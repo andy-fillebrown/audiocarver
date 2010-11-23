@@ -1,0 +1,106 @@
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
+*~
+*.a
+*.core
+*.moc
+*.o
+*.obj
+*.orig
+*.rej
+*.so
+*_pch.h.cpp
+*_resource.rc
+*.qm
+.#*
+*.*#
+core
+!core/
+tags
+.DS_Store
+*.debug
+Makefile*
+*.prl
+*.app
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+Thumbs.db
+
+# qtcreator generated files
+*.pro.user*
+*.pluginspec
+src/app/Info.plist
+src/plugins/coreplugin/ide_version.h
+
+# xemacs temporary files
+*.flc
+
+# Vim temporary files
+.*.swp
+
+# Visual Studio generated files
+*.ib_pdb_index
+*.idb
+*.ilk
+*.pdb
+*.sln
+*.suo
+*.vcproj
+*vcproj.*.*.user
+*.ncb
+
+# MinGW generated files
+*.Debug
+*.Release
+
+# translation related:
+share/qtcreator/translations/*_tr.h
+share/qtcreator/translations/qtcreator_untranslated.ts
+
+# Directories to ignore
+# ---------------------
+
+debug
+lib/*
+lib64/*
+release
+doc/html/*
+doc/api/html/*
+doc/pluginhowto/html/*
+.rcc
+.pch
+
+# Binaries
+# --------
+bin/*.dll
+bin/qtcreator
+bin/qtcreator_process_stub*
+bin/qtcreator.exe
+share/doc/qtcreator/qtcreator.qch
+src/tools/gen-cpp-ast/generate-ast
+src/tools/mkvisitor/cplusplus0
+src/tools/qml/qmldump/qmldump
+
+# Tests
+#------
+tests/manual/cplusplus-frontend/cplusplus0
+tests/manual/cplusplus-dump/cplusplus0
+tests/manual/qml-ast2dot/qml-ast2dot
+tests/manual/gdbdebugger/simple/libsimple_gdbtest_plugin.*dylib
+tests/manual/plain-cplusplus/plain-c++
+tests/manual/preprocessor/pp
+tests/auto/cplusplus/codegen/tst_codegen
+tests/auto/cplusplus/ast/tst_ast
+tests/auto/cplusplus/codeformatter/tst_codeformatter
+tests/auto/cplusplus/findusages/tst_findusages
+tests/auto/cplusplus/lookup/tst_lookup
+tests/auto/cplusplus/preprocessor/tst_preprocessor
+tests/auto/cplusplus/semantic/tst_semantic
+tests/auto/cplusplus/typeprettyprinter/tst_typeprettyprinter
+tests/auto/qml/qmldesigner/bauhaustests/tst_bauhaus
+tests/auto/qml/qmldesigner/coretests/tst_qmldesigner_core
+tests/auto/qml/qmldesigner/propertyeditortests/tst_propertyeditor
+tests/auto/profilewriter/tst_profilewriter
+
