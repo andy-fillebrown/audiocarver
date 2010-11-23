@@ -277,10 +277,17 @@ void StyleHelper::drawArrow(QStyle::PrimitiveElement element, QPainter *painter,
     int size = qMin(r.height(), r.width());
     QPixmap pixmap;
     QString pixmapName;
+#ifdef Q_OS_WIN
+    pixmapName.sprintf("arrow-%s-%d-%d-%d-%I64d",
+                       "$qt_ia",
+                       uint(option->state), element,
+                       size, option->palette.cacheKey());
+#else
     pixmapName.sprintf("arrow-%s-%d-%d-%d-%lld",
                        "$qt_ia",
                        uint(option->state), element,
                        size, option->palette.cacheKey());
+#endif
     if (!QPixmapCache::find(pixmapName, pixmap)) {
         int border = size/5;
         int sqsize = 2*(size/2);
