@@ -2,6 +2,7 @@ include(../audiocarver.pri)
 
 # use precompiled header for libraries by default
 isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$PWD/shared/audiocarver_pch.h
+OTHER_FILES += $$PRECOMPILED_HEADER
 
 win32:DLLDESTDIR = $$AC_APP_PATH
 DESTDIR = $$AC_LIBRARY_PATH
@@ -21,6 +22,3 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
     }
     INSTALLS += target
 }
-
-OTHER_FILES += \
-    $$PRECOMPILED_HEADER
