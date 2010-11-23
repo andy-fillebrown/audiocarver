@@ -1,39 +1,29 @@
-include(../qtcreator.pri)
+include(../audiocarver.pri)
 
 # use gui precompiled header for plugins by default
-isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$PWD/shared/qtcreator_gui_pch.h
+isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$PWD/shared/audiocarver_gui_pch.h
+OTHER_FILES += $$PRECOMPILED_HEADER
 
 isEmpty(PROVIDER) {
-    PROVIDER = Nokia
+    PROVIDER = AndyFillebrown
 }
 
-DESTDIR = $$IDE_PLUGIN_PATH/$$PROVIDER
+DESTDIR = $$AC_PLUGIN_PATH/$$PROVIDER
 LIBS += -L$$DESTDIR
-INCLUDEPATH += $$IDE_SOURCE_TREE/src/plugins
-DEPENDPATH += $$IDE_SOURCE_TREE/src/plugins
+INCLUDEPATH += $$AC_SOURCE_TREE/src/plugins
+DEPENDPATH += $$AC_SOURCE_TREE/src/plugins
 
 # copy the plugin spec
 isEmpty(TARGET) {
-    error("qtcreatorplugin.pri: You must provide a TARGET")
-}
-
-defineReplace(stripOutDir) {
-    1 ~= s|^$$re_escape($$OUT_PWD/)||$$i_flag
-    return($$1)
+    error("audiocarverplugin.pri: You must provide a TARGET")
 }
 
 PLUGINSPEC = $$_PRO_FILE_PWD_/$${TARGET}.pluginspec
 PLUGINSPEC_IN = $${PLUGINSPEC}.in
-exists($$PLUGINSPEC_IN) {
-    OTHER_FILES += $$PLUGINSPEC_IN
-    PLUGINSPEC = $$OUT_PWD/$${TARGET}.pluginspec
-    QMAKE_SUBSTITUTES += $${PLUGINSPEC}.in
-    copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripOutDir}
-} else {
-    # need to support that for external plugins
-    OTHER_FILES += $$PLUGINSPEC
-    copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripSrcDir}
-}
+OTHER_FILES += $$PLUGINSPEC_IN
+PLUGINSPEC = $$OUT_PWD/$${TARGET}.pluginspec
+QMAKE_SUBSTITUTES += $${PLUGINSPEC}.in
+copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripDir}
 copy2build.input = PLUGINSPEC
 isEmpty(vcproj):copy2build.variable_out = PRE_TARGETDEPS
 copy2build.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
@@ -49,7 +39,7 @@ macx {
         QMAKE_LFLAGS += -Wl,-rpath,@loader_path/../../
     }
 } else:linux-* {
-    #do the rpath by hand since it's not possible to use ORIGIN in QMAKE_RPATHDIR
+    # do the rpath by hand since it's not possible to use ORIGIN in QMAKE_RPATHDIR
     QMAKE_RPATHDIR += \$\$ORIGIN
     QMAKE_RPATHDIR += \$\$ORIGIN/..
     QMAKE_RPATHDIR += \$\$ORIGIN/../..
@@ -58,17 +48,15 @@ macx {
     QMAKE_RPATHDIR =
 }
 
-
 contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 
 CONFIG += plugin plugin_with_soname
 
 !macx {
-    target.path = /$$IDE_LIBRARY_BASENAME/qtcreator/plugins/$$PROVIDER
+    target.path = /$$AC_LIBRARY_BASENAME/audiocarver/plugins/$$PROVIDER
     pluginspec.files += $${TARGET}.pluginspec
-    pluginspec.path = /$$IDE_LIBRARY_BASENAME/qtcreator/plugins/$$PROVIDER
+    pluginspec.path = /$$AC_LIBRARY_BASENAME/audiocarver/plugins/$$PROVIDER
     INSTALLS += target pluginspec
 }
 
 TARGET = $$qtLibraryName($$TARGET)
-
