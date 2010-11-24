@@ -20,7 +20,6 @@ SOURCES += \
     filenamevalidatinglineedit.cpp \
     filterlineedit.cpp \
     pathchooser.cpp \
-    qtcolorbutton.cpp \
     stringutils.cpp \
     treewidgetcolumnstretcher.cpp
 
@@ -31,7 +30,6 @@ HEADERS += \
     filenamevalidatinglineedit.h \
     filterlineedit.h \
     pathchooser.h \
-    qtcolorbutton.h \
     stringutils.h \
     treewidgetcolumnstretcher.h \
     utils_global.h
