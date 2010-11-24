@@ -67,7 +67,6 @@ public:
     IContext *currentContextObject() const;
 
     QMainWindow *mainWindow() const;
-    QStatusBar *statusBar() const;
 
     // Adds and removes additional active contexts, these contexts are appended
     // to the currently active contexts.

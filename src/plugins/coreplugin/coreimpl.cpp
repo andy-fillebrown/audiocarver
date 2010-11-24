@@ -115,7 +115,7 @@ SettingsDatabase *CoreImpl::settingsDatabase() const
 #ifdef Q_OS_MAC
 #  define SHARE_PATH "/../Resources"
 #else
-#  define SHARE_PATH "/../share/qtcreator"
+#  define SHARE_PATH "/../share/audiocarver"
 #endif
 
 QString CoreImpl::resourcePath() const
@@ -125,9 +125,9 @@ QString CoreImpl::resourcePath() const
 
 QString CoreImpl::userResourcePath() const
 {
-    // Create qtcreator dir if it doesn't yet exist
+    // Create audiocarver dir if it doesn't yet exist
     const QString configDir = QFileInfo(settings(QSettings::UserScope)->fileName()).path();
-    const QString urp = configDir + "/qtcreator";
+    const QString urp = configDir + "/audiocarver";
 
     QFileInfo fi(urp + QLatin1Char('/'));
     if (!fi.exists()) {
@@ -148,11 +148,6 @@ IContext *CoreImpl::currentContextObject() const
 QMainWindow *CoreImpl::mainWindow() const
 {
     return m_mainwindow;
-}
-
-QStatusBar *CoreImpl::statusBar() const
-{
-    return m_mainwindow->statusBar();
 }
 
 void CoreImpl::updateAdditionalContexts(const Context &remove, const Context &add)
