@@ -89,7 +89,6 @@ MainWindow::MainWindow() :
                                             this)),
     m_actionManager(new ActionManagerPrivate(this)),
     m_fileManager(new FileManager(this)),
-    m_mimeDatabase(new MimeDatabase),
     m_versionDialog(0),
     m_activeContext(0),
     m_generalSettings(new GeneralSettings),
@@ -131,17 +130,11 @@ MainWindow::~MainWindow()
     pm->removeObject(m_coreImpl);
     delete m_coreImpl;
     m_coreImpl = 0;
-
-    delete m_mimeDatabase;
-    m_mimeDatabase = 0;
 }
 
 bool MainWindow::init(QString *errorMessage)
 {
     Q_UNUSED(errorMessage)
-
-    if (!mimeDatabase()->addMimeTypes(QLatin1String(":/core/editormanager/BinFiles.mimetypes.xml"), errorMessage))
-        return false;
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     pm->addObject(m_coreImpl);
@@ -183,49 +176,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     writeSettings();
 
     event->accept();
-}
-
-// Check for desktop file manager file drop events
-
-static bool isDesktopFileManagerDrop(const QMimeData *d, QStringList *files = 0)
-{
-    if (files)
-        files->clear();
-    // Extract dropped files from Mime data.
-    if (!d->hasUrls())
-        return false;
-    const QList<QUrl> urls = d->urls();
-    if (urls.empty())
-        return false;
-    // Try to find local files
-    bool hasFiles = false;
-    const QList<QUrl>::const_iterator cend = urls.constEnd();
-    for (QList<QUrl>::const_iterator it = urls.constBegin(); it != cend; ++it) {
-        const QString fileName = it->toLocalFile();
-        if (!fileName.isEmpty()) {
-            hasFiles = true;
-            if (files) {
-                files->push_back(fileName);
-            } else {
-                break; // No result list, sufficient for checking
-            }
-        }
-    }
-    return hasFiles;
-}
-
-void MainWindow::dragEnterEvent(QDragEnterEvent *event)
-{
-    if (isDesktopFileManagerDrop(event->mimeData())) {
-        event->accept();
-    } else {
-        event->ignore();
-    }
-}
-
-void MainWindow::dropEvent(QDropEvent *event)
-{
-    event->ignore();
 }
 
 IContext *MainWindow::currentContextObject() const
@@ -494,11 +444,6 @@ QSettings *MainWindow::settings(QSettings::Scope scope) const
         return m_settings;
     else
         return m_globalSettings;
-}
-
-MimeDatabase *MainWindow::mimeDatabase() const
-{
-    return m_mimeDatabase;
 }
 
 IContext *MainWindow::contextObject(QWidget *widget)

@@ -77,7 +77,6 @@ public:
     virtual ActionManager *actionManager() const = 0;
     virtual FileManager *fileManager() const = 0;
     virtual UniqueIDManager *uniqueIDManager() const = 0;
-    virtual MimeDatabase *mimeDatabase() const = 0;
 
     virtual QSettings *settings(QSettings::Scope scope = QSettings::UserScope) const = 0;
     virtual SettingsDatabase *settingsDatabase() const = 0;

@@ -86,11 +86,6 @@ UniqueIDManager *CoreImpl::uniqueIDManager() const
     return m_mainwindow->uniqueIDManager();
 }
 
-MimeDatabase *CoreImpl::mimeDatabase() const
-{
-    return m_mainwindow->mimeDatabase();
-}
-
 QSettings *CoreImpl::settings(QSettings::Scope scope) const
 {
     return m_mainwindow->settings(scope);

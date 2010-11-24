@@ -148,7 +148,6 @@ private:
     SettingsDatabase *m_settingsDatabase;
     ActionManagerPrivate *m_actionManager;
     FileManager *m_fileManager;
-    MimeDatabase *m_mimeDatabase;
     VersionDialog *m_versionDialog;
 
     IContext *m_activeContext;

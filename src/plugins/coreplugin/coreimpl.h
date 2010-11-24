@@ -51,7 +51,6 @@ public:
     ActionManager *actionManager() const;
     FileManager *fileManager() const ;
     UniqueIDManager *uniqueIDManager() const;
-    MimeDatabase *mimeDatabase() const;
 
     QSettings *settings(QSettings::Scope scope = QSettings::UserScope) const;
     SettingsDatabase *settingsDatabase() const;

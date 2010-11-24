@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/core">
-        <file>editormanager/BinFiles.mimetypes.xml</file>
         <file>images/editcopy.png</file>
         <file>images/editcut.png</file>
         <file>images/editpaste.png</file>

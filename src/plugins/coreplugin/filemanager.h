@@ -56,42 +56,21 @@ public:
     explicit FileManager(QMainWindow *ew);
     virtual ~FileManager();
 
-    // file pool to monitor
-    bool addFiles(const QList<IFile *> &files, bool addWatcher = true);
-    bool addFile(IFile *file, bool addWatcher = true);
-    bool removeFile(IFile *file);
-    bool isFileManaged(const QString &fileName) const;
-    QList<IFile *> modifiedFiles() const;
-
-    void renamedFile(const QString &from, QString &to);
-
-    void blockFileChange(IFile *file);
-    void unblockFileChange(IFile *file);
-
-    void expectFileChange(const QString &fileName);
-    void unexpectFileChange(const QString &fileName);
-
     // recent files
     void addToRecentFiles(const QString &fileName);
     QStringList recentFiles() const;
     void saveSettings();
 
-    // current file
-    void setCurrentFile(const QString &filePath);
-    QString currentFile() const;
-
     // helper methods
     static QString fixFileName(const QString &fileName);
 
     QStringList getOpenFileNames(const QString &filters,
-                                 const QString path = QString(),
-                                 QString *selectedFilter = 0);
+                                 const QString path = QString());
     QString getSaveFileName(const QString &title, const QString &pathIn,
-                            const QString &filter = QString(), QString *selectedFilter = 0);
+                            const QString &filter = QString());
     QString getSaveFileNameWithExtension(const QString &title, const QString &pathIn,
                                          const QString &filter);
-    QString getSaveAsFileName(IFile *file, const QString &filter = QString(),
-                              QString *selectedFilter = 0);
+    QString getSaveAsFileName(IFile *file, const QString &filter = QString());
 
     QString fileDialogLastVisitedDirectory() const;
     void setFileDialogLastVisitedDirectory(const QString &);
@@ -104,51 +83,10 @@ public:
     QString projectsDirectory() const;
     void setProjectsDirectory(const QString &);
 
-public slots:
-    /* Used to notify e.g. the code model to update the given files. Does *not*
-       lead to any editors to reload or any other editor manager actions. */
-    void notifyFilesChangedInternally(const QStringList &files);
-
-signals:
-    void currentFileChanged(const QString &filePath);
-    /* Used to notify e.g. the code model to update the given files. Does *not*
-       lead to any editors to reload or any other editor manager actions. */
-    void filesChangedInternally(const QStringList &files);
-
-private slots:
-    void fileDestroyed(QObject *obj);
-    void checkForNewFileName();
-    void changedFile(const QString &file);
-
 private:
     void readSettings();
-    void dump();
-    void addFileInfo(IFile *file);
-    void removeFileInfo(IFile *file);
-    void removeFileInfo(const QString &fileName, IFile *file);
-
-    void addWatch(const QString &filename);
-    void removeWatch(const QString &filename);
-    void updateFileInfo(IFile *file);
-    void updateExpectedState(const QString &fileName);
 
     Internal::FileManagerPrivate *d;
-};
-
-/*! The FileChangeBlocker blocks all change notifications to all IFile * that
-    match the given filename. And unblocks in the destructor.
-
-    To also reload the IFile in the destructor class set modifiedReload to true
-  */
-class CORE_EXPORT FileChangeBlocker
-{
-public:
-    explicit FileChangeBlocker(const QString &fileName);
-    ~FileChangeBlocker();
-
-private:
-    const QString m_fileName;
-    Q_DISABLE_COPY(FileChangeBlocker)
 };
 
 } // namespace Core

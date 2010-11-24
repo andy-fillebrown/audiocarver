@@ -38,7 +38,6 @@ SOURCES += \
     generalsettings.cpp \
     icore.cpp \
     mainwindow.cpp \
-    mimedatabase.cpp \
     plugindialog.cpp \
     settingsdatabase.cpp \
     uniqueidmanager.cpp \
@@ -72,7 +71,6 @@ HEADERS += \
     ifile.h \
     icorelistener.h \
     mainwindow.h \
-    mimedatabase.h \
     plugindialog.h \
     settingsdatabase.h \
     versiondialog.h
@@ -92,8 +90,4 @@ unix {
 }
 
 QMAKE_SUBSTITUTES += pro_version.h.in
-
-OTHER_FILES += \
-    editormanager/BinFiles.mimetypes.xml \
-    \
-    $$QMAKE_SUBSTITUTES
+OTHER_FILES += $$QMAKE_SUBSTITUTES
