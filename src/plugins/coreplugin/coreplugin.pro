@@ -1,15 +1,17 @@
 TEMPLATE = lib
 TARGET   = Core
-DEFINES += CORE_LIBRARY
 
-QT += xml
-CONFIG += help
+QT += \
+    sql \
+    xml
 
 include(../../projectplugin.pri)
 include(../../libs/utils/utils.pri)
 include(coreplugin_dependencies.pri)
 
 win32-msvc*:QMAKE_CXXFLAGS += -wd4251 -wd4290 -wd4250
+
+DEFINES += CORE_LIBRARY
 
 INCLUDEPATH += \
     actionmanager \
