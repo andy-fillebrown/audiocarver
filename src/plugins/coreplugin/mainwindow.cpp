@@ -35,7 +35,6 @@
 #include "coreconstants.h"
 #include "filemanager.h"
 #include "generalsettings.h"
-#include "mimedatabase.h"
 #include "plugindialog.h"
 #include "shortcutsettings.h"
 
