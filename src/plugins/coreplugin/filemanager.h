@@ -93,12 +93,12 @@ public:
     QString getSaveAsFileName(IFile *file, const QString &filter = QString(),
                               QString *selectedFilter = 0);
 
-    QList<IFile *> saveModifiedFilesSilently(const QList<IFile *> &files);
-    QList<IFile *> saveModifiedFiles(const QList<IFile *> &files,
-                                     bool *cancelled = 0,
-                                     const QString &message = QString(),
-                                     const QString &alwaysSaveMessage = QString::null,
-                                     bool *alwaysSave = 0);
+//    QList<IFile *> saveModifiedFilesSilently(const QList<IFile *> &files);
+//    QList<IFile *> saveModifiedFiles(const QList<IFile *> &files,
+//                                     bool *cancelled = 0,
+//                                     const QString &message = QString(),
+//                                     const QString &alwaysSaveMessage = QString::null,
+//                                     bool *alwaysSave = 0);
 
 
     QString fileDialogLastVisitedDirectory() const;
@@ -140,11 +140,11 @@ private:
     void updateFileInfo(IFile *file);
     void updateExpectedState(const QString &fileName);
 
-    QList<IFile *> saveModifiedFiles(const QList<IFile *> &files,
-                               bool *cancelled, bool silently,
-                               const QString &message,
-                               const QString &alwaysSaveMessage = QString::null,
-                               bool *alwaysSave = 0);
+//    QList<IFile *> saveModifiedFiles(const QList<IFile *> &files,
+//                               bool *cancelled, bool silently,
+//                               const QString &message,
+//                               const QString &alwaysSaveMessage = QString::null,
+//                               bool *alwaysSave = 0);
 
     Internal::FileManagerPrivate *d;
 };

@@ -126,10 +126,10 @@ QWidget *GeneralSettings::createPage(QWidget *parent)
 
     fillLanguageBox();
 
-    m_page->colorButton->setColor(StyleHelper::requestedBaseColor());
+//    m_page->colorButton->setColor(StyleHelper::requestedBaseColor());
 
-    connect(m_page->resetButton, SIGNAL(clicked()),
-            this, SLOT(resetInterfaceColor()));
+//    connect(m_page->resetButton, SIGNAL(clicked()),
+//            this, SLOT(resetInterfaceColor()));
 
     return w;
 }
@@ -144,7 +144,7 @@ void GeneralSettings::apply()
     int currentIndex = m_page->languageBox->currentIndex();
     setLanguage(m_page->languageBox->itemData(currentIndex, Qt::UserRole).toString());
     // Apply the new base color if accepted
-    StyleHelper::setBaseColor(m_page->colorButton->color());
+//    StyleHelper::setBaseColor(m_page->colorButton->color());
 }
 
 void GeneralSettings::finish()
@@ -154,7 +154,7 @@ void GeneralSettings::finish()
 
 void GeneralSettings::resetInterfaceColor()
 {
-    m_page->colorButton->setColor(StyleHelper::DEFAULT_BASE_COLOR);
+//    m_page->colorButton->setColor(StyleHelper::DEFAULT_BASE_COLOR);
 }
 
 #ifdef Q_OS_UNIX

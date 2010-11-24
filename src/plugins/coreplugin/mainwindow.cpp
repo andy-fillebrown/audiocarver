@@ -117,27 +117,27 @@ MainWindow::MainWindow() :
                                             this)),
     m_actionManager(new ActionManagerPrivate(this)),
     m_fileManager(new FileManager(this)),
-    m_progressManager(new ProgressManagerPrivate()),
-    m_variableManager(new VariableManager),
-    m_statusBarManager(0),
-    m_modeManager(0),
+//    m_progressManager(new ProgressManagerPrivate()),
+//    m_variableManager(new VariableManager),
+//    m_statusBarManager(0),
+//    m_modeManager(0),
     m_mimeDatabase(new MimeDatabase),
-    m_helpManager(new HelpManager),
-    m_navigationWidget(0),
-    m_rightPaneWidget(0),
+//    m_helpManager(new HelpManager),
+//    m_navigationWidget(0),
+//    m_rightPaneWidget(0),
     m_versionDialog(0),
     m_activeContext(0),
     m_generalSettings(new GeneralSettings),
     m_shortcutSettings(new ShortcutSettings),
     m_exitAction(0),
-    m_optionsAction(0),
-    m_toggleSideBarAction(0),
-    m_toggleFullScreenAction(0),
+    m_optionsAction(0)//,
+//    m_toggleSideBarAction(0),
+//    m_toggleFullScreenAction(0),
 #ifdef Q_WS_MAC
     m_minimizeAction(0),
     m_zoomAction(0),
 #endif
-    m_toggleSideBarButton(new QToolButton)
+//    m_toggleSideBarButton(new QToolButton)
 {
     setWindowTitle(tr("AudioCarver"));
 #ifndef Q_WS_MAC
@@ -147,82 +147,82 @@ MainWindow::MainWindow() :
     QCoreApplication::setApplicationVersion(QLatin1String(Core::Constants::AC_VERSION_LONG));
     QCoreApplication::setOrganizationName(QLatin1String("AndyFillebrown"));
     QSettings::setDefaultFormat(QSettings::IniFormat);
-    QString baseName = QApplication::style()->objectName();
-#ifdef Q_WS_X11
-    if (baseName == QLatin1String("windows")) {
-        // Sometimes we get the standard windows 95 style as a fallback
-        // e.g. if we are running on a KDE4 desktop
-        QByteArray desktopEnvironment = qgetenv("DESKTOP_SESSION");
-        if (desktopEnvironment == "kde")
-            baseName = QLatin1String("plastique");
-        else
-            baseName = QLatin1String("cleanlooks");
-    }
-#endif
-    qApp->setStyle(new ManhattanStyle(baseName));
+//    QString baseName = QApplication::style()->objectName();
+//#ifdef Q_WS_X11
+//    if (baseName == QLatin1String("windows")) {
+//        // Sometimes we get the standard windows 95 style as a fallback
+//        // e.g. if we are running on a KDE4 desktop
+//        QByteArray desktopEnvironment = qgetenv("DESKTOP_SESSION");
+//        if (desktopEnvironment == "kde")
+//            baseName = QLatin1String("plastique");
+//        else
+//            baseName = QLatin1String("cleanlooks");
+//    }
+//#endif
+//    qApp->setStyle(new ManhattanStyle(baseName));
 
-    setDockNestingEnabled(true);
+//    setDockNestingEnabled(true);
 
-    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-    setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
+//    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+//    setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 
     registerDefaultContainers();
     registerDefaultActions();
 
-    m_navigationWidget = new NavigationWidget(m_toggleSideBarAction);
-    m_rightPaneWidget = new RightPaneWidget();
+//    m_navigationWidget = new NavigationWidget(m_toggleSideBarAction);
+//    m_rightPaneWidget = new RightPaneWidget();
 
-    m_modeStack = new FancyTabWidget(this);
-    m_modeManager = new ModeManager(this, m_modeStack);
-    m_modeManager->addWidget(m_progressManager->progressView());
-    m_statusBarManager = new StatusBarManager(this);
-    m_messageManager = new MessageManager;
-    setCentralWidget(m_modeStack);
+//    m_modeStack = new FancyTabWidget(this);
+//    m_modeManager = new ModeManager(this, m_modeStack);
+//    m_modeManager->addWidget(m_progressManager->progressView());
+//    m_statusBarManager = new StatusBarManager(this);
+//    m_messageManager = new MessageManager;
+//    setCentralWidget(m_modeStack);
 
-    connect(QApplication::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)),
-            this, SLOT(updateFocusWidget(QWidget*,QWidget*)));
+//    connect(QApplication::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)),
+//            this, SLOT(updateFocusWidget(QWidget*,QWidget*)));
     // Add a small Toolbutton for toggling the navigation widget
-    statusBar()->insertPermanentWidget(0, m_toggleSideBarButton);
+//    statusBar()->insertPermanentWidget(0, m_toggleSideBarButton);
 
 //    setUnifiedTitleAndToolBarOnMac(true);
 #ifdef Q_OS_UNIX
      //signal(SIGINT, handleSigInt);
 #endif
 
-    statusBar()->setProperty("p_styled", true);
-    setAcceptDrops(true);
+//    statusBar()->setProperty("p_styled", true);
+//    setAcceptDrops(true);
 }
 
-void MainWindow::setSidebarVisible(bool visible)
-{
-    if (NavigationWidgetPlaceHolder::current()) {
-        if (m_navigationWidget->isSuppressed() && visible) {
-            m_navigationWidget->setShown(true);
-            m_navigationWidget->setSuppressed(false);
-        } else {
-            m_navigationWidget->setShown(visible);
-        }
-    }
-}
+//void MainWindow::setSidebarVisible(bool visible)
+//{
+//    if (NavigationWidgetPlaceHolder::current()) {
+//        if (m_navigationWidget->isSuppressed() && visible) {
+//            m_navigationWidget->setShown(true);
+//            m_navigationWidget->setSuppressed(false);
+//        } else {
+//            m_navigationWidget->setShown(visible);
+//        }
+//    }
+//}
 
-void MainWindow::setSuppressNavigationWidget(bool suppress)
-{
-    if (NavigationWidgetPlaceHolder::current())
-        m_navigationWidget->setSuppressed(suppress);
-}
+//void MainWindow::setSuppressNavigationWidget(bool suppress)
+//{
+//    if (NavigationWidgetPlaceHolder::current())
+//        m_navigationWidget->setSuppressed(suppress);
+//}
 
-void MainWindow::setOverrideColor(const QColor &color)
-{
-    m_overrideColor = color;
-}
+//void MainWindow::setOverrideColor(const QColor &color)
+//{
+//    m_overrideColor = color;
+//}
 
 MainWindow::~MainWindow()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     pm->removeObject(m_shortcutSettings);
     pm->removeObject(m_generalSettings);
-    delete m_messageManager;
-    m_messageManager = 0;
+//    delete m_messageManager;
+//    m_messageManager = 0;
     delete m_shortcutSettings;
     m_shortcutSettings = 0;
     delete m_generalSettings;
@@ -232,24 +232,24 @@ MainWindow::~MainWindow()
     delete m_uniqueIDManager;
     m_uniqueIDManager = 0;
 
-    delete m_statusBarManager;
-    m_statusBarManager = 0;
-    delete m_progressManager;
-    m_progressManager = 0;
+//    delete m_statusBarManager;
+//    m_statusBarManager = 0;
+//    delete m_progressManager;
+//    m_progressManager = 0;
     pm->removeObject(m_coreImpl);
     delete m_coreImpl;
     m_coreImpl = 0;
 
-    delete m_rightPaneWidget;
-    m_rightPaneWidget = 0;
+//    delete m_rightPaneWidget;
+//    m_rightPaneWidget = 0;
 
-    delete m_modeManager;
-    m_modeManager = 0;
+//    delete m_modeManager;
+//    m_modeManager = 0;
     delete m_mimeDatabase;
     m_mimeDatabase = 0;
 
-    delete m_helpManager;
-    m_helpManager = 0;
+//    delete m_helpManager;
+//    m_helpManager = 0;
 }
 
 bool MainWindow::init(QString *errorMessage)
@@ -261,21 +261,21 @@ bool MainWindow::init(QString *errorMessage)
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     pm->addObject(m_coreImpl);
-    m_statusBarManager->init();
-    m_modeManager->init();
-    m_progressManager->init();
+//    m_statusBarManager->init();
+//    m_modeManager->init();
+//    m_progressManager->init();
 
     pm->addObject(m_generalSettings);
     pm->addObject(m_shortcutSettings);
 
-    m_messageManager->init();
+//    m_messageManager->init();
     return true;
 }
 
 void MainWindow::extensionsInitialized()
 {
-    m_statusBarManager->extensionsInitalized();
-    m_navigationWidget->setFactories(ExtensionSystem::PluginManager::instance()->getObjects<INavigationWidgetFactory>());
+//    m_statusBarManager->extensionsInitalized();
+//    m_navigationWidget->setFactories(ExtensionSystem::PluginManager::instance()->getObjects<INavigationWidgetFactory>());
 
     // reading the shortcut settings must be done after all shortcuts have been registered
     m_actionManager->initialize();
@@ -293,12 +293,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
     emit m_coreImpl->saveSettingsRequested();
 
     // Save opened files
-    bool cancelled;
-    QList<IFile*> notSaved = fileManager()->saveModifiedFiles(fileManager()->modifiedFiles(), &cancelled);
-    if (cancelled || !notSaved.isEmpty()) {
-        event->ignore();
-        return;
-    }
+//    bool cancelled;
+//    QList<IFile*> notSaved = fileManager()->saveModifiedFiles(fileManager()->modifiedFiles(), &cancelled);
+//    if (cancelled || !notSaved.isEmpty()) {
+//        event->ignore();
+//        return;
+//    }
 
     const QList<ICoreListener *> listeners =
         ExtensionSystem::PluginManager::instance()->getObjects<ICoreListener>();
@@ -313,7 +313,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     writeSettings();
 
-    m_navigationWidget->closeSubWidgets();
+//    m_navigationWidget->closeSubWidgets();
 
     event->accept();
 }
@@ -366,10 +366,10 @@ IContext *MainWindow::currentContextObject() const
     return m_activeContext;
 }
 
-QStatusBar *MainWindow::statusBar() const
-{
-    return m_modeStack->statusBar();
-}
+//QStatusBar *MainWindow::statusBar() const
+//{
+//    return m_modeStack->statusBar();
+//}
 
 void MainWindow::registerDefaultContainers()
 {
@@ -573,20 +573,20 @@ void MainWindow::registerDefaultActions()
 #endif
 
     // Show Sidebar Action
-    m_toggleSideBarAction = new QAction(QIcon(Constants::ICON_TOGGLE_SIDEBAR),
-                                        tr("Show Sidebar"), this);
-    m_toggleSideBarAction->setCheckable(true);
-    cmd = am->registerAction(m_toggleSideBarAction, Constants::TOGGLE_SIDEBAR, globalContext);
-    cmd->setAttribute(Command::CA_UpdateText);
-#ifdef Q_WS_MAC
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+0"));
-#else
-    cmd->setDefaultKeySequence(QKeySequence("Alt+0"));
-#endif
-    connect(m_toggleSideBarAction, SIGNAL(triggered(bool)), this, SLOT(setSidebarVisible(bool)));
-    m_toggleSideBarButton->setDefaultAction(cmd->action());
-    mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
-    m_toggleSideBarAction->setEnabled(false);
+//    m_toggleSideBarAction = new QAction(QIcon(Constants::ICON_TOGGLE_SIDEBAR),
+//                                        tr("Show Sidebar"), this);
+//    m_toggleSideBarAction->setCheckable(true);
+//    cmd = am->registerAction(m_toggleSideBarAction, Constants::TOGGLE_SIDEBAR, globalContext);
+//    cmd->setAttribute(Command::CA_UpdateText);
+//#ifdef Q_WS_MAC
+//    cmd->setDefaultKeySequence(QKeySequence("Ctrl+0"));
+//#else
+//    cmd->setDefaultKeySequence(QKeySequence("Alt+0"));
+//#endif
+//    connect(m_toggleSideBarAction, SIGNAL(triggered(bool)), this, SLOT(setSidebarVisible(bool)));
+//    m_toggleSideBarButton->setDefaultAction(cmd->action());
+//    mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
+//    m_toggleSideBarAction->setEnabled(false);
 
 #ifndef Q_WS_MAC
     // Full Screen Action
@@ -618,7 +618,7 @@ void MainWindow::registerDefaultActions()
 #endif
     connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutQtCreator()));
 
-    //About Plugins Action
+    // About Plugins Action
     tmpaction = new QAction(tr("About &Plugins..."), this);
     cmd = am->registerAction(tmpaction, Constants::ABOUT_PLUGINS, globalContext);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
@@ -672,10 +672,10 @@ UniqueIDManager *MainWindow::uniqueIDManager() const
     return m_uniqueIDManager;
 }
 
-MessageManager *MainWindow::messageManager() const
-{
-    return m_messageManager;
-}
+//MessageManager *MainWindow::messageManager() const
+//{
+//    return m_messageManager;
+//}
 
 QSettings *MainWindow::settings(QSettings::Scope scope) const
 {
@@ -685,30 +685,30 @@ QSettings *MainWindow::settings(QSettings::Scope scope) const
         return m_globalSettings;
 }
 
-ProgressManager *MainWindow::progressManager() const
-{
-    return m_progressManager;
-}
+//ProgressManager *MainWindow::progressManager() const
+//{
+//    return m_progressManager;
+//}
 
-VariableManager *MainWindow::variableManager() const
-{
-     return m_variableManager.data();
-}
+//VariableManager *MainWindow::variableManager() const
+//{
+//     return m_variableManager.data();
+//}
 
-ModeManager *MainWindow::modeManager() const
-{
-    return m_modeManager;
-}
+//ModeManager *MainWindow::modeManager() const
+//{
+//    return m_modeManager;
+//}
 
 MimeDatabase *MainWindow::mimeDatabase() const
 {
     return m_mimeDatabase;
 }
 
-HelpManager *MainWindow::helpManager() const
-{
-    return m_helpManager;
-}
+//HelpManager *MainWindow::helpManager() const
+//{
+//    return m_helpManager;
+//}
 
 IContext *MainWindow::contextObject(QWidget *widget)
 {
@@ -816,7 +816,7 @@ void MainWindow::aboutToShutdown()
 }
 
 static const char *settingsGroup = "MainWindow";
-static const char *colorKey = "Color";
+//static const char *colorKey = "Color";
 static const char *windowGeometryKey = "WindowGeometry";
 static const char *windowStateKey = "WindowState";
 
@@ -829,15 +829,15 @@ void MainWindow::readSettings()
 {
     m_settings->beginGroup(QLatin1String(settingsGroup));
 
-    if (m_overrideColor.isValid()) {
-        Utils::StyleHelper::setBaseColor(m_overrideColor);
-        // Get adapted base color.
-        m_overrideColor = Utils::StyleHelper::baseColor();
-    } else {
-        Utils::StyleHelper::setBaseColor(
-                m_settings->value(QLatin1String(colorKey),
-                                  QColor(Utils::StyleHelper::DEFAULT_BASE_COLOR)).value<QColor>());
-    }
+//    if (m_overrideColor.isValid()) {
+//        Utils::StyleHelper::setBaseColor(m_overrideColor);
+//        // Get adapted base color.
+//        m_overrideColor = Utils::StyleHelper::baseColor();
+//    } else {
+//        Utils::StyleHelper::setBaseColor(
+//                m_settings->value(QLatin1String(colorKey),
+//                                  QColor(Utils::StyleHelper::DEFAULT_BASE_COLOR)).value<QColor>());
+//    }
 
     // TODO compat for <= 2.1, remove later
     if (m_settings->contains(QLatin1String(geometryKey))) {
@@ -863,16 +863,16 @@ void MainWindow::readSettings()
 
     m_settings->endGroup();
 
-    m_navigationWidget->restoreSettings(m_settings);
-    m_rightPaneWidget->readSettings(m_settings);
+//    m_navigationWidget->restoreSettings(m_settings);
+//    m_rightPaneWidget->readSettings(m_settings);
 }
 
 void MainWindow::writeSettings()
 {
     m_settings->beginGroup(QLatin1String(settingsGroup));
 
-    if (!(m_overrideColor.isValid() && Utils::StyleHelper::baseColor() == m_overrideColor))
-        m_settings->setValue(QLatin1String(colorKey), Utils::StyleHelper::requestedBaseColor());
+//    if (!(m_overrideColor.isValid() && Utils::StyleHelper::baseColor() == m_overrideColor))
+//        m_settings->setValue(QLatin1String(colorKey), Utils::StyleHelper::requestedBaseColor());
 
     m_settings->setValue(QLatin1String(windowGeometryKey), saveGeometry());
     m_settings->setValue(QLatin1String(windowStateKey), saveState());
@@ -881,7 +881,7 @@ void MainWindow::writeSettings()
 
     m_fileManager->saveSettings();
     m_actionManager->saveSettings(m_settings);
-    m_navigationWidget->saveSettings(m_settings);
+//    m_navigationWidget->saveSettings(m_settings);
 }
 
 void MainWindow::updateAdditionalContexts(const Context &remove, const Context &add)

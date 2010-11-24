@@ -22,67 +22,67 @@ DEPENDPATH += \
 
 SOURCES += \
     mainwindow.cpp \
-    tabpositionindicator.cpp \
-    fancyactionbar.cpp \
-    fancytabwidget.cpp \
-    flowlayout.cpp \
+#    tabpositionindicator.cpp \
+#    fancyactionbar.cpp \
+#    fancytabwidget.cpp \
+#    flowlayout.cpp \
     generalsettings.cpp \
     filemanager.cpp \
     uniqueidmanager.cpp \
-    messagemanager.cpp \
-    statusbarmanager.cpp \
+#    messagemanager.cpp \
+#    statusbarmanager.cpp \
     versiondialog.cpp \
     actionmanager/actionmanager.cpp \
     actionmanager/command.cpp \
     actionmanager/actioncontainer.cpp \
     actionmanager/commandsfile.cpp \
-    dialogs/saveitemsdialog.cpp \
+#    dialogs/saveitemsdialog.cpp \
     dialogs/settingsdialog.cpp \
     actionmanager/commandmappings.cpp \
     dialogs/shortcutsettings.cpp \
-    progressmanager/progressmanager.cpp \
-    progressmanager/progressview.cpp \
-    progressmanager/progressbar.cpp \
-    progressmanager/futureprogress.cpp \
-    basemode.cpp \
-    statusbarwidget.cpp \
+#    progressmanager/progressmanager.cpp \
+#    progressmanager/progressview.cpp \
+#    progressmanager/progressbar.cpp \
+#    progressmanager/futureprogress.cpp \
+#    basemode.cpp \
+#    statusbarwidget.cpp \
     coreplugin.cpp \
-    variablemanager.cpp \
-    modemanager.cpp \
+#    variablemanager.cpp \
+#    modemanager.cpp \
     coreimpl.cpp \
-    basefilewizard.cpp \
+#    basefilewizard.cpp \
     plugindialog.cpp \
-    inavigationwidgetfactory.cpp \
-    navigationwidget.cpp \
-    manhattanstyle.cpp \
-    minisplitter.cpp \
-    styleanimator.cpp \
+#    inavigationwidgetfactory.cpp \
+#    navigationwidget.cpp \
+#    manhattanstyle.cpp \
+#    minisplitter.cpp \
+#    styleanimator.cpp \
     findplaceholder.cpp \
-    rightpane.cpp \
-    sidebar.cpp \
-    fileiconprovider.cpp \
+#    rightpane.cpp \
+#    sidebar.cpp \
+#    fileiconprovider.cpp \
     mimedatabase.cpp \
     icore.cpp \
     dialogs/ioptionspage.cpp \
-    dialogs/iwizard.cpp \
+#    dialogs/iwizard.cpp \
     settingsdatabase.cpp \
     eventfilteringmainwindow.cpp \
-    imode.cpp \
-    helpmanager.cpp \
-    navigationsubwidget.cpp \
-    sidebarwidget.cpp
+#    imode.cpp \
+#    helpmanager.cpp \
+#    navigationsubwidget.cpp \
+#    sidebarwidget.cpp
 
 HEADERS += \
     mainwindow.h \
-    tabpositionindicator.h \
-    fancyactionbar.h \
-    fancytabwidget.h \
-    flowlayout.h \
+#    tabpositionindicator.h \
+#    fancyactionbar.h \
+#    fancytabwidget.h \
+#    flowlayout.h \
     generalsettings.h \
     filemanager.h \
     uniqueidmanager.h \
-    messagemanager.h \
-    statusbarmanager.h \
+#    messagemanager.h \
+#    statusbarmanager.h \
     actionmanager/actioncontainer.h \
     actionmanager/actionmanager.h \
     actionmanager/command.h \
@@ -90,69 +90,70 @@ HEADERS += \
     actionmanager/command_p.h \
     actionmanager/actioncontainer_p.h \
     actionmanager/commandsfile.h \
-    dialogs/saveitemsdialog.h \
+#    dialogs/saveitemsdialog.h \
     dialogs/settingsdialog.h \
     actionmanager/commandmappings.h \
     dialogs/shortcutsettings.h \
-    dialogs/iwizard.h \
+#    dialogs/iwizard.h \
     dialogs/ioptionspage.h \
-    progressmanager/progressmanager_p.h \
-    progressmanager/progressview.h \
-    progressmanager/progressbar.h \
-    progressmanager/futureprogress.h \
-    progressmanager/progressmanager.h \
+#    progressmanager/progressmanager_p.h \
+#    progressmanager/progressview.h \
+#    progressmanager/progressbar.h \
+#    progressmanager/futureprogress.h \
+#    progressmanager/progressmanager.h \
     icontext.h \
     icore.h \
     ifile.h \
-    ifilefactory.h \
-    imode.h \
+#    ifilefactory.h \
+#    imode.h \
     coreconstants.h \
-    ifilewizardextension.h \
+#    ifilewizardextension.h \
     icorelistener.h \
     versiondialog.h \
     core_global.h \
-    basemode.h \
-    statusbarwidget.h \
+#    basemode.h \
+#    statusbarwidget.h \
     coreplugin.h \
-    variablemanager.h \
-    modemanager.h \
+#    variablemanager.h \
+#    modemanager.h \
     coreimpl.h \
-    basefilewizard.h \
+#    basefilewizard.h \
     plugindialog.h \
-    inavigationwidgetfactory.h \
-    navigationwidget.h \
-    manhattanstyle.h \
-    minisplitter.h \
-    styleanimator.h \
+#    inavigationwidgetfactory.h \
+#    navigationwidget.h \
+#    manhattanstyle.h \
+#    minisplitter.h \
+#    styleanimator.h \
     findplaceholder.h \
-    rightpane.h \
-    sidebar.h \
-    fileiconprovider.h \
+#    rightpane.h \
+#    sidebar.h \
+#    fileiconprovider.h \
     mimedatabase.h \
     settingsdatabase.h \
     eventfilteringmainwindow.h \
-    helpmanager.h \
-    navigationsubwidget.h \
-    sidebarwidget.h
+#    helpmanager.h \
+#    navigationsubwidget.h \
+#    sidebarwidget.h
 
 FORMS += \
     actionmanager/commandmappings.ui \
     dialogs/saveitemsdialog.ui \
     generalsettings.ui
 
-RESOURCES += core.qrc \
-    fancyactionbar.qrc
+RESOURCES += \
+    core.qrc \
+#    fancyactionbar.qrc
 
 win32 {
-    SOURCES += progressmanager/progressmanager_win.cpp
-    LIBS += -lole32
+#    SOURCES += progressmanager/progressmanager_win.cpp
+#    LIBS += -lole32
 }
 else:macx {
-    OBJECTIVE_SOURCES += progressmanager/progressmanager_mac.mm
-    LIBS += -framework AppKit
+#    OBJECTIVE_SOURCES += progressmanager/progressmanager_mac.mm
+#    LIBS += -framework AppKit
 }
 else:unix {
-    SOURCES += progressmanager/progressmanager_x11.cpp
+#    SOURCES += progressmanager/progressmanager_x11.cpp
 
     images.files = images/qtcreator_logo_*.png
     images.path = /share/pixmaps

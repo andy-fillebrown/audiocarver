@@ -48,7 +48,7 @@ CorePlugin::CorePlugin() :
 CorePlugin::~CorePlugin()
 {
     // delete FileIconProvider singleton
-    delete FileIconProvider::instance();
+//    delete FileIconProvider::instance();
 
     delete m_mainWindow;
 }
@@ -56,11 +56,11 @@ CorePlugin::~CorePlugin()
 void CorePlugin::parseArguments(const QStringList &arguments)
 {
     for (int i = 0; i < arguments.size() - 1; i++) {
-        if (arguments.at(i) == QLatin1String("-color")) {
-            const QString colorcode(arguments.at(i + 1));
-            m_mainWindow->setOverrideColor(QColor(colorcode));
-            i++; // skip the argument
-        }
+//        if (arguments.at(i) == QLatin1String("-color")) {
+//            const QString colorcode(arguments.at(i + 1));
+//            m_mainWindow->setOverrideColor(QColor(colorcode));
+//            i++; // skip the argument
+//        }
     }
 }
 
