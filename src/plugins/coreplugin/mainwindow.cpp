@@ -83,9 +83,9 @@ MainWindow::MainWindow() :
     m_additionalContexts(Constants::C_GLOBAL),
     m_settings(ExtensionSystem::PluginManager::instance()->settings()),
     m_globalSettings(new QSettings(QSettings::IniFormat, QSettings::SystemScope,
-                             QLatin1String("AndyFillebrown"), QLatin1String("AudioCarver"), this)),
+                             QLatin1String(Constants::PRO_AUTHOR), QLatin1String(PRO_NAME_STR), this)),
     m_settingsDatabase(new SettingsDatabase(QFileInfo(m_settings->fileName()).path(),
-                                            QLatin1String("AudioCarver"),
+                                            QLatin1String(PRO_NAME_STR),
                                             this)),
     m_actionManager(new ActionManagerPrivate(this)),
     m_fileManager(new FileManager(this)),
@@ -499,30 +499,6 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::updateFocusWidget(QWidget *old, QWidget *now)
-{
-    Q_UNUSED(old)
-
-    // Prevent changing the context object just because the menu or a menu item is activated
-    if (qobject_cast<QMenuBar*>(now) || qobject_cast<QMenu*>(now))
-        return;
-
-    IContext *newContext = 0;
-    if (focusWidget()) {
-        IContext *context = 0;
-        QWidget *p = focusWidget();
-        while (p) {
-            context = m_contextWidgets.value(p);
-            if (context) {
-                newContext = context;
-                break;
-            }
-            p = p->parentWidget();
-        }
-    }
-    updateContextObject(newContext);
-}
-
 void MainWindow::updateContextObject(IContext *context)
 {
     if (context == m_activeContext)
@@ -545,8 +521,6 @@ void MainWindow::resetContext()
 
 void MainWindow::aboutToShutdown()
 {
-    disconnect(QApplication::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)),
-               this, SLOT(updateFocusWidget(QWidget*,QWidget*)));
     m_activeContext = 0;
     hide();
 }
@@ -682,29 +656,4 @@ void MainWindow::setFullScreen(bool on)
         setWindowState(windowState() | Qt::WindowFullScreen);
     else
         setWindowState(windowState() & ~Qt::WindowFullScreen);
-}
-
-// Display a warning with an additional button to open
-// the debugger settings dialog if settingsId is nonempty.
-
-bool MainWindow::showWarningWithOptions(const QString &title,
-                                        const QString &text,
-                                        const QString &details,
-                                        const QString &settingsCategory,
-                                        const QString &settingsId,
-                                        QWidget *parent)
-{
-    if (parent == 0)
-        parent = this;
-    QMessageBox msgBox(QMessageBox::Warning, title, text,
-                       QMessageBox::Ok, parent);
-    if (details.isEmpty())
-        msgBox.setDetailedText(details);
-    QAbstractButton *settingsButton = 0;
-    if (!settingsId.isEmpty() || !settingsCategory.isEmpty())
-        settingsButton = msgBox.addButton(tr("Settings..."), QMessageBox::AcceptRole);
-    msgBox.exec();
-    if (settingsButton && msgBox.clickedButton() == settingsButton)
-        return showOptionsDialog(settingsCategory, settingsId);
-    return false;
 }

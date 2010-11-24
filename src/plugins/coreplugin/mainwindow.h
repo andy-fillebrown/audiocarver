@@ -112,22 +112,13 @@ public slots:
                            const QString &page = QString(),
                            QWidget *parent = 0);
 
-    bool showWarningWithOptions(const QString &title, const QString &text,
-                                const QString &details = QString(),
-                                const QString &settingsCategory = QString(),
-                                const QString &settingsId = QString(),
-                                QWidget *parent = 0);
-
 protected:
     virtual void changeEvent(QEvent *e);
     virtual void closeEvent(QCloseEvent *event);
-    virtual void dragEnterEvent(QDragEnterEvent *event);
-    virtual void dropEvent(QDropEvent *event);
 
 private slots:
     void aboutAudioCarver();
     void aboutPlugins();
-    void updateFocusWidget(QWidget *old, QWidget *now);
     void destroyVersionDialog();
 
 private:
