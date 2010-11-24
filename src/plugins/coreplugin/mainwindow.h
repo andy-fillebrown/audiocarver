@@ -125,7 +125,7 @@ protected:
     virtual void dropEvent(QDropEvent *event);
 
 private slots:
-    void aboutQtCreator();
+    void aboutAudioCarver();
     void aboutPlugins();
     void updateFocusWidget(QWidget *old, QWidget *now);
     void destroyVersionDialog();

@@ -104,7 +104,7 @@ SettingsDatabase *CoreImpl::settingsDatabase() const
 #ifdef Q_OS_MAC
 #  define SHARE_PATH "/../Resources"
 #else
-#  define SHARE_PATH "/../share/audiocarver"
+#  define SHARE_PATH "/../share/"PRO_NAME_LC_STR
 #endif
 
 QString CoreImpl::resourcePath() const
@@ -114,9 +114,9 @@ QString CoreImpl::resourcePath() const
 
 QString CoreImpl::userResourcePath() const
 {
-    // Create audiocarver dir if it doesn't yet exist
+    // Create project dir if it doesn't yet exist
     const QString configDir = QFileInfo(settings(QSettings::UserScope)->fileName()).path();
-    const QString urp = configDir + "/audiocarver";
+    const QString urp = configDir + "/"PRO_NAME_LC_STR;
 
     QFileInfo fi(urp + QLatin1Char('/'));
     if (!fi.exists()) {

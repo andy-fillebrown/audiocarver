@@ -53,24 +53,24 @@ VersionDialog::VersionDialog(QWidget *parent)
 {
     // We need to set the window icon explicitly here since for some reason the
     // application icon isn't used when the size of the dialog is fixed (at least not on X11/GNOME)
-    setWindowIcon(QIcon(QLatin1String(Constants::ICON_QTLOGO_128)));
+    setWindowIcon(QIcon(QLatin1String(Constants::ICON_PROLOGO_128)));
 
     setWindowTitle(tr("About AudioCarver"));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     QGridLayout *layout = new QGridLayout(this);
     layout->setSizeConstraint(QLayout::SetFixedSize);
 
-    QString version = QLatin1String(AC_VERSION_LONG);
+    QString version = QLatin1String(PRO_VERSION_LONG);
 
     QString ideVersionDescription;
 #ifdef AC_VERSION_DESCRIPTION
-    ideVersionDescription = tr("(%1)").arg(QLatin1String(AC_VERSION_DESCRIPTION_STR));
+    ideVersionDescription = tr("(%1)").arg(QLatin1String(PRO_VERSION_DESCRIPTION_STR));
 #endif
 
     QString ideRev;
-#ifdef AC_REVISION
+#ifdef PRO_REVISION
      //: This gets conditionally inserted as argument %8 into the description string.
-     ideRev = tr("From revision %1<br/>").arg(QString::fromLatin1(AC_REVISION_STR).left(10));
+     ideRev = tr("From revision %1<br/>").arg(QString::fromLatin1(PRO_REVISION_STR).left(10));
 #endif
 
      const QString description = tr(
@@ -81,15 +81,15 @@ VersionDialog::VersionDialog(QWidget *parent)
         "<br/>"
         "%9"
         "<br/>"
-        "Copyright 2008-%6 %7. All rights reserved.<br/>"
+        "Copyright %6 %7. All rights reserved.<br/>"
         "<br/>"
         "The program is provided AS IS with NO WARRANTY OF ANY KIND, "
         "INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A "
         "PARTICULAR PURPOSE.<br/>")
         .arg(version,
              QLatin1String(QT_VERSION_STR), QString::number(QSysInfo::WordSize),
-             QLatin1String(__DATE__), QLatin1String(__TIME__), QLatin1String(AC_YEAR),
-             (QLatin1String(AC_AUTHOR)), ideVersionDescription,
+             QLatin1String(__DATE__), QLatin1String(__TIME__), QLatin1String(PRO_YEAR_STR),
+             (QLatin1String(PRO_AUTHOR)), ideVersionDescription,
              ideRev);
 
     QLabel *copyRightLabel = new QLabel(description);
@@ -104,7 +104,7 @@ VersionDialog::VersionDialog(QWidget *parent)
     connect(buttonBox , SIGNAL(rejected()), this, SLOT(reject()));
 
     QLabel *logoLabel = new QLabel;
-    logoLabel->setPixmap(QPixmap(QLatin1String(Constants::ICON_QTLOGO_128)));
+    logoLabel->setPixmap(QPixmap(QLatin1String(Constants::ICON_PROLOGO_128)));
     layout->addWidget(logoLabel , 0, 0, 1, 1);
     layout->addWidget(copyRightLabel, 0, 1, 4, 4);
     layout->addWidget(buttonBox, 4, 0, 1, 5);

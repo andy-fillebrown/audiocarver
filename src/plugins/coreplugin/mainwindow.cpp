@@ -101,13 +101,13 @@ MainWindow::MainWindow() :
     m_zoomAction(0),
 #endif
 {
-    setWindowTitle(tr("AudioCarver"));
+    setWindowTitle(tr(PRO_NAME_STR));
 #ifndef Q_WS_MAC
-    QApplication::setWindowIcon(QIcon(QLatin1String(Constants::ICON_QTLOGO_128)));
+    QApplication::setWindowIcon(QIcon(QLatin1String(Constants::ICON_PROLOGO_128)));
 #endif
-    QCoreApplication::setApplicationName(QLatin1String("AudioCarver"));
-    QCoreApplication::setApplicationVersion(QLatin1String(Core::Constants::AC_VERSION_LONG));
-    QCoreApplication::setOrganizationName(QLatin1String("AndyFillebrown"));
+    QCoreApplication::setApplicationName(QLatin1String(PRO_NAME_STR));
+    QCoreApplication::setApplicationVersion(QLatin1String(Core::Constants::PRO_VERSION_LONG));
+    QCoreApplication::setOrganizationName(QLatin1String(Constants::PRO_AUTHOR));
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     registerDefaultContainers();
@@ -253,12 +253,6 @@ void MainWindow::registerDefaultContainers()
     ActionContainer *filemenu = am->createMenu(Constants::M_FILE);
     menubar->addMenu(filemenu, Constants::G_FILE);
     filemenu->menu()->setTitle(tr("&File"));
-    filemenu->appendGroup(Constants::G_FILE_NEW);
-    filemenu->appendGroup(Constants::G_FILE_OPEN);
-    filemenu->appendGroup(Constants::G_FILE_PROJECT);
-    filemenu->appendGroup(Constants::G_FILE_SAVE);
-    filemenu->appendGroup(Constants::G_FILE_CLOSE);
-    filemenu->appendGroup(Constants::G_FILE_PRINT);
     filemenu->appendGroup(Constants::G_FILE_OTHER);
 
 
@@ -269,8 +263,6 @@ void MainWindow::registerDefaultContainers()
     medit->appendGroup(Constants::G_EDIT_UNDOREDO);
     medit->appendGroup(Constants::G_EDIT_COPYPASTE);
     medit->appendGroup(Constants::G_EDIT_SELECTALL);
-    medit->appendGroup(Constants::G_EDIT_ADVANCED);
-    medit->appendGroup(Constants::G_EDIT_FIND);
     medit->appendGroup(Constants::G_EDIT_OTHER);
 
     // Tools Menu
@@ -283,17 +275,12 @@ void MainWindow::registerDefaultContainers()
     menubar->addMenu(mwindow, Constants::G_WINDOW);
     mwindow->menu()->setTitle(tr("&Window"));
     mwindow->appendGroup(Constants::G_WINDOW_SIZE);
-    mwindow->appendGroup(Constants::G_WINDOW_VIEWS);
-    mwindow->appendGroup(Constants::G_WINDOW_PANES);
-    mwindow->appendGroup(Constants::G_WINDOW_SPLIT);
-    mwindow->appendGroup(Constants::G_WINDOW_NAVIGATE);
     mwindow->appendGroup(Constants::G_WINDOW_OTHER);
 
     // Help Menu
     ac = am->createMenu(Constants::M_HELP);
     menubar->addMenu(ac, Constants::G_HELP);
     ac->menu()->setTitle(tr("&Help"));
-    ac->appendGroup(Constants::G_HELP_HELP);
     ac->appendGroup(Constants::G_HELP_ABOUT);
 }
 
@@ -319,13 +306,7 @@ void MainWindow::registerDefaultActions()
     Context globalContext(Constants::C_GLOBAL);
 
     // File menu separators
-    Command *cmd = createSeparator(am, this, QLatin1String("AudioCarver.File.Sep.Save"), globalContext);
-    mfile->addAction(cmd, Constants::G_FILE_SAVE);
-
-    cmd =  createSeparator(am, this, QLatin1String("AudioCarver.File.Sep.Close"), globalContext);
-    mfile->addAction(cmd, Constants::G_FILE_CLOSE);
-
-    cmd = createSeparator(am, this, QLatin1String("AudioCarver.File.Sep.Other"), globalContext);
+    Command *cmd = createSeparator(am, this, QLatin1String("AudioCarver.File.Sep.Other"), globalContext);
     mfile->addAction(cmd, Constants::G_FILE_OTHER);
 
     // Edit menu separators
@@ -334,12 +315,6 @@ void MainWindow::registerDefaultActions()
 
     cmd = createSeparator(am, this, QLatin1String("AudioCarver.Edit.Sep.SelectAll"), globalContext);
     medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
-
-    cmd = createSeparator(am, this, QLatin1String("AudioCarver.Edit.Sep.Find"), globalContext);
-    medit->addAction(cmd, Constants::G_EDIT_FIND);
-
-    cmd = createSeparator(am, this, QLatin1String("AudioCarver.Edit.Sep.Advanced"), globalContext);
-    medit->addAction(cmd, Constants::G_EDIT_ADVANCED);
 
     // Tools menu separators
     cmd = createSeparator(am, this, QLatin1String("AudioCarver.Tools.Sep.Options"), globalContext);
@@ -444,25 +419,20 @@ void MainWindow::registerDefaultActions()
     connect(m_toggleFullScreenAction, SIGNAL(triggered(bool)), this, SLOT(setFullScreen(bool)));
 #endif
 
-    // Window->Views
-    ActionContainer *mviews = am->createMenu(Constants::M_WINDOW_VIEWS);
-    mwindow->addMenu(mviews, Constants::G_WINDOW_VIEWS);
-    mviews->menu()->setTitle(tr("&Views"));
-
-    // About AudioCarver Action
+    // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
 #ifdef Q_WS_MAC
-    tmpaction = new QAction(icon, tr("About &AudioCarver"), this); // it's convention not to add dots to the about menu
+    tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR), this); // it's convention not to add dots to the about menu
 #else
-    tmpaction = new QAction(icon, tr("About &AudioCarver..."), this);
+    tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR"..."), this);
 #endif
-    cmd = am->registerAction(tmpaction, Constants::ABOUT_QTCREATOR, globalContext);
+    cmd = am->registerAction(tmpaction, Constants::ABOUT_PROJECT, globalContext);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
     tmpaction->setEnabled(true);
 #ifdef Q_WS_MAC
     cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
 #endif
-    connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutQtCreator()));
+    connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutAudioCarver()));
 
     // About Plugins Action
     tmpaction = new QAction(tr("About &Plugins..."), this);
@@ -477,7 +447,7 @@ void MainWindow::registerDefaultActions()
 #ifndef Q_WS_MAC // doesn't have the "About" actions in the Help menu
     tmpaction = new QAction(this);
     tmpaction->setSeparator(true);
-    cmd = am->registerAction(tmpaction, "AudioCarver.Help.Sep.About", globalContext);
+    cmd = am->registerAction(tmpaction, PRO_NAME_STR".Help.Sep.About", globalContext);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
 #endif
 }
@@ -734,7 +704,7 @@ void MainWindow::updateContext()
     emit m_coreImpl->contextChanged(m_activeContext, m_additionalContexts);
 }
 
-void MainWindow::aboutQtCreator()
+void MainWindow::aboutAudioCarver()
 {
     if (!m_versionDialog) {
         m_versionDialog = new VersionDialog(this);

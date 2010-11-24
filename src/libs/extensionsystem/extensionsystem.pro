@@ -1,12 +1,10 @@
 TEMPLATE = lib
 TARGET = ExtensionSystem
 DEFINES += EXTENSIONSYSTEM_LIBRARY
-include(../../audiocarverlibrary.pri)
+include(../../projectlibrary.pri)
 include(extensionsystem_dependencies.pri)
 
 unix:!macx:!freebsd*:LIBS += -ldl
-
-DEFINES += AC_TEST_DIR=\\\"$$AC_SOURCE_TREE\\\"
 
 HEADERS += \
     pluginerrorview.h \

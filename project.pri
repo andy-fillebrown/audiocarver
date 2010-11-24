@@ -1,9 +1,20 @@
-!isEmpty(AUDIOCARVER_PRI_INCLUDED):error("audiocarver.pri already included")
-AUDIOCARVER_PRI_INCLUDED = 1
+!isEmpty(PROJECT_PRI_INCLUDED):error("$$_FILE_ already included")
+PROJECT_PRI_INCLUDED = 1
 
 !verbose:CONFIG += silent
 
-AUDIOCARVER_VERSION = 1.0.0
+PRO_NAME           = AudioCarver
+PRO_VERSION        = 1.0.0
+PRO_AUTHOR         = Andrew Fillebrown
+PRO_AUTHOR_NOSPACE = AndyFillebrown
+PRO_AUTHOR_EMAIL   = andy.fillebrown@gmail.com
+PRO_YEAR           = 2010
+PRO_URL            = http://audiosculptures.com
+
+DEFINES *= PRO_NAME_STR=\\\"$$PRO_NAME\\\"
+DEFINES *= PRO_NAME_LC_STR=\\\"$$lower($$PRO_NAME)\\\"
+DEFINES *= PRO_AUTHOR_NOSPACE_STR=\\\"$$PRO_AUTHOR_NOSPACE\\\"
+DEFINES *= PRO_YEAR_STR=\\\"$$PRO_YEAR\\\"
 
 defineReplace(cleanPath) {
     win32:1 ~= s|\\\\|/|g
@@ -61,14 +72,14 @@ defineReplace(stripDir) {
     return($$basename(1))
 }
 
-isEmpty(AC_LIBRARY_BASENAME) {
-    AC_LIBRARY_BASENAME = lib
+isEmpty(PRO_LIBRARY_BASENAME) {
+    PRO_LIBRARY_BASENAME = lib
 }
 
-DEFINES += AC_LIBRARY_BASENAME=\\\"$$AC_LIBRARY_BASENAME\\\"
+DEFINES += PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\"
 
-AC_SOURCE_TREE = $$PWD
-isEmpty(AC_BUILD_TREE) {
+PRO_SOURCE_TREE = $$PWD
+isEmpty(PRO_BUILD_TREE) {
     pro_dir = $$cleanPath($$_PRO_FILE_PWD_)
     sub_dir = $$cleanPath($$OUT_PWD)
     pro_dir_split = $$split(pro_dir, /)
@@ -88,17 +99,17 @@ isEmpty(AC_BUILD_TREE) {
             break()
         }
     }
-    AC_BUILD_TREE = $$sub_dir
+    PRO_BUILD_TREE = $$sub_dir
 }
-AC_APP_PATH = $$AC_BUILD_TREE/bin
+PRO_APP_PATH = $$PRO_BUILD_TREE/bin
 macx {
-    AC_APP_TARGET   = "AudioCarver"
-    AC_LIBRARY_PATH = $$AC_APP_PATH/$${IDE_APP_TARGET}.app/Contents/PlugIns
-    AC_PLUGIN_PATH  = $$AC_LIBRARY_PATH
-    AC_LIBEXEC_PATH = $$AC_APP_PATH/$${IDE_APP_TARGET}.app/Contents/Resources
-    AC_DATA_PATH    = $$AC_APP_PATH/$${IDE_APP_TARGET}.app/Contents/Resources
-    AC_DOC_PATH     = $$AC_DATA_PATH/doc
-    AC_BIN_PATH     = $$AC_APP_PATH/$${AC_APP_TARGET}.app/Contents/MacOS
+    PRO_APP_TARGET   = $$PRO_NAME
+    PRO_LIBRARY_PATH = $$PRO_APP_PATH/$${PRO_APP_TARGET}.app/Contents/PlugIns
+    PRO_PLUGIN_PATH  = $$PRO_LIBRARY_PATH
+    PRO_LIBEXEC_PATH = $$PRO_APP_PATH/$${PRO_APP_TARGET}.app/Contents/Resources
+    PRO_DATA_PATH    = $$PRO_APP_PATH/$${PRO_APP_TARGET}.app/Contents/Resources
+    PRO_DOC_PATH     = $$PRO_DATA_PATH/doc
+    PRO_BIN_PATH     = $$PRO_APP_PATH/$${PRO_APP_TARGET}.app/Contents/MacOS
     contains(QT_CONFIG, ppc):CONFIG += ppc x86
     copydata = 1
     isEmpty(TIGER_COMPAT_MODE):TIGER_COMPAT_MODE=$$(QTC_TIGER_COMPAT)
@@ -110,25 +121,20 @@ macx {
     win32 {
         contains(TEMPLATE, vc.*)|contains(TEMPLATE_PREFIX, vc):vcproj = 1
     }
-    AC_APP_TARGET = audiocarver
-    AC_LIBRARY_PATH = $$AC_BUILD_TREE/$$AC_LIBRARY_BASENAME/audiocarver
-    AC_PLUGIN_PATH  = $$AC_LIBRARY_PATH/plugins
-    AC_LIBEXEC_PATH = $$AC_APP_PATH
-    AC_DATA_PATH    = $$AC_BUILD_TREE/share/audiocarver
-    AC_DOC_PATH     = $$AC_BUILD_TREE/share/doc/audiocarver
-    AC_BIN_PATH     = $$AC_APP_PATH
-    !isEqual(AC_SOURCE_TREE, $$AC_BUILD_TREE):copydata = 1
+    PRO_APP_TARGET = $$lower($$PRO_NAME)
+    PRO_LIBRARY_PATH = $$PRO_BUILD_TREE/$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET
+    PRO_PLUGIN_PATH  = $$PRO_LIBRARY_PATH/plugins
+    PRO_LIBEXEC_PATH = $$PRO_APP_PATH
+    PRO_DATA_PATH    = $$PRO_BUILD_TREE/share/$$PRO_APP_TARGET
+    PRO_DOC_PATH     = $$PRO_BUILD_TREE/share/doc/$$PRO_APP_TARGET
+    PRO_BIN_PATH     = $$PRO_APP_PATH
+    !isEqual(PRO_SOURCE_TREE, $$PRO_BUILD_TREE):copydata = 1
 }
 
-INCLUDEPATH += \
-    $$AC_SOURCE_TREE/src/libs \
-    $$AC_SOURCE_TREE/tools
+INCLUDEPATH += $$PRO_SOURCE_TREE/src/libs
+DEPENDPATH += $$PRO_SOURCE_TREE/src/libs
 
-DEPENDPATH += \
-    $$AC_SOURCE_TREE/src/libs \
-    $$AC_SOURCE_TREE/tools
-
-LIBS += -L$$AC_LIBRARY_PATH
+LIBS += -L$$PRO_LIBRARY_PATH
 
 DEFINES += QT_NO_CAST_TO_ASCII
 !macx:DEFINES += QT_USE_FAST_OPERATOR_PLUS QT_USE_FAST_CONCATENATION
@@ -156,5 +162,5 @@ win32-msvc* {
 }
 
 # Handle S60 support: default on Windows, conditionally built on other platforms.
-macx:SUPPORT_QT_S60 = $$(QTCREATOR_WITH_S60)
-else:SUPPORT_QT_S60=1
+macx:SUPPORT_QT_S60 = $$(AUDIOCARVER_WITH_S60)
+else:SUPPORT_QT_S60 = 1

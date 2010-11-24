@@ -530,43 +530,6 @@ void PluginManager::startTests()
 }
 
 /*!
- * \fn bool PluginManager::runningTests() const
- * \internal
- */
-bool PluginManager::runningTests() const
-{
-    return !d->testSpecs.isEmpty();
-}
-
-/*!
- * \fn QString PluginManager::testDataDirectory() const
- * \internal
- */
-QString PluginManager::testDataDirectory() const
-{
-    QByteArray ba = qgetenv("AUDIOCARVER_TEST_DIR");
-    QString s = QString::fromLocal8Bit(ba.constData(), ba.size());
-    if (s.isEmpty()) {
-        s = AC_TEST_DIR;
-        s.append("/tests");
-    }
-    s = QDir::cleanPath(s);
-    return s;
-}
-
-/*!
-    \fn void PluginManager::profilingReport(const char *what, const PluginSpec *spec = 0)
-
-    Create a profiling entry showing the elapsed time if profiling is activated.
-*/
-
-void PluginManager::profilingReport(const char *what, const PluginSpec *spec)
-{
-    d->profilingReport(what, spec);
-}
-
-
-/*!
     \fn void PluginManager::loadQueue()
 
     Returns a list of plugins in load order.

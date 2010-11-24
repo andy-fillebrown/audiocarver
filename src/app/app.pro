@@ -1,11 +1,11 @@
 TEMPLATE = app
 TARGET   = audiocarver
 
-include(../../audiocarver.pri)
+include(../../project.pri)
 
-DESTDIR = $$AC_APP_PATH
+DESTDIR = $$PRO_APP_PATH
 
-DEFINES += AC_LIBRARY_BASENAME=\\\"$$AC_LIBRARY_BASENAME\\\"
+DEFINES += PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\"
 
 SOURCES += main.cpp
 
@@ -14,7 +14,7 @@ LIBS *= \
     -l$$qtLibraryName(Aggregation)
 
 win32 {
-    RC_FILE = audiocarver.rc
+    RC_FILE = project.rc
     target.path = /bin
     INSTALLS += target
 } else:macx {
@@ -32,5 +32,5 @@ win32 {
 QMAKE_SUBSTITUTES = Info.plist.in
 
 OTHER_FILES += \
-    audiocarver.rc \
+    $$RC_FILE \
     Info.plist.in

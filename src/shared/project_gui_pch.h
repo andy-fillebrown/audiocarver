@@ -32,7 +32,7 @@
  * GCC >= 3.4 / VC to greatly speed the building of Qt Creator.
  */
 
-#include "audiocarver_pch.h"
+#include "project_pch.h"
 
 #if defined __cplusplus
 

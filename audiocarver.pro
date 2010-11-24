@@ -4,7 +4,7 @@ contains(QT_VERSION, ^4\\.[0-6]\\..*) {
     error("Use at least Qt 4.7.")
 }
 
-include(audiocarver.pri)
+include(project.pri)
 
 TEMPLATE  = subdirs
 CONFIG   += ordered

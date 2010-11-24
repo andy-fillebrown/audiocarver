@@ -49,7 +49,7 @@
 
 enum { OptionIndent = 4, DescriptionIndent = 34 };
 
-static const char *appNameC = "AudioCarver";
+static const char *appNameC = PRO_NAME_STR;
 static const char *corePluginNameC = "Core";
 static const char *fixedOptionsC =
 " [OPTION]... [FILE]...\n"
@@ -147,9 +147,9 @@ static inline QStringList getPluginPaths()
     // 1) "plugins" (Win/Linux)
     QString pluginPath = rootDirPath;
     pluginPath += QLatin1Char('/');
-    pluginPath += QLatin1String(AC_LIBRARY_BASENAME);
+    pluginPath += QLatin1String(PRO_LIBRARY_BASENAME);
     pluginPath += QLatin1Char('/');
-    pluginPath += QLatin1String("audiocarver");
+    pluginPath += QLatin1String(PRO_NAME_LC_STR);
     pluginPath += QLatin1Char('/');
     pluginPath += QLatin1String("plugins");
     rc.push_back(pluginPath);
@@ -164,7 +164,7 @@ static inline QStringList getPluginPaths()
 #ifdef Q_OS_MAC
 #  define SHARE_PATH "/../Resources"
 #else
-#  define SHARE_PATH "/../share/audiocarver"
+#  define SHARE_PATH "/../share/"PRO_NAME_LC_STR
 #endif
 
 int main(int argc, char **argv)
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
             QCoreApplication::applicationDirPath()+QLatin1String(SHARE_PATH));
     // plugin manager takes control of this settings object
     QSettings *settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                                 QLatin1String("AndyFillebrown"), QLatin1String("AudioCarver"));
+                                 QLatin1String(PRO_AUTHOR_NOSPACE_STR), QLatin1String(PRO_NAME_STR));
 
     ExtensionSystem::PluginManager pluginManager;
     pluginManager.setFileExtension(QLatin1String("pluginspec"));
@@ -211,14 +211,14 @@ int main(int argc, char **argv)
     locale = settings->value("General/OverrideLanguage", locale).toString();
     const QString &creatorTrPath = QCoreApplication::applicationDirPath()
                         + QLatin1String(SHARE_PATH "/translations");
-    if (translator.load(QLatin1String("audiocarver_") + locale, creatorTrPath)) {
+    if (translator.load(QLatin1String(PRO_NAME_LC_STR"_") + locale, creatorTrPath)) {
         const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
         const QString &qtTrFile = QLatin1String("qt_") + locale;
         // Binary installer puts Qt tr files into creatorTrPath
         if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, creatorTrPath)) {
             app.installTranslator(&translator);
             app.installTranslator(&qtTranslator);
-            app.setProperty("qtc_locale", locale);
+            app.setProperty(PRO_NAME_LC_STR"_locale", locale);
         } else {
             translator.load(QString()); // unload()
         }
@@ -290,7 +290,7 @@ int main(int argc, char **argv)
             errors.append(p->name() + "\n" + p->errorString());
     if (!errors.isEmpty())
         QMessageBox::warning(0,
-            QCoreApplication::translate("Application", "AudioCarver - Plugin loader messages"),
+            QCoreApplication::translate("Application", PRO_NAME_STR" - Plugin loader messages"),
             errors.join(QString::fromLatin1("\n\n")));
 
     // shutdown plugin manager on exit

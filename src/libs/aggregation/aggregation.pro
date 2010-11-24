@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET   = Aggregation
 
-include(../../audiocarverlibrary.pri)
+include(../../projectlibrary.pri)
 
 DEFINES += AGGREGATION_LIBRARY
 

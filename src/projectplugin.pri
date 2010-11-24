@@ -1,21 +1,21 @@
-include(../audiocarver.pri)
+include(../project.pri)
 
 # use gui precompiled header for plugins by default
-isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$PWD/shared/audiocarver_gui_pch.h
+isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$PWD/shared/project_gui_pch.h
 OTHER_FILES += $$PRECOMPILED_HEADER
 
 isEmpty(PROVIDER) {
-    PROVIDER = AndyFillebrown
+    PROVIDER = $$PRO_AUTHOR_NOSPACE
 }
 
-DESTDIR = $$AC_PLUGIN_PATH/$$PROVIDER
+DESTDIR = $$PRO_PLUGIN_PATH/$$PROVIDER
 LIBS += -L$$DESTDIR
-INCLUDEPATH += $$AC_SOURCE_TREE/src/plugins
-DEPENDPATH += $$AC_SOURCE_TREE/src/plugins
+INCLUDEPATH += $$PRO_SOURCE_TREE/src/plugins
+DEPENDPATH += $$PRO_SOURCE_TREE/src/plugins
 
 # copy the plugin spec
 isEmpty(TARGET) {
-    error("audiocarverplugin.pri: You must provide a TARGET")
+    error("$$_FILE_: You must provide a TARGET")
 }
 
 PLUGINSPEC = $$_PRO_FILE_PWD_/$${TARGET}.pluginspec
@@ -44,7 +44,7 @@ macx {
     QMAKE_RPATHDIR += \$\$ORIGIN/..
     QMAKE_RPATHDIR += \$\$ORIGIN/../..
     IDE_PLUGIN_RPATH = $$join(QMAKE_RPATHDIR, ":")
-    QMAKE_LFLAGS += -Wl,-z,origin \'-Wl,-rpath,$${IDE_PLUGIN_RPATH}\'
+    QMAKE_LFLAGS += -Wl,-z,origin \'-Wl,-rpath,$${PRO_PLUGIN_RPATH}\'
     QMAKE_RPATHDIR =
 }
 
@@ -53,9 +53,9 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 CONFIG += plugin plugin_with_soname
 
 !macx {
-    target.path = /$$AC_LIBRARY_BASENAME/audiocarver/plugins/$$PROVIDER
+    target.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
     pluginspec.files += $${TARGET}.pluginspec
-    pluginspec.path = /$$AC_LIBRARY_BASENAME/audiocarver/plugins/$$PROVIDER
+    pluginspec.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
     INSTALLS += target pluginspec
 }
 
