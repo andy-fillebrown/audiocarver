@@ -32,7 +32,6 @@
 #include "icore.h"
 #include "ifile.h"
 #include "mimedatabase.h"
-#include "saveitemsdialog.h"
 #include "coreconstants.h"
 
 #include <utils/qtcassert.h>

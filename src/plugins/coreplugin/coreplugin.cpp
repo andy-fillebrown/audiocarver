@@ -29,8 +29,6 @@
 
 #include "coreplugin.h"
 #include "mainwindow.h"
-#include "modemanager.h"
-#include "fileiconprovider.h"
 
 #include <extensionsystem/pluginmanager.h>
 

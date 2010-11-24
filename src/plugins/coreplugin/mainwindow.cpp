@@ -33,36 +33,20 @@
 #include "actionmanager_p.h"
 #include "coreimpl.h"
 #include "coreconstants.h"
-#include "fancytabwidget.h"
 #include "filemanager.h"
 #include "generalsettings.h"
-#include "helpmanager.h"
-#include "ifilefactory.h"
-#include "messagemanager.h"
-#include "modemanager.h"
 #include "mimedatabase.h"
 #include "plugindialog.h"
-#include "progressmanager_p.h"
-#include "progressview.h"
 #include "shortcutsettings.h"
 
 #include "settingsdialog.h"
-#include "variablemanager.h"
 #include "versiondialog.h"
-#include "statusbarmanager.h"
 #include "uniqueidmanager.h"
-#include "manhattanstyle.h"
-#include "navigationwidget.h"
-#include "rightpane.h"
-#include "statusbarwidget.h"
-#include "basefilewizard.h"
 
 #include <coreplugin/findplaceholder.h>
 #include <coreplugin/icorelistener.h>
-#include <coreplugin/inavigationwidgetfactory.h>
 #include <coreplugin/settingsdatabase.h>
 #include <utils/pathchooser.h>
-#include <utils/stylehelper.h>
 #include <utils/stringutils.h>
 #include <extensionsystem/pluginmanager.h>
 

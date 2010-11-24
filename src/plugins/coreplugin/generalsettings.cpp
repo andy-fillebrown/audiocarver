@@ -30,7 +30,6 @@
 #include "generalsettings.h"
 #include "coreconstants.h"
 
-#include <utils/stylehelper.h>
 #include <utils/qtcolorbutton.h>
 #include <coreplugin/icore.h>
 
