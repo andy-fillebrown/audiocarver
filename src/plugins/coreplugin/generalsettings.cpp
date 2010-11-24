@@ -125,11 +125,6 @@ QWidget *GeneralSettings::createPage(QWidget *parent)
 
     fillLanguageBox();
 
-//    m_page->colorButton->setColor(StyleHelper::requestedBaseColor());
-
-//    connect(m_page->resetButton, SIGNAL(clicked()),
-//            this, SLOT(resetInterfaceColor()));
-
     return w;
 }
 
@@ -142,34 +137,12 @@ void GeneralSettings::apply()
 {
     int currentIndex = m_page->languageBox->currentIndex();
     setLanguage(m_page->languageBox->itemData(currentIndex, Qt::UserRole).toString());
-    // Apply the new base color if accepted
-//    StyleHelper::setBaseColor(m_page->colorButton->color());
 }
 
 void GeneralSettings::finish()
 {
     delete m_page;
 }
-
-void GeneralSettings::resetInterfaceColor()
-{
-//    m_page->colorButton->setColor(StyleHelper::DEFAULT_BASE_COLOR);
-}
-
-#ifdef Q_OS_UNIX
-void GeneralSettings::resetTerminal()
-{
-//    m_page->terminalEdit->setText(ConsoleProcess::defaultTerminalEmulator() + QLatin1String(" -e"));
-}
-
-#ifndef Q_OS_MAC
-void GeneralSettings::resetFileBrowser()
-{
-//    m_page->externalFileBrowserEdit->setText(UnixUtils::defaultFileBrowser());
-}
-#endif
-#endif
-
 
 void GeneralSettings::variableHelpDialogCreator(const QString &helpText)
 {

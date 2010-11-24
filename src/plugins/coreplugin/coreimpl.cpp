@@ -97,35 +97,10 @@ UniqueIDManager *CoreImpl::uniqueIDManager() const
     return m_mainwindow->uniqueIDManager();
 }
 
-//MessageManager *CoreImpl::messageManager() const
-//{
-//    return m_mainwindow->messageManager();
-//}
-
-//ProgressManager *CoreImpl::progressManager() const
-//{
-//    return m_mainwindow->progressManager();
-//}
-
-//VariableManager *CoreImpl::variableManager() const
-//{
-//    return m_mainwindow->variableManager();
-//}
-
-//ModeManager *CoreImpl::modeManager() const
-//{
-//    return m_mainwindow->modeManager();
-//}
-
 MimeDatabase *CoreImpl::mimeDatabase() const
 {
     return m_mainwindow->mimeDatabase();
 }
-
-//HelpManager *CoreImpl::helpManager() const
-//{
-//    return m_mainwindow->helpManager();
-//}
 
 QSettings *CoreImpl::settings(QSettings::Scope scope) const
 {
@@ -199,8 +174,3 @@ void CoreImpl::removeContextObject(IContext *context)
 {
     m_mainwindow->removeContextObject(context);
 }
-
-//void CoreImpl::emitNewItemsDialogRequested()
-//{
-//    emit newItemsDialogRequested();
-//}

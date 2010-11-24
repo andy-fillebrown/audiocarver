@@ -92,24 +92,14 @@ public:
     Core::ActionManager *actionManager() const;
     Core::FileManager *fileManager() const;
     Core::UniqueIDManager *uniqueIDManager() const;
-//    Core::MessageManager *messageManager() const;
-//    Core::ProgressManager *progressManager() const;
-//    Core::VariableManager *variableManager() const;
-//    Core::ModeManager *modeManager() const;
     Core::MimeDatabase *mimeDatabase() const;
-//    Core::HelpManager *helpManager() const;
 
     QSettings *settings(QSettings::Scope scope) const;
     inline SettingsDatabase *settingsDatabase() const { return m_settingsDatabase; }
     IContext * currentContextObject() const;
-//    QStatusBar *statusBar() const;
 
     void updateAdditionalContexts(const Context &remove, const Context &add);
     bool hasContext(int context) const;
-
-//    void setSuppressNavigationWidget(bool suppress);
-
-//    void setOverrideColor(const QColor &color);
 
 signals:
     void windowActivated();
@@ -138,7 +128,6 @@ private slots:
     void aboutQtCreator();
     void aboutPlugins();
     void updateFocusWidget(QWidget *old, QWidget *now);
-//    void setSidebarVisible(bool visible);
     void destroyVersionDialog();
 
 private:
@@ -159,16 +148,7 @@ private:
     SettingsDatabase *m_settingsDatabase;
     ActionManagerPrivate *m_actionManager;
     FileManager *m_fileManager;
-//    MessageManager *m_messageManager;
-//    ProgressManagerPrivate *m_progressManager;
-//    QScopedPointer<VariableManager> m_variableManager;
-//    StatusBarManager *m_statusBarManager;
-//    ModeManager *m_modeManager;
     MimeDatabase *m_mimeDatabase;
-//    HelpManager *m_helpManager;
-//    FancyTabWidget *m_modeStack;
-//    NavigationWidget *m_navigationWidget;
-//    RightPaneWidget *m_rightPaneWidget;
     VersionDialog *m_versionDialog;
 
     IContext *m_activeContext;
@@ -181,15 +161,11 @@ private:
     // actions
     QAction *m_exitAction;
     QAction *m_optionsAction;
-//    QAction *m_toggleSideBarAction;
     QAction *m_toggleFullScreenAction;
 #ifdef Q_WS_MAC
     QAction *m_minimizeAction;
     QAction *m_zoomAction;
 #endif
-
-//    QToolButton *m_toggleSideBarButton;
-//    QColor m_overrideColor;
 };
 
 } // namespace Internal

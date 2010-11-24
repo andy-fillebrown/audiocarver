@@ -93,14 +93,6 @@ public:
     QString getSaveAsFileName(IFile *file, const QString &filter = QString(),
                               QString *selectedFilter = 0);
 
-//    QList<IFile *> saveModifiedFilesSilently(const QList<IFile *> &files);
-//    QList<IFile *> saveModifiedFiles(const QList<IFile *> &files,
-//                                     bool *cancelled = 0,
-//                                     const QString &message = QString(),
-//                                     const QString &alwaysSaveMessage = QString::null,
-//                                     bool *alwaysSave = 0);
-
-
     QString fileDialogLastVisitedDirectory() const;
     void setFileDialogLastVisitedDirectory(const QString &);
 
@@ -140,12 +132,6 @@ private:
     void updateFileInfo(IFile *file);
     void updateExpectedState(const QString &fileName);
 
-//    QList<IFile *> saveModifiedFiles(const QList<IFile *> &files,
-//                               bool *cancelled, bool silently,
-//                               const QString &message,
-//                               const QString &alwaysSaveMessage = QString::null,
-//                               bool *alwaysSave = 0);
-
     Internal::FileManagerPrivate *d;
 };
 
@@ -153,13 +139,13 @@ private:
     match the given filename. And unblocks in the destructor.
 
     To also reload the IFile in the destructor class set modifiedReload to true
-
   */
 class CORE_EXPORT FileChangeBlocker
 {
 public:
     explicit FileChangeBlocker(const QString &fileName);
     ~FileChangeBlocker();
+
 private:
     const QString m_fileName;
     Q_DISABLE_COPY(FileChangeBlocker)

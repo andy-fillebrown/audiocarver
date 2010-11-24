@@ -56,12 +56,7 @@ public:
     ActionManager *actionManager() const;
     FileManager *fileManager() const ;
     UniqueIDManager *uniqueIDManager() const;
-//    MessageManager *messageManager() const;
-//    ProgressManager *progressManager() const;
-//    VariableManager *variableManager() const;
-//    ModeManager *modeManager() const;
     MimeDatabase *mimeDatabase() const;
-//    HelpManager *helpManager() const;
 
     QSettings *settings(QSettings::Scope scope = QSettings::UserScope) const;
     SettingsDatabase *settingsDatabase() const;
@@ -80,8 +75,6 @@ public:
     bool hasContext(int context) const;
     void addContextObject(IContext *context);
     void removeContextObject(IContext *context);
-
-//    void emitNewItemsDialogRequested();
 
 private:
     MainWindow *m_mainwindow;

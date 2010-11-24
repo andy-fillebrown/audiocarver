@@ -62,14 +62,11 @@ public:
     virtual bool matches(const QString &) const;
 
 private slots:
-    void resetInterfaceColor();
     void resetLanguage();
 #ifdef Q_OS_UNIX
 #  ifndef Q_OS_MAC
     void showHelpForFileBrowser();
-    void resetFileBrowser();
 #  endif
-    void resetTerminal();
 #endif
 
 private:

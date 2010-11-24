@@ -42,7 +42,6 @@ class QStatusBar;
 template <class T> class QList;
 QT_END_NAMESPACE
 
-
 namespace Core {
 class IWizard;
 class ActionManager;
@@ -84,12 +83,7 @@ public:
     virtual ActionManager *actionManager() const = 0;
     virtual FileManager *fileManager() const = 0;
     virtual UniqueIDManager *uniqueIDManager() const = 0;
-//    virtual MessageManager *messageManager() const = 0;
-//    virtual ProgressManager *progressManager() const = 0;
-//    virtual VariableManager *variableManager() const = 0;
-//    virtual ModeManager *modeManager() const = 0;
     virtual MimeDatabase *mimeDatabase() const = 0;
-//    virtual HelpManager *helpManager() const = 0;
 
     virtual QSettings *settings(QSettings::Scope scope = QSettings::UserScope) const = 0;
     virtual SettingsDatabase *settingsDatabase() const = 0;
@@ -98,7 +92,6 @@ public:
     virtual QString userResourcePath() const = 0;
 
     virtual QMainWindow *mainWindow() const = 0;
-//    virtual QStatusBar *statusBar() const = 0;
 
     virtual IContext *currentContextObject() const = 0;
     // Adds and removes additional active contexts, these contexts are appended
@@ -119,7 +112,6 @@ public:
 signals:
     void coreAboutToOpen();
     void coreOpened();
-//    void newItemsDialogRequested();
     void saveSettingsRequested();
     void optionsDialogRequested();
     void coreAboutToClose();

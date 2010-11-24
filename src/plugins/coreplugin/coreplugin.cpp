@@ -39,32 +39,17 @@ using namespace Core;
 using namespace Core::Internal;
 
 CorePlugin::CorePlugin() :
-    m_mainWindow(new MainWindow)//, m_editMode(0)
+    m_mainWindow(new MainWindow)
 {
 }
 
 CorePlugin::~CorePlugin()
 {
-    // delete FileIconProvider singleton
-//    delete FileIconProvider::instance();
-
     delete m_mainWindow;
-}
-
-void CorePlugin::parseArguments(const QStringList &arguments)
-{
-    for (int i = 0; i < arguments.size() - 1; i++) {
-//        if (arguments.at(i) == QLatin1String("-color")) {
-//            const QString colorcode(arguments.at(i + 1));
-//            m_mainWindow->setOverrideColor(QColor(colorcode));
-//            i++; // skip the argument
-//        }
-    }
 }
 
 bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
-    parseArguments(arguments);
     const bool success = m_mainWindow->init(errorMessage);
     return success;
 }
@@ -72,16 +57,6 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 void CorePlugin::extensionsInitialized()
 {
     m_mainWindow->extensionsInitialized();
-}
-
-void CorePlugin::remoteCommand(const QStringList & /* options */, const QStringList &args)
-{
-    m_mainWindow->activateWindow();
-}
-
-void CorePlugin::fileOpenRequest(const QString &f)
-{
-    remoteCommand(QStringList(), QStringList(f));
 }
 
 ExtensionSystem::IPlugin::ShutdownFlag CorePlugin::aboutToShutdown()

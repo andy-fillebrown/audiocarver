@@ -49,14 +49,8 @@ public:
     virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     virtual void extensionsInitialized();
     virtual ShutdownFlag aboutToShutdown();
-    virtual void remoteCommand(const QStringList & /* options */, const QStringList &args);
-
-public slots:
-    void fileOpenRequest(const QString&);
 
 private:
-    void parseArguments(const QStringList & arguments);
-
     MainWindow *m_mainWindow;
 };
 
