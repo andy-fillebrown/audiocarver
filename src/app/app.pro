@@ -34,4 +34,3 @@ QMAKE_SUBSTITUTES = Info.plist.in
 OTHER_FILES += \
     audiocarver.rc \
     Info.plist.in
-
