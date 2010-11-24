@@ -131,7 +131,6 @@ signals:
     void pluginsChanged();
 
 public slots:
-    void remoteArguments(const QString &serializedArguments);
     void shutdown();
 
 private slots:
