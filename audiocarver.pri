@@ -61,22 +61,11 @@ defineReplace(stripDir) {
     return($$basename(1))
 }
 
-isEmpty(TEST):CONFIG(debug, debug|release) {
-    !debug_and_release|build_pass {
-        TEST = 1
-    }
-}
-
 isEmpty(AC_LIBRARY_BASENAME) {
     AC_LIBRARY_BASENAME = lib
 }
 
 DEFINES += AC_LIBRARY_BASENAME=\\\"$$AC_LIBRARY_BASENAME\\\"
-
-equals(TEST, 1) {
-    QT += testlib
-    DEFINES += WITH_TESTS
-}
 
 AC_SOURCE_TREE = $$PWD
 isEmpty(AC_BUILD_TREE) {
