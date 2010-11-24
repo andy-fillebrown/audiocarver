@@ -30,7 +30,6 @@
 #include "generalsettings.h"
 #include "coreconstants.h"
 
-#include <utils/qtcolorbutton.h>
 #include <coreplugin/icore.h>
 
 #include <QtGui/QMainWindow>
@@ -44,7 +43,6 @@
 
 #include "ui_generalsettings.h"
 
-using namespace Utils;
 using namespace Core::Internal;
 
 

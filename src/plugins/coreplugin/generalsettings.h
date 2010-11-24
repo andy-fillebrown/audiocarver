@@ -63,10 +63,11 @@ public:
 
 private slots:
     void resetLanguage();
+
 #ifdef Q_OS_UNIX
-#  ifndef Q_OS_MAC
-    void showHelpForFileBrowser();
-#  endif
+    #  ifndef Q_OS_MAC
+        void showHelpForFileBrowser();
+    #  endif
 #endif
 
 private:

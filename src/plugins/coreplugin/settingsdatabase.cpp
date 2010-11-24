@@ -93,8 +93,8 @@ public:
 SettingsDatabase::SettingsDatabase(const QString &path,
                                    const QString &application,
                                    QObject *parent)
-    : QObject(parent)
-    , d(new SettingsDatabasePrivate)
+    :   QObject(parent)
+    ,   d(new SettingsDatabasePrivate)
 {
     const QLatin1Char slash('/');
 

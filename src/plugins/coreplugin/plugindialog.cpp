@@ -48,8 +48,8 @@ using namespace Core::Internal;
 bool PluginDialog::m_isRestartRequired = false;
 
 PluginDialog::PluginDialog(QWidget *parent)
-    : QDialog(parent),
-      m_view(new ExtensionSystem::PluginView(ExtensionSystem::PluginManager::instance(), this))
+    :   QDialog(parent)
+    ,   m_view(new ExtensionSystem::PluginView(ExtensionSystem::PluginManager::instance(), this))
 {
     QVBoxLayout *vl = new QVBoxLayout(this);
     vl->addWidget(m_view);
@@ -75,7 +75,6 @@ PluginDialog::PluginDialog(QWidget *parent)
     hl->addWidget(m_closeButton);
 
     vl->addLayout(hl);
-
 
     resize(650, 400);
     setWindowTitle(tr("Installed Plugins"));
@@ -118,7 +117,6 @@ void PluginDialog::updateButtons()
         m_errorDetailsButton->setEnabled(false);
     }
 }
-
 
 void PluginDialog::openDetails()
 {
@@ -163,4 +161,3 @@ void PluginDialog::openErrorDetails()
     dialog.resize(500, 300);
     dialog.exec();
 }
-

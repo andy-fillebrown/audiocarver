@@ -74,7 +74,7 @@ VersionDialog::VersionDialog(QWidget *parent)
 #endif
 
      const QString description = tr(
-        "<h3>AudioCarver %1 %8</h3>"
+        "<h3>"PRO_NAME_STR" %1 %8</h3>"
         "Based on Qt %2 (%3 bit)<br/>"
         "<br/>"
         "Built on %4 at %5<br />"

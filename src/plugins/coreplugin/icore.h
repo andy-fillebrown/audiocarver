@@ -43,22 +43,12 @@ template <class T> class QList;
 QT_END_NAMESPACE
 
 namespace Core {
-class IWizard;
 class ActionManager;
 class Context;
-class EditorManager;
 class FileManager;
-class HelpManager;
 class IContext;
-class MessageManager;
-class MimeDatabase;
-class ModeManager;
-class ProgressManager;
-class ScriptManager;
 class SettingsDatabase;
 class UniqueIDManager;
-class VariableManager;
-class VCSManager;
 
 class CORE_EXPORT ICore : public QObject
 {

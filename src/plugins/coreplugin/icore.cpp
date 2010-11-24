@@ -32,7 +32,7 @@
 /*!
     \namespace Core
     \brief The Core namespace contains all classes that make up the Core plugin
-    which constitute the basic functionality of Qt Creator.
+    which constitute the basic functionality of the app.
 */
 
 /*!
@@ -53,21 +53,6 @@
 */
 
 /*!
-    \fn void ICore::showNewItemDialog(const QString &title,
-                                      const QList<IWizard *> &wizards,
-                                      const QString &defaultLocation = QString())
-    \brief Opens a dialog where the user can choose from a set of \a wizards that
-    create new files/classes/projects.
-
-    The \a title argument is shown as the dialogs title. The path where the
-    files will be created (if the user doesn't change it) is set
-    in \a defaultLocation. It defaults to the path of the file manager's
-    current file.
-
-    \sa Core::FileManager
-*/
-
-/*!
     \fn bool ICore::showOptionsDialog(const QString &group = QString(),
                                const QString &page = QString())
     \brief Opens the application options/preferences dialog with preselected
@@ -75,20 +60,6 @@
 
     The arguments refer to the string IDs of the corresponding IOptionsPage.
 */
-
-/*!
-    \fn bool ICore::showWarningWithOptions(const QString &title, const QString &text,
-                                   const QString &details = QString(),
-                                   const QString &settingsCategory = QString(),
-                                   const QString &settingsId = QString(),
-                                   QWidget *parent = 0);
-
-    \brief Show a warning message with a button that opens a settings page.
-
-    Should be used to display configuration errors and point users to the setting.
-    Returns true if the settings dialog was accepted.
-*/
-
 
 /*!
     \fn ActionManager *ICore::actionManager() const
@@ -113,78 +84,11 @@
 */
 
 /*!
-    \fn MessageManager *ICore::messageManager() const
-    \brief Returns the application's message manager.
-
-    The message manager is the interface to the "General" output pane for
-    general application debug messages.
-*/
-
-/*!
     \fn ExtensionSystem::PluginManager *ICore::pluginManager() const
     \brief Returns the application's plugin manager.
 
     The plugin manager handles the plugin life cycles and manages
     the common object pool.
-*/
-
-/*!
-    \fn EditorManager *ICore::editorManager() const
-    \brief Returns the application's editor manager.
-
-    The editor manager handles all editor related tasks like opening
-    documents, the stack of currently open documents and the currently
-    active document.
-*/
-
-/*!
-    \fn ProgressManager *ICore::progressManager() const
-    \brief Returns the application's progress manager.
-
-    Use the progress manager to register a concurrent task to
-    show a progress bar the way Qt Creator does it.
-*/
-
-/*!
-    \fn ScriptManager *ICore::scriptManager() const
-    \internal
-*/
-
-/*!
-    \fn VariableManager *ICore::variableManager() const
-    \brief Returns the application's variable manager.
-
-    The variable manager is used to register application wide string variables
-    like \c MY_PROJECT_DIR such that strings like \c{somecommand ${MY_PROJECT_DIR}/sub}
-    can be resolved/expanded from anywhere in the application.
-*/
-
-/*!
-    \fn VCSManager *ICore::vcsManager() const
-    \brief Returns the application's vcs manager.
-
-    The vcs manager can be used to e.g. retrieve information about
-    the version control system used for a directory on hard disk.
-    The actual functionality for a specific version control system
-    must be implemented in a IVersionControl object and registered in
-    the plugin manager's object pool.
-*/
-
-/*!
-    \fn ModeManager *ICore::modeManager() const
-    \brief Returns the application's mode manager.
-
-    The mode manager handles everything related to the instances of IMode
-    that were added to the plugin manager's object pool as well as their
-    buttons and the tool bar with the round buttons in the lower left
-    corner of Qt Creator.
-*/
-
-/*!
-    \fn MimeDatabase *ICore::mimeDatabase() const
-    \brief Returns the application's mime database.
-
-    Use the mime database to manage mime types.
 */
 
 /*!
@@ -214,14 +118,6 @@
     are application wide.
 
     \see SettingsDatabase
-*/
-
-/*!
-    \fn QPrinter *ICore::printer() const
-    \brief Returns the application's printer object.
-
-    Always use this printer object for printing, so the different parts of the
-    application re-use its settings.
 */
 
 /*!

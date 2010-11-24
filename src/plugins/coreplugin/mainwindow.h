@@ -47,29 +47,16 @@ QT_END_NAMESPACE
 namespace Core {
 
 class ActionManager;
-class StatusBarWidget;
 class FileManager;
-class HelpManager;
-class IWizard;
-class MessageManager;
-class MimeDatabase;
-class ModeManager;
-class ProgressManager;
-class NavigationWidget;
-class RightPaneWidget;
 class SettingsDatabase;
 class UniqueIDManager;
-class VariableManager;
 
 namespace Internal {
 
 class ActionManagerPrivate;
 class CoreImpl;
-class FancyTabWidget;
 class GeneralSettings;
-class ProgressManagerPrivate;
 class ShortcutSettings;
-class StatusBarManager;
 class VersionDialog;
 
 class MainWindow : public EventFilteringMainWindow
@@ -92,7 +79,6 @@ public:
     Core::ActionManager *actionManager() const;
     Core::FileManager *fileManager() const;
     Core::UniqueIDManager *uniqueIDManager() const;
-    Core::MimeDatabase *mimeDatabase() const;
 
     QSettings *settings(QSettings::Scope scope) const;
     inline SettingsDatabase *settingsDatabase() const { return m_settingsDatabase; }

@@ -33,7 +33,6 @@
 #include "ifile.h"
 #include "coreconstants.h"
 
-#include <utils/qtcassert.h>
 #include <utils/pathchooser.h>
 
 #include <QtCore/QSettings>

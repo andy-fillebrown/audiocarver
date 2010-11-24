@@ -49,26 +49,11 @@
 #include <utils/stringutils.h>
 #include <extensionsystem/pluginmanager.h>
 
-#include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
-#include <QtCore/QSettings>
-#include <QtCore/QTimer>
 #include <QtCore/QtPlugin>
-#include <QtCore/QUrl>
-#include <QtCore/QDir>
 
-#include <QtGui/QApplication>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QMenu>
-#include <QtGui/QPixmap>
-#include <QtGui/QPrinter>
-#include <QtGui/QPushButton>
-#include <QtGui/QShortcut>
-#include <QtGui/QStatusBar>
-#include <QtGui/QWizard>
-#include <QtGui/QToolButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMenuBar>
 
 using namespace Core;
 using namespace Core::Internal;
