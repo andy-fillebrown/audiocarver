@@ -33,23 +33,24 @@
 #include <extensionsystem/pluginmanager.h>
 
 #include <QtCore/QtPlugin>
-#include <QtCore/QDebug>
 
 using namespace Core;
 using namespace Core::Internal;
 
-CorePlugin::CorePlugin() :
-    m_mainWindow(new MainWindow)
+CorePlugin::CorePlugin()
+    :   m_mainWindow(new MainWindow)
 {
 }
 
 CorePlugin::~CorePlugin()
 {
     delete m_mainWindow;
+    m_mainWindow = 0;
 }
 
 bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
+    Q_UNUSED(arguments);
     const bool success = m_mainWindow->init(errorMessage);
     return success;
 }
