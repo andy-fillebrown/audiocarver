@@ -33,7 +33,6 @@
 #include <extensionsystem/iplugin.h>
 
 namespace Core {
-class DesignMode;
 namespace Internal {
 
 class MainWindow;
