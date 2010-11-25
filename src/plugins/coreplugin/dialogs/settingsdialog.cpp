@@ -498,11 +498,12 @@ void SettingsDialog::done(int val)
 }
 
 /**
- * Override to make sure the settings dialog starts up as small as possible.
+ * Reimplemented to start settings dialog with a usable size.
  */
 QSize SettingsDialog::sizeHint() const
 {
-    return minimumSize();
+    const QSize min = minimumSize();
+    return QSize(1.5 * min.width(), 1.25 * min.height());
 }
 
 SettingsDialog *SettingsDialog::getSettingsDialog(QWidget *parent,
