@@ -28,32 +28,21 @@
 **************************************************************************/
 
 #include "settingsdialog.h"
+#include "icore.h"
 
 #include <extensionsystem/pluginmanager.h>
-#include "icore.h"
 
 #include <utils/filterlineedit.h>
 
 #include <QtCore/QSettings>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QItemSelectionModel>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QIcon>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QToolButton>
-#include <QtGui/QToolBar>
-#include <QtGui/QScrollBar>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QStyle>
-#include <QtGui/QStackedLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLineEdit>
-#include <QtGui/QFrame>
+
 #include <QtGui/QDialogButtonBox>
+#include <QtGui/QLabel>
 #include <QtGui/QListView>
-#include <QtGui/QApplication>
-#include <QtGui/QGroupBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QScrollBar>
+#include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QStackedLayout>
 #include <QtGui/QStyledItemDelegate>
 
 static const char categoryKeyC[] = "General/LastPreferenceCategory";
@@ -159,8 +148,9 @@ Category *CategoryModel::findCategoryById(const QString &id)
 {
     for (int i = 0; i < m_categories.size(); ++i) {
         Category *category = m_categories.at(i);
-        if (category->id == id)
+        if (category->id == id) {
             return category;
+        }
     }
 
     return 0;
@@ -176,7 +166,7 @@ class CategoryFilterModel : public QSortFilterProxyModel
 {
 public:
     explicit CategoryFilterModel(QObject *parent = 0)
-        : QSortFilterProxyModel(parent)
+        :   QSortFilterProxyModel(parent)
     {}
 
 protected:
@@ -194,8 +184,9 @@ bool CategoryFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sou
         const QString pattern = filterRegExp().pattern();
         if (page->displayCategory().contains(pattern, Qt::CaseInsensitive)
             || page->displayName().contains(pattern, Qt::CaseInsensitive)
-            || page->matches(pattern))
+            || page->matches(pattern)) {
             return true;
+        }
     }
 
     return false;
@@ -271,11 +262,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     createGui();
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#ifdef Q_OS_MAC
-    setWindowTitle(tr("Preferences"));
-#else
-    setWindowTitle(tr("Options"));
-#endif
+    {
+#   ifdef Q_OS_MAC
+        setWindowTitle(tr("Preferences"));
+#   else
+        setWindowTitle(tr("Options"));
+#   endif
+    }
 
     m_model->setPages(m_pages);
 
@@ -336,16 +329,18 @@ void SettingsDialog::showPage(const QString &categoryId, const QString &pageId)
             initialCategoryIndex = i;
             for (int j = 0; j < category->pages.size(); ++j) {
                 IOptionsPage *page = category->pages.at(j);
-                if (page->id() == initialPage)
+                if (page->id() == initialPage) {
                     initialPageIndex = j;
+                }
             }
         }
     }
     if (initialCategoryIndex != -1) {
         const QModelIndex modelIndex = m_proxyModel->mapFromSource(m_model->index(initialCategoryIndex));
         m_categoryList->setCurrentIndex(modelIndex);
-        if (initialPageIndex != -1)
+        if (initialPageIndex != -1) {
             categories.at(initialCategoryIndex)->tabWidget->setCurrentIndex(initialPageIndex);
+        }
     }
 }
 
@@ -510,9 +505,8 @@ SettingsDialog *SettingsDialog::getSettingsDialog(QWidget *parent,
                            const QString &initialCategory,
                            const QString &initialPage)
 {
-    if (!m_instance) {
+    if (!m_instance)
         m_instance = new SettingsDialog(parent);
-    }
     m_instance->showPage(initialCategory, initialPage);
     return m_instance;
 }
@@ -542,7 +536,6 @@ bool SettingsDialog::execDialog()
     }
     return m_applied;
 }
-
 
 } // namespace Internal
 } // namespace Core
