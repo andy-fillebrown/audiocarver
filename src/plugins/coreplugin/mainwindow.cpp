@@ -60,34 +60,37 @@ using namespace Core::Internal;
 
 enum { debugMainWindow = 0 };
 
-MainWindow::MainWindow() :
-    EventFilteringMainWindow(),
-    m_coreImpl(new CoreImpl(this)),
-    m_uniqueIDManager(new UniqueIDManager()),
-    m_additionalContexts(Constants::C_GLOBAL),
-    m_settings(ExtensionSystem::PluginManager::instance()->settings()),
-    m_globalSettings(new QSettings(QSettings::IniFormat, QSettings::SystemScope,
-                             QLatin1String(Constants::PRO_AUTHOR), QLatin1String(PRO_NAME_STR), this)),
-    m_settingsDatabase(new SettingsDatabase(QFileInfo(m_settings->fileName()).path(),
-                                            QLatin1String(PRO_NAME_STR),
-                                            this)),
-    m_actionManager(new ActionManagerPrivate(this)),
-    m_fileManager(new FileManager(this)),
-    m_versionDialog(0),
-    m_activeContext(0),
-    m_generalSettings(new GeneralSettings),
-    m_shortcutSettings(new ShortcutSettings),
-    m_exitAction(0),
-    m_optionsAction(0)
-#ifdef Q_WS_MAC
-    m_minimizeAction(0),
-    m_zoomAction(0),
-#endif
+MainWindow::MainWindow()
+    :   EventFilteringMainWindow()
+    ,   m_coreImpl(new CoreImpl(this))
+    ,   m_uniqueIDManager(new UniqueIDManager())
+    ,   m_additionalContexts(Constants::C_GLOBAL)
+    ,   m_settings(ExtensionSystem::PluginManager::instance()->settings())
+    ,   m_globalSettings(new QSettings(QSettings::IniFormat, QSettings::SystemScope,
+                                       QLatin1String(Constants::PRO_AUTHOR),
+                                       QLatin1String(PRO_NAME_STR), this))
+    ,   m_settingsDatabase(new SettingsDatabase(QFileInfo(m_settings->fileName()).path(),
+                                                QLatin1String(PRO_NAME_STR),
+                                                this))
+    ,   m_actionManager(new ActionManagerPrivate(this))
+    ,   m_fileManager(new FileManager(this))
+    ,   m_versionDialog(0)
+    ,   m_activeContext(0)
+    ,   m_generalSettings(new GeneralSettings)
+    ,   m_shortcutSettings(new ShortcutSettings)
+    ,   m_exitAction(0)
+    ,   m_optionsAction(0)
+#   ifdef Q_WS_MAC
+    ,   m_minimizeAction(0)
+    ,   m_zoomAction(0)
+#   endif
 {
     setWindowTitle(tr(PRO_NAME_STR));
-#ifndef Q_WS_MAC
-    QApplication::setWindowIcon(QIcon(QLatin1String(Constants::ICON_PROLOGO_128)));
-#endif
+    {
+#   ifndef Q_WS_MAC
+        QApplication::setWindowIcon(QIcon(QLatin1String(Constants::ICON_PROLOGO_128)));
+#   endif
+    }
     QCoreApplication::setApplicationName(QLatin1String(PRO_NAME_STR));
     QCoreApplication::setApplicationVersion(QLatin1String(Core::Constants::PRO_VERSION_LONG));
     QCoreApplication::setOrganizationName(QLatin1String(Constants::PRO_AUTHOR));
@@ -100,6 +103,7 @@ MainWindow::MainWindow() :
 MainWindow::~MainWindow()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+
     pm->removeObject(m_shortcutSettings);
     pm->removeObject(m_generalSettings);
     delete m_shortcutSettings;
@@ -108,6 +112,7 @@ MainWindow::~MainWindow()
     m_generalSettings = 0;
     delete m_settings;
     m_settings = 0;
+
     delete m_uniqueIDManager;
     m_uniqueIDManager = 0;
 
@@ -170,12 +175,12 @@ IContext *MainWindow::currentContextObject() const
 void MainWindow::registerDefaultContainers()
 {
     ActionManagerPrivate *am = m_actionManager;
-
     ActionContainer *menubar = am->createMenuBar(Constants::MENU_BAR);
-
-#ifndef Q_WS_MAC // System menu bar on Mac
-    setMenuBar(menubar->menuBar());
-#endif
+    {
+#   ifndef Q_WS_MAC // System menu bar on Mac
+        setMenuBar(menubar->menuBar());
+#   endif
+    }
     menubar->appendGroup(Constants::G_FILE);
     menubar->appendGroup(Constants::G_EDIT);
     menubar->appendGroup(Constants::G_VIEW);
@@ -188,7 +193,6 @@ void MainWindow::registerDefaultContainers()
     menubar->addMenu(filemenu, Constants::G_FILE);
     filemenu->menu()->setTitle(tr("&File"));
     filemenu->appendGroup(Constants::G_FILE_OTHER);
-
 
     // Edit Menu
     ActionContainer *medit = am->createMenu(Constants::M_EDIT);
@@ -317,55 +321,65 @@ void MainWindow::registerDefaultActions()
     // Options Action
     m_optionsAction = new QAction(tr("&Options..."), this);
     cmd = am->registerAction(m_optionsAction, Constants::OPTIONS, globalContext);
-#ifdef Q_WS_MAC
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+,"));
-    cmd->action()->setMenuRole(QAction::PreferencesRole);
-#endif
+    {
+#   ifdef Q_WS_MAC
+        cmd->setDefaultKeySequence(QKeySequence("Ctrl+,"));
+        cmd->action()->setMenuRole(QAction::PreferencesRole);
+#   endif
+    }
     mtools->addAction(cmd, Constants::G_DEFAULT_THREE);
     connect(m_optionsAction, SIGNAL(triggered()), this, SLOT(showOptionsDialog()));
 
-#ifdef Q_WS_MAC
-    // Minimize Action
-    m_minimizeAction = new QAction(tr("Minimize"), this);
-    cmd = am->registerAction(m_minimizeAction, Constants::MINIMIZE_WINDOW, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+M"));
-    mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
-    connect(m_minimizeAction, SIGNAL(triggered()), this, SLOT(showMinimized()));
+    {
+#   ifdef Q_WS_MAC
+        // Minimize Action
+        m_minimizeAction = new QAction(tr("Minimize"), this);
+        cmd = am->registerAction(m_minimizeAction, Constants::MINIMIZE_WINDOW, globalContext);
+        cmd->setDefaultKeySequence(QKeySequence("Ctrl+M"));
+        mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
+        connect(m_minimizeAction, SIGNAL(triggered()), this, SLOT(showMinimized()));
 
-    // Zoom Action
-    m_zoomAction = new QAction(tr("Zoom"), this);
-    cmd = am->registerAction(m_zoomAction, Constants::ZOOM_WINDOW, globalContext);
-    mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
-    connect(m_zoomAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
+        // Zoom Action
+        m_zoomAction = new QAction(tr("Zoom"), this);
+        cmd = am->registerAction(m_zoomAction, Constants::ZOOM_WINDOW, globalContext);
+        mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
+        connect(m_zoomAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
 
-    // Window separator
-    cmd = createSeparator(am, this, QLatin1String("SuperConductor.Window.Sep.Size"), globalContext);
-    mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
-#endif
+        // Window separator
+        cmd = createSeparator(am, this, QLatin1String("SuperConductor.Window.Sep.Size"), globalContext);
+        mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
+#   endif
+    }
 
-#ifndef Q_WS_MAC
-    // Full Screen Action
-    m_toggleFullScreenAction = new QAction(tr("Full Screen"), this);
-    m_toggleFullScreenAction->setCheckable(true);
-    cmd = am->registerAction(m_toggleFullScreenAction, Constants::TOGGLE_FULLSCREEN, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+Shift+F11"));
-    mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
-    connect(m_toggleFullScreenAction, SIGNAL(triggered(bool)), this, SLOT(setFullScreen(bool)));
-#endif
+    {
+#   ifndef Q_WS_MAC
+        // Full Screen Action
+        m_toggleFullScreenAction = new QAction(tr("Full Screen"), this);
+        m_toggleFullScreenAction->setCheckable(true);
+        cmd = am->registerAction(m_toggleFullScreenAction, Constants::TOGGLE_FULLSCREEN, globalContext);
+        cmd->setDefaultKeySequence(QKeySequence("Ctrl+Shift+F11"));
+        mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
+        connect(m_toggleFullScreenAction, SIGNAL(triggered(bool)), this, SLOT(setFullScreen(bool)));
+#   endif
+    }
 
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
-#ifdef Q_WS_MAC
-    tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR), this); // it's convention not to add dots to the about menu
-#else
-    tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR"..."), this);
-#endif
+    {
+#   ifdef Q_WS_MAC
+        tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR), this); // it's convention not to add dots to the about menu
+#   else
+        tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR"..."), this);
+#   endif
+    }
     cmd = am->registerAction(tmpaction, Constants::ABOUT_PROJECT, globalContext);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
     tmpaction->setEnabled(true);
-#ifdef Q_WS_MAC
-    cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
-#endif
+    {
+#   ifdef Q_WS_MAC
+        cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
+#   endif
+    }
     connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutAudioCarver()));
 
     // About Plugins Action
@@ -373,17 +387,21 @@ void MainWindow::registerDefaultActions()
     cmd = am->registerAction(tmpaction, Constants::ABOUT_PLUGINS, globalContext);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
     tmpaction->setEnabled(true);
-#ifdef Q_WS_MAC
-    cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
-#endif
+    {
+#   ifdef Q_WS_MAC
+        cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
+#   endif
+    }
     connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutPlugins()));
 
-#ifndef Q_WS_MAC // doesn't have the "About" actions in the Help menu
-    tmpaction = new QAction(this);
-    tmpaction->setSeparator(true);
-    cmd = am->registerAction(tmpaction, PRO_NAME_STR".Help.Sep.About", globalContext);
-    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
-#endif
+    {
+#   ifndef Q_WS_MAC // doesn't have the "About" actions in the Help menu
+        tmpaction = new QAction(this);
+        tmpaction->setSeparator(true);
+        cmd = am->registerAction(tmpaction, PRO_NAME_STR".Help.Sep.About", globalContext);
+        mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
+#   endif
+    }
 }
 
 bool MainWindow::showOptionsDialog(const QString &category,
@@ -470,16 +488,18 @@ void MainWindow::changeEvent(QEvent *e)
             emit windowActivated();
         }
     } else if (e->type() == QEvent::WindowStateChange) {
-#ifdef Q_WS_MAC
-        bool minimized = isMinimized();
-        if (debugMainWindow)
-            qDebug() << "main window state changed to minimized=" << minimized;
-        m_minimizeAction->setEnabled(!minimized);
-        m_zoomAction->setEnabled(!minimized);
-#else
-        bool isFullScreen = (windowState() & Qt::WindowFullScreen) != 0;
-        m_toggleFullScreenAction->setChecked(isFullScreen);
-#endif
+        {
+#       ifdef Q_WS_MAC
+            bool minimized = isMinimized();
+            if (debugMainWindow)
+                qDebug() << "main window state changed to minimized=" << minimized;
+            m_minimizeAction->setEnabled(!minimized);
+            m_zoomAction->setEnabled(!minimized);
+#       else
+            bool isFullScreen = (windowState() & Qt::WindowFullScreen) != 0;
+            m_toggleFullScreenAction->setChecked(isFullScreen);
+#       endif
+        }
     }
 }
 
@@ -492,9 +512,10 @@ void MainWindow::updateContextObject(IContext *context)
     if (!context || oldContext != m_activeContext) {
         emit m_coreImpl->contextAboutToChange(context);
         updateContext();
-        if (debugMainWindow)
+        if (debugMainWindow) {
             qDebug() << "new context object =" << context << (context ? context->widget() : 0)
                      << (context ? context->widget()->metaObject()->className() : 0);
+        }
     }
 }
 
@@ -538,9 +559,8 @@ void MainWindow::readSettings()
         m_settings->remove(QLatin1String(maxKey));
         m_settings->remove(QLatin1String(fullScreenKey));
     } else {
-        if (!restoreGeometry(m_settings->value(QLatin1String(windowGeometryKey)).toByteArray())) {
+        if (!restoreGeometry(m_settings->value(QLatin1String(windowGeometryKey)).toByteArray()))
             resize(1024, 700);
-        }
         restoreState(m_settings->value(QLatin1String(windowStateKey)).toByteArray());
     }
 
@@ -567,16 +587,18 @@ void MainWindow::updateAdditionalContexts(const Context &remove, const Context &
             continue;
 
         int index = m_additionalContexts.indexOf(context);
-        if (index != -1)
+        if (index != -1) {
             m_additionalContexts.removeAt(index);
+        }
     }
 
     foreach (const int context, add) {
         if (context == 0)
             continue;
 
-        if (!m_additionalContexts.contains(context))
+        if (!m_additionalContexts.contains(context)) {
             m_additionalContexts.prepend(context);
+        }
     }
 
     updateContext();
@@ -599,8 +621,9 @@ void MainWindow::updateContext()
     Context uniquecontexts;
     for (int i = 0; i < contexts.size(); ++i) {
         const int c = contexts.at(i);
-        if (!uniquecontexts.contains(c))
+        if (!uniquecontexts.contains(c)) {
             uniquecontexts.add(c);
+        }
     }
 
     m_actionManager->setContext(uniquecontexts);
