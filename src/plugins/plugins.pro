@@ -2,4 +2,6 @@ TEMPLATE = subdirs
 CONFIG  += ordered
 
 SUBDIRS = \
-    coreplugin
+    coreplugin \
+    databaseplugin \
+    editorplugin
