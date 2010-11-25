@@ -94,8 +94,8 @@ PluginView::PluginView(PluginManager *manager, QWidget *parent)
     m_ui->categoryWidget->setColumnWidth(C_LOAD, 40);
 
     // cannot disable these
-    m_whitelist << QString("Core") << QString("Locator")
-                << QString("Find") << QString("TextEditor");
+    // TODO: move this -- make each plugin determine for itself if it can be disabled
+    m_whitelist << QString("Core") << QString("Database") << QString("Editor");
 
     p->manager = manager;
     connect(p->manager, SIGNAL(pluginsChanged()), this, SLOT(updateList()));
