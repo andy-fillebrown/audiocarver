@@ -104,11 +104,11 @@ QString FileManager::fixFileName(const QString &fileName)
         s = QDir::toNativeSeparators(s);
     else
         s = QDir::toNativeSeparators(fi.canonicalFilePath());
-
+    {
 #   ifdef Q_OS_WIN
         s = s.toLower();
 #   endif
-
+    }
     return s;
 }
 
@@ -116,6 +116,7 @@ QString FileManager::getSaveFileName(const QString &title, const QString &pathIn
                                      const QString &filter)
 {
     const QString &path = pathIn.isEmpty() ? fileDialogInitialDirectory() : pathIn;
+
     QString fileName;
     bool repeat;
     do {
@@ -148,6 +149,7 @@ QString FileManager::getSaveAsFileName(IFile *file, const QString &filter)
 {
     if (!file)
         return QLatin1String("");
+
     QString absoluteFilePath = file->fileName();
     const QFileInfo fi(absoluteFilePath);
     QString fileName = fi.fileName();
@@ -155,8 +157,9 @@ QString FileManager::getSaveAsFileName(IFile *file, const QString &filter)
     if (absoluteFilePath.isEmpty()) {
         fileName = file->suggestedFileName();
         const QString defaultPath = file->defaultPath();
-        if (!defaultPath.isEmpty())
+        if (!defaultPath.isEmpty()) {
             path = defaultPath;
+        }
     }
 
     absoluteFilePath = getSaveFileName(tr("Save File As"),
@@ -190,8 +193,9 @@ void FileManager::addToRecentFiles(const QString &fileName)
     QMutableStringListIterator it(d->m_recentFiles);
     while (it.hasNext()) {
         QString recentUnifiedForm(fixFileName(it.next()));
-        if (unifiedForm == recentUnifiedForm)
+        if (unifiedForm == recentUnifiedForm) {
             it.remove();
+        }
     }
     if (d->m_recentFiles.count() > d->m_maxRecentFiles)
         d->m_recentFiles.removeLast();
@@ -222,8 +226,9 @@ void FileManager::readSettings()
     QStringList recentFiles = s->value(QLatin1String(settingsGroupC) + QLatin1Char('/') + QLatin1String(filesKeyC), QStringList()).toStringList();
     // clean non-existing files
     foreach (const QString &file, recentFiles) {
-        if (QFileInfo(file).isFile())
+        if (QFileInfo(file).isFile()) {
             d->m_recentFiles.append(QDir::fromNativeSeparators(file)); // from native to guard against old settings
+        }
     }
 
     const QString directoryGroup = QLatin1String(directoryGroupC) + QLatin1Char('/');
