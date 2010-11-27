@@ -40,8 +40,7 @@ public:
     {
         if (contains(name)) {
             NameSet ns = nameSet(name);
-            if (ns.ids.contains(id))
-            {
+            if (ns.ids.contains(id)) {
                 id = ns.ids.last() + 1;
                 ns.ids.append(id);
             } else {
