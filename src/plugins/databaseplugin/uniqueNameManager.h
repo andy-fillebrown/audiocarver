@@ -18,14 +18,24 @@
 #ifndef UNIQUENAMEMANAGER_H
 #define UNIQUENAMEMANAGER_H
 
+#include <QtCore/QString>
+
 namespace Database {
 namespace Internal {
+
+class UniqueNameManagerPrivate;
 
 class UniqueNameManager
 {
 public:
     UniqueNameManager();
     ~UniqueNameManager();
+
+    void addName(QString &name);
+    void removeName(const QString &name);
+
+private:
+    UniqueNameManagerPrivate *d;
 };
 
 } // namespace Internal
