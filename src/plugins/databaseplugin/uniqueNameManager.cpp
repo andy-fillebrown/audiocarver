@@ -51,6 +51,7 @@ public:
                         return;
                     }
                 }
+                ns.ids.append(id);
             }
         } else {
             NameSet ns;
