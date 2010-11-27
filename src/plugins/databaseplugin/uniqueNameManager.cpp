@@ -36,16 +36,6 @@ public:
     UniqueNameManagerPrivate() {}
     ~UniqueNameManagerPrivate() {}
 
-    bool contains(const QString &name)
-    {
-        foreach (const NameSet &ns, nameSets) {
-            if (ns.name == name) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     void add(const QString &name, uint &id)
     {
         if (contains(name)) {
@@ -84,6 +74,16 @@ public:
     }
 
 protected:
+    bool contains(const QString &name)
+    {
+        foreach (const NameSet &ns, nameSets) {
+            if (ns.name == name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     const NameSet &nameSet(const QString &name) const
     {
         foreach (const NameSet &nameSet, nameSets) {
