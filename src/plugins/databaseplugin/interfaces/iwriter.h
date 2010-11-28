@@ -15,26 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef IROOTOBJECT_H
-#define IROOTOBJECT_H
+#ifndef IWRITER_H
+#define IWRITER_H
 
-#include "idataobject.h"
+#include "ifiler.h"
 
 namespace Database {
 
-class IListObject;
-
-class IRootObject : public IDataObject
+class IWriter : public QObject
 {
     Q_OBJECT
 
 public:
-    IRootObject();
-    virtual ~IRootObject();
+    IWriter();
+    virtual ~IWriter();
 
-    virtual IRootObject *rootObject() const { return this; }
+    virtual void writeDataList(IDataList *list) = 0;
+    virtual void writeDataObject(IDataObject *object) = 0;
+
+    virtual void writeLinkList(ILinkList *list) = 0;
+    virtual void writeLinkObject(ILinkObject *object) = 0;
 };
 
 } // namespace Database
 
-#endif // IROOTOBJECT_H
+#endif // IWRITER_H

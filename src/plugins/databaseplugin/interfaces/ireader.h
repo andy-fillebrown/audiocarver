@@ -15,26 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef IROOTOBJECT_H
-#define IROOTOBJECT_H
+#ifndef IREADER_H
+#define IREADER_H
 
-#include "idataobject.h"
+#include "ifiler.h"
 
 namespace Database {
 
-class IListObject;
-
-class IRootObject : public IDataObject
+class IReader : public IFiler
 {
     Q_OBJECT
 
 public:
-    IRootObject();
-    virtual ~IRootObject();
+    IReader();
+    virtual ~IReader();
 
-    virtual IRootObject *rootObject() const { return this; }
+    virtual void readDataList(IDataList *list) = 0;
+    virtual void readDataObject(IDataObject *object) = 0;
+
+    virtual void readLinkList(ILinkList *list) = 0;
+    virtual void readLinkObject(ILinkObject *object) = 0;
 };
 
 } // namespace Database
 
-#endif // IROOTOBJECT_H
+#endif // IREADER_H

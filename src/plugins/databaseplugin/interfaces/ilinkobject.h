@@ -15,26 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef ILISTOBJECT_H
-#define ILISTOBJECT_H
+#ifndef ILINKOBJECT_H
+#define ILINKOBJECT_H
 
 #include "iobject.h"
 
 namespace Database {
 
 class IDataObject;
+class ILinkList;
 
-class IListObject : public IObject
+class ILinkObject : public IObject
 {
     Q_OBJECT
 
 public:
-    IListObject();
-    virtual ~IListObject();
+    ILinkObject();
+    virtual ~ILinkObject();
 
-    virtual QList<IDataObject *> dataObjects() const = 0;
+    virtual ILinkList *parent() const = 0;
+
+    virtual IDataObject *dataObject() const = 0;
+    virtual void setDataObject(IDataObject *object) = 0;
 };
 
 } // namespace Database
 
-#endif // ILISTOBJECT_H
+#endif // ILINKOBJECT_H

@@ -15,9 +15,14 @@ SOURCES += \
 HEADERS += \
     implementations/uniqueNameManager.h \
     interfaces/idatabase.h \
+    interfaces/idatalist.h \
     interfaces/idataobject.h \
-    interfaces/ilistobject.h \
+    interfaces/ifiler.h \
+    interfaces/ilinklist.h \
+    interfaces/ilinkobject.h \
     interfaces/iobject.h \
+    interfaces/ireader.h \
     interfaces/irootobject.h \
+    interfaces/iwriter.h \
     database_global.h \
     databaseplugin.h

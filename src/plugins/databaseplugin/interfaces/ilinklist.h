@@ -15,26 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef IROOTOBJECT_H
-#define IROOTOBJECT_H
+#ifndef ILINKLIST_H
+#define ILINKLIST_H
 
-#include "idataobject.h"
+#include "iobject.h"
 
 namespace Database {
 
-class IListObject;
+class IDataObject;
+class ILinkObject;
 
-class IRootObject : public IDataObject
+class ILinkList : public IObject
 {
     Q_OBJECT
 
 public:
-    IRootObject();
-    virtual ~IRootObject();
+    IDataList();
+    virtual ~IDataList();
 
-    virtual IRootObject *rootObject() const { return this; }
+    virtual IRootObject *root() const { return parent()->root(); }
+    virtual IDataObject *parent() const = 0;
+
+    virtual int objectCount() const = 0;
+    virtual IDataObject *objectAt(int i) = 0;
+    virtual void appendObject(ILinkObject *object) = 0;
+    virtual void removeObject(ILinkObject *object) = 0;
 };
 
 } // namespace Database
 
-#endif // IROOTOBJECT_H
+#endif // ILINKLIST_H

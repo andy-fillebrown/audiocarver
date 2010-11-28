@@ -15,26 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef IROOTOBJECT_H
-#define IROOTOBJECT_H
-
-#include "idataobject.h"
+#ifndef IFILER_H
+#define IFILER_H
 
 namespace Database {
 
-class IListObject;
+class IDatabase;
+class IDataList;
+class IDataObject;
+class ILinkList;
+class ILinkObject;
 
-class IRootObject : public IDataObject
+class IFiler : public QObject
 {
     Q_OBJECT
 
 public:
-    IRootObject();
-    virtual ~IRootObject();
+    IFiler();
+    virtual ~IFiler();
 
-    virtual IRootObject *rootObject() const { return this; }
+    IDatabase *database() const = 0;
 };
 
 } // namespace Database
 
-#endif // IROOTOBJECT_H
+#endif // IFILER_H

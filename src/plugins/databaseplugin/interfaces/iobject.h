@@ -20,13 +20,11 @@
 
 #include <QtCore/QObject>
 
-QT_BEGIN_NAMESPACE
-class QXmlStreamReader;
-QT_END_NAMESPACE
-
 namespace Database {
 
+class IReader;
 class IRootObject;
+class IWriter;
 
 class IObject : public QObject
 {
@@ -36,10 +34,10 @@ public:
     IObject();
     virtual ~IObject();
 
-    virtual void read(QXmlStreamReader &in) = 0;
-    virtual void write(QXmlStreamReader &out) = 0;
+    virtual IRootObject *root() const = 0;
 
-    virtual IRootObject *rootObject() const = 0;
+    virtual void read(IReader *in) = 0;
+    virtual void write(IWriter *out) = 0;
 };
 
 } // namespace Database

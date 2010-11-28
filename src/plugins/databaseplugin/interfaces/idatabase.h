@@ -22,8 +22,7 @@
 
 namespace Database {
 
-class IList;
-class IObject;
+class IDataObject;
 class IRootObject;
 
 class IDatabase : public QObject
@@ -34,14 +33,14 @@ public:
     IDatabase();
     virtual ~IDatabase();
 
+    virtual const QString &fileExtension() const = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
 
-    virtual const QString &uniqueName(const QString &nameHint) = 0;
+    virtual const QString &addUniqueName(const QString &nameHint) = 0;
 
     virtual IRootObject *rootObject() const = 0;
-    virtual IList *list(const QString &name) = 0;
-    virtual IObject *object(const QString &name) = 0;
+    virtual IDataObject *object(const QString &name) const = 0;
 };
 
 } // namespace Database
