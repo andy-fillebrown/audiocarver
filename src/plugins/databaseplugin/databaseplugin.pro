@@ -9,10 +9,10 @@ include(databaseplugin_dependencies.pri)
 DEFINES += DATABASE_LIBRARY
 
 SOURCES += \
-    databaseplugin.cpp \
-    uniqueNameManager.cpp
+    implementations/uniqueNameManager.cpp \
+    databaseplugin.cpp
 
 HEADERS += \
+    implementations/uniqueNameManager.h \
     database_global.h \
-    databaseplugin.h \
-    uniqueNameManager.h
+    databaseplugin.h
