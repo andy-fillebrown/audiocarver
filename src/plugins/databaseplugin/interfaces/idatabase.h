@@ -30,8 +30,8 @@ class IDatabase : public QObject
     Q_OBJECT
 
 public:
-    IDatabase();
-    virtual ~IDatabase();
+    IDatabase() {}
+    virtual ~IDatabase() {}
 
     virtual const QString &fileExtension() const = 0;
     virtual void read(const QString &fileName) = 0;

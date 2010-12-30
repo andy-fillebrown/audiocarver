@@ -29,10 +29,10 @@ class IRootObject : public IDataObject
     Q_OBJECT
 
 public:
-    IRootObject();
-    virtual ~IRootObject();
+    IRootObject() {}
+    virtual ~IRootObject() {}
 
-    virtual IRootObject *rootObject() const { return this; }
+    virtual const IRootObject *rootObject() const { return this; }
 };
 
 } // namespace Database

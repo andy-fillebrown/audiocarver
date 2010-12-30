@@ -27,8 +27,8 @@ class IReader : public IFiler
     Q_OBJECT
 
 public:
-    IReader();
-    virtual ~IReader();
+    IReader() {}
+    virtual ~IReader() {}
 
     virtual void readDataList(IDataList *list) = 0;
     virtual void readDataObject(IDataObject *object) = 0;

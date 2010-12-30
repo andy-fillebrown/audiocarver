@@ -18,11 +18,10 @@
 #ifndef ILINKLIST_H
 #define ILINKLIST_H
 
-#include "iobject.h"
+#include "idataobject.h"
 
 namespace Database {
 
-class IDataObject;
 class ILinkObject;
 
 class ILinkList : public IObject
@@ -30,14 +29,14 @@ class ILinkList : public IObject
     Q_OBJECT
 
 public:
-    IDataList();
-    virtual ~IDataList();
+    ILinkList() {}
+    virtual ~ILinkList() {}
 
-    virtual IRootObject *root() const { return parent()->root(); }
+    virtual IRootObject *root() const { return parent() ? parent()->root() : 0; }
     virtual IDataObject *parent() const = 0;
 
     virtual int objectCount() const = 0;
-    virtual IDataObject *objectAt(int i) = 0;
+    virtual ILinkObject *objectAt(int i) = 0;
     virtual void appendObject(ILinkObject *object) = 0;
     virtual void removeObject(ILinkObject *object) = 0;
 };

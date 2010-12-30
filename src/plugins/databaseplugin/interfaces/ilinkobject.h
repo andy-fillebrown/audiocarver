@@ -30,8 +30,8 @@ class ILinkObject : public IObject
     Q_OBJECT
 
 public:
-    ILinkObject();
-    virtual ~ILinkObject();
+    ILinkObject() {}
+    virtual ~ILinkObject() {}
 
     virtual ILinkList *parent() const = 0;
 

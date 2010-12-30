@@ -29,8 +29,8 @@ class IDataList : public IObject
     Q_OBJECT
 
 public:
-    IDataList();
-    virtual ~IDataList();
+    IDataList() {}
+    virtual ~IDataList() {}
 
     virtual int objectCount() const = 0;
     virtual IDataObject *objectAt(int i) = 0;

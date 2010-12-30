@@ -23,14 +23,15 @@
 namespace Database {
 
 class IDataList;
+class IListObject;
 
 class IDataObject : public IObject
 {
     Q_OBJECT
 
 public:
-    IDataObject();
-    virtual ~IDataObject();
+    IDataObject() {}
+    virtual ~IDataObject() {}
 
     virtual QString uniqueName() const = 0;
 

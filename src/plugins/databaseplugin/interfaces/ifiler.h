@@ -31,10 +31,10 @@ class IFiler : public QObject
     Q_OBJECT
 
 public:
-    IFiler();
-    virtual ~IFiler();
+    IFiler() {}
+    virtual ~IFiler() {}
 
-    IDatabase *database() const = 0;
+    virtual IDatabase *database() const = 0;
 };
 
 } // namespace Database

@@ -27,8 +27,8 @@ class IWriter : public QObject
     Q_OBJECT
 
 public:
-    IWriter();
-    virtual ~IWriter();
+    IWriter() {}
+    virtual ~IWriter() {}
 
     virtual void writeDataList(IDataList *list) = 0;
     virtual void writeDataObject(IDataObject *object) = 0;

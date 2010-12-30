@@ -31,8 +31,8 @@ class IObject : public QObject
     Q_OBJECT
 
 public:
-    IObject();
-    virtual ~IObject();
+    IObject() {}
+    virtual ~IObject() {}
 
     virtual IRootObject *root() const = 0;
 
