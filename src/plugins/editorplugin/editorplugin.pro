@@ -14,3 +14,6 @@ HEADERS += \
     editor_global.h \
     editorconstants.h \
     editorplugin.h
+
+RESOURCES += \
+    editor.qrc

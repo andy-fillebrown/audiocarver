@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/editor">
+        <file>images/filesave.png</file>
+        <file>images/filenew.png</file>
+        <file>images/fileopen.png</file>
+    </qresource>
+</RCC>

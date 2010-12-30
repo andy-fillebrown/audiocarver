@@ -37,6 +37,8 @@ public:
 public slots:
     void createNewFile();
     void openFile();
+    void saveFile();
+    void saveFileAs();
 };
 
 } // namespace Internal

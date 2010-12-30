@@ -35,8 +35,14 @@
 namespace Editor {
 namespace Constants {
 
-const char * const OPEN = PRO_NAME_STR".Open";
-const char * const NEW  = PRO_NAME_STR".New";
+const char * const NEW    = PRO_NAME_STR".New";
+const char * const OPEN   = PRO_NAME_STR".Open";
+const char * const SAVE   = PRO_NAME_STR".Save";
+const char * const SAVEAS = PRO_NAME_STR".SaveAs";
+
+const char * const ICON_NEW  = ":/editor/images/filenew.png";
+const char * const ICON_OPEN = ":/editor/images/fileopen.png";
+const char * const ICON_SAVE = ":/editor/images/filesave.png";
 
 } // namespace Constants
 } // namespace Editor

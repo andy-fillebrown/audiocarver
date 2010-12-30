@@ -54,21 +54,42 @@ void EditorPlugin::extensionsInitialized()
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
     Core::Context globalContext(Core::Constants::C_GLOBAL);
 
-    QAction *tmpAction = 0;
+    QIcon icon;
+    QAction *action = 0;
     Core::Command *cmd = 0;
 
-    Core::ActionContainer *mfile = am->actionContainer(Core::Constants::M_FILE);
-    tmpAction = new QAction(tr("&New"), this);
-    cmd = am->registerAction(tmpAction, Constants::NEW, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::New);
-    mfile->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
-    connect(tmpAction, SIGNAL(triggered()), SLOT(createNewFile()));
+    Core::ActionContainer *fileMenu = am->actionContainer(Core::Constants::M_FILE);
 
-    tmpAction = new QAction(tr("&Open"), this);
-    cmd = am->registerAction(tmpAction, Constants::OPEN, globalContext);
+    icon = QIcon::fromTheme(QLatin1String("document-new"), QIcon(Constants::ICON_NEW));
+    action = new QAction(icon, tr("&New"), this);
+    cmd = am->registerAction(action, Constants::NEW, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence::New);
+    fileMenu->addAction(cmd, Core::Constants::G_FILE_NEW);
+    connect(action, SIGNAL(triggered()), SLOT(createNewFile()));
+
+    icon = QIcon::fromTheme(QLatin1String("document-open"), QIcon(Constants::ICON_OPEN));
+    action = new QAction(icon, tr("&Open"), this);
+    cmd = am->registerAction(action, Constants::OPEN, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Open);
-    mfile->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
-    connect(tmpAction, SIGNAL(triggered()), SLOT(openFile()));
+    fileMenu->addAction(cmd, Core::Constants::G_FILE_OPEN);
+    connect(action, SIGNAL(triggered()), SLOT(openFile()));
+
+    action = new QAction(this);
+    action->setSeparator(true);
+    cmd = am->registerAction(action, PRO_NAME_STR".File.Sep.Save", globalContext);
+    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
+
+    icon = QIcon::fromTheme(QLatin1String("document-save"), QIcon(Constants::ICON_SAVE));
+    action = new QAction(icon, tr("&Save"), this);
+    cmd = am->registerAction(action, Constants::SAVE, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence::Save);
+    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
+    connect(action, SIGNAL(triggered()), SLOT(saveFile()));
+
+    action = new QAction(tr("Save &As"), this);
+    cmd = am->registerAction(action, Constants::SAVEAS, globalContext);
+    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
+    connect(action, SIGNAL(triggered()), SLOT(saveFileAs()));
 }
 
 void EditorPlugin::createNewFile()
@@ -77,6 +98,16 @@ void EditorPlugin::createNewFile()
 }
 
 void EditorPlugin::openFile()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void EditorPlugin::saveFile()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void EditorPlugin::saveFileAs()
 {
     qDebug() << Q_FUNC_INFO;
 }
