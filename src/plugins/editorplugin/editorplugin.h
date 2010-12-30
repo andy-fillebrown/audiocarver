@@ -33,6 +33,10 @@ public:
 
     virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     virtual void extensionsInitialized();
+
+public slots:
+    void createNewFile();
+    void openFile();
 };
 
 } // namespace Internal

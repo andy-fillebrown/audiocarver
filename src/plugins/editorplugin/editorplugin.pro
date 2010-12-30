@@ -2,6 +2,7 @@ TEMPLATE = lib
 TARGET   = Editor
 
 include(../../projectplugin.pri)
+include(../coreplugin/coreplugin.pri)
 include(editorplugin_dependencies.pri)
 
 DEFINES += EDITOR_LIBRARY
@@ -11,4 +12,5 @@ SOURCES += \
 
 HEADERS += \
     editor_global.h \
+    editorconstants.h \
     editorplugin.h

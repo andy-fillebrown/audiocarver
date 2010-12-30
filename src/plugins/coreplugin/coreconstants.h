@@ -69,9 +69,6 @@ const char * const MENU_BAR              = PRO_NAME_STR".MenuBar";
 
 //menus
 const char * const M_FILE                = PRO_NAME_STR".Menu.File";
-const char * const M_FILE_OPEN           = PRO_NAME_STR".Menu.File.Open";
-const char * const M_FILE_NEW            = PRO_NAME_STR".Menu.File.New";
-const char * const M_FILE_RECENTFILES    = PRO_NAME_STR".Menu.File.RecentFiles";
 const char * const M_EDIT                = PRO_NAME_STR".Menu.Edit";
 const char * const M_EDIT_ADVANCED       = PRO_NAME_STR".Menu.Edit.Advanced";
 const char * const M_TOOLS               = PRO_NAME_STR".Menu.Tools";
