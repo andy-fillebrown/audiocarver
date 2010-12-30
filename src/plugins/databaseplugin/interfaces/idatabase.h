@@ -43,6 +43,17 @@ public:
     virtual IDataObject *object(const QString &name) const = 0;
 };
 
+class IDatabaseFactory : public QObject
+{
+    Q_OBJECT
+
+public:
+    IDatabaseFactory() {}
+    virtual ~IDatabaseFactory() {}
+
+    virtual IDatabase *createDatabase(QObject *parent) = 0;
+};
+
 } // namespace Database
 
 #endif // IDATABASE_H

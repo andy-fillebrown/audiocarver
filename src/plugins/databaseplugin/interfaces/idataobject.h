@@ -34,14 +34,6 @@ public:
     virtual ~IDataObject() {}
 
     virtual QString uniqueName() const = 0;
-
-    virtual IDataList *parent() const = 0;
-    virtual QList<IListObject *> listObjects() const = 0;
-
-    virtual int propertyCount() const = 0;
-    virtual QString propertyName(int propertyIndex) const = 0;
-    virtual QVariant propertyValue(const QString &propertyName) const = 0;
-    virtual void setPropertyValue(const QString &propertyName, const QVariant &value) = 0;
 };
 
 } // namespace Database

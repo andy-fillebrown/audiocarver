@@ -33,8 +33,6 @@ public:
     ILinkObject() {}
     virtual ~ILinkObject() {}
 
-    virtual ILinkList *parent() const = 0;
-
     virtual IDataObject *dataObject() const = 0;
     virtual void setDataObject(IDataObject *object) = 0;
 };
