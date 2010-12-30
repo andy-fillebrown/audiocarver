@@ -9,4 +9,8 @@ This plugin may be used under the terms of the GNU Lesser General Public License
     <category>$$PRO_NAME</category>
     <description>The editor plugin for $${PRO_NAME}.</description>
     <url>$$PRO_URL</url>
+    <dependencyList>
+        <dependency name=\"Core\" version=\"$$PRO_VERSION\"/>
+        <dependency name=\"Database\" version=\"$$PRO_VERSION\"/>
+    </dependencyList>
 </plugin>
