@@ -192,6 +192,9 @@ void MainWindow::registerDefaultContainers()
     ActionContainer *filemenu = am->createMenu(Constants::M_FILE);
     menubar->addMenu(filemenu, Constants::G_FILE);
     filemenu->menu()->setTitle(tr("&File"));
+    filemenu->appendGroup(Constants::G_FILE_NEW);
+    filemenu->appendGroup(Constants::G_FILE_OPEN);
+    filemenu->appendGroup(Constants::G_FILE_SAVE);
     filemenu->appendGroup(Constants::G_FILE_OTHER);
 
     // Edit Menu

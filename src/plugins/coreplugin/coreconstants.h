@@ -113,6 +113,9 @@ const char * const G_WINDOW              = PRO_NAME_STR".Group.Window";
 const char * const G_HELP                = PRO_NAME_STR".Group.Help";
 
 // file menu groups
+const char * const G_FILE_NEW            = PRO_NAME_STR".Group.File.New";
+const char * const G_FILE_OPEN           = PRO_NAME_STR".Group.File.Open";
+const char * const G_FILE_SAVE           = PRO_NAME_STR".Group.File.Save";
 const char * const G_FILE_OTHER          = PRO_NAME_STR".Group.File.Other";
 
 // edit menu groups
