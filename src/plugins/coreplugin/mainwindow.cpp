@@ -244,18 +244,18 @@ void MainWindow::registerDefaultActions()
     Context globalContext(Constants::C_GLOBAL);
 
     // File menu separators
-    Command *cmd = createSeparator(am, this, QLatin1String("AudioCarver.File.Sep.Other"), globalContext);
+    Command *cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".File.Sep.Other"), globalContext);
     mfile->addAction(cmd, Constants::G_FILE_OTHER);
 
     // Edit menu separators
-    cmd = createSeparator(am, this, QLatin1String("AudioCarver.Edit.Sep.CopyPaste"), globalContext);
+    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.CopyPaste"), globalContext);
     medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
 
-    cmd = createSeparator(am, this, QLatin1String("AudioCarver.Edit.Sep.SelectAll"), globalContext);
+    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.SelectAll"), globalContext);
     medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
 
     // Tools menu separators
-    cmd = createSeparator(am, this, QLatin1String("AudioCarver.Tools.Sep.Options"), globalContext);
+    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Tools.Sep.Options"), globalContext);
     mtools->addAction(cmd, Constants::G_DEFAULT_THREE);
 
     // Exit Action
