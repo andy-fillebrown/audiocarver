@@ -18,6 +18,8 @@
 #ifndef IFILER_H
 #define IFILER_H
 
+#include <QtCore/QObject>
+
 namespace Database {
 
 class IDatabase;

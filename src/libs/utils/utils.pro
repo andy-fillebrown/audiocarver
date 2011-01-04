@@ -34,4 +34,9 @@ HEADERS += \
     treewidgetcolumnstretcher.h \
     utils_global.h
 
+unix: !macx {
+	SOURCES += unixutils.cpp
+	HEADERS += unixutils.h
+}
+
 OTHER_FILES += utils.pri

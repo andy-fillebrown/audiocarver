@@ -79,6 +79,7 @@ FileManagerPrivate::FileManagerPrivate(QObject *q, QMainWindow *mw)
     ,   m_lastVisitedDirectory(QDir::currentPath())
     ,   m_useProjectsDirectory(USE_PROJECTS_DIR)
 {
+	Q_UNUSED(q)
 }
 
 } // namespace Internal

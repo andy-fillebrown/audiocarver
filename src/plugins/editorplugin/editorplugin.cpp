@@ -27,6 +27,7 @@
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
 
+#include <QtCore/QDebug>
 #include <QtCore/QtPlugin>
 
 #include <QtGui/QAction>

@@ -17,7 +17,7 @@
 
 #include "uniqueNameManager.h"
 
-#include <QtCore/QList>
+#include <QtCore/QStringList>
 
 namespace Database {
 namespace Internal {

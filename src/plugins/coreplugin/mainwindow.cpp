@@ -49,9 +49,12 @@
 #include <utils/stringutils.h>
 #include <extensionsystem/pluginmanager.h>
 
+#include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
 #include <QtCore/QtPlugin>
+#include <QtCore/QTimer>
 
+#include <QtGui/QApplication>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QMenu>
 

@@ -36,6 +36,7 @@
 
 #include <QtCore/QSettings>
 
+#include <QtGui/QApplication>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QLabel>
 #include <QtGui/QListView>

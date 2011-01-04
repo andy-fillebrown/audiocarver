@@ -2,6 +2,7 @@ TEMPLATE = app
 TARGET   = audiocarver
 
 include(../../project.pri)
+include(../rpath.pri)
 
 DESTDIR = $$PRO_APP_PATH
 

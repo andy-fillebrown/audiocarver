@@ -30,6 +30,10 @@
 #include "generalsettings.h"
 #include "coreconstants.h"
 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#	include <utils/unixutils.h>
+#endif
+
 #include <coreplugin/icore.h>
 
 #include <QtGui/QMainWindow>
@@ -166,7 +170,7 @@ void GeneralSettings::variableHelpDialogCreator(const QString &helpText)
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 void GeneralSettings::showHelpForFileBrowser()
 {
-    variableHelpDialogCreator(UnixUtils::fileBrowserHelpText());
+	variableHelpDialogCreator(Utils::UnixUtils::fileBrowserHelpText());
 }
 #endif
 
