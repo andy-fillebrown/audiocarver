@@ -209,13 +209,13 @@ int main(int argc, char **argv)
     pluginManager.setSettings(settings);
 
     locale = settings->value("General/OverrideLanguage", locale).toString();
-    const QString &creatorTrPath = QCoreApplication::applicationDirPath()
+    const QString &projectTrPath = QCoreApplication::applicationDirPath()
                         + QLatin1String(SHARE_PATH "/translations");
-    if (translator.load(QLatin1String(PRO_NAME_LC_STR"_") + locale, creatorTrPath)) {
+    if (translator.load(QLatin1String(PRO_NAME_LC_STR"_") + locale, projectTrPath)) {
         const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
         const QString &qtTrFile = QLatin1String("qt_") + locale;
         // Binary installer puts Qt tr files into creatorTrPath
-        if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, creatorTrPath)) {
+        if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, projectTrPath)) {
             app.installTranslator(&translator);
             app.installTranslator(&qtTranslator);
             app.setProperty(PRO_NAME_LC_STR"_locale", locale);
