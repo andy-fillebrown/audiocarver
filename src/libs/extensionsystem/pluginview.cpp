@@ -95,7 +95,13 @@ PluginView::PluginView(PluginManager *manager, QWidget *parent)
 
     // cannot disable these
     // TODO: move this -- make each plugin determine for itself if it can be disabled
-    m_whitelist << QString("Core") << QString("Database") << QString("Editor");
+    m_whitelist
+        << QString("AC_Database")
+        << QString("AC_Editor")
+        << QString("Core")
+        << QString("Database")
+        << QString("Editor")
+        ;
 
     p->manager = manager;
     connect(p->manager, SIGNAL(pluginsChanged()), this, SLOT(updateList()));

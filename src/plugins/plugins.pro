@@ -4,4 +4,6 @@ CONFIG += ordered
 SUBDIRS = \
     coreplugin \
     databaseplugin \
-    editorplugin
+	editorplugin \
+	ac_databaseplugin \
+	ac_editorplugin
