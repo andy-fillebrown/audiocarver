@@ -4,6 +4,7 @@ TEMPLATE = lib
 QT += xml
 
 include(../../projectplugin.pri)
+include(../databaseplugin/databaseplugin.pri)
 include(ac_databaseplugin_dependencies.pri)
 
 DEFINES += AC_DATABASE_LIBRARY
