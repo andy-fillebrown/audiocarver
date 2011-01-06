@@ -17,6 +17,8 @@
 
 #include "ac_databaseplugin.h"
 
+#include <implementations/database.h>
+
 #include <extensionsystem/pluginmanager.h>
 
 #include <QtCore/QtPlugin>
@@ -41,6 +43,7 @@ bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMess
 
 void DatabasePlugin::extensionsInitialized()
 {
+    addAutoReleasedObject(new DatabaseImpl);
 }
 
 Q_EXPORT_PLUGIN(DatabasePlugin)
