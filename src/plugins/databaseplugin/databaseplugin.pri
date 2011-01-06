@@ -1,8 +1,8 @@
-include(coreplugin_dependencies.pri)
+include(databaseplugin_dependencies.pri)
 
 LIBS *= -L$$PRO_PLUGIN_PATH
-LIBS *= -l$$qtLibraryName(Core)
+LIBS *= -l$$qtLibraryName(Database)
 
 # for ide_version.h
-INCLUDEPATH *= $$AC_BUILD_TREE/src/plugins/coreplugin
-DEPENDPATH *= $$AC_BUILD_TREE/src/plugins/coreplugin
+INCLUDEPATH *= $$PRO_BUILD_TREE/src/plugins/databaseplugin
+DEPENDPATH *= $$PRO_BUILD_TREE/src/plugins/databaseplugin

@@ -1,1 +1,1 @@
-include(../../libs/extensionsystem/extensionsystem.pri)
+include(../editorplugin/editorplugin.pri)

@@ -2,7 +2,6 @@ TARGET = AC_Editor
 TEMPLATE = lib
 
 include(../../projectplugin.pri)
-include(../coreplugin/coreplugin.pri)
 include(ac_editorplugin_dependencies.pri)
 
 DEFINES += AC_EDITOR_LIBRARY

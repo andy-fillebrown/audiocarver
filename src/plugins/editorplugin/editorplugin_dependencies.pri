@@ -1,1 +1,1 @@
-include(../../libs/extensionsystem/extensionsystem.pri)
+include(../databaseplugin/databaseplugin.pri)
