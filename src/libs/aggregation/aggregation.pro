@@ -1,5 +1,5 @@
+TARGET = Aggregation
 TEMPLATE = lib
-TARGET   = Aggregation
 
 include(../../projectlibrary.pri)
 

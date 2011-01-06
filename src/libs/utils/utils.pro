@@ -1,17 +1,25 @@
-TEMPLATE = lib
 TARGET   = Utils
+TEMPLATE = lib
+
 QT += gui
 
-CONFIG += dll
 include(../../projectlibrary.pri)
 
-dll {
-    DEFINES += QTCREATOR_UTILS_LIB
-} else {
-    DEFINES += QTCREATOR_UTILS_STATIC_LIB
-}
+DEFINES += QTCREATOR_UTILS_LIB
 
 INCLUDEPATH += $$PWD
+DEPENDPATH += $$PWD
+
+HEADERS += \
+	basevalidatinglineedit.h \
+	environment.h \
+	fancylineedit.h \
+	filenamevalidatinglineedit.h \
+	filterlineedit.h \
+	pathchooser.h \
+	stringutils.h \
+	treewidgetcolumnstretcher.h \
+	utils_global.h
 
 SOURCES += \
     basevalidatinglineedit.cpp \
@@ -23,20 +31,9 @@ SOURCES += \
     stringutils.cpp \
     treewidgetcolumnstretcher.cpp
 
-HEADERS += \
-    basevalidatinglineedit.h \
-    environment.h \
-    fancylineedit.h \
-    filenamevalidatinglineedit.h \
-    filterlineedit.h \
-    pathchooser.h \
-    stringutils.h \
-    treewidgetcolumnstretcher.h \
-    utils_global.h
-
 unix: !macx {
-	SOURCES += unixutils.cpp
 	HEADERS += unixutils.h
+	SOURCES += unixutils.cpp
 }
 
 OTHER_FILES += utils.pri

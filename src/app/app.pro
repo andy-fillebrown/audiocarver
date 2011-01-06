@@ -1,10 +1,12 @@
+TARGET = audiocarver
 TEMPLATE = app
-TARGET   = audiocarver
 
 include(../../project.pri)
 include(../rpath.pri)
 
 DESTDIR = $$PRO_APP_PATH
+
+QMAKE_SUBSTITUTES = Info.plist.in
 
 DEFINES += PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\"
 
@@ -29,8 +31,6 @@ win32 {
     target.path  = /bin
     INSTALLS    += target
 }
-
-QMAKE_SUBSTITUTES = Info.plist.in
 
 OTHER_FILES += \
     $$RC_FILE \

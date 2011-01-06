@@ -1,10 +1,10 @@
-TEMPLATE = lib
 TARGET = ExtensionSystem
-DEFINES += EXTENSIONSYSTEM_LIBRARY
+TEMPLATE = lib
+
 include(../../projectlibrary.pri)
 include(extensionsystem_dependencies.pri)
 
-unix:!macx:!freebsd*:LIBS += -ldl
+DEFINES += EXTENSIONSYSTEM_LIBRARY
 
 HEADERS += \
     pluginerrorview.h \
@@ -38,3 +38,5 @@ FORMS += \
 
 RESOURCES += \
     pluginview.qrc
+
+unix:!macx:!freebsd*:LIBS += -ldl

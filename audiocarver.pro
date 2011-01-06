@@ -1,12 +1,10 @@
-#version check qt
+# check qt version
 contains(QT_VERSION, ^4\\.[0-6]\\..*) {
     message("Cannot build AudioCarver with Qt version $${QT_VERSION}.")
     error("Use at least Qt 4.7.")
 }
 
-include(project.pri)
-
-TEMPLATE  = subdirs
-CONFIG   += ordered
+TEMPLATE = subdirs
+CONFIG += ordered
 
 SUBDIRS = src
