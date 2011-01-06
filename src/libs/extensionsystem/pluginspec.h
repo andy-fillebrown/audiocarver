@@ -82,6 +82,7 @@ public:
     bool isExperimental() const;
     bool isEnabled() const;
     bool isDisabledIndirectly() const;
+    bool isUnloadable() const;
     QList<PluginDependency> dependencies() const;
 
     typedef QList<PluginArgumentDescription> PluginArgumentDescriptions;

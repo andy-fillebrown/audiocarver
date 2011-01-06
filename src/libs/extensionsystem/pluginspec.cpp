@@ -265,6 +265,15 @@ bool PluginSpec::isDisabledIndirectly() const
 }
 
 /*!
+    \fn bool PluginSpec::isUnloadable() const
+    Returns true if plugin can be unloaded.
+*/
+bool PluginSpec::isUnloadable() const
+{
+    return d->unloadable;
+}
+
+/*!
     \fn QList<PluginDependency> PluginSpec::dependencies() const
     The plugin dependencies. This is valid after the PluginSpec::Read state is reached.
 */
@@ -415,6 +424,7 @@ namespace {
     const char * const PLUGIN_VERSION = "version";
     const char * const PLUGIN_COMPATVERSION = "compatVersion";
     const char * const PLUGIN_EXPERIMENTAL = "experimental";
+    const char * const PLUGIN_UNLOADABLE = "unloadable";
     const char * const VENDOR = "vendor";
     const char * const COPYRIGHT = "copyright";
     const char * const LICENSE = "license";
@@ -435,13 +445,13 @@ namespace {
     \internal
 */
 PluginSpecPrivate::PluginSpecPrivate(PluginSpec *spec)
-    :
-    enabled(true),
-    disabledIndirectly(false),
-    plugin(0),
-    state(PluginSpec::Invalid),
-    hasError(false),
-    q(spec)
+    :   enabled(true)
+    ,   disabledIndirectly(false)
+    ,   unloadable(true)
+    ,   plugin(0)
+    ,   state(PluginSpec::Invalid)
+    ,   hasError(false)
+    ,   q(spec)
 {
 }
 
@@ -581,6 +591,13 @@ void PluginSpecPrivate::readPluginSpec(QXmlStreamReader &reader)
         return;
     }
     enabled = !experimental;
+    QString unloadableString = reader.attributes().value(PLUGIN_UNLOADABLE).toString();
+    unloadable = !(unloadableString.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0);
+    if (!unloadableString.isEmpty() && !unloadable
+            && unloadableString.compare(QLatin1String("false"), Qt::CaseInsensitive) != 0) {
+        reader.raiseError(msgInvalidFormat(PLUGIN_UNLOADABLE));
+        return;
+    }
     while (!reader.atEnd()) {
         reader.readNext();
         switch (reader.tokenType()) {

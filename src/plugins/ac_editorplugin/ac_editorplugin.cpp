@@ -17,20 +17,7 @@
 
 #include "ac_editorplugin.h"
 
-#include "ac_editorconstants.h"
-
-#include <coreplugin/coreconstants.h>
-#include <coreplugin/icontext.h>
-#include <coreplugin/icore.h>
-
-#include <coreplugin/actionmanager/actioncontainer.h>
-#include <coreplugin/actionmanager/actionmanager.h>
-#include <coreplugin/actionmanager/command.h>
-
-#include <QtCore/QDebug>
 #include <QtCore/QtPlugin>
-
-#include <QtGui/QAction>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Editor;

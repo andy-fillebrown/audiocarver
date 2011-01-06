@@ -1,4 +1,4 @@
-<plugin name=\"Database\" version=\"$$PRO_VERSION\" compatVersion=\"$$PRO_VERSION\">
+<plugin name=\"Database\" version=\"$$PRO_VERSION\" compatVersion=\"$$PRO_VERSION\" unloadable=\"false\">
     <vendor>$$PRO_AUTHOR_NOSPACE</vendor>
     <copyright>(C) $$PRO_YEAR $$PRO_AUTHOR</copyright>
     <license>

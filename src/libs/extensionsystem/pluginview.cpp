@@ -93,16 +93,6 @@ PluginView::PluginView(PluginManager *manager, QWidget *parent)
 
     m_ui->categoryWidget->setColumnWidth(C_LOAD, 40);
 
-    // cannot disable these
-    // TODO: move this -- make each plugin determine for itself if it can be disabled
-    m_whitelist
-        << QString("AC_Database")
-        << QString("AC_Editor")
-        << QString("Core")
-        << QString("Database")
-        << QString("Editor")
-        ;
-
     p->manager = manager;
     connect(p->manager, SIGNAL(pluginsChanged()), this, SLOT(updateList()));
     connect(m_ui->categoryWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
@@ -227,7 +217,7 @@ int PluginView::parsePluginSpecs(QTreeWidgetItem *parentItem, Qt::CheckState &gr
             ++loadCount;
         }
 
-        if (!m_whitelist.contains(spec->name())) {
+        if (spec->isUnloadable()) {
             pluginItem->setData(C_LOAD, Qt::CheckStateRole, state);
         } else {
             pluginItem->setData(C_LOAD, Qt::CheckStateRole, Qt::Checked);
@@ -330,7 +320,7 @@ void PluginView::updatePluginSettings(QTreeWidgetItem *item, int column)
             PluginSpec *spec = collection->plugins().at(i);
             QTreeWidgetItem *child = m_specToItem.value(spec);
 
-            if (!m_whitelist.contains(spec->name())) {
+            if (spec->isUnloadable()) {
                 spec->setEnabled(loadOnStartup);
                 Qt::CheckState state = (loadOnStartup ? Qt::Checked : Qt::Unchecked);
                 child->setData(C_LOAD, Qt::CheckStateRole, state);
@@ -351,7 +341,7 @@ void PluginView::updatePluginDependencies()
 {
     foreach (PluginSpec *spec, PluginManager::instance()->loadQueue()) {
         bool disableIndirectly = false;
-        if (m_whitelist.contains(spec->name()))
+        if (!spec->isUnloadable())
             continue;
 
         foreach(const PluginSpec *depSpec, spec->dependencySpecs()) {
