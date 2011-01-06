@@ -19,6 +19,8 @@
 
 #include "editorconstants.h"
 
+#include <extensionsystem/pluginmanager.h>
+
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
@@ -27,10 +29,14 @@
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
 
+#include <databaseplugin/interfaces/idatabase.h>
+
 #include <QtCore/QDebug>
 #include <QtCore/QtPlugin>
 
 #include <QtGui/QAction>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
 
 using namespace Editor;
 using namespace Editor::Internal;
@@ -66,7 +72,7 @@ void EditorPlugin::extensionsInitialized()
     cmd = am->registerAction(action, Constants::NEW, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::New);
     fileMenu->addAction(cmd, Core::Constants::G_FILE_NEW);
-    connect(action, SIGNAL(triggered()), SLOT(createNewFile()));
+    connect(action, SIGNAL(triggered()), SLOT(newFile()));
 
     icon = QIcon::fromTheme(QLatin1String("document-open"), QIcon(Constants::ICON_OPEN));
     action = new QAction(icon, tr("&Open"), this);
@@ -93,24 +99,92 @@ void EditorPlugin::extensionsInitialized()
     connect(action, SIGNAL(triggered()), SLOT(saveFileAs()));
 }
 
-void EditorPlugin::createNewFile()
+void EditorPlugin::newFile()
 {
     qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+
+    // Get database.
+    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
+    Q_ASSERT(db);
+    if (!db)
+        return;
+
+    // Clear database.
+    db->clear();
 }
 
 void EditorPlugin::openFile()
 {
     qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+
+    // Get database.
+    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
+    Q_ASSERT(db);
+    if (!db)
+        return;
+
+    // Get filename filter.
+    const QString filter = db->fileFilter();
+
+    // Get filename from user.
+    QString filename = QFileDialog::getOpenFileName(
+                Core::ICore::instance()->mainWindow()->centralWidget(), "", "",
+                tr(qPrintable(filter)));
+    if (!QFile::exists(filename))
+        return;
+
+    // Read file into database.
+    db->read(filename);
 }
 
 void EditorPlugin::saveFile()
 {
     qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+
+    // Get database.
+    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
+    Q_ASSERT(db);
+    if (!db)
+        return;
+
+    // Write database using current filename.
+    db->write(db->fileName());
 }
 
 void EditorPlugin::saveFileAs()
 {
     qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+
+    // Get database.
+    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
+    Q_ASSERT(db);
+    if (!db)
+        return;
+
+    // Get filename filter.
+    const QString filter = db->fileFilter();
+
+    // Get filename from user.
+    QString filename = QFileDialog::getSaveFileName(
+                Core::ICore::instance()->mainWindow()->centralWidget(), "", "",
+                tr(qPrintable(filter)));
+    if (filename.isEmpty())
+        return;
+
+    // Add file extension if missing.
+    if (!filename.endsWith(db->fileExtension()))
+        filename.append(db->fileExtension());
+
+    // Write database using filename chosen by user.
+    db->write(filename);
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin)

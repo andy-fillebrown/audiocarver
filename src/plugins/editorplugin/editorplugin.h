@@ -35,10 +35,10 @@ public:
     virtual void extensionsInitialized();
 
 public slots:
-    void createNewFile();
-    void openFile();
-    void saveFile();
-    void saveFileAs();
+    virtual void newFile();
+    virtual void openFile();
+    virtual void saveFile();
+    virtual void saveFileAs();
 };
 
 } // namespace Internal
