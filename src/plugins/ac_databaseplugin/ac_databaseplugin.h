@@ -28,8 +28,8 @@ class DatabasePlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-	DatabasePlugin();
-	~DatabasePlugin();
+    DatabasePlugin();
+    ~DatabasePlugin();
 
     virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     virtual void extensionsInitialized();
