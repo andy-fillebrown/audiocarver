@@ -36,15 +36,6 @@ public:
     virtual ~IObject() {}
 
     virtual IRootObject *root() const = 0;
-    virtual IDataObject *parent() const = 0;
-
-    virtual int childCount() const = 0;
-    virtual IObject *childAt(int i) = 0;
-
-    virtual int propertyCount() const = 0;
-    virtual QString propertyName(int propertyIndex) const = 0;
-    virtual QVariant propertyValue(const QString &propertyName) const = 0;
-    virtual void setPropertyValue(const QString &propertyName, const QVariant &value) = 0;
 
     virtual void read(IReader *in) = 0;
     virtual void write(IWriter *out) = 0;

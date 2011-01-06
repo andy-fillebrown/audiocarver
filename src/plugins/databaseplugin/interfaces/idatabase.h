@@ -37,7 +37,7 @@ public:
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
 
-    virtual const QString &addUniqueName(const QString &nameHint) = 0;
+	virtual const QString &addUniqueName(const QString &requestedName) = 0;
 
     virtual IRootObject *rootObject() const = 0;
     virtual IDataObject *object(const QString &name) const = 0;

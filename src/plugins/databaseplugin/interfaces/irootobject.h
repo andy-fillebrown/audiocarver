@@ -33,7 +33,6 @@ public:
     virtual ~IRootObject() {}
 
     virtual IRootObject *root() const { return const_cast<IRootObject *>(this); }
-    virtual IDataObject *parent() const { return 0; }
 };
 
 } // namespace Database

@@ -30,10 +30,7 @@ public:
     IReader() {}
     virtual ~IReader() {}
 
-    virtual void readDataList(IDataList *list) = 0;
     virtual void readDataObject(IDataObject *object) = 0;
-
-    virtual void readLinkList(ILinkList *list) = 0;
     virtual void readLinkObject(ILinkObject *object) = 0;
 };
 

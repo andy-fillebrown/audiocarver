@@ -23,9 +23,7 @@
 namespace Database {
 
 class IDatabase;
-class IDataList;
 class IDataObject;
-class ILinkList;
 class ILinkObject;
 
 class IFiler : public QObject

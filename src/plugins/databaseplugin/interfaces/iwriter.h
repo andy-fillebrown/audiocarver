@@ -30,10 +30,7 @@ public:
     IWriter() {}
     virtual ~IWriter() {}
 
-    virtual void writeDataList(IDataList *list) = 0;
     virtual void writeDataObject(IDataObject *object) = 0;
-
-    virtual void writeLinkList(ILinkList *list) = 0;
     virtual void writeLinkObject(ILinkObject *object) = 0;
 };
 
