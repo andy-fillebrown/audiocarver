@@ -18,13 +18,11 @@
 #ifndef IROOTOBJECT_H
 #define IROOTOBJECT_H
 
-#include "idataobject.h"
+#include "iobject.h"
 
 namespace Database {
 
-class IListObject;
-
-class IRootObject : public IDataObject
+class DATABASE_EXPORT IRootObject : public IObject
 {
     Q_OBJECT
 

@@ -22,7 +22,7 @@
 
 namespace Database {
 
-class IWriter : public QObject
+class DATABASE_EXPORT IWriter : public QObject
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ public:
     IWriter() {}
     virtual ~IWriter() {}
 
-    virtual void writeDataObject(IDataObject *object) = 0;
+    virtual void writeObject(IObject *object) = 0;
     virtual void writeLinkObject(ILinkObject *object) = 0;
 };
 

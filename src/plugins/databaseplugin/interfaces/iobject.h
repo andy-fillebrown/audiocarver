@@ -18,16 +18,17 @@
 #ifndef IOBJECT_H
 #define IOBJECT_H
 
+#include "../database_global.h"
+
 #include <QtCore/QObject>
 
 namespace Database {
 
-class IDataObject;
 class IReader;
 class IRootObject;
 class IWriter;
 
-class IObject : public QObject
+class DATABASE_EXPORT IObject : public QObject
 {
     Q_OBJECT
 

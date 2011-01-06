@@ -18,15 +18,17 @@
 #ifndef IFILER_H
 #define IFILER_H
 
+#include "../database_global.h"
+
 #include <QtCore/QObject>
 
 namespace Database {
 
 class IDatabase;
-class IDataObject;
+class IObject;
 class ILinkObject;
 
-class IFiler : public QObject
+class DATABASE_EXPORT IFiler : public QObject
 {
     Q_OBJECT
 

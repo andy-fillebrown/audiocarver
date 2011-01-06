@@ -22,10 +22,9 @@
 
 namespace Database {
 
-class IDataObject;
 class ILinkList;
 
-class ILinkObject : public IObject
+class DATABASE_EXPORT ILinkObject : public IObject
 {
     Q_OBJECT
 
@@ -33,8 +32,8 @@ public:
     ILinkObject() {}
     virtual ~ILinkObject() {}
 
-    virtual IDataObject *dataObject() const = 0;
-    virtual void setDataObject(IDataObject *object) = 0;
+    virtual IObject *linkedObject() const = 0;
+    virtual void setLinkedObject(IObject *object) = 0;
 };
 
 } // namespace Database

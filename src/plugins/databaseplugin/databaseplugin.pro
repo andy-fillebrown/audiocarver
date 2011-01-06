@@ -12,7 +12,6 @@ HEADERS += \
 	implementations/uniqueNameManager.h \
 	\
 	interfaces/idatabase.h \
-	interfaces/idataobject.h \
 	interfaces/ifiler.h \
 	interfaces/ilinkobject.h \
 	interfaces/iobject.h \
@@ -24,6 +23,6 @@ HEADERS += \
 	databaseplugin.h
 
 SOURCES += \
-    implementations/uniqueNameManager.cpp \
+	implementations/uniqueNameManager.cpp \
 	\
-    databaseplugin.cpp
+	databaseplugin.cpp

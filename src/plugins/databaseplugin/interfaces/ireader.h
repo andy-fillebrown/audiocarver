@@ -22,7 +22,7 @@
 
 namespace Database {
 
-class IReader : public IFiler
+class DATABASE_EXPORT IReader : public IFiler
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ public:
     IReader() {}
     virtual ~IReader() {}
 
-    virtual void readDataObject(IDataObject *object) = 0;
+    virtual void readObject(IObject *object) = 0;
     virtual void readLinkObject(ILinkObject *object) = 0;
 };
 
