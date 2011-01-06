@@ -22,8 +22,7 @@
 #include <QtCore/QtPlugin>
 
 using namespace AudioCarver;
-using namespace AudioCarver::Database;
-using namespace AudioCarver::Database::Internal;
+using namespace AudioCarver::Internal;
 
 DatabasePlugin::DatabasePlugin()
 {

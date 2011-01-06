@@ -21,7 +21,6 @@
 #include <extensionsystem/iplugin.h>
 
 namespace AudioCarver {
-namespace Database {
 namespace Internal {
 
 class DatabasePlugin : public ExtensionSystem::IPlugin
@@ -37,7 +36,6 @@ public:
 };
 
 } // namespace Internal
-} // namespace Database
 } // namespace AudioCarver
 
 #endif // AC_DATABASEPLUGIN_H
