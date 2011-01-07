@@ -82,7 +82,7 @@ const char * const G_FILE_OTHER                = PRO_NAME_STR".Group.File.Other"
 const char * const G_WINDOW_SIZE               = PRO_NAME_STR".Group.Window.Size";
 const char * const G_WINDOW_OTHER              = PRO_NAME_STR".Group.Window.Other";
 
-const char * const G_HELP_ABOUT                = PRO_NAME_STR".Group.Help.About";
+const char * const G_HELP_ABOUTPLUGINS         = PRO_NAME_STR".Group.Help.AboutPlugins";
 
 const char * const M_FILE                      = PRO_NAME_STR".Menu.File";
 const char * const M_TOOLS                     = PRO_NAME_STR".Menu.Tools";
@@ -97,8 +97,7 @@ const char * const TOGGLE_FULLSCREEN           = PRO_NAME_STR".ToggleFullScreen"
 const char * const MINIMIZE_WINDOW             = PRO_NAME_STR".MinimizeWindow";
 const char * const ZOOM_WINDOW                 = PRO_NAME_STR".ZoomWindow";
 
-const char * const ABOUT_PROJECT               = PRO_NAME_STR".About"PRO_NAME_STR;
-const char * const ABOUT_PLUGINS               = PRO_NAME_STR".AboutPlugins";
+const char * const ABOUTPLUGINS                = PRO_NAME_STR".AboutPlugins";
 
 const char * const ICON_PROLOGO_32             = ":/core/images/project_logo_32.png";
 const char * const ICON_PROLOGO_128            = ":/core/images/project_logo_128.png";

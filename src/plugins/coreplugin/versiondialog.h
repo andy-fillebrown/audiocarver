@@ -30,19 +30,19 @@
 #ifndef VERSIONDIALOG_H
 #define VERSIONDIALOG_H
 
+#include "core_global.h"
 #include <QtGui/QDialog>
 
 namespace Core {
-namespace Internal {
 
-class VersionDialog : public QDialog
+class CORE_EXPORT VersionDialog : public QDialog
 {
     Q_OBJECT
+
 public:
     explicit VersionDialog(QWidget *parent);
 };
 
-} // namespace Internal
 } // namespace Core
 
 #endif // VERSIONDIALOG_H

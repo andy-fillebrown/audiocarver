@@ -20,11 +20,19 @@
 
 #include <coreplugin/interfaces/imainwindow.h>
 
+namespace Core {
+
+class VersionDialog;
+
+} // namespace Core
+
 namespace AudioCarver {
 namespace Internal {
 
 class MainWindowImpl : public Core::IMainWindow
 {
+    Q_OBJECT
+
 public:
     MainWindowImpl();
     virtual ~MainWindowImpl();
@@ -32,6 +40,13 @@ public:
     virtual void initMenuBarGroups(QStringList &groups) const;
     virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
     virtual void initActions();
+
+private slots:
+    void aboutAudioCarver();
+    void destroyVersionDialog();
+
+private:
+    Core::VersionDialog *m_versionDialog;
 };
 
 } // namespace Internal

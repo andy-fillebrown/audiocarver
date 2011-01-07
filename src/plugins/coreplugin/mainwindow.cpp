@@ -80,7 +80,6 @@ MainWindow::MainWindow()
                                                 this))
     ,   m_actionManager(new ActionManagerPrivate(this))
     ,   m_fileManager(new FileManager(this))
-    ,   m_versionDialog(0)
     ,   m_activeContext(0)
     ,   m_generalSettings(new GeneralSettings)
     ,   m_shortcutSettings(new ShortcutSettings)
@@ -217,7 +216,7 @@ void MainWindow::registerContainers()
         } else if (menuBarGroup == Constants::G_HELP) {
             id = Constants::M_HELP;
             title = tr("&Help");
-            groups  << Constants::G_HELP_ABOUT;
+            groups  << Constants::G_HELP_ABOUTPLUGINS;
         }
         ActionContainer *menu = am->createMenu(id);
         menubar->addMenu(menu, menuBarGroup);
@@ -307,28 +306,10 @@ void MainWindow::registerActions()
     }
 #   endif
 
-    // About Project Action
-    icon = QIcon::fromTheme(QLatin1String("help-about"));
-#   ifdef Q_WS_MAC
-    {   action = new QAction(icon, tr("About &"PRO_NAME_STR), this); // it's convention not to add dots to the about menu
-    }
-#   else
-    {   action = new QAction(icon, tr("About &"PRO_NAME_STR"..."), this);
-    }
-#   endif
-    cmd = am->registerAction(action, Constants::ABOUT_PROJECT, globalContext);
-    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
-    action->setEnabled(true);
-#   ifdef Q_WS_MAC
-    {   cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
-    }
-#   endif
-    connect(action, SIGNAL(triggered()), this,  SLOT(aboutAudioCarver()));
-
     // About Plugins Action
     action = new QAction(tr("About &Plugins..."), this);
-    cmd = am->registerAction(action, Constants::ABOUT_PLUGINS, globalContext);
-    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
+    cmd = am->registerAction(action, Constants::ABOUTPLUGINS, globalContext);
+    mhelp->addAction(cmd, Constants::G_HELP_ABOUTPLUGINS);
     action->setEnabled(true);
 #   ifdef Q_WS_MAC
     {   cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
@@ -340,7 +321,7 @@ void MainWindow::registerActions()
     {   action = new QAction(this);
         action->setSeparator(true);
         cmd = am->registerAction(action, PRO_NAME_STR".Help.Sep.About", globalContext);
-        mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
+        mhelp->addAction(cmd, Constants::G_HELP_ABOUTPLUGINS);
     }
 #   endif
 
@@ -574,24 +555,6 @@ void MainWindow::updateContext()
 
     m_actionManager->setContext(uniquecontexts);
     emit m_coreImpl->contextChanged(m_activeContext, m_additionalContexts);
-}
-
-void MainWindow::aboutAudioCarver()
-{
-    if (!m_versionDialog) {
-        m_versionDialog = new VersionDialog(this);
-        connect(m_versionDialog, SIGNAL(finished(int)),
-                this, SLOT(destroyVersionDialog()));
-    }
-    m_versionDialog->show();
-}
-
-void MainWindow::destroyVersionDialog()
-{
-    if (m_versionDialog) {
-        m_versionDialog->deleteLater();
-        m_versionDialog = 0;
-    }
 }
 
 void MainWindow::aboutPlugins()

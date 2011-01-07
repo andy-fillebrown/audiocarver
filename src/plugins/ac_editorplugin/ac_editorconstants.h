@@ -35,6 +35,9 @@
 namespace AudioCarver {
 namespace Constants {
 
+const char * const G_HELP_ABOUTAUDIOCARVER = PRO_NAME_STR".Group.Help.AboutAudioCarver";
+
+const char * const ABOUTAUDIOCARVER        = PRO_NAME_STR".About"PRO_NAME_STR;
 
 
 } // namespace Constants

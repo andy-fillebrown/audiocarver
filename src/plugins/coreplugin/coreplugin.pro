@@ -68,6 +68,8 @@ SOURCES += \
     dialogs/settingsdialog.cpp \
     dialogs/shortcutsettings.cpp \
     \
+    interfaces/imainwindow.cpp \
+    \
     coreimpl.cpp \
     coreplugin.cpp \
     eventfilteringmainwindow.cpp \

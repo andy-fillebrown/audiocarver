@@ -45,7 +45,6 @@
 #include <QtGui/QTextBrowser>
 
 using namespace Core;
-using namespace Core::Internal;
 using namespace Core::Constants;
 
 VersionDialog::VersionDialog(QWidget *parent)

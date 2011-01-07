@@ -107,9 +107,7 @@ protected:
     virtual void closeEvent(QCloseEvent *event);
 
 private slots:
-    void aboutAudioCarver();
     void aboutPlugins();
-    void destroyVersionDialog();
 
 private:
     void updateContextObject(IContext *context);
@@ -126,7 +124,6 @@ private:
     SettingsDatabase *m_settingsDatabase;
     Internal::ActionManagerPrivate *m_actionManager;
     FileManager *m_fileManager;
-    Internal::VersionDialog *m_versionDialog;
 
     IContext *m_activeContext;
 

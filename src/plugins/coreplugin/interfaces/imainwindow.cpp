@@ -15,28 +15,14 @@
 **
 **************************************************************************/
 
-#ifndef IMAINWINDOW_H
-#define IMAINWINDOW_H
+#include "imainwindow.h"
 
-#include <coreplugin/core_global.h>
+using namespace Core;
 
-#include <QtCore/QObject>
-
-namespace Core {
-
-class CORE_EXPORT IMainWindow : public QObject
+IMainWindow::IMainWindow()
 {
-    Q_OBJECT
+}
 
-public:
-    IMainWindow();
-    virtual ~IMainWindow();
-
-    virtual void initMenuBarGroups(QStringList &groups) const = 0;
-    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const = 0;
-    virtual void initActions() = 0;
-};
-
-} // namespace Core
-
-#endif // IMAINWINDOW_H
+IMainWindow::~IMainWindow()
+{
+}
