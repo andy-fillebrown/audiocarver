@@ -24,36 +24,38 @@ DEPENDPATH += \
     dialogs
 
 HEADERS += \
-	actionmanager/actioncontainer.h \
-	actionmanager/actioncontainer_p.h \
-	actionmanager/actionmanager.h \
-	actionmanager/actionmanager_p.h \
-	actionmanager/command.h \
-	actionmanager/command_p.h \
-	actionmanager/commandmappings.h \
-	actionmanager/commandsfile.h \
-	\
-	dialogs/ioptionspage.h \
-	dialogs/settingsdialog.h \
-	dialogs/shortcutsettings.h \
-	\
-	core_global.h \
-	coreconstants.h \
-	coreimpl.h \
-	coreplugin.h \
-	generalsettings.h \
-	filemanager.h \
-	uniqueidmanager.h \
-	eventfilteringmainwindow.h \
-	findplaceholder.h \
-	icontext.h \
-	icore.h \
-	ifile.h \
-	icorelistener.h \
-	mainwindow.h \
-	plugindialog.h \
-	settingsdatabase.h \
-	versiondialog.h
+    actionmanager/actioncontainer.h \
+    actionmanager/actioncontainer_p.h \
+    actionmanager/actionmanager.h \
+    actionmanager/actionmanager_p.h \
+    actionmanager/command.h \
+    actionmanager/command_p.h \
+    actionmanager/commandmappings.h \
+    actionmanager/commandsfile.h \
+    \
+    dialogs/ioptionspage.h \
+    dialogs/settingsdialog.h \
+    dialogs/shortcutsettings.h \
+    \
+    interfaces/imainwindow.h \
+    \
+    core_global.h \
+    coreconstants.h \
+    coreimpl.h \
+    coreplugin.h \
+    generalsettings.h \
+    filemanager.h \
+    uniqueidmanager.h \
+    eventfilteringmainwindow.h \
+    findplaceholder.h \
+    icontext.h \
+    icore.h \
+    ifile.h \
+    icorelistener.h \
+    mainwindow.h \
+    plugindialog.h \
+    settingsdatabase.h \
+    versiondialog.h
 
 SOURCES += \
     actionmanager/actioncontainer.cpp \
