@@ -113,13 +113,9 @@ void EditorPlugin::newFile()
     qDebug() << Q_FUNC_INFO;
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-
-    // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
         return;
-
-    // Clear database.
     db->clear();
 }
 
@@ -128,23 +124,15 @@ void EditorPlugin::openFile()
     qDebug() << Q_FUNC_INFO;
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-
-    // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
         return;
-
-    // Get filename filter.
     const QString filter = db->fileFilter();
-
-    // Get filename from user.
     QString filename = QFileDialog::getOpenFileName(
                 Core::ICore::instance()->mainWindow()->centralWidget(), "", "",
                 tr(qPrintable(filter)));
     if (!QFile::exists(filename))
         return;
-
-    // Read file into database.
     db->read(filename);
 }
 
@@ -153,13 +141,9 @@ void EditorPlugin::saveFile()
     qDebug() << Q_FUNC_INFO;
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-
-    // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
         return;
-
-    // Write database using current filename.
     db->write(db->fileName());
 }
 
@@ -168,27 +152,17 @@ void EditorPlugin::saveFileAs()
     qDebug() << Q_FUNC_INFO;
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-
-    // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
         return;
-
-    // Get filename filter.
     const QString filter = db->fileFilter();
-
-    // Get filename from user.
     QString filename = QFileDialog::getSaveFileName(
                 Core::ICore::instance()->mainWindow()->centralWidget(), "", "",
                 tr(qPrintable(filter)));
     if (filename.isEmpty())
         return;
-
-    // Add file extension if missing.
     if (!filename.endsWith(db->fileExtension()))
         filename.append(db->fileExtension());
-
-    // Write database using filename chosen by user.
     db->write(filename);
 }
 
