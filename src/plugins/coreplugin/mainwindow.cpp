@@ -28,6 +28,9 @@
 **************************************************************************/
 
 #include "mainwindow.h"
+
+#include "interfaces/imainwindow.h"
+
 #include "actioncontainer.h"
 #include "command.h"
 #include "actionmanager_p.h"
@@ -98,9 +101,6 @@ MainWindow::MainWindow()
     QCoreApplication::setApplicationVersion(QLatin1String(Core::Constants::PRO_VERSION_LONG));
     QCoreApplication::setOrganizationName(QLatin1String(Constants::PRO_AUTHOR));
     QSettings::setDefaultFormat(QSettings::IniFormat);
-
-    registerDefaultContainers();
-    registerDefaultActions();
 }
 
 MainWindow::~MainWindow()
@@ -175,57 +175,99 @@ IContext *MainWindow::currentContextObject() const
     return m_activeContext;
 }
 
-void MainWindow::registerDefaultContainers()
+void MainWindow::registerContainers()
 {
+    QStringList menuBarGroups;
+    menuBarGroups
+            << Constants::G_FILE
+            << Constants::G_TOOLS
+            << Constants::G_WINDOW
+            << Constants::G_HELP;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    QList<IMainWindow *> mwlist = pm->getObjects<IMainWindow>();
+    foreach (IMainWindow *mw, mwlist)
+        mw->initMenuBarGroups(menuBarGroups);
+
     ActionManagerPrivate *am = m_actionManager;
     ActionContainer *menubar = am->createMenuBar(Constants::MENU_BAR);
-    {
 #   ifndef Q_WS_MAC // System menu bar on Mac
-        setMenuBar(menubar->menuBar());
-#   endif
+    {   setMenuBar(menubar->menuBar());
     }
-    menubar->appendGroup(Constants::G_FILE);
-    menubar->appendGroup(Constants::G_EDIT);
-    menubar->appendGroup(Constants::G_VIEW);
-    menubar->appendGroup(Constants::G_TOOLS);
-    menubar->appendGroup(Constants::G_WINDOW);
-    menubar->appendGroup(Constants::G_HELP);
+#   endif
+    foreach (const QString &menuBarGroup, menuBarGroups) {
+        menubar->appendGroup(menuBarGroup);
+        QString id;
+        QString title;
+        QStringList groups;
+        foreach (IMainWindow *mw, mwlist)
+            mw->initMenuGroups(menuBarGroup, id, title, groups);
+        if (menuBarGroup == Constants::G_FILE) {
+            id = Constants::M_FILE;
+            title = tr("&File");
+            groups.append(Constants::G_FILE_OTHER);
+        } else if (menuBarGroup == Constants::G_TOOLS) {
+            id = Constants::M_TOOLS;
+            title = tr("&Tools");
+        } else if (menuBarGroup == Constants::G_WINDOW) {
+            id = Constants::M_WINDOW;
+            title = tr("&Window");
+            groups  << Constants::G_WINDOW_SIZE
+                    << Constants::G_WINDOW_OTHER;
+        } else if (menuBarGroup == Constants::G_HELP) {
+            id = Constants::M_HELP;
+            title = tr("&Help");
+            groups  << Constants::G_HELP_ABOUT;
+        }
+        ActionContainer *menu = am->createMenu(id);
+        menubar->addMenu(menu, menuBarGroup);
+        menu->menu()->setTitle(title);
+        foreach (const QString &group, groups)
+            menu->appendGroup(group);
+    }
 
-    // File Menu
-    ActionContainer *filemenu = am->createMenu(Constants::M_FILE);
-    menubar->addMenu(filemenu, Constants::G_FILE);
-    filemenu->menu()->setTitle(tr("&File"));
-    filemenu->appendGroup(Constants::G_FILE_NEW);
-    filemenu->appendGroup(Constants::G_FILE_OPEN);
-    filemenu->appendGroup(Constants::G_FILE_SAVE);
-    filemenu->appendGroup(Constants::G_FILE_OTHER);
+//    menubar->appendGroup(Constants::G_FILE);
+//    menubar->appendGroup(Constants::G_EDIT);
+//    menubar->appendGroup(Constants::G_VIEW);
+//    menubar->appendGroup(Constants::G_TOOLS);
+//    menubar->appendGroup(Constants::G_WINDOW);
+//    menubar->appendGroup(Constants::G_HELP);
 
-    // Edit Menu
-    ActionContainer *medit = am->createMenu(Constants::M_EDIT);
-    menubar->addMenu(medit, Constants::G_EDIT);
-    medit->menu()->setTitle(tr("&Edit"));
-    medit->appendGroup(Constants::G_EDIT_UNDOREDO);
-    medit->appendGroup(Constants::G_EDIT_COPYPASTE);
-    medit->appendGroup(Constants::G_EDIT_SELECTALL);
-    medit->appendGroup(Constants::G_EDIT_OTHER);
+//    // File Menu
+//    ActionContainer *filemenu = am->createMenu(Constants::M_FILE);
+//    menubar->addMenu(filemenu, Constants::G_FILE);
+//    filemenu->menu()->setTitle(tr("&File"));
+//    filemenu->appendGroup(Constants::G_FILE_NEW);
+//    filemenu->appendGroup(Constants::G_FILE_OPEN);
+//    filemenu->appendGroup(Constants::G_FILE_SAVE);
+//    filemenu->appendGroup(Constants::G_FILE_OTHER);
 
-    // Tools Menu
-    ActionContainer *ac = am->createMenu(Constants::M_TOOLS);
-    menubar->addMenu(ac, Constants::G_TOOLS);
-    ac->menu()->setTitle(tr("&Tools"));
+//    // Edit Menu
+//    ActionContainer *medit = am->createMenu(Constants::M_EDIT);
+//    menubar->addMenu(medit, Constants::G_EDIT);
+//    medit->menu()->setTitle(tr("&Edit"));
+//    medit->appendGroup(Constants::G_EDIT_UNDOREDO);
+//    medit->appendGroup(Constants::G_EDIT_COPYPASTE);
+//    medit->appendGroup(Constants::G_EDIT_SELECTALL);
+//    medit->appendGroup(Constants::G_EDIT_OTHER);
 
-    // Window Menu
-    ActionContainer *mwindow = am->createMenu(Constants::M_WINDOW);
-    menubar->addMenu(mwindow, Constants::G_WINDOW);
-    mwindow->menu()->setTitle(tr("&Window"));
-    mwindow->appendGroup(Constants::G_WINDOW_SIZE);
-    mwindow->appendGroup(Constants::G_WINDOW_OTHER);
+//    // Tools Menu
+//    ActionContainer *ac = am->createMenu(Constants::M_TOOLS);
+//    menubar->addMenu(ac, Constants::G_TOOLS);
+//    ac->menu()->setTitle(tr("&Tools"));
 
-    // Help Menu
-    ac = am->createMenu(Constants::M_HELP);
-    menubar->addMenu(ac, Constants::G_HELP);
-    ac->menu()->setTitle(tr("&Help"));
-    ac->appendGroup(Constants::G_HELP_ABOUT);
+//    // Window Menu
+//    ActionContainer *mwindow = am->createMenu(Constants::M_WINDOW);
+//    menubar->addMenu(mwindow, Constants::G_WINDOW);
+//    mwindow->menu()->setTitle(tr("&Window"));
+//    mwindow->appendGroup(Constants::G_WINDOW_SIZE);
+//    mwindow->appendGroup(Constants::G_WINDOW_OTHER);
+
+//    // Help Menu
+//    ac = am->createMenu(Constants::M_HELP);
+//    menubar->addMenu(ac, Constants::G_HELP);
+//    ac->menu()->setTitle(tr("&Help"));
+//    ac->appendGroup(Constants::G_HELP_ABOUT);
 }
 
 static Command *createSeparator(ActionManager *am, QObject *parent,
@@ -238,11 +280,11 @@ static Command *createSeparator(ActionManager *am, QObject *parent,
     return cmd;
 }
 
-void MainWindow::registerDefaultActions()
+void MainWindow::registerActions()
 {
     ActionManagerPrivate *am = m_actionManager;
     ActionContainer *mfile = am->actionContainer(Constants::M_FILE);
-    ActionContainer *medit = am->actionContainer(Constants::M_EDIT);
+//    ActionContainer *medit = am->actionContainer(Constants::M_EDIT);
     ActionContainer *mtools = am->actionContainer(Constants::M_TOOLS);
     ActionContainer *mwindow = am->actionContainer(Constants::M_WINDOW);
     ActionContainer *mhelp = am->actionContainer(Constants::M_HELP);
@@ -253,12 +295,12 @@ void MainWindow::registerDefaultActions()
     Command *cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".File.Sep.Other"), globalContext);
     mfile->addAction(cmd, Constants::G_FILE_OTHER);
 
-    // Edit menu separators
-    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.CopyPaste"), globalContext);
-    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
+//    // Edit menu separators
+//    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.CopyPaste"), globalContext);
+//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
 
-    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.SelectAll"), globalContext);
-    medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
+//    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.SelectAll"), globalContext);
+//    medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
 
     // Tools menu separators
     cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Tools.Sep.Options"), globalContext);
@@ -272,57 +314,59 @@ void MainWindow::registerDefaultActions()
     mfile->addAction(cmd, Constants::G_FILE_OTHER);
     connect(m_exitAction, SIGNAL(triggered()), this, SLOT(exit()));
 
-    // Undo Action
-    icon = QIcon::fromTheme(QLatin1String("edit-undo"), QIcon(Constants::ICON_UNDO));
-    QAction *tmpaction = new QAction(icon, tr("&Undo"), this);
-    cmd = am->registerAction(tmpaction, Constants::UNDO, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::Undo);
-    cmd->setAttribute(Command::CA_UpdateText);
-    cmd->setDefaultText(tr("&Undo"));
-    medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
-//    tmpaction->setEnabled(false);
+    QAction *tmpaction = 0;
 
-    // Redo Action
-    icon = QIcon::fromTheme(QLatin1String("edit-redo"), QIcon(Constants::ICON_REDO));
-    tmpaction = new QAction(icon, tr("&Redo"), this);
-    cmd = am->registerAction(tmpaction, Constants::REDO, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::Redo);
-    cmd->setAttribute(Command::CA_UpdateText);
-    cmd->setDefaultText(tr("&Redo"));
-    medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
-//    tmpaction->setEnabled(false);
+//    // Undo Action
+//    icon = QIcon::fromTheme(QLatin1String("edit-undo"), QIcon(Constants::ICON_UNDO));
+//    tmpaction = new QAction(icon, tr("&Undo"), this);
+//    cmd = am->registerAction(tmpaction, Constants::UNDO, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::Undo);
+//    cmd->setAttribute(Command::CA_UpdateText);
+//    cmd->setDefaultText(tr("&Undo"));
+//    medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
+////    tmpaction->setEnabled(false);
 
-    // Cut Action
-    icon = QIcon::fromTheme(QLatin1String("edit-cut"), QIcon(Constants::ICON_CUT));
-    tmpaction = new QAction(icon, tr("Cu&t"), this);
-    cmd = am->registerAction(tmpaction, Constants::CUT, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::Cut);
-    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-//    tmpaction->setEnabled(false);
+//    // Redo Action
+//    icon = QIcon::fromTheme(QLatin1String("edit-redo"), QIcon(Constants::ICON_REDO));
+//    tmpaction = new QAction(icon, tr("&Redo"), this);
+//    cmd = am->registerAction(tmpaction, Constants::REDO, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::Redo);
+//    cmd->setAttribute(Command::CA_UpdateText);
+//    cmd->setDefaultText(tr("&Redo"));
+//    medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
+////    tmpaction->setEnabled(false);
 
-    // Copy Action
-    icon = QIcon::fromTheme(QLatin1String("edit-copy"), QIcon(Constants::ICON_COPY));
-    tmpaction = new QAction(icon, tr("&Copy"), this);
-    cmd = am->registerAction(tmpaction, Constants::COPY, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::Copy);
-    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-//    tmpaction->setEnabled(false);
+//    // Cut Action
+//    icon = QIcon::fromTheme(QLatin1String("edit-cut"), QIcon(Constants::ICON_CUT));
+//    tmpaction = new QAction(icon, tr("Cu&t"), this);
+//    cmd = am->registerAction(tmpaction, Constants::CUT, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::Cut);
+//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
+////    tmpaction->setEnabled(false);
 
-    // Paste Action
-    icon = QIcon::fromTheme(QLatin1String("edit-paste"), QIcon(Constants::ICON_PASTE));
-    tmpaction = new QAction(icon, tr("&Paste"), this);
-    cmd = am->registerAction(tmpaction, Constants::PASTE, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::Paste);
-    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-//    tmpaction->setEnabled(false);
+//    // Copy Action
+//    icon = QIcon::fromTheme(QLatin1String("edit-copy"), QIcon(Constants::ICON_COPY));
+//    tmpaction = new QAction(icon, tr("&Copy"), this);
+//    cmd = am->registerAction(tmpaction, Constants::COPY, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::Copy);
+//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
+////    tmpaction->setEnabled(false);
 
-    // Select All
-    icon = QIcon::fromTheme(QLatin1String("edit-select-all"));
-    tmpaction = new QAction(icon, tr("&Select All"), this);
-    cmd = am->registerAction(tmpaction, Constants::SELECTALL, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::SelectAll);
-    medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
-//    tmpaction->setEnabled(false);
+//    // Paste Action
+//    icon = QIcon::fromTheme(QLatin1String("edit-paste"), QIcon(Constants::ICON_PASTE));
+//    tmpaction = new QAction(icon, tr("&Paste"), this);
+//    cmd = am->registerAction(tmpaction, Constants::PASTE, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::Paste);
+//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
+////    tmpaction->setEnabled(false);
+
+//    // Select All
+//    icon = QIcon::fromTheme(QLatin1String("edit-select-all"));
+//    tmpaction = new QAction(icon, tr("&Select All"), this);
+//    cmd = am->registerAction(tmpaction, Constants::SELECTALL, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::SelectAll);
+//    medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
+////    tmpaction->setEnabled(false);
 
     // Options Action
     m_optionsAction = new QAction(tr("&Options..."), this);
@@ -336,8 +380,8 @@ void MainWindow::registerDefaultActions()
     mtools->addAction(cmd, Constants::G_DEFAULT_THREE);
     connect(m_optionsAction, SIGNAL(triggered()), this, SLOT(showOptionsDialog()));
 
-    {
 #   ifdef Q_WS_MAC
+    {
         // Minimize Action
         m_minimizeAction = new QAction(tr("Minimize"), this);
         cmd = am->registerAction(m_minimizeAction, Constants::MINIMIZE_WINDOW, globalContext);
@@ -354,11 +398,9 @@ void MainWindow::registerDefaultActions()
         // Window separator
         cmd = createSeparator(am, this, QLatin1String("SuperConductor.Window.Sep.Size"), globalContext);
         mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
-#   endif
     }
-
+#   else
     {
-#   ifndef Q_WS_MAC
         // Full Screen Action
         m_toggleFullScreenAction = new QAction(tr("Full Screen"), this);
         m_toggleFullScreenAction->setCheckable(true);
@@ -366,8 +408,8 @@ void MainWindow::registerDefaultActions()
         cmd->setDefaultKeySequence(QKeySequence("Ctrl+Shift+F11"));
         mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
         connect(m_toggleFullScreenAction, SIGNAL(triggered(bool)), this, SLOT(setFullScreen(bool)));
-#   endif
     }
+#   endif
 
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));

@@ -17,22 +17,24 @@
 
 #include "editorplugin.h"
 
+#include "implementations/mainwindow.h"
+
 #include "interfaces/ieditor.h"
 
 #include "editorconstants.h"
 
-#include <extensionsystem/pluginmanager.h>
+#include <coreplugin/actionmanager/actioncontainer.h>
+#include <coreplugin/actionmanager/actionmanager.h>
+#include <coreplugin/actionmanager/command.h>
 
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
 
-#include <coreplugin/actionmanager/actioncontainer.h>
-#include <coreplugin/actionmanager/actionmanager.h>
-#include <coreplugin/actionmanager/command.h>
-
 #include <databaseplugin/interfaces/idatabase.h>
+
+#include <extensionsystem/pluginmanager.h>
 
 #include <QtCore/QDebug>
 #include <QtCore/QtPlugin>
@@ -61,52 +63,57 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void EditorPlugin::extensionsInitialized()
 {
-    Core::ActionManager *am = Core::ICore::instance()->actionManager();
-    Core::Context globalContext(Core::Constants::C_GLOBAL);
+    Core::ICore *core = Core::ICore::instance();
+    Core::MainWindow *mw = core->mainWindow();
+    mw->registerContainers();
+    mw->registerActions();
 
-    QIcon icon;
-    QAction *action = 0;
-    Core::Command *cmd = 0;
+//    Core::ActionManager *am = Core::ICore::instance()->actionManager();
+//    Core::Context globalContext(Core::Constants::C_GLOBAL);
 
-    Core::ActionContainer *fileMenu = am->actionContainer(Core::Constants::M_FILE);
+//    QIcon icon;
+//    QAction *action = 0;
+//    Core::Command *cmd = 0;
 
-    icon = QIcon::fromTheme(QLatin1String("document-new"), QIcon(Constants::ICON_NEW));
-    action = new QAction(icon, tr("&New"), this);
-    cmd = am->registerAction(action, Constants::NEW, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::New);
-    fileMenu->addAction(cmd, Core::Constants::G_FILE_NEW);
-    connect(action, SIGNAL(triggered()), SLOT(newFile()));
+//    Core::ActionContainer *fileMenu = am->actionContainer(Core::Constants::M_FILE);
 
-    icon = QIcon::fromTheme(QLatin1String("document-open"), QIcon(Constants::ICON_OPEN));
-    action = new QAction(icon, tr("&Open"), this);
-    cmd = am->registerAction(action, Constants::OPEN, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::Open);
-    fileMenu->addAction(cmd, Core::Constants::G_FILE_OPEN);
-    connect(action, SIGNAL(triggered()), SLOT(openFile()));
+//    icon = QIcon::fromTheme(QLatin1String("document-new"), QIcon(Constants::ICON_NEW));
+//    action = new QAction(icon, tr("&New"), this);
+//    cmd = am->registerAction(action, Constants::NEW, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::New);
+//    fileMenu->addAction(cmd, Core::Constants::G_FILE_NEW);
+//    connect(action, SIGNAL(triggered()), SLOT(newFile()));
 
-    action = new QAction(this);
-    action->setSeparator(true);
-    cmd = am->registerAction(action, PRO_NAME_STR".File.Sep.Save", globalContext);
-    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
+//    icon = QIcon::fromTheme(QLatin1String("document-open"), QIcon(Constants::ICON_OPEN));
+//    action = new QAction(icon, tr("&Open"), this);
+//    cmd = am->registerAction(action, Constants::OPEN, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::Open);
+//    fileMenu->addAction(cmd, Core::Constants::G_FILE_OPEN);
+//    connect(action, SIGNAL(triggered()), SLOT(openFile()));
 
-    icon = QIcon::fromTheme(QLatin1String("document-save"), QIcon(Constants::ICON_SAVE));
-    action = new QAction(icon, tr("&Save"), this);
-    cmd = am->registerAction(action, Constants::SAVE, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence::Save);
-    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
-    connect(action, SIGNAL(triggered()), SLOT(saveFile()));
+//    action = new QAction(this);
+//    action->setSeparator(true);
+//    cmd = am->registerAction(action, PRO_NAME_STR".File.Sep.Save", globalContext);
+//    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
 
-    action = new QAction(tr("Save &As"), this);
-    cmd = am->registerAction(action, Constants::SAVEAS, globalContext);
-    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
-    connect(action, SIGNAL(triggered()), SLOT(saveFileAs()));
+//    icon = QIcon::fromTheme(QLatin1String("document-save"), QIcon(Constants::ICON_SAVE));
+//    action = new QAction(icon, tr("&Save"), this);
+//    cmd = am->registerAction(action, Constants::SAVE, globalContext);
+//    cmd->setDefaultKeySequence(QKeySequence::Save);
+//    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
+//    connect(action, SIGNAL(triggered()), SLOT(saveFile()));
 
-    connect(am->command(Core::Constants::UNDO)->action(), SIGNAL(triggered()), SLOT(undo()));
-    connect(am->command(Core::Constants::REDO)->action(), SIGNAL(triggered()), SLOT(redo()));
-    connect(am->command(Core::Constants::CUT)->action(), SIGNAL(triggered()), SLOT(cut()));
-    connect(am->command(Core::Constants::COPY)->action(), SIGNAL(triggered()), SLOT(copy()));
-    connect(am->command(Core::Constants::PASTE)->action(), SIGNAL(triggered()), SLOT(paste()));
-    connect(am->command(Core::Constants::SELECTALL)->action(), SIGNAL(triggered()), SLOT(selectAll()));
+//    action = new QAction(tr("Save &As"), this);
+//    cmd = am->registerAction(action, Constants::SAVEAS, globalContext);
+//    fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
+//    connect(action, SIGNAL(triggered()), SLOT(saveFileAs()));
+
+//    connect(am->command(Core::Constants::UNDO)->action(), SIGNAL(triggered()), SLOT(undo()));
+//    connect(am->command(Core::Constants::REDO)->action(), SIGNAL(triggered()), SLOT(redo()));
+//    connect(am->command(Core::Constants::CUT)->action(), SIGNAL(triggered()), SLOT(cut()));
+//    connect(am->command(Core::Constants::COPY)->action(), SIGNAL(triggered()), SLOT(copy()));
+//    connect(am->command(Core::Constants::PASTE)->action(), SIGNAL(triggered()), SLOT(paste()));
+//    connect(am->command(Core::Constants::SELECTALL)->action(), SIGNAL(triggered()), SLOT(selectAll()));
 }
 
 void EditorPlugin::newFile()

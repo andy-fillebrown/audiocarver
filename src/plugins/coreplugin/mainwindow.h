@@ -70,6 +70,8 @@ public:
     ~MainWindow();
 
     bool init(QString *errorMessage);
+    void registerContainers();
+    void registerActions();
     void extensionsInitialized();
     void aboutToShutdown();
 
@@ -84,7 +86,7 @@ public:
 
     QSettings *settings(QSettings::Scope scope) const;
     inline SettingsDatabase *settingsDatabase() const { return m_settingsDatabase; }
-    IContext * currentContextObject() const;
+    IContext *currentContextObject() const;
 
     void updateAdditionalContexts(const Context &remove, const Context &add);
     bool hasContext(int context) const;
@@ -112,9 +114,6 @@ private slots:
 private:
     void updateContextObject(IContext *context);
     void updateContext();
-
-    void registerDefaultContainers();
-    void registerDefaultActions();
 
     void readSettings();
     void writeSettings();
