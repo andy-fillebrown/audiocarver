@@ -39,6 +39,13 @@ public slots:
     virtual void openFile();
     virtual void saveFile();
     virtual void saveFileAs();
+
+    void undo();
+    void redo();
+    void cut();
+    void copy();
+    void paste();
+    void selectAll();
 };
 
 } // namespace Internal

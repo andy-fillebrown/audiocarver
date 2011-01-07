@@ -17,6 +17,8 @@
 
 #include "editorplugin.h"
 
+#include "interfaces/ieditor.h"
+
 #include "editorconstants.h"
 
 #include <extensionsystem/pluginmanager.h>
@@ -97,6 +99,13 @@ void EditorPlugin::extensionsInitialized()
     cmd = am->registerAction(action, Constants::SAVEAS, globalContext);
     fileMenu->addAction(cmd, Core::Constants::G_FILE_SAVE);
     connect(action, SIGNAL(triggered()), SLOT(saveFileAs()));
+
+    connect(am->command(Core::Constants::UNDO)->action(), SIGNAL(triggered()), SLOT(undo()));
+    connect(am->command(Core::Constants::REDO)->action(), SIGNAL(triggered()), SLOT(redo()));
+    connect(am->command(Core::Constants::CUT)->action(), SIGNAL(triggered()), SLOT(cut()));
+    connect(am->command(Core::Constants::COPY)->action(), SIGNAL(triggered()), SLOT(copy()));
+    connect(am->command(Core::Constants::PASTE)->action(), SIGNAL(triggered()), SLOT(paste()));
+    connect(am->command(Core::Constants::SELECTALL)->action(), SIGNAL(triggered()), SLOT(selectAll()));
 }
 
 void EditorPlugin::newFile()
@@ -185,6 +194,72 @@ void EditorPlugin::saveFileAs()
 
     // Write database using filename chosen by user.
     db->write(filename);
+}
+
+void EditorPlugin::undo()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
+    if (!ed)
+        return;
+    ed->undo();
+}
+
+void EditorPlugin::redo()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
+    if (!ed)
+        return;
+    ed->redo();
+}
+
+void EditorPlugin::cut()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
+    if (!ed)
+        return;
+    ed->cut();
+}
+
+void EditorPlugin::copy()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
+    if (!ed)
+        return;
+    ed->copy();
+}
+
+void EditorPlugin::paste()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
+    if (!ed)
+        return;
+    ed->paste();
+}
+
+void EditorPlugin::selectAll()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
+    if (!ed)
+        return;
+    ed->selectAll();
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin)
