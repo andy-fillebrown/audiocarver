@@ -15,35 +15,26 @@
 **
 **************************************************************************/
 
-#include "ac_editorplugin.h"
+#ifndef AC_MAINWINDOW_H
+#define AC_MAINWINDOW_H
 
-#include "implementations/editor.h"
-#include "implementations/mainwindow.h"
+#include <coreplugin/interfaces/imainwindow.h>
 
-#include <QtCore/QtPlugin>
+namespace AudioCarver {
+namespace Internal {
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
-
-EditorPlugin::EditorPlugin()
+class MainWindowImpl : public Core::IMainWindow
 {
-}
+public:
+    MainWindowImpl();
+    virtual ~MainWindowImpl();
 
-EditorPlugin::~EditorPlugin()
-{
-}
+    virtual void initMenuBarGroups(QStringList &groups) const;
+    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    virtual void initActions();
+};
 
-bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new EditorImpl);
-    addAutoReleasedObject(new MainWindowImpl);
-    return true;
-}
+} // namespace Internal
+} // namespace AudioCarver
 
-void EditorPlugin::extensionsInitialized()
-{
-}
-
-Q_EXPORT_PLUGIN(EditorPlugin)
+#endif // AC_MAINWINDOW_H
