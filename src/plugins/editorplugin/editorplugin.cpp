@@ -116,7 +116,6 @@ void EditorPlugin::newFile()
 
     // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    Q_ASSERT(db);
     if (!db)
         return;
 
@@ -132,7 +131,6 @@ void EditorPlugin::openFile()
 
     // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    Q_ASSERT(db);
     if (!db)
         return;
 
@@ -158,7 +156,6 @@ void EditorPlugin::saveFile()
 
     // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    Q_ASSERT(db);
     if (!db)
         return;
 
@@ -174,7 +171,6 @@ void EditorPlugin::saveFileAs()
 
     // Get database.
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    Q_ASSERT(db);
     if (!db)
         return;
 
