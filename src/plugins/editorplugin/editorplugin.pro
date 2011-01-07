@@ -8,9 +8,11 @@ include(editorplugin_dependencies.pri)
 DEFINES += EDITOR_LIBRARY
 
 HEADERS += \
-	editor_global.h \
-	editorconstants.h \
-	editorplugin.h
+    interfaces/ieditor.h \
+    \
+    editor_global.h \
+    editorconstants.h \
+    editorplugin.h
 
 SOURCES += \
     editorplugin.cpp
