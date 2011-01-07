@@ -38,12 +38,12 @@ bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMess
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+    addAutoReleasedObject(new DatabaseImpl);
     return true;
 }
 
 void DatabasePlugin::extensionsInitialized()
 {
-    addAutoReleasedObject(new DatabaseImpl);
 }
 
 Q_EXPORT_PLUGIN(DatabasePlugin)

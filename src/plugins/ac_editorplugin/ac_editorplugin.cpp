@@ -36,12 +36,12 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+    addAutoReleasedObject(new EditorImpl);
     return true;
 }
 
 void EditorPlugin::extensionsInitialized()
 {
-    addAutoReleasedObject(new EditorImpl);
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin)
