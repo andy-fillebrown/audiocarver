@@ -280,7 +280,7 @@ void MainWindow::registerDefaultActions()
     cmd->setAttribute(Command::CA_UpdateText);
     cmd->setDefaultText(tr("&Undo"));
     medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
-    tmpaction->setEnabled(false);
+//    tmpaction->setEnabled(false);
 
     // Redo Action
     icon = QIcon::fromTheme(QLatin1String("edit-redo"), QIcon(Constants::ICON_REDO));
@@ -290,7 +290,7 @@ void MainWindow::registerDefaultActions()
     cmd->setAttribute(Command::CA_UpdateText);
     cmd->setDefaultText(tr("&Redo"));
     medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
-    tmpaction->setEnabled(false);
+//    tmpaction->setEnabled(false);
 
     // Cut Action
     icon = QIcon::fromTheme(QLatin1String("edit-cut"), QIcon(Constants::ICON_CUT));
@@ -298,7 +298,7 @@ void MainWindow::registerDefaultActions()
     cmd = am->registerAction(tmpaction, Constants::CUT, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Cut);
     medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-    tmpaction->setEnabled(false);
+//    tmpaction->setEnabled(false);
 
     // Copy Action
     icon = QIcon::fromTheme(QLatin1String("edit-copy"), QIcon(Constants::ICON_COPY));
@@ -306,7 +306,7 @@ void MainWindow::registerDefaultActions()
     cmd = am->registerAction(tmpaction, Constants::COPY, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Copy);
     medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-    tmpaction->setEnabled(false);
+//    tmpaction->setEnabled(false);
 
     // Paste Action
     icon = QIcon::fromTheme(QLatin1String("edit-paste"), QIcon(Constants::ICON_PASTE));
@@ -314,7 +314,7 @@ void MainWindow::registerDefaultActions()
     cmd = am->registerAction(tmpaction, Constants::PASTE, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Paste);
     medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-    tmpaction->setEnabled(false);
+//    tmpaction->setEnabled(false);
 
     // Select All
     icon = QIcon::fromTheme(QLatin1String("edit-select-all"));
@@ -322,7 +322,7 @@ void MainWindow::registerDefaultActions()
     cmd = am->registerAction(tmpaction, Constants::SELECTALL, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::SelectAll);
     medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
-    tmpaction->setEnabled(false);
+//    tmpaction->setEnabled(false);
 
     // Options Action
     m_optionsAction = new QAction(tr("&Options..."), this);
