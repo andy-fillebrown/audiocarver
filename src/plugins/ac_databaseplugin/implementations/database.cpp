@@ -20,21 +20,12 @@
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
-DatabaseImpl *s_instance = 0;
-
-Database::IDatabase *DatabaseImpl::instance()
-{
-    return s_instance;
-}
-
 DatabaseImpl::DatabaseImpl()
 {
-    s_instance = this;
 }
 
 DatabaseImpl::~DatabaseImpl()
 {
-    s_instance = 0;
 }
 
 const QString &DatabaseImpl::fileExtension() const

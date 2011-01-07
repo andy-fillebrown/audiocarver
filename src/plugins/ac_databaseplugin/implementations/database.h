@@ -29,8 +29,6 @@ public:
     DatabaseImpl();
     virtual ~DatabaseImpl();
 
-    static Database::IDatabase *instance();
-
     virtual const QString &fileExtension() const;
     virtual const QString &fileFilter() const;
 
