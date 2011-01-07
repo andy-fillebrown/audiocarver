@@ -33,19 +33,6 @@ public:
 
     virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     virtual void extensionsInitialized();
-
-public slots:
-    void newFile();
-    void openFile();
-    void saveFile();
-    void saveFileAs();
-
-    void undo();
-    void redo();
-    void cut();
-    void copy();
-    void paste();
-    void selectAll();
 };
 
 } // namespace Internal

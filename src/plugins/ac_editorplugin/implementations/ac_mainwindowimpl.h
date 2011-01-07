@@ -15,29 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITOR_H
-#define AC_EDITOR_H
+#ifndef AC_MAINWINDOWIMPL_H
+#define AC_MAINWINDOWIMPL_H
 
-#include <editorplugin/interfaces/ieditor.h>
+#include <coreplugin/interfaces/imainwindow.h>
 
 namespace AudioCarver {
 namespace Internal {
 
-class EditorImpl : public Editor::IEditor
+class MainWindowImpl : public Core::IMainWindow
 {
 public:
-    EditorImpl();
-    virtual ~EditorImpl();
+    MainWindowImpl();
+    virtual ~MainWindowImpl();
 
-    virtual void undo();
-    virtual void redo();
-    virtual void cut();
-    virtual void copy() const;
-    virtual void paste();
-    virtual void selectAll();
+    virtual void initMenuBarGroups(QStringList &groups) const;
+    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    virtual void initActions();
 };
 
 } // namespace Internal
 } // namespace AudioCarver
 
-#endif // AC_EDITOR_H
+#endif // AC_MAINWINDOWIMPL_H

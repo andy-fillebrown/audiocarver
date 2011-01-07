@@ -17,8 +17,8 @@
 
 #include "ac_editorplugin.h"
 
-#include "implementations/editor.h"
-#include "implementations/mainwindow.h"
+#include "implementations/ac_editorimpl.h"
+#include "implementations/ac_mainwindowimpl.h"
 
 #include <QtCore/QtPlugin>
 

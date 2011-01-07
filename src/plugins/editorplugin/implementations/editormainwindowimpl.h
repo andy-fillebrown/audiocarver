@@ -15,16 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#ifndef EDITORMAINWINDOWIMPL_H
+#define EDITORMAINWINDOWIMPL_H
 
 #include <coreplugin/interfaces/imainwindow.h>
 
-namespace AudioCarver {
+namespace Editor {
 namespace Internal {
 
 class MainWindowImpl : public Core::IMainWindow
 {
+    Q_OBJECT
+
 public:
     MainWindowImpl();
     virtual ~MainWindowImpl();
@@ -32,9 +34,22 @@ public:
     virtual void initMenuBarGroups(QStringList &groups) const;
     virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
     virtual void initActions();
+
+public slots:
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveFileAs();
+
+    void undo();
+    void redo();
+    void cut();
+    void copy();
+    void paste();
+    void selectAll();
 };
 
 } // namespace Internal
-} // namespace AudioCarver
+} // namespace Editor
 
-#endif // AC_MAINWINDOW_H
+#endif // EDITORMAINWINDOWIMPL_H

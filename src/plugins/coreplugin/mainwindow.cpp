@@ -205,7 +205,7 @@ void MainWindow::registerContainers()
         if (menuBarGroup == Constants::G_FILE) {
             id = Constants::M_FILE;
             title = tr("&File");
-            groups.append(Constants::G_FILE_OTHER);
+            groups  << Constants::G_FILE_OTHER;
         } else if (menuBarGroup == Constants::G_TOOLS) {
             id = Constants::M_TOOLS;
             title = tr("&Tools");
@@ -225,49 +225,6 @@ void MainWindow::registerContainers()
         foreach (const QString &group, groups)
             menu->appendGroup(group);
     }
-
-//    menubar->appendGroup(Constants::G_FILE);
-//    menubar->appendGroup(Constants::G_EDIT);
-//    menubar->appendGroup(Constants::G_VIEW);
-//    menubar->appendGroup(Constants::G_TOOLS);
-//    menubar->appendGroup(Constants::G_WINDOW);
-//    menubar->appendGroup(Constants::G_HELP);
-
-//    // File Menu
-//    ActionContainer *filemenu = am->createMenu(Constants::M_FILE);
-//    menubar->addMenu(filemenu, Constants::G_FILE);
-//    filemenu->menu()->setTitle(tr("&File"));
-//    filemenu->appendGroup(Constants::G_FILE_NEW);
-//    filemenu->appendGroup(Constants::G_FILE_OPEN);
-//    filemenu->appendGroup(Constants::G_FILE_SAVE);
-//    filemenu->appendGroup(Constants::G_FILE_OTHER);
-
-//    // Edit Menu
-//    ActionContainer *medit = am->createMenu(Constants::M_EDIT);
-//    menubar->addMenu(medit, Constants::G_EDIT);
-//    medit->menu()->setTitle(tr("&Edit"));
-//    medit->appendGroup(Constants::G_EDIT_UNDOREDO);
-//    medit->appendGroup(Constants::G_EDIT_COPYPASTE);
-//    medit->appendGroup(Constants::G_EDIT_SELECTALL);
-//    medit->appendGroup(Constants::G_EDIT_OTHER);
-
-//    // Tools Menu
-//    ActionContainer *ac = am->createMenu(Constants::M_TOOLS);
-//    menubar->addMenu(ac, Constants::G_TOOLS);
-//    ac->menu()->setTitle(tr("&Tools"));
-
-//    // Window Menu
-//    ActionContainer *mwindow = am->createMenu(Constants::M_WINDOW);
-//    menubar->addMenu(mwindow, Constants::G_WINDOW);
-//    mwindow->menu()->setTitle(tr("&Window"));
-//    mwindow->appendGroup(Constants::G_WINDOW_SIZE);
-//    mwindow->appendGroup(Constants::G_WINDOW_OTHER);
-
-//    // Help Menu
-//    ac = am->createMenu(Constants::M_HELP);
-//    menubar->addMenu(ac, Constants::G_HELP);
-//    ac->menu()->setTitle(tr("&Help"));
-//    ac->appendGroup(Constants::G_HELP_ABOUT);
 }
 
 static Command *createSeparator(ActionManager *am, QObject *parent,
@@ -284,105 +241,45 @@ void MainWindow::registerActions()
 {
     ActionManagerPrivate *am = m_actionManager;
     ActionContainer *mfile = am->actionContainer(Constants::M_FILE);
-//    ActionContainer *medit = am->actionContainer(Constants::M_EDIT);
     ActionContainer *mtools = am->actionContainer(Constants::M_TOOLS);
     ActionContainer *mwindow = am->actionContainer(Constants::M_WINDOW);
     ActionContainer *mhelp = am->actionContainer(Constants::M_HELP);
 
     Context globalContext(Constants::C_GLOBAL);
 
+    QIcon icon;
+    QAction *action = 0;
+    Command *cmd = 0;
+
     // File menu separators
-    Command *cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".File.Sep.Other"), globalContext);
+    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".File.Sep.Other"), globalContext);
     mfile->addAction(cmd, Constants::G_FILE_OTHER);
 
-//    // Edit menu separators
-//    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.CopyPaste"), globalContext);
-//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-
-//    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Edit.Sep.SelectAll"), globalContext);
-//    medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
-
-    // Tools menu separators
-    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Tools.Sep.Options"), globalContext);
-    mtools->addAction(cmd, Constants::G_DEFAULT_THREE);
-
     // Exit Action
-    QIcon icon = QIcon::fromTheme(QLatin1String("application-exit"));
+    icon = QIcon::fromTheme(QLatin1String("application-exit"));
     m_exitAction = new QAction(icon, tr("E&xit"), this);
     cmd = am->registerAction(m_exitAction, Constants::EXIT, globalContext);
     cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Q")));
     mfile->addAction(cmd, Constants::G_FILE_OTHER);
     connect(m_exitAction, SIGNAL(triggered()), this, SLOT(exit()));
 
-    QAction *tmpaction = 0;
-
-//    // Undo Action
-//    icon = QIcon::fromTheme(QLatin1String("edit-undo"), QIcon(Constants::ICON_UNDO));
-//    tmpaction = new QAction(icon, tr("&Undo"), this);
-//    cmd = am->registerAction(tmpaction, Constants::UNDO, globalContext);
-//    cmd->setDefaultKeySequence(QKeySequence::Undo);
-//    cmd->setAttribute(Command::CA_UpdateText);
-//    cmd->setDefaultText(tr("&Undo"));
-//    medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
-////    tmpaction->setEnabled(false);
-
-//    // Redo Action
-//    icon = QIcon::fromTheme(QLatin1String("edit-redo"), QIcon(Constants::ICON_REDO));
-//    tmpaction = new QAction(icon, tr("&Redo"), this);
-//    cmd = am->registerAction(tmpaction, Constants::REDO, globalContext);
-//    cmd->setDefaultKeySequence(QKeySequence::Redo);
-//    cmd->setAttribute(Command::CA_UpdateText);
-//    cmd->setDefaultText(tr("&Redo"));
-//    medit->addAction(cmd, Constants::G_EDIT_UNDOREDO);
-////    tmpaction->setEnabled(false);
-
-//    // Cut Action
-//    icon = QIcon::fromTheme(QLatin1String("edit-cut"), QIcon(Constants::ICON_CUT));
-//    tmpaction = new QAction(icon, tr("Cu&t"), this);
-//    cmd = am->registerAction(tmpaction, Constants::CUT, globalContext);
-//    cmd->setDefaultKeySequence(QKeySequence::Cut);
-//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-////    tmpaction->setEnabled(false);
-
-//    // Copy Action
-//    icon = QIcon::fromTheme(QLatin1String("edit-copy"), QIcon(Constants::ICON_COPY));
-//    tmpaction = new QAction(icon, tr("&Copy"), this);
-//    cmd = am->registerAction(tmpaction, Constants::COPY, globalContext);
-//    cmd->setDefaultKeySequence(QKeySequence::Copy);
-//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-////    tmpaction->setEnabled(false);
-
-//    // Paste Action
-//    icon = QIcon::fromTheme(QLatin1String("edit-paste"), QIcon(Constants::ICON_PASTE));
-//    tmpaction = new QAction(icon, tr("&Paste"), this);
-//    cmd = am->registerAction(tmpaction, Constants::PASTE, globalContext);
-//    cmd->setDefaultKeySequence(QKeySequence::Paste);
-//    medit->addAction(cmd, Constants::G_EDIT_COPYPASTE);
-////    tmpaction->setEnabled(false);
-
-//    // Select All
-//    icon = QIcon::fromTheme(QLatin1String("edit-select-all"));
-//    tmpaction = new QAction(icon, tr("&Select All"), this);
-//    cmd = am->registerAction(tmpaction, Constants::SELECTALL, globalContext);
-//    cmd->setDefaultKeySequence(QKeySequence::SelectAll);
-//    medit->addAction(cmd, Constants::G_EDIT_SELECTALL);
-////    tmpaction->setEnabled(false);
+    // Tools menu separators
+    cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Tools.Sep.Options"), globalContext);
+    mtools->addAction(cmd, Constants::G_DEFAULT_THREE);
 
     // Options Action
     m_optionsAction = new QAction(tr("&Options..."), this);
     cmd = am->registerAction(m_optionsAction, Constants::OPTIONS, globalContext);
-    {
 #   ifdef Q_WS_MAC
-        cmd->setDefaultKeySequence(QKeySequence("Ctrl+,"));
+    {   cmd->setDefaultKeySequence(QKeySequence("Ctrl+,"));
         cmd->action()->setMenuRole(QAction::PreferencesRole);
-#   endif
     }
+#   endif
     mtools->addAction(cmd, Constants::G_DEFAULT_THREE);
     connect(m_optionsAction, SIGNAL(triggered()), this, SLOT(showOptionsDialog()));
 
 #   ifdef Q_WS_MAC
-    {
-        // Minimize Action
+    {   // Minimize Action
         m_minimizeAction = new QAction(tr("Minimize"), this);
         cmd = am->registerAction(m_minimizeAction, Constants::MINIMIZE_WINDOW, globalContext);
         cmd->setDefaultKeySequence(QKeySequence("Ctrl+M"));
@@ -400,8 +297,7 @@ void MainWindow::registerActions()
         mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
     }
 #   else
-    {
-        // Full Screen Action
+    {   // Full Screen Action
         m_toggleFullScreenAction = new QAction(tr("Full Screen"), this);
         m_toggleFullScreenAction->setCheckable(true);
         cmd = am->registerAction(m_toggleFullScreenAction, Constants::TOGGLE_FULLSCREEN, globalContext);
@@ -413,43 +309,45 @@ void MainWindow::registerActions()
 
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
-    {
 #   ifdef Q_WS_MAC
-        tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR), this); // it's convention not to add dots to the about menu
+    {   action = new QAction(icon, tr("About &"PRO_NAME_STR), this); // it's convention not to add dots to the about menu
+    }
 #   else
-        tmpaction = new QAction(icon, tr("About &"PRO_NAME_STR"..."), this);
-#   endif
+    {   action = new QAction(icon, tr("About &"PRO_NAME_STR"..."), this);
     }
-    cmd = am->registerAction(tmpaction, Constants::ABOUT_PROJECT, globalContext);
+#   endif
+    cmd = am->registerAction(action, Constants::ABOUT_PROJECT, globalContext);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
-    tmpaction->setEnabled(true);
-    {
+    action->setEnabled(true);
 #   ifdef Q_WS_MAC
-        cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
-#   endif
+    {   cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
     }
-    connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutAudioCarver()));
+#   endif
+    connect(action, SIGNAL(triggered()), this,  SLOT(aboutAudioCarver()));
 
     // About Plugins Action
-    tmpaction = new QAction(tr("About &Plugins..."), this);
-    cmd = am->registerAction(tmpaction, Constants::ABOUT_PLUGINS, globalContext);
+    action = new QAction(tr("About &Plugins..."), this);
+    cmd = am->registerAction(action, Constants::ABOUT_PLUGINS, globalContext);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
-    tmpaction->setEnabled(true);
-    {
+    action->setEnabled(true);
 #   ifdef Q_WS_MAC
-        cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
-#   endif
+    {   cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
     }
-    connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutPlugins()));
+#   endif
+    connect(action, SIGNAL(triggered()), this,  SLOT(aboutPlugins()));
 
-    {
 #   ifndef Q_WS_MAC // doesn't have the "About" actions in the Help menu
-        tmpaction = new QAction(this);
-        tmpaction->setSeparator(true);
-        cmd = am->registerAction(tmpaction, PRO_NAME_STR".Help.Sep.About", globalContext);
+    {   action = new QAction(this);
+        action->setSeparator(true);
+        cmd = am->registerAction(action, PRO_NAME_STR".Help.Sep.About", globalContext);
         mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
-#   endif
     }
+#   endif
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    QList<IMainWindow *> mwlist = pm->getObjects<IMainWindow>();
+    foreach (IMainWindow *mw, mwlist)
+        mw->initActions();
 }
 
 bool MainWindow::showOptionsDialog(const QString &category,
@@ -536,18 +434,18 @@ void MainWindow::changeEvent(QEvent *e)
             emit windowActivated();
         }
     } else if (e->type() == QEvent::WindowStateChange) {
-        {
 #       ifdef Q_WS_MAC
-            bool minimized = isMinimized();
+        {   bool minimized = isMinimized();
             if (debugMainWindow)
                 qDebug() << "main window state changed to minimized=" << minimized;
             m_minimizeAction->setEnabled(!minimized);
             m_zoomAction->setEnabled(!minimized);
-#       else
-            bool isFullScreen = (windowState() & Qt::WindowFullScreen) != 0;
-            m_toggleFullScreenAction->setChecked(isFullScreen);
-#       endif
         }
+#       else
+        {   bool isFullScreen = (windowState() & Qt::WindowFullScreen) != 0;
+            m_toggleFullScreenAction->setChecked(isFullScreen);
+        }
+#       endif
     }
 }
 

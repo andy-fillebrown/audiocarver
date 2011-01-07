@@ -15,45 +15,27 @@
 **
 **************************************************************************/
 
-#include "editor.h"
+#include "ac_mainwindowimpl.h"
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
-EditorImpl::EditorImpl()
+MainWindowImpl::MainWindowImpl()
 {
 }
 
-EditorImpl::~EditorImpl()
+MainWindowImpl::~MainWindowImpl()
 {
 }
 
-void EditorImpl::undo()
+void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
-void EditorImpl::redo()
+void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &menuId, QString &title, QStringList &groups) const
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
-void EditorImpl::cut()
+void MainWindowImpl::initActions()
 {
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::copy() const
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::paste()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::selectAll()
-{
-    qDebug() << Q_FUNC_INFO;
 }
