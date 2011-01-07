@@ -129,7 +129,7 @@ IContext *CoreImpl::currentContextObject() const
 }
 
 
-QMainWindow *CoreImpl::mainWindow() const
+MainWindow *CoreImpl::mainWindow() const
 {
     return m_mainwindow;
 }

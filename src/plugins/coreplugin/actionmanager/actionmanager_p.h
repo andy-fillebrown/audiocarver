@@ -49,12 +49,12 @@ struct CommandLocation
 
 namespace Core {
 
+class MainWindow;
 class UniqueIDManager;
 
 namespace Internal {
 
 class ActionContainerPrivate;
-class MainWindow;
 class CommandPrivate;
 
 class ActionManagerPrivate : public Core::ActionManager

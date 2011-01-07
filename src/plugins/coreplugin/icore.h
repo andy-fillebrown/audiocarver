@@ -36,7 +36,6 @@
 #include <QtCore/QSettings>
 
 QT_BEGIN_NAMESPACE
-class QMainWindow;
 class QPrinter;
 class QStatusBar;
 template <class T> class QList;
@@ -47,6 +46,7 @@ class ActionManager;
 class Context;
 class FileManager;
 class IContext;
+class MainWindow;
 class SettingsDatabase;
 class UniqueIDManager;
 
@@ -74,7 +74,7 @@ public:
     virtual QString resourcePath() const = 0;
     virtual QString userResourcePath() const = 0;
 
-    virtual QMainWindow *mainWindow() const = 0;
+    virtual MainWindow *mainWindow() const = 0;
 
     virtual IContext *currentContextObject() const = 0;
     // Adds and removes additional active contexts, these contexts are appended

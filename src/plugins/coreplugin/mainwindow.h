@@ -59,7 +59,9 @@ class GeneralSettings;
 class ShortcutSettings;
 class VersionDialog;
 
-class MainWindow : public EventFilteringMainWindow
+} // namespace Internal
+
+class CORE_EXPORT MainWindow : public Internal::EventFilteringMainWindow
 {
     Q_OBJECT
 
@@ -117,22 +119,22 @@ private:
     void readSettings();
     void writeSettings();
 
-    CoreImpl *m_coreImpl;
+    Internal::CoreImpl *m_coreImpl;
     UniqueIDManager *m_uniqueIDManager;
     Context m_additionalContexts;
     QSettings *m_settings;
     QSettings *m_globalSettings;
     SettingsDatabase *m_settingsDatabase;
-    ActionManagerPrivate *m_actionManager;
+    Internal::ActionManagerPrivate *m_actionManager;
     FileManager *m_fileManager;
-    VersionDialog *m_versionDialog;
+    Internal::VersionDialog *m_versionDialog;
 
     IContext *m_activeContext;
 
     QMap<QWidget *, IContext *> m_contextWidgets;
 
-    GeneralSettings *m_generalSettings;
-    ShortcutSettings *m_shortcutSettings;
+    Internal::GeneralSettings *m_generalSettings;
+    Internal::ShortcutSettings *m_shortcutSettings;
 
     // actions
     QAction *m_exitAction;
@@ -144,7 +146,6 @@ private:
 #endif
 };
 
-} // namespace Internal
 } // namespace Core
 
 #endif // MAINWINDOW_H

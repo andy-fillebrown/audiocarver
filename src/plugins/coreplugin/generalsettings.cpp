@@ -35,6 +35,7 @@
 #endif
 
 #include <coreplugin/icore.h>
+#include <coreplugin/mainwindow.h>
 
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>

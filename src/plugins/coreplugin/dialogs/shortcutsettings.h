@@ -41,12 +41,11 @@ QT_END_NAMESPACE
 namespace Core {
 
 class Command;
+class MainWindow;
 
 namespace Internal {
 
 class ActionManagerPrivate;
-class MainWindow;
-
 struct ShortcutItem
 {
     Command *m_cmd;

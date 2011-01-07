@@ -33,8 +33,10 @@
 #include "icore.h"
 
 namespace Core {
-namespace Internal {
+
 class MainWindow;
+
+namespace Internal {
 
 class CoreImpl : public ICore
 {
@@ -60,7 +62,7 @@ public:
 
     IContext *currentContextObject() const;
 
-    QMainWindow *mainWindow() const;
+    MainWindow *mainWindow() const;
 
     // Adds and removes additional active contexts, these contexts are appended
     // to the currently active contexts.
@@ -71,7 +73,7 @@ public:
 
 private:
     MainWindow *m_mainwindow;
-    friend class MainWindow;
+    friend class Core::MainWindow;
 };
 
 } // namespace Internal

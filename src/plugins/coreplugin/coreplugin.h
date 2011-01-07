@@ -33,9 +33,10 @@
 #include <extensionsystem/iplugin.h>
 
 namespace Core {
-namespace Internal {
 
 class MainWindow;
+
+namespace Internal {
 
 class CorePlugin : public ExtensionSystem::IPlugin
 {

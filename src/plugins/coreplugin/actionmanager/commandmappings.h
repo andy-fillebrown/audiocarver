@@ -44,12 +44,11 @@ QT_END_NAMESPACE
 namespace Core {
 
 class Command;
+class MainWindow;
 
 namespace Internal {
 
 class ActionManagerPrivate;
-class MainWindow;
-
 }
 
 class CORE_EXPORT CommandMappings : public Core::IOptionsPage
