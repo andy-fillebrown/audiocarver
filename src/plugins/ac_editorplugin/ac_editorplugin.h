@@ -21,7 +21,6 @@
 #include <extensionsystem/iplugin.h>
 
 namespace AudioCarver {
-namespace Editor {
 namespace Internal {
 
 class EditorPlugin : public ExtensionSystem::IPlugin
@@ -37,7 +36,6 @@ public:
 };
 
 } // namespace Internal
-} // namespace Editor
 } // namespace AudioCarver
 
 #endif // AC_EDITORPLUGIN_H

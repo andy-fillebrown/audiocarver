@@ -20,8 +20,7 @@
 #include <QtCore/QtPlugin>
 
 using namespace AudioCarver;
-using namespace AudioCarver::Editor;
-using namespace AudioCarver::Editor::Internal;
+using namespace AudioCarver::Internal;
 
 EditorPlugin::EditorPlugin()
 {

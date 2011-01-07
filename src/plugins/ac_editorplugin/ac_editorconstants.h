@@ -33,13 +33,11 @@
 #include <coreplugin/coreconstants.h>
 
 namespace AudioCarver {
-namespace Editor {
 namespace Constants {
 
 
 
 } // namespace Constants
-} // namespace Editor
 } // namespace AudioCarver
 
 #endif // AC_EDITORCONSTANTS_H
