@@ -171,7 +171,7 @@ void GeneralSettings::variableHelpDialogCreator(const QString &helpText)
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 void GeneralSettings::showHelpForFileBrowser()
 {
-	variableHelpDialogCreator(Utils::UnixUtils::fileBrowserHelpText());
+    variableHelpDialogCreator(Utils::UnixUtils::fileBrowserHelpText());
 }
 #endif
 
