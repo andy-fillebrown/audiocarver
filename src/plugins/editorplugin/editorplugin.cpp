@@ -26,6 +26,7 @@
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
+#include <coreplugin/mainwindow.h>
 
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
@@ -129,7 +130,7 @@ void EditorPlugin::openFile()
         return;
     const QString filter = db->fileFilter();
     QString filename = QFileDialog::getOpenFileName(
-                Core::ICore::instance()->mainWindow()->centralWidget(), "", "",
+                Core::ICore::instance()->mainWindow(), "", "",
                 tr(qPrintable(filter)));
     if (!QFile::exists(filename))
         return;
@@ -157,7 +158,7 @@ void EditorPlugin::saveFileAs()
         return;
     const QString filter = db->fileFilter();
     QString filename = QFileDialog::getSaveFileName(
-                Core::ICore::instance()->mainWindow()->centralWidget(), "", "",
+                Core::ICore::instance()->mainWindow(), "", "",
                 tr(qPrintable(filter)));
     if (filename.isEmpty())
         return;
