@@ -35,10 +35,10 @@ public:
     virtual void extensionsInitialized();
 
 public slots:
-    virtual void newFile();
-    virtual void openFile();
-    virtual void saveFile();
-    virtual void saveFileAs();
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveFileAs();
 
     void undo();
     void redo();
