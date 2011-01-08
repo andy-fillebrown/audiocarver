@@ -55,9 +55,8 @@ void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QS
 void MainWindowImpl::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
-    Core::Context globalContext(Core::Constants::C_GLOBAL);
-
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
+    Core::Context globalContext(Core::Constants::C_GLOBAL);
 
     QIcon icon;
     QAction *action = 0;
