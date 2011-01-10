@@ -163,7 +163,7 @@ void MainWindowImpl::initActions()
     editMenu->addAction(cmd, Constants::G_EDIT_COPYPASTE);
     connect(action, SIGNAL(triggered()), SLOT(paste()));
 
-    // SelectAll Separator
+    // Select All Separator
     action = new QAction(this);
     action->setSeparator(true);
     cmd = am->registerAction(action, PRO_NAME_STR".Edit.Sep.SelectAll", globalContext);
