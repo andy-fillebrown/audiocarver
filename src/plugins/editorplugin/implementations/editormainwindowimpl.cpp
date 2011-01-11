@@ -180,8 +180,6 @@ void MainWindowImpl::initActions()
 
 void MainWindowImpl::newFile()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
@@ -191,8 +189,6 @@ void MainWindowImpl::newFile()
 
 void MainWindowImpl::openFile()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
@@ -208,8 +204,6 @@ void MainWindowImpl::openFile()
 
 void MainWindowImpl::saveFile()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
@@ -219,8 +213,6 @@ void MainWindowImpl::saveFile()
 
 void MainWindowImpl::saveFileAs()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
@@ -238,8 +230,6 @@ void MainWindowImpl::saveFileAs()
 
 void MainWindowImpl::undo()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
     if (!ed)
@@ -249,8 +239,6 @@ void MainWindowImpl::undo()
 
 void MainWindowImpl::redo()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
     if (!ed)
@@ -260,8 +248,6 @@ void MainWindowImpl::redo()
 
 void MainWindowImpl::cut()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
     if (!ed)
@@ -271,8 +257,6 @@ void MainWindowImpl::cut()
 
 void MainWindowImpl::copy()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
     if (!ed)
@@ -282,8 +266,6 @@ void MainWindowImpl::copy()
 
 void MainWindowImpl::paste()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
     if (!ed)
@@ -293,8 +275,6 @@ void MainWindowImpl::paste()
 
 void MainWindowImpl::selectAll()
 {
-    qDebug() << Q_FUNC_INFO;
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
     if (!ed)

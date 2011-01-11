@@ -35,6 +35,7 @@ public:
     virtual ~IEditor3D();
 
     virtual IViewport3D *currentViewport() const = 0;
+    virtual void setCurrentViewport(IViewport3D *viewport) = 0;
 
     virtual void viewAll() = 0;
     virtual void viewFront() = 0;

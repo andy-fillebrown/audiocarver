@@ -15,37 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_editorplugin.h"
+#ifndef AC_EDITOR_H
+#define AC_EDITOR_H
 
-#include "implementations/ac_mainwindowimpl.h"
-#include "implementations/ac_editor3dimpl.h"
-#include "implementations/ac_editorimpl.h"
+namespace AudioCarver {
+namespace Internal {
 
-#include <QtCore/QtPlugin>
-
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
-
-EditorPlugin::EditorPlugin()
+class Editor
 {
-}
+public:
+    Editor();
+    ~Editor();
 
-EditorPlugin::~EditorPlugin()
-{
-}
+    static Editor *instance();
+};
 
-bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new MainWindowImpl);
-    addAutoReleasedObject(new EditorImpl);
-    addAutoReleasedObject(new Editor3DImpl);
-    return true;
-}
+} // namespace Internal
+} // namespace AudioCarver
 
-void EditorPlugin::extensionsInitialized()
-{
-}
-
-Q_EXPORT_PLUGIN(EditorPlugin)
+#endif // AC_EDITOR_H

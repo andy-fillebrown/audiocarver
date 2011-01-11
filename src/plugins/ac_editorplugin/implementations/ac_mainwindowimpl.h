@@ -53,7 +53,7 @@ private slots:
     void destroyVersionDialog();
 
 private:
-    Core::VersionDialog *m_versionDialog;
+    Core::VersionDialog *_versionDialog;
 };
 
 } // namespace Internal

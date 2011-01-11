@@ -1,2 +1,1 @@
-include(../coreplugin/coreplugin.pri)
-include(../editorplugin/editorplugin.pri)
+include(../editorplugin3d/editorplugin3d.pri)

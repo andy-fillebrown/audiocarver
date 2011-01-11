@@ -17,17 +17,18 @@
 
 #include "editor3dmainwindowimpl.h"
 
+#include "../interfaces/ieditor3d.h"
 #include "../editor3dconstants.h"
 
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
 
-#include <editorplugin3d/editor3dconstants.h>
-
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
+
+#include <extensionsystem/pluginmanager.h>
 
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
@@ -157,45 +158,81 @@ void MainWindowImpl::initActions()
 
 void MainWindowImpl::viewAll()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewAll();
 }
 
 void MainWindowImpl::viewZoom()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewZoom();
 }
 
 void MainWindowImpl::viewPan()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewPan();
 }
 
 void MainWindowImpl::viewRotate()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewRotate();
 }
 
 void MainWindowImpl::viewParallel()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewParallel();
 }
 
 void MainWindowImpl::viewPerspective()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewPerspective();
 }
 
 void MainWindowImpl::viewTransparencyNone()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewTransparencyNone();
 }
 
 void MainWindowImpl::viewTransparencyScreen()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewTransparencyScreen();
 }
 
 void MainWindowImpl::viewTransparencyFull()
 {
-    qDebug() << Q_FUNC_INFO;
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->viewTransparencyFull();
 }

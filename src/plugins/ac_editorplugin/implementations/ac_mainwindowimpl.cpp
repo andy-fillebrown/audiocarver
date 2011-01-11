@@ -39,17 +39,18 @@ using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
 MainWindowImpl::MainWindowImpl()
-    :   m_versionDialog(0)
+    :   _versionDialog(0)
 {
 }
 
 MainWindowImpl::~MainWindowImpl()
 {
-    m_versionDialog = 0;
+    _versionDialog = 0;
 }
 
 void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 {
+    Q_UNUSED(groups);
 }
 
 void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
@@ -192,17 +193,19 @@ void MainWindowImpl::viewScaleDecreaseZ()
 
 void MainWindowImpl::aboutAudioCarver()
 {
-    if (!m_versionDialog) {
-        m_versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
-        connect(m_versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
+    qDebug() << Q_FUNC_INFO;
+
+    if (!_versionDialog) {
+        _versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
+        connect(_versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
     }
-    m_versionDialog->show();
+    _versionDialog->show();
 }
 
 void MainWindowImpl::destroyVersionDialog()
 {
-    if (m_versionDialog) {
-        m_versionDialog->deleteLater();
-        m_versionDialog = 0;
+    if (_versionDialog) {
+        _versionDialog->deleteLater();
+        _versionDialog = 0;
     }
 }

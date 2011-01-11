@@ -7,7 +7,6 @@ include(editorplugin3d_dependencies.pri)
 DEFINES += EDITOR3D_LIBRARY
 
 HEADERS += \
-    implementations/editor3dimpl.h \
     implementations/editor3dmainwindowimpl.h \
     \
     interfaces/ieditor3d.h \
@@ -18,7 +17,6 @@ HEADERS += \
     editorplugin3d.h
 
 SOURCES += \
-    implementations/editor3dimpl.cpp \
     implementations/editor3dmainwindowimpl.cpp \
     \
     interfaces/ieditor3d.cpp \

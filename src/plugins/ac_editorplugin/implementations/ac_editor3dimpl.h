@@ -15,12 +15,13 @@
 **
 **************************************************************************/
 
-#ifndef EDITOR3DIMPL_H
-#define EDITOR3DIMPL_H
+#ifndef AC_EDITOR3DIMPL_H
+#define AC_EDITOR3DIMPL_H
 
 #include <editorplugin3d/interfaces/ieditor3d.h>
 
-namespace Editor3D {
+namespace AudioCarver {
+namespace Internal {
 
 class Editor3DImpl : public Editor3D::IEditor3D
 {
@@ -30,7 +31,8 @@ public:
     Editor3DImpl();
     virtual ~Editor3DImpl();
 
-    virtual IViewport3D *currentViewport() const = 0;
+    Editor3D::IViewport3D *currentViewport() const;
+    void setCurrentViewport(Editor3D::IViewport3D *viewport);
 
     virtual void viewAll();
     virtual void viewFront();
@@ -48,8 +50,12 @@ public:
     virtual void viewTransparencyNone();
     virtual void viewTransparencyScreen();
     virtual void viewTransparencyFull();
+
+private:
+    Editor3D::IViewport3D *_viewport;
 };
 
-} // namespace Editor3D
+} // namespace Internal
+} // namespace AudioCarver
 
-#endif // EDITOR3DIMPL_H
+#endif // AC_EDITOR3DIMPL_H
