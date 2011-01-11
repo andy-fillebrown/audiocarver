@@ -15,25 +15,14 @@
 **
 **************************************************************************/
 
-#ifndef IWRITER_H
-#define IWRITER_H
+#include "idatabase.h"
 
-#include "ifiler.h"
+using namespace Database;
 
-namespace Database {
-
-class DATABASE_EXPORT IWriter : public QObject
+IDatabase::IDatabase()
 {
-    Q_OBJECT
+}
 
-public:
-    IWriter() {}
-    virtual ~IWriter() {}
-
-    virtual void writeObject(IObject *object) = 0;
-    virtual void writeLinkObject(ILinkObject *object) = 0;
-};
-
-} // namespace Database
-
-#endif // IWRITER_H
+IDatabase::~IDatabase()
+{
+}

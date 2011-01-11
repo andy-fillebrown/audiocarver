@@ -37,14 +37,6 @@ public:
     virtual void clear();
     virtual void read(const QString &fileName);
     virtual void write(const QString &fileName);
-
-    virtual const QString &addUniqueName(const QString &requestedName);
-
-    virtual Database::IRootObject *rootObject() const;
-    virtual Database::IObject *object(const QString &name) const;
-
-private:
-    QString _fileName;
 };
 
 } // namespace Internal

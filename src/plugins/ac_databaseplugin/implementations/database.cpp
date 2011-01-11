@@ -42,38 +42,18 @@ const QString &DatabaseImpl::fileFilter() const
 
 const QString &DatabaseImpl::fileName() const
 {
-    return _fileName;
-}
-
-void DatabaseImpl::clear()
-{
-    _fileName = QString::fromLatin1("");
-}
-
-void DatabaseImpl::read(const QString &fileName)
-{
-    _fileName = fileName;
-}
-
-void DatabaseImpl::write(const QString &fileName)
-{
-    _fileName = fileName;
-}
-
-const QString &DatabaseImpl::addUniqueName(const QString &requestedName)
-{
-    Q_UNUSED(requestedName);
     static QString dummy;
     return dummy;
 }
 
-Database::IRootObject *DatabaseImpl::rootObject() const
+void DatabaseImpl::clear()
 {
-    return 0;
 }
 
-Database::IObject *DatabaseImpl::object(const QString &name) const
+void DatabaseImpl::read(const QString &fileName)
 {
-    Q_UNUSED(name);
-    return 0;
+}
+
+void DatabaseImpl::write(const QString &fileName)
+{
 }

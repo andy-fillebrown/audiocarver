@@ -20,20 +20,15 @@
 
 #include <databaseplugin/database_global.h>
 
-#include <extensionsystem/iplugin.h>
-
 namespace Database {
-
-class IObject;
-class IRootObject;
 
 class DATABASE_EXPORT IDatabase : public QObject
 {
     Q_OBJECT
 
 public:
-    IDatabase() {}
-    virtual ~IDatabase() {}
+    IDatabase();
+    virtual ~IDatabase();
 
     virtual const QString &fileExtension() const = 0;
     virtual const QString &fileFilter() const = 0;
@@ -43,11 +38,6 @@ public:
     virtual void clear() = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
-
-    virtual const QString &addUniqueName(const QString &requestedName) = 0;
-
-    virtual IRootObject *rootObject() const = 0;
-    virtual IObject *object(const QString &name) const = 0;
 };
 
 } // namespace Database
