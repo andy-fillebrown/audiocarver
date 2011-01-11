@@ -15,31 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef IEDITOR_H
-#define IEDITOR_H
+#ifndef EDITORPLUGIN3D_H
+#define EDITORPLUGIN3D_H
 
-#include <editorplugin/editor_global.h>
+#include <extensionsystem/iplugin.h>
 
-#include <QtCore/QObject>
+namespace Editor3D {
+namespace Internal {
 
-namespace Editor {
-
-class EDITOR_EXPORT IEditor : public QObject
+class EditorPlugin3D : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
 public:
-    IEditor();
-    virtual ~IEditor();
+    EditorPlugin3D();
+    ~EditorPlugin3D();
 
-    virtual void undo() = 0;
-    virtual void redo() = 0;
-    virtual void cut() = 0;
-    virtual void copy() const = 0;
-    virtual void paste() = 0;
-    virtual void selectAll() = 0;
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized();
 };
 
-} // namespace Editor
+} // namespace Internal
+} // namespace Editor3D
 
-#endif // IEDITOR_H
+#endif // EDITORPLUGIN3D_H

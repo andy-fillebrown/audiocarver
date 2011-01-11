@@ -15,31 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef IEDITOR_H
-#define IEDITOR_H
+#ifndef EDITOR3D_GLOBAL_H
+#define EDITOR3D_GLOBAL_H
 
-#include <editorplugin/editor_global.h>
+#include <QtCore/qglobal.h>
 
-#include <QtCore/QObject>
+#if defined(EDITOR3D_LIBRARY)
+#  define EDITOR3D_EXPORT Q_DECL_EXPORT
+#else
+#  define EDITOR3D_EXPORT Q_DECL_IMPORT
+#endif
 
-namespace Editor {
-
-class EDITOR_EXPORT IEditor : public QObject
-{
-    Q_OBJECT
-
-public:
-    IEditor();
-    virtual ~IEditor();
-
-    virtual void undo() = 0;
-    virtual void redo() = 0;
-    virtual void cut() = 0;
-    virtual void copy() const = 0;
-    virtual void paste() = 0;
-    virtual void selectAll() = 0;
-};
-
-} // namespace Editor
-
-#endif // IEDITOR_H
+#endif // EDITOR3D_GLOBAL_H

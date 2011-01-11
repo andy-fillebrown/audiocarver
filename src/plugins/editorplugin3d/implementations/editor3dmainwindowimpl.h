@@ -15,18 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOWIMPL_H
-#define AC_MAINWINDOWIMPL_H
+#ifndef EDITOR3DMAINWINDOWIMPL_H
+#define EDITOR3DMAINWINDOWIMPL_H
 
 #include <coreplugin/interfaces/imainwindow.h>
 
-namespace Core {
-
-class VersionDialog;
-
-} // namespace Core
-
-namespace AudioCarver {
+namespace Editor3D {
 namespace Internal {
 
 class MainWindowImpl : public Core::IMainWindow
@@ -42,14 +36,25 @@ public:
     virtual void initActions();
 
 private slots:
-    void aboutAudioCarver();
-    void destroyVersionDialog();
-
-private:
-    Core::VersionDialog *m_versionDialog;
+    void viewAll();
+    void viewFront();
+    void viewSide();
+    void viewBottom();
+    void viewZoom();
+    void viewPan();
+    void viewRotate();
+    void viewParallel();
+    void viewPerspective();
+    void viewScaleIncreaseX();
+    void viewScaleDecreaseX();
+    void viewScaleIncreaseZ();
+    void viewScaleDecreaseZ();
+    void viewTransparencyNone();
+    void viewTransparencyScreen();
+    void viewTransparencyFull();
 };
 
 } // namespace Internal
-} // namespace AudioCarver
+} // namespace Editor3D
 
-#endif // AC_MAINWINDOWIMPL_H
+#endif // EDITOR3DMAINWINDOWIMPL_H

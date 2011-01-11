@@ -15,31 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef IEDITOR_H
-#define IEDITOR_H
+#include "editorplugin3d.h"
 
-#include <editorplugin/editor_global.h>
+#include "implementations/editor3dmainwindowimpl.h"
 
-#include <QtCore/QObject>
+#include <coreplugin/icore.h>
+#include <coreplugin/mainwindow.h>
 
-namespace Editor {
+#include <QtCore/QtPlugin>
 
-class EDITOR_EXPORT IEditor : public QObject
+using namespace Editor3D;
+using namespace Editor3D::Internal;
+
+EditorPlugin3D::EditorPlugin3D()
 {
-    Q_OBJECT
+}
 
-public:
-    IEditor();
-    virtual ~IEditor();
+EditorPlugin3D::~EditorPlugin3D()
+{
+}
 
-    virtual void undo() = 0;
-    virtual void redo() = 0;
-    virtual void cut() = 0;
-    virtual void copy() const = 0;
-    virtual void paste() = 0;
-    virtual void selectAll() = 0;
-};
+bool EditorPlugin3D::initialize(const QStringList &arguments, QString *errorMessage)
+{
+    Q_UNUSED(arguments);
+    Q_UNUSED(errorMessage);
+    addAutoReleasedObject(new MainWindowImpl);
+    return true;
+}
 
-} // namespace Editor
+void EditorPlugin3D::extensionsInitialized()
+{
+}
 
-#endif // IEDITOR_H
+Q_EXPORT_PLUGIN(EditorPlugin3D)

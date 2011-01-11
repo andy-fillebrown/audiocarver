@@ -19,6 +19,8 @@ HEADERS += \
 SOURCES += \
     implementations/editormainwindowimpl.cpp \
     \
+    interfaces/ieditor.cpp \
+    \
     editorplugin.cpp
 
 RESOURCES += \

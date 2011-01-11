@@ -17,7 +17,6 @@ DEPENDPATH += $$PRO_SOURCE_TREE/src/plugins
 isEmpty(TARGET) {
     error("$$_FILE_: You must provide a TARGET")
 }
-
 PLUGINSPEC = $$_PRO_FILE_PWD_/$${TARGET}.pluginspec
 PLUGINSPEC_IN = $${PLUGINSPEC}.in
 OTHER_FILES += $$PLUGINSPEC_IN
