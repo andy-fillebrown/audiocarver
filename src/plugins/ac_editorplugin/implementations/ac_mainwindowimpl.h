@@ -42,6 +42,13 @@ public:
     virtual void initActions();
 
 private slots:
+    void viewFront();
+    void viewSide();
+    void viewBottom();
+    void viewScaleIncreaseX();
+    void viewScaleDecreaseX();
+    void viewScaleIncreaseZ();
+    void viewScaleDecreaseZ();
     void aboutAudioCarver();
     void destroyVersionDialog();
 

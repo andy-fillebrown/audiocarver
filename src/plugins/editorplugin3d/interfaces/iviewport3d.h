@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef IEDITOR3D_H
-#define IEDITOR3D_H
+#ifndef IVIEWPORT3D_H
+#define IVIEWPORT3D_H
 
 #include <editorplugin3d/editor3d_global.h>
 
@@ -24,36 +24,15 @@
 
 namespace Editor3D {
 
-class IViewport3D;
-
-class EDITOR3D_EXPORT IEditor3D : public QObject
+class EDITOR3D_EXPORT IViewport3D : public QObject
 {
     Q_OBJECT
 
 public:
-    IEditor3D();
-    virtual ~IEditor3D();
-
-    virtual IViewport3D *currentViewport() const = 0;
-
-    virtual void viewAll() = 0;
-    virtual void viewFront() = 0;
-    virtual void viewSide() = 0;
-    virtual void viewBottom() = 0;
-    virtual void viewZoom() = 0;
-    virtual void viewPan() = 0;
-    virtual void viewRotate() = 0;
-    virtual void viewParallel() = 0;
-    virtual void viewPerspective() = 0;
-    virtual void viewScaleIncreaseX() = 0;
-    virtual void viewScaleDecreaseX() = 0;
-    virtual void viewScaleIncreaseZ() = 0;
-    virtual void viewScaleDecreaseZ() = 0;
-    virtual void viewTransparencyNone() = 0;
-    virtual void viewTransparencyScreen() = 0;
-    virtual void viewTransparencyFull() = 0;
+    IViewport3D();
+    virtual ~IViewport3D();
 };
 
 } // namespace Editor3D
 
-#endif // IEDITOR3D_H
+#endif // IVIEWPORT3D_H

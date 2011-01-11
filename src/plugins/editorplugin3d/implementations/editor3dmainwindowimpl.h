@@ -37,18 +37,11 @@ public:
 
 private slots:
     void viewAll();
-    void viewFront();
-    void viewSide();
-    void viewBottom();
     void viewZoom();
     void viewPan();
     void viewRotate();
     void viewParallel();
     void viewPerspective();
-    void viewScaleIncreaseX();
-    void viewScaleDecreaseX();
-    void viewScaleIncreaseZ();
-    void viewScaleDecreaseZ();
     void viewTransparencyNone();
     void viewTransparencyScreen();
     void viewTransparencyFull();

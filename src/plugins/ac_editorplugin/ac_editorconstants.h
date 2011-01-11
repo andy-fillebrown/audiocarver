@@ -35,9 +35,22 @@
 namespace AudioCarver {
 namespace Constants {
 
-const char * const ABOUTAUDIOCARVER        = PRO_NAME_STR".About"PRO_NAME_STR;
+const char * const G_VIEW_PRESET           = PRO_NAME_STR".Group.View.Preset";
+const char * const G_VIEW_SCALE            = PRO_NAME_STR".Group.View.Scale";
 
 const char * const G_HELP_ABOUTAUDIOCARVER = PRO_NAME_STR".Group.Help.AboutAudioCarver";
+
+const char * const M_VIEW_SCALE            = PRO_NAME_STR".Menu.View.Scale";
+
+const char * const VIEWFRONT               = PRO_NAME_STR".ViewFront";
+const char * const VIEWSIDE                = PRO_NAME_STR".ViewSide";
+const char * const VIEWBOTTOM              = PRO_NAME_STR".ViewBottom";
+const char * const VIEWSCALEINCREASEX      = PRO_NAME_STR".ViewScaleIncreaseX";
+const char * const VIEWSCALEDECREASEX      = PRO_NAME_STR".ViewScaleDecreaseX";
+const char * const VIEWSCALEINCREASEZ      = PRO_NAME_STR".ViewScaleIncreaseZ";
+const char * const VIEWSCALEDECREASEZ      = PRO_NAME_STR".ViewScaleDecreaseZ";
+
+const char * const ABOUTAUDIOCARVER        = PRO_NAME_STR".About"PRO_NAME_STR;
 
 } // namespace Constants
 } // namespace AudioCarver

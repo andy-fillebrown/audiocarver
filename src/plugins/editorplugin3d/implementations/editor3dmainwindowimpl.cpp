@@ -55,10 +55,8 @@ void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QS
         id = Constants::M_VIEW;
         title = tr("&View");
         groups  << Constants::G_VIEW_ALL
-                << Constants::G_VIEW_PRESET
                 << Constants::G_VIEW_CAMERA
                 << Constants::G_VIEW_PROJECTION
-                << Constants::G_VIEW_SCALE
                 << Constants::G_VIEW_TRANSPARENCY;
     }
 }
@@ -79,33 +77,6 @@ void MainWindowImpl::initActions()
     cmd->setDefaultKeySequence(QKeySequence("a"));
     viewMenu->addAction(cmd, Constants::G_VIEW_ALL);
     connect(action, SIGNAL(triggered()), SLOT(viewAll()));
-
-    // View Preset Separator
-    action = new QAction(this);
-    action->setSeparator(true);
-    cmd = am->registerAction(action, PRO_NAME_STR".View.Sep.Preset", globalContext);
-    viewMenu->addAction(cmd, Constants::G_VIEW_PRESET);
-
-    // View Front Action
-    action = new QAction(tr("&Front"), this);
-    cmd = am->registerAction(action, Constants::VIEWFRONT, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("f"));
-    viewMenu->addAction(cmd, Constants::G_VIEW_PRESET);
-    connect(action, SIGNAL(triggered()), SLOT(viewFront()));
-
-    // View Side Action
-    action = new QAction(tr("&Side"), this);
-    cmd = am->registerAction(action, Constants::VIEWSIDE, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("s"));
-    viewMenu->addAction(cmd, Constants::G_VIEW_PRESET);
-    connect(action, SIGNAL(triggered()), SLOT(viewSide()));
-
-    // View Side Action
-    action = new QAction(tr("&Bottom"), this);
-    cmd = am->registerAction(action, Constants::VIEWBOTTOM, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("b"));
-    viewMenu->addAction(cmd, Constants::G_VIEW_PRESET);
-    connect(action, SIGNAL(triggered()), SLOT(viewBottom()));
 
     // View Camera Separator
     action = new QAction(this);
@@ -154,39 +125,6 @@ void MainWindowImpl::initActions()
     subMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
     connect(action, SIGNAL(triggered()), SLOT(viewPerspective()));
 
-    // View Scale Sub-Menu
-    subMenu = am->createMenu(Constants::M_VIEW_SCALE);
-    subMenu->menu()->setTitle(tr("Scale"));
-    viewMenu->addMenu(subMenu, Constants::G_VIEW_SCALE);
-
-    // View Scale Increase X Action
-    action = new QAction(tr("Increase X"), this);
-    cmd = am->registerAction(action, Constants::VIEWSCALEINCREASEX, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("."));
-    subMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
-    connect(action, SIGNAL(triggered()), SLOT(viewScaleIncreaseX()));
-
-    // View Scale Decrease X Action
-    action = new QAction(tr("Decrease X"), this);
-    cmd = am->registerAction(action, Constants::VIEWSCALEDECREASEX, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence(","));
-    subMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
-    connect(action, SIGNAL(triggered()), SLOT(viewScaleDecreaseX()));
-
-    // View Scale Increase Z Action
-    action = new QAction(tr("Increase Z"), this);
-    cmd = am->registerAction(action, Constants::VIEWSCALEINCREASEZ, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+."));
-    subMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
-    connect(action, SIGNAL(triggered()), SLOT(viewScaleIncreaseZ()));
-
-    // View Scale Decrease Z Action
-    action = new QAction(tr("Decrease Z"), this);
-    cmd = am->registerAction(action, Constants::VIEWSCALEDECREASEZ, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+,"));
-    subMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
-    connect(action, SIGNAL(triggered()), SLOT(viewScaleDecreaseZ()));
-
     // View Transparency Separator
     action = new QAction(this);
     action->setSeparator(true);
@@ -222,21 +160,6 @@ void MainWindowImpl::viewAll()
     qDebug() << Q_FUNC_INFO;
 }
 
-void MainWindowImpl::viewFront()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void MainWindowImpl::viewSide()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void MainWindowImpl::viewBottom()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
 void MainWindowImpl::viewZoom()
 {
     qDebug() << Q_FUNC_INFO;
@@ -258,26 +181,6 @@ void MainWindowImpl::viewParallel()
 }
 
 void MainWindowImpl::viewPerspective()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void MainWindowImpl::viewScaleIncreaseX()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void MainWindowImpl::viewScaleDecreaseX()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void MainWindowImpl::viewScaleIncreaseZ()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void MainWindowImpl::viewScaleDecreaseZ()
 {
     qDebug() << Q_FUNC_INFO;
 }
