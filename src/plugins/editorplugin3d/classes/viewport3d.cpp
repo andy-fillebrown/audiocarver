@@ -27,14 +27,11 @@ using namespace Editor3D;
 Viewport3D::Viewport3D(QWidget *parent)
     :   QGLWidget(parent)
     ,   _fbo(0)
-    ,   _image(0)
 {
 }
 
 Viewport3D::~Viewport3D()
 {
-    delete _image;
-    _image = 0;
     _fbo = 0;
 }
 
@@ -49,15 +46,40 @@ void Viewport3D::initializeGL()
 
     ok = _fbo->release();
     Q_ASSERT(ok);
-
-    _image = new QImage();
-    *_image = _fbo->toImage();
 }
 
-void Viewport3D::paintEvent(QPaintEvent *event)
+void Viewport3D::paintGL()
 {
-    QPainter painter(this);
-    painter.drawImage(event->rect(), *_image);
+    saveGLState();
+
+    qglClearColor(Qt::white);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 1, 1, 0, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glViewport(0, 0, width(), height());
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _fbo->texture());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glBegin(GL_QUADS);
+    glTexCoord2i(0, 1);  glVertex2i(0, 0);
+    glTexCoord2i(1, 1);  glVertex2i(1, 0);
+    glTexCoord2i(1, 0);  glVertex2i(1, 1);
+    glTexCoord2i(0, 0);  glVertex2i(0, 1);
+    glEnd();
+
+    restoreGLState();
 }
 
 void Viewport3D::draw()
@@ -78,20 +100,25 @@ void Viewport3D::draw()
         Qt::red, Qt::green, Qt::blue, Qt::yellow
     };
 
+    saveGLState();
+
     qglClearColor(Qt::black);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glShadeModel(GL_FLAT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+    glShadeModel(GL_FLAT);
 
-    glViewport(0, 0, 512, 512);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    GLfloat x = GLfloat(512) / 512;
-    glFrustum(-x, +x, -1.0, +1.0, 4.0, 15.0);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    GLfloat x = GLfloat(512) / 512;
+    glViewport(0, 0, 512, 512);
+    glFrustum(-x, +x, -1.0, +1.0, 4.0, 15.0);
+
     glTranslatef(0.0, 0.0, -10.0);
     glRotatef(rotationX, 1.0, 0.0, 0.0);
     glRotatef(rotationY, 0.0, 1.0, 0.0);
@@ -108,6 +135,23 @@ void Viewport3D::draw()
         glEnd();
     }
 
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
+    restoreGLState();
+}
+
+void Viewport3D::saveGLState()
+{
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+}
+
+void Viewport3D::restoreGLState()
+{
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glPopAttrib();
 }

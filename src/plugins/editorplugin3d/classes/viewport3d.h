@@ -37,14 +37,15 @@ public:
 
 protected:
     virtual void initializeGL();
-    virtual void paintEvent(QPaintEvent *event);
+    virtual void paintGL();
 
 private:
     void draw();
+    void saveGLState();
+    void restoreGLState();
 
 private:
     QGLFramebufferObject *_fbo;
-    QImage *_image;
 };
 
 } // namespace Editor3D
