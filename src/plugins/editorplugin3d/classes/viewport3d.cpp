@@ -76,11 +76,10 @@ void Viewport3D::paintGL()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glBegin(GL_QUADS);
-    glVertex2i(0, 0);
-    glVertex2i(1, 0);
-    glVertex2i(1, 1);
-    glVertex2i(0, 1);
+    glBegin(GL_TRIANGLES);
+    glVertex2f(-1.0, +0.0);
+    glVertex2f(+2.0, +0.0);
+    glVertex2f(+0.5, +2.0);
     glEnd();
 
     restoreGLState();
@@ -154,15 +153,13 @@ void Viewport3D::initializeShaderProgram()
     const QString vs =
             "void main(void)\n"
             "{\n"
-            "   gl_TexCoord[0].s = gl_Vertex.x;\n"
-            "   gl_TexCoord[0].t = 1.0 - gl_Vertex.y;\n"
             "   gl_Position = ftransform();\n"
             "}";
     const QString fs =
             "uniform sampler2D Texture;\n"
             "void main(void)\n"
             "{\n"
-            "   gl_FragColor = texture2D(Texture, gl_TexCoord[0].st);\n"
+            "   gl_FragColor = texture2D(Texture, gl_FragCoord.xy / vec2(1024, 512));\n"
             "}";
 
     _vertexShader = new QGLShader(QGLShader::Vertex, this);
