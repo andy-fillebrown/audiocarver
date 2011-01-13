@@ -30,6 +30,8 @@ using namespace Editor3D;
 
 Viewport3D::Viewport3D(QWidget *parent)
     :   QGLWidget(parent)
+    ,   _framebufferObjectDisplayListId(0)
+    ,   _fullscreenDisplayListId(0)
     ,   _framebufferObject(0)
     ,   _vertexShader(0)
     ,   _fragmentShader(0)
@@ -43,60 +45,38 @@ Viewport3D::~Viewport3D()
     _shaderProgram = 0;
     _fragmentShader = 0;
     _vertexShader = 0;
+    glDeleteLists(_fullscreenDisplayListId, 1); _fullscreenDisplayListId = 0;
+    glDeleteLists(_framebufferObjectDisplayListId, 1); _framebufferObjectDisplayListId = 0;
 }
 
 void Viewport3D::initializeGL()
 {
     initializeFramebufferObject();
-    initializeShaderProgram();
+    initializeFullscreenShaderProgram();
 }
 
 void Viewport3D::paintGL()
 {
-    bool ok = true;
-
-    saveGLState();
-
-    qglClearColor(Qt::white);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, 1, 1, 0, -1, 1);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glViewport(0, 0, width(), height());
-
-    Q_CHECK(ok = _shaderProgram->bind());
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _framebufferObject->texture());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glBegin(GL_TRIANGLES);
-    glVertex2f(-1.0, +0.0);
-    glVertex2f(+2.0, +0.0);
-    glVertex2f(+0.5, +2.0);
-    glEnd();
-
-    restoreGLState();
+    drawFullscreen();
 }
 
 void Viewport3D::initializeFramebufferObject()
 {
-    bool ok = true;
+    _framebufferObject = new QGLFramebufferObject(512, 512);
+    initializeFramebufferObjectDisplayList();
+    drawFramebufferObject();
+}
 
-    static const GLfloat rotationX = 0;
+void Viewport3D::initializeFramebufferObjectDisplayList()
+{
+    static const GLfloat rotationX =  0;
     static const GLfloat rotationY = 45;
-    static const GLfloat rotationZ = 0;
+    static const GLfloat rotationZ =  0;
 
-    static const GLfloat P1[3] = { 0.0, -1.0, +2.0 };
-    static const GLfloat P2[3] = { +1.73205081, -1.0, -1.0 };
+    static const GLfloat P1[3] = { 0.0, -1.0, 2.0 };
+    static const GLfloat P2[3] = { 1.73205081, -1.0, -1.0 };
     static const GLfloat P3[3] = { -1.73205081, -1.0, -1.0 };
-    static const GLfloat P4[3] = { 0.0, +2.0, 0.0 };
+    static const GLfloat P4[3] = { 0.0, +2.0, +0.0 };
 
     static const GLfloat * const coords[4][3] = {
         { P1, P2, P3 }, { P1, P3, P4 }, { P1, P4, P2 }, { P2, P4, P3 }
@@ -105,7 +85,29 @@ void Viewport3D::initializeFramebufferObject()
         Qt::red, Qt::green, Qt::blue, Qt::yellow
     };
 
-    _framebufferObject = new QGLFramebufferObject(512, 512);
+    _framebufferObjectDisplayListId = glGenLists(1);
+    glNewList(_framebufferObjectDisplayListId, GL_COMPILE);
+
+    glTranslatef(0.0, 0.0, -10.0);
+    glRotatef(rotationX, 1.0, 0.0, 0.0);
+    glRotatef(rotationY, 0.0, 1.0, 0.0);
+    glRotatef(rotationZ, 0.0, 0.0, 1.0);
+
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < 4; ++i) {
+        qglColor(faceColors[i]);
+        for (int j = 0; j < 3; ++j)
+            glVertex3f(coords[i][j][0], coords[i][j][1], coords[i][j][2]);
+    }
+    glEnd();
+
+    glEndList();
+}
+
+void Viewport3D::drawFramebufferObject()
+{
+    bool ok = true;
+
     Q_CHECK(_framebufferObject->bind());
 
     saveGLState();
@@ -125,35 +127,23 @@ void Viewport3D::initializeFramebufferObject()
 
     GLfloat x = GLfloat(512) / 512;
     glViewport(0, 0, 512, 512);
-    glFrustum(-x, +x, -1.0, +1.0, 4.0, 15.0);
+    glFrustum(-x, x, -1.0, 1.0, 4.0, 15.0);
 
-    glTranslatef(0.0, 0.0, -10.0);
-    glRotatef(rotationX, 1.0, 0.0, 0.0);
-    glRotatef(rotationY, 0.0, 1.0, 0.0);
-    glRotatef(rotationZ, 0.0, 0.0, 1.0);
-
-    for (int i = 0; i < 4; ++i) {
-        glLoadName(i);
-        glBegin(GL_TRIANGLES);
-        qglColor(faceColors[i]);
-        for (int j = 0; j < 3; ++j)
-            glVertex3f(coords[i][j][0], coords[i][j][1], coords[i][j][2]);
-        glEnd();
-    }
+    glCallList(_framebufferObjectDisplayListId);
 
     restoreGLState();
 
     Q_CHECK(ok = _framebufferObject->release());
 }
 
-void Viewport3D::initializeShaderProgram()
+void Viewport3D::initializeFullscreenShaderProgram()
 {
     bool ok = true;
 
     const QString vs =
             "void main(void)\n"
             "{\n"
-            "   gl_Position = ftransform();\n"
+            "   gl_Position = gl_Vertex;\n"
             "}";
     const QString fs =
             "uniform sampler2D Texture;\n"
@@ -176,6 +166,45 @@ void Viewport3D::initializeShaderProgram()
     Q_CHECK(ok = _shaderProgram->addShader(_vertexShader));
     Q_CHECK(ok = _shaderProgram->addShader(_fragmentShader));
     Q_CHECK(ok = _shaderProgram->link());
+
+    initializeFullscreenDisplayList();
+}
+
+void Viewport3D::initializeFullscreenDisplayList()
+{
+    _fullscreenDisplayListId = glGenLists(1);
+    glNewList(_fullscreenDisplayListId, GL_COMPILE);
+
+    glBegin(GL_TRIANGLES);
+    glVertex2f(-2.0, -1.0);
+    glVertex2f(2.0, -1.0);
+    glVertex2f(0.0, 4.0);
+    glEnd();
+
+    glEndList();
+}
+
+void Viewport3D::drawFullscreen()
+{
+    bool ok = true;
+
+    saveGLState();
+
+    qglClearColor(Qt::white);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(0, 0, width(), height());
+
+    Q_CHECK(ok = _shaderProgram->bind());
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, _framebufferObject->texture());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glCallList(_fullscreenDisplayListId);
+
+    restoreGLState();
 }
 
 void Viewport3D::saveGLState()

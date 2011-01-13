@@ -43,11 +43,19 @@ protected:
 
 private:
     void initializeFramebufferObject();
-    void initializeShaderProgram();
+    void initializeFramebufferObjectDisplayList();
+    void drawFramebufferObject();
+
+    void initializeFullscreenShaderProgram();
+    void initializeFullscreenDisplayList();
+    void drawFullscreen();
+
     void saveGLState();
     void restoreGLState();
 
 private:
+    GLuint _framebufferObjectDisplayListId;
+    GLuint _fullscreenDisplayListId;
     QGLFramebufferObject *_framebufferObject;
     QGLShader *_vertexShader;
     QGLShader *_fragmentShader;
