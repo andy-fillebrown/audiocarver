@@ -64,9 +64,6 @@ void Viewport3D::paintGL()
 
     glViewport(0, 0, width(), height());
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _fbo->texture());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -128,10 +125,8 @@ void Viewport3D::draw()
         glLoadName(i);
         glBegin(GL_TRIANGLES);
         qglColor(faceColors[i]);
-        for (int j = 0; j < 3; ++j) {
-            glVertex3f(coords[i][j][0], coords[i][j][1],
-                       coords[i][j][2]);
-        }
+        for (int j = 0; j < 3; ++j)
+            glVertex3f(coords[i][j][0], coords[i][j][1], coords[i][j][2]);
         glEnd();
     }
 
