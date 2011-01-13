@@ -23,6 +23,8 @@
 #include <QtOpenGL/QGLWidget>
 
 class QGLFramebufferObject;
+class QGLShader;
+class QGLShaderProgram;
 class QImage;
 
 namespace Editor3D {
@@ -40,12 +42,16 @@ protected:
     virtual void paintGL();
 
 private:
-    void draw();
+    void initializeFramebufferObject();
+    void initializeShaderProgram();
     void saveGLState();
     void restoreGLState();
 
 private:
-    QGLFramebufferObject *_fbo;
+    QGLFramebufferObject *_framebufferObject;
+    QGLShader *_vertexShader;
+    QGLShader *_fragmentShader;
+    QGLShaderProgram *_shaderProgram;
 };
 
 } // namespace Editor3D
