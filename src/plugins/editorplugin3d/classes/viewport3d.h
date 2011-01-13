@@ -40,11 +40,12 @@ public:
 protected:
     virtual void initializeGL();
     virtual void paintGL();
+    virtual void resizeGL(int w, int h);
 
 private:
-    void initializeFramebufferObject();
+    void initializeFramebufferObject(int w, int h);
     void initializeFramebufferObjectDisplayList();
-    void drawFramebufferObject();
+    void drawFramebufferObject(int w, int h);
 
     void initializeFullscreenShaderProgram();
     void initializeFullscreenDisplayList();
@@ -60,6 +61,7 @@ private:
     QGLShader *_vertexShader;
     QGLShader *_fragmentShader;
     QGLShaderProgram *_shaderProgram;
+    int _shaderProgramScreenSizeVariableId;
 };
 
 } // namespace Editor3D

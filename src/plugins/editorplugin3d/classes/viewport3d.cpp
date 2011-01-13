@@ -26,6 +26,20 @@
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>
 
+#include <GL/glu.h>
+#define Q_CHECK_GLERROR \
+{ \
+    GLenum e = glGetError(); \
+    if (e != GL_NO_ERROR) \
+        qDebug() << qPrintable( \
+                QString("GL error in member function \'%1\'\n%2(%3): %4") \
+                    .arg(Q_FUNC_INFO) \
+                    .arg(__FILE__) \
+                    .arg(__LINE__) \
+                    .arg((char *)gluErrorString(e)) \
+            ); \
+}
+
 using namespace Editor3D;
 
 Viewport3D::Viewport3D(QWidget *parent)
@@ -36,6 +50,7 @@ Viewport3D::Viewport3D(QWidget *parent)
     ,   _vertexShader(0)
     ,   _fragmentShader(0)
     ,   _shaderProgram(0)
+    ,   _shaderProgramScreenSizeVariableId(-1)
 {
 }
 
@@ -51,20 +66,29 @@ Viewport3D::~Viewport3D()
 
 void Viewport3D::initializeGL()
 {
-    initializeFramebufferObject();
+    initializeFramebufferObject(width(), height());
     initializeFullscreenShaderProgram();
+    Q_CHECK_GLERROR;
 }
 
 void Viewport3D::paintGL()
 {
     drawFullscreen();
+    Q_CHECK_GLERROR;
 }
 
-void Viewport3D::initializeFramebufferObject()
+void Viewport3D::resizeGL(int w, int h)
 {
-    _framebufferObject = new QGLFramebufferObject(512, 512);
+    delete _framebufferObject;
+    initializeFramebufferObject(w, h);
+    Q_CHECK_GLERROR;
+}
+
+void Viewport3D::initializeFramebufferObject(int w, int h)
+{
+    _framebufferObject = new QGLFramebufferObject(w, h);
     initializeFramebufferObjectDisplayList();
-    drawFramebufferObject();
+    drawFramebufferObject(w, h);
 }
 
 void Viewport3D::initializeFramebufferObjectDisplayList()
@@ -104,7 +128,7 @@ void Viewport3D::initializeFramebufferObjectDisplayList()
     glEndList();
 }
 
-void Viewport3D::drawFramebufferObject()
+void Viewport3D::drawFramebufferObject(int w, int h)
 {
     bool ok = true;
 
@@ -125,9 +149,9 @@ void Viewport3D::drawFramebufferObject()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    GLfloat x = GLfloat(512) / 512;
-    glViewport(0, 0, 512, 512);
-    glFrustum(-x, x, -1.0, 1.0, 4.0, 15.0);
+    GLfloat aspect = w / float(h ? h : 1);
+    glViewport(0, 0, w, h);
+    glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
 
     glCallList(_framebufferObjectDisplayListId);
 
@@ -147,9 +171,10 @@ void Viewport3D::initializeFullscreenShaderProgram()
             "}";
     const QString fs =
             "uniform sampler2D Texture;\n"
+            "uniform vec2 screenSize;\n"
             "void main(void)\n"
             "{\n"
-            "   gl_FragColor = texture2D(Texture, gl_FragCoord.xy / vec2(1024, 512));\n"
+            "   gl_FragColor = texture2D(Texture, gl_FragCoord.xy / screenSize);\n"
             "}";
 
     _vertexShader = new QGLShader(QGLShader::Vertex, this);
@@ -166,6 +191,9 @@ void Viewport3D::initializeFullscreenShaderProgram()
     Q_CHECK(ok = _shaderProgram->addShader(_vertexShader));
     Q_CHECK(ok = _shaderProgram->addShader(_fragmentShader));
     Q_CHECK(ok = _shaderProgram->link());
+
+    _shaderProgramScreenSizeVariableId = _shaderProgram->uniformLocation("screenSize");
+    Q_ASSERT(_shaderProgramScreenSizeVariableId != -1);
 
     initializeFullscreenDisplayList();
 }
@@ -196,6 +224,7 @@ void Viewport3D::drawFullscreen()
     glViewport(0, 0, width(), height());
 
     Q_CHECK(ok = _shaderProgram->bind());
+    _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, width(), height());
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _framebufferObject->texture());
@@ -203,6 +232,8 @@ void Viewport3D::drawFullscreen()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glCallList(_fullscreenDisplayListId);
+
+    _shaderProgram->release();
 
     restoreGLState();
 }
