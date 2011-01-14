@@ -28,11 +28,11 @@ class QGLFramebufferObject;
 class QGLShader;
 class QGLShaderProgram;
 
-class QImage;
-
 QT_END_NAMESPACE
 
 namespace Editor3D {
+
+class Viewport3D;
 
 class EDITOR3D_EXPORT CentralWidget3D : public QGLWidget
 {
@@ -46,13 +46,8 @@ protected:
     virtual void initializeGL();
     virtual void paintGL();
     virtual void resizeGL(int w, int h);
-    virtual void timerEvent(QTimerEvent *event);
 
 private:
-    void initializeFramebufferObject(int w, int h);
-    void initializeFramebufferObjectDisplayList();
-    void drawFramebufferObject(int w, int h);
-
     void initializeFullscreenShaderProgram();
     void initializeFullscreenDisplayList();
     void drawFullscreen();
@@ -64,18 +59,12 @@ private:
     void restoreGLState();
 
 private:
-    GLuint _framebufferObjectDisplayListId;
+    Viewport3D *_viewport;
     GLuint _fullscreenDisplayListId;
-    QGLFramebufferObject *_framebufferObject;
-
     QGLShader *_vertexShader;
     QGLShader *_fragmentShader;
     QGLShaderProgram *_shaderProgram;
     int _shaderProgramScreenSizeVariableId;
-    bool _shaderProgramBound;
-
-    int _timerId;
-    float _rotationY;
 };
 
 } // namespace Editor3D

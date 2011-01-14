@@ -18,59 +18,54 @@
 #ifndef VIEWPORT3D_H
 #define VIEWPORT3D_H
 
-//#include <editorplugin3d/editor3d_global.h>
+#include <editorplugin3d/editor3d_global.h>
 
-//#include <QtOpenGL/QGLWidget>
+#include <utils3d/utils3d_global.h>
 
-//class QGLFramebufferObject;
-//class QGLShader;
-//class QGLShaderProgram;
-//class QImage;
+#include <QtCore/QObject>
+#include <QtCore/QSize>
 
-//namespace Editor3D {
+class QGLFramebufferObject;
 
-//class EDITOR3D_EXPORT Viewport3D : public QGLWidget
-//{
-//    Q_OBJECT
+namespace Editor3D {
 
-//public:
-//    Viewport3D(QWidget *parent = 0);
-//    virtual ~Viewport3D();
+class CentralWidget3D;
 
-//protected:
-//    virtual void initializeGL();
-//    virtual void paintGL();
-//    virtual void resizeGL(int w, int h);
-//    virtual void timerEvent(QTimerEvent *event);
+namespace Internal {
 
-//private:
-//    void initializeFramebufferObject(int w, int h);
-//    void initializeFramebufferObjectDisplayList();
-//    void drawFramebufferObject(int w, int h);
+class Viewport3DPrivate;
 
-//    void initializeFullscreenShaderProgram();
-//    void initializeFullscreenDisplayList();
-//    void drawFullscreen();
+} // namespace Internal
 
-//    void bindShaderProgram(int w, int h);
-//    void releaseShaderProgram();
+class EDITOR3D_EXPORT Viewport3D : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QSize size READ size);
 
-//    void saveGLState();
-//    void restoreGLState();
+public:
+    Viewport3D(CentralWidget3D *centralWidget, const QSize &size);
+    virtual ~Viewport3D();
 
-//private:
-//    GLuint _framebufferObjectDisplayListId;
-//    GLuint _fullscreenDisplayListId;
-//    QGLFramebufferObject *_framebufferObject;
-//    QGLShader *_vertexShader;
-//    QGLShader *_fragmentShader;
-//    QGLShaderProgram *_shaderProgram;
-//    int _shaderProgramScreenSizeVariableId;
-//    bool _shaderProgramBound;
-//    int _timerId;
-//    float _rotationY;
-//};
+    CentralWidget3D *centralWidget() const;
+    QSize size() const;
 
-//} // namespace Editor3D
+    GLuint textureId() const;
+
+public slots:
+    void update();
+    void startCameraDrag(const QPoint &startPoint);
+
+signals:
+    void cameraDragFinished();
+
+protected:
+    friend class CentralWidget3D;
+    void resize(int w, int h);
+
+private:
+    Internal::Viewport3DPrivate *d;
+};
+
+} // namespace Editor3D
 
 #endif // VIEWPORT3D_H

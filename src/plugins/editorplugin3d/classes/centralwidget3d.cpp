@@ -16,13 +16,10 @@
 **************************************************************************/
 
 #include "centralwidget3d.h"
+#include "viewport3d.h"
 
 #include <utils3d/utils3d_global.h>
 
-#include <QtGui/QPainter>
-#include <QtGui/QPaintEvent>
-
-#include <QtOpenGL/QGLFramebufferObject>
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>
 
@@ -30,123 +27,47 @@ using namespace Editor3D;
 
 CentralWidget3D::CentralWidget3D(QWidget *parent)
     :   QGLWidget(parent)
-    ,   _framebufferObjectDisplayListId(0)
+    ,   _viewport(0)
     ,   _fullscreenDisplayListId(0)
-    ,   _framebufferObject(0)
     ,   _vertexShader(0)
     ,   _fragmentShader(0)
     ,   _shaderProgram(0)
     ,   _shaderProgramScreenSizeVariableId(-1)
-    ,   _shaderProgramBound(false)
-    ,   _timerId(0)
-    ,   _rotationY(0)
 {
-    _timerId = startTimer(30);
 }
 
 CentralWidget3D::~CentralWidget3D()
 {
-    _rotationY = 0;
-    _timerId = 0;
-    _shaderProgramBound = false;
+    makeCurrent();
+
     _shaderProgramScreenSizeVariableId = -1;
     _shaderProgram = 0;
     _fragmentShader = 0;
     _vertexShader = 0;
-    delete _framebufferObject;
-    _framebufferObject = 0;
-    makeCurrent();
-    glDeleteLists(_fullscreenDisplayListId, 1);
-    _fullscreenDisplayListId = 0;
-    glDeleteLists(_framebufferObjectDisplayListId, 1);
-    _framebufferObjectDisplayListId = 0;
+    glDeleteLists(_fullscreenDisplayListId, 1);  _fullscreenDisplayListId = 0;
+    delete _viewport;  _viewport = 0;
 }
 
 void CentralWidget3D::initializeGL()
 {
-    initializeFramebufferObject(width(), height());
+    _viewport = new Viewport3D(this, size());
+
     initializeFullscreenShaderProgram();
+
     Q_CHECK_GLERROR;
 }
 
 void CentralWidget3D::paintGL()
 {
     drawFullscreen();
+
     Q_CHECK_GLERROR;
 }
 
 void CentralWidget3D::resizeGL(int w, int h)
 {
-    initializeFramebufferObject(w, h);
-    Q_CHECK_GLERROR;
-}
+    _viewport->resize(w, h);
 
-void CentralWidget3D::timerEvent(QTimerEvent *event)
-{
-    if (event->timerId() != _timerId)
-        return;
-    _rotationY += 1;
-    makeCurrent();
-    drawFramebufferObject(width(), height());
-    updateGL();
-    Q_CHECK_GLERROR;
-}
-
-void CentralWidget3D::initializeFramebufferObject(int w, int h)
-{
-    delete _framebufferObject;
-    _framebufferObject = new QGLFramebufferObject(w, h);
-    initializeFramebufferObjectDisplayList();
-    drawFramebufferObject(w, h);
-    Q_CHECK_GLERROR;
-}
-
-void CentralWidget3D::initializeFramebufferObjectDisplayList()
-{
-    static const GLfloat P1[3] = { 0.0, -1.0, 2.0 };
-    static const GLfloat P2[3] = { 1.73205081, -1.0, -1.0 };
-    static const GLfloat P3[3] = { -1.73205081, -1.0, -1.0 };
-    static const GLfloat P4[3] = { 0.0, 2.0, 0.0 };
-    static const GLfloat * const coords[4][3] = {
-        { P1, P2, P3 }, { P1, P3, P4 }, { P1, P4, P2 }, { P2, P4, P3 }
-    };
-    static const QColor faceColors[] = {
-        Qt::red, Qt::green, Qt::blue, Qt::yellow
-    };
-    _framebufferObjectDisplayListId = glGenLists(1);
-    glNewList(_framebufferObjectDisplayListId, GL_COMPILE);
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < 4; ++i) {
-        qglColor(faceColors[i]);
-        for (int j = 0; j < 3; ++j)
-            glVertex3f(coords[i][j][0], coords[i][j][1], coords[i][j][2]);
-    }
-    glEnd();
-    glEndList();
-    Q_CHECK_GLERROR;
-}
-
-void CentralWidget3D::drawFramebufferObject(int w, int h)
-{
-    releaseShaderProgram();
-    Q_CHECK(_framebufferObject->bind());
-    saveGLState();
-    qglClearColor(Qt::white);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glShadeModel(GL_FLAT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glViewport(0, 0, w, h);
-    // TODO: Fix frustum so view scales correctly when tall and skinny.
-    GLfloat aspect = w / GLfloat(h ? h : 1);
-    glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
-    glTranslatef(0.0, 0.0, -10.0);
-    glRotatef(_rotationY, 0.0, 1.0, 0.0);
-    glCallList(_framebufferObjectDisplayListId);
-    restoreGLState();
-    Q_CHECK(_framebufferObject->release());
     Q_CHECK_GLERROR;
 }
 
@@ -179,6 +100,7 @@ void CentralWidget3D::initializeFullscreenShaderProgram()
     _shaderProgramScreenSizeVariableId = _shaderProgram->uniformLocation("screenSize");
     Q_ASSERT(_shaderProgramScreenSizeVariableId != -1);
     initializeFullscreenDisplayList();
+
     Q_CHECK_GLERROR;
 }
 
@@ -192,60 +114,40 @@ void CentralWidget3D::initializeFullscreenDisplayList()
     glVertex2f(0.0, 4.0);
     glEnd();
     glEndList();
+
     Q_CHECK_GLERROR;
 }
 
 void CentralWidget3D::drawFullscreen()
 {
-    saveGLState();
-    qglClearColor(Qt::black);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     const int w = width();
     const int h = height();
+
+    qglPushState();
+    qglClearColor(Qt::black);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, w, h);
     bindShaderProgram(w, h);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _framebufferObject->texture());
+    glBindTexture(GL_TEXTURE_2D, _viewport->textureId());
     glCallList(_fullscreenDisplayListId);
-    restoreGLState();
+    releaseShaderProgram();
+    qglPopState();
+
     Q_CHECK_GLERROR;
 }
 
 void CentralWidget3D::bindShaderProgram(int w, int h)
 {
-    if (!_shaderProgramBound) {
-        Q_CHECK(_shaderProgram->bind());
-        _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, w, h);
-        _shaderProgramBound = true;
-        Q_CHECK_GLERROR;
-    }
+    Q_CHECK(_shaderProgram->bind());
+    _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, w, h);
+
+    Q_CHECK_GLERROR;
 }
 
 void CentralWidget3D::releaseShaderProgram()
 {
-    if (_shaderProgramBound) {
-        _shaderProgram->release();
-        _shaderProgramBound = false;
-        Q_CHECK_GLERROR;
-    }
-}
+    _shaderProgram->release();
 
-void CentralWidget3D::saveGLState()
-{
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    Q_CHECK_GLERROR;
-}
-
-void CentralWidget3D::restoreGLState()
-{
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    glPopAttrib();
     Q_CHECK_GLERROR;
 }

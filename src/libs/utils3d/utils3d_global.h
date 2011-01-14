@@ -66,4 +66,26 @@ inline const char *qglErrorString(GLenum errorCode)
     }
 }
 
+inline void qglPushState()
+{
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    Q_CHECK_GLERROR;
+}
+
+inline void qglPopState()
+{
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glPopAttrib();
+
+    Q_CHECK_GLERROR;
+}
+
 #endif // UTILS3D_GLOBAL_H
