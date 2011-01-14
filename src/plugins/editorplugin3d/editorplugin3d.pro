@@ -9,6 +9,7 @@ include(editorplugin3d_dependencies.pri)
 DEFINES += EDITOR3D_LIBRARY
 
 HEADERS += \
+    classes/centralwidget3d.h \
     classes/viewport3d.h \
     \
     implementations/editor3dmainwindowimpl.h \
@@ -21,6 +22,7 @@ HEADERS += \
     editorplugin3d.h
 
 SOURCES += \
+    classes/centralwidget3d.cpp \
     classes/viewport3d.cpp \
     \
     implementations/editor3dmainwindowimpl.cpp \

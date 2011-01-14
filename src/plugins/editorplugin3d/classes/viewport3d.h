@@ -18,59 +18,59 @@
 #ifndef VIEWPORT3D_H
 #define VIEWPORT3D_H
 
-#include <editorplugin3d/editor3d_global.h>
+//#include <editorplugin3d/editor3d_global.h>
 
-#include <QtOpenGL/QGLWidget>
+//#include <QtOpenGL/QGLWidget>
 
-class QGLFramebufferObject;
-class QGLShader;
-class QGLShaderProgram;
-class QImage;
+//class QGLFramebufferObject;
+//class QGLShader;
+//class QGLShaderProgram;
+//class QImage;
 
-namespace Editor3D {
+//namespace Editor3D {
 
-class EDITOR3D_EXPORT Viewport3D : public QGLWidget
-{
-    Q_OBJECT
+//class EDITOR3D_EXPORT Viewport3D : public QGLWidget
+//{
+//    Q_OBJECT
 
-public:
-    Viewport3D(QWidget *parent = 0);
-    virtual ~Viewport3D();
+//public:
+//    Viewport3D(QWidget *parent = 0);
+//    virtual ~Viewport3D();
 
-protected:
-    virtual void initializeGL();
-    virtual void paintGL();
-    virtual void resizeGL(int w, int h);
-    virtual void timerEvent(QTimerEvent *event);
+//protected:
+//    virtual void initializeGL();
+//    virtual void paintGL();
+//    virtual void resizeGL(int w, int h);
+//    virtual void timerEvent(QTimerEvent *event);
 
-private:
-    void initializeFramebufferObject(int w, int h);
-    void initializeFramebufferObjectDisplayList();
-    void drawFramebufferObject(int w, int h);
+//private:
+//    void initializeFramebufferObject(int w, int h);
+//    void initializeFramebufferObjectDisplayList();
+//    void drawFramebufferObject(int w, int h);
 
-    void initializeFullscreenShaderProgram();
-    void initializeFullscreenDisplayList();
-    void drawFullscreen();
+//    void initializeFullscreenShaderProgram();
+//    void initializeFullscreenDisplayList();
+//    void drawFullscreen();
 
-    void bindShaderProgram(int w, int h);
-    void releaseShaderProgram();
+//    void bindShaderProgram(int w, int h);
+//    void releaseShaderProgram();
 
-    void saveGLState();
-    void restoreGLState();
+//    void saveGLState();
+//    void restoreGLState();
 
-private:
-    GLuint _framebufferObjectDisplayListId;
-    GLuint _fullscreenDisplayListId;
-    QGLFramebufferObject *_framebufferObject;
-    QGLShader *_vertexShader;
-    QGLShader *_fragmentShader;
-    QGLShaderProgram *_shaderProgram;
-    int _shaderProgramScreenSizeVariableId;
-    bool _shaderProgramBound;
-    int _timerId;
-    float _rotationY;
-};
+//private:
+//    GLuint _framebufferObjectDisplayListId;
+//    GLuint _fullscreenDisplayListId;
+//    QGLFramebufferObject *_framebufferObject;
+//    QGLShader *_vertexShader;
+//    QGLShader *_fragmentShader;
+//    QGLShaderProgram *_shaderProgram;
+//    int _shaderProgramScreenSizeVariableId;
+//    bool _shaderProgramBound;
+//    int _timerId;
+//    float _rotationY;
+//};
 
-} // namespace Editor3D
+//} // namespace Editor3D
 
 #endif // VIEWPORT3D_H

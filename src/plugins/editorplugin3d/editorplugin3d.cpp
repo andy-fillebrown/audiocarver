@@ -17,7 +17,7 @@
 
 #include "editorplugin3d.h"
 
-#include "classes/viewport3d.h"
+#include "classes/centralwidget3d.h"
 
 #include "implementations/editor3dmainwindowimpl.h"
 
@@ -48,7 +48,7 @@ bool EditorPlugin3D::initialize(const QStringList &arguments, QString *errorMess
 void EditorPlugin3D::extensionsInitialized()
 {
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-    mw->setCentralWidget(new Viewport3D(mw));
+    mw->setCentralWidget(new CentralWidget3D(mw));
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin3D)
