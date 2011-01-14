@@ -45,6 +45,12 @@ private slots:
     void viewTransparencyNone();
     void viewTransparencyScreen();
     void viewTransparencyFull();
+
+    void windowSplitHorizontal();
+    void windowSplitVertical();
+    void windowRemoveCurrentSplit();
+    void windowRemoveAllSplits();
+    void windowGotoNextSplit();
 };
 
 } // namespace Internal

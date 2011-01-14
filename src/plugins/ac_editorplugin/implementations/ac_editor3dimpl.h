@@ -51,6 +51,12 @@ public:
     virtual void viewTransparencyScreen();
     virtual void viewTransparencyFull();
 
+    virtual void windowSplitHorizontal();
+    virtual void windowSplitVertical();
+    virtual void windowRemoveCurrentSplit();
+    virtual void windowRemoveAllSplits();
+    virtual void windowGotoNextSplit();
+
 private:
     Editor3D::IViewport3D *_viewport;
 };

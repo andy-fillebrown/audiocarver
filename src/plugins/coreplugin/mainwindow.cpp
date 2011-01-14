@@ -211,8 +211,8 @@ void MainWindow::registerContainers()
         } else if (menuBarGroup == Constants::G_WINDOW) {
             id = Constants::M_WINDOW;
             title = tr("&Window");
-            groups  << Constants::G_WINDOW_SIZE
-                    << Constants::G_WINDOW_OTHER;
+            groups.insert(0, Constants::G_WINDOW_SIZE);
+            groups  << Constants::G_WINDOW_OTHER;
         } else if (menuBarGroup == Constants::G_HELP) {
             id = Constants::M_HELP;
             title = tr("&Help");
@@ -349,7 +349,7 @@ void MainWindow::exit()
     // since on close we are going to delete everything
     // so to prevent the deleting of that object we
     // just append it
-    QTimer::singleShot(0, this,  SLOT(close()));
+    QTimer::singleShot(0, this, SLOT(close()));
 }
 
 ActionManager *MainWindow::actionManager() const

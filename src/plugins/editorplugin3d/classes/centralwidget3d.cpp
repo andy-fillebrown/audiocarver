@@ -131,7 +131,7 @@ void CentralWidget3D::drawFramebufferObject(int w, int h)
     releaseShaderProgram();
     Q_CHECK(_framebufferObject->bind());
     saveGLState();
-    qglClearColor(Qt::black);
+    qglClearColor(Qt::white);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -198,7 +198,7 @@ void CentralWidget3D::initializeFullscreenDisplayList()
 void CentralWidget3D::drawFullscreen()
 {
     saveGLState();
-    qglClearColor(Qt::white);
+    qglClearColor(Qt::black);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     const int w = width();
     const int h = height();

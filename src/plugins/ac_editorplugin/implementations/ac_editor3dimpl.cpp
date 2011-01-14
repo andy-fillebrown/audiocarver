@@ -119,3 +119,29 @@ void Editor3DImpl::viewTransparencyFull()
 {
     qDebug() << Q_FUNC_INFO;
 }
+
+void Editor3DImpl::windowSplitHorizontal()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor3DImpl::windowSplitVertical()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor3DImpl::windowRemoveCurrentSplit()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor3DImpl::windowRemoveAllSplits()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor3DImpl::windowGotoNextSplit()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+

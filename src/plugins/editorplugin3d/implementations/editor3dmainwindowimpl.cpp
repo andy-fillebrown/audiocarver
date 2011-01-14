@@ -60,12 +60,15 @@ void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QS
                 << Constants::G_VIEW_PROJECTION
                 << Constants::G_VIEW_TRANSPARENCY;
     }
+    else if (menuBarGroup == Core::Constants::G_WINDOW)
+        groups  << Constants::G_WINDOW_SPLIT;
 }
 
 void MainWindowImpl::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
     Core::ActionContainer *viewMenu = am->actionContainer(Constants::M_VIEW);
+    Core::ActionContainer *windowMenu = am->actionContainer(Core::Constants::M_WINDOW);
     Core::Context globalContext(Core::Constants::C_GLOBAL);
 
     QAction *action = 0;
@@ -154,6 +157,47 @@ void MainWindowImpl::initActions()
     cmd = am->registerAction(action, Constants::VIEWTRANSPARENCYFULL, globalContext);
     subMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
     connect(action, SIGNAL(triggered()), SLOT(viewTransparencyFull()));
+
+    // Window Split Separator
+    action = new QAction(this);
+    action->setSeparator(true);
+    cmd = am->registerAction(action, PRO_NAME_STR".Window.Sep.Split", globalContext);
+    windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
+
+    // Window Split Horizontal Action
+    action = new QAction(tr("Split Horizontal"), this);
+    cmd = am->registerAction(action, Constants::WINDOWSPLITHORIZONTAL, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence("Ctrl+E, 1"));
+    windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
+    connect(action, SIGNAL(triggered()), SLOT(windowSplitHorizontal()));
+
+    // Window Split Vertical Action
+    action = new QAction(tr("Split Vertical"), this);
+    cmd = am->registerAction(action, Constants::WINDOWSPLITVERTICAL, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence("Ctrl+E, 2"));
+    windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
+    connect(action, SIGNAL(triggered()), SLOT(windowSplitVertical()));
+
+    // Window Remove Current Split Action
+    action = new QAction(tr("Remove Current Split"), this);
+    cmd = am->registerAction(action, Constants::WINDOWREMOVECURRENTSPLIT, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence("Ctrl+E, 3"));
+    windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
+    connect(action, SIGNAL(triggered()), SLOT(windowRemoveCurrentSplit()));
+
+    // Window Remove All Splits Action
+    action = new QAction(tr("Remove All Splits"), this);
+    cmd = am->registerAction(action, Constants::WINDOWREMOVEALLSPLITS, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence("Ctrl+E, 4"));
+    windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
+    connect(action, SIGNAL(triggered()), SLOT(windowRemoveAllSplits()));
+
+    // Window Goto Next Split Action
+    action = new QAction(tr("Go to Next Split"), this);
+    cmd = am->registerAction(action, Constants::WINDOWGOTONEXTSPLIT, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence("Ctrl+E, 5"));
+    windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
+    connect(action, SIGNAL(triggered()), SLOT(windowGotoNextSplit()));
 }
 
 void MainWindowImpl::viewAll()
@@ -235,4 +279,49 @@ void MainWindowImpl::viewTransparencyFull()
     if (!ed)
         return;
     ed->viewTransparencyFull();
+}
+
+void MainWindowImpl::windowSplitHorizontal()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->windowSplitHorizontal();
+}
+
+void MainWindowImpl::windowSplitVertical()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->windowSplitVertical();
+}
+
+void MainWindowImpl::windowRemoveCurrentSplit()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->windowRemoveCurrentSplit();
+}
+
+void MainWindowImpl::windowRemoveAllSplits()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->windowRemoveAllSplits();
+}
+
+void MainWindowImpl::windowGotoNextSplit()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IEditor3D *ed = pm->getObject<IEditor3D>();
+    if (!ed)
+        return;
+    ed->windowGotoNextSplit();
 }

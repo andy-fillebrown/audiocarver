@@ -53,6 +53,12 @@ public:
     virtual void viewTransparencyNone() = 0;
     virtual void viewTransparencyScreen() = 0;
     virtual void viewTransparencyFull() = 0;
+
+    virtual void windowSplitHorizontal() = 0;
+    virtual void windowSplitVertical() = 0;
+    virtual void windowRemoveCurrentSplit() = 0;
+    virtual void windowRemoveAllSplits() = 0;
+    virtual void windowGotoNextSplit() = 0;
 };
 
 } // namespace Editor3D
