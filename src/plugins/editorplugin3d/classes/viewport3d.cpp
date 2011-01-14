@@ -17,8 +17,6 @@
 
 #include "viewport3d.h"
 
-#include <utils/utils_global.h>
-
 #include <QtGui/QPainter>
 #include <QtGui/QPaintEvent>
 
@@ -68,6 +66,8 @@ Viewport3D::Viewport3D(QWidget *parent)
 
 Viewport3D::~Viewport3D()
 {
+    _rotationY = 0;
+    _timerId = 0;
     _shaderProgramBound = false;
     _shaderProgramScreenSizeVariableId = -1;
     _shaderProgram = 0;
@@ -108,8 +108,7 @@ void Viewport3D::timerEvent(QTimerEvent *event)
     _rotationY += 1;
     makeCurrent();
     drawFramebufferObject(width(), height());
-    drawFullscreen();
-    swapBuffers();
+    updateGL();
     Q_CHECK_GLERROR;
 }
 
