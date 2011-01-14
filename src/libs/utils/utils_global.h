@@ -40,6 +40,4 @@
 #  define QTCREATOR_UTILS_EXPORT Q_DECL_IMPORT
 #endif
 
-#define Q_CHECK(x) if (!(x)) Q_ASSERT(false);
-
 #endif // UTILS_GLOBAL_H

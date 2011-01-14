@@ -41,6 +41,7 @@ protected:
     virtual void initializeGL();
     virtual void paintGL();
     virtual void resizeGL(int w, int h);
+    virtual void timerEvent(QTimerEvent *event);
 
 private:
     void initializeFramebufferObject(int w, int h);
@@ -50,6 +51,9 @@ private:
     void initializeFullscreenShaderProgram();
     void initializeFullscreenDisplayList();
     void drawFullscreen();
+
+    void bindShaderProgram(int w, int h);
+    void releaseShaderProgram();
 
     void saveGLState();
     void restoreGLState();
@@ -62,6 +66,9 @@ private:
     QGLShader *_fragmentShader;
     QGLShaderProgram *_shaderProgram;
     int _shaderProgramScreenSizeVariableId;
+    bool _shaderProgramBound;
+    int _timerId;
+    float _rotationY;
 };
 
 } // namespace Editor3D
