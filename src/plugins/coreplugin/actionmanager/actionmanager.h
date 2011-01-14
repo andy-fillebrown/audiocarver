@@ -37,9 +37,11 @@
 #include <QtCore/QList>
 
 QT_BEGIN_NAMESPACE
+
 class QAction;
 class QShortcut;
 class QString;
+
 QT_END_NAMESPACE
 
 namespace Core {

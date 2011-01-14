@@ -38,7 +38,9 @@
 #include <QtCore/QMultiHash>
 
 QT_BEGIN_NAMESPACE
+
 class QSettings;
+
 QT_END_NAMESPACE
 
 struct CommandLocation

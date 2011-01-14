@@ -36,7 +36,9 @@
 #include <QtCore/QStringList>
 
 QT_BEGIN_NAMESPACE
+
 class QMainWindow;
+
 QT_END_NAMESPACE
 
 namespace Core {

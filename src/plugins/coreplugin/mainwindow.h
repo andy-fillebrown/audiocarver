@@ -38,10 +38,12 @@
 #include <QtGui/QColor>
 
 QT_BEGIN_NAMESPACE
+
 class QSettings;
 class QShortcut;
 class QPrinter;
 class QToolButton;
+
 QT_END_NAMESPACE
 
 namespace Core {
@@ -136,6 +138,7 @@ private:
     QAction *m_exitAction;
     QAction *m_optionsAction;
     QAction *m_toggleFullScreenAction;
+
 #ifdef Q_WS_MAC
     QAction *m_minimizeAction;
     QAction *m_zoomAction;

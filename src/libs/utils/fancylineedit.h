@@ -39,7 +39,7 @@ namespace Utils {
 
 class FancyLineEditPrivate;
 
-class QTCREATOR_UTILS_EXPORT IconButton: public QAbstractButton
+class UTILS_EXPORT IconButton: public QAbstractButton
 {
     Q_OBJECT
     Q_PROPERTY(float iconOpacity READ iconOpacity WRITE setIconOpacity)
@@ -70,7 +70,7 @@ private:
  * text if isShowingHintText() returns true (that is, does not contain
  * valid user input).
  */
-class QTCREATOR_UTILS_EXPORT FancyLineEdit : public QLineEdit
+class UTILS_EXPORT FancyLineEdit : public QLineEdit
 {
     Q_DISABLE_COPY(FancyLineEdit)
     Q_OBJECT

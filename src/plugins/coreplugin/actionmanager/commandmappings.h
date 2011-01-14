@@ -35,10 +35,12 @@
 #include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
+
 class QLineEdit;
 class QTreeWidget;
 class QTreeWidgetItem;
 class Ui_CommandMappings;
+
 QT_END_NAMESPACE
 
 namespace Core {

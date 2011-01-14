@@ -39,7 +39,7 @@
 
 namespace Utils {
 
-class QTCREATOR_UTILS_EXPORT EnvironmentItem
+class UTILS_EXPORT EnvironmentItem
 {
 public:
     EnvironmentItem(QString n, QString v)
@@ -59,7 +59,7 @@ public:
     static QStringList toStringList(QList<EnvironmentItem> list);
 };
 
-class QTCREATOR_UTILS_EXPORT Environment {
+class UTILS_EXPORT Environment {
 public:
     typedef QMap<QString, QString>::const_iterator const_iterator;
 

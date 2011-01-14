@@ -34,7 +34,9 @@
 #include <QtCore/QObject>
 
 namespace Core {
+
 class IEditor;
+
 /*!
   \class Core::ICoreListener
 
@@ -62,6 +64,7 @@ the core plugin.
 class CORE_EXPORT ICoreListener : public QObject
 {
     Q_OBJECT
+
 public:
     ICoreListener(QObject *parent = 0) : QObject(parent) {}
     virtual ~ICoreListener() {}

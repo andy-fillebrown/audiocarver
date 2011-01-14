@@ -35,7 +35,9 @@
 #include <QtGui/QKeySequence>
 
 QT_BEGIN_NAMESPACE
+
 class QKeyEvent;
+
 QT_END_NAMESPACE
 
 namespace Core {

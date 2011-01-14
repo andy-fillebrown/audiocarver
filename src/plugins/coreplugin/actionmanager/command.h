@@ -35,9 +35,11 @@
 #include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
+
 class QAction;
 class QShortcut;
 class QKeySequence;
+
 QT_END_NAMESPACE
 
 

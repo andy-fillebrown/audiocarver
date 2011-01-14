@@ -36,7 +36,7 @@ namespace Utils {
 
 /* A fancy line edit customized for filtering purposes with a clear button. */
 
-class QTCREATOR_UTILS_EXPORT FilterLineEdit : public FancyLineEdit
+class UTILS_EXPORT FilterLineEdit : public FancyLineEdit
 {
     Q_OBJECT
 public:

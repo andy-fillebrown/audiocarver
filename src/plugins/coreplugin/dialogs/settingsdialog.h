@@ -39,11 +39,13 @@
 #include <QtGui/QDialog>
 
 QT_BEGIN_NAMESPACE
+
 class QModelIndex;
 class QSortFilterProxyModel;
 class QStackedLayout;
 class QLabel;
 class QListView;
+
 QT_END_NAMESPACE
 
 namespace Utils {

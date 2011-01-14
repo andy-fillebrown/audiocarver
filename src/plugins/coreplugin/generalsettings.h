@@ -34,7 +34,9 @@
 #include <QtCore/QPointer>
 
 QT_BEGIN_NAMESPACE
+
 class QMessageBox;
+
 QT_END_NAMESPACE
 
 namespace Core {

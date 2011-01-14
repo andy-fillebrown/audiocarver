@@ -33,14 +33,18 @@
 #include <QtGui/QDialog>
 
 QT_BEGIN_NAMESPACE
+
 class QPushButton;
 class QLabel;
+
 QT_END_NAMESPACE
 
 namespace ExtensionSystem {
+
 class PluginSpec;
 class PluginView;
-}
+
+} // namespace ExtensionSystem
 
 namespace Core {
 namespace Internal {

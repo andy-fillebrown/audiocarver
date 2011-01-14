@@ -47,7 +47,7 @@ still interactively resizable.
 
 */
 
-class QTCREATOR_UTILS_EXPORT TreeWidgetColumnStretcher : public QObject
+class UTILS_EXPORT TreeWidgetColumnStretcher : public QObject
 {
     int m_columnToStretch;
 public:

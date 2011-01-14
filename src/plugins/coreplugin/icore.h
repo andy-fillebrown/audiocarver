@@ -36,9 +36,11 @@
 #include <QtCore/QSettings>
 
 QT_BEGIN_NAMESPACE
+
 class QPrinter;
 class QStatusBar;
 template <class T> class QList;
+
 QT_END_NAMESPACE
 
 namespace Core {

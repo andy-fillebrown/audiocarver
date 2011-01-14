@@ -44,7 +44,7 @@ QT_END_NAMESPACE
 
 namespace Utils {
 
-class QTCREATOR_UTILS_EXPORT UnixUtils
+class UTILS_EXPORT UnixUtils
 {
 public:
     static QString defaultFileBrowser();

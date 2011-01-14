@@ -33,9 +33,11 @@
 #include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
+
 class QMenu;
 class QMenuBar;
 class QAction;
+
 QT_END_NAMESPACE
 
 namespace Core {
