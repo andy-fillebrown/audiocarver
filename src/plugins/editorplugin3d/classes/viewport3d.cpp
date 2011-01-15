@@ -33,7 +33,7 @@ namespace Internal {
 class Viewport3DPrivate : public QObject
 {
 public:
-    Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidget, const QSize &size);
+    Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidget, int w, int h);
     ~Viewport3DPrivate();
 
     Viewport3D *q;
@@ -42,6 +42,9 @@ public:
     GLuint displayListId;
     int timerId;
     float rotation;
+    float rotationDelta;
+    QColor backgroundColor;
+    bool dirty;
 
     void initFBO(int w, int h);
     void initDisplayList();
@@ -52,23 +55,37 @@ protected:
     virtual void timerEvent(QTimerEvent *event);
 };
 
-Viewport3DPrivate::Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidget, const QSize &size)
+Viewport3DPrivate::Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidget, int w, int h)
     :   q(q)
     ,   centralWidget(centralWidget)
     ,   fbo(0)
     ,   displayListId(0)
     ,   timerId(0)
+    ,   rotation(0)
+    ,   rotationDelta(0)
+    ,   backgroundColor(Qt::white)
+    ,   dirty(true)
 {
-    initFBO(size.width(), size.height());
+    initFBO(w, h);
     initDisplayList();
     draw();
-    timerId = startTimer(30);
+
+//    static bool timerStarted = false;
+//    if (!timerStarted) {
+//        timerStarted = true;
+        timerId = startTimer(30);
+//    }
 }
 
 Viewport3DPrivate::~Viewport3DPrivate()
 {
     centralWidget->makeCurrent();
 
+    dirty = true;
+    backgroundColor = Qt::white;
+    rotationDelta = 0;
+    rotation = 0;
+    timerId = 0;
     glDeleteLists(displayListId, 1);  displayListId = 0;
     delete fbo;  fbo = 0;
     centralWidget = 0;
@@ -120,10 +137,11 @@ void Viewport3DPrivate::draw()
     const GLfloat aspect = w / GLfloat(h ? h : 1);
 
     centralWidget->makeCurrent();
+
     Q_CHECK(fbo->bind());
 
     qglPushState();
-    centralWidget->qglClearColor(Qt::white);
+    centralWidget->qglClearColor(backgroundColor);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -139,36 +157,39 @@ void Viewport3DPrivate::draw()
 
     Q_CHECK(fbo->release());
 
+    dirty = false;
+
     Q_CHECK_GLERROR;
 }
 
 void Viewport3DPrivate::resize(int w, int h)
 {
     initFBO(w, h);
-    draw();
+
+    dirty = true;
 }
 
 void Viewport3DPrivate::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() != timerId)
         return;
-    rotation += 1;
-    draw();
-    centralWidget->updateGL();
+
+    rotation += rotationDelta;
+
+    dirty = true;
 }
 
 } // namespace Internal
 } // namespace Editor3D
 
-Viewport3D::Viewport3D(CentralWidget3D *centralWidget, const QSize &size)
-    :   d(new Viewport3DPrivate(this, centralWidget, size))
+Viewport3D::Viewport3D(CentralWidget3D *centralWidget, int w, int h)
+    :   d(new Viewport3DPrivate(this, centralWidget, w, h))
 {
 }
 
 Viewport3D::~Viewport3D()
 {
-    delete d;
-    d = 0;
+    delete d;  d = 0;
 }
 
 CentralWidget3D *Viewport3D::centralWidget() const
@@ -179,6 +200,16 @@ CentralWidget3D *Viewport3D::centralWidget() const
 QSize Viewport3D::size() const
 {
     return d->fbo->size();
+}
+
+void Viewport3D::setBackgroundColor(const QColor &color)
+{
+    d->backgroundColor = color;
+}
+
+void Viewport3D::setRotation(float rotation)
+{
+    d->rotationDelta = rotation;
 }
 
 GLuint Viewport3D::textureId() const
@@ -199,4 +230,9 @@ void Viewport3D::startCameraDrag(const QPoint &startPoint)
 void Viewport3D::resize(int w, int h)
 {
     d->resize(w, h);
+}
+
+bool Viewport3D::isDirty() const
+{
+    return d->dirty;
 }

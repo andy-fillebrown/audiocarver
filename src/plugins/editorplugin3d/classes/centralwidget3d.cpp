@@ -27,13 +27,16 @@ using namespace Editor3D;
 
 CentralWidget3D::CentralWidget3D(QWidget *parent)
     :   QGLWidget(parent)
-    ,   _viewport(0)
+    ,   _viewportLeft(0)
+    ,   _viewportRight(0)
     ,   _fullscreenDisplayListId(0)
     ,   _vertexShader(0)
     ,   _fragmentShader(0)
     ,   _shaderProgram(0)
+    ,   _shaderProgramScreenOriginVariableId(-1)
     ,   _shaderProgramScreenSizeVariableId(-1)
 {
+    startTimer(30);
 }
 
 CentralWidget3D::~CentralWidget3D()
@@ -41,16 +44,27 @@ CentralWidget3D::~CentralWidget3D()
     makeCurrent();
 
     _shaderProgramScreenSizeVariableId = -1;
+    _shaderProgramScreenOriginVariableId = -1;
     _shaderProgram = 0;
     _fragmentShader = 0;
     _vertexShader = 0;
     glDeleteLists(_fullscreenDisplayListId, 1);  _fullscreenDisplayListId = 0;
-    delete _viewport;  _viewport = 0;
+    delete _viewportRight;  _viewportRight = 0;
+    delete _viewportLeft;  _viewportLeft = 0;
 }
 
 void CentralWidget3D::initializeGL()
 {
-    _viewport = new Viewport3D(this, size());
+    const int w = width() / 2;
+    const int h = height();
+
+    _viewportLeft = new Viewport3D(this, w, h);
+    _viewportLeft->setBackgroundColor(Qt::white);
+    _viewportLeft->setRotation(2);
+
+    _viewportRight = new Viewport3D(this, w, h);
+    _viewportRight->setBackgroundColor(Qt::lightGray);
+    _viewportRight->setRotation(3);
 
     initializeFullscreenShaderProgram();
 
@@ -66,9 +80,16 @@ void CentralWidget3D::paintGL()
 
 void CentralWidget3D::resizeGL(int w, int h)
 {
-    _viewport->resize(w, h);
+    w /= 2;
+    _viewportLeft->resize(w, h);
+    _viewportRight->resize(w, h);
 
     Q_CHECK_GLERROR;
+}
+
+void CentralWidget3D::timerEvent(QTimerEvent *event)
+{
+    updateGL();
 }
 
 void CentralWidget3D::initializeFullscreenShaderProgram()
@@ -80,10 +101,11 @@ void CentralWidget3D::initializeFullscreenShaderProgram()
             "}";
     const QString fs =
             "uniform sampler2D Texture;\n"
+            "uniform vec2 screenOrigin;\n"
             "uniform vec2 screenSize;\n"
             "void main(void)\n"
             "{\n"
-            "   gl_FragColor = texture2D(Texture, gl_FragCoord.xy / screenSize);\n"
+            "   gl_FragColor = texture2D(Texture, (gl_FragCoord.xy - screenOrigin) / screenSize);\n"
             "}";
     _vertexShader = new QGLShader(QGLShader::Vertex, this);
     Q_CHECK(_vertexShader->compileSourceCode(vs));
@@ -97,6 +119,7 @@ void CentralWidget3D::initializeFullscreenShaderProgram()
     Q_CHECK(_shaderProgram->addShader(_vertexShader));
     Q_CHECK(_shaderProgram->addShader(_fragmentShader));
     Q_CHECK(_shaderProgram->link());
+    _shaderProgramScreenOriginVariableId = _shaderProgram->uniformLocation("screenOrigin");
     _shaderProgramScreenSizeVariableId = _shaderProgram->uniformLocation("screenSize");
     Q_ASSERT(_shaderProgramScreenSizeVariableId != -1);
     initializeFullscreenDisplayList();
@@ -120,34 +143,40 @@ void CentralWidget3D::initializeFullscreenDisplayList()
 
 void CentralWidget3D::drawFullscreen()
 {
-    const int w = width();
-    const int h = height();
-
     qglPushState();
+
+    if (_viewportLeft->isDirty())
+        _viewportLeft->update();
+    if (_viewportRight->isDirty())
+        _viewportRight->update();
+
     qglClearColor(Qt::black);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, w, h);
-    bindShaderProgram(w, h);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, _viewport->textureId());
-    glCallList(_fullscreenDisplayListId);
-    releaseShaderProgram();
-    qglPopState();
 
-    Q_CHECK_GLERROR;
-}
-
-void CentralWidget3D::bindShaderProgram(int w, int h)
-{
     Q_CHECK(_shaderProgram->bind());
-    _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, w, h);
 
-    Q_CHECK_GLERROR;
-}
+    const QSize vpL = _viewportLeft->size();
+    const int vpL_w = vpL.width();
+    const int vpL_h = vpL.height();
+    glViewport(0, 0, vpL.width(), vpL.height());
+    _shaderProgram->setUniformValue(_shaderProgramScreenOriginVariableId, 0, 0);
+    _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, vpL_w, vpL_h);
+    glBindTexture(GL_TEXTURE_2D, _viewportLeft->textureId());
+    glCallList(_fullscreenDisplayListId);
 
-void CentralWidget3D::releaseShaderProgram()
-{
+    const QSize vpR = _viewportRight->size();
+    const int vpR_w = vpR.width();
+    const int vpR_h = vpR.height();
+    glViewport(vpL_w, 0, vpR_w, vpR_h);
+    _shaderProgram->setUniformValue(_shaderProgramScreenOriginVariableId, vpL_w, 0);
+    _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, vpR_w, vpR_h);
+    glBindTexture(GL_TEXTURE_2D, _viewportRight->textureId());
+    glCallList(_fullscreenDisplayListId);
+
     _shaderProgram->release();
+
+    qglPopState();
 
     Q_CHECK_GLERROR;
 }

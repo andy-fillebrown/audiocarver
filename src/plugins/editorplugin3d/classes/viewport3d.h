@@ -40,15 +40,16 @@ class Viewport3DPrivate;
 class EDITOR3D_EXPORT Viewport3D : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QSize size READ size);
 
 public:
-    Viewport3D(CentralWidget3D *centralWidget, const QSize &size);
+    Viewport3D(CentralWidget3D *centralWidget, int w, int h);
     virtual ~Viewport3D();
 
     CentralWidget3D *centralWidget() const;
     QSize size() const;
 
+    void setBackgroundColor(const QColor &color);
+    void setRotation(float rotation);
     GLuint textureId() const;
 
 public slots:
@@ -61,6 +62,7 @@ signals:
 protected:
     friend class CentralWidget3D;
     void resize(int w, int h);
+    bool isDirty() const;
 
 private:
     Internal::Viewport3DPrivate *d;

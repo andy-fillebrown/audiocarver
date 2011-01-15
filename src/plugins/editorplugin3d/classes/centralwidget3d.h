@@ -46,24 +46,21 @@ protected:
     virtual void initializeGL();
     virtual void paintGL();
     virtual void resizeGL(int w, int h);
+    virtual void timerEvent(QTimerEvent *event);
 
 private:
     void initializeFullscreenShaderProgram();
     void initializeFullscreenDisplayList();
     void drawFullscreen();
 
-    void bindShaderProgram(int w, int h);
-    void releaseShaderProgram();
-
-    void saveGLState();
-    void restoreGLState();
-
 private:
-    Viewport3D *_viewport;
+    Viewport3D *_viewportLeft;
+    Viewport3D *_viewportRight;
     GLuint _fullscreenDisplayListId;
     QGLShader *_vertexShader;
     QGLShader *_fragmentShader;
     QGLShaderProgram *_shaderProgram;
+    int _shaderProgramScreenOriginVariableId;
     int _shaderProgramScreenSizeVariableId;
 };
 
