@@ -292,7 +292,7 @@ void MainWindow::registerActions()
         connect(m_zoomAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
 
         // Window separator
-        cmd = createSeparator(am, this, QLatin1String("SuperConductor.Window.Sep.Size"), globalContext);
+        cmd = createSeparator(am, this, QLatin1String(PRO_NAME_STR".Window.Sep.Size"), globalContext);
         mwindow->addAction(cmd, Constants::G_WINDOW_SIZE);
     }
 #   else
