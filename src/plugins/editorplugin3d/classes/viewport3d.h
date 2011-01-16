@@ -62,7 +62,6 @@ signals:
 protected:
     friend class CentralWidget3D;
     void resize(int w, int h);
-    bool isDirty() const;
 
 private:
     Internal::Viewport3DPrivate *d;

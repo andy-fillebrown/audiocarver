@@ -145,10 +145,8 @@ void CentralWidget3D::drawFullscreen()
 {
     qglPushState();
 
-    if (_viewportLeft->isDirty())
-        _viewportLeft->update();
-    if (_viewportRight->isDirty())
-        _viewportRight->update();
+    _viewportLeft->update();
+    _viewportRight->update();
 
     qglClearColor(Qt::black);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

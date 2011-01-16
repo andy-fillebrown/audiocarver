@@ -70,11 +70,7 @@ Viewport3DPrivate::Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidg
     initDisplayList();
     draw();
 
-//    static bool timerStarted = false;
-//    if (!timerStarted) {
-//        timerStarted = true;
-        timerId = startTimer(30);
-//    }
+    timerId = startTimer(30);
 }
 
 Viewport3DPrivate::~Viewport3DPrivate()
@@ -95,6 +91,7 @@ Viewport3DPrivate::~Viewport3DPrivate()
 void Viewport3DPrivate::initFBO(int w, int h)
 {
     centralWidget->makeCurrent();
+
     delete fbo;
     fbo = new QGLFramebufferObject(w, h);
 
@@ -140,7 +137,6 @@ void Viewport3DPrivate::draw()
 
     Q_CHECK(fbo->bind());
 
-    qglPushState();
     centralWidget->qglClearColor(backgroundColor);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -153,7 +149,6 @@ void Viewport3DPrivate::draw()
     glTranslatef(0.0, 0.0, -10.0);
     glRotatef(rotation, 0.0, 1.0, 0.0);
     glCallList(displayListId);
-    qglPopState();
 
     Q_CHECK(fbo->release());
 
@@ -219,7 +214,8 @@ GLuint Viewport3D::textureId() const
 
 void Viewport3D::update()
 {
-    d->draw();
+    if (d->dirty)
+        d->draw();
 }
 
 void Viewport3D::startCameraDrag(const QPoint &startPoint)
@@ -230,9 +226,4 @@ void Viewport3D::startCameraDrag(const QPoint &startPoint)
 void Viewport3D::resize(int w, int h)
 {
     d->resize(w, h);
-}
-
-bool Viewport3D::isDirty() const
-{
-    return d->dirty;
 }
