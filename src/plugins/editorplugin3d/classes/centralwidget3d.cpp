@@ -89,6 +89,7 @@ void CentralWidget3D::resizeGL(int w, int h)
 
 void CentralWidget3D::timerEvent(QTimerEvent *event)
 {
+    Q_UNUSED(event);
     updateGL();
 }
 

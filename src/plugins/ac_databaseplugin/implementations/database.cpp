@@ -52,8 +52,10 @@ void DatabaseImpl::clear()
 
 void DatabaseImpl::read(const QString &fileName)
 {
+    Q_UNUSED(fileName);
 }
 
 void DatabaseImpl::write(const QString &fileName)
 {
+    Q_UNUSED(fileName);
 }

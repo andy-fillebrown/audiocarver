@@ -20,6 +20,8 @@
 
 #include <databaseplugin/database_global.h>
 
+#include <QtCore/QObject>
+
 namespace Database {
 
 class DATABASE_EXPORT IDatabase : public QObject

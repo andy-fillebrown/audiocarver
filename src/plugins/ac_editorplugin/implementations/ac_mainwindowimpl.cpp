@@ -32,6 +32,8 @@
 #include <coreplugin/mainwindow.h>
 #include <coreplugin/versiondialog.h>
 
+#include <QtCore/QDebug>
+
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 
@@ -55,6 +57,9 @@ void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 
 void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
+    Q_UNUSED(id);
+    Q_UNUSED(title);
+
     if (menuBarGroup == Editor3D::Constants::G_VIEW) {
         const int viewAllIndex = groups.indexOf(Editor3D::Constants::G_VIEW_ALL);
         groups.insert(viewAllIndex + 1, Constants::G_VIEW_PRESET);

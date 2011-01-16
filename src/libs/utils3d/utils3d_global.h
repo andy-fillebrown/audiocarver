@@ -30,7 +30,9 @@
 #ifndef UTILS3D_GLOBAL_H
 #define UTILS3D_GLOBAL_H
 
-#include <Utils/utils_global.h>
+#include <utils/utils_global.h>
+
+#include <QtCore/QDebug>
 
 #include <QtOpenGL/qgl.h>
 
