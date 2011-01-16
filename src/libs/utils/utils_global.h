@@ -38,10 +38,14 @@
 #  define UTILS_EXPORT Q_DECL_IMPORT
 #endif
 
-#define Q_CHECK(x) \
-{ \
-    bool ok = x; \
-    Q_ASSERT(ok); \
-}
+#if defined(QT_NO_DEBUG)
+#  define Q_CHECK(x) x
+#else
+#  define Q_CHECK(x) \
+          { \
+              bool ok = x; \
+              Q_ASSERT(ok); \
+          }
+#endif
 
 #endif // UTILS_GLOBAL_H

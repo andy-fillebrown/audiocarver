@@ -17,6 +17,8 @@
 
 #include "ac_editor3dimpl.h"
 
+#include <QtCore/QDebug>
+
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
