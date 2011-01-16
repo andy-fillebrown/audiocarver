@@ -50,7 +50,8 @@ public:
 
     void setBackgroundColor(const QColor &color);
     void setRotation(float rotation);
-    GLuint textureId() const;
+    GLuint staticTextureId() const;
+    GLuint animatedTextureId() const;
 
 public slots:
     void update();

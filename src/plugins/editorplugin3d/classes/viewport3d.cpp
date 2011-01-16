@@ -38,17 +38,21 @@ public:
 
     Viewport3D *q;
     CentralWidget3D *centralWidget;
-    QGLFramebufferObject *fbo;
-    GLuint displayListId;
+    QGLFramebufferObject *staticFBO;
+    QGLFramebufferObject *animatedFBO;
+    GLuint staticDisplayListId;
+    GLuint animatedDisplayListId;
     int timerId;
     float rotation;
     float rotationDelta;
     QColor backgroundColor;
-    bool dirty;
+    bool dirtyStaticFBO;
+    bool dirtyAnimatedFBO;
 
-    void initFBO(int w, int h);
-    void initDisplayList();
-    void draw();
+    void initFBOs(int w, int h);
+    void initDisplayLists();
+    void drawStaticFBO();
+    void drawAnimatedFBO();
     void resize(int w, int h);
 
 protected:
@@ -58,17 +62,21 @@ protected:
 Viewport3DPrivate::Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidget, int w, int h)
     :   q(q)
     ,   centralWidget(centralWidget)
-    ,   fbo(0)
-    ,   displayListId(0)
+    ,   staticFBO(0)
+    ,   animatedFBO(0)
+    ,   staticDisplayListId(0)
+    ,   animatedDisplayListId(0)
     ,   timerId(0)
     ,   rotation(0)
     ,   rotationDelta(0)
     ,   backgroundColor(Qt::white)
-    ,   dirty(true)
+    ,   dirtyStaticFBO(true)
+    ,   dirtyAnimatedFBO(true)
 {
-    initFBO(w, h);
-    initDisplayList();
-    draw();
+    initFBOs(w, h);
+    initDisplayLists();
+    drawStaticFBO();
+    drawAnimatedFBO();
 
     timerId = startTimer(30);
 }
@@ -77,65 +85,118 @@ Viewport3DPrivate::~Viewport3DPrivate()
 {
     centralWidget->makeCurrent();
 
-    dirty = true;
+    dirtyAnimatedFBO = true;
+    dirtyStaticFBO = true;
     backgroundColor = Qt::white;
     rotationDelta = 0;
     rotation = 0;
     timerId = 0;
-    glDeleteLists(displayListId, 1);  displayListId = 0;
-    delete fbo;  fbo = 0;
+    glDeleteLists(animatedDisplayListId, 1);  animatedDisplayListId = 0;
+    glDeleteLists(staticDisplayListId, 1);  staticDisplayListId = 0;
+    delete animatedFBO;  animatedFBO = 0;
+    delete staticFBO;  staticFBO = 0;
     centralWidget = 0;
     q = 0;
 }
 
-void Viewport3DPrivate::initFBO(int w, int h)
+void Viewport3DPrivate::initFBOs(int w, int h)
 {
     centralWidget->makeCurrent();
 
-    delete fbo;
-    fbo = new QGLFramebufferObject(w, h);
+    delete staticFBO;
+    staticFBO = new QGLFramebufferObject(w, h);
+    Q_ASSERT(staticFBO->isValid());
 
-    Q_ASSERT(fbo->isValid());
+    delete animatedFBO;
+    animatedFBO = new QGLFramebufferObject(w, h);
+    Q_ASSERT(animatedFBO->isValid());
 }
 
-void Viewport3DPrivate::initDisplayList()
+void Viewport3DPrivate::initDisplayLists()
 {
-    static const GLfloat P1[3] = { 0.0, -1.0, 2.0 };
-    static const GLfloat P2[3] = { 1.73205081, -1.0, -1.0 };
-    static const GLfloat P3[3] = { -1.73205081, -1.0, -1.0 };
-    static const GLfloat P4[3] = { 0.0, 2.0, 0.0 };
-    static const GLfloat * const coords[4][3] = {
-        { P1, P2, P3 }, { P1, P3, P4 }, { P1, P4, P2 }, { P2, P4, P3 }
+    // animated fbo's display list
+    static const GLfloat A1[3] = { 0.0, -1.0, 2.0 };
+    static const GLfloat A2[3] = { 1.73205081, -1.0, -1.0 };
+    static const GLfloat A3[3] = { -1.73205081, -1.0, -1.0 };
+    static const GLfloat A4[3] = { 0.0, 2.0, 0.0 };
+    static const GLfloat * const coordsA[4][3] = {
+        { A1, A2, A3 }, { A1, A3, A4 }, { A1, A4, A2 }, { A2, A4, A3 }
     };
-    static const QColor faceColors[] = {
+    static const QColor faceColorsA[] = {
         Qt::red, Qt::green, Qt::blue, Qt::yellow
     };
-
-    displayListId = glGenLists(1);
-    glNewList(displayListId, GL_COMPILE);
+    animatedDisplayListId = glGenLists(1);
+    glNewList(animatedDisplayListId, GL_COMPILE);
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < 4; ++i) {
-        centralWidget->qglColor(faceColors[i]);
+    for (int i = 0;  i < 4;  ++i) {
+        centralWidget->qglColor(faceColorsA[i]);
         for (int j = 0; j < 3; ++j)
-            glVertex3f(coords[i][j][0], coords[i][j][1], coords[i][j][2]);
+            glVertex3f(coordsA[i][j][0], coordsA[i][j][1], coordsA[i][j][2]);
     }
     glEnd();
     glEndList();
+    Q_CHECK_GLERROR;
 
+    // static fbo's display list
+    static const GLfloat x = 1.0f;
+    static const GLfloat y = 1.0f;
+    static const GLfloat S1[3] = { x, y, 0.0 };
+    static const GLfloat S2[3] = { x, -y, 0.0 };
+    static const GLfloat S3[3] = { -x, y, 0.0 };
+    static const GLfloat S4[3] = { -x, -y, 0.0 };
+    static const GLfloat * const coordsS[2][3] = {
+        { S2, S1, S3 }, { S3, S4, S2 }
+    };
+    staticDisplayListId = glGenLists(1);
+    glNewList(staticDisplayListId, GL_COMPILE);
+    glBegin(GL_TRIANGLES);
+    centralWidget->qglColor(Qt::lightGray);
+    for (int i = 0;  i < 2;  ++i) {
+        for (int j = 0;  j < 3;  ++j)
+            glVertex3f(coordsS[i][j][0], coordsS[i][j][1], coordsS[i][j][2]);
+    }
+    glEnd();
+    glEndList();
     Q_CHECK_GLERROR;
 }
 
-// TODO: Fix frustum so view scales correctly when tall and narrow.
-void Viewport3DPrivate::draw()
+void Viewport3DPrivate::drawStaticFBO()
 {
-    const QSize size = fbo->size();
+    const QSize size = staticFBO->size();
+    const int w = size.width();
+    const int h = size.height();
+    const GLfloat aspect = w / GLfloat(h ? h : 1);
+
+    centralWidget->makeCurrent();
+    Q_CHECK(staticFBO->bind());
+
+    centralWidget->qglClearColor(backgroundColor);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glShadeModel(GL_FLAT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glViewport(0, 0, w, h);
+    glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
+    glTranslatef(0.0, 0.0, -10.0);
+    glCallList(staticDisplayListId);
+
+    Q_CHECK(staticFBO->release());
+    Q_CHECK_GLERROR;
+    dirtyStaticFBO = false;
+}
+
+void Viewport3DPrivate::drawAnimatedFBO()
+{
+    const QSize size = animatedFBO->size();
     const int w = size.width();
     const int h = size.height();
     const GLfloat aspect = w / GLfloat(h ? h : 1);
 
     centralWidget->makeCurrent();
 
-    Q_CHECK(fbo->bind());
+    Q_CHECK(animatedFBO->bind());
 
     centralWidget->qglClearColor(backgroundColor);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -148,20 +209,18 @@ void Viewport3DPrivate::draw()
     glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
     glTranslatef(0.0, 0.0, -10.0);
     glRotatef(rotation, 0.0, 1.0, 0.0);
-    glCallList(displayListId);
+    glCallList(animatedDisplayListId);
 
-    Q_CHECK(fbo->release());
-
-    dirty = false;
-
+    Q_CHECK(animatedFBO->release());
     Q_CHECK_GLERROR;
+    dirtyAnimatedFBO = false;
 }
 
 void Viewport3DPrivate::resize(int w, int h)
 {
-    initFBO(w, h);
-
-    dirty = true;
+    initFBOs(w, h);
+    dirtyStaticFBO = true;
+    dirtyAnimatedFBO = true;
 }
 
 void Viewport3DPrivate::timerEvent(QTimerEvent *event)
@@ -170,8 +229,7 @@ void Viewport3DPrivate::timerEvent(QTimerEvent *event)
         return;
 
     rotation += rotationDelta;
-
-    dirty = true;
+    dirtyAnimatedFBO = true;
 }
 
 } // namespace Internal
@@ -194,7 +252,7 @@ CentralWidget3D *Viewport3D::centralWidget() const
 
 QSize Viewport3D::size() const
 {
-    return d->fbo->size();
+    return d->staticFBO->size();
 }
 
 void Viewport3D::setBackgroundColor(const QColor &color)
@@ -207,15 +265,23 @@ void Viewport3D::setRotation(float rotation)
     d->rotationDelta = rotation;
 }
 
-GLuint Viewport3D::textureId() const
+GLuint Viewport3D::staticTextureId() const
 {
-    return d->fbo->texture();
+    return d->staticFBO->texture();
+}
+
+GLuint Viewport3D::animatedTextureId() const
+{
+    return d->animatedFBO->texture();
 }
 
 void Viewport3D::update()
 {
-    if (d->dirty)
-        d->draw();
+    if (d->dirtyAnimatedFBO)
+        d->drawAnimatedFBO();
+
+    if (d->dirtyStaticFBO)
+        d->drawStaticFBO();
 }
 
 void Viewport3D::startCameraDrag(const QPoint &startPoint)

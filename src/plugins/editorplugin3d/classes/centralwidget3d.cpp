@@ -63,7 +63,7 @@ void CentralWidget3D::initializeGL()
     _viewportLeft->setRotation(2);
 
     _viewportRight = new Viewport3D(this, w, h);
-    _viewportRight->setBackgroundColor(Qt::lightGray);
+    _viewportRight->setBackgroundColor(Qt::white);
     _viewportRight->setRotation(3);
 
     initializeFullscreenShaderProgram();
@@ -106,6 +106,7 @@ void CentralWidget3D::initializeFullscreenShaderProgram()
             "void main(void)\n"
             "{\n"
             "   gl_FragColor = texture2D(Texture, (gl_FragCoord.xy - screenOrigin) / screenSize);\n"
+            "   gl_FragColor.a = 0.5;\n"
             "}";
     _vertexShader = new QGLShader(QGLShader::Vertex, this);
     Q_CHECK(_vertexShader->compileSourceCode(vs));
@@ -151,6 +152,9 @@ void CentralWidget3D::drawFullscreen()
     qglClearColor(Qt::black);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Q_CHECK(_shaderProgram->bind());
 
@@ -160,7 +164,9 @@ void CentralWidget3D::drawFullscreen()
     glViewport(0, 0, vpL.width(), vpL.height());
     _shaderProgram->setUniformValue(_shaderProgramScreenOriginVariableId, 0, 0);
     _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, vpL_w, vpL_h);
-    glBindTexture(GL_TEXTURE_2D, _viewportLeft->textureId());
+    glBindTexture(GL_TEXTURE_2D, _viewportLeft->staticTextureId());
+    glCallList(_fullscreenDisplayListId);
+    glBindTexture(GL_TEXTURE_2D, _viewportLeft->animatedTextureId());
     glCallList(_fullscreenDisplayListId);
 
     const QSize vpR = _viewportRight->size();
@@ -169,7 +175,9 @@ void CentralWidget3D::drawFullscreen()
     glViewport(vpL_w, 0, vpR_w, vpR_h);
     _shaderProgram->setUniformValue(_shaderProgramScreenOriginVariableId, vpL_w, 0);
     _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, vpR_w, vpR_h);
-    glBindTexture(GL_TEXTURE_2D, _viewportRight->textureId());
+    glBindTexture(GL_TEXTURE_2D, _viewportRight->staticTextureId());
+    glCallList(_fullscreenDisplayListId);
+    glBindTexture(GL_TEXTURE_2D, _viewportRight->animatedTextureId());
     glCallList(_fullscreenDisplayListId);
 
     _shaderProgram->release();
