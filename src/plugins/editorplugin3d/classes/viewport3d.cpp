@@ -122,14 +122,14 @@ void Viewport3DPrivate::initDisplayLists()
     static const GLfloat * const coordsA[4][3] = {
         { A1, A2, A3 }, { A1, A3, A4 }, { A1, A4, A2 }, { A2, A4, A3 }
     };
-    static const QColor faceColorsA[] = {
-        Qt::red, Qt::green, Qt::blue, Qt::yellow
+    static const GLfloat faceColorsA[][3] = {
+        { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }, { 1, 1, 0 }
     };
     animatedDisplayListId = glGenLists(1);
     glNewList(animatedDisplayListId, GL_COMPILE);
     glBegin(GL_TRIANGLES);
     for (int i = 0;  i < 4;  ++i) {
-        centralWidget->qglColor(faceColorsA[i]);
+        glColor4f(faceColorsA[i][0], faceColorsA[i][1], faceColorsA[i][2], 0.5f);
         for (int j = 0; j < 3; ++j)
             glVertex3f(coordsA[i][j][0], coordsA[i][j][1], coordsA[i][j][2]);
     }
@@ -150,7 +150,7 @@ void Viewport3DPrivate::initDisplayLists()
     staticDisplayListId = glGenLists(1);
     glNewList(staticDisplayListId, GL_COMPILE);
     glBegin(GL_TRIANGLES);
-    centralWidget->qglColor(Qt::lightGray);
+    glColor4f(0.5, 0.5, 0.5, 0.5);
     for (int i = 0;  i < 2;  ++i) {
         for (int j = 0;  j < 3;  ++j)
             glVertex3f(coordsS[i][j][0], coordsS[i][j][1], coordsS[i][j][2]);
@@ -170,7 +170,7 @@ void Viewport3DPrivate::drawStaticFBO()
     centralWidget->makeCurrent();
     Q_CHECK(staticFBO->bind());
 
-    centralWidget->qglClearColor(backgroundColor);
+    glClearColor(0, 0, 0, 0.5);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -198,7 +198,7 @@ void Viewport3DPrivate::drawAnimatedFBO()
 
     Q_CHECK(animatedFBO->bind());
 
-    centralWidget->qglClearColor(backgroundColor);
+    glClearColor(1, 1, 1, 0.5);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
