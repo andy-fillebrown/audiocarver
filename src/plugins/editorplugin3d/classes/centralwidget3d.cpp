@@ -144,10 +144,14 @@ void CentralWidget3D::drawFullscreen()
 
     Q_CHECK(_shaderProgram->bind());
 
+    const QSize cw = size();
+    const int modW = cw.width() % 2;
+    const int modH = cw.height() % 2;
+
     const QSize vpL = _viewportLeft->size();
-    const int vpL_w = vpL.width();
-    const int vpL_h = vpL.height();
-    glViewport(0, 0, vpL.width(), vpL.height());
+    const int vpL_w = vpL.width() + modW;
+    const int vpL_h = vpL.height() + modH;
+    glViewport(0, 0, vpL_w, vpL_h);
     _shaderProgram->setUniformValue(_shaderProgramScreenOriginVariableId, 0, 0);
     _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, vpL_w, vpL_h);
     glBindTexture(GL_TEXTURE_2D, _viewportLeft->staticTextureId());
@@ -156,8 +160,8 @@ void CentralWidget3D::drawFullscreen()
     glCallList(_fullscreenDisplayListId);
 
     const QSize vpR = _viewportRight->size();
-    const int vpR_w = vpR.width();
-    const int vpR_h = vpR.height();
+    const int vpR_w = vpR.width() + modW;
+    const int vpR_h = vpR.height() + modH;
     glViewport(vpL_w, 0, vpR_w, vpR_h);
     _shaderProgram->setUniformValue(_shaderProgramScreenOriginVariableId, vpL_w, 0);
     _shaderProgram->setUniformValue(_shaderProgramScreenSizeVariableId, vpR_w, vpR_h);
