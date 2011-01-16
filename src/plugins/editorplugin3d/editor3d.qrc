@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/editor3d">
+        <file>shaders/centralwidget3d_vertex.glsl</file>
+        <file>shaders/centralwidget3d_fragment.glsl</file>
+    </qresource>
+</RCC>

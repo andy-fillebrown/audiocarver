@@ -31,3 +31,10 @@ SOURCES += \
     interfaces/iviewport3d.cpp \
     \
     editorplugin3d.cpp
+
+RESOURCES += \
+    editor3d.qrc
+
+OTHER_FILES += \
+    shaders/centralwidget3d_fragment.glsl \
+    shaders/centralwidget3d_vertex.glsl

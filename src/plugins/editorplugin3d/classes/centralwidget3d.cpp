@@ -94,26 +94,12 @@ void CentralWidget3D::timerEvent(QTimerEvent *event)
 
 void CentralWidget3D::initializeFullscreenShaderProgram()
 {
-    const QString vs =
-            "void main(void)\n"
-            "{\n"
-            "   gl_Position = gl_Vertex;\n"
-            "}";
-    const QString fs =
-            "uniform sampler2D Texture;\n"
-            "uniform vec2 screenOrigin;\n"
-            "uniform vec2 screenSize;\n"
-            "void main(void)\n"
-            "{\n"
-            "   gl_FragColor = texture2D(Texture, (gl_FragCoord.xy - screenOrigin) / screenSize);\n"
-            "   gl_FragColor.a = 0.5;\n"
-            "}";
     _vertexShader = new QGLShader(QGLShader::Vertex, this);
-    Q_CHECK(_vertexShader->compileSourceCode(vs));
+    Q_CHECK(_vertexShader->compileSourceFile(":/editor3d/shaders/centralwidget3d_vertex.glsl"));
     if (!_vertexShader->isCompiled())
         qDebug() << _vertexShader->log();
     _fragmentShader = new QGLShader(QGLShader::Fragment, this);
-    Q_CHECK(_fragmentShader->compileSourceCode(fs));
+    Q_CHECK(_fragmentShader->compileSourceFile(":/editor3d/shaders/centralwidget3d_fragment.glsl"));
     if (!_fragmentShader->isCompiled())
         qDebug() << _fragmentShader->log();
     _shaderProgram = new QGLShaderProgram(this);
