@@ -23,6 +23,7 @@
 #include <QtCore/QTimerEvent>
 
 #include <QtOpenGL/QGLFramebufferObject>
+#include <QtOpenGL/QGLFunctions>
 
 using namespace Editor3D;
 using namespace Editor3D::Internal;
@@ -30,7 +31,7 @@ using namespace Editor3D::Internal;
 namespace Editor3D {
 namespace Internal {
 
-class Viewport3DPrivate : public QObject
+class Viewport3DPrivate : public QObject, protected QGLFunctions
 {
 public:
     Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidget, int w, int h);
@@ -73,6 +74,8 @@ Viewport3DPrivate::Viewport3DPrivate(Viewport3D *q, CentralWidget3D *centralWidg
     ,   dirtyStaticFBO(true)
     ,   dirtyAnimatedFBO(true)
 {
+    initializeGLFunctions(centralWidget->context());
+
     initFBOs(w, h);
     initDisplayLists();
     drawStaticFBO();
@@ -123,7 +126,7 @@ void Viewport3DPrivate::initDisplayLists()
         { A1, A2, A3 }, { A1, A3, A4 }, { A1, A4, A2 }, { A2, A4, A3 }
     };
     static const GLfloat faceColorsA[][3] = {
-        { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }, { 1, 1, 0 }
+        { 1, 1, 1 }, { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }
     };
     animatedDisplayListId = glGenLists(1);
     glNewList(animatedDisplayListId, GL_COMPILE);
@@ -173,7 +176,7 @@ void Viewport3DPrivate::drawStaticFBO()
     glClearColor(0, 0, 0, 0.5);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_ALPHA_TEST);
     glShadeModel(GL_FLAT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -200,8 +203,10 @@ void Viewport3DPrivate::drawAnimatedFBO()
 
     glClearColor(1, 1, 1, 0.5);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_DST_ALPHA, GL_SRC_ALPHA, GL_DST_ALPHA);
     glShadeModel(GL_FLAT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
