@@ -39,7 +39,7 @@ class EDITOR3D_EXPORT CentralWidget3D : public QGLWidget
     Q_OBJECT
 
 public:
-    CentralWidget3D(QWidget *parent = 0);
+    CentralWidget3D(const QGLFormat &format, QWidget *parent = 0);
     virtual ~CentralWidget3D();
 
 protected:

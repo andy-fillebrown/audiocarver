@@ -25,8 +25,8 @@
 
 using namespace Editor3D;
 
-CentralWidget3D::CentralWidget3D(QWidget *parent)
-    :   QGLWidget(parent)
+CentralWidget3D::CentralWidget3D(const QGLFormat &format, QWidget *parent)
+    :   QGLWidget(format, parent)
     ,   _viewportLeft(0)
     ,   _viewportRight(0)
     ,   _fullscreenDisplayListId(0)

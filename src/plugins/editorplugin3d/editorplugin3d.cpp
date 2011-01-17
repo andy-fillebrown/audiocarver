@@ -47,8 +47,10 @@ bool EditorPlugin3D::initialize(const QStringList &arguments, QString *errorMess
 
 void EditorPlugin3D::extensionsInitialized()
 {
+    QGLFormat fmt;
+    fmt.setSwapInterval(1);
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-    mw->setCentralWidget(new CentralWidget3D(mw));
+    mw->setCentralWidget(new CentralWidget3D(fmt, mw));
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin3D)
