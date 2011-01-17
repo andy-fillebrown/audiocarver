@@ -23,7 +23,6 @@
 #include <utils3d/utils3d_global.h>
 
 #include <QtCore/QObject>
-#include <QtCore/QSize>
 
 class QGLFramebufferObject;
 
