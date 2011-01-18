@@ -34,6 +34,12 @@ namespace Editor3D {
 
 class Viewport3D;
 
+namespace Internal {
+
+class CentralWidget3DPrivate;
+
+} // namespace Internal
+
 class EDITOR3D_EXPORT CentralWidget3D : public QGLWidget
 {
     Q_OBJECT
@@ -42,26 +48,14 @@ public:
     CentralWidget3D(const QGLFormat &format, QWidget *parent = 0);
     virtual ~CentralWidget3D();
 
+    void draw();
+
 protected:
-    virtual void initializeGL();
-    virtual void paintGL();
-    virtual void resizeGL(int w, int h);
-    virtual void timerEvent(QTimerEvent *event);
+    virtual void paintEvent(QPaintEvent *);
+    virtual void resizeEvent(QResizeEvent *event);
 
 private:
-    void initializeFullscreenShaderProgram();
-    void initializeFullscreenDisplayList();
-    void drawFullscreen();
-
-private:
-    Viewport3D *_viewportLeft;
-    Viewport3D *_viewportRight;
-    GLuint _fullscreenDisplayListId;
-    QGLShader *_vertexShader;
-    QGLShader *_fragmentShader;
-    QGLShaderProgram *_shaderProgram;
-    int _shaderProgramScreenOriginVariableId;
-    int _shaderProgramScreenSizeVariableId;
+    Internal::CentralWidget3DPrivate *d;
 };
 
 } // namespace Editor3D

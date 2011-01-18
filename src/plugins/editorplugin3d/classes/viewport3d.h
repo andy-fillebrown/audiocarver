@@ -24,16 +24,11 @@
 
 #include <QtCore/QObject>
 
-class QGLFramebufferObject;
-
 namespace Editor3D {
-
 class CentralWidget3D;
 
 namespace Internal {
-
 class Viewport3DPrivate;
-
 } // namespace Internal
 
 class EDITOR3D_EXPORT Viewport3D : public QObject
@@ -47,17 +42,13 @@ public:
     CentralWidget3D *centralWidget() const;
     QSize size() const;
 
-    void setBackgroundColor(const QColor &color);
-    void setRotation(float rotation);
     GLuint staticTextureId() const;
     GLuint animatedTextureId() const;
 
-public slots:
-    void update();
-    void startCameraDrag(const QPoint &startPoint);
+    void setBackgroundColor(const QColor &color);
+    void setRotationPerFrame(float rotation);
 
-signals:
-    void cameraDragFinished();
+    void update();
 
 protected:
     friend class CentralWidget3D;
