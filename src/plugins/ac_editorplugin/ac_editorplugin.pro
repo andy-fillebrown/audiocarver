@@ -8,7 +8,7 @@ DEFINES += AC_EDITOR_LIBRARY
 
 HEADERS += \
     implementations/ac_editorimpl.h \
-    implementations/ac_editor3dimpl.h \
+    implementations/ac_gleditorimpl.h \
     implementations/ac_mainwindowimpl.h \
     \
     ac_editor.h \
@@ -18,7 +18,7 @@ HEADERS += \
 
 SOURCES += \
     implementations/ac_editorimpl.cpp \
-    implementations/ac_editor3dimpl.cpp \
+    implementations/ac_gleditorimpl.cpp \
     implementations/ac_mainwindowimpl.cpp \
     \
     ac_editor.cpp \

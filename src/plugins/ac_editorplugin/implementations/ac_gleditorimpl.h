@@ -15,24 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITOR3DIMPL_H
-#define AC_EDITOR3DIMPL_H
+#ifndef AC_GLEDITORIMPL_H
+#define AC_GLEDITORIMPL_H
 
-#include <editorplugin3d/interfaces/ieditor3d.h>
+#include <gleditorplugin/interfaces/igleditor.h>
 
 namespace AudioCarver {
 namespace Internal {
+class GLEditorImplPrivate;
 
-class Editor3DImpl : public Editor3D::IEditor3D
+class GLEditorImpl : public GLEditor::IGLEditor
 {
     Q_OBJECT
 
 public:
-    Editor3DImpl();
-    virtual ~Editor3DImpl();
-
-    Editor3D::IViewport3D *currentViewport() const;
-    void setCurrentViewport(Editor3D::IViewport3D *viewport);
+    GLEditorImpl();
+    virtual ~GLEditorImpl();
 
     virtual void viewAll();
     virtual void viewFront();
@@ -56,12 +54,9 @@ public:
     virtual void windowRemoveCurrentSplit();
     virtual void windowRemoveAllSplits();
     virtual void windowGotoNextSplit();
-
-private:
-    Editor3D::IViewport3D *_viewport;
 };
 
 } // namespace Internal
 } // namespace AudioCarver
 
-#endif // AC_EDITOR3DIMPL_H
+#endif // AC_GLEDITORIMPL_H

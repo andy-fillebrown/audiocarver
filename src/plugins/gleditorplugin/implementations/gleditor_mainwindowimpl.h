@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef EDITORMAINWINDOWIMPL_H
-#define EDITORMAINWINDOWIMPL_H
+#ifndef GLEDITOR_MAINWINDOWIMPL_H
+#define GLEDITOR_MAINWINDOWIMPL_H
 
 #include <coreplugin/interfaces/imainwindow.h>
 
-namespace Editor {
+namespace GLEditor {
 namespace Internal {
 
 class MainWindowImpl : public Core::IMainWindow
@@ -35,21 +35,24 @@ public:
     virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
     virtual void initActions();
 
-public slots:
-    void newFile();
-    void openFile();
-    void saveFile();
-    void saveFileAs();
+private slots:
+    void viewAll();
+    void viewZoom();
+    void viewPan();
+    void viewRotate();
+    void viewParallel();
+    void viewPerspective();
+    void viewTransparencyNone();
+    void viewTransparencyScreen();
+    void viewTransparencyFull();
 
-    void undo();
-    void redo();
-    void cut();
-    void copy();
-    void paste();
-    void selectAll();
+    void windowSplitHorizontal();
+    void windowSplitVertical();
+    void windowRemoveCurrentSplit();
+    void windowRemoveAllSplits();
 };
 
 } // namespace Internal
-} // namespace Editor
+} // namespace GLEditor
 
-#endif // EDITORMAINWINDOWIMPL_H
+#endif // GLEDITOR_MAINWINDOWIMPL_H

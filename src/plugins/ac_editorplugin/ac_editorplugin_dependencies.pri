@@ -1,1 +1,1 @@
-include(../editorplugin3d/editorplugin3d.pri)
+include(../gleditorplugin/gleditorplugin.pri)

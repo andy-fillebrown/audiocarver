@@ -15,24 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef IVIEWPORT3D_H
-#define IVIEWPORT3D_H
+#ifndef GLEDITORPLUGIN_H
+#define GLEDITORPLUGIN_H
 
-#include <editorplugin3d/editor3d_global.h>
+#include <extensionsystem/iplugin.h>
 
-#include <QtCore/QObject>
+namespace GLEditor {
+namespace Internal {
 
-namespace Editor3D {
-
-class EDITOR3D_EXPORT IViewport3D : public QObject
+class GLEditorPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
 public:
-    IViewport3D();
-    virtual ~IViewport3D();
+    GLEditorPlugin();
+    virtual ~GLEditorPlugin();
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized();
 };
 
-} // namespace Editor3D
+} // namespace Internal
+} // namespace GLEditor
 
-#endif // IVIEWPORT3D_H
+#endif // GLEDITORPLUGIN_H

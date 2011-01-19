@@ -17,7 +17,7 @@
 
 #include "editorplugin.h"
 
-#include "implementations/editormainwindowimpl.h"
+#include "implementations/editor_mainwindowimpl.h"
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>

@@ -8,7 +8,7 @@ include(editorplugin_dependencies.pri)
 DEFINES += EDITOR_LIBRARY
 
 HEADERS += \
-    implementations/editormainwindowimpl.h \
+    implementations/editor_mainwindowimpl.h \
     \
     interfaces/ieditor.h \
     \
@@ -17,7 +17,7 @@ HEADERS += \
     editorplugin.h
 
 SOURCES += \
-    implementations/editormainwindowimpl.cpp \
+    implementations/editor_mainwindowimpl.cpp \
     \
     interfaces/ieditor.cpp \
     \

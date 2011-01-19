@@ -18,8 +18,8 @@
 #include "ac_editorplugin.h"
 
 #include "implementations/ac_mainwindowimpl.h"
-#include "implementations/ac_editor3dimpl.h"
 #include "implementations/ac_editorimpl.h"
+#include "implementations/ac_gleditorimpl.h"
 
 #include <QtCore/QtPlugin>
 
@@ -40,7 +40,7 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage);
     addAutoReleasedObject(new MainWindowImpl);
     addAutoReleasedObject(new EditorImpl);
-    addAutoReleasedObject(new Editor3DImpl);
+    addAutoReleasedObject(new GLEditorImpl);
     return true;
 }
 

@@ -15,29 +15,29 @@
 **
 **************************************************************************/
 
-#include "editorplugin3d.h"
+#include "gleditorplugin.h"
 
-#include "classes/centralwidget3d.h"
+#include "classes/glwidget.h"
 
-#include "implementations/editor3dmainwindowimpl.h"
+#include "implementations/gleditor_mainwindowimpl.h"
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
 
 #include <QtCore/QtPlugin>
 
-using namespace Editor3D;
-using namespace Editor3D::Internal;
+using namespace GLEditor;
+using namespace GLEditor::Internal;
 
-EditorPlugin3D::EditorPlugin3D()
+GLEditorPlugin::GLEditorPlugin()
 {
 }
 
-EditorPlugin3D::~EditorPlugin3D()
+GLEditorPlugin::~GLEditorPlugin()
 {
 }
 
-bool EditorPlugin3D::initialize(const QStringList &arguments, QString *errorMessage)
+bool GLEditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
@@ -45,12 +45,8 @@ bool EditorPlugin3D::initialize(const QStringList &arguments, QString *errorMess
     return true;
 }
 
-void EditorPlugin3D::extensionsInitialized()
+void GLEditorPlugin::extensionsInitialized()
 {
-    QGLFormat fmt;
-    fmt.setSwapInterval(1);
-    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-    mw->setCentralWidget(new CentralWidget3D(fmt, mw));
 }
 
-Q_EXPORT_PLUGIN(EditorPlugin3D)
+Q_EXPORT_PLUGIN(GLEditorPlugin)

@@ -15,27 +15,56 @@
 **
 **************************************************************************/
 
-#ifndef EDITORPLUGIN3D_H
-#define EDITORPLUGIN3D_H
+#include "glwidgetsplit.h"
 
-#include <extensionsystem/iplugin.h>
+#include <QtCore/QSize>
 
-namespace Editor3D {
+using namespace GLEditor;
+using namespace GLEditor::Internal;
+
+namespace GLEditor {
 namespace Internal {
 
-class EditorPlugin3D : public ExtensionSystem::IPlugin
+class GLWidgetSplitPrivate
 {
-    Q_OBJECT
-
 public:
-    EditorPlugin3D();
-    ~EditorPlugin3D();
+    GLWidgetSplitPrivate(GLWidgetSplit *q, GLWidget *glWidget, int w, int h)
+    {
+    }
 
-    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    virtual void extensionsInitialized();
+    ~GLWidgetSplitPrivate()
+    {
+    }
 };
 
 } // namespace Internal
 } // namespace Editor3D
 
-#endif // EDITORPLUGIN3D_H
+GLWidgetSplit::GLWidgetSplit(GLWidget *glWidget, const QSize &size)
+    :   d(new GLWidgetSplitPrivate(this, glWidget, size.width(), size.height()))
+{
+    Q_CHECK_PTR(d);
+}
+
+GLWidgetSplit::GLWidgetSplit(GLWidget *glWidget, int w, int h)
+    :   d(new GLWidgetSplitPrivate(this, glWidget, w, h))
+{
+    Q_CHECK_PTR(d);
+}
+
+GLWidgetSplit::~GLWidgetSplit()
+{
+    delete d;  d = 0;
+}
+
+void GLWidgetSplit::splitHorizontal()
+{
+}
+
+void GLWidgetSplit::splitVertical()
+{
+}
+
+void GLWidgetSplit::removeSplit()
+{
+}

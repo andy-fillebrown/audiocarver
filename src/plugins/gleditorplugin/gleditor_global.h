@@ -15,15 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef EDITOR3D_GLOBAL_H
-#define EDITOR3D_GLOBAL_H
+#ifndef GLEDITOR_GLOBAL_H
+#define GLEDITOR_GLOBAL_H
 
 #include <QtCore/qglobal.h>
 
-#if defined(EDITOR3D_LIBRARY)
-#  define EDITOR3D_EXPORT Q_DECL_EXPORT
+#if defined(GLEDITOR_LIBRARY)
+#  define GLEDITOR_EXPORT Q_DECL_EXPORT
 #else
-#  define EDITOR3D_EXPORT Q_DECL_IMPORT
+#  define GLEDITOR_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // EDITOR3D_GLOBAL_H
+#endif // GLEDITOR_GLOBAL_H

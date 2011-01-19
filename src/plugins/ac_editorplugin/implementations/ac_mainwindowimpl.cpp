@@ -19,7 +19,7 @@
 
 #include "../ac_editorconstants.h"
 
-#include <editorplugin3d/editor3dconstants.h>
+#include <gleditorplugin/gleditorconstants.h>
 
 #include <editorplugin/editorconstants.h>
 
@@ -32,10 +32,10 @@
 #include <coreplugin/mainwindow.h>
 #include <coreplugin/versiondialog.h>
 
-#include <QtCore/QDebug>
-
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
+
+#include <QtCore/QDebug>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
@@ -60,10 +60,10 @@ void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QS
     Q_UNUSED(id);
     Q_UNUSED(title);
 
-    if (menuBarGroup == Editor3D::Constants::G_VIEW) {
-        const int viewAllIndex = groups.indexOf(Editor3D::Constants::G_VIEW_ALL);
+    if (menuBarGroup == GLEditor::Constants::G_VIEW) {
+        const int viewAllIndex = groups.indexOf(GLEditor::Constants::G_VIEW_ALL);
         groups.insert(viewAllIndex + 1, Constants::G_VIEW_PRESET);
-        const int viewProjectionIndex = groups.indexOf(Editor3D::Constants::G_VIEW_PROJECTION);
+        const int viewProjectionIndex = groups.indexOf(GLEditor::Constants::G_VIEW_PROJECTION);
         groups.insert(viewProjectionIndex + 1, Constants::G_VIEW_SCALE);
     }
     else if (menuBarGroup == Core::Constants::G_HELP)
@@ -73,7 +73,7 @@ void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QS
 void MainWindowImpl::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
-    Core::ActionContainer *viewMenu = am->actionContainer(Editor3D::Constants::M_VIEW);
+    Core::ActionContainer *viewMenu = am->actionContainer(GLEditor::Constants::M_VIEW);
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
     Core::Context globalContext(Core::Constants::C_GLOBAL);
 

@@ -15,134 +15,122 @@
 **
 **************************************************************************/
 
-#include "ac_editor3dimpl.h"
+#include "ac_gleditorimpl.h"
 
 #include <QtCore/QDebug>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
-Editor3DImpl::Editor3DImpl()
-    :   _viewport(0)
+GLEditorImpl::GLEditorImpl()
 {
 }
 
-Editor3DImpl::~Editor3DImpl()
+GLEditorImpl::~GLEditorImpl()
 {
-    _viewport = 0;
 }
 
-Editor3D::IViewport3D *Editor3DImpl::currentViewport() const
-{
-    return _viewport;
-}
-
-void Editor3DImpl::setCurrentViewport(Editor3D::IViewport3D *viewport)
-{
-    _viewport = viewport;
-}
-
-void Editor3DImpl::viewAll()
+void GLEditorImpl::viewAll()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewFront()
+void GLEditorImpl::viewFront()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewSide()
+void GLEditorImpl::viewSide()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewBottom()
+void GLEditorImpl::viewBottom()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewZoom()
+void GLEditorImpl::viewZoom()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewPan()
+void GLEditorImpl::viewPan()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewRotate()
+void GLEditorImpl::viewRotate()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewParallel()
+void GLEditorImpl::viewParallel()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewPerspective()
+void GLEditorImpl::viewPerspective()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewScaleIncreaseX()
+void GLEditorImpl::viewScaleIncreaseX()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewScaleDecreaseX()
+void GLEditorImpl::viewScaleDecreaseX()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewScaleIncreaseZ()
+void GLEditorImpl::viewScaleIncreaseZ()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewScaleDecreaseZ()
+void GLEditorImpl::viewScaleDecreaseZ()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewTransparencyNone()
+void GLEditorImpl::viewTransparencyNone()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewTransparencyScreen()
+void GLEditorImpl::viewTransparencyScreen()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::viewTransparencyFull()
+void GLEditorImpl::viewTransparencyFull()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::windowSplitHorizontal()
+void GLEditorImpl::windowSplitHorizontal()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::windowSplitVertical()
+void GLEditorImpl::windowSplitVertical()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::windowRemoveCurrentSplit()
+void GLEditorImpl::windowRemoveCurrentSplit()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::windowRemoveAllSplits()
+void GLEditorImpl::windowRemoveAllSplits()
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor3DImpl::windowGotoNextSplit()
+void GLEditorImpl::windowGotoNextSplit()
 {
     qDebug() << Q_FUNC_INFO;
 }

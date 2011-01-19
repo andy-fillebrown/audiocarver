@@ -15,49 +15,41 @@
 **
 **************************************************************************/
 
-#ifndef CENTRALWIDGET3D_H
-#define CENTRALWIDGET3D_H
+#ifndef EDITOR_MAINWINDOWIMPL_H
+#define EDITOR_MAINWINDOWIMPL_H
 
-#include <editorplugin3d/editor3d_global.h>
+#include <coreplugin/interfaces/imainwindow.h>
 
-#include <QtOpenGL/QGLWidget>
-
-QT_BEGIN_NAMESPACE
-
-class QGLFramebufferObject;
-class QGLShader;
-class QGLShaderProgram;
-
-QT_END_NAMESPACE
-
-namespace Editor3D {
-
-class Viewport3D;
-
+namespace Editor {
 namespace Internal {
 
-class CentralWidget3DPrivate;
-
-} // namespace Internal
-
-class EDITOR3D_EXPORT CentralWidget3D : public QGLWidget
+class MainWindowImpl : public Core::IMainWindow
 {
     Q_OBJECT
 
 public:
-    CentralWidget3D(const QGLFormat &format, QWidget *parent = 0);
-    virtual ~CentralWidget3D();
+    MainWindowImpl();
+    virtual ~MainWindowImpl();
 
-    void draw();
+    virtual void initMenuBarGroups(QStringList &groups) const;
+    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    virtual void initActions();
 
-protected:
-    virtual void paintEvent(QPaintEvent *);
-    virtual void resizeEvent(QResizeEvent *event);
+public slots:
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveFileAs();
 
-private:
-    Internal::CentralWidget3DPrivate *d;
+    void undo();
+    void redo();
+    void cut();
+    void copy();
+    void paste();
+    void selectAll();
 };
 
-} // namespace Editor3D
+} // namespace Internal
+} // namespace Editor
 
-#endif // CENTRALWIDGET3D_H
+#endif // EDITOR_MAINWINDOWIMPL_H

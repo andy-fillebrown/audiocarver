@@ -15,14 +15,14 @@
 **
 **************************************************************************/
 
-#include "iviewport3d.h"
+#include "igleditor.h"
 
-using namespace Editor3D;
+using namespace GLEditor;
 
-IViewport3D::IViewport3D()
+IGLEditor::IGLEditor()
 {
 }
 
-IViewport3D::~IViewport3D()
+IGLEditor::~IGLEditor()
 {
 }

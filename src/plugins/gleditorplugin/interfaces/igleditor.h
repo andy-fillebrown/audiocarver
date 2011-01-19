@@ -15,27 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef IEDITOR3D_H
-#define IEDITOR3D_H
+#ifndef IGLEDITOR3D_H
+#define IGLEDITOR3D_H
 
-#include <editorplugin3d/editor3d_global.h>
+#include <gleditorplugin/gleditor_global.h>
 
 #include <QtCore/QObject>
 
-namespace Editor3D {
+namespace GLEditor {
 
-class IViewport3D;
-
-class EDITOR3D_EXPORT IEditor3D : public QObject
+class GLEDITOR_EXPORT IGLEditor : public QObject
 {
     Q_OBJECT
 
 public:
-    IEditor3D();
-    virtual ~IEditor3D();
-
-    virtual IViewport3D *currentViewport() const = 0;
-    virtual void setCurrentViewport(IViewport3D *viewport) = 0;
+    IGLEditor();
+    virtual ~IGLEditor();
 
     virtual void viewAll() = 0;
     virtual void viewFront() = 0;
@@ -61,6 +56,6 @@ public:
     virtual void windowGotoNextSplit() = 0;
 };
 
-} // namespace Editor3D
+} // namespace GLEditor
 
-#endif // IEDITOR3D_H
+#endif // IGLEDITOR_H

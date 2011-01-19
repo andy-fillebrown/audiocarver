@@ -15,49 +15,49 @@
 **
 **************************************************************************/
 
-#ifndef VIEWPORT3D_H
-#define VIEWPORT3D_H
+#ifndef GLWIDGET_H
+#define GLWIDGET_H
 
-#include <editorplugin3d/editor3d_global.h>
+#include <gleditorplugin/gleditor_global.h>
 
-#include <utils3d/utils3d_global.h>
+#include <QtOpenGL/QGLWidget>
 
-#include <QtCore/QObject>
+QT_BEGIN_NAMESPACE
+class QMutex;
+QT_END_NAMESPACE
 
-namespace Editor3D {
-class CentralWidget3D;
+namespace GLEditor {
+class GLViewport;
+class GLWidgetSplit;
 
 namespace Internal {
-class Viewport3DPrivate;
+class GLWidgetPrivate;
 } // namespace Internal
 
-class EDITOR3D_EXPORT Viewport3D : public QObject
+class GLEDITOR_EXPORT GLWidget : public QGLWidget
 {
     Q_OBJECT
 
 public:
-    Viewport3D(CentralWidget3D *centralWidget, int w, int h);
-    virtual ~Viewport3D();
+    GLWidget(QWidget *parent = 0);
+    virtual ~GLWidget();
 
-    CentralWidget3D *centralWidget() const;
-    QSize size() const;
+    GLWidgetSplit *currentSplit() const;
+    void setCurrentSplit(GLWidgetSplit *split);
 
-    GLuint staticTextureId() const;
-    GLuint animatedTextureId() const;
-
-    void setBackgroundColor(const QColor &color);
-    void setRotationPerFrame(float rotation);
-
-    void update();
+public slots:
+    void splitHorizontal();
+    void splitVertical();
+    void removeCurrentSplit();
+    void removeAllSplits();
 
 protected:
-    friend class CentralWidget3D;
-    void resize(int w, int h);
+    QMutex *glMutex() const;
 
 private:
-    Internal::Viewport3DPrivate *d;
+    Internal::GLWidgetPrivate *d;
 };
 
-} // namespace Editor3D
+} // namespace GLEditor
 
-#endif // VIEWPORT3D_H
+#endif // GLWIDGET_H

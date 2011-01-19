@@ -27,12 +27,12 @@
 **
 **************************************************************************/
 
-#ifndef EDITOR3DCONSTANTS_H
-#define EDITOR3DCONSTANTS_H
+#ifndef GLEDITORCONSTANTS_H
+#define GLEDITORCONSTANTS_H
 
 #include <editorplugin/editorconstants.h>
 
-namespace Editor3D {
+namespace GLEditor {
 namespace Constants {
 
 const char * const G_VIEW                   = PRO_NAME_STR".Group.View";
@@ -62,9 +62,8 @@ const char * const WINDOWSPLITHORIZONTAL    = PRO_NAME_STR".WindowSplit";
 const char * const WINDOWSPLITVERTICAL      = PRO_NAME_STR".WindowSplitSideBySide";
 const char * const WINDOWREMOVECURRENTSPLIT = PRO_NAME_STR".WindowRemoveCurrentSplit";
 const char * const WINDOWREMOVEALLSPLITS    = PRO_NAME_STR".WindowRemoveAllSplits";
-const char * const WINDOWGOTONEXTSPLIT      = PRO_NAME_STR".WindowGotoNextSplit";
 
 } // namespace Constants
-} // namespace Editor3D
+} // namespace GLEditor
 
-#endif // EDITOR3DCONSTANTS_H
+#endif // GLEDITORCONSTANTS_H

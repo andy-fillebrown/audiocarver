@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#include "editor3dmainwindowimpl.h"
+#include "gleditor_mainwindowimpl.h"
 
-#include "../interfaces/ieditor3d.h"
-#include "../editor3dconstants.h"
+#include "../interfaces/igleditor.h"
+#include "../gleditorconstants.h"
 
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
@@ -33,8 +33,8 @@
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 
-using namespace Editor3D;
-using namespace Editor3D::Internal;
+using namespace GLEditor;
+using namespace GLEditor::Internal;
 
 MainWindowImpl::MainWindowImpl()
 {
@@ -191,19 +191,12 @@ void MainWindowImpl::initActions()
     cmd->setDefaultKeySequence(QKeySequence("Ctrl+E, 4"));
     windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
     connect(action, SIGNAL(triggered()), SLOT(windowRemoveAllSplits()));
-
-    // Window Goto Next Split Action
-    action = new QAction(tr("Go to Next Split"), this);
-    cmd = am->registerAction(action, Constants::WINDOWGOTONEXTSPLIT, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+E, 5"));
-    windowMenu->addAction(cmd, Constants::G_WINDOW_SPLIT);
-    connect(action, SIGNAL(triggered()), SLOT(windowGotoNextSplit()));
 }
 
 void MainWindowImpl::viewAll()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewAll();
@@ -212,7 +205,7 @@ void MainWindowImpl::viewAll()
 void MainWindowImpl::viewZoom()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewZoom();
@@ -221,7 +214,7 @@ void MainWindowImpl::viewZoom()
 void MainWindowImpl::viewPan()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewPan();
@@ -230,7 +223,7 @@ void MainWindowImpl::viewPan()
 void MainWindowImpl::viewRotate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewRotate();
@@ -239,7 +232,7 @@ void MainWindowImpl::viewRotate()
 void MainWindowImpl::viewParallel()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewParallel();
@@ -248,7 +241,7 @@ void MainWindowImpl::viewParallel()
 void MainWindowImpl::viewPerspective()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewPerspective();
@@ -257,7 +250,7 @@ void MainWindowImpl::viewPerspective()
 void MainWindowImpl::viewTransparencyNone()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewTransparencyNone();
@@ -266,7 +259,7 @@ void MainWindowImpl::viewTransparencyNone()
 void MainWindowImpl::viewTransparencyScreen()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewTransparencyScreen();
@@ -275,7 +268,7 @@ void MainWindowImpl::viewTransparencyScreen()
 void MainWindowImpl::viewTransparencyFull()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->viewTransparencyFull();
@@ -284,7 +277,7 @@ void MainWindowImpl::viewTransparencyFull()
 void MainWindowImpl::windowSplitHorizontal()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->windowSplitHorizontal();
@@ -293,7 +286,7 @@ void MainWindowImpl::windowSplitHorizontal()
 void MainWindowImpl::windowSplitVertical()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->windowSplitVertical();
@@ -302,7 +295,7 @@ void MainWindowImpl::windowSplitVertical()
 void MainWindowImpl::windowRemoveCurrentSplit()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->windowRemoveCurrentSplit();
@@ -311,17 +304,8 @@ void MainWindowImpl::windowRemoveCurrentSplit()
 void MainWindowImpl::windowRemoveAllSplits()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
+    IGLEditor *ed = pm->getObject<IGLEditor>();
     if (!ed)
         return;
     ed->windowRemoveAllSplits();
-}
-
-void MainWindowImpl::windowGotoNextSplit()
-{
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IEditor3D *ed = pm->getObject<IEditor3D>();
-    if (!ed)
-        return;
-    ed->windowGotoNextSplit();
 }

@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "editormainwindowimpl.h"
+#include "editor_mainwindowimpl.h"
 
 #include "interfaces/ieditor.h"
 
