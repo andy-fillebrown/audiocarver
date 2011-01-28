@@ -87,6 +87,13 @@ public:
         widget = 0;
         q = 0;
     }
+
+    void createViewport()
+    {
+        if (viewport)
+            return;
+        viewport = new GLViewport(widget, q->size());
+    }
 };
 
 } // namespace Internal
@@ -207,6 +214,10 @@ void GLWidgetSplit::setSplitLocation(int location)
 
 GLViewport *GLWidgetSplit::viewport() const
 {
+    if (isSplit())
+        return 0;
+
+    d->createViewport();
     return d->viewport;
 }
 
