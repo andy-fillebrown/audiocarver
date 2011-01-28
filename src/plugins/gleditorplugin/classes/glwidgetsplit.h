@@ -35,9 +35,19 @@ class GLEDITOR_EXPORT GLWidgetSplit : public QObject
     Q_OBJECT
 
 public:
-    GLWidgetSplit(GLWidget *glWidget, const QSize &size);
-    GLWidgetSplit(GLWidget *glWidget, int width, int height);
+    enum SplitType
+    {
+        ParentSplit = 0,
+        FirstSplit,
+        SecondSplit
+    };
+
+    GLWidgetSplit(GLWidget *widget);
+    GLWidgetSplit(GLWidgetSplit *parentSplit, SplitType splitType = ParentSplit);
     virtual ~GLWidgetSplit();
+
+    GLWidget *widget() const;
+    GLWidgetSplit *parentSplit() const;
 
     QPoint pos() const;
     QRect rect() const;
@@ -55,8 +65,8 @@ public:
     void removeSplit();
 
     GLViewport *viewport() const; // null if split
-    GLWidgetSplit *sectionOne() const; // null if not split
-    GLWidgetSplit *sectionTwo() const; // null if not split
+    GLWidgetSplit *splitOne() const; // null if not split
+    GLWidgetSplit *splitTwo() const; // null if not split
 
     int splitLocation() const;
     void setSplitLocation(int location);

@@ -87,7 +87,7 @@ public:
 
     void initializeSplits()
     {
-        mainSplit = new GLWidgetSplit(q, q->size());
+        mainSplit = new GLWidgetSplit(q);
         Q_CHECK_PTR(mainSplit);
 
         currentSplit = mainSplit;
