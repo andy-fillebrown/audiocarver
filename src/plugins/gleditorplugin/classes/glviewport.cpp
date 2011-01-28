@@ -258,6 +258,12 @@ public:
 } // namespace Internal
 } // namespace Editor3D
 
+GLViewport::GLViewport(GLWidget *widget, const QSize &size)
+    :   d(new GLViewportPrivate(this, widget, size.width(), size.height()))
+{
+    Q_CHECK_PTR(d);
+}
+
 GLViewport::GLViewport(GLWidget *widget, int w, int h)
     :   d(new GLViewportPrivate(this, widget, w, h))
 {
