@@ -168,14 +168,6 @@ int GLWidgetSplit::height() const
     return size().height();
 }
 
-void GLWidgetSplit::resize(const QSize &size)
-{
-}
-
-void GLWidgetSplit::resize(int width, int height)
-{
-}
-
 bool GLWidgetSplit::isSplit() const
 {
     return d->splitType != ParentSplit;
