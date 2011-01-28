@@ -33,7 +33,7 @@ class GLViewportPrivate : protected QGLFunctions
 {
 public:
     GLViewport *q;
-    GLWidget *glWidget;
+    GLWidget *widget;
     QColor backgroundColor;
     QGLFramebufferObject *staticFBO_1;
     QGLFramebufferObject *staticFBO_2;
@@ -45,9 +45,9 @@ public:
     QGLFramebufferObject *animatedFBO_back;
     QList<GLuint> textureIds;
 
-    GLViewportPrivate(GLViewport *q, GLWidget *glWidget, int w, int h)
+    GLViewportPrivate(GLViewport *q, GLWidget *widget, int w, int h)
         :   q(q)
-        ,   glWidget(glWidget)
+        ,   widget(widget)
         ,   backgroundColor(Qt::white)
         ,   staticFBO_1(0)
         ,   staticFBO_2(0)
@@ -58,7 +58,7 @@ public:
         ,   animatedFBO_front(0)
         ,   animatedFBO_back(0)
     {
-        initializeGLFunctions(glWidget->context());
+        initializeGLFunctions(widget->context());
     }
 
     ~GLViewportPrivate()
@@ -258,9 +258,10 @@ public:
 } // namespace Internal
 } // namespace Editor3D
 
-GLViewport::GLViewport(GLWidget *glWidget, int w, int h)
-    :   d(new GLViewportPrivate(this, glWidget, w, h))
+GLViewport::GLViewport(GLWidget *widget, int w, int h)
+    :   d(new GLViewportPrivate(this, widget, w, h))
 {
+    Q_CHECK_PTR(d);
 }
 
 GLViewport::~GLViewport()

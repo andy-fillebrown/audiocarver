@@ -35,7 +35,7 @@ class GLWidgetPrivate
 {
 public:
     GLWidget *q;
-    QMutex *glMutex;
+    QMutex *drawMutex;
     GLWidgetSplit *mainSplit;
     GLWidgetSplit *currentSplit;
     GLuint displayListId;
@@ -47,7 +47,7 @@ public:
 
     GLWidgetPrivate(GLWidget *q)
         :   q(q)
-        ,   glMutex(new QMutex)
+        ,   drawMutex(new QMutex)
         ,   mainSplit(0)
         ,   currentSplit(0)
         ,   displayListId(0)
@@ -57,7 +57,7 @@ public:
         ,   screenOriginId(-1)
         ,   screenSizeId(-1)
     {
-        Q_CHECK_PTR(glMutex);
+        Q_CHECK_PTR(drawMutex);
     }
 
     ~GLWidgetPrivate()
@@ -74,7 +74,7 @@ public:
         glDeleteLists(displayListId, 1);  displayListId = 0;
         currentSplit = 0;
         mainSplit = 0;
-        delete glMutex;  glMutex = 0;
+        delete drawMutex;  drawMutex = 0;
         q = 0;
     }
 
@@ -231,7 +231,7 @@ void GLWidget::removeAllSplits()
     d->mainSplit->removeSplit();
 }
 
-QMutex *GLWidget::glMutex() const
+QMutex *GLWidget::glDrawMutex() const
 {
-    return d->glMutex;
+    return d->drawMutex;
 }

@@ -52,7 +52,7 @@ public slots:
     void removeAllSplits();
 
 protected:
-    QMutex *glMutex() const;
+    QMutex *glDrawMutex() const;
 
 private:
     Internal::GLWidgetPrivate *d;
