@@ -62,12 +62,12 @@ public:
     void splitVertical();
     void removeSplit();
 
+    int splitLocation() const;
+    void setSplitLocation(int location);
+
     GLViewport *viewport() const; // null if split
     GLWidgetSplit *splitOne() const; // null if not split
     GLWidgetSplit *splitTwo() const; // null if not split
-
-    int splitLocation() const;
-    void setSplitLocation(int location);
 
 private:
     Internal::GLWidgetSplitPrivate *d;

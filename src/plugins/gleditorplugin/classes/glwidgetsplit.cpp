@@ -42,11 +42,11 @@ public:
     GLWidget *widget;
     GLWidgetSplit *parentSplit;
     GLWidgetSplit::SplitType splitType;
+    SplitOrientation splitOrientation;
+    int splitLocation;
     GLViewport *viewport;
     GLWidgetSplit *splitOne;
     GLWidgetSplit *splitTwo;
-    SplitOrientation splitOrientation;
-    int splitLocation;
 
     GLWidgetSplitPrivate(GLWidgetSplit *q, GLWidget *widget)
         :   q(q)
@@ -68,20 +68,20 @@ public:
 
     void finishConstruction()
     {
+        splitOrientation = NotSplit;
+        splitLocation = 0;
         viewport = 0;
         splitOne = 0;
         splitTwo = 0;
-        splitOrientation = NotSplit;
-        splitLocation = 0;
     }
 
     ~GLWidgetSplitPrivate()
     {
-        splitLocation = 0;
-        splitOrientation = NotSplit;
         delete splitTwo;  splitTwo = 0;
         delete splitOne;  splitOne = 0;
         delete viewport;  viewport = 0;
+        splitLocation = 0;
+        splitOrientation = NotSplit;
         splitType = GLWidgetSplit::ParentSplit;
         parentSplit = 0;
         widget = 0;
@@ -195,6 +195,16 @@ void GLWidgetSplit::removeSplit()
 {
 }
 
+int GLWidgetSplit::splitLocation() const
+{
+    return d->splitLocation;
+}
+
+void GLWidgetSplit::setSplitLocation(int location)
+{
+    d->splitLocation = location;
+}
+
 GLViewport *GLWidgetSplit::viewport() const
 {
     return d->viewport;
@@ -208,14 +218,4 @@ GLWidgetSplit *GLWidgetSplit::splitOne() const
 GLWidgetSplit *GLWidgetSplit::splitTwo() const
 {
     return d->splitTwo;
-}
-
-int GLWidgetSplit::splitLocation() const
-{
-    return d->splitLocation;
-}
-
-void GLWidgetSplit::setSplitLocation(int location)
-{
-    d->splitLocation = location;
 }
