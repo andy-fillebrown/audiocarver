@@ -37,13 +37,12 @@ class GLEDITOR_EXPORT GLWidgetSplit : public QObject
 public:
     enum SplitType
     {
-        ParentSplit = 0,
         FirstSplit,
         SecondSplit
     };
 
     GLWidgetSplit(GLWidget *widget);
-    GLWidgetSplit(GLWidgetSplit *parentSplit, SplitType splitType = ParentSplit);
+    GLWidgetSplit(GLWidgetSplit *parentSplit, SplitType splitType);
     virtual ~GLWidgetSplit();
 
     GLWidget *widget() const;
@@ -62,8 +61,8 @@ public:
     void splitVertical();
     void removeSplit();
 
-    int splitLocation() const;
-    void setSplitLocation(int location);
+    qreal splitLocation() const;
+    void setSplitLocation(qreal location);
 
     GLViewport *viewport() const; // null if split
     GLWidgetSplit *splitOne() const; // null if not split
