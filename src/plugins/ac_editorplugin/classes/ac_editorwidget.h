@@ -15,24 +15,26 @@
 **
 **************************************************************************/
 
-#include "ac_editor.h"
+#ifndef AC_EDITORWIDGET_H
+#define AC_EDITORWIDGET_H
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
+#include <gleditorplugin/classes/glwidget.h>
 
-Editor *s_instance = 0;
+namespace AudioCarver {
+namespace Internal {
 
-Editor::Editor()
+class EditorWidget : public GLEditor::GLWidget
 {
-    s_instance = this;
-}
+    Q_OBJECT
 
-Editor::~Editor()
-{
-    s_instance = 0;
-}
+public:
+    EditorWidget();
+    virtual ~EditorWidget();
 
-Editor *Editor::instance()
-{
-    return s_instance;
-}
+    static EditorWidget *instance();
+};
+
+} // namespace Internal
+} // namespace AudioCarver
+
+#endif // AC_EDITORWIDGET_H

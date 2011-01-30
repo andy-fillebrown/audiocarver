@@ -15,22 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITOR_H
-#define AC_EDITOR_H
+#include "ac_editorwidget.h"
 
-namespace AudioCarver {
-namespace Internal {
+using namespace AudioCarver;
+using namespace AudioCarver::Internal;
 
-class Editor
+EditorWidget *s_instance = 0;
+
+EditorWidget::EditorWidget()
 {
-public:
-    Editor();
-    ~Editor();
+    s_instance = this;
+}
 
-    static Editor *instance();
-};
+EditorWidget::~EditorWidget()
+{
+    s_instance = 0;
+}
 
-} // namespace Internal
-} // namespace AudioCarver
-
-#endif // AC_EDITOR_H
+EditorWidget *EditorWidget::instance()
+{
+    return s_instance;
+}
