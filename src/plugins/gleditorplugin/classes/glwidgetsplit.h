@@ -68,6 +68,10 @@ public:
     GLWidgetSplit *splitOne() const; // null if not split
     GLWidgetSplit *splitTwo() const; // null if not split
 
+protected:
+    friend class GLWidget;
+    virtual void draw();
+
 private:
     Internal::GLWidgetSplitPrivate *d;
 };

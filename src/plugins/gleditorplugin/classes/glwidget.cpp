@@ -134,51 +134,6 @@ public:
         glEndList();
         Q_CHECK_GLERROR;
     }
-
-    void draw()
-    {
-//        qglPushState();
-//        viewportLeft->update();
-//        viewportRight->update();
-//        Q_CHECK(shaderProgram->bind());
-
-//        glClearColor(0, 0, 0, 1);
-//        glClear(GL_COLOR_BUFFER_BIT);
-//        glEnable(GL_BLEND);
-//        glEnable(GL_CULL_FACE);
-//        glDisable(GL_DEPTH_TEST);
-//        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-//        const QSize cw = q->size();
-//        const int modW = cw.width() % 2;
-//        const int modH = cw.height() % 2;
-
-//        const QSize vpL = viewportLeft->size();
-//        const int vpL_w = vpL.width() + modW;
-//        const int vpL_h = vpL.height() + modH;
-//        glViewport(0, 0, vpL_w, vpL_h);
-//        shaderProgram->setUniformValue(screenOriginId, 0, 0);
-//        shaderProgram->setUniformValue(screenSizeId, vpL_w, vpL_h);
-//        glBindTexture(GL_TEXTURE_2D, viewportLeft->staticTextureId());
-//        glCallList(displayListId);
-//        glBindTexture(GL_TEXTURE_2D, viewportLeft->animatedTextureId());
-//        glCallList(displayListId);
-
-//        const QSize vpR = viewportRight->size();
-//        const int vpR_w = vpR.width() + modW;
-//        const int vpR_h = vpR.height() + modH;
-//        glViewport(vpL_w, 0, vpR_w, vpR_h);
-//        shaderProgram->setUniformValue(screenOriginId, vpL_w, 0);
-//        shaderProgram->setUniformValue(screenSizeId, vpR_w, vpR_h);
-//        glBindTexture(GL_TEXTURE_2D, viewportRight->staticTextureId());
-//        glCallList(displayListId);
-//        glBindTexture(GL_TEXTURE_2D, viewportRight->animatedTextureId());
-//        glCallList(displayListId);
-
-//        shaderProgram->release();
-//        qglPopState();
-//        Q_CHECK_GLERROR;
-    }
 };
 
 } // namespace Internal
@@ -234,4 +189,39 @@ void GLWidget::removeAllSplits()
 QMutex *GLWidget::glDrawMutex() const
 {
     return d->drawMutex;
+}
+
+void GLWidget::drawViewport(GLViewport *viewport)
+{
+    qDebug() << "Drawing viewport" << viewport;
+
+    qglPushState();
+    Q_CHECK(d->shaderProgram->bind());
+
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+    QRect vp = viewport->rect();
+    glViewport(0, 0, vp.width(), vp.height());
+    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.right());
+    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
+
+    const QList<GLuint> &textureIds = viewport->textureIds();
+    foreach (const GLuint &id, textureIds) {
+        glBindTexture(GL_TEXTURE_2D, id);
+        glCallList(d->displayListId);
+    }
+
+    d->shaderProgram->release();
+    qglPopState();
+    Q_CHECK_GLERROR;
+}
+
+void GLWidget::glDraw()
+{
+    d->mainSplit->draw();
 }

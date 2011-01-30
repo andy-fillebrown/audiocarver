@@ -55,7 +55,6 @@ public:
         ,   splitType(GLWidgetSplit::FirstSplit)
     {
         finishConstruction();
-        createViewport();
     }
 
     GLWidgetSplitPrivate(GLWidgetSplit *q, GLWidgetSplit *parentSplit, GLWidgetSplit::SplitType splitType)
@@ -88,12 +87,17 @@ public:
         q = 0;
     }
 
+    void init()
+    {
+        createViewport();
+    }
+
     void createViewport()
     {
         if (viewport)
             return;
         destroySplits();
-        viewport = new GLViewport(widget, parentSplit ? parentSplit->size() : widget->size());
+        viewport = new GLViewport(q, parentSplit ? parentSplit->size() : widget->size());
     }
 
     void destroyViewport()
@@ -125,12 +129,14 @@ GLWidgetSplit::GLWidgetSplit(GLWidget *widget)
     :   d(new GLWidgetSplitPrivate(this, widget))
 {
     Q_CHECK_PTR(d);
+    d->init();
 }
 
 GLWidgetSplit::GLWidgetSplit(GLWidgetSplit *parentSplit, SplitType splitType)
     :   d(new GLWidgetSplitPrivate(this, parentSplit, splitType))
 {
     Q_CHECK_PTR(d);
+    d->init();
 }
 
 GLWidgetSplit::~GLWidgetSplit()
@@ -254,6 +260,15 @@ GLWidgetSplit *GLWidgetSplit::splitTwo() const
 {
     if (!isSplit())
         return 0;
-    d->createSplits();
     return d->splitTwo;
+}
+
+void GLWidgetSplit::draw()
+{
+    if (isSplit()) {
+        d->splitOne->draw();
+        d->splitTwo->draw();
+    } else {
+        d->viewport->draw();
+    }
 }

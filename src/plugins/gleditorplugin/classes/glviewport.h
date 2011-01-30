@@ -23,7 +23,7 @@
 #include <utils3d/utils3d_global.h>
 
 namespace GLEditor {
-class GLWidget;
+class GLWidgetSplit;
 
 namespace Internal {
 class GLViewportPrivate;
@@ -34,14 +34,16 @@ class GLEDITOR_EXPORT GLViewport : public QObject
     Q_OBJECT
 
 public:
-    GLViewport(GLWidget *widget, const QSize &size);
-    GLViewport(GLWidget *widget, int width, int height);
+    GLViewport(GLWidgetSplit *split, const QSize &size);
+    GLViewport(GLWidgetSplit *split, int width, int height);
     virtual ~GLViewport();
 
     QColor backgroundColor() const;
     void setBackgroundColor(const QColor &color);
     void setBackgroundColor(GLfloat red, GLfloat blue, GLfloat green, GLfloat alpha = 1.0f);
 
+    QPoint pos() const;
+    QRect rect() const;
     QSize size() const;
     int width() const;
     int height() const;
@@ -52,6 +54,10 @@ public:
 
 public slots:
     void update();
+
+protected:
+    friend class GLWidgetSplit;
+    virtual void draw();
 
 private:
     Internal::GLViewportPrivate *d;

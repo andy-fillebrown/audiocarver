@@ -52,7 +52,11 @@ public slots:
     void removeAllSplits();
 
 protected:
+    friend class GLViewport;
+    virtual void drawViewport(GLViewport *viewport);
     QMutex *glDrawMutex() const;
+
+    virtual void glDraw();
 
 private:
     Internal::GLWidgetPrivate *d;

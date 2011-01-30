@@ -16,7 +16,9 @@
 **************************************************************************/
 
 #include "glviewport.h"
+
 #include "glwidget.h"
+#include "glwidgetsplit.h"
 
 #include <utils3d/utils3d_global.h>
 
@@ -34,27 +36,25 @@ class GLViewportPrivate : protected QGLFunctions
 public:
     GLViewport *q;
     GLWidget *widget;
+    GLWidgetSplit *split;
     QColor backgroundColor;
-    QGLFramebufferObject *staticFBO_1;
-    QGLFramebufferObject *staticFBO_2;
+    QGLFramebufferObject *staticFBO;
     QGLFramebufferObject *staticFBO_front;
     QGLFramebufferObject *staticFBO_back;
-    QGLFramebufferObject *animatedFBO_1;
-    QGLFramebufferObject *animatedFBO_2;
+    QGLFramebufferObject *animatedFBO;
     QGLFramebufferObject *animatedFBO_front;
     QGLFramebufferObject *animatedFBO_back;
     QList<GLuint> textureIds;
 
-    GLViewportPrivate(GLViewport *q, GLWidget *widget, int w, int h)
+    GLViewportPrivate(GLViewport *q, GLWidgetSplit *split, int w, int h)
         :   q(q)
-        ,   widget(widget)
+        ,   widget(split->widget())
+        ,   split(split)
         ,   backgroundColor(Qt::white)
-        ,   staticFBO_1(0)
-        ,   staticFBO_2(0)
+        ,   staticFBO(0)
         ,   staticFBO_front(0)
         ,   staticFBO_back(0)
-        ,   animatedFBO_1(0)
-        ,   animatedFBO_2(0)
+        ,   animatedFBO(0)
         ,   animatedFBO_front(0)
         ,   animatedFBO_back(0)
     {
@@ -258,14 +258,14 @@ public:
 } // namespace Internal
 } // namespace Editor3D
 
-GLViewport::GLViewport(GLWidget *widget, const QSize &size)
-    :   d(new GLViewportPrivate(this, widget, size.width(), size.height()))
+GLViewport::GLViewport(GLWidgetSplit *split, const QSize &size)
+    :   d(new GLViewportPrivate(this, split, size.width(), size.height()))
 {
     Q_CHECK_PTR(d);
 }
 
-GLViewport::GLViewport(GLWidget *widget, int w, int h)
-    :   d(new GLViewportPrivate(this, widget, w, h))
+GLViewport::GLViewport(GLWidgetSplit *split, int w, int h)
+    :   d(new GLViewportPrivate(this, split, w, h))
 {
     Q_CHECK_PTR(d);
 }
@@ -280,9 +280,19 @@ void GLViewport::setBackgroundColor(const QColor &color)
     d->backgroundColor = color;
 }
 
+QPoint GLViewport::pos() const
+{
+    return d->split->pos();
+}
+
+QRect GLViewport::rect() const
+{
+    return d->split->rect();
+}
+
 QSize GLViewport::size() const
 {
-    return d->staticFBO_front->size();
+    return d->split->size();
 }
 
 void GLViewport::resize(int w, int h)
@@ -290,6 +300,16 @@ void GLViewport::resize(int w, int h)
     d->resize(w, h);
 }
 
+const QList<GLuint> &GLViewport::textureIds() const
+{
+    return d->textureIds;
+}
+
 void GLViewport::update()
 {
+}
+
+void GLViewport::draw()
+{
+    d->widget->drawViewport(this);
 }
