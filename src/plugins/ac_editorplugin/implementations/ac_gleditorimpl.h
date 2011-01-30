@@ -53,7 +53,6 @@ public:
     virtual void windowSplitVertical();
     virtual void windowRemoveCurrentSplit();
     virtual void windowRemoveAllSplits();
-    virtual void windowGotoNextSplit();
 };
 
 } // namespace Internal

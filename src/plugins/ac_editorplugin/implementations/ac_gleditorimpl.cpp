@@ -135,8 +135,3 @@ void GLEditorImpl::windowRemoveAllSplits()
     qDebug() << Q_FUNC_INFO;
     EditorWidget::instance()->removeAllSplits();
 }
-
-void GLEditorImpl::windowGotoNextSplit()
-{
-    qDebug() << Q_FUNC_INFO;
-}

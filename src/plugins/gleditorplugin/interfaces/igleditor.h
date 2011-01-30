@@ -53,7 +53,6 @@ public:
     virtual void windowSplitVertical() = 0;
     virtual void windowRemoveCurrentSplit() = 0;
     virtual void windowRemoveAllSplits() = 0;
-    virtual void windowGotoNextSplit() = 0;
 };
 
 } // namespace GLEditor
