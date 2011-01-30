@@ -17,7 +17,7 @@
 
 #include "ac_editorplugin.h"
 
-#include "ac_editor.h"
+#include "classes/ac_editorwidget.h"
 
 #include "implementations/ac_mainwindowimpl.h"
 #include "implementations/ac_editorimpl.h"
@@ -51,7 +51,7 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void EditorPlugin::extensionsInitialized()
 {
-    Core::ICore::instance()->mainWindow()->setCentralWidget(new EditorWidget());
+    Core::ICore::instance()->mainWindow()->setCentralWidget(new EditorWidget);
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin)
