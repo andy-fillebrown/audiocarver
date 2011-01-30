@@ -17,6 +17,8 @@
 
 #include "ac_gleditorimpl.h"
 
+#include "classes/ac_editorwidget.h"
+
 #include <QtCore/QDebug>
 
 using namespace AudioCarver;
@@ -113,25 +115,28 @@ void GLEditorImpl::viewTransparencyFull()
 void GLEditorImpl::windowSplitHorizontal()
 {
     qDebug() << Q_FUNC_INFO;
+    EditorWidget::instance()->splitHorizontal();
 }
 
 void GLEditorImpl::windowSplitVertical()
 {
     qDebug() << Q_FUNC_INFO;
+    EditorWidget::instance()->splitVertical();
 }
 
 void GLEditorImpl::windowRemoveCurrentSplit()
 {
     qDebug() << Q_FUNC_INFO;
+    EditorWidget::instance()->removeCurrentSplit();
 }
 
 void GLEditorImpl::windowRemoveAllSplits()
 {
     qDebug() << Q_FUNC_INFO;
+    EditorWidget::instance()->removeAllSplits();
 }
 
 void GLEditorImpl::windowGotoNextSplit()
 {
     qDebug() << Q_FUNC_INFO;
 }
-

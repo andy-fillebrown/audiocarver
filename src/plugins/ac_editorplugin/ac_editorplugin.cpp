@@ -17,11 +17,11 @@
 
 #include "ac_editorplugin.h"
 
+#include "ac_editor.h"
+
 #include "implementations/ac_mainwindowimpl.h"
 #include "implementations/ac_editorimpl.h"
 #include "implementations/ac_gleditorimpl.h"
-
-#include <gleditorplugin/classes/glwidget.h>
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
@@ -51,7 +51,7 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void EditorPlugin::extensionsInitialized()
 {
-    Core::ICore::instance()->mainWindow()->setCentralWidget(new GLEditor::GLWidget);
+    Core::ICore::instance()->mainWindow()->setCentralWidget(new EditorWidget());
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin)
