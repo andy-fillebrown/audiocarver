@@ -73,7 +73,7 @@ public:
         vertexShader = 0;
         glDeleteLists(displayListId, 1);  displayListId = 0;
         currentSplit = 0;
-        mainSplit = 0;
+        delete mainSplit;  mainSplit = 0;
         delete drawMutex;  drawMutex = 0;
         q = 0;
     }
@@ -115,10 +115,10 @@ public:
         Q_CHECK(shaderProgram->addShader(fragmentShader));
         Q_CHECK(shaderProgram->link());
 
-//        screenOriginId = shaderProgram->uniformLocation("screenOrigin");
-//        screenSizeId = shaderProgram->uniformLocation("screenSize");
-//        Q_ASSERT(screenOriginId != -1);
-//        Q_ASSERT(screenSizeId != -1);
+        screenOriginId = shaderProgram->uniformLocation("screenOrigin");
+        screenSizeId = shaderProgram->uniformLocation("screenSize");
+        Q_ASSERT(screenOriginId != -1);
+        Q_ASSERT(screenSizeId != -1);
         Q_CHECK_GLERROR;
     }
 
@@ -212,12 +212,12 @@ void GLWidget::drawViewport(GLViewport *viewport)
     Q_ASSERT(0 < vp.width());
     Q_ASSERT(0 < vp.height());
     glViewport(0, 0, vp.width(), vp.height());
-//    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.top());
-//    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
+    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.top());
+    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
     Q_CHECK_GLERROR;
 
     const QList<GLuint> &textureIds = viewport->textureIds();
-    foreach (const GLuint id, textureIds) {
+    foreach (const GLuint &id, textureIds) {
         glBindTexture(GL_TEXTURE_2D, id);
         Q_CHECK_GLERROR;
         glCallList(d->displayListId);

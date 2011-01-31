@@ -22,7 +22,8 @@ using namespace AudioCarver::Internal;
 
 EditorWidget *s_instance = 0;
 
-EditorWidget::EditorWidget()
+EditorWidget::EditorWidget(QWidget *parent)
+    :   GLEditor::GLWidget(parent)
 {
     s_instance = this;
 }

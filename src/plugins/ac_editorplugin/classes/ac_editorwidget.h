@@ -28,7 +28,7 @@ class EditorWidget : public GLEditor::GLWidget
     Q_OBJECT
 
 public:
-    EditorWidget();
+    EditorWidget(QWidget *parent = 0);
     virtual ~EditorWidget();
 
     static EditorWidget *instance();

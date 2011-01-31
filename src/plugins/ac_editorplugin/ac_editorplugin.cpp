@@ -52,8 +52,8 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 void EditorPlugin::extensionsInitialized()
 {
     // EditorWidget instance must be created with main window as it's parent,
-    // otherwise app crashes on exit when run on Windows OS.
-    // Encountered this issue on 1/31/11 on Windows 7 64 bit.
+    // otherwise app crashes when run on Windows OS.
+    // Encountered this issue on 1/31/11 (Windows 7, 64 bit).
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
     EditorWidget *ew = new EditorWidget(mw);
     mw->setCentralWidget(ew);

@@ -33,8 +33,8 @@ public:
     float rotation;
 
     Testing()
-        :   staticDisplayListId(0)
-        ,   animatedDisplayListId(0)
+        :   staticDisplayListId(-1)
+        ,   animatedDisplayListId(-1)
         ,   rotation(0)
     {
         initializeGLFunctions();
@@ -42,11 +42,28 @@ public:
 
     ~Testing()
     {
+        glDeleteLists(animatedDisplayListId, 1);  animatedDisplayListId = -1;
+        glDeleteLists(staticDisplayListId, 1);  staticDisplayListId = -1;
+        rotation = 0;
     }
 
     void initDisplayLists()
     {
-        // static fbo's display list
+        staticDisplayListId = glGenLists(1);
+        glNewList(staticDisplayListId, GL_COMPILE);
+        drawStaticGeometry();
+        glEndList();
+        Q_CHECK_GLERROR;
+
+        animatedDisplayListId = glGenLists(1);
+        glNewList(animatedDisplayListId, GL_COMPILE);
+        drawAnimatedGeometry();
+        glEndList();
+        Q_CHECK_GLERROR;
+    }
+
+    void drawStaticGeometry()
+    {
         static const GLfloat x = 1.0f;
         static const GLfloat y = 1.0f;
         static const GLfloat S1[3] = { x, y, 0.0 };
@@ -56,8 +73,6 @@ public:
         static const GLfloat * const coordsS[2][3] = {
             { S2, S1, S3 }, { S3, S4, S2 }
         };
-        staticDisplayListId = glGenLists(1);
-        glNewList(staticDisplayListId, GL_COMPILE);
         glBegin(GL_TRIANGLES);
         glColor4f(0.5, 0.5, 0.5, 0.5);
         for (int i = 0;  i < 2;  ++i) {
@@ -65,10 +80,11 @@ public:
                 glVertex3f(coordsS[i][j][0], coordsS[i][j][1], coordsS[i][j][2]);
         }
         glEnd();
-        glEndList();
         Q_CHECK_GLERROR;
+    }
 
-        // animated fbo's display list
+    void drawAnimatedGeometry()
+    {
         static const GLfloat A1[3] = { 0.0, -1.0, 2.0 };
         static const GLfloat A2[3] = { 1.73205081, -1.0, -1.0 };
         static const GLfloat A3[3] = { -1.73205081, -1.0, -1.0 };
@@ -79,8 +95,6 @@ public:
         static const GLfloat faceColorsA[][3] = {
             { 1, 1, 1 }, { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }
         };
-        animatedDisplayListId = glGenLists(1);
-        glNewList(animatedDisplayListId, GL_COMPILE);
         glBegin(GL_TRIANGLES);
         for (int i = 0;  i < 4;  ++i) {
             glColor4f(faceColorsA[i][0], faceColorsA[i][1], faceColorsA[i][2], 0.5f);
@@ -88,7 +102,6 @@ public:
                 glVertex3f(coordsA[i][j][0], coordsA[i][j][1], coordsA[i][j][2]);
         }
         glEnd();
-        glEndList();
         Q_CHECK_GLERROR;
     }
 
@@ -187,6 +200,13 @@ public:
 
     ~GLViewportPrivate()
     {
+        delete animatedFBO_back;  animatedFBO_back = 0;
+        delete animatedFBO_front;  animatedFBO_front = 0;
+        delete staticFBO_back;  staticFBO_back = 0;
+        delete staticFBO_front;  staticFBO_front = 0;
+        split = 0;
+        widget = 0;
+        q = 0;
     }
 
     void initFBOs(int w, int h)
@@ -251,31 +271,6 @@ public:
         updateAnimatedFBO();
     }
 };
-
-//Viewport3DPrivate::~Viewport3DPrivate()
-//{
-//    centralWidget->makeCurrent();
-//    Q_ASSERT(centralWidget->isValid());
-
-//    dirtyStaticFBO = true;
-//    backgroundColor = Qt::white;
-//    rotationPerFrame = 0;
-//    rotation = 0;
-//    timerId = 0;
-//    glDeleteLists(animatedDisplayListId, 1);  animatedDisplayListId = 0;
-//    glDeleteLists(staticDisplayListId, 1);  staticDisplayListId = 0;
-//    delete animatedFBO;  animatedFBO = 0;
-//    delete staticFBO;  staticFBO = 0;
-//    centralWidget = 0;
-//    q = 0;
-//}
-
-//void Viewport3DPrivate::resize(int w, int h)
-//{
-//    initFBOs(w, h);
-//    dirtyStaticFBO = true;
-//    q->update();
-//}
 
 } // namespace Internal
 } // namespace Editor3D
