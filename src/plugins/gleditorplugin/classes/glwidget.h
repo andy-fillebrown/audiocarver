@@ -57,6 +57,7 @@ protected:
     QMutex *glDrawMutex() const;
 
     virtual void glDraw();
+    virtual void glResize(int width, int height);
 
 private:
     Internal::GLWidgetPrivate *d;

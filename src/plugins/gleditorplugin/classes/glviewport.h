@@ -47,7 +47,6 @@ public:
     QSize size() const;
     int width() const;
     int height() const;
-    void resize(const QSize &size);
     void resize(int width, int height);
 
     const QList<GLuint> &textureIds() const;

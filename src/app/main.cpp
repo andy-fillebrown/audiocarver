@@ -299,5 +299,7 @@ int main(int argc, char **argv)
     // Do this after the event loop has started
     QTimer::singleShot(100, &pluginManager, SLOT(startTests()));
 
-    return app.exec();
+    app.exec();
+    qDebug() << "done";
+    return 0;
 }

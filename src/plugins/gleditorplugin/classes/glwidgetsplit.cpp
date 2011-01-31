@@ -272,3 +272,10 @@ void GLWidgetSplit::draw()
         d->viewport->draw();
     }
 }
+
+void GLWidgetSplit::resize(int width, int height)
+{
+    if (isSplit())
+        return;
+    d->viewport->resize(width, height);
+}

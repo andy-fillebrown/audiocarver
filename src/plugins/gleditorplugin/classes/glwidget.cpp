@@ -115,10 +115,10 @@ public:
         Q_CHECK(shaderProgram->addShader(fragmentShader));
         Q_CHECK(shaderProgram->link());
 
-        screenOriginId = shaderProgram->uniformLocation("screenOrigin");
-        screenSizeId = shaderProgram->uniformLocation("screenSize");
-        Q_ASSERT(screenOriginId != -1);
-        Q_ASSERT(screenSizeId != -1);
+//        screenOriginId = shaderProgram->uniformLocation("screenOrigin");
+//        screenSizeId = shaderProgram->uniformLocation("screenSize");
+//        Q_ASSERT(screenOriginId != -1);
+//        Q_ASSERT(screenSizeId != -1);
         Q_CHECK_GLERROR;
     }
 
@@ -144,7 +144,10 @@ GLWidget::GLWidget(QWidget *parent)
     ,   d(new Internal::GLWidgetPrivate(this))
 {
     Q_CHECK_PTR(d);
+
     makeCurrent();
+    Q_CHECK(isValid());
+
     d->initialize();
 }
 
@@ -206,22 +209,31 @@ void GLWidget::drawViewport(GLViewport *viewport)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     QRect vp = viewport->rect();
+    Q_ASSERT(0 < vp.width());
+    Q_ASSERT(0 < vp.height());
     glViewport(0, 0, vp.width(), vp.height());
-    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.right());
-    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
+//    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.top());
+//    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
+    Q_CHECK_GLERROR;
 
     const QList<GLuint> &textureIds = viewport->textureIds();
-    foreach (const GLuint &id, textureIds) {
+    foreach (const GLuint id, textureIds) {
         glBindTexture(GL_TEXTURE_2D, id);
+        Q_CHECK_GLERROR;
         glCallList(d->displayListId);
     }
 
     d->shaderProgram->release();
-    qglPopState();
     Q_CHECK_GLERROR;
+    qglPopState();
 }
 
 void GLWidget::glDraw()
 {
     d->mainSplit->draw();
+}
+
+void GLWidget::glResize(int width, int height)
+{
+    d->mainSplit->resize(width, height);
 }
