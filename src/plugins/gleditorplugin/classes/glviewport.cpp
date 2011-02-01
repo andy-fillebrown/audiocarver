@@ -181,7 +181,7 @@ public:
     QList<GLuint> textureIds;
     Testing testing;
 
-    GLViewportPrivate(GLViewport *q, GLWidgetSplit *split, int w, int h)
+    GLViewportPrivate(GLViewport *q, GLWidgetSplit *split)
         :   q(q)
         ,   widget(split->widget())
         ,   split(split)
@@ -192,7 +192,7 @@ public:
         ,   animatedFBO_back(0)
     {
         initializeGLFunctions(widget->context());
-        initFBOs(w, h);
+        initFBOs(split->width(), split->height());
         testing.initDisplayLists();
         updateStaticFBO();
         updateAnimatedFBO();
@@ -275,14 +275,8 @@ public:
 } // namespace Internal
 } // namespace Editor3D
 
-GLViewport::GLViewport(GLWidgetSplit *split, const QSize &size)
-    :   d(new GLViewportPrivate(this, split, size.width(), size.height()))
-{
-    Q_CHECK_PTR(d);
-}
-
-GLViewport::GLViewport(GLWidgetSplit *split, int w, int h)
-    :   d(new GLViewportPrivate(this, split, w, h))
+GLViewport::GLViewport(GLWidgetSplit *split)
+    :   d(new GLViewportPrivate(this, split))
 {
     Q_CHECK_PTR(d);
 }

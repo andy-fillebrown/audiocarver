@@ -56,8 +56,8 @@ protected:
     virtual void drawViewport(GLViewport *viewport);
     QMutex *glDrawMutex() const;
 
-    virtual void glDraw();
-    virtual void glResize(int width, int height);
+    virtual void paintGL();
+    virtual void resizeGL(int width, int height);
 
 private:
     Internal::GLWidgetPrivate *d;

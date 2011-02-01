@@ -97,7 +97,7 @@ public:
         if (viewport)
             return;
         destroySplits();
-        viewport = new GLViewport(q, parentSplit ? parentSplit->size() : widget->size());
+        viewport = new GLViewport(q);
     }
 
     void destroyViewport()
@@ -163,7 +163,7 @@ QPoint GLWidgetSplit::pos() const
     QPoint parentPos = p->pos();
     if (d->splitType == FirstSplit)
         return parentPos;
-    if (isSplitHorizontal())
+    if (p->isSplitHorizontal())
         return QPoint(parentPos.x(), parentPos.y() + (p->splitLocation() * p->height()));
     return QPoint(parentPos.x() + (p->splitLocation() * p->width()), parentPos.y());
 }
@@ -178,18 +178,16 @@ QSize GLWidgetSplit::size() const
     GLWidgetSplit *p = parentSplit();
     if (!p)
         return widget()->size();
-    if (!isSplit())
-        return p->size();
 
     QSize parentSize = p->size();
     if (d->splitType == FirstSplit) {
-        if (isSplitHorizontal())
+        if (p->isSplitHorizontal())
             return QSize(parentSize.width(), p->splitLocation() * parentSize.height());
-        return QSize(p->splitLocation(), parentSize.height());
+        return QSize(p->splitLocation() * parentSize.width(), parentSize.height());
     }
-    if (isSplitHorizontal())
+    if (p->isSplitHorizontal())
         return QSize(parentSize.width(), parentSize.height() - (p->splitLocation() * parentSize.height()));
-    return QSize(parentSize.width() - (p->splitLocation() * parentSize.height()), parentSize.height());
+    return QSize(parentSize.width() - (p->splitLocation() * parentSize.width()), parentSize.height());
 }
 
 int GLWidgetSplit::width() const
@@ -273,9 +271,13 @@ void GLWidgetSplit::draw()
     }
 }
 
-void GLWidgetSplit::resize(int width, int height)
+void GLWidgetSplit::resize()
 {
-    if (isSplit())
-        return;
-    d->viewport->resize(width, height);
+    if (isSplit()) {
+        d->splitOne->resize();
+        d->splitTwo->resize();
+    } else {
+        const QSize size = this->size();
+        d->viewport->resize(size.width(), size.height());
+    }
 }

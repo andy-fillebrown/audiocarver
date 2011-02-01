@@ -71,7 +71,7 @@ public:
 protected:
     friend class GLWidget;
     virtual void draw();
-    virtual void resize(int width, int height);
+    virtual void resize();
 
 private:
     Internal::GLWidgetSplitPrivate *d;

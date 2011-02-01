@@ -34,8 +34,7 @@ class GLEDITOR_EXPORT GLViewport : public QObject
     Q_OBJECT
 
 public:
-    GLViewport(GLWidgetSplit *split, const QSize &size);
-    GLViewport(GLWidgetSplit *split, int width, int height);
+    GLViewport(GLWidgetSplit *split);
     virtual ~GLViewport();
 
     QColor backgroundColor() const;

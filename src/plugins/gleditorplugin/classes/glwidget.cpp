@@ -170,11 +170,15 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
 void GLWidget::splitHorizontal()
 {
     currentSplit()->splitHorizontal();
+    d->mainSplit->resize();
+    updateGL();
 }
 
 void GLWidget::splitVertical()
 {
     currentSplit()->splitVertical();
+    d->mainSplit->resize();
+    updateGL();
 }
 
 void GLWidget::removeCurrentSplit()
@@ -182,11 +186,15 @@ void GLWidget::removeCurrentSplit()
     if (d->currentSplit == d->mainSplit)
         return;
     d->currentSplit->removeSplit();
+    d->mainSplit->resize();
+    updateGL();
 }
 
 void GLWidget::removeAllSplits()
 {
     d->mainSplit->removeSplit();
+    d->mainSplit->resize();
+    updateGL();
 }
 
 QMutex *GLWidget::glDrawMutex() const
@@ -196,8 +204,22 @@ QMutex *GLWidget::glDrawMutex() const
 
 void GLWidget::drawViewport(GLViewport *viewport)
 {
-    qDebug() << "Drawing viewport" << viewport;
+    QRect vp = viewport->rect();
+    Q_ASSERT(0 < vp.width());
+    Q_ASSERT(0 < vp.height());
+    glViewport(vp.left(), vp.top(), vp.width(), vp.height());
+    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.top());
+    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
 
+    const QList<GLuint> &textureIds = viewport->textureIds();
+    foreach (const GLuint &id, textureIds) {
+        glBindTexture(GL_TEXTURE_2D, id);
+        glCallList(d->displayListId);
+    }
+}
+
+void GLWidget::paintGL()
+{
     qglPushState();
     Q_CHECK(d->shaderProgram->bind());
 
@@ -208,32 +230,16 @@ void GLWidget::drawViewport(GLViewport *viewport)
     glDisable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    QRect vp = viewport->rect();
-    Q_ASSERT(0 < vp.width());
-    Q_ASSERT(0 < vp.height());
-    glViewport(0, 0, vp.width(), vp.height());
-    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.top());
-    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
-    Q_CHECK_GLERROR;
-
-    const QList<GLuint> &textureIds = viewport->textureIds();
-    foreach (const GLuint &id, textureIds) {
-        glBindTexture(GL_TEXTURE_2D, id);
-        Q_CHECK_GLERROR;
-        glCallList(d->displayListId);
-    }
+    d->mainSplit->draw();
 
     d->shaderProgram->release();
     Q_CHECK_GLERROR;
     qglPopState();
 }
 
-void GLWidget::glDraw()
+void GLWidget::resizeGL(int width, int height)
 {
-    d->mainSplit->draw();
-}
-
-void GLWidget::glResize(int width, int height)
-{
-    d->mainSplit->resize(width, height);
+    Q_UNUSED(width);
+    Q_UNUSED(height);
+    d->mainSplit->resize();
 }
