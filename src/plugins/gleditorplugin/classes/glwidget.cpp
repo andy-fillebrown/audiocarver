@@ -169,24 +169,27 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
 
 void GLWidget::splitHorizontal()
 {
-    currentSplit()->splitHorizontal();
-    d->mainSplit->resize();
+    GLWidgetSplit *split = currentSplit();
+    split->splitHorizontal();
+    split->resize();
     updateGL();
 }
 
 void GLWidget::splitVertical()
 {
-    currentSplit()->splitVertical();
-    d->mainSplit->resize();
+    GLWidgetSplit *split = currentSplit();
+    split->splitVertical();
+    split->resize();
     updateGL();
 }
 
 void GLWidget::removeCurrentSplit()
 {
-    if (d->currentSplit == d->mainSplit)
+    GLWidgetSplit *split = currentSplit();
+    if (split == d->mainSplit)
         return;
-    d->currentSplit->removeSplit();
-    d->mainSplit->resize();
+    split->removeSplit();
+    split->resize();
     updateGL();
 }
 
