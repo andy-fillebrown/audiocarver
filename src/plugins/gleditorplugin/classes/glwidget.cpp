@@ -62,7 +62,6 @@ public:
 
     ~GLWidgetPrivate()
     {
-        // Make context current for glDeleteLists.
         q->makeCurrent();
         Q_ASSERT(q->isValid());
 
