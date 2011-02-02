@@ -53,12 +53,14 @@ public:
         glNewList(staticDisplayListId, GL_COMPILE);
         drawStaticGeometry();
         glEndList();
+
         Q_CHECK_GLERROR;
 
         animatedDisplayListId = glGenLists(1);
         glNewList(animatedDisplayListId, GL_COMPILE);
         drawAnimatedGeometry();
         glEndList();
+
         Q_CHECK_GLERROR;
     }
 
@@ -80,6 +82,7 @@ public:
                 glVertex3f(coordsS[i][j][0], coordsS[i][j][1], coordsS[i][j][2]);
         }
         glEnd();
+
         Q_CHECK_GLERROR;
     }
 
@@ -102,6 +105,7 @@ public:
                 glVertex3f(coordsA[i][j][0], coordsA[i][j][1], coordsA[i][j][2]);
         }
         glEnd();
+
         Q_CHECK_GLERROR;
     }
 
@@ -217,18 +221,22 @@ public:
 
         delete staticFBO_front;
         staticFBO_front = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(staticFBO_front);
         Q_ASSERT(staticFBO_front->isValid());
 
         delete staticFBO_back;
         staticFBO_back = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(staticFBO_back);
         Q_ASSERT(staticFBO_back->isValid());
 
         delete animatedFBO_front;
         animatedFBO_front = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(animatedFBO_front);
         Q_ASSERT(animatedFBO_front->isValid());
 
         delete animatedFBO_back;
         animatedFBO_back = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(animatedFBO_back);
         Q_ASSERT(animatedFBO_back->isValid());
 
         textureIds.clear();

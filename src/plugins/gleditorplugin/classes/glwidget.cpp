@@ -64,6 +64,7 @@ public:
     {
         q->makeCurrent();
         Q_ASSERT(q->isValid());
+        Q_ASSERT(q->context() == QGLContext::currentContext());
 
         screenSizeId = -1;
         screenOriginId = -1;
@@ -77,14 +78,18 @@ public:
         q = 0;
     }
 
-    void initialize()
+    void init()
     {
-        initializeSplits();
-        initializeShaders();
-        initializeDisplayLists();
+        q->makeCurrent();
+        Q_ASSERT(q->isValid());
+        Q_ASSERT(q->context() == QGLContext::currentContext());
+
+        initSplits();
+        initShaders();
+        initDisplayLists();
     }
 
-    void initializeSplits()
+    void initSplits()
     {
         mainSplit = new GLWidgetSplit(q);
         Q_CHECK_PTR(mainSplit);
@@ -92,7 +97,7 @@ public:
         currentSplit = mainSplit;
     }
 
-    void initializeShaders()
+    void initShaders()
     {
         Q_ASSERT(q->isValid());
 
@@ -118,10 +123,11 @@ public:
         screenSizeId = shaderProgram->uniformLocation("screenSize");
         Q_ASSERT(screenOriginId != -1);
         Q_ASSERT(screenSizeId != -1);
+
         Q_CHECK_GLERROR;
     }
 
-    void initializeDisplayLists()
+    void initDisplayLists()
     {
         displayListId = glGenLists(1);
         glNewList(displayListId, GL_COMPILE);
@@ -131,6 +137,7 @@ public:
         glVertex2f(0.0, 4.0);
         glEnd();
         glEndList();
+
         Q_CHECK_GLERROR;
     }
 };
@@ -143,16 +150,11 @@ GLWidget::GLWidget(QWidget *parent)
     ,   d(new Internal::GLWidgetPrivate(this))
 {
     Q_CHECK_PTR(d);
-
-    makeCurrent();
-    Q_CHECK(isValid());
-
-    d->initialize();
+    d->init();
 }
 
 GLWidget::~GLWidget()
 {
-    makeCurrent();
     delete d;  d = 0;
 }
 
@@ -209,6 +211,7 @@ void GLWidget::drawViewport(GLViewport *viewport)
     QRect vp = viewport->rect();
     Q_ASSERT(0 < vp.width());
     Q_ASSERT(0 < vp.height());
+
     glViewport(vp.left(), vp.top(), vp.width(), vp.height());
     d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.top());
     d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());

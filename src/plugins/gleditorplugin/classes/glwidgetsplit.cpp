@@ -102,6 +102,7 @@ public:
             return;
         destroySplits();
         viewport = new GLViewport(q);
+        Q_CHECK_PTR(viewport);
     }
 
     void destroyViewport()
@@ -109,14 +110,16 @@ public:
         delete viewport;  viewport = 0;
     }
 
-    void createSplits(SplitOrientation orientation = HorizontalSplit)
+    void createSplits(SplitOrientation orientation)
     {
         if (splitOne)
             return;
         destroyViewport();
         splitOrientation = orientation;
         splitOne = new GLWidgetSplit(q);
+        Q_CHECK_PTR(splitOne);
         splitTwo = new GLWidgetSplit(q);
+        Q_CHECK_PTR(splitTwo);
     }
 
     void destroySplits()
