@@ -170,7 +170,7 @@ void GLWidget::splitHorizontal()
 {
     GLWidgetSplit *split = currentSplit();
     split->splitHorizontal();
-    split->resize();
+    setCurrentSplit(split->splitOne());
     updateGL();
 }
 
@@ -178,24 +178,24 @@ void GLWidget::splitVertical()
 {
     GLWidgetSplit *split = currentSplit();
     split->splitVertical();
-    split->resize();
+    setCurrentSplit(split->splitOne());
     updateGL();
 }
 
 void GLWidget::removeCurrentSplit()
 {
-    GLWidgetSplit *split = currentSplit();
-    if (split == d->mainSplit)
+    GLWidgetSplit *split = currentSplit()->parentSplit();
+    if (!split)
         return;
     split->removeSplit();
-    split->resize();
+    setCurrentSplit(split);
     updateGL();
 }
 
 void GLWidget::removeAllSplits()
 {
     d->mainSplit->removeSplit();
-    d->mainSplit->resize();
+    setCurrentSplit(d->mainSplit);
     updateGL();
 }
 
@@ -241,7 +241,5 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int width, int height)
 {
-    Q_UNUSED(width);
-    Q_UNUSED(height);
-    d->mainSplit->resize();
+    d->mainSplit->resize(width, height);
 }

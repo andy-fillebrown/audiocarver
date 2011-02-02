@@ -42,7 +42,7 @@ public:
     };
 
     GLWidgetSplit(GLWidget *widget);
-    GLWidgetSplit(GLWidgetSplit *parentSplit, SplitType splitType);
+    GLWidgetSplit(GLWidgetSplit *parentSplit);
     virtual ~GLWidgetSplit();
 
     GLWidget *widget() const;
@@ -71,7 +71,7 @@ public:
 protected:
     friend class GLWidget;
     virtual void draw();
-    virtual void resize();
+    virtual void resize(int w, int h);
 
 private:
     Internal::GLWidgetSplitPrivate *d;
