@@ -209,12 +209,16 @@ QMutex *GLWidget::glDrawMutex() const
 void GLWidget::drawViewport(GLViewport *viewport)
 {
     QRect vp = viewport->rect();
-    Q_ASSERT(0 < vp.width());
-    Q_ASSERT(0 < vp.height());
+    const GLfloat left = vp.left();
+    const GLfloat bottom = height() - vp.bottom();
+    const GLfloat width = vp.width();
+    const GLfloat height = vp.height();
+    Q_ASSERT(0 < width);
+    Q_ASSERT(0 < height);
 
-    glViewport(vp.left(), vp.top(), vp.width(), vp.height());
-    d->shaderProgram->setUniformValue(d->screenOriginId, vp.left(), vp.top());
-    d->shaderProgram->setUniformValue(d->screenSizeId, vp.width(), vp.height());
+    glViewport(left, bottom, width, height);
+    d->shaderProgram->setUniformValue(d->screenOriginId, left, bottom);
+    d->shaderProgram->setUniformValue(d->screenSizeId, width, height);
 
     const QList<GLuint> &textureIds = viewport->textureIds();
     foreach (const GLuint &id, textureIds) {
