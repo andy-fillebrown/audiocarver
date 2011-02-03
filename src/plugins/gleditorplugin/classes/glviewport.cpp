@@ -123,7 +123,7 @@ public:
         glEnable(GL_DEPTH_TEST);
         glShadeModel(GL_FLAT);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ZERO); // default
+        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glViewport(0, 0, w, h);
@@ -150,7 +150,7 @@ public:
         glDisable(GL_CULL_FACE);
         glShadeModel(GL_FLAT);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ZERO); // default
+        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glViewport(0, 0, w, h);
