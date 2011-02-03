@@ -116,6 +116,7 @@ public:
             return;
         destroyViewport();
         splitOrientation = orientation;
+        splitLocation = 0.5;
         splitOne = new GLWidgetSplit(q);
         Q_CHECK_PTR(splitOne);
         splitTwo = new GLWidgetSplit(q);
@@ -226,6 +227,26 @@ qreal GLWidgetSplit::splitLocation() const
 
 void GLWidgetSplit::setSplitLocation(qreal location)
 {
+    if (d->splitLocation == location)
+        return;
+
+    // Make sure sub-split width and height won't be smaller than 3 pixels.
+    if (isSplitHorizontal()) {
+        const qreal h = height();
+        const int newSplitHeight = location * h;
+        if (newSplitHeight < 3)
+            location = 3.0 / h;
+        if (h - newSplitHeight < 3)
+            location = (h - 3.0) / h;
+    } else {
+        const qreal w = width();
+        const int newSplitWidth = location * w;
+        if (newSplitWidth < 3)
+            location = 3.0 / w;
+        if (w - newSplitWidth < 3)
+            location = (w - 3.0) / w;
+    }
+
     d->splitLocation = location;
 }
 
