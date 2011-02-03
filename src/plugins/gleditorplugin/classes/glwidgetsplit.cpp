@@ -261,9 +261,9 @@ void GLWidgetSplit::draw()
 
 void GLWidgetSplit::resize(int w, int h)
 {
-    if (!w)
+    if (w < 1)
         w = 1;
-    if (!h)
+    if (h < 1)
         h = 1;
     d->size = QSize(w, h);
 

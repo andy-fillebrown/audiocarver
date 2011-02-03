@@ -216,6 +216,11 @@ public:
 
     void initFBOs(int w, int h)
     {
+        if (w < 1)
+            w = 1;
+        if (h < 1)
+            h = 1;
+
         widget->makeCurrent();
         Q_ASSERT(widget->isValid());
         Q_ASSERT(QGLContext::currentContext() == widget->context());
