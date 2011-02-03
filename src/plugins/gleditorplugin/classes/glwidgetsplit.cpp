@@ -304,3 +304,12 @@ void GLWidgetSplit::resize(int w, int h)
     } else
         d->viewport->resize(w, h);
 }
+
+void GLWidgetSplit::updateAnimation()
+{
+    if (isSplit()) {
+        d->splitOne->updateAnimation();
+        d->splitTwo->updateAnimation();
+    } else
+        d->viewport->updateAnimation();
+}

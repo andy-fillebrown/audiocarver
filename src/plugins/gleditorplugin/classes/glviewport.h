@@ -51,7 +51,7 @@ public:
     const QList<GLuint> &textureIds() const;
 
 public slots:
-    void update();
+    void updateAnimation();
 
 protected:
     friend class GLWidgetSplit;

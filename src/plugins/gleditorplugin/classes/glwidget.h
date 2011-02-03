@@ -31,6 +31,7 @@ class GLViewport;
 class GLWidgetSplit;
 
 namespace Internal {
+class GLWidgetDrawThread;
 class GLWidgetPrivate;
 } // namespace Internal
 
@@ -53,11 +54,17 @@ public slots:
 
 protected:
     friend class GLViewport;
-    virtual void drawViewport(GLViewport *viewport);
+    friend class Internal::GLWidgetDrawThread;
+
     QMutex *glDrawMutex() const;
+
+    virtual void drawViewport(GLViewport *viewport);
 
     virtual void paintGL();
     virtual void resizeGL(int width, int height);
+
+    virtual void paintEvent(QPaintEvent *);
+    virtual void resizeEvent(QResizeEvent *event);
 
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);

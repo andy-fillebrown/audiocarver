@@ -73,6 +73,8 @@ protected:
     virtual void draw();
     virtual void resize(int w, int h);
 
+    void updateAnimation();
+
 private:
     Internal::GLWidgetSplitPrivate *d;
 };

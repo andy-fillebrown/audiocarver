@@ -27,11 +27,83 @@
 #include <QtGui/QMouseEvent>
 
 #include <QtCore/QMutex>
+#include <QtCore/QThread>
 
 using namespace GLEditor;
 
 namespace GLEditor {
 namespace Internal {
+
+class GLWidgetDrawThread : public QThread
+{
+public:
+    GLWidget *widget;
+    QMutex *mutex;
+    bool running;
+    bool swap;
+    bool animating;
+
+    GLWidgetDrawThread(GLWidget *widget)
+        :   widget(widget)
+        ,   mutex(widget->glDrawMutex())
+        ,   running(false)
+        ,   swap(false)
+        ,   animating(false)
+    {
+    }
+
+    ~GLWidgetDrawThread()
+    {
+        stop();
+
+        animating = false;
+        swap = false;
+        mutex = 0;
+        widget = 0;
+    }
+
+    virtual void run()
+    {
+        running = true;
+        while(running) {
+            if (!swap) {
+                msleep(5);
+                continue;
+            }
+            mutex->lock();
+            widget->makeCurrent();
+            Q_ASSERT(widget->isValid());
+            Q_ASSERT(widget->context() == QGLContext::currentContext());
+
+            if (animating)
+                widget->paintGL();
+
+            widget->swapBuffers();
+
+            if (!animating)
+                swap = false;
+
+            widget->doneCurrent();
+            mutex->unlock();
+        }
+    }
+
+    void stop()
+    {
+        running = false;
+        wait();
+    }
+
+    void swapBuffers()
+    {
+        swap = true;
+    }
+
+    void setAnimating(bool animating = true)
+    {
+        this->animating = animating;
+    }
+};
 
 class GLWidgetPrivate
 {
@@ -47,6 +119,7 @@ public:
     int screenOriginId;
     int screenSizeId;
     GLWidgetSplit *draggingSplit;
+    GLWidgetDrawThread *drawThread;
 
     GLWidgetPrivate(GLWidget *q)
         :   q(q)
@@ -66,6 +139,8 @@ public:
 
     ~GLWidgetPrivate()
     {
+        delete drawThread;  drawThread = 0;
+
         q->makeCurrent();
         Q_ASSERT(q->isValid());
         Q_ASSERT(q->context() == QGLContext::currentContext());
@@ -92,6 +167,7 @@ public:
         initSplits();
         initShaders();
         initDisplayLists();
+        initDrawThread();
     }
 
     void initSplits()
@@ -145,20 +221,47 @@ public:
 
         Q_CHECK_GLERROR;
     }
+
+    void initDrawThread()
+    {
+        drawThread = new GLWidgetDrawThread(q);
+        Q_CHECK_PTR(drawThread);
+    }
 };
 
 } // namespace Internal
 } // namespace Editor3D
 
+class GLFormat : public QGLFormat
+{
+public:
+    GLFormat()
+    {
+        setSwapInterval(1);
+    }
+
+    ~GLFormat()
+    {
+    }
+};
+static GLFormat s_format;
+
 GLWidget::GLWidget(QWidget *parent)
-    :   QGLWidget(parent)
+    :   QGLWidget(s_format, parent)
     ,   d(new Internal::GLWidgetPrivate(this))
 {
     Q_CHECK_PTR(d);
     d->init();
 
+    setAutoBufferSwap(false);
+
     setMouseTracking(true);
     setCursor(QCursor(Qt::CrossCursor));
+
+    doneCurrent();
+    d->drawThread->start();
+
+    d->drawThread->setAnimating(true);
 }
 
 GLWidget::~GLWidget()
@@ -178,35 +281,67 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
 
 void GLWidget::splitHorizontal()
 {
+    d->drawMutex->lock();
+    makeCurrent();
+    Q_ASSERT(isValid());
+    Q_ASSERT(context() == QGLContext::currentContext());
+
     GLWidgetSplit *split = currentSplit();
     split->splitHorizontal();
     setCurrentSplit(split->splitOne());
-    updateGL();
+    paintGL();
+
+    doneCurrent();
+    d->drawMutex->unlock();
 }
 
 void GLWidget::splitVertical()
 {
+    d->drawMutex->lock();
+    makeCurrent();
+    Q_ASSERT(isValid());
+    Q_ASSERT(context() == QGLContext::currentContext());
+
     GLWidgetSplit *split = currentSplit();
     split->splitVertical();
     setCurrentSplit(split->splitOne());
-    updateGL();
+    paintGL();
+
+    doneCurrent();
+    d->drawMutex->unlock();
 }
 
 void GLWidget::removeCurrentSplit()
 {
+    d->drawMutex->lock();
+    makeCurrent();
+    Q_ASSERT(isValid());
+    Q_ASSERT(context() == QGLContext::currentContext());
+
     GLWidgetSplit *split = currentSplit()->parentSplit();
     if (!split)
         return;
     split->removeSplit();
     setCurrentSplit(split);
-    updateGL();
+    paintGL();
+
+    doneCurrent();
+    d->drawMutex->unlock();
 }
 
 void GLWidget::removeAllSplits()
 {
+    d->drawMutex->lock();
+    makeCurrent();
+    Q_ASSERT(isValid());
+    Q_ASSERT(context() == QGLContext::currentContext());
+
     d->mainSplit->removeSplit();
     setCurrentSplit(d->mainSplit);
-    updateGL();
+    paintGL();
+
+    doneCurrent();
+    d->drawMutex->unlock();
 }
 
 QMutex *GLWidget::glDrawMutex() const
@@ -237,6 +372,9 @@ void GLWidget::drawViewport(GLViewport *viewport)
 
 void GLWidget::paintGL()
 {
+    if (d->drawThread->animating)
+        d->mainSplit->updateAnimation();
+
     qglPushState();
     Q_CHECK(d->shaderProgram->bind());
 
@@ -252,11 +390,35 @@ void GLWidget::paintGL()
     d->shaderProgram->release();
     Q_CHECK_GLERROR;
     qglPopState();
+
+    d->drawThread->swapBuffers();
 }
 
 void GLWidget::resizeGL(int width, int height)
 {
     d->mainSplit->resize(width, height);
+    paintGL();
+}
+
+void GLWidget::paintEvent(QPaintEvent *)
+{
+    // do nothing
+}
+
+void GLWidget::resizeEvent(QResizeEvent *event)
+{
+    const QSize &size = event->size();
+
+    d->drawMutex->lock();
+    makeCurrent();
+    Q_ASSERT(isValid());
+    Q_ASSERT(context() == QGLContext::currentContext());
+
+    resizeGL(size.width(), size.height());
+
+    Q_CHECK_GLERROR;
+    doneCurrent();
+    d->drawMutex->unlock();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
@@ -289,8 +451,17 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         else
             d->draggingSplit->setSplitLocation(qreal(splitPos.x()) / qreal(d->draggingSplit->width()));
 
+        d->drawMutex->lock();
+        makeCurrent();
+        Q_ASSERT(isValid());
+        Q_ASSERT(context() == QGLContext::currentContext());
+
         d->draggingSplit->resize(d->draggingSplit->width(), d->draggingSplit->height());
-        updateGL();
+        paintGL();
+
+        Q_CHECK_GLERROR;
+        doneCurrent();
+        d->drawMutex->unlock();
     }
 }
 

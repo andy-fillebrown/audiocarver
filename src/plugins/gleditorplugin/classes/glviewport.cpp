@@ -330,8 +330,9 @@ const QList<GLuint> &GLViewport::textureIds() const
     return d->textureIds;
 }
 
-void GLViewport::update()
+void GLViewport::updateAnimation()
 {
+    d->updateAnimatedFBO();
 }
 
 void GLViewport::draw()
