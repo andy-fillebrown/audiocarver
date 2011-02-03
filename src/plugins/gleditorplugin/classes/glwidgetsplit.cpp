@@ -273,11 +273,11 @@ void GLWidgetSplit::resize(int w, int h)
         d->splitTwo->d->pos = pos;
         if (isSplitHorizontal()) {
             d->splitOne->resize(w, d->splitLocation * h);
-            d->splitTwo->d->pos.ry() += (splitLocation() * qreal(h)) + 1;
+            d->splitTwo->d->pos.ry() += (d->splitLocation * qreal(h)) + 1; // +1 is for border
             d->splitTwo->resize(w, h - d->splitTwo->d->pos.y());
         } else {
             d->splitOne->resize(d->splitLocation * w, h);
-            d->splitTwo->d->pos.rx() += (splitLocation() * qreal(w)) + 1;
+            d->splitTwo->d->pos.rx() += (d->splitLocation * qreal(w)) + 1; // +1 is for border
             d->splitTwo->resize(w - d->splitTwo->d->pos.x(), h);
         }
     } else
