@@ -118,11 +118,12 @@ public:
 
         Q_CHECK(fbo->bind());
 
-        glClearColor(0, 0, 0, 0.5);
+        glClearColor(1, 1, 1, 0.5);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
-        glDisable(GL_ALPHA_TEST);
         glShadeModel(GL_FLAT);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ZERO); // default
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glViewport(0, 0, w, h);
@@ -147,9 +148,9 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_DST_ALPHA, GL_SRC_ALPHA, GL_DST_ALPHA);
         glShadeModel(GL_FLAT);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ZERO); // default
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glViewport(0, 0, w, h);
