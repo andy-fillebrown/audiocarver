@@ -117,6 +117,7 @@ public:
         const GLfloat aspect = w / GLfloat(h ? h : 1);
 
         Q_CHECK(fbo->bind());
+        qglPushState();
 
         glClearColor(1, 1, 1, 0.5);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -131,6 +132,7 @@ public:
         glTranslatef(0.0, 0.0, -10.0);
         glCallList(staticDisplayListId);
 
+        qglPopState();
         Q_CHECK(fbo->release());
         Q_CHECK_GLERROR;
     }
@@ -143,6 +145,7 @@ public:
         const GLfloat aspect = w / GLfloat(h ? h : 1);
 
         Q_CHECK(fbo->bind());
+        qglPushState();
 
         glClearColor(1, 1, 1, 0.5);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -159,6 +162,7 @@ public:
         glRotatef(rotation, 0.0, 1.0, 0.0);
         glCallList(animatedDisplayListId);
 
+        qglPopState();
         Q_CHECK(fbo->release());
         Q_CHECK_GLERROR;
 
