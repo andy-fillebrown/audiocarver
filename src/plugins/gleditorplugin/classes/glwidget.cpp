@@ -74,6 +74,7 @@ public:
             widget->makeCurrent();
             Q_ASSERT(widget->isValid());
             Q_ASSERT(widget->context() == QGLContext::currentContext());
+            Q_CHECK_GLERROR;
 
             if (animating)
                 widget->paintGL();
@@ -123,7 +124,7 @@ public:
 
     GLWidgetPrivate(GLWidget *q)
         :   q(q)
-        ,   drawMutex(new QMutex)
+        ,   drawMutex(new QMutex(QMutex::Recursive))
         ,   mainSplit(0)
         ,   currentSplit(0)
         ,   displayListId(0)
@@ -133,6 +134,7 @@ public:
         ,   screenOriginId(-1)
         ,   screenSizeId(-1)
         ,   draggingSplit(0)
+        ,   drawThread(0)
     {
         Q_CHECK_PTR(drawMutex);
     }
@@ -160,10 +162,6 @@ public:
 
     void init()
     {
-        q->makeCurrent();
-        Q_ASSERT(q->isValid());
-        Q_ASSERT(q->context() == QGLContext::currentContext());
-
         initSplits();
         initShaders();
         initDisplayLists();
@@ -172,15 +170,21 @@ public:
 
     void initSplits()
     {
+        q->makeCurrent();
+        Q_ASSERT(q->isValid());
+        Q_ASSERT(q->context() == QGLContext::currentContext());
+
         mainSplit = new GLWidgetSplit(q);
         Q_CHECK_PTR(mainSplit);
 
-        currentSplit = mainSplit;
+        q->setCurrentSplit(mainSplit);
     }
 
     void initShaders()
     {
+        q->makeCurrent();
         Q_ASSERT(q->isValid());
+        Q_ASSERT(q->context() == QGLContext::currentContext());
 
         vertexShader = new QGLShader(QGLShader::Vertex, q);
         Q_CHECK_PTR(vertexShader);
@@ -210,6 +214,10 @@ public:
 
     void initDisplayLists()
     {
+        q->makeCurrent();
+        Q_ASSERT(q->isValid());
+        Q_ASSERT(q->context() == QGLContext::currentContext());
+
         displayListId = glGenLists(1);
         glNewList(displayListId, GL_COMPILE);
         glBegin(GL_TRIANGLES);
@@ -276,6 +284,28 @@ GLWidgetSplit *GLWidget::currentSplit() const
 
 void GLWidget::setCurrentSplit(GLWidgetSplit *split)
 {
+    if (d->currentSplit == split)
+        return;
+
+    d->drawMutex->lock();
+    makeCurrent();
+    Q_ASSERT(isValid());
+    Q_ASSERT(context() == QGLContext::currentContext());
+
+    GLViewport *vp = d->currentSplit ? d->currentSplit->viewport() : 0;
+    if (vp)
+        vp->setBackgroundColor(QColor(251, 251, 251));
+
+    vp = split->viewport();
+    if (vp)
+        vp->setBackgroundColor(Qt::white);
+
+    paintGL();
+    swapBuffers();
+
+    doneCurrent();
+    d->drawMutex->unlock();
+
     d->currentSplit = split;
 }
 
@@ -296,7 +326,6 @@ void GLWidget::splitHorizontal()
     GLWidgetSplit *split = currentSplit();
     split->splitHorizontal();
     setCurrentSplit(split->splitOne());
-    paintGL();
 
     doneCurrent();
     d->drawMutex->unlock();
@@ -312,7 +341,6 @@ void GLWidget::splitVertical()
     GLWidgetSplit *split = currentSplit();
     split->splitVertical();
     setCurrentSplit(split->splitOne());
-    paintGL();
 
     doneCurrent();
     d->drawMutex->unlock();
@@ -329,8 +357,8 @@ void GLWidget::removeCurrentSplit()
     if (!split)
         return;
     split->removeSplit();
+    d->currentSplit = 0;
     setCurrentSplit(split);
-    paintGL();
 
     doneCurrent();
     d->drawMutex->unlock();
@@ -344,8 +372,8 @@ void GLWidget::removeAllSplits()
     Q_ASSERT(context() == QGLContext::currentContext());
 
     d->mainSplit->removeSplit();
+    d->currentSplit = 0;
     setCurrentSplit(d->mainSplit);
-    paintGL();
 
     doneCurrent();
     d->drawMutex->unlock();
@@ -379,6 +407,9 @@ void GLWidget::drawViewport(GLViewport *viewport)
 
 void GLWidget::paintGL()
 {
+    if (!d->drawThread)
+        return;
+
     if (d->drawThread->animating)
         d->mainSplit->updateAnimation();
 
@@ -405,6 +436,7 @@ void GLWidget::resizeGL(int width, int height)
 {
     d->mainSplit->resize(width, height);
     paintGL();
+    swapBuffers();
 }
 
 void GLWidget::paintEvent(QPaintEvent *)
@@ -465,6 +497,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
         d->draggingSplit->resize(d->draggingSplit->width(), d->draggingSplit->height());
         paintGL();
+        swapBuffers();
 
         Q_CHECK_GLERROR;
         doneCurrent();
@@ -474,8 +507,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    // Set dragging split, if any.
     const QPoint pos = event->pos();
+
     GLWidgetSplit *split = d->mainSplit;
     while (split->isSplit()) {
         if (split->splitOne()->rect().contains(pos)) {
@@ -484,9 +517,12 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
             split = split->splitTwo();
         } else {
             d->draggingSplit = split;
+            split = 0;
             break;
         }
     }
+    if (split)
+        setCurrentSplit(split);
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)

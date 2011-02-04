@@ -39,7 +39,6 @@ public:
 
     QColor backgroundColor() const;
     void setBackgroundColor(const QColor &color);
-    void setBackgroundColor(GLfloat red, GLfloat blue, GLfloat green, GLfloat alpha = 1.0f);
 
     QPoint pos() const;
     QRect rect() const;
@@ -54,6 +53,7 @@ public slots:
     void updateAnimation();
 
 protected:
+    friend class GLWidget;
     friend class GLWidgetSplit;
     virtual void draw();
 

@@ -109,62 +109,19 @@ public:
         Q_CHECK_GLERROR;
     }
 
-    void drawStaticFBO(QGLFramebufferObject *fbo)
+    void drawStaticFBO(GLfloat aspect)
     {
-        const QSize size = fbo->size();
-        const int w = size.width();
-        const int h = size.height();
-        const GLfloat aspect = w / GLfloat(h ? h : 1);
-
-        Q_CHECK(fbo->bind());
-        qglPushState();
-
-        glClearColor(1, 1, 1, 0.5);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glShadeModel(GL_FLAT);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glViewport(0, 0, w, h);
         glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
         glTranslatef(0.0, 0.0, -10.0);
         glCallList(staticDisplayListId);
-
-        qglPopState();
-        Q_CHECK(fbo->release());
-        Q_CHECK_GLERROR;
     }
 
-    void drawAnimatedFBO(QGLFramebufferObject *fbo)
+    void drawAnimatedFBO(GLfloat aspect)
     {
-        const QSize size = fbo->size();
-        const int w = size.width();
-        const int h = size.height();
-        const GLfloat aspect = w / GLfloat(h ? h : 1);
-
-        Q_CHECK(fbo->bind());
-        qglPushState();
-
-        glClearColor(1, 1, 1, 0.5);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glShadeModel(GL_FLAT);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glViewport(0, 0, w, h);
         glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
         glTranslatef(0.0, 0.0, -10.0);
         glRotatef(rotation, 0.0, 1.0, 0.0);
         glCallList(animatedDisplayListId);
-
-        qglPopState();
-        Q_CHECK(fbo->release());
-        Q_CHECK_GLERROR;
 
         rotation += 0.1f;
     }
@@ -194,7 +151,7 @@ public:
         :   q(q)
         ,   widget(split->widget())
         ,   split(split)
-        ,   backgroundColor(Qt::white)
+        ,   backgroundColor(QColor(251, 251, 251, 127))
         ,   staticFBO_front(0)
         ,   staticFBO_back(0)
         ,   animatedFBO_front(0)
@@ -225,10 +182,6 @@ public:
         if (h < 1)
             h = 1;
 
-        widget->makeCurrent();
-        Q_ASSERT(widget->isValid());
-        Q_ASSERT(QGLContext::currentContext() == widget->context());
-
         delete staticFBO_front;
         staticFBO_front = new QGLFramebufferObject(w, h);
         Q_CHECK_PTR(staticFBO_front);
@@ -256,7 +209,30 @@ public:
 
     void updateStaticFBO()
     {
-        testing.drawStaticFBO(staticFBO_back);
+        const QSize size = staticFBO_back->size();
+        const int w = size.width();
+        const int h = size.height();
+        const GLfloat aspect = w / GLfloat(h ? h : 1);
+
+        Q_CHECK(staticFBO_back->bind());
+        qglPushState();
+
+        widget->qglClearColor(backgroundColor);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glShadeModel(GL_FLAT);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glViewport(0, 0, w, h);
+
+        testing.drawStaticFBO(aspect);
+
+        qglPopState();
+        Q_CHECK(staticFBO_back->release());
+        Q_CHECK_GLERROR;
+
         swapStaticFBO();
     }
 
@@ -270,7 +246,31 @@ public:
 
     void updateAnimatedFBO()
     {
-        testing.drawAnimatedFBO(animatedFBO_back);
+        const QSize size = animatedFBO_back->size();
+        const int w = size.width();
+        const int h = size.height();
+        const GLfloat aspect = w / GLfloat(h ? h : 1);
+
+        Q_CHECK(animatedFBO_back->bind());
+        qglPushState();
+
+        widget->qglClearColor(backgroundColor);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glShadeModel(GL_FLAT);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glViewport(0, 0, w, h);
+
+        testing.drawAnimatedFBO(aspect);
+
+        qglPopState();
+        Q_CHECK(animatedFBO_back->release());
+        Q_CHECK_GLERROR;
+
         swapAnimatedFBO();
     }
 
@@ -282,11 +282,31 @@ public:
         textureIds[1] = animatedFBO_front->texture();
     }
 
-    void resize(int w, int h)
+    void resizeFBOs(int w, int h)
     {
-        initFBOs(w, h);
+        QGLFramebufferObject *oldFBO = staticFBO_back;
+        QGLFramebufferObject *newFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(newFBO);
+        Q_ASSERT(newFBO->isValid());
+
+        staticFBO_back = newFBO;
         updateStaticFBO();
+        delete oldFBO;
+
+        delete staticFBO_back;
+        staticFBO_back = new QGLFramebufferObject(w, h);
+
+        oldFBO = animatedFBO_back;
+        newFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(newFBO);
+        Q_ASSERT(newFBO->isValid());
+
+        animatedFBO_back = newFBO;
         updateAnimatedFBO();
+        delete oldFBO;
+
+        delete animatedFBO_back;
+        animatedFBO_back = new QGLFramebufferObject(w, h);
     }
 };
 
@@ -306,7 +326,14 @@ GLViewport::~GLViewport()
 
 void GLViewport::setBackgroundColor(const QColor &color)
 {
+    if (d->backgroundColor == color)
+        return;
+
     d->backgroundColor = color;
+    d->backgroundColor.setAlphaF(0.5);
+
+    d->updateStaticFBO();
+    d->updateAnimatedFBO();
 }
 
 QPoint GLViewport::pos() const
@@ -326,7 +353,7 @@ QSize GLViewport::size() const
 
 void GLViewport::resize(int w, int h)
 {
-    d->resize(w, h);
+    d->resizeFBOs(w, h);
 }
 
 const QList<GLuint> &GLViewport::textureIds() const
