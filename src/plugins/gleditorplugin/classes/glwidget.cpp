@@ -279,6 +279,13 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
     d->currentSplit = split;
 }
 
+bool GLWidget::isAnimating() const
+{
+    if (!d->drawThread)
+        return false;
+    return d->drawThread->animating;
+}
+
 void GLWidget::splitHorizontal()
 {
     d->drawMutex->lock();

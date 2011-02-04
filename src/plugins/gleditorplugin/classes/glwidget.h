@@ -46,6 +46,8 @@ public:
     GLWidgetSplit *currentSplit() const;
     void setCurrentSplit(GLWidgetSplit *split);
 
+    bool isAnimating() const;
+
 public slots:
     void splitHorizontal();
     void splitVertical();
