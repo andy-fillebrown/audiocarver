@@ -261,7 +261,7 @@ GLWidget::GLWidget(QWidget *parent)
     doneCurrent();
     d->drawThread->start(QThread::TimeCriticalPriority);
 
-    d->drawThread->setAnimating(true);
+    d->drawThread->setAnimating(false);
 }
 
 GLWidget::~GLWidget()
@@ -293,7 +293,10 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
         vp->setBackgroundColor(Qt::white);
 
     paintGL();
-    swapBuffers();
+    if (d->drawThread)
+        d->drawThread->swapBuffers();
+    else
+        swapBuffers();
 
     doneCurrent();
     d->drawMutex->unlock();
@@ -421,14 +424,16 @@ void GLWidget::paintGL()
     Q_CHECK_GLERROR;
     qglPopState();
 
-    d->drawThread->swapBuffers();
+    if (d->drawThread)
+        d->drawThread->swapBuffers();
+    else
+        swapBuffers();
 }
 
 void GLWidget::resizeGL(int width, int height)
 {
     d->mainSplit->resize(width, height);
     paintGL();
-    swapBuffers();
 }
 
 void GLWidget::paintEvent(QPaintEvent *)
@@ -489,7 +494,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
         d->draggingSplit->resize(d->draggingSplit->width(), d->draggingSplit->height());
         paintGL();
-        swapBuffers();
+        d->drawThread->swapBuffers();
 
         Q_CHECK_GLERROR;
         doneCurrent();
