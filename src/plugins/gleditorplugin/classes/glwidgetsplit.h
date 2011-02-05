@@ -21,6 +21,9 @@
 #include <gleditorplugin/gleditor_global.h>
 
 #include <QtCore/QObject>
+#include <QtCore/QPoint>
+#include <QtCore/QRect>
+#include <QtCore/QSize>
 
 namespace GLEditor {
 class GLViewport;

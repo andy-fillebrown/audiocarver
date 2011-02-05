@@ -517,7 +517,7 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
         setCurrentSplit(split);
 }
 
-void GLWidget::mouseReleaseEvent(QMouseEvent *event)
+void GLWidget::mouseReleaseEvent(QMouseEvent *)
 {
     d->draggingSplit = 0;
 }
