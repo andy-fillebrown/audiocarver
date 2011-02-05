@@ -26,6 +26,7 @@
 
 #include <QtGui/QMouseEvent>
 
+#include <QtCore/QElapsedTimer>
 #include <QtCore/QMutex>
 #include <QtCore/QThread>
 
@@ -64,12 +65,14 @@ public:
 
     virtual void run()
     {
+        QElapsedTimer timer;
         running = true;
         while(running) {
             if (!swap) {
-                msleep(5);
+                msleep(1);
                 continue;
             }
+            timer.start();
             mutex->lock();
             widget->makeCurrent();
             Q_ASSERT(widget->isValid());
@@ -86,6 +89,9 @@ public:
 
             widget->doneCurrent();
             mutex->unlock();
+
+            while (timer.elapsed() < 5)
+                msleep(1);
         }
     }
 
@@ -240,22 +246,8 @@ public:
 } // namespace Internal
 } // namespace Editor3D
 
-class GLFormat : public QGLFormat
-{
-public:
-    GLFormat()
-    {
-        setSwapInterval(1);
-    }
-
-    ~GLFormat()
-    {
-    }
-};
-static GLFormat s_format;
-
 GLWidget::GLWidget(QWidget *parent)
-    :   QGLWidget(s_format, parent)
+    :   QGLWidget(parent)
     ,   d(new Internal::GLWidgetPrivate(this))
 {
     Q_CHECK_PTR(d);
@@ -267,7 +259,7 @@ GLWidget::GLWidget(QWidget *parent)
     setCursor(QCursor(Qt::CrossCursor));
 
     doneCurrent();
-    d->drawThread->start();
+    d->drawThread->start(QThread::TimeCriticalPriority);
 
     d->drawThread->setAnimating(true);
 }
