@@ -48,7 +48,7 @@ public:
         :   widget(widget)
         ,   mutex(widget->glDrawMutex())
         ,   running(false)
-        ,   swap(false)
+        ,   swap(true)
         ,   animating(false)
     {
     }
