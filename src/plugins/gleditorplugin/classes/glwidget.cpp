@@ -264,7 +264,7 @@ void GLWidget::animateGL()
     updateGL();
 
     if (isAnimating())
-        QTimer::singleShot(5, this, SLOT(animateGL()));
+        QTimer::singleShot(0, this, SLOT(animateGL()));
 }
 
 void GLWidget::drawViewport(GLViewport *viewport)
