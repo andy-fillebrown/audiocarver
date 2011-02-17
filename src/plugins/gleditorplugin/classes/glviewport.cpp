@@ -25,7 +25,7 @@
 #include <QtOpenGL/QGLFramebufferObject>
 #include <QtOpenGL/QGLFunctions>
 
-class Testing : public QGLFunctions
+class Testing : protected QGLFunctions
 {
 public:
     GLuint staticDisplayListId;
@@ -123,7 +123,7 @@ public:
         glRotatef(rotation, 0.0, 1.0, 0.0);
         glCallList(animatedDisplayListId);
 
-        rotation += 0.1f;
+        rotation += 1.0f;
     }
 };
 
@@ -140,10 +140,8 @@ public:
     GLWidget *widget;
     GLWidgetSplit *split;
     QColor backgroundColor;
-    QGLFramebufferObject *staticFBO_front;
-    QGLFramebufferObject *staticFBO_back;
-    QGLFramebufferObject *animatedFBO_front;
-    QGLFramebufferObject *animatedFBO_back;
+    QGLFramebufferObject *staticFBO;
+    QGLFramebufferObject *animatedFBO;
     QList<GLuint> textureIds;
     Testing testing;
 
@@ -152,10 +150,8 @@ public:
         ,   widget(split->widget())
         ,   split(split)
         ,   backgroundColor(QColor(251, 251, 251, 127))
-        ,   staticFBO_front(0)
-        ,   staticFBO_back(0)
-        ,   animatedFBO_front(0)
-        ,   animatedFBO_back(0)
+        ,   staticFBO(0)
+        ,   animatedFBO(0)
     {
         initializeGLFunctions(widget->context());
         initFBOs(split->width(), split->height());
@@ -166,10 +162,8 @@ public:
 
     ~GLViewportPrivate()
     {
-        delete animatedFBO_back;  animatedFBO_back = 0;
-        delete animatedFBO_front;  animatedFBO_front = 0;
-        delete staticFBO_back;  staticFBO_back = 0;
-        delete staticFBO_front;  staticFBO_front = 0;
+        delete animatedFBO;  animatedFBO = 0;
+        delete staticFBO;  staticFBO = 0;
         split = 0;
         widget = 0;
         q = 0;
@@ -182,39 +176,29 @@ public:
         if (h < 1)
             h = 1;
 
-        delete staticFBO_front;
-        staticFBO_front = new QGLFramebufferObject(w, h);
-        Q_CHECK_PTR(staticFBO_front);
-        Q_ASSERT(staticFBO_front->isValid());
+        delete staticFBO;
+        staticFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(staticFBO);
+        Q_ASSERT(staticFBO->isValid());
 
-        delete staticFBO_back;
-        staticFBO_back = new QGLFramebufferObject(w, h);
-        Q_CHECK_PTR(staticFBO_back);
-        Q_ASSERT(staticFBO_back->isValid());
-
-        delete animatedFBO_front;
-        animatedFBO_front = new QGLFramebufferObject(w, h);
-        Q_CHECK_PTR(animatedFBO_front);
-        Q_ASSERT(animatedFBO_front->isValid());
-
-        delete animatedFBO_back;
-        animatedFBO_back = new QGLFramebufferObject(w, h);
-        Q_CHECK_PTR(animatedFBO_back);
-        Q_ASSERT(animatedFBO_back->isValid());
+        delete animatedFBO;
+        animatedFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(animatedFBO);
+        Q_ASSERT(animatedFBO->isValid());
 
         textureIds.clear();
-        textureIds.append(staticFBO_front->texture());
-        textureIds.append(animatedFBO_front->texture());
+        textureIds.append(staticFBO->texture());
+        textureIds.append(animatedFBO->texture());
     }
 
     void updateStaticFBO()
     {
-        const QSize size = staticFBO_back->size();
+        const QSize size = staticFBO->size();
         const int w = size.width();
         const int h = size.height();
         const GLfloat aspect = w / GLfloat(h ? h : 1);
 
-        Q_CHECK(staticFBO_back->bind());
+        Q_CHECK(staticFBO->bind());
         qglPushState();
 
         widget->qglClearColor(backgroundColor);
@@ -230,28 +214,18 @@ public:
         testing.drawStaticFBO(aspect);
 
         qglPopState();
-        Q_CHECK(staticFBO_back->release());
+        Q_CHECK(staticFBO->release());
         Q_CHECK_GLERROR;
-
-        swapStaticFBO();
-    }
-
-    void swapStaticFBO()
-    {
-        QGLFramebufferObject *tmp = staticFBO_front;
-        staticFBO_front = staticFBO_back;
-        staticFBO_back = tmp;
-        textureIds[0] = staticFBO_front->texture();
     }
 
     void updateAnimatedFBO()
     {
-        const QSize size = animatedFBO_back->size();
+        const QSize size = animatedFBO->size();
         const int w = size.width();
         const int h = size.height();
         const GLfloat aspect = w / GLfloat(h ? h : 1);
 
-        Q_CHECK(animatedFBO_back->bind());
+        Q_CHECK(animatedFBO->bind());
         qglPushState();
 
         widget->qglClearColor(backgroundColor);
@@ -268,45 +242,31 @@ public:
         testing.drawAnimatedFBO(aspect);
 
         qglPopState();
-        Q_CHECK(animatedFBO_back->release());
+        Q_CHECK(animatedFBO->release());
         Q_CHECK_GLERROR;
-
-        swapAnimatedFBO();
-    }
-
-    void swapAnimatedFBO()
-    {
-        QGLFramebufferObject *tmp = animatedFBO_front;
-        animatedFBO_front = animatedFBO_back;
-        animatedFBO_back = tmp;
-        textureIds[1] = animatedFBO_front->texture();
     }
 
     void resizeFBOs(int w, int h)
     {
-        QGLFramebufferObject *oldFBO = staticFBO_back;
+        QGLFramebufferObject *oldFBO = staticFBO;
         QGLFramebufferObject *newFBO = new QGLFramebufferObject(w, h);
         Q_CHECK_PTR(newFBO);
         Q_ASSERT(newFBO->isValid());
 
-        staticFBO_back = newFBO;
+        staticFBO = newFBO;
         updateStaticFBO();
+        textureIds[0] = staticFBO->texture();
         delete oldFBO;
 
-        delete staticFBO_back;
-        staticFBO_back = new QGLFramebufferObject(w, h);
-
-        oldFBO = animatedFBO_back;
+        oldFBO = animatedFBO;
         newFBO = new QGLFramebufferObject(w, h);
         Q_CHECK_PTR(newFBO);
         Q_ASSERT(newFBO->isValid());
 
-        animatedFBO_back = newFBO;
+        animatedFBO = newFBO;
         updateAnimatedFBO();
+        textureIds[1] = animatedFBO->texture();
         delete oldFBO;
-
-        delete animatedFBO_back;
-        animatedFBO_back = new QGLFramebufferObject(w, h);
     }
 };
 

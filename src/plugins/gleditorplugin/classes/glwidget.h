@@ -46,6 +46,7 @@ public:
     GLWidgetSplit *currentSplit() const;
     void setCurrentSplit(GLWidgetSplit *split);
 
+    void setAnimating(bool animating = true);
     bool isAnimating() const;
 
 public slots:
@@ -54,19 +55,16 @@ public slots:
     void removeCurrentSplit();
     void removeAllSplits();
 
+    void animateGL();
+
 protected:
     friend class GLViewport;
     friend class Internal::GLWidgetDrawThread;
-
-    QMutex *glDrawMutex() const;
 
     virtual void drawViewport(GLViewport *viewport);
 
     virtual void paintGL();
     virtual void resizeGL(int width, int height);
-
-    virtual void paintEvent(QPaintEvent *);
-    virtual void resizeEvent(QResizeEvent *event);
 
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);

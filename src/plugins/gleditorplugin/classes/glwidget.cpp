@@ -26,97 +26,18 @@
 
 #include <QtGui/QMouseEvent>
 
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QMutex>
-#include <QtCore/QThread>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QTimer>
 
 using namespace GLEditor;
 
 namespace GLEditor {
 namespace Internal {
 
-class GLWidgetDrawThread : public QThread
-{
-public:
-    GLWidget *widget;
-    QMutex *mutex;
-    bool running;
-    bool swap;
-    bool animating;
-
-    GLWidgetDrawThread(GLWidget *widget)
-        :   widget(widget)
-        ,   mutex(widget->glDrawMutex())
-        ,   running(false)
-        ,   swap(true)
-        ,   animating(false)
-    {
-    }
-
-    ~GLWidgetDrawThread()
-    {
-        stop();
-
-        animating = false;
-        swap = false;
-        mutex = 0;
-        widget = 0;
-    }
-
-    virtual void run()
-    {
-        QElapsedTimer timer;
-        running = true;
-        while(running) {
-            if (!swap) {
-                msleep(1);
-                continue;
-            }
-            timer.start();
-            mutex->lock();
-            widget->makeCurrent();
-            Q_ASSERT(widget->isValid());
-            Q_ASSERT(widget->context() == QGLContext::currentContext());
-            Q_CHECK_GLERROR;
-
-            if (animating)
-                widget->paintGL();
-
-            widget->swapBuffers();
-
-            if (!animating)
-                swap = false;
-
-            widget->doneCurrent();
-            mutex->unlock();
-
-            while (timer.elapsed() < 5)
-                msleep(1);
-        }
-    }
-
-    void stop()
-    {
-        running = false;
-        wait();
-    }
-
-    void swapBuffers()
-    {
-        swap = true;
-    }
-
-    void setAnimating(bool animating = true)
-    {
-        this->animating = animating;
-    }
-};
-
 class GLWidgetPrivate
 {
 public:
     GLWidget *q;
-    QMutex *drawMutex;
     GLWidgetSplit *mainSplit;
     GLWidgetSplit *currentSplit;
     GLuint displayListId;
@@ -126,11 +47,10 @@ public:
     int screenOriginId;
     int screenSizeId;
     GLWidgetSplit *draggingSplit;
-    GLWidgetDrawThread *drawThread;
+    bool animating;
 
     GLWidgetPrivate(GLWidget *q)
         :   q(q)
-        ,   drawMutex(new QMutex(QMutex::Recursive))
         ,   mainSplit(0)
         ,   currentSplit(0)
         ,   displayListId(0)
@@ -140,14 +60,13 @@ public:
         ,   screenOriginId(-1)
         ,   screenSizeId(-1)
         ,   draggingSplit(0)
-        ,   drawThread(0)
+        ,   animating(false)
     {
-        Q_CHECK_PTR(drawMutex);
     }
 
     ~GLWidgetPrivate()
     {
-        delete drawThread;  drawThread = 0;
+        animating = false;
 
         q->makeCurrent();
         Q_ASSERT(q->isValid());
@@ -162,7 +81,6 @@ public:
         glDeleteLists(displayListId, 1);  displayListId = 0;
         currentSplit = 0;
         delete mainSplit;  mainSplit = 0;
-        delete drawMutex;  drawMutex = 0;
         q = 0;
     }
 
@@ -171,7 +89,6 @@ public:
         initSplits();
         initShaders();
         initDisplayLists();
-        initDrawThread();
     }
 
     void initSplits()
@@ -235,12 +152,6 @@ public:
 
         Q_CHECK_GLERROR;
     }
-
-    void initDrawThread()
-    {
-        drawThread = new GLWidgetDrawThread(q);
-        Q_CHECK_PTR(drawThread);
-    }
 };
 
 } // namespace Internal
@@ -253,15 +164,10 @@ GLWidget::GLWidget(QWidget *parent)
     Q_CHECK_PTR(d);
     d->init();
 
-    setAutoBufferSwap(false);
-
     setMouseTracking(true);
     setCursor(QCursor(Qt::CrossCursor));
 
-    doneCurrent();
-    d->drawThread->start(QThread::TimeCriticalPriority);
-
-    d->drawThread->setAnimating(false);
+    setAnimating(true);
 }
 
 GLWidget::~GLWidget()
@@ -279,8 +185,6 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
     if (d->currentSplit == split)
         return;
 
-    d->drawMutex->lock();
-    makeCurrent();
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
@@ -292,59 +196,45 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
     if (vp)
         vp->setBackgroundColor(Qt::white);
 
-    paintGL();
-    if (d->drawThread)
-        d->drawThread->swapBuffers();
-    else
-        swapBuffers();
-
-    doneCurrent();
-    d->drawMutex->unlock();
-
     d->currentSplit = split;
+
+    updateGL();
+}
+
+void GLWidget::setAnimating(bool animating)
+{
+    d->animating = true;
+    if (animating)
+        QTimer::singleShot(0, this, SLOT(animateGL()));
 }
 
 bool GLWidget::isAnimating() const
 {
-    if (!d->drawThread)
-        return false;
-    return d->drawThread->animating;
+    return d->animating;
 }
 
 void GLWidget::splitHorizontal()
 {
-    d->drawMutex->lock();
-    makeCurrent();
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
     GLWidgetSplit *split = currentSplit();
     split->splitHorizontal();
     setCurrentSplit(split->splitOne());
-
-    doneCurrent();
-    d->drawMutex->unlock();
 }
 
 void GLWidget::splitVertical()
 {
-    d->drawMutex->lock();
-    makeCurrent();
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
     GLWidgetSplit *split = currentSplit();
     split->splitVertical();
     setCurrentSplit(split->splitOne());
-
-    doneCurrent();
-    d->drawMutex->unlock();
 }
 
 void GLWidget::removeCurrentSplit()
 {
-    d->drawMutex->lock();
-    makeCurrent();
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
@@ -354,29 +244,27 @@ void GLWidget::removeCurrentSplit()
     split->removeSplit();
     d->currentSplit = 0;
     setCurrentSplit(split);
-
-    doneCurrent();
-    d->drawMutex->unlock();
 }
 
 void GLWidget::removeAllSplits()
 {
-    d->drawMutex->lock();
-    makeCurrent();
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
     d->mainSplit->removeSplit();
     d->currentSplit = 0;
     setCurrentSplit(d->mainSplit);
-
-    doneCurrent();
-    d->drawMutex->unlock();
 }
 
-QMutex *GLWidget::glDrawMutex() const
+void GLWidget::animateGL()
 {
-    return d->drawMutex;
+    QCoreApplication::processEvents();
+    d->mainSplit->updateAnimation();
+
+    updateGL();
+
+    if (isAnimating())
+        QTimer::singleShot(5, this, SLOT(animateGL()));
 }
 
 void GLWidget::drawViewport(GLViewport *viewport)
@@ -402,11 +290,8 @@ void GLWidget::drawViewport(GLViewport *viewport)
 
 void GLWidget::paintGL()
 {
-    if (!d->drawThread)
+    if (!d->shaderProgram)
         return;
-
-    if (d->drawThread->animating)
-        d->mainSplit->updateAnimation();
 
     qglPushState();
     Q_CHECK(d->shaderProgram->bind());
@@ -423,38 +308,11 @@ void GLWidget::paintGL()
     d->shaderProgram->release();
     Q_CHECK_GLERROR;
     qglPopState();
-
-    if (d->drawThread)
-        d->drawThread->swapBuffers();
-    else
-        swapBuffers();
 }
 
 void GLWidget::resizeGL(int width, int height)
 {
     d->mainSplit->resize(width, height);
-    paintGL();
-}
-
-void GLWidget::paintEvent(QPaintEvent *)
-{
-    // do nothing
-}
-
-void GLWidget::resizeEvent(QResizeEvent *event)
-{
-    const QSize &size = event->size();
-
-    d->drawMutex->lock();
-    makeCurrent();
-    Q_ASSERT(isValid());
-    Q_ASSERT(context() == QGLContext::currentContext());
-
-    resizeGL(size.width(), size.height());
-
-    Q_CHECK_GLERROR;
-    doneCurrent();
-    d->drawMutex->unlock();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
@@ -487,18 +345,13 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         else
             d->draggingSplit->setSplitLocation(qreal(splitPos.x()) / qreal(d->draggingSplit->width()));
 
-        d->drawMutex->lock();
-        makeCurrent();
         Q_ASSERT(isValid());
         Q_ASSERT(context() == QGLContext::currentContext());
 
         d->draggingSplit->resize(d->draggingSplit->width(), d->draggingSplit->height());
-        paintGL();
-        d->drawThread->swapBuffers();
+        updateGL();
 
         Q_CHECK_GLERROR;
-        doneCurrent();
-        d->drawMutex->unlock();
     }
 }
 
