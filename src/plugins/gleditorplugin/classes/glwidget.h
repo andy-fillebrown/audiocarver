@@ -25,9 +25,6 @@
 namespace GLDatabase {
 class IGLModel;
 } // namespace GLDatabase
-QT_BEGIN_NAMESPACE
-class QMutex;
-QT_END_NAMESPACE
 
 namespace GLEditor {
 class GLViewport;
