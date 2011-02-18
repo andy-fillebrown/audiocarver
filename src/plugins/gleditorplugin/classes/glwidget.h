@@ -22,6 +22,9 @@
 
 #include <QtOpenGL/QGLWidget>
 
+namespace GLDatabase {
+class IGLModel;
+} // namespace GLDatabase
 QT_BEGIN_NAMESPACE
 class QMutex;
 QT_END_NAMESPACE
@@ -43,8 +46,14 @@ public:
     GLWidget(QWidget *parent = 0);
     virtual ~GLWidget();
 
+    GLDatabase::IGLModel *currentModel() const;
+    void setCurrentModel(GLDatabase::IGLModel *model);
+
     GLWidgetSplit *currentSplit() const;
     void setCurrentSplit(GLWidgetSplit *split);
+
+    GLViewport *currentViewport() const;
+    void setCurrentViewport(GLViewport *viewport);
 
     void setAnimating(bool animating = true);
     bool isAnimating() const;

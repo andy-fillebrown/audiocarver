@@ -24,6 +24,8 @@
 
 namespace GLDatabase {
 
+class IGLModel;
+
 class GLDATABASE_EXPORT IGLDatabase : public Database::IDatabase
 {
     Q_OBJECT
@@ -31,6 +33,8 @@ class GLDATABASE_EXPORT IGLDatabase : public Database::IDatabase
 public:
     IGLDatabase();
     virtual ~IGLDatabase();
+
+    virtual IGLModel *model() const = 0;
 };
 
 } // namespace GLDatabase

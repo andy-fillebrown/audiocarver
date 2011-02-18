@@ -15,39 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_databaseplugin.h"
+#include "iglmodel.h"
 
-#include <implementations/database.h>
-#include <implementations/model.h>
+using namespace GLDatabase;
 
-#include <extensionsystem/pluginmanager.h>
-
-#include <QtCore/QtPlugin>
-
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
-
-DatabasePlugin::DatabasePlugin()
+IGLModel::IGLModel()
 {
 }
 
-DatabasePlugin::~DatabasePlugin()
+IGLModel::~IGLModel()
 {
 }
-
-bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-
-    DatabaseImpl *db = new DatabaseImpl;
-    addAutoReleasedObject(db);
-    addAutoReleasedObject(db->model());
-    return true;
-}
-
-void DatabasePlugin::extensionsInitialized()
-{
-}
-
-Q_EXPORT_PLUGIN(DatabasePlugin)

@@ -15,39 +15,31 @@
 **
 **************************************************************************/
 
-#include "ac_databaseplugin.h"
-
-#include <implementations/database.h>
-#include <implementations/model.h>
-
-#include <extensionsystem/pluginmanager.h>
-
-#include <QtCore/QtPlugin>
+#include "model.h"
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
-DatabasePlugin::DatabasePlugin()
+ModelImpl::ModelImpl()
 {
 }
 
-DatabasePlugin::~DatabasePlugin()
+ModelImpl::~ModelImpl()
 {
 }
 
-bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+void ModelImpl::drawStaticGL(const QRectF &frustum)
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-
-    DatabaseImpl *db = new DatabaseImpl;
-    addAutoReleasedObject(db);
-    addAutoReleasedObject(db->model());
-    return true;
+    Q_UNUSED(frustum);
 }
 
-void DatabasePlugin::extensionsInitialized()
+void ModelImpl::drawTransientGL(const QRectF &frustum)
 {
+    Q_UNUSED(frustum);
 }
 
-Q_EXPORT_PLUGIN(DatabasePlugin)
+void ModelImpl::drawAnimatedGL(const QRectF &frustum, qreal timeDelta)
+{
+    Q_UNUSED(frustum);
+    Q_UNUSED(timeDelta);
+}

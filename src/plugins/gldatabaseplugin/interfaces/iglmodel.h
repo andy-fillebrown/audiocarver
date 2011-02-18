@@ -15,39 +15,29 @@
 **
 **************************************************************************/
 
-#include "ac_databaseplugin.h"
+#ifndef IGLMODEL_H
+#define IGLMODEL_H
 
-#include <implementations/database.h>
-#include <implementations/model.h>
+#include <gldatabaseplugin/gldatabase_global.h>
 
-#include <extensionsystem/pluginmanager.h>
+#include <QtCore/QObject>
+#include <QtCore/QRectF>
 
-#include <QtCore/QtPlugin>
+namespace GLDatabase {
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
-
-DatabasePlugin::DatabasePlugin()
+class GLDATABASE_EXPORT IGLModel : public QObject
 {
-}
+    Q_OBJECT
 
-DatabasePlugin::~DatabasePlugin()
-{
-}
+public:
+    IGLModel();
+    virtual ~IGLModel();
 
-bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
+    virtual void drawStaticGL(const QRectF &frustum) = 0;
+    virtual void drawTransientGL(const QRectF &frustum) = 0;
+    virtual void drawAnimatedGL(const QRectF &frustum, qreal timeDelta) = 0;
+};
 
-    DatabaseImpl *db = new DatabaseImpl;
-    addAutoReleasedObject(db);
-    addAutoReleasedObject(db->model());
-    return true;
-}
+} // namespace GLDatabase
 
-void DatabasePlugin::extensionsInitialized()
-{
-}
-
-Q_EXPORT_PLUGIN(DatabasePlugin)
+#endif // IGLMODEL_H

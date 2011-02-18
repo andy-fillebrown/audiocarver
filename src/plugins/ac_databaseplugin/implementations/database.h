@@ -23,6 +23,8 @@
 namespace AudioCarver {
 namespace Internal {
 
+class DatabaseImplPrivate;
+
 class DatabaseImpl : public GLDatabase::IGLDatabase
 {
 public:
@@ -37,6 +39,11 @@ public:
     virtual void clear();
     virtual void read(const QString &fileName);
     virtual void write(const QString &fileName);
+
+    virtual GLDatabase::IGLModel *model() const;
+
+private:
+    DatabaseImplPrivate *d;
 };
 
 } // namespace Internal

@@ -16,16 +16,44 @@
 **************************************************************************/
 
 #include "database.h"
+#include "model.h"
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
+namespace AudioCarver {
+namespace Internal {
+
+class DatabaseImplPrivate
+{
+public:
+    DatabaseImpl *q;
+    ModelImpl *model;
+
+    DatabaseImplPrivate(DatabaseImpl *q)
+        :   q(q)
+        ,   model(new ModelImpl) // deleted by extension system
+    {
+    }
+
+    ~DatabaseImplPrivate()
+    {
+        model = 0;
+        q = 0;
+    }
+};
+
+} // namespace Internal
+} // namespace AudioCarver
+
 DatabaseImpl::DatabaseImpl()
+    :   d(new DatabaseImplPrivate(this))
 {
 }
 
 DatabaseImpl::~DatabaseImpl()
 {
+    delete d;  d = 0;
 }
 
 const QString &DatabaseImpl::fileExtension() const
@@ -58,4 +86,9 @@ void DatabaseImpl::read(const QString &fileName)
 void DatabaseImpl::write(const QString &fileName)
 {
     Q_UNUSED(fileName);
+}
+
+GLDatabase::IGLModel *DatabaseImpl::model() const
+{
+    return d->model;
 }

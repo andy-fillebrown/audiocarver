@@ -19,6 +19,10 @@
 #include "glwidgetsplit.h"
 #include "glviewport.h"
 
+#include <gldatabaseplugin/interfaces/iglmodel.h>
+
+#include <extensionsystem/pluginmanager.h>
+
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLShader>
@@ -38,6 +42,7 @@ class GLWidgetPrivate
 {
 public:
     GLWidget *q;
+    GLDatabase::IGLModel *model;
     GLWidgetSplit *mainSplit;
     GLWidgetSplit *currentSplit;
     GLuint displayListId;
@@ -51,6 +56,7 @@ public:
 
     GLWidgetPrivate(GLWidget *q)
         :   q(q)
+        ,   model(0)
         ,   mainSplit(0)
         ,   currentSplit(0)
         ,   displayListId(0)
@@ -81,6 +87,7 @@ public:
         glDeleteLists(displayListId, 1);  displayListId = 0;
         currentSplit = 0;
         delete mainSplit;  mainSplit = 0;
+        model = 0;
         q = 0;
     }
 
@@ -89,6 +96,13 @@ public:
         initSplits();
         initShaders();
         initDisplayLists();
+    }
+
+    void initModel()
+    {
+        ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+        model = pm->getObject<GLDatabase::IGLModel>();
+        Q_ASSERT(model);
     }
 
     void initSplits()
@@ -173,6 +187,16 @@ GLWidget::GLWidget(QWidget *parent)
 GLWidget::~GLWidget()
 {
     delete d;  d = 0;
+}
+
+GLDatabase::IGLModel *GLWidget::currentModel() const
+{
+    return d->model;
+}
+
+void GLWidget::setCurrentModel(GLDatabase::IGLModel *model)
+{
+    Q_ASSERT(false && "Not implemented yet");
 }
 
 GLWidgetSplit *GLWidget::currentSplit() const

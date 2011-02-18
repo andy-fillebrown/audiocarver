@@ -11,11 +11,13 @@ DEFINES += AC_DATABASE_LIBRARY
 
 HEADERS += \
 	implementations/database.h \
+	implementations/model.h \
 	\
 	ac_database_global.h \
 	ac_databaseplugin.h
 
 SOURCES += \
 	implementations/database.cpp \
+	implementations/model.cpp \
 	\
 	ac_databaseplugin.cpp
