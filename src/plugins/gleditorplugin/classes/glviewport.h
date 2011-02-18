@@ -47,13 +47,13 @@ public:
     int height() const;
     void resize(int width, int height);
 
-    const QList<GLuint> &textureIds() const;
-
 public slots:
     void updateAnimation();
 
 protected:
     friend class GLWidget;
+    const QList<GLuint> &textureIds() const;
+
     friend class GLWidgetSplit;
     virtual void draw();
 

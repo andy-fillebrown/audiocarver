@@ -316,14 +316,14 @@ void GLViewport::resize(int w, int h)
     d->resizeFBOs(w, h);
 }
 
-const QList<GLuint> &GLViewport::textureIds() const
-{
-    return d->textureIds;
-}
-
 void GLViewport::updateAnimation()
 {
     d->updateAnimatedFBO();
+}
+
+const QList<GLuint> &GLViewport::textureIds() const
+{
+    return d->textureIds;
 }
 
 void GLViewport::draw()

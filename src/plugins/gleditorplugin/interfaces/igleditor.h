@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef IGLEDITOR3D_H
-#define IGLEDITOR3D_H
+#ifndef IGLEDITOR_H
+#define IGLEDITOR_H
 
 #include <gleditorplugin/gleditor_global.h>
 
