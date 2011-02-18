@@ -15,31 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_H
-#define AC_DATABASE_H
+#ifndef GLDATABASE_GLOBAL_H
+#define GLDATABASE_GLOBAL_H
 
-#include <gldatabaseplugin/interfaces/igldatabase.h>
+#include <QtCore/qglobal.h>
 
-namespace AudioCarver {
-namespace Internal {
+#if defined(GLDATABASE_LIBRARY)
+#  define GLDATABASE_EXPORT Q_DECL_EXPORT
+#else
+#  define GLDATABASE_EXPORT Q_DECL_IMPORT
+#endif
 
-class DatabaseImpl : public GLDatabase::IGLDatabase
-{
-public:
-    DatabaseImpl();
-    virtual ~DatabaseImpl();
-
-    virtual const QString &fileExtension() const;
-    virtual const QString &fileFilter() const;
-
-    virtual const QString &fileName() const;
-
-    virtual void clear();
-    virtual void read(const QString &fileName);
-    virtual void write(const QString &fileName);
-};
-
-} // namespace Internal
-} // namespace AudioCarver
-
-#endif // AC_DATABASE_H
+#endif // GLDATABASE_GLOBAL_H

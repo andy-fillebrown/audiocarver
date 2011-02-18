@@ -15,31 +15,14 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_H
-#define AC_DATABASE_H
+#include "igldatabase.h"
 
-#include <gldatabaseplugin/interfaces/igldatabase.h>
+using namespace GLDatabase;
 
-namespace AudioCarver {
-namespace Internal {
-
-class DatabaseImpl : public GLDatabase::IGLDatabase
+IGLDatabase::IGLDatabase()
 {
-public:
-    DatabaseImpl();
-    virtual ~DatabaseImpl();
+}
 
-    virtual const QString &fileExtension() const;
-    virtual const QString &fileFilter() const;
-
-    virtual const QString &fileName() const;
-
-    virtual void clear();
-    virtual void read(const QString &fileName);
-    virtual void write(const QString &fileName);
-};
-
-} // namespace Internal
-} // namespace AudioCarver
-
-#endif // AC_DATABASE_H
+IGLDatabase::~IGLDatabase()
+{
+}
