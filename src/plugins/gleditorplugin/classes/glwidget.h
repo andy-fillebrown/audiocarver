@@ -54,6 +54,7 @@ public:
 
     void setAnimating(bool animating = true);
     bool isAnimating() const;
+    qreal animationTime() const;
 
 public slots:
     void splitHorizontal();

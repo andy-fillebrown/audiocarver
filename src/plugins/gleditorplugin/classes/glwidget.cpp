@@ -31,6 +31,7 @@
 #include <QtGui/QMouseEvent>
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QElapsedTimer>
 #include <QtCore/QTimer>
 
 using namespace GLEditor;
@@ -52,6 +53,7 @@ public:
     int screenOriginId;
     int screenSizeId;
     GLWidgetSplit *draggingSplit;
+    QElapsedTimer elapsedTime;
     bool animating;
 
     GLWidgetPrivate(GLWidget *q)
@@ -228,14 +230,23 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
 
 void GLWidget::setAnimating(bool animating)
 {
-    d->animating = true;
-    if (animating)
+    d->animating = animating;
+    if (animating) {
+        d->elapsedTime.start();
         QTimer::singleShot(0, this, SLOT(animateGL()));
+    }
 }
 
 bool GLWidget::isAnimating() const
 {
     return d->animating;
+}
+
+qreal GLWidget::animationTime() const
+{
+    if (d->elapsedTime.isValid())
+        return qreal(d->elapsedTime.elapsed()) / qreal(1000.0);
+    return qreal(0.0);
 }
 
 void GLWidget::splitHorizontal()
@@ -284,8 +295,8 @@ void GLWidget::removeAllSplits()
 void GLWidget::animateGL()
 {
     QCoreApplication::processEvents();
-    d->mainSplit->updateAnimation();
 
+    d->mainSplit->updateAnimation(animationTime());
     updateGL();
 
     if (isAnimating())
@@ -338,6 +349,7 @@ void GLWidget::paintGL()
 void GLWidget::resizeGL(int width, int height)
 {
     d->mainSplit->resize(width, height);
+    updateGL();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)

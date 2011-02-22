@@ -76,7 +76,7 @@ protected:
     virtual void draw();
     virtual void resize(int w, int h);
 
-    void updateAnimation();
+    void updateAnimation(qreal time);
 
 private:
     Internal::GLWidgetSplitPrivate *d;

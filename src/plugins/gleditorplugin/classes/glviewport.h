@@ -48,7 +48,7 @@ public:
     void resize(int width, int height);
 
 public slots:
-    void updateAnimation();
+    void updateAnimation(qreal time);
 
 protected:
     friend class GLWidget;

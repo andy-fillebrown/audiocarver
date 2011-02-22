@@ -122,8 +122,6 @@ public:
         glTranslatef(0.0, 0.0, -10.0);
         glRotatef(rotation, 0.0, 1.0, 0.0);
         glCallList(animatedDisplayListId);
-
-        rotation += 1.0f;
     }
 };
 
@@ -218,7 +216,7 @@ public:
         Q_CHECK_GLERROR;
     }
 
-    void updateAnimatedFBO()
+    void updateAnimatedFBO(qreal time = 0.0)
     {
         const QSize size = animatedFBO->size();
         const int w = size.width();
@@ -239,6 +237,7 @@ public:
         glLoadIdentity();
         glViewport(0, 0, w, h);
 
+        testing.rotation = 90.0 * time;
         testing.drawAnimatedFBO(aspect);
 
         qglPopState();
@@ -264,7 +263,7 @@ public:
         Q_ASSERT(newFBO->isValid());
 
         animatedFBO = newFBO;
-        updateAnimatedFBO();
+        updateAnimatedFBO(widget->animationTime());
         textureIds[1] = animatedFBO->texture();
         delete oldFBO;
     }
@@ -293,7 +292,7 @@ void GLViewport::setBackgroundColor(const QColor &color)
     d->backgroundColor.setAlphaF(0.5);
 
     d->updateStaticFBO();
-    d->updateAnimatedFBO();
+    d->updateAnimatedFBO(d->widget->animationTime());
 }
 
 QPoint GLViewport::pos() const
@@ -316,9 +315,9 @@ void GLViewport::resize(int w, int h)
     d->resizeFBOs(w, h);
 }
 
-void GLViewport::updateAnimation()
+void GLViewport::updateAnimation(qreal time)
 {
-    d->updateAnimatedFBO();
+    d->updateAnimatedFBO(time);
 }
 
 const QList<GLuint> &GLViewport::textureIds() const
