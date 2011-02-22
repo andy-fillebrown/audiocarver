@@ -5,7 +5,8 @@ SUBDIRS = \
     coreplugin \
     databaseplugin \
     editorplugin \
-    gldatabaseplugin \
+    glsceneplugin \
     gleditorplugin \
     ac_databaseplugin \
+    ac_sceneplugin \
     ac_editorplugin

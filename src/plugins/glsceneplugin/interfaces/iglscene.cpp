@@ -15,30 +15,14 @@
 **
 **************************************************************************/
 
-#include "gldatabaseplugin.h"
+#include "iglscene.h"
 
-#include <QtCore/QtPlugin>
+using namespace GLScene;
 
-using namespace GLDatabase;
-using namespace GLDatabase::Internal;
-
-GLDatabasePlugin::GLDatabasePlugin()
+IGLScene::IGLScene()
 {
 }
 
-GLDatabasePlugin::~GLDatabasePlugin()
+IGLScene::~IGLScene()
 {
 }
-
-bool GLDatabasePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    return true;
-}
-
-void GLDatabasePlugin::extensionsInitialized()
-{
-}
-
-Q_EXPORT_PLUGIN(GLDatabasePlugin)

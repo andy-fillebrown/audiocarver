@@ -10,7 +10,8 @@ This plugin may be used under the terms of the GNU Lesser General Public License
     <description>The OpenGL editor plugin for $${PRO_NAME}.</description>
     <url>$$PRO_URL</url>
     <dependencyList>
+        <dependency name=\"Database\" version=\"$$PRO_VERSION\"/>
         <dependency name=\"Editor\" version=\"$$PRO_VERSION\"/>
-        <dependency name=\"GLDatabase\" version=\"$$PRO_VERSION\"/>
+        <dependency name=\"GLScene\" version=\"$$PRO_VERSION\"/>
     </dependencyList>
 </plugin>

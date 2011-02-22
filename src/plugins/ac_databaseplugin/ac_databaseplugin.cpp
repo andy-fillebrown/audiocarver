@@ -18,7 +18,6 @@
 #include "ac_databaseplugin.h"
 
 #include <implementations/database.h>
-#include <implementations/model.h>
 
 #include <extensionsystem/pluginmanager.h>
 
@@ -40,9 +39,8 @@ bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMess
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
 
-    DatabaseImpl *db = new DatabaseImpl;
-    addAutoReleasedObject(db);
-    addAutoReleasedObject(db->model());
+    addAutoReleasedObject(new DatabaseImpl);
+
     return true;
 }
 

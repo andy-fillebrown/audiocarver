@@ -15,29 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef IGLMODEL_H
-#define IGLMODEL_H
+#include "scene.h"
 
-#include <gldatabaseplugin/gldatabase_global.h>
+using namespace AudioCarver;
+using namespace AudioCarver::Internal;
 
-#include <QtCore/QObject>
-#include <QtCore/QRectF>
-
-namespace GLDatabase {
-
-class GLDATABASE_EXPORT IGLModel : public QObject
+SceneImpl::SceneImpl()
 {
-    Q_OBJECT
+}
 
-public:
-    IGLModel();
-    virtual ~IGLModel();
+SceneImpl::~SceneImpl()
+{
+}
 
-    virtual void drawStaticGL(const QRectF &frustum) = 0;
-    virtual void drawTransientGL(const QRectF &frustum) = 0;
-    virtual void drawAnimatedGL(const QRectF &frustum, qreal timeDelta) = 0;
-};
+void SceneImpl::drawStaticGL(const QRectF &frustum)
+{
+    Q_UNUSED(frustum);
+}
 
-} // namespace GLDatabase
+void SceneImpl::drawModelGL(const QRectF &frustum)
+{
+    Q_UNUSED(frustum);
+}
 
-#endif // IGLMODEL_H
+void SceneImpl::drawDelegateGL(const QRectF &frustum)
+{
+    Q_UNUSED(frustum);
+}
+
+void SceneImpl::drawAnimationGL(const QRectF &frustum, qreal timeDelta)
+{
+    Q_UNUSED(frustum);
+    Q_UNUSED(timeDelta);
+}

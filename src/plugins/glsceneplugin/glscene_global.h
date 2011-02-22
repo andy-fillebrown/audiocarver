@@ -15,14 +15,15 @@
 **
 **************************************************************************/
 
-#include "iglmodel.h"
+#ifndef GLSCENE_GLOBAL_H
+#define GLSCENE_GLOBAL_H
 
-using namespace GLDatabase;
+#include <QtCore/qglobal.h>
 
-IGLModel::IGLModel()
-{
-}
+#if defined(GLSCENE_LIBRARY)
+#  define GLSCENE_EXPORT Q_DECL_EXPORT
+#else
+#  define GLSCENE_EXPORT Q_DECL_IMPORT
+#endif
 
-IGLModel::~IGLModel()
-{
-}
+#endif // GLSCENE_GLOBAL_H

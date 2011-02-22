@@ -22,8 +22,8 @@
 
 #include <QtOpenGL/QGLWidget>
 
-namespace GLDatabase {
-class IGLModel;
+namespace GLScene {
+class IGLScene;
 } // namespace GLDatabase
 
 namespace GLEditor {
@@ -43,8 +43,8 @@ public:
     GLWidget(QWidget *parent = 0);
     virtual ~GLWidget();
 
-    GLDatabase::IGLModel *currentModel() const;
-    void setCurrentModel(GLDatabase::IGLModel *model);
+    GLScene::IGLScene *currentScene() const;
+    void setCurrentScene(GLScene::IGLScene *scene);
 
     GLWidgetSplit *currentSplit() const;
     void setCurrentSplit(GLWidgetSplit *split);

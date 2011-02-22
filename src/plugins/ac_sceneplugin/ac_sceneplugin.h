@@ -15,14 +15,27 @@
 **
 **************************************************************************/
 
-#include "igldatabase.h"
+#ifndef AC_SCENEPLUGIN_H
+#define AC_SCENEPLUGIN_H
 
-using namespace GLDatabase;
+#include <extensionsystem/iplugin.h>
 
-IGLDatabase::IGLDatabase()
+namespace AudioCarver {
+namespace Internal {
+
+class ScenePlugin : public ExtensionSystem::IPlugin
 {
-}
+    Q_OBJECT
 
-IGLDatabase::~IGLDatabase()
-{
-}
+public:
+    ScenePlugin();
+    ~ScenePlugin();
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized();
+};
+
+} // namespace Internal
+} // namespace AudioCarver
+
+#endif // AC_SCENEPLUGIN_H

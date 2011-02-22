@@ -15,15 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef GLDATABASE_GLOBAL_H
-#define GLDATABASE_GLOBAL_H
+#include "ac_sceneplugin.h"
 
-#include <QtCore/qglobal.h>
+#include <implementations/scene.h>
 
-#if defined(GLDATABASE_LIBRARY)
-#  define GLDATABASE_EXPORT Q_DECL_EXPORT
-#else
-#  define GLDATABASE_EXPORT Q_DECL_IMPORT
-#endif
+#include <extensionsystem/pluginmanager.h>
 
-#endif // GLDATABASE_GLOBAL_H
+#include <QtCore/QtPlugin>
+
+using namespace AudioCarver;
+using namespace AudioCarver::Internal;
+
+ScenePlugin::ScenePlugin()
+{
+}
+
+ScenePlugin::~ScenePlugin()
+{
+}
+
+bool ScenePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+{
+    Q_UNUSED(arguments);
+    Q_UNUSED(errorMessage);
+
+    addAutoReleasedObject(new SceneImpl);
+
+    return true;
+}
+
+void ScenePlugin::extensionsInitialized()
+{
+}
+
+Q_EXPORT_PLUGIN(ScenePlugin)

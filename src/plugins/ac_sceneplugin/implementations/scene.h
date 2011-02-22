@@ -15,28 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef IGLDATABASE_H
-#define IGLDATABASE_H
+#ifndef AC_SCENE_H
+#define AC_SCENE_H
 
-#include <gldatabaseplugin/gldatabase_global.h>
+#include <glsceneplugin/interfaces/iglscene.h>
 
-#include <databaseplugin/interfaces/idatabase.h>
+namespace AudioCarver {
+namespace Internal {
 
-namespace GLDatabase {
-
-class IGLModel;
-
-class GLDATABASE_EXPORT IGLDatabase : public Database::IDatabase
+class SceneImpl : public GLScene::IGLScene
 {
-    Q_OBJECT
-
 public:
-    IGLDatabase();
-    virtual ~IGLDatabase();
+    SceneImpl();
+    virtual ~SceneImpl();
 
-    virtual IGLModel *model() const = 0;
+    virtual void drawStaticGL(const QRectF &frustum);
+    virtual void drawModelGL(const QRectF &frustum);
+    virtual void drawDelegateGL(const QRectF &frustum);
+    virtual void drawAnimationGL(const QRectF &frustum, qreal timeDelta);
 };
 
-} // namespace GLDatabase
+} // namespace Internal
+} // namespace AudioCarver
 
-#endif // IGLDATABASE_H
+#endif // AC_SCENE_H

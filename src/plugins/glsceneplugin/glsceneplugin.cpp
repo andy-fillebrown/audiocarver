@@ -15,27 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef GLDATABASEPLUGIN_H
-#define GLDATABASEPLUGIN_H
+#include "glsceneplugin.h"
 
-#include <extensionsystem/iplugin.h>
+#include <QtCore/QtPlugin>
 
-namespace GLDatabase {
-namespace Internal {
+using namespace GLScene;
+using namespace GLScene::Internal;
 
-class GLDatabasePlugin : public ExtensionSystem::IPlugin
+GLScenePlugin::GLScenePlugin()
 {
-    Q_OBJECT
+}
 
-public:
-    GLDatabasePlugin();
-    virtual ~GLDatabasePlugin();
+GLScenePlugin::~GLScenePlugin()
+{
+}
 
-    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    virtual void extensionsInitialized();
-};
+bool GLScenePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+{
+    Q_UNUSED(arguments);
+    Q_UNUSED(errorMessage);
 
-} // namespace Internal
-} // namespace GLDatabase
+    return true;
+}
 
-#endif // GLDATABASEPLUGIN_H
+void GLScenePlugin::extensionsInitialized()
+{
+}
+
+Q_EXPORT_PLUGIN(GLScenePlugin)

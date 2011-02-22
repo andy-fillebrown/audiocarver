@@ -15,31 +15,27 @@
 **
 **************************************************************************/
 
-#include "model.h"
+#ifndef GLSCENEPLUGIN_H
+#define GLSCENEPLUGIN_H
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
+#include <extensionsystem/iplugin.h>
 
-ModelImpl::ModelImpl()
+namespace GLScene {
+namespace Internal {
+
+class GLScenePlugin : public ExtensionSystem::IPlugin
 {
-}
+    Q_OBJECT
 
-ModelImpl::~ModelImpl()
-{
-}
+public:
+    GLScenePlugin();
+    virtual ~GLScenePlugin();
 
-void ModelImpl::drawStaticGL(const QRectF &frustum)
-{
-    Q_UNUSED(frustum);
-}
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized();
+};
 
-void ModelImpl::drawTransientGL(const QRectF &frustum)
-{
-    Q_UNUSED(frustum);
-}
+} // namespace Internal
+} // namespace GLScene
 
-void ModelImpl::drawAnimatedGL(const QRectF &frustum, qreal timeDelta)
-{
-    Q_UNUSED(frustum);
-    Q_UNUSED(timeDelta);
-}
+#endif // GLSCENEPLUGIN_H

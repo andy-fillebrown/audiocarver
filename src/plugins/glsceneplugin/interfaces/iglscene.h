@@ -15,36 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_H
-#define AC_DATABASE_H
+#ifndef IGLSCENE_H
+#define IGLSCENE_H
 
-#include <databaseplugin/interfaces/idatabase.h>
+#include <glsceneplugin/glscene_global.h>
 
-namespace AudioCarver {
-namespace Internal {
+#include <QtCore/QObject>
+#include <QtCore/QRectF>
 
-class DatabaseImplPrivate;
+namespace GLScene {
 
-class DatabaseImpl : public Database::IDatabase
+class GLSCENE_EXPORT IGLScene : public QObject
 {
+    Q_OBJECT
+
 public:
-    DatabaseImpl();
-    virtual ~DatabaseImpl();
+    IGLScene();
+    virtual ~IGLScene();
 
-    virtual const QString &fileExtension() const;
-    virtual const QString &fileFilter() const;
-
-    virtual const QString &fileName() const;
-
-    virtual void clear();
-    virtual void read(const QString &fileName);
-    virtual void write(const QString &fileName);
-
-private:
-    DatabaseImplPrivate *d;
+    virtual void drawStaticGL(const QRectF &frustum) = 0;
+    virtual void drawModelGL(const QRectF &frustum) = 0;
+    virtual void drawDelegateGL(const QRectF &frustum) = 0;
+    virtual void drawAnimationGL(const QRectF &frustum, qreal timeDelta) = 0;
 };
 
-} // namespace Internal
-} // namespace AudioCarver
+} // namespace GLScene
 
-#endif // AC_DATABASE_H
+#endif // IGLSCENE_H

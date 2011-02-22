@@ -19,7 +19,7 @@
 #include "glwidgetsplit.h"
 #include "glviewport.h"
 
-#include <gldatabaseplugin/interfaces/iglmodel.h>
+#include <glsceneplugin/interfaces/iglscene.h>
 
 #include <extensionsystem/pluginmanager.h>
 
@@ -42,7 +42,7 @@ class GLWidgetPrivate
 {
 public:
     GLWidget *q;
-    GLDatabase::IGLModel *model;
+    GLScene::IGLScene *scene;
     GLWidgetSplit *mainSplit;
     GLWidgetSplit *currentSplit;
     GLuint displayListId;
@@ -56,7 +56,7 @@ public:
 
     GLWidgetPrivate(GLWidget *q)
         :   q(q)
-        ,   model(0)
+        ,   scene(0)
         ,   mainSplit(0)
         ,   currentSplit(0)
         ,   displayListId(0)
@@ -87,22 +87,23 @@ public:
         glDeleteLists(displayListId, 1);  displayListId = 0;
         currentSplit = 0;
         delete mainSplit;  mainSplit = 0;
-        model = 0;
+        scene = 0;
         q = 0;
     }
 
     void init()
     {
+        initScene();
         initSplits();
         initShaders();
         initDisplayLists();
     }
 
-    void initModel()
+    void initScene()
     {
         ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-        model = pm->getObject<GLDatabase::IGLModel>();
-        Q_ASSERT(model);
+        scene = pm->getObject<GLScene::IGLScene>();
+        Q_ASSERT(scene);
     }
 
     void initSplits()
@@ -189,12 +190,12 @@ GLWidget::~GLWidget()
     delete d;  d = 0;
 }
 
-GLDatabase::IGLModel *GLWidget::currentModel() const
+GLScene::IGLScene *GLWidget::currentScene() const
 {
-    return d->model;
+    return d->scene;
 }
 
-void GLWidget::setCurrentModel(GLDatabase::IGLModel *model)
+void GLWidget::setCurrentScene(GLScene::IGLScene *scene)
 {
     Q_ASSERT(false && "Not implemented yet");
 }

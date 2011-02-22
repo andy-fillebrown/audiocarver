@@ -15,26 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_MODEL_H
-#define AC_MODEL_H
+#ifndef AC_SCENE_GLOBAL_H
+#define AC_SCENE_GLOBAL_H
 
-#include <gldatabaseplugin/interfaces/iglmodel.h>
+#include <QtCore/qglobal.h>
 
-namespace AudioCarver {
-namespace Internal {
+#if defined(AC_SCENE_LIBRARY)
+#  define AC_SCENE_EXPORT Q_DECL_EXPORT
+#else
+#  define AC_SCENE_EXPORT Q_DECL_IMPORT
+#endif
 
-class ModelImpl : public GLDatabase::IGLModel
-{
-public:
-    ModelImpl();
-    virtual ~ModelImpl();
-
-    virtual void drawStaticGL(const QRectF &frustum);
-    virtual void drawTransientGL(const QRectF &frustum);
-    virtual void drawAnimatedGL(const QRectF &frustum, qreal timeDelta);
-};
-
-} // namespace Internal
-} // namespace AudioCarver
-
-#endif // AC_MODEL_H
+#endif // AC_SCENE_GLOBAL_H
