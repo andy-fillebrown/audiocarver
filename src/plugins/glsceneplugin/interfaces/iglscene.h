@@ -33,10 +33,14 @@ public:
     IGLScene();
     virtual ~IGLScene();
 
-    virtual void drawStaticGL(const QRectF &frustum) = 0;
-    virtual void drawModelGL(const QRectF &frustum) = 0;
-    virtual void drawDelegateGL(const QRectF &frustum) = 0;
-    virtual void drawAnimationGL(const QRectF &frustum, qreal timeDelta) = 0;
+    virtual void initializeGL() = 0;
+    virtual void destroyGL() = 0;
+
+    virtual void drawStaticGL() = 0;
+    virtual void drawModelGL() = 0;
+    virtual void drawEditingGL() = 0;
+    virtual void drawAnimationGL(qreal time) = 0;
+    virtual void drawOverlayGL() = 0;
 };
 
 } // namespace GLScene

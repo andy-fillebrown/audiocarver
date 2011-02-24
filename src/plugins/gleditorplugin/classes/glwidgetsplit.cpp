@@ -305,11 +305,11 @@ void GLWidgetSplit::resize(int w, int h)
         d->viewport->resize(w, h);
 }
 
-void GLWidgetSplit::updateAnimation(qreal time)
+void GLWidgetSplit::updateAnimation()
 {
     if (isSplit()) {
-        d->splitOne->updateAnimation(time);
-        d->splitTwo->updateAnimation(time);
+        d->splitOne->updateAnimation();
+        d->splitTwo->updateAnimation();
     } else
-        d->viewport->updateAnimation(time);
+        d->viewport->updateAnimation();
 }

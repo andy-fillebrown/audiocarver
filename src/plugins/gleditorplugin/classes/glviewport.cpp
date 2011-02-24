@@ -20,116 +20,27 @@
 #include "glwidget.h"
 #include "glwidgetsplit.h"
 
+#include <glsceneplugin/interfaces/iglscene.h>
+
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLFramebufferObject>
 #include <QtOpenGL/QGLFunctions>
-
-class Testing : protected QGLFunctions
-{
-public:
-    GLuint staticDisplayListId;
-    GLuint animatedDisplayListId;
-    float rotation;
-
-    Testing()
-        :   staticDisplayListId(-1)
-        ,   animatedDisplayListId(-1)
-        ,   rotation(0)
-    {
-        initializeGLFunctions();
-    }
-
-    ~Testing()
-    {
-        glDeleteLists(animatedDisplayListId, 1);  animatedDisplayListId = -1;
-        glDeleteLists(staticDisplayListId, 1);  staticDisplayListId = -1;
-        rotation = 0;
-    }
-
-    void initDisplayLists()
-    {
-        staticDisplayListId = glGenLists(1);
-        glNewList(staticDisplayListId, GL_COMPILE);
-        drawStaticGeometry();
-        glEndList();
-
-        Q_CHECK_GLERROR;
-
-        animatedDisplayListId = glGenLists(1);
-        glNewList(animatedDisplayListId, GL_COMPILE);
-        drawAnimatedGeometry();
-        glEndList();
-
-        Q_CHECK_GLERROR;
-    }
-
-    void drawStaticGeometry()
-    {
-        static const GLfloat x = 1.0f;
-        static const GLfloat y = 1.0f;
-        static const GLfloat S1[3] = { x, y, 0.0 };
-        static const GLfloat S2[3] = { x, -y, 0.0 };
-        static const GLfloat S3[3] = { -x, y, 0.0 };
-        static const GLfloat S4[3] = { -x, -y, 0.0 };
-        static const GLfloat * const coordsS[2][3] = {
-            { S2, S1, S3 }, { S3, S4, S2 }
-        };
-        glBegin(GL_TRIANGLES);
-        glColor4f(0.5, 0.5, 0.5, 0.5);
-        for (int i = 0;  i < 2;  ++i) {
-            for (int j = 0;  j < 3;  ++j)
-                glVertex3f(coordsS[i][j][0], coordsS[i][j][1], coordsS[i][j][2]);
-        }
-        glEnd();
-
-        Q_CHECK_GLERROR;
-    }
-
-    void drawAnimatedGeometry()
-    {
-        static const GLfloat A1[3] = { 0.0, -1.0, 2.0 };
-        static const GLfloat A2[3] = { 1.73205081, -1.0, -1.0 };
-        static const GLfloat A3[3] = { -1.73205081, -1.0, -1.0 };
-        static const GLfloat A4[3] = { 0.0, 2.0, 0.0 };
-        static const GLfloat * const coordsA[4][3] = {
-            { A1, A2, A3 }, { A1, A3, A4 }, { A1, A4, A2 }, { A2, A4, A3 }
-        };
-        static const GLfloat faceColorsA[][3] = {
-            { 1, 1, 1 }, { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }
-        };
-        glBegin(GL_TRIANGLES);
-        for (int i = 0;  i < 4;  ++i) {
-            glColor4f(faceColorsA[i][0], faceColorsA[i][1], faceColorsA[i][2], 0.5f);
-            for (int j = 0; j < 3; ++j)
-                glVertex3f(coordsA[i][j][0], coordsA[i][j][1], coordsA[i][j][2]);
-        }
-        glEnd();
-
-        Q_CHECK_GLERROR;
-    }
-
-    void drawStaticFBO(GLfloat aspect)
-    {
-        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
-        glTranslatef(0.0, 0.0, -10.0);
-        glCallList(staticDisplayListId);
-    }
-
-    void drawAnimatedFBO(GLfloat aspect)
-    {
-        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
-        glTranslatef(0.0, 0.0, -10.0);
-        glRotatef(rotation, 0.0, 1.0, 0.0);
-        glCallList(animatedDisplayListId);
-    }
-};
 
 using namespace GLEditor;
 using namespace GLEditor::Internal;
 
 namespace GLEditor {
 namespace Internal {
+
+enum {
+    StaticFBO = 0,
+    ModelFBO,
+    EditingFBO,
+    AnimationFBO,
+    OverlayFBO,
+    LastFBO
+};
 
 class GLViewportPrivate : protected QGLFunctions
 {
@@ -139,28 +50,33 @@ public:
     GLWidgetSplit *split;
     QColor backgroundColor;
     QGLFramebufferObject *staticFBO;
-    QGLFramebufferObject *animatedFBO;
+    QGLFramebufferObject *modelFBO;
+    QGLFramebufferObject *editingFBO;
+    QGLFramebufferObject *animationFBO;
+    QGLFramebufferObject *overlayFBO;
     QList<GLuint> textureIds;
-    Testing testing;
 
     GLViewportPrivate(GLViewport *q, GLWidgetSplit *split)
         :   q(q)
         ,   widget(split->widget())
         ,   split(split)
-        ,   backgroundColor(QColor(251, 251, 251, 127))
+        ,   backgroundColor(QColor(251, 251, 251))
         ,   staticFBO(0)
-        ,   animatedFBO(0)
+        ,   modelFBO(0)
+        ,   editingFBO(0)
+        ,   animationFBO(0)
+        ,   overlayFBO(0)
     {
         initializeGLFunctions(widget->context());
         initFBOs(split->width(), split->height());
-        testing.initDisplayLists();
-        updateStaticFBO();
-        updateAnimatedFBO();
     }
 
     ~GLViewportPrivate()
     {
-        delete animatedFBO;  animatedFBO = 0;
+        delete overlayFBO;  overlayFBO = 0;
+        delete animationFBO;  animationFBO = 0;
+        delete editingFBO;  editingFBO = 0;
+        delete modelFBO;  modelFBO = 0;
         delete staticFBO;  staticFBO = 0;
         split = 0;
         widget = 0;
@@ -179,93 +95,128 @@ public:
         Q_CHECK_PTR(staticFBO);
         Q_ASSERT(staticFBO->isValid());
 
-        delete animatedFBO;
-        animatedFBO = new QGLFramebufferObject(w, h);
-        Q_CHECK_PTR(animatedFBO);
-        Q_ASSERT(animatedFBO->isValid());
+        delete modelFBO;
+        modelFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(modelFBO);
+        Q_ASSERT(modelFBO->isValid());
+
+        delete editingFBO;
+        editingFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(editingFBO);
+        Q_ASSERT(editingFBO->isValid());
+
+        delete animationFBO;
+        animationFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(animationFBO);
+        Q_ASSERT(animationFBO->isValid());
+
+        delete overlayFBO;
+        overlayFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(overlayFBO);
+        Q_ASSERT(overlayFBO->isValid());
 
         textureIds.clear();
         textureIds.append(staticFBO->texture());
-        textureIds.append(animatedFBO->texture());
+        textureIds.append(modelFBO->texture());
+        textureIds.append(editingFBO->texture());
+        textureIds.append(animationFBO->texture());
+        textureIds.append(overlayFBO->texture());
     }
 
-    void updateStaticFBO()
+    QGLFramebufferObject *fbo(int type)
     {
-        const QSize size = staticFBO->size();
+        switch (type) {
+        case StaticFBO:
+            return staticFBO;
+        case ModelFBO:
+            return modelFBO;
+        case EditingFBO:
+            return editingFBO;
+        case AnimationFBO:
+            return animationFBO;
+        case OverlayFBO:
+            return overlayFBO;
+        default:
+            Q_ASSERT(false && "Invalid fbo type");
+            return 0;
+        }
+        Q_ASSERT(false && "Invalid fbo type");
+        return 0;
+    }
+
+    void updateFBO(int fboType)
+    {
+        const QSize size = q->size();
         const int w = size.width();
         const int h = size.height();
-        const GLfloat aspect = w / GLfloat(h ? h : 1);
+        const qreal aspect = size.width() / qreal(size.height() ? size.height() : 1);
 
-        Q_CHECK(staticFBO->bind());
+        QGLFramebufferObject *fbo = this->fbo(fboType);
+        Q_CHECK(fbo);
+        Q_ASSERT(fbo->isValid());
+
+        Q_CHECK(fbo->bind());
         qglPushState();
 
-        widget->qglClearColor(backgroundColor);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
         glShadeModel(GL_FLAT);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glViewport(0, 0, w, h);
+        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
+        glTranslatef(0.0, 0.0, -10.0);
 
-        testing.drawStaticFBO(aspect);
+        GLScene::IGLScene *scene = widget->currentScene();
+        Q_ASSERT(scene && "No scene");
+
+        switch (fboType) {
+        case StaticFBO:
+            widget->qglClearColor(backgroundColor);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            scene->drawStaticGL();
+            break;
+        case ModelFBO:
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            scene->drawModelGL();
+            break;
+        case EditingFBO:
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            scene->drawEditingGL();
+            break;
+        case AnimationFBO:
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            scene->drawAnimationGL(widget->animationTime());
+            break;
+        case OverlayFBO:
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            scene->drawOverlayGL();
+            break;
+        default:
+            Q_ASSERT(false && "Invalid fbo type");
+        }
 
         qglPopState();
-        Q_CHECK(staticFBO->release());
+        Q_CHECK(fbo->release());
         Q_CHECK_GLERROR;
     }
 
-    void updateAnimatedFBO(qreal time = 0.0)
+    void updateAllFBOs()
     {
-        const QSize size = animatedFBO->size();
-        const int w = size.width();
-        const int h = size.height();
-        const GLfloat aspect = w / GLfloat(h ? h : 1);
-
-        Q_CHECK(animatedFBO->bind());
-        qglPushState();
-
-        widget->qglClearColor(backgroundColor);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glShadeModel(GL_FLAT);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glViewport(0, 0, w, h);
-
-        testing.rotation = 90.0 * time;
-        testing.drawAnimatedFBO(aspect);
-
-        qglPopState();
-        Q_CHECK(animatedFBO->release());
-        Q_CHECK_GLERROR;
+        for (int i = 0;  i < LastFBO;  ++i)
+            updateFBO(i);
     }
 
     void resizeFBOs(int w, int h)
     {
-        QGLFramebufferObject *oldFBO = staticFBO;
-        QGLFramebufferObject *newFBO = new QGLFramebufferObject(w, h);
-        Q_CHECK_PTR(newFBO);
-        Q_ASSERT(newFBO->isValid());
-
-        staticFBO = newFBO;
-        updateStaticFBO();
-        textureIds[0] = staticFBO->texture();
-        delete oldFBO;
-
-        oldFBO = animatedFBO;
-        newFBO = new QGLFramebufferObject(w, h);
-        Q_CHECK_PTR(newFBO);
-        Q_ASSERT(newFBO->isValid());
-
-        animatedFBO = newFBO;
-        updateAnimatedFBO(widget->animationTime());
-        textureIds[1] = animatedFBO->texture();
-        delete oldFBO;
+        initFBOs(w, h);
+        updateAllFBOs();
     }
 };
 
@@ -276,11 +227,17 @@ GLViewport::GLViewport(GLWidgetSplit *split)
     :   d(new GLViewportPrivate(this, split))
 {
     Q_CHECK_PTR(d);
+    d->updateAllFBOs();
 }
 
 GLViewport::~GLViewport()
 {
     delete d;  d = 0;
+}
+
+QColor GLViewport::backgroundColor() const
+{
+    return d->backgroundColor;
 }
 
 void GLViewport::setBackgroundColor(const QColor &color)
@@ -289,10 +246,9 @@ void GLViewport::setBackgroundColor(const QColor &color)
         return;
 
     d->backgroundColor = color;
-    d->backgroundColor.setAlphaF(0.5);
+    d->backgroundColor.setAlphaF(1.0);
 
-    d->updateStaticFBO();
-    d->updateAnimatedFBO(d->widget->animationTime());
+    d->updateFBO(StaticFBO); // TODO: Use a background fbo.
 }
 
 QPoint GLViewport::pos() const
@@ -315,9 +271,9 @@ void GLViewport::resize(int w, int h)
     d->resizeFBOs(w, h);
 }
 
-void GLViewport::updateAnimation(qreal time)
+void GLViewport::updateAnimation()
 {
-    d->updateAnimatedFBO(time);
+    d->updateFBO(AnimationFBO);
 }
 
 const QList<GLuint> &GLViewport::textureIds() const

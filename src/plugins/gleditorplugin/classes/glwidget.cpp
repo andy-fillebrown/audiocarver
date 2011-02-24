@@ -89,7 +89,7 @@ public:
         glDeleteLists(displayListId, 1);  displayListId = 0;
         currentSplit = 0;
         delete mainSplit;  mainSplit = 0;
-        scene = 0;
+        scene->destroyGL();  scene = 0;
         q = 0;
     }
 
@@ -106,6 +106,11 @@ public:
         ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
         scene = pm->getObject<GLScene::IGLScene>();
         Q_ASSERT(scene);
+
+        q->makeCurrent();
+        Q_ASSERT(q->isValid());
+        Q_ASSERT(q->context() == QGLContext::currentContext());
+        scene->initializeGL();
     }
 
     void initSplits()
@@ -296,7 +301,7 @@ void GLWidget::animateGL()
 {
     QCoreApplication::processEvents();
 
-    d->mainSplit->updateAnimation(animationTime());
+    d->mainSplit->updateAnimation();
     updateGL();
 
     if (isAnimating())
@@ -337,7 +342,7 @@ void GLWidget::paintGL()
     glEnable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     d->mainSplit->draw();
 

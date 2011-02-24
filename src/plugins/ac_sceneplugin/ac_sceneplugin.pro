@@ -1,7 +1,7 @@
 TARGET = AC_Scene
 TEMPLATE = lib
 
-QT -= gui
+QT += opengl
 
 include(../../projectplugin.pri)
 include(ac_sceneplugin_dependencies.pri)

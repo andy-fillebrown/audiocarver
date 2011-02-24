@@ -23,16 +23,25 @@
 namespace AudioCarver {
 namespace Internal {
 
+class SceneImplPrivate;
+
 class SceneImpl : public GLScene::IGLScene
 {
 public:
     SceneImpl();
     virtual ~SceneImpl();
 
-    virtual void drawStaticGL(const QRectF &frustum);
-    virtual void drawModelGL(const QRectF &frustum);
-    virtual void drawDelegateGL(const QRectF &frustum);
-    virtual void drawAnimationGL(const QRectF &frustum, qreal timeDelta);
+    virtual void initializeGL();
+    virtual void destroyGL();
+
+    virtual void drawStaticGL();
+    virtual void drawModelGL();
+    virtual void drawEditingGL();
+    virtual void drawAnimationGL(qreal time);
+    virtual void drawOverlayGL();
+
+private:
+    SceneImplPrivate *d;
 };
 
 } // namespace Internal

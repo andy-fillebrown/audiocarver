@@ -59,4 +59,17 @@ void EditorPlugin::extensionsInitialized()
     mw->setCentralWidget(ew);
 }
 
+ExtensionSystem::IPlugin::ShutdownFlag EditorPlugin::aboutToShutdown()
+{
+    // Delete editor widget before extension system deletes IGLScene
+    // implementation.  Editor widget needs to be current so GL stuff can be
+    // cleaned up.
+    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+    QWidget *ew = mw->centralWidget();
+    delete ew;
+    mw->setCentralWidget(0);
+
+    return SynchronousShutdown;
+}
+
 Q_EXPORT_PLUGIN(EditorPlugin)

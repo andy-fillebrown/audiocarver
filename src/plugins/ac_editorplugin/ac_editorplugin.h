@@ -33,6 +33,7 @@ public:
 
     virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     virtual void extensionsInitialized();
+    virtual ShutdownFlag aboutToShutdown();
 };
 
 } // namespace Internal
