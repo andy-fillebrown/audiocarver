@@ -34,7 +34,8 @@ namespace GLEditor {
 namespace Internal {
 
 enum {
-    StaticFBO = 0,
+    BackgroundFBO = 0,
+    StaticFBO,
     ModelFBO,
     EditingFBO,
     AnimationFBO,
@@ -49,6 +50,7 @@ public:
     GLWidget *widget;
     GLWidgetSplit *split;
     QColor backgroundColor;
+    QGLFramebufferObject *backgroundFBO;
     QGLFramebufferObject *staticFBO;
     QGLFramebufferObject *modelFBO;
     QGLFramebufferObject *editingFBO;
@@ -61,6 +63,7 @@ public:
         ,   widget(split->widget())
         ,   split(split)
         ,   backgroundColor(QColor(251, 251, 251))
+        ,   backgroundFBO(0)
         ,   staticFBO(0)
         ,   modelFBO(0)
         ,   editingFBO(0)
@@ -78,6 +81,7 @@ public:
         delete editingFBO;  editingFBO = 0;
         delete modelFBO;  modelFBO = 0;
         delete staticFBO;  staticFBO = 0;
+        delete backgroundFBO;  backgroundFBO = 0;
         split = 0;
         widget = 0;
         q = 0;
@@ -89,6 +93,11 @@ public:
             w = 1;
         if (h < 1)
             h = 1;
+
+        delete backgroundFBO;
+        backgroundFBO = new QGLFramebufferObject(w, h);
+        Q_CHECK_PTR(backgroundFBO);
+        Q_ASSERT(backgroundFBO->isValid());
 
         delete staticFBO;
         staticFBO = new QGLFramebufferObject(w, h);
@@ -116,6 +125,7 @@ public:
         Q_ASSERT(overlayFBO->isValid());
 
         textureIds.clear();
+        textureIds.append(backgroundFBO->texture());
         textureIds.append(staticFBO->texture());
         textureIds.append(modelFBO->texture());
         textureIds.append(editingFBO->texture());
@@ -126,6 +136,8 @@ public:
     QGLFramebufferObject *fbo(int type)
     {
         switch (type) {
+        case BackgroundFBO:
+            return backgroundFBO;
         case StaticFBO:
             return staticFBO;
         case ModelFBO:
@@ -173,8 +185,12 @@ public:
         Q_ASSERT(scene && "No scene");
 
         switch (fboType) {
-        case StaticFBO:
+        case BackgroundFBO:
             widget->qglClearColor(backgroundColor);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            break;
+        case StaticFBO:
+            glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             scene->drawStaticGL();
             break;
@@ -248,7 +264,7 @@ void GLViewport::setBackgroundColor(const QColor &color)
     d->backgroundColor = color;
     d->backgroundColor.setAlphaF(1.0);
 
-    d->updateFBO(StaticFBO); // TODO: Use a background fbo.
+    d->updateFBO(BackgroundFBO);
 }
 
 QPoint GLViewport::pos() const
