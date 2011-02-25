@@ -290,9 +290,9 @@ QSize GLViewport::size() const
     return d->split->size();
 }
 
-void GLViewport::resize(int w, int h)
+void GLViewport::resize(int width, int height)
 {
-    d->resizeFBOs(w, h);
+    d->resizeFBOs(width, height);
 }
 
 void GLViewport::updateAnimation()
