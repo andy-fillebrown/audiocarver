@@ -189,32 +189,32 @@ public:
         switch (fboId) {
         case BackgroundFBO:
             widget->qglClearColor(backgroundColor);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
             scene->drawBackgroundGL();
             break;
         case StaticFBO:
             glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
             drewToFBO = scene->drawStaticGL();
             break;
         case ModelFBO:
             glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
             drewToFBO = scene->drawModelGL();
             break;
         case EditingFBO:
             glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
             drewToFBO = scene->drawEditingGL();
             break;
         case AnimationFBO:
             glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
             drewToFBO = scene->drawAnimationGL(widget->animationTime());
             break;
         case OverlayFBO:
             glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
             drewToFBO = scene->drawOverlayGL();
             break;
         default:
