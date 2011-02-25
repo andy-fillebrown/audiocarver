@@ -162,8 +162,7 @@ public:
         Q_ASSERT(scene && "No scene");
 
         QGLFramebufferObject *fbo = this->fbo(fboId);
-        Q_CHECK(fbo);
-        Q_ASSERT(fbo->isValid());
+        Q_ASSERT(fbo && fbo->isValid());
 
         bool drewToFBO = true;
 
