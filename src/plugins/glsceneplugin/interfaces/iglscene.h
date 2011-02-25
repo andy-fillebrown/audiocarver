@@ -36,11 +36,12 @@ public:
     virtual void initializeGL() = 0;
     virtual void destroyGL() = 0;
 
-    virtual void drawStaticGL() = 0;
-    virtual void drawModelGL() = 0;
-    virtual void drawEditingGL() = 0;
-    virtual void drawAnimationGL(qreal time) = 0;
-    virtual void drawOverlayGL() = 0;
+    virtual bool drawBackgroundGL() = 0;
+    virtual bool drawStaticGL() = 0;
+    virtual bool drawModelGL() = 0;
+    virtual bool drawEditingGL() = 0;
+    virtual bool drawAnimationGL(qreal time) = 0;
+    virtual bool drawOverlayGL() = 0;
 };
 
 } // namespace GLScene

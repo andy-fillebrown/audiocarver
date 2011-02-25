@@ -34,11 +34,12 @@ public:
     virtual void initializeGL();
     virtual void destroyGL();
 
-    virtual void drawStaticGL();
-    virtual void drawModelGL();
-    virtual void drawEditingGL();
-    virtual void drawAnimationGL(qreal time);
-    virtual void drawOverlayGL();
+    virtual bool drawBackgroundGL();
+    virtual bool drawStaticGL();
+    virtual bool drawModelGL();
+    virtual bool drawEditingGL();
+    virtual bool drawAnimationGL(qreal time);
+    virtual bool drawOverlayGL();
 
 private:
     SceneImplPrivate *d;

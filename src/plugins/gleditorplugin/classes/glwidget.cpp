@@ -324,6 +324,8 @@ void GLWidget::drawViewport(GLViewport *viewport)
 
     const QList<GLuint> &textureIds = viewport->textureIds();
     foreach (const GLuint &id, textureIds) {
+        if (id == 0)
+            continue;
         glBindTexture(GL_TEXTURE_2D, id);
         glCallList(d->displayListId);
     }

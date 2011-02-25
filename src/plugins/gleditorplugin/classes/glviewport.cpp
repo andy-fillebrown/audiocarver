@@ -156,16 +156,21 @@ public:
         return 0;
     }
 
-    void updateFBO(int fboType)
+    void updateFBO(int fboId)
     {
+        GLScene::IGLScene *scene = widget->currentScene();
+        Q_ASSERT(scene && "No scene");
+
+        QGLFramebufferObject *fbo = this->fbo(fboId);
+        Q_CHECK(fbo);
+        Q_ASSERT(fbo->isValid());
+
+        bool drewToFBO = true;
+
         const QSize size = q->size();
         const int w = size.width();
         const int h = size.height();
         const qreal aspect = size.width() / qreal(size.height() ? size.height() : 1);
-
-        QGLFramebufferObject *fbo = this->fbo(fboType);
-        Q_CHECK(fbo);
-        Q_ASSERT(fbo->isValid());
 
         Q_CHECK(fbo->bind());
         qglPushState();
@@ -181,38 +186,36 @@ public:
         glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
         glTranslatef(0.0, 0.0, -10.0);
 
-        GLScene::IGLScene *scene = widget->currentScene();
-        Q_ASSERT(scene && "No scene");
-
-        switch (fboType) {
+        switch (fboId) {
         case BackgroundFBO:
             widget->qglClearColor(backgroundColor);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            scene->drawBackgroundGL();
             break;
         case StaticFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            scene->drawStaticGL();
+            drewToFBO = scene->drawStaticGL();
             break;
         case ModelFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            scene->drawModelGL();
+            drewToFBO = scene->drawModelGL();
             break;
         case EditingFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            scene->drawEditingGL();
+            drewToFBO = scene->drawEditingGL();
             break;
         case AnimationFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            scene->drawAnimationGL(widget->animationTime());
+            drewToFBO = scene->drawAnimationGL(widget->animationTime());
             break;
         case OverlayFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            scene->drawOverlayGL();
+            drewToFBO = scene->drawOverlayGL();
             break;
         default:
             Q_ASSERT(false && "Invalid fbo type");
@@ -221,6 +224,11 @@ public:
         qglPopState();
         Q_CHECK(fbo->release());
         Q_CHECK_GLERROR;
+
+        if (drewToFBO)
+            textureIds[fboId] = fbo->texture();
+        else
+            textureIds[fboId] = 0;
     }
 
     void updateAllFBOs()

@@ -157,25 +157,35 @@ void SceneImpl::destroyGL()
     d->destroy();
 }
 
-void SceneImpl::drawStaticGL()
+bool SceneImpl::drawBackgroundGL()
+{
+    return false;
+}
+
+bool SceneImpl::drawStaticGL()
 {
     d->drawStaticFBO();
+    return true;
 }
 
-void SceneImpl::drawModelGL()
+bool SceneImpl::drawModelGL()
 {
+    return false;
 }
 
-void SceneImpl::drawEditingGL()
+bool SceneImpl::drawEditingGL()
 {
+    return false;
 }
 
-void SceneImpl::drawAnimationGL(qreal time)
+bool SceneImpl::drawAnimationGL(qreal time)
 {
     d->rotation = 90.0 * time;
     d->drawAnimationFBO();
+    return true;
 }
 
-void SceneImpl::drawOverlayGL()
+bool SceneImpl::drawOverlayGL()
 {
+    return false;
 }
