@@ -312,7 +312,7 @@ void GLWidget::drawViewport(GLViewport *viewport)
 {
     QRect vp = viewport->rect();
     const GLfloat left = vp.left();
-    const GLfloat bottom = height() - vp.bottom();
+    const GLfloat bottom = height() - vp.bottom() - 1;
     const GLfloat width = vp.width();
     const GLfloat height = vp.height();
     Q_ASSERT(0 < width);
