@@ -204,6 +204,7 @@ GLScene::IGLScene *GLWidget::currentScene() const
 
 void GLWidget::setCurrentScene(GLScene::IGLScene *scene)
 {
+    Q_UNUSED(scene);
     Q_ASSERT(false && "Not implemented yet");
 }
 
