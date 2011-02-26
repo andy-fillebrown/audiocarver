@@ -15,38 +15,41 @@
 **
 **************************************************************************/
 
-#ifndef IDATABASE_H
-#define IDATABASE_H
+#include "rootobject.h"
 
-#include <databaseplugin/database_global.h>
-
-#include <QtCore/QObject>
+using namespace Database;
+using namespace Database::Internal;
 
 namespace Database {
+namespace Internal {
 
-class Object;
-
-class DATABASE_EXPORT IDatabase : public QObject
+class RootObjectPrivate
 {
-    Q_OBJECT
-
 public:
-    IDatabase();
-    virtual ~IDatabase();
+    RootObject *q;
 
-    virtual const QString &fileExtension() const = 0;
-    virtual const QString &fileFilter() const = 0;
+    RootObjectPrivate(RootObject *q)
+        :   q(q)
+    {
+    }
 
-    virtual const QString &fileName() const = 0;
-
-    virtual void clear() = 0;
-    virtual void read(const QString &fileName) = 0;
-    virtual void write(const QString &fileName) = 0;
-
-    virtual Object *idToObject(quint64 id) = 0;
-    virtual quint64 nextId() = 0;
+    ~RootObjectPrivate()
+    {
+        q = 0;
+    }
 };
 
+} // namespace Internal
 } // namespace Database
 
-#endif // IDATABASE_H
+RootObject::RootObject(QObject *parent)
+    :   BaseClassT(parent)
+    ,   d(new RootObjectPrivate(this))
+{
+    Q_CHECK_PTR(d);
+}
+
+RootObject::~RootObject()
+{
+    delete d;  d = 0;
+}

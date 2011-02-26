@@ -15,38 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef IDATABASE_H
-#define IDATABASE_H
+#ifndef LINK_H
+#define LINK_H
 
-#include <databaseplugin/database_global.h>
-
-#include <QtCore/QObject>
+#include "object.h"
 
 namespace Database {
 
-class Object;
+namespace Internal {
+class LinkPrivate;
+} // namespace Internal
 
-class DATABASE_EXPORT IDatabase : public QObject
+class DATABASE_EXPORT Link : public Object
 {
+    typedef Object BaseClassT;
     Q_OBJECT
 
 public:
-    IDatabase();
-    virtual ~IDatabase();
+    Link(QObject *parent = 0);
+    virtual ~Link();
 
-    virtual const QString &fileExtension() const = 0;
-    virtual const QString &fileFilter() const = 0;
+    virtual bool isLink() const { return true; }
 
-    virtual const QString &fileName() const = 0;
+    quint64 linkId() const;
+    void setLinkId(quint64 id);
 
-    virtual void clear() = 0;
-    virtual void read(const QString &fileName) = 0;
-    virtual void write(const QString &fileName) = 0;
-
-    virtual Object *idToObject(quint64 id) = 0;
-    virtual quint64 nextId() = 0;
+private:
+    Q_DISABLE_COPY(Link)
+    Internal::LinkPrivate *d;
 };
 
 } // namespace Database
 
-#endif // IDATABASE_H
+Q_DECLARE_METATYPE(Database::Link*);
+
+#endif // LINK_H

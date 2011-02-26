@@ -15,38 +15,44 @@
 **
 **************************************************************************/
 
-#ifndef IDATABASE_H
-#define IDATABASE_H
+#include "link.h"
 
-#include <databaseplugin/database_global.h>
-
-#include <QtCore/QObject>
+using namespace Database;
+using namespace Database::Internal;
 
 namespace Database {
+namespace Internal {
 
-class Object;
-
-class DATABASE_EXPORT IDatabase : public QObject
+class LinkPrivate
 {
-    Q_OBJECT
-
 public:
-    IDatabase();
-    virtual ~IDatabase();
+    Link *q;
+    quint64 linkId;
 
-    virtual const QString &fileExtension() const = 0;
-    virtual const QString &fileFilter() const = 0;
+    LinkPrivate(Link *q)
+        :   q(q)
+        ,   linkId(0)
+    {
+    }
 
-    virtual const QString &fileName() const = 0;
-
-    virtual void clear() = 0;
-    virtual void read(const QString &fileName) = 0;
-    virtual void write(const QString &fileName) = 0;
-
-    virtual Object *idToObject(quint64 id) = 0;
-    virtual quint64 nextId() = 0;
+    ~LinkPrivate()
+    {
+        linkId = 0;
+        q = 0;
+    }
 };
 
+} // namespace Internal
 } // namespace Database
 
-#endif // IDATABASE_H
+Link::Link(QObject *parent)
+    :   BaseClassT(parent)
+    ,   d(new LinkPrivate(this))
+{
+    Q_CHECK_PTR(d);
+}
+
+Link::~Link()
+{
+    delete d;  d = 0;
+}
