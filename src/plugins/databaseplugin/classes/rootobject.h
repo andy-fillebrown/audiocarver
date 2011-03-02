@@ -22,43 +22,25 @@
 
 namespace Database {
 
-class Link;
-
-namespace Internal {
-class RootObjectPrivate;
-} // namespace Internal
-
 class DATABASE_EXPORT RootObject : public Object
 {
     typedef Object BaseClassT;
+
     Q_OBJECT
-    Q_PROPERTY(QString version READ version)
-    Q_PROPERTY(Object* options READ options)
 
 public:
     RootObject(QObject *parent = 0);
     virtual ~RootObject();
 
-    virtual QString version() const;
-    Object *options() const;
-
-    virtual QString &normalizeClassType(QString &type) const;
-
     virtual bool isRoot() const { return true; }
 
-    Object *createObject(const QString &className) const;
-    Object *findObject(quint64 id) const;
+    virtual QString &normalizeClassName(QString &className) const;
+    virtual QString getUniqueId(Object *object, const QString &idHint = QString()) const;
 
-    virtual bool variantIsObject(const QVariant &variant) const;
-    virtual Object *variantToObject(const QVariant &variant) const;
-    virtual QString variantToString(const QVariant &variant) const;
-    virtual QVariant stringToVariant(const QString &string, const QString &type) const;
-    QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const { return stringToVariant(stringRef.toString(), type); }
-    QVariant stringToVariant(const QVariant &variant, const QString &type) const { Q_ASSERT(variant.type() == QVariant::String);  return stringToVariant(variant.toString(), type); }
+    virtual Object *createObject(const QString &className) const;
 
 private:
     Q_DISABLE_COPY(RootObject)
-    Internal::RootObjectPrivate *d;
 };
 
 } // namespace Database

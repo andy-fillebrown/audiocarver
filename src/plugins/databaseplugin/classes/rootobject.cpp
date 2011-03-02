@@ -18,38 +18,70 @@
 #include "rootobject.h"
 
 using namespace Database;
-using namespace Database::Internal;
-
-namespace Database {
-namespace Internal {
-
-class RootObjectPrivate
-{
-public:
-    RootObject *q;
-
-    RootObjectPrivate(RootObject *q)
-        :   q(q)
-    {
-    }
-
-    ~RootObjectPrivate()
-    {
-        q = 0;
-    }
-};
-
-} // namespace Internal
-} // namespace Database
 
 RootObject::RootObject(QObject *parent)
     :   BaseClassT(parent)
-    ,   d(new RootObjectPrivate(this))
 {
-    Q_CHECK_PTR(d);
 }
 
 RootObject::~RootObject()
 {
-    delete d;  d = 0;
+}
+
+QString &RootObject::normalizeClassName(QString &className) const
+{
+    return className;
+}
+
+QString RootObject::getUniqueId(Object *object, const QString &idHint) const
+{
+    QString actualId = idHint;
+    if (actualId.isEmpty())
+        actualId = object->className();
+
+    bool idIsUsed = false;
+    QList<Object*> children = findChildren<Object*>();
+    foreach (Object *object, children)
+    {
+        Q_ASSERT(object);
+
+        if (object->id() == actualId) {
+            idIsUsed = true;
+            break;
+        }
+    }
+
+    if (!idIsUsed)
+        return actualId;
+
+    int lastIndexOfDot = actualId.lastIndexOf(".");
+    if (lastIndexOfDot != -1)
+        actualId = actualId.left(lastIndexOfDot);
+
+    int maxSuffix = 0;
+
+    foreach (Object *object, children) {
+        Q_ASSERT(object);
+
+        QString id = object->id();
+        if (id.startsWith(actualId)) {
+            int lastIndexOfDot = id.lastIndexOf(".");
+            if (lastIndexOfDot == -1)
+                continue;
+
+            QString preDotName = id.left(lastIndexOfDot);
+            if (actualId.startsWith(preDotName)) {
+                QString suffix = id.mid(lastIndexOfDot + 1);
+                maxSuffix = qMax(maxSuffix, suffix.toInt());
+            }
+        }
+    }
+
+    return actualId += QString(".%1").arg(maxSuffix + 1);
+}
+
+Object *RootObject::createObject(const QString &className) const
+{
+    Q_UNUSED(className);
+    return 0;
 }

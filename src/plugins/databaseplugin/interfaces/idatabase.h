@@ -42,9 +42,6 @@ public:
     virtual void clear() = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
-
-    virtual Object *idToObject(quint64 id) = 0;
-    virtual quint64 nextId() = 0;
 };
 
 } // namespace Database

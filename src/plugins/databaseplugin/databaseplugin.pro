@@ -11,7 +11,6 @@ DEFINES += DATABASE_LIBRARY
 HEADERS += \
     interfaces/idatabase.h \
     \
-    classes/link.h \
     classes/object.h \
     classes/rootobject.h \
     \
@@ -21,7 +20,6 @@ HEADERS += \
 SOURCES += \
     interfaces/idatabase.cpp \
     \
-    classes/link.cpp \
     classes/object.cpp \
     classes/rootobject.cpp \
     \

@@ -22,50 +22,36 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_NAMESPACE
+class QXmlStreamReader;
+class QXmlStreamWriter;
+QT_END_NAMESPACE
+
 namespace Database {
 
 class RootObject;
 
-namespace Internal {
-class ObjectPrivate;
-} // namespace Internal
-
 class DATABASE_EXPORT Object : public QObject
 {
     typedef QObject BaseClassT;
+
     Q_OBJECT
 
 public:
     Object(QObject *parent = 0);
     virtual ~Object();
 
-    virtual QString classType() const;
-    virtual bool isLink() const { return false; }
+    virtual QString className() const;
     virtual bool isRoot() const { return false; }
 
-    bool hasRoot() const { return root() != 0; }
     virtual RootObject *root() const;
 
-    quint64 id() const;
-    void setId(quint64 id);
+    QString id() const { return objectName(); }
+    virtual void setId(const QString &id);
 
-    bool isErased() const;
+    bool isErased() const { return id().startsWith("~"); }
     virtual void erase();
     virtual void unerase();
-
-    Object *owner() const;
-    void setOwner(Object *owner);
-
-    int objectCount() const;
-    Object *objectAt(int i) const;
-    int indexOfObject(Object *object) const;
-    void appendObject(Object *object);
-    Object *takeObject(int i);
-
-    virtual void insertObject(int i, Object *object);
-    virtual void removeObject(int i);
-    virtual void removeAllObjects();
-    virtual void moveObject(int from, int to);
 
     int propertyCount() const;
     int propertyIndex(const QString &name) const;
@@ -75,21 +61,22 @@ public:
     void setPropertyValue(int i, const QVariant &value);
     template<typename T> T propertyValue(int i) const { return qVariantValue<T>(propertyValue(i)); }
 
+    virtual Object *ioParent(QXmlStreamReader &in) const;
+    virtual bool read(QXmlStreamReader &in);
+    virtual void write(QXmlStreamWriter &out) const;
+    virtual void update(bool recursive = false);
+
 signals:
-    void idChanged(quint64 from, quint64 to, Object *object = 0);
+    void childAdded(Object *child, Object *parent);
+    void childRemoved(Object *child, Object *parent);
 
     void erased(Object *object = 0);
     void unerased(Object *object = 0);
-
-    void objectAdded(int i, Object *owner);
-    void objectRemoved(int i, Object *owner);
-    void objectMoved(int from, int to, Object *owner);
 
     void propertyChanged(int index, Object *object = 0);
 
 private:
     Q_DISABLE_COPY(Object)
-    Internal::ObjectPrivate *d;
 };
 
 } // namespace Database
