@@ -31,7 +31,6 @@ class GLViewport;
 class GLWidgetSplit;
 
 namespace Internal {
-class GLWidgetDrawThread;
 class GLWidgetPrivate;
 } // namespace Internal
 
@@ -66,7 +65,6 @@ public slots:
 
 protected:
     friend class GLViewport;
-    friend class Internal::GLWidgetDrawThread;
 
     virtual void drawViewport(GLViewport *viewport);
 
