@@ -17,6 +17,8 @@
 
 #include "rootobject.h"
 
+#include <QtCore/QMetaType>
+
 using namespace Database;
 
 RootObject::RootObject(QObject *parent)
@@ -84,4 +86,27 @@ Object *RootObject::createObject(const QString &className) const
 {
     Q_UNUSED(className);
     return 0;
+}
+
+QString RootObject::variantToString(const QVariant &variant) const
+{
+    int type = variant.type();
+    if (type == QVariant::Double || type == QMetaType::Float) {
+        QString s = QString("%1").arg(variant.toDouble(), 0, 'f', 6);
+        while (s.contains(".") && s.endsWith("0"))
+            s.chop(1);
+        if (s.endsWith("."))
+            s.chop(1);
+        return s;
+    }
+    if (variant.type() == QVariant::Bool)
+        return variant.toBool() ? "1" : "0";
+    return variant.toString();
+}
+
+QVariant RootObject::stringToVariant(const QString &string, const QString &type) const
+{
+    if (type == "Bool")
+        return QVariant(string == "1");
+    return QVariant(string);
 }

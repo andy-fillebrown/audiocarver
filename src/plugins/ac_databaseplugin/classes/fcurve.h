@@ -36,6 +36,7 @@ public:
     FCurve(QObject *parent = 0);
     virtual ~FCurve();
 
+    const QList<FPoint> &points() const;
     int pointCount() const;
     const FPoint &pointAt(int i) const;
     void setPointAt(const FPoint &point, int i);
@@ -43,6 +44,9 @@ public:
     void appendPoint(const FPoint &point);
     void removePoint(const FPoint &point);
     void removePoint(int i);
+
+    virtual bool read(QXmlStreamReader &in);
+    virtual void write(QXmlStreamWriter &out) const;
 
 private:
     Internal::FCurvePrivate *d;

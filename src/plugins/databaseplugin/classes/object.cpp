@@ -183,7 +183,7 @@ bool Object::read(QXmlStreamReader &in)
             setPropertyValue(i, QVariant::fromValue(object));
         }
         else
-            setPropertyValue(i, att.value().toString());
+            setPropertyValue(i, root->stringToVariant(att.value(), type));
     }
 
     // Read lists.
@@ -242,6 +242,9 @@ bool Object::read(QXmlStreamReader &in)
   */
 void Object::write(QXmlStreamWriter &out) const
 {
+    RootObject *root = this->root();
+    Q_ASSERT(root);
+
     out.writeStartElement(className());
 
     // Write properties.
@@ -263,7 +266,7 @@ void Object::write(QXmlStreamWriter &out) const
         QString name = propertyName(i);
         if (name == "objectName")
             name = "id";
-        out.writeAttribute(name, value.toString());
+        out.writeAttribute(name, root->variantToString(value));
     }
 
     // Write lists.

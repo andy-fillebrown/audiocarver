@@ -27,9 +27,13 @@ class TrackPrivate
 {
 public:
     Database::ObjectList *notes;
+    bool visible;
+    qreal volume;
 
     TrackPrivate()
         :   notes(new Database::ObjectList)
+        ,   visible(true)
+        ,   volume(0.999999)
     {
         Q_CHECK_PTR(notes);
     }
@@ -53,6 +57,38 @@ Track::Track(QObject *parent)
 Track::~Track()
 {
     delete d;  d = 0;
+}
+
+bool Track::isVisible() const
+{
+    return d->visible;
+}
+
+void Track::setVisibility(bool visible)
+{
+    if (visible && isVisible())
+        return;
+
+    d->visible = visible;
+
+    emit propertyChanged(propertyIndex("visible"), this);
+}
+
+qreal Track::volume() const
+{
+    return d->volume;
+}
+
+void Track::setVolume(qreal volume)
+{
+    volume = qBound(0.0, volume, 1.0);
+
+    if (volume == d->volume)
+        return;
+
+    d->volume = volume;
+
+    emit propertyChanged(propertyIndex("volume"), this);
 }
 
 Database::ObjectList *Track::notes() const

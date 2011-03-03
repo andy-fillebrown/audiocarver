@@ -47,13 +47,18 @@ public:
         track->setParent(score);
         score->tracks()->append(track);
 
-        Database::Object *pitchCurve = score->createObject("FCurve");
+        FCurve *pitchCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
         pitchCurve->setParent(score);
         score->curves()->append(pitchCurve);
+        pitchCurve->appendPoint(FPoint(0.000001, 0));
+        pitchCurve->appendPoint(FPoint(1, 1));
 
-        Database::Object *volumeCurve = score->createObject("FCurve");
+        FCurve *volumeCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
         volumeCurve->setParent(score);
         score->curves()->append(volumeCurve);
+        volumeCurve->appendPoint(FPoint(0, 0));
+        volumeCurve->appendPoint(FPoint(0.5, 1, true));
+        volumeCurve->appendPoint(FPoint(1, 0));
 
         Note *note = qobject_cast<Note*>(score->createObject("Note"));
         note->setParent(track);

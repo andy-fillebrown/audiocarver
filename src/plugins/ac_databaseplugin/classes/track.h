@@ -31,10 +31,18 @@ class Track : public Database::Object
     Q_OBJECT
 
     Q_PROPERTY(Database::ObjectList* notes READ notes)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
+    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
 public:
     Track(QObject *parent = 0);
     virtual ~Track();
+
+    bool isVisible() const;
+    void setVisibility(bool visible);
+
+    qreal volume() const;
+    void setVolume(qreal volume);
 
     Database::ObjectList *notes() const;
 

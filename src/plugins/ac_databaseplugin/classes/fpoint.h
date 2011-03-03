@@ -38,11 +38,18 @@ public:
     bool isCurvePoint() const { return curvep; }
     void setCurvePoint(bool curve) { curvep = curve; }
 
+    friend inline bool operator==(const FPoint &a, const FPoint &b);
+
 private:
     float xp;
     float yp;
     bool curvep;
 };
+
+inline bool operator==(const FPoint &a, const FPoint &b)
+{
+    return a.curvep == b.curvep && qFuzzyIsNull(a.xp - a.xp) && qFuzzyIsNull(a.yp - a.yp);
+}
 
 } // namespace AudioCarver
 

@@ -37,6 +37,11 @@ public:
 
     virtual Object *createObject(const QString &className) const;
 
+    virtual QString variantToString(const QVariant &variant) const;
+    virtual QVariant stringToVariant(const QString &string, const QString &type) const;
+    QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const { return stringToVariant(stringRef.toString(), type); }
+    QVariant stringToVariant(const QVariant &variant, const QString &type) const { Q_ASSERT(variant.type() == QVariant::String);  return stringToVariant(variant.toString(), type); }
+
 private:
     Q_DISABLE_COPY(RootObject)
 };
