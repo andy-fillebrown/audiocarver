@@ -51,7 +51,7 @@ public:
 } // namespace AudioCarver
 
 Score::Score(QObject *parent)
-    :   RootObject(parent)
+    :   Root(parent)
     ,   d(new ScorePrivate)
 {
     Q_CHECK_PTR(d);

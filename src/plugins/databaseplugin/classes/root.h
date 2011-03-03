@@ -15,20 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef ROOTOBJECT_H
-#define ROOTOBJECT_H
+#ifndef ROOT_H
+#define ROOT_H
 
 #include "object.h"
 
 namespace Database {
 
-class DATABASE_EXPORT RootObject : public Object
+class DATABASE_EXPORT Root : public Object
 {
     Q_OBJECT
 
 public:
-    RootObject(QObject *parent = 0);
-    virtual ~RootObject();
+    Root(QObject *parent = 0);
+    virtual ~Root();
 
     virtual bool isRoot() const { return true; }
 
@@ -43,9 +43,9 @@ public:
     QVariant stringToVariant(const QVariant &variant, const QString &type) const { Q_ASSERT(variant.type() == QVariant::String);  return stringToVariant(variant.toString(), type); }
 
 private:
-    Q_DISABLE_COPY(RootObject)
+    Q_DISABLE_COPY(Root)
 };
 
 } // namespace Database
 
-#endif // ROOTOBJECT_H
+#endif // ROOT_H

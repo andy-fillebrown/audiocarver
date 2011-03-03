@@ -18,7 +18,7 @@
 #ifndef AC_SCORE_H
 #define AC_SCORE_H
 
-#include <databaseplugin/classes/rootobject.h>
+#include <databaseplugin/classes/root.h>
 
 namespace AudioCarver {
 
@@ -26,7 +26,7 @@ namespace Internal {
 class ScorePrivate;
 } // namespace Internal
 
-class Score : public Database::RootObject
+class Score : public Database::Root
 {
     Q_OBJECT
 

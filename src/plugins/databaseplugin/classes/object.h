@@ -29,7 +29,7 @@ QT_END_NAMESPACE
 
 namespace Database {
 
-class RootObject;
+class Root;
 
 class DATABASE_EXPORT Object : public QObject
 {
@@ -42,7 +42,7 @@ public:
     virtual QString className() const;
     virtual bool isRoot() const { return false; }
 
-    virtual RootObject *root() const;
+    virtual Root *root() const;
 
     QString id() const { return objectName(); }
     virtual void setId(const QString &id = "");

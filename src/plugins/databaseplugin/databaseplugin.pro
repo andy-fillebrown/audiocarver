@@ -12,7 +12,7 @@ HEADERS += \
     interfaces/idatabase.h \
     \
     classes/object.h \
-    classes/rootobject.h \
+    classes/root.h \
     \
     database_global.h \
     databaseplugin.h
@@ -21,6 +21,6 @@ SOURCES += \
     interfaces/idatabase.cpp \
     \
     classes/object.cpp \
-    classes/rootobject.cpp \
+    classes/root.cpp \
     \
     databaseplugin.cpp

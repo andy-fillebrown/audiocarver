@@ -16,8 +16,8 @@
 **************************************************************************/
 
 #include "object.h"
-#include "rootobject.h"
 
+#include "root.h"
 #include <QtCore/QChildEvent>
 #include <QtCore/QMetaProperty>
 #include <QtCore/QVariant>
@@ -41,10 +41,10 @@ QString Object::className() const
     return root()->normalizeClassName(className);
 }
 
-RootObject *Object::root() const
+Root *Object::root() const
 {
     if (this->isRoot())
-        return qobject_cast<RootObject*>(const_cast<Object*>(this));
+        return qobject_cast<Root*>(const_cast<Object*>(this));
 
     Object *parent = qobject_cast<Object*>(this->parent());
     if (parent)
@@ -58,7 +58,7 @@ void Object::setId(const QString &id)
     if (this->id() == id && !id.isEmpty())
         return;
 
-    RootObject *root = this->root();
+    Root *root = this->root();
 
     if (root && !id.startsWith("~"))
         setObjectName(root->getUniqueId(this, id));
@@ -158,7 +158,7 @@ Object *Object::ioParent(QXmlStreamReader &in) const
   */
 bool Object::read(QXmlStreamReader &in)
 {
-    RootObject *root = this->root();
+    Root *root = this->root();
     Q_ASSERT(root);
 
     Q_ASSERT(in.name() == className());
@@ -242,7 +242,7 @@ bool Object::read(QXmlStreamReader &in)
   */
 void Object::write(QXmlStreamWriter &out) const
 {
-    RootObject *root = this->root();
+    Root *root = this->root();
     Q_ASSERT(root);
 
     out.writeStartElement(className());

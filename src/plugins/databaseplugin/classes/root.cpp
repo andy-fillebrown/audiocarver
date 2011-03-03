@@ -15,27 +15,27 @@
 **
 **************************************************************************/
 
-#include "rootobject.h"
+#include "root.h"
 
 #include <QtCore/QMetaType>
 
 using namespace Database;
 
-RootObject::RootObject(QObject *parent)
+Root::Root(QObject *parent)
     :   Object(parent)
 {
 }
 
-RootObject::~RootObject()
+Root::~Root()
 {
 }
 
-QString &RootObject::normalizeClassName(QString &className) const
+QString &Root::normalizeClassName(QString &className) const
 {
     return className;
 }
 
-QString RootObject::getUniqueId(Object *object, const QString &idHint) const
+QString Root::getUniqueId(Object *object, const QString &idHint) const
 {
     QString actualId = idHint;
     if (actualId.isEmpty())
@@ -82,13 +82,13 @@ QString RootObject::getUniqueId(Object *object, const QString &idHint) const
     return actualId += QString(".%1").arg(maxSuffix + 1);
 }
 
-Object *RootObject::createObject(const QString &className) const
+Object *Root::createObject(const QString &className) const
 {
     Q_UNUSED(className);
     return 0;
 }
 
-QString RootObject::variantToString(const QVariant &variant) const
+QString Root::variantToString(const QVariant &variant) const
 {
     int type = variant.type();
     if (type == QVariant::Double || type == QMetaType::Float) {
@@ -104,7 +104,7 @@ QString RootObject::variantToString(const QVariant &variant) const
     return variant.toString();
 }
 
-QVariant RootObject::stringToVariant(const QString &string, const QString &type) const
+QVariant Root::stringToVariant(const QString &string, const QString &type) const
 {
     if (type == "Bool")
         return QVariant(string == "1");

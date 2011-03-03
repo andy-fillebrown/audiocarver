@@ -17,7 +17,7 @@
 
 #include "fcurve.h"
 
-#include <databaseplugin/classes/rootobject.h>
+#include <databaseplugin/classes/root.h>
 
 #include <QtCore/QXmlStreamReader>
 #include <QtCore/QXmlStreamWriter>
@@ -159,7 +159,7 @@ bool FCurve::read(QXmlStreamReader &in)
 
 void FCurve::write(QXmlStreamWriter &out) const
 {
-    Database::RootObject *root = this->root();
+    Database::Root *root = this->root();
     Q_ASSERT(root);
 
     out.writeStartElement(className());
