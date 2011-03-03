@@ -17,7 +17,9 @@
 
 #include "object.h"
 
+#include "list.h"
 #include "root.h"
+
 #include <QtCore/QChildEvent>
 #include <QtCore/QMetaProperty>
 #include <QtCore/QVariant>
@@ -174,7 +176,7 @@ bool Object::read(QXmlStreamReader &in)
         const int i = propertyIndex(name);
         QString type = propertyType(i);
 
-        if (type == "ObjectList*")
+        if (type == "Database::List*")
             continue;
 
         if (type.endsWith("*")) {
@@ -192,16 +194,15 @@ bool Object::read(QXmlStreamReader &in)
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
 
-        if (type != "Database::ObjectList*")
+        if (type != "Database::List*")
             continue;
 
-        ObjectList *list = propertyValue(i).value<ObjectList*>();
+        List *list = propertyValue(i).value<List*>();
         Q_ASSERT(list);
         if (!list)
             return false;
 
-        qDeleteAll(*list);
-        list->clear();
+        list->deleteAll();
 
         while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
 
@@ -253,7 +254,7 @@ void Object::write(QXmlStreamWriter &out) const
     for (int i = 0;  i < count;  ++i) {
         QString type = propertyType(i);
 
-        if (type == "Database::ObjectList*")
+        if (type == "Database::List*")
             continue;
 
         QVariant value = propertyValue(i);
@@ -273,11 +274,11 @@ void Object::write(QXmlStreamWriter &out) const
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
 
-        if (type != "Database::ObjectList*")
+        if (type != "Database::List*")
             continue;
 
         QVariant value = propertyValue(i);
-        ObjectList *list = value.value<ObjectList*>();
+        List *list = value.value<List*>();
 
         out.writeStartElement(propertyName(i));
 

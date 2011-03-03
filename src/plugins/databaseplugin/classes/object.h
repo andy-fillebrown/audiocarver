@@ -29,6 +29,7 @@ QT_END_NAMESPACE
 
 namespace Database {
 
+class List;
 class Root;
 
 class DATABASE_EXPORT Object : public QObject
@@ -64,10 +65,9 @@ public:
     virtual void write(QXmlStreamWriter &out) const;
     virtual void update(bool recursive = false);
 
-signals:
-    void childAdded(Object *child, Object *parent);
-    void childRemoved(Object *child, Object *parent);
+    friend class List;
 
+signals:
     void erased(Object *object = 0);
     void unerased(Object *object = 0);
 
@@ -80,11 +80,8 @@ private:
     Q_DISABLE_COPY(Object)
 };
 
-typedef QList<Object*> ObjectList;
-
 } // namespace Database
 
 Q_DECLARE_METATYPE(Database::Object*);
-Q_DECLARE_METATYPE(Database::ObjectList*);
 
 #endif // OBJECT_H

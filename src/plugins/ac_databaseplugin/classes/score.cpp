@@ -29,12 +29,12 @@ namespace Internal {
 class ScorePrivate
 {
 public:
-    Database::ObjectList *curves;
-    Database::ObjectList *tracks;
+    Database::List *curves;
+    Database::List *tracks;
 
-    ScorePrivate()
-        :   curves(new Database::ObjectList)
-        ,   tracks(new Database::ObjectList)
+    ScorePrivate(Score *q)
+        :   curves(new Database::List(q, q->propertyIndex("curves")))
+        ,   tracks(new Database::List(q, q->propertyIndex("tracks")))
     {
         Q_CHECK_PTR(curves);
         Q_CHECK_PTR(tracks);
@@ -52,7 +52,7 @@ public:
 
 Score::Score(QObject *parent)
     :   Root(parent)
-    ,   d(new ScorePrivate)
+    ,   d(new ScorePrivate(this))
 {
     Q_CHECK_PTR(d);
 }
@@ -81,12 +81,12 @@ Database::Object *Score::createObject(const QString &className) const
     return 0;
 }
 
-Database::ObjectList *Score::curves() const
+Database::List *Score::curves() const
 {
     return d->curves;
 }
 
-Database::ObjectList *Score::tracks() const
+Database::List *Score::tracks() const
 {
     return d->tracks;
 }

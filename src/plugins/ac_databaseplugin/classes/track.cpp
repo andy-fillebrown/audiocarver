@@ -26,12 +26,12 @@ namespace Internal {
 class TrackPrivate
 {
 public:
-    Database::ObjectList *notes;
+    Database::List *notes;
     bool visible;
     qreal volume;
 
-    TrackPrivate()
-        :   notes(new Database::ObjectList)
+    TrackPrivate(Track *q)
+        :   notes(new Database::List(q, q->propertyIndex("notes")))
         ,   visible(true)
         ,   volume(0.999999)
     {
@@ -49,7 +49,7 @@ public:
 
 Track::Track(QObject *parent)
     :   Object(parent)
-    ,   d(new TrackPrivate)
+    ,   d(new TrackPrivate(this))
 {
     Q_CHECK_PTR(d);
 }
@@ -91,7 +91,7 @@ void Track::setVolume(qreal volume)
     emit propertyChanged(propertyIndex("volume"), this);
 }
 
-Database::ObjectList *Track::notes() const
+Database::List *Track::notes() const
 {
     return d->notes;
 }

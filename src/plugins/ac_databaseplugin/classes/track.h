@@ -18,7 +18,7 @@
 #ifndef AC_TRACK_H
 #define AC_TRACK_H
 
-#include <databaseplugin/classes/object.h>
+#include <databaseplugin/classes/list.h>
 
 namespace AudioCarver {
 
@@ -30,7 +30,7 @@ class Track : public Database::Object
 {
     Q_OBJECT
 
-    Q_PROPERTY(Database::ObjectList* notes READ notes)
+    Q_PROPERTY(Database::List* notes READ notes)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
@@ -44,7 +44,7 @@ public:
     qreal volume() const;
     void setVolume(qreal volume);
 
-    Database::ObjectList *notes() const;
+    Database::List *notes() const;
 
 private:
     Q_DISABLE_COPY(Track)

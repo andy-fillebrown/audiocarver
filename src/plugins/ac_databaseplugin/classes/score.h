@@ -30,8 +30,8 @@ class Score : public Database::Root
 {
     Q_OBJECT
 
-    Q_PROPERTY(Database::ObjectList* curves READ curves)
-    Q_PROPERTY(Database::ObjectList* tracks READ tracks)
+    Q_PROPERTY(Database::List* curves READ curves)
+    Q_PROPERTY(Database::List* tracks READ tracks)
 
 public:
     Score(QObject *parent = 0);
@@ -41,8 +41,8 @@ public:
 
     virtual Database::Object *createObject(const QString &className) const;
 
-    Database::ObjectList *curves() const;
-    Database::ObjectList *tracks() const;
+    Database::List *curves() const;
+    Database::List *tracks() const;
 
 private:
     Q_DISABLE_COPY(Score)
