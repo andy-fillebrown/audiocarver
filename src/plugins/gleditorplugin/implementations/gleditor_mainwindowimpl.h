@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2010 Andrew Fillebrown.
+** Copyright (c) 2011 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **

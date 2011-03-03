@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>(C) 2008-2010 Andrew Fillebrown</string>
+	<string>(C) 2008-2011 Andrew Fillebrown</string>
 	<key>CFBundleIconFile</key>
 	<string>@ICON@</string>
 	<key>CFBundlePackageType</key>

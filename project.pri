@@ -8,7 +8,7 @@ PRO_VERSION        = 1.0.0
 PRO_AUTHOR         = Andrew Fillebrown
 PRO_AUTHOR_NOSPACE = AndyFillebrown
 PRO_AUTHOR_EMAIL   = andy.fillebrown@gmail.com
-PRO_YEAR           = 2010
+PRO_YEAR           = 2011
 PRO_URL            = http://audiosculptures.com
 
 DEFINES *= PRO_NAME_STR=\\\"$$PRO_NAME\\\"
