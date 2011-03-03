@@ -18,6 +18,7 @@
 #include "object.h"
 #include "rootobject.h"
 
+#include <QtCore/QChildEvent>
 #include <QtCore/QMetaProperty>
 #include <QtCore/QVariant>
 #include <QtCore/QXmlStreamReader>
@@ -26,7 +27,7 @@
 using namespace Database;
 
 Object::Object(QObject *parent)
-    :   BaseClassT(parent)
+    :   QObject(parent)
 {
 }
 
@@ -54,9 +55,11 @@ RootObject *Object::root() const
 
 void Object::setId(const QString &id)
 {
-    if (this->id() == id || id.isEmpty())
+    if (this->id() == id && !id.isEmpty())
         return;
+
     RootObject *root = this->root();
+
     if (root && !id.startsWith("~"))
         setObjectName(root->getUniqueId(this, id));
     else
@@ -81,6 +84,7 @@ void Object::unerase()
         return;
 
     QString id = this->id();
+
     if (id.at(0) == '~')
         id.remove(0, 1);
     setId(id);
@@ -117,7 +121,7 @@ QString Object::propertyType(int i) const
   */
 QString Object::propertyName(int i) const
 {
-    return QString( metaObject()->property(i).name());
+    return QString(metaObject()->property(i).name());
 }
 
 /*!
@@ -142,8 +146,10 @@ void Object::setPropertyValue(int i, const QVariant &value)
 Object *Object::ioParent(QXmlStreamReader &in) const
 {
     Object *root = this->root();
+
     if (!root || root == this)
         return 0;
+
     return root->ioParent(in);
 }
 
@@ -161,12 +167,17 @@ bool Object::read(QXmlStreamReader &in)
     QXmlStreamAttributes atts = in.attributes();
 
     foreach (QXmlStreamAttribute att, atts) {
-        const int i = propertyIndex(att.name().toString());
-        QString propertyName = this->propertyName(i);
+        QString name = att.name().toString();
+        if (name == "id")
+            name = "objectName";
 
-        if (propertyName.endsWith("*")) {
-            RootObject *root = this->root();
-            Q_ASSERT(root);
+        const int i = propertyIndex(name);
+        QString type = propertyType(i);
+
+        if (type == "ObjectList*")
+            continue;
+
+        if (type.endsWith("*")) {
             Object *object = root->findChild<Object*>(att.value().toString());
             Q_ASSERT(object);
             setPropertyValue(i, QVariant::fromValue(object));
@@ -175,28 +186,51 @@ bool Object::read(QXmlStreamReader &in)
             setPropertyValue(i, att.value().toString());
     }
 
-    // Read children.
-    while (!in.atEnd()) {
-        QXmlStreamReader::TokenType tokenType = in.readNext();
+    // Read lists.
+    const int count = propertyCount();
 
-        if (tokenType == QXmlStreamReader::Characters)
+    for (int i = 1;  i < count;  ++i) {
+        QString type = propertyType(i);
+
+        if (type != "Database::ObjectList*")
             continue;
 
-        const QString currentClassName = in.name().toString();
+        ObjectList *list = propertyValue(i).value<ObjectList*>();
+        Q_ASSERT(list);
+        if (!list)
+            return false;
 
-        if (tokenType == QXmlStreamReader::EndElement && currentClassName == className())
-            return true;
+        qDeleteAll(*list);
+        list->clear();
 
-        if (tokenType == QXmlStreamReader::StartElement) {
-            Object *object = root->createObject(currentClassName);
-            Q_ASSERT(object);
-            if (!object)
-                return false;
+        while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
 
-            object->setParent(this);
+        QString currentListName = in.name().toString();
 
-            if (!object->read(in))
-                return false;
+        while (!in.atEnd()) {
+            QXmlStreamReader::TokenType tokenType = in.readNext();
+
+            if (tokenType == QXmlStreamReader::Characters)
+                continue;
+
+            const QString currentClassName = in.name().toString();
+
+            if (tokenType == QXmlStreamReader::EndElement && currentClassName == currentListName)
+                break;
+
+            if (tokenType == QXmlStreamReader::StartElement) {
+                Object *object = root->createObject(currentClassName);
+                Q_ASSERT(object);
+                if (!object)
+                    return false;
+
+                object->setParent(this);
+
+                if (!object->read(in))
+                    return false;
+
+                list->append(object);
+            }
         }
     }
 
@@ -208,30 +242,46 @@ bool Object::read(QXmlStreamReader &in)
   */
 void Object::write(QXmlStreamWriter &out) const
 {
-    RootObject *root = this->root();
-    Q_ASSERT(root);
-
     out.writeStartElement(className());
 
     // Write properties.
-    const int propertyCount = this->propertyCount();
-    for (int i = 1;  i < propertyCount;  ++i) {
-        QString name = propertyName(i);
+    const int count = this->propertyCount();
+
+    for (int i = 0;  i < count;  ++i) {
+        QString type = propertyType(i);
+
+        if (type == "Database::ObjectList*")
+            continue;
+
         QVariant value = propertyValue(i);
 
-        if (propertyName(i).endsWith("*")) {
+        if (type.endsWith("*")) {
             Object *object = value.value<Object*>();
             value = object->id();
         }
+
+        QString name = propertyName(i);
+        if (name == "objectName")
+            name = "id";
         out.writeAttribute(name, value.toString());
     }
 
-    // Write children.
-    const QObjectList &children = this->children();
-    foreach (QObject *child, children) {
-        Object *object = qobject_cast<Object*>(child);
-        if (object)
-            object->write(out);
+    // Write lists.
+    for (int i = 1;  i < count;  ++i) {
+        QString type = propertyType(i);
+
+        if (type != "Database::ObjectList*")
+            continue;
+
+        QVariant value = propertyValue(i);
+        ObjectList *list = value.value<ObjectList*>();
+
+        out.writeStartElement(propertyName(i));
+
+        for (int i = 0;  i < list->count();  ++i)
+            list->at(i)->write(out);
+
+        out.writeEndElement();
     }
 
     out.writeEndElement();
@@ -251,5 +301,14 @@ void Object::update(bool recursive)
         Object *object = qobject_cast<Object*>(child);
         if (object)
             object->update(recursive);
+    }
+}
+
+void Object::childEvent(QChildEvent *event)
+{
+    if (event->type() == QChildEvent::ChildAdded) {
+        Object *object = qobject_cast<Object*>(event->child());
+        if (object)
+            object->setId();
     }
 }

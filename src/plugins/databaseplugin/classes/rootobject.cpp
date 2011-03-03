@@ -20,7 +20,7 @@
 using namespace Database;
 
 RootObject::RootObject(QObject *parent)
-    :   BaseClassT(parent)
+    :   Object(parent)
 {
 }
 
@@ -37,7 +37,7 @@ QString RootObject::getUniqueId(Object *object, const QString &idHint) const
 {
     QString actualId = idHint;
     if (actualId.isEmpty())
-        actualId = object->className();
+        actualId = object->className() + ".1";
 
     bool idIsUsed = false;
     QList<Object*> children = findChildren<Object*>();

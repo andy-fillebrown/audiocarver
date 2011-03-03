@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "fcurve.h"
+#include "track.h"
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
@@ -23,18 +23,39 @@ using namespace AudioCarver::Internal;
 namespace AudioCarver {
 namespace Internal {
 
-class FCurvePrivate
+class TrackPrivate
 {
+public:
+    Database::ObjectList *notes;
+
+    TrackPrivate()
+        :   notes(new Database::ObjectList)
+    {
+        Q_CHECK_PTR(notes);
+    }
+
+    ~TrackPrivate()
+    {
+        delete notes;  notes = 0;
+    }
 };
 
 } // namespace Internal
 } // namespace AudioCarver
 
-FCurve::FCurve(QObject *parent)
-    :   Database::Object(parent)
+Track::Track(QObject *parent)
+    :   Object(parent)
+    ,   d(new TrackPrivate)
 {
+    Q_CHECK_PTR(d);
 }
 
-FCurve::~FCurve()
+Track::~Track()
 {
+    delete d;  d = 0;
+}
+
+Database::ObjectList *Track::notes() const
+{
+    return d->notes;
 }

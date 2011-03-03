@@ -17,6 +17,14 @@
 
 #include "database.h"
 
+#include <classes/note.h>
+#include <classes/score.h>
+#include <classes/track.h>
+
+#include <QtCore/QFile>
+#include <QtCore/QXmlStreamReader>
+#include <QtCore/QXmlStreamWriter>
+
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
@@ -27,14 +35,36 @@ class DatabaseImplPrivate
 {
 public:
     DatabaseImpl *q;
+    Score *score;
 
     DatabaseImplPrivate(DatabaseImpl *q)
         :   q(q)
+        ,   score(new Score(q))
     {
+        Q_CHECK_PTR(score);
+
+        Track* track = qobject_cast<Track*>(score->createObject("Track"));
+        track->setParent(score);
+        score->tracks()->append(track);
+
+        Database::Object *pitchCurve = score->createObject("FCurve");
+        pitchCurve->setParent(score);
+        score->curves()->append(pitchCurve);
+
+        Database::Object *volumeCurve = score->createObject("FCurve");
+        volumeCurve->setParent(score);
+        score->curves()->append(volumeCurve);
+
+        Note *note = qobject_cast<Note*>(score->createObject("Note"));
+        note->setParent(track);
+        track->notes()->append(note);
+        note->setPitchCurve(pitchCurve);
+        note->setVolumeCurve(volumeCurve);
     }
 
     ~DatabaseImplPrivate()
     {
+        score = 0;
         q = 0;
     }
 };
@@ -76,10 +106,25 @@ void DatabaseImpl::clear()
 
 void DatabaseImpl::read(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly))
+        return;
+
+    QXmlStreamReader in(&file);
+    while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
+    d->score->read(in);
 }
 
 void DatabaseImpl::write(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    QFile file(fileName);
+    if (!file.open(QFile::WriteOnly))
+        return;
+
+    QXmlStreamWriter out(&file);
+    out.setAutoFormatting(true);
+
+    d->score->write(out);
+
+    file.write("\n");
 }

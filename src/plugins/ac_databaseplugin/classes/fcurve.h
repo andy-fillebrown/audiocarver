@@ -20,7 +20,7 @@
 
 #include "fpoint.h"
 
-#include <QObject>
+#include <databaseplugin/classes/object.h>
 
 namespace AudioCarver {
 
@@ -28,12 +28,12 @@ namespace Internal {
 class FCurvePrivate;
 } // namespace Internal
 
-class FCurve : public QObject
+class FCurve : public Database::Object
 {
     Q_OBJECT
 
 public:
-    FCurve();
+    FCurve(QObject *parent = 0);
     virtual ~FCurve();
 
     int pointCount() const;
@@ -49,7 +49,5 @@ private:
 };
 
 } // namespace AudioCarver
-
-Q_DECLARE_METATYPE(AudioCarver::FCurve*);
 
 #endif // AC_FCURVE_H

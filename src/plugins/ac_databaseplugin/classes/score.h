@@ -15,26 +15,40 @@
 **
 **************************************************************************/
 
-#include "fcurve.h"
+#ifndef AC_SCORE_H
+#define AC_SCORE_H
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
+#include <databaseplugin/classes/rootobject.h>
 
 namespace AudioCarver {
-namespace Internal {
 
-class FCurvePrivate
+namespace Internal {
+class ScorePrivate;
+} // namespace Internal
+
+class Score : public Database::RootObject
 {
+    Q_OBJECT
+
+    Q_PROPERTY(Database::ObjectList* curves READ curves)
+    Q_PROPERTY(Database::ObjectList* tracks READ tracks)
+
+public:
+    Score(QObject *parent = 0);
+    virtual ~Score();
+
+    virtual QString &normalizeClassName(QString &className) const;
+
+    virtual Database::Object *createObject(const QString &className) const;
+
+    Database::ObjectList *curves() const;
+    Database::ObjectList *tracks() const;
+
+private:
+    Q_DISABLE_COPY(Score)
+    Internal::ScorePrivate *d;
 };
 
-} // namespace Internal
 } // namespace AudioCarver
 
-FCurve::FCurve(QObject *parent)
-    :   Database::Object(parent)
-{
-}
-
-FCurve::~FCurve()
-{
-}
+#endif // AC_SCORE_H

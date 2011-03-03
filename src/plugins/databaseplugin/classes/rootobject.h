@@ -24,8 +24,6 @@ namespace Database {
 
 class DATABASE_EXPORT RootObject : public Object
 {
-    typedef Object BaseClassT;
-
     Q_OBJECT
 
 public:

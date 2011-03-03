@@ -12,6 +12,9 @@ DEFINES += AC_DATABASE_LIBRARY
 HEADERS += \
 	classes/fcurve.h \
 	classes/fpoint.h \
+	classes/note.h \
+	classes/track.h \
+	classes/score.h \
 	\
 	implementations/database.h \
 	\
@@ -21,6 +24,9 @@ HEADERS += \
 SOURCES += \
 	classes/fcurve.cpp \
 	classes/fpoint.cpp \
+	classes/note.cpp \
+	classes/track.cpp \
+	classes/score.cpp \
 	\
 	implementations/database.cpp \
 	\

@@ -17,6 +17,8 @@
 
 #include "databaseplugin.h"
 
+#include "classes/object.h"
+
 #include <extensionsystem/pluginmanager.h>
 
 #include <QtCore/QtPlugin>
@@ -36,6 +38,10 @@ bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMess
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+
+    qRegisterMetaType<Object*>();
+    qRegisterMetaType<ObjectList*>();
+
     return true;
 }
 

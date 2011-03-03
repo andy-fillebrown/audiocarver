@@ -33,8 +33,6 @@ class RootObject;
 
 class DATABASE_EXPORT Object : public QObject
 {
-    typedef QObject BaseClassT;
-
     Q_OBJECT
 
 public:
@@ -47,7 +45,7 @@ public:
     virtual RootObject *root() const;
 
     QString id() const { return objectName(); }
-    virtual void setId(const QString &id);
+    virtual void setId(const QString &id = "");
 
     bool isErased() const { return id().startsWith("~"); }
     virtual void erase();
@@ -75,12 +73,18 @@ signals:
 
     void propertyChanged(int index, Object *object = 0);
 
+protected:
+    virtual void childEvent(QChildEvent *event);
+
 private:
     Q_DISABLE_COPY(Object)
 };
 
+typedef QList<Object*> ObjectList;
+
 } // namespace Database
 
 Q_DECLARE_METATYPE(Database::Object*);
+Q_DECLARE_METATYPE(Database::ObjectList*);
 
 #endif // OBJECT_H

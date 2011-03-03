@@ -15,26 +15,39 @@
 **
 **************************************************************************/
 
+#ifndef AC_NOTE_H
+#define AC_NOTE_H
+
 #include "fcurve.h"
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
-
 namespace AudioCarver {
-namespace Internal {
 
-class FCurvePrivate
+namespace Internal {
+class NotePrivate;
+} // namespace Internal
+
+class Note : public Database::Object
 {
+    Q_OBJECT
+
+    Q_PROPERTY(Database::Object* pitchCurve READ pitchCurve WRITE setPitchCurve)
+    Q_PROPERTY(Database::Object* volumeCurve READ volumeCurve WRITE setVolumeCurve)
+
+public:
+    Note(QObject *parent = 0);
+    virtual ~Note();
+
+    Database::Object *pitchCurve() const;
+    void setPitchCurve(Database::Object *curve);
+
+    Database::Object *volumeCurve() const;
+    void setVolumeCurve(Database::Object *curve);
+
+private:
+    Q_DISABLE_COPY(Note)
+    Internal::NotePrivate *d;
 };
 
-} // namespace Internal
 } // namespace AudioCarver
 
-FCurve::FCurve(QObject *parent)
-    :   Database::Object(parent)
-{
-}
-
-FCurve::~FCurve()
-{
-}
+#endif // AC_NOTE_H

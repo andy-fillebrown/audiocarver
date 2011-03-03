@@ -15,26 +15,34 @@
 **
 **************************************************************************/
 
-#include "fcurve.h"
+#ifndef AC_TRACK_H
+#define AC_TRACK_H
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
+#include <databaseplugin/classes/object.h>
 
 namespace AudioCarver {
-namespace Internal {
 
-class FCurvePrivate
+namespace Internal {
+class TrackPrivate;
+} // namespace Internal
+
+class Track : public Database::Object
 {
+    Q_OBJECT
+
+    Q_PROPERTY(Database::ObjectList* notes READ notes)
+
+public:
+    Track(QObject *parent = 0);
+    virtual ~Track();
+
+    Database::ObjectList *notes() const;
+
+private:
+    Q_DISABLE_COPY(Track)
+    Internal::TrackPrivate *d;
 };
 
-} // namespace Internal
 } // namespace AudioCarver
 
-FCurve::FCurve(QObject *parent)
-    :   Database::Object(parent)
-{
-}
-
-FCurve::~FCurve()
-{
-}
+#endif // AC_TRACK_H
