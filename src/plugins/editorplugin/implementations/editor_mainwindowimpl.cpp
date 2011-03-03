@@ -208,7 +208,10 @@ void MainWindowImpl::saveFile()
     Database::IDatabase *db = pm->getObject<Database::IDatabase>();
     if (!db)
         return;
-    db->write(db->fileName());
+    if (db->fileName().isEmpty())
+        saveFileAs();
+    else
+        db->write(db->fileName());
 }
 
 void MainWindowImpl::saveFileAs()
