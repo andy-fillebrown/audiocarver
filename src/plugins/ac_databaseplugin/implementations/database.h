@@ -21,6 +21,7 @@
 #include <databaseplugin/interfaces/idatabase.h>
 
 namespace AudioCarver {
+
 namespace Internal {
 
 class DatabaseImplPrivate;

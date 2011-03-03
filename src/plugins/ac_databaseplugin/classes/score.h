@@ -37,6 +37,10 @@ public:
     Score(QObject *parent = 0);
     virtual ~Score();
 
+    void initialize();
+
+    static Score *instance();
+
     virtual QString &normalizeClassName(QString &className) const;
 
     virtual Database::Object *createObject(const QString &className) const;

@@ -29,6 +29,14 @@ using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
+
+static Score *scoreInstance = 0;
+
+Score *score()
+{
+    return scoreInstance;
+}
+
 namespace Internal {
 
 class DatabaseImplPrivate
@@ -36,6 +44,7 @@ class DatabaseImplPrivate
 public:
     DatabaseImpl *q;
     Score *score;
+    QString fileName;
 
     DatabaseImplPrivate(DatabaseImpl *q)
         :   q(q)
@@ -43,28 +52,28 @@ public:
     {
         Q_CHECK_PTR(score);
 
-        Track* track = qobject_cast<Track*>(score->createObject("Track"));
-        track->setParent(score);
-        score->tracks()->append(track);
+//        Track* track = qobject_cast<Track*>(score->createObject("Track"));
+//        track->setParent(score);
+//        score->tracks()->append(track);
 
-        FCurve *pitchCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
-        pitchCurve->setParent(score);
-        score->curves()->append(pitchCurve);
-        pitchCurve->appendPoint(FPoint(0.000001, 0));
-        pitchCurve->appendPoint(FPoint(1, 1));
+//        FCurve *pitchCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
+//        pitchCurve->setParent(score);
+//        score->curves()->append(pitchCurve);
+//        pitchCurve->appendPoint(FPoint(0.000001, 0));
+//        pitchCurve->appendPoint(FPoint(1, 1));
 
-        FCurve *volumeCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
-        volumeCurve->setParent(score);
-        score->curves()->append(volumeCurve);
-        volumeCurve->appendPoint(FPoint(0, 0));
-        volumeCurve->appendPoint(FPoint(0.5, 1, true));
-        volumeCurve->appendPoint(FPoint(1, 0));
+//        FCurve *volumeCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
+//        volumeCurve->setParent(score);
+//        score->curves()->append(volumeCurve);
+//        volumeCurve->appendPoint(FPoint(0, 0));
+//        volumeCurve->appendPoint(FPoint(0.5, 1, true));
+//        volumeCurve->appendPoint(FPoint(1, 0));
 
-        Note *note = qobject_cast<Note*>(score->createObject("Note"));
-        note->setParent(track);
-        track->notes()->append(note);
-        note->setPitchCurve(pitchCurve);
-        note->setVolumeCurve(volumeCurve);
+//        Note *note = qobject_cast<Note*>(score->createObject("Note"));
+//        note->setParent(track);
+//        track->notes()->append(note);
+//        note->setPitchCurve(pitchCurve);
+//        note->setVolumeCurve(volumeCurve);
     }
 
     ~DatabaseImplPrivate()
@@ -101,12 +110,12 @@ const QString &DatabaseImpl::fileFilter() const
 
 const QString &DatabaseImpl::fileName() const
 {
-    static QString dummy;
-    return dummy;
+    return d->fileName;
 }
 
 void DatabaseImpl::clear()
 {
+    d->score->initialize();
 }
 
 void DatabaseImpl::read(const QString &fileName)
@@ -117,7 +126,9 @@ void DatabaseImpl::read(const QString &fileName)
 
     QXmlStreamReader in(&file);
     while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
-    d->score->read(in);
+
+    if (d->score->read(in))
+        d->fileName = fileName;
 }
 
 void DatabaseImpl::write(const QString &fileName)
@@ -132,4 +143,6 @@ void DatabaseImpl::write(const QString &fileName)
     d->score->write(out);
 
     file.write("\n");
+
+    d->fileName = fileName;
 }

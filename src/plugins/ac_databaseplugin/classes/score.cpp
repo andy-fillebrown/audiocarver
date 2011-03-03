@@ -50,16 +50,33 @@ public:
 } // namespace Internal
 } // namespace AudioCarver
 
+static Score *scoreInstance = 0;
+
 Score::Score(QObject *parent)
     :   Root(parent)
     ,   d(new ScorePrivate(this))
 {
     Q_CHECK_PTR(d);
+
+    scoreInstance = this;
 }
 
 Score::~Score()
 {
+    scoreInstance = 0;
+
     delete d;  d = 0;
+}
+
+void Score::initialize()
+{
+    d->tracks->deleteAll();
+    d->curves->deleteAll();
+}
+
+Score *Score::instance()
+{
+    return scoreInstance;
 }
 
 QString &Score::normalizeClassName(QString &className) const
