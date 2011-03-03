@@ -49,6 +49,11 @@ private slots:
     void viewScaleDecreaseX();
     void viewScaleIncreaseZ();
     void viewScaleDecreaseZ();
+    void createTrack();
+    void createNote();
+    void createCurve();
+    void erase();
+    void buildAll();
     void aboutAudioCarver();
     void destroyVersionDialog();
 

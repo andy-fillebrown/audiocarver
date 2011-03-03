@@ -52,19 +52,31 @@ MainWindowImpl::~MainWindowImpl()
 
 void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 {
-    Q_UNUSED(groups);
+    const int viewMenuIndex = groups.indexOf(GLEditor::Constants::G_VIEW);
+    groups.insert(viewMenuIndex + 1, Constants::G_CREATE);
+    groups.insert(viewMenuIndex + 2, Constants::G_MODIFY);
+    groups.insert(viewMenuIndex + 3, Constants::G_BUILD);
 }
 
 void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
-    Q_UNUSED(id);
-    Q_UNUSED(title);
-
     if (menuBarGroup == GLEditor::Constants::G_VIEW) {
         const int viewAllIndex = groups.indexOf(GLEditor::Constants::G_VIEW_ALL);
         groups.insert(viewAllIndex + 1, Constants::G_VIEW_PRESET);
         const int viewProjectionIndex = groups.indexOf(GLEditor::Constants::G_VIEW_PROJECTION);
         groups.insert(viewProjectionIndex + 1, Constants::G_VIEW_SCALE);
+    }
+    else if (menuBarGroup == Constants::G_CREATE) {
+        id = Constants::M_CREATE;
+        title = tr("&Create");
+    }
+    else if (menuBarGroup == Constants::G_MODIFY) {
+        id = Constants::M_MODIFY;
+        title = tr("&Modify");
+    }
+    else if (menuBarGroup == Constants::G_BUILD) {
+        id = Constants::M_BUILD;
+        title = tr("&Build");
     }
     else if (menuBarGroup == Core::Constants::G_HELP)
         groups  << Constants::G_HELP_ABOUTAUDIOCARVER;
@@ -74,6 +86,9 @@ void MainWindowImpl::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
     Core::ActionContainer *viewMenu = am->actionContainer(GLEditor::Constants::M_VIEW);
+    Core::ActionContainer *createMenu = am->actionContainer(Constants::M_CREATE);
+    Core::ActionContainer *modifyMenu = am->actionContainer(Constants::M_MODIFY);
+    Core::ActionContainer *buildMenu = am->actionContainer(Constants::M_BUILD);
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
     Core::Context globalContext(Core::Constants::C_GLOBAL);
 
@@ -142,6 +157,38 @@ void MainWindowImpl::initActions()
     subMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
     connect(action, SIGNAL(triggered()), SLOT(viewScaleDecreaseZ()));
 
+    // Create Track Action
+    action = new QAction(tr("Track"), this);
+    cmd = am->registerAction(action, Constants::CREATETRACK, globalContext);
+    createMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
+    connect(action, SIGNAL(triggered()), SLOT(createTrack()));
+
+    // Create Note Action
+    action = new QAction(tr("Note"), this);
+    cmd = am->registerAction(action, Constants::CREATENOTE, globalContext);
+    createMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
+    connect(action, SIGNAL(triggered()), SLOT(createNote()));
+
+    // Create Curve Action
+    action = new QAction(tr("Curve"), this);
+    cmd = am->registerAction(action, Constants::CREATECURVE, globalContext);
+    createMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
+    connect(action, SIGNAL(triggered()), SLOT(createCurve()));
+
+    // Erase Action (Modify menu).
+    action = new QAction(tr("Erase"), this);
+    cmd = am->registerAction(action, Constants::ERASE, globalContext);
+    cmd->setKeySequence(QKeySequence(Qt::Key_Delete));
+    modifyMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
+    connect(action, SIGNAL(triggered()), SLOT(erase()));
+
+    // Build All Action
+    action = new QAction(tr("Build All"), this);
+    cmd = am->registerAction(action, Constants::BUILDALL, globalContext);
+    cmd->setKeySequence(QKeySequence("Ctrl+Shift+F7"));
+    buildMenu->addAction(cmd, Core::Constants::G_DEFAULT_ONE);
+    connect(action, SIGNAL(triggered()), SLOT(buildAll()));
+
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
 #   ifdef Q_WS_MAC
@@ -192,6 +239,31 @@ void MainWindowImpl::viewScaleIncreaseZ()
 }
 
 void MainWindowImpl::viewScaleDecreaseZ()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindowImpl::createTrack()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindowImpl::createNote()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindowImpl::createCurve()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindowImpl::erase()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindowImpl::buildAll()
 {
     qDebug() << Q_FUNC_INFO;
 }
