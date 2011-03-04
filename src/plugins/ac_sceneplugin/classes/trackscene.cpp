@@ -41,10 +41,9 @@ public:
     TrackScenePrivate(TrackScene *q, ScoreScene *scoreScene)
         :   q(q)
         ,   scoreScene(scoreScene)
+        ,   track(qobject_cast<Track*>(q->databaseObject()))
     {
         Q_ASSERT(scoreScene);
-
-        track = qobject_cast<Track*>(q->databaseObject());
         Q_ASSERT(track);
     }
 

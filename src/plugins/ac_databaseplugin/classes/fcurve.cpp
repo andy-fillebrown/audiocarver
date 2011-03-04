@@ -81,6 +81,7 @@ void FCurve::setPointAt(const FPoint &point, int i)
 {
     d->points[i] = point;
     qSort(d->points.begin(), d->points.end(), lessThan);
+    emit pointsChanged(this);
 }
 
 int FCurve::indexOfPoint(const FPoint &point)
@@ -92,18 +93,21 @@ void FCurve::appendPoint(const FPoint &point)
 {
     d->points.append(point);
     qSort(d->points.begin(), d->points.end(), lessThan);
+    emit pointsChanged(this);
 }
 
 void FCurve::removePoint(const FPoint &point)
 {
     d->points.removeOne(point);
     qSort(d->points.begin(), d->points.end(), lessThan);
+    emit pointsChanged(this);
 }
 
 void FCurve::removePoint(int i)
 {
     d->points.removeAt(i);
     qSort(d->points.begin(), d->points.end(), lessThan);
+    emit pointsChanged(this);
 }
 
 bool FCurve::read(QXmlStreamReader &in)

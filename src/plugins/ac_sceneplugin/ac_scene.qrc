@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/ac_scene">
+        <file>shaders/note_fragment.glsl</file>
+        <file>shaders/note_vertex.glsl</file>
+    </qresource>
+</RCC>

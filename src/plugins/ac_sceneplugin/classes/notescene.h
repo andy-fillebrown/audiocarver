@@ -22,6 +22,10 @@
 
 namespace AudioCarver {
 
+namespace Internal {
+class NoteScenePrivate;
+} // namespace Internal;
+
 class NoteScene : public SceneObject
 {
     Q_OBJECT
@@ -29,6 +33,13 @@ class NoteScene : public SceneObject
 public:
     NoteScene(Database::Object *databaseObject, QObject *parent = 0);
     virtual ~NoteScene();
+
+protected:
+    virtual void updateProperty(int index);
+
+private:
+    Q_DISABLE_COPY(NoteScene)
+    Internal::NoteScenePrivate *d;
 };
 
 } // namespace AudioCarver

@@ -24,13 +24,96 @@
 
 #include <databaseplugin/classes/list.h>
 
-#include <QtCore/QPair>
+#include <QtOpenGL/QGLFunctions>
+#include <QtOpenGL/QGLBuffer>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
 namespace Internal {
+
+class GLVertexBufferObject;
+
+class GLVertexBufferSubArray
+{
+public:
+    GLVertexBufferObject *vbo;
+    int start;
+    int count;
+
+    int end() const
+    {
+        return start + count;
+    }
+
+    void write(float *data);
+};
+
+class GLVertexBufferObject : protected QGLFunctions
+{
+public:
+    QGLBuffer buffer;
+    int count;
+    QList<GLVertexBufferSubArray> subArrays;
+
+    GLVertexBufferObject(int count)
+        :   buffer(QGLBuffer::VertexBuffer)
+        ,   count(count)
+    {
+        initializeGLFunctions();
+
+        bool ok = buffer.create();
+        Q_ASSERT(ok);
+        buffer.setUsagePattern(QGLBuffer::DynamicDraw);
+        buffer.allocate(count * sizeof(float));
+    }
+
+    ~GLVertexBufferObject()
+    {
+    }
+
+    int createSubArray(int count)
+    {
+        GLVertexBufferSubArray subArray;
+        subArray.vbo = this;
+        subArray.count = count;
+
+        int start = 0;
+
+        if (!subArrays.isEmpty()) {
+            // Search for unused area between sub-arrays large enough for count.
+            start = subArrays.first().end();
+
+            for (int i = 1;  i < subArrays.count();  ++i) {
+                if (count <= subArrays.at(i).start - start) {
+                    subArray.start = start;
+                    subArrays.insert(i, subArray);
+
+                    return i;
+                }
+            }
+
+            // No unused area found between sub-arrays.
+            start = subArrays.last().end();
+        }
+
+        subArray.start = start;
+        subArrays.append(subArray);
+
+        return subArrays.count() - 1;
+    }
+};
+
+void GLVertexBufferSubArray::write(float *data)
+{
+    bool ok = vbo->buffer.bind();
+    Q_ASSERT(ok);
+
+    vbo->buffer.write(start, data, count);
+
+    vbo->buffer.release();
+}
 
 class ScoreScenePrivate
 {

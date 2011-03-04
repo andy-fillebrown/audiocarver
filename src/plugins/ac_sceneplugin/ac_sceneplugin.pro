@@ -30,3 +30,10 @@ SOURCES += \
 	implementations/scene.cpp \
 	\
 	ac_sceneplugin.cpp
+
+RESOURCES = \
+	ac_scene.qrc
+
+OTHER_FILES = \
+	shaders/note_fragment.glsl \
+	shaders/note_vertex.glsl

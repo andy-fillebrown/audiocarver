@@ -26,11 +26,13 @@ namespace Internal {
 class NotePrivate
 {
 public:
+    int pointCount;
     FCurve *pitchCurve;
     FCurve *volumeCurve;
 
     NotePrivate()
-        :   pitchCurve(0)
+        :   pointCount(64)
+        ,   pitchCurve(0)
         ,   volumeCurve(0)
     {
     }
@@ -55,6 +57,21 @@ Note::Note(QObject *parent)
 Note::~Note()
 {
     delete d;  d = 0;
+}
+
+int Note::pointCount() const
+{
+    return d->pointCount;
+}
+
+void Note::setPointCount(int count)
+{
+    if (pointCount() == count)
+        return;
+
+    d->pointCount = count;
+
+    emit propertyChanged(propertyIndex("pointCount"), this);
 }
 
 Database::Object *Note::pitchCurve() const

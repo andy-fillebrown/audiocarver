@@ -30,12 +30,16 @@ class AC_DATABASE_EXPORT Note : public Database::Object
 {
     Q_OBJECT
 
+    Q_PROPERTY(int pointCount READ pointCount WRITE setPointCount)
     Q_PROPERTY(Database::Object* pitchCurve READ pitchCurve WRITE setPitchCurve)
     Q_PROPERTY(Database::Object* volumeCurve READ volumeCurve WRITE setVolumeCurve)
 
 public:
     Note(QObject *parent = 0);
     virtual ~Note();
+
+    int pointCount() const;
+    void setPointCount(int count);
 
     Database::Object *pitchCurve() const;
     void setPitchCurve(Database::Object *curve);

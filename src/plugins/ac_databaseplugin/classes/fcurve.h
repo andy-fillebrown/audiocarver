@@ -48,6 +48,9 @@ public:
     virtual bool read(QXmlStreamReader &in);
     virtual void write(QXmlStreamWriter &out) const;
 
+signals:
+    void pointsChanged(FCurve *curve = 0);
+
 private:
     Internal::FCurvePrivate *d;
 };

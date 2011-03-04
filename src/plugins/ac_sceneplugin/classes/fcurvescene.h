@@ -22,6 +22,8 @@
 
 namespace AudioCarver {
 
+class NoteScene;
+
 namespace Internal {
 class FCurveScenePrivate;
 } // Internal
@@ -33,6 +35,15 @@ class FCurveScene : public SceneObject
 public:
     FCurveScene(Database::Object *databaseObject, QObject* parent);
     virtual ~FCurveScene();
+
+    void appendNote(NoteScene *note);
+    void removeNote(NoteScene *note);
+
+    int maxPointCount() const;
+    void setMaxPointCount(int count);
+
+public slots:
+    virtual void updateVBO();
 
 protected:
     virtual void updateProperty(int index);
