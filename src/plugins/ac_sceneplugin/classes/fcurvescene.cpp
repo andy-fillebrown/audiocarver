@@ -15,44 +15,49 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACK_H
-#define AC_TRACK_H
+#include "fcurvescene.h"
 
-#include <databaseplugin/classes/list.h>
+#include "scorescene.h"
 
-#include "ac_databaseplugin/ac_database_global.h"
+using namespace AudioCarver;
+using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
-
 namespace Internal {
-class TrackPrivate;
-} // namespace Internal
 
-class AC_DATABASE_EXPORT Track : public Database::Object
+class FCurveScenePrivate
 {
-    Q_OBJECT
-
-    Q_PROPERTY(Database::List* notes READ notes)
-    Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
-    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
-
 public:
-    Track(QObject *parent = 0);
-    virtual ~Track();
+    ScoreScene *scoreScene;
 
-    bool isVisible() const;
-    void setVisibility(bool visible);
+    FCurveScenePrivate(ScoreScene *scoreScene)
+        :   scoreScene(scoreScene)
+    {
+        Q_ASSERT(scoreScene);
+    }
 
-    qreal volume() const;
-    void setVolume(qreal volume);
-
-    Database::List *notes() const;
-
-private:
-    Q_DISABLE_COPY(Track)
-    Internal::TrackPrivate *d;
+    ~FCurveScenePrivate()
+    {
+        scoreScene = 0;
+    }
 };
 
-} // namespace AudioCarver
+} // Internal
+} // AudioCarver
 
-#endif // AC_TRACK_H
+FCurveScene::FCurveScene(Database::Object *databaseObject, QObject *parent)
+    :   SceneObject(databaseObject, parent)
+    ,   d(new FCurveScenePrivate(qobject_cast<ScoreScene*>(parent)))
+{
+    Q_CHECK_PTR(d);
+}
+
+FCurveScene::~FCurveScene()
+{
+    delete d;  d = 0;
+}
+
+void FCurveScene::updateProperty(int index)
+{
+    SceneObject::updateProperty(index);
+}

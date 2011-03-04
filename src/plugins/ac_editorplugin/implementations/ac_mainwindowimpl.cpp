@@ -17,7 +17,10 @@
 
 #include "ac_mainwindowimpl.h"
 
-#include "../ac_editorconstants.h"
+#include "ac_editorconstants.h"
+
+#include <ac_databaseplugin/classes/score.h>
+#include <ac_databaseplugin/classes/track.h>
 
 #include <gleditorplugin/gleditorconstants.h>
 
@@ -245,17 +248,38 @@ void MainWindowImpl::viewScaleDecreaseZ()
 
 void MainWindowImpl::createTrack()
 {
-    qDebug() << Q_FUNC_INFO;
+    Score *score = Score::instance();
+
+    Database::Object *track = score->createObject("Track");
+    track->setParent(score);
+
+    score->tracks()->append(track);
 }
 
 void MainWindowImpl::createNote()
 {
-    qDebug() << Q_FUNC_INFO;
+    Score *score = Score::instance();
+
+    if (score->tracks()->count() == 0)
+        createTrack();
+
+    Track *track = qobject_cast<Track*>(score->tracks()->data()[0]);
+    Q_ASSERT(track);
+
+    Database::Object *note = score->createObject("Note");
+    note->setParent(track);
+
+    track->notes()->append(note);
 }
 
 void MainWindowImpl::createCurve()
 {
-    qDebug() << Q_FUNC_INFO;
+    Score *score = Score::instance();
+
+    Database::Object *curve = score->createObject("FCurve");
+    curve->setParent(score);
+
+    score->curves()->append(curve);
 }
 
 void MainWindowImpl::erase()

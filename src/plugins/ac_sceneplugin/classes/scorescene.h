@@ -15,16 +15,33 @@
 **
 **************************************************************************/
 
-#include "scene_fcurve.h"
+#ifndef AC_SCORESCENE_H
+#define AC_SCORESCENE_H
 
-using namespace AudioCarver;
-using namespace AudioCarver::Scene;
+#include "sceneobject.h"
 
-FCurve::FCurve(QObject *parent)
-    :   QObject(parent)
+namespace AudioCarver {
+
+namespace Internal {
+class ScoreScenePrivate;
+} // Internal
+
+class ScoreScene : public SceneObject
 {
-}
+    Q_OBJECT
 
-FCurve::~FCurve()
-{
-}
+public:
+    ScoreScene(QObject *parent = 0);
+    virtual ~ScoreScene();
+
+protected:
+    virtual void updateProperty(int index);
+
+private:
+    Q_DISABLE_COPY(ScoreScene)
+    Internal::ScoreScenePrivate *d;
+};
+
+} // namespace AudioCarver
+
+#endif // AC_SCORESCENE_H

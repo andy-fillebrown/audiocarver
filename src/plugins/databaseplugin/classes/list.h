@@ -37,6 +37,8 @@ public:
     {
     }
 
+    const QList<Object*> &data() const { return list; }
+
     int count() const { return list.count(); }
     const Object *at(int i) const { return list.at(i); }
     int indexOf(Object *object, int from = 0) const { return list.indexOf(object, from); }

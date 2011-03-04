@@ -22,7 +22,7 @@
 
 namespace AudioCarver {
 
-class FPoint
+class AC_DATABASE_EXPORT FPoint
 {
 public:
     FPoint() : xp(0.0f), yp(0.0f), curvep(false) {}

@@ -15,24 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_NOTE_H
-#define AC_SCENE_NOTE_H
+#ifndef AC_NOTESCENE_H
+#define AC_NOTESCENE_H
 
-#include <QtCore/QObject>
+#include "sceneobject.h"
 
 namespace AudioCarver {
-namespace Scene {
 
-class Note : public QObject
+class NoteScene : public SceneObject
 {
     Q_OBJECT
 
 public:
-    Note(QObject *parent = 0);
-    virtual ~Note();
+    NoteScene(Database::Object *databaseObject, QObject *parent = 0);
+    virtual ~NoteScene();
 };
 
-} // namespace Scene
 } // namespace AudioCarver
 
-#endif // AC_SCENE_NOTE_H
+#endif // AC_NOTESCENE_H

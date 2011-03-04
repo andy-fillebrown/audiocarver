@@ -20,13 +20,15 @@
 
 #include <databaseplugin/classes/root.h>
 
+#include "ac_databaseplugin/ac_database_global.h"
+
 namespace AudioCarver {
 
 namespace Internal {
 class ScorePrivate;
 } // namespace Internal
 
-class Score : public Database::Root
+class AC_DATABASE_EXPORT Score : public Database::Root
 {
     Q_OBJECT
 

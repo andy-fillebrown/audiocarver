@@ -15,24 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_SCORE_H
-#define AC_SCENE_SCORE_H
+#ifndef AC_TRACKSCENE_H
+#define AC_TRACKSCENE_H
 
-#include <QtCore/QObject>
+#include "sceneobject.h"
 
 namespace AudioCarver {
-namespace Scene {
 
-class Score : public QObject
+class ScoreScene;
+
+namespace Internal {
+class TrackScenePrivate;
+} // Internal
+
+class TrackScene : public SceneObject
 {
     Q_OBJECT
 
 public:
-    Score(QObject *parent = 0);
-    virtual ~Score();
+    TrackScene(Database::Object *databaseObject, QObject *parent);
+    virtual ~TrackScene();
+
+protected:
+    virtual void updateProperty(int index);
+
+private:
+    Q_DISABLE_COPY(TrackScene)
+    Internal::TrackScenePrivate *d;
 };
 
-} // namespace Scene
 } // namespace AudioCarver
 
-#endif // AC_SCENE_SCORE_H
+#endif // AC_TRACKSCENE_H

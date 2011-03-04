@@ -15,16 +15,15 @@
 **
 **************************************************************************/
 
-#include "scene_score.h"
+#include "notescene.h"
 
 using namespace AudioCarver;
-using namespace AudioCarver::Scene;
 
-Score::Score(QObject *parent)
-    :   QObject(parent)
+NoteScene::NoteScene(Database::Object *databaseObject, QObject *parent)
+    :   SceneObject(databaseObject, parent)
 {
 }
 
-Score::~Score()
+NoteScene::~NoteScene()
 {
 }

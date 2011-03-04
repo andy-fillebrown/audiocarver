@@ -28,7 +28,7 @@ namespace Internal {
 class FCurvePrivate;
 } // namespace Internal
 
-class FCurve : public Database::Object
+class AC_DATABASE_EXPORT FCurve : public Database::Object
 {
     Q_OBJECT
 

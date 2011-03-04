@@ -26,7 +26,7 @@ namespace Internal {
 class NotePrivate;
 } // namespace Internal
 
-class Note : public Database::Object
+class AC_DATABASE_EXPORT Note : public Database::Object
 {
     Q_OBJECT
 

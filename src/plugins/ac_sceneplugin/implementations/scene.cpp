@@ -17,6 +17,8 @@
 
 #include "scene.h"
 
+#include <classes/scorescene.h>
+
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLFunctions>
@@ -31,16 +33,20 @@ class SceneImplPrivate : protected QGLFunctions
 {
 public:
     SceneImpl *q;
+    ScoreScene *scoreScene;
+
     GLuint staticDisplayListId;
     GLuint animationDisplayListId;
     float rotation;
 
     SceneImplPrivate(SceneImpl *q)
         :   q(q)
+        ,   scoreScene(new ScoreScene(q))
         ,   staticDisplayListId(-1)
         ,   animationDisplayListId(-1)
         ,   rotation(0.0f)
     {
+        Q_CHECK_PTR(scoreScene);
     }
 
     ~SceneImplPrivate()
