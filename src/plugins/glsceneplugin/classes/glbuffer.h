@@ -20,12 +20,24 @@
 
 #include <QtCore/QObject>
 
+#include <QtGui/QVector3D>
+
 #include <QtOpenGL/QGLBuffer>
 
 namespace GLScene {
 
+typedef QVector3D GLVertex;
+
 class GLIndexSubArray;
 class GLVertexSubArray;
+
+namespace Internal {
+
+class GLBufferPrivate;
+class GLIndexBufferPrivate;
+class GLVertexBufferPrivate;
+
+} // namespace Internal
 
 class GLBuffer : public QObject
 {
@@ -41,8 +53,11 @@ public:
     int createSubArray(quint32 count);
     void destroySubArray(int i);
 
-protected:
-    void write(int offset, void *data, int byteCount);
+    friend class GLIndexBuffer;
+    friend class GLVertexBuffer;
+
+private:
+    Internal::GLBufferPrivate *d;
 };
 
 class GLIndexBuffer : public GLBuffer
@@ -56,9 +71,10 @@ public:
     GLIndexSubArray *subArrayAt(int i);
 
     void write(int offset, const QVector<quint32> &indices);
-};
 
-typedef QVector3D GLVertex;
+private:
+    Internal::GLIndexBufferPrivate *d;
+};
 
 class GLVertexBuffer : public GLBuffer
 {
@@ -71,6 +87,9 @@ public:
     GLVertexSubArray *subArrayAt(int i);
 
     void write(int offset, const QVector<GLVertex> &vertices);
+
+private:
+    Internal::GLVertexBufferPrivate *d;
 };
 
 } // namespace GLScene

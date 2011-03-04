@@ -29,11 +29,16 @@ class GLSubArray : public QObject
     Q_OBJECT
 
 public:
-    GLSubArray(GLBuffer *buffer);
+    GLSubArray(GLBuffer *buffer, quint32 count);
     virtual ~GLSubArray();
 
     int id() const;
     void setId(int id);
+
+    int startOffset() const;
+    void setStartOffset(int offset);
+
+    int endOffset() const;
 
 public slots:
     virtual void appendObject(GLObject *object);
@@ -48,7 +53,7 @@ class GLIndexSubArray : public GLSubArray
     Q_OBJECT
 
 public:
-    GLIndexSubArray(GLIndexBuffer *buffer, quint32 count);
+    GLIndexSubArray(GLBuffer *buffer, quint32 count);
     virtual ~GLIndexSubArray();
 
     void write(const QVector<quint32> &indices);
@@ -59,7 +64,7 @@ class GLVertexSubArray : public GLSubArray
     Q_OBJECT
 
 public:
-    GLVertexSubArray(GLVertexBuffer *buffer, quint32 count);
+    GLVertexSubArray(GLBuffer *buffer, quint32 count);
     virtual ~GLVertexSubArray();
 
     void write(const QVector<GLVertex> &vertices);

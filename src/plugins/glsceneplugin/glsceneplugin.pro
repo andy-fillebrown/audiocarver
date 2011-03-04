@@ -1,7 +1,7 @@
 TARGET = GLScene
 TEMPLATE = lib
 
-QT -= gui
+QT += opengl
 
 include(../../projectplugin.pri)
 include(glsceneplugin_dependencies.pri)

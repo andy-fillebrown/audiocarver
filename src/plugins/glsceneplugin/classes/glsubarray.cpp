@@ -19,7 +19,7 @@
 
 using namespace GLScene;
 
-GLSubArray::GLSubArray(GLBuffer *buffer)
+GLSubArray::GLSubArray(GLBuffer *buffer, quint32 count)
     :   QObject(buffer)
 {
 }
@@ -36,8 +36,8 @@ void GLSubArray::removeObject(GLObject *object)
 {
 }
 
-GLIndexSubArray::GLIndexSubArray(GLIndexBuffer *buffer, quint32 count)
-    :   GLSubArray(buffer)
+GLIndexSubArray::GLIndexSubArray(GLBuffer *buffer, quint32 count)
+    :   GLSubArray(buffer, count)
 {
 }
 
@@ -45,8 +45,8 @@ GLIndexSubArray::~GLIndexSubArray()
 {
 }
 
-GLVertexSubArray::GLVertexSubArray(GLVertexBuffer *buffer, quint32 count)
-    :   GLSubArray(buffer)
+GLVertexSubArray::GLVertexSubArray(GLBuffer *buffer, quint32 count)
+    :   GLSubArray(buffer, count)
 {
 }
 
