@@ -56,7 +56,17 @@ public:
 
     void updateNotes()
     {
-        ac_updateSceneList_helper(notes, track->notes()->data(), q);
+        QList<NoteScene*> oldNotes = notes;
+        QList<NoteScene*> removedNotes = ac_updateSceneList_helper(notes, track->notes()->data(), q);
+
+        bool notesAdded = false;
+
+        foreach (NoteScene *note, notes) {
+            if (!oldNotes.contains(note)) {
+                scoreScene->appendNote(note);
+                notesAdded = true;
+            }
+        }
     }
 };
 

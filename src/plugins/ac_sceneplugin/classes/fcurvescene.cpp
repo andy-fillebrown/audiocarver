@@ -37,15 +37,19 @@ public:
     FCurve *curve;
     QList<NoteScene*> linkedNotes;
     int pointCount;
+    int vboId;
 
     FCurveScenePrivate(FCurveScene *q, ScoreScene *scoreScene)
         :   q(q)
         ,   scoreScene(scoreScene)
         ,   curve(qobject_cast<FCurve*>(q->databaseObject()))
         ,   pointCount(64)
+        ,   vboId(-1)
     {
         Q_ASSERT(scoreScene);
         Q_ASSERT(curve);
+
+        vboId = scoreScene->createVBOSubArray(pointCount);
     }
 
     ~FCurveScenePrivate()
@@ -73,8 +77,19 @@ public:
 
         if (maxCount < pointCount) {
             pointCount = maxCount;
-            q->updateVBO();
+
+            scoreScene->removeVBOSubArray(vboId);
+            vboId = scoreScene->createVBOSubArray(pointCount);
+
+            q->updateVBOs();
+            updateNoteIBOs();
         }
+    }
+
+    void updateNoteIBOs()
+    {
+        foreach (NoteScene *note, linkedNotes)
+            note->updateIBO();
     }
 };
 
@@ -90,7 +105,7 @@ FCurveScene::FCurveScene(Database::Object *databaseObject, QObject *parent)
     d->curve = qobject_cast<FCurve*>(databaseObject);
     Q_ASSERT(d->curve);
 
-    connect(d->curve, SIGNAL(pointsChanged()), SLOT(updateVBO()));
+    connect(d->curve, SIGNAL(pointsChanged()), SLOT(updateVBOs()));
 }
 
 FCurveScene::~FCurveScene()
@@ -108,7 +123,8 @@ void FCurveScene::appendNote(NoteScene *note)
 
         if (d->pointCount < db_note->pointCount()) {
             d->pointCount = db_note->pointCount();
-            updateVBO();
+            updateVBOs();
+            d->updateNoteIBOs();
         }
     }
 }
@@ -133,11 +149,12 @@ void FCurveScene::setMaxPointCount(int count)
 {
     if (d->pointCount < count) {
         d->pointCount = count;
-        updateVBO();
+        updateVBOs();
+        d->updateNoteIBOs();
     }
 }
 
-void FCurveScene::updateVBO()
+void FCurveScene::updateVBOs()
 {
 }
 

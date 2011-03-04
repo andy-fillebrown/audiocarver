@@ -22,6 +22,9 @@
 
 namespace AudioCarver {
 
+class FCurveScene;
+class NoteScene;
+
 namespace Internal {
 class ScoreScenePrivate;
 } // Internal
@@ -33,6 +36,22 @@ class ScoreScene : public SceneObject
 public:
     ScoreScene(QObject *parent = 0);
     virtual ~ScoreScene();
+
+    int createVBOSubArray(int count);
+    int createVBOSubArray(NoteScene *note);
+    void setVBOSubArray(int i, float *data);
+    void removeVBOSubArray(int i);
+    void bindVBO();
+    void releaseVBO();
+
+    int createIBOSubArray(int count);
+    void setIBOSubArray(int i, quint32 *data);
+    void removeIBOSubArray(int i);
+    void bindIBO();
+    void releaseIBO();
+
+    void appendNote(NoteScene *note);
+    void removeNote(NoteScene *note);
 
 protected:
     virtual void updateProperty(int index);

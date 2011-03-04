@@ -33,12 +33,13 @@ using namespace AudioCarver::Internal;
 namespace AudioCarver {
 namespace Internal {
 
-class GLVertexBufferObject;
+template <typename T> class GLBuffer;
 
-class GLVertexBufferSubArray
+template <typename T>
+class GLSubArray
 {
 public:
-    GLVertexBufferObject *vbo;
+    GLBuffer<T> *buffer;
     int start;
     int count;
 
@@ -47,36 +48,35 @@ public:
         return start + count;
     }
 
-    void write(float *data);
+    void write(T *data);
 };
 
-class GLVertexBufferObject : protected QGLFunctions
+template <typename T>
+class GLBuffer
 {
 public:
     QGLBuffer buffer;
     int count;
-    QList<GLVertexBufferSubArray> subArrays;
+    QList<GLSubArray<T> > subArrays;
 
-    GLVertexBufferObject(int count)
-        :   buffer(QGLBuffer::VertexBuffer)
+    GLBuffer(QGLBuffer::Type type, int count)
+        :   buffer(type)
         ,   count(count)
     {
-        initializeGLFunctions();
-
         bool ok = buffer.create();
         Q_ASSERT(ok);
         buffer.setUsagePattern(QGLBuffer::DynamicDraw);
-        buffer.allocate(count * sizeof(float));
+        buffer.allocate(count * sizeof(T));
     }
 
-    ~GLVertexBufferObject()
+    ~GLBuffer()
     {
     }
 
     int createSubArray(int count)
     {
-        GLVertexBufferSubArray subArray;
-        subArray.vbo = this;
+        GLSubArray<T> subArray;
+        subArray.buffer = this;
         subArray.count = count;
 
         int start = 0;
@@ -105,15 +105,25 @@ public:
     }
 };
 
-void GLVertexBufferSubArray::write(float *data)
+template <typename T>
+void GLSubArray<T>::write(T *data)
 {
-    bool ok = vbo->buffer.bind();
+    bool ok = buffer->buffer.bind();
     Q_ASSERT(ok);
 
-    vbo->buffer.write(start, data, count);
+    buffer->buffer.write(start, data, count);
 
-    vbo->buffer.release();
+    buffer->buffer.release();
 }
+
+class GLNoteSubArray
+{
+public:
+    int vboId;
+    int pointCount;
+    FCurveScene *pitchCurve;
+    FCurveScene *volumeCurve;
+};
 
 class ScoreScenePrivate
 {
@@ -122,10 +132,16 @@ public:
     Score *score;
     QList<FCurveScene*> curves;
     QList<TrackScene*> tracks;
+    GLBuffer<float> vbo;
+    GLBuffer<quint32> ibo;
+    QList<GLNoteSubArray> noteSubArrays;
+    QList<NoteScene*> notes;
 
     ScoreScenePrivate(ScoreScene *q)
         :   q(q)
         ,   score(Score::instance())
+        ,   vbo(QGLBuffer::VertexBuffer, 2048000) // 8 MB?
+        ,   ibo(QGLBuffer::IndexBuffer, 2048000) // 8 MB?
     {
     }
 
@@ -155,6 +171,75 @@ ScoreScene::ScoreScene(QObject *parent)
 
 ScoreScene::~ScoreScene()
 {
+}
+
+int ScoreScene::createVBOSubArray(int count)
+{
+    return d->vbo.createSubArray(count);
+}
+
+int ScoreScene::createVBOSubArray(NoteScene *note)
+{
+    Q_ASSERT(false && "Not implemented yet");
+    return -1;
+}
+
+void ScoreScene::setVBOSubArray(int i, float *data)
+{
+    d->vbo.subArrays[i].write(data);
+}
+
+void ScoreScene::removeVBOSubArray(int i)
+{
+    d->vbo.subArrays.removeAt(i);
+}
+
+void ScoreScene::bindVBO()
+{
+    bool ok = d->vbo.buffer.bind();
+    Q_ASSERT(ok);
+}
+
+void ScoreScene::releaseVBO()
+{
+    d->vbo.buffer.release();
+}
+
+int ScoreScene::createIBOSubArray(int count)
+{
+    return d->ibo.createSubArray(count);
+}
+
+void ScoreScene::setIBOSubArray(int i, quint32 *data)
+{
+    d->ibo.subArrays[i].write(data);
+}
+
+void ScoreScene::removeIBOSubArray(int i)
+{
+    d->ibo.subArrays.removeAt(i);
+}
+
+void ScoreScene::bindIBO()
+{
+    bool ok = d->ibo.buffer.bind();
+    Q_ASSERT(ok);
+}
+
+void ScoreScene::releaseIBO()
+{
+    d->ibo.buffer.release();
+}
+
+void ScoreScene::appendNote(NoteScene *note)
+{
+    if (!d->notes.contains(note))
+        d->notes.append(note);
+}
+
+void ScoreScene::removeNote(NoteScene *note)
+{
+    d->notes.removeOne(note);
 }
 
 void ScoreScene::updateProperty(int index)

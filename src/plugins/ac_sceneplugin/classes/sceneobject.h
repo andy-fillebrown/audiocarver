@@ -51,9 +51,9 @@ private:
 } // namespace AudioCarver
 
 template <typename T>
-void ac_updateSceneList_helper(QList<T*> &sceneList,
-                               const QList<Database::Object*> &databaseList,
-                               QObject *parent)
+QList<T*> ac_updateSceneList_helper(QList<T*> &sceneList,
+                                    const QList<Database::Object*> &databaseList,
+                                    QObject *parent)
 {
     QList<T*> oldSceneList = sceneList;
     sceneList.clear();
@@ -85,6 +85,8 @@ void ac_updateSceneList_helper(QList<T*> &sceneList,
     }
 
     qDeleteAll(oldSceneList);
+
+    return oldSceneList;
 }
 
 #endif // AC_SCENEOBJECT_H

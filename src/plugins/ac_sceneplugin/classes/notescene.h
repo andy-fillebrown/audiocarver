@@ -34,6 +34,8 @@ public:
     NoteScene(Database::Object *databaseObject, QObject *parent = 0);
     virtual ~NoteScene();
 
+    void updateIBO();
+
 protected:
     virtual void updateProperty(int index);
 

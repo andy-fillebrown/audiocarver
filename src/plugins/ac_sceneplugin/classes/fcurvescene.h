@@ -43,7 +43,7 @@ public:
     void setMaxPointCount(int count);
 
 public slots:
-    virtual void updateVBO();
+    virtual void updateVBOs();
 
 protected:
     virtual void updateProperty(int index);

@@ -36,6 +36,8 @@ public:
     TrackScene *track;
     FCurveScene *pitchCurve;
     FCurveScene *volumeCurve;
+    int lineIBOId;
+    int polygonIBOId;
 
     NoteScenePrivate(NoteScene *q)
         :   q(q)
@@ -73,6 +75,10 @@ NoteScene::NoteScene(Database::Object *databaseObject, QObject *parent)
 }
 
 NoteScene::~NoteScene()
+{
+}
+
+void NoteScene::updateIBO()
 {
 }
 
