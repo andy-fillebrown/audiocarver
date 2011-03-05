@@ -15,30 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef GLOBJECT_H
-#define GLOBJECT_H
+#ifndef GLNODE_H
+#define GLNODE_H
 
 #include <QtCore/QObject>
 
 namespace GLScene {
 
-class GLObject : public QObject
+class GLRoot;
+
+class GLNode : public QObject
 {
     Q_OBJECT
 
 public:
-    GLObject(QObject *parent = 0);
-    virtual ~GLObject();
+    GLNode(QObject *parent = 0);
+    virtual ~GLNode();
 
-    virtual bool isRoot() { return false; }
+    virtual bool isRoot() const { return false; }
+    GLRoot *root() const;
 
     virtual void drawLines(bool picking = false);
     virtual void drawTriangles(bool picking = false);
 
 public slots:
-    void changeSubArrayId(int from, int to);
+    virtual void changeSubArrayId(int from, int to);
 };
 
 } // namespace GLScene
 
-#endif // GLOBJECT_H
+#endif // GLNODE_H

@@ -18,11 +18,11 @@
 #ifndef GLROOT_H
 #define GLROOT_H
 
-#include "globject.h"
+#include "glnode.h"
 
 namespace GLScene {
 
-class GLRoot : public GLObject
+class GLRoot : public GLNode
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ public:
     GLRoot(QObject *parent = 0);
     virtual ~GLRoot();
 
-    virtual bool isRoot() { return true; }
+    virtual bool isRoot() const { return true; }
 
     virtual void drawLines(bool picking = false);
     virtual void drawTriangles(bool picking = false);

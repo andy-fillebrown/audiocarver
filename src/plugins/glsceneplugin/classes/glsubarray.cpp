@@ -18,38 +18,164 @@
 #include "glsubarray.h"
 
 using namespace GLScene;
+using namespace GLScene::Internal;
 
-GLSubArray::GLSubArray(GLBuffer *buffer, quint32 count)
-    :   QObject(buffer)
+namespace GLScene {
+namespace Internal {
+
+class GLSubArrayPrivate
 {
+public:
+    int id;
+    int offset;
+    int count;
+    QList<GLNode*> nodes;
+
+    GLSubArrayPrivate(int count)
+        :   id(-1)
+        ,   offset(-1)
+        ,   count(count)
+    {
+    }
+
+    ~GLSubArrayPrivate()
+    {
+        count = 0;
+        offset = -1;
+        id = -1;
+    }
+};
+
+class GLIndexSubArrayPrivate
+{
+public:
+    GLIndexBuffer *buffer;
+
+    GLIndexSubArrayPrivate(GLBuffer *buffer)
+        :   buffer(qobject_cast<GLIndexBuffer*>(buffer))
+    {
+        Q_ASSERT(this->buffer);
+    }
+
+    ~GLIndexSubArrayPrivate()
+    {
+        buffer = 0;
+    }
+};
+
+class GLVertexSubArrayPrivate
+{
+public:
+    GLVertexBuffer *buffer;
+
+    GLVertexSubArrayPrivate(GLBuffer *buffer)
+        :   buffer(qobject_cast<GLVertexBuffer*>(buffer))
+    {
+        Q_ASSERT(this->buffer);
+    }
+
+    ~GLVertexSubArrayPrivate()
+    {
+        buffer = 0;
+    }
+};
+
+} // namespace Internal
+} // namespace GLScene
+
+GLSubArray::GLSubArray(GLBuffer *buffer, int count)
+    :   QObject(buffer)
+    ,   d(new GLSubArrayPrivate(count))
+{
+    Q_CHECK_PTR(d);
 }
 
 GLSubArray::~GLSubArray()
 {
+    delete d;  d = 0;
 }
 
-void GLSubArray::appendObject(GLObject *object)
+int GLSubArray::id() const
 {
+    return d->id;
 }
 
-void GLSubArray::removeObject(GLObject *object)
+void GLSubArray::setId(int id)
 {
+    if (id == d->id)
+        return;
+
+    int oldId = d->id;
+    d->id = id;
+
+    emit idChanged(oldId, id);
 }
 
-GLIndexSubArray::GLIndexSubArray(GLBuffer *buffer, quint32 count)
+int GLSubArray::startOffset() const
+{
+    return d->offset;
+}
+
+void GLSubArray::setStartOffset(int offset)
+{
+    d->offset = offset;
+}
+
+int GLSubArray::endOffset() const
+{
+    return d->offset + d->count;
+}
+
+const QList<GLNode*> &GLSubArray::nodes() const
+{
+    return d->nodes;
+}
+
+void GLSubArray::appendNode(GLNode *node)
+{
+    d->nodes.append(node);
+
+    connect(this, SIGNAL(idChanged(int,int)), node, SLOT(changeSubArrayId(int,int)));
+}
+
+void GLSubArray::removeNode(GLNode *node)
+{
+    d->nodes.removeOne(node);
+
+    if (!d->nodes.contains(node))
+        disconnect(this, SIGNAL(idChanged(int,int)), node, SLOT(changeSubArrayId(int,int)));
+}
+
+GLIndexSubArray::GLIndexSubArray(GLBuffer *buffer, int count)
     :   GLSubArray(buffer, count)
+    ,   d(new GLIndexSubArrayPrivate(buffer))
 {
+    Q_CHECK_PTR(d);
 }
 
 GLIndexSubArray::~GLIndexSubArray()
 {
+    delete d;  d = 0;
 }
 
-GLVertexSubArray::GLVertexSubArray(GLBuffer *buffer, quint32 count)
-    :   GLSubArray(buffer, count)
+void GLIndexSubArray::write(const QVector<quint32> &indices)
 {
+    d->buffer->write(startOffset(), indices);
+}
+
+GLVertexSubArray::GLVertexSubArray(GLBuffer *buffer, int count)
+    :   GLSubArray(buffer, count)
+    ,   d(new GLVertexSubArrayPrivate(buffer))
+{
+    Q_CHECK_PTR(d);
 }
 
 GLVertexSubArray::~GLVertexSubArray()
 {
+    delete d;  d = 0;
+}
+
+void GLVertexSubArray::write(const QVector<GLVertex> &vertices)
+{
+    d->buffer->write(startOffset(), vertices);
 }

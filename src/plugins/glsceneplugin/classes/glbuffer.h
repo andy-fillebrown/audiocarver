@@ -50,8 +50,8 @@ public:
     bool bind();
     void release();
 
-    int createSubArray(quint32 count);
-    void destroySubArray(int i);
+    virtual int createSubArray(int count) = 0;
+    virtual void destroySubArray(int i) = 0;
 
     friend class GLIndexBuffer;
     friend class GLVertexBuffer;
@@ -68,7 +68,12 @@ public:
     GLIndexBuffer(QObject *parent);
     virtual ~GLIndexBuffer();
 
+    virtual int createSubArray(int count);
+    virtual void destroySubArray(int i);
     GLIndexSubArray *subArrayAt(int i);
+
+protected:
+    friend class GLIndexSubArray;
 
     void write(int offset, const QVector<quint32> &indices);
 
@@ -84,7 +89,12 @@ public:
     GLVertexBuffer(QObject *parent);
     virtual ~GLVertexBuffer();
 
+    virtual int createSubArray(int count);
+    virtual void destroySubArray(int i);
     GLVertexSubArray *subArrayAt(int i);
+
+protected:
+    friend class GLVertexSubArray;
 
     void write(int offset, const QVector<GLVertex> &vertices);
 

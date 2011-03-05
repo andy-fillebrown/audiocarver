@@ -10,7 +10,7 @@ DEFINES += GLSCENE_LIBRARY
 
 HEADERS += \
     classes/glbuffer.h \
-    classes/globject.h \
+    classes/glnode.h \
     classes/glroot.h \
     classes/glsubarray.h \
     \
@@ -21,7 +21,7 @@ HEADERS += \
 
 SOURCES += \
     classes/glbuffer.cpp \
-    classes/globject.cpp \
+    classes/glnode.cpp \
     classes/glroot.cpp \
     classes/glsubarray.cpp \
     \

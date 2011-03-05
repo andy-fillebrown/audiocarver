@@ -105,7 +105,7 @@ public:
 
     int createSubArray(int count)
     {
-        GLSubArray *subArray = newSubArray(count, T(0));
+        GLSubArray *subArray = newSubArray(count, T());
         int startOffset = 0;
 
         if (!h::subArrays.isEmpty()) {
@@ -187,6 +187,16 @@ GLBuffer::~GLBuffer()
     delete d;  d = 0;
 }
 
+bool GLBuffer::bind()
+{
+    return d->buffer->bind();
+}
+
+void GLBuffer::release()
+{
+    d->buffer->release();
+}
+
 GLIndexBuffer::GLIndexBuffer(QObject *parent)
     :   GLBuffer(QGLBuffer::IndexBuffer, parent)
     ,   d(new GLIndexBufferPrivate(this))
@@ -199,6 +209,28 @@ GLIndexBuffer::~GLIndexBuffer()
     delete d;  d = 0;
 }
 
+int GLIndexBuffer::createSubArray(int count)
+{
+    return d->bufferHelper.createSubArray(count);
+}
+
+void GLIndexBuffer::destroySubArray(int i)
+{
+    GLSubArray *subArray = d->bufferHelper.subArrays.at(i);
+    d->bufferHelper.subArrays.removeAt(i);
+    delete subArray;
+}
+
+GLIndexSubArray *GLIndexBuffer::subArrayAt(int i)
+{
+    return qobject_cast<GLIndexSubArray*>(d->bufferHelper.subArrays[i]);
+}
+
+void GLIndexBuffer::write(int offset, const QVector<quint32> &indices)
+{
+    GLBuffer::d->buffer->write(offset, indices.data(), indices.count() * sizeof(quint32));
+}
+
 GLVertexBuffer::GLVertexBuffer(QObject *parent)
     :   GLBuffer(QGLBuffer::VertexBuffer, parent)
     ,   d(new GLVertexBufferPrivate(this))
@@ -209,4 +241,26 @@ GLVertexBuffer::GLVertexBuffer(QObject *parent)
 GLVertexBuffer::~GLVertexBuffer()
 {
     delete d;  d = 0;
+}
+
+int GLVertexBuffer::createSubArray(int count)
+{
+    return d->bufferHelper.createSubArray(count);
+}
+
+void GLVertexBuffer::destroySubArray(int i)
+{
+    GLSubArray *subArray = d->bufferHelper.subArrays.at(i);
+    d->bufferHelper.subArrays.removeAt(i);
+    delete subArray;
+}
+
+GLVertexSubArray *GLVertexBuffer::subArrayAt(int i)
+{
+    return qobject_cast<GLVertexSubArray*>(d->bufferHelper.subArrays[i]);
+}
+
+void GLVertexBuffer::write(int offset, const QVector<GLVertex> &vertices)
+{
+    GLBuffer::d->buffer->write(offset, vertices.data(), vertices.count() * sizeof(GLVertex));
 }

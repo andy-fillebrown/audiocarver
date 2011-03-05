@@ -15,27 +15,41 @@
 **
 **************************************************************************/
 
-#include "globject.h"
+#include "glnode.h"
+
+#include "glroot.h"
 
 using namespace GLScene;
 
-GLObject::GLObject(QObject *parent)
+GLNode::GLNode(QObject *parent)
     :   QObject(parent)
 {
 }
 
-GLObject::~GLObject()
+GLNode::~GLNode()
 {
 }
 
-void GLObject::drawLines(bool picking)
+GLRoot *GLNode::root() const
+{
+    if (isRoot())
+        return qobject_cast<GLRoot*>(const_cast<GLNode*>(this));
+
+    GLNode *parent = qobject_cast<GLNode*>(this->parent());
+    if (parent)
+        return parent->root();
+
+    return 0;
+}
+
+void GLNode::drawLines(bool picking)
 {
 }
 
-void GLObject::drawTriangles(bool picking)
+void GLNode::drawTriangles(bool picking)
 {
 }
 
-void GLObject::changeSubArrayId(int from, int to)
+void GLNode::changeSubArrayId(int from, int to)
 {
 }

@@ -20,18 +20,33 @@
 
 #include "glbuffer.h"
 
+#include "glnode.h"
+
 namespace GLScene {
 
-class GLObject;
+namespace Internal {
+
+class GLSubArrayPrivate;
+class GLIndexSubArrayPrivate;
+class GLVertexSubArrayPrivate;
+
+template <typename T>
+class GLBufferHelperBase;
+
+} // namespace Internal
 
 class GLSubArray : public QObject
 {
     Q_OBJECT
 
-public:
-    GLSubArray(GLBuffer *buffer, quint32 count);
+protected:
+    GLSubArray(GLBuffer *buffer, int count);
     virtual ~GLSubArray();
 
+    friend class GLIndexBuffer;
+    friend class GLVertexBuffer;
+
+public:
     int id() const;
     void setId(int id);
 
@@ -40,34 +55,77 @@ public:
 
     int endOffset() const;
 
+    const QList<GLNode*> &nodes() const;
+
+    template <typename T>
+    inline T findNode(const QString &name = QString()) const
+    {
+        foreach (GLNode *node, nodes()) {
+            T t = qobject_cast<T>(node);
+            if (t && (name.isEmpty() || t->objectName() == name))
+                return t;
+        }
+        return 0;
+    }
+
+    template <typename T>
+    inline QList<T> findNodes(const QString &name = QString()) const
+    {
+        QList<T> list;
+        foreach (GLNode *node, nodes()) {
+            T t = qobject_cast<T>(node);
+            if (t && (name.isEmpty() || t->objectName() == name))
+                list.append(t);
+        }
+        return list;
+    }
+
 public slots:
-    virtual void appendObject(GLObject *object);
-    virtual void removeObject(GLObject *object);
+    virtual void appendNode(GLNode *node);
+    virtual void removeNode(GLNode *node);
 
 signals:
     void idChanged(int from, int to);
+
+private:
+    Q_DISABLE_COPY(GLSubArray)
+    Internal::GLSubArrayPrivate *d;
 };
 
 class GLIndexSubArray : public GLSubArray
 {
     Q_OBJECT
 
-public:
-    GLIndexSubArray(GLBuffer *buffer, quint32 count);
+private:
+    GLIndexSubArray(GLBuffer *buffer, int count);
     virtual ~GLIndexSubArray();
 
+    template <typename T> friend class Internal::GLBufferHelperBase;
+
+public:
     void write(const QVector<quint32> &indices);
+
+private:
+    Q_DISABLE_COPY(GLIndexSubArray)
+    Internal::GLIndexSubArrayPrivate *d;
 };
 
 class GLVertexSubArray : public GLSubArray
 {
     Q_OBJECT
 
-public:
-    GLVertexSubArray(GLBuffer *buffer, quint32 count);
+private:
+    GLVertexSubArray(GLBuffer *buffer, int count);
     virtual ~GLVertexSubArray();
 
+    template <typename T> friend class Internal::GLBufferHelperBase;
+
+public:
     void write(const QVector<GLVertex> &vertices);
+
+private:
+    Q_DISABLE_COPY(GLVertexSubArray)
+    Internal::GLVertexSubArrayPrivate *d;
 };
 
 } // namespace GLScene

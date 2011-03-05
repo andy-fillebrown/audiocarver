@@ -20,7 +20,7 @@
 using namespace GLScene;
 
 GLRoot::GLRoot(QObject *parent)
-    :   GLObject(parent)
+    :   GLNode(parent)
 {
 }
 
