@@ -89,7 +89,7 @@ public:
         bool ok = h::qglbuffer->create();
         Q_ASSERT(ok);
 
-        h::qglbuffer->setUsagePattern(QGLBuffer::DynamicDraw);
+        h::qglbuffer->setUsagePattern(QGLBuffer::StaticDraw);
         h::qglbuffer->allocate(1024000 * sizeof(T));
 
         ok = h::qglbuffer->bind();
