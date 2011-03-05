@@ -45,7 +45,7 @@ QString Object::className() const
 
 Root *Object::root() const
 {
-    if (this->isRoot())
+    if (isRoot())
         return qobject_cast<Root*>(const_cast<Object*>(this));
 
     Object *parent = qobject_cast<Object*>(this->parent());
