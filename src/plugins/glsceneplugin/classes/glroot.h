@@ -22,6 +22,15 @@
 
 namespace GLScene {
 
+class GLIndexBuffer;
+class GLVertexBuffer;
+
+namespace Internal {
+
+class GLRootPrivate;
+
+} // Internal
+
 class GLRoot : public GLNode
 {
     Q_OBJECT
@@ -34,6 +43,13 @@ public:
 
     virtual void drawLines(bool picking = false);
     virtual void drawTriangles(bool picking = false);
+
+    GLIndexBuffer *indexBuffer() const;
+    GLVertexBuffer *vertexBuffer() const;
+
+private:
+    Q_DISABLE_COPY(GLRoot)
+    Internal::GLRootPrivate *d;
 };
 
 } // namespace GLScene

@@ -17,15 +17,51 @@
 
 #include "glroot.h"
 
+#include "glbuffer.h"
+
 using namespace GLScene;
+using namespace GLScene::Internal;
+
+namespace GLScene {
+namespace Internal {
+
+class GLRootPrivate
+{
+public:
+    GLRoot *q;
+    GLIndexBuffer *indexBuffer;
+    GLVertexBuffer *vertexBuffer;
+
+    GLRootPrivate(GLRoot *q)
+        :   q(q)
+        ,   indexBuffer(new GLIndexBuffer(q))
+        ,   vertexBuffer(new GLVertexBuffer(q))
+    {
+        Q_CHECK_PTR(indexBuffer);
+        Q_CHECK_PTR(vertexBuffer);
+    }
+
+    ~GLRootPrivate()
+    {
+        vertexBuffer = 0;
+        indexBuffer = 0;
+        q = 0;
+    }
+};
+
+} // namespace Internal
+} // namespace GLScene
 
 GLRoot::GLRoot(QObject *parent)
     :   GLNode(parent)
+    ,   d(new GLRootPrivate(this))
 {
+    Q_CHECK_PTR(d);
 }
 
 GLRoot::~GLRoot()
 {
+    delete d;  d = 0;
 }
 
 void GLRoot::drawLines(bool picking)
@@ -34,4 +70,14 @@ void GLRoot::drawLines(bool picking)
 
 void GLRoot::drawTriangles(bool picking)
 {
+}
+
+GLIndexBuffer *GLRoot::indexBuffer() const
+{
+    return d->indexBuffer;
+}
+
+GLVertexBuffer *GLRoot::vertexBuffer() const
+{
+    return d->vertexBuffer;
 }
