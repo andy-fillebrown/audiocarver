@@ -15,35 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACKSCENE_H
-#define AC_TRACKSCENE_H
+#ifndef AC_SCORENODE_H
+#define AC_SCORENODE_H
 
-#include "sceneobject.h"
+#include <glsceneplugin/classes/glroot.h>
 
 namespace AudioCarver {
 
-class ScoreScene;
+class NoteNode;
 
 namespace Internal {
-class TrackScenePrivate;
+class ScoreNodePrivate;
 } // Internal
 
-class TrackScene : public SceneObject
+class ScoreNode : public GLScene::GLRoot
 {
     Q_OBJECT
 
 public:
-    TrackScene(Database::Object *databaseObject, QObject *parent);
-    virtual ~TrackScene();
+    ScoreNode(QObject *parent = 0);
+    virtual ~ScoreNode();
 
-protected:
+    void appendNoteNode(NoteNode *noteNode);
+    void removeNoteNode(NoteNode *noteNode);
+
+public slots:
     virtual void updateProperty(int index);
 
 private:
-    Q_DISABLE_COPY(TrackScene)
-    Internal::TrackScenePrivate *d;
+    Q_DISABLE_COPY(ScoreNode)
+    Internal::ScoreNodePrivate *d;
 };
 
 } // namespace AudioCarver
 
-#endif // AC_TRACKSCENE_H
+#endif // AC_SCORENODE_H

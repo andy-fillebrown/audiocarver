@@ -15,52 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCORESCENE_H
-#define AC_SCORESCENE_H
+#ifndef AC_TRACKNODE_H
+#define AC_TRACKNODE_H
 
-#include "sceneobject.h"
+#include "node.h"
 
 namespace AudioCarver {
 
-class FCurveScene;
-class NoteScene;
-
 namespace Internal {
-class ScoreScenePrivate;
+class TrackNodePrivate;
 } // Internal
 
-class ScoreScene : public SceneObject
+class TrackNode : public Node
 {
     Q_OBJECT
 
 public:
-    ScoreScene(QObject *parent = 0);
-    virtual ~ScoreScene();
-
-    int createVBOSubArray(int count);
-    int createVBOSubArray(NoteScene *note);
-    void setVBOSubArray(int i, float *data);
-    void removeVBOSubArray(int i);
-    void bindVBO();
-    void releaseVBO();
-
-    int createIBOSubArray(int count);
-    void setIBOSubArray(int i, quint32 *data);
-    void removeIBOSubArray(int i);
-    void bindIBO();
-    void releaseIBO();
-
-    void appendNote(NoteScene *note);
-    void removeNote(NoteScene *note);
+    TrackNode(Database::Object *databaseObject, QObject *parent);
+    virtual ~TrackNode();
 
 protected:
     virtual void updateProperty(int index);
 
 private:
-    Q_DISABLE_COPY(ScoreScene)
-    Internal::ScoreScenePrivate *d;
+    Q_DISABLE_COPY(TrackNode)
+    Internal::TrackNodePrivate *d;
 };
 
 } // namespace AudioCarver
 
-#endif // AC_SCORESCENE_H
+#endif // AC_TRACKNODE_H

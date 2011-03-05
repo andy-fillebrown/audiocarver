@@ -9,11 +9,11 @@ include(ac_sceneplugin_dependencies.pri)
 DEFINES += AC_SCENE_LIBRARY
 
 HEADERS += \
-	classes/fcurvescene.h \
-	classes/notescene.h \
-	classes/sceneobject.h \
-	classes/scorescene.h \
-	classes/trackscene.h \
+	classes/fcurvenode.h \
+	classes/node.h \
+	classes/notenode.h \
+	classes/scorenode.h \
+	classes/tracknode.h \
 	\
 	implementations/scene.h \
 	\
@@ -21,11 +21,11 @@ HEADERS += \
 	ac_sceneplugin.h
 
 SOURCES += \
-	classes/fcurvescene.cpp \
-	classes/notescene.cpp \
-	classes/sceneobject.cpp \
-	classes/scorescene.cpp \
-	classes/trackscene.cpp \
+	classes/fcurvenode.cpp \
+	classes/node.cpp \
+	classes/notenode.cpp \
+	classes/scorenode.cpp \
+	classes/tracknode.cpp \
 	\
 	implementations/scene.cpp \
 	\

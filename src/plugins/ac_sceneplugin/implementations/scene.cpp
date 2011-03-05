@@ -17,7 +17,7 @@
 
 #include "scene.h"
 
-#include <classes/scorescene.h>
+#include "classes/scorenode.h"
 
 #include <utils3d/utils3d_global.h>
 
@@ -33,7 +33,7 @@ class SceneImplPrivate : protected QGLFunctions
 {
 public:
     SceneImpl *q;
-    ScoreScene *scoreScene;
+    ScoreNode *scoreNode;
 
     GLuint staticDisplayListId;
     GLuint animationDisplayListId;
@@ -41,12 +41,12 @@ public:
 
     SceneImplPrivate(SceneImpl *q)
         :   q(q)
-        ,   scoreScene(new ScoreScene(q))
+        ,   scoreNode(new ScoreNode(q))
         ,   staticDisplayListId(-1)
         ,   animationDisplayListId(-1)
         ,   rotation(0.0f)
     {
-        Q_CHECK_PTR(scoreScene);
+        Q_CHECK_PTR(scoreNode);
     }
 
     ~SceneImplPrivate()

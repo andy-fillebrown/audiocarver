@@ -15,44 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_FCURVESCENE_H
-#define AC_FCURVESCENE_H
+#ifndef AC_NOTENODE_H
+#define AC_NOTENODE_H
 
-#include "sceneobject.h"
+#include "node.h"
 
 namespace AudioCarver {
 
-class NoteScene;
-
 namespace Internal {
-class FCurveScenePrivate;
-} // Internal
+class NoteNodePrivate;
+} // namespace Internal;
 
-class FCurveScene : public SceneObject
+class NoteNode : public Node
 {
     Q_OBJECT
 
 public:
-    FCurveScene(Database::Object *databaseObject, QObject* parent);
-    virtual ~FCurveScene();
-
-    void appendNote(NoteScene *note);
-    void removeNote(NoteScene *note);
-
-    int maxPointCount() const;
-    void setMaxPointCount(int count);
-
-public slots:
-    virtual void updateVBOs();
+    NoteNode(Database::Object *databaseObject, QObject *parent = 0);
+    virtual ~NoteNode();
 
 protected:
     virtual void updateProperty(int index);
 
 private:
-    Q_DISABLE_COPY(FCurveScene)
-    Internal::FCurveScenePrivate *d;
+    Q_DISABLE_COPY(NoteNode)
+    Internal::NoteNodePrivate *d;
 };
 
 } // namespace AudioCarver
 
-#endif // AC_FCURVESCENE_H
+#endif // AC_NOTENODE_H

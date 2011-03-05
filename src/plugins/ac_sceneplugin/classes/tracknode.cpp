@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#include "trackscene.h"
+#include "tracknode.h"
 
-#include "notescene.h"
-#include "scorescene.h"
+#include "notenode.h"
+#include "scorenode.h"
 
 #include <databaseplugin/classes/object.h>
 
@@ -30,41 +30,42 @@ using namespace Internal;
 namespace AudioCarver {
 namespace Internal {
 
-class TrackScenePrivate
+class TrackNodePrivate
 {
 public:
-    TrackScene *q;
-    ScoreScene *scoreScene;
-    Track *track;
-    QList<NoteScene*> notes;
+    TrackNode *q;
+    Track *qdb;
+    ScoreNode *scoreNode;
+    QList<NoteNode*> noteNodes;
 
-    TrackScenePrivate(TrackScene *q, ScoreScene *scoreScene)
+    TrackNodePrivate(TrackNode *q)
         :   q(q)
-        ,   scoreScene(scoreScene)
-        ,   track(qobject_cast<Track*>(q->databaseObject()))
+        ,   qdb(qobject_cast<Track*>(q->databaseObject()))
+        ,   scoreNode(qobject_cast<ScoreNode*>(q->parent()))
     {
-        Q_ASSERT(scoreScene);
-        Q_ASSERT(track);
+        Q_ASSERT(qdb);
+        Q_ASSERT(scoreNode);
     }
 
-    ~TrackScenePrivate()
+    ~TrackNodePrivate()
     {
-        track = 0;
-        scoreScene = 0;
+        noteNodes.clear();
+        scoreNode = 0;
+        qdb = 0;
         q = 0;
     }
 
-    void updateNotes()
+    void updateNoteNodes()
     {
-        QList<NoteScene*> oldNotes = notes;
-        QList<NoteScene*> removedNotes = ac_updateSceneList_helper(notes, track->notes()->data(), q);
+        QList<NoteNode*> oldNoteNodes = noteNodes;
+        QList<NoteNode*> removedNoteNodes = ac_updateNodeList_helper(noteNodes, qdb->notes()->data(), q);
 
-        bool notesAdded = false;
+        bool notesNodesAdded = false;
 
-        foreach (NoteScene *note, notes) {
-            if (!oldNotes.contains(note)) {
-                scoreScene->appendNote(note);
-                notesAdded = true;
+        foreach (NoteNode *noteNode, noteNodes) {
+            if (!oldNoteNodes.contains(noteNode)) {
+                scoreNode->appendNoteNode(noteNode);
+                notesNodesAdded = true;
             }
         }
     }
@@ -73,26 +74,26 @@ public:
 } // namespace Internal
 } // namespace AudioCarver
 
-TrackScene::TrackScene(Database::Object *databaseObject, QObject *parent)
-    :   SceneObject(databaseObject, parent)
-    ,   d(new TrackScenePrivate(this, qobject_cast<ScoreScene*>(parent)))
+TrackNode::TrackNode(Database::Object *databaseObject, QObject *parent)
+    :   Node(databaseObject, parent)
+    ,   d(new TrackNodePrivate(this))
 {
     Q_CHECK_PTR(d);
 }
 
-TrackScene::~TrackScene()
+TrackNode::~TrackNode()
 {
     delete d;  d = 0;
 }
 
-void TrackScene::updateProperty(int index)
+void TrackNode::updateProperty(int index)
 {
     const QString propertyName = databaseObject()->propertyName(index);
 
     if (propertyName == "notes") {
-        d->updateNotes();
+        d->updateNoteNodes();
         return;
     }
 
-    SceneObject::updateProperty(index);
+    Node::updateProperty(index);
 }

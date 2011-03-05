@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "sceneobject.h"
+#include "node.h"
 
 #include <databaseplugin/classes/object.h>
 
@@ -25,47 +25,47 @@ using namespace AudioCarver::Internal;
 namespace AudioCarver {
 namespace Internal {
 
-class SceneObjectPrivate
+class NodePrivate
 {
 public:
-    Database::Object *databaseObject;
+    Database::Object *qdb;
 
-    SceneObjectPrivate(Database::Object *databaseObject)
-        :   databaseObject(databaseObject)
+    NodePrivate(Database::Object *databaseObject)
+        :   qdb(databaseObject)
     {
     }
 
-    ~SceneObjectPrivate()
+    ~NodePrivate()
     {
-        databaseObject = 0;
+        qdb = 0;
     }
 };
 
 } // namespace Internal
 } // namespace AudioCarver
 
-SceneObject::SceneObject(Database::Object *databaseObject, QObject *parent)
-    :   QObject(parent)
-    ,   d(new SceneObjectPrivate(databaseObject))
+Node::Node(Database::Object *databaseObject, QObject *parent)
+    :   GLScene::GLNode(parent)
+    ,   d(new NodePrivate(databaseObject))
 {
     setObjectName(databaseObject->objectName());
     connect(databaseObject, SIGNAL(propertyChanged(int)), SLOT(updateProperty(int)));
 }
 
-SceneObject::~SceneObject()
+Node::~Node()
 {
     delete d;  d = 0;
 }
 
-Database::Object *SceneObject::databaseObject() const
+Database::Object *Node::databaseObject() const
 {
-    return d->databaseObject;
+    return d->qdb;
 }
 
-void SceneObject::updateProperty(int index)
+void Node::updateProperty(int index)
 {
     if (index == 0) {
-        setObjectName(d->databaseObject->objectName());
+        setObjectName(d->qdb->objectName());
         return;
     }
 }

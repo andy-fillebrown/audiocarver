@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENEOBJECT_H
-#define AC_SCENEOBJECT_H
+#ifndef AC_NODE_H
+#define AC_NODE_H
 
-#include <QtCore/QObject>
+#include <glsceneplugin/classes/glnode.h>
 
 namespace Database {
 class Object;
@@ -27,16 +27,16 @@ class Object;
 namespace AudioCarver {
 
 namespace Internal {
-class SceneObjectPrivate;
+class NodePrivate;
 } // namespace Internal
 
-class SceneObject : public QObject
+class Node : public GLScene::GLNode
 {
     Q_OBJECT
 
 public:
-    SceneObject(Database::Object *databaseObject, QObject *parent);
-    virtual ~SceneObject();
+    Node(Database::Object *databaseObject, QObject *parent);
+    virtual ~Node();
 
     Database::Object *databaseObject() const;
 
@@ -44,49 +44,49 @@ public slots:
     virtual void updateProperty(int index);
 
 private:
-    Q_DISABLE_COPY(SceneObject)
-    Internal::SceneObjectPrivate *d;
+    Q_DISABLE_COPY(Node)
+    Internal::NodePrivate *d;
 };
 
 } // namespace AudioCarver
 
 template <typename T>
-QList<T*> ac_updateSceneList_helper(QList<T*> &sceneList,
-                                    const QList<Database::Object*> &databaseList,
-                                    QObject *parent)
+QList<T*> ac_updateNodeList_helper(QList<T*> &nodeList,
+                                   const QList<Database::Object*> &databaseList,
+                                   QObject *parent)
 {
-    QList<T*> oldSceneList = sceneList;
-    sceneList.clear();
+    QList<T*> oldNodeList = nodeList;
+    nodeList.clear();
 
     for (int i = 0;  i < databaseList.count();  ++i) {
         Database::Object *dbObj = databaseList.at(i);
 
-        T *sceneObj = 0;
+        T *node = 0;
 
-        if (i < oldSceneList.count())
-            sceneObj = oldSceneList.at(i);
+        if (i < oldNodeList.count())
+            node = oldNodeList.at(i);
 
-        if (sceneObj && sceneObj->databaseObject() != dbObj) {
-            sceneObj = 0;
+        if (node && node->databaseObject() != dbObj) {
+            node = 0;
 
-            for (int j = 0;  j < oldSceneList.count();  ++j) {
-                if (oldSceneList.at(j)->databaseObject() == dbObj) {
-                    sceneObj = oldSceneList.at(j);
-                    oldSceneList.removeAt(j);
+            for (int j = 0;  j < oldNodeList.count();  ++j) {
+                if (oldNodeList.at(j)->databaseObject() == dbObj) {
+                    node = oldNodeList.at(j);
+                    oldNodeList.removeAt(j);
                     break;
                 }
             }
         }
 
-        if (!sceneObj)
-            sceneObj = new T(dbObj, parent);
+        if (!node)
+            node = new T(dbObj, parent);
 
-        sceneList.append(sceneObj);
+        nodeList.append(node);
     }
 
-    qDeleteAll(oldSceneList);
+    qDeleteAll(oldNodeList);
 
-    return oldSceneList;
+    return oldNodeList;
 }
 
-#endif // AC_SCENEOBJECT_H
+#endif // AC_NODE_H
