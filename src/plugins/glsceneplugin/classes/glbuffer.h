@@ -20,6 +20,8 @@
 
 #include <QtCore/QObject>
 
+#include <glsceneplugin/glscene_global.h>
+
 #include <QtGui/QVector3D>
 
 #include <QtOpenGL/QGLBuffer>
@@ -39,7 +41,7 @@ class GLVertexBufferPrivate;
 
 } // namespace Internal
 
-class GLBuffer : public QObject
+class GLSCENE_EXPORT GLBuffer : public QObject
 {
     Q_OBJECT
 
@@ -60,7 +62,7 @@ private:
     Internal::GLBufferPrivate *d;
 };
 
-class GLIndexBuffer : public GLBuffer
+class GLSCENE_EXPORT GLIndexBuffer : public GLBuffer
 {
     Q_OBJECT
 
@@ -81,7 +83,7 @@ private:
     Internal::GLIndexBufferPrivate *d;
 };
 
-class GLVertexBuffer : public GLBuffer
+class GLSCENE_EXPORT GLVertexBuffer : public GLBuffer
 {
     Q_OBJECT
 

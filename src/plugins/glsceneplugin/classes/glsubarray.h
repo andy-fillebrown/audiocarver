@@ -35,7 +35,7 @@ class GLBufferHelperBase;
 
 } // namespace Internal
 
-class GLSubArray : public QObject
+class GLSCENE_EXPORT GLSubArray : public QObject
 {
     Q_OBJECT
 
@@ -92,7 +92,7 @@ private:
     Internal::GLSubArrayPrivate *d;
 };
 
-class GLIndexSubArray : public GLSubArray
+class GLSCENE_EXPORT GLIndexSubArray : public GLSubArray
 {
     Q_OBJECT
 
@@ -110,7 +110,7 @@ private:
     Internal::GLIndexSubArrayPrivate *d;
 };
 
-class GLVertexSubArray : public GLSubArray
+class GLSCENE_EXPORT GLVertexSubArray : public GLSubArray
 {
     Q_OBJECT
 
@@ -131,3 +131,10 @@ private:
 } // namespace GLScene
 
 #endif // GLSUBARRAY_H
+
+/*!
+  \todo Figure out a better way of making the glbuffer.cpp classes the only
+  classes that can create and delete sub-array objects, so the forward
+  declarations of the internal GLBufferHelper template class and friend classes
+  can be removed.
+  */

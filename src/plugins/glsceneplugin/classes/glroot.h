@@ -26,12 +26,10 @@ class GLIndexBuffer;
 class GLVertexBuffer;
 
 namespace Internal {
-
 class GLRootPrivate;
-
 } // Internal
 
-class GLRoot : public GLNode
+class GLSCENE_EXPORT GLRoot : public GLNode
 {
     Q_OBJECT
 

@@ -20,11 +20,13 @@
 
 #include <QtCore/QObject>
 
+#include <glsceneplugin/glscene_global.h>
+
 namespace GLScene {
 
 class GLRoot;
 
-class GLNode : public QObject
+class GLSCENE_EXPORT GLNode : public QObject
 {
     Q_OBJECT
 
