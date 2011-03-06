@@ -20,10 +20,18 @@
 
 #include "node.h"
 
-namespace AudioCarver {
+namespace GLScene {
 
+class GLIndexBuffer;
+class GLVertexBuffer;
+
+} // namespace GLScene
+
+namespace AudioCarver {
 namespace Internal {
+
 class TrackNodePrivate;
+
 } // Internal
 
 class TrackNode : public Node
@@ -33,6 +41,9 @@ class TrackNode : public Node
 public:
     TrackNode(Database::Object *databaseObject, QObject *parent);
     virtual ~TrackNode();
+
+    GLScene::GLIndexBuffer *indexBuffer() const;
+    GLScene::GLVertexBuffer *vertexBuffer() const;
 
 protected:
     virtual void updateProperty(int index);

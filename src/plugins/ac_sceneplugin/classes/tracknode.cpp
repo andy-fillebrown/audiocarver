@@ -20,12 +20,14 @@
 #include "notenode.h"
 #include "scorenode.h"
 
+#include <ac_databaseplugin/classes/track.h>
+#include <glsceneplugin/classes/glbuffer.h>
 #include <databaseplugin/classes/object.h>
 
-#include <ac_databaseplugin/classes/track.h>
+using namespace GLScene;
 
 using namespace AudioCarver;
-using namespace Internal;
+using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
 namespace Internal {
@@ -36,20 +38,29 @@ public:
     TrackNode *q;
     Track *qdb;
     ScoreNode *scoreNode;
+    GLIndexBuffer *ibo;
+    GLVertexBuffer *vbo;
     QList<NoteNode*> noteNodes;
 
     TrackNodePrivate(TrackNode *q)
         :   q(q)
         ,   qdb(qobject_cast<Track*>(q->databaseObject()))
         ,   scoreNode(qobject_cast<ScoreNode*>(q->parent()))
+        ,   ibo(new GLIndexBuffer(1024000, q))
+        ,   vbo(new GLVertexBuffer(256000, q))
     {
         Q_ASSERT(qdb);
         Q_ASSERT(scoreNode);
+        Q_CHECK_PTR(ibo);
+        Q_CHECK_PTR(vbo);
     }
 
     ~TrackNodePrivate()
     {
         noteNodes.clear();
+
+        vbo = 0;
+        ibo = 0;
         scoreNode = 0;
         qdb = 0;
         q = 0;
@@ -84,6 +95,16 @@ TrackNode::TrackNode(Database::Object *databaseObject, QObject *parent)
 TrackNode::~TrackNode()
 {
     delete d;  d = 0;
+}
+
+GLIndexBuffer *TrackNode::indexBuffer() const
+{
+    return d->ibo;
+}
+
+GLVertexBuffer *TrackNode::vertexBuffer() const
+{
+    return d->vbo;
 }
 
 void TrackNode::updateProperty(int index)

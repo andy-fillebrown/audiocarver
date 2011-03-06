@@ -12,7 +12,6 @@ HEADERS += \
     classes/glbuffer.h \
     classes/glnode.h \
     classes/glroot.h \
-    classes/glsubarray.h \
     \
     interfaces/iglscene.h \
     \
@@ -23,7 +22,6 @@ SOURCES += \
     classes/glbuffer.cpp \
     classes/glnode.cpp \
     classes/glroot.cpp \
-    classes/glsubarray.cpp \
     \
     interfaces/iglscene.cpp \
     \

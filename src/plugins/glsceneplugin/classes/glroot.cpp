@@ -17,7 +17,9 @@
 
 #include "glroot.h"
 
-#include "glbuffer.h"
+#include <utils3d/utils3d_global.h>
+
+#include <QtOpenGL/QGLBuffer>
 
 using namespace GLScene;
 using namespace GLScene::Internal;
@@ -29,22 +31,14 @@ class GLRootPrivate
 {
 public:
     GLRoot *q;
-    GLIndexBuffer *indexBuffer;
-    GLVertexBuffer *vertexBuffer;
 
     GLRootPrivate(GLRoot *q)
         :   q(q)
-        ,   indexBuffer(new GLIndexBuffer(q))
-        ,   vertexBuffer(new GLVertexBuffer(q))
     {
-        Q_CHECK_PTR(indexBuffer);
-        Q_CHECK_PTR(vertexBuffer);
     }
 
     ~GLRootPrivate()
     {
-        vertexBuffer = 0;
-        indexBuffer = 0;
         q = 0;
     }
 };
@@ -72,12 +66,9 @@ void GLRoot::drawTriangles(bool picking)
 {
 }
 
-GLIndexBuffer *GLRoot::indexBuffer() const
+void GLRoot::releaseBuffers() const
 {
-    return d->indexBuffer;
-}
-
-GLVertexBuffer *GLRoot::vertexBuffer() const
-{
-    return d->vertexBuffer;
+    QGLBuffer::release(QGLBuffer::IndexBuffer);
+    QGLBuffer::release(QGLBuffer::VertexBuffer);
+    Q_CHECK_GLERROR;
 }

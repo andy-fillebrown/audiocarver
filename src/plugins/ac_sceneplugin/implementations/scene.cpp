@@ -34,19 +34,17 @@ class SceneImplPrivate : protected QGLFunctions
 public:
     SceneImpl *q;
     ScoreNode *scoreNode;
-
     GLuint staticDisplayListId;
     GLuint animationDisplayListId;
     float rotation;
 
     SceneImplPrivate(SceneImpl *q)
         :   q(q)
-        ,   scoreNode(new ScoreNode(q))
+        ,   scoreNode(0) // allocated in init()
         ,   staticDisplayListId(-1)
         ,   animationDisplayListId(-1)
         ,   rotation(0.0f)
     {
-        Q_CHECK_PTR(scoreNode);
     }
 
     ~SceneImplPrivate()
@@ -54,6 +52,7 @@ public:
         rotation = 0.0f;
         animationDisplayListId = 0;
         staticDisplayListId  = 0;
+        scoreNode = 0;
         q = 0;
     }
 
@@ -61,6 +60,9 @@ public:
     void init()
     {
         initializeGLFunctions();
+
+        scoreNode = new ScoreNode(q);
+        Q_CHECK_PTR(scoreNode);
 
         staticDisplayListId = glGenLists(1);
         glNewList(staticDisplayListId, GL_COMPILE);

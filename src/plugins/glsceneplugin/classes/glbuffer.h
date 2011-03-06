@@ -24,41 +24,56 @@
 
 #include <QtGui/QVector3D>
 
-#include <QtOpenGL/QGLBuffer>
+QT_BEGIN_NAMESPACE
+
+class QGLBuffer;
+
+QT_END_NAMESPACE
 
 namespace GLScene {
-
-typedef QVector3D GLVertex;
-
-class GLIndexSubArray;
-class GLVertexSubArray;
-
 namespace Internal {
 
+class GLArrayPrivate;
 class GLBufferPrivate;
+class GLIndexArrayPrivate;
 class GLIndexBufferPrivate;
+class GLVertexArrayPrivate;
 class GLVertexBufferPrivate;
 
 } // namespace Internal
+
+typedef quint16 GLIndex;
+
+class GLVertex
+{
+public:
+    float x;
+    float y;
+    float z;
+    float pad;
+
+    GLVertex(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z), pad(0.0f) {}
+};
 
 class GLSCENE_EXPORT GLBuffer : public QObject
 {
     Q_OBJECT
 
 public:
-    GLBuffer(QGLBuffer::Type bufferType, QObject *parent);
+    GLBuffer(int count, QObject *parent = 0);
     virtual ~GLBuffer();
+
+    int count() const;
 
     bool bind();
     void release();
 
-    virtual int createSubArray(int count) = 0;
-    virtual void destroySubArray(int i) = 0;
-
-    friend class GLIndexBuffer;
-    friend class GLVertexBuffer;
-
 private:
+    friend class GLArray;
+    friend class GLIndexArray;
+    friend class GLIndexBuffer;
+    friend class GLVertexArray;
+    friend class GLVertexBuffer;
     Internal::GLBufferPrivate *d;
 };
 
@@ -67,19 +82,11 @@ class GLSCENE_EXPORT GLIndexBuffer : public GLBuffer
     Q_OBJECT
 
 public:
-    GLIndexBuffer(QObject *parent);
+    GLIndexBuffer(int count, QObject *parent = 0);
     virtual ~GLIndexBuffer();
 
-    virtual int createSubArray(int count);
-    virtual void destroySubArray(int i);
-    GLIndexSubArray *subArrayAt(int i);
-
-protected:
-    friend class GLIndexSubArray;
-
-    void write(int offset, const QVector<quint32> &indices);
-
 private:
+    friend class GLIndexArray;
     Internal::GLIndexBufferPrivate *d;
 };
 
@@ -88,20 +95,59 @@ class GLSCENE_EXPORT GLVertexBuffer : public GLBuffer
     Q_OBJECT
 
 public:
-    GLVertexBuffer(QObject *parent);
+    GLVertexBuffer(int count, QObject *parent = 0);
     virtual ~GLVertexBuffer();
 
-    virtual int createSubArray(int count);
-    virtual void destroySubArray(int i);
-    GLVertexSubArray *subArrayAt(int i);
+private:
+    friend class GLVertexArray;
+    Internal::GLVertexBufferPrivate *d;
+};
+
+class GLSCENE_EXPORT GLArray : public QObject
+{
+    Q_OBJECT
 
 protected:
-    friend class GLVertexSubArray;
+    GLArray(int count, GLBuffer *buffer);
+    virtual ~GLArray();
 
-    void write(int offset, const QVector<GLVertex> &vertices);
+public:
+    int offset() const;
+    int count() const;
+    int end() const { return offset() + count(); }
 
 private:
-    Internal::GLVertexBufferPrivate *d;
+    friend class GLIndexArray;
+    friend class GLVertexArray;
+    Internal::GLArrayPrivate *d;
+};
+
+class GLSCENE_EXPORT GLIndexArray : public GLArray
+{
+    Q_OBJECT
+
+public:
+    GLIndexArray(int count, GLIndexBuffer *indexBuffer);
+    virtual ~GLIndexArray();
+
+    void write(const QVector<GLIndex> &indices);
+
+private:
+    Internal::GLIndexArrayPrivate *d;
+};
+
+class GLSCENE_EXPORT GLVertexArray : public GLArray
+{
+    Q_OBJECT
+
+public:
+    GLVertexArray(int count, GLVertexBuffer *vertexBuffer);
+    virtual ~GLVertexArray();
+
+    void write(const QVector<GLVertex> &vertices);
+
+private:
+    Internal::GLVertexArrayPrivate *d;
 };
 
 } // namespace GLScene

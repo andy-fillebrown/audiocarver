@@ -21,12 +21,10 @@
 #include "glnode.h"
 
 namespace GLScene {
-
-class GLIndexBuffer;
-class GLVertexBuffer;
-
 namespace Internal {
+
 class GLRootPrivate;
+
 } // Internal
 
 class GLSCENE_EXPORT GLRoot : public GLNode
@@ -42,8 +40,7 @@ public:
     virtual void drawLines(bool picking = false);
     virtual void drawTriangles(bool picking = false);
 
-    GLIndexBuffer *indexBuffer() const;
-    GLVertexBuffer *vertexBuffer() const;
+    void releaseBuffers() const;
 
 private:
     Q_DISABLE_COPY(GLRoot)
