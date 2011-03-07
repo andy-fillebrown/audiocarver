@@ -53,6 +53,9 @@ public:
 
     void updateAnimation();
 
+    const QVector3D &cameraPosition() const;
+    void setCameraPosition(const QVector3D &position);
+
 protected:
     virtual void paintGL();
 

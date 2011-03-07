@@ -279,5 +279,25 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
+
     d->draggingSplit = 0;
+}
+
+void GLWidget::wheelEvent(QWheelEvent *event)
+{
+    GLViewport *viewport = d->viewportAtPosition(event->pos());
+    if (!viewport) {
+        event->ignore();
+        return;
+    }
+
+    QVector3D camPos = viewport->cameraPosition();
+    const int delta = event->delta();
+    if (0 < delta)
+        camPos.setZ(camPos.z() / 1.25);
+    else
+        camPos.setZ(camPos.z() * 1.25);
+    viewport->setCameraPosition(camPos);
+
+    updateGL();
 }

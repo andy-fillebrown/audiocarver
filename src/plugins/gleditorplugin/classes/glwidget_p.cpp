@@ -95,6 +95,16 @@ void GLWidgetPrivate::removeViewport(GLViewport *viewport)
     Q_ASSERT(!viewports.contains(viewport));
 }
 
+GLViewport *GLWidgetPrivate::viewportAtPosition(const QPoint &position) const
+{
+    foreach (GLViewport *viewport, viewports)
+        if (viewport->rect().contains(position))
+            return viewport;
+
+    Q_ASSERT(false && "No viewport found at position.");
+    return 0;
+}
+
 void GLWidgetPrivate::initializeScene()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();

@@ -59,6 +59,8 @@ public:
 
     QColor backgroundColor;
     QList<GLuint> textureIds;
+    QVector3D cameraPosition;
+    QVector3D cameraTarget;
 
     GLViewportPrivate(GLViewport *q, GLWidgetSplit *parentSplit)
         :   q(q)
@@ -71,6 +73,7 @@ public:
         ,   animationFBO(0)
         ,   overlayFBO(0)
         ,   backgroundColor(QColor(251, 251, 251))
+        ,   cameraPosition(0.0, 0.0, -10.0)
     {
         Q_ASSERT(widget);
 
@@ -186,16 +189,17 @@ public:
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glViewport(0, 0, w, h);
-        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
-        glTranslatef(0.0, 0.0, -10.0);
+        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 1000.0);
+        glTranslatef(cameraPosition.x(), cameraPosition.y(), cameraPosition.z());
 
-        bool drewToFBO = true;
+        bool drewToFBO = false;
 
         switch (fboId) {
         case BackgroundFBO:
             widget->qglClearColor(backgroundColor);
             glClear(GL_COLOR_BUFFER_BIT);
             scene->drawBackgroundGL();
+            drewToFBO = true;
             break;
         case StaticFBO:
             glClearColor(0, 0, 0, 0);
@@ -215,7 +219,8 @@ public:
         case AnimationFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawAnimationGL(widget->animationTime());
+            if (widget->isAnimating())
+                drewToFBO = scene->drawAnimationGL(widget->animationTime());
             break;
         case OverlayFBO:
             glClearColor(0, 0, 0, 0);
@@ -313,6 +318,17 @@ void GLViewport::resize(int width, int height)
 void GLViewport::updateAnimation()
 {
     d->updateFBO(AnimationFBO);
+}
+
+const QVector3D &GLViewport::cameraPosition() const
+{
+    return d->cameraPosition;
+}
+
+void GLViewport::setCameraPosition(const QVector3D &position)
+{
+    d->cameraPosition = position;
+    d->updateAllFBOs();
 }
 
 void GLViewport::paintGL()

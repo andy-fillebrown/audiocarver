@@ -72,6 +72,8 @@ public:
     void appendViewport(GLViewport *viewport);
     void removeViewport(GLViewport* viewport);
 
+    GLViewport *viewportAtPosition(const QPoint &position) const;
+
 private:
     void initializeScene();
     void initializeSplits();
