@@ -65,7 +65,7 @@ public slots:
     void removeCurrentSplit();
     void removeAllSplits();
 
-    void animateGL();
+    virtual void animateGL();
 
 protected:
     virtual void paintGL();
@@ -73,14 +73,13 @@ protected:
 
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     Internal::GLWidgetPrivate *d;
     Q_DISABLE_COPY(GLWidget)
 
     friend class GLViewport;
-    friend class GLWidgetSplit;
 };
 
 } // namespace GLEditor

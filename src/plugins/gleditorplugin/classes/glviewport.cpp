@@ -48,8 +48,8 @@ class GLViewportPrivate : protected QGLFunctions
 {
 public:
     GLViewport *q;
+    GLWidgetSplit *parentSplit;
     GLWidget *widget;
-    GLWidgetSplit *split;
     QGLFramebufferObject *backgroundFBO;
     QGLFramebufferObject *staticFBO;
     QGLFramebufferObject *modelFBO;
@@ -60,10 +60,10 @@ public:
     QColor backgroundColor;
     QList<GLuint> textureIds;
 
-    GLViewportPrivate(GLViewport *q, GLWidgetSplit *split)
+    GLViewportPrivate(GLViewport *q, GLWidgetSplit *parentSplit)
         :   q(q)
-        ,   widget(split->widget())
-        ,   split(split)
+        ,   parentSplit(parentSplit)
+        ,   widget(parentSplit->widget())
         ,   backgroundFBO(0)
         ,   staticFBO(0)
         ,   modelFBO(0)
@@ -75,7 +75,7 @@ public:
         Q_ASSERT(widget);
 
         initializeGLFunctions(widget->context());
-        initializeFBOs(split->width(), split->height());
+        initializeFBOs(parentSplit->width(), parentSplit->height());
     }
 
     ~GLViewportPrivate()
@@ -252,8 +252,8 @@ public:
 } // namespace Internal
 } // namespace Editor3D
 
-GLViewport::GLViewport(GLWidgetSplit *split)
-    :   d(new GLViewportPrivate(this, split))
+GLViewport::GLViewport(GLWidgetSplit *parentSplit)
+    :   d(new GLViewportPrivate(this, parentSplit))
 {
     Q_CHECK_PTR(d);
 
@@ -271,7 +271,7 @@ GLViewport::~GLViewport()
 
 GLWidgetSplit *GLViewport::parentSplit() const
 {
-    return d->split;
+    return d->parentSplit;
 }
 
 QColor GLViewport::backgroundColor() const
@@ -292,17 +292,17 @@ void GLViewport::setBackgroundColor(const QColor &color)
 
 QPoint GLViewport::pos() const
 {
-    return d->split->pos();
+    return d->parentSplit->pos();
 }
 
 QRect GLViewport::rect() const
 {
-    return d->split->rect();
+    return d->parentSplit->rect();
 }
 
 QSize GLViewport::size() const
 {
-    return d->split->size();
+    return d->parentSplit->size();
 }
 
 void GLViewport::resize(int width, int height)

@@ -23,18 +23,20 @@
 #include <utils3d/utils3d_global.h>
 
 namespace GLEditor {
-class GLWidgetSplit;
-
 namespace Internal {
+
 class GLViewportPrivate;
+
 } // namespace Internal
+
+class GLWidgetSplit;
 
 class GLEDITOR_EXPORT GLViewport : public QObject
 {
     Q_OBJECT
 
 public:
-    GLViewport(GLWidgetSplit *split);
+    GLViewport(GLWidgetSplit *parentSplit);
     virtual ~GLViewport();
 
     GLWidgetSplit *parentSplit() const;
@@ -49,7 +51,6 @@ public:
     int height() const;
     void resize(int width, int height);
 
-public slots:
     void updateAnimation();
 
 protected:
@@ -60,7 +61,6 @@ private:
     Q_DISABLE_COPY(GLViewport)
 
     friend class GLWidget;
-    friend class GLWidgetSplit;
 };
 
 } // namespace GLEditor

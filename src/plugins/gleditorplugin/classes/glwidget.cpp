@@ -62,7 +62,7 @@ GLScene::IGLScene *GLWidget::currentScene() const
 void GLWidget::setCurrentScene(GLScene::IGLScene *scene)
 {
     Q_UNUSED(scene);
-    Q_ASSERT(false && "Not implemented yet");
+    Q_ASSERT(false && "Not implemented yet.");
 }
 
 GLWidgetSplit *GLWidget::currentSplit() const
@@ -276,7 +276,8 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
         setCurrentSplit(split);
 }
 
-void GLWidget::mouseReleaseEvent(QMouseEvent *)
+void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     d->draggingSplit = 0;
 }
