@@ -18,14 +18,15 @@
 #include "glviewport.h"
 
 #include "glwidget.h"
+#include "glwidget_p.h"
 #include "glwidgetsplit.h"
 
 #include <glsceneplugin/interfaces/iglscene.h>
-
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLFramebufferObject>
 #include <QtOpenGL/QGLFunctions>
+#include <QtOpenGL/QGLShaderProgram>
 
 using namespace GLEditor;
 using namespace GLEditor::Internal;
@@ -299,12 +300,28 @@ void GLViewport::updateAnimation()
     d->updateFBO(AnimationFBO);
 }
 
-const QList<GLuint> &GLViewport::textureIds() const
+void GLViewport::paintGL()
 {
-    return d->textureIds;
-}
+    const GLWidget *widget = d->widget;
+    const QRect rect = this->rect();
 
-void GLViewport::draw()
-{
-    d->widget->drawViewport(this);
+    const GLfloat left = rect.left();
+    const GLfloat bottom = widget->height() - rect.bottom() - 1;
+    const GLfloat width = rect.width();
+    const GLfloat height = rect.height();
+    Q_ASSERT(0 < width);
+    Q_ASSERT(0 < height);
+
+    glViewport(left, bottom, width, height);
+
+    const GLWidgetPrivate *widget_d = widget->d;
+    widget_d->shaderProgram->setUniformValue(widget_d->screenOriginId, left, bottom);
+    widget_d->shaderProgram->setUniformValue(widget_d->screenSizeId, width, height);
+
+    foreach (const GLuint &id, d->textureIds) {
+        if (id == 0)
+            continue;
+        glBindTexture(GL_TEXTURE_2D, id);
+        glCallList(widget_d->displayListId);
+    }
 }

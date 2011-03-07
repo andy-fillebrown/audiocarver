@@ -51,14 +51,14 @@ public slots:
     void updateAnimation();
 
 protected:
-    friend class GLWidget;
-    const QList<GLuint> &textureIds() const;
-
-    friend class GLWidgetSplit;
-    virtual void draw();
+    virtual void paintGL();
 
 private:
     Internal::GLViewportPrivate *d;
+    Q_DISABLE_COPY(GLViewport)
+
+    friend class GLWidget;
+    friend class GLWidgetSplit;
 };
 
 } // namespace GLEditor

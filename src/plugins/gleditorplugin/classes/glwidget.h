@@ -23,16 +23,20 @@
 #include <QtOpenGL/QGLWidget>
 
 namespace GLScene {
+
 class IGLScene;
-} // namespace GLDatabase
+
+} // namespace GLScene
 
 namespace GLEditor {
+namespace Internal {
+
+class GLWidgetPrivate;
+
+} // namespace Internal
+
 class GLViewport;
 class GLWidgetSplit;
-
-namespace Internal {
-class GLWidgetPrivate;
-} // namespace Internal
 
 class GLEDITOR_EXPORT GLWidget : public QGLWidget
 {
@@ -64,8 +68,6 @@ public slots:
     void animateGL();
 
 protected:
-    friend class GLViewport;
-
     virtual void drawViewport(GLViewport *viewport);
 
     virtual void paintGL();
@@ -77,6 +79,10 @@ protected:
 
 private:
     Internal::GLWidgetPrivate *d;
+    Q_DISABLE_COPY(GLWidget)
+
+    friend class GLViewport;
+    friend class GLWidgetSplit;
 };
 
 } // namespace GLEditor

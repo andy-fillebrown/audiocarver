@@ -16,13 +16,13 @@
 **************************************************************************/
 
 #include "glwidget.h"
+
+#include "glwidget_p.h"
 #include "glwidgetsplit.h"
 #include "glviewport.h"
 
 #include <glsceneplugin/interfaces/iglscene.h>
-
 #include <extensionsystem/pluginmanager.h>
-
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLShader>
@@ -36,155 +36,12 @@
 
 using namespace GLEditor;
 
-namespace GLEditor {
-namespace Internal {
-
-class GLWidgetPrivate
-{
-public:
-    GLWidget *q;
-    GLScene::IGLScene *scene;
-    GLWidgetSplit *mainSplit;
-    GLWidgetSplit *currentSplit;
-    GLuint displayListId;
-    QGLShader *vertexShader;
-    QGLShader *fragmentShader;
-    QGLShaderProgram *shaderProgram;
-    int screenOriginId;
-    int screenSizeId;
-    GLWidgetSplit *draggingSplit;
-    QElapsedTimer elapsedTime;
-    bool animating;
-
-    GLWidgetPrivate(GLWidget *q)
-        :   q(q)
-        ,   scene(0)
-        ,   mainSplit(0)
-        ,   currentSplit(0)
-        ,   displayListId(0)
-        ,   vertexShader(0)
-        ,   fragmentShader(0)
-        ,   shaderProgram(0)
-        ,   screenOriginId(-1)
-        ,   screenSizeId(-1)
-        ,   draggingSplit(0)
-        ,   animating(false)
-    {
-    }
-
-    ~GLWidgetPrivate()
-    {
-        animating = false;
-
-        q->makeCurrent();
-        Q_ASSERT(q->isValid());
-        Q_ASSERT(q->context() == QGLContext::currentContext());
-
-        draggingSplit = 0;
-        screenSizeId = -1;
-        screenOriginId = -1;
-        shaderProgram = 0;
-        fragmentShader = 0;
-        vertexShader = 0;
-        glDeleteLists(displayListId, 1);  displayListId = 0;
-        currentSplit = 0;
-        delete mainSplit;  mainSplit = 0;
-        scene->destroyGL();  scene = 0;
-        q = 0;
-    }
-
-    void init()
-    {
-        initScene();
-        initSplits();
-        initShaders();
-        initDisplayLists();
-    }
-
-    void initScene()
-    {
-        ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-        scene = pm->getObject<GLScene::IGLScene>();
-        Q_ASSERT(scene);
-
-        q->makeCurrent();
-        Q_ASSERT(q->isValid());
-        Q_ASSERT(q->context() == QGLContext::currentContext());
-        scene->initializeGL();
-    }
-
-    void initSplits()
-    {
-        q->makeCurrent();
-        Q_ASSERT(q->isValid());
-        Q_ASSERT(q->context() == QGLContext::currentContext());
-
-        mainSplit = new GLWidgetSplit(q);
-        Q_CHECK_PTR(mainSplit);
-
-        q->setCurrentSplit(mainSplit);
-    }
-
-    void initShaders()
-    {
-        q->makeCurrent();
-        Q_ASSERT(q->isValid());
-        Q_ASSERT(q->context() == QGLContext::currentContext());
-
-        vertexShader = new QGLShader(QGLShader::Vertex, q);
-        Q_CHECK_PTR(vertexShader);
-        Q_CHECK(vertexShader->compileSourceFile(":/gleditor/shaders/glwidget_vertex.glsl"));
-        if (!vertexShader->isCompiled())
-            qDebug() << vertexShader->log();
-
-        fragmentShader = new QGLShader(QGLShader::Fragment, q);
-        Q_CHECK_PTR(fragmentShader);
-        Q_CHECK(fragmentShader->compileSourceFile(":/gleditor/shaders/glwidget_fragment.glsl"));
-        if (!fragmentShader->isCompiled())
-            qDebug() << fragmentShader->log();
-
-        shaderProgram = new QGLShaderProgram(q);
-        Q_CHECK_PTR(shaderProgram);
-        Q_CHECK(shaderProgram->addShader(vertexShader));
-        Q_CHECK(shaderProgram->addShader(fragmentShader));
-        Q_CHECK(shaderProgram->link());
-
-        screenOriginId = shaderProgram->uniformLocation("screenOrigin");
-        screenSizeId = shaderProgram->uniformLocation("screenSize");
-        Q_ASSERT(screenOriginId != -1);
-        Q_ASSERT(screenSizeId != -1);
-
-        Q_CHECK_GLERROR;
-    }
-
-    void initDisplayLists()
-    {
-        q->makeCurrent();
-        Q_ASSERT(q->isValid());
-        Q_ASSERT(q->context() == QGLContext::currentContext());
-
-        displayListId = glGenLists(1);
-        glNewList(displayListId, GL_COMPILE);
-        glBegin(GL_TRIANGLES);
-        glVertex2f(-2.0, -1.0);
-        glVertex2f(2.0, -1.0);
-        glVertex2f(0.0, 4.0);
-        glEnd();
-        glEndList();
-
-        Q_CHECK_GLERROR;
-    }
-};
-
-} // namespace Internal
-} // namespace Editor3D
-
 GLWidget::GLWidget(QWidget *parent)
     :   QGLWidget(parent)
     ,   d(new Internal::GLWidgetPrivate(this))
 {
     Q_CHECK_PTR(d);
-    d->init();
+    d->initialize();
 
     setMouseTracking(true);
     setCursor(QCursor(Qt::CrossCursor));
@@ -311,25 +168,6 @@ void GLWidget::animateGL()
 
 void GLWidget::drawViewport(GLViewport *viewport)
 {
-    QRect vp = viewport->rect();
-    const GLfloat left = vp.left();
-    const GLfloat bottom = height() - vp.bottom() - 1;
-    const GLfloat width = vp.width();
-    const GLfloat height = vp.height();
-    Q_ASSERT(0 < width);
-    Q_ASSERT(0 < height);
-
-    glViewport(left, bottom, width, height);
-    d->shaderProgram->setUniformValue(d->screenOriginId, left, bottom);
-    d->shaderProgram->setUniformValue(d->screenSizeId, width, height);
-
-    const QList<GLuint> &textureIds = viewport->textureIds();
-    foreach (const GLuint &id, textureIds) {
-        if (id == 0)
-            continue;
-        glBindTexture(GL_TEXTURE_2D, id);
-        glCallList(d->displayListId);
-    }
 }
 
 void GLWidget::paintGL()
@@ -347,7 +185,7 @@ void GLWidget::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    d->mainSplit->draw();
+    d->mainSplit->paintGL();
 
     d->shaderProgram->release();
     Q_CHECK_GLERROR;

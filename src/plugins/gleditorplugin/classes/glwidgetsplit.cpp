@@ -271,13 +271,13 @@ GLWidgetSplit *GLWidgetSplit::splitTwo() const
     return d->splitTwo;
 }
 
-void GLWidgetSplit::draw()
+void GLWidgetSplit::paintGL()
 {
     if (isSplit()) {
-        d->splitOne->draw();
-        d->splitTwo->draw();
+        d->splitOne->paintGL();
+        d->splitTwo->paintGL();
     } else
-        d->viewport->draw();
+        d->viewport->paintGL();
 }
 
 void GLWidgetSplit::resize(int w, int h)

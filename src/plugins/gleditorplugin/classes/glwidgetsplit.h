@@ -26,12 +26,14 @@
 #include <QtCore/QSize>
 
 namespace GLEditor {
+namespace Internal {
+
+class GLWidgetSplitPrivate;
+
+} // namespace Internal
+
 class GLViewport;
 class GLWidget;
-
-namespace Internal {
-class GLWidgetSplitPrivate;
-} // namespace Internal
 
 class GLEDITOR_EXPORT GLWidgetSplit : public QObject
 {
@@ -67,19 +69,21 @@ public:
     qreal splitLocation() const;
     void setSplitLocation(qreal location);
 
-    GLViewport *viewport() const; // null if split
+    GLViewport *viewport() const;    // null if split
     GLWidgetSplit *splitOne() const; // null if not split
     GLWidgetSplit *splitTwo() const; // null if not split
 
 protected:
-    friend class GLWidget;
-    virtual void draw();
+    virtual void paintGL();
     virtual void resize(int w, int h);
 
     void updateAnimation();
 
 private:
     Internal::GLWidgetSplitPrivate *d;
+    Q_DISABLE_COPY(GLWidgetSplit)
+
+    friend class GLWidget;
 };
 
 } // namespace GLEditor

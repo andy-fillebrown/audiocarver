@@ -11,6 +11,7 @@ DEFINES += GLEDITOR_LIBRARY
 HEADERS += \
     classes/glviewport.h \
     classes/glwidget.h \
+    classes/glwidget_p.h \
     classes/glwidgetsplit.h \
     \
     implementations/gleditor_mainwindowimpl.h \
@@ -24,6 +25,7 @@ HEADERS += \
 SOURCES += \
     classes/glviewport.cpp \
     classes/glwidget.cpp \
+    classes/glwidget_p.cpp \
     classes/glwidgetsplit.cpp \
     \
     implementations/gleditor_mainwindowimpl.cpp \
