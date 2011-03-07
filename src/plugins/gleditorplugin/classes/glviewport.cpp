@@ -88,8 +88,8 @@ public:
         delete modelFBO;  modelFBO = 0;
         delete staticFBO;  staticFBO = 0;
         delete backgroundFBO;  backgroundFBO = 0;
-        split = 0;
         widget = 0;
+        parentSplit = 0;
         q = 0;
     }
 
