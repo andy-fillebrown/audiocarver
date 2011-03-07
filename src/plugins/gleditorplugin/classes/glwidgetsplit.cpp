@@ -271,15 +271,6 @@ GLWidgetSplit *GLWidgetSplit::splitTwo() const
     return d->splitTwo;
 }
 
-void GLWidgetSplit::paintGL()
-{
-    if (isSplit()) {
-        d->splitOne->paintGL();
-        d->splitTwo->paintGL();
-    } else
-        d->viewport->paintGL();
-}
-
 void GLWidgetSplit::resize(int w, int h)
 {
     if (w < 1)
@@ -303,13 +294,4 @@ void GLWidgetSplit::resize(int w, int h)
         }
     } else
         d->viewport->resize(w, h);
-}
-
-void GLWidgetSplit::updateAnimation()
-{
-    if (isSplit()) {
-        d->splitOne->updateAnimation();
-        d->splitTwo->updateAnimation();
-    } else
-        d->viewport->updateAnimation();
 }

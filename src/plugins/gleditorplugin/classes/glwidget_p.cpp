@@ -44,11 +44,14 @@ GLWidgetPrivate::GLWidgetPrivate(GLWidget *q)
     ,   screenSizeId(-1)
     ,   draggingSplit(0)
     ,   animating(false)
+    ,   isBeingDestroyed(false)
 {
 }
 
 GLWidgetPrivate::~GLWidgetPrivate()
 {
+    isBeingDestroyed = true;
+
     q->makeCurrent();
     Q_ASSERT(q->isValid());
     Q_ASSERT(q->context() == QGLContext::currentContext());
@@ -75,6 +78,21 @@ void GLWidgetPrivate::initialize()
     initializeSplits();
     initializeShaders();
     initializeDisplayLists();
+}
+
+void GLWidgetPrivate::appendViewport(GLViewport *viewport)
+{
+    Q_ASSERT(!viewports.contains(viewport));
+    if (viewports.contains(viewport))
+        return;
+    viewports.append(viewport);
+}
+
+void GLWidgetPrivate::removeViewport(GLViewport *viewport)
+{
+    Q_ASSERT(viewports.contains(viewport));
+    viewports.removeOne(viewport);
+    Q_ASSERT(!viewports.contains(viewport));
 }
 
 void GLWidgetPrivate::initializeScene()

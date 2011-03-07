@@ -50,33 +50,38 @@ public:
     GLViewport *q;
     GLWidget *widget;
     GLWidgetSplit *split;
-    QColor backgroundColor;
     QGLFramebufferObject *backgroundFBO;
     QGLFramebufferObject *staticFBO;
     QGLFramebufferObject *modelFBO;
     QGLFramebufferObject *editingFBO;
     QGLFramebufferObject *animationFBO;
     QGLFramebufferObject *overlayFBO;
+
+    QColor backgroundColor;
     QList<GLuint> textureIds;
 
     GLViewportPrivate(GLViewport *q, GLWidgetSplit *split)
         :   q(q)
         ,   widget(split->widget())
         ,   split(split)
-        ,   backgroundColor(QColor(251, 251, 251))
         ,   backgroundFBO(0)
         ,   staticFBO(0)
         ,   modelFBO(0)
         ,   editingFBO(0)
         ,   animationFBO(0)
         ,   overlayFBO(0)
+        ,   backgroundColor(QColor(251, 251, 251))
     {
+        Q_ASSERT(widget);
+
         initializeGLFunctions(widget->context());
-        initFBOs(split->width(), split->height());
+        initializeFBOs(split->width(), split->height());
     }
 
     ~GLViewportPrivate()
     {
+        textureIds.clear();
+
         delete overlayFBO;  overlayFBO = 0;
         delete animationFBO;  animationFBO = 0;
         delete editingFBO;  editingFBO = 0;
@@ -88,7 +93,7 @@ public:
         q = 0;
     }
 
-    void initFBOs(int w, int h)
+    void initializeFBOs(int w, int h)
     {
         if (w < 1)
             w = 1;
@@ -150,22 +155,20 @@ public:
         case OverlayFBO:
             return overlayFBO;
         default:
-            Q_ASSERT(false && "Invalid fbo type");
+            Q_ASSERT(false && "Invalid fbo type.");
             return 0;
         }
-        Q_ASSERT(false && "Invalid fbo type");
+        Q_ASSERT(false && "Invalid fbo type.");
         return 0;
     }
 
     void updateFBO(int fboId)
     {
         GLScene::IGLScene *scene = widget->currentScene();
-        Q_ASSERT(scene && "No scene");
+        Q_ASSERT(scene && "No scene.");
 
         QGLFramebufferObject *fbo = this->fbo(fboId);
         Q_ASSERT(fbo && fbo->isValid());
-
-        bool drewToFBO = true;
 
         const QSize size = q->size();
         const int w = size.width();
@@ -179,12 +182,14 @@ public:
         glEnable(GL_DEPTH_TEST);
         glShadeModel(GL_FLAT);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glViewport(0, 0, w, h);
         glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 15.0);
         glTranslatef(0.0, 0.0, -10.0);
+
+        bool drewToFBO = true;
 
         switch (fboId) {
         case BackgroundFBO:
@@ -218,7 +223,7 @@ public:
             drewToFBO = scene->drawOverlayGL();
             break;
         default:
-            Q_ASSERT(false && "Invalid fbo type");
+            Q_ASSERT(false && "Invalid fbo type.");
         }
 
         qglPopState();
@@ -239,7 +244,7 @@ public:
 
     void resizeFBOs(int w, int h)
     {
-        initFBOs(w, h);
+        initializeFBOs(w, h);
         updateAllFBOs();
     }
 };
@@ -251,12 +256,22 @@ GLViewport::GLViewport(GLWidgetSplit *split)
     :   d(new GLViewportPrivate(this, split))
 {
     Q_CHECK_PTR(d);
+
     d->updateAllFBOs();
+    d->widget->d->appendViewport(this);
 }
 
 GLViewport::~GLViewport()
 {
+    if (!d->widget->d->isBeingDestroyed)
+        d->widget->d->removeViewport(this);
+
     delete d;  d = 0;
+}
+
+GLWidgetSplit *GLViewport::parentSplit() const
+{
+    return d->split;
 }
 
 QColor GLViewport::backgroundColor() const

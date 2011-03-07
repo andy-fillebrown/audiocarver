@@ -74,10 +74,7 @@ public:
     GLWidgetSplit *splitTwo() const; // null if not split
 
 protected:
-    virtual void paintGL();
     virtual void resize(int w, int h);
-
-    void updateAnimation();
 
 private:
     Internal::GLWidgetSplitPrivate *d;

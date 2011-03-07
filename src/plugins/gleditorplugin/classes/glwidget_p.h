@@ -60,6 +60,7 @@ public:
     GLWidgetSplit *draggingSplit;
     QElapsedTimer elapsedTime;
     bool animating;
+    bool isBeingDestroyed;
 
     QList<GLViewport*> viewports;
 
@@ -67,6 +68,9 @@ public:
     ~GLWidgetPrivate();
 
     void initialize();
+
+    void appendViewport(GLViewport *viewport);
+    void removeViewport(GLViewport* viewport);
 
 private:
     void initializeScene();

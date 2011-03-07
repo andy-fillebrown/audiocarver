@@ -68,8 +68,6 @@ public slots:
     void animateGL();
 
 protected:
-    virtual void drawViewport(GLViewport *viewport);
-
     virtual void paintGL();
     virtual void resizeGL(int width, int height);
 

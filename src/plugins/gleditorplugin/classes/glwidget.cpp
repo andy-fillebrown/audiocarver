@@ -91,6 +91,16 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
     updateGL();
 }
 
+GLViewport *GLWidget::currentViewport() const
+{
+    return currentSplit()->viewport();
+}
+
+void GLWidget::setCurrentViewport(GLViewport *viewport)
+{
+    setCurrentSplit(viewport->parentSplit());
+}
+
 void GLWidget::setAnimating(bool animating)
 {
     d->animating = animating;
@@ -159,15 +169,13 @@ void GLWidget::animateGL()
 {
     QCoreApplication::processEvents();
 
-    d->mainSplit->updateAnimation();
+    foreach (GLViewport *viewport, d->viewports)
+        viewport->updateAnimation();
+
     updateGL();
 
     if (isAnimating())
         QTimer::singleShot(0, this, SLOT(animateGL()));
-}
-
-void GLWidget::drawViewport(GLViewport *viewport)
-{
 }
 
 void GLWidget::paintGL()
@@ -185,7 +193,8 @@ void GLWidget::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    d->mainSplit->paintGL();
+    foreach (GLViewport *viewport, d->viewports)
+        viewport->paintGL();
 
     d->shaderProgram->release();
     Q_CHECK_GLERROR;
@@ -202,10 +211,28 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
     const QPoint pos = event->pos();
 
-    if (!d->draggingSplit) {
-        setCursor(QCursor(Qt::CrossCursor));
+    if (d->draggingSplit) {
+       // Convert mouse position from widget coords to split coords.
+       QPoint splitPos = pos;
+       splitPos.rx() -= d->draggingSplit->pos().x();
+       splitPos.ry() -= d->draggingSplit->pos().y();
 
+       if (d->draggingSplit->isSplitHorizontal())
+           d->draggingSplit->setSplitLocation(qreal(splitPos.y()) / qreal(d->draggingSplit->height()));
+       else
+           d->draggingSplit->setSplitLocation(qreal(splitPos.x()) / qreal(d->draggingSplit->width()));
+
+       d->draggingSplit->resize(d->draggingSplit->width(), d->draggingSplit->height());
+       updateGL();
+
+       Q_CHECK_GLERROR;
+       return;
+    }
+
+    if (!d->draggingSplit) {
         // Change cursor to sizing arrows when over split border.
+        bool isOnBorder = false;
+
         GLWidgetSplit *split = d->mainSplit;
         while (split->isSplit()) {
             if (split->splitOne()->rect().contains(pos)) {
@@ -213,28 +240,19 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
             } else if (split->splitTwo()->rect().contains(pos)) {
                 split = split->splitTwo();
             } else {
-                setCursor(QCursor(split->isSplitHorizontal() ? Qt::SizeVerCursor : Qt::SizeHorCursor));
+                isOnBorder = true;
                 break;
             }
         }
-    } else {
-        // Convert mouse position from widget coords to split coords.
-        QPoint splitPos = pos;
-        splitPos.rx() -= d->draggingSplit->pos().x();
-        splitPos.ry() -= d->draggingSplit->pos().y();
+        const Qt::CursorShape currentCursorShape = cursor().shape();
+        Qt::CursorShape desiredCursorShape = Qt::CrossCursor;
+        if (isOnBorder)
+            desiredCursorShape = split->isSplitHorizontal() ? Qt::SizeVerCursor
+                                                            : Qt::SizeHorCursor;
+        if (currentCursorShape != desiredCursorShape)
+            setCursor(QCursor(desiredCursorShape));
 
-        if (d->draggingSplit->isSplitHorizontal())
-            d->draggingSplit->setSplitLocation(qreal(splitPos.y()) / qreal(d->draggingSplit->height()));
-        else
-            d->draggingSplit->setSplitLocation(qreal(splitPos.x()) / qreal(d->draggingSplit->width()));
-
-        Q_ASSERT(isValid());
-        Q_ASSERT(context() == QGLContext::currentContext());
-
-        d->draggingSplit->resize(d->draggingSplit->width(), d->draggingSplit->height());
-        updateGL();
-
-        Q_CHECK_GLERROR;
+        return;
     }
 }
 

@@ -37,6 +37,8 @@ public:
     GLViewport(GLWidgetSplit *split);
     virtual ~GLViewport();
 
+    GLWidgetSplit *parentSplit() const;
+
     QColor backgroundColor() const;
     void setBackgroundColor(const QColor &color);
 
