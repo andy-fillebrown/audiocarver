@@ -56,6 +56,11 @@ public:
     const QVector3D &cameraPosition() const;
     void setCameraPosition(const QVector3D &position);
 
+    const QVector3D &cameraTarget() const;
+    void setCameraTarget(const QVector3D &target);
+
+    void setCameraPoints(const QVector3D &position, const QVector3D &target);
+
 protected:
     virtual void paintGL();
 

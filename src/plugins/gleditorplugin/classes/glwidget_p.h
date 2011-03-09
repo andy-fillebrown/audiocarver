@@ -21,6 +21,8 @@
 #include <QtCore/QElapsedTimer>
 #include <QtCore/qlist.h>
 
+#include <QtGui/QVector3D>
+
 QT_BEGIN_NAMESPACE
 
 class QElapsedTimer;
@@ -58,6 +60,12 @@ public:
     int screenOriginId;
     int screenSizeId;
     GLWidgetSplit *draggingSplit;
+    QPoint dragStartScreenPosition;
+    GLViewport *draggingViewport;
+    QVector3D dragStartCameraPosition;
+    QVector3D dragStartCameraTarget;
+    bool isPanning;
+    bool isRotating;
     QElapsedTimer elapsedTime;
     bool animating;
     bool isBeingDestroyed;

@@ -28,9 +28,9 @@
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>
 
+#include <QtGui/QApplication>
 #include <QtGui/QMouseEvent>
 
-#include <QtCore/QCoreApplication>
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QTimer>
 
@@ -251,8 +251,20 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
                                                             : Qt::SizeHorCursor;
         if (currentCursorShape != desiredCursorShape)
             setCursor(QCursor(desiredCursorShape));
+    }
 
-        return;
+    if (d->isPanning) {
+        GLViewport *vp = d->draggingViewport;
+        QVector3D camPos = d->dragStartCameraPosition;
+        QVector3D camTar = d->dragStartCameraTarget;
+        qreal aspect = qreal(vp->width()) / qreal(vp->height());
+        qreal dragX = qreal(pos.x() - d->dragStartScreenPosition.x()) / qreal(vp->width() / (0.5 * aspect * -camPos.z()));
+        qreal dragY = qreal(pos.y() - d->dragStartScreenPosition.y()) / qreal(vp->height() / (0.25 * aspect * -camPos.z()));
+        camPos.setX(camPos.x() + dragX);
+        camPos.setY(camPos.y() + dragY);
+        camTar.setX(camTar.x() + dragX);
+        camTar.setY(camTar.y() + dragY);
+        vp->setCameraPoints(camPos, camTar);
     }
 }
 
@@ -260,27 +272,46 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 {
     const QPoint pos = event->pos();
 
-    GLWidgetSplit *split = d->mainSplit;
-    while (split->isSplit()) {
-        if (split->splitOne()->rect().contains(pos)) {
-            split = split->splitOne();
-        } else if (split->splitTwo()->rect().contains(pos)) {
-            split = split->splitTwo();
-        } else {
-            d->draggingSplit = split;
-            split = 0;
-            break;
+    if (event->button() == Qt::LeftButton) {
+        GLWidgetSplit *split = d->mainSplit;
+        while (split->isSplit()) {
+            if (split->splitOne()->rect().contains(pos)) {
+                split = split->splitOne();
+            } else if (split->splitTwo()->rect().contains(pos)) {
+                split = split->splitTwo();
+            } else {
+                d->draggingSplit = split;
+                split = 0;
+                break;
+            }
+        }
+        if (split)
+            setCurrentSplit(split);
+    }
+    else if (event->button() == Qt::RightButton) {
+        d->dragStartScreenPosition = pos;
+
+        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
+            d->isPanning = true;
+        else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+            d->isRotating = true;
+        if (d->isPanning || d->isRotating) {
+            d->draggingViewport = d->viewportAtPosition(pos);
+            d->dragStartCameraPosition = d->draggingViewport->cameraPosition();
+            d->dragStartCameraTarget = d->draggingViewport->cameraTarget();
         }
     }
-    if (split)
-        setCurrentSplit(split);
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
-
-    d->draggingSplit = 0;
+    if (event->button() == Qt::LeftButton)
+        d->draggingSplit = 0;
+    else if (event->button() == Qt::RightButton) {
+        d->draggingViewport = 0;
+        d->isPanning = false;
+        d->isRotating = false;
+    }
 }
 
 void GLWidget::wheelEvent(QWheelEvent *event)

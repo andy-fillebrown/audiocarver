@@ -28,6 +28,8 @@
 #include <QtOpenGL/QGLFunctions>
 #include <QtOpenGL/QGLShaderProgram>
 
+#include <GL/glu.h>
+
 using namespace GLEditor;
 using namespace GLEditor::Internal;
 
@@ -74,6 +76,7 @@ public:
         ,   overlayFBO(0)
         ,   backgroundColor(QColor(251, 251, 251))
         ,   cameraPosition(0.0, 0.0, -10.0)
+        ,   cameraTarget(0.0, 0.0, 0.0)
     {
         Q_ASSERT(widget);
 
@@ -186,11 +189,18 @@ public:
         glShadeModel(GL_FLAT);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+
+        glViewport(0, 0, w, h);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 1000.0);
+
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glViewport(0, 0, w, h);
-        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 1000.0);
-        glTranslatef(cameraPosition.x(), cameraPosition.y(), cameraPosition.z());
+        gluLookAt(cameraPosition.x(), cameraPosition.y(), cameraPosition.z(),
+                  cameraTarget.x(), cameraTarget.y(), cameraTarget.z(),
+                  0, 1, 0);
 
         bool drewToFBO = false;
 
@@ -310,6 +320,16 @@ QSize GLViewport::size() const
     return d->parentSplit->size();
 }
 
+int GLViewport::width() const
+{
+    return d->parentSplit->width();
+}
+
+int GLViewport::height() const
+{
+    return d->parentSplit->height();
+}
+
 void GLViewport::resize(int width, int height)
 {
     d->resizeFBOs(width, height);
@@ -328,6 +348,24 @@ const QVector3D &GLViewport::cameraPosition() const
 void GLViewport::setCameraPosition(const QVector3D &position)
 {
     d->cameraPosition = position;
+    d->updateAllFBOs();
+}
+
+const QVector3D &GLViewport::cameraTarget() const
+{
+    return d->cameraTarget;
+}
+
+void GLViewport::setCameraTarget(const QVector3D &target)
+{
+    d->cameraTarget = target;
+    d->updateAllFBOs();
+}
+
+void GLViewport::setCameraPoints(const QVector3D &position, const QVector3D &target)
+{
+    d->cameraPosition = position;
+    d->cameraTarget = target;
     d->updateAllFBOs();
 }
 
