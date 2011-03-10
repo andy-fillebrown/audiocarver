@@ -264,7 +264,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         camPos.setY(camPos.y() + dragY);
         camTar.setX(camTar.x() + dragX);
         camTar.setY(camTar.y() + dragY);
-        vp->setCameraPoints(camPos, camTar);
+        vp->setCameraVectors(camPos, camTar, QVector3D(0, 1, 0));
     }
 }
 

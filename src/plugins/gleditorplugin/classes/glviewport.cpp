@@ -61,8 +61,18 @@ public:
 
     QColor backgroundColor;
     QList<GLuint> textureIds;
-    QVector3D cameraPosition;
+
     QVector3D cameraTarget;
+    QVector3D cameraPosition;
+    QVector3D cameraUpVector;
+    qreal dcsWidth;
+    qreal dcsHeight;
+    bool perspective;
+
+    QMatrix4x4 screenTransform;
+    QMatrix4x4 projectionTransform;
+    QMatrix4x4 viewTransform;
+    QMatrix4x4 worldTransform;
 
     GLViewportPrivate(GLViewport *q, GLWidgetSplit *parentSplit)
         :   q(q)
@@ -75,8 +85,12 @@ public:
         ,   animationFBO(0)
         ,   overlayFBO(0)
         ,   backgroundColor(QColor(251, 251, 251))
-        ,   cameraPosition(0.0, 0.0, -10.0)
         ,   cameraTarget(0.0, 0.0, 0.0)
+        ,   cameraPosition(0.0, 0.0, -100.0)
+        ,   cameraUpVector(0.0, 1.0, 0.0)
+        ,   dcsWidth(2.0)
+        ,   dcsHeight(2.0)
+        ,   perspective(true)
     {
         Q_ASSERT(widget);
 
@@ -195,12 +209,14 @@ public:
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 1000.0);
+//        glLoadMatrixd(projectionTransform.data());
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         gluLookAt(cameraPosition.x(), cameraPosition.y(), cameraPosition.z(),
                   cameraTarget.x(), cameraTarget.y(), cameraTarget.z(),
                   0, 1, 0);
+//        glLoadMatrixd(viewTransform.data());
 
         bool drewToFBO = false;
 
@@ -261,6 +277,55 @@ public:
     {
         initializeFBOs(w, h);
         updateAllFBOs();
+    }
+
+    void updateTransforms()
+    {
+        QMatrix4x4 xform;
+
+        // Screen transform.
+        xform(0,0) = xform(0,3) = qreal(q->width()) / 2.0;
+        xform(1,1) = xform(1,3) = qreal(q->height()) / 2.0;
+        if (perspective) {
+            xform(2,2) = 3276.75;
+            xform(2,3) = 62258.75;
+        } else
+            xform(2,2) = xform(2,3) = 32767.5;
+        screenTransform = xform;
+
+        // Projection transform.
+        xform.setToIdentity();
+        const qreal targetDistance = (cameraTarget - cameraPosition).length();
+        xform(0,0) = 2.0 / dcsWidth;
+        xform(1,1) = 2.0 / dcsHeight;
+        if (perspective)
+            xform(2,2) = xform(3,2) = 1.0 / targetDistance;
+        else
+            xform(2,2) = 0.1 / targetDistance;
+        projectionTransform = xform;
+
+        // View transform.
+        xform.setToIdentity();
+        QVector3D vz = (cameraTarget - cameraPosition).normalized();
+        QVector3D vy = cameraUpVector;
+        QVector3D vx = QVector3D::crossProduct(vz, vy);
+        xform(0,0) = vx.x();  xform(0,1) = vx.y();  xform(0,2) = vx.z();
+        xform(1,0) = vy.x();  xform(1,1) = vy.y();  xform(1,2) = vy.z();
+        xform(2,0) = vz.x();  xform(2,1) = vz.y();  xform(2,2) = vz.z();
+        QVector3D target = xform.map(cameraTarget);
+        target = -target;
+        xform(0,3) = target.x();
+        xform(1,3) = target.y();
+        xform(2,3) = target.z();
+        viewTransform = xform;
+
+        // World Transform.
+        xform = screenTransform * projectionTransform * viewTransform;
+        const qreal scalar = xform(3,3);
+        if (scalar != 1.0 && scalar != 0.0)
+            xform *= scalar;
+        xform(3,3) = 1.0;
+        worldTransform = xform;
     }
 };
 
@@ -340,14 +405,12 @@ void GLViewport::updateAnimation()
     d->updateFBO(AnimationFBO);
 }
 
-const QVector3D &GLViewport::cameraPosition() const
-{
-    return d->cameraPosition;
-}
-
-void GLViewport::setCameraPosition(const QVector3D &position)
+void GLViewport::setCameraVectors(const QVector3D &position, const QVector3D &target, const QVector3D &upVector)
 {
     d->cameraPosition = position;
+    d->cameraTarget = target;
+    d->cameraUpVector = upVector;
+    d->updateTransforms();
     d->updateAllFBOs();
 }
 
@@ -359,14 +422,64 @@ const QVector3D &GLViewport::cameraTarget() const
 void GLViewport::setCameraTarget(const QVector3D &target)
 {
     d->cameraTarget = target;
+    d->updateTransforms();
     d->updateAllFBOs();
 }
 
-void GLViewport::setCameraPoints(const QVector3D &position, const QVector3D &target)
+const QVector3D &GLViewport::cameraPosition() const
+{
+    return d->cameraPosition;
+}
+
+void GLViewport::setCameraPosition(const QVector3D &position)
 {
     d->cameraPosition = position;
-    d->cameraTarget = target;
+    d->updateTransforms();
     d->updateAllFBOs();
+}
+
+const QVector3D &GLViewport::cameraUpVector() const
+{
+    return d->cameraUpVector;
+}
+
+void GLViewport::setCameraUpVector(const QVector3D &upVector)
+{
+    d->cameraUpVector = upVector;
+    d->updateTransforms();
+    d->updateAllFBOs();
+}
+
+bool GLViewport::isPerspective() const
+{
+    return d->perspective;
+}
+
+void GLViewport::setPerspective(bool perspective)
+{
+    d->perspective = perspective;
+    d->updateTransforms();
+    d->updateAllFBOs();
+}
+
+const QMatrix4x4 &GLViewport::screenTransform() const
+{
+    return d->screenTransform;
+}
+
+const QMatrix4x4 &GLViewport::projectionTransform() const
+{
+    return d->projectionTransform;
+}
+
+const QMatrix4x4 &GLViewport::viewTransform() const
+{
+    return d->viewTransform;
+}
+
+const QMatrix4x4 &GLViewport::worldTransform() const
+{
+    return d->worldTransform;
 }
 
 void GLViewport::paintGL()

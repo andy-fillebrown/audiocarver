@@ -53,13 +53,20 @@ public:
 
     void updateAnimation();
 
-    const QVector3D &cameraPosition() const;
-    void setCameraPosition(const QVector3D &position);
-
+    void setCameraVectors(const QVector3D &position, const QVector3D &target, const QVector3D &upVector);
     const QVector3D &cameraTarget() const;
     void setCameraTarget(const QVector3D &target);
+    const QVector3D &cameraPosition() const;
+    void setCameraPosition(const QVector3D &position);
+    const QVector3D &cameraUpVector() const;
+    void setCameraUpVector(const QVector3D &upVector);
+    bool isPerspective() const;
+    void setPerspective(bool perspective);
 
-    void setCameraPoints(const QVector3D &position, const QVector3D &target);
+    const QMatrix4x4 &screenTransform() const;
+    const QMatrix4x4 &projectionTransform() const;
+    const QMatrix4x4 &viewTransform() const;
+    const QMatrix4x4 &worldTransform() const;
 
 protected:
     virtual void paintGL();
