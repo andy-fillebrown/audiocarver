@@ -22,6 +22,7 @@
 #include "glwidgetsplit.h"
 
 #include <glsceneplugin/interfaces/iglscene.h>
+//#include <geometry/classes/point.h>
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLFramebufferObject>
@@ -217,6 +218,23 @@ public:
                   cameraTarget.x(), cameraTarget.y(), cameraTarget.z(),
                   0, 1, 0);
 //        glLoadMatrixd(viewTransform.data());
+
+
+#ifndef QT_NO_DEBUG
+        if (fboId == BackgroundFBO) {
+//            qglTraceModelViewMatrix();
+//            qglTraceProjectionMatrix();
+//            qglTraceViewport();
+            qglTraceTransformations();
+
+//            Geometry::Point pt(1.1, 2.2, 3.1415926535897932384626433832795);
+//            qDebug() << "Geometry::Point size ==" << sizeof(pt);
+//            qDebug() << QString("%1, %2, %3")
+//                        .arg(((float*)&pt)[0])
+//                        .arg(((float*)&pt)[1])
+//                        .arg(((float*)&pt)[2]);
+        }
+#endif
 
         bool drewToFBO = false;
 
