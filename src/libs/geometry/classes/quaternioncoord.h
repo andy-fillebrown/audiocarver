@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_LINESEGMENT_H
-#define GEOMETRY_LINESEGMENT_H
+#ifndef GEOMETRY_QUATERNIONCOORD_H
+#define GEOMETRY_QUATERNIONCOORD_H
 
-#include <gmtl/LineSeg.h>
+#include <gmtl/Coord.h>
 
-#include <geometry/classes/point.h>
+#include <geometry/geometry_global.h>
 
 namespace Geometry {
 namespace Internal {
 
-typedef gmtl::LineSeg<real> LineSegmentData;
+typedef gmtl::Coord<gmtl::Vec<real, 3>, gmtl::Quat<real> > QuaternionCoordData;
+
+class Helper;
 
 } // namespace Internal
 
-class Plane;
-
-class GEOMETRY_EXPORT LineSegment
+class GEOMETRY_EXPORT QuaternionCoord
 {
 public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
-
-    Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
+    QuaternionCoord() {}
+    ~QuaternionCoord() {}
 
 private:
-    Internal::LineSegmentData d;
+    Internal::QuaternionCoordData d;
+
+    QuaternionCoord(const Internal::QuaternionCoordData &d) : d(d) {}
 
     friend class Internal::Helper;
 };
 
 } // namespace Geometry
 
-#endif // GEOMETRY_LINESEGMENT_H
+#endif // GEOMETRY_QUATERNIONCOORD_H

@@ -27,17 +27,16 @@ namespace Geometry {
 namespace Internal {
 
 typedef gmtl::Ray<real> RayData;
-class Helper;
 
 } // namespace Internal
 
 class LineSegment;
-class Ray;
 
 class GEOMETRY_EXPORT Ray
 {
 public:
-    Ray(const Point &startPoint = Point(), const Vector &vector = Vector()) : d(startPoint.d, vector.d) {}
+    Ray();
+    Ray(const Point &startPoint, const Vector &vector);
     ~Ray() {}
 
     Point intersectPoint(const LineSegment &lineSegment, bool *isValid = 0) const;

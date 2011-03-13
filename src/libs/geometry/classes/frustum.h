@@ -26,15 +26,39 @@ namespace Geometry {
 namespace Internal {
 
 typedef gmtl::Frustum<real> FrustumData;
+
 class Helper;
 
 } // namespace Internal
 
+class AxisAlignedBox;
+class LineSegment;
+class Matrix;
+class Plane;
+class Point;
+class Ray;
+class Sphere;
+class Vector;
+
 class GEOMETRY_EXPORT Frustum
 {
 public:
-    Frustum() {}
-    ~Frustum() {}
+    Frustum();
+    Frustum(const Matrix &projectionMatrix);
+    Frustum(const Matrix &projectionMatrix, const Matrix &modelViewMatrix);
+    ~Frustum();
+
+    bool contains(const AxisAlignedBox &axisAlignedBox) const;
+    bool contains(const LineSegment &lineSegment) const;
+    bool contains(const Point &point) const;
+    bool contains(const Sphere &sphere) const;
+
+    bool intersectsWith(const AxisAlignedBox &axisAlignedBox) const;
+    bool intersectsWith(const LineSegment &lineSegment) const;
+    bool intersectsWith(const Plane &plane) const;
+    bool intersectsWith(const Ray &ray) const;
+    bool intersectsWith(const Sphere &sphere) const;
+    bool intersectsWith(const Vector &vector) const;
 
 private:
     Internal::FrustumData d;

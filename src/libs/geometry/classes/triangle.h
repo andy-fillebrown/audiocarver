@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_LINESEGMENT_H
-#define GEOMETRY_LINESEGMENT_H
+#ifndef GEOMETRY_TRIANGLE_H
+#define GEOMETRY_TRIANGLE_H
 
-#include <gmtl/LineSeg.h>
+#include <gmtl/Tri.h>
 
-#include <geometry/classes/point.h>
+#include <geometry/geometry_global.h>
 
 namespace Geometry {
 namespace Internal {
 
-typedef gmtl::LineSeg<real> LineSegmentData;
+typedef gmtl::Tri<real> TriangleData;
+
+class Helper;
 
 } // namespace Internal
 
-class Plane;
-
-class GEOMETRY_EXPORT LineSegment
+class GEOMETRY_EXPORT Triangle
 {
 public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
-
-    Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
+    Triangle() {}
+    ~Triangle() {}
 
 private:
-    Internal::LineSegmentData d;
+    Internal::TriangleData d;
+
+    Triangle(const Internal::TriangleData &d) : d(d) {}
 
     friend class Internal::Helper;
 };
 
 } // namespace Geometry
 
-#endif // GEOMETRY_LINESEGMENT_H
+#endif // GEOMETRY_TRIANGLE_H

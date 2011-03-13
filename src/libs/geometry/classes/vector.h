@@ -26,6 +26,7 @@ namespace Geometry {
 namespace Internal {
 
 typedef gmtl::Vec<real, 3> VectorData;
+
 class Helper;
 
 } // namespace Internal
@@ -33,27 +34,28 @@ class Helper;
 class GEOMETRY_EXPORT Vector
 {
 public:
-    Vector(real x = 0.0, real y = 0.0, real z = 1.0) :   d(x, y, z) {}
-    ~Vector() {}
+    Vector(real x, real y, real z);
+    ~Vector();
 
-    real x() const { return d[0]; }
-    void setX(real x) { d[0] = x; }
+    real x() const;
+    void setX(real x);
 
-    real y() const { return d[1]; }
-    void setY(real y) { d[1] = y; }
+    real y() const;
+    void setY(real y);
 
-    real z() const { return d[2]; }
-    void setZ(real z) { d[2] = z; }
+    real z() const;
+    void setZ(real z);
 
 private:
     Internal::VectorData d;
 
     Vector(const Internal::VectorData &d) : d(d) {}
 
-    friend class Internal::Helper;
     friend class LineSegment;
     friend class Plane;
     friend class Ray;
+
+    friend class Internal::Helper;
 };
 
 } // namespace Geometry

@@ -16,14 +16,3 @@
 **************************************************************************/
 
 #include "plane.h"
-
-#include <classes/helper.h>
-#include <classes/linesegment.h>
-
-using namespace Geometry;
-
-Point Plane::intersectionPoint(const LineSegment &lineSegment, bool *isValid) const
-{
-    Q_ASSERT(false && "Not implemented yet.");
-    return Point();
-}

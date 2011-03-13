@@ -15,37 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_LINESEGMENT_H
-#define GEOMETRY_LINESEGMENT_H
-
-#include <gmtl/LineSeg.h>
-
-#include <geometry/classes/point.h>
-
-namespace Geometry {
-namespace Internal {
-
-typedef gmtl::LineSeg<real> LineSegmentData;
-
-} // namespace Internal
-
-class Plane;
-
-class GEOMETRY_EXPORT LineSegment
-{
-public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
-
-    Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
-
-private:
-    Internal::LineSegmentData d;
-
-    friend class Internal::Helper;
-};
-
-} // namespace Geometry
-
-#endif // GEOMETRY_LINESEGMENT_H
+#include "eulerangle.h"

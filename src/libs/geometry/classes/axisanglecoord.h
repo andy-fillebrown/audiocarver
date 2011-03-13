@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_LINESEGMENT_H
-#define GEOMETRY_LINESEGMENT_H
+#ifndef GEOMETRY_AXISANGLECOORD_H
+#define GEOMETRY_AXISANGLECOORD_H
 
-#include <gmtl/LineSeg.h>
+#include <gmtl/Coord.h>
 
-#include <geometry/classes/point.h>
+#include <geometry/geometry_global.h>
 
 namespace Geometry {
 namespace Internal {
 
-typedef gmtl::LineSeg<real> LineSegmentData;
+typedef gmtl::Coord<gmtl::Vec<real, 3>, gmtl::AxisAngle<real> > AxisAngleCoordData;
+
+class Helper;
 
 } // namespace Internal
 
-class Plane;
-
-class GEOMETRY_EXPORT LineSegment
+class GEOMETRY_EXPORT AxisAngleCoord
 {
 public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
-
-    Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
+    AxisAngleCoord() {}
+    ~AxisAngleCoord() {}
 
 private:
-    Internal::LineSegmentData d;
+    Internal::AxisAngleCoordData d;
+
+    AxisAngleCoord(const Internal::AxisAngleCoordData &d) : d(d) {}
 
     friend class Internal::Helper;
 };
 
 } // namespace Geometry
 
-#endif // GEOMETRY_LINESEGMENT_H
+#endif // GEOMETRY_AXISANGLECOORD_H

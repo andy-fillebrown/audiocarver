@@ -28,14 +28,14 @@ namespace Geometry {
 namespace Internal {
 
 typedef gmtl::Sphere<real> SphereData;
-class Helper;
 
 } // namespace Internal
 
 class GEOMETRY_EXPORT Sphere
 {
 public:
-    Sphere(const Point &centerPoint = Point(), real radius = 1.0) : d(centerPoint.d, radius) {}
+    Sphere();
+    Sphere(const Point &centerPoint, real radius);
     ~Sphere() {}
 
     static Sphere containing(const QVector<Point> &points);

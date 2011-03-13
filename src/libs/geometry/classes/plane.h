@@ -27,7 +27,6 @@ namespace Geometry {
 namespace Internal {
 
 typedef gmtl::Plane<real> PlaneData;
-class Helper;
 
 } // namespace Internal
 
@@ -37,16 +36,19 @@ class Ray;
 class GEOMETRY_EXPORT Plane
 {
 public:
-    Plane(const Point &pointOnPlane = Point(), const Vector &normal = Vector()) : d(normal.d, pointOnPlane.d) {}
+    Plane() {}
+    Plane(const Point &point, const Vector &normal) : d(normal.d, point.d) {}
     ~Plane() {}
 
-    Point intersectionPoint(const LineSegment &lineSegment, bool *isValid = 0) const;
-    Point intersectionPoint(const Ray &ray, bool *isValid = 0) const;
+    Point intersectionPointOf(const LineSegment &lineSegment, bool *isValid = 0) const;
+    Point intersectionPointOf(const Ray &ray, bool *isValid = 0) const;
 
 private:
+    Plane(const Internal::PlaneData &d) : d(d) {}
+
     Internal::PlaneData d;
 
-    Plane(const Internal::PlaneData &d) : d(d) {}
+    friend class Frustum;
 
     friend class Internal::Helper;
 };

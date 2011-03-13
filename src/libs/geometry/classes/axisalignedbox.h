@@ -26,26 +26,28 @@ namespace Geometry {
 namespace Internal {
 
 typedef gmtl::AABox<real> AxisAlignedBoxData;
-class Helper;
 
 } // namespace Internal
 
 class GEOMETRY_EXPORT AxisAlignedBox
 {
 public:
-    AxisAlignedBox(const Point &minimumPoint = Point(), const Point &maximumPoint = Point(1, 1, 1)) : d(minimumPoint.d, maximumPoint.d) {}
+    AxisAlignedBox() {}
+    AxisAlignedBox(const Point &minimumPoint, const Point &maximumPoint) : d(minimumPoint.d, maximumPoint.d) {}
     ~AxisAlignedBox() {}
 
-    Point minimumPoint() const;
-    void setMinimumPoint(const Point &point);
+    Point minimumPoint() const { return d.mMin; }
+    void setMinimumPoint(const Point &point) { d.mMin = point.d; }
 
-    Point maximumPoint() const;
-    void setMaximumPoint(const Point &point);
+    Point maximumPoint() const { return d.mMax; }
+    void setMaximumPoint(const Point &point) { d.mMax = point.d; }
+
+    void expandToContain(const AxisAlignedBox &axisAlignedBox);
+    void expandToContain(const Point &point);
 
     bool contains(const Point &point) const;
 
-    void expand(const AxisAlignedBox &box);
-    void expand(const Point &point);
+    bool intersectsWith(const AxisAlignedBox &axisAlignedBox) const;
 
 private:
     Internal::AxisAlignedBoxData d;

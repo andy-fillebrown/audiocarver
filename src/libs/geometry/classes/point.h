@@ -26,42 +26,29 @@ namespace Geometry {
 namespace Internal {
 
 typedef gmtl::Point<real, 3> PointData;
+
 class Helper;
 
 } // namespace Internal
 
-class AxisAlignedBox;
-class Sphere;
-
 class GEOMETRY_EXPORT Point
 {
 public:
-    Point(real x = 0.0, real y = 0.0, real z = 0.0) :   d(x, y, z) {}
+    Point(real x = 0.0, real y = 0.0, real z = 0.0);
     ~Point() {}
-
-    real x() const { return d[0]; }
-    void setX(real x) { d[0] = x; }
-
-    real y() const { return d[1]; }
-    void setY(real y) { d[1] = y; }
-
-    real z() const { return d[2]; }
-    void setZ(real z) { d[2] = z; }
-
-    bool isOn(const Sphere &sphere, real tolerance = 0.0) const;
 
 private:
     Internal::PointData d;
 
     Point(const Internal::PointData &d) : d(d) {}
 
-    friend class Internal::Helper;
-
     friend class AxisAlignedBox;
     friend class LineSegment;
     friend class Plane;
     friend class Ray;
     friend class Sphere;
+
+    friend class Internal::Helper;
 };
 
 } // namespace Geometry

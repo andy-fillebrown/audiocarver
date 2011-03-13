@@ -15,33 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_HELPER_H
-#define GEOMETRY_HELPER_H
-
-#include <geometry/classes/linesegment.h>
-#include <geometry/classes/plane.h>
-#include <geometry/classes/ray.h>
-
-#include <gmtl/Intersection.h>
-
-namespace Geometry {
-namespace Internal {
-
-class Helper
-{
-public:
-    inline static Point intersection(const LineSegment &lineSegment, const Plane &plane, bool *isValid = 0)
-    {
-        real t = 0.0;
-        bool ok = gmtl::intersect(plane.d, lineSegment.d, t);
-        if (isValid)
-            *isValid = ok;
-
-        return Point(lineSegment.d.mOrigin + lineSegment.d.mDir * t);
-    }
-};
-
-} // namespace Internal
-} // namespace Geometry
-
-#endif // GEOMETRY_HELPER_H
+#include "axisangle.h"

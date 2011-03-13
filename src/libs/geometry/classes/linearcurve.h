@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_LINESEGMENT_H
-#define GEOMETRY_LINESEGMENT_H
+#ifndef GEOMETRY_LINEARCURVE_H
+#define GEOMETRY_LINEARCURVE_H
 
-#include <gmtl/LineSeg.h>
+#include <gmtl/ParametricCurve.h>
 
-#include <geometry/classes/point.h>
+#include <geometry/geometry_global.h>
 
 namespace Geometry {
 namespace Internal {
 
-typedef gmtl::LineSeg<real> LineSegmentData;
+typedef gmtl::LinearCurve<real, 3> LinearCurveData;
+
+class Helper;
 
 } // namespace Internal
 
-class Plane;
-
-class GEOMETRY_EXPORT LineSegment
+class GEOMETRY_EXPORT LinearCurve
 {
 public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
-
-    Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
+    LinearCurve() {}
+    ~LinearCurve() {}
 
 private:
-    Internal::LineSegmentData d;
+    Internal::LinearCurveData d;
+
+    LinearCurve(const Internal::LinearCurveData &d) : d(d) {}
 
     friend class Internal::Helper;
 };
 
 } // namespace Geometry
 
-#endif // GEOMETRY_LINESEGMENT_H
+#endif // GEOMETRY_LINEARCURVE_H

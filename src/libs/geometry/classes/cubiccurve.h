@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_LINESEGMENT_H
-#define GEOMETRY_LINESEGMENT_H
+#ifndef GEOMETRY_CUBICCURVE_H
+#define GEOMETRY_CUBICCURVE_H
 
-#include <gmtl/LineSeg.h>
+#include <gmtl/ParametricCurve.h>
 
-#include <geometry/classes/point.h>
+#include <geometry/geometry_global.h>
 
 namespace Geometry {
 namespace Internal {
 
-typedef gmtl::LineSeg<real> LineSegmentData;
+typedef gmtl::CubicCurve<real, 3> CubicCurveData;
+
+class Helper;
 
 } // namespace Internal
 
-class Plane;
-
-class GEOMETRY_EXPORT LineSegment
+class GEOMETRY_EXPORT CubicCurve
 {
 public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
-
-    Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
+    CubicCurve() {}
+    ~CubicCurve() {}
 
 private:
-    Internal::LineSegmentData d;
+    Internal::CubicCurveData d;
+
+    CubicCurve(const Internal::CubicCurveData &d) : d(d) {}
 
     friend class Internal::Helper;
 };
 
 } // namespace Geometry
 
-#endif // GEOMETRY_LINESEGMENT_H
+#endif // GEOMETRY_CUBICCURVE_H

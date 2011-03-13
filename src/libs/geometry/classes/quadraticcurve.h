@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_LINESEGMENT_H
-#define GEOMETRY_LINESEGMENT_H
+#ifndef GEOMETRY_QUADRATICCURVE_H
+#define GEOMETRY_QUADRATICCURVE_H
 
-#include <gmtl/LineSeg.h>
+#include <gmtl/ParametricCurve.h>
 
-#include <geometry/classes/point.h>
+#include <geometry/geometry_global.h>
 
 namespace Geometry {
 namespace Internal {
 
-typedef gmtl::LineSeg<real> LineSegmentData;
+typedef gmtl::QuadraticCurve<real, 3> QuadraticCurveData;
+
+class Helper;
 
 } // namespace Internal
 
-class Plane;
-
-class GEOMETRY_EXPORT LineSegment
+class GEOMETRY_EXPORT QuadraticCurve
 {
 public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
-
-    Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
+    QuadraticCurve() {}
+    ~QuadraticCurve() {}
 
 private:
-    Internal::LineSegmentData d;
+    Internal::QuadraticCurveData d;
+
+    QuadraticCurve(const Internal::QuadraticCurveData &d) : d(d) {}
 
     friend class Internal::Helper;
 };
 
 } // namespace Geometry
 
-#endif // GEOMETRY_LINESEGMENT_H
+#endif // GEOMETRY_QUADRATICCURVE_H
