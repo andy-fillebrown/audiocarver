@@ -8,3 +8,6 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = src
+
+OTHER_FILES += \
+    project.pri
