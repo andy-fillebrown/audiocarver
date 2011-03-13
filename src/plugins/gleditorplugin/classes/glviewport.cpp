@@ -208,7 +208,7 @@ public:
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glFrustum(-aspect, aspect, -1.0, 1.0, 4.0, 1000.0);
+        glFrustum(-aspect, aspect, -1.0, 1.0, 1.0, 1000.0);
 //        glLoadMatrixd(projectionTransform.data());
 
         glMatrixMode(GL_MODELVIEW);
