@@ -15,42 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_POINT_H
-#define GEOMETRY_POINT_H
+#include "point2d.h"
+#include "point3d.h"
+#include "point4d.h"
+#include "vector2d.h"
+#include "vector3d.h"
+#include "vector4d.h"
 
-#include <gmtl/Point.h>
+#include <QtCore/QVariant>
 
-#include <geometry/geometry_global.h>
+using namespace Geometry;
 
-namespace Geometry {
-namespace Internal {
-
-typedef gmtl::Point<real, 3> PointData;
-
-class Helper;
-
-} // namespace Internal
-
-class GEOMETRY_EXPORT Point
+Vector2D::Vector2D(const Point2D &point)
+    :   d(point.d[0], point.d[2])
 {
-public:
-    Point(real x = 0.0, real y = 0.0, real z = 0.0);
-    ~Point() {}
+}
 
-private:
-    Internal::PointData d;
+Vector2D::Vector2D(const Point3D &point)
+    :   d(point.d[0], point.d[1])
+{
+}
 
-    Point(const Internal::PointData &d) : d(d) {}
+Vector2D::Vector2D(const Point4D &point)
+    :   d(point.d[0], point.d[1])
+{
+}
 
-    friend class AxisAlignedBox;
-    friend class LineSegment;
-    friend class Plane;
-    friend class Ray;
-    friend class Sphere;
+Vector2D::Vector2D(const Vector3D &vector)
+    :   d(vector.d[0], vector.d[1])
+{
+}
 
-    friend class Internal::Helper;
-};
+Vector2D::Vector2D(const Vector4D &vector)
+    :   d(vector.d[0], vector.d[1])
+{
+}
 
-} // namespace Geometry
-
-#endif // GEOMETRY_POINT_H
+Vector2D::operator QVariant() const
+{
+    return QVariant(*this);
+}

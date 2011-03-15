@@ -15,4 +15,43 @@
 **
 **************************************************************************/
 
-#include "point.h"
+#include "point2d.h"
+#include "point3d.h"
+#include "point4d.h"
+#include "vector2d.h"
+#include "vector3d.h"
+#include "vector4d.h"
+
+#include <QtCore/QVariant>
+
+using namespace Geometry;
+
+Point2D::Point2D(const Point3D &point)
+    :   d(point.d[0], point.d[1])
+{
+}
+
+Point2D::Point2D(const Point4D &point)
+    :   d(point.d[0], point.d[1])
+{
+}
+
+Point2D::Point2D(const Vector2D &vector)
+    :   d(vector.d[0], vector.d[1])
+{
+}
+
+Point2D::Point2D(const Vector3D &vector)
+    :   d(vector.d[0], vector.d[1])
+{
+}
+
+Point2D::Point2D(const Vector4D &vector)
+    :   d(vector.d[0], vector.d[0])
+{
+}
+
+Point2D::operator QVariant() const
+{
+    return QVariant(*this);
+}

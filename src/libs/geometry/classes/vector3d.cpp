@@ -15,49 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_VECTOR_H
-#define GEOMETRY_VECTOR_H
+#include "point2d.h"
+#include "point3d.h"
+#include "point4d.h"
+#include "vector2d.h"
+#include "vector3d.h"
+#include "vector4d.h"
 
-#include <gmtl/Vec.h>
+#include <QtCore/QVariant>
 
-#include <geometry/geometry_global.h>
+using namespace Geometry;
 
-namespace Geometry {
-namespace Internal {
-
-typedef gmtl::Vec<real, 3> VectorData;
-
-class Helper;
-
-} // namespace Internal
-
-class GEOMETRY_EXPORT Vector
+Vector3D::Vector3D(const Point2D &point)
+    :   d(point.d[0], point.d[1], 0.0f)
 {
-public:
-    Vector(real x, real y, real z);
-    ~Vector();
+}
 
-    real x() const;
-    void setX(real x);
+Vector3D::Vector3D(const Point3D &point)
+    :   d(point.d[0], point.d[1], point.d[2])
+{
+}
 
-    real y() const;
-    void setY(real y);
+Vector3D::Vector3D(const Point4D &point)
+    :   d(point.d[0], point.d[1], point.d[2])
+{
+}
 
-    real z() const;
-    void setZ(real z);
+Vector3D::Vector3D(const Vector2D &vector)
+    :   d(vector.d[0], vector.d[1], 0.0f)
+{
+}
 
-private:
-    Internal::VectorData d;
+Vector3D::Vector3D(const Vector4D &vector)
+    :   d(vector.d[0], vector.d[1], vector.d[2])
+{
+}
 
-    Vector(const Internal::VectorData &d) : d(d) {}
-
-    friend class LineSegment;
-    friend class Plane;
-    friend class Ray;
-
-    friend class Internal::Helper;
-};
-
-} // namespace Geometry
-
-#endif // GEOMETRY_VECTOR_H
+Vector3D::operator QVariant() const
+{
+    return QVariant(*this);
+}
