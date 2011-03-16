@@ -20,9 +20,14 @@
 
 #include <utils/utils_global.h>
 
-#include <QtCore/QDebug>
+#include <gmtl/Generate.h>
+#include <gmtl/MatrixOps.h>
+#include <gmtl/Plane.h>
+#include <gmtl/Point.h>
+#include <gmtl/Vec.h>
 
 #include <QtOpenGL/qgl.h>
+#include <QtCore/QDebug>
 
 #if defined(UTILS3D_LIB)
 #  define UTILS3D_EXPORT Q_DECL_EXPORT
@@ -43,6 +48,51 @@
             ); \
     Q_ASSERT(e == GL_NO_ERROR); \
 }
+
+namespace GL {
+
+typedef float real;
+typedef gmtl::Matrix<real, 4, 4> Matrix;
+typedef gmtl::Plane<real> Plane;
+typedef gmtl::Point<real, 3> Point;
+typedef gmtl::Vec<real, 3> Vector;
+
+inline void lookAt(Matrix &m, const Point &eye, const Point &target, const Vector &upVec)
+{
+    Vector fwd = target - eye;
+    gmtl::normalize(fwd);
+
+    Vector side;
+    gmtl::cross(side, fwd, upVec);
+    gmtl::normalize(side);
+
+    Vector up;
+    gmtl::cross(up, side, fwd);
+
+    m(0,0) = side[0];
+    m(1,0) = side[1];
+    m(2,0) = side[2];
+    m(3,0) = 0.0f;
+    m(0,1) = up[0];
+    m(1,1) = up[1];
+    m(2,1) = up[2];
+    m(3,1) = 0.0f;
+    m(0,2) = -fwd[0];
+    m(1,2) = -fwd[1];
+    m(2,2) = -fwd[2];
+    m(3,2) = 0.0f;
+    m(0,3) = 0.0f;
+    m(1,3) = 0.0f;
+    m(2,3) = 0.0f;
+    m(3,3) = 1.0f;
+
+    Matrix trans;
+    gmtl::setTrans(trans, -eye);
+
+    m *= trans;
+}
+
+} // namespace GL
 
 inline const char *qglErrorString(GLenum errorCode)
 {
