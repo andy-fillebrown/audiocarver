@@ -34,6 +34,7 @@
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QTimer>
 
+using namespace GL;
 using namespace GLEditor;
 
 GLWidget::GLWidget(QWidget *parent)
@@ -255,16 +256,16 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
     if (d->isPanning) {
         GLViewport *vp = d->draggingViewport;
-        QVector3D camPos = d->dragStartCameraPosition;
-        QVector3D camTar = d->dragStartCameraTarget;
-        qreal aspect = qreal(vp->width()) / qreal(vp->height());
-        qreal dragX = qreal(pos.x() - d->dragStartScreenPosition.x()) / qreal(vp->width() / (0.5 * aspect * -camPos.z()));
-        qreal dragY = qreal(pos.y() - d->dragStartScreenPosition.y()) / qreal(vp->height() / (0.25 * aspect * -camPos.z()));
-        camPos.setX(camPos.x() + dragX);
-        camPos.setY(camPos.y() + dragY);
-        camTar.setX(camTar.x() + dragX);
-        camTar.setY(camTar.y() + dragY);
-        vp->setCameraVectors(camPos, camTar, QVector3D(0, 1, 0));
+        Point camPos = d->dragStartCameraPosition;
+        Point camTar = d->dragStartCameraTarget;
+        real aspect = real(vp->width()) / real(vp->height());
+        real dragX = real(pos.x() - d->dragStartScreenPosition.x()) / real(vp->width() / (0.5f * aspect * -camPos[2]));
+        real dragY = real(pos.y() - d->dragStartScreenPosition.y()) / real(vp->height() / (0.25f * aspect * -camPos[2]));
+        camPos[0] += dragX;
+        camPos[1] += dragY;
+        camTar[0] += dragX;
+        camTar[1] += dragY;
+        vp->setCamera(camPos, camTar, Vector(0.0f, 1.0f, 0.0f));
     }
 }
 
@@ -316,19 +317,19 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-    GLViewport *viewport = d->viewportAtPosition(event->pos());
-    if (!viewport) {
+    GLViewport *vp = d->viewportAtPosition(event->pos());
+    if (!vp) {
         event->ignore();
         return;
     }
 
-    QVector3D camPos = viewport->cameraPosition();
+    Point camPos = vp->cameraPosition();
     const int delta = event->delta();
     if (0 < delta)
-        camPos.setZ(camPos.z() / 1.25);
+        camPos[2] /= 1.25f;
     else
-        camPos.setZ(camPos.z() * 1.25);
-    viewport->setCameraPosition(camPos);
+        camPos[2] *= 1.25f;
+    vp->setCameraPosition(camPos);
 
     updateGL();
 }

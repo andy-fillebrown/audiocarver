@@ -18,10 +18,11 @@
 #ifndef GLWIDGET_P_H
 #define GLWIDGET_P_H
 
-#include <QtCore/QElapsedTimer>
-#include <QtCore/qlist.h>
+#include <utils3d/utils3d_global.h>
 
 #include <QtGui/QVector3D>
+#include <QtCore/QElapsedTimer>
+#include <QtCore/qlist.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,8 +63,8 @@ public:
     GLWidgetSplit *draggingSplit;
     QPoint dragStartScreenPosition;
     GLViewport *draggingViewport;
-    QVector3D dragStartCameraPosition;
-    QVector3D dragStartCameraTarget;
+    GL::Point dragStartCameraPosition;
+    GL::Point dragStartCameraTarget;
     bool isPanning;
     bool isRotating;
     QElapsedTimer elapsedTime;
