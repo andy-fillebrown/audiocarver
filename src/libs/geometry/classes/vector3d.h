@@ -36,6 +36,7 @@ typedef gmtl::Vec<real, 3> Vector3DData;
 
 } // namespace Internal
 
+class Matrix4x4;
 class Point2D;
 class Point3D;
 class Point4D;
@@ -90,15 +91,17 @@ public:
     inline Vector3D &operator*=(const Vector3D &vector);
     inline Vector3D &operator/=(real divisor);
 
-    friend inline bool operator==(const Vector3D &v1, const Vector3D &v2);
-    friend inline bool operator!=(const Vector3D &v1, const Vector3D &v2);
-    friend inline const Vector3D operator+(const Vector3D &v1, const Vector3D &v2);
-    friend inline const Vector3D operator-(const Vector3D &v1, const Vector3D &v2);
-    friend inline const Vector3D operator*(real factor, const Vector3D &vector);
-    friend inline const Vector3D operator*(const Vector3D &vector, real factor);
-    friend inline const Vector3D operator*(const Vector3D &v1, const Vector3D &v2);
-    friend inline const Vector3D operator-(const Vector3D &vector);
-    friend inline const Vector3D operator/(const Vector3D &vector, real divisor);
+    friend bool operator==(const Vector3D &v1, const Vector3D &v2);
+    friend bool operator!=(const Vector3D &v1, const Vector3D &v2);
+    friend Vector3D operator+(const Vector3D &v1, const Vector3D &v2);
+    friend Vector3D operator-(const Vector3D &v1, const Vector3D &v2);
+    friend Vector3D operator*(real factor, const Vector3D &vector);
+    friend Vector3D operator*(const Vector3D &vector, real factor);
+    friend Vector3D operator*(const Vector3D &v1, const Vector3D &v2);
+    friend Vector3D operator-(const Vector3D &vector);
+    friend Vector3D operator/(const Vector3D &vector, real divisor);
+
+    friend Vector3D operator*(const Vector3D &vector, const Matrix4x4 &matrix);
 
     friend inline bool qFuzzyCompare(const Vector3D &v1, const Vector3D &v2);
 
@@ -116,6 +119,7 @@ private:
 
     inline Vector3D(const Internal::Vector3DData &d);
 
+    friend class Matrix4x4;
     friend class Point2D;
     friend class Point3D;
     friend class Point4D;
@@ -284,32 +288,32 @@ inline bool operator!=(const Vector3D &v1, const Vector3D &v2)
     return v1.d[0] != v2.d[0] || v1.d[1] != v2.d[1] || v1.d[2] != v2.d[2];
 }
 
-inline const Vector3D operator+(const Vector3D &v1, const Vector3D &v2)
+inline Vector3D operator+(const Vector3D &v1, const Vector3D &v2)
 {
     return Vector3D(Internal::Vector3DData(v1.d[0] + v2.d[0], v1.d[1] + v2.d[1], v1.d[2] + v2.d[2]));
 }
 
-inline const Vector3D operator-(const Vector3D &v1, const Vector3D &v2)
+inline Vector3D operator-(const Vector3D &v1, const Vector3D &v2)
 {
     return Vector3D(Internal::Vector3DData(v1.d[0] - v2.d[0], v1.d[1] - v2.d[1], v1.d[2] - v2.d[2]));
 }
 
-inline const Vector3D operator*(real factor, const Vector3D &vector)
+inline Vector3D operator*(real factor, const Vector3D &vector)
 {
     return Vector3D(Internal::Vector3DData(factor * vector.d[0], factor * vector.d[1], factor * vector.d[2]));
 }
 
-inline const Vector3D operator*(const Vector3D &vector, real factor)
+inline Vector3D operator*(const Vector3D &vector, real factor)
 {
     return Vector3D(Internal::Vector3DData(factor * vector.d[0], factor * vector.d[1], factor * vector.d[2]));
 }
 
-inline const Vector3D operator*(const Vector3D &v1, const Vector3D &v2)
+inline Vector3D operator*(const Vector3D &v1, const Vector3D &v2)
 {
     return Vector3D(Internal::Vector3DData(v1.d[0] * v2.d[0], v1.d[1] * v2.d[1], v1.d[2] * v2.d[2]));
 }
 
-inline const Vector3D operator/(const Vector3D &vector, real divisor)
+inline Vector3D operator/(const Vector3D &vector, real divisor)
 {
     return Vector3D(Internal::Vector3DData(vector.d[0] / divisor, vector.d[1] / divisor, vector.d[2] / divisor));
 }

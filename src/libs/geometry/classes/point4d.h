@@ -34,6 +34,7 @@ typedef gmtl::Point<real, 4> Point4DData;
 
 } // namespace Internal
 
+class Matrix4x4;
 class Point2D;
 class Point3D;
 class Vector2D;
@@ -74,15 +75,18 @@ public:
     inline Point4D &operator*=(const Point4D &point);
     inline Point4D &operator/=(real divisor);
 
-    friend inline bool operator==(const Point4D &pt1, const Point4D &pt2);
-    friend inline bool operator!=(const Point4D &pt1, const Point4D &pt2);
-    friend inline const Point4D operator+(const Point4D &pt1, const Point4D &pt2);
-    friend inline const Point4D operator-(const Point4D &pt1, const Point4D &pt2);
-    friend inline const Point4D operator*(real factor, const Point4D &point);
-    friend inline const Point4D operator*(const Point4D &point, real factor);
-    friend inline const Point4D operator*(const Point4D &pt1, const Point4D &pt2);
-    friend inline const Point4D operator-(const Point4D &point);
-    friend inline const Point4D operator/(const Point4D &point, real divisor);
+    friend bool operator==(const Point4D &pt1, const Point4D &pt2);
+    friend bool operator!=(const Point4D &pt1, const Point4D &pt2);
+    friend Point4D operator+(const Point4D &pt1, const Point4D &pt2);
+    friend Point4D operator-(const Point4D &pt1, const Point4D &pt2);
+    friend Point4D operator*(real factor, const Point4D &point);
+    friend Point4D operator*(const Point4D &point, real factor);
+    friend Point4D operator*(const Point4D &pt1, const Point4D &pt2);
+    friend Point4D operator-(const Point4D &point);
+    friend Point4D operator/(const Point4D &point, real divisor);
+
+    friend Point4D operator*(const Matrix4x4& matrix, const Point4D& point);
+    friend Point4D operator*(const Point4D& point, const Matrix4x4& matrix);
 
     friend inline bool qFuzzyCompare(const Point4D &pt1, const Point4D &pt2);
 
@@ -221,32 +225,32 @@ inline bool operator!=(const Point4D &pt1, const Point4D &pt2)
     return pt1.d[0] != pt2.d[0] || pt1.d[1] != pt2.d[1] || pt1.d[2] != pt2.d[2] || pt1.d[3] != pt2.d[3];
 }
 
-inline const Point4D operator+(const Point4D &pt1, const Point4D &pt2)
+inline Point4D operator+(const Point4D &pt1, const Point4D &pt2)
 {
     return Point4D(Internal::Point4DData(pt1.d[0] + pt2.d[0], pt1.d[1] + pt2.d[1], pt1.d[2] + pt2.d[2], pt1.d[3] + pt2.d[3]));
 }
 
-inline const Point4D operator-(const Point4D &pt1, const Point4D &pt2)
+inline Point4D operator-(const Point4D &pt1, const Point4D &pt2)
 {
     return Point4D(Internal::Point4DData(pt1.d[0] - pt2.d[0], pt1.d[1] - pt2.d[1], pt1.d[2] - pt2.d[2], pt1.d[3] - pt2.d[3]));
 }
 
-inline const Point4D operator*(real factor, const Point4D &point)
+inline Point4D operator*(real factor, const Point4D &point)
 {
     return Point4D(Internal::Point4DData(factor * point.d[0], factor * point.d[1], factor * point.d[2], factor * point.d[3]));
 }
 
-inline const Point4D operator*(const Point4D &point, real factor)
+inline Point4D operator*(const Point4D &point, real factor)
 {
     return Point4D(Internal::Point4DData(factor * point.d[0], factor * point.d[1], factor * point.d[2], factor * point.d[3]));
 }
 
-inline const Point4D operator*(const Point4D &pt1, const Point4D &pt2)
+inline Point4D operator*(const Point4D &pt1, const Point4D &pt2)
 {
     return Point4D(Internal::Point4DData(pt1.d[0] * pt2.d[0], pt1.d[1] * pt2.d[1], pt1.d[2] * pt2.d[2], pt1.d[3] * pt2.d[3]));
 }
 
-inline const Point4D operator/(const Point4D &point, real divisor)
+inline Point4D operator/(const Point4D &point, real divisor)
 {
     return Point4D(Internal::Point4DData(point.d[0] / divisor, point.d[1] / divisor, point.d[2] / divisor, point.d[3] / divisor));
 }

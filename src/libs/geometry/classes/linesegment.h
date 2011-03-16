@@ -34,14 +34,18 @@ class Plane;
 class GEOMETRY_EXPORT LineSegment
 {
 public:
-    LineSegment();
-    LineSegment(const Point &startPoint, const Point &endPoint);
-    ~LineSegment();
+    LineSegment() {}
+    LineSegment(const Point &startPoint, const Point &endPoint) : d(startPoint.d, endPoint.d) {}
+    ~LineSegment() {}
 
     Point intersectionPointOf(const Plane &plane, bool *isValid = 0) const;
 
 private:
+    LineSegment(const Internal::LineSegmentData &d) : d(d) {}
+
     Internal::LineSegmentData d;
+
+    friend class AxisAlignedBox;
 
     friend class Internal::Helper;
 };

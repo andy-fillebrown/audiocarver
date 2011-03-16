@@ -16,3 +16,8 @@
 **************************************************************************/
 
 #include "plane.h"
+
+#include <geometry/helper.h>
+
+using namespace Geometry;
+using namespace Geometry::Internal;

@@ -34,6 +34,7 @@ typedef gmtl::Point<real, 3> Point3DData;
 
 } // namespace Internal
 
+class Matrix4x4;
 class Point2D;
 class Point4D;
 class Vector2D;
@@ -72,15 +73,18 @@ public:
     inline Point3D &operator*=(const Point3D &point);
     inline Point3D &operator/=(real divisor);
 
-    friend inline bool operator==(const Point3D &pt1, const Point3D &pt2);
-    friend inline bool operator!=(const Point3D &pt1, const Point3D &pt2);
-    friend inline const Point3D operator+(const Point3D &pt1, const Point3D &pt2);
-    friend inline const Point3D operator-(const Point3D &pt1, const Point3D &pt2);
-    friend inline const Point3D operator*(real factor, const Point3D &point);
-    friend inline const Point3D operator*(const Point3D &point, real factor);
-    friend inline const Point3D operator*(const Point3D &pt1, const Point3D &pt2);
-    friend inline const Point3D operator-(const Point3D &point);
-    friend inline const Point3D operator/(const Point3D &point, real divisor);
+    friend bool operator==(const Point3D &pt1, const Point3D &pt2);
+    friend bool operator!=(const Point3D &pt1, const Point3D &pt2);
+    friend Point3D operator+(const Point3D &pt1, const Point3D &pt2);
+    friend Point3D operator-(const Point3D &pt1, const Point3D &pt2);
+    friend Point3D operator*(real factor, const Point3D &point);
+    friend Point3D operator*(const Point3D &point, real factor);
+    friend Point3D operator*(const Point3D &pt1, const Point3D &pt2);
+    friend Point3D operator-(const Point3D &point);
+    friend Point3D operator/(const Point3D &point, real divisor);
+
+    friend Point3D operator*(const Matrix4x4 &matrix, const Point3D &point);
+    friend Point3D operator*(const Point3D &point, const Matrix4x4 &matrix);
 
     friend inline bool qFuzzyCompare(const Point3D &pt1, const Point3D &pt2);
 
@@ -204,32 +208,32 @@ inline bool operator!=(const Point3D &pt1, const Point3D &pt2)
     return pt1.d[0] != pt2.d[0] || pt1.d[1] != pt2.d[1] || pt1.d[2] != pt2.d[2];
 }
 
-inline const Point3D operator+(const Point3D &pt1, const Point3D &pt2)
+inline Point3D operator+(const Point3D &pt1, const Point3D &pt2)
 {
     return Point3D(Internal::Point3DData(pt1.d[0] + pt2.d[0], pt1.d[1] + pt2.d[1], pt1.d[2] + pt2.d[2]));
 }
 
-inline const Point3D operator-(const Point3D &pt1, const Point3D &pt2)
+inline Point3D operator-(const Point3D &pt1, const Point3D &pt2)
 {
     return Point3D(Internal::Point3DData(pt1.d[0] - pt2.d[0], pt1.d[1] - pt2.d[1], pt1.d[2] - pt2.d[2]));
 }
 
-inline const Point3D operator*(real factor, const Point3D &point)
+inline Point3D operator*(real factor, const Point3D &point)
 {
     return Point3D(Internal::Point3DData(factor * point.d[0], factor * point.d[1], factor * point.d[2]));
 }
 
-inline const Point3D operator*(const Point3D &point, real factor)
+inline Point3D operator*(const Point3D &point, real factor)
 {
     return Point3D(Internal::Point3DData(factor * point.d[0], factor * point.d[1], factor * point.d[2]));
 }
 
-inline const Point3D operator*(const Point3D &pt1, const Point3D &pt2)
+inline Point3D operator*(const Point3D &pt1, const Point3D &pt2)
 {
     return Point3D(Internal::Point3DData(pt1.d[0] * pt2.d[0], pt1.d[1] * pt2.d[1], pt1.d[2] * pt2.d[2]));
 }
 
-inline const Point3D operator/(const Point3D &point, real divisor)
+inline Point3D operator/(const Point3D &point, real divisor)
 {
     return Point3D(Internal::Point3DData(point.d[0] / divisor, point.d[1] / divisor, point.d[2] / divisor));
 }

@@ -20,7 +20,7 @@ HEADERS += \
 #    classes/frustum.h \
 #    classes/linearcurve.h \
 #    classes/linesegment.h \
-#    classes/matrix.h \
+    classes/matrix4x4.h \
 #    classes/plane.h \
     classes/point2d.h \
     classes/point3d.h \
@@ -50,7 +50,7 @@ SOURCES += \
 #    classes/frustum.cpp \
 #    classes/linearcurve.cpp \
 #    classes/linesegment.cpp \
-#    classes/matrix.cpp \
+    classes/matrix4x4.cpp \
 #    classes/plane.cpp \
     classes/point2d.cpp \
     classes/point3d.cpp \
@@ -70,9 +70,9 @@ SOURCES += \
 OTHER_FILES += \
     geometry.pri \
     \
-    $$files(include/gmtl/*.h) \
-    $$files(include/gmtl/External/*.h) \
-    $$files(include/gmtl/Fit/*.h) \
-    $$files(include/gmtl/Misc/*.h) \
-    $$files(include/gmtl/Numerics/*.h) \
-    $$files(include/gmtl/Util/*.h)
+#    $$files(include/gmtl/*.h) \
+#    $$files(include/gmtl/External/*.h) \
+#    $$files(include/gmtl/Fit/*.h) \
+#    $$files(include/gmtl/Misc/*.h) \
+#    $$files(include/gmtl/Numerics/*.h) \
+#    $$files(include/gmtl/Util/*.h)

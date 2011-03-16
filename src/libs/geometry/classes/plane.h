@@ -18,10 +18,10 @@
 #ifndef GEOMETRY_PLANE_H
 #define GEOMETRY_PLANE_H
 
-#include <gmtl/Plane.h>
-
 #include <geometry/classes/point.h>
 #include <geometry/classes/vector.h>
+
+#include <gmtl/Plane.h>
 
 namespace Geometry {
 namespace Internal {
@@ -36,17 +36,27 @@ class Ray;
 class GEOMETRY_EXPORT Plane
 {
 public:
-    Plane() {}
-    Plane(const Point &point, const Vector &normal) : d(normal.d, point.d) {}
+    Plane();
+    Plane(const Point &pt1, const Point &pt2, const Point &pt3);
+    Plane(const Vector &norm, const Point &pt);
+    Plane(const Vector &norm, const real offset);
+    Plane(const Plane &plane);
     ~Plane() {}
 
-    Point intersectionPointOf(const LineSegment &lineSegment, bool *isValid = 0) const;
-    Point intersectionPointOf(const Ray &ray, bool *isValid = 0) const;
+    Vector normal() const;
+    void setNormal(const Vector &norm);
+
+    real offset() const;
+    void setOffset(real offset);
+
+    LineSegment findIntersection(const Plane &plane, bool *found = 0) const;
+    Point findIntersection(const LineSegment &line, bool *found = 0) const;
+    Point findIntersection(const Ray &ray, bool *found = 0) const;
 
 private:
-    Plane(const Internal::PlaneData &d) : d(d) {}
-
     Internal::PlaneData d;
+
+    Plane(const Internal::PlaneData &d);
 
     friend class Frustum;
 

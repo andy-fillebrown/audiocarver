@@ -39,8 +39,8 @@ public:
     Ray(const Point &startPoint, const Vector &vector);
     ~Ray() {}
 
-    Point intersectPoint(const LineSegment &lineSegment, bool *isValid = 0) const;
-    Point intersectPoint(const Ray &ray, bool *isValid = 0) const;
+    Point intersectPointOf(const LineSegment &lineSegment, bool *isValid = 0) const;
+    Point intersectPointOf(const Ray &ray, bool *isValid = 0) const;
 
 private:
     Internal::RayData d;

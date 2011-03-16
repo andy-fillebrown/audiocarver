@@ -36,6 +36,7 @@ typedef gmtl::Point<real, 2> Point2DData;
 
 } // namespace Internal
 
+class Matrix4x4;
 class Point3D;
 class Point4D;
 class Vector2D;
@@ -72,15 +73,18 @@ public:
     inline Point2D &operator*=(const Point2D &point);
     inline Point2D &operator/=(real divisor);
 
-    friend inline bool operator==(const Point2D &pt1, const Point2D &pt2);
-    friend inline bool operator!=(const Point2D &pt1, const Point2D &pt2);
-    friend inline const Point2D operator+(const Point2D &pt1, const Point2D &pt2);
-    friend inline const Point2D operator-(const Point2D &pt1, const Point2D &pt2);
-    friend inline const Point2D operator*(real factor, const Point2D &point);
-    friend inline const Point2D operator*(const Point2D &point, real factor);
-    friend inline const Point2D operator*(const Point2D &pt1, const Point2D &pt2);
-    friend inline const Point2D operator-(const Point2D &point);
-    friend inline const Point2D operator/(const Point2D &point, real divisor);
+    friend bool operator==(const Point2D &pt1, const Point2D &pt2);
+    friend bool operator!=(const Point2D &pt1, const Point2D &pt2);
+    friend Point2D operator+(const Point2D &pt1, const Point2D &pt2);
+    friend Point2D operator-(const Point2D &pt1, const Point2D &pt2);
+    friend Point2D operator*(real factor, const Point2D &point);
+    friend Point2D operator*(const Point2D &point, real factor);
+    friend Point2D operator*(const Point2D &pt1, const Point2D &pt2);
+    friend Point2D operator-(const Point2D &point);
+    friend Point2D operator/(const Point2D &point, real divisor);
+
+    friend Point2D operator*(const Matrix4x4 &matrix, const Point2D &point);
+    friend Point2D operator*(const Point2D &point, const Matrix4x4 &matrix);
 
     friend inline bool qFuzzyCompare(const Point2D &pt1, const Point2D &pt2);
 
@@ -189,32 +193,32 @@ inline bool operator!=(const Point2D &pt1, const Point2D &pt2)
     return pt1.d[0] != pt2.d[0] || pt1.d[1] != pt2.d[1];
 }
 
-inline const Point2D operator+(const Point2D &pt1, const Point2D &pt2)
+inline Point2D operator+(const Point2D &pt1, const Point2D &pt2)
 {
     return Point2D(Internal::Point2DData(pt1.d[0] + pt2.d[0], pt1.d[1] + pt2.d[1]));
 }
 
-inline const Point2D operator-(const Point2D &pt1, const Point2D &pt2)
+inline Point2D operator-(const Point2D &pt1, const Point2D &pt2)
 {
     return Point2D(Internal::Point2DData(pt1.d[0] - pt2.d[0], pt1.d[1] - pt2.d[1]));
 }
 
-inline const Point2D operator*(real factor, const Point2D &point)
+inline Point2D operator*(real factor, const Point2D &point)
 {
     return Point2D(Internal::Point2DData(factor * point.d[0], factor * point.d[1]));
 }
 
-inline const Point2D operator*(const Point2D &point, real factor)
+inline Point2D operator*(const Point2D &point, real factor)
 {
     return Point2D(Internal::Point2DData(factor * point.d[0], factor * point.d[1]));
 }
 
-inline const Point2D operator*(const Point2D &pt1, const Point2D &pt2)
+inline Point2D operator*(const Point2D &pt1, const Point2D &pt2)
 {
     return Point2D(Internal::Point2DData(pt1.d[0] * pt2.d[0], pt1.d[1] * pt2.d[1]));
 }
 
-inline const Point2D operator/(const Point2D &point, real divisor)
+inline Point2D operator/(const Point2D &point, real divisor)
 {
     return Point2D(Internal::Point2DData(point.d[0] / divisor, point.d[1] / divisor));
 }

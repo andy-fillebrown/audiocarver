@@ -30,6 +30,8 @@ namespace Geometry {
 
 typedef float real;
 
+const real TOLERANCE = 0.0009;
+
 } // namespace Geometry
 
 #endif // GEOMETRY_GLOBAL_H

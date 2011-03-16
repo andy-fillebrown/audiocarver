@@ -15,43 +15,7 @@
 **
 **************************************************************************/
 
-#ifndef GEOMETRY_MATRIX_H
-#define GEOMETRY_MATRIX_H
+#include "sweptaxisalignedbox.h"
 
-#include <gmtl/Matrix.h>
-
-#include <geometry/geometry_global.h>
-
-namespace Geometry {
-namespace Internal {
-
-typedef gmtl::Matrix<real, 4, 4> MatrixData;
-
-class Helper;
-
-} // namespace Internal
-
-class GEOMETRY_EXPORT Matrix
-{
-public:
-    Matrix();
-    ~Matrix();
-
-private:
-    Internal::MatrixData d;
-
-    Matrix(const Internal::MatrixData &d) : d(d) {}
-
-    friend class AxisAlignedBox;
-    friend class Frustum;
-    friend class LineSegment;
-    friend class Plane;
-    friend class Ray;
-    friend class Sphere;
-
-    friend class Internal::Helper;
-};
-
-} // namespace Geometry
-
-#endif // GEOMETRY_MATRIX_H
+using namespace Geometry;
+using namespace Geometry::Internal;

@@ -89,13 +89,13 @@ public:
 
     friend inline bool operator==(const Vector2D &v1, const Vector2D &v2);
     friend inline bool operator!=(const Vector2D &v1, const Vector2D &v2);
-    friend inline const Vector2D operator+(const Vector2D &v1, const Vector2D &v2);
-    friend inline const Vector2D operator-(const Vector2D &v1, const Vector2D &v2);
-    friend inline const Vector2D operator*(real factor, const Vector2D &vector);
-    friend inline const Vector2D operator*(const Vector2D &vector, real factor);
-    friend inline const Vector2D operator*(const Vector2D &v1, const Vector2D &v2);
-    friend inline const Vector2D operator-(const Vector2D &vector);
-    friend inline const Vector2D operator/(const Vector2D &vector, real divisor);
+    friend inline Vector2D operator+(const Vector2D &v1, const Vector2D &v2);
+    friend inline Vector2D operator-(const Vector2D &v1, const Vector2D &v2);
+    friend inline Vector2D operator*(real factor, const Vector2D &vector);
+    friend inline Vector2D operator*(const Vector2D &vector, real factor);
+    friend inline Vector2D operator*(const Vector2D &v1, const Vector2D &v2);
+    friend inline Vector2D operator-(const Vector2D &vector);
+    friend inline Vector2D operator/(const Vector2D &vector, real divisor);
 
     friend inline bool qFuzzyCompare(const Vector2D &v1, const Vector2D &v2);
 
@@ -260,32 +260,32 @@ inline bool operator!=(const Vector2D &v1, const Vector2D &v2)
     return v1.d[0] != v2.d[0] || v1.d[1] != v2.d[1];
 }
 
-inline const Vector2D operator+(const Vector2D &v1, const Vector2D &v2)
+inline Vector2D operator+(const Vector2D &v1, const Vector2D &v2)
 {
     return Vector2D(Internal::Vector2DData(v1.d[0] + v2.d[0], v1.d[1] + v2.d[1]));
 }
 
-inline const Vector2D operator-(const Vector2D &v1, const Vector2D &v2)
+inline Vector2D operator-(const Vector2D &v1, const Vector2D &v2)
 {
     return Vector2D(Internal::Vector2DData(v1.d[0] - v2.d[0], v1.d[1] - v2.d[1]));
 }
 
-inline const Vector2D operator*(real factor, const Vector2D &vector)
+inline Vector2D operator*(real factor, const Vector2D &vector)
 {
     return Vector2D(Internal::Vector2DData(factor * vector.d[0], factor * vector.d[1]));
 }
 
-inline const Vector2D operator*(const Vector2D &vector, real factor)
+inline Vector2D operator*(const Vector2D &vector, real factor)
 {
     return Vector2D(Internal::Vector2DData(factor * vector.d[0], factor * vector.d[1]));
 }
 
-inline const Vector2D operator*(const Vector2D &v1, const Vector2D &v2)
+inline Vector2D operator*(const Vector2D &v1, const Vector2D &v2)
 {
     return Vector2D(Internal::Vector2DData(v1.d[0] * v2.d[0], v1.d[1] * v2.d[1]));
 }
 
-inline const Vector2D operator/(const Vector2D &vector, real divisor)
+inline Vector2D operator/(const Vector2D &vector, real divisor)
 {
     return Vector2D(Internal::Vector2DData(vector.d[0] / divisor, vector.d[1] / divisor));
 }

@@ -16,3 +16,13 @@
 **************************************************************************/
 
 #include "linesegment.h"
+
+#include <geometry/helper.h>
+
+using namespace Geometry;
+using namespace Geometry::Internal;
+
+//Point LineSegment::intersectionPointOf(const Plane &plane, bool *isValid) const
+//{
+//    return Helper::intersectionPointOf(*this, plane, isValid);
+//}

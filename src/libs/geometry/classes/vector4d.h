@@ -36,6 +36,7 @@ typedef gmtl::Vec<real, 4> Vector4DData;
 
 } // namespace Internal
 
+class Matrix4x4;
 class Point2D;
 class Point3D;
 class Point4D;
@@ -93,13 +94,13 @@ public:
 
     friend inline bool operator==(const Vector4D &v1, const Vector4D &v2);
     friend inline bool operator!=(const Vector4D &v1, const Vector4D &v2);
-    friend inline const Vector4D operator+(const Vector4D &v1, const Vector4D &v2);
-    friend inline const Vector4D operator-(const Vector4D &v1, const Vector4D &v2);
-    friend inline const Vector4D operator*(real factor, const Vector4D &vector);
-    friend inline const Vector4D operator*(const Vector4D &vector, real factor);
-    friend inline const Vector4D operator*(const Vector4D &v1, const Vector4D &v2);
-    friend inline const Vector4D operator-(const Vector4D &vector);
-    friend inline const Vector4D operator/(const Vector4D &vector, real divisor);
+    friend inline Vector4D operator+(const Vector4D &v1, const Vector4D &v2);
+    friend inline Vector4D operator-(const Vector4D &v1, const Vector4D &v2);
+    friend inline Vector4D operator*(real factor, const Vector4D &vector);
+    friend inline Vector4D operator*(const Vector4D &vector, real factor);
+    friend inline Vector4D operator*(const Vector4D &v1, const Vector4D &v2);
+    friend inline Vector4D operator-(const Vector4D &vector);
+    friend inline Vector4D operator/(const Vector4D &vector, real divisor);
 
     friend inline bool qFuzzyCompare(const Vector4D &v1, const Vector4D &v2);
 
@@ -117,6 +118,7 @@ private:
 
     inline Vector4D(const Internal::Vector4DData &d);
 
+    friend class Matrix4x4;
     friend class Point2D;
     friend class Point3D;
     friend class Point4D;
@@ -294,32 +296,32 @@ inline bool operator!=(const Vector4D &v1, const Vector4D &v2)
     return v1.d[0] != v2.d[0] || v1.d[1] != v2.d[1] || v1.d[2] != v2.d[2] || v1.d[3] != v2.d[3];
 }
 
-inline const Vector4D operator+(const Vector4D &v1, const Vector4D &v2)
+inline Vector4D operator+(const Vector4D &v1, const Vector4D &v2)
 {
     return Vector4D(Internal::Vector4DData(v1.d[0] + v2.d[0], v1.d[1] + v2.d[1], v1.d[2] + v2.d[2], v1.d[3] + v2.d[3]));
 }
 
-inline const Vector4D operator-(const Vector4D &v1, const Vector4D &v2)
+inline Vector4D operator-(const Vector4D &v1, const Vector4D &v2)
 {
     return Vector4D(Internal::Vector4DData(v1.d[0] - v2.d[0], v1.d[1] - v2.d[1], v1.d[2] - v2.d[2], v1.d[3] - v2.d[3]));
 }
 
-inline const Vector4D operator*(real factor, const Vector4D &vector)
+inline Vector4D operator*(real factor, const Vector4D &vector)
 {
     return Vector4D(Internal::Vector4DData(factor * vector.d[0], factor * vector.d[1], factor * vector.d[2], factor * vector.d[3]));
 }
 
-inline const Vector4D operator*(const Vector4D &vector, real factor)
+inline Vector4D operator*(const Vector4D &vector, real factor)
 {
     return Vector4D(Internal::Vector4DData(factor * vector.d[0], factor * vector.d[1], factor * vector.d[2], factor * vector.d[3]));
 }
 
-inline const Vector4D operator*(const Vector4D &v1, const Vector4D &v2)
+inline Vector4D operator*(const Vector4D &v1, const Vector4D &v2)
 {
     return Vector4D(Internal::Vector4DData(v1.d[0] * v2.d[0], v1.d[1] * v2.d[1], v1.d[2] * v2.d[2], v1.d[3] * v2.d[3]));
 }
 
-inline const Vector4D operator/(const Vector4D &vector, real divisor)
+inline Vector4D operator/(const Vector4D &vector, real divisor)
 {
     return Vector4D(Internal::Vector4DData(vector.d[0] / divisor, vector.d[1] / divisor, vector.d[2] / divisor, vector.d[3] / divisor));
 }

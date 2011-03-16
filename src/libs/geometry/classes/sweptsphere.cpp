@@ -15,4 +15,7 @@
 **
 **************************************************************************/
 
-#include "matrix.h"
+#include "sweptsphere.h"
+
+using namespace Geometry;
+using namespace Geometry::Internal;
