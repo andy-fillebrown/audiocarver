@@ -196,11 +196,6 @@ public:
         QGLFramebufferObject *fbo = this->fbo(fboId);
         Q_ASSERT(fbo && fbo->isValid());
 
-        const QSize size = q->size();
-        const int w = size.width();
-        const int h = size.height();
-        const real aspect = size.width() / real(size.height() ? size.height() : 1);
-
         Q_CHECK(fbo->bind());
         qglPushState();
 
@@ -210,8 +205,9 @@ public:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
 
-        glViewport(0, 0, w, h);
-        pushXforms(aspect);
+        const QSize size = q->size();
+        glViewport(0, 0, size.width(), size.height());
+        pushXforms();
 
         bool drewToFBO = false;
 
@@ -271,19 +267,28 @@ public:
     void resizeFBOs(int w, int h)
     {
         initializeFBOs(w, h);
+        updateXforms();
         updateAllFBOs();
+    }
+
+    real aspect() const
+    {
+        const QSize size = parentSplit->size();
+        const int h = size.height();
+        return real(size.width()) / real(h ? h : 1);
     }
 
     void updateXforms()
     {
         GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
+        GL::perspective(projXform, 5.0f, aspect(), 4.0f, 100.0f);
     }
 
-    void pushXforms(real aspect)
+    void pushXforms()
     {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glFrustum(-aspect, aspect, -1.0f, 1.0f, 4.0f, 1000.0f);
+        glLoadMatrixf(projXform.mData);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();

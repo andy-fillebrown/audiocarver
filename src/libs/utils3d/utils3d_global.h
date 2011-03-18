@@ -28,6 +28,7 @@
 
 #include <QtOpenGL/qgl.h>
 #include <QtCore/QDebug>
+#include <QtCore/qmath.h>
 
 #if defined(UTILS3D_LIB)
 #  define UTILS3D_EXPORT Q_DECL_EXPORT
@@ -56,6 +57,39 @@ typedef gmtl::Matrix<real, 4, 4> Matrix;
 typedef gmtl::Plane<real> Plane;
 typedef gmtl::Point<real, 3> Point;
 typedef gmtl::Vec<real, 3> Vector;
+
+inline void perspective(Matrix &m, real fov, real aspect, real nearPlane, real farPlane)
+{
+    gmtl::identity(m);
+
+    // Bail out if the projection volume is zero-sized.
+    if (nearPlane == farPlane || aspect == 0.0f)
+        return;
+
+    // Construct the projection.
+    real radians = (fov / 2.0f) * M_PI / 180.0f;
+    real sine = qSin(radians);
+    if (sine == 0.0f)
+        return;
+    real cotan = qCos(radians) / sine;
+    real clip = farPlane - nearPlane;
+    m(0,0) = cotan / aspect;
+    m(1,0) = 0.0f;
+    m(2,0) = 0.0f;
+    m(3,0) = 0.0f;
+    m(0,1) = 0.0f;
+    m(1,1) = cotan;
+    m(2,1) = 0.0f;
+    m(3,1) = 0.0f;
+    m(0,2) = 0.0f;
+    m(1,2) = 0.0f;
+    m(2,2) = -(nearPlane + farPlane) / clip;
+    m(3,2) = -(2.0f * nearPlane * farPlane) / clip;
+    m(0,3) = 0.0f;
+    m(1,3) = 0.0f;
+    m(2,3) = -1.0f;
+    m(3,3) = 0.0f;
+}
 
 inline void lookAt(Matrix &m, const Point &eye, const Point &target, const Vector &upVec)
 {
