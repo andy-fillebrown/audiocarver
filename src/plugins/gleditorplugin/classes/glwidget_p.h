@@ -63,8 +63,7 @@ public:
     GLWidgetSplit *draggingSplit;
     QPoint dragStartScreenPosition;
     GLViewport *draggingViewport;
-    GL::Point dragStartCameraPosition;
-    GL::Point dragStartCameraTarget;
+    QPoint prevDragPos;
     bool isPanning;
     bool isRotating;
     QElapsedTimer elapsedTime;

@@ -25,12 +25,12 @@
 #include <extensionsystem/pluginmanager.h>
 #include <utils3d/utils3d_global.h>
 
+#include <gmtl/VecOps.h>
+
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>
-
 #include <QtGui/QApplication>
 #include <QtGui/QMouseEvent>
-
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QTimer>
 
@@ -252,27 +252,22 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
                                                             : Qt::SizeHorCursor;
         if (currentCursorShape != desiredCursorShape)
             setCursor(QCursor(desiredCursorShape));
+
+        if (isOnBorder)
+            return;
     }
 
     if (d->isPanning) {
         GLViewport *vp = d->draggingViewport;
-        Point camPos = d->dragStartCameraPosition;
-        Point camTar = d->dragStartCameraTarget;
-        real aspect = real(vp->width()) / real(vp->height());
-        real dragX = real(pos.x() - d->dragStartScreenPosition.x()) / real(vp->width() / (0.5f * aspect * -camPos[2]));
-        real dragY = real(pos.y() - d->dragStartScreenPosition.y()) / real(vp->height() / (0.25f * aspect * -camPos[2]));
-        camPos[0] += dragX;
-        camPos[1] += dragY;
-        camTar[0] += dragX;
-        camTar[1] += dragY;
+        const Point startPt = vp->findUcsPoint(d->prevDragPos);
+        const Point endPt = vp->findUcsPoint(pos);
+        Point dragVec = endPt - startPt;
+        dragVec[1] = -dragVec[1]; // ... don't know why y coord needs negation
+        const Point camPos = vp->cameraPosition() + dragVec;
+        const Point camTar = vp->cameraTarget() + dragVec;
         vp->setCamera(camPos, camTar, Vector(0.0f, 1.0f, 0.0f));
-    } else {
-        GLViewport *vp = d->viewportAtPosition(pos);
-        if (!vp)
-            return;
-        QRect vpRect = vp->rect();
-        QPoint vpPos(pos.x() - vpRect.left(), pos.y() - vpRect.top());
-        vp->findUcsPoint(vpPos);
+        d->prevDragPos = pos;
+        updateGL();
     }
 }
 
@@ -283,11 +278,11 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         GLWidgetSplit *split = d->mainSplit;
         while (split->isSplit()) {
-            if (split->splitOne()->rect().contains(pos)) {
+            if (split->splitOne()->rect().contains(pos))
                 split = split->splitOne();
-            } else if (split->splitTwo()->rect().contains(pos)) {
+            else if (split->splitTwo()->rect().contains(pos))
                 split = split->splitTwo();
-            } else {
+            else {
                 d->draggingSplit = split;
                 split = 0;
                 break;
@@ -299,14 +294,17 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
     else if (event->button() == Qt::RightButton) {
         d->dragStartScreenPosition = pos;
 
-        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-            d->isPanning = true;
-        else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier)
             d->isRotating = true;
+        else
+            d->isPanning = true;
+
         if (d->isPanning || d->isRotating) {
             d->draggingViewport = d->viewportAtPosition(pos);
-            d->dragStartCameraPosition = d->draggingViewport->cameraPosition();
-            d->dragStartCameraTarget = d->draggingViewport->cameraTarget();
+            if (d->draggingViewport)
+                d->prevDragPos = pos;
+            else
+                d->isPanning = d->isRotating = false;
         }
     }
 }
