@@ -236,11 +236,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
         GLWidgetSplit *split = d->mainSplit;
         while (split->isSplit()) {
-            if (split->splitOne()->rect().contains(pos)) {
+            if (split->splitOne()->rect().contains(pos))
                 split = split->splitOne();
-            } else if (split->splitTwo()->rect().contains(pos)) {
+            else if (split->splitTwo()->rect().contains(pos))
                 split = split->splitTwo();
-            } else {
+            else {
                 isOnBorder = true;
                 break;
             }
