@@ -25,6 +25,7 @@
 #include <utils3d/utils3d_global.h>
 
 #include <gmtl/Generate.h>
+#include <gmtl/Intersection.h>
 #include <gmtl/MatrixOps.h>
 #include <gmtl/VecOps.h>
 
@@ -72,10 +73,10 @@ public:
     Vector cameraUpVector;
     bool perspective;
 
-    Matrix screenXform;
     Matrix projXform;
-    Matrix modelXform;
     Matrix viewXform;
+    Matrix modelXform;
+    Matrix inverseXform; // inverted projXform * viewXform, for unprojecting
 
     Plane ucsPlane;
 
@@ -282,6 +283,9 @@ public:
     {
         GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
         GL::perspective(projXform, 5.0f, aspect(), 4.0f, 100.0f);
+
+        inverseXform = projXform * viewXform;
+        gmtl::invertFull(inverseXform, inverseXform);
     }
 
     void pushXforms()
@@ -429,11 +433,6 @@ void GLViewport::setPerspective(bool perspective)
     d->updateAllFBOs();
 }
 
-const Matrix &GLViewport::screenXform() const
-{
-    return d->screenXform;
-}
-
 const Matrix &GLViewport::projXform() const
 {
     return d->projXform;
@@ -447,6 +446,60 @@ const Matrix &GLViewport::modelXform() const
 const Matrix &GLViewport::viewXform() const
 {
     return d->viewXform;
+}
+
+Point GLViewport::findUcsPoint(const QPoint &screenPos) const
+{
+    const QSize size = this->size();
+    const real w = size.width();
+    const real h = size.height();
+    const real posX = screenPos.x();
+    const real posY = screenPos.y();
+
+    // Transform screenPos to normalized device coordinates.
+    const real x = (2.0f * posX / w) - 1.0f;
+    const real y = -((2.0f * posY / h) - 1.0f);
+
+    // Cache values common to start and end point transformations.
+    const real *m = d->inverseXform.mData;
+    const real baseDenom = m[3] * x + m[7] * y + m[15];
+    const real baseX = m[0] * x + m[4] * y + m[12];
+    const real baseY = m[1] * x + m[5] * y + m[13];
+    const real baseZ = m[2] * x + m[6] * y + m[14];
+
+    // Calculate ray's start point.
+    const real startDenom = 1.0f / baseDenom;
+    if (startDenom == 0.0f) {
+        Q_ASSERT(false ** "Can't calculate ray start point.");
+        return Point();
+    }
+    const Point startPt(
+        startDenom * baseX,
+        startDenom * baseY,
+        startDenom * baseZ);
+
+    // Calculate ray's end point.
+    const real endDenom = 1.0f / (baseDenom + m[11]);
+    if (endDenom == 0.0f) {
+        Q_ASSERT(false && "Can't calculate ray end point.");
+        return Point();
+    }
+    const Point endPt(
+        endDenom * (baseX + m[8]),
+        endDenom * (baseY + m[9]),
+        endDenom * (baseZ + m[10]));
+
+    // Find intersection of ray and ucs plane.
+    Ray ray(startPt, startPt - endPt);
+    real t;
+    bool hit = gmtl::intersect(d->ucsPlane, ray, t);
+    if (hit && t != 0.0f) {
+        Point pt = ray.mOrigin + ray.mDir * t;
+        pt[0] = -pt[0]; // ... don't know why x coord needs negation
+        return pt;
+    }
+
+    return Point();
 }
 
 void GLViewport::paintGL()

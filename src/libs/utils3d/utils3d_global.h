@@ -53,10 +53,14 @@
 namespace GL {
 
 typedef float real;
+
 typedef gmtl::Matrix<real, 4, 4> Matrix;
-typedef gmtl::Plane<real> Plane;
 typedef gmtl::Point<real, 3> Point;
 typedef gmtl::Vec<real, 3> Vector;
+
+typedef gmtl::LineSeg<real> LineSegment;
+typedef gmtl::Plane<real> Plane;
+typedef gmtl::Ray<real> Ray;
 
 inline void perspective(Matrix &m, real fov, real aspect, real nearPlane, real farPlane)
 {
@@ -163,7 +167,7 @@ inline void qglPopState()
 }
 
 
-inline void qglTraceMatrix(GLdouble *m)
+inline void qglTraceMatrix(GL::real *m)
 {
     qDebug() << QString("%1, %2, %3, %4").arg(m[0]).arg(m[1]).arg(m[2]).arg(m[3]);
     qDebug() << QString("%1, %2, %3, %4").arg(m[4]).arg(m[5]).arg(m[6]).arg(m[7]);
@@ -173,8 +177,8 @@ inline void qglTraceMatrix(GLdouble *m)
 
 inline void qglTraceModelViewMatrix()
 {
-    GLdouble m[16];
-    glGetDoublev(GL_MODELVIEW_MATRIX, m);
+    GL::real m[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, m);
 
     qDebug() << "";
     qDebug() << "gl model view:";
@@ -183,8 +187,8 @@ inline void qglTraceModelViewMatrix()
 
 inline void qglTraceProjectionMatrix()
 {
-    GLdouble m[16];
-    glGetDoublev(GL_PROJECTION_MATRIX, m);
+    GL::real m[16];
+    glGetFloatv(GL_PROJECTION_MATRIX, m);
 
     qDebug() << "";
     qDebug() << "gl projection:";

@@ -266,6 +266,13 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         camTar[0] += dragX;
         camTar[1] += dragY;
         vp->setCamera(camPos, camTar, Vector(0.0f, 1.0f, 0.0f));
+    } else {
+        GLViewport *vp = d->viewportAtPosition(pos);
+        if (!vp)
+            return;
+        QRect vpRect = vp->rect();
+        QPoint vpPos(pos.x() - vpRect.left(), pos.y() - vpRect.top());
+        vp->findUcsPoint(vpPos);
     }
 }
 

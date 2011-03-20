@@ -63,10 +63,11 @@ public:
     bool isPerspective() const;
     void setPerspective(bool perspective);
 
-    const GL::Matrix &screenXform() const;
     const GL::Matrix &projXform() const;
     const GL::Matrix &modelXform() const;
     const GL::Matrix &viewXform() const;
+
+    GL::Point findUcsPoint(const QPoint &screenPos) const;
 
 protected:
     virtual void paintGL();

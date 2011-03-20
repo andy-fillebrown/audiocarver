@@ -104,7 +104,7 @@ GLViewport *GLWidgetPrivate::viewportAtPosition(const QPoint &position) const
         if (viewport->rect().contains(position))
             return viewport;
 
-    Q_ASSERT(false && "No viewport found at position.");
+//    Q_ASSERT(false && "No viewport found at position.");
     return 0;
 }
 
