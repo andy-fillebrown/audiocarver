@@ -322,9 +322,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         const QSize size = vp->size();
         const QPoint deltaPos = pos - d->prevDragPos;
 
+        vp->pushViewAutomaticUpdate();
+
         const real dragX = real(deltaPos.x()) / real(size.width());
         if (dragX != 0.0f) {
-            AxisAngle axisAngle(-2.0f * M_PI * dragX, Vector(0, 1, 0));
+            AxisAngle axisAngle(-2.0f * M_PI * dragX, GL::yAxis);
             Matrix m;
             gmtl::setRot(m, axisAngle);
 
@@ -340,12 +342,12 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
         const real dragY = real(deltaPos.y()) / real(size.height());
         if (dragY != 0.0f) {
-            Vector fwd = vp->cameraTarget() - vp->cameraPosition();
-            gmtl::normalize(fwd);
-            Vector side;
-            gmtl::cross(side, fwd, vp->cameraUpVector());
-            gmtl::normalize(side);
-            AxisAngle axisAngle(-2.0f * M_PI * dragY, side);
+//            Vector fwd = vp->cameraTarget() - vp->cameraPosition();
+//            gmtl::normalize(fwd);
+//            Vector side;
+//            gmtl::cross(side, fwd, vp->cameraUpVector());
+//            gmtl::normalize(side);
+            AxisAngle axisAngle(-2.0f * M_PI * dragY, vp->cameraSideVector());
             Matrix m;
             gmtl::setRot(m, axisAngle);
 
@@ -358,6 +360,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
             vp->setCamera(newCamPos, vp->cameraTarget(), newCamUpVec);
         }
+
+        vp->popViewAutomaticUpdate();
 
         d->prevDragPos = pos;
         updateGL();
@@ -384,7 +388,7 @@ void GLWidget::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    Vector fwd = vp->cameraTarget() - vp->cameraPosition();
+    Vector fwd = vp->cameraViewVector();
     const int delta = event->delta();
     if (0 < delta)
         fwd /= 1.25f;

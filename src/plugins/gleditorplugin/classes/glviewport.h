@@ -52,6 +52,15 @@ public:
     void resize(int width, int height);
 
     void updateAnimation();
+    void updateView();
+
+    bool isViewAutomaticallyUpdated() const;
+    void setViewAutomaticUpdate(bool automatic);
+    void pushViewAutomaticUpdate();
+    void popViewAutomaticUpdate();
+
+    bool isPerspective() const;
+    void setPerspective(bool perspective);
 
     void setCamera(const GL::Point &position, const GL::Point &target, const GL::Vector &upVector);
     const GL::Point &cameraPosition() const;
@@ -60,8 +69,11 @@ public:
     void setCameraTarget(const GL::Point &target);
     const GL::Vector &cameraUpVector() const;
     void setCameraUpVector(const GL::Vector &upVector);
-    bool isPerspective() const;
-    void setPerspective(bool perspective);
+
+    GL::real cameraDistanceToTarget() const;
+    const GL::Vector &cameraViewVector() const;
+    const GL::Vector &cameraViewDirection() const;
+    const GL::Vector &cameraSideVector() const;
 
     const GL::Matrix &projXform() const;
     const GL::Matrix &modelXform() const;

@@ -68,10 +68,18 @@ public:
     QColor backgroundColor;
     QList<GLuint> textureIds;
 
+    bool viewAutoUpdate;
+    bool viewAutoUpdatePushed;
+
+    bool perspective;
     Point cameraPosition;
     Point cameraTarget;
-    Vector cameraUpVector;
-    bool perspective;
+    Vector cameraUpVector;   // normalized
+
+    real cameraDistanceToTarget;
+    Vector cameraViewVector; // not normalized
+    Vector cameraViewDir;    // normalized
+    Vector cameraSideVector; // normalized
 
     Matrix projXform;
     Matrix viewXform;
@@ -91,18 +99,24 @@ public:
         ,   animationFBO(0)
         ,   overlayFBO(0)
         ,   backgroundColor(QColor(251, 251, 251))
+        ,   viewAutoUpdate(true)
+        ,   viewAutoUpdatePushed(false)
+        ,   perspective(false)
         ,   cameraPosition(0.0, 0.0, -10.0)
         ,   cameraTarget(0.0, 0.0, 0.0)
-        ,   cameraUpVector(0.0, 1.0, 0.0)
-        ,   perspective(false)
-        ,   ucs(Vector(0.0f, 0.0f, -1.0f), 0.0f)
+        ,   cameraUpVector(GL::yAxis)
+        ,   cameraDistanceToTarget(qAbs(cameraPosition[2]))
+        ,   cameraViewVector(cameraTarget - cameraPosition)
+        ,   cameraViewDir(0.0f, 0.0f, 1.0f)
+        ,   cameraSideVector(GL::xAxis)
+        ,   ucs(GL::xyPlane)
     {
         Q_ASSERT(widget);
 
         initializeGLFunctions(widget->context());
         initializeFBOs(parentSplit->width(), parentSplit->height());
 
-        updateXforms();
+        updateCamera();
     }
 
     ~GLViewportPrivate()
@@ -206,7 +220,7 @@ public:
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
 
-        const QSize size = q->size();
+        const QSize size = parentSplit->size();
         glViewport(0, 0, size.width(), size.height());
         pushXforms();
 
@@ -268,8 +282,7 @@ public:
     void resizeFBOs(int w, int h)
     {
         initializeFBOs(w, h);
-        updateXforms();
-        updateAllFBOs();
+        updateCamera();
     }
 
     real aspect() const
@@ -279,13 +292,22 @@ public:
         return real(size.width()) / real(h ? h : 1);
     }
 
-    void updateXforms()
+    void updateCamera()
     {
         GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
-        GL::perspective(projXform, 30.0f, aspect(), 1.0f, 100.0f);
+        GL::perspective(projXform, 30.0f, aspect(), 1.0f, 10000.0f);
 
-        inverseXform = projXform * viewXform;
-        gmtl::invertFull(inverseXform, inverseXform);
+        gmtl::invertFull(inverseXform, projXform * viewXform);
+
+        cameraViewVector = cameraTarget - cameraPosition;
+        cameraDistanceToTarget = gmtl::length(cameraViewVector);
+        cameraViewDir = cameraViewVector;
+        gmtl::normalize(cameraViewDir);
+        gmtl::cross(cameraSideVector, cameraViewDir, cameraUpVector);
+        gmtl::normalize(cameraSideVector);
+
+        if (viewAutoUpdate && !viewAutoUpdatePushed)
+            updateAllFBOs();
     }
 
     void pushXforms()
@@ -376,48 +398,29 @@ void GLViewport::updateAnimation()
     d->updateFBO(AnimationFBO);
 }
 
-void GLViewport::setCamera(const Point &position, const Point &target, const Vector &upVector)
+void GLViewport::updateView()
 {
-    d->cameraPosition = position;
-    d->cameraTarget = target;
-    d->cameraUpVector = upVector;
-    d->updateXforms();
     d->updateAllFBOs();
 }
 
-const Point &GLViewport::cameraPosition() const
+bool GLViewport::isViewAutomaticallyUpdated() const
 {
-    return d->cameraPosition;
+    return d->viewAutoUpdate;
 }
 
-void GLViewport::setCameraPosition(const Point &position)
+void GLViewport::setViewAutomaticUpdate(bool automatic)
 {
-    d->cameraPosition = position;
-    d->updateXforms();
-    d->updateAllFBOs();
+    d->viewAutoUpdate = automatic;
 }
 
-const Point &GLViewport::cameraTarget() const
+void GLViewport::pushViewAutomaticUpdate()
 {
-    return d->cameraTarget;
+    d->viewAutoUpdatePushed = true;
 }
 
-void GLViewport::setCameraTarget(const Point &target)
+void GLViewport::popViewAutomaticUpdate()
 {
-    d->cameraTarget = target;
-    d->updateXforms();
-    d->updateAllFBOs();
-}
-
-const Vector &GLViewport::cameraUpVector() const
-{
-    return d->cameraUpVector;
-}
-
-void GLViewport::setCameraUpVector(const Vector &upVector)
-{
-    d->cameraUpVector = upVector;
-    d->updateXforms();
+    d->viewAutoUpdatePushed = false;
     d->updateAllFBOs();
 }
 
@@ -429,8 +432,68 @@ bool GLViewport::isPerspective() const
 void GLViewport::setPerspective(bool perspective)
 {
     d->perspective = perspective;
-    d->updateXforms();
-    d->updateAllFBOs();
+    d->updateCamera();
+}
+
+void GLViewport::setCamera(const Point &position, const Point &target, const Vector &upVector)
+{
+    d->cameraPosition = position;
+    d->cameraTarget = target;
+    d->cameraUpVector = upVector;
+    d->updateCamera();
+}
+
+const Point &GLViewport::cameraPosition() const
+{
+    return d->cameraPosition;
+}
+
+void GLViewport::setCameraPosition(const Point &position)
+{
+    d->cameraPosition = position;
+    d->updateCamera();
+}
+
+const Point &GLViewport::cameraTarget() const
+{
+    return d->cameraTarget;
+}
+
+void GLViewport::setCameraTarget(const Point &target)
+{
+    d->cameraTarget = target;
+    d->updateCamera();
+}
+
+const Vector &GLViewport::cameraUpVector() const
+{
+    return d->cameraUpVector;
+}
+
+void GLViewport::setCameraUpVector(const Vector &upVector)
+{
+    d->cameraUpVector = upVector;
+    d->updateCamera();
+}
+
+real GLViewport::cameraDistanceToTarget() const
+{
+    return d->cameraDistanceToTarget;
+}
+
+const Vector &GLViewport::cameraViewVector() const
+{
+    return d->cameraViewVector;
+}
+
+const Vector &GLViewport::cameraViewDirection() const
+{
+    return d->cameraViewDir;
+}
+
+const Vector &GLViewport::cameraSideVector() const
+{
+    return d->cameraSideVector;
 }
 
 const Matrix &GLViewport::projXform() const
