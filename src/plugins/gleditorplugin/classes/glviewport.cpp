@@ -102,7 +102,7 @@ public:
         ,   backgroundColor(QColor(251, 251, 251))
         ,   viewAutoUpdate(true)
         ,   viewAutoUpdatePushed(false)
-        ,   perspective(false)
+        ,   perspective(true)
         ,   cameraPosition(0.0, 0.0, -10.0)
         ,   cameraTarget(0.0, 0.0, 0.0)
         ,   cameraUpVector(GL::yAxis)
@@ -310,9 +310,9 @@ public:
         const real w = aspect * h;
 
         if (perspective)
-            GL::frustum(projXform, -w, w, -h, h, 1.0f, 10000.0f);
+            GL::frustum(projXform, -w, w, -h, h, 1.0f, 100000.0f);
         else
-            GL::ortho(projXform, -w, w, -h, h, 1.0f, 10000.0f);
+            GL::ortho(projXform, -w, w, -h, h, -100000.0f, 100000.0f);
 
         gmtl::invertFull(inverseXform, projXform * viewXform);
 
@@ -583,19 +583,13 @@ Point GLViewport::findPointOnPlane(const QPoint &screenPos, const GL::Plane &pla
         endDenom * (baseY + m[9]),
         endDenom * (baseZ + m[10]));
 
-    // Find intersection of ray and ucs plane.
-    Vector rayDir(d->perspective ? endPt - startPt : startPt - endPt);
-    Ray ray(startPt, rayDir);
+    // Find intersection of ray and plane.
     real t;
-    bool hit = gmtl::intersect(plane, ray, t);
-    if (hit && t != 0.0f) {
-        Point pt = ray.mOrigin + ray.mDir * t;
-        pt[0] = -pt[0];
-        return pt;
-    } else
-        qWarning() << "No ucs hit point found.";
-
-    return Point();
+    Ray ray(startPt, endPt - startPt);
+    gmtl::intersect(plane, ray, t);
+    Point pt = ray.mOrigin + ray.mDir * t;
+    pt[0] = -pt[0];
+    return pt;
 }
 
 void GLViewport::paintGL()
