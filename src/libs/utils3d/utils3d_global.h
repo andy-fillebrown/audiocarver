@@ -64,6 +64,14 @@ typedef gmtl::LineSeg<real> LineSegment;
 typedef gmtl::Plane<real> Plane;
 typedef gmtl::Ray<real> Ray;
 
+const Vector xAxis(1.0f, 0.0f, 0.0f);
+const Vector yAxis(0.0f, 1.0f, 0.0f);
+const Vector zAxis(0.0f, 0.0f, 1.0f);
+
+const Plane xyPlane(zAxis, 0.0f);
+const Plane xzPlane(yAxis, 0.0f);
+const Plane yzPlane(xAxis, 0.0f);
+
 inline void perspective(Matrix &m, real fov, real aspect, real nearPlane, real farPlane)
 {
     gmtl::identity(m);
