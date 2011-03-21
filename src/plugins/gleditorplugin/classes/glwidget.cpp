@@ -208,6 +208,44 @@ void GLWidget::resizeGL(int width, int height)
     updateGL();
 }
 
+void GLWidget::mousePressEvent(QMouseEvent *event)
+{
+    const QPoint pos = event->pos();
+
+    if (event->button() == Qt::LeftButton) {
+        GLWidgetSplit *split = d->mainSplit;
+        while (split->isSplit()) {
+            if (split->splitOne()->rect().contains(pos))
+                split = split->splitOne();
+            else if (split->splitTwo()->rect().contains(pos))
+                split = split->splitTwo();
+            else {
+                d->draggingSplit = split;
+                split = 0;
+                break;
+            }
+        }
+        if (split)
+            setCurrentSplit(split);
+    }
+    else if (event->button() == Qt::RightButton) {
+        d->dragStartScreenPosition = pos;
+
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+            d->isRotating = true;
+        else
+            d->isPanning = true;
+
+        if (d->isPanning || d->isRotating) {
+            d->draggingViewport = d->viewportAtPosition(pos);
+            if (d->draggingViewport)
+                d->prevDragPos = pos;
+            else
+                d->isPanning = d->isRotating = false;
+        }
+    }
+}
+
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
     const QPoint pos = event->pos();
@@ -253,6 +291,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         if (currentCursorShape != desiredCursorShape)
             setCursor(QCursor(desiredCursorShape));
 
+        // Don't fall through to pan/rotate if the cursor is on border.
         if (isOnBorder)
             return;
     }
@@ -263,49 +302,61 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         const Point endPt = vp->findUcsPoint(pos);
         Point dragVec = endPt - startPt;
         dragVec[1] = -dragVec[1]; // ... don't know why y coord needs negation
+
         const Point camPos = vp->cameraPosition() + dragVec;
         const Point camTar = vp->cameraTarget() + dragVec;
         vp->setCamera(camPos, camTar, Vector(0.0f, 1.0f, 0.0f));
+
         d->prevDragPos = pos;
         updateGL();
+        return;
     }
-}
 
-void GLWidget::mousePressEvent(QMouseEvent *event)
-{
-    const QPoint pos = event->pos();
+    if (d->isRotating) {
+        GLViewport *vp = d->draggingViewport;
+        const QSize size = vp->size();
+        const QPoint deltaPos = pos - d->prevDragPos;
 
-    if (event->button() == Qt::LeftButton) {
-        GLWidgetSplit *split = d->mainSplit;
-        while (split->isSplit()) {
-            if (split->splitOne()->rect().contains(pos))
-                split = split->splitOne();
-            else if (split->splitTwo()->rect().contains(pos))
-                split = split->splitTwo();
-            else {
-                d->draggingSplit = split;
-                split = 0;
-                break;
-            }
+        const real dragX = real(deltaPos.x()) / real(size.width());
+        if (dragX != 0.0f) {
+            AxisAngle axisAngle(-2.0f * M_PI * dragX, Vector(0, 1, 0));
+            Matrix m;
+            gmtl::setRot(m, axisAngle);
+
+            Point normCamPos = vp->cameraPosition() - vp->cameraTarget();
+            gmtl::xform(normCamPos, m, normCamPos);
+            Point newCamPos = vp->cameraTarget() + normCamPos;
+
+            Vector newCamUpVec;
+            gmtl::xform(newCamUpVec, m, vp->cameraUpVector());
+
+            vp->setCamera(newCamPos, vp->cameraTarget(), newCamUpVec);
         }
-        if (split)
-            setCurrentSplit(split);
-    }
-    else if (event->button() == Qt::RightButton) {
-        d->dragStartScreenPosition = pos;
 
-        if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-            d->isRotating = true;
-        else
-            d->isPanning = true;
+        const real dragY = real(deltaPos.y()) / real(size.height());
+        if (dragY != 0.0f) {
+            Vector fwd = vp->cameraTarget() - vp->cameraPosition();
+            gmtl::normalize(fwd);
+            Vector side;
+            gmtl::cross(side, fwd, vp->cameraUpVector());
+            gmtl::normalize(side);
+            AxisAngle axisAngle(-2.0f * M_PI * dragY, side);
+            Matrix m;
+            gmtl::setRot(m, axisAngle);
 
-        if (d->isPanning || d->isRotating) {
-            d->draggingViewport = d->viewportAtPosition(pos);
-            if (d->draggingViewport)
-                d->prevDragPos = pos;
-            else
-                d->isPanning = d->isRotating = false;
+            Point normCamPos = vp->cameraPosition() - vp->cameraTarget();
+            gmtl::xform(normCamPos, m, normCamPos);
+            Point newCamPos = vp->cameraTarget() + normCamPos;
+
+            Vector newCamUpVec;
+            gmtl::xform(newCamUpVec, m, vp->cameraUpVector());
+
+            vp->setCamera(newCamPos, vp->cameraTarget(), newCamUpVec);
         }
+
+        d->prevDragPos = pos;
+        updateGL();
+        return;
     }
 }
 
@@ -328,13 +379,13 @@ void GLWidget::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    Point camPos = vp->cameraPosition();
+    Vector fwd = vp->cameraTarget() - vp->cameraPosition();
     const int delta = event->delta();
     if (0 < delta)
-        camPos[2] /= 1.25f;
+        fwd /= 1.25f;
     else
-        camPos[2] *= 1.25f;
-    vp->setCameraPosition(camPos);
+        fwd *= 1.25f;
+    vp->setCameraPosition(vp->cameraTarget() - fwd);
 
     updateGL();
 }

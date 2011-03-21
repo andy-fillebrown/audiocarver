@@ -282,7 +282,7 @@ public:
     void updateXforms()
     {
         GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
-        GL::perspective(projXform, 5.0f, aspect(), 4.0f, 100.0f);
+        GL::perspective(projXform, 45.0f, aspect(), 1.0f, 100.0f);
 
         inverseXform = projXform * viewXform;
         gmtl::invertFull(inverseXform, inverseXform);
@@ -490,7 +490,7 @@ Point GLViewport::findUcsPoint(const QPoint &screenPos) const
         endDenom * (baseZ + m[10]));
 
     // Find intersection of ray and ucs plane.
-    Ray ray(startPt, startPt - endPt);
+    Ray ray(startPt, endPt - startPt);
     real t;
     bool hit = gmtl::intersect(d->ucsPlane, ray, t);
     if (hit && t != 0.0f) {

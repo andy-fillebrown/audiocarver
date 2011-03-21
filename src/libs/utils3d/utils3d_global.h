@@ -20,6 +20,7 @@
 
 #include <utils/utils_global.h>
 
+#include <gmtl/AxisAngle.h>
 #include <gmtl/Generate.h>
 #include <gmtl/MatrixOps.h>
 #include <gmtl/Plane.h>
@@ -54,6 +55,7 @@ namespace GL {
 
 typedef float real;
 
+typedef gmtl::AxisAngle<real> AxisAngle;
 typedef gmtl::Matrix<real, 4, 4> Matrix;
 typedef gmtl::Point<real, 3> Point;
 typedef gmtl::Vec<real, 3> Vector;
@@ -78,20 +80,20 @@ inline void perspective(Matrix &m, real fov, real aspect, real nearPlane, real f
     real cotan = qCos(radians) / sine;
     real clip = farPlane - nearPlane;
     m(0,0) = cotan / aspect;
-    m(1,0) = 0.0f;
-    m(2,0) = 0.0f;
-    m(3,0) = 0.0f;
     m(0,1) = 0.0f;
-    m(1,1) = cotan;
-    m(2,1) = 0.0f;
-    m(3,1) = 0.0f;
     m(0,2) = 0.0f;
-    m(1,2) = 0.0f;
-    m(2,2) = -(nearPlane + farPlane) / clip;
-    m(3,2) = -(2.0f * nearPlane * farPlane) / clip;
     m(0,3) = 0.0f;
+    m(1,0) = 0.0f;
+    m(1,1) = cotan;
+    m(1,2) = 0.0f;
     m(1,3) = 0.0f;
-    m(2,3) = -1.0f;
+    m(2,0) = 0.0f;
+    m(2,1) = 0.0f;
+    m(2,2) = -(nearPlane + farPlane) / clip;
+    m(2,3) = -(2.0f * nearPlane * farPlane) / clip;
+    m(3,0) = 0.0f;
+    m(3,1) = 0.0f;
+    m(3,2) = -1.0f;
     m(3,3) = 0.0f;
 }
 
@@ -108,20 +110,20 @@ inline void lookAt(Matrix &m, const Point &eye, const Point &target, const Vecto
     gmtl::cross(up, side, fwd);
 
     m(0,0) = side[0];
-    m(1,0) = side[1];
-    m(2,0) = side[2];
-    m(3,0) = 0.0f;
-    m(0,1) = up[0];
-    m(1,1) = up[1];
-    m(2,1) = up[2];
-    m(3,1) = 0.0f;
-    m(0,2) = -fwd[0];
-    m(1,2) = -fwd[1];
-    m(2,2) = -fwd[2];
-    m(3,2) = 0.0f;
+    m(0,1) = side[1];
+    m(0,2) = side[2];
     m(0,3) = 0.0f;
+    m(1,0) = up[0];
+    m(1,1) = up[1];
+    m(1,2) = up[2];
     m(1,3) = 0.0f;
+    m(2,0) = -fwd[0];
+    m(2,1) = -fwd[1];
+    m(2,2) = -fwd[2];
     m(2,3) = 0.0f;
+    m(3,0) = 0.0f;
+    m(3,1) = 0.0f;
+    m(3,2) = 0.0f;
     m(3,3) = 1.0f;
 
     Matrix trans;
@@ -167,7 +169,8 @@ inline void qglPopState()
 }
 
 
-inline void qglTraceMatrix(GL::real *m)
+template <typename T>
+inline void qglTraceMatrix(T *m)
 {
     qDebug() << QString("%1, %2, %3, %4").arg(m[0]).arg(m[1]).arg(m[2]).arg(m[3]);
     qDebug() << QString("%1, %2, %3, %4").arg(m[4]).arg(m[5]).arg(m[6]).arg(m[7]);
