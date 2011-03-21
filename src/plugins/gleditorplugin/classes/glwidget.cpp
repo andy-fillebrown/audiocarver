@@ -303,8 +303,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
     if (d->isPanning) {
         GLViewport *vp = d->draggingViewport;
-        const Point startPt = vp->findUcsPoint(d->prevDragPos);
-        const Point endPt = vp->findUcsPoint(pos);
+        const Point startPt = vp->findPointOnUcs(d->prevDragPos - vp->pos());
+        const Point endPt = vp->findPointOnUcs(pos - vp->pos());
         Point dragVec = endPt - startPt;
         dragVec[1] = -dragVec[1]; // ... don't know why y coord needs negation
 
