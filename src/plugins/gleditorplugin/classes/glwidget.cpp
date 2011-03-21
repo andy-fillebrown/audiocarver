@@ -315,8 +315,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
             cursorShape = split->isSplitHorizontal() ? Qt::SizeVerCursor : Qt::SizeHorCursor;
 
         // Change cursor shape, if necessary.
-        if (cursor().shape() != desiredCursorShape)
-            setCursor(QCursor(desiredCursorShape));
+        if (cursor().shape() != cursorShape)
+            setCursor(QCursor(cursorShape));
 
         // Don't fall through to pan/rotate if cursor is on border.
         if (isOnBorder)
