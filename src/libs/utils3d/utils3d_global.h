@@ -82,22 +82,23 @@ inline void ortho(Matrix &m, real left, real right, real bottom, real top, real 
     qreal invheight = top - bottom;
     qreal clip = farPlane - nearPlane;
 
-    m(0,0) = 2.0f / width;
-    m(0,1) = 0.0f;
-    m(0,2) = 0.0f;
-    m(0,3) = -(left + right) / width;
-    m(1,0) = 0.0f;
-    m(1,1) = 2.0f / invheight;
-    m(1,2) = 0.0f;
-    m(1,3) = -(top + bottom) / invheight;
-    m(2,0) = 0.0f;
-    m(2,1) = 0.0f;
-    m(2,2) = -2.0f / clip;
-    m(2,3) = -(nearPlane + farPlane) / clip;
-    m(3,0) = 0.0f;
-    m(3,1) = 0.0f;
-    m(3,2) = 0.0f;
-    m(3,3) = 1.0f;
+    real *d = m.mData;
+    d[ 0] = 2.0f / width;
+    d[ 4] = 0.0f;
+    d[ 8] = 0.0f;
+    d[12] = -(left + right) / width;
+    d[ 1] = 0.0f;
+    d[ 5] = 2.0f / invheight;
+    d[ 9] = 0.0f;
+    d[13] = -(top + bottom) / invheight;
+    d[ 2] = 0.0f;
+    d[ 6] = 0.0f;
+    d[10] = -2.0f / clip;
+    d[14] = -(nearPlane + farPlane) / clip;
+    d[ 3] = 0.0f;
+    d[ 7] = 0.0f;
+    d[11] = 0.0f;
+    d[15] = 1.0f;
 }
 
 inline void frustum(Matrix &m, real left, real right, real bottom, real top, real nearPlane, real farPlane)
@@ -110,22 +111,23 @@ inline void frustum(Matrix &m, real left, real right, real bottom, real top, rea
     qreal invheight = top - bottom;
     qreal clip = farPlane - nearPlane;
 
-    m(0,0) = 2.0f * nearPlane / width;
-    m(0,1) = 0.0f;
-    m(0,2) = (left + right) / width;
-    m(0,3) = 0.0f;
-    m(1,0) = 0.0f;
-    m(1,1) = 2.0f * nearPlane / invheight;
-    m(1,2) = (top + bottom) / invheight;
-    m(1,3) = 0.0f;
-    m(2,0) = 0.0f;
-    m(2,1) = 0.0f;
-    m(2,2) = -(nearPlane + farPlane) / clip;
-    m(2,3) = -2.0f * nearPlane * farPlane / clip;
-    m(3,0) = 0.0f;
-    m(3,1) = 0.0f;
-    m(3,2) = -1.0f;
-    m(3,3) = 0.0f;
+    real *d = m.mData;
+    d[ 0] = 2.0f * nearPlane / width;
+    d[ 4] = 0.0f;
+    d[ 8] = (left + right) / width;
+    d[12] = 0.0f;
+    d[ 1] = 0.0f;
+    d[ 5] = 2.0f * nearPlane / invheight;
+    d[ 9] = (top + bottom) / invheight;
+    d[13] = 0.0f;
+    d[ 2] = 0.0f;
+    d[ 6] = 0.0f;
+    d[10] = -(nearPlane + farPlane) / clip;
+    d[14] = -2.0f * nearPlane * farPlane / clip;
+    d[ 3] = 0.0f;
+    d[ 7] = 0.0f;
+    d[11] = -1.0f;
+    d[15] = 0.0f;
 }
 
 inline void perspective(Matrix &m, real fov, real aspect, real nearPlane, real farPlane)
@@ -140,22 +142,24 @@ inline void perspective(Matrix &m, real fov, real aspect, real nearPlane, real f
         return;
     real cotan = qCos(radians) / sine;
     real clip = farPlane - nearPlane;
-    m(0,0) = cotan / aspect;
-    m(0,1) = 0.0f;
-    m(0,2) = 0.0f;
-    m(0,3) = 0.0f;
-    m(1,0) = 0.0f;
-    m(1,1) = cotan;
-    m(1,2) = 0.0f;
-    m(1,3) = 0.0f;
-    m(2,0) = 0.0f;
-    m(2,1) = 0.0f;
-    m(2,2) = -(nearPlane + farPlane) / clip;
-    m(2,3) = -(2.0f * nearPlane * farPlane) / clip;
-    m(3,0) = 0.0f;
-    m(3,1) = 0.0f;
-    m(3,2) = -1.0f;
-    m(3,3) = 0.0f;
+
+    real *d = m.mData;
+    d[ 0] = cotan / aspect;
+    d[ 4] = 0.0f;
+    d[ 8] = 0.0f;
+    d[12] = 0.0f;
+    d[ 1] = 0.0f;
+    d[ 5] = cotan;
+    d[ 9] = 0.0f;
+    d[13] = 0.0f;
+    d[ 2] = 0.0f;
+    d[ 6] = 0.0f;
+    d[10] = -(nearPlane + farPlane) / clip;
+    d[14] = -(2.0f * nearPlane * farPlane) / clip;
+    d[ 3] = 0.0f;
+    d[ 7] = 0.0f;
+    d[11] = -1.0f;
+    d[15] = 0.0f;
 }
 
 inline void lookAt(Matrix &m, const Point &eye, const Point &target, const Vector &upVec)
@@ -170,26 +174,26 @@ inline void lookAt(Matrix &m, const Point &eye, const Point &target, const Vecto
     Vector up;
     gmtl::cross(up, side, fwd);
 
-    m(0,0) = side[0];
-    m(0,1) = side[1];
-    m(0,2) = side[2];
-    m(0,3) = 0.0f;
-    m(1,0) = up[0];
-    m(1,1) = up[1];
-    m(1,2) = up[2];
-    m(1,3) = 0.0f;
-    m(2,0) = -fwd[0];
-    m(2,1) = -fwd[1];
-    m(2,2) = -fwd[2];
-    m(2,3) = 0.0f;
-    m(3,0) = 0.0f;
-    m(3,1) = 0.0f;
-    m(3,2) = 0.0f;
-    m(3,3) = 1.0f;
+    real *d = m.mData;
+    d[ 0] = side[0];
+    d[ 4] = side[1];
+    d[ 8] = side[2];
+    d[12] = 0.0f;
+    d[ 1] = up[0];
+    d[ 5] = up[1];
+    d[ 9] = up[2];
+    d[13] = 0.0f;
+    d[ 2] = -fwd[0];
+    d[ 6] = -fwd[1];
+    d[10] = -fwd[2];
+    d[14] = 0.0f;
+    d[ 3] = 0.0f;
+    d[ 7] = 0.0f;
+    d[11] = 0.0f;
+    d[15] = 1.0f;
 
     Matrix trans;
     gmtl::setTrans(trans, -eye);
-
     m *= trans;
 }
 
@@ -233,9 +237,9 @@ inline void qglPopState()
 template <typename T>
 inline void qglTraceMatrix(T *m)
 {
-    qDebug() << QString("%1, %2, %3, %4").arg(m[0]).arg(m[1]).arg(m[2]).arg(m[3]);
-    qDebug() << QString("%1, %2, %3, %4").arg(m[4]).arg(m[5]).arg(m[6]).arg(m[7]);
-    qDebug() << QString("%1, %2, %3, %4").arg(m[8]).arg(m[9]).arg(m[10]).arg(m[11]);
+    qDebug() << QString("%1, %2, %3, %4").arg(m[ 0]).arg(m[ 1]).arg(m[ 2]).arg(m[ 3]);
+    qDebug() << QString("%1, %2, %3, %4").arg(m[ 4]).arg(m[ 5]).arg(m[ 6]).arg(m[ 7]);
+    qDebug() << QString("%1, %2, %3, %4").arg(m[ 8]).arg(m[ 9]).arg(m[10]).arg(m[11]);
     qDebug() << QString("%1, %2, %3, %4").arg(m[12]).arg(m[13]).arg(m[14]).arg(m[15]);
 }
 
