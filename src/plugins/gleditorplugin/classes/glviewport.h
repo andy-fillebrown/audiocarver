@@ -62,6 +62,9 @@ public:
     bool isPerspective() const;
     void setPerspective(bool perspective);
 
+    GL::real cameraHeight() const;
+    void setCameraHeight(GL::real height);
+
     void setCamera(const GL::Point &position, const GL::Point &target, const GL::Vector &upVector);
     const GL::Point &cameraPosition() const;
     void setCameraPosition(const GL::Point &position);

@@ -77,6 +77,7 @@ public:
     Vector cameraUpVector;   // normalized
 
     real cameraDistanceToTarget;
+    real cameraHeight;
     Vector cameraViewVector; // not normalized
     Vector cameraViewDir;    // normalized
     Vector cameraSideVector; // normalized
@@ -106,6 +107,7 @@ public:
         ,   cameraTarget(0.0, 0.0, 0.0)
         ,   cameraUpVector(GL::yAxis)
         ,   cameraDistanceToTarget(qAbs(cameraPosition[2]))
+        ,   cameraHeight(10.0f)
         ,   cameraViewVector(cameraTarget - cameraPosition)
         ,   cameraViewDir(0.0f, 0.0f, 1.0f)
         ,   cameraSideVector(GL::xAxis)
@@ -294,17 +296,25 @@ public:
 
     void updateCamera()
     {
-        GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
-        GL::perspective(projXform, 30.0f, aspect(), 1.0f, 10000.0f);
-
-        gmtl::invertFull(inverseXform, projXform * viewXform);
-
         cameraViewVector = cameraTarget - cameraPosition;
         cameraDistanceToTarget = gmtl::length(cameraViewVector);
         cameraViewDir = cameraViewVector;
         gmtl::normalize(cameraViewDir);
         gmtl::cross(cameraSideVector, cameraViewDir, cameraUpVector);
         gmtl::normalize(cameraSideVector);
+
+        GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
+
+        const real aspect = this->aspect();
+        const real h = cameraHeight;
+        const real w = aspect * h;
+
+        if (perspective)
+            GL::frustum(projXform, -w, w, -h, h, 1.0f, 10000.0f);
+        else
+            GL::ortho(projXform, -w, w, -h, h, 1.0f, 10000.0f);
+
+        gmtl::invertFull(inverseXform, projXform * viewXform);
 
         if (viewAutoUpdate && !viewAutoUpdatePushed)
             updateAllFBOs();
@@ -432,6 +442,17 @@ bool GLViewport::isPerspective() const
 void GLViewport::setPerspective(bool perspective)
 {
     d->perspective = perspective;
+    d->updateCamera();
+}
+
+real GLViewport::cameraHeight() const
+{
+    return d->cameraHeight;
+}
+
+void GLViewport::setCameraHeight(GL::real height)
+{
+    d->cameraHeight = height;
     d->updateCamera();
 }
 
@@ -563,12 +584,13 @@ Point GLViewport::findPointOnPlane(const QPoint &screenPos, const GL::Plane &pla
         endDenom * (baseZ + m[10]));
 
     // Find intersection of ray and ucs plane.
-    Ray ray(startPt, endPt - startPt); // ... endPt - startPt is backwards?
+    Vector rayDir(d->perspective ? endPt - startPt : startPt - endPt);
+    Ray ray(startPt, rayDir);
     real t;
     bool hit = gmtl::intersect(plane, ray, t);
     if (hit && t != 0.0f) {
         Point pt = ray.mOrigin + ray.mDir * t;
-        pt[0] = -pt[0]; // ... don't know why x coord needs negation
+        pt[0] = -pt[0];
         return pt;
     } else
         qWarning() << "No ucs hit point found.";

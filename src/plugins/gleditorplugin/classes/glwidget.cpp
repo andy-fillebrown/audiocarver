@@ -388,13 +388,15 @@ void GLWidget::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    Vector fwd = vp->cameraViewVector();
+    // Scale viewport's camera height by plus or minus 1.25 depending on which
+    // way mouse wheel rolled.
+    real h = vp->cameraHeight();
     const int delta = event->delta();
     if (0 < delta)
-        fwd /= 1.25f;
+        h /= 1.25f;
     else
-        fwd *= 1.25f;
-    vp->setCameraPosition(vp->cameraTarget() - fwd);
+        h *= 1.25f;
+    vp->setCameraHeight(h);
 
     updateGL();
 }
