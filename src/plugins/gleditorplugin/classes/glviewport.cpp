@@ -78,7 +78,7 @@ public:
     Matrix modelXform;
     Matrix inverseXform; // inverted projXform * viewXform, for unprojecting
 
-    Plane ucsPlane;
+    Plane ucs;
 
     GLViewportPrivate(GLViewport *q, GLWidgetSplit *parentSplit)
         :   q(q)
@@ -95,7 +95,7 @@ public:
         ,   cameraTarget(0.0, 0.0, 0.0)
         ,   cameraUpVector(0.0, 1.0, 0.0)
         ,   perspective(false)
-        ,   ucsPlane(Vector(0.0f, 0.0f, -1.0f), 0.0f)
+        ,   ucs(Vector(0.0f, 0.0f, -1.0f), 0.0f)
     {
         Q_ASSERT(widget);
 
@@ -282,7 +282,7 @@ public:
     void updateXforms()
     {
         GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
-        GL::perspective(projXform, 45.0f, aspect(), 1.0f, 100.0f);
+        GL::perspective(projXform, 30.0f, aspect(), 1.0f, 100.0f);
 
         inverseXform = projXform * viewXform;
         gmtl::invertFull(inverseXform, inverseXform);
@@ -448,7 +448,17 @@ const Matrix &GLViewport::viewXform() const
     return d->viewXform;
 }
 
-Point GLViewport::findUcsPoint(const QPoint &screenPos) const
+const Plane &GLViewport::currentUcs() const
+{
+    return d->ucs;
+}
+
+Point GLViewport::findPointOnUcs(const QPoint &screenPos) const
+{
+    return findPointOnPlane(screenPos, currentUcs());
+}
+
+Point GLViewport::findPointOnPlane(const QPoint &screenPos, const GL::Plane &plane) const
 {
     const QSize size = this->size();
     const real w = size.width();
@@ -490,14 +500,15 @@ Point GLViewport::findUcsPoint(const QPoint &screenPos) const
         endDenom * (baseZ + m[10]));
 
     // Find intersection of ray and ucs plane.
-    Ray ray(startPt, endPt - startPt);
+    Ray ray(startPt, endPt - startPt); // ... endPt - startPt is backwards?
     real t;
-    bool hit = gmtl::intersect(d->ucsPlane, ray, t);
+    bool hit = gmtl::intersect(plane, ray, t);
     if (hit && t != 0.0f) {
         Point pt = ray.mOrigin + ray.mDir * t;
         pt[0] = -pt[0]; // ... don't know why x coord needs negation
         return pt;
-    }
+    } else
+        qWarning() << "No ucs hit point found.";
 
     return Point();
 }
