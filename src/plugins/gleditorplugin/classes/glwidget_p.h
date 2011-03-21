@@ -67,6 +67,7 @@ public:
     bool isPanning;
     bool isRotating;
     QElapsedTimer elapsedTime;
+    qint64 prevFrameTime;
     bool animating;
     bool isBeingDestroyed;
 

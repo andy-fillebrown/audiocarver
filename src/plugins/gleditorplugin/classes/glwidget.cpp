@@ -175,8 +175,13 @@ void GLWidget::animateGL()
 
     updateGL();
 
-    if (isAnimating())
-        QTimer::singleShot(0, this, SLOT(animateGL()));
+    if (!isAnimating())
+        return;
+
+    const qint64 elapsed = d->elapsedTime.elapsed() - d->prevFrameTime;
+    const qint64 nextFrameTime = 20 <= elapsed ? 0 : 20 - elapsed;
+    QTimer::singleShot(nextFrameTime, this, SLOT(animateGL()));
+    d->prevFrameTime = d->elapsedTime.elapsed();
 }
 
 void GLWidget::paintGL()

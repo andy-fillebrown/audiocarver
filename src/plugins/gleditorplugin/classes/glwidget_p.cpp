@@ -46,6 +46,7 @@ GLWidgetPrivate::GLWidgetPrivate(GLWidget *q)
     ,   draggingViewport(0)
     ,   isPanning(false)
     ,   isRotating(false)
+    ,   prevFrameTime(0)
     ,   animating(false)
     ,   isBeingDestroyed(false)
 {
