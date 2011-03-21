@@ -72,15 +72,68 @@ const Plane xyPlane(zAxis, 0.0f);
 const Plane xzPlane(yAxis, 0.0f);
 const Plane yzPlane(xAxis, 0.0f);
 
+inline void ortho(Matrix &m, real left, real right, real bottom, real top, real nearPlane, real farPlane)
+{
+    // Early out if projection volume is zero-sized.
+    if (left == right || bottom == top || nearPlane == farPlane)
+        return;
+
+    qreal width = right - left;
+    qreal invheight = top - bottom;
+    qreal clip = farPlane - nearPlane;
+
+    m(0,0) = 2.0f / width;
+    m(0,1) = 0.0f;
+    m(0,2) = 0.0f;
+    m(0,3) = -(left + right) / width;
+    m(1,0) = 0.0f;
+    m(1,1) = 2.0f / invheight;
+    m(1,2) = 0.0f;
+    m(1,3) = -(top + bottom) / invheight;
+    m(2,0) = 0.0f;
+    m(2,1) = 0.0f;
+    m(2,2) = -2.0f / clip;
+    m(2,3) = -(nearPlane + farPlane) / clip;
+    m(3,0) = 0.0f;
+    m(3,1) = 0.0f;
+    m(3,2) = 0.0f;
+    m(3,3) = 1.0f;
+}
+
+inline void frustum(Matrix &m, real left, real right, real bottom, real top, real nearPlane, real farPlane)
+{
+    // Early out if projection volume is zero-sized.
+    if (left == right || bottom == top || nearPlane == farPlane)
+        return;
+
+    qreal width = right - left;
+    qreal invheight = top - bottom;
+    qreal clip = farPlane - nearPlane;
+
+    m(0,0) = 2.0f * nearPlane / width;
+    m(0,1) = 0.0f;
+    m(0,2) = (left + right) / width;
+    m(0,3) = 0.0f;
+    m(1,0) = 0.0f;
+    m(1,1) = 2.0f * nearPlane / invheight;
+    m(1,2) = (top + bottom) / invheight;
+    m(1,3) = 0.0f;
+    m(2,0) = 0.0f;
+    m(2,1) = 0.0f;
+    m(2,2) = -(nearPlane + farPlane) / clip;
+    m(2,3) = -2.0f * nearPlane * farPlane / clip;
+    m(3,0) = 0.0f;
+    m(3,1) = 0.0f;
+    m(3,2) = -1.0f;
+    m(3,3) = 0.0f;
+}
+
 inline void perspective(Matrix &m, real fov, real aspect, real nearPlane, real farPlane)
 {
-    gmtl::identity(m);
-
-    // Bail out if the projection volume is zero-sized.
+    // Early out if projection volume is zero-sized.
     if (nearPlane == farPlane || aspect == 0.0f)
         return;
 
-    // Construct the projection.
     real radians = (fov / 2.0f) * M_PI / 180.0f;
     real sine = qSin(radians);
     if (sine == 0.0f)
