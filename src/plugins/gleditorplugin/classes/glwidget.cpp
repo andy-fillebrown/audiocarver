@@ -328,12 +328,10 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         GLViewport *vp = d->draggingViewport;
         const Point startPt = vp->findPointOnUcs(d->prevDragPos - vp->pos());
         const Point endPt = vp->findPointOnUcs(pos - vp->pos());
-        Point dragVec = endPt - startPt;
+        Vector dragVec = endPt - startPt;
         dragVec[1] = -dragVec[1];
 
-        const Point camPos = vp->cameraPosition() + dragVec;
-        const Point camTar = vp->cameraTarget() + dragVec;
-        vp->setCamera(camPos, camTar, Vector(0.0f, 1.0f, 0.0f));
+        vp->setModelTranslation(vp->modelTranslation() - dragVec);
 
         // Update previous mouse position and redraw.
         d->prevDragPos = pos;
@@ -348,7 +346,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         const QPoint deltaPos = pos - d->prevDragPos;
 
         // Pause automatic view updating, since we may be making two calls to
-        // GLViewport::setCamera.
+        // GLViewport::setCameraMatrix.
         vp->pushViewAutomaticUpdate();
 
         // Rotate the camera around the target using the y axis as the axis of
@@ -370,7 +368,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
             gmtl::xform(newCamUpVec, m, vp->cameraUpVector());
 
             // Apply new position and up vector.
-            vp->setCamera(newCamPos, vp->cameraTarget(), newCamUpVec);
+            vp->setCameraMatrix(newCamPos, vp->cameraTarget(), newCamUpVec);
         }
 
         // Rotate the camera around the target using the camera's side vector
@@ -392,7 +390,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
             gmtl::xform(newCamUpVec, m, vp->cameraUpVector());
 
             // Apply new position and up vector.
-            vp->setCamera(newCamPos, vp->cameraTarget(), newCamUpVec);
+            vp->setCameraMatrix(newCamPos, vp->cameraTarget(), newCamUpVec);
         }
 
         // Restart automatic view updating.
