@@ -107,9 +107,9 @@ public:
         ,   backgroundColor(QColor(251, 251, 251))
         ,   viewAutoUpdate(true)
         ,   viewAutoUpdatePushed(false)
-        ,   perspective(true)
-        ,   cameraPosition(0.0, 0.0, -10.0)
-        ,   cameraTarget(0.0, 0.0, 0.0)
+        ,   perspective(false)
+        ,   cameraPosition(0.0f, 0.0f, -10.0f)
+        ,   cameraTarget(0.0f, 0.0f, 0.0f)
         ,   cameraUpVector(GL::yAxis)
         ,   cameraDistanceToTarget(qAbs(cameraPosition[2]))
         ,   cameraHeight(10.0f)
@@ -328,6 +328,16 @@ public:
 
         if (viewAutoUpdate && !viewAutoUpdatePushed)
             updateAllFBOs();
+
+        // Update ucs plane.
+        real dirX = cameraViewDir[0];
+        real dirZ = cameraViewDir[2];
+        if (dirZ < -0.5f || 0.5f < dirZ)
+            ucs = GL::xyPlane;
+        else if (dirX < -0.5f || 0.5f < dirX)
+            ucs = GL::yzPlane;
+        else
+            ucs = GL::xzPlane;
     }
 
     void updateModelXform()
