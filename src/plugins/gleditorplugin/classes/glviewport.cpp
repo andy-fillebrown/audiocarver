@@ -90,7 +90,10 @@ public:
     Matrix projXform;
     Matrix viewXform;
     Matrix modelXform;
-    Matrix inverseXform; // inverted projXform * viewXform, for unprojecting
+
+    Matrix projViewXform;      // projXform * viewXform
+    Matrix inverseXform;       // inverted projXfrom * viewXform * modelXform
+    Matrix inverseCameraXform; // inverted projXform * viewXform
 
     Plane ucs;
 
@@ -117,7 +120,7 @@ public:
         ,   cameraViewDir(0.0f, 0.0f, 1.0f)
         ,   cameraSideVector(GL::xAxis)
         ,   modelTranslation(0.0f, 0.0f, 0.0f)
-        ,   modelScaleX(2.0f)
+        ,   modelScaleX(1.0f)
         ,   modelScaleY(1.0f)
         ,   modelScaleZ(1.0f)
         ,   ucs(GL::xyPlane)
@@ -324,7 +327,9 @@ public:
         else
             GL::ortho(projXform, -w, w, -h, h, -100000.0f, 100000.0f);
 
-        gmtl::invertFull(inverseXform, projXform * viewXform);
+        projViewXform = projXform * viewXform;
+        gmtl::invertFull(inverseXform, projViewXform * modelXform);
+        gmtl::invertFull(inverseCameraXform, projViewXform);
 
         if (viewAutoUpdate && !viewAutoUpdatePushed)
             updateAllFBOs();
@@ -349,6 +354,8 @@ public:
         gmtl::setScale(scale, Vector(modelScaleX, modelScaleY, modelScaleZ));
 
         modelXform = trans * scale;
+
+        gmtl::invertFull(inverseXform, projViewXform * modelXform);
 
         if (viewAutoUpdate && !viewAutoUpdatePushed)
             updateAllFBOs();
@@ -619,6 +626,21 @@ const Matrix &GLViewport::viewXform() const
     return d->viewXform;
 }
 
+const Matrix &GLViewport::projViewXform() const
+{
+    return d->projViewXform;
+}
+
+const Matrix &GLViewport::inverseXform() const
+{
+    return d->inverseXform;
+}
+
+const Matrix &GLViewport::inverseCameraXform() const
+{
+    return d->inverseCameraXform;
+}
+
 const Plane &GLViewport::currentUcs() const
 {
     return d->ucs;
@@ -642,7 +664,7 @@ Point GLViewport::findPointOnPlane(const QPoint &screenPos, const GL::Plane &pla
     const real y = -((2.0f * posY / h) - 1.0f);
 
     // Cache values common to start and end point transformations.
-    const real *m = d->inverseXform.mData;
+    const real *m = d->inverseCameraXform.mData;
     const real baseDenom = m[3] * x + m[7] * y + m[15];
     const real baseX = m[0] * x + m[4] * y + m[12];
     const real baseY = m[1] * x + m[5] * y + m[13];
@@ -651,7 +673,7 @@ Point GLViewport::findPointOnPlane(const QPoint &screenPos, const GL::Plane &pla
     // Calculate ray's start point.
     const real startDenom = 1.0f / baseDenom;
     if (startDenom == 0.0f) {
-        Q_ASSERT(false ** "Can't calculate ray start point.");
+        Q_ASSERT(false && "Can't calculate ray start point.");
         return Point();
     }
     const Point startPt(

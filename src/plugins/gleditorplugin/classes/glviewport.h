@@ -93,6 +93,10 @@ public:
     const GL::Matrix &modelXform() const;
     const GL::Matrix &viewXform() const;
 
+    const GL::Matrix &projViewXform() const;
+    const GL::Matrix &inverseXform() const;
+    const GL::Matrix &inverseCameraXform() const;
+
     const GL::Plane &currentUcs() const;
     GL::Point findPointOnUcs(const QPoint &screenPos) const;
     GL::Point findPointOnPlane(const QPoint &screenPos, const GL::Plane &plane) const;
