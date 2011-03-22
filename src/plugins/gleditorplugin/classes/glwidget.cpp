@@ -345,8 +345,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         const QSize size = vp->size();
         const QPoint deltaPos = pos - d->prevDragPos;
 
-        // Pause automatic view updating, since we may be making two calls to
-        // GLViewport::setCameraMatrix.
+        // Pause automatic view updating, since two calls to
+        // GLViewport::setCameraMatrix might be made.
         vp->pushViewAutomaticUpdate();
 
         // Rotate the camera around the target using the y axis as the axis of
