@@ -329,9 +329,10 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         const Point startPt = vp->findPointOnUcs(d->prevDragPos - vp->pos());
         const Point endPt = vp->findPointOnUcs(pos - vp->pos());
         Vector dragVec = endPt - startPt;
-        dragVec[1] = -dragVec[1];
+        dragVec[0] = -dragVec[0];
 
-        vp->setModelTranslation(vp->modelTranslation() - dragVec);
+        // Apply translation to viewport's model matrix.
+        vp->setModelTranslation(vp->modelTranslation() + dragVec);
 
         // Update previous mouse position and redraw.
         d->prevDragPos = pos;
