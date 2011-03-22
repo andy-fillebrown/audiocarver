@@ -82,6 +82,11 @@ public:
     Vector cameraViewDir;    // normalized
     Vector cameraSideVector; // normalized
 
+    Vector modelTranslation; // not normalized
+    real modelScaleX;
+    real modelScaleY;
+    real modelScaleZ;
+
     Matrix projXform;
     Matrix viewXform;
     Matrix modelXform;
@@ -111,6 +116,10 @@ public:
         ,   cameraViewVector(cameraTarget - cameraPosition)
         ,   cameraViewDir(0.0f, 0.0f, 1.0f)
         ,   cameraSideVector(GL::xAxis)
+        ,   modelTranslation(0.0f, 0.0f, 0.0f)
+        ,   modelScaleX(2.0f)
+        ,   modelScaleY(1.0f)
+        ,   modelScaleZ(1.0f)
         ,   ucs(GL::xyPlane)
     {
         Q_ASSERT(widget);
@@ -119,6 +128,7 @@ public:
         initializeFBOs(parentSplit->width(), parentSplit->height());
 
         updateCamera();
+        updateModelXform();
     }
 
     ~GLViewportPrivate()
@@ -320,15 +330,28 @@ public:
             updateAllFBOs();
     }
 
+    void updateModelXform()
+    {
+        Matrix trans;
+        gmtl::setTrans(trans, modelTranslation);
+
+        Matrix scale;
+        gmtl::setScale(scale, Vector(modelScaleX, modelScaleY, modelScaleZ));
+
+        modelXform = trans * scale;
+
+        if (viewAutoUpdate && !viewAutoUpdatePushed)
+            updateAllFBOs();
+    }
+
     void pushXforms()
     {
         glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
         glLoadMatrixf(projXform.mData);
 
         glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
         glLoadMatrixf(viewXform.mData);
+        glMultMatrixf(modelXform.mData);
     }
 };
 
@@ -456,7 +479,7 @@ void GLViewport::setCameraHeight(GL::real height)
     d->updateCamera();
 }
 
-void GLViewport::setCamera(const Point &position, const Point &target, const Vector &upVector)
+void GLViewport::setCameraMatrix(const Point &position, const Point &target, const Vector &upVector)
 {
     d->cameraPosition = position;
     d->cameraTarget = target;
@@ -515,6 +538,60 @@ const Vector &GLViewport::cameraViewDirection() const
 const Vector &GLViewport::cameraSideVector() const
 {
     return d->cameraSideVector;
+}
+
+void GLViewport::setModelMatrix(const GL::Vector &translation, GL::real scaleX, GL::real scaleY, GL::real scaleZ)
+{
+    d->updateModelXform();
+}
+
+void GLViewport::setModelScale(GL::real scaleX, GL::real scaleY, GL::real scaleZ)
+{
+    d->updateModelXform();
+}
+
+const Vector &GLViewport::modelTranslation() const
+{
+    return d->modelTranslation;
+}
+
+void GLViewport::setModelTranslation(const GL::Vector &translation)
+{
+    d->modelTranslation = translation;
+    d->updateModelXform();
+}
+
+real GLViewport::modelScaleX() const
+{
+    return d->modelScaleX;
+}
+
+void GLViewport::setModelScaleX(GL::real scale)
+{
+    d->modelScaleX = scale;
+    d->updateModelXform();
+}
+
+real GLViewport::modelScaleY() const
+{
+    return d->modelScaleY;
+}
+
+void GLViewport::setModelScaleY(GL::real scale)
+{
+    d->modelScaleY = scale;
+    d->updateModelXform();
+}
+
+real GLViewport::modelScaleZ() const
+{
+    return d->modelScaleZ;
+}
+
+void GLViewport::setModelScaleZ(GL::real scale)
+{
+    d->modelScaleZ = scale;
+    d->updateModelXform();
 }
 
 const Matrix &GLViewport::projXform() const

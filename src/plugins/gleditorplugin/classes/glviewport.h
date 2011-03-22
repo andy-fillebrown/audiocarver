@@ -65,7 +65,7 @@ public:
     GL::real cameraHeight() const;
     void setCameraHeight(GL::real height);
 
-    void setCamera(const GL::Point &position, const GL::Point &target, const GL::Vector &upVector);
+    void setCameraMatrix(const GL::Point &position, const GL::Point &target, const GL::Vector &upVector);
     const GL::Point &cameraPosition() const;
     void setCameraPosition(const GL::Point &position);
     const GL::Point &cameraTarget() const;
@@ -77,6 +77,17 @@ public:
     const GL::Vector &cameraViewVector() const;
     const GL::Vector &cameraViewDirection() const;
     const GL::Vector &cameraSideVector() const;
+
+    void setModelMatrix(const GL::Vector &translation, GL::real scaleX, GL::real scaleY, GL::real scaleZ);
+    void setModelScale(GL::real scaleX, GL::real scaleY, GL::real scaleZ);
+    const GL::Vector &modelTranslation() const;
+    void setModelTranslation(const GL::Vector &translation);
+    GL::real modelScaleX() const;
+    void setModelScaleX(GL::real scale);
+    GL::real modelScaleY() const;
+    void setModelScaleY(GL::real scale);
+    GL::real modelScaleZ() const;
+    void setModelScaleZ(GL::real scale);
 
     const GL::Matrix &projXform() const;
     const GL::Matrix &modelXform() const;
