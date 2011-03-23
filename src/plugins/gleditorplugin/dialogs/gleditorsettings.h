@@ -15,40 +15,41 @@
 **
 **************************************************************************/
 
-#include "gleditorplugin.h"
+#ifndef GLEDITORETTINGS_H
+#define GLEDITORETTINGS_H
 
-#include <classes/glwidget.h>
-#include <dialogs/gleditorsettings.h>
-#include <implementations/gleditor_mainwindowimpl.h>
+#include <coreplugin/dialogs/ioptionspage.h>
 
-#include <coreplugin/icore.h>
-#include <coreplugin/mainwindow.h>
+namespace GLEditor {
+namespace Internal {
 
-#include <QtCore/QtPlugin>
-
-using namespace GLEditor::Internal;
-
-GLEditorPlugin::GLEditorPlugin()
-{
+namespace Ui {
+    class GLEditorSettings;
 }
 
-GLEditorPlugin::~GLEditorPlugin()
+class GLEditorSettings : public Core::IOptionsPage
 {
-}
+    Q_OBJECT
 
-bool GLEditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
+public:
+    GLEditorSettings();
 
-    addAutoReleasedObject(new MainWindowImpl);
-    addAutoReleasedObject(new GLEditorSettings);
+    QString id() const;
+    QString displayName() const;
+    QString category() const;
+    QString displayCategory() const;
+    QIcon categoryIcon() const;
+    QWidget* createPage(QWidget *parent);
+    virtual bool matches(const QString &s) const;
 
-    return true;
-}
+    void apply();
+    void finish();
 
-void GLEditorPlugin::extensionsInitialized()
-{
-}
+private:
+    Ui::GLEditorSettings *ui;
+};
 
-Q_EXPORT_PLUGIN(GLEditorPlugin)
+} // namespace Internal
+} // namespace GLEditor
+
+#endif // GLEDITORETTINGS_H

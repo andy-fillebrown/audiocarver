@@ -14,6 +14,8 @@ HEADERS += \
     classes/glwidget_p.h \
     classes/glwidgetsplit.h \
     \
+    dialogs/gleditorsettings.h \
+    \
     implementations/gleditor_mainwindowimpl.h \
     \
     interfaces/igleditor.h \
@@ -28,11 +30,16 @@ SOURCES += \
     classes/glwidget_p.cpp \
     classes/glwidgetsplit.cpp \
     \
+    dialogs/gleditorsettings.cpp \
+    \
     implementations/gleditor_mainwindowimpl.cpp \
     \
     interfaces/igleditor.cpp \
     \
     gleditorplugin.cpp
+
+FORMS += \
+    dialogs/gleditorsettings.ui
 
 RESOURCES += \
     gleditor.qrc
