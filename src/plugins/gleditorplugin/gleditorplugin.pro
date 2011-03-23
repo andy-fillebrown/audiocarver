@@ -14,7 +14,8 @@ HEADERS += \
     classes/glwidget_p.h \
     classes/glwidgetsplit.h \
     \
-    dialogs/gleditorsettings.h \
+    dialogs/behaviorsettingspage.h \
+    dialogs/displaysettingspage.h \
     \
     implementations/gleditor_mainwindowimpl.h \
     \
@@ -33,7 +34,8 @@ SOURCES += \
     classes/glwidget_p.cpp \
     classes/glwidgetsplit.cpp \
     \
-    dialogs/gleditorsettings.cpp \
+    dialogs/behaviorsettingspage.cpp \
+    dialogs/displaysettingspage.cpp \
     \
     implementations/gleditor_mainwindowimpl.cpp \
     \
@@ -45,7 +47,8 @@ SOURCES += \
     gleditorplugin.cpp
 
 FORMS += \
-    dialogs/gleditorsettings.ui
+    dialogs/behaviorsettingspage.ui \
+    dialogs/displaysettingspage.ui
 
 RESOURCES += \
     gleditor.qrc

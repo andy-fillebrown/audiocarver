@@ -65,6 +65,9 @@ public slots:
     void removeCurrentSplit();
     void removeAllSplits();
 
+    void updateBehaviorSettings();
+    void updateDisplaySettings();
+
     virtual void animateGL();
 
 protected:
@@ -80,6 +83,7 @@ private:
     Internal::GLWidgetPrivate *d;
     Q_DISABLE_COPY(GLWidget)
 
+    friend class GLEditorSettings;
     friend class GLViewport;
 };
 

@@ -15,72 +15,72 @@
 **
 **************************************************************************/
 
-#include "gleditorsettings.h"
-#include "gleditorconstants.h"
-#include "ui_gleditorsettings.h"
+#include "displaysettingspage.h"
+#include "ui_displaysettingspage.h"
 
+#include <gleditorplugin/gleditorconstants.h>
 #include <coreplugin/icore.h>
 
 #include <QtCore/QSettings>
 
 using namespace GLEditor::Internal;
 
-GLEditorSettings::GLEditorSettings()
-    :   m_ui(0)
+DisplaySettingsPage::DisplaySettingsPage()
+    :   ui(0)
 {
 }
 
-QString GLEditorSettings::id() const
+QString DisplaySettingsPage::id() const
 {
     return QLatin1String(GLEditor::Constants::SETTINGS_ID_3D);
 }
 
-QString GLEditorSettings::displayName() const
+QString DisplaySettingsPage::displayName() const
 {
     return QLatin1String("3D");
 }
 
-QString GLEditorSettings::category() const
+QString DisplaySettingsPage::category() const
 {
     return QLatin1String(GLEditor::Constants::SETTINGS_CATEGORY_3D);
 }
 
-QString GLEditorSettings::displayCategory() const
+QString DisplaySettingsPage::displayCategory() const
 {
     return QCoreApplication::translate("GLEditor", GLEditor::Constants::SETTINGS_TR_CATERGORY_3D);
 }
 
-QIcon GLEditorSettings::categoryIcon() const
+QIcon DisplaySettingsPage::categoryIcon() const
 {
     return QIcon(QLatin1String(GLEditor::Constants::SETTINGS_CATEGORY_3D_ICON));
 }
 
-QWidget *GLEditorSettings::createPage(QWidget *parent)
+QWidget *DisplaySettingsPage::createPage(QWidget *parent)
 {
-    m_ui = new Ui::GLEditorSettings();
+    ui = new Ui::DisplaySettingsPage();
     QWidget *w = new QWidget(parent);
-    m_ui->setupUi(w);
+    ui->setupUi(w);
 
     QSettings* settings = Core::ICore::instance()->settings();
-    m_ui->zoomFactorSpinBox->setValue(settings->value(QLatin1String("GLEditor/ZoomFactor"), 1.0).toDouble());
+    ui->zoomFactorSpinBox->setValue(settings->value(QLatin1String("GLEditor/ZoomFactor"), 1.0).toDouble());
 
     return w;
 }
 
-bool GLEditorSettings::matches(const QString &s) const
+bool DisplaySettingsPage::matches(const QString &s) const
 {
     Q_UNUSED(s);
     return false;
 }
 
-void GLEditorSettings::apply()
+void DisplaySettingsPage::apply()
 {
     qDebug() << Q_FUNC_INFO;
     QSettings *settings = Core::ICore::instance()->settings();
-    settings->setValue(QLatin1String("GLEditor/ZoomFactor"), m_ui->zoomFactorSpinBox->value());
+    settings->setValue(QLatin1String("GLEditor/ZoomFactor"), ui->zoomFactorSpinBox->value());
 }
 
-void GLEditorSettings::finish()
+void DisplaySettingsPage::finish()
 {
     qDebug() << Q_FUNC_INFO;
 }

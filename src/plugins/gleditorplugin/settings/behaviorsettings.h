@@ -28,25 +28,31 @@ QT_END_NAMESPACE
 
 namespace GLEditor {
 
+class GLEDITOR_EXPORT BehaviorSettingsData
+{
+public:
+    BehaviorSettingsData();
+
+    qreal zoomSpeed;
+
+    bool panningZ;
+    bool scrollWheelPanningZ;
+    bool scrollWheelZooming;
+    bool scalingY;
+    bool rotatingX;
+
+    bool linkedViewportModelXforms;
+};
+
 class GLEDITOR_EXPORT BehaviorSettings
 {
 public:
-    BehaviorSettings();
+    BehaviorSettingsData d;
 
     void toSettings(const QString &category, QSettings *s) const;
     void fromSettings(const QString &category, const QSettings *s);
 
     bool equals(const BehaviorSettings &bs) const;
-
-    qreal m_zoomSpeed;
-
-    bool m_panningZ;
-    bool m_scrollWheelPanningZ;
-    bool m_scrollWheelZooming;
-    bool m_scalingY;
-    bool m_rotatingX;
-
-    bool m_linkedViewportModelXforms;
 };
 
 inline bool operator==(const BehaviorSettings &a, const BehaviorSettings &b) { return a.equals(b); }

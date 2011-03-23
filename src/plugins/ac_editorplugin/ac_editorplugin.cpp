@@ -43,17 +43,18 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+
     addAutoReleasedObject(new MainWindowImpl);
     addAutoReleasedObject(new EditorImpl);
     addAutoReleasedObject(new GLEditorImpl);
+
     return true;
 }
 
 void EditorPlugin::extensionsInitialized()
 {
     // EditorWidget instance must be created with main window as it's parent,
-    // otherwise app crashes when run on Windows OS.
-    // Encountered this issue on 1/31/11 (Windows 7, 64 bit).
+    // otherwise app crashes on Windows.
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
     EditorWidget *ew = new EditorWidget(mw);
     mw->setCentralWidget(ew);

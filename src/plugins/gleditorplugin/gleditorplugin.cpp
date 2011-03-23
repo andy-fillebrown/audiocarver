@@ -18,14 +18,17 @@
 #include "gleditorplugin.h"
 
 #include <classes/glwidget.h>
-#include <dialogs/gleditorsettings.h>
+#include <dialogs/behaviorsettingspage.h>
+#include <dialogs/displaysettingspage.h>
 #include <implementations/gleditor_mainwindowimpl.h>
+#include <gleditorsettings.h>
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
 
 #include <QtCore/QtPlugin>
 
+using namespace GLEditor;
 using namespace GLEditor::Internal;
 
 GLEditorPlugin::GLEditorPlugin()
@@ -42,7 +45,10 @@ bool GLEditorPlugin::initialize(const QStringList &arguments, QString *errorMess
     Q_UNUSED(errorMessage);
 
     addAutoReleasedObject(new MainWindowImpl);
-    addAutoReleasedObject(new GLEditorSettings);
+    addAutoReleasedObject(new BehaviorSettingsPage);
+    addAutoReleasedObject(new DisplaySettingsPage);
+
+    new GLEditorSettings(Core::ICore::instance()->mainWindow());
 
     return true;
 }

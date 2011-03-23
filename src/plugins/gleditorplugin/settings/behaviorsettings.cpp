@@ -32,14 +32,14 @@ static const char * const groupPostfix = "BehaviorSettings";
 
 using namespace GLEditor;
 
-BehaviorSettings::BehaviorSettings()
-    :   m_zoomSpeed(1.0f)
-    ,   m_panningZ(true)
-    ,   m_scrollWheelPanningZ(true)
-    ,   m_scrollWheelZooming(true)
-    ,   m_scalingY(false)
-    ,   m_rotatingX(true)
-    ,   m_linkedViewportModelXforms(true)
+BehaviorSettingsData::BehaviorSettingsData()
+    :   zoomSpeed(1.0f)
+    ,   panningZ(true)
+    ,   scrollWheelPanningZ(true)
+    ,   scrollWheelZooming(true)
+    ,   scalingY(false)
+    ,   rotatingX(true)
+    ,   linkedViewportModelXforms(true)
 {
 }
 
@@ -50,43 +50,43 @@ void BehaviorSettings::toSettings(const QString &category, QSettings *s) const
         group.insert(0, category);
 
     s->beginGroup(group);
-    s->setValue(QLatin1String(zoomSpeedKey), m_zoomSpeed);
-    s->setValue(QLatin1String(panningZKey), m_panningZ);
-    s->setValue(QLatin1String(scrollWheelPanningZKey), m_scrollWheelPanningZ);
-    s->setValue(QLatin1String(scrollWheelZoomingKey), m_scrollWheelZooming);
-    s->setValue(QLatin1String(scalingYKey), m_scalingY);
-    s->setValue(QLatin1String(rotatingXKey), m_rotatingX);
-    s->setValue(QLatin1String(linkedViewportModelXformsKey), m_linkedViewportModelXforms);
+    s->setValue(QLatin1String(zoomSpeedKey), d.zoomSpeed);
+    s->setValue(QLatin1String(panningZKey), d.panningZ);
+    s->setValue(QLatin1String(scrollWheelPanningZKey), d.scrollWheelPanningZ);
+    s->setValue(QLatin1String(scrollWheelZoomingKey), d.scrollWheelZooming);
+    s->setValue(QLatin1String(scalingYKey), d.scalingY);
+    s->setValue(QLatin1String(rotatingXKey), d.rotatingX);
+    s->setValue(QLatin1String(linkedViewportModelXformsKey), d.linkedViewportModelXforms);
     s->endGroup();
 }
 
 void BehaviorSettings::fromSettings(const QString &category, const QSettings *s)
 {
     // Assign defaults.
-    *this = BehaviorSettings();
+    d = BehaviorSettingsData();
 
     QString group = QLatin1String(groupPostfix);
     if (!category.isEmpty())
         group.insert(0, category);
     group += QLatin1Char('/');
 
-    m_zoomSpeed = s->value(group + QLatin1String(zoomSpeedKey), m_zoomSpeed).toDouble();
-    m_panningZ = s->value(group + QLatin1String(panningZKey), m_panningZ).toBool();
-    m_scrollWheelPanningZ = s->value(group + QLatin1String(scrollWheelPanningZKey), m_scrollWheelPanningZ).toBool();
-    m_scrollWheelZooming = s->value(group + QLatin1String(scrollWheelZoomingKey), m_scrollWheelZooming).toBool();
-    m_scalingY = s->value(group + QLatin1String(scalingYKey), m_scalingY).toInt();
-    m_rotatingX = s->value(group + QLatin1String(rotatingXKey), m_rotatingX).toBool();
-    m_linkedViewportModelXforms = s->value(group + QLatin1String(linkedViewportModelXformsKey), m_linkedViewportModelXforms).toBool();
+    d.zoomSpeed = s->value(group + QLatin1String(zoomSpeedKey), d.zoomSpeed).toDouble();
+    d.panningZ = s->value(group + QLatin1String(panningZKey), d.panningZ).toBool();
+    d.scrollWheelPanningZ = s->value(group + QLatin1String(scrollWheelPanningZKey), d.scrollWheelPanningZ).toBool();
+    d.scrollWheelZooming = s->value(group + QLatin1String(scrollWheelZoomingKey), d.scrollWheelZooming).toBool();
+    d.scalingY = s->value(group + QLatin1String(scalingYKey), d.scalingY).toInt();
+    d.rotatingX = s->value(group + QLatin1String(rotatingXKey), d.rotatingX).toBool();
+    d.linkedViewportModelXforms = s->value(group + QLatin1String(linkedViewportModelXformsKey), d.linkedViewportModelXforms).toBool();
 }
 
 bool BehaviorSettings::equals(const BehaviorSettings &bs) const
 {
-    return m_zoomSpeed == bs.m_zoomSpeed
-        && m_panningZ == bs.m_panningZ
-        && m_scrollWheelPanningZ == bs.m_scrollWheelPanningZ
-        && m_scrollWheelZooming == bs.m_scrollWheelZooming
-        && m_scalingY == bs.m_scalingY
-        && m_rotatingX == bs.m_rotatingX
-        && m_linkedViewportModelXforms == bs.m_linkedViewportModelXforms
+    return d.zoomSpeed == bs.d.zoomSpeed
+        && d.panningZ == bs.d.panningZ
+        && d.scrollWheelPanningZ == bs.d.scrollWheelPanningZ
+        && d.scrollWheelZooming == bs.d.scrollWheelZooming
+        && d.scalingY == bs.d.scalingY
+        && d.rotatingX == bs.d.rotatingX
+        && d.linkedViewportModelXforms == bs.d.linkedViewportModelXforms
         ;
 }

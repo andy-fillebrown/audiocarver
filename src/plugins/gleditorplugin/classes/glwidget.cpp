@@ -22,6 +22,9 @@
 #include "glviewport.h"
 
 #include <glsceneplugin/interfaces/iglscene.h>
+#include <gleditorplugin/dialogs/behaviorsettingspage.h>
+#include <gleditorplugin/dialogs/displaysettingspage.h>
+#include <gleditorplugin/gleditorsettings.h>
 #include <extensionsystem/pluginmanager.h>
 #include <utils3d/utils3d_global.h>
 
@@ -36,6 +39,7 @@
 
 using namespace GL;
 using namespace GLEditor;
+using namespace GLEditor::Internal;
 
 GLWidget::GLWidget(QWidget *parent)
     :   QGLWidget(parent)
@@ -43,6 +47,11 @@ GLWidget::GLWidget(QWidget *parent)
 {
     Q_CHECK_PTR(d);
     d->initialize();
+
+    d->behaviorSettings = d->settings->d->behaviorSettings;
+    d->displaySettings = d->settings->d->displaySettings;
+    connect(BehaviorSettingsPage::instance(), SIGNAL(changed()), SLOT(updateBehaviorSettings()));
+    connect(DisplaySettingsPage::instance(), SIGNAL(changed()), SLOT(updateDisplaySettings()));
 
     setMouseTracking(true);
     setCursor(QCursor(Qt::CrossCursor));
@@ -166,6 +175,16 @@ void GLWidget::removeAllSplits()
     d->mainSplit->removeSplit();
     d->currentSplit = 0;
     setCurrentSplit(d->mainSplit);
+}
+
+void GLWidget::updateBehaviorSettings()
+{
+    qDebug() << Q_FUNC_INFO << "not implemented yet.";
+}
+
+void GLWidget::updateDisplaySettings()
+{
+    qDebug() << Q_FUNC_INFO << "not implemented yet.";
 }
 
 void GLWidget::animateGL()

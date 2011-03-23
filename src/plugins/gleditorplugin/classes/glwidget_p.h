@@ -20,9 +20,8 @@
 
 #include <utils3d/utils3d_global.h>
 
-#include <QtGui/QVector3D>
 #include <QtCore/QElapsedTimer>
-#include <QtCore/qlist.h>
+#include <QtCore/QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -41,6 +40,10 @@ class IGLScene;
 
 namespace GLEditor {
 
+class BehaviorSettings;
+class DisplaySettings;
+
+class GLEditorSettings;
 class GLViewport;
 class GLWidget;
 class GLWidgetSplit;
@@ -54,24 +57,32 @@ public:
     GLScene::IGLScene *scene;
     GLWidgetSplit *mainSplit;
     GLWidgetSplit *currentSplit;
+
     quint32 displayListId;
     QGLShader *vertexShader;
     QGLShader *fragmentShader;
     QGLShaderProgram *shaderProgram;
     int screenOriginId;
     int screenSizeId;
+
     GLWidgetSplit *draggingSplit;
     QPoint dragStartScreenPosition;
     GLViewport *draggingViewport;
     QPoint prevDragPos;
     bool isPanning;
     bool isRotating;
+
     QElapsedTimer elapsedTime;
     qint64 prevFrameTime;
     bool animating;
+
     bool isBeingDestroyed;
 
     QList<GLViewport*> viewports;
+
+    GLEditorSettings *settings;
+    BehaviorSettings *behaviorSettings;
+    DisplaySettings *displaySettings;
 
     GLWidgetPrivate(GLWidget *q);
     ~GLWidgetPrivate();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GLEditor::Internal::GLEditorSettings</class>
- <widget class="QWidget" name="GLEditor::Internal::GLEditorSettings">
+ <class>GLEditor::Internal::DisplaySettingsPage</class>
+ <widget class="QWidget" name="GLEditor::Internal::DisplaySettingsPage">
   <property name="geometry">
    <rect>
     <x>0</x>

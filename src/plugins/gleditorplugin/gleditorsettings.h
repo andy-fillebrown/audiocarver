@@ -15,43 +15,50 @@
 **
 **************************************************************************/
 
-#ifndef GLEDITORETTINGS_H
-#define GLEDITORETTINGS_H
+#ifndef GLEDITORSETTINGS_H
+#define GLEDITORSETTINGS_H
 
-#include <coreplugin/dialogs/ioptionspage.h>
+#include "gleditor_global.h"
+
+#include <QtCore/QObject>
 
 namespace GLEditor {
+
+class BehaviorSettings;
+class DisplaySettings;
+
 namespace Internal {
 
-namespace Ui {
-    class GLEditorSettings;
-}
+class GLEditorSettingsData
+{
+public:
+    GLEditorSettingsData();
 
-class GLEditorSettings : public Core::IOptionsPage
+    BehaviorSettings *behaviorSettings;
+    DisplaySettings *displaySettings;
+};
+
+} // namespace Internal
+
+class GLEDITOR_EXPORT GLEditorSettings : public QObject
 {
     Q_OBJECT
 
 public:
-    GLEditorSettings();
+    GLEditorSettings(QObject *parent = 0);
+    virtual ~GLEditorSettings();
 
-    QString id() const;
-    QString displayName() const;
-    QString category() const;
-    QString displayCategory() const;
-    QIcon categoryIcon() const;
-    QWidget* createPage(QWidget *parent);
-    virtual bool matches(const QString &s) const;
+    static GLEditorSettings *instance();
 
-    void apply();
-    void finish();
-
-
+    const BehaviorSettings &behaviorSettings() const;
+    const DisplaySettings &displaySettings() const;
 
 private:
-    Ui::GLEditorSettings *m_ui;
+    Internal::GLEditorSettingsData *d;
+
+    friend class GLWidget;
 };
 
-} // namespace Internal
 } // namespace GLEditor
 
-#endif // GLEDITORETTINGS_H
+#endif // GLEDITORSETTINGS_H
