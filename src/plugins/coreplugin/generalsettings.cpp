@@ -58,7 +58,7 @@ GeneralSettings::GeneralSettings():
 
 QString GeneralSettings::id() const
 {
-    return QLatin1String(Core::Constants::SETTINGS_ID_ENVIRONMENT);
+    return QLatin1String(Core::Constants::SETTINGS_ID_ENVIRONMENT_GENERAL);
 }
 
 QString GeneralSettings::displayName() const
@@ -68,17 +68,17 @@ QString GeneralSettings::displayName() const
 
 QString GeneralSettings::category() const
 {
-    return QLatin1String(Core::Constants::SETTINGS_CATEGORY_CORE);
+    return QLatin1String(Core::Constants::SETTINGS_CATEGORY_ENVIRONMENT);
 }
 
 QString GeneralSettings::displayCategory() const
 {
-    return QCoreApplication::translate("Core", Core::Constants::SETTINGS_TR_CATEGORY_CORE);
+    return QCoreApplication::translate("Core", Core::Constants::SETTINGS_TR_CATEGORY_ENVIRONMENT);
 }
 
 QIcon GeneralSettings::categoryIcon() const
 {
-    return QIcon(QLatin1String(Core::Constants::SETTINGS_CATEGORY_CORE_ICON));
+    return QIcon(QLatin1String(Core::Constants::SETTINGS_CATEGORY_ENVIRONMENT_ICON));
 }
 
 static bool hasQmFilesForLocale(const QString &locale, const QString &creatorTrPath)

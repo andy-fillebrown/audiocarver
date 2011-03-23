@@ -44,73 +44,75 @@ namespace Constants {
     "." STRINGIFY(PRO_VERSION_MINOR) \
     "." STRINGIFY(PRO_VERSION_RELEASE)
 
-const char * const PRO_VERSION_LONG            = PRO_VERSION;
-const char * const PRO_AUTHOR                  = PRO_AUTHOR_NOSPACE_STR;
-const char * const PRO_YEAR                    = PRO_YEAR_STR;
+const char * const PRO_VERSION_LONG                    = PRO_VERSION;
+const char * const PRO_AUTHOR                          = PRO_AUTHOR_NOSPACE_STR;
+const char * const PRO_YEAR                            = PRO_YEAR_STR;
 
 #ifdef PRO_VERSION_DESCRIPTION
-const char * const PROVERSION_DESCRIPTION_STR  = STRINGIFY(PRO_VERSION_DESCRIPTION);
+const char * const PROVERSION_DESCRIPTION_STR          = STRINGIFY(PRO_VERSION_DESCRIPTION);
 #else
-const char * const PRO_VERSION_DESCRIPTION_STR = "";
+const char * const PRO_VERSION_DESCRIPTION_STR         = "";
 #endif
 
 #ifdef PRO_REVISION
-const char * const PRO_REVISION_STR            = STRINGIFY(PRO_REVISION);
+const char * const PRO_REVISION_STR                    = STRINGIFY(PRO_REVISION);
 #else
-const char * const PRO_REVISION_STR            = "";
+const char * const PRO_REVISION_STR                    = "";
 #endif
 
 #undef PRO_VERSION
 #undef STRINGIFY
 #undef STRINGIFY_INTERNAL
 
-const char * const C_GLOBAL                    = "Global Context";
+const char * const C_GLOBAL                            = "Global Context";
 
-const char * const MENU_BAR                    = PRO_NAME_STR".MenuBar";
+const char * const MENU_BAR                            = PRO_NAME_STR".MenuBar";
 
-const char * const G_FILE                      = PRO_NAME_STR".Group.File";
-const char * const G_TOOLS                     = PRO_NAME_STR".Group.Tools";
-const char * const G_WINDOW                    = PRO_NAME_STR".Group.Window";
-const char * const G_HELP                      = PRO_NAME_STR".Group.Help";
+const char * const G_FILE                              = PRO_NAME_STR".Group.File";
+const char * const G_TOOLS                             = PRO_NAME_STR".Group.Tools";
+const char * const G_WINDOW                            = PRO_NAME_STR".Group.Window";
+const char * const G_HELP                              = PRO_NAME_STR".Group.Help";
 
-const char * const G_DEFAULT_ONE               = PRO_NAME_STR".Group.Default.One";
-const char * const G_DEFAULT_TWO               = PRO_NAME_STR".Group.Default.Two";
-const char * const G_DEFAULT_THREE             = PRO_NAME_STR".Group.Default.Three";
+const char * const G_DEFAULT_ONE                       = PRO_NAME_STR".Group.Default.One";
+const char * const G_DEFAULT_TWO                       = PRO_NAME_STR".Group.Default.Two";
+const char * const G_DEFAULT_THREE                     = PRO_NAME_STR".Group.Default.Three";
 
-const char * const G_FILE_OTHER                = PRO_NAME_STR".Group.File.Other";
+const char * const G_FILE_OTHER                        = PRO_NAME_STR".Group.File.Other";
 
-const char * const G_WINDOW_SIZE               = PRO_NAME_STR".Group.Window.Size";
-const char * const G_WINDOW_OTHER              = PRO_NAME_STR".Group.Window.Other";
+const char * const G_WINDOW_SIZE                       = PRO_NAME_STR".Group.Window.Size";
+const char * const G_WINDOW_OTHER                      = PRO_NAME_STR".Group.Window.Other";
 
-const char * const G_HELP_ABOUTPLUGINS         = PRO_NAME_STR".Group.Help.AboutPlugins";
+const char * const G_HELP_ABOUTPLUGINS                 = PRO_NAME_STR".Group.Help.AboutPlugins";
 
-const char * const M_FILE                      = PRO_NAME_STR".Menu.File";
-const char * const M_TOOLS                     = PRO_NAME_STR".Menu.Tools";
-const char * const M_WINDOW                    = PRO_NAME_STR".Menu.Window";
-const char * const M_HELP                      = PRO_NAME_STR".Menu.Help";
+const char * const M_FILE                              = PRO_NAME_STR".Menu.File";
+const char * const M_TOOLS                             = PRO_NAME_STR".Menu.Tools";
+const char * const M_WINDOW                            = PRO_NAME_STR".Menu.Window";
+const char * const M_HELP                              = PRO_NAME_STR".Menu.Help";
 
-const char * const EXIT                        = PRO_NAME_STR".Exit";
+const char * const EXIT                                = PRO_NAME_STR".Exit";
 
-const char * const OPTIONS                     = PRO_NAME_STR".Options";
-const char * const TOGGLE_FULLSCREEN           = PRO_NAME_STR".ToggleFullScreen";
+const char * const OPTIONS                             = PRO_NAME_STR".Options";
+const char * const TOGGLE_FULLSCREEN                   = PRO_NAME_STR".ToggleFullScreen";
 
-const char * const MINIMIZE_WINDOW             = PRO_NAME_STR".MinimizeWindow";
-const char * const ZOOM_WINDOW                 = PRO_NAME_STR".ZoomWindow";
+const char * const MINIMIZE_WINDOW                     = PRO_NAME_STR".MinimizeWindow";
+const char * const ZOOM_WINDOW                         = PRO_NAME_STR".ZoomWindow";
 
-const char * const ABOUTPLUGINS                = PRO_NAME_STR".AboutPlugins";
+const char * const ABOUTPLUGINS                        = PRO_NAME_STR".AboutPlugins";
 
-const char * const ICON_PROLOGO_32             = ":/core/images/project_logo_32.png";
-const char * const ICON_PROLOGO_128            = ":/core/images/project_logo_128.png";
-const char * const ICON_RESET                  = ":/core/images/reset.png";
+const char * const ICON_PROLOGO_32                     = ":/core/images/project_logo_32.png";
+const char * const ICON_PROLOGO_128                    = ":/core/images/project_logo_128.png";
+const char * const ICON_RESET                          = ":/core/images/reset.png";
 
-const char * const SETTINGS_CATEGORY_CORE      = "A.Core";
-const char * const SETTINGS_CATEGORY_CORE_ICON = ":/core/images/category_core.png";
-const char * const SETTINGS_TR_CATEGORY_CORE   = QT_TRANSLATE_NOOP("Core", "Environment");
-const char * const SETTINGS_ID_ENVIRONMENT     = "A.General";
+const char * const SETTINGS_CATEGORY_ENVIRONMENT       = "A.Environment";
+const char * const SETTINGS_CATEGORY_ENVIRONMENT_ICON  = ":/core/images/category_environment.png";
 
-const char * const ALL_FILES_FILTER            = QT_TRANSLATE_NOOP("Core", "All Files (*)");
+const char * const SETTINGS_TR_CATEGORY_ENVIRONMENT    = QT_TRANSLATE_NOOP("Core", "Environment");
+const char * const SETTINGS_ID_ENVIRONMENT_GENERAL     = "A.General";
+const char * const SETTINGS_ID_ENVIRONMENT_KEYBOARD    = "B.Keyboard";
 
-const int TARGET_ICON_SIZE                     = 32;
+const char * const ALL_FILES_FILTER                    = QT_TRANSLATE_NOOP("Core", "All Files (*)");
+
+const int TARGET_ICON_SIZE                             = 32;
 
 } // namespace Constants
 } // namespace Core

@@ -69,7 +69,7 @@ ShortcutSettings::~ShortcutSettings()
 
 QString ShortcutSettings::id() const
 {
-    return QLatin1String("D.Keyboard");
+    return QLatin1String(Core::Constants::SETTINGS_ID_ENVIRONMENT_KEYBOARD);
 }
 
 QString ShortcutSettings::displayName() const
@@ -79,17 +79,17 @@ QString ShortcutSettings::displayName() const
 
 QString ShortcutSettings::category() const
 {
-    return QLatin1String(Core::Constants::SETTINGS_CATEGORY_CORE);
+    return QLatin1String(Core::Constants::SETTINGS_CATEGORY_ENVIRONMENT);
 }
 
 QString ShortcutSettings::displayCategory() const
 {
-    return QCoreApplication::translate("Core", Core::Constants::SETTINGS_TR_CATEGORY_CORE);
+    return QCoreApplication::translate("Core", Core::Constants::SETTINGS_TR_CATEGORY_ENVIRONMENT);
 }
 
 QIcon ShortcutSettings::categoryIcon() const
 {
-    return QIcon(QLatin1String(Core::Constants::SETTINGS_CATEGORY_CORE_ICON));
+    return QIcon(QLatin1String(Core::Constants::SETTINGS_CATEGORY_ENVIRONMENT_ICON));
 }
 
 QWidget *ShortcutSettings::createPage(QWidget *parent)
