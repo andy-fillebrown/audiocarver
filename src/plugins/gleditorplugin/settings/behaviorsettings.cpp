@@ -20,13 +20,13 @@
 #include <QtCore/QSettings>
 #include <QtCore/QString>
 
-static const char * const zoomSpeedKey = "ZoomSpeedKey";
-static const char * const panningZKey = "PanningZKey";
-static const char * const scrollWheelPanningZKey = "ScrollWheelPanningZKey";
-static const char * const scrollWheelZoomingKey = "ScrollWheelZoomingKey";
-static const char * const scalingYKey = "ScalingYKey";
-static const char * const rotatingXKey = "RotatingXKey";
-static const char * const linkedViewportModelXformsKey = "LinkedViewportModelXformsKey";
+static const char * const zoomSpeedKey = "ZoomSpeed";
+static const char * const panningZKey = "PanningZ";
+static const char * const scrollWheelPanningZKey = "ScrollWheelPanning";
+static const char * const scrollWheelZoomingKey = "ScrollWheelZooming";
+static const char * const scalingYKey = "ScalingY";
+static const char * const rotatingXKey = "RotatingX";
+static const char * const linkedViewportModelXformsKey = "LinkedViewportModelXforms";
 
 static const char * const groupPostfix = "BehaviorSettings";
 

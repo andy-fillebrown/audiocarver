@@ -20,9 +20,12 @@
 
 #include <coreplugin/dialogs/ioptionspage.h>
 
+#include <gleditorplugin/settings/displaysettings.h>
+
 namespace GLEditor {
 
 class DisplaySettings;
+class GLWidget;
 
 namespace Internal {
 namespace Ui {
@@ -35,8 +38,10 @@ class DisplaySettingsPageData
 {
 public:
     DisplaySettingsPageData();
+    ~DisplaySettingsPageData();
 
     DisplaySettings *settings;
+    DisplaySettings previousSettings;
 };
 
 class DisplaySettingsPage : public Core::IOptionsPage
@@ -45,6 +50,7 @@ class DisplaySettingsPage : public Core::IOptionsPage
 
 public:
     DisplaySettingsPage();
+    ~DisplaySettingsPage();
 
     static DisplaySettingsPage *instance();
 
@@ -60,10 +66,13 @@ public:
     void finish();
 
 signals:
-    void changed();
+    void settingsChanged(const DisplaySettings &previousSettings);
 
 private:
+    DisplaySettingsPageData *d;
     Ui::DisplaySettingsPage *ui;
+
+    friend class GLEditor::GLWidget;
 };
 
 } // namespace Internal

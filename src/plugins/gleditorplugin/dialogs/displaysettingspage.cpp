@@ -21,23 +21,49 @@
 #include <gleditorplugin/gleditorconstants.h>
 #include <coreplugin/icore.h>
 
-#include <QtCore/QSettings>
-
+using namespace GLEditor;
 using namespace GLEditor::Internal;
 
-DisplaySettingsPage::DisplaySettingsPage()
-    :   ui(0)
+static DisplaySettingsPage *instance = 0;
+
+DisplaySettingsPageData::DisplaySettingsPageData()
+    :   settings(new DisplaySettings)
 {
+}
+
+DisplaySettingsPageData::~DisplaySettingsPageData()
+{
+    delete settings;  settings = 0;
+}
+
+DisplaySettingsPage::DisplaySettingsPage()
+    :   d(new DisplaySettingsPageData)
+    ,   ui(0)
+{
+    ::instance = this;
+    d->settings->fromSettings(displayCategory(), Core::ICore::instance()->settings());
+    d->previousSettings = *d->settings;
+}
+
+DisplaySettingsPage::~DisplaySettingsPage()
+{
+    delete ui;  ui = 0;
+    delete d;  d = 0;
+}
+
+DisplaySettingsPage *DisplaySettingsPage::instance()
+{
+    return ::instance;
 }
 
 QString DisplaySettingsPage::id() const
 {
-    return QLatin1String(GLEditor::Constants::SETTINGS_ID_3D);
+    return QLatin1String(GLEditor::Constants::SETTINGS_ID_3D_DISPLAY);
 }
 
 QString DisplaySettingsPage::displayName() const
 {
-    return QLatin1String("3D");
+    return QLatin1String("Display");
 }
 
 QString DisplaySettingsPage::category() const
@@ -75,9 +101,12 @@ bool DisplaySettingsPage::matches(const QString &s) const
 
 void DisplaySettingsPage::apply()
 {
-    qDebug() << Q_FUNC_INFO;
-    QSettings *settings = Core::ICore::instance()->settings();
-    settings->setValue(QLatin1String("GLEditor/ZoomFactor"), ui->zoomFactorSpinBox->value());
+    if (d->previousSettings == *d->settings)
+        return;
+
+    emit settingsChanged(d->previousSettings);
+    d->previousSettings = *d->settings;
+    d->settings->toSettings(displayCategory(), Core::ICore::instance()->settings());
 }
 
 void DisplaySettingsPage::finish()

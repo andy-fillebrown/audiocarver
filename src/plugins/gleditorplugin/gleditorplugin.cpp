@@ -21,7 +21,6 @@
 #include <dialogs/behaviorsettingspage.h>
 #include <dialogs/displaysettingspage.h>
 #include <implementations/gleditor_mainwindowimpl.h>
-#include <gleditorsettings.h>
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
@@ -47,8 +46,6 @@ bool GLEditorPlugin::initialize(const QStringList &arguments, QString *errorMess
     addAutoReleasedObject(new MainWindowImpl);
     addAutoReleasedObject(new BehaviorSettingsPage);
     addAutoReleasedObject(new DisplaySettingsPage);
-
-    new GLEditorSettings(Core::ICore::instance()->mainWindow());
 
     return true;
 }

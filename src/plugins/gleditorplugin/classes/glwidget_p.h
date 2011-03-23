@@ -80,7 +80,6 @@ public:
 
     QList<GLViewport*> viewports;
 
-    GLEditorSettings *settings;
     BehaviorSettings *behaviorSettings;
     DisplaySettings *displaySettings;
 

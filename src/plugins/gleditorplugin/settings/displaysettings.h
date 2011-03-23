@@ -20,13 +20,35 @@
 
 #include <gleditorplugin/gleditor_global.h>
 
+QT_BEGIN_NAMESPACE
+
+class QSettings;
+
+QT_END_NAMESPACE
+
 namespace GLEditor {
+
+class GLEDITOR_EXPORT DisplaySettingsData
+{
+public:
+    DisplaySettingsData();
+
+    bool test;
+};
 
 class GLEDITOR_EXPORT DisplaySettings
 {
 public:
-    DisplaySettings();
+    DisplaySettingsData d;
+
+    void toSettings(const QString &category, QSettings *s) const;
+    void fromSettings(const QString &category, const QSettings *s);
+
+    bool equals(const DisplaySettings &ds) const;
 };
+
+inline bool operator==(const DisplaySettings &a, const DisplaySettings &b) { return a.equals(b); }
+inline bool operator!=(const DisplaySettings &a, const DisplaySettings &b) { return !a.equals(b); }
 
 } // namespace GLEditor
 

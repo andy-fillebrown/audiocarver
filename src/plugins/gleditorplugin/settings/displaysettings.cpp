@@ -17,8 +17,47 @@
 
 #include "displaysettings.h"
 
+#include <QtCore/QSettings>
+#include <QtCore/QString>
+
+static const char * const testKey = "Test";
+
+static const char * const groupPostfix = "DisplaySettings";
+
 using namespace GLEditor;
 
-DisplaySettings::DisplaySettings()
+DisplaySettingsData::DisplaySettingsData()
+    :   test(true)
 {
+}
+
+void DisplaySettings::toSettings(const QString &category, QSettings *s) const
+{
+    QString group = QLatin1String(groupPostfix);
+    if (!category.isEmpty())
+        group.insert(0, category);
+
+    s->beginGroup(group);
+    s->setValue(QLatin1String(testKey), d.test);
+    s->endGroup();
+}
+
+
+void DisplaySettings::fromSettings(const QString &category, const QSettings *s)
+{
+    // Assign defaults.
+    d = DisplaySettingsData();
+
+    QString group = QLatin1String(groupPostfix);
+    if (!category.isEmpty())
+        group.insert(0, category);
+    group += QLatin1Char('/');
+
+    d.test = s->value(group + QLatin1String(testKey), d.test).toBool();
+}
+
+bool DisplaySettings::equals(const DisplaySettings &ds) const
+{
+    return d.test == ds.d.test
+        ;
 }

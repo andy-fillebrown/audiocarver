@@ -26,9 +26,9 @@
       <item row="4" column="0">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="zoomFactorLabel">
+         <widget class="QLabel" name="zoomSpeedLabel">
           <property name="text">
-           <string>Zoom Factor:</string>
+           <string>Zoom Speed:</string>
           </property>
          </widget>
         </item>
@@ -48,15 +48,15 @@
        </spacer>
       </item>
       <item row="4" column="1">
-       <widget class="QDoubleSpinBox" name="zoomFactorSpinBox">
+       <widget class="QDoubleSpinBox" name="zoomSpeedSpinBox">
         <property name="decimals">
          <number>1</number>
         </property>
         <property name="minimum">
-         <double>0.100000000000000</double>
+         <double>1.000000000000000</double>
         </property>
         <property name="maximum">
-         <double>2.000000000000000</double>
+         <double>10.000000000000000</double>
         </property>
         <property name="singleStep">
          <double>0.100000000000000</double>

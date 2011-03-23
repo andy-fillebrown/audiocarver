@@ -25,19 +25,46 @@
 
 using namespace GLEditor::Internal;
 
-BehaviorSettingsPage::BehaviorSettingsPage()
-    :   ui(0)
+static BehaviorSettingsPage *instance = 0;
+
+BehaviorSettingsPageData::BehaviorSettingsPageData()
+    :   settings(new BehaviorSettings)
 {
+}
+
+BehaviorSettingsPageData::~BehaviorSettingsPageData()
+{
+    delete settings;  settings = 0;
+}
+
+BehaviorSettingsPage::BehaviorSettingsPage()
+    :   d(new BehaviorSettingsPageData)
+    ,   ui(0)
+{
+    ::instance = this;
+    d->settings->fromSettings(displayCategory(), Core::ICore::instance()->settings());
+    d->previousSettings = *d->settings;
+}
+
+BehaviorSettingsPage::~BehaviorSettingsPage()
+{
+    delete ui;  ui = 0;
+    delete d;  d = 0;
+}
+
+BehaviorSettingsPage *BehaviorSettingsPage::instance()
+{
+    return ::instance;
 }
 
 QString BehaviorSettingsPage::id() const
 {
-    return QLatin1String(GLEditor::Constants::SETTINGS_ID_3D);
+    return QLatin1String(GLEditor::Constants::SETTINGS_ID_3D_BEHAVIOR);
 }
 
 QString BehaviorSettingsPage::displayName() const
 {
-    return QLatin1String("3D");
+    return QLatin1String("Behavior");
 }
 
 QString BehaviorSettingsPage::category() const
@@ -61,8 +88,7 @@ QWidget *BehaviorSettingsPage::createPage(QWidget *parent)
     QWidget *w = new QWidget(parent);
     ui->setupUi(w);
 
-    QSettings* settings = Core::ICore::instance()->settings();
-    ui->zoomFactorSpinBox->setValue(settings->value(QLatin1String("GLEditor/ZoomFactor"), 1.0).toDouble());
+    ui->zoomSpeedSpinBox->setValue(d->settings->d.zoomSpeed);
 
     return w;
 }
@@ -75,9 +101,14 @@ bool BehaviorSettingsPage::matches(const QString &s) const
 
 void BehaviorSettingsPage::apply()
 {
-    qDebug() << Q_FUNC_INFO;
-    QSettings *settings = Core::ICore::instance()->settings();
-    settings->setValue(QLatin1String("GLEditor/ZoomFactor"), ui->zoomFactorSpinBox->value());
+    d->settings->d.zoomSpeed = ui->zoomSpeedSpinBox->value();
+
+    if (d->previousSettings == *d->settings)
+        return;
+
+    emit settingsChanged(d->previousSettings);
+    d->previousSettings = *d->settings;
+    d->settings->toSettings(displayCategory(), Core::ICore::instance()->settings());
 }
 
 void BehaviorSettingsPage::finish()

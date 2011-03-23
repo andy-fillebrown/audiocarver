@@ -24,7 +24,6 @@
 #include <glsceneplugin/interfaces/iglscene.h>
 #include <gleditorplugin/dialogs/behaviorsettingspage.h>
 #include <gleditorplugin/dialogs/displaysettingspage.h>
-#include <gleditorplugin/gleditorsettings.h>
 #include <extensionsystem/pluginmanager.h>
 #include <utils3d/utils3d_global.h>
 
@@ -48,10 +47,15 @@ GLWidget::GLWidget(QWidget *parent)
     Q_CHECK_PTR(d);
     d->initialize();
 
-    d->behaviorSettings = d->settings->d->behaviorSettings;
-    d->displaySettings = d->settings->d->displaySettings;
-    connect(BehaviorSettingsPage::instance(), SIGNAL(changed()), SLOT(updateBehaviorSettings()));
-    connect(DisplaySettingsPage::instance(), SIGNAL(changed()), SLOT(updateDisplaySettings()));
+    d->behaviorSettings = BehaviorSettingsPage::instance()->d->settings;
+    connect(BehaviorSettingsPage::instance(),
+            SIGNAL(settingsChanged(BehaviorSettings)),
+            SLOT(updateBehaviorSettings(BehaviorSettings)));
+
+    d->displaySettings = DisplaySettingsPage::instance()->d->settings;
+    connect(DisplaySettingsPage::instance(),
+            SIGNAL(settingsChanged(DisplaySettings)),
+            SLOT(updateDisplaySettings(DisplaySettings)));
 
     setMouseTracking(true);
     setCursor(QCursor(Qt::CrossCursor));
@@ -177,12 +181,12 @@ void GLWidget::removeAllSplits()
     setCurrentSplit(d->mainSplit);
 }
 
-void GLWidget::updateBehaviorSettings()
+void GLWidget::updateBehaviorSettings(const BehaviorSettings &previousSettings)
 {
     qDebug() << Q_FUNC_INFO << "not implemented yet.";
 }
 
-void GLWidget::updateDisplaySettings()
+void GLWidget::updateDisplaySettings(const DisplaySettings &previousSettings)
 {
     qDebug() << Q_FUNC_INFO << "not implemented yet.";
 }
@@ -449,9 +453,9 @@ void GLWidget::wheelEvent(QWheelEvent *event)
     real h = vp->cameraHeight();
     const int delta = event->delta();
     if (0 < delta)
-        h /= 1.25f;
+        h /= 1.1f * d->behaviorSettings->d.zoomSpeed;
     else
-        h *= 1.25f;
+        h *= 1.1f * d->behaviorSettings->d.zoomSpeed;
     vp->setCameraHeight(h);
 
     updateGL();

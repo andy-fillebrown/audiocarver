@@ -35,6 +35,9 @@ class GLWidgetPrivate;
 
 } // namespace Internal
 
+class BehaviorSettings;
+class DisplaySettings;
+
 class GLViewport;
 class GLWidgetSplit;
 
@@ -65,8 +68,8 @@ public slots:
     void removeCurrentSplit();
     void removeAllSplits();
 
-    void updateBehaviorSettings();
-    void updateDisplaySettings();
+    void updateBehaviorSettings(const BehaviorSettings &previousSettings);
+    void updateDisplaySettings(const DisplaySettings &previousSettings);
 
     virtual void animateGL();
 

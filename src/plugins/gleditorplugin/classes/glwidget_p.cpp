@@ -22,7 +22,6 @@
 #include "glviewport.h"
 
 #include <glsceneplugin/interfaces/iglscene.h>
-#include <gleditorplugin/gleditorsettings.h>
 #include <extensionsystem/pluginmanager.h>
 #include <utils3d/utils3d_global.h>
 
@@ -50,7 +49,6 @@ GLWidgetPrivate::GLWidgetPrivate(GLWidget *q)
     ,   prevFrameTime(0)
     ,   animating(false)
     ,   isBeingDestroyed(false)
-    ,   settings(GLEditorSettings::instance())
     ,   behaviorSettings(0)
     ,   displaySettings(0)
 {
@@ -58,6 +56,9 @@ GLWidgetPrivate::GLWidgetPrivate(GLWidget *q)
 
 GLWidgetPrivate::~GLWidgetPrivate()
 {
+    displaySettings = 0;
+    behaviorSettings = 0;
+
     isBeingDestroyed = true;
 
     q->makeCurrent();

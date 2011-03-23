@@ -20,9 +20,12 @@
 
 #include <coreplugin/dialogs/ioptionspage.h>
 
+#include <gleditorplugin/settings/behaviorsettings.h>
+
 namespace GLEditor {
 
 class BehaviorSettings;
+class GLWidget;
 
 namespace Internal {
 namespace Ui {
@@ -35,8 +38,10 @@ class BehaviorSettingsPageData
 {
 public:
     BehaviorSettingsPageData();
+    ~BehaviorSettingsPageData();
 
     BehaviorSettings *settings;
+    BehaviorSettings previousSettings;
 };
 
 class BehaviorSettingsPage : public Core::IOptionsPage
@@ -45,6 +50,7 @@ class BehaviorSettingsPage : public Core::IOptionsPage
 
 public:
     BehaviorSettingsPage();
+    ~BehaviorSettingsPage();
 
     static BehaviorSettingsPage *instance();
 
@@ -60,11 +66,13 @@ public:
     void finish();
 
 signals:
-    void changed();
+    void settingsChanged(const BehaviorSettings &previousSettings);
 
 private:
-    Internal::BehaviorSettingsPageData *d;
+    BehaviorSettingsPageData *d;
     Ui::BehaviorSettingsPage *ui;
+
+    friend class GLEditor::GLWidget;
 };
 
 } // namespace Internal
