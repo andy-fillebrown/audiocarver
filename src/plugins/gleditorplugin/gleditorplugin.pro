@@ -20,6 +20,9 @@ HEADERS += \
     \
     interfaces/igleditor.h \
     \
+    settings/behaviorsettings.h \
+    settings/displaysettings.h \
+    \
     gleditor_global.h \
     gleditorconstants.h \
     gleditorplugin.h
@@ -36,6 +39,9 @@ SOURCES += \
     \
     interfaces/igleditor.cpp \
     \
+    settings/behaviorsettings.cpp \
+    settings/displaysettings.cpp \
+    \
     gleditorplugin.cpp
 
 FORMS += \
@@ -45,5 +51,10 @@ RESOURCES += \
     gleditor.qrc
 
 OTHER_FILES += \
+    *.* \
+    $$HEADERS \
+    $$SOURCES \
+    $$FORMS \
+    $$RESOURCES \
     shaders/glwidget_fragment.glsl \
     shaders/glwidget_vertex.glsl

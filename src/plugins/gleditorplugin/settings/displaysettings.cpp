@@ -15,43 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef GLEDITORETTINGS_H
-#define GLEDITORETTINGS_H
+#include "displaysettings.h"
 
-#include <coreplugin/dialogs/ioptionspage.h>
+using namespace GLEditor;
 
-namespace GLEditor {
-namespace Internal {
-
-namespace Ui {
-    class GLEditorSettings;
-}
-
-class GLEditorSettings : public Core::IOptionsPage
+DisplaySettings::DisplaySettings()
 {
-    Q_OBJECT
-
-public:
-    GLEditorSettings();
-
-    QString id() const;
-    QString displayName() const;
-    QString category() const;
-    QString displayCategory() const;
-    QIcon categoryIcon() const;
-    QWidget* createPage(QWidget *parent);
-    virtual bool matches(const QString &s) const;
-
-    void apply();
-    void finish();
-
-
-
-private:
-    Ui::GLEditorSettings *m_ui;
-};
-
-} // namespace Internal
-} // namespace GLEditor
-
-#endif // GLEDITORETTINGS_H
+}

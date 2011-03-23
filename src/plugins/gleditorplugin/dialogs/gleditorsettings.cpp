@@ -26,7 +26,7 @@
 using namespace GLEditor::Internal;
 
 GLEditorSettings::GLEditorSettings()
-    :   ui(0)
+    :   m_ui(0)
 {
 }
 
@@ -57,14 +57,12 @@ QIcon GLEditorSettings::categoryIcon() const
 
 QWidget *GLEditorSettings::createPage(QWidget *parent)
 {
-    ui = new Ui::GLEditorSettings();
+    m_ui = new Ui::GLEditorSettings();
     QWidget *w = new QWidget(parent);
-    ui->setupUi(w);
+    m_ui->setupUi(w);
 
     QSettings* settings = Core::ICore::instance()->settings();
-    Q_UNUSED(settings) // Windows
-
-    ui->zoomFactorSpinBox->setValue(1.0);
+    m_ui->zoomFactorSpinBox->setValue(settings->value(QLatin1String("GLEditor/ZoomFactor"), 1.0).toDouble());
 
     return w;
 }
@@ -78,6 +76,8 @@ bool GLEditorSettings::matches(const QString &s) const
 void GLEditorSettings::apply()
 {
     qDebug() << Q_FUNC_INFO;
+    QSettings *settings = Core::ICore::instance()->settings();
+    settings->setValue(QLatin1String("GLEditor/ZoomFactor"), m_ui->zoomFactorSpinBox->value());
 }
 
 void GLEditorSettings::finish()

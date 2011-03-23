@@ -34,9 +34,6 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="1">
-       <widget class="QDoubleSpinBox" name="zoomFactorSpinBox"/>
-      </item>
       <item row="4" column="2">
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
@@ -49,6 +46,25 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="4" column="1">
+       <widget class="QDoubleSpinBox" name="zoomFactorSpinBox">
+        <property name="decimals">
+         <number>1</number>
+        </property>
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>2.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="value">
+         <double>1.000000000000000</double>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
