@@ -19,9 +19,7 @@
 
 #include "classes/scorenode.h"
 
-#include <utils3d/utils3d_global.h>
-
-#include <QtOpenGL/QGLFunctions>
+#include <glutils/glutils_global.h>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
@@ -29,7 +27,7 @@ using namespace AudioCarver::Internal;
 namespace AudioCarver {
 namespace Internal {
 
-class SceneImplPrivate : protected QGLFunctions
+class SceneImplPrivate
 {
 public:
     SceneImpl *q;
@@ -56,11 +54,9 @@ public:
         q = 0;
     }
 
-    /// Should only be called when gl context is active.
+    /// Assumes GL context is active.
     void init()
     {
-        initializeGLFunctions();
-
         scoreNode = new ScoreNode(q);
         Q_CHECK_PTR(scoreNode);
 
@@ -77,7 +73,7 @@ public:
         Q_CHECK_GLERROR;
     }
 
-    /// Should only be called when gl context is active.
+    /// Assumes GL context is active.
     void destroy()
     {
         glDeleteLists(animationDisplayListId, 1);  animationDisplayListId = -1;

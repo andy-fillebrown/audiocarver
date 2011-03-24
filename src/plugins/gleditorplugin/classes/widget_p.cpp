@@ -24,7 +24,6 @@
 #include <glsceneplugin/interfaces/iscene.h>
 
 #include <extensionsystem/pluginmanager.h>
-#include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>

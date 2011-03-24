@@ -27,7 +27,6 @@
 #include <gmtl/Intersection.h>
 #include <gmtl/MatrixOps.h>
 #include <gmtl/VecOps.h>
-#include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLFramebufferObject>
 #include <QtOpenGL/QGLFunctions>
@@ -224,7 +223,7 @@ public:
         Q_ASSERT(fbo && fbo->isValid());
 
         Q_CHECK(fbo->bind());
-        qglPushState();
+        GL::pushState();
 
         glDisable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
@@ -275,7 +274,7 @@ public:
             Q_ASSERT(false && "Invalid fbo type.");
         }
 
-        qglPopState();
+        GL::popState();
         Q_CHECK(fbo->release());
         Q_CHECK_GLERROR;
 

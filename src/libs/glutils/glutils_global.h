@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef UTILS3D_GLOBAL_H
-#define UTILS3D_GLOBAL_H
+#ifndef GLUTILS_GLOBAL_H
+#define GLUTILS_GLOBAL_H
 
 #include <utils/utils_global.h>
 
@@ -31,10 +31,10 @@
 #include <QtCore/QDebug>
 #include <QtCore/qmath.h>
 
-#if defined(UTILS3D_LIB)
-#  define UTILS3D_EXPORT Q_DECL_EXPORT
+#if defined(GLUTILS_LIB)
+#  define GLUTILS_EXPORT Q_DECL_EXPORT
 #else
-#  define UTILS3D_EXPORT Q_DECL_IMPORT
+#  define GLUTILS_EXPORT Q_DECL_IMPORT
 #endif
 
 #define Q_CHECK_GLERROR \
@@ -42,11 +42,11 @@
     GLenum e = glGetError(); \
     if (e != GL_NO_ERROR) \
         qDebug() << qPrintable( \
-                QString("GL error in member function \'%1\'\n%2(%3): %4") \
+                QString("GL error in \'%1\'\n%2(%3): %4") \
                     .arg(Q_FUNC_INFO) \
                     .arg(__FILE__) \
                     .arg(__LINE__) \
-                    .arg(qglErrorString(e)) \
+                    .arg(GL::errorString(e)) \
             ); \
     Q_ASSERT(e == GL_NO_ERROR); \
 }
@@ -202,9 +202,7 @@ inline void lookAt(Matrix &m, const Point &eye, const Point &target, const Vecto
     m *= trans;
 }
 
-} // namespace GL
-
-inline const char *qglErrorString(GLenum errorCode)
+inline const char *errorString(GLenum errorCode)
 {
     switch (errorCode) {
     case GL_INVALID_ENUM: return "invalid enum";
@@ -216,7 +214,7 @@ inline const char *qglErrorString(GLenum errorCode)
     }
 }
 
-inline void qglPushState()
+inline void pushState()
 {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glMatrixMode(GL_PROJECTION);
@@ -227,7 +225,7 @@ inline void qglPushState()
     Q_CHECK_GLERROR;
 }
 
-inline void qglPopState()
+inline void popState()
 {
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -240,7 +238,7 @@ inline void qglPopState()
 
 
 template <typename T>
-inline void qglTraceMatrix(T *m)
+inline void traceMatrix(T *m)
 {
     qDebug() << QString("%1, %2, %3, %4").arg(m[ 0]).arg(m[ 1]).arg(m[ 2]).arg(m[ 3]);
     qDebug() << QString("%1, %2, %3, %4").arg(m[ 4]).arg(m[ 5]).arg(m[ 6]).arg(m[ 7]);
@@ -248,27 +246,27 @@ inline void qglTraceMatrix(T *m)
     qDebug() << QString("%1, %2, %3, %4").arg(m[12]).arg(m[13]).arg(m[14]).arg(m[15]);
 }
 
-inline void qglTraceModelViewMatrix()
+inline void traceModelViewMatrix()
 {
     GL::real m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
 
     qDebug() << "";
     qDebug() << "gl model view:";
-    qglTraceMatrix(m);
+    traceMatrix(m);
 }
 
-inline void qglTraceProjectionMatrix()
+inline void traceProjectionMatrix()
 {
     GL::real m[16];
     glGetFloatv(GL_PROJECTION_MATRIX, m);
 
     qDebug() << "";
     qDebug() << "gl projection:";
-    qglTraceMatrix(m);
+    traceMatrix(m);
 }
 
-inline void qglTraceViewport()
+inline void traceViewport()
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -282,13 +280,15 @@ inline void qglTraceViewport()
                 .arg(viewport[3]);
 }
 
-inline void qglTraceTransformations()
+inline void traceTransformations()
 {
     qDebug() << "";
-    qglTraceModelViewMatrix();
-    qglTraceProjectionMatrix();
-    qglTraceViewport();
+    traceModelViewMatrix();
+    traceProjectionMatrix();
+    traceViewport();
     qDebug() << "";
 }
 
-#endif // UTILS3D_GLOBAL_H
+} // namespace GL
+
+#endif // GLUTILS_GLOBAL_H

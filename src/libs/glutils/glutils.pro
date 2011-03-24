@@ -1,18 +1,19 @@
-TARGET   = Utils3D
+TARGET   = GLUtils
 TEMPLATE = lib
 
 QT *= gui opengl
 
 include(../../projectlibrary.pri)
 
-DEFINES += UTILS3D_LIB
+DEFINES += GLUTILS_LIB
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += \
-    utils3d_global.h
+    glutils_global.h
 
 SOURCES += \
 
-OTHER_FILES += utils3d.pri
+OTHER_FILES += \
+    *.*

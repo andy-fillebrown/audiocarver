@@ -17,7 +17,7 @@
 
 #include "root.h"
 
-#include <utils3d/utils3d_global.h>
+#include <glutils/glutils_global.h>
 
 #include <QtOpenGL/QGLBuffer>
 

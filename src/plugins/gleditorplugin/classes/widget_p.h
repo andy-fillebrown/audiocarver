@@ -18,7 +18,7 @@
 #ifndef GL_WIDGET_P_H
 #define GL_WIDGET_P_H
 
-#include <utils3d/utils3d_global.h>
+#include <glutils/glutils_global.h>
 
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QList>

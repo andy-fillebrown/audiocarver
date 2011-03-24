@@ -27,7 +27,6 @@
 
 #include <extensionsystem/pluginmanager.h>
 #include <gmtl/VecOps.h>
-#include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>
@@ -214,7 +213,7 @@ void Widget::paintGL()
     if (!d->shaderProgram)
         return;
 
-    qglPushState();
+    GL::pushState();
     Q_CHECK(d->shaderProgram->bind());
 
     glClearColor(0, 0, 0, 1);
@@ -229,7 +228,7 @@ void Widget::paintGL()
 
     d->shaderProgram->release();
     Q_CHECK_GLERROR;
-    qglPopState();
+    GL::popState();
 
     d->prevFrameTime = d->elapsedTime.elapsed();
 }
