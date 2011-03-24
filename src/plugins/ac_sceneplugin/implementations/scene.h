@@ -37,7 +37,7 @@ public:
     virtual bool drawBackground();
     virtual bool drawStatic();
     virtual bool drawModel();
-    virtual bool drawEditing();
+    virtual bool drawEdit();
     virtual bool drawAnimation(qreal time);
     virtual bool drawOverlay();
 

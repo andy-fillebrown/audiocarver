@@ -255,7 +255,7 @@ public:
         case EditingFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawEditing();
+            drewToFBO = scene->drawEdit();
             break;
         case AnimationFBO:
             glClearColor(0, 0, 0, 0);

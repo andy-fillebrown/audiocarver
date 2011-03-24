@@ -177,7 +177,7 @@ bool SceneImpl::drawModel()
     return false;
 }
 
-bool SceneImpl::drawEditing()
+bool SceneImpl::drawEdit()
 {
     return false;
 }

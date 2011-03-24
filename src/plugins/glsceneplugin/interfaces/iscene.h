@@ -39,7 +39,7 @@ public:
     virtual bool drawBackground() = 0;
     virtual bool drawStatic() = 0;
     virtual bool drawModel() = 0;
-    virtual bool drawEditing() = 0;
+    virtual bool drawEdit() = 0;
     virtual bool drawAnimation(qreal time) = 0;
     virtual bool drawOverlay() = 0;
 };
