@@ -24,6 +24,8 @@
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
+using namespace GL;
+
 namespace AudioCarver {
 namespace Internal {
 
@@ -34,7 +36,7 @@ public:
     ScoreNode *scoreNode;
     GLuint staticDisplayListId;
     GLuint animationDisplayListId;
-    float rotation;
+    real rotation;
 
     SceneImplPrivate(SceneImpl *q)
         :   q(q)
@@ -82,17 +84,17 @@ public:
 
     void drawStaticGeometry()
     {
-        static const GLfloat x = 1.0f;
-        static const GLfloat y = 1.0f;
-        static const GLfloat S1[3] = { x, y, 0.0 };
-        static const GLfloat S2[3] = { x, -y, 0.0 };
-        static const GLfloat S3[3] = { -x, y, 0.0 };
-        static const GLfloat S4[3] = { -x, -y, 0.0 };
-        static const GLfloat * const coordsS[2][3] = {
-            { S2, S1, S3 }, { S3, S4, S2 }
+        static const real x = 1.0f;
+        static const real y = 1.0f;
+        static const real S1[3] = { x, y, 0.0f };
+        static const real S2[3] = { x, -y, 0.0f };
+        static const real S3[3] = { -x, -y, 0.0f };
+        static const real S4[3] = { -x, y, 0.0f };
+        static const real * const coordsS[2][3] = {
+            { S1, S2, S3 }, { S1, S3, S4 }
         };
         glBegin(GL_TRIANGLES);
-        glColor4f(0.5, 0.5, 0.5, 0.5);
+        glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
         for (int i = 0;  i < 2;  ++i) {
             for (int j = 0;  j < 3;  ++j)
                 glVertex3f(coordsS[i][j][0], coordsS[i][j][1], coordsS[i][j][2]);
@@ -104,15 +106,15 @@ public:
 
     void drawAnimationGeometry()
     {
-        static const GLfloat A1[3] = { 0.0, -1.0, 2.0 };
-        static const GLfloat A2[3] = { 1.73205081, -1.0, -1.0 };
-        static const GLfloat A3[3] = { -1.73205081, -1.0, -1.0 };
-        static const GLfloat A4[3] = { 0.0, 2.0, 0.0 };
-        static const GLfloat * const coordsA[4][3] = {
+        static const real A1[3] = { 0.0f, -1.0f, 2.0f };
+        static const real A2[3] = { -1.73205081f, -1.0f, -1.0f };
+        static const real A3[3] = { 1.73205081f, -1.0f, -1.0f };
+        static const real A4[3] = { 0.0f, 2.0f, 0.0f };
+        static const real * const coordsA[4][3] = {
             { A1, A2, A3 }, { A1, A3, A4 }, { A1, A4, A2 }, { A2, A4, A3 }
         };
-        static const GLfloat faceColorsA[][3] = {
-            { 1, 1, 1 }, { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }
+        static const real faceColorsA[][3] = {
+            { 0, 0, 0 }, { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }
         };
         glBegin(GL_TRIANGLES);
         for (int i = 0;  i < 4;  ++i) {
@@ -132,7 +134,7 @@ public:
 
     void drawAnimationFBO()
     {
-        glRotatef(rotation, 0.0, 1.0, 0.0);
+        glRotatef(rotation, 0.0f, 1.0f, 0.0f);
         glCallList(animationDisplayListId);
     }
 };
@@ -174,12 +176,16 @@ bool SceneImpl::drawStatic()
 
 bool SceneImpl::drawModel()
 {
-    return false;
+    glTranslatef(0.0f, 0.0f, 10.0f);
+    return drawStatic();
+//    return false;
 }
 
 bool SceneImpl::drawEdit()
 {
-    return false;
+    glTranslatef(0.0f, 0.0f, 20.0f);
+    return drawStatic();
+//    return false;
 }
 
 bool SceneImpl::drawAnimation(qreal time)
@@ -191,5 +197,7 @@ bool SceneImpl::drawAnimation(qreal time)
 
 bool SceneImpl::drawOverlay()
 {
-    return false;
+    glTranslatef(0.0f, 0.0f, 20.0f);
+    return drawAnimation(d->rotation / 90.0);
+//    return false;
 }

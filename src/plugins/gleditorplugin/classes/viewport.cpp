@@ -105,7 +105,7 @@ public:
         ,   backgroundColor(QColor(251, 251, 251))
         ,   autoViewUpdate(true)
         ,   autoViewUpdatePaused(false)
-        ,   perspective(false)
+        ,   perspective(true)
         ,   cameraEye(0.0f, 0.0f, -10.0f)
         ,   cameraTarget(0.0f, 0.0f, 0.0f)
         ,   cameraUpVector(Constants::axisY)
@@ -224,8 +224,7 @@ public:
         GL::pushState();
 
         glDisable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-        glShadeModel(GL_FLAT);
+        glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
 
