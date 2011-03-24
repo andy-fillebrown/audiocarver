@@ -81,18 +81,18 @@ public:
     WidgetPrivate(Widget *q);
     ~WidgetPrivate();
 
-    void initialize();
+    void init();
 
     void appendViewport(Viewport *viewport);
     void removeViewport(Viewport* viewport);
 
-    Viewport *viewportAtPosition(const QPoint &position) const;
+    Viewport *viewportAt(const QPoint &pos) const;
 
 private:
-    void initializeScene();
-    void initializeSplits();
-    void initializeShaders();
-    void initializeDisplayLists();
+    void initScene();
+    void initSplits();
+    void initShaders();
+    void initDisplayLists();
 };
 
 } // namespace Internal

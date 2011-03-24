@@ -29,7 +29,6 @@
 #include <gmtl/VecOps.h>
 
 #include <QtOpenGL/QGLFramebufferObject>
-#include <QtOpenGL/QGLFunctions>
 #include <QtOpenGL/QGLShaderProgram>
 
 using namespace GL;
@@ -48,7 +47,7 @@ enum {
     LastFBO
 };
 
-class ViewportPrivate : protected QGLFunctions
+class ViewportPrivate
 {
 public:
     Viewport *q;
@@ -64,11 +63,11 @@ public:
     QColor backgroundColor;
     QList<GLuint> textureIds;
 
-    bool viewAutoUpdate;
-    bool viewAutoUpdatePushed;
+    bool autoViewUpdate;
+    bool autoViewUpdatePaused;
 
     bool perspective;
-    Point cameraPosition;
+    Point cameraEye;
     Point cameraTarget;
     Vector cameraUpVector;   // normalized
 
@@ -104,15 +103,15 @@ public:
         ,   animationFBO(0)
         ,   overlayFBO(0)
         ,   backgroundColor(QColor(251, 251, 251))
-        ,   viewAutoUpdate(true)
-        ,   viewAutoUpdatePushed(false)
+        ,   autoViewUpdate(true)
+        ,   autoViewUpdatePaused(false)
         ,   perspective(false)
-        ,   cameraPosition(0.0f, 0.0f, -10.0f)
+        ,   cameraEye(0.0f, 0.0f, -10.0f)
         ,   cameraTarget(0.0f, 0.0f, 0.0f)
         ,   cameraUpVector(Constants::axisY)
-        ,   cameraDistanceToTarget(qAbs(cameraPosition[2]))
+        ,   cameraDistanceToTarget(qAbs(cameraEye[2]))
         ,   cameraHeight(10.0f)
-        ,   cameraViewVector(cameraTarget - cameraPosition)
+        ,   cameraViewVector(cameraTarget - cameraEye)
         ,   cameraViewDir(0.0f, 0.0f, 1.0f)
         ,   cameraSideVector(Constants::axisY)
         ,   modelTranslation(0.0f, 0.0f, 0.0f)
@@ -123,8 +122,7 @@ public:
     {
         Q_ASSERT(widget);
 
-        initializeGLFunctions(widget->context());
-        initializeFBOs(parentSplit->width(), parentSplit->height());
+        initFBOs(parentSplit->width(), parentSplit->height());
 
         updateCamera();
         updateModelXform();
@@ -145,7 +143,7 @@ public:
         q = 0;
     }
 
-    void initializeFBOs(int w, int h)
+    void initFBOs(int w, int h)
     {
         if (w < 1)
             w = 1;
@@ -292,7 +290,7 @@ public:
 
     void resizeFBOs(int w, int h)
     {
-        initializeFBOs(w, h);
+        initFBOs(w, h);
         updateCamera();
     }
 
@@ -305,18 +303,17 @@ public:
 
     void updateCamera()
     {
-        cameraViewVector = cameraTarget - cameraPosition;
+        cameraViewVector = cameraTarget - cameraEye;
         cameraDistanceToTarget = gmtl::length(cameraViewVector);
         cameraViewDir = cameraViewVector;
         gmtl::normalize(cameraViewDir);
         gmtl::cross(cameraSideVector, cameraViewDir, cameraUpVector);
         gmtl::normalize(cameraSideVector);
 
-        GL::lookAt(viewXform, cameraPosition, cameraTarget, cameraUpVector);
+        GL::lookAt(viewXform, cameraEye, cameraTarget, cameraUpVector);
 
-        const real aspect = this->aspect();
         const real h = cameraHeight;
-        const real w = aspect * h;
+        const real w = aspect() * h;
 
         if (perspective)
             GL::frustum(projXform, -w, w, -h, h, 1.0f, 100000.0f);
@@ -327,7 +324,7 @@ public:
         gmtl::invertFull(inverseXform, projViewXform * modelXform);
         gmtl::invertFull(inverseCameraXform, projViewXform);
 
-        if (viewAutoUpdate && !viewAutoUpdatePushed)
+        if (autoViewUpdate && !autoViewUpdatePaused)
             updateAllFBOs();
 
         // Update ucs plane.
@@ -353,7 +350,7 @@ public:
 
         gmtl::invertFull(inverseXform, projViewXform * modelXform);
 
-        if (viewAutoUpdate && !viewAutoUpdatePushed)
+        if (autoViewUpdate && !autoViewUpdatePaused)
             updateAllFBOs();
     }
 
@@ -449,24 +446,24 @@ void Viewport::updateView()
     d->updateAllFBOs();
 }
 
-bool Viewport::isViewAutomaticallyUpdated() const
+bool Viewport::isAutomaticallyUpdatingView() const
 {
-    return d->viewAutoUpdate;
+    return d->autoViewUpdate;
 }
 
-void Viewport::setViewAutomaticUpdate(bool automatic)
+void Viewport::setAutomaticViewUpdate(bool on)
 {
-    d->viewAutoUpdate = automatic;
+    d->autoViewUpdate = on;
 }
 
-void Viewport::pushViewAutomaticUpdate()
+void Viewport::pauseAutomaticViewUpdate()
 {
-    d->viewAutoUpdatePushed = true;
+    d->autoViewUpdatePaused = true;
 }
 
-void Viewport::popViewAutomaticUpdate()
+void Viewport::resumeAutomaticViewUpdate()
 {
-    d->viewAutoUpdatePushed = false;
+    d->autoViewUpdatePaused = false;
     d->updateAllFBOs();
 }
 
@@ -492,22 +489,29 @@ void Viewport::setCameraHeight(GL::real height)
     d->updateCamera();
 }
 
-void Viewport::setCameraMatrix(const Point &position, const Point &target, const Vector &upVector)
+void Viewport::setCameraTransform(const Point &eye, const Vector &up)
 {
-    d->cameraPosition = position;
-    d->cameraTarget = target;
-    d->cameraUpVector = upVector;
+    d->cameraEye = eye;
+    d->cameraUpVector = up;
     d->updateCamera();
 }
 
-const Point &Viewport::cameraPosition() const
+void Viewport::setCameraTransform(const Point &eye, const Point &target, const Vector &up)
 {
-    return d->cameraPosition;
+    d->cameraEye = eye;
+    d->cameraTarget = target;
+    d->cameraUpVector = up;
+    d->updateCamera();
 }
 
-void Viewport::setCameraPosition(const Point &position)
+const Point &Viewport::cameraEye() const
 {
-    d->cameraPosition = position;
+    return d->cameraEye;
+}
+
+void Viewport::setCameraEye(const Point &eye)
+{
+    d->cameraEye = eye;
     d->updateCamera();
 }
 
@@ -527,9 +531,9 @@ const Vector &Viewport::cameraUpVector() const
     return d->cameraUpVector;
 }
 
-void Viewport::setCameraUpVector(const Vector &upVector)
+void Viewport::setCameraUpVector(const Vector &up)
 {
-    d->cameraUpVector = upVector;
+    d->cameraUpVector = up;
     d->updateCamera();
 }
 
@@ -553,13 +557,20 @@ const Vector &Viewport::cameraSideVector() const
     return d->cameraSideVector;
 }
 
-void Viewport::setModelMatrix(const Vector &translation, real scaleX, real scaleY, real scaleZ)
+void Viewport::setModelTransform(const Vector &translation, real scaleX, real scaleY, real scaleZ)
 {
+    d->modelTranslation = translation;
+    d->modelScaleX = scaleX;
+    d->modelScaleY = scaleY;
+    d->modelScaleZ = scaleZ;
     d->updateModelXform();
 }
 
 void Viewport::setModelScale(real scaleX, real scaleY, real scaleZ)
 {
+    d->modelScaleX = scaleX;
+    d->modelScaleY = scaleY;
+    d->modelScaleZ = scaleZ;
     d->updateModelXform();
 }
 
@@ -607,32 +618,32 @@ void Viewport::setModelScaleZ(real scale)
     d->updateModelXform();
 }
 
-const Matrix &Viewport::projXform() const
+const Matrix &Viewport::projectionTransform() const
 {
     return d->projXform;
 }
 
-const Matrix &Viewport::modelXform() const
+const Matrix &Viewport::modelTransform() const
 {
     return d->modelXform;
 }
 
-const Matrix &Viewport::viewXform() const
+const Matrix &Viewport::viewTransform() const
 {
     return d->viewXform;
 }
 
-const Matrix &Viewport::projViewXform() const
+const Matrix &Viewport::projectionViewTransform() const
 {
     return d->projViewXform;
 }
 
-const Matrix &Viewport::inverseXform() const
+const Matrix &Viewport::inverseTransform() const
 {
     return d->inverseXform;
 }
 
-const Matrix &Viewport::inverseCameraXform() const
+const Matrix &Viewport::inverseCameraTransform() const
 {
     return d->inverseCameraXform;
 }
@@ -642,20 +653,20 @@ const Plane &Viewport::currentUcs() const
     return d->ucs;
 }
 
-Point Viewport::findPointOnUcs(const QPoint &screenPos) const
+Point Viewport::findPointOnCurrentUcs(const QPoint &pos) const
 {
-    return findPointOnPlane(screenPos, currentUcs());
+    return findPointOnPlane(pos, currentUcs());
 }
 
-Point Viewport::findPointOnPlane(const QPoint &screenPos, const Plane &plane) const
+Point Viewport::findPointOnPlane(const QPoint &pos, const Plane &plane) const
 {
     const QSize size = this->size();
     const real w = size.width();
     const real h = size.height();
-    const real posX = screenPos.x();
-    const real posY = screenPos.y();
+    const real posX = pos.x();
+    const real posY = pos.y();
 
-    // Transform screenPos to normalized device coordinates.
+    // Calculate normalized device coordinates from 'pos'.
     const real x = (2.0f * posX / w) - 1.0f;
     const real y = -((2.0f * posY / h) - 1.0f);
 

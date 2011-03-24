@@ -43,7 +43,7 @@ Widget::Widget(QWidget *parent)
     ,   d(new WidgetPrivate(this))
 {
     Q_CHECK_PTR(d);
-    d->initialize();
+    d->init();
 
     d->behaviorSettings = BehaviorSettingsPage::instance()->d->settings;
     connect(BehaviorSettingsPage::instance(),
@@ -193,8 +193,8 @@ void Widget::animateGL()
 {
     QCoreApplication::processEvents();
 
-    foreach (Viewport *viewport, d->viewports)
-        viewport->updateAnimation();
+    foreach (Viewport *vp, d->viewports)
+        vp->updateAnimation();
 
     updateGL();
 
@@ -223,8 +223,8 @@ void Widget::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    foreach (Viewport *viewport, d->viewports)
-        viewport->paintGL();
+    foreach (Viewport *vp, d->viewports)
+        vp->paintGL();
 
     d->shaderProgram->release();
     Q_CHECK_GLERROR;
@@ -276,7 +276,7 @@ void Widget::mousePressEvent(QMouseEvent *event)
             d->isPanning = true;
 
         if (d->isPanning || d->isRotating) {
-            d->draggingViewport = d->viewportAtPosition(pos);
+            d->draggingViewport = d->viewportAt(pos);
 
             // If mouse is over a viewport, d->draggingViewport will be valid,
             // otherwise the mouse is over a viewport border and panning or
@@ -347,8 +347,8 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
     if (d->isPanning) {
         // Calculate drag vector from previous mouse position.
         Viewport *vp = d->draggingViewport;
-        const Point startPt = vp->findPointOnUcs(d->prevDragPos - vp->pos());
-        const Point endPt = vp->findPointOnUcs(pos - vp->pos());
+        const Point startPt = vp->findPointOnCurrentUcs(d->prevDragPos - vp->pos());
+        const Point endPt = vp->findPointOnCurrentUcs(pos - vp->pos());
         Vector dragVec = endPt - startPt;
         dragVec[0] = -dragVec[0];
 
@@ -369,7 +369,7 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
 
         // Pause automatic view updating, since two calls to
         // GLViewport::setCameraMatrix might be made.
-        vp->pushViewAutomaticUpdate();
+        vp->pauseAutomaticViewUpdate();
 
         // Rotate the camera around the target using the y axis as the axis of
         // rotation.
@@ -381,16 +381,16 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
             gmtl::setRot(m, axisAngle);
 
             // Rotate camera's position.
-            Point normCamPos = vp->cameraPosition() - vp->cameraTarget();
-            gmtl::xform(normCamPos, m, normCamPos);
-            Point newCamPos = vp->cameraTarget() + normCamPos;
+            Point normCamEye = vp->cameraEye() - vp->cameraTarget();
+            gmtl::xform(normCamEye, m, normCamEye);
+            Point newCamEye = vp->cameraTarget() + normCamEye;
 
             // Rotate camera's up vector.
             Vector newCamUpVec;
             gmtl::xform(newCamUpVec, m, vp->cameraUpVector());
 
             // Apply new position and up vector.
-            vp->setCameraMatrix(newCamPos, vp->cameraTarget(), newCamUpVec);
+            vp->setCameraTransform(newCamEye, newCamUpVec);
         }
 
         // Rotate the camera around the target using the camera's side vector
@@ -403,20 +403,20 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
             gmtl::setRot(m, axisAngle);
 
             // Rotate camera's position.
-            Point normCamPos = vp->cameraPosition() - vp->cameraTarget();
-            gmtl::xform(normCamPos, m, normCamPos);
-            Point newCamPos = vp->cameraTarget() + normCamPos;
+            Point normCamEye = vp->cameraEye() - vp->cameraTarget();
+            gmtl::xform(normCamEye, m, normCamEye);
+            Point newCamEye = vp->cameraTarget() + normCamEye;
 
             // Rotate camera's up vector.
             Vector newCamUpVec;
             gmtl::xform(newCamUpVec, m, vp->cameraUpVector());
 
             // Apply new position and up vector.
-            vp->setCameraMatrix(newCamPos, vp->cameraTarget(), newCamUpVec);
+            vp->setCameraTransform(newCamEye, newCamUpVec);
         }
 
         // Restart automatic view updating.
-        vp->popViewAutomaticUpdate();
+        vp->resumeAutomaticViewUpdate();
 
         // Update previous mouse position and redraw.
         d->prevDragPos = pos;
@@ -440,7 +440,7 @@ void Widget::mouseReleaseEvent(QMouseEvent *event)
 void Widget::wheelEvent(QWheelEvent *event)
 {
     // Do nothing if mouse pointer is not over viewport.
-    Viewport *vp = d->viewportAtPosition(event->pos());
+    Viewport *vp = d->viewportAt(event->pos());
     if (!vp) {
         event->ignore();
         return;

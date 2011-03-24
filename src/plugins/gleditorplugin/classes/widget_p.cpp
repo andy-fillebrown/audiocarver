@@ -81,12 +81,12 @@ WidgetPrivate::~WidgetPrivate()
     q = 0;
 }
 
-void WidgetPrivate::initialize()
+void WidgetPrivate::init()
 {
-    initializeScene();
-    initializeSplits();
-    initializeShaders();
-    initializeDisplayLists();
+    initScene();
+    initSplits();
+    initShaders();
+    initDisplayLists();
 }
 
 void WidgetPrivate::appendViewport(Viewport *viewport)
@@ -104,15 +104,15 @@ void WidgetPrivate::removeViewport(Viewport *viewport)
     Q_ASSERT(!viewports.contains(viewport));
 }
 
-Viewport *WidgetPrivate::viewportAtPosition(const QPoint &position) const
+Viewport *WidgetPrivate::viewportAt(const QPoint &pos) const
 {
-    foreach (Viewport *viewport, viewports)
-        if (viewport->rect().contains(position))
-            return viewport;
+    foreach (Viewport *vp, viewports)
+        if (vp->rect().contains(pos))
+            return vp;
     return 0;
 }
 
-void WidgetPrivate::initializeScene()
+void WidgetPrivate::initScene()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     scene = pm->getObject<IScene>();
@@ -125,7 +125,7 @@ void WidgetPrivate::initializeScene()
     scene->initialize();
 }
 
-void WidgetPrivate::initializeSplits()
+void WidgetPrivate::initSplits()
 {
     q->makeCurrent();
     Q_ASSERT(q->isValid());
@@ -137,7 +137,7 @@ void WidgetPrivate::initializeSplits()
     q->setCurrentSplit(mainSplit);
 }
 
-void WidgetPrivate::initializeShaders()
+void WidgetPrivate::initShaders()
 {
     q->makeCurrent();
     Q_ASSERT(q->isValid());
@@ -169,7 +169,7 @@ void WidgetPrivate::initializeShaders()
     Q_CHECK_GLERROR;
 }
 
-void WidgetPrivate::initializeDisplayLists()
+void WidgetPrivate::initDisplayLists()
 {
     q->makeCurrent();
     Q_ASSERT(q->isValid());

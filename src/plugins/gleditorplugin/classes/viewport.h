@@ -54,10 +54,10 @@ public:
     void updateAnimation();
     void updateView();
 
-    bool isViewAutomaticallyUpdated() const;
-    void setViewAutomaticUpdate(bool automatic);
-    void pushViewAutomaticUpdate();
-    void popViewAutomaticUpdate();
+    bool isAutomaticallyUpdatingView() const;
+    void setAutomaticViewUpdate(bool on);
+    void pauseAutomaticViewUpdate();
+    void resumeAutomaticViewUpdate();
 
     bool isPerspective() const;
     void setPerspective(bool perspective);
@@ -65,20 +65,21 @@ public:
     real cameraHeight() const;
     void setCameraHeight(real height);
 
-    void setCameraMatrix(const Point &position, const Point &target, const Vector &upVector);
-    const Point &cameraPosition() const;
-    void setCameraPosition(const Point &position);
+    void setCameraTransform(const Point &eye, const Vector &up);
+    void setCameraTransform(const Point &eye, const Point &target, const Vector &up);
+    const Point &cameraEye() const;
+    void setCameraEye(const Point &eye);
     const Point &cameraTarget() const;
     void setCameraTarget(const Point &target);
     const Vector &cameraUpVector() const;
-    void setCameraUpVector(const Vector &upVector);
+    void setCameraUpVector(const Vector &up);
 
     real cameraDistanceToTarget() const;
     const Vector &cameraViewVector() const;
     const Vector &cameraViewDirection() const;
     const Vector &cameraSideVector() const;
 
-    void setModelMatrix(const Vector &translation, real scaleX, real scaleY, real scaleZ);
+    void setModelTransform(const Vector &translation, real scaleX, real scaleY, real scaleZ);
     void setModelScale(real scaleX, real scaleY, real scaleZ);
     const Vector &modelTranslation() const;
     void setModelTranslation(const Vector &translation);
@@ -89,17 +90,17 @@ public:
     real modelScaleZ() const;
     void setModelScaleZ(real scale);
 
-    const Matrix &projXform() const;
-    const Matrix &modelXform() const;
-    const Matrix &viewXform() const;
+    const Matrix &projectionTransform() const;
+    const Matrix &modelTransform() const;
+    const Matrix &viewTransform() const;
 
-    const Matrix &projViewXform() const;
-    const Matrix &inverseXform() const;
-    const Matrix &inverseCameraXform() const;
+    const Matrix &projectionViewTransform() const;
+    const Matrix &inverseTransform() const;
+    const Matrix &inverseCameraTransform() const;
 
     const Plane &currentUcs() const;
-    Point findPointOnUcs(const QPoint &screenPos) const;
-    Point findPointOnPlane(const QPoint &screenPos, const Plane &plane) const;
+    Point findPointOnCurrentUcs(const QPoint &pos) const;
+    Point findPointOnPlane(const QPoint &pos, const Plane &plane) const;
 
 protected:
     virtual void paintGL();
