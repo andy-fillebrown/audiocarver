@@ -97,4 +97,9 @@ unix {
     INSTALLS += images
 }
 
-OTHER_FILES += $$QMAKE_SUBSTITUTES
+OTHER_FILES += \
+    actionmanager/*.* \
+    dialogs/*.* \
+    images/*.* \
+    interfaces/*.* \
+    *.*

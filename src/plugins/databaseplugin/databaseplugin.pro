@@ -26,3 +26,8 @@ SOURCES += \
     classes/root.cpp \
     \
     databaseplugin.cpp
+
+OTHER_FILES += \
+    classes/*.* \
+    interfaces/*.* \
+    *.*

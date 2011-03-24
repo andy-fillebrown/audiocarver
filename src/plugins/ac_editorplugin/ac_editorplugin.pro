@@ -27,3 +27,8 @@ SOURCES += \
     implementations/ac_mainwindowimpl.cpp \
     \
     ac_editorplugin.cpp
+
+OTHER_FILES += \
+    classes/*.* \
+    implementations/*.* \
+    *.*

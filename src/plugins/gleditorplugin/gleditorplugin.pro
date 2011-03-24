@@ -54,10 +54,11 @@ RESOURCES += \
     gleditor.qrc
 
 OTHER_FILES += \
-    *.* \
-    $$HEADERS \
-    $$SOURCES \
-    $$FORMS \
-    $$RESOURCES \
-    shaders/glwidget_fragment.glsl \
-    shaders/glwidget_vertex.glsl
+    classes/*.* \
+    dialogs/*.* \
+    images/*.* \
+    implementations/*.* \
+    interfaces/*.* \
+    settings/*.* \
+    shaders/*.* \
+    *.*

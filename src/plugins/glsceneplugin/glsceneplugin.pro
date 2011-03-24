@@ -30,3 +30,6 @@ SOURCES += \
 RESOURCES += \
 
 OTHER_FILES += \
+    classes/*.* \
+    interfaces/*.* \
+    *.*

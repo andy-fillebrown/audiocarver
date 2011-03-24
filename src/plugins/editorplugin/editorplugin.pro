@@ -25,3 +25,9 @@ SOURCES += \
 
 RESOURCES += \
     editor.qrc
+
+OTHER_FILES += \
+    images/*.* \
+    implementations/*.* \
+    interfaces/*.* \
+    *.*
