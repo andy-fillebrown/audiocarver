@@ -15,14 +15,45 @@
 **
 **************************************************************************/
 
-#include "igleditor.h"
+#include "node.h"
 
-using namespace GLEditor;
+#include "root.h"
 
-IGLEditor::IGLEditor()
+using namespace GL;
+
+Node::Node(QObject *parent)
+    :   QObject(parent)
 {
 }
 
-IGLEditor::~IGLEditor()
+Node::~Node()
 {
+}
+
+Root *Node::root() const
+{
+    if (isRoot())
+        return qobject_cast<Root*>(const_cast<Node*>(this));
+
+    Node *parent = qobject_cast<Node*>(this->parent());
+    if (parent)
+        return parent->root();
+
+    return 0;
+}
+
+void Node::drawLines(bool picking)
+{
+    Q_UNUSED(picking);
+}
+
+void Node::drawTriangles(bool picking)
+{
+    Q_UNUSED(picking);
+}
+
+void Node::changeSubArrayId(int from, int to)
+{
+    Q_UNUSED(from);
+    Q_UNUSED(to);
 }

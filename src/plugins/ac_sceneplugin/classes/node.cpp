@@ -45,7 +45,7 @@ public:
 } // namespace AudioCarver
 
 Node::Node(Database::Object *databaseObject, QObject *parent)
-    :   GLScene::GLNode(parent)
+    :   GL::Node(parent)
     ,   d(new NodePrivate(databaseObject))
 {
     setObjectName(databaseObject->objectName());

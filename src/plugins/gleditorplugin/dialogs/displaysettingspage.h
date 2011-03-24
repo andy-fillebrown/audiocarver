@@ -15,17 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef GLEDITOR_DISPLAYSETTINGSPAGE_H
-#define GLEDITOR_DISPLAYSETTINGSPAGE_H
+#ifndef GL_DISPLAYSETTINGSPAGE_H
+#define GL_DISPLAYSETTINGSPAGE_H
 
 #include <coreplugin/dialogs/ioptionspage.h>
 
 #include <gleditorplugin/settings/displaysettings.h>
 
-namespace GLEditor {
+namespace GL {
 
 class DisplaySettings;
-class GLWidget;
+class Widget;
 
 namespace Internal {
 namespace Ui {
@@ -72,10 +72,10 @@ private:
     DisplaySettingsPageData *d;
     Ui::DisplaySettingsPage *ui;
 
-    friend class GLEditor::GLWidget;
+    friend class GL::Widget;
 };
 
 } // namespace Internal
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLEDITOR_DISPLAYSETTINGSPAGE_H
+#endif // GL_DISPLAYSETTINGSPAGE_H

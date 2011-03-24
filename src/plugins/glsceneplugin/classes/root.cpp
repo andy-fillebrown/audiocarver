@@ -15,58 +15,60 @@
 **
 **************************************************************************/
 
-#include "glroot.h"
+#include "root.h"
 
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLBuffer>
 
-using namespace GLScene;
-using namespace GLScene::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
-namespace GLScene {
+namespace GL {
 namespace Internal {
 
-class GLRootPrivate
+class RootPrivate
 {
 public:
-    GLRoot *q;
+    Root *q;
 
-    GLRootPrivate(GLRoot *q)
+    RootPrivate(Root *q)
         :   q(q)
     {
     }
 
-    ~GLRootPrivate()
+    ~RootPrivate()
     {
         q = 0;
     }
 };
 
 } // namespace Internal
-} // namespace GLScene
+} // namespace GL
 
-GLRoot::GLRoot(QObject *parent)
-    :   GLNode(parent)
-    ,   d(new GLRootPrivate(this))
+Root::Root(QObject *parent)
+    :   Node(parent)
+    ,   d(new RootPrivate(this))
 {
     Q_CHECK_PTR(d);
 }
 
-GLRoot::~GLRoot()
+Root::~Root()
 {
     delete d;  d = 0;
 }
 
-void GLRoot::drawLines(bool picking)
+void Root::drawLines(bool picking)
 {
+    Q_UNUSED(picking);
 }
 
-void GLRoot::drawTriangles(bool picking)
+void Root::drawTriangles(bool picking)
 {
+    Q_UNUSED(picking);
 }
 
-void GLRoot::releaseBuffers() const
+void Root::releaseBuffers() const
 {
     QGLBuffer::release(QGLBuffer::IndexBuffer);
     QGLBuffer::release(QGLBuffer::VertexBuffer);

@@ -22,9 +22,7 @@
 
 #include <ac_databaseplugin/classes/score.h>
 #include <databaseplugin/classes/list.h>
-#include <glsceneplugin/classes/glbuffer.h>
-
-using namespace GLScene;
+#include <glsceneplugin/classes/buffer.h>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
@@ -37,8 +35,8 @@ class ScoreNodePrivate
 public:
     ScoreNode *q;
     Score *qdb;
-    GLIndexBuffer *ibo;
-    GLVertexBuffer *vbo;
+    GL::IndexBuffer *ibo;
+    GL::VertexBuffer *vbo;
     QList<TrackNode*> trackNodes;
     QList<FCurveNode*> curveNodes;
     QList<NoteNode*> noteNodes;
@@ -46,8 +44,8 @@ public:
     ScoreNodePrivate(ScoreNode *q)
         :   q(q)
         ,   qdb(Score::instance())
-        ,   ibo(new GLIndexBuffer(1024000, q))
-        ,   vbo(new GLVertexBuffer(256000, q))
+        ,   ibo(new GL::IndexBuffer(1024000, q))
+        ,   vbo(new GL::VertexBuffer(256000, q))
     {
         Q_ASSERT(qdb);
     }
@@ -79,7 +77,7 @@ public:
 } // AudioCarver
 
 ScoreNode::ScoreNode(QObject *parent)
-    :   GLScene::GLRoot(parent)
+    :   GL::Root(parent)
     ,   d(new ScoreNodePrivate(this))
 {
     Q_CHECK_PTR(d);

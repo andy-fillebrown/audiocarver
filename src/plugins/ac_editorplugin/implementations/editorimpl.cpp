@@ -15,35 +15,47 @@
 **
 **************************************************************************/
 
-#ifndef GLNODE_H
-#define GLNODE_H
+#include "editorimpl.h"
 
-#include <QtCore/QObject>
+#include <QtCore/QDebug>
 
-#include <glsceneplugin/glscene_global.h>
+using namespace AudioCarver;
+using namespace AudioCarver::Internal;
 
-namespace GLScene {
-
-class GLRoot;
-
-class GLSCENE_EXPORT GLNode : public QObject
+EditorImpl::EditorImpl()
 {
-    Q_OBJECT
+}
 
-public:
-    GLNode(QObject *parent = 0);
-    virtual ~GLNode();
+EditorImpl::~EditorImpl()
+{
+}
 
-    virtual bool isRoot() const { return false; }
-    GLRoot *root() const;
+void EditorImpl::undo()
+{
+    qDebug() << Q_FUNC_INFO;
+}
 
-    virtual void drawLines(bool picking = false);
-    virtual void drawTriangles(bool picking = false);
+void EditorImpl::redo()
+{
+    qDebug() << Q_FUNC_INFO;
+}
 
-public slots:
-    virtual void changeSubArrayId(int from, int to);
-};
+void EditorImpl::cut()
+{
+    qDebug() << Q_FUNC_INFO;
+}
 
-} // namespace GLScene
+void EditorImpl::copy() const
+{
+    qDebug() << Q_FUNC_INFO;
+}
 
-#endif // GLNODE_H
+void EditorImpl::paste()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void EditorImpl::selectAll()
+{
+    qDebug() << Q_FUNC_INFO;
+}

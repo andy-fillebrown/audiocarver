@@ -30,7 +30,7 @@ static const char * const linkedViewportModelXformsKey = "LinkedViewportModelXfo
 
 static const char * const groupPostfix = "BehaviorSettings";
 
-using namespace GLEditor;
+using namespace GL;
 
 BehaviorSettingsData::BehaviorSettingsData()
     :   zoomSpeed(1.0f)

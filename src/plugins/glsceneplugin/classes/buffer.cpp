@@ -15,27 +15,27 @@
 **
 **************************************************************************/
 
-#include "glbuffer.h"
+#include "buffer.h"
 
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLBuffer>
 
-using namespace GLScene;
-using namespace GLScene::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
-namespace GLScene {
+namespace GL {
 namespace Internal {
 
-class GLArrayPrivate
+class ArrayPrivate
 {
 public:
-    GLArray *q;
+    Array *q;
     int offset;
     int count; // item count (not byte count)
-    GLBuffer *buffer;
+    Buffer *buffer;
 
-    GLArrayPrivate(GLArray *q, int count, GLBuffer *buffer)
+    ArrayPrivate(Array *q, int count, Buffer *buffer)
         :   q(q)
         ,   offset(0) // set in GLBufferPrivate::initializeArray
         ,   count(count)
@@ -43,7 +43,7 @@ public:
     {
     }
 
-    ~GLArrayPrivate()
+    ~ArrayPrivate()
     {
         buffer = 0;
         count = -1;
@@ -52,31 +52,31 @@ public:
     }
 };
 
-class GLIndexArrayPrivate
+class IndexArrayPrivate
 {
 public:
 };
 
-class GLVertexArrayPrivate
+class VertexArrayPrivate
 {
 public:
 };
 
-class GLBufferPrivate
+class BufferPrivate
 {
 public:
     QGLBuffer *buffer;
     int count; // item count (not byte count)
 
-    QList<GLArray*> arrays;
+    QList<Array*> arrays;
 
-    GLBufferPrivate(int count)
+    BufferPrivate(int count)
         :   buffer(0)
         ,   count(count)
     {
     }
 
-    ~GLBufferPrivate()
+    ~BufferPrivate()
     {
         arrays.clear();
 
@@ -90,7 +90,7 @@ public:
         if (!buffer)
             return 0;
 
-        return buffer->type() == QGLBuffer::IndexBuffer ? sizeof(GLIndex) : sizeof(GLVertex);
+        return buffer->type() == QGLBuffer::IndexBuffer ? sizeof(index) : sizeof(Vertex);
     }
 
     void initializeBuffer(QGLBuffer::Type type)
@@ -121,9 +121,9 @@ public:
         Q_CHECK_GLERROR;
     }
 
-    void initializeArray(GLArrayPrivate *array_d)
+    void initializeArray(ArrayPrivate *array_d)
     {
-        GLArray *array = array_d->q;
+        Array *array = array_d->q;
         Q_ASSERT(!arrays.contains(array));
 
         // Find space for array in buffer.
@@ -142,121 +142,121 @@ public:
         }
     }
 
-    void removeArray(GLArrayPrivate *array_d)
+    void removeArray(ArrayPrivate *array_d)
     {
         arrays.removeOne(array_d->q);
     }
 };
 
-class GLIndexBufferPrivate
+class IndexBufferPrivate
 {
 public:
 };
 
-class GLVertexBufferPrivate
+class VertexBufferPrivate
 {
 public:
 };
 
 } // namespace Internal
-} // namespace GLScene
+} // namespace GL
 
-GLBuffer::GLBuffer(int count, QObject *parent)
+Buffer::Buffer(int count, QObject *parent)
     :   QObject(parent)
-    ,   d(new GLBufferPrivate(count))
+    ,   d(new BufferPrivate(count))
 {
     Q_CHECK_PTR(d);
 }
 
-GLBuffer::~GLBuffer()
+Buffer::~Buffer()
 {
     delete d;  d = 0;
 }
 
-int GLBuffer::count() const
+int Buffer::count() const
 {
     return d->count;
 }
 
-bool GLBuffer::bind()
+bool Buffer::bind()
 {
     return d->buffer->bind();
 }
 
-void GLBuffer::release()
+void Buffer::release()
 {
     return d->buffer->release();
 }
 
-GLIndexBuffer::GLIndexBuffer(int count, QObject *parent)
-    :   GLBuffer(count, parent)
-    ,   d(new GLIndexBufferPrivate())
+IndexBuffer::IndexBuffer(int count, QObject *parent)
+    :   Buffer(count, parent)
+    ,   d(new IndexBufferPrivate())
 {
     Q_CHECK_PTR(d);
 
-    GLBuffer::d->initializeBuffer(QGLBuffer::IndexBuffer);
+    Buffer::d->initializeBuffer(QGLBuffer::IndexBuffer);
 }
 
-GLIndexBuffer::~GLIndexBuffer()
+IndexBuffer::~IndexBuffer()
 {
     delete d;  d = 0;
 }
 
-GLVertexBuffer::GLVertexBuffer(int count, QObject *parent)
-    :   GLBuffer(count, parent)
-    ,   d(new GLVertexBufferPrivate())
+VertexBuffer::VertexBuffer(int count, QObject *parent)
+    :   Buffer(count, parent)
+    ,   d(new VertexBufferPrivate())
 {
     Q_CHECK_PTR(d);
 
-    GLBuffer::d->initializeBuffer(QGLBuffer::VertexBuffer);
+    Buffer::d->initializeBuffer(QGLBuffer::VertexBuffer);
 }
 
-GLVertexBuffer::~GLVertexBuffer()
+VertexBuffer::~VertexBuffer()
 {
     delete d;  d = 0;
 }
 
-GLArray::GLArray(int count, GLBuffer *buffer)
+Array::Array(int count, Buffer *buffer)
     :   QObject(buffer)
-    ,   d(new GLArrayPrivate(this, count, buffer))
+    ,   d(new ArrayPrivate(this, count, buffer))
 {
     Q_CHECK_PTR(d);
 
     d->buffer->d->initializeArray(d);
 }
 
-GLArray::~GLArray()
+Array::~Array()
 {
     d->buffer->d->removeArray(d);
 
     delete d;  d = 0;
 }
 
-int GLArray::offset() const
+int Array::offset() const
 {
     return d->offset;
 }
 
-int GLArray::count() const
+int Array::count() const
 {
     return d->count;
 }
 
-GLIndexArray::GLIndexArray(int count, GLIndexBuffer *indexBuffer)
-    :   GLArray(count, indexBuffer)
-    ,   d(new GLIndexArrayPrivate())
+IndexArray::IndexArray(int count, IndexBuffer *indexBuffer)
+    :   Array(count, indexBuffer)
+    ,   d(new IndexArrayPrivate())
 {
     Q_CHECK_PTR(d);
 }
 
-GLIndexArray::~GLIndexArray()
+IndexArray::~IndexArray()
 {
     delete d;  d = 0;
 }
 
-void GLIndexArray::write(const QVector<GLIndex> &indices)
+void IndexArray::write(const QVector<index> &indices)
 {
-    QGLBuffer *buffer = GLArray::d->buffer->d->buffer;
+    QGLBuffer *buffer = Array::d->buffer->d->buffer;
     Q_ASSERT(buffer);
     if (!buffer)
         return;
@@ -267,26 +267,26 @@ void GLIndexArray::write(const QVector<GLIndex> &indices)
     if (!ok)
         return;
 
-    buffer->write(offset() * sizeof(GLIndex),
+    buffer->write(offset() * sizeof(index),
                   indices.data(),
-                  count() * sizeof(GLIndex));
+                  count() * sizeof(index));
 }
 
-GLVertexArray::GLVertexArray(int count, GLVertexBuffer *vertexBuffer)
-    :   GLArray(count, vertexBuffer)
-    ,   d(new GLVertexArrayPrivate())
+VertexArray::VertexArray(int count, VertexBuffer *vertexBuffer)
+    :   Array(count, vertexBuffer)
+    ,   d(new VertexArrayPrivate())
 {
     Q_CHECK_PTR(d);
 }
 
-GLVertexArray::~GLVertexArray()
+VertexArray::~VertexArray()
 {
     delete d;  d = 0;
 }
 
-void GLVertexArray::write(const QVector<GLVertex> &vertices)
+void VertexArray::write(const QVector<Vertex> &vertices)
 {
-    QGLBuffer *buffer = GLArray::d->buffer->d->buffer;
+    QGLBuffer *buffer = Array::d->buffer->d->buffer;
     Q_ASSERT(buffer);
     if (!buffer)
         return;
@@ -297,7 +297,7 @@ void GLVertexArray::write(const QVector<GLVertex> &vertices)
     if (!ok)
         return;
 
-    buffer->write(offset() * sizeof(GLVertex),
+    buffer->write(offset() * sizeof(Vertex),
                   vertices.data(),
-                  count() * sizeof(GLVertex));
+                  count() * sizeof(Vertex));
 }

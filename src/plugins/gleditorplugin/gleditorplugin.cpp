@@ -17,18 +17,18 @@
 
 #include "gleditorplugin.h"
 
-#include <classes/glwidget.h>
+#include <classes/widget.h>
 #include <dialogs/behaviorsettingspage.h>
 #include <dialogs/displaysettingspage.h>
-#include <implementations/gleditor_mainwindowimpl.h>
+#include <implementations/mainwindowimpl.h>
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
 
 #include <QtCore/QtPlugin>
 
-using namespace GLEditor;
-using namespace GLEditor::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
 GLEditorPlugin::GLEditorPlugin()
 {

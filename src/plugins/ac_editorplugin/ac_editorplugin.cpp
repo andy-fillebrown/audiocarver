@@ -17,11 +17,11 @@
 
 #include "ac_editorplugin.h"
 
-#include "classes/ac_editorwidget.h"
+#include "classes/widget.h"
 
-#include "implementations/ac_mainwindowimpl.h"
-#include "implementations/ac_editorimpl.h"
-#include "implementations/ac_gleditorimpl.h"
+#include "implementations/mainwindowimpl.h"
+#include "implementations/editorimpl.h"
+#include "implementations/gleditorimpl.h"
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
@@ -56,7 +56,7 @@ void EditorPlugin::extensionsInitialized()
     // EditorWidget instance must be created with main window as it's parent,
     // otherwise app crashes on Windows.
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-    EditorWidget *ew = new EditorWidget(mw);
+    Widget *ew = new Widget(mw);
     mw->setCentralWidget(ew);
 }
 

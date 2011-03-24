@@ -15,41 +15,26 @@
 **
 **************************************************************************/
 
-#include "glnode.h"
+#ifndef AC_WIDGET_H
+#define AC_WIDGET_H
 
-#include "glroot.h"
+#include <gleditorplugin/classes/widget.h>
 
-using namespace GLScene;
+namespace AudioCarver {
+namespace Internal {
 
-GLNode::GLNode(QObject *parent)
-    :   QObject(parent)
+class Widget : public GL::Widget
 {
-}
+    Q_OBJECT
 
-GLNode::~GLNode()
-{
-}
+public:
+    Widget(QWidget *parent = 0);
+    virtual ~Widget();
 
-GLRoot *GLNode::root() const
-{
-    if (isRoot())
-        return qobject_cast<GLRoot*>(const_cast<GLNode*>(this));
+    static Widget *instance();
+};
 
-    GLNode *parent = qobject_cast<GLNode*>(this->parent());
-    if (parent)
-        return parent->root();
+} // namespace Internal
+} // namespace AudioCarver
 
-    return 0;
-}
-
-void GLNode::drawLines(bool picking)
-{
-}
-
-void GLNode::drawTriangles(bool picking)
-{
-}
-
-void GLNode::changeSubArrayId(int from, int to)
-{
-}
+#endif // AC_WIDGET_H

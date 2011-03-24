@@ -15,48 +15,44 @@
 **
 **************************************************************************/
 
-#ifndef GLWIDGET_H
-#define GLWIDGET_H
+#ifndef GL_WIDGET_H
+#define GL_WIDGET_H
 
 #include <gleditorplugin/gleditor_global.h>
 
 #include <QtOpenGL/QGLWidget>
 
-namespace GLScene {
-
-class IGLScene;
-
-} // namespace GLScene
-
-namespace GLEditor {
+namespace GL {
 namespace Internal {
 
-class GLWidgetPrivate;
+class WidgetPrivate;
 
 } // namespace Internal
 
 class BehaviorSettings;
 class DisplaySettings;
 
-class GLViewport;
-class GLWidgetSplit;
+class IScene;
 
-class GLEDITOR_EXPORT GLWidget : public QGLWidget
+class Viewport;
+class WidgetSplit;
+
+class GLEDITOR_EXPORT Widget : public QGLWidget
 {
     Q_OBJECT
 
 public:
-    GLWidget(QWidget *parent = 0);
-    virtual ~GLWidget();
+    Widget(QWidget *parent = 0);
+    virtual ~Widget();
 
-    GLScene::IGLScene *currentScene() const;
-    void setCurrentScene(GLScene::IGLScene *scene);
+    IScene *currentScene() const;
+    void setCurrentScene(IScene *scene);
 
-    GLWidgetSplit *currentSplit() const;
-    void setCurrentSplit(GLWidgetSplit *split);
+    WidgetSplit *currentSplit() const;
+    void setCurrentSplit(WidgetSplit *split);
 
-    GLViewport *currentViewport() const;
-    void setCurrentViewport(GLViewport *viewport);
+    Viewport *currentViewport() const;
+    void setCurrentViewport(Viewport *viewport);
 
     void setAnimating(bool animating = true);
     bool isAnimating() const;
@@ -83,13 +79,12 @@ protected:
     virtual void wheelEvent(QWheelEvent *event);
 
 private:
-    Internal::GLWidgetPrivate *d;
-    Q_DISABLE_COPY(GLWidget)
+    Internal::WidgetPrivate *d;
+    Q_DISABLE_COPY(Widget)
 
-    friend class GLEditorSettings;
-    friend class GLViewport;
+    friend class Viewport;
 };
 
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLWIDGET_H
+#endif // GL_WIDGET_H

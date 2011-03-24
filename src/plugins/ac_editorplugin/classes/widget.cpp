@@ -15,14 +15,25 @@
 **
 **************************************************************************/
 
-#include "iglscene.h"
+#include "widget.h"
 
-using namespace GLScene;
+using namespace AudioCarver;
+using namespace AudioCarver::Internal;
 
-IGLScene::IGLScene()
+static Widget *instance = 0;
+
+Widget::Widget(QWidget *parent)
+    :   ::GL::Widget(parent)
 {
+    ::instance = this;
 }
 
-IGLScene::~IGLScene()
+Widget::~Widget()
 {
+    ::instance = 0;
+}
+
+Widget *Widget::instance()
+{
+    return ::instance;
 }

@@ -15,47 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_editorimpl.h"
+#include "ieditor.h"
 
-#include <QtCore/QDebug>
+using namespace GL;
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
-
-EditorImpl::EditorImpl()
+IEditor::IEditor()
 {
 }
 
-EditorImpl::~EditorImpl()
+IEditor::~IEditor()
 {
-}
-
-void EditorImpl::undo()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::redo()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::cut()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::copy() const
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::paste()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void EditorImpl::selectAll()
-{
-    qDebug() << Q_FUNC_INFO;
 }

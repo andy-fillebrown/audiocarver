@@ -21,8 +21,8 @@
 #include <gleditorplugin/gleditorconstants.h>
 #include <coreplugin/icore.h>
 
-using namespace GLEditor;
-using namespace GLEditor::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
 static DisplaySettingsPage *instance = 0;
 
@@ -59,7 +59,7 @@ DisplaySettingsPage *DisplaySettingsPage::instance()
 
 QString DisplaySettingsPage::id() const
 {
-    return QLatin1String(GLEditor::Constants::SETTINGS_ID_3D_DISPLAY);
+    return QLatin1String(Constants::SETTINGS_ID_3D_DISPLAY);
 }
 
 QString DisplaySettingsPage::displayName() const
@@ -69,17 +69,17 @@ QString DisplaySettingsPage::displayName() const
 
 QString DisplaySettingsPage::category() const
 {
-    return QLatin1String(GLEditor::Constants::SETTINGS_CATEGORY_3D);
+    return QLatin1String(Constants::SETTINGS_CATEGORY_3D);
 }
 
 QString DisplaySettingsPage::displayCategory() const
 {
-    return QCoreApplication::translate("GLEditor", GLEditor::Constants::SETTINGS_TR_CATERGORY_3D);
+    return QCoreApplication::translate("GLEditor", Constants::SETTINGS_TR_CATERGORY_3D);
 }
 
 QIcon DisplaySettingsPage::categoryIcon() const
 {
-    return QIcon(QLatin1String(GLEditor::Constants::SETTINGS_CATEGORY_3D_ICON));
+    return QIcon(QLatin1String(Constants::SETTINGS_CATEGORY_3D_ICON));
 }
 
 QWidget *DisplaySettingsPage::createPage(QWidget *parent)

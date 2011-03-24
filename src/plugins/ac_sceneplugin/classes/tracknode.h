@@ -20,10 +20,10 @@
 
 #include "node.h"
 
-namespace GLScene {
+namespace GL {
 
-class GLIndexBuffer;
-class GLVertexBuffer;
+class IndexBuffer;
+class VertexBuffer;
 
 } // namespace GLScene
 
@@ -42,8 +42,8 @@ public:
     TrackNode(Database::Object *databaseObject, QObject *parent);
     virtual ~TrackNode();
 
-    GLScene::GLIndexBuffer *indexBuffer() const;
-    GLScene::GLVertexBuffer *vertexBuffer() const;
+    GL::IndexBuffer *indexBuffer() const;
+    GL::VertexBuffer *vertexBuffer() const;
 
 protected:
     virtual void updateProperty(int index);

@@ -15,31 +15,28 @@
 **
 **************************************************************************/
 
-#include "glviewport.h"
+#include "viewport.h"
 
-#include "glwidget.h"
-#include "glwidget_p.h"
-#include "glwidgetsplit.h"
+#include "widget.h"
+#include "widget_p.h"
+#include "widgetsplit.h"
 
-#include <glsceneplugin/interfaces/iglscene.h>
-#include <utils3d/utils3d_global.h>
+#include <glsceneplugin/interfaces/iscene.h>
 
 #include <gmtl/Generate.h>
 #include <gmtl/Intersection.h>
 #include <gmtl/MatrixOps.h>
 #include <gmtl/VecOps.h>
+#include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLFramebufferObject>
 #include <QtOpenGL/QGLFunctions>
 #include <QtOpenGL/QGLShaderProgram>
 
-#include <GL/glu.h>
-
 using namespace GL;
-using namespace GLEditor;
-using namespace GLEditor::Internal;
+using namespace GL::Internal;
 
-namespace GLEditor {
+namespace GL {
 namespace Internal {
 
 enum {
@@ -52,12 +49,12 @@ enum {
     LastFBO
 };
 
-class GLViewportPrivate : protected QGLFunctions
+class ViewportPrivate : protected QGLFunctions
 {
 public:
-    GLViewport *q;
-    GLWidgetSplit *parentSplit;
-    GLWidget *widget;
+    Viewport *q;
+    WidgetSplit *parentSplit;
+    Widget *widget;
     QGLFramebufferObject *backgroundFBO;
     QGLFramebufferObject *staticFBO;
     QGLFramebufferObject *modelFBO;
@@ -97,7 +94,7 @@ public:
 
     Plane ucs;
 
-    GLViewportPrivate(GLViewport *q, GLWidgetSplit *parentSplit)
+    ViewportPrivate(Viewport *q, WidgetSplit *parentSplit)
         :   q(q)
         ,   parentSplit(parentSplit)
         ,   widget(parentSplit->widget())
@@ -113,17 +110,17 @@ public:
         ,   perspective(false)
         ,   cameraPosition(0.0f, 0.0f, -10.0f)
         ,   cameraTarget(0.0f, 0.0f, 0.0f)
-        ,   cameraUpVector(GL::yAxis)
+        ,   cameraUpVector(Constants::axisY)
         ,   cameraDistanceToTarget(qAbs(cameraPosition[2]))
         ,   cameraHeight(10.0f)
         ,   cameraViewVector(cameraTarget - cameraPosition)
         ,   cameraViewDir(0.0f, 0.0f, 1.0f)
-        ,   cameraSideVector(GL::xAxis)
+        ,   cameraSideVector(Constants::axisY)
         ,   modelTranslation(0.0f, 0.0f, 0.0f)
         ,   modelScaleX(1.0f)
         ,   modelScaleY(1.0f)
         ,   modelScaleZ(1.0f)
-        ,   ucs(GL::xyPlane)
+        ,   ucs(Constants::planeXY)
     {
         Q_ASSERT(widget);
 
@@ -134,7 +131,7 @@ public:
         updateModelXform();
     }
 
-    ~GLViewportPrivate()
+    ~ViewportPrivate()
     {
         textureIds.clear();
 
@@ -220,7 +217,7 @@ public:
 
     void updateFBO(int fboId)
     {
-        GLScene::IGLScene *scene = widget->currentScene();
+        IScene *scene = widget->currentScene();
         Q_ASSERT(scene && "No scene.");
 
         QGLFramebufferObject *fbo = this->fbo(fboId);
@@ -245,34 +242,34 @@ public:
         case BackgroundFBO:
             widget->qglClearColor(backgroundColor);
             glClear(GL_COLOR_BUFFER_BIT);
-            scene->drawBackgroundGL();
+            scene->drawBackground();
             drewToFBO = true;
             break;
         case StaticFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawStaticGL();
+            drewToFBO = scene->drawStatic();
             break;
         case ModelFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawModelGL();
+            drewToFBO = scene->drawModel();
             break;
         case EditingFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawEditingGL();
+            drewToFBO = scene->drawEditing();
             break;
         case AnimationFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
             if (widget->isAnimating())
-                drewToFBO = scene->drawAnimationGL(widget->animationTime());
+                drewToFBO = scene->drawAnimation(widget->animationTime());
             break;
         case OverlayFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawOverlayGL();
+            drewToFBO = scene->drawOverlay();
             break;
         default:
             Q_ASSERT(false && "Invalid fbo type.");
@@ -338,11 +335,11 @@ public:
         real dirX = cameraViewDir[0];
         real dirZ = cameraViewDir[2];
         if (dirZ < -0.5f || 0.5f < dirZ)
-            ucs = GL::xyPlane;
+            ucs = Constants::planeXY;
         else if (dirX < -0.5f || 0.5f < dirX)
-            ucs = GL::yzPlane;
+            ucs = Constants::planeYZ;
         else
-            ucs = GL::xzPlane;
+            ucs = Constants::planeXZ;
     }
 
     void updateModelXform()
@@ -373,10 +370,10 @@ public:
 };
 
 } // namespace Internal
-} // namespace Editor3D
+} // namespace GL
 
-GLViewport::GLViewport(GLWidgetSplit *parentSplit)
-    :   d(new GLViewportPrivate(this, parentSplit))
+Viewport::Viewport(WidgetSplit *parentSplit)
+    :   d(new ViewportPrivate(this, parentSplit))
 {
     Q_CHECK_PTR(d);
 
@@ -384,7 +381,7 @@ GLViewport::GLViewport(GLWidgetSplit *parentSplit)
     d->widget->d->appendViewport(this);
 }
 
-GLViewport::~GLViewport()
+Viewport::~Viewport()
 {
     if (!d->widget->d->isBeingDestroyed)
         d->widget->d->removeViewport(this);
@@ -392,17 +389,17 @@ GLViewport::~GLViewport()
     delete d;  d = 0;
 }
 
-GLWidgetSplit *GLViewport::parentSplit() const
+WidgetSplit *Viewport::parentSplit() const
 {
     return d->parentSplit;
 }
 
-QColor GLViewport::backgroundColor() const
+QColor Viewport::backgroundColor() const
 {
     return d->backgroundColor;
 }
 
-void GLViewport::setBackgroundColor(const QColor &color)
+void Viewport::setBackgroundColor(const QColor &color)
 {
     if (d->backgroundColor == color)
         return;
@@ -413,90 +410,90 @@ void GLViewport::setBackgroundColor(const QColor &color)
     d->updateFBO(BackgroundFBO);
 }
 
-QPoint GLViewport::pos() const
+QPoint Viewport::pos() const
 {
     return d->parentSplit->pos();
 }
 
-QRect GLViewport::rect() const
+QRect Viewport::rect() const
 {
     return d->parentSplit->rect();
 }
 
-QSize GLViewport::size() const
+QSize Viewport::size() const
 {
     return d->parentSplit->size();
 }
 
-int GLViewport::width() const
+int Viewport::width() const
 {
     return d->parentSplit->width();
 }
 
-int GLViewport::height() const
+int Viewport::height() const
 {
     return d->parentSplit->height();
 }
 
-void GLViewport::resize(int width, int height)
+void Viewport::resize(int width, int height)
 {
     d->resizeFBOs(width, height);
 }
 
-void GLViewport::updateAnimation()
+void Viewport::updateAnimation()
 {
     d->updateFBO(AnimationFBO);
 }
 
-void GLViewport::updateView()
+void Viewport::updateView()
 {
     d->updateAllFBOs();
 }
 
-bool GLViewport::isViewAutomaticallyUpdated() const
+bool Viewport::isViewAutomaticallyUpdated() const
 {
     return d->viewAutoUpdate;
 }
 
-void GLViewport::setViewAutomaticUpdate(bool automatic)
+void Viewport::setViewAutomaticUpdate(bool automatic)
 {
     d->viewAutoUpdate = automatic;
 }
 
-void GLViewport::pushViewAutomaticUpdate()
+void Viewport::pushViewAutomaticUpdate()
 {
     d->viewAutoUpdatePushed = true;
 }
 
-void GLViewport::popViewAutomaticUpdate()
+void Viewport::popViewAutomaticUpdate()
 {
     d->viewAutoUpdatePushed = false;
     d->updateAllFBOs();
 }
 
-bool GLViewport::isPerspective() const
+bool Viewport::isPerspective() const
 {
     return d->perspective;
 }
 
-void GLViewport::setPerspective(bool perspective)
+void Viewport::setPerspective(bool perspective)
 {
     d->perspective = perspective;
     d->updateCamera();
 }
 
-real GLViewport::cameraHeight() const
+real Viewport::cameraHeight() const
 {
     return d->cameraHeight;
 }
 
-void GLViewport::setCameraHeight(GL::real height)
+void Viewport::setCameraHeight(GL::real height)
 {
     d->cameraHeight = height;
     d->updateCamera();
 }
 
-void GLViewport::setCameraMatrix(const Point &position, const Point &target, const Vector &upVector)
+void Viewport::setCameraMatrix(const Point &position, const Point &target, const Vector &upVector)
 {
     d->cameraPosition = position;
     d->cameraTarget = target;
@@ -504,154 +501,154 @@ void GLViewport::setCameraMatrix(const Point &position, const Point &target, con
     d->updateCamera();
 }
 
-const Point &GLViewport::cameraPosition() const
+const Point &Viewport::cameraPosition() const
 {
     return d->cameraPosition;
 }
 
-void GLViewport::setCameraPosition(const Point &position)
+void Viewport::setCameraPosition(const Point &position)
 {
     d->cameraPosition = position;
     d->updateCamera();
 }
 
-const Point &GLViewport::cameraTarget() const
+const Point &Viewport::cameraTarget() const
 {
     return d->cameraTarget;
 }
 
-void GLViewport::setCameraTarget(const Point &target)
+void Viewport::setCameraTarget(const Point &target)
 {
     d->cameraTarget = target;
     d->updateCamera();
 }
 
-const Vector &GLViewport::cameraUpVector() const
+const Vector &Viewport::cameraUpVector() const
 {
     return d->cameraUpVector;
 }
 
-void GLViewport::setCameraUpVector(const Vector &upVector)
+void Viewport::setCameraUpVector(const Vector &upVector)
 {
     d->cameraUpVector = upVector;
     d->updateCamera();
 }
 
-real GLViewport::cameraDistanceToTarget() const
+real Viewport::cameraDistanceToTarget() const
 {
     return d->cameraDistanceToTarget;
 }
 
-const Vector &GLViewport::cameraViewVector() const
+const Vector &Viewport::cameraViewVector() const
 {
     return d->cameraViewVector;
 }
 
-const Vector &GLViewport::cameraViewDirection() const
+const Vector &Viewport::cameraViewDirection() const
 {
     return d->cameraViewDir;
 }
 
-const Vector &GLViewport::cameraSideVector() const
+const Vector &Viewport::cameraSideVector() const
 {
     return d->cameraSideVector;
 }
 
-void GLViewport::setModelMatrix(const GL::Vector &translation, GL::real scaleX, GL::real scaleY, GL::real scaleZ)
+void Viewport::setModelMatrix(const Vector &translation, real scaleX, real scaleY, real scaleZ)
 {
     d->updateModelXform();
 }
 
-void GLViewport::setModelScale(GL::real scaleX, GL::real scaleY, GL::real scaleZ)
+void Viewport::setModelScale(real scaleX, real scaleY, real scaleZ)
 {
     d->updateModelXform();
 }
 
-const Vector &GLViewport::modelTranslation() const
+const Vector &Viewport::modelTranslation() const
 {
     return d->modelTranslation;
 }
 
-void GLViewport::setModelTranslation(const GL::Vector &translation)
+void Viewport::setModelTranslation(const Vector &translation)
 {
     d->modelTranslation = translation;
     d->updateModelXform();
 }
 
-real GLViewport::modelScaleX() const
+real Viewport::modelScaleX() const
 {
     return d->modelScaleX;
 }
 
-void GLViewport::setModelScaleX(GL::real scale)
+void Viewport::setModelScaleX(real scale)
 {
     d->modelScaleX = scale;
     d->updateModelXform();
 }
 
-real GLViewport::modelScaleY() const
+real Viewport::modelScaleY() const
 {
     return d->modelScaleY;
 }
 
-void GLViewport::setModelScaleY(GL::real scale)
+void Viewport::setModelScaleY(real scale)
 {
     d->modelScaleY = scale;
     d->updateModelXform();
 }
 
-real GLViewport::modelScaleZ() const
+real Viewport::modelScaleZ() const
 {
     return d->modelScaleZ;
 }
 
-void GLViewport::setModelScaleZ(GL::real scale)
+void Viewport::setModelScaleZ(real scale)
 {
     d->modelScaleZ = scale;
     d->updateModelXform();
 }
 
-const Matrix &GLViewport::projXform() const
+const Matrix &Viewport::projXform() const
 {
     return d->projXform;
 }
 
-const Matrix &GLViewport::modelXform() const
+const Matrix &Viewport::modelXform() const
 {
     return d->modelXform;
 }
 
-const Matrix &GLViewport::viewXform() const
+const Matrix &Viewport::viewXform() const
 {
     return d->viewXform;
 }
 
-const Matrix &GLViewport::projViewXform() const
+const Matrix &Viewport::projViewXform() const
 {
     return d->projViewXform;
 }
 
-const Matrix &GLViewport::inverseXform() const
+const Matrix &Viewport::inverseXform() const
 {
     return d->inverseXform;
 }
 
-const Matrix &GLViewport::inverseCameraXform() const
+const Matrix &Viewport::inverseCameraXform() const
 {
     return d->inverseCameraXform;
 }
 
-const Plane &GLViewport::currentUcs() const
+const Plane &Viewport::currentUcs() const
 {
     return d->ucs;
 }
 
-Point GLViewport::findPointOnUcs(const QPoint &screenPos) const
+Point Viewport::findPointOnUcs(const QPoint &screenPos) const
 {
     return findPointOnPlane(screenPos, currentUcs());
 }
 
-Point GLViewport::findPointOnPlane(const QPoint &screenPos, const GL::Plane &plane) const
+Point Viewport::findPointOnPlane(const QPoint &screenPos, const Plane &plane) const
 {
     const QSize size = this->size();
     const real w = size.width();
@@ -701,21 +698,21 @@ Point GLViewport::findPointOnPlane(const QPoint &screenPos, const GL::Plane &pla
     return pt;
 }
 
-void GLViewport::paintGL()
+void Viewport::paintGL()
 {
-    const GLWidget *widget = d->widget;
+    const Widget *widget = d->widget;
     const QRect rect = this->rect();
 
-    const GLfloat left = rect.left();
-    const GLfloat bottom = widget->height() - rect.bottom() - 1;
-    const GLfloat width = rect.width();
-    const GLfloat height = rect.height();
+    const real left = rect.left();
+    const real bottom = widget->height() - rect.bottom() - 1;
+    const real width = rect.width();
+    const real height = rect.height();
     Q_ASSERT(0 < width);
     Q_ASSERT(0 < height);
 
     glViewport(left, bottom, width, height);
 
-    const GLWidgetPrivate *widget_d = widget->d;
+    const WidgetPrivate *widget_d = widget->d;
     widget_d->shaderProgram->setUniformValue(widget_d->screenOriginId, left, bottom);
     widget_d->shaderProgram->setUniformValue(widget_d->screenSizeId, width, height);
 

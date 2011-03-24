@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GLEditor::Internal::BehaviorSettingsPage</class>
- <widget class="QWidget" name="GLEditor::Internal::BehaviorSettingsPage">
+ <class>GL::Internal::BehaviorSettingsPage</class>
+ <widget class="QWidget" name="GL::Internal::BehaviorSettingsPage">
   <property name="geometry">
    <rect>
     <x>0</x>

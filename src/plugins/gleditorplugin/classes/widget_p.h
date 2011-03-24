@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef GLWIDGET_P_H
-#define GLWIDGET_P_H
+#ifndef GL_WIDGET_P_H
+#define GL_WIDGET_P_H
 
 #include <utils3d/utils3d_global.h>
 
@@ -32,31 +32,26 @@ class QGLShaderProgram;
 
 QT_END_NAMESPACE
 
-namespace GLScene {
-
-class IGLScene;
-
-} // namespace GLScene
-
-namespace GLEditor {
+namespace GL {
 
 class BehaviorSettings;
 class DisplaySettings;
 
-class GLEditorSettings;
-class GLViewport;
-class GLWidget;
-class GLWidgetSplit;
+class IScene;
+
+class Viewport;
+class Widget;
+class WidgetSplit;
 
 namespace Internal {
 
-class GLWidgetPrivate
+class WidgetPrivate
 {
 public:
-    GLWidget *q;
-    GLScene::IGLScene *scene;
-    GLWidgetSplit *mainSplit;
-    GLWidgetSplit *currentSplit;
+    Widget *q;
+    IScene *scene;
+    WidgetSplit *mainSplit;
+    WidgetSplit *currentSplit;
 
     quint32 displayListId;
     QGLShader *vertexShader;
@@ -65,9 +60,9 @@ public:
     int screenOriginId;
     int screenSizeId;
 
-    GLWidgetSplit *draggingSplit;
+    WidgetSplit *draggingSplit;
     QPoint dragStartScreenPosition;
-    GLViewport *draggingViewport;
+    Viewport *draggingViewport;
     QPoint prevDragPos;
     bool isPanning;
     bool isRotating;
@@ -78,20 +73,20 @@ public:
 
     bool isBeingDestroyed;
 
-    QList<GLViewport*> viewports;
+    QList<Viewport*> viewports;
 
     BehaviorSettings *behaviorSettings;
     DisplaySettings *displaySettings;
 
-    GLWidgetPrivate(GLWidget *q);
-    ~GLWidgetPrivate();
+    WidgetPrivate(Widget *q);
+    ~WidgetPrivate();
 
     void initialize();
 
-    void appendViewport(GLViewport *viewport);
-    void removeViewport(GLViewport* viewport);
+    void appendViewport(Viewport *viewport);
+    void removeViewport(Viewport* viewport);
 
-    GLViewport *viewportAtPosition(const QPoint &position) const;
+    Viewport *viewportAtPosition(const QPoint &position) const;
 
 private:
     void initializeScene();
@@ -101,6 +96,6 @@ private:
 };
 
 } // namespace Internal
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLWIDGET_P_H
+#endif // GL_WIDGET_P_H

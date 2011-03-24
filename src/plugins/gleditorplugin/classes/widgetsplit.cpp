@@ -15,17 +15,17 @@
 **
 **************************************************************************/
 
-#include "glwidgetsplit.h"
+#include "widgetsplit.h"
 
-#include "glviewport.h"
-#include "glwidget.h"
+#include "viewport.h"
+#include "widget.h"
 
 #include <QtCore/QSize>
 
-using namespace GLEditor;
-using namespace GLEditor::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
-namespace GLEditor {
+namespace GL {
 namespace Internal {
 
 enum SplitOrientation
@@ -35,21 +35,21 @@ enum SplitOrientation
     VerticalSplit
 };
 
-class GLWidgetSplitPrivate
+class WidgetSplitPrivate
 {
 public:
-    GLWidgetSplit *q;
-    GLWidget *widget;
-    GLWidgetSplit *parentSplit;
+    WidgetSplit *q;
+    Widget *widget;
+    WidgetSplit *parentSplit;
     SplitOrientation splitOrientation;
     qreal splitLocation;
     QPoint pos;
     QSize size;
-    GLViewport *viewport;
-    GLWidgetSplit *splitOne;
-    GLWidgetSplit *splitTwo;
+    Viewport *viewport;
+    WidgetSplit *splitOne;
+    WidgetSplit *splitTwo;
 
-    GLWidgetSplitPrivate(GLWidgetSplit *q, GLWidget *widget)
+    WidgetSplitPrivate(WidgetSplit *q, Widget *widget)
         :   q(q)
         ,   widget(widget)
         ,   parentSplit(0)
@@ -60,7 +60,7 @@ public:
         size = widget->size();
     }
 
-    GLWidgetSplitPrivate(GLWidgetSplit *q, GLWidgetSplit *parentSplit)
+    WidgetSplitPrivate(WidgetSplit *q, WidgetSplit *parentSplit)
         :   q(q)
         ,   widget(parentSplit->widget())
         ,   parentSplit(parentSplit)
@@ -80,7 +80,7 @@ public:
         splitTwo = 0;
     }
 
-    ~GLWidgetSplitPrivate()
+    ~WidgetSplitPrivate()
     {
         destroySplits();
         destroyViewport();
@@ -101,7 +101,7 @@ public:
         if (viewport)
             return;
         destroySplits();
-        viewport = new GLViewport(q);
+        viewport = new Viewport(q);
         Q_CHECK_PTR(viewport);
     }
 
@@ -117,9 +117,9 @@ public:
         destroyViewport();
         splitOrientation = orientation;
         splitLocation = 0.5;
-        splitOne = new GLWidgetSplit(q);
+        splitOne = new WidgetSplit(q);
         Q_CHECK_PTR(splitOne);
-        splitTwo = new GLWidgetSplit(q);
+        splitTwo = new WidgetSplit(q);
         Q_CHECK_PTR(splitTwo);
     }
 
@@ -133,99 +133,99 @@ public:
 } // namespace Internal
 } // namespace Editor3D
 
-GLWidgetSplit::GLWidgetSplit(GLWidget *widget)
-    :   d(new GLWidgetSplitPrivate(this, widget))
+WidgetSplit::WidgetSplit(Widget *widget)
+    :   d(new WidgetSplitPrivate(this, widget))
 {
     Q_CHECK_PTR(d);
     d->init();
 }
 
-GLWidgetSplit::GLWidgetSplit(GLWidgetSplit *parentSplit)
-    :   d(new GLWidgetSplitPrivate(this, parentSplit))
+WidgetSplit::WidgetSplit(WidgetSplit *parentSplit)
+    :   d(new WidgetSplitPrivate(this, parentSplit))
 {
     Q_CHECK_PTR(d);
     d->init();
 }
 
-GLWidgetSplit::~GLWidgetSplit()
+WidgetSplit::~WidgetSplit()
 {
     delete d;  d = 0;
 }
 
-GLWidget *GLWidgetSplit::widget() const
+Widget *WidgetSplit::widget() const
 {
     return d->widget;
 }
 
-GLWidgetSplit *GLWidgetSplit::parentSplit() const
+WidgetSplit *WidgetSplit::parentSplit() const
 {
     return d->parentSplit;
 }
 
-QPoint GLWidgetSplit::pos() const
+QPoint WidgetSplit::pos() const
 {
     return d->pos;
 }
 
-QRect GLWidgetSplit::rect() const
+QRect WidgetSplit::rect() const
 {
     return QRect(pos(), size());
 }
 
-QSize GLWidgetSplit::size() const
+QSize WidgetSplit::size() const
 {
     return d->size;
 }
 
-int GLWidgetSplit::width() const
+int WidgetSplit::width() const
 {
     return size().width();
 }
 
-int GLWidgetSplit::height() const
+int WidgetSplit::height() const
 {
     return size().height();
 }
 
-bool GLWidgetSplit::isSplit() const
+bool WidgetSplit::isSplit() const
 {
     return d->viewport == 0;
 }
 
-bool GLWidgetSplit::isSplitHorizontal() const
+bool WidgetSplit::isSplitHorizontal() const
 {
     return d->splitOrientation == HorizontalSplit;
 }
 
-bool GLWidgetSplit::isSplitVertical() const
+bool WidgetSplit::isSplitVertical() const
 {
     return d->splitOrientation == VerticalSplit;
 }
 
-void GLWidgetSplit::splitHorizontal()
+void WidgetSplit::splitHorizontal()
 {
     d->createSplits(HorizontalSplit);
     resize(width(), height());
 }
 
-void GLWidgetSplit::splitVertical()
+void WidgetSplit::splitVertical()
 {
     d->createSplits(VerticalSplit);
     resize(width(), height());
 }
 
-void GLWidgetSplit::removeSplit()
+void WidgetSplit::removeSplit()
 {
     d->createViewport();
     resize(width(), height());
 }
 
-qreal GLWidgetSplit::splitLocation() const
+qreal WidgetSplit::splitLocation() const
 {
     return d->splitLocation;
 }
 
-void GLWidgetSplit::setSplitLocation(qreal location)
+void WidgetSplit::setSplitLocation(qreal location)
 {
     if (d->splitLocation == location)
         return;
@@ -250,28 +250,28 @@ void GLWidgetSplit::setSplitLocation(qreal location)
     d->splitLocation = location;
 }
 
-GLViewport *GLWidgetSplit::viewport() const
+Viewport *WidgetSplit::viewport() const
 {
     if (isSplit())
         return 0;
     return d->viewport;
 }
 
-GLWidgetSplit *GLWidgetSplit::splitOne() const
+WidgetSplit *WidgetSplit::splitOne() const
 {
     if (!isSplit())
         return 0;
     return d->splitOne;
 }
 
-GLWidgetSplit *GLWidgetSplit::splitTwo() const
+WidgetSplit *WidgetSplit::splitTwo() const
 {
     if (!isSplit())
         return 0;
     return d->splitTwo;
 }
 
-void GLWidgetSplit::resize(int w, int h)
+void WidgetSplit::resize(int w, int h)
 {
     if (w < 1)
         w = 1;

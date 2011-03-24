@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef GLWIDGETSPLIT_H
-#define GLWIDGETSPLIT_H
+#ifndef GL_WIDGETSPLIT_H
+#define GL_WIDGETSPLIT_H
 
 #include <gleditorplugin/gleditor_global.h>
 
@@ -25,17 +25,17 @@
 #include <QtCore/QRect>
 #include <QtCore/QSize>
 
-namespace GLEditor {
+namespace GL {
 namespace Internal {
 
-class GLWidgetSplitPrivate;
+class WidgetSplitPrivate;
 
 } // namespace Internal
 
-class GLViewport;
-class GLWidget;
+class Viewport;
+class Widget;
 
-class GLEDITOR_EXPORT GLWidgetSplit : public QObject
+class GLEDITOR_EXPORT WidgetSplit : public QObject
 {
     Q_OBJECT
 
@@ -46,12 +46,12 @@ public:
         SecondSplit
     };
 
-    GLWidgetSplit(GLWidget *widget);
-    GLWidgetSplit(GLWidgetSplit *parentSplit);
-    virtual ~GLWidgetSplit();
+    WidgetSplit(Widget *widget);
+    WidgetSplit(WidgetSplit *parentSplit);
+    virtual ~WidgetSplit();
 
-    GLWidget *widget() const;
-    GLWidgetSplit *parentSplit() const;
+    Widget *widget() const;
+    WidgetSplit *parentSplit() const;
 
     QPoint pos() const;
     QRect rect() const;
@@ -69,20 +69,20 @@ public:
     qreal splitLocation() const;
     void setSplitLocation(qreal location);
 
-    GLViewport *viewport() const;    // null if split
-    GLWidgetSplit *splitOne() const; // null if not split
-    GLWidgetSplit *splitTwo() const; // null if not split
+    Viewport *viewport() const;    // null if split
+    WidgetSplit *splitOne() const; // null if not split
+    WidgetSplit *splitTwo() const; // null if not split
 
 protected:
     virtual void resize(int w, int h);
 
 private:
-    Internal::GLWidgetSplitPrivate *d;
-    Q_DISABLE_COPY(GLWidgetSplit)
+    Internal::WidgetSplitPrivate *d;
+    Q_DISABLE_COPY(WidgetSplit)
 
-    friend class GLWidget;
+    friend class Widget;
 };
 
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLWIDGETSPLIT_H
+#endif // GL_WIDGETSPLIT_H

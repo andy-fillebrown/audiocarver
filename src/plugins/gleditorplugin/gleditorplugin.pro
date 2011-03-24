@@ -9,17 +9,17 @@ include(gleditorplugin_dependencies.pri)
 DEFINES += GLEDITOR_LIBRARY
 
 HEADERS += \
-    classes/glviewport.h \
-    classes/glwidget.h \
-    classes/glwidget_p.h \
-    classes/glwidgetsplit.h \
+    classes/viewport.h \
+    classes/widget.h \
+    classes/widget_p.h \
+    classes/widgetsplit.h \
     \
     dialogs/behaviorsettingspage.h \
     dialogs/displaysettingspage.h \
     \
-    implementations/gleditor_mainwindowimpl.h \
+    implementations/mainwindowimpl.h \
     \
-    interfaces/igleditor.h \
+    interfaces/ieditor.h \
     \
     settings/behaviorsettings.h \
     settings/displaysettings.h \
@@ -29,17 +29,17 @@ HEADERS += \
     gleditorplugin.h
 
 SOURCES += \
-    classes/glviewport.cpp \
-    classes/glwidget.cpp \
-    classes/glwidget_p.cpp \
-    classes/glwidgetsplit.cpp \
+    classes/viewport.cpp \
+    classes/widget.cpp \
+    classes/widget_p.cpp \
+    classes/widgetsplit.cpp \
     \
     dialogs/behaviorsettingspage.cpp \
     dialogs/displaysettingspage.cpp \
     \
-    implementations/gleditor_mainwindowimpl.cpp \
+    implementations/mainwindowimpl.cpp \
     \
-    interfaces/igleditor.cpp \
+    interfaces/ieditor.cpp \
     \
     settings/behaviorsettings.cpp \
     settings/displaysettings.cpp \

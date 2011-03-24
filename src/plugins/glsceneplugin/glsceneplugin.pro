@@ -9,21 +9,21 @@ include(glsceneplugin_dependencies.pri)
 DEFINES += GLSCENE_LIBRARY
 
 HEADERS += \
-    classes/glbuffer.h \
-    classes/glnode.h \
-    classes/glroot.h \
+    classes/buffer.h \
+    classes/node.h \
+    classes/root.h \
     \
-    interfaces/iglscene.h \
+    interfaces/iscene.h \
     \
     glscene_global.h \
     glsceneplugin.h
 
 SOURCES += \
-    classes/glbuffer.cpp \
-    classes/glnode.cpp \
-    classes/glroot.cpp \
+    classes/buffer.cpp \
+    classes/node.cpp \
+    classes/root.cpp \
     \
-    interfaces/iglscene.cpp \
+    interfaces/iscene.cpp \
     \
     glsceneplugin.cpp
 

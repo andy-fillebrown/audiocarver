@@ -18,28 +18,28 @@
 #ifndef AC_SCENE_H
 #define AC_SCENE_H
 
-#include <glsceneplugin/interfaces/iglscene.h>
+#include <glsceneplugin/interfaces/iscene.h>
 
 namespace AudioCarver {
 namespace Internal {
 
 class SceneImplPrivate;
 
-class SceneImpl : public GLScene::IGLScene
+class SceneImpl : public GL::IScene
 {
 public:
     SceneImpl();
     virtual ~SceneImpl();
 
-    virtual void initializeGL();
-    virtual void destroyGL();
+    virtual void initialize();
+    virtual void destroy();
 
-    virtual bool drawBackgroundGL();
-    virtual bool drawStaticGL();
-    virtual bool drawModelGL();
-    virtual bool drawEditingGL();
-    virtual bool drawAnimationGL(qreal time);
-    virtual bool drawOverlayGL();
+    virtual bool drawBackground();
+    virtual bool drawStatic();
+    virtual bool drawModel();
+    virtual bool drawEditing();
+    virtual bool drawAnimation(qreal time);
+    virtual bool drawOverlay();
 
 private:
     SceneImplPrivate *d;

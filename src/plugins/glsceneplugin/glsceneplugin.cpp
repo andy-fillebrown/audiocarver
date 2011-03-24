@@ -19,8 +19,8 @@
 
 #include <QtCore/QtPlugin>
 
-using namespace GLScene;
-using namespace GLScene::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
 GLScenePlugin::GLScenePlugin()
 {

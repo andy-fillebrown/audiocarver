@@ -18,7 +18,7 @@
 #ifndef AC_SCORENODE_H
 #define AC_SCORENODE_H
 
-#include <glsceneplugin/classes/glroot.h>
+#include <glsceneplugin/classes/root.h>
 
 namespace AudioCarver {
 
@@ -28,7 +28,7 @@ namespace Internal {
 class ScoreNodePrivate;
 } // Internal
 
-class ScoreNode : public GLScene::GLRoot
+class ScoreNode : public GL::Root
 {
     Q_OBJECT
 

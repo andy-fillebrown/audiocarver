@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_mainwindowimpl.h"
+#include "mainwindowimpl.h"
 
 #include "ac_editorconstants.h"
 
@@ -55,7 +55,7 @@ MainWindowImpl::~MainWindowImpl()
 
 void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 {
-    const int viewMenuIndex = groups.indexOf(GLEditor::Constants::G_VIEW);
+    const int viewMenuIndex = groups.indexOf(GL::Constants::G_VIEW);
     groups.insert(viewMenuIndex + 1, Constants::G_CREATE);
     groups.insert(viewMenuIndex + 2, Constants::G_MODIFY);
     groups.insert(viewMenuIndex + 3, Constants::G_BUILD);
@@ -63,10 +63,10 @@ void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 
 void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
-    if (menuBarGroup == GLEditor::Constants::G_VIEW) {
-        const int viewAllIndex = groups.indexOf(GLEditor::Constants::G_VIEW_ALL);
+    if (menuBarGroup == GL::Constants::G_VIEW) {
+        const int viewAllIndex = groups.indexOf(GL::Constants::G_VIEW_ALL);
         groups.insert(viewAllIndex + 1, Constants::G_VIEW_PRESET);
-        const int viewProjectionIndex = groups.indexOf(GLEditor::Constants::G_VIEW_PROJECTION);
+        const int viewProjectionIndex = groups.indexOf(GL::Constants::G_VIEW_PROJECTION);
         groups.insert(viewProjectionIndex + 1, Constants::G_VIEW_SCALE);
     }
     else if (menuBarGroup == Constants::G_CREATE) {
@@ -88,7 +88,7 @@ void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QS
 void MainWindowImpl::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
-    Core::ActionContainer *viewMenu = am->actionContainer(GLEditor::Constants::M_VIEW);
+    Core::ActionContainer *viewMenu = am->actionContainer(GL::Constants::M_VIEW);
     Core::ActionContainer *createMenu = am->actionContainer(Constants::M_CREATE);
     Core::ActionContainer *modifyMenu = am->actionContainer(Constants::M_MODIFY);
     Core::ActionContainer *buildMenu = am->actionContainer(Constants::M_BUILD);

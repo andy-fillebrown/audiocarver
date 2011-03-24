@@ -18,13 +18,14 @@
 #ifndef AC_GLEDITORIMPL_H
 #define AC_GLEDITORIMPL_H
 
-#include <gleditorplugin/interfaces/igleditor.h>
+#include <gleditorplugin/interfaces/ieditor.h>
 
 namespace AudioCarver {
 namespace Internal {
-class GLEditorImplPrivate;
 
-class GLEditorImpl : public GLEditor::IGLEditor
+class EditorImplPrivate;
+
+class GLEditorImpl : public GL::IEditor
 {
     Q_OBJECT
 

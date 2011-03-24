@@ -15,19 +15,19 @@
 **
 **************************************************************************/
 
-#include "glwidget.h"
+#include "widget.h"
 
-#include "glwidget_p.h"
-#include "glwidgetsplit.h"
-#include "glviewport.h"
+#include "widget_p.h"
+#include "widgetsplit.h"
+#include "viewport.h"
 
-#include <glsceneplugin/interfaces/iglscene.h>
+#include <glsceneplugin/interfaces/iscene.h>
 #include <gleditorplugin/dialogs/behaviorsettingspage.h>
 #include <gleditorplugin/dialogs/displaysettingspage.h>
-#include <extensionsystem/pluginmanager.h>
-#include <utils3d/utils3d_global.h>
 
+#include <extensionsystem/pluginmanager.h>
 #include <gmtl/VecOps.h>
+#include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>
@@ -37,12 +37,11 @@
 #include <QtCore/QTimer>
 
 using namespace GL;
-using namespace GLEditor;
-using namespace GLEditor::Internal;
+using namespace GL::Internal;
 
-GLWidget::GLWidget(QWidget *parent)
+Widget::Widget(QWidget *parent)
     :   QGLWidget(parent)
-    ,   d(new Internal::GLWidgetPrivate(this))
+    ,   d(new WidgetPrivate(this))
 {
     Q_CHECK_PTR(d);
     d->initialize();
@@ -63,28 +62,28 @@ GLWidget::GLWidget(QWidget *parent)
     setAnimating(true);
 }
 
-GLWidget::~GLWidget()
+Widget::~Widget()
 {
     delete d;  d = 0;
 }
 
-GLScene::IGLScene *GLWidget::currentScene() const
+IScene *Widget::currentScene() const
 {
     return d->scene;
 }
 
-void GLWidget::setCurrentScene(GLScene::IGLScene *scene)
+void Widget::setCurrentScene(IScene *scene)
 {
     Q_UNUSED(scene);
     Q_ASSERT(false && "Not implemented yet.");
 }
 
-GLWidgetSplit *GLWidget::currentSplit() const
+WidgetSplit *Widget::currentSplit() const
 {
     return d->currentSplit;
 }
 
-void GLWidget::setCurrentSplit(GLWidgetSplit *split)
+void Widget::setCurrentSplit(WidgetSplit *split)
 {
     if (d->currentSplit == split)
         return;
@@ -93,7 +92,7 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
     Q_ASSERT(context() == QGLContext::currentContext());
 
     // Set old viewport background color to inactive color (light grey).
-    GLViewport *vp = d->currentSplit ? d->currentSplit->viewport() : 0;
+    Viewport *vp = d->currentSplit ? d->currentSplit->viewport() : 0;
     if (vp)
         vp->setBackgroundColor(QColor(251, 251, 251));
 
@@ -107,17 +106,17 @@ void GLWidget::setCurrentSplit(GLWidgetSplit *split)
     updateGL();
 }
 
-GLViewport *GLWidget::currentViewport() const
+Viewport *Widget::currentViewport() const
 {
     return currentSplit()->viewport();
 }
 
-void GLWidget::setCurrentViewport(GLViewport *viewport)
+void Widget::setCurrentViewport(Viewport *viewport)
 {
     setCurrentSplit(viewport->parentSplit());
 }
 
-void GLWidget::setAnimating(bool animating)
+void Widget::setAnimating(bool animating)
 {
     d->animating = animating;
     if (animating) {
@@ -126,44 +125,44 @@ void GLWidget::setAnimating(bool animating)
     }
 }
 
-bool GLWidget::isAnimating() const
+bool Widget::isAnimating() const
 {
     return d->animating;
 }
 
-qreal GLWidget::animationTime() const
+qreal Widget::animationTime() const
 {
     if (d->elapsedTime.isValid())
         return qreal(d->elapsedTime.elapsed()) / qreal(1000.0);
     return qreal(0.0);
 }
 
-void GLWidget::splitHorizontal()
+void Widget::splitHorizontal()
 {
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
-    GLWidgetSplit *split = currentSplit();
+    WidgetSplit *split = currentSplit();
     split->splitHorizontal();
     setCurrentSplit(split->splitOne());
 }
 
-void GLWidget::splitVertical()
+void Widget::splitVertical()
 {
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
-    GLWidgetSplit *split = currentSplit();
+    WidgetSplit *split = currentSplit();
     split->splitVertical();
     setCurrentSplit(split->splitOne());
 }
 
-void GLWidget::removeCurrentSplit()
+void Widget::removeCurrentSplit()
 {
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
 
-    GLWidgetSplit *split = currentSplit()->parentSplit();
+    WidgetSplit *split = currentSplit()->parentSplit();
     if (!split)
         return;
     split->removeSplit();
@@ -171,7 +170,7 @@ void GLWidget::removeCurrentSplit()
     setCurrentSplit(split);
 }
 
-void GLWidget::removeAllSplits()
+void Widget::removeAllSplits()
 {
     Q_ASSERT(isValid());
     Q_ASSERT(context() == QGLContext::currentContext());
@@ -181,20 +180,21 @@ void GLWidget::removeAllSplits()
     setCurrentSplit(d->mainSplit);
 }
 
-void GLWidget::updateBehaviorSettings(const BehaviorSettings &previousSettings)
+void Widget::updateBehaviorSettings(const BehaviorSettings &previousSettings)
 {
+    Q_UNUSED(previousSettings);
 }
 
-void GLWidget::updateDisplaySettings(const DisplaySettings &previousSettings)
+void Widget::updateDisplaySettings(const DisplaySettings &previousSettings)
 {
-    qDebug() << Q_FUNC_INFO << "not implemented yet.";
+    Q_UNUSED(previousSettings);
 }
 
-void GLWidget::animateGL()
+void Widget::animateGL()
 {
     QCoreApplication::processEvents();
 
-    foreach (GLViewport *viewport, d->viewports)
+    foreach (Viewport *viewport, d->viewports)
         viewport->updateAnimation();
 
     updateGL();
@@ -209,7 +209,7 @@ void GLWidget::animateGL()
     QTimer::singleShot(nextFrameTime, this, SLOT(animateGL()));
 }
 
-void GLWidget::paintGL()
+void Widget::paintGL()
 {
     if (!d->shaderProgram)
         return;
@@ -224,7 +224,7 @@ void GLWidget::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    foreach (GLViewport *viewport, d->viewports)
+    foreach (Viewport *viewport, d->viewports)
         viewport->paintGL();
 
     d->shaderProgram->release();
@@ -234,20 +234,20 @@ void GLWidget::paintGL()
     d->prevFrameTime = d->elapsedTime.elapsed();
 }
 
-void GLWidget::resizeGL(int width, int height)
+void Widget::resizeGL(int width, int height)
 {
     d->mainSplit->resize(width, height);
     updateGL();
 }
 
-void GLWidget::mousePressEvent(QMouseEvent *event)
+void Widget::mousePressEvent(QMouseEvent *event)
 {
     const QPoint pos = event->pos();
 
     // If left mouse button is pressed on a viewport, make it current.
     // If left mouse button is pressed on a viewport border, start dragging it.
     if (event->button() == Qt::LeftButton) {
-        GLWidgetSplit *split = d->mainSplit;
+        WidgetSplit *split = d->mainSplit;
         while (split->isSplit()) {
             if (split->splitOne()->rect().contains(pos))
                 split = split->splitOne();
@@ -290,12 +290,12 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void GLWidget::mouseMoveEvent(QMouseEvent *event)
+void Widget::mouseMoveEvent(QMouseEvent *event)
 {
     const QPoint pos = event->pos();
 
     if (d->draggingSplit) {
-        GLWidgetSplit *split = d->draggingSplit;
+        WidgetSplit *split = d->draggingSplit;
 
        // Convert mouse position from widget coords to split coords.
        QPoint splitPos = pos;
@@ -319,7 +319,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         // Change cursor to sizing arrows when over split border.
         bool isOnBorder = false;
 
-        GLWidgetSplit *split = d->mainSplit;
+        WidgetSplit *split = d->mainSplit;
         while (split->isSplit()) {
             if (split->splitOne()->rect().contains(pos))
                 split = split->splitOne();
@@ -347,7 +347,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
     if (d->isPanning) {
         // Calculate drag vector from previous mouse position.
-        GLViewport *vp = d->draggingViewport;
+        Viewport *vp = d->draggingViewport;
         const Point startPt = vp->findPointOnUcs(d->prevDragPos - vp->pos());
         const Point endPt = vp->findPointOnUcs(pos - vp->pos());
         Vector dragVec = endPt - startPt;
@@ -364,7 +364,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     }
 
     if (d->isRotating) {
-        GLViewport *vp = d->draggingViewport;
+        Viewport *vp = d->draggingViewport;
         const QSize size = vp->size();
         const QPoint deltaPos = pos - d->prevDragPos;
 
@@ -377,7 +377,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         const real dragX = real(deltaPos.x()) / real(size.width());
         if (dragX != 0.0f) {
             // Calculate rotation matrix using previous mouse position.
-            AxisAngle axisAngle(-2.0f * M_PI * dragX, GL::yAxis);
+            AxisAngle axisAngle(-2.0f * M_PI * dragX, Constants::axisY);
             Matrix m;
             gmtl::setRot(m, axisAngle);
 
@@ -427,7 +427,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void GLWidget::mouseReleaseEvent(QMouseEvent *event)
+void Widget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         d->draggingSplit = 0;
@@ -438,10 +438,10 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void GLWidget::wheelEvent(QWheelEvent *event)
+void Widget::wheelEvent(QWheelEvent *event)
 {
     // Do nothing if mouse pointer is not over viewport.
-    GLViewport *vp = d->viewportAtPosition(event->pos());
+    Viewport *vp = d->viewportAtPosition(event->pos());
     if (!vp) {
         event->ignore();
         return;

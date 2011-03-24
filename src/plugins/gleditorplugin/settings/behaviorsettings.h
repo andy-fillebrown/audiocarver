@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef GLEDITOR_BEHAVIORSETTINGS_H
-#define GLEDITOR_BEHAVIORSETTINGS_H
+#ifndef GL_BEHAVIORSETTINGS_H
+#define GL_BEHAVIORSETTINGS_H
 
 #include <gleditorplugin/gleditor_global.h>
 
@@ -26,7 +26,7 @@ class QSettings;
 
 QT_END_NAMESPACE
 
-namespace GLEditor {
+namespace GL {
 
 class GLEDITOR_EXPORT BehaviorSettingsData
 {
@@ -58,6 +58,6 @@ public:
 inline bool operator==(const BehaviorSettings &a, const BehaviorSettings &b) { return a.equals(b); }
 inline bool operator!=(const BehaviorSettings &a, const BehaviorSettings &b) { return !a.equals(b); }
 
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLEDITOR_BEHAVIORSETTINGS_H
+#endif // GL_BEHAVIORSETTINGS_H

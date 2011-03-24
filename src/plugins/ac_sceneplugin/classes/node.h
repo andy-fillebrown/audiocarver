@@ -18,7 +18,7 @@
 #ifndef AC_NODE_H
 #define AC_NODE_H
 
-#include <glsceneplugin/classes/glnode.h>
+#include <glsceneplugin/classes/node.h>
 
 namespace Database {
 class Object;
@@ -30,7 +30,7 @@ namespace Internal {
 class NodePrivate;
 } // namespace Internal
 
-class Node : public GLScene::GLNode
+class Node : public GL::Node
 {
     Q_OBJECT
 

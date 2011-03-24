@@ -15,35 +15,14 @@
 **
 **************************************************************************/
 
-#ifndef IGLSCENE_H
-#define IGLSCENE_H
+#include "iscene.h"
 
-#include <glsceneplugin/glscene_global.h>
+using namespace GL;
 
-#include <QtCore/QObject>
-#include <QtCore/QRectF>
-
-namespace GLScene {
-
-class GLSCENE_EXPORT IGLScene : public QObject
+IScene::IScene()
 {
-    Q_OBJECT
+}
 
-public:
-    IGLScene();
-    virtual ~IGLScene();
-
-    virtual void initializeGL() = 0;
-    virtual void destroyGL() = 0;
-
-    virtual bool drawBackgroundGL() = 0;
-    virtual bool drawStaticGL() = 0;
-    virtual bool drawModelGL() = 0;
-    virtual bool drawEditingGL() = 0;
-    virtual bool drawAnimationGL(qreal time) = 0;
-    virtual bool drawOverlayGL() = 0;
-};
-
-} // namespace GLScene
-
-#endif // IGLSCENE_H
+IScene::~IScene()
+{
+}

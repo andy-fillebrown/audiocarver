@@ -53,6 +53,7 @@
 
 namespace GL {
 
+typedef quint16 index;
 typedef float real;
 
 typedef gmtl::AxisAngle<real> AxisAngle;
@@ -64,13 +65,17 @@ typedef gmtl::LineSeg<real> LineSegment;
 typedef gmtl::Plane<real> Plane;
 typedef gmtl::Ray<real> Ray;
 
-const Vector xAxis(1.0f, 0.0f, 0.0f);
-const Vector yAxis(0.0f, 1.0f, 0.0f);
-const Vector zAxis(0.0f, 0.0f, 1.0f);
+namespace Constants {
 
-const Plane xyPlane(zAxis, 0.0f);
-const Plane xzPlane(yAxis, 0.0f);
-const Plane yzPlane(xAxis, 0.0f);
+const Vector axisX(1.0f, 0.0f, 0.0f);
+const Vector axisY(0.0f, 1.0f, 0.0f);
+const Vector axisZ(0.0f, 0.0f, 1.0f);
+
+const Plane planeXY(axisZ, 0.0f);
+const Plane planeXZ(axisY, 0.0f);
+const Plane planeYZ(axisX, 0.0f);
+
+} // namespace Constants
 
 inline void ortho(Matrix &m, real left, real right, real bottom, real top, real nearPlane, real farPlane)
 {

@@ -15,23 +15,24 @@
 **
 **************************************************************************/
 
-#include "glwidget_p.h"
+#include "widget_p.h"
 
-#include "glwidget.h"
-#include "glwidgetsplit.h"
-#include "glviewport.h"
+#include "widget.h"
+#include "widgetsplit.h"
+#include "viewport.h"
 
-#include <glsceneplugin/interfaces/iglscene.h>
+#include <glsceneplugin/interfaces/iscene.h>
+
 #include <extensionsystem/pluginmanager.h>
 #include <utils3d/utils3d_global.h>
 
 #include <QtOpenGL/QGLShader>
 #include <QtOpenGL/QGLShaderProgram>
 
-namespace GLEditor {
+namespace GL {
 namespace Internal {
 
-GLWidgetPrivate::GLWidgetPrivate(GLWidget *q)
+WidgetPrivate::WidgetPrivate(Widget *q)
     :   q(q)
     ,   scene(0)
     ,   mainSplit(0)
@@ -54,7 +55,7 @@ GLWidgetPrivate::GLWidgetPrivate(GLWidget *q)
 {
 }
 
-GLWidgetPrivate::~GLWidgetPrivate()
+WidgetPrivate::~WidgetPrivate()
 {
     displaySettings = 0;
     behaviorSettings = 0;
@@ -77,11 +78,11 @@ GLWidgetPrivate::~GLWidgetPrivate()
     glDeleteLists(displayListId, 1);  displayListId = 0;
     currentSplit = 0;
     delete mainSplit;  mainSplit = 0;
-    scene->destroyGL();  scene = 0;
+    scene->destroy();  scene = 0;
     q = 0;
 }
 
-void GLWidgetPrivate::initialize()
+void WidgetPrivate::initialize()
 {
     initializeScene();
     initializeSplits();
@@ -89,7 +90,7 @@ void GLWidgetPrivate::initialize()
     initializeDisplayLists();
 }
 
-void GLWidgetPrivate::appendViewport(GLViewport *viewport)
+void WidgetPrivate::appendViewport(Viewport *viewport)
 {
     Q_ASSERT(!viewports.contains(viewport));
     if (viewports.contains(viewport))
@@ -97,47 +98,47 @@ void GLWidgetPrivate::appendViewport(GLViewport *viewport)
     viewports.append(viewport);
 }
 
-void GLWidgetPrivate::removeViewport(GLViewport *viewport)
+void WidgetPrivate::removeViewport(Viewport *viewport)
 {
     Q_ASSERT(viewports.contains(viewport));
     viewports.removeOne(viewport);
     Q_ASSERT(!viewports.contains(viewport));
 }
 
-GLViewport *GLWidgetPrivate::viewportAtPosition(const QPoint &position) const
+Viewport *WidgetPrivate::viewportAtPosition(const QPoint &position) const
 {
-    foreach (GLViewport *viewport, viewports)
+    foreach (Viewport *viewport, viewports)
         if (viewport->rect().contains(position))
             return viewport;
     return 0;
 }
 
-void GLWidgetPrivate::initializeScene()
+void WidgetPrivate::initializeScene()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    scene = pm->getObject<GLScene::IGLScene>();
+    scene = pm->getObject<IScene>();
     Q_ASSERT(scene);
 
     q->makeCurrent();
     Q_ASSERT(q->isValid());
     Q_ASSERT(q->context() == QGLContext::currentContext());
 
-    scene->initializeGL();
+    scene->initialize();
 }
 
-void GLWidgetPrivate::initializeSplits()
+void WidgetPrivate::initializeSplits()
 {
     q->makeCurrent();
     Q_ASSERT(q->isValid());
     Q_ASSERT(q->context() == QGLContext::currentContext());
 
-    mainSplit = new GLWidgetSplit(q);
+    mainSplit = new WidgetSplit(q);
     Q_CHECK_PTR(mainSplit);
 
     q->setCurrentSplit(mainSplit);
 }
 
-void GLWidgetPrivate::initializeShaders()
+void WidgetPrivate::initializeShaders()
 {
     q->makeCurrent();
     Q_ASSERT(q->isValid());
@@ -145,13 +146,13 @@ void GLWidgetPrivate::initializeShaders()
 
     vertexShader = new QGLShader(QGLShader::Vertex, q);
     Q_CHECK_PTR(vertexShader);
-    Q_CHECK(vertexShader->compileSourceFile(":/gleditor/shaders/glwidget_vertex.glsl"));
+    Q_CHECK(vertexShader->compileSourceFile(":/gleditor/shaders/widget_vertex.glsl"));
     if (!vertexShader->isCompiled())
         qDebug() << vertexShader->log();
 
     fragmentShader = new QGLShader(QGLShader::Fragment, q);
     Q_CHECK_PTR(fragmentShader);
-    Q_CHECK(fragmentShader->compileSourceFile(":/gleditor/shaders/glwidget_fragment.glsl"));
+    Q_CHECK(fragmentShader->compileSourceFile(":/gleditor/shaders/widget_fragment.glsl"));
     if (!fragmentShader->isCompiled())
         qDebug() << fragmentShader->log();
 
@@ -169,7 +170,7 @@ void GLWidgetPrivate::initializeShaders()
     Q_CHECK_GLERROR;
 }
 
-void GLWidgetPrivate::initializeDisplayLists()
+void WidgetPrivate::initializeDisplayLists()
 {
     q->makeCurrent();
     Q_ASSERT(q->isValid());
@@ -188,4 +189,4 @@ void GLWidgetPrivate::initializeDisplayLists()
 }
 
 } // namespace Internal
-} // GLEditor
+} // namespace GL

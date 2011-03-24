@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef GLEDITOR_MAINWINDOWIMPL_H
-#define GLEDITOR_MAINWINDOWIMPL_H
+#ifndef GL_MAINWINDOWIMPL_H
+#define GL_MAINWINDOWIMPL_H
 
 #include <coreplugin/interfaces/imainwindow.h>
 
-namespace GLEditor {
+namespace GL {
 namespace Internal {
 
 class MainWindowImpl : public Core::IMainWindow
@@ -53,6 +53,6 @@ private slots:
 };
 
 } // namespace Internal
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLEDITOR_MAINWINDOWIMPL_H
+#endif // GL_MAINWINDOWIMPL_H

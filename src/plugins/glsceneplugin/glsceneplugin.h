@@ -20,7 +20,7 @@
 
 #include <extensionsystem/iplugin.h>
 
-namespace GLScene {
+namespace GL {
 namespace Internal {
 
 class GLScenePlugin : public ExtensionSystem::IPlugin
@@ -36,6 +36,6 @@ public:
 };
 
 } // namespace Internal
-} // namespace GLScene
+} // namespace GL
 
 #endif // GLSCENEPLUGIN_H

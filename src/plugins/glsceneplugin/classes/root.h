@@ -15,26 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITORWIDGET_H
-#define AC_EDITORWIDGET_H
+#ifndef GL_ROOT_H
+#define GL_ROOT_H
 
-#include <gleditorplugin/classes/glwidget.h>
+#include "node.h"
 
-namespace AudioCarver {
+namespace GL {
 namespace Internal {
 
-class EditorWidget : public GLEditor::GLWidget
+class RootPrivate;
+
+} // Internal
+
+class GLSCENE_EXPORT Root : public Node
 {
     Q_OBJECT
 
 public:
-    EditorWidget(QWidget *parent = 0);
-    virtual ~EditorWidget();
+    Root(QObject *parent = 0);
+    virtual ~Root();
 
-    static EditorWidget *instance();
+    virtual bool isRoot() const { return true; }
+
+    virtual void drawLines(bool picking = false);
+    virtual void drawTriangles(bool picking = false);
+
+    void releaseBuffers() const;
+
+private:
+    Q_DISABLE_COPY(Root)
+    Internal::RootPrivate *d;
 };
 
-} // namespace Internal
-} // namespace AudioCarver
+} // namespace GL
 
-#endif // AC_EDITORWIDGET_H
+#endif // GL_ROOT_H

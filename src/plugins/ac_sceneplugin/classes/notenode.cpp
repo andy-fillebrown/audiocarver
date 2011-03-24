@@ -22,7 +22,7 @@
 
 #include <ac_databaseplugin/classes/note.h>
 
-#include <glsceneplugin/classes/glroot.h>
+#include <glsceneplugin/classes/root.h>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;

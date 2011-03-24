@@ -20,7 +20,7 @@
 
 #include <extensionsystem/iplugin.h>
 
-namespace GLEditor {
+namespace GL {
 namespace Internal {
 
 class GLEditorPlugin : public ExtensionSystem::IPlugin
@@ -36,6 +36,6 @@ public:
 };
 
 } // namespace Internal
-} // namespace GLEditor
+} // namespace GL
 
 #endif // GLEDITORPLUGIN_H

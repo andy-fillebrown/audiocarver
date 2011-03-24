@@ -15,25 +15,35 @@
 **
 **************************************************************************/
 
-#include "ac_editorwidget.h"
+#ifndef GL_NODE_H
+#define GL_NODE_H
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
+#include <QtCore/QObject>
 
-EditorWidget *s_instance = 0;
+#include <glsceneplugin/glscene_global.h>
 
-EditorWidget::EditorWidget(QWidget *parent)
-    :   GLEditor::GLWidget(parent)
+namespace GL {
+
+class Root;
+
+class GLSCENE_EXPORT Node : public QObject
 {
-    s_instance = this;
-}
+    Q_OBJECT
 
-EditorWidget::~EditorWidget()
-{
-    s_instance = 0;
-}
+public:
+    Node(QObject *parent = 0);
+    virtual ~Node();
 
-EditorWidget *EditorWidget::instance()
-{
-    return s_instance;
-}
+    virtual bool isRoot() const { return false; }
+    Root *root() const;
+
+    virtual void drawLines(bool picking = false);
+    virtual void drawTriangles(bool picking = false);
+
+public slots:
+    virtual void changeSubArrayId(int from, int to);
+};
+
+} // namespace GL
+
+#endif // GL_NODE_H

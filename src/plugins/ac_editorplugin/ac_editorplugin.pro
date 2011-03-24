@@ -9,22 +9,22 @@ include(ac_editorplugin_dependencies.pri)
 DEFINES += AC_EDITOR_LIBRARY
 
 HEADERS += \
-    classes/ac_editorwidget.h \
+    classes/widget.h \
     \
-    implementations/ac_editorimpl.h \
-    implementations/ac_gleditorimpl.h \
-    implementations/ac_mainwindowimpl.h \
+    implementations/editorimpl.h \
+    implementations/gleditorimpl.h \
+    implementations/mainwindowimpl.h \
     \
     ac_editor_global.h \
     ac_editorconstants.h \
     ac_editorplugin.h
 
 SOURCES += \
-    classes/ac_editorwidget.cpp \
+    classes/widget.cpp \
     \
-    implementations/ac_editorimpl.cpp \
-    implementations/ac_gleditorimpl.cpp \
-    implementations/ac_mainwindowimpl.cpp \
+    implementations/editorimpl.cpp \
+    implementations/gleditorimpl.cpp \
+    implementations/mainwindowimpl.cpp \
     \
     ac_editorplugin.cpp
 

@@ -15,17 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef GLEDITOR_BEHAVIORSETTINGSPAGE_H
-#define GLEDITOR_BEHAVIORSETTINGSPAGE_H
+#ifndef GL_BEHAVIORSETTINGSPAGE_H
+#define GL_BEHAVIORSETTINGSPAGE_H
 
 #include <coreplugin/dialogs/ioptionspage.h>
 
 #include <gleditorplugin/settings/behaviorsettings.h>
 
-namespace GLEditor {
+namespace GL {
 
 class BehaviorSettings;
-class GLWidget;
+class Widget;
 
 namespace Internal {
 namespace Ui {
@@ -72,10 +72,10 @@ private:
     BehaviorSettingsPageData *d;
     Ui::BehaviorSettingsPage *ui;
 
-    friend class GLEditor::GLWidget;
+    friend class GL::Widget;
 };
 
 } // namespace Internal
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLEDITOR_BEHAVIORSETTINGSPAGE_H
+#endif // GL_BEHAVIORSETTINGSPAGE_H

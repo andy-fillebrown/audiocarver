@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef GLEDITOR_DISPLAYSETTINGS_H
-#define GLEDITOR_DISPLAYSETTINGS_H
+#ifndef GL_DISPLAYSETTINGS_H
+#define GL_DISPLAYSETTINGS_H
 
 #include <gleditorplugin/gleditor_global.h>
 
@@ -26,7 +26,7 @@ class QSettings;
 
 QT_END_NAMESPACE
 
-namespace GLEditor {
+namespace GL {
 
 class GLEDITOR_EXPORT DisplaySettingsData
 {
@@ -50,6 +50,6 @@ public:
 inline bool operator==(const DisplaySettings &a, const DisplaySettings &b) { return a.equals(b); }
 inline bool operator!=(const DisplaySettings &a, const DisplaySettings &b) { return !a.equals(b); }
 
-} // namespace GLEditor
+} // namespace GL
 
-#endif // GLEDITOR_DISPLAYSETTINGS_H
+#endif // GL_DISPLAYSETTINGS_H

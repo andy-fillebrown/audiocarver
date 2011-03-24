@@ -24,7 +24,7 @@ static const char * const testKey = "Test";
 
 static const char * const groupPostfix = "DisplaySettings";
 
-using namespace GLEditor;
+using namespace GL;
 
 DisplaySettingsData::DisplaySettingsData()
     :   test(true)

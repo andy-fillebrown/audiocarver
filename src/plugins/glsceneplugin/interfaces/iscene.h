@@ -15,38 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef GLROOT_H
-#define GLROOT_H
+#ifndef GL_ISCENE_H
+#define GL_ISCENE_H
 
-#include "glnode.h"
+#include <glsceneplugin/glscene_global.h>
 
-namespace GLScene {
-namespace Internal {
+#include <QtCore/QObject>
+#include <QtCore/QRectF>
 
-class GLRootPrivate;
+namespace GL {
 
-} // Internal
-
-class GLSCENE_EXPORT GLRoot : public GLNode
+class GLSCENE_EXPORT IScene : public QObject
 {
     Q_OBJECT
 
 public:
-    GLRoot(QObject *parent = 0);
-    virtual ~GLRoot();
+    IScene();
+    virtual ~IScene();
 
-    virtual bool isRoot() const { return true; }
+    virtual void initialize() = 0;
+    virtual void destroy() = 0;
 
-    virtual void drawLines(bool picking = false);
-    virtual void drawTriangles(bool picking = false);
-
-    void releaseBuffers() const;
-
-private:
-    Q_DISABLE_COPY(GLRoot)
-    Internal::GLRootPrivate *d;
+    virtual bool drawBackground() = 0;
+    virtual bool drawStatic() = 0;
+    virtual bool drawModel() = 0;
+    virtual bool drawEditing() = 0;
+    virtual bool drawAnimation(qreal time) = 0;
+    virtual bool drawOverlay() = 0;
 };
 
-} // namespace GLScene
+} // namespace GL
 
-#endif // GLROOT_H
+#endif // GL_ISCENE_H

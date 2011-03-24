@@ -15,26 +15,24 @@
 **
 **************************************************************************/
 
-#include "gleditor_mainwindowimpl.h"
-
-#include "../interfaces/igleditor.h"
-#include "../gleditorconstants.h"
+#include "mainwindowimpl.h"
 
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
-
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
+#include <gleditorplugin/interfaces/ieditor.h>
+#include <gleditorplugin/gleditorconstants.h>
 
 #include <extensionsystem/pluginmanager.h>
 
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 
-using namespace GLEditor;
-using namespace GLEditor::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
 MainWindowImpl::MainWindowImpl()
 {
@@ -196,7 +194,7 @@ void MainWindowImpl::initActions()
 void MainWindowImpl::viewAll()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewAll();
@@ -205,7 +203,7 @@ void MainWindowImpl::viewAll()
 void MainWindowImpl::viewZoom()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewZoom();
@@ -214,7 +212,7 @@ void MainWindowImpl::viewZoom()
 void MainWindowImpl::viewPan()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewPan();
@@ -223,7 +221,7 @@ void MainWindowImpl::viewPan()
 void MainWindowImpl::viewRotate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewRotate();
@@ -232,7 +230,7 @@ void MainWindowImpl::viewRotate()
 void MainWindowImpl::viewParallel()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewParallel();
@@ -241,7 +239,7 @@ void MainWindowImpl::viewParallel()
 void MainWindowImpl::viewPerspective()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewPerspective();
@@ -250,7 +248,7 @@ void MainWindowImpl::viewPerspective()
 void MainWindowImpl::viewTransparencyNone()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewTransparencyNone();
@@ -259,7 +257,7 @@ void MainWindowImpl::viewTransparencyNone()
 void MainWindowImpl::viewTransparencyScreen()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewTransparencyScreen();
@@ -268,7 +266,7 @@ void MainWindowImpl::viewTransparencyScreen()
 void MainWindowImpl::viewTransparencyFull()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->viewTransparencyFull();
@@ -277,7 +275,7 @@ void MainWindowImpl::viewTransparencyFull()
 void MainWindowImpl::windowSplitHorizontal()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->windowSplitHorizontal();
@@ -286,7 +284,7 @@ void MainWindowImpl::windowSplitHorizontal()
 void MainWindowImpl::windowSplitVertical()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->windowSplitVertical();
@@ -295,7 +293,7 @@ void MainWindowImpl::windowSplitVertical()
 void MainWindowImpl::windowRemoveCurrentSplit()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->windowRemoveCurrentSplit();
@@ -304,7 +302,7 @@ void MainWindowImpl::windowRemoveCurrentSplit()
 void MainWindowImpl::windowRemoveAllSplits()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IGLEditor *ed = pm->getObject<IGLEditor>();
+    IEditor *ed = pm->getObject<IEditor>();
     if (!ed)
         return;
     ed->windowRemoveAllSplits();

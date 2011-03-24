@@ -21,10 +21,8 @@
 #include "scorenode.h"
 
 #include <ac_databaseplugin/classes/track.h>
-#include <glsceneplugin/classes/glbuffer.h>
+#include <glsceneplugin/classes/buffer.h>
 #include <databaseplugin/classes/object.h>
-
-using namespace GLScene;
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
@@ -38,16 +36,16 @@ public:
     TrackNode *q;
     Track *qdb;
     ScoreNode *scoreNode;
-    GLIndexBuffer *ibo;
-    GLVertexBuffer *vbo;
+    GL::IndexBuffer *ibo;
+    GL::VertexBuffer *vbo;
     QList<NoteNode*> noteNodes;
 
     TrackNodePrivate(TrackNode *q)
         :   q(q)
         ,   qdb(qobject_cast<Track*>(q->databaseObject()))
         ,   scoreNode(qobject_cast<ScoreNode*>(q->parent()))
-        ,   ibo(new GLIndexBuffer(1024000, q))
-        ,   vbo(new GLVertexBuffer(256000, q))
+        ,   ibo(new GL::IndexBuffer(1024000, q))
+        ,   vbo(new GL::VertexBuffer(256000, q))
     {
         Q_ASSERT(qdb);
         Q_ASSERT(scoreNode);
@@ -97,12 +95,12 @@ TrackNode::~TrackNode()
     delete d;  d = 0;
 }
 
-GLIndexBuffer *TrackNode::indexBuffer() const
+GL::IndexBuffer *TrackNode::indexBuffer() const
 {
     return d->ibo;
 }
 
-GLVertexBuffer *TrackNode::vertexBuffer() const
+GL::VertexBuffer *TrackNode::vertexBuffer() const
 {
     return d->vbo;
 }

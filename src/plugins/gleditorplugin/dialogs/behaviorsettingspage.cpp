@@ -21,9 +21,8 @@
 #include <gleditorplugin/gleditorconstants.h>
 #include <coreplugin/icore.h>
 
-#include <QtCore/QSettings>
-
-using namespace GLEditor::Internal;
+using namespace GL;
+using namespace GL::Internal;
 
 static BehaviorSettingsPage *instance = 0;
 
@@ -60,7 +59,7 @@ BehaviorSettingsPage *BehaviorSettingsPage::instance()
 
 QString BehaviorSettingsPage::id() const
 {
-    return QLatin1String(GLEditor::Constants::SETTINGS_ID_3D_BEHAVIOR);
+    return QLatin1String(Constants::SETTINGS_ID_3D_BEHAVIOR);
 }
 
 QString BehaviorSettingsPage::displayName() const
@@ -70,17 +69,17 @@ QString BehaviorSettingsPage::displayName() const
 
 QString BehaviorSettingsPage::category() const
 {
-    return QLatin1String(GLEditor::Constants::SETTINGS_CATEGORY_3D);
+    return QLatin1String(Constants::SETTINGS_CATEGORY_3D);
 }
 
 QString BehaviorSettingsPage::displayCategory() const
 {
-    return QCoreApplication::translate("GLEditor", GLEditor::Constants::SETTINGS_TR_CATERGORY_3D);
+    return QCoreApplication::translate("GLEditor", Constants::SETTINGS_TR_CATERGORY_3D);
 }
 
 QIcon BehaviorSettingsPage::categoryIcon() const
 {
-    return QIcon(QLatin1String(GLEditor::Constants::SETTINGS_CATEGORY_3D_ICON));
+    return QIcon(QLatin1String(Constants::SETTINGS_CATEGORY_3D_ICON));
 }
 
 QWidget *BehaviorSettingsPage::createPage(QWidget *parent)

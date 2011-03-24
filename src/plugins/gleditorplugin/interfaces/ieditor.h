@@ -15,22 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef IGLEDITOR_H
-#define IGLEDITOR_H
+#ifndef GL_IEDITOR_H
+#define GL_IEDITOR_H
 
 #include <gleditorplugin/gleditor_global.h>
 
 #include <QtCore/QObject>
 
-namespace GLEditor {
+namespace GL {
 
-class GLEDITOR_EXPORT IGLEditor : public QObject
+class GLEDITOR_EXPORT IEditor : public QObject
 {
     Q_OBJECT
 
 public:
-    IGLEditor();
-    virtual ~IGLEditor();
+    IEditor();
+    virtual ~IEditor();
 
     virtual void viewAll() = 0;
     virtual void viewFront() = 0;
@@ -55,6 +55,6 @@ public:
     virtual void windowRemoveAllSplits() = 0;
 };
 
-} // namespace GLEditor
+} // namespace GL
 
-#endif // IGLEDITOR_H
+#endif // GL_IEDITOR_H

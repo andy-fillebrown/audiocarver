@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "ac_gleditorimpl.h"
+#include "gleditorimpl.h"
 
-#include "classes/ac_editorwidget.h"
+#include <classes/widget.h>
 
 #include <QtCore/QDebug>
 
@@ -115,23 +115,23 @@ void GLEditorImpl::viewTransparencyFull()
 void GLEditorImpl::windowSplitHorizontal()
 {
     qDebug() << Q_FUNC_INFO;
-    EditorWidget::instance()->splitHorizontal();
+    Widget::instance()->splitHorizontal();
 }
 
 void GLEditorImpl::windowSplitVertical()
 {
     qDebug() << Q_FUNC_INFO;
-    EditorWidget::instance()->splitVertical();
+    Widget::instance()->splitVertical();
 }
 
 void GLEditorImpl::windowRemoveCurrentSplit()
 {
     qDebug() << Q_FUNC_INFO;
-    EditorWidget::instance()->removeCurrentSplit();
+    Widget::instance()->removeCurrentSplit();
 }
 
 void GLEditorImpl::windowRemoveAllSplits()
 {
     qDebug() << Q_FUNC_INFO;
-    EditorWidget::instance()->removeAllSplits();
+    Widget::instance()->removeAllSplits();
 }

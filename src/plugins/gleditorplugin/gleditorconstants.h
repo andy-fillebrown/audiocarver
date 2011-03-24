@@ -20,7 +20,7 @@
 
 #include <editorplugin/editorconstants.h>
 
-namespace GLEditor {
+namespace GL {
 namespace Constants {
 
 const char * const G_VIEW                    = PRO_NAME_STR".Group.View";
@@ -58,6 +58,6 @@ const char * const SETTINGS_ID_3D_BEHAVIOR   = "A.3D.Behavior";
 const char * const SETTINGS_ID_3D_DISPLAY    = "B.3D.Display";
 
 } // namespace Constants
-} // namespace GLEditor
+} // namespace GL
 
 #endif // GLEDITORCONSTANTS_H
