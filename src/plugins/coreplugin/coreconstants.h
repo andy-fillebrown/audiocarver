@@ -107,8 +107,8 @@ const char * const SETTINGS_CATEGORY_ENVIRONMENT       = "A.Environment";
 const char * const SETTINGS_CATEGORY_ENVIRONMENT_ICON  = ":/core/images/category_environment.png";
 
 const char * const SETTINGS_TR_CATEGORY_ENVIRONMENT    = QT_TRANSLATE_NOOP("Core", "Environment");
-const char * const SETTINGS_ID_ENVIRONMENT_GENERAL     = "A.General";
-const char * const SETTINGS_ID_ENVIRONMENT_KEYBOARD    = "B.Keyboard";
+const char * const SETTINGS_ID_ENVIRONMENT_GENERAL     = "A.Environment.General";
+const char * const SETTINGS_ID_ENVIRONMENT_KEYBOARD    = "B.Environment.Keyboard";
 
 const char * const ALL_FILES_FILTER                    = QT_TRANSLATE_NOOP("Core", "All Files (*)");
 

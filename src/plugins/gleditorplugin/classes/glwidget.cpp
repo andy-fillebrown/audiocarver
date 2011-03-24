@@ -183,7 +183,6 @@ void GLWidget::removeAllSplits()
 
 void GLWidget::updateBehaviorSettings(const BehaviorSettings &previousSettings)
 {
-    qDebug() << Q_FUNC_INFO << "not implemented yet.";
 }
 
 void GLWidget::updateDisplaySettings(const DisplaySettings &previousSettings)
@@ -203,7 +202,7 @@ void GLWidget::animateGL()
     if (!isAnimating())
         return;
 
-    // Hackish attempt at maintaining 60 fps.
+    // Hackish attempt at maintaining 60+ fps.
     // 'd->prevFrameTime' is set in paintGL().
     const qint64 elapsed = d->elapsedTime.elapsed() - d->prevFrameTime;
     const qint64 nextFrameTime = 14 <= elapsed ? 0 : 14 - elapsed;
@@ -261,7 +260,7 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
                 break;
             }
         }
-        // 'split' is not zero if not on border.
+        // 'split' is only valid if mouse is not on border.
         if (split)
             setCurrentSplit(split);
 

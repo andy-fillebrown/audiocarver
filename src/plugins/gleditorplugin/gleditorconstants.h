@@ -51,11 +51,11 @@ const char * const WINDOWSPLITVERTICAL       = PRO_NAME_STR".WindowSplitSideBySi
 const char * const WINDOWREMOVECURRENTSPLIT  = PRO_NAME_STR".WindowRemoveCurrentSplit";
 const char * const WINDOWREMOVEALLSPLITS     = PRO_NAME_STR".WindowRemoveAllSplits";
 
-const char * const SETTINGS_CATEGORY_3D      = "B.GLEditor";
+const char * const SETTINGS_CATEGORY_3D      = "B.3D";
 const char * const SETTINGS_CATEGORY_3D_ICON = ":/gleditor/images/3d-box.png";
 const char * const SETTINGS_TR_CATERGORY_3D  = QT_TRANSLATE_NOOP("GLEditor", "3D");
-const char * const SETTINGS_ID_3D_BEHAVIOR   = "A.Behavior";
-const char * const SETTINGS_ID_3D_DISPLAY    = "B.Display";
+const char * const SETTINGS_ID_3D_BEHAVIOR   = "A.3D.Behavior";
+const char * const SETTINGS_ID_3D_DISPLAY    = "B.3D.Display";
 
 } // namespace Constants
 } // namespace GLEditor

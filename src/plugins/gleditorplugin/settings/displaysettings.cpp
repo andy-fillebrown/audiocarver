@@ -31,7 +31,7 @@ DisplaySettingsData::DisplaySettingsData()
 {
 }
 
-void DisplaySettings::toSettings(const QString &category, QSettings *s) const
+void DisplaySettings::save(const QString &category, QSettings *s) const
 {
     QString group = QLatin1String(groupPostfix);
     if (!category.isEmpty())
@@ -43,7 +43,7 @@ void DisplaySettings::toSettings(const QString &category, QSettings *s) const
 }
 
 
-void DisplaySettings::fromSettings(const QString &category, const QSettings *s)
+void DisplaySettings::load(const QString &category, const QSettings *s)
 {
     // Assign defaults.
     d = DisplaySettingsData();

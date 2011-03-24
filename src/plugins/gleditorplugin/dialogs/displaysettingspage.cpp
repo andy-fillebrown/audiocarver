@@ -41,7 +41,8 @@ DisplaySettingsPage::DisplaySettingsPage()
     ,   ui(0)
 {
     ::instance = this;
-    d->settings->fromSettings(displayCategory(), Core::ICore::instance()->settings());
+
+    d->settings->load(displayCategory(), Core::ICore::instance()->settings());
     d->previousSettings = *d->settings;
 }
 
@@ -106,10 +107,10 @@ void DisplaySettingsPage::apply()
 
     emit settingsChanged(d->previousSettings);
     d->previousSettings = *d->settings;
-    d->settings->toSettings(displayCategory(), Core::ICore::instance()->settings());
+
+    d->settings->save(displayCategory(), Core::ICore::instance()->settings());
 }
 
 void DisplaySettingsPage::finish()
 {
-    qDebug() << Q_FUNC_INFO;
 }

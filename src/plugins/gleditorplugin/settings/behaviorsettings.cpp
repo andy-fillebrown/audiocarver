@@ -43,7 +43,7 @@ BehaviorSettingsData::BehaviorSettingsData()
 {
 }
 
-void BehaviorSettings::toSettings(const QString &category, QSettings *s) const
+void BehaviorSettings::save(const QString &category, QSettings *s) const
 {
     QString group = QLatin1String(groupPostfix);
     if (!category.isEmpty())
@@ -60,7 +60,7 @@ void BehaviorSettings::toSettings(const QString &category, QSettings *s) const
     s->endGroup();
 }
 
-void BehaviorSettings::fromSettings(const QString &category, const QSettings *s)
+void BehaviorSettings::load(const QString &category, const QSettings *s)
 {
     // Assign defaults.
     d = BehaviorSettingsData();

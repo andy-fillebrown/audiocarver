@@ -41,8 +41,8 @@ class GLEDITOR_EXPORT DisplaySettings
 public:
     DisplaySettingsData d;
 
-    void toSettings(const QString &category, QSettings *s) const;
-    void fromSettings(const QString &category, const QSettings *s);
+    void save(const QString &category, QSettings *s) const;
+    void load(const QString &category, const QSettings *s);
 
     bool equals(const DisplaySettings &ds) const;
 };
