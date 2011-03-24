@@ -64,8 +64,10 @@ public slots:
     void removeCurrentSplit();
     void removeAllSplits();
 
-    void updateBehaviorSettings(const BehaviorSettings &previousSettings);
-    void updateDisplaySettings(const DisplaySettings &previousSettings);
+    void updateBehaviorSettings(const BehaviorSettings &previous);
+    void updateDisplaySettings(const DisplaySettings &previous);
+
+    void synchronizeModelTranslations(Viewport *viewport = 0);
 
     virtual void animateGL();
 

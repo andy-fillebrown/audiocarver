@@ -43,7 +43,7 @@ BehaviorSettingsPage::BehaviorSettingsPage()
     ::instance = this;
 
     d->settings->load(displayCategory(), Core::ICore::instance()->settings());
-    d->previousSettings = *d->settings;
+    d->prevSettings = *d->settings;
 }
 
 BehaviorSettingsPage::~BehaviorSettingsPage()
@@ -88,7 +88,9 @@ QWidget *BehaviorSettingsPage::createPage(QWidget *parent)
     QWidget *w = new QWidget(parent);
     ui->setupUi(w);
 
-    ui->zoomSpeedSpinBox->setValue(d->settings->d.zoomSpeed);
+    const BehaviorSettingsData &data = d->settings->d;
+    ui->zoomSpeedSpinBox->setValue(data.zoomSpeed);
+    ui->linkModelTranslationsCheckBox->setChecked(data.linkModelTranslations);
 
     return w;
 }
@@ -101,13 +103,15 @@ bool BehaviorSettingsPage::matches(const QString &s) const
 
 void BehaviorSettingsPage::apply()
 {
-    d->settings->d.zoomSpeed = ui->zoomSpeedSpinBox->value();
+    BehaviorSettingsData &data = d->settings->d;
+    data.zoomSpeed = ui->zoomSpeedSpinBox->value();
+    data.linkModelTranslations = ui->linkModelTranslationsCheckBox->isChecked();
 
-    if (d->previousSettings == *d->settings)
+    if (d->prevSettings == *d->settings)
         return;
 
-    emit settingsChanged(d->previousSettings);
-    d->previousSettings = *d->settings;
+    emit settingsChanged(d->prevSettings);
+    d->prevSettings = *d->settings;
 
     d->settings->save(displayCategory(), Core::ICore::instance()->settings());
 }

@@ -41,7 +41,7 @@ public:
     ~DisplaySettingsPageData();
 
     DisplaySettings *settings;
-    DisplaySettings previousSettings;
+    DisplaySettings prevSettings;
 };
 
 class DisplaySettingsPage : public Core::IOptionsPage

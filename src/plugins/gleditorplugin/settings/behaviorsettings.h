@@ -41,7 +41,7 @@ public:
     bool scalingY;
     bool rotatingX;
 
-    bool linkedViewportModelXforms;
+    bool linkModelTranslations;
 };
 
 class GLEDITOR_EXPORT BehaviorSettings

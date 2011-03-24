@@ -26,7 +26,7 @@ static const char * const scrollWheelPanningZKey = "ScrollWheelPanning";
 static const char * const scrollWheelZoomingKey = "ScrollWheelZooming";
 static const char * const scalingYKey = "ScalingY";
 static const char * const rotatingXKey = "RotatingX";
-static const char * const linkedViewportModelXformsKey = "LinkedViewportModelXforms";
+static const char * const linkModelTranslationsKey = "LinkModelTranslations";
 
 static const char * const groupPostfix = "BehaviorSettings";
 
@@ -39,7 +39,7 @@ BehaviorSettingsData::BehaviorSettingsData()
     ,   scrollWheelZooming(true)
     ,   scalingY(false)
     ,   rotatingX(true)
-    ,   linkedViewportModelXforms(true)
+    ,   linkModelTranslations(true)
 {
 }
 
@@ -56,7 +56,7 @@ void BehaviorSettings::save(const QString &category, QSettings *s) const
     s->setValue(QLatin1String(scrollWheelZoomingKey), d.scrollWheelZooming);
     s->setValue(QLatin1String(scalingYKey), d.scalingY);
     s->setValue(QLatin1String(rotatingXKey), d.rotatingX);
-    s->setValue(QLatin1String(linkedViewportModelXformsKey), d.linkedViewportModelXforms);
+    s->setValue(QLatin1String(linkModelTranslationsKey), d.linkModelTranslations);
     s->endGroup();
 }
 
@@ -76,7 +76,7 @@ void BehaviorSettings::load(const QString &category, const QSettings *s)
     d.scrollWheelZooming = s->value(group + QLatin1String(scrollWheelZoomingKey), d.scrollWheelZooming).toBool();
     d.scalingY = s->value(group + QLatin1String(scalingYKey), d.scalingY).toInt();
     d.rotatingX = s->value(group + QLatin1String(rotatingXKey), d.rotatingX).toBool();
-    d.linkedViewportModelXforms = s->value(group + QLatin1String(linkedViewportModelXformsKey), d.linkedViewportModelXforms).toBool();
+    d.linkModelTranslations = s->value(group + QLatin1String(linkModelTranslationsKey), d.linkModelTranslations).toBool();
 }
 
 bool BehaviorSettings::equals(const BehaviorSettings &bs) const
@@ -87,6 +87,6 @@ bool BehaviorSettings::equals(const BehaviorSettings &bs) const
         && d.scrollWheelZooming == bs.d.scrollWheelZooming
         && d.scalingY == bs.d.scalingY
         && d.rotatingX == bs.d.rotatingX
-        && d.linkedViewportModelXforms == bs.d.linkedViewportModelXforms
+        && d.linkModelTranslations == bs.d.linkModelTranslations
         ;
 }

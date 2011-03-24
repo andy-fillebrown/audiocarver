@@ -43,7 +43,7 @@ DisplaySettingsPage::DisplaySettingsPage()
     ::instance = this;
 
     d->settings->load(displayCategory(), Core::ICore::instance()->settings());
-    d->previousSettings = *d->settings;
+    d->prevSettings = *d->settings;
 }
 
 DisplaySettingsPage::~DisplaySettingsPage()
@@ -102,11 +102,11 @@ bool DisplaySettingsPage::matches(const QString &s) const
 
 void DisplaySettingsPage::apply()
 {
-    if (d->previousSettings == *d->settings)
+    if (d->prevSettings == *d->settings)
         return;
 
-    emit settingsChanged(d->previousSettings);
-    d->previousSettings = *d->settings;
+    emit settingsChanged(d->prevSettings);
+    d->prevSettings = *d->settings;
 
     d->settings->save(displayCategory(), Core::ICore::instance()->settings());
 }

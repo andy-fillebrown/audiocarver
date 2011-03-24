@@ -41,7 +41,7 @@ public:
     ~BehaviorSettingsPageData();
 
     BehaviorSettings *settings;
-    BehaviorSettings previousSettings;
+    BehaviorSettings prevSettings;
 };
 
 class BehaviorSettingsPage : public Core::IOptionsPage

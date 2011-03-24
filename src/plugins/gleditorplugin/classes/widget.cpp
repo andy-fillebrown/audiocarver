@@ -179,14 +179,29 @@ void Widget::removeAllSplits()
     setCurrentSplit(d->mainSplit);
 }
 
-void Widget::updateBehaviorSettings(const BehaviorSettings &previousSettings)
+void Widget::updateBehaviorSettings(const BehaviorSettings &previous)
 {
-    Q_UNUSED(previousSettings);
+    const BehaviorSettingsData &cur = d->behaviorSettings->d;
+    const BehaviorSettingsData &prev = previous.d;
+
+    if (cur.linkModelTranslations != prev.linkModelTranslations
+        && cur.linkModelTranslations) {
+        synchronizeModelTranslations();
+    }
 }
 
-void Widget::updateDisplaySettings(const DisplaySettings &previousSettings)
+void Widget::updateDisplaySettings(const DisplaySettings &previous)
 {
-    Q_UNUSED(previousSettings);
+    Q_UNUSED(previous);
+}
+
+void Widget::synchronizeModelTranslations(Viewport *viewport)
+{
+    if (!viewport)
+        viewport = currentViewport();
+    const Vector &trans = viewport->modelTranslation();
+    foreach (Viewport *vp, d->viewports)
+        vp->setModelTranslation(trans);
 }
 
 void Widget::animateGL()
@@ -354,6 +369,9 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
 
         // Apply translation to viewport's model matrix.
         vp->setModelTranslation(vp->modelTranslation() + dragVec);
+
+        if (d->behaviorSettings->d.linkModelTranslations)
+            synchronizeModelTranslations(vp);
 
         // Update previous mouse position and redraw.
         d->prevDragPos = pos;
