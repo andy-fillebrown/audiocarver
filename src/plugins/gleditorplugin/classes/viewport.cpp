@@ -94,9 +94,9 @@ public:
     Plane ucs;
 
     VertexBuffer *staticVBO;
-    VertexArray *staticVA;
     IndexBuffer *staticIBO;
-    IndexArray *staticIA;
+    VertexSubBuffer *staticVSB;
+    IndexSubBuffer *staticISB;
 
     ViewportPrivate(Viewport *q, WidgetSplit *parentSplit)
         :   q(q)
@@ -126,9 +126,9 @@ public:
         ,   modelScaleZ(1.0f)
         ,   ucs(Constants::planeXY)
         ,   staticVBO(new VertexBuffer(4, q))
-        ,   staticVA(new VertexArray(4, staticVBO))
         ,   staticIBO(new IndexBuffer(6, q))
-        ,   staticIA(new IndexArray(6, staticIBO))
+        ,   staticVSB(new VertexSubBuffer(4, staticVBO))
+        ,   staticISB(new IndexSubBuffer(6, staticIBO))
     {
         Q_ASSERT(widget);
 
@@ -382,7 +382,7 @@ public:
         vertices[1] = Vertex(100000.0f, 0, 0);
         vertices[2] = Vertex(0, 100000.0f, 0);
         vertices[3] = Vertex(0, 0, -100000.0f);
-        staticVA->write(vertices);
+        staticVSB->write(vertices);
 
         QVector<index> indices(6);
         indices[0] = 0;
@@ -391,7 +391,7 @@ public:
         indices[3] = 2;
         indices[4] = 0;
         indices[5] = 3;
-        staticIA->write(indices);
+        staticISB->write(indices);
     }
 
     void drawStatic()

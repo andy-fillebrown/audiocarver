@@ -33,11 +33,11 @@ QT_END_NAMESPACE
 namespace GL {
 namespace Internal {
 
-class ArrayPrivate;
 class BufferPrivate;
-class IndexArrayPrivate;
+class SubBufferPrivate;
+class IndexSubBufferPrivate;
 class IndexBufferPrivate;
-class VertexArrayPrivate;
+class VertexSubBufferPrivate;
 class VertexBufferPrivate;
 
 } // namespace Internal
@@ -69,10 +69,10 @@ public:
     void release();
 
 private:
-    friend class Array;
-    friend class IndexArray;
+    friend class SubBuffer;
+    friend class IndexSubBuffer;
     friend class IndexBuffer;
-    friend class VertexArray;
+    friend class VertexSubBuffer;
     friend class VertexBuffer;
     Internal::BufferPrivate *d;
 };
@@ -86,7 +86,7 @@ public:
     virtual ~IndexBuffer();
 
 private:
-    friend class IndexArray;
+    friend class IndexSubBuffer;
     Internal::IndexBufferPrivate *d;
 };
 
@@ -99,17 +99,17 @@ public:
     virtual ~VertexBuffer();
 
 private:
-    friend class VertexArray;
+    friend class VertexSubBuffer;
     Internal::VertexBufferPrivate *d;
 };
 
-class GLSCENE_EXPORT Array : public QObject
+class GLSCENE_EXPORT SubBuffer : public QObject
 {
     Q_OBJECT
 
 protected:
-    Array(int count, Buffer *buffer);
-    virtual ~Array();
+    SubBuffer(int count, Buffer *buffer);
+    virtual ~SubBuffer();
 
 public:
     int offset() const;
@@ -117,37 +117,37 @@ public:
     int end() const { return offset() + count(); }
 
 private:
-    friend class IndexArray;
-    friend class VertexArray;
-    Internal::ArrayPrivate *d;
+    friend class IndexSubBuffer;
+    friend class VertexSubBuffer;
+    Internal::SubBufferPrivate *d;
 };
 
-class GLSCENE_EXPORT IndexArray : public Array
+class GLSCENE_EXPORT IndexSubBuffer : public SubBuffer
 {
     Q_OBJECT
 
 public:
-    IndexArray(int count, IndexBuffer *indexBuffer);
-    virtual ~IndexArray();
+    IndexSubBuffer(int count, IndexBuffer *indexBuffer);
+    virtual ~IndexSubBuffer();
 
     void write(const QVector<index> &indices);
 
 private:
-    Internal::IndexArrayPrivate *d;
+    Internal::IndexSubBufferPrivate *d;
 };
 
-class GLSCENE_EXPORT VertexArray : public Array
+class GLSCENE_EXPORT VertexSubBuffer : public SubBuffer
 {
     Q_OBJECT
 
 public:
-    VertexArray(int count, VertexBuffer *vertexBuffer);
-    virtual ~VertexArray();
+    VertexSubBuffer(int count, VertexBuffer *vertexBuffer);
+    virtual ~VertexSubBuffer();
 
     void write(const QVector<Vertex> &vertices);
 
 private:
-    Internal::VertexArrayPrivate *d;
+    Internal::VertexSubBufferPrivate *d;
 };
 
 } // namespace GL

@@ -27,23 +27,23 @@ using namespace GL::Internal;
 namespace GL {
 namespace Internal {
 
-class ArrayPrivate
+class SubBufferPrivate
 {
 public:
-    Array *q;
+    SubBuffer *q;
     int offset;
     int count; // item count (not byte count)
     Buffer *buffer;
 
-    ArrayPrivate(Array *q, int count, Buffer *buffer)
+    SubBufferPrivate(SubBuffer *q, int count, Buffer *buffer)
         :   q(q)
-        ,   offset(0) // set in GLBufferPrivate::initializeArray
+        ,   offset(0) // set in GLBufferPrivate::initializeSubBuffer
         ,   count(count)
         ,   buffer(buffer)
     {
     }
 
-    ~ArrayPrivate()
+    ~SubBufferPrivate()
     {
         buffer = 0;
         count = -1;
@@ -52,12 +52,12 @@ public:
     }
 };
 
-class IndexArrayPrivate
+class IndexSubBufferPrivate
 {
 public:
 };
 
-class VertexArrayPrivate
+class VertexSubBufferPrivate
 {
 public:
 };
@@ -68,7 +68,7 @@ public:
     QGLBuffer *buffer;
     int count; // item count (not byte count)
 
-    QList<Array*> arrays;
+    QList<SubBuffer*> SubBuffers;
 
     BufferPrivate(int count)
         :   buffer(0)
@@ -78,7 +78,7 @@ public:
 
     ~BufferPrivate()
     {
-        arrays.clear();
+        SubBuffers.clear();
 
         count = -1;
         delete buffer;  buffer = 0;
@@ -121,30 +121,30 @@ public:
         Q_CHECK_GLERROR;
     }
 
-    void initArray(ArrayPrivate *array_d)
+    void initSubBuffer(SubBufferPrivate *SubBuffer_d)
     {
-        Array *array = array_d->q;
-        Q_ASSERT(!arrays.contains(array));
+        SubBuffer *SubBuffer = SubBuffer_d->q;
+        Q_ASSERT(!SubBuffers.contains(SubBuffer));
 
-        // Find space for array in buffer.
-        if (arrays.isEmpty())
-            arrays.append(array);
+        // Find space for SubBuffer in buffer.
+        if (SubBuffers.isEmpty())
+            SubBuffers.append(SubBuffer);
         else {
-            array_d->offset = arrays.last()->end();
+            SubBuffer_d->offset = SubBuffers.last()->end();
             int i = 1;
-            for (;  i < arrays.count();  ++i) {
-                if (array->end() < arrays.at(i)->offset())
+            for (;  i < SubBuffers.count();  ++i) {
+                if (SubBuffer->end() < SubBuffers.at(i)->offset())
                     break;
-                array_d->offset = arrays.at(i)->end();
+                SubBuffer_d->offset = SubBuffers.at(i)->end();
             }
-            Q_ASSERT(array->end() < count);
-            arrays.insert(i, array);
+            Q_ASSERT(SubBuffer->end() < count);
+            SubBuffers.insert(i, SubBuffer);
         }
     }
 
-    void removeArray(ArrayPrivate *array_d)
+    void removeSubBuffer(SubBufferPrivate *SubBuffer_d)
     {
-        arrays.removeOne(array_d->q);
+        SubBuffers.removeOne(SubBuffer_d->q);
     }
 };
 
@@ -216,48 +216,48 @@ VertexBuffer::~VertexBuffer()
     delete d;  d = 0;
 }
 
-Array::Array(int count, Buffer *buffer)
+SubBuffer::SubBuffer(int count, Buffer *buffer)
     :   QObject(buffer)
-    ,   d(new ArrayPrivate(this, count, buffer))
+    ,   d(new SubBufferPrivate(this, count, buffer))
 {
     Q_CHECK_PTR(d);
 
-    d->buffer->d->initArray(d);
+    d->buffer->d->initSubBuffer(d);
 }
 
-Array::~Array()
+SubBuffer::~SubBuffer()
 {
     if (d->buffer->d)
-        d->buffer->d->removeArray(d);
+        d->buffer->d->removeSubBuffer(d);
 
     delete d;  d = 0;
 }
 
-int Array::offset() const
+int SubBuffer::offset() const
 {
     return d->offset;
 }
 
-int Array::count() const
+int SubBuffer::count() const
 {
     return d->count;
 }
 
-IndexArray::IndexArray(int count, IndexBuffer *indexBuffer)
-    :   Array(count, indexBuffer)
-    ,   d(new IndexArrayPrivate())
+IndexSubBuffer::IndexSubBuffer(int count, IndexBuffer *indexBuffer)
+    :   SubBuffer(count, indexBuffer)
+    ,   d(new IndexSubBufferPrivate())
 {
     Q_CHECK_PTR(d);
 }
 
-IndexArray::~IndexArray()
+IndexSubBuffer::~IndexSubBuffer()
 {
     delete d;  d = 0;
 }
 
-void IndexArray::write(const QVector<index> &indices)
+void IndexSubBuffer::write(const QVector<index> &indices)
 {
-    QGLBuffer *buffer = Array::d->buffer->d->buffer;
+    QGLBuffer *buffer = SubBuffer::d->buffer->d->buffer;
     Q_ASSERT(buffer);
     if (!buffer)
         return;
@@ -273,21 +273,21 @@ void IndexArray::write(const QVector<index> &indices)
                   count() * sizeof(index));
 }
 
-VertexArray::VertexArray(int count, VertexBuffer *vertexBuffer)
-    :   Array(count, vertexBuffer)
-    ,   d(new VertexArrayPrivate())
+VertexSubBuffer::VertexSubBuffer(int count, VertexBuffer *vertexBuffer)
+    :   SubBuffer(count, vertexBuffer)
+    ,   d(new VertexSubBufferPrivate())
 {
     Q_CHECK_PTR(d);
 }
 
-VertexArray::~VertexArray()
+VertexSubBuffer::~VertexSubBuffer()
 {
     delete d;  d = 0;
 }
 
-void VertexArray::write(const QVector<Vertex> &vertices)
+void VertexSubBuffer::write(const QVector<Vertex> &vertices)
 {
-    QGLBuffer *buffer = Array::d->buffer->d->buffer;
+    QGLBuffer *buffer = SubBuffer::d->buffer->d->buffer;
     Q_ASSERT(buffer);
     if (!buffer)
         return;
