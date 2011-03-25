@@ -12,6 +12,7 @@ HEADERS += \
     classes/buffer.h \
     classes/node.h \
     classes/root.h \
+    classes/scene.h \
     \
     interfaces/iscene.h \
     \
@@ -22,6 +23,7 @@ SOURCES += \
     classes/buffer.cpp \
     classes/node.cpp \
     classes/root.cpp \
+    classes/scene.cpp \
     \
     interfaces/iscene.cpp \
     \

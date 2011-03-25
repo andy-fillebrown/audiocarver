@@ -15,15 +15,37 @@
 **
 **************************************************************************/
 
-#include "iscene.h"
+#ifndef GL_VIEWPORTSCENE_H
+#define GL_VIEWPORTSCENE_H
 
-using namespace GL;
+#include <glsceneplugin/classes/scene.h>
 
-IScene::IScene(QObject *parent)
-    :   QObject(parent)
+namespace GL {
+
+class Root;
+
+namespace Internal {
+
+class ViewportScenePrivate;
+
+class ViewportScene : public Scene
 {
-}
+public:
+    ViewportScene(QObject *parent = 0);
+    virtual ~ViewportScene();
 
-IScene::~IScene()
-{
-}
+    Root *rootNode() const;
+
+    virtual void initialize();
+    virtual void destroy();
+
+    virtual bool drawStatic(bool picking = false);
+
+private:
+    ViewportScenePrivate *d;
+};
+
+} // namespace Internal
+} // namespace GL
+
+#endif // GL_VIEWPORTSCENE_H

@@ -15,15 +15,35 @@
 **
 **************************************************************************/
 
-#include "iscene.h"
+#ifndef GL_AXESNODE_H
+#define GL_AXESNODE_H
 
-using namespace GL;
+#include <glsceneplugin/classes/node.h>
 
-IScene::IScene(QObject *parent)
-    :   QObject(parent)
+#include <gleditorplugin/gleditor_global.h>
+
+namespace GL {
+namespace Internal {
+
+class AxesNodePrivate;
+
+} // namespace Internal
+
+class GLEDITOR_EXPORT AxesNode : public Node
 {
-}
+    Q_OBJECT
 
-IScene::~IScene()
-{
-}
+public:
+    AxesNode(Node *parent = 0);
+    virtual ~AxesNode();
+
+    virtual void drawLines(bool picking = false);
+    virtual void drawTriangles(bool picking = false);
+
+private:
+    Internal::AxesNodePrivate *d;
+};
+
+} // namespace GL
+
+#endif // GL_AXESNODE_H

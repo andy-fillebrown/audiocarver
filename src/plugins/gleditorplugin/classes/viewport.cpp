@@ -17,12 +17,12 @@
 
 #include "viewport.h"
 
+#include "viewportscene.h"
 #include "widget.h"
 #include "widget_p.h"
 #include "widgetsplit.h"
 
 #include <glsceneplugin/classes/buffer.h>
-#include <glsceneplugin/interfaces/iscene.h>
 
 #include <gmtl/Generate.h>
 #include <gmtl/Intersection.h>
@@ -93,10 +93,7 @@ public:
 
     Plane ucs;
 
-    VertexBuffer *staticVBO;
-    IndexBuffer *staticIBO;
-    VertexSubBuffer *staticVSB;
-    IndexSubBuffer *staticISB;
+    ViewportScene *viewportScene;
 
     ViewportPrivate(Viewport *q, WidgetSplit *parentSplit)
         :   q(q)
@@ -125,15 +122,13 @@ public:
         ,   modelScaleY(1.0f)
         ,   modelScaleZ(1.0f)
         ,   ucs(Constants::planeXY)
-        ,   staticVBO(new VertexBuffer(4, q))
-        ,   staticIBO(new IndexBuffer(6, q))
-        ,   staticVSB(new VertexSubBuffer(4, staticVBO))
-        ,   staticISB(new IndexSubBuffer(6, staticIBO))
+        ,   viewportScene(new ViewportScene(q))
     {
         Q_ASSERT(widget);
 
         initFBOs(parentSplit->width(), parentSplit->height());
-        initStaticBuffers();
+
+        viewportScene->initialize();
 
         updateCamera();
         updateModelXform();
@@ -141,6 +136,8 @@ public:
 
     ~ViewportPrivate()
     {
+        delete viewportScene;  viewportScene = 0;
+
         textureIds.clear();
 
         delete overlayFBO;  overlayFBO = 0;
@@ -225,8 +222,8 @@ public:
 
     void updateFBO(int fboId)
     {
-        IScene *scene = widget->currentScene();
-        Q_ASSERT(scene && "No scene.");
+        IScene *widgetScene = widget->currentScene();
+        Q_ASSERT(widgetScene && "No widget scene.");
 
         QGLFramebufferObject *fbo = this->fbo(fboId);
         Q_ASSERT(fbo && fbo->isValid());
@@ -249,35 +246,35 @@ public:
         case BackgroundFBO:
             widget->qglClearColor(backgroundColor);
             glClear(GL_COLOR_BUFFER_BIT);
-            scene->drawBackground();
+            widgetScene->drawBackground();
             drewToFBO = true;
             break;
         case StaticFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drawStatic();
-            drewToFBO = scene->drawStatic();
+            drewToFBO = viewportScene->drawStatic();
+            drewToFBO |= widgetScene->drawStatic();
             break;
         case ModelFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawModel();
+            drewToFBO = widgetScene->drawModel();
             break;
         case EditingFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawEdit();
+            drewToFBO = widgetScene->drawEdit();
             break;
         case AnimationFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
             if (widget->isAnimating())
-                drewToFBO = scene->drawAnimation(widget->animationTime());
+                drewToFBO = widgetScene->drawAnimation(widget->animationTime());
             break;
         case OverlayFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
-            drewToFBO = scene->drawOverlay();
+            drewToFBO = widgetScene->drawOverlay();
             break;
         default:
             Q_ASSERT(false && "Invalid fbo type.");
@@ -373,39 +370,6 @@ public:
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(viewXform.mData);
         glMultMatrixf(modelXform.mData);
-    }
-
-    void initStaticBuffers()
-    {
-        VertexArray vertices(staticVSB);
-        vertices[0] = Vertex(0, 0, 0);
-        vertices[1] = Vertex(100000.0f, 0, 0);
-        vertices[2] = Vertex(0, 100000.0f, 0);
-        vertices[3] = Vertex(0, 0, -100000.0f);
-
-        IndexArray indices(staticISB);
-        indices[0] = 0;
-        indices[1] = 1;
-        indices[2] = 0;
-        indices[3] = 2;
-        indices[4] = 0;
-        indices[5] = 3;
-    }
-
-    void drawStatic()
-    {
-        bool ok = staticVBO->bind();
-        Q_ASSERT(ok);
-
-        ok = staticIBO->bind();
-        Q_ASSERT(ok);
-
-        glVertexPointer(3, GL_FLOAT, 16, 0);
-
-        glColor3f(0, 0, 0);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glDrawElements(GL_LINES, 6, GL_UNSIGNED_SHORT, 0);
-        glDisableClientState(GL_VERTEX_ARRAY);
     }
 };
 

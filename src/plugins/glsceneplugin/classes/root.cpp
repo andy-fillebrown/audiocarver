@@ -17,6 +17,8 @@
 
 #include "root.h"
 
+#include <glsceneplugin/classes/buffer.h>
+
 #include <glutils/glutils_global.h>
 
 #include <QtOpenGL/QGLBuffer>
@@ -31,9 +33,13 @@ class RootPrivate
 {
 public:
     Root *q;
+    VertexBuffer *vertexBuffer;
+    IndexBuffer *indexBuffer;
 
     RootPrivate(Root *q)
         :   q(q)
+        ,   vertexBuffer(0)
+        ,   indexBuffer(0)
     {
     }
 
@@ -55,22 +61,58 @@ Root::Root(QObject *parent)
 
 Root::~Root()
 {
+    destroyBuffers();
     delete d;  d = 0;
+}
+
+void Root::initializeBuffers(int vertexCount, int indexCount)
+{
+    d->vertexBuffer = new VertexBuffer(vertexCount);
+    d->indexBuffer = new IndexBuffer(indexCount);
+}
+
+void Root::destroyBuffers()
+{
+    delete d->indexBuffer;  d->indexBuffer = 0;
+    delete d->vertexBuffer;  d->vertexBuffer = 0;
 }
 
 void Root::drawLines(bool picking)
 {
-    Q_UNUSED(picking);
+    bool ok = vertexBuffer()->bind();
+    Q_ASSERT(ok);
+
+    ok = indexBuffer()->bind();
+    Q_ASSERT(ok);
+
+    glVertexPointer(3, GL_FLOAT, 16, 0);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    Node::drawLines(picking);
 }
 
 void Root::drawTriangles(bool picking)
 {
-    Q_UNUSED(picking);
+    bool ok = vertexBuffer()->bind();
+    Q_ASSERT(ok);
+
+    ok = indexBuffer()->bind();
+    Q_ASSERT(ok);
+
+    glVertexPointer(3, GL_FLOAT, 16, 0);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    Node::drawTriangles(picking);
 }
 
-void Root::releaseBuffers() const
+VertexBuffer *Root::vertexBuffer() const
 {
-    QGLBuffer::release(QGLBuffer::IndexBuffer);
-    QGLBuffer::release(QGLBuffer::VertexBuffer);
-    Q_CHECK_GLERROR;
+    Q_ASSERT(d->vertexBuffer); // forgot to call initializeBuffers?
+    return d->vertexBuffer;
+}
+
+IndexBuffer *Root::indexBuffer() const
+{
+    Q_ASSERT(d->indexBuffer); // forgot to call initializeBuffers?
+    return d->indexBuffer;
 }

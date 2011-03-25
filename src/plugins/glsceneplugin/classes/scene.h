@@ -15,15 +15,32 @@
 **
 **************************************************************************/
 
-#include "iscene.h"
+#ifndef GL_SCENE_H
+#define GL_SCENE_H
 
-using namespace GL;
+#include <glsceneplugin/interfaces/iscene.h>
 
-IScene::IScene(QObject *parent)
-    :   QObject(parent)
+namespace GL {
+
+class GLSCENE_EXPORT Scene : public IScene
 {
-}
+    Q_OBJECT
 
-IScene::~IScene()
-{
-}
+public:
+    Scene(QObject *parent = 0);
+    virtual ~Scene();
+
+    virtual void initialize() = 0;
+    virtual void destroy() = 0;
+
+    virtual bool drawBackground() { return false; }
+    virtual bool drawStatic() { return false; }
+    virtual bool drawModel() { return false; }
+    virtual bool drawEdit() { return false; }
+    virtual bool drawAnimation(qreal time) { Q_UNUSED(time);  return false; }
+    virtual bool drawOverlay() { return false; }
+};
+
+} // namespace GL
+
+#endif // GL_SCENE_H

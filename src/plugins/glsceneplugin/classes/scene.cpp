@@ -15,15 +15,15 @@
 **
 **************************************************************************/
 
-#include "iscene.h"
+#include "scene.h"
 
 using namespace GL;
 
-IScene::IScene(QObject *parent)
-    :   QObject(parent)
+Scene::Scene(QObject *parent)
+    :   IScene(parent)
 {
 }
 
-IScene::~IScene()
+Scene::~Scene()
 {
 }

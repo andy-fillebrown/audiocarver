@@ -15,9 +15,10 @@
 **
 **************************************************************************/
 
-#include "node.h"
+#include "viewportscene.h"
 
-#include "root.h"
+#include <gleditorplugin/nodes/axesnode.h>
+#include <glsceneplugin/classes/root.h>
 
 using namespace GL;
 using namespace GL::Internal;
@@ -25,59 +26,69 @@ using namespace GL::Internal;
 namespace GL {
 namespace Internal {
 
-class NodePrivate
+class ViewportScenePrivate
 {
 public:
-    Node *q;
+    ViewportScene *q;
     Root *root;
+    AxesNode *axes;
 
-    NodePrivate(Node *q)
+    ViewportScenePrivate(ViewportScene *q)
         :   q(q)
-        ,   root(0)
+        ,   root(new Root(q))
+        ,   axes(0)
     {
+    }
+
+    ~ViewportScenePrivate()
+    {
+        axes = 0;
+        root = 0;
+        q = 0;
+    }
+
+    void init()
+    {
+        root->initializeBuffers(1024, 4096);
+        axes = new AxesNode(root);
+    }
+
+    void destroy()
+    {
+        root->destroyBuffers();
     }
 };
 
 } // namespace Internal
 } // namespace GL
 
-Node::Node(QObject *parent)
-    :   QObject(parent)
-    ,   d(new NodePrivate(this))
+ViewportScene::ViewportScene(QObject *parent)
+    :   Scene(parent)
+    ,   d(new ViewportScenePrivate(this))
 {
-    d->root = root();
 }
 
-Node::~Node()
+ViewportScene::~ViewportScene()
 {
     delete d;  d = 0;
 }
 
-Root *Node::root() const
+Root *ViewportScene::rootNode() const
 {
-    if (d->root)
-        return d->root;
-
-    if (isRoot())
-        return qobject_cast<Root*>(const_cast<Node*>(this));
-
-    Node *parent = qobject_cast<Node*>(this->parent());
-    if (parent)
-        return parent->root();
-
-    return 0;
+    return d->root;
 }
 
-void Node::drawLines(bool picking)
+void ViewportScene::initialize()
 {
-    QList<Node*> childNodes = findChildren<Node*>();
-    foreach (Node *node, childNodes)
-        node->drawLines(picking);
+    d->init();
 }
 
-void Node::drawTriangles(bool picking)
+void ViewportScene::destroy()
 {
-    QList<Node*> childNodes = findChildren<Node*>();
-    foreach (Node *node, childNodes)
-        node->drawTriangles(picking);
+}
+
+bool ViewportScene::drawStatic(bool picking)
+{
+    d->root->drawLines(picking);
+    return true;
 }

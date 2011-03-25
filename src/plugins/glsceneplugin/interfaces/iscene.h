@@ -30,7 +30,7 @@ class GLSCENE_EXPORT IScene : public QObject
     Q_OBJECT
 
 public:
-    IScene();
+    IScene(QObject *parent = 0);
     virtual ~IScene();
 
     virtual void initialize() = 0;

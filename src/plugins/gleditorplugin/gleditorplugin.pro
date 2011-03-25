@@ -10,6 +10,7 @@ DEFINES += GLEDITOR_LIBRARY
 
 HEADERS += \
     classes/viewport.h \
+    classes/viewportscene.h \
     classes/widget.h \
     classes/widget_p.h \
     classes/widgetsplit.h \
@@ -21,6 +22,8 @@ HEADERS += \
     \
     interfaces/ieditor.h \
     \
+    nodes/axesnode.h \
+    \
     settings/behaviorsettings.h \
     settings/displaysettings.h \
     \
@@ -30,6 +33,7 @@ HEADERS += \
 
 SOURCES += \
     classes/viewport.cpp \
+    classes/viewportscene.cpp \
     classes/widget.cpp \
     classes/widget_p.cpp \
     classes/widgetsplit.cpp \
@@ -40,6 +44,8 @@ SOURCES += \
     implementations/mainwindowimpl.cpp \
     \
     interfaces/ieditor.cpp \
+    \
+    nodes/axesnode.cpp \
     \
     settings/behaviorsettings.cpp \
     settings/displaysettings.cpp \
@@ -59,6 +65,7 @@ OTHER_FILES += \
     images/*.* \
     implementations/*.* \
     interfaces/*.* \
+    nodes/*.* \
     settings/*.* \
     shaders/*.* \
     *.*

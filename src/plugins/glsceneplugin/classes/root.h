@@ -27,6 +27,9 @@ class RootPrivate;
 
 } // Internal
 
+class IndexBuffer;
+class VertexBuffer;
+
 class GLSCENE_EXPORT Root : public Node
 {
     Q_OBJECT
@@ -35,12 +38,16 @@ public:
     Root(QObject *parent = 0);
     virtual ~Root();
 
+    void initializeBuffers(int vertexCount, int indexCount);
+    void destroyBuffers();
+
     virtual bool isRoot() const { return true; }
 
     virtual void drawLines(bool picking = false);
     virtual void drawTriangles(bool picking = false);
 
-    void releaseBuffers() const;
+    VertexBuffer *vertexBuffer() const;
+    IndexBuffer *indexBuffer() const;
 
 private:
     Q_DISABLE_COPY(Root)

@@ -23,6 +23,11 @@
 #include <glsceneplugin/glscene_global.h>
 
 namespace GL {
+namespace Internal {
+
+class NodePrivate;
+
+} // namespace Internal
 
 class Root;
 
@@ -40,8 +45,8 @@ public:
     virtual void drawLines(bool picking = false);
     virtual void drawTriangles(bool picking = false);
 
-public slots:
-    virtual void changeSubArrayId(int from, int to);
+private:
+    Internal::NodePrivate *d;
 };
 
 } // namespace GL
