@@ -158,6 +158,38 @@ class VertexBufferPrivate
 public:
 };
 
+class IndexArrayPrivate
+{
+public:
+    IndexSubBuffer *subBuffer;
+
+    IndexArrayPrivate(IndexSubBuffer *subBuffer)
+        :   subBuffer(subBuffer)
+    {
+    }
+
+    ~IndexArrayPrivate()
+    {
+        subBuffer = 0;
+    }
+};
+
+class VertexArrayPrivate
+{
+public:
+    VertexSubBuffer *subBuffer;
+
+    VertexArrayPrivate(VertexSubBuffer *subBuffer)
+        :   subBuffer(subBuffer)
+    {
+    }
+
+    ~VertexArrayPrivate()
+    {
+        subBuffer = 0;
+    }
+};
+
 } // namespace Internal
 } // namespace GL
 
@@ -255,7 +287,7 @@ IndexSubBuffer::~IndexSubBuffer()
     delete d;  d = 0;
 }
 
-void IndexSubBuffer::write(const QVector<index> &indices)
+void IndexSubBuffer::read(index *indices)
 {
     QGLBuffer *buffer = SubBuffer::d->buffer->d->buffer;
     Q_ASSERT(buffer);
@@ -268,9 +300,23 @@ void IndexSubBuffer::write(const QVector<index> &indices)
     if (!ok)
         return;
 
-    buffer->write(offset() * sizeof(index),
-                  indices.data(),
-                  count() * sizeof(index));
+    buffer->read(offset() * sizeof(index), indices, count() * sizeof(index));
+}
+
+void IndexSubBuffer::write(const index *indices)
+{
+    QGLBuffer *buffer = SubBuffer::d->buffer->d->buffer;
+    Q_ASSERT(buffer);
+    if (!buffer)
+        return;
+
+    bool ok = buffer->bind();
+    Q_ASSERT(ok);
+    Q_CHECK_GLERROR;
+    if (!ok)
+        return;
+
+    buffer->write(offset() * sizeof(index), indices, count() * sizeof(index));
 }
 
 VertexSubBuffer::VertexSubBuffer(int count, VertexBuffer *vertexBuffer)
@@ -285,7 +331,7 @@ VertexSubBuffer::~VertexSubBuffer()
     delete d;  d = 0;
 }
 
-void VertexSubBuffer::write(const QVector<Vertex> &vertices)
+void VertexSubBuffer::read(Vertex *vertices)
 {
     QGLBuffer *buffer = SubBuffer::d->buffer->d->buffer;
     Q_ASSERT(buffer);
@@ -298,7 +344,21 @@ void VertexSubBuffer::write(const QVector<Vertex> &vertices)
     if (!ok)
         return;
 
-    buffer->write(offset() * sizeof(Vertex),
-                  vertices.data(),
-                  count() * sizeof(Vertex));
+    buffer->write(offset() * sizeof(Vertex), vertices, count() * sizeof(Vertex));
+}
+
+void VertexSubBuffer::write(const Vertex *vertices)
+{
+    QGLBuffer *buffer = SubBuffer::d->buffer->d->buffer;
+    Q_ASSERT(buffer);
+    if (!buffer)
+        return;
+
+    bool ok = buffer->bind();
+    Q_ASSERT(ok);
+    Q_CHECK_GLERROR;
+    if (!ok)
+        return;
+
+    buffer->write(offset() * sizeof(Vertex), vertices, count() * sizeof(Vertex));
 }

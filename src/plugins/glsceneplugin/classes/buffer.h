@@ -34,11 +34,13 @@ namespace GL {
 namespace Internal {
 
 class BufferPrivate;
-class SubBufferPrivate;
-class IndexSubBufferPrivate;
+class IndexArrayPrivate;
 class IndexBufferPrivate;
-class VertexSubBufferPrivate;
+class IndexSubBufferPrivate;
+class SubBufferPrivate;
+class VertexArrayPrivate;
 class VertexBufferPrivate;
+class VertexSubBufferPrivate;
 
 } // namespace Internal
 
@@ -130,7 +132,8 @@ public:
     IndexSubBuffer(int count, IndexBuffer *indexBuffer);
     virtual ~IndexSubBuffer();
 
-    void write(const QVector<index> &indices);
+    void read(index *indices);
+    void write(const index *indices);
 
 private:
     Internal::IndexSubBufferPrivate *d;
@@ -144,11 +147,51 @@ public:
     VertexSubBuffer(int count, VertexBuffer *vertexBuffer);
     virtual ~VertexSubBuffer();
 
-    void write(const QVector<Vertex> &vertices);
+    void read(Vertex *vertices);
+    void write(const Vertex *vertices);
 
 private:
     Internal::VertexSubBufferPrivate *d;
 };
+
+template <typename ElementT, typename SubBufferT>
+class GLSCENE_EXPORT Array
+{
+public:
+    Array(SubBufferT *subBuffer, bool read = false)
+        :   sb(subBuffer)
+        ,   p(new ElementT[count()])
+    {
+        Q_ASSERT(sb);
+
+        if (read)
+            sb->read(p);
+    }
+
+    ~Array()
+    {
+        sb->write(p);
+        delete[] p;  p = 0;
+    }
+
+    int count() const
+    {
+        return sb->count();
+    }
+
+    ElementT &operator[](int i)
+    {
+        Q_ASSERT(i < count());
+        return p[i];
+    }
+
+private:
+    SubBufferT *sb;
+    ElementT *p;
+};
+
+typedef Array<index, IndexSubBuffer> IndexArray;
+typedef Array<Vertex, VertexSubBuffer> VertexArray;
 
 } // namespace GL
 

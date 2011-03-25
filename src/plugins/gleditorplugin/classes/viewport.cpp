@@ -377,21 +377,19 @@ public:
 
     void initStaticBuffers()
     {
-        QVector<Vertex> vertices(4);
+        VertexArray vertices(staticVSB);
         vertices[0] = Vertex(0, 0, 0);
         vertices[1] = Vertex(100000.0f, 0, 0);
         vertices[2] = Vertex(0, 100000.0f, 0);
         vertices[3] = Vertex(0, 0, -100000.0f);
-        staticVSB->write(vertices);
 
-        QVector<index> indices(6);
+        IndexArray indices(staticISB);
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 0;
         indices[3] = 2;
         indices[4] = 0;
         indices[5] = 3;
-        staticISB->write(indices);
     }
 
     void drawStatic()
