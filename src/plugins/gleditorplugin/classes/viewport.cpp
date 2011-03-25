@@ -21,6 +21,7 @@
 #include "widget_p.h"
 #include "widgetsplit.h"
 
+#include <glsceneplugin/classes/buffer.h>
 #include <glsceneplugin/interfaces/iscene.h>
 
 #include <gmtl/Generate.h>
@@ -92,6 +93,11 @@ public:
 
     Plane ucs;
 
+    VertexBuffer *staticVBO;
+    VertexArray *staticVA;
+    IndexBuffer *staticIBO;
+    IndexArray *staticIA;
+
     ViewportPrivate(Viewport *q, WidgetSplit *parentSplit)
         :   q(q)
         ,   parentSplit(parentSplit)
@@ -106,11 +112,11 @@ public:
         ,   autoViewUpdate(true)
         ,   autoViewUpdatePaused(false)
         ,   perspective(true)
-        ,   cameraEye(0.0f, 0.0f, -10.0f)
+        ,   cameraEye(0.0f, 0.0f, 100.0f)
         ,   cameraTarget(0.0f, 0.0f, 0.0f)
         ,   cameraUpVector(Constants::axisY)
         ,   cameraDistanceToTarget(qAbs(cameraEye[2]))
-        ,   cameraHeight(10.0f)
+        ,   cameraHeight(0.1f)
         ,   cameraViewVector(cameraTarget - cameraEye)
         ,   cameraViewDir(0.0f, 0.0f, 1.0f)
         ,   cameraSideVector(Constants::axisY)
@@ -119,10 +125,15 @@ public:
         ,   modelScaleY(1.0f)
         ,   modelScaleZ(1.0f)
         ,   ucs(Constants::planeXY)
+        ,   staticVBO(new VertexBuffer(4, q))
+        ,   staticVA(new VertexArray(4, staticVBO))
+        ,   staticIBO(new IndexBuffer(6, q))
+        ,   staticIA(new IndexArray(6, staticIBO))
     {
         Q_ASSERT(widget);
 
         initFBOs(parentSplit->width(), parentSplit->height());
+        initStaticBuffers();
 
         updateCamera();
         updateModelXform();
@@ -244,6 +255,7 @@ public:
         case StaticFBO:
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
+            drawStatic();
             drewToFBO = scene->drawStatic();
             break;
         case ModelFBO:
@@ -361,6 +373,41 @@ public:
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(viewXform.mData);
         glMultMatrixf(modelXform.mData);
+    }
+
+    void initStaticBuffers()
+    {
+        QVector<Vertex> vertices(4);
+        vertices[0] = Vertex(0, 0, 0);
+        vertices[1] = Vertex(100000.0f, 0, 0);
+        vertices[2] = Vertex(0, 100000.0f, 0);
+        vertices[3] = Vertex(0, 0, -100000.0f);
+        staticVA->write(vertices);
+
+        QVector<index> indices(6);
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 0;
+        indices[3] = 2;
+        indices[4] = 0;
+        indices[5] = 3;
+        staticIA->write(indices);
+    }
+
+    void drawStatic()
+    {
+        bool ok = staticVBO->bind();
+        Q_ASSERT(ok);
+
+        ok = staticIBO->bind();
+        Q_ASSERT(ok);
+
+        glVertexPointer(3, GL_FLOAT, 16, 0);
+
+        glColor3f(0, 0, 0);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glDrawElements(GL_LINES, 6, GL_UNSIGNED_SHORT, 0);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 };
 
@@ -669,6 +716,17 @@ Point Viewport::findPointOnPlane(const QPoint &pos, const Plane &plane) const
     const real x = (2.0f * posX / w) - 1.0f;
     const real y = -((2.0f * posY / h) - 1.0f);
 
+    // Since the ray start and end point z coords are always 0 and -1, the
+    // matrix multiplication can be optimized.
+
+    // Instead of this ...
+    //    Point startPt(x, y, 0);
+    //    Point endPt(x, y, -1);
+    //    startPt *= d->inverseCameraXform;
+    //    endPt *= d->inverseCameraXform;
+
+    // We optomize to this ...
+
     // Cache values common to start and end point transformations.
     const real *m = d->inverseCameraXform.mData;
     const real baseDenom = m[3] * x + m[7] * y + m[15];
@@ -688,19 +746,19 @@ Point Viewport::findPointOnPlane(const QPoint &pos, const Plane &plane) const
         startDenom * baseZ);
 
     // Calculate ray's end point.
-    const real endDenom = 1.0f / (baseDenom + m[11]);
+    const real endDenom = 1.0f / (baseDenom - m[11]);
     if (endDenom == 0.0f) {
         Q_ASSERT(false && "Can't calculate ray end point.");
         return Point();
     }
     const Point endPt(
-        endDenom * (baseX + m[8]),
-        endDenom * (baseY + m[9]),
-        endDenom * (baseZ + m[10]));
+        endDenom * (baseX - m[8]),
+        endDenom * (baseY - m[9]),
+        endDenom * (baseZ - m[10]));
 
     // Find intersection of ray and plane.
     real t;
-    Ray ray(startPt, endPt - startPt);
+    Ray ray(startPt, startPt - endPt);
     gmtl::intersect(plane, ray, t);
     Point pt = ray.mOrigin + ray.mDir * t;
     pt[0] = -pt[0];
