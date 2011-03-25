@@ -93,7 +93,7 @@ public:
         return buffer->type() == QGLBuffer::IndexBuffer ? sizeof(index) : sizeof(Vertex);
     }
 
-    void initializeBuffer(QGLBuffer::Type type)
+    void initBuffer(QGLBuffer::Type type)
     {
         Q_ASSERT(!buffer);
         Q_ASSERT(type == QGLBuffer::IndexBuffer || type == QGLBuffer::VertexBuffer);
@@ -121,7 +121,7 @@ public:
         Q_CHECK_GLERROR;
     }
 
-    void initializeArray(ArrayPrivate *array_d)
+    void initArray(ArrayPrivate *array_d)
     {
         Array *array = array_d->q;
         Q_ASSERT(!arrays.contains(array));
@@ -194,7 +194,7 @@ IndexBuffer::IndexBuffer(int count, QObject *parent)
 {
     Q_CHECK_PTR(d);
 
-    Buffer::d->initializeBuffer(QGLBuffer::IndexBuffer);
+    Buffer::d->initBuffer(QGLBuffer::IndexBuffer);
 }
 
 IndexBuffer::~IndexBuffer()
@@ -208,7 +208,7 @@ VertexBuffer::VertexBuffer(int count, QObject *parent)
 {
     Q_CHECK_PTR(d);
 
-    Buffer::d->initializeBuffer(QGLBuffer::VertexBuffer);
+    Buffer::d->initBuffer(QGLBuffer::VertexBuffer);
 }
 
 VertexBuffer::~VertexBuffer()
@@ -222,12 +222,13 @@ Array::Array(int count, Buffer *buffer)
 {
     Q_CHECK_PTR(d);
 
-    d->buffer->d->initializeArray(d);
+    d->buffer->d->initArray(d);
 }
 
 Array::~Array()
 {
-    d->buffer->d->removeArray(d);
+    if (d->buffer->d)
+        d->buffer->d->removeArray(d);
 
     delete d;  d = 0;
 }
