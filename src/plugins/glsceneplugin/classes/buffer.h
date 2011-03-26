@@ -49,12 +49,15 @@ class Vertex
 public:
     real x;
     real y;
-    real z;
-    real pad;
+//    real z;
+//    real pad;
 
-    Vertex(real x = 0.0f, real y = 0.0f, real z = 0.0f)
-        :   x(x), y(y), z(z), pad(0.0f)
+    Vertex(real x = 0.0f, real y = 0.0f)
+        :   x(x), y(y)
     {}
+//    Vertex(real x = 0.0f, real y = 0.0f, real z = 0.0f)
+//        :   x(x), y(y), z(z), pad(0.0f)
+//    {}
 };
 
 class GLSCENE_EXPORT Buffer : public QObject

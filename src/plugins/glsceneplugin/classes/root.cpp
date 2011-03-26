@@ -85,7 +85,8 @@ void Root::drawLines(bool picking)
     ok = indexBuffer()->bind();
     Q_ASSERT(ok);
 
-    glVertexPointer(3, GL_FLOAT, 16, 0);
+    glVertexPointer(2, GL_FLOAT, 8, 0);
+//    glVertexPointer(3, GL_FLOAT, 16, 0);
     glEnableClientState(GL_VERTEX_ARRAY);
 
     Node::drawLines(picking);
@@ -99,7 +100,8 @@ void Root::drawTriangles(bool picking)
     ok = indexBuffer()->bind();
     Q_ASSERT(ok);
 
-    glVertexPointer(3, GL_FLOAT, 16, 0);
+    glVertexPointer(2, GL_FLOAT, 0, 0);
+//    glVertexPointer(3, GL_FLOAT, 16, 0);
     glEnableClientState(GL_VERTEX_ARRAY);
 
     Node::drawTriangles(picking);

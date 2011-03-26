@@ -35,22 +35,27 @@ public:
 
     AxesNodePrivate(AxesNode *q)
         :   q(q)
-        ,   vertexSubBuffer(new VertexSubBuffer(4, q->root()->vertexBuffer()))
-        ,   indexSubBuffer(new IndexSubBuffer(6, q->root()->indexBuffer()))
+        ,   vertexSubBuffer(new VertexSubBuffer(3, q->root()->vertexBuffer()))
+        ,   indexSubBuffer(new IndexSubBuffer(4, q->root()->indexBuffer()))
+//        ,   vertexSubBuffer(new VertexSubBuffer(4, q->root()->vertexBuffer()))
+//        ,   indexSubBuffer(new IndexSubBuffer(6, q->root()->indexBuffer()))
     {
         VertexArray vertices(vertexSubBuffer);
-        vertices[0] = Vertex(0, 0, 0);
-        vertices[1] = Vertex(100000.0f, 0, 0);
-        vertices[2] = Vertex(0, 100000.0f, 0);
-        vertices[3] = Vertex(0, 0, -100000.0f);
+        vertices[0] = Vertex(0.0f, 0.0f);
+        vertices[1] = Vertex(100000.0f, 0.0f);
+        vertices[2] = Vertex(0.0f, 100000.0f);
+//        vertices[0] = Vertex(0, 0, 0);
+//        vertices[1] = Vertex(100000.0f, 0, 0);
+//        vertices[2] = Vertex(0, 100000.0f, 0);
+//        vertices[3] = Vertex(0, 0, -100000.0f);
 
         IndexArray indices(indexSubBuffer);
         indices[0] = 0;
         indices[1] = 1;
         indices[2] = 0;
         indices[3] = 2;
-        indices[4] = 0;
-        indices[5] = 3;
+//        indices[4] = 0;
+//        indices[5] = 3;
     }
 };
 
@@ -73,7 +78,7 @@ void AxesNode::drawLines(bool picking)
     Q_UNUSED(picking);
 
     glColor3f(0, 0, 0);
-    glDrawElements(GL_LINES, 6, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_LINES, 4, GL_UNSIGNED_SHORT, 0);
 }
 
 void AxesNode::drawTriangles(bool picking)
