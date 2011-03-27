@@ -28,11 +28,14 @@ class ScenePlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    ScenePlugin();
-    virtual ~ScenePlugin();
+    ScenePlugin() {}
+private:
+    ~ScenePlugin() {}
+    Q_DISABLE_COPY(ScenePlugin)
 
-    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    virtual void extensionsInitialized();
+private:
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized();
 };
 
 } // namespace Internal

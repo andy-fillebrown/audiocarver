@@ -23,8 +23,10 @@
 #include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
+
 class QXmlStreamReader;
 class QXmlStreamWriter;
+
 QT_END_NAMESPACE
 
 namespace Database {
@@ -36,10 +38,14 @@ class DATABASE_EXPORT Object : public QObject
 {
     Q_OBJECT
 
-public:
+protected:
     Object(QObject *parent = 0);
-    virtual ~Object();
+public:
+    ~Object() {}
+private:
+    Q_DISABLE_COPY(Object)
 
+public:
     virtual QString className() const;
     virtual bool isRoot() const { return false; }
 
@@ -65,19 +71,18 @@ public:
     virtual void write(QXmlStreamWriter &out) const;
     virtual void update(bool recursive = false);
 
-    friend class List;
+protected:
+    virtual void childEvent(QChildEvent *event);
 
 signals:
     void erased(Object *object = 0);
     void unerased(Object *object = 0);
 
-    void propertyChanged(int index, Object *object = 0);
-
-protected:
-    virtual void childEvent(QChildEvent *event);
+    void propertyChanged(int index);
 
 private:
-    Q_DISABLE_COPY(Object)
+    friend class List;
+
 };
 
 } // namespace Database

@@ -17,31 +17,24 @@
 
 #include "note.h"
 
+#include <ac_databaseplugin/classes/fcurve.h>
+
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
 namespace Internal {
 
-class NotePrivate
+class NoteData
 {
 public:
     int pointCount;
     FCurve *pitchCurve;
-    FCurve *volumeCurve;
 
-    NotePrivate()
+    NoteData()
         :   pointCount(64)
         ,   pitchCurve(0)
-        ,   volumeCurve(0)
-    {
-    }
-
-    ~NotePrivate()
-    {
-        volumeCurve = 0;
-        pitchCurve = 0;
-    }
+    {}
 };
 
 } // namespace Internal
@@ -49,14 +42,12 @@ public:
 
 Note::Note(QObject *parent)
     :   Object(parent)
-    ,   d(new NotePrivate)
-{
-    Q_CHECK_PTR(d);
-}
+    ,   d(new NoteData)
+{}
 
 Note::~Note()
 {
-    delete d;  d = 0;
+    delete d;
 }
 
 int Note::pointCount() const
@@ -68,10 +59,8 @@ void Note::setPointCount(int count)
 {
     if (pointCount() == count)
         return;
-
     d->pointCount = count;
-
-    emit propertyChanged(propertyIndex("pointCount"), this);
+    emit propertyChanged(propertyIndex("pointCount"));
 }
 
 Database::Object *Note::pitchCurve() const
@@ -83,23 +72,6 @@ void Note::setPitchCurve(Database::Object *curve)
 {
     if (pitchCurve() == curve)
         return;
-
     d->pitchCurve = qobject_cast<FCurve*>(curve);
-
-    emit propertyChanged(propertyIndex("pitchCurve"), this);
-}
-
-Database::Object *Note::volumeCurve() const
-{
-    return d->volumeCurve;
-}
-
-void Note::setVolumeCurve(Database::Object *curve)
-{
-    if (volumeCurve() == curve)
-        return;
-
-    d->volumeCurve = qobject_cast<FCurve*>(curve);
-
-    emit propertyChanged(propertyIndex("volumeCurve"), this);
+    emit propertyChanged(propertyIndex("pitchCurve"));
 }

@@ -17,17 +17,14 @@
 
 #include "mainwindowimpl.h"
 
-#include "ac_editorconstants.h"
+#include <ac_editorplugin/ac_editorconstants.h>
 
 #include <ac_databaseplugin/classes/score.h>
 #include <ac_databaseplugin/classes/track.h>
-
 #include <editorplugin/editorconstants.h>
-
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
-
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
@@ -36,27 +33,54 @@
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 
-#include <QtCore/QDebug>
-
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
-MainWindowImpl::MainWindowImpl()
-    :   versionDialog(0)
+namespace AudioCarver {
+namespace Internal {
+
+class MainWindowImplData
 {
+public:
+    Core::VersionDialog *versionDialog;
+
+    MainWindowImplData()
+        :   versionDialog(0)
+    {}
+};
+
+} // namespace Internal
+} // namespace AudioCarver
+
+static MainWindowImpl *instance = 0;
+
+MainWindowImpl::MainWindowImpl()
+    :   d(new MainWindowImplData)
+{
+    ::instance = this;
 }
 
 MainWindowImpl::~MainWindowImpl()
 {
-    versionDialog = 0;
+    delete d;
+}
+
+MainWindowImpl *MainWindowImpl::instance()
+{
+    return ::instance;
 }
 
 void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 {
+    Q_UNUSED(groups);
 }
 
 void MainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
+    Q_UNUSED(id);
+    Q_UNUSED(title);
+    Q_UNUSED(groups);
+
     if (menuBarGroup == Core::Constants::G_HELP)
         groups  << Constants::G_HELP_ABOUTAUDIOCARVER;
 }
@@ -92,17 +116,17 @@ void MainWindowImpl::initActions()
 
 void MainWindowImpl::aboutAudioCarver()
 {
-    if (!versionDialog) {
-        versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
-        connect(versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
+    if (!d->versionDialog) {
+        d->versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
+        connect(d->versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
     }
-    versionDialog->show();
+    d->versionDialog->show();
 }
 
 void MainWindowImpl::destroyVersionDialog()
 {
-    if (versionDialog) {
-        versionDialog->deleteLater();
-        versionDialog = 0;
+    if (d->versionDialog) {
+        d->versionDialog->deleteLater();
+        d->versionDialog = 0;
     }
 }

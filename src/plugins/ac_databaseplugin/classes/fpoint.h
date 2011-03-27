@@ -25,30 +25,29 @@ namespace AudioCarver {
 class AC_DATABASE_EXPORT FPoint
 {
 public:
-    FPoint() : xp(0.0f), yp(0.0f), curvep(false) {}
-    FPoint(qreal x, qreal y, bool curvePoint = false) : xp(x), yp(y), curvep(curvePoint) {}
-    ~FPoint() {}
+    FPoint(qreal x = 0.0f, qreal y = 0.0f, bool curved = false) : xp(x), yp(y), curvedp(curved) {}
 
+public:
     qreal x() const { return xp; }
     void setX(qreal x) { xp = x; }
 
     qreal y() const { return yp; }
     void setY(qreal y) { yp = y; }
 
-    bool isCurvePoint() const { return curvep; }
-    void setCurvePoint(bool curve) { curvep = curve; }
+    bool isCurved() const { return curvedp; }
+    void setCurved(bool curve) { curvedp = curve; }
 
     friend inline bool operator==(const FPoint &a, const FPoint &b);
 
 private:
     qreal xp;
     qreal yp;
-    bool curvep;
+    bool curvedp;
 };
 
 inline bool operator==(const FPoint &a, const FPoint &b)
 {
-    return a.curvep == b.curvep && qFuzzyIsNull(a.xp - a.xp) && qFuzzyIsNull(a.yp - a.yp);
+    return a.curvedp == b.curvedp && qFuzzyIsNull(a.xp - b.xp) && qFuzzyIsNull(a.yp - b.yp);
 }
 
 } // namespace AudioCarver

@@ -22,14 +22,6 @@
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
-EditorImpl::EditorImpl()
-{
-}
-
-EditorImpl::~EditorImpl()
-{
-}
-
 void EditorImpl::undo()
 {
     qDebug() << Q_FUNC_INFO;

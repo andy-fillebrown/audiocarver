@@ -28,8 +28,12 @@ class DATABASE_EXPORT Root : public Object
 
 public:
     Root(QObject *parent = 0);
-    virtual ~Root();
+protected:
+    ~Root() {}
+private:
+    Q_DISABLE_COPY(Root)
 
+public:
     virtual bool isRoot() const { return true; }
 
     virtual QString &normalizeClassName(QString &className) const;
@@ -41,9 +45,6 @@ public:
     virtual QVariant stringToVariant(const QString &string, const QString &type) const;
     QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const { return stringToVariant(stringRef.toString(), type); }
     QVariant stringToVariant(const QVariant &variant, const QString &type) const { Q_ASSERT(variant.type() == QVariant::String);  return stringToVariant(variant.toString(), type); }
-
-private:
-    Q_DISABLE_COPY(Root)
 };
 
 } // namespace Database

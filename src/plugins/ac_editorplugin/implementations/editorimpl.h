@@ -26,15 +26,18 @@ namespace Internal {
 class EditorImpl : public Editor::IEditor
 {
 public:
-    EditorImpl();
-    virtual ~EditorImpl();
+    EditorImpl() {}
+private:
+    ~EditorImpl() {}
+    Q_DISABLE_COPY(EditorImpl)
 
-    virtual void undo();
-    virtual void redo();
-    virtual void cut();
-    virtual void copy() const;
-    virtual void paste();
-    virtual void selectAll();
+private:
+    void undo();
+    void redo();
+    void cut();
+    void copy() const;
+    void paste();
+    void selectAll();
 };
 
 } // namespace Internal

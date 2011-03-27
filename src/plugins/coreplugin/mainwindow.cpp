@@ -184,7 +184,7 @@ void MainWindow::registerContainers()
             << Constants::G_HELP;
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    QList<IMainWindow *> mwlist = pm->getObjects<IMainWindow>();
+    QList<IMainWindow*> mwlist = pm->getObjects<IMainWindow>();
     foreach (IMainWindow *mw, mwlist)
         mw->initMenuBarGroups(menuBarGroups);
 

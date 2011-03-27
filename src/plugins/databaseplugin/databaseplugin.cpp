@@ -27,27 +27,13 @@
 using namespace Database;
 using namespace Database::Internal;
 
-DatabasePlugin::DatabasePlugin()
-{
-}
-
-DatabasePlugin::~DatabasePlugin()
-{
-}
-
 bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-
     qRegisterMetaType<Object*>();
     qRegisterMetaType<List*>();
-
     return true;
-}
-
-void DatabasePlugin::extensionsInitialized()
-{
 }
 
 Q_EXPORT_PLUGIN(DatabasePlugin)

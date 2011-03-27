@@ -17,30 +17,32 @@
 
 #include "track.h"
 
+#include "note.h"
+
+#include <databaseplugin/classes/list.h>
+
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
 namespace Internal {
 
-class TrackPrivate
+class TrackData
 {
 public:
     Database::List *notes;
     bool visible;
     qreal volume;
 
-    TrackPrivate(Track *q)
+    TrackData(Track *q)
         :   notes(new Database::List(q, q->propertyIndex("notes")))
         ,   visible(true)
         ,   volume(0.999999)
-    {
-        Q_CHECK_PTR(notes);
-    }
+    {}
 
-    ~TrackPrivate()
+    ~TrackData()
     {
-        delete notes;  notes = 0;
+        delete notes;
     }
 };
 
@@ -49,14 +51,12 @@ public:
 
 Track::Track(QObject *parent)
     :   Object(parent)
-    ,   d(new TrackPrivate(this))
-{
-    Q_CHECK_PTR(d);
-}
+    ,   d(new TrackData(this))
+{}
 
 Track::~Track()
 {
-    delete d;  d = 0;
+    delete d;
 }
 
 bool Track::isVisible() const
@@ -68,10 +68,8 @@ void Track::setVisibility(bool visible)
 {
     if (visible && isVisible())
         return;
-
     d->visible = visible;
-
-    emit propertyChanged(propertyIndex("visible"), this);
+    emit propertyChanged(propertyIndex("visible"));
 }
 
 qreal Track::volume() const
@@ -82,13 +80,17 @@ qreal Track::volume() const
 void Track::setVolume(qreal volume)
 {
     volume = qBound(0.0, volume, 1.0);
-
     if (volume == d->volume)
         return;
-
     d->volume = volume;
+    emit propertyChanged(propertyIndex("volume"));
+}
 
-    emit propertyChanged(propertyIndex("volume"), this);
+Note *Track::createNote()
+{
+    Note *note = new Note(this);
+    d->notes->append(note);
+    return note;
 }
 
 Database::List *Track::notes() const

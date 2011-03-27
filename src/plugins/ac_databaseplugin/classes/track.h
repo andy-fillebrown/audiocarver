@@ -18,15 +18,18 @@
 #ifndef AC_TRACK_H
 #define AC_TRACK_H
 
-#include <databaseplugin/classes/list.h>
+#include <databaseplugin/classes/object.h>
 
-#include "ac_databaseplugin/ac_database_global.h"
+#include <ac_databaseplugin/ac_database_global.h>
 
 namespace AudioCarver {
-
 namespace Internal {
-class TrackPrivate;
+
+class TrackData;
+
 } // namespace Internal
+
+class Note;
 
 class AC_DATABASE_EXPORT Track : public Database::Object
 {
@@ -38,19 +41,23 @@ class AC_DATABASE_EXPORT Track : public Database::Object
 
 public:
     Track(QObject *parent = 0);
+private:
     virtual ~Track();
+    Q_DISABLE_COPY(Track)
 
+public:
     bool isVisible() const;
     void setVisibility(bool visible);
 
     qreal volume() const;
     void setVolume(qreal volume);
 
+    Note *createNote();
+
     Database::List *notes() const;
 
 private:
-    Q_DISABLE_COPY(Track)
-    Internal::TrackPrivate *d;
+    Internal::TrackData *d;
 };
 
 } // namespace AudioCarver

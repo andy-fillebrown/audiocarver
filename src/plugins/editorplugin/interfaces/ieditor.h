@@ -30,7 +30,13 @@ class EDITOR_EXPORT IEditor : public QObject
 
 public:
     IEditor();
-    virtual ~IEditor();
+protected:
+    virtual ~IEditor() {}
+private:
+    Q_DISABLE_COPY(IEditor)
+
+public:
+    static IEditor *instance();
 
     virtual void undo() = 0;
     virtual void redo() = 0;

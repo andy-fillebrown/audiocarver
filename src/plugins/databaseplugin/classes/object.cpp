@@ -30,12 +30,7 @@ using namespace Database;
 
 Object::Object(QObject *parent)
     :   QObject(parent)
-{
-}
-
-Object::~Object()
-{
-}
+{}
 
 QString Object::className() const
 {
@@ -47,11 +42,9 @@ Root *Object::root() const
 {
     if (isRoot())
         return qobject_cast<Root*>(const_cast<Object*>(this));
-
     Object *parent = qobject_cast<Object*>(this->parent());
     if (parent)
         return parent->root();
-
     return 0;
 }
 
@@ -59,9 +52,7 @@ void Object::setId(const QString &id)
 {
     if (this->id() == id && !id.isEmpty())
         return;
-
     Root *root = this->root();
-
     if (root && !id.startsWith("~"))
         setObjectName(root->getUniqueId(this, id));
     else
@@ -72,26 +63,21 @@ void Object::erase()
 {
     if (isErased())
         return;
-
     QString id = this->id();
     id.prepend("~");
     setId(id);
-
-    emit erased(this);
+    emit erased();
 }
 
 void Object::unerase()
 {
     if (!isErased())
         return;
-
     QString id = this->id();
-
     if (id.at(0) == '~')
         id.remove(0, 1);
     setId(id);
-
-    emit unerased(this);
+    emit unerased();
 }
 
 /*!
@@ -148,10 +134,8 @@ void Object::setPropertyValue(int i, const QVariant &value)
 Object *Object::ioParent(QXmlStreamReader &in) const
 {
     Object *root = this->root();
-
     if (!root || root == this)
         return 0;
-
     return root->ioParent(in);
 }
 
@@ -167,18 +151,14 @@ bool Object::read(QXmlStreamReader &in)
 
     // Read properties.
     QXmlStreamAttributes atts = in.attributes();
-
     foreach (QXmlStreamAttribute att, atts) {
         QString name = att.name().toString();
         if (name == "id")
             name = "objectName";
-
         const int i = propertyIndex(name);
         QString type = propertyType(i);
-
         if (type == "Database::List*")
             continue;
-
         if (type.endsWith("*")) {
             Object *object = root->findChild<Object*>(att.value().toString());
             Q_ASSERT(object);
@@ -190,46 +170,32 @@ bool Object::read(QXmlStreamReader &in)
 
     // Read lists.
     const int count = propertyCount();
-
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
-
         if (type != "Database::List*")
             continue;
-
         List *list = propertyValue(i).value<List*>();
         Q_ASSERT(list);
         if (!list)
             return false;
-
         list->deleteAll();
-
         while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
-
         QString currentListName = in.name().toString();
-
         while (!in.atEnd()) {
             QXmlStreamReader::TokenType tokenType = in.readNext();
-
             if (tokenType == QXmlStreamReader::Characters)
                 continue;
-
             const QString currentClassName = in.name().toString();
-
             if (tokenType == QXmlStreamReader::EndElement && currentClassName == currentListName)
                 break;
-
             if (tokenType == QXmlStreamReader::StartElement) {
                 Object *object = root->createObject(currentClassName);
                 Q_ASSERT(object);
                 if (!object)
                     return false;
-
                 object->setParent(this);
-
                 if (!object->read(in))
                     return false;
-
                 list->append(object);
             }
         }
@@ -250,20 +216,15 @@ void Object::write(QXmlStreamWriter &out) const
 
     // Write properties.
     const int count = this->propertyCount();
-
     for (int i = 0;  i < count;  ++i) {
         QString type = propertyType(i);
-
         if (type == "Database::List*")
             continue;
-
         QVariant value = propertyValue(i);
-
         if (type.endsWith("*")) {
             Object *object = value.value<Object*>();
             value = object->id();
         }
-
         QString name = propertyName(i);
         if (name == "objectName")
             name = "id";
@@ -273,18 +234,13 @@ void Object::write(QXmlStreamWriter &out) const
     // Write lists.
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
-
         if (type != "Database::List*")
             continue;
-
         QVariant value = propertyValue(i);
         List *list = value.value<List*>();
-
         out.writeStartElement(propertyName(i));
-
         for (int i = 0;  i < list->count();  ++i)
             list->at(i)->write(out);
-
         out.writeEndElement();
     }
 
@@ -298,9 +254,7 @@ void Object::update(bool recursive)
 {
     if (!recursive)
         return;
-
     const QObjectList &children = this->children();
-
     foreach (QObject *child, children) {
         Object *object = qobject_cast<Object*>(child);
         if (object)

@@ -22,14 +22,6 @@
 using namespace Scene;
 using namespace Scene::Internal;
 
-ScenePlugin::ScenePlugin()
-{
-}
-
-ScenePlugin::~ScenePlugin()
-{
-}
-
 bool ScenePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
@@ -39,7 +31,6 @@ bool ScenePlugin::initialize(const QStringList &arguments, QString *errorMessage
 }
 
 void ScenePlugin::extensionsInitialized()
-{
-}
+{}
 
 Q_EXPORT_PLUGIN(ScenePlugin)

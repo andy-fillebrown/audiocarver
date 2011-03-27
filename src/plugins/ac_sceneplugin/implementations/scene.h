@@ -23,16 +23,18 @@
 namespace AudioCarver {
 namespace Internal {
 
-class SceneImplPrivate;
+class SceneImplData;
 
 class SceneImpl : public Scene::IScene
 {
 public:
     SceneImpl();
-    virtual ~SceneImpl();
+private:
+    ~SceneImpl();
+    Q_DISABLE_COPY(SceneImpl)
 
 private:
-    SceneImplPrivate *d;
+    SceneImplData *d;
 };
 
 } // namespace Internal

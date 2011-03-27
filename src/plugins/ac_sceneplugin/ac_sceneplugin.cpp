@@ -19,33 +19,16 @@
 
 #include <implementations/scene.h>
 
-#include <extensionsystem/pluginmanager.h>
-
 #include <QtCore/QtPlugin>
 
-using namespace AudioCarver;
 using namespace AudioCarver::Internal;
-
-ScenePlugin::ScenePlugin()
-{
-}
-
-ScenePlugin::~ScenePlugin()
-{
-}
 
 bool ScenePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-
     addAutoReleasedObject(new SceneImpl);
-
     return true;
-}
-
-void ScenePlugin::extensionsInitialized()
-{
 }
 
 Q_EXPORT_PLUGIN(ScenePlugin)

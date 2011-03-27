@@ -23,25 +23,28 @@
 namespace AudioCarver {
 namespace Internal {
 
-class DatabaseImplPrivate;
+class DatabaseImplData;
 
 class DatabaseImpl : public Database::IDatabase
 {
 public:
     DatabaseImpl();
-    virtual ~DatabaseImpl();
-
-    virtual const QString &fileExtension() const;
-    virtual const QString &fileFilter() const;
-
-    virtual const QString &fileName() const;
-
-    virtual void clear();
-    virtual void read(const QString &fileName);
-    virtual void write(const QString &fileName);
+private:
+    ~DatabaseImpl();
+    Q_DISABLE_COPY(DatabaseImpl)
 
 private:
-    DatabaseImplPrivate *d;
+    const QString &fileExtension() const;
+    const QString &fileFilter() const;
+
+    const QString &fileName() const;
+
+    void clear();
+    void read(const QString &fileName);
+    void write(const QString &fileName);
+
+private:
+    DatabaseImplData *d;
 };
 
 } // namespace Internal

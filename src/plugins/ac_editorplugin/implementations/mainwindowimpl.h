@@ -20,14 +20,10 @@
 
 #include <coreplugin/interfaces/imainwindow.h>
 
-namespace Core {
-
-class VersionDialog;
-
-} // namespace Core
-
 namespace AudioCarver {
 namespace Internal {
+
+class MainWindowImplData;
 
 class MainWindowImpl : public Core::IMainWindow
 {
@@ -35,18 +31,24 @@ class MainWindowImpl : public Core::IMainWindow
 
 public:
     MainWindowImpl();
-    virtual ~MainWindowImpl();
+private:
+    ~MainWindowImpl();
+    Q_DISABLE_COPY(MainWindowImpl)
 
-    virtual void initMenuBarGroups(QStringList &groups) const;
-    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    virtual void initActions();
+public:
+    static MainWindowImpl *instance();
+
+private:
+    void initMenuBarGroups(QStringList &groups) const;
+    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    void initActions();
 
 private slots:
     void aboutAudioCarver();
     void destroyVersionDialog();
 
 private:
-    Core::VersionDialog *versionDialog;
+    MainWindowImplData *d;
 };
 
 } // namespace Internal

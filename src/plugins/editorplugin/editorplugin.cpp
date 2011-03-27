@@ -17,7 +17,7 @@
 
 #include "editorplugin.h"
 
-#include "implementations/mainwindowimpl.h"
+#include <editorplugin/implementations/mainwindowimpl.h>
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
@@ -26,14 +26,6 @@
 
 using namespace Editor;
 using namespace Editor::Internal;
-
-EditorPlugin::EditorPlugin()
-{
-}
-
-EditorPlugin::~EditorPlugin()
-{
-}
 
 bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
@@ -45,8 +37,7 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
 void EditorPlugin::extensionsInitialized()
 {
-    Core::ICore *core = Core::ICore::instance();
-    Core::MainWindow *mw = core->mainWindow();
+    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
     mw->registerContainers();
     mw->registerActions();
 }

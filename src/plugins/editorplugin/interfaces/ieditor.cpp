@@ -19,10 +19,14 @@
 
 using namespace Editor;
 
+static IEditor *instance = 0;
+
 IEditor::IEditor()
 {
+    ::instance = this;
 }
 
-IEditor::~IEditor()
+IEditor *IEditor::instance()
 {
+    return ::instance;
 }

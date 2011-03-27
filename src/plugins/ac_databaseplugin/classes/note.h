@@ -18,12 +18,15 @@
 #ifndef AC_NOTE_H
 #define AC_NOTE_H
 
-#include "fcurve.h"
+#include <databaseplugin/classes/object.h>
+
+#include <ac_databaseplugin/ac_database_global.h>
 
 namespace AudioCarver {
-
 namespace Internal {
-class NotePrivate;
+
+class NoteData;
+
 } // namespace Internal
 
 class AC_DATABASE_EXPORT Note : public Database::Object
@@ -32,24 +35,22 @@ class AC_DATABASE_EXPORT Note : public Database::Object
 
     Q_PROPERTY(int pointCount READ pointCount WRITE setPointCount)
     Q_PROPERTY(Database::Object* pitchCurve READ pitchCurve WRITE setPitchCurve)
-    Q_PROPERTY(Database::Object* volumeCurve READ volumeCurve WRITE setVolumeCurve)
 
 public:
     Note(QObject *parent = 0);
+private:
     virtual ~Note();
+    Q_DISABLE_COPY(Note)
 
+public:
     int pointCount() const;
     void setPointCount(int count);
 
     Database::Object *pitchCurve() const;
     void setPitchCurve(Database::Object *curve);
 
-    Database::Object *volumeCurve() const;
-    void setVolumeCurve(Database::Object *curve);
-
 private:
-    Q_DISABLE_COPY(Note)
-    Internal::NotePrivate *d;
+    Internal::NoteData *d;
 };
 
 } // namespace AudioCarver

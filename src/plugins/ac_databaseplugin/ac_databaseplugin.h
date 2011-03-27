@@ -28,11 +28,14 @@ class DatabasePlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    DatabasePlugin();
-    ~DatabasePlugin();
+    DatabasePlugin() {}
+private:
+    ~DatabasePlugin() {}
+    Q_DISABLE_COPY(DatabasePlugin)
 
-    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    virtual void extensionsInitialized();
+private:
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized() {}
 };
 
 } // namespace Internal

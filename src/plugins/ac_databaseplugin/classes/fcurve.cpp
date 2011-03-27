@@ -17,6 +17,7 @@
 
 #include "fcurve.h"
 
+#include <ac_databaseplugin/classes/fpoint.h>
 #include <databaseplugin/classes/root.h>
 
 #include <QtCore/QXmlStreamReader>
@@ -33,17 +34,14 @@ static bool lessThan(const FPoint &a, const FPoint &b)
 namespace AudioCarver {
 namespace Internal {
 
-class FCurvePrivate
+class FCurveData
 {
 public:
     QList<FPoint> points;
 
-    FCurvePrivate()
+    void sortPoints()
     {
-    }
-
-    ~FCurvePrivate()
-    {
+        qSort(points.begin(), points.end(), lessThan);
     }
 };
 
@@ -52,14 +50,12 @@ public:
 
 FCurve::FCurve(QObject *parent)
     :   Database::Object(parent)
-    ,   d(new FCurvePrivate)
-{
-    Q_CHECK_PTR(d);
-}
+    ,   d(new FCurveData)
+{}
 
 FCurve::~FCurve()
 {
-    delete d;  d = 0;
+    delete d;
 }
 
 const QList<FPoint> &FCurve::points() const
@@ -80,8 +76,8 @@ const FPoint &FCurve::pointAt(int i) const
 void FCurve::setPointAt(const FPoint &point, int i)
 {
     d->points[i] = point;
-    qSort(d->points.begin(), d->points.end(), lessThan);
-    emit pointsChanged(this);
+    d->sortPoints();
+    emit pointsChanged();
 }
 
 int FCurve::indexOfPoint(const FPoint &point)
@@ -92,22 +88,22 @@ int FCurve::indexOfPoint(const FPoint &point)
 void FCurve::appendPoint(const FPoint &point)
 {
     d->points.append(point);
-    qSort(d->points.begin(), d->points.end(), lessThan);
-    emit pointsChanged(this);
+    d->sortPoints();
+    emit pointsChanged();
 }
 
 void FCurve::removePoint(const FPoint &point)
 {
     d->points.removeOne(point);
-    qSort(d->points.begin(), d->points.end(), lessThan);
-    emit pointsChanged(this);
+    d->sortPoints();
+    emit pointsChanged();
 }
 
 void FCurve::removePoint(int i)
 {
     d->points.removeAt(i);
-    qSort(d->points.begin(), d->points.end(), lessThan);
-    emit pointsChanged(this);
+    d->sortPoints();
+    emit pointsChanged();
 }
 
 bool FCurve::read(QXmlStreamReader &in)
@@ -116,7 +112,6 @@ bool FCurve::read(QXmlStreamReader &in)
 
     // Read properties.
     QXmlStreamAttributes atts = in.attributes();
-
     foreach (const QXmlStreamAttribute &att, atts) {
         QString name = att.name().toString();
         if (name == "id")
@@ -125,24 +120,17 @@ bool FCurve::read(QXmlStreamReader &in)
 
     // Read points.
     d->points.clear();
-
     while (!in.atEnd()) {
         QXmlStreamReader::TokenType tokenType = in.readNext();
-
         if (tokenType == QXmlStreamReader::Characters)
             continue;
-
         const QString currentClassName = in.name().toString();
-
         if (tokenType == QXmlStreamReader::EndElement && currentClassName == className())
             break;
-
         if (tokenType == QXmlStreamReader::StartElement) {
             Q_ASSERT(in.name() == "point");
-
             atts = in.attributes();
             FPoint point;
-
             foreach (const QXmlStreamAttribute &att, atts) {
                 const QString name = att.name().toString();
                 const QString value = att.value().toString();
@@ -151,12 +139,12 @@ bool FCurve::read(QXmlStreamReader &in)
                 else if (name == "y")
                     point.setY(QVariant(value).toDouble());
                 else if (name == "curve")
-                    point.setCurvePoint(value == "1");
+                    point.setCurved(value == "1");
             }
-
             d->points.append(point);
         }
     }
+    d->sortPoints();
 
     return true;
 }
@@ -176,7 +164,7 @@ void FCurve::write(QXmlStreamWriter &out) const
         out.writeStartElement("point");
         out.writeAttribute("x", root->variantToString(QVariant(d->points.at(i).x())));
         out.writeAttribute("y", root->variantToString(QVariant(d->points.at(i).y())));
-        out.writeAttribute("curve", root->variantToString(QVariant(d->points.at(i).isCurvePoint())));
+        out.writeAttribute("curve", root->variantToString(QVariant(d->points.at(i).isCurved())));
         out.writeEndElement();
     }
 

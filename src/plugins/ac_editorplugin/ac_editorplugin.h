@@ -28,12 +28,14 @@ class EditorPlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    EditorPlugin();
-    ~EditorPlugin();
+    EditorPlugin() {}
+private:
+    ~EditorPlugin() {}
+    Q_DISABLE_COPY(EditorPlugin)
 
-    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    virtual void extensionsInitialized();
-    virtual ShutdownFlag aboutToShutdown();
+private:
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized() {}
 };
 
 } // namespace Internal

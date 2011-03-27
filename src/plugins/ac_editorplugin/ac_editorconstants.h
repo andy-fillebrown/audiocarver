@@ -36,16 +36,6 @@ const char * const M_CREATE                = PRO_NAME_STR".Menu.Create";
 const char * const M_MODIFY                = PRO_NAME_STR".Menu.Modify";
 const char * const M_BUILD                 = PRO_NAME_STR".Menu.Build";
 
-const char * const M_VIEW_SCALE            = PRO_NAME_STR".Menu.View.Scale";
-
-const char * const VIEWFRONT               = PRO_NAME_STR".ViewFront";
-const char * const VIEWSIDE                = PRO_NAME_STR".ViewSide";
-const char * const VIEWBOTTOM              = PRO_NAME_STR".ViewBottom";
-const char * const VIEWSCALEINCREASEX      = PRO_NAME_STR".ViewScaleIncreaseX";
-const char * const VIEWSCALEDECREASEX      = PRO_NAME_STR".ViewScaleDecreaseX";
-const char * const VIEWSCALEINCREASEZ      = PRO_NAME_STR".ViewScaleIncreaseZ";
-const char * const VIEWSCALEDECREASEZ      = PRO_NAME_STR".ViewScaleDecreaseZ";
-
 const char * const CREATETRACK             = PRO_NAME_STR".CreateTrack";
 const char * const CREATENOTE              = PRO_NAME_STR".CreateNote";
 const char * const CREATECURVE             = PRO_NAME_STR".CreateCurve";

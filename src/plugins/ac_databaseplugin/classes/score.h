@@ -20,12 +20,13 @@
 
 #include <databaseplugin/classes/root.h>
 
-#include "ac_databaseplugin/ac_database_global.h"
+#include <ac_databaseplugin/ac_database_global.h>
 
 namespace AudioCarver {
-
 namespace Internal {
-class ScorePrivate;
+
+class ScoreData;
+
 } // namespace Internal
 
 class AC_DATABASE_EXPORT Score : public Database::Root
@@ -37,22 +38,23 @@ class AC_DATABASE_EXPORT Score : public Database::Root
 
 public:
     Score(QObject *parent = 0);
+private:
     virtual ~Score();
+    Q_DISABLE_COPY(Score)
 
-    void initialize();
-
+public:
     static Score *instance();
-
-    virtual QString &normalizeClassName(QString &className) const;
-
-    virtual Database::Object *createObject(const QString &className) const;
 
     Database::List *curves() const;
     Database::List *tracks() const;
 
+    void clear();
+
+    QString &normalizeClassName(QString &className) const;
+    Database::Object *createObject(const QString &className);
+
 private:
-    Q_DISABLE_COPY(Score)
-    Internal::ScorePrivate *d;
+    Internal::ScoreData *d;
 };
 
 } // namespace AudioCarver

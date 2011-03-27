@@ -19,10 +19,14 @@
 
 using namespace Database;
 
+static IDatabase *instance = 0;
+
 IDatabase::IDatabase()
 {
+    ::instance = this;
 }
 
-IDatabase::~IDatabase()
+IDatabase *IDatabase::instance()
 {
+    return ::instance;
 }

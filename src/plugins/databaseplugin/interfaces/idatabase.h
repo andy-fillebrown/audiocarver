@@ -18,13 +18,11 @@
 #ifndef IDATABASE_H
 #define IDATABASE_H
 
-#include <databaseplugin/database_global.h>
-
 #include <QtCore/QObject>
 
-namespace Database {
+#include <databaseplugin/database_global.h>
 
-class Object;
+namespace Database {
 
 class DATABASE_EXPORT IDatabase : public QObject
 {
@@ -32,7 +30,13 @@ class DATABASE_EXPORT IDatabase : public QObject
 
 public:
     IDatabase();
-    virtual ~IDatabase();
+protected:
+    virtual ~IDatabase() {}
+private:
+    Q_DISABLE_COPY(IDatabase)
+
+public:
+    static IDatabase *instance();
 
     virtual const QString &fileExtension() const = 0;
     virtual const QString &fileFilter() const = 0;

@@ -19,16 +19,13 @@
 
 #include <editorplugin/interfaces/ieditor.h>
 #include <editorplugin/editorconstants.h>
-
+#include <databaseplugin/interfaces/idatabase.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/command.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
-#include <databaseplugin/interfaces/idatabase.h>
-
-#include <extensionsystem/pluginmanager.h>
 
 #include <QtGui/QAction>
 #include <QtGui/QFileDialog>
@@ -36,14 +33,6 @@
 
 using namespace Editor;
 using namespace Editor::Internal;
-
-MainWindowImpl::MainWindowImpl()
-{
-}
-
-MainWindowImpl::~MainWindowImpl()
-{
-}
 
 void MainWindowImpl::initMenuBarGroups(QStringList &groups) const
 {
@@ -177,23 +166,16 @@ void MainWindowImpl::initActions()
 
 void MainWindowImpl::newFile()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    if (!db)
-        return;
-    db->clear();
+    Database::IDatabase::instance()->clear();
 }
 
 void MainWindowImpl::openFile()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    if (!db)
-        return;
-    const QString filter = db->fileFilter();
+    Database::IDatabase *db = Database::IDatabase::instance();
+
     QString filename = QFileDialog::getOpenFileName(
                 Core::ICore::instance()->mainWindow(), "", "",
-                tr(qPrintable(filter)));
+                tr(qPrintable(db->fileFilter())));
     if (!QFile::exists(filename))
         return;
     db->read(filename);
@@ -201,10 +183,8 @@ void MainWindowImpl::openFile()
 
 void MainWindowImpl::saveFile()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    if (!db)
-        return;
+    Database::IDatabase *db = Database::IDatabase::instance();
+
     if (db->fileName().isEmpty())
         saveFileAs();
     else
@@ -213,14 +193,10 @@ void MainWindowImpl::saveFile()
 
 void MainWindowImpl::saveFileAs()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Database::IDatabase *db = pm->getObject<Database::IDatabase>();
-    if (!db)
-        return;
-    const QString filter = db->fileFilter();
+    Database::IDatabase *db = Database::IDatabase::instance();
     QString filename = QFileDialog::getSaveFileName(
                 Core::ICore::instance()->mainWindow(), "", "",
-                tr(qPrintable(filter)));
+                tr(qPrintable(db->fileFilter())));
     if (filename.isEmpty())
         return;
     if (!filename.endsWith(db->fileExtension()))
@@ -230,54 +206,30 @@ void MainWindowImpl::saveFileAs()
 
 void MainWindowImpl::undo()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
-    if (!ed)
-        return;
-    ed->undo();
+    IEditor::instance()->undo();
 }
 
 void MainWindowImpl::redo()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
-    if (!ed)
-        return;
-    ed->redo();
+    IEditor::instance()->redo();
 }
 
 void MainWindowImpl::cut()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
-    if (!ed)
-        return;
-    ed->cut();
+    IEditor::instance()->cut();
 }
 
 void MainWindowImpl::copy()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
-    if (!ed)
-        return;
-    ed->copy();
+    IEditor::instance()->copy();
 }
 
 void MainWindowImpl::paste()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
-    if (!ed)
-        return;
-    ed->paste();
+    IEditor::instance()->paste();
 }
 
 void MainWindowImpl::selectAll()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    Editor::IEditor *ed = pm->getObject<Editor::IEditor>();
-    if (!ed)
-        return;
-    ed->selectAll();
+    IEditor::instance()->selectAll();
 }

@@ -21,9 +21,4 @@ using namespace Scene;
 
 IScene::IScene(QObject *parent)
     :   QObject(parent)
-{
-}
-
-IScene::~IScene()
-{
-}
+{}

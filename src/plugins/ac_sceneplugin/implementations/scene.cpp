@@ -17,38 +17,24 @@
 
 #include "scene.h"
 
-using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
 namespace Internal {
 
-class SceneImplPrivate
+class SceneImplData
 {
 public:
-    SceneImpl *q;
-
-    SceneImplPrivate(SceneImpl *q)
-        :   q(q)
-    {
-    }
-
-    ~SceneImplPrivate()
-    {
-        q = 0;
-    }
 };
 
 } // namespace Internal
 } // namespace AudioCarver
 
 SceneImpl::SceneImpl()
-    :   d(new SceneImplPrivate(this))
-{
-}
+    :   d(new SceneImplData)
+{}
 
 SceneImpl::~SceneImpl()
 {
-
-    delete d;  d = 0;
+    delete d;
 }

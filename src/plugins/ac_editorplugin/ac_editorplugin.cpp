@@ -20,40 +20,18 @@
 #include "implementations/mainwindowimpl.h"
 #include "implementations/editorimpl.h"
 
-#include <coreplugin/icore.h>
-#include <coreplugin/mainwindow.h>
-
 #include <QtCore/QtPlugin>
 
 using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
-EditorPlugin::EditorPlugin()
-{
-}
-
-EditorPlugin::~EditorPlugin()
-{
-}
-
 bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-
     addAutoReleasedObject(new MainWindowImpl);
     addAutoReleasedObject(new EditorImpl);
-
     return true;
-}
-
-void EditorPlugin::extensionsInitialized()
-{
-}
-
-ExtensionSystem::IPlugin::ShutdownFlag EditorPlugin::aboutToShutdown()
-{
-    return SynchronousShutdown;
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin)

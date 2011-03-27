@@ -30,7 +30,10 @@ class SCENE_EXPORT IScene : public QObject
 
 public:
     IScene(QObject *parent = 0);
-    virtual ~IScene();
+protected:
+    virtual ~IScene() {}
+private:
+    Q_DISABLE_COPY(IScene)
 };
 
 } // namespace Scene

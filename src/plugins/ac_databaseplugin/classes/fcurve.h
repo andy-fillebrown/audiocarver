@@ -18,15 +18,18 @@
 #ifndef AC_FCURVE_H
 #define AC_FCURVE_H
 
-#include "fpoint.h"
-
 #include <databaseplugin/classes/object.h>
 
-namespace AudioCarver {
+#include <ac_databaseplugin/ac_database_global.h>
 
+namespace AudioCarver {
 namespace Internal {
-class FCurvePrivate;
+
+class FCurveData;
+
 } // namespace Internal
+
+class FPoint;
 
 class AC_DATABASE_EXPORT FCurve : public Database::Object
 {
@@ -34,8 +37,11 @@ class AC_DATABASE_EXPORT FCurve : public Database::Object
 
 public:
     FCurve(QObject *parent = 0);
+private:
     virtual ~FCurve();
+    Q_DISABLE_COPY(FCurve)
 
+public:
     const QList<FPoint> &points() const;
     int pointCount() const;
     const FPoint &pointAt(int i) const;
@@ -49,10 +55,10 @@ public:
     virtual void write(QXmlStreamWriter &out) const;
 
 signals:
-    void pointsChanged(FCurve *curve = 0);
+    void pointsChanged();
 
 private:
-    Internal::FCurvePrivate *d;
+    Internal::FCurveData *d;
 };
 
 } // namespace AudioCarver

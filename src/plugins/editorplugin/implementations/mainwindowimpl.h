@@ -28,14 +28,17 @@ class MainWindowImpl : public Core::IMainWindow
     Q_OBJECT
 
 public:
-    MainWindowImpl();
-    virtual ~MainWindowImpl();
+    MainWindowImpl() {}
+private:
+    ~MainWindowImpl() {}
+    Q_DISABLE_COPY(MainWindowImpl)
 
-    virtual void initMenuBarGroups(QStringList &groups) const;
-    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    virtual void initActions();
+private:
+    void initMenuBarGroups(QStringList &groups) const;
+    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    void initActions();
 
-public slots:
+private slots:
     void newFile();
     void openFile();
     void saveFile();

@@ -23,12 +23,7 @@ using namespace Database;
 
 Root::Root(QObject *parent)
     :   Object(parent)
-{
-}
-
-Root::~Root()
-{
-}
+{}
 
 QString &Root::normalizeClassName(QString &className) const
 {
@@ -40,37 +35,28 @@ QString Root::getUniqueId(Object *object, const QString &idHint) const
     QString actualId = idHint;
     if (actualId.isEmpty())
         actualId = object->className() + ".1";
-
     bool idIsUsed = false;
     QList<Object*> children = findChildren<Object*>();
-    foreach (Object *object, children)
-    {
+    foreach (Object *object, children) {
         Q_ASSERT(object);
-
         if (object->id() == actualId) {
             idIsUsed = true;
             break;
         }
     }
-
     if (!idIsUsed)
         return actualId;
-
     int lastIndexOfDot = actualId.lastIndexOf(".");
     if (lastIndexOfDot != -1)
         actualId = actualId.left(lastIndexOfDot);
-
     int maxSuffix = 0;
-
     foreach (Object *object, children) {
         Q_ASSERT(object);
-
         QString id = object->id();
         if (id.startsWith(actualId)) {
             int lastIndexOfDot = id.lastIndexOf(".");
             if (lastIndexOfDot == -1)
                 continue;
-
             QString preDotName = id.left(lastIndexOfDot);
             if (actualId.startsWith(preDotName)) {
                 QString suffix = id.mid(lastIndexOfDot + 1);
@@ -78,7 +64,6 @@ QString Root::getUniqueId(Object *object, const QString &idHint) const
             }
         }
     }
-
     return actualId += QString(".%1").arg(maxSuffix + 1);
 }
 
