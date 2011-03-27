@@ -1,9 +1,7 @@
 TARGET   = Utils
 TEMPLATE = lib
 
-QT *= gui
-
-include(../../projectlibrary.pri)
+include(../../library.pri)
 
 DEFINES += UTILS_LIB
 
@@ -19,7 +17,7 @@ HEADERS += \
     pathchooser.h \
     stringutils.h \
     treewidgetcolumnstretcher.h \
-    utils_global.h
+    utils_global.h \
 
 SOURCES += \
     basevalidatinglineedit.cpp \
@@ -29,11 +27,9 @@ SOURCES += \
     filterlineedit.cpp \
     pathchooser.cpp \
     stringutils.cpp \
-    treewidgetcolumnstretcher.cpp
+    treewidgetcolumnstretcher.cpp \
 
 unix: !macx {
     HEADERS += unixutils.h
     SOURCES += unixutils.cpp
 }
-
-OTHER_FILES += utils.pri

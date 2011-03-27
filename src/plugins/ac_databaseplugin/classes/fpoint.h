@@ -20,22 +20,20 @@
 
 #include <ac_databaseplugin/ac_database_global.h>
 
-#include <glutils/glutils_global.h>
-
 namespace AudioCarver {
 
 class AC_DATABASE_EXPORT FPoint
 {
 public:
     FPoint() : xp(0.0f), yp(0.0f), curvep(false) {}
-    FPoint(GL::real x, GL::real y, bool curvePoint = false) : xp(x), yp(y), curvep(curvePoint) {}
+    FPoint(qreal x, qreal y, bool curvePoint = false) : xp(x), yp(y), curvep(curvePoint) {}
     ~FPoint() {}
 
-    GL::real x() const { return xp; }
-    void setX(GL::real x) { xp = x; }
+    qreal x() const { return xp; }
+    void setX(qreal x) { xp = x; }
 
-    GL::real y() const { return yp; }
-    void setY(GL::real y) { yp = y; }
+    qreal y() const { return yp; }
+    void setY(qreal y) { yp = y; }
 
     bool isCurvePoint() const { return curvep; }
     void setCurvePoint(bool curve) { curvep = curve; }
@@ -43,8 +41,8 @@ public:
     friend inline bool operator==(const FPoint &a, const FPoint &b);
 
 private:
-    GL::real xp;
-    GL::real yp;
+    qreal xp;
+    qreal yp;
     bool curvep;
 };
 

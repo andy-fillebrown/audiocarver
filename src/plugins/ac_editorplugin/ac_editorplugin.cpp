@@ -17,11 +17,8 @@
 
 #include "ac_editorplugin.h"
 
-#include "classes/widget.h"
-
 #include "implementations/mainwindowimpl.h"
 #include "implementations/editorimpl.h"
-#include "implementations/gleditorimpl.h"
 
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
@@ -46,30 +43,16 @@ bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessag
 
     addAutoReleasedObject(new MainWindowImpl);
     addAutoReleasedObject(new EditorImpl);
-    addAutoReleasedObject(new GLEditorImpl);
 
     return true;
 }
 
 void EditorPlugin::extensionsInitialized()
 {
-    // EditorWidget instance must be created with main window as it's parent,
-    // otherwise app crashes on Windows.
-    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-    Widget *ew = new Widget(mw);
-    mw->setCentralWidget(ew);
 }
 
 ExtensionSystem::IPlugin::ShutdownFlag EditorPlugin::aboutToShutdown()
 {
-    // Delete editor widget before extension system deletes IGLScene
-    // implementation.  Editor widget needs to be current so GL stuff can be
-    // cleaned up.
-    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-    QWidget *ew = mw->centralWidget();
-    delete ew;
-    mw->setCentralWidget(0);
-
     return SynchronousShutdown;
 }
 

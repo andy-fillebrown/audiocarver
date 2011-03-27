@@ -1,12 +1,7 @@
 TARGET = Core
 TEMPLATE = lib
 
-QT += \
-    sql \
-    xml
-
-include(../../projectplugin.pri)
-include(../../libs/utils/utils.pri)
+include(../../plugin.pri)
 include(coreplugin_dependencies.pri)
 
 QMAKE_SUBSTITUTES += pro_version.h.in
@@ -17,11 +12,11 @@ DEFINES += CORE_LIBRARY
 
 INCLUDEPATH += \
     actionmanager \
-    dialogs
+    dialogs \
 
 DEPENDPATH += \
     actionmanager \
-    dialogs
+    dialogs \
 
 HEADERS += \
     actionmanager/actioncontainer.h \
@@ -55,7 +50,7 @@ HEADERS += \
     mainwindow.h \
     plugindialog.h \
     settingsdatabase.h \
-    versiondialog.h
+    versiondialog.h \
 
 SOURCES += \
     actionmanager/actioncontainer.cpp \
@@ -86,20 +81,12 @@ SOURCES += \
 FORMS += \
     actionmanager/commandmappings.ui \
     \
-    generalsettings.ui
+    generalsettings.ui \
 
-RESOURCES += \
-    core.qrc \
+RESOURCES += core.qrc
 
 unix {
     images.files = images/project_logo_*.png
     images.path = /share/pixmaps
     INSTALLS += images
 }
-
-OTHER_FILES += \
-    actionmanager/*.* \
-    dialogs/*.* \
-    images/*.* \
-    interfaces/*.* \
-    *.*

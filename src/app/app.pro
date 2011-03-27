@@ -14,7 +14,7 @@ SOURCES += main.cpp
 
 LIBS *= \
     -l$$qtLibraryName(ExtensionSystem) \
-    -l$$qtLibraryName(Aggregation)
+    -l$$qtLibraryName(Aggregation) \
 
 win32 {
     RC_FILE = project.rc
@@ -32,6 +32,5 @@ win32 {
     INSTALLS    += target
 }
 
-OTHER_FILES += \
-    $$RC_FILE \
-    Info.plist.in
+# Remove "d" suffix so QtCreator finds audiocarver.exe
+TARGET = $$PRO_TARGET

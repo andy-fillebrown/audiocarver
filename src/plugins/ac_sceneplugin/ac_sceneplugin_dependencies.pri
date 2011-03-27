@@ -1,2 +1,2 @@
-include(../glsceneplugin/glsceneplugin.pri)
+include(../sceneplugin/sceneplugin.pri)
 include(../ac_databaseplugin/ac_databaseplugin.pri)

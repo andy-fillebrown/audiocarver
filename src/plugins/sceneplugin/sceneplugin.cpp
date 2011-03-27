@@ -15,27 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_H
-#define AC_SCENE_H
+#include "sceneplugin.h"
 
-#include <sceneplugin/interfaces/iscene.h>
+#include <QtCore/QtPlugin>
 
-namespace AudioCarver {
-namespace Internal {
+using namespace Scene;
+using namespace Scene::Internal;
 
-class SceneImplPrivate;
-
-class SceneImpl : public Scene::IScene
+ScenePlugin::ScenePlugin()
 {
-public:
-    SceneImpl();
-    virtual ~SceneImpl();
+}
 
-private:
-    SceneImplPrivate *d;
-};
+ScenePlugin::~ScenePlugin()
+{
+}
 
-} // namespace Internal
-} // namespace AudioCarver
+bool ScenePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+{
+    Q_UNUSED(arguments);
+    Q_UNUSED(errorMessage);
 
-#endif // AC_SCENE_H
+    return true;
+}
+
+void ScenePlugin::extensionsInitialized()
+{
+}
+
+Q_EXPORT_PLUGIN(ScenePlugin)

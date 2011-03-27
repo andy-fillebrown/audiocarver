@@ -5,6 +5,3 @@ SUBDIRS = \
     aggregation \
     extensionsystem \
     utils \
-    glutils
-
-include(gmtl.pri)

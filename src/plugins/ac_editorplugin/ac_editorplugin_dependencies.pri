@@ -1,2 +1,2 @@
-include(../gleditorplugin/gleditorplugin.pri)
-include(../ac_databaseplugin/ac_databaseplugin.pri)
+include(../editorplugin/editorplugin.pri)
+include(../ac_sceneplugin/ac_sceneplugin.pri)

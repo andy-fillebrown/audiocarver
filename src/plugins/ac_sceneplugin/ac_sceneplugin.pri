@@ -1,8 +1,4 @@
-include(coreplugin_dependencies.pri)
 
-LIBS *= -L$$PRO_PLUGIN_PATH
-LIBS *= -l$$qtLibraryName(Core)
+include(ac_sceneplugin_dependencies.pri)
 
-# for ide_version.h
-INCLUDEPATH *= $$AC_BUILD_TREE/src/plugins/coreplugin
-DEPENDPATH *= $$AC_BUILD_TREE/src/plugins/coreplugin
+LIBS *= -l$$qtLibraryName(AC_Scene)

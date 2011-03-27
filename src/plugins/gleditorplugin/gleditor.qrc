@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/gleditor">
-        <file>images/3d-box.png</file>
-        <file>shaders/widget_vertex.glsl</file>
-        <file>shaders/widget_fragment.glsl</file>
-    </qresource>
-</RCC>

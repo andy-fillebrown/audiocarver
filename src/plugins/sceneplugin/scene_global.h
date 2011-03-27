@@ -15,27 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_H
-#define AC_SCENE_H
+#ifndef SCENE_GLOBAL_H
+#define SCENE_GLOBAL_H
 
-#include <sceneplugin/interfaces/iscene.h>
+#include <QtCore/qglobal.h>
 
-namespace AudioCarver {
-namespace Internal {
+#if defined(SCENE_LIBRARY)
+#  define SCENE_EXPORT Q_DECL_EXPORT
+#else
+#  define SCENE_EXPORT Q_DECL_IMPORT
+#endif
 
-class SceneImplPrivate;
-
-class SceneImpl : public Scene::IScene
-{
-public:
-    SceneImpl();
-    virtual ~SceneImpl();
-
-private:
-    SceneImplPrivate *d;
-};
-
-} // namespace Internal
-} // namespace AudioCarver
-
-#endif // AC_SCENE_H
+#endif // SCENE_GLOBAL_H

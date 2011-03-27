@@ -15,27 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_H
-#define AC_SCENE_H
+#include "iscene.h"
 
-#include <sceneplugin/interfaces/iscene.h>
+using namespace Scene;
 
-namespace AudioCarver {
-namespace Internal {
-
-class SceneImplPrivate;
-
-class SceneImpl : public Scene::IScene
+IScene::IScene(QObject *parent)
+    :   QObject(parent)
 {
-public:
-    SceneImpl();
-    virtual ~SceneImpl();
+}
 
-private:
-    SceneImplPrivate *d;
-};
-
-} // namespace Internal
-} // namespace AudioCarver
-
-#endif // AC_SCENE_H
+IScene::~IScene()
+{
+}

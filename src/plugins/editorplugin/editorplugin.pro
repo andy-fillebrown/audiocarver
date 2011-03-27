@@ -1,33 +1,25 @@
 TARGET = Editor
 TEMPLATE = lib
 
-include(../../projectplugin.pri)
-include(../coreplugin/coreplugin.pri)
+include(../../plugin.pri)
 include(editorplugin_dependencies.pri)
 
 DEFINES += EDITOR_LIBRARY
 
 HEADERS += \
-    implementations/editor_mainwindowimpl.h \
+    implementations/mainwindowimpl.h \
     \
     interfaces/ieditor.h \
     \
     editor_global.h \
     editorconstants.h \
-    editorplugin.h
+    editorplugin.h \
 
 SOURCES += \
-    implementations/editor_mainwindowimpl.cpp \
+    implementations/mainwindowimpl.cpp \
     \
     interfaces/ieditor.cpp \
     \
-    editorplugin.cpp
+    editorplugin.cpp \
 
-RESOURCES += \
-    editor.qrc
-
-OTHER_FILES += \
-    images/*.* \
-    implementations/*.* \
-    interfaces/*.* \
-    *.*
+RESOURCES += editor.qrc

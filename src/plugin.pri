@@ -13,15 +13,10 @@ LIBS += -L$$DESTDIR
 INCLUDEPATH += $$PRO_SOURCE_TREE/src/plugins
 DEPENDPATH += $$PRO_SOURCE_TREE/src/plugins
 
-# copy the plugin spec
-isEmpty(TARGET) {
-    error("$$_FILE_: You must provide a TARGET")
-}
-
-PLUGINSPEC = $$_PRO_FILE_PWD_/$${TARGET}.pluginspec
+PLUGINSPEC = $$_PRO_FILE_PWD_/$${PRO_TARGET}.pluginspec
 PLUGINSPEC_IN = $${PLUGINSPEC}.in
 OTHER_FILES += $$PLUGINSPEC_IN
-PLUGINSPEC = $$OUT_PWD/$${TARGET}.pluginspec
+PLUGINSPEC = $$OUT_PWD/$${PRO_TARGET}.pluginspec
 QMAKE_SUBSTITUTES += $${PLUGINSPEC}.in
 copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripDir}
 copy2build.input = PLUGINSPEC
@@ -54,9 +49,7 @@ CONFIG += plugin plugin_with_soname
 
 !macx {
     target.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
-    pluginspec.files += $${TARGET}.pluginspec
+    pluginspec.files += $${PRO_TARGET}.pluginspec
     pluginspec.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
     INSTALLS += target pluginspec
 }
-
-TARGET = $$qtLibraryName($$TARGET)

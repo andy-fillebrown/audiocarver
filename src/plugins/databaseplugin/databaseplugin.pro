@@ -1,9 +1,7 @@
 TARGET = Database
 TEMPLATE = lib
 
-QT += xml
-
-include(../../projectplugin.pri)
+include(../../plugin.pri)
 include(databaseplugin_dependencies.pri)
 
 DEFINES += DATABASE_LIBRARY
@@ -16,7 +14,7 @@ HEADERS += \
     classes/root.h \
     \
     database_global.h \
-    databaseplugin.h
+    databaseplugin.h \
 
 SOURCES += \
     interfaces/idatabase.cpp \
@@ -25,9 +23,4 @@ SOURCES += \
     classes/object.cpp \
     classes/root.cpp \
     \
-    databaseplugin.cpp
-
-OTHER_FILES += \
-    classes/*.* \
-    interfaces/*.* \
-    *.*
+    databaseplugin.cpp \

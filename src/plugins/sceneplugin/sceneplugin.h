@@ -15,27 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_H
-#define AC_SCENE_H
+#ifndef SCENEPLUGIN_H
+#define SCENEPLUGIN_H
 
-#include <sceneplugin/interfaces/iscene.h>
+#include <extensionsystem/iplugin.h>
 
-namespace AudioCarver {
+namespace Scene {
 namespace Internal {
 
-class SceneImplPrivate;
-
-class SceneImpl : public Scene::IScene
+class ScenePlugin : public ExtensionSystem::IPlugin
 {
-public:
-    SceneImpl();
-    virtual ~SceneImpl();
+    Q_OBJECT
 
-private:
-    SceneImplPrivate *d;
+public:
+    ScenePlugin();
+    virtual ~ScenePlugin();
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized();
 };
 
 } // namespace Internal
-} // namespace AudioCarver
+} // namespace Scene
 
-#endif // AC_SCENE_H
+#endif // SCENEPLUGIN_H

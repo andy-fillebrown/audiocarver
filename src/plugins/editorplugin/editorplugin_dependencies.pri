@@ -1,1 +1,1 @@
-include(../databaseplugin/databaseplugin.pri)
+include(../sceneplugin/sceneplugin.pri)

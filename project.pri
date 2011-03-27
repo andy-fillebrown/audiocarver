@@ -9,7 +9,7 @@ PRO_AUTHOR         = Andrew Fillebrown
 PRO_AUTHOR_NOSPACE = AndyFillebrown
 PRO_AUTHOR_EMAIL   = andy.fillebrown@gmail.com
 PRO_YEAR           = 2011
-PRO_URL            = http://audiosculptures.com
+PRO_URL            = http://gitorious.org/audiocarver
 
 DEFINES *= PRO_NAME_STR=\\\"$$PRO_NAME\\\"
 DEFINES *= PRO_NAME_LC_STR=\\\"$$lower($$PRO_NAME)\\\"
@@ -65,6 +65,12 @@ defineTest(minQtVersion) {
     }
     return(false)
 }
+
+isEmpty(TARGET) {
+    error("$$_FILE_: You must provide a TARGET")
+}
+PRO_TARGET = $$TARGET
+TARGET = $$qtLibraryName($$TARGET)
 
 # For use in custom compilers which just copy files
 win32:i_flag = i

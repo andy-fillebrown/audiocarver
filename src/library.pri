@@ -9,8 +9,6 @@ DESTDIR = $$PRO_LIBRARY_PATH
 
 include(rpath.pri)
 
-TARGET = $$qtLibraryName($$TARGET)
-
 contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 
 !macx {

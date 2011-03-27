@@ -42,23 +42,11 @@ public:
     virtual void initActions();
 
 private slots:
-    void viewFront();
-    void viewSide();
-    void viewBottom();
-    void viewScaleIncreaseX();
-    void viewScaleDecreaseX();
-    void viewScaleIncreaseZ();
-    void viewScaleDecreaseZ();
-    void createTrack();
-    void createNote();
-    void createCurve();
-    void erase();
-    void buildAll();
     void aboutAudioCarver();
     void destroyVersionDialog();
 
 private:
-    Core::VersionDialog *_versionDialog;
+    Core::VersionDialog *versionDialog;
 };
 
 } // namespace Internal
