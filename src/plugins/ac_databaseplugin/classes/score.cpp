@@ -21,6 +21,7 @@
 #include "note.h"
 #include "track.h"
 
+#include <ac_databaseplugin/settings/gridsettings.h>
 #include <databaseplugin/classes/list.h>
 
 using namespace AudioCarver;
@@ -32,18 +33,25 @@ namespace Internal {
 class ScoreData
 {
 public:
+    Database::List *settings;
     Database::List *curves;
     Database::List *tracks;
 
+    GridSettings *gridSettings;
+
     ScoreData(Score *q)
-        :   curves(new Database::List(q, q->propertyIndex("curves")))
+        :   settings(new Database::ConstantList(q, q->propertyIndex("settings")))
+        ,   curves(new Database::List(q, q->propertyIndex("curves")))
         ,   tracks(new Database::List(q, q->propertyIndex("tracks")))
-    {}
+        ,   gridSettings(new GridSettings(q))
+    {
+    }
 
     ~ScoreData()
     {
         delete tracks;
         delete curves;
+        delete settings;
     }
 };
 
@@ -69,6 +77,11 @@ Score *Score::instance()
     return ::instance;
 }
 
+Database::List *Score::settings() const
+{
+    return d->settings;
+}
+
 Database::List *Score::curves() const
 {
     return d->curves;
@@ -92,11 +105,6 @@ QString &Score::normalizeClassName(QString &className) const
 
 Database::Object *Score::createObject(const QString &className)
 {
-    if (className == "Note") {
-        if (d->tracks->isEmpty())
-            return 0;
-        return d->tracks->last<Track>()->createNote();
-    }
     if (className == "FCurve") {
         FCurve *fcurve = new FCurve(this);
         d->curves->append(fcurve);
@@ -107,5 +115,12 @@ Database::Object *Score::createObject(const QString &className)
         d->tracks->append(track);
         return track;
     }
+    return 0;
+}
+
+Database::Object *Score::findObject(const QString &className) const
+{
+    if (className == "GridSettings")
+        return d->gridSettings;
     return 0;
 }

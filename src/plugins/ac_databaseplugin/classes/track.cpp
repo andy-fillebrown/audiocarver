@@ -59,6 +59,11 @@ Track::~Track()
     delete d;
 }
 
+Database::List *Track::notes() const
+{
+    return d->notes;
+}
+
 bool Track::isVisible() const
 {
     return d->visible;
@@ -86,14 +91,18 @@ void Track::setVolume(qreal volume)
     emit propertyChanged(propertyIndex("volume"));
 }
 
-Note *Track::createNote()
+Database::Object *Track::createObject(const QString &className)
 {
-    Note *note = new Note(this);
-    d->notes->append(note);
-    return note;
+    if (className == "Note") {
+        Note *note = new Note(this);
+        d->notes->append(note);
+        return note;
+    }
+    return 0;
 }
 
-Database::List *Track::notes() const
+Database::Object *Track::findObject(const QString &className) const
 {
-    return d->notes;
+    Q_UNUSED(className);
+    return 0;
 }

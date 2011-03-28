@@ -33,6 +33,8 @@ public:
     {}
 
 public:
+    virtual bool isConstant() const { return false; }
+
     int count() const { return list.count(); }
     bool isEmpty() const { return list.isEmpty(); }
     Object *at(int i) const { return list.at(i); }
@@ -56,6 +58,16 @@ private:
     Object *owner;
     int propertyIndex;
     QList<Object*> list;
+};
+
+class ConstantList : public List
+{
+public:
+    ConstantList(Object *owner, int propertyIndex)
+        :   List(owner, propertyIndex)
+    {}
+
+    bool isConstant() const { return true; }
 };
 
 } // namespace Database

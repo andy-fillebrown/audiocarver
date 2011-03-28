@@ -46,15 +46,16 @@ private:
     Q_DISABLE_COPY(Track)
 
 public:
+    Database::List *notes() const;
+
     bool isVisible() const;
     void setVisibility(bool visible);
 
     qreal volume() const;
     void setVolume(qreal volume);
 
-    Note *createNote();
-
-    Database::List *notes() const;
+    Database::Object *createObject(const QString &className);
+    Database::Object *findObject(const QString &className) const;
 
 private:
     Internal::TrackData *d;

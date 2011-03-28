@@ -71,6 +71,9 @@ public:
     virtual void write(QXmlStreamWriter &out) const;
     virtual void update(bool recursive = false);
 
+    virtual Object *createObject(const QString &className);
+    virtual Object *findObject(const QString &className) const;
+
 protected:
     virtual void childEvent(QChildEvent *event);
 

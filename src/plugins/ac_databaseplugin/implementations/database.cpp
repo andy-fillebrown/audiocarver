@@ -45,13 +45,13 @@ public:
         :   q(q)
         ,   score(new Score(q))
     {
-        score->createObject("Track");
+        Database::Object *track = score->createObject("Track");
 
         FCurve *pitchCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
         pitchCurve->appendPoint(FPoint(0.000001, 0));
         pitchCurve->appendPoint(FPoint(1, 1));
 
-        Note *note = qobject_cast<Note*>(score->createObject("Note"));
+        Note *note = qobject_cast<Note*>(track->createObject("Note"));
         note->setPitchCurve(pitchCurve);
     }
 };

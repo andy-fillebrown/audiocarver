@@ -178,7 +178,8 @@ bool Object::read(QXmlStreamReader &in)
         Q_ASSERT(list);
         if (!list)
             return false;
-        list->deleteAll();
+        if (!list->isConstant())
+            list->deleteAll();
         while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
         QString currentListName = in.name().toString();
         while (!in.atEnd()) {
@@ -189,14 +190,18 @@ bool Object::read(QXmlStreamReader &in)
             if (tokenType == QXmlStreamReader::EndElement && currentClassName == currentListName)
                 break;
             if (tokenType == QXmlStreamReader::StartElement) {
-                Object *object = root->createObject(currentClassName);
+                Object *object = 0;
+                if (list->isConstant())
+                    object = findObject(currentClassName);
+                else
+                    object = createObject(currentClassName);
                 Q_ASSERT(object);
                 if (!object)
                     return false;
-                object->setParent(this);
+                if (!list->isConstant())
+                    object->setParent(this);
                 if (!object->read(in))
                     return false;
-                list->append(object);
             }
         }
     }
@@ -260,6 +265,18 @@ void Object::update(bool recursive)
         if (object)
             object->update(recursive);
     }
+}
+
+Object *Object::createObject(const QString &className)
+{
+    Q_UNUSED(className);
+    return 0;
+}
+
+Object *Object::findObject(const QString &className) const
+{
+    Q_UNUSED(className);
+    return 0;
 }
 
 void Object::childEvent(QChildEvent *event)

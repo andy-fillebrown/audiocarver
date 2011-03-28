@@ -39,8 +39,6 @@ public:
     virtual QString &normalizeClassName(QString &className) const;
     virtual QString getUniqueId(Object *object, const QString &idHint = QString()) const;
 
-    virtual Object *createObject(const QString &className) const;
-
     virtual QString variantToString(const QVariant &variant) const;
     virtual QVariant stringToVariant(const QString &string, const QString &type) const;
     QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const { return stringToVariant(stringRef.toString(), type); }

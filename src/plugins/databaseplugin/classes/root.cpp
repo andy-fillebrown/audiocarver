@@ -67,12 +67,6 @@ QString Root::getUniqueId(Object *object, const QString &idHint) const
     return actualId += QString(".%1").arg(maxSuffix + 1);
 }
 
-Object *Root::createObject(const QString &className) const
-{
-    Q_UNUSED(className);
-    return 0;
-}
-
 QString Root::variantToString(const QVariant &variant) const
 {
     int type = variant.type();

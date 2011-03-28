@@ -15,6 +15,8 @@ HEADERS += \
     \
     implementations/database.h \
     \
+    settings/gridsettings.h \
+    \
     ac_database_global.h \
     ac_databaseplugin.h \
 
@@ -26,5 +28,7 @@ SOURCES += \
     classes/score.cpp \
     \
     implementations/database.cpp \
+    \
+    settings/gridsettings.cpp \
     \
     ac_databaseplugin.cpp \

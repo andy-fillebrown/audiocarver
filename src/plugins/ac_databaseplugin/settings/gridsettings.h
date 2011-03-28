@@ -15,51 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCORE_H
-#define AC_SCORE_H
+#ifndef AC_GRIDSETTINGS_H
+#define AC_GRIDSETTINGS_H
 
-#include <databaseplugin/classes/root.h>
+#include <databaseplugin/classes/object.h>
 
 #include <ac_databaseplugin/ac_database_global.h>
 
 namespace AudioCarver {
 namespace Internal {
 
-class ScoreData;
+class GridSettingsData;
 
 } // namespace Internal
 
-class AC_DATABASE_EXPORT Score : public Database::Root
+class AC_DATABASE_EXPORT GridSettings : public Database::Object
 {
     Q_OBJECT
 
-    Q_PROPERTY(Database::List* settings READ settings)
-    Q_PROPERTY(Database::List* curves READ curves)
-    Q_PROPERTY(Database::List* tracks READ tracks)
+    Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
-    Score(QObject *parent = 0);
+    GridSettings(QObject *parent = 0);
 private:
-    virtual ~Score();
-    Q_DISABLE_COPY(Score)
+    virtual ~GridSettings();
+    Q_DISABLE_COPY(GridSettings)
 
 public:
-    static Score *instance();
-
-    Database::List *settings() const;
-    Database::List *curves() const;
-    Database::List *tracks() const;
-
-    void clear();
-
-    QString &normalizeClassName(QString &className) const;
-    Database::Object *createObject(const QString &className);
-    Database::Object *findObject(const QString &className) const;
+    bool visible() const;
+    void setVisible(bool visible);
 
 private:
-    Internal::ScoreData *d;
+    Internal::GridSettingsData *d;
 };
 
 } // namespace AudioCarver
 
-#endif // AC_SCORE_H
+#endif // AC_GRIDSETTINGS_H
