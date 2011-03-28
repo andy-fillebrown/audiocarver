@@ -17,7 +17,7 @@
 
 #include "ac_sceneplugin.h"
 
-#include <implementations/scene.h>
+#include <implementations/sceneimpl.h>
 
 #include <QtCore/QtPlugin>
 

@@ -19,6 +19,15 @@
 
 using namespace Scene;
 
+static IScene *instance = 0;
+
 IScene::IScene(QObject *parent)
     :   QObject(parent)
-{}
+{
+    ::instance = this;
+}
+
+IScene *IScene::instance()
+{
+    return ::instance;
+}

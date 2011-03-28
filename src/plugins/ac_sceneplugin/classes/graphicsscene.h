@@ -15,38 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef ISCENE_H
-#define ISCENE_H
+#ifndef AC_GRAPHICSSCENE_H
+#define AC_GRAPHICSSCENE_H
 
-#include <QtCore/QObject>
+#include <sceneplugin/classes/graphicsscene.h>
 
-#include <sceneplugin/scene_global.h>
+#include <ac_sceneplugin/ac_scene_global.h>
 
-QT_BEGIN_NAMESPACE
+namespace AudioCarver {
 
-class QGraphicsScene;
-
-QT_END_NAMESPACE
-
-namespace Scene {
-
-class SCENE_EXPORT IScene : public QObject
+class AC_SCENE_EXPORT GraphicsScene : public Scene::GraphicsScene
 {
     Q_OBJECT
 
 public:
-    IScene(QObject *parent = 0);
+    GraphicsScene(QObject *parent = 0);
 protected:
-    virtual ~IScene() {}
+    virtual ~GraphicsScene() {}
 private:
-    Q_DISABLE_COPY(IScene)
-
-public:
-    static IScene *instance();
-
-    virtual QGraphicsScene *scene() const = 0;
+    Q_DISABLE_COPY(GraphicsScene)
 };
 
-} // namespace Scene
+} // namespace AudioCarver
 
-#endif // ISCENE_H
+#endif // AC_GRAPHICSSCENE_H

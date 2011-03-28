@@ -15,38 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef ISCENE_H
-#define ISCENE_H
+#ifndef GRAPHICSSCENE_H
+#define GRAPHICSSCENE_H
 
-#include <QtCore/QObject>
+#include <QtGui/QGraphicsScene>
 
 #include <sceneplugin/scene_global.h>
 
-QT_BEGIN_NAMESPACE
-
-class QGraphicsScene;
-
-QT_END_NAMESPACE
-
 namespace Scene {
 
-class SCENE_EXPORT IScene : public QObject
+class SCENE_EXPORT GraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    IScene(QObject *parent = 0);
+    GraphicsScene(QObject *parent = 0);
 protected:
-    virtual ~IScene() {}
+    virtual ~GraphicsScene() {}
 private:
-    Q_DISABLE_COPY(IScene)
-
-public:
-    static IScene *instance();
-
-    virtual QGraphicsScene *scene() const = 0;
+    Q_DISABLE_COPY(GraphicsScene)
 };
 
 } // namespace Scene
 
-#endif // ISCENE_H
+#endif // GRAPHICSSCENE_H

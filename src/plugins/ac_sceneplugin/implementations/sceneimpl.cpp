@@ -15,8 +15,11 @@
 **
 **************************************************************************/
 
-#include "scene.h"
+#include "sceneimpl.h"
 
+#include <ac_sceneplugin/classes/graphicsscene.h>
+
+using namespace AudioCarver;
 using namespace AudioCarver::Internal;
 
 namespace AudioCarver {
@@ -25,16 +28,26 @@ namespace Internal {
 class SceneImplData
 {
 public:
+    GraphicsScene *scene;
+
+    SceneImplData(SceneImpl *q)
+        :   scene(new GraphicsScene(q))
+    {}
 };
 
 } // namespace Internal
 } // namespace AudioCarver
 
 SceneImpl::SceneImpl()
-    :   d(new SceneImplData)
+    :   d(new SceneImplData(this))
 {}
 
 SceneImpl::~SceneImpl()
 {
     delete d;
+}
+
+QGraphicsScene *SceneImpl::scene() const
+{
+    return d->scene;
 }

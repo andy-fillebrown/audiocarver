@@ -15,38 +15,13 @@
 **
 **************************************************************************/
 
-#ifndef ISCENE_H
-#define ISCENE_H
+#include "graphicsview.h"
 
-#include <QtCore/QObject>
+using namespace Editor;
 
-#include <sceneplugin/scene_global.h>
-
-QT_BEGIN_NAMESPACE
-
-class QGraphicsScene;
-
-QT_END_NAMESPACE
-
-namespace Scene {
-
-class SCENE_EXPORT IScene : public QObject
+GraphicsView::GraphicsView(QWidget *parent)
+    :   QGraphicsView(parent)
 {
-    Q_OBJECT
-
-public:
-    IScene(QObject *parent = 0);
-protected:
-    virtual ~IScene() {}
-private:
-    Q_DISABLE_COPY(IScene)
-
-public:
-    static IScene *instance();
-
-    virtual QGraphicsScene *scene() const = 0;
-};
-
-} // namespace Scene
-
-#endif // ISCENE_H
+    setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    scale(100.0f, 10.0f);
+}

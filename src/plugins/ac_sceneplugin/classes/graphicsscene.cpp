@@ -15,29 +15,14 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_H
-#define AC_SCENE_H
+#include "graphicsscene.h"
 
-#include <sceneplugin/interfaces/iscene.h>
+using namespace AudioCarver;
 
-namespace AudioCarver {
-namespace Internal {
-
-class SceneImplData;
-
-class SceneImpl : public Scene::IScene
+GraphicsScene::GraphicsScene(QObject *parent)
+    :   Scene::GraphicsScene(parent)
 {
-public:
-    SceneImpl();
-private:
-    ~SceneImpl();
-    Q_DISABLE_COPY(SceneImpl)
-
-private:
-    SceneImplData *d;
-};
-
-} // namespace Internal
-} // namespace AudioCarver
-
-#endif // AC_SCENE_H
+    addText("Hello World!");
+    addRect(0.0f, 0.0f, 127.0f, 127.0f);
+    setSceneRect(-10, -10, 147, 147);
+}

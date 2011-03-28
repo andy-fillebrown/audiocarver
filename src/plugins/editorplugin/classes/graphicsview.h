@@ -15,38 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef ISCENE_H
-#define ISCENE_H
+#ifndef GRAPHICSVIEW_H
+#define GRAPHICSVIEW_H
 
-#include <QtCore/QObject>
+#include <QtGui/QGraphicsView>
 
-#include <sceneplugin/scene_global.h>
+#include <editorplugin/editor_global.h>
 
-QT_BEGIN_NAMESPACE
+namespace Editor {
 
-class QGraphicsScene;
-
-QT_END_NAMESPACE
-
-namespace Scene {
-
-class SCENE_EXPORT IScene : public QObject
+class EDITOR_EXPORT GraphicsView : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    IScene(QObject *parent = 0);
+    GraphicsView(QWidget *parent = 0);
 protected:
-    virtual ~IScene() {}
+    virtual ~GraphicsView() {}
 private:
-    Q_DISABLE_COPY(IScene)
-
-public:
-    static IScene *instance();
-
-    virtual QGraphicsScene *scene() const = 0;
+    Q_DISABLE_COPY(GraphicsView)
 };
 
-} // namespace Scene
+} // namespace Editor
 
-#endif // ISCENE_H
+#endif // GRAPHICSVIEW_H

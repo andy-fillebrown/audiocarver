@@ -17,8 +17,9 @@
 
 #include "editorplugin.h"
 
+#include <editorplugin/classes/graphicsview.h>
 #include <editorplugin/implementations/mainwindowimpl.h>
-
+#include <sceneplugin/interfaces/iscene.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mainwindow.h>
 
@@ -40,6 +41,10 @@ void EditorPlugin::extensionsInitialized()
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
     mw->registerContainers();
     mw->registerActions();
+
+    GraphicsView *view = new GraphicsView(mw);
+    view->setScene(Scene::IScene::instance()->scene());
+    mw->setCentralWidget(view);
 }
 
 Q_EXPORT_PLUGIN(EditorPlugin)
