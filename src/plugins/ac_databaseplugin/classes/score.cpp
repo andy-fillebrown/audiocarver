@@ -20,6 +20,7 @@
 #include "fcurve.h"
 #include "note.h"
 #include "track.h"
+#include "tuning.h"
 
 #include <ac_databaseplugin/settings/gridsettings.h>
 #include <databaseplugin/classes/list.h>
@@ -34,6 +35,7 @@ class ScoreData
 {
 public:
     Database::List *settings;
+    Database::List *tunings;
     Database::List *curves;
     Database::List *tracks;
 
@@ -41,16 +43,19 @@ public:
 
     ScoreData(Score *q)
         :   settings(new Database::ConstantList(q, q->propertyIndex("settings")))
+        ,   tunings(new Database::List(q, q->propertyIndex("tunings")))
         ,   curves(new Database::List(q, q->propertyIndex("curves")))
         ,   tracks(new Database::List(q, q->propertyIndex("tracks")))
         ,   gridSettings(new GridSettings(q))
     {
+        settings->append(gridSettings);
     }
 
     ~ScoreData()
     {
         delete tracks;
         delete curves;
+        delete tunings;
         delete settings;
     }
 };
@@ -82,6 +87,11 @@ Database::List *Score::settings() const
     return d->settings;
 }
 
+Database::List *Score::tunings() const
+{
+    return d->tunings;
+}
+
 Database::List *Score::curves() const
 {
     return d->curves;
@@ -109,6 +119,11 @@ Database::Object *Score::createObject(const QString &className)
         FCurve *fcurve = new FCurve(this);
         d->curves->append(fcurve);
         return fcurve;
+    }
+    if (className == "Tuning") {
+        Tuning *tuning = new Tuning(this);
+        d->tunings->append(tuning);
+        return tuning;
     }
     if (className == "Track") {
         Track *track = new Track(this);

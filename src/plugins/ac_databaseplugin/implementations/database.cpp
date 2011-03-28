@@ -22,6 +22,7 @@
 #include <ac_databaseplugin/classes/note.h>
 #include <ac_databaseplugin/classes/score.h>
 #include <ac_databaseplugin/classes/track.h>
+#include <ac_databaseplugin/classes/tuning.h>
 #include <databaseplugin/classes/list.h>
 
 #include <QtCore/QFile>
@@ -45,7 +46,10 @@ public:
         :   q(q)
         ,   score(new Score(q))
     {
-        Database::Object *track = score->createObject("Track");
+        Database::Object *tuning = score->createObject("Tuning");
+
+        Track *track = qobject_cast<Track*>(score->createObject("Track"));
+        track->setTuning(tuning);
 
         FCurve *pitchCurve = qobject_cast<FCurve*>(score->createObject("FCurve"));
         pitchCurve->appendPoint(FPoint(0.000001, 0));

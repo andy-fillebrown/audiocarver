@@ -60,6 +60,7 @@ public:
 
     int propertyCount() const;
     int propertyIndex(const QString &name) const;
+    bool propertyIsReadOnly(int i) const;
     QString propertyType(int i) const;
     QString propertyName(int i) const;
     QVariant propertyValue(int i) const;
@@ -85,9 +86,20 @@ signals:
 
 private:
     friend class List;
-
 };
 
+namespace Internal {
+
+class DATABASE_EXPORT LinkableObjectData
+{
+public:
+    LinkableObjectData(Object *q) : q(q) { q->setId(); }
+
+private:
+    Object *q;
+};
+
+} // namespace Internal
 } // namespace Database
 
 Q_DECLARE_METATYPE(Database::Object*);

@@ -18,6 +18,7 @@
 #include "track.h"
 
 #include "note.h"
+#include "tuning.h"
 
 #include <databaseplugin/classes/list.h>
 
@@ -30,12 +31,14 @@ namespace Internal {
 class TrackData
 {
 public:
+    Tuning *tuning;
     Database::List *notes;
     bool visible;
     qreal volume;
 
     TrackData(Track *q)
-        :   notes(new Database::List(q, q->propertyIndex("notes")))
+        :   tuning(0)
+        ,   notes(new Database::List(q, q->propertyIndex("notes")))
         ,   visible(true)
         ,   volume(0.999999)
     {}
@@ -57,6 +60,19 @@ Track::Track(QObject *parent)
 Track::~Track()
 {
     delete d;
+}
+
+Database::Object *Track::tuning() const
+{
+    return d->tuning;
+}
+
+void Track::setTuning(Database::Object *tuning)
+{
+    if (d->tuning == tuning)
+        return;
+    d->tuning = qobject_cast<Tuning*>(tuning);
+    emit propertyChanged(propertyIndex("tuning"));
 }
 
 Database::List *Track::notes() const

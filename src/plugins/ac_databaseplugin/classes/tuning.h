@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACK_H
-#define AC_TRACK_H
+#ifndef AC_TUNING_H
+#define AC_TUNING_H
 
 #include <databaseplugin/classes/object.h>
 
@@ -25,46 +25,56 @@
 namespace AudioCarver {
 namespace Internal {
 
-class TrackData;
+class TuningData;
+class TuningNoteData;
 
 } // namespace Internal
 
-class Tuning;
-
-class AC_DATABASE_EXPORT Track : public Database::Object
+class AC_DATABASE_EXPORT Tuning : public Database::Object
 {
     Q_OBJECT
 
-    Q_PROPERTY(Database::Object *tuning READ tuning WRITE setTuning)
-    Q_PROPERTY(Database::List* notes READ notes)
-    Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
-    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
+    Q_PROPERTY(qreal centerNote READ centerNote WRITE setCenterNote)
+    Q_PROPERTY(Database::List* tuningNotes READ tuningNotes)
 
 public:
-    Track(QObject *parent = 0);
+    Tuning(QObject *parent = 0);
 private:
-    virtual ~Track();
-    Q_DISABLE_COPY(Track)
+    virtual ~Tuning();
+    Q_DISABLE_COPY(Tuning)
 
 public:
-    Database::Object *tuning() const;
-    void setTuning(Database::Object *tuning);
+    qreal centerNote() const;
+    void setCenterNote(qreal centerNote);
 
-    Database::List *notes() const;
-
-    bool isVisible() const;
-    void setVisibility(bool visible);
-
-    qreal volume() const;
-    void setVolume(qreal volume);
+    Database::List *tuningNotes() const;
 
     Database::Object *createObject(const QString &className);
-    Database::Object *findObject(const QString &className) const;
 
 private:
-    Internal::TrackData *d;
+    Internal::TuningData *d;
+};
+
+class AC_DATABASE_EXPORT TuningNote : public Database::Object
+{
+    Q_OBJECT
+
+    Q_PROPERTY(qreal note READ note WRITE setNote)
+
+public:
+    TuningNote(qreal note = 0.0f, QObject *parent = 0);
+private:
+    virtual ~TuningNote();
+    Q_DISABLE_COPY(TuningNote)
+
+public:
+    qreal note() const;
+    void setNote(qreal note);
+
+private:
+    Internal::TuningNoteData *d;
 };
 
 } // namespace AudioCarver
 
-#endif // AC_TRACK_H
+#endif // AC_TUNING_H

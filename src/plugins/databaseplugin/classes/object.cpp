@@ -96,6 +96,11 @@ int Object::propertyIndex(const QString &name) const
     return metaObject()->indexOfProperty(qPrintable(name));
 }
 
+bool Object::propertyIsReadOnly(int i) const
+{
+    return !metaObject()->property(i).isWritable();
+}
+
 /*!
   \todo Document.
   */
@@ -168,6 +173,22 @@ bool Object::read(QXmlStreamReader &in)
             setPropertyValue(i, root->stringToVariant(att.value(), type));
     }
 
+    // Read constant read-only objects.
+    foreach (QXmlStreamAttribute att, atts) {
+        QString name = att.name().toString();
+        const int i = propertyIndex(name);
+        QString type = propertyType(i);
+        if (type.endsWith("*")) {
+            if (type == "Database::List*")
+                continue;
+            if (propertyIsReadOnly(i)) {
+                Object *object = propertyValue(i).value<Object*>();
+                if (!object->read(in))
+                    return false;
+            }
+        }
+    }
+
     // Read lists.
     const int count = propertyCount();
     for (int i = 1;  i < count;  ++i) {
@@ -228,12 +249,31 @@ void Object::write(QXmlStreamWriter &out) const
         QVariant value = propertyValue(i);
         if (type.endsWith("*")) {
             Object *object = value.value<Object*>();
+            if (propertyIsReadOnly(i))
+                continue;
             value = object->id();
         }
         QString name = propertyName(i);
-        if (name == "objectName")
+        if (name == "objectName") {
+            if (value.toString().isEmpty())
+                continue;
             name = "id";
+        }
         out.writeAttribute(name, root->variantToString(value));
+    }
+
+    // Write constant read-only objects.
+    for (int i = 0;  i < count;  ++i) {
+        QString type = propertyType(i);
+        if (type.endsWith("*")) {
+            if (type == "Database::List*")
+                continue;
+            if (propertyIsReadOnly(i)) {
+                QVariant value = propertyValue(i);
+                Object *object = value.value<Object*>();
+                object->write(out);
+            }
+        }
     }
 
     // Write lists.
@@ -243,7 +283,8 @@ void Object::write(QXmlStreamWriter &out) const
             continue;
         QVariant value = propertyValue(i);
         List *list = value.value<List*>();
-        out.writeStartElement(propertyName(i));
+        QString name = propertyName(i);
+        out.writeStartElement(name);
         for (int i = 0;  i < list->count();  ++i)
             list->at(i)->write(out);
         out.writeEndElement();

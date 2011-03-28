@@ -34,6 +34,7 @@ class AC_DATABASE_EXPORT Score : public Database::Root
     Q_OBJECT
 
     Q_PROPERTY(Database::List* settings READ settings)
+    Q_PROPERTY(Database::List* tunings READ tunings)
     Q_PROPERTY(Database::List* curves READ curves)
     Q_PROPERTY(Database::List* tracks READ tracks)
 
@@ -47,6 +48,7 @@ public:
     static Score *instance();
 
     Database::List *settings() const;
+    Database::List *tunings() const;
     Database::List *curves() const;
     Database::List *tracks() const;
 

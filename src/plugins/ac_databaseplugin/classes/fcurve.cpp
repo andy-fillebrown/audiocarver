@@ -34,10 +34,14 @@ static bool lessThan(const FPoint &a, const FPoint &b)
 namespace AudioCarver {
 namespace Internal {
 
-class FCurveData
+class FCurveData : public Database::Internal::LinkableObjectData
 {
 public:
     QList<FPoint> points;
+
+    FCurveData(FCurve *q)
+        :   Database::Internal::LinkableObjectData(q)
+    {}
 
     void sortPoints()
     {
@@ -50,7 +54,7 @@ public:
 
 FCurve::FCurve(QObject *parent)
     :   Database::Object(parent)
-    ,   d(new FCurveData)
+    ,   d(new FCurveData(this))
 {}
 
 FCurve::~FCurve()

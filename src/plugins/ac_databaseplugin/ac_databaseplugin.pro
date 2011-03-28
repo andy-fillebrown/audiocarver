@@ -10,8 +10,9 @@ HEADERS += \
     classes/fcurve.h \
     classes/fpoint.h \
     classes/note.h \
-    classes/track.h \
     classes/score.h \
+    classes/track.h \
+    classes/tuning.h \
     \
     implementations/database.h \
     \
@@ -24,8 +25,9 @@ SOURCES += \
     classes/fcurve.cpp \
     classes/fpoint.cpp \
     classes/note.cpp \
-    classes/track.cpp \
     classes/score.cpp \
+    classes/track.cpp \
+    classes/tuning.cpp \
     \
     implementations/database.cpp \
     \
