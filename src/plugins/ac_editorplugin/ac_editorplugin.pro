@@ -7,6 +7,8 @@ include(ac_editorplugin_dependencies.pri)
 DEFINES += AC_EDITOR_LIBRARY
 
 HEADERS += \
+    classes/ac_mainwidget.h \
+    \
     implementations/ac_editorimpl.h \
     implementations/ac_mainwindowimpl.h \
     \
@@ -15,6 +17,8 @@ HEADERS += \
     ac_editorplugin.h \
 
 SOURCES += \
+    classes/ac_mainwidget.cpp \
+    \
     implementations/ac_editorimpl.cpp \
     implementations/ac_mainwindowimpl.cpp \
     \

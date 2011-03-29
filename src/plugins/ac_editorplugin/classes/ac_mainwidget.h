@@ -15,28 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITORPLUGIN_H
-#define AC_EDITORPLUGIN_H
+#ifndef AC_MAINWIDGET_H
+#define AC_MAINWIDGET_H
 
-#include <iplugin.h>
+#include <QWidget>
+
+#include <ac_editor_global.h>
 
 namespace Private {
 
-class AcEditorPlugin : public ExtensionSystem::IPlugin
+class AcMainWidgetData;
+
+class AcMainWidget : public QWidget
 {
-    Q_OBJECT
+public:
+    AcMainWidget(QWidget *parent = 0);
+private:
+    ~AcMainWidget();
+    Q_DISABLE_COPY(AcMainWidget)
 
 public:
-    AcEditorPlugin() {}
-private:
-    ~AcEditorPlugin() {}
-    Q_DISABLE_COPY(AcEditorPlugin)
+    static AcMainWidget *instance();
 
 private:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
+    AcMainWidgetData *d;
 };
 
 } // namespace Private
 
-#endif // AC_EDITORPLUGIN_H
+#endif // AC_MAINWIDGET_H

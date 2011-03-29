@@ -37,4 +37,11 @@ bool AcEditorPlugin::initialize(const QStringList &arguments, QString *errorMess
     return true;
 }
 
-Q_EXPORT_PLUGIN(EditorPlugin)
+void AcEditorPlugin::extensionsInitialized()
+{
+    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+    AcMainWidget *widget = new AcMainWidget(mw);
+    mw->setCentralWidget(widget);
+}
+
+Q_EXPORT_PLUGIN(AcEditorPlugin)
