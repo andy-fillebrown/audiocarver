@@ -18,7 +18,7 @@
 #ifndef AC_DATABASE_GLOBAL_H
 #define AC_DATABASE_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <qglobal.h>
 
 #if defined(AC_DATABASE_LIBRARY)
 #  define AC_DATABASE_EXPORT Q_DECL_EXPORT

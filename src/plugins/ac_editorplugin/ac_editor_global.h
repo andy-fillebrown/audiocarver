@@ -18,7 +18,7 @@
 #ifndef AC_EDITOR_GLOBAL_H
 #define AC_EDITOR_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <qglobal.h>
 
 #if defined(AC_EDITOR_LIBRARY)
 #  define AC_EDITOR_EXPORT Q_DECL_EXPORT

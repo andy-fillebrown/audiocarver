@@ -17,18 +17,18 @@
 
 #include "ac_sceneplugin.h"
 
-#include <implementations/sceneimpl.h>
+#include <ac_sceneimpl.h>
 
-#include <QtCore/QtPlugin>
+#include <QtPlugin>
 
-using namespace AudioCarver::Internal;
+using namespace Private;
 
-bool ScenePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+bool AcScenePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new SceneImpl);
+    addAutoReleasedObject(new AcSceneImpl);
     return true;
 }
 
-Q_EXPORT_PLUGIN(ScenePlugin)
+Q_EXPORT_PLUGIN(AcScenePlugin)

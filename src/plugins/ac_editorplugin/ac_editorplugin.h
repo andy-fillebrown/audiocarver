@@ -18,27 +18,25 @@
 #ifndef AC_EDITORPLUGIN_H
 #define AC_EDITORPLUGIN_H
 
-#include <extensionsystem/iplugin.h>
+#include <iplugin.h>
 
-namespace AudioCarver {
-namespace Internal {
+namespace Private {
 
-class EditorPlugin : public ExtensionSystem::IPlugin
+class AcEditorPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
 public:
-    EditorPlugin() {}
+    AcEditorPlugin() {}
 private:
-    ~EditorPlugin() {}
-    Q_DISABLE_COPY(EditorPlugin)
+    ~AcEditorPlugin() {}
+    Q_DISABLE_COPY(AcEditorPlugin)
 
 private:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized() {}
 };
 
-} // namespace Internal
-} // namespace AudioCarver
+} // namespace Private
 
 #endif // AC_EDITORPLUGIN_H

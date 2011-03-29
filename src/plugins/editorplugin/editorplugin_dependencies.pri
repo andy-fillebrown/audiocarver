@@ -1,1 +1,0 @@
-include(../sceneplugin/sceneplugin.pri)

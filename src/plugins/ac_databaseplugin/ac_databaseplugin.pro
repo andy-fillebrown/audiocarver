@@ -7,30 +7,30 @@ include(ac_databaseplugin_dependencies.pri)
 DEFINES += AC_DATABASE_LIBRARY
 
 HEADERS += \
-    classes/fcurve.h \
-    classes/fpoint.h \
-    classes/note.h \
-    classes/score.h \
-    classes/track.h \
-    classes/tuning.h \
+    classes/ac_fcurve.h \
+    classes/ac_fpoint.h \
+    classes/ac_note.h \
+    classes/ac_score.h \
+    classes/ac_track.h \
+    classes/ac_tuning.h \
     \
-    implementations/database.h \
+    implementations/ac_database.h \
     \
-    settings/gridsettings.h \
+    settings/ac_gridsettings.h \
     \
     ac_database_global.h \
     ac_databaseplugin.h \
 
 SOURCES += \
-    classes/fcurve.cpp \
-    classes/fpoint.cpp \
-    classes/note.cpp \
-    classes/score.cpp \
-    classes/track.cpp \
-    classes/tuning.cpp \
+    classes/ac_fcurve.cpp \
+    classes/ac_fpoint.cpp \
+    classes/ac_note.cpp \
+    classes/ac_score.cpp \
+    classes/ac_track.cpp \
+    classes/ac_tuning.cpp \
     \
-    implementations/database.cpp \
+    implementations/ac_database.cpp \
     \
-    settings/gridsettings.cpp \
+    settings/ac_gridsettings.cpp \
     \
     ac_databaseplugin.cpp \

@@ -1,1 +1,0 @@
-include(../databaseplugin/databaseplugin.pri)

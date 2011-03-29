@@ -18,7 +18,7 @@
 #ifndef AC_SCENE_GLOBAL_H
 #define AC_SCENE_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <qglobal.h>
 
 #if defined(AC_SCENE_LIBRARY)
 #  define AC_SCENE_EXPORT Q_DECL_EXPORT

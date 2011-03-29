@@ -17,19 +17,20 @@
 
 #include "ac_databaseplugin.h"
 
-#include <ac_databaseplugin/implementations/database.h>
-#include <extensionsystem/pluginmanager.h>
+#include <ac_database.h>
 
-#include <QtCore/QtPlugin>
+#include <pluginmanager.h>
 
-using namespace AudioCarver::Internal;
+#include <QtPlugin>
 
-bool DatabasePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+using namespace Private;
+
+bool AcDatabasePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new DatabaseImpl);
+    addAutoReleasedObject(new AcDatabaseImpl);
     return true;
 }
 
-Q_EXPORT_PLUGIN(DatabasePlugin)
+Q_EXPORT_PLUGIN(AcDatabasePlugin)

@@ -10,14 +10,6 @@ win32-msvc*:QMAKE_CXXFLAGS += -wd4251 -wd4290 -wd4250
 
 DEFINES += CORE_LIBRARY
 
-INCLUDEPATH += \
-    actionmanager \
-    dialogs \
-
-DEPENDPATH += \
-    actionmanager \
-    dialogs \
-
 HEADERS += \
     actionmanager/actioncontainer.h \
     actionmanager/actioncontainer_p.h \

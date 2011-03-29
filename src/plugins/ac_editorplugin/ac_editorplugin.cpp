@@ -17,20 +17,23 @@
 
 #include "ac_editorplugin.h"
 
-#include "implementations/mainwindowimpl.h"
-#include "implementations/editorimpl.h"
+#include <ac_mainwidget.h>
+#include <ac_mainwindowimpl.h>
+#include <ac_editorimpl.h>
 
-#include <QtCore/QtPlugin>
+#include <icore.h>
+#include <mainwindow.h>
 
-using namespace AudioCarver;
-using namespace AudioCarver::Internal;
+#include <QtPlugin>
 
-bool EditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
+using namespace Private;
+
+bool AcEditorPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new MainWindowImpl);
-    addAutoReleasedObject(new EditorImpl);
+    addAutoReleasedObject(new AcMainWindowImpl);
+    addAutoReleasedObject(new AcEditorImpl);
     return true;
 }
 

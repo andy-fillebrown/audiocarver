@@ -18,10 +18,7 @@
 #ifndef AC_EDITORCONSTANTS_H
 #define AC_EDITORCONSTANTS_H
 
-#include <coreplugin/coreconstants.h>
-
-namespace AudioCarver {
-namespace Constants {
+#include <coreconstants.h>
 
 const char * const G_CREATE                = PRO_NAME_STR".Group.Create";
 const char * const G_MODIFY                = PRO_NAME_STR".Group.Modify";
@@ -45,8 +42,5 @@ const char * const ERASE                   = PRO_NAME_STR".Erase";
 const char * const BUILDALL                = PRO_NAME_STR".BuildAll";
 
 const char * const ABOUTAUDIOCARVER        = PRO_NAME_STR".About"PRO_NAME_STR;
-
-} // namespace Constants
-} // namespace AudioCarver
 
 #endif // AC_EDITORCONSTANTS_H

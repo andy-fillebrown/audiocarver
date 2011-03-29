@@ -18,27 +18,25 @@
 #ifndef AC_SCENEPLUGIN_H
 #define AC_SCENEPLUGIN_H
 
-#include <extensionsystem/iplugin.h>
+#include <iplugin.h>
 
-namespace AudioCarver {
-namespace Internal {
+namespace Private {
 
-class ScenePlugin : public ExtensionSystem::IPlugin
+class AcScenePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
 public:
-    ScenePlugin() {}
+    AcScenePlugin() {}
 private:
-    ~ScenePlugin() {}
-    Q_DISABLE_COPY(ScenePlugin)
+    ~AcScenePlugin() {}
+    Q_DISABLE_COPY(AcScenePlugin)
 
 private:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized() {}
 };
 
-} // namespace Internal
-} // namespace AudioCarver
+} // namespace Private
 
 #endif // AC_SCENEPLUGIN_H

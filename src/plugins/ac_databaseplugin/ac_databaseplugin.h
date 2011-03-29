@@ -18,27 +18,25 @@
 #ifndef AC_DATABASEPLUGIN_H
 #define AC_DATABASEPLUGIN_H
 
-#include <extensionsystem/iplugin.h>
+#include <iplugin.h>
 
-namespace AudioCarver {
-namespace Internal {
+namespace Private {
 
-class DatabasePlugin : public ExtensionSystem::IPlugin
+class AcDatabasePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
 public:
-    DatabasePlugin() {}
+    AcDatabasePlugin() {}
 private:
-    ~DatabasePlugin() {}
-    Q_DISABLE_COPY(DatabasePlugin)
+    ~AcDatabasePlugin() {}
+    Q_DISABLE_COPY(AcDatabasePlugin)
 
 private:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized() {}
 };
 
-} // namespace Internal
-} // namespace AudioCarver
+} // namespace Private
 
 #endif // AC_DATABASEPLUGIN_H
