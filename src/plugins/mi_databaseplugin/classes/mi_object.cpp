@@ -139,7 +139,7 @@ bool MiObject::read(QXmlStreamReader &in)
             name = "objectName";
         const int i = propertyIndex(name);
         QString type = propertyType(i);
-        if (type == "Database::List*")
+        if (type == "MiList*")
             continue;
         if (type.endsWith("*")) {
             MiObject *object = root->findChild<MiObject*>(att.value().toString());
@@ -156,7 +156,7 @@ bool MiObject::read(QXmlStreamReader &in)
         const int i = propertyIndex(name);
         QString type = propertyType(i);
         if (type.endsWith("*")) {
-            if (type == "Database::List*")
+            if (type == "MiList*")
                 continue;
             if (propertyIsReadOnly(i)) {
                 MiObject *object = propertyValue(i).value<MiObject*>();
@@ -170,7 +170,7 @@ bool MiObject::read(QXmlStreamReader &in)
     const int count = propertyCount();
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
-        if (type != "Database::List*")
+        if (type != "MiList*")
             continue;
         MiList *list = propertyValue(i).value<MiList*>();
         Q_ASSERT(list);
@@ -218,7 +218,7 @@ void MiObject::write(QXmlStreamWriter &out) const
     const int count = this->propertyCount();
     for (int i = 0;  i < count;  ++i) {
         QString type = propertyType(i);
-        if (type == "Database::List*")
+        if (type == "MiList*")
             continue;
         QVariant value = propertyValue(i);
         if (type.endsWith("*")) {
@@ -240,7 +240,7 @@ void MiObject::write(QXmlStreamWriter &out) const
     for (int i = 0;  i < count;  ++i) {
         QString type = propertyType(i);
         if (type.endsWith("*")) {
-            if (type == "Database::List*")
+            if (type == "MiList*")
                 continue;
             if (propertyIsReadOnly(i)) {
                 QVariant value = propertyValue(i);
@@ -253,7 +253,7 @@ void MiObject::write(QXmlStreamWriter &out) const
     // Write lists.
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
-        if (type != "Database::List*")
+        if (type != "MiList*")
             continue;
         QVariant value = propertyValue(i);
         MiList *list = value.value<MiList*>();
