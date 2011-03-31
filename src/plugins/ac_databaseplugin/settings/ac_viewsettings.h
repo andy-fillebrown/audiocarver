@@ -15,30 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWIDGET_H
-#define AC_MAINWIDGET_H
+#ifndef AC_VIEWSETTINGS_H
+#define AC_VIEWSETTINGS_H
 
-#include <QWidget>
+#include <mi_object.h>
 
-#include <ac_editor_global.h>
+#include <ac_database_global.h>
 
 namespace Private {
 
-class AcMainWidgetData;
+class AcViewSettingsData;
 
-class AcMainWidget : public QWidget
+} // namespace Private
+
+class AC_DATABASE_EXPORT AcViewSettings : public MiObject
 {
     Q_OBJECT
+    Q_PROPERTY(qreal positionX READ positionX WRITE setPositionX)
+    Q_PROPERTY(qreal positionY READ positionY WRITE setPositionY)
+    Q_PROPERTY(qreal scaleX READ scaleX WRITE setScaleX)
+    Q_PROPERTY(qreal scaleY READ scaleY WRITE setScaleY)
 
 public:
-    AcMainWidget(QWidget *parent = 0);
+    AcViewSettings(QObject *parent = 0);
 private:
-    ~AcMainWidget();
-    Q_DISABLE_COPY(AcMainWidget)
+    ~AcViewSettings();
+    Q_DISABLE_COPY(AcViewSettings)
 
 public:
-    static AcMainWidget *instance();
-
     qreal positionX() const;
     void setPositionX(qreal positionX);
     qreal positionY() const;
@@ -50,15 +54,7 @@ public:
     void setScaleY(qreal scaleY);
 
 private:
-    void wheelEvent(QWheelEvent *event);
-
-private slots:
-    void updateViewSettings(int propertyIndex);
-
-private:
-    AcMainWidgetData *d;
+    Private::AcViewSettingsData *d;
 };
 
-} // namespace Private
-
-#endif // AC_MAINWIDGET_H
+#endif // AC_VIEWSETTINGS_H

@@ -22,6 +22,12 @@
 
 #include <ac_scene_global.h>
 
+namespace Private {
+
+class AcGraphicsSceneData;
+
+} // namespace Private
+
 class AC_SCENE_EXPORT AcGraphicsScene : public MiGraphicsScene
 {
     Q_OBJECT
@@ -29,9 +35,15 @@ class AC_SCENE_EXPORT AcGraphicsScene : public MiGraphicsScene
 public:
     AcGraphicsScene(QObject *parent = 0);
 protected:
-    virtual ~AcGraphicsScene() {}
+    virtual ~AcGraphicsScene();
 private:
     Q_DISABLE_COPY(AcGraphicsScene)
+
+private slots:
+    void updateScoreProperty(int propertyIndex);
+
+private:
+    Private::AcGraphicsSceneData *d;
 };
 
 #endif // AC_GRAPHICSSCENE_H

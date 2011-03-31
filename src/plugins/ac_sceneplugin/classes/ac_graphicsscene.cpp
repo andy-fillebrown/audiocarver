@@ -17,10 +17,53 @@
 
 #include "ac_graphicsscene.h"
 
+#include <ac_score.h>
+
+#include <QGraphicsRectItem>
+
+using namespace Private;
+
+namespace Private {
+
+class AcGraphicsSceneData
+{
+public:
+    AcGraphicsScene *q;
+    AcScore *score;
+    QGraphicsRectItem *scoreRectItem;
+
+    AcGraphicsSceneData(AcGraphicsScene *q)
+        :   q(q)
+        ,   score(AcScore::instance())
+        ,   scoreRectItem(q->addRect(0.0f, 0.0f, 0.0f, 0.0f))
+    {
+        updateScoreRectItem();
+    }
+
+    void updateScoreRectItem()
+    {
+        scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
+        q->setSceneRect(-5.0f, -5.0f, score->length() + 10.0f, 137.0f);
+    }
+};
+
+} // namespace Private
+
 AcGraphicsScene::AcGraphicsScene(QObject *parent)
     :   MiGraphicsScene(parent)
+    ,   d(new AcGraphicsSceneData(this))
 {
-    addText("Hello World!");
-    addRect(0.0f, 0.0f, 127.0f, 127.0f);
-    setSceneRect(-10, -10, 147, 147);
+    connect(d->score, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+}
+
+AcGraphicsScene::~AcGraphicsScene()
+{
+    delete d;
+}
+
+void AcGraphicsScene::updateScoreProperty(int propertyIndex)
+{
+    const QString propName = d->score->propertyName(propertyIndex);
+    if (propName == "length")
+        d->updateScoreRectItem();
 }

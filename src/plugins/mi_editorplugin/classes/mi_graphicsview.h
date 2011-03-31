@@ -30,6 +30,10 @@ public:
     MiGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
 protected:
     virtual ~MiGraphicsView() {}
+
+protected:
+    virtual void wheelEvent(QWheelEvent *event);
+
 private:
     Q_DISABLE_COPY(MiGraphicsView)
 };

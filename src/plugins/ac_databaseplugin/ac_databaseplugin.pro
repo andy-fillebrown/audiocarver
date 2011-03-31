@@ -17,6 +17,7 @@ HEADERS += \
     implementations/ac_database.h \
     \
     settings/ac_gridsettings.h \
+    settings/ac_viewsettings.h \
     \
     ac_database_global.h \
     ac_databaseplugin.h \
@@ -32,5 +33,6 @@ SOURCES += \
     implementations/ac_database.cpp \
     \
     settings/ac_gridsettings.cpp \
+    settings/ac_viewsettings.cpp \
     \
     ac_databaseplugin.cpp \

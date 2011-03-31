@@ -18,10 +18,14 @@
 #include "ac_mainwidget.h"
 
 #include <ac_graphicsscene.h>
+#include <ac_score.h>
+#include <ac_viewsettings.h>
 
 #include <mi_graphicsview.h>
 
+#include <QApplication>
 #include <QLayout>
+#include <QWheelEvent>
 
 using namespace Private;
 
@@ -31,6 +35,7 @@ class AcMainWidgetData
 {
 public:
     AcMainWidget *q;
+    AcViewSettings *viewSettings;
     AcGraphicsScene *scene;
 
     QGridLayout *layout;
@@ -59,17 +64,26 @@ public:
         topLeft->setMaximumSize(128, 128);
 
         topRight->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        topRight->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        topRight->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         topRight->setMinimumHeight(128);
         topRight->setMaximumHeight(128);
 
-        bottomLeft->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        bottomLeft->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         bottomLeft->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         bottomLeft->setMinimumWidth(128);
         bottomLeft->setMaximumWidth(128);
 
-        sceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        sceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        sceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        sceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        AcScore *score = AcScore::instance();
+        viewSettings = qobject_cast<AcViewSettings*>(score->findObject("ViewSettings"));
+    }
+
+    void updateViewTransform()
+    {
+        sceneView->setTransform(QTransform::fromTranslate(viewSettings->positionX(), viewSettings->positionY()));
+        sceneView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()), true);
     }
 };
 
@@ -82,6 +96,7 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     ,   d(new AcMainWidgetData(this))
 {
     ::instance = this;
+    connect(d->viewSettings, SIGNAL(propertyChanged(int)), SLOT(updateViewSettings(int)));
 }
 
 AcMainWidget::~AcMainWidget()
@@ -92,4 +107,72 @@ AcMainWidget::~AcMainWidget()
 AcMainWidget *AcMainWidget::instance()
 {
     return ::instance;
+}
+
+qreal AcMainWidget::positionX() const
+{
+    return d->viewSettings->positionX();
+}
+
+void AcMainWidget::setPositionX(qreal positionX)
+{
+    d->viewSettings->setPositionX(positionX);
+}
+
+qreal AcMainWidget::positionY() const
+{
+    return d->viewSettings->positionY();
+}
+
+void AcMainWidget::setPositionY(qreal positionY)
+{
+    d->viewSettings->setPositionY(positionY);
+}
+
+qreal AcMainWidget::scaleX() const
+{
+    return d->viewSettings->scaleX();
+}
+
+void AcMainWidget::setScaleX(qreal scaleX)
+{
+    d->viewSettings->setScaleX(scaleX);
+}
+
+qreal AcMainWidget::scaleY() const
+{
+    return d->viewSettings->scaleY();
+}
+
+void AcMainWidget::setScaleY(qreal scaleY)
+{
+    d->viewSettings->setScaleY(scaleY);
+}
+
+void AcMainWidget::wheelEvent(QWheelEvent *event)
+{
+    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+        qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
+        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
+            setScaleX(scale * scaleX());
+        else
+            setScaleY(scale * scaleY());
+    } else {
+        qreal offset = event->delta() < 0 ? 10.0f : -10.0f;
+        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
+            setPositionX(positionX() + offset);
+        else
+            setPositionY(positionY() + offset);
+    }
+    event->accept();
+}
+
+void AcMainWidget::updateViewSettings(int propertyIndex)
+{
+    const QString propName = d->viewSettings->propertyName(propertyIndex);
+    if (propName == "scaleX"
+            || propName == "scaleY"
+            || propName == "positionX"
+            || propName == "positionY")
+        d->updateViewTransform();
 }

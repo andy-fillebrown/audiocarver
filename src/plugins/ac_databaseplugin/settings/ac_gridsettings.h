@@ -31,13 +31,12 @@ class AcGridSettingsData;
 class AC_DATABASE_EXPORT AcGridSettings : public MiObject
 {
     Q_OBJECT
-
     Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
     AcGridSettings(QObject *parent = 0);
 private:
-    virtual ~AcGridSettings();
+    ~AcGridSettings();
     Q_DISABLE_COPY(AcGridSettings)
 
 public:

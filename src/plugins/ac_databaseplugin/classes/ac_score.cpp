@@ -22,6 +22,7 @@
 #include <ac_note.h>
 #include <ac_track.h>
 #include <ac_tuning.h>
+#include <ac_viewsettings.h>
 
 #include <mi_list.h>
 
@@ -36,17 +37,22 @@ public:
     MiList *tunings;
     MiList *curves;
     MiList *tracks;
+    qreal length;
 
     AcGridSettings *gridSettings;
+    AcViewSettings *viewSettings;
 
     AcScoreData(AcScore *q)
         :   settings(new MiConstantList(q, q->propertyIndex("settings")))
         ,   tunings(new MiList(q, q->propertyIndex("tunings")))
         ,   curves(new MiList(q, q->propertyIndex("curves")))
         ,   tracks(new MiList(q, q->propertyIndex("tracks")))
+        ,   length(128.0f)
         ,   gridSettings(new AcGridSettings(q))
+        ,   viewSettings(new AcViewSettings(q))
     {
         settings->append(gridSettings);
+        settings->append(viewSettings);
     }
 
     ~AcScoreData()
@@ -99,6 +105,19 @@ MiList *AcScore::tracks() const
     return d->tracks;
 }
 
+qreal AcScore::length() const
+{
+    return d->length;
+}
+
+void AcScore::setLength(qreal length)
+{
+    if (d->length == length)
+        return;
+    d->length = length;
+    emit propertyChanged(propertyIndex("length"));
+}
+
 void AcScore::clear()
 {
     d->tracks->deleteAll();
@@ -135,5 +154,7 @@ MiObject *AcScore::findObject(const QString &className) const
 {
     if (className == "GridSettings")
         return d->gridSettings;
+    if (className == "ViewSettings")
+        return d->viewSettings;
     return 0;
 }

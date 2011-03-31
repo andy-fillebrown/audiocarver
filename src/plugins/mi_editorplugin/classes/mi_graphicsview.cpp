@@ -17,9 +17,16 @@
 
 #include "mi_graphicsview.h"
 
+#include <QWheelEvent>
+
 MiGraphicsView::MiGraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   QGraphicsView(scene, parent)
 {
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    scale(100.0f, 10.0f);
+}
+
+void MiGraphicsView::wheelEvent(QWheelEvent *event)
+{
+    // Ignore wheel events here so the main widget will get them.
+    event->ignore();
 }
