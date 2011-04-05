@@ -176,7 +176,7 @@ void AcMainWidget::wheelEvent(QWheelEvent *event)
     } else {
         int offset = event->delta() < 0 ? 10 : -10;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-            setPositionX(positionX() + offset);
+            setPositionX(positionX() - offset);
         else
             setPositionY(positionY() + offset);
     }
