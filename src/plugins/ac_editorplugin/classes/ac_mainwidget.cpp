@@ -86,9 +86,7 @@ public:
 
     void updateViewCenter()
     {
-        QPoint ctr = sceneView->rect().center();
-        ctr.rx() -= 1;
-        sceneViewCenter = sceneView->mapToScene(ctr);
+        sceneViewCenter = sceneView->mapToScene(sceneView->rect().center());
     }
 
     void updateViewTransform()
