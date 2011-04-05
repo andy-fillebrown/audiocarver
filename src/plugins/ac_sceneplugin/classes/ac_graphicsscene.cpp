@@ -43,7 +43,6 @@ public:
     void updateScoreRectItem()
     {
         scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
-        q->setSceneRect(-5.0f, -5.0f, score->length() + 10.0f, 137.0f);
     }
 };
 

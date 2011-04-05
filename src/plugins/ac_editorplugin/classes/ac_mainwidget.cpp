@@ -44,6 +44,8 @@ public:
     MiGraphicsView *bottomLeft;
     MiGraphicsView *sceneView;
 
+    QPointF sceneViewCenter;
+
     AcMainWidgetData(AcMainWidget *q)
         :   q(q)
         ,   scene(new AcGraphicsScene(q))
@@ -78,12 +80,20 @@ public:
 
         AcScore *score = AcScore::instance();
         viewSettings = qobject_cast<AcViewSettings*>(score->findObject("ViewSettings"));
+
+        updateViewCenter();
+    }
+
+    void updateViewCenter()
+    {
+        QPoint ctr = sceneView->rect().center();
+        ctr.rx() -= 1;
+        sceneViewCenter = sceneView->mapToScene(ctr);
     }
 
     void updateViewTransform()
     {
-        sceneView->setTransform(QTransform::fromTranslate(viewSettings->positionX(), viewSettings->positionY()));
-        sceneView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()), true);
+        sceneView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
     }
 };
 
@@ -111,22 +121,30 @@ AcMainWidget *AcMainWidget::instance()
 
 qreal AcMainWidget::positionX() const
 {
-    return d->viewSettings->positionX();
+    return d->sceneViewCenter.x();
 }
 
 void AcMainWidget::setPositionX(qreal positionX)
 {
-    d->viewSettings->setPositionX(positionX);
+    const qreal prevX = d->sceneViewCenter.x();
+    d->sceneView->centerOn(positionX, d->sceneViewCenter.y());
+    d->updateViewCenter();
+    if (d->sceneViewCenter.x() != prevX)
+        d->viewSettings->setPositionX(d->sceneViewCenter.x());
 }
 
 qreal AcMainWidget::positionY() const
 {
-    return d->viewSettings->positionY();
+    return d->sceneViewCenter.y();
 }
 
 void AcMainWidget::setPositionY(qreal positionY)
 {
-    d->viewSettings->setPositionY(positionY);
+    const qreal prevY = d->sceneViewCenter.y();
+    d->sceneView->centerOn(d->sceneViewCenter.x(), positionY);
+    d->updateViewCenter();
+    if (d->sceneViewCenter.y() != prevY)
+        d->viewSettings->setPositionY(d->sceneViewCenter.y());
 }
 
 qreal AcMainWidget::scaleX() const
@@ -158,7 +176,7 @@ void AcMainWidget::wheelEvent(QWheelEvent *event)
         else
             setScaleY(scale * scaleY());
     } else {
-        qreal offset = event->delta() < 0 ? 10.0f : -10.0f;
+        int offset = event->delta() < 0 ? 10 : -10;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             setPositionX(positionX() + offset);
         else
@@ -170,9 +188,6 @@ void AcMainWidget::wheelEvent(QWheelEvent *event)
 void AcMainWidget::updateViewSettings(int propertyIndex)
 {
     const QString propName = d->viewSettings->propertyName(propertyIndex);
-    if (propName == "scaleX"
-            || propName == "scaleY"
-            || propName == "positionX"
-            || propName == "positionY")
+    if (propName == "scaleX" || propName == "scaleY")
         d->updateViewTransform();
 }

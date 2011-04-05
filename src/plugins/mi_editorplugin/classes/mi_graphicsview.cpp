@@ -22,7 +22,6 @@
 MiGraphicsView::MiGraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   QGraphicsView(scene, parent)
 {
-    setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 void MiGraphicsView::wheelEvent(QWheelEvent *event)
