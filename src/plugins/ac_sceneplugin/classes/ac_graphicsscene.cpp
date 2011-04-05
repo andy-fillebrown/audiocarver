@@ -20,6 +20,7 @@
 #include <ac_score.h>
 
 #include <QGraphicsRectItem>
+#include <QPainterPath>
 
 using namespace Private;
 
@@ -30,18 +31,39 @@ class AcGraphicsSceneData
 public:
     AcGraphicsScene *q;
     AcScore *score;
+
     QGraphicsRectItem *scoreRectItem;
+    QGraphicsPathItem *barLineItem;
+    QGraphicsPathItem *tuningLineItem;
 
     AcGraphicsSceneData(AcGraphicsScene *q)
         :   q(q)
         ,   score(AcScore::instance())
         ,   scoreRectItem(q->addRect(0.0f, 0.0f, 0.0f, 0.0f))
+        ,   barLineItem(0)
+        ,   tuningLineItem(0)
     {
-        updateScoreRectItem();
+        updateScoreRectItems();
     }
 
-    void updateScoreRectItem()
+    void updateScoreRectItems()
     {
+        if (barLineItem)
+            q->removeItem(barLineItem);
+        QPainterPath barLinePath;
+        for (int i = 0;  i < score->length();  i+=4) {
+            barLinePath.moveTo(qreal(i), 0.0f);
+            barLinePath.lineTo(qreal(i), 127.0f);
+        }
+        barLineItem = q->addPath(barLinePath);
+
+        if (tuningLineItem)
+            q->removeItem(tuningLineItem);
+        QPainterPath tuningLinePath;
+        tuningLinePath.moveTo(0.0f, 60.0f);
+        tuningLinePath.lineTo(score->length(), 60.0f);
+        tuningLineItem = q->addPath(tuningLinePath, QPen(QColor(Qt::red)));
+
         scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
     }
 };
@@ -64,5 +86,5 @@ void AcGraphicsScene::updateScoreProperty(int propertyIndex)
 {
     const QString propName = d->score->propertyName(propertyIndex);
     if (propName == "length")
-        d->updateScoreRectItem();
+        d->updateScoreRectItems();
 }
