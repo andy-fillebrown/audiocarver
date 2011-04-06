@@ -60,8 +60,8 @@ public:
         if (tuningLineItem)
             q->removeItem(tuningLineItem);
         QPainterPath tuningLinePath;
-        tuningLinePath.moveTo(0.0f, 60.0f);
-        tuningLinePath.lineTo(score->length(), 60.0f);
+        tuningLinePath.moveTo(0.0f, qAbs(60.0f - 127.0f));
+        tuningLinePath.lineTo(score->length(), qAbs(60.0f - 127.0f));
         tuningLineItem = q->addPath(tuningLinePath, QPen(QColor(Qt::red)));
 
         scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);

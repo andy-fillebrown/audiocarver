@@ -24,6 +24,7 @@
 #include <mi_graphicsview.h>
 
 #include <QApplication>
+#include <QGraphicsPathItem>
 #include <QLayout>
 #include <QWheelEvent>
 
@@ -36,47 +37,57 @@ class AcMainWidgetData
 public:
     AcMainWidget *q;
     AcViewSettings *viewSettings;
-    AcGraphicsScene *scene;
+    MiGraphicsScene *timeScene;
+    MiGraphicsScene *pitchScene;
+    AcGraphicsScene *scoreScene;
 
     QGridLayout *layout;
     MiGraphicsView *topLeft;
-    MiGraphicsView *topRight;
-    MiGraphicsView *bottomLeft;
-    MiGraphicsView *sceneView;
+    MiGraphicsView *timeSceneView;
+    MiGraphicsView *pitchSceneView;
+    MiGraphicsView *scoreSceneView;
 
     QPointF sceneViewCenter;
 
+    QGraphicsPathItem *pitchLineItem;
+    QGraphicsPathItem *pitchTextItem;
+
     AcMainWidgetData(AcMainWidget *q)
         :   q(q)
-        ,   scene(new AcGraphicsScene(q))
+        ,   timeScene(new MiGraphicsScene(q))
+        ,   pitchScene(new MiGraphicsScene(q))
+        ,   scoreScene(new AcGraphicsScene(q))
         ,   layout(new QGridLayout(q))
         ,   topLeft(new MiGraphicsView(0, q))
-        ,   topRight(new MiGraphicsView(0, q))
-        ,   bottomLeft(new MiGraphicsView(0, q))
-        ,   sceneView(new MiGraphicsView(scene, q))
+        ,   timeSceneView(new MiGraphicsView(timeScene, q))
+        ,   pitchSceneView(new MiGraphicsView(pitchScene, q))
+        ,   scoreSceneView(new MiGraphicsView(scoreScene, q))
+        ,   pitchLineItem(0)
+        ,   pitchTextItem(0)
     {
         layout->setContentsMargins(QMargins());
         layout->setSpacing(0);
         layout->addWidget(topLeft, 0, 0);
-        layout->addWidget(topRight, 0, 1);
-        layout->addWidget(bottomLeft, 1, 0);
-        layout->addWidget(sceneView, 1, 1);
+        layout->addWidget(timeSceneView, 0, 1);
+        layout->addWidget(pitchSceneView, 1, 0);
+        layout->addWidget(scoreSceneView, 1, 1);
 
         topLeft->setMinimumSize(128, 128);
         topLeft->setMaximumSize(128, 128);
 
-        topRight->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        topRight->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        topRight->setMinimumHeight(128);
-        topRight->setMaximumHeight(128);
+        timeSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        timeSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        timeSceneView->setMinimumHeight(128);
+        timeSceneView->setMaximumHeight(128);
 
-        bottomLeft->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        bottomLeft->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        bottomLeft->setMinimumWidth(128);
-        bottomLeft->setMaximumWidth(128);
+        pitchSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        pitchSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        pitchSceneView->setMinimumWidth(128);
+        pitchSceneView->setMaximumWidth(128);
+        pitchSceneView->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-        sceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        sceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        scoreSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        scoreSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
         AcScore *score = AcScore::instance();
         viewSettings = qobject_cast<AcViewSettings*>(score->findObject("ViewSettings"));
@@ -86,12 +97,60 @@ public:
 
     void updateViewCenter()
     {
-        sceneViewCenter = sceneView->mapToScene(sceneView->rect().center());
+        sceneViewCenter = scoreSceneView->mapToScene(scoreSceneView->rect().center());
+        updatePitchScene();
     }
 
     void updateViewTransform()
     {
-        sceneView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
+        scoreSceneView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
+        updatePitchScene();
+    }
+
+    void updatePitchScene()
+    {
+        const qreal scaleX = viewSettings->scaleX();
+        const qreal scaleY = viewSettings->scaleY();
+
+        QPointF topLeft = scoreSceneView->mapToScene(scoreSceneView->rect().topLeft());
+        QPointF bottomRight = scoreSceneView->mapToScene(scoreSceneView->rect().bottomRight());
+
+        topLeft.rx() *= scaleX;
+        topLeft.ry() *= scaleY;
+        bottomRight.rx() *= scaleX;
+        bottomRight.ry() *= scaleY;
+
+        pitchScene->setSceneRect(0.0f, topLeft.y(), 10.0f, bottomRight.y() - topLeft.y());
+        pitchSceneView->centerOn(5.0f, sceneViewCenter.y() * scaleY);
+
+        if (pitchLineItem)
+            pitchScene->removeItem(pitchLineItem);
+        QPainterPath pitchLines;
+        pitchLines.moveTo(0.0f, qAbs(0.0f - 127.0f) * scaleY);
+        pitchLines.lineTo(10.0f, qAbs(0.0f - 127.0f) * scaleY);
+        pitchLines.moveTo(0.0f, qAbs(60.0f - 127.0f) * scaleY);
+        pitchLines.lineTo(10.0f, qAbs(60.0f - 127.0f) * scaleY);
+        pitchLines.moveTo(0.0f, qAbs(127.0f - 127.0f) * scaleY);
+        pitchLines.lineTo(10.0f, qAbs(127.0f - 127.0f) * scaleY);
+        pitchLineItem = pitchScene->addPath(pitchLines);
+
+        if (pitchTextItem)
+            pitchScene->removeItem(pitchTextItem);
+        QPainterPath pitchText;
+        QFont font("Courier");
+        QFontMetrics metrics(font);
+        QString s;
+        QRect rect;
+        s = "0.0";
+        rect = metrics.boundingRect(s);
+        pitchText.addText(11.0f, (qAbs(0.0f - 127.0f) * scaleY) - rect.center().y(), font, s);
+        s = "60.0";
+        rect = metrics.boundingRect(s);
+        pitchText.addText(11.0f, (qAbs(60.0f - 127.0f) * scaleY) - rect.center().y(), font, s);
+        s = "127.0";
+        rect = metrics.boundingRect(s);
+        pitchText.addText(11.0f, (qAbs(127.0f - 127.0f) * scaleY) - rect.center().y(), font, s);
+        pitchTextItem = pitchScene->addPath(pitchText);
     }
 };
 
@@ -125,7 +184,7 @@ qreal AcMainWidget::positionX() const
 void AcMainWidget::setPositionX(qreal positionX)
 {
     const qreal prevX = d->sceneViewCenter.x();
-    d->sceneView->centerOn(positionX, d->sceneViewCenter.y());
+    d->scoreSceneView->centerOn(positionX, d->sceneViewCenter.y());
     d->updateViewCenter();
     if (d->sceneViewCenter.x() != prevX)
         d->viewSettings->setPositionX(d->sceneViewCenter.x());
@@ -139,7 +198,7 @@ qreal AcMainWidget::positionY() const
 void AcMainWidget::setPositionY(qreal positionY)
 {
     const qreal prevY = d->sceneViewCenter.y();
-    d->sceneView->centerOn(d->sceneViewCenter.x(), positionY);
+    d->scoreSceneView->centerOn(d->sceneViewCenter.x(), positionY);
     d->updateViewCenter();
     if (d->sceneViewCenter.y() != prevY)
         d->viewSettings->setPositionY(d->sceneViewCenter.y());
@@ -163,6 +222,18 @@ qreal AcMainWidget::scaleY() const
 void AcMainWidget::setScaleY(qreal scaleY)
 {
     d->viewSettings->setScaleY(scaleY);
+}
+
+void AcMainWidget::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    d->updateViewCenter();
+}
+
+void AcMainWidget::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    d->updateViewCenter();
 }
 
 void AcMainWidget::wheelEvent(QWheelEvent *event)

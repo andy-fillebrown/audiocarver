@@ -50,6 +50,8 @@ public:
     void setScaleY(qreal scaleY);
 
 private:
+    void resizeEvent(QResizeEvent *event);
+    void showEvent(QShowEvent *event);
     void wheelEvent(QWheelEvent *event);
 
 private slots:
