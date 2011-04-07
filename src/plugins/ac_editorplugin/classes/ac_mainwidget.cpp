@@ -50,7 +50,7 @@ public:
     QPointF sceneViewCenter;
 
     QGraphicsPathItem *pitchLineItem;
-    QGraphicsPathItem *pitchTextItem;
+    QList<QGraphicsTextItem*> pitchTextItems;
 
     AcMainWidgetData(AcMainWidget *q)
         :   q(q)
@@ -63,29 +63,33 @@ public:
         ,   pitchSceneView(new MiGraphicsView(pitchScene, q))
         ,   scoreSceneView(new MiGraphicsView(scoreScene, q))
         ,   pitchLineItem(0)
-        ,   pitchTextItem(0)
     {
-        layout->setContentsMargins(QMargins());
+        layout->setContentsMargins(QMargins(0, 0, 0, 0));
         layout->setSpacing(0);
         layout->addWidget(topLeft, 0, 0);
         layout->addWidget(timeSceneView, 0, 1);
         layout->addWidget(pitchSceneView, 1, 0);
         layout->addWidget(scoreSceneView, 1, 1);
 
-        topLeft->setMinimumSize(128, 128);
-        topLeft->setMaximumSize(128, 128);
+        const int sideWidth = 64;
+        const int sideHeight = 64;
 
+        topLeft->setFixedSize(sideWidth, sideHeight);
+        topLeft->setFrameShape(QFrame::NoFrame);
+
+        timeSceneView->setFixedHeight(sideHeight);
+        timeSceneView->setFrameShape(QFrame::NoFrame);
         timeSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         timeSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        timeSceneView->setMinimumHeight(128);
-        timeSceneView->setMaximumHeight(128);
 
+        pitchSceneView->setFixedWidth(sideWidth);
+        pitchSceneView->setFrameShape(QFrame::NoFrame);
         pitchSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         pitchSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        pitchSceneView->setMinimumWidth(128);
-        pitchSceneView->setMaximumWidth(128);
-        pitchSceneView->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
+        scoreSceneView->setFrameShape(QFrame::Box);
+        scoreSceneView->setFrameShadow(QFrame::Sunken);
+        scoreSceneView->setLineWidth(1);
         scoreSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scoreSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -134,23 +138,29 @@ public:
         pitchLines.lineTo(10.0f, qAbs(127.0f - 127.0f) * scaleY);
         pitchLineItem = pitchScene->addPath(pitchLines);
 
-        if (pitchTextItem)
-            pitchScene->removeItem(pitchTextItem);
-        QPainterPath pitchText;
-        QFont font("Courier");
+        foreach (QGraphicsTextItem *textItem, pitchTextItems)
+            pitchScene->removeItem(textItem);
+        pitchTextItems.clear();
+        QGraphicsTextItem *textItem = 0;
+        QFont font("Arial", 8);
         QFontMetrics metrics(font);
         QString s;
         QRect rect;
         s = "0.0";
         rect = metrics.boundingRect(s);
-        pitchText.addText(11.0f, (qAbs(0.0f - 127.0f) * scaleY) - rect.center().y(), font, s);
+        textItem = pitchScene->addText(s, font);
+        pitchTextItems.append(textItem);
+        textItem->setPos(12.0f, (qAbs(0.0f - 127.0f) * scaleY) - (rect.height() / 1.5));
         s = "60.0";
         rect = metrics.boundingRect(s);
-        pitchText.addText(11.0f, (qAbs(60.0f - 127.0f) * scaleY) - rect.center().y(), font, s);
+        textItem = pitchScene->addText(s, font);
+        pitchTextItems.append(textItem);
+        textItem->setPos(12.0f, (qAbs(60.0f - 127.0f) * scaleY) - (rect.height() / 1.5));
         s = "127.0";
         rect = metrics.boundingRect(s);
-        pitchText.addText(11.0f, (qAbs(127.0f - 127.0f) * scaleY) - rect.center().y(), font, s);
-        pitchTextItem = pitchScene->addPath(pitchText);
+        textItem = pitchScene->addText(s, font);
+        pitchTextItems.append(textItem);
+        textItem->setPos(12.0f, (qAbs(127.0f - 127.0f) * scaleY) - (rect.height() / 1.5));
     }
 };
 
