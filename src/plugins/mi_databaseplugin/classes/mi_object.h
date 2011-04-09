@@ -31,11 +31,10 @@ class MI_DATABASE_EXPORT MiObject : public QObject
 {
     Q_OBJECT
 
-protected:
+public:
     MiObject(QObject *parent = 0);
     virtual ~MiObject() {}
 
-public:
     virtual QString className() const;
     virtual bool isRoot() const { return false; }
 

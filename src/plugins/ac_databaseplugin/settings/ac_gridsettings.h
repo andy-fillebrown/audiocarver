@@ -36,7 +36,6 @@ class AC_DATABASE_EXPORT AcGridSettings : public MiObject
 public:
     AcGridSettings(QObject *parent = 0);
     ~AcGridSettings();
-    Q_DISABLE_COPY(AcGridSettings)
 
     bool visible() const;
     void setVisible(bool visible);
