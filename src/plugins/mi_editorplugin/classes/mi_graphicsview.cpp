@@ -26,6 +26,6 @@ MiGraphicsView::MiGraphicsView(QGraphicsScene *scene, QWidget *parent)
 
 void MiGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    // Ignore wheel events here so the main widget will get them.
+    // Ignore event so parent widget's wheelEvent gets called.
     event->ignore();
 }

@@ -38,11 +38,8 @@ class AC_DATABASE_EXPORT AcViewSettings : public MiObject
 
 public:
     AcViewSettings(QObject *parent = 0);
-private:
     ~AcViewSettings();
-    Q_DISABLE_COPY(AcViewSettings)
 
-public:
     qreal positionX() const;
     void setPositionX(qreal positionX);
     qreal positionY() const;
@@ -54,6 +51,7 @@ public:
     void setScaleY(qreal scaleY);
 
 private:
+    Q_DISABLE_COPY(AcViewSettings)
     Private::AcViewSettingsData *d;
 };
 

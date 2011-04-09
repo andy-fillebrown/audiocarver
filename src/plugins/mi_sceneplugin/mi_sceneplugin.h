@@ -28,13 +28,13 @@ class MiScenePlugin : public ExtensionSystem::IPlugin
 
 public:
     MiScenePlugin() {}
-private:
-    ~MiScenePlugin() {}
-    Q_DISABLE_COPY(MiScenePlugin)
+    virtual ~MiScenePlugin() {}
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized() {}
 
 private:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+    Q_DISABLE_COPY(MiScenePlugin)
 };
 
 } // namespace Private

@@ -28,15 +28,13 @@ class AcSceneImpl : public MiIScene
 {
 public:
     AcSceneImpl();
+    virtual ~AcSceneImpl();
+
+    virtual QGraphicsScene *scene() const;
+
 private:
-    ~AcSceneImpl();
     Q_DISABLE_COPY(AcSceneImpl)
-
-private:
     AcSceneImplData *d;
-
-private:
-    QGraphicsScene *scene() const;
 };
 
 } // namespace Private

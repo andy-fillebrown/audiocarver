@@ -28,12 +28,8 @@ class MI_DATABASE_EXPORT MiIDatabase : public QObject
 
 public:
     MiIDatabase();
-protected:
     virtual ~MiIDatabase() {}
-private:
-    Q_DISABLE_COPY(MiIDatabase)
 
-public:
     static MiIDatabase *instance();
 
     virtual const QString &fileExtension() const = 0;
@@ -44,6 +40,9 @@ public:
     virtual void clear() = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
+
+private:
+    Q_DISABLE_COPY(MiIDatabase)
 };
 
 #endif // MI_IDATABASE_H

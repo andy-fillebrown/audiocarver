@@ -28,13 +28,13 @@ class MiDatabasePlugin : public ExtensionSystem::IPlugin
 
 public:
     MiDatabasePlugin() {}
-private:
-    ~MiDatabasePlugin() {}
-    Q_DISABLE_COPY(MiDatabasePlugin)
+    virtual ~MiDatabasePlugin() {}
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized() {}
 
 private:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+    Q_DISABLE_COPY(MiDatabasePlugin)
 };
 
 } // namespace Private

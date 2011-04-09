@@ -28,13 +28,13 @@ class AcDatabasePlugin : public ExtensionSystem::IPlugin
 
 public:
     AcDatabasePlugin() {}
-private:
-    ~AcDatabasePlugin() {}
-    Q_DISABLE_COPY(AcDatabasePlugin)
+    virtual ~AcDatabasePlugin() {}
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized() {}
 
 private:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+    Q_DISABLE_COPY(AcDatabasePlugin)
 };
 
 } // namespace Private

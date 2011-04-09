@@ -28,12 +28,8 @@ class MI_EDITOR_EXPORT MiIEditor : public QObject
 
 public:
     MiIEditor();
-protected:
     virtual ~MiIEditor() {}
-private:
-    Q_DISABLE_COPY(MiIEditor)
 
-public:
     static MiIEditor *instance();
 
     virtual void undo() = 0;
@@ -42,6 +38,9 @@ public:
     virtual void copy() const = 0;
     virtual void paste() = 0;
     virtual void selectAll() = 0;
+
+private:
+    Q_DISABLE_COPY(MiIEditor)
 };
 
 #endif // MI_IEDITOR_H

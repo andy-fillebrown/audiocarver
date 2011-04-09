@@ -28,14 +28,11 @@ class MiMainWindowImpl : public Core::IMainWindow
 
 public:
     MiMainWindowImpl() {}
-private:
-    ~MiMainWindowImpl() {}
-    Q_DISABLE_COPY(MiMainWindowImpl)
+    virtual ~MiMainWindowImpl() {}
 
-private:
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
+    virtual void initMenuBarGroups(QStringList &groups) const;
+    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    virtual void initActions();
 
 private slots:
     void newFile();
@@ -49,6 +46,9 @@ private slots:
     void copy();
     void paste();
     void selectAll();
+
+private:
+    Q_DISABLE_COPY(MiMainWindowImpl)
 };
 
 } // namespace Private

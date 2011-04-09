@@ -28,7 +28,6 @@ class MI_EDITOR_EXPORT MiGraphicsView : public QGraphicsView
 
 public:
     MiGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-protected:
     virtual ~MiGraphicsView() {}
 
 protected:

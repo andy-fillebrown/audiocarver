@@ -26,7 +26,7 @@ namespace Private {
 
 class AcGridSettingsData;
 
-} // namespace Internal
+} // namespace Private
 
 class AC_DATABASE_EXPORT AcGridSettings : public MiObject
 {
@@ -35,15 +35,14 @@ class AC_DATABASE_EXPORT AcGridSettings : public MiObject
 
 public:
     AcGridSettings(QObject *parent = 0);
-private:
     ~AcGridSettings();
     Q_DISABLE_COPY(AcGridSettings)
 
-public:
     bool visible() const;
     void setVisible(bool visible);
 
 private:
+    Q_DISABLE_COPY(AcGridSettings)
     Private::AcGridSettingsData *d;
 };
 

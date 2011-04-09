@@ -28,13 +28,13 @@ class AcEditorPlugin : public ExtensionSystem::IPlugin
 
 public:
     AcEditorPlugin() {}
-private:
-    ~AcEditorPlugin() {}
-    Q_DISABLE_COPY(AcEditorPlugin)
+    virtual ~AcEditorPlugin() {}
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized();
 
 private:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
+    Q_DISABLE_COPY(AcEditorPlugin)
 };
 
 } // namespace Private

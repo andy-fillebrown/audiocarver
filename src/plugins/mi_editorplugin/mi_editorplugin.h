@@ -28,12 +28,13 @@ class MiEditorPlugin : public ExtensionSystem::IPlugin
 
 public:
     MiEditorPlugin() {}
-private:
-    ~MiEditorPlugin() {}
-    Q_DISABLE_COPY(MiEditorPlugin)
+    virtual ~MiEditorPlugin() {}
 
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized();
+
+private:
+    Q_DISABLE_COPY(MiEditorPlugin)
 };
 
 } // namespace Private

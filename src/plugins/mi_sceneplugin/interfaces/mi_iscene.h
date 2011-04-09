@@ -30,15 +30,14 @@ class MI_SCENE_EXPORT MiIScene : public QObject
 
 public:
     MiIScene(QObject *parent = 0);
-protected:
     virtual ~MiIScene() {}
-private:
-    Q_DISABLE_COPY(MiIScene)
 
-public:
     static MiIScene *instance();
 
     virtual QGraphicsScene *scene() const = 0;
+
+private:
+    Q_DISABLE_COPY(MiIScene)
 };
 
 #endif // MI_ISCENE_H

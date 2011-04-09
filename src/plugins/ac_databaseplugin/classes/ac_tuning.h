@@ -27,50 +27,44 @@ namespace Private {
 class AcTuningData;
 class AcTuningNoteData;
 
-} // namespace Internal
+} // namespace Private
 
 class AC_DATABASE_EXPORT AcTuning : public MiObject
 {
     Q_OBJECT
-
     Q_PROPERTY(qreal centerNote READ centerNote WRITE setCenterNote)
     Q_PROPERTY(MiList* tuningNotes READ tuningNotes)
 
 public:
-    AcTuning(QObject *parent = 0);
-private:
+    explicit AcTuning(QObject *parent = 0);
     virtual ~AcTuning();
-    Q_DISABLE_COPY(AcTuning)
 
-public:
     qreal centerNote() const;
     void setCenterNote(qreal centerNote);
 
     MiList *tuningNotes() const;
 
-    MiObject *createObject(const QString &className);
+    virtual MiObject *createObject(const QString &className);
 
 private:
+    Q_DISABLE_COPY(AcTuning)
     Private::AcTuningData *d;
 };
 
 class AC_DATABASE_EXPORT AcTuningNote : public MiObject
 {
     Q_OBJECT
-
     Q_PROPERTY(qreal note READ note WRITE setNote)
 
 public:
-    AcTuningNote(qreal note = 0.0f, QObject *parent = 0);
-private:
+    explicit AcTuningNote(qreal note = 0.0f, QObject *parent = 0);
     virtual ~AcTuningNote();
-    Q_DISABLE_COPY(AcTuningNote)
 
-public:
     qreal note() const;
     void setNote(qreal note);
 
 private:
+    Q_DISABLE_COPY(AcTuningNote)
     Private::AcTuningNoteData *d;
 };
 

@@ -30,7 +30,6 @@ public:
         ,   propertyIndex(propertyIndex)
     {}
 
-public:
     virtual bool isConstant() const { return false; }
 
     int count() const { return list.count(); }
@@ -52,11 +51,12 @@ public:
 private:
     void emitChanged() { owner->emit propertyChanged(propertyIndex); }
 
-private:
     MiObject *owner;
     int propertyIndex;
     QList<MiObject*> list;
 };
+
+Q_DECLARE_METATYPE(MiList*);
 
 class MiConstantList : public MiList
 {
@@ -65,9 +65,7 @@ public:
         :   MiList(owner, propertyIndex)
     {}
 
-    bool isConstant() const { return true; }
+    virtual bool isConstant() const { return true; }
 };
-
-Q_DECLARE_METATYPE(MiList*);
 
 #endif // MI_LIST_H

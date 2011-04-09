@@ -33,7 +33,6 @@ class AcTuning;
 class AC_DATABASE_EXPORT AcTrack : public MiObject
 {
     Q_OBJECT
-
     Q_PROPERTY(MiObject *tuning READ tuning WRITE setTuning)
     Q_PROPERTY(MiList* notes READ notes)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
@@ -41,11 +40,8 @@ class AC_DATABASE_EXPORT AcTrack : public MiObject
 
 public:
     AcTrack(QObject *parent = 0);
-private:
     virtual ~AcTrack();
-    Q_DISABLE_COPY(AcTrack)
 
-public:
     MiObject *tuning() const;
     void setTuning(MiObject *tuning);
 
@@ -57,10 +53,11 @@ public:
     qreal volume() const;
     void setVolume(qreal volume);
 
-    MiObject *createObject(const QString &className);
-    MiObject *findObject(const QString &className) const;
+    virtual MiObject *createObject(const QString &className);
+    virtual MiObject *findObject(const QString &className) const;
 
 private:
+    Q_DISABLE_COPY(AcTrack)
     Private::AcTrackData *d;
 };
 

@@ -25,7 +25,6 @@ class AC_DATABASE_EXPORT AcFPoint
 public:
     AcFPoint(qreal x = 0.0f, qreal y = 0.0f, bool curved = false) : xp(x), yp(y), curvedp(curved) {}
 
-public:
     qreal x() const { return xp; }
     void setX(qreal x) { xp = x; }
 

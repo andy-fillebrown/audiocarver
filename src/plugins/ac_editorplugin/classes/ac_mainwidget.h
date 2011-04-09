@@ -32,11 +32,8 @@ class AcMainWidget : public QWidget
 
 public:
     AcMainWidget(QWidget *parent = 0);
-private:
     ~AcMainWidget();
-    Q_DISABLE_COPY(AcMainWidget)
 
-public:
     static AcMainWidget *instance();
 
     qreal positionX() const;
@@ -49,7 +46,7 @@ public:
     qreal scaleY() const;
     void setScaleY(qreal scaleY);
 
-private:
+protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
     void wheelEvent(QWheelEvent *event);
@@ -58,6 +55,7 @@ private slots:
     void updateViewSettings(int propertyIndex);
 
 private:
+    Q_DISABLE_COPY(AcMainWidget)
     AcMainWidgetData *d;
 };
 

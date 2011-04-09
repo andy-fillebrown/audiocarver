@@ -26,17 +26,17 @@ class AcEditorImpl : public MiIEditor
 {
 public:
     AcEditorImpl() {}
-private:
-    ~AcEditorImpl() {}
-    Q_DISABLE_COPY(AcEditorImpl)
+    virtual ~AcEditorImpl() {}
 
-private:
     void undo();
     void redo();
     void cut();
     void copy() const;
     void paste();
     void selectAll();
+
+private:
+    Q_DISABLE_COPY(AcEditorImpl)
 };
 
 } // namespace Private

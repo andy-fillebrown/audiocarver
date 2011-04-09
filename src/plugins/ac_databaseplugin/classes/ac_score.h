@@ -31,7 +31,6 @@ class AcScoreData;
 class AC_DATABASE_EXPORT AcScore : public MiRoot
 {
     Q_OBJECT
-
     Q_PROPERTY(MiList* settings READ settings)
     Q_PROPERTY(MiList* tunings READ tunings)
     Q_PROPERTY(MiList* curves READ curves)
@@ -40,11 +39,8 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
 
 public:
     AcScore(QObject *parent = 0);
-private:
     virtual ~AcScore();
-    Q_DISABLE_COPY(AcScore)
 
-public:
     static AcScore *instance();
 
     MiList *settings() const;
@@ -57,11 +53,12 @@ public:
 
     void clear();
 
-    QString &normalizeClassName(QString &className) const;
-    MiObject *createObject(const QString &className);
-    MiObject *findObject(const QString &className) const;
+    virtual QString &normalizeClassName(QString &className) const;
+    virtual MiObject *createObject(const QString &className);
+    virtual MiObject *findObject(const QString &className) const;
 
 private:
+    Q_DISABLE_COPY(AcScore)
     Private::AcScoreData *d;
 };
 

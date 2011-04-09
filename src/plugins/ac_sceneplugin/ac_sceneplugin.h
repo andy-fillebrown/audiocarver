@@ -28,13 +28,13 @@ class AcScenePlugin : public ExtensionSystem::IPlugin
 
 public:
     AcScenePlugin() {}
-private:
-    ~AcScenePlugin() {}
-    Q_DISABLE_COPY(AcScenePlugin)
+    virtual ~AcScenePlugin() {}
+
+    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void extensionsInitialized() {}
 
 private:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+    Q_DISABLE_COPY(AcScenePlugin)
 };
 
 } // namespace Private

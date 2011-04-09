@@ -33,10 +33,7 @@ class MI_DATABASE_EXPORT MiObject : public QObject
 
 protected:
     MiObject(QObject *parent = 0);
-public:
-    ~MiObject() {}
-private:
-    Q_DISABLE_COPY(MiObject)
+    virtual ~MiObject() {}
 
 public:
     virtual QString className() const;
@@ -74,10 +71,10 @@ protected:
 signals:
     void erased();
     void unerased();
-
     void propertyChanged(int index);
 
 private:
+    Q_DISABLE_COPY(MiObject)
     friend class MiList;
 };
 

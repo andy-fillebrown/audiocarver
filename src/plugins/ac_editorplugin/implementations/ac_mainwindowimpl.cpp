@@ -49,7 +49,7 @@ public:
     {}
 };
 
-} // namespace Internal
+} // namespace Private
 
 static AcMainWindowImpl *instance = 0;
 
@@ -78,7 +78,6 @@ void AcMainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, 
 {
     Q_UNUSED(id);
     Q_UNUSED(title);
-    Q_UNUSED(groups);
 
     if (menuBarGroup == Core::Constants::G_HELP)
         groups  << G_HELP_ABOUTAUDIOCARVER;

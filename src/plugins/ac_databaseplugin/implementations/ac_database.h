@@ -28,21 +28,19 @@ class AcDatabaseImpl : public MiIDatabase
 {
 public:
     AcDatabaseImpl();
+    virtual ~AcDatabaseImpl();
+
+    virtual const QString &fileExtension() const;
+    virtual const QString &fileFilter() const;
+
+    virtual const QString &fileName() const;
+
+    virtual void clear();
+    virtual void read(const QString &fileName);
+    virtual void write(const QString &fileName);
+
 private:
-    ~AcDatabaseImpl();
     Q_DISABLE_COPY(AcDatabaseImpl)
-
-private:
-    const QString &fileExtension() const;
-    const QString &fileFilter() const;
-
-    const QString &fileName() const;
-
-    void clear();
-    void read(const QString &fileName);
-    void write(const QString &fileName);
-
-private:
     AcDatabaseImplData *d;
 };
 

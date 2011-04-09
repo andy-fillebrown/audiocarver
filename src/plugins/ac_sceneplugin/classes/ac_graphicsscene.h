@@ -34,15 +34,13 @@ class AC_SCENE_EXPORT AcGraphicsScene : public MiGraphicsScene
 
 public:
     AcGraphicsScene(QObject *parent = 0);
-protected:
     virtual ~AcGraphicsScene();
-private:
-    Q_DISABLE_COPY(AcGraphicsScene)
 
 private slots:
     void updateScoreProperty(int propertyIndex);
 
 private:
+    Q_DISABLE_COPY(AcGraphicsScene)
     Private::AcGraphicsSceneData *d;
 };
 

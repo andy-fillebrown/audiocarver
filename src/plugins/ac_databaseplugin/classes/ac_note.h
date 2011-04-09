@@ -31,17 +31,13 @@ class AcNoteData;
 class AC_DATABASE_EXPORT AcNote : public MiObject
 {
     Q_OBJECT
-
     Q_PROPERTY(int pointCount READ pointCount WRITE setPointCount)
     Q_PROPERTY(MiObject* pitchCurve READ pitchCurve WRITE setPitchCurve)
 
 public:
     AcNote(QObject *parent = 0);
-private:
     virtual ~AcNote();
-    Q_DISABLE_COPY(AcNote)
 
-public:
     int pointCount() const;
     void setPointCount(int count);
 
@@ -49,6 +45,7 @@ public:
     void setPitchCurve(MiObject *curve);
 
 private:
+    Q_DISABLE_COPY(AcNote)
     Private::AcNoteData *d;
 };
 

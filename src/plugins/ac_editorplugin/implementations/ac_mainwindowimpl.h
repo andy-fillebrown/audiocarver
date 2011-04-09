@@ -30,23 +30,20 @@ class AcMainWindowImpl : public Core::IMainWindow
 
 public:
     AcMainWindowImpl();
-private:
-    ~AcMainWindowImpl();
-    Q_DISABLE_COPY(AcMainWindowImpl)
+    virtual ~AcMainWindowImpl();
 
-public:
     static AcMainWindowImpl *instance();
 
-private:
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
+    virtual void initMenuBarGroups(QStringList &groups) const;
+    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    virtual void initActions();
 
 private slots:
     void aboutAudioCarver();
     void destroyVersionDialog();
 
 private:
+    Q_DISABLE_COPY(AcMainWindowImpl)
     AcMainWindowImplData *d;
 };
 

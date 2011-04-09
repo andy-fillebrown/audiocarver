@@ -28,8 +28,8 @@ class MI_SCENE_EXPORT MiGraphicsScene : public QGraphicsScene
 
 public:
     MiGraphicsScene(QObject *parent = 0);
-protected:
     virtual ~MiGraphicsScene() {}
+
 private:
     Q_DISABLE_COPY(MiGraphicsScene)
 };

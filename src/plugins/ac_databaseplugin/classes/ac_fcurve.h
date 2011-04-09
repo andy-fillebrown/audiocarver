@@ -36,11 +36,8 @@ class AC_DATABASE_EXPORT AcFCurve : public MiObject
 
 public:
     AcFCurve(QObject *parent = 0);
-private:
     virtual ~AcFCurve();
-    Q_DISABLE_COPY(AcFCurve)
 
-public:
     const QList<AcFPoint> &points() const;
     int pointCount() const;
     const AcFPoint &pointAt(int i) const;
@@ -57,6 +54,7 @@ signals:
     void pointsChanged();
 
 private:
+    Q_DISABLE_COPY(AcFCurve)
     Private::AcFCurveData *d;
 };
 
