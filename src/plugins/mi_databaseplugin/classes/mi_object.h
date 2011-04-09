@@ -22,6 +22,8 @@
 
 #include <mi_database_global.h>
 
+#include <QVariant>
+
 class MiList;
 class MiRoot;
 class QXmlStreamReader;
