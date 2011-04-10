@@ -27,27 +27,28 @@ class AcTuningData : public MiLinkableObjectData
 {
 public:
     qreal centerNote;
-    MiList *tuningNotes;
+    MiList *notes;
 
     AcTuningData(AcTuning *q)
         :   MiLinkableObjectData(q)
         ,   centerNote(60.0f)
-        ,   tuningNotes(new MiList(q, q->propertyIndex("noteOffsets")))
+        ,   notes(new MiList(q, q->propertyIndex("notes")))
     {}
 
     ~AcTuningData()
     {
-        delete tuningNotes;
+        delete notes;
     }
 };
 
 class AcTuningNoteData
 {
 public:
-    qreal note;
+    qreal cents;
+    QColor color;
 
-    AcTuningNoteData(qreal note)
-        :   note(note)
+    AcTuningNoteData(qreal cents)
+        :   cents(cents)
     {}
 };
 
@@ -76,24 +77,24 @@ void AcTuning::setCenterNote(qreal centerNote)
     emit propertyChanged(propertyIndex("centerNote"));
 }
 
-MiList *AcTuning::tuningNotes() const
+MiList *AcTuning::notes() const
 {
-    return d->tuningNotes;
+    return d->notes;
 }
 
 MiObject *AcTuning::createObject(const QString &className)
 {
     if (className == "TuningNote") {
-        AcTuningNote *tuningNote = new AcTuningNote(0.0f, this);
-        d->tuningNotes->append(tuningNote);
-        return tuningNote;
+        AcTuningNote *note = new AcTuningNote(0.0f, this);
+        d->notes->append(note);
+        return note;
     }
     return 0;
 }
 
-AcTuningNote::AcTuningNote(qreal note, QObject *parent)
+AcTuningNote::AcTuningNote(qreal cents, QObject *parent)
     :   MiObject(parent)
-    ,   d(new AcTuningNoteData(note))
+    ,   d(new AcTuningNoteData(cents))
 {}
 
 AcTuningNote::~AcTuningNote()
@@ -101,15 +102,28 @@ AcTuningNote::~AcTuningNote()
     delete d;
 }
 
-qreal AcTuningNote::note() const
+qreal AcTuningNote::cents() const
 {
-    return d->note;
+    return d->cents;
 }
 
-void AcTuningNote::setNote(qreal note)
+void AcTuningNote::setCents(qreal cents)
 {
-    if (d->note == note)
+    if (d->cents == cents)
         return;
-    d->note = note;
-    emit propertyChanged(propertyIndex("note"));
+    d->cents = cents;
+    emit propertyChanged(propertyIndex("cents"));
+}
+
+const QColor &AcTuningNote::color() const
+{
+    return d->color;
+}
+
+void AcTuningNote::setColor(const QColor &color)
+{
+    if (d->color == color)
+        return;
+    d->color = color;
+    emit propertyChanged(propertyIndex("color"));
 }

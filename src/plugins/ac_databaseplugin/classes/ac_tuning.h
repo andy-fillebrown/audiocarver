@@ -33,7 +33,7 @@ class AC_DATABASE_EXPORT AcTuning : public MiObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal centerNote READ centerNote WRITE setCenterNote)
-    Q_PROPERTY(MiList* tuningNotes READ tuningNotes)
+    Q_PROPERTY(MiList* notes READ notes)
 
 public:
     explicit AcTuning(QObject *parent = 0);
@@ -42,7 +42,7 @@ public:
     qreal centerNote() const;
     void setCenterNote(qreal centerNote);
 
-    MiList *tuningNotes() const;
+    MiList *notes() const;
 
     virtual MiObject *createObject(const QString &className);
 
@@ -54,14 +54,18 @@ private:
 class AC_DATABASE_EXPORT AcTuningNote : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal note READ note WRITE setNote)
+    Q_PROPERTY(qreal cents READ cents WRITE setCents)
+    Q_PROPERTY(QColor color READ color WRITE setColor)
 
 public:
-    explicit AcTuningNote(qreal note = 0.0f, QObject *parent = 0);
+    explicit AcTuningNote(qreal cents = 0.0f, QObject *parent = 0);
     virtual ~AcTuningNote();
 
-    qreal note() const;
-    void setNote(qreal note);
+    qreal cents() const;
+    void setCents(qreal cents);
+
+    const QColor &color() const;
+    void setColor(const QColor &color);
 
 private:
     Q_DISABLE_COPY(AcTuningNote)

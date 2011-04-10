@@ -45,7 +45,10 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        MiObject *tuning = score->createObject("Tuning");
+        AcTuning *tuning = qobject_cast<AcTuning*>(score->createObject("Tuning"));
+        AcTuningNote *tuningNote = qobject_cast<AcTuningNote*>(tuning->createObject("TuningNote"));
+        tuningNote->setCents(60.0f);
+        tuningNote->setColor(QColor(Qt::red));
 
         AcTrack *track = qobject_cast<AcTrack*>(score->createObject("Track"));
         track->setTuning(tuning);
