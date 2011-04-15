@@ -37,15 +37,18 @@ class AcMainWidgetData
 public:
     AcMainWidget *q;
     AcViewSettings *viewSettings;
+    AcGraphicsScene *scoreScene;
     MiGraphicsScene *timeScene;
     MiGraphicsScene *pitchScene;
-    AcGraphicsScene *scoreScene;
+    MiGraphicsScene *volumeScene;
 
     QGridLayout *layout;
-    MiGraphicsView *topLeft;
+    MiGraphicsView *scoreSceneView;
     MiGraphicsView *timeSceneView;
     MiGraphicsView *pitchSceneView;
-    MiGraphicsView *scoreSceneView;
+    MiGraphicsView *volumeSceneView;
+    MiGraphicsView *topLeft;
+    MiGraphicsView *bottomLeft;
 
     QPointF sceneViewCenter;
 
@@ -54,14 +57,17 @@ public:
 
     AcMainWidgetData(AcMainWidget *q)
         :   q(q)
+        ,   scoreScene(new AcGraphicsScene(q))
         ,   timeScene(new MiGraphicsScene(q))
         ,   pitchScene(new MiGraphicsScene(q))
-        ,   scoreScene(new AcGraphicsScene(q))
+        ,   volumeScene(new MiGraphicsScene(q))
         ,   layout(new QGridLayout(q))
-        ,   topLeft(new MiGraphicsView(0, q))
+        ,   scoreSceneView(new MiGraphicsView(scoreScene, q))
         ,   timeSceneView(new MiGraphicsView(timeScene, q))
         ,   pitchSceneView(new MiGraphicsView(pitchScene, q))
-        ,   scoreSceneView(new MiGraphicsView(scoreScene, q))
+        ,   volumeSceneView(new MiGraphicsView(volumeScene, q))
+        ,   topLeft(new MiGraphicsView(0, q))
+        ,   bottomLeft(new MiGraphicsView(0, q))
         ,   pitchLineItem(0)
     {
         layout->setContentsMargins(QMargins(0, 0, 0, 0));
@@ -70,12 +76,18 @@ public:
         layout->addWidget(timeSceneView, 0, 1);
         layout->addWidget(pitchSceneView, 1, 0);
         layout->addWidget(scoreSceneView, 1, 1);
+        layout->addWidget(bottomLeft, 2, 0);
+        layout->addWidget(volumeSceneView, 2, 1);
 
         const int sideWidth = 64;
         const int sideHeight = 64;
+        const int volumeHeight = 128;
 
-        topLeft->setFixedSize(sideWidth, sideHeight);
-        topLeft->setFrameShape(QFrame::NoFrame);
+        scoreSceneView->setFrameShape(QFrame::Box);
+        scoreSceneView->setFrameShadow(QFrame::Sunken);
+        scoreSceneView->setLineWidth(1);
+        scoreSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        scoreSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
         timeSceneView->setFixedHeight(sideHeight);
         timeSceneView->setFrameShape(QFrame::NoFrame);
@@ -87,11 +99,17 @@ public:
         pitchSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         pitchSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-        scoreSceneView->setFrameShape(QFrame::Box);
-        scoreSceneView->setFrameShadow(QFrame::Sunken);
-        scoreSceneView->setLineWidth(1);
-        scoreSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        scoreSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        volumeSceneView->setFixedHeight(volumeHeight);
+        volumeSceneView->setFrameShape(QFrame::Box);
+        volumeSceneView->setFrameShadow(QFrame::Sunken);
+        volumeSceneView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        volumeSceneView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        topLeft->setFixedSize(sideWidth, sideHeight);
+        topLeft->setFrameShape(QFrame::NoFrame);
+
+        bottomLeft->setFixedSize(sideWidth, volumeHeight);
+        bottomLeft->setFrameShape(QFrame::NoFrame);
 
         AcScore *score = AcScore::instance();
         viewSettings = qobject_cast<AcViewSettings*>(score->findObject("ViewSettings"));
