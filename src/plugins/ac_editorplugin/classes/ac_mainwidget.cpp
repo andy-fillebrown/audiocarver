@@ -52,7 +52,8 @@ public:
 
     QPointF sceneViewCenter;
 
-    QGraphicsPathItem *pitchLineItem;
+    QFont font;
+    QFontMetrics fontMetrics;
     QList<QGraphicsTextItem*> pitchTextItems;
 
     AcMainWidgetData(AcMainWidget *q)
@@ -68,7 +69,8 @@ public:
         ,   volumeSceneView(new MiGraphicsView(volumeScene, q))
         ,   topLeft(new MiGraphicsView(0, q))
         ,   bottomLeft(new MiGraphicsView(0, q))
-        ,   pitchLineItem(0)
+        ,   font("Arial", 8)
+        ,   fontMetrics(font)
     {
         layout->setContentsMargins(QMargins(0, 0, 0, 0));
         layout->setSpacing(0);
@@ -114,19 +116,32 @@ public:
         AcScore *score = AcScore::instance();
         viewSettings = qobject_cast<AcViewSettings*>(score->findObject("ViewSettings"));
 
+        initPitchTextItems();
         updateViewCenter();
     }
 
-    void updateViewCenter()
+    void initPitchTextItems()
     {
-        sceneViewCenter = scoreSceneView->mapToScene(scoreSceneView->rect().center());
-        updatePitchScene();
+        QGraphicsTextItem *textItem = 0;
+
+        textItem = pitchScene->addText("0.0", font);
+        pitchTextItems.append(textItem);
+
+        textItem = pitchScene->addText("60.0", font);
+        pitchTextItems.append(textItem);
+
+        textItem = pitchScene->addText("127.0", font);
+        pitchTextItems.append(textItem);
+
+        foreach (QGraphicsTextItem *textItem, pitchTextItems)
+            updatePitchTextItem(textItem);
     }
 
-    void updateViewTransform()
+    void updatePitchTextItem(QGraphicsTextItem *textItem)
     {
-        scoreSceneView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
-        updatePitchScene();
+        QString s = textItem->toPlainText();
+        QRect rect = fontMetrics.boundingRect(s);
+        textItem->setPos(20.0f - rect.width(), (qAbs(s.toDouble() - 127.0f) * viewSettings->scaleY()) - (rect.height() / 1.5));
     }
 
     void updatePitchScene()
@@ -145,40 +160,20 @@ public:
         pitchScene->setSceneRect(0.0f, topLeft.y(), 10.0f, bottomRight.y() - topLeft.y());
         pitchSceneView->centerOn(5.0f, sceneViewCenter.y() * scaleY);
 
-        if (pitchLineItem)
-            pitchScene->removeItem(pitchLineItem);
-        QPainterPath pitchLines;
-        pitchLines.moveTo(0.0f, qAbs(0.0f - 127.0f) * scaleY);
-        pitchLines.lineTo(10.0f, qAbs(0.0f - 127.0f) * scaleY);
-        pitchLines.moveTo(0.0f, qAbs(60.0f - 127.0f) * scaleY);
-        pitchLines.lineTo(10.0f, qAbs(60.0f - 127.0f) * scaleY);
-        pitchLines.moveTo(0.0f, qAbs(127.0f - 127.0f) * scaleY);
-        pitchLines.lineTo(10.0f, qAbs(127.0f - 127.0f) * scaleY);
-        pitchLineItem = pitchScene->addPath(pitchLines);
-
         foreach (QGraphicsTextItem *textItem, pitchTextItems)
-            pitchScene->removeItem(textItem);
-        pitchTextItems.clear();
-        QGraphicsTextItem *textItem = 0;
-        QFont font("Arial", 8);
-        QFontMetrics metrics(font);
-        QString s;
-        QRect rect;
-        s = "0.0";
-        rect = metrics.boundingRect(s);
-        textItem = pitchScene->addText(s, font);
-        pitchTextItems.append(textItem);
-        textItem->setPos(12.0f, (qAbs(0.0f - 127.0f) * scaleY) - (rect.height() / 1.5));
-        s = "60.0";
-        rect = metrics.boundingRect(s);
-        textItem = pitchScene->addText(s, font);
-        pitchTextItems.append(textItem);
-        textItem->setPos(12.0f, (qAbs(60.0f - 127.0f) * scaleY) - (rect.height() / 1.5));
-        s = "127.0";
-        rect = metrics.boundingRect(s);
-        textItem = pitchScene->addText(s, font);
-        pitchTextItems.append(textItem);
-        textItem->setPos(12.0f, (qAbs(127.0f - 127.0f) * scaleY) - (rect.height() / 1.5));
+            updatePitchTextItem(textItem);
+    }
+
+    void updateViewCenter()
+    {
+        sceneViewCenter = scoreSceneView->mapToScene(scoreSceneView->rect().center());
+        updatePitchScene();
+    }
+
+    void updateViewTransform()
+    {
+        scoreSceneView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
+        updatePitchScene();
     }
 };
 
