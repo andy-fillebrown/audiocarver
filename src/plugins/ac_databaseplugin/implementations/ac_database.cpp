@@ -104,8 +104,10 @@ void AcDatabaseImpl::read(const QString &fileName)
     QXmlStreamReader in(&file);
     while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
 
-    if (d->score->read(in))
+    if (d->score->read(in)) {
+        d->score->update(true);
         d->fileName = fileName;
+    }
 }
 
 void AcDatabaseImpl::write(const QString &fileName)
