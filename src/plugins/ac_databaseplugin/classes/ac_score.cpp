@@ -37,7 +37,6 @@ public:
     MiList *tunings;
     MiList *curves;
     MiList *tracks;
-    qreal length;
 
     AcGridSettings *gridSettings;
     AcViewSettings *viewSettings;
@@ -47,7 +46,6 @@ public:
         ,   tunings(new MiList(q, q->propertyIndex("tunings")))
         ,   curves(new MiList(q, q->propertyIndex("curves")))
         ,   tracks(new MiList(q, q->propertyIndex("tracks")))
-        ,   length(128.0f)
         ,   gridSettings(new AcGridSettings(q))
         ,   viewSettings(new AcViewSettings(q))
     {
@@ -103,19 +101,6 @@ MiList *AcScore::curves() const
 MiList *AcScore::tracks() const
 {
     return d->tracks;
-}
-
-qreal AcScore::length() const
-{
-    return d->length;
-}
-
-void AcScore::setLength(qreal length)
-{
-    if (d->length == length)
-        return;
-    d->length = length;
-    emit propertyChanged(propertyIndex("length"));
 }
 
 void AcScore::clear()

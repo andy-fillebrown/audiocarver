@@ -48,23 +48,23 @@ public:
 
     void updateScoreRectItems()
     {
-        if (barLineItem)
-            q->removeItem(barLineItem);
-        QPainterPath barLinePath;
-        for (int i = 0;  i < score->length();  i+=4) {
-            barLinePath.moveTo(qreal(i), 0.0f);
-            barLinePath.lineTo(qreal(i), 127.0f);
-        }
-        barLineItem = q->addPath(barLinePath);
+//        if (barLineItem)
+//            q->removeItem(barLineItem);
+//        QPainterPath barLinePath;
+//        for (int i = 0;  i < score->length();  i+=4) {
+//            barLinePath.moveTo(qreal(i), 0.0f);
+//            barLinePath.lineTo(qreal(i), 127.0f);
+//        }
+//        barLineItem = q->addPath(barLinePath);
 
-        if (tuningLineItem)
-            q->removeItem(tuningLineItem);
-        QPainterPath tuningLinePath;
-        tuningLinePath.moveTo(0.0f, qAbs(60.0f - 127.0f));
-        tuningLinePath.lineTo(score->length(), qAbs(60.0f - 127.0f));
-        tuningLineItem = q->addPath(tuningLinePath, QPen(QColor(Qt::red)));
+//        if (tuningLineItem)
+//            q->removeItem(tuningLineItem);
+//        QPainterPath tuningLinePath;
+//        tuningLinePath.moveTo(0.0f, qAbs(60.0f - 127.0f));
+//        tuningLinePath.lineTo(score->length(), qAbs(60.0f - 127.0f));
+//        tuningLineItem = q->addPath(tuningLinePath, QPen(QColor(Qt::red)));
 
-        scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
+//        scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
     }
 };
 

@@ -35,7 +35,6 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
     Q_PROPERTY(MiList* tunings READ tunings)
     Q_PROPERTY(MiList* curves READ curves)
     Q_PROPERTY(MiList* tracks READ tracks)
-    Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
     AcScore(QObject *parent = 0);
@@ -47,9 +46,6 @@ public:
     MiList *tunings() const;
     MiList *curves() const;
     MiList *tracks() const;
-
-    qreal length() const;
-    void setLength(qreal length);
 
     void clear();
 
