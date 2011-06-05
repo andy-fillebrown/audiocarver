@@ -36,6 +36,7 @@ public:
     MiList *settings;
     MiList *tunings;
     MiList *curves;
+    MiList *notes;
     MiList *tracks;
 
     AcGridSettings *gridSettings;
@@ -45,6 +46,7 @@ public:
         :   settings(new MiConstantList(q, q->propertyIndex("settings")))
         ,   tunings(new MiList(q, q->propertyIndex("tunings")))
         ,   curves(new MiList(q, q->propertyIndex("curves")))
+        ,   notes(new MiList(q, q->propertyIndex("notes")))
         ,   tracks(new MiList(q, q->propertyIndex("tracks")))
         ,   gridSettings(new AcGridSettings(q))
         ,   viewSettings(new AcViewSettings(q))
@@ -56,6 +58,7 @@ public:
     ~AcScoreData()
     {
         delete tracks;
+        delete notes;
         delete curves;
         delete tunings;
         delete settings;
@@ -98,6 +101,11 @@ MiList *AcScore::curves() const
     return d->curves;
 }
 
+MiList *AcScore::notes() const
+{
+    return d->notes;
+}
+
 MiList *AcScore::tracks() const
 {
     return d->tracks;
@@ -106,6 +114,7 @@ MiList *AcScore::tracks() const
 void AcScore::clear()
 {
     d->tracks->deleteAll();
+    d->notes->deleteAll();
     d->curves->deleteAll();
 }
 
@@ -122,6 +131,12 @@ MiObject *AcScore::createObject(const QString &className)
         d->curves->append(fcurve);
         return fcurve;
     }
+    if (className == "Note") {
+        AcNote *note = new AcNote(this);
+        d->notes->append(note);
+        return note;
+    }
+    if (className == "Tempo") {
     if (className == "Tuning") {
         AcTuning *tuning = new AcTuning(this);
         d->tunings->append(tuning);
