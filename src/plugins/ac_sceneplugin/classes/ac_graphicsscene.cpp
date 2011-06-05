@@ -65,6 +65,7 @@ public:
 //        tuningLineItem = q->addPath(tuningLinePath, QPen(QColor(Qt::red)));
 
 //        scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
+        scoreRectItem->setRect(0.0f, 0.0f, 128.0f, 127.0f);
     }
 };
 
