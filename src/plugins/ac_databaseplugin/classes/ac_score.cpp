@@ -35,6 +35,7 @@ namespace Private {
 class AcScoreData
 {
 public:
+    AcScore *q;
     MiList *settings;
     MiList *meters;
     MiList *tempos;
@@ -47,18 +48,18 @@ public:
     AcViewSettings *viewSettings;
 
     AcScoreData(AcScore *q)
-        :   settings(new MiConstantList(q, q->propertyIndex("settings")))
+        :   q(q)
+        ,   settings(new MiConstantList(q, q->propertyIndex("settings")))
         ,   meters(new MiList(q, q->propertyIndex("meters")))
         ,   tempos(new MiList(q, q->propertyIndex("tempos")))
         ,   tunings(new MiList(q, q->propertyIndex("tunings")))
         ,   curves(new MiList(q, q->propertyIndex("curves")))
         ,   notes(new MiList(q, q->propertyIndex("notes")))
         ,   tracks(new MiList(q, q->propertyIndex("tracks")))
-        ,   gridSettings(new AcGridSettings(q))
-        ,   viewSettings(new AcViewSettings(q))
+        ,   gridSettings(0)
+        ,   viewSettings(0)
     {
-        settings->append(gridSettings);
-        settings->append(viewSettings);
+        init();
     }
 
     ~AcScoreData()
@@ -70,6 +71,18 @@ public:
         delete tempos;
         delete meters;
         delete settings;
+    }
+
+    void init()
+    {
+        gridSettings = new AcGridSettings(q);
+        viewSettings = new AcViewSettings(q);
+        settings->append(gridSettings);
+        settings->append(viewSettings);
+
+        q->createObject("Meter");
+        q->createObject("Tempo");
+        q->createObject("Tuning");
     }
 };
 
@@ -137,6 +150,9 @@ void AcScore::clear()
     d->tunings->deleteAll();
     d->tempos->deleteAll();
     d->meters->deleteAll();
+    d->settings->deleteAll();
+
+    d->init();
 }
 
 QString &AcScore::normalizeClassName(QString &className) const

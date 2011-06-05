@@ -31,7 +31,7 @@ public:
     AcTempoData(AcTempo *q)
         :   q(q)
         ,   startTime(0.0f)
-        ,   beatsPerMinute(120.f)
+        ,   beatsPerMinute(120.0f)
     {}
 
     ~AcTempoData()

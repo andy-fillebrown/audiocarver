@@ -31,7 +31,7 @@ public:
 
     AcMeterData(AcMeter *q)
         :  q(q)
-        ,   duration(0)
+        ,   duration(16)
         ,   beatsPerMeasure(4)
         ,   denominator(4)
     {}
