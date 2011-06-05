@@ -23,6 +23,9 @@ MiRoot::MiRoot(QObject *parent)
     :   MiObject(parent)
 {}
 
+void MiRoot::clear()
+{}
+
 QString &MiRoot::normalizeClassName(QString &className) const
 {
     return className;

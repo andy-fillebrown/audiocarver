@@ -30,6 +30,8 @@ public:
 
     virtual bool isRoot() const { return true; }
 
+    virtual void clear();
+
     virtual QString &normalizeClassName(QString &className) const;
     virtual QString getUniqueId(MiObject *object, const QString &idHint = QString()) const;
 

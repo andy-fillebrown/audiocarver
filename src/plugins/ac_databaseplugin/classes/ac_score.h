@@ -47,7 +47,7 @@ public:
     MiList *curves() const;
     MiList *tracks() const;
 
-    void clear();
+    virtual void clear();
 
     virtual QString &normalizeClassName(QString &className) const;
     virtual MiObject *createObject(const QString &className);
