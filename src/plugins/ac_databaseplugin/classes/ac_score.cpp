@@ -19,7 +19,9 @@
 
 #include <ac_fcurve.h>
 #include <ac_gridsettings.h>
+#include <ac_meter.h>
 #include <ac_note.h>
+#include <ac_tempo.h>
 #include <ac_track.h>
 #include <ac_tuning.h>
 #include <ac_viewsettings.h>
@@ -34,6 +36,8 @@ class AcScoreData
 {
 public:
     MiList *settings;
+    MiList *meters;
+    MiList *tempos;
     MiList *tunings;
     MiList *curves;
     MiList *notes;
@@ -44,6 +48,8 @@ public:
 
     AcScoreData(AcScore *q)
         :   settings(new MiConstantList(q, q->propertyIndex("settings")))
+        ,   meters(new MiList(q, q->propertyIndex("meters")))
+        ,   tempos(new MiList(q, q->propertyIndex("tempos")))
         ,   tunings(new MiList(q, q->propertyIndex("tunings")))
         ,   curves(new MiList(q, q->propertyIndex("curves")))
         ,   notes(new MiList(q, q->propertyIndex("notes")))
@@ -61,6 +67,8 @@ public:
         delete notes;
         delete curves;
         delete tunings;
+        delete tempos;
+        delete meters;
         delete settings;
     }
 };
@@ -91,6 +99,16 @@ MiList *AcScore::settings() const
     return d->settings;
 }
 
+MiList *AcScore::meters() const
+{
+    return d->meters;
+}
+
+MiList *AcScore::tempos() const
+{
+    return d->tempos;
+}
+
 MiList *AcScore::tunings() const
 {
     return d->tunings;
@@ -116,6 +134,9 @@ void AcScore::clear()
     d->tracks->deleteAll();
     d->notes->deleteAll();
     d->curves->deleteAll();
+    d->tunings->deleteAll();
+    d->tempos->deleteAll();
+    d->meters->deleteAll();
 }
 
 QString &AcScore::normalizeClassName(QString &className) const
@@ -131,12 +152,21 @@ MiObject *AcScore::createObject(const QString &className)
         d->curves->append(fcurve);
         return fcurve;
     }
+    if (className == "Meter") {
+        AcMeter *meter = new AcMeter(this);
+        d->meters->append(meter);
+        return meter;
+    }
     if (className == "Note") {
         AcNote *note = new AcNote(this);
         d->notes->append(note);
         return note;
     }
     if (className == "Tempo") {
+        AcTempo *tempo = new AcTempo(this);
+        d->tempos->append(tempo);
+        return tempo;
+    }
     if (className == "Tuning") {
         AcTuning *tuning = new AcTuning(this);
         d->tunings->append(tuning);
