@@ -58,9 +58,7 @@ public:
         ,   tracks(new MiList(q, q->propertyIndex("tracks")))
         ,   gridSettings(0)
         ,   viewSettings(0)
-    {
-        init();
-    }
+    {}
 
     ~AcScoreData()
     {
@@ -94,6 +92,7 @@ AcScore::AcScore(QObject *parent)
     :   MiRoot(parent)
     ,   d(new AcScoreData(this))
 {
+    d->init();
     ::instance = this;
 }
 
