@@ -17,6 +17,7 @@
 
 #include "ac_mainwidget.h"
 
+#include <ac_pitchscene.h>
 #include <ac_pitchview.h>
 #include <ac_score.h>
 #include <ac_scorescene.h>
@@ -41,7 +42,7 @@ public:
 
     AcScoreScene *scoreScene;
     MiGraphicsScene *timeScene;
-    MiGraphicsScene *pitchScene;
+    AcPitchScene *pitchScene;
     MiGraphicsScene *volumeScene;
 
     QGridLayout *layout;
@@ -56,7 +57,7 @@ public:
         :   q(q)
         ,   scoreScene(new AcScoreScene(q))
         ,   timeScene(new MiGraphicsScene(q))
-        ,   pitchScene(new MiGraphicsScene(q))
+        ,   pitchScene(new AcPitchScene(q))
         ,   volumeScene(new MiGraphicsScene(q))
         ,   layout(new QGridLayout(q))
         ,   scoreView(new AcScoreView(scoreScene, q))

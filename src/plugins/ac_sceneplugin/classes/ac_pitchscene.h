@@ -36,6 +36,10 @@ public:
     AcPitchScene(QObject *parent = 0);
     virtual ~AcPitchScene();
 
+    static AcPitchScene *instance();
+
+    void setSceneScaleY(qreal scaleY);
+
 protected:
     virtual void updateScoreProperty(const QString &propertyName);
 

@@ -17,6 +17,7 @@
 
 #include "ac_pitchview.h"
 
+#include <ac_pitchscene.h>
 #include <ac_score.h>
 #include <ac_scoreview.h>
 #include <ac_viewsettings.h>
@@ -30,48 +31,16 @@ namespace Private {
 class AcPitchViewData
 {
 public:
-    QFont font;
-    QFontMetrics fontMetrics;
-    QList<QGraphicsTextItem*> pitchTextItems;
 
     AcPitchViewData()
-        :   font("Arial", 8)
-        ,   fontMetrics(font)
     {}
-
-    void initPitchTextItems()
-    {
-        QGraphicsScene *pitchScene = AcPitchView::instance()->scene();
-        QGraphicsTextItem *textItem = 0;
-
-        textItem = pitchScene->addText("0.0", font);
-        pitchTextItems.append(textItem);
-
-        textItem = pitchScene->addText("60.0", font);
-        pitchTextItems.append(textItem);
-
-        textItem = pitchScene->addText("127.0", font);
-        pitchTextItems.append(textItem);
-
-        foreach (QGraphicsTextItem *textItem, pitchTextItems)
-            updatePitchTextItem(textItem);
-    }
-
-    void updatePitchTextItem(QGraphicsTextItem *textItem)
-    {
-        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-
-        QString s = textItem->toPlainText();
-        QRect rect = fontMetrics.boundingRect(s);
-        textItem->setPos(20.0f - rect.width(), (qAbs(s.toDouble() - 127.0f) * viewSettings->scaleY()) - (rect.height() / 1.5));
-    }
 
     void updatePitchScene()
     {
-        AcPitchView *pitchView = AcPitchView::instance();
-        QGraphicsScene *pitchScene = pitchView->scene();
-        AcScoreView *scoreView = AcScoreView::instance();
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+        AcPitchScene *pitchScene = AcPitchScene::instance();
+        AcPitchView *pitchView = AcPitchView::instance();
+        AcScoreView *scoreView = AcScoreView::instance();
 
         const qreal scaleX = viewSettings->scaleX();
         const qreal scaleY = viewSettings->scaleY();
@@ -85,10 +54,8 @@ public:
         bottomRight.ry() *= scaleY;
 
         pitchScene->setSceneRect(0.0f, topLeft.y(), 10.0f, bottomRight.y() - topLeft.y());
+        pitchScene->setSceneScaleY(scaleY);
         pitchView->centerOn(5.0f, scoreView->center().y() * scaleY);
-
-        foreach (QGraphicsTextItem *textItem, pitchTextItems)
-            updatePitchTextItem(textItem);
     }
 };
 
@@ -101,8 +68,6 @@ AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
     ,   d(new AcPitchViewData)
 {
     ::instance = this;
-
-    d->initPitchTextItems();
 }
 
 AcPitchView::~AcPitchView()
