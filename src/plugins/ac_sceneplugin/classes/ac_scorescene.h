@@ -15,40 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSSCENE_H
-#define AC_GRAPHICSSCENE_H
+#ifndef AC_SCORESCENE_H
+#define AC_SCORESCENE_H
 
-#include <mi_graphicsscene.h>
+#include <ac_graphicsscene.h>
 
 #include <ac_scene_global.h>
 
-class AcScore;
-class AcViewSettings;
-
 namespace Private {
 
-class AcGraphicsSceneData;
+class AcScoreSceneData;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsScene : public MiGraphicsScene
+class AC_SCENE_EXPORT AcScoreScene : public AcGraphicsScene
 {
     Q_OBJECT
 
 public:
-    AcGraphicsScene(QObject *parent = 0);
-    virtual ~AcGraphicsScene();
+    AcScoreScene(QObject *parent = 0);
+    virtual ~AcScoreScene();
 
-    AcScore *score() const;
-
+protected:
     virtual void updateScoreProperty(const QString &propertyName);
 
-private slots:
-    void updateScoreProperty(int propertyIndex);
-
 private:
-    Q_DISABLE_COPY(AcGraphicsScene)
-    Private::AcGraphicsSceneData *d;
+    Q_DISABLE_COPY(AcScoreScene)
+    Private::AcScoreSceneData *d;
 };
 
-#endif // AC_GRAPHICSSCENE_H
+#endif // AC_SCORESCENE_H

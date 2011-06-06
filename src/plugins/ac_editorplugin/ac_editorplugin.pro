@@ -7,7 +7,10 @@ include(ac_editorplugin_dependencies.pri)
 DEFINES += AC_EDITOR_LIBRARY
 
 HEADERS += \
+    classes/ac_graphicsview.h \
     classes/ac_mainwidget.h \
+    classes/ac_pitchview.h \
+    classes/ac_scoreview.h \
     \
     implementations/ac_editorimpl.h \
     implementations/ac_mainwindowimpl.h \
@@ -17,7 +20,10 @@ HEADERS += \
     ac_editorplugin.h \
 
 SOURCES += \
+    classes/ac_graphicsview.cpp \
     classes/ac_mainwidget.cpp \
+    classes/ac_pitchview.cpp \
+    classes/ac_scoreview.cpp \
     \
     implementations/ac_editorimpl.cpp \
     implementations/ac_mainwindowimpl.cpp \

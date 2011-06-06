@@ -22,6 +22,9 @@
 
 #include <ac_database_global.h>
 
+class AcGridSettings;
+class AcViewSettings;
+
 namespace Private {
 
 class AcScoreData;
@@ -52,6 +55,9 @@ public:
     MiList *curves() const;
     MiList *notes() const;
     MiList *tracks() const;
+
+    AcGridSettings *gridSettings() const;
+    AcViewSettings *viewSettings() const;
 
     virtual void clear();
 

@@ -26,6 +26,8 @@ namespace Private {
 
 class AcMainWidgetData;
 
+} // namespace Private
+
 class AcMainWidget : public QWidget
 {
     Q_OBJECT
@@ -51,14 +53,9 @@ protected:
     void showEvent(QShowEvent *event);
     void wheelEvent(QWheelEvent *event);
 
-private slots:
-    void updateViewSettings(int propertyIndex);
-
 private:
     Q_DISABLE_COPY(AcMainWidget)
-    AcMainWidgetData *d;
+    Private::AcMainWidgetData *d;
 };
-
-} // namespace Private
 
 #endif // AC_MAINWIDGET_H

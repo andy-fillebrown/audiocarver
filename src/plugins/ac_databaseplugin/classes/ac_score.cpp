@@ -141,6 +141,16 @@ MiList *AcScore::tracks() const
     return d->tracks;
 }
 
+AcGridSettings *AcScore::gridSettings() const
+{
+    return d->gridSettings;
+}
+
+AcViewSettings *AcScore::viewSettings() const
+{
+    return d->viewSettings;
+}
+
 void AcScore::clear()
 {
     d->tracks->deleteAll();

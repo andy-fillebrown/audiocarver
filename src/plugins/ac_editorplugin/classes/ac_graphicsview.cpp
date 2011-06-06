@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsscene.h"
+#include "ac_graphicsview.h"
 
 #include <ac_score.h>
 #include <ac_viewsettings.h>
@@ -24,42 +24,41 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsSceneData
+class AcGraphicsViewData
 {
 public:
-    AcScore *score;
+    AcGraphicsView *q;
 
-    AcGraphicsSceneData()
-        :   score(AcScore::instance())
+    AcGraphicsViewData(AcGraphicsView *q)
+        :   q(q)
     {}
 };
 
 } // namespace Private
 
-AcGraphicsScene::AcGraphicsScene(QObject *parent)
-    :   MiGraphicsScene(parent)
-    ,   d(new AcGraphicsSceneData)
+AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
+    :   MiGraphicsView(scene, parent)
+    ,   d(new AcGraphicsViewData(this))
 {
-    connect(d->score, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+
+    connect(viewSettings, SIGNAL(propertyChanged(int)), SLOT(updateViewSettings(int)));
 }
 
-AcGraphicsScene::~AcGraphicsScene()
+AcGraphicsView::~AcGraphicsView()
 {
     delete d;
 }
 
-AcScore *AcGraphicsScene::score() const
-{
-    return d->score;
-}
-
-void AcGraphicsScene::updateScoreProperty(const QString &propertyName)
+void AcGraphicsView::updateViewSettings(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
 }
 
-void AcGraphicsScene::updateScoreProperty(int propertyIndex)
+void AcGraphicsView::updateViewSettings(int propertyIndex)
 {
-    const QString propertyName = d->score->propertyName(propertyIndex);
-    updateScoreProperty(propertyName);
+    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+
+    QString propertyName = viewSettings->propertyName(propertyIndex);
+    updateViewSettings(propertyName);
 }
