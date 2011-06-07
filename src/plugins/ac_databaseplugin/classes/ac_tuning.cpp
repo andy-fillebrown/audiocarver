@@ -26,29 +26,15 @@ namespace Private {
 class AcTuningData : public MiLinkableObjectData
 {
 public:
-    qreal centerNote;
-    MiList *notes;
+    qreal cents;
+    QColor color;
+    int priority;
 
     AcTuningData(AcTuning *q)
         :   MiLinkableObjectData(q)
-        ,   centerNote(60.0f)
-        ,   notes(new MiList(q, q->propertyIndex("notes")))
-    {}
-
-    ~AcTuningData()
-    {
-        delete notes;
-    }
-};
-
-class AcTuningNoteData
-{
-public:
-    qreal cents;
-    QColor color;
-
-    AcTuningNoteData(qreal cents)
-        :   cents(cents)
+        ,   cents(0.0f)
+        ,   color(Qt::black)
+        ,   priority(0)
     {}
 };
 
@@ -64,50 +50,12 @@ AcTuning::~AcTuning()
     delete d;
 }
 
-qreal AcTuning::centerNote() const
-{
-    return d->centerNote;
-}
-
-void AcTuning::setCenterNote(qreal centerNote)
-{
-    if (d->centerNote == centerNote)
-        return;
-    d->centerNote = centerNote;
-    emit propertyChanged(propertyIndex("centerNote"));
-}
-
-MiList *AcTuning::notes() const
-{
-    return d->notes;
-}
-
-MiObject *AcTuning::createObject(const QString &className)
-{
-    if (className == "TuningNote") {
-        AcTuningNote *note = new AcTuningNote(0.0f, this);
-        d->notes->append(note);
-        return note;
-    }
-    return 0;
-}
-
-AcTuningNote::AcTuningNote(qreal cents, QObject *parent)
-    :   MiObject(parent)
-    ,   d(new AcTuningNoteData(cents))
-{}
-
-AcTuningNote::~AcTuningNote()
-{
-    delete d;
-}
-
-qreal AcTuningNote::cents() const
+qreal AcTuning::cents() const
 {
     return d->cents;
 }
 
-void AcTuningNote::setCents(qreal cents)
+void AcTuning::setCents(qreal cents)
 {
     if (d->cents == cents)
         return;
@@ -115,15 +63,28 @@ void AcTuningNote::setCents(qreal cents)
     emit propertyChanged(propertyIndex("cents"));
 }
 
-const QColor &AcTuningNote::color() const
+const QColor &AcTuning::color() const
 {
     return d->color;
 }
 
-void AcTuningNote::setColor(const QColor &color)
+void AcTuning::setColor(const QColor &color)
 {
     if (d->color == color)
         return;
     d->color = color;
     emit propertyChanged(propertyIndex("color"));
+}
+
+int AcTuning::priority() const
+{
+    return d->priority;
+}
+
+void AcTuning::setPriority(int priority)
+{
+    if (d->priority == priority)
+        return;
+    d->priority = priority;
+    emit propertyChanged(propertyIndex("priority"));
 }
