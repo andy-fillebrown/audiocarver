@@ -46,9 +46,13 @@ public:
         ,   score(new AcScore(q))
     {
         AcTuning *tuning = qobject_cast<AcTuning*>(score->createObject("Tuning"));
-        AcTuningNote *tuningNote = qobject_cast<AcTuningNote*>(tuning->createObject("TuningNote"));
-        tuningNote->setCents(60.0f);
-        tuningNote->setColor(QColor(Qt::red));
+        tuning->setCents(60.0f);
+        tuning->setColor(QColor(Qt::red));
+
+        tuning = qobject_cast<AcTuning*>(score->createObject("Tuning"));
+        tuning->setCents(48.0f);
+        tuning = qobject_cast<AcTuning*>(score->createObject("Tuning"));
+        tuning->setCents(72.0f);
 
         AcTrack *track = qobject_cast<AcTrack*>(score->createObject("Track"));
         track->setTuning(tuning);
