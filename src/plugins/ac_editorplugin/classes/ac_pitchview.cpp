@@ -31,7 +31,6 @@ namespace Private {
 class AcPitchViewData
 {
 public:
-
     AcPitchViewData()
     {}
 

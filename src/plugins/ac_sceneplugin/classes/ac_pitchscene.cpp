@@ -57,7 +57,7 @@ public:
     {
         QString text = textItem->toPlainText();
         QRect textRect = fontMetrics.boundingRect(text);
-        textItem->setPos(20.0f - textRect.width(), (qAbs(text.toDouble() - 127.0f) * scaleY) - (textRect.height() / 1.5));
+        textItem->setPos(20.0f - textRect.width(), ((127.0f - text.toDouble()) * scaleY) - (textRect.height() / 1.5));
     }
 };
 
