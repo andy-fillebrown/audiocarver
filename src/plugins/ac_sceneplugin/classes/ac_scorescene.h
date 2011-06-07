@@ -41,8 +41,10 @@ protected:
 
 private slots:
     void updateScoreLength(qreal scoreLength);
-    void updateTuningLineList();
-    void updateTuningLineProperties();
+    void updateTunings();
+    void updateTuningProperties();
+    void updateBarlines();
+    void updateBarlineProperties();
 
 private:
     Q_DISABLE_COPY(AcScoreScene)

@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_TEMPO_H
-#define AC_TEMPO_H
+#ifndef AC_GUIDELINE_H
+#define AC_GUIDELINE_H
 
 #include <mi_object.h>
 
@@ -24,29 +24,37 @@
 
 namespace Private {
 
-class AcTempoData;
+class AcGuidelineData;
 
 } // namespace Private
 
-class AC_DATABASE_EXPORT AcTempo : public MiObject
+class AC_DATABASE_EXPORT AcGuideline : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal startTime READ startTime WRITE setStartTime)
-    Q_PROPERTY(qreal beatsPerMinute READ beatsPerMinute WRITE setBeatsPerMinute)
+    Q_PROPERTY(qreal location READ location WRITE setLocation)
+    Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(QString text READ text WRITE setText)
+    Q_PROPERTY(int priority READ priority WRITE setPriority)
 
 public:
-    explicit AcTempo(QObject *parent = 0);
-    virtual ~AcTempo();
+    explicit AcGuideline(QObject *parent = 0);
+    virtual ~AcGuideline();
 
-    qreal startTime() const;
-    void setStartTime(qreal startTime);
+    qreal location() const;
+    void setLocation(qreal location);
 
-    qreal beatsPerMinute() const;
-    void setBeatsPerMinute(qreal beatsPerMinute);
+    const QColor &color() const;
+    void setColor(const QColor &color);
+
+    const QString &text() const;
+    void setText(const QString &text);
+
+    int priority() const;
+    void setPriority(int priority);
 
 private:
-    Q_DISABLE_COPY(AcTempo)
-    Private::AcTempoData *d;
+    Q_DISABLE_COPY(AcGuideline)
+    Private::AcGuidelineData *d;
 };
 
-#endif // AC_TEMPO_H
+#endif // AC_GUIDELINE_H

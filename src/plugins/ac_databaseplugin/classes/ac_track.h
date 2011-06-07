@@ -28,12 +28,9 @@ class AcTrackData;
 
 } // namespace Private
 
-class AcTuning;
-
 class AC_DATABASE_EXPORT AcTrack : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(MiObject *tuning READ tuning WRITE setTuning)
     Q_PROPERTY(MiList* notes READ notes)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
@@ -41,9 +38,6 @@ class AC_DATABASE_EXPORT AcTrack : public MiObject
 public:
     AcTrack(QObject *parent = 0);
     virtual ~AcTrack();
-
-    MiObject *tuning() const;
-    void setTuning(MiObject *tuning);
 
     MiList *notes() const;
 

@@ -15,60 +15,61 @@
 **
 **************************************************************************/
 
-#include "ac_tuning.h"
-
-#include <mi_list.h>
+#include "ac_guideline.h"
 
 using namespace Private;
 
 namespace Private {
 
-class AcTuningData : public MiLinkableObjectData
+class AcGuidelineData
 {
 public:
-    qreal cents;
+    qreal location;
     QColor color;
+    QString text;
     int priority;
 
-    AcTuningData(AcTuning *q)
-        :   MiLinkableObjectData(q)
-        ,   cents(0.0f)
-        ,   color(Qt::black)
+    AcGuidelineData()
+        :   location(0.0f)
+        ,   color(Qt::lightGray)
+        ,   text(QString())
         ,   priority(0)
     {}
 };
 
 } // namespace Private
 
-AcTuning::AcTuning(QObject *parent)
+AcGuideline::AcGuideline(QObject *parent)
     :   MiObject(parent)
-    ,   d(new AcTuningData(this))
+    ,   d(new AcGuidelineData)
 {}
 
-AcTuning::~AcTuning()
+AcGuideline::~AcGuideline()
 {
     delete d;
 }
 
-qreal AcTuning::cents() const
+qreal AcGuideline::location() const
 {
-    return d->cents;
+    return d->location;
 }
 
-void AcTuning::setCents(qreal cents)
+void AcGuideline::setLocation(qreal location)
 {
-    if (d->cents == cents)
+    if (location < 0.0f)
+        location = 0.0f;
+    if (d->location == location)
         return;
-    d->cents = cents;
-    emit propertyChanged(propertyIndex("cents"));
+    d->location = location;
+    emit propertyChanged(propertyIndex("location"));
 }
 
-const QColor &AcTuning::color() const
+const QColor &AcGuideline::color() const
 {
     return d->color;
 }
 
-void AcTuning::setColor(const QColor &color)
+void AcGuideline::setColor(const QColor &color)
 {
     if (d->color == color)
         return;
@@ -76,13 +77,28 @@ void AcTuning::setColor(const QColor &color)
     emit propertyChanged(propertyIndex("color"));
 }
 
-int AcTuning::priority() const
+const QString &AcGuideline::text() const
+{
+    return d->text;
+}
+
+void AcGuideline::setText(const QString &text)
+{
+    if (d->text == text)
+        return;
+    d->text = text;
+    emit propertyChanged(propertyIndex("text"));
+}
+
+int AcGuideline::priority() const
 {
     return d->priority;
 }
 
-void AcTuning::setPriority(int priority)
+void AcGuideline::setPriority(int priority)
 {
+    if (priority < 0)
+        priority = 0;
     if (d->priority == priority)
         return;
     d->priority = priority;

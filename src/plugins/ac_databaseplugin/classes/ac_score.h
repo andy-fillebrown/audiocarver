@@ -35,8 +35,7 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
 {
     Q_OBJECT
     Q_PROPERTY(MiList* settings READ settings)
-    Q_PROPERTY(MiList* meters READ meters)
-    Q_PROPERTY(MiList* tempos READ tempos)
+    Q_PROPERTY(MiList* barlines READ barlines)
     Q_PROPERTY(MiList* tunings READ tunings)
     Q_PROPERTY(MiList* curves READ curves)
     Q_PROPERTY(MiList* notes READ notes)
@@ -49,8 +48,7 @@ public:
     static AcScore *instance();
 
     MiList *settings() const;
-    MiList *meters() const;
-    MiList *tempos() const;
+    MiList *barlines() const;
     MiList *tunings() const;
     MiList *curves() const;
     MiList *notes() const;

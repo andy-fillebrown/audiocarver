@@ -18,7 +18,6 @@
 #include "ac_track.h"
 
 #include <ac_note.h>
-#include <ac_tuning.h>
 
 #include <mi_list.h>
 
@@ -29,14 +28,12 @@ namespace Private {
 class AcTrackData
 {
 public:
-    AcTuning *tuning;
     MiList *notes;
     bool visible;
     qreal volume;
 
     AcTrackData(AcTrack *q)
-        :   tuning(0)
-        ,   notes(new MiList(q, q->propertyIndex("notes")))
+        :   notes(new MiList(q, q->propertyIndex("notes")))
         ,   visible(true)
         ,   volume(0.999999)
     {}
@@ -57,19 +54,6 @@ AcTrack::AcTrack(QObject *parent)
 AcTrack::~AcTrack()
 {
     delete d;
-}
-
-MiObject *AcTrack::tuning() const
-{
-    return d->tuning;
-}
-
-void AcTrack::setTuning(MiObject *tuning)
-{
-    if (d->tuning == tuning)
-        return;
-    d->tuning = qobject_cast<AcTuning*>(tuning);
-    emit propertyChanged(propertyIndex("tuning"));
 }
 
 MiList *AcTrack::notes() const

@@ -19,10 +19,10 @@
 
 #include <ac_fcurve.h>
 #include <ac_fpoint.h>
+#include <ac_guideline.h>
 #include <ac_note.h>
 #include <ac_score.h>
 #include <ac_track.h>
-#include <ac_tuning.h>
 
 #include <mi_list.h>
 
@@ -45,17 +45,24 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        AcTuning *tuning = qobject_cast<AcTuning*>(score->createObject("Tuning"));
-        tuning->setCents(60.0f);
+        AcGuideline *tuning = qobject_cast<AcGuideline*>(score->createObject("Tuning"));
+        tuning->setLocation(60.0f);
         tuning->setColor(QColor(Qt::red));
+        tuning = qobject_cast<AcGuideline*>(score->createObject("Tuning"));
+        tuning->setLocation(48.0f);
+        tuning = qobject_cast<AcGuideline*>(score->createObject("Tuning"));
+        tuning->setLocation(72.0f);
 
-        tuning = qobject_cast<AcTuning*>(score->createObject("Tuning"));
-        tuning->setCents(48.0f);
-        tuning = qobject_cast<AcTuning*>(score->createObject("Tuning"));
-        tuning->setCents(72.0f);
+        AcGuideline *barline = qobject_cast<AcGuideline*>(score->createObject("Barline"));
+        barline->setLocation(0.0f);
+        barline->setColor(QColor(Qt::green));
+        barline->setText("1");
+        for (int i = 1;  i < 32;  ++i) {
+            barline = qobject_cast<AcGuideline*>(score->createObject("Barline"));
+            barline->setLocation(4.0f * i);
+        }
 
         AcTrack *track = qobject_cast<AcTrack*>(score->createObject("Track"));
-        track->setTuning(tuning);
 
         AcFCurve *pitchCurve = qobject_cast<AcFCurve*>(score->createObject("FCurve"));
         pitchCurve->appendPoint(AcFPoint(0.000001, 0));

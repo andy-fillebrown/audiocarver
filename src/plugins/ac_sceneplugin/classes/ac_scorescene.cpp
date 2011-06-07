@@ -17,8 +17,8 @@
 
 #include "ac_scorescene.h"
 
+#include <ac_guideline.h>
 #include <ac_score.h>
-#include <ac_tuning.h>
 
 #include <mi_list.h>
 
@@ -36,8 +36,8 @@ public:
     AcScoreScene *q;
 
     QGraphicsRectItem *scoreRectItem;
-    QList<QGraphicsLineItem*> barLineItems;
-    QList<QGraphicsLineItem*> tuningLineItems;
+    QList<QGraphicsLineItem*> barlineItems;
+    QList<QGraphicsLineItem*> tuningItems;
 
     AcScoreSceneData(AcScoreScene *q)
         :   q(q)
@@ -46,34 +46,52 @@ public:
         updateLength(q->score()->length());
     }
 
-    void updateTuning(AcTuning *tuning, int index)
+    void updateLength(qreal scoreLength)
     {
-        while (tuningLineItems.count() < index + 1)
-            tuningLineItems.append(q->addLine(QLineF()));
+        scoreRectItem->setRect(0.0f, 0.0f, scoreLength, 127.0f);
 
-        QGraphicsLineItem *tuningLineItem = tuningLineItems.at(index);
-        const qreal y = 127.0f - tuning->cents();
+        foreach (QGraphicsLineItem *tuningItem, tuningItems) {
+            QLineF line = tuningItem->line();
+            line.setLength(scoreLength);
+            tuningItem->setLine(line);
+        }
+    }
+
+    void updateBarlineItem(int index, AcGuideline *barline)
+    {
+        while (barlineItems.count() < index + 1)
+            barlineItems.append(q->addLine(QLineF()));
+
+        QGraphicsLineItem *barlineItem = barlineItems.at(index);
+        const qreal x = barline->location();
+        barlineItem->setLine(x, 0.0f, x, 127.0f);
+        barlineItem->setPen(QPen(barline->color()));
+    }
+
+    void removeUnusedBarlineItems()
+    {
+        MiList *barlines = q->score()->barlines();
+        while (barlines->count() < barlineItems.count())
+            barlineItems.removeLast();
+    }
+
+    void updateTuningItem(int index, AcGuideline *tuning)
+    {
+        while (tuningItems.count() < index + 1)
+            tuningItems.append(q->addLine(QLineF()));
+
+        QGraphicsLineItem *tuningItem = tuningItems.at(index);
+        const qreal y = 127.0f - tuning->location();
         const qreal scoreLength = q->score()->length();
-        tuningLineItem->setLine(0.0f, y, scoreLength, y);
-        tuningLineItem->setPen(QPen(tuning->color()));
+        tuningItem->setLine(0.0f, y, scoreLength, y);
+        tuningItem->setPen(QPen(tuning->color()));
     }
 
     void removeUnusedTuningItems()
     {
         MiList *tunings = q->score()->tunings();
-        while (tunings->count() < tuningLineItems.count())
-            tuningLineItems.removeLast();
-    }
-
-    void updateLength(qreal scoreLength)
-    {
-        scoreRectItem->setRect(0.0f, 0.0f, scoreLength, 127.0f);
-
-        foreach (QGraphicsLineItem *tuningLineItem, tuningLineItems) {
-            QLineF line = tuningLineItem->line();
-            line.setLength(scoreLength);
-            tuningLineItem->setLine(line);
-        }
+        while (tunings->count() < tuningItems.count())
+            tuningItems.removeLast();
     }
 };
 
@@ -85,7 +103,8 @@ AcScoreScene::AcScoreScene(QObject *parent)
 {
     connect(score(), SIGNAL(lengthChanged(qreal)), SLOT(updateScoreLength(qreal)));
 
-    updateTuningLineList();
+    updateBarlines();
+    updateTunings();
 }
 
 AcScoreScene::~AcScoreScene()
@@ -95,8 +114,14 @@ AcScoreScene::~AcScoreScene()
 
 void AcScoreScene::updateScoreProperty(const QString &propertyName)
 {
-    if ("tunings" == propertyName)
-        updateTuningLineList();
+    if ("barlines" == propertyName) {
+        updateBarlines();
+        return;
+    }
+    if ("tunings" == propertyName) {
+        updateTunings();
+        return;
+    }
 }
 
 void AcScoreScene::updateScoreLength(qreal scoreLength)
@@ -104,20 +129,38 @@ void AcScoreScene::updateScoreLength(qreal scoreLength)
     d->updateLength(scoreLength);
 }
 
-void AcScoreScene::updateTuningLineList()
+void AcScoreScene::updateBarlines()
+{
+    MiList *barlines = score()->barlines();
+    for (int i = 0;  i < barlines->count();  ++i) {
+        AcGuideline *barline = barlines->at<AcGuideline>(i);
+        connect(barline, SIGNAL(propertyChanged(int)), SLOT(updateBarlineProperties()), Qt::UniqueConnection);
+        d->updateBarlineItem(i, barline);
+    }
+    d->removeUnusedBarlineItems();
+}
+
+void AcScoreScene::updateBarlineProperties()
+{
+    MiList *barlines = score()->barlines();
+    for (int i = 0;  i < barlines->count();  ++i)
+        d->updateBarlineItem(i, barlines->at<AcGuideline>(i));
+}
+
+void AcScoreScene::updateTunings()
 {
     MiList *tunings = score()->tunings();
     for (int i = 0;  i < tunings->count();  ++i) {
-        AcTuning *tuning = tunings->at<AcTuning>(i);
-        connect(tuning, SIGNAL(propertyChanged(int)), SLOT(updateTuningLineProperties()), Qt::UniqueConnection);
-        d->updateTuning(tuning, i);
+        AcGuideline *tuning = tunings->at<AcGuideline>(i);
+        connect(tuning, SIGNAL(propertyChanged(int)), SLOT(updateTuningProperties()), Qt::UniqueConnection);
+        d->updateTuningItem(i, tuning);
     }
     d->removeUnusedTuningItems();
 }
 
-void AcScoreScene::updateTuningLineProperties()
+void AcScoreScene::updateTuningProperties()
 {
     MiList *tunings = score()->tunings();
     for (int i = 0;  i < tunings->count();  ++i)
-        d->updateTuning(tunings->at<AcTuning>(i), i);
+        d->updateTuningItem(i, tunings->at<AcGuideline>(i));
 }
