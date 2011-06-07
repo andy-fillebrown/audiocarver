@@ -39,6 +39,11 @@ public:
 protected:
     virtual void updateScoreProperty(const QString &propertyName);
 
+private slots:
+    void updateScoreLength(qreal scoreLength);
+    void updateTuningLineList();
+    void updateTuningLineProperties();
+
 private:
     Q_DISABLE_COPY(AcScoreScene)
     Private::AcScoreSceneData *d;

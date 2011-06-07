@@ -18,7 +18,11 @@
 #include "ac_scorescene.h"
 
 #include <ac_score.h>
+#include <ac_tuning.h>
 
+#include <mi_list.h>
+
+#include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QPainterPath>
 
@@ -32,38 +36,44 @@ public:
     AcScoreScene *q;
 
     QGraphicsRectItem *scoreRectItem;
-    QGraphicsPathItem *barLineItem;
-    QGraphicsPathItem *tuningLineItem;
+    QList<QGraphicsLineItem*> barLineItems;
+    QList<QGraphicsLineItem*> tuningLineItems;
 
     AcScoreSceneData(AcScoreScene *q)
         :   q(q)
         ,   scoreRectItem(q->addRect(0.0f, 0.0f, 0.0f, 0.0f))
-        ,   barLineItem(0)
-        ,   tuningLineItem(0)
     {
-        updateScoreRectItems();
+        updateLength(q->score()->length());
     }
 
-    void updateScoreRectItems()
+    void updateTuning(AcTuning *tuning, int index)
     {
-//        if (barLineItem)
-//            q->removeItem(barLineItem);
-//        QPainterPath barLinePath;
-//        for (int i = 0;  i < score->length();  i+=4) {
-//            barLinePath.moveTo(qreal(i), 0.0f);
-//            barLinePath.lineTo(qreal(i), 127.0f);
-//        }
-//        barLineItem = q->addPath(barLinePath);
+        while (tuningLineItems.count() < index + 1)
+            tuningLineItems.append(q->addLine(QLineF()));
 
-//        if (tuningLineItem)
-//            q->removeItem(tuningLineItem);
-//        QPainterPath tuningLinePath;
-//        tuningLinePath.moveTo(0.0f, qAbs(60.0f - 127.0f));
-//        tuningLinePath.lineTo(score->length(), qAbs(60.0f - 127.0f));
-//        tuningLineItem = q->addPath(tuningLinePath, QPen(QColor(Qt::red)));
+        QGraphicsLineItem *tuningLineItem = tuningLineItems.at(index);
+        const qreal y = 127.0f - tuning->cents();
+        const qreal scoreLength = q->score()->length();
+        tuningLineItem->setLine(0.0f, y, scoreLength, y);
+        tuningLineItem->setPen(QPen(tuning->color()));
+    }
 
-//        scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
-        scoreRectItem->setRect(0.0f, 0.0f, 128.0f, 127.0f);
+    void removeUnusedTuningItems()
+    {
+        MiList *tunings = q->score()->tunings();
+        while (tunings->count() < tuningLineItems.count())
+            tuningLineItems.removeLast();
+    }
+
+    void updateLength(qreal scoreLength)
+    {
+        scoreRectItem->setRect(0.0f, 0.0f, scoreLength, 127.0f);
+
+        foreach (QGraphicsLineItem *tuningLineItem, tuningLineItems) {
+            QLineF line = tuningLineItem->line();
+            line.setLength(scoreLength);
+            tuningLineItem->setLine(line);
+        }
     }
 };
 
@@ -73,6 +83,9 @@ AcScoreScene::AcScoreScene(QObject *parent)
     :   AcGraphicsScene(parent)
     ,   d(new AcScoreSceneData(this))
 {
+    connect(score(), SIGNAL(lengthChanged(qreal)), SLOT(updateScoreLength(qreal)));
+
+    updateTuningLineList();
 }
 
 AcScoreScene::~AcScoreScene()
@@ -82,6 +95,29 @@ AcScoreScene::~AcScoreScene()
 
 void AcScoreScene::updateScoreProperty(const QString &propertyName)
 {
-    if ("length" == propertyName)
-        d->updateScoreRectItems();
+    if ("tunings" == propertyName)
+        updateTuningLineList();
+}
+
+void AcScoreScene::updateScoreLength(qreal scoreLength)
+{
+    d->updateLength(scoreLength);
+}
+
+void AcScoreScene::updateTuningLineList()
+{
+    MiList *tunings = score()->tunings();
+    for (int i = 0;  i < tunings->count();  ++i) {
+        AcTuning *tuning = tunings->at<AcTuning>(i);
+        connect(tuning, SIGNAL(propertyChanged(int)), SLOT(updateTuningLineProperties()), Qt::UniqueConnection);
+        d->updateTuning(tuning, i);
+    }
+    d->removeUnusedTuningItems();
+}
+
+void AcScoreScene::updateTuningLineProperties()
+{
+    MiList *tunings = score()->tunings();
+    for (int i = 0;  i < tunings->count();  ++i)
+        d->updateTuning(tunings->at<AcTuning>(i), i);
 }
