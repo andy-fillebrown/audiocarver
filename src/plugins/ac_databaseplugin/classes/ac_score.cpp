@@ -164,6 +164,14 @@ void AcScore::clear()
     d->init();
 }
 
+/*!
+  \todo Implement.
+  */
+qreal AcScore::length() const
+{
+    return 128.0f;
+}
+
 QString &AcScore::normalizeClassName(QString &className) const
 {
     // Remove "Ac" prefix.

@@ -59,11 +59,16 @@ public:
     AcGridSettings *gridSettings() const;
     AcViewSettings *viewSettings() const;
 
+    qreal length() const;
+
     virtual void clear();
 
     virtual QString &normalizeClassName(QString &className) const;
     virtual MiObject *createObject(const QString &className);
     virtual MiObject *findObject(const QString &className) const;
+
+signals:
+    void lengthChanged(qreal length);
 
 private:
     Q_DISABLE_COPY(AcScore)
