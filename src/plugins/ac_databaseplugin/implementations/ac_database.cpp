@@ -45,30 +45,30 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        AcGuideline *tuning = qobject_cast<AcGuideline*>(score->createObject("Tuning"));
+        AcGuideline *tuning = score->createTuning();
         tuning->setLocation(60.0f);
         tuning->setColor(QColor(Qt::red));
-        tuning = qobject_cast<AcGuideline*>(score->createObject("Tuning"));
+        tuning = score->createTuning();
         tuning->setLocation(48.0f);
-        tuning = qobject_cast<AcGuideline*>(score->createObject("Tuning"));
+        tuning = score->createTuning();
         tuning->setLocation(72.0f);
 
-        AcGuideline *barline = qobject_cast<AcGuideline*>(score->createObject("Barline"));
+        AcGuideline *barline = score->createBarline();
         barline->setLocation(0.0f);
         barline->setColor(QColor(Qt::green));
         barline->setText("1");
         for (int i = 1;  i < 32;  ++i) {
-            barline = qobject_cast<AcGuideline*>(score->createObject("Barline"));
+            barline = score->createBarline();
             barline->setLocation(4.0f * i);
         }
 
-        AcTrack *track = qobject_cast<AcTrack*>(score->createObject("Track"));
+        score->createTrack();
 
-        AcFCurve *pitchCurve = qobject_cast<AcFCurve*>(score->createObject("FCurve"));
+        AcFCurve *pitchCurve = score->createCurve();
         pitchCurve->appendPoint(AcFPoint(0.000001, 0));
         pitchCurve->appendPoint(AcFPoint(1, 1));
 
-        AcNote *note = qobject_cast<AcNote*>(track->createObject("Note"));
+        AcNote *note = score->createNote();
         note->setPitchCurve(pitchCurve);
     }
 };

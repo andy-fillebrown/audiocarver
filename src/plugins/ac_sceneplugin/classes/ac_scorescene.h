@@ -40,7 +40,6 @@ protected:
     virtual void updateScoreProperty(const QString &propertyName);
 
 private slots:
-    void updateScoreLength(qreal scoreLength);
     void updateTunings();
     void updateTuningProperties();
     void updateBarlines();

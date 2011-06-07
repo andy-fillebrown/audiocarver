@@ -40,6 +40,7 @@ public:
     MiList *curves;
     MiList *notes;
     MiList *tracks;
+    qreal length;
 
     AcGridSettings *gridSettings;
     AcViewSettings *viewSettings;
@@ -52,6 +53,7 @@ public:
         ,   curves(new MiList(q, q->propertyIndex("curves")))
         ,   notes(new MiList(q, q->propertyIndex("notes")))
         ,   tracks(new MiList(q, q->propertyIndex("tracks")))
+        ,   length(128.0f)
         ,   gridSettings(0)
         ,   viewSettings(0)
     {}
@@ -72,9 +74,6 @@ public:
         viewSettings = new AcViewSettings(q);
         settings->append(gridSettings);
         settings->append(viewSettings);
-
-        q->createObject("Barline");
-        q->createObject("Tuning");
     }
 };
 
@@ -86,8 +85,9 @@ AcScore::AcScore(QObject *parent)
     :   MiRoot(parent)
     ,   d(new AcScoreData(this))
 {
-    d->init();
     ::instance = this;
+
+    d->init();
 }
 
 AcScore::~AcScore()
@@ -130,6 +130,56 @@ MiList *AcScore::tracks() const
     return d->tracks;
 }
 
+qreal AcScore::length() const
+{
+    return d->length;
+}
+
+void AcScore::setLength(qreal length)
+{
+    if (length < 1.0f)
+        length = 1.0f;
+    if (d->length == length)
+        return;
+    d->length = length;
+    emit propertyChanged(propertyIndex("length"));
+}
+
+AcGuideline *AcScore::createBarline()
+{
+    AcGuideline *barline = new AcGuideline(this);
+    d->barlines->append(barline);
+    return barline;
+}
+
+AcGuideline *AcScore::createTuning()
+{
+    AcGuideline *tuning = new AcGuideline(this);
+    d->tunings->append(tuning);
+    return tuning;
+}
+
+AcFCurve *AcScore::createCurve()
+{
+    AcFCurve *curve = new AcFCurve(this);
+    d->curves->append(curve);
+    return curve;
+}
+
+AcNote *AcScore::createNote()
+{
+    AcNote *note = new AcNote(this);
+    d->notes->append(note);
+    return note;
+}
+
+AcTrack *AcScore::createTrack()
+{
+    AcTrack *track = new AcTrack(this);
+    d->tracks->append(track);
+    return track;
+}
+
 AcGridSettings *AcScore::gridSettings() const
 {
     return d->gridSettings;
@@ -138,6 +188,31 @@ AcGridSettings *AcScore::gridSettings() const
 AcViewSettings *AcScore::viewSettings() const
 {
     return d->viewSettings;
+}
+
+AcGuideline *AcScore::barlineAt(int i)
+{
+    return qobject_cast<AcGuideline*>(d->barlines->at(i));
+}
+
+AcGuideline *AcScore::tuningAt(int i)
+{
+    return qobject_cast<AcGuideline*>(d->tunings->at(i));
+}
+
+AcFCurve *AcScore::curveAt(int i)
+{
+    return qobject_cast<AcFCurve*>(d->curves->at(i));
+}
+
+AcNote *AcScore::noteAt(int i)
+{
+    return qobject_cast<AcNote*>(d->notes->at(i));
+}
+
+AcTrack *AcScore::trackAt(int i)
+{
+    return qobject_cast<AcTrack*>(d->tracks->at(i));
 }
 
 void AcScore::clear()
@@ -152,14 +227,6 @@ void AcScore::clear()
     d->init();
 }
 
-/*!
-  \todo Implement.
-  */
-qreal AcScore::length() const
-{
-    return 128.0f;
-}
-
 QString &AcScore::normalizeClassName(QString &className) const
 {
     // Remove "Ac" prefix.
@@ -168,31 +235,16 @@ QString &AcScore::normalizeClassName(QString &className) const
 
 MiObject *AcScore::createObject(const QString &className)
 {
-    if (className == "FCurve") {
-        AcFCurve *fcurve = new AcFCurve(this);
-        d->curves->append(fcurve);
-        return fcurve;
-    }
-    if (className == "Barline") {
-        AcGuideline *guideline = new AcGuideline(this);
-        d->barlines->append(guideline);
-        return guideline;
-    }
-    if (className == "Note") {
-        AcNote *note = new AcNote(this);
-        d->notes->append(note);
-        return note;
-    }
-    if (className == "Tuning") {
-        AcGuideline *guideline = new AcGuideline(this);
-        d->tunings->append(guideline);
-        return guideline;
-    }
-    if (className == "Track") {
-        AcTrack *track = new AcTrack(this);
-        d->tracks->append(track);
-        return track;
-    }
+    if (className == "Barline")
+        return createBarline();
+    if (className == "FCurve")
+        return createCurve();
+    if (className == "Note")
+        return createNote();
+    if (className == "Tuning")
+        return createTuning();
+    if (className == "Track")
+        return createTrack();
     return 0;
 }
 

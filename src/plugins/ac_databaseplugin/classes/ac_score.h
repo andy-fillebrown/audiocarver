@@ -22,7 +22,11 @@
 
 #include <ac_database_global.h>
 
+class AcFCurve;
+class AcGuideline;
 class AcGridSettings;
+class AcNote;
+class AcTrack;
 class AcViewSettings;
 
 namespace Private {
@@ -40,6 +44,7 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
     Q_PROPERTY(MiList* curves READ curves)
     Q_PROPERTY(MiList* notes READ notes)
     Q_PROPERTY(MiList* tracks READ tracks)
+    Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
     AcScore(QObject *parent = 0);
@@ -54,19 +59,28 @@ public:
     MiList *notes() const;
     MiList *tracks() const;
 
+    qreal length() const;
+    void setLength(qreal length);
+
+    AcGuideline *createBarline();
+    AcGuideline *createTuning();
+    AcFCurve *createCurve();
+    AcNote *createNote();
+    AcTrack *createTrack();
+
     AcGridSettings *gridSettings() const;
     AcViewSettings *viewSettings() const;
-
-    qreal length() const;
+    AcGuideline *barlineAt(int i);
+    AcGuideline *tuningAt(int i);
+    AcFCurve *curveAt(int i);
+    AcNote *noteAt(int i);
+    AcTrack *trackAt(int i);
 
     virtual void clear();
 
     virtual QString &normalizeClassName(QString &className) const;
     virtual MiObject *createObject(const QString &className);
     virtual MiObject *findObject(const QString &className) const;
-
-signals:
-    void lengthChanged(qreal length);
 
 private:
     Q_DISABLE_COPY(AcScore)

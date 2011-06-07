@@ -43,11 +43,13 @@ public:
         :   q(q)
         ,   scoreRectItem(q->addRect(0.0f, 0.0f, 0.0f, 0.0f))
     {
-        updateLength(q->score()->length());
+        updateLength();
     }
 
-    void updateLength(qreal scoreLength)
+    void updateLength()
     {
+        qreal scoreLength = q->score()->length();
+
         scoreRectItem->setRect(0.0f, 0.0f, scoreLength, 127.0f);
 
         foreach (QGraphicsLineItem *tuningItem, tuningItems) {
@@ -70,8 +72,7 @@ public:
 
     void removeUnusedBarlineItems()
     {
-        MiList *barlines = q->score()->barlines();
-        while (barlines->count() < barlineItems.count())
+        while (q->score()->barlines()->count() < barlineItems.count())
             barlineItems.removeLast();
     }
 
@@ -89,8 +90,7 @@ public:
 
     void removeUnusedTuningItems()
     {
-        MiList *tunings = q->score()->tunings();
-        while (tunings->count() < tuningItems.count())
+        while (q->score()->tunings()->count() < tuningItems.count())
             tuningItems.removeLast();
     }
 };
@@ -101,8 +101,6 @@ AcScoreScene::AcScoreScene(QObject *parent)
     :   AcGraphicsScene(parent)
     ,   d(new AcScoreSceneData(this))
 {
-    connect(score(), SIGNAL(lengthChanged(qreal)), SLOT(updateScoreLength(qreal)));
-
     updateBarlines();
     updateTunings();
 }
@@ -114,26 +112,18 @@ AcScoreScene::~AcScoreScene()
 
 void AcScoreScene::updateScoreProperty(const QString &propertyName)
 {
-    if ("barlines" == propertyName) {
+    if ("barlines" == propertyName)
         updateBarlines();
-        return;
-    }
-    if ("tunings" == propertyName) {
+    else if ("tunings" == propertyName)
         updateTunings();
-        return;
-    }
-}
-
-void AcScoreScene::updateScoreLength(qreal scoreLength)
-{
-    d->updateLength(scoreLength);
+    else if ("length" == propertyName)
+        d->updateLength();
 }
 
 void AcScoreScene::updateBarlines()
 {
-    MiList *barlines = score()->barlines();
-    for (int i = 0;  i < barlines->count();  ++i) {
-        AcGuideline *barline = barlines->at<AcGuideline>(i);
+    for (int i = 0;  i < score()->barlines()->count();  ++i) {
+        AcGuideline *barline = score()->barlineAt(i);
         connect(barline, SIGNAL(propertyChanged(int)), SLOT(updateBarlineProperties()), Qt::UniqueConnection);
         d->updateBarlineItem(i, barline);
     }
@@ -142,16 +132,14 @@ void AcScoreScene::updateBarlines()
 
 void AcScoreScene::updateBarlineProperties()
 {
-    MiList *barlines = score()->barlines();
-    for (int i = 0;  i < barlines->count();  ++i)
-        d->updateBarlineItem(i, barlines->at<AcGuideline>(i));
+    for (int i = 0;  i < score()->barlines()->count();  ++i)
+        d->updateBarlineItem(i, score()->barlineAt(i));
 }
 
 void AcScoreScene::updateTunings()
 {
-    MiList *tunings = score()->tunings();
-    for (int i = 0;  i < tunings->count();  ++i) {
-        AcGuideline *tuning = tunings->at<AcGuideline>(i);
+    for (int i = 0;  i < score()->tunings()->count();  ++i) {
+        AcGuideline *tuning = score()->tuningAt(i);
         connect(tuning, SIGNAL(propertyChanged(int)), SLOT(updateTuningProperties()), Qt::UniqueConnection);
         d->updateTuningItem(i, tuning);
     }
@@ -160,7 +148,6 @@ void AcScoreScene::updateTunings()
 
 void AcScoreScene::updateTuningProperties()
 {
-    MiList *tunings = score()->tunings();
-    for (int i = 0;  i < tunings->count();  ++i)
-        d->updateTuningItem(i, tunings->at<AcGuideline>(i));
+    for (int i = 0;  i < score()->tunings()->count();  ++i)
+        d->updateTuningItem(i, score()->tuningAt(i));
 }
