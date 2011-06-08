@@ -45,30 +45,30 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        AcGuideline *tuning = score->createTuning();
+        AcGuideline *tuning = score->addTuning();
         tuning->setLocation(60.0f);
         tuning->setColor(QColor(Qt::red));
-        tuning = score->createTuning();
+        tuning = score->addTuning();
         tuning->setLocation(48.0f);
-        tuning = score->createTuning();
+        tuning = score->addTuning();
         tuning->setLocation(72.0f);
 
-        AcGuideline *barline = score->createBarline();
+        AcGuideline *barline = score->addBarline();
         barline->setLocation(0.0f);
         barline->setColor(QColor(Qt::green));
         barline->setText("1");
         for (int i = 1;  i < 32;  ++i) {
-            barline = score->createBarline();
+            barline = score->addBarline();
             barline->setLocation(4.0f * i);
         }
 
-        score->createTrack();
+        score->addTrack();
 
-        AcFCurve *pitchCurve = score->createCurve();
+        AcFCurve *pitchCurve = score->addCurve();
         pitchCurve->appendPoint(AcFPoint(0.000001, 0));
         pitchCurve->appendPoint(AcFPoint(1, 1));
 
-        AcNote *note = score->createNote();
+        AcNote *note = score->addNote();
         note->setPitchCurve(pitchCurve);
     }
 };

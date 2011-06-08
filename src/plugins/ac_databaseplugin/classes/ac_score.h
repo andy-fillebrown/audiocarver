@@ -62,11 +62,11 @@ public:
     qreal length() const;
     void setLength(qreal length);
 
-    AcGuideline *createBarline();
-    AcGuideline *createTuning();
-    AcFCurve *createCurve();
-    AcNote *createNote();
-    AcTrack *createTrack();
+    AcGuideline *addBarline();
+    AcGuideline *addTuning();
+    AcFCurve *addCurve();
+    AcNote *addNote();
+    AcTrack *addTrack();
 
     AcGridSettings *gridSettings() const;
     AcViewSettings *viewSettings() const;

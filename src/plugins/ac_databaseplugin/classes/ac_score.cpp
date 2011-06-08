@@ -145,35 +145,35 @@ void AcScore::setLength(qreal length)
     emit propertyChanged(propertyIndex("length"));
 }
 
-AcGuideline *AcScore::createBarline()
+AcGuideline *AcScore::addBarline()
 {
     AcGuideline *barline = new AcGuideline(this);
     d->barlines->append(barline);
     return barline;
 }
 
-AcGuideline *AcScore::createTuning()
+AcGuideline *AcScore::addTuning()
 {
     AcGuideline *tuning = new AcGuideline(this);
     d->tunings->append(tuning);
     return tuning;
 }
 
-AcFCurve *AcScore::createCurve()
+AcFCurve *AcScore::addCurve()
 {
     AcFCurve *curve = new AcFCurve(this);
     d->curves->append(curve);
     return curve;
 }
 
-AcNote *AcScore::createNote()
+AcNote *AcScore::addNote()
 {
     AcNote *note = new AcNote(this);
     d->notes->append(note);
     return note;
 }
 
-AcTrack *AcScore::createTrack()
+AcTrack *AcScore::addTrack()
 {
     AcTrack *track = new AcTrack(this);
     d->tracks->append(track);
@@ -236,15 +236,15 @@ QString &AcScore::normalizeClassName(QString &className) const
 MiObject *AcScore::createObject(const QString &className)
 {
     if (className == "Barline")
-        return createBarline();
+        return addBarline();
     if (className == "FCurve")
-        return createCurve();
+        return addCurve();
     if (className == "Note")
-        return createNote();
+        return addNote();
     if (className == "Tuning")
-        return createTuning();
+        return addTuning();
     if (className == "Track")
-        return createTrack();
+        return addTrack();
     return 0;
 }
 
