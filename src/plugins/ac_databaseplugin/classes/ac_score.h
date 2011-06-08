@@ -38,13 +38,13 @@ class AcScoreData;
 class AC_DATABASE_EXPORT AcScore : public MiRoot
 {
     Q_OBJECT
+    Q_PROPERTY(qreal length READ length WRITE setLength)
     Q_PROPERTY(MiList* settings READ settings)
     Q_PROPERTY(MiList* barlines READ barlines)
     Q_PROPERTY(MiList* tunings READ tunings)
     Q_PROPERTY(MiList* curves READ curves)
     Q_PROPERTY(MiList* notes READ notes)
     Q_PROPERTY(MiList* tracks READ tracks)
-    Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
     AcScore(QObject *parent = 0);
@@ -52,15 +52,14 @@ public:
 
     static AcScore *instance();
 
-    MiList *settings() const;
-    MiList *barlines() const;
-    MiList *tunings() const;
-    MiList *curves() const;
-    MiList *notes() const;
-    MiList *tracks() const;
-
     qreal length() const;
     void setLength(qreal length);
+
+    int barlineCount() const;
+    int tuningCount() const;
+    int curveCount() const;
+    int noteCount() const;
+    int trackCount() const;
 
     AcGuideline *addBarline(AcGuideline *barline = 0);
     AcGuideline *addTuning(AcGuideline *tuning = 0);
@@ -99,6 +98,13 @@ private slots:
 private:
     Q_DISABLE_COPY(AcScore)
     Private::AcScoreData *d;
+
+    MiList *settings() const;
+    MiList *barlines() const;
+    MiList *tunings() const;
+    MiList *curves() const;
+    MiList *notes() const;
+    MiList *tracks() const;
 };
 
 #endif // AC_SCORE_H

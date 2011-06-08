@@ -72,7 +72,7 @@ public:
 
     void removeUnusedBarlineItems()
     {
-        while (q->score()->barlines()->count() < barlineItems.count())
+        while (q->score()->barlineCount() < barlineItems.count())
             barlineItems.removeLast();
     }
 
@@ -90,7 +90,7 @@ public:
 
     void removeUnusedTuningItems()
     {
-        while (q->score()->tunings()->count() < tuningItems.count())
+        while (q->score()->tuningCount() < tuningItems.count())
             tuningItems.removeLast();
     }
 };
@@ -122,7 +122,7 @@ void AcScoreScene::updateScoreProperty(const QString &propertyName)
 
 void AcScoreScene::updateBarlines()
 {
-    for (int i = 0;  i < score()->barlines()->count();  ++i) {
+    for (int i = 0;  i < score()->barlineCount();  ++i) {
         AcGuideline *barline = score()->barlineAt(i);
         connect(barline, SIGNAL(propertyChanged(int)), SLOT(updateBarlineProperties()), Qt::UniqueConnection);
         d->updateBarlineItem(i, barline);
@@ -132,13 +132,13 @@ void AcScoreScene::updateBarlines()
 
 void AcScoreScene::updateBarlineProperties()
 {
-    for (int i = 0;  i < score()->barlines()->count();  ++i)
+    for (int i = 0;  i < score()->barlineCount();  ++i)
         d->updateBarlineItem(i, score()->barlineAt(i));
 }
 
 void AcScoreScene::updateTunings()
 {
-    for (int i = 0;  i < score()->tunings()->count();  ++i) {
+    for (int i = 0;  i < score()->tuningCount();  ++i) {
         AcGuideline *tuning = score()->tuningAt(i);
         connect(tuning, SIGNAL(propertyChanged(int)), SLOT(updateTuningProperties()), Qt::UniqueConnection);
         d->updateTuningItem(i, tuning);
@@ -148,6 +148,6 @@ void AcScoreScene::updateTunings()
 
 void AcScoreScene::updateTuningProperties()
 {
-    for (int i = 0;  i < score()->tunings()->count();  ++i)
+    for (int i = 0;  i < score()->tuningCount();  ++i)
         d->updateTuningItem(i, score()->tuningAt(i));
 }

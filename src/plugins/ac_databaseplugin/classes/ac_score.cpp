@@ -107,36 +107,6 @@ AcScore *AcScore::instance()
     return ::instance;
 }
 
-MiList *AcScore::settings() const
-{
-    return d->settings;
-}
-
-MiList *AcScore::barlines() const
-{
-    return d->barlines;
-}
-
-MiList *AcScore::tunings() const
-{
-    return d->tunings;
-}
-
-MiList *AcScore::curves() const
-{
-    return d->curves;
-}
-
-MiList *AcScore::notes() const
-{
-    return d->notes;
-}
-
-MiList *AcScore::tracks() const
-{
-    return d->tracks;
-}
-
 qreal AcScore::length() const
 {
     return d->length;
@@ -150,6 +120,31 @@ void AcScore::setLength(qreal length)
         return;
     d->length = length;
     emit propertyChanged(propertyIndex("length"));
+}
+
+int AcScore::barlineCount() const
+{
+    return d->barlines->count();
+}
+
+int AcScore::tuningCount() const
+{
+    return d->tunings->count();
+}
+
+int AcScore::curveCount() const
+{
+    return d->curves->count();
+}
+
+int AcScore::noteCount() const
+{
+    return d->notes->count();
+}
+
+int AcScore::trackCount() const
+{
+    return d->tracks->count();
 }
 
 AcGuideline *AcScore::addBarline(AcGuideline *barline)
@@ -350,4 +345,34 @@ void AcScore::sortBarlines()
 void AcScore::sortTunings()
 {
     d->tunings->sort(guidelineLessThan);
+}
+
+MiList *AcScore::settings() const
+{
+    return d->settings;
+}
+
+MiList *AcScore::barlines() const
+{
+    return d->barlines;
+}
+
+MiList *AcScore::tunings() const
+{
+    return d->tunings;
+}
+
+MiList *AcScore::curves() const
+{
+    return d->curves;
+}
+
+MiList *AcScore::notes() const
+{
+    return d->notes;
+}
+
+MiList *AcScore::tracks() const
+{
+    return d->tracks;
 }
