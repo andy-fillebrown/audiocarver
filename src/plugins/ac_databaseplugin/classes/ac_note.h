@@ -33,6 +33,7 @@ class AC_DATABASE_EXPORT AcNote : public MiObject
     Q_OBJECT
     Q_PROPERTY(int pointCount READ pointCount WRITE setPointCount)
     Q_PROPERTY(MiObject* pitchCurve READ pitchCurve WRITE setPitchCurve)
+    Q_PROPERTY(MiObject* volumeCurve READ volumeCurve WRITE setVolumeCurve)
 
 public:
     AcNote(QObject *parent = 0);
@@ -43,6 +44,9 @@ public:
 
     MiObject *pitchCurve() const;
     void setPitchCurve(MiObject *curve);
+
+    MiObject *volumeCurve() const;
+    void setVolumeCurve(MiObject *curve);
 
 private:
     Q_DISABLE_COPY(AcNote)

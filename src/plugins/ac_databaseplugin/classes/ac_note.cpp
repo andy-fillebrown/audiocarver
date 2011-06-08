@@ -28,10 +28,12 @@ class AcNoteData
 public:
     int pointCount;
     AcFCurve *pitchCurve;
+    AcFCurve *volumeCurve;
 
     AcNoteData()
         :   pointCount(64)
         ,   pitchCurve(0)
+        ,   volumeCurve(0)
     {}
 };
 
@@ -71,4 +73,17 @@ void AcNote::setPitchCurve(MiObject *curve)
         return;
     d->pitchCurve = qobject_cast<AcFCurve*>(curve);
     emit propertyChanged(propertyIndex("pitchCurve"));
+}
+
+MiObject *AcNote::volumeCurve() const
+{
+    return d->volumeCurve;
+}
+
+void AcNote::setVolumeCurve(MiObject *curve)
+{
+    if (volumeCurve() == curve)
+        return;
+    d->volumeCurve = qobject_cast<AcFCurve*>(curve);
+    emit propertyChanged(propertyIndex("volumeCurve"));
 }
