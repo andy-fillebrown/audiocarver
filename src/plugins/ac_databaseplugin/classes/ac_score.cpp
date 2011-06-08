@@ -26,6 +26,13 @@
 
 #include <mi_list.h>
 
+static bool guidelineLessThan(MiObject *a, MiObject *b)
+{
+    AcGuideline *aa = qobject_cast<AcGuideline*>(a);
+    AcGuideline *bb = qobject_cast<AcGuideline*>(b);
+    return aa->location() < bb->location();
+}
+
 using namespace Private;
 
 namespace Private {
@@ -86,8 +93,8 @@ AcScore::AcScore(QObject *parent)
     ,   d(new AcScoreData(this))
 {
     ::instance = this;
-
     d->init();
+    connect(this, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
 }
 
 AcScore::~AcScore()
@@ -314,4 +321,33 @@ MiObject *AcScore::findObject(const QString &className) const
     if (className == "ViewSettings")
         return d->viewSettings;
     return 0;
+}
+
+void AcScore::updateScoreProperty(int propertyIndex)
+{
+    QString propName = propertyName(propertyIndex);
+    if ("barlines" == propName) {
+        for (int i = 0;  i < d->barlines->count();  ++i)
+            connect(d->barlines->at(i), SIGNAL(propertyChanged(int)), SLOT(sortBarlines()), Qt::UniqueConnection);
+        blockSignals(true);
+        sortBarlines();
+        blockSignals(false);
+    }
+    else if ("tunings" == propName) {
+        for (int i = 0;  i < d->tunings->count();  ++i)
+            connect(d->tunings->at(i), SIGNAL(propertyChanged(int)), SLOT(sortTunings()), Qt::UniqueConnection);
+        blockSignals(true);
+        sortTunings();
+        blockSignals(false);
+    }
+}
+
+void AcScore::sortBarlines()
+{
+    d->barlines->sort(guidelineLessThan);
+}
+
+void AcScore::sortTunings()
+{
+    d->tunings->sort(guidelineLessThan);
 }

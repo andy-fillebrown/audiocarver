@@ -49,6 +49,8 @@ public:
     template <typename T> T *first() const { return qobject_cast<T*>(first()); }
     template <typename T> T *last() const { return qobject_cast<T*>(last()); }
 
+    template <typename LessThan> void sort(LessThan lessThan) { qSort(list.begin(), list.end(), lessThan);  emitChanged(); }
+
 private:
     void emitChanged() { owner->emit propertyChanged(propertyIndex); }
 

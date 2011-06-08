@@ -91,6 +91,11 @@ public:
     virtual MiObject *createObject(const QString &className);
     virtual MiObject *findObject(const QString &className) const;
 
+private slots:
+    void updateScoreProperty(int propertyIndex);
+    void sortBarlines();
+    void sortTunings();
+
 private:
     Q_DISABLE_COPY(AcScore)
     Private::AcScoreData *d;
