@@ -42,7 +42,7 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
 {
     AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
 
-    connect(viewSettings, SIGNAL(propertyChanged(int)), SLOT(updateViewSettings(int)));
+    connect(viewSettings, SIGNAL(propertyChanged(QString)), SLOT(updateViewSettings(QString)));
 }
 
 AcGraphicsView::~AcGraphicsView()
@@ -53,12 +53,4 @@ AcGraphicsView::~AcGraphicsView()
 void AcGraphicsView::updateViewSettings(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
-}
-
-void AcGraphicsView::updateViewSettings(int propertyIndex)
-{
-    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-
-    QString propertyName = viewSettings->propertyName(propertyIndex);
-    updateViewSettings(propertyName);
 }

@@ -24,7 +24,7 @@
 #include <ac_track.h>
 #include <ac_viewsettings.h>
 
-#include <mi_list.h>
+#include <mi_objectlist.h>
 
 static bool guidelineLessThan(MiObject *a, MiObject *b)
 {
@@ -41,46 +41,37 @@ class AcScoreData
 {
 public:
     AcScore *q;
-    MiList *settings;
-    MiList *barlines;
-    MiList *tunings;
-    MiList *curves;
-    MiList *notes;
-    MiList *tracks;
+
     qreal length;
+    MiConstantObjectList settings;
+    MiList<AcGuideline> barlines;
+    MiList<AcGuideline> tunings;
+    MiList<AcFCurve> curves;
+    MiList<AcNote> notes;
+    MiList<AcTrack> tracks;
 
     AcGridSettings *gridSettings;
     AcViewSettings *viewSettings;
 
     AcScoreData(AcScore *q)
         :   q(q)
-        ,   settings(new MiConstantList(q, q->propertyIndex("settings")))
-        ,   barlines(new MiList(q, q->propertyIndex("barlines")))
-        ,   tunings(new MiList(q, q->propertyIndex("tunings")))
-        ,   curves(new MiList(q, q->propertyIndex("curves")))
-        ,   notes(new MiList(q, q->propertyIndex("notes")))
-        ,   tracks(new MiList(q, q->propertyIndex("tracks")))
         ,   length(128.0f)
+        ,   settings("settings", q)
+        ,   barlines("barlines", q)
+        ,   tunings("tunings", q)
+        ,   curves("curves", q)
+        ,   notes("notes", q)
+        ,   tracks("tracks", q)
         ,   gridSettings(0)
         ,   viewSettings(0)
     {}
-
-    ~AcScoreData()
-    {
-        delete tracks;
-        delete notes;
-        delete curves;
-        delete tunings;
-        delete barlines;
-        delete settings;
-    }
 
     void init()
     {
         gridSettings = new AcGridSettings(q);
         viewSettings = new AcViewSettings(q);
-        settings->append(gridSettings);
-        settings->append(viewSettings);
+        settings.append(gridSettings);
+        settings.append(viewSettings);
     }
 };
 
@@ -94,7 +85,7 @@ AcScore::AcScore(QObject *parent)
 {
     ::instance = this;
     d->init();
-    connect(this, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    connect(this, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
 AcScore::~AcScore()
@@ -119,117 +110,32 @@ void AcScore::setLength(qreal length)
     if (d->length == length)
         return;
     d->length = length;
-    emit propertyChanged(propertyIndex("length"));
+    emit propertyChanged("length");
 }
 
-int AcScore::barlineCount() const
+MiList<AcGuideline> &AcScore::barlines() const
 {
-    return d->barlines->count();
+    return d->barlines;
 }
 
-int AcScore::tuningCount() const
+MiList<AcGuideline> &AcScore::tunings() const
 {
-    return d->tunings->count();
+    return d->tunings;
 }
 
-int AcScore::curveCount() const
+MiList<AcFCurve> &AcScore::curves() const
 {
-    return d->curves->count();
+    return d->curves;
 }
 
-int AcScore::noteCount() const
+MiList<AcNote> &AcScore::notes() const
 {
-    return d->notes->count();
+    return d->notes;
 }
 
-int AcScore::trackCount() const
+MiList<AcTrack> &AcScore::tracks() const
 {
-    return d->tracks->count();
-}
-
-AcGuideline *AcScore::addBarline(AcGuideline *barline)
-{
-    if (barline)
-        barline->setParent(this);
-    else
-        barline = new AcGuideline(this);
-    d->barlines->append(barline);
-    return barline;
-}
-
-AcGuideline *AcScore::addTuning(AcGuideline *tuning)
-{
-    if (tuning)
-        tuning->setParent(this);
-    else
-        tuning = new AcGuideline(this);
-    d->tunings->append(tuning);
-    return tuning;
-}
-
-AcFCurve *AcScore::addCurve(AcFCurve *curve)
-{
-    if (curve)
-        curve->setParent(this);
-    else
-        curve = new AcFCurve(this);
-    d->curves->append(curve);
-    return curve;
-}
-
-AcNote *AcScore::addNote(AcNote *note)
-{
-    if (note)
-        note->setParent(note);
-    else
-        note = new AcNote(this);
-    d->notes->append(note);
-    return note;
-}
-
-AcTrack *AcScore::addTrack(AcTrack *track)
-{
-    if (track)
-        track->setParent(this);
-    else
-        track = new AcTrack(this);
-    d->tracks->append(track);
-    return track;
-}
-
-void AcScore::addBarlines(const QList<MiObject*> &barlines)
-{
-    foreach (MiObject *object, barlines)
-        object->setParent(this);
-    d->barlines->append(barlines);
-}
-
-void AcScore::addTunings(const QList<MiObject*> &tunings)
-{
-    foreach (MiObject *object, tunings)
-        object->setParent(this);
-    d->tunings->append(tunings);
-}
-
-void AcScore::addCurves(const QList<MiObject*> &curves)
-{
-    foreach (MiObject *object, curves)
-        object->setParent(this);
-    d->curves->append(curves);
-}
-
-void AcScore::addNotes(const QList<MiObject*> &notes)
-{
-    foreach (MiObject *object, notes)
-        object->setParent(this);
-    d->notes->append(notes);
-}
-
-void AcScore::addTracks(const QList<MiObject*> &tracks)
-{
-    foreach (MiObject *object, tracks)
-        object->setParent(this);
-    d->tracks->append(tracks);
+    return d->tracks;
 }
 
 AcGridSettings *AcScore::gridSettings() const
@@ -242,49 +148,14 @@ AcViewSettings *AcScore::viewSettings() const
     return d->viewSettings;
 }
 
-AcGuideline *AcScore::barlineAt(int i)
-{
-    return qobject_cast<AcGuideline*>(d->barlines->at(i));
-}
-
-AcGuideline *AcScore::tuningAt(int i)
-{
-    return qobject_cast<AcGuideline*>(d->tunings->at(i));
-}
-
-AcFCurve *AcScore::curveAt(int i)
-{
-    return qobject_cast<AcFCurve*>(d->curves->at(i));
-}
-
-AcNote *AcScore::noteAt(int i)
-{
-    return qobject_cast<AcNote*>(d->notes->at(i));
-}
-
-AcTrack *AcScore::trackAt(int i)
-{
-    return qobject_cast<AcTrack*>(d->tracks->at(i));
-}
-
-void AcScore::clearBarlines()
-{
-    d->barlines->deleteAll();
-}
-
-void AcScore::clearTunings()
-{
-    d->tunings->deleteAll();
-}
-
 void AcScore::clear()
 {
-    d->tracks->deleteAll();
-    d->notes->deleteAll();
-    d->curves->deleteAll();
-    clearTunings();
-    clearBarlines();
-    d->settings->deleteAll();
+    d->tracks.deleteAll();
+    d->notes.deleteAll();
+    d->curves.deleteAll();
+    d->tunings.deleteAll();
+    d->barlines.deleteAll();
+    d->settings.deleteAll();
     d->init();
 }
 
@@ -297,15 +168,15 @@ QString &AcScore::normalizeClassName(QString &className) const
 MiObject *AcScore::createObject(const QString &className)
 {
     if (className == "Barline")
-        return addBarline();
+        return d->barlines.add();
     if (className == "FCurve")
-        return addCurve();
+        return d->curves.add();
     if (className == "Note")
-        return addNote();
+        return d->notes.add();
     if (className == "Tuning")
-        return addTuning();
+        return d->tunings.add();
     if (className == "Track")
-        return addTrack();
+        return d->tracks.add();
     return 0;
 }
 
@@ -318,61 +189,72 @@ MiObject *AcScore::findObject(const QString &className) const
     return 0;
 }
 
-void AcScore::updateScoreProperty(int propertyIndex)
+void AcScore::updateScoreProperty(const QString &propertyName)
 {
-    QString propName = propertyName(propertyIndex);
-    if ("barlines" == propName) {
-        for (int i = 0;  i < d->barlines->count();  ++i)
-            connect(d->barlines->at(i), SIGNAL(propertyChanged(int)), SLOT(sortBarlines()), Qt::UniqueConnection);
-        blockSignals(true);
+    if ("barlines" == propertyName) {
+        for (int i = 0;  i < d->barlines.count();  ++i)
+            connect(d->barlines.at(i), SIGNAL(propertyChanged(QString)), SLOT(updateBarlineProperty(QString)), Qt::UniqueConnection);
         sortBarlines();
-        blockSignals(false);
     }
-    else if ("tunings" == propName) {
-        for (int i = 0;  i < d->tunings->count();  ++i)
-            connect(d->tunings->at(i), SIGNAL(propertyChanged(int)), SLOT(sortTunings()), Qt::UniqueConnection);
-        blockSignals(true);
+    else if ("tunings" == propertyName) {
+        for (int i = 0;  i < d->tunings.count();  ++i)
+            connect(d->tunings.at(i), SIGNAL(propertyChanged(QString)), SLOT(updateTuningProperty(QString)), Qt::UniqueConnection);
         sortTunings();
-        blockSignals(false);
     }
+}
+
+void AcScore::updateBarlineProperty(const QString &propertyName)
+{
+    if ("location" == propertyName)
+        sortBarlines();
+}
+
+void AcScore::updateTuningProperty(const QString &propertyName)
+{
+    if ("location" == propertyName)
+        sortTunings();
 }
 
 void AcScore::sortBarlines()
 {
-    d->barlines->sort(guidelineLessThan);
+    blockSignals(true);
+    d->barlines.sort(guidelineLessThan);
+    blockSignals(false);
 }
 
 void AcScore::sortTunings()
 {
-    d->tunings->sort(guidelineLessThan);
+    blockSignals(true);
+    d->tunings.sort(guidelineLessThan);
+    blockSignals(false);
 }
 
-MiList *AcScore::settings() const
+MiObjectList *AcScore::settingObjectList() const
 {
-    return d->settings;
+    return &(d->settings);
 }
 
-MiList *AcScore::barlines() const
+MiObjectList *AcScore::barlineObjectList() const
 {
-    return d->barlines;
+    return d->barlines.objects();
 }
 
-MiList *AcScore::tunings() const
+MiObjectList *AcScore::tuningObjectList() const
 {
-    return d->tunings;
+    return d->tunings.objects();
 }
 
-MiList *AcScore::curves() const
+MiObjectList *AcScore::curveObjectList() const
 {
-    return d->curves;
+    return d->curves.objects();
 }
 
-MiList *AcScore::notes() const
+MiObjectList *AcScore::noteObjectList() const
 {
-    return d->notes;
+    return d->notes.objects();
 }
 
-MiList *AcScore::tracks() const
+MiObjectList *AcScore::trackObjectList() const
 {
-    return d->tracks;
+    return d->tracks.objects();
 }

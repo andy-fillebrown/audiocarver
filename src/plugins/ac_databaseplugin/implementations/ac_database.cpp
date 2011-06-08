@@ -24,8 +24,6 @@
 #include <ac_score.h>
 #include <ac_track.h>
 
-#include <mi_list.h>
-
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -45,30 +43,30 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        AcGuideline *tuning = score->addTuning();
+        AcGuideline *tuning = score->tunings().add();
         tuning->setLocation(60.0f);
         tuning->setColor(QColor(Qt::red));
-        tuning = score->addTuning();
+        tuning = score->tunings().add();
         tuning->setLocation(48.0f);
-        tuning = score->addTuning();
+        tuning = score->tunings().add();
         tuning->setLocation(72.0f);
 
-        AcGuideline *barline = score->addBarline();
+        AcGuideline *barline = score->barlines().add();
         barline->setLocation(0.0f);
         barline->setColor(QColor(Qt::green));
         barline->setText("1");
         for (int i = 1;  i < 32;  ++i) {
-            barline = score->addBarline();
+            barline = score->barlines().add();
             barline->setLocation(4.0f * i);
         }
 
-        score->addTrack();
+        score->tracks().add();
 
-        AcFCurve *pitchCurve = score->addCurve();
+        AcFCurve *pitchCurve = score->curves().add();
         pitchCurve->appendPoint(AcFPoint(0.000001, 0));
         pitchCurve->appendPoint(AcFPoint(1, 1));
 
-        AcNote *note = score->addNote();
+        AcNote *note = score->notes().add();
         note->setPitchCurve(pitchCurve);
     }
 };

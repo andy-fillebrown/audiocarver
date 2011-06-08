@@ -17,7 +17,7 @@
 
 #include "mi_object.h"
 
-#include <mi_list.h>
+#include <mi_objectlist.h>
 #include <mi_root.h>
 
 #include <QChildEvent>
@@ -139,12 +139,12 @@ bool MiObject::read(QXmlStreamReader &in)
             name = "objectName";
         const int i = propertyIndex(name);
         QString type = propertyType(i);
-        if (type == "MiList*")
+        if (type == "MiObjectList*")
             continue;
         if (type.endsWith("*")) {
             MiObject *object = root->findChild<MiObject*>(att.value().toString());
-            Q_ASSERT(object);
-            setPropertyValue(i, QVariant::fromValue(object));
+            if (object)
+                setPropertyValue(i, QVariant::fromValue(object));
         }
         else
             setPropertyValue(i, root->stringToVariant(att.value(), type));
@@ -156,7 +156,7 @@ bool MiObject::read(QXmlStreamReader &in)
         const int i = propertyIndex(name);
         QString type = propertyType(i);
         if (type.endsWith("*")) {
-            if (type == "MiList*")
+            if (type == "MiObjectList*")
                 continue;
             if (propertyIsReadOnly(i)) {
                 MiObject *object = propertyValue(i).value<MiObject*>();
@@ -170,9 +170,9 @@ bool MiObject::read(QXmlStreamReader &in)
     const int count = propertyCount();
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
-        if (type != "MiList*")
+        if (type != "MiObjectList*")
             continue;
-        MiList *list = propertyValue(i).value<MiList*>();
+        MiObjectList *list = propertyValue(i).value<MiObjectList*>();
         Q_ASSERT(list);
         if (!list)
             return false;
@@ -218,14 +218,17 @@ void MiObject::write(QXmlStreamWriter &out) const
     const int count = this->propertyCount();
     for (int i = 0;  i < count;  ++i) {
         QString type = propertyType(i);
-        if (type == "MiList*")
+        if (type == "MiObjectList*")
             continue;
         QVariant value = propertyValue(i);
         if (type.endsWith("*")) {
             MiObject *object = value.value<MiObject*>();
             if (propertyIsReadOnly(i))
                 continue;
-            value = object->id();
+            if (object)
+                value = object->id();
+            else
+                value = "";
         }
         QString name = propertyName(i);
         if (name == "objectName") {
@@ -240,7 +243,7 @@ void MiObject::write(QXmlStreamWriter &out) const
     for (int i = 0;  i < count;  ++i) {
         QString type = propertyType(i);
         if (type.endsWith("*")) {
-            if (type == "MiList*")
+            if (type == "MiObjectList*")
                 continue;
             if (propertyIsReadOnly(i)) {
                 QVariant value = propertyValue(i);
@@ -253,10 +256,10 @@ void MiObject::write(QXmlStreamWriter &out) const
     // Write lists.
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
-        if (type != "MiList*")
+        if (type != "MiObjectList*")
             continue;
         QVariant value = propertyValue(i);
-        MiList *list = value.value<MiList*>();
+        MiObjectList *list = value.value<MiObjectList*>();
         QString name = propertyName(i);
         out.writeStartElement(name);
         for (int i = 0;  i < list->count();  ++i)

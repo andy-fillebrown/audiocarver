@@ -61,7 +61,7 @@ void AcGuideline::setLocation(qreal location)
     if (d->location == location)
         return;
     d->location = location;
-    emit propertyChanged(propertyIndex("location"));
+    emit propertyChanged("location");
 }
 
 const QColor &AcGuideline::color() const
@@ -74,7 +74,7 @@ void AcGuideline::setColor(const QColor &color)
     if (d->color == color)
         return;
     d->color = color;
-    emit propertyChanged(propertyIndex("color"));
+    emit propertyChanged("color");
 }
 
 const QString &AcGuideline::text() const
@@ -87,7 +87,7 @@ void AcGuideline::setText(const QString &text)
     if (d->text == text)
         return;
     d->text = text;
-    emit propertyChanged(propertyIndex("text"));
+    emit propertyChanged("text");
 }
 
 int AcGuideline::priority() const
@@ -102,5 +102,5 @@ void AcGuideline::setPriority(int priority)
     if (d->priority == priority)
         return;
     d->priority = priority;
-    emit propertyChanged(propertyIndex("priority"));
+    emit propertyChanged("priority");
 }

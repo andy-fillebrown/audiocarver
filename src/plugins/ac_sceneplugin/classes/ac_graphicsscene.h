@@ -41,10 +41,8 @@ public:
 
     AcScore *score() const;
 
+protected slots:
     virtual void updateScoreProperty(const QString &propertyName);
-
-private slots:
-    void updateScoreProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcGraphicsScene)

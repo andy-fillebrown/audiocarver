@@ -36,11 +36,8 @@ public:
     AcGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcGraphicsView();
 
-protected:
+protected slots:
     virtual void updateViewSettings(const QString &propertyName);
-
-private slots:
-    void updateViewSettings(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcGraphicsView)

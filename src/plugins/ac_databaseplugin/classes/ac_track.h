@@ -31,7 +31,7 @@ class AcTrackData;
 class AC_DATABASE_EXPORT AcTrack : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(MiList* notes READ notes)
+    Q_PROPERTY(MiObjectList* notes READ notes)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
@@ -39,7 +39,7 @@ public:
     AcTrack(QObject *parent = 0);
     virtual ~AcTrack();
 
-    MiList *notes() const;
+    MiObjectList *notes() const;
 
     bool isVisible() const;
     void setVisibility(bool visible);

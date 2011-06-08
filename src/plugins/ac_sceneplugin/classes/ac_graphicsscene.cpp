@@ -40,7 +40,7 @@ AcGraphicsScene::AcGraphicsScene(QObject *parent)
     :   MiGraphicsScene(parent)
     ,   d(new AcGraphicsSceneData)
 {
-    connect(d->score, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
 AcGraphicsScene::~AcGraphicsScene()
@@ -56,10 +56,4 @@ AcScore *AcGraphicsScene::score() const
 void AcGraphicsScene::updateScoreProperty(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
-}
-
-void AcGraphicsScene::updateScoreProperty(int propertyIndex)
-{
-    const QString propertyName = d->score->propertyName(propertyIndex);
-    updateScoreProperty(propertyName);
 }

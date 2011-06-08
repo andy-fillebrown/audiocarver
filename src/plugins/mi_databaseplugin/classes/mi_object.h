@@ -24,7 +24,7 @@
 
 #include <QVariant>
 
-class MiList;
+class MiObjectList;
 class MiRoot;
 class QXmlStreamReader;
 class QXmlStreamWriter;
@@ -72,11 +72,11 @@ protected:
 signals:
     void erased();
     void unerased();
-    void propertyChanged(int index);
+    void propertyChanged(const QString &name);
 
 private:
     Q_DISABLE_COPY(MiObject)
-    friend class MiList;
+    friend class MiObjectList;
 };
 
 Q_DECLARE_METATYPE(MiObject*);

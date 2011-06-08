@@ -12,6 +12,7 @@ HEADERS += \
     classes/mi_link.h \
     classes/mi_list.h \
     classes/mi_object.h \
+    classes/mi_objectlist.h \
     classes/mi_root.h \
     \
     mi_database_global.h \
@@ -23,6 +24,7 @@ SOURCES += \
     classes/mi_link.cpp \
     classes/mi_list.cpp \
     classes/mi_object.cpp \
+    classes/mi_objectlist.cpp \
     classes/mi_root.cpp \
     \
     mi_databaseplugin.cpp \

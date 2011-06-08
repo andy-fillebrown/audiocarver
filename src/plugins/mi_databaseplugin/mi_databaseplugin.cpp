@@ -17,8 +17,8 @@
 
 #include "mi_databaseplugin.h"
 
-#include <mi_list.h>
 #include <mi_object.h>
+#include <mi_objectlist.h>
 
 #include <pluginmanager.h>
 
@@ -31,7 +31,7 @@ bool MiDatabasePlugin::initialize(const QStringList &arguments, QString *errorMe
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
     qRegisterMetaType<MiObject*>();
-    qRegisterMetaType<MiList*>();
+    qRegisterMetaType<MiObjectList*>();
     return true;
 }
 

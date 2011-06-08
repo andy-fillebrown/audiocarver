@@ -59,7 +59,7 @@ void AcViewSettings::setPositionX(qreal positionX)
     if (d->posX == positionX)
         return;
     d->posX = positionX;
-    emit propertyChanged(propertyIndex("positionX"));
+    emit propertyChanged("positionX");
 }
 
 qreal AcViewSettings::positionY() const
@@ -72,7 +72,7 @@ void AcViewSettings::setPositionY(qreal positionY)
     if (d->posY == positionY)
         return;
     d->posY = positionY;
-    emit propertyChanged(propertyIndex("positionY"));
+    emit propertyChanged("positionY");
 }
 
 qreal AcViewSettings::scaleX() const
@@ -86,7 +86,7 @@ void AcViewSettings::setScaleX(qreal scaleX)
     if (d->scaleX == scaleX)
         return;
     d->scaleX = scaleX;
-    emit propertyChanged(propertyIndex("scaleX"));
+    emit propertyChanged("scaleX");
 }
 
 qreal AcViewSettings::scaleY() const
@@ -100,5 +100,5 @@ void AcViewSettings::setScaleY(qreal scaleY)
     if (d->scaleY == scaleY)
         return;
     d->scaleY = scaleY;
-    emit propertyChanged(propertyIndex("scaleY"));
+    emit propertyChanged("scaleY");
 }

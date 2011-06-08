@@ -22,6 +22,8 @@
 
 #include <ac_database_global.h>
 
+#include <mi_list.h>
+
 class AcFCurve;
 class AcGuideline;
 class AcGridSettings;
@@ -39,12 +41,12 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
 {
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
-    Q_PROPERTY(MiList* settings READ settings)
-    Q_PROPERTY(MiList* barlines READ barlines)
-    Q_PROPERTY(MiList* tunings READ tunings)
-    Q_PROPERTY(MiList* curves READ curves)
-    Q_PROPERTY(MiList* notes READ notes)
-    Q_PROPERTY(MiList* tracks READ tracks)
+    Q_PROPERTY(MiObjectList* settings READ settingObjectList)
+    Q_PROPERTY(MiObjectList* barlines READ barlineObjectList)
+    Q_PROPERTY(MiObjectList* tunings READ tuningObjectList)
+    Q_PROPERTY(MiObjectList* curves READ curveObjectList)
+    Q_PROPERTY(MiObjectList* notes READ noteObjectList)
+    Q_PROPERTY(MiObjectList* tracks READ trackObjectList)
 
 public:
     AcScore(QObject *parent = 0);
@@ -55,34 +57,14 @@ public:
     qreal length() const;
     void setLength(qreal length);
 
-    int barlineCount() const;
-    int tuningCount() const;
-    int curveCount() const;
-    int noteCount() const;
-    int trackCount() const;
-
-    AcGuideline *addBarline(AcGuideline *barline = 0);
-    AcGuideline *addTuning(AcGuideline *tuning = 0);
-    AcFCurve *addCurve(AcFCurve *curve = 0);
-    AcNote *addNote(AcNote *note = 0);
-    AcTrack *addTrack(AcTrack *track = 0);
-
-    void addBarlines(const QList<MiObject*> &barlines);
-    void addTunings(const QList<MiObject*> &tunings);
-    void addCurves(const QList<MiObject*> &curves);
-    void addNotes(const QList<MiObject*> &notes);
-    void addTracks(const QList<MiObject*> &tracks);
+    MiList<AcGuideline> &barlines() const;
+    MiList<AcGuideline> &tunings() const;
+    MiList<AcFCurve> &curves() const;
+    MiList<AcNote> &notes() const;
+    MiList<AcTrack> &tracks() const;
 
     AcGridSettings *gridSettings() const;
     AcViewSettings *viewSettings() const;
-    AcGuideline *barlineAt(int i);
-    AcGuideline *tuningAt(int i);
-    AcFCurve *curveAt(int i);
-    AcNote *noteAt(int i);
-    AcTrack *trackAt(int i);
-
-    void clearBarlines();
-    void clearTunings();
 
     virtual void clear();
 
@@ -91,7 +73,9 @@ public:
     virtual MiObject *findObject(const QString &className) const;
 
 private slots:
-    void updateScoreProperty(int propertyIndex);
+    void updateScoreProperty(const QString &propertyName);
+    void updateBarlineProperty(const QString &propertyName);
+    void updateTuningProperty(const QString &propertyName);
     void sortBarlines();
     void sortTunings();
 
@@ -99,12 +83,12 @@ private:
     Q_DISABLE_COPY(AcScore)
     Private::AcScoreData *d;
 
-    MiList *settings() const;
-    MiList *barlines() const;
-    MiList *tunings() const;
-    MiList *curves() const;
-    MiList *notes() const;
-    MiList *tracks() const;
+    MiObjectList *settingObjectList() const;
+    MiObjectList *barlineObjectList() const;
+    MiObjectList *tuningObjectList() const;
+    MiObjectList *curveObjectList() const;
+    MiObjectList *noteObjectList() const;
+    MiObjectList *trackObjectList() const;
 };
 
 #endif // AC_SCORE_H

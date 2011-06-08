@@ -20,8 +20,6 @@
 #include <ac_guideline.h>
 #include <ac_score.h>
 
-#include <mi_list.h>
-
 #include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QPainterPath>
@@ -72,7 +70,7 @@ public:
 
     void removeUnusedBarlineItems()
     {
-        while (q->score()->barlineCount() < barlineItems.count())
+        while (q->score()->barlines().count() < barlineItems.count())
             barlineItems.removeLast();
     }
 
@@ -90,7 +88,7 @@ public:
 
     void removeUnusedTuningItems()
     {
-        while (q->score()->tuningCount() < tuningItems.count())
+        while (q->score()->tunings().count() < tuningItems.count())
             tuningItems.removeLast();
     }
 };
@@ -122,9 +120,9 @@ void AcScoreScene::updateScoreProperty(const QString &propertyName)
 
 void AcScoreScene::updateBarlines()
 {
-    for (int i = 0;  i < score()->barlineCount();  ++i) {
-        AcGuideline *barline = score()->barlineAt(i);
-        connect(barline, SIGNAL(propertyChanged(int)), SLOT(updateBarlineProperties()), Qt::UniqueConnection);
+    for (int i = 0;  i < score()->barlines().count();  ++i) {
+        AcGuideline *barline = score()->barlines().at(i);
+        connect(barline, SIGNAL(propertyChanged(QString)), SLOT(updateBarlineProperties()), Qt::UniqueConnection);
         d->updateBarlineItem(i, barline);
     }
     d->removeUnusedBarlineItems();
@@ -132,15 +130,15 @@ void AcScoreScene::updateBarlines()
 
 void AcScoreScene::updateBarlineProperties()
 {
-    for (int i = 0;  i < score()->barlineCount();  ++i)
-        d->updateBarlineItem(i, score()->barlineAt(i));
+    for (int i = 0;  i < score()->barlines().count();  ++i)
+        d->updateBarlineItem(i, score()->barlines().at(i));
 }
 
 void AcScoreScene::updateTunings()
 {
-    for (int i = 0;  i < score()->tuningCount();  ++i) {
-        AcGuideline *tuning = score()->tuningAt(i);
-        connect(tuning, SIGNAL(propertyChanged(int)), SLOT(updateTuningProperties()), Qt::UniqueConnection);
+    for (int i = 0;  i < score()->tunings().count();  ++i) {
+        AcGuideline *tuning = score()->tunings().at(i);
+        connect(tuning, SIGNAL(propertyChanged(QString)), SLOT(updateTuningProperties()), Qt::UniqueConnection);
         d->updateTuningItem(i, tuning);
     }
     d->removeUnusedTuningItems();
@@ -148,6 +146,6 @@ void AcScoreScene::updateTunings()
 
 void AcScoreScene::updateTuningProperties()
 {
-    for (int i = 0;  i < score()->tuningCount();  ++i)
-        d->updateTuningItem(i, score()->tuningAt(i));
+    for (int i = 0;  i < score()->tunings().count();  ++i)
+        d->updateTuningItem(i, score()->tunings().at(i));
 }

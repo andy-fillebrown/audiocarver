@@ -19,7 +19,8 @@
 
 #include <ac_note.h>
 
-#include <mi_list.h>
+#include <mi_objectlist.h>
+#include <mi_root.h>
 
 using namespace Private;
 
@@ -28,12 +29,12 @@ namespace Private {
 class AcTrackData
 {
 public:
-    MiList *notes;
+    MiObjectList *notes;
     bool visible;
     qreal volume;
 
     AcTrackData(AcTrack *q)
-        :   notes(new MiList(q, q->propertyIndex("notes")))
+        :   notes(new MiObjectList("notes", q, q->root()))
         ,   visible(true)
         ,   volume(0.999999)
     {}
@@ -56,7 +57,7 @@ AcTrack::~AcTrack()
     delete d;
 }
 
-MiList *AcTrack::notes() const
+MiObjectList *AcTrack::notes() const
 {
     return d->notes;
 }
@@ -71,7 +72,7 @@ void AcTrack::setVisibility(bool visible)
     if (visible && isVisible())
         return;
     d->visible = visible;
-    emit propertyChanged(propertyIndex("visible"));
+    emit propertyChanged("visible");
 }
 
 qreal AcTrack::volume() const
@@ -85,7 +86,7 @@ void AcTrack::setVolume(qreal volume)
     if (volume == d->volume)
         return;
     d->volume = volume;
-    emit propertyChanged(propertyIndex("volume"));
+    emit propertyChanged("volume");
 }
 
 MiObject *AcTrack::createObject(const QString &className)
