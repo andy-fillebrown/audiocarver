@@ -26,14 +26,24 @@ namespace Private {
 class AcNoteData
 {
 public:
-    int pointCount;
+    qreal startTime;
+    qreal duration;
+    qreal pitchScale;
+    qreal volumeScale;
     AcFCurve *pitchCurve;
     AcFCurve *volumeCurve;
+    int pitchPointCount;
+    int volumePointCount;
 
     AcNoteData()
-        :   pointCount(64)
+        :   startTime(0.0f)
+        ,   duration(0.0f)
+        ,   pitchScale(1.0f)
+        ,   volumeScale(1.0f)
         ,   pitchCurve(0)
         ,   volumeCurve(0)
+        ,   pitchPointCount(64)
+        ,   volumePointCount(64)
     {}
 };
 
@@ -49,41 +59,130 @@ AcNote::~AcNote()
     delete d;
 }
 
-int AcNote::pointCount() const
+qreal AcNote::startTime() const
 {
-    return d->pointCount;
+    return d->startTime;
 }
 
-void AcNote::setPointCount(int count)
+void AcNote::setStartTime(qreal time)
 {
-    if (pointCount() == count)
+    if (time < 0.0f)
+        time = 0.0f;
+    if (d->startTime == time)
         return;
-    d->pointCount = count;
-    emit propertyChanged(propertyIndex("pointCount"));
+    d->startTime = time;
+    emit propertyChanged(propertyIndex("startTime"));
 }
 
-MiObject *AcNote::pitchCurve() const
+qreal AcNote::duration() const
+{
+    return d->duration;
+}
+
+void AcNote::setDuration(qreal duration)
+{
+    if (duration < 0.0f)
+        duration = 0.0f;
+    if (d->duration == duration)
+        return;
+    d->duration = duration;
+    emit propertyChanged(propertyIndex("duration"));
+}
+
+qreal AcNote::pitchScale() const
+{
+    return d->pitchScale;
+}
+
+void AcNote::setPitchScale(qreal scale)
+{
+    if (d->pitchScale == scale)
+        return;
+    d->pitchScale = scale;
+    emit propertyChanged(propertyIndex("pitchScale"));
+}
+
+qreal AcNote::volumeScale() const
+{
+    return d->volumeScale;
+}
+
+void AcNote::setVolumeScale(qreal scale)
+{
+    if (d->volumeScale == scale)
+        return;
+    d->volumeScale = scale;
+    emit propertyChanged(propertyIndex("volumeScale"));
+}
+
+AcFCurve *AcNote::pitchCurve() const
 {
     return d->pitchCurve;
 }
 
-void AcNote::setPitchCurve(MiObject *curve)
+void AcNote::setPitchCurve(AcFCurve *curve)
 {
-    if (pitchCurve() == curve)
+    if (d->pitchCurve == curve)
         return;
-    d->pitchCurve = qobject_cast<AcFCurve*>(curve);
+    d->pitchCurve = curve;
     emit propertyChanged(propertyIndex("pitchCurve"));
 }
 
-MiObject *AcNote::volumeCurve() const
+AcFCurve *AcNote::volumeCurve() const
 {
     return d->volumeCurve;
 }
 
-void AcNote::setVolumeCurve(MiObject *curve)
+void AcNote::setVolumeCurve(AcFCurve *curve)
 {
-    if (volumeCurve() == curve)
+    if (d->volumeCurve == curve)
         return;
-    d->volumeCurve = qobject_cast<AcFCurve*>(curve);
+    d->volumeCurve = curve;
     emit propertyChanged(propertyIndex("volumeCurve"));
+}
+
+int AcNote::pitchPointCount() const
+{
+    return d->pitchPointCount;
+}
+
+void AcNote::setPitchPointCount(int count)
+{
+    if (d->pitchPointCount == count)
+        return;
+    d->pitchPointCount = count;
+    emit propertyChanged(propertyIndex("pitchPointCount"));
+}
+
+int AcNote::volumePointCount() const
+{
+    return d->volumePointCount;
+}
+
+void AcNote::setVolumePointCount(int count)
+{
+    if (d->volumePointCount == count)
+        return;
+    d->volumePointCount = count;
+    emit propertyChanged(propertyIndex("volumePointCount"));
+}
+
+MiObject *AcNote::pitchCurveObject() const
+{
+    return d->pitchCurve;
+}
+
+void AcNote::setPitchCurveObject(MiObject *curve)
+{
+    setPitchCurve(qobject_cast<AcFCurve*>(curve));
+}
+
+MiObject *AcNote::volumeCurveObject() const
+{
+    return d->volumeCurve;
+}
+
+void AcNote::setVolumeCurveObject(MiObject *curve)
+{
+    setVolumeCurve(qobject_cast<AcFCurve*>(curve));
 }
