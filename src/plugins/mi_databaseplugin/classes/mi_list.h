@@ -39,6 +39,7 @@ public:
     MiObject *last() const { return list.last(); }
     int indexOf(MiObject *object, int from = 0) const { return list.indexOf(object, from); }
     void append(MiObject *object) { list.append(object);  emitChanged(); }
+    void append(const QList<MiObject*> &objects) { list.append(objects);  emitChanged(); }
     void insert(int i, MiObject *object) { list.insert(i, object);  emitChanged(); }
     void remove(int i) { list.removeAt(i);  emitChanged(); }
     void clear() { list.clear();  emitChanged(); }

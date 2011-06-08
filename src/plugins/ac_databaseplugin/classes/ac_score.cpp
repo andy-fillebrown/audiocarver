@@ -145,39 +145,89 @@ void AcScore::setLength(qreal length)
     emit propertyChanged(propertyIndex("length"));
 }
 
-AcGuideline *AcScore::addBarline()
+AcGuideline *AcScore::addBarline(AcGuideline *barline)
 {
-    AcGuideline *barline = new AcGuideline(this);
+    if (barline)
+        barline->setParent(this);
+    else
+        barline = new AcGuideline(this);
     d->barlines->append(barline);
     return barline;
 }
 
-AcGuideline *AcScore::addTuning()
+AcGuideline *AcScore::addTuning(AcGuideline *tuning)
 {
-    AcGuideline *tuning = new AcGuideline(this);
+    if (tuning)
+        tuning->setParent(this);
+    else
+        tuning = new AcGuideline(this);
     d->tunings->append(tuning);
     return tuning;
 }
 
-AcFCurve *AcScore::addCurve()
+AcFCurve *AcScore::addCurve(AcFCurve *curve)
 {
-    AcFCurve *curve = new AcFCurve(this);
+    if (curve)
+        curve->setParent(this);
+    else
+        curve = new AcFCurve(this);
     d->curves->append(curve);
     return curve;
 }
 
-AcNote *AcScore::addNote()
+AcNote *AcScore::addNote(AcNote *note)
 {
-    AcNote *note = new AcNote(this);
+    if (note)
+        note->setParent(note);
+    else
+        note = new AcNote(this);
     d->notes->append(note);
     return note;
 }
 
-AcTrack *AcScore::addTrack()
+AcTrack *AcScore::addTrack(AcTrack *track)
 {
-    AcTrack *track = new AcTrack(this);
+    if (track)
+        track->setParent(this);
+    else
+        track = new AcTrack(this);
     d->tracks->append(track);
     return track;
+}
+
+void AcScore::addBarlines(const QList<MiObject*> &barlines)
+{
+    foreach (MiObject *object, barlines)
+        object->setParent(this);
+    d->barlines->append(barlines);
+}
+
+void AcScore::addTunings(const QList<MiObject*> &tunings)
+{
+    foreach (MiObject *object, tunings)
+        object->setParent(this);
+    d->tunings->append(tunings);
+}
+
+void AcScore::addCurves(const QList<MiObject*> &curves)
+{
+    foreach (MiObject *object, curves)
+        object->setParent(this);
+    d->curves->append(curves);
+}
+
+void AcScore::addNotes(const QList<MiObject*> &notes)
+{
+    foreach (MiObject *object, notes)
+        object->setParent(this);
+    d->notes->append(notes);
+}
+
+void AcScore::addTracks(const QList<MiObject*> &tracks)
+{
+    foreach (MiObject *object, tracks)
+        object->setParent(this);
+    d->tracks->append(tracks);
 }
 
 AcGridSettings *AcScore::gridSettings() const
@@ -215,15 +265,24 @@ AcTrack *AcScore::trackAt(int i)
     return qobject_cast<AcTrack*>(d->tracks->at(i));
 }
 
+void AcScore::clearBarlines()
+{
+    d->barlines->deleteAll();
+}
+
+void AcScore::clearTunings()
+{
+    d->tunings->deleteAll();
+}
+
 void AcScore::clear()
 {
     d->tracks->deleteAll();
     d->notes->deleteAll();
     d->curves->deleteAll();
-    d->tunings->deleteAll();
-    d->barlines->deleteAll();
+    clearTunings();
+    clearBarlines();
     d->settings->deleteAll();
-
     d->init();
 }
 

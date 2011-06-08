@@ -62,11 +62,17 @@ public:
     qreal length() const;
     void setLength(qreal length);
 
-    AcGuideline *addBarline();
-    AcGuideline *addTuning();
-    AcFCurve *addCurve();
-    AcNote *addNote();
-    AcTrack *addTrack();
+    AcGuideline *addBarline(AcGuideline *barline = 0);
+    AcGuideline *addTuning(AcGuideline *tuning = 0);
+    AcFCurve *addCurve(AcFCurve *curve = 0);
+    AcNote *addNote(AcNote *note = 0);
+    AcTrack *addTrack(AcTrack *track = 0);
+
+    void addBarlines(const QList<MiObject*> &barlines);
+    void addTunings(const QList<MiObject*> &tunings);
+    void addCurves(const QList<MiObject*> &curves);
+    void addNotes(const QList<MiObject*> &notes);
+    void addTracks(const QList<MiObject*> &tracks);
 
     AcGridSettings *gridSettings() const;
     AcViewSettings *viewSettings() const;
@@ -75,6 +81,9 @@ public:
     AcFCurve *curveAt(int i);
     AcNote *noteAt(int i);
     AcTrack *trackAt(int i);
+
+    void clearBarlines();
+    void clearTunings();
 
     virtual void clear();
 
