@@ -143,12 +143,12 @@ AcViewSettings *AcScore::viewSettings() const
 
 void AcScore::clear()
 {
-    d->tracks.deleteAll();
-    d->notes.deleteAll();
-    d->curves.deleteAll();
-    d->tunings.deleteAll();
-    d->barlines.deleteAll();
-    d->settings.deleteAll();
+    d->tracks.clear();
+    d->notes.clear();
+    d->curves.clear();
+    d->tunings.clear();
+    d->barlines.clear();
+    d->settings.clear();
     d->init();
 }
 

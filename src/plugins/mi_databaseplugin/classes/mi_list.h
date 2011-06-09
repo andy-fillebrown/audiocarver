@@ -43,9 +43,8 @@ public:
     void append(T *object) { list->append(object); }
     void append(const QList<T*> &objects) { QList<MiObject*> objs;  foreach (MiObject *object, objects) objs.append(object);  list->append(objs); }
     void insert(int i, T *object) { list->insert(i, object); }
-    void remove(int i) { list->remove(i); }
-    void clear() { list->clear(); }
-    void deleteAll() { list->deleteAll(); }
+    void remove(int i) { delete list->at(i);  list->remove(i); }
+    void clear() { list->deleteAll();  list->clear(); }
 
     void sort() { list->sort(lessThan); }
 
