@@ -53,10 +53,13 @@ public:
 
     void updateBarlineItemText()
     {
+        MiList<AcBarline> &bars = q->score()->barlines();
         int maxPriority = 0;
-        for (int i = 0;  i < q->score()->barlines().count();  ++i)
-            if (maxPriority < q->score()->barlines().at(i)->priority())
-                maxPriority = q->score()->barlines().at(i)->priority();
+        for (int i = 0;  i < bars.count();  ++i) {
+            const int priority = bars.at(i)->priority();
+            if (maxPriority < priority)
+                maxPriority = priority;
+        }
         int curPriority = maxPriority;
         bool overlaps = true;
         while (overlaps) {
@@ -65,7 +68,7 @@ public:
             qreal prevRight = prevItem->pos().x() + (prevItem->textWidth() / 2.0f);
             for (int i = 1;  i < barlineItems.count();  ++i) {
                 QGraphicsTextItem *curItem = barlineItems.at(i);
-                AcBarline *curBar = q->score()->barlines().at(i);
+                AcBarline *curBar = bars.at(i);
                 if (curBar->priority() <= curPriority) {
                     qreal curLeft = curItem->pos().x() - (curItem->textWidth() / 2.0f);
                     if (curLeft - 16 < prevRight) {
@@ -80,7 +83,7 @@ public:
             }
         }
         for (int i = 0;  i < barlineItems.count();  ++i) {
-            AcBarline *bar = q->score()->barlines().at(i);
+            AcBarline *bar = bars.at(i);
             if (bar->priority() <= curPriority)
                 barlineItems.at(i)->setPlainText(bar->text());
             else
