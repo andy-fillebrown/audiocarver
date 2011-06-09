@@ -29,6 +29,7 @@ class AcNote;
 class AcTrack;
 class AcTuning;
 class AcViewSettings;
+class MiFont;
 template <typename T> class MiList;
 
 namespace Private {
@@ -62,6 +63,7 @@ public:
     MiList<AcNote> &notes() const;
     MiList<AcTrack> &tracks() const;
 
+    MiFont *fontSettings() const;
     AcGridSettings *gridSettings() const;
     AcViewSettings *viewSettings() const;
 

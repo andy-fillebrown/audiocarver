@@ -23,6 +23,7 @@
 #include <ac_track.h>
 #include <ac_tuning.h>
 #include <ac_viewsettings.h>
+#include <mi_font.h>
 #include <mi_list.h>
 #include <mi_scopedsignalblocker.h>
 
@@ -43,6 +44,7 @@ public:
     MiList<AcNote> notes;
     MiList<AcTrack> tracks;
 
+    MiFont *fontSettings;
     AcGridSettings *gridSettings;
     AcViewSettings *viewSettings;
 
@@ -55,14 +57,17 @@ public:
         ,   curves("curves", q)
         ,   notes("notes", q)
         ,   tracks("tracks", q)
+        ,   fontSettings(0)
         ,   gridSettings(0)
         ,   viewSettings(0)
     {}
 
     void init()
     {
+        fontSettings = new MiFont(q);
         gridSettings = new AcGridSettings(q);
         viewSettings = new AcViewSettings(q);
+        settings.append(fontSettings);
         settings.append(gridSettings);
         settings.append(viewSettings);
     }
@@ -131,6 +136,11 @@ MiList<AcTrack> &AcScore::tracks() const
     return d->tracks;
 }
 
+MiFont *AcScore::fontSettings() const
+{
+    return d->fontSettings;
+}
+
 AcGridSettings *AcScore::gridSettings() const
 {
     return d->gridSettings;
@@ -175,6 +185,8 @@ MiObject *AcScore::createObject(const QString &className)
 
 MiObject *AcScore::findObject(const QString &className) const
 {
+    if (className == "Font")
+        return d->fontSettings;
     if (className == "GridSettings")
         return d->gridSettings;
     if (className == "ViewSettings")
