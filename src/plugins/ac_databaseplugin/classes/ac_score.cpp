@@ -26,6 +26,7 @@
 #include <ac_viewsettings.h>
 
 #include <mi_list.h>
+#include <mi_scopedsignalblocker.h>
 
 using namespace Private;
 
@@ -211,16 +212,14 @@ void AcScore::updateTuningProperty(const QString &propertyName)
 
 void AcScore::sortBarlines()
 {
-    blockSignals(true);
+    MiScopedSignalBlocker blockSignals(this);
     d->barlines.sort();
-    blockSignals(false);
 }
 
 void AcScore::sortTunings()
 {
-    blockSignals(true);
+    MiScopedSignalBlocker blockSignals(this);
     d->tunings.sort();
-    blockSignals(false);
 }
 
 MiObjectList *AcScore::settingObjectList() const
