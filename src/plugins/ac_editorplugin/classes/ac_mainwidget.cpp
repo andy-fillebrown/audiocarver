@@ -97,14 +97,13 @@ public:
         topLeft->setFrameShape(QFrame::NoFrame);
         bottomLeft->setFixedSize(sideWidth, volumeHeight);
         bottomLeft->setFrameShape(QFrame::NoFrame);
-        scoreView->updateCenter();
-        pitchView->update();
-        timeView->update();
+        updateViews();
     }
 
     void updateViews()
     {
         scoreView->updateCenter();
+        timeView->update();
         pitchView->update();
     }
 };
