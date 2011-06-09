@@ -72,8 +72,10 @@ public:
 
     void removeUnusedBarlineItems()
     {
-        while (q->score()->barlines().count() < barlineItems.count())
+        while (q->score()->barlines().count() < barlineItems.count()) {
+            delete barlineItems.last();
             barlineItems.removeLast();
+        }
     }
 
     void updateTuningItem(int index, AcGuideline *tuning)
@@ -90,8 +92,10 @@ public:
 
     void removeUnusedTuningItems()
     {
-        while (q->score()->tunings().count() < tuningItems.count())
+        while (q->score()->tunings().count() < tuningItems.count()) {
+            delete tuningItems.last();
             tuningItems.removeLast();
+        }
     }
 };
 
