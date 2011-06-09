@@ -37,7 +37,6 @@ public:
 
     const QString &linkId() const;
     void setLinkId(const QString &id);
-
     MiObject *linkedObject() const;
     void setLinkedObject(MiObject *object);
 

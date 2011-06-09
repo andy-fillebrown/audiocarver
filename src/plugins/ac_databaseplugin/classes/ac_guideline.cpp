@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_guideline.h"
-
 #include <mi_list.h>
 
 template <> bool MiList<AcGuideline>::lessThan(MiObject *a, MiObject *b)

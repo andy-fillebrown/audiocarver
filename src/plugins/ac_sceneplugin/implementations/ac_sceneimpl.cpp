@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_sceneimpl.h"
-
 #include <ac_graphicsscene.h>
 
 using namespace Private;

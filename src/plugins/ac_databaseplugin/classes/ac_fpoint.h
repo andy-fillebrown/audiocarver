@@ -27,10 +27,8 @@ public:
 
     qreal x() const { return xp; }
     void setX(qreal x) { xp = x; }
-
     qreal y() const { return yp; }
     void setY(qreal y) { yp = y; }
-
     bool isCurved() const { return curvedp; }
     void setCurved(bool curve) { curvedp = curve; }
 

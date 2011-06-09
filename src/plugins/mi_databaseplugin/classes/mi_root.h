@@ -29,12 +29,9 @@ public:
     ~MiRoot() {}
 
     virtual bool isRoot() const { return true; }
-
     virtual void clear();
-
     virtual QString &normalizeClassName(QString &className) const;
     virtual QString getUniqueId(MiObject *object, const QString &idHint = QString()) const;
-
     virtual QString variantToString(const QVariant &variant) const;
     virtual QVariant stringToVariant(const QString &string, const QString &type) const;
     QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const { return stringToVariant(stringRef.toString(), type); }

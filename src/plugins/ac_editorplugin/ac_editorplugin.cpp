@@ -16,14 +16,11 @@
 **************************************************************************/
 
 #include "ac_editorplugin.h"
-
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 #include <ac_editorimpl.h>
-
 #include <icore.h>
 #include <mainwindow.h>
-
 #include <QtPlugin>
 
 using namespace Private;

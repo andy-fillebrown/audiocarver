@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_link.h"
-
 #include <mi_root.h>
 
 namespace Private {

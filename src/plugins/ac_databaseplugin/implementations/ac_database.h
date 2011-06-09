@@ -32,9 +32,7 @@ public:
 
     virtual const QString &fileExtension() const;
     virtual const QString &fileFilter() const;
-
     virtual const QString &fileName() const;
-
     virtual void clear();
     virtual void read(const QString &fileName);
     virtual void write(const QString &fileName);

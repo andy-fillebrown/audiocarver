@@ -19,7 +19,6 @@
 #define MI_OBJECTLIST_H
 
 #include <mi_object.h>
-
 #include <QList>
 
 class MiObjectList

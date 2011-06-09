@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_editorimpl.h"
-
 #include <QDebug>
 
 using namespace Private;

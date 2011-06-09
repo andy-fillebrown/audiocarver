@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_graphicsview.h"
-
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
@@ -41,7 +40,6 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     ,   d(new AcGraphicsViewData(this))
 {
     AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-
     connect(viewSettings, SIGNAL(propertyChanged(QString)), SLOT(updateViewSettings(QString)));
 }
 

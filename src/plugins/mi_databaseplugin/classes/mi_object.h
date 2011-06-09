@@ -19,9 +19,7 @@
 #define MI_OBJECT_H
 
 #include <QObject>
-
 #include <mi_database_global.h>
-
 #include <QVariant>
 
 class MiObjectList;
@@ -39,7 +37,6 @@ public:
 
     virtual QString className() const;
     virtual bool isRoot() const { return false; }
-
     virtual MiRoot *root() const;
 
     QString id() const { return objectName(); }

@@ -19,7 +19,6 @@
 #define AC_SCORE_H
 
 #include <mi_root.h>
-
 #include <ac_database_global.h>
 
 class AcBarline;
@@ -30,7 +29,6 @@ class AcNote;
 class AcTrack;
 class AcTuning;
 class AcViewSettings;
-
 template <typename T> class MiList;
 
 namespace Private {
@@ -58,7 +56,6 @@ public:
 
     qreal length() const;
     void setLength(qreal length);
-
     MiList<AcBarline> &barlines() const;
     MiList<AcTuning> &tunings() const;
     MiList<AcFCurve> &curves() const;

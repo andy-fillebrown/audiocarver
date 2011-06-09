@@ -16,12 +16,9 @@
 **************************************************************************/
 
 #include "mi_editorplugin.h"
-
 #include <mi_mainwindowimpl.h>
-
 #include <icore.h>
 #include <mainwindow.h>
-
 #include <QtPlugin>
 
 using namespace Private;

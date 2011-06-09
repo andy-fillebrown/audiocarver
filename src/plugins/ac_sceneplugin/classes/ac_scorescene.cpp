@@ -16,13 +16,10 @@
 **************************************************************************/
 
 #include "ac_scorescene.h"
-
 #include <ac_barline.h>
 #include <ac_score.h>
 #include <ac_tuning.h>
-
 #include <mi_list.h>
-
 #include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QPainterPath>
@@ -35,7 +32,6 @@ class AcScoreSceneData
 {
 public:
     AcScoreScene *q;
-
     QGraphicsRectItem *scoreRectItem;
     QList<QGraphicsLineItem*> barlineItems;
     QList<QGraphicsLineItem*> tuningItems;
@@ -50,10 +46,8 @@ public:
     void updateLength()
     {
         qreal scoreLength = q->score()->length();
-
         scoreRectItem->setRect(0.0f, 0.0f, scoreLength, 127.0f);
         q->setSceneRect(scoreRectItem->rect());
-
         foreach (QGraphicsLineItem *tuningItem, tuningItems) {
             QLineF line = tuningItem->line();
             line.setLength(scoreLength);
@@ -65,7 +59,6 @@ public:
     {
         while (barlineItems.count() < index + 1)
             barlineItems.append(q->addLine(QLineF()));
-
         QGraphicsLineItem *barlineItem = barlineItems.at(index);
         const qreal x = barline->location();
         barlineItem->setLine(x, 0.0f, x, 127.0f);
@@ -84,7 +77,6 @@ public:
     {
         while (tuningItems.count() < index + 1)
             tuningItems.append(q->addLine(QLineF()));
-
         QGraphicsLineItem *tuningItem = tuningItems.at(index);
         const qreal y = 127.0f - tuning->location();
         const qreal scoreLength = q->score()->length();

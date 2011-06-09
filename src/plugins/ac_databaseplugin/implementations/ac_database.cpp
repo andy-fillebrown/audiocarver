@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_database.h"
-
 #include <ac_barline.h>
 #include <ac_fcurve.h>
 #include <ac_fpoint.h>
@@ -24,9 +23,7 @@
 #include <ac_score.h>
 #include <ac_track.h>
 #include <ac_tuning.h>
-
 #include <mi_list.h>
-
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -53,7 +50,6 @@ public:
         tuning->setLocation(48.0f);
         tuning = score->tunings().add();
         tuning->setLocation(72.0f);
-
         AcBarline *barline = score->barlines().add();
         barline->setLocation(0.0f);
         barline->setColor(QColor(Qt::green));
@@ -62,13 +58,10 @@ public:
             barline = score->barlines().add();
             barline->setLocation(4.0f * i);
         }
-
         score->tracks().add();
-
         AcFCurve *pitchCurve = score->curves().add();
         pitchCurve->appendPoint(AcFPoint(0.000001, 0));
         pitchCurve->appendPoint(AcFPoint(1, 1));
-
         AcNote *note = score->notes().add();
         note->setPitchCurve(pitchCurve);
     }
@@ -112,10 +105,8 @@ void AcDatabaseImpl::read(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
         return;
-
     QXmlStreamReader in(&file);
     while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
-
     if (d->score->read(in)) {
         d->score->update(true);
         d->fileName = fileName;
@@ -127,12 +118,9 @@ void AcDatabaseImpl::write(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly))
         return;
-
     QXmlStreamWriter out(&file);
     out.setAutoFormatting(true);
-
     d->score->write(out);
     file.write("\n");
-
     d->fileName = fileName;
 }

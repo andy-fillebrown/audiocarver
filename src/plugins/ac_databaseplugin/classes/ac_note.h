@@ -19,7 +19,6 @@
 #define AC_NOTE_H
 
 #include <mi_object.h>
-
 #include <ac_database_global.h>
 
 class AcFCurve;
@@ -48,38 +47,29 @@ public:
 
     qreal startTime() const;
     void setStartTime(qreal time);
-
     qreal duration() const;
     void setDuration(qreal duration);
-
     qreal pitchScale() const;
     void setPitchScale(qreal scale);
-
     qreal volumeScale() const;
     void setVolumeScale(qreal scale);
-
     int pitchPointCount() const;
     void setPitchPointCount(int count);
-
     int volumePointCount() const;
     void setVolumePointCount(int count);
-
     AcFCurve *pitchCurve() const;
     void setPitchCurve(AcFCurve *curve);
-
     AcFCurve *volumeCurve() const;
     void setVolumeCurve(AcFCurve *curve);
 
 private:
-    MiObject *pitchCurveObject() const;
-    void setPitchCurveObject(MiObject *curve);
-
-    MiObject *volumeCurveObject() const;
-    void setVolumeCurveObject(MiObject *curve);
-
-private:
     Q_DISABLE_COPY(AcNote)
     Private::AcNoteData *d;
+
+    MiObject *pitchCurveObject() const;
+    void setPitchCurveObject(MiObject *curve);
+    MiObject *volumeCurveObject() const;
+    void setVolumeCurveObject(MiObject *curve);
 };
 
 #endif // AC_NOTE_H

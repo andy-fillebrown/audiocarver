@@ -19,7 +19,6 @@
 #define MI_SCOPEDSIGNALBLOCKER_H
 
 #include <QObject>
-
 #include <mi_database_global.h>
 
 class MI_DATABASE_EXPORT MiScopedSignalBlocker

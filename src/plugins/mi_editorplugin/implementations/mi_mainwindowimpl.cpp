@@ -16,19 +16,15 @@
 **************************************************************************/
 
 #include "mi_mainwindowimpl.h"
-
 #include <mi_editorconstants.h>
 #include <mi_ieditor.h>
-
 #include <mi_idatabase.h>
-
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
 #include <icontext.h>
 #include <icore.h>
 #include <mainwindow.h>
-
 #include <QAction>
 #include <QFileDialog>
 #include <QIcon>
@@ -64,37 +60,31 @@ void MiMainWindowImpl::initActions()
     Core::ActionContainer *fileMenu = am->actionContainer(Core::Constants::M_FILE);
     Core::ActionContainer *editMenu = am->actionContainer(M_EDIT);
     Core::Context globalContext(Core::Constants::C_GLOBAL);
-
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
-
     icon = QIcon::fromTheme(QLatin1String("document-new"), QIcon(ICON_NEW));
     action = new QAction(icon, tr("&New"), this);
     cmd = am->registerAction(action, NEW, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::New);
     fileMenu->addAction(cmd, G_FILE_NEW);
     connect(action, SIGNAL(triggered()), SLOT(newFile()));
-
     icon = QIcon::fromTheme(QLatin1String("document-open"), QIcon(ICON_OPEN));
     action = new QAction(icon, tr("&Open"), this);
     cmd = am->registerAction(action, OPEN, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Open);
     fileMenu->addAction(cmd, G_FILE_OPEN);
     connect(action, SIGNAL(triggered()), SLOT(openFile()));
-
     action = new QAction(this);
     action->setSeparator(true);
     cmd = am->registerAction(action, PRO_NAME_STR".File.Sep.Save", globalContext);
     fileMenu->addAction(cmd, G_FILE_SAVE);
-
     icon = QIcon::fromTheme(QLatin1String("document-save"), QIcon(ICON_SAVE));
     action = new QAction(icon, tr("&Save"), this);
     cmd = am->registerAction(action, SAVE, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Save);
     fileMenu->addAction(cmd, G_FILE_SAVE);
     connect(action, SIGNAL(triggered()), SLOT(saveFile()));
-
     action = new QAction(tr("Save &As"), this);
     cmd = am->registerAction(action, SAVEAS, globalContext);
     fileMenu->addAction(cmd, G_FILE_SAVE);

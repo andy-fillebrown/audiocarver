@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_tuning.h"
-
 #include <mi_list.h>
 
 template <> bool MiList<AcTuning>::lessThan(MiObject *a, MiObject *b)

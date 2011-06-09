@@ -19,7 +19,6 @@
 #define AC_GUIDELINE_H
 
 #include <mi_object.h>
-
 #include <ac_database_global.h>
 
 namespace Private {
@@ -44,13 +43,10 @@ public:
 
     qreal location() const;
     void setLocation(qreal location);
-
     const QColor &color() const;
     void setColor(const QColor &color);
-
     const QString &text() const;
     void setText(const QString &text);
-
     int priority() const;
     void setPriority(int priority);
 

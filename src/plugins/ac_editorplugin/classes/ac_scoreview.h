@@ -19,7 +19,6 @@
 #define AC_SCOREVIEW_H
 
 #include <ac_graphicsview.h>
-
 #include <ac_editor_global.h>
 
 namespace Private {

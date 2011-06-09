@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_root.h"
-
 #include <QMetaType>
 
 MiRoot::MiRoot(QObject *parent)

@@ -19,7 +19,6 @@
 #define MI_ISCENE_H
 
 #include <QObject>
-
 #include <mi_scene_global.h>
 
 class QGraphicsScene;

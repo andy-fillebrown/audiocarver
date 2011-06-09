@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_sceneplugin.h"
-
 #include <QtPlugin>
 
 using namespace Private;

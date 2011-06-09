@@ -19,7 +19,6 @@
 #define MI_IDATABASE_H
 
 #include <QObject>
-
 #include <mi_database_global.h>
 
 class MI_DATABASE_EXPORT MiIDatabase : public QObject
@@ -34,9 +33,7 @@ public:
 
     virtual const QString &fileExtension() const = 0;
     virtual const QString &fileFilter() const = 0;
-
     virtual const QString &fileName() const = 0;
-
     virtual void clear() = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;

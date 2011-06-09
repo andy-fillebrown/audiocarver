@@ -16,16 +16,13 @@
 **************************************************************************/
 
 #include "ac_mainwidget.h"
-
 #include <ac_pitchscene.h>
 #include <ac_pitchview.h>
 #include <ac_score.h>
 #include <ac_scorescene.h>
 #include <ac_scoreview.h>
 #include <ac_viewsettings.h>
-
 #include <mi_graphicsview.h>
-
 #include <QApplication>
 #include <QGraphicsPathItem>
 #include <QLayout>
@@ -39,12 +36,10 @@ class AcMainWidgetData
 {
 public:
     AcMainWidget *q;
-
     AcScoreScene *scoreScene;
     MiGraphicsScene *timeScene;
     AcPitchScene *pitchScene;
     MiGraphicsScene *volumeScene;
-
     QGridLayout *layout;
     AcScoreView *scoreView;
     MiGraphicsView *timeView;
@@ -67,6 +62,9 @@ public:
         ,   topLeft(new MiGraphicsView(0, q))
         ,   bottomLeft(new MiGraphicsView(0, q))
     {
+        const int sideWidth = 64;
+        const int sideHeight = 64;
+        const int volumeHeight = 192;
         layout->setContentsMargins(QMargins(0, 0, 0, 0));
         layout->setSpacing(0);
         layout->addWidget(topLeft, 0, 0);
@@ -75,39 +73,28 @@ public:
         layout->addWidget(scoreView, 1, 1);
         layout->addWidget(bottomLeft, 2, 0);
         layout->addWidget(volumeView, 2, 1);
-
-        const int sideWidth = 64;
-        const int sideHeight = 64;
-        const int volumeHeight = 192;
-
         scoreView->setFrameShape(QFrame::Box);
         scoreView->setFrameShadow(QFrame::Sunken);
         scoreView->setLineWidth(1);
         scoreView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scoreView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
         timeView->setFixedHeight(sideHeight);
         timeView->setFrameShape(QFrame::NoFrame);
         timeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         timeView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
         pitchView->setFixedWidth(sideWidth);
         pitchView->setFrameShape(QFrame::NoFrame);
         pitchView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         pitchView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
         volumeView->setFixedHeight(volumeHeight);
         volumeView->setFrameShape(QFrame::Box);
         volumeView->setFrameShadow(QFrame::Sunken);
         volumeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         volumeView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
         topLeft->setFixedSize(sideWidth, sideHeight);
         topLeft->setFrameShape(QFrame::NoFrame);
-
         bottomLeft->setFixedSize(sideWidth, volumeHeight);
         bottomLeft->setFrameShape(QFrame::NoFrame);
-
         scoreView->updateCenter();
         pitchView->update();
     }

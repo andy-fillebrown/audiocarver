@@ -16,14 +16,10 @@
 **************************************************************************/
 
 #include "ac_mainwindowimpl.h"
-
 #include <ac_editorconstants.h>
-
 #include <ac_score.h>
 #include <ac_track.h>
-
 #include <mi_editorconstants.h>
-
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
@@ -31,7 +27,6 @@
 #include <icore.h>
 #include <mainwindow.h>
 #include <versiondialog.h>
-
 #include <QAction>
 #include <QMenu>
 
@@ -78,7 +73,6 @@ void AcMainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, 
 {
     Q_UNUSED(id);
     Q_UNUSED(title);
-
     if (menuBarGroup == Core::Constants::G_HELP)
         groups  << G_HELP_ABOUTAUDIOCARVER;
 }
@@ -88,7 +82,6 @@ void AcMainWindowImpl::initActions()
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
     Core::Context globalContext(Core::Constants::C_GLOBAL);
-
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;

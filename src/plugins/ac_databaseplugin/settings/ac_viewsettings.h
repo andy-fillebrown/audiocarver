@@ -19,7 +19,6 @@
 #define AC_VIEWSETTINGS_H
 
 #include <mi_object.h>
-
 #include <ac_database_global.h>
 
 namespace Private {
@@ -44,7 +43,6 @@ public:
     void setPositionX(qreal positionX);
     qreal positionY() const;
     void setPositionY(qreal positionY);
-
     qreal scaleX() const;
     void setScaleX(qreal scaleX);
     qreal scaleY() const;

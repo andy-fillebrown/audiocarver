@@ -19,7 +19,6 @@
 #define MI_IEDITOR_H
 
 #include <QObject>
-
 #include <mi_editor_global.h>
 
 class MI_EDITOR_EXPORT MiIEditor : public QObject

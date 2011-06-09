@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_pitchscene.h"
-
 #include <QGraphicsTextItem>
 
 using namespace Private;
@@ -39,16 +38,12 @@ public:
     {
         QGraphicsScene *pitchScene = AcPitchScene::instance();
         QGraphicsTextItem *textItem = 0;
-
         textItem = pitchScene->addText("0.0", font);
         pitchTextItems.append(textItem);
-
         textItem = pitchScene->addText("60.0", font);
         pitchTextItems.append(textItem);
-
         textItem = pitchScene->addText("127.0", font);
         pitchTextItems.append(textItem);
-
         foreach (QGraphicsTextItem *textItem, pitchTextItems)
             updatePitchTextItem(textItem);
     }
@@ -70,7 +65,6 @@ AcPitchScene::AcPitchScene(QObject *parent)
     ,   d(new AcPitchSceneData)
 {
     ::instance = this;
-
     d->initPitchTextItems();
 }
 

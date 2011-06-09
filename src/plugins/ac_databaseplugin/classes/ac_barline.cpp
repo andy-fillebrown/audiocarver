@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_barline.h"
-
 #include <mi_list.h>
 
 template <> bool MiList<AcBarline>::lessThan(MiObject *a, MiObject *b)

@@ -16,9 +16,7 @@
 **************************************************************************/
 
 #include "ac_sceneplugin.h"
-
 #include <ac_sceneimpl.h>
-
 #include <QtPlugin>
 
 using namespace Private;

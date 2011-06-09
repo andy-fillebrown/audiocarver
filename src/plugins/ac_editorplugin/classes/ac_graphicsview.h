@@ -19,7 +19,6 @@
 #define AC_GRAPHICSVIEW_H
 
 #include <mi_graphicsview.h>
-
 #include <ac_editor_global.h>
 
 namespace Private {

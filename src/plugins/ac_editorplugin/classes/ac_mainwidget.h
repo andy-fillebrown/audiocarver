@@ -19,7 +19,6 @@
 #define AC_MAINWIDGET_H
 
 #include <QWidget>
-
 #include <ac_editor_global.h>
 
 namespace Private {
@@ -42,7 +41,6 @@ public:
     void setPositionX(qreal positionX);
     qreal positionY() const;
     void setPositionY(qreal positionY);
-
     qreal scaleX() const;
     void setScaleX(qreal scaleX);
     qreal scaleY() const;

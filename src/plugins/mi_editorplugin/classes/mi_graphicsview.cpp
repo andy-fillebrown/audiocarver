@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_graphicsview.h"
-
 #include <QWheelEvent>
 
 MiGraphicsView::MiGraphicsView(QGraphicsScene *scene, QWidget *parent)

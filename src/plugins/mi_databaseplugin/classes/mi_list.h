@@ -31,7 +31,7 @@ public:
 
     ~MiList() { delete list; }
 
-    virtual bool isConstant() const { return list->isConstant(); }
+    bool isConstant() const { return list->isConstant(); }
 
     int count() const { return list->count(); }
     bool isEmpty() const { return list->isEmpty(); }
@@ -51,9 +51,7 @@ public:
     T *eraseAndTake(int i) { erase(i);  return take(i); }
     void clear() { list->clear(); }
     void deleteAll() { list->deleteAll(); }
-
     void sort() { list->sort(lessThan); }
-
     MiObjectList *objects() { return list; }
 
 protected:

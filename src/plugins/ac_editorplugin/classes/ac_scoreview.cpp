@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_scoreview.h"
-
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
@@ -36,7 +35,6 @@ public:
     {
         AcScoreView *scoreView = AcScoreView::instance();
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-
         scoreView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
     }
 };
@@ -73,7 +71,6 @@ void AcScoreView::setCenter(const QPointF &center)
     QPointF prevCtr = d->center;
     centerOn(center);
     updateCenter();
-
     if (d->center != prevCtr) {
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
         viewSettings->setPositionX(center.x());

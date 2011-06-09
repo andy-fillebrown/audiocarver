@@ -16,9 +16,7 @@
 **************************************************************************/
 
 #include "ac_track.h"
-
 #include <ac_note.h>
-
 #include <mi_objectlist.h>
 #include <mi_root.h>
 

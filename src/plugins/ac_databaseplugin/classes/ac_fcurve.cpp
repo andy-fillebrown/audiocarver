@@ -16,13 +16,10 @@
 **************************************************************************/
 
 #include "ac_fcurve.h"
-
 #include <ac_fpoint.h>
-
 #include <mi_root.h>
-
-#include <QtCore/QXmlStreamReader>
-#include <QtCore/QXmlStreamWriter>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 using namespace Private;
 

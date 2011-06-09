@@ -19,7 +19,6 @@
 #define AC_PITCHSCENE_H
 
 #include <ac_graphicsscene.h>
-
 #include <ac_scene_global.h>
 
 namespace Private {

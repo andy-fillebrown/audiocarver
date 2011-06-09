@@ -16,10 +16,8 @@
 **************************************************************************/
 
 #include "mi_object.h"
-
 #include <mi_objectlist.h>
 #include <mi_root.h>
-
 #include <QChildEvent>
 #include <QMetaProperty>
 #include <QVariant>
@@ -128,7 +126,6 @@ bool MiObject::read(QXmlStreamReader &in)
 {
     MiRoot *root = this->root();
     Q_ASSERT(root);
-
     Q_ASSERT(in.name() == className());
 
     // Read properties.
@@ -203,7 +200,6 @@ bool MiObject::read(QXmlStreamReader &in)
             }
         }
     }
-
     return true;
 }
 
@@ -211,7 +207,6 @@ void MiObject::write(QXmlStreamWriter &out) const
 {
     MiRoot *root = this->root();
     Q_ASSERT(root);
-
     out.writeStartElement(className());
 
     // Write properties.
@@ -266,7 +261,6 @@ void MiObject::write(QXmlStreamWriter &out) const
             list->at(i)->write(out);
         out.writeEndElement();
     }
-
     out.writeEndElement();
 }
 

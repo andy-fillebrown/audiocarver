@@ -19,7 +19,6 @@
 #define AC_TRACK_H
 
 #include <mi_object.h>
-
 #include <ac_database_global.h>
 
 namespace Private {
@@ -40,13 +39,12 @@ public:
     virtual ~AcTrack();
 
     MiObjectList *notes() const;
-
     bool isVisible() const;
     void setVisibility(bool visible);
-
     qreal volume() const;
     void setVolume(qreal volume);
 
+protected:
     virtual MiObject *createObject(const QString &className);
     virtual MiObject *findObject(const QString &className) const;
 

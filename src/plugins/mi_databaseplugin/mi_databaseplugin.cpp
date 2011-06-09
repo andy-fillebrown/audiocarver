@@ -16,12 +16,9 @@
 **************************************************************************/
 
 #include "mi_databaseplugin.h"
-
 #include <mi_object.h>
 #include <mi_objectlist.h>
-
 #include <pluginmanager.h>
-
 #include <QtPlugin>
 
 using namespace Private;

@@ -19,7 +19,6 @@
 #define MI_GRAPHICSVIEW_H
 
 #include <QGraphicsView>
-
 #include <mi_editor_global.h>
 
 class MI_EDITOR_EXPORT MiGraphicsView : public QGraphicsView

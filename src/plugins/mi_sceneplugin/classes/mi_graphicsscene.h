@@ -19,7 +19,6 @@
 #define MI_GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
-
 #include <mi_scene_global.h>
 
 class MI_SCENE_EXPORT MiGraphicsScene : public QGraphicsScene

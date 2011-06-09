@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_graphicsscene.h"
-
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 

@@ -16,11 +16,8 @@
 **************************************************************************/
 
 #include "ac_databaseplugin.h"
-
 #include <ac_database.h>
-
 #include <pluginmanager.h>
-
 #include <QtPlugin>
 
 using namespace Private;

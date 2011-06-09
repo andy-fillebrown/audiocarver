@@ -19,7 +19,6 @@
 #define AC_GRAPHICSSCENE_H
 
 #include <mi_graphicsscene.h>
-
 #include <ac_scene_global.h>
 
 class AcScore;

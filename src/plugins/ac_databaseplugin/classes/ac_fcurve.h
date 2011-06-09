@@ -19,7 +19,6 @@
 #define AC_FCURVE_H
 
 #include <mi_object.h>
-
 #include <ac_database_global.h>
 
 namespace Private {

@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_score.h"
-
 #include <ac_barline.h>
 #include <ac_fcurve.h>
 #include <ac_gridsettings.h>
@@ -24,7 +23,6 @@
 #include <ac_track.h>
 #include <ac_tuning.h>
 #include <ac_viewsettings.h>
-
 #include <mi_list.h>
 #include <mi_scopedsignalblocker.h>
 

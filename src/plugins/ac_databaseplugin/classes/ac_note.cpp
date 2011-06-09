@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_note.h"
-
 #include <ac_fcurve.h>
 
 using namespace Private;
