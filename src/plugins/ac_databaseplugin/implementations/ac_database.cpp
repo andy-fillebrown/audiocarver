@@ -45,11 +45,14 @@ public:
     {
         AcTuning *tuning = score->tunings().add();
         tuning->setLocation(60.0f);
+        tuning->setText("60.0");
         tuning->setColor(QColor(Qt::red));
         tuning = score->tunings().add();
         tuning->setLocation(48.0f);
+        tuning->setText("48.0");
         tuning = score->tunings().add();
         tuning->setLocation(72.0f);
+        tuning->setText("72.0");
         AcBarline *barline = score->barlines().add();
         barline->setLocation(0.0f);
         barline->setColor(QColor(Qt::green));
@@ -57,6 +60,7 @@ public:
         for (int i = 1;  i < 32;  ++i) {
             barline = score->barlines().add();
             barline->setLocation(4.0f * i);
+            barline->setText(QString(i + 1));
         }
         score->tracks().add();
         AcFCurve *pitchCurve = score->curves().add();

@@ -47,7 +47,6 @@ public:
         bottomRight.rx() *= scaleX;
         bottomRight.ry() *= scaleY;
         pitchScene->setSceneRect(0.0f, topLeft.y(), 10.0f, bottomRight.y() - topLeft.y());
-        pitchScene->setSceneScaleY(scaleY);
         pitchView->centerOn(5.0f, scoreView->center().y() * scaleY);
     }
 };

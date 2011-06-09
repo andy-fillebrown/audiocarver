@@ -37,10 +37,13 @@ public:
 
     static AcPitchScene *instance();
 
-    void setSceneScaleY(qreal scaleY);
-
 protected:
     virtual void updateScoreProperty(const QString &propertyName);
+
+private slots:
+    void updateViewSettingsProperty(const QString &propertyName);
+    void updateTunings();
+    void updateTuningProperties();
 
 private:
     Q_DISABLE_COPY(AcPitchScene)

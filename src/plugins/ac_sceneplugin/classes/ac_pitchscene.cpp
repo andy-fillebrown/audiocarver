@@ -16,6 +16,11 @@
 **************************************************************************/
 
 #include "ac_pitchscene.h"
+#include <ac_barline.h>
+#include <ac_score.h>
+#include <ac_tuning.h>
+#include <ac_viewsettings.h>
+#include <mi_list.h>
 #include <QGraphicsTextItem>
 
 using namespace Private;
@@ -25,34 +30,34 @@ namespace Private {
 class AcPitchSceneData
 {
 public:
+    AcPitchScene *q;
     QFont font;
     QFontMetrics fontMetrics;
-    QList<QGraphicsTextItem*> pitchTextItems;
+    QList<QGraphicsTextItem*> tuningItems;
 
-    AcPitchSceneData()
-        :   font("Arial", 8)
+    AcPitchSceneData(AcPitchScene *q)
+        :   q(q)
+        ,   font("Arial", 8)
         ,   fontMetrics(font)
     {}
 
-    void initPitchTextItems()
+    void updateTuningItem(int index, AcTuning *tuning)
     {
-        QGraphicsScene *pitchScene = AcPitchScene::instance();
-        QGraphicsTextItem *textItem = 0;
-        textItem = pitchScene->addText("0.0", font);
-        pitchTextItems.append(textItem);
-        textItem = pitchScene->addText("60.0", font);
-        pitchTextItems.append(textItem);
-        textItem = pitchScene->addText("127.0", font);
-        pitchTextItems.append(textItem);
-        foreach (QGraphicsTextItem *textItem, pitchTextItems)
-            updatePitchTextItem(textItem);
+        while (tuningItems.count() < index + 1)
+            tuningItems.append(q->addText("", font));
+        QGraphicsTextItem *tuningItem = tuningItems.at(index);
+        tuningItem->setPlainText(tuning->text());
+        QRect textRect = fontMetrics.boundingRect(tuning->text());
+        qreal scaleY = q->score()->viewSettings()->scaleY();
+        tuningItem->setPos(20.0f - textRect.width(), ((127.0f - tuning->location()) * scaleY) - (textRect.height() / 1.5));
     }
 
-    void updatePitchTextItem(QGraphicsTextItem *textItem, qreal scaleY = 1.0f)
+    void removeUnusedTuningItems()
     {
-        QString text = textItem->toPlainText();
-        QRect textRect = fontMetrics.boundingRect(text);
-        textItem->setPos(20.0f - textRect.width(), ((127.0f - text.toDouble()) * scaleY) - (textRect.height() / 1.5));
+        while (q->score()->tunings().count() < tuningItems.count()) {
+            delete tuningItems.last();
+            tuningItems.removeLast();
+        }
     }
 };
 
@@ -62,10 +67,11 @@ static AcPitchScene *instance = 0;
 
 AcPitchScene::AcPitchScene(QObject *parent)
     :   AcGraphicsScene(parent)
-    ,   d(new AcPitchSceneData)
+    ,   d(new AcPitchSceneData(this))
 {
     ::instance = this;
-    d->initPitchTextItems();
+    connect(score()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+    updateTunings();
 }
 
 AcPitchScene::~AcPitchScene()
@@ -78,13 +84,30 @@ AcPitchScene *AcPitchScene::instance()
     return ::instance;
 }
 
-void AcPitchScene::setSceneScaleY(qreal scaleY)
-{
-    foreach (QGraphicsTextItem *textItem, d->pitchTextItems)
-        d->updatePitchTextItem(textItem, scaleY);
-}
-
 void AcPitchScene::updateScoreProperty(const QString &propertyName)
 {
-    Q_UNUSED(propertyName);
+    if ("tunings" == propertyName)
+        updateTunings();
+}
+
+void AcPitchScene::updateViewSettingsProperty(const QString &propertyName)
+{
+    if ("scaleY" == propertyName)
+        updateTuningProperties();
+}
+
+void AcPitchScene::updateTunings()
+{
+    for (int i = 0;  i < score()->tunings().count();  ++i) {
+        AcTuning *tuning = score()->tunings().at(i);
+        connect(tuning, SIGNAL(propertyChanged(QString)), SLOT(updateTuningProperties()), Qt::UniqueConnection);
+        d->updateTuningItem(i, tuning);
+    }
+    d->removeUnusedTuningItems();
+}
+
+void AcPitchScene::updateTuningProperties()
+{
+    for (int i = 0;  i < score()->tunings().count();  ++i)
+        d->updateTuningItem(i, score()->tunings().at(i));
 }
