@@ -11,6 +11,7 @@ HEADERS += \
     classes/ac_mainwidget.h \
     classes/ac_pitchview.h \
     classes/ac_scoreview.h \
+    classes/ac_timeview.h \
     \
     implementations/ac_editorimpl.h \
     implementations/ac_mainwindowimpl.h \
@@ -24,6 +25,7 @@ SOURCES += \
     classes/ac_mainwidget.cpp \
     classes/ac_pitchview.cpp \
     classes/ac_scoreview.cpp \
+    classes/ac_timeview.cpp \
     \
     implementations/ac_editorimpl.cpp \
     implementations/ac_mainwindowimpl.cpp \

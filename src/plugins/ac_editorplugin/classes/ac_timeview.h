@@ -15,39 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMESCENE_H
-#define AC_TIMESCENE_H
+#ifndef AC_TIMEVIEW_H
+#define AC_TIMEVIEW_H
 
-#include <ac_graphicsscene.h>
-#include <ac_scene_global.h>
+#include <ac_graphicsview.h>
+#include <ac_editor_global.h>
 
 namespace Private {
 
-class AcTimeSceneData;
+class AcTimeViewData;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcTimeScene : public AcGraphicsScene
+class AcTimeView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcTimeScene(QObject *parent = 0);
-    virtual ~AcTimeScene();
+    AcTimeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcTimeView();
 
-    static AcTimeScene *instance();
+    static AcTimeView *instance();
+
+    void update();
 
 protected:
-    virtual void updateScoreProperty(const QString &propertyName);
-
-private slots:
-    void updateViewSettingsProperty(const QString &propertyName);
-    void updateBarlines();
-    void updateBarlineProperties();
+    virtual void updateViewSettings(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcTimeScene)
-    Private::AcTimeSceneData *d;
+    Q_DISABLE_COPY(AcTimeView)
+    Private::AcTimeViewData *d;
 };
 
-#endif // AC_TIMESCENE_H
+#endif // AC_TIMEVIEW_H

@@ -21,6 +21,8 @@
 #include <ac_score.h>
 #include <ac_scorescene.h>
 #include <ac_scoreview.h>
+#include <ac_timescene.h>
+#include <ac_timeview.h>
 #include <ac_viewsettings.h>
 #include <mi_graphicsview.h>
 #include <QApplication>
@@ -37,12 +39,12 @@ class AcMainWidgetData
 public:
     AcMainWidget *q;
     AcScoreScene *scoreScene;
-    MiGraphicsScene *timeScene;
+    AcTimeScene *timeScene;
     AcPitchScene *pitchScene;
     MiGraphicsScene *volumeScene;
     QGridLayout *layout;
     AcScoreView *scoreView;
-    MiGraphicsView *timeView;
+    AcTimeView *timeView;
     AcPitchView *pitchView;
     MiGraphicsView *volumeView;
     MiGraphicsView *topLeft;
@@ -51,12 +53,12 @@ public:
     AcMainWidgetData(AcMainWidget *q)
         :   q(q)
         ,   scoreScene(new AcScoreScene(q))
-        ,   timeScene(new MiGraphicsScene(q))
+        ,   timeScene(new AcTimeScene(q))
         ,   pitchScene(new AcPitchScene(q))
         ,   volumeScene(new MiGraphicsScene(q))
         ,   layout(new QGridLayout(q))
         ,   scoreView(new AcScoreView(scoreScene, q))
-        ,   timeView(new MiGraphicsView(timeScene, q))
+        ,   timeView(new AcTimeView(timeScene, q))
         ,   pitchView(new AcPitchView(pitchScene, q))
         ,   volumeView(new MiGraphicsView(volumeScene, q))
         ,   topLeft(new MiGraphicsView(0, q))
@@ -97,6 +99,7 @@ public:
         bottomLeft->setFrameShape(QFrame::NoFrame);
         scoreView->updateCenter();
         pitchView->update();
+        timeView->update();
     }
 
     void updateViews()

@@ -15,77 +15,99 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsscene.h"
-
+#include "ac_timescene.h"
+#include <ac_barline.h>
 #include <ac_score.h>
-
-#include <QGraphicsRectItem>
-#include <QPainterPath>
+#include <ac_tuning.h>
+#include <ac_viewsettings.h>
+#include <mi_list.h>
+#include <QGraphicsTextItem>
 
 using namespace Private;
 
 namespace Private {
 
-class AcGraphicsSceneData
+class AcTimeSceneData
 {
 public:
-    AcGraphicsScene *q;
-    AcScore *score;
+    AcTimeScene *q;
+    QFont font;
+    QFontMetrics fontMetrics;
+    QList<QGraphicsTextItem*> barlineItems;
 
-    QGraphicsRectItem *scoreRectItem;
-    QGraphicsPathItem *barLineItem;
-    QGraphicsPathItem *tuningLineItem;
-
-    AcGraphicsSceneData(AcGraphicsScene *q)
+    AcTimeSceneData(AcTimeScene *q)
         :   q(q)
-        ,   score(AcScore::instance())
-        ,   scoreRectItem(q->addRect(0.0f, 0.0f, 0.0f, 0.0f))
-        ,   barLineItem(0)
-        ,   tuningLineItem(0)
+        ,   font("Arial", 8)
+        ,   fontMetrics(font)
+    {}
+
+    void updateBarlineItem(int index, AcBarline *barline)
     {
-        updateScoreRectItems();
+        while (barlineItems.count() < index + 1)
+            barlineItems.append(q->addText("", font));
+        QGraphicsTextItem *barlineItem = barlineItems.at(index);
+        barlineItem->setPlainText(barline->text());
+        QRect textRect = fontMetrics.boundingRect(barline->text());
+        qreal scaleX = q->score()->viewSettings()->scaleX();
+        barlineItem->setPos((barline->location() * scaleX) - (textRect.width() / 2), 10.0f);
     }
 
-    void updateScoreRectItems()
+    void removeUnusedBarlineItems()
     {
-//        if (barLineItem)
-//            q->removeItem(barLineItem);
-//        QPainterPath barLinePath;
-//        for (int i = 0;  i < score->length();  i+=4) {
-//            barLinePath.moveTo(qreal(i), 0.0f);
-//            barLinePath.lineTo(qreal(i), 127.0f);
-//        }
-//        barLineItem = q->addPath(barLinePath);
-
-//        if (tuningLineItem)
-//            q->removeItem(tuningLineItem);
-//        QPainterPath tuningLinePath;
-//        tuningLinePath.moveTo(0.0f, qAbs(60.0f - 127.0f));
-//        tuningLinePath.lineTo(score->length(), qAbs(60.0f - 127.0f));
-//        tuningLineItem = q->addPath(tuningLinePath, QPen(QColor(Qt::red)));
-
-//        scoreRectItem->setRect(0.0f, 0.0f, score->length(), 127.0f);
-        scoreRectItem->setRect(0.0f, 0.0f, 128.0f, 127.0f);
+        while (q->score()->barlines().count() <barlineItems.count()) {
+            delete barlineItems.last();
+            barlineItems.removeLast();
+        }
     }
 };
 
 } // namespace Private
 
-AcGraphicsScene::AcGraphicsScene(QObject *parent)
-    :   MiGraphicsScene(parent)
-    ,   d(new AcGraphicsSceneData(this))
+static AcTimeScene *instance = 0;
+
+AcTimeScene::AcTimeScene(QObject *parent)
+    :   AcGraphicsScene(parent)
+    ,   d(new AcTimeSceneData(this))
 {
-    connect(d->score, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    ::instance = this;
+    connect(score()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+    updateBarlines();
 }
 
-AcGraphicsScene::~AcGraphicsScene()
+AcTimeScene::~AcTimeScene()
 {
     delete d;
 }
 
-void AcGraphicsScene::updateScoreProperty(int propertyIndex)
+AcTimeScene *AcTimeScene::instance()
 {
-    const QString propName = d->score->propertyName(propertyIndex);
-    if (propName == "length")
-        d->updateScoreRectItems();
+    return ::instance;
+}
+
+void AcTimeScene::updateScoreProperty(const QString &propertyName)
+{
+    if ("barlines" == propertyName)
+        updateBarlines();
+}
+
+void AcTimeScene::updateViewSettingsProperty(const QString &propertyName)
+{
+    if ("scaleX" == propertyName)
+        updateBarlineProperties();
+}
+
+void AcTimeScene::updateBarlines()
+{
+    for (int i = 0;  i < score()->barlines().count();  ++i) {
+        AcBarline *barline = score()->barlines().at(i);
+        connect(barline, SIGNAL(propertyChanged(QString)), SLOT(updateBarlineProperties()), Qt::UniqueConnection);
+        d->updateBarlineItem(i, barline);
+    }
+    d->removeUnusedBarlineItems();
+}
+
+void AcTimeScene::updateBarlineProperties()
+{
+    for (int i = 0;  i < score()->barlines().count();  ++i)
+        d->updateBarlineItem(i, score()->barlines().at(i));
 }

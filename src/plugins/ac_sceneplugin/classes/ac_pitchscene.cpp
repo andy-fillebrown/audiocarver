@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_pitchscene.h"
-#include <ac_barline.h>
 #include <ac_score.h>
 #include <ac_tuning.h>
 #include <ac_viewsettings.h>

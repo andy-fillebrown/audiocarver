@@ -60,7 +60,7 @@ public:
         for (int i = 1;  i < 32;  ++i) {
             barline = score->barlines().add();
             barline->setLocation(4.0f * i);
-            barline->setText(QString(i + 1));
+            barline->setText(QString("%1").arg(i + 1));
         }
         score->tracks().add();
         AcFCurve *pitchCurve = score->curves().add();
