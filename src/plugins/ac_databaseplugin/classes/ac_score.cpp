@@ -17,11 +17,12 @@
 
 #include "ac_score.h"
 
+#include <ac_barline.h>
 #include <ac_fcurve.h>
 #include <ac_gridsettings.h>
-#include <ac_guideline.h>
 #include <ac_note.h>
 #include <ac_track.h>
+#include <ac_tuning.h>
 #include <ac_viewsettings.h>
 
 #include <mi_list.h>
@@ -37,8 +38,8 @@ public:
 
     qreal length;
     MiConstantObjectList settings;
-    MiList<AcGuideline> barlines;
-    MiList<AcGuideline> tunings;
+    MiList<AcBarline> barlines;
+    MiList<AcTuning> tunings;
     MiList<AcFCurve> curves;
     MiList<AcNote> notes;
     MiList<AcTrack> tracks;
@@ -106,12 +107,12 @@ void AcScore::setLength(qreal length)
     emit propertyChanged("length");
 }
 
-MiList<AcGuideline> &AcScore::barlines() const
+MiList<AcBarline> &AcScore::barlines() const
 {
     return d->barlines;
 }
 
-MiList<AcGuideline> &AcScore::tunings() const
+MiList<AcTuning> &AcScore::tunings() const
 {
     return d->tunings;
 }

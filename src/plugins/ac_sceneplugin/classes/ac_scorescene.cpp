@@ -17,8 +17,9 @@
 
 #include "ac_scorescene.h"
 
-#include <ac_guideline.h>
+#include <ac_barline.h>
 #include <ac_score.h>
+#include <ac_tuning.h>
 
 #include <mi_list.h>
 
@@ -59,7 +60,7 @@ public:
         }
     }
 
-    void updateBarlineItem(int index, AcGuideline *barline)
+    void updateBarlineItem(int index, AcBarline *barline)
     {
         while (barlineItems.count() < index + 1)
             barlineItems.append(q->addLine(QLineF()));
@@ -78,7 +79,7 @@ public:
         }
     }
 
-    void updateTuningItem(int index, AcGuideline *tuning)
+    void updateTuningItem(int index, AcTuning *tuning)
     {
         while (tuningItems.count() < index + 1)
             tuningItems.append(q->addLine(QLineF()));
@@ -127,7 +128,7 @@ void AcScoreScene::updateScoreProperty(const QString &propertyName)
 void AcScoreScene::updateBarlines()
 {
     for (int i = 0;  i < score()->barlines().count();  ++i) {
-        AcGuideline *barline = score()->barlines().at(i);
+        AcBarline *barline = score()->barlines().at(i);
         connect(barline, SIGNAL(propertyChanged(QString)), SLOT(updateBarlineProperties()), Qt::UniqueConnection);
         d->updateBarlineItem(i, barline);
     }
@@ -143,7 +144,7 @@ void AcScoreScene::updateBarlineProperties()
 void AcScoreScene::updateTunings()
 {
     for (int i = 0;  i < score()->tunings().count();  ++i) {
-        AcGuideline *tuning = score()->tunings().at(i);
+        AcTuning *tuning = score()->tunings().at(i);
         connect(tuning, SIGNAL(propertyChanged(QString)), SLOT(updateTuningProperties()), Qt::UniqueConnection);
         d->updateTuningItem(i, tuning);
     }

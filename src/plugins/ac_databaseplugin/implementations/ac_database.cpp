@@ -17,12 +17,13 @@
 
 #include "ac_database.h"
 
+#include <ac_barline.h>
 #include <ac_fcurve.h>
 #include <ac_fpoint.h>
-#include <ac_guideline.h>
 #include <ac_note.h>
 #include <ac_score.h>
 #include <ac_track.h>
+#include <ac_tuning.h>
 
 #include <mi_list.h>
 
@@ -45,7 +46,7 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        AcGuideline *tuning = score->tunings().add();
+        AcTuning *tuning = score->tunings().add();
         tuning->setLocation(60.0f);
         tuning->setColor(QColor(Qt::red));
         tuning = score->tunings().add();
@@ -53,7 +54,7 @@ public:
         tuning = score->tunings().add();
         tuning->setLocation(72.0f);
 
-        AcGuideline *barline = score->barlines().add();
+        AcBarline *barline = score->barlines().add();
         barline->setLocation(0.0f);
         barline->setColor(QColor(Qt::green));
         barline->setText("1");

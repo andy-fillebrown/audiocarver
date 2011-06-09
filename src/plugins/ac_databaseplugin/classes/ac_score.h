@@ -22,11 +22,13 @@
 
 #include <ac_database_global.h>
 
+class AcBarline;
 class AcFCurve;
 class AcGuideline;
 class AcGridSettings;
 class AcNote;
 class AcTrack;
+class AcTuning;
 class AcViewSettings;
 
 template <typename T> class MiList;
@@ -57,8 +59,8 @@ public:
     qreal length() const;
     void setLength(qreal length);
 
-    MiList<AcGuideline> &barlines() const;
-    MiList<AcGuideline> &tunings() const;
+    MiList<AcBarline> &barlines() const;
+    MiList<AcTuning> &tunings() const;
     MiList<AcFCurve> &curves() const;
     MiList<AcNote> &notes() const;
     MiList<AcTrack> &tracks() const;

@@ -40,6 +40,8 @@ public:
     explicit AcGuideline(QObject *parent = 0);
     virtual ~AcGuideline();
 
+    inline static bool lessThan(MiObject *a, MiObject *b);
+
     qreal location() const;
     void setLocation(qreal location);
 
@@ -56,5 +58,12 @@ private:
     Q_DISABLE_COPY(AcGuideline)
     Private::AcGuidelineData *d;
 };
+
+inline bool AcGuideline::lessThan(MiObject *a, MiObject *b)
+{
+    AcGuideline *A = qobject_cast<AcGuideline*>(a);
+    AcGuideline *B = qobject_cast<AcGuideline*>(b);
+    return A->location() < B->location();
+}
 
 #endif // AC_GUIDELINE_H
