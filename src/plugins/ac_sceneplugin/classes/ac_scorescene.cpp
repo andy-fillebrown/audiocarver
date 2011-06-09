@@ -52,6 +52,7 @@ public:
         qreal scoreLength = q->score()->length();
 
         scoreRectItem->setRect(0.0f, 0.0f, scoreLength, 127.0f);
+        q->setSceneRect(scoreRectItem->rect());
 
         foreach (QGraphicsLineItem *tuningItem, tuningItems) {
             QLineF line = tuningItem->line();

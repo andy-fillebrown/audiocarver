@@ -50,6 +50,7 @@ AcScoreView::AcScoreView(QGraphicsScene *scene, QWidget *parent)
     ,   d(new AcScoreViewData)
 {
     ::instance = this;
+    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
 AcScoreView::~AcScoreView()
@@ -83,6 +84,12 @@ void AcScoreView::setCenter(const QPointF &center)
 void AcScoreView::setCenter(qreal x, qreal y)
 {
     setCenter(QPointF(x, y));
+}
+
+void AcScoreView::updateScoreProperty(const QString &propertyName)
+{
+    if ("length" == propertyName)
+        setCenter(mapToScene(rect().center()));
 }
 
 void AcScoreView::updateCenter()

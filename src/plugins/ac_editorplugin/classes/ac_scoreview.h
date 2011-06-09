@@ -43,6 +43,7 @@ public:
     void setCenter(qreal x, qreal y);
 
 public slots:
+    void updateScoreProperty(const QString &propertyName);
     void updateCenter();
 
 protected:
