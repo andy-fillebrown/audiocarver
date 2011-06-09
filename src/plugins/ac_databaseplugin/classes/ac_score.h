@@ -70,6 +70,7 @@ public:
 
     virtual void clear();
 
+protected:
     virtual QString &normalizeClassName(QString &className) const;
     virtual MiObject *createObject(const QString &className);
     virtual MiObject *findObject(const QString &className) const;
