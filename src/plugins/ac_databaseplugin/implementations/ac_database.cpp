@@ -57,10 +57,20 @@ public:
         barline->setLocation(0.0f);
         barline->setColor(QColor(Qt::green));
         barline->setText("1");
+        barline->setPriority(0);
         for (int i = 1;  i < 32;  ++i) {
             barline = score->barlines().add();
             barline->setLocation(4.0f * i);
             barline->setText(QString("%1").arg(i + 1));
+            for (int j = 16;  1 < j;  j/=2) {
+                int mod = i % j;
+                if (mod == 0) {
+                    barline->setPriority(16 / j);
+                    break;
+                }
+            }
+            if (barline->priority() == 0)
+                barline->setPriority(32);
         }
         score->tracks().add();
         AcFCurve *pitchCurve = score->curves().add();

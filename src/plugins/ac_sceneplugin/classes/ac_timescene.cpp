@@ -46,10 +46,46 @@ public:
         while (barlineItems.count() < index + 1)
             barlineItems.append(q->addText("", font));
         QGraphicsTextItem *barlineItem = barlineItems.at(index);
-        barlineItem->setPlainText(barline->text());
         QRect textRect = fontMetrics.boundingRect(barline->text());
         qreal scaleX = q->score()->viewSettings()->scaleX();
         barlineItem->setPos((barline->location() * scaleX) - (textRect.width() / 2), 10.0f);
+    }
+
+    void updateBarlineItemText()
+    {
+        int maxPriority = 0;
+        for (int i = 0;  i < q->score()->barlines().count();  ++i)
+            if (maxPriority < q->score()->barlines().at(i)->priority())
+                maxPriority = q->score()->barlines().at(i)->priority();
+        int curPriority = maxPriority;
+        bool overlaps = true;
+        while (overlaps) {
+            overlaps = false;
+            QGraphicsTextItem *prevItem = barlineItems.first();
+            qreal prevRight = prevItem->pos().x() + (prevItem->textWidth() / 2.0f);
+            for (int i = 1;  i < barlineItems.count();  ++i) {
+                QGraphicsTextItem *curItem = barlineItems.at(i);
+                AcBarline *curBar = q->score()->barlines().at(i);
+                if (curBar->priority() <= curPriority) {
+                    qreal curLeft = curItem->pos().x() - (curItem->textWidth() / 2.0f);
+                    if (curLeft - 16 < prevRight) {
+                        --curPriority;
+                        overlaps = true;
+                        break;
+                    } else {
+                        prevItem = curItem;
+                        prevRight = curItem->pos().x() + (curItem->textWidth() / 2.0f);
+                    }
+                }
+            }
+        }
+        for (int i = 0;  i < barlineItems.count();  ++i) {
+            AcBarline *bar = q->score()->barlines().at(i);
+            if (bar->priority() <= curPriority)
+                barlineItems.at(i)->setPlainText(bar->text());
+            else
+                barlineItems.at(i)->setPlainText("");
+        }
     }
 
     void removeUnusedBarlineItems()
@@ -104,10 +140,12 @@ void AcTimeScene::updateBarlines()
         d->updateBarlineItem(i, barline);
     }
     d->removeUnusedBarlineItems();
+    d->updateBarlineItemText();
 }
 
 void AcTimeScene::updateBarlineProperties()
 {
     for (int i = 0;  i < score()->barlines().count();  ++i)
         d->updateBarlineItem(i, score()->barlines().at(i));
+    d->updateBarlineItemText();
 }
