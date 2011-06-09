@@ -38,6 +38,7 @@ public:
     T *at(int i) const { return qobject_cast<T*>(list->at(i)); }
     T *first() const { return qobject_cast<T*>(list->first()); }
     T *last() const { return qobject_cast<T*>(list->last()); }
+    QList<T*> toList() const { QList<T*> objs;  for (int i=0; i<count(); ++i) objs.append(at(i));  return objs; }
     int indexOf(T *object, int from = 0) const { return list->indexOf(object, from); }
     T *add() { T* object = new T(list->parent);  append(object);  return object; }
     void append(T *object) { list->append(object); }
