@@ -24,6 +24,8 @@
 #include <ac_score.h>
 #include <ac_track.h>
 
+#include <mi_list.h>
+
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>

@@ -24,14 +24,7 @@
 #include <ac_track.h>
 #include <ac_viewsettings.h>
 
-#include <mi_objectlist.h>
-
-static bool guidelineLessThan(MiObject *a, MiObject *b)
-{
-    AcGuideline *aa = qobject_cast<AcGuideline*>(a);
-    AcGuideline *bb = qobject_cast<AcGuideline*>(b);
-    return aa->location() < bb->location();
-}
+#include <mi_list.h>
 
 using namespace Private;
 
@@ -218,14 +211,14 @@ void AcScore::updateTuningProperty(const QString &propertyName)
 void AcScore::sortBarlines()
 {
     blockSignals(true);
-    d->barlines.sort(guidelineLessThan);
+    d->barlines.sort();
     blockSignals(false);
 }
 
 void AcScore::sortTunings()
 {
     blockSignals(true);
-    d->tunings.sort(guidelineLessThan);
+    d->tunings.sort();
     blockSignals(false);
 }
 

@@ -17,6 +17,15 @@
 
 #include "ac_guideline.h"
 
+#include <mi_list.h>
+
+template <> bool MiList<AcGuideline>::lessThan(MiObject *a, MiObject *b)
+{
+    AcGuideline *A = qobject_cast<AcGuideline*>(a);
+    AcGuideline *B = qobject_cast<AcGuideline*>(b);
+    return A->location() < B->location();
+}
+
 using namespace Private;
 
 namespace Private {

@@ -22,14 +22,14 @@
 
 #include <ac_database_global.h>
 
-#include <mi_list.h>
-
 class AcFCurve;
 class AcGuideline;
 class AcGridSettings;
 class AcNote;
 class AcTrack;
 class AcViewSettings;
+
+template <typename T> class MiList;
 
 namespace Private {
 

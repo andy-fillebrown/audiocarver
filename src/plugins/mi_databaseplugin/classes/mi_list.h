@@ -22,6 +22,8 @@
 
 template <typename T> class MiList
 {
+    static bool lessThan(MiObject *a, MiObject *b);
+
 public:
     MiList(const QString &propertyName, MiObject *owner, QObject *parent = 0)
         :   list(new MiObjectList(propertyName, owner, parent))
@@ -45,7 +47,7 @@ public:
     void clear() { list->clear(); }
     void deleteAll() { list->deleteAll(); }
 
-    template <typename LessThan> void sort(LessThan lessThan) { list->sort(lessThan); }
+    void sort() { list->sort(lessThan); }
 
     MiObjectList *objects() { return list; }
 

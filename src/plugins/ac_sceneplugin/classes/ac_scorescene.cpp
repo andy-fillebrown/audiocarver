@@ -20,6 +20,8 @@
 #include <ac_guideline.h>
 #include <ac_score.h>
 
+#include <mi_list.h>
+
 #include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QPainterPath>
