@@ -35,10 +35,15 @@ public:
     AcScoreScene(QObject *parent = 0);
     virtual ~AcScoreScene();
 
+    static AcScoreScene *instance();
+
+    const QFontMetrics &fontMetrics() const;
+
 protected:
     virtual void updateScoreProperty(const QString &propertyName);
 
 private slots:
+    void updateFontMetrics();
     void updateBarlines();
     void updateBarlineProperties();
     void updateTunings();

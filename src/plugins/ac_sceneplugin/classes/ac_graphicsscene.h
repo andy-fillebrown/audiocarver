@@ -39,6 +39,8 @@ public:
     virtual ~AcGraphicsScene();
 
     AcScore *score() const;
+    const QFont &font() const;
+    const QFontMetrics &fontMetrics() const;
 
 protected slots:
     virtual void updateScoreProperty(const QString &propertyName);

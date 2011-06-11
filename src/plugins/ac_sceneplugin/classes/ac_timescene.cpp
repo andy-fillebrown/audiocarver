@@ -20,6 +20,7 @@
 #include <ac_score.h>
 #include <ac_tuning.h>
 #include <ac_viewsettings.h>
+#include <mi_font.h>
 #include <mi_list.h>
 #include <QGraphicsTextItem>
 
@@ -31,22 +32,18 @@ class AcTimeSceneData
 {
 public:
     AcTimeScene *q;
-    QFont font;
-    QFontMetrics fontMetrics;
     QList<QGraphicsTextItem*> barlineItems;
 
     AcTimeSceneData(AcTimeScene *q)
         :   q(q)
-        ,   font("Arial", 8)
-        ,   fontMetrics(font)
     {}
 
     void updateBarlineItem(int index, AcBarline *barline)
     {
         while (barlineItems.count() < index + 1)
-            barlineItems.append(q->addText("", font));
+            barlineItems.append(q->addText("", q->font()));
         QGraphicsTextItem *barlineItem = barlineItems.at(index);
-        QRect textRect = fontMetrics.boundingRect(barline->text());
+        QRect textRect = q->fontMetrics().boundingRect(barline->text());
         qreal scaleX = q->score()->viewSettings()->scaleX();
         barlineItem->setPos((barline->location() * scaleX) - (textRect.width() / 2), 10.0f);
     }
@@ -109,8 +106,9 @@ AcTimeScene::AcTimeScene(QObject *parent)
     ,   d(new AcTimeSceneData(this))
 {
     ::instance = this;
-    connect(score()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
     updateBarlines();
+    connect(score()->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateBarlineProperties()));
+    connect(score()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
 }
 
 AcTimeScene::~AcTimeScene()

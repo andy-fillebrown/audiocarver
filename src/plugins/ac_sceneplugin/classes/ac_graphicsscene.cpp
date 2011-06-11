@@ -17,7 +17,9 @@
 
 #include "ac_graphicsscene.h"
 #include <ac_score.h>
+#include <ac_scorescene.h>
 #include <ac_viewsettings.h>
+#include <mi_font.h>
 
 using namespace Private;
 
@@ -50,6 +52,16 @@ AcGraphicsScene::~AcGraphicsScene()
 AcScore *AcGraphicsScene::score() const
 {
     return d->score;
+}
+
+const QFont &AcGraphicsScene::font() const
+{
+    return score()->fontSettings()->qFont();
+}
+
+const QFontMetrics &AcGraphicsScene::fontMetrics() const
+{
+    return AcScoreScene::instance()->fontMetrics();
 }
 
 void AcGraphicsScene::updateScoreProperty(const QString &propertyName)

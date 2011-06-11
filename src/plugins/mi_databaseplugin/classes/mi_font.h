@@ -42,6 +42,8 @@ public:
     int pointSize() const;
     void setPointSize(int size);
 
+    const QFont &qFont() const;
+
 private:
     Q_DISABLE_COPY(MiFont)
     Private::MiFontData *d;

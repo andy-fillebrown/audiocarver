@@ -19,7 +19,9 @@
 #include <ac_barline.h>
 #include <ac_score.h>
 #include <ac_tuning.h>
+#include <mi_font.h>
 #include <mi_list.h>
+#include <QFontMetrics>
 #include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QPainterPath>
@@ -32,12 +34,14 @@ class AcScoreSceneData
 {
 public:
     AcScoreScene *q;
+    QFontMetrics fontMetrics;
     QGraphicsRectItem *scoreRectItem;
     QList<QGraphicsLineItem*> barlineItems;
     QList<QGraphicsLineItem*> tuningItems;
 
     AcScoreSceneData(AcScoreScene *q)
         :   q(q)
+        ,   fontMetrics(q->score()->fontSettings()->qFont())
         ,   scoreRectItem(q->addRect(0.0f, 0.0f, 0.0f, 0.0f))
     {
         updateLength();
@@ -93,19 +97,33 @@ public:
     }
 };
 
+static AcScoreScene *instance = 0;
+
 } // namespace Private
 
 AcScoreScene::AcScoreScene(QObject *parent)
     :   AcGraphicsScene(parent)
     ,   d(new AcScoreSceneData(this))
 {
+    ::instance = this;
     updateBarlines();
     updateTunings();
+    connect(score()->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontMetrics()));
 }
 
 AcScoreScene::~AcScoreScene()
 {
     delete d;
+}
+
+AcScoreScene *AcScoreScene::instance()
+{
+    return ::instance;
+}
+
+const QFontMetrics &AcScoreScene::fontMetrics() const
+{
+    return d->fontMetrics;
 }
 
 void AcScoreScene::updateScoreProperty(const QString &propertyName)
@@ -116,6 +134,11 @@ void AcScoreScene::updateScoreProperty(const QString &propertyName)
         updateTunings();
     else if ("length" == propertyName)
         d->updateLength();
+}
+
+void AcScoreScene::updateFontMetrics()
+{
+    d->fontMetrics = QFontMetrics(score()->fontSettings()->qFont());
 }
 
 void AcScoreScene::updateBarlines()

@@ -69,3 +69,8 @@ void MiFont::setPointSize(int size)
     d->font.setPointSize(size);
     emit propertyChanged("pointSize");
 }
+
+const QFont &MiFont::qFont() const
+{
+    return d->font;
+}

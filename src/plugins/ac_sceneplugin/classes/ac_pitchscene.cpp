@@ -19,6 +19,7 @@
 #include <ac_score.h>
 #include <ac_tuning.h>
 #include <ac_viewsettings.h>
+#include <mi_font.h>
 #include <mi_list.h>
 #include <QGraphicsTextItem>
 
@@ -30,23 +31,19 @@ class AcPitchSceneData
 {
 public:
     AcPitchScene *q;
-    QFont font;
-    QFontMetrics fontMetrics;
     QList<QGraphicsTextItem*> tuningItems;
 
     AcPitchSceneData(AcPitchScene *q)
         :   q(q)
-        ,   font("Arial", 8)
-        ,   fontMetrics(font)
     {}
 
     void updateTuningItem(int index, AcTuning *tuning)
     {
         while (tuningItems.count() < index + 1)
-            tuningItems.append(q->addText("", font));
+            tuningItems.append(q->addText("", q->font()));
         QGraphicsTextItem *tuningItem = tuningItems.at(index);
         tuningItem->setPlainText(tuning->text());
-        QRect textRect = fontMetrics.boundingRect(tuning->text());
+        QRect textRect = q->fontMetrics().boundingRect(tuning->text());
         qreal scaleY = q->score()->viewSettings()->scaleY();
         tuningItem->setPos(20.0f - textRect.width(), ((127.0f - tuning->location()) * scaleY) - (textRect.height() / 1.5));
     }
@@ -69,8 +66,9 @@ AcPitchScene::AcPitchScene(QObject *parent)
     ,   d(new AcPitchSceneData(this))
 {
     ::instance = this;
-    connect(score()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
     updateTunings();
+    connect(score()->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateTuningProperties()));
+    connect(score()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
 }
 
 AcPitchScene::~AcPitchScene()
