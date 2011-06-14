@@ -18,18 +18,18 @@
 #ifndef AC_BARLINE_H
 #define AC_BARLINE_H
 
-#include <ac_guideline.h>
+#include <ac_gridline.h>
 
-class AC_DATABASE_EXPORT AcBarline : public AcGuideline
+class AC_DATABASE_EXPORT AcBarLine : public AcGridLine
 {
     Q_OBJECT
 
 public:
-    explicit AcBarline(QObject *parent = 0);
-    virtual ~AcBarline();
+    explicit AcBarLine(QObject *parent = 0);
+    virtual ~AcBarLine();
 
 private:
-    Q_DISABLE_COPY(AcBarline)
+    Q_DISABLE_COPY(AcBarLine)
 };
 
 #endif // AC_BARLINE_H

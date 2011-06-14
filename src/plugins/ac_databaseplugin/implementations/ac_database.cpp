@@ -22,7 +22,7 @@
 #include <ac_note.h>
 #include <ac_score.h>
 #include <ac_track.h>
-#include <ac_tuning.h>
+#include <ac_tuningline.h>
 #include <mi_list.h>
 #include <QFile>
 #include <QXmlStreamReader>
@@ -43,34 +43,37 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        AcTuning *tuning = score->tunings().add();
-        tuning->setLocation(60.0f);
-        tuning->setText("60.0");
-        tuning->setColor(QColor(Qt::red));
-        tuning = score->tunings().add();
-        tuning->setLocation(48.0f);
-        tuning->setText("48.0");
-        tuning = score->tunings().add();
-        tuning->setLocation(72.0f);
-        tuning->setText("72.0");
-        AcBarline *barline = score->barlines().add();
-        barline->setLocation(0.0f);
-        barline->setColor(QColor(Qt::green));
-        barline->setText("1");
-        barline->setPriority(0);
+        AcTuningLine *tuningLine = score->tuningLines().add();
+        tuningLine->setLocation(60.0f);
+        tuningLine->setText("60.0");
+        tuningLine->setColor(QColor(Qt::red));
+        tuningLine->setPriority(1);
+        tuningLine = score->tuningLines().add();
+        tuningLine->setLocation(48.0f);
+        tuningLine->setText("48.0");
+        tuningLine->setPriority(2);
+        tuningLine = score->tuningLines().add();
+        tuningLine->setLocation(72.0f);
+        tuningLine->setText("72.0");
+        tuningLine->setPriority(2);
+        AcBarLine *barLine = score->barLines().add();
+        barLine->setLocation(0.0f);
+        barLine->setColor(QColor(Qt::green));
+        barLine->setText("1");
+        barLine->setPriority(0);
         for (int i = 1;  i < 32;  ++i) {
-            barline = score->barlines().add();
-            barline->setLocation(4.0f * i);
-            barline->setText(QString("%1").arg(i + 1));
+            barLine = score->barLines().add();
+            barLine->setLocation(4.0f * i);
+            barLine->setText(QString("%1").arg(i + 1));
             for (int j = 16;  1 < j;  j/=2) {
                 int mod = i % j;
                 if (mod == 0) {
-                    barline->setPriority(16 / j);
+                    barLine->setPriority(16 / j);
                     break;
                 }
             }
-            if (barline->priority() == 0)
-                barline->setPriority(32);
+            if (barLine->priority() == 0)
+                barLine->setPriority(32);
         }
         score->tracks().add();
         AcFCurve *pitchCurve = score->curves().add();

@@ -15,39 +15,45 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSSCENE_H
-#define AC_GRAPHICSSCENE_H
+#ifndef AC_GRAPHICSVIEWMANAGER_H
+#define AC_GRAPHICSVIEWMANAGER_H
 
-#include <mi_graphicsscene.h>
-#include <ac_scene_global.h>
+#include <QObject>
+#include <ac_editor_global.h>
 
-class AcScore;
-class AcViewSettings;
+class AcGraphicsSceneManager;
+class AcMainWidget;
+class AcPitchGraphicsView;
+class AcScoreGraphicsView;
+class AcTimeGraphicsView;
 
 namespace Private {
 
-class AcGraphicsSceneData;
+class AcGraphicsViewManagerData;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsScene : public MiGraphicsScene
+class AcGraphicsViewManager : public QObject
 {
     Q_OBJECT
 
 public:
-    AcGraphicsScene(QObject *parent = 0);
-    virtual ~AcGraphicsScene();
+    AcGraphicsViewManager(AcMainWidget *mainWidget);
+    ~AcGraphicsViewManager();
 
-    AcScore *score() const;
-    const QFont &font() const;
-    const QFontMetrics &fontMetrics() const;
+    AcPitchGraphicsView *pitchGraphicsView() const;
+    AcScoreGraphicsView *scoreGraphicsView() const;
+    AcTimeGraphicsView *timeGraphicsView() const;
 
-protected slots:
+    AcGraphicsSceneManager *graphicsSceneManager() const;
+
+private slots:
     virtual void updateScoreProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsScene)
-    Private::AcGraphicsSceneData *d;
+    Q_DISABLE_COPY(AcGraphicsViewManager)
+    Private::AcGraphicsViewManagerData *d;
 };
 
-#endif // AC_GRAPHICSSCENE_H
+#endif // AC_GRAPHICSVIEWMANAGER_H

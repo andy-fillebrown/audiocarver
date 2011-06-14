@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_pitchview.h"
+#include "ac_pitchgraphicsview.h"
 #include <ac_pitchscene.h>
 #include <ac_score.h>
-#include <ac_scoreview.h>
+#include <ac_scoregraphicsview.h>
 #include <ac_viewsettings.h>
 #include <QGraphicsTextItem>
 
@@ -34,20 +34,20 @@ public:
 
     void updatePitchScene()
     {
-        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-        AcPitchScene *pitchScene = AcPitchScene::instance();
-        AcPitchView *pitchView = AcPitchView::instance();
-        AcScoreView *scoreView = AcScoreView::instance();
-        const qreal scaleX = viewSettings->scaleX();
-        const qreal scaleY = viewSettings->scaleY();
-        QPointF topLeft = scoreView->mapToScene(scoreView->rect().topLeft());
-        QPointF bottomRight = scoreView->mapToScene(scoreView->rect().bottomRight());
-        topLeft.rx() *= scaleX;
-        topLeft.ry() *= scaleY;
-        bottomRight.rx() *= scaleX;
-        bottomRight.ry() *= scaleY;
-        pitchScene->setSceneRect(0.0f, topLeft.y(), 10.0f, bottomRight.y() - topLeft.y());
-        pitchView->centerOn(5.0f, scoreView->center().y() * scaleY);
+//        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+//        AcPitchScene *pitchScene = AcPitchScene::instance();
+//        AcPitchView *pitchView = AcPitchView::instance();
+//        AcScoreView *scoreView = AcScoreView::instance();
+//        const qreal scaleX = viewSettings->scaleX();
+//        const qreal scaleY = viewSettings->scaleY();
+//        QPointF topLeft = scoreView->mapToScene(scoreView->rect().topLeft());
+//        QPointF bottomRight = scoreView->mapToScene(scoreView->rect().bottomRight());
+//        topLeft.rx() *= scaleX;
+//        topLeft.ry() *= scaleY;
+//        bottomRight.rx() *= scaleX;
+//        bottomRight.ry() *= scaleY;
+//        pitchScene->setSceneRect(0.0f, topLeft.y(), 10.0f, bottomRight.y() - topLeft.y());
+//        pitchView->centerOn(5.0f, scoreView->center().y() * scaleY);
     }
 };
 

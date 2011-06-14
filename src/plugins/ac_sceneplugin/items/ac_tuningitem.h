@@ -15,39 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMESCENE_H
-#define AC_TIMESCENE_H
+#ifndef AC_TUNINGITEM_H
+#define AC_TUNINGITEM_H
 
-#include <ac_graphicsscene.h>
-#include <ac_scene_global.h>
+#include <ac_guidelineitem.h>
 
-namespace Private {
+class AcTuning;
 
-class AcTimeSceneData;
-
-} // namespace Private
-
-class AC_SCENE_EXPORT AcTimeScene : public AcGraphicsScene
+class AC_SCENE_EXPORT AcTuningItem : public AcGuidelineItem
 {
-    Q_OBJECT
-
 public:
-    AcTimeScene(QObject *parent = 0);
-    virtual ~AcTimeScene();
-
-    static AcTimeScene *instance();
-
-protected:
-    virtual void updateScoreProperty(const QString &propertyName);
-
-private slots:
-    void updateViewSettingsProperty(const QString &propertyName);
-    void updateBarlines();
-    void updateBarlineProperties();
+    AcTuningItem(AcTuning *tuning = 0);
+    virtual ~AcTuningItem();
 
 private:
-    Q_DISABLE_COPY(AcTimeScene)
-    Private::AcTimeSceneData *d;
+    Q_DISABLE_COPY(AcTuningItem)
 };
 
-#endif // AC_TIMESCENE_H
+#endif // AC_TUNINGITEM_H

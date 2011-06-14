@@ -15,32 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVIEW_H
-#define AC_GRAPHICSVIEW_H
+#ifndef AC_SCORESCENE_H
+#define AC_SCORESCENE_H
 
-#include <mi_graphicsview.h>
-#include <ac_editor_global.h>
+#include <ac_graphicsscene.h>
+#include <ac_scene_global.h>
 
 namespace Private {
 
-class AcGraphicsViewData;
+class AcScoreSceneData;
 
 } // namespace Private
 
-class AcGraphicsView : public MiGraphicsView
+class AC_SCENE_EXPORT AcScoreScene : public AcGraphicsScene
 {
-    Q_OBJECT
+//    Q_OBJECT
 
-public:
-    AcGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcGraphicsView();
+//public:
+//    AcScoreScene(QObject *parent = 0);
+//    virtual ~AcScoreScene();
 
-protected slots:
-    virtual void updateViewSettings(const QString &propertyName);
+//    static AcScoreScene *instance();
 
-private:
-    Q_DISABLE_COPY(AcGraphicsView)
-    Private::AcGraphicsViewData *d;
+//    const QFontMetrics &fontMetrics() const;
+
+//protected:
+//    virtual void updateScoreProperty(const QString &propertyName);
+
+//private slots:
+//    void updateFontMetrics();
+//    void updateBarlines();
+//    void updateBarlineProperties();
+//    void updateTunings();
+//    void updateTuningProperties();
+
+//private:
+//    Q_DISABLE_COPY(AcScoreScene)
+//    Private::AcScoreSceneData *d;
 };
 
-#endif // AC_GRAPHICSVIEW_H
+#endif // AC_SCORESCENE_H

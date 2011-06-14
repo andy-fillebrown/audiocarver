@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_timeview.h"
+#include "ac_timegraphicsview.h"
 #include <ac_timescene.h>
 #include <ac_score.h>
-#include <ac_scoreview.h>
+#include <ac_scoregraphicsview.h>
 #include <ac_viewsettings.h>
 #include <QGraphicsTextItem>
 
@@ -34,20 +34,20 @@ public:
 
     void updateTimeScene()
     {
-        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-        AcTimeScene *timeScene = AcTimeScene::instance();
-        AcTimeView *timeView = AcTimeView::instance();
-        AcScoreView *scoreView = AcScoreView::instance();
-        const qreal scaleX = viewSettings->scaleX();
-        const qreal scaleY = viewSettings->scaleY();
-        QPointF topLeft = scoreView->mapToScene(scoreView->rect().topLeft());
-        QPointF bottomRight = scoreView->mapToScene(scoreView->rect().bottomRight());
-        topLeft.rx() *= scaleX;
-        topLeft.ry() *= scaleY;
-        bottomRight.rx() *= scaleX;
-        bottomRight.ry() *= scaleY;
-        timeScene->setSceneRect(topLeft.x(), 0.0f, bottomRight.x() - topLeft.x(), 10.0f);
-        timeView->centerOn(scoreView->center().x() * scaleX, 5.0f);
+//        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+//        AcTimeScene *timeScene = AcTimeScene::instance();
+//        AcTimeView *timeView = AcTimeView::instance();
+//        AcScoreView *scoreView = AcScoreView::instance();
+//        const qreal scaleX = viewSettings->scaleX();
+//        const qreal scaleY = viewSettings->scaleY();
+//        QPointF topLeft = scoreView->mapToScene(scoreView->rect().topLeft());
+//        QPointF bottomRight = scoreView->mapToScene(scoreView->rect().bottomRight());
+//        topLeft.rx() *= scaleX;
+//        topLeft.ry() *= scaleY;
+//        bottomRight.rx() *= scaleX;
+//        bottomRight.ry() *= scaleY;
+//        timeScene->setSceneRect(topLeft.x(), 0.0f, bottomRight.x() - topLeft.x(), 10.0f);
+//        timeView->centerOn(scoreView->center().x() * scaleX, 5.0f);
     }
 };
 

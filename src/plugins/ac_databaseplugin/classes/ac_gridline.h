@@ -15,19 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUIDELINE_H
-#define AC_GUIDELINE_H
+#ifndef AC_GRIDLINE_H
+#define AC_GRIDLINE_H
 
 #include <mi_object.h>
 #include <ac_database_global.h>
 
 namespace Private {
 
-class AcGuidelineData;
+class AcGridLineData;
 
 } // namespace Private
 
-class AC_DATABASE_EXPORT AcGuideline : public MiObject
+class AC_DATABASE_EXPORT AcGridLine : public MiObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal location READ location WRITE setLocation)
@@ -36,10 +36,11 @@ class AC_DATABASE_EXPORT AcGuideline : public MiObject
     Q_PROPERTY(int priority READ priority WRITE setPriority)
 
 public:
-    explicit AcGuideline(QObject *parent = 0);
-    virtual ~AcGuideline();
+    explicit AcGridLine(QObject *parent = 0);
+    virtual ~AcGridLine();
 
-    inline static bool lessThan(MiObject *a, MiObject *b);
+    inline static bool locationLessThan(MiObject *a, MiObject *b);
+    inline static bool priorityLessThan(MiObject *a, MiObject *b);
 
     qreal location() const;
     void setLocation(qreal location);
@@ -51,15 +52,26 @@ public:
     void setPriority(int priority);
 
 private:
-    Q_DISABLE_COPY(AcGuideline)
-    Private::AcGuidelineData *d;
+    Q_DISABLE_COPY(AcGridLine)
+    Private::AcGridLineData *d;
 };
 
-inline bool AcGuideline::lessThan(MiObject *a, MiObject *b)
+inline bool AcGridLine::locationLessThan(MiObject *a, MiObject *b)
 {
-    AcGuideline *A = qobject_cast<AcGuideline*>(a);
-    AcGuideline *B = qobject_cast<AcGuideline*>(b);
+    AcGridLine *A = qobject_cast<AcGridLine*>(a);
+    AcGridLine *B = qobject_cast<AcGridLine*>(b);
     return A->location() < B->location();
 }
 
-#endif // AC_GUIDELINE_H
+inline bool AcGridLine::priorityLessThan(MiObject *a, MiObject *b)
+{
+    AcGridLine *A = qobject_cast<AcGridLine*>(a);
+    AcGridLine *B = qobject_cast<AcGridLine*>(b);
+    if (A->priority() < B->priority())
+        return true;
+    if (A->priority() == B->priority() && A->location() <= B->location())
+        return true;
+    return false;
+}
+
+#endif // AC_GRIDLINE_H

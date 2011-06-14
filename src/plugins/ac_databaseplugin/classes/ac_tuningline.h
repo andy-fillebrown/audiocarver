@@ -15,21 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_TUNING_H
-#define AC_TUNING_H
+#ifndef AC_TUNINGLINE_H
+#define AC_TUNINGLINE_H
 
-#include <ac_guideline.h>
+#include <ac_gridline.h>
 
-class AC_DATABASE_EXPORT AcTuning : public AcGuideline
+class AC_DATABASE_EXPORT AcTuningLine : public AcGridLine
 {
     Q_OBJECT
 
 public:
-    explicit AcTuning(QObject *parent = 0);
-    virtual ~AcTuning();
+    explicit AcTuningLine(QObject *parent = 0);
+    virtual ~AcTuningLine();
 
 private:
-    Q_DISABLE_COPY(AcTuning)
+    Q_DISABLE_COPY(AcTuningLine)
 };
 
-#endif // AC_TUNING_H
+#endif // AC_TUNINGLINE_H

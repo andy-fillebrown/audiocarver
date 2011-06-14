@@ -59,7 +59,6 @@ protected:
         :   list(list)
     {}
 
-private:
     MiObjectList *list;
 };
 

@@ -37,23 +37,23 @@ public:
 
     static AcMainWidget *instance();
 
-    qreal positionX() const;
-    void setPositionX(qreal positionX);
-    qreal positionY() const;
-    void setPositionY(qreal positionY);
-    qreal scaleX() const;
-    void setScaleX(qreal scaleX);
-    qreal scaleY() const;
-    void setScaleY(qreal scaleY);
+//    qreal positionX() const;
+//    void setPositionX(qreal positionX);
+//    qreal positionY() const;
+//    void setPositionY(qreal positionY);
+//    qreal scaleX() const;
+//    void setScaleX(qreal scaleX);
+//    qreal scaleY() const;
+//    void setScaleY(qreal scaleY);
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void showEvent(QShowEvent *event);
-    void wheelEvent(QWheelEvent *event);
+//protected:
+//    void resizeEvent(QResizeEvent *event);
+//    void showEvent(QShowEvent *event);
+//    void wheelEvent(QWheelEvent *event);
 
-private:
-    Q_DISABLE_COPY(AcMainWidget)
-    Private::AcMainWidgetData *d;
+//private:
+//    Q_DISABLE_COPY(AcMainWidget)
+//    Private::AcMainWidgetData *d;
 };
 
 #endif // AC_MAINWIDGET_H

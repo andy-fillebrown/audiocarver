@@ -15,39 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHSCENE_H
-#define AC_PITCHSCENE_H
-
-#include <ac_graphicsscene.h>
-#include <ac_scene_global.h>
-
-namespace Private {
-
-class AcPitchSceneData;
-
-} // namespace Private
-
-class AC_SCENE_EXPORT AcPitchScene : public AcGraphicsScene
-{
-    Q_OBJECT
-
-public:
-    AcPitchScene(QObject *parent = 0);
-    virtual ~AcPitchScene();
-
-    static AcPitchScene *instance();
-
-protected:
-    virtual void updateScoreProperty(const QString &propertyName);
-
-private slots:
-    void updateViewSettingsProperty(const QString &propertyName);
-    void updateTunings();
-    void updateTuningProperties();
-
-private:
-    Q_DISABLE_COPY(AcPitchScene)
-    Private::AcPitchSceneData *d;
-};
-
-#endif // AC_PITCHSCENE_H
+#include "mi_prioritylist.h"

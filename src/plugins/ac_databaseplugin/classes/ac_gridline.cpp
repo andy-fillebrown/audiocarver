@@ -15,21 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_guideline.h"
+#include "ac_gridline.h"
 #include <mi_list.h>
-
-template <> bool MiList<AcGuideline>::lessThan(MiObject *a, MiObject *b)
-{
-    AcGuideline *A = qobject_cast<AcGuideline*>(a);
-    AcGuideline *B = qobject_cast<AcGuideline*>(b);
-    return A->location() < B->location();
-}
 
 using namespace Private;
 
 namespace Private {
 
-class AcGuidelineData
+class AcGridLineData
 {
 public:
     qreal location;
@@ -37,7 +30,7 @@ public:
     QString text;
     int priority;
 
-    AcGuidelineData()
+    AcGridLineData()
         :   location(0.0f)
         ,   color(Qt::lightGray)
         ,   text(QString())
@@ -47,22 +40,22 @@ public:
 
 } // namespace Private
 
-AcGuideline::AcGuideline(QObject *parent)
+AcGridLine::AcGridLine(QObject *parent)
     :   MiObject(parent)
-    ,   d(new AcGuidelineData)
+    ,   d(new AcGridLineData)
 {}
 
-AcGuideline::~AcGuideline()
+AcGridLine::~AcGridLine()
 {
     delete d;
 }
 
-qreal AcGuideline::location() const
+qreal AcGridLine::location() const
 {
     return d->location;
 }
 
-void AcGuideline::setLocation(qreal location)
+void AcGridLine::setLocation(qreal location)
 {
     if (location < 0.0f)
         location = 0.0f;
@@ -72,12 +65,12 @@ void AcGuideline::setLocation(qreal location)
     emit propertyChanged("location");
 }
 
-const QColor &AcGuideline::color() const
+const QColor &AcGridLine::color() const
 {
     return d->color;
 }
 
-void AcGuideline::setColor(const QColor &color)
+void AcGridLine::setColor(const QColor &color)
 {
     if (d->color == color)
         return;
@@ -85,12 +78,12 @@ void AcGuideline::setColor(const QColor &color)
     emit propertyChanged("color");
 }
 
-const QString &AcGuideline::text() const
+const QString &AcGridLine::text() const
 {
     return d->text;
 }
 
-void AcGuideline::setText(const QString &text)
+void AcGridLine::setText(const QString &text)
 {
     if (d->text == text)
         return;
@@ -98,12 +91,12 @@ void AcGuideline::setText(const QString &text)
     emit propertyChanged("text");
 }
 
-int AcGuideline::priority() const
+int AcGridLine::priority() const
 {
     return d->priority;
 }
 
-void AcGuideline::setPriority(int priority)
+void AcGridLine::setPriority(int priority)
 {
     if (priority < 0)
         priority = 0;

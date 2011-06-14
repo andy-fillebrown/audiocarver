@@ -15,17 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_tuning.h"
+#ifndef MI_PRIORITYLIST_H
+#define MI_PRIORITYLIST_H
+
 #include <mi_list.h>
 
-template <> bool MiList<AcTuning>::lessThan(MiObject *a, MiObject *b)
+template <typename T> class MiPriorityList : public MiList<T>
 {
-    return AcGuideline::lessThan(a, b);
-}
+    static bool lessThan(MiObject *a, MiObject *b);
 
-AcTuning::AcTuning(QObject *parent)
-    :   AcGuideline(parent)
-{}
+public:
+    MiPriorityList();
+    ~MiPriorityList();
 
-AcTuning::~AcTuning()
-{}
+    void sort() { MiList<T>::list->sort(lessThan); }
+};
+
+#endif // MI_PRIORITYLIST_H

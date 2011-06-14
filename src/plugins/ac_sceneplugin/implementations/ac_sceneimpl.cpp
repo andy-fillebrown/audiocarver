@@ -28,7 +28,7 @@ public:
     AcGraphicsScene *scene;
 
     AcSceneImplData(AcSceneImpl *q)
-        :   scene(new AcGraphicsScene(q))
+//        :   scene(new AcGraphicsScene(q))
     {}
 };
 

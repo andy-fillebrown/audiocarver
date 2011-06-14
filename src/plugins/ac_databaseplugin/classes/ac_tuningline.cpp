@@ -15,32 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVIEW_H
-#define AC_GRAPHICSVIEW_H
+#include "ac_tuningline.h"
+#include <mi_list.h>
+#include <mi_prioritylist.h>
 
-#include <mi_graphicsview.h>
-#include <ac_editor_global.h>
-
-namespace Private {
-
-class AcGraphicsViewData;
-
-} // namespace Private
-
-class AcGraphicsView : public MiGraphicsView
+template <> bool MiList<AcTuningLine>::lessThan(MiObject *a, MiObject *b)
 {
-    Q_OBJECT
+    return AcGridLine::locationLessThan(a, b);
+}
 
-public:
-    AcGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcGraphicsView();
+template <> bool MiPriorityList<AcTuningLine>::lessThan(MiObject *a, MiObject *b)
+{
+    return AcGridLine::priorityLessThan(a, b);
+}
 
-protected slots:
-    virtual void updateViewSettings(const QString &propertyName);
+AcTuningLine::AcTuningLine(QObject *parent)
+    :   AcGridLine(parent)
+{}
 
-private:
-    Q_DISABLE_COPY(AcGraphicsView)
-    Private::AcGraphicsViewData *d;
-};
-
-#endif // AC_GRAPHICSVIEW_H
+AcTuningLine::~AcTuningLine()
+{}

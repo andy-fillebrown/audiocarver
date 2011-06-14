@@ -15,32 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVIEW_H
-#define AC_GRAPHICSVIEW_H
+#ifndef AC_PITCHSCENE_H
+#define AC_PITCHSCENE_H
 
-#include <mi_graphicsview.h>
-#include <ac_editor_global.h>
+#include <ac_graphicsscene.h>
+#include <ac_scene_global.h>
 
 namespace Private {
 
-class AcGraphicsViewData;
+class AcPitchSceneData;
 
 } // namespace Private
 
-class AcGraphicsView : public MiGraphicsView
+class AC_SCENE_EXPORT AcPitchScene : public AcGraphicsScene
 {
-    Q_OBJECT
+//    Q_OBJECT
 
-public:
-    AcGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcGraphicsView();
+//public:
+//    AcPitchScene(QObject *parent = 0);
+//    virtual ~AcPitchScene();
 
-protected slots:
-    virtual void updateViewSettings(const QString &propertyName);
+//    static AcPitchScene *instance();
 
-private:
-    Q_DISABLE_COPY(AcGraphicsView)
-    Private::AcGraphicsViewData *d;
+//protected:
+//    virtual void updateScoreProperty(const QString &propertyName);
+
+//private slots:
+//    void updateViewSettingsProperty(const QString &propertyName);
+//    void updateTunings();
+//    void updateTuningProperties();
+
+//private:
+//    Q_DISABLE_COPY(AcPitchScene)
+//    Private::AcPitchSceneData *d;
 };
 
-#endif // AC_GRAPHICSVIEW_H
+#endif // AC_PITCHSCENE_H

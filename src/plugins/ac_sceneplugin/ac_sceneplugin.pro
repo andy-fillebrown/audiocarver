@@ -7,24 +7,30 @@ include(ac_sceneplugin_dependencies.pri)
 DEFINES += AC_SCENE_LIBRARY
 
 HEADERS += \
-    classes/ac_graphicsscene.h \
-    classes/ac_pitchscene.h \
-    classes/ac_scorescene.h \
-    classes/ac_timescene.h \
-#    classes/ac_volumescene.h \
-    \
     implementations/ac_sceneimpl.h \
+    \
+    items/ac_barlineitem.h \
+    items/ac_guidelineitem.h \
+    items/ac_tuningitem.h \
+    \
+    scenes/ac_graphicsscene.h \
+    scenes/ac_pitchscene.h \
+    scenes/ac_scorescene.h \
+    scenes/ac_timescene.h \
     \
     ac_scene_global.h \
     ac_sceneplugin.h \
 
 SOURCES += \
-    classes/ac_graphicsscene.cpp \
-    classes/ac_pitchscene.cpp \
-    classes/ac_scorescene.cpp \
-    classes/ac_timescene.cpp \
-#    classes/ac_volumescene.cpp \
-    \
     implementations/ac_sceneimpl.cpp \
+    \
+    items/ac_barlineitem.cpp \
+    items/ac_guidelineitem.cpp \
+    items/ac_tuningitem.cpp \
+    \
+    scenes/ac_graphicsscene.cpp \
+    scenes/ac_pitchscene.cpp \
+    scenes/ac_scorescene.cpp \
+    scenes/ac_timescene.cpp \
     \
     ac_sceneplugin.cpp \

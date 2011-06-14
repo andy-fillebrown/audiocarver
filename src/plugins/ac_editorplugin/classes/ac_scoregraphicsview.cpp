@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_scoreview.h"
+#include "ac_scoregraphicsview.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 

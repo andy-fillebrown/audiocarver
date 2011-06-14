@@ -15,43 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCORESCENE_H
-#define AC_SCORESCENE_H
+#ifndef AC_BARLINEITEM_H
+#define AC_BARLINEITEM_H
 
-#include <ac_graphicsscene.h>
-#include <ac_scene_global.h>
+#include <ac_guidelineitem.h>
 
-namespace Private {
+class AcBarline;
 
-class AcScoreSceneData;
-
-} // namespace Private
-
-class AC_SCENE_EXPORT AcScoreScene : public AcGraphicsScene
+class AC_SCENE_EXPORT AcBarlineItem : public AcGuidelineItem
 {
-    Q_OBJECT
-
 public:
-    AcScoreScene(QObject *parent = 0);
-    virtual ~AcScoreScene();
-
-    static AcScoreScene *instance();
-
-    const QFontMetrics &fontMetrics() const;
-
-protected:
-    virtual void updateScoreProperty(const QString &propertyName);
-
-private slots:
-    void updateFontMetrics();
-    void updateBarlines();
-    void updateBarlineProperties();
-    void updateTunings();
-    void updateTuningProperties();
+    AcBarlineItem(AcBarline *barline = 0);
+    virtual ~AcBarlineItem();
 
 private:
-    Q_DISABLE_COPY(AcScoreScene)
-    Private::AcScoreSceneData *d;
+    Q_DISABLE_COPY(AcBarlineItem)
 };
 
-#endif // AC_SCORESCENE_H
+#endif // AC_BARLINEITEM_H

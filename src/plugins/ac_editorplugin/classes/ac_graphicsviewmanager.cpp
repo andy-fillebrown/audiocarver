@@ -15,56 +15,50 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsscene.h"
+#include "ac_graphicsviewmanager.h"
+#include <ac_mainwidget.h>
 #include <ac_score.h>
-#include <ac_scorescene.h>
 #include <ac_viewsettings.h>
-#include <mi_font.h>
 
 using namespace Private;
 
 namespace Private {
 
-class AcGraphicsSceneData
+class AcGraphicsViewManagerData
 {
 public:
+    AcGraphicsViewManager *q;
     AcScore *score;
+    AcViewSettings *viewSettings;
 
-    AcGraphicsSceneData()
-        :   score(AcScore::instance())
-    {}
+    AcGraphicsViewManagerData(AcGraphicsViewManager *q)
+        :   q(q)
+        ,   score(AcScore::instance())
+        ,   viewSettings(score->viewSettings())
+    {
+        q->connect(score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+    }
 };
 
 } // namespace Private
 
-AcGraphicsScene::AcGraphicsScene(QObject *parent)
-    :   MiGraphicsScene(parent)
-    ,   d(new AcGraphicsSceneData)
+AcGraphicsViewManager::AcGraphicsViewManager(AcMainWidget *mainWidget)
+    :   QObject(mainWidget)
+    ,   d(new AcGraphicsViewManagerData(this))
 {
-    connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
-AcGraphicsScene::~AcGraphicsScene()
+AcGraphicsViewManager::~AcGraphicsViewManager()
 {
     delete d;
 }
 
-AcScore *AcGraphicsScene::score() const
+void AcGraphicsViewManager::updateScoreProperty(const QString &propertyName)
 {
-    return d->score;
+    Q_UNUSED(propertyName);
 }
 
-const QFont &AcGraphicsScene::font() const
-{
-    return score()->fontSettings()->qFont();
-}
-
-const QFontMetrics &AcGraphicsScene::fontMetrics() const
-{
-    return AcScoreScene::instance()->fontMetrics();
-}
-
-void AcGraphicsScene::updateScoreProperty(const QString &propertyName)
+void AcGraphicsViewManager::updateViewSettingsProperty(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
 }
