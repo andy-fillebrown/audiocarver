@@ -15,34 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMEGRAPHICSVIEW_H
-#define AC_TIMEGRAPHICSVIEW_H
+#ifndef AC_VIEWMANAGER_H
+#define AC_VIEWMANAGER_H
 
-#include <ac_graphicsview.h>
+#include <QObject>
 #include <ac_editor_global.h>
+
+class AcMainWidget;
 
 namespace Private {
 
-class AcTimeGraphicsViewData;
+class AcViewManagerData;
 
 } // namespace Private
 
-class AcTimeGraphicsView : public AcGraphicsView
+class AcViewManager : public QObject
 {
     Q_OBJECT
 
 public:
-    AcTimeGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcTimeGraphicsView();
+    AcViewManager(AcMainWidget *mainWidget);
+    ~AcViewManager();
 
-    void update();
-
-protected:
-    virtual void updateViewSettings(const QString &propertyName);
+private slots:
+    virtual void updateScoreProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcTimeGraphicsView)
-    Private::AcTimeGraphicsViewData *d;
+    Q_DISABLE_COPY(AcViewManager)
+    Private::AcViewManagerData *d;
 };
 
-#endif // AC_TIMEGRAPHICSVIEW_H
+#endif // AC_VIEWMANAGER_H

@@ -9,9 +9,9 @@ DEFINES += AC_SCENE_LIBRARY
 HEADERS += \
     implementations/ac_sceneimpl.h \
     \
-    items/ac_barlineitem.h \
-    items/ac_guidelineitem.h \
-    items/ac_tuningitem.h \
+    items/ac_graphicsbarlineitem.h \
+    items/ac_graphicsgridlineitem.h \
+    items/ac_graphicstuninglineitem.h \
     \
     scenes/ac_graphicsscene.h \
     scenes/ac_pitchscene.h \
@@ -24,9 +24,9 @@ HEADERS += \
 SOURCES += \
     implementations/ac_sceneimpl.cpp \
     \
-    items/ac_barlineitem.cpp \
-    items/ac_guidelineitem.cpp \
-    items/ac_tuningitem.cpp \
+    items/ac_graphicsbarlineitem.cpp \
+    items/ac_graphicsgridlineitem.cpp \
+    items/ac_graphicstuninglineitem.cpp \
     \
     scenes/ac_graphicsscene.cpp \
     scenes/ac_pitchscene.cpp \

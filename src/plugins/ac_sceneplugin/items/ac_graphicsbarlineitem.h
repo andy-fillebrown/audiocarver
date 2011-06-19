@@ -15,21 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_BARLINEITEM_H
-#define AC_BARLINEITEM_H
+#ifndef AC_GRAPHICSBARLINEITEM_H
+#define AC_GRAPHICSBARLINEITEM_H
 
-#include <ac_guidelineitem.h>
+#include <ac_graphicsgridlineitem.h>
 
-class AcBarline;
+class AcBarLine;
 
-class AC_SCENE_EXPORT AcBarlineItem : public AcGuidelineItem
+class AC_SCENE_EXPORT AcGraphicsBarLineItem : public AcGraphicsGridLineItem
 {
 public:
-    AcBarlineItem(AcBarline *barline = 0);
-    virtual ~AcBarlineItem();
+    AcGraphicsBarLineItem(AcBarLine *barLine = 0);
+    virtual ~AcGraphicsBarLineItem();
 
 private:
-    Q_DISABLE_COPY(AcBarlineItem)
+    Q_DISABLE_COPY(AcGraphicsBarLineItem)
 };
 
-#endif // AC_BARLINEITEM_H
+#endif // AC_GRAPHICSBARLINEITEM_H

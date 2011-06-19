@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_timegraphicsview.h"
-#include <ac_timescene.h>
+#include "ac_pitchview.h"
+#include <ac_pitchscene.h>
 #include <ac_score.h>
-#include <ac_scoregraphicsview.h>
+#include <ac_scoreview.h>
 #include <ac_viewsettings.h>
 #include <QGraphicsTextItem>
 
@@ -26,17 +26,17 @@ using namespace Private;
 
 namespace Private {
 
-class AcTimeGraphicsViewData
+class AcPitchViewData
 {
 public:
-    AcTimeGraphicsViewData()
+    AcPitchViewData()
     {}
 
-    void updateTimeScene()
+    void updatePitchScene()
     {
 //        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-//        AcTimeScene *timeScene = AcTimeScene::instance();
-//        AcTimeView *timeView = AcTimeView::instance();
+//        AcPitchScene *pitchScene = AcPitchScene::instance();
+//        AcPitchView *pitchView = AcPitchView::instance();
 //        AcScoreView *scoreView = AcScoreView::instance();
 //        const qreal scaleX = viewSettings->scaleX();
 //        const qreal scaleY = viewSettings->scaleY();
@@ -46,29 +46,29 @@ public:
 //        topLeft.ry() *= scaleY;
 //        bottomRight.rx() *= scaleX;
 //        bottomRight.ry() *= scaleY;
-//        timeScene->setSceneRect(topLeft.x(), 0.0f, bottomRight.x() - topLeft.x(), 10.0f);
-//        timeView->centerOn(scoreView->center().x() * scaleX, 5.0f);
+//        pitchScene->setSceneRect(0.0f, topLeft.y(), 10.0f, bottomRight.y() - topLeft.y());
+//        pitchView->centerOn(5.0f, scoreView->center().y() * scaleY);
     }
 };
 
 } // namespace Private
 
-AcTimeGraphicsView::AcTimeGraphicsView(QGraphicsScene *scene, QWidget *parent)
+AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcTimeGraphicsViewData)
+    ,   d(new AcPitchViewData)
 {}
 
-AcTimeGraphicsView::~AcTimeGraphicsView()
+AcPitchView::~AcPitchView()
 {
     delete d;
 }
 
-void AcTimeGraphicsView::update()
+void AcPitchView::update()
 {
-    d->updateTimeScene();
+    d->updatePitchScene();
 }
 
-void AcTimeGraphicsView::updateViewSettings(const QString &propertyName)
+void AcPitchView::updateViewSettings(const QString &propertyName)
 {
-    d->updateTimeScene();
+    d->updatePitchScene();
 }

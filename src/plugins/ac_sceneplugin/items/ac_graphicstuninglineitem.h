@@ -15,34 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHGRAPHICSVIEW_H
-#define AC_PITCHGRAPHICSVIEW_H
+#ifndef AC_GRAPHICSTUNINGLINEITEM_H
+#define AC_GRAPHICSTUNINGLINEITEM_H
 
-#include <ac_graphicsview.h>
-#include <ac_editor_global.h>
+#include <ac_graphicsgridlineitem.h>
 
-namespace Private {
+class AcTuningLine;
 
-class AcPitchGraphicsViewData;
-
-} // namespace Private
-
-class AcPitchGraphicsView : public AcGraphicsView
+class AC_SCENE_EXPORT AcGraphicsTuningLineItem : public AcGraphicsGridLineItem
 {
-    Q_OBJECT
-
 public:
-    AcPitchGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcPitchGraphicsView();
-
-    void update();
-
-protected:
-    virtual void updateViewSettings(const QString &propertyName);
+    AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0);
+    virtual ~AcGraphicsTuningLineItem();
 
 private:
-    Q_DISABLE_COPY(AcPitchGraphicsView)
-    Private::AcPitchGraphicsViewData *d;
+    Q_DISABLE_COPY(AcGraphicsTuningLineItem)
 };
 
-#endif // AC_PITCHGRAPHICSVIEW_H
+#endif // AC_GRAPHICSTUNINGLINEITEM_H

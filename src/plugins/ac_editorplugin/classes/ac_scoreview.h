@@ -15,21 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_TUNINGITEM_H
-#define AC_TUNINGITEM_H
+#ifndef AC_SCOREVIEW_H
+#define AC_SCOREVIEW_H
 
-#include <ac_guidelineitem.h>
+#include <ac_graphicsview.h>
+#include <ac_editor_global.h>
 
-class AcTuning;
+namespace Private {
 
-class AC_SCENE_EXPORT AcTuningItem : public AcGuidelineItem
+class AcScoreViewData;
+
+} // namespace Private
+
+class AcScoreView : public AcGraphicsView
 {
+    Q_OBJECT
+
 public:
-    AcTuningItem(AcTuning *tuning = 0);
-    virtual ~AcTuningItem();
+    AcScoreView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcScoreView();
+
+    const QPointF &center() const;
+    void setCenter(const QPointF &center);
+    void setCenter(qreal x, qreal y);
+
+public slots:
+    void updateScoreProperty(const QString &propertyName);
+    void updateCenter();
+
+protected:
+    virtual void updateViewSettings(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcTuningItem)
+    Q_DISABLE_COPY(AcScoreView)
+    Private::AcScoreViewData *d;
 };
 
-#endif // AC_TUNINGITEM_H
+#endif // AC_SCOREVIEW_H

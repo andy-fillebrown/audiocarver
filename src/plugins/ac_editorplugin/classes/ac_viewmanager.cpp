@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsviewmanager.h"
+#include "ac_viewmanager.h"
 #include <ac_mainwidget.h>
 #include <ac_score.h>
 #include <ac_viewsettings.h>
@@ -24,14 +24,14 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsViewManagerData
+class AcViewManagerData
 {
 public:
-    AcGraphicsViewManager *q;
+    AcViewManager *q;
     AcScore *score;
     AcViewSettings *viewSettings;
 
-    AcGraphicsViewManagerData(AcGraphicsViewManager *q)
+    AcViewManagerData(AcViewManager *q)
         :   q(q)
         ,   score(AcScore::instance())
         ,   viewSettings(score->viewSettings())
@@ -40,24 +40,24 @@ public:
 
 } // namespace Private
 
-AcGraphicsViewManager::AcGraphicsViewManager(AcMainWidget *mainWidget)
+AcViewManager::AcViewManager(AcMainWidget *mainWidget)
     :   QObject(mainWidget)
-    ,   d(new AcGraphicsViewManagerData(this))
+    ,   d(new AcViewManagerData(this))
 {
     connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
-AcGraphicsViewManager::~AcGraphicsViewManager()
+AcViewManager::~AcViewManager()
 {
     delete d;
 }
 
-void AcGraphicsViewManager::updateScoreProperty(const QString &propertyName)
+void AcViewManager::updateScoreProperty(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
 }
 
-void AcGraphicsViewManager::updateViewSettingsProperty(const QString &propertyName)
+void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
 }

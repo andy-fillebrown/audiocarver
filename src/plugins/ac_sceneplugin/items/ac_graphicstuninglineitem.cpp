@@ -15,31 +15,32 @@
 **
 **************************************************************************/
 
-#include "ac_barlineitem.h"
-//#include <ac_barline.h>
+#include "ac_graphicstuninglineitem.h"
+//#include <ac_tuning.h>
 //#include <ac_score.h>
 //#include <ac_scorescene.h>
 //#include <ac_viewsettings.h>
 //#include <QGraphicsLineItem>
 //#include <QGraphicsTextItem>
 
-//AcBarlineItem::AcBarlineItem(AcBarline *barline)
-//    :   AcGuidelineItem(barline)
+//AcTuningItem::AcTuningItem(AcTuning *tuning)
+//    :   AcGuidelineItem(tuning)
 //{}
 
-//AcBarlineItem::~AcBarlineItem()
+//AcTuningItem::~AcTuningItem()
 //{}
 
-//void AcBarlineItem::updateItems()
+//void AcTuningItem::updateItems()
 //{
 //    AcGuidelineItem::updateItems();
 //    QGraphicsLineItem *lineItem = qLineItem();
+//    const qreal length = AcScore::instance()->length();
 //    AcGuideline *guideline = this->guideline();
 //    const qreal location = guideline->location();
-//    lineItem->setLine(location, 0.0f, location, 127.0f);
+//    lineItem->setLine(0.0f, location, length, 0.0f);
 //    QGraphicsTextItem *textItem = qTextItem();
 //    const QFontMetrics &fontMetrics = AcScoreScene::instance()->fontMetrics();
 //    QRect textRect = fontMetrics.boundingRect(guideline->text());
-//    qreal scaleX = AcScore::instance()->viewSettings()->scaleX();
-//    textItem->setPos((location * scaleX) - (textRect.width() / 2), 10.0f);
+//    qreal scaleY = AcScore::instance()->viewSettings()->scaleY();
+//    textItem->setPos(20.0f - textRect.width(), ((127.0f - location) * scaleY) - (textRect.height() / 1.5));
 //}

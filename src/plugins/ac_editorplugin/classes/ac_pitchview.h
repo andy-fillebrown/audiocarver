@@ -15,35 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVIEWMANAGER_H
-#define AC_GRAPHICSVIEWMANAGER_H
+#ifndef AC_PITCHVIEW_H
+#define AC_PITCHVIEW_H
 
-#include <QObject>
+#include <ac_graphicsview.h>
 #include <ac_editor_global.h>
-
-class AcMainWidget;
 
 namespace Private {
 
-class AcGraphicsViewManagerData;
+class AcPitchViewData;
 
 } // namespace Private
 
-class AcGraphicsViewManager : public QObject
+class AcPitchView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcGraphicsViewManager(AcMainWidget *mainWidget);
-    ~AcGraphicsViewManager();
+    AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcPitchView();
 
-private slots:
-    virtual void updateScoreProperty(const QString &propertyName);
-    virtual void updateViewSettingsProperty(const QString &propertyName);
+    void update();
+
+protected:
+    virtual void updateViewSettings(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsViewManager)
-    Private::AcGraphicsViewManagerData *d;
+    Q_DISABLE_COPY(AcPitchView)
+    Private::AcPitchViewData *d;
 };
 
-#endif // AC_GRAPHICSVIEWMANAGER_H
+#endif // AC_PITCHVIEW_H

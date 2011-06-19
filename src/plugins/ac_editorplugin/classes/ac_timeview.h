@@ -15,40 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCOREGRAPHICSVIEW_H
-#define AC_SCOREGRAPHICSVIEW_H
+#ifndef AC_TIMEVIEW_H
+#define AC_TIMEVIEW_H
 
 #include <ac_graphicsview.h>
 #include <ac_editor_global.h>
 
 namespace Private {
 
-class AcScoreGraphicsViewData;
+class AcTimeViewData;
 
 } // namespace Private
 
-class AcScoreGraphicsView : public AcGraphicsView
+class AcTimeView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcScoreGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcScoreGraphicsView();
+    AcTimeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcTimeView();
 
-    const QPointF &center() const;
-    void setCenter(const QPointF &center);
-    void setCenter(qreal x, qreal y);
-
-public slots:
-    void updateScoreProperty(const QString &propertyName);
-    void updateCenter();
+    void update();
 
 protected:
     virtual void updateViewSettings(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcScoreGraphicsView)
-    Private::AcScoreGraphicsViewData *d;
+    Q_DISABLE_COPY(AcTimeView)
+    Private::AcTimeViewData *d;
 };
 
-#endif // AC_SCOREGRAPHICSVIEW_H
+#endif // AC_TIMEVIEW_H
