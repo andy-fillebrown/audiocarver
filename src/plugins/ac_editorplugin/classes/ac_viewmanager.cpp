@@ -16,8 +16,11 @@
 **************************************************************************/
 
 #include "ac_viewmanager.h"
+#include <ac_barline.h>
 #include <ac_controllerscene.h>
 #include <ac_controllerview.h>
+#include <ac_graphicsbarlineitem.h>
+#include <ac_graphicstuninglineitem.h>
 #include <ac_pitchscene.h>
 #include <ac_pitchview.h>
 #include <ac_score.h>
@@ -26,6 +29,8 @@
 #include <ac_timescene.h>
 #include <ac_timeview.h>
 #include <ac_viewsettings.h>
+#include <mi_list.h>
+#include <QGraphicsLineItem>
 #include <QWidget>
 
 using namespace Private;
@@ -47,6 +52,8 @@ public:
     AcTimeView *timeView;
     AcScore *score;
     AcViewSettings *viewSettings;
+    QList<AcGraphicsBarLineItem*> graphicsBarLineItems;
+    QList<AcGraphicsTuningLineItem*> graphicsTuningLineItems;
 
     AcViewManagerData(AcViewManager *q, QWidget *widget)
         :   q(q)
@@ -62,6 +69,31 @@ public:
         ,   score(AcScore::instance())
         ,   viewSettings(score->viewSettings())
     {}
+
+    void updateGraphicsBarLineItems()
+    {
+        const MiList<AcBarLine> &barLines = score->barLines();
+        for (int i = 0;  i < barLines.count();  ++i) {
+            AcGraphicsBarLineItem *graphicsBarLineItem = 0;
+            if (graphicsBarLineItems.count() <= i) {
+                graphicsBarLineItem = new AcGraphicsBarLineItem(barLines.at(i));
+                scoreScene->addItem(graphicsBarLineItem->qGraphicsLineItem());
+                timeScene->addItem(graphicsBarLineItem->qGraphicsTextItem());
+                graphicsBarLineItems.append(graphicsBarLineItem);
+            } else
+                graphicsBarLineItems.at(i)->setGridLine(barLines.at(i));
+        }
+        while (barLines.count() < graphicsBarLineItems.count()) {
+            AcGraphicsBarLineItem *graphicsBarLineItem = graphicsBarLineItems.last();
+            timeScene->removeItem(graphicsBarLineItem->qGraphicsTextItem());
+            scoreScene->removeItem(graphicsBarLineItem->qGraphicsLineItem());
+            graphicsBarLineItems.removeLast();
+        }
+        for (int i = 0;  i < barLines.count();  ++i) {
+            const int pos = barLines.at(i)->location();
+            graphicsBarLineItems.at(i)->qGraphicsLineItem()->setLine(pos, 0, pos, 127);
+        }
+    }
 };
 
 } // namespace Private
@@ -121,7 +153,10 @@ void AcViewManager::setScaleY(qreal scaleY)
 
 void AcViewManager::updateScoreProperty(const QString &propertyName)
 {
-    Q_UNUSED(propertyName);
+    if ("barLines" == propertyName) {
+        updateBarLines();
+        return;
+    }
 }
 
 void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
@@ -151,4 +186,10 @@ AcTimeView *AcViewManager::timeView() const
 
 void AcViewManager::updateViews()
 {
+    updateBarLines();
+}
+
+void AcViewManager::updateBarLines()
+{
+    d->updateGraphicsBarLineItems();
 }

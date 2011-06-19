@@ -169,14 +169,15 @@ bool MiObject::read(QXmlStreamReader &in)
         QString type = propertyType(i);
         if (type != "MiObjectList*")
             continue;
+        while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
+        QString currentListName = in.name().toString();
         MiObjectList *list = propertyValue(i).value<MiObjectList*>();
         Q_ASSERT(list);
         if (!list)
             return false;
+        blockSignals(true);
         if (!list->isConstant())
             list->deleteAll();
-        while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
-        QString currentListName = in.name().toString();
         while (!in.atEnd()) {
             QXmlStreamReader::TokenType tokenType = in.readNext();
             if (tokenType == QXmlStreamReader::Characters)
@@ -199,6 +200,8 @@ bool MiObject::read(QXmlStreamReader &in)
                     return false;
             }
         }
+        blockSignals(false);
+        emit propertyChanged(currentListName);
     }
     return true;
 }

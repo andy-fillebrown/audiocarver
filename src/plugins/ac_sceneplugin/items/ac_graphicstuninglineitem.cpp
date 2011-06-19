@@ -16,19 +16,19 @@
 **************************************************************************/
 
 #include "ac_graphicstuninglineitem.h"
-//#include <ac_tuning.h>
+#include <ac_tuningline.h>
 //#include <ac_score.h>
 //#include <ac_scorescene.h>
 //#include <ac_viewsettings.h>
 //#include <QGraphicsLineItem>
 //#include <QGraphicsTextItem>
 
-//AcTuningItem::AcTuningItem(AcTuning *tuning)
-//    :   AcGuidelineItem(tuning)
-//{}
+AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine)
+    :   AcGraphicsGridLineItem(tuningLine)
+{}
 
-//AcTuningItem::~AcTuningItem()
-//{}
+AcGraphicsTuningLineItem::~AcGraphicsTuningLineItem()
+{}
 
 //void AcTuningItem::updateItems()
 //{

@@ -64,6 +64,7 @@ private:
     AcPitchView *pitchView() const;
     AcTimeView *timeView() const;
     void updateViews();
+    void updateBarLines();
 };
 
 #endif // AC_VIEWMANAGER_H

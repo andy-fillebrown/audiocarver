@@ -16,19 +16,19 @@
 **************************************************************************/
 
 #include "ac_graphicsbarlineitem.h"
-//#include <ac_barline.h>
+#include <ac_barline.h>
 //#include <ac_score.h>
 //#include <ac_scorescene.h>
 //#include <ac_viewsettings.h>
 //#include <QGraphicsLineItem>
 //#include <QGraphicsTextItem>
 
-//AcBarlineItem::AcBarlineItem(AcBarline *barline)
-//    :   AcGuidelineItem(barline)
-//{}
+AcGraphicsBarLineItem::AcGraphicsBarLineItem(AcBarLine *barLine)
+    :   AcGraphicsGridLineItem(barLine)
+{}
 
-//AcBarlineItem::~AcBarlineItem()
-//{}
+AcGraphicsBarLineItem::~AcGraphicsBarLineItem()
+{}
 
 //void AcBarlineItem::updateItems()
 //{
