@@ -29,25 +29,14 @@ class AcTimeSceneData;
 
 class AC_SCENE_EXPORT AcTimeScene : public AcGraphicsScene
 {
-//    Q_OBJECT
+    Q_OBJECT
 
-//public:
-//    AcTimeScene(QObject *parent = 0);
-//    virtual ~AcTimeScene();
-
-//    static AcTimeScene *instance();
-
-//protected:
-//    virtual void updateScoreProperty(const QString &propertyName);
-
-//private slots:
-//    void updateViewSettingsProperty(const QString &propertyName);
-//    void updateBarlines();
-//    void updateBarlineProperties();
-
-//private:
-//    Q_DISABLE_COPY(AcTimeScene)
-//    Private::AcTimeSceneData *d;
+public:
+    AcTimeScene(QObject *parent = 0);
+    virtual ~AcTimeScene();
+private:
+    Q_DISABLE_COPY(AcTimeScene)
+    Private::AcTimeSceneData *d;
 };
 
 #endif // AC_TIMESCENE_H

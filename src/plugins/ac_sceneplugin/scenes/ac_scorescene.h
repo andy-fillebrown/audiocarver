@@ -29,29 +29,15 @@ class AcScoreSceneData;
 
 class AC_SCENE_EXPORT AcScoreScene : public AcGraphicsScene
 {
-//    Q_OBJECT
+    Q_OBJECT
 
-//public:
-//    AcScoreScene(QObject *parent = 0);
-//    virtual ~AcScoreScene();
+public:
+    AcScoreScene(QObject *parent = 0);
+    virtual ~AcScoreScene();
 
-//    static AcScoreScene *instance();
-
-//    const QFontMetrics &fontMetrics() const;
-
-//protected:
-//    virtual void updateScoreProperty(const QString &propertyName);
-
-//private slots:
-//    void updateFontMetrics();
-//    void updateBarlines();
-//    void updateBarlineProperties();
-//    void updateTunings();
-//    void updateTuningProperties();
-
-//private:
-//    Q_DISABLE_COPY(AcScoreScene)
-//    Private::AcScoreSceneData *d;
+private:
+    Q_DISABLE_COPY(AcScoreScene)
+    Private::AcScoreSceneData *d;
 };
 
 #endif // AC_SCORESCENE_H

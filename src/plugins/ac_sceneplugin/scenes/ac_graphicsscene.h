@@ -32,22 +32,15 @@ class AcGraphicsSceneData;
 
 class AC_SCENE_EXPORT AcGraphicsScene : public MiGraphicsScene
 {
-//    Q_OBJECT
+    Q_OBJECT
 
-//public:
-//    AcGraphicsScene(QObject *parent = 0);
-//    virtual ~AcGraphicsScene();
+public:
+    AcGraphicsScene(QObject *parent = 0);
+    virtual ~AcGraphicsScene();
 
-//    AcScore *score() const;
-//    const QFont &font() const;
-//    const QFontMetrics &fontMetrics() const;
-
-//protected slots:
-//    virtual void updateScoreProperty(const QString &propertyName);
-
-//private:
-//    Q_DISABLE_COPY(AcGraphicsScene)
-//    Private::AcGraphicsSceneData *d;
+private:
+    Q_DISABLE_COPY(AcGraphicsScene)
+    Private::AcGraphicsSceneData *d;
 };
 
 #endif // AC_GRAPHICSSCENE_H

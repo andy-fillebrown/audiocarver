@@ -16,55 +16,26 @@
 **************************************************************************/
 
 #include "ac_graphicsscene.h"
-//#include <ac_score.h>
-//#include <ac_scorescene.h>
-//#include <ac_viewsettings.h>
-//#include <mi_font.h>
 
-//using namespace Private;
+using namespace Private;
 
-//namespace Private {
+namespace Private {
 
-//class AcGraphicsSceneData
-//{
-//public:
-//    AcScore *score;
+class AcGraphicsSceneData
+{
+public:
+    AcGraphicsSceneData()
+    {}
+};
 
-//    AcGraphicsSceneData()
-//        :   score(AcScore::instance())
-//    {}
-//};
+} // namespace Private
 
-//} // namespace Private
+AcGraphicsScene::AcGraphicsScene(QObject *parent)
+    :   MiGraphicsScene(parent)
+    ,   d(new AcGraphicsSceneData)
+{}
 
-//AcGraphicsScene::AcGraphicsScene(QObject *parent)
-//    :   MiGraphicsScene(parent)
-//    ,   d(new AcGraphicsSceneData)
-//{
-//    connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-//}
-
-//AcGraphicsScene::~AcGraphicsScene()
-//{
-//    delete d;
-//}
-
-//AcScore *AcGraphicsScene::score() const
-//{
-//    return d->score;
-//}
-
-//const QFont &AcGraphicsScene::font() const
-//{
-//    return score()->fontSettings()->qFont();
-//}
-
-//const QFontMetrics &AcGraphicsScene::fontMetrics() const
-//{
-//    return AcScoreScene::instance()->fontMetrics();
-//}
-
-//void AcGraphicsScene::updateScoreProperty(const QString &propertyName)
-//{
-//    Q_UNUSED(propertyName);
-//}
+AcGraphicsScene::~AcGraphicsScene()
+{
+    delete d;
+}

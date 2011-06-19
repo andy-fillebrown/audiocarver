@@ -17,7 +17,13 @@
 
 #include "ac_viewmanager.h"
 #include <ac_mainwidget.h>
+#include <ac_pitchscene.h>
+#include <ac_pitchview.h>
 #include <ac_score.h>
+#include <ac_scorescene.h>
+#include <ac_scoreview.h>
+#include <ac_timescene.h>
+#include <ac_timeview.h>
 #include <ac_viewsettings.h>
 
 using namespace Private;
@@ -28,11 +34,25 @@ class AcViewManagerData
 {
 public:
     AcViewManager *q;
+    AcMainWidget *mainWidget;
+    AcScoreScene *scoreScene;
+    AcScoreView *scoreView;
+    AcPitchScene *pitchScene;
+    AcPitchView *pitchView;
+    AcTimeScene *timeScene;
+    AcTimeView *timeView;
     AcScore *score;
     AcViewSettings *viewSettings;
 
-    AcViewManagerData(AcViewManager *q)
+    AcViewManagerData(AcViewManager *q, AcMainWidget *mainWidget)
         :   q(q)
+        ,   mainWidget(mainWidget)
+        ,   scoreScene(new AcScoreScene(q))
+        ,   scoreView(new AcScoreView(scoreScene, mainWidget))
+        ,   pitchScene(new AcPitchScene(q))
+        ,   pitchView(new AcPitchView(pitchScene, mainWidget))
+        ,   timeScene(new AcTimeScene(q))
+        ,   timeView(new AcTimeView(timeScene, mainWidget))
         ,   score(AcScore::instance())
         ,   viewSettings(score->viewSettings())
     {}
@@ -42,7 +62,7 @@ public:
 
 AcViewManager::AcViewManager(AcMainWidget *mainWidget)
     :   QObject(mainWidget)
-    ,   d(new AcViewManagerData(this))
+    ,   d(new AcViewManagerData(this, mainWidget))
 {
     connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
