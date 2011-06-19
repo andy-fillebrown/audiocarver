@@ -15,27 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMEVIEW_H
-#define AC_TIMEVIEW_H
+#ifndef AC_TIMEGRAPHICSVIEW_H
+#define AC_TIMEGRAPHICSVIEW_H
 
 #include <ac_graphicsview.h>
 #include <ac_editor_global.h>
 
 namespace Private {
 
-class AcTimeViewData;
+class AcTimeGraphicsViewData;
 
 } // namespace Private
 
-class AcTimeView : public AcGraphicsView
+class AcTimeGraphicsView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcTimeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcTimeView();
-
-    static AcTimeView *instance();
+    AcTimeGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcTimeGraphicsView();
 
     void update();
 
@@ -43,8 +41,8 @@ protected:
     virtual void updateViewSettings(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcTimeView)
-    Private::AcTimeViewData *d;
+    Q_DISABLE_COPY(AcTimeGraphicsView)
+    Private::AcTimeGraphicsViewData *d;
 };
 
-#endif // AC_TIMEVIEW_H
+#endif // AC_TIMEGRAPHICSVIEW_H

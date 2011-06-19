@@ -26,10 +26,10 @@ using namespace Private;
 
 namespace Private {
 
-class AcTimeViewData
+class AcTimeGraphicsViewData
 {
 public:
-    AcTimeViewData()
+    AcTimeGraphicsViewData()
     {}
 
     void updateTimeScene()
@@ -53,31 +53,22 @@ public:
 
 } // namespace Private
 
-static AcTimeView *instance = 0;
-
-AcTimeView::AcTimeView(QGraphicsScene *scene, QWidget *parent)
+AcTimeGraphicsView::AcTimeGraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcTimeViewData)
-{
-    ::instance = this;
-}
+    ,   d(new AcTimeGraphicsViewData)
+{}
 
-AcTimeView::~AcTimeView()
+AcTimeGraphicsView::~AcTimeGraphicsView()
 {
     delete d;
 }
 
-AcTimeView *AcTimeView::instance()
-{
-    return ::instance;
-}
-
-void AcTimeView::update()
+void AcTimeGraphicsView::update()
 {
     d->updateTimeScene();
 }
 
-void AcTimeView::updateViewSettings(const QString &propertyName)
+void AcTimeGraphicsView::updateViewSettings(const QString &propertyName)
 {
     d->updateTimeScene();
 }

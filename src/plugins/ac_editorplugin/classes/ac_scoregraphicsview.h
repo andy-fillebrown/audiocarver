@@ -15,27 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCOREVIEW_H
-#define AC_SCOREVIEW_H
+#ifndef AC_SCOREGRAPHICSVIEW_H
+#define AC_SCOREGRAPHICSVIEW_H
 
 #include <ac_graphicsview.h>
 #include <ac_editor_global.h>
 
 namespace Private {
 
-class AcScoreViewData;
+class AcScoreGraphicsViewData;
 
 } // namespace Private
 
-class AcScoreView : public AcGraphicsView
+class AcScoreGraphicsView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcScoreView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcScoreView();
-
-    static AcScoreView *instance();
+    AcScoreGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcScoreGraphicsView();
 
     const QPointF &center() const;
     void setCenter(const QPointF &center);
@@ -49,8 +47,8 @@ protected:
     virtual void updateViewSettings(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcScoreView)
-    Private::AcScoreViewData *d;
+    Q_DISABLE_COPY(AcScoreGraphicsView)
+    Private::AcScoreGraphicsViewData *d;
 };
 
-#endif // AC_SCOREVIEW_H
+#endif // AC_SCOREGRAPHICSVIEW_H

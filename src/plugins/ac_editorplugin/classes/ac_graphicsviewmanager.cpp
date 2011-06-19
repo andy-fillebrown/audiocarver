@@ -35,9 +35,7 @@ public:
         :   q(q)
         ,   score(AcScore::instance())
         ,   viewSettings(score->viewSettings())
-    {
-        q->connect(score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-    }
+    {}
 };
 
 } // namespace Private
@@ -46,6 +44,7 @@ AcGraphicsViewManager::AcGraphicsViewManager(AcMainWidget *mainWidget)
     :   QObject(mainWidget)
     ,   d(new AcGraphicsViewManagerData(this))
 {
+    connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
 AcGraphicsViewManager::~AcGraphicsViewManager()

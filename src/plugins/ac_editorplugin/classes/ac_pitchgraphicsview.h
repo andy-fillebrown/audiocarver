@@ -15,27 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHVIEW_H
-#define AC_PITCHVIEW_H
+#ifndef AC_PITCHGRAPHICSVIEW_H
+#define AC_PITCHGRAPHICSVIEW_H
 
 #include <ac_graphicsview.h>
 #include <ac_editor_global.h>
 
 namespace Private {
 
-class AcPitchViewData;
+class AcPitchGraphicsViewData;
 
 } // namespace Private
 
-class AcPitchView : public AcGraphicsView
+class AcPitchGraphicsView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcPitchView();
-
-    static AcPitchView *instance();
+    AcPitchGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcPitchGraphicsView();
 
     void update();
 
@@ -43,8 +41,8 @@ protected:
     virtual void updateViewSettings(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcPitchView)
-    Private::AcPitchViewData *d;
+    Q_DISABLE_COPY(AcPitchGraphicsView)
+    Private::AcPitchGraphicsViewData *d;
 };
 
-#endif // AC_PITCHVIEW_H
+#endif // AC_PITCHGRAPHICSVIEW_H

@@ -23,50 +23,43 @@ using namespace Private;
 
 namespace Private {
 
-class AcScoreViewData
+class AcScoreGraphicsViewData
 {
 public:
+    AcScoreGraphicsView *q;
     QPointF center;
 
-    AcScoreViewData()
+    AcScoreGraphicsViewData(AcScoreGraphicsView *q)
+        :   q(q)
     {}
 
     void updateViewTransform()
     {
-        AcScoreView *scoreView = AcScoreView::instance();
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-        scoreView->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
+        q->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
     }
 };
 
 } // namespace Private
 
-static AcScoreView *instance = 0;
-
-AcScoreView::AcScoreView(QGraphicsScene *scene, QWidget *parent)
+AcScoreGraphicsView::AcScoreGraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcScoreViewData)
+    ,   d(new AcScoreGraphicsViewData(this))
 {
-    ::instance = this;
     connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
-AcScoreView::~AcScoreView()
+AcScoreGraphicsView::~AcScoreGraphicsView()
 {
     delete d;
 }
 
-AcScoreView *AcScoreView::instance()
-{
-    return ::instance;
-}
-
-const QPointF &AcScoreView::center() const
+const QPointF &AcScoreGraphicsView::center() const
 {
     return d->center;
 }
 
-void AcScoreView::setCenter(const QPointF &center)
+void AcScoreGraphicsView::setCenter(const QPointF &center)
 {
     QPointF prevCtr = d->center;
     centerOn(center);
@@ -78,23 +71,23 @@ void AcScoreView::setCenter(const QPointF &center)
     }
 }
 
-void AcScoreView::setCenter(qreal x, qreal y)
+void AcScoreGraphicsView::setCenter(qreal x, qreal y)
 {
     setCenter(QPointF(x, y));
 }
 
-void AcScoreView::updateScoreProperty(const QString &propertyName)
+void AcScoreGraphicsView::updateScoreProperty(const QString &propertyName)
 {
     if ("length" == propertyName)
         setCenter(mapToScene(rect().center()));
 }
 
-void AcScoreView::updateCenter()
+void AcScoreGraphicsView::updateCenter()
 {
     d->center = mapToScene(rect().center());
 }
 
-void AcScoreView::updateViewSettings(const QString &propertyName)
+void AcScoreGraphicsView::updateViewSettings(const QString &propertyName)
 {
     if (propertyName.startsWith("scale"))
         d->updateViewTransform();

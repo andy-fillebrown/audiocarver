@@ -21,11 +21,7 @@
 #include <QObject>
 #include <ac_editor_global.h>
 
-class AcGraphicsSceneManager;
 class AcMainWidget;
-class AcPitchGraphicsView;
-class AcScoreGraphicsView;
-class AcTimeGraphicsView;
 
 namespace Private {
 
@@ -40,12 +36,6 @@ class AcGraphicsViewManager : public QObject
 public:
     AcGraphicsViewManager(AcMainWidget *mainWidget);
     ~AcGraphicsViewManager();
-
-    AcPitchGraphicsView *pitchGraphicsView() const;
-    AcScoreGraphicsView *scoreGraphicsView() const;
-    AcTimeGraphicsView *timeGraphicsView() const;
-
-    AcGraphicsSceneManager *graphicsSceneManager() const;
 
 private slots:
     virtual void updateScoreProperty(const QString &propertyName);

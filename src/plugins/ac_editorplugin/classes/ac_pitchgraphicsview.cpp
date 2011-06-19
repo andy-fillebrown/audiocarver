@@ -26,10 +26,10 @@ using namespace Private;
 
 namespace Private {
 
-class AcPitchViewData
+class AcPitchGraphicsViewData
 {
 public:
-    AcPitchViewData()
+    AcPitchGraphicsViewData()
     {}
 
     void updatePitchScene()
@@ -53,31 +53,22 @@ public:
 
 } // namespace Private
 
-static AcPitchView *instance = 0;
-
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
+AcPitchGraphicsView::AcPitchGraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchViewData)
-{
-    ::instance = this;
-}
+    ,   d(new AcPitchGraphicsViewData)
+{}
 
-AcPitchView::~AcPitchView()
+AcPitchGraphicsView::~AcPitchGraphicsView()
 {
     delete d;
 }
 
-AcPitchView *AcPitchView::instance()
-{
-    return ::instance;
-}
-
-void AcPitchView::update()
+void AcPitchGraphicsView::update()
 {
     d->updatePitchScene();
 }
 
-void AcPitchView::updateViewSettings(const QString &propertyName)
+void AcPitchGraphicsView::updateViewSettings(const QString &propertyName)
 {
     d->updatePitchScene();
 }
