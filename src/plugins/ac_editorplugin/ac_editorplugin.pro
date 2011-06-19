@@ -7,6 +7,7 @@ include(ac_editorplugin_dependencies.pri)
 DEFINES += AC_EDITOR_LIBRARY
 
 HEADERS += \
+    classes/ac_controllerview.h \
     classes/ac_graphicsview.h \
     classes/ac_mainwidget.h \
     classes/ac_pitchview.h \
@@ -22,6 +23,7 @@ HEADERS += \
     ac_editorplugin.h \
 
 SOURCES += \
+    classes/ac_controllerview.cpp \
     classes/ac_graphicsview.cpp \
     classes/ac_mainwidget.cpp \
     classes/ac_pitchview.cpp \

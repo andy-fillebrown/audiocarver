@@ -16,8 +16,6 @@
 **************************************************************************/
 
 #include "ac_graphicsview.h"
-#include <ac_score.h>
-#include <ac_viewsettings.h>
 
 using namespace Private;
 
@@ -39,16 +37,11 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   MiGraphicsView(scene, parent)
     ,   d(new AcGraphicsViewData(this))
 {
-    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-    connect(viewSettings, SIGNAL(propertyChanged(QString)), SLOT(updateViewSettings(QString)));
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 AcGraphicsView::~AcGraphicsView()
 {
     delete d;
-}
-
-void AcGraphicsView::updateViewSettings(const QString &propertyName)
-{
-    Q_UNUSED(propertyName);
 }

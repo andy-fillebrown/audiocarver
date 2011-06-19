@@ -15,34 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWIDGET_H
-#define AC_MAINWIDGET_H
+#include "ac_controllerscene.h"
 
-#include <QWidget>
-#include <ac_editor_global.h>
+using namespace Private;
 
 namespace Private {
 
-class AcMainWidgetData;
+class AcControllerSceneData
+{
+public:
+    AcControllerSceneData()
+    {}
+};
 
 } // namespace Private
 
-class AcMainWidget : public QWidget
+AcControllerScene::AcControllerScene(QObject *parent)
+    :   AcGraphicsScene(parent)
+    ,   d(new AcControllerSceneData)
+{}
+
+AcControllerScene::~AcControllerScene()
 {
-    Q_OBJECT
-
-public:
-    AcMainWidget(QWidget *parent = 0);
-    ~AcMainWidget();
-
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void showEvent(QShowEvent *event);
-    void wheelEvent(QWheelEvent *event);
-
-private:
-    Q_DISABLE_COPY(AcMainWidget)
-    Private::AcMainWidgetData *d;
-};
-
-#endif // AC_MAINWIDGET_H
+    delete d;
+}

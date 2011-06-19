@@ -33,6 +33,11 @@ public:
         :   q(q)
     {}
 
+    void updateCenter()
+    {
+        center = q->mapToScene(q->rect().center());
+    }
+
     void updateViewTransform()
     {
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
@@ -45,9 +50,7 @@ public:
 AcScoreView::AcScoreView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
     ,   d(new AcScoreViewData(this))
-{
-    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-}
+{}
 
 AcScoreView::~AcScoreView()
 {
@@ -63,7 +66,7 @@ void AcScoreView::setCenter(const QPointF &center)
 {
     QPointF prevCtr = d->center;
     centerOn(center);
-    updateCenter();
+    d->updateCenter();
     if (d->center != prevCtr) {
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
         viewSettings->setPositionX(center.x());
@@ -76,19 +79,20 @@ void AcScoreView::setCenter(qreal x, qreal y)
     setCenter(QPointF(x, y));
 }
 
-void AcScoreView::updateScoreProperty(const QString &propertyName)
-{
-    if ("length" == propertyName)
-        setCenter(mapToScene(rect().center()));
-}
-
 void AcScoreView::updateCenter()
 {
-    d->center = mapToScene(rect().center());
+    setCenter(mapToScene(rect().center()));
 }
 
-void AcScoreView::updateViewSettings(const QString &propertyName)
+void AcScoreView::updateLength()
 {
-    if (propertyName.startsWith("scale"))
-        d->updateViewTransform();
+}
+
+void AcScoreView::updateScaleX()
+{
+    d->updateViewTransform();
+}
+
+void AcScoreView::updateScaleY()
+{
 }

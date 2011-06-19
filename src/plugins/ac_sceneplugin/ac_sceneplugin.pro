@@ -13,6 +13,7 @@ HEADERS += \
     items/ac_graphicsgridlineitem.h \
     items/ac_graphicstuninglineitem.h \
     \
+    scenes/ac_controllerscene.h \
     scenes/ac_graphicsscene.h \
     scenes/ac_pitchscene.h \
     scenes/ac_scorescene.h \
@@ -28,6 +29,7 @@ SOURCES += \
     items/ac_graphicsgridlineitem.cpp \
     items/ac_graphicstuninglineitem.cpp \
     \
+    scenes/ac_controllerscene.cpp \
     scenes/ac_graphicsscene.cpp \
     scenes/ac_pitchscene.cpp \
     scenes/ac_scorescene.cpp \

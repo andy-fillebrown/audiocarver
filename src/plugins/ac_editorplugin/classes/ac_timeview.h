@@ -35,10 +35,9 @@ public:
     AcTimeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcTimeView();
 
-    void update();
-
-protected:
-    virtual void updateViewSettings(const QString &propertyName);
+    void updateCenter();
+    void updateLength();
+    void updateScaleX();
 
 private:
     Q_DISABLE_COPY(AcTimeView)

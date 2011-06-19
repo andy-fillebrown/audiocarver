@@ -63,12 +63,20 @@ AcPitchView::~AcPitchView()
     delete d;
 }
 
-void AcPitchView::update()
+void AcPitchView::updateCenter()
 {
-    d->updatePitchScene();
 }
 
-void AcPitchView::updateViewSettings(const QString &propertyName)
+void AcPitchView::updateScaleY()
 {
-    d->updatePitchScene();
 }
+
+//void AcPitchView::update()
+//{
+//    d->updatePitchScene();
+//}
+
+//void AcPitchView::updateViewSettings(const QString &propertyName)
+//{
+//    d->updatePitchScene();
+//}

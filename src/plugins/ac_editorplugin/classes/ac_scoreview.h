@@ -39,12 +39,10 @@ public:
     void setCenter(const QPointF &center);
     void setCenter(qreal x, qreal y);
 
-public slots:
-    void updateScoreProperty(const QString &propertyName);
     void updateCenter();
-
-protected:
-    virtual void updateViewSettings(const QString &propertyName);
+    void updateLength();
+    void updateScaleX();
+    void updateScaleY();
 
 private:
     Q_DISABLE_COPY(AcScoreView)

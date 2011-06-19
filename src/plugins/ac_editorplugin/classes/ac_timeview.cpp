@@ -63,12 +63,24 @@ AcTimeView::~AcTimeView()
     delete d;
 }
 
-void AcTimeView::update()
+void AcTimeView::updateCenter()
 {
-    d->updateTimeScene();
 }
 
-void AcTimeView::updateViewSettings(const QString &propertyName)
+void AcTimeView::updateLength()
 {
-    d->updateTimeScene();
 }
+
+void AcTimeView::updateScaleX()
+{
+}
+
+//void AcTimeView::update()
+//{
+//    d->updateTimeScene();
+//}
+
+//void AcTimeView::updateViewSettings(const QString &propertyName)
+//{
+//    d->updateTimeScene();
+//}
