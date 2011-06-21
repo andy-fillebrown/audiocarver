@@ -38,7 +38,7 @@ public:
         center = q->mapToScene(q->rect().center());
     }
 
-    void updateViewTransform()
+    void updateTransform()
     {
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
         q->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
@@ -84,15 +84,7 @@ void AcScoreView::updateCenter()
     setCenter(mapToScene(rect().center()));
 }
 
-void AcScoreView::updateLength()
+void AcScoreView::updateTransform()
 {
-}
-
-void AcScoreView::updateScaleX()
-{
-    d->updateViewTransform();
-}
-
-void AcScoreView::updateScaleY()
-{
+    d->updateTransform();
 }

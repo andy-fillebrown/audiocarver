@@ -40,9 +40,7 @@ public:
     void setCenter(qreal x, qreal y);
 
     void updateCenter();
-    void updateLength();
-    void updateScaleX();
-    void updateScaleY();
+    void updateTransform();
 
 private:
     Q_DISABLE_COPY(AcScoreView)

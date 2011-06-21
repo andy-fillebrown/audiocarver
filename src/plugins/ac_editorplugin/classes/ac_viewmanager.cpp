@@ -82,16 +82,47 @@ public:
 
     void init()
     {
-        synchronizeGraphicsBarLineItems();
-        updateBarLines();
-        updateBarLabels();
+        updateScoreViewLength();
+        synchronizeTuningLineLists();
+        updateTuningLinePositions();
+        updateTuningLabelPositions();
+        synchronizeBarLineLists();
+        updateBarLinePositions();
+        updateBarLabelPositions();
     }
 
-    void synchronizeGraphicsBarLineItems()
+    void updateScoreViewLength()
+    {
+        scoreScene->setSceneRect(0.0f, 0.0f, score->length(), 127.0f);
+    }
+
+    void updateViewRects()
+    {
+        pitchScene->setSceneRect(0.0f, 0.0f, 10.0f, 127.0f * viewSettings->scaleY());
+        timeScene->setSceneRect(0.0f, 0.0f, score->length() * viewSettings->scaleX(), 10.0f);
+    }
+
+    void updateViewCenters()
+    {
+        pitchView->centerOn(5.0f, scoreView->center().y() * viewSettings->scaleY());
+        timeView->centerOn(scoreView->center().x() * viewSettings->scaleX(), 5.0f);
+    }
+
+    void synchronizeTuningLineLists()
+    {
+    }
+
+    void updateTuningLinePositions()
+    {
+    }
+
+    void updateTuningLabelPositions()
+    {
+    }
+
+    void synchronizeBarLineLists()
     {
         const MiList<AcBarLine> &barLines = score->barLines();
-
-        // Synchronize graphics bar line list with score bar line list.
         for (int i = 0;  i < barLines.count();  ++i) {
             if (graphicsBarLineItems.count() <= i) {
                 AcGraphicsBarLineItem *graphicsBarLineItem = new AcGraphicsBarLineItem(barLines.at(i));
@@ -112,7 +143,7 @@ public:
         }
     }
 
-    void updateBarLines()
+    void updateBarLinePositions()
     {
         foreach (AcGraphicsBarLineItem *graphicsBarLineItem, graphicsBarLineItems) {
             const qreal location = graphicsBarLineItem->location();
@@ -120,7 +151,7 @@ public:
         }
     }
 
-    void updateBarLabels()
+    void updateBarLabelPositions()
     {
         qreal scaleX = viewSettings->scaleX();
         foreach (AcGraphicsBarLineItem *graphicsBarLineItem, graphicsBarLineItems) {
@@ -197,10 +228,15 @@ void AcViewManager::setScaleY(qreal scaleY)
 
 void AcViewManager::updateScoreProperty(const QString &propertyName)
 {
-    if ("barLines" == propertyName) {
-        d->synchronizeGraphicsBarLineItems();
-        d->updateBarLines();
-        return;
+    if ("tuningLines" == propertyName) {
+        d->synchronizeTuningLineLists();
+        d->updateTuningLinePositions();
+        d->updateTuningLabelPositions();
+    }
+    else if ("barLines" == propertyName) {
+        d->synchronizeBarLineLists();
+        d->updateBarLinePositions();
+        d->updateBarLabelPositions();
     }
 }
 
@@ -209,12 +245,27 @@ void AcViewManager::updateFontSettingsProperty(const QString &propertyName)
     Q_UNUSED(propertyName);
 
     d->updateFont();
-    d->updateBarLabels();
+    d->updateBarLabelPositions();
 }
 
 void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
 {
-    Q_UNUSED(propertyName);
+    if (propertyName.startsWith("position")) {
+        d->scoreView->updateCenter();
+        d->updateViewCenters();
+    } else if (propertyName.startsWith("scale")) {
+        d->scoreView->updateTransform();
+        d->scoreView->updateCenter();
+        d->updateViewRects();
+        d->updateViewCenters();
+    }
+    if (propertyName.endsWith("Y")) {
+        d->updateTuningLinePositions();
+        d->updateTuningLabelPositions();
+    } else {
+        d->updateBarLinePositions();
+        d->updateBarLabelPositions();
+    }
 }
 
 AcScoreView *AcViewManager::scoreView() const
@@ -239,4 +290,8 @@ AcTimeView *AcViewManager::timeView() const
 
 void AcViewManager::updateViews()
 {
+    d->scoreView->updateTransform();
+    d->updateScoreViewLength();
+    d->updateViewRects();
+    d->updateViewCenters();
 }
