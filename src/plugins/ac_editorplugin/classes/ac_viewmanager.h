@@ -51,8 +51,9 @@ public:
     void setScaleY(qreal scaleY);
 
 private slots:
-    virtual void updateScoreProperty(const QString &propertyName);
-    virtual void updateViewSettingsProperty(const QString &propertyName);
+    void updateScoreProperty(const QString &propertyName);
+    void updateFontSettingsProperty(const QString &propertyName);
+    void updateViewSettingsProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcViewManager)
@@ -64,7 +65,6 @@ private:
     AcPitchView *pitchView() const;
     AcTimeView *timeView() const;
     void updateViews();
-    void updateBarLines();
 };
 
 #endif // AC_VIEWMANAGER_H

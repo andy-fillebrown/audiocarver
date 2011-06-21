@@ -87,12 +87,6 @@ public:
         updateBarLabels();
     }
 
-    void updateFont()
-    {
-        font = QFont(fontSettings->family(), fontSettings->pointSize());
-        fontMetrics = QFontMetrics(font);
-    }
-
     void synchronizeGraphicsBarLineItems()
     {
         const MiList<AcBarLine> &barLines = score->barLines();
@@ -135,6 +129,12 @@ public:
             graphicsBarLineItem->qGraphicsTimeTextItem()->setPos((location * scaleX) - (labelRect.width() / 2), 10.0f);
         }
     }
+
+    void updateFont()
+    {
+        font = QFont(fontSettings->family(), fontSettings->pointSize());
+        fontMetrics = QFontMetrics(font);
+    }
 };
 
 } // namespace Private
@@ -144,6 +144,7 @@ AcViewManager::AcViewManager(QWidget *widget)
     ,   d(new AcViewManagerData(this, widget))
 {
     connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+    connect(d->fontSettings, SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
     connect(d->viewSettings, SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
 
     d->init();
@@ -197,9 +198,18 @@ void AcViewManager::setScaleY(qreal scaleY)
 void AcViewManager::updateScoreProperty(const QString &propertyName)
 {
     if ("barLines" == propertyName) {
-        updateBarLines();
+        d->synchronizeGraphicsBarLineItems();
+        d->updateBarLines();
         return;
     }
+}
+
+void AcViewManager::updateFontSettingsProperty(const QString &propertyName)
+{
+    Q_UNUSED(propertyName);
+
+    d->updateFont();
+    d->updateBarLabels();
 }
 
 void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
@@ -229,9 +239,4 @@ AcTimeView *AcViewManager::timeView() const
 
 void AcViewManager::updateViews()
 {
-}
-
-void AcViewManager::updateBarLines()
-{
-    d->synchronizeGraphicsBarLineItems();
 }
