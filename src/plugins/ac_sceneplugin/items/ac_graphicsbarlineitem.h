@@ -22,14 +22,25 @@
 
 class AcBarLine;
 
+namespace Private {
+
+class AcGraphicsBarLineItemData;
+
+} // namespace Private
+
 class AC_SCENE_EXPORT AcGraphicsBarLineItem : public AcGraphicsGridLineItem
 {
 public:
     AcGraphicsBarLineItem(AcBarLine *barLine = 0);
     virtual ~AcGraphicsBarLineItem();
 
+    void setGridLine(AcGridLine *gridLine);
+
+    QGraphicsTextItem *qGraphicsTimeTextItem() const;
+
 private:
     Q_DISABLE_COPY(AcGraphicsBarLineItem)
+    Private::AcGraphicsBarLineItemData *d;
 };
 
 #endif // AC_GRAPHICSBARLINEITEM_H

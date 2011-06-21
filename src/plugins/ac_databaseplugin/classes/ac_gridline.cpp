@@ -27,13 +27,13 @@ class AcGridLineData
 public:
     qreal location;
     QColor color;
-    QString text;
+    QString label;
     int priority;
 
     AcGridLineData()
         :   location(0.0f)
         ,   color(Qt::lightGray)
-        ,   text(QString())
+        ,   label(QString())
         ,   priority(0)
     {}
 };
@@ -78,17 +78,17 @@ void AcGridLine::setColor(const QColor &color)
     emit propertyChanged("color");
 }
 
-const QString &AcGridLine::text() const
+const QString &AcGridLine::label() const
 {
-    return d->text;
+    return d->label;
 }
 
-void AcGridLine::setText(const QString &text)
+void AcGridLine::setLabel(const QString &label)
 {
-    if (d->text == text)
+    if (d->label == label)
         return;
-    d->text = text;
-    emit propertyChanged("text");
+    d->label = label;
+    emit propertyChanged("label");
 }
 
 int AcGridLine::priority() const

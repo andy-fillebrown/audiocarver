@@ -29,8 +29,12 @@
 #include <ac_timescene.h>
 #include <ac_timeview.h>
 #include <ac_viewsettings.h>
+#include <mi_font.h>
 #include <mi_list.h>
+#include <QFont>
+#include <QFontMetrics>
 #include <QGraphicsLineItem>
+#include <QGraphicsTextItem>
 #include <QWidget>
 
 using namespace Private;
@@ -51,7 +55,10 @@ public:
     AcTimeScene *timeScene;
     AcTimeView *timeView;
     AcScore *score;
+    MiFont *fontSettings;
     AcViewSettings *viewSettings;
+    QFont font;
+    QFontMetrics fontMetrics;
     QList<AcGraphicsBarLineItem*> graphicsBarLineItems;
     QList<AcGraphicsTuningLineItem*> graphicsTuningLineItems;
 
@@ -67,31 +74,65 @@ public:
         ,   timeScene(new AcTimeScene(q))
         ,   timeView(new AcTimeView(timeScene, widget))
         ,   score(AcScore::instance())
+        ,   fontSettings(score->fontSettings())
         ,   viewSettings(score->viewSettings())
+        ,   font(fontSettings->family(), fontSettings->pointSize())
+        ,   fontMetrics(font)
     {}
 
-    void updateGraphicsBarLineItems()
+    void init()
+    {
+        synchronizeGraphicsBarLineItems();
+        updateBarLines();
+        updateBarLabels();
+    }
+
+    void updateFont()
+    {
+        font = QFont(fontSettings->family(), fontSettings->pointSize());
+        fontMetrics = QFontMetrics(font);
+    }
+
+    void synchronizeGraphicsBarLineItems()
     {
         const MiList<AcBarLine> &barLines = score->barLines();
+
+        // Synchronize graphics bar line list with score bar line list.
         for (int i = 0;  i < barLines.count();  ++i) {
-            AcGraphicsBarLineItem *graphicsBarLineItem = 0;
             if (graphicsBarLineItems.count() <= i) {
-                graphicsBarLineItem = new AcGraphicsBarLineItem(barLines.at(i));
-                scoreScene->addItem(graphicsBarLineItem->qGraphicsLineItem());
-                timeScene->addItem(graphicsBarLineItem->qGraphicsTextItem());
+                AcGraphicsBarLineItem *graphicsBarLineItem = new AcGraphicsBarLineItem(barLines.at(i));
+                scoreScene->addItem(graphicsBarLineItem->qGraphicsScoreLineItem());
+                timeScene->addItem(graphicsBarLineItem->qGraphicsTimeTextItem());
                 graphicsBarLineItems.append(graphicsBarLineItem);
             } else
                 graphicsBarLineItems.at(i)->setGridLine(barLines.at(i));
         }
+
+        // Remove unused graphics bar line items.
         while (barLines.count() < graphicsBarLineItems.count()) {
             AcGraphicsBarLineItem *graphicsBarLineItem = graphicsBarLineItems.last();
-            timeScene->removeItem(graphicsBarLineItem->qGraphicsTextItem());
-            scoreScene->removeItem(graphicsBarLineItem->qGraphicsLineItem());
+            timeScene->removeItem(graphicsBarLineItem->qGraphicsTimeTextItem());
+            scoreScene->removeItem(graphicsBarLineItem->qGraphicsScoreLineItem());
             graphicsBarLineItems.removeLast();
+            delete graphicsBarLineItem;
         }
-        for (int i = 0;  i < barLines.count();  ++i) {
-            const int pos = barLines.at(i)->location();
-            graphicsBarLineItems.at(i)->qGraphicsLineItem()->setLine(pos, 0, pos, 127);
+    }
+
+    void updateBarLines()
+    {
+        foreach (AcGraphicsBarLineItem *graphicsBarLineItem, graphicsBarLineItems) {
+            const qreal location = graphicsBarLineItem->location();
+            graphicsBarLineItem->qGraphicsScoreLineItem()->setLine(location, 0.0f, location, 127.0f);
+        }
+    }
+
+    void updateBarLabels()
+    {
+        qreal scaleX = viewSettings->scaleX();
+        foreach (AcGraphicsBarLineItem *graphicsBarLineItem, graphicsBarLineItems) {
+            const qreal location = graphicsBarLineItem->location();
+            const QRect labelRect = fontMetrics.boundingRect(graphicsBarLineItem->label());
+            graphicsBarLineItem->qGraphicsTimeTextItem()->setPos((location * scaleX) - (labelRect.width() / 2), 10.0f);
         }
     }
 };
@@ -104,6 +145,8 @@ AcViewManager::AcViewManager(QWidget *widget)
 {
     connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
     connect(d->viewSettings, SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+
+    d->init();
 }
 
 AcViewManager::~AcViewManager()
@@ -186,10 +229,9 @@ AcTimeView *AcViewManager::timeView() const
 
 void AcViewManager::updateViews()
 {
-    updateBarLines();
 }
 
 void AcViewManager::updateBarLines()
 {
-    d->updateGraphicsBarLineItems();
+    d->synchronizeGraphicsBarLineItems();
 }

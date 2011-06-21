@@ -17,12 +17,7 @@
 
 #include "ac_graphicsgridlineitem.h"
 #include <ac_gridline.h>
-#include <ac_score.h>
-#include <ac_viewsettings.h>
-#include <mi_font.h>
-#include <QFont>
 #include <QGraphicsLineItem>
-#include <QGraphicsTextItem>
 
 using namespace Private;
 
@@ -32,34 +27,31 @@ class AcGraphicsGridLineItemData
 {
 public:
     AcGridLine *gridLine;
-    QGraphicsLineItem *lineItem;
-    QGraphicsTextItem *textItem;
+    QGraphicsLineItem *scoreLineItem;
 
     AcGraphicsGridLineItemData()
         :   gridLine(0)
-        ,   lineItem(new QGraphicsLineItem)
-        ,   textItem(new QGraphicsTextItem)
+        ,   scoreLineItem(new QGraphicsLineItem)
     {}
 
     ~AcGraphicsGridLineItemData()
     {
-        delete textItem;
-        delete lineItem;
+        delete scoreLineItem;
     }
 
     void updateItems()
     {
-        if (gridLine) {
-            lineItem->setPen(gridLine->color());
-            lineItem->show();
-            MiFont *font = AcScore::instance()->fontSettings();
-            textItem->setFont(QFont(font->family(), font->pointSize()));
-            textItem->setPlainText(gridLine->text());
-            textItem->show();
-        } else {
-            lineItem->hide();
-            textItem->hide();
-        }
+        scoreLineItem->setPen(gridLine->color());
+    }
+
+    void hideItems()
+    {
+        scoreLineItem->hide();
+    }
+
+    void showItems()
+    {
+        scoreLineItem->show();
     }
 };
 
@@ -86,7 +78,26 @@ void AcGraphicsGridLineItem::setGridLine(AcGridLine *gridLine)
     if (d->gridLine == gridLine)
         return;
     d->gridLine = gridLine;
-    d->updateItems();
+    if (gridLine) {
+        d->updateItems();
+        d->showItems();
+    } else
+        d->hideItems();
+}
+
+qreal AcGraphicsGridLineItem::location() const
+{
+    return d->gridLine->location();
+}
+
+const QColor &AcGraphicsGridLineItem::color() const
+{
+    return d->gridLine->color();
+}
+
+const QString &AcGraphicsGridLineItem::label() const
+{
+    return d->gridLine->label();
 }
 
 int AcGraphicsGridLineItem::priority() const
@@ -94,12 +105,12 @@ int AcGraphicsGridLineItem::priority() const
     return d->gridLine->priority();
 }
 
-QGraphicsLineItem *AcGraphicsGridLineItem::qGraphicsLineItem() const
+QGraphicsLineItem *AcGraphicsGridLineItem::qGraphicsScoreLineItem() const
 {
-    return d->lineItem;
+    return d->scoreLineItem;
 }
 
-QGraphicsTextItem *AcGraphicsGridLineItem::qGraphicsTextItem() const
+QGraphicsLineItem *AcGraphicsGridLineItem::qGraphicsControllerLineItem() const
 {
-    return d->textItem;
+    return 0;
 }

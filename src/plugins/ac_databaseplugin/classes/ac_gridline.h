@@ -32,7 +32,7 @@ class AC_DATABASE_EXPORT AcGridLine : public MiObject
     Q_OBJECT
     Q_PROPERTY(qreal location READ location WRITE setLocation)
     Q_PROPERTY(QColor color READ color WRITE setColor)
-    Q_PROPERTY(QString text READ text WRITE setText)
+    Q_PROPERTY(QString label READ label WRITE setLabel)
     Q_PROPERTY(int priority READ priority WRITE setPriority)
 
 public:
@@ -46,8 +46,8 @@ public:
     void setLocation(qreal location);
     const QColor &color() const;
     void setColor(const QColor &color);
-    const QString &text() const;
-    void setText(const QString &text);
+    const QString &label() const;
+    void setLabel(const QString &label);
     int priority() const;
     void setPriority(int priority);
 

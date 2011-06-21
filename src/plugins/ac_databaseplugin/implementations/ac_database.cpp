@@ -45,26 +45,26 @@ public:
     {
         AcTuningLine *tuningLine = score->tuningLines().add();
         tuningLine->setLocation(60.0f);
-        tuningLine->setText("60.0");
+        tuningLine->setLabel("60.0");
         tuningLine->setColor(QColor(Qt::red));
         tuningLine->setPriority(1);
         tuningLine = score->tuningLines().add();
         tuningLine->setLocation(48.0f);
-        tuningLine->setText("48.0");
+        tuningLine->setLabel("48.0");
         tuningLine->setPriority(2);
         tuningLine = score->tuningLines().add();
         tuningLine->setLocation(72.0f);
-        tuningLine->setText("72.0");
+        tuningLine->setLabel("72.0");
         tuningLine->setPriority(2);
         AcBarLine *barLine = score->barLines().add();
         barLine->setLocation(0.0f);
         barLine->setColor(QColor(Qt::green));
-        barLine->setText("1");
+        barLine->setLabel("1");
         barLine->setPriority(0);
         for (int i = 1;  i < 32;  ++i) {
             barLine = score->barLines().add();
             barLine->setLocation(4.0f * i);
-            barLine->setText(QString("%1").arg(i + 1));
+            barLine->setLabel(QString("%1").arg(i + 1));
             for (int j = 16;  1 < j;  j/=2) {
                 int mod = i % j;
                 if (mod == 0) {

@@ -22,6 +22,7 @@
 #include <ac_scene_global.h>
 
 class AcGridLine;
+class QColor;
 class QGraphicsLineItem;
 class QGraphicsTextItem;
 
@@ -40,10 +41,13 @@ public:
     AcGridLine *gridLine() const;
     void setGridLine(AcGridLine *gridLine);
 
+    qreal location() const;
+    const QColor &color() const;
+    const QString &label() const;
     int priority() const;
 
-    QGraphicsLineItem *qGraphicsLineItem() const;
-    QGraphicsTextItem *qGraphicsTextItem() const;
+    QGraphicsLineItem *qGraphicsScoreLineItem() const;
+    QGraphicsLineItem *qGraphicsControllerLineItem() const;
 
 private:
     Q_DISABLE_COPY(AcGraphicsGridLineItem)

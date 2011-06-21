@@ -17,29 +17,78 @@
 
 #include "ac_graphicsbarlineitem.h"
 #include <ac_barline.h>
-//#include <ac_score.h>
-//#include <ac_scorescene.h>
-//#include <ac_viewsettings.h>
-//#include <QGraphicsLineItem>
-//#include <QGraphicsTextItem>
+#include <ac_score.h>
+#include <ac_viewsettings.h>
+#include <mi_font.h>
+#include <QFont>
+#include <QGraphicsTextItem>
+
+using namespace Private;
+
+namespace Private {
+
+class AcGraphicsBarLineItemData
+{
+public:
+    AcGraphicsBarLineItem *q;
+    QGraphicsTextItem *timeTextItem;
+
+    AcGraphicsBarLineItemData(AcGraphicsBarLineItem *q)
+        :   q(q)
+        ,   timeTextItem(new QGraphicsTextItem)
+    {}
+
+    ~AcGraphicsBarLineItemData()
+    {
+        delete timeTextItem;
+    }
+
+    void updateItems()
+    {
+        MiFont *font = AcScore::instance()->fontSettings();
+        timeTextItem->setFont(QFont(font->family(), font->pointSize()));
+        timeTextItem->setPlainText(q->label());
+    }
+
+    void hideItems()
+    {
+        timeTextItem->hide();
+    }
+
+    void showItems()
+    {
+        timeTextItem->show();
+    }
+};
+
+} // namespace Private
 
 AcGraphicsBarLineItem::AcGraphicsBarLineItem(AcBarLine *barLine)
     :   AcGraphicsGridLineItem(barLine)
-{}
+    ,   d(new AcGraphicsBarLineItemData(this))
+{
+    if (barLine) {
+        d->updateItems();
+        d->showItems();
+    }
+}
 
 AcGraphicsBarLineItem::~AcGraphicsBarLineItem()
-{}
+{
+    delete d;
+}
 
-//void AcBarlineItem::updateItems()
-//{
-//    AcGuidelineItem::updateItems();
-//    QGraphicsLineItem *lineItem = qLineItem();
-//    AcGuideline *guideline = this->guideline();
-//    const qreal location = guideline->location();
-//    lineItem->setLine(location, 0.0f, location, 127.0f);
-//    QGraphicsTextItem *textItem = qTextItem();
-//    const QFontMetrics &fontMetrics = AcScoreScene::instance()->fontMetrics();
-//    QRect textRect = fontMetrics.boundingRect(guideline->text());
-//    qreal scaleX = AcScore::instance()->viewSettings()->scaleX();
-//    textItem->setPos((location * scaleX) - (textRect.width() / 2), 10.0f);
-//}
+void AcGraphicsBarLineItem::setGridLine(AcGridLine *gridLine)
+{
+    AcGraphicsGridLineItem::setGridLine(gridLine);
+    if (gridLine) {
+        d->updateItems();
+        d->showItems();
+    } else
+        d->hideItems();
+}
+
+QGraphicsTextItem *AcGraphicsBarLineItem::qGraphicsTimeTextItem() const
+{
+    return d->timeTextItem;
+}
