@@ -111,10 +111,10 @@ public:
 
     void synchronizeTuningLineLists()
     {
-        const MiList<AcTuningLine> &tuningLines = score->tuningLines();
+        const QList<AcTuningLine*> &tuningLines = score->tuningLines().list();
         for (int i = 0;  i < tuningLines.count();  ++i) {
             if (graphicsTuningLineItems.count() <= i) {
-                AcGraphicsTuningLineItem *graphicsTuningLineItem = new AcGraphicsTuningLineItem(tuningLines.at(i));
+                AcGraphicsTuningLineItem *graphicsTuningLineItem = new AcGraphicsTuningLineItem(tuningLines[i]);
                 scoreScene->addItem(graphicsTuningLineItem->qGraphicsScoreLineItem());
             }
         }
@@ -133,12 +133,12 @@ public:
         const QList<AcBarLine*> &barLines = score->barLines().list();
         for (int i = 0;  i < barLines.count();  ++i) {
             if (graphicsBarLineItems.count() <= i) {
-                AcGraphicsBarLineItem *graphicsBarLineItem = new AcGraphicsBarLineItem(barLines.at(i));
+                AcGraphicsBarLineItem *graphicsBarLineItem = new AcGraphicsBarLineItem(barLines[i]);
                 scoreScene->addItem(graphicsBarLineItem->qGraphicsScoreLineItem());
                 timeScene->addItem(graphicsBarLineItem->qGraphicsTimeTextItem());
                 graphicsBarLineItems.append(graphicsBarLineItem);
             } else
-                graphicsBarLineItems.at(i)->setGridLine(barLines.at(i));
+                graphicsBarLineItems[i]->setGridLine(barLines[i]);
         }
 
         // Remove unused graphics bar line items.
