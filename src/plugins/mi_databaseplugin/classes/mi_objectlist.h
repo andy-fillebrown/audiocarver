@@ -24,37 +24,40 @@
 class MiObjectList
 {
 public:
-    QObject *parent;
-
     MiObjectList(const QString &propertyName, MiObject *owner, QObject *parent = 0)
-        :   parent(parent ? parent : owner)
-        ,   propertyName(propertyName)
-        ,   owner(owner)
+        :   _parent(parent ? parent : owner)
+        ,   _owner(owner)
+        ,   _propertyName(propertyName)
     {}
+
+    QObject *parent() const { return _parent; }
 
     virtual bool isConstant() const { return false; }
 
-    int count() const { return list.count(); }
-    bool isEmpty() const { return list.isEmpty(); }
-    MiObject *at(int i) const { return list.at(i); }
-    MiObject *first() const { return list.first(); }
-    MiObject *last() const { return list.last(); }
-    int indexOf(MiObject *object, int from = 0) const { return list.indexOf(object, from); }
-    void append(MiObject *object) { object->setParent(parent);  list.append(object);  emitChanged(); }
-    void append(const QList<MiObject*> &objects) { foreach (MiObject *object, objects) object->setParent(parent);  list.append(objects);  emitChanged(); }
-    void insert(int i, MiObject *object) { object->setParent(parent);  list.insert(i, object);  emitChanged(); }
-    void remove(int i) { list.removeAt(i);  emitChanged(); }
-    void clear() { list.clear();  emitChanged(); }
-    void deleteAll() { qDeleteAll(list);  clear(); }
+    int count() const { return _list.count(); }
+    bool isEmpty() const { return _list.isEmpty(); }
+    MiObject *at(int i) const { return _list.at(i); }
+    MiObject *first() const { return _list.first(); }
+    MiObject *last() const { return _list.last(); }
+    int indexOf(MiObject *object, int from = 0) const { return _list.indexOf(object, from); }
+    void append(MiObject *object) { object->setParent(_parent);  _list.append(object);  emitChanged(); }
+    void append(const QList<MiObject*> &objects) { foreach (MiObject *object, objects) object->setParent(_parent);  _list.append(objects);  emitChanged(); }
+    void insert(int i, MiObject *object) { object->setParent(_parent);  _list.insert(i, object);  emitChanged(); }
+    void remove(int i) { _list.removeAt(i);  emitChanged(); }
+    void clear() { _list.clear();  emitChanged(); }
+    void deleteAll() { qDeleteAll(_list);  clear(); }
 
-    template <typename LessThan> void sort(LessThan lessThan) { qSort(list.begin(), list.end(), lessThan);  emitChanged(); }
+    template <typename LessThan> void sort(LessThan lessThan) { qSort(_list.begin(), _list.end(), lessThan);  emitChanged(); }
+
+    QList<MiObject*> *list() { return &_list; }
 
 private:
-    void emitChanged() { owner->emit propertyChanged(propertyName); }
+    void emitChanged() { _owner->emit propertyChanged(_propertyName); }
 
-    QString propertyName;
-    MiObject *owner;
-    QList<MiObject*> list;
+    QObject *_parent;
+    MiObject *_owner;
+    QString _propertyName;
+    QList<MiObject*> _list;
 };
 
 Q_DECLARE_METATYPE(MiObjectList*);

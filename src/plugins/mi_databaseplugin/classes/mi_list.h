@@ -26,40 +26,42 @@ template <typename T> class MiList
 
 public:
     MiList(const QString &propertyName, MiObject *owner, QObject *parent = 0)
-        :   list(new MiObjectList(propertyName, owner, parent))
+        :   _list(new MiObjectList(propertyName, owner, parent))
     {}
 
-    ~MiList() { delete list; }
+    ~MiList() { delete _list; }
 
-    bool isConstant() const { return list->isConstant(); }
+    bool isConstant() const { return _list->isConstant(); }
 
-    int count() const { return list->count(); }
-    bool isEmpty() const { return list->isEmpty(); }
-    T *at(int i) const { return qobject_cast<T*>(list->at(i)); }
-    T *first() const { return qobject_cast<T*>(list->first()); }
-    T *last() const { return qobject_cast<T*>(list->last()); }
-    QList<T*> toList() const { QList<T*> objs;  for (int i=0; i<count(); ++i) objs.append(at(i));  return objs; }
-    int indexOf(T *object, int from = 0) const { return list->indexOf(object, from); }
-    T *add() { T* object = new T(list->parent);  append(object);  return object; }
-    void append(T *object) { list->append(object); }
-    void append(const QList<T*> &objects) { QList<MiObject*> objs;  foreach (MiObject *object, objects) objs.append(object);  list->append(objs); }
-    void insert(int i, T *object) { list->insert(i, object); }
-    void remove(int i) { list->remove(i); }
+    int count() const { return _list->count(); }
+    bool isEmpty() const { return _list->isEmpty(); }
+    T *at(int i) const { return qobject_cast<T*>(_list->at(i)); }
+    T *first() const { return qobject_cast<T*>(_list->first()); }
+    T *last() const { return qobject_cast<T*>(_list->last()); }
+    QList<T*> *list() const { return reinterpret_cast<QList<T*>*>(_list->list()); }
+    int indexOf(T *object, int from = 0) const { return _list->indexOf(object, from); }
+    T *add() { T* object = new T(_list->parent());  append(object);  return object; }
+    void append(T *object) { _list->append(object); }
+    void append(const QList<T*> &objects) { _list->append(reinterpret_cast<const QList<MiObject*>&>(objects)); }
+    void insert(int i, T *object) { _list->insert(i, object); }
+    void remove(int i) { _list->remove(i); }
     T *take(int i) { T *object = at(i);  remove(i);  return object; }
     void erase(int i) { at(i)->erase(); }
     void eraseAndRemove(int i) { erase(i);  remove(i); }
     T *eraseAndTake(int i) { erase(i);  return take(i); }
-    void clear() { list->clear(); }
-    void deleteAll() { list->deleteAll(); }
-    void sort() { list->sort(lessThan); }
-    MiObjectList *objects() { return list; }
+    void clear() { _list->clear(); }
+    void deleteAll() { _list->deleteAll(); }
+    void sort() { _list->sort(lessThan); }
+
+    MiObjectList *objects() { return _list; }
 
 protected:
     MiList(MiObjectList *list)
-        :   list(list)
+        :   _list(list)
     {}
 
-    MiObjectList *list;
+private:
+    MiObjectList *_list;
 };
 
 template <typename T> class MiConstantList : MiList<T>

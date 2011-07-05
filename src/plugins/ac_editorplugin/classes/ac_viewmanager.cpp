@@ -122,19 +122,20 @@ public:
 
     void synchronizeBarLineLists()
     {
-        const MiList<AcBarLine> &barLines = score->barLines();
-        for (int i = 0;  i < barLines.count();  ++i) {
+//        const MiList<AcBarLine> &barLines = score->barLines();
+        QList<AcBarLine*> *barLines = score->barLines().list();
+        for (int i = 0;  i < barLines->count();  ++i) {
             if (graphicsBarLineItems.count() <= i) {
-                AcGraphicsBarLineItem *graphicsBarLineItem = new AcGraphicsBarLineItem(barLines.at(i));
+                AcGraphicsBarLineItem *graphicsBarLineItem = new AcGraphicsBarLineItem(barLines->at(i));
                 scoreScene->addItem(graphicsBarLineItem->qGraphicsScoreLineItem());
                 timeScene->addItem(graphicsBarLineItem->qGraphicsTimeTextItem());
                 graphicsBarLineItems.append(graphicsBarLineItem);
             } else
-                graphicsBarLineItems.at(i)->setGridLine(barLines.at(i));
+                graphicsBarLineItems.at(i)->setGridLine(barLines->at(i));
         }
 
         // Remove unused graphics bar line items.
-        while (barLines.count() < graphicsBarLineItems.count()) {
+        while (barLines->count() < graphicsBarLineItems.count()) {
             AcGraphicsBarLineItem *graphicsBarLineItem = graphicsBarLineItems.last();
             timeScene->removeItem(graphicsBarLineItem->qGraphicsTimeTextItem());
             scoreScene->removeItem(graphicsBarLineItem->qGraphicsScoreLineItem());
