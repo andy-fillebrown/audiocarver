@@ -28,6 +28,7 @@
 #include <ac_scoreview.h>
 #include <ac_timescene.h>
 #include <ac_timeview.h>
+#include <ac_tuningline.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
 #include <mi_list.h>
@@ -110,6 +111,13 @@ public:
 
     void synchronizeTuningLineLists()
     {
+        const MiList<AcTuningLine> &tuningLines = score->tuningLines();
+        for (int i = 0;  i < tuningLines.count();  ++i) {
+            if (graphicsTuningLineItems.count() <= i) {
+                AcGraphicsTuningLineItem *graphicsTuningLineItem = new AcGraphicsTuningLineItem(tuningLines.at(i));
+                scoreScene->addItem(graphicsTuningLineItem->qGraphicsScoreLineItem());
+            }
+        }
     }
 
     void updateTuningLinePositions()
