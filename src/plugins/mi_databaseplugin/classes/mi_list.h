@@ -38,7 +38,6 @@ public:
     T *at(int i) const { return qobject_cast<T*>(_list->at(i)); }
     T *first() const { return qobject_cast<T*>(_list->first()); }
     T *last() const { return qobject_cast<T*>(_list->last()); }
-    QList<T*> *list() const { return reinterpret_cast<QList<T*>*>(_list->list()); }
     int indexOf(T *object, int from = 0) const { return _list->indexOf(object, from); }
     T *add() { T* object = new T(_list->parent());  append(object);  return object; }
     void append(T *object) { _list->append(object); }
@@ -54,6 +53,7 @@ public:
     void sort() { _list->sort(lessThan); }
 
     MiObjectList *objects() { return _list; }
+    const QList<T*> &list() const { return reinterpret_cast<QList<T*>&>(*_list->list()); }
 
 protected:
     MiList(MiObjectList *list)
