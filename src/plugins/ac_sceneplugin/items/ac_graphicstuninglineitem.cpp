@@ -17,11 +17,19 @@
 
 #include "ac_graphicstuninglineitem.h"
 #include <ac_tuningline.h>
-//#include <ac_score.h>
-//#include <ac_scorescene.h>
-//#include <ac_viewsettings.h>
-//#include <QGraphicsLineItem>
-//#include <QGraphicsTextItem>
+
+using namespace Private;
+
+namespace Private {
+
+class AcGraphicsTuningLineItemData
+{
+public:
+    AcGraphicsTuningLineItem *q;
+
+};
+
+} // namespace Private
 
 AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine)
     :   AcGraphicsGridLineItem(tuningLine)

@@ -31,24 +31,6 @@ class AcTimeViewData
 public:
     AcTimeViewData()
     {}
-
-    void updateTimeScene()
-    {
-//        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-//        AcTimeScene *timeScene = AcTimeScene::instance();
-//        AcTimeView *timeView = AcTimeView::instance();
-//        AcScoreView *scoreView = AcScoreView::instance();
-//        const qreal scaleX = viewSettings->scaleX();
-//        const qreal scaleY = viewSettings->scaleY();
-//        QPointF topLeft = scoreView->mapToScene(scoreView->rect().topLeft());
-//        QPointF bottomRight = scoreView->mapToScene(scoreView->rect().bottomRight());
-//        topLeft.rx() *= scaleX;
-//        topLeft.ry() *= scaleY;
-//        bottomRight.rx() *= scaleX;
-//        bottomRight.ry() *= scaleY;
-//        timeScene->setSceneRect(topLeft.x(), 0.0f, bottomRight.x() - topLeft.x(), 10.0f);
-//        timeView->centerOn(scoreView->center().x() * scaleX, 5.0f);
-    }
 };
 
 } // namespace Private
@@ -62,25 +44,3 @@ AcTimeView::~AcTimeView()
 {
     delete d;
 }
-
-void AcTimeView::updateCenter()
-{
-}
-
-void AcTimeView::updateLength()
-{
-}
-
-void AcTimeView::updateScaleX()
-{
-}
-
-//void AcTimeView::update()
-//{
-//    d->updateTimeScene();
-//}
-
-//void AcTimeView::updateViewSettings(const QString &propertyName)
-//{
-//    d->updateTimeScene();
-//}

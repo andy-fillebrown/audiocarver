@@ -35,9 +35,6 @@ public:
     AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcPitchView();
 
-    void updateCenter();
-    void updateScaleY();
-
 private:
     Q_DISABLE_COPY(AcPitchView)
     Private::AcPitchViewData *d;

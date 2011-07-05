@@ -22,14 +22,25 @@
 
 class AcTuningLine;
 
+namespace Private {
+
+class AcGraphicsTuninglineItem;
+
+} // namespace Private
+
 class AC_SCENE_EXPORT AcGraphicsTuningLineItem : public AcGraphicsGridLineItem
 {
 public:
     AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0);
     virtual ~AcGraphicsTuningLineItem();
 
+    void setGridLine(AcGridLine *gridLine);
+
+    QGraphicsTextItem *qGraphicsTimeTextItem() const;
+
 private:
     Q_DISABLE_COPY(AcGraphicsTuningLineItem)
+    Private::AcGraphicsTuninglineItem *d;
 };
 
 #endif // AC_GRAPHICSTUNINGLINEITEM_H
