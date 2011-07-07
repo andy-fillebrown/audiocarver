@@ -37,6 +37,8 @@ public:
     AcGraphicsGridLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsGridLineItem();
 
+    virtual bool isVertical() const = 0;
+
     AcGridLine *gridLine() const;
     virtual void setGridLine(AcGridLine *gridLine);
 

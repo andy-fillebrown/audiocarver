@@ -24,7 +24,7 @@ class AcTuningLine;
 
 namespace Private {
 
-class AcGraphicsTuninglineItem;
+class AcGraphicsTuningLineItemData;
 
 } // namespace Private
 
@@ -34,15 +34,18 @@ public:
     AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0);
     virtual ~AcGraphicsTuningLineItem();
 
+    virtual bool isVertical() const { return false; }
+
     virtual void setGridLine(AcGridLine *gridLine);
 
 protected:
     virtual void updateFontSettingsProperty(const QString &propertyName);
     virtual void updateViewSettingsProperty(const QString &propertyName);
+    virtual void updateGridLineProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsTuningLineItem)
-    Private::AcGraphicsTuninglineItem *d;
+    Private::AcGraphicsTuningLineItemData *d;
 };
 
 #endif // AC_GRAPHICSTUNINGLINEITEM_H

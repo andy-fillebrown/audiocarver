@@ -34,6 +34,8 @@ public:
     AcGraphicsBarLineItem(AcBarLine *barLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsBarLineItem();
 
+    virtual bool isVertical() const { return true; }
+
     virtual void setGridLine(AcGridLine *barLine);
 
 protected:

@@ -30,11 +30,13 @@ namespace Private {
 class AcGraphicsGridLineItemData
 {
 public:
+    AcGraphicsGridLineItem *q;
     AcGridLine *gridLine;
     QGraphicsLineItem *scoreLineItem;
 
-    AcGraphicsGridLineItemData()
-        :   gridLine(0)
+    AcGraphicsGridLineItemData(AcGraphicsGridLineItem *q)
+        :   q(q)
+        ,   gridLine(0)
         ,   scoreLineItem(new QGraphicsLineItem)
     {
         AcScoreScene::instance()->addItem(scoreLineItem);
@@ -48,7 +50,10 @@ public:
 
     void updateLocation()
     {
-        scoreLineItem->setLine(gridLine->location(), 0.0f, gridLine->location(), 127.0f);
+        if (q->isVertical())
+            scoreLineItem->setLine(gridLine->location(), 0.0f, gridLine->location(), 127.0f);
+        else
+            scoreLineItem->setLine(0.0f, gridLine->location(), AcScore::instance()->length(), gridLine->location());
     }
 
     void updateColor()
@@ -71,12 +76,11 @@ public:
 
 AcGraphicsGridLineItem::AcGraphicsGridLineItem(AcGridLine *gridLine, QObject *parent)
     :   QObject(parent)
-    ,   d(new AcGraphicsGridLineItemData)
+    ,   d(new AcGraphicsGridLineItemData(this))
 {
     AcScore *score = AcScore::instance();
     connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
     connect(score->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
-    setGridLine(gridLine);
 }
 
 AcGraphicsGridLineItem::~AcGraphicsGridLineItem()

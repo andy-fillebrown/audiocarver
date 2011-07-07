@@ -115,6 +115,7 @@ void AcGraphicsBarLineItem::setGridLine(AcGridLine *gridLine)
 
 void AcGraphicsBarLineItem::updateFontSettingsProperty(const QString &propertyName)
 {
+    Q_UNUSED(propertyName);
     d->updateFont();
 }
 
