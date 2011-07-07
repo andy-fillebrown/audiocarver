@@ -26,19 +26,35 @@ namespace Private {
 class AcTimeSceneData
 {
 public:
+    AcTimeScene *q;
     qreal height;
 
-    AcTimeSceneData()
-        :   height(10.0f)
+    AcTimeSceneData(AcTimeScene *q)
+        :   q(q)
+        ,   height(10.0f)
     {}
+
+    void init()
+    {
+        updateSceneRect();
+    }
+
+    void updateSceneRect()
+    {
+        const AcScore *score = AcScore::instance();
+        const qreal width = score->length() * score->viewSettings()->scaleX();
+        q->setSceneRect(0.0f, 0.0f, width, height);
+    }
 };
 
 } // namespace Private
 
 AcTimeScene::AcTimeScene(QObject *parent)
     :   AcScaledScene(parent)
-    ,   d(new AcTimeSceneData)
-{}
+    ,   d(new AcTimeSceneData(this))
+{
+    d->init();
+}
 
 AcTimeScene::~AcTimeScene()
 {
@@ -47,9 +63,6 @@ AcTimeScene::~AcTimeScene()
 
 void AcTimeScene::updateViewSettingsProperty(const QString &propertyName)
 {
-    if ("scaleX" == propertyName) {
-        const AcScore *score = AcScore::instance();
-        const qreal width = score->length() * score->viewSettings()->scaleX();
-        setSceneRect(0.0f, 0.0f, width, d->height);
-    }
+    if ("scaleX" == propertyName)
+        d->updateSceneRect();
 }
