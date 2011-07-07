@@ -16,6 +16,8 @@
 **************************************************************************/
 
 #include "ac_pitchscene.h"
+#include <ac_score.h>
+#include <ac_viewsettings.h>
 
 using namespace Private;
 
@@ -24,19 +26,29 @@ namespace Private {
 class AcPitchSceneData
 {
 public:
+    qreal width;
+
     AcPitchSceneData()
+        :   width(10.0f)
     {}
 };
 
 } // namespace Private
 
 AcPitchScene::AcPitchScene(QObject *parent)
-    :   AcGraphicsScene(parent)
+    :   AcScaledScene(parent)
     ,   d(new AcPitchSceneData)
-{
-}
+{}
 
 AcPitchScene::~AcPitchScene()
 {
     delete d;
+}
+
+void AcPitchScene::updateViewSettingsProperty(const QString &propertyName)
+{
+    if ("scaleY" == propertyName) {
+        const qreal height = 127.0f * AcScore::instance()->viewSettings()->scaleY();
+        setSceneRect(0.0f, 0.0f, d->width, height);
+    }
 }

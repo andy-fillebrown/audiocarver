@@ -97,12 +97,6 @@ public:
         scoreScene->setSceneRect(0.0f, 0.0f, score->length(), 127.0f);
     }
 
-    void updateViewRects()
-    {
-        pitchScene->setSceneRect(0.0f, 0.0f, 10.0f, 127.0f * viewSettings->scaleY());
-        timeScene->setSceneRect(0.0f, 0.0f, score->length() * viewSettings->scaleX(), 10.0f);
-    }
-
     void updateViewCenters()
     {
         pitchView->centerOn(5.0f, scoreView->center().y() * viewSettings->scaleY());
@@ -264,7 +258,6 @@ void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
     } else if (propertyName.startsWith("scale")) {
         d->scoreView->updateTransform();
         d->scoreView->updateCenter();
-        d->updateViewRects();
         d->updateViewCenters();
     }
     if (propertyName.endsWith("Y")) {
@@ -300,6 +293,5 @@ void AcViewManager::updateViews()
 {
     d->scoreView->updateTransform();
     d->updateScoreViewLength();
-    d->updateViewRects();
     d->updateViewCenters();
 }

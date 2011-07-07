@@ -15,31 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMESCENE_H
-#define AC_TIMESCENE_H
+#include "ac_scaledscene.h"
+#include <ac_score.h>
+#include <ac_viewsettings.h>
 
-#include <ac_scaledscene.h>
+using namespace Private;
 
 namespace Private {
 
-class AcTimeSceneData;
+class AcScaledSceneData
+{
+public:
+    AcScaledSceneData()
+    {}
+};
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcTimeScene : public AcScaledScene
+AcScaledScene::AcScaledScene(QObject *parent)
+    :   AcGraphicsScene(parent)
+    ,   d(new AcScaledSceneData)
 {
-    Q_OBJECT
+    connect(AcScore::instance()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+}
 
-public:
-    AcTimeScene(QObject *parent = 0);
-    virtual ~AcTimeScene();
-
-protected:
-   virtual void updateViewSettingsProperty(const QString &propertyName);
-
-private:
-    Q_DISABLE_COPY(AcTimeScene)
-    Private::AcTimeSceneData *d;
-};
-
-#endif // AC_TIMESCENE_H
+AcScaledScene::~AcScaledScene()
+{
+    delete d;
+}

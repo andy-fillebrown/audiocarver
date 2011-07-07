@@ -16,6 +16,7 @@ HEADERS += \
     scenes/ac_controllerscene.h \
     scenes/ac_graphicsscene.h \
     scenes/ac_pitchscene.h \
+    scenes/ac_scaledscene.h \
     scenes/ac_scorescene.h \
     scenes/ac_timescene.h \
     \
@@ -32,6 +33,7 @@ SOURCES += \
     scenes/ac_controllerscene.cpp \
     scenes/ac_graphicsscene.cpp \
     scenes/ac_pitchscene.cpp \
+    scenes/ac_scaledscene.cpp \
     scenes/ac_scorescene.cpp \
     scenes/ac_timescene.cpp \
     \

@@ -16,6 +16,8 @@
 **************************************************************************/
 
 #include "ac_timescene.h"
+#include <ac_score.h>
+#include <ac_viewsettings.h>
 
 using namespace Private;
 
@@ -24,14 +26,17 @@ namespace Private {
 class AcTimeSceneData
 {
 public:
+    qreal height;
+
     AcTimeSceneData()
+        :   height(10.0f)
     {}
 };
 
 } // namespace Private
 
 AcTimeScene::AcTimeScene(QObject *parent)
-    :   AcGraphicsScene(parent)
+    :   AcScaledScene(parent)
     ,   d(new AcTimeSceneData)
 {}
 
@@ -40,3 +45,11 @@ AcTimeScene::~AcTimeScene()
     delete d;
 }
 
+void AcTimeScene::updateViewSettingsProperty(const QString &propertyName)
+{
+    if ("scaleX" == propertyName) {
+        const AcScore *score = AcScore::instance();
+        const qreal width = score->length() * score->viewSettings()->scaleX();
+        setSceneRect(0.0f, 0.0f, width, d->height);
+    }
+}
