@@ -21,9 +21,6 @@
 #include <mi_graphicsscene.h>
 #include <ac_scene_global.h>
 
-class AcScore;
-class AcViewSettings;
-
 namespace Private {
 
 class AcGraphicsSceneData;
