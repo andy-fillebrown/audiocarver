@@ -34,6 +34,8 @@ public:
     AcPitchScene(QObject *parent = 0);
     virtual ~AcPitchScene();
 
+    static AcPitchScene *instance();
+
 protected:
     virtual void updateViewSettingsProperty(const QString &propertyName);
 

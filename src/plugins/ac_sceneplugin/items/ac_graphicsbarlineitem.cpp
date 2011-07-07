@@ -17,10 +17,13 @@
 
 #include "ac_graphicsbarlineitem.h"
 #include <ac_barline.h>
+#include <ac_scenemanager.h>
 #include <ac_score.h>
+#include <ac_timescene.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
 #include <QFont>
+#include <QFontMetrics>
 #include <QGraphicsTextItem>
 
 using namespace Private;
@@ -31,46 +34,68 @@ class AcGraphicsBarLineItemData
 {
 public:
     AcGraphicsBarLineItem *q;
-    QGraphicsTextItem *timeTextItem;
+    QGraphicsTextItem *labelItem;
 
     AcGraphicsBarLineItemData(AcGraphicsBarLineItem *q)
         :   q(q)
-        ,   timeTextItem(new QGraphicsTextItem)
-    {}
+        ,   labelItem(new QGraphicsTextItem)
+    {
+        AcTimeScene::instance()->addItem(labelItem);
+    }
 
     ~AcGraphicsBarLineItemData()
     {
-        delete timeTextItem;
+        delete labelItem;
     }
 
-    void updateItems()
+    void update()
+    {
+        updateFont();
+        updateLocation();
+        updateLabel();
+    }
+
+    void updateFont()
     {
         MiFont *font = AcScore::instance()->fontSettings();
-        timeTextItem->setFont(QFont(font->family(), font->pointSize()));
-        timeTextItem->setPlainText(q->label());
+        labelItem->setFont(QFont(font->family(), font->pointSize()));
     }
 
-    void hideItems()
+    void updateLocation()
     {
-        timeTextItem->hide();
+        const AcGridLine *gridLine = q->gridLine();
+        const qreal location = gridLine->location();
+        const AcScore *score = AcScore::instance();
+        const qreal scale = score->viewSettings()->scaleX();
+        const QRect labelRect = AcSceneManager::instance()->fontMetrics().boundingRect(gridLine->label());
+        const qreal x = (location * scale) - (labelRect.width() / 2);
+        const qreal y = AcTimeScene::instance()->height();
+        labelItem->setPos(x, y);
     }
 
-    void showItems()
+    void updateLabel()
     {
-        timeTextItem->show();
+        labelItem->setPlainText(q->gridLine()->label());
+    }
+
+    void show()
+    {
+        labelItem->show();
+    }
+
+    void hide()
+    {
+        labelItem->hide();
     }
 };
 
 } // namespace Private
 
-AcGraphicsBarLineItem::AcGraphicsBarLineItem(AcBarLine *barLine)
-    :   AcGraphicsGridLineItem(barLine)
+AcGraphicsBarLineItem::AcGraphicsBarLineItem(AcBarLine *barLine, QObject *parent)
+    :   AcGraphicsGridLineItem(barLine, parent)
     ,   d(new AcGraphicsBarLineItemData(this))
 {
-    if (barLine) {
-        d->updateItems();
-        d->showItems();
-    }
+    setGridLine(barLine);
 }
 
 AcGraphicsBarLineItem::~AcGraphicsBarLineItem()
@@ -82,13 +107,28 @@ void AcGraphicsBarLineItem::setGridLine(AcGridLine *gridLine)
 {
     AcGraphicsGridLineItem::setGridLine(gridLine);
     if (gridLine) {
-        d->updateItems();
-        d->showItems();
+        d->update();
+        d->show();
     } else
-        d->hideItems();
+        d->hide();
 }
 
-QGraphicsTextItem *AcGraphicsBarLineItem::qGraphicsTimeTextItem() const
+void AcGraphicsBarLineItem::updateFontSettingsProperty(const QString &propertyName)
 {
-    return d->timeTextItem;
+    d->updateFont();
+}
+
+void AcGraphicsBarLineItem::updateViewSettingsProperty(const QString &propertyName)
+{
+    if ("scaleX" == propertyName)
+        d->updateLocation();
+}
+
+void AcGraphicsBarLineItem::updateGridLineProperty(const QString &propertyName)
+{
+    AcGraphicsGridLineItem::updateGridLineProperty(propertyName);
+    if ("location" == propertyName)
+        d->updateLocation();
+    else if ("label" == propertyName)
+        d->updateLabel();
 }

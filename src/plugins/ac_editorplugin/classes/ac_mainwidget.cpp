@@ -16,14 +16,11 @@
 **************************************************************************/
 
 #include "ac_mainwidget.h"
-#include <ac_controllerview.h>
-#include <ac_pitchview.h>
-#include <ac_scoreview.h>
-#include <ac_timeview.h>
 #include <ac_viewmanager.h>
 #include <mi_graphicsview.h>
 #include <QApplication>
 #include <QGraphicsPathItem>
+#include <QGraphicsView>
 #include <QLayout>
 #include <QWheelEvent>
 
@@ -66,17 +63,17 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     d->topLeft->setFixedSize(sideWidth, sideHeight);
     d->topLeft->setFrameShape(QFrame::NoFrame);
 
-    AcTimeView *timeView = d->viewManager->timeView();
+    QGraphicsView *timeView = d->viewManager->timeView();
     d->layout->addWidget(timeView, 0, 1);
     timeView->setFixedHeight(sideHeight);
     timeView->setFrameShape(QFrame::NoFrame);
 
-    AcPitchView *pitchView = d->viewManager->pitchView();
+    QGraphicsView *pitchView = d->viewManager->pitchView();
     d->layout->addWidget(pitchView, 1, 0);
     pitchView->setFixedWidth(sideWidth);
     pitchView->setFrameShape(QFrame::NoFrame);
 
-    AcScoreView *scoreView = d->viewManager->scoreView();
+    QGraphicsView *scoreView = d->viewManager->scoreView();
     d->layout->addWidget(scoreView, 1, 1);
     scoreView->setFrameShape(QFrame::Box);
     scoreView->setFrameShadow(QFrame::Sunken);
@@ -86,7 +83,7 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     d->bottomLeft->setFixedSize(sideWidth, controllerHeight);
     d->bottomLeft->setFrameShape(QFrame::NoFrame);
 
-    AcControllerView *controllerView = d->viewManager->controllerView();
+    QGraphicsView *controllerView = d->viewManager->controllerView();
     d->layout->addWidget(controllerView, 2, 1);
     controllerView->setFixedHeight(controllerHeight);
     controllerView->setFrameShape(QFrame::Box);

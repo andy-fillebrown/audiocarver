@@ -31,12 +31,15 @@ class AcGraphicsBarLineItemData;
 class AC_SCENE_EXPORT AcGraphicsBarLineItem : public AcGraphicsGridLineItem
 {
 public:
-    AcGraphicsBarLineItem(AcBarLine *barLine = 0);
+    AcGraphicsBarLineItem(AcBarLine *barLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsBarLineItem();
 
-    void setGridLine(AcGridLine *gridLine);
+    virtual void setGridLine(AcGridLine *barLine);
 
-    QGraphicsTextItem *qGraphicsTimeTextItem() const;
+protected:
+    virtual void updateFontSettingsProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(const QString &propertyName);
+    virtual void updateGridLineProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsBarLineItem)

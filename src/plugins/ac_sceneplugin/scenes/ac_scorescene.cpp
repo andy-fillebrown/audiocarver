@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "ac_scorescene.h"
+#include <ac_score.h>
 
 using namespace Private;
 
@@ -24,18 +25,48 @@ namespace Private {
 class AcScoreSceneData
 {
 public:
-    AcScoreSceneData()
+    AcScoreScene *q;
+
+    AcScoreSceneData(AcScoreScene *q)
+        :   q(q)
     {}
+
+    void init()
+    {
+        updateSceneRect();
+    }
+
+    void updateSceneRect()
+    {
+        q->setSceneRect(0.0f, 0.0f, AcScore::instance()->length(), 127.0f);
+    }
 };
 
 } // namespace Private
 
+static AcScoreScene *instance = 0;
+
 AcScoreScene::AcScoreScene(QObject *parent)
     :   AcGraphicsScene(parent)
-    ,   d(new AcScoreSceneData)
-{}
+    ,   d(new AcScoreSceneData(this))
+{
+    ::instance = this;
+    d->init();
+    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+}
 
 AcScoreScene::~AcScoreScene()
 {
     delete d;
+}
+
+AcScoreScene *AcScoreScene::instance()
+{
+    return ::instance;
+}
+
+void AcScoreScene::updateScoreProperty(const QString &propertyName)
+{
+    if ("length" == propertyName)
+        d->updateSceneRect();
 }

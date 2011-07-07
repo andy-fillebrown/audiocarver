@@ -35,6 +35,11 @@ public:
     AcScoreScene(QObject *parent = 0);
     virtual ~AcScoreScene();
 
+    static AcScoreScene *instance();
+
+protected slots:
+    virtual void updateScoreProperty(const QString &propertyName);
+
 private:
     Q_DISABLE_COPY(AcScoreScene)
     Private::AcScoreSceneData *d;

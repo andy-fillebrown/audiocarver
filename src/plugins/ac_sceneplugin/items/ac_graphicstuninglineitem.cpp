@@ -38,6 +38,21 @@ AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine)
 AcGraphicsTuningLineItem::~AcGraphicsTuningLineItem()
 {}
 
+void AcGraphicsTuningLineItem::setGridLine(AcGridLine *gridLine)
+{
+    AcGraphicsGridLineItem::setGridLine(gridLine);
+}
+
+void AcGraphicsTuningLineItem::updateFontSettingsProperty(const QString &propertyName)
+{
+    Q_UNUSED(propertyName);
+}
+
+void AcGraphicsTuningLineItem::updateViewSettingsProperty(const QString &propertyName)
+{
+    Q_UNUSED(propertyName);
+}
+
 //void AcTuningItem::updateItems()
 //{
 //    AcGuidelineItem::updateItems();

@@ -34,9 +34,11 @@ public:
     AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0);
     virtual ~AcGraphicsTuningLineItem();
 
-    void setGridLine(AcGridLine *gridLine);
+    virtual void setGridLine(AcGridLine *gridLine);
 
-    QGraphicsTextItem *qGraphicsTimeTextItem() const;
+protected:
+    virtual void updateFontSettingsProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsTuningLineItem)

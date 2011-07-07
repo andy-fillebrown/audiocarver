@@ -17,6 +17,10 @@
 
 #include "ac_graphicsgridlineitem.h"
 #include <ac_gridline.h>
+#include <ac_score.h>
+#include <ac_scorescene.h>
+#include <ac_viewsettings.h>
+#include <mi_font.h>
 #include <QGraphicsLineItem>
 
 using namespace Private;
@@ -32,34 +36,46 @@ public:
     AcGraphicsGridLineItemData()
         :   gridLine(0)
         ,   scoreLineItem(new QGraphicsLineItem)
-    {}
-
-    ~AcGraphicsGridLineItemData()
     {
-        delete scoreLineItem;
+        AcScoreScene::instance()->addItem(scoreLineItem);
     }
 
-    void updateItems()
+    void update()
+    {
+        updateLocation();
+        updateColor();
+    }
+
+    void updateLocation()
+    {
+        scoreLineItem->setLine(gridLine->location(), 0.0f, gridLine->location(), 127.0f);
+    }
+
+    void updateColor()
     {
         scoreLineItem->setPen(gridLine->color());
     }
 
-    void hideItems()
-    {
-        scoreLineItem->hide();
-    }
-
-    void showItems()
+    void show()
     {
         scoreLineItem->show();
+    }
+
+    void hide()
+    {
+        scoreLineItem->hide();
     }
 };
 
 } // namespace Private
 
-AcGraphicsGridLineItem::AcGraphicsGridLineItem(AcGridLine *gridLine)
-    :   d(new AcGraphicsGridLineItemData)
+AcGraphicsGridLineItem::AcGraphicsGridLineItem(AcGridLine *gridLine, QObject *parent)
+    :   QObject(parent)
+    ,   d(new AcGraphicsGridLineItemData)
 {
+    AcScore *score = AcScore::instance();
+    connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
+    connect(score->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
     setGridLine(gridLine);
 }
 
@@ -77,40 +93,22 @@ void AcGraphicsGridLineItem::setGridLine(AcGridLine *gridLine)
 {
     if (d->gridLine == gridLine)
         return;
+    if (d->gridLine) {
+        d->gridLine->disconnect(this);
+    }
     d->gridLine = gridLine;
-    if (gridLine) {
-        d->updateItems();
-        d->showItems();
+    if (d->gridLine) {
+        connect(d->gridLine, SIGNAL(propertyChanged(QString)), SLOT(updateGridLineProperty(QString)));
+        d->update();
+        d->show();
     } else
-        d->hideItems();
+        d->hide();
 }
 
-qreal AcGraphicsGridLineItem::location() const
+void AcGraphicsGridLineItem::updateGridLineProperty(const QString &propertyName)
 {
-    return d->gridLine->location();
-}
-
-const QColor &AcGraphicsGridLineItem::color() const
-{
-    return d->gridLine->color();
-}
-
-const QString &AcGraphicsGridLineItem::label() const
-{
-    return d->gridLine->label();
-}
-
-int AcGraphicsGridLineItem::priority() const
-{
-    return d->gridLine->priority();
-}
-
-QGraphicsLineItem *AcGraphicsGridLineItem::qGraphicsScoreLineItem() const
-{
-    return d->scoreLineItem;
-}
-
-QGraphicsLineItem *AcGraphicsGridLineItem::qGraphicsControllerLineItem() const
-{
-    return 0;
+    if ("location" == propertyName)
+        d->updateLocation();
+    else if ("color" == propertyName)
+        d->updateColor();
 }

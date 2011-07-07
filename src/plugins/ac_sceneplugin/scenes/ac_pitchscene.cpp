@@ -27,37 +27,52 @@ class AcPitchSceneData
 {
 public:
     AcPitchScene *q;
-    qreal width;
 
     AcPitchSceneData(AcPitchScene *q)
         :   q(q)
-        ,   width(10.0f)
     {}
+
+    qreal height() const
+    {
+        return 127.0f * AcScore::instance()->viewSettings()->scaleY();
+    }
 
     void init()
     {
-        updateSceneRect();
+        initSceneRect();
+    }
+
+    void initSceneRect()
+    {
+        q->setSceneRect(0.0f, 0.0f, 10.0f, height());
     }
 
     void updateSceneRect()
     {
-        const qreal height = 127.0f * AcScore::instance()->viewSettings()->scaleY();
-        q->setSceneRect(0.0f, 0.0f, width, height);
+        q->setSceneRect(0.0f, 0.0f, q->width(), height());
     }
 };
 
 } // namespace Private
 
+static AcPitchScene *instance = 0;
+
 AcPitchScene::AcPitchScene(QObject *parent)
     :   AcScaledScene(parent)
     ,   d(new AcPitchSceneData(this))
 {
+    ::instance = this;
     d->init();
 }
 
 AcPitchScene::~AcPitchScene()
 {
     delete d;
+}
+
+AcPitchScene *AcPitchScene::instance()
+{
+    return ::instance;
 }
 
 void AcPitchScene::updateViewSettingsProperty(const QString &propertyName)

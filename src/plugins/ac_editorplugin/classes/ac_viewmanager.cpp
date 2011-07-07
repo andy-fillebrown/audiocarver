@@ -16,26 +16,14 @@
 **************************************************************************/
 
 #include "ac_viewmanager.h"
-#include <ac_barline.h>
-#include <ac_controllerscene.h>
 #include <ac_controllerview.h>
-#include <ac_graphicsbarlineitem.h>
-#include <ac_graphicstuninglineitem.h>
-#include <ac_pitchscene.h>
 #include <ac_pitchview.h>
+#include <ac_scenemanager.h>
 #include <ac_score.h>
-#include <ac_scorescene.h>
 #include <ac_scoreview.h>
-#include <ac_timescene.h>
 #include <ac_timeview.h>
-#include <ac_tuningline.h>
 #include <ac_viewsettings.h>
-#include <mi_font.h>
-#include <mi_list.h>
-#include <QFont>
-#include <QFontMetrics>
-#include <QGraphicsLineItem>
-#include <QGraphicsTextItem>
+#include <QGraphicsView>
 #include <QWidget>
 
 using namespace Private;
@@ -46,127 +34,26 @@ class AcViewManagerData
 {
 public:
     AcViewManager *q;
-    QWidget *widget;
-    AcScoreScene *scoreScene;
+    AcSceneManager *sceneManager;
     AcScoreView *scoreView;
-    AcControllerScene *controllerScene;
     AcControllerView *controllerView;
-    AcPitchScene *pitchScene;
     AcPitchView *pitchView;
-    AcTimeScene *timeScene;
     AcTimeView *timeView;
-    AcScore *score;
-    MiFont *fontSettings;
-    AcViewSettings *viewSettings;
-    QFont font;
-    QFontMetrics fontMetrics;
-    QList<AcGraphicsBarLineItem*> graphicsBarLineItems;
-    QList<AcGraphicsTuningLineItem*> graphicsTuningLineItems;
 
     AcViewManagerData(AcViewManager *q, QWidget *widget)
         :   q(q)
-        ,   widget(widget)
-        ,   scoreScene(new AcScoreScene(q))
-        ,   scoreView(new AcScoreView(scoreScene, widget))
-        ,   controllerScene(new AcControllerScene(q))
-        ,   controllerView(new AcControllerView(controllerScene, widget))
-        ,   pitchScene(new AcPitchScene(q))
-        ,   pitchView(new AcPitchView(pitchScene, widget))
-        ,   timeScene(new AcTimeScene(q))
-        ,   timeView(new AcTimeView(timeScene, widget))
-        ,   score(AcScore::instance())
-        ,   fontSettings(score->fontSettings())
-        ,   viewSettings(score->viewSettings())
-        ,   font(fontSettings->family(), fontSettings->pointSize())
-        ,   fontMetrics(font)
+        ,   sceneManager(new AcSceneManager(q))
+        ,   scoreView(new AcScoreView(sceneManager->scoreScene(), widget))
+        ,   controllerView(new AcControllerView(sceneManager->controllerScene(), widget))
+        ,   pitchView(new AcPitchView(sceneManager->pitchScene(), widget))
+        ,   timeView(new AcTimeView(sceneManager->timeScene(), widget))
     {}
-
-    void init()
-    {
-        updateScoreViewLength();
-        synchronizeTuningLineLists();
-        updateTuningLinePositions();
-        updateTuningLabelPositions();
-        synchronizeBarLineLists();
-        updateBarLinePositions();
-        updateBarLabelPositions();
-    }
-
-    void updateScoreViewLength()
-    {
-        scoreScene->setSceneRect(0.0f, 0.0f, score->length(), 127.0f);
-    }
 
     void updateViewCenters()
     {
-        pitchView->centerOn(5.0f, scoreView->center().y() * viewSettings->scaleY());
-        timeView->centerOn(scoreView->center().x() * viewSettings->scaleX(), 5.0f);
-    }
-
-    void synchronizeTuningLineLists()
-    {
-        const QList<AcTuningLine*> &tuningLines = score->tuningLines().list();
-        for (int i = 0;  i < tuningLines.count();  ++i) {
-            if (graphicsTuningLineItems.count() <= i) {
-                AcGraphicsTuningLineItem *graphicsTuningLineItem = new AcGraphicsTuningLineItem(tuningLines[i]);
-                scoreScene->addItem(graphicsTuningLineItem->qGraphicsScoreLineItem());
-            }
-        }
-    }
-
-    void updateTuningLinePositions()
-    {
-    }
-
-    void updateTuningLabelPositions()
-    {
-    }
-
-    void synchronizeBarLineLists()
-    {
-        const QList<AcBarLine*> &barLines = score->barLines().list();
-        for (int i = 0;  i < barLines.count();  ++i) {
-            if (graphicsBarLineItems.count() <= i) {
-                AcGraphicsBarLineItem *graphicsBarLineItem = new AcGraphicsBarLineItem(barLines[i]);
-                scoreScene->addItem(graphicsBarLineItem->qGraphicsScoreLineItem());
-                timeScene->addItem(graphicsBarLineItem->qGraphicsTimeTextItem());
-                graphicsBarLineItems.append(graphicsBarLineItem);
-            } else
-                graphicsBarLineItems[i]->setGridLine(barLines[i]);
-        }
-
-        // Remove unused graphics bar line items.
-        while (barLines.count() < graphicsBarLineItems.count()) {
-            AcGraphicsBarLineItem *graphicsBarLineItem = graphicsBarLineItems.last();
-            timeScene->removeItem(graphicsBarLineItem->qGraphicsTimeTextItem());
-            scoreScene->removeItem(graphicsBarLineItem->qGraphicsScoreLineItem());
-            graphicsBarLineItems.removeLast();
-            delete graphicsBarLineItem;
-        }
-    }
-
-    void updateBarLinePositions()
-    {
-        foreach (AcGraphicsBarLineItem *graphicsBarLineItem, graphicsBarLineItems) {
-            const qreal location = graphicsBarLineItem->location();
-            graphicsBarLineItem->qGraphicsScoreLineItem()->setLine(location, 0.0f, location, 127.0f);
-        }
-    }
-
-    void updateBarLabelPositions()
-    {
-        qreal scaleX = viewSettings->scaleX();
-        foreach (AcGraphicsBarLineItem *graphicsBarLineItem, graphicsBarLineItems) {
-            const qreal location = graphicsBarLineItem->location();
-            const QRect labelRect = fontMetrics.boundingRect(graphicsBarLineItem->label());
-            graphicsBarLineItem->qGraphicsTimeTextItem()->setPos((location * scaleX) - (labelRect.width() / 2), 10.0f);
-        }
-    }
-
-    void updateFont()
-    {
-        font = QFont(fontSettings->family(), fontSettings->pointSize());
-        fontMetrics = QFontMetrics(font);
+        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+        pitchView->centerOn(sceneManager->pitchScene()->width() / 2.0f, scoreView->center().y() * viewSettings->scaleY());
+        timeView->centerOn(scoreView->center().x() * viewSettings->scaleX(), sceneManager->timeScene()->height() / 2.0f);
     }
 };
 
@@ -176,16 +63,32 @@ AcViewManager::AcViewManager(QWidget *widget)
     :   QObject(widget)
     ,   d(new AcViewManagerData(this, widget))
 {
-    connect(d->score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-    connect(d->fontSettings, SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
-    connect(d->viewSettings, SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
-
-    d->init();
+    connect(AcScore::instance()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
 }
 
 AcViewManager::~AcViewManager()
 {
     delete d;
+}
+
+QGraphicsView *AcViewManager::scoreView() const
+{
+    return d->scoreView;
+}
+
+QGraphicsView *AcViewManager::controllerView() const
+{
+    return d->controllerView;
+}
+
+QGraphicsView *AcViewManager::pitchView() const
+{
+    return d->pitchView;
+}
+
+QGraphicsView *AcViewManager::timeView() const
+{
+    return d->timeView;
 }
 
 qreal AcViewManager::positionX() const
@@ -210,44 +113,28 @@ void AcViewManager::setPositionY(qreal positionY)
 
 qreal AcViewManager::scaleX() const
 {
-    return d->viewSettings->scaleX();
+    return AcScore::instance()->viewSettings()->scaleX();
 }
 
 void AcViewManager::setScaleX(qreal scaleX)
 {
-    d->viewSettings->setScaleX(scaleX);
+    AcScore::instance()->viewSettings()->setScaleX(scaleX);
 }
 
 qreal AcViewManager::scaleY() const
 {
-    return d->viewSettings->scaleY();
+    return AcScore::instance()->viewSettings()->scaleY();
 }
 
 void AcViewManager::setScaleY(qreal scaleY)
 {
-    d->viewSettings->setScaleY(scaleY);
+    AcScore::instance()->viewSettings()->setScaleY(scaleY);
 }
 
-void AcViewManager::updateScoreProperty(const QString &propertyName)
+void AcViewManager::updateViews()
 {
-    if ("tuningLines" == propertyName) {
-        d->synchronizeTuningLineLists();
-        d->updateTuningLinePositions();
-        d->updateTuningLabelPositions();
-    }
-    else if ("barLines" == propertyName) {
-        d->synchronizeBarLineLists();
-        d->updateBarLinePositions();
-        d->updateBarLabelPositions();
-    }
-}
-
-void AcViewManager::updateFontSettingsProperty(const QString &propertyName)
-{
-    Q_UNUSED(propertyName);
-
-    d->updateFont();
-    d->updateBarLabelPositions();
+    d->scoreView->updateTransform();
+    d->updateViewCenters();
 }
 
 void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
@@ -260,38 +147,4 @@ void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
         d->scoreView->updateCenter();
         d->updateViewCenters();
     }
-    if (propertyName.endsWith("Y")) {
-        d->updateTuningLinePositions();
-        d->updateTuningLabelPositions();
-    } else {
-        d->updateBarLinePositions();
-        d->updateBarLabelPositions();
-    }
-}
-
-AcScoreView *AcViewManager::scoreView() const
-{
-    return d->scoreView;
-}
-
-AcControllerView *AcViewManager::controllerView() const
-{
-    return d->controllerView;
-}
-
-AcPitchView *AcViewManager::pitchView() const
-{
-    return d->pitchView;
-}
-
-AcTimeView *AcViewManager::timeView() const
-{
-    return d->timeView;
-}
-
-void AcViewManager::updateViews()
-{
-    d->scoreView->updateTransform();
-    d->updateScoreViewLength();
-    d->updateViewCenters();
 }

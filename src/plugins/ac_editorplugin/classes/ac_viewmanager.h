@@ -21,10 +21,7 @@
 #include <QObject>
 #include <ac_editor_global.h>
 
-class AcControllerView;
-class AcPitchView;
-class AcScoreView;
-class AcTimeView;
+class QGraphicsView;
 class QWidget;
 
 namespace Private {
@@ -41,6 +38,11 @@ public:
     AcViewManager(QWidget *widget);
     ~AcViewManager();
 
+    QGraphicsView *scoreView() const;
+    QGraphicsView *controllerView() const;
+    QGraphicsView *timeView() const;
+    QGraphicsView *pitchView() const;
+
     qreal positionX() const;
     void setPositionX(qreal positionX);
     qreal positionY() const;
@@ -50,21 +52,14 @@ public:
     qreal scaleY() const;
     void setScaleY(qreal scaleY);
 
+    void updateViews();
+
 private slots:
-    void updateScoreProperty(const QString &propertyName);
-    void updateFontSettingsProperty(const QString &propertyName);
     void updateViewSettingsProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcViewManager)
     Private::AcViewManagerData *d;
-
-    friend class AcMainWidget;
-    AcScoreView *scoreView() const;
-    AcControllerView *controllerView() const;
-    AcPitchView *pitchView() const;
-    AcTimeView *timeView() const;
-    void updateViews();
 };
 
 #endif // AC_VIEWMANAGER_H

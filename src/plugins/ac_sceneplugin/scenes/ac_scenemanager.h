@@ -15,39 +15,45 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSGRIDLINEITEM_H
-#define AC_GRAPHICSGRIDLINEITEM_H
+#ifndef AC_SCENEMANAGER_H
+#define AC_SCENEMANAGER_H
 
 #include <QObject>
 #include <ac_scene_global.h>
 
-class AcGridLine;
+class QFontMetrics;
+class QGraphicsScene;
 
 namespace Private {
 
-class AcGraphicsGridLineItemData;
+class AcSceneManagerData;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsGridLineItem : public QObject
+class AC_SCENE_EXPORT AcSceneManager : public QObject
 {
     Q_OBJECT
 
 public:
-    AcGraphicsGridLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
-    virtual ~AcGraphicsGridLineItem();
+    AcSceneManager(QObject *parent = 0);
+    ~AcSceneManager();
 
-    AcGridLine *gridLine() const;
-    virtual void setGridLine(AcGridLine *gridLine);
+    static AcSceneManager *instance();
 
-protected slots:
-    virtual void updateFontSettingsProperty(const QString &propertyName) = 0;
-    virtual void updateViewSettingsProperty(const QString &propertyName) = 0;
-    virtual void updateGridLineProperty(const QString &propertyName);
+    QGraphicsScene *scoreScene() const;
+    QGraphicsScene *controllerScene() const;
+    QGraphicsScene *timeScene() const;
+    QGraphicsScene *pitchScene() const;
+
+    const QFontMetrics &fontMetrics() const;
+
+private slots:
+    void updateScoreProperty(const QString &propertyName);
+    void updateFontSettingsProperty(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsGridLineItem)
-    Private::AcGraphicsGridLineItemData *d;
+    Q_DISABLE_COPY(AcSceneManager)
+    Private::AcSceneManagerData *d;
 };
 
-#endif // AC_GRAPHICSGRIDLINEITEM_H
+#endif // AC_SCENEMANAGER_H
