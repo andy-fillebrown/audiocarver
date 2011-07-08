@@ -35,7 +35,6 @@ class AcScoreData
 {
 public:
     AcScore *q;
-
     qreal length;
     MiConstantObjectList settings;
     MiList<AcFCurve> curves;
@@ -43,7 +42,6 @@ public:
     MiList<AcTrack> tracks;
     MiList<AcBarLine> barLines;
     MiList<AcTuningLine> tuningLines;
-
     MiFont *fontSettings;
     AcGridSettings *gridSettings;
     AcViewSettings *viewSettings;
