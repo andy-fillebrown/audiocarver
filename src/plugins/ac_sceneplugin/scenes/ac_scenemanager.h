@@ -50,6 +50,7 @@ public:
 private slots:
     void updateScoreProperty(const QString &propertyName);
     void updateFontSettingsProperty(const QString &propertyName);
+    void updateViewSettingsProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcSceneManager)

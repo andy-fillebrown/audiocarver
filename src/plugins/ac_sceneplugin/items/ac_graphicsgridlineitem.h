@@ -24,6 +24,7 @@
 class AcGridLine;
 class QGraphicsLineItem;
 class QGraphicsTextItem;
+class QRectF;
 
 namespace Private {
 
@@ -54,7 +55,15 @@ public:
 
     virtual void setGridLine(AcGridLine *gridLine);
 
-    bool isVisible() const;
+    int priority() const;
+    QRectF labelRect() const;
+
+    bool isLineVisible() const;
+    void showLine();
+    void hideLine();
+    bool isLabelVisible() const;
+    void showLabel();
+    void hideLabel();
 
 protected slots:
     virtual void updateFontSettingsProperty(const QString &propertyName);

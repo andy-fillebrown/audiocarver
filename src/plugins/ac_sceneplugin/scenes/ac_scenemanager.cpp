@@ -25,6 +25,7 @@
 #include <ac_scorescene.h>
 #include <ac_timescene.h>
 #include <ac_tuningline.h>
+#include <ac_viewsettings.h>
 #include <mi_font.h>
 #include <mi_list.h>
 #include <QFont>
@@ -42,8 +43,8 @@ public:
     AcControllerScene *controllerScene;
     AcTimeScene *timeScene;
     AcPitchScene *pitchScene;
-    QList<AcGraphicsBarLineItem*> barLineItems;
-    QList<AcGraphicsTuningLineItem*> tuningLineItems;
+    QList<AcGraphicsBarLineItem*> barItems;
+    QList<AcGraphicsTuningLineItem*> tuningItems;
     QFontMetrics fontMetrics;
 
     AcSceneManagerData(AcSceneManager *q)
@@ -63,45 +64,86 @@ public:
 
     void init()
     {
-        updateTuningLineItems();
-        updateBarLineItems();
+        updateBarItems();
+        updateTuningItems();
         updateFontMetrics();
+        updateBarLineVisibilities();
+        updateBarLabelVisibilities();
+        updateTuningLineVisibilities();
+        updateTuningLabelVisibilities();
     }
 
-    void updateTuningLineItems()
-    {
-        const QList<AcTuningLine*> &tuningLines = AcScore::instance()->tuningLines().list();
-        for (int i = 0;  i < tuningLines.count();  ++i) {
-            if (tuningLineItems.count() <= i)
-                tuningLineItems.append(new AcGraphicsTuningLineItem(tuningLines[i]));
-            else
-                tuningLineItems[i]->setGridLine(tuningLines[i]);
-        }
-        while (tuningLines.count() < tuningLineItems.count()) {
-            delete tuningLineItems.last();
-            tuningLineItems.removeLast();
-        }
-    }
-
-    void updateBarLineItems()
+    void updateBarItems()
     {
         const QList<AcBarLine*> &barLines = AcScore::instance()->barLines().list();
         for (int i = 0;  i < barLines.count();  ++i) {
-            if (barLineItems.count() <= i) {
-                AcGraphicsBarLineItem *barLineItem = new AcGraphicsBarLineItem(barLines[i]);
-                barLineItems.append(barLineItem);
+            if (barItems.count() <= i) {
+                AcGraphicsBarLineItem *barItem = new AcGraphicsBarLineItem(barLines[i]);
+                barItems.append(barItem);
             } else
-                barLineItems[i]->setGridLine(barLines[i]);
+                barItems[i]->setGridLine(barLines[i]);
         }
-        while (barLines.count() < barLineItems.count()) {
-            delete barLineItems.last();
-            barLineItems.removeLast();
+        while (barLines.count() < barItems.count()) {
+            delete barItems.last();
+            barItems.removeLast();
+        }
+    }
+
+    void updateTuningItems()
+    {
+        const QList<AcTuningLine*> &tuningLines = AcScore::instance()->tuningLines().list();
+        for (int i = 0;  i < tuningLines.count();  ++i) {
+            if (tuningItems.count() <= i)
+                tuningItems.append(new AcGraphicsTuningLineItem(tuningLines[i]));
+            else
+                tuningItems[i]->setGridLine(tuningLines[i]);
+        }
+        while (tuningLines.count() < tuningItems.count()) {
+            delete tuningItems.last();
+            tuningItems.removeLast();
         }
     }
 
     void updateFontMetrics()
     {
         fontMetrics = QFontMetrics(font());
+    }
+
+    void updateBarLineVisibilities()
+    {
+    }
+
+    void updateBarLabelVisibilities()
+    {
+        int minPriority = 0x7fffffff;
+        int prevPriority = 0;
+        QRectF prevRect;
+        foreach (AcGraphicsBarLineItem *barItem, barItems) {
+            if (minPriority && minPriority < barItem->priority())
+                continue;
+            QRectF curRect = barItem->labelRect();
+            curRect.setWidth(2.0f * curRect.width());
+            if (prevRect.intersects(curRect))
+                minPriority = qMax(prevPriority, barItem->priority());
+            else {
+                prevPriority = barItem->priority();
+                prevRect = curRect;
+            }
+        }
+        foreach (AcGraphicsBarLineItem *barItem, barItems) {
+            if (minPriority < barItem->priority())
+                barItem->hideLabel();
+            else
+                barItem->showLabel();
+        }
+    }
+
+    void updateTuningLineVisibilities()
+    {
+    }
+
+    void updateTuningLabelVisibilities()
+    {
     }
 };
 
@@ -118,6 +160,7 @@ AcSceneManager::AcSceneManager(QObject *parent)
     AcScore *score = AcScore::instance();
     connect(score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
     connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
+    connect(score->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
 }
 
 AcSceneManager::~AcSceneManager()
@@ -132,15 +175,23 @@ AcSceneManager *AcSceneManager::instance()
 
 void AcSceneManager::updateScoreProperty(const QString &propertyName)
 {
-    if ("tuningLines" == propertyName)
-        d->updateTuningLineItems();
-    else if ("barLines" == propertyName)
-        d->updateBarLineItems();
+    if ("barLines" == propertyName)
+        d->updateBarItems();
+    else if ("tuningLines" == propertyName)
+        d->updateTuningItems();
 }
 
 void AcSceneManager::updateFontSettingsProperty(const QString &propertyName)
 {
+    Q_UNUSED(propertyName);
     d->updateFontMetrics();
+    d->updateBarLabelVisibilities();
+}
+
+void AcSceneManager::updateViewSettingsProperty(const QString &propertyName)
+{
+    if ("scaleX" == propertyName)
+        d->updateBarLabelVisibilities();
 }
 
 QGraphicsScene *AcSceneManager::scoreScene() const

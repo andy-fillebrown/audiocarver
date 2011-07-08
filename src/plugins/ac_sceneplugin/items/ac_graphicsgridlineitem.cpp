@@ -66,18 +66,6 @@ public:
     {
         scoreLineItem->setPen(gridLine->color());
     }
-
-    void show()
-    {
-        scoreLineItem->show();
-        labelItem->show();
-    }
-
-    void hide()
-    {
-        scoreLineItem->hide();
-        labelItem->hide();
-    }
 };
 
 } // namespace Private
@@ -108,15 +96,55 @@ void AcGraphicsGridLineItem::setGridLine(AcGridLine *gridLine)
     if (d->gridLine) {
         connect(d->gridLine, SIGNAL(propertyChanged(QString)), SLOT(updateGridLineProperty(QString)));
         d->update();
-        d->show();
-    } else
-        d->hide();
+    }
 }
 
-bool AcGraphicsGridLineItem::isVisible() const
+int AcGraphicsGridLineItem::priority() const
+{
+    Q_D(const AcGraphicsGridLineItem);
+    return d->gridLine->priority();
+}
+
+QRectF AcGraphicsGridLineItem::labelRect() const
+{
+    Q_D(const AcGraphicsGridLineItem);
+    return QRectF(d->labelItem->pos(), d->labelItem->boundingRect().size());
+}
+
+bool AcGraphicsGridLineItem::isLineVisible() const
 {
     Q_D(const AcGraphicsGridLineItem);
     return d->scoreLineItem->isVisible();
+}
+
+void AcGraphicsGridLineItem::showLine()
+{
+    Q_D(AcGraphicsGridLineItem);
+    d->scoreLineItem->show();
+}
+
+void AcGraphicsGridLineItem::hideLine()
+{
+    Q_D(AcGraphicsGridLineItem);
+    d->scoreLineItem->hide();
+}
+
+bool AcGraphicsGridLineItem::isLabelVisible() const
+{
+    Q_D(const AcGraphicsGridLineItem);
+    return d->labelItem->isVisible();
+}
+
+void AcGraphicsGridLineItem::showLabel()
+{
+    Q_D(AcGraphicsGridLineItem);
+    d->labelItem->show();
+}
+
+void AcGraphicsGridLineItem::hideLabel()
+{
+    Q_D(AcGraphicsGridLineItem);
+    d->labelItem->hide();
 }
 
 void AcGraphicsGridLineItem::updateFontSettingsProperty(const QString &propertyName)
