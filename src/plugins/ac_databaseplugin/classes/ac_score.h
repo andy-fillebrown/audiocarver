@@ -44,7 +44,7 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
     Q_PROPERTY(qreal length READ length WRITE setLength)
     Q_PROPERTY(MiObjectList* settings READ settingsObjects)
     Q_PROPERTY(MiObjectList* barLines READ barLineObjects)
-    Q_PROPERTY(MiObjectList* tunings READ tuningLineObjects)
+    Q_PROPERTY(MiObjectList* tuningLines READ tuningLineObjects)
     Q_PROPERTY(MiObjectList* curves READ curveObjects)
     Q_PROPERTY(MiObjectList* notes READ noteObjects)
     Q_PROPERTY(MiObjectList* tracks READ trackObjects)
