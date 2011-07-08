@@ -51,6 +51,7 @@ public:
 
     void updateViewCenters()
     {
+        scoreView->updateCenter();
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
         pitchView->centerOn(sceneManager->pitchScene()->width() / 2.0f, scoreView->center().y() * viewSettings->scaleY());
         timeView->centerOn(scoreView->center().x() * viewSettings->scaleX(), sceneManager->timeScene()->height() / 2.0f);
@@ -139,12 +140,10 @@ void AcViewManager::updateViews()
 
 void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
 {
-    if (propertyName.startsWith("position")) {
-        d->scoreView->updateCenter();
+    if (propertyName.startsWith("position"))
         d->updateViewCenters();
-    } else if (propertyName.startsWith("scale")) {
+    else if (propertyName.startsWith("scale")) {
         d->scoreView->updateTransform();
-        d->scoreView->updateCenter();
         d->updateViewCenters();
     }
 }
