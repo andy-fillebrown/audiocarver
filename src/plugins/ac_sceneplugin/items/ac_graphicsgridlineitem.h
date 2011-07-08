@@ -58,12 +58,9 @@ public:
     int priority() const;
     QRectF labelRect() const;
 
-    bool isLineVisible() const;
-    void showLine();
-    void hideLine();
-    bool isLabelVisible() const;
-    void showLabel();
-    void hideLabel();
+    bool isVisible() const;
+    void show();
+    void hide();
 
 protected slots:
     virtual void updateFontSettingsProperty(const QString &propertyName);

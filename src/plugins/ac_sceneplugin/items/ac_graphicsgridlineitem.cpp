@@ -111,39 +111,23 @@ QRectF AcGraphicsGridLineItem::labelRect() const
     return QRectF(d->labelItem->pos(), d->labelItem->boundingRect().size());
 }
 
-bool AcGraphicsGridLineItem::isLineVisible() const
+bool AcGraphicsGridLineItem::isVisible() const
 {
     Q_D(const AcGraphicsGridLineItem);
     return d->scoreLineItem->isVisible();
 }
 
-void AcGraphicsGridLineItem::showLine()
+void AcGraphicsGridLineItem::show()
 {
     Q_D(AcGraphicsGridLineItem);
     d->scoreLineItem->show();
-}
-
-void AcGraphicsGridLineItem::hideLine()
-{
-    Q_D(AcGraphicsGridLineItem);
-    d->scoreLineItem->hide();
-}
-
-bool AcGraphicsGridLineItem::isLabelVisible() const
-{
-    Q_D(const AcGraphicsGridLineItem);
-    return d->labelItem->isVisible();
-}
-
-void AcGraphicsGridLineItem::showLabel()
-{
-    Q_D(AcGraphicsGridLineItem);
     d->labelItem->show();
 }
 
-void AcGraphicsGridLineItem::hideLabel()
+void AcGraphicsGridLineItem::hide()
 {
     Q_D(AcGraphicsGridLineItem);
+    d->scoreLineItem->hide();
     d->labelItem->hide();
 }
 

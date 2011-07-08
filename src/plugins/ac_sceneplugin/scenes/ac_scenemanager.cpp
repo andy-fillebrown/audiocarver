@@ -131,10 +131,10 @@ public:
             }
         }
         foreach (AcGraphicsBarLineItem *barItem, barItems) {
-            if (minPriority < barItem->priority())
-                barItem->hideLabel();
+            if (barItem->priority() <= minPriority)
+                barItem->show();
             else
-                barItem->showLabel();
+                barItem->hide();
         }
     }
 
@@ -144,6 +144,26 @@ public:
 
     void updateTuningLabelVisibilities()
     {
+        int minPriority = 0x7fffffff;
+        int prevPriority = 0;
+        QRectF prevRect;
+        foreach (AcGraphicsTuningLineItem *tuningItem, tuningItems) {
+            if (minPriority && minPriority <= tuningItem->priority())
+                continue;
+            QRectF curRect = tuningItem->labelRect();
+            if (prevRect.intersects(curRect))
+                minPriority = qMax(prevPriority, tuningItem->priority());
+            else {
+                prevPriority = tuningItem->priority();
+                prevRect = curRect;
+            }
+        }
+        foreach (AcGraphicsTuningLineItem *tuningItem, tuningItems) {
+            if (tuningItem->priority() < minPriority)
+                tuningItem->show();
+            else
+                tuningItem->hide();
+        }
     }
 };
 
@@ -186,12 +206,15 @@ void AcSceneManager::updateFontSettingsProperty(const QString &propertyName)
     Q_UNUSED(propertyName);
     d->updateFontMetrics();
     d->updateBarLabelVisibilities();
+    d->updateTuningLabelVisibilities();
 }
 
 void AcSceneManager::updateViewSettingsProperty(const QString &propertyName)
 {
     if ("scaleX" == propertyName)
         d->updateBarLabelVisibilities();
+    else if ("scaleY" == propertyName)
+        d->updateTuningLabelVisibilities();
 }
 
 QGraphicsScene *AcSceneManager::scoreScene() const
