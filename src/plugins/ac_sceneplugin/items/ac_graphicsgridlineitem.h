@@ -54,6 +54,8 @@ public:
 
     virtual void setGridLine(AcGridLine *gridLine);
 
+    bool isVisible() const;
+
 protected slots:
     virtual void updateFontSettingsProperty(const QString &propertyName);
     virtual void updateViewSettingsProperty(const QString &propertyName) = 0;

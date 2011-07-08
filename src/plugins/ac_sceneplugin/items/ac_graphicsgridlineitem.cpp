@@ -113,6 +113,12 @@ void AcGraphicsGridLineItem::setGridLine(AcGridLine *gridLine)
         d->hide();
 }
 
+bool AcGraphicsGridLineItem::isVisible() const
+{
+    Q_D(const AcGraphicsGridLineItem);
+    return d->scoreLineItem->isVisible();
+}
+
 void AcGraphicsGridLineItem::updateFontSettingsProperty(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
