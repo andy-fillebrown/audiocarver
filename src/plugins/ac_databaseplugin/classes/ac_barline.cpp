@@ -17,16 +17,10 @@
 
 #include "ac_barline.h"
 #include <mi_list.h>
-#include <mi_prioritylist.h>
 
 template <> bool MiList<AcBarLine>::lessThan(MiObject *a, MiObject *b)
 {
-    return AcGridLine::locationLessThan(a, b);
-}
-
-template <> bool MiPriorityList<AcBarLine>::lessThan(MiObject *a, MiObject *b)
-{
-    return AcGridLine::priorityLessThan(a, b);
+    return AcGridLine::lessThan(a, b);
 }
 
 AcBarLine::AcBarLine(QObject *parent)

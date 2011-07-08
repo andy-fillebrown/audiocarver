@@ -17,16 +17,10 @@
 
 #include "ac_tuningline.h"
 #include <mi_list.h>
-#include <mi_prioritylist.h>
 
 template <> bool MiList<AcTuningLine>::lessThan(MiObject *a, MiObject *b)
 {
-    return AcGridLine::locationLessThan(a, b);
-}
-
-template <> bool MiPriorityList<AcTuningLine>::lessThan(MiObject *a, MiObject *b)
-{
-    return AcGridLine::priorityLessThan(a, b);
+    return AcGridLine::lessThan(a, b);
 }
 
 AcTuningLine::AcTuningLine(QObject *parent)

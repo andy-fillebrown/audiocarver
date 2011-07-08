@@ -39,8 +39,7 @@ public:
     explicit AcGridLine(QObject *parent = 0);
     virtual ~AcGridLine();
 
-    inline static bool locationLessThan(MiObject *a, MiObject *b);
-    inline static bool priorityLessThan(MiObject *a, MiObject *b);
+    inline static bool lessThan(MiObject *a, MiObject *b);
 
     qreal location() const;
     void setLocation(qreal location);
@@ -56,22 +55,11 @@ private:
     Private::AcGridLineData *d;
 };
 
-inline bool AcGridLine::locationLessThan(MiObject *a, MiObject *b)
+inline bool AcGridLine::lessThan(MiObject *a, MiObject *b)
 {
-    AcGridLine *A = qobject_cast<AcGridLine*>(a);
-    AcGridLine *B = qobject_cast<AcGridLine*>(b);
+    AcGridLine *A = static_cast<AcGridLine*>(a);
+    AcGridLine *B = static_cast<AcGridLine*>(b);
     return A->location() < B->location();
-}
-
-inline bool AcGridLine::priorityLessThan(MiObject *a, MiObject *b)
-{
-    AcGridLine *A = qobject_cast<AcGridLine*>(a);
-    AcGridLine *B = qobject_cast<AcGridLine*>(b);
-    if (A->priority() < B->priority())
-        return true;
-    if (A->priority() == B->priority() && A->location() <= B->location())
-        return true;
-    return false;
 }
 
 #endif // AC_GRIDLINE_H
