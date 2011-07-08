@@ -43,11 +43,11 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
     Q_PROPERTY(MiObjectList* settings READ settingsObjects)
-    Q_PROPERTY(MiObjectList* barLines READ barLineObjects)
-    Q_PROPERTY(MiObjectList* tuningLines READ tuningLineObjects)
     Q_PROPERTY(MiObjectList* curves READ curveObjects)
     Q_PROPERTY(MiObjectList* notes READ noteObjects)
     Q_PROPERTY(MiObjectList* tracks READ trackObjects)
+    Q_PROPERTY(MiObjectList* barLines READ barLineObjects)
+    Q_PROPERTY(MiObjectList* tuningLines READ tuningLineObjects)
 
 public:
     AcScore(QObject *parent = 0);
@@ -57,11 +57,11 @@ public:
 
     qreal length() const;
     void setLength(qreal length);
-    MiList<AcBarLine> &barLines() const;
-    MiList<AcTuningLine> &tuningLines() const;
     MiList<AcFCurve> &curves() const;
     MiList<AcNote> &notes() const;
     MiList<AcTrack> &tracks() const;
+    MiList<AcBarLine> &barLines() const;
+    MiList<AcTuningLine> &tuningLines() const;
 
     MiFont *fontSettings() const;
     AcGridSettings *gridSettings() const;
@@ -86,11 +86,11 @@ private:
     Private::AcScoreData *d;
 
     MiObjectList *settingsObjects() const;
-    MiObjectList *barLineObjects() const;
-    MiObjectList *tuningLineObjects() const;
     MiObjectList *curveObjects() const;
     MiObjectList *noteObjects() const;
     MiObjectList *trackObjects() const;
+    MiObjectList *barLineObjects() const;
+    MiObjectList *tuningLineObjects() const;
 };
 
 #endif // AC_SCORE_H

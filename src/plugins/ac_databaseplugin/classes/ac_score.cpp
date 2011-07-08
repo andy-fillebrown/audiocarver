@@ -38,11 +38,11 @@ public:
 
     qreal length;
     MiConstantObjectList settings;
-    MiList<AcBarLine> barLines;
-    MiList<AcTuningLine> tuningLines;
     MiList<AcFCurve> curves;
     MiList<AcNote> notes;
     MiList<AcTrack> tracks;
+    MiList<AcBarLine> barLines;
+    MiList<AcTuningLine> tuningLines;
 
     MiFont *fontSettings;
     AcGridSettings *gridSettings;
@@ -52,11 +52,11 @@ public:
         :   q(q)
         ,   length(128.0f)
         ,   settings("settings", q)
-        ,   barLines("barLines", q)
-        ,   tuningLines("tuningLines", q)
         ,   curves("curves", q)
         ,   notes("notes", q)
         ,   tracks("tracks", q)
+        ,   barLines("barLines", q)
+        ,   tuningLines("tuningLines", q)
         ,   fontSettings(0)
         ,   gridSettings(0)
         ,   viewSettings(0)
@@ -111,16 +111,6 @@ void AcScore::setLength(qreal length)
     emit propertyChanged("length");
 }
 
-MiList<AcBarLine> &AcScore::barLines() const
-{
-    return d->barLines;
-}
-
-MiList<AcTuningLine> &AcScore::tuningLines() const
-{
-    return d->tuningLines;
-}
-
 MiList<AcFCurve> &AcScore::curves() const
 {
     return d->curves;
@@ -134,6 +124,16 @@ MiList<AcNote> &AcScore::notes() const
 MiList<AcTrack> &AcScore::tracks() const
 {
     return d->tracks;
+}
+
+MiList<AcBarLine> &AcScore::barLines() const
+{
+    return d->barLines;
+}
+
+MiList<AcTuningLine> &AcScore::tuningLines() const
+{
+    return d->tuningLines;
 }
 
 MiFont *AcScore::fontSettings() const
@@ -237,16 +237,6 @@ MiObjectList *AcScore::settingsObjects() const
     return &(d->settings);
 }
 
-MiObjectList *AcScore::barLineObjects() const
-{
-    return d->barLines.objects();
-}
-
-MiObjectList *AcScore::tuningLineObjects() const
-{
-    return d->tuningLines.objects();
-}
-
 MiObjectList *AcScore::curveObjects() const
 {
     return d->curves.objects();
@@ -260,4 +250,14 @@ MiObjectList *AcScore::noteObjects() const
 MiObjectList *AcScore::trackObjects() const
 {
     return d->tracks.objects();
+}
+
+MiObjectList *AcScore::barLineObjects() const
+{
+    return d->barLines.objects();
+}
+
+MiObjectList *AcScore::tuningLineObjects() const
+{
+    return d->tuningLines.objects();
 }
