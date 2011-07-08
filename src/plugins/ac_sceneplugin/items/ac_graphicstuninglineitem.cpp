@@ -30,106 +30,82 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsTuningLineItemData
+class AcGraphicsTuningLineItemPrivate : public AcGraphicsGridLineItemData
 {
 public:
-    AcGraphicsTuningLineItem *q;
-    QGraphicsTextItem *labelItem;
 
-    AcGraphicsTuningLineItemData(AcGraphicsTuningLineItem *q)
-        :   q(q)
-        ,   labelItem(new QGraphicsTextItem)
+    AcGraphicsTuningLineItemPrivate()
     {
         AcPitchScene::instance()->addItem(labelItem);
     }
 
-    ~AcGraphicsTuningLineItemData()
-    {
-        delete labelItem;
-    }
-
     void update()
     {
-        updateFont();
-        updateLocation();
-        updateLabel();
+        updateScoreLineGeometry();
+        updateLabelPosition();
     }
 
-    void updateFont()
+    void updateScoreLineGeometry()
     {
-        MiFont *font = AcScore::instance()->fontSettings();
-        labelItem->setFont(QFont(font->family(), font->pointSize()));
+        const qreal pos = 127.0f - gridLine->location();
+        const AcScore *score = AcScore::instance();
+        scoreLineItem->setLine(0.0f, pos, score->length(), pos);
     }
 
-    void updateLocation()
+    void updateLabelPosition()
     {
-        const AcGridLine *gridLine = q->gridLine();
-        const qreal location = gridLine->location();
+        const qreal pos = 127.0f - gridLine->location();
         const AcScore *score = AcScore::instance();
         const qreal scale = score->viewSettings()->scaleY();
         const QRect labelRect = AcSceneManager::instance()->fontMetrics().boundingRect(gridLine->label());
         const qreal x = AcPitchScene::instance()->width() - labelRect.width();
-        const qreal y = ((127.0f - location) * scale) - (labelRect.height() / 1.5);
+        const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
-    }
-
-    void updateLabel()
-    {
-        labelItem->setPlainText(q->gridLine()->label());
-    }
-
-    void show()
-    {
-        labelItem->show();
-    }
-
-    void hide()
-    {
-        labelItem->hide();
     }
 };
 
 } // namespace Private
 
-AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine)
-    :   AcGraphicsGridLineItem(tuningLine)
-    ,   d(new AcGraphicsTuningLineItemData(this))
+AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine, QObject *parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsTuningLineItemPrivate), parent)
 {
+    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
     setGridLine(tuningLine);
 }
 
 AcGraphicsTuningLineItem::~AcGraphicsTuningLineItem()
-{
-    delete d;
-}
+{}
 
 void AcGraphicsTuningLineItem::setGridLine(AcGridLine *gridLine)
 {
     AcGraphicsGridLineItem::setGridLine(gridLine);
     if (gridLine) {
+        Q_D(AcGraphicsTuningLineItem);
         d->update();
-        d->show();
-    } else
-        d->hide();
-}
-
-void AcGraphicsTuningLineItem::updateFontSettingsProperty(const QString &propertyName)
-{
-    Q_UNUSED(propertyName);
-    d->updateFont();
+    }
 }
 
 void AcGraphicsTuningLineItem::updateViewSettingsProperty(const QString &propertyName)
 {
-    if ("scaleY" == propertyName)
-        d->updateLocation();
+    if ("scaleY" == propertyName) {
+        Q_D(AcGraphicsTuningLineItem);
+        d->updateLabelPosition();
+    }
 }
 
 void AcGraphicsTuningLineItem::updateGridLineProperty(const QString &propertyName)
 {
     AcGraphicsGridLineItem::updateGridLineProperty(propertyName);
-    if ("location" == propertyName)
-        d->updateLocation();
-    else if ("label" == propertyName)
-        d->updateLabel();
+    if ("location" == propertyName) {
+        Q_D(AcGraphicsTuningLineItem);
+        d->update();
+    }
+}
+
+void AcGraphicsTuningLineItem::updateScoreProperty(const QString &propertyName)
+{
+    if ("length" == propertyName) {
+        Q_D(AcGraphicsTuningLineItem);
+        d->updateScoreLineGeometry();
+    }
 }

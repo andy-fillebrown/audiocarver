@@ -22,10 +22,23 @@
 #include <ac_scene_global.h>
 
 class AcGridLine;
+class QGraphicsLineItem;
+class QGraphicsTextItem;
 
 namespace Private {
 
-class AcGraphicsGridLineItemData;
+class AcGraphicsGridLineItemPrivate;
+
+class AcGraphicsGridLineItemData
+{
+public:
+    AcGridLine *gridLine;
+    QGraphicsLineItem *scoreLineItem;
+    QGraphicsTextItem *labelItem;
+
+    AcGraphicsGridLineItemData();
+    virtual ~AcGraphicsGridLineItemData();
+};
 
 } // namespace Private
 
@@ -33,23 +46,25 @@ class AC_SCENE_EXPORT AcGraphicsGridLineItem : public QObject
 {
     Q_OBJECT
 
+protected:
+    AcGraphicsGridLineItem(Private::AcGraphicsGridLineItemData &dd, QObject *parent);
+
 public:
-    AcGraphicsGridLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsGridLineItem();
 
-    virtual bool isVertical() const = 0;
-
-    AcGridLine *gridLine() const;
     virtual void setGridLine(AcGridLine *gridLine);
 
 protected slots:
-    virtual void updateFontSettingsProperty(const QString &propertyName) = 0;
+    virtual void updateFontSettingsProperty(const QString &propertyName);
     virtual void updateViewSettingsProperty(const QString &propertyName) = 0;
     virtual void updateGridLineProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsGridLineItem)
-    Private::AcGraphicsGridLineItemData *d;
+
+protected:
+    Q_DECLARE_PRIVATE(Private::AcGraphicsGridLineItem)
+    Private::AcGraphicsGridLineItemData *d_ptr;
 };
 
 #endif // AC_GRAPHICSGRIDLINEITEM_H

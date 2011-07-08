@@ -24,28 +24,30 @@ class AcTuningLine;
 
 namespace Private {
 
-class AcGraphicsTuningLineItemData;
+class AcGraphicsTuningLineItemPrivate;
 
 } // namespace Private
 
 class AC_SCENE_EXPORT AcGraphicsTuningLineItem : public AcGraphicsGridLineItem
 {
-public:
-    AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0);
-    virtual ~AcGraphicsTuningLineItem();
+    Q_OBJECT
 
-    virtual bool isVertical() const { return false; }
+public:
+    AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0, QObject *parent = 0);
+    virtual ~AcGraphicsTuningLineItem();
 
     virtual void setGridLine(AcGridLine *gridLine);
 
 protected:
-    virtual void updateFontSettingsProperty(const QString &propertyName);
     virtual void updateViewSettingsProperty(const QString &propertyName);
     virtual void updateGridLineProperty(const QString &propertyName);
 
+protected slots:
+    virtual void updateScoreProperty(const QString &propertyName);
+
 private:
     Q_DISABLE_COPY(AcGraphicsTuningLineItem)
-    Private::AcGraphicsTuningLineItemData *d;
+    Q_DECLARE_PRIVATE(Private::AcGraphicsTuningLineItem)
 };
 
 #endif // AC_GRAPHICSTUNINGLINEITEM_H

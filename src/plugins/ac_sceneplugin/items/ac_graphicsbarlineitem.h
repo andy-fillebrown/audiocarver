@@ -24,28 +24,27 @@ class AcBarLine;
 
 namespace Private {
 
-class AcGraphicsBarLineItemData;
+class AcGraphicsBarLineItemPrivate;
 
 } // namespace Private
 
 class AC_SCENE_EXPORT AcGraphicsBarLineItem : public AcGraphicsGridLineItem
 {
+    Q_OBJECT
+
 public:
     AcGraphicsBarLineItem(AcBarLine *barLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsBarLineItem();
 
-    virtual bool isVertical() const { return true; }
-
     virtual void setGridLine(AcGridLine *barLine);
 
 protected:
-    virtual void updateFontSettingsProperty(const QString &propertyName);
     virtual void updateViewSettingsProperty(const QString &propertyName);
     virtual void updateGridLineProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsBarLineItem)
-    Private::AcGraphicsBarLineItemData *d;
+    Q_DECLARE_PRIVATE(Private::AcGraphicsBarLineItem)
 };
 
 #endif // AC_GRAPHICSBARLINEITEM_H

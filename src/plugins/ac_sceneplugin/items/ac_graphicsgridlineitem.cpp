@@ -27,33 +27,39 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsGridLineItemData
+AcGraphicsGridLineItemData::AcGraphicsGridLineItemData()
+    :   gridLine(0)
+    ,   scoreLineItem(new QGraphicsLineItem)
+    ,   labelItem(new QGraphicsTextItem)
+{
+    AcScoreScene::instance()->addItem(scoreLineItem);
+}
+
+AcGraphicsGridLineItemData::~AcGraphicsGridLineItemData()
+{
+    delete labelItem;
+    delete scoreLineItem;
+}
+
+class AcGraphicsGridLineItemPrivate : public AcGraphicsGridLineItemData
 {
 public:
-    AcGraphicsGridLineItem *q;
-    AcGridLine *gridLine;
-    QGraphicsLineItem *scoreLineItem;
-
-    AcGraphicsGridLineItemData(AcGraphicsGridLineItem *q)
-        :   q(q)
-        ,   gridLine(0)
-        ,   scoreLineItem(new QGraphicsLineItem)
-    {
-        AcScoreScene::instance()->addItem(scoreLineItem);
-    }
-
     void update()
     {
-        updateLocation();
+        updateFont();
+        updateLabel();
         updateColor();
     }
 
-    void updateLocation()
+    void updateFont()
     {
-        if (q->isVertical())
-            scoreLineItem->setLine(gridLine->location(), 0.0f, gridLine->location(), 127.0f);
-        else
-            scoreLineItem->setLine(0.0f, gridLine->location(), AcScore::instance()->length(), gridLine->location());
+        MiFont *font = AcScore::instance()->fontSettings();
+        labelItem->setFont(QFont(font->family(), font->pointSize()));
+    }
+
+    void updateLabel()
+    {
+        labelItem->setPlainText(gridLine->label());
     }
 
     void updateColor()
@@ -64,19 +70,21 @@ public:
     void show()
     {
         scoreLineItem->show();
+        labelItem->show();
     }
 
     void hide()
     {
         scoreLineItem->hide();
+        labelItem->hide();
     }
 };
 
 } // namespace Private
 
-AcGraphicsGridLineItem::AcGraphicsGridLineItem(AcGridLine *gridLine, QObject *parent)
+AcGraphicsGridLineItem::AcGraphicsGridLineItem(Private::AcGraphicsGridLineItemData &dd, QObject *parent)
     :   QObject(parent)
-    ,   d(new AcGraphicsGridLineItemData(this))
+    ,   d_ptr(&dd)
 {
     AcScore *score = AcScore::instance();
     connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
@@ -85,16 +93,12 @@ AcGraphicsGridLineItem::AcGraphicsGridLineItem(AcGridLine *gridLine, QObject *pa
 
 AcGraphicsGridLineItem::~AcGraphicsGridLineItem()
 {
-    delete d;
-}
-
-AcGridLine *AcGraphicsGridLineItem::gridLine() const
-{
-    return d->gridLine;
+    delete d_ptr;
 }
 
 void AcGraphicsGridLineItem::setGridLine(AcGridLine *gridLine)
 {
+    Q_D(Private::AcGraphicsGridLineItem);
     if (d->gridLine == gridLine)
         return;
     if (d->gridLine) {
@@ -109,10 +113,18 @@ void AcGraphicsGridLineItem::setGridLine(AcGridLine *gridLine)
         d->hide();
 }
 
+void AcGraphicsGridLineItem::updateFontSettingsProperty(const QString &propertyName)
+{
+    Q_UNUSED(propertyName);
+    Q_D(AcGraphicsGridLineItem);
+    d->updateFont();
+}
+
 void AcGraphicsGridLineItem::updateGridLineProperty(const QString &propertyName)
 {
-    if ("location" == propertyName)
-        d->updateLocation();
+    Q_D(Private::AcGraphicsGridLineItem);
+    if ("label" == propertyName)
+        d->updateLabel();
     else if ("color" == propertyName)
         d->updateColor();
 }
