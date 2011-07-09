@@ -22,15 +22,16 @@ using namespace Private;
 
 namespace Private {
 
-class AcPointData
+class AcPointData : public MiLinkableObjectData
 {
 public:
     qreal x;
     qreal y;
     bool curved;
 
-    AcPointData()
-        :   x(0.0f)
+    AcPointData(AcPoint *q)
+        :   MiLinkableObjectData(q)
+        ,   x(0.0f)
         ,   y(0.0f)
         ,   curved(false)
     {}
@@ -51,7 +52,7 @@ template <> bool MiList<AcPoint>::lessThan(MiObject *a, MiObject *b)
 
 AcPoint::AcPoint(QObject *parent)
     :   MiObject(parent)
-    ,   d(new AcPointData)
+    ,   d(new AcPointData(this))
 {}
 
 AcPoint::~AcPoint()
