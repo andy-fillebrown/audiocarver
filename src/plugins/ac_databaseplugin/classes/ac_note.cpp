@@ -26,13 +26,11 @@ namespace Private {
 class AcNoteData
 {
 public:
-    AcNote *q;
     AcPitchCurve *pitchCurve;
     AcVolumeCurve *volumeCurve;
 
     AcNoteData(AcNote *q)
-        :   q(q)
-        ,   pitchCurve(new AcPitchCurve(q))
+        :   pitchCurve(new AcPitchCurve(q))
         ,   volumeCurve(new AcVolumeCurve(q))
     {}
 };
