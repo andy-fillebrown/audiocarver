@@ -83,10 +83,7 @@ namespace Private {
 class MI_DATABASE_EXPORT MiLinkableObjectData
 {
 public:
-    MiLinkableObjectData(MiObject *q) : q(q) { q->setId(); }
-
-private:
-    MiObject *q;
+    MiLinkableObjectData(MiObject *q) { q->setId(); }
 };
 
 } // namespace Private
