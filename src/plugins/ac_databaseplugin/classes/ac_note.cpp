@@ -16,9 +16,8 @@
 **************************************************************************/
 
 #include "ac_note.h"
-#include <ac_point.h>
-#include <mi_list.h>
-#include <mi_root.h>
+#include <ac_pitchcurve.h>
+#include <ac_volumecurve.h>
 
 using namespace Private;
 
@@ -28,13 +27,13 @@ class AcNoteData
 {
 public:
     AcNote *q;
-    MiList<AcPitchPoint> pitchPoints;
-    MiList<AcVolumePoint> volumePoints;
+    AcPitchCurve *pitchCurve;
+    AcVolumeCurve *volumeCurve;
 
     AcNoteData(AcNote *q)
         :   q(q)
-        ,   pitchPoints("pitchPoints", q, q->root())
-        ,   volumePoints("volumePoints", q, q->root())
+        ,   pitchCurve(new AcPitchCurve(q))
+        ,   volumeCurve(new AcVolumeCurve(q))
     {}
 };
 
@@ -50,31 +49,31 @@ AcNote::~AcNote()
     delete d;
 }
 
-MiList<AcPitchPoint> &AcNote::pitchPoints() const
+AcPitchCurve *AcNote::pitchCurve() const
 {
-    return d->pitchPoints;
+    return d->pitchCurve;
 }
 
-MiList<AcVolumePoint> &AcNote::volumePoints() const
+AcVolumeCurve *AcNote::volumeCurve() const
 {
-    return d->volumePoints;
+    return d->volumeCurve;
 }
 
-MiObject *AcNote::createObject(const QString &className)
+MiObject *AcNote::findObject(const QString &className) const
 {
-    if ("PitchPoint" == className)
-        return d->pitchPoints.add();
-    if ("VolumePoint" == className)
-        return d->volumePoints.add();
+    if ("PitchCurve" == className)
+        return pitchCurve();
+    if ("VolumeCurve" == className)
+        return volumeCurve();
     return 0;
 }
 
-MiObjectList *AcNote::pitchPointObjects() const
+MiObject *AcNote::pitchCurveObject() const
 {
-    return d->pitchPoints.objects();
+    return pitchCurve();
 }
 
-MiObjectList *AcNote::volumePointObjects() const
+MiObject *AcNote::volumeCurveObject() const
 {
-    return d->volumePoints.objects();
+    return volumeCurve();
 }

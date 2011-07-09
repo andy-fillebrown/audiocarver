@@ -41,6 +41,7 @@ MiRoot *MiObject::root() const
     MiObject *parent = qobject_cast<MiObject*>(this->parent());
     if (parent)
         return parent->root();
+    Q_ASSERT(false && "No root.");
     return 0;
 }
 
@@ -148,14 +149,14 @@ bool MiObject::read(QXmlStreamReader &in)
     }
 
     // Read constant read-only objects.
-    foreach (QXmlStreamAttribute att, atts) {
-        QString name = att.name().toString();
-        const int i = propertyIndex(name);
+    const int count = propertyCount();
+    for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
         if (type.endsWith("*")) {
             if (type == "MiObjectList*")
                 continue;
             if (propertyIsReadOnly(i)) {
+                while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
                 MiObject *object = propertyValue(i).value<MiObject*>();
                 if (!object->read(in))
                     return false;
@@ -164,7 +165,6 @@ bool MiObject::read(QXmlStreamReader &in)
     }
 
     // Read lists.
-    const int count = propertyCount();
     for (int i = 1;  i < count;  ++i) {
         QString type = propertyType(i);
         if (type != "MiObjectList*")
@@ -194,8 +194,6 @@ bool MiObject::read(QXmlStreamReader &in)
                 Q_ASSERT(object);
                 if (!object)
                     return false;
-                if (!list->isConstant())
-                    object->setParent(this);
                 if (!object->read(in))
                     return false;
             }

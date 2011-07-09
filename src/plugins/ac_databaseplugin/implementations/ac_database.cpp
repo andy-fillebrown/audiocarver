@@ -82,20 +82,22 @@ public:
         barLine->setPriority(0);
         AcTrack *track = score->tracks().add();
         AcNote *note = track->notes().add();
-        AcPoint *pitchPointA = note->pitchPoints().add();
+        AcPitchCurve *pitchCurve = note->pitchCurve();
+        AcPoint *pitchPointA = pitchCurve->points().add();
         pitchPointA->setX(0.0f);
         pitchPointA->setY(60.0f);
-        AcPoint *pitchPointB = note->pitchPoints().add();
+        AcPoint *pitchPointB = pitchCurve->points().add();
         pitchPointB->setX(10.0f);
         pitchPointB->setY(72.0f);
-        AcPoint *volumePointA = note->volumePoints().add();
+        AcVolumeCurve *volumeCurve = note->volumeCurve();
+        AcPoint *volumePointA = volumeCurve->points().add();
         volumePointA->setX(0.0f);
         volumePointA->setY(0.0f);
-        AcPoint *volumePointB = note->volumePoints().add();
+        AcPoint *volumePointB = volumeCurve->points().add();
         volumePointB->setX(0.5f);
         volumePointB->setY(1.0f);
         volumePointB->setCurved(true);
-        AcPoint *volumePointC = note->volumePoints().add();
+        AcPoint *volumePointC = volumeCurve->points().add();
         volumePointC->setX(1.0f);
         volumePointC->setY(0.0f);
     }

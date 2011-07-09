@@ -24,10 +24,9 @@
 class MiObjectList
 {
 public:
-    MiObjectList(const QString &propertyName, MiObject *owner, QObject *parent = 0)
-        :   _parent(parent ? parent : owner)
-        ,   _owner(owner)
-        ,   _propertyName(propertyName)
+    MiObjectList(const QString &propertyName, MiObject *parent = 0)
+        :   _propertyName(propertyName)
+        ,   _parent(parent)
     {}
 
     QObject *parent() const { return _parent; }
@@ -52,11 +51,10 @@ public:
     QList<MiObject*> *list() { return &_list; }
 
 private:
-    void emitChanged() { _owner->emit propertyChanged(_propertyName); }
+    void emitChanged() { _parent->emit propertyChanged(_propertyName); }
 
-    QObject *_parent;
-    MiObject *_owner;
     QString _propertyName;
+    MiObject *_parent;
     QList<MiObject*> _list;
 };
 
@@ -65,8 +63,8 @@ Q_DECLARE_METATYPE(MiObjectList*);
 class MiConstantObjectList : public MiObjectList
 {
 public:
-    MiConstantObjectList(const QString &propertyName, MiObject *owner, QObject *parent = 0)
-        :   MiObjectList(propertyName, owner, parent)
+    MiConstantObjectList(const QString &propertyName, MiObject *parent = 0)
+        :   MiObjectList(propertyName, parent)
     {}
 
     virtual bool isConstant() const { return true; }

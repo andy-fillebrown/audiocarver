@@ -21,9 +21,8 @@
 #include <mi_object.h>
 #include <ac_database_global.h>
 
-class AcPitchPoint;
-class AcVolumePoint;
-template <typename T> class MiList;
+class AcPitchCurve;
+class AcVolumeCurve;
 
 namespace Private {
 
@@ -34,25 +33,25 @@ class AcNoteData;
 class AC_DATABASE_EXPORT AcNote : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(MiObjectList* pitchPoints READ pitchPointObjects)
-    Q_PROPERTY(MiObjectList* volumePoints READ volumePointObjects)
+    Q_PROPERTY(MiObject* pitchCurve READ pitchCurveObject)
+    Q_PROPERTY(MiObject* volumeCurve READ volumeCurveObject)
 
 public:
     AcNote(QObject *parent = 0);
     virtual ~AcNote();
 
-    MiList<AcPitchPoint> &pitchPoints() const;
-    MiList<AcVolumePoint> &volumePoints() const;
+    AcPitchCurve *pitchCurve() const;
+    AcVolumeCurve *volumeCurve() const;
 
 protected:
-    virtual MiObject *createObject(const QString &className);
+    virtual MiObject *findObject(const QString &className) const;
 
 private:
     Q_DISABLE_COPY(AcNote)
     Private::AcNoteData *d;
 
-    MiObjectList *pitchPointObjects() const;
-    MiObjectList *volumePointObjects() const;
+    MiObject *pitchCurveObject() const;
+    MiObject *volumeCurveObject() const;
 };
 
 #endif // AC_NOTE_H

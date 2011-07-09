@@ -42,6 +42,9 @@ public:
 
     MiList<AcPoint> &points() const;
 
+protected:
+    virtual MiObject *createObject(const QString &className);
+
 protected slots:
     virtual void updatePoints();
 

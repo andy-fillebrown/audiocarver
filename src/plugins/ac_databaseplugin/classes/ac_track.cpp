@@ -32,7 +32,7 @@ public:
     qreal volume;
 
     AcTrackData(AcTrack *q)
-        :   notes("notes", q, q->root())
+        :   notes("notes", q)
         ,   visible(true)
         ,   volume(0.999999)
     {}

@@ -52,6 +52,13 @@ MiList<AcPoint> &AcCurve::points() const
     return d->points;
 }
 
+MiObject *AcCurve::createObject(const QString &className)
+{
+    if ("Point" == className)
+        return d->points.add();
+    return 0;
+}
+
 MiObjectList *AcCurve::pointObjects() const
 {
     return d->points.objects();

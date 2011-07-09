@@ -97,18 +97,3 @@ void AcPoint::setCurved(bool curved)
     d->curved = curved;
     emit propertyChanged("curved");
 }
-
-
-AcPitchPoint::AcPitchPoint(QObject *parent)
-    :   AcPoint(parent)
-{}
-
-AcPitchPoint::~AcPitchPoint()
-{}
-
-AcVolumePoint::AcVolumePoint(QObject *parent)
-    :   AcPoint(parent)
-{}
-
-AcVolumePoint::~AcVolumePoint()
-{}
