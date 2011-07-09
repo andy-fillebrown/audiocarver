@@ -67,10 +67,8 @@ public:
         updateBarItems();
         updateTuningItems();
         updateFontMetrics();
-        updateBarLineVisibilities();
-        updateBarLabelVisibilities();
-        updateTuningLineVisibilities();
-        updateTuningLabelVisibilities();
+        updateBarItemVisibilities();
+        updateTuningItemVisibilities();
     }
 
     void updateBarItems()
@@ -109,11 +107,7 @@ public:
         fontMetrics = QFontMetrics(font());
     }
 
-    void updateBarLineVisibilities()
-    {
-    }
-
-    void updateBarLabelVisibilities()
+    void updateBarItemVisibilities()
     {
         int minPriority = 0x7fffffff;
         int prevPriority = 0;
@@ -138,11 +132,7 @@ public:
         }
     }
 
-    void updateTuningLineVisibilities()
-    {
-    }
-
-    void updateTuningLabelVisibilities()
+    void updateTuningItemVisibilities()
     {
         int minPriority = 0x7fffffff;
         int prevPriority = 0;
@@ -195,26 +185,30 @@ AcSceneManager *AcSceneManager::instance()
 
 void AcSceneManager::updateScoreProperty(const QString &propertyName)
 {
-    if ("barLines" == propertyName)
+    if ("barLines" == propertyName) {
         d->updateBarItems();
-    else if ("tuningLines" == propertyName)
+        d->updateBarItemVisibilities();
+    }
+    else if ("tuningLines" == propertyName) {
         d->updateTuningItems();
+        d->updateTuningItemVisibilities();
+    }
 }
 
 void AcSceneManager::updateFontSettingsProperty(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
     d->updateFontMetrics();
-    d->updateBarLabelVisibilities();
-    d->updateTuningLabelVisibilities();
+    d->updateBarItemVisibilities();
+    d->updateTuningItemVisibilities();
 }
 
 void AcSceneManager::updateViewSettingsProperty(const QString &propertyName)
 {
     if ("scaleX" == propertyName)
-        d->updateBarLabelVisibilities();
+        d->updateBarItemVisibilities();
     else if ("scaleY" == propertyName)
-        d->updateTuningLabelVisibilities();
+        d->updateTuningItemVisibilities();
 }
 
 QGraphicsScene *AcSceneManager::scoreScene() const
