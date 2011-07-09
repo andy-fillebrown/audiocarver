@@ -175,9 +175,9 @@ bool MiObject::read(QXmlStreamReader &in)
         Q_ASSERT(list);
         if (!list)
             return false;
-        blockSignals(true);
         if (!list->isConstant())
             list->deleteAll();
+        blockSignals(true);
         while (!in.atEnd()) {
             QXmlStreamReader::TokenType tokenType = in.readNext();
             if (tokenType == QXmlStreamReader::Characters)
