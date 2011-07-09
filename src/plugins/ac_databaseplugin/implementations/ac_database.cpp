@@ -17,12 +17,13 @@
 
 #include "ac_database.h"
 #include <ac_barline.h>
-#include <ac_fcurve.h>
-#include <ac_fpoint.h>
 #include <ac_note.h>
+#include <ac_pitchcurve.h>
+#include <ac_point.h>
 #include <ac_score.h>
 #include <ac_track.h>
 #include <ac_tuningline.h>
+#include <ac_volumecurve.h>
 #include <mi_list.h>
 #include <QFile>
 #include <QXmlStreamReader>
@@ -79,12 +80,24 @@ public:
         barLine->setLocation(4.0f * 32);
         barLine->setColor(QColor(127, 0, 0));
         barLine->setPriority(0);
-        score->tracks().add();
-        AcFCurve *pitchCurve = score->curves().add();
-        pitchCurve->appendPoint(AcFPoint(0.000001, 0));
-        pitchCurve->appendPoint(AcFPoint(1, 1));
-        AcNote *note = score->notes().add();
-        note->setPitchCurve(pitchCurve);
+        AcTrack *track = score->tracks().add();
+        AcNote *note = track->notes().add();
+        AcPoint *pitchPointA = note->pitchPoints().add();
+        pitchPointA->setX(0.0f);
+        pitchPointA->setY(60.0f);
+        AcPoint *pitchPointB = note->pitchPoints().add();
+        pitchPointB->setX(10.0f);
+        pitchPointB->setY(72.0f);
+        AcPoint *volumePointA = note->volumePoints().add();
+        volumePointA->setX(0.0f);
+        volumePointA->setY(0.0f);
+        AcPoint *volumePointB = note->volumePoints().add();
+        volumePointB->setX(0.5f);
+        volumePointB->setY(1.0f);
+        volumePointB->setCurved(true);
+        AcPoint *volumePointC = note->volumePoints().add();
+        volumePointC->setX(1.0f);
+        volumePointC->setY(0.0f);
     }
 };
 

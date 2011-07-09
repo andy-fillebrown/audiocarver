@@ -35,7 +35,7 @@ class AC_DATABASE_EXPORT AcPoint : public MiObject
     Q_PROPERTY(bool curved READ isCurved WRITE setCurved)
 
 public:
-    AcPoint(qreal x = 0.0f, qreal y = 0.0f, bool curved = false, QObject *parent = 0);
+    AcPoint(QObject *parent = 0);
     virtual ~AcPoint();
 
     qreal x() const;
@@ -48,6 +48,30 @@ public:
 private:
     Q_DISABLE_COPY(AcPoint)
     Private::AcPointData *d;
+};
+
+class AC_DATABASE_EXPORT AcPitchPoint : public AcPoint
+{
+    Q_OBJECT
+
+public:
+    AcPitchPoint(QObject *parent = 0);
+    virtual ~AcPitchPoint();
+
+private:
+    Q_DISABLE_COPY(AcPitchPoint)
+};
+
+class AC_DATABASE_EXPORT AcVolumePoint : public AcPoint
+{
+    Q_OBJECT
+
+public:
+    AcVolumePoint(QObject *parent = 0);
+    virtual ~AcVolumePoint();
+
+private:
+    Q_DISABLE_COPY(AcVolumePoint)
 };
 
 #endif // AC_POINT_H

@@ -17,9 +17,7 @@
 
 #include "ac_score.h"
 #include <ac_barline.h>
-#include <ac_fcurve.h>
 #include <ac_gridsettings.h>
-#include <ac_note.h>
 #include <ac_track.h>
 #include <ac_tuningline.h>
 #include <ac_viewsettings.h>
@@ -37,8 +35,6 @@ public:
     AcScore *q;
     qreal length;
     MiConstantObjectList settings;
-    MiList<AcFCurve> curves;
-    MiList<AcNote> notes;
     MiList<AcTrack> tracks;
     MiList<AcBarLine> barLines;
     MiList<AcTuningLine> tuningLines;
@@ -50,8 +46,6 @@ public:
         :   q(q)
         ,   length(128.0f)
         ,   settings("settings", q)
-        ,   curves("curves", q)
-        ,   notes("notes", q)
         ,   tracks("tracks", q)
         ,   barLines("barLines", q)
         ,   tuningLines("tuningLines", q)
@@ -109,16 +103,6 @@ void AcScore::setLength(qreal length)
     emit propertyChanged("length");
 }
 
-MiList<AcFCurve> &AcScore::curves() const
-{
-    return d->curves;
-}
-
-MiList<AcNote> &AcScore::notes() const
-{
-    return d->notes;
-}
-
 MiList<AcTrack> &AcScore::tracks() const
 {
     return d->tracks;
@@ -152,8 +136,6 @@ AcViewSettings *AcScore::viewSettings() const
 void AcScore::clear()
 {
     d->tracks.clear();
-    d->notes.clear();
-    d->curves.clear();
     d->tuningLines.clear();
     d->barLines.clear();
     d->settings.clear();
@@ -170,10 +152,6 @@ MiObject *AcScore::createObject(const QString &className)
 {
     if (className == "BarLine")
         return d->barLines.add();
-    if (className == "FCurve")
-        return d->curves.add();
-    if (className == "Note")
-        return d->notes.add();
     if (className == "TuningLine")
         return d->tuningLines.add();
     if (className == "Track")
@@ -233,16 +211,6 @@ void AcScore::sortTuningLines()
 MiObjectList *AcScore::settingsObjects() const
 {
     return &(d->settings);
-}
-
-MiObjectList *AcScore::curveObjects() const
-{
-    return d->curves.objects();
-}
-
-MiObjectList *AcScore::noteObjects() const
-{
-    return d->notes.objects();
 }
 
 MiObjectList *AcScore::trackObjects() const

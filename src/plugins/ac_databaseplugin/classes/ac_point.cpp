@@ -29,10 +29,10 @@ public:
     qreal y;
     bool curved;
 
-    AcPointData(qreal x, qreal y, bool curved)
-        :   x(x)
-        ,   y(y)
-        ,   curved(curved)
+    AcPointData()
+        :   x(0.0f)
+        ,   y(0.0f)
+        ,   curved(false)
     {}
 };
 
@@ -49,9 +49,9 @@ template <> bool MiList<AcPoint>::lessThan(MiObject *a, MiObject *b)
     return false;
 }
 
-AcPoint::AcPoint(qreal x, qreal y, bool curved, QObject *parent)
+AcPoint::AcPoint(QObject *parent)
     :   MiObject(parent)
-    ,   d(new AcPointData(x, y, curved))
+    ,   d(new AcPointData)
 {}
 
 AcPoint::~AcPoint()
@@ -97,3 +97,18 @@ void AcPoint::setCurved(bool curved)
     d->curved = curved;
     emit propertyChanged("curved");
 }
+
+
+AcPitchPoint::AcPitchPoint(QObject *parent)
+    :   AcPoint(parent)
+{}
+
+AcPitchPoint::~AcPitchPoint()
+{}
+
+AcVolumePoint::AcVolumePoint(QObject *parent)
+    :   AcPoint(parent)
+{}
+
+AcVolumePoint::~AcVolumePoint()
+{}

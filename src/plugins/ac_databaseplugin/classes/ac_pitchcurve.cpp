@@ -16,3 +16,30 @@
 **************************************************************************/
 
 #include "ac_pitchcurve.h"
+
+using namespace Private;
+
+namespace Private {
+
+class AcPitchCurveData
+{
+public:
+    AcPitchCurveData()
+    {}
+};
+
+} // namespace Private
+
+AcPitchCurve::AcPitchCurve(QObject *parent)
+    :   AcCurve(parent)
+    ,   d(new AcPitchCurveData)
+{}
+
+AcPitchCurve::~AcPitchCurve()
+{
+    delete d;
+}
+
+void AcPitchCurve::updatePoints()
+{
+}

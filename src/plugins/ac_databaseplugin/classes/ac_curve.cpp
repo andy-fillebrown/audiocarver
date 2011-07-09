@@ -59,5 +59,4 @@ MiObjectList *AcCurve::pointObjects() const
 
 void AcCurve::updatePoints()
 {
-
 }

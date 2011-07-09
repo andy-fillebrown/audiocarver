@@ -16,8 +16,8 @@
 **************************************************************************/
 
 #include "ac_track.h"
+#include <mi_list.h>
 #include <ac_note.h>
-#include <mi_objectlist.h>
 #include <mi_root.h>
 
 using namespace Private;
@@ -27,20 +27,15 @@ namespace Private {
 class AcTrackData
 {
 public:
-    MiObjectList *notes;
+    MiList<AcNote> notes;
     bool visible;
     qreal volume;
 
     AcTrackData(AcTrack *q)
-        :   notes(new MiObjectList("notes", q, q->root()))
+        :   notes("notes", q, q->root())
         ,   visible(true)
         ,   volume(0.999999)
     {}
-
-    ~AcTrackData()
-    {
-        delete notes;
-    }
 };
 
 } // namespace Private
@@ -55,7 +50,7 @@ AcTrack::~AcTrack()
     delete d;
 }
 
-MiObjectList *AcTrack::notes() const
+MiList<AcNote> &AcTrack::notes() const
 {
     return d->notes;
 }
@@ -65,7 +60,7 @@ bool AcTrack::isVisible() const
     return d->visible;
 }
 
-void AcTrack::setVisibility(bool visible)
+void AcTrack::setVisible(bool visible)
 {
     if (visible && isVisible())
         return;
@@ -89,16 +84,12 @@ void AcTrack::setVolume(qreal volume)
 
 MiObject *AcTrack::createObject(const QString &className)
 {
-    if (className == "Note") {
-        AcNote *note = new AcNote(this);
-        d->notes->append(note);
-        return note;
-    }
+    if ("Note" == className)
+        return d->notes.add();
     return 0;
 }
 
-MiObject *AcTrack::findObject(const QString &className) const
+MiObjectList *AcTrack::noteObjects() const
 {
-    Q_UNUSED(className);
-    return 0;
+    return d->notes.objects();
 }

@@ -21,6 +21,9 @@
 #include <mi_object.h>
 #include <ac_database_global.h>
 
+class AcNote;
+template <typename T> class MiList;
+
 namespace Private {
 
 class AcTrackData;
@@ -30,27 +33,28 @@ class AcTrackData;
 class AC_DATABASE_EXPORT AcTrack : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(MiObjectList* notes READ notes)
-    Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
+    Q_PROPERTY(MiObjectList* notes READ noteObjects)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
 public:
     AcTrack(QObject *parent = 0);
     virtual ~AcTrack();
 
-    MiObjectList *notes() const;
+    MiList<AcNote> &notes() const;
     bool isVisible() const;
-    void setVisibility(bool visible);
+    void setVisible(bool visible);
     qreal volume() const;
     void setVolume(qreal volume);
 
 protected:
     virtual MiObject *createObject(const QString &className);
-    virtual MiObject *findObject(const QString &className) const;
 
 private:
     Q_DISABLE_COPY(AcTrack)
     Private::AcTrackData *d;
+
+    MiObjectList *noteObjects() const;
 };
 
 #endif // AC_TRACK_H

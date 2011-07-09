@@ -21,7 +21,9 @@
 #include <mi_object.h>
 #include <ac_database_global.h>
 
-class AcFCurve;
+class AcPitchPoint;
+class AcVolumePoint;
+template <typename T> class MiList;
 
 namespace Private {
 
@@ -32,44 +34,25 @@ class AcNoteData;
 class AC_DATABASE_EXPORT AcNote : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal startTime READ startTime WRITE setStartTime)
-    Q_PROPERTY(qreal duration READ duration WRITE setDuration)
-    Q_PROPERTY(qreal pitchScale READ pitchScale WRITE setPitchScale)
-    Q_PROPERTY(qreal volumeScale READ volumeScale WRITE setVolumeScale)
-    Q_PROPERTY(MiObject* pitchCurve READ pitchCurveObject WRITE setPitchCurveObject)
-    Q_PROPERTY(MiObject* volumeCurve READ volumeCurveObject WRITE setVolumeCurveObject)
-    Q_PROPERTY(int pitchPointCount READ pitchPointCount WRITE setPitchPointCount)
-    Q_PROPERTY(int volumePointCount READ volumePointCount WRITE setVolumePointCount)
+    Q_PROPERTY(MiObjectList* pitchPoints READ pitchPointObjects)
+    Q_PROPERTY(MiObjectList* volumePoints READ volumePointObjects)
 
 public:
     AcNote(QObject *parent = 0);
     virtual ~AcNote();
 
-    qreal startTime() const;
-    void setStartTime(qreal time);
-    qreal duration() const;
-    void setDuration(qreal duration);
-    qreal pitchScale() const;
-    void setPitchScale(qreal scale);
-    qreal volumeScale() const;
-    void setVolumeScale(qreal scale);
-    int pitchPointCount() const;
-    void setPitchPointCount(int count);
-    int volumePointCount() const;
-    void setVolumePointCount(int count);
-    AcFCurve *pitchCurve() const;
-    void setPitchCurve(AcFCurve *curve);
-    AcFCurve *volumeCurve() const;
-    void setVolumeCurve(AcFCurve *curve);
+    MiList<AcPitchPoint> &pitchPoints() const;
+    MiList<AcVolumePoint> &volumePoints() const;
+
+protected:
+    virtual MiObject *createObject(const QString &className);
 
 private:
     Q_DISABLE_COPY(AcNote)
     Private::AcNoteData *d;
 
-    MiObject *pitchCurveObject() const;
-    void setPitchCurveObject(MiObject *curve);
-    MiObject *volumeCurveObject() const;
-    void setVolumeCurveObject(MiObject *curve);
+    MiObjectList *pitchPointObjects() const;
+    MiObjectList *volumePointObjects() const;
 };
 
 #endif // AC_NOTE_H

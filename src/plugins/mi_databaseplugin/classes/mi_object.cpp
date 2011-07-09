@@ -281,7 +281,9 @@ void MiObject::update(bool recursive)
 
 MiObject *MiObject::createObject(const QString &className)
 {
-    Q_UNUSED(className);
+    MiRoot *root = this->root();
+    if (root)
+        return root->createObject(className);
     return 0;
 }
 

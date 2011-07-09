@@ -22,10 +22,7 @@
 #include <ac_database_global.h>
 
 class AcBarLine;
-class AcFCurve;
-class AcGuideline;
 class AcGridSettings;
-class AcNote;
 class AcTrack;
 class AcTuningLine;
 class AcViewSettings;
@@ -43,8 +40,6 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
     Q_PROPERTY(MiObjectList* settings READ settingsObjects)
-    Q_PROPERTY(MiObjectList* curves READ curveObjects)
-    Q_PROPERTY(MiObjectList* notes READ noteObjects)
     Q_PROPERTY(MiObjectList* tracks READ trackObjects)
     Q_PROPERTY(MiObjectList* barLines READ barLineObjects)
     Q_PROPERTY(MiObjectList* tuningLines READ tuningLineObjects)
@@ -57,8 +52,6 @@ public:
 
     qreal length() const;
     void setLength(qreal length);
-    MiList<AcFCurve> &curves() const;
-    MiList<AcNote> &notes() const;
     MiList<AcTrack> &tracks() const;
     MiList<AcBarLine> &barLines() const;
     MiList<AcTuningLine> &tuningLines() const;
@@ -86,8 +79,6 @@ private:
     Private::AcScoreData *d;
 
     MiObjectList *settingsObjects() const;
-    MiObjectList *curveObjects() const;
-    MiObjectList *noteObjects() const;
     MiObjectList *trackObjects() const;
     MiObjectList *barLineObjects() const;
     MiObjectList *tuningLineObjects() const;
