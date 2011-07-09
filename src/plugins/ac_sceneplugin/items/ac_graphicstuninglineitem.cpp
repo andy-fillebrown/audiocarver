@@ -48,15 +48,14 @@ public:
     void updateScoreLineGeometry()
     {
         const qreal pos = 127.0f - gridLine->location();
-        const AcScore *score = AcScore::instance();
-        scoreLineItem->setLine(0.0f, pos, score->length(), pos);
+        scoreLineItem->setLine(0.0f, pos, AcScore::instance()->length(), pos);
     }
 
     void updateLabelPosition()
     {
         const qreal pos = 127.0f - gridLine->location();
         const AcScore *score = AcScore::instance();
-        const qreal scale = score->viewSettings()->scaleY();
+        const qreal scale = score->viewSettings()->pitchScale();
         const QRect labelRect = AcSceneManager::instance()->fontMetrics().boundingRect(gridLine->label());
         const qreal x = AcPitchScene::instance()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
@@ -87,7 +86,7 @@ void AcGraphicsTuningLineItem::setGridLine(AcGridLine *gridLine)
 
 void AcGraphicsTuningLineItem::updateViewSettingsProperty(const QString &propertyName)
 {
-    if ("scaleY" == propertyName) {
+    if ("pitchScale" == propertyName) {
         Q_D(AcGraphicsTuningLineItem);
         d->updateLabelPosition();
     }

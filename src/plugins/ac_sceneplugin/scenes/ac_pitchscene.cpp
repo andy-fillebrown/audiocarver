@@ -34,7 +34,7 @@ public:
 
     qreal height() const
     {
-        return 127.0f * AcScore::instance()->viewSettings()->scaleY();
+        return 127.0f * AcScore::instance()->viewSettings()->pitchScale();
     }
 
     void init()
@@ -77,6 +77,6 @@ AcPitchScene *AcPitchScene::instance()
 
 void AcPitchScene::updateViewSettingsProperty(const QString &propertyName)
 {
-    if ("scaleY" == propertyName)
+    if ("pitchScale" == propertyName)
         d->updateSceneRect();
 }

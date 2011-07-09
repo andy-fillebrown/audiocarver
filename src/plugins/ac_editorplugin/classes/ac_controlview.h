@@ -15,28 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLLERSCENE_H
-#define AC_CONTROLLERSCENE_H
+#ifndef AC_CONTROLVIEW_H
+#define AC_CONTROLVIEW_H
 
-#include <ac_graphicsscene.h>
-#include <ac_scene_global.h>
+#include <ac_editorview.h>
+#include <ac_editor_global.h>
 
 namespace Private {
 
-class AcControllerSceneData;
+class AcControlViewData;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcControllerScene : public AcGraphicsScene
+class AcControlView : public AcEditorView
 {
     Q_OBJECT
 
 public:
-    AcControllerScene(QObject *parent = 0);
-    virtual ~AcControllerScene();
+    AcControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcControlView();
+
+    virtual void updateTransform();
+
+protected:
+    virtual void updateViewSettings() const;
+
 private:
-    Q_DISABLE_COPY(AcControllerScene)
-    Private::AcControllerSceneData *d;
+    Q_DISABLE_COPY(AcControlView)
+    Private::AcControlViewData *d;
 };
 
-#endif // AC_CONTROLLERSCENE_H
+#endif // AC_CONTROLVIEW_H

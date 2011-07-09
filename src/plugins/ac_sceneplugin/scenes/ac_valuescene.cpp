@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_timescene.h"
+#include "ac_valuescene.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
@@ -23,19 +23,18 @@ using namespace Private;
 
 namespace Private {
 
-class AcTimeSceneData
+class AcValueSceneData
 {
 public:
-    AcTimeScene *q;
+    AcValueScene *q;
 
-    AcTimeSceneData(AcTimeScene *q)
+    AcValueSceneData(AcValueScene *q)
         :   q(q)
     {}
 
-    qreal width() const
+    qreal height() const
     {
-        const AcScore *score = AcScore::instance();
-        return score->length() * score->viewSettings()->timeScale();
+        return AcScore::instance()->viewSettings()->valueScale();
     }
 
     void init()
@@ -45,45 +44,39 @@ public:
 
     void initSceneRect()
     {
-        q->setSceneRect(0.0f, 0.0f, width(), 10.0f);
+        q->setSceneRect(0.0f, 0.0f, 10.0f, height());
     }
 
     void updateSceneRect()
     {
-        q->setSceneRect(0.0f, 0.0f, width(), q->height());
+        q->setSceneRect(0.0f, 0.0f, q->width(), height());
     }
 };
 
 } // namespace Private
 
-static AcTimeScene *instance = 0;
+static AcValueScene *instance = 0;
 
-AcTimeScene::AcTimeScene(QObject *parent)
+AcValueScene::AcValueScene(QObject *parent)
     :   AcScaledScene(parent)
-    ,   d(new AcTimeSceneData(this))
+    ,   d(new AcValueSceneData(this))
 {
     ::instance = this;
     d->init();
 }
 
-AcTimeScene::~AcTimeScene()
+AcValueScene::~AcValueScene()
 {
     delete d;
 }
 
-AcTimeScene *AcTimeScene::instance()
+AcValueScene *AcValueScene::instance()
 {
     return ::instance;
 }
 
-void AcTimeScene::updateViewSettingsProperty(const QString &propertyName)
+void AcValueScene::updateViewSettingsProperty(const QString &propertyName)
 {
-    if ("timeScale" == propertyName)
-        d->updateSceneRect();
-}
-
-void AcTimeScene::updateScoreProperty(const QString &propertyName)
-{
-    if ("length" == propertyName)
+    if ("valueScale" == propertyName)
         d->updateSceneRect();
 }

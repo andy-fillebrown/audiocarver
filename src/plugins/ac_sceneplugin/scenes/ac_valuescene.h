@@ -15,27 +15,33 @@
 **
 **************************************************************************/
 
-#include "ac_pitchview.h"
+#ifndef AC_VALUESCENE_H
+#define AC_VALUESCENE_H
 
-using namespace Private;
+#include <ac_scaledscene.h>
 
 namespace Private {
 
-class AcPitchViewData
-{
-public:
-    AcPitchViewData()
-    {}
-};
+class AcValueSceneData;
 
 } // namespace Private
 
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
-    :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchViewData)
-{}
-
-AcPitchView::~AcPitchView()
+class AC_SCENE_EXPORT AcValueScene : public AcScaledScene
 {
-    delete d;
-}
+    Q_OBJECT
+
+public:
+    AcValueScene(QObject *parent = 0);
+    virtual ~AcValueScene();
+
+    static AcValueScene *instance();
+
+protected:
+    virtual void updateViewSettingsProperty(const QString &propertyName);
+
+private:
+    Q_DISABLE_COPY(AcValueScene)
+    Private::AcValueSceneData *d;
+};
+
+#endif // AC_VALUESCENE_H

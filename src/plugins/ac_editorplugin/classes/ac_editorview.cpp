@@ -15,27 +15,53 @@
 **
 **************************************************************************/
 
-#include "ac_pitchview.h"
+#include "ac_editorview.h"
 
 using namespace Private;
 
 namespace Private {
 
-class AcPitchViewData
+class AcEditorViewData
 {
 public:
-    AcPitchViewData()
+    QPointF center;
+
+    AcEditorViewData()
     {}
 };
 
 } // namespace Private
 
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
+AcEditorView::AcEditorView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchViewData)
+    ,   d(new AcEditorViewData)
 {}
 
-AcPitchView::~AcPitchView()
+AcEditorView::~AcEditorView()
 {
     delete d;
+}
+
+const QPointF &AcEditorView::center() const
+{
+    return d->center;
+}
+
+void AcEditorView::setCenter(const QPointF &center)
+{
+    QPointF prevCtr = d->center;
+    centerOn(center);
+    d->center = mapToScene(rect().center());
+    if (d->center != prevCtr)
+        updateViewSettings();
+}
+
+void AcEditorView::setCenter(qreal x, qreal y)
+{
+    setCenter(QPointF(x, y));
+}
+
+void AcEditorView::updateCenter()
+{
+    setCenter(mapToScene(rect().center()));
 }

@@ -39,18 +39,23 @@ public:
     ~AcViewManager();
 
     QGraphicsView *scoreView() const;
-    QGraphicsView *controllerView() const;
+    QGraphicsView *controlView() const;
     QGraphicsView *timeView() const;
     QGraphicsView *pitchView() const;
+    QGraphicsView *valueView() const;
 
-    qreal positionX() const;
-    void setPositionX(qreal positionX);
-    qreal positionY() const;
-    void setPositionY(qreal positionY);
-    qreal scaleX() const;
-    void setScaleX(qreal scaleX);
-    qreal scaleY() const;
-    void setScaleY(qreal scaleY);
+    qreal timePosition() const;
+    void setTimePosition(qreal position);
+    qreal pitchPosition() const;
+    void setPitchPosition(qreal position);
+    qreal valuePosition() const;
+    void setValuePosition(qreal position);
+    qreal timeScale() const;
+    void setTimeScale(qreal scale);
+    qreal pitchScale() const;
+    void setPitchScale(qreal scale);
+    qreal valueScale() const;
+    void setValueScale(qreal scale);
 
     void updateViews();
 

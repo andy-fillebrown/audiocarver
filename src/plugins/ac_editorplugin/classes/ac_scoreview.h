@@ -18,7 +18,7 @@
 #ifndef AC_SCOREVIEW_H
 #define AC_SCOREVIEW_H
 
-#include <ac_graphicsview.h>
+#include <ac_editorview.h>
 #include <ac_editor_global.h>
 
 namespace Private {
@@ -27,7 +27,7 @@ class AcScoreViewData;
 
 } // namespace Private
 
-class AcScoreView : public AcGraphicsView
+class AcScoreView : public AcEditorView
 {
     Q_OBJECT
 
@@ -35,12 +35,10 @@ public:
     AcScoreView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcScoreView();
 
-    const QPointF &center() const;
-    void setCenter(const QPointF &center);
-    void setCenter(qreal x, qreal y);
+    virtual void updateTransform();
 
-    void updateCenter();
-    void updateTransform();
+protected:
+    virtual void updateViewSettings() const;
 
 private:
     Q_DISABLE_COPY(AcScoreView)

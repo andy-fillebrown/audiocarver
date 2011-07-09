@@ -35,14 +35,12 @@ public:
     QGridLayout *layout;
     AcViewManager *viewManager;
     MiGraphicsView *topLeft;
-    MiGraphicsView *bottomLeft;
 
     AcMainWidgetData(AcMainWidget *q)
         :   q(q)
         ,   layout(new QGridLayout(q))
         ,   viewManager(new AcViewManager(q))
         ,   topLeft(new MiGraphicsView)
-        ,   bottomLeft(new MiGraphicsView)
     {
         layout->setContentsMargins(QMargins(0, 0, 0, 0));
         layout->setSpacing(0);
@@ -55,9 +53,9 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     :   QWidget(parent)
     ,   d(new AcMainWidgetData(this))
 {
-    const int sideWidth = 64;
-    const int sideHeight = 64;
-    const int controllerHeight = 192;
+    const int sideWidth = 48;
+    const int sideHeight = 32;
+    const int controlHeight = 192;
 
     d->layout->addWidget(d->topLeft, 0, 0);
     d->topLeft->setFixedSize(sideWidth, sideHeight);
@@ -79,15 +77,16 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     scoreView->setFrameShadow(QFrame::Sunken);
     scoreView->setLineWidth(1);
 
-    d->layout->addWidget(d->bottomLeft, 2, 0);
-    d->bottomLeft->setFixedSize(sideWidth, controllerHeight);
-    d->bottomLeft->setFrameShape(QFrame::NoFrame);
+    QGraphicsView *valueView = d->viewManager->valueView();
+    d->layout->addWidget(valueView, 2, 0);
+    valueView->setFixedSize(sideWidth, controlHeight);
+    valueView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *controllerView = d->viewManager->controllerView();
-    d->layout->addWidget(controllerView, 2, 1);
-    controllerView->setFixedHeight(controllerHeight);
-    controllerView->setFrameShape(QFrame::Box);
-    controllerView->setFrameShadow(QFrame::Sunken);
+    QGraphicsView *controlView = d->viewManager->controlView();
+    d->layout->addWidget(controlView, 2, 1);
+    controlView->setFixedHeight(controlHeight);
+    controlView->setFrameShape(QFrame::Box);
+    controlView->setFrameShadow(QFrame::Sunken);
 
     d->viewManager->updateViews();
 }
@@ -114,15 +113,15 @@ void AcMainWidget::wheelEvent(QWheelEvent *event)
     if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
         qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-            d->viewManager->setScaleX(scale * d->viewManager->scaleX());
+            d->viewManager->setTimeScale(scale * d->viewManager->timeScale());
         else
-            d->viewManager->setScaleY(scale * d->viewManager->scaleY());
+            d->viewManager->setPitchScale(scale * d->viewManager->pitchScale());
     } else {
         int offset = event->delta() < 0 ? 10 : -10;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-            d->viewManager->setPositionX(d->viewManager->positionX() - offset);
+            d->viewManager->setTimePosition(d->viewManager->timePosition() - offset);
         else
-            d->viewManager->setPositionY(d->viewManager->positionY() + offset);
+            d->viewManager->setPitchPosition(d->viewManager->pitchPosition() + offset);
     }
     event->accept();
 }

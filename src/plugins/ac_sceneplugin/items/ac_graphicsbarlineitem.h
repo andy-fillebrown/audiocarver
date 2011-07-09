@@ -38,6 +38,9 @@ public:
 
     virtual void setGridLine(AcGridLine *barLine);
 
+    virtual void show();
+    virtual void hide();
+
 protected:
     virtual void updateViewSettingsProperty(const QString &propertyName);
     virtual void updateGridLineProperty(const QString &propertyName);

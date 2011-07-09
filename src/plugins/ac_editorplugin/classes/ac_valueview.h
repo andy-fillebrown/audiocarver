@@ -15,43 +15,29 @@
 **
 **************************************************************************/
 
-#include "ac_controllerview.h"
+#ifndef AC_VALUEVIEW_H
+#define AC_VALUEVIEW_H
 
-using namespace Private;
+#include <ac_graphicsview.h>
+#include <ac_editor_global.h>
 
 namespace Private {
 
-class AcControllerViewData
-{
-public:
-    AcControllerViewData()
-    {}
-};
+class AcValueViewData;
 
 } // namespace Private
 
-AcControllerView::AcControllerView(QGraphicsScene *scene, QWidget *parent)
-    :   AcGraphicsView(scene, parent)
-    ,   d(new AcControllerViewData)
-{}
-
-AcControllerView::~AcControllerView()
+class AcValueView : public AcGraphicsView
 {
-    delete d;
-}
+    Q_OBJECT
 
-void AcControllerView::updateCenter()
-{
-}
+public:
+    AcValueView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcValueView();
 
-void AcControllerView::updateLength()
-{
-}
+private:
+    Q_DISABLE_COPY(AcValueView)
+    Private::AcValueViewData *d;
+};
 
-void AcControllerView::updateScaleX()
-{
-}
-
-void AcControllerView::updateScaleY()
-{
-}
+#endif // AC_VALUEVIEW_H

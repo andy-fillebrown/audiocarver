@@ -15,27 +15,27 @@
 **
 **************************************************************************/
 
-#include "ac_pitchview.h"
+#include "ac_valueview.h"
 
 using namespace Private;
 
 namespace Private {
 
-class AcPitchViewData
+class AcValueViewData
 {
 public:
-    AcPitchViewData()
+    AcValueViewData()
     {}
 };
 
 } // namespace Private
 
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
+AcValueView::AcValueView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchViewData)
+    ,   d(new AcValueViewData)
 {}
 
-AcPitchView::~AcPitchView()
+AcValueView::~AcValueView()
 {
     delete d;
 }

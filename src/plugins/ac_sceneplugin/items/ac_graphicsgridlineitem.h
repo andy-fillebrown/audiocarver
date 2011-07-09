@@ -59,8 +59,8 @@ public:
     QRectF labelRect() const;
 
     bool isVisible() const;
-    void show();
-    void hide();
+    virtual void show();
+    virtual void hide();
 
 protected slots:
     virtual void updateFontSettingsProperty(const QString &propertyName);

@@ -26,30 +26,15 @@ namespace Private {
 class AcScoreViewData
 {
 public:
-    AcScoreView *q;
-    QPointF center;
-
-    AcScoreViewData(AcScoreView *q)
-        :   q(q)
+    AcScoreViewData()
     {}
-
-    void updateCenter()
-    {
-        center = q->mapToScene(q->rect().center());
-    }
-
-    void updateTransform()
-    {
-        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-        q->setTransform(QTransform::fromScale(viewSettings->scaleX(), viewSettings->scaleY()));
-    }
 };
 
 } // namespace Private
 
 AcScoreView::AcScoreView(QGraphicsScene *scene, QWidget *parent)
-    :   AcGraphicsView(scene, parent)
-    ,   d(new AcScoreViewData(this))
+    :   AcEditorView(scene, parent)
+    ,   d(new AcScoreViewData)
 {}
 
 AcScoreView::~AcScoreView()
@@ -57,34 +42,15 @@ AcScoreView::~AcScoreView()
     delete d;
 }
 
-const QPointF &AcScoreView::center() const
-{
-    return d->center;
-}
-
-void AcScoreView::setCenter(const QPointF &center)
-{
-    QPointF prevCtr = d->center;
-    centerOn(center);
-    d->updateCenter();
-    if (d->center != prevCtr) {
-        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-        viewSettings->setPositionX(center.x());
-        viewSettings->setPositionY(center.y());
-    }
-}
-
-void AcScoreView::setCenter(qreal x, qreal y)
-{
-    setCenter(QPointF(x, y));
-}
-
-void AcScoreView::updateCenter()
-{
-    setCenter(mapToScene(rect().center()));
-}
-
 void AcScoreView::updateTransform()
 {
-    d->updateTransform();
+    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+    setTransform(QTransform::fromScale(viewSettings->timeScale(), viewSettings->pitchScale()));
+}
+
+void AcScoreView::updateViewSettings() const
+{
+    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+    viewSettings->setTimePosition(center().x());
+    viewSettings->setPitchPosition(center().y());
 }

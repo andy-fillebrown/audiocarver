@@ -16,12 +16,13 @@
 **************************************************************************/
 
 #include "ac_viewmanager.h"
-#include <ac_controllerview.h>
+#include <ac_controlview.h>
 #include <ac_pitchview.h>
 #include <ac_scenemanager.h>
 #include <ac_score.h>
 #include <ac_scoreview.h>
 #include <ac_timeview.h>
+#include <ac_valueview.h>
 #include <ac_viewsettings.h>
 #include <QGraphicsView>
 #include <QWidget>
@@ -36,25 +37,29 @@ public:
     AcViewManager *q;
     AcSceneManager *sceneManager;
     AcScoreView *scoreView;
-    AcControllerView *controllerView;
-    AcPitchView *pitchView;
+    AcControlView *controlView;
     AcTimeView *timeView;
+    AcPitchView *pitchView;
+    AcValueView *valueView;
 
     AcViewManagerData(AcViewManager *q, QWidget *widget)
         :   q(q)
         ,   sceneManager(new AcSceneManager(q))
         ,   scoreView(new AcScoreView(sceneManager->scoreScene(), widget))
-        ,   controllerView(new AcControllerView(sceneManager->controllerScene(), widget))
-        ,   pitchView(new AcPitchView(sceneManager->pitchScene(), widget))
+        ,   controlView(new AcControlView(sceneManager->controlScene(), widget))
         ,   timeView(new AcTimeView(sceneManager->timeScene(), widget))
+        ,   pitchView(new AcPitchView(sceneManager->pitchScene(), widget))
+        ,   valueView(new AcValueView(sceneManager->valueScene(), widget))
     {}
 
     void updateViewCenters()
     {
         scoreView->updateCenter();
+        controlView->updateCenter();
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-        pitchView->centerOn(sceneManager->pitchScene()->width() / 2.0f, scoreView->center().y() * viewSettings->scaleY());
-        timeView->centerOn(scoreView->center().x() * viewSettings->scaleX(), sceneManager->timeScene()->height() / 2.0f);
+        timeView->centerOn(scoreView->center().x() * viewSettings->timeScale(), sceneManager->timeScene()->height() / 2.0f);
+        pitchView->centerOn(sceneManager->pitchScene()->width() / 2.0f, scoreView->center().y() * viewSettings->pitchScale());
+        valueView->centerOn(sceneManager->valueScene()->width() / 2.0f, controlView->center().y() * viewSettings->valueScale());
     }
 };
 
@@ -77,14 +82,9 @@ QGraphicsView *AcViewManager::scoreView() const
     return d->scoreView;
 }
 
-QGraphicsView *AcViewManager::controllerView() const
+QGraphicsView *AcViewManager::controlView() const
 {
-    return d->controllerView;
-}
-
-QGraphicsView *AcViewManager::pitchView() const
-{
-    return d->pitchView;
+    return d->controlView;
 }
 
 QGraphicsView *AcViewManager::timeView() const
@@ -92,58 +92,88 @@ QGraphicsView *AcViewManager::timeView() const
     return d->timeView;
 }
 
-qreal AcViewManager::positionX() const
+QGraphicsView *AcViewManager::pitchView() const
+{
+    return d->pitchView;
+}
+
+QGraphicsView *AcViewManager::valueView() const
+{
+    return d->valueView;
+}
+
+qreal AcViewManager::timePosition() const
 {
     return d->scoreView->center().x();
 }
 
-void AcViewManager::setPositionX(qreal positionX)
+void AcViewManager::setTimePosition(qreal position)
 {
-    d->scoreView->setCenter(positionX, positionY());
+    d->scoreView->setCenter(position, pitchPosition());
+    d->controlView->setCenter(position, valuePosition());
 }
 
-qreal AcViewManager::positionY() const
+qreal AcViewManager::pitchPosition() const
 {
     return d->scoreView->center().y();
 }
 
-void AcViewManager::setPositionY(qreal positionY)
+void AcViewManager::setPitchPosition(qreal position)
 {
-    d->scoreView->setCenter(positionX(), positionY);
+    d->scoreView->setCenter(timePosition(), position);
 }
 
-qreal AcViewManager::scaleX() const
+qreal AcViewManager::valuePosition() const
 {
-    return AcScore::instance()->viewSettings()->scaleX();
+    return d->controlView->center().y();
 }
 
-void AcViewManager::setScaleX(qreal scaleX)
+void AcViewManager::setValuePosition(qreal position)
 {
-    AcScore::instance()->viewSettings()->setScaleX(scaleX);
+    d->controlView->setCenter(timePosition(), position);
 }
 
-qreal AcViewManager::scaleY() const
+qreal AcViewManager::timeScale() const
 {
-    return AcScore::instance()->viewSettings()->scaleY();
+    return AcScore::instance()->viewSettings()->timeScale();
 }
 
-void AcViewManager::setScaleY(qreal scaleY)
+void AcViewManager::setTimeScale(qreal scale)
 {
-    AcScore::instance()->viewSettings()->setScaleY(scaleY);
+    AcScore::instance()->viewSettings()->setTimeScale(scale);
+}
+
+qreal AcViewManager::pitchScale() const
+{
+    return AcScore::instance()->viewSettings()->pitchScale();
+}
+
+void AcViewManager::setPitchScale(qreal scale)
+{
+    AcScore::instance()->viewSettings()->setPitchScale(scale);
+}
+
+qreal AcViewManager::valueScale() const
+{
+    return AcScore::instance()->viewSettings()->valueScale();
+}
+
+void AcViewManager::setValueScale(qreal scale)
+{
+    AcScore::instance()->viewSettings()->setValueScale(scale);
 }
 
 void AcViewManager::updateViews()
 {
     d->scoreView->updateTransform();
+    d->controlView->updateTransform();
     d->updateViewCenters();
 }
 
 void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
 {
-    if (propertyName.startsWith("position"))
+    if (propertyName.endsWith("Position"))
         d->updateViewCenters();
-    else if (propertyName.startsWith("scale")) {
-        d->scoreView->updateTransform();
-        d->updateViewCenters();
-    }
+    else if (propertyName.endsWith("Scale"))
+        updateViews();
 }

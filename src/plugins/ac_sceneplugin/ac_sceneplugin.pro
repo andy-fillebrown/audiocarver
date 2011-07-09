@@ -13,13 +13,14 @@ HEADERS += \
     items/ac_graphicsgridlineitem.h \
     items/ac_graphicstuninglineitem.h \
     \
-    scenes/ac_controllerscene.h \
+    scenes/ac_controlscene.h \
     scenes/ac_graphicsscene.h \
     scenes/ac_pitchscene.h \
     scenes/ac_scaledscene.h \
     scenes/ac_scenemanager.h \
     scenes/ac_scorescene.h \
     scenes/ac_timescene.h \
+    scenes/ac_valuescene.h \
     \
     ac_scene_global.h \
     ac_sceneplugin.h \
@@ -31,12 +32,13 @@ SOURCES += \
     items/ac_graphicsgridlineitem.cpp \
     items/ac_graphicstuninglineitem.cpp \
     \
-    scenes/ac_controllerscene.cpp \
+    scenes/ac_controlscene.cpp \
     scenes/ac_graphicsscene.cpp \
     scenes/ac_pitchscene.cpp \
     scenes/ac_scaledscene.cpp \
     scenes/ac_scenemanager.cpp \
     scenes/ac_scorescene.cpp \
     scenes/ac_timescene.cpp \
+    scenes/ac_valuescene.cpp \
     \
     ac_sceneplugin.cpp \

@@ -15,27 +15,58 @@
 **
 **************************************************************************/
 
-#include "ac_controllerscene.h"
+#include "ac_controlscene.h"
+#include <ac_score.h>
 
 using namespace Private;
 
 namespace Private {
 
-class AcControllerSceneData
+class AcControlSceneData
 {
 public:
-    AcControllerSceneData()
+    AcControlScene *q;
+
+    AcControlSceneData(AcControlScene *q)
+        :   q(q)
     {}
+
+    void init()
+    {
+        updateSceneRect();
+    }
+
+    void updateSceneRect()
+    {
+        q->setSceneRect(0.0f, 0.0f, AcScore::instance()->length(), 1.0f);
+    }
 };
 
 } // namespace Private
 
-AcControllerScene::AcControllerScene(QObject *parent)
-    :   AcGraphicsScene(parent)
-    ,   d(new AcControllerSceneData)
-{}
+static AcControlScene *instance = 0;
 
-AcControllerScene::~AcControllerScene()
+AcControlScene::AcControlScene(QObject *parent)
+    :   AcGraphicsScene(parent)
+    ,   d(new AcControlSceneData(this))
+{
+    ::instance = this;
+    d->init();
+    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+}
+
+AcControlScene::~AcControlScene()
 {
     delete d;
+}
+
+AcControlScene *AcControlScene::instance()
+{
+    return ::instance;
+}
+
+void AcControlScene::updateScoreProperty(const QString &propertyName)
+{
+    if ("length" == propertyName)
+        d->updateSceneRect();
 }

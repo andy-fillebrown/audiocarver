@@ -30,23 +30,29 @@ class AcViewSettingsData;
 class AC_DATABASE_EXPORT AcViewSettings : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal positionX READ positionX WRITE setPositionX)
-    Q_PROPERTY(qreal positionY READ positionY WRITE setPositionY)
-    Q_PROPERTY(qreal scaleX READ scaleX WRITE setScaleX)
-    Q_PROPERTY(qreal scaleY READ scaleY WRITE setScaleY)
+    Q_PROPERTY(qreal timePosition READ timePosition WRITE setTimePosition)
+    Q_PROPERTY(qreal pitchPosition READ pitchPosition WRITE setPitchPosition)
+    Q_PROPERTY(qreal valuePosition READ valuePosition WRITE setValuePosition)
+    Q_PROPERTY(qreal timeScale READ timeScale WRITE setTimeScale)
+    Q_PROPERTY(qreal pitchScale READ pitchScale WRITE setPitchScale)
+    Q_PROPERTY(qreal valueScale READ valueScale WRITE setValueScale)
 
 public:
     AcViewSettings(QObject *parent = 0);
     ~AcViewSettings();
 
-    qreal positionX() const;
-    void setPositionX(qreal positionX);
-    qreal positionY() const;
-    void setPositionY(qreal positionY);
-    qreal scaleX() const;
-    void setScaleX(qreal scaleX);
-    qreal scaleY() const;
-    void setScaleY(qreal scaleY);
+    qreal timePosition() const;
+    void setTimePosition(qreal position);
+    qreal pitchPosition() const;
+    void setPitchPosition(qreal position);
+    qreal valuePosition() const;
+    void setValuePosition(qreal position);
+    qreal timeScale() const;
+    void setTimeScale(qreal scale);
+    qreal pitchScale() const;
+    void setPitchScale(qreal scale);
+    qreal valueScale() const;
+    void setValueScale(qreal scale);
 
 private:
     Q_DISABLE_COPY(AcViewSettings)

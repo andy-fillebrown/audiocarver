@@ -15,27 +15,39 @@
 **
 **************************************************************************/
 
-#include "ac_pitchview.h"
+#ifndef AC_EDITORVIEW_H
+#define AC_EDITORVIEW_H
 
-using namespace Private;
+#include <ac_graphicsview.h>
+#include <ac_editor_global.h>
 
 namespace Private {
 
-class AcPitchViewData
-{
-public:
-    AcPitchViewData()
-    {}
-};
+class AcEditorViewData;
 
 } // namespace Private
 
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
-    :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchViewData)
-{}
-
-AcPitchView::~AcPitchView()
+class AcEditorView : public AcGraphicsView
 {
-    delete d;
-}
+    Q_OBJECT
+
+public:
+    AcEditorView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcEditorView();
+
+    const QPointF &center() const;
+    void setCenter(const QPointF &center);
+    void setCenter(qreal x, qreal y);
+
+    void updateCenter();
+    virtual void updateTransform() = 0;
+
+protected:
+    virtual void updateViewSettings() const = 0;
+
+private:
+    Q_DISABLE_COPY(AcEditorView)
+    Private::AcEditorViewData *d;
+};
+
+#endif // AC_EDITORVIEW_H

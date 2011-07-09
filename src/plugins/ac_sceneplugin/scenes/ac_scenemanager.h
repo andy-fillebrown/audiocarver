@@ -41,9 +41,10 @@ public:
     static AcSceneManager *instance();
 
     QGraphicsScene *scoreScene() const;
-    QGraphicsScene *controllerScene() const;
+    QGraphicsScene *controlScene() const;
     QGraphicsScene *timeScene() const;
     QGraphicsScene *pitchScene() const;
+    QGraphicsScene *valueScene() const;
 
     const QFontMetrics &fontMetrics() const;
 

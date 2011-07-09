@@ -24,16 +24,20 @@ namespace Private {
 class AcViewSettingsData
 {
 public:
-    qreal posX;
-    qreal posY;
-    qreal scaleX;
-    qreal scaleY;
+    qreal timePosition;
+    qreal pitchPosition;
+    qreal valuePosition;
+    qreal timeScale;
+    qreal pitchScale;
+    qreal valueScale;
 
     AcViewSettingsData()
-        :   posX(0.0f)
-        ,   posY(0.0f)
-        ,   scaleX(1.0f)
-        ,   scaleY(1.0f)
+        :   timePosition(0.0f)
+        ,   pitchPosition(0.0f)
+        ,   valuePosition(0.0f)
+        ,   timeScale(1.0f)
+        ,   pitchScale(1.0f)
+        ,   valueScale(100.0f)
     {}
 };
 
@@ -49,56 +53,83 @@ AcViewSettings::~AcViewSettings()
     delete d;
 }
 
-qreal AcViewSettings::positionX() const
+qreal AcViewSettings::timePosition() const
 {
-    return d->posX;
+    return d->timePosition;
 }
 
-void AcViewSettings::setPositionX(qreal positionX)
+void AcViewSettings::setTimePosition(qreal position)
 {
-    if (d->posX == positionX)
+    if (d->timePosition == position)
         return;
-    d->posX = positionX;
-    emit propertyChanged("positionX");
+    d->timePosition = position;
+    emit propertyChanged("timePosition");
 }
 
-qreal AcViewSettings::positionY() const
+qreal AcViewSettings::pitchPosition() const
 {
-    return d->posY;
+    return d->pitchPosition;
 }
 
-void AcViewSettings::setPositionY(qreal positionY)
+void AcViewSettings::setPitchPosition(qreal position)
 {
-    if (d->posY == positionY)
+    if (d->pitchPosition == position)
         return;
-    d->posY = positionY;
-    emit propertyChanged("positionY");
+    d->pitchPosition = position;
+    emit propertyChanged("pitchPosition");
 }
 
-qreal AcViewSettings::scaleX() const
+qreal AcViewSettings::valuePosition() const
 {
-    return d->scaleX;
+    return d->valuePosition;
 }
 
-void AcViewSettings::setScaleX(qreal scaleX)
+void AcViewSettings::setValuePosition(qreal position)
 {
-    scaleX = qBound(0.125, scaleX, 1000.0);
-    if (d->scaleX == scaleX)
+    if (d->valuePosition == position)
         return;
-    d->scaleX = scaleX;
-    emit propertyChanged("scaleX");
+    d->valuePosition = position;
+    emit propertyChanged("valuePosition");
 }
 
-qreal AcViewSettings::scaleY() const
+qreal AcViewSettings::timeScale() const
 {
-    return d->scaleY;
+    return d->timeScale;
 }
 
-void AcViewSettings::setScaleY(qreal scaleY)
+void AcViewSettings::setTimeScale(qreal scale)
 {
-    scaleY = qBound(0.125, scaleY, 1000.0);
-    if (d->scaleY == scaleY)
+    scale = qBound(0.125, scale, 1000.0);
+    if (d->timeScale == scale)
         return;
-    d->scaleY = scaleY;
-    emit propertyChanged("scaleY");
+    d->timeScale = scale;
+    emit propertyChanged("timeScale");
+}
+
+qreal AcViewSettings::pitchScale() const
+{
+    return d->pitchScale;
+}
+
+void AcViewSettings::setPitchScale(qreal scale)
+{
+    scale = qBound(0.125, scale, 1000.0);
+    if (d->pitchScale == scale)
+        return;
+    d->pitchScale = scale;
+    emit propertyChanged("pitchScale");
+}
+
+qreal AcViewSettings::valueScale() const
+{
+    return d->valueScale;
+}
+
+void AcViewSettings::setValueScale(qreal scale)
+{
+    scale = qBound(0.125, scale, 1000.0);
+    if (d->valueScale == scale)
+        return;
+    d->valueScale = scale;
+    emit propertyChanged("valueScale");
 }

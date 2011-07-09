@@ -17,7 +17,7 @@
 
 #include "ac_scenemanager.h"
 #include <ac_barline.h>
-#include <ac_controllerscene.h>
+#include <ac_controlscene.h>
 #include <ac_graphicsbarlineitem.h>
 #include <ac_graphicstuninglineitem.h>
 #include <ac_pitchscene.h>
@@ -25,6 +25,7 @@
 #include <ac_scorescene.h>
 #include <ac_timescene.h>
 #include <ac_tuningline.h>
+#include <ac_valuescene.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
 #include <mi_list.h>
@@ -40,9 +41,10 @@ class AcSceneManagerData
 public:
     AcSceneManager *q;
     AcScoreScene *scoreScene;
-    AcControllerScene *controllerScene;
+    AcControlScene *controlScene;
     AcTimeScene *timeScene;
     AcPitchScene *pitchScene;
+    AcValueScene *valueScene;
     QList<AcGraphicsBarLineItem*> barItems;
     QList<AcGraphicsTuningLineItem*> tuningItems;
     QFontMetrics fontMetrics;
@@ -50,9 +52,10 @@ public:
     AcSceneManagerData(AcSceneManager *q)
         :   q(q)
         ,   scoreScene(new AcScoreScene(q))
-        ,   controllerScene(new AcControllerScene(q))
+        ,   controlScene(new AcControlScene(q))
         ,   timeScene(new AcTimeScene(q))
         ,   pitchScene(new AcPitchScene(q))
+        ,   valueScene(new AcValueScene(q))
         ,   fontMetrics(font())
     {}
 
@@ -66,9 +69,11 @@ public:
     {
         updateBarItems();
         updateTuningItems();
+        updateValueItems();
         updateFontMetrics();
         updateBarItemVisibilities();
         updateTuningItemVisibilities();
+        updateValueItemVisibilities();
     }
 
     void updateBarItems()
@@ -100,6 +105,10 @@ public:
             delete tuningItems.last();
             tuningItems.removeLast();
         }
+    }
+
+    void updateValueItems()
+    {
     }
 
     void updateFontMetrics()
@@ -155,6 +164,10 @@ public:
                 tuningItem->hide();
         }
     }
+
+    void updateValueItemVisibilities()
+    {
+    }
 };
 
 } // namespace Private
@@ -193,6 +206,10 @@ void AcSceneManager::updateScoreProperty(const QString &propertyName)
         d->updateTuningItems();
         d->updateTuningItemVisibilities();
     }
+    else if ("valueLines" == propertyName) {
+        d->updateValueItems();
+        d->updateValueItemVisibilities();
+    }
 }
 
 void AcSceneManager::updateFontSettingsProperty(const QString &propertyName)
@@ -201,14 +218,17 @@ void AcSceneManager::updateFontSettingsProperty(const QString &propertyName)
     d->updateFontMetrics();
     d->updateBarItemVisibilities();
     d->updateTuningItemVisibilities();
+    d->updateValueItemVisibilities();
 }
 
 void AcSceneManager::updateViewSettingsProperty(const QString &propertyName)
 {
-    if ("scaleX" == propertyName)
+    if ("timeScale" == propertyName)
         d->updateBarItemVisibilities();
-    else if ("scaleY" == propertyName)
+    else if ("pitchScale" == propertyName)
         d->updateTuningItemVisibilities();
+    else if ("valueScale" == propertyName)
+        d->updateValueItemVisibilities();
 }
 
 QGraphicsScene *AcSceneManager::scoreScene() const
@@ -216,9 +236,9 @@ QGraphicsScene *AcSceneManager::scoreScene() const
     return d->scoreScene;
 }
 
-QGraphicsScene *AcSceneManager::controllerScene() const
+QGraphicsScene *AcSceneManager::controlScene() const
 {
-    return d->controllerScene;
+    return d->controlScene;
 }
 
 QGraphicsScene *AcSceneManager::timeScene() const
@@ -229,6 +249,11 @@ QGraphicsScene *AcSceneManager::timeScene() const
 QGraphicsScene *AcSceneManager::pitchScene() const
 {
     return d->pitchScene;
+}
+
+QGraphicsScene *AcSceneManager::valueScene() const
+{
+    return d->valueScene;
 }
 
 const QFontMetrics &AcSceneManager::fontMetrics() const
