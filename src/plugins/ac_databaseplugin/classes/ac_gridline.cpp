@@ -26,15 +26,15 @@ class AcGridLineData
 {
 public:
     qreal location;
-    QColor color;
     QString label;
     int priority;
+    QColor color;
 
     AcGridLineData()
         :   location(0.0f)
-        ,   color(Qt::lightGray)
         ,   label(QString())
         ,   priority(0)
+        ,   color(Qt::lightGray)
     {}
 };
 
@@ -65,19 +65,6 @@ void AcGridLine::setLocation(qreal location)
     emit propertyChanged("location");
 }
 
-const QColor &AcGridLine::color() const
-{
-    return d->color;
-}
-
-void AcGridLine::setColor(const QColor &color)
-{
-    if (d->color == color)
-        return;
-    d->color = color;
-    emit propertyChanged("color");
-}
-
 const QString &AcGridLine::label() const
 {
     return d->label;
@@ -105,3 +92,17 @@ void AcGridLine::setPriority(int priority)
     d->priority = priority;
     emit propertyChanged("priority");
 }
+
+const QColor &AcGridLine::color() const
+{
+    return d->color;
+}
+
+void AcGridLine::setColor(const QColor &color)
+{
+    if (d->color == color)
+        return;
+    d->color = color;
+    emit propertyChanged("color");
+}
+
