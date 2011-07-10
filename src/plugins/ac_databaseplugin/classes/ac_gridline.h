@@ -50,6 +50,9 @@ public:
     const QColor &color() const;
     void setColor(const QColor &color);
 
+    void set(qreal location, const QString &label, int priority, const QColor &color = Qt::lightGray);
+    void set(qreal location, int priority, const QColor &color = Qt::lightGray);
+
 private:
     Q_DISABLE_COPY(AcGridLine)
     Private::AcGridLineData *d;

@@ -106,3 +106,17 @@ void AcGridLine::setColor(const QColor &color)
     emit propertyChanged("color");
 }
 
+void AcGridLine::set(qreal location, const QString &label, int priority, const QColor &color)
+{
+    setLocation(location);
+    setLabel(label);
+    setPriority(priority);
+    setColor(color);
+}
+
+void AcGridLine::set(qreal location, int priority, const QColor &color)
+{
+    setLocation(location);
+    setPriority(priority);
+    setColor(color);
+}
