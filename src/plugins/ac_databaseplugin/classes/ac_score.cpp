@@ -20,6 +20,7 @@
 #include <ac_gridsettings.h>
 #include <ac_track.h>
 #include <ac_tuningline.h>
+#include <ac_valueline.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
 #include <mi_list.h>
@@ -38,6 +39,7 @@ public:
     MiList<AcTrack> tracks;
     MiList<AcBarLine> barLines;
     MiList<AcTuningLine> tuningLines;
+    MiList<AcValueLine> valueLines;
     MiFont *fontSettings;
     AcGridSettings *gridSettings;
     AcViewSettings *viewSettings;
@@ -49,6 +51,7 @@ public:
         ,   tracks("tracks", q)
         ,   barLines("barLines", q)
         ,   tuningLines("tuningLines", q)
+        ,   valueLines("valueLines", q)
         ,   fontSettings(0)
         ,   gridSettings(0)
         ,   viewSettings(0)
@@ -118,6 +121,11 @@ MiList<AcTuningLine> &AcScore::tuningLines() const
     return d->tuningLines;
 }
 
+MiList<AcValueLine> &AcScore::valueLines() const
+{
+    return d->valueLines;
+}
+
 MiFont *AcScore::fontSettings() const
 {
     return d->fontSettings;
@@ -136,6 +144,7 @@ AcViewSettings *AcScore::viewSettings() const
 void AcScore::clear()
 {
     d->tracks.clear();
+    d->valueLines.clear();
     d->tuningLines.clear();
     d->barLines.clear();
     d->settings.clear();
@@ -150,22 +159,24 @@ QString &AcScore::normalizeClassName(QString &className) const
 
 MiObject *AcScore::createObject(const QString &className)
 {
-    if (className == "BarLine")
+    if ("BarLine" == className)
         return d->barLines.add();
-    if (className == "TuningLine")
+    if ("TuningLine" == className)
         return d->tuningLines.add();
-    if (className == "Track")
+    if ("ValueLine" == className)
+        return d->valueLines.add();
+    if ("Track" == className)
         return d->tracks.add();
     return 0;
 }
 
 MiObject *AcScore::findObject(const QString &className) const
 {
-    if (className == "Font")
+    if ("Font" == className)
         return d->fontSettings;
-    if (className == "GridSettings")
+    if ("GridSettings" == className)
         return d->gridSettings;
-    if (className == "ViewSettings")
+    if ("ViewSettings" == className)
         return d->viewSettings;
     return 0;
 }
@@ -173,14 +184,17 @@ MiObject *AcScore::findObject(const QString &className) const
 void AcScore::updateScoreProperty(const QString &propertyName)
 {
     if ("barLines" == propertyName) {
-        for (int i = 0;  i < d->barLines.count();  ++i)
-            connect(d->barLines.at(i), SIGNAL(propertyChanged(QString)), SLOT(updateBarLineProperty(QString)), Qt::UniqueConnection);
+        foreach (AcBarLine *barLine, d->barLines.list())
+            connect(barLine, SIGNAL(propertyChanged(QString)), SLOT(updateBarLineProperty(QString)), Qt::UniqueConnection);
         sortBarLines();
-    }
-    else if ("tuningLines" == propertyName) {
-        for (int i = 0;  i < d->tuningLines.count();  ++i)
-            connect(d->tuningLines.at(i), SIGNAL(propertyChanged(QString)), SLOT(updateTuningLineProperty(QString)), Qt::UniqueConnection);
+    } else if ("tuningLines" == propertyName) {
+        foreach (AcTuningLine *tuningLine, d->tuningLines.list())
+            connect(tuningLine, SIGNAL(propertyChanged(QString)), SLOT(updateTuningLineProperty(QString)), Qt::UniqueConnection);
         sortTuningLines();
+    } else if ("valueLines" == propertyName) {
+        foreach (AcValueLine *valueLine, d->valueLines.list())
+            connect(valueLine, SIGNAL(propertyChanged(QString)), SLOT(updateValueLineProperty(QString)), Qt::UniqueConnection);
+        sortValueLines();
     }
 }
 
@@ -196,6 +210,12 @@ void AcScore::updateTuningLineProperty(const QString &propertyName)
         sortTuningLines();
 }
 
+void AcScore::updateValueLineProperty(const QString &propertyName)
+{
+    if ("location" == propertyName)
+        sortValueLines();
+}
+
 void AcScore::sortBarLines()
 {
     MiScopedSignalBlocker blockSignals(this);
@@ -206,6 +226,12 @@ void AcScore::sortTuningLines()
 {
     MiScopedSignalBlocker blockSignals(this);
     d->tuningLines.sort();
+}
+
+void AcScore::sortValueLines()
+{
+    MiScopedSignalBlocker blockSignals(this);
+    d->valueLines.sort();
 }
 
 MiObjectList *AcScore::settingsObjects() const
@@ -226,4 +252,9 @@ MiObjectList *AcScore::barLineObjects() const
 MiObjectList *AcScore::tuningLineObjects() const
 {
     return d->tuningLines.objects();
+}
+
+MiObjectList *AcScore::valueLineObjects() const
+{
+    return d->valueLines.objects();
 }

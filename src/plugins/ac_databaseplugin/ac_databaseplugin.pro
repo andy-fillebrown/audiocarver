@@ -16,6 +16,7 @@ HEADERS += \
     classes/ac_score.h \
     classes/ac_track.h \
     classes/ac_tuningline.h \
+    classes/ac_valueline.h \
     classes/ac_volumecurve.h \
     \
     implementations/ac_database.h \
@@ -36,6 +37,7 @@ SOURCES += \
     classes/ac_score.cpp \
     classes/ac_track.cpp \
     classes/ac_tuningline.cpp \
+    classes/ac_valueline.cpp \
     classes/ac_volumecurve.cpp \
     \
     implementations/ac_database.cpp \

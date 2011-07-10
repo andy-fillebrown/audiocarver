@@ -25,6 +25,7 @@ class AcBarLine;
 class AcGridSettings;
 class AcTrack;
 class AcTuningLine;
+class AcValueLine;
 class AcViewSettings;
 class MiFont;
 template <typename T> class MiList;
@@ -43,6 +44,7 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
     Q_PROPERTY(MiObjectList* tracks READ trackObjects)
     Q_PROPERTY(MiObjectList* barLines READ barLineObjects)
     Q_PROPERTY(MiObjectList* tuningLines READ tuningLineObjects)
+    Q_PROPERTY(MiObjectList* valueLines READ valueLineObjects)
 
 public:
     AcScore(QObject *parent = 0);
@@ -55,6 +57,7 @@ public:
     MiList<AcTrack> &tracks() const;
     MiList<AcBarLine> &barLines() const;
     MiList<AcTuningLine> &tuningLines() const;
+    MiList<AcValueLine> &valueLines() const;
 
     MiFont *fontSettings() const;
     AcGridSettings *gridSettings() const;
@@ -71,8 +74,10 @@ private slots:
     void updateScoreProperty(const QString &propertyName);
     void updateBarLineProperty(const QString &propertyName);
     void updateTuningLineProperty(const QString &propertyName);
+    void updateValueLineProperty(const QString &propertyName);
     void sortBarLines();
     void sortTuningLines();
+    void sortValueLines();
 
 private:
     Q_DISABLE_COPY(AcScore)
@@ -82,6 +87,7 @@ private:
     MiObjectList *trackObjects() const;
     MiObjectList *barLineObjects() const;
     MiObjectList *tuningLineObjects() const;
+    MiObjectList *valueLineObjects() const;
 };
 
 #endif // AC_SCORE_H
