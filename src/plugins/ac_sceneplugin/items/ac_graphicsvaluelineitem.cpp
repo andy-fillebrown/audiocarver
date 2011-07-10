@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_graphicstuninglineitem.h"
-#include <ac_pitchscene.h>
+#include "ac_graphicsvaluelineitem.h"
+#include <ac_controlscene.h>
 #include <ac_scenemanager.h>
 #include <ac_score.h>
-#include <ac_scorescene.h>
-#include <ac_tuningline.h>
+#include <ac_valueline.h>
+#include <ac_valuescene.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
 #include <QFont>
@@ -31,14 +31,14 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsTuningLineItemPrivate : public AcGraphicsGridLineItemData
+class AcGraphicsValueLineItemPrivate : public AcGraphicsGridLineItemData
 {
 public:
 
-    AcGraphicsTuningLineItemPrivate()
+    AcGraphicsValueLineItemPrivate()
     {
-        AcScoreScene::instance()->addItem(lineItem);
-        AcPitchScene::instance()->addItem(labelItem);
+        AcControlScene::instance()->addItem(lineItem);
+        AcValueScene::instance()->addItem(labelItem);
     }
 
     void update()
@@ -49,17 +49,17 @@ public:
 
     void updateLineGeometry()
     {
-        const qreal pos = 127.0f - gridLine->location();
+        const qreal pos = 1.0f - gridLine->location();
         lineItem->setLine(0.0f, pos, AcScore::instance()->length(), pos);
     }
 
     void updateLabelPosition()
     {
-        const qreal pos = 127.0f - gridLine->location();
+        const qreal pos = 1.0f - gridLine->location();
         const AcScore *score = AcScore::instance();
-        const qreal scale = score->viewSettings()->pitchScale();
+        const qreal scale = score->viewSettings()->valueScale();
         const QRect labelRect = AcSceneManager::instance()->fontMetrics().boundingRect(gridLine->label());
-        const qreal x = AcPitchScene::instance()->width() - labelRect.width();
+        const qreal x = AcValueScene::instance()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
     }
@@ -67,46 +67,46 @@ public:
 
 } // namespace Private
 
-AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsTuningLineItemPrivate), parent)
+AcGraphicsValueLineItem::AcGraphicsValueLineItem(AcValueLine *tuningLine, QObject *parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsValueLineItemPrivate), parent)
 {
     connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
     setGridLine(tuningLine);
 }
 
-AcGraphicsTuningLineItem::~AcGraphicsTuningLineItem()
+AcGraphicsValueLineItem::~AcGraphicsValueLineItem()
 {}
 
-void AcGraphicsTuningLineItem::setGridLine(AcGridLine *gridLine)
+void AcGraphicsValueLineItem::setGridLine(AcGridLine *gridLine)
 {
     AcGraphicsGridLineItem::setGridLine(gridLine);
     if (gridLine) {
-        Q_D(AcGraphicsTuningLineItem);
+        Q_D(AcGraphicsValueLineItem);
         d->update();
     }
 }
 
-void AcGraphicsTuningLineItem::updateViewSettingsProperty(const QString &propertyName)
+void AcGraphicsValueLineItem::updateViewSettingsProperty(const QString &propertyName)
 {
-    if ("pitchScale" == propertyName) {
-        Q_D(AcGraphicsTuningLineItem);
+    if ("valueScale" == propertyName) {
+        Q_D(AcGraphicsValueLineItem);
         d->updateLabelPosition();
     }
 }
 
-void AcGraphicsTuningLineItem::updateGridLineProperty(const QString &propertyName)
+void AcGraphicsValueLineItem::updateGridLineProperty(const QString &propertyName)
 {
     AcGraphicsGridLineItem::updateGridLineProperty(propertyName);
     if ("location" == propertyName) {
-        Q_D(AcGraphicsTuningLineItem);
+        Q_D(AcGraphicsValueLineItem);
         d->update();
     }
 }
 
-void AcGraphicsTuningLineItem::updateScoreProperty(const QString &propertyName)
+void AcGraphicsValueLineItem::updateScoreProperty(const QString &propertyName)
 {
     if ("length" == propertyName) {
-        Q_D(AcGraphicsTuningLineItem);
+        Q_D(AcGraphicsValueLineItem);
         d->updateLineGeometry();
     }
 }

@@ -79,7 +79,7 @@ public:
         score->valueLines().add()->set(0.375f, "0.375", 3);
         score->valueLines().add()->set(0.25f, "0.250", 2);
         score->valueLines().add()->set(0.125f, "0.125", 3);
-        score->valueLines().add()->set(0.0f, "0.000", 0, Qt::black);
+        score->valueLines().add()->set(0.0f, "", 0, Qt::black);
 
         AcTrack *track = score->tracks().add();
         AcNote *note = track->notes().add();

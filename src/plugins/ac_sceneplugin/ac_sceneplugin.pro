@@ -12,6 +12,7 @@ HEADERS += \
     items/ac_graphicsbarlineitem.h \
     items/ac_graphicsgridlineitem.h \
     items/ac_graphicstuninglineitem.h \
+    items/ac_graphicsvaluelineitem.h \
     \
     scenes/ac_controlscene.h \
     scenes/ac_graphicsscene.h \
@@ -31,6 +32,7 @@ SOURCES += \
     items/ac_graphicsbarlineitem.cpp \
     items/ac_graphicsgridlineitem.cpp \
     items/ac_graphicstuninglineitem.cpp \
+    items/ac_graphicsvaluelineitem.cpp \
     \
     scenes/ac_controlscene.cpp \
     scenes/ac_graphicsscene.cpp \

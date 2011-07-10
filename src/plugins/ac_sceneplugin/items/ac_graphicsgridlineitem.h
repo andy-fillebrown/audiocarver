@@ -34,7 +34,7 @@ class AcGraphicsGridLineItemData
 {
 public:
     AcGridLine *gridLine;
-    QGraphicsLineItem *scoreLineItem;
+    QGraphicsLineItem *lineItem;
     QGraphicsTextItem *labelItem;
 
     AcGraphicsGridLineItemData();

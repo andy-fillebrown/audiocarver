@@ -20,11 +20,13 @@
 #include <ac_controlscene.h>
 #include <ac_graphicsbarlineitem.h>
 #include <ac_graphicstuninglineitem.h>
+#include <ac_graphicsvaluelineitem.h>
 #include <ac_pitchscene.h>
 #include <ac_score.h>
 #include <ac_scorescene.h>
 #include <ac_timescene.h>
 #include <ac_tuningline.h>
+#include <ac_valueline.h>
 #include <ac_valuescene.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
@@ -99,6 +101,7 @@ public:
     AcValueScene *valueScene;
     QList<AcGraphicsBarLineItem*> barItems;
     QList<AcGraphicsTuningLineItem*> tuningItems;
+    QList<AcGraphicsValueLineItem*> valueItems;
     QFontMetrics fontMetrics;
 
     AcSceneManagerData(AcSceneManager *q)
@@ -140,6 +143,7 @@ public:
 
     void updateValueItems()
     {
+        updateItemsHelper(AcScore::instance()->valueLines().list(), valueItems);
     }
 
     void updateFontMetrics()
@@ -159,6 +163,7 @@ public:
 
     void updateValueItemVisibilities()
     {
+        updateItemVisibilitiesHelper(valueItems, expandLeftLabelRect);
     }
 };
 

@@ -20,6 +20,7 @@
 #include <ac_controlscene.h>
 #include <ac_scenemanager.h>
 #include <ac_score.h>
+#include <ac_scorescene.h>
 #include <ac_timescene.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
@@ -40,8 +41,9 @@ public:
     AcGraphicsBarLineItemPrivate()
         :   controlLineItem(new QGraphicsLineItem)
     {
-        AcTimeScene::instance()->addItem(labelItem);
+        AcScoreScene::instance()->addItem(lineItem);
         AcControlScene::instance()->addItem(controlLineItem);
+        AcTimeScene::instance()->addItem(labelItem);
     }
 
     void update()
@@ -58,7 +60,7 @@ public:
     void updateLocation()
     {
         const qreal location = gridLine->location();
-        scoreLineItem->setLine(location, 0.0f, location, 127.0f);
+        lineItem->setLine(location, 0.0f, location, 127.0f);
         controlLineItem->setLine(location, 0.0f, location, 1.0f);
         const AcScore *score = AcScore::instance();
         const qreal scale = score->viewSettings()->timeScale();

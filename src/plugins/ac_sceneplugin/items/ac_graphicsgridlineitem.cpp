@@ -29,16 +29,14 @@ namespace Private {
 
 AcGraphicsGridLineItemData::AcGraphicsGridLineItemData()
     :   gridLine(0)
-    ,   scoreLineItem(new QGraphicsLineItem)
+    ,   lineItem(new QGraphicsLineItem)
     ,   labelItem(new QGraphicsTextItem)
-{
-    AcScoreScene::instance()->addItem(scoreLineItem);
-}
+{}
 
 AcGraphicsGridLineItemData::~AcGraphicsGridLineItemData()
 {
     delete labelItem;
-    delete scoreLineItem;
+    delete lineItem;
 }
 
 class AcGraphicsGridLineItemPrivate : public AcGraphicsGridLineItemData
@@ -64,7 +62,7 @@ public:
 
     void updateColor()
     {
-        scoreLineItem->setPen(gridLine->color());
+        lineItem->setPen(gridLine->color());
     }
 };
 
@@ -114,20 +112,20 @@ QRectF AcGraphicsGridLineItem::labelRect() const
 bool AcGraphicsGridLineItem::isVisible() const
 {
     Q_D(const AcGraphicsGridLineItem);
-    return d->scoreLineItem->isVisible();
+    return d->lineItem->isVisible();
 }
 
 void AcGraphicsGridLineItem::show()
 {
     Q_D(AcGraphicsGridLineItem);
-    d->scoreLineItem->show();
+    d->lineItem->show();
     d->labelItem->show();
 }
 
 void AcGraphicsGridLineItem::hide()
 {
     Q_D(AcGraphicsGridLineItem);
-    d->scoreLineItem->hide();
+    d->lineItem->hide();
     d->labelItem->hide();
 }
 
