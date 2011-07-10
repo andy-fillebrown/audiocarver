@@ -110,16 +110,28 @@ void AcMainWidget::showEvent(QShowEvent *event)
 
 void AcMainWidget::wheelEvent(QWheelEvent *event)
 {
+    const QGraphicsView *valueView = d->viewManager->valueView();
+    QRect valueRect = valueView->rect();
+    valueRect = QRect(valueView->mapToGlobal(valueRect.topLeft()), valueView->mapToGlobal(valueRect.bottomRight()));
+    const QGraphicsView *controlView = d->viewManager->controlView();
+    QRect controlRect = controlView->rect();
+    controlRect = QRect(controlView->mapToGlobal(controlRect.topLeft()), controlView->mapToGlobal(controlRect.bottomRight()));
+    const QPoint eventPos = event->globalPos();
+
     if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
         qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             d->viewManager->setTimeScale(scale * d->viewManager->timeScale());
+        else if (controlRect.contains(eventPos) || valueRect.contains(eventPos))
+            d->viewManager->setValueScale(scale * d->viewManager->valueScale());
         else
             d->viewManager->setPitchScale(scale * d->viewManager->pitchScale());
     } else {
         int offset = event->delta() < 0 ? 10 : -10;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             d->viewManager->setTimePosition(d->viewManager->timePosition() - offset);
+        else if (controlRect.contains(eventPos))
+            d->viewManager->setValuePosition(d->viewManager->valuePosition() + offset);
         else
             d->viewManager->setPitchPosition(d->viewManager->pitchPosition() + offset);
     }
