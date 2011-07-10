@@ -39,11 +39,11 @@ using namespace Private;
 namespace Private {
 
 template <typename ObjectType, typename ItemType>
-static void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*> &items)
+static void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*> &items, QObject *parent)
 {
     for (int i = 0;  i < objects.count();  ++i) {
         if (items.count() <= i) {
-            ItemType *item = new ItemType(objects[i]);
+            ItemType *item = new ItemType(objects[i], parent);
             items.append(item);
         } else
             items[i]->setGridLine(objects[i]);
@@ -133,17 +133,17 @@ public:
 
     void updateBarItems()
     {
-        updateItemsHelper(AcScore::instance()->barLines().list(), barItems);
+        updateItemsHelper(AcScore::instance()->barLines().list(), barItems, q);
     }
 
     void updateTuningItems()
     {
-        updateItemsHelper(AcScore::instance()->tuningLines().list(), tuningItems);
+        updateItemsHelper(AcScore::instance()->tuningLines().list(), tuningItems, q);
     }
 
     void updateValueItems()
     {
-        updateItemsHelper(AcScore::instance()->valueLines().list(), valueItems);
+        updateItemsHelper(AcScore::instance()->valueLines().list(), valueItems, q);
     }
 
     void updateFontMetrics()
