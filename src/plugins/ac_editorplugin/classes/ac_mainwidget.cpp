@@ -96,6 +96,17 @@ AcMainWidget::~AcMainWidget()
     delete d;
 }
 
+bool AcMainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) const
+{
+    QGraphicsView *controlView = d->viewManager->controlView();
+    if (controlView->rect().contains(controlView->mapFrom(widget, pos)))
+        return true;
+    QGraphicsView *valueView = d->viewManager->valueView();
+    if (valueView->rect().contains(valueView->mapFrom(widget, pos)))
+        return true;
+    return false;
+}
+
 void AcMainWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
@@ -110,19 +121,11 @@ void AcMainWidget::showEvent(QShowEvent *event)
 
 void AcMainWidget::wheelEvent(QWheelEvent *event)
 {
-    const QGraphicsView *valueView = d->viewManager->valueView();
-    QRect valueRect = valueView->rect();
-    valueRect = QRect(valueView->mapToGlobal(valueRect.topLeft()), valueView->mapToGlobal(valueRect.bottomRight()));
-    const QGraphicsView *controlView = d->viewManager->controlView();
-    QRect controlRect = controlView->rect();
-    controlRect = QRect(controlView->mapToGlobal(controlRect.topLeft()), controlView->mapToGlobal(controlRect.bottomRight()));
-    const QPoint eventPos = event->globalPos();
-
     if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
         qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             d->viewManager->setTimeScale(scale * d->viewManager->timeScale());
-        else if (controlRect.contains(eventPos) || valueRect.contains(eventPos))
+        else if (isPointInControlViews(this, event->pos()))
             d->viewManager->setValueScale(scale * d->viewManager->valueScale());
         else
             d->viewManager->setPitchScale(scale * d->viewManager->pitchScale());
@@ -130,7 +133,7 @@ void AcMainWidget::wheelEvent(QWheelEvent *event)
         int offset = event->delta() < 0 ? 10 : -10;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             d->viewManager->setTimePosition(d->viewManager->timePosition() - offset);
-        else if (controlRect.contains(eventPos))
+        else if (isPointInControlViews(this, event->pos()))
             d->viewManager->setValuePosition(d->viewManager->valuePosition() + offset);
         else
             d->viewManager->setPitchPosition(d->viewManager->pitchPosition() + offset);

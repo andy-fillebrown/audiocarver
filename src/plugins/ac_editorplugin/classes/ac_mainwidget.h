@@ -35,6 +35,8 @@ public:
     AcMainWidget(QWidget *parent = 0);
     ~AcMainWidget();
 
+    bool isPointInControlViews(QWidget *widget, const QPoint &pos) const;
+
 protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
