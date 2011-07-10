@@ -36,6 +36,58 @@ using namespace Private;
 
 namespace Private {
 
+template <typename ObjectType, typename ItemType>
+static void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*> &items)
+{
+    for (int i = 0;  i < objects.count();  ++i) {
+        if (items.count() <= i) {
+            ItemType *item = new ItemType(objects[i]);
+            items.append(item);
+        } else
+            items[i]->setGridLine(objects[i]);
+    }
+    while (objects.count() < items.count()) {
+        delete items.last();
+        items.removeLast();
+    }
+}
+
+template <typename T, typename ExpandRect>
+static void updateItemVisibilitiesHelper(const QList<T*> &items, ExpandRect expandRect)
+{
+    int minPriority = 0x7fffffff;
+    int prevPriority = 0;
+    QRectF prevRect;
+    foreach (T *item, items) {
+        if (minPriority < item->priority())
+            continue;
+        QRectF curRect = item->labelRect();
+        expandRect(curRect);
+        if (prevRect.intersects(curRect))
+            minPriority = qMax(prevPriority, item->priority());
+        else {
+            prevPriority = item->priority();
+            prevRect = curRect;
+        }
+    }
+    foreach (T *item, items) {
+        if (item->priority() <= minPriority)
+            item->show();
+        else
+            item->hide();
+    }
+}
+
+static void expandTopLabelRect(QRectF &rect)
+{
+    rect.setWidth(3.0f * rect.width());
+}
+
+static void expandLeftLabelRect(QRectF &rect)
+{
+    rect.setTop(rect.top() - (1.5f * rect.height()));
+}
+
 class AcSceneManagerData
 {
 public:
@@ -78,33 +130,12 @@ public:
 
     void updateBarItems()
     {
-        const QList<AcBarLine*> &barLines = AcScore::instance()->barLines().list();
-        for (int i = 0;  i < barLines.count();  ++i) {
-            if (barItems.count() <= i) {
-                AcGraphicsBarLineItem *barItem = new AcGraphicsBarLineItem(barLines[i]);
-                barItems.append(barItem);
-            } else
-                barItems[i]->setGridLine(barLines[i]);
-        }
-        while (barLines.count() < barItems.count()) {
-            delete barItems.last();
-            barItems.removeLast();
-        }
+        updateItemsHelper(AcScore::instance()->barLines().list(), barItems);
     }
 
     void updateTuningItems()
     {
-        const QList<AcTuningLine*> &tuningLines = AcScore::instance()->tuningLines().list();
-        for (int i = 0;  i < tuningLines.count();  ++i) {
-            if (tuningItems.count() <= i)
-                tuningItems.append(new AcGraphicsTuningLineItem(tuningLines[i]));
-            else
-                tuningItems[i]->setGridLine(tuningLines[i]);
-        }
-        while (tuningLines.count() < tuningItems.count()) {
-            delete tuningItems.last();
-            tuningItems.removeLast();
-        }
+        updateItemsHelper(AcScore::instance()->tuningLines().list(), tuningItems);
     }
 
     void updateValueItems()
@@ -118,51 +149,12 @@ public:
 
     void updateBarItemVisibilities()
     {
-        int minPriority = 0x7fffffff;
-        int prevPriority = 0;
-        QRectF prevRect;
-        foreach (AcGraphicsBarLineItem *barItem, barItems) {
-            if (minPriority && minPriority < barItem->priority())
-                continue;
-            QRectF curRect = barItem->labelRect();
-            curRect.setWidth(2.0f * curRect.width());
-            if (prevRect.intersects(curRect))
-                minPriority = qMax(prevPriority, barItem->priority());
-            else {
-                prevPriority = barItem->priority();
-                prevRect = curRect;
-            }
-        }
-        foreach (AcGraphicsBarLineItem *barItem, barItems) {
-            if (barItem->priority() <= minPriority)
-                barItem->show();
-            else
-                barItem->hide();
-        }
+        updateItemVisibilitiesHelper(barItems, expandTopLabelRect);
     }
 
     void updateTuningItemVisibilities()
     {
-        int minPriority = 0x7fffffff;
-        int prevPriority = 0;
-        QRectF prevRect;
-        foreach (AcGraphicsTuningLineItem *tuningItem, tuningItems) {
-            if (minPriority && minPriority <= tuningItem->priority())
-                continue;
-            QRectF curRect = tuningItem->labelRect();
-            if (prevRect.intersects(curRect))
-                minPriority = qMax(prevPriority, tuningItem->priority());
-            else {
-                prevPriority = tuningItem->priority();
-                prevRect = curRect;
-            }
-        }
-        foreach (AcGraphicsTuningLineItem *tuningItem, tuningItems) {
-            if (tuningItem->priority() < minPriority)
-                tuningItem->show();
-            else
-                tuningItem->hide();
-        }
+        updateItemVisibilitiesHelper(tuningItems, expandLeftLabelRect);
     }
 
     void updateValueItemVisibilities()
