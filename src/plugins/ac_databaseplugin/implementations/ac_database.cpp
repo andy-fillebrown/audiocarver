@@ -23,6 +23,7 @@
 #include <ac_score.h>
 #include <ac_track.h>
 #include <ac_tuningline.h>
+#include <ac_valueline.h>
 #include <ac_volumecurve.h>
 #include <mi_list.h>
 #include <QFile>
@@ -44,42 +45,42 @@ public:
         :   q(q)
         ,   score(new AcScore(q))
     {
-        AcTuningLine *tuningLine = score->tuningLines().add();
-        tuningLine->setLocation(60.0f);
-        tuningLine->setLabel("60.0");
-        tuningLine->setColor(QColor(0, 0, 127));
-        tuningLine->setPriority(1);
-        tuningLine = score->tuningLines().add();
-        tuningLine->setLocation(48.0f);
-        tuningLine->setLabel("48.0");
-        tuningLine->setPriority(2);
-        tuningLine = score->tuningLines().add();
-        tuningLine->setLocation(72.0f);
-        tuningLine->setLabel("72.0");
-        tuningLine->setPriority(2);
-        AcBarLine *barLine = score->barLines().add();
-        barLine->setLocation(0.0f);
-        barLine->setColor(QColor(0, 127, 0));
-        barLine->setLabel("1");
-        barLine->setPriority(0);
-        for (int i = 1;  i < 32;  ++i) {
-            barLine = score->barLines().add();
-            barLine->setLocation(4.0f * i);
-            barLine->setLabel(QString("%1").arg(i + 1));
-            for (int j = 16;  1 < j;  j/=2) {
-                int mod = i % j;
-                if (mod == 0) {
-                    barLine->setPriority(16 / j);
-                    break;
-                }
-            }
-            if (barLine->priority() == 0)
-                barLine->setPriority(32);
+        score->tuningLines().add()->set(127.0f, "", 0, Qt::black);
+        score->tuningLines().add()->set(0.0f, "", 0, Qt::black);
+        score->tuningLines().add()->set(84.0f, "84 (C)", 1, QColor(127, 0, 0));
+        score->tuningLines().add()->set(72.0f, "72 (C)", 2, QColor(127, 0, 0));
+        score->tuningLines().add()->set(60.0f, "60 (C)", 0, QColor(127, 0, 0));
+        score->tuningLines().add()->set(48.0f, "48 (C)", 2, QColor(127, 0, 0));
+        score->tuningLines().add()->set(32.0f, "32 (C)", 1, QColor(127, 0, 0));
+        score->tuningLines().add()->set(79.0f, "79 (G)", 3);
+        score->tuningLines().add()->set(67.0f, "67 (G)", 3);
+        score->tuningLines().add()->set(55.0f, "55 (G)", 3);
+        score->tuningLines().add()->set(39.0f, "39 (G)", 3);
+
+        for (int i = 0;  i < 128;  ++i) {
+            QString label = QString("%1.%2").arg((i / 4) + 1).arg(i % 4);
+            if (label.endsWith(".0"))
+                label.chop(2);
+            AcBarLine *barLine = score->barLines().add();
+            barLine->setLocation(i);
+            barLine->setLabel(label);
         }
-        barLine = score->barLines().add();
-        barLine->setLocation(4.0f * 32);
-        barLine->setColor(QColor(127, 0, 0));
-        barLine->setPriority(0);
+        score->barLines().first()->setColor(QColor(0, 127, 0));
+        for (int i = 1;  i < 128;  i*=2)
+            for (int j = i;  j < 128;  j+=i)
+                score->barLines().at(j)->setPriority(128 / (i + 1));
+        score->barLines().add()->set(4.0f * 32, 0, QColor(127, 0, 0));
+
+        score->valueLines().add()->set(1.0f, "1.000", 0, Qt::black);
+        score->valueLines().add()->set(0.875f, "0.875", 3);
+        score->valueLines().add()->set(0.75f, "0.750", 2);
+        score->valueLines().add()->set(0.625f, "0.625", 3);
+        score->valueLines().add()->set(0.5f, "0.500", 1, QColor(0, 0, 127));
+        score->valueLines().add()->set(0.375f, "0.375", 3);
+        score->valueLines().add()->set(0.25f, "0.250", 2);
+        score->valueLines().add()->set(0.125f, "0.125", 3);
+        score->valueLines().add()->set(0.0f, "0.000", 0, Qt::black);
+
         AcTrack *track = score->tracks().add();
         AcNote *note = track->notes().add();
         AcPitchCurve *pitchCurve = note->pitchCurve();
