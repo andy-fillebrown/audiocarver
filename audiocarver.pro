@@ -8,5 +8,3 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = src
-
-# test commit from linux
