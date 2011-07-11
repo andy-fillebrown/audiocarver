@@ -20,6 +20,7 @@
 
 #include <mi_object.h>
 #include <ac_database_global.h>
+#include <QColor>
 
 namespace Private {
 

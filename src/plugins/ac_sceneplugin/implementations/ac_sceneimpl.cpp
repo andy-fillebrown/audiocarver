@@ -29,7 +29,9 @@ public:
 
     AcSceneImplData(AcSceneImpl *q)
 //        :   scene(new AcGraphicsScene(q))
-    {}
+    {
+        Q_UNUSED(q);
+    }
 };
 
 } // namespace Private
