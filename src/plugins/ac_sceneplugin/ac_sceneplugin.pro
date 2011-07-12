@@ -25,6 +25,7 @@ HEADERS += \
     scenes/ac_timescene.h \
     scenes/ac_valuescene.h \
     \
+    ac_scene_common.h \
     ac_scene_global.h \
     ac_sceneplugin.h \
 

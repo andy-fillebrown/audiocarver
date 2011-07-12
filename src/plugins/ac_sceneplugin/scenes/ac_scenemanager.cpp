@@ -23,6 +23,7 @@
 #include <ac_graphicstuninglineitem.h>
 #include <ac_graphicsvaluelineitem.h>
 #include <ac_pitchscene.h>
+#include <ac_scene_common.h>
 #include <ac_score.h>
 #include <ac_scorescene.h>
 #include <ac_timescene.h>
@@ -38,22 +39,6 @@
 using namespace Private;
 
 namespace Private {
-
-template <typename ObjectType, typename ItemType>
-static void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*> &items, QObject *parent)
-{
-    for (int i = 0;  i < objects.count();  ++i) {
-        if (items.count() <= i) {
-            ItemType *item = new ItemType(objects[i], parent);
-            items.append(item);
-        } else
-            items[i]->setDatabaseObject(objects[i]);
-    }
-    while (objects.count() < items.count()) {
-        delete items.last();
-        items.removeLast();
-    }
-}
 
 template <typename T, typename ExpandRect>
 static void updateItemVisibilitiesHelper(const QList<T*> &items, ExpandRect expandRect)
