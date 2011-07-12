@@ -114,6 +114,13 @@ public:
         ,   fontMetrics(font())
     {}
 
+    virtual ~AcSceneManagerData()
+    {
+        qDeleteAll(valueItems);
+        qDeleteAll(tuningItems);
+        qDeleteAll(barItems);
+    }
+
     QFont font() const
     {
         const MiFont *fontSettings = AcScore::instance()->fontSettings();
