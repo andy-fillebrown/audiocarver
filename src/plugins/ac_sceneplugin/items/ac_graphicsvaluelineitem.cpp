@@ -71,15 +71,15 @@ AcGraphicsValueLineItem::AcGraphicsValueLineItem(AcValueLine *tuningLine, QObjec
     :   AcGraphicsGridLineItem(*(new AcGraphicsValueLineItemPrivate), parent)
 {
     connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-    setGridLine(tuningLine);
+    setDatabaseObject(tuningLine);
 }
 
 AcGraphicsValueLineItem::~AcGraphicsValueLineItem()
 {}
 
-void AcGraphicsValueLineItem::setGridLine(AcGridLine *gridLine)
+void AcGraphicsValueLineItem::setDatabaseObject(AcGridLine *gridLine)
 {
-    AcGraphicsGridLineItem::setGridLine(gridLine);
+    AcGraphicsGridLineItem::setDatabaseObject(gridLine);
     if (gridLine) {
         Q_D(AcGraphicsValueLineItem);
         d->update();

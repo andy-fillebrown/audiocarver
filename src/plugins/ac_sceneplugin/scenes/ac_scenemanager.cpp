@@ -46,7 +46,7 @@ static void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*
             ItemType *item = new ItemType(objects[i], parent);
             items.append(item);
         } else
-            items[i]->setGridLine(objects[i]);
+            items[i]->setDatabaseObject(objects[i]);
     }
     while (objects.count() < items.count()) {
         delete items.last();

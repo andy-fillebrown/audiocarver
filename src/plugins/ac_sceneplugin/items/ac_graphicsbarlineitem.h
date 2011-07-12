@@ -36,7 +36,7 @@ public:
     AcGraphicsBarLineItem(AcBarLine *barLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsBarLineItem();
 
-    virtual void setGridLine(AcGridLine *barLine);
+    virtual void setDatabaseObject(AcGridLine *barLine);
 
     virtual void show();
     virtual void hide();

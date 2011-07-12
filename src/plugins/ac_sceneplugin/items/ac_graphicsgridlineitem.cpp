@@ -82,7 +82,7 @@ AcGraphicsGridLineItem::~AcGraphicsGridLineItem()
     delete d_ptr;
 }
 
-void AcGraphicsGridLineItem::setGridLine(AcGridLine *gridLine)
+void AcGraphicsGridLineItem::setDatabaseObject(AcGridLine *gridLine)
 {
     Q_D(Private::AcGraphicsGridLineItem);
     if (d->gridLine == gridLine)

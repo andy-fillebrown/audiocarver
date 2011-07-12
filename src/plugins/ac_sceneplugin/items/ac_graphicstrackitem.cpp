@@ -43,7 +43,7 @@ AcGraphicsTrackItem::AcGraphicsTrackItem(AcTrack *track, QObject *parent)
     :   QObject(parent)
     ,   d(new AcGraphicsTrackItemData(this))
 {
-    setTrack(track);
+    setDatabaseObject(track);
 }
 
 AcGraphicsTrackItem::~AcGraphicsTrackItem()
@@ -51,7 +51,7 @@ AcGraphicsTrackItem::~AcGraphicsTrackItem()
     delete d;
 }
 
-void AcGraphicsTrackItem::setTrack(AcTrack *track)
+void AcGraphicsTrackItem::setDatabaseObject(AcTrack *track)
 {
     if (d->track == track)
         return;

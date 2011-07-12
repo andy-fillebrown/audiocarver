@@ -53,7 +53,7 @@ protected:
 public:
     virtual ~AcGraphicsGridLineItem();
 
-    virtual void setGridLine(AcGridLine *gridLine);
+    virtual void setDatabaseObject(AcGridLine *gridLine);
 
     int priority() const;
     QRectF labelRect() const;

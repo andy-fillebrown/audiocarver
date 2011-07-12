@@ -37,7 +37,7 @@ public:
     AcGraphicsTrackItem(AcTrack *track = 0, QObject *parent = 0);
     virtual ~AcGraphicsTrackItem();
 
-    virtual void setTrack(AcTrack *track);
+    virtual void setDatabaseObject(AcTrack *track);
 
     bool isVisible() const;
     virtual void show();

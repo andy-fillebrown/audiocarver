@@ -76,7 +76,7 @@ public:
 AcGraphicsBarLineItem::AcGraphicsBarLineItem(AcBarLine *barLine, QObject *parent)
     :   AcGraphicsGridLineItem(*(new AcGraphicsBarLineItemPrivate), parent)
 {
-    setGridLine(barLine);
+    setDatabaseObject(barLine);
 }
 
 AcGraphicsBarLineItem::~AcGraphicsBarLineItem()
@@ -96,10 +96,10 @@ void AcGraphicsBarLineItem::hide()
     d->controlLineItem->hide();
 }
 
-void AcGraphicsBarLineItem::setGridLine(AcGridLine *gridLine)
+void AcGraphicsBarLineItem::setDatabaseObject(AcGridLine *gridLine)
 {
     Q_D(AcGraphicsBarLineItem);
-    AcGraphicsGridLineItem::setGridLine(gridLine);
+    AcGraphicsGridLineItem::setDatabaseObject(gridLine);
     if (gridLine)
         d->update();
 }

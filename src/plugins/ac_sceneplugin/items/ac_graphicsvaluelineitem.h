@@ -36,7 +36,7 @@ public:
     AcGraphicsValueLineItem(AcValueLine *valueLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsValueLineItem();
 
-    virtual void setGridLine(AcGridLine *gridLine);
+    virtual void setDatabaseObject(AcGridLine *gridLine);
 
 protected:
     virtual void updateViewSettingsProperty(const QString &propertyName);
