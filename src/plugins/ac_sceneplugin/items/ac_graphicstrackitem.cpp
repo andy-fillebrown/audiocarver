@@ -22,7 +22,7 @@
 #include <ac_scorescene.h>
 #include <ac_track.h>
 #include <mi_list.h>
-#include <QGraphicsItemGroup>
+#include <QGraphicsItem>
 
 using namespace Private;
 
@@ -32,14 +32,14 @@ class AcGraphicsTrackItemPrivate : public AcGraphicsItemData
 {
 public:
     AcGraphicsTrackItem *q;
-    QGraphicsItemGroup *scoreGroup;
-    QGraphicsItemGroup *controlGroup;
+    QGraphicsItem *scoreItem;
+    QGraphicsItem *controlItem;
     QList<AcGraphicsNoteItem*> noteItems;
 
     AcGraphicsTrackItemPrivate(AcGraphicsTrackItem *q, AcTrack *track)
         :   q(q)
-        ,   scoreGroup(new QGraphicsItemGroup)
-        ,   controlGroup(new QGraphicsItemGroup)
+        ,   scoreItem(new QGraphicsItemGroup)
+        ,   controlItem(new QGraphicsItemGroup)
     {
         databaseObject = track;
     }
@@ -47,8 +47,8 @@ public:
     virtual ~AcGraphicsTrackItemPrivate()
     {
         qDeleteAll(noteItems);
-        delete controlGroup;
-        delete scoreGroup;
+        delete controlItem;
+        delete scoreItem;
     }
 
     AcTrack *track() const
@@ -80,9 +80,9 @@ QGraphicsItem *AcGraphicsTrackItem::sceneItem(SceneType sceneType) const
     Q_D(const AcGraphicsTrackItem);
     switch (sceneType) {
     case ScoreScene:
-        return d->scoreGroup;
+        return d->scoreItem;
     case ControlScene:
-        return d->controlGroup;
+        return d->controlItem;
     default:
         break;
     }
