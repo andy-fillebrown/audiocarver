@@ -135,16 +135,19 @@ public:
     void updateBarItems()
     {
         updateItemsHelper(AcScore::instance()->barLines().list(), barItems, q);
+        q->addItems(barItems);
     }
 
     void updateTuningItems()
     {
         updateItemsHelper(AcScore::instance()->tuningLines().list(), tuningItems, q);
+        q->addItems(tuningItems);
     }
 
     void updateValueItems()
     {
         updateItemsHelper(AcScore::instance()->valueLines().list(), valueItems, q);
+        q->addItems(valueItems);
     }
 
     void updateFontMetrics()
@@ -231,29 +234,32 @@ void AcSceneManager::updateViewSettingsProperty(const QString &propertyName)
         d->updateValueItemVisibilities();
 }
 
-QGraphicsScene *AcSceneManager::scoreScene() const
+QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
 {
-    return d->scoreScene;
+    switch (sceneType) {
+    case ScoreScene:
+        return d->scoreScene;
+    case ControlScene:
+        return d->controlScene;
+    case TimeScene:
+        return d->timeScene;
+    case PitchScene:
+        return d->pitchScene;
+    case ValueScene:
+        return d->valueScene;
+    default:
+        break;
+    }
+    return 0;
 }
 
-QGraphicsScene *AcSceneManager::controlScene() const
+void AcSceneManager::addItem(AcGraphicsItem *item)
 {
-    return d->controlScene;
-}
-
-QGraphicsScene *AcSceneManager::timeScene() const
-{
-    return d->timeScene;
-}
-
-QGraphicsScene *AcSceneManager::pitchScene() const
-{
-    return d->pitchScene;
-}
-
-QGraphicsScene *AcSceneManager::valueScene() const
-{
-    return d->valueScene;
+    for (int i = 0;  i < SceneTypeCount;  ++i) {
+        QGraphicsItem *sceneItem = item->sceneItem(SceneType(i));
+        if (sceneItem)
+            scene(SceneType(i))->addItem(sceneItem);
+    }
 }
 
 const QFontMetrics &AcSceneManager::fontMetrics() const

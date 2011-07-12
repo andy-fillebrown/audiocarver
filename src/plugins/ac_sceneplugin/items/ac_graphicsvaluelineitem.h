@@ -36,11 +36,11 @@ public:
     AcGraphicsValueLineItem(AcValueLine *valueLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsValueLineItem();
 
-    virtual void setDatabaseObject(AcGridLine *gridLine);
+    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
     virtual void updateViewSettingsProperty(const QString &propertyName);
-    virtual void updateGridLineProperty(const QString &propertyName);
+    virtual void updateDatabaseObjectProperty(const QString &propertyName);
 
 protected slots:
     virtual void updateScoreProperty(const QString &propertyName);

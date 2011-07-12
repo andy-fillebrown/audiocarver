@@ -17,17 +17,16 @@
 
 #include "ac_graphicsbarlineitem.h"
 #include <ac_barline.h>
-#include <ac_controlscene.h>
 #include <ac_scenemanager.h>
 #include <ac_score.h>
-#include <ac_scorescene.h>
 #include <ac_timescene.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
-#include <QFont>
+#include <QColor>
 #include <QFontMetrics>
 #include <QGraphicsLineItem>
 #include <QGraphicsTextItem>
+#include <QPen>
 
 using namespace Private;
 
@@ -38,12 +37,16 @@ class AcGraphicsBarLineItemPrivate : public AcGraphicsGridLineItemData
 public:
     QGraphicsLineItem *controlLineItem;
 
-    AcGraphicsBarLineItemPrivate()
+    AcGraphicsBarLineItemPrivate(AcBarLine *barLine)
         :   controlLineItem(new QGraphicsLineItem)
     {
-        AcScoreScene::instance()->addItem(lineItem);
-        AcControlScene::instance()->addItem(controlLineItem);
-        AcTimeScene::instance()->addItem(labelItem);
+        databaseObject = barLine;
+        update();
+    }
+
+    ~AcGraphicsBarLineItemPrivate()
+    {
+        delete controlLineItem;
     }
 
     void update()
@@ -54,11 +57,12 @@ public:
 
     void updateColor()
     {
-        controlLineItem->setPen(gridLine->color());
+        controlLineItem->setPen(gridLine()->color());
     }
 
     void updateLocation()
     {
+        const AcGridLine *gridLine = this->gridLine();
         const qreal location = gridLine->location();
         lineItem->setLine(location, 0.0f, location, 127.0f);
         controlLineItem->setLine(location, 0.0f, location, 1.0f);
@@ -74,34 +78,26 @@ public:
 } // namespace Private
 
 AcGraphicsBarLineItem::AcGraphicsBarLineItem(AcBarLine *barLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsBarLineItemPrivate), parent)
-{
-    setDatabaseObject(barLine);
-}
+    :   AcGraphicsGridLineItem(*(new AcGraphicsBarLineItemPrivate(barLine)), parent)
+{}
 
 AcGraphicsBarLineItem::~AcGraphicsBarLineItem()
 {}
 
-void AcGraphicsBarLineItem::show()
+QGraphicsItem *AcGraphicsBarLineItem::sceneItem(SceneType sceneType) const
 {
-    Q_D(AcGraphicsBarLineItem);
-    AcGraphicsGridLineItem::show();
-    d->controlLineItem->show();
-}
-
-void AcGraphicsBarLineItem::hide()
-{
-    Q_D(AcGraphicsBarLineItem);
-    AcGraphicsGridLineItem::hide();
-    d->controlLineItem->hide();
-}
-
-void AcGraphicsBarLineItem::setDatabaseObject(AcGridLine *gridLine)
-{
-    Q_D(AcGraphicsBarLineItem);
-    AcGraphicsGridLineItem::setDatabaseObject(gridLine);
-    if (gridLine)
-        d->update();
+    Q_D(const AcGraphicsBarLineItem);
+    switch (sceneType) {
+    case ScoreScene:
+        return d->lineItem;
+    case ControlScene:
+        return d->controlLineItem;
+    case TimeScene:
+        return d->labelItem;
+    default:
+        break;
+    }
+    return 0;
 }
 
 void AcGraphicsBarLineItem::updateViewSettingsProperty(const QString &propertyName)
@@ -111,10 +107,10 @@ void AcGraphicsBarLineItem::updateViewSettingsProperty(const QString &propertyNa
         d->updateLocation();
 }
 
-void AcGraphicsBarLineItem::updateGridLineProperty(const QString &propertyName)
+void AcGraphicsBarLineItem::updateDatabaseObjectProperty(const QString &propertyName)
 {
     Q_D(AcGraphicsBarLineItem);
-    AcGraphicsGridLineItem::updateGridLineProperty(propertyName);
+    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyName);
     if ("color" == propertyName)
         d->updateColor();
     else if ("location" == propertyName)

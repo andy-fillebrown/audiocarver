@@ -18,18 +18,18 @@
 #include "ac_graphicsgridlineitem.h"
 #include <ac_gridline.h>
 #include <ac_score.h>
-#include <ac_scorescene.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
+#include <QFont>
 #include <QGraphicsLineItem>
+#include <QPen>
 
 using namespace Private;
 
 namespace Private {
 
 AcGraphicsGridLineItemData::AcGraphicsGridLineItemData()
-    :   gridLine(0)
-    ,   lineItem(new QGraphicsLineItem)
+    :   lineItem(new QGraphicsLineItem)
     ,   labelItem(new QGraphicsTextItem)
 {}
 
@@ -37,6 +37,16 @@ AcGraphicsGridLineItemData::~AcGraphicsGridLineItemData()
 {
     delete labelItem;
     delete lineItem;
+}
+
+const AcGridLine *AcGraphicsGridLineItemData::gridLine()
+{
+    return qobject_cast<AcGridLine*>(databaseObject);
+}
+
+const AcGridLine *AcGraphicsGridLineItemData::gridLine() const
+{
+    return qobject_cast<AcGridLine*>(databaseObject);
 }
 
 class AcGraphicsGridLineItemPrivate : public AcGraphicsGridLineItemData
@@ -57,76 +67,40 @@ public:
 
     void updateLabel()
     {
-        labelItem->setPlainText(gridLine->label());
+        labelItem->setPlainText(gridLine()->label());
     }
 
     void updateColor()
     {
-        lineItem->setPen(gridLine->color());
+        lineItem->setPen(QPen(gridLine()->color()));
     }
 };
 
 } // namespace Private
 
 AcGraphicsGridLineItem::AcGraphicsGridLineItem(Private::AcGraphicsGridLineItemData &dd, QObject *parent)
-    :   QObject(parent)
-    ,   d_ptr(&dd)
+    :   AcGraphicsItem(dd, parent)
 {
     AcScore *score = AcScore::instance();
     connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
     connect(score->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+    Q_D(AcGraphicsGridLineItem);
+    d->update();
 }
 
 AcGraphicsGridLineItem::~AcGraphicsGridLineItem()
-{
-    delete d_ptr;
-}
-
-void AcGraphicsGridLineItem::setDatabaseObject(AcGridLine *gridLine)
-{
-    Q_D(Private::AcGraphicsGridLineItem);
-    if (d->gridLine == gridLine)
-        return;
-    if (d->gridLine) {
-        d->gridLine->disconnect(this);
-    }
-    d->gridLine = gridLine;
-    if (d->gridLine) {
-        connect(d->gridLine, SIGNAL(propertyChanged(QString)), SLOT(updateGridLineProperty(QString)));
-        d->update();
-    }
-}
+{}
 
 int AcGraphicsGridLineItem::priority() const
 {
     Q_D(const AcGraphicsGridLineItem);
-    return d->gridLine->priority();
+    return d->gridLine()->priority();
 }
 
 QRectF AcGraphicsGridLineItem::labelRect() const
 {
     Q_D(const AcGraphicsGridLineItem);
     return QRectF(d->labelItem->pos(), d->labelItem->boundingRect().size());
-}
-
-bool AcGraphicsGridLineItem::isVisible() const
-{
-    Q_D(const AcGraphicsGridLineItem);
-    return d->lineItem->isVisible();
-}
-
-void AcGraphicsGridLineItem::show()
-{
-    Q_D(AcGraphicsGridLineItem);
-    d->lineItem->show();
-    d->labelItem->show();
-}
-
-void AcGraphicsGridLineItem::hide()
-{
-    Q_D(AcGraphicsGridLineItem);
-    d->lineItem->hide();
-    d->labelItem->hide();
 }
 
 void AcGraphicsGridLineItem::updateFontSettingsProperty(const QString &propertyName)
@@ -136,9 +110,9 @@ void AcGraphicsGridLineItem::updateFontSettingsProperty(const QString &propertyN
     d->updateFont();
 }
 
-void AcGraphicsGridLineItem::updateGridLineProperty(const QString &propertyName)
+void AcGraphicsGridLineItem::updateDatabaseObjectProperty(const QString &propertyName)
 {
-    Q_D(Private::AcGraphicsGridLineItem);
+    Q_D(AcGraphicsGridLineItem);
     if ("label" == propertyName)
         d->updateLabel();
     else if ("color" == propertyName)

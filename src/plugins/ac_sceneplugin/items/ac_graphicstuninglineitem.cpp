@@ -34,11 +34,10 @@ namespace Private {
 class AcGraphicsTuningLineItemPrivate : public AcGraphicsGridLineItemData
 {
 public:
-
-    AcGraphicsTuningLineItemPrivate()
+    AcGraphicsTuningLineItemPrivate(AcTuningLine *tuningLine)
     {
-        AcScoreScene::instance()->addItem(lineItem);
-        AcPitchScene::instance()->addItem(labelItem);
+        databaseObject = tuningLine;
+        update();
     }
 
     void update()
@@ -49,12 +48,13 @@ public:
 
     void updateLineGeometry()
     {
-        const qreal pos = 127.0f - gridLine->location();
+        const qreal pos = 127.0f - gridLine()->location();
         lineItem->setLine(0.0f, pos, AcScore::instance()->length(), pos);
     }
 
     void updateLabelPosition()
     {
+        const AcGridLine *gridLine = this->gridLine();
         const qreal pos = 127.0f - gridLine->location();
         const AcScore *score = AcScore::instance();
         const qreal scale = score->viewSettings()->pitchScale();
@@ -68,22 +68,26 @@ public:
 } // namespace Private
 
 AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsTuningLineItemPrivate), parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsTuningLineItemPrivate(tuningLine)), parent)
 {
     connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-    setDatabaseObject(tuningLine);
 }
 
 AcGraphicsTuningLineItem::~AcGraphicsTuningLineItem()
 {}
 
-void AcGraphicsTuningLineItem::setDatabaseObject(AcGridLine *gridLine)
+QGraphicsItem *AcGraphicsTuningLineItem::sceneItem(SceneType sceneType) const
 {
-    AcGraphicsGridLineItem::setDatabaseObject(gridLine);
-    if (gridLine) {
-        Q_D(AcGraphicsTuningLineItem);
-        d->update();
+    Q_D(const AcGraphicsTuningLineItem);
+    switch (sceneType) {
+    case ScoreScene:
+        return d->lineItem;
+    case PitchScene:
+        return d->labelItem;
+    default:
+        break;
     }
+    return 0;
 }
 
 void AcGraphicsTuningLineItem::updateViewSettingsProperty(const QString &propertyName)
@@ -96,7 +100,7 @@ void AcGraphicsTuningLineItem::updateViewSettingsProperty(const QString &propert
 
 void AcGraphicsTuningLineItem::updateGridLineProperty(const QString &propertyName)
 {
-    AcGraphicsGridLineItem::updateGridLineProperty(propertyName);
+    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyName);
     if ("location" == propertyName) {
         Q_D(AcGraphicsTuningLineItem);
         d->update();

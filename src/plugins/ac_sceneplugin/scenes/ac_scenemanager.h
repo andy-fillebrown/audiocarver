@@ -19,8 +19,10 @@
 #define AC_SCENEMANAGER_H
 
 #include <QObject>
+#include <ac_scene_common.h>
 #include <ac_scene_global.h>
 
+class AcGraphicsItem;
 class QFontMetrics;
 class QGraphicsScene;
 
@@ -40,11 +42,10 @@ public:
 
     static AcSceneManager *instance();
 
-    QGraphicsScene *scoreScene() const;
-    QGraphicsScene *controlScene() const;
-    QGraphicsScene *timeScene() const;
-    QGraphicsScene *pitchScene() const;
-    QGraphicsScene *valueScene() const;
+    QGraphicsScene *scene(SceneType sceneType) const;
+
+    void addItem(AcGraphicsItem *item);
+    template <typename T> void addItems(const QList<T*> &items) { foreach (AcGraphicsItem *item, items) addItem(item); }
 
     const QFontMetrics &fontMetrics() const;
 

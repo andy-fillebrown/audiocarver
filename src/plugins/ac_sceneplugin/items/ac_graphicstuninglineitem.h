@@ -36,7 +36,7 @@ public:
     AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsTuningLineItem();
 
-    virtual void setDatabaseObject(AcGridLine *gridLine);
+    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
     virtual void updateViewSettingsProperty(const QString &propertyName);

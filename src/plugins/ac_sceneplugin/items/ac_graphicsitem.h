@@ -27,7 +27,16 @@ class QGraphicsItem;
 
 namespace Private {
 
-class AcGraphicsItemData;
+class AcGraphicsItemData
+{
+public:
+    MiObject *databaseObject;
+
+    AcGraphicsItemData() : databaseObject(0) {}
+    virtual ~AcGraphicsItemData() {}
+};
+
+class AcGraphicsItemPrivate;
 
 } // namespace Private
 
@@ -35,11 +44,14 @@ class AC_SCENE_EXPORT AcGraphicsItem : public QObject
 {
     Q_OBJECT
 
+protected:
+    AcGraphicsItem(Private::AcGraphicsItemData &dd, QObject *parent = 0);
+
 public:
-    AcGraphicsItem(MiObject *databaseObject = 0, QObject *parent = 0);
     virtual ~AcGraphicsItem();
 
-    virtual void setDatabaseObject(MiObject *object);
+    void setDatabaseObject(MiObject *object);
+
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const = 0;
 
     bool isVisible() const;
@@ -47,11 +59,14 @@ public:
     void hide();
 
 protected slots:
-    virtual void updateDatabaseObjectProperty(const QString &propertyName);
+    virtual void updateDatabaseObjectProperty(const QString &propertyName) = 0;
 
 private:
     Q_DISABLE_COPY(AcGraphicsItem)
-    Private::AcGraphicsItemData *d;
+    Q_DECLARE_PRIVATE(Private::AcGraphicsItem)
+
+protected:
+    Private::AcGraphicsItemData *d_ptr;
 };
 
 #endif // AC_GRAPHICSITEM_H

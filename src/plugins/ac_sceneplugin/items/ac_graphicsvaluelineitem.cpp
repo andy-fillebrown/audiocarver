@@ -35,10 +35,10 @@ class AcGraphicsValueLineItemPrivate : public AcGraphicsGridLineItemData
 {
 public:
 
-    AcGraphicsValueLineItemPrivate()
+    AcGraphicsValueLineItemPrivate(AcValueLine *valueLine)
     {
-        AcControlScene::instance()->addItem(lineItem);
-        AcValueScene::instance()->addItem(labelItem);
+        databaseObject = valueLine;
+        update();
     }
 
     void update()
@@ -49,12 +49,13 @@ public:
 
     void updateLineGeometry()
     {
-        const qreal pos = 1.0f - gridLine->location();
+        const qreal pos = 1.0f - gridLine()->location();
         lineItem->setLine(0.0f, pos, AcScore::instance()->length(), pos);
     }
 
     void updateLabelPosition()
     {
+        const AcGridLine *gridLine = this->gridLine();
         const qreal pos = 1.0f - gridLine->location();
         const AcScore *score = AcScore::instance();
         const qreal scale = score->viewSettings()->valueScale();
@@ -67,23 +68,28 @@ public:
 
 } // namespace Private
 
-AcGraphicsValueLineItem::AcGraphicsValueLineItem(AcValueLine *tuningLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsValueLineItemPrivate), parent)
+AcGraphicsValueLineItem::AcGraphicsValueLineItem(AcValueLine *valueLine, QObject *parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsValueLineItemPrivate(valueLine)), parent)
 {
     connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-    setDatabaseObject(tuningLine);
+    setDatabaseObject(valueLine);
 }
 
 AcGraphicsValueLineItem::~AcGraphicsValueLineItem()
 {}
 
-void AcGraphicsValueLineItem::setDatabaseObject(AcGridLine *gridLine)
+QGraphicsItem *AcGraphicsValueLineItem::sceneItem(SceneType sceneType) const
 {
-    AcGraphicsGridLineItem::setDatabaseObject(gridLine);
-    if (gridLine) {
-        Q_D(AcGraphicsValueLineItem);
-        d->update();
+    Q_D(const AcGraphicsValueLineItem);
+    switch (sceneType) {
+    case ControlScene:
+        return d->lineItem;
+    case ValueScene:
+        return d->labelItem;
+    default:
+        break;
     }
+    return 0;
 }
 
 void AcGraphicsValueLineItem::updateViewSettingsProperty(const QString &propertyName)
@@ -94,9 +100,9 @@ void AcGraphicsValueLineItem::updateViewSettingsProperty(const QString &property
     }
 }
 
-void AcGraphicsValueLineItem::updateGridLineProperty(const QString &propertyName)
+void AcGraphicsValueLineItem::updateDatabaseObjectProperty(const QString &propertyName)
 {
-    AcGraphicsGridLineItem::updateGridLineProperty(propertyName);
+    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyName);
     if ("location" == propertyName) {
         Q_D(AcGraphicsValueLineItem);
         d->update();

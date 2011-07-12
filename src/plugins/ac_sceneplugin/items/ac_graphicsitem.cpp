@@ -23,39 +23,38 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsItemData
-{
-public:
-    MiObject *databaseObject;
+class AcGraphicsItemPrivate : public AcGraphicsItemData
+{};
 
-    AcGraphicsItemData()
-        :   databaseObject(0)
-    {}
-};
+} // namespace Private
 
-}
-
-AcGraphicsItem::AcGraphicsItem(MiObject *databaseObject, QObject *parent)
+AcGraphicsItem::AcGraphicsItem(AcGraphicsItemData &dd, QObject *parent)
     :   QObject(parent)
-    ,   d(new AcGraphicsItemData)
+    ,   d_ptr(&dd)
 {
-    setDatabaseObject(databaseObject);
+    Q_D(AcGraphicsItem);
+    setDatabaseObject(d->databaseObject);
 }
 
 AcGraphicsItem::~AcGraphicsItem()
 {
-    delete d;
+    delete d_ptr;
 }
 
 void AcGraphicsItem::setDatabaseObject(MiObject *databaseObject)
 {
+    Q_D(AcGraphicsItem);
     if (d->databaseObject == databaseObject)
         return;
     if (d->databaseObject)
         d->databaseObject->disconnect(this);
     d->databaseObject = databaseObject;
-    if (d->databaseObject)
+    if (d->databaseObject) {
         connect(d->databaseObject, SIGNAL(propertyChanged(QString)), SLOT(updateDatabaseObjectProperty(QString)));
+        for (int i = 0;  i < d->databaseObject->propertyCount();  ++i)
+            updateDatabaseObjectProperty(d->databaseObject->propertyName(i));
+    } else
+        hide();
 }
 
 bool AcGraphicsItem::isVisible() const
@@ -82,9 +81,4 @@ void AcGraphicsItem::hide()
         if (item)
             item->hide();
     }
-}
-
-void AcGraphicsItem::updateDatabaseObjectProperty(const QString &propertyName)
-{
-    Q_UNUSED(propertyName);
 }

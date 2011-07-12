@@ -36,14 +36,11 @@ public:
     AcGraphicsBarLineItem(AcBarLine *barLine = 0, QObject *parent = 0);
     virtual ~AcGraphicsBarLineItem();
 
-    virtual void setDatabaseObject(AcGridLine *barLine);
-
-    virtual void show();
-    virtual void hide();
+    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
     virtual void updateViewSettingsProperty(const QString &propertyName);
-    virtual void updateGridLineProperty(const QString &propertyName);
+    virtual void updateDatabaseObjectProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsBarLineItem)

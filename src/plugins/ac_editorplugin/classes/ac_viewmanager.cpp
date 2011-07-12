@@ -45,11 +45,11 @@ public:
     AcViewManagerData(AcViewManager *q, QWidget *widget)
         :   q(q)
         ,   sceneManager(new AcSceneManager(q))
-        ,   scoreView(new AcScoreView(sceneManager->scoreScene(), widget))
-        ,   controlView(new AcControlView(sceneManager->controlScene(), widget))
-        ,   timeView(new AcTimeView(sceneManager->timeScene(), widget))
-        ,   pitchView(new AcPitchView(sceneManager->pitchScene(), widget))
-        ,   valueView(new AcValueView(sceneManager->valueScene(), widget))
+        ,   scoreView(new AcScoreView(sceneManager->scene(ScoreScene), widget))
+        ,   controlView(new AcControlView(sceneManager->scene(ControlScene), widget))
+        ,   timeView(new AcTimeView(sceneManager->scene(TimeScene), widget))
+        ,   pitchView(new AcPitchView(sceneManager->scene(PitchScene), widget))
+        ,   valueView(new AcValueView(sceneManager->scene(ValueScene), widget))
     {}
 
     void updateViewCenters()
@@ -57,9 +57,9 @@ public:
         scoreView->updateCenter();
         controlView->updateCenter();
         AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-        timeView->centerOn(scoreView->center().x() * viewSettings->timeScale(), sceneManager->timeScene()->height() / 2.0f);
-        pitchView->centerOn(sceneManager->pitchScene()->width() / 2.0f, scoreView->center().y() * viewSettings->pitchScale());
-        valueView->centerOn(sceneManager->valueScene()->width() / 2.0f, controlView->center().y() * viewSettings->valueScale());
+        timeView->centerOn(scoreView->center().x() * viewSettings->timeScale(), sceneManager->scene(TimeScene)->height() / 2.0f);
+        pitchView->centerOn(sceneManager->scene(PitchScene)->width() / 2.0f, scoreView->center().y() * viewSettings->pitchScale());
+        valueView->centerOn(sceneManager->scene(ValueScene)->width() / 2.0f, controlView->center().y() * viewSettings->valueScale());
     }
 };
 
