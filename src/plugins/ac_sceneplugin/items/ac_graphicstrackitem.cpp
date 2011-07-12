@@ -16,6 +16,8 @@
 **************************************************************************/
 
 #include "ac_graphicstrackitem.h"
+#include <ac_controlscene.h>
+#include <ac_scorescene.h>
 #include <ac_track.h>
 #include <QGraphicsItemGroup>
 
@@ -34,7 +36,18 @@ public:
     AcGraphicsTrackItemData(AcGraphicsTrackItem *q)
         :   q(q)
         ,   track(0)
-    {}
+        ,   scoreGroup(new QGraphicsItemGroup)
+        ,   controlGroup(new QGraphicsItemGroup)
+    {
+        AcScoreScene::instance()->addItem(scoreGroup);
+        AcControlScene::instance()->addItem(controlGroup);
+    }
+
+    virtual ~AcGraphicsTrackItemData()
+    {
+        delete controlGroup;
+        delete scoreGroup;
+    }
 };
 
 } // namespace Private

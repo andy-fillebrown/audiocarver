@@ -19,6 +19,7 @@
 #include <ac_barline.h>
 #include <ac_controlscene.h>
 #include <ac_graphicsbarlineitem.h>
+#include <ac_graphicstrackitem.h>
 #include <ac_graphicstuninglineitem.h>
 #include <ac_graphicsvaluelineitem.h>
 #include <ac_pitchscene.h>
@@ -99,6 +100,7 @@ public:
     AcTimeScene *timeScene;
     AcPitchScene *pitchScene;
     AcValueScene *valueScene;
+    QList<AcGraphicsTrackItem*> trackItems;
     QList<AcGraphicsBarLineItem*> barItems;
     QList<AcGraphicsTuningLineItem*> tuningItems;
     QList<AcGraphicsValueLineItem*> valueItems;
@@ -119,6 +121,7 @@ public:
         qDeleteAll(valueItems);
         qDeleteAll(tuningItems);
         qDeleteAll(barItems);
+        qDeleteAll(trackItems);
     }
 
     QFont font() const
@@ -129,6 +132,7 @@ public:
 
     void init()
     {
+        updateTrackItems();
         updateBarItems();
         updateTuningItems();
         updateValueItems();
@@ -136,6 +140,11 @@ public:
         updateBarItemVisibilities();
         updateTuningItemVisibilities();
         updateValueItemVisibilities();
+    }
+
+    void updateTrackItems()
+    {
+        updateItemsHelper(AcScore::instance()->tracks().list(), trackItems, q);
     }
 
     void updateBarItems()
@@ -202,7 +211,9 @@ AcSceneManager *AcSceneManager::instance()
 
 void AcSceneManager::updateScoreProperty(const QString &propertyName)
 {
-    if ("barLines" == propertyName) {
+    if ("tracks" == propertyName)
+        d->updateTrackItems();
+    else if ("barLines" == propertyName) {
         d->updateBarItems();
         d->updateBarItemVisibilities();
     }
