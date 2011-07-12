@@ -25,65 +25,77 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsTrackItemData
+AcGraphicsTrackItemData::AcGraphicsTrackItemData()
+    :   track(0)
+    ,   scoreGroup(new QGraphicsItemGroup)
+    ,   controlGroup(new QGraphicsItemGroup)
+{
+    AcScoreScene::instance()->addItem(scoreGroup);
+    AcControlScene::instance()->addItem(controlGroup);
+}
+
+AcGraphicsTrackItemData::~AcGraphicsTrackItemData()
+{
+    delete controlGroup;
+    delete scoreGroup;
+}
+
+
+class AcGraphicsTrackItemPrivate : public AcGraphicsTrackItemData
 {
 public:
     AcGraphicsTrackItem *q;
-    AcTrack *track;
-    QGraphicsItemGroup *scoreGroup;
-    QGraphicsItemGroup *controlGroup;
 
-    AcGraphicsTrackItemData(AcGraphicsTrackItem *q)
+    AcGraphicsTrackItemPrivate(AcGraphicsTrackItem *q)
         :   q(q)
-        ,   track(0)
-        ,   scoreGroup(new QGraphicsItemGroup)
-        ,   controlGroup(new QGraphicsItemGroup)
-    {
-        AcScoreScene::instance()->addItem(scoreGroup);
-        AcControlScene::instance()->addItem(controlGroup);
-    }
+    {}
 
-    virtual ~AcGraphicsTrackItemData()
-    {
-        delete controlGroup;
-        delete scoreGroup;
-    }
+    virtual ~AcGraphicsTrackItemPrivate()
+    {}
 };
 
 } // namespace Private
 
 AcGraphicsTrackItem::AcGraphicsTrackItem(AcTrack *track, QObject *parent)
     :   QObject(parent)
-    ,   d(new AcGraphicsTrackItemData(this))
+    ,   d_ptr(new AcGraphicsTrackItemPrivate(this))
 {
     setDatabaseObject(track);
 }
 
 AcGraphicsTrackItem::~AcGraphicsTrackItem()
 {
-    delete d;
+    delete d_ptr;
 }
 
 void AcGraphicsTrackItem::setDatabaseObject(AcTrack *track)
 {
+    Q_D(AcGraphicsTrackItem);
     if (d->track == track)
         return;
+    if (d->track)
+        d->track->disconnect(this);
     d->track = track;
+    if (d->track)
+        connect(d->track, SIGNAL(propertyChanged(QString)), SLOT(updateTrackProperty(QString)));
 }
 
 bool AcGraphicsTrackItem::isVisible() const
 {
+    Q_D(const AcGraphicsTrackItem);
     return d->scoreGroup->isVisible();
 }
 
 void AcGraphicsTrackItem::show()
 {
+    Q_D(AcGraphicsTrackItem);
     d->scoreGroup->show();
     d->controlGroup->show();
 }
 
 void AcGraphicsTrackItem::hide()
 {
+    Q_D(AcGraphicsTrackItem);
     d->scoreGroup->hide();
     d->controlGroup->hide();
 }

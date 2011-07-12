@@ -22,10 +22,22 @@
 #include <ac_scene_global.h>
 
 class AcTrack;
+class QGraphicsItemGroup;
 
 namespace Private {
 
-class AcGraphicsTrackItemData;
+class AcGraphicsTrackItemData
+{
+public:
+    AcTrack *track;
+    QGraphicsItemGroup *scoreGroup;
+    QGraphicsItemGroup *controlGroup;
+
+    AcGraphicsTrackItemData();
+    virtual ~AcGraphicsTrackItemData();
+};
+
+class AcGraphicsTrackItemPrivate;
 
 } // namespace Private
 
@@ -48,7 +60,8 @@ protected slots:
 
 private:
     Q_DISABLE_COPY(AcGraphicsTrackItem)
-    Private::AcGraphicsTrackItemData *d;
+    Q_DECLARE_PRIVATE(Private::AcGraphicsTrackItem)
+    Private::AcGraphicsTrackItemData *d_ptr;
 };
 
 #endif // AC_GRAPHICSTRACKITEM_H
