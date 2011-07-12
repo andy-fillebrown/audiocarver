@@ -28,8 +28,6 @@ class QRectF;
 
 namespace Private {
 
-class AcGraphicsGridLineItemPrivate;
-
 class AcGraphicsGridLineItemData
 {
 public:
@@ -40,6 +38,8 @@ public:
     AcGraphicsGridLineItemData();
     virtual ~AcGraphicsGridLineItemData();
 };
+
+class AcGraphicsGridLineItemPrivate;
 
 } // namespace Private
 
