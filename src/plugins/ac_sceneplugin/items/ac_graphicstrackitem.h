@@ -18,30 +18,18 @@
 #ifndef AC_GRAPHICSTRACKITEM_H
 #define AC_GRAPHICSTRACKITEM_H
 
-#include <QObject>
-#include <ac_scene_global.h>
+#include <ac_graphicsitem.h>
 
 class AcTrack;
 class QGraphicsItemGroup;
 
 namespace Private {
 
-class AcGraphicsTrackItemData
-{
-public:
-    AcTrack *track;
-    QGraphicsItemGroup *scoreGroup;
-    QGraphicsItemGroup *controlGroup;
-
-    AcGraphicsTrackItemData();
-    virtual ~AcGraphicsTrackItemData();
-};
-
 class AcGraphicsTrackItemPrivate;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsTrackItem : public QObject
+class AC_SCENE_EXPORT AcGraphicsTrackItem : public AcGraphicsItem
 {
     Q_OBJECT
 
@@ -49,19 +37,14 @@ public:
     AcGraphicsTrackItem(AcTrack *track = 0, QObject *parent = 0);
     virtual ~AcGraphicsTrackItem();
 
-    virtual void setDatabaseObject(AcTrack *track);
+    QGraphicsItem *sceneItem(SceneType sceneType) const;
 
-    bool isVisible() const;
-    virtual void show();
-    virtual void hide();
-
-protected slots:
-    virtual void updateTrackProperty(const QString &propertyName);
+protected:
+    virtual void updateDatabaseObjectProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsTrackItem)
     Q_DECLARE_PRIVATE(Private::AcGraphicsTrackItem)
-    Private::AcGraphicsTrackItemData *d_ptr;
 };
 
 #endif // AC_GRAPHICSTRACKITEM_H

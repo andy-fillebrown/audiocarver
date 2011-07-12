@@ -18,18 +18,17 @@
 #ifndef AC_GRAPHICSNOTEITEM_H
 #define AC_GRAPHICSNOTEITEM_H
 
-#include <QObject>
-#include <ac_scene_global.h>
+#include <ac_graphicsitem.h>
 
 class AcNote;
 
 namespace Private {
 
-class AcGraphicsNoteItemData;
+class AcGraphicsNoteItemPrivate;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsNoteItem : public QObject
+class AC_SCENE_EXPORT AcGraphicsNoteItem : public AcGraphicsItem
 {
     Q_OBJECT
 
@@ -37,18 +36,14 @@ public:
     AcGraphicsNoteItem(AcNote *note = 0, QObject *parent = 0);
     virtual ~AcGraphicsNoteItem();
 
-    virtual void setDatabaseObject(AcNote *note);
+    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
-    bool isVisible() const;
-    virtual void show();
-    virtual void hide();
-
-protected slots:
-    virtual void updateNoteProperty(const QString &propertyName);
+protected:
+    virtual void updateDatabaseObjectProperty(const QString &propertyName);
 
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)
-    Private::AcGraphicsNoteItemData *d;
+    Q_DECLARE_PRIVATE(Private::AcGraphicsNoteItem);
 };
 
 #endif // AC_GRAPHICSNOTEITEM_H

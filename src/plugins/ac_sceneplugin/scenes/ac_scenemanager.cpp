@@ -27,6 +27,7 @@
 #include <ac_score.h>
 #include <ac_scorescene.h>
 #include <ac_timescene.h>
+#include <ac_track.h>
 #include <ac_tuningline.h>
 #include <ac_valueline.h>
 #include <ac_valuescene.h>
@@ -130,6 +131,7 @@ public:
     void updateTrackItems()
     {
         updateItemsHelper(AcScore::instance()->tracks().list(), trackItems, q);
+        q->addItems(trackItems);
     }
 
     void updateBarItems()

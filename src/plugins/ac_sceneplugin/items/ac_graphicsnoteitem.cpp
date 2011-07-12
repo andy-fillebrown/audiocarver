@@ -23,22 +23,20 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsNoteItemData
+class AcGraphicsNoteItemPrivate : public AcGraphicsItemData
 {
 public:
-    AcGraphicsNoteItem *q;
-    AcNote *note;
     QGraphicsPathItem *scoreItem;
     QGraphicsPathItem *controlItem;
 
-    AcGraphicsNoteItemData(AcGraphicsNoteItem *q)
-        :   q(q)
-        ,   note(0)
-        ,   scoreItem(new QGraphicsPathItem)
+    AcGraphicsNoteItemPrivate(AcNote *note)
+        :   scoreItem(new QGraphicsPathItem)
         ,   controlItem(new QGraphicsPathItem)
-    {}
+    {
+        databaseObject = note;
+    }
 
-    virtual ~AcGraphicsNoteItemData()
+    virtual ~AcGraphicsNoteItemPrivate()
     {
         delete controlItem;
         delete scoreItem;
@@ -48,42 +46,27 @@ public:
 } // namespace Private
 
 AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
-    :   QObject(parent)
-    ,   d(new AcGraphicsNoteItemData(this))
-{
-    setDatabaseObject(note);
-}
+    :   AcGraphicsItem(*(new AcGraphicsNoteItemPrivate(note)), parent)
+{}
 
 AcGraphicsNoteItem::~AcGraphicsNoteItem()
+{}
+
+QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
 {
-    delete d;
+    Q_D(const AcGraphicsNoteItem);
+    switch (sceneType) {
+    case ScoreScene:
+        return d->scoreItem;
+    case ControlScene:
+        return d->controlItem;
+    default:
+        break;
+    }
+    return 0;
 }
 
-void AcGraphicsNoteItem::setDatabaseObject(AcNote *note)
-{
-    if (d->note == note)
-        return;
-    d->note = note;
-}
-
-bool AcGraphicsNoteItem::isVisible() const
-{
-    return d->scoreItem->isVisible();
-}
-
-void AcGraphicsNoteItem::show()
-{
-    d->scoreItem->show();
-    d->controlItem->show();
-}
-
-void AcGraphicsNoteItem::hide()
-{
-    d->scoreItem->hide();
-    d->controlItem->hide();
-}
-
-void AcGraphicsNoteItem::updateNoteProperty(const QString &propertyName)
+void AcGraphicsNoteItem::updateDatabaseObjectProperty(const QString &propertyName)
 {
     Q_UNUSED(propertyName);
 }

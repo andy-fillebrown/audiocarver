@@ -82,3 +82,13 @@ void AcGraphicsItem::hide()
             item->hide();
     }
 }
+
+void AcGraphicsItem::addItem(AcGraphicsItem *item)
+{
+    for (int i = 0;  i < SceneTypeCount;  ++i) {
+        QGraphicsItem *parentSceneItem = sceneItem(SceneType(i));
+        QGraphicsItem *sceneItem = item->sceneItem(SceneType(i));
+        if (parentSceneItem && sceneItem)
+            sceneItem->setParentItem(parentSceneItem);
+    }
+}
