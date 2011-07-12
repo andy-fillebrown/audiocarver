@@ -11,6 +11,7 @@ HEADERS += \
     \
     items/ac_graphicsbarlineitem.h \
     items/ac_graphicsgridlineitem.h \
+    items/ac_graphicsitem.h \
     items/ac_graphicsnoteitem.h \
     items/ac_graphicstrackitem.h \
     items/ac_graphicstuninglineitem.h \
@@ -34,6 +35,7 @@ SOURCES += \
     \
     items/ac_graphicsbarlineitem.cpp \
     items/ac_graphicsgridlineitem.cpp \
+    items/ac_graphicsitem.cpp \
     items/ac_graphicsnoteitem.cpp \
     items/ac_graphicstrackitem.cpp \
     items/ac_graphicstuninglineitem.cpp \
