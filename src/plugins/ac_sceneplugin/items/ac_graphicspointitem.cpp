@@ -28,7 +28,10 @@ AcGraphicsPointItemData::AcGraphicsPointItemData(AcPoint *point)
     :   pointItem(new QGraphicsRectItem)
 {
     databaseObject = point;
+    pointItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    pointItem->setPen(QPen(Qt::blue));
     pointItem->setBrush(QBrush(Qt::blue, Qt::SolidPattern));
+    pointItem->setZValue(1.0f);
 }
 
 AcGraphicsPointItemData::~AcGraphicsPointItemData()

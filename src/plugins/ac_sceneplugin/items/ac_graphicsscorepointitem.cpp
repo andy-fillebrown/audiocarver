@@ -35,10 +35,10 @@ public:
     void updateRect()
     {
         const AcPoint *point = this->point();
-        const qreal w = 7.5f / viewSettings()->timeScale();
-        const qreal h = 7.5f / viewSettings()->pitchScale();
-        const qreal x = point->x() - (w / 2.0f);
-        const qreal y = 127.0f - point->y() - (h / 2.0f);
+        const qreal w = 6.0f;
+        const qreal h = 6.0f;
+        const qreal x = (viewSettings()->timeScale() * point->x()) - (w / 2.0f);
+        const qreal y = (viewSettings()->pitchScale() * (127.0f - point->y())) - (h / 2.0f);
         pointItem->setRect(x, y, w, h);
     }
 };
