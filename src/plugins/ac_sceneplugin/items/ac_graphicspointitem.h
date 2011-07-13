@@ -15,39 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSNOTEITEM_H
-#define AC_GRAPHICSNOTEITEM_H
+#ifndef AC_GRAPHICSPOINTITEM_H
+#define AC_GRAPHICSPOINTITEM_H
 
 #include <ac_graphicsitem.h>
 
-class AcNote;
+class AcPoint;
+class QGraphicsEllipseItem;
 
 namespace Private {
 
-class AcGraphicsNoteItemPrivate;
+class AcGraphicsPointItemData : public AcGraphicsItemData
+{
+public:
+    QGraphicsEllipseItem *pointItem;
+
+    AcGraphicsPointItemData(AcPoint *point);
+    virtual ~AcGraphicsPointItemData();
+};
+
+class AcGraphicsPointItemPrivate;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsNoteItem : public AcGraphicsItem
+class AC_SCENE_EXPORT AcGraphicsPointItem : public AcGraphicsItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsNoteItem(AcNote *note = 0, QObject *parent = 0);
-    virtual ~AcGraphicsNoteItem();
-
-    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
-
-protected slots:
-    virtual void updatePitchCurveProperty(const QString &propertyName);
-    virtual void updateVolumeCurveProperty(const QString &propertyName);
-
-protected:
-    virtual void updateDatabaseObjectProperty(const QString &propertyName);
+    AcGraphicsPointItem(AcPoint *point = 0, QObject *parent = 0);
+    virtual ~AcGraphicsPointItem();
 
 private:
-    Q_DISABLE_COPY(AcGraphicsNoteItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsNoteItem);
+    Q_DISABLE_COPY(AcGraphicsPointItem)
+    Q_DECLARE_PRIVATE(Private::AcGraphicsPointItem)
 };
 
-#endif // AC_GRAPHICSNOTEITEM_H
+#endif // AC_GRAPHICSPOINTITEM_H

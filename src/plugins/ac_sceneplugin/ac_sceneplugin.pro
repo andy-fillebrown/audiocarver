@@ -10,9 +10,12 @@ HEADERS += \
     implementations/ac_sceneimpl.h \
     \
     items/ac_graphicsbarlineitem.h \
+    items/ac_graphicscontrolpointitem.h \
     items/ac_graphicsgridlineitem.h \
     items/ac_graphicsitem.h \
     items/ac_graphicsnoteitem.h \
+    items/ac_graphicspointitem.h \
+    items/ac_graphicsscorepointitem.h \
     items/ac_graphicstrackitem.h \
     items/ac_graphicstuninglineitem.h \
     items/ac_graphicsvaluelineitem.h \
@@ -34,9 +37,12 @@ SOURCES += \
     implementations/ac_sceneimpl.cpp \
     \
     items/ac_graphicsbarlineitem.cpp \
+    items/ac_graphicscontrolpointitem.cpp \
     items/ac_graphicsgridlineitem.cpp \
     items/ac_graphicsitem.cpp \
     items/ac_graphicsnoteitem.cpp \
+    items/ac_graphicspointitem.cpp \
+    items/ac_graphicsscorepointitem.cpp \
     items/ac_graphicstrackitem.cpp \
     items/ac_graphicstuninglineitem.cpp \
     items/ac_graphicsvaluelineitem.cpp \

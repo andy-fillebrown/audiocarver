@@ -15,39 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSNOTEITEM_H
-#define AC_GRAPHICSNOTEITEM_H
+#ifndef AC_GRAPHICSCONTROLPOINTITEM_H
+#define AC_GRAPHICSCONTROLPOINTITEM_H
 
-#include <ac_graphicsitem.h>
+#include <ac_graphicspointitem.h>
 
-class AcNote;
+class AcPoint;
 
 namespace Private {
 
-class AcGraphicsNoteItemPrivate;
+class AcGraphicsControlPointItemPrivate;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsNoteItem : public AcGraphicsItem
+class AC_SCENE_EXPORT AcGraphicsControlPointItem : public AcGraphicsPointItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsNoteItem(AcNote *note = 0, QObject *parent = 0);
-    virtual ~AcGraphicsNoteItem();
+    AcGraphicsControlPointItem(AcPoint *point = 0, QObject *parent = 0);
+    virtual ~AcGraphicsControlPointItem();
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
-
-protected slots:
-    virtual void updatePitchCurveProperty(const QString &propertyName);
-    virtual void updateVolumeCurveProperty(const QString &propertyName);
 
 protected:
     virtual void updateDatabaseObjectProperty(const QString &propertyName);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsNoteItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsNoteItem);
+    Q_DISABLE_COPY(AcGraphicsControlPointItem)
+    Q_DECLARE_PRIVATE(Private::AcGraphicsControlPointItem)
 };
 
-#endif // AC_GRAPHICSNOTEITEM_H
+#endif // AC_GRAPHICSCONTROLPOINTITEM_H
