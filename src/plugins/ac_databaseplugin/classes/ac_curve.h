@@ -52,6 +52,8 @@ protected:
     virtual MiObject *createObject(const QString &className);
 
 protected slots:
+    virtual void updateCurveProperty(int propertyIndex);
+    virtual void updatePointProperty(int propertyIndex);
     virtual void updatePoints();
 
 private:

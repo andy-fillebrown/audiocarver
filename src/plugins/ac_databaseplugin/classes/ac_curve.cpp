@@ -18,6 +18,7 @@
 #include "ac_curve.h"
 #include <ac_point.h>
 #include <mi_list.h>
+#include <mi_scopedsignalblocker.h>
 
 using namespace Private;
 
@@ -40,7 +41,9 @@ public:
 AcCurve::AcCurve(QObject *parent)
     :   MiObject(parent)
     ,   d(new AcCurveData(this))
-{}
+{
+    connect(this, SIGNAL(propertyChanged(int)), SLOT(updateCurveProperty(int)));
+}
 
 AcCurve::~AcCurve()
 {
@@ -64,6 +67,29 @@ MiObjectList *AcCurve::pointObjects() const
     return d->points.objects();
 }
 
+void AcCurve::updateCurveProperty(int propertyIndex)
+{
+    if (Points == propertyIndex) {
+        foreach (AcPoint *point, d->points.list())
+            connect(point, SIGNAL(propertyChanged(int)), SLOT(updatePointProperty(int)), Qt::UniqueConnection);
+        updatePoints();
+    }
+}
+
+void AcCurve::updatePointProperty(int propertyIndex)
+{
+    switch (propertyIndex) {
+    case AcPoint::X:
+    case AcPoint::Y:
+        updatePoints();
+        break;
+    default:
+        break;
+    }
+}
+
 void AcCurve::updatePoints()
 {
+    MiScopedSignalBlocker blockSignals(this);
+    d->points.sort();
 }

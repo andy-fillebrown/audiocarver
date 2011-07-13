@@ -42,4 +42,5 @@ AcPitchCurve::~AcPitchCurve()
 
 void AcPitchCurve::updatePoints()
 {
+    AcCurve::updatePoints();
 }
