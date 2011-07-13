@@ -44,7 +44,7 @@ namespace Private {
 template <typename T, typename ExpandRect>
 static void updateItemVisibilitiesHelper(const QList<T*> &items, ExpandRect expandRect)
 {
-    int minPriority = 0x7fffffff;
+    int minPriority = INT_MAX;
     int prevPriority = 0;
     QRectF prevRect;
     foreach (T *item, items) {
