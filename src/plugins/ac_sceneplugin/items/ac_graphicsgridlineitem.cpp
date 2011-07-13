@@ -77,8 +77,8 @@ AcGraphicsGridLineItem::AcGraphicsGridLineItem(Private::AcGraphicsGridLineItemDa
 {
     Q_D(AcGraphicsGridLineItem);
     const AcScore *score = d->score();
-    connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
-    connect(score->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+    connect(score->fontSettings(), SIGNAL(propertyChanged(int)), SLOT(updateFontSettingsProperty(int)));
+    connect(score->viewSettings(), SIGNAL(propertyChanged(int)), SLOT(updateViewSettingsProperty(int)));
     d->update();
 }
 
@@ -97,18 +97,24 @@ QRectF AcGraphicsGridLineItem::labelRect() const
     return QRectF(d->labelItem->pos(), d->labelItem->boundingRect().size());
 }
 
-void AcGraphicsGridLineItem::updateFontSettingsProperty(const QString &propertyName)
+void AcGraphicsGridLineItem::updateFontSettingsProperty(int propertyIndex)
 {
-    Q_UNUSED(propertyName);
+    Q_UNUSED(propertyIndex);
     Q_D(AcGraphicsGridLineItem);
     d->updateFont();
 }
 
-void AcGraphicsGridLineItem::updateDatabaseObjectProperty(const QString &propertyName)
+void AcGraphicsGridLineItem::updateDatabaseObjectProperty(int propertyIndex)
 {
     Q_D(AcGraphicsGridLineItem);
-    if ("label" == propertyName)
+    switch (propertyIndex) {
+    case AcGridLine::Label:
         d->updateLabel();
-    else if ("color" == propertyName)
+        break;
+    case AcGridLine::Color:
         d->updateColor();
+        break;
+    default:
+        break;
+    }
 }

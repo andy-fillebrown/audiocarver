@@ -37,6 +37,12 @@ class AC_DATABASE_EXPORT AcCurve : public MiObject
     Q_PROPERTY(MiObjectList* points READ pointObjects)
 
 public:
+    enum PropertyIndex
+    {
+        Points = MiObject::PropertyCount,
+        PropertyCount
+    };
+
     AcCurve(QObject *parent = 0);
     virtual ~AcCurve();
 

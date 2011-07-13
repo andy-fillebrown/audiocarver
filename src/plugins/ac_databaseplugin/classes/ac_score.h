@@ -47,6 +47,17 @@ class AC_DATABASE_EXPORT AcScore : public MiRoot
     Q_PROPERTY(MiObjectList* valueLines READ valueLineObjects)
 
 public:
+    enum PropertyIndex
+    {
+        Length = MiRoot::PropertyCount,
+        Settings,
+        Tracks,
+        BarLines,
+        TuningLines,
+        ValueLines,
+        PropertyCount
+    };
+
     AcScore(QObject *parent = 0);
     virtual ~AcScore();
 
@@ -71,10 +82,10 @@ protected:
     virtual MiObject *findObject(const QString &className) const;
 
 private slots:
-    void updateScoreProperty(const QString &propertyName);
-    void updateBarLineProperty(const QString &propertyName);
-    void updateTuningLineProperty(const QString &propertyName);
-    void updateValueLineProperty(const QString &propertyName);
+    void updateScoreProperty(int propertyIndex);
+    void updateBarLineProperty(int propertyIndex);
+    void updateTuningLineProperty(int propertyIndex);
+    void updateValueLineProperty(int propertyIndex);
     void sortBarLines();
     void sortTuningLines();
     void sortValueLines();

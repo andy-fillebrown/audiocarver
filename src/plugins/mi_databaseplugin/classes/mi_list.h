@@ -25,8 +25,8 @@ template <typename T> class MiList
     static bool lessThan(MiObject *a, MiObject *b);
 
 public:
-    MiList(const QString &propertyName, MiObject *parent = 0)
-        :   _list(new MiObjectList(propertyName, parent))
+    MiList(int propertyIndex, MiObject *parent = 0)
+        :   _list(new MiObjectList(propertyIndex, parent))
     {}
 
     ~MiList() { delete _list; }
@@ -67,8 +67,8 @@ private:
 template <typename T> class MiConstantList : MiList<T>
 {
 public:
-    MiConstantList(const QString &propertyName, MiObject *parent = 0)
-        :   MiList<T>(new MiConstantObjectList(propertyName, parent))
+    MiConstantList(int propertyIndex, MiObject *parent = 0)
+        :   MiList<T>(new MiConstantObjectList(propertyIndex, parent))
     {}
 };
 

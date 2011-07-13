@@ -32,6 +32,12 @@ class MI_DATABASE_EXPORT MiLink : public MiObject
     Q_PROPERTY(QString linkId READ linkId WRITE setLinkId)
 
 public:
+    enum PropertyIndex
+    {
+        LinkId = MiObject::PropertyCount,
+        PropertyCount
+    };
+
     MiLink(QObject *parent = 0);
     virtual ~MiLink();
 

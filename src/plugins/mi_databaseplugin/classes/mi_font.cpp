@@ -54,7 +54,7 @@ void MiFont::setFamily(const QString &family)
     if (d->font.family() == family)
         return;
     d->font.setFamily(family);
-    emit propertyChanged("family");
+    emit propertyChanged(Family);
 }
 
 int MiFont::pointSize() const
@@ -67,7 +67,7 @@ void MiFont::setPointSize(int size)
     if (d->font.pointSize() == size)
         return;
     d->font.setPointSize(size);
-    emit propertyChanged("pointSize");
+    emit propertyChanged(PointSize);
 }
 
 const QFont &MiFont::qFont() const

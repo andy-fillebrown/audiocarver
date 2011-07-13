@@ -39,11 +39,11 @@ public:
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettingsProperty(const QString &propertyName);
-    virtual void updateGridLineProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(int propertyIndex);
+    virtual void updateGridLineProperty(int propertyIndex);
 
 protected slots:
-    virtual void updateScoreProperty(const QString &propertyName);
+    virtual void updateScoreProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcGraphicsTuningLineItem)

@@ -25,6 +25,8 @@ class MI_DATABASE_EXPORT MiRoot : public MiObject
     Q_OBJECT
 
 public:
+    typedef MiObject::PropertyIndex PropertyIndex;
+
     MiRoot(QObject *parent = 0);
     ~MiRoot() {}
 

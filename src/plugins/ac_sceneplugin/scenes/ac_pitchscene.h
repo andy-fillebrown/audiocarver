@@ -37,7 +37,7 @@ public:
     static AcPitchScene *instance();
 
 protected:
-    virtual void updateViewSettingsProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcPitchScene)

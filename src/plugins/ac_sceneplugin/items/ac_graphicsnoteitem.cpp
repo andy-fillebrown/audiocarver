@@ -95,8 +95,8 @@ AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
 {
     Q_D(AcGraphicsNoteItem);
     d->update();
-    updateDatabaseObjectProperty("pitchCurve");
-    updateDatabaseObjectProperty("volumeCurve");
+    updateDatabaseObjectProperty(AcNote::PitchCurve);
+    updateDatabaseObjectProperty(AcNote::VolumeCurve);
 }
 
 AcGraphicsNoteItem::~AcGraphicsNoteItem()
@@ -116,27 +116,33 @@ QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsNoteItem::updatePitchCurveProperty(const QString &propertyName)
+void AcGraphicsNoteItem::updatePitchCurveProperty(int propertyIndex)
 {
-    if ("points" == propertyName) {
+    if (AcCurve::Points == propertyIndex) {
         Q_D(AcGraphicsNoteItem);
         d->updateScorePointItems();
     }
 }
 
-void AcGraphicsNoteItem::updateVolumeCurveProperty(const QString &propertyName)
+void AcGraphicsNoteItem::updateVolumeCurveProperty(int propertyIndex)
 {
-    if ("points" == propertyName) {
+    if (AcCurve::Points == propertyIndex) {
         Q_D(AcGraphicsNoteItem);
         d->updateControlPointItems();
     }
 }
 
-void AcGraphicsNoteItem::updateDatabaseObjectProperty(const QString &propertyName)
+void AcGraphicsNoteItem::updateDatabaseObjectProperty(int propertyIndex)
 {
     Q_D(AcGraphicsNoteItem);
-    if ("pitchCurve" == propertyName)
-        connect(d->pitchCurve(), SIGNAL(propertyChanged(QString)), SLOT(updatePitchCurveProperty(QString)), Qt::UniqueConnection);
-    else if ("volumeCurve" == propertyName)
-        connect(d->volumeCurve(), SIGNAL(propertyChanged(QString)), SLOT(updateVolumeCurveProperty(QString)), Qt::UniqueConnection);
+    switch (propertyIndex) {
+    case AcNote::PitchCurve:
+        connect(d->pitchCurve(), SIGNAL(propertyChanged(int)), SLOT(updatePitchCurveProperty(int)), Qt::UniqueConnection);
+        break;
+    case AcNote::VolumeCurve:
+        connect(d->volumeCurve(), SIGNAL(propertyChanged(int)), SLOT(updateVolumeCurveProperty(int)), Qt::UniqueConnection);
+        break;
+    default:
+        break;
+    }
 }

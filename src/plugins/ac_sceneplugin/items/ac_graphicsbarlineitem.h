@@ -39,8 +39,8 @@ public:
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettingsProperty(const QString &propertyName);
-    virtual void updateDatabaseObjectProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(int propertyIndex);
+    virtual void updateDatabaseObjectProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcGraphicsBarLineItem)

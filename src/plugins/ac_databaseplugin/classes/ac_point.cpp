@@ -69,7 +69,7 @@ void AcPoint::setX(qreal x)
     if (d->x == x)
         return;
     d->x = x;
-    emit propertyChanged("x");
+    emit propertyChanged(X);
 }
 
 qreal AcPoint::y() const
@@ -82,7 +82,7 @@ void AcPoint::setY(qreal y)
     if (d->y == y)
         return;
     d->y = y;
-    emit propertyChanged("y");
+    emit propertyChanged(Y);
 }
 
 bool AcPoint::isCurved() const
@@ -95,5 +95,5 @@ void AcPoint::setCurved(bool curved)
     if (d->curved == curved)
         return;
     d->curved = curved;
-    emit propertyChanged("curved");
+    emit propertyChanged(Curved);
 }

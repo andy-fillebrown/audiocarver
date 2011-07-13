@@ -63,7 +63,7 @@ void AcViewSettings::setTimePosition(qreal position)
     if (d->timePosition == position)
         return;
     d->timePosition = position;
-    emit propertyChanged("timePosition");
+    emit propertyChanged(TimePosition);
 }
 
 qreal AcViewSettings::pitchPosition() const
@@ -76,7 +76,7 @@ void AcViewSettings::setPitchPosition(qreal position)
     if (d->pitchPosition == position)
         return;
     d->pitchPosition = position;
-    emit propertyChanged("pitchPosition");
+    emit propertyChanged(PitchPosition);
 }
 
 qreal AcViewSettings::valuePosition() const
@@ -89,7 +89,7 @@ void AcViewSettings::setValuePosition(qreal position)
     if (d->valuePosition == position)
         return;
     d->valuePosition = position;
-    emit propertyChanged("valuePosition");
+    emit propertyChanged(ValuePosition);
 }
 
 qreal AcViewSettings::timeScale() const
@@ -103,7 +103,7 @@ void AcViewSettings::setTimeScale(qreal scale)
     if (d->timeScale == scale)
         return;
     d->timeScale = scale;
-    emit propertyChanged("timeScale");
+    emit propertyChanged(TimeScale);
 }
 
 qreal AcViewSettings::pitchScale() const
@@ -117,7 +117,7 @@ void AcViewSettings::setPitchScale(qreal scale)
     if (d->pitchScale == scale)
         return;
     d->pitchScale = scale;
-    emit propertyChanged("pitchScale");
+    emit propertyChanged(PitchScale);
 }
 
 qreal AcViewSettings::valueScale() const
@@ -131,5 +131,5 @@ void AcViewSettings::setValueScale(qreal scale)
     if (d->valueScale == scale)
         return;
     d->valueScale = scale;
-    emit propertyChanged("valueScale");
+    emit propertyChanged(ValueScale);
 }

@@ -25,6 +25,8 @@ class AC_DATABASE_EXPORT AcTuningLine : public AcGridLine
     Q_OBJECT
 
 public:
+    typedef AcGridLine::PropertyIndex PropertyIndex;
+
     explicit AcTuningLine(QObject *parent = 0);
     virtual ~AcTuningLine();
 

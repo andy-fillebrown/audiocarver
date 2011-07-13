@@ -35,6 +35,14 @@ class AC_DATABASE_EXPORT AcPoint : public MiObject
     Q_PROPERTY(bool curved READ isCurved WRITE setCurved)
 
 public:
+    enum PropertyIndex
+    {
+        X = MiObject::PropertyCount,
+        Y,
+        Curved,
+        PropertyCount
+    };
+
     AcPoint(QObject *parent = 0);
     virtual ~AcPoint();
 

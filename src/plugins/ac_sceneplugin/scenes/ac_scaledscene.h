@@ -35,7 +35,7 @@ public:
     virtual ~AcScaledScene();
 
 protected slots:
-    virtual void updateViewSettingsProperty(const QString &propertyName) = 0;
+    virtual void updateViewSettingsProperty(int propertyIndex) = 0;
 
 private:
     Q_DISABLE_COPY(AcScaledScene)

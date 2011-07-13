@@ -37,10 +37,10 @@ public:
     static AcTimeScene *instance();
 
 protected:
-    virtual void updateViewSettingsProperty(const QString &propertyName);
+    virtual void updateViewSettingsProperty(int propertyIndex);
 
 protected slots:
-    virtual void updateScoreProperty(const QString &propertyName);
+    virtual void updateScoreProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcTimeScene)

@@ -50,9 +50,9 @@ public:
     const QFontMetrics &fontMetrics() const;
 
 private slots:
-    void updateScoreProperty(const QString &propertyName);
-    void updateFontSettingsProperty(const QString &propertyName);
-    void updateViewSettingsProperty(const QString &propertyName);
+    void updateScoreProperty(int propertyIndex);
+    void updateFontSettingsProperty(int propertyIndex);
+    void updateViewSettingsProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcSceneManager)

@@ -32,7 +32,7 @@ public:
     qreal volume;
 
     AcTrackData(AcTrack *q)
-        :   notes("notes", q)
+        :   notes(AcTrack::Notes, q)
         ,   visible(true)
         ,   volume(0.999999)
     {}
@@ -65,7 +65,7 @@ void AcTrack::setVisible(bool visible)
     if (visible && isVisible())
         return;
     d->visible = visible;
-    emit propertyChanged("visible");
+    emit propertyChanged(Visible);
 }
 
 qreal AcTrack::volume() const
@@ -79,7 +79,7 @@ void AcTrack::setVolume(qreal volume)
     if (volume == d->volume)
         return;
     d->volume = volume;
-    emit propertyChanged("volume");
+    emit propertyChanged(Volume);
 }
 
 MiObject *AcTrack::createObject(const QString &className)

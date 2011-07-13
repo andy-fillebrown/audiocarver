@@ -47,11 +47,11 @@ public:
     AcScoreData(AcScore *q)
         :   q(q)
         ,   length(128.0f)
-        ,   settings("settings", q)
-        ,   tracks("tracks", q)
-        ,   barLines("barLines", q)
-        ,   tuningLines("tuningLines", q)
-        ,   valueLines("valueLines", q)
+        ,   settings(AcScore::Settings, q)
+        ,   tracks(AcScore::Tracks, q)
+        ,   barLines(AcScore::BarLines, q)
+        ,   tuningLines(AcScore::TuningLines, q)
+        ,   valueLines(AcScore::ValueLines, q)
         ,   fontSettings(0)
         ,   gridSettings(0)
         ,   viewSettings(0)
@@ -78,7 +78,7 @@ AcScore::AcScore(QObject *parent)
 {
     ::instance = this;
     d->init();
-    connect(this, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+    connect(this, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
 }
 
 AcScore::~AcScore()
@@ -103,7 +103,7 @@ void AcScore::setLength(qreal length)
     if (d->length == length)
         return;
     d->length = length;
-    emit propertyChanged("length");
+    emit propertyChanged(Length);
 }
 
 MiList<AcTrack> &AcScore::tracks() const
@@ -181,38 +181,44 @@ MiObject *AcScore::findObject(const QString &className) const
     return 0;
 }
 
-void AcScore::updateScoreProperty(const QString &propertyName)
+void AcScore::updateScoreProperty(int propertyIndex)
 {
-    if ("barLines" == propertyName) {
+    switch (propertyIndex) {
+    case BarLines:
         foreach (AcBarLine *barLine, d->barLines.list())
-            connect(barLine, SIGNAL(propertyChanged(QString)), SLOT(updateBarLineProperty(QString)), Qt::UniqueConnection);
+            connect(barLine, SIGNAL(propertyChanged(int)), SLOT(updateBarLineProperty(int)), Qt::UniqueConnection);
         sortBarLines();
-    } else if ("tuningLines" == propertyName) {
+        break;
+    case TuningLines:
         foreach (AcTuningLine *tuningLine, d->tuningLines.list())
-            connect(tuningLine, SIGNAL(propertyChanged(QString)), SLOT(updateTuningLineProperty(QString)), Qt::UniqueConnection);
+            connect(tuningLine, SIGNAL(propertyChanged(int)), SLOT(updateTuningLineProperty(int)), Qt::UniqueConnection);
         sortTuningLines();
-    } else if ("valueLines" == propertyName) {
+        break;
+    case ValueLines:
         foreach (AcValueLine *valueLine, d->valueLines.list())
-            connect(valueLine, SIGNAL(propertyChanged(QString)), SLOT(updateValueLineProperty(QString)), Qt::UniqueConnection);
+            connect(valueLine, SIGNAL(propertyChanged(int)), SLOT(updateValueLineProperty(int)), Qt::UniqueConnection);
         sortValueLines();
+        break;
+    default:
+        break;
     }
 }
 
-void AcScore::updateBarLineProperty(const QString &propertyName)
+void AcScore::updateBarLineProperty(int propertyIndex)
 {
-    if ("location" == propertyName)
+    if (AcGridLine::Location == propertyIndex)
         sortBarLines();
 }
 
-void AcScore::updateTuningLineProperty(const QString &propertyName)
+void AcScore::updateTuningLineProperty(int propertyIndex)
 {
-    if ("location" == propertyName)
+    if (AcGridLine::Location == propertyIndex)
         sortTuningLines();
 }
 
-void AcScore::updateValueLineProperty(const QString &propertyName)
+void AcScore::updateValueLineProperty(int propertyIndex)
 {
-    if ("location" == propertyName)
+    if (AcGridLine::Location == propertyIndex)
         sortValueLines();
 }
 

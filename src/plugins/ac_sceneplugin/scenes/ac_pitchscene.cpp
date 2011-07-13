@@ -75,8 +75,8 @@ AcPitchScene *AcPitchScene::instance()
     return ::instance;
 }
 
-void AcPitchScene::updateViewSettingsProperty(const QString &propertyName)
+void AcPitchScene::updateViewSettingsProperty(int propertyIndex)
 {
-    if ("pitchScale" == propertyName)
+    if (AcViewSettings::PitchScale == propertyIndex)
         d->updateSceneRect();
 }

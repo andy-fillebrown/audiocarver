@@ -39,7 +39,7 @@ public:
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateDatabaseObjectProperty(const QString &propertyName);
+    virtual void updateDatabaseObjectProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcGraphicsControlPointItem)

@@ -57,11 +57,11 @@ public:
     QRectF labelRect() const;
 
 protected slots:
-    virtual void updateFontSettingsProperty(const QString &propertyName);
-    virtual void updateViewSettingsProperty(const QString &propertyName) = 0;
+    virtual void updateFontSettingsProperty(int propertyIndex);
+    virtual void updateViewSettingsProperty(int propertyIndex) = 0;
 
 protected:
-    virtual void updateDatabaseObjectProperty(const QString &propertyName);
+    virtual void updateDatabaseObjectProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcGraphicsGridLineItem)

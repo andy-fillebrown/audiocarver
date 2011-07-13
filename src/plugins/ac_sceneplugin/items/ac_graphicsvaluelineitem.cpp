@@ -68,7 +68,7 @@ AcGraphicsValueLineItem::AcGraphicsValueLineItem(AcValueLine *valueLine, QObject
     :   AcGraphicsGridLineItem(*(new AcGraphicsValueLineItemPrivate(valueLine)), parent)
 {
     Q_D(AcGraphicsValueLineItem);
-    connect(d->score(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+    connect(d->score(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
 }
 
 AcGraphicsValueLineItem::~AcGraphicsValueLineItem()
@@ -88,26 +88,26 @@ QGraphicsItem *AcGraphicsValueLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsValueLineItem::updateViewSettingsProperty(const QString &propertyName)
+void AcGraphicsValueLineItem::updateViewSettingsProperty(int propertyIndex)
 {
-    if ("valueScale" == propertyName) {
+    if (AcViewSettings::ValueScale == propertyIndex) {
         Q_D(AcGraphicsValueLineItem);
         d->updateLabelPosition();
     }
 }
 
-void AcGraphicsValueLineItem::updateDatabaseObjectProperty(const QString &propertyName)
+void AcGraphicsValueLineItem::updateDatabaseObjectProperty(int propertyIndex)
 {
-    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyName);
-    if ("location" == propertyName) {
+    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyIndex);
+    if (AcValueLine::Location == propertyIndex) {
         Q_D(AcGraphicsValueLineItem);
         d->update();
     }
 }
 
-void AcGraphicsValueLineItem::updateScoreProperty(const QString &propertyName)
+void AcGraphicsValueLineItem::updateScoreProperty(int propertyIndex)
 {
-    if ("length" == propertyName) {
+    if (AcScore::Length == propertyIndex) {
         Q_D(AcGraphicsValueLineItem);
         d->updateLineGeometry();
     }

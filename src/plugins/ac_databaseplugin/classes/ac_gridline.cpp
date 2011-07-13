@@ -62,7 +62,7 @@ void AcGridLine::setLocation(qreal location)
     if (d->location == location)
         return;
     d->location = location;
-    emit propertyChanged("location");
+    emit propertyChanged(Location);
 }
 
 const QString &AcGridLine::label() const
@@ -75,7 +75,7 @@ void AcGridLine::setLabel(const QString &label)
     if (d->label == label)
         return;
     d->label = label;
-    emit propertyChanged("label");
+    emit propertyChanged(Label);
 }
 
 int AcGridLine::priority() const
@@ -90,7 +90,7 @@ void AcGridLine::setPriority(int priority)
     if (d->priority == priority)
         return;
     d->priority = priority;
-    emit propertyChanged("priority");
+    emit propertyChanged(Priority);
 }
 
 const QColor &AcGridLine::color() const
@@ -103,7 +103,7 @@ void AcGridLine::setColor(const QColor &color)
     if (d->color == color)
         return;
     d->color = color;
-    emit propertyChanged("color");
+    emit propertyChanged(Color);
 }
 
 void AcGridLine::set(qreal location, const QString &label, int priority, const QColor &color)

@@ -54,6 +54,7 @@ void MiObject::setId(const QString &id)
         setObjectName(root->getUniqueId(this, id));
     else
         setObjectName(id);
+    emit propertyChanged(Id);
 }
 
 void MiObject::erase()
@@ -199,7 +200,7 @@ bool MiObject::read(QXmlStreamReader &in)
             }
         }
         blockSignals(false);
-        emit propertyChanged(currentListName);
+        emit propertyChanged(i);
     }
     return true;
 }

@@ -31,6 +31,8 @@ class AC_DATABASE_EXPORT AcPitchCurve: public AcCurve
     Q_OBJECT
 
 public:
+    typedef AcCurve::PropertyIndex PropertyIndex;
+
     AcPitchCurve(QObject *parent = 0);
     virtual ~AcPitchCurve();
 

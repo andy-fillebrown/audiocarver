@@ -31,7 +31,7 @@ public:
 
     AcCurveData(AcCurve *q)
         :   q(q)
-        ,   points("points", q)
+        ,   points(AcCurve::Points, q)
     {}
 };
 

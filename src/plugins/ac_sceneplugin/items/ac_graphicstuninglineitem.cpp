@@ -65,7 +65,7 @@ public:
 AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine, QObject *parent)
     :   AcGraphicsGridLineItem(*(new AcGraphicsTuningLineItemPrivate(tuningLine)), parent)
 {
-    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+    connect(AcScore::instance(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
 }
 
 AcGraphicsTuningLineItem::~AcGraphicsTuningLineItem()
@@ -85,26 +85,26 @@ QGraphicsItem *AcGraphicsTuningLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsTuningLineItem::updateViewSettingsProperty(const QString &propertyName)
+void AcGraphicsTuningLineItem::updateViewSettingsProperty(int propertyIndex)
 {
-    if ("pitchScale" == propertyName) {
+    if (AcViewSettings::PitchScale == propertyIndex) {
         Q_D(AcGraphicsTuningLineItem);
         d->updateLabelPosition();
     }
 }
 
-void AcGraphicsTuningLineItem::updateGridLineProperty(const QString &propertyName)
+void AcGraphicsTuningLineItem::updateGridLineProperty(int propertyIndex)
 {
-    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyName);
-    if ("location" == propertyName) {
+    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyIndex);
+    if (AcGridLine::Location == propertyIndex) {
         Q_D(AcGraphicsTuningLineItem);
         d->update();
     }
 }
 
-void AcGraphicsTuningLineItem::updateScoreProperty(const QString &propertyName)
+void AcGraphicsTuningLineItem::updateScoreProperty(int propertyIndex)
 {
-    if ("length" == propertyName) {
+    if (AcScore::Length == propertyIndex) {
         Q_D(AcGraphicsTuningLineItem);
         d->updateLineGeometry();
     }

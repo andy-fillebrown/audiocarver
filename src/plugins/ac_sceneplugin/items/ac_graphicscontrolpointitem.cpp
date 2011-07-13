@@ -47,7 +47,7 @@ QGraphicsItem *AcGraphicsControlPointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsControlPointItem::updateDatabaseObjectProperty(const QString &propertyName)
+void AcGraphicsControlPointItem::updateDatabaseObjectProperty(int propertyIndex)
 {
-    Q_UNUSED(propertyName);
+    Q_UNUSED(propertyIndex);
 }

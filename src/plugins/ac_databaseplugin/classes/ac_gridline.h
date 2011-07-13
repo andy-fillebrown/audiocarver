@@ -37,6 +37,15 @@ class AC_DATABASE_EXPORT AcGridLine : public MiObject
     Q_PROPERTY(QColor color READ color WRITE setColor)
 
 public:
+    enum PropertyIndex
+    {
+        Location = MiObject::PropertyCount,
+        Label,
+        Priority,
+        Color,
+        PropertyCount
+    };
+
     explicit AcGridLine(QObject *parent = 0);
     virtual ~AcGridLine();
 

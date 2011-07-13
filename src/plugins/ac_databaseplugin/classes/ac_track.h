@@ -38,6 +38,14 @@ class AC_DATABASE_EXPORT AcTrack : public MiObject
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
 public:
+    enum PropertyIndex
+    {
+        Notes = MiObject::PropertyCount,
+        Visible,
+        Volume,
+        PropertyCount
+    };
+
     AcTrack(QObject *parent = 0);
     virtual ~AcTrack();
 

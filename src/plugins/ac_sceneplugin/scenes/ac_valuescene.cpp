@@ -75,8 +75,8 @@ AcValueScene *AcValueScene::instance()
     return ::instance;
 }
 
-void AcValueScene::updateViewSettingsProperty(const QString &propertyName)
+void AcValueScene::updateViewSettingsProperty(int propertyIndex)
 {
-    if ("valueScale" == propertyName)
+    if (AcViewSettings::ValueScale == propertyIndex)
         d->updateSceneRect();
 }

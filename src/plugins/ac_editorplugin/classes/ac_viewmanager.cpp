@@ -69,7 +69,7 @@ AcViewManager::AcViewManager(QWidget *widget)
     :   QObject(widget)
     ,   d(new AcViewManagerData(this, widget))
 {
-    connect(AcScore::instance()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+    connect(AcScore::instance()->viewSettings(), SIGNAL(propertyChanged(int)), SLOT(updateViewSettingsProperty(int)));
 }
 
 AcViewManager::~AcViewManager()
@@ -170,10 +170,20 @@ void AcViewManager::updateViews()
     d->updateViewCenters();
 }
 
-void AcViewManager::updateViewSettingsProperty(const QString &propertyName)
+void AcViewManager::updateViewSettingsProperty(int propertyIndex)
 {
-    if (propertyName.endsWith("Position"))
+    switch (propertyIndex) {
+    case AcViewSettings::TimePosition:
+    case AcViewSettings::PitchPosition:
+    case AcViewSettings::ValuePosition:
         d->updateViewCenters();
-    else if (propertyName.endsWith("Scale"))
+        break;
+    case AcViewSettings::TimeScale:
+    case AcViewSettings::PitchScale:
+    case AcViewSettings::ValueScale:
         updateViews();
+        break;
+    default:
+        break;
+    }
 }

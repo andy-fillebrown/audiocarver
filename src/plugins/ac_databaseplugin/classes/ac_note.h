@@ -37,6 +37,13 @@ class AC_DATABASE_EXPORT AcNote : public MiObject
     Q_PROPERTY(MiObject* volumeCurve READ volumeCurveObject)
 
 public:
+    enum PropertyIndex
+    {
+        PitchCurve = MiObject::PropertyCount,
+        VolumeCurve,
+        PropertyCount
+    };
+
     AcNote(QObject *parent = 0);
     virtual ~AcNote();
 

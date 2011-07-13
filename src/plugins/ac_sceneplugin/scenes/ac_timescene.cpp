@@ -76,14 +76,14 @@ AcTimeScene *AcTimeScene::instance()
     return ::instance;
 }
 
-void AcTimeScene::updateViewSettingsProperty(const QString &propertyName)
+void AcTimeScene::updateViewSettingsProperty(int propertyIndex)
 {
-    if ("timeScale" == propertyName)
+    if (AcViewSettings::TimeScale == propertyIndex)
         d->updateSceneRect();
 }
 
-void AcTimeScene::updateScoreProperty(const QString &propertyName)
+void AcTimeScene::updateScoreProperty(int propertyIndex)
 {
-    if ("length" == propertyName)
+    if (AcScore::Length == propertyIndex)
         d->updateSceneRect();
 }

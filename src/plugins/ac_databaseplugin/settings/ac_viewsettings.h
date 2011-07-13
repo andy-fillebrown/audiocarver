@@ -38,6 +38,17 @@ class AC_DATABASE_EXPORT AcViewSettings : public MiObject
     Q_PROPERTY(qreal valueScale READ valueScale WRITE setValueScale)
 
 public:
+    enum PropertyIndex
+    {
+        TimePosition = MiObject::PropertyCount,
+        PitchPosition,
+        ValuePosition,
+        TimeScale,
+        PitchScale,
+        ValueScale,
+        PropertyCount
+    };
+
     AcViewSettings(QObject *parent = 0);
     ~AcViewSettings();
 

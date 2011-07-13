@@ -62,10 +62,15 @@ QGraphicsItem *AcGraphicsScorePointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsScorePointItem::updateDatabaseObjectProperty(const QString &propertyName)
+void AcGraphicsScorePointItem::updateDatabaseObjectProperty(int propertyIndex)
 {
-    if ("x" == propertyName || "y" == propertyName) {
-        Q_D(AcGraphicsScorePointItem);
+    Q_D(AcGraphicsScorePointItem);
+    switch (propertyIndex) {
+    case AcPoint::X:
+    case AcPoint::Y:
         d->updateRect();
+        break;
+    default:
+        break;
     }
 }

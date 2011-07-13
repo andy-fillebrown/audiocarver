@@ -24,8 +24,8 @@
 class MiObjectList
 {
 public:
-    MiObjectList(const QString &propertyName, MiObject *parent = 0)
-        :   _propertyName(propertyName)
+    MiObjectList(int propertyIndex, MiObject *parent = 0)
+        :   _propertyIndex(propertyIndex)
         ,   _parent(parent)
     {}
 
@@ -51,9 +51,9 @@ public:
     QList<MiObject*> *list() { return &_list; }
 
 private:
-    void emitChanged() { _parent->emit propertyChanged(_propertyName); }
+    void emitChanged() { _parent->emit propertyChanged(_propertyIndex); }
 
-    QString _propertyName;
+    int _propertyIndex;
     MiObject *_parent;
     QList<MiObject*> _list;
 };
@@ -63,8 +63,8 @@ Q_DECLARE_METATYPE(MiObjectList*);
 class MiConstantObjectList : public MiObjectList
 {
 public:
-    MiConstantObjectList(const QString &propertyName, MiObject *parent = 0)
-        :   MiObjectList(propertyName, parent)
+    MiConstantObjectList(int propertyIndex, MiObject *parent = 0)
+        :   MiObjectList(propertyIndex, parent)
     {}
 
     virtual bool isConstant() const { return true; }

@@ -184,9 +184,9 @@ AcSceneManager::AcSceneManager(QObject *parent)
     ::instance = this;
     d->init();
     AcScore *score = AcScore::instance();
-    connect(score, SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-    connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
-    connect(score->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+    connect(score, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    connect(score->fontSettings(), SIGNAL(propertyChanged(int)), SLOT(updateFontSettingsProperty(int)));
+    connect(score->viewSettings(), SIGNAL(propertyChanged(int)), SLOT(updateViewSettingsProperty(int)));
 }
 
 AcSceneManager::~AcSceneManager()
@@ -199,41 +199,53 @@ AcSceneManager *AcSceneManager::instance()
     return ::instance;
 }
 
-void AcSceneManager::updateScoreProperty(const QString &propertyName)
+void AcSceneManager::updateScoreProperty(int propertyIndex)
 {
-    if ("tracks" == propertyName)
+    switch (propertyIndex) {
+    case AcScore::Tracks:
         d->updateTrackItems();
-    else if ("barLines" == propertyName) {
+        break;
+    case AcScore::BarLines:
         d->updateBarItems();
         d->updateBarItemVisibilities();
-    }
-    else if ("tuningLines" == propertyName) {
+        break;
+    case AcScore::TuningLines:
         d->updateTuningItems();
         d->updateTuningItemVisibilities();
-    }
-    else if ("valueLines" == propertyName) {
+        break;
+    case AcScore::ValueLines:
         d->updateValueItems();
         d->updateValueItemVisibilities();
+        break;
+    default:
+        break;
     }
 }
 
-void AcSceneManager::updateFontSettingsProperty(const QString &propertyName)
+void AcSceneManager::updateFontSettingsProperty(int propertyIndex)
 {
-    Q_UNUSED(propertyName);
+    Q_UNUSED(propertyIndex);
     d->updateFontMetrics();
     d->updateBarItemVisibilities();
     d->updateTuningItemVisibilities();
     d->updateValueItemVisibilities();
 }
 
-void AcSceneManager::updateViewSettingsProperty(const QString &propertyName)
+void AcSceneManager::updateViewSettingsProperty(int propertyIndex)
 {
-    if ("timeScale" == propertyName)
+    switch (propertyIndex) {
+    case AcViewSettings::TimeScale:
         d->updateBarItemVisibilities();
-    else if ("pitchScale" == propertyName)
+        break;
+    case AcViewSettings::PitchScale:
         d->updateTuningItemVisibilities();
-    else if ("valueScale" == propertyName)
+        break;
+    case AcViewSettings::ValueScale:
         d->updateValueItemVisibilities();
+        break;
+    default:
+        break;
+    }
 }
 
 QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const

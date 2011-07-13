@@ -31,6 +31,8 @@ class AC_DATABASE_EXPORT AcVolumeCurve: public AcCurve
     Q_OBJECT
 
 public:
+    typedef AcCurve::PropertyIndex PropertyIndex;
+
     AcVolumeCurve(QObject *parent = 0);
     virtual ~AcVolumeCurve();
 

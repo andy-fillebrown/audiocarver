@@ -25,6 +25,8 @@ class AC_DATABASE_EXPORT AcValueLine : public AcGridLine
     Q_OBJECT
 
 public:
+    typedef AcGridLine::PropertyIndex PropertyIndex;
+
     explicit AcValueLine(QObject *parent = 0);
     virtual ~AcValueLine();
 

@@ -34,6 +34,13 @@ class MI_DATABASE_EXPORT MiFont : public MiObject
     Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
 
 public:
+    enum PropertyIndex
+    {
+        Family = MiObject::PropertyCount,
+        PointSize,
+        PropertyCount
+    };
+
     MiFont(QObject *parent = 0);
     virtual ~MiFont();
 

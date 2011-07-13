@@ -53,5 +53,5 @@ void AcGridSettings::setVisible(bool visible)
     if (d->visible == visible)
         return;
     d->visible = visible;
-    emit propertyChanged("visible");
+    emit propertyChanged(Visible);
 }

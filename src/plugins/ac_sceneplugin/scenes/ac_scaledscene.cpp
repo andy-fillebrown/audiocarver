@@ -36,7 +36,7 @@ AcScaledScene::AcScaledScene(QObject *parent)
     :   AcGraphicsScene(parent)
     ,   d(new AcScaledSceneData)
 {
-    connect(AcScore::instance()->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
+    connect(AcScore::instance()->viewSettings(), SIGNAL(propertyChanged(int)), SLOT(updateViewSettingsProperty(int)));
 }
 
 AcScaledScene::~AcScaledScene()

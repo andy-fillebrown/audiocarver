@@ -87,9 +87,9 @@ QGraphicsItem *AcGraphicsTrackItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsTrackItem::updateDatabaseObjectProperty(const QString &propertyName)
+void AcGraphicsTrackItem::updateDatabaseObjectProperty(int propertyIndex)
 {
-    if ("notes" == propertyName) {
+    if (AcTrack::Notes == propertyIndex) {
         Q_D(AcGraphicsTrackItem);
         d->updateNoteItems();
     }

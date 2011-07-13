@@ -32,6 +32,12 @@ class MI_DATABASE_EXPORT MiObject : public QObject
     Q_OBJECT
 
 public:
+    enum PropertyIndex
+    {
+        Id = 0,
+        PropertyCount
+    };
+
     MiObject(QObject *parent = 0);
     virtual ~MiObject() {}
 
@@ -69,7 +75,7 @@ protected:
 signals:
     void erased();
     void unerased();
-    void propertyChanged(const QString &name);
+    void propertyChanged(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(MiObject)

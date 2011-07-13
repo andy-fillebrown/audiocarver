@@ -60,7 +60,7 @@ public:
     void updateViews();
 
 private slots:
-    void updateViewSettingsProperty(const QString &propertyName);
+    void updateViewSettingsProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcViewManager)

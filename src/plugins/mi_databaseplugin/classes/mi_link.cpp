@@ -62,7 +62,7 @@ void MiLink::setLinkId(const QString &id)
         return;
     d->linkId = id;
     d->updateLinkedObject();
-    emit propertyChanged("linkId");
+    emit propertyChanged(LinkId);
 }
 
 MiObject *MiLink::linkedObject() const

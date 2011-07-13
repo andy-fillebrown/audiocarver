@@ -52,7 +52,7 @@ AcScoreScene::AcScoreScene(QObject *parent)
 {
     ::instance = this;
     d->init();
-    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
+    connect(AcScore::instance(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
 }
 
 AcScoreScene::~AcScoreScene()
@@ -65,8 +65,8 @@ AcScoreScene *AcScoreScene::instance()
     return ::instance;
 }
 
-void AcScoreScene::updateScoreProperty(const QString &propertyName)
+void AcScoreScene::updateScoreProperty(int propertyIndex)
 {
-    if ("length" == propertyName)
+    if (AcScore::Length == propertyIndex)
         d->updateSceneRect();
 }

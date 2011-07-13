@@ -33,6 +33,12 @@ class AC_DATABASE_EXPORT AcGridSettings : public MiObject
     Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
+    enum PropertyIndex
+    {
+        Visible = MiObject::PropertyCount,
+        PropertyCount
+    };
+
     AcGridSettings(QObject *parent = 0);
     ~AcGridSettings();
 

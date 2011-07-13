@@ -96,19 +96,26 @@ QGraphicsItem *AcGraphicsBarLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsBarLineItem::updateViewSettingsProperty(const QString &propertyName)
+void AcGraphicsBarLineItem::updateViewSettingsProperty(int propertyIndex)
 {
-    Q_D(AcGraphicsBarLineItem);
-    if ("timeScale" == propertyName)
+    if (AcViewSettings::TimeScale == propertyIndex) {
+        Q_D(AcGraphicsBarLineItem);
         d->updateLocation();
+    }
 }
 
-void AcGraphicsBarLineItem::updateDatabaseObjectProperty(const QString &propertyName)
+void AcGraphicsBarLineItem::updateDatabaseObjectProperty(int propertyIndex)
 {
     Q_D(AcGraphicsBarLineItem);
-    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyName);
-    if ("color" == propertyName)
+    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyIndex);
+    switch (propertyIndex) {
+    case AcBarLine::Color:
         d->updateColor();
-    else if ("location" == propertyName)
+        break;
+    case AcBarLine::Location:
         d->updateLocation();
+        break;
+    default:
+        break;
+    }
 }

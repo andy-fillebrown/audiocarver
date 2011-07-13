@@ -39,11 +39,11 @@ public:
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected slots:
-    virtual void updatePitchCurveProperty(const QString &propertyName);
-    virtual void updateVolumeCurveProperty(const QString &propertyName);
+    virtual void updatePitchCurveProperty(int propertyIndex);
+    virtual void updateVolumeCurveProperty(int propertyIndex);
 
 protected:
-    virtual void updateDatabaseObjectProperty(const QString &propertyName);
+    virtual void updateDatabaseObjectProperty(int propertyIndex);
 
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)
