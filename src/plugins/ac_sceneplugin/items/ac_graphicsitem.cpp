@@ -96,7 +96,7 @@ void AcGraphicsItem::setDatabaseObject(MiObject *databaseObject)
         d->databaseObject->disconnect(this);
     d->databaseObject = databaseObject;
     if (d->databaseObject) {
-        connect(d->databaseObject, SIGNAL(propertyChanged(QString)), SLOT(updateDatabaseObjectProperty(QString)));
+        connect(d->databaseObject, SIGNAL(propertyChanged(QString)), SLOT(updateDatabaseObjectProperty(QString)), Qt::UniqueConnection);
         for (int i = 0;  i < d->databaseObject->propertyCount();  ++i)
             updateDatabaseObjectProperty(d->databaseObject->propertyName(i));
     } else
