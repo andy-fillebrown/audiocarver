@@ -47,7 +47,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsNoteItem);
+    Q_DECLARE_PRIVATE(Private::AcGraphicsNoteItem)
 };
 
 #endif // AC_GRAPHICSNOTEITEM_H
