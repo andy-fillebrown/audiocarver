@@ -18,7 +18,7 @@
 #ifndef AC_GRAPHICSNOTEITEM_H
 #define AC_GRAPHICSNOTEITEM_H
 
-#include <ac_graphicsitem.h>
+#include <ac_scaledgraphicsitem.h>
 
 class AcNote;
 
@@ -28,7 +28,7 @@ class AcGraphicsNoteItemPrivate;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsNoteItem : public AcGraphicsItem
+class AC_SCENE_EXPORT AcGraphicsNoteItem : public AcScaledGraphicsItem
 {
     Q_OBJECT
 
@@ -43,6 +43,7 @@ protected slots:
     virtual void updateVolumeCurveProperty(int propertyIndex);
 
 protected:
+    virtual void updateViewSettingsProperty(int propertyIndex);
     virtual void updateDatabaseObjectProperty(int propertyIndex);
 
 private:

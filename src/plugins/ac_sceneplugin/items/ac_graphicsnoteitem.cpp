@@ -21,37 +21,46 @@
 #include <ac_note.h>
 #include <ac_pitchcurve.h>
 #include <ac_point.h>
+#include <ac_viewsettings.h>
 #include <ac_volumecurve.h>
 #include <mi_list.h>
+#include <QBrush>
+#include <QColor>
 #include <QGraphicsPathItem>
+#include <QPen>
 
 using namespace Private;
 
 namespace Private {
 
-class AcGraphicsNoteItemPrivate : public AcGraphicsItemData
+class AcGraphicsNoteItemPrivate : public AcScaledGraphicsItemData
 {
 public:
     AcGraphicsNoteItem *q;
-    QGraphicsPathItem *scoreItem;
-    QGraphicsPathItem *controlItem;
+    QGraphicsPathItem *scoreLineItem;
+    QGraphicsPathItem *controlLineItem;
     QList<AcGraphicsScorePointItem*> scorePointItems;
     QList<AcGraphicsControlPointItem*> controlPointItems;
 
     AcGraphicsNoteItemPrivate(AcGraphicsNoteItem *q, AcNote *note)
         :   q(q)
-        ,   scoreItem(new QGraphicsPathItem)
-        ,   controlItem(new QGraphicsPathItem)
+        ,   scoreLineItem(new QGraphicsPathItem)
+        ,   controlLineItem(new QGraphicsPathItem)
     {
         databaseObject = note;
+        scoreLineItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        QPen pen(Qt::red);
+        pen.setWidth(2);
+        scoreLineItem->setPen(pen);
+        controlLineItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     }
 
     virtual ~AcGraphicsNoteItemPrivate()
     {
         qDeleteAll(controlPointItems);
         qDeleteAll(scorePointItems);
-        delete controlItem;
-        delete scoreItem;
+        delete controlLineItem;
+        delete scoreLineItem;
     }
 
     const AcNote *note() const
@@ -71,8 +80,30 @@ public:
 
     void update()
     {
+        updateScoreLineItem();
+        updateControlLineItem();
         updateScorePointItems();
         updateControlPointItems();
+    }
+
+    void updateScoreLineItem()
+    {
+        QPainterPath path;
+        const QList<AcPoint*> &points = pitchCurve()->points().list();
+        if (points.count() == 0) {
+            scoreLineItem->setPath(path);
+            return;
+        }
+        const qreal timeScale = viewSettings()->timeScale();
+        const qreal pitchScale = viewSettings()->pitchScale();
+        path.moveTo(timeScale * points[0]->x(), pitchScale * (127.0f - points[0]->y()));
+        for (int i = 1;  i < points.count();  ++i)
+            path.lineTo(timeScale * points[i]->x(), pitchScale * (127.0f - points[i]->y()));
+        scoreLineItem->setPath(path);
+    }
+
+    void updateControlLineItem()
+    {
     }
 
     void updateScorePointItems()
@@ -91,7 +122,7 @@ public:
 } // namespace Private
 
 AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
-    :   AcGraphicsItem(*(new AcGraphicsNoteItemPrivate(this, note)), parent)
+    :   AcScaledGraphicsItem(*(new AcGraphicsNoteItemPrivate(this, note)), parent)
 {
     Q_D(AcGraphicsNoteItem);
     d->update();
@@ -107,9 +138,9 @@ QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
     Q_D(const AcGraphicsNoteItem);
     switch (sceneType) {
     case ScoreScene:
-        return d->scoreItem;
+        return d->scoreLineItem;
     case ControlScene:
-        return d->controlItem;
+        return d->controlLineItem;
     default:
         break;
     }
@@ -129,6 +160,25 @@ void AcGraphicsNoteItem::updateVolumeCurveProperty(int propertyIndex)
     if (AcCurve::Points == propertyIndex) {
         Q_D(AcGraphicsNoteItem);
         d->updateControlPointItems();
+    }
+}
+
+void AcGraphicsNoteItem::updateViewSettingsProperty(int propertyIndex)
+{
+    Q_D(AcGraphicsNoteItem);
+    switch (propertyIndex) {
+    case AcViewSettings::TimeScale:
+        d->updateScoreLineItem();
+        d->updateControlLineItem();
+        break;
+    case AcViewSettings::PitchScale:
+        d->updateScoreLineItem();
+        break;
+    case AcViewSettings::ValueScale:
+        d->updateControlLineItem();
+        break;
+    default:
+        break;
     }
 }
 
