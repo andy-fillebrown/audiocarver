@@ -20,9 +20,9 @@
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 #include <mi_font.h>
+#include <QColor>
 #include <QFont>
 #include <QGraphicsLineItem>
-#include <QPen>
 
 using namespace Private;
 
@@ -56,8 +56,7 @@ public:
 
     void updateFont()
     {
-        MiFont *font = AcScore::instance()->fontSettings();
-        labelItem->setFont(QFont(font->family(), font->pointSize()));
+        labelItem->setFont(font());
     }
 
     void updateLabel()
@@ -76,10 +75,10 @@ public:
 AcGraphicsGridLineItem::AcGraphicsGridLineItem(Private::AcGraphicsGridLineItemData &dd, QObject *parent)
     :   AcGraphicsItem(dd, parent)
 {
-    AcScore *score = AcScore::instance();
+    Q_D(AcGraphicsGridLineItem);
+    const AcScore *score = d->score();
     connect(score->fontSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateFontSettingsProperty(QString)));
     connect(score->viewSettings(), SIGNAL(propertyChanged(QString)), SLOT(updateViewSettingsProperty(QString)));
-    Q_D(AcGraphicsGridLineItem);
     d->update();
 }
 

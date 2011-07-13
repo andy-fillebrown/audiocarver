@@ -17,16 +17,13 @@
 
 #include "ac_graphicsbarlineitem.h"
 #include <ac_barline.h>
-#include <ac_scenemanager.h>
 #include <ac_score.h>
-#include <ac_timescene.h>
 #include <ac_viewsettings.h>
-#include <mi_font.h>
 #include <QColor>
 #include <QFontMetrics>
 #include <QGraphicsLineItem>
+#include <QGraphicsScene>
 #include <QGraphicsTextItem>
-#include <QPen>
 
 using namespace Private;
 
@@ -66,11 +63,10 @@ public:
         const qreal location = gridLine->location();
         lineItem->setLine(location, 0.0f, location, 127.0f);
         controlLineItem->setLine(location, 0.0f, location, 1.0f);
-        const AcScore *score = AcScore::instance();
-        const qreal scale = score->viewSettings()->timeScale();
-        const QRect labelRect = AcSceneManager::instance()->fontMetrics().boundingRect(gridLine->label());
+        const qreal scale = score()->viewSettings()->timeScale();
+        const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
         const qreal x = (location * scale) - (labelRect.width() / 2.0f);
-        const qreal y = (AcTimeScene::instance()->height() / 2.0f) - (labelRect.height() / 2.0f);
+        const qreal y = (timeScene()->height() / 2.0f) - (labelRect.height() / 2.0f);
         labelItem->setPos(x, y);
     }
 };

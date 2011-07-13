@@ -16,15 +16,11 @@
 **************************************************************************/
 
 #include "ac_graphicstuninglineitem.h"
-#include <ac_pitchscene.h>
-#include <ac_scenemanager.h>
 #include <ac_score.h>
-#include <ac_scorescene.h>
 #include <ac_tuningline.h>
 #include <ac_viewsettings.h>
-#include <mi_font.h>
-#include <QFont>
 #include <QFontMetrics>
+#include <QGraphicsScene>
 #include <QGraphicsTextItem>
 
 using namespace Private;
@@ -56,10 +52,9 @@ public:
     {
         const AcGridLine *gridLine = this->gridLine();
         const qreal pos = 127.0f - gridLine->location();
-        const AcScore *score = AcScore::instance();
-        const qreal scale = score->viewSettings()->pitchScale();
-        const QRect labelRect = AcSceneManager::instance()->fontMetrics().boundingRect(gridLine->label());
-        const qreal x = AcPitchScene::instance()->width() - labelRect.width();
+        const qreal scale = score()->viewSettings()->pitchScale();
+        const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
+        const qreal x = pitchScene()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
     }

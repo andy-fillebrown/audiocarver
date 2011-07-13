@@ -16,10 +16,8 @@
 **************************************************************************/
 
 #include "ac_graphicstrackitem.h"
-#include <ac_controlscene.h>
 #include <ac_graphicsnoteitem.h>
 #include <ac_note.h>
-#include <ac_scorescene.h>
 #include <ac_track.h>
 #include <mi_list.h>
 #include <QGraphicsItem>

@@ -22,8 +22,12 @@
 #include <ac_scene_common.h>
 #include <ac_scene_global.h>
 
+class AcScore;
 class MiObject;
+class QFont;
+class QFontMetrics;
 class QGraphicsItem;
+class QGraphicsScene;
 
 namespace Private {
 
@@ -34,6 +38,15 @@ public:
 
     AcGraphicsItemData() : databaseObject(0) {}
     virtual ~AcGraphicsItemData() {}
+
+    const AcScore *score() const;
+    const QFont font() const;
+    const QFontMetrics &fontMetrics() const;
+    const QGraphicsScene *scoreScene() const;
+    const QGraphicsScene *controlScene() const;
+    const QGraphicsScene *timeScene() const;
+    const QGraphicsScene *pitchScene() const;
+    const QGraphicsScene *valueScene() const;
 };
 
 class AcGraphicsItemPrivate;

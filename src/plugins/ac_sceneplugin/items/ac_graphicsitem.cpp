@@ -16,12 +16,58 @@
 **************************************************************************/
 
 #include "ac_graphicsitem.h"
+#include <ac_scenemanager.h>
+#include <ac_score.h>
+#include <mi_font.h>
 #include <mi_object.h>
+#include <QFont>
+#include <QFontMetrics>
 #include <QGraphicsItem>
 
 using namespace Private;
 
 namespace Private {
+
+const AcScore *AcGraphicsItemData::score() const
+{
+    return AcScore::instance();
+}
+
+const QFont AcGraphicsItemData::font() const
+{
+    MiFont *fontSettings = score()->fontSettings();
+    return QFont(fontSettings->family(), fontSettings->pointSize());
+}
+
+const QFontMetrics &AcGraphicsItemData::fontMetrics() const
+{
+    return AcSceneManager::instance()->fontMetrics();
+}
+
+const QGraphicsScene *AcGraphicsItemData::scoreScene() const
+{
+    return AcSceneManager::instance()->scene(ScoreScene);
+}
+
+const QGraphicsScene *AcGraphicsItemData::controlScene() const
+{
+    return AcSceneManager::instance()->scene(ControlScene);
+}
+
+const QGraphicsScene *AcGraphicsItemData::timeScene() const
+{
+    return AcSceneManager::instance()->scene(TimeScene);
+}
+
+const QGraphicsScene *AcGraphicsItemData::pitchScene() const
+{
+    return AcSceneManager::instance()->scene(PitchScene);
+}
+
+const QGraphicsScene *AcGraphicsItemData::valueScene() const
+{
+    return AcSceneManager::instance()->scene(ValueScene);
+}
 
 class AcGraphicsItemPrivate : public AcGraphicsItemData
 {};

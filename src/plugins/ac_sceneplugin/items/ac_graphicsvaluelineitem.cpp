@@ -16,15 +16,12 @@
 **************************************************************************/
 
 #include "ac_graphicsvaluelineitem.h"
-#include <ac_controlscene.h>
-#include <ac_scenemanager.h>
 #include <ac_score.h>
 #include <ac_valueline.h>
-#include <ac_valuescene.h>
 #include <ac_viewsettings.h>
-#include <mi_font.h>
 #include <QFont>
 #include <QFontMetrics>
+#include <QGraphicsScene>
 #include <QGraphicsTextItem>
 
 using namespace Private;
@@ -50,17 +47,16 @@ public:
     void updateLineGeometry()
     {
         const qreal pos = 1.0f - gridLine()->location();
-        lineItem->setLine(0.0f, pos, AcScore::instance()->length(), pos);
+        lineItem->setLine(0.0f, pos, score()->length(), pos);
     }
 
     void updateLabelPosition()
     {
         const AcGridLine *gridLine = this->gridLine();
         const qreal pos = 1.0f - gridLine->location();
-        const AcScore *score = AcScore::instance();
-        const qreal scale = score->viewSettings()->valueScale();
-        const QRect labelRect = AcSceneManager::instance()->fontMetrics().boundingRect(gridLine->label());
-        const qreal x = AcValueScene::instance()->width() - labelRect.width();
+        const qreal scale = score()->viewSettings()->valueScale();
+        const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
+        const qreal x = valueScene()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
     }
@@ -71,8 +67,8 @@ public:
 AcGraphicsValueLineItem::AcGraphicsValueLineItem(AcValueLine *valueLine, QObject *parent)
     :   AcGraphicsGridLineItem(*(new AcGraphicsValueLineItemPrivate(valueLine)), parent)
 {
-    connect(AcScore::instance(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
-    setDatabaseObject(valueLine);
+    Q_D(AcGraphicsValueLineItem);
+    connect(d->score(), SIGNAL(propertyChanged(QString)), SLOT(updateScoreProperty(QString)));
 }
 
 AcGraphicsValueLineItem::~AcGraphicsValueLineItem()
