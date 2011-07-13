@@ -40,6 +40,8 @@ public:
         ,   controlItem(new QGraphicsItemGroup)
     {
         databaseObject = track;
+        scoreItem->setZValue(1.0f);
+        controlItem->setZValue(1.0f);
     }
 
     virtual ~AcGraphicsTrackItemPrivate()
