@@ -125,18 +125,18 @@ void AcMainWidget::wheelEvent(QWheelEvent *event)
         qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             d->viewManager->setTimeScale(scale * d->viewManager->timeScale());
-        else if (isPointInControlViews(this, event->pos()))
-            d->viewManager->setValueScale(scale * d->viewManager->valueScale());
-        else
+        else if (!isPointInControlViews(this, event->pos()))
             d->viewManager->setPitchScale(scale * d->viewManager->pitchScale());
-    } else {
-        int offset = event->delta() < 0 ? 10 : -10;
-        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-            d->viewManager->setTimePosition(d->viewManager->timePosition() - offset);
-        else if (isPointInControlViews(this, event->pos()))
-            d->viewManager->setValuePosition(d->viewManager->valuePosition() + offset);
         else
-            d->viewManager->setPitchPosition(d->viewManager->pitchPosition() + offset);
+            d->viewManager->setValueScale(scale * d->viewManager->valueScale());
+    } else {
+        int offset = event->delta() < 0 ? 100 : -100;
+        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
+            d->viewManager->setTimePosition(d->viewManager->timePosition() - (offset / d->viewManager->timeScale()));
+        else if (!isPointInControlViews(this, event->pos()))
+            d->viewManager->setPitchPosition(d->viewManager->pitchPosition() + (offset / d->viewManager->pitchScale()));
+        else
+            d->viewManager->setValuePosition(d->viewManager->valuePosition() + (offset / d->viewManager->valueScale()));
     }
     event->accept();
 }
