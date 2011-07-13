@@ -17,7 +17,8 @@
 
 #include "ac_graphicsscorepointitem.h"
 #include <ac_point.h>
-#include <QGraphicsEllipseItem>
+#include <ac_viewsettings.h>
+#include <QGraphicsRectItem>
 
 using namespace Private;
 
@@ -34,7 +35,11 @@ public:
     void updateRect()
     {
         const AcPoint *point = this->point();
-        pointItem->setRect(point->x(), 127.0f - point->y(), 1.0f, 1.0f);
+        const qreal w = 7.5f / viewSettings()->timeScale();
+        const qreal h = 7.5f / viewSettings()->pitchScale();
+        const qreal x = point->x() - (w / 2.0f);
+        const qreal y = 127.0f - point->y() - (h / 2.0f);
+        pointItem->setRect(x, y, w, h);
     }
 };
 
@@ -60,6 +65,19 @@ QGraphicsItem *AcGraphicsScorePointItem::sceneItem(SceneType sceneType) const
         break;
     }
     return 0;
+}
+
+void AcGraphicsScorePointItem::updateViewSettingsProperty(int propertyIndex)
+{
+    Q_D(AcGraphicsScorePointItem);
+    switch (propertyIndex) {
+    case AcViewSettings::TimeScale:
+    case AcViewSettings::PitchScale:
+        d->updateRect();
+        break;
+    default:
+        break;
+    }
 }
 
 void AcGraphicsScorePointItem::updateDatabaseObjectProperty(int propertyIndex)

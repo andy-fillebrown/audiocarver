@@ -39,6 +39,7 @@ public:
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
+    virtual void updateViewSettingsProperty(int propertyIndex);
     virtual void updateDatabaseObjectProperty(int propertyIndex);
 
 private:

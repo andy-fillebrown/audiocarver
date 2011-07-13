@@ -17,16 +17,18 @@
 
 #include "ac_graphicspointitem.h"
 #include <ac_point.h>
-#include <QGraphicsEllipseItem>
+#include <QBrush>
+#include <QGraphicsRectItem>
 
 using namespace Private;
 
 namespace Private {
 
 AcGraphicsPointItemData::AcGraphicsPointItemData(AcPoint *point)
-    :   pointItem(new QGraphicsEllipseItem)
+    :   pointItem(new QGraphicsRectItem)
 {
     databaseObject = point;
+    pointItem->setBrush(QBrush(Qt::blue, Qt::SolidPattern));
 }
 
 AcGraphicsPointItemData::~AcGraphicsPointItemData()
@@ -45,8 +47,13 @@ class AcGraphicsPointItemPrivate : public AcGraphicsPointItemData
 } // namespace Private
 
 AcGraphicsPointItem::AcGraphicsPointItem(AcPoint *point, QObject *parent)
-    :   AcGraphicsItem(*(new AcGraphicsPointItemData(point)), parent)
+    :   AcScaledGraphicsItem(*(new AcGraphicsPointItemData(point)), parent)
 {}
 
 AcGraphicsPointItem::~AcGraphicsPointItem()
 {}
+
+void AcGraphicsPointItem::updateViewSettingsProperty(int propertyIndex)
+{
+    Q_UNUSED(propertyIndex);
+}

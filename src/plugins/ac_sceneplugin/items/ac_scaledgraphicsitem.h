@@ -15,45 +15,44 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSPOINTITEM_H
-#define AC_GRAPHICSPOINTITEM_H
+#ifndef AC_SCALEDGRAPHICSITEM_H
+#define AC_SCALEDGRAPHICSITEM_H
 
-#include <ac_scaledgraphicsitem.h>
+#include <ac_graphicsitem.h>
 
-class AcPoint;
-class QGraphicsRectItem;
+class AcViewSettings;
 
 namespace Private {
 
-class AcGraphicsPointItemData : public AcScaledGraphicsItemData
+class AcScaledGraphicsItemData : public AcGraphicsItemData
 {
 public:
-    QGraphicsRectItem *pointItem;
+    AcScaledGraphicsItemData() {}
+    virtual ~AcScaledGraphicsItemData() {}
 
-    AcGraphicsPointItemData(AcPoint *point);
-    virtual ~AcGraphicsPointItemData();
-
-    const AcPoint *point() const;
+    const AcViewSettings *viewSettings() const;
 };
 
-class AcGraphicsPointItemPrivate;
+class AcScaledGraphicsItemPrivate;
 
 } // namespace Private
 
-class AC_SCENE_EXPORT AcGraphicsPointItem : public AcScaledGraphicsItem
+class AC_SCENE_EXPORT AcScaledGraphicsItem : public AcGraphicsItem
 {
     Q_OBJECT
 
-public:
-    AcGraphicsPointItem(AcPoint *point = 0, QObject *parent = 0);
-    virtual ~AcGraphicsPointItem();
-
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
+    AcScaledGraphicsItem(Private::AcScaledGraphicsItemData &dd, QObject *parent = 0);
+
+public:
+    virtual ~AcScaledGraphicsItem();
+
+protected slots:
+    virtual void updateViewSettingsProperty(int propertyIndex) = 0;
 
 private:
-    Q_DISABLE_COPY(AcGraphicsPointItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsPointItem)
+    Q_DISABLE_COPY(AcScaledGraphicsItem)
+    Q_DECLARE_PRIVATE(Private::AcScaledGraphicsItem)
 };
 
-#endif // AC_GRAPHICSPOINTITEM_H
+#endif // AC_SCALEDGRAPHICSITEM_H

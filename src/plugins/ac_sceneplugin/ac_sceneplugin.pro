@@ -19,6 +19,7 @@ HEADERS += \
     items/ac_graphicstrackitem.h \
     items/ac_graphicstuninglineitem.h \
     items/ac_graphicsvaluelineitem.h \
+    items/ac_scaledgraphicsitem.h \
     \
     scenes/ac_controlscene.h \
     scenes/ac_graphicsscene.h \
@@ -46,6 +47,7 @@ SOURCES += \
     items/ac_graphicstrackitem.cpp \
     items/ac_graphicstuninglineitem.cpp \
     items/ac_graphicsvaluelineitem.cpp \
+    items/ac_scaledgraphicsitem.cpp \
     \
     scenes/ac_controlscene.cpp \
     scenes/ac_graphicsscene.cpp \
