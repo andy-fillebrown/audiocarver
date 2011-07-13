@@ -32,6 +32,8 @@ public:
 
     AcGraphicsPointItemData(AcPoint *point);
     virtual ~AcGraphicsPointItemData();
+
+    const AcPoint *point() const;
 };
 
 class AcGraphicsPointItemPrivate;

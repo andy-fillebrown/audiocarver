@@ -34,6 +34,11 @@ AcGraphicsPointItemData::~AcGraphicsPointItemData()
     delete pointItem;
 }
 
+const AcPoint *AcGraphicsPointItemData::point() const
+{
+    return qobject_cast<AcPoint*>(databaseObject);
+}
+
 class AcGraphicsPointItemPrivate : public AcGraphicsPointItemData
 {};
 

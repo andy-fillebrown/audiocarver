@@ -24,13 +24,28 @@ using namespace Private;
 namespace Private {
 
 class AcGraphicsScorePointItemPrivate : public AcGraphicsPointItemData
-{};
+{
+public:
+    void update()
+    {
+        updateRect();
+    }
+
+    void updateRect()
+    {
+        const AcPoint *point = this->point();
+        pointItem->setRect(point->x(), 127.0f - point->y(), 1.0f, 1.0f);
+    }
+};
 
 } // namespace Private
 
 AcGraphicsScorePointItem::AcGraphicsScorePointItem(AcPoint *point, QObject *parent)
     :   AcGraphicsPointItem(point, parent)
-{}
+{
+    Q_D(AcGraphicsScorePointItem);
+    d->update();
+}
 
 AcGraphicsScorePointItem::~AcGraphicsScorePointItem()
 {}
@@ -49,5 +64,8 @@ QGraphicsItem *AcGraphicsScorePointItem::sceneItem(SceneType sceneType) const
 
 void AcGraphicsScorePointItem::updateDatabaseObjectProperty(const QString &propertyName)
 {
-    Q_UNUSED(propertyName);
+    if ("x" == propertyName || "y" == propertyName) {
+        Q_D(AcGraphicsScorePointItem);
+        d->updateRect();
+    }
 }
