@@ -36,7 +36,6 @@ public:
     AcGraphicsGridLineItemData();
     virtual ~AcGraphicsGridLineItemData();
 
-    const AcGridLine *gridLine();
     const AcGridLine *gridLine() const;
 };
 

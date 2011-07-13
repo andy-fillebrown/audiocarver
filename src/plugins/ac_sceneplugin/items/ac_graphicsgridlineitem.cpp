@@ -39,11 +39,6 @@ AcGraphicsGridLineItemData::~AcGraphicsGridLineItemData()
     delete lineItem;
 }
 
-const AcGridLine *AcGraphicsGridLineItemData::gridLine()
-{
-    return qobject_cast<AcGridLine*>(databaseObject);
-}
-
 const AcGridLine *AcGraphicsGridLineItemData::gridLine() const
 {
     return qobject_cast<AcGridLine*>(databaseObject);
