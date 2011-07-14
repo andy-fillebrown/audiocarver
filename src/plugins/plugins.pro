@@ -3,9 +3,7 @@ CONFIG += ordered
 
 SUBDIRS = \
     coreplugin \
-    mi_databaseplugin \
-    mi_sceneplugin \
-    mi_editorplugin \
-    ac_databaseplugin \
-    ac_sceneplugin \
-    ac_editorplugin
+    mi_coreplugin \
+    mi_guiplugin \
+    ac_coreplugin \
+    ac_guiplugin
