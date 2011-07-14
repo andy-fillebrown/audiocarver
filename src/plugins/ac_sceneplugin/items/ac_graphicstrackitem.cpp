@@ -20,7 +20,7 @@
 #include <ac_note.h>
 #include <ac_track.h>
 #include <mi_list.h>
-#include <QGraphicsItem>
+#include <QGraphicsItemGroup>
 
 using namespace Private;
 
@@ -30,8 +30,8 @@ class AcGraphicsTrackItemPrivate : public AcGraphicsItemData
 {
 public:
     AcGraphicsTrackItem *q;
-    QGraphicsItem *scoreItem;
-    QGraphicsItem *controlItem;
+    QGraphicsItemGroup *scoreItem;
+    QGraphicsItemGroup *controlItem;
     QList<AcGraphicsNoteItem*> noteItems;
 
     AcGraphicsTrackItemPrivate(AcGraphicsTrackItem *q, AcTrack *track)
