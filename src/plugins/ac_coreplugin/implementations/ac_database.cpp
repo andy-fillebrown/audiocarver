@@ -82,25 +82,30 @@ public:
         score->valueLines().add()->set(0.0f, "", 0, Qt::black);
 
         AcTrack *track = score->tracks().add();
-        AcNote *note = track->notes().add();
-        AcPitchCurve *pitchCurve = note->pitchCurve();
-        AcPoint *pitchPointA = pitchCurve->points().add();
-        pitchPointA->setX(0.0f);
-        pitchPointA->setY(60.0f);
-        AcPoint *pitchPointB = pitchCurve->points().add();
-        pitchPointB->setX(10.0f);
-        pitchPointB->setY(72.0f);
-        AcVolumeCurve *volumeCurve = note->volumeCurve();
-        AcPoint *volumePointA = volumeCurve->points().add();
-        volumePointA->setX(0.0f);
-        volumePointA->setY(0.0f);
-        AcPoint *volumePointB = volumeCurve->points().add();
-        volumePointB->setX(0.5f);
-        volumePointB->setY(1.0f);
-        volumePointB->setCurved(true);
-        AcPoint *volumePointC = volumeCurve->points().add();
-        volumePointC->setX(1.0f);
-        volumePointC->setY(0.0f);
+        for (int i = 0;  i < 126;  ++i) {
+            AcNote *note = track->notes().add();
+            AcPitchCurve *pitchCurve = note->pitchCurve();
+            AcPoint *pitchPointA = pitchCurve->points().add();
+            pitchPointA->setX(i + 0.0f);
+            pitchPointA->setY(60.0f);
+            AcPoint *pitchPointB = pitchCurve->points().add();
+            pitchPointB->setX(i + 1.0f);
+            pitchPointB->setY(72.0f);
+            AcPoint *pitchPointC = pitchCurve->points().add();
+            pitchPointC->setX(i + 2.0f);
+            pitchPointC->setY(67.0f);
+            AcVolumeCurve *volumeCurve = note->volumeCurve();
+            AcPoint *volumePointA = volumeCurve->points().add();
+            volumePointA->setX(0.0f);
+            volumePointA->setY(0.0f);
+            AcPoint *volumePointB = volumeCurve->points().add();
+            volumePointB->setX(0.5f);
+            volumePointB->setY(1.0f);
+            volumePointB->setCurved(true);
+            AcPoint *volumePointC = volumeCurve->points().add();
+            volumePointC->setX(1.0f);
+            volumePointC->setY(0.0f);
+        }
     }
 };
 
