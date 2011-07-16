@@ -79,3 +79,5 @@ SOURCES += \
     \
     ac_guiplugin.cpp \
     ac_mainwidget.cpp \
+
+RESOURCES = ac_gui.qrc

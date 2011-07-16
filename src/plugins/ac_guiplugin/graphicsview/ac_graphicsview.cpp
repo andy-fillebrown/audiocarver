@@ -17,6 +17,7 @@
 
 #include "ac_graphicsview.h"
 #include <ac_graphicsitem.h>
+#include <QBitmap>
 #include <QGraphicsItem>
 #include <QMouseEvent>
 
@@ -43,7 +44,9 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    setCursor(Qt::CrossCursor);
+    QBitmap mask(32, 32);
+    mask.clear();
+    setCursor(QCursor(QBitmap(":/ac_gui/images/crosshair.png"), mask));
 }
 
 AcGraphicsView::~AcGraphicsView()
