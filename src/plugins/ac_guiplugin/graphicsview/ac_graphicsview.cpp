@@ -17,6 +17,7 @@
 
 #include "ac_graphicsview.h"
 #include <ac_graphicsitem.h>
+#include <QApplication>
 #include <QBitmap>
 #include <QGraphicsItem>
 #include <QMouseEvent>
@@ -41,6 +42,39 @@ public:
     {
         q->scene()->addItem(selectionRect);
         selectionRect->hide();
+    }
+
+    void setSelectedItems(const QList<AcGraphicsItem*> items)
+    {
+        unhighlightSelectedItems();
+        selectedItems = items;
+        highlightSelectedItems();
+    }
+
+    void appendSelectedItems(const QList<AcGraphicsItem*> items)
+    {
+        foreach (AcGraphicsItem *item, items) {
+            if (!selectedItems.contains(item)) {
+                selectedItems.append(item);
+                item->highlight();
+            }
+        }
+    }
+
+    void removeSelectedItems(const QList<AcGraphicsItem*> items)
+    {
+        foreach (AcGraphicsItem *item, items) {
+            if (selectedItems.contains(item)) {
+                selectedItems.removeOne(item);
+                item->unhighlight();
+            }
+        }
+    }
+
+    void clearSelectedItems()
+    {
+        unhighlightSelectedItems();
+        selectedItems.clear();
     }
 
     void highlightSelectedItems()
