@@ -32,6 +32,7 @@ AcGraphicsPointItemData::AcGraphicsPointItemData(AcPoint *point)
     pointItem->setPen(QPen(Qt::blue));
     pointItem->setBrush(QBrush(Qt::blue, Qt::SolidPattern));
     pointItem->setZValue(1.0f);
+    pointItem->hide();
 }
 
 AcGraphicsPointItemData::~AcGraphicsPointItemData()

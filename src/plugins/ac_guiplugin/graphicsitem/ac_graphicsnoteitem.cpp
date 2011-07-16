@@ -120,6 +120,22 @@ public:
         updateItemsHelper(volumeCurve()->points().list(), controlPointItems, q);
         q->addItems(controlPointItems);
     }
+
+    void showPointItems()
+    {
+        foreach (AcGraphicsItem *item, scorePointItems)
+            item->show();
+        foreach (AcGraphicsItem *item, controlPointItems)
+            item->show();
+    }
+
+    void hidePointItems()
+    {
+        foreach (AcGraphicsItem *item, scorePointItems)
+            item->hide();
+        foreach (AcGraphicsItem *item, controlPointItems)
+            item->hide();
+    }
 };
 
 } // namespace Private
@@ -152,12 +168,14 @@ QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
 
 void AcGraphicsNoteItem::highlight()
 {
-    qDebug() << "Note highlighted!";
+    Q_D(AcGraphicsNoteItem);
+    d->showPointItems();
 }
 
 void AcGraphicsNoteItem::unhighlight()
 {
-    qDebug() << "Note unhighlighted.";
+    Q_D(AcGraphicsNoteItem);
+    d->hidePointItems();
 }
 
 void AcGraphicsNoteItem::updatePitchCurveProperty(int propertyIndex)
