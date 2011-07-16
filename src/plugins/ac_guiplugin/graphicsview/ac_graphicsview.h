@@ -38,6 +38,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void keyPressEvent(QKeyEvent *event);
 
 private:
     Q_DISABLE_COPY(AcGraphicsView)

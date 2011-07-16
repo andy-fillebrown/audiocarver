@@ -143,9 +143,18 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         if (item)
             items.append(item);
     }
-    d->unhighlightSelectedItems();
-    d->selectedItems = items;
-    d->highlightSelectedItems();
+    if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
+        d->appendSelectedItems(items);
+    else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+        d->removeSelectedItems(items);
+    else
+        d->setSelectedItems(items);
     d->selectionRect->hide();
     d->dragging = false;
+}
+
+void AcGraphicsView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape)
+        d->clearSelectedItems();
 }
