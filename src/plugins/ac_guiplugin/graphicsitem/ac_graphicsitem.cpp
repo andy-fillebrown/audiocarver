@@ -138,3 +138,9 @@ void AcGraphicsItem::addItem(AcGraphicsItem *item)
             sceneItem->setParentItem(parentSceneItem);
     }
 }
+
+void AcGraphicsItem::highlight()
+{}
+
+void AcGraphicsItem::unhighlight()
+{}

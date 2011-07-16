@@ -48,11 +48,14 @@ public:
         ,   controlLineItem(new QGraphicsPathItem)
     {
         databaseObject = note;
+        scoreLineItem->setData(0, quintptr(q));
+        controlLineItem->setData(0, quintptr(q));
         scoreLineItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        controlLineItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
         QPen pen(Qt::red);
         pen.setWidth(2);
         scoreLineItem->setPen(pen);
-        controlLineItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        controlLineItem->setPen(pen);
     }
 
     virtual ~AcGraphicsNoteItemPrivate()
@@ -145,6 +148,15 @@ QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
         break;
     }
     return 0;
+}
+
+void AcGraphicsNoteItem::highlight()
+{
+    qDebug() << "Note highlighted!";
+}
+
+void AcGraphicsNoteItem::unhighlight()
+{
 }
 
 void AcGraphicsNoteItem::updatePitchCurveProperty(int propertyIndex)

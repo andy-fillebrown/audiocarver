@@ -34,6 +34,9 @@ public:
     AcGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcGraphicsView();
 
+protected:
+    virtual void mousePressEvent(QMouseEvent *event);
+
 private:
     Q_DISABLE_COPY(AcGraphicsView)
     Private::AcGraphicsViewData *d;

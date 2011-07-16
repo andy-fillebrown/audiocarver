@@ -16,6 +16,9 @@
 **************************************************************************/
 
 #include "ac_graphicsview.h"
+#include <ac_graphicsitem.h>
+#include <QGraphicsItem>
+#include <QMouseEvent>
 
 using namespace Private;
 
@@ -40,9 +43,21 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    setCursor(Qt::CrossCursor);
 }
 
 AcGraphicsView::~AcGraphicsView()
 {
     delete d;
+}
+
+void AcGraphicsView::mousePressEvent(QMouseEvent *event)
+{
+    QPoint pos = event->pos();
+    QList<QGraphicsItem*> sceneItems = items(QRect(pos.x() - 2, pos.y() - 2, 4, 4));
+    foreach (QGraphicsItem *sceneItem, sceneItems) {
+        AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
+        if (item)
+            item->highlight();
+    }
 }

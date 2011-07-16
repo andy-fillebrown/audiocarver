@@ -38,6 +38,10 @@ public:
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
+protected:
+    virtual void highlight();
+    virtual void unhighlight();
+
 protected slots:
     virtual void updatePitchCurveProperty(int propertyIndex);
     virtual void updateVolumeCurveProperty(int propertyIndex);

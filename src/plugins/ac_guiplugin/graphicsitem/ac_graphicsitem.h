@@ -73,6 +73,9 @@ public:
     void addItem(AcGraphicsItem *item);
     template <typename T> void addItems(const QList<T*> &items) { foreach (AcGraphicsItem *item, items) addItem(item); }
 
+    virtual void highlight();
+    virtual void unhighlight();
+
 protected slots:
     virtual void updateDatabaseObjectProperty(int propertyIndex) = 0;
 
