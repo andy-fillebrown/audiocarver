@@ -157,6 +157,7 @@ void AcGraphicsNoteItem::highlight()
 
 void AcGraphicsNoteItem::unhighlight()
 {
+    qDebug() << "Note unhighlighted.";
 }
 
 void AcGraphicsNoteItem::updatePitchCurveProperty(int propertyIndex)

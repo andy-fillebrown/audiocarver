@@ -29,10 +29,31 @@ class AcGraphicsViewData
 {
 public:
     AcGraphicsView *q;
+    bool dragging;
+    QPoint dragOrigin;
+    QList<AcGraphicsItem*> selectedItems;
+    QGraphicsPolygonItem *selectionRect;
 
     AcGraphicsViewData(AcGraphicsView *q)
         :   q(q)
-    {}
+        ,   dragging(false)
+        ,   selectionRect(new QGraphicsPolygonItem)
+    {
+        q->scene()->addItem(selectionRect);
+        selectionRect->hide();
+    }
+
+    void highlightSelectedItems()
+    {
+        foreach (AcGraphicsItem *item, selectedItems)
+            item->highlight();
+    }
+
+    void unhighlightSelectedItems()
+    {
+        foreach (AcGraphicsItem *item, selectedItems)
+            item->unhighlight();
+    }
 };
 
 } // namespace Private
@@ -56,11 +77,43 @@ AcGraphicsView::~AcGraphicsView()
 
 void AcGraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    QPoint pos = event->pos();
-    QList<QGraphicsItem*> sceneItems = items(QRect(pos.x() - 2, pos.y() - 2, 4, 4));
-    foreach (QGraphicsItem *sceneItem, sceneItems) {
-        AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
-        if (item)
-            item->highlight();
+    d->dragging = true;
+    d->dragOrigin = event->pos();
+}
+
+void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (d->dragging) {
+        if (4 <= (event->pos() - d->dragOrigin).manhattanLength()) {
+            QRect rect(d->dragOrigin, event->pos());
+            QPolygonF polygon = mapToScene(rect.normalized());
+            d->selectionRect->setPolygon(polygon);
+            d->selectionRect->show();
+        }
     }
+}
+
+void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QList<QGraphicsItem*> sceneItems;
+    QRect rect;
+    if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
+        rect = QRect(d->dragOrigin.x() - 2, d->dragOrigin.y() - 2, 4, 4);
+    else
+        rect = QRect(d->dragOrigin, event->pos());
+    rect = rect.normalized();
+    sceneItems = items(rect);
+    if (sceneItems.isEmpty()) {
+        d->unhighlightSelectedItems();
+        d->selectedItems.clear();
+    } else {
+        foreach (QGraphicsItem *sceneItem, sceneItems) {
+            AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
+            if (item)
+                d->selectedItems.append(item);
+        }
+        d->highlightSelectedItems();
+    }
+    d->selectionRect->hide();
+    d->dragging = false;
 }
