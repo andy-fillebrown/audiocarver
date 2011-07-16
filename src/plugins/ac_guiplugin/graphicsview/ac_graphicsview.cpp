@@ -103,17 +103,15 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         rect = QRect(d->dragOrigin, event->pos());
     rect = rect.normalized();
     sceneItems = items(rect);
-    if (sceneItems.isEmpty()) {
-        d->unhighlightSelectedItems();
-        d->selectedItems.clear();
-    } else {
-        foreach (QGraphicsItem *sceneItem, sceneItems) {
-            AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
-            if (item)
-                d->selectedItems.append(item);
-        }
-        d->highlightSelectedItems();
+    QList<AcGraphicsItem*> items;
+    foreach (QGraphicsItem *sceneItem, sceneItems) {
+        AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
+        if (item)
+            items.append(item);
     }
+    d->unhighlightSelectedItems();
+    d->selectedItems = items;
+    d->highlightSelectedItems();
     d->selectionRect->hide();
     d->dragging = false;
 }
