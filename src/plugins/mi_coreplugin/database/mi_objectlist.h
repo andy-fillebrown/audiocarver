@@ -23,11 +23,7 @@
 
 namespace Private {
 
-class MiObjectListData
-{
-public:
-    QList<QObject*> objects;
-};
+class MiObjectListPrivate;
 
 } // namespace Private
 
@@ -36,166 +32,215 @@ class MI_CORE_EXPORT MiObjectList : public QObject
     Q_OBJECT
 
 protected:
-    MiObjectList(Private::MiObjectListData &dd, QObject *parent = 0)
+    MiObjectList(Private::MiObjectListPrivate &dd, QObject *parent)
         :   QObject(parent)
         ,   d(&dd)
     {}
 
 public:
-    virtual ~MiObjectList()
-    {
-        qDebug() << Q_FUNC_INFO;
-        delete d;
-    }
+    inline virtual ~MiObjectList();
+
+signals:
+    void objectsAboutToBeInserted(int start, int end);
+    void objectsInserted(int start, int end);
+    void objectsAboutToBeMoved(int start, int end, int destination);
+    void objectsMoved(int start, int end, int destination);
+    void objectsAboutToBeRemoved(int start, int end);
+    void objectsRemoved(int start, int end);
 
 private:
     Q_DISABLE_COPY(MiObjectList)
 
 protected:
-    Private::MiObjectListData *d;
+    friend class Private::MiObjectListPrivate;
+    Private::MiObjectListPrivate *d;
 };
 
 namespace Private {
 
-template <typename T>
-class MiObjectListTData : public MiObjectListData
-{};
-
-template <typename T>
-class MiObjectListTPrivate : public MiObjectListTData<T>
+class MiObjectListPrivate
 {
 public:
-    void test();
+    MiObjectList *q;
+    QList<QObject*> objects;
+
+    MiObjectListPrivate(MiObjectList *q)
+        :   q(q)
+    {}
+
+    void insert(int i, QObject *object)
+    {
+        objects.insert(i, object);
+        if (q != object->parent())
+            object->setParent(q);
+    }
+
+    virtual void beginInsert(int start, int end)
+    {
+        q->emit objectsAboutToBeInserted(start, end);
+    }
+
+    virtual void endInsert(int start, int end)
+    {
+        q->emit objectsInserted(start, end);
+    }
+
+    virtual void beginMove(int start, int end, int destination)
+    {
+        q->emit objectsAboutToBeMoved(start, end, destination);
+    }
+
+    virtual void endMove(int start, int end, int destination)
+    {
+        q->emit objectsMoved(start, end, destination);
+    }
+
+    virtual void beginRemove(int start, int end)
+    {
+        q->emit objectsAboutToBeRemoved(start, end);
+    }
+
+    virtual void endRemove(int start, int end)
+    {
+        q->emit objectsRemoved(start, end);
+    }
 };
 
 } // namespace Private
+
+inline MiObjectList::~MiObjectList()
+{
+    qDebug() << Q_FUNC_INFO;
+    delete d;
+}
 
 template <typename T>
 class MiList : public MiObjectList
 {
 public:
     MiList(QObject *parent = 0)
-        :   MiObjectList(*(new Private::MiObjectListTData<T>), parent)
+        :   MiObjectList(*(new Private::MiObjectListPrivate(this)), parent)
     {}
 
+protected:
+    MiList(Private::MiObjectListPrivate &dd, QObject *parent)
+        :   MiObjectList(dd, parent)
+    {}
+
+public:
     virtual ~MiList()
     {
         qDebug() << Q_FUNC_INFO;
     }
+
+    bool isEmpty() const
+    {
+        return d->objects.isEmpty();
+    }
+
+    int count() const
+    {
+        return d->objects.count();
+    }
+
 
     const QList<T*> &asQList() const
     {
         return reinterpret_cast<const QList<T*>&>(d->objects);
     }
 
+    T *const &at(int i) const
+    {
+        return asQList().at(i);
+    }
+
+    T *&operator[](int i)
+    {
+        return asQList()[i];
+    }
+
+    const T *&operator[](int i) const
+    {
+        return at(i);
+    }
+    void insert(int i, T* object)
+    {
+        d->beginInsert(i, i);
+        d->insert(i, object);
+        d->endInsert(i, i);
+    }
+
+    void insert(int i, const QList<T*> &objects)
+    {
+        const int end = i + objects.count() - 1;
+        d->beginInsert(i, end);
+        int j = i - 1;
+        foreach (T* object, objects)
+            d->insert(++j, object);
+        d->endInsert(i, end);
+    }
+
+    void insert(int i, const MiList<T> *objects)
+    {
+        insert(i, objects->asQList());
+    }
+
     void append(T* object)
     {
-        d->objects.append(object);
-        object->setParent(this);
+        insert(count(), object);
     }
-};
 
-class MiTestObject : public QObject
-{
-    Q_OBJECT
-
-public:
-    MiTestObject(QObject *parent = 0)
-        :   QObject(parent)
-    {}
-
-    virtual ~MiTestObject()
+    void append(const QList<T*> &objects)
     {
-        qDebug() << Q_FUNC_INFO;
+        insert(count(), objects);
+    }
+
+    void append(const MiList<T> *objects)
+    {
+        append(objects->asQList());
+    }
+
+    void move(int i, int destination)
+    {
+        d->beginMove(i, i, destination);
+        d->objects.move(i, destination);
+        d->endMove(i, i, destination);
+    }
+
+    void move(int i, int count, int destination)
+    {
+        const int end = i + count - 1;
+        d->beginMove(i, end, destination);
+        QList<T*> taken;
+        taken.reserve(count);
+        for (int j = i;  j <= end;  ++j)
+            taken.append(d->objects.takeAt(i));
+        int k = destination - 1;
+        foreach (QObject *object, taken)
+            d->objects.insert(++k, object);
+        d->endMove(i, end, destination);
+    }
+
+    void removeAt(int i)
+    {
+        d->beginRemove(i, i);
+        d->objects.removeAt(i);
+        d->endRemove(i, i);
+    }
+
+    void removeAt(int i, int count)
+    {
+        const int end = i + count - 1;
+        d->beginRemove(i, end);
+        for (int j = i;  j <= end;  ++j)
+            d->objects.removeAt(j);
+        d->endRemove(i, end);
+    }
+
+    void removeOne(const T* object)
+    {
+        removeAt(d->objects.indexOf(object));
     }
 };
-
-class MiTestObjectList : public MiList<MiTestObject>
-{
-    Q_OBJECT
-
-public:
-    MiTestObjectList(QObject *parent = 0)
-        :   MiList<MiTestObject>(parent)
-    {}
-};
-
-typedef MiList<MiTestObject> MiTestObjectList;
-
-Q_DECLARE_METATYPE(MiTestObjectList*);
-
-namespace Private {
-
-class MiTestDataObjectData;
-
-} // namespace Private
-
-class MiTestDataObject : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(MiTestObjectList* list READ list)
-
-public:
-    MiTestDataObject(QObject *parent = 0);
-    virtual ~MiTestDataObject();
-
-    MiTestObjectList *list() const;
-
-private:
-    Q_DISABLE_COPY(MiTestDataObject)
-    Private::MiTestDataObjectData *d;
-};
-
-//#include <mi_object.h>
-//#include <QList>
-
-//class MiObjectList
-//{
-//public:
-//    MiObjectList(int propertyIndex, MiObject *parent = 0)
-//        :   _propertyIndex(propertyIndex)
-//        ,   _parent(parent)
-//    {}
-
-//    QObject *parent() const { return _parent; }
-
-//    virtual bool isConstant() const { return false; }
-
-//    int count() const { return _list.count(); }
-//    bool isEmpty() const { return _list.isEmpty(); }
-//    MiObject *at(int i) const { return _list.at(i); }
-//    MiObject *first() const { return _list.first(); }
-//    MiObject *last() const { return _list.last(); }
-//    int indexOf(MiObject *object, int from = 0) const { return _list.indexOf(object, from); }
-//    void append(MiObject *object) { object->setParent(_parent);  _list.append(object);  emitChanged(); }
-//    void append(const QList<MiObject*> &objects) { foreach (MiObject *object, objects) object->setParent(_parent);  _list.append(objects);  emitChanged(); }
-//    void insert(int i, MiObject *object) { object->setParent(_parent);  _list.insert(i, object);  emitChanged(); }
-//    void remove(int i) { _list.removeAt(i);  emitChanged(); }
-//    void clear() { _list.clear();  emitChanged(); }
-//    void deleteAll() { qDeleteAll(_list);  clear(); }
-
-//    template <typename LessThan> void sort(LessThan lessThan) { qSort(_list.begin(), _list.end(), lessThan);  emitChanged(); }
-
-//    QList<MiObject*> *list() { return &_list; }
-
-//private:
-//    void emitChanged() { _parent->emit propertyChanged(_propertyIndex); }
-
-//    int _propertyIndex;
-//    MiObject *_parent;
-//    QList<MiObject*> _list;
-//};
-
-//Q_DECLARE_METATYPE(MiObjectList*);
-
-//class MiConstantObjectList : public MiObjectList
-//{
-//public:
-//    MiConstantObjectList(int propertyIndex, MiObject *parent = 0)
-//        :   MiObjectList(propertyIndex, parent)
-//    {}
-
-//    virtual bool isConstant() const { return true; }
-//};
 
 #endif // MI_OBJECTLIST_H
