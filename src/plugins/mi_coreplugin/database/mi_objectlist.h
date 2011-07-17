@@ -71,14 +71,14 @@ public:
 } // namespace Private
 
 template <typename T>
-class MiObjectListT : public MiObjectList
+class MiList : public MiObjectList
 {
 public:
-    MiObjectListT(QObject *parent = 0)
+    MiList(QObject *parent = 0)
         :   MiObjectList(*(new Private::MiObjectListTData<T>), parent)
     {}
 
-    virtual ~MiObjectListT()
+    virtual ~MiList()
     {
         qDebug() << Q_FUNC_INFO;
     }
@@ -110,13 +110,13 @@ public:
     }
 };
 
-class MiTestObjectList : public MiObjectListT<MiTestObject>
+class MiTestObjectList : public MiList<MiTestObject>
 {
     Q_OBJECT
 
 public:
     MiTestObjectList(QObject *parent = 0)
-        :   MiObjectListT<MiTestObject>(parent)
+        :   MiList<MiTestObject>(parent)
     {}
 };
 
