@@ -33,7 +33,7 @@ class MI_CORE_EXPORT MiObjectList : public MiObject
 protected:
     MiObjectList(Private::MiObjectListPrivate &dd, QObject *parent)
         :   MiObject(parent)
-        ,   d(&dd)
+        ,   d_ptr(&dd)
     {}
 
 public:
@@ -52,7 +52,7 @@ private:
 
 protected:
     friend class Private::MiObjectListPrivate;
-    Private::MiObjectListPrivate *d;
+    Private::MiObjectListPrivate *d_ptr;
 };
 
 namespace Private {
@@ -110,8 +110,122 @@ public:
 inline MiObjectList::~MiObjectList()
 {
     qDebug() << Q_FUNC_INFO;
-    delete d;
+    delete d_ptr;
 }
+
+namespace Private {
+
+class MiWritableObjectListPrivate : public MiObjectListPrivate
+{
+public:
+    bool erased;
+
+    MiWritableObjectListPrivate(MiObjectList *q)
+        :   MiObjectListPrivate(q)
+        ,   erased(false)
+    {}
+
+    QList<MiWritableObjectInterface*> writableObjects() const
+    {
+        QList<MiWritableObjectInterface*> iobjects;
+        foreach (QObject *qObject, objects) {
+            MiObject *miObject = qobject_cast<MiObject*>(qObject);
+            if (miObject && miObject->isWritable()) {
+                MiWritableObjectInterface *iobject = dynamic_cast<MiWritableObjectInterface*>(miObject);
+                Q_ASSERT(iobject);
+                iobjects.append(iobject);
+            }
+        }
+        return iobjects;
+    }
+
+    virtual void erase()
+    {
+        QList<MiWritableObjectInterface*> iobjects = writableObjects();
+        foreach (MiWritableObjectInterface *iobject, iobjects)
+            iobject->erase();
+        erased = true;
+    }
+
+    virtual void unerase()
+    {
+        QList<MiWritableObjectInterface*> iobjects = writableObjects();
+        foreach (MiWritableObjectInterface *iobject, iobjects)
+            iobject->unerase();
+        erased = false;
+    }
+};
+
+} // namespace Private
+
+class MiWritableObjectList : public MiObjectList
+                           , public MiWritableObjectInterface
+{
+    Q_OBJECT
+
+protected:
+    MiWritableObjectList(Private::MiWritableObjectListPrivate &dd, QObject *parent)
+        :   MiObjectList(dd, parent)
+    {}
+
+public:
+    virtual ~MiWritableObjectList()
+    {}
+
+    virtual bool isWritable() const
+    {
+        return true;
+    }
+
+    virtual bool isErased() const
+    {
+        Q_D(const Private::MiWritableObjectList);
+        return d->erased;
+    }
+
+    virtual void erase()
+    {
+        if (isErased())
+            return;
+        emit aboutToBeErased();
+        Q_D(Private::MiWritableObjectList);
+        d->erase();
+        emit erased();
+    }
+
+    virtual void unerase()
+    {
+        if (!isErased())
+            return;
+        emit aboutToBeUnerased();
+        Q_D(Private::MiWritableObjectList);
+        d->unerase();
+        emit unerased();
+    }
+
+    virtual bool read(QXmlStreamReader &in)
+    {
+        Q_ASSERT(false && "Not impemented yet.");
+        Q_UNUSED(in);
+        return false;
+    }
+
+    virtual void write(QXmlStreamReader &out) const
+    {
+        Q_ASSERT(false && "Not impemented yet.");
+        Q_UNUSED(out);
+    }
+
+signals:
+    void aboutToBeErased();
+    void erased();
+    void aboutToBeUnerased();
+    void unerased();
+
+private:
+    Q_DISABLE_COPY(MiWritableObjectList)
+    Q_DECLARE_PRIVATE(Private::MiWritableObjectList)
+};
 
 template <typename T>
 class MiList : public MiObjectList
@@ -128,118 +242,29 @@ protected:
 
 public:
     virtual ~MiList()
-    {
-        qDebug() << Q_FUNC_INFO;
-    }
+    {}
 
-    bool isEmpty() const
-    {
-        return d->objects.isEmpty();
-    }
+#include "mi_objectlist.hh"
+};
 
-    int count() const
-    {
-        return d->objects.count();
-    }
+template <typename T>
+class MiWritableList : public MiWritableObjectList
+{
+public:
+    MiWritableList(QObject *parent = 0)
+        :   MiWritableObjectList(*(new Private::MiWritableObjectListPrivate(this)), parent)
+    {}
 
+protected:
+    MiWritableList(Private::MiWritableObjectListPrivate &dd, QObject *parent)
+        :   MiWritableObjectList(dd, parent)
+    {}
 
-    const QList<T*> &asQList() const
-    {
-        return reinterpret_cast<const QList<T*>&>(d->objects);
-    }
+public:
+    virtual ~MiWritableList()
+    {}
 
-    T *const &at(int i) const
-    {
-        return asQList().at(i);
-    }
-
-    T *&operator[](int i)
-    {
-        return asQList()[i];
-    }
-
-    const T *&operator[](int i) const
-    {
-        return at(i);
-    }
-    void insert(int i, T* object)
-    {
-        d->beginInsert(i, i);
-        d->insert(i, object);
-        d->endInsert(i, i);
-    }
-
-    void insert(int i, const QList<T*> &objects)
-    {
-        const int end = i + objects.count() - 1;
-        d->beginInsert(i, end);
-        int j = i - 1;
-        foreach (T* object, objects)
-            d->insert(++j, object);
-        d->endInsert(i, end);
-    }
-
-    void insert(int i, const MiList<T> *objects)
-    {
-        insert(i, objects->asQList());
-    }
-
-    void append(T* object)
-    {
-        insert(count(), object);
-    }
-
-    void append(const QList<T*> &objects)
-    {
-        insert(count(), objects);
-    }
-
-    void append(const MiList<T> *objects)
-    {
-        append(objects->asQList());
-    }
-
-    void move(int i, int destination)
-    {
-        d->beginMove(i, i, destination);
-        d->objects.move(i, destination);
-        d->endMove(i, i, destination);
-    }
-
-    void move(int i, int count, int destination)
-    {
-        const int end = i + count - 1;
-        d->beginMove(i, end, destination);
-        QList<T*> taken;
-        taken.reserve(count);
-        for (int j = i;  j <= end;  ++j)
-            taken.append(d->objects.takeAt(i));
-        int k = destination - 1;
-        foreach (QObject *object, taken)
-            d->objects.insert(++k, object);
-        d->endMove(i, end, destination);
-    }
-
-    void removeAt(int i)
-    {
-        d->beginRemove(i, i);
-        d->objects.removeAt(i);
-        d->endRemove(i, i);
-    }
-
-    void removeAt(int i, int count)
-    {
-        const int end = i + count - 1;
-        d->beginRemove(i, end);
-        for (int j = i;  j <= end;  ++j)
-            d->objects.removeAt(j);
-        d->endRemove(i, end);
-    }
-
-    void removeOne(const T* object)
-    {
-        removeAt(d->objects.indexOf(object));
-    }
+#include "mi_objectlist.hh"
 };
 
 #endif // MI_OBJECTLIST_H

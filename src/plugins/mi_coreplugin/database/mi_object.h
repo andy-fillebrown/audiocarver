@@ -22,9 +22,24 @@
 #include <mi_core_global.h>
 
 class MiDatabase;
+class MiObject;
 class QXmlStreamReader;
 class QXmlStreamWriter;
 class QVariant;
+
+namespace Private {
+
+class MiObjectData
+{
+public:
+    MiObject *q;
+
+    MiObjectData(MiObject *q)
+        :   q(q)
+    {}
+};
+
+} // namespace Private
 
 class MI_CORE_EXPORT MiObject : public QObject
 {
@@ -67,6 +82,16 @@ private:
     Q_DISABLE_COPY(MiObject)
 };
 
+class MiWritableObjectInterface
+{
+public:
+    virtual bool isErased() const = 0;
+    virtual void erase() = 0;
+    virtual void unerase() = 0;
+    virtual bool read(QXmlStreamReader &in) = 0;
+    virtual void write(QXmlStreamReader &out) const = 0;
+};
+
 class MiWritableObject;
 
 namespace Private {
@@ -74,12 +99,10 @@ namespace Private {
 class MiWritableObjectPrivate
 {
 public:
-    MiWritableObject *q;
     bool erased;
 
-    MiWritableObjectPrivate(MiWritableObject *q)
-        :   q(q)
-        ,   erased(false)
+    MiWritableObjectPrivate()
+        :   erased(false)
     {}
 
     virtual void erase()
@@ -96,13 +119,14 @@ public:
 } // namespace Private
 
 class MI_CORE_EXPORT MiWritableObject : public MiObject
+                                      , public MiWritableObjectInterface
 {
     Q_OBJECT
 
 public:
     MiWritableObject(QObject *parent = 0)
         :   MiObject(parent)
-        ,   d(new Private::MiWritableObjectPrivate(this))
+        ,   d(new Private::MiWritableObjectPrivate)
     {}
 
 protected:
@@ -119,10 +143,10 @@ public:
 
     virtual bool isWritable() const
     {
-        return isErased();
+        return true;
     }
 
-    bool isErased() const
+    virtual bool isErased() const
     {
         return d->erased;
     }

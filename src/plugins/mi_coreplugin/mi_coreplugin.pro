@@ -12,6 +12,7 @@ HEADERS += \
     database/mi_link.h \
     database/mi_object.h \
     database/mi_objectlist.h \
+    database/mi_objectlist.hh \
     database/mi_scopedsignalblocker.h \
     \
     interfaces/mi_idatabase.h \
