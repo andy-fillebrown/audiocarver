@@ -120,6 +120,8 @@ public:
     {}
 };
 
+typedef MiList<MiTestObject> MiTestObjectList;
+
 Q_DECLARE_METATYPE(MiTestObjectList*);
 
 namespace Private {
