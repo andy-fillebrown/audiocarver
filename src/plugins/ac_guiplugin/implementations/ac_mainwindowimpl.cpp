@@ -17,8 +17,6 @@
 
 #include "ac_mainwindowimpl.h"
 #include <ac_guiconstants.h>
-#include <ac_score.h>
-#include <ac_track.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>

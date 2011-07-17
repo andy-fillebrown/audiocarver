@@ -18,41 +18,41 @@
 #ifndef MI_FONT_H
 #define MI_FONT_H
 
-#include <mi_object.h>
+//#include <mi_object.h>
 
-namespace Private {
+//namespace Private {
 
-class MiFontData;
+//class MiFontData;
 
-} // namespace Private
+//} // namespace Private
 
-class MI_CORE_EXPORT MiFont : public MiObject
-{
-    Q_OBJECT
-    Q_PROPERTY(QString family READ family WRITE setFamily)
-    Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
+//class MI_CORE_EXPORT MiFont : public MiObject
+//{
+//    Q_OBJECT
+//    Q_PROPERTY(QString family READ family WRITE setFamily)
+//    Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
 
-public:
-    enum PropertyIndex
-    {
-        Family = MiObject::PropertyCount,
-        PointSize,
-        PropertyCount
-    };
+//public:
+//    enum PropertyIndex
+//    {
+//        Family = MiObject::PropertyCount,
+//        PointSize,
+//        PropertyCount
+//    };
 
-    MiFont(QObject *parent = 0);
-    virtual ~MiFont();
+//    MiFont(QObject *parent = 0);
+//    virtual ~MiFont();
 
-    QString family() const;
-    void setFamily(const QString &family);
-    int pointSize() const;
-    void setPointSize(int size);
+//    QString family() const;
+//    void setFamily(const QString &family);
+//    int pointSize() const;
+//    void setPointSize(int size);
 
-    const QFont &qFont() const;
+//    const QFont &qFont() const;
 
-private:
-    Q_DISABLE_COPY(MiFont)
-    Private::MiFontData *d;
-};
+//private:
+//    Q_DISABLE_COPY(MiFont)
+//    Private::MiFontData *d;
+//};
 
 #endif // MI_FONT_H

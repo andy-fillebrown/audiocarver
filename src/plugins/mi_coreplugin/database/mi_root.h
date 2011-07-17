@@ -18,29 +18,29 @@
 #ifndef MI_ROOT_H
 #define MI_ROOT_H
 
-#include <mi_object.h>
+//#include <mi_object.h>
 
-class MI_CORE_EXPORT MiRoot : public MiObject
-{
-    Q_OBJECT
+//class MI_CORE_EXPORT MiRoot : public MiObject
+//{
+//    Q_OBJECT
 
-public:
-    typedef MiObject::PropertyIndex PropertyIndex;
+//public:
+//    typedef MiObject::PropertyIndex PropertyIndex;
 
-    MiRoot(QObject *parent = 0);
-    ~MiRoot() {}
+//    MiRoot(QObject *parent = 0);
+//    ~MiRoot() {}
 
-    virtual bool isRoot() const { return true; }
-    virtual void clear();
-    virtual QString &normalizeClassName(QString &className) const;
-    virtual QString getUniqueId(MiObject *object, const QString &idHint = QString()) const;
-    virtual QString variantToString(const QVariant &variant) const;
-    virtual QVariant stringToVariant(const QString &string, const QString &type) const;
-    QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const { return stringToVariant(stringRef.toString(), type); }
-    QVariant stringToVariant(const QVariant &variant, const QString &type) const { Q_ASSERT(variant.type() == QVariant::String);  return stringToVariant(variant.toString(), type); }
+//    virtual bool isRoot() const { return true; }
+//    virtual void clear();
+//    virtual QString &normalizeClassName(QString &className) const;
+//    virtual QString getUniqueId(MiObject *object, const QString &idHint = QString()) const;
+//    virtual QString variantToString(const QVariant &variant) const;
+//    virtual QVariant stringToVariant(const QString &string, const QString &type) const;
+//    QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const { return stringToVariant(stringRef.toString(), type); }
+//    QVariant stringToVariant(const QVariant &variant, const QString &type) const { Q_ASSERT(variant.type() == QVariant::String);  return stringToVariant(variant.toString(), type); }
 
-private:
-    Q_DISABLE_COPY(MiRoot)
-};
+//private:
+//    Q_DISABLE_COPY(MiRoot)
+//};
 
 #endif // MI_ROOT_H

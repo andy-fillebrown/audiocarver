@@ -16,287 +16,287 @@
 **************************************************************************/
 
 #include "mi_object.h"
-#include <mi_objectlist.h>
-#include <mi_root.h>
-#include <QChildEvent>
-#include <QMetaProperty>
-#include <QVariant>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
+//#include <mi_objectlist.h>
+//#include <mi_root.h>
+//#include <QChildEvent>
+//#include <QMetaProperty>
+//#include <QVariant>
+//#include <QXmlStreamReader>
+//#include <QXmlStreamWriter>
 
-MiObject::MiObject(QObject *parent)
-    :   QObject(parent)
-{}
+//MiObject::MiObject(QObject *parent)
+//    :   QObject(parent)
+//{}
 
-QString MiObject::className() const
-{
-    QString className = metaObject()->className();
-    return root()->normalizeClassName(className);
-}
+//QString MiObject::className() const
+//{
+//    QString className = metaObject()->className();
+//    return root()->normalizeClassName(className);
+//}
 
-MiRoot *MiObject::root() const
-{
-    if (isRoot())
-        return qobject_cast<MiRoot*>(const_cast<MiObject*>(this));
-    MiObject *parent = qobject_cast<MiObject*>(this->parent());
-    if (parent)
-        return parent->root();
-    Q_ASSERT(false && "No root.");
-    return 0;
-}
+//MiRoot *MiObject::root() const
+//{
+//    if (isRoot())
+//        return qobject_cast<MiRoot*>(const_cast<MiObject*>(this));
+//    MiObject *parent = qobject_cast<MiObject*>(this->parent());
+//    if (parent)
+//        return parent->root();
+//    Q_ASSERT(false && "No root.");
+//    return 0;
+//}
 
-void MiObject::setId(const QString &id)
-{
-    if (this->id() == id && !id.isEmpty())
-        return;
-    MiRoot *root = this->root();
-    if (root && !id.startsWith("~"))
-        setObjectName(root->getUniqueId(this, id));
-    else
-        setObjectName(id);
-    emit propertyChanged(Id);
-}
+//void MiObject::setId(const QString &id)
+//{
+//    if (this->id() == id && !id.isEmpty())
+//        return;
+//    MiRoot *root = this->root();
+//    if (root && !id.startsWith("~"))
+//        setObjectName(root->getUniqueId(this, id));
+//    else
+//        setObjectName(id);
+//    emit propertyChanged(Id);
+//}
 
-void MiObject::erase()
-{
-    if (isErased())
-        return;
-    QString id = this->id();
-    id.prepend("~");
-    setId(id);
-    emit erased();
-}
+//void MiObject::erase()
+//{
+//    if (isErased())
+//        return;
+//    QString id = this->id();
+//    id.prepend("~");
+//    setId(id);
+//    emit erased();
+//}
 
-void MiObject::unerase()
-{
-    if (!isErased())
-        return;
-    QString id = this->id();
-    if (id.at(0) == '~')
-        id.remove(0, 1);
-    setId(id);
-    emit unerased();
-}
+//void MiObject::unerase()
+//{
+//    if (!isErased())
+//        return;
+//    QString id = this->id();
+//    if (id.at(0) == '~')
+//        id.remove(0, 1);
+//    setId(id);
+//    emit unerased();
+//}
 
-int MiObject::propertyCount() const
-{
-    return metaObject()->propertyCount();
-}
+//int MiObject::propertyCount() const
+//{
+//    return metaObject()->propertyCount();
+//}
 
-int MiObject::propertyIndex(const QString &name) const
-{
-    return metaObject()->indexOfProperty(qPrintable(name));
-}
+//int MiObject::propertyIndex(const QString &name) const
+//{
+//    return metaObject()->indexOfProperty(qPrintable(name));
+//}
 
-bool MiObject::propertyIsReadOnly(int i) const
-{
-    return !metaObject()->property(i).isWritable();
-}
+//bool MiObject::propertyIsReadOnly(int i) const
+//{
+//    return !metaObject()->property(i).isWritable();
+//}
 
-QString MiObject::propertyType(int i) const
-{
-    return metaObject()->property(i).typeName();
-}
+//QString MiObject::propertyType(int i) const
+//{
+//    return metaObject()->property(i).typeName();
+//}
 
-QString MiObject::propertyName(int i) const
-{
-    return QString(metaObject()->property(i).name());
-}
+//QString MiObject::propertyName(int i) const
+//{
+//    return QString(metaObject()->property(i).name());
+//}
 
-QVariant MiObject::propertyValue(int i) const
-{
-    return metaObject()->property(i).read(this);
-}
+//QVariant MiObject::propertyValue(int i) const
+//{
+//    return metaObject()->property(i).read(this);
+//}
 
-void MiObject::setPropertyValue(int i, const QVariant &value)
-{
-    const QMetaObject *metaObject = this->metaObject();
-    bool ok = metaObject->property(i).write(this, value);
-    if (!ok && value.isValid())
-        metaObject->property(i).write(this, QVariant());
-}
+//void MiObject::setPropertyValue(int i, const QVariant &value)
+//{
+//    const QMetaObject *metaObject = this->metaObject();
+//    bool ok = metaObject->property(i).write(this, value);
+//    if (!ok && value.isValid())
+//        metaObject->property(i).write(this, QVariant());
+//}
 
-MiObject *MiObject::ioParent(QXmlStreamReader &in) const
-{
-    MiObject *root = this->root();
-    if (!root || root == this)
-        return 0;
-    return root->ioParent(in);
-}
+//MiObject *MiObject::ioParent(QXmlStreamReader &in) const
+//{
+//    MiObject *root = this->root();
+//    if (!root || root == this)
+//        return 0;
+//    return root->ioParent(in);
+//}
 
-bool MiObject::read(QXmlStreamReader &in)
-{
-    MiRoot *root = this->root();
-    Q_ASSERT(root);
-    Q_ASSERT(in.name() == className());
+//bool MiObject::read(QXmlStreamReader &in)
+//{
+//    MiRoot *root = this->root();
+//    Q_ASSERT(root);
+//    Q_ASSERT(in.name() == className());
 
-    // Read properties.
-    QXmlStreamAttributes atts = in.attributes();
-    foreach (QXmlStreamAttribute att, atts) {
-        QString name = att.name().toString();
-        if (name == "id")
-            name = "objectName";
-        const int i = propertyIndex(name);
-        QString type = propertyType(i);
-        if (type == "MiObjectList*")
-            continue;
-        if (type.endsWith("*")) {
-            MiObject *object = root->findChild<MiObject*>(att.value().toString());
-            if (object)
-                setPropertyValue(i, QVariant::fromValue(object));
-        }
-        else
-            setPropertyValue(i, root->stringToVariant(att.value(), type));
-    }
+//    // Read properties.
+//    QXmlStreamAttributes atts = in.attributes();
+//    foreach (QXmlStreamAttribute att, atts) {
+//        QString name = att.name().toString();
+//        if (name == "id")
+//            name = "objectName";
+//        const int i = propertyIndex(name);
+//        QString type = propertyType(i);
+//        if (type == "MiObjectList*")
+//            continue;
+//        if (type.endsWith("*")) {
+//            MiObject *object = root->findChild<MiObject*>(att.value().toString());
+//            if (object)
+//                setPropertyValue(i, QVariant::fromValue(object));
+//        }
+//        else
+//            setPropertyValue(i, root->stringToVariant(att.value(), type));
+//    }
 
-    // Read constant read-only objects.
-    const int count = propertyCount();
-    for (int i = 1;  i < count;  ++i) {
-        QString type = propertyType(i);
-        if (type.endsWith("*")) {
-            if (type == "MiObjectList*")
-                continue;
-            if (propertyIsReadOnly(i)) {
-                while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
-                MiObject *object = propertyValue(i).value<MiObject*>();
-                if (!object->read(in))
-                    return false;
-            }
-        }
-    }
+//    // Read constant read-only objects.
+//    const int count = propertyCount();
+//    for (int i = 1;  i < count;  ++i) {
+//        QString type = propertyType(i);
+//        if (type.endsWith("*")) {
+//            if (type == "MiObjectList*")
+//                continue;
+//            if (propertyIsReadOnly(i)) {
+//                while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
+//                MiObject *object = propertyValue(i).value<MiObject*>();
+//                if (!object->read(in))
+//                    return false;
+//            }
+//        }
+//    }
 
-    // Read lists.
-    for (int i = 1;  i < count;  ++i) {
-        QString type = propertyType(i);
-        if (type != "MiObjectList*")
-            continue;
-        while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
-        QString currentListName = in.name().toString();
-        MiObjectList *list = propertyValue(i).value<MiObjectList*>();
-        Q_ASSERT(list);
-        if (!list)
-            return false;
-        if (!list->isConstant())
-            list->deleteAll();
-        blockSignals(true);
-        while (!in.atEnd()) {
-            QXmlStreamReader::TokenType tokenType = in.readNext();
-            if (tokenType == QXmlStreamReader::Characters)
-                continue;
-            const QString currentClassName = in.name().toString();
-            if (tokenType == QXmlStreamReader::EndElement && currentClassName == currentListName)
-                break;
-            if (tokenType == QXmlStreamReader::StartElement) {
-                MiObject *object = 0;
-                if (list->isConstant())
-                    object = findObject(currentClassName);
-                else
-                    object = createObject(currentClassName);
-                Q_ASSERT(object);
-                if (!object)
-                    return false;
-                if (!object->read(in))
-                    return false;
-            }
-        }
-        blockSignals(false);
-        emit propertyChanged(i);
-    }
-    return true;
-}
+//    // Read lists.
+//    for (int i = 1;  i < count;  ++i) {
+//        QString type = propertyType(i);
+//        if (type != "MiObjectList*")
+//            continue;
+//        while (in.readNext() != QXmlStreamReader::StartElement && !in.atEnd());
+//        QString currentListName = in.name().toString();
+//        MiObjectList *list = propertyValue(i).value<MiObjectList*>();
+//        Q_ASSERT(list);
+//        if (!list)
+//            return false;
+//        if (!list->isConstant())
+//            list->deleteAll();
+//        blockSignals(true);
+//        while (!in.atEnd()) {
+//            QXmlStreamReader::TokenType tokenType = in.readNext();
+//            if (tokenType == QXmlStreamReader::Characters)
+//                continue;
+//            const QString currentClassName = in.name().toString();
+//            if (tokenType == QXmlStreamReader::EndElement && currentClassName == currentListName)
+//                break;
+//            if (tokenType == QXmlStreamReader::StartElement) {
+//                MiObject *object = 0;
+//                if (list->isConstant())
+//                    object = findObject(currentClassName);
+//                else
+//                    object = createObject(currentClassName);
+//                Q_ASSERT(object);
+//                if (!object)
+//                    return false;
+//                if (!object->read(in))
+//                    return false;
+//            }
+//        }
+//        blockSignals(false);
+//        emit propertyChanged(i);
+//    }
+//    return true;
+//}
 
-void MiObject::write(QXmlStreamWriter &out) const
-{
-    MiRoot *root = this->root();
-    Q_ASSERT(root);
-    out.writeStartElement(className());
+//void MiObject::write(QXmlStreamWriter &out) const
+//{
+//    MiRoot *root = this->root();
+//    Q_ASSERT(root);
+//    out.writeStartElement(className());
 
-    // Write properties.
-    const int count = this->propertyCount();
-    for (int i = 0;  i < count;  ++i) {
-        QString type = propertyType(i);
-        if (type == "MiObjectList*")
-            continue;
-        QVariant value = propertyValue(i);
-        if (type.endsWith("*")) {
-            MiObject *object = value.value<MiObject*>();
-            if (propertyIsReadOnly(i))
-                continue;
-            if (object)
-                value = object->id();
-            else
-                value = "";
-        }
-        QString name = propertyName(i);
-        if (name == "objectName") {
-            if (value.toString().isEmpty())
-                continue;
-            name = "id";
-        }
-        out.writeAttribute(name, root->variantToString(value));
-    }
+//    // Write properties.
+//    const int count = this->propertyCount();
+//    for (int i = 0;  i < count;  ++i) {
+//        QString type = propertyType(i);
+//        if (type == "MiObjectList*")
+//            continue;
+//        QVariant value = propertyValue(i);
+//        if (type.endsWith("*")) {
+//            MiObject *object = value.value<MiObject*>();
+//            if (propertyIsReadOnly(i))
+//                continue;
+//            if (object)
+//                value = object->id();
+//            else
+//                value = "";
+//        }
+//        QString name = propertyName(i);
+//        if (name == "objectName") {
+//            if (value.toString().isEmpty())
+//                continue;
+//            name = "id";
+//        }
+//        out.writeAttribute(name, root->variantToString(value));
+//    }
 
-    // Write constant read-only objects.
-    for (int i = 0;  i < count;  ++i) {
-        QString type = propertyType(i);
-        if (type.endsWith("*")) {
-            if (type == "MiObjectList*")
-                continue;
-            if (propertyIsReadOnly(i)) {
-                QVariant value = propertyValue(i);
-                MiObject *object = value.value<MiObject*>();
-                object->write(out);
-            }
-        }
-    }
+//    // Write constant read-only objects.
+//    for (int i = 0;  i < count;  ++i) {
+//        QString type = propertyType(i);
+//        if (type.endsWith("*")) {
+//            if (type == "MiObjectList*")
+//                continue;
+//            if (propertyIsReadOnly(i)) {
+//                QVariant value = propertyValue(i);
+//                MiObject *object = value.value<MiObject*>();
+//                object->write(out);
+//            }
+//        }
+//    }
 
-    // Write lists.
-    for (int i = 1;  i < count;  ++i) {
-        QString type = propertyType(i);
-        if (type != "MiObjectList*")
-            continue;
-        QVariant value = propertyValue(i);
-        MiObjectList *list = value.value<MiObjectList*>();
-        QString name = propertyName(i);
-        out.writeStartElement(name);
-        for (int i = 0;  i < list->count();  ++i)
-            list->at(i)->write(out);
-        out.writeEndElement();
-    }
-    out.writeEndElement();
-}
+//    // Write lists.
+//    for (int i = 1;  i < count;  ++i) {
+//        QString type = propertyType(i);
+//        if (type != "MiObjectList*")
+//            continue;
+//        QVariant value = propertyValue(i);
+//        MiObjectList *list = value.value<MiObjectList*>();
+//        QString name = propertyName(i);
+//        out.writeStartElement(name);
+//        for (int i = 0;  i < list->count();  ++i)
+//            list->at(i)->write(out);
+//        out.writeEndElement();
+//    }
+//    out.writeEndElement();
+//}
 
-void MiObject::update(bool recursive)
-{
-    if (!recursive)
-        return;
-    const QObjectList &children = this->children();
-    foreach (QObject *child, children) {
-        MiObject *object = qobject_cast<MiObject*>(child);
-        if (object)
-            object->update(recursive);
-    }
-}
+//void MiObject::update(bool recursive)
+//{
+//    if (!recursive)
+//        return;
+//    const QObjectList &children = this->children();
+//    foreach (QObject *child, children) {
+//        MiObject *object = qobject_cast<MiObject*>(child);
+//        if (object)
+//            object->update(recursive);
+//    }
+//}
 
-MiObject *MiObject::createObject(const QString &className)
-{
-    MiRoot *root = this->root();
-    if (root)
-        return root->createObject(className);
-    return 0;
-}
+//MiObject *MiObject::createObject(const QString &className)
+//{
+//    MiRoot *root = this->root();
+//    if (root)
+//        return root->createObject(className);
+//    return 0;
+//}
 
-MiObject *MiObject::findObject(const QString &className) const
-{
-    Q_UNUSED(className);
-    return 0;
-}
+//MiObject *MiObject::findObject(const QString &className) const
+//{
+//    Q_UNUSED(className);
+//    return 0;
+//}
 
-void MiObject::childEvent(QChildEvent *event)
-{
-    if (event->type() == QChildEvent::ChildAdded) {
-        MiObject *object = qobject_cast<MiObject*>(event->child());
-        if (object)
-            object->setId();
-    }
-}
+//void MiObject::childEvent(QChildEvent *event)
+//{
+//    if (event->type() == QChildEvent::ChildAdded) {
+//        MiObject *object = qobject_cast<MiObject*>(event->child());
+//        if (object)
+//            object->setId();
+//    }
+//}

@@ -16,68 +16,68 @@
 **************************************************************************/
 
 #include "mi_link.h"
-#include <mi_root.h>
+//#include <mi_root.h>
 
-namespace Private {
+//namespace Private {
 
-class MiLinkData {
-public:
-    MiLink *q;
-    QString linkId;
-    MiObject *linkedObject;
+//class MiLinkData {
+//public:
+//    MiLink *q;
+//    QString linkId;
+//    MiObject *linkedObject;
 
-    MiLinkData(MiLink *q)
-        :   q(q)
-        ,   linkedObject(0)
-    {}
+//    MiLinkData(MiLink *q)
+//        :   q(q)
+//        ,   linkedObject(0)
+//    {}
 
-    void updateLinkedObject()
-    {
-        linkedObject = q->root()->findChild<MiObject*>(linkId);
-    }
-};
+//    void updateLinkedObject()
+//    {
+//        linkedObject = q->root()->findChild<MiObject*>(linkId);
+//    }
+//};
 
-} // namespace Private
+//} // namespace Private
 
-using namespace Private;
+//using namespace Private;
 
-MiLink::MiLink(QObject *parent)
-    :   MiObject(parent)
-    ,   d(new MiLinkData(this))
-{}
+//MiLink::MiLink(QObject *parent)
+//    :   MiObject(parent)
+//    ,   d(new MiLinkData(this))
+//{}
 
-MiLink::~MiLink()
-{
-    delete d;
-}
+//MiLink::~MiLink()
+//{
+//    delete d;
+//}
 
-const QString &MiLink::linkId() const
-{
-    return d->linkId;
-}
+//const QString &MiLink::linkId() const
+//{
+//    return d->linkId;
+//}
 
-void MiLink::setLinkId(const QString &id)
-{
-    if (d->linkId == id)
-        return;
-    d->linkId = id;
-    d->updateLinkedObject();
-    emit propertyChanged(LinkId);
-}
+//void MiLink::setLinkId(const QString &id)
+//{
+//    if (d->linkId == id)
+//        return;
+//    d->linkId = id;
+//    d->updateLinkedObject();
+//    emit propertyChanged(LinkId);
+//}
 
-MiObject *MiLink::linkedObject() const
-{
-    return d->linkedObject;
-}
+//MiObject *MiLink::linkedObject() const
+//{
+//    return d->linkedObject;
+//}
 
-void MiLink::setLinkedObject(MiObject *object)
-{
-    setLinkId(object->id());
-}
+//void MiLink::setLinkedObject(MiObject *object)
+//{
+//    setLinkId(object->id());
+//}
 
-void MiLink::update(bool recursive)
-{
-    Q_UNUSED(recursive);
+//void MiLink::update(bool recursive)
+//{
+//    Q_UNUSED(recursive);
 
-    d->updateLinkedObject();
-}
+//    d->updateLinkedObject();
+//}

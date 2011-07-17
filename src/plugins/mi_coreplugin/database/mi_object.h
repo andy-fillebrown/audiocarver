@@ -18,80 +18,80 @@
 #ifndef MI_OBJECT_H
 #define MI_OBJECT_H
 
-#include <QObject>
-#include <mi_core_global.h>
-#include <QVariant>
+//#include <QObject>
+//#include <mi_core_global.h>
+//#include <QVariant>
 
-class MiObjectList;
-class MiRoot;
-class QXmlStreamReader;
-class QXmlStreamWriter;
+//class MiObjectList;
+//class MiRoot;
+//class QXmlStreamReader;
+//class QXmlStreamWriter;
 
-class MI_CORE_EXPORT MiObject : public QObject
-{
-    Q_OBJECT
+//class MI_CORE_EXPORT MiObject : public QObject
+//{
+//    Q_OBJECT
 
-public:
-    enum PropertyIndex
-    {
-        Id = 0,
-        PropertyCount
-    };
+//public:
+//    enum PropertyIndex
+//    {
+//        Id = 0,
+//        PropertyCount
+//    };
 
-    MiObject(QObject *parent = 0);
-    virtual ~MiObject() {}
+//    MiObject(QObject *parent = 0);
+//    virtual ~MiObject() {}
 
-    virtual QString className() const;
-    virtual bool isRoot() const { return false; }
-    virtual MiRoot *root() const;
+//    virtual QString className() const;
+//    virtual bool isRoot() const { return false; }
+//    virtual MiRoot *root() const;
 
-    QString id() const { return objectName(); }
-    virtual void setId(const QString &id = "");
+//    QString id() const { return objectName(); }
+//    virtual void setId(const QString &id = "");
 
-    bool isErased() const { return id().startsWith("~"); }
-    virtual void erase();
-    virtual void unerase();
+//    bool isErased() const { return id().startsWith("~"); }
+//    virtual void erase();
+//    virtual void unerase();
 
-    int propertyCount() const;
-    int propertyIndex(const QString &name) const;
-    bool propertyIsReadOnly(int i) const;
-    QString propertyType(int i) const;
-    QString propertyName(int i) const;
-    QVariant propertyValue(int i) const;
-    void setPropertyValue(int i, const QVariant &value);
-    template<typename T> T propertyValue(int i) const { return qVariantValue<T>(propertyValue(i)); }
+//    int propertyCount() const;
+//    int propertyIndex(const QString &name) const;
+//    bool propertyIsReadOnly(int i) const;
+//    QString propertyType(int i) const;
+//    QString propertyName(int i) const;
+//    QVariant propertyValue(int i) const;
+//    void setPropertyValue(int i, const QVariant &value);
+//    template<typename T> T propertyValue(int i) const { return qVariantValue<T>(propertyValue(i)); }
 
-    virtual MiObject *ioParent(QXmlStreamReader &in) const;
-    virtual bool read(QXmlStreamReader &in);
-    virtual void write(QXmlStreamWriter &out) const;
-    virtual void update(bool recursive = false);
+//    virtual MiObject *ioParent(QXmlStreamReader &in) const;
+//    virtual bool read(QXmlStreamReader &in);
+//    virtual void write(QXmlStreamWriter &out) const;
+//    virtual void update(bool recursive = false);
 
-    virtual MiObject *createObject(const QString &className);
-    virtual MiObject *findObject(const QString &className) const;
+//    virtual MiObject *createObject(const QString &className);
+//    virtual MiObject *findObject(const QString &className) const;
 
-protected:
-    virtual void childEvent(QChildEvent *event);
+//protected:
+//    virtual void childEvent(QChildEvent *event);
 
-signals:
-    void erased();
-    void unerased();
-    void propertyChanged(int propertyIndex);
+//signals:
+//    void erased();
+//    void unerased();
+//    void propertyChanged(int propertyIndex);
 
-private:
-    Q_DISABLE_COPY(MiObject)
-    friend class MiObjectList;
-};
+//private:
+//    Q_DISABLE_COPY(MiObject)
+//    friend class MiObjectList;
+//};
 
-Q_DECLARE_METATYPE(MiObject*);
+//Q_DECLARE_METATYPE(MiObject*);
 
-namespace Private {
+//namespace Private {
 
-class MI_CORE_EXPORT MiLinkableObjectData
-{
-public:
-    MiLinkableObjectData(MiObject *q) { q->setId(); }
-};
+//class MI_CORE_EXPORT MiLinkableObjectData
+//{
+//public:
+//    MiLinkableObjectData(MiObject *q) { q->setId(); }
+//};
 
-} // namespace Private
+//} // namespace Private
 
 #endif // MI_OBJECT_H

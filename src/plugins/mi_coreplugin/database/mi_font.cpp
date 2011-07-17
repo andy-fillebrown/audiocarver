@@ -16,61 +16,61 @@
 **************************************************************************/
 
 #include "mi_font.h"
-#include <QFont>
+//#include <QFont>
 
-using namespace Private;
+//using namespace Private;
 
-namespace Private {
+//namespace Private {
 
-class MiFontData
-{
-public:
-    QFont font;
+//class MiFontData
+//{
+//public:
+//    QFont font;
 
-    MiFontData()
-        :   font("Arial", 8)
-    {}
-};
+//    MiFontData()
+//        :   font("Arial", 8)
+//    {}
+//};
 
-}
+//}
 
-MiFont::MiFont(QObject *parent)
-    :   MiObject(parent)
-    ,   d(new MiFontData)
-{}
+//MiFont::MiFont(QObject *parent)
+//    :   MiObject(parent)
+//    ,   d(new MiFontData)
+//{}
 
-MiFont::~MiFont()
-{
-    delete d;
-}
+//MiFont::~MiFont()
+//{
+//    delete d;
+//}
 
-QString MiFont::family() const
-{
-    return d->font.family();
-}
+//QString MiFont::family() const
+//{
+//    return d->font.family();
+//}
 
-void MiFont::setFamily(const QString &family)
-{
-    if (d->font.family() == family)
-        return;
-    d->font.setFamily(family);
-    emit propertyChanged(Family);
-}
+//void MiFont::setFamily(const QString &family)
+//{
+//    if (d->font.family() == family)
+//        return;
+//    d->font.setFamily(family);
+//    emit propertyChanged(Family);
+//}
 
-int MiFont::pointSize() const
-{
-    return d->font.pointSize();
-}
+//int MiFont::pointSize() const
+//{
+//    return d->font.pointSize();
+//}
 
-void MiFont::setPointSize(int size)
-{
-    if (d->font.pointSize() == size)
-        return;
-    d->font.setPointSize(size);
-    emit propertyChanged(PointSize);
-}
+//void MiFont::setPointSize(int size)
+//{
+//    if (d->font.pointSize() == size)
+//        return;
+//    d->font.setPointSize(size);
+//    emit propertyChanged(PointSize);
+//}
 
-const QFont &MiFont::qFont() const
-{
-    return d->font;
-}
+//const QFont &MiFont::qFont() const
+//{
+//    return d->font;
+//}

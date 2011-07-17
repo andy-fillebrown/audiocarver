@@ -18,41 +18,41 @@
 #ifndef MI_LINK_H
 #define MI_LINK_H
 
-#include <mi_object.h>
+//#include <mi_object.h>
 
-namespace Private {
+//namespace Private {
 
-class MiLinkData;
+//class MiLinkData;
 
-} // namespace Private
+//} // namespace Private
 
-class MI_CORE_EXPORT MiLink : public MiObject
-{
-    Q_OBJECT
-    Q_PROPERTY(QString linkId READ linkId WRITE setLinkId)
+//class MI_CORE_EXPORT MiLink : public MiObject
+//{
+//    Q_OBJECT
+//    Q_PROPERTY(QString linkId READ linkId WRITE setLinkId)
 
-public:
-    enum PropertyIndex
-    {
-        LinkId = MiObject::PropertyCount,
-        PropertyCount
-    };
+//public:
+//    enum PropertyIndex
+//    {
+//        LinkId = MiObject::PropertyCount,
+//        PropertyCount
+//    };
 
-    MiLink(QObject *parent = 0);
-    virtual ~MiLink();
+//    MiLink(QObject *parent = 0);
+//    virtual ~MiLink();
 
-    const QString &linkId() const;
-    void setLinkId(const QString &id);
-    MiObject *linkedObject() const;
-    void setLinkedObject(MiObject *object);
+//    const QString &linkId() const;
+//    void setLinkId(const QString &id);
+//    MiObject *linkedObject() const;
+//    void setLinkedObject(MiObject *object);
 
-    virtual void update(bool recursive = false);
+//    virtual void update(bool recursive = false);
 
-private:
-    Q_DISABLE_COPY(MiLink)
-    Private::MiLinkData *d;
-};
+//private:
+//    Q_DISABLE_COPY(MiLink)
+//    Private::MiLinkData *d;
+//};
 
-Q_DECLARE_METATYPE(MiLink*);
+//Q_DECLARE_METATYPE(MiLink*);
 
 #endif // MI_LINK_H
