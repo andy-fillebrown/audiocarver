@@ -16,3 +16,33 @@
 **************************************************************************/
 
 #include "mi_objectlist.h"
+
+using namespace Private;
+
+namespace Private {
+
+class MiTestDataObjectData
+{
+public:
+    MiTestObjectList *list;
+};
+
+} // namespace Private
+
+MiTestDataObject::MiTestDataObject(QObject *parent)
+    :   QObject(parent)
+    ,   d(new MiTestDataObjectData)
+{
+    d->list = new MiTestObjectList(this);
+}
+
+MiTestDataObject::~MiTestDataObject()
+{
+    qDebug() << Q_FUNC_INFO;
+    delete d;
+}
+
+MiTestObjectList *MiTestDataObject::list() const
+{
+    return d->list;
+}

@@ -30,6 +30,21 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage);
 //    qRegisterMetaType<MiObject*>();
 //    qRegisterMetaType<MiObjectList*>();
+    qRegisterMetaType<MiTestObjectList*>();
+
+    MiTestDataObject *test = new MiTestDataObject(this);
+    MiTestObjectList *list = test->property("list").value<MiTestObjectList*>();
+    Q_ASSERT(list);
+    list->append(new MiTestObject);
+    list->append(new MiTestObject);
+    qDebug() << list->asQList().count();
+    int i = 0;
+    foreach (MiTestObject *testObject, list->asQList()) {
+        Q_ASSERT(testObject);
+        qDebug() << i;
+        ++i;
+    }
+
     return true;
 }
 

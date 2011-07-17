@@ -18,28 +18,130 @@
 #ifndef MI_OBJECTLIST_H
 #define MI_OBJECTLIST_H
 
+#include <QObject>
+#include <mi_core_global.h>
 
-class MiObjectList
+namespace Private {
+
+class MiObjectListData
 {
 public:
-    MiObjectList(int propertyIndex, MiObject *parent = 0)
-    {}
-
-
-
-
-
-
-
+    QList<QObject*> objects;
 };
 
+} // namespace Private
 
-class MiConstantObjectList : public MiObjectList
+class MI_CORE_EXPORT MiObjectList : public QObject
 {
-public:
-    MiConstantObjectList(int propertyIndex, MiObject *parent = 0)
+    Q_OBJECT
+
+protected:
+    MiObjectList(Private::MiObjectListData &dd, QObject *parent = 0)
+        :   QObject(parent)
+        ,   d(&dd)
     {}
 
+public:
+    virtual ~MiObjectList()
+    {
+        qDebug() << Q_FUNC_INFO;
+        delete d;
+    }
+
+private:
+    Q_DISABLE_COPY(MiObjectList)
+
+protected:
+    Private::MiObjectListData *d;
+};
+
+namespace Private {
+
+template <typename T>
+class MiObjectListTData : public MiObjectListData
+{};
+
+template <typename T>
+class MiObjectListTPrivate : public MiObjectListTData<T>
+{
+public:
+    void test();
+};
+
+} // namespace Private
+
+template <typename T>
+class MiObjectListT : public MiObjectList
+{
+public:
+    MiObjectListT(QObject *parent = 0)
+        :   MiObjectList(*(new Private::MiObjectListTData<T>), parent)
+    {}
+
+    virtual ~MiObjectListT()
+    {
+        qDebug() << Q_FUNC_INFO;
+    }
+
+    const QList<T*> &asQList() const
+    {
+        return reinterpret_cast<const QList<T*>&>(d->objects);
+    }
+
+    void append(T* object)
+    {
+        d->objects.append(object);
+        object->setParent(this);
+    }
+};
+
+class MiTestObject : public QObject
+{
+    Q_OBJECT
+
+public:
+    MiTestObject(QObject *parent = 0)
+        :   QObject(parent)
+    {}
+
+    virtual ~MiTestObject()
+    {
+        qDebug() << Q_FUNC_INFO;
+    }
+};
+
+class MiTestObjectList : public MiObjectListT<MiTestObject>
+{
+    Q_OBJECT
+
+public:
+    MiTestObjectList(QObject *parent = 0)
+        :   MiObjectListT<MiTestObject>(parent)
+    {}
+};
+
+Q_DECLARE_METATYPE(MiTestObjectList*);
+
+namespace Private {
+
+class MiTestDataObjectData;
+
+} // namespace Private
+
+class MiTestDataObject : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(MiTestObjectList* list READ list)
+
+public:
+    MiTestDataObject(QObject *parent = 0);
+    virtual ~MiTestDataObject();
+
+    MiTestObjectList *list() const;
+
+private:
+    Q_DISABLE_COPY(MiTestDataObject)
+    Private::MiTestDataObjectData *d;
 };
 
 //#include <mi_object.h>
