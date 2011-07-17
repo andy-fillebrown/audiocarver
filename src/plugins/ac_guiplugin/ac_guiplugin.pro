@@ -1,4 +1,4 @@
-TARGET = AC_Gui
+TARGET = AcGuiPlugin
 TEMPLATE = lib
 
 include(../../plugin.pri)

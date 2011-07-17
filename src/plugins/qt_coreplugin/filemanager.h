@@ -30,7 +30,7 @@
 #ifndef FILEMANAGER_H
 #define FILEMANAGER_H
 
-#include <coreplugin/core_global.h>
+#include <qt_coreplugin/core_global.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>

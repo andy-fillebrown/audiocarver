@@ -30,7 +30,7 @@
 #ifndef ICONTEXT_H
 #define ICONTEXT_H
 
-#include <coreplugin/core_global.h>
+#include <qt_coreplugin/core_global.h>
 
 #include <QtCore/QList>
 #include <QtCore/QObject>

@@ -27,67 +27,41 @@
 **
 **************************************************************************/
 
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef IOPTIONSPAGE_H
+#define IOPTIONSPAGE_H
 
-#include <coreplugin/core_global.h>
+#include <qt_coreplugin/core_global.h>
 
+#include <QtGui/QIcon>
 #include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 
-class QAction;
-class QShortcut;
-class QKeySequence;
+class QWidget;
 
 QT_END_NAMESPACE
 
-
 namespace Core {
 
-class Context;
-
-class CORE_EXPORT Command : public QObject
+class CORE_EXPORT IOptionsPage : public QObject
 {
     Q_OBJECT
 public:
-    enum CommandAttribute {
-        CA_Hide             = 0x0100,
-        CA_UpdateText       = 0x0200,
-        CA_UpdateIcon       = 0x0400,
-        CA_NonConfigureable = 0x8000,
-        CA_Mask             = 0xFF00
-    };
+    IOptionsPage(QObject *parent = 0) : QObject(parent) {}
+    virtual ~IOptionsPage() {}
 
-    virtual void setDefaultKeySequence(const QKeySequence &key) = 0;
-    virtual QKeySequence defaultKeySequence() const = 0;
-    virtual QKeySequence keySequence() const = 0;
-    virtual void setDefaultText(const QString &text) = 0;
-    virtual QString defaultText() const = 0;
+    virtual QString id() const = 0;
+    virtual QString displayName() const = 0;
+    virtual QString category() const = 0;
+    virtual QString displayCategory() const = 0;
+    virtual QIcon categoryIcon() const = 0;
+    virtual bool matches(const QString & /* searchKeyWord*/) const { return false; }
 
-    virtual int id() const = 0;
-
-    virtual QAction *action() const = 0;
-    virtual QShortcut *shortcut() const = 0;
-    virtual Context context() const = 0;
-
-    virtual void setAttribute(CommandAttribute attr) = 0;
-    virtual void removeAttribute(CommandAttribute attr) = 0;
-    virtual bool hasAttribute(CommandAttribute attr) const = 0;
-
-    virtual bool isActive() const = 0;
-
-    virtual ~Command() {}
-
-    virtual void setKeySequence(const QKeySequence &key) = 0;
-
-    virtual QString stringWithAppendedShortcut(const QString &str) const = 0;
-
-signals:
-    void keySequenceChanged();
-    void activeStateChanged();
+    virtual QWidget *createPage(QWidget *parent) = 0;
+    virtual void apply() = 0;
+    virtual void finish() = 0;
 };
 
 } // namespace Core
 
-#endif // COMMAND_H
+#endif // IOPTIONSPAGE_H

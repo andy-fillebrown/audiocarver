@@ -1,4 +1,4 @@
-TARGET = MI_Core
+TARGET = MiCorePlugin
 TEMPLATE = lib
 
 include(../../plugin.pri)

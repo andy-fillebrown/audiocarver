@@ -1,5 +1,5 @@
 
-include(../coreplugin/coreplugin.pri)
+include(../qt_coreplugin/coreplugin.pri)
 
 DIRS = \
     database \

@@ -1,4 +1,4 @@
 
 include(ac_guiplugin_dependencies.pri)
 
-LIBS *= -l$$qtLibraryName(AC_GuiPlugin)
+LIBS *= -l$$qtLibraryName(AcGuiPlugin)

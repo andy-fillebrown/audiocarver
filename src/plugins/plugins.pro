@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = \
-    coreplugin \
+    qt_coreplugin \
     mi_coreplugin \
     mi_guiplugin \
     ac_coreplugin \

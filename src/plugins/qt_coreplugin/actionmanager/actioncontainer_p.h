@@ -32,8 +32,8 @@
 
 #include "actionmanager_p.h"
 
-#include <coreplugin/actionmanager/actioncontainer.h>
-#include <coreplugin/actionmanager/command.h>
+#include <qt_coreplugin/actionmanager/actioncontainer.h>
+#include <qt_coreplugin/actionmanager/command.h>
 
 namespace Core {
 namespace Internal {

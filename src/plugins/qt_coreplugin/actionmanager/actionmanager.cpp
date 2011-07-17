@@ -33,8 +33,8 @@
 #include "command_p.h"
 #include "uniqueidmanager.h"
 
-#include <coreplugin/coreconstants.h>
-#include <coreplugin/icore.h>
+#include <qt_coreplugin/coreconstants.h>
+#include <qt_coreplugin/icore.h>
 
 #include <QtCore/QDebug>
 #include <QtCore/QSettings>

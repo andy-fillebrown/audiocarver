@@ -31,7 +31,7 @@
 #include "shortcutsettings.h"
 #include "command_p.h"
 
-#include <coreplugin/uniqueidmanager.h>
+#include <qt_coreplugin/uniqueidmanager.h>
 
 #include <QtCore/QFile>
 #include <QtXml/QDomDocument>

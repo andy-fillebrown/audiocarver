@@ -34,8 +34,8 @@
 #	include <utils/unixutils.h>
 #endif
 
-#include <coreplugin/icore.h>
-#include <coreplugin/mainwindow.h>
+#include <qt_coreplugin/icore.h>
+#include <qt_coreplugin/mainwindow.h>
 
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>

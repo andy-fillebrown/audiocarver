@@ -1,4 +1,4 @@
-TARGET = Core
+TARGET = QtCorePlugin
 TEMPLATE = lib
 
 include(../../plugin.pri)

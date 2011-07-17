@@ -30,8 +30,8 @@
 #ifndef ACTIONMANAGERPRIVATE_H
 #define ACTIONMANAGERPRIVATE_H
 
-#include <coreplugin/actionmanager/actionmanager.h>
-#include <coreplugin/icontext.h>
+#include <qt_coreplugin/actionmanager/actionmanager.h>
+#include <qt_coreplugin/icontext.h>
 
 #include <QtCore/QMap>
 #include <QtCore/QHash>

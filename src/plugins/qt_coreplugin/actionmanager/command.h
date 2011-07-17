@@ -27,48 +27,67 @@
 **
 **************************************************************************/
 
-#ifndef ACTIONMANAGER_H
-#define ACTIONMANAGER_H
+#ifndef COMMAND_H
+#define COMMAND_H
 
-#include "coreplugin/core_global.h"
-#include "coreplugin/uniqueidmanager.h"
+#include <qt_coreplugin/core_global.h>
 
 #include <QtCore/QObject>
-#include <QtCore/QList>
 
 QT_BEGIN_NAMESPACE
 
 class QAction;
 class QShortcut;
-class QString;
+class QKeySequence;
 
 QT_END_NAMESPACE
 
+
 namespace Core {
 
-class ActionContainer;
-class Command;
 class Context;
 
-class CORE_EXPORT ActionManager : public QObject
+class CORE_EXPORT Command : public QObject
 {
     Q_OBJECT
 public:
-    ActionManager(QObject *parent = 0) : QObject(parent) {}
-    virtual ~ActionManager() {}
+    enum CommandAttribute {
+        CA_Hide             = 0x0100,
+        CA_UpdateText       = 0x0200,
+        CA_UpdateIcon       = 0x0400,
+        CA_NonConfigureable = 0x8000,
+        CA_Mask             = 0xFF00
+    };
 
-    virtual ActionContainer *createMenu(const Id &id) = 0;
-    virtual ActionContainer *createMenuBar(const Id &id) = 0;
+    virtual void setDefaultKeySequence(const QKeySequence &key) = 0;
+    virtual QKeySequence defaultKeySequence() const = 0;
+    virtual QKeySequence keySequence() const = 0;
+    virtual void setDefaultText(const QString &text) = 0;
+    virtual QString defaultText() const = 0;
 
-    virtual Command *registerAction(QAction *action, const Id &id, const Context &context) = 0;
-    virtual Command *registerShortcut(QShortcut *shortcut, const Id &id, const Context &context) = 0;
+    virtual int id() const = 0;
 
-    virtual Command *command(const Id &id) const = 0;
-    virtual ActionContainer *actionContainer(const Id &id) const = 0;
+    virtual QAction *action() const = 0;
+    virtual QShortcut *shortcut() const = 0;
+    virtual Context context() const = 0;
 
-    virtual QList<Command *> commands() const = 0;
+    virtual void setAttribute(CommandAttribute attr) = 0;
+    virtual void removeAttribute(CommandAttribute attr) = 0;
+    virtual bool hasAttribute(CommandAttribute attr) const = 0;
+
+    virtual bool isActive() const = 0;
+
+    virtual ~Command() {}
+
+    virtual void setKeySequence(const QKeySequence &key) = 0;
+
+    virtual QString stringWithAppendedShortcut(const QString &str) const = 0;
+
+signals:
+    void keySequenceChanged();
+    void activeStateChanged();
 };
 
 } // namespace Core
 
-#endif // ACTIONMANAGER_H
+#endif // COMMAND_H

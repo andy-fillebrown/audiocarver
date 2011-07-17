@@ -27,19 +27,16 @@
 **
 **************************************************************************/
 
-#ifndef COMMANDMAPPINGS_H
-#define COMMANDMAPPINGS_H
+#ifndef SHORTCUTSETTINGS_H
+#define SHORTCUTSETTINGS_H
 
-#include <coreplugin/dialogs/ioptionspage.h>
+#include <qt_coreplugin/actionmanager/commandmappings.h>
 
-#include <QtCore/QObject>
+#include <QtGui/QKeySequence>
 
 QT_BEGIN_NAMESPACE
 
-class QLineEdit;
-class QTreeWidget;
-class QTreeWidgetItem;
-class Ui_CommandMappings;
+class QKeyEvent;
 
 QT_END_NAMESPACE
 
@@ -51,47 +48,63 @@ class MainWindow;
 namespace Internal {
 
 class ActionManagerPrivate;
-}
+struct ShortcutItem
+{
+    Command *m_cmd;
+    QKeySequence m_key;
+    QTreeWidgetItem *m_item;
+};
 
-class CORE_EXPORT CommandMappings : public Core::IOptionsPage
+
+class ShortcutSettings : public Core::CommandMappings
 {
     Q_OBJECT
 
 public:
-    CommandMappings(QObject *parent = 0);
-    ~CommandMappings();
+    ShortcutSettings(QObject *parent = 0);
+    ~ShortcutSettings();
 
-protected slots:
-    void commandChanged(QTreeWidgetItem *current);
-    void filterChanged(const QString &f);
-    virtual void importAction() {}
-    virtual void exportAction() {}
-    virtual void defaultAction() = 0;
+    // IOptionsPage
+    QString id() const;
+    QString displayName() const;
+    QString category() const;
+    QString displayCategory() const;
+    QIcon categoryIcon() const;
+
+    QWidget *createPage(QWidget *parent);
+    void apply();
+    void finish();
+    bool matches(const QString &s) const;
 
 protected:
-    // IOptionsPage
-    QWidget *createPage(QWidget *parent);
-    virtual void apply() {}
-    virtual void finish();
+    bool eventFilter(QObject *o, QEvent *e);
 
-    virtual void initialize() = 0;
-    bool filter(const QString &f, const QTreeWidgetItem *item);
+private slots:
+    void commandChanged(QTreeWidgetItem *current);
+    void targetIdentifierChanged();
+    void resetTargetIdentifier();
+    void removeTargetIdentifier();
+    void importAction();
+    void exportAction();
+    void defaultAction();
 
-    // access to m_page
-    void setImportExportEnabled(bool enabled);
-    QTreeWidget *commandList() const;
-    QLineEdit *targetEdit() const;
-    void setPageTitle(const QString &s);
-    void setTargetLabelText(const QString &s);
-    void setTargetEditTitle(const QString &s);
-    void setTargetHeader(const QString &s);
-    void setModified(QTreeWidgetItem *item, bool modified);
-    virtual void markPossibleCollisions(QTreeWidgetItem *) {}
-    virtual void resetCollisionMarkers() {}
 private:
-    Ui_CommandMappings *m_page;
+    void setKeySequence(const QKeySequence &key);
+    void initialize();
+
+    void handleKeyEvent(QKeyEvent *e);
+    int translateModifiers(Qt::KeyboardModifiers state, const QString &text);
+    void markPossibleCollisions(ShortcutItem *);
+    void resetCollisionMarker(ShortcutItem *);
+    void resetCollisionMarkers();
+
+    QList<ShortcutItem *> m_scitems;
+    int m_key[4], m_keyNum;
+
+    QString m_searchKeywords;
 };
 
+} // namespace Internal
 } // namespace Core
 
-#endif // COMMANDMAPPINGS_H
+#endif // SHORTCUTSETTINGS_H

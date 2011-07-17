@@ -27,41 +27,62 @@
 **
 **************************************************************************/
 
-#ifndef IOPTIONSPAGE_H
-#define IOPTIONSPAGE_H
+#ifndef GENERALSETTINGS_H
+#define GENERALSETTINGS_H
 
-#include <coreplugin/core_global.h>
-
-#include <QtGui/QIcon>
-#include <QtCore/QObject>
+#include <qt_coreplugin/dialogs/ioptionspage.h>
+#include <QtCore/QPointer>
 
 QT_BEGIN_NAMESPACE
 
-class QWidget;
+class QMessageBox;
 
 QT_END_NAMESPACE
 
 namespace Core {
+namespace Internal {
 
-class CORE_EXPORT IOptionsPage : public QObject
+namespace Ui {
+    class GeneralSettings;
+}
+
+class GeneralSettings : public IOptionsPage
 {
     Q_OBJECT
+
 public:
-    IOptionsPage(QObject *parent = 0) : QObject(parent) {}
-    virtual ~IOptionsPage() {}
+    GeneralSettings();
 
-    virtual QString id() const = 0;
-    virtual QString displayName() const = 0;
-    virtual QString category() const = 0;
-    virtual QString displayCategory() const = 0;
-    virtual QIcon categoryIcon() const = 0;
-    virtual bool matches(const QString & /* searchKeyWord*/) const { return false; }
+    QString id() const;
+    QString displayName() const;
+    QString category() const;
+    QString displayCategory() const;
+    QIcon categoryIcon() const;
+    QWidget* createPage(QWidget *parent);
+    void apply();
+    void finish();
+    virtual bool matches(const QString &) const;
 
-    virtual QWidget *createPage(QWidget *parent) = 0;
-    virtual void apply() = 0;
-    virtual void finish() = 0;
+private slots:
+    void resetLanguage();
+
+#ifdef Q_OS_UNIX
+    #  ifndef Q_OS_MAC
+        void showHelpForFileBrowser();
+    #  endif
+#endif
+
+private:
+    void variableHelpDialogCreator(const QString &helpText);
+    void fillLanguageBox() const;
+    QString language() const;
+    void setLanguage(const QString&);
+    Ui::GeneralSettings *m_page;
+    QString m_searchKeywords;
+    QPointer<QMessageBox> m_dialog;
 };
 
+} // namespace Internal
 } // namespace Core
 
-#endif // IOPTIONSPAGE_H
+#endif // GENERALSETTINGS_H

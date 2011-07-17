@@ -1,4 +1,4 @@
-TARGET = MI_Gui
+TARGET = MiGuiPlugin
 TEMPLATE = lib
 
 include(../../plugin.pri)

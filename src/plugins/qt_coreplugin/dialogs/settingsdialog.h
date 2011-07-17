@@ -30,7 +30,7 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include "coreplugin/dialogs/ioptionspage.h"
+#include "qt_coreplugin/dialogs/ioptionspage.h"
 
 #include <QtCore/QList>
 #include <QtCore/QSet>

@@ -18,7 +18,7 @@
 #ifndef IMAINWINDOW_H
 #define IMAINWINDOW_H
 
-#include <coreplugin/core_global.h>
+#include <qt_coreplugin/core_global.h>
 
 #include <QtCore/QObject>
 

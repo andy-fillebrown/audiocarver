@@ -45,9 +45,9 @@
 #include "versiondialog.h"
 #include "uniqueidmanager.h"
 
-#include <coreplugin/findplaceholder.h>
-#include <coreplugin/icorelistener.h>
-#include <coreplugin/settingsdatabase.h>
+#include <qt_coreplugin/findplaceholder.h>
+#include <qt_coreplugin/icorelistener.h>
+#include <qt_coreplugin/settingsdatabase.h>
 #include <utils/pathchooser.h>
 #include <utils/stringutils.h>
 #include <extensionsystem/pluginmanager.h>

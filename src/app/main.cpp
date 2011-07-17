@@ -50,7 +50,7 @@
 enum { OptionIndent = 4, DescriptionIndent = 34 };
 
 static const char *appNameC = PRO_NAME_STR;
-static const char *corePluginNameC = "Core";
+static const char *corePluginNameC = "QtCorePlugin";
 static const char *fixedOptionsC =
 " [OPTION]... [FILE]...\n"
 "Options:\n"
@@ -258,7 +258,7 @@ int main(int argc, char **argv)
     }
     if (!coreplugin) {
         QString nativePaths = QDir::toNativeSeparators(pluginPaths.join(QLatin1String(",")));
-        const QString reason = QCoreApplication::translate("Application", "Could not find 'Core.pluginspec' in %1").arg(nativePaths);
+        const QString reason = QCoreApplication::translate("Application", "Could not find '%1.pluginspec' in %2").arg(corePluginNameC).arg(nativePaths);
         displayError(msgCoreLoadFailure(reason));
         return 1;
     }

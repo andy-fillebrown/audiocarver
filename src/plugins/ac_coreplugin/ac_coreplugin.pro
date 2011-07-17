@@ -1,4 +1,4 @@
-TARGET = AC_Core
+TARGET = AcCorePlugin
 TEMPLATE = lib
 
 include(../../plugin.pri)

@@ -27,62 +27,48 @@
 **
 **************************************************************************/
 
-#ifndef GENERALSETTINGS_H
-#define GENERALSETTINGS_H
+#ifndef ACTIONMANAGER_H
+#define ACTIONMANAGER_H
 
-#include <coreplugin/dialogs/ioptionspage.h>
-#include <QtCore/QPointer>
+#include "qt_coreplugin/core_global.h"
+#include "qt_coreplugin/uniqueidmanager.h"
+
+#include <QtCore/QObject>
+#include <QtCore/QList>
 
 QT_BEGIN_NAMESPACE
 
-class QMessageBox;
+class QAction;
+class QShortcut;
+class QString;
 
 QT_END_NAMESPACE
 
 namespace Core {
-namespace Internal {
 
-namespace Ui {
-    class GeneralSettings;
-}
+class ActionContainer;
+class Command;
+class Context;
 
-class GeneralSettings : public IOptionsPage
+class CORE_EXPORT ActionManager : public QObject
 {
     Q_OBJECT
-
 public:
-    GeneralSettings();
+    ActionManager(QObject *parent = 0) : QObject(parent) {}
+    virtual ~ActionManager() {}
 
-    QString id() const;
-    QString displayName() const;
-    QString category() const;
-    QString displayCategory() const;
-    QIcon categoryIcon() const;
-    QWidget* createPage(QWidget *parent);
-    void apply();
-    void finish();
-    virtual bool matches(const QString &) const;
+    virtual ActionContainer *createMenu(const Id &id) = 0;
+    virtual ActionContainer *createMenuBar(const Id &id) = 0;
 
-private slots:
-    void resetLanguage();
+    virtual Command *registerAction(QAction *action, const Id &id, const Context &context) = 0;
+    virtual Command *registerShortcut(QShortcut *shortcut, const Id &id, const Context &context) = 0;
 
-#ifdef Q_OS_UNIX
-    #  ifndef Q_OS_MAC
-        void showHelpForFileBrowser();
-    #  endif
-#endif
+    virtual Command *command(const Id &id) const = 0;
+    virtual ActionContainer *actionContainer(const Id &id) const = 0;
 
-private:
-    void variableHelpDialogCreator(const QString &helpText);
-    void fillLanguageBox() const;
-    QString language() const;
-    void setLanguage(const QString&);
-    Ui::GeneralSettings *m_page;
-    QString m_searchKeywords;
-    QPointer<QMessageBox> m_dialog;
+    virtual QList<Command *> commands() const = 0;
 };
 
-} // namespace Internal
 } // namespace Core
 
-#endif // GENERALSETTINGS_H
+#endif // ACTIONMANAGER_H
