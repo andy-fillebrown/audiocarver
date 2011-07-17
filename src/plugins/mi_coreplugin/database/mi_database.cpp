@@ -15,22 +15,10 @@
 **
 **************************************************************************/
 
-#include "mi_root.h"
-//#include <QMetaType>
+#include "mi_database.h"
+#include <QMetaType>
 
-//MiRoot::MiRoot(QObject *parent)
-//    :   MiObject(parent)
-//{}
-
-//void MiRoot::clear()
-//{}
-
-//QString &MiRoot::normalizeClassName(QString &className) const
-//{
-//    return className;
-//}
-
-//QString MiRoot::getUniqueId(MiObject *object, const QString &idHint) const
+//QString MiDatabase::getUniqueId(MiObject *object, const QString &idHint) const
 //{
 //    QString actualId = idHint;
 //    if (actualId.isEmpty())
@@ -39,7 +27,7 @@
 //    QList<MiObject*> children = findChildren<MiObject*>();
 //    foreach (MiObject *object, children) {
 //        Q_ASSERT(object);
-//        if (object->id() == actualId) {
+//        if (object->className() == actualId) {
 //            idIsUsed = true;
 //            break;
 //        }
@@ -52,7 +40,7 @@
 //    int maxSuffix = 0;
 //    foreach (MiObject *object, children) {
 //        Q_ASSERT(object);
-//        QString id = object->id();
+//        QString id = object->className();
 //        if (id.startsWith(actualId)) {
 //            int lastIndexOfDot = id.lastIndexOf(".");
 //            if (lastIndexOfDot == -1)
@@ -67,7 +55,7 @@
 //    return actualId += QString(".%1").arg(maxSuffix + 1);
 //}
 
-//QString MiRoot::variantToString(const QVariant &variant) const
+//QString MiDatabase::variantToString(const QVariant &variant) const
 //{
 //    int type = variant.type();
 //    if (type == QVariant::Double || type == QMetaType::Float) {
@@ -83,7 +71,7 @@
 //    return variant.toString();
 //}
 
-//QVariant MiRoot::stringToVariant(const QString &string, const QString &type) const
+//QVariant MiDatabase::stringToVariant(const QString &string, const QString &type) const
 //{
 //    if (type == "Bool")
 //        return QVariant(string == "1");

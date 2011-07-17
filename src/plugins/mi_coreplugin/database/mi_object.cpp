@@ -16,116 +16,75 @@
 **************************************************************************/
 
 #include "mi_object.h"
-//#include <mi_objectlist.h>
-//#include <mi_root.h>
-//#include <QChildEvent>
-//#include <QMetaProperty>
-//#include <QVariant>
-//#include <QXmlStreamReader>
-//#include <QXmlStreamWriter>
+#include <mi_database.h>
+#include <mi_objectlist.h>
+#include <QMetaProperty>
+#include <QVariant>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
-//MiObject::MiObject(QObject *parent)
-//    :   QObject(parent)
-//{}
+using namespace Private;
 
-//QString MiObject::className() const
-//{
-//    QString className = metaObject()->className();
-//    return root()->normalizeClassName(className);
-//}
+QString MiObject::className() const
+{
+    QString className = metaObject()->className();
+//    MiDatabase *db = database();
+//    if (db)
+//        return db->normalizeClassName(className);
+    return className;
+}
 
-//MiRoot *MiObject::root() const
-//{
-//    if (isRoot())
-//        return qobject_cast<MiRoot*>(const_cast<MiObject*>(this));
-//    MiObject *parent = qobject_cast<MiObject*>(this->parent());
-//    if (parent)
-//        return parent->root();
-//    Q_ASSERT(false && "No root.");
-//    return 0;
-//}
+MiDatabase *MiObject::database() const
+{
+    if (isDatabase())
+        return qobject_cast<MiDatabase*>(const_cast<MiObject*>(this));
+    MiObject *parent = qobject_cast<MiObject*>(this->parent());
+    if (parent)
+        return parent->database();
+    Q_ASSERT(false && "No database.");
+    return 0;
+}
 
-//void MiObject::setId(const QString &id)
-//{
-//    if (this->id() == id && !id.isEmpty())
-//        return;
-//    MiRoot *root = this->root();
-//    if (root && !id.startsWith("~"))
-//        setObjectName(root->getUniqueId(this, id));
-//    else
-//        setObjectName(id);
-//    emit propertyChanged(Id);
-//}
+int MiObject::propertyCount() const
+{
+    return metaObject()->propertyCount();
+}
 
-//void MiObject::erase()
-//{
-//    if (isErased())
-//        return;
-//    QString id = this->id();
-//    id.prepend("~");
-//    setId(id);
-//    emit erased();
-//}
+int MiObject::propertyIndex(const QString &name) const
+{
+    return metaObject()->indexOfProperty(qPrintable(name));
+}
 
-//void MiObject::unerase()
-//{
-//    if (!isErased())
-//        return;
-//    QString id = this->id();
-//    if (id.at(0) == '~')
-//        id.remove(0, 1);
-//    setId(id);
-//    emit unerased();
-//}
+bool MiObject::propertyIsReadOnly(int i) const
+{
+    return !metaObject()->property(i).isWritable();
+}
 
-//int MiObject::propertyCount() const
-//{
-//    return metaObject()->propertyCount();
-//}
+QString MiObject::propertyType(int i) const
+{
+    return metaObject()->property(i).typeName();
+}
 
-//int MiObject::propertyIndex(const QString &name) const
-//{
-//    return metaObject()->indexOfProperty(qPrintable(name));
-//}
+QString MiObject::propertyName(int i) const
+{
+    return QString(metaObject()->property(i).name());
+}
 
-//bool MiObject::propertyIsReadOnly(int i) const
-//{
-//    return !metaObject()->property(i).isWritable();
-//}
+QVariant MiObject::propertyValue(int i) const
+{
+    return metaObject()->property(i).read(this);
+}
 
-//QString MiObject::propertyType(int i) const
-//{
-//    return metaObject()->property(i).typeName();
-//}
+void MiObject::setPropertyValue(int i, const QVariant &value)
+{
+    const QMetaObject *metaObject = this->metaObject();
+    bool ok = metaObject->property(i).write(this, value);
+    if (!ok && value.isValid())
+        metaObject->property(i).write(this, QVariant());
+}
 
-//QString MiObject::propertyName(int i) const
-//{
-//    return QString(metaObject()->property(i).name());
-//}
-
-//QVariant MiObject::propertyValue(int i) const
-//{
-//    return metaObject()->property(i).read(this);
-//}
-
-//void MiObject::setPropertyValue(int i, const QVariant &value)
-//{
-//    const QMetaObject *metaObject = this->metaObject();
-//    bool ok = metaObject->property(i).write(this, value);
-//    if (!ok && value.isValid())
-//        metaObject->property(i).write(this, QVariant());
-//}
-
-//MiObject *MiObject::ioParent(QXmlStreamReader &in) const
-//{
-//    MiObject *root = this->root();
-//    if (!root || root == this)
-//        return 0;
-//    return root->ioParent(in);
-//}
-
-//bool MiObject::read(QXmlStreamReader &in)
-//{
+bool MiWritableObject::read(QXmlStreamReader &in)
+{
 //    MiRoot *root = this->root();
 //    Q_ASSERT(root);
 //    Q_ASSERT(in.name() == className());
@@ -202,11 +161,11 @@
 //        blockSignals(false);
 //        emit propertyChanged(i);
 //    }
-//    return true;
-//}
+    return true;
+}
 
-//void MiObject::write(QXmlStreamWriter &out) const
-//{
+void MiWritableObject::write(QXmlStreamWriter &out) const
+{
 //    MiRoot *root = this->root();
 //    Q_ASSERT(root);
 //    out.writeStartElement(className());
@@ -264,39 +223,4 @@
 //        out.writeEndElement();
 //    }
 //    out.writeEndElement();
-//}
-
-//void MiObject::update(bool recursive)
-//{
-//    if (!recursive)
-//        return;
-//    const QObjectList &children = this->children();
-//    foreach (QObject *child, children) {
-//        MiObject *object = qobject_cast<MiObject*>(child);
-//        if (object)
-//            object->update(recursive);
-//    }
-//}
-
-//MiObject *MiObject::createObject(const QString &className)
-//{
-//    MiRoot *root = this->root();
-//    if (root)
-//        return root->createObject(className);
-//    return 0;
-//}
-
-//MiObject *MiObject::findObject(const QString &className) const
-//{
-//    Q_UNUSED(className);
-//    return 0;
-//}
-
-//void MiObject::childEvent(QChildEvent *event)
-//{
-//    if (event->type() == QChildEvent::ChildAdded) {
-//        MiObject *object = qobject_cast<MiObject*>(event->child());
-//        if (object)
-//            object->setId();
-//    }
-//}
+}

@@ -18,8 +18,7 @@
 #ifndef MI_OBJECTLIST_H
 #define MI_OBJECTLIST_H
 
-#include <QObject>
-#include <mi_core_global.h>
+#include <mi_object.h>
 
 namespace Private {
 
@@ -27,13 +26,13 @@ class MiObjectListPrivate;
 
 } // namespace Private
 
-class MI_CORE_EXPORT MiObjectList : public QObject
+class MI_CORE_EXPORT MiObjectList : public MiObject
 {
     Q_OBJECT
 
 protected:
     MiObjectList(Private::MiObjectListPrivate &dd, QObject *parent)
-        :   QObject(parent)
+        :   MiObject(parent)
         ,   d(&dd)
     {}
 
