@@ -20,13 +20,13 @@
 
 #include <mi_object.h>
 
-class MI_CORE_EXPORT MiDatabase : public MiWritableObject
+class MI_CORE_EXPORT MiDatabase : public MiObject
 {
     Q_OBJECT
 
 public:
     MiDatabase(QObject *parent = 0)
-        :   MiWritableObject(parent)
+        :   MiObject(parent)
     {}
 
     ~MiDatabase()

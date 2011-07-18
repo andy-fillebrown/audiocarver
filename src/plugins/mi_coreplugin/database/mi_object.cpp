@@ -17,22 +17,9 @@
 
 #include "mi_object.h"
 #include <mi_database.h>
-#include <mi_objectlist.h>
 #include <QMetaProperty>
-#include <QVariant>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
 
 using namespace Private;
-
-QString MiObject::className() const
-{
-    QString className = metaObject()->className();
-//    MiDatabase *db = database();
-//    if (db)
-//        return db->normalizeClassName(className);
-    return className;
-}
 
 MiDatabase *MiObject::database() const
 {
@@ -45,6 +32,15 @@ MiDatabase *MiObject::database() const
     return 0;
 }
 
+QString MiObject::className() const
+{
+    QString className = metaObject()->className();
+//    MiDatabase *db = database();
+//    if (db)
+//        return db->normalizeClassName(className);
+    return className;
+}
+
 int MiObject::propertyCount() const
 {
     return metaObject()->propertyCount();
@@ -55,9 +51,9 @@ int MiObject::propertyIndex(const QString &name) const
     return metaObject()->indexOfProperty(qPrintable(name));
 }
 
-bool MiObject::propertyIsReadOnly(int i) const
+QString MiObject::propertyName(int i) const
 {
-    return !metaObject()->property(i).isWritable();
+    return QString(metaObject()->property(i).name());
 }
 
 QString MiObject::propertyType(int i) const
@@ -65,9 +61,9 @@ QString MiObject::propertyType(int i) const
     return metaObject()->property(i).typeName();
 }
 
-QString MiObject::propertyName(int i) const
+bool MiObject::isPropertyWritable(int i) const
 {
-    return QString(metaObject()->property(i).name());
+    return metaObject()->property(i).isWritable();
 }
 
 QVariant MiObject::propertyValue(int i) const
@@ -83,8 +79,8 @@ void MiObject::setPropertyValue(int i, const QVariant &value)
         metaObject->property(i).write(this, QVariant());
 }
 
-bool MiWritableObject::read(QXmlStreamReader &in)
-{
+//bool MiWritableObject::read(QXmlStreamReader &in)
+//{
 //    MiRoot *root = this->root();
 //    Q_ASSERT(root);
 //    Q_ASSERT(in.name() == className());
@@ -161,11 +157,11 @@ bool MiWritableObject::read(QXmlStreamReader &in)
 //        blockSignals(false);
 //        emit propertyChanged(i);
 //    }
-    return true;
-}
+//    return true;
+//}
 
-void MiWritableObject::write(QXmlStreamWriter &out) const
-{
+//void MiWritableObject::write(QXmlStreamWriter &out) const
+//{
 //    MiRoot *root = this->root();
 //    Q_ASSERT(root);
 //    out.writeStartElement(className());
@@ -223,4 +219,4 @@ void MiWritableObject::write(QXmlStreamWriter &out) const
 //        out.writeEndElement();
 //    }
 //    out.writeEndElement();
-}
+//}
