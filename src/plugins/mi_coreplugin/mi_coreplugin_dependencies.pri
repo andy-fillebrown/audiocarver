@@ -3,7 +3,7 @@ include(../qt_coreplugin/coreplugin.pri)
 
 DIRS = \
     components \
-    database \
+    dataobjects \
     interfaces \
     tools \
     . \
