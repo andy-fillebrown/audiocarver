@@ -32,7 +32,7 @@ public:
     MiObject *q_ptr;
     bool erased;
 
-    MiObjectPrivate(MiObject *q = 0)
+    MiObjectPrivate(MiObject *q)
         :   q_ptr(q)
         ,   erased(false)
     {}
