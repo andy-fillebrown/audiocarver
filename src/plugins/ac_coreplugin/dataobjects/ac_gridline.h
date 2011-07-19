@@ -20,6 +20,7 @@
 
 #include <mi_object.h>
 #include <ac_core_global.h>
+#include <ac_coreconstants.h>
 
 namespace Private {
 
@@ -36,7 +37,7 @@ public:
         ,   location(0.0f)
         ,   label(QString())
         ,   priority(0)
-        ,   color("0xcccccc00")
+        ,   color(DEFAULT_GRIDLINE_COLOR)
     {}
 
     virtual ~AcGridLinePrivate()
@@ -140,7 +141,7 @@ public:
         endChangeProperty(Color);
     }
 
-    void set(qreal location, const QString &label, int priority, const QString &color = "0xcccccc00")
+    void set(qreal location, const QString &label, int priority, const QString &color = DEFAULT_GRIDLINE_COLOR)
     {
         setLocation(location);
         setLabel(label);
@@ -148,7 +149,7 @@ public:
         setColor(color);
     }
 
-    void set(qreal location, int priority, const QString &color = "0xcccccc00")
+    void set(qreal location, int priority, const QString &color = DEFAULT_GRIDLINE_COLOR)
     {
         setLocation(location);
         setPriority(priority);

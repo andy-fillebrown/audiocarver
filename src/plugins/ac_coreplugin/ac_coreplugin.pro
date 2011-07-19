@@ -25,6 +25,7 @@ HEADERS += \
     implementations/ac_database.h \
     \
     ac_core_global.h \
+    ac_coreconstants.h \
     ac_coreplugin.h \
 
 SOURCES += \
