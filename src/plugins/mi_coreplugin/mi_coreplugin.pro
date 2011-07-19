@@ -15,7 +15,10 @@ HEADERS += \
     database/mi_objectlist.hh \
     database/mi_scopedsignalblocker.h \
     \
+    implementations/mi_propertybag.h \
+    \
     interfaces/mi_idatabase.h \
+    interfaces/mi_ipropertybag.h \
     \
     mi_core_global.h \
     mi_coreplugin.h \
@@ -27,6 +30,8 @@ SOURCES += \
     database/mi_object.cpp \
     database/mi_objectlist.cpp \
     database/mi_scopedsignalblocker.cpp \
+    \
+    implementations/mi_propertybag.cpp \
     \
     interfaces/mi_idatabase.cpp \
     \

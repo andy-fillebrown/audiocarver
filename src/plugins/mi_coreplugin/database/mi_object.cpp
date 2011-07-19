@@ -17,7 +17,6 @@
 
 #include "mi_object.h"
 #include <mi_database.h>
-#include <QMetaProperty>
 
 using namespace Private;
 
@@ -28,55 +27,7 @@ MiDatabase *MiObject::database() const
     MiObject *parent = qobject_cast<MiObject*>(this->parent());
     if (parent)
         return parent->database();
-    Q_ASSERT(false && "No database.");
     return 0;
-}
-
-QString MiObject::className() const
-{
-    QString className = metaObject()->className();
-//    MiDatabase *db = database();
-//    if (db)
-//        return db->normalizeClassName(className);
-    return className;
-}
-
-int MiObject::propertyCount() const
-{
-    return metaObject()->propertyCount();
-}
-
-int MiObject::propertyIndex(const QString &name) const
-{
-    return metaObject()->indexOfProperty(qPrintable(name));
-}
-
-QString MiObject::propertyName(int i) const
-{
-    return QString(metaObject()->property(i).name());
-}
-
-QString MiObject::propertyType(int i) const
-{
-    return metaObject()->property(i).typeName();
-}
-
-bool MiObject::isPropertyWritable(int i) const
-{
-    return metaObject()->property(i).isWritable();
-}
-
-QVariant MiObject::propertyValue(int i) const
-{
-    return metaObject()->property(i).read(this);
-}
-
-void MiObject::setPropertyValue(int i, const QVariant &value)
-{
-    const QMetaObject *metaObject = this->metaObject();
-    bool ok = metaObject->property(i).write(this, value);
-    if (!ok && value.isValid())
-        metaObject->property(i).write(this, QVariant());
 }
 
 //bool MiWritableObject::read(QXmlStreamReader &in)

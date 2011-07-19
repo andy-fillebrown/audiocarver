@@ -72,11 +72,6 @@ public:
         return false;
     }
 
-    virtual bool isWritable() const
-    {
-        return true;
-    }
-
     bool isErased() const
     {
         return d_ptr->erased;
@@ -100,22 +95,11 @@ public:
         emit unerased();
     }
 
-    virtual QString className() const;
-    int propertyCount() const;
-    int propertyIndex(const QString &name) const;
-    QString propertyName(int i) const;
-    QString propertyType(int i) const;
-    bool isPropertyWritable(int i) const;
-    QVariant propertyValue(int i) const;
-    void setPropertyValue(int i, const QVariant &value);
-
 signals:
     void aboutToBeErased();
     void erased();
     void aboutToBeUnerased();
     void unerased();
-    void propertyAboutToBeChanged(const QVariant &value, int i);
-    void propertyChanged(const QVariant &value, int i);
 
 protected:
     virtual void setErased(bool erased)
