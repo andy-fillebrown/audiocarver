@@ -64,7 +64,7 @@ public:
         PropertyCount
     };
 
-    AcPoint(QObject *parent = 0)
+    explicit AcPoint(QObject *parent = 0)
         :   MiListObject(*(new Private::AcPointPrivate(this)), parent)
     {}
 

@@ -137,7 +137,7 @@ class MiList : public MiObjectList
 public:
     typedef MiObjectList::Properties Properties;
 
-    MiList(QObject *parent = 0)
+    explicit MiList(QObject *parent = 0)
         :   MiObjectList(parent)
     {}
 
@@ -288,7 +288,7 @@ class MiSortedList : public MiList<T>
 public:
     typedef MiObjectList::Properties Properties;
 
-    MiSortedList(QObject *parent = 0)
+    explicit MiSortedList(QObject *parent = 0)
         :   MiList<T>(parent)
     {}
 

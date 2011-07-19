@@ -28,7 +28,7 @@ class MI_CORE_EXPORT MiDatabase : public MiObject
 public:
     typedef MiObject::Properties Properties;
 
-    MiDatabase(QObject *parent = 0)
+    explicit MiDatabase(QObject *parent = 0)
         :   MiObject(parent)
     {}
 

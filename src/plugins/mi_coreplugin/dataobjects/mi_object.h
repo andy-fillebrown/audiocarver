@@ -53,7 +53,7 @@ public:
         PropertyCount = 1
     };
 
-    MiObject(QObject *parent = 0)
+    explicit MiObject(QObject *parent = 0)
         :   QObject(parent)
         ,   d_ptr(new Private::MiObjectPrivate(this))
     {}
