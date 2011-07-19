@@ -123,20 +123,6 @@ public:
         q->emit objectsRemoved(start, end);
     }
 
-    virtual void erase()
-    {
-        MiObjectPrivate::erase();
-        foreach (MiObject *object, objects)
-            object->erase();
-    }
-
-    virtual void unerase()
-    {
-        MiObjectPrivate::unerase();
-        foreach (MiObject *object, objects)
-            object->unerase();
-    }
-
 private:
     Q_DECLARE_PUBLIC(MiObjectList)
 };
@@ -280,6 +266,19 @@ public:
     {
         Q_D(Private::MiList);
         removeAt(d->objects.indexOf(object));
+    }
+
+protected:
+    virtual void setErased(bool erased)
+    {
+        MiObject::setErased(erased);
+        Q_D(Private::MiList);
+        if (erased)
+            foreach (MiObject *object, d->objects)
+                object->erase();
+        else
+            foreach (MiObject *object, d->objects)
+                object->unerase();
     }
 
 private:

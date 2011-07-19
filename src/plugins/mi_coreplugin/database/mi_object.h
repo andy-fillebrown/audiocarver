@@ -39,16 +39,6 @@ public:
 
     virtual ~MiObjectPrivate()
     {}
-
-    virtual void erase()
-    {
-        erased = true;
-    }
-
-    virtual void unerase()
-    {
-        erased = false;
-    }
 };
 
 } // namespace Private
@@ -92,22 +82,22 @@ public:
         return d_ptr->erased;
     }
 
-    virtual void erase()
+    void erase()
     {
         if (isErased())
             return;
-        beginErase();
-        d_ptr->erase();
-        endErase();
+        emit aboutToBeErased();
+        setErased(true);
+        emit erased();
     }
 
-    virtual void unerase()
+    void unerase()
     {
         if (!isErased())
             return;
-        beginUnerase();
-        d_ptr->unerase();
-        endUnerase();
+        emit aboutToBeUnerased();
+        setErased(false);
+        emit unerased();
     }
 
     virtual QString className() const;
@@ -128,24 +118,9 @@ signals:
     void propertyChanged(const QVariant &value, int i);
 
 protected:
-    void beginErase()
+    virtual void setErased(bool erased)
     {
-        emit aboutToBeErased();
-    }
-
-    void endErase()
-    {
-        emit erased();
-    }
-
-    void beginUnerase()
-    {
-        emit aboutToBeUnerased();
-    }
-
-    void endUnerase()
-    {
-        emit unerased();
+        d_ptr->erased = erased;
     }
 
 private:
