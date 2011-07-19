@@ -23,6 +23,7 @@
 class AC_CORE_EXPORT AcPitchLine : public AcGridLine
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcPitchLine)
 
 public:
     typedef AcGridLine::Properties Properties;
@@ -33,9 +34,6 @@ public:
 
     virtual ~AcPitchLine()
     {}
-
-private:
-    Q_DISABLE_COPY(AcPitchLine)
 };
 
 #endif // AC_PITCHLINE_H
