@@ -107,6 +107,9 @@ protected:
         d_ptr->erased = erased;
     }
 
+    void emitPropertyAboutToBeChanged(int propertyIndex);
+    void emitPropertyChanged(int propertyIndex);
+
 private:
     Q_DISABLE_COPY(MiObject)
 

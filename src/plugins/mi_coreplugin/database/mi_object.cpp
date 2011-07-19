@@ -16,8 +16,11 @@
 **************************************************************************/
 
 #include "mi_object.h"
+#include <aggregate.h>
 #include <mi_database.h>
+#include <mi_ipropertybag.h>
 
+using namespace Aggregation;
 using namespace Private;
 
 MiDatabase *MiObject::database() const
@@ -28,6 +31,22 @@ MiDatabase *MiObject::database() const
     if (parent)
         return parent->database();
     return 0;
+}
+
+void MiObject::emitPropertyAboutToBeChanged(int propertyIndex)
+{
+    IPropertyBag *pb = query<IPropertyBag>(this);
+    if (!pb)
+        return;
+    pb->emit propertyAboutToBeChanged(pb->propertyValue(propertyIndex), propertyIndex);
+}
+
+void MiObject::emitPropertyChanged(int propertyIndex)
+{
+    IPropertyBag *pb = query<IPropertyBag>(this);
+    if (!pb)
+        return;
+    pb->emit propertyChanged(pb->propertyValue(propertyIndex), propertyIndex);
 }
 
 //bool MiWritableObject::read(QXmlStreamReader &in)

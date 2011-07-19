@@ -38,6 +38,11 @@ public:
     virtual QVariant propertyValue(int i) const = 0;
     virtual void setPropertyValue(int i, const QVariant &value) = 0;
 
+signals:
+    friend class MiObject;
+    void propertyAboutToBeChanged(const QVariant &value, int propertyIndex);
+    void propertyChanged(const QVariant &value, int propertyIndex);
+
 private:
     Q_DISABLE_COPY(IPropertyBag)
 };
