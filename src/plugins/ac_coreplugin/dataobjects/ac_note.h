@@ -21,7 +21,6 @@
 #include <mi_object.h>
 #include <ac_controlcurve.h>
 #include <ac_pitchcurve.h>
-#include <mi_objectlist.h>
 
 namespace Private {
 

@@ -18,8 +18,8 @@
 #ifndef AC_CONTROLCURVE_H
 #define AC_CONTROLCURVE_H
 
-#include <mi_objectlist.h>
 #include <ac_controlpoint.h>
+#include <mi_objectlist.h>
 #include <QMetaType>
 
 namespace Private {

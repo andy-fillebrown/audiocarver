@@ -24,7 +24,6 @@
 #include <ac_track.h>
 #include <ac_viewsettings.h>
 #include <mi_fontsettings.h>
-#include <QMetaType>
 
 typedef MiList<QObject> AcSettingsList;
 

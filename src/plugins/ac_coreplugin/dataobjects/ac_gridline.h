@@ -18,9 +18,7 @@
 #ifndef AC_GRIDLINE_H
 #define AC_GRIDLINE_H
 
-#include <mi_object.h>
 #include <ac_core_global.h>
-#include <ac_coreconstants.h>
 #include <mi_objectlist.h>
 #include <QMetaType>
 
@@ -39,7 +37,7 @@ public:
         ,   location(0.0f)
         ,   label(QString())
         ,   priority(0)
-        ,   color(DEFAULT_GRIDLINE_COLOR)
+        ,   color("0xc0c0c0")
     {}
 
     virtual ~AcGridLinePrivate()

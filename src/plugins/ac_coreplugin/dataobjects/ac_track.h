@@ -18,10 +18,7 @@
 #ifndef AC_TRACK_H
 #define AC_TRACK_H
 
-#include <mi_object.h>
 #include <ac_note.h>
-#include <mi_objectlist.h>
-#include <QMetaObject>
 
 namespace Private {
 
