@@ -15,23 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_TUNINGLINE_H
-#define AC_TUNINGLINE_H
+#ifndef AC_PITCHLINE_H
+#define AC_PITCHLINE_H
 
 #include <ac_gridline.h>
 
-class AC_CORE_EXPORT AcTuningLine : public AcGridLine
+class AC_CORE_EXPORT AcPitchLine : public AcGridLine
 {
     Q_OBJECT
 
 public:
-    typedef AcGridLine::PropertyIndex PropertyIndex;
+    typedef AcGridLine::Properties Properties;
 
-    explicit AcTuningLine(QObject *parent = 0);
-    virtual ~AcTuningLine();
+    explicit AcPitchLine(QObject *parent = 0)
+        :   AcGridLine(parent)
+    {}
+
+    virtual ~AcPitchLine()
+    {}
 
 private:
-    Q_DISABLE_COPY(AcTuningLine)
+    Q_DISABLE_COPY(AcPitchLine)
 };
 
-#endif // AC_TUNINGLINE_H
+#endif // AC_PITCHLINE_H

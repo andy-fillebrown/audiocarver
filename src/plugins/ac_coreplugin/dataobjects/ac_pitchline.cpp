@@ -15,17 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_tuningline.h"
-#include <mi_list.h>
-
-template <> bool MiList<AcTuningLine>::lessThan(MiObject *a, MiObject *b)
-{
-    return AcGridLine::lessThan(a, b);
-}
-
-AcTuningLine::AcTuningLine(QObject *parent)
-    :   AcGridLine(parent)
-{}
-
-AcTuningLine::~AcTuningLine()
-{}
+#include "ac_pitchline.h"
