@@ -25,6 +25,8 @@ namespace Private {
 
 class AcPointPrivate : public MiObjectPrivate
 {
+    Q_DECLARE_PUBLIC(MiObject)
+
 public:
     qreal x;
     qreal y;
@@ -39,11 +41,13 @@ public:
 
     virtual ~AcPointPrivate()
     {}
+
+    void sortList();
 };
 
 } // namespace Private
 
-class AC_CORE_EXPORT AcPoint : public MiObject
+class AC_CORE_EXPORT AcPoint : public MiListObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(AcPoint)
@@ -61,7 +65,7 @@ public:
     };
 
     AcPoint(QObject *parent = 0)
-        :   MiObject(*(new Private::AcPointPrivate(this)), parent)
+        :   MiListObject(*(new Private::AcPointPrivate(this)), parent)
     {}
 
     virtual ~AcPoint()
@@ -81,6 +85,7 @@ public:
         beginChangeProperty(X);
         d->x = x;
         endChangeProperty(X);
+        sortList();
     }
 
     qreal y() const
@@ -97,6 +102,7 @@ public:
         beginChangeProperty(Y);
         d->y = y;
         endChangeProperty(Y);
+        sortList();
     }
 
     bool isCurved() const
@@ -113,6 +119,15 @@ public:
         beginChangeProperty(Y);
         d->curved = curved;
         endChangeProperty(Y);
+    }
+
+    static bool lessThan(AcPoint *a, AcPoint *b)
+    {
+        if (a->x() < b->x())
+            return true;
+        if (a->x() == b->x() && a->y() < b->y())
+            return true;
+        return false;
     }
 };
 

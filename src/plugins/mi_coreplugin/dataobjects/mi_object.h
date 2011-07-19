@@ -116,4 +116,21 @@ protected:
     Private::MiObjectPrivate *d_ptr;
 };
 
+class MI_CORE_EXPORT MiListObject : public MiObject
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(MiListObject)
+
+public:
+    virtual ~MiListObject()
+    {}
+
+protected:
+    MiListObject(Private::MiObjectPrivate &dd, QObject *parent)
+        :   MiObject(dd, parent)
+    {}
+
+    void sortList() const;
+};
+
 #endif // MI_OBJECT_H

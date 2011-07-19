@@ -16,15 +16,3 @@
 **************************************************************************/
 
 #include "ac_point.h"
-#include <mi_objectlist.h>
-
-template <> bool MiSortedList<AcPoint>::lessThan(AcPoint *a, AcPoint *b)
-{
-    qDebug() << Q_FUNC_INFO;
-
-    if (a->x() < b->x())
-        return true;
-    if (a->x() == b->x() && a->y() < b->y())
-        return true;
-    return false;
-}

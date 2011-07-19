@@ -291,8 +291,6 @@ public:
     {}
 
 private:
-    static bool lessThan(T *a, T *b);
-
     bool isSorted() const
     {
         const int end = MiList<T>::count() - 1;
@@ -308,7 +306,7 @@ private:
             return;
         QList<T*> list = MiList<T>::toQList();
         MiList<T>::clear();
-        qSort(list.begin(), list.end(), lessThan);
+        qSort(list.begin(), list.end(), T::lessThan);
         append(list);
     }
 };
