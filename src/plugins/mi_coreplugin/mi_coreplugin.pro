@@ -14,7 +14,6 @@ HEADERS += \
     database/mi_link.h \
     database/mi_object.h \
     database/mi_objectlist.h \
-    database/mi_scopedsignalblocker.h \
     \
     interfaces/mi_idatabase.h \
     \
@@ -29,8 +28,9 @@ SOURCES += \
     database/mi_link.cpp \
     database/mi_object.cpp \
     database/mi_objectlist.cpp \
-    database/mi_scopedsignalblocker.cpp \
     \
     interfaces/mi_idatabase.cpp \
+    \
+    tools/mi_scopedsignalblocker.cpp \
     \
     mi_coreplugin.cpp \

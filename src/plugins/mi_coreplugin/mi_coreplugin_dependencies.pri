@@ -5,6 +5,7 @@ DIRS = \
     components \
     database \
     interfaces \
+    tools \
     . \
 
 for(dir, DIRS) {
