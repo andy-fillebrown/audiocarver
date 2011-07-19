@@ -9,7 +9,7 @@ DEFINES += AC_CORE_LIBRARY
 
 HEADERS += \
     dataobjects/ac_curve.h \
-#    dataobjects/ac_gridline.h \
+    dataobjects/ac_gridline.h \
 #    dataobjects/ac_gridsettings.h \
 #    dataobjects/ac_note.h \
 #    dataobjects/ac_pitchcurve.h \
@@ -29,7 +29,7 @@ HEADERS += \
 
 SOURCES += \
     dataobjects/ac_curve.cpp \
-#    dataobjects/ac_gridline.cpp \
+    dataobjects/ac_gridline.cpp \
 #    dataobjects/ac_gridsettings.cpp \
 #    dataobjects/ac_note.cpp \
     dataobjects/ac_point.cpp \

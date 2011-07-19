@@ -20,25 +20,43 @@
 
 #include <mi_object.h>
 #include <ac_core_global.h>
-#include <QColor>
 
 namespace Private {
 
-class AcGridLineData;
+class AcGridLinePrivate : public MiObjectPrivate
+{
+public:
+    qreal location;
+    QString label;
+    int priority;
+    QString color;
+
+    AcGridLinePrivate(MiObject *q)
+        :   MiObjectPrivate(q)
+        ,   location(0.0f)
+        ,   label(QString())
+        ,   priority(0)
+        ,   color("0xcccccc00")
+    {}
+
+    virtual ~AcGridLinePrivate()
+    {}
+};
 
 } // namespace Private
 
-class AC_CORE_EXPORT AcGridLine : public MiObject
+class AC_CORE_EXPORT AcGridLine : public MiListObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcGridLine)
+    Q_DECLARE_PRIVATE(Private::AcGridLine)
     Q_PROPERTY(qreal location READ location WRITE setLocation)
     Q_PROPERTY(QString label READ label WRITE setLabel)
     Q_PROPERTY(int priority READ priority WRITE setPriority)
-    Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(QString color READ color WRITE setColor)
 
 public:
-    enum PropertyIndex
-    {
+    enum {
         Location = MiObject::PropertyCount,
         Label,
         Priority,
@@ -46,33 +64,101 @@ public:
         PropertyCount
     };
 
-    explicit AcGridLine(QObject *parent = 0);
-    virtual ~AcGridLine();
+    explicit AcGridLine(QObject *parent)
+        :   MiListObject(*(new Private::AcGridLinePrivate(this)), parent)
+    {}
 
-    inline static bool lessThan(MiObject *a, MiObject *b);
+    virtual ~AcGridLine()
+    {}
 
-    qreal location() const;
-    void setLocation(qreal location);
-    const QString &label() const;
-    void setLabel(const QString &label);
-    int priority() const;
-    void setPriority(int priority);
-    const QColor &color() const;
-    void setColor(const QColor &color);
+    qreal location() const
+    {
+        Q_D(const Private::AcGridLine);
+        return d->location;
+    }
 
-    void set(qreal location, const QString &label, int priority, const QColor &color = Qt::lightGray);
-    void set(qreal location, int priority, const QColor &color = Qt::lightGray);
+    void setLocation(qreal location)
+    {
+        Q_D(Private::AcGridLine);
+        if (location < 0.0f)
+            location = 0.0f;
+        if (d->location == location)
+            return;
+        beginChangeProperty(Location);
+        d->location = location;
+        endChangeProperty(Location);
+        sortList();
+    }
 
-private:
-    Q_DISABLE_COPY(AcGridLine)
-    Private::AcGridLineData *d;
+    const QString &label() const
+    {
+        Q_D(const Private::AcGridLine);
+        return d->label;
+    }
+
+    void setLabel(const QString &label)
+    {
+        Q_D(Private::AcGridLine);
+        if (d->label == label)
+            return;
+        beginChangeProperty(Label);
+        d->label = label;
+        endChangeProperty(Label);
+    }
+
+    int priority() const
+    {
+        Q_D(const Private::AcGridLine);
+        return d->priority;
+    }
+
+    void setPriority(int priority)
+    {
+        Q_D(Private::AcGridLine);
+        if (priority < 0)
+            priority = 0;
+        if (d->priority == priority)
+            return;
+        beginChangeProperty(Priority);
+        d->priority = priority;
+        endChangeProperty(Priority);
+    }
+
+    const QString &color() const
+    {
+        Q_D(const Private::AcGridLine);
+        return d->color;
+    }
+
+    void setColor(const QString &color)
+    {
+        Q_D(Private::AcGridLine);
+        if (d->color == color)
+            return;
+        beginChangeProperty(Color);
+        d->color = color;
+        endChangeProperty(Color);
+    }
+
+    void set(qreal location, const QString &label, int priority, const QString &color = "0xcccccc00")
+    {
+        setLocation(location);
+        setLabel(label);
+        setPriority(priority);
+        setColor(color);
+    }
+
+    void set(qreal location, int priority, const QString &color = "0xcccccc00")
+    {
+        setLocation(location);
+        setPriority(priority);
+        setColor(color);
+    }
+
+    static bool lessThan(AcGridLine *a, AcGridLine *b)
+    {
+        return a->location() < b->location();
+    }
 };
-
-inline bool AcGridLine::lessThan(MiObject *a, MiObject *b)
-{
-    AcGridLine *A = static_cast<AcGridLine*>(a);
-    AcGridLine *B = static_cast<AcGridLine*>(b);
-    return A->location() < B->location();
-}
 
 #endif // AC_GRIDLINE_H
