@@ -22,7 +22,7 @@
 
 namespace Private {
 
-class AcEditorImpl : public MiIEditor
+class AcEditorImpl : public IEditor
 {
 public:
     AcEditorImpl() {}

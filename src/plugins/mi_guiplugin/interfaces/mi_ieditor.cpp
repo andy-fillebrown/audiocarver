@@ -17,14 +17,14 @@
 
 #include "mi_ieditor.h"
 
-static MiIEditor *instance = 0;
+static IEditor *instance = 0;
 
-MiIEditor::MiIEditor()
+IEditor::IEditor()
 {
     ::instance = this;
 }
 
-MiIEditor *MiIEditor::instance()
+IEditor *IEditor::instance()
 {
     return ::instance;
 }

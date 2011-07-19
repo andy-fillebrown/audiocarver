@@ -21,15 +21,15 @@
 #include <QObject>
 #include <mi_gui_global.h>
 
-class MI_GUI_EXPORT MiIEditor : public QObject
+class MI_GUI_EXPORT IEditor : public QObject
 {
     Q_OBJECT
 
 public:
-    MiIEditor();
-    virtual ~MiIEditor() {}
+    IEditor();
+    virtual ~IEditor() {}
 
-    static MiIEditor *instance();
+    static IEditor *instance();
 
     virtual void undo() = 0;
     virtual void redo() = 0;
@@ -39,7 +39,7 @@ public:
     virtual void selectAll() = 0;
 
 private:
-    Q_DISABLE_COPY(MiIEditor)
+    Q_DISABLE_COPY(IEditor)
 };
 
 #endif // MI_IEDITOR_H

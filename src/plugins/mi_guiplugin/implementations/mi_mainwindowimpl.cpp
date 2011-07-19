@@ -195,30 +195,30 @@ void MiMainWindowImpl::saveFileAs()
 
 void MiMainWindowImpl::undo()
 {
-    MiIEditor::instance()->undo();
+    IEditor::instance()->undo();
 }
 
 void MiMainWindowImpl::redo()
 {
-    MiIEditor::instance()->redo();
+    IEditor::instance()->redo();
 }
 
 void MiMainWindowImpl::cut()
 {
-    MiIEditor::instance()->cut();
+    IEditor::instance()->cut();
 }
 
 void MiMainWindowImpl::copy()
 {
-    MiIEditor::instance()->copy();
+    IEditor::instance()->copy();
 }
 
 void MiMainWindowImpl::paste()
 {
-    MiIEditor::instance()->paste();
+    IEditor::instance()->paste();
 }
 
 void MiMainWindowImpl::selectAll()
 {
-    MiIEditor::instance()->selectAll();
+    IEditor::instance()->selectAll();
 }
