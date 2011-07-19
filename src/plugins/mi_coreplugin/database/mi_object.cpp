@@ -33,7 +33,7 @@ MiDatabase *MiObject::database() const
     return 0;
 }
 
-void MiObject::emitPropertyAboutToBeChanged(int propertyIndex)
+void MiObject::beginChangeProperty(int propertyIndex)
 {
     MiPropertyBag *pb = query<MiPropertyBag>(this);
     if (!pb)
@@ -41,7 +41,7 @@ void MiObject::emitPropertyAboutToBeChanged(int propertyIndex)
     pb->emit propertyAboutToBeChanged(pb->propertyValue(propertyIndex), propertyIndex);
 }
 
-void MiObject::emitPropertyChanged(int propertyIndex)
+void MiObject::endChangeProperty(int propertyIndex)
 {
     MiPropertyBag *pb = query<MiPropertyBag>(this);
     if (!pb)
