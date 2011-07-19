@@ -141,19 +141,21 @@ public:
         endChangeProperty(Color);
     }
 
-    void set(qreal location, const QString &label, int priority, const QString &color = DEFAULT_GRIDLINE_COLOR)
+    void set(qreal location, const QString &label, int priority, const QString &color = QString())
     {
         setLocation(location);
         setLabel(label);
         setPriority(priority);
-        setColor(color);
+        if (!color.isEmpty())
+            setColor(color);
     }
 
-    void set(qreal location, int priority, const QString &color = DEFAULT_GRIDLINE_COLOR)
+    void set(qreal location, int priority, const QString &color = QString())
     {
         setLocation(location);
         setPriority(priority);
-        setColor(color);
+        if (!color.isEmpty())
+            setColor(color);
     }
 
     static bool lessThan(AcGridLine *a, AcGridLine *b)
