@@ -23,50 +23,145 @@
 
 namespace Private {
 
-class AcViewSettingsData;
+class AcViewSettingsData
+{
+public:
+    qreal timePosition;
+    qreal pitchPosition;
+    qreal controlPosition;
+    qreal timeScale;
+    qreal pitchScale;
+    qreal controlScale;
+
+    AcViewSettingsData()
+        :   timePosition(0.0f)
+        ,   pitchPosition(0.0f)
+        ,   controlPosition(0.0f)
+        ,   timeScale(1.0f)
+        ,   pitchScale(1.0f)
+        ,   controlScale(100.0f)
+    {}
+};
 
 } // namespace Private
 
 class AC_CORE_EXPORT AcViewSettings : public MiObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcViewSettings)
     Q_PROPERTY(qreal timePosition READ timePosition WRITE setTimePosition)
     Q_PROPERTY(qreal pitchPosition READ pitchPosition WRITE setPitchPosition)
-    Q_PROPERTY(qreal valuePosition READ valuePosition WRITE setValuePosition)
+    Q_PROPERTY(qreal controlPosition READ controlPosition WRITE setControlPosition)
     Q_PROPERTY(qreal timeScale READ timeScale WRITE setTimeScale)
     Q_PROPERTY(qreal pitchScale READ pitchScale WRITE setPitchScale)
-    Q_PROPERTY(qreal valueScale READ valueScale WRITE setValueScale)
+    Q_PROPERTY(qreal controlScale READ controlScale WRITE setControlScale)
 
 public:
-    enum PropertyIndex
-    {
+    enum Property {
         TimePosition = MiObject::PropertyCount,
         PitchPosition,
-        ValuePosition,
+        ControlPosition,
         TimeScale,
         PitchScale,
-        ValueScale,
+        ControlScale,
         PropertyCount
     };
 
-    AcViewSettings(QObject *parent = 0);
-    ~AcViewSettings();
+    AcViewSettings(QObject *parent = 0)
+        :   MiObject(parent)
+        ,   d(new Private::AcViewSettingsData)
+    {}
 
-    qreal timePosition() const;
-    void setTimePosition(qreal position);
-    qreal pitchPosition() const;
-    void setPitchPosition(qreal position);
-    qreal valuePosition() const;
-    void setValuePosition(qreal position);
-    qreal timeScale() const;
-    void setTimeScale(qreal scale);
-    qreal pitchScale() const;
-    void setPitchScale(qreal scale);
-    qreal valueScale() const;
-    void setValueScale(qreal scale);
+    ~AcViewSettings()
+    {
+        delete d;
+    }
+
+    qreal timePosition() const
+    {
+        return d->timePosition;
+    }
+
+    void setTimePosition(qreal position)
+    {
+        if (d->timePosition == position)
+            return;
+        beginChangeProperty(TimePosition);
+        d->timePosition = position;
+        endChangeProperty(TimePosition);
+    }
+
+    qreal pitchPosition() const
+    {
+        return d->pitchPosition;
+    }
+
+    void setPitchPosition(qreal position)
+    {
+        if (d->pitchPosition == position)
+            return;
+        beginChangeProperty(PitchPosition);
+        d->pitchPosition = position;
+        endChangeProperty(PitchPosition);
+    }
+
+    qreal controlPosition() const
+    {
+        return d->controlPosition;
+    }
+
+    void setControlPosition(qreal position)
+    {
+        if (d->controlPosition == position)
+            return;
+        beginChangeProperty(ControlPosition);
+        d->controlPosition = position;
+        endChangeProperty(ControlPosition);
+    }
+
+    qreal timeScale() const
+    {
+        return d->timeScale;
+    }
+
+    void setTimeScale(qreal scale)
+    {
+        if (d->timeScale == scale)
+            return;
+        beginChangeProperty(TimeScale);
+        d->timePosition = scale;
+        endChangeProperty(TimeScale);
+    }
+
+    qreal pitchScale() const
+    {
+        return d->pitchScale;
+    }
+
+    void setPitchScale(qreal scale)
+    {
+        if (d->pitchScale == scale)
+            return;
+        beginChangeProperty(PitchScale);
+        d->pitchScale = scale;
+        endChangeProperty(PitchScale);
+    }
+
+    qreal controlScale() const
+    {
+        return d->controlScale;
+    }
+
+    void setControlScale(qreal scale)
+    {
+        if (d->controlScale == scale)
+            return;
+        beginChangeProperty(ControlScale);
+        d->controlScale = scale;
+        endChangeProperty(ControlScale);
+    }
 
 private:
-    Q_DISABLE_COPY(AcViewSettings)
     Private::AcViewSettingsData *d;
 };
 

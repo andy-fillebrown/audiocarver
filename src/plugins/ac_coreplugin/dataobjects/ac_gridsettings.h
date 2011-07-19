@@ -23,30 +23,55 @@
 
 namespace Private {
 
-class AcGridSettingsData;
+class AcGridSettingsData
+{
+public:
+    bool visible;
+
+    AcGridSettingsData()
+        :   visible(true)
+    {}
+};
 
 } // namespace Private
 
 class AC_CORE_EXPORT AcGridSettings : public MiObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcGridSettings)
     Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
-    enum PropertyIndex
-    {
+    enum Property {
         Visible = MiObject::PropertyCount,
         PropertyCount
     };
 
-    AcGridSettings(QObject *parent = 0);
-    ~AcGridSettings();
+    AcGridSettings(QObject *parent = 0)
+        :   MiObject(parent)
+        ,   d(new Private::AcGridSettingsData)
+    {}
 
-    bool visible() const;
-    void setVisible(bool visible);
+    virtual ~AcGridSettings()
+    {
+        delete d;
+    }
+
+    bool visible() const
+    {
+        return d->visible;
+    }
+
+    void setVisible(bool visible)
+    {
+        if (d->visible == visible)
+            return;
+        beginChangeProperty(Visible);
+        d->visible = visible;
+        endChangeProperty(Visible);
+    }
 
 private:
-    Q_DISABLE_COPY(AcGridSettings)
     Private::AcGridSettingsData *d;
 };
 

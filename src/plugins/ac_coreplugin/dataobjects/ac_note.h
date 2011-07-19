@@ -19,46 +19,69 @@
 #define AC_NOTE_H
 
 #include <mi_object.h>
-#include <ac_core_global.h>
-
-class AcPitchCurve;
-class AcVolumeCurve;
+#include <ac_controlcurve.h>
+#include <ac_pitchcurve.h>
+#include <mi_objectlist.h>
 
 namespace Private {
 
-class AcNoteData;
+class AcNoteData
+{
+public:
+    AcPitchCurve *pitchCurve;
+    AcControlCurveList *controlCurves;
+
+    AcNoteData(QObject *q)
+        :   pitchCurve(new AcPitchCurve(q))
+        ,   controlCurves(new AcControlCurveList(q))
+    {}
+
+    virtual ~AcNoteData()
+    {}
+};
 
 } // namespace Private
 
 class AC_CORE_EXPORT AcNote : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(MiObject* pitchCurve READ pitchCurveObject)
-    Q_PROPERTY(MiObject* volumeCurve READ volumeCurveObject)
+    Q_DISABLE_COPY(AcNote)
+    Q_PROPERTY(AcPitchCurve* pitchCurve READ pitchCurve)
+    Q_PROPERTY(AcControlCurveList* controlCurves READ controlCurves)
 
 public:
-    enum PropertyIndex
-    {
+    enum Property {
         PitchCurve = MiObject::PropertyCount,
         VolumeCurve,
         PropertyCount
     };
 
-    AcNote(QObject *parent = 0);
-    virtual ~AcNote();
+    AcNote(QObject *parent = 0)
+        :   MiObject(parent)
+        ,   d(new Private::AcNoteData(this))
+    {}
 
-    AcPitchCurve *pitchCurve() const;
-    AcVolumeCurve *volumeCurve() const;
+    virtual ~AcNote()
+    {
+        delete d;
+    }
 
-protected:
-    virtual MiObject *findObject(const QString &className) const;
+    AcPitchCurve *pitchCurve() const
+    {
+        return d->pitchCurve;
+    }
+
+    AcControlCurveList *controlCurves() const
+    {
+        return d->controlCurves;
+    }
 
 private:
-    Q_DISABLE_COPY(AcNote)
     Private::AcNoteData *d;
-
-    MiObject *pitchCurveObject() const;
-    MiObject *volumeCurveObject() const;
 };
+
+typedef MiList<AcNote> AcNoteList;
+
+Q_DECLARE_METATYPE(AcNoteList*)
 
 #endif // AC_NOTE_H

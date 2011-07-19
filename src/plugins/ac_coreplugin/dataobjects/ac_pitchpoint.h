@@ -27,7 +27,7 @@ class AcPitchPoint : public AcPoint
     Q_DECLARE_PRIVATE(Private::AcPoint)
 
 public:
-    typedef AcPoint::Properties Properties;
+    typedef AcPoint::Property Property;
 
     explicit AcPitchPoint(QObject *parent = 0)
         :   AcPoint(parent)

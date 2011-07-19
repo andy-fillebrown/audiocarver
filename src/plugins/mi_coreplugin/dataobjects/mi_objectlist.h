@@ -27,7 +27,7 @@ namespace Private {
 class MiObjectListData : public MiObjectPrivate
 {
 public:
-    QList<MiObject*> objects;
+    QList<QObject*> objects;
 
     MiObjectListData(MiObject *q)
         :   MiObjectPrivate(q)
@@ -48,7 +48,7 @@ class MI_CORE_EXPORT MiObjectList : public MiObject
     Q_DECLARE_PRIVATE(Private::MiObjectList)
 
 public:
-    typedef MiObject::Properties Properties;
+    typedef MiObject::Property Property;
 
     virtual ~MiObjectList()
     {}
@@ -78,7 +78,7 @@ class MiObjectListPrivate : public MiObjectListData
     Q_DECLARE_PUBLIC(MiObjectList)
 
 public:
-    void insert(int i, MiObject *object)
+    void insert(int i, QObject *object)
     {
         Q_Q(MiObjectList);
         objects.insert(i, object);
@@ -135,7 +135,7 @@ class MiList : public MiObjectList
     Q_DECLARE_PRIVATE(Private::MiObjectList)
 
 public:
-    typedef MiObjectList::Properties Properties;
+    typedef MiObjectList::Property Property;
 
     explicit MiList(QObject *parent = 0)
         :   MiObjectList(parent)
@@ -272,11 +272,17 @@ private:
         MiObject::setErased(erased);
         Q_D(Private::MiObjectList);
         if (erased)
-            foreach (MiObject *object, d->objects)
-                object->erase();
+            foreach (QObject *object, d->objects) {
+                MiObject *miObject = qobject_cast<MiObject*>(object);
+                if (miObject)
+                    miObject->erase();
+            }
         else
-            foreach (MiObject *object, d->objects)
-                object->unerase();
+            foreach (QObject *object, d->objects) {
+                MiObject *miObject = qobject_cast<MiObject*>(object);
+                if (miObject)
+                    miObject->unerase();
+            }
     }
 };
 
@@ -286,7 +292,7 @@ class MiSortedList : public MiList<T>
     Q_DISABLE_COPY(MiSortedList)
 
 public:
-    typedef MiObjectList::Properties Properties;
+    typedef MiObjectList::Property Property;
 
     explicit MiSortedList(QObject *parent = 0)
         :   MiList<T>(parent)

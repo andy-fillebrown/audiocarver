@@ -26,7 +26,7 @@ class AC_CORE_EXPORT AcControlLine : public AcGridLine
     Q_DISABLE_COPY(AcControlLine)
 
 public:
-    typedef AcGridLine::Properties Properties;
+    typedef AcGridLine::Property Property;
 
     explicit AcControlLine(QObject *parent = 0)
         :   AcGridLine(parent)

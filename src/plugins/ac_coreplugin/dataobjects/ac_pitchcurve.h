@@ -24,6 +24,6 @@
 
 typedef MiSortedList<AcPitchPoint> AcPitchCurve;
 
-Q_DECLARE_METATYPE(AcPitchCurve*);
+Q_DECLARE_METATYPE(AcPitchCurve*)
 
 #endif // AC_PITCHCURVE_H

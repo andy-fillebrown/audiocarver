@@ -19,6 +19,7 @@
 #define MI_FONTSETTINGS_H
 
 #include <mi_object.h>
+#include <QMetaType>
 
 namespace Private {
 
@@ -49,7 +50,7 @@ class MI_CORE_EXPORT MiFontSettings : public MiObject
     Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
 
 public:
-    enum Properties {
+    enum Property {
         Family = MiObject::PropertyCount,
         PointSize,
         PropertyCount

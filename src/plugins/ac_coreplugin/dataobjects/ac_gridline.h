@@ -21,6 +21,8 @@
 #include <mi_object.h>
 #include <ac_core_global.h>
 #include <ac_coreconstants.h>
+#include <mi_objectlist.h>
+#include <QMetaType>
 
 namespace Private {
 
@@ -57,8 +59,8 @@ class AC_CORE_EXPORT AcGridLine : public MiListObject
     Q_PROPERTY(QString color READ color WRITE setColor)
 
 public:
-    enum Properties {
-        Location = MiObject::PropertyCount,
+    enum Property {
+        Location = MiListObject::PropertyCount,
         Label,
         Priority,
         Color,
@@ -163,5 +165,10 @@ public:
         return a->location() < b->location();
     }
 };
+
+typedef MiSortedList<AcGridLine> AcGridLineList;
+typedef MiList<AcGridLineList> AcGridLinesList;
+
+Q_DECLARE_METATYPE(AcGridLinesList*)
 
 #endif // AC_GRIDLINE_H

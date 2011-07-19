@@ -18,87 +18,158 @@
 #ifndef AC_SCORE_H
 #define AC_SCORE_H
 
-#include <mi_root.h>
-#include <ac_core_global.h>
+#include <mi_database.h>
+#include <ac_gridline.h>
+#include <ac_gridsettings.h>
+#include <ac_track.h>
+#include <ac_viewsettings.h>
+#include <mi_fontsettings.h>
+#include <QMetaType>
 
-class AcBarLine;
-class AcGridSettings;
-class AcTrack;
-class AcTuningLine;
-class AcValueLine;
-class AcViewSettings;
-class MiFont;
-template <typename T> class MiList;
+typedef MiList<QObject> AcSettingsList;
 
 namespace Private {
 
-class AcScoreData;
+class AcScoreData
+{
+public:
+    qreal length;
+    AcSettingsList *settings;
+    AcTrackList *tracks;
+    AcGridLinesList *grid;
+
+    MiFontSettings *fontSettings;
+    AcGridSettings *gridSettings;
+    AcViewSettings *viewSettings;
+
+    AcGridLineList *timeLines;
+    AcGridLineList *pitchLines;
+    AcGridLineList *controlLines;
+
+    AcScoreData(QObject *q)
+        :   length(0)
+        ,   settings(new AcSettingsList(q))
+        ,   tracks(new AcTrackList(q))
+        ,   grid(new AcGridLinesList(q))
+        ,   fontSettings(new MiFontSettings)
+        ,   gridSettings(new AcGridSettings)
+        ,   viewSettings(new AcViewSettings)
+        ,   timeLines(new AcGridLineList)
+        ,   pitchLines(new AcGridLineList)
+        ,   controlLines(new AcGridLineList)
+    {
+        QObjectList settingsList;
+        settingsList.append(fontSettings);
+        settingsList.append(gridSettings);
+        settingsList.append(viewSettings);
+        settings->append(settingsList);
+
+        QList<AcGridLineList*> gridLinesList;
+        gridLinesList.append(timeLines);
+        gridLinesList.append(pitchLines);
+        gridLinesList.append(controlLines);
+        grid->append(gridLinesList);
+    }
+};
 
 } // namespace Private
 
-class AC_CORE_EXPORT AcScore : public MiRoot
+class AC_CORE_EXPORT AcScore : public MiDatabase
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcScore)
     Q_PROPERTY(qreal length READ length WRITE setLength)
-    Q_PROPERTY(MiObjectList* settings READ settingsObjects)
-    Q_PROPERTY(MiObjectList* tracks READ trackObjects)
-    Q_PROPERTY(MiObjectList* barLines READ barLineObjects)
-    Q_PROPERTY(MiObjectList* tuningLines READ tuningLineObjects)
-    Q_PROPERTY(MiObjectList* valueLines READ valueLineObjects)
+    Q_PROPERTY(AcSettingsList* settings READ settings)
+    Q_PROPERTY(AcTrackList* tracks READ tracks)
+    Q_PROPERTY(AcGridLinesList* grid READ grid)
 
 public:
-    enum PropertyIndex
-    {
-        Length = MiRoot::PropertyCount,
+    enum Property {
+        Length = MiDatabase::PropertyCount,
         Settings,
         Tracks,
-        BarLines,
-        TuningLines,
-        ValueLines,
+        Grid,
         PropertyCount
     };
 
-    AcScore(QObject *parent = 0);
-    virtual ~AcScore();
+    explicit AcScore(QObject *parent = 0)
+        :   MiDatabase(parent)
+        ,   d(new Private::AcScoreData(this))
+    {}
 
-    static AcScore *instance();
+    virtual ~AcScore()
+    {
+        delete d;
+    }
 
-    qreal length() const;
-    void setLength(qreal length);
-    MiList<AcTrack> &tracks() const;
-    MiList<AcBarLine> &barLines() const;
-    MiList<AcTuningLine> &tuningLines() const;
-    MiList<AcValueLine> &valueLines() const;
+    qreal length() const
+    {
+        return d->length;
+    }
 
-    MiFont *fontSettings() const;
-    AcGridSettings *gridSettings() const;
-    AcViewSettings *viewSettings() const;
+    void setLength(qreal length)
+    {
+        if (length < 1.0f)
+            length = 1.0f;
+        if (d->length == length)
+            return;
+        beginChangeProperty(Length);
+        d->length = length;
+        endChangeProperty(Length);
+    }
 
-    virtual void clear();
+    AcSettingsList *settings() const
+    {
+        return d->settings;
+    }
 
-protected:
-    virtual QString &normalizeClassName(QString &className) const;
-    virtual MiObject *createObject(const QString &className);
-    virtual MiObject *findObject(const QString &className) const;
+    AcTrackList *tracks() const
+    {
+        return d->tracks;
+    }
 
-private slots:
-    void updateScoreProperty(int propertyIndex);
-    void updateBarLineProperty(int propertyIndex);
-    void updateTuningLineProperty(int propertyIndex);
-    void updateValueLineProperty(int propertyIndex);
-    void sortBarLines();
-    void sortTuningLines();
-    void sortValueLines();
+    AcGridLinesList *grid() const
+    {
+        return d->grid;
+    }
+
+    MiFontSettings *fontSettings() const
+    {
+        return d->fontSettings;
+    }
+
+    AcGridSettings *gridSettings() const
+    {
+        return d->gridSettings;
+    }
+
+    AcViewSettings *viewSettings() const
+    {
+        return d->viewSettings;
+    }
+
+    AcGridLineList *timeLines() const
+    {
+        return d->timeLines;
+    }
+
+    AcGridLineList *pitchLines() const
+    {
+        return d->pitchLines;
+    }
+
+    AcGridLineList *controlLines() const
+    {
+        return d->controlLines;
+    }
+
+    virtual void clear()
+    {}
 
 private:
-    Q_DISABLE_COPY(AcScore)
     Private::AcScoreData *d;
-
-    MiObjectList *settingsObjects() const;
-    MiObjectList *trackObjects() const;
-    MiObjectList *barLineObjects() const;
-    MiObjectList *tuningLineObjects() const;
-    MiObjectList *valueLineObjects() const;
 };
+
+Q_DECLARE_METATYPE(AcSettingsList*)
 
 #endif // AC_SCORE_H

@@ -22,8 +22,68 @@
 #include <ac_controlpoint.h>
 #include <QMetaType>
 
-typedef MiSortedList<AcControlPoint> AcControlCurve;
+namespace Private {
 
-Q_DECLARE_METATYPE(AcControlCurve*);
+class AcControlCurveData
+{
+public:
+    int type;
+
+    AcControlCurveData()
+        :   type(0)
+    {}
+};
+
+} // namespace Private
+
+class AcControlCurve : public MiSortedList<AcControlPoint>
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(AcControlCurve)
+    Q_PROPERTY(int type READ type WRITE setType)
+
+public:
+    enum Property {
+        Type = MiSortedList<AcControlPoint>::PropertyCount,
+        PropertyCount
+    };
+
+    enum ControlType {
+        Volume = 0,
+        Pan,
+        ControlTypeCount
+    };
+
+    explicit AcControlCurve(QObject *parent = 0)
+        :   MiSortedList<AcControlPoint>(parent)
+        ,   d(new Private::AcControlCurveData)
+    {}
+
+    virtual ~AcControlCurve()
+    {
+        delete d;
+    }
+
+    int type() const
+    {
+        return d->type;
+    }
+
+    void setType(int type)
+    {
+        if (d->type == type || type < 0 || ControlTypeCount <= type)
+            return;
+        beginChangeProperty(Type);
+        d->type = type;
+        endChangeProperty(Type);
+    }
+
+private:
+    Private::AcControlCurveData *d;
+};
+
+typedef MiList<AcControlCurve> AcControlCurveList;
+
+Q_DECLARE_METATYPE(AcControlCurveList*)
 
 #endif // AC_CONTROLCURVE_H

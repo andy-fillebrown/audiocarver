@@ -16,11 +16,8 @@
 **************************************************************************/
 
 #include "mi_coreplugin.h"
-#include <mi_object.h>
-#include <mi_objectlist.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
-#include <QVariant>
 
 using namespace Private;
 

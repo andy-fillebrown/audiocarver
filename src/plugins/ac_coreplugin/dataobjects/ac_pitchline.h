@@ -26,7 +26,7 @@ class AC_CORE_EXPORT AcPitchLine : public AcGridLine
     Q_DISABLE_COPY(AcPitchLine)
 
 public:
-    typedef AcGridLine::Properties Properties;
+    typedef AcGridLine::Property Property;
 
     explicit AcPitchLine(QObject *parent = 0)
         :   AcGridLine(parent)

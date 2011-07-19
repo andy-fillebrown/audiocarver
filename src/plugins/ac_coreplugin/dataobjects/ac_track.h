@@ -19,50 +19,97 @@
 #define AC_TRACK_H
 
 #include <mi_object.h>
-#include <ac_core_global.h>
-
-class AcNote;
-template <typename T> class MiList;
+#include <ac_note.h>
+#include <mi_objectlist.h>
+#include <QMetaObject>
 
 namespace Private {
 
-class AcTrackData;
+class AcTrackData
+{
+public:
+    AcNoteList *notes;
+    bool visible;
+    qreal volume;
+
+    AcTrackData(QObject *q)
+        :   notes(new AcNoteList(q))
+        ,   visible(true)
+        ,   volume(1.0f)
+    {}
+};
 
 } // namespace Private
 
 class AC_CORE_EXPORT AcTrack : public MiObject
 {
     Q_OBJECT
-    Q_PROPERTY(MiObjectList* notes READ noteObjects)
+    Q_DISABLE_COPY(AcTrack)
+    Q_PROPERTY(MiObjectList* notes READ notes)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
 public:
-    enum PropertyIndex
-    {
+    enum Property {
         Notes = MiObject::PropertyCount,
         Visible,
         Volume,
         PropertyCount
     };
 
-    AcTrack(QObject *parent = 0);
-    virtual ~AcTrack();
+    explicit AcTrack(QObject *parent = 0)
+        :   MiObject(parent)
+        ,   d(new Private::AcTrackData(this))
+    {}
 
-    MiList<AcNote> &notes() const;
-    bool isVisible() const;
-    void setVisible(bool visible);
-    qreal volume() const;
-    void setVolume(qreal volume);
+    virtual ~AcTrack()
+    {
+        delete d;
+    }
 
-protected:
-    virtual MiObject *createObject(const QString &className);
+    AcNoteList *notes() const
+    {
+        return d->notes;
+    }
+
+    bool isVisible() const
+    {
+        return d->visible;
+    }
+
+    void setVisible(bool visible)
+    {
+        if (d->visible == visible)
+            return;
+        beginChangeProperty(Visible);
+        d->visible = visible;
+        endChangeProperty(Visible);
+    }
+
+    qreal volume() const
+    {
+        return d->volume;
+    }
+
+    void setVolume(qreal volume)
+    {
+        if (volume < 0.0f)
+            volume = 0.0f;
+        else if (1.0f < volume)
+            volume = 1.0f;
+        if (d->volume == volume)
+            return;
+        beginChangeProperty(Volume);
+        d->volume = volume;
+        endChangeProperty(Volume);
+    }
 
 private:
-    Q_DISABLE_COPY(AcTrack)
     Private::AcTrackData *d;
-
-    MiObjectList *noteObjects() const;
 };
+
+typedef MiList<AcTrack> AcTrackList;
+
+Q_DECLARE_METATYPE(AcTrackList*)
 
 #endif // AC_TRACK_H
