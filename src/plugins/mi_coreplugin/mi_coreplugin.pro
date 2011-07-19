@@ -11,7 +11,6 @@ HEADERS += \
     \
     dataobjects/mi_database.h \
     dataobjects/mi_font.h \
-    dataobjects/mi_link.h \
     dataobjects/mi_object.h \
     dataobjects/mi_objectlist.h \
     \
@@ -27,7 +26,6 @@ SOURCES += \
     \
     dataobjects/mi_database.cpp \
     dataobjects/mi_font.cpp \
-    dataobjects/mi_link.cpp \
     dataobjects/mi_object.cpp \
     dataobjects/mi_objectlist.cpp \
     \
