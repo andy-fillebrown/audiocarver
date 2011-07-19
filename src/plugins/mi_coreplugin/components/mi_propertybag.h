@@ -15,28 +15,53 @@
 **
 **************************************************************************/
 
-#ifndef MI_IPROPERTYBAG_H
-#define MI_IPROPERTYBAG_H
+#ifndef MI_PROPERTYBAG_H
+#define MI_PROPERTYBAG_H
 
 #include <QObject>
 #include <mi_core_global.h>
 
-class MI_CORE_EXPORT IPropertyBag : public QObject
+namespace Private {
+
+class MiPropertyBagData
+{
+public:
+    QObject *object;
+
+    MiPropertyBagData(QObject *object)
+        :   object(object)
+    {}
+};
+
+} // namespace Private
+
+class MI_CORE_EXPORT MiPropertyBag : public QObject
 {
     Q_OBJECT
 
 public:
-    IPropertyBag() {}
-    virtual ~IPropertyBag() {}
+    MiPropertyBag(QObject *object)
+        :   d(new Private::MiPropertyBagData(object))
+    {}
 
-    virtual QString className() const = 0;
-    virtual int propertyCount() const = 0;
-    virtual int propertyIndex(const QString &name) const = 0;
-    virtual QString propertyName(int i) const = 0;
-    virtual QString propertyType(int i) const = 0;
-    virtual bool isPropertyWritable(int i) const = 0;
-    virtual QVariant propertyValue(int i) const = 0;
-    virtual void setPropertyValue(int i, const QVariant &value) = 0;
+    virtual ~MiPropertyBag()
+    {
+        delete d;
+    }
+
+    void setObject(QObject *object)
+    {
+        d->object = object;
+    }
+
+    QString className() const;
+    int propertyCount() const;
+    int propertyIndex(const QString &name) const;
+    QString propertyName(int i) const;
+    QString propertyType(int i) const;
+    bool isPropertyWritable(int i) const;
+    QVariant propertyValue(int i) const;
+    void setPropertyValue(int i, const QVariant &value);
 
 signals:
     friend class MiObject;
@@ -44,7 +69,8 @@ signals:
     void propertyChanged(const QVariant &value, int propertyIndex);
 
 private:
-    Q_DISABLE_COPY(IPropertyBag)
+    Q_DISABLE_COPY(MiPropertyBag)
+    Private::MiPropertyBagData *d;
 };
 
-#endif // MI_IPROPERTYBAG_H
+#endif // MI_PROPERTYBAG_H

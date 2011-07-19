@@ -18,7 +18,7 @@
 #include "mi_object.h"
 #include <aggregate.h>
 #include <mi_database.h>
-#include <mi_ipropertybag.h>
+#include <mi_propertybag.h>
 
 using namespace Aggregation;
 using namespace Private;
@@ -35,7 +35,7 @@ MiDatabase *MiObject::database() const
 
 void MiObject::emitPropertyAboutToBeChanged(int propertyIndex)
 {
-    IPropertyBag *pb = query<IPropertyBag>(this);
+    MiPropertyBag *pb = query<MiPropertyBag>(this);
     if (!pb)
         return;
     pb->emit propertyAboutToBeChanged(pb->propertyValue(propertyIndex), propertyIndex);
@@ -43,7 +43,7 @@ void MiObject::emitPropertyAboutToBeChanged(int propertyIndex)
 
 void MiObject::emitPropertyChanged(int propertyIndex)
 {
-    IPropertyBag *pb = query<IPropertyBag>(this);
+    MiPropertyBag *pb = query<MiPropertyBag>(this);
     if (!pb)
         return;
     pb->emit propertyChanged(pb->propertyValue(propertyIndex), propertyIndex);
