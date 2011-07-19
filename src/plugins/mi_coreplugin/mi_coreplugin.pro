@@ -10,7 +10,7 @@ HEADERS += \
     components/mi_propertybag.h \
     \
     dataobjects/mi_database.h \
-    dataobjects/mi_font.h \
+    dataobjects/mi_fontsettings.h \
     dataobjects/mi_object.h \
     dataobjects/mi_objectlist.h \
     \
@@ -25,7 +25,7 @@ SOURCES += \
     components/mi_propertybag.cpp \
     \
     dataobjects/mi_database.cpp \
-    dataobjects/mi_font.cpp \
+    dataobjects/mi_fontsettings.cpp \
     dataobjects/mi_object.cpp \
     dataobjects/mi_objectlist.cpp \
     \
