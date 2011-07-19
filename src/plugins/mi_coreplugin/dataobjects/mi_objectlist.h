@@ -44,14 +44,15 @@ class MiObjectListPrivate;
 class MI_CORE_EXPORT MiObjectList : public MiObject
 {
     Q_OBJECT
-
-protected:
-    MiObjectList(Private::MiObjectListData &dd, QObject *parent)
-        :   MiObject(dd, parent)
-    {}
+    Q_DISABLE_COPY(MiObjectList)
+    Q_DECLARE_PRIVATE(Private::MiObjectList)
 
 public:
     virtual ~MiObjectList()
+    {}
+
+public slots:
+    virtual void sort()
     {}
 
 signals:
@@ -62,23 +63,19 @@ signals:
     void objectsAboutToBeRemoved(int start, int end);
     void objectsRemoved(int start, int end);
 
-private:
-    Q_DISABLE_COPY(MiObjectList)
-    Q_DECLARE_PRIVATE(Private::MiObjectList)
+protected:
+    MiObjectList(QObject *parent)
+        :   MiObject(*(new Private::MiObjectListData(this)), parent)
+    {}
 };
 
 namespace Private {
 
 class MiObjectListPrivate : public MiObjectListData
 {
+    Q_DECLARE_PUBLIC(MiObjectList)
+
 public:
-    MiObjectListPrivate(MiObject *q)
-        :   MiObjectListData(q)
-    {}
-
-    virtual ~MiObjectListPrivate()
-    {}
-
     void insert(int i, MiObject *object)
     {
         Q_Q(MiObjectList);
@@ -97,6 +94,7 @@ public:
     {
         Q_Q(MiObjectList);
         q->emit objectsInserted(start, end);
+        q->sort();
     }
 
     void beginMove(int start, int end, int destination)
@@ -109,6 +107,7 @@ public:
     {
         Q_Q(MiObjectList);
         q->emit objectsMoved(start, end, destination);
+        q->sort();
     }
 
     void beginRemove(int start, int end)
@@ -121,22 +120,8 @@ public:
     {
         Q_Q(MiObjectList);
         q->emit objectsRemoved(start, end);
+        q->sort();
     }
-
-private:
-    Q_DECLARE_PUBLIC(MiObjectList)
-};
-
-
-class MiListPrivate : public MiObjectListPrivate
-{
-public:
-    MiListPrivate(MiObjectList *q)
-        :   MiObjectListPrivate(q)
-    {}
-
-    virtual ~MiListPrivate()
-    {}
 };
 
 } // namespace Private
@@ -144,20 +129,17 @@ public:
 template <typename T>
 class MiList : public MiObjectList
 {
+    Q_DISABLE_COPY(MiList)
+    Q_DECLARE_PRIVATE(Private::MiObjectList)
+
 public:
     MiList(QObject *parent = 0)
-        :   MiObjectList(*(new Private::MiListPrivate(this)), parent)
-    {}
-
-protected:
-    MiList(Private::MiListPrivate &dd, QObject *parent)
-        :   MiObjectList(dd, parent)
+        :   MiObjectList(parent)
     {}
 
 public:
     virtual ~MiList()
     {}
-
 
     bool isEmpty() const
     {
@@ -167,19 +149,14 @@ public:
 
     int count() const
     {
-        Q_D(const Private::MiList);
+        Q_D(const Private::MiObjectList);
         return d->objects.count();
     }
 
-    const QList<T*> &asQList() const
+    T *at(int i) const
     {
-        Q_D(const Private::MiList);
-        return reinterpret_cast<const QList<T*>&>(d->objects);
-    }
-
-    T *const &at(int i) const
-    {
-        return asQList().at(i);
+        Q_D(const Private::MiObjectList);
+        return qobject_cast<T*>(d->objects[i]);
     }
 
     T *&operator[](int i)
@@ -187,14 +164,14 @@ public:
         return asQList()[i];
     }
 
-    const T *&operator[](int i) const
+    T *operator[](int i) const
     {
         return at(i);
     }
 
     void insert(int i, T* object)
     {
-        Q_D(Private::MiList);
+        Q_D(Private::MiObjectList);
         d->beginInsert(i, i);
         d->insert(i, object);
         d->endInsert(i, i);
@@ -202,7 +179,7 @@ public:
 
     void insert(int i, const QList<T*> &objects)
     {
-        Q_D(const Private::MiList);
+        Q_D(Private::MiObjectList);
         const int end = i + objects.count() - 1;
         d->beginInsert(i, end);
         int j = i - 1;
@@ -223,7 +200,7 @@ public:
 
     void move(int i, int destination)
     {
-        Q_D(Private::MiList);
+        Q_D(Private::MiObjectList);
         d->beginMove(i, i, destination);
         d->objects.move(i, destination);
         d->endMove(i, i, destination);
@@ -231,7 +208,7 @@ public:
 
     void move(int i, int count, int destination)
     {
-        Q_D(Private::MiList);
+        Q_D(Private::MiObjectList);
         const int end = i + count - 1;
         d->beginMove(i, end, destination);
         QList<T*> taken;
@@ -246,7 +223,7 @@ public:
 
     void removeAt(int i)
     {
-        Q_D(Private::MiList);
+        Q_D(Private::MiObjectList);
         d->beginRemove(i, i);
         d->objects.removeAt(i);
         d->endRemove(i, i);
@@ -254,7 +231,7 @@ public:
 
     void removeAt(int i, int count)
     {
-        Q_D(Private::MiList);
+        Q_D(Private::MiObjectList);
         const int end = i + count - 1;
         d->beginRemove(i, end);
         for (int j = i;  j <= end;  ++j)
@@ -264,15 +241,33 @@ public:
 
     void removeOne(const QObject* object)
     {
-        Q_D(Private::MiList);
+        Q_D(Private::MiObjectList);
         removeAt(d->objects.indexOf(object));
     }
 
+    void clear()
+    {
+        removeAt(0, count());
+    }
+
+    QList<T*> toQList() const
+    {
+        Q_D(const Private::MiObjectList);
+        return *reinterpret_cast<const QList<T*>*>(&d->objects);
+    }
+
 protected:
-    virtual void setErased(bool erased)
+    QList<T*> &asQList()
+    {
+        Q_D(Private::MiObjectList);
+        return reinterpret_cast<QList<T*>&>(d->objects);
+    }
+
+private:
+    void setErased(bool erased)
     {
         MiObject::setErased(erased);
-        Q_D(Private::MiList);
+        Q_D(Private::MiObjectList);
         if (erased)
             foreach (MiObject *object, d->objects)
                 object->erase();
@@ -280,10 +275,42 @@ protected:
             foreach (MiObject *object, d->objects)
                 object->unerase();
     }
+};
+
+template <typename T>
+class MiSortedList : public MiList<T>
+{
+    Q_DISABLE_COPY(MiSortedList)
+
+public:
+    MiSortedList(QObject *parent = 0)
+        :   MiList<T>(parent)
+    {}
+
+    virtual ~MiSortedList()
+    {}
 
 private:
-    Q_DISABLE_COPY(MiList)
-    Q_DECLARE_PRIVATE(Private::MiList)
+    static bool lessThan(T *a, T *b);
+
+    bool isSorted() const
+    {
+        const int end = MiList<T>::count() - 1;
+        for (int i = 0;  i < end;  ++i)
+            if (lessThan(MiList<T>::at(i + 1), MiList<T>::at(i)))
+                return false;
+        return true;
+    }
+
+    void sort()
+    {
+        if (isSorted())
+            return;
+        QList<T*> list = MiList<T>::toQList();
+        MiList<T>::clear();
+        qSort(list.begin(), list.end(), lessThan);
+        append(list);
+    }
 };
 
 #endif // MI_OBJECTLIST_H

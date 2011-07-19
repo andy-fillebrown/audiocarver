@@ -77,7 +77,7 @@ void MiFontSettings::setPointSize(int size)
     endChangeProperty(PointSize);
 }
 
-const QFont &MiFontSettings::font() const
+const QFont &MiFontSettings::toQFont() const
 {
     Q_D(const Private::MiFontSettings);
     return d->font;

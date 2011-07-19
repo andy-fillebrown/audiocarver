@@ -15,21 +15,16 @@
 **
 **************************************************************************/
 
-#include "ac_coreplugin.h"
-#include <ac_curve.h>
-#include <ac_database.h>
-#include <pluginmanager.h>
-#include <QtPlugin>
+#include "ac_point.h"
+#include <mi_objectlist.h>
 
-using namespace Private;
-
-bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+template <> bool MiSortedList<AcPoint>::lessThan(AcPoint *a, AcPoint *b)
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    qRegisterMetaType<AcCurve*>();
-    addAutoReleasedObject(new AcDatabaseImpl);
-    return true;
-}
+    qDebug() << Q_FUNC_INFO;
 
-Q_EXPORT_PLUGIN(AcCorePlugin)
+    if (a->x() < b->x())
+        return true;
+    if (a->x() == b->x() && a->y() < b->y())
+        return true;
+    return false;
+}

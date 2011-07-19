@@ -23,6 +23,7 @@
 class MI_CORE_EXPORT MiDatabase : public MiObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(MiDatabase)
 
 public:
     MiDatabase(QObject *parent = 0)
@@ -59,9 +60,6 @@ public:
 //        Q_ASSERT(variant.type() == QVariant::String);
 //        return stringToVariant(variant.toString(), type);
 //    }
-
-private:
-    Q_DISABLE_COPY(MiDatabase)
 };
 
 #endif // MI_DATABASE_H

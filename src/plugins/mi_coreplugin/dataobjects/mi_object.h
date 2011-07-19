@@ -46,6 +46,7 @@ public:
 class MI_CORE_EXPORT MiObject : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(MiObject)
 
 public:
     enum {
@@ -57,13 +58,6 @@ public:
         ,   d_ptr(new Private::MiObjectPrivate(this))
     {}
 
-protected:
-    MiObject(Private::MiObjectPrivate &dd, QObject *parent)
-        :   QObject(parent)
-        ,   d_ptr(&dd)
-    {}
-
-public:
     virtual ~MiObject()
     {
         delete d_ptr;
@@ -106,6 +100,11 @@ signals:
     void unerased();
 
 protected:
+    MiObject(Private::MiObjectPrivate &dd, QObject *parent)
+        :   QObject(parent)
+        ,   d_ptr(&dd)
+    {}
+
     virtual void setErased(bool erased)
     {
         d_ptr->erased = erased;
@@ -114,10 +113,6 @@ protected:
     void beginChangeProperty(int propertyIndex);
     void endChangeProperty(int propertyIndex);
 
-private:
-    Q_DISABLE_COPY(MiObject)
-
-protected:
     Private::MiObjectPrivate *d_ptr;
 };
 

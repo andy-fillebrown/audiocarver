@@ -2,9 +2,8 @@
 include(../mi_coreplugin/mi_coreplugin.pri)
 
 DIRS = \
+    dataobjects \
     implementations \
-    score \
-    settings \
     . \
 
 for(dir, DIRS) {

@@ -31,6 +31,8 @@ class MiFontSettingsPrivate;
 class MI_CORE_EXPORT MiFontSettings : public MiObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(MiFontSettings)
+    Q_DECLARE_PRIVATE(Private::MiFontSettings)
     Q_PROPERTY(QString family READ family WRITE setFamily)
     Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
 
@@ -49,11 +51,7 @@ public:
     int pointSize() const;
     void setPointSize(int size);
 
-    const QFont &font() const;
-
-private:
-    Q_DISABLE_COPY(MiFontSettings)
-    Q_DECLARE_PRIVATE(Private::MiFontSettings)
+    const QFont &toQFont() const;
 };
 
 #endif // MI_FONT_H

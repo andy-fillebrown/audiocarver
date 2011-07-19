@@ -15,4 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_fpoint.h"
+#ifndef AC_CURVE_H
+#define AC_CURVE_H
+
+#include <mi_objectlist.h>
+#include <ac_point.h>
+
+typedef MiSortedList<AcPoint> AcCurve;
+
+Q_DECLARE_METATYPE(AcCurve*);
+
+#endif // AC_CURVE_H
