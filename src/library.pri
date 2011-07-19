@@ -1,9 +1,5 @@
 include(../project.pri)
 
-# use precompiled header for libraries by default
-isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$PWD/shared/project_pch.h
-OTHER_FILES += $$PRECOMPILED_HEADER
-
 win32:DLLDESTDIR = $$PRO_APP_PATH
 DESTDIR = $$PRO_LIBRARY_PATH
 

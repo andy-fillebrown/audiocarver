@@ -42,4 +42,6 @@ defineTest(addSubdirs) {
 }
 
 addSubdirs(SUBDIRS)
-OTHER_FILES += *.*
+OTHER_FILES += \
+    *.* \
+    src/shared/*.* \

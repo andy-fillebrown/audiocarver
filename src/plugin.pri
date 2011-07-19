@@ -1,9 +1,5 @@
 include(../project.pri)
 
-# use gui precompiled header for plugins by default
-isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$PWD/shared/project_gui_pch.h
-OTHER_FILES += $$PRECOMPILED_HEADER
-
 isEmpty(PROVIDER) {
     PROVIDER = $$PRO_AUTHOR_NOSPACE
 }
