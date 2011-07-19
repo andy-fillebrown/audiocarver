@@ -17,14 +17,14 @@
 
 #include "mi_idatabase.h"
 
-static MiIDatabase *instance = 0;
+static IDatabase *instance = 0;
 
-MiIDatabase::MiIDatabase()
+IDatabase::IDatabase()
 {
     ::instance = this;
 }
 
-MiIDatabase *MiIDatabase::instance()
+IDatabase *IDatabase::instance()
 {
     return ::instance;
 }

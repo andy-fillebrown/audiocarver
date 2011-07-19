@@ -21,15 +21,15 @@
 #include <QObject>
 #include <mi_core_global.h>
 
-class MI_CORE_EXPORT MiIDatabase : public QObject
+class MI_CORE_EXPORT IDatabase : public QObject
 {
     Q_OBJECT
 
 public:
-    MiIDatabase();
-    virtual ~MiIDatabase() {}
+    IDatabase();
+    virtual ~IDatabase() {}
 
-    static MiIDatabase *instance();
+    static IDatabase *instance();
 
     virtual const QString &fileExtension() const = 0;
     virtual const QString &fileFilter() const = 0;
@@ -39,7 +39,7 @@ public:
     virtual void write(const QString &fileName) = 0;
 
 private:
-    Q_DISABLE_COPY(MiIDatabase)
+    Q_DISABLE_COPY(IDatabase)
 };
 
 #endif // MI_IDATABASE_H

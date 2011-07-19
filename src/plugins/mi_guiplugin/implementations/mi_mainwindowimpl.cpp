@@ -157,12 +157,12 @@ void MiMainWindowImpl::initActions()
 
 void MiMainWindowImpl::newFile()
 {
-    MiIDatabase::instance()->clear();
+    IDatabase::instance()->clear();
 }
 
 void MiMainWindowImpl::openFile()
 {
-    MiIDatabase *db = MiIDatabase::instance();
+    IDatabase *db = IDatabase::instance();
     QString filename = QFileDialog::getOpenFileName(
                 Core::ICore::instance()->mainWindow(), "", "",
                 tr(qPrintable(db->fileFilter())));
@@ -173,7 +173,7 @@ void MiMainWindowImpl::openFile()
 
 void MiMainWindowImpl::saveFile()
 {
-    MiIDatabase *db = MiIDatabase::instance();
+    IDatabase *db = IDatabase::instance();
     if (db->fileName().isEmpty())
         saveFileAs();
     else
@@ -182,7 +182,7 @@ void MiMainWindowImpl::saveFile()
 
 void MiMainWindowImpl::saveFileAs()
 {
-    MiIDatabase *db = MiIDatabase::instance();
+    IDatabase *db = IDatabase::instance();
     QString filename = QFileDialog::getSaveFileName(
                 Core::ICore::instance()->mainWindow(), "", "",
                 tr(qPrintable(db->fileFilter())));

@@ -24,7 +24,7 @@ namespace Private {
 
 class AcDatabaseImplData;
 
-class AcDatabaseImpl : public MiIDatabase
+class AcDatabaseImpl : public IDatabase
 {
 public:
     AcDatabaseImpl();
