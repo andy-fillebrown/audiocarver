@@ -15,17 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_valueline.h"
-#include <mi_list.h>
-
-template <> bool MiList<AcValueLine>::lessThan(MiObject *a, MiObject *b)
-{
-    return AcGridLine::lessThan(a, b);
-}
-
-AcValueLine::AcValueLine(QObject *parent)
-    :   AcGridLine(parent)
-{}
-
-AcValueLine::~AcValueLine()
-{}
+#include "ac_controlline.h"

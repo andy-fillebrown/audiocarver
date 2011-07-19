@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_VALUELINE_H
-#define AC_VALUELINE_H
+#ifndef AC_CONTROLLINE_H
+#define AC_CONTROLLINE_H
 
 #include <ac_gridline.h>
 
-class AC_CORE_EXPORT AcValueLine : public AcGridLine
+class AC_CORE_EXPORT AcControlLine : public AcGridLine
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcControlLine)
 
 public:
-    typedef AcGridLine::PropertyIndex PropertyIndex;
+    typedef AcGridLine::Properties Properties;
 
-    explicit AcValueLine(QObject *parent = 0);
-    virtual ~AcValueLine();
+    explicit AcControlLine(QObject *parent = 0)
+        :   AcGridLine(parent)
+    {}
 
-private:
-    Q_DISABLE_COPY(AcValueLine)
+    virtual ~AcControlLine()
+    {}
 };
 
-#endif // AC_VALUELINE_H
+#endif // AC_CONTROLLINE_H
