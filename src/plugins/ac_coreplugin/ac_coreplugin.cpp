@@ -16,7 +16,8 @@
 **************************************************************************/
 
 #include "ac_coreplugin.h"
-#include <ac_curve.h>
+#include <ac_controlcurve.h>
+#include <ac_pitchcurve.h>
 #include <ac_database.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
@@ -27,7 +28,8 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    qRegisterMetaType<AcCurve*>();
+    qRegisterMetaType<AcPitchCurve*>();
+    qRegisterMetaType<AcControlCurve*>();
     addAutoReleasedObject(new AcDatabaseImpl);
     return true;
 }

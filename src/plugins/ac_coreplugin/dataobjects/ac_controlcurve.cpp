@@ -15,31 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_volumecurve.h"
-
-using namespace Private;
-
-namespace Private {
-
-class AcVolumeCurveData
-{
-public:
-    AcVolumeCurveData()
-    {}
-};
-
-} // namespace Private
-
-AcVolumeCurve::AcVolumeCurve(QObject *parent)
-    :   AcCurve(parent)
-    ,   d(new AcVolumeCurveData)
-{}
-
-AcVolumeCurve::~AcVolumeCurve()
-{
-    delete d;
-}
-
-void AcVolumeCurve::updatePoints()
-{
-}
+#include "ac_controlcurve.h"

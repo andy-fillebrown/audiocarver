@@ -15,15 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef AC_CURVE_H
-#define AC_CURVE_H
-
-#include <mi_objectlist.h>
-#include <ac_point.h>
-#include <QMetaType>
-
-typedef MiSortedList<AcPoint> AcCurve;
-
-Q_DECLARE_METATYPE(AcCurve*);
-
-#endif // AC_CURVE_H
+#include "ac_pitchpoint.h"

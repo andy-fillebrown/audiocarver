@@ -15,4 +15,37 @@
 **
 **************************************************************************/
 
-#include "ac_curve.h"
+#ifndef AC_CONTROLPOINT_H
+#define AC_CONTROLPOINT_H
+
+#include <ac_point.h>
+
+class AcControlPoint : public AcPoint
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(AcControlPoint)
+    Q_DECLARE_PRIVATE(Private::AcPoint)
+
+public:
+    typedef AcPoint::Properties Properties;
+
+    explicit AcControlPoint(QObject *parent = 0)
+        :   AcPoint(parent)
+    {}
+
+    virtual ~AcControlPoint()
+    {}
+
+protected:
+    virtual void endChangeProperty(int propertyIndex)
+    {
+        if (Y == propertyIndex) {
+            Q_D(Private::AcPoint);
+            if (1.0f < d->y)
+                d->y = 1.0f;
+        }
+        AcPoint::endChangeProperty(propertyIndex);
+    }
+};
+
+#endif // AC_CONTROLPOINT_H

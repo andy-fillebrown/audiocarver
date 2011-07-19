@@ -41,8 +41,6 @@ public:
 
     virtual ~AcPointPrivate()
     {}
-
-    void sortList();
 };
 
 } // namespace Private
@@ -80,6 +78,8 @@ public:
     void setX(qreal x)
     {
         Q_D(Private::AcPoint);
+        if (x < 0.0f)
+            x = 0.0f;
         if (d->x == x)
             return;
         beginChangeProperty(X);
@@ -97,6 +97,8 @@ public:
     void setY(qreal y)
     {
         Q_D(Private::AcPoint);
+        if (y < 0.0f)
+            y = 0.0f;
         if (d->y == y)
             return;
         beginChangeProperty(Y);

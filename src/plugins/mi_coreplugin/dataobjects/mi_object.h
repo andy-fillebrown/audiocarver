@@ -111,7 +111,7 @@ protected:
     }
 
     void beginChangeProperty(int propertyIndex);
-    void endChangeProperty(int propertyIndex);
+    virtual void endChangeProperty(int propertyIndex);
 
     Private::MiObjectPrivate *d_ptr;
 };

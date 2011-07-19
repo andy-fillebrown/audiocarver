@@ -15,33 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef AC_VOLUMECURVE_H
-#define AC_VOLUMECURVE_H
+#ifndef AC_PITCHPOINT_H
+#define AC_PITCHPOINT_H
 
-#include <ac_curve.h>
+#include <ac_point.h>
 
-namespace Private {
-
-class AcVolumeCurveData;
-
-} // namespace Private
-
-class AC_CORE_EXPORT AcVolumeCurve: public AcCurve
+class AcPitchPoint : public AcPoint
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcPitchPoint)
+    Q_DECLARE_PRIVATE(Private::AcPoint)
 
 public:
-    typedef AcCurve::PropertyIndex PropertyIndex;
+    typedef AcPoint::Properties Properties;
 
-    AcVolumeCurve(QObject *parent = 0);
-    virtual ~AcVolumeCurve();
+    explicit AcPitchPoint(QObject *parent = 0)
+        :   AcPoint(parent)
+    {}
+
+    virtual ~AcPitchPoint()
+    {}
 
 protected:
-    virtual void updatePoints();
-
-private:
-    Q_DISABLE_COPY(AcVolumeCurve)
-    Private::AcVolumeCurveData *d;
+    virtual void endChangeProperty(int propertyIndex)
+    {
+        if (Y == propertyIndex) {
+            Q_D(Private::AcPoint);
+            if (127.0f < d->y)
+                d->y = 127.0f;
+        }
+        AcPoint::endChangeProperty(propertyIndex);
+    }
 };
 
-#endif // AC_VOLUMECURVE_H
+#endif // AC_PITCHPOINT_H
