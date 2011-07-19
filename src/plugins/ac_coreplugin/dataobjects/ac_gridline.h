@@ -57,7 +57,7 @@ class AC_CORE_EXPORT AcGridLine : public MiListObject
     Q_PROPERTY(QString color READ color WRITE setColor)
 
 public:
-    enum {
+    enum Properties {
         Location = MiObject::PropertyCount,
         Label,
         Priority,

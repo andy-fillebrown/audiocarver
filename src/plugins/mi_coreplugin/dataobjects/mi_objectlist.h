@@ -48,6 +48,8 @@ class MI_CORE_EXPORT MiObjectList : public MiObject
     Q_DECLARE_PRIVATE(Private::MiObjectList)
 
 public:
+    typedef MiObject::Properties Properties;
+
     virtual ~MiObjectList()
     {}
 
@@ -133,11 +135,12 @@ class MiList : public MiObjectList
     Q_DECLARE_PRIVATE(Private::MiObjectList)
 
 public:
+    typedef MiObjectList::Properties Properties;
+
     MiList(QObject *parent = 0)
         :   MiObjectList(parent)
     {}
 
-public:
     virtual ~MiList()
     {}
 
@@ -283,6 +286,8 @@ class MiSortedList : public MiList<T>
     Q_DISABLE_COPY(MiSortedList)
 
 public:
+    typedef MiObjectList::Properties Properties;
+
     MiSortedList(QObject *parent = 0)
         :   MiList<T>(parent)
     {}

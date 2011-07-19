@@ -49,7 +49,7 @@ class MI_CORE_EXPORT MiObject : public QObject
     Q_DISABLE_COPY(MiObject)
 
 public:
-    enum {
+    enum Properties {
         PropertyCount = 1
     };
 
