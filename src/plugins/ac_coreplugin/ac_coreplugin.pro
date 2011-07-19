@@ -16,7 +16,7 @@ HEADERS += \
     dataobjects/ac_pitchline.h \
     dataobjects/ac_point.h \
 #    dataobjects/ac_score.h \
-#    dataobjects/ac_timeline.h \
+    dataobjects/ac_timeline.h \
 #    dataobjects/ac_track.h \
 #    dataobjects/ac_valuecurve.h \
 #    dataobjects/ac_valueline.h \
@@ -37,7 +37,7 @@ SOURCES += \
 #    dataobjects/ac_pitchcurve.cpp \
     dataobjects/ac_pitchline.cpp \
 #    dataobjects/ac_score.cpp \
-#    dataobjects/ac_timeline.cpp \
+    dataobjects/ac_timeline.cpp \
 #    dataobjects/ac_track.cpp \
 #    dataobjects/ac_valuecurve.cpp \
 #    dataobjects/ac_valueline.cpp \

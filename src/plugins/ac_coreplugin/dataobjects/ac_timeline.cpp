@@ -15,17 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_barline.h"
-#include <mi_list.h>
-
-template <> bool MiList<AcBarLine>::lessThan(MiObject *a, MiObject *b)
-{
-    return AcGridLine::lessThan(a, b);
-}
-
-AcBarLine::AcBarLine(QObject *parent)
-    :   AcGridLine(parent)
-{}
-
-AcBarLine::~AcBarLine()
-{}
+#include "ac_timeline.h"

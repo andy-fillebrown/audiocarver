@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_BARLINE_H
-#define AC_BARLINE_H
+#ifndef AC_TIMELINE_H
+#define AC_TIMELINE_H
 
 #include <ac_gridline.h>
 
-class AC_CORE_EXPORT AcBarLine : public AcGridLine
+class AC_CORE_EXPORT AcTimeLine : public AcGridLine
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AcTimeLine)
 
 public:
-    typedef AcGridLine::PropertyIndex PropertyIndex;
+    typedef AcGridLine::Properties Properties;
 
-    explicit AcBarLine(QObject *parent = 0);
-    virtual ~AcBarLine();
+    explicit AcTimeLine(QObject *parent = 0)
+        :   AcGridLine(parent)
+    {}
 
-private:
-    Q_DISABLE_COPY(AcBarLine)
+    virtual ~AcTimeLine()
+    {}
 };
 
 #endif // AC_BARLINE_H
