@@ -1,5 +1,6 @@
 TARGET = AcCorePlugin
 TEMPLATE = lib
+QT -= gui
 
 include(../../plugin.pri)
 include(ac_coreplugin_dependencies.pri)

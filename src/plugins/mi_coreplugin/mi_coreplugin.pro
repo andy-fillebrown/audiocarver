@@ -1,5 +1,6 @@
 TARGET = MiCorePlugin
 TEMPLATE = lib
+QT -= gui
 
 include(../../plugin.pri)
 include(mi_coreplugin_dependencies.pri)

@@ -20,11 +20,23 @@
 
 #include <mi_object.h>
 
-class QFont;
-
 namespace Private {
 
-class MiFontSettingsPrivate;
+class MiFontSettingsPrivate : public MiObjectPrivate
+{
+public:
+    QString family;
+    int pointSize;
+
+    MiFontSettingsPrivate(MiObject *q)
+        :   MiObjectPrivate(q)
+        ,   family("Arial")
+        ,   pointSize(8)
+    {}
+
+    virtual ~MiFontSettingsPrivate()
+    {}
+};
 
 } // namespace Private
 
@@ -43,15 +55,46 @@ public:
         PropertyCount
     };
 
-    MiFontSettings(QObject *parent = 0);
-    virtual ~MiFontSettings();
+    explicit MiFontSettings(QObject *parent = 0)
+        :   MiObject(*(new Private::MiFontSettingsPrivate(this)), parent)
+    {}
 
-    QString family() const;
-    void setFamily(const QString &family);
-    int pointSize() const;
-    void setPointSize(int size);
+    virtual ~MiFontSettings()
+    {}
 
-    const QFont &toQFont() const;
+    const QString &family() const
+    {
+        Q_D(const Private::MiFontSettings);
+        return d->family;
+    }
+
+    void setFamily(const QString &family)
+    {
+        Q_D(Private::MiFontSettings);
+        if (d->family == family)
+            return;
+        beginChangeProperty(Family);
+        d->family = family;
+        endChangeProperty(Family);
+    }
+
+    int pointSize() const
+    {
+        Q_D(const Private::MiFontSettings);
+        return d->pointSize;
+    }
+
+    void setPointSize(int pointSize)
+    {
+        Q_D(Private::MiFontSettings);
+        if (pointSize < 1)
+            pointSize = 1;
+        if (d->pointSize == pointSize)
+            return;
+        beginChangeProperty(PointSize);
+        d->pointSize = pointSize;
+        endChangeProperty(PointSize);
+    }
 };
 
 #endif // MI_FONT_H
