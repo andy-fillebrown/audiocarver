@@ -295,7 +295,7 @@ private:
     {
         const int end = MiList<T>::count() - 1;
         for (int i = 0;  i < end;  ++i)
-            if (lessThan(MiList<T>::at(i + 1), MiList<T>::at(i)))
+            if (T::lessThan(MiList<T>::at(i + 1), MiList<T>::at(i)))
                 return false;
         return true;
     }
