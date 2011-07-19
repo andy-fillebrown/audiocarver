@@ -48,6 +48,10 @@ class MI_CORE_EXPORT MiObject : public QObject
     Q_OBJECT
 
 public:
+    enum {
+        PropertyCount = 1
+    };
+
     MiObject(QObject *parent = 0)
         :   QObject(parent)
         ,   d_ptr(new Private::MiObjectPrivate(this))
