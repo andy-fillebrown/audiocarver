@@ -20,6 +20,7 @@
 
 #include <mi_objectlist.h>
 #include <ac_point.h>
+#include <QMetaType>
 
 typedef MiSortedList<AcPoint> AcCurve;
 

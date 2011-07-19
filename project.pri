@@ -170,12 +170,3 @@ win32-msvc* {
 # Handle S60 support: default on Windows, conditionally built on other platforms.
 macx:SUPPORT_QT_S60 = $$(AUDIOCARVER_WITH_S60)
 else:SUPPORT_QT_S60 = 1
-
-isEmpty(PRECOMPILED_HEADER) {
-    CONFIG(gui) {
-        PRECOMPILED_HEADER = $$PWD/src/shared/project_gui_pch.h
-    } else {
-        PRECOMPILED_HEADER = $$PWD/src/shared/project_pch.h
-    }
-}
-OTHER_FILES += $$PRECOMPILED_HEADER

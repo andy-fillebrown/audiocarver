@@ -20,6 +20,7 @@
 #include <mi_database.h>
 #include <mi_objectlist.h>
 #include <mi_propertybag.h>
+#include <QVariant>
 
 using namespace Aggregation;
 using namespace Private;
