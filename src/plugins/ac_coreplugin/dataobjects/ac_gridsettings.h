@@ -42,7 +42,7 @@ class AC_CORE_EXPORT AcGridSettings : public MiObject
     Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
-    enum Property {
+    enum Properties {
         Visible = MiObject::PropertyCount,
         PropertyCount
     };

@@ -55,7 +55,7 @@ class AC_CORE_EXPORT AcPoint : public MiListObject
     Q_PROPERTY(bool curved READ isCurved WRITE setCurved)
 
 public:
-    enum Property {
+    enum Properties {
         X = MiListObject::PropertyCount,
         Y,
         Curved,

@@ -50,7 +50,7 @@ class MI_CORE_EXPORT MiFontSettings : public MiObject
     Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
 
 public:
-    enum Property {
+    enum Properties {
         Family = MiObject::PropertyCount,
         PointSize,
         PropertyCount

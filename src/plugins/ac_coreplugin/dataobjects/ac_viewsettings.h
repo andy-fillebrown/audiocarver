@@ -57,7 +57,7 @@ class AC_CORE_EXPORT AcViewSettings : public MiObject
     Q_PROPERTY(qreal controlScale READ controlScale WRITE setControlScale)
 
 public:
-    enum Property {
+    enum Properties {
         TimePosition = MiObject::PropertyCount,
         PitchPosition,
         ControlPosition,

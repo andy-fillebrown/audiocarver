@@ -27,10 +27,10 @@ namespace Private {
 class AcControlCurveData
 {
 public:
-    int type;
+    int controlType;
 
     AcControlCurveData()
-        :   type(0)
+        :   controlType(0)
     {}
 };
 
@@ -40,15 +40,15 @@ class AcControlCurve : public MiSortedList<AcControlPoint>
 {
     Q_OBJECT
     Q_DISABLE_COPY(AcControlCurve)
-    Q_PROPERTY(int type READ type WRITE setType)
+    Q_PROPERTY(int controlType READ controlType WRITE setControlType)
 
 public:
-    enum Property {
-        Type = MiSortedList<AcControlPoint>::PropertyCount,
+    enum Properties {
+        ControlType = MiSortedList<AcControlPoint>::PropertyCount,
         PropertyCount
     };
 
-    enum ControlType {
+    enum ControlTypes {
         Volume = 0,
         Pan,
         ControlTypeCount
@@ -64,18 +64,18 @@ public:
         delete d;
     }
 
-    int type() const
+    int controlType() const
     {
-        return d->type;
+        return d->controlType;
     }
 
-    void setType(int type)
+    void setControlType(int controlType)
     {
-        if (d->type == type || type < 0 || ControlTypeCount <= type)
+        if (d->controlType == controlType || controlType < 0 || ControlTypeCount <= controlType)
             return;
-        beginChangeProperty(Type);
-        d->type = type;
-        endChangeProperty(Type);
+        beginChangeProperty(ControlType);
+        d->controlType = controlType;
+        endChangeProperty(ControlType);
     }
 
 private:

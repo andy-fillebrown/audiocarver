@@ -50,7 +50,7 @@ class AC_CORE_EXPORT AcTrack : public MiObject
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
 public:
-    enum Property {
+    enum Properties {
         Notes = MiObject::PropertyCount,
         Visible,
         Volume,

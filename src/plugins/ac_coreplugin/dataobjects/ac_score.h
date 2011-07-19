@@ -84,7 +84,7 @@ class AC_CORE_EXPORT AcScore : public MiDatabase
     Q_PROPERTY(AcGridLinesList* grid READ grid)
 
 public:
-    enum Property {
+    enum Properties {
         Length = MiDatabase::PropertyCount,
         Settings,
         Tracks,

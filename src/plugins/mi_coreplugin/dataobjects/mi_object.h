@@ -49,7 +49,7 @@ class MI_CORE_EXPORT MiObject : public QObject
     Q_DISABLE_COPY(MiObject)
 
 public:
-    enum Property {
+    enum Properties {
         PropertyOffset = 1,
         PropertyCount = PropertyOffset
     };
@@ -123,7 +123,7 @@ class MI_CORE_EXPORT MiListObject : public MiObject
     Q_DISABLE_COPY(MiListObject)
 
 public:
-    typedef MiObject::Property Property;
+    typedef MiObject::Properties Properties;
 
     virtual ~MiListObject()
     {}

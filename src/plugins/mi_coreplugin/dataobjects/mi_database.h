@@ -26,7 +26,7 @@ class MI_CORE_EXPORT MiDatabase : public MiObject
     Q_DISABLE_COPY(MiDatabase)
 
 public:
-    typedef MiObject::Property Property;
+    typedef MiObject::Properties Properties;
 
     explicit MiDatabase(QObject *parent = 0)
         :   MiObject(parent)

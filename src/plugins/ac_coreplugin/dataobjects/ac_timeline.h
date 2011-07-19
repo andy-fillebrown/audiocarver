@@ -26,7 +26,7 @@ class AC_CORE_EXPORT AcTimeLine : public AcGridLine
     Q_DISABLE_COPY(AcTimeLine)
 
 public:
-    typedef AcGridLine::Property Property;
+    typedef AcGridLine::Properties Properties;
 
     explicit AcTimeLine(QObject *parent = 0)
         :   AcGridLine(parent)

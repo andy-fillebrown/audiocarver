@@ -50,7 +50,7 @@ class AC_CORE_EXPORT AcNote : public MiObject
     Q_PROPERTY(AcControlCurveList* controlCurves READ controlCurves)
 
 public:
-    enum Property {
+    enum Properties {
         PitchCurve = MiObject::PropertyCount,
         VolumeCurve,
         PropertyCount
