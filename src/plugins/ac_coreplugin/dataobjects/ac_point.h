@@ -80,6 +80,8 @@ public:
         Q_D(Private::AcPoint);
         if (x < 0.0f)
             x = 0.0f;
+        else if (1.0f < x)
+            x = 1.0f;
         if (d->x == x)
             return;
         beginChangeProperty(X);
@@ -97,8 +99,6 @@ public:
     void setY(qreal y)
     {
         Q_D(Private::AcPoint);
-        if (y < 0.0f)
-            y = 0.0f;
         if (d->y == y)
             return;
         beginChangeProperty(Y);
@@ -123,14 +123,21 @@ public:
         endChangeProperty(Y);
     }
 
-    static bool lessThan(AcPoint *a, AcPoint *b)
+private:
+    bool lessThan(const MiObject *other) const
     {
-        if (a->x() < b->x())
+        const AcPoint *b = qobject_cast<const AcPoint*>(other);
+        if (!b)
+            return false;
+        Q_D(const Private::AcPoint);
+        if (d->x < b->x())
             return true;
-        if (a->x() == b->x() && a->y() < b->y())
+        if (d->x == b->x() && d->y < b->y())
             return true;
         return false;
     }
 };
+
+
 
 #endif // AC_POINT_H

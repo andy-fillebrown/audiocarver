@@ -36,7 +36,7 @@ public:
 
 } // namespace Private
 
-class AcControlCurve : public MiSortedList<AcControlPoint>
+class AcControlCurve : public MiObjectList
 {
     Q_OBJECT
     Q_DISABLE_COPY(AcControlCurve)
@@ -44,7 +44,7 @@ class AcControlCurve : public MiSortedList<AcControlPoint>
 
 public:
     enum Properties {
-        ControlType = MiSortedList<AcControlPoint>::PropertyCount,
+        ControlType = MiObjectList::PropertyCount,
         PropertyCount
     };
 
@@ -55,7 +55,7 @@ public:
     };
 
     explicit AcControlCurve(QObject *parent = 0)
-        :   MiSortedList<AcControlPoint>(parent)
+        :   MiObjectList(parent)
         ,   d(new Private::AcControlCurveData)
     {}
 
@@ -81,9 +81,5 @@ public:
 private:
     Private::AcControlCurveData *d;
 };
-
-typedef MiList<AcControlCurve> AcControlCurveList;
-
-Q_DECLARE_METATYPE(AcControlCurveList*)
 
 #endif // AC_CONTROLCURVE_H

@@ -41,7 +41,9 @@ protected:
     {
         if (Y == propertyIndex) {
             Q_D(Private::AcPoint);
-            if (1.0f < d->y)
+            if (d->y < 0.0f)
+                d->y = 0.0f;
+            else if (1.0f < d->y)
                 d->y = 1.0f;
         }
         AcPoint::endChangeProperty(propertyIndex);
