@@ -17,9 +17,7 @@
 
 #include "ac_coreplugin.h"
 #include <ac_database.h>
-#include <ac_controlcurve.h>
-#include <ac_pitchcurve.h>
-#include <ac_score.h>
+//#include <ac_score.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -29,19 +27,12 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    qRegisterMetaType<AcControlCurveList*>();
-    qRegisterMetaType<AcPitchCurve*>();
-    qRegisterMetaType<AcGridLinesList*>();
-    qRegisterMetaType<AcSettingsList*>();
-    qRegisterMetaType<AcTrackList*>();
+//    qRegisterMetaType<AcControlCurveList*>();
+//    qRegisterMetaType<AcPitchCurve*>();
+//    qRegisterMetaType<AcGridLinesList*>();
+//    qRegisterMetaType<AcSettingsList*>();
+//    qRegisterMetaType<AcTrackList*>();
     addAutoReleasedObject(new AcDatabaseImpl);
-
-    // Testing ...
-    AcScore *score = new AcScore;
-    MiDataObjectFactory *factory = score->dataObjectFactory();
-    AcPitchCurve *pitchCurve = dynamic_cast<AcPitchCurve*>(factory->createList("AcPitchPoint"));
-    Q_ASSERT(pitchCurve);
-
     return true;
 }
 
