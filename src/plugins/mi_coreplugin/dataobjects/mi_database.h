@@ -19,6 +19,27 @@
 #define MI_DATABASE_H
 
 #include <mi_object.h>
+#include <mi_dataobjectfactory.h>
+#include <mi_filerfactory.h>
+
+namespace Private {
+
+class MiDatabaseData
+{
+public:
+    MiDataObjectFactory *dataObjectFactory;
+    MiFilerFactory *filerFactory;
+
+    MiDatabaseData()
+        :   dataObjectFactory(0)
+        ,   filerFactory(0)
+    {}
+
+    virtual ~MiDatabaseData()
+    {}
+};
+
+} // namespace Private
 
 class MI_CORE_EXPORT MiDatabase : public MiObject
 {
@@ -30,10 +51,40 @@ public:
 
     explicit MiDatabase(QObject *parent = 0)
         :   MiObject(parent)
-    {}
+        ,   d(new Private::MiDatabaseData)
+    {
+        setDataObjectFactory(new MiDataObjectFactory(this));
+        setFilerFactory(new MiFilerFactory(this));
+    }
 
-    ~MiDatabase()
-    {}
+    MiDatabase(MiDataObjectFactory *dataObjectFactory, QObject *parent = 0)
+        :   MiObject(parent)
+        ,   d(new Private::MiDatabaseData)
+    {
+        setDataObjectFactory(dataObjectFactory);
+        setFilerFactory(new MiFilerFactory(this));
+    }
+
+    MiDatabase(MiFilerFactory *filerFactory, QObject *parent = 0)
+        :   MiObject(parent)
+        ,   d(new Private::MiDatabaseData)
+    {
+        setDataObjectFactory(new MiDataObjectFactory(this));
+        setFilerFactory(filerFactory);
+    }
+
+    MiDatabase(MiDataObjectFactory *dataObjectFactory, MiFilerFactory *filerFactory, QObject *parent = 0)
+        :   MiObject(parent)
+        ,   d(new Private::MiDatabaseData)
+    {
+        setDataObjectFactory(dataObjectFactory);
+        setFilerFactory(filerFactory);
+    }
+
+    virtual ~MiDatabase()
+    {
+        delete d;
+    }
 
     virtual bool isDatabase() const
     {
@@ -43,25 +94,35 @@ public:
     virtual void clear()
     {}
 
-//    virtual QString &normalizeClassName(QString &className) const
-//    {
-//        return className;
-//    }
+    MiDataObjectFactory *dataObjectFactory() const
+    {
+        return d->dataObjectFactory;
+    }
 
-//    virtual QString getUniqueId(MiObject *object, const QString &idHint = QString()) const;
-//    virtual QString variantToString(const QVariant &variant) const;
-//    virtual QVariant stringToVariant(const QString &string, const QString &type) const;
+    MiFilerFactory *filerFactory() const
+    {
+        return d->filerFactory;
+    }
 
-//    QVariant stringToVariant(const QStringRef &stringRef, const QString &type) const
-//    {
-//        return stringToVariant(stringRef.toString(), type);
-//    }
+protected:
+    void setDataObjectFactory(MiDataObjectFactory *factory)
+    {
+        if (d->dataObjectFactory == factory)
+            return;
+        delete d->dataObjectFactory;
+        d->dataObjectFactory = factory;
+    }
 
-//    QVariant stringToVariant(const QVariant &variant, const QString &type) const
-//    {
-//        Q_ASSERT(variant.type() == QVariant::String);
-//        return stringToVariant(variant.toString(), type);
-//    }
+    void setFilerFactory(MiFilerFactory *factory)
+    {
+        if (d->filerFactory == factory)
+            return;
+        delete d->filerFactory;
+        d->filerFactory = factory;
+    }
+
+private:
+    Private::MiDatabaseData *d;
 };
 
 #endif // MI_DATABASE_H

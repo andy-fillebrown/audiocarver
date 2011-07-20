@@ -19,6 +19,7 @@
 #define AC_SCORE_H
 
 #include <mi_database.h>
+#include <ac_dataobjectfactory.h>
 #include <ac_gridline.h>
 #include <ac_gridsettings.h>
 #include <ac_track.h>
@@ -92,7 +93,22 @@ public:
     };
 
     explicit AcScore(QObject *parent = 0)
-        :   MiDatabase(parent)
+        :   MiDatabase(new AcDataObjectFactory(this), parent)
+        ,   d(new Private::AcScoreData(this))
+    {}
+
+    AcScore(AcDataObjectFactory *dataObjectFactory, QObject *parent = 0)
+        :   MiDatabase(dataObjectFactory, parent)
+        ,   d(new Private::AcScoreData(this))
+    {}
+
+    AcScore(MiFilerFactory *filerFactory, QObject *parent = 0)
+        :   MiDatabase(new AcDataObjectFactory(this), filerFactory, parent)
+        ,   d(new Private::AcScoreData(this))
+    {}
+
+    AcScore(AcDataObjectFactory *dataObjectFactory, MiFilerFactory *filerFactory, QObject *parent = 0)
+        :   MiDatabase(dataObjectFactory, filerFactory, parent)
         ,   d(new Private::AcScoreData(this))
     {}
 

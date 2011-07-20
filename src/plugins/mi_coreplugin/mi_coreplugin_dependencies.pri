@@ -4,6 +4,7 @@ include(../qt_coreplugin/coreplugin.pri)
 DIRS = \
     components \
     dataobjects \
+    factories \
     interfaces \
     tools \
     . \

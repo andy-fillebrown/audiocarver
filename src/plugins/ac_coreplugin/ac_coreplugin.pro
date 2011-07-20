@@ -23,6 +23,8 @@ HEADERS += \
     dataobjects/ac_track.h \
     dataobjects/ac_viewsettings.h \
     \
+    factories/ac_dataobjectfactory.h \
+    \
     implementations/ac_database.h \
     \
     ac_core_global.h \
@@ -43,6 +45,8 @@ SOURCES += \
     dataobjects/ac_timeline.cpp \
     dataobjects/ac_track.cpp \
     dataobjects/ac_viewsettings.cpp \
+    \
+    factories/ac_dataobjectfactory.cpp \
     \
     implementations/ac_database.cpp \
     \
