@@ -38,24 +38,7 @@ public:
     ~MiDataObjectFactory()
     {}
 
-    template <typename T>
-    T *createObject(QObject *parent = 0)
-    {
-        T *object = qobject_cast<T*>(createObject(T::staticMetaObject.className(), parent));
-        Q_ASSERT(object);
-        return object;
-    }
-
-    template <typename T>
-    MiList<T> *createList(QObject *parent = 0)
-    {
-        MiList<T> *list = dynamic_cast<MiList<T>*>(createList(T::staticMetaObject.className(), parent));
-        Q_ASSERT(list);
-        return list;
-    }
-
-protected:
-    virtual QObject *createObject(const QString &className, QObject *parent)
+    virtual QObject *createObject(const QString &className, QObject *parent = 0)
     {
         if ("MiFontSettings" == className)
             return createFontSettings(parent);
@@ -63,14 +46,15 @@ protected:
         return 0;
     }
 
-    virtual MiObjectList *createList(const QString &listObjectClassName, QObject *parent)
+    virtual MiObjectList *createList(const QString &className, QObject *parent = 0)
     {
-        Q_UNUSED(listObjectClassName);
+        Q_UNUSED(className);
         Q_UNUSED(parent);
         Q_ASSERT(false);
         return 0;
     }
 
+protected:
     virtual MiFontSettings *createFontSettings(QObject *parent)
     {
         MiFontSettings *fontSettings = new MiFontSettings(parent);

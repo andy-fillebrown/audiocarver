@@ -39,7 +39,7 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     // Testing ...
     AcScore *score = new AcScore;
     MiDataObjectFactory *factory = score->dataObjectFactory();
-    AcPitchCurve *pitchCurve = factory->createList<AcPitchPoint>();
+    AcPitchCurve *pitchCurve = dynamic_cast<AcPitchCurve*>(factory->createList("AcPitchPoint"));
     Q_ASSERT(pitchCurve);
 
     return true;

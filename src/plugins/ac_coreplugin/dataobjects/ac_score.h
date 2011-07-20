@@ -93,7 +93,7 @@ public:
     };
 
     explicit AcScore(QObject *parent = 0)
-        :   MiDatabase(new AcDataObjectFactory(this), parent)
+        :   MiDatabase(new AcDataObjectFactory, parent)
         ,   d(new Private::AcScoreData(this))
     {}
 
@@ -103,7 +103,7 @@ public:
     {}
 
     AcScore(MiFilerFactory *filerFactory, QObject *parent = 0)
-        :   MiDatabase(new AcDataObjectFactory(this), filerFactory, parent)
+        :   MiDatabase(new AcDataObjectFactory, filerFactory, parent)
         ,   d(new Private::AcScoreData(this))
     {}
 

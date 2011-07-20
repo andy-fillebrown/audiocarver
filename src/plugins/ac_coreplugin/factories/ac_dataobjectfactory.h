@@ -80,11 +80,16 @@ protected:
         return track;
     }
 
-    virtual MiObjectList *createList(const QString &listObjectClassName, QObject *parent)
+    virtual MiObjectList *createList(const QString &className, QObject *parent = 0)
     {
-        if ("AcPitchPoint" == listObjectClassName)
-            return new AcPitchCurve(parent);
-        return MiDataObjectFactory::createList(listObjectClassName, parent);
+        if ("AcPitchPoint" == className)
+            return createPitchCurve(parent);
+        return MiDataObjectFactory::createList(className, parent);
+    }
+
+    virtual AcPitchCurve *createPitchCurve(QObject *parent)
+    {
+        return new AcPitchCurve(parent);
     }
 };
 

@@ -61,6 +61,7 @@ public:
         :   MiObject(parent)
         ,   d(new Private::MiDatabaseData)
     {
+        dataObjectFactory->setParent(this);
         setDataObjectFactory(dataObjectFactory);
         setFilerFactory(new MiFilerFactory(this));
     }
@@ -70,6 +71,7 @@ public:
         ,   d(new Private::MiDatabaseData)
     {
         setDataObjectFactory(new MiDataObjectFactory(this));
+        filerFactory->setParent(this);
         setFilerFactory(filerFactory);
     }
 
@@ -77,7 +79,9 @@ public:
         :   MiObject(parent)
         ,   d(new Private::MiDatabaseData)
     {
+        dataObjectFactory->setParent(this);
         setDataObjectFactory(dataObjectFactory);
+        filerFactory->setParent(this);
         setFilerFactory(filerFactory);
     }
 
