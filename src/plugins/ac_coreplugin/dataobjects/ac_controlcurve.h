@@ -19,27 +19,31 @@
 #define AC_CONTROLCURVE_H
 
 #include <ac_controlpoint.h>
-#include <mi_objectlist.h>
-#include <QMetaType>
+#include <ac_curve.h>
 
 namespace Private {
 
-class AcControlCurveData
+class AcControlCurvePrivate : public MiObjectListData
 {
 public:
     int controlType;
 
-    AcControlCurveData()
-        :   controlType(0)
+    AcControlCurvePrivate(MiObject *q)
+        :   MiObjectListData(q)
+        ,   controlType(0)
+    {}
+
+    virtual ~AcControlCurvePrivate()
     {}
 };
 
 } // namespace Private
 
-class AcControlCurve : public MiObjectList
+class AcControlCurve : public AcCurve
 {
     Q_OBJECT
     Q_DISABLE_COPY(AcControlCurve)
+    Q_DECLARE_PRIVATE(Private::AcControlCurve)
     Q_PROPERTY(int controlType READ controlType WRITE setControlType)
 
 public:
@@ -55,31 +59,27 @@ public:
     };
 
     explicit AcControlCurve(QObject *parent = 0)
-        :   MiObjectList(parent)
-        ,   d(new Private::AcControlCurveData)
+        :   AcCurve(*(new Private::AcControlCurvePrivate(this)), parent)
     {}
 
     virtual ~AcControlCurve()
-    {
-        delete d;
-    }
+    {}
 
     int controlType() const
     {
+        Q_D(const Private::AcControlCurve);
         return d->controlType;
     }
 
     void setControlType(int controlType)
     {
+        Q_D(Private::AcControlCurve);
         if (d->controlType == controlType || controlType < 0 || ControlTypeCount <= controlType)
             return;
         beginChangeProperty(ControlType);
         d->controlType = controlType;
         endChangeProperty(ControlType);
     }
-
-private:
-    Private::AcControlCurveData *d;
 };
 
 #endif // AC_CONTROLCURVE_H

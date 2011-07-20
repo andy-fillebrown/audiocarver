@@ -8,7 +8,7 @@ include(ac_coreplugin_dependencies.pri)
 DEFINES += AC_CORE_LIBRARY
 
 HEADERS += \
-#    dataobjects/ac_controlcurve.h \
+    dataobjects/ac_controlcurve.h \
 #    dataobjects/ac_controlline.h \
     dataobjects/ac_controlpoint.h \
     dataobjects/ac_curve.h \
@@ -32,7 +32,7 @@ HEADERS += \
     ac_coreplugin.h \
 
 SOURCES += \
-#    dataobjects/ac_controlcurve.cpp \
+    dataobjects/ac_controlcurve.cpp \
 #    dataobjects/ac_controlline.cpp \
     dataobjects/ac_controlpoint.cpp \
     dataobjects/ac_curve.cpp \
