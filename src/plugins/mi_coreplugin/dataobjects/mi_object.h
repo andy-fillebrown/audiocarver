@@ -71,6 +71,11 @@ public:
         return false;
     }
 
+    virtual bool isList() const
+    {
+        return false;
+    }
+
     bool isErased() const
     {
         return d_ptr->erased;
@@ -127,6 +132,12 @@ public:
 
     virtual ~MiListObject()
     {}
+
+    virtual bool lessThan(const MiListObject *other) const
+    {
+        Q_UNUSED(other);
+        return false;
+    }
 
 protected:
     MiListObject(Private::MiObjectPrivate &dd, QObject *parent)
