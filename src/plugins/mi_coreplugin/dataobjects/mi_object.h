@@ -123,7 +123,7 @@ protected:
     Private::MiObjectPrivate *d_ptr;
 };
 
-Q_DECLARE_METATYPE(MiObject*);
+Q_DECLARE_METATYPE(MiObject*)
 
 class MI_CORE_EXPORT MiListObject : public MiObject
 {
