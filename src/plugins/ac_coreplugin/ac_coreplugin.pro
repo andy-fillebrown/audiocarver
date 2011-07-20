@@ -11,6 +11,7 @@ HEADERS += \
 #    dataobjects/ac_controlcurve.h \
 #    dataobjects/ac_controlline.h \
     dataobjects/ac_controlpoint.h \
+    dataobjects/ac_curve.h \
 #    dataobjects/ac_gridline.h \
 #    dataobjects/ac_gridsettings.h \
 #    dataobjects/ac_note.h \
@@ -34,6 +35,7 @@ SOURCES += \
 #    dataobjects/ac_controlcurve.cpp \
 #    dataobjects/ac_controlline.cpp \
     dataobjects/ac_controlpoint.cpp \
+    dataobjects/ac_curve.cpp \
 #    dataobjects/ac_gridline.cpp \
 #    dataobjects/ac_gridsettings.cpp \
 #    dataobjects/ac_note.cpp \
