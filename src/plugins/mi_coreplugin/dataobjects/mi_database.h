@@ -90,11 +90,6 @@ public:
         delete d;
     }
 
-    virtual bool isDatabase() const
-    {
-        return true;
-    }
-
     virtual void clear()
     {}
 
@@ -126,6 +121,11 @@ protected:
     }
 
 private:
+    bool isDatabase() const
+    {
+        return true;
+    }
+
     Private::MiDatabaseData *d;
 };
 
