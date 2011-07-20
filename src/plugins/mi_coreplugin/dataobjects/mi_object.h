@@ -18,8 +18,9 @@
 #ifndef MI_OBJECT_H
 #define MI_OBJECT_H
 
-#include <QObject>
 #include <mi_core_global.h>
+#include <QMetaType>
+#include <QObject>
 
 class MiDatabase;
 class MiObject;
@@ -121,6 +122,8 @@ protected:
 
     Private::MiObjectPrivate *d_ptr;
 };
+
+Q_DECLARE_METATYPE(MiObject*);
 
 class MI_CORE_EXPORT MiListObject : public MiObject
 {

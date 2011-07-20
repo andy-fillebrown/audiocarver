@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "mi_coreplugin.h"
+#include <mi_objectlist.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -25,6 +26,8 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+    qRegisterMetaType<MiObject*>();
+    qRegisterMetaType<MiObjectList*>();
     return true;
 }
 

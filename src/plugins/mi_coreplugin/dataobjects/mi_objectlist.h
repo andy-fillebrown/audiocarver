@@ -239,4 +239,6 @@ private:
     }
 };
 
+Q_DECLARE_METATYPE(MiObjectList*)
+
 #endif // MI_OBJECTLIST_H
