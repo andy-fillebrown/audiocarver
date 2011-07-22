@@ -21,6 +21,7 @@
 #include <mi_object.h>
 
 class MiObjectList;
+class MiSortedObjectList;
 
 namespace Private {
 
@@ -43,11 +44,17 @@ class MiObjectListPrivate;
 
 class MI_CORE_EXPORT MiObjectList : public MiObject
 {
+    friend class Private::MiObjectListPrivate;
+
     Q_OBJECT
     Q_DISABLE_COPY(MiObjectList)
 
 public:
     typedef MiObject::Properties Properties;
+
+    MiObjectList(QObject *parent = 0)
+        :   MiObject(*(new Private::MiObjectListData(this)), parent)
+    {}
 
     virtual ~MiObjectList()
     {}
@@ -61,7 +68,6 @@ signals:
 protected:
     MiObjectList(Private::MiObjectListData &dd, QObject *parent = 0)
         :   MiObject(dd, parent)
-        ,   d(&dd)
     {}
 
 private:
@@ -72,6 +78,7 @@ private:
 
     void setErased(bool erased)
     {
+        Private::MiObjectListData *d = static_cast<Private::MiObjectListData*>(d_ptr);
         MiObject::setErased(erased);
         if (erased) {
             foreach (MiObject *object, d->objects)
@@ -83,10 +90,6 @@ private:
                     object->unerase();
         }
     }
-
-    friend class MiFiler;
-    friend class Private::MiObjectListPrivate;
-    Private::MiObjectListData *d;
 };
 
 namespace Private {
@@ -96,6 +99,13 @@ class MiObjectListPrivate : public MiObjectListData
     Q_DECLARE_PUBLIC(MiObjectList)
 
 public:
+    MiObjectListPrivate(MiObject *q)
+        :   MiObjectListData(q)
+    {}
+
+    virtual ~MiObjectListPrivate()
+    {}
+
     void insert(int i, MiObject* object)
     {
         beginInsert(i, i);
@@ -178,7 +188,6 @@ public:
 #endif
     }
 
-protected:
     void insertObject(int i, MiObject *object)
     {
         Q_Q(MiObject);
@@ -187,18 +196,16 @@ protected:
             object->setParent(q);
     }
 
-private:
     void beginInsert(int start, int end)
     {
         Q_Q(MiObjectList);
         q->emit objectsAboutToBeInserted(start, end);
     }
 
-    void endInsert(int start, int end)
+    virtual void endInsert(int start, int end)
     {
         Q_Q(MiObjectList);
         q->emit objectsInserted(start, end);
-//        q->sort();
     }
 
     void beginRemove(int start, int end)
@@ -214,36 +221,64 @@ private:
     }
 };
 
+class MiSortedObjectListPrivate : public MiObjectListPrivate
+{
+public:
+    MiSortedObjectListPrivate(MiObject *q)
+        :   MiObjectListPrivate(q)
+    {}
+
+    virtual ~MiSortedObjectListPrivate()
+    {}
+
+    inline virtual void endInsert(int start, int end);
+};
+
 } // namespace Private
 
 class MiSortedObjectList : public MiObjectList
 {
     Q_OBJECT
     Q_DISABLE_COPY(MiSortedObjectList)
-    Q_DECLARE_PRIVATE(Private::MiObjectList)
+    Q_DECLARE_PRIVATE(Private::MiSortedObjectList)
+
+public:
+    MiSortedObjectList(QObject *parent = 0)
+        :   MiObjectList(*(new Private::MiSortedObjectListPrivate(this)), parent)
+    {}
+
+    virtual ~MiSortedObjectList()
+    {}
 
 public slots:
     virtual void sort()
     {
-//        if (isSorted())
-//            return;
-//        QList<MiObject*> list = d->objects;
-//        emit objectsAboutToBeRemoved(0, list.count());
-//        d->objects.clear();
-//        emit objectsRemoved(0, list.count());
-//        qSort(list.begin(), list.end(), lessThan);
-//        emit objectsAboutToBeInserted(0, list.count());
-//        d->objects.append(list);
-//        emit objectsInserted(0, list.count());
+        Q_D(Private::MiObjectList);
+        if (isSorted())
+            return;
+        QList<MiObject*> list = d->objects;
+        d->beginRemove(0, list.count());
+        d->objects.clear();
+        d->endRemove(0, list.count());
+        qSort(list.begin(), list.end(), lessThan);
+        d->beginInsert(0, list.count());
+        d->objects.append(list);
+        d->endInsert(0, list.count());
     }
+
+protected:
+    MiSortedObjectList(Private::MiSortedObjectListPrivate &dd, QObject *parent = 0)
+        :   MiObjectList(dd, parent)
+    {}
 
 private:
     bool isSorted() const
     {
-//        const int end = d->objects.count() - 1;
-//        for (int i = 0;  i < end;  ++i)
-//            if (lessThan(d->objects[i + 1], d->objects[i]))
-//                return false;
+        Q_D(const Private::MiSortedObjectList);
+        const int end = d->objects.count() - 1;
+        for (int i = 0;  i < end;  ++i)
+            if (lessThan(d->objects[i + 1], d->objects[i]))
+                return false;
         return true;
     }
 
@@ -252,6 +287,17 @@ private:
         return false;//a->lessThan(b);
     }
 };
+
+namespace Private {
+
+inline void MiSortedObjectListPrivate::endInsert(int start, int end)
+{
+    MiSortedObjectList *q = static_cast<MiSortedObjectList*>(q_ptr);
+    MiObjectListPrivate::endInsert(start, end);
+    q->sort();
+}
+
+} // namespace Private
 
 Q_DECLARE_METATYPE(MiObjectList*)
 
