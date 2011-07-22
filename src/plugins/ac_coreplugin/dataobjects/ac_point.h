@@ -45,7 +45,7 @@ public:
 
 } // namespace Private
 
-class AC_CORE_EXPORT AcPoint : public MiListObject
+class AC_CORE_EXPORT AcPoint : public MiSortedObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(AcPoint)
@@ -56,14 +56,14 @@ class AC_CORE_EXPORT AcPoint : public MiListObject
 
 public:
     enum Properties {
-        X = MiListObject::PropertyCount,
+        X = MiSortedObject::PropertyCount,
         Y,
         Curved,
         PropertyCount
     };
 
     explicit AcPoint(QObject *parent = 0)
-        :   MiListObject(*(new Private::AcPointPrivate(this)), parent)
+        :   MiSortedObject(*(new Private::AcPointPrivate(this)), parent)
     {}
 
     virtual ~AcPoint()

@@ -24,6 +24,7 @@
 
 class MiDatabase;
 class MiObject;
+class MiSortedObjectList;
 
 namespace Private {
 
@@ -123,27 +124,30 @@ protected:
     Private::MiObjectPrivate *d_ptr;
 };
 
-Q_DECLARE_METATYPE(MiObject*)
+Q_DECLARE_METATYPE(MiObject*);
 
-class MI_CORE_EXPORT MiListObject : public MiObject
+class MI_CORE_EXPORT MiSortedObject : public MiObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(MiListObject)
+    Q_DISABLE_COPY(MiSortedObject)
 
 public:
     typedef MiObject::Properties Properties;
 
-    virtual ~MiListObject()
+    virtual ~MiSortedObject()
     {}
 
-    virtual bool lessThan(const MiListObject *other) const
+    void setList(MiSortedObjectList *list)
+    {}
+
+    virtual bool lessThan(const MiSortedObject *other) const
     {
         Q_UNUSED(other);
         return false;
     }
 
 protected:
-    MiListObject(Private::MiObjectPrivate &dd, QObject *parent)
+    MiSortedObject(Private::MiObjectPrivate &dd, QObject *parent)
         :   MiObject(dd, parent)
     {}
 

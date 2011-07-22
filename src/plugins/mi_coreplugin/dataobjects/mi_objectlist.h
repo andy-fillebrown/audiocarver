@@ -27,7 +27,7 @@ namespace Private {
 class MiObjectListData : public MiObjectPrivate
 {
 public:
-    QList<MiListObject*> objects;
+    QList<MiObject*> objects;
 
     MiObjectListData(MiObject *q)
         :   MiObjectPrivate(q)
@@ -52,21 +52,6 @@ public:
     virtual ~MiObjectList()
     {}
 
-public slots:
-    virtual void sort()
-    {
-        if (isSorted())
-            return;
-        QList<MiListObject*> list = d->objects;
-        emit objectsAboutToBeRemoved(0, list.count());
-        d->objects.clear();
-        emit objectsRemoved(0, list.count());
-        qSort(list.begin(), list.end(), lessThan);
-        emit objectsAboutToBeInserted(0, list.count());
-        d->objects.append(list);
-        emit objectsInserted(0, list.count());
-    }
-
 signals:
     void objectsAboutToBeInserted(int start, int end);
     void objectsInserted(int start, int end);
@@ -89,28 +74,14 @@ private:
     {
         MiObject::setErased(erased);
         if (erased) {
-            foreach (MiListObject *object, d->objects)
+            foreach (MiObject *object, d->objects)
                 if (object)
                     object->erase();
         } else {
-            foreach (MiListObject *object, d->objects)
+            foreach (MiObject *object, d->objects)
                 if (object)
                     object->unerase();
         }
-    }
-
-    bool isSorted() const
-    {
-        const int end = d->objects.count() - 1;
-        for (int i = 0;  i < end;  ++i)
-            if (lessThan(d->objects[i + 1], d->objects[i]))
-                return false;
-        return true;
-    }
-
-    static bool lessThan(const MiListObject *a, const MiListObject *b)
-    {
-        return a->lessThan(b);
     }
 
     friend class MiFiler;
@@ -125,19 +96,19 @@ class MiObjectListPrivate : public MiObjectListData
     Q_DECLARE_PUBLIC(MiObjectList)
 
 public:
-    void insert(int i, MiListObject* object)
+    void insert(int i, MiObject* object)
     {
         beginInsert(i, i);
         insertObject(i, object);
         endInsert(i, i);
     }
 
-    void insert(int i, const QList<MiListObject*> &objects)
+    void insert(int i, const QList<MiObject*> &objects)
     {
         const int end = i + objects.count();
         beginInsert(i, end);
         int j = i - 1;
-        foreach (MiListObject *object, objects)
+        foreach (MiObject *object, objects)
             insertObject(++j, object);
         endInsert(i, end);
     }
@@ -153,12 +124,12 @@ public:
         endInsert(i, end);
     }
 
-    void append(MiListObject *object)
+    void append(MiObject *object)
     {
         insert(objects.count(), object);
     }
 
-    void append(const QList<MiListObject*> &objects)
+    void append(const QList<MiObject*> &objects)
     {
         insert(objects.count(), objects);
     }
@@ -185,7 +156,7 @@ public:
         endRemove(i, end);
     }
 
-    void removeOne(MiListObject* object)
+    void removeOne(MiObject* object)
     {
         removeAt(objects.indexOf(object));
     }
@@ -207,8 +178,8 @@ public:
 #endif
     }
 
-private:
-    void insertObject(int i, MiListObject *object)
+protected:
+    void insertObject(int i, MiObject *object)
     {
         Q_Q(MiObject);
         objects.insert(i, object);
@@ -216,6 +187,7 @@ private:
             object->setParent(q);
     }
 
+private:
     void beginInsert(int start, int end)
     {
         Q_Q(MiObjectList);
@@ -226,7 +198,7 @@ private:
     {
         Q_Q(MiObjectList);
         q->emit objectsInserted(start, end);
-        q->sort();
+//        q->sort();
     }
 
     void beginRemove(int start, int end)
@@ -243,6 +215,43 @@ private:
 };
 
 } // namespace Private
+
+class MiSortedObjectList : public MiObjectList
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(MiSortedObjectList)
+    Q_DECLARE_PRIVATE(Private::MiObjectList)
+
+public slots:
+    virtual void sort()
+    {
+//        if (isSorted())
+//            return;
+//        QList<MiObject*> list = d->objects;
+//        emit objectsAboutToBeRemoved(0, list.count());
+//        d->objects.clear();
+//        emit objectsRemoved(0, list.count());
+//        qSort(list.begin(), list.end(), lessThan);
+//        emit objectsAboutToBeInserted(0, list.count());
+//        d->objects.append(list);
+//        emit objectsInserted(0, list.count());
+    }
+
+private:
+    bool isSorted() const
+    {
+//        const int end = d->objects.count() - 1;
+//        for (int i = 0;  i < end;  ++i)
+//            if (lessThan(d->objects[i + 1], d->objects[i]))
+//                return false;
+        return true;
+    }
+
+    static bool lessThan(const MiObject *a, const MiObject *b)
+    {
+        return false;//a->lessThan(b);
+    }
+};
 
 Q_DECLARE_METATYPE(MiObjectList*)
 

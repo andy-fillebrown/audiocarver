@@ -51,9 +51,9 @@ void MiObject::endChangeProperty(int propertyIndex)
     pb->emit propertyChanged(pb->propertyValue(propertyIndex), propertyIndex);
 }
 
-void MiListObject::sortList() const
+void MiSortedObject::sortList() const
 {
-    MiObjectList *list = qobject_cast<MiObjectList*>(parent());
-    if (list)
-        list->sort();
+//    MiObjectList *list = qobject_cast<MiObjectList*>(parent());
+//    if (list)
+//        list->sort();
 }
