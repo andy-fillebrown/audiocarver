@@ -28,6 +28,30 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage);
     qRegisterMetaType<MiObject*>();
     qRegisterMetaType<MiObjectList*>();
+
+    qRegisterMetaType<Object*>();
+
+    Parent *parent = new Parent;
+    Child *child = new Child;
+    parent->addChild(child);
+    child->change();
+
+    ParentB *parentB = new ParentB;
+    ChildB *childB = new ChildB;
+    parentB->addChild(childB);
+    childB->change();
+
+    const QList<ChildB*> &childrenB = parentB->children();
+    Q_UNUSED(childrenB);
+
+    parent = parentB;
+    const QList<Child*> &children = parent->children();
+    Q_UNUSED(children);
+
+    qDebug() << "childB property count ==" << childB->propertyCount();
+    qDebug() << "childB property 1 name ==" << childB->propertyName(1);
+    qDebug() << "childB property 1 value ==" << childB->propertyValue(1);
+
     return true;
 }
 
