@@ -53,7 +53,7 @@ public:
         return metaObject()->property(i).read(this);
     }
 
-    // Note that the shorter form of connect() doesn't work.
+    // Note that the shorter receiver-less form of connect() doesn't work.
     bool connect(const Object *sender, const char *signal, const QObject *receiver, const char *member, Qt::ConnectionType type = Qt::UniqueConnection) const
     {
         return QObject::connect(sender, signal, receiver, member, type);
@@ -135,11 +135,13 @@ public:
     virtual bool addChild(Object *child)
     {
         Child *c = cast<Child>(child);
-        if (!c)
+        if (!c) {
+            qDebug() << "Wrong object type:" << qPrintable(QString("%1:%2").arg(__FILE__).arg(__LINE__));  Q_ASSERT(false);
             return false;
+        }
         if (Object::addChild(child)) {
             sortChildren();
-            // Note that the shorter form of connect() doesn't work.
+            // Note that the shorter receiver-less form of connect() doesn't work.
             return c->connect(c, SIGNAL(changed()), this, SLOT(childChanged()));
         }
         return false;

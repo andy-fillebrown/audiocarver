@@ -41,6 +41,8 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     parentB->addChild(childB);
     childB->change();
 
+//    parentB->addChild(parent); // should print message and assert
+
     const QList<ChildB*> &childrenB = parentB->children();
     Q_UNUSED(childrenB);
 
