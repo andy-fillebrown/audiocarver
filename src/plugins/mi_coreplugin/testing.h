@@ -1,13 +1,31 @@
 
+#ifndef TESTING_H
+#define TESTING_H
+
 #include <QDebug>
 #include <QObject>
 #include <QMetaProperty>
 
+#include <aggregate.h>
+
+#define Q_ENABLE_QUERY(Class) friend Class *qobject_cast<Class*>(QObject*);
+
+using namespace Aggregation;
+
+class Component;
+class IErase;
+class IParent;
+
 class Object : protected QObject
 {
     Q_OBJECT
+    Q_ENABLE_QUERY(Object)
+
+    friend class Component;
 
 public:
+    Object();
+
     virtual bool addChild(Object *child)
     {
         if (!children().contains(child)) {
@@ -38,14 +56,31 @@ public:
         return QObject::connect(sender, signal, receiver, member, type);
     }
 
-    // Use this instead of qobject_cast<T*>(object)
+    void addComponent(Component *i);
+
     template <typename T>
-    static T* cast(QObject* object)
+    T *cast() const
     {
-#       if !defined(QT_NO_MEMBER_TEMPLATES) && !defined(QT_NO_QOBJECT_CHECK)
-            reinterpret_cast<T*>(0)->qt_check_for_QOBJECT_macro(*reinterpret_cast<T*>(object));
-#       endif
+        return cast<T>(const_cast<Object*>(this));
+    }
+
+    template <typename T>
+    static T *cast(Object *object)
+    {
+        reinterpret_cast<T*>(0)->qt_check_for_QOBJECT_macro(*reinterpret_cast<T*>(object));
         return static_cast<T*>(reinterpret_cast<T*>(0)->staticMetaObject.cast(object));
+    }
+
+    template <typename T>
+    T *query() const
+    {
+        return query<T>(const_cast<Object*>(this));
+    }
+
+    template <typename T>
+    static T *query(Object *object)
+    {
+        return Aggregation::query<T>(object);
     }
 
 protected:
@@ -63,6 +98,92 @@ protected:
 };
 
 Q_DECLARE_METATYPE(Object*);
+
+class Component : protected QObject
+{
+    Q_ENABLE_QUERY(Component)
+
+    friend class Object;
+
+public:
+    template <typename T>
+    T *query() const
+    {
+        return Aggregation::query<T>(const_cast<Component*>(this));
+    }
+};
+
+class IErase : public Component
+{
+    Q_OBJECT
+    Q_ENABLE_QUERY(IErase)
+
+public:
+    void test()
+    {
+        Object *root = query<Object>();
+        Q_UNUSED(root);
+    }
+};
+
+class IParent : public Component
+{
+    Q_OBJECT
+    Q_ENABLE_QUERY(IParent)
+};
+
+inline Object::Object()
+{
+    Aggregate *agg = new Aggregate;
+    agg->add(this);
+    addComponent(new IErase);
+    addComponent(new IParent);
+
+    IErase *iErase = query<IErase>();
+    Q_UNUSED(iErase);
+
+    IParent *iParent = query<IParent>();
+    Q_UNUSED(iParent);
+}
+
+inline void Object::addComponent(Component *i)
+{
+    Aggregate *agg = query<Aggregate>();
+    if (!agg) {
+        agg = new Aggregate;
+        agg->add(this);
+    }
+    agg->add(i);
+}
+
+class IObjectB : public Component
+{
+    Q_OBJECT
+    Q_ENABLE_QUERY(IObjectB)
+
+public:
+    void test();
+};
+
+class ObjectB : public Object
+{
+    Q_OBJECT
+    Q_ENABLE_QUERY(ObjectB)
+
+public:
+    ObjectB()
+    {
+        addComponent(new IObjectB);
+        IObjectB *iObjectB = query<IObjectB>();
+        iObjectB->test();
+    }
+};
+
+inline void IObjectB::test()
+{
+    ObjectB *root = query<ObjectB>();
+    Q_UNUSED(root);
+}
 
 class Child : public Object
 {
@@ -120,7 +241,6 @@ public:
         }
         if (Object::addChild(child)) {
             sortChildren();
-            // Note that the shorter receiver-less form of connect() doesn't work.
             return c->connect(c, SIGNAL(changed()), this, SLOT(childChanged()));
         }
         return false;
@@ -161,6 +281,22 @@ public:
     }
 };
 
+template <>
+inline QObject *Object::cast(Object *object)
+{
+    qDebug() << "Casting to QObject is not allowed.";
+    Q_ASSERT(false);
+    return 0;
+}
+
+template <>
+inline QObject *Object::query() const
+{
+    qDebug() << "Querying for QObject is not allowed.";
+    Q_ASSERT(false);
+    return 0;
+}
+
 inline void test()
 {
     qRegisterMetaType<Object*>();
@@ -175,8 +311,6 @@ inline void test()
     parentB->addChild(childB);
     childB->change();
 
-//    parentB->addChild(parent); // should print message and assert
-
     const QList<ChildB*> &childrenB = parentB->children();
     Q_UNUSED(childrenB);
 
@@ -187,6 +321,6 @@ inline void test()
     qDebug() << "childB property count ==" << childB->propertyCount();
     qDebug() << "childB property 1 name ==" << childB->propertyName(1);
     qDebug() << "childB property 1 value ==" << childB->propertyValue(1);
-
-    parentB->test();
 }
+
+#endif // TESTING_H
