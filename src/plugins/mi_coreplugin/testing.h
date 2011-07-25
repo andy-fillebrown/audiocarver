@@ -134,8 +134,6 @@ class IParent : public Component
 
 inline Object::Object()
 {
-    Aggregate *agg = new Aggregate;
-    agg->add(this);
     addComponent(new IErase);
     addComponent(new IParent);
 
@@ -148,7 +146,7 @@ inline Object::Object()
 
 inline void Object::addComponent(Component *i)
 {
-    Aggregate *agg = query<Aggregate>();
+    Aggregate *agg = Aggregate::parentAggregate(this);
     if (!agg) {
         agg = new Aggregate;
         agg->add(this);
