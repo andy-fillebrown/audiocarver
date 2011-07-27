@@ -22,6 +22,19 @@
 #include <QObject>
 #include <QVariant>
 
+// Redefine Q_OBJECT to declare meta-object members as protected, not public.
+#undef Q_OBJECT
+#define Q_OBJECT \
+protected: \
+    Q_OBJECT_CHECK \
+    static const QMetaObject staticMetaObject; \
+    Q_OBJECT_GETSTATICMETAOBJECT \
+    virtual const QMetaObject *metaObject() const; \
+    virtual void *qt_metacast(const char *); \
+    QT_TR_FUNCTIONS \
+    virtual int qt_metacall(QMetaObject::Call, int, void **); \
+private:
+
 class MiObject;
 
 class MI_CORE_EXPORT MiObjectPrivate
@@ -38,6 +51,8 @@ public:
     virtual ~MiObjectPrivate()
     {}
 
+    QObject *parent() const;
+    QObjectList &children() const;
     void addChild(MiObject *child);
     void removeChild(MiObject *child);
 };
@@ -61,6 +76,11 @@ public:
     virtual ~MiObject()
     {
         delete d_ptr;
+    }
+
+    MiObject *parent() const
+    {
+        return static_cast<MiObject*>(QObject::parent());
     }
 
     QString className() const
@@ -89,7 +109,6 @@ public:
         return UpdateFlags(d_ptr->updateFlags);
     }
 
-public slots:
     void setUpdateFlag(UpdateFlag flag = UpdateAll, bool enabled = true)
     {
         if (enabled)
@@ -98,7 +117,7 @@ public slots:
             setUpdateFlags(UpdateFlags(d_ptr->updateFlags) & ~flag);
     }
 
-    virtual void setUpdateFlags(const UpdateFlags &flags = UpdateAll)
+    void setUpdateFlags(const UpdateFlags &flags = UpdateAll)
     {
         if (flags == UpdateFlags(d_ptr->updateFlags))
             return;
@@ -124,6 +143,16 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::UpdateFlags)
+
+inline QObject *MiObjectPrivate::parent() const
+{
+    return q_ptr->parent();
+}
+
+inline QObjectList &MiObjectPrivate::children() const
+{
+    return const_cast<QObjectList&>(q_ptr->children());
+}
 
 inline void MiObjectPrivate::addChild(MiObject *child)
 {
