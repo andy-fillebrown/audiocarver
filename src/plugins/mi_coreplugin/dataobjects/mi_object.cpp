@@ -16,44 +16,31 @@
 **************************************************************************/
 
 #include "mi_object.h"
-#include <aggregate.h>
-#include <mi_database.h>
-#include <mi_objectlist.h>
-#include <mi_propertybag.h>
-#include <QVariant>
+#include <QMetaProperty>
 
-using namespace Aggregation;
-using namespace Private;
-
-MiDatabase *MiObject::database() const
+QString MiObject::propertyType(int i) const
 {
-    if (isDatabase())
-        return qobject_cast<MiDatabase*>(const_cast<MiObject*>(this));
-    MiObject *parent = qobject_cast<MiObject*>(this->parent());
-    if (parent)
-        return parent->database();
-    return 0;
+    return metaObject()->property(i).typeName();
 }
 
-void MiObject::beginChangeProperty(int propertyIndex)
+QString MiObject::propertyName(int i) const
 {
-    MiPropertyBag *pb = query<MiPropertyBag>(this);
-    if (!pb)
-        return;
-    pb->emit propertyAboutToBeChanged(pb->propertyValue(propertyIndex), propertyIndex);
+    return metaObject()->property(i).name();
 }
 
-void MiObject::endChangeProperty(int propertyIndex)
+bool MiObject::isPropertyWritable(int i) const
 {
-    MiPropertyBag *pb = query<MiPropertyBag>(this);
-    if (!pb)
-        return;
-    pb->emit propertyChanged(pb->propertyValue(propertyIndex), propertyIndex);
+    return metaObject()->property(i).isWritable();
 }
 
-void MiSortedObject::sortList() const
+QVariant MiObject::propertyValue(int i) const
 {
-//    MiObjectList *list = qobject_cast<MiObjectList*>(parent());
-//    if (list)
-//        list->sort();
+    return metaObject()->property(i).read(this);
+}
+
+void MiObject::setPropertyValue(int i, const QVariant &value)
+{
+    const QMetaObject *metaObj = metaObject();
+    if (!metaObj->property(i).write(this, value) && value.isValid())
+        metaObj->property(i).write(this, QVariant());
 }

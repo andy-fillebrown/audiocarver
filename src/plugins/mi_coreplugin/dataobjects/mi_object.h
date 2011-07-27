@@ -19,48 +19,43 @@
 #define MI_OBJECT_H
 
 #include <mi_core_global.h>
-#include <QDebug>
-#include <QMetaProperty>
-#include <QMetaType>
 #include <QObject>
+#include <QVariant>
 
-class MiDatabase;
 class MiObject;
-class MiSortedObjectList;
 
-namespace Private {
-
-class MiObjectPrivate
+class MI_CORE_EXPORT MiObjectPrivate
 {
 public:
     MiObject *q_ptr;
-    bool erased;
+    quint32 updateFlags;
 
     MiObjectPrivate(MiObject *q)
         :   q_ptr(q)
-        ,   erased(false)
+        ,   updateFlags(0)
     {}
 
     virtual ~MiObjectPrivate()
     {}
+
+    void addChild(MiObject *child);
+    void removeChild(MiObject *child);
 };
 
-} // namespace Private
-
-class MI_CORE_EXPORT MiObject : public QObject
+class MI_CORE_EXPORT MiObject : protected QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(MiObject)
 
 public:
-    enum Properties {
-        PropertyOffset = 1,
-        PropertyCount = PropertyOffset
+    enum UpdateFlag {
+        UpdateObject = 0x1,
+        UpdateChildren = 0x2,
+        UpdateAll = 0xf
     };
+    Q_DECLARE_FLAGS(UpdateFlags, UpdateFlag)
 
-    explicit MiObject(QObject *parent = 0)
-        :   QObject(parent)
-        ,   d_ptr(new Private::MiObjectPrivate(this))
+    MiObject()
+        :   d_ptr(new MiObjectPrivate(this))
     {}
 
     virtual ~MiObject()
@@ -68,92 +63,77 @@ public:
         delete d_ptr;
     }
 
-    MiDatabase *database() const;
-
-    virtual bool isDatabase() const
+    QString className() const
     {
-        return false;
+        return metaObject()->className();
     }
 
-    virtual bool isList() const
+    int propertyCount() const
     {
-        return false;
+        return metaObject()->propertyCount();
     }
 
-    bool isErased() const
+    int propertyIndex(const QString propertyName) const
     {
-        return d_ptr->erased;
+        return metaObject()->indexOfProperty(qPrintable(propertyName));
     }
 
-    void erase()
+    QString propertyType(int i) const;
+    bool isPropertyWritable(int i) const;
+    QString propertyName(int i) const;
+    QVariant propertyValue(int i) const;
+    void setPropertyValue(int i, const QVariant &value);
+
+    UpdateFlags updateFlags() const
     {
-        if (isErased())
+        return UpdateFlags(d_ptr->updateFlags);
+    }
+
+public slots:
+    void setUpdateFlag(UpdateFlag flag = UpdateAll, bool enabled = true)
+    {
+        if (enabled)
+            setUpdateFlags(UpdateFlags(d_ptr->updateFlags) | flag);
+        else
+            setUpdateFlags(UpdateFlags(d_ptr->updateFlags) & ~flag);
+    }
+
+    virtual void setUpdateFlags(const UpdateFlags &flags = UpdateAll)
+    {
+        if (flags == UpdateFlags(d_ptr->updateFlags))
             return;
-        emit aboutToBeErased();
-        setErased(true);
-        emit erased();
-    }
-
-    void unerase()
-    {
-        if (!isErased())
-            return;
-        emit aboutToBeUnerased();
-        setErased(false);
-        emit unerased();
+        d_ptr->updateFlags = flags;
+        emit updateFlagsChanged(UpdateFlags(d_ptr->updateFlags));
     }
 
 signals:
-    void aboutToBeErased();
-    void erased();
-    void aboutToBeUnerased();
-    void unerased();
+    void aboutToChange(int i = -1, const QVariant &value = QVariant());
+    void changed(int i = -1, const QVariant &value = QVariant());
+    void updateFlagsChanged(const UpdateFlags &flags = UpdateAll);
 
 protected:
-    MiObject(Private::MiObjectPrivate &dd, QObject *parent)
-        :   QObject(parent)
-        ,   d_ptr(&dd)
+    MiObject(MiObjectPrivate &dd)
+        :   d_ptr(&dd)
     {}
 
-    virtual void setErased(bool erased)
-    {
-        d_ptr->erased = erased;
-    }
+    MiObjectPrivate *d_ptr;
 
-    void beginChangeProperty(int propertyIndex);
-    virtual void endChangeProperty(int propertyIndex);
-
-    Private::MiObjectPrivate *d_ptr;
+private:
+    Q_DECLARE_PRIVATE(MiObject)
+    Q_DISABLE_COPY(MiObject)
 };
 
-Q_DECLARE_METATYPE(MiObject*);
+Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::UpdateFlags)
 
-class MI_CORE_EXPORT MiSortedObject : public MiObject
+inline void MiObjectPrivate::addChild(MiObject *child)
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(MiSortedObject)
+    child->setParent(q_ptr);
+}
 
-public:
-    typedef MiObject::Properties Properties;
-
-    virtual ~MiSortedObject()
-    {}
-
-    void setList(MiSortedObjectList *list)
-    {}
-
-    virtual bool lessThan(const MiSortedObject *other) const
-    {
-        Q_UNUSED(other);
-        return false;
-    }
-
-protected:
-    MiSortedObject(Private::MiObjectPrivate &dd, QObject *parent)
-        :   MiObject(dd, parent)
-    {}
-
-    void sortList() const;
-};
+inline void MiObjectPrivate::removeChild(MiObject *child)
+{
+    Q_ASSERT(q_ptr == child->parent());
+    child->setParent(0);
+}
 
 #endif // MI_OBJECT_H
