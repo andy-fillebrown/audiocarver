@@ -24,7 +24,6 @@ HEADERS += \
     \
     mi_core_global.h \
     mi_coreplugin.h \
-    testing.h \
 
 SOURCES += \
     components/mi_propertybag.cpp \

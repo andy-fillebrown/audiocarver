@@ -19,8 +19,7 @@
 #include <mi_objectlist.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
-
-#include <testing.h>
+#include <QMetaType>
 
 using namespace Private;
 
@@ -30,7 +29,6 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(errorMessage);
     qRegisterMetaType<MiObject*>();
     qRegisterMetaType<MiObjectList*>();
-    test();
     return true;
 }
 
