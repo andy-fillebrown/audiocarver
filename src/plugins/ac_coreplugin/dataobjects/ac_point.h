@@ -18,10 +18,8 @@
 #ifndef AC_POINT_H
 #define AC_POINT_H
 
-#include <mi_object.h>
 #include <ac_core_global.h>
-
-namespace Private {
+#include <mi_object.h>
 
 class AcPointPrivate : public MiObjectPrivate
 {
@@ -30,40 +28,40 @@ class AcPointPrivate : public MiObjectPrivate
 public:
     qreal x;
     qreal y;
-    bool curved;
 
     AcPointPrivate(MiObject *q)
         :   MiObjectPrivate(q)
         ,   x(0.0f)
         ,   y(0.0f)
-        ,   curved(false)
     {}
 
     virtual ~AcPointPrivate()
     {}
+
+    void setParentUpdateFlags()
+    {
+        Q_Q(MiObject);
+        MiObject *parent = q->parent();
+        if (parent)
+            parent->setUpdateFlags(MiObject::UpdateChildren);
+    }
 };
 
-} // namespace Private
-
-class AC_CORE_EXPORT AcPoint : public MiSortedObject
+class AC_CORE_EXPORT AcPoint : public MiObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(AcPoint)
-    Q_DECLARE_PRIVATE(Private::AcPoint)
     Q_PROPERTY(qreal x READ x WRITE setX)
     Q_PROPERTY(qreal y READ y WRITE setY)
-    Q_PROPERTY(bool curved READ isCurved WRITE setCurved)
 
 public:
-    enum Properties {
-        X = MiSortedObject::PropertyCount,
+    enum Property {
+        X = MiObject::PropertyCount,
         Y,
-        Curved,
         PropertyCount
     };
 
-    explicit AcPoint(QObject *parent = 0)
-        :   MiSortedObject(*(new Private::AcPointPrivate(this)), parent)
+    AcPoint()
+        :   MiObject(*(new AcPointPrivate(this)))
     {}
 
     virtual ~AcPoint()
@@ -71,73 +69,60 @@ public:
 
     qreal x() const
     {
-        Q_D(const Private::AcPoint);
+        Q_D(const AcPoint);
         return d->x;
     }
 
     void setX(qreal x)
     {
-        Q_D(Private::AcPoint);
+        Q_D(AcPoint);
         if (x < 0.0f)
             x = 0.0f;
-        else if (1.0f < x)
-            x = 1.0f;
         if (d->x == x)
             return;
-        beginChangeProperty(X);
+        aboutToChange(X, d->x);
         d->x = x;
-        endChangeProperty(X);
-        sortList();
+        changed(X, d->x);
+        d->setParentUpdateFlags();
     }
 
     qreal y() const
     {
-        Q_D(const Private::AcPoint);
+        Q_D(const AcPoint);
         return d->y;
     }
 
     void setY(qreal y)
     {
-        Q_D(Private::AcPoint);
+        Q_D(AcPoint);
+        if (y < 0.0f)
+            y = 0.0f;
         if (d->y == y)
             return;
-        beginChangeProperty(Y);
+        aboutToChange(Y, d->x);
         d->y = y;
-        endChangeProperty(Y);
-        sortList();
+        changed(Y, d->x);
+        d->setParentUpdateFlags();
     }
 
-    bool isCurved() const
+    bool isLessThan(AcPoint *other) const
     {
-        Q_D(const Private::AcPoint);
-        return d->curved;
-    }
-
-    void setCurved(bool curved)
-    {
-        Q_D(Private::AcPoint);
-        if (d->curved == curved)
-            return;
-        beginChangeProperty(Y);
-        d->curved = curved;
-        endChangeProperty(Y);
-    }
-
-private:
-    bool lessThan(const MiObject *other) const
-    {
-        const AcPoint *b = qobject_cast<const AcPoint*>(other);
-        if (!b)
-            return false;
-        Q_D(const Private::AcPoint);
-        if (d->x < b->x())
+        Q_D(const AcPoint);
+        if (d->x < other->x())
             return true;
-        if (d->x == b->x() && d->y < b->y())
+        if (d->x == other->x() && d->y < other->y())
             return true;
         return false;
     }
+
+protected:
+    AcPoint(AcPointPrivate &dd)
+        :   MiObject(dd)
+    {}
+
+private:
+    Q_DISABLE_COPY(AcPoint)
+    Q_DECLARE_PRIVATE(AcPoint)
 };
-
-
 
 #endif // AC_POINT_H

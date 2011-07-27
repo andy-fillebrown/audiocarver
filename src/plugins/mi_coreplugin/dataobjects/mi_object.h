@@ -37,7 +37,7 @@ private:
 
 class MiObject;
 
-class MI_CORE_EXPORT MiObjectPrivate
+class MiObjectPrivate
 {
 public:
     MiObject *q_ptr;
@@ -62,6 +62,11 @@ class MI_CORE_EXPORT MiObject : protected QObject
     Q_OBJECT
 
 public:
+    enum Property {
+        Id = 0,
+        PropertyCount
+    };
+
     enum UpdateFlag {
         UpdateDone = 0x0,
         UpdateObject = 0x1,
