@@ -47,3 +47,5 @@ CONFIG += plugin plugin_with_soname
     pluginspec.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
     INSTALLS += target pluginspec
 }
+
+CONFIG(use_mi_assert): DEFINES += USE_MI_ASSERT

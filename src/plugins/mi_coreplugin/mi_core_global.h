@@ -26,4 +26,21 @@
 #  define MI_CORE_EXPORT Q_DECL_IMPORT
 #endif
 
+inline void mi_assert(const char *assertion, const char *file, int line)
+{
+    qDebug("ASSERT: \"%s\" in file %s, line %d", assertion, file, line);
+    qt_assert(assertion, file, line);
+}
+
+#ifdef USE_MI_ASSERT
+#  ifdef Q_ASSERT
+#    undef Q_ASSERT
+#  endif
+#  ifndef QT_NO_DEBUG
+#    define Q_ASSERT(cond) ((!(cond)) ? mi_assert(#cond,__FILE__,__LINE__) : qt_noop())
+#  else
+#    define Q_ASSERT(cond) qt_noop()
+#  endif
+#endif
+
 #endif // MI_CORE_GLOBAL_H
