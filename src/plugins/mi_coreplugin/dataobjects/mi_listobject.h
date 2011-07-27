@@ -34,7 +34,7 @@ public:
 
     QList<MiObject*> &items() const
     {
-        return reinterpret_cast<QList<MiObject*>&>(children());
+        return const_cast<QList<MiObject*>&>(children());
     }
 };
 
@@ -52,7 +52,8 @@ public:
 
     const QList<MiObject*> &items() const
     {
-        return reinterpret_cast<const QList<MiObject*>&>(children());
+        Q_D(const MiListObject);
+        return d->children();
     }
 
     virtual void addItem(MiObject *item)

@@ -52,7 +52,7 @@ public:
     {}
 
     QObject *parent() const;
-    QObjectList &children() const;
+    const QList<MiObject*> &children() const;
     void addChild(MiObject *child);
     void removeChild(MiObject *child);
 };
@@ -63,6 +63,7 @@ class MI_CORE_EXPORT MiObject : protected QObject
 
 public:
     enum UpdateFlag {
+        UpdateDone = 0x0,
         UpdateObject = 0x1,
         UpdateChildren = 0x2,
         UpdateAll = 0xf
@@ -125,6 +126,15 @@ public:
         emit updateFlagsChanged(UpdateFlags(d_ptr->updateFlags));
     }
 
+public slots:
+    virtual void update()
+    {
+        if (UpdateChildren & d_ptr->updateFlags)
+            foreach (MiObject *child, d_ptr->children())
+                child->update();
+        setUpdateFlags(UpdateDone);
+    }
+
 signals:
     void aboutToChange(int i = -1, const QVariant &value = QVariant());
     void changed(int i = -1, const QVariant &value = QVariant());
@@ -149,9 +159,9 @@ inline QObject *MiObjectPrivate::parent() const
     return q_ptr->parent();
 }
 
-inline QObjectList &MiObjectPrivate::children() const
+inline const QList<MiObject*> &MiObjectPrivate::children() const
 {
-    return const_cast<QObjectList&>(q_ptr->children());
+    return reinterpret_cast<const QList<MiObject*>&>(q_ptr->children());
 }
 
 inline void MiObjectPrivate::addChild(MiObject *child)
