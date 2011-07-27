@@ -78,6 +78,11 @@ public:
         setUpdateFlags();
     }
 
+protected:
+    MiListObject(MiListObjectPrivate &dd)
+        :   MiObject(dd)
+    {}
+
 private:
     Q_DECLARE_PRIVATE(MiListObject)
     Q_DISABLE_COPY(MiListObject)
