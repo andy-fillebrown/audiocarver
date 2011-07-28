@@ -50,17 +50,12 @@ public:
     virtual bool isSorted() const = 0;
     virtual void sort() = 0;
 
-    virtual void addItem(MiObject *item)
-    {
-        MiListObject::addItem(item);
-        setUpdateFlag(MiObject::UpdateObject);
-    }
-
     virtual void update()
     {
         Q_D(MiSortedListObject);
-        if (MiObject::UpdateObject & d->updateFlags && !isSorted())
-            sort();
+        if ((MiObject::ListChanged | MiObject::ListItemSortValueChanged) & d->changedFlags)
+            if (!isSorted())
+                sort();
         MiListObject::update();
     }
 

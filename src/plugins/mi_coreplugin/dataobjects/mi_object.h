@@ -42,11 +42,11 @@ class MiObjectData
 {
 public:
     MiObject *q_ptr;
-    quint32 updateFlags;
+    quint32 changedFlags;
 
     MiObjectData(MiObject *q)
         :   q_ptr(q)
-        ,   updateFlags(0)
+        ,   changedFlags(0)
     {}
 
     virtual ~MiObjectData()
@@ -66,13 +66,14 @@ public:
         PropertyCount
     };
 
-    enum UpdateFlag {
-        UpdateDone = 0x0,
-        UpdateObject = 0x1,
-        UpdateChildren = 0x2,
-        UpdateAll = 0xf
+    enum ChangedFlag {
+        NoChange = 0x0,
+        ListChanged = 0x2,
+        ListItemChanged = 0x4,
+        ListItemSortValueChanged = 0x8 | ListItemChanged,
+        EverythingChanged = 0xf
     };
-    Q_DECLARE_FLAGS(UpdateFlags, UpdateFlag)
+    Q_DECLARE_FLAGS(ChangedFlags, ChangedFlag)
 
     MiObject()
         :   d_ptr(new MiObjectData(this))
@@ -109,40 +110,37 @@ public:
     QVariant propertyValue(int i) const;
     void setPropertyValue(int i, const QVariant &value);
 
-    UpdateFlags updateFlags() const
+    ChangedFlags changedFlags() const
     {
-        return UpdateFlags(d_ptr->updateFlags);
+        return ChangedFlags(d_ptr->changedFlags);
     }
 
-    void setUpdateFlag(UpdateFlag flag = UpdateAll, bool enabled = true)
+    void setChangedFlag(ChangedFlag flag = EverythingChanged, bool enabled = true)
     {
         if (enabled)
-            setUpdateFlags(UpdateFlags(d_ptr->updateFlags) | flag);
+            setChangedFlags(ChangedFlags(d_ptr->changedFlags) | flag);
         else
-            setUpdateFlags(UpdateFlags(d_ptr->updateFlags) & ~flag);
+            setChangedFlags(ChangedFlags(d_ptr->changedFlags) & ~flag);
     }
 
-    void setUpdateFlags(const UpdateFlags &flags = UpdateAll)
+    void setChangedFlags(const ChangedFlags &flags = EverythingChanged)
     {
-        if (flags == UpdateFlags(d_ptr->updateFlags))
+        if (flags == ChangedFlags(d_ptr->changedFlags))
             return;
-        d_ptr->updateFlags = flags;
-        emit updateFlagsChanged(UpdateFlags(d_ptr->updateFlags));
+        d_ptr->changedFlags = flags;
+        emit changedFlagsChanged(ChangedFlags(d_ptr->changedFlags));
     }
 
 public slots:
     virtual void update()
     {
-        if (UpdateChildren & d_ptr->updateFlags)
-            foreach (MiObject *child, d_ptr->children())
-                child->update();
-        setUpdateFlags(UpdateDone);
+        setChangedFlags(NoChange);
     }
 
 signals:
     void aboutToChange(int i = -1, const QVariant &value = QVariant());
     void changed(int i = -1, const QVariant &value = QVariant());
-    void updateFlagsChanged(const UpdateFlags &flags = UpdateAll);
+    void changedFlagsChanged(const ChangedFlags &flags = EverythingChanged);
 
 protected:
     MiObject(MiObjectData &dd)
@@ -157,7 +155,7 @@ private:
     friend class MiObjectPrivate;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::UpdateFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::ChangedFlags)
 
 inline const QList<MiObject*> &MiObjectData::children() const
 {
@@ -192,12 +190,12 @@ public:
         child->setParent(0);
     }
 
-    void addParentUpdateFlags(const MiObject::UpdateFlags &flags)
+    void addParentChangedFlags(const MiObject::ChangedFlags &flags)
     {
         Q_Q(MiObject);
         MiObject *parent = q->parent();
         if (parent)
-            parent->setUpdateFlags(MiObject::UpdateFlags(updateFlags) | flags);
+            parent->setChangedFlags(MiObject::ChangedFlags(changedFlags) | flags);
     }
 };
 

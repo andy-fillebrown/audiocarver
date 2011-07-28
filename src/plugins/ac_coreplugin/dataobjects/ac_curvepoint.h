@@ -82,7 +82,7 @@ public:
         emit aboutToChange(CurveTypeIndex, d->curveType);
         d->curveType = type;
         emit changed(CurveTypeIndex, d->curveType);
-        d->addParentUpdateFlags(MiObject::UpdateObject);
+        d->addParentChangedFlags(MiObject::ListItemChanged);
     }
 
     StretchType stretchType() const
@@ -99,7 +99,7 @@ public:
         emit aboutToChange(StretchTypeIndex, d->stretchType);
         d->stretchType = type;
         emit changed(StretchTypeIndex, d->stretchType);
-        d->addParentUpdateFlags(MiObject::UpdateObject);
+        d->addParentChangedFlags(MiObject::ListItemChanged);
     }
 
 protected:

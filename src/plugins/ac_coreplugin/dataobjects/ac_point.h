@@ -75,7 +75,7 @@ public:
         aboutToChange(XIndex, d->x);
         d->x = x;
         changed(XIndex, d->x);
-        d->addParentUpdateFlags(MiObject::UpdateObject);
+        d->addParentChangedFlags(MiObject::ListItemSortValueChanged);
     }
 
     qreal y() const
@@ -94,7 +94,7 @@ public:
         aboutToChange(YIndex, d->x);
         d->y = y;
         changed(YIndex, d->x);
-        d->addParentUpdateFlags(MiObject::UpdateObject);
+        d->addParentChangedFlags(MiObject::ListItemSortValueChanged);
     }
 
     bool isLessThan(AcPoint *other) const

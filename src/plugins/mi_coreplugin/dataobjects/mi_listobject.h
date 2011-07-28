@@ -66,7 +66,7 @@ public:
         emit aboutToChange();
         d->addChild(item);
         emit changed();
-        setUpdateFlags();
+        setChangedFlags(MiObject::ListChanged);
     }
 
     virtual void removeItem(MiObject *item)
@@ -77,7 +77,7 @@ public:
         emit aboutToChange();
         d->removeChild(item);
         emit changed();
-        setUpdateFlags();
+        setChangedFlags(MiObject::ListChanged);
     }
 
 protected:
