@@ -36,25 +36,24 @@ protected: \
 private:
 
 class MiObject;
+class MiObjectPrivate;
 
-class MiObjectPrivate
+class MiObjectData
 {
 public:
     MiObject *q_ptr;
     quint32 updateFlags;
 
-    MiObjectPrivate(MiObject *q)
+    MiObjectData(MiObject *q)
         :   q_ptr(q)
         ,   updateFlags(0)
     {}
 
-    virtual ~MiObjectPrivate()
+    virtual ~MiObjectData()
     {}
 
-    QObject *parent() const;
     const QList<MiObject*> &children() const;
-    void addChild(MiObject *child);
-    void removeChild(MiObject *child);
+
 };
 
 class MI_CORE_EXPORT MiObject : protected QObject
@@ -76,7 +75,7 @@ public:
     Q_DECLARE_FLAGS(UpdateFlags, UpdateFlag)
 
     MiObject()
-        :   d_ptr(new MiObjectPrivate(this))
+        :   d_ptr(new MiObjectData(this))
     {}
 
     virtual ~MiObject()
@@ -146,38 +145,60 @@ signals:
     void updateFlagsChanged(const UpdateFlags &flags = UpdateAll);
 
 protected:
-    MiObject(MiObjectPrivate &dd)
+    MiObject(MiObjectData &dd)
         :   d_ptr(&dd)
     {}
 
-    MiObjectPrivate *d_ptr;
+    MiObjectData *d_ptr;
 
 private:
-    Q_DECLARE_PRIVATE(MiObject)
     Q_DISABLE_COPY(MiObject)
+    friend class MiObjectData;
+    friend class MiObjectPrivate;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::UpdateFlags)
 
-inline QObject *MiObjectPrivate::parent() const
-{
-    return q_ptr->parent();
-}
-
-inline const QList<MiObject*> &MiObjectPrivate::children() const
+inline const QList<MiObject*> &MiObjectData::children() const
 {
     return reinterpret_cast<const QList<MiObject*>&>(q_ptr->children());
 }
 
-inline void MiObjectPrivate::addChild(MiObject *child)
+class MiObjectPrivate : public MiObjectData
 {
-    child->setParent(q_ptr);
-}
+    Q_DECLARE_PUBLIC(MiObject)
 
-inline void MiObjectPrivate::removeChild(MiObject *child)
-{
-    Q_ASSERT(q_ptr == child->parent());
-    child->setParent(0);
-}
+public:
+    MiObjectPrivate(MiObject *q)
+        :   MiObjectData(q)
+    {}
+
+    virtual ~MiObjectPrivate()
+    {}
+
+    QObject *parent() const
+    {
+        return q_ptr->parent();
+    }
+
+    void addChild(MiObject *child)
+    {
+        child->setParent(q_ptr);
+    }
+
+    void removeChild(MiObject *child)
+    {
+        Q_ASSERT(q_ptr == child->parent());
+        child->setParent(0);
+    }
+
+    void addParentUpdateFlags(const MiObject::UpdateFlags &flags)
+    {
+        Q_Q(MiObject);
+        MiObject *parent = q->parent();
+        if (parent)
+            parent->setUpdateFlags(MiObject::UpdateFlags(updateFlags) | flags);
+    }
+};
 
 #endif // MI_OBJECT_H

@@ -37,14 +37,6 @@ public:
 
     virtual ~AcPointPrivate()
     {}
-
-    void setParentUpdateFlags()
-    {
-        Q_Q(MiObject);
-        MiObject *parent = q->parent();
-        if (parent)
-            parent->setUpdateFlags(MiObject::UpdateChildren);
-    }
 };
 
 class AC_CORE_EXPORT AcPoint : public MiObject
@@ -83,7 +75,7 @@ public:
         aboutToChange(X, d->x);
         d->x = x;
         changed(X, d->x);
-        d->setParentUpdateFlags();
+        d->addParentUpdateFlags(MiObject::UpdateChildren);
     }
 
     qreal y() const
@@ -102,7 +94,7 @@ public:
         aboutToChange(Y, d->x);
         d->y = y;
         changed(Y, d->x);
-        d->setParentUpdateFlags();
+        d->addParentUpdateFlags(MiObject::UpdateChildren);
     }
 
     bool isLessThan(AcPoint *other) const
