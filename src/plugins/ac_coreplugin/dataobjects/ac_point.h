@@ -46,9 +46,9 @@ class AC_CORE_EXPORT AcPoint : public MiObject
     Q_PROPERTY(qreal y READ y WRITE setY)
 
 public:
-    enum Property {
-        X = MiObject::PropertyCount,
-        Y,
+    enum PropertyIndex {
+        XIndex = MiObject::PropertyCount,
+        YIndex,
         PropertyCount
     };
 
@@ -72,10 +72,10 @@ public:
             x = 0.0f;
         if (d->x == x)
             return;
-        aboutToChange(X, d->x);
+        aboutToChange(XIndex, d->x);
         d->x = x;
-        changed(X, d->x);
-        d->addParentUpdateFlags(MiObject::UpdateChildren);
+        changed(XIndex, d->x);
+        d->addParentUpdateFlags(MiObject::UpdateObject);
     }
 
     qreal y() const
@@ -91,10 +91,10 @@ public:
             y = 0.0f;
         if (d->y == y)
             return;
-        aboutToChange(Y, d->x);
+        aboutToChange(YIndex, d->x);
         d->y = y;
-        changed(Y, d->x);
-        d->addParentUpdateFlags(MiObject::UpdateChildren);
+        changed(YIndex, d->x);
+        d->addParentUpdateFlags(MiObject::UpdateObject);
     }
 
     bool isLessThan(AcPoint *other) const

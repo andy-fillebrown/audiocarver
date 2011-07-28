@@ -43,6 +43,8 @@ class MI_CORE_EXPORT MiListObject : public MiObject
     Q_OBJECT
 
 public:
+    typedef MiObject::PropertyIndex PropertyIndex;
+
     MiListObject()
         :   MiObject(*(new MiObjectPrivate(this)))
     {}
