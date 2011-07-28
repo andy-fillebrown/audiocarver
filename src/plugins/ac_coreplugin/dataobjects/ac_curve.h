@@ -18,61 +18,38 @@
 #ifndef AC_CURVE_H
 #define AC_CURVE_H
 
-#include <mi_objectlist.h>
-#include <ac_point.h>
+#include <ac_core_global.h>
+#include <mi_sortedlistobject.h>
 
-class AcCurve : public MiObjectList
+class AcCurvePoint;
+
+#define AcCurvePrivate MiSortedListObjectPrivate
+
+class AcCurve : public MiSortedListObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(AcCurve)
-    Q_DECLARE_PRIVATE(Private::MiObjectList)
 
 public:
-    typedef MiObjectList::Properties Properties;
+    typedef MiSortedListObject::PropertyIndex PropertyIndex;
 
     virtual ~AcCurve()
     {}
 
-    const QList<AcPoint*> &points() const
-    {
-        Q_D(const Private::MiObjectList);
-        return d->cast<AcPoint>();
-    }
+    const QList<AcCurvePoint*> &items() const;
 
-    int pointCount() const
-    {
-        Q_D(const Private::MiObjectList);
-        return d->objects.count();
-    }
-
-    AcPoint *pointAt(int i) const
-    {
-        Q_D(const Private::MiObjectList);
-        return d->cast<AcPoint>()[i];
-    }
-
-    void insertPoint(int i, AcPoint *point)
-    {
-        Q_D(Private::MiObjectList);
-        d->insert(i, point);
-    }
-
-    void appendPoint(AcPoint *point)
-    {
-        Q_D(Private::MiObjectList);
-        d->append(point);
-    }
-
-    void removePoint(AcPoint *point)
-    {
-        Q_D(Private::MiObjectList);
-        d->removeOne(point);
-    }
+    virtual bool isSorted() const;
+    virtual void sort();
+    virtual void addItem(MiObject *item);
+    virtual void update();
 
 protected:
-    AcCurve(Private::MiObjectListData &dd, QObject *parent = 0)
-        :   MiObjectList(dd, parent)
+    AcCurve(AcCurvePrivate &dd)
+        :   MiSortedListObject(dd)
     {}
+
+private:
+    Q_DISABLE_COPY(AcCurve)
+    Q_DECLARE_PRIVATE(AcCurve)
 };
 
 #endif // AC_CURVE_H

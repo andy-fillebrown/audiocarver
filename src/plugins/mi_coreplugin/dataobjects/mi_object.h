@@ -53,6 +53,7 @@ public:
     {}
 
     const QList<MiObject*> &children() const;
+    QObjectList &children();
 
 };
 
@@ -160,6 +161,11 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::ChangedFlags)
 inline const QList<MiObject*> &MiObjectData::children() const
 {
     return reinterpret_cast<const QList<MiObject*>&>(q_ptr->children());
+}
+
+inline QObjectList &MiObjectData::children()
+{
+    return const_cast<QObjectList&>(q_ptr->children());
 }
 
 class MiObjectPrivate : public MiObjectData

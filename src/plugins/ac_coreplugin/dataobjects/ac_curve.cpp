@@ -16,3 +16,47 @@
 **************************************************************************/
 
 #include "ac_curve.h"
+#include <ac_curvepoint.h>
+
+static bool lessThan(const AcPoint *a, const AcPoint *b)
+{
+    return a->isLessThan(b);
+}
+
+const QList<AcCurvePoint*> &AcCurve::items() const
+{
+    Q_D(const AcCurve);
+    return reinterpret_cast<const QList<AcCurvePoint*>&>(d->children());
+}
+
+bool AcCurve::isSorted() const
+{
+    const QList<AcCurvePoint*> &items = this->items();
+    for (int i = 1;  i < items.count();  ++i)
+        if (items[i]->isLessThan(items[i - 1]))
+            return false;
+    return true;
+}
+
+void AcCurve::sort()
+{
+    if (isSorted())
+        return;
+    Q_D(AcCurve);
+    qSort(d->items<AcCurvePoint>(), lessThan);
+}
+
+void AcCurve::addItem(MiObject *item)
+{
+    if (!qobject_cast<AcCurvePoint*>(item))
+        return;
+    MiSortedListObject::addItem(item);
+}
+
+void AcCurve::update()
+{
+    if (MiObject::ListItemChanged & changedFlags()) {
+        // TODO
+    }
+    MiSortedListObject::update();
+}

@@ -43,4 +43,13 @@ inline void mi_assert(const char *assertion, const char *file, int line)
 #  endif
 #endif
 
+#define Q_DECLARE_FRIENDS(Class) \
+    friend Class *qobject_cast<Class*>(QObject*);
+
+template <typename Container, typename LessThan>
+void qSort(Container &c, LessThan lessThan)
+{
+    qSort(c.begin(), c.end(), lessThan);
+}
+
 #endif // MI_CORE_GLOBAL_H

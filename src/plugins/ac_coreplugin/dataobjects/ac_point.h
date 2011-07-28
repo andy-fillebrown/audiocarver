@@ -97,7 +97,7 @@ public:
         d->addParentChangedFlags(MiObject::ListItemSortValueChanged);
     }
 
-    bool isLessThan(AcPoint *other) const
+    bool isLessThan(const AcPoint *other) const
     {
         Q_D(const AcPoint);
         if (d->x < other->x())

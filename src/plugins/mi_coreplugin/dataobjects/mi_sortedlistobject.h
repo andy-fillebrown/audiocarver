@@ -20,18 +20,7 @@
 
 #include <mi_listobject.h>
 
-class MiSortedListObject;
-
-class MI_CORE_EXPORT MiSortedListObjectPrivate : public MiListObjectPrivate
-{
-public:
-    MiSortedListObjectPrivate(MiListObject *q)
-        :   MiListObjectPrivate(q)
-    {}
-
-    virtual ~MiSortedListObjectPrivate()
-    {}
-};
+#define MiSortedListObjectPrivate MiListObjectPrivate
 
 class MI_CORE_EXPORT MiSortedListObject : public MiListObject
 {
@@ -39,10 +28,6 @@ class MI_CORE_EXPORT MiSortedListObject : public MiListObject
 
 public:
     typedef MiListObject::PropertyIndex PropertyIndex;
-
-    MiSortedListObject()
-        :   MiListObject(*(new MiSortedListObjectPrivate(this)))
-    {}
 
     virtual ~MiSortedListObject()
     {}
@@ -65,8 +50,8 @@ protected:
     {}
 
 private:
-    Q_DECLARE_PRIVATE(MiSortedListObject)
     Q_DISABLE_COPY(MiSortedListObject)
+    Q_DECLARE_PRIVATE(MiSortedListObject)
 };
 
 #endif // MI_SORTEDLISTOBJECT_H

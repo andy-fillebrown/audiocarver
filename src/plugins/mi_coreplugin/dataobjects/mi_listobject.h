@@ -32,9 +32,10 @@ public:
     virtual ~MiListObjectPrivate()
     {}
 
-    QList<MiObject*> &items() const
+    template <typename T>
+    QList<T*> &items()
     {
-        return const_cast<QList<MiObject*>&>(children());
+        return reinterpret_cast<QList<T*>&>(children());
     }
 };
 
