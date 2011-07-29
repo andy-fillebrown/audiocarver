@@ -15,40 +15,48 @@
 **
 **************************************************************************/
 
-#ifndef AC_NOTE_H
-#define AC_NOTE_H
+#ifndef AC_NOTELIST_H
+#define AC_NOTELIST_H
 
-#include <ac_scoreobject.h>
+#include <ac_core_global.h>
+#include <mi_sortedlistobject.h>
 
-class AcNotePrivate : public AcScoreObjectPrivate
+class AcNote;
+
+class AcNoteListPrivate : public MiSortedListObjectPrivate
 {
 public:
-    AcNotePrivate(AcScoreObject *q)
-        :   AcScoreObjectPrivate(q)
+    AcNoteListPrivate(MiObject *q)
+        :   MiSortedListObjectPrivate(q)
     {}
 
-    virtual ~AcNotePrivate()
+    virtual ~AcNoteListPrivate()
     {}
+
+    QList<AcNote*> &items();
 };
 
-class AC_CORE_EXPORT AcNote : public AcScoreObject
+class AcNoteList : public MiSortedListObject
 {
     Q_OBJECT
 
 public:
-    AcNote()
-    :   AcScoreObject(*(new AcNotePrivate(this)))
+    AcNoteList()
+        :   MiSortedListObject(*(new AcNoteListPrivate(this)))
     {}
 
-    virtual ~AcNote()
+    virtual ~AcNoteList()
     {}
 
-    virtual bool isLessThan(const AcNote *other) const;
+    virtual bool isSorted() const;
+    virtual void sort();
+    const QList<AcNote*> &items() const;
+    virtual void addItem(MiObject *item);
 
 private:
-    Q_DISABLE_COPY(AcNote)
-    Q_DECLARE_PRIVATE(AcNote)
-    Q_DECLARE_FRIENDS(AcNote)
+    Q_DISABLE_COPY(AcNoteList)
+    Q_DECLARE_PRIVATE(AcNoteList)
+    Q_DECLARE_FRIENDS(AcNoteList)
 };
 
-#endif // AC_NOTE_H
+#endif // AC_NOTELIST_H

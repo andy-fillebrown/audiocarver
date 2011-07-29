@@ -19,7 +19,7 @@
 #include <ac_pitchcurve.h>
 #include <ac_pitchpoint.h>
 
-bool AcNote::isLessThan(const AcNote *other)
+bool AcNote::isLessThan(const AcNote *other) const
 {
     if (pitchCurve()->items().first()->isLessThan(other->pitchCurve()->items().first()))
         return true;

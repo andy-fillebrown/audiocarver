@@ -13,6 +13,7 @@ HEADERS += \
 #    dataobjects/ac_gridline.h \
 #    dataobjects/ac_gridsettings.h \
     dataobjects/ac_note.h \
+    dataobjects/ac_notelist.h \
     dataobjects/ac_pitchcurve.h \
 #    dataobjects/ac_pitchline.h \
     dataobjects/ac_pitchpoint.h \
@@ -39,6 +40,7 @@ SOURCES += \
 #    dataobjects/ac_gridline.cpp \
 #    dataobjects/ac_gridsettings.cpp \
     dataobjects/ac_note.cpp \
+    dataobjects/ac_notelist.cpp \
     dataobjects/ac_pitchcurve.cpp \
 #    dataobjects/ac_pitchline.cpp \
     dataobjects/ac_pitchpoint.cpp \
