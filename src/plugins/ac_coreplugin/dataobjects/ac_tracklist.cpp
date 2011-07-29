@@ -15,39 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_NOTE_H
-#define AC_NOTE_H
+#include "ac_tracklist.h"
+//#include <ac_track.h>
 
-#include <ac_scoreobject.h>
-
-class AcNotePrivate : public AcScoreObjectPrivate
+void AcTrackList::addItem(MiObject *item)
 {
-public:
-    AcNotePrivate(AcScoreObject *q)
-        :   AcScoreObjectPrivate(q)
-    {}
-
-    virtual ~AcNotePrivate()
-    {}
-};
-
-class AC_CORE_EXPORT AcNote : public AcScoreObject
-{
-    Q_OBJECT
-
-public:
-    AcNote()
-    :   AcScoreObject(*(new AcNotePrivate(this)))
-    {}
-
-    virtual ~AcNote()
-    {}
-
-    virtual bool isLessThan(const AcNote *other);
-
-private:
-    Q_DISABLE_COPY(AcNote)
-    Q_DECLARE_PRIVATE(AcNote)
-};
-
-#endif // AC_NOTE_H
+//    if (!qobject_cast<AcTrack*>(item))
+//        return;
+//    MiListObject::addItem(item);
+}

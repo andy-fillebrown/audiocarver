@@ -48,10 +48,12 @@ public:
     {}
 
     const QList<AcCurvePoint*> &items() const;
+    qreal duration() const;
 
     virtual bool isSorted() const;
     virtual void sort();
     virtual void addItem(MiObject *item);
+    virtual void removeItem(MiObject *item);
     virtual void update();
 
 protected:

@@ -18,17 +18,17 @@
 #ifndef AC_PITCHPOINT_H
 #define AC_PITCHPOINT_H
 
-#include <ac_point.h>
+#include <ac_curvepoint.h>
 
-#define AcPitchPointPrivate AcPointPrivate
+#define AcPitchPointPrivate AcCurvePointPrivate
 
-class AcPitchPoint : public AcPoint
+class AcPitchPoint : public AcCurvePoint
 {
     Q_OBJECT
 
 public:
     AcPitchPoint()
-        :   AcPoint(*(new AcPitchPointPrivate(this)))
+        :   AcCurvePoint(*(new AcPitchPointPrivate(this)))
     {}
 
     virtual ~AcPitchPoint()

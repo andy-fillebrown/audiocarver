@@ -14,3 +14,21 @@
 ** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
 **
 **************************************************************************/
+
+#include "ac_note.h"
+#include <ac_pitchcurve.h>
+#include <ac_pitchpoint.h>
+
+bool AcNote::isLessThan(const AcNote *other)
+{
+    if (pitchCurve()->items().first()->isLessThan(other->pitchCurve()->items().first()))
+        return true;
+    if (pitchCurve()->items().first()->x() == other->pitchCurve()->items().first()->x()
+            && pitchCurve()->items().first()->isLessThan(other->pitchCurve()->items().first()))
+        return true;
+    if (pitchCurve()->items().first()->x() == other->pitchCurve()->items().first()->x()
+            && pitchCurve()->items().first()->y() == other->pitchCurve()->items().first()->y()
+            && pitchCurve()->duration() < other->pitchCurve()->duration())
+        return true;
+    return false;
+}

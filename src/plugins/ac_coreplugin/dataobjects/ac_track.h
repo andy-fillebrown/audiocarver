@@ -18,95 +18,95 @@
 #ifndef AC_TRACK_H
 #define AC_TRACK_H
 
-#include <ac_note.h>
+#include <ac_scoreobject.h>
 
-namespace Private {
+//namespace Private {
 
-class AcTrackData
-{
-public:
-    AcNoteList *notes;
-    bool visible;
-    qreal volume;
+//class AcTrackData
+//{
+//public:
+//    AcNoteList *notes;
+//    bool visible;
+//    qreal volume;
 
-    AcTrackData(QObject *q)
-        :   notes(new AcNoteList(q))
-        ,   visible(true)
-        ,   volume(1.0f)
-    {}
-};
+//    AcTrackData(QObject *q)
+//        :   notes(new AcNoteList(q))
+//        ,   visible(true)
+//        ,   volume(1.0f)
+//    {}
+//};
 
-} // namespace Private
+//} // namespace Private
 
-class AC_CORE_EXPORT AcTrack : public MiObject
-{
-    Q_OBJECT
-    Q_DISABLE_COPY(AcTrack)
-    Q_PROPERTY(MiObjectList* notes READ notes)
-    Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
-    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
+//class AC_CORE_EXPORT AcTrack : public MiObject
+//{
+//    Q_OBJECT
+//    Q_DISABLE_COPY(AcTrack)
+//    Q_PROPERTY(MiObjectList* notes READ notes)
+//    Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
+//    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
-public:
-    enum Properties {
-        Notes = MiObject::PropertyCount,
-        Visible,
-        Volume,
-        PropertyCount
-    };
+//public:
+//    enum Properties {
+//        Notes = MiObject::PropertyCount,
+//        Visible,
+//        Volume,
+//        PropertyCount
+//    };
 
-    explicit AcTrack(QObject *parent = 0)
-        :   MiObject(parent)
-        ,   d(new Private::AcTrackData(this))
-    {}
+//    explicit AcTrack(QObject *parent = 0)
+//        :   MiObject(parent)
+//        ,   d(new Private::AcTrackData(this))
+//    {}
 
-    virtual ~AcTrack()
-    {
-        delete d;
-    }
+//    virtual ~AcTrack()
+//    {
+//        delete d;
+//    }
 
-    AcNoteList *notes() const
-    {
-        return d->notes;
-    }
+//    AcNoteList *notes() const
+//    {
+//        return d->notes;
+//    }
 
-    bool isVisible() const
-    {
-        return d->visible;
-    }
+//    bool isVisible() const
+//    {
+//        return d->visible;
+//    }
 
-    void setVisible(bool visible)
-    {
-        if (d->visible == visible)
-            return;
-        beginChangeProperty(Visible);
-        d->visible = visible;
-        endChangeProperty(Visible);
-    }
+//    void setVisible(bool visible)
+//    {
+//        if (d->visible == visible)
+//            return;
+//        beginChangeProperty(Visible);
+//        d->visible = visible;
+//        endChangeProperty(Visible);
+//    }
 
-    qreal volume() const
-    {
-        return d->volume;
-    }
+//    qreal volume() const
+//    {
+//        return d->volume;
+//    }
 
-    void setVolume(qreal volume)
-    {
-        if (volume < 0.0f)
-            volume = 0.0f;
-        else if (1.0f < volume)
-            volume = 1.0f;
-        if (d->volume == volume)
-            return;
-        beginChangeProperty(Volume);
-        d->volume = volume;
-        endChangeProperty(Volume);
-    }
+//    void setVolume(qreal volume)
+//    {
+//        if (volume < 0.0f)
+//            volume = 0.0f;
+//        else if (1.0f < volume)
+//            volume = 1.0f;
+//        if (d->volume == volume)
+//            return;
+//        beginChangeProperty(Volume);
+//        d->volume = volume;
+//        endChangeProperty(Volume);
+//    }
 
-private:
-    Private::AcTrackData *d;
-};
+//private:
+//    Private::AcTrackData *d;
+//};
 
-typedef MiList<AcTrack> AcTrackList;
+//typedef MiList<AcTrack> AcTrackList;
 
-Q_DECLARE_METATYPE(AcTrackList*)
+//Q_DECLARE_METATYPE(AcTrackList*)
 
 #endif // AC_TRACK_H

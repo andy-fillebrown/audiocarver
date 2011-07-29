@@ -27,9 +27,7 @@ class AcPitchCurve : public AcCurve
     Q_OBJECT
 
 public:
-    AcPitchCurve()
-        :   AcCurve(*(new AcPitchCurvePrivate(this)))
-    {}
+    AcPitchCurve();
 
     virtual ~AcPitchCurve()
     {}

@@ -34,11 +34,17 @@ const AcCurvePointList &AcCurve::items() const
     return reinterpret_cast<const AcCurvePointList&>(d->children());
 }
 
+qreal AcCurve::duration() const
+{
+    const AcCurvePointList &pts = items();
+    return pts.last()->x() - pts.first()->x();
+}
+
 bool AcCurve::isSorted() const
 {
-    const AcCurvePointList &items = this->items();
-    for (int i = 1;  i < items.count();  ++i)
-        if (items[i]->isLessThan(items[i - 1]))
+    const AcCurvePointList &pts = items();
+    for (int i = 1;  i < pts.count();  ++i)
+        if (pts[i]->isLessThan(pts[i - 1]))
             return false;
     return true;
 }
@@ -58,42 +64,47 @@ void AcCurve::addItem(MiObject *item)
     MiSortedListObject::addItem(item);
 }
 
+void AcCurve::removeItem(MiObject *item)
+{
+    if (children().count() <= 2)
+        return;
+    MiSortedListObject::removeItem(item);
+}
+
 void AcCurve::update()
 {
     if (MiObject::ListItemChanged & changedFlags()) {
         const AcCurvePointList &pts = items();
-        if (1 < pts.count()) {
-            AcCurvePoint *startPt = pts.first();
-            AcCurvePoint *endPt = pts.last();
-            startPt->setCurveType(AcCurvePoint::LinearCurve);
-            startPt->setStretchType(AcCurvePoint::StartStretch);
-            endPt->setCurveType(AcCurvePoint::LinearCurve);
-            endPt->setStretchType(AcCurvePoint::EndStretch);
-            const qreal startX = startPt->x();
-            const qreal startPrevX = startPt->previousX();
-            const qreal endX = endPt->x();
-            const qreal endPrevX = endPt->previousX();
-            const qreal middleStretchFactor = (endPrevX - startPrevX) / (endX - startX);
-            AcCurvePoint::CurveType prevCurveType = AcCurvePoint::LinearCurve;
-            for (int i = 1;  i < pts.count() - 1;  ++i) {
-                AcCurvePoint *pt = pts[i];
-                if (pt->previousX() == pt->x()) {
-                    switch (pt->stretchType()) {
-                    case AcCurvePoint::StartStretch:
-                        pt->setX(pt->x() + startX - startPrevX);
-                        break;
-                    case AcCurvePoint::MiddleStretch:
-                        pt->setX(pt->x() + (middleStretchFactor * (pt->x() - startPt->x())));
-                        break;
-                    case AcCurvePoint::EndStretch:
-                        pt->setX(pt->x() + endX - endPrevX);
-                        break;
-                    }
+        AcCurvePoint *startPt = pts.first();
+        AcCurvePoint *endPt = pts.last();
+        startPt->setCurveType(AcCurvePoint::LinearCurve);
+        startPt->setStretchType(AcCurvePoint::StartStretch);
+        endPt->setCurveType(AcCurvePoint::LinearCurve);
+        endPt->setStretchType(AcCurvePoint::EndStretch);
+        const qreal startX = startPt->x();
+        const qreal startPrevX = startPt->previousX();
+        const qreal endX = endPt->x();
+        const qreal endPrevX = endPt->previousX();
+        const qreal middleStretchFactor = (endPrevX - startPrevX) / (endX - startX);
+        AcCurvePoint::CurveType prevCurveType = AcCurvePoint::LinearCurve;
+        for (int i = 1;  i < pts.count() - 1;  ++i) {
+            AcCurvePoint *pt = pts[i];
+            if (pt->previousX() == pt->x()) {
+                switch (pt->stretchType()) {
+                case AcCurvePoint::StartStretch:
+                    pt->setX(pt->x() + startX - startPrevX);
+                    break;
+                case AcCurvePoint::MiddleStretch:
+                    pt->setX(pt->x() + (middleStretchFactor * (pt->x() - startPt->x())));
+                    break;
+                case AcCurvePoint::EndStretch:
+                    pt->setX(pt->x() + endX - endPrevX);
+                    break;
                 }
-                if (AcCurvePoint::BezierCurve == pt->curveType() && AcCurvePoint::BezierCurve == prevCurveType)
-                    pt->setCurveType(AcCurvePoint::LinearCurve);
-                prevCurveType = pt->curveType();
             }
+            if (AcCurvePoint::BezierCurve == pt->curveType() && AcCurvePoint::BezierCurve == prevCurveType)
+                pt->setCurveType(AcCurvePoint::LinearCurve);
+            prevCurveType = pt->curveType();
         }
         foreach (AcCurvePoint *pt, pts)
             pt->update();

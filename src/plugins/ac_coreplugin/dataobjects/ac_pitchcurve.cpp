@@ -18,6 +18,13 @@
 #include "ac_pitchcurve.h"
 #include <ac_pitchpoint.h>
 
+AcPitchCurve::AcPitchCurve()
+:   AcCurve(*(new AcPitchCurvePrivate(this)))
+{
+    addItem(new AcPitchPoint);
+    addItem(new AcPitchPoint);
+}
+
 void AcPitchCurve::addItem(MiObject *item)
 {
     if (!qobject_cast<AcPitchPoint*>(item))

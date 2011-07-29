@@ -19,26 +19,13 @@
 #include <ac_pitchcurve.h>
 #include <ac_volumecurve.h>
 
-void AcScoreObject::setPitchCurve(AcPitchCurve *pitchCurve)
-{
-    Q_D(AcScoreObject);
-    if (pitchCurve == d->pitchCurve)
-        return;
-    emit aboutToChange(PitchCurveIndex, QVariant::fromValue(d->pitchCurve));
-    d->removeChild(d->pitchCurve);
-    d->pitchCurve = pitchCurve;
-    d->addChild(d->pitchCurve);
-    emit changed(PitchCurveIndex, QVariant::fromValue(d->pitchCurve));
-}
 
-void AcScoreObject::setVolumeCurve(AcVolumeCurve *volumeCurve)
+AcScoreObjectPrivate::AcScoreObjectPrivate(MiObject *q)
+    :   MiObjectPrivate(q)
+    ,   volume(0.9f)
+    ,   pitchCurve(new AcPitchCurve)
+    ,   volumeCurve(new AcVolumeCurve)
 {
-    Q_D(AcScoreObject);
-    if (volumeCurve == d->volumeCurve)
-        return;
-    emit aboutToChange(VolumeCurveIndex, QVariant::fromValue(d->volumeCurve));
-    d->removeChild(d->volumeCurve);
-    d->volumeCurve = volumeCurve;
-    d->addChild(d->volumeCurve);
-    emit changed(VolumeCurveIndex, QVariant::fromValue(d->volumeCurve));
+    addChild(pitchCurve);
+    addChild(volumeCurve);
 }

@@ -32,12 +32,7 @@ public:
     AcPitchCurve *pitchCurve;
     AcVolumeCurve *volumeCurve;
 
-    AcScoreObjectPrivate(MiObject *q)
-        :   MiObjectPrivate(q)
-        ,   volume(0.9f)
-        ,   pitchCurve(0)
-        ,   volumeCurve(0)
-    {}
+    AcScoreObjectPrivate(MiObject *q);
 
     virtual ~AcScoreObjectPrivate()
     {}
@@ -48,8 +43,8 @@ class AC_CORE_EXPORT AcScoreObject : public MiObject
     Q_OBJECT
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
     Q_PROPERTY(QString color READ color WRITE setColor)
-    Q_PROPERTY(AcPitchCurve* pitchCurve READ pitchCurve WRITE setPitchCurve)
-    Q_PROPERTY(AcVolumeCurve* volumeCurve READ volumeCurve WRITE setVolumeCurve)
+    Q_PROPERTY(AcPitchCurve* pitchCurve READ pitchCurve)
+    Q_PROPERTY(AcVolumeCurve* volumeCurve READ volumeCurve)
 
 public:
     enum PropertyIndex {
@@ -61,7 +56,7 @@ public:
     };
 
     AcScoreObject()
-        :   MiObject(*(new AcScoreObjectPrivate(this)))
+    :   MiObject(*(new AcScoreObjectPrivate(this)))
     {}
 
     virtual ~AcScoreObject()
@@ -109,15 +104,11 @@ public:
         return d->pitchCurve;
     }
 
-    void setPitchCurve(AcPitchCurve *pitchCurve);
-
     AcVolumeCurve *volumeCurve() const
     {
         Q_D(const AcScoreObject);
         return d->volumeCurve;
     }
-
-    void setVolumeCurve(AcVolumeCurve *volumeCurve);
 
 protected:
     AcScoreObject(AcScoreObjectPrivate &dd)
