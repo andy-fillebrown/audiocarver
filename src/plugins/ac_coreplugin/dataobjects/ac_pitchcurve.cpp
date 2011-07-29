@@ -16,3 +16,11 @@
 **************************************************************************/
 
 #include "ac_pitchcurve.h"
+#include <ac_pitchpoint.h>
+
+void AcPitchCurve::addItem(MiObject *item)
+{
+    if (!qobject_cast<AcPitchPoint*>(item))
+        return;
+    MiSortedListObject::addItem(item);
+}

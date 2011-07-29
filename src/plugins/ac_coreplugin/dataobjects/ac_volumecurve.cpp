@@ -15,4 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_pitchcurve.h"
+#include "ac_volumecurve.h"
+#include <ac_volumepoint.h>
+
+void AcVolumeCurve::addItem(MiObject *item)
+{
+    if (!qobject_cast<AcVolumePoint*>(item))
+        return;
+    MiSortedListObject::addItem(item);
+}

@@ -34,6 +34,8 @@ public:
     virtual ~AcPitchCurve()
     {}
 
+    virtual void addItem(MiObject *item);
+
 private:
     Q_DISABLE_COPY(AcPitchCurve)
     Q_DECLARE_FRIENDS(AcPitchCurve)

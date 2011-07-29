@@ -43,6 +43,7 @@ public:
 
 private:
     Q_DISABLE_COPY(AcVolumePoint)
+    Q_DECLARE_FRIENDS(AcVolumePoint)
 };
 
 #endif // AC_VOLUMEPOINT_H

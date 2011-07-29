@@ -43,6 +43,7 @@ public:
 
 private:
     Q_DISABLE_COPY(AcPitchPoint)
+    Q_DECLARE_FRIENDS(AcPitchPoint)
 };
 
 #endif // AC_PITCHPOINT_H

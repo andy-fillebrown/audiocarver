@@ -34,6 +34,8 @@ public:
     virtual ~AcVolumeCurve()
     {}
 
+    virtual void addItem(MiObject *item);
+
 private:
     Q_DISABLE_COPY(AcVolumeCurve)
     Q_DECLARE_FRIENDS(AcVolumeCurve)
