@@ -23,7 +23,16 @@
 
 class AcCurvePoint;
 
-#define AcCurvePrivate MiSortedListObjectPrivate
+class AcCurvePrivate : public MiSortedListObjectPrivate
+{
+public:
+    AcCurvePrivate(AcCurvePoint *q);
+
+    virtual ~AcCurvePrivate()
+    {}
+
+    QList<AcCurvePoint*> &items();
+};
 
 class AcCurve : public MiSortedListObject
 {

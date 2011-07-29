@@ -25,11 +25,13 @@ class AcCurvePointPrivate : public AcPointPrivate
 public:
     quint32 curveType : 16;
     quint32 stretchType : 16;
+    qreal previousX;
 
     AcCurvePointPrivate(AcPoint *q)
         :   AcPointPrivate(q)
         ,   curveType(0)
         ,   stretchType(0)
+        ,   previousX(x)
     {}
 
     virtual ~AcCurvePointPrivate()
@@ -102,6 +104,21 @@ public:
         d->addParentChangedFlags(MiObject::ListItemChanged);
     }
 
+    qreal previousX() const
+    {
+        Q_D(const AcCurvePoint);
+        return d->previousX;
+    }
+
+    virtual void update()
+    {
+        if (MiObject::ListItemSortValueChanged & changedFlags()) {
+            Q_D(AcCurvePoint);
+            d->previousX = d->x;
+        }
+        AcPoint::update();
+    }
+
 protected:
     AcCurvePoint(AcCurvePointPrivate &dd)
         :   AcPoint(dd)
@@ -112,5 +129,7 @@ private:
     Q_DECLARE_PRIVATE(AcCurvePoint)
     Q_DECLARE_FRIENDS(AcCurvePoint)
 };
+
+typedef QList<AcCurvePoint*> AcCurvePointList;
 
 #endif // AC_CURVEPOINT_H

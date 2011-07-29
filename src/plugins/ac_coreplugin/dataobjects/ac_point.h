@@ -75,6 +75,7 @@ public:
         aboutToChange(XIndex, d->x);
         d->x = x;
         changed(XIndex, d->x);
+        setChangedFlag(MiObject::ListItemSortValueChanged);
         d->addParentChangedFlags(MiObject::ListItemSortValueChanged);
     }
 
