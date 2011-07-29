@@ -65,9 +65,8 @@ void AcCurve::addItem(MiObject *item)
 void AcCurve::update()
 {
     if (MiObject::ListItemChanged & changedFlags()) {
-        Q_D(AcCurve);
-        AcCurvePointList &pts = d->items();
-        if (2 < pts.count()) {
+        const AcCurvePointList &pts = items();
+        if (1 < pts.count()) {
             AcCurvePoint *startPt = pts.first();
             AcCurvePoint *endPt = pts.last();
             startPt->setCurveType(AcCurvePoint::LinearCurve);
