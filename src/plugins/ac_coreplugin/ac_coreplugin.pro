@@ -15,12 +15,14 @@ HEADERS += \
 #    dataobjects/ac_note.h \
     dataobjects/ac_pitchcurve.h \
 #    dataobjects/ac_pitchline.h \
+    dataobjects/ac_pitchpoint.h \
     dataobjects/ac_point.h \
 #    dataobjects/ac_score.h \
 #    dataobjects/ac_timeline.h \
 #    dataobjects/ac_track.h \
 #    dataobjects/ac_viewsettings.h \
     dataobjects/ac_volumecurve.h \
+    dataobjects/ac_volumepoint.h \
     \
 #    factories/ac_dataobjectfactory.h \
     \
@@ -37,12 +39,14 @@ SOURCES += \
 #    dataobjects/ac_note.cpp \
     dataobjects/ac_pitchcurve.cpp \
 #    dataobjects/ac_pitchline.cpp \
+    dataobjects/ac_pitchpoint.cpp \
     dataobjects/ac_point.cpp \
 #    dataobjects/ac_score.cpp \
 #    dataobjects/ac_timeline.cpp \
 #    dataobjects/ac_track.cpp \
 #    dataobjects/ac_viewsettings.cpp \
     dataobjects/ac_volumecurve.cpp \
+    dataobjects/ac_volumepoint.cpp \
     \
 #    factories/ac_dataobjectfactory.cpp \
     \

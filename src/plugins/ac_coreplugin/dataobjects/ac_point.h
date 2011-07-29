@@ -85,7 +85,7 @@ public:
         return d->y;
     }
 
-    void setY(qreal y)
+    virtual void setY(qreal y)
     {
         Q_D(AcPoint);
         if (y < 0.0f)
