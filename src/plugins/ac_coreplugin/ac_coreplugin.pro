@@ -15,7 +15,6 @@ HEADERS += \
 #    dataobjects/ac_note.h \
     dataobjects/ac_pitchcurve.h \
 #    dataobjects/ac_pitchline.h \
-#    dataobjects/ac_pitchpoint.h \
     dataobjects/ac_point.h \
 #    dataobjects/ac_score.h \
 #    dataobjects/ac_timeline.h \
@@ -38,7 +37,6 @@ SOURCES += \
 #    dataobjects/ac_note.cpp \
     dataobjects/ac_pitchcurve.cpp \
 #    dataobjects/ac_pitchline.cpp \
-#    dataobjects/ac_pitchpoint.cpp \
     dataobjects/ac_point.cpp \
 #    dataobjects/ac_score.cpp \
 #    dataobjects/ac_timeline.cpp \
