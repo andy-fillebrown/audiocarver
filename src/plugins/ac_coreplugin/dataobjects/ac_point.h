@@ -23,8 +23,6 @@
 
 class AcPointPrivate : public MiObjectPrivate
 {
-    Q_DECLARE_PUBLIC(MiObject)
-
 public:
     qreal x;
     qreal y;

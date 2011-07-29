@@ -27,7 +27,9 @@ class AcCurvePoint;
 class AcCurvePrivate : public MiSortedListObjectPrivate
 {
 public:
-    AcCurvePrivate(AcCurve *q);
+    AcCurvePrivate(MiSortedListObject *q)
+        :   MiSortedListObjectPrivate(q)
+    {}
 
     virtual ~AcCurvePrivate()
     {}

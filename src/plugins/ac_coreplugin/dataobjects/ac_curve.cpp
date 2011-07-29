@@ -23,10 +23,6 @@ static bool lessThan(const AcPoint *a, const AcPoint *b)
     return a->isLessThan(b);
 }
 
-AcCurvePrivate::AcCurvePrivate(AcCurve *q)
-    :   MiSortedListObjectPrivate(q)
-{}
-
 AcCurvePointList &AcCurvePrivate::items()
 {
     return MiSortedListObjectPrivate::items<AcCurvePoint>();
