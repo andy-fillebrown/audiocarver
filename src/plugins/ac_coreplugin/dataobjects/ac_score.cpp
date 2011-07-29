@@ -16,3 +16,11 @@
 **************************************************************************/
 
 #include "ac_score.h"
+#include <ac_tracklist.h>
+
+AcScorePrivate::AcScorePrivate(AcScoreObject *q)
+    :   AcScoreObjectPrivate(q)
+    ,   tracks(new AcTrackList)
+{
+    addChild(tracks);
+}

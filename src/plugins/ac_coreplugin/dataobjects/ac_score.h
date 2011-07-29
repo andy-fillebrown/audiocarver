@@ -18,173 +18,69 @@
 #ifndef AC_SCORE_H
 #define AC_SCORE_H
 
-#include <mi_database.h>
-#include <ac_dataobjectfactory.h>
-#include <ac_gridline.h>
-#include <ac_gridsettings.h>
-#include <ac_track.h>
-#include <ac_viewsettings.h>
-#include <mi_fontsettings.h>
+#include <ac_scoreobject.h>
 
-typedef MiList<QObject> AcSettingsList;
+class AcTrackList;
 
-namespace Private {
-
-class AcScoreData
+class AcScorePrivate : public AcScoreObjectPrivate
 {
 public:
     qreal length;
-    AcSettingsList *settings;
     AcTrackList *tracks;
-    AcGridLinesList *grid;
 
-    MiFontSettings *fontSettings;
-    AcGridSettings *gridSettings;
-    AcViewSettings *viewSettings;
+    AcScorePrivate(AcScoreObject *q);
 
-    AcGridLineList *timeLines;
-    AcGridLineList *pitchLines;
-    AcGridLineList *controlLines;
-
-    AcScoreData(QObject *q)
-        :   length(0)
-        ,   settings(new AcSettingsList(q))
-        ,   tracks(new AcTrackList(q))
-        ,   grid(new AcGridLinesList(q))
-        ,   fontSettings(new MiFontSettings)
-        ,   gridSettings(new AcGridSettings)
-        ,   viewSettings(new AcViewSettings)
-        ,   timeLines(new AcGridLineList)
-        ,   pitchLines(new AcGridLineList)
-        ,   controlLines(new AcGridLineList)
-    {
-        QObjectList settingsList;
-        settingsList.append(fontSettings);
-        settingsList.append(gridSettings);
-        settingsList.append(viewSettings);
-        settings->append(settingsList);
-
-        QList<AcGridLineList*> gridLinesList;
-        gridLinesList.append(timeLines);
-        gridLinesList.append(pitchLines);
-        gridLinesList.append(controlLines);
-        grid->append(gridLinesList);
-    }
+    virtual ~AcScorePrivate()
+    {}
 };
 
-} // namespace Private
-
-class AC_CORE_EXPORT AcScore : public MiDatabase
+class AcScore : public AcScoreObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(AcScore)
     Q_PROPERTY(qreal length READ length WRITE setLength)
-    Q_PROPERTY(AcSettingsList* settings READ settings)
     Q_PROPERTY(AcTrackList* tracks READ tracks)
-    Q_PROPERTY(AcGridLinesList* grid READ grid)
 
 public:
-    enum Properties {
-        Length = MiDatabase::PropertyCount,
-        Settings,
-        Tracks,
-        Grid,
+    enum PropertyIndex {
+        LengthIndex = AcScoreObject::PropertyCount,
+        TracksIndex,
         PropertyCount
     };
 
-    explicit AcScore(QObject *parent = 0)
-        :   MiDatabase(new AcDataObjectFactory, parent)
-        ,   d(new Private::AcScoreData(this))
-    {}
-
-    AcScore(AcDataObjectFactory *dataObjectFactory, QObject *parent = 0)
-        :   MiDatabase(dataObjectFactory, parent)
-        ,   d(new Private::AcScoreData(this))
-    {}
-
-    AcScore(MiFilerFactory *filerFactory, QObject *parent = 0)
-        :   MiDatabase(new AcDataObjectFactory, filerFactory, parent)
-        ,   d(new Private::AcScoreData(this))
-    {}
-
-    AcScore(AcDataObjectFactory *dataObjectFactory, MiFilerFactory *filerFactory, QObject *parent = 0)
-        :   MiDatabase(dataObjectFactory, filerFactory, parent)
-        ,   d(new Private::AcScoreData(this))
+    AcScore()
+        :   AcScoreObject(*(new AcScorePrivate(this)))
     {}
 
     virtual ~AcScore()
-    {
-        delete d;
-    }
+    {}
 
     qreal length() const
     {
+        Q_D(const AcScore);
         return d->length;
     }
 
     void setLength(qreal length)
     {
-        if (length < 1.0f)
-            length = 1.0f;
-        if (d->length == length)
+        Q_D(AcScore);
+        if (length < 0.0f)
+            length = 0.0f;
+        if (length == d->length)
             return;
-        beginChangeProperty(Length);
+        emit aboutToChange(LengthIndex, d->length);
         d->length = length;
-        endChangeProperty(Length);
-    }
-
-    AcSettingsList *settings() const
-    {
-        return d->settings;
+        emit changed(LengthIndex, d->length);
     }
 
     AcTrackList *tracks() const
     {
+        Q_D(const AcScore);
         return d->tracks;
     }
 
-    AcGridLinesList *grid() const
-    {
-        return d->grid;
-    }
-
-    MiFontSettings *fontSettings() const
-    {
-        return d->fontSettings;
-    }
-
-    AcGridSettings *gridSettings() const
-    {
-        return d->gridSettings;
-    }
-
-    AcViewSettings *viewSettings() const
-    {
-        return d->viewSettings;
-    }
-
-    AcGridLineList *timeLines() const
-    {
-        return d->timeLines;
-    }
-
-    AcGridLineList *pitchLines() const
-    {
-        return d->pitchLines;
-    }
-
-    AcGridLineList *controlLines() const
-    {
-        return d->controlLines;
-    }
-
-    virtual void clear()
-    {}
-
 private:
-    Private::AcScoreData *d;
+    Q_DISABLE_COPY(AcScore)
+    Q_DECLARE_PRIVATE(AcScore)
 };
-
-Q_DECLARE_METATYPE(AcSettingsList*)
 
 #endif // AC_SCORE_H
