@@ -20,7 +20,6 @@
 
 #include <ac_scoreobject.h>
 
-
 class AcNoteList;
 
 class AcTrackPrivate : public AcScoreObjectPrivate
@@ -56,6 +55,7 @@ public:
 private:
     Q_DISABLE_COPY(AcTrack)
     Q_DECLARE_PRIVATE(AcTrack)
+    Q_DECLARE_FRIENDS(AcTrack)
 };
 
 #endif // AC_TRACK_H

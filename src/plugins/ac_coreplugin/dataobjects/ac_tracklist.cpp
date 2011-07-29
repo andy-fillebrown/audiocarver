@@ -16,11 +16,11 @@
 **************************************************************************/
 
 #include "ac_tracklist.h"
-//#include <ac_track.h>
+#include <ac_track.h>
 
 void AcTrackList::addItem(MiObject *item)
 {
-//    if (!qobject_cast<AcTrack*>(item))
-//        return;
-//    MiListObject::addItem(item);
+    if (!qobject_cast<AcTrack*>(item))
+        return;
+    MiListObject::addItem(item);
 }
