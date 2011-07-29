@@ -20,93 +20,42 @@
 
 #include <ac_scoreobject.h>
 
-//namespace Private {
 
-//class AcTrackData
-//{
-//public:
-//    AcNoteList *notes;
-//    bool visible;
-//    qreal volume;
+class AcNoteList;
 
-//    AcTrackData(QObject *q)
-//        :   notes(new AcNoteList(q))
-//        ,   visible(true)
-//        ,   volume(1.0f)
-//    {}
-//};
+class AcTrackPrivate : public AcScoreObjectPrivate
+{
+public:
+    AcNoteList *notes;
 
-//} // namespace Private
+    AcTrackPrivate(AcScoreObject *q);
 
-//class AC_CORE_EXPORT AcTrack : public MiObject
-//{
-//    Q_OBJECT
-//    Q_DISABLE_COPY(AcTrack)
-//    Q_PROPERTY(MiObjectList* notes READ notes)
-//    Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
-//    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
+    virtual ~AcTrackPrivate()
+    {}
+};
 
-//public:
-//    enum Properties {
-//        Notes = MiObject::PropertyCount,
-//        Visible,
-//        Volume,
-//        PropertyCount
-//    };
+class AcTrack : public AcScoreObject
+{
+    Q_OBJECT
+    Q_PROPERTY(AcNoteList* notes READ notes)
 
-//    explicit AcTrack(QObject *parent = 0)
-//        :   MiObject(parent)
-//        ,   d(new Private::AcTrackData(this))
-//    {}
+public:
+    AcTrack()
+        :   AcScoreObject(*(new AcTrackPrivate(this)))
+    {}
 
-//    virtual ~AcTrack()
-//    {
-//        delete d;
-//    }
+    virtual ~AcTrack()
+    {}
 
-//    AcNoteList *notes() const
-//    {
-//        return d->notes;
-//    }
+    AcNoteList *notes() const
+    {
+        Q_D(const AcTrack);
+        return d->notes;
+    }
 
-//    bool isVisible() const
-//    {
-//        return d->visible;
-//    }
-
-//    void setVisible(bool visible)
-//    {
-//        if (d->visible == visible)
-//            return;
-//        beginChangeProperty(Visible);
-//        d->visible = visible;
-//        endChangeProperty(Visible);
-//    }
-
-//    qreal volume() const
-//    {
-//        return d->volume;
-//    }
-
-//    void setVolume(qreal volume)
-//    {
-//        if (volume < 0.0f)
-//            volume = 0.0f;
-//        else if (1.0f < volume)
-//            volume = 1.0f;
-//        if (d->volume == volume)
-//            return;
-//        beginChangeProperty(Volume);
-//        d->volume = volume;
-//        endChangeProperty(Volume);
-//    }
-
-//private:
-//    Private::AcTrackData *d;
-//};
-
-//typedef MiList<AcTrack> AcTrackList;
-
-//Q_DECLARE_METATYPE(AcTrackList*)
+private:
+    Q_DISABLE_COPY(AcTrack)
+    Q_DECLARE_PRIVATE(AcTrack)
+};
 
 #endif // AC_TRACK_H

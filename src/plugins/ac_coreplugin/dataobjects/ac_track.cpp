@@ -16,3 +16,11 @@
 **************************************************************************/
 
 #include "ac_track.h"
+#include <ac_notelist.h>
+
+AcTrackPrivate::AcTrackPrivate(AcScoreObject *q)
+    :   AcScoreObjectPrivate(q)
+    ,   notes(new AcNoteList)
+{
+    addChild(notes);
+}
