@@ -18,6 +18,7 @@ HEADERS += \
     dataobjects/ac_pitchpoint.h \
     dataobjects/ac_point.h \
 #    dataobjects/ac_score.h \
+    dataobjects/ac_scoreobject.h \
 #    dataobjects/ac_timeline.h \
 #    dataobjects/ac_track.h \
 #    dataobjects/ac_viewsettings.h \
@@ -42,6 +43,7 @@ SOURCES += \
     dataobjects/ac_pitchpoint.cpp \
     dataobjects/ac_point.cpp \
 #    dataobjects/ac_score.cpp \
+    dataobjects/ac_scoreobject.cpp \
 #    dataobjects/ac_timeline.cpp \
 #    dataobjects/ac_track.cpp \
 #    dataobjects/ac_viewsettings.cpp \
