@@ -21,12 +21,13 @@
 #include <ac_core_global.h>
 #include <mi_sortedlistobject.h>
 
+class AcCurve;
 class AcCurvePoint;
 
 class AcCurvePrivate : public MiSortedListObjectPrivate
 {
 public:
-    AcCurvePrivate(AcCurvePoint *q);
+    AcCurvePrivate(AcCurve *q);
 
     virtual ~AcCurvePrivate()
     {}
