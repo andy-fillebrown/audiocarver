@@ -18,12 +18,32 @@
 #ifndef AC_PITCHCURVE_H
 #define AC_PITCHCURVE_H
 
-#include <mi_objectlist.h>
-#include <ac_pitchpoint.h>
-#include <QMetaType>
+#include <ac_curve.h>
 
-typedef MiSortedList<AcPitchPoint> AcPitchCurve;
+#define AcPitchCurvePrivate AcCurvePrivate
 
-Q_DECLARE_METATYPE(AcPitchCurve*)
+class AcPitchCurve : public AcCurve
+{
+    Q_OBJECT
+
+public:
+    AcPitchCurve()
+        :   AcCurve(*(new AcPitchCurvePrivate(this)))
+    {}
+
+    virtual ~AcPitchCurve()
+    {}
+
+    virtual void addItem(MiObject *item)
+    {
+        if (!qobject_cast<AcPitchCurve*>(item))
+            return;
+        AcCurve::addItem(item);
+    }
+
+private:
+    Q_DISABLE_COPY(AcPitchCurve)
+    Q_DECLARE_FRIENDS(AcPitchCurve)
+};
 
 #endif // AC_PITCHCURVE_H
