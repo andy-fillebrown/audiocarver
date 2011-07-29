@@ -17,6 +17,8 @@
 
 #include "ac_coreplugin.h"
 #include <ac_database.h>
+#include <ac_pitchcurve.h>
+#include <ac_volumecurve.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -27,6 +29,8 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
     addAutoReleasedObject(new AcDatabaseImpl);
+    qRegisterMetaType<AcPitchCurve*>();
+    qRegisterMetaType<AcVolumeCurve*>();
     return true;
 }
 

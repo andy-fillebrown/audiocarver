@@ -41,4 +41,6 @@ private:
     Q_DECLARE_FRIENDS(AcPitchCurve)
 };
 
+Q_DECLARE_METATYPE(AcPitchCurve*)
+
 #endif // AC_PITCHCURVE_H

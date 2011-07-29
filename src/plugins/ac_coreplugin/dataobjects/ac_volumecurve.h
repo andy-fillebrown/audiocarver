@@ -41,4 +41,6 @@ private:
     Q_DECLARE_FRIENDS(AcVolumeCurve)
 };
 
+Q_DECLARE_METATYPE(AcVolumeCurve*)
+
 #endif // AC_VOLUMECURVE_H
