@@ -187,12 +187,15 @@ public:
 
     void addChild(MiObject *child)
     {
+        if (!child)
+            return;
         child->setParent(q_ptr);
     }
 
     void removeChild(MiObject *child)
     {
-        Q_ASSERT(q_ptr == child->parent());
+        if (!child)
+            return;
         child->setParent(0);
     }
 
