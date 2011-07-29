@@ -34,13 +34,6 @@ public:
     virtual ~AcPitchCurve()
     {}
 
-    virtual void addItem(MiObject *item)
-    {
-        if (!qobject_cast<AcPitchCurve*>(item))
-            return;
-        AcCurve::addItem(item);
-    }
-
 private:
     Q_DISABLE_COPY(AcPitchCurve)
     Q_DECLARE_FRIENDS(AcPitchCurve)

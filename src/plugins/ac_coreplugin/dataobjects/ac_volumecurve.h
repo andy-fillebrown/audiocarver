@@ -34,13 +34,6 @@ public:
     virtual ~AcVolumeCurve()
     {}
 
-    virtual void addItem(MiObject *item)
-    {
-        if (!qobject_cast<AcVolumeCurve*>(item))
-            return;
-        AcCurve::addItem(item);
-    }
-
 private:
     Q_DISABLE_COPY(AcVolumeCurve)
     Q_DECLARE_FRIENDS(AcVolumeCurve)
