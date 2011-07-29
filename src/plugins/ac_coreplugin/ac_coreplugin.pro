@@ -24,6 +24,7 @@ HEADERS += \
 #    dataobjects/ac_timeline.h \
 #    dataobjects/ac_track.h \
 #    dataobjects/ac_viewsettings.h \
+    dataobjects/ac_volumecurve.h \
     \
 #    factories/ac_dataobjectfactory.h \
     \
@@ -49,6 +50,7 @@ SOURCES += \
 #    dataobjects/ac_timeline.cpp \
 #    dataobjects/ac_track.cpp \
 #    dataobjects/ac_viewsettings.cpp \
+    dataobjects/ac_volumecurve.cpp \
     \
 #    factories/ac_dataobjectfactory.cpp \
     \
