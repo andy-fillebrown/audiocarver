@@ -15,28 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHVIEW_H
-#define AC_PITCHVIEW_H
+#ifndef AC_SCOREVIEW_H
+#define AC_SCOREVIEW_H
 
-#include <ac_graphicsview.h>
+#include <ac_editorview.h>
 
 namespace Private {
 
-class AcPitchViewData;
+class AcScoreViewData;
 
 } // namespace Private
 
-class AcPitchView : public AcGraphicsView
+class AcScoreView : public AcEditorView
 {
     Q_OBJECT
 
 public:
-    AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcPitchView();
+    AcScoreView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcScoreView();
+
+    virtual void updateTransform();
+
+protected:
+    virtual void updateViewSettings() const;
 
 private:
-    Q_DISABLE_COPY(AcPitchView)
-    Private::AcPitchViewData *d;
+    Q_DISABLE_COPY(AcScoreView)
+    Private::AcScoreViewData *d;
 };
 
-#endif // AC_PITCHVIEW_H
+#endif // AC_SCOREVIEW_H

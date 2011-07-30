@@ -15,33 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCORESCENE_H
-#define AC_SCORESCENE_H
+#ifndef AC_PITCHSCENE_H
+#define AC_PITCHSCENE_H
 
-#include <ac_graphicsscene.h>
+#include <ac_scaledscene.h>
 
 namespace Private {
 
-class AcScoreSceneData;
+class AcPitchSceneData;
 
 } // namespace Private
 
-class AcScoreScene : public AcGraphicsScene
+class AcPitchScene : public AcScaledScene
 {
     Q_OBJECT
 
 public:
-    AcScoreScene(QObject *parent = 0);
-    virtual ~AcScoreScene();
+    AcPitchScene(QObject *parent = 0);
+    virtual ~AcPitchScene();
 
-    static AcScoreScene *instance();
+    static AcPitchScene *instance();
 
-protected slots:
-    virtual void updateScoreProperty(int propertyIndex);
+protected:
+    virtual void updateViewSettingsProperty(int propertyIndex);
 
 private:
-    Q_DISABLE_COPY(AcScoreScene)
-    Private::AcScoreSceneData *d;
+    Q_DISABLE_COPY(AcPitchScene)
+    Private::AcPitchSceneData *d;
 };
 
-#endif // AC_SCORESCENE_H
+#endif // AC_PITCHSCENE_H

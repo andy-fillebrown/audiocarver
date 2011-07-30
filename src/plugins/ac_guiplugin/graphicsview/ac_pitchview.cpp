@@ -15,27 +15,42 @@
 **
 **************************************************************************/
 
-#include "ac_pitchview.h"
+#include "ac_scoreview.h"
+#include <ac_score.h>
+#include <ac_viewsettings.h>
 
 using namespace Private;
 
 namespace Private {
 
-class AcPitchViewData
+class AcScoreViewData
 {
 public:
-    AcPitchViewData()
+    AcScoreViewData()
     {}
 };
 
 } // namespace Private
 
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
-    :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchViewData)
+AcScoreView::AcScoreView(QGraphicsScene *scene, QWidget *parent)
+    :   AcEditorView(scene, parent)
+    ,   d(new AcScoreViewData)
 {}
 
-AcPitchView::~AcPitchView()
+AcScoreView::~AcScoreView()
 {
     delete d;
+}
+
+void AcScoreView::updateTransform()
+{
+    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+    setTransform(QTransform::fromScale(viewSettings->timeScale(), viewSettings->pitchScale()));
+}
+
+void AcScoreView::updateViewSettings() const
+{
+    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
+    viewSettings->setTimePosition(center().x());
+    viewSettings->setPitchPosition(center().y());
 }

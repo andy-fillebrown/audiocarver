@@ -15,33 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCORESCENE_H
-#define AC_SCORESCENE_H
+#include "ac_pitchview.h"
 
-#include <ac_graphicsscene.h>
+using namespace Private;
 
 namespace Private {
 
-class AcScoreSceneData;
+class AcPitchViewData
+{
+public:
+    AcPitchViewData()
+    {}
+};
 
 } // namespace Private
 
-class AcScoreScene : public AcGraphicsScene
+AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
+    :   AcGraphicsView(scene, parent)
+    ,   d(new AcPitchViewData)
+{}
+
+AcPitchView::~AcPitchView()
 {
-    Q_OBJECT
-
-public:
-    AcScoreScene(QObject *parent = 0);
-    virtual ~AcScoreScene();
-
-    static AcScoreScene *instance();
-
-protected slots:
-    virtual void updateScoreProperty(int propertyIndex);
-
-private:
-    Q_DISABLE_COPY(AcScoreScene)
-    Private::AcScoreSceneData *d;
-};
-
-#endif // AC_SCORESCENE_H
+    delete d;
+}

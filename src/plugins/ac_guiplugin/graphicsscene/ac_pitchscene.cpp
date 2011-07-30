@@ -15,68 +15,58 @@
 **
 **************************************************************************/
 
-#include "ac_pitchscene.h"
+#include "ac_scorescene.h"
 #include <ac_score.h>
-#include <ac_viewsettings.h>
 
 using namespace Private;
 
 namespace Private {
 
-class AcPitchSceneData
+class AcScoreSceneData
 {
 public:
-    AcPitchScene *q;
+    AcScoreScene *q;
 
-    AcPitchSceneData(AcPitchScene *q)
+    AcScoreSceneData(AcScoreScene *q)
         :   q(q)
     {}
 
-    qreal height() const
-    {
-        return 127.0f * AcScore::instance()->viewSettings()->pitchScale();
-    }
-
     void init()
     {
-        initSceneRect();
-    }
-
-    void initSceneRect()
-    {
-        q->setSceneRect(0.0f, 0.0f, 10.0f, height());
+        updateSceneRect();
     }
 
     void updateSceneRect()
     {
-        q->setSceneRect(0.0f, 0.0f, q->width(), height());
+        q->setSceneRect(0.0f, 0.0f, AcScore::instance()->length(), 127.0f);
     }
 };
 
 } // namespace Private
 
-static AcPitchScene *instance = 0;
+static AcScoreScene *instance = 0;
 
-AcPitchScene::AcPitchScene(QObject *parent)
-    :   AcScaledScene(parent)
-    ,   d(new AcPitchSceneData(this))
+AcScoreScene::AcScoreScene(QObject *parent)
+    :   AcGraphicsScene(parent)
+    ,   d(new AcScoreSceneData(this))
 {
     ::instance = this;
     d->init();
+    connect(AcScore::instance(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
 }
 
-AcPitchScene::~AcPitchScene()
+AcScoreScene::~AcScoreScene()
 {
     delete d;
 }
 
-AcPitchScene *AcPitchScene::instance()
+AcScoreScene *AcScoreScene::instance()
 {
     return ::instance;
 }
 
-void AcPitchScene::updateViewSettingsProperty(int propertyIndex)
+void AcScoreScene::updateScoreProperty(int propertyIndex)
 {
-    if (AcViewSettings::PitchScale == propertyIndex)
+    if (AcScore::Length == propertyIndex)
         d->updateSceneRect();
 }
