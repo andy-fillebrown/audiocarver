@@ -37,10 +37,8 @@ public:
 
     virtual void update()
     {
-        Q_D(MiSortedListObject);
-        if ((MiObject::ListChanged | MiObject::ListItemSortValueChanged) & d->changedFlags)
-            if (!isSorted())
-                sort();
+        if (isChildChanged() && !isSorted())
+            sort();
         MiListObject::update();
     }
 

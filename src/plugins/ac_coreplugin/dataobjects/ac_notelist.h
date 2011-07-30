@@ -33,7 +33,7 @@ public:
     virtual ~AcNoteListPrivate()
     {}
 
-    QList<AcNote*> &items();
+    QList<AcNote*> &children();
 };
 
 class AcNoteList : public MiSortedListObject
@@ -50,8 +50,8 @@ public:
 
     virtual bool isSorted() const;
     virtual void sort();
-    const QList<AcNote*> &items() const;
-    virtual void addItem(MiObject *item);
+    const QList<AcNote*> &children() const;
+    virtual void addChild(MiObject *item);
 
 private:
     Q_DISABLE_COPY(AcNoteList)

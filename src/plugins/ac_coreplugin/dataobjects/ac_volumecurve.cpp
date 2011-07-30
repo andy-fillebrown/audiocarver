@@ -18,9 +18,16 @@
 #include "ac_volumecurve.h"
 #include <ac_volumepoint.h>
 
-void AcVolumeCurve::addItem(MiObject *item)
+AcVolumeCurve::AcVolumeCurve()
+    :   AcCurve(*(new AcVolumeCurvePrivate(this)))
 {
-    if (!qobject_cast<AcVolumePoint*>(item))
+    d_ptr->addChild(new AcVolumePoint);
+    d_ptr->addChild(new AcVolumePoint);
+}
+
+void AcVolumeCurve::addChild(MiObject *child)
+{
+    if (!qobject_cast<AcVolumePoint*>(child))
         return;
-    MiSortedListObject::addItem(item);
+    MiSortedListObject::addChild(child);
 }

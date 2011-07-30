@@ -20,24 +20,7 @@
 
 #include <mi_object.h>
 
-class MiListObject;
-
-class MI_CORE_EXPORT MiListObjectPrivate : public MiObjectPrivate
-{
-public:
-    MiListObjectPrivate(MiObject *q)
-        :   MiObjectPrivate(q)
-    {}
-
-    virtual ~MiListObjectPrivate()
-    {}
-
-    template <typename T>
-    QList<T*> &items()
-    {
-        return reinterpret_cast<QList<T*>&>(children());
-    }
-};
+#define MiListObjectPrivate MiObjectPrivate
 
 class MI_CORE_EXPORT MiListObject : public MiObject
 {
@@ -47,38 +30,33 @@ public:
     typedef MiObject::PropertyIndex PropertyIndex;
 
     MiListObject()
-        :   MiObject(*(new MiObjectPrivate(this)))
+        :   MiObject(*(new MiListObjectPrivate(this)))
     {}
 
     virtual ~MiListObject()
     {}
 
-    const QList<MiObject*> &items() const
+    const QList<MiObject*> &children() const
     {
-        Q_D(const MiListObject);
-        return d->children();
+        return d_ptr->children<MiObject>();
     }
 
-    virtual void addItem(MiObject *item)
+    virtual void addChild(MiObject *child)
     {
-        if (children().contains(item))
-            return;
-        Q_D(MiListObject);
-        emit aboutToChange();
-        d->addChild(item);
-        emit changed();
-        setChangedFlags(MiObject::ListChanged);
+        d_ptr->addChild(child);
     }
 
-    virtual void removeItem(MiObject *item)
+    virtual void removeChild(MiObject *child)
     {
-        if (!children().contains(item))
-            return;
-        Q_D(MiListObject);
-        emit aboutToChange();
-        d->removeChild(item);
-        emit changed();
-        setChangedFlags(MiObject::ListChanged);
+        d_ptr->removeChild(child);
+    }
+
+    bool isChildChanged() const
+    {
+        foreach (const MiObject *child, children())
+            if (child->isChanged())
+                return true;
+        return false;
     }
 
 protected:

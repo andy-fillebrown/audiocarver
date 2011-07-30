@@ -60,7 +60,8 @@ public:
     enum StretchType {
         StartStretch,
         MiddleStretch,
-        EndStretch
+        EndStretch,
+        NoStretch
     };
 
     AcCurvePoint()
@@ -81,10 +82,8 @@ public:
         Q_D(AcCurvePoint);
         if (type == CurveType(d->curveType))
             return;
-        emit aboutToChange(CurveTypeIndex, d->curveType);
+        changing(CurveTypeIndex);
         d->curveType = type;
-        emit changed(CurveTypeIndex, d->curveType);
-        d->addParentChangedFlags(MiObject::ListItemChanged);
     }
 
     StretchType stretchType() const
@@ -98,10 +97,8 @@ public:
         Q_D(AcCurvePoint);
         if (type == StretchType(d->stretchType))
             return;
-        emit aboutToChange(StretchTypeIndex, d->stretchType);
+        changing(StretchTypeIndex);
         d->stretchType = type;
-        emit changed(StretchTypeIndex, d->stretchType);
-        d->addParentChangedFlags(MiObject::ListItemChanged);
     }
 
     qreal previousX() const
@@ -112,7 +109,7 @@ public:
 
     virtual void update()
     {
-        if (MiObject::ListItemSortValueChanged & changedFlags()) {
+        if (isChanged()) {
             Q_D(AcCurvePoint);
             d->previousX = d->x;
         }
@@ -129,7 +126,5 @@ private:
     Q_DECLARE_PRIVATE(AcCurvePoint)
     Q_DECLARE_FRIENDS(AcCurvePoint)
 };
-
-typedef QList<AcCurvePoint*> AcCurvePointList;
 
 #endif // AC_CURVEPOINT_H

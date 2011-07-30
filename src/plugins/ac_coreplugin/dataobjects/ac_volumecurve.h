@@ -19,6 +19,7 @@
 #define AC_VOLUMECURVE_H
 
 #include <ac_curve.h>
+#include <QMetaType>
 
 #define AcVolumeCurvePrivate AcCurvePrivate
 
@@ -27,14 +28,12 @@ class AcVolumeCurve : public AcCurve
     Q_OBJECT
 
 public:
-    AcVolumeCurve()
-        :   AcCurve(*(new AcVolumeCurvePrivate(this)))
-    {}
+    AcVolumeCurve();
 
     virtual ~AcVolumeCurve()
     {}
 
-    virtual void addItem(MiObject *item);
+    virtual void addChild(MiObject *child);
 
 private:
     Q_DISABLE_COPY(AcVolumeCurve)

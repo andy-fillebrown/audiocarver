@@ -67,9 +67,8 @@ public:
             length = 0.0f;
         if (length == d->length)
             return;
-        emit aboutToChange(LengthIndex, d->length);
+        changing(LengthIndex);
         d->length = length;
-        emit changed(LengthIndex, d->length);
     }
 
     AcTrackList *tracks() const

@@ -28,14 +28,19 @@ class AcTrackList : public MiListObject
     Q_OBJECT
 
 public:
-    AcTrackList()
-        :   MiListObject(*(new AcTrackListPrivate(this)))
-    {}
+    AcTrackList();
 
     virtual ~AcTrackList()
     {}
 
-    virtual void addItem(MiObject *item);
+    virtual void addChild(MiObject *child);
+
+    virtual void removeChild(MiObject *child)
+    {
+        if (QObject::children().count() == 1)
+            return;
+        MiListObject::removeChild(child);
+    }
 
 private:
     Q_DISABLE_COPY(AcTrackList)

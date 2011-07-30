@@ -23,14 +23,14 @@ static bool lessThan(const AcNote *a, const AcNote *b)
     return a->isLessThan(b);
 }
 
-QList<AcNote*> &AcNoteListPrivate::items()
+QList<AcNote*> &AcNoteListPrivate::children()
 {
-    return MiSortedListObjectPrivate::items<AcNote>();
+    return MiObjectPrivate::children<AcNote>();
 }
 
 bool AcNoteList::isSorted() const
 {
-    const QList<AcNote*> &notes = items();
+    const QList<AcNote*> &notes = children();
     for (int i = 1;  i < notes.count();  ++i)
         if (notes[i]->isLessThan(notes[i - 1]))
             return false;
@@ -42,17 +42,17 @@ void AcNoteList::sort()
     if (isSorted())
         return;
     Q_D(AcNoteList);
-    qSort(d->items(), lessThan);
+    qSort(d->children(), lessThan);
 }
 
-const QList<AcNote*> &AcNoteList::items() const
+const QList<AcNote*> &AcNoteList::children() const
 {
-    return reinterpret_cast<const QList<AcNote*>&>(children());
+    return reinterpret_cast<const QList<AcNote*>&>(d_ptr->children<AcNote>());
 }
 
-void AcNoteList::addItem(MiObject *item)
+void AcNoteList::addChild(MiObject *child)
 {
-    if (!qobject_cast<AcNote*>(item))
+    if (!qobject_cast<AcNote*>(child))
         return;
-    MiListObject::addItem(item);
+    MiSortedListObject::addChild(child);
 }

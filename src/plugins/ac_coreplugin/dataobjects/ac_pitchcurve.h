@@ -19,6 +19,7 @@
 #define AC_PITCHCURVE_H
 
 #include <ac_curve.h>
+#include <QMetaType>
 
 #define AcPitchCurvePrivate AcCurvePrivate
 
@@ -32,7 +33,7 @@ public:
     virtual ~AcPitchCurve()
     {}
 
-    virtual void addItem(MiObject *item);
+    virtual void addChild(MiObject *child);
 
 private:
     Q_DISABLE_COPY(AcPitchCurve)

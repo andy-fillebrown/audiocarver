@@ -23,26 +23,25 @@ static bool lessThan(const AcPoint *a, const AcPoint *b)
     return a->isLessThan(b);
 }
 
-AcCurvePointList &AcCurvePrivate::items()
+QList<AcCurvePoint*> &AcCurvePrivate::children()
 {
-    return MiSortedListObjectPrivate::items<AcCurvePoint>();
+    return MiObjectPrivate::children<AcCurvePoint>();
 }
 
-const AcCurvePointList &AcCurve::items() const
+const QList<AcCurvePoint*> &AcCurve::children() const
 {
-    Q_D(const AcCurve);
-    return reinterpret_cast<const AcCurvePointList&>(d->children());
+    return reinterpret_cast<const QList<AcCurvePoint*>&>(d_ptr->children<AcCurvePoint>());
 }
 
 qreal AcCurve::duration() const
 {
-    const AcCurvePointList &pts = items();
+    const QList<AcCurvePoint*> &pts = children();
     return pts.last()->x() - pts.first()->x();
 }
 
 bool AcCurve::isSorted() const
 {
-    const AcCurvePointList &pts = items();
+    const QList<AcCurvePoint*> &pts = children();
     for (int i = 1;  i < pts.count();  ++i)
         if (pts[i]->isLessThan(pts[i - 1]))
             return false;
@@ -54,60 +53,47 @@ void AcCurve::sort()
     if (isSorted())
         return;
     Q_D(AcCurve);
-    qSort(d->items(), lessThan);
+    qSort(d->children(), lessThan);
 }
 
-void AcCurve::addItem(MiObject *item)
+void AcCurve::addChild(MiObject *item)
 {
     if (!qobject_cast<AcCurvePoint*>(item))
         return;
-    MiSortedListObject::addItem(item);
-}
-
-void AcCurve::removeItem(MiObject *item)
-{
-    if (children().count() <= 2)
-        return;
-    MiSortedListObject::removeItem(item);
+    MiSortedListObject::addChild(item);
 }
 
 void AcCurve::update()
 {
-    if (MiObject::ListItemChanged & changedFlags()) {
-        const AcCurvePointList &pts = items();
+    if (isChildChanged()) {
+        const QList<AcCurvePoint*> &pts = children();
         AcCurvePoint *startPt = pts.first();
         AcCurvePoint *endPt = pts.last();
-        startPt->setCurveType(AcCurvePoint::LinearCurve);
-        startPt->setStretchType(AcCurvePoint::StartStretch);
-        endPt->setCurveType(AcCurvePoint::LinearCurve);
-        endPt->setStretchType(AcCurvePoint::EndStretch);
         const qreal startX = startPt->x();
         const qreal startPrevX = startPt->previousX();
+        const qreal startOffset = startX - startPrevX;
         const qreal endX = endPt->x();
         const qreal endPrevX = endPt->previousX();
+        const qreal endOffset = endX - endPrevX;
         const qreal middleStretchFactor = (endPrevX - startPrevX) / (endX - startX);
-        AcCurvePoint::CurveType prevCurveType = AcCurvePoint::LinearCurve;
         for (int i = 1;  i < pts.count() - 1;  ++i) {
             AcCurvePoint *pt = pts[i];
             if (pt->previousX() == pt->x()) {
                 switch (pt->stretchType()) {
                 case AcCurvePoint::StartStretch:
-                    pt->setX(pt->x() + startX - startPrevX);
+                    pt->setX(pt->x() + startOffset);
                     break;
                 case AcCurvePoint::MiddleStretch:
                     pt->setX(pt->x() + (middleStretchFactor * (pt->x() - startPt->x())));
                     break;
                 case AcCurvePoint::EndStretch:
-                    pt->setX(pt->x() + endX - endPrevX);
+                    pt->setX(pt->x() + endOffset);
+                    break;
+                default:
                     break;
                 }
             }
-            if (AcCurvePoint::BezierCurve == pt->curveType() && AcCurvePoint::BezierCurve == prevCurveType)
-                pt->setCurveType(AcCurvePoint::LinearCurve);
-            prevCurveType = pt->curveType();
         }
-        foreach (AcCurvePoint *pt, pts)
-            pt->update();
     }
     MiSortedListObject::update();
 }

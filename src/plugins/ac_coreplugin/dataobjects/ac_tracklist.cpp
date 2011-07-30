@@ -18,9 +18,15 @@
 #include "ac_tracklist.h"
 #include <ac_track.h>
 
-void AcTrackList::addItem(MiObject *item)
+AcTrackList::AcTrackList()
+    :   MiListObject(*(new AcTrackListPrivate(this)))
 {
-    if (!qobject_cast<AcTrack*>(item))
+    d_ptr->addChild(new AcTrack);
+}
+
+void AcTrackList::addChild(MiObject *child)
+{
+    if (!qobject_cast<AcTrack*>(child))
         return;
-    MiListObject::addItem(item);
+    MiListObject::addChild(child);
 }

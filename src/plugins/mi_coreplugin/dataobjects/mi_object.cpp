@@ -17,6 +17,18 @@
 
 #include "mi_object.h"
 #include <QMetaProperty>
+#include <QVariant>
+
+void MiObjectPrivate::beginChange(int i)
+{
+    q_ptr->emit aboutToChange(i, q_ptr->propertyValue(i));
+}
+
+void MiObjectPrivate::endChange(int i)
+{
+    q_ptr->emit changed(i, q_ptr->propertyValue(i));
+    setChangedFlag();
+}
 
 QString MiObject::propertyType(int i) const
 {

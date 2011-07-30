@@ -43,7 +43,7 @@ public:
     virtual ~AcNote()
     {}
 
-    virtual bool isLessThan(const AcNote *other) const;
+    bool isLessThan(const AcNote *other) const;
 
 private:
     Q_DISABLE_COPY(AcNote)

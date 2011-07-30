@@ -21,13 +21,13 @@
 AcPitchCurve::AcPitchCurve()
 :   AcCurve(*(new AcPitchCurvePrivate(this)))
 {
-    addItem(new AcPitchPoint);
-    addItem(new AcPitchPoint);
+    d_ptr->addChild(new AcPitchPoint);
+    d_ptr->addChild(new AcPitchPoint);
 }
 
-void AcPitchCurve::addItem(MiObject *item)
+void AcPitchCurve::addChild(MiObject *child)
 {
-    if (!qobject_cast<AcPitchPoint*>(item))
+    if (!qobject_cast<AcPitchPoint*>(child))
         return;
-    MiSortedListObject::addItem(item);
+    MiSortedListObject::addChild(child);
 }

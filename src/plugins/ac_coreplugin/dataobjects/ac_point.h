@@ -20,6 +20,7 @@
 
 #include <ac_core_global.h>
 #include <mi_object.h>
+#include <QVariant>
 
 class AcPointPrivate : public MiObjectPrivate
 {
@@ -70,11 +71,8 @@ public:
             x = 0.0f;
         if (d->x == x)
             return;
-        aboutToChange(XIndex, d->x);
+        changing(XIndex);
         d->x = x;
-        changed(XIndex, d->x);
-        setChangedFlag(MiObject::ListItemSortValueChanged);
-        d->addParentChangedFlags(MiObject::ListItemSortValueChanged);
     }
 
     qreal y() const
@@ -90,10 +88,8 @@ public:
             y = 0.0f;
         if (d->y == y)
             return;
-        aboutToChange(YIndex, d->x);
+        changing(YIndex);
         d->y = y;
-        changed(YIndex, d->x);
-        d->addParentChangedFlags(MiObject::ListItemSortValueChanged);
     }
 
     bool isLessThan(const AcPoint *other) const

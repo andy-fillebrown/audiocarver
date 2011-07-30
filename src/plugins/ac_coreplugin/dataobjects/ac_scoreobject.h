@@ -77,9 +77,8 @@ public:
             volume = 1.0f;
         if (volume == d->volume)
             return;
-        emit aboutToChange(VolumeIndex, d->volume);
+        changing(VolumeIndex);
         d->volume = volume;
-        emit changed(VolumeIndex, d->volume);
     }
 
     QString color() const
@@ -93,9 +92,8 @@ public:
         Q_D(AcScoreObject);
         if (color == d->color)
             return;
-        emit aboutToChange(ColorIndex, d->color);
+        changing(ColorIndex);
         d->color = color;
-        emit changed(ColorIndex, d->color);
     }
 
     AcPitchCurve *pitchCurve() const
