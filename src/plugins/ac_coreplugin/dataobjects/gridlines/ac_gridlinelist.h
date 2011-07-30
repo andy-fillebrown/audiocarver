@@ -50,4 +50,19 @@ private:
     Q_DECLARE_PRIVATE(AcGridLineList)
 };
 
+class AcTimeLineList : public AcGridLineList
+{
+    Q_OBJECT
+};
+
+class AcPitchLineList : public AcGridLineList
+{
+    Q_OBJECT
+};
+
+class AcVolumeLineList : public AcGridLineList
+{
+    Q_OBJECT
+};
+
 #endif // AC_GRIDLINELIST_H
