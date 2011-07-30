@@ -18,11 +18,6 @@
 #include "ac_curve.h"
 #include <ac_curvepoint.h>
 
-static bool lessThan(const AcPoint *a, const AcPoint *b)
-{
-    return a->isLessThan(b);
-}
-
 QList<AcCurvePoint*> &AcCurvePrivate::children()
 {
     return MiObjectPrivate::children<AcCurvePoint>();
@@ -41,19 +36,14 @@ qreal AcCurve::duration() const
 
 bool AcCurve::isSorted() const
 {
-    const QList<AcCurvePoint*> &pts = children();
-    for (int i = 1;  i < pts.count();  ++i)
-        if (pts[i]->isLessThan(pts[i - 1]))
-            return false;
-    return true;
+    Q_D(const AcCurve);
+    return d->isSorted<AcCurvePoint>();
 }
 
 void AcCurve::sort()
 {
-    if (isSorted())
-        return;
     Q_D(AcCurve);
-    qSort(d->children(), lessThan);
+    d->sort<AcCurvePoint>();
 }
 
 void AcCurve::addChild(MiObject *item)

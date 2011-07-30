@@ -20,7 +20,40 @@
 
 #include <mi_listobject.h>
 
-#define MiSortedListObjectPrivate MiListObjectPrivate
+class MiSortedListObjectPrivate : public MiListObjectPrivate
+{
+public:
+    MiSortedListObjectPrivate(MiListObject *q)
+        :   MiListObjectPrivate(q)
+    {}
+
+    virtual ~MiSortedListObjectPrivate()
+    {}
+
+    template <typename T>
+    bool isSorted() const
+    {
+        const QList<T*> &children = this->children<T>();
+        for (int i = 1;  i < children.count();  ++i)
+            if (children[i]->isLessThan(children[i - 1]))
+                return false;
+        return true;
+    }
+
+    template <typename T>
+    void sort()
+    {
+        if (isSorted<T>())
+            return;
+        qSort(children<T>(), lessThan<T>);
+    }
+
+    template <typename T>
+    static bool lessThan(const T *a, const T *b)
+    {
+        return a->isLessThan(b);
+    }
+};
 
 class MI_CORE_EXPORT MiSortedListObject : public MiListObject
 {

@@ -18,11 +18,6 @@
 #include "ac_notelist.h"
 #include <ac_note.h>
 
-static bool lessThan(const AcNote *a, const AcNote *b)
-{
-    return a->isLessThan(b);
-}
-
 QList<AcNote*> &AcNoteListPrivate::children()
 {
     return MiObjectPrivate::children<AcNote>();
@@ -30,19 +25,14 @@ QList<AcNote*> &AcNoteListPrivate::children()
 
 bool AcNoteList::isSorted() const
 {
-    const QList<AcNote*> &notes = children();
-    for (int i = 1;  i < notes.count();  ++i)
-        if (notes[i]->isLessThan(notes[i - 1]))
-            return false;
-    return true;
+    Q_D(const AcNoteList);
+    return d->isSorted<AcNote>();
 }
 
 void AcNoteList::sort()
 {
-    if (isSorted())
-        return;
     Q_D(AcNoteList);
-    qSort(d->children(), lessThan);
+    d->sort<AcNote>();
 }
 
 const QList<AcNote*> &AcNoteList::children() const
