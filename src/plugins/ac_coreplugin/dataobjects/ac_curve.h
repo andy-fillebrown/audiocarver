@@ -35,11 +35,12 @@ public:
     virtual ~AcCurve()
     {}
 
-    const QList<AcCurvePoint*> &children() const;
     qreal duration() const;
 
     virtual bool isSorted() const;
     virtual void sort();
+
+    const QList<AcCurvePoint*> &children() const;
 
     virtual void removeChild(MiObject *child)
     {

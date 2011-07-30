@@ -18,11 +18,6 @@
 #include "ac_curve.h"
 #include <ac_curvepoint.h>
 
-const QList<AcCurvePoint*> &AcCurve::children() const
-{
-    return reinterpret_cast<const QList<AcCurvePoint*>&>(d_ptr->children<AcCurvePoint>());
-}
-
 qreal AcCurve::duration() const
 {
     const QList<AcCurvePoint*> &pts = children();
@@ -39,6 +34,11 @@ void AcCurve::sort()
 {
     Q_D(AcCurve);
     d->sort<AcCurvePoint>();
+}
+
+const QList<AcCurvePoint*> &AcCurve::children() const
+{
+    return reinterpret_cast<const QList<AcCurvePoint*>&>(d_ptr->children<AcCurvePoint>());
 }
 
 void AcCurve::update()

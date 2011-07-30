@@ -50,6 +50,7 @@ public:
 
     virtual bool isSorted() const;
     virtual void sort();
+
     const QList<AcNote*> &children() const;
     virtual void addChild(MiObject *item);
 
