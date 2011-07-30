@@ -21,20 +21,7 @@
 #include <ac_core_global.h>
 #include <mi_sortedlistobject.h>
 
-class AcCurvePoint;
-
-class AcCurvePrivate : public MiSortedListObjectPrivate
-{
-public:
-    AcCurvePrivate(MiSortedListObject *q)
-        :   MiSortedListObjectPrivate(q)
-    {}
-
-    virtual ~AcCurvePrivate()
-    {}
-
-    QList<AcCurvePoint*> &children();
-};
+#define AcCurvePrivate MiSortedListObjectPrivate
 
 class AcCurve : public MiSortedListObject
 {
@@ -51,7 +38,6 @@ public:
 
     virtual bool isSorted() const;
     virtual void sort();
-    virtual void addChild(MiObject *child);
 
     virtual void removeChild(MiObject *child)
     {
