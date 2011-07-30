@@ -20,7 +20,6 @@
 
 #include <ac_core_global.h>
 #include <mi_object.h>
-#include <QVariant>
 
 class AcPointPrivate : public MiObjectPrivate
 {
