@@ -19,10 +19,7 @@
 #define AC_GRIDLINE_H
 
 #include <ac_core_global.h>
-#include <mi_objectlist.h>
-#include <QMetaType>
-
-namespace Private {
+#include <mi_scopedchange.h>
 
 class AcGridLinePrivate : public MiObjectPrivate
 {
@@ -44,29 +41,25 @@ public:
     {}
 };
 
-} // namespace Private
-
-class AC_CORE_EXPORT AcGridLine : public MiListObject
+class AC_CORE_EXPORT AcGridLine : public MiObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(AcGridLine)
-    Q_DECLARE_PRIVATE(Private::AcGridLine)
     Q_PROPERTY(qreal location READ location WRITE setLocation)
     Q_PROPERTY(QString label READ label WRITE setLabel)
     Q_PROPERTY(int priority READ priority WRITE setPriority)
     Q_PROPERTY(QString color READ color WRITE setColor)
 
 public:
-    enum Properties {
-        Location = MiListObject::PropertyCount,
-        Label,
-        Priority,
-        Color,
+    enum PropertyIndex {
+        LocationIndex = MiObject::PropertyCount,
+        LabelIndex,
+        PriorityIndex,
+        ColorIndex,
         PropertyCount
     };
 
-    explicit AcGridLine(QObject *parent)
-        :   MiListObject(*(new Private::AcGridLinePrivate(this)), parent)
+    AcGridLine()
+        :   MiObject(*(new AcGridLinePrivate(this)))
     {}
 
     virtual ~AcGridLine()
@@ -74,71 +67,66 @@ public:
 
     qreal location() const
     {
-        Q_D(const Private::AcGridLine);
+        Q_D(const AcGridLine);
         return d->location;
     }
 
     void setLocation(qreal location)
     {
-        Q_D(Private::AcGridLine);
+        Q_D(AcGridLine);
         if (location < 0.0f)
             location = 0.0f;
         if (d->location == location)
             return;
-        beginChangeProperty(Location);
+        changing(LocationIndex);
         d->location = location;
-        endChangeProperty(Location);
-        sortList();
     }
 
     const QString &label() const
     {
-        Q_D(const Private::AcGridLine);
+        Q_D(const AcGridLine);
         return d->label;
     }
 
     void setLabel(const QString &label)
     {
-        Q_D(Private::AcGridLine);
+        Q_D(AcGridLine);
         if (d->label == label)
             return;
-        beginChangeProperty(Label);
+        changing(LabelIndex);
         d->label = label;
-        endChangeProperty(Label);
     }
 
     int priority() const
     {
-        Q_D(const Private::AcGridLine);
+        Q_D(const AcGridLine);
         return d->priority;
     }
 
     void setPriority(int priority)
     {
-        Q_D(Private::AcGridLine);
+        Q_D(AcGridLine);
         if (priority < 0)
             priority = 0;
         if (d->priority == priority)
             return;
-        beginChangeProperty(Priority);
+        changing(PriorityIndex);
         d->priority = priority;
-        endChangeProperty(Priority);
     }
 
     const QString &color() const
     {
-        Q_D(const Private::AcGridLine);
+        Q_D(const AcGridLine);
         return d->color;
     }
 
     void setColor(const QString &color)
     {
-        Q_D(Private::AcGridLine);
+        Q_D(AcGridLine);
         if (d->color == color)
             return;
-        beginChangeProperty(Color);
+        changing(ColorIndex);
         d->color = color;
-        endChangeProperty(Color);
     }
 
     void set(qreal location, const QString &label, int priority, const QString &color = QString())
@@ -158,15 +146,14 @@ public:
             setColor(color);
     }
 
-    static bool lessThan(AcGridLine *a, AcGridLine *b)
+    bool isLessThan(const AcGridLine *other) const
     {
-        return a->location() < b->location();
+        return location() < other->location();
     }
+
+private:
+    Q_DISABLE_COPY(AcGridLine)
+    Q_DECLARE_PRIVATE(AcGridLine)
 };
-
-typedef MiSortedList<AcGridLine> AcGridLineList;
-typedef MiList<AcGridLineList> AcGridLinesList;
-
-Q_DECLARE_METATYPE(AcGridLinesList*)
 
 #endif // AC_GRIDLINE_H
