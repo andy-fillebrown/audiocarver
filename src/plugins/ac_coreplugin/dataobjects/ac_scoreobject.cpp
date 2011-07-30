@@ -25,6 +25,9 @@ AcScoreObjectPrivate::AcScoreObjectPrivate(MiObject *q)
     ,   volume(0.9f)
     ,   pitchCurve(new AcPitchCurve)
     ,   volumeCurve(new AcVolumeCurve)
+{}
+
+void AcScoreObjectPrivate::init()
 {
     addChild(pitchCurve);
     addChild(volumeCurve);

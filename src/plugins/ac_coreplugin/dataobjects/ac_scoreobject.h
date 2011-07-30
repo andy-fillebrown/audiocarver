@@ -36,6 +36,8 @@ public:
 
     virtual ~AcScoreObjectPrivate()
     {}
+
+    void init();
 };
 
 class AC_CORE_EXPORT AcScoreObject : public MiObject
@@ -57,7 +59,10 @@ public:
 
     AcScoreObject()
     :   MiObject(*(new AcScoreObjectPrivate(this)))
-    {}
+    {
+        Q_D(AcScoreObject);
+        d->init();
+    }
 
     virtual ~AcScoreObject()
     {}

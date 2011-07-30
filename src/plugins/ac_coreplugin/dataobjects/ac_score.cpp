@@ -31,6 +31,9 @@ AcScorePrivate::AcScorePrivate(AcScoreObject *q)
     ,   settingsObjects(new MiListObject)
     ,   gridSettings(new AcGridSettings)
     ,   viewSettings(new AcViewSettings)
+{}
+
+void AcScorePrivate::init()
 {
     addChild(tracks);
     addChild(gridLineLists);

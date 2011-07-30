@@ -21,6 +21,9 @@
 AcTrackPrivate::AcTrackPrivate(AcScoreObject *q)
     :   AcScoreObjectPrivate(q)
     ,   notes(new AcNoteList)
+{}
+
+void AcTrackPrivate::init()
 {
     addChild(notes);
 }

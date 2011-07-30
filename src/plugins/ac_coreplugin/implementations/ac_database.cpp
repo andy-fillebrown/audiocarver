@@ -20,7 +20,7 @@
 //#include <ac_note.h>
 //#include <ac_pitchcurve.h>
 //#include <ac_point.h>
-//#include <ac_score.h>
+#include <ac_score.h>
 //#include <ac_track.h>
 //#include <ac_tuningline.h>
 //#include <ac_valueline.h>
@@ -38,12 +38,12 @@ class AcDatabaseImplData
 {
 public:
     AcDatabaseImpl *q;
-//    AcScore *score;
+    AcScore *score;
     QString fileName;
 
     AcDatabaseImplData(AcDatabaseImpl *q)
         :   q(q)
-//        ,   score(new AcScore(q))
+        ,   score(new AcScore)
     {
 //        score->tuningLines().add()->set(127.0f, "", 0, Qt::black);
 //        score->tuningLines().add()->set(0.0f, "", 0, Qt::black);
@@ -106,6 +106,11 @@ public:
 //            volumePointC->setX(1.0f);
 //            volumePointC->setY(0.0f);
 //        }
+    }
+
+    virtual ~AcDatabaseImplData()
+    {
+        delete score;
     }
 };
 

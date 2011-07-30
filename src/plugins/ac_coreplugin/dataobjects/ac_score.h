@@ -43,6 +43,8 @@ public:
 
     virtual ~AcScorePrivate()
     {}
+
+    void init();
 };
 
 class AcScore : public AcScoreObject
@@ -62,7 +64,10 @@ public:
 
     AcScore()
         :   AcScoreObject(*(new AcScorePrivate(this)))
-    {}
+    {
+        Q_D(AcScore);
+        d->init();
+    }
 
     virtual ~AcScore()
     {}

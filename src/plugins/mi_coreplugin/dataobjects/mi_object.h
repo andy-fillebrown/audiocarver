@@ -162,7 +162,7 @@ const QList<T*> &MiObjectPrivate::children() const
 template <typename T> inline
 QList<T*> &MiObjectPrivate::children()
 {
-    return const_cast<QList<T*>&>(children<T>());
+    return reinterpret_cast<QList<T*>&>(const_cast<QObjectList&>(q_ptr->children()));
 }
 
 inline

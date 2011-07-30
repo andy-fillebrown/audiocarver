@@ -31,6 +31,8 @@ public:
 
     virtual ~AcTrackPrivate()
     {}
+
+    void init();
 };
 
 class AcTrack : public AcScoreObject
@@ -41,7 +43,10 @@ class AcTrack : public AcScoreObject
 public:
     AcTrack()
         :   AcScoreObject(*(new AcTrackPrivate(this)))
-    {}
+    {
+        Q_D(AcTrack);
+        d->init();
+    }
 
     virtual ~AcTrack()
     {}
