@@ -40,6 +40,6 @@ SOURCES += \
     \
     interfaces/mi_idatabase.cpp \
     \
-    tools/mi_scopedsignalblocker.cpp \
+#    tools/mi_scopedsignalblocker.cpp \
     \
     mi_coreplugin.cpp \
