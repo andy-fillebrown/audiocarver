@@ -66,7 +66,8 @@ public:
 
     void addItem(AcGraphicsItem *item);
 
-    template <typename T> void addItems(const QList<T*> &items)
+    template <typename T>
+    void addItems(const QList<T*> &items)
     {
         foreach (AcGraphicsItem *item, items)
             addItem(item);
