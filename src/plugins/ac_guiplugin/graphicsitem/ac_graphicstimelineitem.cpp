@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsbarlineitem.h"
-#include <ac_barline.h>
+#include "ac_graphicstimelineitem.h"
+#include <ac_gridline.h>
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 #include <QColor>
@@ -24,26 +24,23 @@
 #include <QGraphicsLineItem>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
+#include <QPen>
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsBarLineItemPrivate : public AcGraphicsGridLineItemData
+class AcGraphicsTimeLineItemPrivate : public AcGraphicsGridLineItemPrivate
 {
 public:
-    QGraphicsLineItem *controlLineItem;
+    QGraphicsLineItem *volumeLineItem;
 
-    AcGraphicsBarLineItemPrivate(AcBarLine *barLine)
-        :   controlLineItem(new QGraphicsLineItem)
+    AcGraphicsTimeLineItemPrivate(AcGridLine *gridLine)
+        :   volumeLineItem(new QGraphicsLineItem)
     {
-        databaseObject = barLine;
+        dataObject = gridLine;
         update();
     }
 
-    ~AcGraphicsBarLineItemPrivate()
+    ~AcGraphicsTimeLineItemPrivate()
     {
-        delete controlLineItem;
+        delete volumeLineItem;
     }
 
     void update()
@@ -54,7 +51,7 @@ public:
 
     void updateColor()
     {
-        controlLineItem->setPen(gridLine()->color());
+        volumeLineItem->setPen(QPen(QColor(QRgb(gridLine()->color()))));
     }
 
     void updateLocation()
@@ -62,33 +59,31 @@ public:
         const AcGridLine *gridLine = this->gridLine();
         const qreal location = gridLine->location();
         lineItem->setLine(location, 0.0f, location, 127.0f);
-        controlLineItem->setLine(location, 0.0f, location, 1.0f);
+        volumeLineItem->setLine(location, 0.0f, location, 1.0f);
         const qreal scale = score()->viewSettings()->timeScale();
         const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
         const qreal x = (location * scale) - (labelRect.width() / 2.0f);
-        const qreal y = (timeScene()->height() / 2.0f) - (labelRect.height() / 2.0f);
+        const qreal y = (timeLabelScene()->height() / 2.0f) - (labelRect.height() / 2.0f);
         labelItem->setPos(x, y);
     }
 };
 
-} // namespace Private
-
-AcGraphicsBarLineItem::AcGraphicsBarLineItem(AcBarLine *barLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsBarLineItemPrivate(barLine)), parent)
+AcGraphicsTimeLineItem::AcGraphicsTimeLineItem(AcGridLine *gridLine, QObject *parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsTimeLineItemPrivate(gridLine)), parent)
 {}
 
-AcGraphicsBarLineItem::~AcGraphicsBarLineItem()
+AcGraphicsTimeLineItem::~AcGraphicsTimeLineItem()
 {}
 
-QGraphicsItem *AcGraphicsBarLineItem::sceneItem(SceneType sceneType) const
+QGraphicsItem *AcGraphicsTimeLineItem::sceneItem(SceneType sceneType) const
 {
-    Q_D(const AcGraphicsBarLineItem);
+    Q_D(const AcGraphicsTimeLineItem);
     switch (sceneType) {
-    case ScoreScene:
+    case PitchScene:
         return d->lineItem;
-    case ControlScene:
-        return d->controlLineItem;
-    case TimeScene:
+    case VolumeScene:
+        return d->volumeLineItem;
+    case TimeLabelScene:
         return d->labelItem;
     default:
         break;
@@ -96,23 +91,23 @@ QGraphicsItem *AcGraphicsBarLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsBarLineItem::updateViewSettingsProperty(int propertyIndex)
+void AcGraphicsTimeLineItem::updateViewSettings(int i)
 {
-    if (AcViewSettings::TimeScale == propertyIndex) {
-        Q_D(AcGraphicsBarLineItem);
+    if (AcViewSettings::TimeScaleIndex == i) {
+        Q_D(AcGraphicsTimeLineItem);
         d->updateLocation();
     }
 }
 
-void AcGraphicsBarLineItem::updateDatabaseObjectProperty(int propertyIndex)
+void AcGraphicsTimeLineItem::updateDataObject(int i)
 {
-    Q_D(AcGraphicsBarLineItem);
-    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyIndex);
-    switch (propertyIndex) {
-    case AcBarLine::Color:
+    Q_D(AcGraphicsTimeLineItem);
+    AcGraphicsGridLineItem::updateDataObject(i);
+    switch (i) {
+    case AcGridLine::ColorIndex:
         d->updateColor();
         break;
-    case AcBarLine::Location:
+    case AcGridLine::LocationIndex:
         d->updateLocation();
         break;
     default:

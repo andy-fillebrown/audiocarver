@@ -25,47 +25,45 @@ class QGraphicsLineItem;
 class QGraphicsTextItem;
 class QRectF;
 
-namespace Private {
-
-class AcGraphicsGridLineItemData : public AcGraphicsItemData
+class AcGraphicsGridLineItemPrivate : public AcGraphicsItemPrivate
 {
 public:
     QGraphicsLineItem *lineItem;
     QGraphicsTextItem *labelItem;
 
-    AcGraphicsGridLineItemData();
-    virtual ~AcGraphicsGridLineItemData();
+    AcGraphicsGridLineItemPrivate();
+    virtual ~AcGraphicsGridLineItemPrivate();
 
     const AcGridLine *gridLine() const;
+
+    void update();
+    void updateFont();
+    void updateLabel();
+    void updateColor();
 };
-
-class AcGraphicsGridLineItemPrivate;
-
-} // namespace Private
 
 class AcGraphicsGridLineItem : public AcGraphicsItem
 {
     Q_OBJECT
 
-protected:
-    AcGraphicsGridLineItem(Private::AcGraphicsGridLineItemData &dd, QObject *parent = 0);
-
 public:
-    virtual ~AcGraphicsGridLineItem();
+    virtual ~AcGraphicsGridLineItem()
+    {}
 
     int priority() const;
     QRectF labelRect() const;
 
 protected slots:
-    virtual void updateFontSettingsProperty(int propertyIndex);
-    virtual void updateViewSettingsProperty(int propertyIndex) = 0;
+    virtual void updateFontSettings(int i);
+    virtual void updateViewSettings(int i) = 0;
 
 protected:
-    virtual void updateDatabaseObjectProperty(int propertyIndex);
+    AcGraphicsGridLineItem(AcGraphicsGridLineItemPrivate &dd, QObject *parent = 0);
+    virtual void updateDataObject(int i);
 
 private:
     Q_DISABLE_COPY(AcGraphicsGridLineItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsGridLineItem)
+    Q_DECLARE_PRIVATE(AcGraphicsGridLineItem)
 };
 
 #endif // AC_GRAPHICSGRIDLINEITEM_H

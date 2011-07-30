@@ -18,7 +18,6 @@
 #ifndef AC_GRAPHICSITEM_H
 #define AC_GRAPHICSITEM_H
 
-#include <QObject>
 #include <ac_scene_util.h>
 
 class AcScore;
@@ -28,41 +27,36 @@ class QFontMetrics;
 class QGraphicsItem;
 class QGraphicsScene;
 
-namespace Private {
-
-class AcGraphicsItemData
+class AcGraphicsItemPrivate
 {
 public:
-    MiObject *databaseObject;
+    MiObject *dataObject;
 
-    AcGraphicsItemData() : databaseObject(0) {}
-    virtual ~AcGraphicsItemData() {}
+    AcGraphicsItemPrivate()
+        :   dataObject(0)
+    {}
+
+    virtual ~AcGraphicsItemPrivate()
+    {}
 
     const AcScore *score() const;
     const QFont font() const;
     const QFontMetrics &fontMetrics() const;
-    const QGraphicsScene *scoreScene() const;
-    const QGraphicsScene *controlScene() const;
-    const QGraphicsScene *timeScene() const;
     const QGraphicsScene *pitchScene() const;
-    const QGraphicsScene *valueScene() const;
+    const QGraphicsScene *volumeScene() const;
+    const QGraphicsScene *timeLabelScene() const;
+    const QGraphicsScene *pitchLabelScene() const;
+    const QGraphicsScene *volumeLabelScene() const;
 };
-
-class AcGraphicsItemPrivate;
-
-} // namespace Private
 
 class AcGraphicsItem : public QObject
 {
     Q_OBJECT
 
-protected:
-    AcGraphicsItem(Private::AcGraphicsItemData &dd, QObject *parent = 0);
-
 public:
     virtual ~AcGraphicsItem();
 
-    void setDatabaseObject(MiObject *object);
+    void setDataObject(MiObject *object);
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const = 0;
 
@@ -71,20 +65,27 @@ public:
     void hide();
 
     void addItem(AcGraphicsItem *item);
-    template <typename T> void addItems(const QList<T*> &items) { foreach (AcGraphicsItem *item, items) addItem(item); }
+
+    template <typename T> void addItems(const QList<T*> &items)
+    {
+        foreach (AcGraphicsItem *item, items)
+            addItem(item);
+    }
 
     virtual void highlight();
     virtual void unhighlight();
 
 protected slots:
-    virtual void updateDatabaseObjectProperty(int propertyIndex) = 0;
+    virtual void updateDataObject(int i) = 0;
+
+protected:
+    AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent = 0);
+
+    AcGraphicsItemPrivate *d_ptr;
 
 private:
     Q_DISABLE_COPY(AcGraphicsItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsItem)
-
-protected:
-    Private::AcGraphicsItemData *d_ptr;
+    Q_DECLARE_PRIVATE(AcGraphicsItem)
 };
 
 #endif // AC_GRAPHICSITEM_H

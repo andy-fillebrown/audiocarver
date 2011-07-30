@@ -20,6 +20,7 @@
 #include <ac_gridsettings.h>
 #include <ac_tracklist.h>
 #include <ac_viewsettings.h>
+#include <mi_fontsettings.h>
 
 AcScorePrivate::AcScorePrivate(AcScoreObject *q)
     :   AcScoreObjectPrivate(q)
@@ -29,6 +30,7 @@ AcScorePrivate::AcScorePrivate(AcScoreObject *q)
     ,   pitchLines(new AcPitchLineList)
     ,   volumeLines(new AcVolumeLineList)
     ,   settingsObjects(new MiListObject)
+    ,   fontSettings(new MiFontSettings)
     ,   gridSettings(new AcGridSettings)
     ,   viewSettings(new AcViewSettings)
 {}
@@ -41,6 +43,23 @@ void AcScorePrivate::init()
     gridLineLists->addChild(pitchLines);
     gridLineLists->addChild(volumeLines);
     addChild(settingsObjects);
+    settingsObjects->addChild(fontSettings);
     settingsObjects->addChild(gridSettings);
     settingsObjects->addChild(viewSettings);
+}
+
+static AcScore *instance = 0;
+
+AcScore::AcScore()
+    :   AcScoreObject(*(new AcScorePrivate(this)))
+{
+    Q_D(AcScore);
+    d->init();
+
+    ::instance = this;
+}
+
+AcScore *AcScore::instance()
+{
+    return ::instance;
 }

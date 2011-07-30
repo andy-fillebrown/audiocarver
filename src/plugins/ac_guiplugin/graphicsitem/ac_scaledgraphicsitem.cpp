@@ -19,25 +19,16 @@
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
-using namespace Private;
-
-namespace Private {
-
-const AcViewSettings *AcScaledGraphicsItemData::viewSettings() const
+const AcViewSettings *AcScaledGraphicsItemPrivate::viewSettings() const
 {
     return score()->viewSettings();
 }
 
-class AcScaledGraphicsItemPrivate : public AcScaledGraphicsItemData
-{};
-
-} // namespace Private
-
-AcScaledGraphicsItem::AcScaledGraphicsItem(AcScaledGraphicsItemData &dd, QObject *parent)
+AcScaledGraphicsItem::AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent)
     :   AcGraphicsItem(dd, parent)
 {
     Q_D(AcScaledGraphicsItem);
-    connect(d->viewSettings(), SIGNAL(propertyChanged(int)), SLOT(updateViewSettingsProperty(int)));
+    Q_CONNECT(d->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
 }
 
 AcScaledGraphicsItem::~AcScaledGraphicsItem()

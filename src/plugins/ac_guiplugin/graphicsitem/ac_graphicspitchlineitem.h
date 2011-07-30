@@ -15,39 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSTUNINGLINEITEM_H
-#define AC_GRAPHICSTUNINGLINEITEM_H
+#ifndef AC_GRAPHICSPITCHLINEITEM_H
+#define AC_GRAPHICSPITCHLINEITEM_H
 
 #include <ac_graphicsgridlineitem.h>
 
-class AcTuningLine;
+class AcGraphicsPitchLineItemPrivate;
 
-namespace Private {
-
-class AcGraphicsTuningLineItemPrivate;
-
-} // namespace Private
-
-class AcGraphicsTuningLineItem : public AcGraphicsGridLineItem
+class AcGraphicsPitchLineItem : public AcGraphicsGridLineItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsTuningLineItem(AcTuningLine *tuningLine = 0, QObject *parent = 0);
-    virtual ~AcGraphicsTuningLineItem();
+    AcGraphicsPitchLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
+    virtual ~AcGraphicsPitchLineItem();
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
-    virtual void updateGridLineProperty(int propertyIndex);
+    virtual void updateViewSettings(int i);
+    virtual void updateDataObject(int i);
 
 protected slots:
-    virtual void updateScoreProperty(int propertyIndex);
+    virtual void updateScore(int i);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsTuningLineItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsTuningLineItem)
+    Q_DISABLE_COPY(AcGraphicsPitchLineItem)
+    Q_DECLARE_PRIVATE(AcGraphicsPitchLineItem)
 };
 
-#endif // AC_GRAPHICSTUNINGLINEITEM_H
+#endif // AC_GRAPHICSPITCHLINEITEM_H

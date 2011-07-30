@@ -15,36 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSBARLINEITEM_H
-#define AC_GRAPHICSBARLINEITEM_H
+#ifndef AC_GRAPHICSTIMELINEITEM_H
+#define AC_GRAPHICSTIMELINEITEM_H
 
 #include <ac_graphicsgridlineitem.h>
 
-class AcBarLine;
+class AcGraphicsTimeLineItemPrivate;
 
-namespace Private {
-
-class AcGraphicsBarLineItemPrivate;
-
-} // namespace Private
-
-class AcGraphicsBarLineItem : public AcGraphicsGridLineItem
+class AcGraphicsTimeLineItem : public AcGraphicsGridLineItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsBarLineItem(AcBarLine *barLine = 0, QObject *parent = 0);
-    virtual ~AcGraphicsBarLineItem();
+    AcGraphicsTimeLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
+    virtual ~AcGraphicsTimeLineItem();
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
-    virtual void updateDatabaseObjectProperty(int propertyIndex);
+    virtual void updateViewSettings(int i);
+    virtual void updateDataObject(int i);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsBarLineItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsBarLineItem)
+    Q_DISABLE_COPY(AcGraphicsTimeLineItem)
+    Q_DECLARE_PRIVATE(AcGraphicsTimeLineItem)
 };
 
-#endif // AC_GRAPHICSBARLINEITEM_H
+#endif // AC_GRAPHICSTIMELINEITEM_H

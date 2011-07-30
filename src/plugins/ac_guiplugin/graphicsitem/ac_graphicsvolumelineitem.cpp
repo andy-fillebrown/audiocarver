@@ -15,26 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsvaluelineitem.h"
+#include "ac_graphicsvolumelineitem.h"
+#include <ac_gridline.h>
 #include <ac_score.h>
-#include <ac_valueline.h>
 #include <ac_viewsettings.h>
 #include <QFont>
 #include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsValueLineItemPrivate : public AcGraphicsGridLineItemData
+class AcGraphicsVolumeLineItemPrivate : public AcGraphicsGridLineItemPrivate
 {
 public:
 
-    AcGraphicsValueLineItemPrivate(AcValueLine *valueLine)
+    AcGraphicsVolumeLineItemPrivate(AcGridLine *gridLine)
     {
-        databaseObject = valueLine;
+        dataObject = gridLine;
         update();
     }
 
@@ -54,33 +50,31 @@ public:
     {
         const AcGridLine *gridLine = this->gridLine();
         const qreal pos = 1.0f - gridLine->location();
-        const qreal scale = score()->viewSettings()->valueScale();
+        const qreal scale = score()->viewSettings()->volumeScale();
         const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
-        const qreal x = valueScene()->width() - labelRect.width();
+        const qreal x = volumeLabelScene()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
     }
 };
 
-} // namespace Private
-
-AcGraphicsValueLineItem::AcGraphicsValueLineItem(AcValueLine *valueLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsValueLineItemPrivate(valueLine)), parent)
+AcGraphicsVolumeLineItem::AcGraphicsVolumeLineItem(AcGridLine *gridLine, QObject *parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsVolumeLineItemPrivate(gridLine)), parent)
 {
-    Q_D(AcGraphicsValueLineItem);
-    connect(d->score(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    Q_D(AcGraphicsVolumeLineItem);
+    Q_CONNECT(d->score(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
 }
 
-AcGraphicsValueLineItem::~AcGraphicsValueLineItem()
+AcGraphicsVolumeLineItem::~AcGraphicsVolumeLineItem()
 {}
 
-QGraphicsItem *AcGraphicsValueLineItem::sceneItem(SceneType sceneType) const
+QGraphicsItem *AcGraphicsVolumeLineItem::sceneItem(SceneType sceneType) const
 {
-    Q_D(const AcGraphicsValueLineItem);
+    Q_D(const AcGraphicsVolumeLineItem);
     switch (sceneType) {
-    case ControlScene:
+    case VolumeScene:
         return d->lineItem;
-    case ValueScene:
+    case VolumeLabelScene:
         return d->labelItem;
     default:
         break;
@@ -88,27 +82,27 @@ QGraphicsItem *AcGraphicsValueLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsValueLineItem::updateViewSettingsProperty(int propertyIndex)
+void AcGraphicsVolumeLineItem::updateViewSettings(int i)
 {
-    if (AcViewSettings::ValueScale == propertyIndex) {
-        Q_D(AcGraphicsValueLineItem);
+    if (AcViewSettings::VolumeScaleIndex == i) {
+        Q_D(AcGraphicsVolumeLineItem);
         d->updateLabelPosition();
     }
 }
 
-void AcGraphicsValueLineItem::updateDatabaseObjectProperty(int propertyIndex)
+void AcGraphicsVolumeLineItem::updateDataObject(int i)
 {
-    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyIndex);
-    if (AcValueLine::Location == propertyIndex) {
-        Q_D(AcGraphicsValueLineItem);
+    AcGraphicsGridLineItem::updateDataObject(i);
+    if (AcGridLine::LocationIndex == i) {
+        Q_D(AcGraphicsVolumeLineItem);
         d->update();
     }
 }
 
-void AcGraphicsValueLineItem::updateScoreProperty(int propertyIndex)
+void AcGraphicsVolumeLineItem::updateScore(int i)
 {
-    if (AcScore::Length == propertyIndex) {
-        Q_D(AcGraphicsValueLineItem);
+    if (AcScore::LengthIndex == i) {
+        Q_D(AcGraphicsVolumeLineItem);
         d->updateLineGeometry();
     }
 }

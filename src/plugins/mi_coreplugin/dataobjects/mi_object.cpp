@@ -21,12 +21,12 @@
 
 void MiObjectPrivate::beginChange(int i)
 {
-    q_ptr->emit aboutToChange(i, q_ptr->propertyValue(i));
+    q_ptr->emit aboutToChange(i);
 }
 
 void MiObjectPrivate::endChange(int i)
 {
-    q_ptr->emit changed(i, q_ptr->propertyValue(i));
+    q_ptr->emit changed(i);
     setChangedFlag();
 }
 

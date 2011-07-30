@@ -18,68 +18,51 @@
 #include "ac_graphicsitem.h"
 #include <ac_scenemanager.h>
 #include <ac_score.h>
-#include <mi_font.h>
+#include <mi_fontsettings.h>
 #include <mi_object.h>
 #include <QFont>
 #include <QFontMetrics>
 #include <QGraphicsItem>
 
-using namespace Private;
-
-namespace Private {
-
-const AcScore *AcGraphicsItemData::score() const
+const AcScore *AcGraphicsItemPrivate::score() const
 {
     return AcScore::instance();
 }
 
-const QFont AcGraphicsItemData::font() const
+const QFont AcGraphicsItemPrivate::font() const
 {
-    MiFont *fontSettings = score()->fontSettings();
+    MiFontSettings *fontSettings = score()->fontSettings();
     return QFont(fontSettings->family(), fontSettings->pointSize());
 }
 
-const QFontMetrics &AcGraphicsItemData::fontMetrics() const
+const QFontMetrics &AcGraphicsItemPrivate::fontMetrics() const
 {
     return AcSceneManager::instance()->fontMetrics();
 }
 
-const QGraphicsScene *AcGraphicsItemData::scoreScene() const
-{
-    return AcSceneManager::instance()->scene(ScoreScene);
-}
-
-const QGraphicsScene *AcGraphicsItemData::controlScene() const
-{
-    return AcSceneManager::instance()->scene(ControlScene);
-}
-
-const QGraphicsScene *AcGraphicsItemData::timeScene() const
-{
-    return AcSceneManager::instance()->scene(TimeScene);
-}
-
-const QGraphicsScene *AcGraphicsItemData::pitchScene() const
+const QGraphicsScene *AcGraphicsItemPrivate::pitchScene() const
 {
     return AcSceneManager::instance()->scene(PitchScene);
 }
 
-const QGraphicsScene *AcGraphicsItemData::valueScene() const
+const QGraphicsScene *AcGraphicsItemPrivate::volumeScene() const
 {
-    return AcSceneManager::instance()->scene(ValueScene);
+    return AcSceneManager::instance()->scene(VolumeScene);
 }
 
-class AcGraphicsItemPrivate : public AcGraphicsItemData
-{};
-
-} // namespace Private
-
-AcGraphicsItem::AcGraphicsItem(AcGraphicsItemData &dd, QObject *parent)
-    :   QObject(parent)
-    ,   d_ptr(&dd)
+const QGraphicsScene *AcGraphicsItemPrivate::timeLabelScene() const
 {
-    Q_D(AcGraphicsItem);
-    setDatabaseObject(d->databaseObject);
+    return AcSceneManager::instance()->scene(TimeLabelScene);
+}
+
+const QGraphicsScene *AcGraphicsItemPrivate::pitchLabelScene() const
+{
+    return AcSceneManager::instance()->scene(PitchLabelScene);
+}
+
+const QGraphicsScene *AcGraphicsItemPrivate::volumeLabelScene() const
+{
+    return AcSceneManager::instance()->scene(VolumeLabelScene);
 }
 
 AcGraphicsItem::~AcGraphicsItem()
@@ -87,18 +70,17 @@ AcGraphicsItem::~AcGraphicsItem()
     delete d_ptr;
 }
 
-void AcGraphicsItem::setDatabaseObject(MiObject *databaseObject)
+void AcGraphicsItem::setDataObject(MiObject *object)
 {
     Q_D(AcGraphicsItem);
-    if (d->databaseObject == databaseObject)
+    if (d->dataObject == object)
         return;
-    if (d->databaseObject)
-        d->databaseObject->disconnect(this);
-    d->databaseObject = databaseObject;
-    if (d->databaseObject) {
-        connect(d->databaseObject, SIGNAL(propertyChanged(QString)), SLOT(updateDatabaseObjectProperty(QString)), Qt::UniqueConnection);
-        for (int i = 0;  i < d->databaseObject->propertyCount();  ++i)
-            updateDatabaseObjectProperty(i);
+    Q_DISCONNECT(d->dataObject)
+    d->dataObject = object;
+    if (d->dataObject) {
+        Q_CONNECT(d->dataObject, SIGNAL(changed(int)), this, SLOT(updateDataObject(int)));
+        for (int i = 0;  i < d->dataObject->propertyCount();  ++i)
+            updateDataObject(i);
     } else
         hide();
 }
@@ -144,3 +126,11 @@ void AcGraphicsItem::highlight()
 
 void AcGraphicsItem::unhighlight()
 {}
+
+AcGraphicsItem::AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent)
+    :   QObject(parent)
+    ,   d_ptr(&dd)
+{
+    Q_D(AcGraphicsItem);
+    setDataObject(d->dataObject);
+}

@@ -22,37 +22,34 @@
 
 class AcViewSettings;
 
-namespace Private {
-
-class AcScaledGraphicsItemData : public AcGraphicsItemData
+class AcScaledGraphicsItemPrivate : public AcGraphicsItemPrivate
 {
 public:
-    AcScaledGraphicsItemData() {}
-    virtual ~AcScaledGraphicsItemData() {}
+    AcScaledGraphicsItemPrivate()
+    {}
+
+    virtual ~AcScaledGraphicsItemPrivate()
+    {}
 
     const AcViewSettings *viewSettings() const;
 };
-
-class AcScaledGraphicsItemPrivate;
-
-} // namespace Private
 
 class AcScaledGraphicsItem : public AcGraphicsItem
 {
     Q_OBJECT
 
 protected:
-    AcScaledGraphicsItem(Private::AcScaledGraphicsItemData &dd, QObject *parent = 0);
+    AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent = 0);
 
 public:
     virtual ~AcScaledGraphicsItem();
 
 protected slots:
-    virtual void updateViewSettingsProperty(int propertyIndex) = 0;
+    virtual void updateViewSettings(int i) = 0;
 
 private:
     Q_DISABLE_COPY(AcScaledGraphicsItem)
-    Q_DECLARE_PRIVATE(Private::AcScaledGraphicsItem)
+    Q_DECLARE_PRIVATE(AcScaledGraphicsItem)
 };
 
 #endif // AC_SCALEDGRAPHICSITEM_H

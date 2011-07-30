@@ -15,24 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_graphicstuninglineitem.h"
+#include "ac_graphicspitchlineitem.h"
+#include <ac_gridline.h>
 #include <ac_score.h>
-#include <ac_tuningline.h>
 #include <ac_viewsettings.h>
 #include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsTuningLineItemPrivate : public AcGraphicsGridLineItemData
+class AcGraphicsPitchLineItemPrivate : public AcGraphicsGridLineItemPrivate
 {
 public:
-    AcGraphicsTuningLineItemPrivate(AcTuningLine *tuningLine)
+    AcGraphicsPitchLineItemPrivate(AcGridLine *gridLine)
     {
-        databaseObject = tuningLine;
+        dataObject = gridLine;
         update();
     }
 
@@ -54,30 +50,28 @@ public:
         const qreal pos = 127.0f - gridLine->location();
         const qreal scale = score()->viewSettings()->pitchScale();
         const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
-        const qreal x = pitchScene()->width() - labelRect.width();
+        const qreal x = pitchLabelScene()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
     }
 };
 
-} // namespace Private
-
-AcGraphicsTuningLineItem::AcGraphicsTuningLineItem(AcTuningLine *tuningLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsTuningLineItemPrivate(tuningLine)), parent)
+AcGraphicsPitchLineItem::AcGraphicsPitchLineItem(AcGridLine *gridLine, QObject *parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsPitchLineItemPrivate(gridLine)), parent)
 {
-    connect(AcScore::instance(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
 }
 
-AcGraphicsTuningLineItem::~AcGraphicsTuningLineItem()
+AcGraphicsPitchLineItem::~AcGraphicsPitchLineItem()
 {}
 
-QGraphicsItem *AcGraphicsTuningLineItem::sceneItem(SceneType sceneType) const
+QGraphicsItem *AcGraphicsPitchLineItem::sceneItem(SceneType sceneType) const
 {
-    Q_D(const AcGraphicsTuningLineItem);
+    Q_D(const AcGraphicsPitchLineItem);
     switch (sceneType) {
-    case ScoreScene:
-        return d->lineItem;
     case PitchScene:
+        return d->lineItem;
+    case PitchLabelScene:
         return d->labelItem;
     default:
         break;
@@ -85,27 +79,27 @@ QGraphicsItem *AcGraphicsTuningLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsTuningLineItem::updateViewSettingsProperty(int propertyIndex)
+void AcGraphicsPitchLineItem::updateViewSettings(int i)
 {
-    if (AcViewSettings::PitchScale == propertyIndex) {
-        Q_D(AcGraphicsTuningLineItem);
+    if (AcViewSettings::PitchScaleIndex == i) {
+        Q_D(AcGraphicsPitchLineItem);
         d->updateLabelPosition();
     }
 }
 
-void AcGraphicsTuningLineItem::updateGridLineProperty(int propertyIndex)
+void AcGraphicsPitchLineItem::updateDataObject(int i)
 {
-    AcGraphicsGridLineItem::updateDatabaseObjectProperty(propertyIndex);
-    if (AcGridLine::Location == propertyIndex) {
-        Q_D(AcGraphicsTuningLineItem);
+    AcGraphicsGridLineItem::updateDataObject(i);
+    if (AcGridLine::LocationIndex == i) {
+        Q_D(AcGraphicsPitchLineItem);
         d->update();
     }
 }
 
-void AcGraphicsTuningLineItem::updateScoreProperty(int propertyIndex)
+void AcGraphicsPitchLineItem::updateScore(int i)
 {
-    if (AcScore::Length == propertyIndex) {
-        Q_D(AcGraphicsTuningLineItem);
+    if (AcScore::LengthIndex == i) {
+        Q_D(AcGraphicsPitchLineItem);
         d->updateLineGeometry();
     }
 }

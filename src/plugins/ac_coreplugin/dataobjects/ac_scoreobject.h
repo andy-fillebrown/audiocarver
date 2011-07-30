@@ -28,7 +28,7 @@ class AcScoreObjectPrivate : public MiObjectPrivate
 {
 public:
     qreal volume;
-    QString color;
+    quint32 color;
     AcPitchCurve *pitchCurve;
     AcVolumeCurve *volumeCurve;
 
@@ -44,7 +44,7 @@ class AC_CORE_EXPORT AcScoreObject : public MiObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal volume READ volume WRITE setVolume)
-    Q_PROPERTY(QString color READ color WRITE setColor)
+    Q_PROPERTY(quint32 color READ color WRITE setColor)
     Q_PROPERTY(AcPitchCurve* pitchCurve READ pitchCurve)
     Q_PROPERTY(AcVolumeCurve* volumeCurve READ volumeCurve)
 
@@ -86,13 +86,13 @@ public:
         d->volume = volume;
     }
 
-    QString color() const
+    quint32 color() const
     {
         Q_D(const AcScoreObject);
         return d->color;
     }
 
-    void setColor(const QString &color)
+    void setColor(quint32 color)
     {
         Q_D(AcScoreObject);
         if (color == d->color)

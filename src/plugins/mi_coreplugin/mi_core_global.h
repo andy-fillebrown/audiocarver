@@ -43,6 +43,9 @@ inline void mi_assert(const char *assertion, const char *file, int line)
 #  endif
 #endif
 
+#define Q_CONNECT MiObject::connect
+#define Q_DISCONNECT(sender) if (sender) sender->disconnect(this);
+
 #define Q_DECLARE_FRIENDS(Class) \
     friend Class *qobject_cast<Class*>(QObject*);
 

@@ -123,6 +123,22 @@ public:
         return d_ptr->changed;
     }
 
+    template <typename T>
+    T *cast()
+    {
+        return qobject_cast<T*>(this);
+    }
+
+    static bool connect(const MiObject *sender, const char *signal, const QObject *receiver, const char *member, Qt::ConnectionType type = Qt::UniqueConnection)
+    {
+        return QObject::connect(sender, signal, receiver, member, type);
+    }
+
+    bool disconnect(const QObject *receiver, const char *member = 0)
+    {
+        return QObject::disconnect(receiver, member);
+    }
+
 public slots:
     virtual void update()
     {
@@ -132,8 +148,8 @@ public slots:
     }
 
 signals:
-    void aboutToChange(int i, const QVariant &value);
-    void changed(int i, const QVariant &value);
+    void aboutToChange(int i);
+    void changed(int i);
 
 protected:
     MiObject(MiObjectPrivate &dd)

@@ -27,14 +27,14 @@ public:
     qreal location;
     QString label;
     int priority;
-    QString color;
+    quint32 color;
 
     AcGridLinePrivate(MiObject *q)
         :   MiObjectPrivate(q)
         ,   location(0.0f)
         ,   label(QString())
         ,   priority(0)
-        ,   color("0xc0c0c0")
+        ,   color(0xc0c0c0)
     {}
 
     virtual ~AcGridLinePrivate()
@@ -47,7 +47,7 @@ class AC_CORE_EXPORT AcGridLine : public MiObject
     Q_PROPERTY(qreal location READ location WRITE setLocation)
     Q_PROPERTY(QString label READ label WRITE setLabel)
     Q_PROPERTY(int priority READ priority WRITE setPriority)
-    Q_PROPERTY(QString color READ color WRITE setColor)
+    Q_PROPERTY(quint32 color READ color WRITE setColor)
 
 public:
     enum PropertyIndex {
@@ -114,13 +114,13 @@ public:
         d->priority = priority;
     }
 
-    const QString &color() const
+    const quint32 &color() const
     {
         Q_D(const AcGridLine);
         return d->color;
     }
 
-    void setColor(const QString &color)
+    void setColor(quint32 color)
     {
         Q_D(AcGridLine);
         if (d->color == color)
@@ -129,20 +129,20 @@ public:
         d->color = color;
     }
 
-    void set(qreal location, const QString &label, int priority, const QString &color = QString())
+    void set(qreal location, const QString &label, int priority, quint32 color = 0xffffffff)
     {
         setLocation(location);
         setLabel(label);
         setPriority(priority);
-        if (!color.isEmpty())
+        if (color != 0xffffffff)
             setColor(color);
     }
 
-    void set(qreal location, int priority, const QString &color = QString())
+    void set(qreal location, int priority, quint32 color = 0xffffffff)
     {
         setLocation(location);
         setPriority(priority);
-        if (!color.isEmpty())
+        if (color != 0xffffffff)
             setColor(color);
     }
 

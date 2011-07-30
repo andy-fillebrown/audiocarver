@@ -22,11 +22,11 @@
 
 enum SceneType
 {
-    ScoreScene = 0,
-    ControlScene,
-    TimeScene,
-    PitchScene,
-    ValueScene,
+    PitchScene = 0,
+    VolumeScene,
+    TimeLabelScene,
+    PitchLabelScene,
+    VolumeLabelScene,
     SceneTypeCount
 };
 

@@ -24,6 +24,7 @@ class AcGridLineList;
 class AcGridSettings;
 class AcTrackList;
 class AcViewSettings;
+class MiFontSettings;
 class MiListObject;
 
 class AcScorePrivate : public AcScoreObjectPrivate
@@ -36,6 +37,7 @@ public:
     AcGridLineList *pitchLines;
     AcGridLineList *volumeLines;
     MiListObject *settingsObjects;
+    MiFontSettings *fontSettings;
     AcGridSettings *gridSettings;
     AcViewSettings *viewSettings;
 
@@ -47,7 +49,7 @@ public:
     void init();
 };
 
-class AcScore : public AcScoreObject
+class AC_CORE_EXPORT AcScore : public AcScoreObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
@@ -62,12 +64,7 @@ public:
         PropertyCount
     };
 
-    AcScore()
-        :   AcScoreObject(*(new AcScorePrivate(this)))
-    {
-        Q_D(AcScore);
-        d->init();
-    }
+    AcScore();
 
     virtual ~AcScore()
     {}
@@ -112,6 +109,26 @@ public:
         Q_D(const AcScore);
         return d->volumeLines;
     }
+
+    MiFontSettings *fontSettings() const
+    {
+        Q_D(const AcScore);
+        return d->fontSettings;
+    }
+
+    AcGridSettings *gridSettings() const
+    {
+        Q_D(const AcScore);
+        return d->gridSettings;
+    }
+
+    AcViewSettings *viewSettings() const
+    {
+        Q_D(const AcScore);
+        return d->viewSettings;
+    }
+
+    static AcScore *instance();
 
 private:
     Q_DISABLE_COPY(AcScore)

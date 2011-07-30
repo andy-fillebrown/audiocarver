@@ -15,39 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVALUELINEITEM_H
-#define AC_GRAPHICSVALUELINEITEM_H
+#ifndef AC_GRAPHICSVOLUMELINEITEM_H
+#define AC_GRAPHICSVOLUMELINEITEM_H
 
 #include <ac_graphicsgridlineitem.h>
 
-class AcValueLine;
+class AcGraphicsVolumeLineItemPrivate;
 
-namespace Private {
-
-class AcGraphicsValueLineItemPrivate;
-
-} // namespace Private
-
-class AcGraphicsValueLineItem : public AcGraphicsGridLineItem
+class AcGraphicsVolumeLineItem : public AcGraphicsGridLineItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsValueLineItem(AcValueLine *valueLine = 0, QObject *parent = 0);
-    virtual ~AcGraphicsValueLineItem();
+    AcGraphicsVolumeLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
+    virtual ~AcGraphicsVolumeLineItem();
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
-    virtual void updateDatabaseObjectProperty(int propertyIndex);
+    virtual void updateViewSettings(int i);
+    virtual void updateDataObject(int i);
 
 protected slots:
-    virtual void updateScoreProperty(int propertyIndex);
+    virtual void updateScore(int i);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsValueLineItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsValueLineItem)
+    Q_DISABLE_COPY(AcGraphicsVolumeLineItem)
+    Q_DECLARE_PRIVATE(AcGraphicsVolumeLineItem)
 };
 
-#endif // AC_GRAPHICSVALUELINEITEM_H
+#endif // AC_GRAPHICSVOLUMELINEITEM_H
