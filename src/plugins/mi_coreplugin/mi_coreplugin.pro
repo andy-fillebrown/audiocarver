@@ -8,6 +8,7 @@ include(mi_coreplugin_dependencies.pri)
 DEFINES += MI_CORE_LIBRARY
 
 HEADERS += \
+    dataobjects/settings/mi_fontsettings.h \
     components/mi_propertybag.h \
     \
 #    dataobjects/mi_database.h \
@@ -29,6 +30,7 @@ HEADERS += \
 
 SOURCES += \
 #    components/mi_propertybag.cpp \
+    dataobjects/settings/mi_fontsettings.cpp \
     \
 #    dataobjects/mi_database.cpp \
 #    dataobjects/mi_fontsettings.cpp \

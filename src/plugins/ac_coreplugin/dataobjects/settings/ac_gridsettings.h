@@ -18,61 +18,59 @@
 #ifndef AC_GRIDSETTINGS_H
 #define AC_GRIDSETTINGS_H
 
-#include <mi_object.h>
 #include <ac_core_global.h>
+#include <mi_scopedchange.h>
 
-namespace Private {
-
-class AcGridSettingsData
+class AcGridSettingsPrivate : public MiObjectPrivate
 {
 public:
     bool visible;
 
-    AcGridSettingsData()
-        :   visible(true)
+    AcGridSettingsPrivate(MiObject *q)
+        :   MiObjectPrivate(q)
+        ,   visible(true)
+    {}
+
+    virtual ~AcGridSettingsPrivate()
     {}
 };
-
-} // namespace Private
 
 class AC_CORE_EXPORT AcGridSettings : public MiObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(AcGridSettings)
     Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
-    enum Properties {
-        Visible = MiObject::PropertyCount,
+    enum PropertyIndex {
+        VisibleIndex = MiObject::PropertyCount,
         PropertyCount
     };
 
-    AcGridSettings(QObject *parent = 0)
-        :   MiObject(parent)
-        ,   d(new Private::AcGridSettingsData)
+    AcGridSettings()
+        :   MiObject(*(new AcGridSettingsPrivate(this)))
     {}
 
     virtual ~AcGridSettings()
-    {
-        delete d;
-    }
+    {}
 
     bool visible() const
     {
+        Q_D(const AcGridSettings);
         return d->visible;
     }
 
     void setVisible(bool visible)
     {
+        Q_D(AcGridSettings);
         if (d->visible == visible)
             return;
-        beginChangeProperty(Visible);
+        changing(VisibleIndex);
         d->visible = visible;
-        endChangeProperty(Visible);
     }
 
 private:
-    Private::AcGridSettingsData *d;
+    Q_DISABLE_COPY(AcGridSettings)
+    Q_DECLARE_PRIVATE(AcGridSettings)
 };
 
 #endif // AC_GRIDSETTINGS_H

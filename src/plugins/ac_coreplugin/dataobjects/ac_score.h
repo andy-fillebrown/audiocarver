@@ -20,13 +20,24 @@
 
 #include <ac_scoreobject.h>
 
+class AcGridLineList;
+class AcGridSettings;
 class AcTrackList;
+class AcViewSettings;
+class MiListObject;
 
 class AcScorePrivate : public AcScoreObjectPrivate
 {
 public:
     qreal length;
     AcTrackList *tracks;
+    MiListObject *gridLineLists;
+    AcGridLineList *timeLines;
+    AcGridLineList *pitchLines;
+    AcGridLineList *volumeLines;
+    MiListObject *settingsObjects;
+    AcGridSettings *gridSettings;
+    AcViewSettings *viewSettings;
 
     AcScorePrivate(AcScoreObject *q);
 
@@ -39,6 +50,8 @@ class AcScore : public AcScoreObject
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
     Q_PROPERTY(AcTrackList* tracks READ tracks)
+    Q_PROPERTY(MiListObject* gridLines READ gridLineLists)
+    Q_PROPERTY(MiListObject* settings READ settingsList)
 
 public:
     enum PropertyIndex {
@@ -77,9 +90,39 @@ public:
         return d->tracks;
     }
 
+    AcGridLineList *timeLines() const
+    {
+        Q_D(const AcScore);
+        return d->timeLines;
+    }
+
+    AcGridLineList *pitchLines() const
+    {
+        Q_D(const AcScore);
+        return d->pitchLines;
+    }
+
+    AcGridLineList *volumeLines() const
+    {
+        Q_D(const AcScore);
+        return d->volumeLines;
+    }
+
 private:
     Q_DISABLE_COPY(AcScore)
     Q_DECLARE_PRIVATE(AcScore)
+
+    MiListObject *gridLineLists() const
+    {
+        Q_D(const AcScore);
+        return d->gridLineLists;
+    }
+
+    MiListObject *settingsList() const
+    {
+        Q_D(const AcScore);
+        return d->settingsObjects;
+    }
 };
 
 #endif // AC_SCORE_H

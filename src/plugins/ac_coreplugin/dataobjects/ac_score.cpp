@@ -16,11 +16,28 @@
 **************************************************************************/
 
 #include "ac_score.h"
+#include <ac_gridlinelist.h>
+#include <ac_gridsettings.h>
 #include <ac_tracklist.h>
+#include <ac_viewsettings.h>
 
 AcScorePrivate::AcScorePrivate(AcScoreObject *q)
     :   AcScoreObjectPrivate(q)
     ,   tracks(new AcTrackList)
+    ,   gridLineLists(new MiListObject)
+    ,   timeLines(new AcGridLineList)
+    ,   pitchLines(new AcGridLineList)
+    ,   volumeLines(new AcGridLineList)
+    ,   settingsObjects(new MiListObject)
+    ,   gridSettings(new AcGridSettings)
+    ,   viewSettings(new AcViewSettings)
 {
     addChild(tracks);
+    addChild(gridLineLists);
+    gridLineLists->addChild(timeLines);
+    gridLineLists->addChild(pitchLines);
+    gridLineLists->addChild(volumeLines);
+    addChild(settingsObjects);
+    settingsObjects->addChild(gridSettings);
+    settingsObjects->addChild(viewSettings);
 }

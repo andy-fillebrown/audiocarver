@@ -21,6 +21,8 @@
 #include <ac_core_global.h>
 #include <mi_sortedlistobject.h>
 
+class AcCurvePoint;
+
 #define AcCurvePrivate MiSortedListObjectPrivate
 
 class AcCurve : public MiSortedListObject

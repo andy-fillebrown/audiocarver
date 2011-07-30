@@ -34,3 +34,10 @@ void AcGridLineList::sort()
     Q_D(AcGridLineList);
     d->sort<AcGridLine>();
 }
+
+void AcGridLineList::addChild(MiObject *child)
+{
+    if (!qobject_cast<AcGridLine*>(child))
+        return;
+    MiSortedListObject::addChild(child);
+}

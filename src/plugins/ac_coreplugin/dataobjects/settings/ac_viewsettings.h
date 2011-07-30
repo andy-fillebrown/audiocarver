@@ -18,151 +18,154 @@
 #ifndef AC_VIEWSETTINGS_H
 #define AC_VIEWSETTINGS_H
 
-#include <mi_object.h>
 #include <ac_core_global.h>
+#include <mi_scopedchange.h>
 
-namespace Private {
-
-class AcViewSettingsData
+class AcViewSettingsPrivate : public MiObjectPrivate
 {
 public:
     qreal timePosition;
     qreal pitchPosition;
-    qreal controlPosition;
+    qreal volumePosition;
     qreal timeScale;
     qreal pitchScale;
-    qreal controlScale;
+    qreal volumeScale;
 
-    AcViewSettingsData()
-        :   timePosition(0.0f)
+    AcViewSettingsPrivate(MiObject *q)
+        :   MiObjectPrivate(q)
+        ,   timePosition(0.0f)
         ,   pitchPosition(0.0f)
-        ,   controlPosition(0.0f)
+        ,   volumePosition(0.0f)
         ,   timeScale(1.0f)
         ,   pitchScale(1.0f)
-        ,   controlScale(100.0f)
+        ,   volumeScale(100.0f)
+    {}
+
+    virtual ~AcViewSettingsPrivate()
     {}
 };
-
-} // namespace Private
 
 class AC_CORE_EXPORT AcViewSettings : public MiObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(AcViewSettings)
     Q_PROPERTY(qreal timePosition READ timePosition WRITE setTimePosition)
     Q_PROPERTY(qreal pitchPosition READ pitchPosition WRITE setPitchPosition)
-    Q_PROPERTY(qreal controlPosition READ controlPosition WRITE setControlPosition)
+    Q_PROPERTY(qreal volumePosition READ volumePosition WRITE setVolumePosition)
     Q_PROPERTY(qreal timeScale READ timeScale WRITE setTimeScale)
     Q_PROPERTY(qreal pitchScale READ pitchScale WRITE setPitchScale)
-    Q_PROPERTY(qreal controlScale READ controlScale WRITE setControlScale)
+    Q_PROPERTY(qreal volumeScale READ volumeScale WRITE setVolumeScale)
 
 public:
-    enum Properties {
-        TimePosition = MiObject::PropertyCount,
-        PitchPosition,
-        ControlPosition,
-        TimeScale,
-        PitchScale,
-        ControlScale,
+    enum PropertyIndexes {
+        TimePositionIndex = MiObject::PropertyCount,
+        PitchPositionIndex,
+        VolumePositionIndex,
+        TimeScaleIndex,
+        PitchScaleIndex,
+        VolumeScaleIndex,
         PropertyCount
     };
 
-    AcViewSettings(QObject *parent = 0)
-        :   MiObject(parent)
-        ,   d(new Private::AcViewSettingsData)
+    AcViewSettings()
+        :   MiObject(*(new AcViewSettingsPrivate(this)))
     {}
 
     ~AcViewSettings()
-    {
-        delete d;
-    }
+    {}
 
     qreal timePosition() const
     {
+        Q_D(const AcViewSettings);
         return d->timePosition;
     }
 
     void setTimePosition(qreal position)
     {
+        Q_D(AcViewSettings);
         if (d->timePosition == position)
             return;
-        beginChangeProperty(TimePosition);
+        changing(TimePositionIndex);
         d->timePosition = position;
-        endChangeProperty(TimePosition);
     }
 
     qreal pitchPosition() const
     {
+        Q_D(const AcViewSettings);
         return d->pitchPosition;
     }
 
     void setPitchPosition(qreal position)
     {
+        Q_D(AcViewSettings);
         if (d->pitchPosition == position)
             return;
-        beginChangeProperty(PitchPosition);
+        changing(PitchPositionIndex);
         d->pitchPosition = position;
-        endChangeProperty(PitchPosition);
     }
 
-    qreal controlPosition() const
+    qreal volumePosition() const
     {
-        return d->controlPosition;
+        Q_D(const AcViewSettings);
+        return d->volumePosition;
     }
 
-    void setControlPosition(qreal position)
+    void setVolumePosition(qreal position)
     {
-        if (d->controlPosition == position)
+        Q_D(AcViewSettings);
+        if (d->volumePosition == position)
             return;
-        beginChangeProperty(ControlPosition);
-        d->controlPosition = position;
-        endChangeProperty(ControlPosition);
+        changing(VolumePositionIndex);
+        d->volumePosition = position;
     }
 
     qreal timeScale() const
     {
+        Q_D(const AcViewSettings);
         return d->timeScale;
     }
 
     void setTimeScale(qreal scale)
     {
+        Q_D(AcViewSettings);
         if (d->timeScale == scale)
             return;
-        beginChangeProperty(TimeScale);
+        changing(TimeScaleIndex);
         d->timePosition = scale;
-        endChangeProperty(TimeScale);
     }
 
     qreal pitchScale() const
     {
+        Q_D(const AcViewSettings);
         return d->pitchScale;
     }
 
     void setPitchScale(qreal scale)
     {
+        Q_D(AcViewSettings);
         if (d->pitchScale == scale)
             return;
-        beginChangeProperty(PitchScale);
+        changing(PitchScaleIndex);
         d->pitchScale = scale;
-        endChangeProperty(PitchScale);
     }
 
-    qreal controlScale() const
+    qreal volumeScale() const
     {
-        return d->controlScale;
+        Q_D(const AcViewSettings);
+        return d->volumeScale;
     }
 
-    void setControlScale(qreal scale)
+    void setVolumeScale(qreal scale)
     {
-        if (d->controlScale == scale)
+        Q_D(AcViewSettings);
+        if (d->volumeScale == scale)
             return;
-        beginChangeProperty(ControlScale);
-        d->controlScale = scale;
-        endChangeProperty(ControlScale);
+        changing(VolumeScaleIndex);
+        d->volumeScale = scale;
     }
 
 private:
-    Private::AcViewSettingsData *d;
+    Q_DISABLE_COPY(AcViewSettings)
+    Q_DECLARE_PRIVATE(AcViewSettings)
 };
 
 #endif // AC_VIEWSETTINGS_H

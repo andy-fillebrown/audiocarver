@@ -10,6 +10,10 @@ DEFINES += AC_CORE_LIBRARY
 HEADERS += \
     dataobjects/gridlines/ac_gridline.h \
     dataobjects/gridlines/ac_gridlinelist.h \
+    \
+    dataobjects/settings/ac_gridsettings.h \
+    dataobjects/settings/ac_viewsettings.h \
+    \
     dataobjects/ac_curve.h \
     dataobjects/ac_curvepoint.h \
 #    dataobjects/ac_gridline.h \
@@ -39,6 +43,10 @@ HEADERS += \
 SOURCES += \
     dataobjects/gridlines/ac_gridline.cpp \
     dataobjects/gridlines/ac_gridlinelist.cpp \
+    \
+    dataobjects/settings/ac_gridsettings.cpp \
+    dataobjects/settings/ac_viewsettings.cpp \
+    \
     dataobjects/ac_curve.cpp \
     dataobjects/ac_curvepoint.cpp \
 #    dataobjects/ac_gridline.cpp \

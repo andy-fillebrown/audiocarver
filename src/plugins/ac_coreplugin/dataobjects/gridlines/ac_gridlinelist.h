@@ -21,6 +21,8 @@
 #include <ac_core_global.h>
 #include <mi_sortedlistobject.h>
 
+class AcGridLine;
+
 #define AcGridLineListPrivate MiSortedListObjectPrivate
 
 class AcGridLineList : public MiSortedListObject
@@ -30,6 +32,10 @@ class AcGridLineList : public MiSortedListObject
 public:
     typedef MiSortedListObject::PropertyIndex PropertyIndex;
 
+    AcGridLineList()
+        :   MiSortedListObject(*(new AcGridLineListPrivate(this)))
+    {}
+
     virtual ~AcGridLineList()
     {}
 
@@ -37,11 +43,7 @@ public:
 
     virtual bool isSorted() const;
     virtual void sort();
-
-protected:
-    AcGridLineList(AcGridLineListPrivate &dd)
-        :   MiSortedListObject(dd)
-    {}
+    virtual void addChild(MiObject *child);
 
 private:
     Q_DISABLE_COPY(AcGridLineList)

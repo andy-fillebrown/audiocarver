@@ -154,6 +154,7 @@ public:
 private:
     Q_DISABLE_COPY(AcGridLine)
     Q_DECLARE_PRIVATE(AcGridLine)
+    Q_DECLARE_FRIENDS(AcGridLine)
 };
 
 #endif // AC_GRIDLINE_H

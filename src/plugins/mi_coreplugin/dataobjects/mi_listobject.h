@@ -19,6 +19,7 @@
 #define MI_LISTOBJECT_H
 
 #include <mi_object.h>
+#include <QMetaType>
 
 #define MiListObjectPrivate MiObjectPrivate
 
@@ -68,5 +69,7 @@ private:
     Q_DECLARE_PRIVATE(MiListObject)
     Q_DISABLE_COPY(MiListObject)
 };
+
+Q_DECLARE_METATYPE(MiListObject*)
 
 #endif // MI_LISTOBJECT_H

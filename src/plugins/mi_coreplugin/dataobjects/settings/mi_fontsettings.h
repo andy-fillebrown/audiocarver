@@ -18,10 +18,7 @@
 #ifndef MI_FONTSETTINGS_H
 #define MI_FONTSETTINGS_H
 
-#include <mi_object.h>
-#include <QMetaType>
-
-namespace Private {
+#include <mi_scopedchange.h>
 
 class MiFontSettingsPrivate : public MiObjectPrivate
 {
@@ -39,25 +36,21 @@ public:
     {}
 };
 
-} // namespace Private
-
 class MI_CORE_EXPORT MiFontSettings : public MiObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(MiFontSettings)
-    Q_DECLARE_PRIVATE(Private::MiFontSettings)
     Q_PROPERTY(QString family READ family WRITE setFamily)
     Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
 
 public:
-    enum Properties {
-        Family = MiObject::PropertyCount,
-        PointSize,
+    enum PropertyIndex {
+        FamilyIndex = MiObject::PropertyCount,
+        PointSizeIndex,
         PropertyCount
     };
 
-    explicit MiFontSettings(QObject *parent = 0)
-        :   MiObject(*(new Private::MiFontSettingsPrivate(this)), parent)
+    MiFontSettings()
+        :   MiObject(*(new MiFontSettingsPrivate(this)))
     {}
 
     virtual ~MiFontSettings()
@@ -65,37 +58,39 @@ public:
 
     const QString &family() const
     {
-        Q_D(const Private::MiFontSettings);
+        Q_D(const MiFontSettings);
         return d->family;
     }
 
     void setFamily(const QString &family)
     {
-        Q_D(Private::MiFontSettings);
+        Q_D(MiFontSettings);
         if (d->family == family)
             return;
-        beginChangeProperty(Family);
+        changing(FamilyIndex);
         d->family = family;
-        endChangeProperty(Family);
     }
 
     int pointSize() const
     {
-        Q_D(const Private::MiFontSettings);
+        Q_D(const MiFontSettings);
         return d->pointSize;
     }
 
     void setPointSize(int pointSize)
     {
-        Q_D(Private::MiFontSettings);
+        Q_D(MiFontSettings);
         if (pointSize < 1)
             pointSize = 1;
         if (d->pointSize == pointSize)
             return;
-        beginChangeProperty(PointSize);
+        changing(PointSizeIndex);
         d->pointSize = pointSize;
-        endChangeProperty(PointSize);
     }
+
+private:
+    Q_DISABLE_COPY(MiFontSettings)
+    Q_DECLARE_PRIVATE(MiFontSettings)
 };
 
 #endif // MI_FONT_H
