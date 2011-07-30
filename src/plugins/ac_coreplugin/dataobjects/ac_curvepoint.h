@@ -19,6 +19,7 @@
 #define AC_CURVEPOINT_H
 
 #include <ac_point.h>
+#include <mi_scopedchange.h>
 
 class AcCurvePointPrivate : public AcPointPrivate
 {

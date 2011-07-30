@@ -19,7 +19,7 @@
 #define AC_SCOREOBJECT_H
 
 #include <ac_core_global.h>
-#include <mi_object.h>
+#include <mi_scopedchange.h>
 
 class AcPitchCurve;
 class AcVolumeCurve;

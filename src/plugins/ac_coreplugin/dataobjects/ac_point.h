@@ -19,7 +19,7 @@
 #define AC_POINT_H
 
 #include <ac_core_global.h>
-#include <mi_object.h>
+#include <mi_scopedchange.h>
 
 class AcPointPrivate : public MiObjectPrivate
 {

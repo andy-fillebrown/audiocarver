@@ -22,6 +22,7 @@ HEADERS += \
     interfaces/mi_idatabase.h \
     \
 #    tools/mi_scopedsignalblocker.h \
+    tools/mi_scopedchange.h \
     \
     mi_core_global.h \
     mi_coreplugin.h \
@@ -41,5 +42,6 @@ SOURCES += \
     interfaces/mi_idatabase.cpp \
     \
 #    tools/mi_scopedsignalblocker.cpp \
+    tools/mi_scopedchange.cpp \
     \
     mi_coreplugin.cpp \

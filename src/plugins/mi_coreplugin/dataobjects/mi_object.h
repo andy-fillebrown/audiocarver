@@ -183,26 +183,4 @@ void MiObjectPrivate::removeChild(MiObject *child)
     setChangedFlag();
 }
 
-class ScopedChange
-{
-public:
-    ScopedChange(MiObjectPrivate *d, int i)
-        :   d(d)
-        ,   i(i)
-    {
-        d->beginChange(i);
-    }
-
-    ~ScopedChange()
-    {
-        d->endChange(i);
-    }
-
-private:
-    MiObjectPrivate *d;
-    int i;
-};
-
-#define changing(i) ScopedChange sc(d, i)
-
 #endif // MI_OBJECT_H
