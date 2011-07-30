@@ -18,16 +18,20 @@
 #ifndef MI_GRAPHICSVIEW_H
 #define MI_GRAPHICSVIEW_H
 
-#include <QGraphicsView>
 #include <mi_gui_global.h>
+#include <QGraphicsView>
 
 class MI_GUI_EXPORT MiGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    MiGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    virtual ~MiGraphicsView() {}
+    MiGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0)
+        :   QGraphicsView(scene, parent)
+    {}
+
+    virtual ~MiGraphicsView()
+    {}
 
 protected:
     virtual void wheelEvent(QWheelEvent *event);

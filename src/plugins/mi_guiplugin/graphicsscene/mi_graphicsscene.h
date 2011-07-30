@@ -18,16 +18,20 @@
 #ifndef MI_GRAPHICSSCENE_H
 #define MI_GRAPHICSSCENE_H
 
-#include <QGraphicsScene>
 #include <mi_gui_global.h>
+#include <QGraphicsScene>
 
 class MI_GUI_EXPORT MiGraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    MiGraphicsScene(QObject *parent = 0);
-    virtual ~MiGraphicsScene() {}
+    MiGraphicsScene(QObject *parent = 0)
+    :   QGraphicsScene(parent)
+    {}
+
+    virtual ~MiGraphicsScene()
+    {}
 
 private:
     Q_DISABLE_COPY(MiGraphicsScene)

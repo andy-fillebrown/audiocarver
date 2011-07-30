@@ -16,7 +16,3 @@
 **************************************************************************/
 
 #include "mi_graphicsscene.h"
-
-MiGraphicsScene::MiGraphicsScene(QObject *parent)
-    :   QGraphicsScene(parent)
-{}

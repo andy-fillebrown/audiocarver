@@ -18,11 +18,6 @@
 #include "mi_graphicsview.h"
 #include <QWheelEvent>
 
-MiGraphicsView::MiGraphicsView(QGraphicsScene *scene, QWidget *parent)
-    :   QGraphicsView(scene, parent)
-{
-}
-
 void MiGraphicsView::wheelEvent(QWheelEvent *event)
 {
     // Ignore event so parent widget's wheelEvent gets called.
