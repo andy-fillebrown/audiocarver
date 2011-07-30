@@ -127,8 +127,7 @@ public slots:
     virtual void update()
     {
         foreach (MiObject *child, d_ptr->children<MiObject>())
-            if (child->isChanged())
-                child->update();
+            child->update();
         d_ptr->clearChangedFlag();
     }
 
