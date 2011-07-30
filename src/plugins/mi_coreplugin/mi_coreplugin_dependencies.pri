@@ -3,7 +3,6 @@ include(../qt_coreplugin/coreplugin.pri)
 
 DIRS = \
     dataobjects/settings \
-    components \
     dataobjects \
     factories \
     interfaces \

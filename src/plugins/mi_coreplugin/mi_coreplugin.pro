@@ -9,10 +9,7 @@ DEFINES += MI_CORE_LIBRARY
 
 HEADERS += \
     dataobjects/settings/mi_fontsettings.h \
-    components/mi_propertybag.h \
     \
-#    dataobjects/mi_database.h \
-#    dataobjects/mi_fontsettings.h \
     dataobjects/mi_listobject.h \
     dataobjects/mi_object.h \
     dataobjects/mi_sortedlistobject.h \
@@ -29,11 +26,8 @@ HEADERS += \
     mi_coreplugin.h \
 
 SOURCES += \
-#    components/mi_propertybag.cpp \
     dataobjects/settings/mi_fontsettings.cpp \
     \
-#    dataobjects/mi_database.cpp \
-#    dataobjects/mi_fontsettings.cpp \
     dataobjects/mi_listobject.cpp \
     dataobjects/mi_object.cpp \
     dataobjects/mi_sortedlistobject.cpp \
