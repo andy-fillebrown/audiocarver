@@ -26,7 +26,7 @@ class AcNote;
 class AcNoteListPrivate : public MiSortedListObjectPrivate
 {
 public:
-    AcNoteListPrivate(MiObject *q)
+    AcNoteListPrivate(MiSortedListObject *q)
         :   MiSortedListObjectPrivate(q)
     {}
 
