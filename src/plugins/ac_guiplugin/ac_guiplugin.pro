@@ -15,7 +15,6 @@ HEADERS += \
 #    graphicsitem/ac_graphicstrackitem.h \
     graphicsitem/ac_graphicsvolumelineitem.h \
 #    graphicsitem/ac_graphicsvolumepointitem.h \
-    graphicsitem/ac_scaledgraphicsitem.h \
 #    \
 #    graphicsscene/ac_graphicsscene.h \
 #    graphicsscene/ac_labelscene.h \
@@ -55,7 +54,6 @@ SOURCES += \
 #    graphicsitem/ac_graphicstrackitem.cpp \
     graphicsitem/ac_graphicsvolumelineitem.cpp \
 #    graphicsitem/ac_graphicsvolumepointitem.cpp \
-    graphicsitem/ac_scaledgraphicsitem.cpp \
 #    \
 #    graphicsscene/ac_graphicsscene.cpp \
 #    graphicsscene/ac_labelscene.cpp \
