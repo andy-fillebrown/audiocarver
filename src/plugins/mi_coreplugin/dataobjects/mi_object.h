@@ -74,8 +74,8 @@ public:
             changed = false;
     }
 
-    void beginChange(int i);
-    void endChange(int i);
+    void beginChange(int i = -1);
+    void endChange(int i = -1);
 };
 
 class MI_CORE_EXPORT MiObject : protected QObject
@@ -186,8 +186,9 @@ void MiObjectPrivate::addChild(MiObject *child)
 {
     if (!child || children<MiObject>().contains(child))
         return;
+    beginChange();
     child->setParent(q_ptr);
-    setChangedFlag();
+    endChange();
 }
 
 inline
@@ -195,8 +196,9 @@ void MiObjectPrivate::removeChild(MiObject *child)
 {
     if (!child || !children<MiObject>().contains(child))
         return;
+    beginChange();
     child->setParent(0);
-    setChangedFlag();
+    endChange();
 }
 
 #endif // MI_OBJECT_H
