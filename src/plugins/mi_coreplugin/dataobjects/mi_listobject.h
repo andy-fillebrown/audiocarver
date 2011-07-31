@@ -21,7 +21,19 @@
 #include <mi_object.h>
 #include <QMetaType>
 
-#define MiListObjectPrivate MiObjectPrivate
+class MiListObjectPrivate : public MiObjectPrivate
+{
+public:
+    const int propertyIndex;
+
+    MiListObjectPrivate(MiObject *q, int propertyIndex)
+        :   MiObjectPrivate(q)
+        ,   propertyIndex(propertyIndex)
+    {}
+
+    virtual ~MiListObjectPrivate()
+    {}
+};
 
 class MI_CORE_EXPORT MiListObject : public MiObject
 {
@@ -30,8 +42,8 @@ class MI_CORE_EXPORT MiListObject : public MiObject
 public:
     typedef MiObject::PropertyIndex PropertyIndex;
 
-    MiListObject()
-        :   MiObject(*(new MiListObjectPrivate(this)))
+    MiListObject(int propertyIndex = 0)
+        :   MiObject(*(new MiListObjectPrivate(this, propertyIndex)))
     {}
 
     virtual ~MiListObject()
@@ -44,12 +56,22 @@ public:
 
     virtual void addChild(MiObject *child)
     {
-        d_ptr->addChild(child);
+        if (!child || children().contains(child))
+            return;
+        Q_D(MiListObject);
+        d->parentBeginChange(d->propertyIndex);
+        d->addChild(child);
+        d->parentEndChange(d->propertyIndex);
     }
 
     virtual void removeChild(MiObject *child)
     {
-        d_ptr->removeChild(child);
+        if (!child || !children().contains(child))
+            return;
+        Q_D(MiListObject);
+        d->parentBeginChange(d->propertyIndex);
+        d->removeChild(child);
+        d->parentEndChange(d->propertyIndex);
     }
 
     bool isChildChanged() const

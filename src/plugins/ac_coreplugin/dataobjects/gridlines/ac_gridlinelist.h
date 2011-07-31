@@ -32,15 +32,14 @@ class AcGridLineList : public MiSortedListObject
 public:
     typedef MiSortedListObject::PropertyIndex PropertyIndex;
 
-    AcGridLineList()
-        :   MiSortedListObject(*(new AcGridLineListPrivate(this)))
+    explicit AcGridLineList(int propertyIndex = 0)
+        :   MiSortedListObject(*(new AcGridLineListPrivate(this, propertyIndex)))
     {}
 
     virtual ~AcGridLineList()
     {}
 
     const QList<AcGridLine*> &children() const;
-
     virtual bool isSorted() const;
     virtual void sort();
     virtual void addChild(MiObject *child);

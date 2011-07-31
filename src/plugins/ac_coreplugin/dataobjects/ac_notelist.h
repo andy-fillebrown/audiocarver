@@ -23,35 +23,24 @@
 
 class AcNote;
 
-class AcNoteListPrivate : public MiSortedListObjectPrivate
-{
-public:
-    AcNoteListPrivate(MiSortedListObject *q)
-        :   MiSortedListObjectPrivate(q)
-    {}
-
-    virtual ~AcNoteListPrivate()
-    {}
-
-    QList<AcNote*> &children();
-};
+#define AcNoteListPrivate MiSortedListObjectPrivate
 
 class AcNoteList : public MiSortedListObject
 {
     Q_OBJECT
 
 public:
-    AcNoteList()
-        :   MiSortedListObject(*(new AcNoteListPrivate(this)))
+    explicit AcNoteList(int propertyIndex = 0)
+        :   MiSortedListObject(*(new AcNoteListPrivate(this, propertyIndex)))
     {}
 
     virtual ~AcNoteList()
     {}
 
+    const QList<AcNote*> &children() const;
     virtual bool isSorted() const;
     virtual void sort();
 
-    const QList<AcNote*> &children() const;
     virtual void addChild(MiObject *item);
 
 private:

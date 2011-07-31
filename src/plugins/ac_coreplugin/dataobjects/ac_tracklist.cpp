@@ -18,10 +18,15 @@
 #include "ac_tracklist.h"
 #include <ac_track.h>
 
-AcTrackList::AcTrackList()
-    :   MiListObject(*(new AcTrackListPrivate(this)))
+AcTrackList::AcTrackList(int propertyIndex)
+    :   MiListObject(*(new AcTrackListPrivate(this, propertyIndex)))
 {
     d_ptr->addChild(new AcTrack);
+}
+
+const QList<AcTrack*> &AcTrackList::children() const
+{
+    return reinterpret_cast<const QList<AcTrack*>&>(QObject::children());
 }
 
 void AcTrackList::addChild(MiObject *child)

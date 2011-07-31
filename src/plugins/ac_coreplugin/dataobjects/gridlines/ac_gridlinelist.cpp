@@ -20,7 +20,7 @@
 
 const QList<AcGridLine*> &AcGridLineList::children() const
 {
-    return reinterpret_cast<const QList<AcGridLine*>&>(d_ptr->children<AcGridLine>());
+    return reinterpret_cast<const QList<AcGridLine*>&>(QObject::children());
 }
 
 bool AcGridLineList::isSorted() const

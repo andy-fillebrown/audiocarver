@@ -41,6 +41,11 @@ class AcTrack : public AcScoreObject
     Q_PROPERTY(AcNoteList* notes READ notes)
 
 public:
+    enum PropertyIndex {
+        NotesIndex = AcScoreObject::PropertyCount,
+        PropertyCount
+    };
+
     AcTrack()
         :   AcScoreObject(*(new AcTrackPrivate(this)))
     {

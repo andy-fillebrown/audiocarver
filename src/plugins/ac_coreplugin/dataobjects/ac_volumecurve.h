@@ -21,6 +21,8 @@
 #include <ac_curve.h>
 #include <QMetaType>
 
+class AcVolumePoint;
+
 #define AcVolumeCurvePrivate AcCurvePrivate
 
 class AcVolumeCurve : public AcCurve
@@ -28,11 +30,12 @@ class AcVolumeCurve : public AcCurve
     Q_OBJECT
 
 public:
-    AcVolumeCurve();
+    explicit AcVolumeCurve(int propertyIndex = 0);
 
     virtual ~AcVolumeCurve()
     {}
 
+    const QList<AcVolumePoint*> &children() const;
     virtual void addChild(MiObject *child);
 
 private:

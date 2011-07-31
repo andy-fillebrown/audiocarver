@@ -18,9 +18,9 @@
 #include "ac_notelist.h"
 #include <ac_note.h>
 
-QList<AcNote*> &AcNoteListPrivate::children()
+const QList<AcNote*> &AcNoteList::children() const
 {
-    return MiObjectPrivate::children<AcNote>();
+    return reinterpret_cast<const QList<AcNote*>&>(QObject::children());
 }
 
 bool AcNoteList::isSorted() const
@@ -33,11 +33,6 @@ void AcNoteList::sort()
 {
     Q_D(AcNoteList);
     d->sort<AcNote>();
-}
-
-const QList<AcNote*> &AcNoteList::children() const
-{
-    return reinterpret_cast<const QList<AcNote*>&>(d_ptr->children<AcNote>());
 }
 
 void AcNoteList::addChild(MiObject *child)

@@ -38,7 +38,7 @@ void AcCurve::sort()
 
 const QList<AcCurvePoint*> &AcCurve::children() const
 {
-    return reinterpret_cast<const QList<AcCurvePoint*>&>(d_ptr->children<AcCurvePoint>());
+    return reinterpret_cast<const QList<AcCurvePoint*>&>(QObject::children());
 }
 
 void AcCurve::update()

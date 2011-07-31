@@ -23,8 +23,8 @@
 class MiSortedListObjectPrivate : public MiListObjectPrivate
 {
 public:
-    MiSortedListObjectPrivate(MiListObject *q)
-        :   MiListObjectPrivate(q)
+    MiSortedListObjectPrivate(MiListObject *q, int propertyIndex)
+        :   MiListObjectPrivate(q, propertyIndex)
     {}
 
     virtual ~MiSortedListObjectPrivate()

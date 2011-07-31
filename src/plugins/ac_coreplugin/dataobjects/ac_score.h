@@ -53,9 +53,9 @@ class AC_CORE_EXPORT AcScore : public AcScoreObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
-    Q_PROPERTY(AcTrackList* tracks READ tracks)
-    Q_PROPERTY(MiListObject* gridLines READ gridLineLists)
-    Q_PROPERTY(MiListObject* settings READ settingsList)
+    Q_PROPERTY(AcTrackList* Tracks READ tracks)
+    Q_PROPERTY(MiListObject* GridLines READ gridLineLists)
+    Q_PROPERTY(MiListObject* Settings READ settingsList)
 
 public:
     enum PropertyIndex {
@@ -68,6 +68,8 @@ public:
 
     virtual ~AcScore()
     {}
+
+    static AcScore *instance();
 
     qreal length() const
     {
@@ -127,8 +129,6 @@ public:
         Q_D(const AcScore);
         return d->viewSettings;
     }
-
-    static AcScore *instance();
 
 private:
     Q_DISABLE_COPY(AcScore)

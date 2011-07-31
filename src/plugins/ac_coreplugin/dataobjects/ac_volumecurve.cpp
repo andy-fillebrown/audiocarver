@@ -18,11 +18,16 @@
 #include "ac_volumecurve.h"
 #include <ac_volumepoint.h>
 
-AcVolumeCurve::AcVolumeCurve()
-    :   AcCurve(*(new AcVolumeCurvePrivate(this)))
+AcVolumeCurve::AcVolumeCurve(int propertyIndex)
+    :   AcCurve(*(new AcVolumeCurvePrivate(this, propertyIndex)))
 {
     d_ptr->addChild(new AcVolumePoint);
     d_ptr->addChild(new AcVolumePoint);
+}
+
+const QList<AcVolumePoint*> &AcVolumeCurve::children() const
+{
+    return reinterpret_cast<const QList<AcVolumePoint*>&>(QObject::children());
 }
 
 void AcVolumeCurve::addChild(MiObject *child)

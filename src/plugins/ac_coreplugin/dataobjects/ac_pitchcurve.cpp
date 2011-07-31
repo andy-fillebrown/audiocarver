@@ -18,11 +18,16 @@
 #include "ac_pitchcurve.h"
 #include <ac_pitchpoint.h>
 
-AcPitchCurve::AcPitchCurve()
-:   AcCurve(*(new AcPitchCurvePrivate(this)))
+AcPitchCurve::AcPitchCurve(int propertyIndex)
+:   AcCurve(*(new AcPitchCurvePrivate(this, propertyIndex)))
 {
     d_ptr->addChild(new AcPitchPoint);
     d_ptr->addChild(new AcPitchPoint);
+}
+
+const QList<AcPitchPoint*> &AcPitchCurve::children() const
+{
+    return reinterpret_cast<const QList<AcPitchPoint*>&>(QObject::children());
 }
 
 void AcPitchCurve::addChild(MiObject *child)

@@ -21,6 +21,8 @@
 #include <ac_core_global.h>
 #include <mi_listobject.h>
 
+class AcTrack;
+
 #define AcTrackListPrivate MiListObjectPrivate
 
 class AcTrackList : public MiListObject
@@ -28,11 +30,12 @@ class AcTrackList : public MiListObject
     Q_OBJECT
 
 public:
-    AcTrackList();
+    explicit AcTrackList(int propertyIndex = 0);
 
     virtual ~AcTrackList()
     {}
 
+    const QList<AcTrack*> &children() const;
     virtual void addChild(MiObject *child);
 
     virtual void removeChild(MiObject *child)

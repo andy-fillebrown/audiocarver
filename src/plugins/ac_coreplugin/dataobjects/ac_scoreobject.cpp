@@ -23,8 +23,8 @@
 AcScoreObjectPrivate::AcScoreObjectPrivate(MiObject *q)
     :   MiObjectPrivate(q)
     ,   volume(0.9f)
-    ,   pitchCurve(new AcPitchCurve)
-    ,   volumeCurve(new AcVolumeCurve)
+    ,   pitchCurve(new AcPitchCurve(AcScoreObject::PitchCurveIndex))
+    ,   volumeCurve(new AcVolumeCurve(AcScoreObject::VolumeCurveIndex))
 {}
 
 void AcScoreObjectPrivate::init()
