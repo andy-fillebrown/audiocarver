@@ -18,6 +18,7 @@
 #ifndef AC_GRAPHICSNOTEITEM_H
 #define AC_GRAPHICSNOTEITEM_H
 
+#include <mi_object.h>
 #include <ac_graphicsitem.h>
 
 class AcNote;
@@ -37,13 +38,11 @@ public:
 protected:
     virtual void highlight();
     virtual void unhighlight();
+    virtual void updateDataObject(int i);
 
 protected slots:
-    virtual void updatePitchCurve(int i);
-    virtual void updateVolumeCurve(int i);
-
-protected:
-    virtual void updateDataObject(int i);
+    virtual void updatePitchCurve(const MiObject::ChangeFlags &flags);
+    virtual void updateVolumeCurve(const MiObject::ChangeFlags &flags);
 
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)

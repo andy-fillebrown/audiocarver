@@ -41,7 +41,6 @@ public:
 private:
     Q_DISABLE_COPY(AcPitchCurve)
     Q_DECLARE_PRIVATE(AcPitchCurve)
-    Q_DECLARE_FRIENDS(AcPitchCurve)
 };
 
 Q_DECLARE_METATYPE(AcPitchCurve*)

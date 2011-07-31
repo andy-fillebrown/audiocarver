@@ -23,22 +23,16 @@
 class AcPoint;
 class QGraphicsRectItem;
 
-namespace Private {
-
-class AcGraphicsPointItemData : public AcScaledGraphicsItemData
+class AcGraphicsPointItemPrivate : public AcScaledGraphicsItemPrivate
 {
 public:
     QGraphicsRectItem *pointItem;
 
-    AcGraphicsPointItemData(AcPoint *point);
-    virtual ~AcGraphicsPointItemData();
+    AcGraphicsPointItemPrivate(AcPoint *point);
+    virtual ~AcGraphicsPointItemPrivate();
 
     const AcPoint *point() const;
 };
-
-class AcGraphicsPointItemPrivate;
-
-} // namespace Private
 
 class AcGraphicsPointItem : public AcScaledGraphicsItem
 {
@@ -48,12 +42,9 @@ public:
     AcGraphicsPointItem(AcPoint *point = 0, QObject *parent = 0);
     virtual ~AcGraphicsPointItem();
 
-protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
-
 private:
     Q_DISABLE_COPY(AcGraphicsPointItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsPointItem)
+    Q_DECLARE_PRIVATE(AcGraphicsPointItem)
 };
 
 #endif // AC_GRAPHICSPOINTITEM_H

@@ -46,7 +46,6 @@ public:
 private:
     Q_DISABLE_COPY(AcNoteList)
     Q_DECLARE_PRIVATE(AcNoteList)
-    Q_DECLARE_FRIENDS(AcNoteList)
 };
 
 #endif // AC_NOTELIST_H

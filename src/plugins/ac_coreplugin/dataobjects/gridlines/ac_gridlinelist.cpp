@@ -37,7 +37,7 @@ void AcGridLineList::sort()
 
 void AcGridLineList::addChild(MiObject *child)
 {
-    if (!qobject_cast<AcGridLine*>(child))
+    if (!child->cast<AcGridLine>())
         return;
     MiSortedListObject::addChild(child);
 }

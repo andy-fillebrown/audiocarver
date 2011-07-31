@@ -27,18 +27,14 @@
 #include <QGraphicsPathItem>
 #include <QPen>
 
-using namespace Private;
-
-namespace Private {
-
 class AcGraphicsNoteItemPrivate : public AcGraphicsItemPrivate
 {
 public:
     AcGraphicsNoteItem *q;
     QGraphicsPathItem *pitchLineItem;
     QGraphicsPathItem *volumeLineItem;
-    QList<AcGraphicsScorePointItem*> pitchPointItems;
-    QList<AcGraphicsControlPointItem*> volumePointItems;
+    QList<AcGraphicsPitchPointItem*> pitchPointItems;
+    QList<AcGraphicsVolumePointItem*> volumePointItems;
 
     AcGraphicsNoteItemPrivate(AcGraphicsNoteItem *q, AcNote *note)
         :   q(q)
@@ -65,7 +61,7 @@ public:
 
     const AcNote *note() const
     {
-        return qobject_cast<AcNote*>(dataObject);
+        return dataObject->cast<AcNote>();
     }
 
     const AcCurve *pitchCurve() const
@@ -133,15 +129,13 @@ public:
     }
 };
 
-} // namespace Private
-
 AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
     :   AcGraphicsItem(*(new AcGraphicsNoteItemPrivate(this, note)), parent)
 {
     Q_D(AcGraphicsNoteItem);
     d->update();
-    updateDataObject(AcNote::PitchCurveIndex);
-    updateDataObject(AcNote::VolumeCurveIndex);
+    Q_CONNECT(d->pitchCurve(), SIGNAL(updated(MiObject::ChangeFlags)), this, SLOT(updatePitchCurve(MiObject::ChangeFlags)));
+    Q_CONNECT(d->volumeCurve(), SIGNAL(updated(MiObject::ChangeFlags)), this, SLOT(updateVolumeCurve(MiObject::ChangeFlags)));
 }
 
 AcGraphicsNoteItem::~AcGraphicsNoteItem()
@@ -173,33 +167,29 @@ void AcGraphicsNoteItem::unhighlight()
     d->hidePointItems();
 }
 
-void AcGraphicsNoteItem::updatePitchCurve(int i)
+void AcGraphicsNoteItem::updatePitchCurve(const MiObject::ChangeFlags &flags)
 {
-    if (AcCurve::PointsIndex == i) {
-        Q_D(AcGraphicsNoteItem);
-        d->updateScorePointItems();
-    }
+    if (!flags)
+        return;
+    Q_D(AcGraphicsNoteItem);
+    if (MiObject::ChildPropertyChanged & flags)
+        d->updatePitchLineItem();
+    if (MiObject::ChildListChanged & flags)
+        d->updatePitchPointItems();
 }
 
-void AcGraphicsNoteItem::updateVolumeCurve(int i)
+void AcGraphicsNoteItem::updateVolumeCurve(const MiObject::ChangeFlags &flags)
 {
-    if (AcCurve::Points == i) {
-        Q_D(AcGraphicsNoteItem);
-        d->updateControlPointItems();
-    }
+    if (!flags)
+        return;
+    Q_D(AcGraphicsNoteItem);
+    if (MiObject::ChildPropertyChanged & flags)
+        d->updateVolumeLineItem();
+    if (MiObject::ChildListChanged & flags)
+        d->updateVolumePointItems();
 }
 
 void AcGraphicsNoteItem::updateDataObject(int i)
 {
-    Q_D(AcGraphicsNoteItem);
-    switch (i) {
-    case AcNote::PitchCurveIndex:
-        Q_CONNECT(d->pitchCurve(), SIGNAL(changed(int)), this, SLOT(updatePitchCurve(int)));
-        break;
-    case AcNote::VolumeCurveIndex:
-        Q_CONNECT(d->volumeCurve(), SIGNAL(changed(int)), this, SLOT(updateVolumeCurve(int)));
-        break;
-    default:
-        break;
-    }
+    Q_UNUSED(i);
 }

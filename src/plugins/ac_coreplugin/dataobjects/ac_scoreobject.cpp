@@ -21,7 +21,7 @@
 
 
 AcScoreObjectPrivate::AcScoreObjectPrivate(MiObject *q)
-    :   MiParentObjectPrivate(q)
+    :   MiObjectPrivate(q)
     ,   volume(0.9f)
     ,   pitchCurve(new AcPitchCurve(AcScoreObject::PitchCurveIndex))
     ,   volumeCurve(new AcVolumeCurve(AcScoreObject::VolumeCurveIndex))

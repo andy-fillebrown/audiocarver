@@ -37,7 +37,7 @@ void AcNoteList::sort()
 
 void AcNoteList::addChild(MiObject *child)
 {
-    if (!qobject_cast<AcNote*>(child))
+    if (!child->cast<AcNote>())
         return;
     MiSortedListObject::addChild(child);
 }

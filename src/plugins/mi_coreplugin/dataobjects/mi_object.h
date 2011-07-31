@@ -35,7 +35,7 @@ protected: \
 private:
 
 class MiObject;
-class MiParentObject;
+class MiListObject;
 
 class MI_CORE_EXPORT MiObjectPrivate
 {
@@ -50,6 +50,8 @@ public:
     {}
 
     const QObjectList &children() const;
+    void addChild(MiObject *child);
+    void removeChild(MiObject *child);
 
     void beginChange(int i);
     void endChange(int i);
@@ -99,13 +101,12 @@ public:
     QVariant propertyValue(int i) const;
     void setPropertyValue(int i, const QVariant &value);
 
-    template <typename T>
-    T *cast()
+    template <typename T> T *cast()
     {
         return qobject_cast<T*>(this);
     }
 
-    MiParentObject *parent() const;
+    MiListObject *parent() const;
 
     static bool connect(const MiObject *sender, const char *signal, const QObject *receiver, const char *member, Qt::ConnectionType type = Qt::UniqueConnection)
     {
@@ -133,26 +134,35 @@ protected:
 private:
     Q_DISABLE_COPY(MiObject)
     Q_DECLARE_PRIVATE(MiObject)
-    Q_DECLARE_FRIENDS(MiObject)
 
     friend class MiListObjectPrivate;
-    friend class MiParentObjectPrivate;
 };
 
-inline
-const QObjectList &MiObjectPrivate::children() const
+inline const QObjectList &MiObjectPrivate::children() const
 {
     return q_ptr->children();
 }
 
-inline
-void MiObjectPrivate::beginChange(int i)
+inline void MiObjectPrivate::addChild(MiObject *child)
+{
+    Q_ASSERT(child);
+    Q_ASSERT(!MiObjectPrivate::children().contains(child));
+    child->setParent(q_ptr);
+}
+
+inline void MiObjectPrivate::removeChild(MiObject *child)
+{
+    Q_ASSERT(child);
+    Q_ASSERT(MiObjectPrivate::children().contains(child));
+    child->setParent(0);
+}
+
+inline void MiObjectPrivate::beginChange(int i)
 {
     q_ptr->emit aboutToChange(i);
 }
 
-inline
-void MiObjectPrivate::endChange(int i)
+inline void MiObjectPrivate::endChange(int i)
 {
     q_ptr->emit changed(i);
     q_ptr->setParentChangeFlag(MiObject::ChildPropertyChanged);

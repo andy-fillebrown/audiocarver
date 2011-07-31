@@ -15,4 +15,18 @@
 **
 **************************************************************************/
 
-#include "mi_parentobject.h"
+#include "ac_scaledgraphicsitem.h"
+#include <ac_score.h>
+#include <ac_viewsettings.h>
+
+const AcViewSettings *AcScaledGraphicsItemPrivate::viewSettings() const
+{
+    return score()->viewSettings();
+}
+
+AcScaledGraphicsItem::AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent)
+    :   AcGraphicsItem(dd, parent)
+{
+    Q_D(AcScaledGraphicsItem);
+    Q_CONNECT(d->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
+}

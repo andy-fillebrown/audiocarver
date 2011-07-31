@@ -12,7 +12,6 @@ HEADERS += \
     \
     dataobjects/mi_listobject.h \
     dataobjects/mi_object.h \
-    dataobjects/mi_parentobject.h \
     dataobjects/mi_sortedlistobject.h \
     \
 #    factories/mi_dataobjectfactory.h \
@@ -31,7 +30,6 @@ SOURCES += \
     \
     dataobjects/mi_listobject.cpp \
     dataobjects/mi_object.cpp \
-    dataobjects/mi_parentobject.cpp \
     dataobjects/mi_sortedlistobject.cpp \
     \
 #    factories/mi_dataobjectfactory.cpp \

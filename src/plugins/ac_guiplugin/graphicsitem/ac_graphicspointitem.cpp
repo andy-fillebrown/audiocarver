@@ -19,15 +19,12 @@
 #include <ac_point.h>
 #include <QBrush>
 #include <QGraphicsRectItem>
+#include <QPen>
 
-using namespace Private;
-
-namespace Private {
-
-AcGraphicsPointItemData::AcGraphicsPointItemData(AcPoint *point)
+AcGraphicsPointItemPrivate::AcGraphicsPointItemPrivate(AcPoint *point)
     :   pointItem(new QGraphicsRectItem)
 {
-    databaseObject = point;
+    dataObject = point;
     pointItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     pointItem->setPen(QPen(Qt::blue));
     pointItem->setBrush(QBrush(Qt::blue, Qt::SolidPattern));
@@ -35,29 +32,19 @@ AcGraphicsPointItemData::AcGraphicsPointItemData(AcPoint *point)
     pointItem->hide();
 }
 
-AcGraphicsPointItemData::~AcGraphicsPointItemData()
+AcGraphicsPointItemPrivate::~AcGraphicsPointItemPrivate()
 {
     delete pointItem;
 }
 
-const AcPoint *AcGraphicsPointItemData::point() const
+const AcPoint *AcGraphicsPointItemPrivate::point() const
 {
-    return qobject_cast<AcPoint*>(databaseObject);
+    return dataObject->cast<AcPoint>();
 }
 
-class AcGraphicsPointItemPrivate : public AcGraphicsPointItemData
-{};
-
-} // namespace Private
-
 AcGraphicsPointItem::AcGraphicsPointItem(AcPoint *point, QObject *parent)
-    :   AcScaledGraphicsItem(*(new AcGraphicsPointItemData(point)), parent)
+    :   AcScaledGraphicsItem(*(new AcGraphicsPointItemPrivate(point)), parent)
 {}
 
 AcGraphicsPointItem::~AcGraphicsPointItem()
 {}
-
-void AcGraphicsPointItem::updateViewSettingsProperty(int propertyIndex)
-{
-    Q_UNUSED(propertyIndex);
-}

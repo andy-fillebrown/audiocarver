@@ -33,7 +33,7 @@ const QList<AcPitchPoint*> &AcPitchCurve::children() const
 
 void AcPitchCurve::addChild(MiObject *child)
 {
-    if (!qobject_cast<AcPitchPoint*>(child))
+    if (!child->cast<AcPitchPoint>())
         return;
     MiSortedListObject::addChild(child);
 }

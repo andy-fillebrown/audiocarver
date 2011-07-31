@@ -32,6 +32,9 @@ inline void mi_assert(const char *assertion, const char *file, int line)
     qt_assert(assertion, file, line);
 }
 
+#define Q_DECLARE_FRIENDS(Class) \
+    friend Class *qobject_cast<Class*>(QObject*);
+
 #ifdef USE_MI_ASSERT
 #  ifdef Q_ASSERT
 #    undef Q_ASSERT
@@ -45,9 +48,6 @@ inline void mi_assert(const char *assertion, const char *file, int line)
 
 #define Q_CONNECT MiObject::connect
 #define Q_DISCONNECT(sender) if (sender) sender->disconnect(this);
-
-#define Q_DECLARE_FRIENDS(Class) \
-    friend Class *qobject_cast<Class*>(QObject*);
 
 template <typename Container, typename LessThan>
 void qSort(Container &c, LessThan lessThan)

@@ -18,9 +18,16 @@
 #ifndef AC_GRAPHICSITEM_H
 #define AC_GRAPHICSITEM_H
 
-#include <ac_abstractgraphicsitem.h>
+#include <ac_scene_util.h>
 
-class AcGraphicsItemPrivate : public AcAbstractGraphicsItemPrivate
+class AcScore;
+class MiObject;
+class QFont;
+class QFontMetrics;
+class QGraphicsItem;
+class QGraphicsScene;
+
+class AcGraphicsItemPrivate
 {
 public:
     MiObject *dataObject;
@@ -31,37 +38,51 @@ public:
 
     virtual ~AcGraphicsItemPrivate()
     {}
+
+    const AcScore *score() const;
+    const QFont font() const;
+    const QFontMetrics &fontMetrics() const;
+    const QGraphicsScene *pitchScene() const;
+    const QGraphicsScene *volumeScene() const;
+    const QGraphicsScene *timeLabelScene() const;
+    const QGraphicsScene *pitchLabelScene() const;
+    const QGraphicsScene *volumeLabelScene() const;
 };
 
-class AcGraphicsItem : public AcAbstractGraphicsItem
+class AcGraphicsItem : public QObject
 {
     Q_OBJECT
 
 public:
-    virtual ~AcGraphicsItem()
-    {}
+    virtual ~AcGraphicsItem();
 
-    virtual MiObject *dataObject() const
+    void setDataObject(MiObject *object);
+
+    virtual QGraphicsItem *sceneItem(SceneType sceneType) const = 0;
+
+    bool isVisible() const;
+    void show();
+    void hide();
+
+    void addItem(AcGraphicsItem *item);
+
+    template <typename T>
+    void addItems(const QList<T*> &items)
     {
-        Q_D(const AcGraphicsItem);
-        return d->dataObject;
+        foreach (AcGraphicsItem *item, items)
+            addItem(item);
     }
 
-    void setDataObject(MiObject *object)
-    {
-        Q_D(AcGraphicsItem);
-        if (d->dataObject == object)
-            return;
-        AcAbstractGraphicsItem::setDataObject(object);
-    }
+    virtual void highlight();
+    virtual void unhighlight();
+
+protected slots:
+    virtual void updateDataObject(int i) = 0;
 
 protected:
-    AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent = 0)
-        :   AcAbstractGraphicsItem(dd, parent)
-    {
-        Q_D(AcGraphicsItem);
-        setDataObject(d->dataObject);
-    }
+    AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent = 0);
+
+    AcGraphicsItemPrivate *d_ptr;
 
 private:
     Q_DISABLE_COPY(AcGraphicsItem)

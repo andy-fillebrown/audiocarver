@@ -33,7 +33,7 @@ const QList<AcVolumePoint*> &AcVolumeCurve::children() const
 
 void AcVolumeCurve::addChild(MiObject *child)
 {
-    if (!qobject_cast<AcVolumePoint*>(child))
+    if (!child->cast<AcVolumePoint>())
         return;
     MiSortedListObject::addChild(child);
 }

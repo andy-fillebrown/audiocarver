@@ -109,6 +109,7 @@ protected:
 private:
     Q_DISABLE_COPY(AcPoint)
     Q_DECLARE_PRIVATE(AcPoint)
+    Q_DECLARE_FRIENDS(AcPoint)
 };
 
 #endif // AC_POINT_H

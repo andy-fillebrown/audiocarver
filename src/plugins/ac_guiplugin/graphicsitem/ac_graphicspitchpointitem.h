@@ -15,36 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSSCOREPOINTITEM_H
-#define AC_GRAPHICSSCOREPOINTITEM_H
+#ifndef AC_GRAPHICSPITCHPOINTITEM_H
+#define AC_GRAPHICSPITCHPOINTITEM_H
 
 #include <ac_graphicspointitem.h>
 
 class AcPoint;
 
-namespace Private {
+class AcGraphicsPitchPointItemPrivate;
 
-class AcGraphicsScorePointItemPrivate;
-
-} // namespace Private
-
-class AcGraphicsScorePointItem : public AcGraphicsPointItem
+class AcGraphicsPitchPointItem : public AcGraphicsPointItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsScorePointItem(AcPoint *point = 0, QObject *parent = 0);
-    virtual ~AcGraphicsScorePointItem();
+    AcGraphicsPitchPointItem(AcPoint *point = 0, QObject *parent = 0);
+
+    virtual ~AcGraphicsPitchPointItem()
+    {}
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
-    virtual void updateDatabaseObjectProperty(int propertyIndex);
+    virtual void updateViewSettings(int i);
+    virtual void updateDataObject(int i);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsScorePointItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsScorePointItem)
+    Q_DISABLE_COPY(AcGraphicsPitchPointItem)
+    Q_DECLARE_PRIVATE(AcGraphicsPitchPointItem)
 };
 
-#endif // AC_GRAPHICSSCOREPOINTITEM_H
+#endif // AC_GRAPHICSPITCHPOINTITEM_H

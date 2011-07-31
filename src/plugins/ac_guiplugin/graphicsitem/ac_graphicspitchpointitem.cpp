@@ -15,16 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsscorepointitem.h"
+#include "ac_graphicspitchpointitem.h"
 #include <ac_point.h>
 #include <ac_viewsettings.h>
 #include <QGraphicsRectItem>
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsScorePointItemPrivate : public AcGraphicsPointItemData
+class AcGraphicsPitchPointItemPrivate : public AcGraphicsPointItemPrivate
 {
 public:
     void update()
@@ -43,23 +39,18 @@ public:
     }
 };
 
-} // namespace Private
-
-AcGraphicsScorePointItem::AcGraphicsScorePointItem(AcPoint *point, QObject *parent)
+AcGraphicsPitchPointItem::AcGraphicsPitchPointItem(AcPoint *point, QObject *parent)
     :   AcGraphicsPointItem(point, parent)
 {
-    Q_D(AcGraphicsScorePointItem);
+    Q_D(AcGraphicsPitchPointItem);
     d->update();
 }
 
-AcGraphicsScorePointItem::~AcGraphicsScorePointItem()
-{}
-
-QGraphicsItem *AcGraphicsScorePointItem::sceneItem(SceneType sceneType) const
+QGraphicsItem *AcGraphicsPitchPointItem::sceneItem(SceneType sceneType) const
 {
-    Q_D(const AcGraphicsScorePointItem);
+    Q_D(const AcGraphicsPitchPointItem);
     switch (sceneType) {
-    case ScoreScene:
+    case PitchScene:
         return d->pointItem;
     default:
         break;
@@ -67,12 +58,12 @@ QGraphicsItem *AcGraphicsScorePointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsScorePointItem::updateViewSettingsProperty(int propertyIndex)
+void AcGraphicsPitchPointItem::updateViewSettings(int i)
 {
-    Q_D(AcGraphicsScorePointItem);
-    switch (propertyIndex) {
-    case AcViewSettings::TimeScale:
-    case AcViewSettings::PitchScale:
+    Q_D(AcGraphicsPitchPointItem);
+    switch (i) {
+    case AcViewSettings::TimeScaleIndex:
+    case AcViewSettings::PitchScaleIndex:
         d->updateRect();
         break;
     default:
@@ -80,12 +71,12 @@ void AcGraphicsScorePointItem::updateViewSettingsProperty(int propertyIndex)
     }
 }
 
-void AcGraphicsScorePointItem::updateDatabaseObjectProperty(int propertyIndex)
+void AcGraphicsPitchPointItem::updateDataObject(int i)
 {
-    Q_D(AcGraphicsScorePointItem);
-    switch (propertyIndex) {
-    case AcPoint::X:
-    case AcPoint::Y:
+    Q_D(AcGraphicsPitchPointItem);
+    switch (i) {
+    case AcPoint::XIndex:
+    case AcPoint::YIndex:
         d->updateRect();
         break;
     default:

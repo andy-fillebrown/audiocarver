@@ -41,7 +41,6 @@ public:
 private:
     Q_DISABLE_COPY(AcVolumeCurve)
     Q_DECLARE_PRIVATE(AcVolumeCurve)
-    Q_DECLARE_FRIENDS(AcVolumeCurve)
 };
 
 Q_DECLARE_METATYPE(AcVolumeCurve*)

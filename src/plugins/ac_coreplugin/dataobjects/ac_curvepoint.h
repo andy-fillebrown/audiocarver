@@ -122,7 +122,6 @@ protected:
 private:
     Q_DISABLE_COPY(AcCurvePoint)
     Q_DECLARE_PRIVATE(AcCurvePoint)
-    Q_DECLARE_FRIENDS(AcCurvePoint)
 };
 
 #endif // AC_CURVEPOINT_H

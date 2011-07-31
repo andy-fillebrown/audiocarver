@@ -15,31 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_graphicscontrolpointitem.h"
+#include "ac_graphicsvolumepointitem.h"
 #include <ac_point.h>
 #include <QGraphicsEllipseItem>
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsControlPointItemPrivate : public AcGraphicsPointItemData
+class AcGraphicsVolumePointItemPrivate : public AcGraphicsPointItemPrivate
 {};
 
-} // namespace Private
-
-AcGraphicsControlPointItem::AcGraphicsControlPointItem(AcPoint *point, QObject *parent)
+AcGraphicsVolumePointItem::AcGraphicsVolumePointItem(AcPoint *point, QObject *parent)
     :   AcGraphicsPointItem(point, parent)
 {}
 
-AcGraphicsControlPointItem::~AcGraphicsControlPointItem()
-{}
-
-QGraphicsItem *AcGraphicsControlPointItem::sceneItem(SceneType sceneType) const
+QGraphicsItem *AcGraphicsVolumePointItem::sceneItem(SceneType sceneType) const
 {
-    Q_D(const AcGraphicsControlPointItem);
+    Q_D(const AcGraphicsVolumePointItem);
     switch (sceneType) {
-    case ControlScene:
+    case VolumeScene:
         return d->pointItem;
     default:
         break;
@@ -47,7 +38,12 @@ QGraphicsItem *AcGraphicsControlPointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsControlPointItem::updateDatabaseObjectProperty(int propertyIndex)
+void AcGraphicsVolumePointItem::updateViewSettings(int i)
 {
-    Q_UNUSED(propertyIndex);
+    Q_UNUSED(i);
+}
+
+void AcGraphicsVolumePointItem::updateDataObject(int i)
+{
+    Q_UNUSED(i);
 }

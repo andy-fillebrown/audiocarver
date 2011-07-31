@@ -5,18 +5,17 @@ include(../../plugin.pri)
 include(ac_guiplugin_dependencies.pri)
 
 HEADERS += \
-    graphicsitem/ac_abstractgraphicsitem.h \
 #    graphicsitem/ac_graphicsgridlineitem.h \
     graphicsitem/ac_graphicsitem.h \
-#    graphicsitem/ac_graphicsnoteitem.h \
+    graphicsitem/ac_graphicsnoteitem.h \
 #    graphicsitem/ac_graphicspitchlineitem.h \
-#    graphicsitem/ac_graphicspitchpointitem.h \
-#    graphicsitem/ac_graphicspointitem.h \
+    graphicsitem/ac_graphicspitchpointitem.h \
+    graphicsitem/ac_graphicspointitem.h \
 #    graphicsitem/ac_graphicstimelineitem.h \
 #    graphicsitem/ac_graphicstrackitem.h \
 #    graphicsitem/ac_graphicsvolumelineitem.h \
-#    graphicsitem/ac_graphicsvolumepointitem.h \
-    graphicsitem/ac_parentgraphicsitem.h \
+    graphicsitem/ac_graphicsvolumepointitem.h \
+    graphicsitem/ac_scaledgraphicsitem.h \
 #    \
 #    graphicsscene/ac_graphicsscene.h \
 #    graphicsscene/ac_labelscene.h \
@@ -46,18 +45,17 @@ HEADERS += \
     ac_scene_util.h \
 
 SOURCES += \
-    graphicsitem/ac_abstractgraphicsitem.cpp \
 #    graphicsitem/ac_graphicsgridlineitem.cpp \
     graphicsitem/ac_graphicsitem.cpp \
-#    graphicsitem/ac_graphicsnoteitem.cpp \
+    graphicsitem/ac_graphicsnoteitem.cpp \
 #    graphicsitem/ac_graphicspitchlineitem.cpp \
-#    graphicsitem/ac_graphicspitchpointitem.cpp \
-#    graphicsitem/ac_graphicspointitem.cpp \
+    graphicsitem/ac_graphicspitchpointitem.cpp \
+    graphicsitem/ac_graphicspointitem.cpp \
 #    graphicsitem/ac_graphicstimelineitem.cpp \
 #    graphicsitem/ac_graphicstrackitem.cpp \
 #    graphicsitem/ac_graphicsvolumelineitem.cpp \
-#    graphicsitem/ac_graphicsvolumepointitem.cpp \
-    graphicsitem/ac_parentgraphicsitem.cpp \
+    graphicsitem/ac_graphicsvolumepointitem.cpp \
+    graphicsitem/ac_scaledgraphicsitem.cpp \
 #    \
 #    graphicsscene/ac_graphicsscene.cpp \
 #    graphicsscene/ac_labelscene.cpp \

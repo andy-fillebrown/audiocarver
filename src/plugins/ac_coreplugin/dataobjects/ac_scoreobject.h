@@ -19,13 +19,12 @@
 #define AC_SCOREOBJECT_H
 
 #include <ac_core_global.h>
-#include <mi_parentobject.h>
 #include <mi_scopedchange.h>
 
 class AcPitchCurve;
 class AcVolumeCurve;
 
-class AcScoreObjectPrivate : public MiParentObjectPrivate
+class AcScoreObjectPrivate : public MiObjectPrivate
 {
 public:
     qreal volume;
@@ -57,13 +56,6 @@ public:
         VolumeCurveIndex,
         PropertyCount
     };
-
-    AcScoreObject()
-    :   MiObject(*(new AcScoreObjectPrivate(this)))
-    {
-        Q_D(AcScoreObject);
-        d->init();
-    }
 
     virtual ~AcScoreObject()
     {}
@@ -117,7 +109,10 @@ public:
 protected:
     AcScoreObject(AcScoreObjectPrivate &dd)
         :   MiObject(dd)
-    {}
+    {
+        Q_D(AcScoreObject);
+        d->init();
+    }
 
 private:
     Q_DISABLE_COPY(AcScoreObject)

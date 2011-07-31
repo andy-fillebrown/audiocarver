@@ -32,7 +32,7 @@ const QList<AcTrack*> &AcTrackList::children() const
 
 void AcTrackList::addChild(MiObject *child)
 {
-    if (!qobject_cast<AcTrack*>(child))
+    if (!child->cast<AcTrack>())
         return;
     MiListObject::addChild(child);
 }

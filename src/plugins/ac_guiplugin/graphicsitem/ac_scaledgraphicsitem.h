@@ -15,34 +15,42 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVOLUMEPOINTITEM_H
-#define AC_GRAPHICSVOLUMEPOINTITEM_H
+#ifndef AC_SCALEDGRAPHICSITEM_H
+#define AC_SCALEDGRAPHICSITEM_H
 
-#include <ac_graphicspointitem.h>
+#include <ac_graphicsitem.h>
 
-class AcPoint;
+class AcViewSettings;
 
-class AcGraphicsVolumePointItemPrivate;
+class AcScaledGraphicsItemPrivate : public AcGraphicsItemPrivate
+{
+public:
+    AcScaledGraphicsItemPrivate()
+    {}
 
-class AcGraphicsVolumePointItem : public AcGraphicsPointItem
+    virtual ~AcScaledGraphicsItemPrivate()
+    {}
+
+    const AcViewSettings *viewSettings() const;
+};
+
+class AcScaledGraphicsItem : public AcGraphicsItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsVolumePointItem(AcPoint *point = 0, QObject *parent = 0);
-
-    virtual ~AcGraphicsVolumePointItem()
+    virtual ~AcScaledGraphicsItem()
     {}
 
-    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
-
 protected:
-    virtual void updateViewSettings(int i);
-    virtual void updateDataObject(int i);
+    AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent = 0);
+
+protected slots:
+    virtual void updateViewSettings(int i) = 0;
 
 private:
-    Q_DISABLE_COPY(AcGraphicsVolumePointItem)
-    Q_DECLARE_PRIVATE(AcGraphicsVolumePointItem)
+    Q_DISABLE_COPY(AcScaledGraphicsItem)
+    Q_DECLARE_PRIVATE(AcScaledGraphicsItem)
 };
 
-#endif // AC_GRAPHICSVOLUMEPOINTITEM_H
+#endif // AC_SCALEDGRAPHICSITEM_H
