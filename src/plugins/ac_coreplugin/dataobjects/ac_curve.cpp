@@ -43,35 +43,36 @@ const QList<AcCurvePoint*> &AcCurve::children() const
 
 void AcCurve::update()
 {
-    if (isChildChanged()) {
-        const QList<AcCurvePoint*> &pts = children();
-        AcCurvePoint *startPt = pts.first();
-        AcCurvePoint *endPt = pts.last();
-        const qreal startX = startPt->x();
-        const qreal startPrevX = startPt->previousX();
-        const qreal startOffset = startX - startPrevX;
-        const qreal endX = endPt->x();
-        const qreal endPrevX = endPt->previousX();
-        const qreal endOffset = endX - endPrevX;
-        const qreal middleStretchFactor = (endPrevX - startPrevX) / (endX - startX);
-        for (int i = 1;  i < pts.count() - 1;  ++i) {
-            AcCurvePoint *pt = pts[i];
-            if (pt->previousX() == pt->x()) {
-                switch (pt->stretchType()) {
-                case AcCurvePoint::StartStretch:
-                    pt->setX(pt->x() + startOffset);
-                    break;
-                case AcCurvePoint::MiddleStretch:
-                    pt->setX(pt->x() + (middleStretchFactor * (pt->x() - startPt->x())));
-                    break;
-                case AcCurvePoint::EndStretch:
-                    pt->setX(pt->x() + endOffset);
-                    break;
-                default:
-                    break;
-                }
+    if (!isChanged())
+        return;
+    const QList<AcCurvePoint*> &pts = children();
+    AcCurvePoint *startPt = pts.first();
+    AcCurvePoint *endPt = pts.last();
+    const qreal startX = startPt->x();
+    const qreal startPrevX = startPt->previousX();
+    const qreal startOffset = startX - startPrevX;
+    const qreal endX = endPt->x();
+    const qreal endPrevX = endPt->previousX();
+    const qreal endOffset = endX - endPrevX;
+    const qreal middleStretchFactor = (endPrevX - startPrevX) / (endX - startX);
+    for (int i = 1;  i < pts.count() - 1;  ++i) {
+        AcCurvePoint *pt = pts[i];
+        if (pt->previousX() == pt->x()) {
+            switch (pt->stretchType()) {
+            case AcCurvePoint::StartStretch:
+                pt->setX(pt->x() + startOffset);
+                break;
+            case AcCurvePoint::MiddleStretch:
+                pt->setX(pt->x() + (middleStretchFactor * (pt->x() - startPt->x())));
+                break;
+            case AcCurvePoint::EndStretch:
+                pt->setX(pt->x() + endOffset);
+                break;
+            default:
+                break;
             }
-        }
+        } else
+            pt->update();
     }
     MiSortedListObject::update();
 }

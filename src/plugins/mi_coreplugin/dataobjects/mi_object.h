@@ -19,7 +19,6 @@
 #define MI_OBJECT_H
 
 #include <mi_core_global.h>
-#include <QMetaType>
 #include <QObject>
 
 // Redefine Q_OBJECT to declare meta-object members as protected, not public.
@@ -36,45 +35,24 @@ protected: \
 private:
 
 class MiObject;
+class MiParentObject;
 
 class MI_CORE_EXPORT MiObjectPrivate
 {
 public:
     MiObject *q_ptr;
-    bool changed;
 
     MiObjectPrivate(MiObject *q)
         :   q_ptr(q)
-        ,   changed(true)
     {}
 
     virtual ~MiObjectPrivate()
     {}
 
-    template <typename T>
-    T* parent() const;
-
-    template <typename T>
-    const QList<T*> &children() const;
-
-    template <typename T>
-    QList<T*> &children();
-
-    void addChild(MiObject *child);
-    void removeChild(MiObject *child);
-
-    void setChangedFlag();
-
-    void clearChangedFlag()
-    {
-        if (changed)
-            changed = false;
-    }
+    const QObjectList &children() const;
 
     void beginChange(int i);
     void endChange(int i);
-    void parentBeginChange(int i);
-    void parentEndChange(int i);
 };
 
 class MI_CORE_EXPORT MiObject : protected QObject
@@ -87,9 +65,12 @@ public:
         PropertyCount
     };
 
-    explicit MiObject(int i = 0)
-        :   d_ptr(new MiObjectPrivate(this))
-    {}
+    enum ChangeFlag {
+        NoChange = 0x0,
+        ChildListChanged = 0x1,
+        ChildPropertyChanged = 0x2
+    };
+    Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 
     virtual ~MiObject()
     {
@@ -117,16 +98,13 @@ public:
     QVariant propertyValue(int i) const;
     void setPropertyValue(int i, const QVariant &value);
 
-    bool isChanged() const
-    {
-        return d_ptr->changed;
-    }
-
     template <typename T>
     T *cast()
     {
         return qobject_cast<T*>(this);
     }
+
+    MiParentObject *parent() const;
 
     static bool connect(const MiObject *sender, const char *signal, const QObject *receiver, const char *member, Qt::ConnectionType type = Qt::UniqueConnection)
     {
@@ -138,17 +116,11 @@ public:
         return QObject::disconnect(receiver, member);
     }
 
-public slots:
-    virtual void update()
-    {
-        foreach (MiObject *child, d_ptr->children<MiObject>())
-            child->update();
-        d_ptr->clearChangedFlag();
-    }
+    void setParentChangeFlag(ChangeFlag flag);
 
 signals:
     void aboutToChange(int i);
-    void changed(int i = -1);
+    void changed(int i);
 
 protected:
     MiObject(MiObjectPrivate &dd)
@@ -161,53 +133,15 @@ private:
     Q_DISABLE_COPY(MiObject)
     Q_DECLARE_PRIVATE(MiObject)
     Q_DECLARE_FRIENDS(MiObject)
+
+    friend class MiListObjectPrivate;
+    friend class MiParentObjectPrivate;
 };
 
-Q_DECLARE_METATYPE(MiObject*)
-
-template <typename T> inline
-T* MiObjectPrivate::parent() const
-{
-    return qobject_cast<T*>(q_ptr->parent());
-}
-
-template <typename T> inline
-const QList<T*> &MiObjectPrivate::children() const
-{
-    return reinterpret_cast<const QList<T*>&>(q_ptr->children());
-}
-
-template <typename T> inline
-QList<T*> &MiObjectPrivate::children()
-{
-    return reinterpret_cast<QList<T*>&>(const_cast<QObjectList&>(q_ptr->children()));
-}
-
 inline
-void MiObjectPrivate::addChild(MiObject *child)
+const QObjectList &MiObjectPrivate::children() const
 {
-    Q_ASSERT(child);
-    Q_ASSERT(!children<MiObject>().contains(child));
-    child->setParent(q_ptr);
-}
-
-inline
-void MiObjectPrivate::removeChild(MiObject *child)
-{
-    Q_ASSERT(child);
-    Q_ASSERT(children<MiObject>().contains(child));
-    child->setParent(0);
-}
-
-inline
-void MiObjectPrivate::setChangedFlag()
-{
-    if (changed)
-        return;
-    changed = true;
-    MiObject *parent = this->parent<MiObject>();
-    if (parent)
-        parent->d_ptr->setChangedFlag();
+    return q_ptr->children();
 }
 
 inline
@@ -220,27 +154,9 @@ inline
 void MiObjectPrivate::endChange(int i)
 {
     q_ptr->emit changed(i);
-    setChangedFlag();
+    q_ptr->setParentChangeFlag(MiObject::ChildPropertyChanged);
 }
 
-inline
-void MiObjectPrivate::parentBeginChange(int i)
-{
-    if (i < 1)
-        return;
-    MiObject *parent = this->parent<MiObject>();
-    if (parent)
-        parent->d_ptr->beginChange(i);
-}
-
-inline
-void MiObjectPrivate::parentEndChange(int i)
-{
-    if (i < 1)
-        return;
-    MiObject *parent = this->parent<MiObject>();
-    if (parent)
-        parent->d_ptr->endChange(i);
-}
+Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::ChangeFlags)
 
 #endif // MI_OBJECT_H

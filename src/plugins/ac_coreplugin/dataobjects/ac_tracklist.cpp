@@ -21,7 +21,8 @@
 AcTrackList::AcTrackList(int propertyIndex)
     :   MiListObject(*(new AcTrackListPrivate(this, propertyIndex)))
 {
-    d_ptr->addChild(new AcTrack);
+    Q_D(AcTrackList);
+    d->addChild(new AcTrack);
 }
 
 const QList<AcTrack*> &AcTrackList::children() const

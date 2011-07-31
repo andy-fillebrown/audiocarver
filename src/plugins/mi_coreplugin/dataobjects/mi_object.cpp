@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "mi_object.h"
+#include <mi_parentobject.h>
 #include <QMetaProperty>
 #include <QVariant>
 
@@ -44,4 +45,16 @@ void MiObject::setPropertyValue(int i, const QVariant &value)
     const QMetaObject *metaObj = metaObject();
     if (!metaObj->property(i).write(this, value) && value.isValid())
         metaObj->property(i).write(this, QVariant());
+}
+
+MiParentObject *MiObject::parent() const
+{
+    return qobject_cast<MiParentObject*>(QObject::parent());
+}
+
+void MiObject::setParentChangeFlag(ChangeFlag flag)
+{
+    MiParentObject *parent = this->parent();
+    if (parent)
+        parent->setChangeFlag(flag);
 }

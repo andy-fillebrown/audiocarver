@@ -47,6 +47,7 @@ public:
 
 private:
     Q_DISABLE_COPY(AcTrackList)
+    Q_DECLARE_PRIVATE(AcTrackList)
     Q_DECLARE_FRIENDS(AcTrackList)
 };
 

@@ -38,7 +38,7 @@ inline void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*
             ItemType *item = new ItemType(objects[i], parent);
             items.append(item);
         } else
-            items[i]->setDatabaseObject(objects[i]);
+            items[i]->setDataObject(objects[i]);
     }
     while (objects.count() < items.count()) {
         delete items.last();

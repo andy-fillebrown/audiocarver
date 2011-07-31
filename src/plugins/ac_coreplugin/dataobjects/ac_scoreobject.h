@@ -19,12 +19,13 @@
 #define AC_SCOREOBJECT_H
 
 #include <ac_core_global.h>
+#include <mi_parentobject.h>
 #include <mi_scopedchange.h>
 
 class AcPitchCurve;
 class AcVolumeCurve;
 
-class AcScoreObjectPrivate : public MiObjectPrivate
+class AcScoreObjectPrivate : public MiParentObjectPrivate
 {
 public:
     qreal volume;

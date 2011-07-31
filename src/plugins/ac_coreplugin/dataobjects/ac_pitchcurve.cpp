@@ -21,8 +21,9 @@
 AcPitchCurve::AcPitchCurve(int propertyIndex)
 :   AcCurve(*(new AcPitchCurvePrivate(this, propertyIndex)))
 {
-    d_ptr->addChild(new AcPitchPoint);
-    d_ptr->addChild(new AcPitchPoint);
+    Q_D(AcPitchCurve);
+    d->addChild(new AcPitchPoint);
+    d->addChild(new AcPitchPoint);
 }
 
 const QList<AcPitchPoint*> &AcPitchCurve::children() const

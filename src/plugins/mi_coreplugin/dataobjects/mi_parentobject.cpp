@@ -15,35 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHCURVE_H
-#define AC_PITCHCURVE_H
-
-#include <ac_curve.h>
-#include <QMetaType>
-
-class AcPitchPoint;
-
-#define AcPitchCurvePrivate AcCurvePrivate
-
-class AcPitchCurve : public AcCurve
-{
-    Q_OBJECT
-
-public:
-    explicit AcPitchCurve(int propertyIndex = 0);
-
-    virtual ~AcPitchCurve()
-    {}
-
-    const QList<AcPitchPoint*> &children() const;
-    virtual void addChild(MiObject *child);
-
-private:
-    Q_DISABLE_COPY(AcPitchCurve)
-    Q_DECLARE_PRIVATE(AcPitchCurve)
-    Q_DECLARE_FRIENDS(AcPitchCurve)
-};
-
-Q_DECLARE_METATYPE(AcPitchCurve*)
-
-#endif // AC_PITCHCURVE_H
+#include "mi_parentobject.h"

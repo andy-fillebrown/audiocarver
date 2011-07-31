@@ -21,8 +21,9 @@
 AcVolumeCurve::AcVolumeCurve(int propertyIndex)
     :   AcCurve(*(new AcVolumeCurvePrivate(this, propertyIndex)))
 {
-    d_ptr->addChild(new AcVolumePoint);
-    d_ptr->addChild(new AcVolumePoint);
+    Q_D(AcVolumeCurve);
+    d->addChild(new AcVolumePoint);
+    d->addChild(new AcVolumePoint);
 }
 
 const QList<AcVolumePoint*> &AcVolumeCurve::children() const

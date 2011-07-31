@@ -16,14 +16,12 @@
 **************************************************************************/
 
 #include "ac_graphicsnoteitem.h"
-#include <ac_graphicscontrolpointitem.h>
-#include <ac_graphicsscorepointitem.h>
+#include <ac_curvepoint.h>
+#include <ac_graphicspitchpointitem.h>
+#include <ac_graphicsvolumepointitem.h>
 #include <ac_note.h>
 #include <ac_pitchcurve.h>
-#include <ac_point.h>
-#include <ac_viewsettings.h>
 #include <ac_volumecurve.h>
-#include <mi_list.h>
 #include <QBrush>
 #include <QColor>
 #include <QGraphicsPathItem>
@@ -33,42 +31,41 @@ using namespace Private;
 
 namespace Private {
 
-class AcGraphicsNoteItemPrivate : public AcScaledGraphicsItemData
+class AcGraphicsNoteItemPrivate : public AcGraphicsItemPrivate
 {
 public:
     AcGraphicsNoteItem *q;
-    QGraphicsPathItem *scoreLineItem;
-    QGraphicsPathItem *controlLineItem;
-    QList<AcGraphicsScorePointItem*> scorePointItems;
-    QList<AcGraphicsControlPointItem*> controlPointItems;
+    QGraphicsPathItem *pitchLineItem;
+    QGraphicsPathItem *volumeLineItem;
+    QList<AcGraphicsScorePointItem*> pitchPointItems;
+    QList<AcGraphicsControlPointItem*> volumePointItems;
 
     AcGraphicsNoteItemPrivate(AcGraphicsNoteItem *q, AcNote *note)
         :   q(q)
-        ,   scoreLineItem(new QGraphicsPathItem)
-        ,   controlLineItem(new QGraphicsPathItem)
+        ,   pitchLineItem(new QGraphicsPathItem)
+        ,   volumeLineItem(new QGraphicsPathItem)
     {
-        databaseObject = note;
-        scoreLineItem->setData(0, quintptr(q));
-        controlLineItem->setData(0, quintptr(q));
-        scoreLineItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        controlLineItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        dataObject = note;
+        pitchLineItem->setData(0, quintptr(q));
+        volumeLineItem->setData(0, quintptr(q));
         QPen pen(Qt::red);
         pen.setWidth(2);
-        scoreLineItem->setPen(pen);
-        controlLineItem->setPen(pen);
+        pen.setCosmetic(true);
+        pitchLineItem->setPen(pen);
+        volumeLineItem->setPen(pen);
     }
 
     virtual ~AcGraphicsNoteItemPrivate()
     {
-        qDeleteAll(controlPointItems);
-        qDeleteAll(scorePointItems);
-        delete controlLineItem;
-        delete scoreLineItem;
+        qDeleteAll(volumePointItems);
+        qDeleteAll(pitchPointItems);
+        delete volumeLineItem;
+        delete pitchLineItem;
     }
 
     const AcNote *note() const
     {
-        return qobject_cast<AcNote*>(databaseObject);
+        return qobject_cast<AcNote*>(dataObject);
     }
 
     const AcCurve *pitchCurve() const
@@ -83,57 +80,55 @@ public:
 
     void update()
     {
-        updateScoreLineItem();
-        updateControlLineItem();
-        updateScorePointItems();
-        updateControlPointItems();
+        updatePitchLineItem();
+        updateVolumeLineItem();
+        updatePitchPointItems();
+        updateVolumePointItems();
     }
 
-    void updateScoreLineItem()
+    void updatePitchLineItem()
     {
         QPainterPath path;
-        const QList<AcPoint*> &points = pitchCurve()->points().list();
-        if (points.count() == 0) {
-            scoreLineItem->setPath(path);
+        const QList<AcCurvePoint*> &pts = pitchCurve()->children();
+        if (pts.count() == 0) {
+            pitchLineItem->setPath(path);
             return;
         }
-        const qreal timeScale = viewSettings()->timeScale();
-        const qreal pitchScale = viewSettings()->pitchScale();
-        path.moveTo(timeScale * points[0]->x(), pitchScale * (127.0f - points[0]->y()));
-        for (int i = 1;  i < points.count();  ++i)
-            path.lineTo(timeScale * points[i]->x(), pitchScale * (127.0f - points[i]->y()));
-        scoreLineItem->setPath(path);
+        path.moveTo(pts[0]->x(), 127.0f - pts[0]->y());
+        for (int i = 1;  i < pts.count();  ++i)
+            path.lineTo(pts[i]->x(), 127.0f - pts[i]->y());
+        pitchLineItem->setPath(path);
     }
 
-    void updateControlLineItem()
+    void updateVolumeLineItem()
     {
     }
 
-    void updateScorePointItems()
+    void updatePitchPointItems()
     {
-        updateItemsHelper(pitchCurve()->points().list(), scorePointItems, q);
-        q->addItems(scorePointItems);
+        updateItemsHelper(pitchCurve()->children(), pitchPointItems, q);
+        q->addItems(pitchPointItems);
     }
 
-    void updateControlPointItems()
+    void updateVolumePointItems()
     {
-        updateItemsHelper(volumeCurve()->points().list(), controlPointItems, q);
-        q->addItems(controlPointItems);
+        updateItemsHelper(volumeCurve()->children(), volumePointItems, q);
+        q->addItems(volumePointItems);
     }
 
     void showPointItems()
     {
-        foreach (AcGraphicsItem *item, scorePointItems)
+        foreach (AcGraphicsItem *item, pitchPointItems)
             item->show();
-        foreach (AcGraphicsItem *item, controlPointItems)
+        foreach (AcGraphicsItem *item, volumePointItems)
             item->show();
     }
 
     void hidePointItems()
     {
-        foreach (AcGraphicsItem *item, scorePointItems)
+        foreach (AcGraphicsItem *item, pitchPointItems)
             item->hide();
-        foreach (AcGraphicsItem *item, controlPointItems)
+        foreach (AcGraphicsItem *item, volumePointItems)
             item->hide();
     }
 };
@@ -141,12 +136,12 @@ public:
 } // namespace Private
 
 AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
-    :   AcScaledGraphicsItem(*(new AcGraphicsNoteItemPrivate(this, note)), parent)
+    :   AcGraphicsItem(*(new AcGraphicsNoteItemPrivate(this, note)), parent)
 {
     Q_D(AcGraphicsNoteItem);
     d->update();
-    updateDatabaseObjectProperty(AcNote::PitchCurve);
-    updateDatabaseObjectProperty(AcNote::VolumeCurve);
+    updateDataObject(AcNote::PitchCurveIndex);
+    updateDataObject(AcNote::VolumeCurveIndex);
 }
 
 AcGraphicsNoteItem::~AcGraphicsNoteItem()
@@ -156,10 +151,10 @@ QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
 {
     Q_D(const AcGraphicsNoteItem);
     switch (sceneType) {
-    case ScoreScene:
-        return d->scoreLineItem;
-    case ControlScene:
-        return d->controlLineItem;
+    case PitchScene:
+        return d->pitchLineItem;
+    case VolumeScene:
+        return d->volumeLineItem;
     default:
         break;
     }
@@ -178,50 +173,31 @@ void AcGraphicsNoteItem::unhighlight()
     d->hidePointItems();
 }
 
-void AcGraphicsNoteItem::updatePitchCurveProperty(int propertyIndex)
+void AcGraphicsNoteItem::updatePitchCurve(int i)
 {
-    if (AcCurve::Points == propertyIndex) {
+    if (AcCurve::PointsIndex == i) {
         Q_D(AcGraphicsNoteItem);
         d->updateScorePointItems();
     }
 }
 
-void AcGraphicsNoteItem::updateVolumeCurveProperty(int propertyIndex)
+void AcGraphicsNoteItem::updateVolumeCurve(int i)
 {
-    if (AcCurve::Points == propertyIndex) {
+    if (AcCurve::Points == i) {
         Q_D(AcGraphicsNoteItem);
         d->updateControlPointItems();
     }
 }
 
-void AcGraphicsNoteItem::updateViewSettingsProperty(int propertyIndex)
+void AcGraphicsNoteItem::updateDataObject(int i)
 {
     Q_D(AcGraphicsNoteItem);
-    switch (propertyIndex) {
-    case AcViewSettings::TimeScale:
-        d->updateScoreLineItem();
-        d->updateControlLineItem();
+    switch (i) {
+    case AcNote::PitchCurveIndex:
+        Q_CONNECT(d->pitchCurve(), SIGNAL(changed(int)), this, SLOT(updatePitchCurve(int)));
         break;
-    case AcViewSettings::PitchScale:
-        d->updateScoreLineItem();
-        break;
-    case AcViewSettings::ValueScale:
-        d->updateControlLineItem();
-        break;
-    default:
-        break;
-    }
-}
-
-void AcGraphicsNoteItem::updateDatabaseObjectProperty(int propertyIndex)
-{
-    Q_D(AcGraphicsNoteItem);
-    switch (propertyIndex) {
-    case AcNote::PitchCurve:
-        connect(d->pitchCurve(), SIGNAL(propertyChanged(int)), SLOT(updatePitchCurveProperty(int)), Qt::UniqueConnection);
-        break;
-    case AcNote::VolumeCurve:
-        connect(d->volumeCurve(), SIGNAL(propertyChanged(int)), SLOT(updateVolumeCurveProperty(int)), Qt::UniqueConnection);
+    case AcNote::VolumeCurveIndex:
+        Q_CONNECT(d->volumeCurve(), SIGNAL(changed(int)), this, SLOT(updateVolumeCurve(int)));
         break;
     default:
         break;

@@ -70,7 +70,7 @@ public:
 
     virtual void update()
     {
-        if (isChildChanged() && !isSorted())
+        if (isChanged() && !isSorted())
             sort();
         MiListObject::update();
     }

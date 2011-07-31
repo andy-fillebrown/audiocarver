@@ -108,13 +108,10 @@ public:
         return d->previousX;
     }
 
-    virtual void update()
+    void update()
     {
-        if (isChanged()) {
-            Q_D(AcCurvePoint);
-            d->previousX = d->x;
-        }
-        AcPoint::update();
+        Q_D(AcCurvePoint);
+        d->previousX = d->x;
     }
 
 protected:

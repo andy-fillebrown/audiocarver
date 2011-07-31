@@ -18,17 +18,13 @@
 #ifndef AC_GRAPHICSNOTEITEM_H
 #define AC_GRAPHICSNOTEITEM_H
 
-#include <ac_scaledgraphicsitem.h>
+#include <ac_graphicsitem.h>
 
 class AcNote;
 
-namespace Private {
-
 class AcGraphicsNoteItemPrivate;
 
-} // namespace Private
-
-class AcGraphicsNoteItem : public AcScaledGraphicsItem
+class AcGraphicsNoteItem : public AcGraphicsItem
 {
     Q_OBJECT
 
@@ -43,16 +39,15 @@ protected:
     virtual void unhighlight();
 
 protected slots:
-    virtual void updatePitchCurveProperty(int propertyIndex);
-    virtual void updateVolumeCurveProperty(int propertyIndex);
+    virtual void updatePitchCurve(int i);
+    virtual void updateVolumeCurve(int i);
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
-    virtual void updateDatabaseObjectProperty(int propertyIndex);
+    virtual void updateDataObject(int i);
 
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsNoteItem)
+    Q_DECLARE_PRIVATE(AcGraphicsNoteItem)
 };
 
 #endif // AC_GRAPHICSNOTEITEM_H

@@ -18,24 +18,50 @@
 #ifndef MI_LISTOBJECT_H
 #define MI_LISTOBJECT_H
 
-#include <mi_object.h>
+#include <mi_parentobject.h>
 #include <QMetaType>
 
-class MiListObjectPrivate : public MiObjectPrivate
+class MiListObjectPrivate : public MiParentObjectPrivate
 {
+    Q_DECLARE_PUBLIC(MiParentObject)
+
 public:
     const int propertyIndex;
 
     MiListObjectPrivate(MiObject *q, int propertyIndex)
-        :   MiObjectPrivate(q)
+        :   MiParentObjectPrivate(q)
         ,   propertyIndex(propertyIndex)
     {}
 
     virtual ~MiListObjectPrivate()
     {}
+
+    template <typename T>
+    QList<T*> &children() const
+    {
+        return reinterpret_cast<QList<T*>&>(const_cast<QObjectList&>(q_ptr->children()));
+    }
+
+    void parentBeginChange(int i)
+    {
+        Q_Q(MiParentObject);
+        MiParentObject *parent = q->parent();
+        if (parent)
+            parent->d_ptr->beginChange(i);
+    }
+
+    void parentEndChange(int i)
+    {
+        Q_Q(MiParentObject);
+        MiParentObject *parent = q->parent();
+        if (parent) {
+            parent->d_ptr->endChange(i);
+            parent->setChangeFlag(MiObject::ChildListChanged);
+        }
+    }
 };
 
-class MI_CORE_EXPORT MiListObject : public MiObject
+class MI_CORE_EXPORT MiListObject : public MiParentObject
 {
     Q_OBJECT
 
@@ -43,7 +69,7 @@ public:
     typedef MiObject::PropertyIndex PropertyIndex;
 
     MiListObject(int propertyIndex = 0)
-        :   MiObject(*(new MiListObjectPrivate(this, propertyIndex)))
+        :   MiParentObject(*(new MiListObjectPrivate(this, propertyIndex)))
     {}
 
     virtual ~MiListObject()
@@ -51,7 +77,7 @@ public:
 
     const QList<MiObject*> &children() const
     {
-        return d_ptr->children<MiObject>();
+        return reinterpret_cast<const QList<MiObject*>&>(QObject::children());
     }
 
     virtual void addChild(MiObject *child)
@@ -74,17 +100,9 @@ public:
         d->parentEndChange(d->propertyIndex);
     }
 
-    bool isChildChanged() const
-    {
-        foreach (const MiObject *child, children())
-            if (child->isChanged())
-                return true;
-        return false;
-    }
-
 protected:
     MiListObject(MiListObjectPrivate &dd)
-        :   MiObject(dd)
+        :   MiParentObject(dd)
     {}
 
 private:
