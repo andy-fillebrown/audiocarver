@@ -114,18 +114,24 @@ public:
 
     void showPointItems()
     {
-        foreach (AcGraphicsItem *item, pitchPointItems)
-            item->show();
-        foreach (AcGraphicsItem *item, volumePointItems)
-            item->show();
+//        foreach (AcGraphicsItem *item, pitchPointItems)
+//            item->show();
+//        foreach (AcGraphicsItem *item, volumePointItems)
+//            item->show();
+        updatePitchPointItems();
+        updateVolumePointItems();
     }
 
     void hidePointItems()
     {
-        foreach (AcGraphicsItem *item, pitchPointItems)
-            item->hide();
-        foreach (AcGraphicsItem *item, volumePointItems)
-            item->hide();
+//        foreach (AcGraphicsItem *item, pitchPointItems)
+//            item->hide();
+//        foreach (AcGraphicsItem *item, volumePointItems)
+//            item->hide();
+        qDeleteAll(volumePointItems);
+        volumePointItems.clear();
+        qDeleteAll(pitchPointItems);
+        pitchPointItems.clear();
     }
 };
 
