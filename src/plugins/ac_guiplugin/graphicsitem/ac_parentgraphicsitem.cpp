@@ -15,4 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsitem.h"
+#include "ac_parentgraphicsitem.h"
+#include <mi_parentobject.h>
+
+MiObject *AcParentGraphicsItem::dataObject() const
+{
+    Q_D(const AcParentGraphicsItem);
+    return d->dataObject;
+}
+
+void AcParentGraphicsItem::setDataObject(MiParentObject *object)
+{
+    Q_D(AcParentGraphicsItem);
+    if (d->dataObject == object)
+        return;
+    AcAbstractGraphicsItem::setDataObject(object);
+    if (object) {
+        Q_CONNECT(object, SIGNAL(updated(MiObject::ChangeFlags)), this, SLOT(updateDataObject(MiObject::ChangeFlags)));
+        for (int i = 1;  i < MiObject::LastChangeFlag;  i *= 2)
+            updateDataObject(MiObject::ChangeFlags(i));
+    }
+}

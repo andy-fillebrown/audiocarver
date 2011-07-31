@@ -15,57 +15,52 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSITEM_H
-#define AC_GRAPHICSITEM_H
+#ifndef AC_PARENTGRAPHICSITEM_H
+#define AC_PARENTGRAPHICSITEM_H
 
 #include <ac_abstractgraphicsitem.h>
+#include <mi_object.h>
 
-class AcGraphicsItemPrivate : public AcAbstractGraphicsItemPrivate
+class MiParentObject;
+
+class AcParentGraphicsItemPrivate : public AcAbstractGraphicsItemPrivate
 {
 public:
-    MiObject *dataObject;
+    MiParentObject *dataObject;
 
-    AcGraphicsItemPrivate()
+    AcParentGraphicsItemPrivate()
         :   dataObject(0)
     {}
 
-    virtual ~AcGraphicsItemPrivate()
+    virtual ~AcParentGraphicsItemPrivate()
     {}
 };
 
-class AcGraphicsItem : public AcAbstractGraphicsItem
+class AcParentGraphicsItem : public AcAbstractGraphicsItem
 {
     Q_OBJECT
 
 public:
-    virtual ~AcGraphicsItem()
+    virtual ~AcParentGraphicsItem()
     {}
 
-    virtual MiObject *dataObject() const
-    {
-        Q_D(const AcGraphicsItem);
-        return d->dataObject;
-    }
-
-    void setDataObject(MiObject *object)
-    {
-        Q_D(AcGraphicsItem);
-        if (d->dataObject == object)
-            return;
-        AcAbstractGraphicsItem::setDataObject(object);
-    }
+    virtual MiObject *dataObject() const;
+    void setDataObject(MiParentObject *object);
 
 protected:
-    AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent = 0)
+    AcParentGraphicsItem(AcParentGraphicsItemPrivate &dd, QObject *parent = 0)
         :   AcAbstractGraphicsItem(dd, parent)
     {
-        Q_D(AcGraphicsItem);
+        Q_D(AcParentGraphicsItem);
         setDataObject(d->dataObject);
     }
 
+protected slots:
+    virtual void updateDataObject(const MiObject::ChangeFlags &flags) = 0;
+
 private:
-    Q_DISABLE_COPY(AcGraphicsItem)
-    Q_DECLARE_PRIVATE(AcGraphicsItem)
+    Q_DISABLE_COPY(AcParentGraphicsItem)
+    Q_DECLARE_PRIVATE(AcParentGraphicsItem)
 };
 
-#endif // AC_GRAPHICSITEM_H
+#endif // AC_PARENTGRAPHICSITEM_H

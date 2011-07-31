@@ -68,7 +68,8 @@ public:
     enum ChangeFlag {
         NoChange = 0x0,
         ChildListChanged = 0x1,
-        ChildPropertyChanged = 0x2
+        ChildPropertyChanged = 0x2,
+        LastChangeFlag = 0x4
     };
     Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 
