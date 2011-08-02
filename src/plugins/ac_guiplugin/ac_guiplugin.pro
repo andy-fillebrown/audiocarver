@@ -12,7 +12,7 @@ HEADERS += \
     graphicsitem/ac_graphicspitchpointitem.h \
     graphicsitem/ac_graphicspointitem.h \
 #    graphicsitem/ac_graphicstimelineitem.h \
-#    graphicsitem/ac_graphicstrackitem.h \
+    graphicsitem/ac_graphicstrackitem.h \
 #    graphicsitem/ac_graphicsvolumelineitem.h \
     graphicsitem/ac_graphicsvolumepointitem.h \
     graphicsitem/ac_scaledgraphicsitem.h \
@@ -52,7 +52,7 @@ SOURCES += \
     graphicsitem/ac_graphicspitchpointitem.cpp \
     graphicsitem/ac_graphicspointitem.cpp \
 #    graphicsitem/ac_graphicstimelineitem.cpp \
-#    graphicsitem/ac_graphicstrackitem.cpp \
+    graphicsitem/ac_graphicstrackitem.cpp \
 #    graphicsitem/ac_graphicsvolumelineitem.cpp \
     graphicsitem/ac_graphicsvolumepointitem.cpp \
     graphicsitem/ac_scaledgraphicsitem.cpp \

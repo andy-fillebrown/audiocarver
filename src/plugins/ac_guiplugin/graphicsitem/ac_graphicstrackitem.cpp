@@ -18,52 +18,46 @@
 #include "ac_graphicstrackitem.h"
 #include <ac_graphicsnoteitem.h>
 #include <ac_note.h>
+#include <ac_notelist.h>
 #include <ac_track.h>
-#include <mi_list.h>
 #include <QGraphicsItemGroup>
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsTrackItemPrivate : public AcGraphicsItemData
+class AcGraphicsTrackItemPrivate : public AcGraphicsItemPrivate
 {
 public:
     AcGraphicsTrackItem *q;
-    QGraphicsItemGroup *scoreItem;
-    QGraphicsItemGroup *controlItem;
+    QGraphicsItemGroup *pitchItem;
+    QGraphicsItemGroup *volumeItem;
     QList<AcGraphicsNoteItem*> noteItems;
 
     AcGraphicsTrackItemPrivate(AcGraphicsTrackItem *q, AcTrack *track)
         :   q(q)
-        ,   scoreItem(new QGraphicsItemGroup)
-        ,   controlItem(new QGraphicsItemGroup)
+        ,   pitchItem(new QGraphicsItemGroup)
+        ,   volumeItem(new QGraphicsItemGroup)
     {
-        databaseObject = track;
-        scoreItem->setZValue(1.0f);
-        controlItem->setZValue(1.0f);
+        dataObject = track;
+        pitchItem->setZValue(1.0f);
+        volumeItem->setZValue(1.0f);
     }
 
     virtual ~AcGraphicsTrackItemPrivate()
     {
         qDeleteAll(noteItems);
-        delete controlItem;
-        delete scoreItem;
+        delete volumeItem;
+        delete pitchItem;
     }
 
     AcTrack *track() const
     {
-        return qobject_cast<AcTrack*>(databaseObject);
+        return dataObject->cast<AcTrack>();
     }
 
     void updateNoteItems()
     {
-        updateItemsHelper(track()->notes().list(), noteItems, q);
+        updateItemsHelper(track()->notes()->children(), noteItems, q);
         q->addItems(noteItems);
     }
 };
-
-} // namespace Private
 
 AcGraphicsTrackItem::AcGraphicsTrackItem(AcTrack *track, QObject *parent)
     :   AcGraphicsItem(*(new AcGraphicsTrackItemPrivate(this, track)), parent)
@@ -72,26 +66,23 @@ AcGraphicsTrackItem::AcGraphicsTrackItem(AcTrack *track, QObject *parent)
     d->updateNoteItems();
 }
 
-AcGraphicsTrackItem::~AcGraphicsTrackItem()
-{}
-
 QGraphicsItem *AcGraphicsTrackItem::sceneItem(SceneType sceneType) const
 {
     Q_D(const AcGraphicsTrackItem);
     switch (sceneType) {
-    case ScoreScene:
-        return d->scoreItem;
-    case ControlScene:
-        return d->controlItem;
+    case PitchScene:
+        return d->pitchItem;
+    case VolumeScene:
+        return d->volumeItem;
     default:
         break;
     }
     return 0;
 }
 
-void AcGraphicsTrackItem::updateDatabaseObjectProperty(int propertyIndex)
+void AcGraphicsTrackItem::updateDataObject(int i)
 {
-    if (AcTrack::Notes == propertyIndex) {
+    if (AcTrack::NotesIndex == i) {
         Q_D(AcGraphicsTrackItem);
         d->updateNoteItems();
     }

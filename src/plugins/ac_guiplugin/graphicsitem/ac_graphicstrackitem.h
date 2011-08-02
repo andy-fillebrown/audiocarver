@@ -23,11 +23,7 @@
 class AcTrack;
 class QGraphicsItemGroup;
 
-namespace Private {
-
 class AcGraphicsTrackItemPrivate;
-
-} // namespace Private
 
 class AcGraphicsTrackItem : public AcGraphicsItem
 {
@@ -35,16 +31,18 @@ class AcGraphicsTrackItem : public AcGraphicsItem
 
 public:
     AcGraphicsTrackItem(AcTrack *track = 0, QObject *parent = 0);
-    virtual ~AcGraphicsTrackItem();
+
+    virtual ~AcGraphicsTrackItem()
+    {}
 
     QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateDatabaseObjectProperty(int propertyIndex);
+    virtual void updateDataObject(int i);
 
 private:
     Q_DISABLE_COPY(AcGraphicsTrackItem)
-    Q_DECLARE_PRIVATE(Private::AcGraphicsTrackItem)
+    Q_DECLARE_PRIVATE(AcGraphicsTrackItem)
 };
 
 #endif // AC_GRAPHICSTRACKITEM_H
