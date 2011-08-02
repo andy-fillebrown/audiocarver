@@ -31,7 +31,9 @@ class AcGraphicsNoteItem : public AcGraphicsItem
 
 public:
     AcGraphicsNoteItem(AcNote *note = 0, QObject *parent = 0);
-    virtual ~AcGraphicsNoteItem();
+
+    virtual ~AcGraphicsNoteItem()
+    {}
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
 

@@ -144,9 +144,6 @@ AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
     Q_CONNECT(d->volumeCurve(), SIGNAL(updated(MiObject::ChangeFlags)), this, SLOT(updateVolumeCurve(MiObject::ChangeFlags)));
 }
 
-AcGraphicsNoteItem::~AcGraphicsNoteItem()
-{}
-
 QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
 {
     Q_D(const AcGraphicsNoteItem);
