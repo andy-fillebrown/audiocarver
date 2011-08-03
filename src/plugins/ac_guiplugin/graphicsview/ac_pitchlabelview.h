@@ -15,28 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHVIEW_H
-#define AC_PITCHVIEW_H
+#ifndef AC_PITCHLABELVIEW_H
+#define AC_PITCHLABELVIEW_H
 
 #include <ac_graphicsview.h>
 
-namespace Private {
+class AcPitchLabelViewPrivate;
 
-class AcPitchViewData;
-
-} // namespace Private
-
-class AcPitchView : public AcGraphicsView
+class AcPitchLabelView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcPitchView();
+    AcPitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcPitchLabelView();
 
 private:
-    Q_DISABLE_COPY(AcPitchView)
-    Private::AcPitchViewData *d;
+    Q_DISABLE_COPY(AcPitchLabelView)
+    AcPitchLabelViewPrivate *d;
 };
 
-#endif // AC_PITCHVIEW_H
+#endif // AC_PITCHLABELVIEW_H

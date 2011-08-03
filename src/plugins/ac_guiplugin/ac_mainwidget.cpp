@@ -24,11 +24,7 @@
 #include <QLayout>
 #include <QWheelEvent>
 
-using namespace Private;
-
-namespace Private {
-
-class AcMainWidgetData
+class AcMainWidgetPrivate
 {
 public:
     AcMainWidget *q;
@@ -36,7 +32,7 @@ public:
     AcViewManager *viewManager;
     MiGraphicsView *topLeft;
 
-    AcMainWidgetData(AcMainWidget *q)
+    AcMainWidgetPrivate(AcMainWidget *q)
         :   q(q)
         ,   layout(new QGridLayout(q))
         ,   viewManager(new AcViewManager(q))
@@ -45,13 +41,14 @@ public:
         layout->setContentsMargins(QMargins(0, 0, 0, 0));
         layout->setSpacing(0);
     }
-};
 
-} // namespace Private
+    virtual ~AcMainWidgetPrivate()
+    {}
+};
 
 AcMainWidget::AcMainWidget(QWidget *parent)
     :   QWidget(parent)
-    ,   d(new AcMainWidgetData(this))
+    ,   d(new AcMainWidgetPrivate(this))
 {
     const int sideWidth = 48;
     const int sideHeight = 32;
@@ -61,32 +58,32 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     d->topLeft->setFixedSize(sideWidth, sideHeight);
     d->topLeft->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *timeView = d->viewManager->timeView();
-    d->layout->addWidget(timeView, 0, 1);
-    timeView->setFixedHeight(sideHeight);
-    timeView->setFrameShape(QFrame::NoFrame);
+    QGraphicsView *timeLabelView = d->viewManager->timeLabelView();
+    d->layout->addWidget(timeLabelView, 0, 1);
+    timeLabelView->setFixedHeight(sideHeight);
+    timeLabelView->setFrameShape(QFrame::NoFrame);
+
+    QGraphicsView *pitchLabelView = d->viewManager->pitchLabelView();
+    d->layout->addWidget(pitchLabelView, 1, 0);
+    pitchLabelView->setFixedWidth(sideWidth);
+    pitchLabelView->setFrameShape(QFrame::NoFrame);
 
     QGraphicsView *pitchView = d->viewManager->pitchView();
-    d->layout->addWidget(pitchView, 1, 0);
-    pitchView->setFixedWidth(sideWidth);
-    pitchView->setFrameShape(QFrame::NoFrame);
+    d->layout->addWidget(pitchView, 1, 1);
+    pitchView->setFrameShape(QFrame::Box);
+    pitchView->setFrameShadow(QFrame::Sunken);
+    pitchView->setLineWidth(1);
 
-    QGraphicsView *scoreView = d->viewManager->scoreView();
-    d->layout->addWidget(scoreView, 1, 1);
-    scoreView->setFrameShape(QFrame::Box);
-    scoreView->setFrameShadow(QFrame::Sunken);
-    scoreView->setLineWidth(1);
+    QGraphicsView *volumeLabelView = d->viewManager->volumeLabelView();
+    d->layout->addWidget(volumeLabelView, 2, 0);
+    volumeLabelView->setFixedSize(sideWidth, controlHeight);
+    volumeLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *valueView = d->viewManager->valueView();
-    d->layout->addWidget(valueView, 2, 0);
-    valueView->setFixedSize(sideWidth, controlHeight);
-    valueView->setFrameShape(QFrame::NoFrame);
-
-    QGraphicsView *controlView = d->viewManager->controlView();
-    d->layout->addWidget(controlView, 2, 1);
-    controlView->setFixedHeight(controlHeight);
-    controlView->setFrameShape(QFrame::Box);
-    controlView->setFrameShadow(QFrame::Sunken);
+    QGraphicsView *volumeView = d->viewManager->volumeView();
+    d->layout->addWidget(volumeView, 2, 1);
+    volumeView->setFixedHeight(controlHeight);
+    volumeView->setFrameShape(QFrame::Box);
+    volumeView->setFrameShadow(QFrame::Sunken);
 
     d->viewManager->updateViews();
 }
@@ -96,13 +93,13 @@ AcMainWidget::~AcMainWidget()
     delete d;
 }
 
-bool AcMainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) const
+bool AcMainWidget::isPointInVolumeViews(QWidget *widget, const QPoint &pos) const
 {
-    QGraphicsView *controlView = d->viewManager->controlView();
-    if (controlView->rect().contains(controlView->mapFrom(widget, pos)))
+    QGraphicsView *volumeView = d->viewManager->volumeView();
+    if (volumeView->rect().contains(volumeView->mapFrom(widget, pos)))
         return true;
-    QGraphicsView *valueView = d->viewManager->valueView();
-    if (valueView->rect().contains(valueView->mapFrom(widget, pos)))
+    QGraphicsView *volumeLabelView = d->viewManager->volumeLabelView();
+    if (volumeLabelView->rect().contains(volumeLabelView->mapFrom(widget, pos)))
         return true;
     return false;
 }
@@ -125,18 +122,18 @@ void AcMainWidget::wheelEvent(QWheelEvent *event)
         qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             d->viewManager->setTimeScale(scale * d->viewManager->timeScale());
-        else if (!isPointInControlViews(this, event->pos()))
+        else if (!isPointInVolumeViews(this, event->pos()))
             d->viewManager->setPitchScale(scale * d->viewManager->pitchScale());
         else
-            d->viewManager->setValueScale(scale * d->viewManager->valueScale());
+            d->viewManager->setVolumeScale(scale * d->viewManager->volumeScale());
     } else {
         int offset = event->delta() < 0 ? 100 : -100;
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
             d->viewManager->setTimePosition(d->viewManager->timePosition() - (offset / d->viewManager->timeScale()));
-        else if (!isPointInControlViews(this, event->pos()))
+        else if (!isPointInVolumeViews(this, event->pos()))
             d->viewManager->setPitchPosition(d->viewManager->pitchPosition() + (offset / d->viewManager->pitchScale()));
         else
-            d->viewManager->setValuePosition(d->viewManager->valuePosition() + (offset / d->viewManager->valueScale()));
+            d->viewManager->setVolumePosition(d->viewManager->volumePosition() + (offset / d->viewManager->volumeScale()));
     }
     event->accept();
 }

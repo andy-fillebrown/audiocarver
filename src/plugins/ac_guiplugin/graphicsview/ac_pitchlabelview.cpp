@@ -15,27 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_pitchview.h"
+#include "ac_pitchlabelview.h"
 
-using namespace Private;
-
-namespace Private {
-
-class AcPitchViewData
+class AcPitchLabelViewPrivate
 {
 public:
-    AcPitchViewData()
+    AcPitchLabelViewPrivate()
+    {}
+
+    virtual ~AcPitchLabelViewPrivate()
     {}
 };
 
-} // namespace Private
-
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
+AcPitchLabelView::AcPitchLabelView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchViewData)
+    ,   d(new AcPitchLabelViewPrivate)
 {}
 
-AcPitchView::~AcPitchView()
+AcPitchLabelView::~AcPitchLabelView()
 {
     delete d;
 }

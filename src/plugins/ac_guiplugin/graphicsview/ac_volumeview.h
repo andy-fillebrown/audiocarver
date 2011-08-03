@@ -15,24 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCOREVIEW_H
-#define AC_SCOREVIEW_H
+#ifndef AC_VOLUMEVIEW_H
+#define AC_VOLUMEVIEW_H
 
 #include <ac_editorview.h>
 
-namespace Private {
+class AcVolumeViewPrivate;
 
-class AcScoreViewData;
-
-} // namespace Private
-
-class AcScoreView : public AcEditorView
+class AcVolumeView : public AcEditorView
 {
     Q_OBJECT
 
 public:
-    AcScoreView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcScoreView();
+    AcVolumeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcVolumeView();
 
     virtual void updateTransform();
 
@@ -40,8 +36,8 @@ protected:
     virtual void updateViewSettings() const;
 
 private:
-    Q_DISABLE_COPY(AcScoreView)
-    Private::AcScoreViewData *d;
+    Q_DISABLE_COPY(AcVolumeView)
+    AcVolumeViewPrivate *d;
 };
 
-#endif // AC_SCOREVIEW_H
+#endif // AC_VOLUMEVIEW_H

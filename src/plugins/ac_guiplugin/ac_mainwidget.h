@@ -20,11 +20,7 @@
 
 #include <QWidget>
 
-namespace Private {
-
-class AcMainWidgetData;
-
-} // namespace Private
+class AcMainWidgetPrivate;
 
 class AcMainWidget : public QWidget
 {
@@ -34,7 +30,7 @@ public:
     AcMainWidget(QWidget *parent = 0);
     ~AcMainWidget();
 
-    bool isPointInControlViews(QWidget *widget, const QPoint &pos) const;
+    bool isPointInVolumeViews(QWidget *widget, const QPoint &pos) const;
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -43,7 +39,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(AcMainWidget)
-    Private::AcMainWidgetData *d;
+    AcMainWidgetPrivate *d;
 };
 
 #endif // AC_MAINWIDGET_H

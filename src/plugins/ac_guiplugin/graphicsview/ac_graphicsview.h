@@ -20,11 +20,7 @@
 
 #include <mi_graphicsview.h>
 
-namespace Private {
-
-class AcGraphicsViewData;
-
-} // namespace Private
+class AcGraphicsViewPrivate;
 
 class AcGraphicsView : public MiGraphicsView
 {
@@ -42,7 +38,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(AcGraphicsView)
-    Private::AcGraphicsViewData *d;
+    AcGraphicsViewPrivate *d;
 };
 
 #endif // AC_GRAPHICSVIEW_H

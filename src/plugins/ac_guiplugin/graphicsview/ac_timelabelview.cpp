@@ -15,32 +15,29 @@
 **
 **************************************************************************/
 
-#include "ac_timeview.h"
-#include <ac_timescene.h>
+#include "ac_timelabelview.h"
+#include <ac_pitchview.h>
 #include <ac_score.h>
-#include <ac_scoreview.h>
+#include <ac_timelabelscene.h>
 #include <ac_viewsettings.h>
 #include <QGraphicsTextItem>
 
-using namespace Private;
-
-namespace Private {
-
-class AcTimeViewData
+class AcTimeLabelViewPrivate
 {
 public:
-    AcTimeViewData()
+    AcTimeLabelViewPrivate()
+    {}
+
+    virtual ~AcTimeLabelViewPrivate()
     {}
 };
 
-} // namespace Private
-
-AcTimeView::AcTimeView(QGraphicsScene *scene, QWidget *parent)
+AcTimeLabelView::AcTimeLabelView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcTimeViewData)
+    ,   d(new AcTimeLabelViewPrivate)
 {}
 
-AcTimeView::~AcTimeView()
+AcTimeLabelView::~AcTimeLabelView()
 {
     delete d;
 }

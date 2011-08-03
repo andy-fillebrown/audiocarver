@@ -22,11 +22,7 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsViewData
+class AcGraphicsViewPrivate
 {
 public:
     AcGraphicsView *q;
@@ -35,7 +31,7 @@ public:
     QList<AcGraphicsItem*> selectedItems;
     QGraphicsPolygonItem *selectionRect;
 
-    AcGraphicsViewData(AcGraphicsView *q)
+    AcGraphicsViewPrivate(AcGraphicsView *q)
         :   q(q)
         ,   dragging(false)
         ,   selectionRect(new QGraphicsPolygonItem)
@@ -43,6 +39,9 @@ public:
         q->scene()->addItem(selectionRect);
         selectionRect->hide();
     }
+
+    virtual ~AcGraphicsViewPrivate()
+    {}
 
     void setSelectedItems(const QList<AcGraphicsItem*> items)
     {
@@ -90,11 +89,9 @@ public:
     }
 };
 
-} // namespace Private
-
 AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   MiGraphicsView(scene, parent)
-    ,   d(new AcGraphicsViewData(this))
+    ,   d(new AcGraphicsViewPrivate(this))
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

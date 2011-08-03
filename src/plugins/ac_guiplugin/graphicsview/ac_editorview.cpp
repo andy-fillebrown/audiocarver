@@ -17,24 +17,21 @@
 
 #include "ac_editorview.h"
 
-using namespace Private;
-
-namespace Private {
-
-class AcEditorViewData
+class AcEditorViewPrivate
 {
 public:
     QPointF center;
 
-    AcEditorViewData()
+    AcEditorViewPrivate()
+    {}
+
+    virtual ~AcEditorViewPrivate()
     {}
 };
 
-} // namespace Private
-
 AcEditorView::AcEditorView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcEditorViewData)
+    ,   d(new AcEditorViewPrivate)
 {}
 
 AcEditorView::~AcEditorView()

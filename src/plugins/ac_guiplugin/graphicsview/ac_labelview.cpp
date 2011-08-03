@@ -15,27 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_valueview.h"
+#include "ac_labelview.h"
 
-using namespace Private;
-
-namespace Private {
-
-class AcValueViewData
+class AcLabelViewPrivate
 {
 public:
-    AcValueViewData()
+    AcLabelViewPrivate()
+    {}
+
+    virtual ~AcLabelViewPrivate()
     {}
 };
 
-} // namespace Private
-
-AcValueView::AcValueView(QGraphicsScene *scene, QWidget *parent)
+AcLabelView::AcLabelView(QGraphicsScene *scene, QWidget *parent)
     :   AcGraphicsView(scene, parent)
-    ,   d(new AcValueViewData)
+    ,   d(new AcLabelViewPrivate)
 {}
 
-AcValueView::~AcValueView()
+AcLabelView::~AcLabelView()
 {
     delete d;
 }

@@ -26,22 +26,22 @@ HEADERS += \
     graphicsscene/ac_volumelabelscene.h \
     graphicsscene/ac_volumescene.h \
     \
-#    graphicsview/ac_editorview.h \
-#    graphicsview/ac_labelview.h \
-#    graphicsview/ac_graphicsview.h \
-#    graphicsview/ac_pitchlabelview.h \
-#    graphicsview/ac_pitchview.h \
-#    graphicsview/ac_timelabelview.h \
-#    graphicsview/ac_viewmanager.h \
-#    graphicsview/ac_volumelabelview.h \
-#    graphicsview/ac_volumeview.h \
+    graphicsview/ac_editorview.h \
+    graphicsview/ac_labelview.h \
+    graphicsview/ac_graphicsview.h \
+    graphicsview/ac_pitchlabelview.h \
+    graphicsview/ac_pitchview.h \
+    graphicsview/ac_timelabelview.h \
+    graphicsview/ac_viewmanager.h \
+    graphicsview/ac_volumelabelview.h \
+    graphicsview/ac_volumeview.h \
     \
     implementations/ac_editorimpl.h \
     implementations/ac_mainwindowimpl.h \
     \
     ac_guiconstants.h \
     ac_guiplugin.h \
-#    ac_mainwidget.h \
+    ac_mainwidget.h \
     ac_scene_util.h \
 
 SOURCES += \
@@ -66,20 +66,20 @@ SOURCES += \
     graphicsscene/ac_volumelabelscene.cpp \
     graphicsscene/ac_volumescene.cpp \
     \
-#    graphicsview/ac_editorview.cpp \
-#    graphicsview/ac_labelview.cpp \
-#    graphicsview/ac_graphicsview.cpp \
-#    graphicsview/ac_pitchlabelview.cpp \
-#    graphicsview/ac_pitchview.cpp \
-#    graphicsview/ac_timelabelview.cpp \
-#    graphicsview/ac_viewmanager.cpp \
-#    graphicsview/ac_volumelabelview.cpp \
-#    graphicsview/ac_volumeview.cpp \
+    graphicsview/ac_editorview.cpp \
+    graphicsview/ac_labelview.cpp \
+    graphicsview/ac_graphicsview.cpp \
+    graphicsview/ac_pitchlabelview.cpp \
+    graphicsview/ac_pitchview.cpp \
+    graphicsview/ac_timelabelview.cpp \
+    graphicsview/ac_viewmanager.cpp \
+    graphicsview/ac_volumelabelview.cpp \
+    graphicsview/ac_volumeview.cpp \
     \
     implementations/ac_editorimpl.cpp \
     implementations/ac_mainwindowimpl.cpp \
     \
     ac_guiplugin.cpp \
-#    ac_mainwidget.cpp \
+    ac_mainwidget.cpp \
 
 RESOURCES = ac_gui.qrc

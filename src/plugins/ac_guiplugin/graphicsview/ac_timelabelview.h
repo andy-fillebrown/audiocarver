@@ -15,28 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMEVIEW_H
-#define AC_TIMEVIEW_H
+#ifndef AC_TIMELABELVIEW_H
+#define AC_TIMELABELVIEW_H
 
 #include <ac_graphicsview.h>
 
-namespace Private {
+class AcTimeLabelViewPrivate;
 
-class AcTimeViewData;
-
-} // namespace Private
-
-class AcTimeView : public AcGraphicsView
+class AcTimeLabelView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcTimeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcTimeView();
+    AcTimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcTimeLabelView();
 
 private:
-    Q_DISABLE_COPY(AcTimeView)
-    Private::AcTimeViewData *d;
+    Q_DISABLE_COPY(AcTimeLabelView)
+    AcTimeLabelViewPrivate *d;
 };
 
-#endif // AC_TIMEVIEW_H
+#endif // AC_TIMELABELVIEW_H

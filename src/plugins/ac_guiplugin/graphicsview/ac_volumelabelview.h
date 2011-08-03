@@ -15,33 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLVIEW_H
-#define AC_CONTROLVIEW_H
+#ifndef AC_VOLUMELABELVIEW_H
+#define AC_VOLUMELABELVIEW_H
 
 #include <ac_editorview.h>
 
-namespace Private {
+class AcVolumeLabelViewPrivate;
 
-class AcControlViewData;
-
-} // namespace Private
-
-class AcControlView : public AcEditorView
+class AcVolumeLabelView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcControlView();
-
-    virtual void updateTransform();
-
-protected:
-    virtual void updateViewSettings() const;
+    AcVolumeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcVolumeLabelView();
 
 private:
-    Q_DISABLE_COPY(AcControlView)
-    Private::AcControlViewData *d;
+    Q_DISABLE_COPY(AcVolumeLabelView)
+    AcVolumeLabelViewPrivate *d;
 };
 
-#endif // AC_CONTROLVIEW_H
+#endif // AC_VOLUMELABELVIEW_H

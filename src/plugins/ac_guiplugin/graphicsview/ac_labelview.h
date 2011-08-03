@@ -15,28 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_VALUEVIEW_H
-#define AC_VALUEVIEW_H
+#ifndef AC_LABELVIEW_H
+#define AC_LABELVIEW_H
 
 #include <ac_graphicsview.h>
 
-namespace Private {
+class AcLabelViewPrivate;
 
-class AcValueViewData;
-
-} // namespace Private
-
-class AcValueView : public AcGraphicsView
+class AcLabelView : public AcGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcValueView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcValueView();
+    AcLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~AcLabelView();
 
 private:
-    Q_DISABLE_COPY(AcValueView)
-    Private::AcValueViewData *d;
+    Q_DISABLE_COPY(AcLabelView)
+    AcLabelViewPrivate *d;
 };
 
-#endif // AC_VALUEVIEW_H
+#endif // AC_LABELVIEW_H

@@ -23,11 +23,7 @@
 class QGraphicsView;
 class QWidget;
 
-namespace Private {
-
-class AcViewManagerData;
-
-} // namespace Private
+class AcViewManagerPrivate;
 
 class AcViewManager : public QObject
 {
@@ -37,33 +33,33 @@ public:
     AcViewManager(QWidget *widget);
     ~AcViewManager();
 
-    QGraphicsView *scoreView() const;
-    QGraphicsView *controlView() const;
-    QGraphicsView *timeView() const;
     QGraphicsView *pitchView() const;
-    QGraphicsView *valueView() const;
+    QGraphicsView *volumeView() const;
+    QGraphicsView *timeLabelView() const;
+    QGraphicsView *pitchLabelView() const;
+    QGraphicsView *volumeLabelView() const;
 
     qreal timePosition() const;
     void setTimePosition(qreal position);
     qreal pitchPosition() const;
     void setPitchPosition(qreal position);
-    qreal valuePosition() const;
-    void setValuePosition(qreal position);
+    qreal volumePosition() const;
+    void setVolumePosition(qreal position);
     qreal timeScale() const;
     void setTimeScale(qreal scale);
     qreal pitchScale() const;
     void setPitchScale(qreal scale);
-    qreal valueScale() const;
-    void setValueScale(qreal scale);
+    qreal volumeScale() const;
+    void setVolumeScale(qreal scale);
 
     void updateViews();
 
 private slots:
-    void updateViewSettingsProperty(int propertyIndex);
+    void updateViewSettings(int i);
 
 private:
     Q_DISABLE_COPY(AcViewManager)
-    Private::AcViewManagerData *d;
+    AcViewManagerPrivate *d;
 };
 
 #endif // AC_VIEWMANAGER_H

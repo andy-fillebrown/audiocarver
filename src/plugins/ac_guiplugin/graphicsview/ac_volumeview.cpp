@@ -15,42 +15,39 @@
 **
 **************************************************************************/
 
-#include "ac_scoreview.h"
+#include "ac_volumeview.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcScoreViewData
+class AcVolumeViewPrivate
 {
 public:
-    AcScoreViewData()
+    AcVolumeViewPrivate()
+    {}
+
+    virtual ~AcVolumeViewPrivate()
     {}
 };
 
-} // namespace Private
-
-AcScoreView::AcScoreView(QGraphicsScene *scene, QWidget *parent)
+AcVolumeView::AcVolumeView(QGraphicsScene *scene, QWidget *parent)
     :   AcEditorView(scene, parent)
-    ,   d(new AcScoreViewData)
+    ,   d(new AcVolumeViewPrivate)
 {}
 
-AcScoreView::~AcScoreView()
+AcVolumeView::~AcVolumeView()
 {
     delete d;
 }
 
-void AcScoreView::updateTransform()
+void AcVolumeView::updateTransform()
 {
     AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-    setTransform(QTransform::fromScale(viewSettings->timeScale(), viewSettings->pitchScale()));
+    setTransform(QTransform::fromScale(viewSettings->timeScale(), viewSettings->volumeScale()));
 }
 
-void AcScoreView::updateViewSettings() const
+void AcVolumeView::updateViewSettings() const
 {
     AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
     viewSettings->setTimePosition(center().x());
-    viewSettings->setPitchPosition(center().y());
+    viewSettings->setVolumePosition(center().y());
 }

@@ -20,11 +20,7 @@
 
 #include <ac_graphicsview.h>
 
-namespace Private {
-
-class AcEditorViewData;
-
-} // namespace Private
+class AcEditorViewPrivate;
 
 class AcEditorView : public AcGraphicsView
 {
@@ -46,7 +42,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(AcEditorView)
-    Private::AcEditorViewData *d;
+    AcEditorViewPrivate *d;
 };
 
 #endif // AC_EDITORVIEW_H

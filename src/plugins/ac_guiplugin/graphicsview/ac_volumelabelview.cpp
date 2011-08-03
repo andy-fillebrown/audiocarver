@@ -15,42 +15,26 @@
 **
 **************************************************************************/
 
-#include "ac_controlview.h"
+#include "ac_volumelabelview.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcControlViewData
+class AcVolumeLabelViewPrivate
 {
 public:
-    AcControlViewData()
+    AcVolumeLabelViewPrivate()
+    {}
+
+    virtual ~AcVolumeLabelViewPrivate()
     {}
 };
 
-} // namespace Private
-
-AcControlView::AcControlView(QGraphicsScene *scene, QWidget *parent)
-    :   AcEditorView(scene, parent)
-    ,   d(new AcControlViewData)
+AcVolumeLabelView::AcVolumeLabelView(QGraphicsScene *scene, QWidget *parent)
+    :   AcGraphicsView(scene, parent)
+    ,   d(new AcVolumeLabelViewPrivate)
 {}
 
-AcControlView::~AcControlView()
+AcVolumeLabelView::~AcVolumeLabelView()
 {
     delete d;
-}
-
-void AcControlView::updateTransform()
-{
-    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-    setTransform(QTransform::fromScale(viewSettings->timeScale(), viewSettings->valueScale()));
-}
-
-void AcControlView::updateViewSettings() const
-{
-    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-    viewSettings->setTimePosition(center().x());
-    viewSettings->setValuePosition(center().y());
 }

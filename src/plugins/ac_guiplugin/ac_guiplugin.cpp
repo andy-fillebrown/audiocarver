@@ -16,11 +16,11 @@
 **************************************************************************/
 
 #include "ac_guiplugin.h"
-//#include <ac_mainwidget.h>
+#include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 #include <ac_editorimpl.h>
-//#include <icore.h>
-//#include <mainwindow.h>
+#include <icore.h>
+#include <mainwindow.h>
 #include <QtPlugin>
 
 using namespace Private;
@@ -36,9 +36,9 @@ bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 
 void AcGuiPlugin::extensionsInitialized()
 {
-//    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-//    AcMainWidget *widget = new AcMainWidget(mw);
-//    mw->setCentralWidget(widget);
+    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+    AcMainWidget *widget = new AcMainWidget(mw);
+    mw->setCentralWidget(widget);
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)
