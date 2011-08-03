@@ -35,7 +35,7 @@ public:
     void init();
 };
 
-class AcTrack : public AcScoreObject
+class AC_CORE_EXPORT AcTrack : public AcScoreObject
 {
     Q_OBJECT
     Q_PROPERTY(AcNoteList* notes READ notes)

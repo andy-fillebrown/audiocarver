@@ -16,29 +16,24 @@
 **************************************************************************/
 
 #include "ac_scenemanager.h"
-#include <ac_barline.h>
-#include <ac_controlscene.h>
-#include <ac_graphicsbarlineitem.h>
+#include <ac_graphicspitchlineitem.h>
+#include <ac_graphicstimelineitem.h>
 #include <ac_graphicstrackitem.h>
-#include <ac_graphicstuninglineitem.h>
-#include <ac_graphicsvaluelineitem.h>
+#include <ac_graphicsvolumelineitem.h>
+#include <ac_gridline.h>
+#include <ac_gridlinelist.h>
+#include <ac_pitchlabelscene.h>
 #include <ac_pitchscene.h>
 #include <ac_score.h>
-#include <ac_scorescene.h>
-#include <ac_timescene.h>
+#include <ac_timelabelscene.h>
 #include <ac_track.h>
-#include <ac_tuningline.h>
-#include <ac_valueline.h>
-#include <ac_valuescene.h>
+#include <ac_tracklist.h>
 #include <ac_viewsettings.h>
-#include <mi_font.h>
-#include <mi_list.h>
+#include <ac_volumelabelscene.h>
+#include <ac_volumescene.h>
+#include <mi_fontsettings.h>
 #include <QFont>
 #include <QFontMetrics>
-
-using namespace Private;
-
-namespace Private {
 
 template <typename T, typename ExpandRect>
 static void updateItemVisibilitiesHelper(const QList<T*> &items, ExpandRect expandRect)
@@ -76,79 +71,79 @@ static void expandLeftLabelRect(QRectF &rect)
     rect.setTop(rect.top() - (1.5f * rect.height()));
 }
 
-class AcSceneManagerData
+class AcSceneManagerPrivate
 {
 public:
     AcSceneManager *q;
-    AcScoreScene *scoreScene;
-    AcControlScene *controlScene;
-    AcTimeScene *timeScene;
     AcPitchScene *pitchScene;
-    AcValueScene *valueScene;
+    AcVolumeScene *volumeScene;
+    AcTimeLabelScene *timeLabelScene;
+    AcPitchLabelScene *pitchLabelScene;
+    AcVolumeLabelScene *volumeLabelScene;
     QList<AcGraphicsTrackItem*> trackItems;
-    QList<AcGraphicsBarLineItem*> barItems;
-    QList<AcGraphicsTuningLineItem*> tuningItems;
-    QList<AcGraphicsValueLineItem*> valueItems;
+    QList<AcGraphicsTimeLineItem*> timeLineItems;
+    QList<AcGraphicsPitchLineItem*> pitchLineItems;
+    QList<AcGraphicsVolumeLineItem*> volumeLineItems;
     QFontMetrics fontMetrics;
 
-    AcSceneManagerData(AcSceneManager *q)
+    AcSceneManagerPrivate(AcSceneManager *q)
         :   q(q)
-        ,   scoreScene(new AcScoreScene(q))
-        ,   controlScene(new AcControlScene(q))
-        ,   timeScene(new AcTimeScene(q))
         ,   pitchScene(new AcPitchScene(q))
-        ,   valueScene(new AcValueScene(q))
+        ,   volumeScene(new AcVolumeScene(q))
+        ,   timeLabelScene(new AcTimeLabelScene(q))
+        ,   pitchLabelScene(new AcPitchLabelScene(q))
+        ,   volumeLabelScene(new AcVolumeLabelScene(q))
         ,   fontMetrics(font())
     {}
 
-    virtual ~AcSceneManagerData()
+    virtual ~AcSceneManagerPrivate()
     {
-        qDeleteAll(valueItems);
-        qDeleteAll(tuningItems);
-        qDeleteAll(barItems);
+        qDeleteAll(volumeLineItems);
+        qDeleteAll(pitchLineItems);
+        qDeleteAll(timeLineItems);
         qDeleteAll(trackItems);
     }
 
     QFont font() const
     {
-        const MiFont *fontSettings = AcScore::instance()->fontSettings();
+        const MiFontSettings *fontSettings = AcScore::instance()->fontSettings();
         return QFont(fontSettings->family(), fontSettings->pointSize());
     }
 
     void init()
     {
         updateTrackItems();
-        updateBarItems();
-        updateTuningItems();
-        updateValueItems();
+        updateTimeLineItems();
+        updatePitchLineItems();
+        updateVolumeLineItems();
         updateFontMetrics();
-        updateBarItemVisibilities();
-        updateTuningItemVisibilities();
-        updateValueItemVisibilities();
+        updateTimeLineItemVisibilities();
+        updatePitchLineItemVisibilities();
+        updateVolumeLineItemVisibilities();
     }
 
     void updateTrackItems()
     {
-        updateItemsHelper(AcScore::instance()->tracks().list(), trackItems, q);
+        updateItemsHelper(AcScore::instance()->tracks()->children(), trackItems, q);
         q->addItems(trackItems);
     }
 
-    void updateBarItems()
+    void updateTimeLineItems()
     {
-        updateItemsHelper(AcScore::instance()->barLines().list(), barItems, q);
-        q->addItems(barItems);
+        updateItemsHelper(AcScore::instance()->timeLines()->children(), timeLineItems, q);
+        q->addItems(timeLineItems);
     }
 
-    void updateTuningItems()
+    void updatePitchLineItems()
     {
-        updateItemsHelper(AcScore::instance()->tuningLines().list(), tuningItems, q);
-        q->addItems(tuningItems);
+        updateItemsHelper(AcScore::instance()->pitchLines()->children(), pitchLineItems, q);
+        q->addItems(pitchLineItems);
     }
 
-    void updateValueItems()
+    void updateVolumeLineItems()
     {
-        updateItemsHelper(AcScore::instance()->valueLines().list(), valueItems, q);
-        q->addItems(valueItems);
+        updateItemsHelper(AcScore::instance()->volumeLines()->children(), volumeLineItems, q);
+        q->addItems(volumeLineItems);
     }
 
     void updateFontMetrics()
@@ -156,36 +151,34 @@ public:
         fontMetrics = QFontMetrics(font());
     }
 
-    void updateBarItemVisibilities()
+    void updateTimeLineItemVisibilities()
     {
-        updateItemVisibilitiesHelper(barItems, expandTopLabelRect);
+        updateItemVisibilitiesHelper(timeLineItems, expandTopLabelRect);
     }
 
-    void updateTuningItemVisibilities()
+    void updatePitchLineItemVisibilities()
     {
-        updateItemVisibilitiesHelper(tuningItems, expandLeftLabelRect);
+        updateItemVisibilitiesHelper(pitchLineItems, expandLeftLabelRect);
     }
 
-    void updateValueItemVisibilities()
+    void updateVolumeLineItemVisibilities()
     {
-        updateItemVisibilitiesHelper(valueItems, expandLeftLabelRect);
+        updateItemVisibilitiesHelper(volumeLineItems, expandLeftLabelRect);
     }
 };
-
-} // namespace Private
 
 AcSceneManager *instance = 0;
 
 AcSceneManager::AcSceneManager(QObject *parent)
     :   QObject(parent)
-    ,   d(new AcSceneManagerData(this))
+    ,   d(new AcSceneManagerPrivate(this))
 {
     ::instance = this;
     d->init();
     AcScore *score = AcScore::instance();
-    connect(score, SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
-    connect(score->fontSettings(), SIGNAL(propertyChanged(int)), SLOT(updateFontSettingsProperty(int)));
-    connect(score->viewSettings(), SIGNAL(propertyChanged(int)), SLOT(updateViewSettingsProperty(int)));
+    Q_CONNECT(score, SIGNAL(changed(int)), this, SLOT(updateScore(int)));
+    Q_CONNECT(score->fontSettings(), SIGNAL(changed(int)), this, SLOT(updateFontSettings(int)));
+    Q_CONNECT(score->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
 }
 
 AcSceneManager::~AcSceneManager()
@@ -198,49 +191,49 @@ AcSceneManager *AcSceneManager::instance()
     return ::instance;
 }
 
-void AcSceneManager::updateScoreProperty(int propertyIndex)
+void AcSceneManager::updateScore(int i)
 {
-    switch (propertyIndex) {
-    case AcScore::Tracks:
+    switch (i) {
+    case AcScore::TracksIndex:
         d->updateTrackItems();
         break;
-    case AcScore::BarLines:
-        d->updateBarItems();
-        d->updateBarItemVisibilities();
+    case AcScore::TimeLinesIndex:
+        d->updateTimeLineItems();
+        d->updateTimeLineItemVisibilities();
         break;
-    case AcScore::TuningLines:
-        d->updateTuningItems();
-        d->updateTuningItemVisibilities();
+    case AcScore::PitchLinesIndex:
+        d->updatePitchLineItems();
+        d->updatePitchLineItemVisibilities();
         break;
-    case AcScore::ValueLines:
-        d->updateValueItems();
-        d->updateValueItemVisibilities();
+    case AcScore::VolumeLinesIndex:
+        d->updateVolumeLineItems();
+        d->updateVolumeLineItemVisibilities();
         break;
     default:
         break;
     }
 }
 
-void AcSceneManager::updateFontSettingsProperty(int propertyIndex)
+void AcSceneManager::updateFontSettings(int i)
 {
-    Q_UNUSED(propertyIndex);
+    Q_UNUSED(i);
     d->updateFontMetrics();
-    d->updateBarItemVisibilities();
-    d->updateTuningItemVisibilities();
-    d->updateValueItemVisibilities();
+    d->updateTimeLineItemVisibilities();
+    d->updatePitchLineItemVisibilities();
+    d->updateVolumeLineItemVisibilities();
 }
 
-void AcSceneManager::updateViewSettingsProperty(int propertyIndex)
+void AcSceneManager::updateViewSettings(int i)
 {
-    switch (propertyIndex) {
-    case AcViewSettings::TimeScale:
-        d->updateBarItemVisibilities();
+    switch (i) {
+    case AcViewSettings::TimeScaleIndex:
+        d->updateTimeLineItemVisibilities();
         break;
-    case AcViewSettings::PitchScale:
-        d->updateTuningItemVisibilities();
+    case AcViewSettings::PitchScaleIndex:
+        d->updatePitchLineItemVisibilities();
         break;
-    case AcViewSettings::ValueScale:
-        d->updateValueItemVisibilities();
+    case AcViewSettings::VolumeScaleIndex:
+        d->updateVolumeLineItemVisibilities();
         break;
     default:
         break;
@@ -250,16 +243,16 @@ void AcSceneManager::updateViewSettingsProperty(int propertyIndex)
 QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
 {
     switch (sceneType) {
-    case ScoreScene:
-        return d->scoreScene;
-    case ControlScene:
-        return d->controlScene;
-    case TimeScene:
-        return d->timeScene;
     case PitchScene:
         return d->pitchScene;
-    case ValueScene:
-        return d->valueScene;
+    case VolumeScene:
+        return d->volumeScene;
+    case TimeLabelScene:
+        return d->timeLabelScene;
+    case PitchLabelScene:
+        return d->pitchLabelScene;
+    case VolumeLabelScene:
+        return d->volumeLabelScene;
     default:
         break;
     }

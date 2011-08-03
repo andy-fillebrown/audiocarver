@@ -15,21 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_timescene.h"
+#include "ac_timelabelscene.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcTimeSceneData
+class AcTimeLabelScenePrivate
 {
 public:
-    AcTimeScene *q;
+    AcTimeLabelScene *q;
 
-    AcTimeSceneData(AcTimeScene *q)
+    AcTimeLabelScenePrivate(AcTimeLabelScene *q)
         :   q(q)
+    {}
+
+    virtual ~AcTimeLabelScenePrivate()
     {}
 
     qreal width() const
@@ -54,36 +53,34 @@ public:
     }
 };
 
-} // namespace Private
+static AcTimeLabelScene *instance = 0;
 
-static AcTimeScene *instance = 0;
-
-AcTimeScene::AcTimeScene(QObject *parent)
-    :   AcScaledScene(parent)
-    ,   d(new AcTimeSceneData(this))
+AcTimeLabelScene::AcTimeLabelScene(QObject *parent)
+    :   AcLabelScene(parent)
+    ,   d(new AcTimeLabelScenePrivate(this))
 {
     ::instance = this;
     d->init();
 }
 
-AcTimeScene::~AcTimeScene()
+AcTimeLabelScene::~AcTimeLabelScene()
 {
     delete d;
 }
 
-AcTimeScene *AcTimeScene::instance()
+AcTimeLabelScene *AcTimeLabelScene::instance()
 {
     return ::instance;
 }
 
-void AcTimeScene::updateViewSettingsProperty(int propertyIndex)
+void AcTimeLabelScene::updateViewSettings(int i)
 {
-    if (AcViewSettings::TimeScale == propertyIndex)
+    if (AcViewSettings::TimeScaleIndex == i)
         d->updateSceneRect();
 }
 
-void AcTimeScene::updateScoreProperty(int propertyIndex)
+void AcTimeLabelScene::updateScore(int i)
 {
-    if (AcScore::Length == propertyIndex)
+    if (AcScore::LengthIndex == i)
         d->updateSceneRect();
 }

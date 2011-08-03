@@ -17,22 +17,19 @@
 
 #include "ac_graphicsscene.h"
 
-using namespace Private;
-
-namespace Private {
-
-class AcGraphicsSceneData
+class AcGraphicsScenePrivate
 {
 public:
-    AcGraphicsSceneData()
+    AcGraphicsScenePrivate()
+    {}
+
+    virtual ~AcGraphicsScenePrivate()
     {}
 };
 
-} // namespace Private
-
 AcGraphicsScene::AcGraphicsScene(QObject *parent)
     :   MiGraphicsScene(parent)
-    ,   d(new AcGraphicsSceneData)
+    ,   d(new AcGraphicsScenePrivate)
 {}
 
 AcGraphicsScene::~AcGraphicsScene()

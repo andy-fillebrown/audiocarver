@@ -25,7 +25,7 @@ class AcTrack;
 
 #define AcTrackListPrivate MiListObjectPrivate
 
-class AcTrackList : public MiListObject
+class AC_CORE_EXPORT AcTrackList : public MiListObject
 {
     Q_OBJECT
 

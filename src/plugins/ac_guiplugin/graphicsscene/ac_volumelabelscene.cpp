@@ -15,26 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_valuescene.h"
+#include "ac_volumelabelscene.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcValueSceneData
+class AcVolumeLabelScenePrivate
 {
 public:
-    AcValueScene *q;
+    AcVolumeLabelScene *q;
 
-    AcValueSceneData(AcValueScene *q)
+    AcVolumeLabelScenePrivate(AcVolumeLabelScene *q)
         :   q(q)
+    {}
+
+    virtual ~AcVolumeLabelScenePrivate()
     {}
 
     qreal height() const
     {
-        return AcScore::instance()->viewSettings()->valueScale();
+        return AcScore::instance()->viewSettings()->volumeScale();
     }
 
     void init()
@@ -53,30 +52,28 @@ public:
     }
 };
 
-} // namespace Private
+static AcVolumeLabelScene *instance = 0;
 
-static AcValueScene *instance = 0;
-
-AcValueScene::AcValueScene(QObject *parent)
-    :   AcScaledScene(parent)
-    ,   d(new AcValueSceneData(this))
+AcVolumeLabelScene::AcVolumeLabelScene(QObject *parent)
+    :   AcLabelScene(parent)
+    ,   d(new AcVolumeLabelScenePrivate(this))
 {
     ::instance = this;
     d->init();
 }
 
-AcValueScene::~AcValueScene()
+AcVolumeLabelScene::~AcVolumeLabelScene()
 {
     delete d;
 }
 
-AcValueScene *AcValueScene::instance()
+AcVolumeLabelScene *AcVolumeLabelScene::instance()
 {
     return ::instance;
 }
 
-void AcValueScene::updateViewSettingsProperty(int propertyIndex)
+void AcVolumeLabelScene::updateViewSettings(int i)
 {
-    if (AcViewSettings::ValueScale == propertyIndex)
+    if (AcViewSettings::VolumeScaleIndex == i)
         d->updateSceneRect();
 }

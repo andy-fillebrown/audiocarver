@@ -15,31 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCALEDSCENE_H
-#define AC_SCALEDSCENE_H
+#ifndef AC_LABELSCENE_H
+#define AC_LABELSCENE_H
 
 #include <ac_graphicsscene.h>
 
-namespace Private {
+class AcLabelScenePrivate;
 
-class AcScaledSceneData;
-
-} // namespace Private
-
-class AcScaledScene : public AcGraphicsScene
+class AcLabelScene : public AcGraphicsScene
 {
     Q_OBJECT
 
 public:
-    AcScaledScene(QObject *parent = 0);
-    virtual ~AcScaledScene();
+    AcLabelScene(QObject *parent = 0);
+    virtual ~AcLabelScene();
 
 protected slots:
-    virtual void updateViewSettingsProperty(int propertyIndex) = 0;
+    virtual void updateViewSettings(int i) = 0;
 
 private:
-    Q_DISABLE_COPY(AcScaledScene)
-    Private::AcScaledSceneData *d;
+    Q_DISABLE_COPY(AcLabelScene)
+    AcLabelScenePrivate *d;
 };
 
-#endif // AC_SCALEDSCENE_H
+#endif // AC_LABELSCENE_H

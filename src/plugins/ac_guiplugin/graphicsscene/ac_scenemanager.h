@@ -25,11 +25,7 @@ class AcGraphicsItem;
 class QFontMetrics;
 class QGraphicsScene;
 
-namespace Private {
-
-class AcSceneManagerData;
-
-} // namespace Private
+class AcSceneManagerPrivate;
 
 class AcSceneManager : public QObject
 {
@@ -44,18 +40,23 @@ public:
     QGraphicsScene *scene(SceneType sceneType) const;
 
     void addItem(AcGraphicsItem *item);
-    template <typename T> void addItems(const QList<T*> &items) { foreach (AcGraphicsItem *item, items) addItem(item); }
+
+    template <typename T> void addItems(const QList<T*> &items)
+    {
+        foreach (AcGraphicsItem *item, items)
+            addItem(item);
+    }
 
     const QFontMetrics &fontMetrics() const;
 
 private slots:
-    void updateScoreProperty(int propertyIndex);
-    void updateFontSettingsProperty(int propertyIndex);
-    void updateViewSettingsProperty(int propertyIndex);
+    void updateScore(int i);
+    void updateFontSettings(int i);
+    void updateViewSettings(int i);
 
 private:
     Q_DISABLE_COPY(AcSceneManager)
-    Private::AcSceneManagerData *d;
+    AcSceneManagerPrivate *d;
 };
 
 #endif // AC_SCENEMANAGER_H

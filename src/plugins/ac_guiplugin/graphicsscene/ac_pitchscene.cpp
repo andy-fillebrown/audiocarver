@@ -15,19 +15,15 @@
 **
 **************************************************************************/
 
-#include "ac_scorescene.h"
+#include "ac_pitchscene.h"
 #include <ac_score.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcScoreSceneData
+class AcPitchScenePrivate
 {
 public:
-    AcScoreScene *q;
+    AcPitchScene *q;
 
-    AcScoreSceneData(AcScoreScene *q)
+    AcPitchScenePrivate(AcPitchScene *q)
         :   q(q)
     {}
 
@@ -42,31 +38,29 @@ public:
     }
 };
 
-} // namespace Private
+static AcPitchScene *instance = 0;
 
-static AcScoreScene *instance = 0;
-
-AcScoreScene::AcScoreScene(QObject *parent)
+AcPitchScene::AcPitchScene(QObject *parent)
     :   AcGraphicsScene(parent)
-    ,   d(new AcScoreSceneData(this))
+    ,   d(new AcPitchScenePrivate(this))
 {
     ::instance = this;
     d->init();
-    connect(AcScore::instance(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
 }
 
-AcScoreScene::~AcScoreScene()
+AcPitchScene::~AcPitchScene()
 {
     delete d;
 }
 
-AcScoreScene *AcScoreScene::instance()
+AcPitchScene *AcPitchScene::instance()
 {
     return ::instance;
 }
 
-void AcScoreScene::updateScoreProperty(int propertyIndex)
+void AcPitchScene::updateScore(int i)
 {
-    if (AcScore::Length == propertyIndex)
+    if (AcScore::LengthIndex == i)
         d->updateSceneRect();
 }

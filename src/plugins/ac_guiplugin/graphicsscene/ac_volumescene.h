@@ -15,33 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLSCENE_H
-#define AC_CONTROLSCENE_H
+#ifndef AC_VOLUMESCENE_H
+#define AC_VOLUMESCENE_H
 
 #include <ac_graphicsscene.h>
 
-namespace Private {
+class AcVolumeScenePrivate;
 
-class AcControlSceneData;
-
-} // namespace Private
-
-class AcControlScene : public AcGraphicsScene
+class AcVolumeScene : public AcGraphicsScene
 {
     Q_OBJECT
 
 public:
-    AcControlScene(QObject *parent = 0);
-    virtual ~AcControlScene();
+    AcVolumeScene(QObject *parent = 0);
+    virtual ~AcVolumeScene();
 
-    static AcControlScene *instance();
+    static AcVolumeScene *instance();
 
 protected slots:
-    virtual void updateScoreProperty(int propertyIndex);
+    virtual void updateScore(int i);
 
 private:
-    Q_DISABLE_COPY(AcControlScene)
-    Private::AcControlSceneData *d;
+    Q_DISABLE_COPY(AcVolumeScene)
+    AcVolumeScenePrivate *d;
 };
 
-#endif // AC_CONTROLSCENE_H
+#endif // AC_VOLUMESCENE_H

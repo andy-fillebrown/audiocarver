@@ -15,33 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_VALUESCENE_H
-#define AC_VALUESCENE_H
+#ifndef AC_VOLUMELABELSCENE_H
+#define AC_VOLUMELABELSCENE_H
 
-#include <ac_scaledscene.h>
+#include <ac_labelscene.h>
 
-namespace Private {
+class AcVolumeLabelScenePrivate;
 
-class AcValueSceneData;
-
-} // namespace Private
-
-class AcValueScene : public AcScaledScene
+class AcVolumeLabelScene : public AcLabelScene
 {
     Q_OBJECT
 
 public:
-    AcValueScene(QObject *parent = 0);
-    virtual ~AcValueScene();
+    AcVolumeLabelScene(QObject *parent = 0);
+    virtual ~AcVolumeLabelScene();
 
-    static AcValueScene *instance();
+    static AcVolumeLabelScene *instance();
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
+    virtual void updateViewSettings(int i);
 
 private:
-    Q_DISABLE_COPY(AcValueScene)
-    Private::AcValueSceneData *d;
+    Q_DISABLE_COPY(AcVolumeLabelScene)
+    AcVolumeLabelScenePrivate *d;
 };
 
-#endif // AC_VALUESCENE_H
+#endif // AC_VOLUMELABELSCENE_H

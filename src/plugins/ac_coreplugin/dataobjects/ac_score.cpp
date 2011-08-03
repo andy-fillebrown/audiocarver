@@ -25,7 +25,6 @@
 AcScorePrivate::AcScorePrivate(AcScoreObject *q)
     :   AcScoreObjectPrivate(q)
     ,   tracks(new AcTrackList(AcScore::TracksIndex))
-    ,   gridLineLists(new MiListObject)
     ,   timeLines(new AcTimeLineList)
     ,   pitchLines(new AcPitchLineList)
     ,   volumeLines(new AcVolumeLineList)
@@ -38,10 +37,9 @@ AcScorePrivate::AcScorePrivate(AcScoreObject *q)
 void AcScorePrivate::init()
 {
     addChild(tracks);
-    addChild(gridLineLists);
-    gridLineLists->addChild(timeLines);
-    gridLineLists->addChild(pitchLines);
-    gridLineLists->addChild(volumeLines);
+    addChild(timeLines);
+    addChild(pitchLines);
+    addChild(volumeLines);
     addChild(settingsObjects);
     settingsObjects->addChild(fontSettings);
     settingsObjects->addChild(gridSettings);

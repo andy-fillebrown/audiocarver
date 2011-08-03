@@ -15,20 +15,16 @@
 **
 **************************************************************************/
 
-#include "ac_pitchscene.h"
+#include "ac_pitchlabelscene.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcPitchSceneData
+class AcPitchLabelScenePrivate
 {
 public:
-    AcPitchScene *q;
+    AcPitchLabelScene *q;
 
-    AcPitchSceneData(AcPitchScene *q)
+    AcPitchLabelScenePrivate(AcPitchLabelScene *q)
         :   q(q)
     {}
 
@@ -53,30 +49,28 @@ public:
     }
 };
 
-} // namespace Private
+static AcPitchLabelScene *instance = 0;
 
-static AcPitchScene *instance = 0;
-
-AcPitchScene::AcPitchScene(QObject *parent)
-    :   AcScaledScene(parent)
-    ,   d(new AcPitchSceneData(this))
+AcPitchLabelScene::AcPitchLabelScene(QObject *parent)
+    :   AcLabelScene(parent)
+    ,   d(new AcPitchLabelScenePrivate(this))
 {
     ::instance = this;
     d->init();
 }
 
-AcPitchScene::~AcPitchScene()
+AcPitchLabelScene::~AcPitchLabelScene()
 {
     delete d;
 }
 
-AcPitchScene *AcPitchScene::instance()
+AcPitchLabelScene *AcPitchLabelScene::instance()
 {
     return ::instance;
 }
 
-void AcPitchScene::updateViewSettingsProperty(int propertyIndex)
+void AcPitchLabelScene::updateViewSettings(int i)
 {
-    if (AcViewSettings::PitchScale == propertyIndex)
+    if (AcViewSettings::PitchScaleIndex == i)
         d->updateSceneRect();
 }

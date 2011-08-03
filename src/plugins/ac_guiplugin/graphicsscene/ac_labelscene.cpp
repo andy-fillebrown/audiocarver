@@ -15,31 +15,28 @@
 **
 **************************************************************************/
 
-#include "ac_scaledscene.h"
+#include "ac_labelscene.h"
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcScaledSceneData
+class AcLabelScenePrivate
 {
 public:
-    AcScaledSceneData()
+    AcLabelScenePrivate()
+    {}
+
+    virtual ~AcLabelScenePrivate()
     {}
 };
 
-} // namespace Private
-
-AcScaledScene::AcScaledScene(QObject *parent)
+AcLabelScene::AcLabelScene(QObject *parent)
     :   AcGraphicsScene(parent)
-    ,   d(new AcScaledSceneData)
+    ,   d(new AcLabelScenePrivate)
 {
-    connect(AcScore::instance()->viewSettings(), SIGNAL(propertyChanged(int)), SLOT(updateViewSettingsProperty(int)));
+    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
 }
 
-AcScaledScene::~AcScaledScene()
+AcLabelScene::~AcLabelScene()
 {
     delete d;
 }

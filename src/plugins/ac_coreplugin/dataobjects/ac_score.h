@@ -32,7 +32,6 @@ class AcScorePrivate : public AcScoreObjectPrivate
 public:
     qreal length;
     AcTrackList *tracks;
-    MiListObject *gridLineLists;
     AcGridLineList *timeLines;
     AcGridLineList *pitchLines;
     AcGridLineList *volumeLines;
@@ -53,14 +52,20 @@ class AC_CORE_EXPORT AcScore : public AcScoreObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
-    Q_PROPERTY(AcTrackList* Tracks READ tracks)
-    Q_PROPERTY(MiListObject* GridLines READ gridLineLists)
-    Q_PROPERTY(MiListObject* Settings READ settingsList)
+    Q_PROPERTY(AcTrackList* tracks READ tracks)
+    Q_PROPERTY(AcGridLineList* timeLines READ timeLines)
+    Q_PROPERTY(AcGridLineList* pitchLines READ pitchLines)
+    Q_PROPERTY(AcGridLineList* volumeLines READ volumeLines)
+    Q_PROPERTY(MiListObject* settings READ settingsList)
 
 public:
     enum PropertyIndex {
         LengthIndex = AcScoreObject::PropertyCount,
         TracksIndex,
+        TimeLinesIndex,
+        PitchLinesIndex,
+        VolumeLinesIndex,
+        SettingsIndex,
         PropertyCount
     };
 
@@ -133,12 +138,6 @@ public:
 private:
     Q_DISABLE_COPY(AcScore)
     Q_DECLARE_PRIVATE(AcScore)
-
-    MiListObject *gridLineLists() const
-    {
-        Q_D(const AcScore);
-        return d->gridLineLists;
-    }
 
     MiListObject *settingsList() const
     {

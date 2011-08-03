@@ -16,16 +16,16 @@ HEADERS += \
     graphicsitem/ac_graphicsvolumelineitem.h \
     graphicsitem/ac_graphicsvolumepointitem.h \
     graphicsitem/ac_scaledgraphicsitem.h \
-#    \
-#    graphicsscene/ac_graphicsscene.h \
-#    graphicsscene/ac_labelscene.h \
-#    graphicsscene/ac_pitchlabelscene.h \
-#    graphicsscene/ac_pitchscene.h \
-#    graphicsscene/ac_scenemanager.h \
-#    graphicsscene/ac_timelabelscene.h \
-#    graphicsscene/ac_volumelabelscene.h \
-#    graphicsscene/ac_volumescene.h \
-#    \
+    \
+    graphicsscene/ac_graphicsscene.h \
+    graphicsscene/ac_labelscene.h \
+    graphicsscene/ac_pitchlabelscene.h \
+    graphicsscene/ac_pitchscene.h \
+    graphicsscene/ac_scenemanager.h \
+    graphicsscene/ac_timelabelscene.h \
+    graphicsscene/ac_volumelabelscene.h \
+    graphicsscene/ac_volumescene.h \
+    \
 #    graphicsview/ac_editorview.h \
 #    graphicsview/ac_labelview.h \
 #    graphicsview/ac_graphicsview.h \
@@ -56,16 +56,16 @@ SOURCES += \
     graphicsitem/ac_graphicsvolumelineitem.cpp \
     graphicsitem/ac_graphicsvolumepointitem.cpp \
     graphicsitem/ac_scaledgraphicsitem.cpp \
-#    \
-#    graphicsscene/ac_graphicsscene.cpp \
-#    graphicsscene/ac_labelscene.cpp \
-#    graphicsscene/ac_pitchlabelscene.cpp \
-#    graphicsscene/ac_pitchscene.cpp \
-#    graphicsscene/ac_scenemanager.cpp \
-#    graphicsscene/ac_timelabelscene.cpp \
-#    graphicsscene/ac_volumelabelscene.cpp \
-#    graphicsscene/ac_volumescene.cpp \
-#    \
+    \
+    graphicsscene/ac_graphicsscene.cpp \
+    graphicsscene/ac_labelscene.cpp \
+    graphicsscene/ac_pitchlabelscene.cpp \
+    graphicsscene/ac_pitchscene.cpp \
+    graphicsscene/ac_scenemanager.cpp \
+    graphicsscene/ac_timelabelscene.cpp \
+    graphicsscene/ac_volumelabelscene.cpp \
+    graphicsscene/ac_volumescene.cpp \
+    \
 #    graphicsview/ac_editorview.cpp \
 #    graphicsview/ac_labelview.cpp \
 #    graphicsview/ac_graphicsview.cpp \

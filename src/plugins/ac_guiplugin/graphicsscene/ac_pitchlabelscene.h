@@ -15,33 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHSCENE_H
-#define AC_PITCHSCENE_H
+#ifndef AC_PITCHLABELSCENE_H
+#define AC_PITCHLABELSCENE_H
 
-#include <ac_scaledscene.h>
+#include <ac_labelscene.h>
 
-namespace Private {
+class AcPitchLabelScenePrivate;
 
-class AcPitchSceneData;
-
-} // namespace Private
-
-class AcPitchScene : public AcScaledScene
+class AcPitchLabelScene : public AcLabelScene
 {
     Q_OBJECT
 
 public:
-    AcPitchScene(QObject *parent = 0);
-    virtual ~AcPitchScene();
+    AcPitchLabelScene(QObject *parent = 0);
+    virtual ~AcPitchLabelScene();
 
-    static AcPitchScene *instance();
+    static AcPitchLabelScene *instance();
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
+    virtual void updateViewSettings(int i);
 
 private:
-    Q_DISABLE_COPY(AcPitchScene)
-    Private::AcPitchSceneData *d;
+    Q_DISABLE_COPY(AcPitchLabelScene)
+    AcPitchLabelScenePrivate *d;
 };
 
-#endif // AC_PITCHSCENE_H
+#endif // AC_PITCHLABELSCENE_H

@@ -15,36 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMESCENE_H
-#define AC_TIMESCENE_H
+#ifndef AC_TIMELABELSCENE_H
+#define AC_TIMELABELSCENE_H
 
-#include <ac_scaledscene.h>
+#include <ac_labelscene.h>
 
-namespace Private {
+class AcTimeLabelScenePrivate;
 
-class AcTimeSceneData;
-
-} // namespace Private
-
-class AcTimeScene : public AcScaledScene
+class AcTimeLabelScene : public AcLabelScene
 {
     Q_OBJECT
 
 public:
-    AcTimeScene(QObject *parent = 0);
-    virtual ~AcTimeScene();
+    AcTimeLabelScene(QObject *parent = 0);
+    virtual ~AcTimeLabelScene();
 
-    static AcTimeScene *instance();
+    static AcTimeLabelScene *instance();
 
 protected:
-    virtual void updateViewSettingsProperty(int propertyIndex);
+    virtual void updateViewSettings(int i);
 
 protected slots:
-    virtual void updateScoreProperty(int propertyIndex);
+    virtual void updateScore(int i);
 
 private:
-    Q_DISABLE_COPY(AcTimeScene)
-    Private::AcTimeSceneData *d;
+    Q_DISABLE_COPY(AcTimeLabelScene)
+    AcTimeLabelScenePrivate *d;
 };
 
-#endif // AC_TIMESCENE_H
+#endif // AC_TIMELABELSCENE_H

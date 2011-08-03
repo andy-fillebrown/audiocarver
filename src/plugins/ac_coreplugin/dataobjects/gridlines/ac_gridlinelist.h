@@ -25,7 +25,7 @@ class AcGridLine;
 
 #define AcGridLineListPrivate MiSortedListObjectPrivate
 
-class AcGridLineList : public MiSortedListObject
+class AC_CORE_EXPORT AcGridLineList : public MiSortedListObject
 {
     Q_OBJECT
 

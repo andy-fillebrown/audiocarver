@@ -15,20 +15,19 @@
 **
 **************************************************************************/
 
-#include "ac_controlscene.h"
+#include "ac_volumescene.h"
 #include <ac_score.h>
 
-using namespace Private;
-
-namespace Private {
-
-class AcControlSceneData
+class AcVolumeScenePrivate
 {
 public:
-    AcControlScene *q;
+    AcVolumeScene *q;
 
-    AcControlSceneData(AcControlScene *q)
+    AcVolumeScenePrivate(AcVolumeScene *q)
         :   q(q)
+    {}
+
+    virtual ~AcVolumeScenePrivate()
     {}
 
     void init()
@@ -42,31 +41,29 @@ public:
     }
 };
 
-} // namespace Private
+static AcVolumeScene *instance = 0;
 
-static AcControlScene *instance = 0;
-
-AcControlScene::AcControlScene(QObject *parent)
+AcVolumeScene::AcVolumeScene(QObject *parent)
     :   AcGraphicsScene(parent)
-    ,   d(new AcControlSceneData(this))
+    ,   d(new AcVolumeScenePrivate(this))
 {
     ::instance = this;
     d->init();
-    connect(AcScore::instance(), SIGNAL(propertyChanged(int)), SLOT(updateScoreProperty(int)));
+    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
 }
 
-AcControlScene::~AcControlScene()
+AcVolumeScene::~AcVolumeScene()
 {
     delete d;
 }
 
-AcControlScene *AcControlScene::instance()
+AcVolumeScene *AcVolumeScene::instance()
 {
     return ::instance;
 }
 
-void AcControlScene::updateScoreProperty(int propertyIndex)
+void AcVolumeScene::updateScore(int i)
 {
-    if (AcScore::Length == propertyIndex)
+    if (AcScore::LengthIndex == i)
         d->updateSceneRect();
 }

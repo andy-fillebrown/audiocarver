@@ -25,7 +25,7 @@ class AcCurvePoint;
 
 #define AcCurvePrivate MiSortedListObjectPrivate
 
-class AcCurve : public MiSortedListObject
+class AC_CORE_EXPORT AcCurve : public MiSortedListObject
 {
     Q_OBJECT
 

@@ -25,7 +25,7 @@ class AcNote;
 
 #define AcNoteListPrivate MiSortedListObjectPrivate
 
-class AcNoteList : public MiSortedListObject
+class AC_CORE_EXPORT AcNoteList : public MiSortedListObject
 {
     Q_OBJECT
 

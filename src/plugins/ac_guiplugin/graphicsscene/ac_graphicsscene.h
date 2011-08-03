@@ -20,11 +20,7 @@
 
 #include <mi_graphicsscene.h>
 
-namespace Private {
-
-class AcGraphicsSceneData;
-
-} // namespace Private
+class AcGraphicsScenePrivate;
 
 class AcGraphicsScene : public MiGraphicsScene
 {
@@ -36,7 +32,7 @@ public:
 
 private:
     Q_DISABLE_COPY(AcGraphicsScene)
-    Private::AcGraphicsSceneData *d;
+    AcGraphicsScenePrivate *d;
 };
 
 #endif // AC_GRAPHICSSCENE_H
