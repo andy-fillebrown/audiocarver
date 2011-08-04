@@ -20,6 +20,7 @@
 
 #include <ac_scene_util.h>
 
+class AcGraphicsItem;
 class AcScore;
 class MiObject;
 class QFont;
@@ -30,10 +31,12 @@ class QGraphicsScene;
 class AcGraphicsItemPrivate
 {
 public:
+    AcGraphicsItem *q;
     MiObject *dataObject;
 
     AcGraphicsItemPrivate()
-        :   dataObject(0)
+        :   q(0)
+        ,   dataObject(0)
     {}
 
     virtual ~AcGraphicsItemPrivate()
@@ -47,6 +50,8 @@ public:
     const QGraphicsScene *timeLabelScene() const;
     const QGraphicsScene *pitchLabelScene() const;
     const QGraphicsScene *volumeLabelScene() const;
+
+    void connectDataObject();
 };
 
 class AcGraphicsItem : public QObject

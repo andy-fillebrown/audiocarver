@@ -21,14 +21,16 @@
 #include <QGraphicsRectItem>
 #include <QPen>
 
-AcGraphicsPointItemPrivate::AcGraphicsPointItemPrivate(AcPoint *point)
-    :   pointItem(new QGraphicsRectItem)
+AcGraphicsPointItemPrivate::AcGraphicsPointItemPrivate(AcGraphicsPointItem *q, AcPoint *point)
+    :   q(q)
+    ,   pointItem(new QGraphicsRectItem)
 {
     dataObject = point;
     pointItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     pointItem->setPen(QPen(Qt::blue));
     pointItem->setBrush(QBrush(Qt::blue, Qt::SolidPattern));
     pointItem->setZValue(1.0f);
+    pointItem->setData(0, quintptr(q));
 }
 
 AcGraphicsPointItemPrivate::~AcGraphicsPointItemPrivate()
@@ -36,14 +38,15 @@ AcGraphicsPointItemPrivate::~AcGraphicsPointItemPrivate()
     delete pointItem;
 }
 
-const AcPoint *AcGraphicsPointItemPrivate::point() const
-{
-    return dataObject->cast<AcPoint>();
-}
-
 AcGraphicsPointItem::AcGraphicsPointItem(AcPoint *point, QObject *parent)
-    :   AcScaledGraphicsItem(*(new AcGraphicsPointItemPrivate(point)), parent)
+    :   AcScaledGraphicsItem(*(new AcGraphicsPointItemPrivate(this, point)), parent)
 {}
 
 AcGraphicsPointItem::~AcGraphicsPointItem()
 {}
+
+AcPoint *AcGraphicsPointItem::point()
+{
+    Q_D(AcGraphicsPointItem);
+    return d->dataObject->cast<AcPoint>();
+}

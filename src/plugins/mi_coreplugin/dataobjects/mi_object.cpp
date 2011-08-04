@@ -23,7 +23,7 @@
 void MiObjectPrivate::notifyParentOfChange(int i)
 {
     Q_UNUSED(i);
-    MiListObject *parent = q_ptr->parent();
+    MiObject *parent = q_ptr->parent();
     if (parent)
         parent->d_ptr->endChange(i);
 }
@@ -55,7 +55,7 @@ void MiObject::setPropertyValue(int i, const QVariant &value)
         metaObj->property(i).write(this, QVariant());
 }
 
-MiListObject *MiObject::parent() const
+MiObject *MiObject::parent() const
 {
-    return qobject_cast<MiListObject*>(QObject::parent());
+    return qobject_cast<MiObject*>(QObject::parent());
 }

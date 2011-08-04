@@ -30,7 +30,7 @@ public:
 
     void updateRect()
     {
-        const AcPoint *point = this->point();
+        const AcPoint *point = q->point();
         const qreal w = 6.0f;
         const qreal h = 6.0f;
         const qreal x = (viewSettings()->timeScale() * point->x()) - (w / 2.0f);

@@ -20,18 +20,18 @@
 
 #include <ac_scaledgraphicsitem.h>
 
+class AcGraphicsPointItem;
 class AcPoint;
 class QGraphicsRectItem;
 
 class AcGraphicsPointItemPrivate : public AcScaledGraphicsItemPrivate
 {
 public:
+    AcGraphicsPointItem *q;
     QGraphicsRectItem *pointItem;
 
-    AcGraphicsPointItemPrivate(AcPoint *point);
+    AcGraphicsPointItemPrivate(AcGraphicsPointItem *q, AcPoint *point);
     virtual ~AcGraphicsPointItemPrivate();
-
-    const AcPoint *point() const;
 };
 
 class AcGraphicsPointItem : public AcScaledGraphicsItem
@@ -41,6 +41,8 @@ class AcGraphicsPointItem : public AcScaledGraphicsItem
 public:
     AcGraphicsPointItem(AcPoint *point = 0, QObject *parent = 0);
     virtual ~AcGraphicsPointItem();
+
+    AcPoint *point();
 
 private:
     Q_DISABLE_COPY(AcGraphicsPointItem)

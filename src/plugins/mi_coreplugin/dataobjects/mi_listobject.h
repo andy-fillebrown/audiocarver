@@ -90,14 +90,12 @@ protected:
 private:
     Q_DISABLE_COPY(MiListObject)
     Q_DECLARE_PRIVATE(MiListObject)
-
-    friend MiListObject *qobject_cast<MiListObject*>(QObject*);
 };
 
 inline void MiListObjectPrivate::notifyParentOfChange(int i)
 {
     Q_UNUSED(i);
-    MiListObject *parent = q_ptr->parent();
+    MiObject *parent = q_ptr->parent();
     if (parent)
         parent->d_ptr->endChange(propertyIndex);
 }

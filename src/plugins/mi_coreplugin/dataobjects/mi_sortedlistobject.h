@@ -85,6 +85,7 @@ public:
             if (!q->isSorted())
                 q->sort();
         }
+        MiListObjectPrivate::endChange(i);
     }
 
     virtual bool isSortProperty(int i) const

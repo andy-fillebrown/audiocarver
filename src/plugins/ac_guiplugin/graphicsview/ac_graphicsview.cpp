@@ -16,7 +16,8 @@
 **************************************************************************/
 
 #include "ac_graphicsview.h"
-#include <ac_graphicsitem.h>
+#include <ac_graphicspointitem.h>
+#include <ac_point.h>
 #include <QApplication>
 #include <QBitmap>
 #include <QGraphicsItem>
@@ -27,13 +28,16 @@ class AcGraphicsViewPrivate
 public:
     AcGraphicsView *q;
     bool dragging;
+    bool draggingPoints;
     QPoint dragOrigin;
     QList<AcGraphicsItem*> selectedItems;
+    QList<AcPoint*> pointsBeingDragged;
     QGraphicsPolygonItem *selectionRect;
 
     AcGraphicsViewPrivate(AcGraphicsView *q)
         :   q(q)
         ,   dragging(false)
+        ,   draggingPoints(false)
         ,   selectionRect(new QGraphicsPolygonItem)
     {
         q->scene()->addItem(selectionRect);
@@ -110,11 +114,28 @@ void AcGraphicsView::mousePressEvent(QMouseEvent *event)
 {
     d->dragging = true;
     d->dragOrigin = event->pos();
+    QList<QGraphicsItem*> sceneItems = items(QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2));
+    foreach (QGraphicsItem *sceneItem, sceneItems) {
+        AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
+        AcGraphicsPointItem *pointItem = qobject_cast<AcGraphicsPointItem*>(item);
+        if (pointItem) {
+            AcPoint *point = pointItem->point();
+            if (!d->pointsBeingDragged.contains(point))
+                d->pointsBeingDragged.append(point);
+        }
+    }
+    d->draggingPoints = !d->pointsBeingDragged.isEmpty();
 }
 
 void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d->dragging) {
+    if (d->draggingPoints) {
+        QPointF pos = mapToScene(event->pos());
+        foreach (AcPoint *point, d->pointsBeingDragged) {
+            point->setX(pos.x());
+            point->setY(127.0f - pos.y());
+        }
+    } else if (d->dragging) {
         if (4 <= (event->pos() - d->dragOrigin).manhattanLength()) {
             QRect rect(d->dragOrigin, event->pos());
             QPolygonF polygon = mapToScene(rect.normalized());
@@ -126,29 +147,39 @@ void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
 
 void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    QRect rect;
-    if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
-        rect = QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2);
-    else
-        rect = QRect(d->dragOrigin, event->pos()).normalized();
-    QList<QGraphicsItem*> sceneItems = items(rect);
-    QList<AcGraphicsItem*> items;
-    foreach (QGraphicsItem *sceneItem, sceneItems) {
-        AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
-        if (item && !items.contains(item)) {
-            QRegion region = sceneItem->boundingRegion(viewportTransform());
-            if (region.intersects(rect))
-                items.append(item);
+    if (d->draggingPoints) {
+        QPointF pos = mapToScene(event->pos());
+        foreach (AcPoint *point, d->pointsBeingDragged) {
+            point->setX(pos.x());
+            point->setY(127.0f - pos.y());
         }
+    } else {
+        QRect rect;
+        if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
+            rect = QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2);
+        else
+            rect = QRect(d->dragOrigin, event->pos()).normalized();
+        QList<QGraphicsItem*> sceneItems = items(rect);
+        QList<AcGraphicsItem*> items;
+        foreach (QGraphicsItem *sceneItem, sceneItems) {
+            AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
+            if (item && !items.contains(item)) {
+                QRegion region = sceneItem->boundingRegion(viewportTransform());
+                if (region.intersects(rect))
+                    items.append(item);
+            }
+        }
+        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
+            d->appendSelectedItems(items);
+        else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+            d->removeSelectedItems(items);
+        else
+            d->setSelectedItems(items);
     }
-    if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-        d->appendSelectedItems(items);
-    else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-        d->removeSelectedItems(items);
-    else
-        d->setSelectedItems(items);
     d->selectionRect->hide();
     d->dragging = false;
+    d->draggingPoints = false;
+    d->pointsBeingDragged.clear();
 }
 
 void AcGraphicsView::keyPressEvent(QKeyEvent *event)

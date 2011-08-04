@@ -99,7 +99,7 @@ public:
         return qobject_cast<T*>(this);
     }
 
-    MiListObject *parent() const;
+    MiObject *parent() const;
 
     static bool connect(const MiObject *sender, const char *signal, const QObject *receiver, const char *member, Qt::ConnectionType type = Qt::UniqueConnection)
     {
@@ -125,6 +125,7 @@ protected:
 private:
     Q_DISABLE_COPY(MiObject)
     Q_DECLARE_PRIVATE(MiObject)
+    Q_DECLARE_FRIENDS(MiObject)
 
     friend class MiListObjectPrivate;
 };
