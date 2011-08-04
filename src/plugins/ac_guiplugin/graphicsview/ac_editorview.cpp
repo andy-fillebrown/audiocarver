@@ -60,5 +60,5 @@ void AcEditorView::setCenter(qreal x, qreal y)
 
 void AcEditorView::updateCenter()
 {
-    setCenter(mapToScene(rect().center()));
+    setCenter(mapToScene(center().toPoint()));
 }

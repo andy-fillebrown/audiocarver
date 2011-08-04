@@ -23,8 +23,6 @@
 
 class AcCurvePoint;
 
-#define AcCurvePrivate MiSortedListObjectPrivate
-
 class AC_CORE_EXPORT AcCurve : public MiSortedListObject
 {
     Q_OBJECT
@@ -49,16 +47,32 @@ public:
         MiSortedListObject::removeChild(child);
     }
 
-    virtual void update();
+    void update();
 
 protected:
-    AcCurve(AcCurvePrivate &dd)
+    AcCurve(MiSortedListObjectPrivate &dd)
         :   MiSortedListObject(dd)
     {}
 
 private:
     Q_DISABLE_COPY(AcCurve)
-    Q_DECLARE_PRIVATE(AcCurve)
+    Q_DECLARE_PRIVATE(MiSortedListObject)
+};
+
+class AcCurvePrivate : public MiSortedListObjectPrivate
+{
+    Q_DECLARE_PUBLIC(AcCurve)
+
+public:
+    AcCurvePrivate(AcCurve *q, int propertyIndex)
+        :   MiSortedListObjectPrivate(q, propertyIndex)
+    {}
+
+    virtual ~AcCurvePrivate()
+    {}
+
+    virtual void endChange(int i);
+    virtual bool isSortProperty(int i) const;
 };
 
 #endif // AC_CURVE_H

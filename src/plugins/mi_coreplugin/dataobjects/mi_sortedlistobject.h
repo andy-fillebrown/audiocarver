@@ -20,10 +20,34 @@
 
 #include <mi_listobject.h>
 
+class MI_CORE_EXPORT MiSortedListObject : public MiListObject
+{
+    Q_OBJECT
+
+public:
+    typedef MiListObject::PropertyIndex PropertyIndex;
+
+    virtual ~MiSortedListObject()
+    {}
+
+    virtual bool isSorted() const = 0;
+    virtual void sort() = 0;
+
+protected:
+    MiSortedListObject(MiListObjectPrivate &dd)
+        :   MiListObject(dd)
+    {}
+
+private:
+    Q_DISABLE_COPY(MiSortedListObject)
+};
+
 class MiSortedListObjectPrivate : public MiListObjectPrivate
 {
+    Q_DECLARE_PUBLIC(MiSortedListObject)
+
 public:
-    MiSortedListObjectPrivate(MiListObject *q, int propertyIndex)
+    MiSortedListObjectPrivate(MiSortedListObject *q, int propertyIndex)
         :   MiListObjectPrivate(q, propertyIndex)
     {}
 
@@ -53,36 +77,21 @@ public:
     {
         return a->isLessThan(b);
     }
-};
 
-class MI_CORE_EXPORT MiSortedListObject : public MiListObject
-{
-    Q_OBJECT
-
-public:
-    typedef MiListObject::PropertyIndex PropertyIndex;
-
-    virtual ~MiSortedListObject()
-    {}
-
-    virtual bool isSorted() const = 0;
-    virtual void sort() = 0;
-
-    virtual void update()
+    virtual void endChange(int i)
     {
-        if (isChanged() && !isSorted())
-            sort();
-        MiListObject::update();
+        if (isSortProperty(i)) {
+            Q_Q(MiSortedListObject);
+            if (!q->isSorted())
+                q->sort();
+        }
     }
 
-protected:
-    MiSortedListObject(MiSortedListObjectPrivate &dd)
-        :   MiListObject(dd)
-    {}
-
-private:
-    Q_DISABLE_COPY(MiSortedListObject)
-    Q_DECLARE_PRIVATE(MiSortedListObject)
+    virtual bool isSortProperty(int i) const
+    {
+        Q_UNUSED(i);
+        return true;
+    }
 };
 
 #endif // MI_SORTEDLISTOBJECT_H

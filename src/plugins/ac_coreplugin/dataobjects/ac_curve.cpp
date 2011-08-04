@@ -18,6 +18,25 @@
 #include "ac_curve.h"
 #include <ac_curvepoint.h>
 
+void AcCurvePrivate::endChange(int i)
+{
+    if (AcCurvePoint::XIndex == i) {
+        Q_Q(AcCurve);
+        q->update();
+    }
+    MiListObjectPrivate::endChange(i);
+}
+
+bool AcCurvePrivate::isSortProperty(int i) const
+{
+    switch (i) {
+    case AcCurvePoint::XIndex:
+    case AcCurvePoint::YIndex:
+        return true;
+    }
+    return false;
+}
+
 qreal AcCurve::duration() const
 {
     const QList<AcCurvePoint*> &pts = children();
@@ -26,13 +45,13 @@ qreal AcCurve::duration() const
 
 bool AcCurve::isSorted() const
 {
-    Q_D(const AcCurve);
+    Q_D(const MiSortedListObject);
     return d->isSorted<AcCurvePoint>();
 }
 
 void AcCurve::sort()
 {
-    Q_D(AcCurve);
+    Q_D(MiSortedListObject);
     d->sort<AcCurvePoint>();
 }
 
@@ -43,8 +62,6 @@ const QList<AcCurvePoint*> &AcCurve::children() const
 
 void AcCurve::update()
 {
-    if (!isChanged())
-        return;
     const QList<AcCurvePoint*> &pts = children();
     AcCurvePoint *startPt = pts.first();
     AcCurvePoint *endPt = pts.last();
@@ -74,5 +91,4 @@ void AcCurve::update()
         } else
             pt->update();
     }
-    MiSortedListObject::update();
 }

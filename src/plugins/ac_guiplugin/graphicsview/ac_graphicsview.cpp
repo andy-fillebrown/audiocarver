@@ -129,7 +129,7 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     QList<QGraphicsItem*> sceneItems;
     QRect rect;
     if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
-        rect = QRect(d->dragOrigin.x() - 2, d->dragOrigin.y() - 2, 4, 4);
+        rect = QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2);
     else
         rect = QRect(d->dragOrigin, event->pos());
     rect = rect.normalized();

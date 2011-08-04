@@ -19,6 +19,7 @@
 #define MI_GUI_GLOBAL_H
 
 #include <qglobal.h>
+#include <QDebug>
 
 #if defined(MI_GUI_LIBRARY)
 #  define MI_GUI_EXPORT Q_DECL_EXPORT

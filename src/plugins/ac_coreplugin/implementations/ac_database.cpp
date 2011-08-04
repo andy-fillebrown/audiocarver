@@ -17,11 +17,14 @@
 
 #include "ac_database.h"
 //#include <ac_barline.h>
-//#include <ac_note.h>
-//#include <ac_pitchcurve.h>
+#include <ac_note.h>
+#include <ac_notelist.h>
+#include <ac_pitchcurve.h>
+#include <ac_pitchpoint.h>
 //#include <ac_point.h>
 #include <ac_score.h>
-//#include <ac_track.h>
+#include <ac_track.h>
+#include <ac_tracklist.h>
 //#include <ac_tuningline.h>
 //#include <ac_valueline.h>
 //#include <ac_volumecurve.h>
@@ -81,19 +84,28 @@ public:
 //        score->valueLines().add()->set(0.125f, "0.125", 3);
 //        score->valueLines().add()->set(0.0f, "", 0, Qt::black);
 
-//        AcTrack *track = score->tracks().add();
-//        for (int i = 0;  i < 126;  ++i) {
-//            AcNote *note = track->notes().add();
-//            AcPitchCurve *pitchCurve = note->pitchCurve();
-//            AcPoint *pitchPointA = pitchCurve->points().add();
-//            pitchPointA->setX(i + 0.0f);
-//            pitchPointA->setY(60.0f);
-//            AcPoint *pitchPointB = pitchCurve->points().add();
-//            pitchPointB->setX(i + 1.0f);
-//            pitchPointB->setY(72.0f);
-//            AcPoint *pitchPointC = pitchCurve->points().add();
-//            pitchPointC->setX(i + 2.0f);
-//            pitchPointC->setY(67.0f);
+        AcTrack *track = new AcTrack;
+        score->tracks()->addChild(track);
+        for (int i = 0;  i < 126;  ++i) {
+            AcNote *note = new AcNote;
+            track->notes()->addChild(note);
+            AcPitchCurve *pitchCurve = note->pitchCurve();
+            AcPitchPoint *first = pitchCurve->children().first();
+            AcPitchPoint *last = pitchCurve->children().last();
+            AcPitchPoint *pitchPointA = new AcPitchPoint;
+            pitchCurve->addChild(pitchPointA);
+            pitchPointA->setX(i + 0.0f);
+            pitchPointA->setY(60.0f);
+            AcPoint *pitchPointB = new AcPitchPoint;
+            pitchCurve->addChild(pitchPointB);
+            pitchPointB->setX(i + 1.0f);
+            pitchPointB->setY(72.0f);
+            AcPoint *pitchPointC = new AcPitchPoint;
+            pitchCurve->addChild(pitchPointC);
+            pitchPointC->setX(i + 2.0f);
+            pitchPointC->setY(67.0f);
+            pitchCurve->removeChild(first);
+            pitchCurve->removeChild(last);
 //            AcVolumeCurve *volumeCurve = note->volumeCurve();
 //            AcPoint *volumePointA = volumeCurve->points().add();
 //            volumePointA->setX(0.0f);
@@ -105,7 +117,7 @@ public:
 //            AcPoint *volumePointC = volumeCurve->points().add();
 //            volumePointC->setX(1.0f);
 //            volumePointC->setY(0.0f);
-//        }
+        }
     }
 
     virtual ~AcDatabaseImplData()

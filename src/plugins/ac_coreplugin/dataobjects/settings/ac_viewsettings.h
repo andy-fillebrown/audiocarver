@@ -130,7 +130,7 @@ public:
         if (d->timeScale == scale)
             return;
         changing(TimeScaleIndex);
-        d->timePosition = scale;
+        d->timeScale = scale;
     }
 
     qreal pitchScale() const

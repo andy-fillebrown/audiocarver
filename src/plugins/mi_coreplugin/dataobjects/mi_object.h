@@ -34,8 +34,8 @@ protected: \
     virtual int qt_metacall(QMetaObject::Call, int, void **); \
 private:
 
-class MiObject;
 class MiListObject;
+class MiObject;
 
 class MI_CORE_EXPORT MiObjectPrivate
 {
@@ -53,8 +53,9 @@ public:
     void addChild(MiObject *child);
     void removeChild(MiObject *child);
 
-    void beginChange(int i);
-    void endChange(int i);
+    virtual void beginChange(int i);
+    virtual void endChange(int i);
+    virtual void notifyParentOfChange(int i);
 };
 
 class MI_CORE_EXPORT MiObject : protected QObject
@@ -66,14 +67,6 @@ public:
         IdIndex = 0,
         PropertyCount
     };
-
-    enum ChangeFlag {
-        NoChange = 0x0,
-        ChildListChanged = 0x1,
-        ChildPropertyChanged = 0x2,
-        LastChangeFlag = 0x4
-    };
-    Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 
     virtual ~MiObject()
     {
@@ -117,8 +110,6 @@ public:
     {
         return QObject::disconnect(receiver, member);
     }
-
-    void setParentChangeFlag(ChangeFlag flag);
 
 signals:
     void aboutToChange(int i);
@@ -165,9 +156,7 @@ inline void MiObjectPrivate::beginChange(int i)
 inline void MiObjectPrivate::endChange(int i)
 {
     q_ptr->emit changed(i);
-    q_ptr->setParentChangeFlag(MiObject::ChildPropertyChanged);
+    notifyParentOfChange(i);
 }
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(MiObject::ChangeFlags)
 
 #endif // MI_OBJECT_H

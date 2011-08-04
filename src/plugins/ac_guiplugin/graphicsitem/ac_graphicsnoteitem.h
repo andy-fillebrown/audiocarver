@@ -43,8 +43,8 @@ protected:
     virtual void updateDataObject(int i);
 
 protected slots:
-    virtual void updatePitchCurve(const MiObject::ChangeFlags &flags);
-    virtual void updateVolumeCurve(const MiObject::ChangeFlags &flags);
+    virtual void updatePitchCurve();
+    virtual void updateVolumeCurve();
 
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)

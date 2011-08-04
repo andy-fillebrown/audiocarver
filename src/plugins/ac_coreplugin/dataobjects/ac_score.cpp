@@ -24,6 +24,7 @@
 
 AcScorePrivate::AcScorePrivate(AcScoreObject *q)
     :   AcScoreObjectPrivate(q)
+    ,   length(128.0f)
     ,   tracks(new AcTrackList(AcScore::TracksIndex))
     ,   timeLines(new AcTimeLineList)
     ,   pitchLines(new AcPitchLineList)

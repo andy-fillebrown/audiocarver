@@ -27,12 +27,10 @@ class MiListObjectPrivate : public MiObjectPrivate
 
 public:
     const int propertyIndex;
-    MiObject::ChangeFlags changeFlags;
 
     MiListObjectPrivate(MiObject *q, int propertyIndex)
         :   MiObjectPrivate(q)
         ,   propertyIndex(propertyIndex)
-        ,   changeFlags(MiObject::NoChange)
     {}
 
     virtual ~MiListObjectPrivate()
@@ -44,8 +42,7 @@ public:
         return reinterpret_cast<QList<T*>&>(const_cast<QObjectList&>(q_ptr->children()));
     }
 
-    void parentBeginChange(int i);
-    void parentEndChange(int i);
+    virtual void notifyParentOfChange(int i = 0);
 };
 
 class MI_CORE_EXPORT MiListObject : public MiObject
@@ -72,10 +69,8 @@ public:
         if (!child || children().contains(child))
             return;
         Q_D(MiListObject);
-        d->parentBeginChange(d->propertyIndex);
         d->addChild(child);
-        d->parentEndChange(d->propertyIndex);
-        setChangeFlag(MiObject::ChildListChanged);
+        d->notifyParentOfChange();
     }
 
     virtual void removeChild(MiObject *child)
@@ -83,36 +78,9 @@ public:
         if (!child || !children().contains(child))
             return;
         Q_D(MiListObject);
-        d->parentBeginChange(d->propertyIndex);
         d->removeChild(child);
-        d->parentEndChange(d->propertyIndex);
-        setChangeFlag(MiObject::ChildListChanged);
+        d->notifyParentOfChange();
     }
-
-    bool isChanged() const
-    {
-        Q_D(const MiListObject);
-        return MiObject::NoChange != d->changeFlags;
-    }
-
-    void setChangeFlag(MiObject::ChangeFlag flag)
-    {
-        Q_D(MiListObject);
-        d->changeFlags |= flag;
-    }
-
-public slots:
-    virtual void update()
-    {
-        if (isChanged()) {
-            Q_D(MiListObject);
-            emit updated(d->changeFlags);
-            d->changeFlags = MiObject::NoChange;
-        }
-    }
-
-signals:
-    void updated(const MiObject::ChangeFlags &changes);
 
 protected:
     MiListObject(MiListObjectPrivate &dd)
@@ -126,23 +94,12 @@ private:
     friend MiListObject *qobject_cast<MiListObject*>(QObject*);
 };
 
-inline
-void MiListObjectPrivate::parentBeginChange(int i)
+inline void MiListObjectPrivate::notifyParentOfChange(int i)
 {
-    Q_Q(MiObject);
-    MiListObject *parent = q->parent();
+    Q_UNUSED(i);
+    MiListObject *parent = q_ptr->parent();
     if (parent)
-        parent->d_ptr->beginChange(i);
-}
-
-inline
-void MiListObjectPrivate::parentEndChange(int i)
-{
-    Q_Q(MiObject);
-    MiListObject *parent = q->parent();
-    if (parent) {
-        parent->d_ptr->endChange(i);
-    }
+        parent->d_ptr->endChange(propertyIndex);
 }
 
 Q_DECLARE_METATYPE(MiListObject*)

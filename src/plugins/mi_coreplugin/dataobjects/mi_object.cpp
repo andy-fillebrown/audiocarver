@@ -20,6 +20,14 @@
 #include <QMetaProperty>
 #include <QVariant>
 
+void MiObjectPrivate::notifyParentOfChange(int i)
+{
+    Q_UNUSED(i);
+    MiListObject *parent = q_ptr->parent();
+    if (parent)
+        parent->d_ptr->endChange(i);
+}
+
 QString MiObject::propertyType(int i) const
 {
     return metaObject()->property(i).typeName();
@@ -50,11 +58,4 @@ void MiObject::setPropertyValue(int i, const QVariant &value)
 MiListObject *MiObject::parent() const
 {
     return qobject_cast<MiListObject*>(QObject::parent());
-}
-
-void MiObject::setParentChangeFlag(ChangeFlag flag)
-{
-    MiListObject *parent = this->parent();
-    if (parent)
-        parent->setChangeFlag(flag);
 }
