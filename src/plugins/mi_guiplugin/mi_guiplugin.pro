@@ -7,6 +7,8 @@ include(mi_guiplugin_dependencies.pri)
 DEFINES += MI_GUI_LIBRARY
 
 HEADERS += \
+    graphicsitem/mi_graphicspathitem.h \
+    \
     graphicsscene/mi_graphicsscene.h \
     \
     graphicsview/mi_graphicsview.h \
@@ -20,6 +22,8 @@ HEADERS += \
     mi_guiplugin.h \
 
 SOURCES += \
+    graphicsitem/mi_graphicspathitem.cpp \
+    \
     graphicsscene/mi_graphicsscene.cpp \
     \
     graphicsview/mi_graphicsview.cpp \

@@ -126,19 +126,20 @@ void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
 
 void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    QList<QGraphicsItem*> sceneItems;
     QRect rect;
     if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
         rect = QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2);
     else
-        rect = QRect(d->dragOrigin, event->pos());
-    rect = rect.normalized();
-    sceneItems = items(rect);
+        rect = QRect(d->dragOrigin, event->pos()).normalized();
+    QList<QGraphicsItem*> sceneItems = items(rect);
     QList<AcGraphicsItem*> items;
     foreach (QGraphicsItem *sceneItem, sceneItems) {
         AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
-        if (item)
-            items.append(item);
+        if (item && !items.contains(item)) {
+            QRegion region = sceneItem->boundingRegion(viewportTransform());
+            if (region.intersects(rect))
+                items.append(item);
+        }
     }
     if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
         d->appendSelectedItems(items);

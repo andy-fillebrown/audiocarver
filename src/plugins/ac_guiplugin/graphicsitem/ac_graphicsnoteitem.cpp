@@ -22,33 +22,35 @@
 #include <ac_note.h>
 #include <ac_pitchcurve.h>
 #include <ac_volumecurve.h>
+#include <mi_graphicspathitem.h>
 #include <QBrush>
 #include <QColor>
-#include <QGraphicsPathItem>
 #include <QPen>
 
 class AcGraphicsNoteItemPrivate : public AcGraphicsItemPrivate
 {
 public:
     AcGraphicsNoteItem *q;
-    QGraphicsPathItem *pitchLineItem;
-    QGraphicsPathItem *volumeLineItem;
+    MiGraphicsPathItem *pitchLineItem;
+    MiGraphicsPathItem *volumeLineItem;
     QList<AcGraphicsPitchPointItem*> pitchPointItems;
     QList<AcGraphicsVolumePointItem*> volumePointItems;
 
     AcGraphicsNoteItemPrivate(AcGraphicsNoteItem *q, AcNote *note)
         :   q(q)
-        ,   pitchLineItem(new QGraphicsPathItem)
-        ,   volumeLineItem(new QGraphicsPathItem)
+        ,   pitchLineItem(new MiGraphicsPathItem)
+        ,   volumeLineItem(new MiGraphicsPathItem)
     {
         dataObject = note;
         pitchLineItem->setData(0, quintptr(q));
         volumeLineItem->setData(0, quintptr(q));
         QPen pen(Qt::red);
-        pen.setWidth(2);
         pen.setCosmetic(true);
+        pen.setWidth(2);
         pitchLineItem->setPen(pen);
         volumeLineItem->setPen(pen);
+        pitchLineItem->setBoundingRegionGranularity(1.0f);
+        volumeLineItem->setBoundingRegionGranularity(1.0f);
     }
 
     virtual ~AcGraphicsNoteItemPrivate()
