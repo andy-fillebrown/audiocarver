@@ -131,8 +131,6 @@ AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
 {
     Q_D(AcGraphicsNoteItem);
     d->update();
-    Q_CONNECT(d->pitchCurve(), SIGNAL(changed(int)), this, SLOT(updatePitchCurve()));
-    Q_CONNECT(d->volumeCurve(), SIGNAL(changed(int)), this, SLOT(updateVolumeCurve()));
 }
 
 QGraphicsItem *AcGraphicsNoteItem::sceneItem(SceneType sceneType) const
@@ -159,18 +157,6 @@ void AcGraphicsNoteItem::unhighlight()
 {
     Q_D(AcGraphicsNoteItem);
     d->hidePointItems();
-}
-
-void AcGraphicsNoteItem::updatePitchCurve()
-{
-//    Q_D(AcGraphicsNoteItem);
-//    d->updatePitchPointItems();
-}
-
-void AcGraphicsNoteItem::updateVolumeCurve()
-{
-//    Q_D(AcGraphicsNoteItem);
-//    d->updateVolumePointItems();
 }
 
 void AcGraphicsNoteItem::updateDataObject(int i)

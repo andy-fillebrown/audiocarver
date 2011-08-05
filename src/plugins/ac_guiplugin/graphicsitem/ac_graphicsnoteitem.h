@@ -42,10 +42,6 @@ protected:
     virtual void unhighlight();
     virtual void updateDataObject(int i);
 
-protected slots:
-    virtual void updatePitchCurve();
-    virtual void updateVolumeCurve();
-
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)
     Q_DECLARE_PRIVATE(AcGraphicsNoteItem)
