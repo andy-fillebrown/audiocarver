@@ -21,6 +21,7 @@
 #include <ac_graphicsvolumepointitem.h>
 #include <ac_note.h>
 #include <ac_pitchcurve.h>
+#include <ac_scene_util.h>
 #include <ac_volumecurve.h>
 #include <mi_graphicspathitem.h>
 #include <QBrush>
@@ -80,8 +81,6 @@ public:
     {
         updatePitchLineItem();
         updateVolumeLineItem();
-//        updatePitchPointItems();
-//        updateVolumePointItems();
     }
 
     void updatePitchLineItem()
@@ -105,13 +104,11 @@ public:
     void updatePitchPointItems()
     {
         updateItemsHelper(pitchCurve()->children(), pitchPointItems, q);
-        q->addItems(pitchPointItems);
     }
 
     void updateVolumePointItems()
     {
         updateItemsHelper(volumeCurve()->children(), volumePointItems, q);
-        q->addItems(volumePointItems);
     }
 
     void showPointItems()

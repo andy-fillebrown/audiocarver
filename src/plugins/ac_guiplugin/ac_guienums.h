@@ -15,26 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_UTIL_H
-#define AC_SCENE_UTIL_H
+#ifndef AC_GUIENUMS_H
+#define AC_GUIENUMS_H
 
-#include <QList>
-
-template <typename ObjectType, typename ItemType, typename ParentType>
-inline void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*> &items, ParentType *parent)
+enum SceneType
 {
-    for (int i = 0;  i < objects.count();  ++i) {
-        if (items.count() <= i) {
-            ItemType *item = new ItemType(objects[i], parent);
-            items.append(item);
-            parent->addItem(item);
-        } else
-            items[i]->setDataObject(objects[i]);
-    }
-    while (objects.count() < items.count()) {
-        delete items.last();
-        items.removeLast();
-    }
-}
+    PitchScene = 0,
+    VolumeScene,
+    TimeLabelScene,
+    PitchLabelScene,
+    VolumeLabelScene,
+    SceneTypeCount
+};
 
-#endif // AC_SCENE_UTIL_H
+#endif // AC_GUIENUMS_H

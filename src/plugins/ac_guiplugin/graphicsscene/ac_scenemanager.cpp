@@ -24,6 +24,7 @@
 #include <ac_gridlinelist.h>
 #include <ac_pitchlabelscene.h>
 #include <ac_pitchscene.h>
+#include <ac_scene_util.h>
 #include <ac_score.h>
 #include <ac_timelabelscene.h>
 #include <ac_track.h>
@@ -125,25 +126,21 @@ public:
     void updateTrackItems()
     {
         updateItemsHelper(AcScore::instance()->tracks()->children(), trackItems, q);
-        q->addItems(trackItems);
     }
 
     void updateTimeLineItems()
     {
         updateItemsHelper(AcScore::instance()->timeLines()->children(), timeLineItems, q);
-        q->addItems(timeLineItems);
     }
 
     void updatePitchLineItems()
     {
         updateItemsHelper(AcScore::instance()->pitchLines()->children(), pitchLineItems, q);
-        q->addItems(pitchLineItems);
     }
 
     void updateVolumeLineItems()
     {
         updateItemsHelper(AcScore::instance()->volumeLines()->children(), volumeLineItems, q);
-        q->addItems(volumeLineItems);
     }
 
     void updateFontMetrics()

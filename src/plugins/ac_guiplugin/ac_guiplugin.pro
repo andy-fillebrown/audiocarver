@@ -40,6 +40,7 @@ HEADERS += \
     implementations/ac_mainwindowimpl.h \
     \
     ac_guiconstants.h \
+    ac_guienums.h \
     ac_guiplugin.h \
     ac_mainwidget.h \
     ac_scene_util.h \

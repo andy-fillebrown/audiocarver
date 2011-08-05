@@ -18,8 +18,8 @@
 #ifndef AC_SCENEMANAGER_H
 #define AC_SCENEMANAGER_H
 
+#include <ac_guienums.h>
 #include <QObject>
-#include <ac_scene_util.h>
 
 class AcGraphicsItem;
 class QFontMetrics;

@@ -18,7 +18,8 @@
 #ifndef AC_GRAPHICSITEM_H
 #define AC_GRAPHICSITEM_H
 
-#include <ac_scene_util.h>
+#include <ac_guienums.h>
+#include <QObject>
 
 class AcGraphicsItem;
 class AcScore;
