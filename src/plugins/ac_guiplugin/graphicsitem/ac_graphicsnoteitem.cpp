@@ -52,8 +52,6 @@ public:
         pen.setWidth(2);
         pitchLineItem->setPen(pen);
         volumeLineItem->setPen(pen);
-        pitchLineItem->setBoundingRegionGranularity(1.0f);
-        volumeLineItem->setBoundingRegionGranularity(1.0f);
     }
 
     virtual ~AcGraphicsNoteItemPrivate()
@@ -115,7 +113,6 @@ public:
                     pitchGuide = new MiGraphicsPathItem(pitchLineItem);
                     pitchGuide->setData(0, quintptr(q));
                     pitchGuide->setPen(QPen(Qt::lightGray));
-                    pitchGuide->setBoundingRegionGranularity(1.0f);
                     pitchGuide->setFlag(QGraphicsItem::ItemStacksBehindParent);
                     pitchGuideItems.append(pitchGuide);
                 } else {

@@ -26,7 +26,9 @@ class MI_GUI_EXPORT MiGraphicsPathItem : public QGraphicsPathItem
 public:
     MiGraphicsPathItem(QGraphicsItem *parent = 0)
         :   QGraphicsPathItem(parent)
-    {}
+    {
+        setBoundingRegionGranularity(1.0f);
+    }
 
     virtual ~MiGraphicsPathItem()
     {}
