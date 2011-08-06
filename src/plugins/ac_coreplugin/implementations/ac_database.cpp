@@ -86,7 +86,8 @@ public:
 
         AcTrack *track = new AcTrack;
         score->tracks()->addChild(track);
-        for (int i = 0;  i < 126;  ++i) {
+//        for (int i = 0;  i < 126;  ++i) {
+            int i = 48;
             AcNote *note = new AcNote;
             track->notes()->addChild(note);
             AcPitchCurve *pitchCurve = note->pitchCurve();
@@ -96,14 +97,23 @@ public:
             pitchCurve->addChild(pitchPointA);
             pitchPointA->setX(i + 0.0f);
             pitchPointA->setY(60.0f);
-            AcPoint *pitchPointB = new AcPitchPoint;
+            AcPitchPoint *pitchPointB = new AcPitchPoint;
             pitchCurve->addChild(pitchPointB);
             pitchPointB->setX(i + 1.0f);
             pitchPointB->setY(72.0f);
-            AcPoint *pitchPointC = new AcPitchPoint;
+            AcPitchPoint *pitchPointC = new AcPitchPoint;
             pitchCurve->addChild(pitchPointC);
             pitchPointC->setX(i + 2.0f);
             pitchPointC->setY(67.0f);
+            AcPitchPoint *pitchPointD = new AcPitchPoint;
+            pitchCurve->addChild(pitchPointD);
+            pitchPointD->setCurveType(AcCurvePoint::BezierCurve);
+            pitchPointD->setX(i + 5.0f);
+            pitchPointD->setY(71.0f);
+            AcPitchPoint *pitchPointE = new AcPitchPoint;
+            pitchCurve->addChild(pitchPointE);
+            pitchPointE->setX(i + 7.0f);
+            pitchPointE->setY(72.0f);
             pitchCurve->removeChild(first);
             pitchCurve->removeChild(last);
 //            AcVolumeCurve *volumeCurve = note->volumeCurve();
@@ -117,7 +127,7 @@ public:
 //            AcPoint *volumePointC = volumeCurve->points().add();
 //            volumePointC->setX(1.0f);
 //            volumePointC->setY(0.0f);
-        }
+//        }
     }
 
     virtual ~AcDatabaseImplData()

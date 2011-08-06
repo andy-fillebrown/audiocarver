@@ -54,7 +54,7 @@ public:
     };
 
     enum CurveType {
-        LinearCurve,
+        NoCurve,
         BezierCurve
     };
 
