@@ -17,11 +17,11 @@
 
 #include "ac_graphicsnoteitem.h"
 #include <ac_curvepoint.h>
+#include <ac_guiutil.h>
 #include <ac_graphicspitchpointitem.h>
 #include <ac_graphicsvolumepointitem.h>
 #include <ac_note.h>
 #include <ac_pitchcurve.h>
-#include <ac_scene_util.h>
 #include <ac_volumecurve.h>
 #include <mi_graphicspathitem.h>
 #include <QBrush>

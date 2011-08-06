@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCENE_UTIL_H
-#define AC_SCENE_UTIL_H
+#ifndef AC_GUIUTIL_H
+#define AC_GUIUTIL_H
 
 #include <QList>
 
@@ -37,4 +37,4 @@ inline void updateItemsHelper(const QList<ObjectType*> &objects, QList<ItemType*
     }
 }
 
-#endif // AC_SCENE_UTIL_H
+#endif // AC_GUIUTIL_H

@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "ac_scenemanager.h"
+#include <ac_guiutil.h>
 #include <ac_graphicspitchlineitem.h>
 #include <ac_graphicstimelineitem.h>
 #include <ac_graphicstrackitem.h>
@@ -24,7 +25,6 @@
 #include <ac_gridlinelist.h>
 #include <ac_pitchlabelscene.h>
 #include <ac_pitchscene.h>
-#include <ac_scene_util.h>
 #include <ac_score.h>
 #include <ac_timelabelscene.h>
 #include <ac_track.h>

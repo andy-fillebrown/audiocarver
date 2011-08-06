@@ -16,10 +16,10 @@
 **************************************************************************/
 
 #include "ac_graphicstrackitem.h"
+#include <ac_guiutil.h>
 #include <ac_graphicsnoteitem.h>
 #include <ac_note.h>
 #include <ac_notelist.h>
-#include <ac_scene_util.h>
 #include <ac_track.h>
 #include <QGraphicsItemGroup>
 
