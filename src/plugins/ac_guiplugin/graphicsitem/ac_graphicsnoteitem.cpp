@@ -96,7 +96,7 @@ public:
             pitchLineItem->setPath(path);
             return;
         }
-        path.moveTo(pts[0]->x(), 127.0f - pts[0]->y());
+        path.moveTo(pts[0]->toPointF());
         AcCurvePoint *prevPt = pts[0];
         for (int i = 1;  i < pts.count();  ++i) {
             AcCurvePoint *pt = pts[i];
@@ -104,11 +104,11 @@ public:
             if (AcCurvePoint::NoCurve == curveType
                     || (AcCurvePoint::BezierCurve == curveType
                         && i == pts.count() - 1)) {
-                path.lineTo(pts[i]->x(), 127.0f - pts[i]->y());
+                path.lineTo(pts[i]->toPointF());
                 prevPt = pt;
             } else {
                 AcCurvePoint *nextPt = pts[i + 1];
-                path.quadTo(pt->x(), 127.0f - pt->y(), nextPt->x(), 127.0f - nextPt->y());
+                path.quadTo(pt->toPointF(), nextPt->toPointF());
                 ++i;
                 MiGraphicsPathItem *pitchGuide = 0;
                 if (pitchGuideItems.count() <= nextPitchGuideItemIndex) {
@@ -124,9 +124,9 @@ public:
                 }
                 ++nextPitchGuideItemIndex;
                 QPainterPath guidePath;
-                guidePath.moveTo(prevPt->x(), 127.0f - prevPt->y());
-                guidePath.lineTo(pt->x(), 127.0f - pt->y());
-                guidePath.lineTo(nextPt->x(), 127.0f - nextPt->y());
+                guidePath.moveTo(prevPt->toPointF());
+                guidePath.lineTo(pt->toPointF());
+                guidePath.lineTo(nextPt->toPointF());
                 pitchGuide->setPath(guidePath);
                 prevPt = nextPt;
             }
