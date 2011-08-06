@@ -16,3 +16,16 @@
 **************************************************************************/
 
 #include "ac_point.h"
+#include <QPointF>
+
+void AcPoint::set(const QPointF &pos)
+{
+    setX(pos.x());
+    setY(127.0f - pos.y());
+}
+
+QPointF AcPoint::toPointF() const
+{
+    Q_D(const AcPoint);
+    return QPointF(d->x, 127.0f - d->y);
+}

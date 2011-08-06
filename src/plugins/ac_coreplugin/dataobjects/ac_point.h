@@ -21,6 +21,8 @@
 #include <ac_core_global.h>
 #include <mi_scopedchange.h>
 
+class QPointF;
+
 class AcPointPrivate : public MiObjectPrivate
 {
 public:
@@ -100,6 +102,15 @@ public:
             return true;
         return false;
     }
+
+    void set(qreal x, qreal y)
+    {
+        setX(x);
+        setY(y);
+    }
+
+    void set(const QPointF &pos);
+    QPointF toPointF() const;
 
 protected:
     AcPoint(AcPointPrivate &dd)
