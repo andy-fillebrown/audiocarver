@@ -98,40 +98,38 @@ public:
         }
         path.moveTo(pts[0]->x(), 127.0f - pts[0]->y());
         AcCurvePoint *prevPt = pts[0];
-        AcCurvePoint::CurveType prevCurveType = AcCurvePoint::NoCurve;
         for (int i = 1;  i < pts.count();  ++i) {
             AcCurvePoint *pt = pts[i];
             AcCurvePoint::CurveType curveType = pt->curveType();
             if (AcCurvePoint::NoCurve == curveType
                     || (AcCurvePoint::BezierCurve == curveType
-                        && (AcCurvePoint::BezierCurve == prevCurveType
-                            || i == pts.count() - 1))) {
+                        && i == pts.count() - 1)) {
                 path.lineTo(pts[i]->x(), 127.0f - pts[i]->y());
-                prevCurveType = AcCurvePoint::NoCurve;
+                prevPt = pt;
             } else {
                 AcCurvePoint *nextPt = pts[i + 1];
                 path.quadTo(pt->x(), 127.0f - pt->y(), nextPt->x(), 127.0f - nextPt->y());
-                prevCurveType = AcCurvePoint::BezierCurve;
                 ++i;
                 MiGraphicsPathItem *pitchGuide = 0;
                 if (pitchGuideItems.count() <= nextPitchGuideItemIndex) {
                     pitchGuide = new MiGraphicsPathItem(pitchLineItem);
                     pitchGuide->setData(0, quintptr(q));
                     pitchGuide->setPen(QPen(Qt::lightGray));
+                    pitchGuide->setBoundingRegionGranularity(1.0f);
                     pitchGuide->setFlag(QGraphicsItem::ItemStacksBehindParent);
                     pitchGuideItems.append(pitchGuide);
                 } else {
                     pitchGuide = pitchGuideItems[nextPitchGuideItemIndex];
-                    ++nextPitchGuideItemIndex;
                     pitchGuide->show();
                 }
+                ++nextPitchGuideItemIndex;
                 QPainterPath guidePath;
                 guidePath.moveTo(prevPt->x(), 127.0f - prevPt->y());
                 guidePath.lineTo(pt->x(), 127.0f - pt->y());
                 guidePath.lineTo(nextPt->x(), 127.0f - nextPt->y());
                 pitchGuide->setPath(guidePath);
+                prevPt = nextPt;
             }
-            prevPt = pt;
         }
         pitchLineItem->setPath(path);
     }

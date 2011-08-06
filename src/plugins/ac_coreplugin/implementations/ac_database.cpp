@@ -95,14 +95,17 @@ public:
             AcPitchPoint *last = pitchCurve->children().last();
             AcPitchPoint *pitchPointA = new AcPitchPoint;
             pitchCurve->addChild(pitchPointA);
+            pitchPointA->setCurveType(AcCurvePoint::BezierCurve);
             pitchPointA->setX(i + 0.0f);
             pitchPointA->setY(60.0f);
             AcPitchPoint *pitchPointB = new AcPitchPoint;
             pitchCurve->addChild(pitchPointB);
+            pitchPointB->setCurveType(AcCurvePoint::BezierCurve);
             pitchPointB->setX(i + 1.0f);
             pitchPointB->setY(72.0f);
             AcPitchPoint *pitchPointC = new AcPitchPoint;
             pitchCurve->addChild(pitchPointC);
+            pitchPointC->setCurveType(AcCurvePoint::BezierCurve);
             pitchPointC->setX(i + 2.0f);
             pitchPointC->setY(67.0f);
             AcPitchPoint *pitchPointD = new AcPitchPoint;
@@ -112,6 +115,7 @@ public:
             pitchPointD->setY(71.0f);
             AcPitchPoint *pitchPointE = new AcPitchPoint;
             pitchCurve->addChild(pitchPointE);
+            pitchPointE->setCurveType(AcCurvePoint::BezierCurve);
             pitchPointE->setX(i + 7.0f);
             pitchPointE->setY(72.0f);
             pitchCurve->removeChild(first);
