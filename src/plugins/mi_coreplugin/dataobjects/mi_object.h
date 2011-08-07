@@ -50,8 +50,8 @@ public:
     {}
 
     const QObjectList &children() const;
-    void addChild(MiObject *child);
-    void removeChild(MiObject *child);
+    virtual void addChild(MiObject *child);
+    virtual void removeChild(MiObject *child);
 
     virtual void beginChange(int i);
     virtual void endChange(int i);
