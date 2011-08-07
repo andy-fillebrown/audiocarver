@@ -38,18 +38,22 @@ public:
     QList<AcGraphicsVolumePointItem*> volumePointItems;
     QList<MiGraphicsPathItem*> pitchGuideItems;
     QList<MiGraphicsPathItem*> volumeGuideItems;
+    int pitchGuideItemCount;
+    int volumeGuideItemCount;
+    bool lit;
 
     AcGraphicsNoteItemPrivate(AcGraphicsNoteItem *q, AcNote *note)
         :   q(q)
         ,   pitchLineItem(new MiGraphicsPathItem)
         ,   volumeLineItem(new MiGraphicsPathItem)
+        ,   pitchGuideItemCount(0)
+        ,   volumeGuideItemCount(0)
+        ,   lit(false)
     {
         dataObject = note;
         pitchLineItem->setData(0, quintptr(q));
         volumeLineItem->setData(0, quintptr(q));
-        QPen pen(Qt::red);
-        pen.setCosmetic(true);
-        pen.setWidth(2);
+        QPen pen = unlitPen();
         pitchLineItem->setPen(pen);
         volumeLineItem->setPen(pen);
     }
@@ -85,9 +89,9 @@ public:
 
     void updatePitchLineItem()
     {
-        foreach (QGraphicsItem *pitchGuideItem, pitchGuideItems)
-            pitchGuideItem->hide();
-        int nextPitchGuideItemIndex = 0;
+        foreach (QGraphicsItem *guideItem, pitchGuideItems)
+            guideItem->hide();
+        int nextGuideItemIndex = 0;
         QPainterPath path;
         const QList<AcCurvePoint*> &pts = pitchCurve()->children();
         if (pts.count() == 0) {
@@ -108,26 +112,25 @@ public:
                 AcCurvePoint *nextPt = pts[i + 1];
                 path.quadTo(pt->toPointF(), nextPt->toPointF());
                 ++i;
-                MiGraphicsPathItem *pitchGuide = 0;
-                if (pitchGuideItems.count() <= nextPitchGuideItemIndex) {
-                    pitchGuide = new MiGraphicsPathItem(pitchLineItem);
-                    pitchGuide->setData(0, quintptr(q));
-                    pitchGuide->setPen(QPen(Qt::lightGray));
-                    pitchGuide->setFlag(QGraphicsItem::ItemStacksBehindParent);
-                    pitchGuideItems.append(pitchGuide);
+                MiGraphicsPathItem *guide = 0;
+                if (pitchGuideItems.count() <= nextGuideItemIndex) {
+                    guide = createGuideItem(pitchLineItem);
+                    pitchGuideItems.append(guide);
                 } else {
-                    pitchGuide = pitchGuideItems[nextPitchGuideItemIndex];
-                    pitchGuide->show();
+                    guide = pitchGuideItems[nextGuideItemIndex];
+                    if (lit)
+                        guide->show();
                 }
-                ++nextPitchGuideItemIndex;
+                ++nextGuideItemIndex;
                 QPainterPath guidePath;
                 guidePath.moveTo(prevPt->toPointF());
                 guidePath.lineTo(pt->toPointF());
                 guidePath.lineTo(nextPt->toPointF());
-                pitchGuide->setPath(guidePath);
+                guide->setPath(guidePath);
                 prevPt = nextPt;
             }
         }
+        pitchGuideItemCount = nextGuideItemIndex;
         pitchLineItem->setPath(path);
     }
 
@@ -158,6 +161,34 @@ public:
         qDeleteAll(pitchPointItems);
         pitchPointItems.clear();
     }
+
+    QPen unlitPen() const
+    {
+        QPen pen(Qt::red);
+        pen.setCosmetic(true);
+        pen.setWidth(2);
+        return pen;
+    }
+
+    QPen litPen() const
+    {
+        QPen pen(Qt::red);
+        pen.setCosmetic(true);
+        pen.setWidth(4);
+        return pen;
+    }
+
+private:
+    MiGraphicsPathItem *createGuideItem(QGraphicsItem *parent)
+    {
+        MiGraphicsPathItem *item = new MiGraphicsPathItem(parent);
+        item->setData(0, quintptr(q));
+        item->setPen(QPen(QBrush(Qt::lightGray), 0.0f, Qt::DotLine));
+        item->setFlag(QGraphicsItem::ItemStacksBehindParent);
+        if (!lit)
+            item->hide();
+        return item;
+    }
 };
 
 AcGraphicsNoteItem::AcGraphicsNoteItem(AcNote *note, QObject *parent)
@@ -185,12 +216,20 @@ void AcGraphicsNoteItem::highlight()
 {
     Q_D(AcGraphicsNoteItem);
     d->showPointItems();
+    d->pitchLineItem->setPen(d->litPen());
+    for (int i = 0;  i < d->pitchGuideItemCount;  ++i)
+        d->pitchGuideItems[i]->show();
+    d->lit = true;
 }
 
 void AcGraphicsNoteItem::unhighlight()
 {
     Q_D(AcGraphicsNoteItem);
     d->hidePointItems();
+    d->pitchLineItem->setPen(d->unlitPen());
+    for (int i = 0;  i < d->pitchGuideItemCount;  ++i)
+        d->pitchGuideItems[i]->hide();
+    d->lit = false;
 }
 
 void AcGraphicsNoteItem::updateDataObject(int i)
