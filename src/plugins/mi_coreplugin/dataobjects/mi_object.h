@@ -29,9 +29,9 @@ protected: \
     static const QMetaObject staticMetaObject; \
     Q_OBJECT_GETSTATICMETAOBJECT \
     virtual const QMetaObject *metaObject() const; \
-    virtual void *qt_metacast(const char *); \
+    virtual void *qt_metacast(const char*); \
     QT_TR_FUNCTIONS \
-    virtual int qt_metacall(QMetaObject::Call, int, void **); \
+    virtual int qt_metacall(QMetaObject::Call, int, void**); \
 private:
 
 class MiListObject;
