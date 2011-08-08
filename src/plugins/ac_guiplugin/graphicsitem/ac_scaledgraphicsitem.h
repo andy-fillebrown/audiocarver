@@ -39,14 +39,14 @@ class AcScaledGraphicsItem : public AcGraphicsItem
     Q_OBJECT
 
 public:
-    virtual ~AcScaledGraphicsItem()
+    ~AcScaledGraphicsItem()
     {}
 
 protected:
     AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent = 0);
 
 protected slots:
-    virtual void updateViewSettings(int i) = 0;
+    virtual void updateViewSettings(int i, const QVariant &value) = 0;
 
 private:
     Q_DISABLE_COPY(AcScaledGraphicsItem)

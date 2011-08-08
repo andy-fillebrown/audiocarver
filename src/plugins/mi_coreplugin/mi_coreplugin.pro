@@ -23,7 +23,9 @@ HEADERS += \
     tools/mi_scopedchange.h \
     \
     mi_core_global.h \
+    mi_coreenums.h \
     mi_coreplugin.h \
+    mi_propertyindexes.h \
 
 SOURCES += \
     dataobjects/settings/mi_fontsettings.cpp \

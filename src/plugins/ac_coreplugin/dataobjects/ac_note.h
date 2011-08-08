@@ -27,7 +27,7 @@ public:
         :   AcScoreObjectPrivate(q)
     {}
 
-    virtual ~AcNotePrivate()
+    ~AcNotePrivate()
     {}
 };
 
@@ -37,10 +37,10 @@ class AC_CORE_EXPORT AcNote : public AcScoreObject
 
 public:
     AcNote()
-    :   AcScoreObject(*(new AcNotePrivate(this)))
+        :   AcScoreObject(*(new AcNotePrivate(this)))
     {}
 
-    virtual ~AcNote()
+    ~AcNote()
     {}
 
     bool isLessThan(const AcNote *other) const;

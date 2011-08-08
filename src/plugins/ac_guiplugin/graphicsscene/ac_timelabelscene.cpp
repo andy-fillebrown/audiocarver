@@ -73,13 +73,13 @@ AcTimeLabelScene *AcTimeLabelScene::instance()
     return ::instance;
 }
 
-void AcTimeLabelScene::updateViewSettings(int i)
+void AcTimeLabelScene::updateViewSettings(int i, const QVariant &value)
 {
     if (AcViewSettings::TimeScaleIndex == i)
         d->updateSceneRect();
 }
 
-void AcTimeLabelScene::updateScore(int i)
+void AcTimeLabelScene::updateScore(int i, const QVariant &value)
 {
     if (AcScore::LengthIndex == i)
         d->updateSceneRect();

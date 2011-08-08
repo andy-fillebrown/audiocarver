@@ -32,13 +32,13 @@ class AC_CORE_EXPORT AcTrackList : public MiListObject
 public:
     explicit AcTrackList(int propertyIndex = 0);
 
-    virtual ~AcTrackList()
+    ~AcTrackList()
     {}
 
     const QList<AcTrack*> &children() const;
-    virtual void addChild(MiObject *child);
+    void addChild(MiObject *child);
 
-    virtual void removeChild(MiObject *child)
+    void removeChild(MiObject *child)
     {
         if (QObject::children().count() == 1)
             return;
@@ -49,5 +49,7 @@ private:
     Q_DISABLE_COPY(AcTrackList)
     Q_DECLARE_PRIVATE(AcTrackList)
 };
+
+Q_DECLARE_METATYPE(AcTrackList*)
 
 #endif // AC_TRACKLIST_H

@@ -75,7 +75,7 @@ QRectF AcGraphicsGridLineItem::labelRect() const
     return QRectF(d->labelItem->pos(), d->labelItem->boundingRect().size());
 }
 
-void AcGraphicsGridLineItem::updateFontSettings(int i)
+void AcGraphicsGridLineItem::updateFontSettings(int i, const QVariant &value)
 {
     Q_UNUSED(i);
     Q_D(AcGraphicsGridLineItem);
@@ -87,12 +87,12 @@ AcGraphicsGridLineItem::AcGraphicsGridLineItem(AcGraphicsGridLineItemPrivate &dd
 {
     Q_D(AcGraphicsGridLineItem);
     const AcScore *score = d->score();
-    Q_CONNECT(score->fontSettings(), SIGNAL(changed(int)), this, SLOT(updateFontSettings(int)));
-    Q_CONNECT(score->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
+    Q_CONNECT(score->fontSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateFontSettings(int,QVariant)));
+    Q_CONNECT(score->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
     d->update();
 }
 
-void AcGraphicsGridLineItem::updateDataObject(int i)
+void AcGraphicsGridLineItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsGridLineItem);
     switch (i) {

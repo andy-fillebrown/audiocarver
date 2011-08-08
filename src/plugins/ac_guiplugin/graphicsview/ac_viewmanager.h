@@ -55,7 +55,7 @@ public:
     void updateViews();
 
 private slots:
-    void updateViewSettings(int i);
+    void updateViewSettings(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcViewManager)

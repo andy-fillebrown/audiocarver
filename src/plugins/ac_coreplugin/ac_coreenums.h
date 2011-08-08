@@ -15,35 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHPOINT_H
-#define AC_PITCHPOINT_H
+#ifndef AC_COREENUMS_H
+#define AC_COREENUMS_H
 
-#include <ac_curvepoint.h>
+namespace Ac {
 
-#define AcPitchPointPrivate AcCurvePointPrivate
-
-class AcPitchPoint : public AcCurvePoint
-{
-    Q_OBJECT
-
-public:
-    AcPitchPoint()
-        :   AcCurvePoint(*(new AcPitchPointPrivate(this)))
-    {}
-
-    ~AcPitchPoint()
-    {}
-
-    void setY(qreal y)
-    {
-        if (127.0f < y)
-            y = 127.0f;
-        AcPoint::setY(y);
-    }
-
-private:
-    Q_DISABLE_COPY(AcPitchPoint)
-    Q_DECLARE_FRIENDS(AcPitchPoint)
+enum CurveType {
+    NoCurve,
+    BezierCurve
 };
 
-#endif // AC_PITCHPOINT_H
+enum StretchType {
+    StartStretch,
+    MiddleStretch,
+    EndStretch,
+    NoStretch
+};
+
+} // namespace Ac
+
+#endif // AC_COREENUMS_H

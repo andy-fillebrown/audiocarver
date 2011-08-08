@@ -27,7 +27,7 @@ class MI_GUI_EXPORT IEditor : public QObject
 
 public:
     IEditor();
-    virtual ~IEditor() {}
+    ~IEditor() {}
 
     static IEditor *instance();
 

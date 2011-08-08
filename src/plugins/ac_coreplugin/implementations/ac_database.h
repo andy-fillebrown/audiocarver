@@ -28,7 +28,7 @@ class AcDatabaseImpl : public IDatabase
 {
 public:
     AcDatabaseImpl();
-    virtual ~AcDatabaseImpl();
+    ~AcDatabaseImpl();
 
     virtual const QString &fileExtension() const;
     virtual const QString &fileFilter() const;

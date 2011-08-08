@@ -28,10 +28,10 @@ class AcCorePlugin : public ExtensionSystem::IPlugin
 
 public:
     AcCorePlugin() {}
-    virtual ~AcCorePlugin() {}
+    ~AcCorePlugin() {}
 
-    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    virtual void extensionsInitialized() {}
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized() {}
 
 private:
     Q_DISABLE_COPY(AcCorePlugin)

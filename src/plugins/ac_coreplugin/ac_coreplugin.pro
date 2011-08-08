@@ -33,7 +33,9 @@ HEADERS += \
     implementations/ac_database.h \
     \
     ac_core_global.h \
+    ac_coreenums.h \
     ac_coreplugin.h \
+    ac_propertyindexes.h \
 
 SOURCES += \
     dataobjects/gridlines/ac_gridline.cpp \

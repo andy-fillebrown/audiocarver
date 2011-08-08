@@ -32,7 +32,7 @@ public:
         ,   pointSize(8)
     {}
 
-    virtual ~MiFontSettingsPrivate()
+    ~MiFontSettingsPrivate()
     {}
 };
 
@@ -53,7 +53,7 @@ public:
         :   MiObject(*(new MiFontSettingsPrivate(this)))
     {}
 
-    virtual ~MiFontSettings()
+    ~MiFontSettings()
     {}
 
     const QString &family() const

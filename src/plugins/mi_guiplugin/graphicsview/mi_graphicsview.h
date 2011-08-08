@@ -30,11 +30,11 @@ public:
         :   QGraphicsView(scene, parent)
     {}
 
-    virtual ~MiGraphicsView()
+    ~MiGraphicsView()
     {}
 
 protected:
-    virtual void wheelEvent(QWheelEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 private:
     Q_DISABLE_COPY(MiGraphicsView)

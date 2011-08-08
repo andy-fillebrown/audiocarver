@@ -28,12 +28,12 @@ class AcPitchLabelScene : public AcLabelScene
 
 public:
     AcPitchLabelScene(QObject *parent = 0);
-    virtual ~AcPitchLabelScene();
+    ~AcPitchLabelScene();
 
     static AcPitchLabelScene *instance();
 
 protected:
-    virtual void updateViewSettings(int i);
+    void updateViewSettings(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcPitchLabelScene)

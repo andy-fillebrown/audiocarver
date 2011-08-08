@@ -63,7 +63,7 @@ AcViewManager::AcViewManager(QWidget *widget)
     :   QObject(widget)
     ,   d(new AcViewManagerPrivate(this, widget))
 {
-    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
+    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
 }
 
 AcViewManager::~AcViewManager()
@@ -164,7 +164,7 @@ void AcViewManager::updateViews()
     d->updateViewCenters();
 }
 
-void AcViewManager::updateViewSettings(int i)
+void AcViewManager::updateViewSettings(int i, const QVariant &value)
 {
     switch (i) {
     case AcViewSettings::TimePositionIndex:

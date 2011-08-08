@@ -32,15 +32,15 @@ class AcGraphicsNoteItem : public AcGraphicsItem
 public:
     AcGraphicsNoteItem(AcNote *note = 0, QObject *parent = 0);
 
-    virtual ~AcGraphicsNoteItem()
+    ~AcGraphicsNoteItem()
     {}
 
-    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
+    QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void highlight();
-    virtual void unhighlight();
-    virtual void updateDataObject(int i);
+    void highlight();
+    void unhighlight();
+    void updateDataObject(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcGraphicsNoteItem)

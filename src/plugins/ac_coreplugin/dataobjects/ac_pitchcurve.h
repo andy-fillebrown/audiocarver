@@ -32,11 +32,11 @@ class AcPitchCurve : public AcCurve
 public:
     explicit AcPitchCurve(int propertyIndex = 0);
 
-    virtual ~AcPitchCurve()
+    ~AcPitchCurve()
     {}
 
     const QList<AcPitchPoint*> &children() const;
-    virtual void addChild(MiObject *child);
+    void addChild(MiObject *child);
 
 private:
     Q_DISABLE_COPY(AcPitchCurve)

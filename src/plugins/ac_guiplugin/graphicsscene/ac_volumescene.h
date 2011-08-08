@@ -28,12 +28,12 @@ class AcVolumeScene : public AcGraphicsScene
 
 public:
     AcVolumeScene(QObject *parent = 0);
-    virtual ~AcVolumeScene();
+    ~AcVolumeScene();
 
     static AcVolumeScene *instance();
 
 protected slots:
-    virtual void updateScore(int i);
+    virtual void updateScore(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcVolumeScene)

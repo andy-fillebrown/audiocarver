@@ -28,7 +28,7 @@ class AcGraphicsScene : public MiGraphicsScene
 
 public:
     AcGraphicsScene(QObject *parent = 0);
-    virtual ~AcGraphicsScene();
+    ~AcGraphicsScene();
 
 private:
     Q_DISABLE_COPY(AcGraphicsScene)

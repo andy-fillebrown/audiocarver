@@ -28,11 +28,11 @@ class MiMainWindowImpl : public Core::IMainWindow
 
 public:
     MiMainWindowImpl() {}
-    virtual ~MiMainWindowImpl() {}
+    ~MiMainWindowImpl() {}
 
-    virtual void initMenuBarGroups(QStringList &groups) const;
-    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    virtual void initActions();
+    void initMenuBarGroups(QStringList &groups) const;
+    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    void initActions();
 
 private slots:
     void newFile();

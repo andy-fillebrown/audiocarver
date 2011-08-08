@@ -46,7 +46,7 @@ AcPitchScene::AcPitchScene(QObject *parent)
 {
     ::instance = this;
     d->init();
-    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
+    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int,QVariant)), this, SLOT(updateScore(int,QVariant)));
 }
 
 AcPitchScene::~AcPitchScene()
@@ -59,7 +59,7 @@ AcPitchScene *AcPitchScene::instance()
     return ::instance;
 }
 
-void AcPitchScene::updateScore(int i)
+void AcPitchScene::updateScore(int i, const QVariant &value)
 {
     if (AcScore::LengthIndex == i)
         d->updateSceneRect();

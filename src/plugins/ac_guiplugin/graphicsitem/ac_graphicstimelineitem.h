@@ -28,13 +28,13 @@ class AcGraphicsTimeLineItem : public AcGraphicsGridLineItem
 
 public:
     AcGraphicsTimeLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
-    virtual ~AcGraphicsTimeLineItem();
+    ~AcGraphicsTimeLineItem();
 
-    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
+    QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettings(int i);
-    virtual void updateDataObject(int i);
+    void updateViewSettings(int i, const QVariant &value);
+    void updateDataObject(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcGraphicsTimeLineItem)

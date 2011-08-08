@@ -47,19 +47,19 @@ class AcGraphicsGridLineItem : public AcGraphicsItem
     Q_OBJECT
 
 public:
-    virtual ~AcGraphicsGridLineItem()
+    ~AcGraphicsGridLineItem()
     {}
 
     int priority() const;
     QRectF labelRect() const;
 
 protected slots:
-    virtual void updateFontSettings(int i);
-    virtual void updateViewSettings(int i) = 0;
+    virtual void updateFontSettings(int i, const QVariant &value);
+    virtual void updateViewSettings(int i, const QVariant &value) = 0;
 
 protected:
     AcGraphicsGridLineItem(AcGraphicsGridLineItemPrivate &dd, QObject *parent = 0);
-    virtual void updateDataObject(int i);
+    void updateDataObject(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcGraphicsGridLineItem)

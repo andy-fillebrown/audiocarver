@@ -30,7 +30,7 @@ public:
     :   QGraphicsScene(parent)
     {}
 
-    virtual ~MiGraphicsScene()
+    ~MiGraphicsScene()
     {}
 
 private:

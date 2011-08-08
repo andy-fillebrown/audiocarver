@@ -16,3 +16,27 @@
 **************************************************************************/
 
 #include "mi_listobject.h"
+#include <QVariant>
+
+void MiListObjectPrivate::beginChange(int i)
+{
+    Q_UNUSED(i);
+    Q_Q(MiListObject);
+    MiObject *parent = q->parent();
+    if (parent)
+        q_ptr->emit aboutToChange(-1, parent->propertyValue(propertyIndex));
+    else
+        q_ptr->emit aboutToChange(-1, QVariant::fromValue(q));
+}
+
+void MiListObjectPrivate::endChange(int i)
+{
+    Q_UNUSED(i);
+    Q_Q(MiListObject);
+    MiObject *parent = q->parent();
+    if (parent) {
+        q_ptr->emit changed(-1, parent->propertyValue(propertyIndex));
+        parent->d_ptr->childChanged(propertyIndex);
+    } else
+        q_ptr->emit changed(-1, QVariant::fromValue(q));
+}

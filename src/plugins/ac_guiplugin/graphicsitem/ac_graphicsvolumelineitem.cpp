@@ -82,7 +82,7 @@ QGraphicsItem *AcGraphicsVolumeLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsVolumeLineItem::updateViewSettings(int i)
+void AcGraphicsVolumeLineItem::updateViewSettings(int i, const QVariant &value)
 {
     if (AcViewSettings::VolumeScaleIndex == i) {
         Q_D(AcGraphicsVolumeLineItem);
@@ -90,16 +90,16 @@ void AcGraphicsVolumeLineItem::updateViewSettings(int i)
     }
 }
 
-void AcGraphicsVolumeLineItem::updateDataObject(int i)
+void AcGraphicsVolumeLineItem::updateDataObject(int i, const QVariant &value)
 {
-    AcGraphicsGridLineItem::updateDataObject(i);
+    AcGraphicsGridLineItem::updateDataObject(i, value);
     if (AcGridLine::LocationIndex == i) {
         Q_D(AcGraphicsVolumeLineItem);
         d->update();
     }
 }
 
-void AcGraphicsVolumeLineItem::updateScore(int i)
+void AcGraphicsVolumeLineItem::updateScore(int i, const QVariant &value)
 {
     if (AcScore::LengthIndex == i) {
         Q_D(AcGraphicsVolumeLineItem);

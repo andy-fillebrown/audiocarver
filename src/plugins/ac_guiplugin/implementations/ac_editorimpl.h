@@ -26,7 +26,7 @@ class AcEditorImpl : public IEditor
 {
 public:
     AcEditorImpl() {}
-    virtual ~AcEditorImpl() {}
+    ~AcEditorImpl() {}
 
     void undo();
     void redo();

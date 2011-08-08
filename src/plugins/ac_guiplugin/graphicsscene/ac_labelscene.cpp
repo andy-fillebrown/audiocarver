@@ -33,7 +33,7 @@ AcLabelScene::AcLabelScene(QObject *parent)
     :   AcGraphicsScene(parent)
     ,   d(new AcLabelScenePrivate)
 {
-    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
+    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
 }
 
 AcLabelScene::~AcLabelScene()

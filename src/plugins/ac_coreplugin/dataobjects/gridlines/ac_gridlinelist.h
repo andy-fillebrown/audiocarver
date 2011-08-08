@@ -36,13 +36,13 @@ public:
         :   MiSortedListObject(*(new AcGridLineListPrivate(this, propertyIndex)))
     {}
 
-    virtual ~AcGridLineList()
+    ~AcGridLineList()
     {}
 
     const QList<AcGridLine*> &children() const;
-    virtual bool isSorted() const;
-    virtual void sort();
-    virtual void addChild(MiObject *child);
+    bool isSorted() const;
+    void sort();
+    void addChild(MiObject *child);
 
 private:
     Q_DISABLE_COPY(AcGridLineList)

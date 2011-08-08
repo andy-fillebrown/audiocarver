@@ -28,5 +28,5 @@ AcScaledGraphicsItem::AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObj
     :   AcGraphicsItem(dd, parent)
 {
     Q_D(AcScaledGraphicsItem);
-    Q_CONNECT(d->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
+    Q_CONNECT(d->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
 }

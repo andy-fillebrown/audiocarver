@@ -35,7 +35,7 @@ public:
         ,   previousX(x)
     {}
 
-    virtual ~AcCurvePointPrivate()
+    ~AcCurvePointPrivate()
     {}
 };
 
@@ -69,7 +69,7 @@ public:
         :   AcPoint(*(new AcCurvePointPrivate(this)))
     {}
 
-    virtual ~AcCurvePoint()
+    ~AcCurvePoint()
     {}
 
     CurveType curveType() const

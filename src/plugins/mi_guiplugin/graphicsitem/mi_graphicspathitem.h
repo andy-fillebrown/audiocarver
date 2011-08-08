@@ -30,10 +30,10 @@ public:
         setBoundingRegionGranularity(1.0f);
     }
 
-    virtual ~MiGraphicsPathItem()
+    ~MiGraphicsPathItem()
     {}
 
-    virtual QPainterPath shape() const
+    QPainterPath shape() const
     {
         return path();
     }

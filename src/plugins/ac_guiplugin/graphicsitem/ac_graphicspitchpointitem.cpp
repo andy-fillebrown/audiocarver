@@ -58,7 +58,7 @@ QGraphicsItem *AcGraphicsPitchPointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsPitchPointItem::updateViewSettings(int i)
+void AcGraphicsPitchPointItem::updateViewSettings(int i, const QVariant &value)
 {
     Q_D(AcGraphicsPitchPointItem);
     switch (i) {
@@ -71,7 +71,7 @@ void AcGraphicsPitchPointItem::updateViewSettings(int i)
     }
 }
 
-void AcGraphicsPitchPointItem::updateDataObject(int i)
+void AcGraphicsPitchPointItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsPitchPointItem);
     switch (i) {

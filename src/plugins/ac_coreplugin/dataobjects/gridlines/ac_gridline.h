@@ -37,7 +37,7 @@ public:
         ,   color(0xc0c0c0)
     {}
 
-    virtual ~AcGridLinePrivate()
+    ~AcGridLinePrivate()
     {}
 };
 
@@ -62,7 +62,7 @@ public:
         :   MiObject(*(new AcGridLinePrivate(this)))
     {}
 
-    virtual ~AcGridLine()
+    ~AcGridLine()
     {}
 
     qreal location() const

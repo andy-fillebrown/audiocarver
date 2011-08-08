@@ -32,13 +32,13 @@ class AcGraphicsTrackItem : public AcGraphicsItem
 public:
     AcGraphicsTrackItem(AcTrack *track = 0, QObject *parent = 0);
 
-    virtual ~AcGraphicsTrackItem()
+    ~AcGraphicsTrackItem()
     {}
 
     QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateDataObject(int i);
+    void updateDataObject(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcGraphicsTrackItem)

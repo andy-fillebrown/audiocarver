@@ -30,13 +30,13 @@ class AcMainWindowImpl : public Core::IMainWindow
 
 public:
     AcMainWindowImpl();
-    virtual ~AcMainWindowImpl();
+    ~AcMainWindowImpl();
 
     static AcMainWindowImpl *instance();
 
-    virtual void initMenuBarGroups(QStringList &groups) const;
-    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    virtual void initActions();
+    void initMenuBarGroups(QStringList &groups) const;
+    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    void initActions();
 
 private slots:
     void aboutAudioCarver();

@@ -19,6 +19,7 @@
 #define MI_OBJECT_H
 
 #include <mi_core_global.h>
+#include <aggregate.h>
 #include <QObject>
 
 // Redefine Q_OBJECT to declare meta-object members as protected, not public.
@@ -55,7 +56,11 @@ public:
 
     virtual void beginChange(int i);
     virtual void endChange(int i);
-    virtual void notifyParentOfChange(int i);
+
+    virtual void childChanged(int i)
+    {
+        endChange(i);
+    }
 };
 
 class MI_CORE_EXPORT MiObject : protected QObject
@@ -68,7 +73,7 @@ public:
         PropertyCount
     };
 
-    virtual ~MiObject()
+    ~MiObject()
     {
         delete d_ptr;
     }
@@ -94,11 +99,6 @@ public:
     QVariant propertyValue(int i) const;
     void setPropertyValue(int i, const QVariant &value);
 
-    template <typename T> T *cast()
-    {
-        return qobject_cast<T*>(this);
-    }
-
     MiObject *parent() const;
 
     static bool connect(const MiObject *sender, const char *signal, const QObject *receiver, const char *member, Qt::ConnectionType type = Qt::UniqueConnection)
@@ -111,9 +111,29 @@ public:
         return QObject::disconnect(receiver, member);
     }
 
+    template <typename T> T *cast()
+    {
+        return qobject_cast<T*>(this);
+    }
+
+    template <typename T> T *query() const
+    {
+        return Aggregation::query<T>(this);
+    }
+
+    void addComponent(QObject *component)
+    {
+        Aggregation::Aggregate *agg = Aggregation::query<Aggregation::Aggregate>(this);
+        if (!agg) {
+            agg = new Aggregation::Aggregate;
+            agg->add(this);
+        }
+        agg->add(component);
+    }
+
 signals:
-    void aboutToChange(int i);
-    void changed(int i);
+    void aboutToChange(int i, const QVariant &value);
+    void changed(int i, const QVariant &value);
 
 protected:
     MiObject(MiObjectPrivate &dd)
@@ -127,6 +147,7 @@ private:
     Q_DECLARE_PRIVATE(MiObject)
     Q_DECLARE_FRIENDS(MiObject)
 
+    friend class MiListObject;
     friend class MiListObjectPrivate;
 };
 
@@ -147,17 +168,6 @@ inline void MiObjectPrivate::removeChild(MiObject *child)
     Q_ASSERT(child);
     Q_ASSERT(MiObjectPrivate::children().contains(child));
     child->setParent(0);
-}
-
-inline void MiObjectPrivate::beginChange(int i)
-{
-    q_ptr->emit aboutToChange(i);
-}
-
-inline void MiObjectPrivate::endChange(int i)
-{
-    q_ptr->emit changed(i);
-    notifyParentOfChange(i);
 }
 
 #endif // MI_OBJECT_H

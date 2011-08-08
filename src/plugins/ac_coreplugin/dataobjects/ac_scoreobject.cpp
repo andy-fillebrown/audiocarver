@@ -17,14 +17,14 @@
 
 #include "ac_scoreobject.h"
 #include <ac_pitchcurve.h>
+#include <ac_propertyindexes.h>
 #include <ac_volumecurve.h>
-
 
 AcScoreObjectPrivate::AcScoreObjectPrivate(MiObject *q)
     :   MiObjectPrivate(q)
     ,   volume(0.9f)
-    ,   pitchCurve(new AcPitchCurve(AcScoreObject::PitchCurveIndex))
-    ,   volumeCurve(new AcVolumeCurve(AcScoreObject::VolumeCurveIndex))
+    ,   pitchCurve(new AcPitchCurve(Properties::ScoreObject::PitchCurve))
+    ,   volumeCurve(new AcVolumeCurve(Properties::ScoreObject::VolumeCurve))
 {}
 
 void AcScoreObjectPrivate::init()

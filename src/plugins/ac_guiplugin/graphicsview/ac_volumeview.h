@@ -30,10 +30,10 @@ public:
     AcVolumeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcVolumeView();
 
-    virtual void updateTransform();
+    void updateTransform();
 
 protected:
-    virtual void updateViewSettings() const;
+    void updateViewSettings() const;
 
 private:
     Q_DISABLE_COPY(AcVolumeView)

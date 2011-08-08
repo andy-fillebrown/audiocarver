@@ -68,7 +68,7 @@ const QGraphicsScene *AcGraphicsItemPrivate::volumeLabelScene() const
 void AcGraphicsItemPrivate::connectDataObject()
 {
     if (dataObject)
-        Q_CONNECT(dataObject, SIGNAL(changed(int)), q, SLOT(updateDataObject(int)));
+        Q_CONNECT(dataObject, SIGNAL(changed(int,QVariant)), q, SLOT(updateDataObject(int,QVariant)));
 }
 
 AcGraphicsItem::~AcGraphicsItem()
@@ -86,7 +86,7 @@ void AcGraphicsItem::setDataObject(MiObject *object)
     if (d->dataObject) {
         d->connectDataObject();
         for (int i = 0;  i < d->dataObject->propertyCount();  ++i)
-            updateDataObject(i);
+            updateDataObject(i, d->dataObject->propertyValue(i));
     } else
         hide();
 }

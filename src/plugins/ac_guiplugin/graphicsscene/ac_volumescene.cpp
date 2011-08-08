@@ -49,7 +49,7 @@ AcVolumeScene::AcVolumeScene(QObject *parent)
 {
     ::instance = this;
     d->init();
-    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
+    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int,QVariant)), this, SLOT(updateScore(int,QVariant)));
 }
 
 AcVolumeScene::~AcVolumeScene()
@@ -62,7 +62,7 @@ AcVolumeScene *AcVolumeScene::instance()
     return ::instance;
 }
 
-void AcVolumeScene::updateScore(int i)
+void AcVolumeScene::updateScore(int i, const QVariant &valuei)
 {
     if (AcScore::LengthIndex == i)
         d->updateSceneRect();

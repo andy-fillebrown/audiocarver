@@ -30,13 +30,13 @@ class AC_CORE_EXPORT AcCurve : public MiSortedListObject
 public:
     typedef MiSortedListObject::PropertyIndex PropertyIndex;
 
-    virtual ~AcCurve()
+    ~AcCurve()
     {}
 
     qreal duration() const;
 
-    virtual bool isSorted() const;
-    virtual void sort();
+    bool isSorted() const;
+    void sort();
 
     const QList<AcCurvePoint*> &children() const;
 
@@ -68,11 +68,11 @@ public:
         :   MiSortedListObjectPrivate(q, propertyIndex)
     {}
 
-    virtual ~AcCurvePrivate()
+    ~AcCurvePrivate()
     {}
 
-    virtual void endChange(int i);
-    virtual bool isSortProperty(int i) const;
+    void childChanged(int i);
+    bool isSortProperty(int i) const;
 };
 
 #endif // AC_CURVE_H

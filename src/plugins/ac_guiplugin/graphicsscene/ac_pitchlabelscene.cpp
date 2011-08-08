@@ -69,7 +69,7 @@ AcPitchLabelScene *AcPitchLabelScene::instance()
     return ::instance;
 }
 
-void AcPitchLabelScene::updateViewSettings(int i)
+void AcPitchLabelScene::updateViewSettings(int i, const QVariant &value)
 {
     if (AcViewSettings::PitchScaleIndex == i)
         d->updateSceneRect();

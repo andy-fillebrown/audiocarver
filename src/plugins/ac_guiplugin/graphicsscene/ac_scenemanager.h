@@ -50,9 +50,9 @@ public:
     const QFontMetrics &fontMetrics() const;
 
 private slots:
-    void updateScore(int i);
-    void updateFontSettings(int i);
-    void updateViewSettings(int i);
+    void updateScore(int i, const QVariant &value);
+    void updateFontSettings(int i, const QVariant &value);
+    void updateViewSettings(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcSceneManager)

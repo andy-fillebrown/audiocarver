@@ -31,7 +31,7 @@ public:
     QGraphicsRectItem *pointItem;
 
     AcGraphicsPointItemPrivate(AcGraphicsPointItem *q, AcPoint *point);
-    virtual ~AcGraphicsPointItemPrivate();
+    ~AcGraphicsPointItemPrivate();
 };
 
 class AcGraphicsPointItem : public AcScaledGraphicsItem
@@ -40,7 +40,7 @@ class AcGraphicsPointItem : public AcScaledGraphicsItem
 
 public:
     AcGraphicsPointItem(AcPoint *point = 0, QObject *parent = 0);
-    virtual ~AcGraphicsPointItem();
+    ~AcGraphicsPointItem();
 
     AcPoint *point();
 

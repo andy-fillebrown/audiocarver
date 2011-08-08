@@ -32,11 +32,11 @@ class AcVolumeCurve : public AcCurve
 public:
     explicit AcVolumeCurve(int propertyIndex = 0);
 
-    virtual ~AcVolumeCurve()
+    ~AcVolumeCurve()
     {}
 
     const QList<AcVolumePoint*> &children() const;
-    virtual void addChild(MiObject *child);
+    void addChild(MiObject *child);
 
 private:
     Q_DISABLE_COPY(AcVolumeCurve)

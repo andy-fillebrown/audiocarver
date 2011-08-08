@@ -31,14 +31,14 @@ class AcGraphicsPitchPointItem : public AcGraphicsPointItem
 public:
     AcGraphicsPitchPointItem(AcPoint *point = 0, QObject *parent = 0);
 
-    virtual ~AcGraphicsPitchPointItem()
+    ~AcGraphicsPitchPointItem()
     {}
 
-    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
+    QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    virtual void updateViewSettings(int i);
-    virtual void updateDataObject(int i);
+    void updateViewSettings(int i, const QVariant &value);
+    void updateDataObject(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcGraphicsPitchPointItem)

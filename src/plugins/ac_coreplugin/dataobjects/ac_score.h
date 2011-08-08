@@ -42,7 +42,7 @@ public:
 
     AcScorePrivate(AcScoreObject *q);
 
-    virtual ~AcScorePrivate()
+    ~AcScorePrivate()
     {}
 
     void init();
@@ -71,7 +71,7 @@ public:
 
     AcScore();
 
-    virtual ~AcScore()
+    ~AcScore()
     {}
 
     static AcScore *instance();

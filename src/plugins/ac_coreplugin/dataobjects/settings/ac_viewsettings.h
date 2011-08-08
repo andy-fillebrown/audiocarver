@@ -41,7 +41,7 @@ public:
         ,   volumeScale(100.0f)
     {}
 
-    virtual ~AcViewSettingsPrivate()
+    ~AcViewSettingsPrivate()
     {}
 };
 

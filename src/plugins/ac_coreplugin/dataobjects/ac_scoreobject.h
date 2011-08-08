@@ -34,7 +34,7 @@ public:
 
     AcScoreObjectPrivate(MiObject *q);
 
-    virtual ~AcScoreObjectPrivate()
+    ~AcScoreObjectPrivate()
     {}
 
     void init();
@@ -57,7 +57,7 @@ public:
         PropertyCount
     };
 
-    virtual ~AcScoreObject()
+    ~AcScoreObject()
     {}
 
     qreal volume() const

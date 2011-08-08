@@ -31,10 +31,10 @@ public:
         :   AcPoint(*(new AcVolumePointPrivate(this)))
     {}
 
-    virtual ~AcVolumePoint()
+    ~AcVolumePoint()
     {}
 
-    virtual void setY(qreal y)
+    void setY(qreal y)
     {
         if (1.0f < y)
             y = 1.0f;

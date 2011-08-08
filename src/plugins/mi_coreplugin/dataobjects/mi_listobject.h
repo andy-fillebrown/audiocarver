@@ -19,6 +19,7 @@
 #define MI_LISTOBJECT_H
 
 #include <mi_object.h>
+#include <mi_scopedchange.h>
 #include <QMetaType>
 
 class MiListObjectPrivate;
@@ -32,7 +33,7 @@ public:
 
     MiListObject(int propertyIndex = 0);
 
-    virtual ~MiListObject()
+    ~MiListObject()
     {}
 
     const QList<MiObject*> &children() const
@@ -51,7 +52,7 @@ private:
     Q_DECLARE_PRIVATE(MiListObject)
 };
 
-class MiListObjectPrivate : public MiObjectPrivate
+class MI_CORE_EXPORT MiListObjectPrivate : public MiObjectPrivate
 {
     Q_DECLARE_PUBLIC(MiListObject)
 
@@ -63,16 +64,8 @@ public:
         ,   propertyIndex(propertyIndex)
     {}
 
-    virtual ~MiListObjectPrivate()
+    ~MiListObjectPrivate()
     {}
-
-    virtual void notifyParentOfChange(int i = 0)
-    {
-        Q_UNUSED(i);
-        MiObject *parent = q_ptr->parent();
-        if (parent)
-            parent->d_ptr->endChange(propertyIndex);
-    }
 
     template <typename T>
     QList<T*> &children() const
@@ -91,6 +84,15 @@ public:
         Q_Q(MiListObject);
         q->removeChild(child);
     }
+
+    void beginChange(int i);
+    void endChange(int i);
+
+    void childChanged(int i)
+    {
+        Q_UNUSED(i);
+        endChange(-1);
+    }
 };
 
 inline MiListObject::MiListObject(int propertyIndex )
@@ -106,8 +108,8 @@ inline void MiListObject::addChild(MiObject *child)
     if (!child || children().contains(child))
         return;
     Q_D(MiListObject);
+    changing(-1);
     d->MiObjectPrivate::addChild(child);
-    d->notifyParentOfChange();
 }
 
 inline void MiListObject::removeChild(MiObject *child)
@@ -115,8 +117,8 @@ inline void MiListObject::removeChild(MiObject *child)
     if (!child || !children().contains(child))
         return;
     Q_D(MiListObject);
+    changing(-1);
     d->MiObjectPrivate::removeChild(child);
-    d->notifyParentOfChange();
 }
 
 Q_DECLARE_METATYPE(MiListObject*)

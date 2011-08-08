@@ -79,7 +79,7 @@ QGraphicsItem *AcGraphicsPitchLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsPitchLineItem::updateViewSettings(int i)
+void AcGraphicsPitchLineItem::updateViewSettings(int i, const QVariant &value)
 {
     if (AcViewSettings::PitchScaleIndex == i) {
         Q_D(AcGraphicsPitchLineItem);
@@ -87,16 +87,16 @@ void AcGraphicsPitchLineItem::updateViewSettings(int i)
     }
 }
 
-void AcGraphicsPitchLineItem::updateDataObject(int i)
+void AcGraphicsPitchLineItem::updateDataObject(int i, const QVariant &value)
 {
-    AcGraphicsGridLineItem::updateDataObject(i);
+    AcGraphicsGridLineItem::updateDataObject(i, value);
     if (AcGridLine::LocationIndex == i) {
         Q_D(AcGraphicsPitchLineItem);
         d->update();
     }
 }
 
-void AcGraphicsPitchLineItem::updateScore(int i)
+void AcGraphicsPitchLineItem::updateScore(int i, const QVariant &value)
 {
     if (AcScore::LengthIndex == i) {
         Q_D(AcGraphicsPitchLineItem);

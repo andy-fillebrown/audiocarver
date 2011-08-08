@@ -27,7 +27,7 @@ class MI_CORE_EXPORT MiSortedListObject : public MiListObject
 public:
     typedef MiListObject::PropertyIndex PropertyIndex;
 
-    virtual ~MiSortedListObject()
+    ~MiSortedListObject()
     {}
 
     virtual bool isSorted() const = 0;
@@ -51,7 +51,7 @@ public:
         :   MiListObjectPrivate(q, propertyIndex)
     {}
 
-    virtual ~MiSortedListObjectPrivate()
+    ~MiSortedListObjectPrivate()
     {}
 
     template <typename T>
@@ -78,14 +78,14 @@ public:
         return a->isLessThan(b);
     }
 
-    virtual void endChange(int i)
+    void childChanged(int i)
     {
         if (isSortProperty(i)) {
             Q_Q(MiSortedListObject);
             if (!q->isSorted())
                 q->sort();
         }
-        MiListObjectPrivate::endChange(i);
+        MiListObjectPrivate::childChanged(i);
     }
 
     virtual bool isSortProperty(int i) const

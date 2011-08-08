@@ -28,12 +28,12 @@ class AcVolumeLabelScene : public AcLabelScene
 
 public:
     AcVolumeLabelScene(QObject *parent = 0);
-    virtual ~AcVolumeLabelScene();
+    ~AcVolumeLabelScene();
 
     static AcVolumeLabelScene *instance();
 
 protected:
-    virtual void updateViewSettings(int i);
+    void updateViewSettings(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcVolumeLabelScene)

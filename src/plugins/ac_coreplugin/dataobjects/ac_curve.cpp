@@ -18,13 +18,13 @@
 #include "ac_curve.h"
 #include <ac_curvepoint.h>
 
-void AcCurvePrivate::endChange(int i)
+void AcCurvePrivate::childChanged(int i)
 {
     if (AcCurvePoint::XIndex == i) {
         Q_Q(AcCurve);
         q->update();
     }
-    MiSortedListObjectPrivate::endChange(i);
+    MiSortedListObjectPrivate::childChanged(i);
 }
 
 bool AcCurvePrivate::isSortProperty(int i) const

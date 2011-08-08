@@ -34,18 +34,20 @@ public:
         :   MiSortedListObject(*(new AcNoteListPrivate(this, propertyIndex)))
     {}
 
-    virtual ~AcNoteList()
+    ~AcNoteList()
     {}
 
     const QList<AcNote*> &children() const;
-    virtual bool isSorted() const;
-    virtual void sort();
+    bool isSorted() const;
+    void sort();
 
-    virtual void addChild(MiObject *item);
+    void addChild(MiObject *item);
 
 private:
     Q_DISABLE_COPY(AcNoteList)
     Q_DECLARE_PRIVATE(AcNoteList)
 };
+
+Q_DECLARE_METATYPE(AcNoteList*)
 
 #endif // AC_NOTELIST_H

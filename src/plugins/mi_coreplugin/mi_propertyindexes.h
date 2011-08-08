@@ -15,35 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHPOINT_H
-#define AC_PITCHPOINT_H
+#ifndef MI_PROPERTYINDEXES_H
+#define MI_PROPERTYINDEXES_H
 
-#include <ac_curvepoint.h>
+namespace Properties {
 
-#define AcPitchPointPrivate AcCurvePointPrivate
+namespace Object { enum Index {
+    Id = 0,
+    Count
+};}
 
-class AcPitchPoint : public AcCurvePoint
-{
-    Q_OBJECT
+namespace ListObject {
+typedef Object::Index Index;
+}
 
-public:
-    AcPitchPoint()
-        :   AcCurvePoint(*(new AcPitchPointPrivate(this)))
-    {}
+namespace SortedListObject {
+typedef ListObject::Index Index;
+}
 
-    ~AcPitchPoint()
-    {}
+namespace FontSettings { enum Index {
+    Family = Object::Count,
+    PointSize,
+    Count
+};}
 
-    void setY(qreal y)
-    {
-        if (127.0f < y)
-            y = 127.0f;
-        AcPoint::setY(y);
-    }
+} // namespace Properties
 
-private:
-    Q_DISABLE_COPY(AcPitchPoint)
-    Q_DECLARE_FRIENDS(AcPitchPoint)
-};
-
-#endif // AC_PITCHPOINT_H
+#endif // MI_PROPERTYINDEXES_H

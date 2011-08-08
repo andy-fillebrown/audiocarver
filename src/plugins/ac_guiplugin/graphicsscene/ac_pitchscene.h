@@ -28,12 +28,12 @@ class AcPitchScene : public AcGraphicsScene
 
 public:
     AcPitchScene(QObject *parent = 0);
-    virtual ~AcPitchScene();
+    ~AcPitchScene();
 
     static AcPitchScene *instance();
 
 protected slots:
-    virtual void updateScore(int i);
+    virtual void updateScore(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcPitchScene)

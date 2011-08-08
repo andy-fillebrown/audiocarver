@@ -60,7 +60,7 @@ class AcGraphicsItem : public QObject
     Q_OBJECT
 
 public:
-    virtual ~AcGraphicsItem();
+    ~AcGraphicsItem();
 
     void setDataObject(MiObject *object);
 
@@ -83,7 +83,7 @@ public:
     virtual void unhighlight();
 
 protected slots:
-    virtual void updateDataObject(int i) = 0;
+    virtual void updateDataObject(int i, const QVariant &value) = 0;
 
 protected:
     AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent = 0);

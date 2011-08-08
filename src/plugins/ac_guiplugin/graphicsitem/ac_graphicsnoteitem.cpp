@@ -232,7 +232,7 @@ void AcGraphicsNoteItem::unhighlight()
     d->lit = false;
 }
 
-void AcGraphicsNoteItem::updateDataObject(int i)
+void AcGraphicsNoteItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsNoteItem);
     switch (i) {

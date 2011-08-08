@@ -173,9 +173,9 @@ AcSceneManager::AcSceneManager(QObject *parent)
     ::instance = this;
     d->init();
     AcScore *score = AcScore::instance();
-    Q_CONNECT(score, SIGNAL(changed(int)), this, SLOT(updateScore(int)));
-    Q_CONNECT(score->fontSettings(), SIGNAL(changed(int)), this, SLOT(updateFontSettings(int)));
-    Q_CONNECT(score->viewSettings(), SIGNAL(changed(int)), this, SLOT(updateViewSettings(int)));
+    Q_CONNECT(score, SIGNAL(changed(int,QVariant)), this, SLOT(updateScore(int,QVariant)));
+    Q_CONNECT(score->fontSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateFontSettings(int,QVariant)));
+    Q_CONNECT(score->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
 }
 
 AcSceneManager::~AcSceneManager()
@@ -188,7 +188,7 @@ AcSceneManager *AcSceneManager::instance()
     return ::instance;
 }
 
-void AcSceneManager::updateScore(int i)
+void AcSceneManager::updateScore(int i, const QVariant &value)
 {
     switch (i) {
     case AcScore::TracksIndex:
@@ -211,7 +211,7 @@ void AcSceneManager::updateScore(int i)
     }
 }
 
-void AcSceneManager::updateFontSettings(int i)
+void AcSceneManager::updateFontSettings(int i, const QVariant &value)
 {
     Q_UNUSED(i);
     d->updateFontMetrics();
@@ -220,7 +220,7 @@ void AcSceneManager::updateFontSettings(int i)
     d->updateVolumeLineItemVisibilities();
 }
 
-void AcSceneManager::updateViewSettings(int i)
+void AcSceneManager::updateViewSettings(int i, const QVariant &value)
 {
     switch (i) {
     case AcViewSettings::TimeScaleIndex:

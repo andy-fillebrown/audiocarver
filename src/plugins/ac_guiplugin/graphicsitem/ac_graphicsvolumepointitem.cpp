@@ -38,12 +38,12 @@ QGraphicsItem *AcGraphicsVolumePointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsVolumePointItem::updateViewSettings(int i)
+void AcGraphicsVolumePointItem::updateViewSettings(int i, const QVariant &value)
 {
     Q_UNUSED(i);
 }
 
-void AcGraphicsVolumePointItem::updateDataObject(int i)
+void AcGraphicsVolumePointItem::updateDataObject(int i, const QVariant &value)
 {
     Q_UNUSED(i);
 }

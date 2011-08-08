@@ -20,12 +20,19 @@
 #include <QMetaProperty>
 #include <QVariant>
 
-void MiObjectPrivate::notifyParentOfChange(int i)
+using namespace Aggregation;
+
+void MiObjectPrivate::beginChange(int i)
 {
-    Q_UNUSED(i);
+    q_ptr->emit aboutToChange(i, q_ptr->propertyValue(i));
+}
+
+void MiObjectPrivate::endChange(int i)
+{
+    q_ptr->emit changed(i, q_ptr->propertyValue(i));
     MiObject *parent = q_ptr->parent();
     if (parent)
-        parent->d_ptr->endChange(i);
+        parent->d_ptr->childChanged(i);
 }
 
 QString MiObject::propertyType(int i) const

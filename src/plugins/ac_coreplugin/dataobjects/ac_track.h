@@ -29,7 +29,7 @@ public:
 
     AcTrackPrivate(AcScoreObject *q);
 
-    virtual ~AcTrackPrivate()
+    ~AcTrackPrivate()
     {}
 
     void init();
@@ -53,7 +53,7 @@ public:
         d->init();
     }
 
-    virtual ~AcTrack()
+    ~AcTrack()
     {}
 
     AcNoteList *notes() const

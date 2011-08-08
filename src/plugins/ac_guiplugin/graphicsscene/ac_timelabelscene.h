@@ -33,10 +33,10 @@ public:
     static AcTimeLabelScene *instance();
 
 protected:
-    virtual void updateViewSettings(int i);
+    void updateViewSettings(int i, const QVariant &value);
 
 protected slots:
-    virtual void updateScore(int i);
+    void updateScore(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcTimeLabelScene)

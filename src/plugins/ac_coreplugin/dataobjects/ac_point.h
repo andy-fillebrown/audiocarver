@@ -35,7 +35,7 @@ public:
         ,   y(0.0f)
     {}
 
-    virtual ~AcPointPrivate()
+    ~AcPointPrivate()
     {}
 };
 
@@ -56,7 +56,7 @@ public:
         :   MiObject(*(new AcPointPrivate(this)))
     {}
 
-    virtual ~AcPoint()
+    ~AcPoint()
     {}
 
     qreal x() const

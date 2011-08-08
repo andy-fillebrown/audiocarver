@@ -28,10 +28,10 @@ class MiGuiPlugin : public ExtensionSystem::IPlugin
 
 public:
     MiGuiPlugin() {}
-    virtual ~MiGuiPlugin() {}
+    ~MiGuiPlugin() {}
 
-    virtual bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    virtual void extensionsInitialized();
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized();
 
 private:
     Q_DISABLE_COPY(MiGuiPlugin)

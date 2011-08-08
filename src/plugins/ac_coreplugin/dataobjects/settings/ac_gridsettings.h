@@ -31,7 +31,7 @@ public:
         ,   visible(true)
     {}
 
-    virtual ~AcGridSettingsPrivate()
+    ~AcGridSettingsPrivate()
     {}
 };
 
@@ -50,7 +50,7 @@ public:
         :   MiObject(*(new AcGridSettingsPrivate(this)))
     {}
 
-    virtual ~AcGridSettings()
+    ~AcGridSettings()
     {}
 
     bool visible() const
