@@ -17,6 +17,7 @@
 
 #include "ac_coreplugin.h"
 #include <ac_database.h>
+#include <ac_gridlinelist.h>
 #include <ac_notelist.h>
 #include <ac_pitchcurve.h>
 #include <ac_tracklist.h>
@@ -30,6 +31,7 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+    qRegisterMetaType<AcGridLineList*>();
     qRegisterMetaType<AcNoteList*>();
     qRegisterMetaType<AcTrackList*>();
     qRegisterMetaType<AcPitchCurve*>();

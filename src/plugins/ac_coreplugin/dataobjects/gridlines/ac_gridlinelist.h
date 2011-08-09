@@ -78,4 +78,6 @@ public:
     {}
 };
 
+Q_DECLARE_METATYPE(AcGridLineList*)
+
 #endif // AC_GRIDLINELIST_H
