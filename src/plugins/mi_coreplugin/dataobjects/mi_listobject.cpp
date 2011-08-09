@@ -22,21 +22,15 @@ void MiListObjectPrivate::beginChange(int i)
 {
     Q_UNUSED(i);
     Q_Q(MiListObject);
-    MiObject *parent = q->parent();
-    if (parent)
-        q_ptr->emit aboutToChange(-1, parent->propertyValue(propertyIndex));
-    else
-        q_ptr->emit aboutToChange(-1, QVariant::fromValue(q));
+    q->emit aboutToChange(-1, QVariant::fromValue(q->children()));
 }
 
 void MiListObjectPrivate::endChange(int i)
 {
     Q_UNUSED(i);
     Q_Q(MiListObject);
+    q_ptr->emit changed(-1, QVariant::fromValue(q->children()));
     MiObject *parent = q->parent();
-    if (parent) {
-        q_ptr->emit changed(-1, parent->propertyValue(propertyIndex));
+    if (parent)
         parent->d_ptr->childChanged(propertyIndex);
-    } else
-        q_ptr->emit changed(-1, QVariant::fromValue(q));
 }

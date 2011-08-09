@@ -20,7 +20,6 @@
 
 #include <mi_object.h>
 #include <mi_scopedchange.h>
-#include <QMetaType>
 
 class MiListObjectPrivate;
 
@@ -36,9 +35,9 @@ public:
     ~MiListObject()
     {}
 
-    const QList<MiObject*> &children() const
+    const MiObjectList &children() const
     {
-        return reinterpret_cast<const QList<MiObject*>&>(QObject::children());
+        return reinterpret_cast<const MiObjectList&>(QObject::children());
     }
 
     inline virtual void addChild(MiObject *child);

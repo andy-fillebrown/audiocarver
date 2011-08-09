@@ -20,7 +20,7 @@
 
 #include <mi_core_global.h>
 #include <aggregate.h>
-#include <QObject>
+#include <QMetaType>
 
 // Redefine Q_OBJECT to declare meta-object members as protected, not public.
 #undef Q_OBJECT
@@ -169,5 +169,8 @@ inline void MiObjectPrivate::removeChild(MiObject *child)
     Q_ASSERT(MiObjectPrivate::children().contains(child));
     child->setParent(0);
 }
+
+typedef QList<MiObject*> MiObjectList;
+Q_DECLARE_METATYPE(MiObjectList)
 
 #endif // MI_OBJECT_H

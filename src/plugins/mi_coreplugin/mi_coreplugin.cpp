@@ -27,6 +27,7 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+    qRegisterMetaType<MiObjectList>();
     qRegisterMetaType<MiListObject*>();
     return true;
 }
