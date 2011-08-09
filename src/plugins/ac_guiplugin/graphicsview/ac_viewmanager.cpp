@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "ac_viewmanager.h"
+#include <ac_guifactory.h>
 #include <ac_pitchlabelview.h>
 #include <ac_pitchview.h>
 #include <ac_scenemanager.h>
@@ -40,7 +41,7 @@ public:
 
     AcViewManagerPrivate(AcViewManager *q, QWidget *widget)
         :   q(q)
-        ,   sceneManager(new AcSceneManager(q))
+        ,   sceneManager(AcGuiFactory::instance()->createSceneManager(q))
         ,   pitchView(new AcPitchView(sceneManager->scene(PitchScene), widget))
         ,   volumeView(new AcVolumeView(sceneManager->scene(VolumeScene), widget))
         ,   timeLabelView(new AcTimeLabelView(sceneManager->scene(TimeLabelScene), widget))

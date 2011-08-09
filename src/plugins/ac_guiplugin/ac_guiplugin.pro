@@ -5,6 +5,8 @@ include(../../plugin.pri)
 include(ac_guiplugin_dependencies.pri)
 
 HEADERS += \
+    factories/ac_guifactory.h \
+    \
     graphicsitem/ac_graphicsgridlineitem.h \
     graphicsitem/ac_graphicsitem.h \
     graphicsitem/ac_graphicsnoteitem.h \
@@ -46,6 +48,8 @@ HEADERS += \
     ac_mainwidget.h \
 
 SOURCES += \
+    factories/ac_guifactory.cpp \
+    \
     graphicsitem/ac_graphicsgridlineitem.cpp \
     graphicsitem/ac_graphicsitem.cpp \
     graphicsitem/ac_graphicsnoteitem.cpp \

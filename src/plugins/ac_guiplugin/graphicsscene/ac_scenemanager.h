@@ -22,6 +22,7 @@
 #include <QObject>
 
 class AcGraphicsItem;
+class QFont;
 class QFontMetrics;
 class QGraphicsScene;
 
@@ -47,12 +48,13 @@ public:
             addItem(item);
     }
 
+    const QFont &font() const;
     const QFontMetrics &fontMetrics() const;
 
-private slots:
+public slots:
     void updateScore(int i, const QVariant &value);
     void updateFontSettings(int i, const QVariant &value);
-    void updateViewSettings(int i, const QVariant &value);
+    void updateViewSettings(int i);
 
 private:
     Q_DISABLE_COPY(AcSceneManager)

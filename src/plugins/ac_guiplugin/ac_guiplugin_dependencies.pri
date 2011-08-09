@@ -3,6 +3,7 @@ include(../mi_guiplugin/mi_guiplugin.pri)
 include(../ac_coreplugin/ac_coreplugin.pri)
 
 DIRS = \
+    factories \
     graphicsitem \
     graphicsscene \
     graphicsview \
