@@ -21,14 +21,15 @@
 
 bool AcNote::isLessThan(const AcNote *other) const
 {
-    if (pitchCurve()->children().first()->isLessThan(other->pitchCurve()->children().first()))
+    AcPitchCurve *curveA = pitchCurve();
+    AcPitchCurve *curveB = other->pitchCurve();
+    AcPitchPoint *ptA = curveA->children().first();
+    AcPitchPoint *ptB = curveB->children().first();
+    if (ptA->isLessThan(ptB))
         return true;
-    if (pitchCurve()->children().first()->x() == other->pitchCurve()->children().first()->x()
-            && pitchCurve()->children().first()->isLessThan(other->pitchCurve()->children().first()))
-        return true;
-    if (pitchCurve()->children().first()->x() == other->pitchCurve()->children().first()->x()
-            && pitchCurve()->children().first()->y() == other->pitchCurve()->children().first()->y()
-            && pitchCurve()->duration() < other->pitchCurve()->duration())
+    if (ptA->x() == ptB->x()
+            && ptA->y() == ptB->y()
+            && curveA->duration() < curveB->duration())
         return true;
     return false;
 }
