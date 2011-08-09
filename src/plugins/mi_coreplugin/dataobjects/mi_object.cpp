@@ -52,7 +52,15 @@ bool MiObject::isPropertyWritable(int i) const
 
 QVariant MiObject::propertyValue(int i) const
 {
-    return metaObject()->property(i).read(this);
+    QVariant value = metaObject()->property(i).read(this);
+    if (propertyType(i).endsWith('*')) {
+        const quintptr *p = reinterpret_cast<const quintptr*>(value.constData());
+        if (*p) {
+            const MiListObject *list = reinterpret_cast<const MiListObject*>(*p);
+            value = QVariant::fromValue(list->children());
+        }
+    }
+    return value;
 }
 
 void MiObject::setPropertyValue(int i, const QVariant &value)
