@@ -16,9 +16,7 @@
 **************************************************************************/
 
 #include "ac_graphicstimelineitem.h"
-#include <ac_gridline.h>
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+#include <ac_propertyindexes.h>
 #include <QColor>
 #include <QFontMetrics>
 #include <QGraphicsLineItem>
@@ -31,48 +29,35 @@ class AcGraphicsTimeLineItemPrivate : public AcGraphicsGridLineItemPrivate
 public:
     QGraphicsLineItem *volumeLineItem;
 
-    AcGraphicsTimeLineItemPrivate(AcGridLine *gridLine)
-        :   volumeLineItem(new QGraphicsLineItem)
-    {
-        dataObject = gridLine;
-        update();
-    }
+    AcGraphicsTimeLineItemPrivate(AcGraphicsTimeLineItem *q)
+        :   AcGraphicsGridLineItemPrivate(q)
+        ,   volumeLineItem(new QGraphicsLineItem)
+    {}
 
     ~AcGraphicsTimeLineItemPrivate()
     {
         delete volumeLineItem;
     }
 
-    void update()
+    void updateColor(const QColor &color)
     {
-        updateColor();
-        updateLocation();
+        volumeLineItem->setPen(QPen(color));
     }
 
-    void updateColor()
+    void updateLocation(qreal location)
     {
-        volumeLineItem->setPen(QPen(QColor(QRgb(gridLine()->color()))));
-    }
-
-    void updateLocation()
-    {
-        const AcGridLine *gridLine = this->gridLine();
-        const qreal location = gridLine->location();
         lineItem->setLine(location, 0.0f, location, 127.0f);
         volumeLineItem->setLine(location, 0.0f, location, 1.0f);
-        const qreal scale = score()->viewSettings()->timeScale();
-        const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
+        const qreal scale = timeLabelScene()->width() / pitchScene()->width();
+        const QRect labelRect = fontMetrics().boundingRect(labelItem->toPlainText());
         const qreal x = (location * scale) - (labelRect.width() / 2.0f);
         const qreal y = (timeLabelScene()->height() / 2.0f) - (labelRect.height() / 2.0f);
         labelItem->setPos(x, y);
     }
 };
 
-AcGraphicsTimeLineItem::AcGraphicsTimeLineItem(AcGridLine *gridLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsTimeLineItemPrivate(gridLine)), parent)
-{}
-
-AcGraphicsTimeLineItem::~AcGraphicsTimeLineItem()
+AcGraphicsTimeLineItem::AcGraphicsTimeLineItem(QObject *parent)
+    :   AcGraphicsGridLineItem(*(new AcGraphicsTimeLineItemPrivate(this)), parent)
 {}
 
 QGraphicsItem *AcGraphicsTimeLineItem::sceneItem(SceneType sceneType) const
@@ -91,11 +76,11 @@ QGraphicsItem *AcGraphicsTimeLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsTimeLineItem::updateViewSettings(int i, const QVariant &value)
+void AcGraphicsTimeLineItem::updateViewSettings(int i)
 {
     if (ViewSettings::TimeScale == i) {
         Q_D(AcGraphicsTimeLineItem);
-        d->updateLocation();
+        d->updateLocation(d->lineItem->line().p1().x());
     }
 }
 
@@ -105,10 +90,10 @@ void AcGraphicsTimeLineItem::updateDataObject(int i, const QVariant &value)
     AcGraphicsGridLineItem::updateDataObject(i, value);
     switch (i) {
     case GridLine::Color:
-        d->updateColor();
+        d->updateColor(QRgb(value.value<quint32>()));
         break;
     case GridLine::Location:
-        d->updateLocation();
+        d->updateLocation(value.toReal());
         break;
     default:
         break;

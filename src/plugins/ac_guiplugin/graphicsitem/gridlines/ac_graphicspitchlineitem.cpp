@@ -16,53 +16,44 @@
 **************************************************************************/
 
 #include "ac_graphicspitchlineitem.h"
-#include <ac_gridline.h>
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+#include <ac_scenemanager.h>
+#include <ac_propertyindexes.h>
 #include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 
-class AcGraphicsPitchLineItemPrivate : public AcGraphicsGridLineItemPrivate
+class AcGraphicsPitchLineItemPrivate : public AcGraphicsHGridLineItemPrivate
 {
 public:
-    AcGraphicsPitchLineItemPrivate(AcGridLine *gridLine)
+    AcGraphicsPitchLineItemPrivate(AcGraphicsPitchLineItem *q)
+        :   AcGraphicsHGridLineItemPrivate(q)
+    {}
+
+    void updateLineLocation(qreal location)
     {
-        dataObject = gridLine;
-        update();
+        const qreal pos = 127.0f - location;
+        lineItem->setLine(0.0f, pos, pitchScene()->width(), pos);
     }
 
-    void update()
+    void updateLineLength()
     {
-        updateLineGeometry();
-        updateLabelPosition();
-    }
-
-    void updateLineGeometry()
-    {
-        const qreal pos = 127.0f - gridLine()->location();
-        lineItem->setLine(0.0f, pos, AcScore::instance()->length(), pos);
+        const qreal pos = lineItem->line().p1().y();
+        lineItem->setLine(0.0f, pos, pitchScene()->width(), pos);
     }
 
     void updateLabelPosition()
     {
-        const AcGridLine *gridLine = this->gridLine();
-        const qreal pos = 127.0f - gridLine->location();
-        const qreal scale = score()->viewSettings()->pitchScale();
-        const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
+        const qreal pos = lineItem->line().p1().y();
+        const qreal scale = pitchScene()->height() / 127.0f;
+        const QRect labelRect = fontMetrics().boundingRect(labelItem->toPlainText());
         const qreal x = pitchLabelScene()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
     }
 };
 
-AcGraphicsPitchLineItem::AcGraphicsPitchLineItem(AcGridLine *gridLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsPitchLineItemPrivate(gridLine)), parent)
-{
-    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
-}
-
-AcGraphicsPitchLineItem::~AcGraphicsPitchLineItem()
+AcGraphicsPitchLineItem::AcGraphicsPitchLineItem(QObject *parent)
+    :   AcGraphicsHGridLineItem(*(new AcGraphicsPitchLineItemPrivate(this)), parent)
 {}
 
 QGraphicsItem *AcGraphicsPitchLineItem::sceneItem(SceneType sceneType) const
@@ -79,7 +70,7 @@ QGraphicsItem *AcGraphicsPitchLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsPitchLineItem::updateViewSettings(int i, const QVariant &value)
+void AcGraphicsPitchLineItem::updateViewSettings(int i)
 {
     if (ViewSettings::PitchScale == i) {
         Q_D(AcGraphicsPitchLineItem);
@@ -92,14 +83,15 @@ void AcGraphicsPitchLineItem::updateDataObject(int i, const QVariant &value)
     AcGraphicsGridLineItem::updateDataObject(i, value);
     if (GridLine::Location == i) {
         Q_D(AcGraphicsPitchLineItem);
-        d->update();
+        d->updateLineLocation(value.toReal());
+        d->updateLabelPosition();
     }
 }
 
-void AcGraphicsPitchLineItem::updateScore(int i, const QVariant &value)
+void AcGraphicsPitchLineItem::updateScore(int i)
 {
     if (Score::Length == i) {
         Q_D(AcGraphicsPitchLineItem);
-        d->updateLineGeometry();
+        d->updateLineLength();
     }
 }

@@ -104,22 +104,22 @@ public:
 
     void updateTrackItems(const MiObjectList &tracks)
     {
-//        updateItemsHelper(tracks, trackItems, q);
+        updateItemsHelper(tracks, trackItems, q);
     }
 
     void updateTimeLineItems(const MiObjectList &timeLines)
     {
-//        updateItemsHelper(timeLines, timeLineItems, q);
+        updateItemsHelper(timeLines, timeLineItems, q);
     }
 
     void updatePitchLineItems(const MiObjectList &pitchLines)
     {
-//        updateItemsHelper(pitchLines, pitchLineItems, q);
+        updateItemsHelper(pitchLines, pitchLineItems, q);
     }
 
     void updateVolumeLineItems(const MiObjectList &volumeLines)
     {
-//        updateItemsHelper(volumeLines, volumeLineItems, q);
+        updateItemsHelper(volumeLines, volumeLineItems, q);
     }
 
     void updateFontMetrics()

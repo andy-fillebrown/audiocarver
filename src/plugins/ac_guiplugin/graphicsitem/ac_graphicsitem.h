@@ -21,48 +21,19 @@
 #include <ac_guienums.h>
 #include <QObject>
 
-class AcGraphicsItem;
-class AcScore;
 class MiObject;
 class QFont;
 class QFontMetrics;
 class QGraphicsItem;
 class QGraphicsScene;
 
-class AcGraphicsItemPrivate
-{
-public:
-    AcGraphicsItem *q;
-    MiObject *dataObject;
-
-    AcGraphicsItemPrivate()
-        :   q(0)
-        ,   dataObject(0)
-    {}
-
-    virtual ~AcGraphicsItemPrivate()
-    {}
-
-    const AcScore *score() const;
-    const QFont font() const;
-    const QFontMetrics &fontMetrics() const;
-    const QGraphicsScene *pitchScene() const;
-    const QGraphicsScene *volumeScene() const;
-    const QGraphicsScene *timeLabelScene() const;
-    const QGraphicsScene *pitchLabelScene() const;
-    const QGraphicsScene *volumeLabelScene() const;
-
-    void connectDataObject();
-};
-
+class AcGraphicsItemPrivate;
 class AcGraphicsItem : public QObject
 {
     Q_OBJECT
 
 public:
-    ~AcGraphicsItem();
-
-    void setDataObject(MiObject *object);
+    inline ~AcGraphicsItem();
 
     virtual QGraphicsItem *sceneItem(SceneType sceneType) const = 0;
 
@@ -79,14 +50,20 @@ public:
             addItem(item);
     }
 
-    virtual void highlight();
-    virtual void unhighlight();
+    virtual void highlight()
+    {}
 
-protected slots:
+    virtual void unhighlight()
+    {}
+
+public slots:
     virtual void updateDataObject(int i, const QVariant &value) = 0;
 
 protected:
-    AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent = 0);
+    AcGraphicsItem(AcGraphicsItemPrivate &dd, QObject *parent = 0)
+        :   QObject(parent)
+        ,   d_ptr(&dd)
+    {}
 
     AcGraphicsItemPrivate *d_ptr;
 
@@ -94,5 +71,33 @@ private:
     Q_DISABLE_COPY(AcGraphicsItem)
     Q_DECLARE_PRIVATE(AcGraphicsItem)
 };
+
+class AcGraphicsItemPrivate
+{
+    Q_DECLARE_PUBLIC(AcGraphicsItem)
+
+public:
+    AcGraphicsItem *q_ptr;
+
+    AcGraphicsItemPrivate(AcGraphicsItem *q)
+        :   q_ptr(q)
+    {}
+
+    virtual ~AcGraphicsItemPrivate()
+    {}
+
+    const QFont &font() const;
+    const QFontMetrics &fontMetrics() const;
+    const QGraphicsScene *pitchScene() const;
+    const QGraphicsScene *volumeScene() const;
+    const QGraphicsScene *timeLabelScene() const;
+    const QGraphicsScene *pitchLabelScene() const;
+    const QGraphicsScene *volumeLabelScene() const;
+};
+
+inline AcGraphicsItem::~AcGraphicsItem()
+{
+    delete d_ptr;
+}
 
 #endif // AC_GRAPHICSITEM_H

@@ -18,26 +18,24 @@
 #ifndef AC_GRAPHICSPITCHLINEITEM_H
 #define AC_GRAPHICSPITCHLINEITEM_H
 
-#include <ac_graphicsgridlineitem.h>
+#include <ac_graphicshgridlineitem.h>
 
 class AcGraphicsPitchLineItemPrivate;
-
-class AcGraphicsPitchLineItem : public AcGraphicsGridLineItem
+class AcGraphicsPitchLineItem : public AcGraphicsHGridLineItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsPitchLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
-    ~AcGraphicsPitchLineItem();
+    explicit AcGraphicsPitchLineItem(QObject *parent = 0);
+
+    ~AcGraphicsPitchLineItem()
+    {}
 
     QGraphicsItem *sceneItem(SceneType sceneType) const;
 
-protected:
-    void updateViewSettings(int i, const QVariant &value);
     void updateDataObject(int i, const QVariant &value);
-
-protected slots:
-    virtual void updateScore(int i, const QVariant &value);
+    void updateViewSettings(int i);
+    void updateScore(int i);
 
 private:
     Q_DISABLE_COPY(AcGraphicsPitchLineItem)

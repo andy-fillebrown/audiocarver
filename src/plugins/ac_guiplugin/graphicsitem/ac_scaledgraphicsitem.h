@@ -20,20 +20,7 @@
 
 #include <ac_graphicsitem.h>
 
-class AcViewSettings;
-
-class AcScaledGraphicsItemPrivate : public AcGraphicsItemPrivate
-{
-public:
-    AcScaledGraphicsItemPrivate()
-    {}
-
-    virtual ~AcScaledGraphicsItemPrivate()
-    {}
-
-    const AcViewSettings *viewSettings() const;
-};
-
+class AcScaledGraphicsItemPrivate;
 class AcScaledGraphicsItem : public AcGraphicsItem
 {
     Q_OBJECT
@@ -43,14 +30,31 @@ public:
     {}
 
 protected:
-    AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent = 0);
+    inline AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent = 0);
 
-protected slots:
+public slots:
     virtual void updateViewSettings(int i, const QVariant &value) = 0;
 
 private:
     Q_DISABLE_COPY(AcScaledGraphicsItem)
     Q_DECLARE_PRIVATE(AcScaledGraphicsItem)
 };
+
+class AcScaledGraphicsItemPrivate : public AcGraphicsItemPrivate
+{
+    Q_DECLARE_PUBLIC(AcScaledGraphicsItem)
+
+public:
+    AcScaledGraphicsItemPrivate(AcScaledGraphicsItem *q)
+        :   AcGraphicsItemPrivate(q)
+    {}
+
+    ~AcScaledGraphicsItemPrivate()
+    {}
+};
+
+inline AcScaledGraphicsItem::AcScaledGraphicsItem(AcScaledGraphicsItemPrivate &dd, QObject *parent)
+    :   AcGraphicsItem(dd, parent)
+{}
 
 #endif // AC_SCALEDGRAPHICSITEM_H

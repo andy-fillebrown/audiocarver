@@ -20,8 +20,10 @@
 
 #include <QObject>
 
-class AcScore;
+class AcGraphicsItem;
 class AcSceneManager;
+class AcScore;
+class MiObject;
 
 class AcGuiFactoryPrivate;
 class AcGuiFactory : public QObject
@@ -56,6 +58,8 @@ public:
     {}
 
     AcScore *score();
+
+    void connectGraphicsItem(AcGraphicsItem *item, MiObject *object);
 };
 
 inline AcGuiFactory::~AcGuiFactory()

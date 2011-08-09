@@ -32,10 +32,10 @@ public:
 
     bool isPointInVolumeViews(QWidget *widget, const QPoint &pos) const;
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void showEvent(QShowEvent *event);
-    void wheelEvent(QWheelEvent *event);
+//protected:
+//    void resizeEvent(QResizeEvent *event);
+//    void showEvent(QShowEvent *event);
+//    void wheelEvent(QWheelEvent *event);
 
 private:
     Q_DISABLE_COPY(AcMainWidget)

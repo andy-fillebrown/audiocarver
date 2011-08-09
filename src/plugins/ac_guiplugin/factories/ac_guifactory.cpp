@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "ac_guifactory.h"
+#include <ac_graphicsitem.h>
 #include <ac_scenemanager.h>
 #include <ac_score.h>
 #include <ac_viewsettings.h>
@@ -58,4 +59,9 @@ AcSceneManager *AcGuiFactory::createSceneManager(QObject *parent)
 AcScore *AcGuiFactoryPrivate::score()
 {
     return AcScore::instance();
+}
+
+void AcGuiFactoryPrivate::connectGraphicsItem(AcGraphicsItem *item, MiObject *object)
+{
+    Q_CONNECT(object, SIGNAL(changed(int,QVariant)), item, SLOT(updateDataObject(int,QVariant)));
 }

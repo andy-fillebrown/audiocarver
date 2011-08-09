@@ -16,56 +16,45 @@
 **************************************************************************/
 
 #include "ac_graphicsvolumelineitem.h"
-#include <ac_gridline.h>
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+#include <ac_propertyindexes.h>
 #include <QFont>
 #include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 
-class AcGraphicsVolumeLineItemPrivate : public AcGraphicsGridLineItemPrivate
+class AcGraphicsVolumeLineItemPrivate : public AcGraphicsHGridLineItemPrivate
 {
 public:
 
-    AcGraphicsVolumeLineItemPrivate(AcGridLine *gridLine)
+    AcGraphicsVolumeLineItemPrivate(AcGraphicsVolumeLineItem *q)
+        :   AcGraphicsHGridLineItemPrivate(q)
+    {}
+
+    void updateLineLocation(qreal location)
     {
-        dataObject = gridLine;
-        update();
+        const qreal pos = 1.0f - location;
+        lineItem->setLine(0.0f, pos, volumeScene()->width(), pos);
     }
 
-    void update()
+    void updateLineLength()
     {
-        updateLineGeometry();
-        updateLabelPosition();
-    }
-
-    void updateLineGeometry()
-    {
-        const qreal pos = 1.0f - gridLine()->location();
-        lineItem->setLine(0.0f, pos, score()->length(), pos);
+        const qreal pos = lineItem->line().p1().y();
+        lineItem->setLine(0.0f, pos, volumeScene()->width(), pos);
     }
 
     void updateLabelPosition()
     {
-        const AcGridLine *gridLine = this->gridLine();
-        const qreal pos = 1.0f - gridLine->location();
-        const qreal scale = score()->viewSettings()->volumeScale();
-        const QRect labelRect = fontMetrics().boundingRect(gridLine->label());
+        const qreal pos = lineItem->line().p1().y();
+        const qreal scale = volumeScene()->height() / 127.0f;
+        const QRect labelRect = fontMetrics().boundingRect(labelItem->toPlainText());
         const qreal x = volumeLabelScene()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);
         labelItem->setPos(x, y);
     }
 };
 
-AcGraphicsVolumeLineItem::AcGraphicsVolumeLineItem(AcGridLine *gridLine, QObject *parent)
-    :   AcGraphicsGridLineItem(*(new AcGraphicsVolumeLineItemPrivate(gridLine)), parent)
-{
-    Q_D(AcGraphicsVolumeLineItem);
-    Q_CONNECT(d->score(), SIGNAL(changed(int)), this, SLOT(updateScore(int)));
-}
-
-AcGraphicsVolumeLineItem::~AcGraphicsVolumeLineItem()
+AcGraphicsVolumeLineItem::AcGraphicsVolumeLineItem(QObject *parent)
+    :   AcGraphicsHGridLineItem(*(new AcGraphicsVolumeLineItemPrivate(this)), parent)
 {}
 
 QGraphicsItem *AcGraphicsVolumeLineItem::sceneItem(SceneType sceneType) const
@@ -82,7 +71,17 @@ QGraphicsItem *AcGraphicsVolumeLineItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsVolumeLineItem::updateViewSettings(int i, const QVariant &value)
+void AcGraphicsVolumeLineItem::updateDataObject(int i, const QVariant &value)
+{
+    AcGraphicsGridLineItem::updateDataObject(i, value);
+    if (GridLine::Location == i) {
+        Q_D(AcGraphicsVolumeLineItem);
+        d->updateLineLocation(value.toReal());
+        d->updateLabelPosition();
+    }
+}
+
+void AcGraphicsVolumeLineItem::updateViewSettings(int i)
 {
     if (ViewSettings::VolumeScale == i) {
         Q_D(AcGraphicsVolumeLineItem);
@@ -90,19 +89,10 @@ void AcGraphicsVolumeLineItem::updateViewSettings(int i, const QVariant &value)
     }
 }
 
-void AcGraphicsVolumeLineItem::updateDataObject(int i, const QVariant &value)
-{
-    AcGraphicsGridLineItem::updateDataObject(i, value);
-    if (GridLine::Location == i) {
-        Q_D(AcGraphicsVolumeLineItem);
-        d->update();
-    }
-}
-
-void AcGraphicsVolumeLineItem::updateScore(int i, const QVariant &value)
+void AcGraphicsVolumeLineItem::updateScore(int i)
 {
     if (Score::Length == i) {
         Q_D(AcGraphicsVolumeLineItem);
-        d->updateLineGeometry();
+        d->updateLineLength();
     }
 }

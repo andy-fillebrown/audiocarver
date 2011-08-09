@@ -20,28 +20,12 @@
 
 #include <ac_graphicsitem.h>
 
-class AcGridLine;
 class QGraphicsLineItem;
 class QGraphicsTextItem;
+class QColor;
 class QRectF;
 
-class AcGraphicsGridLineItemPrivate : public AcGraphicsItemPrivate
-{
-public:
-    QGraphicsLineItem *lineItem;
-    QGraphicsTextItem *labelItem;
-
-    AcGraphicsGridLineItemPrivate();
-    virtual ~AcGraphicsGridLineItemPrivate();
-
-    const AcGridLine *gridLine() const;
-
-    void update();
-    void updateFont();
-    void updateLabel();
-    void updateColor();
-};
-
+class AcGraphicsGridLineItemPrivate;
 class AcGraphicsGridLineItem : public AcGraphicsItem
 {
     Q_OBJECT
@@ -51,19 +35,43 @@ public:
     {}
 
     int priority() const;
+    void setPriority(int priority);
+
     QRectF labelRect() const;
 
-protected slots:
-    virtual void updateFontSettings(int i, const QVariant &value);
-    virtual void updateViewSettings(int i, const QVariant &value) = 0;
+    void updateDataObject(int i, const QVariant &value);
+
+public slots:
+    virtual void updateFontSettings();
+    virtual void updateViewSettings(int i) = 0;
 
 protected:
-    AcGraphicsGridLineItem(AcGraphicsGridLineItemPrivate &dd, QObject *parent = 0);
-    void updateDataObject(int i, const QVariant &value);
+    inline AcGraphicsGridLineItem(AcGraphicsGridLineItemPrivate &dd, QObject *parent);
 
 private:
     Q_DISABLE_COPY(AcGraphicsGridLineItem)
     Q_DECLARE_PRIVATE(AcGraphicsGridLineItem)
 };
+
+class AcGraphicsGridLineItemPrivate : public AcGraphicsItemPrivate
+{
+    Q_DECLARE_PUBLIC(AcGraphicsGridLineItem)
+
+public:
+    int priority;
+    QGraphicsLineItem *lineItem;
+    QGraphicsTextItem *labelItem;
+
+    AcGraphicsGridLineItemPrivate(AcGraphicsGridLineItem *q);
+    ~AcGraphicsGridLineItemPrivate();
+
+    void updateFont();
+    void updateLabel(const QString &label);
+    void updateColor(const QColor &color);
+};
+
+inline AcGraphicsGridLineItem::AcGraphicsGridLineItem(AcGraphicsGridLineItemPrivate &dd, QObject *parent)
+    :   AcGraphicsItem(dd, parent)
+{}
 
 #endif // AC_GRAPHICSGRIDLINEITEM_H

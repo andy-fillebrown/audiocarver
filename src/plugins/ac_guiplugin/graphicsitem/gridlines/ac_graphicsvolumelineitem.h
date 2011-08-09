@@ -15,30 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSTIMELINEITEM_H
-#define AC_GRAPHICSTIMELINEITEM_H
+#ifndef AC_GRAPHICSVOLUMELINEITEM_H
+#define AC_GRAPHICSVOLUMELINEITEM_H
 
-#include <ac_graphicsgridlineitem.h>
+#include <ac_graphicshgridlineitem.h>
 
-class AcGraphicsTimeLineItemPrivate;
-
-class AcGraphicsTimeLineItem : public AcGraphicsGridLineItem
+class AcGraphicsVolumeLineItemPrivate;
+class AcGraphicsVolumeLineItem : public AcGraphicsHGridLineItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsTimeLineItem(AcGridLine *gridLine = 0, QObject *parent = 0);
-    ~AcGraphicsTimeLineItem();
+    explicit AcGraphicsVolumeLineItem(QObject *parent = 0);
+
+    ~AcGraphicsVolumeLineItem()
+    {}
 
     QGraphicsItem *sceneItem(SceneType sceneType) const;
 
-protected:
-    void updateViewSettings(int i, const QVariant &value);
     void updateDataObject(int i, const QVariant &value);
+    void updateViewSettings(int i);
+    void updateScore(int i);
 
 private:
-    Q_DISABLE_COPY(AcGraphicsTimeLineItem)
-    Q_DECLARE_PRIVATE(AcGraphicsTimeLineItem)
+    Q_DISABLE_COPY(AcGraphicsVolumeLineItem)
+    Q_DECLARE_PRIVATE(AcGraphicsVolumeLineItem)
 };
 
-#endif // AC_GRAPHICSTIMELINEITEM_H
+#endif // AC_GRAPHICSVOLUMELINEITEM_H

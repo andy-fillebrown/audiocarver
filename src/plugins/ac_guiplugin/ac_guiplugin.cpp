@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_guiplugin.h"
-#include <ac_guifactory.h>
+//#include <ac_guifactory.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 #include <ac_editorimpl.h>
@@ -30,7 +30,7 @@ bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new AcGuiFactory);
+//    addAutoReleasedObject(new AcGuiFactory);
     addAutoReleasedObject(new AcMainWindowImpl);
     addAutoReleasedObject(new AcEditorImpl);
     return true;

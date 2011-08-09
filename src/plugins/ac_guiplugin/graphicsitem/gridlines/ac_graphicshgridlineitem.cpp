@@ -15,33 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSTRACKITEM_H
-#define AC_GRAPHICSTRACKITEM_H
-
-#include <ac_graphicsitem.h>
-
-class QGraphicsItemGroup;
-
-class AcGraphicsTrackItemPrivate;
-
-class AcGraphicsTrackItem : public AcGraphicsItem
-{
-    Q_OBJECT
-
-public:
-    AcGraphicsTrackItem(MiObject *track = 0, QObject *parent = 0);
-
-    ~AcGraphicsTrackItem()
-    {}
-
-    QGraphicsItem *sceneItem(SceneType sceneType) const;
-
-protected:
-    void updateDataObject(int i, const QVariant &value);
-
-private:
-    Q_DISABLE_COPY(AcGraphicsTrackItem)
-    Q_DECLARE_PRIVATE(AcGraphicsTrackItem)
-};
-
-#endif // AC_GRAPHICSTRACKITEM_H
+#include "ac_graphicshgridlineitem.h"
