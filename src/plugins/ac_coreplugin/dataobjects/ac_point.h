@@ -19,6 +19,7 @@
 #define AC_POINT_H
 
 #include <ac_core_global.h>
+#include <ac_propertyindexes.h>
 #include <mi_scopedchange.h>
 
 class QPointF;
@@ -46,12 +47,6 @@ class AC_CORE_EXPORT AcPoint : public MiObject
     Q_PROPERTY(qreal y READ y WRITE setY)
 
 public:
-    enum PropertyIndex {
-        XIndex = MiObject::PropertyCount,
-        YIndex,
-        PropertyCount
-    };
-
     AcPoint()
         :   MiObject(*(new AcPointPrivate(this)))
     {}
@@ -72,7 +67,7 @@ public:
             x = 0.0f;
         if (d->x == x)
             return;
-        changing(XIndex);
+        changing(Point::X);
         d->x = x;
     }
 
@@ -89,7 +84,7 @@ public:
             y = 0.0f;
         if (d->y == y)
             return;
-        changing(YIndex);
+        changing(Point::Y);
         d->y = y;
     }
 

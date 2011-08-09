@@ -81,7 +81,7 @@ QGraphicsItem *AcGraphicsPitchLineItem::sceneItem(SceneType sceneType) const
 
 void AcGraphicsPitchLineItem::updateViewSettings(int i, const QVariant &value)
 {
-    if (AcViewSettings::PitchScaleIndex == i) {
+    if (ViewSettings::PitchScale == i) {
         Q_D(AcGraphicsPitchLineItem);
         d->updateLabelPosition();
     }
@@ -90,7 +90,7 @@ void AcGraphicsPitchLineItem::updateViewSettings(int i, const QVariant &value)
 void AcGraphicsPitchLineItem::updateDataObject(int i, const QVariant &value)
 {
     AcGraphicsGridLineItem::updateDataObject(i, value);
-    if (AcGridLine::LocationIndex == i) {
+    if (GridLine::Location == i) {
         Q_D(AcGraphicsPitchLineItem);
         d->update();
     }
@@ -98,7 +98,7 @@ void AcGraphicsPitchLineItem::updateDataObject(int i, const QVariant &value)
 
 void AcGraphicsPitchLineItem::updateScore(int i, const QVariant &value)
 {
-    if (AcScore::LengthIndex == i) {
+    if (Score::Length == i) {
         Q_D(AcGraphicsPitchLineItem);
         d->updateLineGeometry();
     }

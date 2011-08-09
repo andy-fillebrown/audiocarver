@@ -84,7 +84,7 @@ QGraphicsItem *AcGraphicsVolumeLineItem::sceneItem(SceneType sceneType) const
 
 void AcGraphicsVolumeLineItem::updateViewSettings(int i, const QVariant &value)
 {
-    if (AcViewSettings::VolumeScaleIndex == i) {
+    if (ViewSettings::VolumeScale == i) {
         Q_D(AcGraphicsVolumeLineItem);
         d->updateLabelPosition();
     }
@@ -93,7 +93,7 @@ void AcGraphicsVolumeLineItem::updateViewSettings(int i, const QVariant &value)
 void AcGraphicsVolumeLineItem::updateDataObject(int i, const QVariant &value)
 {
     AcGraphicsGridLineItem::updateDataObject(i, value);
-    if (AcGridLine::LocationIndex == i) {
+    if (GridLine::Location == i) {
         Q_D(AcGraphicsVolumeLineItem);
         d->update();
     }
@@ -101,7 +101,7 @@ void AcGraphicsVolumeLineItem::updateDataObject(int i, const QVariant &value)
 
 void AcGraphicsVolumeLineItem::updateScore(int i, const QVariant &value)
 {
-    if (AcScore::LengthIndex == i) {
+    if (Score::Length == i) {
         Q_D(AcGraphicsVolumeLineItem);
         d->updateLineGeometry();
     }

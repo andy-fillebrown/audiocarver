@@ -25,8 +25,6 @@ class MI_CORE_EXPORT MiSortedListObject : public MiListObject
     Q_OBJECT
 
 public:
-    typedef MiListObject::PropertyIndex PropertyIndex;
-
     ~MiSortedListObject()
     {}
 

@@ -19,6 +19,7 @@
 #define AC_SCOREOBJECT_H
 
 #include <ac_core_global.h>
+#include <ac_propertyindexes.h>
 #include <mi_scopedchange.h>
 
 class AcPitchCurve;
@@ -49,14 +50,6 @@ class AC_CORE_EXPORT AcScoreObject : public MiObject
     Q_PROPERTY(AcVolumeCurve* volumeCurve READ volumeCurve)
 
 public:
-    enum PropertyIndex {
-        VolumeIndex = MiObject::PropertyCount,
-        ColorIndex,
-        PitchCurveIndex,
-        VolumeCurveIndex,
-        PropertyCount
-    };
-
     ~AcScoreObject()
     {}
 
@@ -75,7 +68,7 @@ public:
             volume = 1.0f;
         if (volume == d->volume)
             return;
-        changing(VolumeIndex);
+        changing(ScoreObject::Volume);
         d->volume = volume;
     }
 
@@ -90,7 +83,7 @@ public:
         Q_D(AcScoreObject);
         if (color == d->color)
             return;
-        changing(ColorIndex);
+        changing(ScoreObject::Color);
         d->color = color;
     }
 

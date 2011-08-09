@@ -19,6 +19,7 @@
 #define MI_FONTSETTINGS_H
 
 #include <mi_scopedchange.h>
+#include <mi_propertyindexes.h>
 
 class MiFontSettingsPrivate : public MiObjectPrivate
 {
@@ -43,12 +44,6 @@ class MI_CORE_EXPORT MiFontSettings : public MiObject
     Q_PROPERTY(int pointSize READ pointSize WRITE setPointSize)
 
 public:
-    enum PropertyIndex {
-        FamilyIndex = MiObject::PropertyCount,
-        PointSizeIndex,
-        PropertyCount
-    };
-
     MiFontSettings()
         :   MiObject(*(new MiFontSettingsPrivate(this)))
     {}
@@ -67,7 +62,7 @@ public:
         Q_D(MiFontSettings);
         if (d->family == family)
             return;
-        changing(FamilyIndex);
+        changing(FontSettings::Family);
         d->family = family;
     }
 
@@ -84,7 +79,7 @@ public:
             pointSize = 1;
         if (d->pointSize == pointSize)
             return;
-        changing(PointSizeIndex);
+        changing(FontSettings::PointSize);
         d->pointSize = pointSize;
     }
 

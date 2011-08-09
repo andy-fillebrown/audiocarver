@@ -59,16 +59,6 @@ class AC_CORE_EXPORT AcScore : public AcScoreObject
     Q_PROPERTY(MiListObject* settings READ settingsList)
 
 public:
-    enum PropertyIndex {
-        LengthIndex = AcScoreObject::PropertyCount,
-        TracksIndex,
-        TimeLinesIndex,
-        PitchLinesIndex,
-        VolumeLinesIndex,
-        SettingsIndex,
-        PropertyCount
-    };
-
     AcScore();
 
     ~AcScore()
@@ -89,7 +79,7 @@ public:
             length = 0.0f;
         if (length == d->length)
             return;
-        changing(LengthIndex);
+        changing(Score::Length);
         d->length = length;
     }
 

@@ -18,27 +18,31 @@
 #ifndef MI_PROPERTYINDEXES_H
 #define MI_PROPERTYINDEXES_H
 
-namespace Properties {
+struct Object {
+    enum Index {
+        Id = 0,
+        Count
+    };
+};
 
-namespace Object { enum Index {
-    Id = 0,
-    Count
-};}
+struct ListObject : public Object {
+    enum Index {
+        Children = -1,
+        Id = Object::Id,
+        Count = Object::Count
+    };
+};
 
-namespace ListObject {
-typedef Object::Index Index;
-}
+struct SortedListObject : public ListObject {
+    typedef ListObject::Index Index;
+};
 
-namespace SortedListObject {
-typedef ListObject::Index Index;
-}
-
-namespace FontSettings { enum Index {
-    Family = Object::Count,
-    PointSize,
-    Count
-};}
-
-} // namespace Properties
+struct FontSettings : public Object {
+    enum Index {
+        Family = Object::Count,
+        PointSize,
+        Count
+    };
+};
 
 #endif // MI_PROPERTYINDEXES_H

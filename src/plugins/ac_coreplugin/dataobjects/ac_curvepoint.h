@@ -47,12 +47,6 @@ class AC_CORE_EXPORT AcCurvePoint : public AcPoint
     Q_PROPERTY(StretchType stretchType READ stretchType WRITE setStretchType)
 
 public:
-    enum PropertyIndex {
-        CurveTypeIndex = AcPoint::PropertyCount,
-        StretchTypeIndex,
-        PropertyCount
-    };
-
     enum CurveType {
         NoCurve,
         BezierCurve
@@ -83,7 +77,7 @@ public:
         Q_D(AcCurvePoint);
         if (type == CurveType(d->curveType))
             return;
-        changing(CurveTypeIndex);
+        changing(CurvePoint::CurveType);
         d->curveType = type;
     }
 
@@ -98,7 +92,7 @@ public:
         Q_D(AcCurvePoint);
         if (type == StretchType(d->stretchType))
             return;
-        changing(StretchTypeIndex);
+        changing(CurvePoint::StretchType);
         d->stretchType = type;
     }
 

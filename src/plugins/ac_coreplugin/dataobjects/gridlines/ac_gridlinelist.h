@@ -19,6 +19,7 @@
 #define AC_GRIDLINELIST_H
 
 #include <ac_core_global.h>
+#include <ac_propertyindexes.h>
 #include <mi_sortedlistobject.h>
 
 class AcGridLine;
@@ -30,9 +31,7 @@ class AC_CORE_EXPORT AcGridLineList : public MiSortedListObject
     Q_OBJECT
 
 public:
-    typedef MiSortedListObject::PropertyIndex PropertyIndex;
-
-    explicit AcGridLineList(int propertyIndex = 0)
+    explicit AcGridLineList(int propertyIndex = GridLineList::Children)
         :   MiSortedListObject(*(new AcGridLineListPrivate(this, propertyIndex)))
     {}
 
@@ -52,16 +51,31 @@ private:
 class AcTimeLineList : public AcGridLineList
 {
     Q_OBJECT
+
+public:
+    AcTimeLineList(int propertyIndex = TimeLineList::Children)
+        :   AcGridLineList(propertyIndex)
+    {}
 };
 
 class AcPitchLineList : public AcGridLineList
 {
     Q_OBJECT
+
+public:
+    AcPitchLineList(int propertyIndex = PitchLineList::Children)
+        :   AcGridLineList(propertyIndex)
+    {}
 };
 
 class AcVolumeLineList : public AcGridLineList
 {
     Q_OBJECT
+
+public:
+    AcVolumeLineList(int propertyIndex = VolumeLineList::Children)
+        :   AcGridLineList(propertyIndex)
+    {}
 };
 
 #endif // AC_GRIDLINELIST_H

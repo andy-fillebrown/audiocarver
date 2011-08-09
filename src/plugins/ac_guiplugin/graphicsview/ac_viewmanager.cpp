@@ -167,14 +167,14 @@ void AcViewManager::updateViews()
 void AcViewManager::updateViewSettings(int i, const QVariant &value)
 {
     switch (i) {
-    case AcViewSettings::TimePositionIndex:
-    case AcViewSettings::PitchPositionIndex:
-    case AcViewSettings::VolumePositionIndex:
+    case ViewSettings::TimePosition:
+    case ViewSettings::PitchPosition:
+    case ViewSettings::VolumePosition:
         d->updateViewCenters();
         break;
-    case AcViewSettings::TimeScaleIndex:
-    case AcViewSettings::PitchScaleIndex:
-    case AcViewSettings::VolumeScaleIndex:
+    case ViewSettings::TimeScale:
+    case ViewSettings::PitchScale:
+    case ViewSettings::VolumeScale:
         updateViews();
         break;
     default:

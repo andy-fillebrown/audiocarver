@@ -20,130 +20,126 @@
 
 #include <mi_propertyindexes.h>
 
-namespace Properties {
-
-namespace ScoreObject {
-enum Index {
-    Volume = Object::Count,
-    Color,
-    PitchCurve,
-    VolumeCurve,
-    Count
+struct ScoreObject : public Object {
+    enum Index {
+        Volume = Object::Count,
+        Color,
+        PitchCurve,
+        VolumeCurve,
+        Count
+    };
 };
-}
 
-namespace Score {
-enum Index {
-    Length = ScoreObject::Count,
-    Tracks,
-    TimeLines,
-    PitchLines,
-    VolumeLines,
-    Settings,
-    Count
+struct Score : public ScoreObject {
+    enum Index {
+        Length = ScoreObject::Count,
+        Tracks,
+        TimeLines,
+        PitchLines,
+        VolumeLines,
+        Settings,
+        Count
+    };
 };
-}
 
-namespace TrackList {
-typedef ListObject::Index Index;
-}
-
-namespace Track {
-enum Index {
-    Notes = ScoreObject::Count,
-    Count
+struct TrackList : public ListObject {
+    typedef ListObject::Index Index;
 };
-}
 
-namespace NoteList {
-typedef SortedListObject::Index Index;
-}
-
-namespace Note {
-typedef ScoreObject::Index Index;
-}
-
-namespace Curve {
-typedef SortedListObject::Index Index;
-}
-
-namespace PitchCurve {
-typedef Curve::Index Index;
-}
-
-namespace VolumeCurve {
-typedef Curve::Index Index;
-}
-
-namespace Point {
-enum Index {
-    X = Object::Count,
-    Y,
-    Count
+struct Track : public ScoreObject {
+    enum Index {
+        Notes = ScoreObject::Count,
+        Count
+    };
 };
-}
 
-namespace CurvePoint {
-enum Index {
-    CurveType = Point::Count,
-    StretchType,
-    Count
+struct NoteList : public SortedListObject {
+    typedef SortedListObject::Index Index;
 };
-}
 
-namespace PitchPoint {
-typedef CurvePoint::Index Index;
-}
-
-namespace VolumePoint {
-typedef CurvePoint::Index Index;
-}
-
-namespace GridLineList {
-typedef SortedListObject::Index Index;
-}
-
-namespace GridLine {
-enum Index {
-    Location = Object::Count,
-    Label,
-    Priority,
-    Color,
-    Count
+struct Note : public ScoreObject {
+    typedef ScoreObject::Index Index;
 };
-}
 
-namespace TimeLineList {
-typedef GridLineList::Index Index;
-}
-
-namespace PitchLineList {
-typedef GridLineList::Index Index;
-}
-
-namespace VolumeLineList {
-typedef GridLineList::Index Index;
-}
-
-namespace GridSettings {
-enum Index {
-    Visible = Object::Count,
-    Count
+struct Curve : public SortedListObject {
+    typedef SortedListObject::Index Index;
 };
-}
 
-namespace ViewSettings {
-enum Index {
-    TimePosition = Object::Count,
-    PitchPosition,
-    VolumePosition,
-    TimeScale,
-    PitchScale,
-    VolumeScale,
-    Count
+struct PitchCurve : public Curve {
+    typedef Curve::Index Index;
 };
-}
 
-} // namespace Properties
+struct VolumeCurve : public Curve {
+    typedef Curve::Index Index;
+};
+
+struct Point: public Object {
+    enum Index {
+        X = Object::Count,
+        Y,
+        Count
+    };
+};
+
+struct CurvePoint : public Point {
+    enum Index {
+        CurveType = Point::Count,
+        StretchType,
+        Count
+    };
+};
+
+struct PitchPoint : public CurvePoint {
+    typedef CurvePoint::Index Index;
+};
+
+struct VolumePoint : public CurvePoint {
+    typedef CurvePoint::Index Index;
+};
+
+struct GridLineList : public SortedListObject {
+    typedef SortedListObject::Index Index;
+};
+
+struct GridLine : public Object {
+    enum Index {
+        Location = Object::Count,
+        Label,
+        Priority,
+        Color,
+        Count
+    };
+};
+
+struct TimeLineList : public GridLineList {
+    typedef GridLineList::Index Index;
+};
+
+struct PitchLineList : public GridLineList {
+    typedef GridLineList::Index Index;
+};
+
+struct VolumeLineList : public GridLineList {
+    typedef GridLineList::Index Index;
+};
+
+struct GridSettings : public Object {
+    enum Index {
+        Visible = Object::Count,
+        Count
+    };
+};
+
+struct ViewSettings : public Object {
+    enum Index {
+        TimePosition = Object::Count,
+        PitchPosition,
+        VolumePosition,
+        TimeScale,
+        PitchScale,
+        VolumeScale,
+        Count
+    };
+};
 
 #endif // AC_PROPERTYINDEXES_H

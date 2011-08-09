@@ -20,7 +20,7 @@
 
 AcTrackPrivate::AcTrackPrivate(AcScoreObject *q)
     :   AcScoreObjectPrivate(q)
-    ,   notes(new AcNoteList(AcTrack::NotesIndex))
+    ,   notes(new AcNoteList(Track::Notes))
 {}
 
 void AcTrackPrivate::init()

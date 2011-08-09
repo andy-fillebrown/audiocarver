@@ -20,7 +20,7 @@
 
 void AcCurvePrivate::childChanged(int i)
 {
-    if (AcCurvePoint::XIndex == i) {
+    if (CurvePoint::X == i) {
         Q_Q(AcCurve);
         q->update();
     }
@@ -30,8 +30,8 @@ void AcCurvePrivate::childChanged(int i)
 bool AcCurvePrivate::isSortProperty(int i) const
 {
     switch (i) {
-    case AcCurvePoint::XIndex:
-    case AcCurvePoint::YIndex:
+    case CurvePoint::X:
+    case CurvePoint::Y:
         return true;
     }
     return false;

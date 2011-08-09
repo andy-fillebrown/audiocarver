@@ -68,11 +68,6 @@ class MI_CORE_EXPORT MiObject : protected QObject
     Q_OBJECT
 
 public:
-    enum PropertyIndex {
-        IdIndex = 0,
-        PropertyCount
-    };
-
     ~MiObject()
     {
         delete d_ptr;

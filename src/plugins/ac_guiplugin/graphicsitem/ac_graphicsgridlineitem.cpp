@@ -96,10 +96,10 @@ void AcGraphicsGridLineItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsGridLineItem);
     switch (i) {
-    case AcGridLine::LabelIndex:
+    case GridLine::Label:
         d->updateLabel();
         break;
-    case AcGridLine::ColorIndex:
+    case GridLine::Color:
         d->updateColor();
         break;
     default:

@@ -74,6 +74,6 @@ AcVolumeLabelScene *AcVolumeLabelScene::instance()
 
 void AcVolumeLabelScene::updateViewSettings(int i, const QVariant &value)
 {
-    if (AcViewSettings::VolumeScaleIndex == i)
+    if (ViewSettings::VolumeScale == i)
         d->updateSceneRect();
 }

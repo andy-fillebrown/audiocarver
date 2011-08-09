@@ -236,10 +236,10 @@ void AcGraphicsNoteItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsNoteItem);
     switch (i) {
-    case AcNote::PitchCurveIndex:
+    case Note::PitchCurve:
         d->updatePitchLineItem();
         break;
-    case AcNote::VolumeCurveIndex:
+    case Note::VolumeCurve:
         d->updateVolumeLineItem();
     }
 }

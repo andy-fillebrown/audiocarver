@@ -19,6 +19,7 @@
 #define AC_VIEWSETTINGS_H
 
 #include <ac_core_global.h>
+#include <ac_propertyindexes.h>
 #include <mi_scopedchange.h>
 
 class AcViewSettingsPrivate : public MiObjectPrivate
@@ -56,16 +57,6 @@ class AC_CORE_EXPORT AcViewSettings : public MiObject
     Q_PROPERTY(qreal volumeScale READ volumeScale WRITE setVolumeScale)
 
 public:
-    enum PropertyIndexes {
-        TimePositionIndex = MiObject::PropertyCount,
-        PitchPositionIndex,
-        VolumePositionIndex,
-        TimeScaleIndex,
-        PitchScaleIndex,
-        VolumeScaleIndex,
-        PropertyCount
-    };
-
     AcViewSettings()
         :   MiObject(*(new AcViewSettingsPrivate(this)))
     {}
@@ -84,7 +75,7 @@ public:
         Q_D(AcViewSettings);
         if (d->timePosition == position)
             return;
-        changing(TimePositionIndex);
+        changing(ViewSettings::TimePosition);
         d->timePosition = position;
     }
 
@@ -99,7 +90,7 @@ public:
         Q_D(AcViewSettings);
         if (d->pitchPosition == position)
             return;
-        changing(PitchPositionIndex);
+        changing(ViewSettings::PitchPosition);
         d->pitchPosition = position;
     }
 
@@ -114,7 +105,7 @@ public:
         Q_D(AcViewSettings);
         if (d->volumePosition == position)
             return;
-        changing(VolumePositionIndex);
+        changing(ViewSettings::VolumePosition);
         d->volumePosition = position;
     }
 
@@ -129,7 +120,7 @@ public:
         Q_D(AcViewSettings);
         if (d->timeScale == scale)
             return;
-        changing(TimeScaleIndex);
+        changing(ViewSettings::TimeScale);
         d->timeScale = scale;
     }
 
@@ -144,7 +135,7 @@ public:
         Q_D(AcViewSettings);
         if (d->pitchScale == scale)
             return;
-        changing(PitchScaleIndex);
+        changing(ViewSettings::PitchScale);
         d->pitchScale = scale;
     }
 
@@ -159,7 +150,7 @@ public:
         Q_D(AcViewSettings);
         if (d->volumeScale == scale)
             return;
-        changing(VolumeScaleIndex);
+        changing(ViewSettings::VolumeScale);
         d->volumeScale = scale;
     }
 

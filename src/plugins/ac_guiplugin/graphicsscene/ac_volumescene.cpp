@@ -64,6 +64,6 @@ AcVolumeScene *AcVolumeScene::instance()
 
 void AcVolumeScene::updateScore(int i, const QVariant &valuei)
 {
-    if (AcScore::LengthIndex == i)
+    if (Score::Length == i)
         d->updateSceneRect();
 }

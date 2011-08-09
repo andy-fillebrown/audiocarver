@@ -28,8 +28,6 @@ class AC_CORE_EXPORT AcCurve : public MiSortedListObject
     Q_OBJECT
 
 public:
-    typedef MiSortedListObject::PropertyIndex PropertyIndex;
-
     ~AcCurve()
     {}
 

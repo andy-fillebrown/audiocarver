@@ -19,6 +19,7 @@
 #define MI_LISTOBJECT_H
 
 #include <mi_object.h>
+#include <mi_propertyindexes.h>
 #include <mi_scopedchange.h>
 
 class MiListObjectPrivate;
@@ -28,9 +29,7 @@ class MI_CORE_EXPORT MiListObject : public MiObject
     Q_OBJECT
 
 public:
-    typedef MiObject::PropertyIndex PropertyIndex;
-
-    MiListObject(int propertyIndex = 0);
+    MiListObject(int propertyIndex = ListObject::Children);
 
     ~MiListObject()
     {}
@@ -107,7 +106,7 @@ inline void MiListObject::addChild(MiObject *child)
     if (!child || children().contains(child))
         return;
     Q_D(MiListObject);
-    changing(-1);
+    changing(ListObject::Children);
     d->MiObjectPrivate::addChild(child);
 }
 
@@ -116,7 +115,7 @@ inline void MiListObject::removeChild(MiObject *child)
     if (!child || !children().contains(child))
         return;
     Q_D(MiListObject);
-    changing(-1);
+    changing(ListObject::Children);
     d->MiObjectPrivate::removeChild(child);
 }
 

@@ -19,6 +19,7 @@
 #define AC_GRIDLINE_H
 
 #include <ac_core_global.h>
+#include <ac_propertyindexes.h>
 #include <mi_scopedchange.h>
 
 class AcGridLinePrivate : public MiObjectPrivate
@@ -50,14 +51,6 @@ class AC_CORE_EXPORT AcGridLine : public MiObject
     Q_PROPERTY(quint32 color READ color WRITE setColor)
 
 public:
-    enum PropertyIndex {
-        LocationIndex = MiObject::PropertyCount,
-        LabelIndex,
-        PriorityIndex,
-        ColorIndex,
-        PropertyCount
-    };
-
     AcGridLine()
         :   MiObject(*(new AcGridLinePrivate(this)))
     {}
@@ -78,7 +71,7 @@ public:
             location = 0.0f;
         if (d->location == location)
             return;
-        changing(LocationIndex);
+        changing(GridLine::Location);
         d->location = location;
     }
 
@@ -93,7 +86,7 @@ public:
         Q_D(AcGridLine);
         if (d->label == label)
             return;
-        changing(LabelIndex);
+        changing(GridLine::Label);
         d->label = label;
     }
 
@@ -110,7 +103,7 @@ public:
             priority = 0;
         if (d->priority == priority)
             return;
-        changing(PriorityIndex);
+        changing(GridLine::Priority);
         d->priority = priority;
     }
 
@@ -125,7 +118,7 @@ public:
         Q_D(AcGridLine);
         if (d->color == color)
             return;
-        changing(ColorIndex);
+        changing(GridLine::Color);
         d->color = color;
     }
 

@@ -19,6 +19,7 @@
 #define AC_TRACKLIST_H
 
 #include <ac_core_global.h>
+#include <ac_propertyindexes.h>
 #include <mi_listobject.h>
 
 class AcTrack;
@@ -30,7 +31,7 @@ class AC_CORE_EXPORT AcTrackList : public MiListObject
     Q_OBJECT
 
 public:
-    explicit AcTrackList(int propertyIndex = 0);
+    explicit AcTrackList(int propertyIndex = TrackList::Children);
 
     ~AcTrackList()
     {}

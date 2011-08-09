@@ -82,7 +82,7 @@ QGraphicsItem *AcGraphicsTrackItem::sceneItem(SceneType sceneType) const
 
 void AcGraphicsTrackItem::updateDataObject(int i, const QVariant &value)
 {
-    if (AcTrack::NotesIndex == i) {
+    if (Track::Notes == i) {
         Q_D(AcGraphicsTrackItem);
         d->updateNoteItems();
     }

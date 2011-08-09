@@ -61,6 +61,6 @@ AcPitchScene *AcPitchScene::instance()
 
 void AcPitchScene::updateScore(int i, const QVariant &value)
 {
-    if (AcScore::LengthIndex == i)
+    if (Score::Length == i)
         d->updateSceneRect();
 }

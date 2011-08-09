@@ -75,12 +75,12 @@ AcTimeLabelScene *AcTimeLabelScene::instance()
 
 void AcTimeLabelScene::updateViewSettings(int i, const QVariant &value)
 {
-    if (AcViewSettings::TimeScaleIndex == i)
+    if (ViewSettings::TimeScale == i)
         d->updateSceneRect();
 }
 
 void AcTimeLabelScene::updateScore(int i, const QVariant &value)
 {
-    if (AcScore::LengthIndex == i)
+    if (Score::Length == i)
         d->updateSceneRect();
 }

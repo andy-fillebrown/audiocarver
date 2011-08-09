@@ -191,18 +191,18 @@ AcSceneManager *AcSceneManager::instance()
 void AcSceneManager::updateScore(int i, const QVariant &value)
 {
     switch (i) {
-    case AcScore::TracksIndex:
+    case Score::Tracks:
         d->updateTrackItems();
         break;
-    case AcScore::TimeLinesIndex:
+    case Score::TimeLines:
         d->updateTimeLineItems();
         d->updateTimeLineItemVisibilities();
         break;
-    case AcScore::PitchLinesIndex:
+    case Score::PitchLines:
         d->updatePitchLineItems();
         d->updatePitchLineItemVisibilities();
         break;
-    case AcScore::VolumeLinesIndex:
+    case Score::VolumeLines:
         d->updateVolumeLineItems();
         d->updateVolumeLineItemVisibilities();
         break;
@@ -223,13 +223,13 @@ void AcSceneManager::updateFontSettings(int i, const QVariant &value)
 void AcSceneManager::updateViewSettings(int i, const QVariant &value)
 {
     switch (i) {
-    case AcViewSettings::TimeScaleIndex:
+    case ViewSettings::TimeScale:
         d->updateTimeLineItemVisibilities();
         break;
-    case AcViewSettings::PitchScaleIndex:
+    case ViewSettings::PitchScale:
         d->updatePitchLineItemVisibilities();
         break;
-    case AcViewSettings::VolumeScaleIndex:
+    case ViewSettings::VolumeScale:
         d->updateVolumeLineItemVisibilities();
         break;
     default:

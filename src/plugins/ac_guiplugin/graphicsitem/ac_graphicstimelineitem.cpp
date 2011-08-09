@@ -93,7 +93,7 @@ QGraphicsItem *AcGraphicsTimeLineItem::sceneItem(SceneType sceneType) const
 
 void AcGraphicsTimeLineItem::updateViewSettings(int i, const QVariant &value)
 {
-    if (AcViewSettings::TimeScaleIndex == i) {
+    if (ViewSettings::TimeScale == i) {
         Q_D(AcGraphicsTimeLineItem);
         d->updateLocation();
     }
@@ -104,10 +104,10 @@ void AcGraphicsTimeLineItem::updateDataObject(int i, const QVariant &value)
     Q_D(AcGraphicsTimeLineItem);
     AcGraphicsGridLineItem::updateDataObject(i, value);
     switch (i) {
-    case AcGridLine::ColorIndex:
+    case GridLine::Color:
         d->updateColor();
         break;
-    case AcGridLine::LocationIndex:
+    case GridLine::Location:
         d->updateLocation();
         break;
     default:

@@ -62,8 +62,8 @@ void AcGraphicsPitchPointItem::updateViewSettings(int i, const QVariant &value)
 {
     Q_D(AcGraphicsPitchPointItem);
     switch (i) {
-    case AcViewSettings::TimeScaleIndex:
-    case AcViewSettings::PitchScaleIndex:
+    case ViewSettings::TimeScale:
+    case ViewSettings::PitchScale:
         d->updateRect();
         break;
     default:
@@ -75,8 +75,8 @@ void AcGraphicsPitchPointItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsPitchPointItem);
     switch (i) {
-    case AcPoint::XIndex:
-    case AcPoint::YIndex:
+    case Point::X:
+    case Point::Y:
         d->updateRect();
         break;
     default:

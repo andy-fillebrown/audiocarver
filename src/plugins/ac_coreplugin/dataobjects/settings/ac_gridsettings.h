@@ -19,6 +19,7 @@
 #define AC_GRIDSETTINGS_H
 
 #include <ac_core_global.h>
+#include <ac_propertyindexes.h>
 #include <mi_scopedchange.h>
 
 class AcGridSettingsPrivate : public MiObjectPrivate
@@ -41,11 +42,6 @@ class AC_CORE_EXPORT AcGridSettings : public MiObject
     Q_PROPERTY(bool visible READ visible WRITE setVisible)
 
 public:
-    enum PropertyIndex {
-        VisibleIndex = MiObject::PropertyCount,
-        PropertyCount
-    };
-
     AcGridSettings()
         :   MiObject(*(new AcGridSettingsPrivate(this)))
     {}
@@ -64,7 +60,7 @@ public:
         Q_D(AcGridSettings);
         if (d->visible == visible)
             return;
-        changing(VisibleIndex);
+        changing(GridSettings::Visible);
         d->visible = visible;
     }
 
