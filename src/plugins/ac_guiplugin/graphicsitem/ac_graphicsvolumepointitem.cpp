@@ -16,14 +16,30 @@
 **************************************************************************/
 
 #include "ac_graphicsvolumepointitem.h"
-#include <ac_point.h>
-#include <QGraphicsEllipseItem>
+#include <ac_scenemanager.h>
+#include <ac_propertyindexes.h>
+#include <QGraphicsRectItem>
 
 class AcGraphicsVolumePointItemPrivate : public AcGraphicsPointItemPrivate
-{};
+{
+    Q_DECLARE_PUBLIC(AcGraphicsVolumePointItem)
 
-AcGraphicsVolumePointItem::AcGraphicsVolumePointItem(AcPoint *point, QObject *parent)
-    :   AcGraphicsPointItem(point, parent)
+public:
+    AcGraphicsVolumePointItemPrivate(AcGraphicsVolumePointItem *q)
+        :   AcGraphicsPointItemPrivate(q)
+    {}
+
+    ~AcGraphicsVolumePointItemPrivate()
+    {}
+
+    void updateVolumeScale(qreal scale)
+    {
+        pointItem->setRect(pointItem->rect().x(), (scale * point.y()) - 3.0f, 6.0f, 6.0f);
+    }
+};
+
+AcGraphicsVolumePointItem::AcGraphicsVolumePointItem(QObject *parent)
+    :   AcGraphicsPointItem(*(new AcGraphicsVolumePointItemPrivate(this)), parent)
 {}
 
 QGraphicsItem *AcGraphicsVolumePointItem::sceneItem(SceneType sceneType) const
@@ -38,12 +54,26 @@ QGraphicsItem *AcGraphicsVolumePointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsVolumePointItem::updateViewSettings(int i, const QVariant &value)
-{
-    Q_UNUSED(i);
-}
-
 void AcGraphicsVolumePointItem::updateDataObject(int i, const QVariant &value)
 {
-    Q_UNUSED(i);
+    Q_D(AcGraphicsVolumePointItem);
+    switch (i) {
+    case Point::Y:
+        d->point.setY(1.0f - value.toReal());
+    case Point::X:
+        d->updateTimeScale(d->sceneManager()->timeScale());
+        d->updateVolumeScale(d->sceneManager()->volumeScale());
+        break;
+    default:
+        break;
+    }
+}
+
+void AcGraphicsVolumePointItem::updateViewSettings(int i, const QVariant &value)
+{
+    AcGraphicsPointItem::updateViewSettings(i, value);
+    if (ViewSettings::PitchScale == i) {
+        Q_D(AcGraphicsVolumePointItem);
+        d->updateVolumeScale(value.toReal());
+    }
 }

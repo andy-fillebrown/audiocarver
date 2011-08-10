@@ -20,23 +20,19 @@
 
 #include <ac_graphicspointitem.h>
 
-class AcPoint;
-
 class AcGraphicsPitchPointItemPrivate;
-
 class AcGraphicsPitchPointItem : public AcGraphicsPointItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsPitchPointItem(AcPoint *point = 0, QObject *parent = 0);
+    explicit AcGraphicsPitchPointItem(QObject *parent = 0);
 
     ~AcGraphicsPitchPointItem()
     {}
 
     QGraphicsItem *sceneItem(SceneType sceneType) const;
 
-protected:
     void updateViewSettings(int i, const QVariant &value);
     void updateDataObject(int i, const QVariant &value);
 

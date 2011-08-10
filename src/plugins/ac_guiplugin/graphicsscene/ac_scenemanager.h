@@ -47,6 +47,10 @@ public:
         foreach (AcGraphicsItem *item, items)
             addItem(item);
     }
+	
+	qreal timeScale() const;
+	qreal pitchScale() const;
+	qreal volumeScale() const;
 
     const QFont &font() const;
     const QFontMetrics &fontMetrics() const;

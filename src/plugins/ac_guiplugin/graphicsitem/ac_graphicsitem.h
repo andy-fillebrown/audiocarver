@@ -21,6 +21,7 @@
 #include <ac_guienums.h>
 #include <QObject>
 
+class AcSceneManager;
 class MiObject;
 class QFont;
 class QFontMetrics;
@@ -86,13 +87,14 @@ public:
     virtual ~AcGraphicsItemPrivate()
     {}
 
-    const QFont &font() const;
-    const QFontMetrics &fontMetrics() const;
+    const AcSceneManager *sceneManager() const;
     const QGraphicsScene *pitchScene() const;
     const QGraphicsScene *volumeScene() const;
     const QGraphicsScene *timeLabelScene() const;
     const QGraphicsScene *pitchLabelScene() const;
     const QGraphicsScene *volumeLabelScene() const;
+    const QFont &font() const;
+    const QFontMetrics &fontMetrics() const;
 };
 
 inline AcGraphicsItem::~AcGraphicsItem()

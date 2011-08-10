@@ -17,6 +17,7 @@
 
 #include "ac_graphicstimelineitem.h"
 #include <ac_propertyindexes.h>
+#include <ac_scenemanager.h>
 #include <QColor>
 #include <QFontMetrics>
 #include <QGraphicsLineItem>
@@ -48,7 +49,7 @@ public:
     {
         lineItem->setLine(location, 0.0f, location, 127.0f);
         volumeLineItem->setLine(location, 0.0f, location, 1.0f);
-        const qreal scale = timeLabelScene()->width() / pitchScene()->width();
+        const qreal scale = sceneManager()->timeScale();
         const QRect labelRect = fontMetrics().boundingRect(labelItem->toPlainText());
         const qreal x = (location * scale) - (labelRect.width() / 2.0f);
         const qreal y = (timeLabelScene()->height() / 2.0f) - (labelRect.height() / 2.0f);

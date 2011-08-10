@@ -16,35 +16,31 @@
 **************************************************************************/
 
 #include "ac_graphicspitchpointitem.h"
-#include <ac_point.h>
-#include <ac_viewsettings.h>
+#include <ac_scenemanager.h>
+#include <ac_propertyindexes.h>
 #include <QGraphicsRectItem>
 
 class AcGraphicsPitchPointItemPrivate : public AcGraphicsPointItemPrivate
 {
-public:
-    void update()
-    {
-        updateRect();
-    }
+    Q_DECLARE_PUBLIC(AcGraphicsPitchPointItem)
 
-    void updateRect()
+public:
+    AcGraphicsPitchPointItemPrivate(AcGraphicsPitchPointItem *q)
+        :   AcGraphicsPointItemPrivate(q)
+    {}
+
+    ~AcGraphicsPitchPointItemPrivate()
+    {}
+
+    void updatePitchScale(qreal scale)
     {
-        const AcPoint *point = q->point();
-        const qreal w = 6.0f;
-        const qreal h = 6.0f;
-        const qreal x = (viewSettings()->timeScale() * point->x()) - (w / 2.0f);
-        const qreal y = (viewSettings()->pitchScale() * (127.0f - point->y())) - (h / 2.0f);
-        pointItem->setRect(x, y, w, h);
+        pointItem->setRect(pointItem->rect().x(), (scale * point.y()) - 3.0f, 6.0f, 6.0f);
     }
 };
 
-AcGraphicsPitchPointItem::AcGraphicsPitchPointItem(AcPoint *point, QObject *parent)
-    :   AcGraphicsPointItem(point, parent)
-{
-    Q_D(AcGraphicsPitchPointItem);
-    d->update();
-}
+AcGraphicsPitchPointItem::AcGraphicsPitchPointItem(QObject *parent)
+    :   AcGraphicsPointItem(*(new AcGraphicsPitchPointItemPrivate(this)), parent)
+{}
 
 QGraphicsItem *AcGraphicsPitchPointItem::sceneItem(SceneType sceneType) const
 {
@@ -58,28 +54,26 @@ QGraphicsItem *AcGraphicsPitchPointItem::sceneItem(SceneType sceneType) const
     return 0;
 }
 
-void AcGraphicsPitchPointItem::updateViewSettings(int i, const QVariant &value)
+void AcGraphicsPitchPointItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsPitchPointItem);
     switch (i) {
-    case ViewSettings::TimeScale:
-    case ViewSettings::PitchScale:
-        d->updateRect();
+    case Point::Y:
+        d->point.setY(127.0f - value.toReal());
+    case Point::X:
+        d->updateTimeScale(d->sceneManager()->timeScale());
+        d->updatePitchScale(d->sceneManager()->pitchScale());
         break;
     default:
         break;
     }
 }
 
-void AcGraphicsPitchPointItem::updateDataObject(int i, const QVariant &value)
+void AcGraphicsPitchPointItem::updateViewSettings(int i, const QVariant &value)
 {
-    Q_D(AcGraphicsPitchPointItem);
-    switch (i) {
-    case Point::X:
-    case Point::Y:
-        d->updateRect();
-        break;
-    default:
-        break;
+    AcGraphicsPointItem::updateViewSettings(i, value);
+    if (ViewSettings::PitchScale == i) {
+        Q_D(AcGraphicsPitchPointItem);
+        d->updatePitchScale(value.toReal());
     }
 }

@@ -17,6 +17,7 @@
 
 #include "ac_graphicsvolumelineitem.h"
 #include <ac_propertyindexes.h>
+#include <ac_scenemanager.h>
 #include <QFont>
 #include <QFontMetrics>
 #include <QGraphicsScene>
@@ -45,7 +46,7 @@ public:
     void updateLabelPosition()
     {
         const qreal pos = lineItem->line().p1().y();
-        const qreal scale = volumeScene()->height() / 127.0f;
+        const qreal scale = sceneManager()->volumeScale();
         const QRect labelRect = fontMetrics().boundingRect(labelItem->toPlainText());
         const qreal x = volumeLabelScene()->width() - labelRect.width();
         const qreal y = (pos * scale) - (labelRect.height() / 1.25f);

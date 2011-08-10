@@ -20,25 +20,22 @@
 
 #include <ac_graphicspointitem.h>
 
-class AcPoint;
-
 class AcGraphicsVolumePointItemPrivate;
-
 class AcGraphicsVolumePointItem : public AcGraphicsPointItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsVolumePointItem(AcPoint *point = 0, QObject *parent = 0);
+    explicit AcGraphicsVolumePointItem(QObject *parent = 0);
 
     ~AcGraphicsVolumePointItem()
     {}
 
-    virtual QGraphicsItem *sceneItem(SceneType sceneType) const;
+    QGraphicsItem *sceneItem(SceneType sceneType) const;
 
 protected:
-    void updateViewSettings(int i, const QVariant &value);
     void updateDataObject(int i, const QVariant &value);
+    void updateViewSettings(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcGraphicsVolumePointItem)

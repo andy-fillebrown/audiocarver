@@ -16,16 +16,17 @@
 **************************************************************************/
 
 #include "ac_graphicspointitem.h"
-#include <ac_point.h>
+#include <ac_propertyindexes.h>
+#include <ac_scenemanager.h>
 #include <QBrush>
 #include <QGraphicsRectItem>
 #include <QPen>
 
-AcGraphicsPointItemPrivate::AcGraphicsPointItemPrivate(AcGraphicsPointItem *q, AcPoint *point)
-    :   q(q)
+AcGraphicsPointItemPrivate::AcGraphicsPointItemPrivate(AcGraphicsPointItem *q)
+    :   AcScaledGraphicsItemPrivate(q)
+    ,   curveType(Ac::NoCurve)
     ,   pointItem(new QGraphicsRectItem)
 {
-    dataObject = point;
     pointItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     pointItem->setPen(QPen(Qt::blue));
     pointItem->setBrush(QBrush(Qt::blue, Qt::SolidPattern));
@@ -38,15 +39,32 @@ AcGraphicsPointItemPrivate::~AcGraphicsPointItemPrivate()
     delete pointItem;
 }
 
-AcGraphicsPointItem::AcGraphicsPointItem(AcPoint *point, QObject *parent)
-    :   AcScaledGraphicsItem(*(new AcGraphicsPointItemPrivate(this, point)), parent)
-{}
+void AcGraphicsPointItemPrivate::updateTimeScale(qreal scale)
+{
+    pointItem->setRect((scale * point.x()) - 3.0f, pointItem->rect().y(), 6.0f, 6.0f);
+}
 
-AcGraphicsPointItem::~AcGraphicsPointItem()
-{}
-
-AcPoint *AcGraphicsPointItem::point()
+void AcGraphicsPointItem::updateDataObject(int i, const QVariant &value)
 {
     Q_D(AcGraphicsPointItem);
-    return d->dataObject->cast<AcPoint>();
+    switch (i) {
+    case CurvePoint::X:
+        d->point.setX(value.toReal());
+        break;
+    case CurvePoint::Y:
+        d->point.setY(127.0f - value.toReal());
+        break;
+    case CurvePoint::CurveType:
+        d->curveType = Ac::CurveType(value.toInt());
+        break;
+    default:
+        break;
+    }
+}
+
+void AcGraphicsPointItem::updateViewSettings(int i, const QVariant &value)
+{
+    Q_D(AcGraphicsPointItem);
+    if (ViewSettings::TimeScale == i)
+        d->updateTimeScale(value.toReal());
 }

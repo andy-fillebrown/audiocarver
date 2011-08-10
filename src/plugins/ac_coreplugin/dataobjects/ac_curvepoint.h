@@ -19,13 +19,14 @@
 #define AC_CURVEPOINT_H
 
 #include <ac_point.h>
+#include <ac_coreenums.h>
 #include <mi_scopedchange.h>
 
 class AcCurvePointPrivate : public AcPointPrivate
 {
 public:
-    quint32 curveType : 16;
-    quint32 stretchType : 16;
+    qint32 curveType : 16;
+    qint32 stretchType : 16;
     qreal previousX;
 
     AcCurvePointPrivate(AcPoint *q)
@@ -42,16 +43,10 @@ public:
 class AC_CORE_EXPORT AcCurvePoint : public AcPoint
 {
     Q_OBJECT
-    Q_ENUMS(CurveType StretchType)
-    Q_PROPERTY(CurveType curveType READ curveType WRITE setCurveType)
-    Q_PROPERTY(StretchType stretchType READ stretchType WRITE setStretchType)
+    Q_PROPERTY(int curveType READ curveType WRITE setCurveType)
+    Q_PROPERTY(int stretchType READ stretchType WRITE setStretchType)
 
 public:
-    enum CurveType {
-        NoCurve,
-        BezierCurve
-    };
-
     enum StretchType {
         StartStretch,
         MiddleStretch,
@@ -66,31 +61,31 @@ public:
     ~AcCurvePoint()
     {}
 
-    CurveType curveType() const
+    int curveType() const
     {
         Q_D(const AcCurvePoint);
-        return CurveType(d->curveType);
+        return d->curveType;
     }
 
-    void setCurveType(CurveType type)
+    void setCurveType(int type)
     {
         Q_D(AcCurvePoint);
-        if (type == CurveType(d->curveType))
+        if (type == d->curveType)
             return;
         changing(CurvePoint::CurveType);
         d->curveType = type;
     }
 
-    StretchType stretchType() const
+    int stretchType() const
     {
         Q_D(const AcCurvePoint);
-        return StretchType(d->stretchType);
+        return d->stretchType;
     }
 
-    void setStretchType(StretchType type)
+    void setStretchType(int type)
     {
         Q_D(AcCurvePoint);
-        if (type == StretchType(d->stretchType))
+        if (type == d->stretchType)
             return;
         changing(CurvePoint::StretchType);
         d->stretchType = type;

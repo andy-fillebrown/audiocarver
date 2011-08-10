@@ -19,34 +19,48 @@
 #define AC_GRAPHICSPOINTITEM_H
 
 #include <ac_scaledgraphicsitem.h>
+#include <ac_coreenums.h>
+#include <QPointF>
 
-class AcGraphicsPointItem;
-class AcPoint;
 class QGraphicsRectItem;
 
-class AcGraphicsPointItemPrivate : public AcScaledGraphicsItemPrivate
-{
-public:
-    AcGraphicsPointItem *q;
-    QGraphicsRectItem *pointItem;
-
-    AcGraphicsPointItemPrivate(AcGraphicsPointItem *q, AcPoint *point);
-    ~AcGraphicsPointItemPrivate();
-};
-
+class AcGraphicsPointItemPrivate;
 class AcGraphicsPointItem : public AcScaledGraphicsItem
 {
     Q_OBJECT
 
 public:
-    AcGraphicsPointItem(AcPoint *point = 0, QObject *parent = 0);
-    ~AcGraphicsPointItem();
+    ~AcGraphicsPointItem()
+    {}
 
-    AcPoint *point();
+    void updateDataObject(int i, const QVariant &value);
+    void updateViewSettings(int i, const QVariant &value);
+
+protected:
+    inline AcGraphicsPointItem(AcGraphicsPointItemPrivate &dd, QObject *parent);
 
 private:
     Q_DISABLE_COPY(AcGraphicsPointItem)
     Q_DECLARE_PRIVATE(AcGraphicsPointItem)
 };
+
+class AcGraphicsPointItemPrivate : public AcScaledGraphicsItemPrivate
+{
+    Q_DECLARE_PUBLIC(AcGraphicsPointItem)
+
+public:
+    QPointF point;
+    Ac::CurveType curveType;
+    QGraphicsRectItem *pointItem;
+
+    AcGraphicsPointItemPrivate(AcGraphicsPointItem *q);
+    ~AcGraphicsPointItemPrivate();
+
+    void updateTimeScale(qreal scale);
+};
+
+inline AcGraphicsPointItem::AcGraphicsPointItem(AcGraphicsPointItemPrivate &dd, QObject *parent)
+    :   AcScaledGraphicsItem(dd, parent)
+{}
 
 #endif // AC_GRAPHICSPOINTITEM_H

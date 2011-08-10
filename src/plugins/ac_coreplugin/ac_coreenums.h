@@ -18,12 +18,12 @@
 #ifndef AC_COREENUMS_H
 #define AC_COREENUMS_H
 
-//namespace Ac {
+namespace Ac {
 
-//enum CurveType {
-//    NoCurve,
-//    BezierCurve
-//};
+enum CurveType {
+    NoCurve,
+    BezierCurve
+};
 
 //enum StretchType {
 //    StartStretch,
@@ -32,6 +32,6 @@
 //    NoStretch
 //};
 
-//} // namespace Ac
+} // namespace Ac
 
 #endif // AC_COREENUMS_H

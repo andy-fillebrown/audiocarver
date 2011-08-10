@@ -55,37 +55,42 @@ void AcGraphicsItem::addItem(AcGraphicsItem *item)
     }
 }
 
-const QFont &AcGraphicsItemPrivate::font() const
+const AcSceneManager *AcGraphicsItemPrivate::sceneManager() const
 {
-    return AcSceneManager::instance()->font();
-}
-
-const QFontMetrics &AcGraphicsItemPrivate::fontMetrics() const
-{
-    return AcSceneManager::instance()->fontMetrics();
+    return AcSceneManager::instance();
 }
 
 const QGraphicsScene *AcGraphicsItemPrivate::pitchScene() const
 {
-    return AcSceneManager::instance()->scene(PitchScene);
+    return sceneManager()->scene(PitchScene);
 }
 
 const QGraphicsScene *AcGraphicsItemPrivate::volumeScene() const
 {
-    return AcSceneManager::instance()->scene(VolumeScene);
+    return sceneManager()->scene(VolumeScene);
 }
 
 const QGraphicsScene *AcGraphicsItemPrivate::timeLabelScene() const
 {
-    return AcSceneManager::instance()->scene(TimeLabelScene);
+    return sceneManager()->scene(TimeLabelScene);
 }
 
 const QGraphicsScene *AcGraphicsItemPrivate::pitchLabelScene() const
 {
-    return AcSceneManager::instance()->scene(PitchLabelScene);
+    return sceneManager()->scene(PitchLabelScene);
 }
 
 const QGraphicsScene *AcGraphicsItemPrivate::volumeLabelScene() const
 {
-    return AcSceneManager::instance()->scene(VolumeLabelScene);
+    return sceneManager()->scene(VolumeLabelScene);
+}
+
+const QFont &AcGraphicsItemPrivate::font() const
+{
+    return sceneManager()->font();
+}
+
+const QFontMetrics &AcGraphicsItemPrivate::fontMetrics() const
+{
+    return sceneManager()->fontMetrics();
 }
