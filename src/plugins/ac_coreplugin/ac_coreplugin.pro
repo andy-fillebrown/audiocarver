@@ -15,7 +15,7 @@ SOURCE_PAIRS += \
     \
     items/ac_item \
     \
-    tools/ac_point \
+#    tools/ac_point \
     \
     ac_coreplugin \
 
