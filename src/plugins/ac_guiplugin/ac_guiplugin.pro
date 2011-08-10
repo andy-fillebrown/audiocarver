@@ -7,19 +7,19 @@ include(ac_guiplugin_dependencies.pri)
 HEADERS += \
 #    factories/ac_guifactory.h \
 #    \
-    graphicsitem/gridlines/ac_graphicsgridlineitem.h \
-    graphicsitem/gridlines/ac_graphicshgridlineitem.h \
-    graphicsitem/gridlines/ac_graphicspitchlineitem.h \
-    graphicsitem/gridlines/ac_graphicstimelineitem.h \
-    graphicsitem/gridlines/ac_graphicsvolumelineitem.h \
-    \
-    graphicsitem/ac_graphicsitem.h \
+#    graphicsitem/gridlines/ac_graphicsgridlineitem.h \
+#    graphicsitem/gridlines/ac_graphicshgridlineitem.h \
+#    graphicsitem/gridlines/ac_graphicspitchlineitem.h \
+#    graphicsitem/gridlines/ac_graphicstimelineitem.h \
+#    graphicsitem/gridlines/ac_graphicsvolumelineitem.h \
+#    \
+#    graphicsitem/ac_graphicsitem.h \
 #    graphicsitem/ac_graphicsnoteitem.h \
-    graphicsitem/ac_graphicspitchpointitem.h \
-    graphicsitem/ac_graphicspointitem.h \
+#    graphicsitem/ac_graphicspitchpointitem.h \
+#    graphicsitem/ac_graphicspointitem.h \
 #    graphicsitem/ac_graphicstrackitem.h \
-    graphicsitem/ac_graphicsvolumepointitem.h \
-    graphicsitem/ac_scaledgraphicsitem.h \
+#    graphicsitem/ac_graphicsvolumepointitem.h \
+#    graphicsitem/ac_scaledgraphicsitem.h \
 #    \
 #    graphicsscene/ac_graphicsscene.h \
 #    graphicsscene/ac_labelscene.h \
@@ -52,19 +52,19 @@ HEADERS += \
 SOURCES += \
 #    factories/ac_guifactory.cpp \
 #    \
-    graphicsitem/gridlines/ac_graphicsgridlineitem.cpp \
-    graphicsitem/gridlines/ac_graphicshgridlineitem.cpp \
-    graphicsitem/gridlines/ac_graphicspitchlineitem.cpp \
-    graphicsitem/gridlines/ac_graphicstimelineitem.cpp \
-    graphicsitem/gridlines/ac_graphicsvolumelineitem.cpp \
-    \
-    graphicsitem/ac_graphicsitem.cpp \
+#    graphicsitem/gridlines/ac_graphicsgridlineitem.cpp \
+#    graphicsitem/gridlines/ac_graphicshgridlineitem.cpp \
+#    graphicsitem/gridlines/ac_graphicspitchlineitem.cpp \
+#    graphicsitem/gridlines/ac_graphicstimelineitem.cpp \
+#    graphicsitem/gridlines/ac_graphicsvolumelineitem.cpp \
+#    \
+#    graphicsitem/ac_graphicsitem.cpp \
 #    graphicsitem/ac_graphicsnoteitem.cpp \
-    graphicsitem/ac_graphicspitchpointitem.cpp \
-    graphicsitem/ac_graphicspointitem.cpp \
+#    graphicsitem/ac_graphicspitchpointitem.cpp \
+#    graphicsitem/ac_graphicspointitem.cpp \
 #    graphicsitem/ac_graphicstrackitem.cpp \
-    graphicsitem/ac_graphicsvolumepointitem.cpp \
-    graphicsitem/ac_scaledgraphicsitem.cpp \
+#    graphicsitem/ac_graphicsvolumepointitem.cpp \
+#    graphicsitem/ac_scaledgraphicsitem.cpp \
 #    \
 #    graphicsscene/ac_graphicsscene.cpp \
 #    graphicsscene/ac_labelscene.cpp \
@@ -84,7 +84,7 @@ SOURCES += \
 #    graphicsview/ac_viewmanager.cpp \
 #    graphicsview/ac_volumelabelview.cpp \
 #    graphicsview/ac_volumeview.cpp \
-#    \
+    \
     implementations/ac_editorimpl.cpp \
     implementations/ac_mainwindowimpl.cpp \
     \

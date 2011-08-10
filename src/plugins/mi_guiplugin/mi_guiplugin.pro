@@ -7,11 +7,11 @@ include(mi_guiplugin_dependencies.pri)
 DEFINES += MI_GUI_LIBRARY
 
 HEADERS += \
-    graphicsitem/mi_graphicspathitem.h \
-    \
-    graphicsscene/mi_graphicsscene.h \
-    \
-    graphicsview/mi_graphicsview.h \
+#    graphicsitem/mi_graphicspathitem.h \
+#    \
+#    graphicsscene/mi_graphicsscene.h \
+#    \
+#    graphicsview/mi_graphicsview.h \
     \
     implementations/mi_mainwindowimpl.h \
     \
@@ -22,11 +22,11 @@ HEADERS += \
     mi_guiplugin.h \
 
 SOURCES += \
-    graphicsitem/mi_graphicspathitem.cpp \
-    \
-    graphicsscene/mi_graphicsscene.cpp \
-    \
-    graphicsview/mi_graphicsview.cpp \
+#    graphicsitem/mi_graphicspathitem.cpp \
+#    \
+#    graphicsscene/mi_graphicsscene.cpp \
+#    \
+#    graphicsview/mi_graphicsview.cpp \
     \
     implementations/mi_mainwindowimpl.cpp \
     \

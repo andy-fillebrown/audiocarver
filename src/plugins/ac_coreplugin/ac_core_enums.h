@@ -15,23 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREENUMS_H
-#define AC_COREENUMS_H
+#ifndef AC_CORE_ENUMS_H
+#define AC_CORE_ENUMS_H
 
-namespace Ac {
-
-enum CurveType {
-    NoCurve,
-    BezierCurve
+enum SceneType
+{
+    PitchScene = 0,
+    ControlScene,
+    TimeLabelScene,
+    PitchLabelScene,
+    ControlLabelScene,
+    SceneTypeCount
 };
 
-//enum StretchType {
-//    StartStretch,
-//    MiddleStretch,
-//    EndStretch,
-//    NoStretch
-//};
-
-} // namespace Ac
-
-#endif // AC_COREENUMS_H
+#endif // AC_CORE_ENUMS_H

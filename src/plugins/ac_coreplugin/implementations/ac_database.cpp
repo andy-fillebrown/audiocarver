@@ -17,14 +17,14 @@
 
 #include "ac_database.h"
 //#include <ac_barline.h>
-#include <ac_note.h>
-#include <ac_notelist.h>
-#include <ac_pitchcurve.h>
-#include <ac_pitchpoint.h>
+//#include <ac_note.h>
+//#include <ac_notelist.h>
+//#include <ac_pitchcurve.h>
+//#include <ac_pitchpoint.h>
 //#include <ac_point.h>
-#include <ac_score.h>
-#include <ac_track.h>
-#include <ac_tracklist.h>
+//#include <ac_score.h>
+//#include <ac_track.h>
+//#include <ac_tracklist.h>
 //#include <ac_tuningline.h>
 //#include <ac_valueline.h>
 //#include <ac_volumecurve.h>
@@ -41,12 +41,12 @@ class AcDatabaseImplData
 {
 public:
     AcDatabaseImpl *q;
-    AcScore *score;
+//    AcScore *score;
     QString fileName;
 
     AcDatabaseImplData(AcDatabaseImpl *q)
         :   q(q)
-        ,   score(new AcScore)
+//        ,   score(new AcScore)
     {
 //        score->tuningLines().add()->set(127.0f, "", 0, Qt::black);
 //        score->tuningLines().add()->set(0.0f, "", 0, Qt::black);
@@ -84,42 +84,42 @@ public:
 //        score->valueLines().add()->set(0.125f, "0.125", 3);
 //        score->valueLines().add()->set(0.0f, "", 0, Qt::black);
 
-        AcTrack *track = new AcTrack;
-        score->tracks()->addChild(track);
+//        AcTrack *track = new AcTrack;
+//        score->tracks()->addChild(track);
 //        for (int i = 0;  i < 126;  ++i) {
-            int i = 48;
-            AcNote *note = new AcNote;
-            track->notes()->addChild(note);
-            AcPitchCurve *pitchCurve = note->pitchCurve();
-            AcPitchPoint *first = pitchCurve->children().first();
-            AcPitchPoint *last = pitchCurve->children().last();
-            AcPitchPoint *pitchPointA = new AcPitchPoint;
-            pitchCurve->addChild(pitchPointA);
-            pitchPointA->setCurveType(Ac::BezierCurve);
-            pitchPointA->setX(i + 0.0f);
-            pitchPointA->setY(60.0f);
-            AcPitchPoint *pitchPointB = new AcPitchPoint;
-            pitchCurve->addChild(pitchPointB);
-            pitchPointB->setCurveType(Ac::BezierCurve);
-            pitchPointB->setX(i + 1.0f);
-            pitchPointB->setY(72.0f);
-            AcPitchPoint *pitchPointC = new AcPitchPoint;
-            pitchCurve->addChild(pitchPointC);
-            pitchPointC->setCurveType(Ac::BezierCurve);
-            pitchPointC->setX(i + 2.0f);
-            pitchPointC->setY(67.0f);
-            AcPitchPoint *pitchPointD = new AcPitchPoint;
-            pitchCurve->addChild(pitchPointD);
-            pitchPointD->setCurveType(Ac::BezierCurve);
-            pitchPointD->setX(i + 5.0f);
-            pitchPointD->setY(71.0f);
-            AcPitchPoint *pitchPointE = new AcPitchPoint;
-            pitchCurve->addChild(pitchPointE);
-            pitchPointE->setCurveType(Ac::BezierCurve);
-            pitchPointE->setX(i + 7.0f);
-            pitchPointE->setY(72.0f);
-            pitchCurve->removeChild(first);
-            pitchCurve->removeChild(last);
+//            int i = 48;
+//            AcNote *note = new AcNote;
+//            track->notes()->addChild(note);
+//            AcPitchCurve *pitchCurve = note->pitchCurve();
+//            AcPitchPoint *first = pitchCurve->children().first();
+//            AcPitchPoint *last = pitchCurve->children().last();
+//            AcPitchPoint *pitchPointA = new AcPitchPoint;
+//            pitchCurve->addChild(pitchPointA);
+//            pitchPointA->setCurveType(Ac::BezierCurve);
+//            pitchPointA->setX(i + 0.0f);
+//            pitchPointA->setY(60.0f);
+//            AcPitchPoint *pitchPointB = new AcPitchPoint;
+//            pitchCurve->addChild(pitchPointB);
+//            pitchPointB->setCurveType(Ac::BezierCurve);
+//            pitchPointB->setX(i + 1.0f);
+//            pitchPointB->setY(72.0f);
+//            AcPitchPoint *pitchPointC = new AcPitchPoint;
+//            pitchCurve->addChild(pitchPointC);
+//            pitchPointC->setCurveType(Ac::BezierCurve);
+//            pitchPointC->setX(i + 2.0f);
+//            pitchPointC->setY(67.0f);
+//            AcPitchPoint *pitchPointD = new AcPitchPoint;
+//            pitchCurve->addChild(pitchPointD);
+//            pitchPointD->setCurveType(Ac::BezierCurve);
+//            pitchPointD->setX(i + 5.0f);
+//            pitchPointD->setY(71.0f);
+//            AcPitchPoint *pitchPointE = new AcPitchPoint;
+//            pitchCurve->addChild(pitchPointE);
+//            pitchPointE->setCurveType(Ac::BezierCurve);
+//            pitchPointE->setX(i + 7.0f);
+//            pitchPointE->setY(72.0f);
+//            pitchCurve->removeChild(first);
+//            pitchCurve->removeChild(last);
 //            AcVolumeCurve *volumeCurve = note->volumeCurve();
 //            AcPoint *volumePointA = volumeCurve->points().add();
 //            volumePointA->setX(0.0f);
@@ -136,7 +136,7 @@ public:
 
     virtual ~AcDatabaseImplData()
     {
-        delete score;
+//        delete score;
     }
 };
 

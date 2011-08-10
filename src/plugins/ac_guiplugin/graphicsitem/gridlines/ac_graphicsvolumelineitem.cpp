@@ -26,7 +26,6 @@
 class AcGraphicsVolumeLineItemPrivate : public AcGraphicsHGridLineItemPrivate
 {
 public:
-
     AcGraphicsVolumeLineItemPrivate(AcGraphicsVolumeLineItem *q)
         :   AcGraphicsHGridLineItemPrivate(q)
     {}

@@ -15,22 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_coreplugin.h"
-#include <ac_database.h>
-#include <ac_point.h>
-#include <pluginmanager.h>
-#include <QtPlugin>
-
-using namespace Private;
-
-bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    qRegisterMetaType<AcPoint>();
-    qRegisterMetaType<AcPoints>();
-    addAutoReleasedObject(new AcDatabaseImpl);
-    return true;
-}
-
-Q_EXPORT_PLUGIN(AcCorePlugin)
+#include "ac_item.h"
