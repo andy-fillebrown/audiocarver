@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_pitchscene.h"
-#include <ac_score.h>
+//#include <ac_score.h>
 
 class AcPitchScenePrivate
 {
@@ -34,7 +34,8 @@ public:
 
     void updateSceneRect()
     {
-        q->setSceneRect(0.0f, 0.0f, AcScore::instance()->length(), 127.0f);
+//        q->setSceneRect(0.0f, 0.0f, AcScore::instance()->length(), 127.0f);
+        q->setSceneRect(0.0f, 0.0f, 128.0f, 127.0f);
     }
 };
 
@@ -46,7 +47,7 @@ AcPitchScene::AcPitchScene(QObject *parent)
 {
     ::instance = this;
     d->init();
-    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int,QVariant)), this, SLOT(updateScore(int,QVariant)));
+//    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int,QVariant)), this, SLOT(updateScore(int,QVariant)));
 }
 
 AcPitchScene::~AcPitchScene()
@@ -59,8 +60,8 @@ AcPitchScene *AcPitchScene::instance()
     return ::instance;
 }
 
-void AcPitchScene::updateScore(int i, const QVariant &value)
-{
-    if (Score::Length == i)
-        d->updateSceneRect();
-}
+//void AcPitchScene::updateScore(int i, const QVariant &value)
+//{
+//    if (Score::Length == i)
+//        d->updateSceneRect();
+//}

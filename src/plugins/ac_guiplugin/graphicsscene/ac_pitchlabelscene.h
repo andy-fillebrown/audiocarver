@@ -32,8 +32,8 @@ public:
 
     static AcPitchLabelScene *instance();
 
-protected:
-    void updateViewSettings(int i, const QVariant &value);
+//protected:
+//    void updateViewSettings(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcPitchLabelScene)

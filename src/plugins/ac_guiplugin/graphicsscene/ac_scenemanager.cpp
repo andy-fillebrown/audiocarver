@@ -20,53 +20,53 @@
 #include <ac_timelabelscene.h>
 #include <ac_volumelabelscene.h>
 #include <ac_volumescene.h>
-#include <ac_graphicspitchlineitem.h>
-#include <ac_graphicstimelineitem.h>
-#include <ac_graphicstrackitem.h>
-#include <ac_graphicsvolumelineitem.h>
+//#include <ac_graphicspitchlineitem.h>
+//#include <ac_graphicstimelineitem.h>
+//#include <ac_graphicstrackitem.h>
+//#include <ac_graphicsvolumelineitem.h>
 #include <ac_pitchlabelscene.h>
-#include <ac_guiutil.h>
-#include <ac_propertyindexes.h>
-#include <mi_object.h>
+//#include <ac_guiutil.h>
+//#include <ac_propertyindexes.h>
+//#include <mi_object.h>
 #include <QFont>
 #include <QFontMetrics>
 #include <QVariant>
 
-template <typename T, typename ExpandRect>
-static void updateItemVisibilitiesHelper(const QList<T*> &items, ExpandRect expandRect)
-{
-    int minPriority = INT_MAX;
-    int prevPriority = 0;
-    QRectF prevRect;
-    foreach (T *item, items) {
-        if (minPriority < item->priority())
-            continue;
-        QRectF curRect = item->labelRect();
-        expandRect(curRect);
-        if (prevRect.intersects(curRect))
-            minPriority = qMax(prevPriority, item->priority());
-        else {
-            prevPriority = item->priority();
-            prevRect = curRect;
-        }
-    }
-    foreach (T *item, items) {
-        if (item->priority() <= minPriority)
-            item->show();
-        else
-            item->hide();
-    }
-}
+//template <typename T, typename ExpandRect>
+//static void updateItemVisibilitiesHelper(const QList<T*> &items, ExpandRect expandRect)
+//{
+//    int minPriority = INT_MAX;
+//    int prevPriority = 0;
+//    QRectF prevRect;
+//    foreach (T *item, items) {
+//        if (minPriority < item->priority())
+//            continue;
+//        QRectF curRect = item->labelRect();
+//        expandRect(curRect);
+//        if (prevRect.intersects(curRect))
+//            minPriority = qMax(prevPriority, item->priority());
+//        else {
+//            prevPriority = item->priority();
+//            prevRect = curRect;
+//        }
+//    }
+//    foreach (T *item, items) {
+//        if (item->priority() <= minPriority)
+//            item->show();
+//        else
+//            item->hide();
+//    }
+//}
 
-static void expandTopLabelRect(QRectF &rect)
-{
-    rect.setWidth(3.0f * rect.width());
-}
+//static void expandTopLabelRect(QRectF &rect)
+//{
+//    rect.setWidth(3.0f * rect.width());
+//}
 
-static void expandLeftLabelRect(QRectF &rect)
-{
-    rect.setTop(rect.top() - (1.5f * rect.height()));
-}
+//static void expandLeftLabelRect(QRectF &rect)
+//{
+//    rect.setTop(rect.top() - (1.5f * rect.height()));
+//}
 
 class AcSceneManagerPrivate
 {
@@ -77,12 +77,12 @@ public:
     AcTimeLabelScene *timeLabelScene;
     AcPitchLabelScene *pitchLabelScene;
     AcVolumeLabelScene *volumeLabelScene;
-    QList<AcGraphicsTrackItem*> trackItems;
-    QList<AcGraphicsTimeLineItem*> timeLineItems;
-    QList<AcGraphicsPitchLineItem*> pitchLineItems;
-    QList<AcGraphicsVolumeLineItem*> volumeLineItems;
-    QFont font;
-    QFontMetrics fontMetrics;
+//    QList<AcGraphicsTrackItem*> trackItems;
+//    QList<AcGraphicsTimeLineItem*> timeLineItems;
+//    QList<AcGraphicsPitchLineItem*> pitchLineItems;
+//    QList<AcGraphicsVolumeLineItem*> volumeLineItems;
+//    QFont font;
+//    QFontMetrics fontMetrics;
 
     AcSceneManagerPrivate(AcSceneManager *q)
         :   q(q)
@@ -91,69 +91,86 @@ public:
         ,   timeLabelScene(new AcTimeLabelScene(q))
         ,   pitchLabelScene(new AcPitchLabelScene(q))
         ,   volumeLabelScene(new AcVolumeLabelScene(q))
-        ,   fontMetrics(font)
+//        ,   fontMetrics(font)
     {}
 
     virtual ~AcSceneManagerPrivate()
     {
-        qDeleteAll(volumeLineItems);
-        qDeleteAll(pitchLineItems);
-        qDeleteAll(timeLineItems);
-        qDeleteAll(trackItems);
+//        qDeleteAll(volumeLineItems);
+//        qDeleteAll(pitchLineItems);
+//        qDeleteAll(timeLineItems);
+//        qDeleteAll(trackItems);
     }
 
-    void updateTrackItems(const MiObjectList &tracks)
-    {
-        updateItemsHelper(tracks, trackItems, q);
-    }
+//    void updateTrackItems(const MiObjectList &tracks)
+//    {
+//        updateItemsHelper(tracks, trackItems, q);
+//    }
 
-    void updateTimeLineItems(const MiObjectList &timeLines)
-    {
-        updateItemsHelper(timeLines, timeLineItems, q);
-    }
+//    void updateTimeLineItems(const MiObjectList &timeLines)
+//    {
+//        updateItemsHelper(timeLines, timeLineItems, q);
+//    }
 
-    void updatePitchLineItems(const MiObjectList &pitchLines)
-    {
-        updateItemsHelper(pitchLines, pitchLineItems, q);
-    }
+//    void updatePitchLineItems(const MiObjectList &pitchLines)
+//    {
+//        updateItemsHelper(pitchLines, pitchLineItems, q);
+//    }
 
-    void updateVolumeLineItems(const MiObjectList &volumeLines)
-    {
-        updateItemsHelper(volumeLines, volumeLineItems, q);
-    }
+//    void updateVolumeLineItems(const MiObjectList &volumeLines)
+//    {
+//        updateItemsHelper(volumeLines, volumeLineItems, q);
+//    }
 
-    void updateFontMetrics()
-    {
-        fontMetrics = QFontMetrics(font);
-    }
+//    void updateFontMetrics()
+//    {
+//        fontMetrics = QFontMetrics(font);
+//    }
 
-    void updateTimeLineItemVisibilities()
-    {
-        updateItemVisibilitiesHelper(timeLineItems, expandTopLabelRect);
-    }
+//    void updateTimeLineItemVisibilities()
+//    {
+//        updateItemVisibilitiesHelper(timeLineItems, expandTopLabelRect);
+//    }
 
-    void updatePitchLineItemVisibilities()
-    {
-        updateItemVisibilitiesHelper(pitchLineItems, expandLeftLabelRect);
-    }
+//    void updatePitchLineItemVisibilities()
+//    {
+//        updateItemVisibilitiesHelper(pitchLineItems, expandLeftLabelRect);
+//    }
 
-    void updateVolumeLineItemVisibilities()
-    {
-        updateItemVisibilitiesHelper(volumeLineItems, expandLeftLabelRect);
-    }
+//    void updateVolumeLineItemVisibilities()
+//    {
+//        updateItemVisibilitiesHelper(volumeLineItems, expandLeftLabelRect);
+//    }
 };
 
 AcSceneManager *instance = 0;
+Score *score = 0;
 
 AcSceneManager::AcSceneManager(QObject *parent)
     :   QObject(parent)
     ,   d(new AcSceneManagerPrivate(this))
 {
     ::instance = this;
+
+    Note *note = new Note;
+    CurvePoints pts;
+    pts.append(CurvePoint(0.0f, 60.0f, CurvePoint::BezierCurve));
+    pts.append(CurvePoint(32.0f, 72.0f, CurvePoint::BezierCurve));
+    pts.append(CurvePoint(64.0f, 67.0f, CurvePoint::BezierCurve));
+    pts.append(CurvePoint(128.0f, 48.0f, CurvePoint::BezierCurve));
+    note->pitchCurve->setPoints(pts);
+
+    Track *track = new Track;
+    track->addNote(note);
+
+    score = new Score;
+    score->addTrack(track);
+    addItem(score);
 }
 
 AcSceneManager::~AcSceneManager()
 {
+    delete score;
     delete d;
 }
 
@@ -162,75 +179,75 @@ AcSceneManager *AcSceneManager::instance()
     return ::instance;
 }
 
-void AcSceneManager::updateScore(int i, const QVariant &value)
-{
-    switch (i) {
-    case Score::Tracks:
-        d->updateTrackItems(value.value<MiObjectList>());
-        break;
-    case Score::TimeLines:
-        d->updateTimeLineItems(value.value<MiObjectList>());
-        d->updateTimeLineItemVisibilities();
-        break;
-    case Score::PitchLines:
-        d->updatePitchLineItems(value.value<MiObjectList>());
-        d->updatePitchLineItemVisibilities();
-        break;
-    case Score::VolumeLines:
-        d->updateVolumeLineItems(value.value<MiObjectList>());
-        d->updateVolumeLineItemVisibilities();
-        break;
-    default:
-        break;
-    }
-}
+//void AcSceneManager::updateScore(int i, const QVariant &value)
+//{
+//    switch (i) {
+//    case Score::Tracks:
+//        d->updateTrackItems(value.value<MiObjectList>());
+//        break;
+//    case Score::TimeLines:
+//        d->updateTimeLineItems(value.value<MiObjectList>());
+//        d->updateTimeLineItemVisibilities();
+//        break;
+//    case Score::PitchLines:
+//        d->updatePitchLineItems(value.value<MiObjectList>());
+//        d->updatePitchLineItemVisibilities();
+//        break;
+//    case Score::VolumeLines:
+//        d->updateVolumeLineItems(value.value<MiObjectList>());
+//        d->updateVolumeLineItemVisibilities();
+//        break;
+//    default:
+//        break;
+//    }
+//}
 
-void AcSceneManager::updateFontSettings(int i, const QVariant &value)
-{
-    switch (i) {
-    case FontSettings::Family:
-        d->font.setFamily(value.toString());
-        break;
-    case FontSettings::PointSize:
-        d->font.setPointSize(value.toInt());
-        break;
-    }
+//void AcSceneManager::updateFontSettings(int i, const QVariant &value)
+//{
+//    switch (i) {
+//    case FontSettings::Family:
+//        d->font.setFamily(value.toString());
+//        break;
+//    case FontSettings::PointSize:
+//        d->font.setPointSize(value.toInt());
+//        break;
+//    }
 
-    d->updateFontMetrics();
-    d->updateTimeLineItemVisibilities();
-    d->updatePitchLineItemVisibilities();
-    d->updateVolumeLineItemVisibilities();
-}
+//    d->updateFontMetrics();
+//    d->updateTimeLineItemVisibilities();
+//    d->updatePitchLineItemVisibilities();
+//    d->updateVolumeLineItemVisibilities();
+//}
 
-void AcSceneManager::updateViewSettings(int i)
-{
-    switch (i) {
-    case ViewSettings::TimeScale:
-        d->updateTimeLineItemVisibilities();
-        break;
-    case ViewSettings::PitchScale:
-        d->updatePitchLineItemVisibilities();
-        break;
-    case ViewSettings::VolumeScale:
-        d->updateVolumeLineItemVisibilities();
-        break;
-    default:
-        break;
-    }
-}
+//void AcSceneManager::updateViewSettings(int i)
+//{
+//    switch (i) {
+//    case ViewSettings::TimeScale:
+//        d->updateTimeLineItemVisibilities();
+//        break;
+//    case ViewSettings::PitchScale:
+//        d->updatePitchLineItemVisibilities();
+//        break;
+//    case ViewSettings::VolumeScale:
+//        d->updateVolumeLineItemVisibilities();
+//        break;
+//    default:
+//        break;
+//    }
+//}
 
 QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
 {
     switch (sceneType) {
-    case PitchScene:
+    case Pitch:
         return d->pitchScene;
-    case VolumeScene:
+    case Volume:
         return d->volumeScene;
-    case TimeLabelScene:
+    case TimeLabel:
         return d->timeLabelScene;
-    case PitchLabelScene:
+    case PitchLabel:
         return d->pitchLabelScene;
-    case VolumeLabelScene:
+    case VolumeLabel:
         return d->volumeLabelScene;
     default:
         break;
@@ -238,21 +255,30 @@ QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
     return 0;
 }
 
-void AcSceneManager::addItem(AcGraphicsItem *item)
+//void AcSceneManager::addItem(AcGraphicsItem *item)
+//{
+//    for (int i = 0;  i < SceneTypeCount;  ++i) {
+//        QGraphicsItem *sceneItem = item->sceneItem(SceneType(i));
+//        if (sceneItem)
+//            scene(SceneType(i))->addItem(sceneItem);
+//    }
+//}
+
+void AcSceneManager::addItem(Item *item)
 {
     for (int i = 0;  i < SceneTypeCount;  ++i) {
-        QGraphicsItem *sceneItem = item->sceneItem(SceneType(i));
-        if (sceneItem)
-            scene(SceneType(i))->addItem(sceneItem);
+        QGraphicsItem *graphicsItem = item->graphicsItem(SceneType(i));
+        if (graphicsItem)
+            scene(SceneType(i))->addItem(graphicsItem);
     }
 }
 
-const QFont &AcSceneManager::font() const
-{
-    return d->font;
-}
+//const QFont &AcSceneManager::font() const
+//{
+//    return d->font;
+//}
 
-const QFontMetrics &AcSceneManager::fontMetrics() const
-{
-    return d->fontMetrics;
-}
+//const QFontMetrics &AcSceneManager::fontMetrics() const
+//{
+//    return d->fontMetrics;
+//}

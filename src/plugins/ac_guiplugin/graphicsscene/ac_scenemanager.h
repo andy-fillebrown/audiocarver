@@ -18,12 +18,13 @@
 #ifndef AC_SCENEMANAGER_H
 #define AC_SCENEMANAGER_H
 
-#include <ac_guienums.h>
+//#include <ac_guienums.h>
+#include <ac_item.h>
 #include <QObject>
 
-class AcGraphicsItem;
-class QFont;
-class QFontMetrics;
+//class AcGraphicsItem;
+//class QFont;
+//class QFontMetrics;
 class QGraphicsScene;
 
 class AcSceneManagerPrivate;
@@ -40,25 +41,26 @@ public:
 
     QGraphicsScene *scene(SceneType sceneType) const;
 
-    void addItem(AcGraphicsItem *item);
+//    void addItem(AcGraphicsItem *item);
+    void addItem(Item *item);
 
-    template <typename T> void addItems(const QList<T*> &items)
-    {
-        foreach (AcGraphicsItem *item, items)
-            addItem(item);
-    }
-	
-	qreal timeScale() const;
-	qreal pitchScale() const;
-	qreal volumeScale() const;
+//    template <typename T> void addItems(const QList<T*> &items)
+//    {
+//        foreach (AcGraphicsItem *item, items)
+//            addItem(item);
+//    }
 
-    const QFont &font() const;
-    const QFontMetrics &fontMetrics() const;
+//	qreal timeScale() const;
+//	qreal pitchScale() const;
+//	qreal volumeScale() const;
 
-public slots:
-    void updateScore(int i, const QVariant &value);
-    void updateFontSettings(int i, const QVariant &value);
-    void updateViewSettings(int i);
+//    const QFont &font() const;
+//    const QFontMetrics &fontMetrics() const;
+
+//public slots:
+//    void updateScore(int i, const QVariant &value);
+//    void updateFontSettings(int i, const QVariant &value);
+//    void updateViewSettings(int i);
 
 private:
     Q_DISABLE_COPY(AcSceneManager)

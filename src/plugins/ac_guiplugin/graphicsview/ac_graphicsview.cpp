@@ -16,8 +16,7 @@
 **************************************************************************/
 
 #include "ac_graphicsview.h"
-#include <ac_graphicspointitem.h>
-#include <ac_point.h>
+#include <ac_item.h>
 #include <QApplication>
 #include <QBitmap>
 #include <QGraphicsItem>
@@ -30,8 +29,8 @@ public:
     bool dragging;
     bool draggingPoints;
     QPoint dragOrigin;
-    QList<AcGraphicsItem*> selectedItems;
-    QList<AcPoint*> pointsBeingDragged;
+    QList<Item*> selectedItems;
+//    QList<AcPoint*> pointsBeingDragged;
     QGraphicsPolygonItem *selectionRect;
 
     AcGraphicsViewPrivate(AcGraphicsView *q)
@@ -47,16 +46,16 @@ public:
     virtual ~AcGraphicsViewPrivate()
     {}
 
-    void setSelectedItems(const QList<AcGraphicsItem*> items)
+    void setSelectedItems(const QList<Item*> items)
     {
         unhighlightSelectedItems();
         selectedItems = items;
         highlightSelectedItems();
     }
 
-    void appendSelectedItems(const QList<AcGraphicsItem*> items)
+    void appendSelectedItems(const QList<Item*> items)
     {
-        foreach (AcGraphicsItem *item, items) {
+        foreach (Item *item, items) {
             if (!selectedItems.contains(item)) {
                 selectedItems.append(item);
                 item->highlight();
@@ -64,9 +63,9 @@ public:
         }
     }
 
-    void removeSelectedItems(const QList<AcGraphicsItem*> items)
+    void removeSelectedItems(const QList<Item*> items)
     {
-        foreach (AcGraphicsItem *item, items) {
+        foreach (Item *item, items) {
             if (selectedItems.contains(item)) {
                 selectedItems.removeOne(item);
                 item->unhighlight();
@@ -82,13 +81,13 @@ public:
 
     void highlightSelectedItems()
     {
-        foreach (AcGraphicsItem *item, selectedItems)
+        foreach (Item *item, selectedItems)
             item->highlight();
     }
 
     void unhighlightSelectedItems()
     {
-        foreach (AcGraphicsItem *item, selectedItems)
+        foreach (Item *item, selectedItems)
             item->unhighlight();
     }
 };
@@ -114,27 +113,27 @@ void AcGraphicsView::mousePressEvent(QMouseEvent *event)
 {
     d->dragging = true;
     d->dragOrigin = event->pos();
-    QList<QGraphicsItem*> sceneItems = items(QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2));
-    foreach (QGraphicsItem *sceneItem, sceneItems) {
-        AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
-        AcGraphicsPointItem *pointItem = qobject_cast<AcGraphicsPointItem*>(item);
-        if (pointItem) {
-            AcPoint *point = pointItem->point();
-            if (!d->pointsBeingDragged.contains(point))
-                d->pointsBeingDragged.append(point);
-        }
-    }
-    d->draggingPoints = !d->pointsBeingDragged.isEmpty();
+//    QList<QGraphicsItem*> sceneItems = items(QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2));
+//    foreach (QGraphicsItem *sceneItem, sceneItems) {
+//        Item *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
+//        AcGraphicsPointItem *pointItem = qobject_cast<AcGraphicsPointItem*>(item);
+//        if (pointItem) {
+//            AcPoint *point = pointItem->point();
+//            if (!d->pointsBeingDragged.contains(point))
+//                d->pointsBeingDragged.append(point);
+//        }
+//    }
+//    d->draggingPoints = !d->pointsBeingDragged.isEmpty();
 }
 
 void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if (d->draggingPoints) {
-        QPointF pos = mapToScene(event->pos());
-        foreach (AcPoint *point, d->pointsBeingDragged) {
-            point->setX(pos.x());
-            point->setY(127.0f - pos.y());
-        }
+//        QPointF pos = mapToScene(event->pos());
+//        foreach (AcPoint *point, d->pointsBeingDragged) {
+//            point->setX(pos.x());
+//            point->setY(127.0f - pos.y());
+//        }
     } else if (d->dragging) {
         if (4 <= (event->pos() - d->dragOrigin).manhattanLength()) {
             QRect rect(d->dragOrigin, event->pos());
@@ -147,24 +146,24 @@ void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
 
 void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (d->draggingPoints) {
-        QPointF pos = mapToScene(event->pos());
-        foreach (AcPoint *point, d->pointsBeingDragged) {
-            point->setX(pos.x());
-            point->setY(127.0f - pos.y());
-        }
-    } else {
+//    if (d->draggingPoints) {
+//        QPointF pos = mapToScene(event->pos());
+//        foreach (AcPoint *point, d->pointsBeingDragged) {
+//            point->setX(pos.x());
+//            point->setY(127.0f - pos.y());
+//        }
+//    } else {
         QRect rect;
         if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
             rect = QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2);
         else
             rect = QRect(d->dragOrigin, event->pos()).normalized();
         QList<QGraphicsItem*> sceneItems = items(rect);
-        QList<AcGraphicsItem*> items;
+        QList<Item*> items;
         foreach (QGraphicsItem *sceneItem, sceneItems) {
-            AcGraphicsItem *item = reinterpret_cast<AcGraphicsItem*>(sceneItem->data(0).value<quintptr>());
+            Item *item = reinterpret_cast<Item*>(sceneItem->data(0).value<quintptr>());
             if (item && !items.contains(item)) {
-                QRegion region = sceneItem->boundingRegion(viewportTransform());
+                QRegion region = sceneItem->boundingRegion(sceneItem->sceneTransform() * viewportTransform());
                 if (region.intersects(rect))
                     items.append(item);
             }
@@ -175,15 +174,15 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
             d->removeSelectedItems(items);
         else
             d->setSelectedItems(items);
-    }
+//    }
     d->selectionRect->hide();
     d->dragging = false;
     d->draggingPoints = false;
-    d->pointsBeingDragged.clear();
+//    d->pointsBeingDragged.clear();
 }
 
 void AcGraphicsView::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Escape)
-        d->clearSelectedItems();
+//    if (event->key() == Qt::Key_Escape)
+//        d->clearSelectedItems();
 }

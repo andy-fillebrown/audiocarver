@@ -16,8 +16,8 @@
 **************************************************************************/
 
 #include "ac_pitchlabelscene.h"
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+//#include <ac_score.h>
+//#include <ac_viewsettings.h>
 
 class AcPitchLabelScenePrivate
 {
@@ -30,7 +30,7 @@ public:
 
     qreal height() const
     {
-        return 127.0f * AcScore::instance()->viewSettings()->pitchScale();
+        return 127.0f;// * AcScore::instance()->viewSettings()->pitchScale();
     }
 
     void init()
@@ -69,8 +69,8 @@ AcPitchLabelScene *AcPitchLabelScene::instance()
     return ::instance;
 }
 
-void AcPitchLabelScene::updateViewSettings(int i, const QVariant &value)
-{
-    if (ViewSettings::PitchScale == i)
-        d->updateSceneRect();
-}
+//void AcPitchLabelScene::updateViewSettings(int i, const QVariant &value)
+//{
+//    if (ViewSettings::PitchScale == i)
+//        d->updateSceneRect();
+//}

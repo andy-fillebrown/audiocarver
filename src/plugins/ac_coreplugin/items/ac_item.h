@@ -19,6 +19,7 @@
 #define AC_ITEM_H
 
 #include <QGraphicsPathItem>
+#include <QPen>
 
 #include <QList>
 #include <QPointF>
@@ -73,6 +74,17 @@ class CurvePathItem : public GraphicsPathItem
 public:
     CurvePathItem()
     {
+        unhighlight();
+    }
+
+    void highlight()
+    {
+        setPen(QPen(QBrush(Qt::red), 4.0f));
+    }
+
+    void unhighlight()
+    {
+        setPen(QPen(QBrush(Qt::red), 2.0f));
     }
 };
 
@@ -81,7 +93,9 @@ class GuidePathItem : public GraphicsPathItem
 public:
     GuidePathItem()
     {
-        setFlag(QGraphicsItem::ItemNegativeZStacksBehindParent);
+        setFlag(QGraphicsItem::ItemStacksBehindParent);
+        setPen(QPen(QBrush(Qt::lightGray), 1.0f, Qt::DotLine));
+        hide();
     }
 };
 
@@ -182,9 +196,21 @@ public:
         guideItem->setPath(guidePath);
     }
 
-    operator QGraphicsItem*() const
+    QGraphicsItem *graphicsItem() const
     {
         return curveItem;
+    }
+
+    void highlight()
+    {
+        curveItem->highlight();
+        guideItem->show();
+    }
+
+    void unhighlight()
+    {
+        guideItem->hide();
+        curveItem->unhighlight();
     }
 };
 
@@ -210,7 +236,19 @@ public:
     }
 };
 
-class Note
+class Item
+{
+public:
+    virtual ~Item()
+    {}
+
+    virtual QGraphicsItem *graphicsItem(SceneType type) const = 0;
+
+    virtual void highlight() {}
+    virtual void unhighlight() {}
+};
+
+class Note : public Item
 {
 public:
     PitchCurve *pitchCurve;
@@ -219,7 +257,16 @@ public:
     Note()
         :   pitchCurve(new PitchCurve)
         ,   volumeCurve(new VolumeCurve)
-    {}
+    {
+        QGraphicsItem *pitchCurveItem = pitchCurve->graphicsItem();
+        pitchCurveItem->setData(0, quintptr(this));
+        foreach (QGraphicsItem *child, pitchCurveItem->children())
+            child->setData(0, quintptr(this));
+        QGraphicsItem *volumeCurveItem = volumeCurve->graphicsItem();
+        volumeCurveItem->setData(0, quintptr(this));
+        foreach (QGraphicsItem *child, volumeCurveItem->children())
+            child->setData(0, quintptr(this));
+    }
 
     ~Note()
     {
@@ -227,16 +274,28 @@ public:
         delete pitchCurve;
     }
 
-    QGraphicsItem *graphicsItem(SceneType type)
+    QGraphicsItem *graphicsItem(SceneType type) const
     {
         switch (type) {
         case Pitch:
-            return *pitchCurve;
+            return pitchCurve->graphicsItem();
         case Volume:
-            return *volumeCurve;
+            return volumeCurve->graphicsItem();
         default:
             return 0;
         }
+    }
+
+    void highlight()
+    {
+        pitchCurve->highlight();
+        volumeCurve->highlight();
+    }
+
+    void unhighlight()
+    {
+        volumeCurve->unhighlight();
+        pitchCurve->unhighlight();
     }
 
     static bool lessThan(const Note *a, const Note *b)
@@ -251,7 +310,7 @@ public:
     }
 };
 
-class Track
+class Track : public Item
 {
     QList<Note*> notes;
     QList<GraphicsItem*> items;
@@ -265,10 +324,11 @@ public:
 
     ~Track()
     {
+        qDeleteAll(notes);
         qDeleteAll(items);
     }
 
-    QGraphicsItem *graphicsItem(SceneType type)
+    QGraphicsItem *graphicsItem(SceneType type) const
     {
         return items[type];
     }
@@ -289,7 +349,7 @@ public:
     }
 };
 
-class Score
+class Score : public Item
 {
     QList<Track*> tracks;
     QList<GraphicsRootItem*> items;
@@ -303,10 +363,11 @@ public:
 
     ~Score()
     {
+        qDeleteAll(tracks);
         qDeleteAll(items);
     }
 
-    QGraphicsItem *graphicsItem(SceneType type)
+    QGraphicsItem *graphicsItem(SceneType type) const
     {
         return items[type];
     }

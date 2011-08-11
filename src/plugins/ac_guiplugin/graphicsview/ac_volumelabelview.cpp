@@ -16,8 +16,8 @@
 **************************************************************************/
 
 #include "ac_volumelabelview.h"
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+//#include <ac_score.h>
+//#include <ac_viewsettings.h>
 
 class AcVolumeLabelViewPrivate
 {

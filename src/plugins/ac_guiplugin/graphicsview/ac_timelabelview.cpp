@@ -17,9 +17,9 @@
 
 #include "ac_timelabelview.h"
 #include <ac_pitchview.h>
-#include <ac_score.h>
+//#include <ac_score.h>
 #include <ac_timelabelscene.h>
-#include <ac_viewsettings.h>
+//#include <ac_viewsettings.h>
 #include <QGraphicsTextItem>
 
 class AcTimeLabelViewPrivate

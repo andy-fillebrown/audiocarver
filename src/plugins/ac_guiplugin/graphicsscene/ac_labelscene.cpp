@@ -16,8 +16,8 @@
 **************************************************************************/
 
 #include "ac_labelscene.h"
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+//#include <ac_score.h>
+//#include <ac_viewsettings.h>
 
 class AcLabelScenePrivate
 {
@@ -33,7 +33,7 @@ AcLabelScene::AcLabelScene(QObject *parent)
     :   AcGraphicsScene(parent)
     ,   d(new AcLabelScenePrivate)
 {
-    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
+//    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
 }
 
 AcLabelScene::~AcLabelScene()

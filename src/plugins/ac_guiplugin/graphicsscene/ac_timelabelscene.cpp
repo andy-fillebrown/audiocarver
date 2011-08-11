@@ -16,8 +16,8 @@
 **************************************************************************/
 
 #include "ac_timelabelscene.h"
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+//#include <ac_score.h>
+//#include <ac_viewsettings.h>
 
 class AcTimeLabelScenePrivate
 {
@@ -33,8 +33,9 @@ public:
 
     qreal width() const
     {
-        const AcScore *score = AcScore::instance();
-        return score->length() * score->viewSettings()->timeScale();
+//        const AcScore *score = AcScore::instance();
+//        return score->length() * score->viewSettings()->timeScale();
+        return 128.0f;
     }
 
     void init()
@@ -73,14 +74,14 @@ AcTimeLabelScene *AcTimeLabelScene::instance()
     return ::instance;
 }
 
-void AcTimeLabelScene::updateViewSettings(int i, const QVariant &value)
-{
-    if (ViewSettings::TimeScale == i)
-        d->updateSceneRect();
-}
+//void AcTimeLabelScene::updateViewSettings(int i, const QVariant &value)
+//{
+//    if (ViewSettings::TimeScale == i)
+//        d->updateSceneRect();
+//}
 
-void AcTimeLabelScene::updateScore(int i, const QVariant &value)
-{
-    if (Score::Length == i)
-        d->updateSceneRect();
-}
+//void AcTimeLabelScene::updateScore(int i, const QVariant &value)
+//{
+//    if (Score::Length == i)
+//        d->updateSceneRect();
+//}

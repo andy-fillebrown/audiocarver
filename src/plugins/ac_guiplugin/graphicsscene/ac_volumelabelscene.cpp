@@ -16,8 +16,8 @@
 **************************************************************************/
 
 #include "ac_volumelabelscene.h"
-#include <ac_score.h>
-#include <ac_viewsettings.h>
+//#include <ac_score.h>
+//#include <ac_viewsettings.h>
 
 class AcVolumeLabelScenePrivate
 {
@@ -33,7 +33,8 @@ public:
 
     qreal height() const
     {
-        return AcScore::instance()->viewSettings()->volumeScale();
+//        return AcScore::instance()->viewSettings()->volumeScale();
+        return 1.0f;
     }
 
     void init()
@@ -72,8 +73,8 @@ AcVolumeLabelScene *AcVolumeLabelScene::instance()
     return ::instance;
 }
 
-void AcVolumeLabelScene::updateViewSettings(int i, const QVariant &value)
-{
-    if (ViewSettings::VolumeScale == i)
-        d->updateSceneRect();
-}
+//void AcVolumeLabelScene::updateViewSettings(int i, const QVariant &value)
+//{
+//    if (ViewSettings::VolumeScale == i)
+//        d->updateSceneRect();
+//}

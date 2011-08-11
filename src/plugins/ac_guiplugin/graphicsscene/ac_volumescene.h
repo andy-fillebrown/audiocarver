@@ -32,8 +32,8 @@ public:
 
     static AcVolumeScene *instance();
 
-protected slots:
-    virtual void updateScore(int i, const QVariant &value);
+//protected slots:
+//    virtual void updateScore(int i, const QVariant &value);
 
 private:
     Q_DISABLE_COPY(AcVolumeScene)

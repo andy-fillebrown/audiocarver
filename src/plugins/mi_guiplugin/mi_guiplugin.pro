@@ -9,9 +9,9 @@ DEFINES += MI_GUI_LIBRARY
 HEADERS += \
 #    graphicsitem/mi_graphicspathitem.h \
 #    \
-#    graphicsscene/mi_graphicsscene.h \
-#    \
-#    graphicsview/mi_graphicsview.h \
+    graphicsscene/mi_graphicsscene.h \
+    \
+    graphicsview/mi_graphicsview.h \
     \
     implementations/mi_mainwindowimpl.h \
     \
@@ -24,9 +24,9 @@ HEADERS += \
 SOURCES += \
 #    graphicsitem/mi_graphicspathitem.cpp \
 #    \
-#    graphicsscene/mi_graphicsscene.cpp \
-#    \
-#    graphicsview/mi_graphicsview.cpp \
+    graphicsscene/mi_graphicsscene.cpp \
+    \
+    graphicsview/mi_graphicsview.cpp \
     \
     implementations/mi_mainwindowimpl.cpp \
     \

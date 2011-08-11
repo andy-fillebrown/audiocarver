@@ -30,8 +30,8 @@ public:
     AcLabelScene(QObject *parent = 0);
     ~AcLabelScene();
 
-protected slots:
-    virtual void updateViewSettings(int i, const QVariant &value) = 0;
+//protected slots:
+//    virtual void updateViewSettings(int i, const QVariant &value) = 0;
 
 private:
     Q_DISABLE_COPY(AcLabelScene)

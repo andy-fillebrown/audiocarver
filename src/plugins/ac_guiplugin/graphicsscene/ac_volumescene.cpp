@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_volumescene.h"
-#include <ac_score.h>
+//#include <ac_score.h>
 
 class AcVolumeScenePrivate
 {
@@ -37,7 +37,8 @@ public:
 
     void updateSceneRect()
     {
-        q->setSceneRect(0.0f, 0.0f, AcScore::instance()->length(), 1.0f);
+//        q->setSceneRect(0.0f, 0.0f, AcScore::instance()->length(), 1.0f);
+        q->setSceneRect(0.0f, 0.0f, 128.0f, 1.0f);
     }
 };
 
@@ -49,7 +50,7 @@ AcVolumeScene::AcVolumeScene(QObject *parent)
 {
     ::instance = this;
     d->init();
-    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int,QVariant)), this, SLOT(updateScore(int,QVariant)));
+//    Q_CONNECT(AcScore::instance(), SIGNAL(changed(int,QVariant)), this, SLOT(updateScore(int,QVariant)));
 }
 
 AcVolumeScene::~AcVolumeScene()
@@ -62,8 +63,8 @@ AcVolumeScene *AcVolumeScene::instance()
     return ::instance;
 }
 
-void AcVolumeScene::updateScore(int i, const QVariant &valuei)
-{
-    if (Score::Length == i)
-        d->updateSceneRect();
-}
+//void AcVolumeScene::updateScore(int i, const QVariant &valuei)
+//{
+//    if (Score::Length == i)
+//        d->updateSceneRect();
+//}
