@@ -134,9 +134,8 @@ void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
         foreach (PointItem *point, d->pointsBeingDragged) {
             point->setX(pos.x());
             point->setY(-pos.y());
-        }
-        foreach (PointItem *point, d->pointsBeingDragged)
             point->curve()->update();
+        }
     } else if (d->dragging) {
         if (4 <= (event->pos() - d->dragOrigin).manhattanLength()) {
             QRect rect(d->dragOrigin, event->pos());
@@ -154,9 +153,8 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         foreach (PointItem *point, d->pointsBeingDragged) {
             point->setX(pos.x());
             point->setY(-pos.y());
-        }
-        foreach (PointItem *point, d->pointsBeingDragged)
             point->curve()->update();
+        }
     } else {
         QRect rect;
         if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
