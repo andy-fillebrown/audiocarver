@@ -42,7 +42,7 @@ public:
     QGraphicsScene *scene(SceneType sceneType) const;
 
 //    void addItem(AcGraphicsItem *item);
-    void addItem(Item *item);
+    void addObject(Object *object);
 
 //    template <typename T> void addItems(const QList<T*> &items)
 //    {

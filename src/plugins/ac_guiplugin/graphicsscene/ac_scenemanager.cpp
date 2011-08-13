@@ -153,19 +153,22 @@ AcSceneManager::AcSceneManager(QObject *parent)
     ::instance = this;
 
     Note *note = new Note;
-    CurvePoints pts;
-    pts.append(CurvePoint(0.0f, 60.0f, CurvePoint::BezierCurve));
-    pts.append(CurvePoint(32.0f, 72.0f, CurvePoint::BezierCurve));
-    pts.append(CurvePoint(64.0f, 67.0f, CurvePoint::BezierCurve));
-    pts.append(CurvePoint(128.0f, 48.0f, CurvePoint::BezierCurve));
-    note->pitchCurve->setPoints(pts);
+    PointItems pts;
+    pts.append(new PointItem(0.0f, 60.0f, PointItem::BezierCurve));
+    pts.append(new PointItem(32.0f, 72.0f, PointItem::BezierCurve));
+    pts.append(new PointItem(64.0f, 67.0f, PointItem::BezierCurve));
+    pts.append(new PointItem(96.0f, 60.0f, PointItem::BezierCurve));
+    pts.append(new PointItem(128.0f, 48.0f, PointItem::BezierCurve));
+    foreach (PointItem *pt, pts)
+        note->pitchCurve()->appendPoint(pt);
+    note->pitchCurve()->update();
 
     Track *track = new Track;
-    track->addNote(note);
+    track->appendNote(note);
 
     score = new Score;
-    score->addTrack(track);
-    addItem(score);
+    score->appendTrack(track);
+    addObject(score);
 }
 
 AcSceneManager::~AcSceneManager()
@@ -264,12 +267,12 @@ QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
 //    }
 //}
 
-void AcSceneManager::addItem(Item *item)
+void AcSceneManager::addObject(Object *object)
 {
     for (int i = 0;  i < SceneTypeCount;  ++i) {
-        QGraphicsItem *graphicsItem = item->graphicsItem(SceneType(i));
-        if (graphicsItem)
-            scene(SceneType(i))->addItem(graphicsItem);
+        QGraphicsItem *item = object->item(SceneType(i));
+        if (item)
+            scene(SceneType(i))->addItem(item);
     }
 }
 

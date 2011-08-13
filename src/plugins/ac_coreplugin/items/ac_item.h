@@ -33,7 +33,7 @@ enum SceneType {
     SceneTypeCount
 };
 
-class GraphicsItem : public QGraphicsItem
+class Item : public QGraphicsItem
 {
 public:
     QRectF boundingRect() const
@@ -46,19 +46,51 @@ public:
     {}
 };
 
-class GraphicsRootItem : public GraphicsItem
+class RootItem : public Item
 {
 public:
-    GraphicsRootItem()
+    RootItem()
     {
         setTransform(QTransform::fromScale(1.0f, -1.0f));
     }
 };
 
-class GraphicsPathItem : public QGraphicsPathItem
+class PointItem;
+
+class GripItem : public QGraphicsRectItem
+{
+    PointItem *pt;
+
+public:
+    enum {
+        Type = QGraphicsItem::UserType + 1
+    };
+
+    GripItem(PointItem *point)
+        :   pt(point)
+    {
+        setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        setPen(QPen(Qt::blue));
+        setBrush(QBrush(Qt::blue));
+        setRect(-3.0f, -3.0f, 6.0f, 6.0f);
+        setZValue(1.0f);
+    }
+
+    virtual int type() const
+    {
+        return Type;
+    }
+
+    PointItem *point() const
+    {
+        return pt;
+    }
+};
+
+class PathItem : public QGraphicsPathItem
 {
 public:
-    GraphicsPathItem()
+    PathItem()
     {
         setBoundingRegionGranularity(1.0f);
     }
@@ -69,10 +101,10 @@ public:
     }
 };
 
-class CurvePathItem : public GraphicsPathItem
+class CurveItem : public PathItem
 {
 public:
-    CurvePathItem()
+    CurveItem()
     {
         unhighlight();
     }
@@ -88,18 +120,20 @@ public:
     }
 };
 
-class GuidePathItem : public GraphicsPathItem
+class GuideItem : public PathItem
 {
 public:
-    GuidePathItem()
+    GuideItem()
     {
         setFlag(QGraphicsItem::ItemStacksBehindParent);
-        setPen(QPen(QBrush(Qt::lightGray), 1.0f, Qt::DotLine));
+        setPen(QPen(QBrush(Qt::lightGray), 0.0f, Qt::DotLine));
         hide();
     }
 };
 
-class CurvePoint
+class Curve;
+
+class PointItem : public Item
 {
 public:
     enum CurveType {
@@ -107,111 +141,152 @@ public:
         BezierCurve
     };
 
-    qreal x;
-    qreal y;
-    CurveType curveType;
-
-    CurvePoint(qreal x = 0.0f,
-               qreal y = 0.0f,
-               CurveType curveType = NoCurve)
-        :   x(x)
-        ,   y(y)
-        ,   curveType(curveType)
-    {}
-
-    operator QPointF() const
+    PointItem(qreal x = 0.0f,
+              qreal y = 0.0f,
+              CurveType curveType = NoCurve,
+              Curve *curve = 0)
+        :   _gripItem(new GripItem(this))
+        ,   _curveType(curveType)
+        ,   _curve(curve)
     {
-        return QPointF(x, y);
+        setPos(x, y);
+        _gripItem->setParentItem(this);
+        _gripItem->hide();
     }
 
-    bool operator<(const CurvePoint &cp) const
+    Curve *curve() const
     {
-        return x == cp.x ? y < cp.y : x < cp.x;
-    }
-};
-
-typedef QList<CurvePoint> CurvePoints;
-
-class Curve
-{
-    CurvePathItem *curveItem;
-    GuidePathItem *guideItem;
-
-protected:
-    CurvePoints pts;
-
-public:
-    Curve()
-        :   curveItem(new CurvePathItem)
-        ,   guideItem(new GuidePathItem)
-    {
-        guideItem->setParentItem(curveItem);
+        return _curve;
     }
 
-    ~Curve()
+    void setCurve(Curve *curve)
     {
-        delete guideItem;
-        delete curveItem;
+        _curve = curve;
     }
 
-    const CurvePoints &points() const
+    CurveType curveType() const
     {
-        return pts;
-    }
-
-    void setPoints(const CurvePoints &pts)
-    {
-        this->pts = pts;
-        update();
-    }
-
-    virtual void update()
-    {
-        if (pts.count() < 2) {
-            curveItem->setPath(QPainterPath());
-            guideItem->setPath(QPainterPath());
-            return;
-        }
-        for (int i = 0;  i < pts.count();  ++i) {
-            pts[i].x = qMax(qreal(0.0f), pts[i].x);
-            pts[i].y = qMax(qreal(0.0f), pts[i].y);
-        }
-        qSort(pts);
-        QPainterPath curvePath(pts[0]);
-        QPainterPath guidePath;
-        for (int i = 1;  i < pts.count();  ++i) {
-            if ((CurvePoint::NoCurve == pts[i].curveType)
-                    || i == pts.count() - 1)
-                curvePath.lineTo(pts[i]);
-            else {
-                curvePath.quadTo(pts[i], pts[i + 1]);
-                guidePath.moveTo(pts[i - 1]);
-                guidePath.lineTo(pts[i]);
-                guidePath.lineTo(pts[i + 1]);
-                ++i;
-            }
-
-        }
-        curveItem->setPath(curvePath);
-        guideItem->setPath(guidePath);
-    }
-
-    QGraphicsItem *graphicsItem() const
-    {
-        return curveItem;
+        return _curveType;
     }
 
     void highlight()
     {
-        curveItem->highlight();
-        guideItem->show();
+        _gripItem->show();
     }
 
     void unhighlight()
     {
-        guideItem->hide();
-        curveItem->unhighlight();
+        _gripItem->hide();
     }
+
+    static bool lessThan(const PointItem *a, const PointItem *b)
+    {
+        return a->x() == b->x() ? a->y() < b->y() : a->x() < b->x();
+    }
+
+private:
+    GripItem *_gripItem;
+    CurveType _curveType;
+    Curve *_curve;
+};
+
+typedef QList<PointItem*> PointItems;
+
+class Curve
+{
+public:
+    Curve()
+        :   _curveItem(new CurveItem)
+        ,   _guideItem(new GuideItem)
+    {
+        _guideItem->setParentItem(_curveItem);
+    }
+
+    ~Curve()
+    {
+        delete _guideItem;
+        delete _curveItem;
+    }
+
+    const PointItems &points() const
+    {
+        return _points;
+    }
+
+    void appendPoint(PointItem *point)
+    {
+        if (_points.contains(point))
+            return;
+        _points.append(point);
+        point->setCurve(this);
+        point->setParentItem(_curveItem);
+    }
+
+    void removePoint(PointItem *point)
+    {
+        point->setParentItem(0);
+        point->setCurve(0);
+        _points.removeOne(point);
+    }
+
+    virtual void update()
+    {
+        if (_points.count() < 2) {
+            _curveItem->setPath(QPainterPath());
+            _guideItem->setPath(QPainterPath());
+            return;
+        }
+        qSort(_points.begin(), _points.end(), PointItem::lessThan);
+        for (int i = 0;  i < _points.count();  ++i) {
+            _points[i]->setX(qMax(qreal(0.0f), _points[i]->x()));
+            _points[i]->setY(qMax(qreal(0.0f), _points[i]->y()));
+        }
+        QPainterPath curvePath(_points[0]->pos());
+        QPainterPath guidePath;
+        for (int i = 1;  i < _points.count();  ++i) {
+            if ((PointItem::NoCurve == _points[i]->curveType())
+                    || i == _points.count() - 1)
+                curvePath.lineTo(_points[i]->pos());
+            else {
+                curvePath.quadTo(_points[i]->pos(), _points[i + 1]->pos());
+                guidePath.moveTo(_points[i - 1]->pos());
+                guidePath.lineTo(_points[i]->pos());
+                guidePath.lineTo(_points[i + 1]->pos());
+                ++i;
+            }
+
+        }
+        _curveItem->setPath(curvePath);
+        _guideItem->setPath(guidePath);
+    }
+
+    QGraphicsItem *item() const
+    {
+        return _curveItem;
+    }
+
+    void highlight()
+    {
+        foreach (PointItem *pt, _points)
+            pt->highlight();
+        _curveItem->highlight();
+        _guideItem->show();
+    }
+
+    void unhighlight()
+    {
+        _guideItem->hide();
+        _curveItem->unhighlight();
+        foreach (PointItem *pt, _points)
+            pt->unhighlight();
+    }
+
+protected:
+    PointItems _points;
+
+private:
+    CurveItem *_curveItem;
+    GuideItem *_guideItem;
 };
 
 class PitchCurve : public Curve
@@ -219,8 +294,8 @@ class PitchCurve : public Curve
 public:
     void update()
     {
-        for (int i = 0;  i < pts.count();  ++i)
-            pts[i].y = qMin(pts[i].y, qreal(127.0f));
+        for (int i = 0;  i < _points.count();  ++i)
+            _points[i]->setY(qMin(_points[i]->y(), qreal(127.0f)));
         Curve::update();
     }
 };
@@ -230,57 +305,68 @@ class VolumeCurve : public Curve
 public:
     void update()
     {
-        for (int i = 0;  i < pts.count();  ++i)
-            pts[i].y = qMin(pts[i].y, qreal(1.0f));
+        for (int i = 0;  i < _points.count();  ++i)
+            _points[i]->setY(qMin(_points[i]->y(), qreal(1.0f)));
         Curve::update();
     }
 };
 
-class Item
+class Object
 {
 public:
-    virtual ~Item()
+    virtual ~Object()
     {}
 
-    virtual QGraphicsItem *graphicsItem(SceneType type) const = 0;
-
-    virtual void highlight() {}
-    virtual void unhighlight() {}
+    virtual QGraphicsItem *item(SceneType type) const = 0;
 };
 
-class Note : public Item
+class Entity : public Object
 {
 public:
-    PitchCurve *pitchCurve;
-    VolumeCurve *volumeCurve;
+    virtual void highlight() = 0;
+    virtual void unhighlight() = 0;
+};
 
+class Note : public Entity
+{
+public:
     Note()
-        :   pitchCurve(new PitchCurve)
-        ,   volumeCurve(new VolumeCurve)
+        :   _pitchCurve(new PitchCurve)
+        ,   _volumeCurve(new VolumeCurve)
     {
-        QGraphicsItem *pitchCurveItem = pitchCurve->graphicsItem();
-        pitchCurveItem->setData(0, quintptr(this));
-        foreach (QGraphicsItem *child, pitchCurveItem->children())
+        QGraphicsItem *pitchItem = _pitchCurve->item();
+        pitchItem->setData(0, quintptr(this));
+        foreach (QGraphicsItem *child, pitchItem->children())
             child->setData(0, quintptr(this));
-        QGraphicsItem *volumeCurveItem = volumeCurve->graphicsItem();
-        volumeCurveItem->setData(0, quintptr(this));
-        foreach (QGraphicsItem *child, volumeCurveItem->children())
+        QGraphicsItem *volumeItem = _volumeCurve->item();
+        volumeItem->setData(0, quintptr(this));
+        foreach (QGraphicsItem *child, volumeItem->children())
             child->setData(0, quintptr(this));
     }
 
     ~Note()
     {
-        delete volumeCurve;
-        delete pitchCurve;
+        delete _volumeCurve;
+        delete _pitchCurve;
     }
 
-    QGraphicsItem *graphicsItem(SceneType type) const
+    Curve *pitchCurve() const
+    {
+        return _pitchCurve;
+    }
+
+    Curve *volumeCurve() const
+    {
+        return _volumeCurve;
+    }
+
+    QGraphicsItem *item(SceneType type) const
     {
         switch (type) {
         case Pitch:
-            return pitchCurve->graphicsItem();
+            return _pitchCurve->item();
         case Volume:
-            return volumeCurve->graphicsItem();
+            return _volumeCurve->item();
         default:
             return 0;
         }
@@ -288,103 +374,139 @@ public:
 
     void highlight()
     {
-        pitchCurve->highlight();
-        volumeCurve->highlight();
+        _pitchCurve->highlight();
+        _volumeCurve->highlight();
     }
 
     void unhighlight()
     {
-        volumeCurve->unhighlight();
-        pitchCurve->unhighlight();
+        _volumeCurve->unhighlight();
+        _pitchCurve->unhighlight();
     }
 
     static bool lessThan(const Note *a, const Note *b)
     {
-        const CurvePoints &ptsA = a->pitchCurve->points();
-        const CurvePoints &ptsB = b->pitchCurve->points();
+        const PointItems &ptsA = a->_pitchCurve->points();
+        const PointItems &ptsB = b->_pitchCurve->points();
         if (ptsB.isEmpty())
             return true;
         if (ptsA.isEmpty())
             return false;
-        return ptsA[0] < ptsB[0];
+        return PointItem::lessThan(ptsA.first(), ptsB.first());
     }
+
+private:
+    PitchCurve *_pitchCurve;
+    VolumeCurve *_volumeCurve;
 };
 
-class Track : public Item
+class Track : public Object
 {
-    QList<Note*> notes;
-    QList<GraphicsItem*> items;
-
 public:
     Track()
     {
         for (int i = 0;  i < SceneTypeCount;  ++i)
-            items.append(new GraphicsItem);
+            _items.append(new Item);
     }
 
     ~Track()
     {
-        qDeleteAll(notes);
-        qDeleteAll(items);
+        qDeleteAll(_notes);
+        qDeleteAll(_items);
     }
 
-    QGraphicsItem *graphicsItem(SceneType type) const
+    QGraphicsItem *item(SceneType type) const
     {
-        return items[type];
+        return _items[type];
     }
 
-    void addNote(Note *note)
+    void appendNote(Note *note)
     {
-        notes.append(note);
-        note->graphicsItem(Pitch)->setParentItem(items[Pitch]);
-        note->graphicsItem(Volume)->setParentItem(items[Volume]);
-        qSort(notes.begin(), notes.end(), Note::lessThan);
+        if (_notes.contains(note))
+            return;
+        _notes.append(note);
+        note->item(Pitch)->setParentItem(_items[Pitch]);
+        note->item(Volume)->setParentItem(_items[Volume]);
     }
 
     void removeNote(Note *note)
     {
-        notes.removeOne(note);
-        note->graphicsItem(Pitch)->setParentItem(0);
-        note->graphicsItem(Volume)->setParentItem(0);
+        if (!_notes.contains(note))
+            return;
+        _notes.removeOne(note);
+        note->item(Pitch)->setParentItem(0);
+        note->item(Volume)->setParentItem(0);
     }
+
+    void sortNotes()
+    {
+        qSort(_notes.begin(), _notes.end(), Note::lessThan);
+    }
+
+private:
+    QList<Note*> _notes;
+    QList<Item*> _items;
 };
 
-class Score : public Item
+class Score : public Object
 {
-    QList<Track*> tracks;
-    QList<GraphicsRootItem*> items;
-
 public:
     Score()
     {
         for (int i = 0;  i < SceneTypeCount;  ++i)
-            items.append(new GraphicsRootItem);
+            _items.append(new RootItem);
     }
 
     ~Score()
     {
-        qDeleteAll(tracks);
-        qDeleteAll(items);
+        qDeleteAll(_tracks);
+        qDeleteAll(_items);
     }
 
-    QGraphicsItem *graphicsItem(SceneType type) const
+    QGraphicsItem *item(SceneType type) const
     {
-        return items[type];
+        return _items[type];
     }
 
-    void addTrack(Track *track)
+    int trackCount() const
     {
-        tracks.append(track);
+        return _tracks.count();
+    }
+
+    Track *trackAt(int i)
+    {
+        return _tracks.at(i);
+    }
+
+    void appendTrack(Track *track)
+    {
+        insertTrack(_tracks.count(), track);
+    }
+
+    void insertTrack(int i, Track *track)
+    {
+        _tracks.insert(i, track);
         for (int i = 0;  i < SceneTypeCount;  ++i)
-            track->graphicsItem(SceneType(i))->setParentItem(items[i]);
+            track->item(SceneType(i))->setParentItem(_items[i]);
+    }
+
+    Track *takeTrack(int i)
+    {
+        Track *track = _tracks.at(i);
+        removeTrack(track);
+        return track;
     }
 
     void removeTrack(Track *track)
     {
-        tracks.removeOne(track);
+        _tracks.removeOne(track);
         for (int i = 0;  i < SceneTypeCount;  ++i)
-            track->graphicsItem(SceneType(i))->setParentItem(0);
+            track->item(SceneType(i))->setParentItem(0);
     }
+
+private:
+    QList<Track*> _tracks;
+    QList<RootItem*> _items;
 };
 
 #endif // AC_ITEM_H
