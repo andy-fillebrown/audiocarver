@@ -141,13 +141,22 @@ public:
         BezierCurve
     };
 
-    PointItem(qreal x = 0.0f,
+    enum StretchType {
+        Attack,
+        Sustain,
+        Release
+    };
+
+    PointItem(Curve *curve = 0,
+              qreal x = 0.0f,
               qreal y = 0.0f,
               CurveType curveType = NoCurve,
-              Curve *curve = 0)
-        :   _gripItem(new GripItem(this))
+              StretchType stretchType = Sustain
+              )
+        :   _curve(curve)
+        ,   _gripItem(new GripItem(this))
         ,   _curveType(curveType)
-        ,   _curve(curve)
+        ,   _stretchType(stretchType)
     {
         setPos(x, y);
         _gripItem->setParentItem(this);
@@ -169,6 +178,21 @@ public:
         return _curveType;
     }
 
+    void setCurveType(CurveType type)
+    {
+        _curveType = type;
+    }
+
+    StretchType stretchType() const
+    {
+        return _stretchType;
+    }
+
+    void setStretchType(StretchType type)
+    {
+        _stretchType = type;
+    }
+
     void highlight()
     {
         _gripItem->show();
@@ -185,9 +209,10 @@ public:
     }
 
 private:
+    Curve *_curve;
     GripItem *_gripItem;
     CurveType _curveType;
-    Curve *_curve;
+    StretchType _stretchType;
 };
 
 typedef QList<PointItem*> PointItems;
@@ -241,6 +266,7 @@ public:
             _points[i]->setX(qMax(qreal(0.0f), _points[i]->x()));
             _points[i]->setY(qMax(qreal(0.0f), _points[i]->y()));
         }
+        _prevLength = length;
         QPainterPath curvePath(_points[0]->pos());
         QPainterPath guidePath;
         for (int i = 1;  i < _points.count();  ++i) {
