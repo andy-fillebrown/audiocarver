@@ -58,28 +58,28 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     d->topLeft->setFixedSize(sideWidth, sideHeight);
     d->topLeft->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *timeLabelView = d->viewManager->timeLabelView();
+    QGraphicsView *timeLabelView = new MiGraphicsView;//d->viewManager->timeLabelView();
     d->layout->addWidget(timeLabelView, 0, 1);
     timeLabelView->setFixedHeight(sideHeight);
     timeLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *pitchLabelView = d->viewManager->pitchLabelView();
+    QGraphicsView *pitchLabelView = new MiGraphicsView;//d->viewManager->pitchLabelView();
     d->layout->addWidget(pitchLabelView, 1, 0);
     pitchLabelView->setFixedWidth(sideWidth);
     pitchLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *pitchView = d->viewManager->pitchView();
+    QGraphicsView *pitchView = new MiGraphicsView;//d->viewManager->pitchView();
     d->layout->addWidget(pitchView, 1, 1);
     pitchView->setFrameShape(QFrame::Box);
     pitchView->setFrameShadow(QFrame::Sunken);
     pitchView->setLineWidth(1);
 
-    QGraphicsView *volumeLabelView = d->viewManager->volumeLabelView();
+    QGraphicsView *volumeLabelView = new MiGraphicsView;//d->viewManager->volumeLabelView();
     d->layout->addWidget(volumeLabelView, 2, 0);
     volumeLabelView->setFixedSize(sideWidth, controlHeight);
     volumeLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *volumeView = d->viewManager->volumeView();
+    QGraphicsView *volumeView = new MiGraphicsView;//d->viewManager->volumeView();
     d->layout->addWidget(volumeView, 2, 1);
     volumeView->setFixedHeight(controlHeight);
     volumeView->setFrameShape(QFrame::Box);
@@ -93,16 +93,16 @@ AcMainWidget::~AcMainWidget()
     delete d;
 }
 
-bool AcMainWidget::isPointInVolumeViews(QWidget *widget, const QPoint &pos) const
-{
-    QGraphicsView *volumeView = d->viewManager->volumeView();
-    if (volumeView->rect().contains(volumeView->mapFrom(widget, pos)))
-        return true;
-    QGraphicsView *volumeLabelView = d->viewManager->volumeLabelView();
-    if (volumeLabelView->rect().contains(volumeLabelView->mapFrom(widget, pos)))
-        return true;
-    return false;
-}
+//bool AcMainWidget::isPointInVolumeViews(QWidget *widget, const QPoint &pos) const
+//{
+//    QGraphicsView *volumeView = d->viewManager->volumeView();
+//    if (volumeView->rect().contains(volumeView->mapFrom(widget, pos)))
+//        return true;
+//    QGraphicsView *volumeLabelView = d->viewManager->volumeLabelView();
+//    if (volumeLabelView->rect().contains(volumeLabelView->mapFrom(widget, pos)))
+//        return true;
+//    return false;
+//}
 
 //void AcMainWidget::resizeEvent(QResizeEvent *event)
 //{

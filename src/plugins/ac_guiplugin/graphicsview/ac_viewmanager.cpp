@@ -43,11 +43,11 @@ public:
         :   q(q)
 //        ,   sceneManager(AcGuiFactory::instance()->createSceneManager(q))
         ,   sceneManager(new AcSceneManager(q))
-        ,   pitchView(new AcPitchView(sceneManager->scene(Pitch), widget))
-        ,   volumeView(new AcVolumeView(sceneManager->scene(Volume), widget))
-        ,   timeLabelView(new AcTimeLabelView(sceneManager->scene(TimeLabel), widget))
-        ,   pitchLabelView(new AcPitchLabelView(sceneManager->scene(PitchLabel), widget))
-        ,   volumeLabelView(new AcVolumeLabelView(sceneManager->scene(VolumeLabel), widget))
+//        ,   pitchView(new AcPitchView(sceneManager->scene(Pitch), widget))
+//        ,   volumeView(new AcVolumeView(sceneManager->scene(Volume), widget))
+//        ,   timeLabelView(new AcTimeLabelView(sceneManager->scene(TimeLabel), widget))
+//        ,   pitchLabelView(new AcPitchLabelView(sceneManager->scene(PitchLabel), widget))
+//        ,   volumeLabelView(new AcVolumeLabelView(sceneManager->scene(VolumeLabel), widget))
     {}
 
     void updateViewCenters()
@@ -73,94 +73,94 @@ AcViewManager::~AcViewManager()
     delete d;
 }
 
-QGraphicsView *AcViewManager::pitchView() const
-{
-    return d->pitchView;
-}
+//QGraphicsView *AcViewManager::pitchView() const
+//{
+//    return d->pitchView;
+//}
 
-QGraphicsView *AcViewManager::volumeView() const
-{
-    return d->volumeView;
-}
+//QGraphicsView *AcViewManager::volumeView() const
+//{
+//    return d->volumeView;
+//}
 
-QGraphicsView *AcViewManager::timeLabelView() const
-{
-    return d->timeLabelView;
-}
+//QGraphicsView *AcViewManager::timeLabelView() const
+//{
+//    return d->timeLabelView;
+//}
 
-QGraphicsView *AcViewManager::pitchLabelView() const
-{
-    return d->pitchLabelView;
-}
+//QGraphicsView *AcViewManager::pitchLabelView() const
+//{
+//    return d->pitchLabelView;
+//}
 
-QGraphicsView *AcViewManager::volumeLabelView() const
-{
-    return d->volumeLabelView;
-}
+//QGraphicsView *AcViewManager::volumeLabelView() const
+//{
+//    return d->volumeLabelView;
+//}
 
-qreal AcViewManager::timePosition() const
-{
-    return d->pitchView->center().x();
-}
+//qreal AcViewManager::timePosition() const
+//{
+//    return d->pitchView->center().x();
+//}
 
-void AcViewManager::setTimePosition(qreal position)
-{
-    d->pitchView->setCenter(position, pitchPosition());
-    d->volumeView->setCenter(position, volumePosition());
-}
+//void AcViewManager::setTimePosition(qreal position)
+//{
+//    d->pitchView->setCenter(position, pitchPosition());
+//    d->volumeView->setCenter(position, volumePosition());
+//}
 
-qreal AcViewManager::pitchPosition() const
-{
-    return d->pitchView->center().y();
-}
+//qreal AcViewManager::pitchPosition() const
+//{
+//    return d->pitchView->center().y();
+//}
 
-void AcViewManager::setPitchPosition(qreal position)
-{
-    d->pitchView->setCenter(timePosition(), position);
-}
+//void AcViewManager::setPitchPosition(qreal position)
+//{
+//    d->pitchView->setCenter(timePosition(), position);
+//}
 
-qreal AcViewManager::volumePosition() const
-{
-    return d->volumeView->center().y();
-}
+//qreal AcViewManager::volumePosition() const
+//{
+//    return d->volumeView->center().y();
+//}
 
-void AcViewManager::setVolumePosition(qreal position)
-{
-    d->volumeView->setCenter(timePosition(), position);
-}
+//void AcViewManager::setVolumePosition(qreal position)
+//{
+//    d->volumeView->setCenter(timePosition(), position);
+//}
 
-qreal AcViewManager::timeScale() const
-{
+//qreal AcViewManager::timeScale() const
+//{
 //    return AcScore::instance()->viewSettings()->timeScale();
-    return 1.0f;
-}
+//    return 1.0f;
+//}
 
-void AcViewManager::setTimeScale(qreal scale)
-{
+//void AcViewManager::setTimeScale(qreal scale)
+//{
 //    AcScore::instance()->viewSettings()->setTimeScale(scale);
-}
+//}
 
-qreal AcViewManager::pitchScale() const
-{
+//qreal AcViewManager::pitchScale() const
+//{
 //    return AcScore::instance()->viewSettings()->pitchScale();
-    return 1.0f;
-}
+//    return 1.0f;
+//}
 
-void AcViewManager::setPitchScale(qreal scale)
-{
+//void AcViewManager::setPitchScale(qreal scale)
+//{
 //    AcScore::instance()->viewSettings()->setPitchScale(scale);
-}
+//}
 
-qreal AcViewManager::volumeScale() const
-{
+//qreal AcViewManager::volumeScale() const
+//{
 //    return AcScore::instance()->viewSettings()->volumeScale();
-    return 1.0f;
-}
+//    return 1.0f;
+//}
 
-void AcViewManager::setVolumeScale(qreal scale)
-{
+//void AcViewManager::setVolumeScale(qreal scale)
+//{
 //    AcScore::instance()->viewSettings()->setVolumeScale(scale);
-}
+//}
 
 void AcViewManager::updateViews()
 {

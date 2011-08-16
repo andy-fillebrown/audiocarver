@@ -144,36 +144,33 @@ public:
 };
 
 AcSceneManager *instance = 0;
-Score *score = 0;
+//Score *score = 0;
 
 AcSceneManager::AcSceneManager(QObject *parent)
     :   QObject(parent)
     ,   d(new AcSceneManagerPrivate(this))
 {
     ::instance = this;
-
-    Note *note = new Note;
-    PointItems pts;
-    pts.append(new PointItem(0.0f, 60.0f, PointItem::BezierCurve));
-    pts.append(new PointItem(32.0f, 72.0f, PointItem::BezierCurve));
-    pts.append(new PointItem(64.0f, 67.0f, PointItem::BezierCurve));
-    pts.append(new PointItem(96.0f, 60.0f, PointItem::BezierCurve));
-    pts.append(new PointItem(128.0f, 48.0f, PointItem::BezierCurve));
-    foreach (PointItem *pt, pts)
-        note->pitchCurve()->appendPoint(pt);
-    note->pitchCurve()->update();
-
-    Track *track = new Track;
-    track->appendNote(note);
-
-    score = new Score;
-    score->appendTrack(track);
-    addObject(score);
+//    Note *note = new Note;
+//    PointItems pts;
+//    pts.append(new PointItem(0.0f, 60.0f, PointItem::BezierCurve));
+//    pts.append(new PointItem(32.0f, 72.0f, PointItem::BezierCurve));
+//    pts.append(new PointItem(64.0f, 67.0f, PointItem::BezierCurve));
+//    pts.append(new PointItem(96.0f, 60.0f, PointItem::BezierCurve));
+//    pts.append(new PointItem(128.0f, 48.0f, PointItem::BezierCurve));
+//    foreach (PointItem *pt, pts)
+//        note->pitchCurve()->appendPoint(pt);
+//    note->pitchCurve()->update();
+//    Track *track = new Track;
+//    track->appendNote(note);
+//    score = new Score;
+//    score->appendTrack(track);
+//    addObject(score);
 }
 
 AcSceneManager::~AcSceneManager()
 {
-    delete score;
+//    delete score;
     delete d;
 }
 
@@ -215,7 +212,6 @@ AcSceneManager *AcSceneManager::instance()
 //        d->font.setPointSize(value.toInt());
 //        break;
 //    }
-
 //    d->updateFontMetrics();
 //    d->updateTimeLineItemVisibilities();
 //    d->updatePitchLineItemVisibilities();
@@ -239,24 +235,24 @@ AcSceneManager *AcSceneManager::instance()
 //    }
 //}
 
-QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
-{
-    switch (sceneType) {
-    case Pitch:
-        return d->pitchScene;
-    case Volume:
-        return d->volumeScene;
-    case TimeLabel:
-        return d->timeLabelScene;
-    case PitchLabel:
-        return d->pitchLabelScene;
-    case VolumeLabel:
-        return d->volumeLabelScene;
-    default:
-        break;
-    }
-    return 0;
-}
+//QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
+//{
+//    switch (sceneType) {
+//    case Pitch:
+//        return d->pitchScene;
+//    case Volume:
+//        return d->volumeScene;
+//    case TimeLabel:
+//        return d->timeLabelScene;
+//    case PitchLabel:
+//        return d->pitchLabelScene;
+//    case VolumeLabel:
+//        return d->volumeLabelScene;
+//    default:
+//        break;
+//    }
+//    return 0;
+//}
 
 //void AcSceneManager::addItem(AcGraphicsItem *item)
 //{
@@ -267,14 +263,14 @@ QGraphicsScene *AcSceneManager::scene(SceneType sceneType) const
 //    }
 //}
 
-void AcSceneManager::addObject(Object *object)
-{
-    for (int i = 0;  i < SceneTypeCount;  ++i) {
-        QGraphicsItem *item = object->item(SceneType(i));
-        if (item)
-            scene(SceneType(i))->addItem(item);
-    }
-}
+//void AcSceneManager::addObject(Object *object)
+//{
+//    for (int i = 0;  i < SceneTypeCount;  ++i) {
+//        QGraphicsItem *item = object->item(SceneType(i));
+//        if (item)
+//            scene(SceneType(i))->addItem(item);
+//    }
+//}
 
 //const QFont &AcSceneManager::font() const
 //{

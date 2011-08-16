@@ -33,24 +33,24 @@ public:
     AcViewManager(QWidget *widget);
     ~AcViewManager();
 
-    QGraphicsView *pitchView() const;
-    QGraphicsView *volumeView() const;
-    QGraphicsView *timeLabelView() const;
-    QGraphicsView *pitchLabelView() const;
-    QGraphicsView *volumeLabelView() const;
+//    QGraphicsView *pitchView() const;
+//    QGraphicsView *volumeView() const;
+//    QGraphicsView *timeLabelView() const;
+//    QGraphicsView *pitchLabelView() const;
+//    QGraphicsView *volumeLabelView() const;
 
-    qreal timePosition() const;
-    void setTimePosition(qreal position);
-    qreal pitchPosition() const;
-    void setPitchPosition(qreal position);
-    qreal volumePosition() const;
-    void setVolumePosition(qreal position);
-    qreal timeScale() const;
-    void setTimeScale(qreal scale);
-    qreal pitchScale() const;
-    void setPitchScale(qreal scale);
-    qreal volumeScale() const;
-    void setVolumeScale(qreal scale);
+//    qreal timePosition() const;
+//    void setTimePosition(qreal position);
+//    qreal pitchPosition() const;
+//    void setPitchPosition(qreal position);
+//    qreal volumePosition() const;
+//    void setVolumePosition(qreal position);
+//    qreal timeScale() const;
+//    void setTimeScale(qreal scale);
+//    qreal pitchScale() const;
+//    void setPitchScale(qreal scale);
+//    qreal volumeScale() const;
+//    void setVolumeScale(qreal scale);
 
     void updateViews();
 

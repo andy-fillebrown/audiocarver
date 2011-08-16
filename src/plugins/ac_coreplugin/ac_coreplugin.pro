@@ -13,7 +13,7 @@ HEADERS += \
 SOURCE_PAIRS += \
     implementations/ac_database \
     \
-    items/ac_item \
+    items/ac_model \
     \
 #    tools/ac_point \
     \

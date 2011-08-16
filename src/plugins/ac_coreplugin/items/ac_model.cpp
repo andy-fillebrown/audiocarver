@@ -15,30 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVIEW_H
-#define AC_GRAPHICSVIEW_H
+#include "ac_model.h"
 
-#include <mi_graphicsview.h>
-
-class AcGraphicsViewPrivate;
-
-class AcGraphicsView : public MiGraphicsView
+void test()
 {
-    Q_OBJECT
-
-public:
-    AcGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcGraphicsView();
-
-protected:
-//    void mousePressEvent(QMouseEvent *event);
-//    void mouseMoveEvent(QMouseEvent *event);
-//    void mouseReleaseEvent(QMouseEvent *event);
-//    void keyPressEvent(QKeyEvent *event);
-
-private:
-    Q_DISABLE_COPY(AcGraphicsView)
-    AcGraphicsViewPrivate *d;
-};
-
-#endif // AC_GRAPHICSVIEW_H
+    Model *model = new Model;
+    model->score()->appendTrack(new Track);
+    model->score()->sortChildren();
+    delete model;
+}

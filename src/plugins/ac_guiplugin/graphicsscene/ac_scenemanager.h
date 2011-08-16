@@ -19,7 +19,7 @@
 #define AC_SCENEMANAGER_H
 
 //#include <ac_guienums.h>
-#include <ac_item.h>
+//#include <ac_item.h>
 #include <QObject>
 
 //class AcGraphicsItem;
@@ -39,10 +39,10 @@ public:
 
     static AcSceneManager *instance();
 
-    QGraphicsScene *scene(SceneType sceneType) const;
+//    QGraphicsScene *scene(SceneType sceneType) const;
 
 //    void addItem(AcGraphicsItem *item);
-    void addObject(Object *object);
+//    void addObject(Object *object);
 
 //    template <typename T> void addItems(const QList<T*> &items)
 //    {

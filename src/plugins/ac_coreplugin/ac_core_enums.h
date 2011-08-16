@@ -18,14 +18,47 @@
 #ifndef AC_CORE_ENUMS_H
 #define AC_CORE_ENUMS_H
 
-enum SceneType
-{
-    PitchScene = 0,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
+#include <qnamespace.h>
+
+enum ItemDataRole {
+    ItemTypeRole = Qt::UserRole,
+    ListTypeRole,
+    ControlIndexRole,
+    PointRole,
+    CurveTypeRole,
+    StretchTypeRole,
+    LocationRole,
+    InstrumentRole,
+    VolumeRole,
+    ColorRole,
+    VisibilityRole
+};
+
+enum ItemType {
+    ListItem,
+    ScoreItem,
+    TrackItem,
+    NoteItem,
+    PitchCurveItem,
+    ControlCurveItem,
+    PitchCurvePointItem,
+    ControlCurvePointItem,
+    GridSettingsItem,
+    TimeLineItem,
+    PitchLineItem,
+    ControlLineItem
+};
+
+enum CurveType {
+    NoCurve,
+    BezierCurve
+};
+
+enum StretchType {
+    NoStretch,
+    StretchWithStart,
+    StretchToLength,
+    StretchWithEnd
 };
 
 #endif // AC_CORE_ENUMS_H

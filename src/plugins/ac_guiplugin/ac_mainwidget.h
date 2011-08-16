@@ -30,7 +30,7 @@ public:
     AcMainWidget(QWidget *parent = 0);
     ~AcMainWidget();
 
-    bool isPointInVolumeViews(QWidget *widget, const QPoint &pos) const;
+//    bool isPointInVolumeViews(QWidget *widget, const QPoint &pos) const;
 
 //protected:
 //    void resizeEvent(QResizeEvent *event);
