@@ -28,6 +28,7 @@ enum ItemDataRole {
     CurveTypeRole,
     StretchTypeRole,
     LocationRole,
+    LabelRole,
     PriorityRole,
     InstrumentRole,
     LengthRole,

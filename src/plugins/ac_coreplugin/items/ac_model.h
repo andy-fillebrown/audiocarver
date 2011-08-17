@@ -40,6 +40,7 @@ public:
     virtual ~Item() {}
 
     virtual int type() const = 0;
+    virtual const char *className() const = 0;
 
     Item *parent() const { return _parent; }
     void setParent(Item *parent) { setParentAndModel(parent, parent ? parent->model() : 0); }
@@ -66,9 +67,11 @@ public:
 
     virtual QVariant data(int role) const
     {
-        if (ItemTypeRole == role)
-            return type();
-        return QVariant();
+        switch (role) {
+        case ItemTypeRole: return type();
+        case Qt::DisplayRole: return className();
+        default: return QVariant();
+        }
     }
 
     virtual bool setData(const QVariant &value, int role)
@@ -135,6 +138,13 @@ public:
     }
 
     int type() const { return Type; }
+
+    const char *className() const
+    {
+        static T t;
+        static QString name = QString("%1s").arg(t.className());
+        return qPrintable(name);
+    }
 
     int childCount() const
     {
@@ -208,7 +218,7 @@ public:
         case LocationRole: return _location;
         case PriorityRole: return _priority;
         case ColorRole: return _color;
-        case Qt::DisplayRole: return _label;
+        case LabelRole: return _label;
         default: return Item::data(role);
         }
     }
@@ -219,7 +229,7 @@ public:
         case LocationRole: setLocation(value.toReal()); return true;
         case PriorityRole: setPriority(value.toInt()); return true;
         case ColorRole: setColor(value.value<QColor>()); return true;
-        case Qt::DisplayRole: setLabel(value.toString()); return true;
+        case LabelRole: setLabel(value.toString()); return true;
         default: return Item::setData(value, role);
         }
     }
@@ -285,6 +295,7 @@ public:
     ~TimeLine() {}
 
     int type() const { return Type; }
+    const char *className() const { return "TimeLine"; }
 };
 
 class PitchLine : public GridLine
@@ -299,6 +310,7 @@ public:
     ~PitchLine() {}
 
     int type() const { return Type; }
+    const char *className() const { return "PitchLine"; }
 };
 
 class ControlLine : public GridLine
@@ -313,6 +325,7 @@ public:
     ~ControlLine() {}
 
     int type() const { return Type; }
+    const char *className() const { return "ControlLine"; }
 };
 
 class Point : public Item
@@ -370,6 +383,7 @@ public:
     ~PitchPoint() {}
 
     int type() const { return Type; }
+    const char *className() const { return "PitchPoint"; }
 
     void setPos(QPointF pos)
     {
@@ -453,6 +467,7 @@ public:
     ~PitchCurvePoint() {}
 
     int type() const { return Type; }
+    const char *className() const { return "PitchCurvePoint"; }
 
     void setPos(QPointF pos)
     {
@@ -474,6 +489,7 @@ public:
     ~ControlCurvePoint() {}
 
     int type() const { return Type; }
+    const char *className() const { return "ControlCurvePoint"; }
 
     void setPos(QPointF pos)
     {
@@ -495,6 +511,7 @@ public:
     ~PitchCurve() {}
 
     int type() const { return Type; }
+    const char *className() const { return "PitchCurve"; }
 };
 
 class ControlCurve : public List<ControlCurvePoint>
@@ -510,6 +527,7 @@ public:
     ~ControlCurve() {}
 
     int type() const { return Type; }
+    const char *className() const { return "ControlCurve"; }
 
     QVariant data(int role) const
     {
@@ -563,7 +581,9 @@ public:
     }
 
     int type() const { return Type; }
-    int childCount() const { return 2; }
+    const char *className() const { return "Note"; }
+
+    int childCount() const { return 3; }
 
     Item *childAt(int i) const
     {
@@ -688,6 +708,7 @@ public:
     }
 
     int type() const { return Type; }
+    const char *className() const { return "Track"; }
 
     Item *childAt(int i) const
     {
@@ -791,6 +812,8 @@ public:
     }
 
     int type() const { return Type; }
+    const char *className() const { return "GridSettings"; }
+
     int childCount() const { return 3; }
 
     Item *childAt(int i) const
@@ -849,6 +872,8 @@ public:
     }
 
     int type() const { return Type; }
+    const char *className() const { return "Score"; }
+
     int childCount() const { return 2; }
 
     Item *childAt(int i) const
