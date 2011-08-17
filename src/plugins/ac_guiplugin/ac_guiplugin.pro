@@ -5,90 +5,57 @@ include(../../plugin.pri)
 include(ac_guiplugin_dependencies.pri)
 
 HEADERS += \
-#    factories/ac_guifactory.h \
-#    \
-#    graphicsitem/gridlines/ac_graphicsgridlineitem.h \
-#    graphicsitem/gridlines/ac_graphicshgridlineitem.h \
-#    graphicsitem/gridlines/ac_graphicspitchlineitem.h \
-#    graphicsitem/gridlines/ac_graphicstimelineitem.h \
-#    graphicsitem/gridlines/ac_graphicsvolumelineitem.h \
-#    \
-#    graphicsitem/ac_graphicsitem.h \
-#    graphicsitem/ac_graphicsnoteitem.h \
-#    graphicsitem/ac_graphicspitchpointitem.h \
-#    graphicsitem/ac_graphicspointitem.h \
-#    graphicsitem/ac_graphicstrackitem.h \
-#    graphicsitem/ac_graphicsvolumepointitem.h \
-#    graphicsitem/ac_scaledgraphicsitem.h \
-#    \
-    graphicsscene/ac_graphicsscene.h \
-    graphicsscene/ac_labelscene.h \
-    graphicsscene/ac_pitchlabelscene.h \
-    graphicsscene/ac_pitchscene.h \
-    graphicsscene/ac_scenemanager.h \
-    graphicsscene/ac_timelabelscene.h \
-    graphicsscene/ac_volumelabelscene.h \
-    graphicsscene/ac_volumescene.h \
-    \
-    graphicsview/ac_editorview.h \
-    graphicsview/ac_labelview.h \
-    graphicsview/ac_graphicsview.h \
-    graphicsview/ac_pitchlabelview.h \
-    graphicsview/ac_pitchview.h \
-    graphicsview/ac_timelabelview.h \
-    graphicsview/ac_viewmanager.h \
-    graphicsview/ac_volumelabelview.h \
-    graphicsview/ac_volumeview.h \
-    \
-    implementations/ac_editorimpl.h \
-    implementations/ac_mainwindowimpl.h \
-    \
     ac_guiconstants.h \
     ac_guienums.h \
-    ac_guiplugin.h \
     ac_guiutil.h \
-    ac_mainwidget.h \
 
-SOURCES += \
-#    factories/ac_guifactory.cpp \
+SOURCE_PAIRS = \
+#    factories/ac_guifactory \
 #    \
-#    graphicsitem/gridlines/ac_graphicsgridlineitem.cpp \
-#    graphicsitem/gridlines/ac_graphicshgridlineitem.cpp \
-#    graphicsitem/gridlines/ac_graphicspitchlineitem.cpp \
-#    graphicsitem/gridlines/ac_graphicstimelineitem.cpp \
-#    graphicsitem/gridlines/ac_graphicsvolumelineitem.cpp \
+#    graphicsitem/gridlines/ac_graphicsgridlineitem \
+#    graphicsitem/gridlines/ac_graphicshgridlineitem \
+#    graphicsitem/gridlines/ac_graphicspitchlineitem \
+#    graphicsitem/gridlines/ac_graphicstimelineitem \
+#    graphicsitem/gridlines/ac_graphicsvolumelineitem \
 #    \
-#    graphicsitem/ac_graphicsitem.cpp \
-#    graphicsitem/ac_graphicsnoteitem.cpp \
-#    graphicsitem/ac_graphicspitchpointitem.cpp \
-#    graphicsitem/ac_graphicspointitem.cpp \
-#    graphicsitem/ac_graphicstrackitem.cpp \
-#    graphicsitem/ac_graphicsvolumepointitem.cpp \
-#    graphicsitem/ac_scaledgraphicsitem.cpp \
+#    graphicsitem/ac_graphicsitem \
+#    graphicsitem/ac_graphicsnoteitem \
+#    graphicsitem/ac_graphicspitchpointitem \
+#    graphicsitem/ac_graphicspointitem \
+#    graphicsitem/ac_graphicstrackitem \
+#    graphicsitem/ac_graphicsvolumepointitem \
+#    graphicsitem/ac_scaledgraphicsitem \
 #    \
-    graphicsscene/ac_graphicsscene.cpp \
-    graphicsscene/ac_labelscene.cpp \
-    graphicsscene/ac_pitchlabelscene.cpp \
-    graphicsscene/ac_pitchscene.cpp \
-    graphicsscene/ac_scenemanager.cpp \
-    graphicsscene/ac_timelabelscene.cpp \
-    graphicsscene/ac_volumelabelscene.cpp \
-    graphicsscene/ac_volumescene.cpp \
+    graphicsscene/ac_graphicsscene \
+    graphicsscene/ac_labelscene \
+    graphicsscene/ac_pitchlabelscene \
+    graphicsscene/ac_pitchscene \
+    graphicsscene/ac_scenemanager \
+    graphicsscene/ac_timelabelscene \
+    graphicsscene/ac_volumelabelscene \
+    graphicsscene/ac_volumescene \
     \
-    graphicsview/ac_editorview.cpp \
-    graphicsview/ac_labelview.cpp \
-    graphicsview/ac_graphicsview.cpp \
-    graphicsview/ac_pitchlabelview.cpp \
-    graphicsview/ac_pitchview.cpp \
-    graphicsview/ac_timelabelview.cpp \
-    graphicsview/ac_viewmanager.cpp \
-    graphicsview/ac_volumelabelview.cpp \
-    graphicsview/ac_volumeview.cpp \
+    graphicsview/ac_editorview \
+    graphicsview/ac_labelview \
+    graphicsview/ac_graphicsview \
+    graphicsview/ac_pitchlabelview \
+    graphicsview/ac_pitchview \
+    graphicsview/ac_timelabelview \
+    graphicsview/ac_viewmanager \
+    graphicsview/ac_volumelabelview \
+    graphicsview/ac_volumeview \
     \
-    implementations/ac_editorimpl.cpp \
-    implementations/ac_mainwindowimpl.cpp \
+    implementations/ac_editorimpl \
+    implementations/ac_mainwindowimpl \
     \
-    ac_guiplugin.cpp \
-    ac_mainwidget.cpp \
+    itemviews/ac_itemview \
+    \
+    ac_guiplugin \
+    ac_mainwidget \
+
+for(pair, SOURCE_PAIRS) {
+    HEADERS *= $${pair}.h
+    SOURCES *= $${pair}.cpp
+}
 
 RESOURCES = ac_gui.qrc

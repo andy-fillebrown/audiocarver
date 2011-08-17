@@ -85,7 +85,7 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     volumeView->setFrameShape(QFrame::Box);
     volumeView->setFrameShadow(QFrame::Sunken);
 
-    d->viewManager->updateViews();
+//    d->viewManager->updateViews();
 }
 
 AcMainWidget::~AcMainWidget()

@@ -9,6 +9,7 @@ DIRS = \
     graphicsscene \
     graphicsview \
     implementations \
+    itemviews \
     . \
 
 for(dir, DIRS) {

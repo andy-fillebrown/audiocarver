@@ -52,7 +52,7 @@ public:
 //    qreal volumeScale() const;
 //    void setVolumeScale(qreal scale);
 
-    void updateViews();
+//    void updateViews();
 
 //private slots:
 //    void updateViewSettings(int i, const QVariant &value);

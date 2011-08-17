@@ -16,12 +16,19 @@
 **************************************************************************/
 
 #include "ac_guiplugin.h"
+
+#include <ac_model.h>
+
 //#include <ac_guifactory.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 #include <ac_editorimpl.h>
 #include <icore.h>
 #include <mainwindow.h>
+
+#include <QDockWidget>
+#include <QTreeView>
+
 #include <QtPlugin>
 
 using namespace Private;
@@ -41,6 +48,18 @@ void AcGuiPlugin::extensionsInitialized()
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
     AcMainWidget *widget = new AcMainWidget(mw);
     mw->setCentralWidget(widget);
+
+    Model *model = new Model(mw);
+    model->score()->tracks()->appendChild(new Track);
+    model->score()->tracks()->appendChild(new Track);
+    model->score()->tracks()->appendChild(new Track);
+
+    QDockWidget *dockWidget = new QDockWidget(mw);
+    mw->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
+
+    QTreeView *treeView = new QTreeView(dockWidget);
+    treeView->setModel(model);
+    dockWidget->setWidget(treeView);
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)

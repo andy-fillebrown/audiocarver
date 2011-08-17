@@ -162,12 +162,12 @@ AcViewManager::~AcViewManager()
 //    AcScore::instance()->viewSettings()->setVolumeScale(scale);
 //}
 
-void AcViewManager::updateViews()
-{
-    d->pitchView->updateTransform();
-    d->volumeView->updateTransform();
-    d->updateViewCenters();
-}
+//void AcViewManager::updateViews()
+//{
+//    d->pitchView->updateTransform();
+//    d->volumeView->updateTransform();
+//    d->updateViewCenters();
+//}
 
 //void AcViewManager::updateViewSettings(int i, const QVariant &value)
 //{

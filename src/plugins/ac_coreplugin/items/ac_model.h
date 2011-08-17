@@ -40,7 +40,7 @@ public:
     virtual ~Item() {}
 
     virtual int type() const = 0;
-    virtual const char *className() const = 0;
+    virtual QString className() const = 0;
 
     Item *parent() const { return _parent; }
     void setParent(Item *parent) { setParentAndModel(parent, parent ? parent->model() : 0); }
@@ -115,6 +115,7 @@ protected:
 
     Item *_parent;
     Model *_model;
+    QString _objectName;
 };
 
 template <class T> inline T *item_cast(Item *item)
@@ -130,7 +131,9 @@ public:
 
     explicit List(Item *parent = 0)
         :   Item(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~List()
     {
@@ -139,11 +142,10 @@ public:
 
     int type() const { return Type; }
 
-    const char *className() const
+    QString className() const
     {
         static T t;
-        static QString name = QString("%1s").arg(t.className());
-        return qPrintable(name);
+        return QString("%1s").arg(t.className());
     }
 
     int childCount() const
@@ -290,12 +292,14 @@ public:
 
     explicit TimeLine(Item *parent = 0)
         :   GridLine(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~TimeLine() {}
 
     int type() const { return Type; }
-    const char *className() const { return "TimeLine"; }
+    QString className() const { return "TimeLine"; }
 };
 
 class PitchLine : public GridLine
@@ -305,12 +309,14 @@ public:
 
     explicit PitchLine(Item *parent = 0)
         :   GridLine(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~PitchLine() {}
 
     int type() const { return Type; }
-    const char *className() const { return "PitchLine"; }
+    QString className() const { return "PitchLine"; }
 };
 
 class ControlLine : public GridLine
@@ -320,12 +326,14 @@ public:
 
     explicit ControlLine(Item *parent = 0)
         :   GridLine(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~ControlLine() {}
 
     int type() const { return Type; }
-    const char *className() const { return "ControlLine"; }
+    QString className() const { return "ControlLine"; }
 };
 
 class Point : public Item
@@ -378,12 +386,14 @@ public:
 
     explicit PitchPoint(Item *parent = 0)
         :   Point(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~PitchPoint() {}
 
     int type() const { return Type; }
-    const char *className() const { return "PitchPoint"; }
+    QString className() const { return "PitchPoint"; }
 
     void setPos(QPointF pos)
     {
@@ -462,12 +472,14 @@ public:
 
     explicit PitchCurvePoint(Item *parent = 0)
         :   CurvePoint(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~PitchCurvePoint() {}
 
     int type() const { return Type; }
-    const char *className() const { return "PitchCurvePoint"; }
+    QString className() const { return "PitchCurvePoint"; }
 
     void setPos(QPointF pos)
     {
@@ -484,12 +496,14 @@ public:
 
     explicit ControlCurvePoint(Item *parent = 0)
         :   CurvePoint(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~ControlCurvePoint() {}
 
     int type() const { return Type; }
-    const char *className() const { return "ControlCurvePoint"; }
+    QString className() const { return "ControlCurvePoint"; }
 
     void setPos(QPointF pos)
     {
@@ -506,12 +520,14 @@ public:
 
     explicit PitchCurve(Item *parent = 0)
         :   List<PitchCurvePoint>(parent)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~PitchCurve() {}
 
     int type() const { return Type; }
-    const char *className() const { return "PitchCurve"; }
+    QString className() const { return "PitchCurve"; }
 };
 
 class ControlCurve : public List<ControlCurvePoint>
@@ -522,12 +538,14 @@ public:
     explicit ControlCurve(Item *parent = 0)
         :   List<ControlCurvePoint>(parent)
         ,   _controlIndex(0)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~ControlCurve() {}
 
     int type() const { return Type; }
-    const char *className() const { return "ControlCurve"; }
+    QString className() const { return "ControlCurve"; }
 
     QVariant data(int role) const
     {
@@ -572,7 +590,9 @@ public:
         ,   _length(0.0f)
         ,   _height(0.0f)
         ,   _volume(0.9f)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~Note()
     {
@@ -581,7 +601,7 @@ public:
     }
 
     int type() const { return Type; }
-    const char *className() const { return "Note"; }
+    QString className() const { return "Note"; }
 
     int childCount() const { return 3; }
 
@@ -700,7 +720,9 @@ public:
         ,   _notes(new List<Note>(parent))
         ,   _volume(0.9f)
         ,   _color(Qt::red)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~Track()
     {
@@ -708,7 +730,7 @@ public:
     }
 
     int type() const { return Type; }
-    const char *className() const { return "Track"; }
+    QString className() const { return "Track"; }
 
     Item *childAt(int i) const
     {
@@ -802,7 +824,9 @@ public:
         ,   _timeLines(new List<TimeLine>(this))
         ,   _pitchLines(new List<PitchLine>(this))
         ,   _controlLines(new List<ControlLine>(this))
-    {}
+    {
+        _objectName = className();
+    }
 
     ~GridSettings()
     {
@@ -812,7 +836,7 @@ public:
     }
 
     int type() const { return Type; }
-    const char *className() const { return "GridSettings"; }
+    QString className() const { return "GridSettings"; }
 
     int childCount() const { return 3; }
 
@@ -863,7 +887,9 @@ public:
         :   _tracks(new List<Track>(this))
         ,   _gridSettings(new GridSettings(this))
         ,   _volume(1.0f)
-    {}
+    {
+        _objectName = className();
+    }
 
     ~Score()
     {
@@ -872,7 +898,7 @@ public:
     }
 
     int type() const { return Type; }
-    const char *className() const { return "Score"; }
+    QString className() const { return "Score"; }
 
     int childCount() const { return 2; }
 
@@ -945,7 +971,7 @@ private:
     qreal _volume;
 };
 
-class AbstractItemModel : public QAbstractItemModel
+class AC_CORE_EXPORT AbstractItemModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -964,7 +990,7 @@ protected:
     {}
 };
 
-class Model : public AbstractItemModel
+class AC_CORE_EXPORT Model : public AbstractItemModel
 {
     Q_OBJECT
 
@@ -995,7 +1021,7 @@ public:
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const
     {
-        Item *parentItem = itemFromIndex(parent);
+        Item *parentItem = parent.isValid() ? itemFromIndex(parent) : _score;
         if (!parentItem
                 || row < 0
                 || column < 0
@@ -1014,9 +1040,7 @@ public:
 
     int rowCount(const QModelIndex &parent) const
     {
-        if (!parent.isValid())
-            return _score->childCount();
-        Item *parentItem = itemFromIndex(parent);
+        Item *parentItem = parent.isValid() ? itemFromIndex(parent) : _score;
         return parentItem ? parentItem->childCount() : 0;
     }
 
@@ -1118,7 +1142,7 @@ template <class T> inline void List<T>::insertChild(int i, T *child)
     if (!child || _children.contains(child))
         return;
     if (_model)
-        _model->beginInsertRows(index(), i, i);
+        _model->beginInsertRows(_parent->index(), i, i);
     _children.insert(i, child);
     child->setParentAndModel(this, _model);
     if (_model)
@@ -1131,7 +1155,7 @@ template <class T> inline void List<T>::removeChild(int i)
     if (!child || !_children.contains(item_cast<T>(child)))
         return;
     if (_model)
-        _model->beginRemoveRows(index(), i, i);
+        _model->beginRemoveRows(_parent->index(), i, i);
     child->setParentAndModel(0, 0);
     _children.removeAt(i);
     if (_model)
