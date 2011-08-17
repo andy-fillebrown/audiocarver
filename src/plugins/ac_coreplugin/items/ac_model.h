@@ -890,6 +890,7 @@ public:
     Score()
         :   _tracks(new List<Track>(this))
         ,   _gridSettings(new GridSettings(this))
+        ,   _length(120.0f)
         ,   _volume(1.0f)
     {
         _objectName = className();
@@ -939,6 +940,7 @@ public:
     QVariant data(int role) const
     {
         switch (role) {
+        case LengthRole: return _length;
         case VolumeRole: return _volume;
         default: return Item::data(role);
         }
@@ -947,6 +949,7 @@ public:
     bool setData(const QVariant &value, int role)
     {
         switch (role) {
+        case LengthRole: setLength(value.toReal()); return true;
         case VolumeRole: setVolume(value.toReal()); return true;
         default: return false;
         }
@@ -954,6 +957,18 @@ public:
 
     List<Track> *tracks() const { return _tracks; }
     GridSettings *gridSettings() const { return _gridSettings; }
+
+    qreal length() const { return _length; }
+    void setLength(qreal length)
+    {
+        if (length < 0.0f)
+            length = 0.0f;
+        if (_length == length)
+            return;
+        beginDataChange();
+        _length = length;
+        endDataChange();
+    }
 
     qreal volume() const { return _volume; }
     void setVolume(qreal volume)
@@ -972,6 +987,7 @@ public:
 private:
     List<Track> *_tracks;
     GridSettings *_gridSettings;
+    qreal _length;
     qreal _volume;
 };
 
