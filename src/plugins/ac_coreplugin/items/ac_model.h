@@ -920,11 +920,42 @@ private:
     qreal _volume;
 };
 
-class AbstractModel : public QAbstractItemModel
+class AbstractItemModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
+    ~AbstractItemModel() {}
+
+    virtual QModelIndex childIndex(ItemType type, const QModelIndex &parent) const = 0;
+    virtual QModelIndex listIndex(ItemType listType, const QModelIndex &parent) const = 0;
+
+signals:
+    void dataAboutToChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
+protected:
+    AbstractItemModel(QObject *parent)
+        :   QAbstractItemModel(parent)
+    {}
+};
+
+class Model : public AbstractItemModel
+{
+    Q_OBJECT
+
+public:
+    explicit Model(QObject *parent = 0)
+        :   AbstractItemModel(parent)
+        ,   _score(new Score)
+    {
+        _score->setModel(this);
+    }
+
+    ~Model()
+    {
+        delete _score;
+    }
+
     QModelIndex childIndex(ItemType type, const QModelIndex &parent) const
     {
         Item *parentItem = itemFromIndex(parent);
@@ -987,15 +1018,12 @@ public:
         return itm ? itm->flags() : Qt::NoItemFlags;
     }
 
-signals:
-    void dataAboutToChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    Score *score() const
+    {
+        return _score;
+    }
 
 protected:
-    AbstractModel(QObject *parent)
-        :   QAbstractItemModel(parent)
-        ,   _score(new Score)
-    {}
-
     QModelIndex indexFromItem(Item *item) const
     {
         if (!item)
@@ -1016,29 +1044,8 @@ protected:
         return parentItem->childAt(index.row());
     }
 
-    Score *_score;
-};
-
-class Model : public AbstractModel
-{
-    Q_OBJECT
-
-public:
-    explicit Model(QObject *parent = 0)
-        :   AbstractModel(parent)
-    {
-        _score->setModel(this);
-    }
-
-    ~Model()
-    {}
-
-    Score *score() const
-    {
-        return _score;
-    }
-
 private:
+    Score *_score;
     QModelIndexList _persistentIndexCache;
 
     friend class Item;
