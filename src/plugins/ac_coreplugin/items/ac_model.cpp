@@ -20,7 +20,7 @@
 void test()
 {
     Model *model = new Model;
-    model->score()->appendTrack(new Track);
+    model->score()->tracks()->appendChild(new Track);
     model->score()->sortChildren();
     delete model;
 }

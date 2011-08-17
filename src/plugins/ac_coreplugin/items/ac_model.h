@@ -21,7 +21,10 @@
 #include <ac_core_enums.h>
 #include <ac_core_global.h>
 
+#include <QColor>
+
 #include <QAbstractItemModel>
+#include <QPointF>
 #include <QVector>
 
 class Model;
@@ -77,7 +80,9 @@ public:
 
     virtual Qt::ItemFlags flags() const
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsSelectable
+                | Qt::ItemIsEditable
+                | Qt::ItemIsEnabled;
     }
 
     void setParentAndModel(Item *parent, Model *model)
@@ -101,6 +106,9 @@ protected:
                 child->sortChildren();
         }
     }
+
+    inline void beginDataChange();
+    inline void endDataChange();
 
     Item *_parent;
     Model *_model;
@@ -148,13 +156,7 @@ public:
         insertChild(childCount(), child);
     }
 
-    void insertChild(int i, T *child)
-    {
-        if (!child)
-            return;
-        _children.insert(i, child);
-        child->setParentAndModel(this, _model);
-    }
+    inline void insertChild(int i, T *child);
 
     T *takeChild(int i)
     {
@@ -163,16 +165,15 @@ public:
         return child;
     }
 
-    void removeChild(int i)
-    {
-        Item *child = childAt(i);
-        if (!child)
-            return;
-        child->setParentAndModel(0, 0);
-        _children.removeAt(i);
-    }
-
+    inline void removeChild(int i);
     inline void sortChildren();
+
+    QVariant data(int role) const
+    {
+        if (ListTypeRole == role)
+            return T::Type;
+        return Item::data(role);
+    }
 
 protected:
     inline void d_sortChildren();
@@ -194,9 +195,82 @@ class GridLine : public Item
 public:
     explicit GridLine(Item *parent = 0)
         :   Item(parent)
+        ,   _location(0.0f)
+        ,   _priority(0)
+        ,   _color(Qt::lightGray)
     {}
 
     ~GridLine() {}
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case LocationRole: return _location;
+        case PriorityRole: return _priority;
+        case ColorRole: return _color;
+        case Qt::DisplayRole: return _label;
+        default: return Item::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case LocationRole: setLocation(value.toReal()); return true;
+        case PriorityRole: setPriority(value.toInt()); return true;
+        case ColorRole: setColor(value.value<QColor>()); return true;
+        case Qt::DisplayRole: setLabel(value.toString()); return true;
+        default: return Item::setData(value, role);
+        }
+    }
+
+    qreal location() const { return _location; }
+    void setLocation(qreal location)
+    {
+        if (location < 0.0f)
+            location = 0.0f;
+        if (_location == location)
+            return;
+        beginDataChange();
+        _location = location;
+        endDataChange();
+    }
+
+    int priority() const { return _priority; }
+    void setPriority(int priority)
+    {
+        if (_priority == priority)
+            return;
+        beginDataChange();
+        _priority = priority;
+        endDataChange();
+    }
+
+    const QColor &color() const { return _color; }
+    void setColor(const QColor &color)
+    {
+        if (_color == color)
+            return;
+        beginDataChange();
+        _color = color;
+        endDataChange();
+    }
+
+    const QString &label() const { return _label; }
+    void setLabel(const QString &label)
+    {
+        if (_label == label)
+            return;
+        beginDataChange();
+        _label = label;
+        endDataChange();
+    }
+
+private:
+    qreal _location;
+    int _priority;
+    QColor _color;
+    QString _label;
 };
 
 class TimeLine : public GridLine
@@ -249,34 +323,164 @@ public:
     {}
 
     ~Point() {}
+
+    QVariant data(int role) const
+    {
+        if (PointRole == role)
+            return _pos;
+        return Item::data(role);
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        if (PointRole == role) {
+            setPos(value.toPointF());
+            return true;
+        }
+        return Item::setData(value, role);
+    }
+
+    const QPointF &pos() const { return _pos; }
+    virtual void setPos(QPointF pos)
+    {
+        if (pos.x() < 0.0f)
+            pos.setX(0.0f);
+        if (pos.y() < 0.0f)
+            pos.setY(0.0f);
+        if (_pos == pos)
+            return;
+        beginDataChange();
+        _pos = pos;
+        endDataChange();
+    }
+
+private:
+    QPointF _pos;
 };
 
-class PitchCurvePoint : public Point
+class PitchPoint : public Point
+{
+public:
+    enum { Type = PitchPointItem };
+
+    explicit PitchPoint(Item *parent = 0)
+        :   Point(parent)
+    {}
+
+    ~PitchPoint() {}
+
+    int type() const { return Type; }
+
+    void setPos(QPointF pos)
+    {
+        if (127.0f < pos.y())
+            pos.setY(127.0f);
+        Point::setPos(pos);
+    }
+};
+
+class CurvePoint : public Point
+{
+public:
+    explicit CurvePoint(Item *parent = 0)
+        :   Point(parent)
+        ,   _curveType(NoCurve)
+        ,   _stretchType(NoStretch)
+    {}
+
+    ~CurvePoint() {}
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case CurveTypeRole: return _curveType;
+        case StretchTypeRole: return _stretchType;
+        default: return Point::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case CurveTypeRole: setCurveType(CurveType(value.toInt())); return true;
+        case StretchTypeRole: setStretchType(StretchType(value.toInt())); return true;
+        default: return Point::setData(value, role);
+        }
+    }
+
+    virtual void setPos(QPointF pos)
+    {
+        if (1.0f < pos.x())
+            pos.setX(1.0f);
+        Point::setPos(pos);
+    }
+
+    CurveType curveType() const { return _curveType; }
+    void setCurveType(CurveType type)
+    {
+        if (_curveType == type)
+            return;
+        beginDataChange();
+        _curveType = type;
+        endDataChange();
+    }
+
+    StretchType stretchType() const { return _stretchType; }
+    void setStretchType(StretchType type)
+    {
+        if (_stretchType == type)
+            return;
+        beginDataChange();
+        _stretchType = type;
+        endDataChange();
+    }
+
+private:
+    CurveType _curveType;
+    StretchType _stretchType;
+};
+
+
+class PitchCurvePoint : public CurvePoint
 {
 public:
     enum { Type = PitchCurvePointItem };
 
     explicit PitchCurvePoint(Item *parent = 0)
-        :   Point(parent)
+        :   CurvePoint(parent)
     {}
 
     ~PitchCurvePoint() {}
 
     int type() const { return Type; }
+
+    void setPos(QPointF pos)
+    {
+        if (127.0f < pos.y())
+            pos.setY(127.0f);
+        CurvePoint::setPos(pos);
+    }
 };
 
-class ControlCurvePoint : public Point
+class ControlCurvePoint : public CurvePoint
 {
 public:
     enum { Type = ControlCurvePointItem };
 
     explicit ControlCurvePoint(Item *parent = 0)
-        :   Point(parent)
+        :   CurvePoint(parent)
     {}
 
     ~ControlCurvePoint() {}
 
     int type() const { return Type; }
+
+    void setPos(QPointF pos)
+    {
+        if (1.0f < pos.y())
+            pos.setY(1.0f);
+        CurvePoint::setPos(pos);
+    }
 };
 
 class PitchCurve : public List<PitchCurvePoint>
@@ -300,11 +504,41 @@ public:
 
     explicit ControlCurve(Item *parent = 0)
         :   List<ControlCurvePoint>(parent)
+        ,   _controlIndex(0)
     {}
 
     ~ControlCurve() {}
 
     int type() const { return Type; }
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case ControlIndexRole: return _controlIndex;
+        default: return List<ControlCurvePoint>::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case ControlIndexRole: setControlIndex(value.toInt()); return true;
+        default: return false;
+        }
+    }
+
+    int controlIndex() const { return _controlIndex; }
+    void setControlIndex(int index)
+    {
+        if (_controlIndex == index)
+            return;
+        beginDataChange();
+        _controlIndex = index;
+        endDataChange();
+    }
+
+private:
+    int _controlIndex;
 };
 
 class Note : public Item
@@ -316,6 +550,10 @@ public:
         :   Item(parent)
         ,   _pitchCurve(new PitchCurve(this))
         ,   _controlCurves(new List<ControlCurve>(this))
+        ,   _origin(new PitchPoint(this))
+        ,   _length(0.0f)
+        ,   _height(0.0f)
+        ,   _volume(0.9f)
     {}
 
     ~Note()
@@ -332,22 +570,26 @@ public:
         switch (i) {
         case 0: return _pitchCurve;
         case 1: return _controlCurves;
+        case 2: return _origin;
+        default: return 0;
         }
-        return 0;
     }
 
     int childIndex(Item *child) const
     {
         if (_pitchCurve == child) return 0;
         if (_controlCurves == child) return 1;
+        if (_origin == child) return 2;
         return -1;
     }
 
     Item *findChild(ItemType type) const
     {
-        if (PitchCurveItem == type)
-            return _pitchCurve;
-        return 0;
+        switch (type) {
+        case PitchCurveItem: return _pitchCurve;
+        case PitchPointItem: return _origin;
+        default: return 0;
+        }
     }
 
     Item *findList(ItemType listType) const
@@ -357,9 +599,75 @@ public:
         return 0;
     }
 
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case PointRole: return _origin->pos();
+        case LengthRole: return _length;
+        case HeightRole: return _height;
+        case VolumeRole: return _volume;
+        default: return Item::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case PointRole: _origin->setPos(value.toPointF()); return true;
+        case LengthRole: setLength(value.toReal()); return true;
+        case HeightRole: setHeight(value.toReal()); return true;
+        case VolumeRole: setVolume(value.toReal()); return true;
+        default: return false;
+        }
+    }
+
+    PitchCurve *pitchCurve() const { return _pitchCurve; }
+    List<ControlCurve> *controlCurves() const { return _controlCurves; }
+    PitchPoint *origin() const { return _origin; }
+
+    qreal length() const { return _length; }
+    void setLength(qreal length)
+    {
+        if (length < 0.0f)
+            length = 0.0f;
+        if (_length == length)
+            return;
+        beginDataChange();
+        _length = length;
+        endDataChange();
+    }
+
+    qreal height() const { return _height; }
+    void setHeight(qreal height)
+    {
+        if (_height == height)
+            return;
+        beginDataChange();
+        _height = height;
+        endDataChange();
+    }
+
+    qreal volume() const { return _volume; }
+    void setVolume(qreal volume)
+    {
+        if (volume < 0.0f)
+            volume = 0.0f;
+        if (1.0f < volume)
+            volume = 1.0f;
+        if (_volume == volume)
+            return;
+        beginDataChange();
+        _volume = volume;
+        endDataChange();
+    }
+
 private:
     PitchCurve *_pitchCurve;
     List<ControlCurve> *_controlCurves;
+    PitchPoint *_origin;
+    qreal _length;
+    qreal _height;
+    qreal _volume;
 };
 
 class Track : public Item
@@ -370,6 +678,8 @@ public:
     explicit Track(Item *parent = 0)
         :   Item(parent)
         ,   _notes(new List<Note>(parent))
+        ,   _volume(0.9f)
+        ,   _color(Qt::red)
     {}
 
     ~Track()
@@ -400,8 +710,65 @@ public:
         return 0;
     }
 
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case InstrumentRole: return _instrument;
+        case VolumeRole: return _volume;
+        case ColorRole: return _color;
+        default: return Item::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case InstrumentRole: setInstrument(value.toString()); return true;
+        case VolumeRole: setVolume(value.toReal()); return true;
+        case ColorRole: setColor(value.value<QColor>()); return true;
+        default: return false;
+        }
+    }
+
+    const QString &instrument() const { return _instrument; }
+    void setInstrument(const QString &instrument)
+    {
+        if (_instrument == instrument)
+            return;
+        beginDataChange();
+        _instrument = instrument;
+        endDataChange();
+    }
+
+    qreal volume() const { return _volume; }
+    void setVolume(qreal volume)
+    {
+        if (volume < 0.0f)
+            volume = 0.0f;
+        if (1.0f < volume)
+            volume = 1.0f;
+        if (_volume == volume)
+            return;
+        beginDataChange();
+        _volume = volume;
+        endDataChange();
+    }
+
+    const QColor &color() const { return _color; }
+    void setColor(const QColor &color)
+    {
+        if (_color == color)
+            return;
+        beginDataChange();
+        _color = color;
+        endDataChange();
+    }
+
 private:
     List<Note> *_notes;
+    QString _instrument;
+    qreal _volume;
+    QColor _color;
 };
 
 class GridSettings : public Item
@@ -454,6 +821,10 @@ public:
         }
     }
 
+    List<TimeLine> *timeLines() const { return _timeLines; }
+    List<PitchLine> *pitchLines() const { return _pitchLines; }
+    List<ControlLine> *controlLines() const { return _controlLines; }
+
 private:
     List<TimeLine> *_timeLines;
     List<PitchLine> *_pitchLines;
@@ -463,11 +834,12 @@ private:
 class Score : public Item
 {
 public:
-    enum { Type = GridSettingsItem };
+    enum { Type = ScoreItem };
 
     Score()
         :   _tracks(new List<Track>(this))
         ,   _gridSettings(new GridSettings(this))
+        ,   _volume(1.0f)
     {}
 
     ~Score()
@@ -509,45 +881,49 @@ public:
         return 0;
     }
 
-    Track *trackAt(int i) const
+    QVariant data(int role) const
     {
-        return item_cast<Track>(_tracks->childAt(i));
+        switch (role) {
+        case VolumeRole: return _volume;
+        default: return Item::data(role);
+        }
     }
 
-    void appendTrack(Track *track)
+    bool setData(const QVariant &value, int role)
     {
-        _tracks->appendChild(track);
+        switch (role) {
+        case VolumeRole: setVolume(value.toReal()); return true;
+        default: return false;
+        }
     }
 
-    void insertTrack(int i, Track *track)
-    {
-        _tracks->insertChild(i, track);
-    }
+    List<Track> *tracks() const { return _tracks; }
+    GridSettings *gridSettings() const { return _gridSettings; }
 
-    Track *takeTrack(int i)
+    qreal volume() const { return _volume; }
+    void setVolume(qreal volume)
     {
-        Track *track = trackAt(i);
-        removeTrack(i);
-        return track;
-    }
-
-    void removeTrack(int i)
-    {
-        _tracks->removeChild(i);
-    }
-
-    void removeTrack(Track *track)
-    {
-        _tracks->removeChild(childIndex(track));
+        if (volume < 0.0f)
+            volume = 0.0f;
+        if (1.0f < volume)
+            volume = 1.0f;
+        if (_volume == volume)
+            return;
+        beginDataChange();
+        _volume = volume;
+        endDataChange();
     }
 
 private:
     List<Track> *_tracks;
     GridSettings *_gridSettings;
+    qreal _volume;
 };
 
 class AbstractModel : public QAbstractItemModel
 {
+    Q_OBJECT
+
 public:
     QModelIndex childIndex(ItemType type, const QModelIndex &parent) const
     {
@@ -610,6 +986,9 @@ public:
         Item *itm = index.isValid() ? itemFromIndex(index) : _score;
         return itm ? itm->flags() : Qt::NoItemFlags;
     }
+
+signals:
+    void dataAboutToChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
 protected:
     AbstractModel(QObject *parent)
@@ -679,6 +1058,18 @@ inline QModelIndex Item::index()
     return _model ? _model->indexFromItem(this) : QModelIndex();
 }
 
+inline void Item::beginDataChange()
+{
+    if (_model)
+        emit _model->dataAboutToChange(index(), index());
+}
+
+inline void Item::endDataChange()
+{
+    if (_model)
+        emit _model->dataChanged(index(), index());
+}
+
 class ItemModelLessThan
 {
 public:
@@ -689,6 +1080,31 @@ public:
         return *(l.first) < *(r.first);
     }
 };
+
+template <class T> inline void List<T>::insertChild(int i, T *child)
+{
+    if (!child || _children.contains(child))
+        return;
+    if (_model)
+        _model->beginInsertRows(index(), i, i);
+    _children.insert(i, child);
+    child->setParentAndModel(this, _model);
+    if (_model)
+        _model->endInsertRows();
+}
+
+template <class T> inline void List<T>::removeChild(int i)
+{
+    Item *child = childAt(i);
+    if (!child || !_children.contains(item_cast<T>(child)))
+        return;
+    if (_model)
+        _model->beginRemoveRows(index(), i, i);
+    child->setParentAndModel(0, 0);
+    _children.removeAt(i);
+    if (_model)
+        _model->endRemoveRows();
+}
 
 template <class T> inline void List<T>::sortChildren()
 {

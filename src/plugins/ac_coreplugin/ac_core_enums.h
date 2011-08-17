@@ -28,7 +28,10 @@ enum ItemDataRole {
     CurveTypeRole,
     StretchTypeRole,
     LocationRole,
+    PriorityRole,
     InstrumentRole,
+    LengthRole,
+    HeightRole,
     VolumeRole,
     ColorRole,
     VisibilityRole
@@ -39,6 +42,7 @@ enum ItemType {
     ScoreItem,
     TrackItem,
     NoteItem,
+    PitchPointItem,
     PitchCurveItem,
     ControlCurveItem,
     PitchCurvePointItem,
