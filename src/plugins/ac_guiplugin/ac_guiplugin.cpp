@@ -31,6 +31,21 @@
 
 #include <QtPlugin>
 
+void populateModel(Model *model)
+{
+    Score *score = model->score();
+    score->setLength(64.0f);
+    List<Track> *tracks = score->tracks();
+    Track *track = new Track;
+    tracks->appendChild(track);
+    List<Note> *notes = track->notes();
+    for (int i = 0;  i < 10;  ++i) {
+        Note *note = new Note;
+        notes->appendChild(note);
+        note->origin()->setPos(QPointF(i * 10.0f, 60.0f + (i * 2.0f)));
+        note->setLength(5.0f);
+    }
+}
 
 bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
@@ -47,18 +62,14 @@ void AcGuiPlugin::extensionsInitialized()
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
     AcMainWidget *widget = new AcMainWidget(mw);
     mw->setCentralWidget(widget);
-
     Model *model = new Model(mw);
-    model->score()->tracks()->appendChild(new Track);
-    model->score()->tracks()->appendChild(new Track);
-    model->score()->tracks()->appendChild(new Track);
-
-    QDockWidget *dockWidget = new QDockWidget(mw);
-    mw->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
-
-    QTreeView *treeView = new QTreeView(dockWidget);
-    treeView->setModel(model);
-    dockWidget->setWidget(treeView);
+    QDockWidget *dw = new QDockWidget(mw);
+    mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
+    dw->setObjectName("Model Dock Widget");
+    QTreeView *tv = new QTreeView(dw);
+    tv->setModel(model);
+    dw->setWidget(tv);
+    populateModel(model);
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)
