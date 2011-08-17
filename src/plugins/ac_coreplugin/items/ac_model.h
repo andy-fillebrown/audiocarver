@@ -717,7 +717,7 @@ public:
 
     explicit Track(Item *parent = 0)
         :   Item(parent)
-        ,   _notes(new List<Note>(parent))
+        ,   _notes(new List<Note>(this))
         ,   _volume(0.9f)
         ,   _color(Qt::red)
     {
@@ -731,6 +731,8 @@ public:
 
     int type() const { return Type; }
     QString className() const { return "Track"; }
+
+    int childCount() const { return 1; }
 
     Item *childAt(int i) const
     {
@@ -772,6 +774,8 @@ public:
         default: return false;
         }
     }
+
+    List<Note> *notes() const { return _notes; }
 
     const QString &instrument() const { return _instrument; }
     void setInstrument(const QString &instrument)
@@ -1141,10 +1145,10 @@ template <class T> inline void List<T>::insertChild(int i, T *child)
 {
     if (!child || _children.contains(child))
         return;
-    if (_model)
-        _model->beginInsertRows(_parent->index(), i, i);
-    _children.insert(i, child);
     child->setParentAndModel(this, _model);
+    if (_model)
+        _model->beginInsertRows(index(), i, i);
+    _children.insert(i, child);
     if (_model)
         _model->endInsertRows();
 }
@@ -1155,7 +1159,7 @@ template <class T> inline void List<T>::removeChild(int i)
     if (!child || !_children.contains(item_cast<T>(child)))
         return;
     if (_model)
-        _model->beginRemoveRows(_parent->index(), i, i);
+        _model->beginRemoveRows(index(), i, i);
     child->setParentAndModel(0, 0);
     _children.removeAt(i);
     if (_model)
