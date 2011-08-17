@@ -18,8 +18,6 @@
 #include "ac_editorimpl.h"
 #include <QDebug>
 
-using namespace Private;
-
 void AcEditorImpl::undo()
 {
     qDebug() << Q_FUNC_INFO;

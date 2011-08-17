@@ -20,8 +20,6 @@
 
 #include <mi_ieditor.h>
 
-namespace Private {
-
 class AcEditorImpl : public IEditor
 {
 public:
@@ -38,7 +36,5 @@ public:
 private:
     Q_DISABLE_COPY(AcEditorImpl)
 };
-
-} // namespace Private
 
 #endif // AC_EDITORIMPL_H

@@ -20,8 +20,6 @@
 
 #include <imainwindow.h>
 
-namespace Private {
-
 class AcMainWindowImplData;
 
 class AcMainWindowImpl : public Core::IMainWindow
@@ -46,7 +44,5 @@ private:
     Q_DISABLE_COPY(AcMainWindowImpl)
     AcMainWindowImplData *d;
 };
-
-} // namespace Private
 
 #endif // AC_MAINWINDOWIMPL_H

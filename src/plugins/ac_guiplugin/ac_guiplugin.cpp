@@ -31,7 +31,6 @@
 
 #include <QtPlugin>
 
-using namespace Private;
 
 bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {

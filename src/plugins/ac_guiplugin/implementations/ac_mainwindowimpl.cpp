@@ -28,10 +28,6 @@
 #include <QMenu>
 #include <versiondialog.h>
 
-using namespace Private;
-
-namespace Private {
-
 class AcMainWindowImplData
 {
 public:
@@ -41,8 +37,6 @@ public:
         :   versionDialog(0)
     {}
 };
-
-} // namespace Private
 
 static AcMainWindowImpl *instance = 0;
 

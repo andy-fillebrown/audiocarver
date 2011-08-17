@@ -20,8 +20,6 @@
 
 #include <iplugin.h>
 
-namespace Private {
-
 class AcGuiPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
@@ -36,7 +34,5 @@ public:
 private:
     Q_DISABLE_COPY(AcGuiPlugin)
 };
-
-} // namespace Private
 
 #endif // AC_GUIPLUGIN_H
