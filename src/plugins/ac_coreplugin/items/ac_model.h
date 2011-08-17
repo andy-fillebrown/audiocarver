@@ -584,9 +584,9 @@ public:
 
     explicit Note(Item *parent = 0)
         :   Item(parent)
+        ,   _origin(new PitchPoint(this))
         ,   _pitchCurve(new PitchCurve(this))
         ,   _controlCurves(new List<ControlCurve>(this))
-        ,   _origin(new PitchPoint(this))
         ,   _length(0.0f)
         ,   _height(0.0f)
         ,   _volume(0.9f)
@@ -598,6 +598,7 @@ public:
     {
         delete _controlCurves;
         delete _pitchCurve;
+        delete _origin;
     }
 
     int type() const { return Type; }
@@ -608,26 +609,26 @@ public:
     Item *childAt(int i) const
     {
         switch (i) {
-        case 0: return _pitchCurve;
-        case 1: return _controlCurves;
-        case 2: return _origin;
+        case 0: return _origin;
+        case 1: return _pitchCurve;
+        case 2: return _controlCurves;
         default: return 0;
         }
     }
 
     int childIndex(Item *child) const
     {
-        if (_pitchCurve == child) return 0;
-        if (_controlCurves == child) return 1;
-        if (_origin == child) return 2;
+        if (_origin == child) return 0;
+        if (_pitchCurve == child) return 1;
+        if (_controlCurves == child) return 2;
         return -1;
     }
 
     Item *findChild(ItemType type) const
     {
         switch (type) {
-        case PitchCurveItem: return _pitchCurve;
         case PitchPointItem: return _origin;
+        case PitchCurveItem: return _pitchCurve;
         default: return 0;
         }
     }
@@ -661,9 +662,9 @@ public:
         }
     }
 
+    PitchPoint *origin() const { return _origin; }
     PitchCurve *pitchCurve() const { return _pitchCurve; }
     List<ControlCurve> *controlCurves() const { return _controlCurves; }
-    PitchPoint *origin() const { return _origin; }
 
     qreal length() const { return _length; }
     void setLength(qreal length)
@@ -702,9 +703,9 @@ public:
     }
 
 private:
+    PitchPoint *_origin;
     PitchCurve *_pitchCurve;
     List<ControlCurve> *_controlCurves;
-    PitchPoint *_origin;
     qreal _length;
     qreal _height;
     qreal _volume;
