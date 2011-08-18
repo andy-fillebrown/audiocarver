@@ -19,7 +19,7 @@
 //#include <ac_guifactory.h>
 #include <ac_pitchlabelview.h>
 #include <ac_pitchview.h>
-#include <ac_scenemanager.h>
+//#include <ac_scenemanager.h>
 //#include <ac_score.h>
 #include <ac_timelabelview.h>
 //#include <ac_viewsettings.h>
@@ -32,7 +32,7 @@ class AcViewManagerPrivate
 {
 public:
     AcViewManager *q;
-    AcSceneManager *sceneManager;
+//    AcSceneManager *sceneManager;
     AcPitchView *pitchView;
     AcVolumeView *volumeView;
     AcTimeLabelView *timeLabelView;
@@ -42,7 +42,7 @@ public:
     AcViewManagerPrivate(AcViewManager *q, QWidget *widget)
         :   q(q)
 //        ,   sceneManager(AcGuiFactory::instance()->createSceneManager(q))
-        ,   sceneManager(new AcSceneManager(q))
+//        ,   sceneManager(new AcSceneManager(q))
 //        ,   pitchView(new AcPitchView(sceneManager->scene(Pitch), widget))
 //        ,   volumeView(new AcVolumeView(sceneManager->scene(Volume), widget))
 //        ,   timeLabelView(new AcTimeLabelView(sceneManager->scene(TimeLabel), widget))

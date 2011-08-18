@@ -15,17 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUIENUMS_H
-#define AC_GUIENUMS_H
-
-enum SceneItemType
-{
-    PitchSceneItem,
-    ControlSceneItem,
-    TimeLabelSceneItem,
-    PitchLabelSceneItem,
-    VolumeLabelSceneItem,
-    SceneItemTypeCount
-};
-
-#endif // AC_GUIENUMS_H
+#include "ac_scene.h"

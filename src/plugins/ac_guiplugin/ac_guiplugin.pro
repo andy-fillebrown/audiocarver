@@ -10,30 +10,7 @@ HEADERS += \
     ac_guiutil.h \
 
 SOURCE_PAIRS = \
-#    factories/ac_guifactory \
-#    \
-#    graphicsitem/gridlines/ac_graphicsgridlineitem \
-#    graphicsitem/gridlines/ac_graphicshgridlineitem \
-#    graphicsitem/gridlines/ac_graphicspitchlineitem \
-#    graphicsitem/gridlines/ac_graphicstimelineitem \
-#    graphicsitem/gridlines/ac_graphicsvolumelineitem \
-#    \
-#    graphicsitem/ac_graphicsitem \
-#    graphicsitem/ac_graphicsnoteitem \
-#    graphicsitem/ac_graphicspitchpointitem \
-#    graphicsitem/ac_graphicspointitem \
-#    graphicsitem/ac_graphicstrackitem \
-#    graphicsitem/ac_graphicsvolumepointitem \
-#    graphicsitem/ac_scaledgraphicsitem \
-#    \
-    graphicsscene/ac_graphicsscene \
-    graphicsscene/ac_labelscene \
-    graphicsscene/ac_pitchlabelscene \
-    graphicsscene/ac_pitchscene \
-    graphicsscene/ac_scenemanager \
-    graphicsscene/ac_timelabelscene \
-    graphicsscene/ac_volumelabelscene \
-    graphicsscene/ac_volumescene \
+    graphicsscene/ac_scene \
     \
     graphicsview/ac_editorview \
     graphicsview/ac_labelview \
