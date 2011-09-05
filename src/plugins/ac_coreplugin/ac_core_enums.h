@@ -23,10 +23,7 @@
 enum ItemDataRole {
     ItemTypeRole = Qt::UserRole,
     ListTypeRole,
-    ControlIndexRole,
-    PointRole,
-    CurveTypeRole,
-    StretchTypeRole,
+    PointsRole,
     LocationRole,
     LabelRole,
     PriorityRole,
@@ -43,11 +40,6 @@ enum ItemType {
     ScoreItem,
     TrackItem,
     NoteItem,
-    PitchPointItem,
-    PitchCurveItem,
-    ControlCurveItem,
-    PitchCurvePointItem,
-    ControlCurvePointItem,
     GridSettingsItem,
     TimeLineItem,
     PitchLineItem,
@@ -57,13 +49,6 @@ enum ItemType {
 enum CurveType {
     NoCurve,
     BezierCurve
-};
-
-enum StretchType {
-    NoStretch,
-    StretchWithStart,
-    StretchToLength,
-    StretchWithEnd
 };
 
 #endif // AC_CORE_ENUMS_H

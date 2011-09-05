@@ -19,10 +19,11 @@
 
 #include <ac_model.h>
 
-//#include <ac_guifactory.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 #include <ac_editorimpl.h>
+#include <ac_scene.h>
+
 #include <icore.h>
 #include <mainwindow.h>
 
@@ -39,11 +40,24 @@ void populateModel(Model *model)
     Track *track = new Track;
     tracks->appendChild(track);
     List<Note> *notes = track->notes();
-    for (int i = 0;  i < 10;  ++i) {
+    for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
+        PointList pts;
+        pts.append(Point(10 - i, 0));
+        pts.append(Point(10 - i + 1, 0));
+        note->setPoints(pts);
         notes->appendChild(note);
-        note->origin()->setPos(QPointF(i * 10.0f, 60.0f + (i * 2.0f)));
-        note->setLength(5.0f);
+    }
+    track = new Track;
+    tracks->appendChild(track);
+    notes = track->notes();
+    for (int i = 0;  i < 5;  ++i) {
+        Note *note = new Note;
+        PointList pts;
+        pts.append(Point(10 - i, 0));
+        pts.append(Point(10 - i + 1, 0));
+        note->setPoints(pts);
+        notes->appendChild(note);
     }
 }
 
@@ -60,15 +74,23 @@ bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 void AcGuiPlugin::extensionsInitialized()
 {
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+
     AcMainWidget *widget = new AcMainWidget(mw);
     mw->setCentralWidget(widget);
+
     Model *model = new Model(mw);
+
     QDockWidget *dw = new QDockWidget(mw);
     mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
     dw->setObjectName("Model Dock Widget");
+
     QTreeView *tv = new QTreeView(dw);
     tv->setModel(model);
     dw->setWidget(tv);
+
+    SceneManager *sm = new SceneManager(mw);
+    sm->setModel(model);
+
     populateModel(model);
 }
 

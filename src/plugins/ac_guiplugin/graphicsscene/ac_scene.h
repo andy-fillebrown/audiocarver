@@ -25,6 +25,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
+#include <QDebug>
 #include <QObject>
 
 class GraphicsItem : public QGraphicsItem
@@ -203,14 +204,6 @@ private:
     GraphicsGuideItem *_guideItem;
 };
 
-class GraphicsControlCurveItem : public GraphicsCurveItem
-{
-public:
-    int controlType() const { return 0; }
-};
-
-typedef QList<GraphicsControlCurveItem*> GraphicsControlCurveItems;
-
 class SceneItem
 {
 public:
@@ -228,24 +221,12 @@ class SceneNoteItem : public SceneItem
 public:
     SceneNoteItem()
         :   _pitchCurve(new GraphicsCurveItem)
-        ,   _controlCurveRoot(new GraphicsItem)
     {
         _pitchCurve->setData(0, quintptr(this));
-        foreach (QGraphicsItem *child, _pitchCurve->children())
-            child->setData(0, quintptr(this));
-        _controlCurves.append(new GraphicsControlCurveItem);
-        foreach (GraphicsControlCurveItem *controlCurve, _controlCurves) {
-            controlCurve->setParentItem(_controlCurveRoot);
-            controlCurve->setData(0, quintptr(this));
-            foreach (QGraphicsItem *child, controlCurve->children())
-                child->setData(0, quintptr(this));
-        }
     }
 
     ~SceneNoteItem()
     {
-        qDeleteAll(_controlCurves);
-        delete _controlCurveRoot;
         delete _pitchCurve;
     }
 
@@ -253,7 +234,6 @@ public:
     {
         switch (type) {
         case PitchSceneItem: return _pitchCurve;
-        case ControlSceneItem: return _controlCurveRoot;
         default: return 0;
         }
     }
@@ -261,21 +241,15 @@ public:
     void highlight()
     {
         _pitchCurve->highlight();
-        foreach (GraphicsControlCurveItem *controlCurve, _controlCurves)
-            controlCurve->highlight();
     }
 
     void unhighlight()
     {
-        foreach (GraphicsControlCurveItem *controlCurve, _controlCurves)
-            controlCurve->unhighlight();
         _pitchCurve->unhighlight();
     }
 
 private:
     GraphicsCurveItem *_pitchCurve;
-    GraphicsItem *_controlCurveRoot;
-    GraphicsControlCurveItems _controlCurves;
 };
 
 class SceneTrackItem : public SceneItem
@@ -475,38 +449,74 @@ public:
         ,   _timeLabelScene(new TimeLabelScene(this))
         ,   _pitchLabelScene(new PitchLabelScene(this))
         ,   _controlLabelScene(new ControlLabelScene(this))
+        ,   _model(0)
+        ,   _score(new SceneScoreItem)
     {}
 
-    ~SceneManager() {}
+    ~SceneManager()
+    {
+        delete _score;
+    }
 
     void setModel(AbstractItemModel *model)
     {
         if (_model == model)
             return;
-        _model->disconnect(this);
+        if (_model)
+            _model->disconnect(this);
         _model = model;
-        connect(_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
-        connect(_model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
-        connect(_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
+        if (_model) {
+            connect(_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
+            connect(_model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
+            connect(_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
+        }
     }
 
 public slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
-    {}
+    {
+    }
 
     void rowsInserted(const QModelIndex &parent, int start, int end)
-    {}
+    {
+        if (!_model)
+            return;
+        ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
+        if (ListItem == type) {
+            ItemType listType = ItemType(_model->data(parent, ListTypeRole).toInt());
+            switch (listType) {
+            case TrackItem: {
+                SceneTrackItem *track = new SceneTrackItem;
+                _score->insertTrack(start, track);
+                break;
+            }
+            case NoteItem: {
+                QModelIndex trackIndex = _model->parent(parent);
+                const int track_i = trackIndex.row();
+                SceneTrackItem *track = _score->trackAt(track_i);
+                SceneNoteItem *note = new SceneNoteItem;
+                track->appendNote(note);
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    }
 
     void rowsRemoved(const QModelIndex &parent, int start, int end)
-    {}
+    {
+
+    }
 
 private:
-    AbstractItemModel *_model;
     PitchScene *_pitchScene;
     ControlScene *_controlScene;
     TimeLabelScene *_timeLabelScene;
     PitchLabelScene *_pitchLabelScene;
     ControlLabelScene *_controlLabelScene;
+    AbstractItemModel *_model;
+    SceneScoreItem *_score;
 };
 
 #endif // AC_SCENE_H

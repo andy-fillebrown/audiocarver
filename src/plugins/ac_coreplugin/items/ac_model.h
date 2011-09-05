@@ -27,6 +27,46 @@
 #include <QPointF>
 #include <QVector>
 
+class Point
+{
+public:
+    Point(CurveType curveType = NoCurve)
+        :   curveType(curveType)
+    {}
+
+    Point(qreal x, qreal y, CurveType curveType = NoCurve)
+        :   pos(x, y)
+        ,   curveType(curveType)
+    {}
+
+    Point(const QPointF &pos, CurveType curveType = NoCurve)
+        :   pos(pos)
+        ,   curveType(curveType)
+    {}
+
+    bool operator<(const Point &other) const
+    {
+        if (pos.x() < other.pos.x())
+            return true;
+        if (other.pos.x() < pos.x())
+            return false;
+        if (pos.y() < other.pos.y())
+            return true;
+        return false;
+    }
+
+    QPointF pos;
+    CurveType curveType;
+};
+
+inline bool operator==(const Point &a, const Point &b)
+{
+    return (a.pos == b.pos && a.curveType == b.curveType);
+}
+
+typedef QList<Point> PointList;
+Q_DECLARE_METATYPE(PointList);
+
 class Model;
 
 class Item
@@ -69,7 +109,7 @@ public:
     {
         switch (role) {
         case ItemTypeRole: return type();
-        case Qt::DisplayRole: return className();
+        case Qt::DisplayRole: return _objectName;
         default: return QVariant();
         }
     }
@@ -168,7 +208,7 @@ public:
         insertChild(childCount(), child);
     }
 
-    inline void insertChild(int i, T *child);
+    inline virtual void insertChild(int i, T *child);
 
     T *takeChild(int i)
     {
@@ -336,316 +376,19 @@ public:
     QString className() const { return "ControlLine"; }
 };
 
-class Point : public Item
+class AudibleItem : public Item
 {
 public:
-    explicit Point(Item *parent = 0)
+    explicit AudibleItem(Item *parent = 0)
         :   Item(parent)
+        ,   _volume(1.0f)
     {}
 
-    ~Point() {}
-
-    QVariant data(int role) const
-    {
-        if (PointRole == role)
-            return _pos;
-        return Item::data(role);
-    }
-
-    bool setData(const QVariant &value, int role)
-    {
-        if (PointRole == role) {
-            setPos(value.toPointF());
-            return true;
-        }
-        return Item::setData(value, role);
-    }
-
-    const QPointF &pos() const { return _pos; }
-    virtual void setPos(QPointF pos)
-    {
-        if (pos.x() < 0.0f)
-            pos.setX(0.0f);
-        if (pos.y() < 0.0f)
-            pos.setY(0.0f);
-        if (_pos == pos)
-            return;
-        beginDataChange();
-        _pos = pos;
-        endDataChange();
-    }
-
-private:
-    QPointF _pos;
-};
-
-class PitchPoint : public Point
-{
-public:
-    enum { Type = PitchPointItem };
-
-    explicit PitchPoint(Item *parent = 0)
-        :   Point(parent)
-    {
-        _objectName = className();
-    }
-
-    ~PitchPoint() {}
-
-    int type() const { return Type; }
-    QString className() const { return "PitchPoint"; }
-
-    void setPos(QPointF pos)
-    {
-        if (127.0f < pos.y())
-            pos.setY(127.0f);
-        Point::setPos(pos);
-    }
-};
-
-class CurvePoint : public Point
-{
-public:
-    explicit CurvePoint(Item *parent = 0)
-        :   Point(parent)
-        ,   _curveType(NoCurve)
-        ,   _stretchType(NoStretch)
-    {}
-
-    ~CurvePoint() {}
+    ~AudibleItem() {}
 
     QVariant data(int role) const
     {
         switch (role) {
-        case CurveTypeRole: return _curveType;
-        case StretchTypeRole: return _stretchType;
-        default: return Point::data(role);
-        }
-    }
-
-    bool setData(const QVariant &value, int role)
-    {
-        switch (role) {
-        case CurveTypeRole: setCurveType(CurveType(value.toInt())); return true;
-        case StretchTypeRole: setStretchType(StretchType(value.toInt())); return true;
-        default: return Point::setData(value, role);
-        }
-    }
-
-    virtual void setPos(QPointF pos)
-    {
-        if (1.0f < pos.x())
-            pos.setX(1.0f);
-        Point::setPos(pos);
-    }
-
-    CurveType curveType() const { return _curveType; }
-    void setCurveType(CurveType type)
-    {
-        if (_curveType == type)
-            return;
-        beginDataChange();
-        _curveType = type;
-        endDataChange();
-    }
-
-    StretchType stretchType() const { return _stretchType; }
-    void setStretchType(StretchType type)
-    {
-        if (_stretchType == type)
-            return;
-        beginDataChange();
-        _stretchType = type;
-        endDataChange();
-    }
-
-private:
-    CurveType _curveType;
-    StretchType _stretchType;
-};
-
-
-class PitchCurvePoint : public CurvePoint
-{
-public:
-    enum { Type = PitchCurvePointItem };
-
-    explicit PitchCurvePoint(Item *parent = 0)
-        :   CurvePoint(parent)
-    {
-        _objectName = className();
-    }
-
-    ~PitchCurvePoint() {}
-
-    int type() const { return Type; }
-    QString className() const { return "PitchCurvePoint"; }
-
-    void setPos(QPointF pos)
-    {
-        if (127.0f < pos.y())
-            pos.setY(127.0f);
-        CurvePoint::setPos(pos);
-    }
-};
-
-class ControlCurvePoint : public CurvePoint
-{
-public:
-    enum { Type = ControlCurvePointItem };
-
-    explicit ControlCurvePoint(Item *parent = 0)
-        :   CurvePoint(parent)
-    {
-        _objectName = className();
-    }
-
-    ~ControlCurvePoint() {}
-
-    int type() const { return Type; }
-    QString className() const { return "ControlCurvePoint"; }
-
-    void setPos(QPointF pos)
-    {
-        if (1.0f < pos.y())
-            pos.setY(1.0f);
-        CurvePoint::setPos(pos);
-    }
-};
-
-class PitchCurve : public List<PitchCurvePoint>
-{
-public:
-    enum { Type = PitchCurveItem };
-
-    explicit PitchCurve(Item *parent = 0)
-        :   List<PitchCurvePoint>(parent)
-    {
-        _objectName = className();
-    }
-
-    ~PitchCurve() {}
-
-    int type() const { return Type; }
-    QString className() const { return "PitchCurve"; }
-};
-
-class ControlCurve : public List<ControlCurvePoint>
-{
-public:
-    enum { Type = ControlCurveItem };
-
-    explicit ControlCurve(Item *parent = 0)
-        :   List<ControlCurvePoint>(parent)
-        ,   _controlIndex(0)
-    {
-        _objectName = className();
-    }
-
-    ~ControlCurve() {}
-
-    int type() const { return Type; }
-    QString className() const { return "ControlCurve"; }
-
-    QVariant data(int role) const
-    {
-        switch (role) {
-        case ControlIndexRole: return _controlIndex;
-        default: return List<ControlCurvePoint>::data(role);
-        }
-    }
-
-    bool setData(const QVariant &value, int role)
-    {
-        switch (role) {
-        case ControlIndexRole: setControlIndex(value.toInt()); return true;
-        default: return false;
-        }
-    }
-
-    int controlIndex() const { return _controlIndex; }
-    void setControlIndex(int index)
-    {
-        if (_controlIndex == index)
-            return;
-        beginDataChange();
-        _controlIndex = index;
-        endDataChange();
-    }
-
-private:
-    int _controlIndex;
-};
-
-class Note : public Item
-{
-public:
-    enum { Type = NoteItem };
-
-    explicit Note(Item *parent = 0)
-        :   Item(parent)
-        ,   _origin(new PitchPoint(this))
-        ,   _pitchCurve(new PitchCurve(this))
-        ,   _controlCurves(new List<ControlCurve>(this))
-        ,   _length(0.0f)
-        ,   _height(0.0f)
-        ,   _volume(0.9f)
-    {
-        _objectName = className();
-    }
-
-    ~Note()
-    {
-        delete _controlCurves;
-        delete _pitchCurve;
-        delete _origin;
-    }
-
-    int type() const { return Type; }
-    QString className() const { return "Note"; }
-
-    int childCount() const { return 3; }
-
-    Item *childAt(int i) const
-    {
-        switch (i) {
-        case 0: return _origin;
-        case 1: return _pitchCurve;
-        case 2: return _controlCurves;
-        default: return 0;
-        }
-    }
-
-    int childIndex(Item *child) const
-    {
-        if (_origin == child) return 0;
-        if (_pitchCurve == child) return 1;
-        if (_controlCurves == child) return 2;
-        return -1;
-    }
-
-    Item *findChild(ItemType type) const
-    {
-        switch (type) {
-        case PitchPointItem: return _origin;
-        case PitchCurveItem: return _pitchCurve;
-        default: return 0;
-        }
-    }
-
-    Item *findList(ItemType listType) const
-    {
-        if (ControlCurveItem == listType)
-            return _controlCurves;
-        return 0;
-    }
-
-    QVariant data(int role) const
-    {
-        switch (role) {
-        case PointRole: return _origin->pos();
-        case LengthRole: return _length;
-        case HeightRole: return _height;
         case VolumeRole: return _volume;
         default: return Item::data(role);
         }
@@ -654,47 +397,15 @@ public:
     bool setData(const QVariant &value, int role)
     {
         switch (role) {
-        case PointRole: _origin->setPos(value.toPointF()); return true;
-        case LengthRole: setLength(value.toReal()); return true;
-        case HeightRole: setHeight(value.toReal()); return true;
         case VolumeRole: setVolume(value.toReal()); return true;
-        default: return false;
+        default: return Item::setData(value, role);
         }
-    }
-
-    PitchPoint *origin() const { return _origin; }
-    PitchCurve *pitchCurve() const { return _pitchCurve; }
-    List<ControlCurve> *controlCurves() const { return _controlCurves; }
-
-    qreal length() const { return _length; }
-    void setLength(qreal length)
-    {
-        if (length < 0.0f)
-            length = 0.0f;
-        if (_length == length)
-            return;
-        beginDataChange();
-        _length = length;
-        endDataChange();
-    }
-
-    qreal height() const { return _height; }
-    void setHeight(qreal height)
-    {
-        if (_height == height)
-            return;
-        beginDataChange();
-        _height = height;
-        endDataChange();
     }
 
     qreal volume() const { return _volume; }
     void setVolume(qreal volume)
     {
-        if (volume < 0.0f)
-            volume = 0.0f;
-        if (1.0f < volume)
-            volume = 1.0f;
+        volume = qBound(qreal(0.0f), volume, qreal(1.0f));
         if (_volume == volume)
             return;
         beginDataChange();
@@ -703,23 +414,84 @@ public:
     }
 
 private:
-    PitchPoint *_origin;
-    PitchCurve *_pitchCurve;
-    List<ControlCurve> *_controlCurves;
-    qreal _length;
-    qreal _height;
     qreal _volume;
 };
 
-class Track : public Item
+class Note : public AudibleItem
+{
+public:
+    enum { Type = NoteItem };
+
+    explicit Note(Item *parent = 0)
+        :   AudibleItem(parent)
+    {
+        _points.append(Point());
+        _objectName = className();
+    }
+
+    ~Note() {}
+
+    int type() const { return Type; }
+    QString className() const { return "Note"; }
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case PointsRole: return QVariant::fromValue(_points);
+        default: return AudibleItem::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case PointsRole: setPoints(value.value<PointList>()); return true;
+        default: return AudibleItem::setData(value, role);
+        }
+    }
+
+    const PointList &points() const { return _points; }
+    void setPoints(const PointList &points)
+    {
+        if (_points == points)
+            return;
+        beginDataChange();
+        _points = points;
+        conformPoints();
+        endDataChange();
+    }
+
+    bool operator<(const Item &other)
+    {
+        Q_ASSERT(NoteItem == other.type());
+        const Note &b = static_cast<const Note&>(other);
+        if (points()[0] < b.points()[0])
+            return true;
+        return false;
+    }
+
+private:
+    PointList _points;
+
+    void conformPoints()
+    {
+        qStableSort(_points);
+        for (int i = 0;  i < _points.count();  ++i) {
+            QPointF &pos = _points[i].pos;
+            pos.setX(qMax(qreal(0.0f), pos.x()));
+            pos.setY(qBound(qreal(0.0f), pos.y(), qreal(127.0f)));
+        }
+    }
+};
+
+class Track : public AudibleItem
 {
 public:
     enum { Type = TrackItem };
 
     explicit Track(Item *parent = 0)
-        :   Item(parent)
+        :   AudibleItem(parent)
         ,   _notes(new List<Note>(this))
-        ,   _volume(0.9f)
         ,   _color(Qt::red)
     {
         _objectName = className();
@@ -760,9 +532,8 @@ public:
     {
         switch (role) {
         case InstrumentRole: return _instrument;
-        case VolumeRole: return _volume;
         case ColorRole: return _color;
-        default: return Item::data(role);
+        default: return AudibleItem::data(role);
         }
     }
 
@@ -770,9 +541,8 @@ public:
     {
         switch (role) {
         case InstrumentRole: setInstrument(value.toString()); return true;
-        case VolumeRole: setVolume(value.toReal()); return true;
         case ColorRole: setColor(value.value<QColor>()); return true;
-        default: return false;
+        default: return AudibleItem::setData(value, role);
         }
     }
 
@@ -785,20 +555,6 @@ public:
             return;
         beginDataChange();
         _instrument = instrument;
-        endDataChange();
-    }
-
-    qreal volume() const { return _volume; }
-    void setVolume(qreal volume)
-    {
-        if (volume < 0.0f)
-            volume = 0.0f;
-        if (1.0f < volume)
-            volume = 1.0f;
-        if (_volume == volume)
-            return;
-        beginDataChange();
-        _volume = volume;
         endDataChange();
     }
 
@@ -815,7 +571,6 @@ public:
 private:
     List<Note> *_notes;
     QString _instrument;
-    qreal _volume;
     QColor _color;
 };
 
@@ -883,7 +638,7 @@ private:
     List<ControlLine> *_controlLines;
 };
 
-class Score : public Item
+class Score : public AudibleItem
 {
 public:
     enum { Type = ScoreItem };
@@ -892,7 +647,6 @@ public:
         :   _tracks(new List<Track>(this))
         ,   _gridSettings(new GridSettings(this))
         ,   _length(120.0f)
-        ,   _volume(1.0f)
     {
         _objectName = className();
     }
@@ -942,8 +696,7 @@ public:
     {
         switch (role) {
         case LengthRole: return _length;
-        case VolumeRole: return _volume;
-        default: return Item::data(role);
+        default: return AudibleItem::data(role);
         }
     }
 
@@ -951,8 +704,7 @@ public:
     {
         switch (role) {
         case LengthRole: setLength(value.toReal()); return true;
-        case VolumeRole: setVolume(value.toReal()); return true;
-        default: return false;
+        default: return AudibleItem::setData(value, role);
         }
     }
 
@@ -971,25 +723,10 @@ public:
         endDataChange();
     }
 
-    qreal volume() const { return _volume; }
-    void setVolume(qreal volume)
-    {
-        if (volume < 0.0f)
-            volume = 0.0f;
-        if (1.0f < volume)
-            volume = 1.0f;
-        if (_volume == volume)
-            return;
-        beginDataChange();
-        _volume = volume;
-        endDataChange();
-    }
-
 private:
     List<Track> *_tracks;
     GridSettings *_gridSettings;
     qreal _length;
-    qreal _volume;
 };
 
 class AC_CORE_EXPORT AbstractItemModel : public QAbstractItemModel
@@ -1019,6 +756,7 @@ public:
     explicit Model(QObject *parent = 0)
         :   AbstractItemModel(parent)
         ,   _score(new Score)
+        ,   _layoutAboutToBeChangedEmitted(false)
     {
         _score->setModel(this);
     }
@@ -1114,16 +852,31 @@ protected:
         return parentItem->childAt(index.row());
     }
 
+    void maybeEmitLayoutAboutToBeChanged()
+    {
+        if (_layoutAboutToBeChangedEmitted)
+            return;
+        _layoutAboutToBeChangedEmitted = true;
+        emit layoutAboutToBeChanged();
+    }
+
+    void maybeEmitLayoutChanged()
+    {
+        if (!_layoutAboutToBeChangedEmitted)
+            return;
+        _layoutAboutToBeChangedEmitted = false;
+        emit layoutChanged();
+    }
+
 private:
     Score *_score;
     QModelIndexList _persistentIndexCache;
+    QList<Item*> _itemsToUpdate;
+    bool _layoutAboutToBeChangedEmitted;
 
     friend class Item;
-    friend class List<ControlCurve>;
-    friend class List<ControlCurvePoint>;
     friend class List<ControlLine>;
     friend class List<Note>;
-    friend class List<PitchCurvePoint>;
     friend class List<PitchLine>;
     friend class List<Point>;
     friend class List<TimeLine>;
@@ -1185,33 +938,30 @@ template <class T> inline void List<T>::removeChild(int i)
 
 template <class T> inline void List<T>::sortChildren()
 {
-    if (isSorted()) {
-        Item::sortChildren();
+    if (isSorted())
         return;
-    }
     if (_model) {
         _model->_persistentIndexCache = _model->persistentIndexList();
-        emit _model->layoutAboutToBeChanged();
+        _model->maybeEmitLayoutAboutToBeChanged();
     }
     d_sortChildren();
-    if (_model)
-        emit _model->layoutChanged();
 }
 
 template <class T> inline void List<T>::d_sortChildren()
 {
-    QVector<QPair<Item*, int> > itemPairs(childCount());
-    for (int i = 0;  i < childCount(); ++i)
-        itemPairs.append(QPair<Item*, int>(childAt(i), i));
+    const int count = childCount();
+    QVector<QPair<Item*, int> > itemPairs(count);
+    for (int i = 0;  i < count;  ++i)
+        itemPairs[i] = QPair<Item*, int>(childAt(i), i);
     ItemModelLessThan lt;
     qStableSort(itemPairs.begin(), itemPairs.end(), lt);
     const QModelIndexList &indexes = _model ? _model->_persistentIndexCache : QModelIndexList();
     QModelIndexList oldIndexes, newIndexes;
     QList<T*> sorted_children;
-    sorted_children.reserve(_children.count());
-    for (int i = 0;  i < childCount();  ++i) {
+    sorted_children.reserve(count);
+    for (int i = 0;  i < count;  ++i) {
         int r = itemPairs.at(i).second;
-        sorted_children[i] = item_cast<T>(childAt(r));
+        sorted_children.append(item_cast<T>(childAt(r)));
         if (_model) {
             QModelIndex oldIndex = _model->createIndex(r, 0, this);
             if (indexes.contains(oldIndex)) {
