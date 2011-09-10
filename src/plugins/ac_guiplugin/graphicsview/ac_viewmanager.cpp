@@ -19,7 +19,7 @@
 //#include <ac_guifactory.h>
 #include <ac_pitchlabelview.h>
 #include <ac_pitchview.h>
-//#include <ac_scenemanager.h>
+#include <ac_scene.h>
 //#include <ac_score.h>
 #include <ac_timelabelview.h>
 //#include <ac_viewsettings.h>
@@ -32,32 +32,31 @@ class AcViewManagerPrivate
 {
 public:
     AcViewManager *q;
-//    AcSceneManager *sceneManager;
+    SceneManager *sceneManager;
     AcPitchView *pitchView;
-    AcVolumeView *volumeView;
+    AcVolumeView *controlView;
     AcTimeLabelView *timeLabelView;
     AcPitchLabelView *pitchLabelView;
-    AcVolumeLabelView *volumeLabelView;
+    AcVolumeLabelView *controlLabelView;
 
     AcViewManagerPrivate(AcViewManager *q, QWidget *widget)
         :   q(q)
 //        ,   sceneManager(AcGuiFactory::instance()->createSceneManager(q))
-//        ,   sceneManager(new AcSceneManager(q))
-//        ,   pitchView(new AcPitchView(sceneManager->scene(Pitch), widget))
-//        ,   volumeView(new AcVolumeView(sceneManager->scene(Volume), widget))
-//        ,   timeLabelView(new AcTimeLabelView(sceneManager->scene(TimeLabel), widget))
-//        ,   pitchLabelView(new AcPitchLabelView(sceneManager->scene(PitchLabel), widget))
-//        ,   volumeLabelView(new AcVolumeLabelView(sceneManager->scene(VolumeLabel), widget))
+        ,   sceneManager(new SceneManager(q))
+        ,   pitchView(new AcPitchView(sceneManager->pitchScene, widget))
+        ,   controlView(new AcVolumeView(sceneManager->controlScene, widget))
+        ,   timeLabelView(new AcTimeLabelView(sceneManager->timeLabelScene, widget))
+        ,   pitchLabelView(new AcPitchLabelView(sceneManager->pitchLabelScene, widget))
+        ,   controlLabelView(new AcVolumeLabelView(sceneManager->controlLabelScene, widget))
     {}
 
     void updateViewCenters()
     {
         pitchView->updateCenter();
-        volumeView->updateCenter();
-//        AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-//        timeLabelView->centerOn(pitchView->center().x() * viewSettings->timeScale(), sceneManager->scene(TimeLabelScene)->height() / 2.0f);
-//        pitchView->centerOn(sceneManager->scene(PitchLabelScene)->width() / 2.0f, pitchView->center().y() * viewSettings->pitchScale());
-//        volumeLabelView->centerOn(sceneManager->scene(VolumeLabelScene)->width() / 2.0f, volumeView->center().y() * viewSettings->volumeScale());
+        controlView->updateCenter();
+        timeLabelView->centerOn(pitchView->center().x(), sceneManager->timeLabelScene->height() / 2.0f);
+        pitchLabelView->centerOn(sceneManager->pitchLabelScene->width() / 2.0f, pitchView->center().y());
+        controlLabelView->centerOn(sceneManager->controlLabelScene->width() / 2.0f, controlView->center().y());
     }
 };
 
@@ -73,30 +72,46 @@ AcViewManager::~AcViewManager()
     delete d;
 }
 
-//QGraphicsView *AcViewManager::pitchView() const
-//{
-//    return d->pitchView;
-//}
+QGraphicsView *AcViewManager::pitchView() const
+{
+    return d->pitchView;
+}
 
-//QGraphicsView *AcViewManager::volumeView() const
-//{
-//    return d->volumeView;
-//}
+QGraphicsView *AcViewManager::controlView() const
+{
+    return d->controlView;
+}
 
-//QGraphicsView *AcViewManager::timeLabelView() const
-//{
-//    return d->timeLabelView;
-//}
+QGraphicsView *AcViewManager::timeLabelView() const
+{
+    return d->timeLabelView;
+}
 
-//QGraphicsView *AcViewManager::pitchLabelView() const
-//{
-//    return d->pitchLabelView;
-//}
+QGraphicsView *AcViewManager::pitchLabelView() const
+{
+    return d->pitchLabelView;
+}
 
-//QGraphicsView *AcViewManager::volumeLabelView() const
-//{
-//    return d->volumeLabelView;
-//}
+QGraphicsView *AcViewManager::controlLabelView() const
+{
+    return d->controlLabelView;
+}
+
+void AcViewManager::setModel(AbstractItemModel *model)
+{
+    d->sceneManager->setModel(model);
+}
+
+void AcViewManager::viewAll()
+{
+//    QRectF rect;
+//    QList<QGraphicsItem*> items = d->pitchView->items();
+//    foreach(QGraphicsItem *item, items) {
+//        QRectF itemRect = item->boundingRect();
+//        rect |= itemRect;
+//    }
+//    d->pitchView->ensureVisible(rect);
+}
 
 //qreal AcViewManager::timePosition() const
 //{
@@ -162,12 +177,12 @@ AcViewManager::~AcViewManager()
 //    AcScore::instance()->viewSettings()->setVolumeScale(scale);
 //}
 
-//void AcViewManager::updateViews()
-//{
-//    d->pitchView->updateTransform();
-//    d->volumeView->updateTransform();
-//    d->updateViewCenters();
-//}
+void AcViewManager::updateViews()
+{
+    d->pitchView->updateTransform();
+    d->controlView->updateTransform();
+    d->updateViewCenters();
+}
 
 //void AcViewManager::updateViewSettings(int i, const QVariant &value)
 //{

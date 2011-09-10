@@ -58,32 +58,32 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     d->topLeft->setFixedSize(sideWidth, sideHeight);
     d->topLeft->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *timeLabelView = new MiGraphicsView;//d->viewManager->timeLabelView();
+    QGraphicsView *timeLabelView = d->viewManager->timeLabelView();
     d->layout->addWidget(timeLabelView, 0, 1);
     timeLabelView->setFixedHeight(sideHeight);
     timeLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *pitchLabelView = new MiGraphicsView;//d->viewManager->pitchLabelView();
+    QGraphicsView *pitchLabelView = d->viewManager->pitchLabelView();
     d->layout->addWidget(pitchLabelView, 1, 0);
     pitchLabelView->setFixedWidth(sideWidth);
     pitchLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *pitchView = new MiGraphicsView;//d->viewManager->pitchView();
+    QGraphicsView *pitchView = d->viewManager->pitchView();
     d->layout->addWidget(pitchView, 1, 1);
     pitchView->setFrameShape(QFrame::Box);
     pitchView->setFrameShadow(QFrame::Sunken);
     pitchView->setLineWidth(1);
 
-    QGraphicsView *volumeLabelView = new MiGraphicsView;//d->viewManager->volumeLabelView();
-    d->layout->addWidget(volumeLabelView, 2, 0);
-    volumeLabelView->setFixedSize(sideWidth, controlHeight);
-    volumeLabelView->setFrameShape(QFrame::NoFrame);
+    QGraphicsView *controlLabelView = d->viewManager->controlLabelView();
+    d->layout->addWidget(controlLabelView, 2, 0);
+    controlLabelView->setFixedSize(sideWidth, controlHeight);
+    controlLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *volumeView = new MiGraphicsView;//d->viewManager->volumeView();
-    d->layout->addWidget(volumeView, 2, 1);
-    volumeView->setFixedHeight(controlHeight);
-    volumeView->setFrameShape(QFrame::Box);
-    volumeView->setFrameShadow(QFrame::Sunken);
+    QGraphicsView *controlView = d->viewManager->controlView();
+    d->layout->addWidget(controlView, 2, 1);
+    controlView->setFixedHeight(controlHeight);
+    controlView->setFrameShape(QFrame::Box);
+    controlView->setFrameShadow(QFrame::Sunken);
 
 //    d->viewManager->updateViews();
 }
@@ -93,31 +93,41 @@ AcMainWidget::~AcMainWidget()
     delete d;
 }
 
-//bool AcMainWidget::isPointInVolumeViews(QWidget *widget, const QPoint &pos) const
-//{
-//    QGraphicsView *volumeView = d->viewManager->volumeView();
-//    if (volumeView->rect().contains(volumeView->mapFrom(widget, pos)))
-//        return true;
-//    QGraphicsView *volumeLabelView = d->viewManager->volumeLabelView();
-//    if (volumeLabelView->rect().contains(volumeLabelView->mapFrom(widget, pos)))
-//        return true;
-//    return false;
-//}
+void AcMainWidget::setModel(AbstractItemModel *model)
+{
+    d->viewManager->setModel(model);
+}
 
-//void AcMainWidget::resizeEvent(QResizeEvent *event)
-//{
+void AcMainWidget::viewAll()
+{
+    d->viewManager->viewAll();
+}
+
+bool AcMainWidget::isPointInVolumeViews(QWidget *widget, const QPoint &pos) const
+{
+    QGraphicsView *controlView = d->viewManager->controlView();
+    if (controlView->rect().contains(controlView->mapFrom(widget, pos)))
+        return true;
+    QGraphicsView *controlLabelView = d->viewManager->controlLabelView();
+    if (controlLabelView->rect().contains(controlLabelView->mapFrom(widget, pos)))
+        return true;
+    return false;
+}
+
+void AcMainWidget::resizeEvent(QResizeEvent *event)
+{
 //    QWidget::resizeEvent(event);
 //    d->viewManager->updateViews();
-//}
+}
 
-//void AcMainWidget::showEvent(QShowEvent *event)
-//{
+void AcMainWidget::showEvent(QShowEvent *event)
+{
 //    QWidget::showEvent(event);
 //    d->viewManager->updateViews();
-//}
+}
 
-//void AcMainWidget::wheelEvent(QWheelEvent *event)
-//{
+void AcMainWidget::wheelEvent(QWheelEvent *event)
+{
 //    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
 //        qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
 //        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
@@ -136,4 +146,4 @@ AcMainWidget::~AcMainWidget()
 //            d->viewManager->setVolumePosition(d->viewManager->volumePosition() + (offset / d->viewManager->volumeScale()));
 //    }
 //    event->accept();
-//}
+}

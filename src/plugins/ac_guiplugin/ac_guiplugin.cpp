@@ -43,8 +43,8 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i, 0));
-        pts.append(Point(10 - i + 1, 0));
+        pts.append(Point(10 - i, 30 + i));
+        pts.append(Point(10 - i + 100, 60 + i));
         note->setPoints(pts);
         notes->appendChild(note);
     }
@@ -54,8 +54,8 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i, 0));
-        pts.append(Point(10 - i + 1, 0));
+        pts.append(Point(10 - i, 60 + i));
+        pts.append(Point(10 - i + 100, 90 + i));
         note->setPoints(pts);
         notes->appendChild(note);
     }
@@ -79,6 +79,7 @@ void AcGuiPlugin::extensionsInitialized()
     mw->setCentralWidget(widget);
 
     Model *model = new Model(mw);
+    widget->setModel(model);
 
     QDockWidget *dw = new QDockWidget(mw);
     mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
@@ -88,10 +89,8 @@ void AcGuiPlugin::extensionsInitialized()
     tv->setModel(model);
     dw->setWidget(tv);
 
-    SceneManager *sm = new SceneManager(mw);
-    sm->setModel(model);
-
     populateModel(model);
+    widget->viewAll();
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)

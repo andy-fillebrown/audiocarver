@@ -23,6 +23,7 @@
 class QGraphicsView;
 class QWidget;
 
+class AbstractItemModel;
 class AcViewManagerPrivate;
 
 class AcViewManager : public QObject
@@ -33,11 +34,14 @@ public:
     AcViewManager(QWidget *widget);
     ~AcViewManager();
 
-//    QGraphicsView *pitchView() const;
-//    QGraphicsView *volumeView() const;
-//    QGraphicsView *timeLabelView() const;
-//    QGraphicsView *pitchLabelView() const;
-//    QGraphicsView *volumeLabelView() const;
+    QGraphicsView *pitchView() const;
+    QGraphicsView *controlView() const;
+    QGraphicsView *timeLabelView() const;
+    QGraphicsView *pitchLabelView() const;
+    QGraphicsView *controlLabelView() const;
+
+    void setModel(AbstractItemModel *model);
+    void viewAll();
 
 //    qreal timePosition() const;
 //    void setTimePosition(qreal position);
@@ -52,7 +56,7 @@ public:
 //    qreal volumeScale() const;
 //    void setVolumeScale(qreal scale);
 
-//    void updateViews();
+    void updateViews();
 
 //private slots:
 //    void updateViewSettings(int i, const QVariant &value);

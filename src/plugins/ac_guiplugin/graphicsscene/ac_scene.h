@@ -177,7 +177,6 @@ public:
                 guidePath.lineTo(_points[i + 1]->pos());
                 ++i;
             }
-
         }
         setPath(curvePath);
         _guideItem->setPath(guidePath);
@@ -207,6 +206,10 @@ private:
 class SceneItem
 {
 public:
+    SceneItem(const QModelIndex &index)
+        :   _index(index)
+    {}
+
     virtual ~SceneItem()
     {}
 
@@ -214,19 +217,33 @@ public:
 
     virtual void highlight() {}
     virtual void unhighlight() {}
+
+protected:
+    QPersistentModelIndex _index;
 };
 
 class SceneNoteItem : public SceneItem
 {
 public:
-    SceneNoteItem()
-        :   _pitchCurve(new GraphicsCurveItem)
-    {
-        _pitchCurve->setData(0, quintptr(this));
-    }
+    SceneNoteItem(const QModelIndex &index);
+//        :   SceneItem(index)
+//        ,   _pitchCurve(new GraphicsCurveItem)
+//        ,   _velocityLine(new QGraphicsLineItem)
+//    {
+//        _pitchCurve->setData(0, quintptr(this));
+//        PointList pts = _index.model()->data(_index, PointsRole).value<PointList>();
+//        foreach (const Point &pt, pts) {
+//            GraphicsCurvePointItem *ptItem = new GraphicsCurvePointItem;
+//            ptItem->setPos(pt.pos);
+//            _pitchCurve->appendPoint(ptItem);
+//        }
+//        _pitchCurve->update();
+//        _velocityLine->setData(0, quintptr(this));
+//    }
 
     ~SceneNoteItem()
     {
+        delete _velocityLine;
         delete _pitchCurve;
     }
 
@@ -234,6 +251,7 @@ public:
     {
         switch (type) {
         case PitchSceneItem: return _pitchCurve;
+        case ControlSceneItem: return _velocityLine;
         default: return 0;
         }
     }
@@ -250,12 +268,14 @@ public:
 
 private:
     GraphicsCurveItem *_pitchCurve;
+    QGraphicsLineItem *_velocityLine;
 };
 
 class SceneTrackItem : public SceneItem
 {
 public:
-    SceneTrackItem()
+    SceneTrackItem(const QModelIndex &index)
+        :   SceneItem(index)
     {
         for (int i = 0;  i < SceneItemTypeCount;  ++i)
             _items.append(new GraphicsItem);
@@ -298,7 +318,8 @@ private:
 class SceneScoreItem : public SceneItem
 {
 public:
-    SceneScoreItem()
+    SceneScoreItem(const QModelIndex &index)
+        :   SceneItem(index)
     {
         for (int i = 0;  i < SceneItemTypeCount;  ++i)
             _items.append(new GraphicsRootItem);
@@ -361,9 +382,7 @@ class HScene : public QGraphicsScene
 public:
     HScene(QObject *parent = 0)
         :   QGraphicsScene(parent)
-    {
-        setWidth(0.0f);
-    }
+    {}
 
     void setWidth(qreal w)
     {
@@ -444,20 +463,25 @@ class SceneManager : public QObject
 public:
     SceneManager(QObject *parent = 0)
         :   QObject(parent)
-        ,   _pitchScene(new PitchScene(this))
-        ,   _controlScene(new ControlScene(this))
-        ,   _timeLabelScene(new TimeLabelScene(this))
-        ,   _pitchLabelScene(new PitchLabelScene(this))
-        ,   _controlLabelScene(new ControlLabelScene(this))
+        ,   pitchScene(new PitchScene(this))
+        ,   controlScene(new ControlScene(this))
+        ,   timeLabelScene(new TimeLabelScene(this))
+        ,   pitchLabelScene(new PitchLabelScene(this))
+        ,   controlLabelScene(new ControlLabelScene(this))
         ,   _model(0)
-        ,   _score(new SceneScoreItem)
-    {}
+        ,   _score(0)
+    {
+        pitchScene->setWidth(128.0f);
+        controlScene->setWidth(128.0f);
+        timeLabelScene->setWidth(128.0f);
+    }
 
     ~SceneManager()
     {
         delete _score;
     }
 
+    AbstractItemModel *model() const { return _model; }
     void setModel(AbstractItemModel *model)
     {
         if (_model == model)
@@ -470,6 +494,13 @@ public:
             connect(_model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
             connect(_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
         }
+        delete _score;
+        _score = new SceneScoreItem(_model->index(0, 0));
+        pitchScene->addItem(_score->item(PitchSceneItem));
+        controlScene->addItem(_score->item(ControlSceneItem));
+        timeLabelScene->addItem(_score->item(TimeLabelSceneItem));
+        pitchLabelScene->addItem(_score->item(PitchLabelSceneItem));
+        controlLabelScene->addItem(_score->item(ControlLabelSceneItem));
     }
 
 public slots:
@@ -478,43 +509,44 @@ public slots:
     }
 
     void rowsInserted(const QModelIndex &parent, int start, int end)
-    {
-        if (!_model)
-            return;
-        ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
-        if (ListItem == type) {
-            ItemType listType = ItemType(_model->data(parent, ListTypeRole).toInt());
-            switch (listType) {
-            case TrackItem: {
-                SceneTrackItem *track = new SceneTrackItem;
-                _score->insertTrack(start, track);
-                break;
-            }
-            case NoteItem: {
-                QModelIndex trackIndex = _model->parent(parent);
-                const int track_i = trackIndex.row();
-                SceneTrackItem *track = _score->trackAt(track_i);
-                SceneNoteItem *note = new SceneNoteItem;
-                track->appendNote(note);
-                break;
-            }
-            default:
-                break;
-            }
-        }
-    }
+    ;
+//    {
+//        if (!_model)
+//            return;
+//        ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
+//        if (ListItem == type) {
+//            ItemType listType = ItemType(_model->data(parent, ListTypeRole).toInt());
+//            switch (listType) {
+//            case TrackItem: {
+//                SceneTrackItem *track = new SceneTrackItem(_model->index(start, 0, parent));
+//                _score->insertTrack(start, track);
+//                break;
+//            }
+//            case NoteItem: {
+//                SceneTrackItem *track = _score->trackAt(_model->parent(parent).row());
+//                SceneNoteItem *note = new SceneNoteItem(_model->index(start, 0, parent));
+//                track->appendNote(note);
+//                break;
+//            }
+//            default:
+//                break;
+//            }
+//        }
+//    }
 
     void rowsRemoved(const QModelIndex &parent, int start, int end)
     {
 
     }
 
+public:
+    PitchScene *pitchScene;
+    ControlScene *controlScene;
+    TimeLabelScene *timeLabelScene;
+    PitchLabelScene *pitchLabelScene;
+    ControlLabelScene *controlLabelScene;
+
 private:
-    PitchScene *_pitchScene;
-    ControlScene *_controlScene;
-    TimeLabelScene *_timeLabelScene;
-    PitchLabelScene *_pitchLabelScene;
-    ControlLabelScene *_controlLabelScene;
     AbstractItemModel *_model;
     SceneScoreItem *_score;
 };

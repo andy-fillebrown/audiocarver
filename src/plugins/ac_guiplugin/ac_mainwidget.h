@@ -21,6 +21,7 @@
 #include <QWidget>
 
 class AcMainWidgetPrivate;
+class AbstractItemModel;
 
 class AcMainWidget : public QWidget
 {
@@ -30,12 +31,15 @@ public:
     AcMainWidget(QWidget *parent = 0);
     ~AcMainWidget();
 
-//    bool isPointInVolumeViews(QWidget *widget, const QPoint &pos) const;
+    void setModel(AbstractItemModel *model);
+    void viewAll();
 
-//protected:
-//    void resizeEvent(QResizeEvent *event);
-//    void showEvent(QShowEvent *event);
-//    void wheelEvent(QWheelEvent *event);
+    bool isPointInVolumeViews(QWidget *widget, const QPoint &pos) const;
+
+protected:
+    void resizeEvent(QResizeEvent *event);
+    void showEvent(QShowEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 private:
     Q_DISABLE_COPY(AcMainWidget)

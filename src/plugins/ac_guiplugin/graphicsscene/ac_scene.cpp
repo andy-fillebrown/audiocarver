@@ -16,3 +16,44 @@
 **************************************************************************/
 
 #include "ac_scene.h"
+
+SceneNoteItem::SceneNoteItem(const QModelIndex &index)
+    :   SceneItem(index)
+    ,   _pitchCurve(new GraphicsCurveItem)
+    ,   _velocityLine(new QGraphicsLineItem)
+{
+    _pitchCurve->setData(0, quintptr(this));
+    PointList pts = _index.model()->data(_index, PointsRole).value<PointList>();
+    foreach (const Point &pt, pts) {
+        GraphicsCurvePointItem *ptItem = new GraphicsCurvePointItem;
+        ptItem->setPos(pt.pos);
+        _pitchCurve->appendPoint(ptItem);
+    }
+    _pitchCurve->update();
+    _velocityLine->setData(0, quintptr(this));
+}
+
+void SceneManager::rowsInserted(const QModelIndex &parent, int start, int end)
+{
+    if (!_model)
+        return;
+    ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
+    if (ListItem == type) {
+        ItemType listType = ItemType(_model->data(parent, ListTypeRole).toInt());
+        switch (listType) {
+        case TrackItem: {
+            SceneTrackItem *track = new SceneTrackItem(_model->index(start, 0, parent));
+            _score->insertTrack(start, track);
+            break;
+        }
+        case NoteItem: {
+            SceneTrackItem *track = _score->trackAt(_model->parent(parent).row());
+            SceneNoteItem *note = new SceneNoteItem(_model->index(start, 0, parent));
+            track->appendNote(note);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+}

@@ -24,7 +24,7 @@ enum SceneItemType
     ControlSceneItem,
     TimeLabelSceneItem,
     PitchLabelSceneItem,
-    VolumeLabelSceneItem,
+    ControlLabelSceneItem,
     SceneItemTypeCount
 };
 
