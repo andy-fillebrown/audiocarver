@@ -203,43 +203,97 @@ private:
     GraphicsGuideItem *_guideItem;
 };
 
+class SceneItemList;
+
 class SceneItem
 {
 public:
-    SceneItem(const QModelIndex &index)
-        :   _index(index)
-    {}
+    virtual ~SceneItem() {}
 
-    virtual ~SceneItem()
-    {}
+    virtual int listCount() const { return 0; }
+    virtual SceneItemList *listAt(int i) { Q_UNUSED(i);  return 0; }
 
     virtual QGraphicsItem *item(SceneItemType type) const = 0;
 
     virtual void highlight() {}
     virtual void unhighlight() {}
 
-protected:
-    QPersistentModelIndex _index;
+    virtual void dataChanged(const QModelIndex &index) {}
+};
+
+class SceneItemList
+{
+public:
+    SceneItemList(SceneItem *parent)
+        :   _parent(parent)
+    {}
+
+    ~SceneItemList()
+    {
+        qDeleteAll(_sceneItems);
+    }
+
+    int count() const
+    {
+        return _sceneItems.count();
+    }
+
+    SceneItem *at(int i) const
+    {
+        return _sceneItems.at(i);
+    }
+
+    void append(SceneItem *sceneItem)
+    {
+        insert(_sceneItems.count(), sceneItem);
+    }
+
+    void insert(int i, SceneItem *sceneItem)
+    {
+        if (!sceneItem || !_parent || _sceneItems.contains(sceneItem))
+            return;
+        _sceneItems.insert(i, sceneItem);
+        for (int i = 0;  i < SceneItemTypeCount;  ++i) {
+            SceneItemType type = SceneItemType(i);
+            QGraphicsItem *parentItem = _parent->item(type);
+            QGraphicsItem *item = sceneItem->item(type);
+            if (parentItem && item)
+                item->setParentItem(parentItem);
+        }
+    }
+
+    void remove(int i)
+    {
+        remove(_sceneItems.at(i));
+    }
+
+    void remove(SceneItem *sceneItem)
+    {
+        if (!sceneItem || !_sceneItems.contains(sceneItem))
+            return;
+        _sceneItems.removeOne(sceneItem);
+        for (int i = 0;  i < SceneItemTypeCount;  ++i) {
+            QGraphicsItem *item = sceneItem->item(SceneItemType(i));
+            if (item)
+                item->setParentItem(0);
+        }
+    }
+
+private:
+    SceneItem *_parent;
+    QList<SceneItem*> _sceneItems;
 };
 
 class SceneNoteItem : public SceneItem
 {
 public:
-    SceneNoteItem(const QModelIndex &index);
-//        :   SceneItem(index)
-//        ,   _pitchCurve(new GraphicsCurveItem)
-//        ,   _velocityLine(new QGraphicsLineItem)
-//    {
-//        _pitchCurve->setData(0, quintptr(this));
-//        PointList pts = _index.model()->data(_index, PointsRole).value<PointList>();
-//        foreach (const Point &pt, pts) {
-//            GraphicsCurvePointItem *ptItem = new GraphicsCurvePointItem;
-//            ptItem->setPos(pt.pos);
-//            _pitchCurve->appendPoint(ptItem);
-//        }
-//        _pitchCurve->update();
-//        _velocityLine->setData(0, quintptr(this));
-//    }
+    SceneNoteItem()
+        :   _pitchCurve(new GraphicsCurveItem)
+        ,   _velocityLine(new QGraphicsLineItem)
+    {
+        _pitchCurve->setData(0, quintptr(this));
+        _velocityLine->setData(0, quintptr(this));
+    }
 
     ~SceneNoteItem()
     {
@@ -266,6 +320,17 @@ public:
         _pitchCurve->unhighlight();
     }
 
+    void dataChanged(const QModelIndex &index)
+    {
+        PointList pts = index.model()->data(index, PointsRole).value<PointList>();
+        foreach (const Point &pt, pts) {
+            GraphicsCurvePointItem *ptItem = new GraphicsCurvePointItem;
+            ptItem->setPos(pt.pos);
+            _pitchCurve->appendPoint(ptItem);
+        }
+        _pitchCurve->update();
+    }
+
 private:
     GraphicsCurveItem *_pitchCurve;
     QGraphicsLineItem *_velocityLine;
@@ -274,8 +339,8 @@ private:
 class SceneTrackItem : public SceneItem
 {
 public:
-    SceneTrackItem(const QModelIndex &index)
-        :   SceneItem(index)
+    SceneTrackItem()
+        :   notes(new SceneItemList(this))
     {
         for (int i = 0;  i < SceneItemTypeCount;  ++i)
             _items.append(new GraphicsItem);
@@ -283,8 +348,16 @@ public:
 
     ~SceneTrackItem()
     {
-        qDeleteAll(_notes);
+        delete notes;
         qDeleteAll(_items);
+    }
+
+    int listCount() const { return 1; }
+    SceneItemList *listAt(int i)
+    {
+        if (i == 0)
+            return notes;
+        return 0;
     }
 
     QGraphicsItem *item(SceneItemType type) const
@@ -292,34 +365,18 @@ public:
         return _items[type];
     }
 
-    void appendNote(SceneNoteItem *note)
-    {
-        if (_notes.contains(note))
-            return;
-        _notes.append(note);
-        note->item(PitchSceneItem)->setParentItem(_items[PitchSceneItem]);
-        note->item(ControlSceneItem)->setParentItem(_items[ControlSceneItem]);
-    }
-
-    void removeNote(SceneNoteItem *note)
-    {
-        if (!_notes.contains(note))
-            return;
-        _notes.removeOne(note);
-        note->item(PitchSceneItem)->setParentItem(0);
-        note->item(ControlSceneItem)->setParentItem(0);
-    }
+public:
+    SceneItemList *notes;
 
 private:
-    QList<SceneNoteItem*> _notes;
     QList<GraphicsItem*> _items;
 };
 
 class SceneScoreItem : public SceneItem
 {
 public:
-    SceneScoreItem(const QModelIndex &index)
-        :   SceneItem(index)
+    SceneScoreItem()
+        :   tracks(new SceneItemList(this))
     {
         for (int i = 0;  i < SceneItemTypeCount;  ++i)
             _items.append(new GraphicsRootItem);
@@ -327,8 +384,15 @@ public:
 
     ~SceneScoreItem()
     {
-        qDeleteAll(_tracks);
         qDeleteAll(_items);
+    }
+
+    int listCount() const { return 1; }
+    SceneItemList *listAt(int i)
+    {
+        if (i == 0)
+            return tracks;
+        return 0;
     }
 
     QGraphicsItem *item(SceneItemType type) const
@@ -336,44 +400,10 @@ public:
         return _items[type];
     }
 
-    int trackCount() const
-    {
-        return _tracks.count();
-    }
-
-    SceneTrackItem *trackAt(int i)
-    {
-        return _tracks.at(i);
-    }
-
-    void appendTrack(SceneTrackItem *track)
-    {
-        insertTrack(_tracks.count(), track);
-    }
-
-    void insertTrack(int i, SceneTrackItem *track)
-    {
-        _tracks.insert(i, track);
-        for (int i = 0;  i < SceneItemTypeCount;  ++i)
-            track->item(SceneItemType(i))->setParentItem(_items[i]);
-    }
-
-    SceneTrackItem *takeTrack(int i)
-    {
-        SceneTrackItem *track = _tracks.at(i);
-        removeTrack(track);
-        return track;
-    }
-
-    void removeTrack(SceneTrackItem *track)
-    {
-        _tracks.removeOne(track);
-        for (int i = 0;  i < SceneItemTypeCount;  ++i)
-            track->item(SceneItemType(i))->setParentItem(0);
-    }
+public:
+    SceneItemList *tracks;
 
 private:
-    QList<SceneTrackItem*> _tracks;
     QList<GraphicsRootItem*> _items;
 };
 
@@ -495,48 +525,91 @@ public:
             connect(_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
         }
         delete _score;
-        _score = new SceneScoreItem(_model->index(0, 0));
+        _score = new SceneScoreItem;
         pitchScene->addItem(_score->item(PitchSceneItem));
         controlScene->addItem(_score->item(ControlSceneItem));
         timeLabelScene->addItem(_score->item(TimeLabelSceneItem));
         pitchLabelScene->addItem(_score->item(PitchLabelSceneItem));
         controlLabelScene->addItem(_score->item(ControlLabelSceneItem));
+        _itemHash.clear();
+        _itemHash.insert(QModelIndex(), _score);
+        _listHash.clear();
+        addList(_model->index(0, 0), _score->listAt(0));
     }
 
 public slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
     {
+        if (!_model)
+            return;
+        ItemType type = ItemType(_model->data(topLeft, ItemTypeRole).toInt());
+        if (type != ListItem) {
+            SceneItem *item = _itemHash.find(topLeft).value();
+            Q_ASSERT(item);
+            item->dataChanged(topLeft);
+        }
     }
 
     void rowsInserted(const QModelIndex &parent, int start, int end)
-    ;
-//    {
-//        if (!_model)
-//            return;
-//        ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
-//        if (ListItem == type) {
-//            ItemType listType = ItemType(_model->data(parent, ListTypeRole).toInt());
-//            switch (listType) {
-//            case TrackItem: {
-//                SceneTrackItem *track = new SceneTrackItem(_model->index(start, 0, parent));
-//                _score->insertTrack(start, track);
-//                break;
-//            }
-//            case NoteItem: {
-//                SceneTrackItem *track = _score->trackAt(_model->parent(parent).row());
-//                SceneNoteItem *note = new SceneNoteItem(_model->index(start, 0, parent));
-//                track->appendNote(note);
-//                break;
-//            }
-//            default:
-//                break;
-//            }
-//        }
-//    }
+    {
+        if (!_model)
+            return;
+        ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
+        if (ListItem == type) {
+            SceneItem *item = 0;
+            ItemType listType = ItemType(_model->data(parent, ListTypeRole).toInt());
+            switch (listType) {
+            case TrackItem: item = new SceneTrackItem;  break;
+            case NoteItem: item = new SceneNoteItem;  break;
+            default: break;
+            }
+            QModelIndex index = _model->index(start, 0, parent);
+            _itemHash.insert(index, item);
+            SceneItemList *list = _listHash.value(parent);
+            list->append(item);
+            for (int i = 0;  i < item->listCount();  ++i)
+                addList(_model->index(i, 0, index), item->listAt(i));
+            item->dataChanged(index);
+        }
+    }
 
     void rowsRemoved(const QModelIndex &parent, int start, int end)
     {
+        if (!_model)
+            return;
+        ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
+        if (ListItem == type) {
+            QModelIndex index = _model->index(start, 0, parent);
+            _itemHash.remove(index);
+            SceneItemList *list = _listHash.value(parent);
+            SceneItem *item = _itemHash.value(index);
+            list->remove(item);
+            for (int i = 0;  i < item->listCount();  ++i)
+                removeList(_model->index(i, 0, index), item->listAt(i));
+        }
+    }
 
+private:
+    inline void addList(const QModelIndex &listIndex, SceneItemList *list)
+    {
+        _listHash.insert(listIndex, list);
+        for (int i = 0;  i < list->count();  ++i) {
+            QModelIndex itemIndex = _model->index(i, 0, listIndex);
+            SceneItem *item = list->at(i);
+            for (int j = 0;  j < item->listCount();  ++j)
+                addList(_model->index(j, 0, itemIndex), item->listAt(j));
+        }
+    }
+
+    void removeList(const QModelIndex &listIndex, SceneItemList *list)
+    {
+        _listHash.remove(listIndex);
+        for (int i = 0;  i < list->count();  ++i) {
+            QModelIndex itemIndex = _model->index(i, 0, listIndex);
+            SceneItem *item = list->at(i);
+            for (int j = 0;  j < item->listCount();  ++j)
+                removeList(_model->index(j, 0, itemIndex), item->listAt(j));
+        }
     }
 
 public:
@@ -549,6 +622,8 @@ public:
 private:
     AbstractItemModel *_model;
     SceneScoreItem *_score;
+    QHash<QPersistentModelIndex, SceneItemList*> _listHash;
+    QHash<QPersistentModelIndex, SceneItem*> _itemHash;
 };
 
 #endif // AC_SCENE_H
