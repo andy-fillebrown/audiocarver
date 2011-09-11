@@ -58,28 +58,28 @@ AcMainWidget::AcMainWidget(QWidget *parent)
     d->topLeft->setFixedSize(sideWidth, sideHeight);
     d->topLeft->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *timeLabelView = d->viewManager->timeLabelView();
+    QGraphicsView *timeLabelView = d->viewManager->view(Ac::TimeLabelScene);
     d->layout->addWidget(timeLabelView, 0, 1);
     timeLabelView->setFixedHeight(sideHeight);
     timeLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *pitchLabelView = d->viewManager->pitchLabelView();
+    QGraphicsView *pitchLabelView = d->viewManager->view(Ac::PitchLabelScene);
     d->layout->addWidget(pitchLabelView, 1, 0);
     pitchLabelView->setFixedWidth(sideWidth);
     pitchLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *pitchView = d->viewManager->pitchView();
+    QGraphicsView *pitchView = d->viewManager->view(Ac::PitchScene);
     d->layout->addWidget(pitchView, 1, 1);
     pitchView->setFrameShape(QFrame::Box);
     pitchView->setFrameShadow(QFrame::Sunken);
     pitchView->setLineWidth(1);
 
-    QGraphicsView *controlLabelView = d->viewManager->controlLabelView();
+    QGraphicsView *controlLabelView = d->viewManager->view(Ac::ControlLabelScene);
     d->layout->addWidget(controlLabelView, 2, 0);
     controlLabelView->setFixedSize(sideWidth, controlHeight);
     controlLabelView->setFrameShape(QFrame::NoFrame);
 
-    QGraphicsView *controlView = d->viewManager->controlView();
+    QGraphicsView *controlView = d->viewManager->view(Ac::ControlScene);
     d->layout->addWidget(controlView, 2, 1);
     controlView->setFixedHeight(controlHeight);
     controlView->setFrameShape(QFrame::Box);
@@ -98,17 +98,12 @@ void AcMainWidget::setModel(AbstractItemModel *model)
     d->viewManager->setModel(model);
 }
 
-void AcMainWidget::viewAll()
+bool AcMainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) const
 {
-    d->viewManager->viewAll();
-}
-
-bool AcMainWidget::isPointInVolumeViews(QWidget *widget, const QPoint &pos) const
-{
-    QGraphicsView *controlView = d->viewManager->controlView();
+    QGraphicsView *controlView = d->viewManager->view(Ac::ControlScene);
     if (controlView->rect().contains(controlView->mapFrom(widget, pos)))
         return true;
-    QGraphicsView *controlLabelView = d->viewManager->controlLabelView();
+    QGraphicsView *controlLabelView = d->viewManager->view(Ac::ControlLabelScene);
     if (controlLabelView->rect().contains(controlLabelView->mapFrom(widget, pos)))
         return true;
     return false;

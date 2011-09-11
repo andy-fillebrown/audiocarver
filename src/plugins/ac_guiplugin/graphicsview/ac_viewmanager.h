@@ -18,6 +18,8 @@
 #ifndef AC_VIEWMANAGER_H
 #define AC_VIEWMANAGER_H
 
+#include <ac_guienums.h>
+
 #include <QObject>
 
 class QGraphicsView;
@@ -34,14 +36,9 @@ public:
     AcViewManager(QWidget *widget);
     ~AcViewManager();
 
-    QGraphicsView *pitchView() const;
-    QGraphicsView *controlView() const;
-    QGraphicsView *timeLabelView() const;
-    QGraphicsView *pitchLabelView() const;
-    QGraphicsView *controlLabelView() const;
+    QGraphicsView *view(Ac::SceneType type) const;
 
     void setModel(AbstractItemModel *model);
-    void viewAll();
 
 //    qreal timePosition() const;
 //    void setTimePosition(qreal position);

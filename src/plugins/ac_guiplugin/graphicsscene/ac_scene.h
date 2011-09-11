@@ -25,9 +25,6 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
-#include <QDebug>
-#include <QObject>
-
 class GraphicsItem : public QGraphicsItem
 {
 public:
@@ -213,7 +210,7 @@ public:
     virtual int listCount() const { return 0; }
     virtual SceneItemList *listAt(int i) { Q_UNUSED(i);  return 0; }
 
-    virtual QGraphicsItem *item(SceneItemType type) const = 0;
+    virtual QGraphicsItem *item(Ac::SceneType type) const = 0;
 
     virtual void highlight() {}
     virtual void unhighlight() {}
@@ -253,8 +250,8 @@ public:
         if (!sceneItem || !_parent || _sceneItems.contains(sceneItem))
             return;
         _sceneItems.insert(i, sceneItem);
-        for (int i = 0;  i < SceneItemTypeCount;  ++i) {
-            SceneItemType type = SceneItemType(i);
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            Ac::SceneType type = Ac::SceneType(i);
             QGraphicsItem *parentItem = _parent->item(type);
             QGraphicsItem *item = sceneItem->item(type);
             if (parentItem && item)
@@ -272,8 +269,8 @@ public:
         if (!sceneItem || !_sceneItems.contains(sceneItem))
             return;
         _sceneItems.removeOne(sceneItem);
-        for (int i = 0;  i < SceneItemTypeCount;  ++i) {
-            QGraphicsItem *item = sceneItem->item(SceneItemType(i));
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            QGraphicsItem *item = sceneItem->item(Ac::SceneType(i));
             if (item)
                 item->setParentItem(0);
         }
@@ -301,11 +298,11 @@ public:
         delete _pitchCurve;
     }
 
-    QGraphicsItem *item(SceneItemType type) const
+    QGraphicsItem *item(Ac::SceneType type) const
     {
         switch (type) {
-        case PitchSceneItem: return _pitchCurve;
-        case ControlSceneItem: return _velocityLine;
+        case Ac::PitchScene: return _pitchCurve;
+        case Ac::ControlScene: return _velocityLine;
         default: return 0;
         }
     }
@@ -342,7 +339,7 @@ public:
     SceneTrackItem()
         :   notes(new SceneItemList(this))
     {
-        for (int i = 0;  i < SceneItemTypeCount;  ++i)
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             _items.append(new GraphicsItem);
     }
 
@@ -360,7 +357,7 @@ public:
         return 0;
     }
 
-    QGraphicsItem *item(SceneItemType type) const
+    QGraphicsItem *item(Ac::SceneType type) const
     {
         return _items[type];
     }
@@ -378,7 +375,7 @@ public:
     SceneScoreItem()
         :   tracks(new SceneItemList(this))
     {
-        for (int i = 0;  i < SceneItemTypeCount;  ++i)
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             _items.append(new GraphicsRootItem);
     }
 
@@ -395,7 +392,7 @@ public:
         return 0;
     }
 
-    QGraphicsItem *item(SceneItemType type) const
+    QGraphicsItem *item(Ac::SceneType type) const
     {
         return _items[type];
     }
@@ -493,18 +490,14 @@ class SceneManager : public QObject
 public:
     SceneManager(QObject *parent = 0)
         :   QObject(parent)
-        ,   pitchScene(new PitchScene(this))
-        ,   controlScene(new ControlScene(this))
-        ,   timeLabelScene(new TimeLabelScene(this))
-        ,   pitchLabelScene(new PitchLabelScene(this))
-        ,   controlLabelScene(new ControlLabelScene(this))
         ,   _model(0)
         ,   _score(0)
-    {
-        pitchScene->setWidth(128.0f);
-        controlScene->setWidth(128.0f);
-        timeLabelScene->setWidth(128.0f);
-    }
+        ,   _pitchScene(new PitchScene(this))
+        ,   _controlScene(new ControlScene(this))
+        ,   _timeLabelScene(new TimeLabelScene(this))
+        ,   _pitchLabelScene(new PitchLabelScene(this))
+        ,   _controlLabelScene(new ControlLabelScene(this))
+    {}
 
     ~SceneManager()
     {
@@ -524,17 +517,7 @@ public:
             connect(_model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
             connect(_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
         }
-        delete _score;
-        _score = new SceneScoreItem;
-        pitchScene->addItem(_score->item(PitchSceneItem));
-        controlScene->addItem(_score->item(ControlSceneItem));
-        timeLabelScene->addItem(_score->item(TimeLabelSceneItem));
-        pitchLabelScene->addItem(_score->item(PitchLabelSceneItem));
-        controlLabelScene->addItem(_score->item(ControlLabelSceneItem));
-        _itemHash.clear();
-        _itemHash.insert(QModelIndex(), _score);
-        _listHash.clear();
-        addList(_model->index(0, 0), _score->listAt(0));
+        reset();
     }
 
 public slots:
@@ -544,7 +527,7 @@ public slots:
             return;
         ItemType type = ItemType(_model->data(topLeft, ItemTypeRole).toInt());
         if (type != ListItem) {
-            SceneItem *item = _itemHash.find(topLeft).value();
+            SceneItem *item = _indexToItem.value(topLeft);
             Q_ASSERT(item);
             item->dataChanged(topLeft);
         }
@@ -563,13 +546,7 @@ public slots:
             case NoteItem: item = new SceneNoteItem;  break;
             default: break;
             }
-            QModelIndex index = _model->index(start, 0, parent);
-            _itemHash.insert(index, item);
-            SceneItemList *list = _listHash.value(parent);
-            list->append(item);
-            for (int i = 0;  i < item->listCount();  ++i)
-                addList(_model->index(i, 0, index), item->listAt(i));
-            item->dataChanged(index);
+            addItem(_model->index(start, 0, parent), item, _indexToList.value(parent));
         }
     }
 
@@ -577,22 +554,50 @@ public slots:
     {
         if (!_model)
             return;
-        ItemType type = ItemType(_model->data(parent, ItemTypeRole).toInt());
-        if (ListItem == type) {
+        ItemType parentType = ItemType(_model->data(parent, ItemTypeRole).toInt());
+        if (ListItem == parentType) {
             QModelIndex index = _model->index(start, 0, parent);
-            _itemHash.remove(index);
-            SceneItemList *list = _listHash.value(parent);
-            SceneItem *item = _itemHash.value(index);
-            list->remove(item);
-            for (int i = 0;  i < item->listCount();  ++i)
-                removeList(_model->index(i, 0, index), item->listAt(i));
+            removeItem(_model->index(start, 0, parent), _indexToList.value(parent));
+        }
+    }
+
+    QGraphicsScene *scene(Ac::SceneType type)
+    {
+        switch (type) {
+        case Ac::PitchScene: return _pitchScene;
+        case Ac::ControlScene: return _controlScene;
+        case Ac::TimeLabelScene: return _timeLabelScene;
+        case Ac::PitchLabelScene: return _pitchLabelScene;
+        case Ac::ControlLabelScene: return _controlLabelScene;
+        default: return 0;
         }
     }
 
 private:
-    inline void addList(const QModelIndex &listIndex, SceneItemList *list)
+    void addItem(const QModelIndex &itemIndex, SceneItem *item, SceneItemList *list)
     {
-        _listHash.insert(listIndex, list);
+        _indexToItem.insert(itemIndex, item);
+        _itemToIndex.insert(item, itemIndex);
+        for (int i = 0;  i < item->listCount();  ++i)
+            addList(_model->index(i, 0, itemIndex), item->listAt(i));
+        list->append(item);
+        item->dataChanged(itemIndex);
+    }
+
+    void removeItem(const QModelIndex &itemIndex, SceneItemList *list)
+    {
+        SceneItem *item = _indexToItem.value(itemIndex);
+        _indexToItem.remove(itemIndex);
+        _itemToIndex.remove(item);
+        for (int i = 0;  i < item->listCount();  ++i)
+            removeList(_model->index(i, 0, itemIndex));
+        list->remove(item);
+    }
+
+    void addList(const QModelIndex &listIndex, SceneItemList *list)
+    {
+        _indexToList.insert(listIndex, list);
+        _listToIndex.insert(list, listIndex);
         for (int i = 0;  i < list->count();  ++i) {
             QModelIndex itemIndex = _model->index(i, 0, listIndex);
             SceneItem *item = list->at(i);
@@ -601,29 +606,48 @@ private:
         }
     }
 
-    void removeList(const QModelIndex &listIndex, SceneItemList *list)
+    void removeList(const QModelIndex &listIndex)
     {
-        _listHash.remove(listIndex);
+        SceneItemList *list = _indexToList.value(listIndex);
+        _indexToList.remove(listIndex);
+        _listToIndex.remove(list);
         for (int i = 0;  i < list->count();  ++i) {
             QModelIndex itemIndex = _model->index(i, 0, listIndex);
             SceneItem *item = list->at(i);
             for (int j = 0;  j < item->listCount();  ++j)
-                removeList(_model->index(j, 0, itemIndex), item->listAt(j));
+                removeList(_model->index(j, 0, itemIndex));
         }
     }
 
-public:
-    PitchScene *pitchScene;
-    ControlScene *controlScene;
-    TimeLabelScene *timeLabelScene;
-    PitchLabelScene *pitchLabelScene;
-    ControlLabelScene *controlLabelScene;
+    void reset()
+    {
+        delete _score;
+        _score = new SceneScoreItem;
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            Ac::SceneType type = Ac::SceneType(i);
+            scene(type)->addItem(_score->item(type));
+        }
+        _indexToItem.clear();
+        _itemToIndex.clear();
+        _indexToList.clear();
+        _listToIndex.clear();
+        _indexToItem.insert(QModelIndex(), _score);
+        _itemToIndex.insert(_score, QModelIndex());
+        addList(_model->index(0, 0), _score->listAt(0));
+    }
 
 private:
     AbstractItemModel *_model;
     SceneScoreItem *_score;
-    QHash<QPersistentModelIndex, SceneItemList*> _listHash;
-    QHash<QPersistentModelIndex, SceneItem*> _itemHash;
+    QHash<QPersistentModelIndex, SceneItem*> _indexToItem;
+    QHash<SceneItem*, QPersistentModelIndex> _itemToIndex;
+    QHash<QPersistentModelIndex, SceneItemList*> _indexToList;
+    QHash<SceneItemList*, QPersistentModelIndex> _listToIndex;
+    PitchScene *_pitchScene;
+    ControlScene *_controlScene;
+    TimeLabelScene *_timeLabelScene;
+    PitchLabelScene *_pitchLabelScene;
+    ControlLabelScene *_controlLabelScene;
 };
 
 #endif // AC_SCENE_H

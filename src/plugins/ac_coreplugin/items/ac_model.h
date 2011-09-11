@@ -88,8 +88,6 @@ public:
     virtual int childCount() const { return 0; }
     virtual Item *childAt(int i) const { Q_UNUSED(i);  return 0; }
     virtual int childIndex(Item *child) const { Q_UNUSED(child);  return -1; }
-    virtual Item *findChild(ItemType type) const { Q_UNUSED(type);  return 0; }
-    virtual Item *findList(ItemType listType) const { Q_UNUSED(listType);  return 0; }
     virtual void sortChildren() { d_sortChildren(); }
 
     Model *model() const { return _model; }
@@ -521,13 +519,6 @@ public:
         return -1;
     }
 
-    Item *findList(ItemType listType) const
-    {
-        if (NoteItem == listType)
-            return _notes;
-        return 0;
-    }
-
     QVariant data(int role) const
     {
         switch (role) {
@@ -618,16 +609,6 @@ public:
         return -1;
     }
 
-    Item *findList(ItemType listType) const
-    {
-        switch (listType) {
-        case TimeLineItem: return _timeLines;
-        case PitchLineItem: return _pitchLines;
-        case ControlLineItem: return _controlLines;
-        default: return 0;
-        }
-    }
-
     List<TimeLine> *timeLines() const { return _timeLines; }
     List<PitchLine> *pitchLines() const { return _pitchLines; }
     List<ControlLine> *controlLines() const { return _controlLines; }
@@ -678,20 +659,6 @@ public:
         return -1;
     }
 
-    Item *findChild(ItemType type) const
-    {
-        if (GridSettingsItem == type)
-            return _gridSettings;
-        return 0;
-    }
-
-    Item *findList(ItemType listType) const
-    {
-        if (TrackItem == listType)
-            return _tracks;
-        return 0;
-    }
-
     QVariant data(int role) const
     {
         switch (role) {
@@ -736,9 +703,6 @@ class AC_CORE_EXPORT AbstractItemModel : public QAbstractItemModel
 public:
     ~AbstractItemModel() {}
 
-    virtual QModelIndex childIndex(ItemType type, const QModelIndex &parent) const = 0;
-    virtual QModelIndex listIndex(ItemType listType, const QModelIndex &parent) const = 0;
-
 signals:
     void dataAboutToChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
@@ -764,18 +728,6 @@ public:
     ~Model()
     {
         delete _score;
-    }
-
-    QModelIndex childIndex(ItemType type, const QModelIndex &parent) const
-    {
-        Item *parentItem = itemFromIndex(parent);
-        return parentItem ? indexFromItem(parentItem->findChild(type)) : QModelIndex();
-    }
-
-    QModelIndex listIndex(ItemType listType, const QModelIndex &parent) const
-    {
-        Item *parentItem = itemFromIndex(parent);
-        return parentItem ? indexFromItem(parentItem->findList(listType)) : QModelIndex();
     }
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const

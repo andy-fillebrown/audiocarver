@@ -90,7 +90,6 @@ void AcGuiPlugin::extensionsInitialized()
     dw->setWidget(tv);
 
     populateModel(model);
-    widget->viewAll();
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)

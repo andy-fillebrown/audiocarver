@@ -41,22 +41,21 @@ public:
 
     AcViewManagerPrivate(AcViewManager *q, QWidget *widget)
         :   q(q)
-//        ,   sceneManager(AcGuiFactory::instance()->createSceneManager(q))
         ,   sceneManager(new SceneManager(q))
-        ,   pitchView(new AcPitchView(sceneManager->pitchScene, widget))
-        ,   controlView(new AcVolumeView(sceneManager->controlScene, widget))
-        ,   timeLabelView(new AcTimeLabelView(sceneManager->timeLabelScene, widget))
-        ,   pitchLabelView(new AcPitchLabelView(sceneManager->pitchLabelScene, widget))
-        ,   controlLabelView(new AcVolumeLabelView(sceneManager->controlLabelScene, widget))
+        ,   pitchView(new AcPitchView(sceneManager->scene(Ac::PitchScene), widget))
+        ,   controlView(new AcVolumeView(sceneManager->scene(Ac::ControlScene), widget))
+        ,   timeLabelView(new AcTimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget))
+        ,   pitchLabelView(new AcPitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget))
+        ,   controlLabelView(new AcVolumeLabelView(sceneManager->scene(Ac::ControlLabelScene), widget))
     {}
 
     void updateViewCenters()
     {
         pitchView->updateCenter();
         controlView->updateCenter();
-        timeLabelView->centerOn(pitchView->center().x(), sceneManager->timeLabelScene->height() / 2.0f);
-        pitchLabelView->centerOn(sceneManager->pitchLabelScene->width() / 2.0f, pitchView->center().y());
-        controlLabelView->centerOn(sceneManager->controlLabelScene->width() / 2.0f, controlView->center().y());
+        timeLabelView->centerOn(pitchView->center().x(), sceneManager->scene(Ac::TimeLabelScene)->height() / 2.0f);
+        pitchLabelView->centerOn(sceneManager->scene(Ac::PitchLabelScene)->width() / 2.0f, pitchView->center().y());
+        controlLabelView->centerOn(sceneManager->scene(Ac::ControlLabelScene)->width() / 2.0f, controlView->center().y());
     }
 };
 
@@ -72,45 +71,21 @@ AcViewManager::~AcViewManager()
     delete d;
 }
 
-QGraphicsView *AcViewManager::pitchView() const
+QGraphicsView *AcViewManager::view(Ac::SceneType type) const
 {
-    return d->pitchView;
-}
-
-QGraphicsView *AcViewManager::controlView() const
-{
-    return d->controlView;
-}
-
-QGraphicsView *AcViewManager::timeLabelView() const
-{
-    return d->timeLabelView;
-}
-
-QGraphicsView *AcViewManager::pitchLabelView() const
-{
-    return d->pitchLabelView;
-}
-
-QGraphicsView *AcViewManager::controlLabelView() const
-{
-    return d->controlLabelView;
+    switch (type) {
+    case Ac::PitchScene: return d->pitchView;
+    case Ac::ControlScene: return d->controlView;
+    case Ac::TimeLabelScene: return d->timeLabelView;
+    case Ac::PitchLabelScene: return d->pitchLabelView;
+    case Ac::ControlLabelScene: return d->controlLabelView;
+    default: return 0;
+    }
 }
 
 void AcViewManager::setModel(AbstractItemModel *model)
 {
     d->sceneManager->setModel(model);
-}
-
-void AcViewManager::viewAll()
-{
-//    QRectF rect;
-//    QList<QGraphicsItem*> items = d->pitchView->items();
-//    foreach(QGraphicsItem *item, items) {
-//        QRectF itemRect = item->boundingRect();
-//        rect |= itemRect;
-//    }
-//    d->pitchView->ensureVisible(rect);
 }
 
 //qreal AcViewManager::timePosition() const

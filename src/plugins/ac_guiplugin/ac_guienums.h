@@ -18,14 +18,18 @@
 #ifndef AC_GUIENUMS_H
 #define AC_GUIENUMS_H
 
-enum SceneItemType
+namespace Ac {
+
+enum SceneType
 {
-    PitchSceneItem,
-    ControlSceneItem,
-    TimeLabelSceneItem,
-    PitchLabelSceneItem,
-    ControlLabelSceneItem,
-    SceneItemTypeCount
+    PitchScene,
+    ControlScene,
+    TimeLabelScene,
+    PitchLabelScene,
+    ControlLabelScene,
+    SceneTypeCount
 };
+
+} // namespace Ac
 
 #endif // AC_GUIENUMS_H

@@ -32,9 +32,8 @@ public:
     ~AcMainWidget();
 
     void setModel(AbstractItemModel *model);
-    void viewAll();
 
-    bool isPointInVolumeViews(QWidget *widget, const QPoint &pos) const;
+    bool isPointInControlViews(QWidget *widget, const QPoint &pos) const;
 
 protected:
     void resizeEvent(QResizeEvent *event);
