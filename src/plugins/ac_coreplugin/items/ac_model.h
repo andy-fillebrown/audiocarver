@@ -83,7 +83,10 @@ public:
     virtual QString className() const = 0;
 
     Item *parent() const { return _parent; }
-    void setParent(Item *parent) { setParentAndModel(parent, parent ? parent->model() : 0); }
+    void setParent(Item *parent)
+    {
+        setParentAndModel(parent, parent ? parent->model() : 0);
+    }
 
     virtual int childCount() const { return 0; }
     virtual Item *childAt(int i) const { Q_UNUSED(i);  return 0; }
@@ -597,8 +600,8 @@ public:
         case 0: return _timeLines;
         case 1: return _pitchLines;
         case 2: return _controlLines;
+        default: return 0;
         }
-        return 0;
     }
 
     int childIndex(Item *child) const
@@ -648,8 +651,8 @@ public:
         switch(i) {
         case 0: return _tracks;
         case 1: return _gridSettings;
+        default: return 0;
         }
-        return 0;
     }
 
     int childIndex(Item *child) const
