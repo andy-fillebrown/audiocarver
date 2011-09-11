@@ -4,6 +4,7 @@ include(../mi_coreplugin/mi_coreplugin.pri)
 DIRS = \
     implementations \
     items \
+    model \
     tools \
     . \
 

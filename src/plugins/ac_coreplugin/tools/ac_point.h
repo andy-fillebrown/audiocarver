@@ -19,47 +19,50 @@
 #define AC_POINT_H
 
 #include <ac_core_global.h>
-#include <QMetaType>
+#include <ac_coreenums.h>
 
-class AC_CORE_EXPORT AcPoint
+#include <QList>
+#include <QMetaType>
+#include <QPointF>
+
+class Point
 {
 public:
-    enum CurveType {
-        NoCurve,
-        BezierCurve
-    };
-
-    enum StretchType {
-        NoStretch,
-        StartStretch,
-        MiddleStretch,
-        EndStretch
-    };
-
-    AcPoint(qreal x = 0.0f,
-            qreal y = 0.0f,
-            CurveType curveType = NoCurve,
-            StretchType stretchType = NoStretch)
-        :   x(x)
-        ,   y(y)
-        ,   curveType(curveType)
-        ,   stretchType(stretchType)
+    Point(CurveType curveType = NoCurve)
+        :   curveType(curveType)
     {}
 
-    qreal x;
-    qreal y;
+    Point(qreal x, qreal y, CurveType curveType = NoCurve)
+        :   pos(x, y)
+        ,   curveType(curveType)
+    {}
+
+    Point(const QPointF &pos, CurveType curveType = NoCurve)
+        :   pos(pos)
+        ,   curveType(curveType)
+    {}
+
+    bool operator<(const Point &other) const
+    {
+        if (pos.x() < other.pos.x())
+            return true;
+        if (other.pos.x() < pos.x())
+            return false;
+        if (pos.y() < other.pos.y())
+            return true;
+        return false;
+    }
+
+    QPointF pos;
     CurveType curveType;
-    StretchType stretchType;
 };
 
-inline bool operator<(const AcPoint &a, const AcPoint &b)
+inline bool operator==(const Point &a, const Point &b)
 {
-    return a.x == b.x ? a.y < b.y : a.x < b.x;
+    return (a.pos == b.pos && a.curveType == b.curveType);
 }
 
-typedef QList<AcPoint> AcPoints;
-
-Q_DECLARE_METATYPE(AcPoint)
-Q_DECLARE_METATYPE(AcPoints)
+typedef QList<Point> PointList;
+Q_DECLARE_METATYPE(PointList);
 
 #endif // AC_POINT_H

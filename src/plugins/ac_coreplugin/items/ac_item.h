@@ -18,521 +18,726 @@
 #ifndef AC_ITEM_H
 #define AC_ITEM_H
 
-#include <QGraphicsPathItem>
-#include <QPen>
+#include <ac_coreenums.h>
+#include <ac_point.h>
 
-#include <QList>
-#include <QPointF>
+#include <QColor>
 
-enum SceneType {
-    Pitch,
-    Volume,
-    TimeLabel,
-    PitchLabel,
-    VolumeLabel,
-    SceneTypeCount
-};
+#include <QModelIndex>
+#include <QVector>
 
-class Item : public QGraphicsItem
+class Model;
+
+class Item
 {
 public:
-    QRectF boundingRect() const
-    {
-        static QRectF r;
-        return r;
-    }
-
-    void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*)
+    explicit Item(Item *parent = 0)
+        :   _parent(parent)
+        ,   _model(parent ? parent->model() : 0)
     {}
-};
 
-class RootItem : public Item
-{
-public:
-    RootItem()
+    virtual ~Item() {}
+
+    virtual int type() const = 0;
+    virtual QString className() const = 0;
+
+    Item *parent() const { return _parent; }
+    void setParent(Item *parent)
     {
-        setTransform(QTransform::fromScale(1.0f, -1.0f));
-    }
-};
-
-class PointItem;
-
-class GripItem : public QGraphicsRectItem
-{
-    PointItem *pt;
-
-public:
-    enum {
-        Type = QGraphicsItem::UserType + 1
-    };
-
-    GripItem(PointItem *point)
-        :   pt(point)
-    {
-        setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        setPen(QPen(Qt::blue));
-        setBrush(QBrush(Qt::blue));
-        setRect(-3.0f, -3.0f, 6.0f, 6.0f);
-        setZValue(1.0f);
+        setParentAndModel(parent, parent ? parent->model() : 0);
     }
 
-    virtual int type() const
+    virtual int childCount() const { return 0; }
+    virtual Item *childAt(int i) const { Q_UNUSED(i);  return 0; }
+    virtual int childIndex(Item *child) const { Q_UNUSED(child);  return -1; }
+    virtual void sortChildren() { d_sortChildren(); }
+
+    Model *model() const { return _model; }
+
+    virtual void setModel(Model *model)
     {
-        return Type;
-    }
-
-    PointItem *point() const
-    {
-        return pt;
-    }
-};
-
-class PathItem : public QGraphicsPathItem
-{
-public:
-    PathItem()
-    {
-        setBoundingRegionGranularity(1.0f);
-    }
-
-    QPainterPath shape() const
-    {
-        return path();
-    }
-};
-
-class CurveItem : public PathItem
-{
-public:
-    CurveItem()
-    {
-        unhighlight();
-    }
-
-    void highlight()
-    {
-        setPen(QPen(QBrush(Qt::red), 4.0f));
-    }
-
-    void unhighlight()
-    {
-        setPen(QPen(QBrush(Qt::red), 2.0f));
-    }
-};
-
-class GuideItem : public PathItem
-{
-public:
-    GuideItem()
-    {
-        setFlag(QGraphicsItem::ItemStacksBehindParent);
-        setPen(QPen(QBrush(Qt::lightGray), 0.0f, Qt::DotLine));
-        hide();
-    }
-};
-
-class Curve;
-
-class PointItem : public Item
-{
-public:
-    enum CurveType {
-        NoCurve,
-        BezierCurve
-    };
-
-    enum StretchType {
-        Attack,
-        Sustain,
-        Release
-    };
-
-    PointItem(Curve *curve = 0,
-              qreal x = 0.0f,
-              qreal y = 0.0f,
-              CurveType curveType = NoCurve,
-              StretchType stretchType = Sustain
-              )
-        :   _curve(curve)
-        ,   _gripItem(new GripItem(this))
-        ,   _curveType(curveType)
-        ,   _stretchType(stretchType)
-    {
-        setPos(x, y);
-        _gripItem->setParentItem(this);
-        _gripItem->hide();
-    }
-
-    Curve *curve() const
-    {
-        return _curve;
-    }
-
-    void setCurve(Curve *curve)
-    {
-        _curve = curve;
-    }
-
-    CurveType curveType() const
-    {
-        return _curveType;
-    }
-
-    void setCurveType(CurveType type)
-    {
-        _curveType = type;
-    }
-
-    StretchType stretchType() const
-    {
-        return _stretchType;
-    }
-
-    void setStretchType(StretchType type)
-    {
-        _stretchType = type;
-    }
-
-    void highlight()
-    {
-        _gripItem->show();
-    }
-
-    void unhighlight()
-    {
-        _gripItem->hide();
-    }
-
-    static bool lessThan(const PointItem *a, const PointItem *b)
-    {
-        return a->x() == b->x() ? a->y() < b->y() : a->x() < b->x();
-    }
-
-private:
-    Curve *_curve;
-    GripItem *_gripItem;
-    CurveType _curveType;
-    StretchType _stretchType;
-};
-
-typedef QList<PointItem*> PointItems;
-
-class Curve
-{
-public:
-    Curve()
-        :   _curveItem(new CurveItem)
-        ,   _guideItem(new GuideItem)
-    {
-        _guideItem->setParentItem(_curveItem);
-    }
-
-    ~Curve()
-    {
-        delete _guideItem;
-        delete _curveItem;
-    }
-
-    const PointItems &points() const
-    {
-        return _points;
-    }
-
-    void appendPoint(PointItem *point)
-    {
-        if (_points.contains(point))
+        if (_model == model)
             return;
-        _points.append(point);
-        point->setCurve(this);
-        point->setParentItem(_curveItem);
+        _model = model;
+        for (int i = 0;  i < childCount();  ++i)
+            childAt(i)->setModel(model);
     }
 
-    void removePoint(PointItem *point)
-    {
-        point->setParentItem(0);
-        point->setCurve(0);
-        _points.removeOne(point);
-    }
+    inline QModelIndex index();
 
-    virtual void update()
+    virtual QVariant data(int role) const
     {
-        if (_points.count() < 2) {
-            _curveItem->setPath(QPainterPath());
-            _guideItem->setPath(QPainterPath());
-            return;
+        switch (role) {
+        case ItemTypeRole: return type();
+        case Qt::DisplayRole: return _objectName;
+        default: return QVariant();
         }
-        qSort(_points.begin(), _points.end(), PointItem::lessThan);
-        for (int i = 0;  i < _points.count();  ++i) {
-            _points[i]->setX(qMax(qreal(0.0f), _points[i]->x()));
-            _points[i]->setY(qMax(qreal(0.0f), _points[i]->y()));
-        }
-        _prevLength = length;
-        QPainterPath curvePath(_points[0]->pos());
-        QPainterPath guidePath;
-        for (int i = 1;  i < _points.count();  ++i) {
-            if ((PointItem::NoCurve == _points[i]->curveType())
-                    || i == _points.count() - 1)
-                curvePath.lineTo(_points[i]->pos());
-            else {
-                curvePath.quadTo(_points[i]->pos(), _points[i + 1]->pos());
-                guidePath.moveTo(_points[i - 1]->pos());
-                guidePath.lineTo(_points[i]->pos());
-                guidePath.lineTo(_points[i + 1]->pos());
-                ++i;
-            }
-
-        }
-        _curveItem->setPath(curvePath);
-        _guideItem->setPath(guidePath);
     }
 
-    QGraphicsItem *item() const
+    virtual bool setData(const QVariant &value, int role)
     {
-        return _curveItem;
+        Q_UNUSED(value);
+        Q_UNUSED(role);
+        return false;
     }
 
-    void highlight()
+    virtual Qt::ItemFlags flags() const
     {
-        foreach (PointItem *pt, _points)
-            pt->highlight();
-        _curveItem->highlight();
-        _guideItem->show();
+        return Qt::ItemIsSelectable
+                | Qt::ItemIsEditable
+                | Qt::ItemIsEnabled;
     }
 
-    void unhighlight()
+    void setParentAndModel(Item *parent, Model *model)
     {
-        _guideItem->hide();
-        _curveItem->unhighlight();
-        foreach (PointItem *pt, _points)
-            pt->unhighlight();
+        _parent = parent;
+        setModel(model);
+    }
+
+    virtual bool operator<(const Item &other)
+    {
+        Q_UNUSED(other);
+        return false;
     }
 
 protected:
-    PointItems _points;
-
-private:
-    CurveItem *_curveItem;
-    GuideItem *_guideItem;
-};
-
-class PitchCurve : public Curve
-{
-public:
-    void update()
+    virtual void d_sortChildren()
     {
-        for (int i = 0;  i < _points.count();  ++i)
-            _points[i]->setY(qMin(_points[i]->y(), qreal(127.0f)));
-        Curve::update();
-    }
-};
-
-class VolumeCurve : public Curve
-{
-public:
-    void update()
-    {
-        for (int i = 0;  i < _points.count();  ++i)
-            _points[i]->setY(qMin(_points[i]->y(), qreal(1.0f)));
-        Curve::update();
-    }
-};
-
-class Object
-{
-public:
-    virtual ~Object()
-    {}
-
-    virtual QGraphicsItem *item(SceneType type) const = 0;
-};
-
-class Entity : public Object
-{
-public:
-    virtual void highlight() = 0;
-    virtual void unhighlight() = 0;
-};
-
-class Note : public Entity
-{
-public:
-    Note()
-        :   _pitchCurve(new PitchCurve)
-        ,   _volumeCurve(new VolumeCurve)
-    {
-        QGraphicsItem *pitchItem = _pitchCurve->item();
-        pitchItem->setData(0, quintptr(this));
-        foreach (QGraphicsItem *child, pitchItem->children())
-            child->setData(0, quintptr(this));
-        QGraphicsItem *volumeItem = _volumeCurve->item();
-        volumeItem->setData(0, quintptr(this));
-        foreach (QGraphicsItem *child, volumeItem->children())
-            child->setData(0, quintptr(this));
-    }
-
-    ~Note()
-    {
-        delete _volumeCurve;
-        delete _pitchCurve;
-    }
-
-    Curve *pitchCurve() const
-    {
-        return _pitchCurve;
-    }
-
-    Curve *volumeCurve() const
-    {
-        return _volumeCurve;
-    }
-
-    QGraphicsItem *item(SceneType type) const
-    {
-        switch (type) {
-        case Pitch:
-            return _pitchCurve->item();
-        case Volume:
-            return _volumeCurve->item();
-        default:
-            return 0;
+        for (int i = 0;  i < childCount();  ++i) {
+            Item *child = childAt(i);
+            if (child)
+                child->sortChildren();
         }
     }
 
-    void highlight()
+    inline void beginDataChange();
+    inline void endDataChange();
+
+    Item *_parent;
+    Model *_model;
+    QString _objectName;
+};
+
+template <class T> inline T *item_cast(Item *item)
+{
+    return int(T::Type) == int(item->type()) ? static_cast<T*>(item) : 0;
+}
+
+template <class T>
+class ItemList : public Item
+{
+public:
+    enum { Type = ListItem };
+
+    explicit ItemList(Item *parent = 0)
+        :   Item(parent)
     {
-        _pitchCurve->highlight();
-        _volumeCurve->highlight();
+        _objectName = className();
     }
 
-    void unhighlight()
+    ~ItemList()
     {
-        _volumeCurve->unhighlight();
-        _pitchCurve->unhighlight();
+        qDeleteAll(_children);
     }
 
-    static bool lessThan(const Note *a, const Note *b)
+    int type() const { return Type; }
+
+    QString className() const
     {
-        const PointItems &ptsA = a->_pitchCurve->points();
-        const PointItems &ptsB = b->_pitchCurve->points();
-        if (ptsB.isEmpty())
-            return true;
-        if (ptsA.isEmpty())
-            return false;
-        return PointItem::lessThan(ptsA.first(), ptsB.first());
+        static T t;
+        return QString("%1s").arg(t.className());
+    }
+
+    int childCount() const { return _children.count(); }
+    Item *childAt(int i) const { return _children.at(i); }
+
+    int childIndex(Item *child) const
+    {
+        return _children.indexOf(item_cast<T>(child));
+    }
+
+    void appendChild(T *child)
+    {
+        insertChild(childCount(), child);
+    }
+
+    inline virtual void insertChild(int i, T *child);
+
+    inline void removeChild(int i);
+    inline void sortChildren();
+
+    QVariant data(int role) const
+    {
+        if (ListTypeRole == role)
+            return T::Type;
+        return Item::data(role);
+    }
+
+protected:
+    inline void d_sortChildren();
+
+private:
+    bool isSorted()
+    {
+        for (int i = 1;  i < childCount();  ++i)
+            if (*_children.at(i) < *_children.at(i - 1))
+                return false;
+        return true;
+    }
+
+    QList<T*> _children;
+};
+
+class AudibleItem : public Item
+{
+public:
+    explicit AudibleItem(Item *parent = 0)
+        :   Item(parent)
+        ,   _volume(1.0f)
+    {}
+
+    ~AudibleItem() {}
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case VolumeRole: return _volume;
+        default: return Item::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case VolumeRole: setVolume(value.toReal()); return true;
+        default: return Item::setData(value, role);
+        }
+    }
+
+    qreal volume() const { return _volume; }
+    void setVolume(qreal volume)
+    {
+        volume = qBound(qreal(0.0f), volume, qreal(1.0f));
+        if (_volume == volume)
+            return;
+        beginDataChange();
+        _volume = volume;
+        endDataChange();
     }
 
 private:
-    PitchCurve *_pitchCurve;
-    VolumeCurve *_volumeCurve;
+    qreal _volume;
 };
 
-class Track : public Object
+class Note : public AudibleItem
 {
 public:
-    Track()
+    enum { Type = NoteItem };
+
+    explicit Note(Item *parent = 0)
+        :   AudibleItem(parent)
     {
-        for (int i = 0;  i < SceneTypeCount;  ++i)
-            _items.append(new Item);
+        _points.append(Point());
+        _objectName = className();
+    }
+
+    ~Note() {}
+
+    int type() const { return Type; }
+    QString className() const { return "Note"; }
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case PointsRole: return QVariant::fromValue(_points);
+        default: return AudibleItem::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case PointsRole: setPoints(value.value<PointList>()); return true;
+        default: return AudibleItem::setData(value, role);
+        }
+    }
+
+    const PointList &points() const { return _points; }
+    void setPoints(const PointList &points)
+    {
+        if (_points == points)
+            return;
+        beginDataChange();
+        _points = points;
+        conformPoints();
+        endDataChange();
+    }
+
+    bool operator<(const Item &other)
+    {
+        Q_ASSERT(NoteItem == other.type());
+        const Note &b = static_cast<const Note&>(other);
+        if (points()[0] < b.points()[0])
+            return true;
+        return false;
+    }
+
+private:
+    PointList _points;
+
+    void conformPoints()
+    {
+        qStableSort(_points);
+        for (int i = 0;  i < _points.count();  ++i) {
+            QPointF &pos = _points[i].pos;
+            pos.setX(qMax(qreal(0.0f), pos.x()));
+            pos.setY(qBound(qreal(0.0f), pos.y(), qreal(127.0f)));
+        }
+    }
+};
+
+class Track : public AudibleItem
+{
+public:
+    enum { Type = TrackItem };
+
+    explicit Track(Item *parent = 0)
+        :   AudibleItem(parent)
+        ,   _notes(new ItemList<Note>(this))
+        ,   _color(Qt::red)
+    {
+        _objectName = className();
     }
 
     ~Track()
     {
-        qDeleteAll(_notes);
-        qDeleteAll(_items);
+        delete _notes;
     }
 
-    QGraphicsItem *item(SceneType type) const
+    int type() const { return Type; }
+    QString className() const { return "Track"; }
+
+    int childCount() const { return 1; }
+
+    Item *childAt(int i) const
     {
-        return _items[type];
+        switch (i) {
+        case 0: return _notes;
+        }
+        return 0;
     }
 
-    void appendNote(Note *note)
+    int childIndex(Item *child) const
     {
-        if (_notes.contains(note))
+        if (_notes == child) return 0;
+        return -1;
+    }
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case InstrumentRole: return _instrument;
+        case ColorRole: return _color;
+        default: return AudibleItem::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case InstrumentRole: setInstrument(value.toString()); return true;
+        case ColorRole: setColor(value.value<QColor>()); return true;
+        default: return AudibleItem::setData(value, role);
+        }
+    }
+
+    ItemList<Note> *notes() const { return _notes; }
+
+    const QString &instrument() const { return _instrument; }
+    void setInstrument(const QString &instrument)
+    {
+        if (_instrument == instrument)
             return;
-        _notes.append(note);
-        note->item(Pitch)->setParentItem(_items[Pitch]);
-        note->item(Volume)->setParentItem(_items[Volume]);
+        beginDataChange();
+        _instrument = instrument;
+        endDataChange();
     }
 
-    void removeNote(Note *note)
+    const QColor &color() const { return _color; }
+    void setColor(const QColor &color)
     {
-        if (!_notes.contains(note))
+        if (_color == color)
             return;
-        _notes.removeOne(note);
-        note->item(Pitch)->setParentItem(0);
-        note->item(Volume)->setParentItem(0);
-    }
-
-    void sortNotes()
-    {
-        qSort(_notes.begin(), _notes.end(), Note::lessThan);
+        beginDataChange();
+        _color = color;
+        endDataChange();
     }
 
 private:
-    QList<Note*> _notes;
-    QList<Item*> _items;
+    ItemList<Note> *_notes;
+    QString _instrument;
+    QColor _color;
 };
 
-class Score : public Object
+class GridLine : public Item
 {
 public:
-    Score()
+    explicit GridLine(Item *parent = 0)
+        :   Item(parent)
+        ,   _location(0.0f)
+        ,   _priority(0)
+        ,   _color(Qt::lightGray)
+    {}
+
+    ~GridLine() {}
+
+    QVariant data(int role) const
     {
-        for (int i = 0;  i < SceneTypeCount;  ++i)
-            _items.append(new RootItem);
+        switch (role) {
+        case LocationRole: return _location;
+        case PriorityRole: return _priority;
+        case ColorRole: return _color;
+        case LabelRole: return _label;
+        default: return Item::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case LocationRole: setLocation(value.toReal()); return true;
+        case PriorityRole: setPriority(value.toInt()); return true;
+        case ColorRole: setColor(value.value<QColor>()); return true;
+        case LabelRole: setLabel(value.toString()); return true;
+        default: return Item::setData(value, role);
+        }
+    }
+
+    qreal location() const { return _location; }
+    void setLocation(qreal location)
+    {
+        if (location < 0.0f)
+            location = 0.0f;
+        if (_location == location)
+            return;
+        beginDataChange();
+        _location = location;
+        endDataChange();
+    }
+
+    int priority() const { return _priority; }
+    void setPriority(int priority)
+    {
+        if (_priority == priority)
+            return;
+        beginDataChange();
+        _priority = priority;
+        endDataChange();
+    }
+
+    const QColor &color() const { return _color; }
+    void setColor(const QColor &color)
+    {
+        if (_color == color)
+            return;
+        beginDataChange();
+        _color = color;
+        endDataChange();
+    }
+
+    const QString &label() const { return _label; }
+    void setLabel(const QString &label)
+    {
+        if (_label == label)
+            return;
+        beginDataChange();
+        _label = label;
+        endDataChange();
+    }
+
+private:
+    qreal _location;
+    int _priority;
+    QColor _color;
+    QString _label;
+};
+
+class TimeLine : public GridLine
+{
+public:
+    enum { Type = TimeLineItem };
+
+    explicit TimeLine(Item *parent = 0)
+        :   GridLine(parent)
+    {
+        _objectName = className();
+    }
+
+    ~TimeLine() {}
+
+    int type() const { return Type; }
+    QString className() const { return "TimeLine"; }
+};
+
+class PitchLine : public GridLine
+{
+public:
+    enum { Type = PitchLineItem };
+
+    explicit PitchLine(Item *parent = 0)
+        :   GridLine(parent)
+    {
+        _objectName = className();
+    }
+
+    ~PitchLine() {}
+
+    int type() const { return Type; }
+    QString className() const { return "PitchLine"; }
+};
+
+class ControlLine : public GridLine
+{
+public:
+    enum { Type = ControlLineItem };
+
+    explicit ControlLine(Item *parent = 0)
+        :   GridLine(parent)
+    {
+        _objectName = className();
+    }
+
+    ~ControlLine() {}
+
+    int type() const { return Type; }
+    QString className() const { return "ControlLine"; }
+};
+
+class GridSettings : public Item
+{
+public:
+    enum { Type = GridSettingsItem };
+
+    explicit GridSettings(Item *parent = 0)
+        :   Item(parent)
+        ,   _timeLines(new ItemList<TimeLine>(this))
+        ,   _pitchLines(new ItemList<PitchLine>(this))
+        ,   _controlLines(new ItemList<ControlLine>(this))
+    {
+        _objectName = className();
+    }
+
+    ~GridSettings()
+    {
+        delete _controlLines;
+        delete _pitchLines;
+        delete _timeLines;
+    }
+
+    int type() const { return Type; }
+    QString className() const { return "GridSettings"; }
+
+    int childCount() const { return 3; }
+
+    Item *childAt(int i) const
+    {
+        switch (i) {
+        case 0: return _timeLines;
+        case 1: return _pitchLines;
+        case 2: return _controlLines;
+        default: return 0;
+        }
+    }
+
+    int childIndex(Item *child) const
+    {
+        if (_timeLines == child) return 0;
+        if (_pitchLines == child) return 1;
+        if (_controlLines == child) return 2;
+        return -1;
+    }
+
+    ItemList<TimeLine> *timeLines() const { return _timeLines; }
+    ItemList<PitchLine> *pitchLines() const { return _pitchLines; }
+    ItemList<ControlLine> *controlLines() const { return _controlLines; }
+
+private:
+    ItemList<TimeLine> *_timeLines;
+    ItemList<PitchLine> *_pitchLines;
+    ItemList<ControlLine> *_controlLines;
+};
+
+class Score : public AudibleItem
+{
+public:
+    enum { Type = ScoreItem };
+
+    Score()
+        :   _tracks(new ItemList<Track>(this))
+        ,   _gridSettings(new GridSettings(this))
+        ,   _length(120.0f)
+    {
+        _objectName = className();
     }
 
     ~Score()
     {
-        qDeleteAll(_tracks);
-        qDeleteAll(_items);
+        delete _gridSettings;
+        delete _tracks;
     }
 
-    QGraphicsItem *item(SceneType type) const
+    int type() const { return Type; }
+    QString className() const { return "Score"; }
+
+    int childCount() const { return 2; }
+
+    Item *childAt(int i) const
     {
-        return _items[type];
+        switch(i) {
+        case 0: return _tracks;
+        case 1: return _gridSettings;
+        default: return 0;
+        }
     }
 
-    int trackCount() const
+    int childIndex(Item *child) const
     {
-        return _tracks.count();
+        if (_tracks == child) return 0;
+        if (_gridSettings == child) return 1;
+        return -1;
     }
 
-    Track *trackAt(int i)
+    QVariant data(int role) const
     {
-        return _tracks.at(i);
+        switch (role) {
+        case LengthRole: return _length;
+        default: return AudibleItem::data(role);
+        }
     }
 
-    void appendTrack(Track *track)
+    bool setData(const QVariant &value, int role)
     {
-        insertTrack(_tracks.count(), track);
+        switch (role) {
+        case LengthRole: setLength(value.toReal()); return true;
+        default: return AudibleItem::setData(value, role);
+        }
     }
 
-    void insertTrack(int i, Track *track)
-    {
-        _tracks.insert(i, track);
-        for (int i = 0;  i < SceneTypeCount;  ++i)
-            track->item(SceneType(i))->setParentItem(_items[i]);
-    }
+    ItemList<Track> *tracks() const { return _tracks; }
+    GridSettings *gridSettings() const { return _gridSettings; }
 
-    Track *takeTrack(int i)
+    qreal length() const { return _length; }
+    void setLength(qreal length)
     {
-        Track *track = _tracks.at(i);
-        removeTrack(track);
-        return track;
-    }
-
-    void removeTrack(Track *track)
-    {
-        _tracks.removeOne(track);
-        for (int i = 0;  i < SceneTypeCount;  ++i)
-            track->item(SceneType(i))->setParentItem(0);
+        if (length < 0.0f)
+            length = 0.0f;
+        if (_length == length)
+            return;
+        beginDataChange();
+        _length = length;
+        endDataChange();
     }
 
 private:
-    QList<Track*> _tracks;
-    QList<RootItem*> _items;
+    ItemList<Track> *_tracks;
+    GridSettings *_gridSettings;
+    qreal _length;
 };
+
+#include <ac_model.h>
+
+inline QModelIndex Item::index()
+{
+    return _model ? _model->indexFromItem(this) : QModelIndex();
+}
+
+inline void Item::beginDataChange()
+{
+    if (_model)
+        emit _model->dataAboutToChange(index(), index());
+}
+
+inline void Item::endDataChange()
+{
+    if (_model)
+        emit _model->dataChanged(index(), index());
+}
+
+class ItemModelLessThan
+{
+public:
+    ItemModelLessThan() {}
+
+    bool operator()(const QPair<Item*, int> &l, const QPair<Item*, int> &r) const
+    {
+        return *(l.first) < *(r.first);
+    }
+};
+
+template <class T> inline void ItemList<T>::insertChild(int i, T *child)
+{
+    if (!child || _children.contains(child))
+        return;
+    child->setParentAndModel(this, _model);
+    if (_model)
+        _model->beginInsertRows(index(), i, i);
+    _children.insert(i, child);
+    if (_model)
+        _model->endInsertRows();
+}
+
+template <class T> inline void ItemList<T>::removeChild(int i)
+{
+    Item *child = childAt(i);
+    if (!child || !_children.contains(item_cast<T>(child)))
+        return;
+    if (_model)
+        _model->beginRemoveRows(index(), i, i);
+    child->setParentAndModel(0, 0);
+    _children.removeAt(i);
+    if (_model)
+        _model->endRemoveRows();
+}
+
+template <class T> inline void ItemList<T>::sortChildren()
+{
+    if (isSorted())
+        return;
+    if (_model) {
+        _model->_persistentIndexCache = _model->persistentIndexList();
+        _model->maybeEmitLayoutAboutToBeChanged();
+    }
+    d_sortChildren();
+}
+
+template <class T> inline void ItemList<T>::d_sortChildren()
+{
+    const int count = childCount();
+    QVector<QPair<Item*, int> > itemPairs(count);
+    for (int i = 0;  i < count;  ++i)
+        itemPairs[i] = QPair<Item*, int>(childAt(i), i);
+    ItemModelLessThan lt;
+    qStableSort(itemPairs.begin(), itemPairs.end(), lt);
+    const QModelIndexList &indexes = _model ? _model->_persistentIndexCache : QModelIndexList();
+    QModelIndexList oldIndexes, newIndexes;
+    QList<T*> sorted_children;
+    sorted_children.reserve(count);
+    for (int i = 0;  i < count;  ++i) {
+        int r = itemPairs.at(i).second;
+        sorted_children.append(item_cast<T>(childAt(r)));
+        if (_model) {
+            QModelIndex oldIndex = _model->createIndex(r, 0, this);
+            if (indexes.contains(oldIndex)) {
+                QModelIndex newIndex = _model->createIndex(i, 0, this);
+                oldIndexes.append(oldIndex);
+                newIndexes.append(newIndex);
+            }
+        }
+    }
+    _children = sorted_children;
+    if (_model)
+        _model->changePersistentIndexList(oldIndexes, newIndexes);
+    Item::d_sortChildren();
+}
 
 #endif // AC_ITEM_H

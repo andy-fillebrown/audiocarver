@@ -17,7 +17,7 @@
 
 #include "ac_guiplugin.h"
 
-#include <ac_model.h>
+#include <ac_item.h>
 
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
@@ -36,10 +36,10 @@ void populateModel(Model *model)
 {
     Score *score = model->score();
     score->setLength(64.0f);
-    List<Track> *tracks = score->tracks();
+    ItemList<Track> *tracks = score->tracks();
     Track *track = new Track;
     tracks->appendChild(track);
-    List<Note> *notes = track->notes();
+    ItemList<Note> *notes = track->notes();
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;

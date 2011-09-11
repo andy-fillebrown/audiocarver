@@ -18,7 +18,9 @@
 #ifndef AC_SCENE_H
 #define AC_SCENE_H
 
+#include <ac_coreenums.h>
 #include <ac_model.h>
+#include <ac_point.h>
 
 #include <ac_guienums.h>
 

@@ -16,5 +16,3 @@
 **************************************************************************/
 
 #include "ac_item.h"
-
-QTransform RootItem::xform = QTransform::fromScale(1.0f, -1.0f);
