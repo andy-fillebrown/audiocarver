@@ -189,15 +189,8 @@ public:
         return QString("%1s").arg(t.className());
     }
 
-    int childCount() const
-    {
-        return _children.count();
-    }
-
-    Item *childAt(int i) const
-    {
-        return _children.at(i);
-    }
+    int childCount() const { return _children.count(); }
+    Item *childAt(int i) const { return _children.at(i); }
 
     int childIndex(Item *child) const
     {
@@ -210,13 +203,6 @@ public:
     }
 
     inline virtual void insertChild(int i, T *child);
-
-    T *takeChild(int i)
-    {
-        T *child = childAt(i);
-        removeChild(i);
-        return child;
-    }
 
     inline void removeChild(int i);
     inline void sortChildren();

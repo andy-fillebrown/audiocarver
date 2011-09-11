@@ -135,10 +135,7 @@ public:
         delete _guideItem;
     }
 
-    const GraphicsCurvePointItems &points() const
-    {
-        return _points;
-    }
+    const GraphicsCurvePointItems &points() const { return _points; }
 
     void appendPoint(GraphicsCurvePointItem *point)
     {
@@ -215,7 +212,7 @@ public:
     virtual void highlight() {}
     virtual void unhighlight() {}
 
-    virtual void dataChanged(const QModelIndex &index) {}
+    virtual void dataChanged(const QModelIndex &index) { Q_UNUSED(index); }
 };
 
 class SceneItemList
@@ -230,15 +227,8 @@ public:
         qDeleteAll(_sceneItems);
     }
 
-    int count() const
-    {
-        return _sceneItems.count();
-    }
-
-    SceneItem *at(int i) const
-    {
-        return _sceneItems.at(i);
-    }
+    int count() const { return _sceneItems.count(); }
+    SceneItem *at(int i) const { return _sceneItems.at(i); }
 
     void append(SceneItem *sceneItem)
     {
@@ -350,17 +340,14 @@ public:
     }
 
     int listCount() const { return 1; }
+
     SceneItemList *listAt(int i)
     {
-        if (i == 0)
-            return notes;
+        if (i == 0) return notes;
         return 0;
     }
 
-    QGraphicsItem *item(Ac::SceneType type) const
-    {
-        return _items[type];
-    }
+    QGraphicsItem *item(Ac::SceneType type) const { return _items[type]; }
 
 public:
     SceneItemList *notes;
@@ -385,17 +372,14 @@ public:
     }
 
     int listCount() const { return 1; }
+
     SceneItemList *listAt(int i)
     {
-        if (i == 0)
-            return tracks;
+        if (i == 0) return tracks;
         return 0;
     }
 
-    QGraphicsItem *item(Ac::SceneType type) const
-    {
-        return _items[type];
-    }
+    QGraphicsItem *item(Ac::SceneType type) const { return _items[type]; }
 
 public:
     SceneItemList *tracks;
@@ -520,6 +504,18 @@ public:
         reset();
     }
 
+    QGraphicsScene *scene(Ac::SceneType type)
+    {
+        switch (type) {
+        case Ac::PitchScene: return _pitchScene;
+        case Ac::ControlScene: return _controlScene;
+        case Ac::TimeLabelScene: return _timeLabelScene;
+        case Ac::PitchLabelScene: return _pitchLabelScene;
+        case Ac::ControlLabelScene: return _controlLabelScene;
+        default: return 0;
+        }
+    }
+
 public slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
     {
@@ -558,18 +554,6 @@ public slots:
         if (ListItem == parentType) {
             QModelIndex index = _model->index(start, 0, parent);
             removeItem(_model->index(start, 0, parent), _indexToList.value(parent));
-        }
-    }
-
-    QGraphicsScene *scene(Ac::SceneType type)
-    {
-        switch (type) {
-        case Ac::PitchScene: return _pitchScene;
-        case Ac::ControlScene: return _controlScene;
-        case Ac::TimeLabelScene: return _timeLabelScene;
-        case Ac::PitchLabelScene: return _pitchLabelScene;
-        case Ac::ControlLabelScene: return _controlLabelScene;
-        default: return 0;
         }
     }
 
@@ -633,7 +617,8 @@ private:
         _listToIndex.clear();
         _indexToItem.insert(QModelIndex(), _score);
         _itemToIndex.insert(_score, QModelIndex());
-        addList(_model->index(0, 0), _score->listAt(0));
+        for (int i = 0;  i < _score->listCount();  ++i)
+            addList(_model->index(i, 0), _score->listAt(i));
     }
 
 private:
