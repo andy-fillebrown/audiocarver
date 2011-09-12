@@ -19,10 +19,10 @@
 
 #include <ac_item.h>
 
+#include <ac_editorimpl.h>
+#include <ac_graphicsscene.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
-#include <ac_editorimpl.h>
-#include <ac_scene.h>
 
 #include <icore.h>
 #include <mainwindow.h>

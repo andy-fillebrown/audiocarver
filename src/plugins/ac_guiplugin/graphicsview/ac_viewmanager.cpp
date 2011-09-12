@@ -19,7 +19,7 @@
 //#include <ac_guifactory.h>
 #include <ac_pitchlabelview.h>
 #include <ac_pitchview.h>
-#include <ac_scene.h>
+#include <ac_graphicsscene.h>
 //#include <ac_score.h>
 #include <ac_timelabelview.h>
 //#include <ac_viewsettings.h>
@@ -83,7 +83,7 @@ QGraphicsView *AcViewManager::view(Ac::SceneType type) const
     }
 }
 
-void AcViewManager::setModel(AbstractItemModel *model)
+void AcViewManager::setModel(QAbstractItemModel *model)
 {
     d->sceneManager->setModel(model);
 }

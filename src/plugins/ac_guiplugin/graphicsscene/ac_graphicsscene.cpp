@@ -15,24 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsscene.h"
-
-class AcGraphicsScenePrivate
-{
-public:
-    AcGraphicsScenePrivate()
-    {}
-
-    virtual ~AcGraphicsScenePrivate()
-    {}
-};
-
-AcGraphicsScene::AcGraphicsScene(QObject *parent)
-    :   MiGraphicsScene(parent)
-    ,   d(new AcGraphicsScenePrivate)
-{}
-
-AcGraphicsScene::~AcGraphicsScene()
-{
-    delete d;
-}
+#include "ac_scene.h"

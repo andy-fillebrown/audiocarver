@@ -25,9 +25,9 @@
 class QGraphicsView;
 class QWidget;
 
-class AbstractItemModel;
-class AcViewManagerPrivate;
+class QAbstractItemModel;
 
+class AcViewManagerPrivate;
 class AcViewManager : public QObject
 {
     Q_OBJECT
@@ -38,7 +38,7 @@ public:
 
     QGraphicsView *view(Ac::SceneType type) const;
 
-    void setModel(AbstractItemModel *model);
+    void setModel(QAbstractItemModel *model);
 
 //    qreal timePosition() const;
 //    void setTimePosition(qreal position);

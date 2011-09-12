@@ -10,7 +10,9 @@ HEADERS += \
     ac_guiutil.h \
 
 SOURCE_PAIRS = \
-    graphicsscene/ac_scene \
+    graphics/ac_graphicsitem \
+    graphics/ac_graphicsscene \
+    graphics/ac_graphicssceneitem \
     \
     graphicsview/ac_editorview \
     graphicsview/ac_labelview \

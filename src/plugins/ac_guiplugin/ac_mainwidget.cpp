@@ -93,7 +93,7 @@ AcMainWidget::~AcMainWidget()
     delete d;
 }
 
-void AcMainWidget::setModel(AbstractItemModel *model)
+void AcMainWidget::setModel(QAbstractItemModel *model)
 {
     d->viewManager->setModel(model);
 }

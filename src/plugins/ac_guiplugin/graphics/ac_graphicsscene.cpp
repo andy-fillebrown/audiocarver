@@ -15,30 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSPITCHPOINTITEM_H
-#define AC_GRAPHICSPITCHPOINTITEM_H
-
-#include <ac_graphicspointitem.h>
-
-class AcGraphicsPitchPointItemPrivate;
-class AcGraphicsPitchPointItem : public AcGraphicsPointItem
-{
-    Q_OBJECT
-
-public:
-    explicit AcGraphicsPitchPointItem(QObject *parent = 0);
-
-    ~AcGraphicsPitchPointItem()
-    {}
-
-    QGraphicsItem *sceneItem(SceneType sceneType) const;
-
-    void updateViewSettings(int i, const QVariant &value);
-    void updateDataObject(int i, const QVariant &value);
-
-private:
-    Q_DISABLE_COPY(AcGraphicsPitchPointItem)
-    Q_DECLARE_PRIVATE(AcGraphicsPitchPointItem)
-};
-
-#endif // AC_GRAPHICSPITCHPOINTITEM_H
+#include "ac_graphicsscene.h"

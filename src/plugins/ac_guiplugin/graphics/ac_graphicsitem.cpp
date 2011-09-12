@@ -15,28 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_labelscene.h"
-//#include <ac_score.h>
-//#include <ac_viewsettings.h>
-
-class AcLabelScenePrivate
-{
-public:
-    AcLabelScenePrivate()
-    {}
-
-    virtual ~AcLabelScenePrivate()
-    {}
-};
-
-AcLabelScene::AcLabelScene(QObject *parent)
-    :   AcGraphicsScene(parent)
-    ,   d(new AcLabelScenePrivate)
-{
-//    Q_CONNECT(AcScore::instance()->viewSettings(), SIGNAL(changed(int,QVariant)), this, SLOT(updateViewSettings(int,QVariant)));
-}
-
-AcLabelScene::~AcLabelScene()
-{
-    delete d;
-}
+#include "ac_graphicsitem.h"

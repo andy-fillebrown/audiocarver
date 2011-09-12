@@ -20,9 +20,9 @@
 
 #include <QWidget>
 
-class AcMainWidgetPrivate;
-class AbstractItemModel;
+class QAbstractItemModel;
 
+class AcMainWidgetPrivate;
 class AcMainWidget : public QWidget
 {
     Q_OBJECT
@@ -31,7 +31,7 @@ public:
     AcMainWidget(QWidget *parent = 0);
     ~AcMainWidget();
 
-    void setModel(AbstractItemModel *model);
+    void setModel(QAbstractItemModel *model);
 
     bool isPointInControlViews(QWidget *widget, const QPoint &pos) const;
 

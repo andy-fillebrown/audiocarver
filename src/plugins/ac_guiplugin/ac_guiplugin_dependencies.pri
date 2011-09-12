@@ -4,9 +4,7 @@ include(../ac_coreplugin/ac_coreplugin.pri)
 
 DIRS = \
     factories \
-    graphicsitem/gridlines \
-    graphicsitem \
-    graphicsscene \
+    graphics \
     graphicsview \
     implementations \
     itemviews \
