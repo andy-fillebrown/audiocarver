@@ -85,7 +85,6 @@ protected:
 private:
     Score *_score;
     QModelIndexList _persistentIndexCache;
-    QList<Item*> _itemsToUpdate;
     bool _layoutAboutToBeChangedEmitted;
 
     friend class Item;
