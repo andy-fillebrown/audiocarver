@@ -32,15 +32,37 @@ class SceneItem
 public:
     virtual ~SceneItem() {}
 
-    virtual int listCount() const { return 0; }
-    virtual SceneItemList *listAt(int i) { Q_UNUSED(i);  return 0; }
+    virtual int listCount() const
+    {
+        return 0;
+    }
 
-    virtual QGraphicsItem *item(Ac::SceneType type) const = 0;
+    virtual SceneItemList *listAt(int i)
+    {
+        Q_UNUSED(i);
+        return 0;
+    }
+
+    virtual QGraphicsItem *item(Ac::SceneType type) const
+    {
+        Q_UNUSED(type);
+        return 0;
+    }
+
+    virtual QGraphicsItem *unitItem(Ac::SceneType type, Ac::Axis axis) const
+    {
+        Q_UNUSED(type);
+        Q_UNUSED(axis);
+        return 0;
+    }
 
     virtual void highlight() {}
     virtual void unhighlight() {}
 
-    virtual void dataChanged(const QModelIndex &index) { Q_UNUSED(index); }
+    virtual void dataChanged(const QModelIndex &index)
+    {
+        Q_UNUSED(index);
+    }
 };
 
 class SceneItemList
@@ -55,8 +77,15 @@ public:
         qDeleteAll(_sceneItems);
     }
 
-    int count() const { return _sceneItems.count(); }
-    SceneItem *at(int i) const { return _sceneItems.at(i); }
+    int count() const
+    {
+        return _sceneItems.count();
+    }
+
+    SceneItem *at(int i) const
+    {
+        return _sceneItems.at(i);
+    }
 
     void append(SceneItem *sceneItem)
     {
@@ -72,6 +101,14 @@ public:
             Ac::SceneType type = Ac::SceneType(i);
             QGraphicsItem *parentItem = _parent->item(type);
             QGraphicsItem *item = sceneItem->item(type);
+            if (parentItem && item)
+                item->setParentItem(parentItem);
+            parentItem = _parent->unitItem(type, Ac::XAxis);
+            item = sceneItem->unitItem(type, Ac::XAxis);
+            if (parentItem && item)
+                item->setParentItem(parentItem);
+            parentItem = _parent->unitItem(type, Ac::YAxis);
+            item = sceneItem->unitItem(type, Ac::YAxis);
             if (parentItem && item)
                 item->setParentItem(parentItem);
         }
@@ -161,7 +198,10 @@ public:
         qDeleteAll(_items);
     }
 
-    int listCount() const { return 1; }
+    int listCount() const
+    {
+        return 1;
+    }
 
     SceneItemList *listAt(int i)
     {
@@ -169,7 +209,10 @@ public:
         return 0;
     }
 
-    QGraphicsItem *item(Ac::SceneType type) const { return _items[type]; }
+    QGraphicsItem *item(Ac::SceneType type) const
+    {
+        return _items[type];
+    }
 
 public:
     SceneItemList *notes;
@@ -183,6 +226,10 @@ class SceneScoreItem : public SceneItem
 public:
     SceneScoreItem()
         :   tracks(new SceneItemList(this))
+        ,   _pitchUnitItemX(new GraphicsRootItem)
+        ,   _pitchUnitItemY(new GraphicsRootItem)
+        ,   _controlUnitItemX(new GraphicsRootItem)
+        ,   _controlUnitItemY(new GraphicsRootItem)
     {
         for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             _items.append(new GraphicsRootItem);
@@ -190,10 +237,14 @@ public:
 
     ~SceneScoreItem()
     {
+        delete tracks;
         qDeleteAll(_items);
     }
 
-    int listCount() const { return 1; }
+    int listCount() const
+    {
+        return 1;
+    }
 
     SceneItemList *listAt(int i)
     {
@@ -201,13 +252,156 @@ public:
         return 0;
     }
 
-    QGraphicsItem *item(Ac::SceneType type) const { return _items[type]; }
+    QGraphicsItem *item(Ac::SceneType type) const
+    {
+        return _items[type];
+    }
+
+    QGraphicsItem *unitItem(Ac::SceneType type, Ac::Axis axis) const
+    {
+        switch (type) {
+        case Ac::PitchScene: return Ac::XAxis == axis ? _pitchUnitItemX : _pitchUnitItemY;
+        case Ac::ControlScene: return Ac::XAxis ==  axis ? _controlUnitItemX : _controlUnitItemY;
+        default: return 0;
+        }
+    }
 
 public:
     SceneItemList *tracks;
 
 private:
     QList<GraphicsRootItem*> _items;
+    GraphicsRootItem *_pitchUnitItemX;
+    GraphicsRootItem *_pitchUnitItemY;
+    GraphicsRootItem *_controlUnitItemX;
+    GraphicsRootItem *_controlUnitItemY;
+};
+
+class SceneGridLineItem : public SceneItem
+{
+public:
+    SceneGridLineItem()
+        :   _label(new GraphicsLabelItem)
+    {}
+
+    ~SceneGridLineItem()
+    {
+        delete _label;
+    }
+
+    void dataChanged(const QModelIndex &index)
+    {
+        _label->setText(index.model()->data(index, LabelRole).toString());
+    }
+
+protected:
+    GraphicsLabelItem *_label;
+};
+
+class SceneTimeLineItem : public SceneGridLineItem
+{
+public:
+    SceneTimeLineItem()
+        :   _pitchSceneLine(new QGraphicsLineItem)
+        ,   _controlSceneLine(new QGraphicsLineItem)
+    {}
+
+    ~SceneTimeLineItem()
+    {
+        delete _controlSceneLine;
+        delete _pitchSceneLine;
+    }
+
+    QGraphicsItem *item(Ac::SceneType type) const
+    {
+        switch (type) {
+        case Ac::TimeLabelScene: return _label;
+        default: return 0;
+        }
+    }
+
+    QGraphicsItem *unitItem(Ac::SceneType type, Ac::Axis axis) const
+    {
+        if (Ac::YAxis == axis) {
+            switch (type) {
+            case Ac::PitchScene: return _pitchSceneLine;
+            case Ac::ControlScene: return _controlSceneLine;
+            default: return 0;
+            }
+        }
+        return 0;
+    }
+
+    void dataChanged(const QModelIndex &index)
+    {
+        qreal location = index.model()->data(index, LocationRole).toReal();
+        _label->setPos(location, 0);
+        _pitchSceneLine->setLine(location, 0, location, 1);
+        _controlSceneLine->setLine(location, 0, location, 1);
+    }
+
+private:
+    QGraphicsLineItem *_pitchSceneLine;
+    QGraphicsLineItem *_controlSceneLine;
+};
+
+class SceneHGridLineItem : public SceneGridLineItem
+{
+public:
+    SceneHGridLineItem()
+        :   _sceneLine(new QGraphicsLineItem)
+    {}
+
+    ~SceneHGridLineItem()
+    {
+        delete _sceneLine;
+    }
+
+    void dataChanged(const QModelIndex &index)
+    {
+        qreal location = index.model()->data(index, LocationRole).toReal();
+        _label->setPos(0, location);
+        _sceneLine->setLine(0, location, 1, location);
+    }
+
+protected:
+    QGraphicsLineItem *_sceneLine;
+};
+
+class ScenePitchLineItem : public SceneHGridLineItem
+{
+public:
+    QGraphicsItem *item(Ac::SceneType type) const
+    {
+        if (Ac::PitchLabelScene == type)
+            return _label;
+        return 0;
+    }
+
+    QGraphicsItem *unitItem(Ac::SceneType type, Ac::Axis axis) const
+    {
+        if (Ac::PitchScene == type && Ac::XAxis == axis)
+            return _sceneLine;
+        return 0;
+    }
+};
+
+class SceneControlLineItem : public SceneHGridLineItem
+{
+public:
+    QGraphicsItem *item(Ac::SceneType type) const
+    {
+        if (Ac::ControlLabelScene == type)
+            return _label;
+        return 0;
+    }
+
+    QGraphicsItem *unitItem(Ac::SceneType type, Ac::Axis axis) const
+    {
+        if (Ac::ControlScene == type && Ac::XAxis == axis)
+            return _sceneLine;
+        return 0;
+    }
 };
 
 #endif // AC_GRAPHICSSCENEITEM_H

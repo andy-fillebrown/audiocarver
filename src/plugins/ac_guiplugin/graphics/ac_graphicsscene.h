@@ -113,6 +113,9 @@ public:
         :   QObject(parent)
         ,   _model(0)
         ,   _score(0)
+        ,   _timeLines(0)
+        ,   _pitchLines(0)
+        ,   _controlLines(0)
         ,   _pitchScene(new PitchScene(this))
         ,   _controlScene(new ControlScene(this))
         ,   _timeLabelScene(new TimeLabelScene(this))
@@ -122,6 +125,9 @@ public:
 
     ~SceneManager()
     {
+        delete _controlLines;
+        delete _pitchLines;
+        delete _timeLines;
         delete _score;
     }
 
@@ -177,6 +183,9 @@ public slots:
             switch (listType) {
             case TrackItem: item = new SceneTrackItem;  break;
             case NoteItem: item = new SceneNoteItem;  break;
+            case TimeLineItem: item = new SceneTimeLineItem;  break;
+            case PitchLineItem: item = new ScenePitchLineItem;  break;
+            case ControlLineItem: item = new SceneControlLineItem;  break;
             default: break;
             }
             addItem(_model->index(start, 0, parent), item, _indexToList.value(parent));
@@ -256,11 +265,24 @@ private:
         _itemToIndex.insert(_score, QModelIndex());
         for (int i = 0;  i < _score->listCount();  ++i)
             addList(_model->index(i, 0), _score->listAt(i));
+        QModelIndex gridSettingsIndex = _model->index(1, 0);
+        delete _timeLines;
+        _timeLines = new SceneItemList(_score);
+        addList(_model->index(0, 0, gridSettingsIndex), _timeLines);
+        delete _pitchLines;
+        _pitchLines = new SceneItemList(_score);
+        addList(_model->index(1, 0, gridSettingsIndex), _pitchLines);
+        delete _controlLines;
+        _controlLines = new SceneItemList(_score);
+        addList(_model->index(2, 0, gridSettingsIndex), _controlLines);
     }
 
 private:
     QAbstractItemModel *_model;
     SceneScoreItem *_score;
+    SceneItemList *_timeLines;
+    SceneItemList *_pitchLines;
+    SceneItemList *_controlLines;
     QHash<QPersistentModelIndex, SceneItem*> _indexToItem;
     QHash<SceneItem*, QPersistentModelIndex> _itemToIndex;
     QHash<QPersistentModelIndex, SceneItemList*> _indexToList;

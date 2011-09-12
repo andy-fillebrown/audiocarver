@@ -188,4 +188,23 @@ private:
     GraphicsGuideItem *_guideItem;
 };
 
+class GraphicsLabelItem : public GraphicsItem
+{
+public:
+    GraphicsLabelItem()
+        :   _textItem(new QGraphicsTextItem(this))
+    {
+        _textItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    }
+
+    QColor color() const { return _textItem->defaultTextColor(); }
+    void setColor(const QColor &color) { _textItem->setDefaultTextColor(color); }
+
+    QString text() const { return _textItem->toPlainText(); }
+    void setText(const QString &text) { _textItem->setPlainText(text); }
+
+private:
+    QGraphicsTextItem *_textItem;
+};
+
 #endif // AC_GRAPHICSITEM_H

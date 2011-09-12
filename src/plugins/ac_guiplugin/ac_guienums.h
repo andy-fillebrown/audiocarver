@@ -30,6 +30,12 @@ enum SceneType
     SceneTypeCount
 };
 
+enum Axis
+{
+    XAxis,
+    YAxis
+};
+
 } // namespace Ac
 
 #endif // AC_GUIENUMS_H
