@@ -19,14 +19,12 @@
 #define AC_ITEM_H
 
 #include <ac_coreenums.h>
+#include <ac_model.h>
 #include <ac_point.h>
 
 #include <QColor>
 
-#include <QModelIndex>
 #include <QVector>
-
-class Model;
 
 class Item
 {
@@ -39,7 +37,7 @@ public:
     virtual ~Item() {}
 
     virtual int type() const = 0;
-    virtual QString className() const = 0;
+    QString name() const { return _name; }
 
     Item *parent() const { return _parent; }
     void setParent(Item *parent)
@@ -50,7 +48,7 @@ public:
     virtual int childCount() const { return 0; }
     virtual Item *childAt(int i) const { Q_UNUSED(i);  return 0; }
     virtual int childIndex(Item *child) const { Q_UNUSED(child);  return -1; }
-    virtual void sortChildren() { d_sortChildren(); }
+    virtual void sortChildren() { _sortChildren(); }
 
     Model *model() const { return _model; }
 
@@ -63,13 +61,16 @@ public:
             childAt(i)->setModel(model);
     }
 
-    inline QModelIndex index();
+    QModelIndex index()
+    {
+        return _model ? _model->indexFromItem(this) : QModelIndex();
+    }
 
     virtual QVariant data(int role) const
     {
         switch (role) {
         case ItemTypeRole: return type();
-        case Qt::DisplayRole: return _objectName;
+        case Qt::DisplayRole: return _name;
         default: return QVariant();
         }
     }
@@ -101,7 +102,7 @@ public:
     }
 
 protected:
-    virtual void d_sortChildren()
+    virtual void _sortChildren()
     {
         for (int i = 0;  i < childCount();  ++i) {
             Item *child = childAt(i);
@@ -110,18 +111,38 @@ protected:
         }
     }
 
-    inline void beginDataChange();
-    inline void endDataChange();
+    void _beginDataChange()
+    {
+        if (_model)
+            emit _model->dataAboutToChange(index(), index());
+    }
+
+    void _endDataChange()
+    {
+        if (_model)
+            emit _model->dataChanged(index(), index());
+    }
 
     Item *_parent;
     Model *_model;
-    QString _objectName;
+    QString _name;
 };
 
 template <class T> inline T *item_cast(Item *item)
 {
     return int(T::Type) == int(item->type()) ? static_cast<T*>(item) : 0;
 }
+
+class ItemModelLessThan
+{
+public:
+    ItemModelLessThan() {}
+
+    bool operator()(const QPair<Item*, int> &l, const QPair<Item*, int> &r) const
+    {
+        return *(l.first) < *(r.first);
+    }
+};
 
 template <class T>
 class ItemList : public Item
@@ -132,7 +153,8 @@ public:
     explicit ItemList(Item *parent = 0)
         :   Item(parent)
     {
-        _objectName = className();
+        static T t;
+        _name = QString("%1s").arg(t.name());
     }
 
     ~ItemList()
@@ -141,12 +163,6 @@ public:
     }
 
     int type() const { return Type; }
-
-    QString className() const
-    {
-        static T t;
-        return QString("%1s").arg(t.className());
-    }
 
     int childCount() const { return _children.count(); }
     Item *childAt(int i) const { return _children.at(i); }
@@ -161,10 +177,41 @@ public:
         insertChild(childCount(), child);
     }
 
-    inline virtual void insertChild(int i, T *child);
+    void insertChild(int i, T *child)
+    {
+        if (!child || _children.contains(child))
+            return;
+        child->setParentAndModel(this, _model);
+        if (_model)
+            _model->beginInsertRows(index(), i, i);
+        _children.insert(i, child);
+        if (_model)
+            _model->endInsertRows();
+    }
 
-    inline void removeChild(int i);
-    inline void sortChildren();
+    void removeChild(int i)
+    {
+        Item *child = childAt(i);
+        if (!child || !_children.contains(item_cast<T>(child)))
+            return;
+        if (_model)
+            _model->beginRemoveRows(index(), i, i);
+        child->setParentAndModel(0, 0);
+        _children.removeAt(i);
+        if (_model)
+            _model->endRemoveRows();
+    }
+
+    void sortChildren()
+    {
+        if (_isSorted())
+            return;
+        if (_model) {
+            _model->_persistentIndexCache = _model->persistentIndexList();
+            _model->maybeEmitLayoutAboutToBeChanged();
+        }
+        _sortChildren();
+    }
 
     QVariant data(int role) const
     {
@@ -174,10 +221,38 @@ public:
     }
 
 protected:
-    inline void d_sortChildren();
+    void _sortChildren()
+    {
+        const int count = childCount();
+        QVector<QPair<Item*, int> > itemPairs(count);
+        for (int i = 0;  i < count;  ++i)
+            itemPairs[i] = QPair<Item*, int>(childAt(i), i);
+        ItemModelLessThan lt;
+        qStableSort(itemPairs.begin(), itemPairs.end(), lt);
+        const QModelIndexList &indexes = _model ? _model->_persistentIndexCache : QModelIndexList();
+        QModelIndexList oldIndexes, newIndexes;
+        QList<T*> sortedChildren;
+        sortedChildren.reserve(count);
+        for (int i = 0;  i < count;  ++i) {
+            int r = itemPairs.at(i).second;
+            sortedChildren.append(item_cast<T>(childAt(r)));
+            if (_model) {
+                QModelIndex oldIndex = _model->createIndex(r, 0, this);
+                if (indexes.contains(oldIndex)) {
+                    QModelIndex newIndex = _model->createIndex(i, 0, this);
+                    oldIndexes.append(oldIndex);
+                    newIndexes.append(newIndex);
+                }
+            }
+        }
+        _children = sortedChildren;
+        if (_model)
+            _model->changePersistentIndexList(oldIndexes, newIndexes);
+        Item::_sortChildren();
+    }
 
 private:
-    bool isSorted()
+    bool _isSorted()
     {
         for (int i = 1;  i < childCount();  ++i)
             if (*_children.at(i) < *_children.at(i - 1))
@@ -220,9 +295,9 @@ public:
         volume = qBound(qreal(0.0f), volume, qreal(1.0f));
         if (_volume == volume)
             return;
-        beginDataChange();
+        _beginDataChange();
         _volume = volume;
-        endDataChange();
+        _endDataChange();
     }
 
 private:
@@ -237,14 +312,13 @@ public:
     explicit Note(Item *parent = 0)
         :   AudibleItem(parent)
     {
+        _name = "Note";
         _points.append(Point());
-        _objectName = className();
     }
 
     ~Note() {}
 
     int type() const { return Type; }
-    QString className() const { return "Note"; }
 
     QVariant data(int role) const
     {
@@ -267,10 +341,10 @@ public:
     {
         if (_points == points)
             return;
-        beginDataChange();
+        _beginDataChange();
         _points = points;
-        conformPoints();
-        endDataChange();
+        _conformPoints();
+        _endDataChange();
     }
 
     bool operator<(const Item &other)
@@ -285,7 +359,7 @@ public:
 private:
     PointList _points;
 
-    void conformPoints()
+    void _conformPoints()
     {
         qStableSort(_points);
         for (int i = 0;  i < _points.count();  ++i) {
@@ -306,7 +380,7 @@ public:
         ,   _notes(new ItemList<Note>(this))
         ,   _color(Qt::red)
     {
-        _objectName = className();
+        _name = "Track";
     }
 
     ~Track()
@@ -315,7 +389,6 @@ public:
     }
 
     int type() const { return Type; }
-    QString className() const { return "Track"; }
 
     int childCount() const { return 1; }
 
@@ -358,9 +431,9 @@ public:
     {
         if (_instrument == instrument)
             return;
-        beginDataChange();
+        _beginDataChange();
         _instrument = instrument;
-        endDataChange();
+        _endDataChange();
     }
 
     const QColor &color() const { return _color; }
@@ -368,9 +441,9 @@ public:
     {
         if (_color == color)
             return;
-        beginDataChange();
+        _beginDataChange();
         _color = color;
-        endDataChange();
+        _endDataChange();
     }
 
 private:
@@ -420,9 +493,9 @@ public:
             location = 0.0f;
         if (_location == location)
             return;
-        beginDataChange();
+        _beginDataChange();
         _location = location;
-        endDataChange();
+        _endDataChange();
     }
 
     int priority() const { return _priority; }
@@ -430,9 +503,9 @@ public:
     {
         if (_priority == priority)
             return;
-        beginDataChange();
+        _beginDataChange();
         _priority = priority;
-        endDataChange();
+        _endDataChange();
     }
 
     const QColor &color() const { return _color; }
@@ -440,9 +513,9 @@ public:
     {
         if (_color == color)
             return;
-        beginDataChange();
+        _beginDataChange();
         _color = color;
-        endDataChange();
+        _endDataChange();
     }
 
     const QString &label() const { return _label; }
@@ -450,9 +523,9 @@ public:
     {
         if (_label == label)
             return;
-        beginDataChange();
+        _beginDataChange();
         _label = label;
-        endDataChange();
+        _endDataChange();
     }
 
 private:
@@ -470,13 +543,12 @@ public:
     explicit TimeLine(Item *parent = 0)
         :   GridLine(parent)
     {
-        _objectName = className();
+        _name = "TimeLine";
     }
 
     ~TimeLine() {}
 
     int type() const { return Type; }
-    QString className() const { return "TimeLine"; }
 };
 
 class PitchLine : public GridLine
@@ -487,13 +559,12 @@ public:
     explicit PitchLine(Item *parent = 0)
         :   GridLine(parent)
     {
-        _objectName = className();
+        _name = "PitchLine";
     }
 
     ~PitchLine() {}
 
     int type() const { return Type; }
-    QString className() const { return "PitchLine"; }
 };
 
 class ControlLine : public GridLine
@@ -504,13 +575,12 @@ public:
     explicit ControlLine(Item *parent = 0)
         :   GridLine(parent)
     {
-        _objectName = className();
+        _name = "ControlLine";
     }
 
     ~ControlLine() {}
 
     int type() const { return Type; }
-    QString className() const { return "ControlLine"; }
 };
 
 class GridSettings : public Item
@@ -524,7 +594,7 @@ public:
         ,   _pitchLines(new ItemList<PitchLine>(this))
         ,   _controlLines(new ItemList<ControlLine>(this))
     {
-        _objectName = className();
+        _name = "GridSettings";
     }
 
     ~GridSettings()
@@ -535,7 +605,6 @@ public:
     }
 
     int type() const { return Type; }
-    QString className() const { return "GridSettings"; }
 
     int childCount() const { return 3; }
 
@@ -577,7 +646,7 @@ public:
         ,   _gridSettings(new GridSettings(this))
         ,   _length(120.0f)
     {
-        _objectName = className();
+        _name = "Score";
     }
 
     ~Score()
@@ -587,7 +656,6 @@ public:
     }
 
     int type() const { return Type; }
-    QString className() const { return "Score"; }
 
     int childCount() const { return 2; }
 
@@ -633,9 +701,9 @@ public:
             length = 0.0f;
         if (_length == length)
             return;
-        beginDataChange();
+        _beginDataChange();
         _length = length;
-        endDataChange();
+        _endDataChange();
     }
 
 private:
@@ -643,101 +711,5 @@ private:
     GridSettings *_gridSettings;
     qreal _length;
 };
-
-#include <ac_model.h>
-
-inline QModelIndex Item::index()
-{
-    return _model ? _model->indexFromItem(this) : QModelIndex();
-}
-
-inline void Item::beginDataChange()
-{
-    if (_model)
-        emit _model->dataAboutToChange(index(), index());
-}
-
-inline void Item::endDataChange()
-{
-    if (_model)
-        emit _model->dataChanged(index(), index());
-}
-
-class ItemModelLessThan
-{
-public:
-    ItemModelLessThan() {}
-
-    bool operator()(const QPair<Item*, int> &l, const QPair<Item*, int> &r) const
-    {
-        return *(l.first) < *(r.first);
-    }
-};
-
-template <class T> inline void ItemList<T>::insertChild(int i, T *child)
-{
-    if (!child || _children.contains(child))
-        return;
-    child->setParentAndModel(this, _model);
-    if (_model)
-        _model->beginInsertRows(index(), i, i);
-    _children.insert(i, child);
-    if (_model)
-        _model->endInsertRows();
-}
-
-template <class T> inline void ItemList<T>::removeChild(int i)
-{
-    Item *child = childAt(i);
-    if (!child || !_children.contains(item_cast<T>(child)))
-        return;
-    if (_model)
-        _model->beginRemoveRows(index(), i, i);
-    child->setParentAndModel(0, 0);
-    _children.removeAt(i);
-    if (_model)
-        _model->endRemoveRows();
-}
-
-template <class T> inline void ItemList<T>::sortChildren()
-{
-    if (isSorted())
-        return;
-    if (_model) {
-        _model->_persistentIndexCache = _model->persistentIndexList();
-        _model->maybeEmitLayoutAboutToBeChanged();
-    }
-    d_sortChildren();
-}
-
-template <class T> inline void ItemList<T>::d_sortChildren()
-{
-    const int count = childCount();
-    QVector<QPair<Item*, int> > itemPairs(count);
-    for (int i = 0;  i < count;  ++i)
-        itemPairs[i] = QPair<Item*, int>(childAt(i), i);
-    ItemModelLessThan lt;
-    qStableSort(itemPairs.begin(), itemPairs.end(), lt);
-    const QModelIndexList &indexes = _model ? _model->_persistentIndexCache : QModelIndexList();
-    QModelIndexList oldIndexes, newIndexes;
-    QList<T*> sorted_children;
-    sorted_children.reserve(count);
-    for (int i = 0;  i < count;  ++i) {
-        int r = itemPairs.at(i).second;
-        sorted_children.append(item_cast<T>(childAt(r)));
-        if (_model) {
-            QModelIndex oldIndex = _model->createIndex(r, 0, this);
-            if (indexes.contains(oldIndex)) {
-                QModelIndex newIndex = _model->createIndex(i, 0, this);
-                oldIndexes.append(oldIndex);
-                newIndexes.append(newIndex);
-            }
-        }
-    }
-    _children = sorted_children;
-    if (_model)
-        _model->changePersistentIndexList(oldIndexes, newIndexes);
-    Item::d_sortChildren();
-}
 
 #endif // AC_ITEM_H
