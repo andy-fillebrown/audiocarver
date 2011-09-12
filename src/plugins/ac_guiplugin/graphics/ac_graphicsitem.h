@@ -131,42 +131,35 @@ public:
     ~GraphicsCurveItem()
     {
         delete _guideItem;
+        qDeleteAll(_points);
     }
 
     const GraphicsCurvePointItems &points() const { return _points; }
-
-    void appendPoint(GraphicsCurvePointItem *point)
+    void setPoints(const PointList &points)
     {
-        if (_points.contains(point))
-            return;
-        _points.append(point);
-        point->setParentItem(this);
-    }
-
-    void removePoint(GraphicsCurvePointItem *point)
-    {
-        point->setParentItem(0);
-        _points.removeOne(point);
-    }
-
-    virtual void update()
-    {
-        if (_points.count() < 2) {
+        qDeleteAll(_points);
+        _points.reserve(points.count());
+        foreach (const Point &point, points) {
+            GraphicsCurvePointItem *pointItem = new GraphicsCurvePointItem;
+            pointItem->setPos(point.pos);
+            pointItem->setParentItem(this);
+            _points.append(pointItem);
+        }
+        if (points.count() < 2) {
             setPath(QPainterPath());
             _guideItem->setPath(QPainterPath());
-            return;
         }
-        QPainterPath curvePath(_points[0]->pos());
+        QPainterPath curvePath(points[0].pos);
         QPainterPath guidePath;
-        for (int i = 1;  i < _points.count();  ++i) {
-            if ((NoCurve == _points[i]->curveType())
-                    || i == _points.count() - 1)
-                curvePath.lineTo(_points[i]->pos());
+        for (int i = 1;  i < points.count();  ++i) {
+            if ((NoCurve == points[i].curveType)
+                    || i == points.count() - 1)
+                curvePath.lineTo(points[i].pos);
             else {
-                curvePath.quadTo(_points[i]->pos(), _points[i + 1]->pos());
-                guidePath.moveTo(_points[i - 1]->pos());
-                guidePath.lineTo(_points[i]->pos());
-                guidePath.lineTo(_points[i + 1]->pos());
+                curvePath.quadTo(points[i].pos, points[i + 1].pos);
+                guidePath.moveTo(points[i - 1].pos);
+                guidePath.lineTo(points[i].pos);
+                guidePath.lineTo(points[i + 1].pos);
                 ++i;
             }
         }
@@ -177,16 +170,16 @@ public:
     void highlight()
     {
         setPen(QPen(QBrush(Qt::red), 4.0f));
-        foreach (GraphicsPointItem *pt, _points)
-            pt->highlight();
+        foreach (GraphicsPointItem *point, _points)
+            point->highlight();
         _guideItem->show();
     }
 
     void unhighlight()
     {
         _guideItem->hide();
-        foreach (GraphicsPointItem *pt, _points)
-            pt->unhighlight();
+        foreach (GraphicsPointItem *point, _points)
+            point->unhighlight();
         setPen(QPen(QBrush(Qt::red), 2.0f));
     }
 

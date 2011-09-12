@@ -137,13 +137,7 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        PointList pts = index.model()->data(index, PointsRole).value<PointList>();
-        foreach (const Point &pt, pts) {
-            GraphicsCurvePointItem *ptItem = new GraphicsCurvePointItem;
-            ptItem->setPos(pt.pos);
-            _pitchCurve->appendPoint(ptItem);
-        }
-        _pitchCurve->update();
+        _pitchCurve->setPoints(index.model()->data(index, PointsRole).value<PointList>());
     }
 
 private:
