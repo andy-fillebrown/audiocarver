@@ -18,60 +18,111 @@
 #ifndef AC_ITEM_H
 #define AC_ITEM_H
 
+#include <ac_core_global.h>
 #include <ac_coreenums.h>
-#include <ac_model.h>
 #include <ac_point.h>
 
 #include <QColor>
 
+#include <QObject>
+#include <QVariant>
 #include <QVector>
 
-class Item
+class Object;
+class Model;
+class Note;
+template <class T> class ObjectList;
+class Score;
+class ScoreObject;
+class Track;
+
+class AC_CORE_EXPORT ObjectPrivate
 {
 public:
-    explicit Item(Item *parent = 0)
-        :   _parent(parent)
-        ,   _model(parent ? parent->model() : 0)
+    Object *q;
+    Model *model;
+
+    ObjectPrivate(Object *q)
+        :   q(q)
+        ,   model(0)
     {}
 
-    virtual ~Item() {}
+    virtual ~ObjectPrivate() {}
 
-    virtual int type() const = 0;
-    QString name() const { return _name; }
+    void setModel(Model *model);
+    void beginInsertObjects(int first, int last);
+    void endInsertObjects();
+    void beginRemoveObjects(int first, int last);
+    void endRemoveObjects();
+};
 
-    Item *parent() const { return _parent; }
-    void setParent(Item *parent)
+class AC_CORE_EXPORT Object : public QObject
+{
+    Q_OBJECT
+
+public:
+    ~Object()
     {
-        setParentAndModel(parent, parent ? parent->model() : 0);
+        delete d_ptr;
     }
 
-    virtual int childCount() const { return 0; }
-    virtual Item *childAt(int i) const { Q_UNUSED(i);  return 0; }
-    virtual int childIndex(Item *child) const { Q_UNUSED(child);  return -1; }
-    virtual void sortChildren() { _sortChildren(); }
+    virtual ItemType type() const = 0;
 
-    Model *model() const { return _model; }
-
-    virtual void setModel(Model *model)
+    Object *parent() const
     {
-        if (_model == model)
-            return;
-        _model = model;
-        for (int i = 0;  i < childCount();  ++i)
-            childAt(i)->setModel(model);
+        return qobject_cast<Object*>(QObject::parent());
     }
 
-    QModelIndex index()
+    virtual void setParent(Object *parent)
     {
-        return _model ? _model->indexFromItem(this) : QModelIndex();
+        QObject::setParent(parent);
+        d_ptr->setModel(parent ? parent->model() : 0);
+    }
+
+    Model *model() const
+    {
+        return d_ptr->model;
+    }
+
+    virtual int componentCount() const
+    {
+        return 0;
+    }
+
+    virtual int componentIndex(Object *component) const
+    {
+        Q_UNUSED(component);
+        Q_ASSERT(false);
+        return -1;
+    }
+
+    virtual Object *componentAt(int i) const
+    {
+        Q_UNUSED(i);
+        return 0;
+    }
+
+    virtual Object *findComponent(ItemType type) const
+    {
+        Q_UNUSED(type);
+        return 0;
+    }
+
+    virtual Object *findComponentList(ItemType type) const
+    {
+        Q_UNUSED(type);
+        return 0;
     }
 
     virtual QVariant data(int role) const
     {
         switch (role) {
-        case ItemTypeRole: return type();
-        case Qt::DisplayRole: return _name;
-        default: return QVariant();
+        case Qt::DisplayRole:
+            return objectName();
+        case ItemTypeRole:
+            return type();
+        default:
+            return QVariant();
         }
     }
 
@@ -89,627 +140,338 @@ public:
                 | Qt::ItemIsEnabled;
     }
 
-    void setParentAndModel(Item *parent, Model *model)
-    {
-        _parent = parent;
-        setModel(model);
-    }
-
-    virtual bool operator<(const Item &other)
-    {
-        Q_UNUSED(other);
-        return false;
-    }
-
 protected:
-    virtual void _sortChildren()
-    {
-        for (int i = 0;  i < childCount();  ++i) {
-            Item *child = childAt(i);
-            if (child)
-                child->sortChildren();
-        }
-    }
+    Object(ObjectPrivate &dd, QObject *parent = 0)
+        :   QObject(parent)
+        ,   d_ptr(&dd)
+    {}
 
-    void _beginDataChange()
-    {
-        if (_model)
-            emit _model->dataAboutToChange(index(), index());
-    }
+    ObjectPrivate *d_ptr;
 
-    void _endDataChange()
-    {
-        if (_model)
-            emit _model->dataChanged(index(), index());
-    }
-
-    Item *_parent;
-    Model *_model;
-    QString _name;
+private:
+    Q_DISABLE_COPY(Object)
+    Q_DECLARE_PRIVATE(Object)
 };
 
-template <class T> inline T *item_cast(Item *item)
-{
-    return int(T::Type) == int(item->type()) ? static_cast<T*>(item) : 0;
-}
-
-class ItemModelLessThan
+template <class T> class ObjectListPrivate : public ObjectPrivate
 {
 public:
-    ItemModelLessThan() {}
+    QList<T*> objects;
 
-    bool operator()(const QPair<Item*, int> &l, const QPair<Item*, int> &r) const
-    {
-        return *(l.first) < *(r.first);
-    }
+    ObjectListPrivate(ObjectList<T> *q)
+        :   ObjectPrivate(q)
+    {}
 };
 
-template <class T>
-class ItemList : public Item
+template <class T> class ObjectList : public Object
 {
 public:
-    enum { Type = ListItem };
-
-    explicit ItemList(Item *parent = 0)
-        :   Item(parent)
+    explicit ObjectList(QObject *parent = 0)
+        :   Object(*(new ObjectListPrivate<T>(this)), parent)
     {
         static T t;
-        _name = QString("%1s").arg(t.name());
+        setObjectName(QString("%1s").arg(t.objectName()));
     }
 
-    ~ItemList()
+    ItemType type() const
     {
-        qDeleteAll(_children);
+        return ListItem;
     }
 
-    int type() const { return Type; }
-
-    int childCount() const { return _children.count(); }
-    Item *childAt(int i) const { return _children.at(i); }
-
-    int childIndex(Item *child) const
+    int count() const
     {
-        return _children.indexOf(item_cast<T>(child));
+        ObjectListPrivate<T> *d = reinterpret_cast<ObjectListPrivate<T>*>(d_ptr);
+        return d->objects.count();
     }
 
-    void appendChild(T *child)
+    T *at(int i) const
     {
-        insertChild(childCount(), child);
+        ObjectListPrivate<T> *d = reinterpret_cast<ObjectListPrivate<T>*>(d_ptr);
+        return d->objects.at(i);
     }
 
-    void insertChild(int i, T *child)
+    int indexOf(T *object, int from = 0)
     {
-        if (!child || _children.contains(child))
+        ObjectListPrivate<T> *d = reinterpret_cast<ObjectListPrivate<T>*>(d_ptr);
+        return d->objects.indexOf(object, from);
+    }
+
+    void append(T *object)
+    {
+        insert(count(), object);
+    }
+
+    void insert(int i, T *object)
+    {
+        ObjectListPrivate<T> *d = reinterpret_cast<ObjectListPrivate<T>*>(d_ptr);
+        if (d->objects.contains(object))
             return;
-        child->setParentAndModel(this, _model);
-        if (_model)
-            _model->beginInsertRows(index(), i, i);
-        _children.insert(i, child);
-        if (_model)
-            _model->endInsertRows();
+        object->setParent(this);
+        d->beginInsertObjects(i, i);
+        d->objects.insert(i, object);
+        d->endInsertObjects();
     }
 
-    void removeChild(int i)
+    void removeAt(int i)
     {
-        Item *child = childAt(i);
-        if (!child || !_children.contains(item_cast<T>(child)))
-            return;
-        if (_model)
-            _model->beginRemoveRows(index(), i, i);
-        child->setParentAndModel(0, 0);
-        _children.removeAt(i);
-        if (_model)
-            _model->endRemoveRows();
+        ObjectListPrivate<T> *d = reinterpret_cast<ObjectListPrivate<T>*>(d_ptr);
+        d->beginRemoveObjects(i, i);
+        d->objects.removeAt(i);
+        d->endRemoveObjects();
     }
 
-    void sortChildren()
+    int componentCount() const
     {
-        if (_isSorted())
-            return;
-        if (_model) {
-            _model->_persistentIndexCache = _model->persistentIndexList();
-            _model->maybeEmitLayoutAboutToBeChanged();
-        }
-        _sortChildren();
+        return count();
+    }
+
+    int componentIndex(Object *component) const
+    {
+        ObjectListPrivate<T> *d = reinterpret_cast<ObjectListPrivate<T>*>(d_ptr);
+        return d->objects.indexOf(qobject_cast<T*>(component));
+    }
+
+    Object *componentAt(int i) const
+    {
+        return at(i);
     }
 
     QVariant data(int role) const
     {
+        static T t;
         if (ListTypeRole == role)
-            return T::Type;
-        return Item::data(role);
+            return t.type();
+        return Object::data(role);
     }
+};
+
+class CurvePrivate;
+class AC_CORE_EXPORT Curve : public Object
+{
+    Q_OBJECT
+    Q_PROPERTY(PointList points READ points WRITE setPoints)
+
+public:
+    const PointList &points() const;
+    virtual void setPoints(const PointList &points);
+
+    ScoreObject *parent() const;
+
+    // IModelItem
+
+    QVariant data(int role) const;
+    bool setData(const QVariant &value, int role);
 
 protected:
-    void _sortChildren()
-    {
-        const int count = childCount();
-        QVector<QPair<Item*, int> > itemPairs(count);
-        for (int i = 0;  i < count;  ++i)
-            itemPairs[i] = QPair<Item*, int>(childAt(i), i);
-        ItemModelLessThan lt;
-        qStableSort(itemPairs.begin(), itemPairs.end(), lt);
-        const QModelIndexList &indexes = _model ? _model->_persistentIndexCache : QModelIndexList();
-        QModelIndexList oldIndexes, newIndexes;
-        QList<T*> sortedChildren;
-        sortedChildren.reserve(count);
-        for (int i = 0;  i < count;  ++i) {
-            int r = itemPairs.at(i).second;
-            sortedChildren.append(item_cast<T>(childAt(r)));
-            if (_model) {
-                QModelIndex oldIndex = _model->createIndex(r, 0, this);
-                if (indexes.contains(oldIndex)) {
-                    QModelIndex newIndex = _model->createIndex(i, 0, this);
-                    oldIndexes.append(oldIndex);
-                    newIndexes.append(newIndex);
-                }
-            }
-        }
-        _children = sortedChildren;
-        if (_model)
-            _model->changePersistentIndexList(oldIndexes, newIndexes);
-        Item::_sortChildren();
-    }
+    Curve(CurvePrivate &dd, QObject *parent = 0);
 
 private:
-    bool _isSorted()
-    {
-        for (int i = 1;  i < childCount();  ++i)
-            if (*_children.at(i) < *_children.at(i - 1))
-                return false;
-        return true;
-    }
-
-    QList<T*> _children;
+    Q_DISABLE_COPY(Curve)
+    Q_DECLARE_PRIVATE(Curve)
 };
 
-class AudibleItem : public Item
+class PitchCurvePrivate;
+class AC_CORE_EXPORT PitchCurve : public Curve
 {
+    Q_OBJECT
+
 public:
-    explicit AudibleItem(Item *parent = 0)
-        :   Item(parent)
-        ,   _volume(1.0f)
-    {}
+    explicit PitchCurve(QObject *parent = 0);
 
-    ~AudibleItem() {}
-
-    QVariant data(int role) const
+    ItemType type() const
     {
-        switch (role) {
-        case VolumeRole: return _volume;
-        default: return Item::data(role);
-        }
+        return PitchCurveItem;
     }
 
-    bool setData(const QVariant &value, int role)
-    {
-        switch (role) {
-        case VolumeRole: setVolume(value.toReal()); return true;
-        default: return Item::setData(value, role);
-        }
-    }
-
-    qreal volume() const { return _volume; }
-    void setVolume(qreal volume)
-    {
-        volume = qBound(qreal(0.0f), volume, qreal(1.0f));
-        if (_volume == volume)
-            return;
-        _beginDataChange();
-        _volume = volume;
-        _endDataChange();
-    }
+    void setPoints(const PointList &points);
 
 private:
-    qreal _volume;
+    Q_DISABLE_COPY(PitchCurve)
+    Q_DECLARE_PRIVATE(PitchCurve)
 };
 
-class Note : public AudibleItem
+class ControlCurvePrivate;
+class AC_CORE_EXPORT ControlCurve : public Curve
 {
+    Q_OBJECT
+    Q_PROPERTY(int controlId READ controlId WRITE setControlId)
+
 public:
-    enum { Type = NoteItem };
+    explicit ControlCurve(QObject *parent = 0);
 
-    explicit Note(Item *parent = 0)
-        :   AudibleItem(parent)
+    ItemType type() const
     {
-        _name = "Note";
-        _points.append(Point());
+        return ControlCurveItem;
     }
 
-    ~Note() {}
+    int controlId() const;
+    void setControlId(int controlId);
 
-    int type() const { return Type; }
+    void setPoints(const PointList &points);
 
-    QVariant data(int role) const
-    {
-        switch (role) {
-        case PointsRole: return QVariant::fromValue(_points);
-        default: return AudibleItem::data(role);
-        }
-    }
-
-    bool setData(const QVariant &value, int role)
-    {
-        switch (role) {
-        case PointsRole: setPoints(value.value<PointList>()); return true;
-        default: return AudibleItem::setData(value, role);
-        }
-    }
-
-    const PointList &points() const { return _points; }
-    void setPoints(const PointList &points)
-    {
-        if (_points == points)
-            return;
-        _beginDataChange();
-        _points = points;
-        _conformPoints();
-        _endDataChange();
-    }
-
-    bool operator<(const Item &other)
-    {
-        Q_ASSERT(NoteItem == other.type());
-        const Note &b = static_cast<const Note&>(other);
-        if (points()[0] < b.points()[0])
-            return true;
-        return false;
-    }
+    QVariant data(int role) const;
+    bool setData(const QVariant &value, int role);
 
 private:
-    PointList _points;
-
-    void _conformPoints()
-    {
-        qStableSort(_points);
-        for (int i = 0;  i < _points.count();  ++i) {
-            QPointF &pos = _points[i].pos;
-            pos.setX(qMax(qreal(0.0f), pos.x()));
-            pos.setY(qBound(qreal(0.0f), pos.y(), qreal(127.0f)));
-        }
-    }
+    Q_DISABLE_COPY(ControlCurve)
+    Q_DECLARE_PRIVATE(ControlCurve)
 };
 
-class Track : public AudibleItem
+class ScoreObjectPrivate;
+class AC_CORE_EXPORT ScoreObject : public Object
 {
+    Q_OBJECT
+    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
+
 public:
-    enum { Type = TrackItem };
+    enum {
+        ComponentCount = 2
+    };
 
-    explicit Track(Item *parent = 0)
-        :   AudibleItem(parent)
-        ,   _notes(new ItemList<Note>(this))
-        ,   _color(Qt::red)
+    virtual qreal length() const = 0;
+
+    qreal volume() const;
+    void setVolume(qreal volume);
+
+    ScoreObject *parent() const
     {
-        _name = "Track";
+        return qobject_cast<ScoreObject*>(QObject::parent());
     }
 
-    ~Track()
+    PitchCurve *pitchCurve() const;
+    ObjectList<ControlCurve> *controlCurves() const;
+
+    int componentCount() const
     {
-        delete _notes;
+        return ComponentCount;
     }
 
-    int type() const { return Type; }
+    int componentIndex(Object *component) const;
+    Object *componentAt(int i) const;
+    Object *findComponent(ItemType type) const;
+    Object *findComponentList(ItemType type) const;
+    QVariant data(int role) const;
+    bool setData(const QVariant &value, int role);
 
-    int childCount() const { return 1; }
-
-    Item *childAt(int i) const
-    {
-        switch (i) {
-        case 0: return _notes;
-        }
-        return 0;
-    }
-
-    int childIndex(Item *child) const
-    {
-        if (_notes == child) return 0;
-        return -1;
-    }
-
-    QVariant data(int role) const
-    {
-        switch (role) {
-        case InstrumentRole: return _instrument;
-        case ColorRole: return _color;
-        default: return AudibleItem::data(role);
-        }
-    }
-
-    bool setData(const QVariant &value, int role)
-    {
-        switch (role) {
-        case InstrumentRole: setInstrument(value.toString()); return true;
-        case ColorRole: setColor(value.value<QColor>()); return true;
-        default: return AudibleItem::setData(value, role);
-        }
-    }
-
-    ItemList<Note> *notes() const { return _notes; }
-
-    const QString &instrument() const { return _instrument; }
-    void setInstrument(const QString &instrument)
-    {
-        if (_instrument == instrument)
-            return;
-        _beginDataChange();
-        _instrument = instrument;
-        _endDataChange();
-    }
-
-    const QColor &color() const { return _color; }
-    void setColor(const QColor &color)
-    {
-        if (_color == color)
-            return;
-        _beginDataChange();
-        _color = color;
-        _endDataChange();
-    }
+protected:
+    ScoreObject(ScoreObjectPrivate &dd, QObject *parent);
 
 private:
-    ItemList<Note> *_notes;
-    QString _instrument;
-    QColor _color;
+    Q_DISABLE_COPY(ScoreObject)
+    Q_DECLARE_PRIVATE(ScoreObject)
 };
 
-class GridLine : public Item
+class NotePrivate;
+class AC_CORE_EXPORT Note : public ScoreObject
 {
+    Q_OBJECT
+    Q_PROPERTY(qreal length READ length WRITE setLength)
+
 public:
-    explicit GridLine(Item *parent = 0)
-        :   Item(parent)
-        ,   _location(0.0f)
-        ,   _priority(0)
-        ,   _color(Qt::lightGray)
-    {}
+    explicit Note(QObject *parent = 0);
 
-    ~GridLine() {}
-
-    QVariant data(int role) const
+    ItemType type() const
     {
-        switch (role) {
-        case LocationRole: return _location;
-        case PriorityRole: return _priority;
-        case ColorRole: return _color;
-        case LabelRole: return _label;
-        default: return Item::data(role);
-        }
+        return NoteItem;
     }
 
-    bool setData(const QVariant &value, int role)
-    {
-        switch (role) {
-        case LocationRole: setLocation(value.toReal()); return true;
-        case PriorityRole: setPriority(value.toInt()); return true;
-        case ColorRole: setColor(value.value<QColor>()); return true;
-        case LabelRole: setLabel(value.toString()); return true;
-        default: return Item::setData(value, role);
-        }
-    }
+    qreal length() const;
+    void setLength(qreal length);
 
-    qreal location() const { return _location; }
-    void setLocation(qreal location)
-    {
-        if (location < 0.0f)
-            location = 0.0f;
-        if (_location == location)
-            return;
-        _beginDataChange();
-        _location = location;
-        _endDataChange();
-    }
+    Track *parent() const;
 
-    int priority() const { return _priority; }
-    void setPriority(int priority)
-    {
-        if (_priority == priority)
-            return;
-        _beginDataChange();
-        _priority = priority;
-        _endDataChange();
-    }
-
-    const QColor &color() const { return _color; }
-    void setColor(const QColor &color)
-    {
-        if (_color == color)
-            return;
-        _beginDataChange();
-        _color = color;
-        _endDataChange();
-    }
-
-    const QString &label() const { return _label; }
-    void setLabel(const QString &label)
-    {
-        if (_label == label)
-            return;
-        _beginDataChange();
-        _label = label;
-        _endDataChange();
-    }
+    bool setData(const QVariant &value, int role);
 
 private:
-    qreal _location;
-    int _priority;
-    QColor _color;
-    QString _label;
+    Q_DISABLE_COPY(Note)
+    Q_DECLARE_PRIVATE(Note)
 };
 
-class TimeLine : public GridLine
+class TrackPrivate;
+class AC_CORE_EXPORT Track : public ScoreObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(QString instrument READ instrument WRITE setInstrument)
+
 public:
-    enum { Type = TimeLineItem };
+    enum {
+        ComponentCount = ScoreObject::ComponentCount + 1
+    };
 
-    explicit TimeLine(Item *parent = 0)
-        :   GridLine(parent)
+    explicit Track(QObject *parent = 0);
+
+    ItemType type() const
     {
-        _name = "TimeLine";
+        return TrackItem;
     }
 
-    ~TimeLine() {}
+    qreal length() const;
 
-    int type() const { return Type; }
-};
+    const QColor &color() const;
+    void setColor(const QColor &color);
 
-class PitchLine : public GridLine
-{
-public:
-    enum { Type = PitchLineItem };
+    const QString &instrument() const;
+    void setInstrument(const QString &instrument);
 
-    explicit PitchLine(Item *parent = 0)
-        :   GridLine(parent)
+    Score *parent() const;
+
+    ObjectList<Note> *notes() const;
+
+    int componentCount() const
     {
-        _name = "PitchLine";
+        return ComponentCount;
     }
 
-    ~PitchLine() {}
-
-    int type() const { return Type; }
-};
-
-class ControlLine : public GridLine
-{
-public:
-    enum { Type = ControlLineItem };
-
-    explicit ControlLine(Item *parent = 0)
-        :   GridLine(parent)
-    {
-        _name = "ControlLine";
-    }
-
-    ~ControlLine() {}
-
-    int type() const { return Type; }
-};
-
-class GridSettings : public Item
-{
-public:
-    enum { Type = GridSettingsItem };
-
-    explicit GridSettings(Item *parent = 0)
-        :   Item(parent)
-        ,   _timeLines(new ItemList<TimeLine>(this))
-        ,   _pitchLines(new ItemList<PitchLine>(this))
-        ,   _controlLines(new ItemList<ControlLine>(this))
-    {
-        _name = "GridSettings";
-    }
-
-    ~GridSettings()
-    {
-        delete _controlLines;
-        delete _pitchLines;
-        delete _timeLines;
-    }
-
-    int type() const { return Type; }
-
-    int childCount() const { return 3; }
-
-    Item *childAt(int i) const
-    {
-        switch (i) {
-        case 0: return _timeLines;
-        case 1: return _pitchLines;
-        case 2: return _controlLines;
-        default: return 0;
-        }
-    }
-
-    int childIndex(Item *child) const
-    {
-        if (_timeLines == child) return 0;
-        if (_pitchLines == child) return 1;
-        if (_controlLines == child) return 2;
-        return -1;
-    }
-
-    ItemList<TimeLine> *timeLines() const { return _timeLines; }
-    ItemList<PitchLine> *pitchLines() const { return _pitchLines; }
-    ItemList<ControlLine> *controlLines() const { return _controlLines; }
+    int componentIndex(Object *component) const;
+    Object *componentAt(int i) const;
+    Object *findComponentList(ItemType type) const;
+    QVariant data(int role) const;
+    bool setData(const QVariant &value, int role);
 
 private:
-    ItemList<TimeLine> *_timeLines;
-    ItemList<PitchLine> *_pitchLines;
-    ItemList<ControlLine> *_controlLines;
+    Q_DISABLE_COPY(Track)
+    Q_DECLARE_PRIVATE(Track)
 };
 
-class Score : public AudibleItem
+class ScorePrivate;
+class AC_CORE_EXPORT Score : public ScoreObject
 {
+    Q_OBJECT
+    Q_PROPERTY(qreal length READ length WRITE setLength)
+
 public:
-    enum { Type = ScoreItem };
+    enum {
+        ComponentCount = ScoreObject::ComponentCount + 1
+    };
 
-    Score()
-        :   _tracks(new ItemList<Track>(this))
-        ,   _gridSettings(new GridSettings(this))
-        ,   _length(120.0f)
+    explicit Score(QObject *parent = 0);
+
+    ItemType type() const
     {
-        _name = "Score";
+        return ScoreItem;
     }
 
-    ~Score()
+    qreal length() const;
+    void setLength(qreal length);
+
+    ObjectList<Track> *tracks() const;
+
+    void setModel(Model *model);
+
+    int componentCount() const
     {
-        delete _gridSettings;
-        delete _tracks;
+        return ComponentCount;
     }
 
-    int type() const { return Type; }
-
-    int childCount() const { return 2; }
-
-    Item *childAt(int i) const
-    {
-        switch(i) {
-        case 0: return _tracks;
-        case 1: return _gridSettings;
-        default: return 0;
-        }
-    }
-
-    int childIndex(Item *child) const
-    {
-        if (_tracks == child) return 0;
-        if (_gridSettings == child) return 1;
-        return -1;
-    }
-
-    QVariant data(int role) const
-    {
-        switch (role) {
-        case LengthRole: return _length;
-        default: return AudibleItem::data(role);
-        }
-    }
-
-    bool setData(const QVariant &value, int role)
-    {
-        switch (role) {
-        case LengthRole: setLength(value.toReal()); return true;
-        default: return AudibleItem::setData(value, role);
-        }
-    }
-
-    ItemList<Track> *tracks() const { return _tracks; }
-    GridSettings *gridSettings() const { return _gridSettings; }
-
-    qreal length() const { return _length; }
-    void setLength(qreal length)
-    {
-        if (length < 0.0f)
-            length = 0.0f;
-        if (_length == length)
-            return;
-        _beginDataChange();
-        _length = length;
-        _endDataChange();
-    }
+    int componentIndex(Object *component) const;
+    Object *componentAt(int i) const;
+    Object *findComponentList(ItemType type) const;
+    bool setData(const QVariant &value, int role);
 
 private:
-    ItemList<Track> *_tracks;
-    GridSettings *_gridSettings;
-    qreal _length;
+    Q_DISABLE_COPY(Score)
+    Q_DECLARE_PRIVATE(Score)
 };
 
 #endif // AC_ITEM_H

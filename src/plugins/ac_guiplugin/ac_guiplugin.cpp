@@ -18,6 +18,7 @@
 #include "ac_guiplugin.h"
 
 #include <ac_item.h>
+#include <ac_model.h>
 
 #include <ac_editorimpl.h>
 #include <ac_graphicsscene.h>
@@ -36,29 +37,51 @@ void populateModel(Model *model)
 {
     Score *score = model->score();
     score->setLength(64.0f);
-    ItemList<Track> *tracks = score->tracks();
+    ObjectList<Track> *tracks = score->tracks();
     Track *track = new Track;
-    tracks->appendChild(track);
-    ItemList<Note> *notes = track->notes();
+    tracks->append(track);
+    ObjectList<Note> *notes = track->notes();
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
         pts.append(Point(10 - i, 30 + i));
         pts.append(Point(10 - i + 100, 60 + i));
-        note->setPoints(pts);
-        notes->appendChild(note);
+        note->pitchCurve()->setPoints(pts);
+        notes->append(note);
     }
     track = new Track;
-    tracks->appendChild(track);
+    tracks->append(track);
     notes = track->notes();
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
         pts.append(Point(10 - i, 60 + i));
         pts.append(Point(10 - i + 100, 90 + i));
-        note->setPoints(pts);
-        notes->appendChild(note);
+        note->pitchCurve()->setPoints(pts);
+        notes->append(note);
     }
+//    GridSettings *gridSettings = score->gridSettings();
+//    ObjectList<TimeLine> *timeLines = gridSettings->timeLines();
+//    TimeLine *timeLine = new TimeLine;
+//    timeLine->setColor(QColor(0, 127, 0));
+//    timeLines->append(timeLine);
+//    for (int i = 1;  i < 128;  ++i) {
+//        QString label = QString("%1.%2").arg((i / 4) + 1).arg(i % 4);
+//        if (label.endsWith(".0"))
+//            label.chop(2);
+//        timeLine = new TimeLine;
+//        timeLine->setLocation(i);
+//        timeLine->setLabel(label);
+//        timeLines->append(timeLine);
+//    }
+//    for (int i = 1;  i < 128;  i*=2)
+//        for (int j = i;  j < 128;  j+=i)
+//            timeLines->at(j)->setPriority(128 / (i + 1));
+//    timeLine = new TimeLine;
+//    timeLine->setLocation(128);
+//    timeLine->setPriority(0);
+//    timeLine->setColor(QColor(127, 0, 0));
+//    timeLines->append(timeLine);
 }
 
 bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)

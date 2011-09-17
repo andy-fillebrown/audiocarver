@@ -156,9 +156,12 @@ public:
     QGraphicsItem *item(Ac::SceneType type) const
     {
         switch (type) {
-        case Ac::PitchScene: return _pitchCurve;
-        case Ac::ControlScene: return _velocityLine;
-        default: return 0;
+        case Ac::PitchScene:
+            return _pitchCurve;
+        case Ac::ControlScene:
+            return _velocityLine;
+        default:
+            return 0;
         }
     }
 
@@ -174,7 +177,7 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        _pitchCurve->setPoints(index.model()->data(index, PointsRole).value<PointList>());
+        _pitchCurve->setPoints(index.data(PointsRole).value<PointList>());
     }
 
 private:
@@ -205,7 +208,8 @@ public:
 
     SceneItemList *listAt(int i)
     {
-        if (i == 0) return notes;
+        if (i == 0)
+            return notes;
         return 0;
     }
 
@@ -226,13 +230,18 @@ class SceneScoreItem : public SceneItem
 public:
     SceneScoreItem()
         :   tracks(new SceneItemList(this))
-        ,   _pitchUnitItemX(new GraphicsRootItem)
-        ,   _pitchUnitItemY(new GraphicsRootItem)
-        ,   _controlUnitItemX(new GraphicsRootItem)
-        ,   _controlUnitItemY(new GraphicsRootItem)
+        ,   _pitchUnitItemX(new GraphicsItem)
+        ,   _pitchUnitItemY(new GraphicsItem)
+        ,   _controlUnitItemX(new GraphicsItem)
+        ,   _controlUnitItemY(new GraphicsItem)
     {
         for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             _items.append(new GraphicsRootItem);
+        _pitchUnitItemY->setTransform(QTransform::fromScale(1, 127));
+        _pitchUnitItemX->setParentItem(_items[Ac::PitchScene]);
+        _pitchUnitItemY->setParentItem(_items[Ac::PitchScene]);
+        _controlUnitItemX->setParentItem(_items[Ac::ControlScene]);
+        _controlUnitItemY->setParentItem(_items[Ac::ControlScene]);
     }
 
     ~SceneScoreItem()
@@ -248,7 +257,8 @@ public:
 
     SceneItemList *listAt(int i)
     {
-        if (i == 0) return tracks;
+        if (i == 0)
+            return tracks;
         return 0;
     }
 
@@ -260,10 +270,20 @@ public:
     QGraphicsItem *unitItem(Ac::SceneType type, Ac::Axis axis) const
     {
         switch (type) {
-        case Ac::PitchScene: return Ac::XAxis == axis ? _pitchUnitItemX : _pitchUnitItemY;
-        case Ac::ControlScene: return Ac::XAxis ==  axis ? _controlUnitItemX : _controlUnitItemY;
-        default: return 0;
+        case Ac::PitchScene:
+            return Ac::XAxis == axis ? _pitchUnitItemX : _pitchUnitItemY;
+        case Ac::ControlScene:
+            return Ac::XAxis ==  axis ? _controlUnitItemX : _controlUnitItemY;
+        default:
+            return 0;
         }
+    }
+
+    void dataChanged(const QModelIndex &index)
+    {
+        qreal length = index.data(LengthRole).toReal();
+        _pitchUnitItemX->setTransform(QTransform::fromScale(length, 1));
+        _controlUnitItemX->setTransform(QTransform::fromScale(length, 1));
     }
 
 public:
@@ -271,10 +291,10 @@ public:
 
 private:
     QList<GraphicsRootItem*> _items;
-    GraphicsRootItem *_pitchUnitItemX;
-    GraphicsRootItem *_pitchUnitItemY;
-    GraphicsRootItem *_controlUnitItemX;
-    GraphicsRootItem *_controlUnitItemY;
+    GraphicsItem *_pitchUnitItemX;
+    GraphicsItem *_pitchUnitItemY;
+    GraphicsItem *_controlUnitItemX;
+    GraphicsItem *_controlUnitItemY;
 };
 
 class SceneGridLineItem : public SceneItem
@@ -291,7 +311,7 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        _label->setText(index.model()->data(index, LabelRole).toString());
+        _label->setText(index.data(LabelRole).toString());
     }
 
 protected:
@@ -315,8 +335,10 @@ public:
     QGraphicsItem *item(Ac::SceneType type) const
     {
         switch (type) {
-        case Ac::TimeLabelScene: return _label;
-        default: return 0;
+        case Ac::TimeLabelScene:
+            return _label;
+        default:
+            return 0;
         }
     }
 
@@ -324,9 +346,12 @@ public:
     {
         if (Ac::YAxis == axis) {
             switch (type) {
-            case Ac::PitchScene: return _pitchSceneLine;
-            case Ac::ControlScene: return _controlSceneLine;
-            default: return 0;
+            case Ac::PitchScene:
+                return _pitchSceneLine;
+            case Ac::ControlScene:
+                return _controlSceneLine;
+            default:
+                return 0;
             }
         }
         return 0;
@@ -334,10 +359,14 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        qreal location = index.model()->data(index, LocationRole).toReal();
-        _label->setPos(location, 0);
+        qreal location = index.data(LocationRole).toReal();
+        _label->setPos(location, -10);
         _pitchSceneLine->setLine(location, 0, location, 1);
         _controlSceneLine->setLine(location, 0, location, 1);
+        QColor color = index.data(ColorRole).value<QColor>();
+        _pitchSceneLine->setPen(color);
+        _controlSceneLine->setPen(color);
+        SceneGridLineItem::dataChanged(index);
     }
 
 private:
@@ -359,9 +388,10 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        qreal location = index.model()->data(index, LocationRole).toReal();
+        qreal location = index.data(LocationRole).toReal();
         _label->setPos(0, location);
         _sceneLine->setLine(0, location, 1, location);
+        SceneGridLineItem::dataChanged(index);
     }
 
 protected:

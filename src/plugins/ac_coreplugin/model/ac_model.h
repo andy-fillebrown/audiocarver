@@ -20,12 +20,9 @@
 
 #include <ac_core_global.h>
 
-#include <QColor>
-
 #include <QAbstractItemModel>
 
-class Item;
-template <typename T> class ItemList;
+class Object;
 class Score;
 
 class AC_CORE_EXPORT AbstractItemModel : public QAbstractItemModel
@@ -50,7 +47,6 @@ class AC_CORE_EXPORT Model : public AbstractItemModel
 
 public:
     explicit Model(QObject *parent = 0);
-    ~Model();
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
@@ -60,11 +56,19 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    Score *score() const { return _score; }
+    Score *score() const
+    {
+        return _score;
+    }
+
+    QModelIndex index(int row, const QModelIndex &parent = QModelIndex()) const
+    {
+        return index(row, 0, parent);
+    }
 
 protected:
-    QModelIndex indexFromItem(Item *item) const;
-    Item *itemFromIndex(const QModelIndex &index) const;
+    QModelIndex indexFromItem(Object *item) const;
+    Object *itemFromIndex(const QModelIndex &index) const;
 
     void maybeEmitLayoutAboutToBeChanged()
     {
@@ -84,16 +88,9 @@ protected:
 
 private:
     Score *_score;
-    QModelIndexList _persistentIndexCache;
     bool _layoutAboutToBeChangedEmitted;
 
-    friend class Item;
-    friend class ItemList<class ControlLine>;
-    friend class ItemList<class Note>;
-    friend class ItemList<class PitchLine>;
-    friend class ItemList<class Point>;
-    friend class ItemList<class TimeLine>;
-    friend class ItemList<class Track>;
+    friend class ObjectPrivate;
 };
 
 #endif // AC_MODEL_H
