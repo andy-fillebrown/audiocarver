@@ -28,9 +28,8 @@
 #include <QVariant>
 #include <QVector>
 
-class Object;
 class Model;
-class Note;
+class Object;
 template <class T> class ObjectList;
 class Score;
 class ScoreObject;
@@ -256,8 +255,6 @@ public:
     virtual void setPoints(const PointList &points);
 
     ScoreObject *parent() const;
-
-    // IModelItem
 
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
