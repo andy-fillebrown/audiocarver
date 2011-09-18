@@ -17,8 +17,11 @@
 
 #include "ac_guiplugin.h"
 
-#include <ac_item.h>
-#include <ac_model.h>
+#include <acmodel.h>
+#include <acnote.h>
+#include <acpitchcurve.h>
+#include <acscore.h>
+#include <actrack.h>
 
 #include <ac_editorimpl.h>
 #include <ac_graphicsscene.h>

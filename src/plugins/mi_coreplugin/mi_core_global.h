@@ -33,9 +33,6 @@ inline void mi_assert(const char *assertion, const char *file, int line)
     qt_assert(assertion, file, line);
 }
 
-#define Q_DECLARE_FRIENDS(Class) \
-    friend Class *qobject_cast<Class*>(QObject*);
-
 #ifdef USE_MI_ASSERT
 #  ifdef Q_ASSERT
 #    undef Q_ASSERT
@@ -47,8 +44,18 @@ inline void mi_assert(const char *assertion, const char *file, int line)
 #  endif
 #endif
 
-#define Q_CONNECT MiObject::connect
-#define Q_DISCONNECT(sender) if (sender) sender->disconnect(this);
+#define Q_DECLARE_PRIVATE_TEMPLATE(Class) \
+    inline Class##Private<T> *d_func() { return reinterpret_cast<Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
+    inline const Class##Private<T> *d_func() const { return reinterpret_cast<const Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
+    friend class Class##Private<T>;
+
+#define Q_DECLARE_PUBLIC_TEMPLATE(Class) \
+    inline Class<T> *q_func() { return static_cast<Class<T>*>(q_ptr); } \
+    inline const Class<T> *q_func() const { return static_cast<const Class<T>*>(q_ptr); } \
+    friend class Class<T>;
+
+#define Q_D_TEMPLATE(Class) Class##Private<T> *const d = d_func()
+#define Q_Q_TEMPLATE(Class) Class<T> *const q = q_func()
 
 template <typename Container, typename LessThan>
 void qSort(Container &c, LessThan lessThan)

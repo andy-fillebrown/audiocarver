@@ -2,8 +2,9 @@
 include(../mi_coreplugin/mi_coreplugin.pri)
 
 DIRS = \
+    dataobjects \
     implementations \
-    items \
+    graphicsitems \
     model \
     tools \
     . \
