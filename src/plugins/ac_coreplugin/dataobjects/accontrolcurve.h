@@ -32,10 +32,10 @@ public:
     int controlId() const;
     void setControlId(int controlId);
 
-    void setPoints(const PointList &points);
+    ScoreObject *graphicsParent() const;
 
     // IModelItem
-    ItemType type() const { return ControlCurveItem; }
+    Ac::ItemType type() const { return Ac::ControlCurveItem; }
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 

@@ -18,20 +18,13 @@
 #ifndef ACCURVE_H
 #define ACCURVE_H
 
+#include <acgraphicsitem.h>
 #include <acobject.h>
 #include <acpoint.h>
 
-class Curve;
 class ScoreObject;
 
-class CurvePrivate : public ObjectPrivate
-{
-public:
-    PointList points;
-
-    CurvePrivate(Curve *q);
-};
-
+class CurvePrivate;
 class AC_CORE_EXPORT Curve : public Object
 {
     Q_OBJECT
@@ -41,7 +34,9 @@ public:
     const PointList &points() const;
     virtual void setPoints(const PointList &points);
 
-    ScoreObject *parent() const;
+    void setParent(Object *parent);
+
+    virtual ScoreObject *graphicsParent() const { return 0; }
 
     // IModelItem
     QVariant data(int role) const;
@@ -53,6 +48,20 @@ protected:
 private:
     Q_DISABLE_COPY(Curve)
     Q_DECLARE_PRIVATE(Curve)
+};
+
+class CurvePrivate : public ObjectPrivate
+{
+    Q_DECLARE_PUBLIC(Curve)
+
+public:
+    PointList points;
+    GraphicsCurveItem *graphicsCurveItem;
+
+    CurvePrivate(Curve *q);
+    ~CurvePrivate();
+    virtual void conformPoints() = 0;
+    virtual void updateGraphicsParent() = 0;
 };
 
 #endif // ACCURVE_H

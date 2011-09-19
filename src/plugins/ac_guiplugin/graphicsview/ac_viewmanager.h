@@ -18,14 +18,14 @@
 #ifndef AC_VIEWMANAGER_H
 #define AC_VIEWMANAGER_H
 
-#include <ac_guienums.h>
+#include <accoreenums.h>
 
 #include <QObject>
 
+class Model;
+
 class QGraphicsView;
 class QWidget;
-
-class QAbstractItemModel;
 
 class AcViewManagerPrivate;
 class AcViewManager : public QObject
@@ -38,7 +38,7 @@ public:
 
     QGraphicsView *view(Ac::SceneType type) const;
 
-    void setModel(QAbstractItemModel *model);
+    void setModel(Model *model);
 
 //    qreal timePosition() const;
 //    void setTimePosition(qreal position);

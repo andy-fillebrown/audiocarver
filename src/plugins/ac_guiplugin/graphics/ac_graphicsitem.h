@@ -88,9 +88,9 @@ private:
 class GraphicsCurvePointItem : public GraphicsPointItem
 {
 public:
-    CurveType curveType() const
+    Ac::CurveType curveType() const
     {
-        return BezierCurve;
+        return Ac::BezierCurve;
     }
 };
 
@@ -152,7 +152,7 @@ public:
         QPainterPath curvePath(points[0].pos);
         QPainterPath guidePath;
         for (int i = 1;  i < points.count();  ++i) {
-            if ((NoCurve == points[i].curveType)
+            if ((Ac::NoCurve == points[i].curveType)
                     || i == points.count() - 1)
                 curvePath.lineTo(points[i].pos);
             else {

@@ -22,7 +22,23 @@
 
 class Track;
 
-class ScorePrivate;
+class QGraphicsItem;
+
+class Score;
+class ScorePrivate : public ScoreObjectPrivate
+
+{
+public:
+    qreal length;
+    ObjectList<Track> *tracks;
+
+    ScorePrivate(Score *q);
+    void init();
+    ~ScorePrivate();
+
+    void updateLength();
+};
+
 class AC_CORE_EXPORT Score : public ScoreObject
 {
     Q_OBJECT
@@ -38,14 +54,16 @@ public:
 
     ObjectList<Track> *tracks() const;
 
+    QGraphicsItem *sceneItem(Ac::SceneType type) const;
+
     void setModel(Model *model);
 
     // IModelItem
-    ItemType type() const { return ScoreItem; }
+    Ac::ItemType type() const { return Ac::ScoreItem; }
     int modelItemCount() const { return ModelItemCount; }
     int modelItemIndex(IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
-    IModelItem *findModelItemList(ItemType type) const;
+    IModelItem *findModelItemList(Ac::ItemType type) const;
     bool setData(const QVariant &value, int role);
 
 private:

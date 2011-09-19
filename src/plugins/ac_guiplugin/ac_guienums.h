@@ -20,15 +20,15 @@
 
 namespace Ac {
 
-enum SceneType
-{
-    PitchScene,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
-};
+//enum SceneType
+//{
+//    PitchScene,
+//    ControlScene,
+//    TimeLabelScene,
+//    PitchLabelScene,
+//    ControlLabelScene,
+//    SceneTypeCount
+//};
 
 enum Axis
 {

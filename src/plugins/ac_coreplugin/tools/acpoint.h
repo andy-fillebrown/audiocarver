@@ -28,16 +28,16 @@
 class Point
 {
 public:
-    Point(CurveType curveType = NoCurve)
+    Point(Ac::CurveType curveType = Ac::NoCurve)
         :   curveType(curveType)
     {}
 
-    Point(qreal x, qreal y, CurveType curveType = NoCurve)
+    Point(qreal x, qreal y, Ac::CurveType curveType = Ac::NoCurve)
         :   pos(x, y)
         ,   curveType(curveType)
     {}
 
-    Point(const QPointF &pos, CurveType curveType = NoCurve)
+    Point(const QPointF &pos, Ac::CurveType curveType = Ac::NoCurve)
         :   pos(pos)
         ,   curveType(curveType)
     {}
@@ -54,7 +54,7 @@ public:
     }
 
     QPointF pos;
-    CurveType curveType;
+    Ac::CurveType curveType;
 };
 
 inline bool operator==(const Point &a, const Point &b)

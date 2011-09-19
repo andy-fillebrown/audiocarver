@@ -20,6 +20,8 @@
 
 #include <qnamespace.h>
 
+namespace Ac {
+
 enum ItemDataRole {
     ItemTypeRole = Qt::UserRole,
     ListTypeRole,
@@ -53,5 +55,16 @@ enum CurveType {
     NoCurve,
     BezierCurve
 };
+
+enum SceneType {
+    PitchScene,
+    ControlScene,
+    TimeLabelScene,
+    PitchLabelScene,
+    ControlLabelScene,
+    SceneTypeCount
+};
+
+} // namespace Ac
 
 #endif // AC_CORE_ENUMS_H

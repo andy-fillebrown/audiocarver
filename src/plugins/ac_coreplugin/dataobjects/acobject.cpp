@@ -24,7 +24,7 @@ void ObjectPrivate::setModel(Model *model)
     if (this->model == model)
         return;
     this->model = model;
-    const QObjectList &qchildren = q->children();
+    const QObjectList &qchildren = q_ptr->children();
     foreach (QObject *qchild, qchildren) {
         Object *child = qobject_cast<Object*>(qchild);
         if (child)
@@ -32,10 +32,26 @@ void ObjectPrivate::setModel(Model *model)
     }
 }
 
+void ObjectPrivate::beginChangeData()
+{
+    if (model) {
+        QModelIndex index = model->indexFromItem(q_ptr);
+        emit model->dataAboutToBeChanged(index, index);
+    }
+}
+
+void ObjectPrivate::endChangeData()
+{
+    if (model) {
+        QModelIndex index = model->indexFromItem(q_ptr);
+        emit model->dataChanged(index, index);
+    }
+}
+
 void ObjectPrivate::beginInsertObjects(int first, int last)
 {
     if (model)
-        model->beginInsertColumns(model->indexFromItem(q), first, last);
+        model->beginInsertColumns(model->indexFromItem(q_ptr), first, last);
 }
 
 void ObjectPrivate::endInsertObjects()
@@ -47,7 +63,7 @@ void ObjectPrivate::endInsertObjects()
 void ObjectPrivate::beginRemoveObjects(int first, int last)
 {
     if (model)
-        model->beginRemoveColumns(model->indexFromItem(q), first, last);
+        model->beginRemoveColumns(model->indexFromItem(q_ptr), first, last);
 }
 
 void ObjectPrivate::endRemoveObjects()
@@ -61,7 +77,7 @@ QVariant Object::data(int role) const
     switch (role) {
     case Qt::DisplayRole:
         return objectName();
-    case ItemTypeRole:
+    case Ac::ItemTypeRole:
         return type();
     default:
         return QVariant();

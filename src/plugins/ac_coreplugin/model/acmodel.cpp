@@ -27,6 +27,11 @@ Model::Model(QObject *parent)
     _score->setModel(this);
 }
 
+QGraphicsItem *Model::sceneItem(Ac::SceneType type) const
+{
+    return _score ? _score->sceneItem(type) : 0;
+}
+
 QModelIndex Model::index(int row, int column, const QModelIndex &parent) const
 {
     IModelItem *parentItem = parent.isValid() ? itemFromIndex(parent) : _score;

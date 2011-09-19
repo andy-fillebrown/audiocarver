@@ -31,6 +31,7 @@ class AC_CORE_EXPORT Track : public ScoreObject
     Q_OBJECT
     Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(QString instrument READ instrument WRITE setInstrument)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
 
 public:
     enum { ModelItemCount = ScoreObject::ModelItemCount + 1 };
@@ -45,16 +46,20 @@ public:
     const QString &instrument() const;
     void setInstrument(const QString &instrument);
 
-    Score *parent() const;
+    bool isVisible() const;
+    void setVisibility(bool visible);
 
+    Score *score() const;
     ObjectList<Note> *notes() const;
 
+    ScoreObject *graphicsParent() const;
+
     // IModelItem
-    ItemType type() const { return TrackItem; }
+    Ac::ItemType type() const { return Ac::TrackItem; }
     int modelItemCount() const { return ModelItemCount; }
     int modelItemIndex(IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
-    IModelItem *findModelItemList(ItemType type) const;
+    IModelItem *findModelItemList(Ac::ItemType type) const;
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 

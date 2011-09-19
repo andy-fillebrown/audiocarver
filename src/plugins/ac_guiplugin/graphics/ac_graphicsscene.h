@@ -18,8 +18,8 @@
 #ifndef AC_GRAPHICSSCENE_H
 #define AC_GRAPHICSSCENE_H
 
-#include <ac_graphicssceneitem.h>
-#include <ac_guienums.h>
+#include <accoreenums.h>
+#include <acmodel.h>
 
 #include <QGraphicsScene>
 
@@ -121,10 +121,6 @@ public:
     SceneManager(QObject *parent = 0)
         :   QObject(parent)
         ,   _model(0)
-        ,   _score(0)
-        ,   _timeLines(0)
-        ,   _pitchLines(0)
-        ,   _controlLines(0)
         ,   _pitchScene(new PitchScene(this))
         ,   _controlScene(new ControlScene(this))
         ,   _timeLabelScene(new TimeLabelScene(this))
@@ -134,26 +130,19 @@ public:
 
     ~SceneManager()
     {
-        delete _controlLines;
-        delete _pitchLines;
-        delete _timeLines;
-        delete _score;
+        delete _model;
     }
 
     QAbstractItemModel *model() const { return _model; }
-    void setModel(QAbstractItemModel *model)
+    void setModel(Model *model)
     {
-//        if (_model == model)
-//            return;
-//        if (_model)
-//            _model->disconnect(this);
-//        _model = model;
-//        if (_model) {
-//            connect(_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
-//            connect(_model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
-//            connect(_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
-//        }
-//        _reset();
+        if (_model == model)
+            return;
+        _model = model;
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            Ac::SceneType type = Ac::SceneType(i);
+            scene(type)->addItem(_model->sceneItem(type));
+        }
     }
 
     QGraphicsScene *scene(Ac::SceneType type)
@@ -174,142 +163,8 @@ public:
         }
     }
 
-public slots:
-    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
-    {
-//        if (!_model)
-//            return;
-//        ItemType type = ItemType(_model->data(topLeft, ItemTypeRole).toInt());
-//        if (type != ListItem) {
-//            SceneItem *item = _indexToItem.value(topLeft);
-//            Q_ASSERT(item);
-//            item->dataChanged(topLeft);
-//        }
-    }
-
-    void rowsInserted(const QModelIndex &parent, int start, int end)
-    {
-//        if (!_model)
-//            return;
-//        ItemType type = ItemType(parent.data(ItemTypeRole).toInt());
-//        if (ListItem == type) {
-//            SceneItem *item = 0;
-//            ItemType listType = ItemType(parent.data(ListTypeRole).toInt());
-//            switch (listType) {
-//            case TrackItem:
-//                item = new SceneTrackItem;
-//                break;
-//            case NoteItem:
-//                item = new SceneNoteItem;
-//                break;
-//            case TimeLineItem:
-//                item = new SceneTimeLineItem;
-//                break;
-//            case PitchLineItem:
-//                item = new ScenePitchLineItem;
-//                break;
-//            case ControlLineItem:
-//                item = new SceneControlLineItem;
-//                break;
-//            default: break;
-//            }
-//            _addItem(_model->index(start, 0, parent), item, _indexToList.value(parent));
-//        }
-    }
-
-    void rowsRemoved(const QModelIndex &parent, int start, int end)
-    {
-//        if (!_model)
-//            return;
-//        ItemType parentType = ItemType(parent.data(ItemTypeRole).toInt());
-//        if (ListItem == parentType)
-//            _removeItem(_model->index(start, 0, parent), _indexToList.value(parent));
-    }
-
 private:
-    void _addItem(const QModelIndex &itemIndex, SceneItem *item, SceneItemList *list)
-    {
-        _indexToItem.insert(itemIndex, item);
-        _itemToIndex.insert(item, itemIndex);
-        for (int i = 0;  i < item->listCount();  ++i)
-            _addList(_model->index(i, 0, itemIndex), item->listAt(i));
-        list->append(item);
-        item->dataChanged(itemIndex);
-    }
-
-    void _removeItem(const QModelIndex &itemIndex, SceneItemList *list)
-    {
-        SceneItem *item = _indexToItem.value(itemIndex);
-        _indexToItem.remove(itemIndex);
-        _itemToIndex.remove(item);
-        for (int i = 0;  i < item->listCount();  ++i)
-            _removeList(_model->index(i, 0, itemIndex));
-        list->remove(item);
-    }
-
-    void _addList(const QModelIndex &listIndex, SceneItemList *list)
-    {
-        _indexToList.insert(listIndex, list);
-        _listToIndex.insert(list, listIndex);
-        for (int i = 0;  i < list->count();  ++i) {
-            QModelIndex itemIndex = _model->index(i, 0, listIndex);
-            SceneItem *item = list->at(i);
-            for (int j = 0;  j < item->listCount();  ++j)
-                _addList(_model->index(j, 0, itemIndex), item->listAt(j));
-        }
-    }
-
-    void _removeList(const QModelIndex &listIndex)
-    {
-        SceneItemList *list = _indexToList.value(listIndex);
-        _indexToList.remove(listIndex);
-        _listToIndex.remove(list);
-        for (int i = 0;  i < list->count();  ++i) {
-            QModelIndex itemIndex = _model->index(i, 0, listIndex);
-            SceneItem *item = list->at(i);
-            for (int j = 0;  j < item->listCount();  ++j)
-                _removeList(_model->index(j, 0, itemIndex));
-        }
-    }
-
-    void _reset()
-    {
-        delete _score;
-        _score = new SceneScoreItem;
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-            Ac::SceneType type = Ac::SceneType(i);
-            scene(type)->addItem(_score->item(type));
-        }
-        _indexToItem.clear();
-        _itemToIndex.clear();
-        _indexToList.clear();
-        _listToIndex.clear();
-        _indexToItem.insert(QModelIndex(), _score);
-        _itemToIndex.insert(_score, QModelIndex());
-        for (int i = 0;  i < _score->listCount();  ++i)
-            _addList(_model->index(i, 0), _score->listAt(i));
-        delete _timeLines;
-        delete _pitchLines;
-        delete _controlLines;
-        _timeLines = new SceneItemList(_score);
-        _pitchLines = new SceneItemList(_score);
-        _controlLines = new SceneItemList(_score);
-        QModelIndex gridSettingsIndex = _model->index(1, 0);
-        _addList(_model->index(0, 0, gridSettingsIndex), _timeLines);
-        _addList(_model->index(1, 0, gridSettingsIndex), _pitchLines);
-        _addList(_model->index(2, 0, gridSettingsIndex), _controlLines);
-    }
-
-private:
-    QAbstractItemModel *_model;
-    SceneScoreItem *_score;
-    SceneItemList *_timeLines;
-    SceneItemList *_pitchLines;
-    SceneItemList *_controlLines;
-    QHash<QPersistentModelIndex, SceneItem*> _indexToItem;
-    QHash<SceneItem*, QPersistentModelIndex> _itemToIndex;
-    QHash<QPersistentModelIndex, SceneItemList*> _indexToList;
-    QHash<SceneItemList*, QPersistentModelIndex> _listToIndex;
+    Model *_model;
     PitchScene *_pitchScene;
     ControlScene *_controlScene;
     TimeLabelScene *_timeLabelScene;

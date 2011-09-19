@@ -29,17 +29,19 @@ class Object;
 class AC_CORE_EXPORT ObjectPrivate
 {
 public:
-    Object *q;
+    Object *q_ptr;
     Model *model;
 
     ObjectPrivate(Object *q)
-        :   q(q)
+        :   q_ptr(q)
         ,   model(0)
     {}
 
     virtual ~ObjectPrivate() {}
 
     void setModel(Model *model);
+    void beginChangeData();
+    void endChangeData();
     void beginInsertObjects(int first, int last);
     void endInsertObjects();
     void beginRemoveObjects(int first, int last);
@@ -75,7 +77,7 @@ public:
 
     // IModelItem
 
-    ItemType type() const = 0;
+    Ac::ItemType type() const = 0;
 
     IModelItem *parentModelItem() const
     {
@@ -100,13 +102,13 @@ public:
         return 0;
     }
 
-    IModelItem *findModelItem(ItemType type) const
+    IModelItem *findModelItem(Ac::ItemType type) const
     {
         Q_UNUSED(type);
         return 0;
     }
 
-    IModelItem *findModelItemList(ItemType type) const
+    IModelItem *findModelItemList(Ac::ItemType type) const
     {
         Q_UNUSED(type);
         return 0;

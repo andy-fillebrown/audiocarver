@@ -56,7 +56,7 @@ void GraphicsCurveItem::setPoints(const PointList &points)
     int n = points.count();
     for (int i = 1;  i < n;  ++i) {
         const Point &curPt = points.at(i);
-        if ((NoCurve == curPt.curveType)
+        if ((Ac::NoCurve == curPt.curveType)
                 || i == n - 1)
             curvePath.lineTo(curPt.pos);
         else {

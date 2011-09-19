@@ -177,7 +177,7 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        _pitchCurve->setPoints(index.data(PointsRole).value<PointList>());
+        _pitchCurve->setPoints(index.data(Ac::PointsRole).value<PointList>());
     }
 
 private:
@@ -281,7 +281,7 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        qreal length = index.data(LengthRole).toReal();
+        qreal length = index.data(Ac::LengthRole).toReal();
         _pitchUnitItemX->setTransform(QTransform::fromScale(length, 1));
         _controlUnitItemX->setTransform(QTransform::fromScale(length, 1));
     }
@@ -311,7 +311,7 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        _label->setText(index.data(LabelRole).toString());
+        _label->setText(index.data(Ac::LabelRole).toString());
     }
 
 protected:
@@ -359,11 +359,11 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        qreal location = index.data(LocationRole).toReal();
+        qreal location = index.data(Ac::LocationRole).toReal();
         _label->setPos(location, -10);
         _pitchSceneLine->setLine(location, 0, location, 1);
         _controlSceneLine->setLine(location, 0, location, 1);
-        QColor color = index.data(ColorRole).value<QColor>();
+        QColor color = index.data(Ac::ColorRole).value<QColor>();
         _pitchSceneLine->setPen(color);
         _controlSceneLine->setPen(color);
         SceneGridLineItem::dataChanged(index);
@@ -388,7 +388,7 @@ public:
 
     void dataChanged(const QModelIndex &index)
     {
-        qreal location = index.data(LocationRole).toReal();
+        qreal location = index.data(Ac::LocationRole).toReal();
         _label->setPos(0, location);
         _sceneLine->setLine(0, location, 1, location);
         SceneGridLineItem::dataChanged(index);

@@ -16,8 +16,10 @@
 **************************************************************************/
 
 #include "ac_mainwidget.h"
+
 #include <ac_viewmanager.h>
 #include <mi_graphicsview.h>
+
 #include <QApplication>
 #include <QGraphicsPathItem>
 #include <QGraphicsView>
@@ -93,7 +95,7 @@ AcMainWidget::~AcMainWidget()
     delete d;
 }
 
-void AcMainWidget::setModel(QAbstractItemModel *model)
+void AcMainWidget::setModel(Model *model)
 {
     d->viewManager->setModel(model);
 }

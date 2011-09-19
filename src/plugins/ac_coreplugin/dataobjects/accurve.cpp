@@ -21,7 +21,13 @@
 
 CurvePrivate::CurvePrivate(Curve *q)
     :   ObjectPrivate(q)
+    ,   graphicsCurveItem(new GraphicsCurveItem)
 {}
+
+CurvePrivate::~CurvePrivate()
+{
+    delete graphicsCurveItem;
+}
 
 Curve::Curve(CurvePrivate &dd, QObject *parent)
     :   Object(dd, parent)
@@ -38,18 +44,30 @@ void Curve::setPoints(const PointList &points)
     Q_D(Curve);
     if (d->points == points)
         return;
+    PointList oldPts = d->points;
     d->points = points;
+    d->conformPoints();
+    if (d->points == oldPts)
+        return;
+    PointList newPts = d->points;
+    d->points = oldPts;
+    d->beginChangeData();
+    d->points = newPts;
+    d->graphicsCurveItem->setPoints(d->points);
+    d->endChangeData();
 }
 
-ScoreObject *Curve::parent() const
+void Curve::setParent(Object *parent)
 {
-    return qobject_cast<ScoreObject*>(QObject::parent());
+    Q_D(Curve);
+    Object::setParent(parent);
+    d->updateGraphicsParent();
 }
 
 QVariant Curve::data(int role) const
 {
     switch (role) {
-    case PointsRole:
+    case Ac::PointsRole:
         return QVariant::fromValue(points());
     default:
         return Object::data(role);
@@ -59,7 +77,7 @@ QVariant Curve::data(int role) const
 bool Curve::setData(const QVariant &value, int role)
 {
     switch (role) {
-    case PointsRole:
+    case Ac::PointsRole:
         setPoints(value.value<PointList>());
         return true;
     default:

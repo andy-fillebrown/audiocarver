@@ -20,6 +20,29 @@
 #include <accontrolcurve.h>
 #include <acpitchcurve.h>
 
+#include <QGraphicsItem>
+
+static void setParentGraphicsItems(const QMap<Ac::SceneType, QGraphicsItem*> &items,
+                                   const QMap<Ac::SceneType, QGraphicsItem*> &parentItems)
+{
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+        Ac::SceneType type = Ac::SceneType(i);
+        QGraphicsItem *parentItem = parentItems.value(type, 0);
+        QGraphicsItem *item = items.value(type, 0);
+        if (item && parentItem)
+            item->setParentItem(parentItem);
+    }
+}
+
+static void clearParentGraphicsItems(const QMap<Ac::SceneType, QGraphicsItem*> &items)
+{
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+        QGraphicsItem *item = items.value(Ac::SceneType(i), 0);
+        if (item)
+            item->setParentItem(0);
+    }
+}
+
 ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)
     :   ObjectPrivate(q)
     ,   volume(1.0f)
@@ -29,16 +52,39 @@ ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)
 
 void ScoreObjectPrivate::init()
 {
-    pitchCurve = new PitchCurve(q);
-    controlCurves = new ObjectList<ControlCurve>(q);
+    pitchCurve = new PitchCurve(q_ptr);
+    controlCurves = new ObjectList<ControlCurve>(q_ptr);
+    updateGraphicsParent();
+}
+
+ScoreObjectPrivate::~ScoreObjectPrivate()
+{
+    delete pitchCurve;
+    qDeleteAll(controlCurves);
+    qDeleteAll(unitYGraphicsItems);
+    qDeleteAll(unitXGraphicsItems);
+    qDeleteAll(mainGraphicsItems);
+}
+
+void ScoreObjectPrivate::updateGraphicsParent()
+{
+    Q_Q(ScoreObject);
+    ScoreObject *graphicsParent = q->graphicsParent();
+    if (graphicsParent) {
+        ScoreObjectPrivate *graphicsParent_d = graphicsParent->d_func();
+        setParentGraphicsItems(mainGraphicsItems, graphicsParent_d->mainGraphicsItems);
+        setParentGraphicsItems(unitXGraphicsItems, graphicsParent_d->unitXGraphicsItems);
+        setParentGraphicsItems(unitYGraphicsItems, graphicsParent_d->unitYGraphicsItems);
+    } else {
+        clearParentGraphicsItems(mainGraphicsItems);
+        clearParentGraphicsItems(unitXGraphicsItems);
+        clearParentGraphicsItems(unitYGraphicsItems);
+    }
 }
 
 ScoreObject::ScoreObject(ScoreObjectPrivate &dd, QObject *parent)
     :   Object(dd, parent)
-{
-    Q_D(ScoreObject);
-    d->init();
-}
+{}
 
 qreal ScoreObject::volume() const
 {
@@ -51,7 +97,16 @@ void ScoreObject::setVolume(qreal volume)
     Q_D(ScoreObject);
     if (d->volume == volume)
         return;
+    d->beginChangeData();
     d->volume = volume;
+    d->endChangeData();
+}
+
+void ScoreObject::setParent(Object *parent)
+{
+    Q_D(ScoreObject);
+    Object::setParent(parent);
+    d->updateGraphicsParent();
 }
 
 PitchCurve *ScoreObject::pitchCurve() const
@@ -69,9 +124,9 @@ ObjectList<ControlCurve> *ScoreObject::controlCurves() const
 QVariant ScoreObject::data(int role) const
 {
     switch (role) {
-    case LengthRole:
+    case Ac::LengthRole:
         return length();
-    case VolumeRole:
+    case Ac::VolumeRole:
         return volume();
     default:
         return Object::data(role);
@@ -81,7 +136,7 @@ QVariant ScoreObject::data(int role) const
 bool ScoreObject::setData(const QVariant &value, int role)
 {
     switch (role) {
-    case VolumeRole:
+    case Ac::VolumeRole:
         setVolume(value.toReal());
         return true;
     default:
@@ -111,20 +166,20 @@ IModelItem *ScoreObject::modelItemAt(int i) const
     }
 }
 
-IModelItem *ScoreObject::findModelItem(ItemType type) const
+IModelItem *ScoreObject::findModelItem(Ac::ItemType type) const
 {
     switch (type) {
-    case PitchCurveItem:
+    case Ac::PitchCurveItem:
         return pitchCurve();
     default:
         return 0;
     }
 }
 
-IModelItem *ScoreObject::findModelItemList(ItemType type) const
+IModelItem *ScoreObject::findModelItemList(Ac::ItemType type) const
 {
     switch (type) {
-    case ControlCurveItem:
+    case Ac::ControlCurveItem:
         return controlCurves();
     default:
         return 0;

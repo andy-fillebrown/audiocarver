@@ -83,7 +83,7 @@ QGraphicsView *AcViewManager::view(Ac::SceneType type) const
     }
 }
 
-void AcViewManager::setModel(QAbstractItemModel *model)
+void AcViewManager::setModel(Model *model)
 {
     d->sceneManager->setModel(model);
 }

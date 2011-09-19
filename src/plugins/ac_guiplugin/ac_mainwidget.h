@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-class QAbstractItemModel;
+class Model;
 
 class AcMainWidgetPrivate;
 class AcMainWidget : public QWidget
@@ -31,7 +31,7 @@ public:
     AcMainWidget(QWidget *parent = 0);
     ~AcMainWidget();
 
-    void setModel(QAbstractItemModel *model);
+    void setModel(Model *model);
 
     bool isPointInControlViews(QWidget *widget, const QPoint &pos) const;
 

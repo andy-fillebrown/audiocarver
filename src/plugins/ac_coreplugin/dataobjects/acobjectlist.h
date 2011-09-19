@@ -24,6 +24,8 @@
 
 template <class T> class ObjectList;
 
+template <class T> inline void qDeleteAll(ObjectList<T> *list);
+
 template <class T> class ObjectListPrivate : public ObjectPrivate
 {
 public:
@@ -52,6 +54,11 @@ public:
     {
         Q_D_TEMPLATE(const ObjectList);
         return d->objects.count();
+    }
+
+    bool isEmpty() const
+    {
+        return count() == 0;
     }
 
     T *at(int i) const
@@ -85,16 +92,28 @@ public:
     void removeAt(int i)
     {
         Q_D_TEMPLATE(ObjectList);
+        Object *object = d->objects[i];
         d->beginRemoveObjects(i, i);
         d->objects.removeAt(i);
+        d->endRemoveObjects();
+        object->setParent(0);
+    }
+
+    void clear()
+    {
+        if (isEmpty())
+            return;
+        Q_D_TEMPLATE(ObjectList);
+        d->beginRemoveObjects(0, count() - 1);
+        d->objects.clear();
         d->endRemoveObjects();
     }
 
     // IModelItem
 
-    ItemType type() const
+    Ac::ItemType type() const
     {
-        return ListItem;
+        return Ac::ListItem;
     }
 
     int modelItemCount() const
@@ -115,7 +134,7 @@ public:
 
     QVariant data(int role) const
     {
-        if (ListTypeRole == role) {
+        if (Ac::ListTypeRole == role) {
             Q_D_TEMPLATE(const ObjectList);
             return d->t().type();
         }
@@ -125,11 +144,22 @@ public:
 private:
     Q_DISABLE_COPY(ObjectList)
     Q_DECLARE_PRIVATE_TEMPLATE(ObjectList)
+
+    friend void qDeleteAll<T>(ObjectList<T>*);
 };
 
 template <class T> inline
 ObjectListPrivate<T>::ObjectListPrivate(ObjectList<T> *q)
     :   ObjectPrivate(q)
 {}
+
+template <class T> inline
+void qDeleteAll(ObjectList<T> *list)
+{
+    if (!list)
+        return;
+    foreach (T *object, list->d_func()->objects)
+        delete object;
+}
 
 #endif // ACOBJECTLIST_H

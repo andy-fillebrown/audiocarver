@@ -17,6 +17,7 @@
 
 #include "actrack.h"
 
+#include <acgraphicsitem.h>
 #include <acnote.h>
 #include <acscore.h>
 
@@ -35,7 +36,15 @@ public:
 
     void init()
     {
-        notes = new ObjectList<Note>(q);
+        notes = new ObjectList<Note>(q_ptr);
+        mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+        mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+        ScoreObjectPrivate::init();
+    }
+
+    ~TrackPrivate()
+    {
+        qDeleteAll(notes);
     }
 };
 
@@ -49,7 +58,7 @@ Track::Track(QObject *parent)
 
 qreal Track::length() const
 {
-    Score *score = parent();
+    Score *score = this->score();
     return score ? score->length() : 0.0f;
 }
 
@@ -64,7 +73,9 @@ void Track::setColor(const QColor &color)
     Q_D(Track);
     if (d->color == color)
         return;
+    d->beginChangeData();
     d->color = color;
+    d->endChangeData();
 }
 
 const QString &Track::instrument() const
@@ -78,18 +89,43 @@ void Track::setInstrument(const QString &instrument)
     Q_D(Track);
     if (d->instrument == instrument)
         return;
+    d->beginChangeData();
     d->instrument = instrument;
+    d->endChangeData();
 }
 
-Score *Track::parent() const
+bool Track::isVisible() const
 {
-    return qobject_cast<Score*>(QObject::parent());
+    Q_D(const Track);
+    return d->mainGraphicsItems[Ac::PitchScene]->isVisible();
+}
+
+void Track::setVisibility(bool visible)
+{
+    Q_D(Track);
+    if (isVisible() == visible)
+        return;
+    d->beginChangeData();
+    foreach (QGraphicsItem *item, d->mainGraphicsItems)
+        item->setVisible(visible);
+    d->endChangeData();
+}
+
+Score *Track::score() const
+{
+    QObject *parent = QObject::parent();
+    return parent ? qobject_cast<Score*>(parent->parent()) : 0;
 }
 
 ObjectList<Note> *Track::notes() const
 {
     Q_D(const Track);
     return d->notes;
+}
+
+ScoreObject *Track::graphicsParent() const
+{
+    return score();
 }
 
 int Track::modelItemIndex(IModelItem *item) const
@@ -110,10 +146,10 @@ IModelItem *Track::modelItemAt(int i) const
     }
 }
 
-IModelItem *Track::findModelItemList(ItemType type) const
+IModelItem *Track::findModelItemList(Ac::ItemType type) const
 {
     switch (type) {
-    case NoteItem:
+    case Ac::NoteItem:
         return notes();
     default:
         return ScoreObject::findModelItemList(type);
@@ -123,9 +159,9 @@ IModelItem *Track::findModelItemList(ItemType type) const
 QVariant Track::data(int role) const
 {
     switch (role) {
-    case ColorRole:
+    case Ac::ColorRole:
         return color();
-    case InstrumentRole:
+    case Ac::InstrumentRole:
         return instrument();
     default:
         return ScoreObject::data(role);
@@ -135,10 +171,10 @@ QVariant Track::data(int role) const
 bool Track::setData(const QVariant &value, int role)
 {
     switch (role) {
-    case ColorRole:
+    case Ac::ColorRole:
         setColor(value.value<QColor>());
         return true;
-    case InstrumentRole:
+    case Ac::InstrumentRole:
         setInstrument(value.toString());
         return true;
     default:

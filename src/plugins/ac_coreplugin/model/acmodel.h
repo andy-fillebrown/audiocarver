@@ -18,12 +18,15 @@
 #ifndef AC_MODEL_H
 #define AC_MODEL_H
 
+#include <accoreenums.h>
 #include <accoreglobal.h>
 
 #include <QAbstractItemModel>
 
 class IModelItem;
 class Score;
+
+class QGraphicsItem;
 
 class AC_CORE_EXPORT AbstractItemModel : public QAbstractItemModel
 {
@@ -33,7 +36,7 @@ public:
     ~AbstractItemModel() {}
 
 signals:
-    void dataAboutToChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
 protected:
     AbstractItemModel(QObject *parent)
@@ -47,6 +50,8 @@ class AC_CORE_EXPORT Model : public AbstractItemModel
 
 public:
     explicit Model(QObject *parent = 0);
+
+    QGraphicsItem *sceneItem(Ac::SceneType type) const;
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;

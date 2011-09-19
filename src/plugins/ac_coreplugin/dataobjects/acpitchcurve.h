@@ -28,10 +28,10 @@ class AC_CORE_EXPORT PitchCurve : public Curve
 public:
     explicit PitchCurve(QObject *parent = 0);
 
-    void setPoints(const PointList &points);
+    ScoreObject *graphicsParent() const;
 
     // IModelItem
-    ItemType type() const { return PitchCurveItem; }
+    Ac::ItemType type() const { return Ac::PitchCurveItem; }
 
 private:
     Q_DISABLE_COPY(PitchCurve)

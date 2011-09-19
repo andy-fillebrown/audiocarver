@@ -17,25 +17,40 @@
 
 #include "acscore.h"
 
+#include <acgraphicsitem.h>
 #include <actrack.h>
 
-class ScorePrivate : public ScoreObjectPrivate
+ScorePrivate::ScorePrivate(Score *q)
+    :   ScoreObjectPrivate(q)
+    ,   length(128.0f)
+    ,   tracks(0)
 {
-public:
-    qreal length;
-    ObjectList<Track> *tracks;
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+        mainGraphicsItems.insert(Ac::SceneType(i), new GraphicsRootItem);
+    unitXGraphicsItems.insert(Ac::PitchScene, new GraphicsItem(mainGraphicsItems[Ac::PitchScene]));
+    unitXGraphicsItems.insert(Ac::ControlScene, new GraphicsItem(mainGraphicsItems[Ac::PitchScene]));
+    unitYGraphicsItems.insert(Ac::PitchScene, new GraphicsItem(mainGraphicsItems[Ac::PitchScene]));
+    unitXGraphicsItems[Ac::PitchScene]->setTransform(QTransform::fromScale(length, 1.0f));
+    unitXGraphicsItems[Ac::ControlScene]->setTransform(QTransform::fromScale(length, 1.0f));
+    unitYGraphicsItems[Ac::PitchScene]->setTransform(QTransform::fromScale(1.0f, 127.0f));
+}
 
-    ScorePrivate(Score *q)
-        :   ScoreObjectPrivate(q)
-        ,   length(128.0f)
-        ,   tracks(0)
-    {}
+void ScorePrivate::init()
+{
+    tracks = new ObjectList<Track>(q_ptr);
+    ScoreObjectPrivate::init();
+}
 
-    void init()
-    {
-        tracks = new ObjectList<Track>(q);
-    }
-};
+ScorePrivate::~ScorePrivate()
+{
+    qDeleteAll(tracks);
+}
+
+void ScorePrivate::updateLength()
+{
+    foreach (QGraphicsItem *item, unitXGraphicsItems)
+        item->setTransform(QTransform::fromScale(length, 1.0f));
+}
 
 Score::Score(QObject *parent)
     :   ScoreObject(*(new ScorePrivate(this)), parent)
@@ -56,13 +71,22 @@ void Score::setLength(qreal length)
     Q_D(Score);
     if (d->length == length)
         return;
+    d->beginChangeData();
     d->length = length;
+    d->updateLength();
+    d->endChangeData();
 }
 
 ObjectList<Track> *Score::tracks() const
 {
     Q_D(const Score);
     return d->tracks;
+}
+
+QGraphicsItem *Score::sceneItem(Ac::SceneType type) const
+{
+    Q_D(const Score);
+    return d->mainGraphicsItems[type];
 }
 
 void Score::setModel(Model *model)
@@ -88,10 +112,10 @@ IModelItem *Score::modelItemAt(int i) const
     }
 }
 
-IModelItem *Score::findModelItemList(ItemType type) const
+IModelItem *Score::findModelItemList(Ac::ItemType type) const
 {
     switch (type) {
-    case TrackItem:
+    case Ac::TrackItem:
         return tracks();
     default:
         return ScoreObject::findModelItemList(type);
@@ -101,7 +125,7 @@ IModelItem *Score::findModelItemList(ItemType type) const
 bool Score::setData(const QVariant &value, int role)
 {
     switch (role) {
-    case LengthRole:
+    case Ac::LengthRole:
         setLength(value.toReal());
         return true;
     default:

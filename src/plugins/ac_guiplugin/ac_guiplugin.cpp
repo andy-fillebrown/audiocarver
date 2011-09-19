@@ -24,7 +24,7 @@
 #include <actrack.h>
 
 #include <ac_editorimpl.h>
-#include <ac_graphicsscene.h>
+//#include <ac_graphicsscene.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 
@@ -47,8 +47,8 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i, 30 + i));
-        pts.append(Point(10 - i + 100, 60 + i));
+        pts.append(Point(10 - i, 30 + (5 * i)));
+        pts.append(Point(10 - i + 100, 60 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
@@ -58,8 +58,8 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i, 60 + i));
-        pts.append(Point(10 - i + 100, 90 + i));
+        pts.append(Point(10 - i, 60 + (5 * i)));
+        pts.append(Point(10 - i + 100, 90 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
@@ -104,7 +104,7 @@ void AcGuiPlugin::extensionsInitialized()
     AcMainWidget *widget = new AcMainWidget(mw);
     mw->setCentralWidget(widget);
 
-    Model *model = new Model(mw);
+    Model *model = new Model;
     widget->setModel(model);
 
     QDockWidget *dw = new QDockWidget(mw);

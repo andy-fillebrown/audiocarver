@@ -17,6 +17,7 @@
 
 #include "acnote.h"
 
+#include <acgraphicsitem.h>
 #include <actrack.h>
 
 class NotePrivate : public ScoreObjectPrivate
@@ -28,11 +29,20 @@ public:
         :   ScoreObjectPrivate(q)
         ,   length(0.0f)
     {}
+
+    void init()
+    {
+        mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+        mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+        ScoreObjectPrivate::init();
+    }
 };
 
 Note::Note(QObject *parent)
     :   ScoreObject(*(new NotePrivate(this)), parent)
 {
+    Q_D(Note);
+    d->init();
     setObjectName("Note");
 }
 
@@ -47,18 +57,15 @@ void Note::setLength(qreal length)
     Q_D(Note);
     if (d->length == length)
         return;
+    d->beginChangeData();
     d->length = length;
-}
-
-Track *Note::parent() const
-{
-    return qobject_cast<Track*>(QObject::parent());
+    d->endChangeData();
 }
 
 bool Note::setData(const QVariant &value, int role)
 {
     switch (role) {
-    case LengthRole:
+    case Ac::LengthRole:
         setLength(value.toReal());
         return true;
     default:
