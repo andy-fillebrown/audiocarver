@@ -15,11 +15,11 @@
 **
 **************************************************************************/
 
-#include "actrack.h"
+#include "ac_track.h"
 
-#include <acgraphicsitem.h>
-#include <acnote.h>
-#include <acscore.h>
+#include <ac_graphicsitem.h>
+#include <ac_note.h>
+#include <ac_score.h>
 
 class TrackPrivate : public ScoreObjectPrivate
 {

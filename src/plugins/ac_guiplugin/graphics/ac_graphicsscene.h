@@ -18,8 +18,8 @@
 #ifndef AC_GRAPHICSSCENE_H
 #define AC_GRAPHICSSCENE_H
 
-#include <accoreenums.h>
-#include <acmodel.h>
+#include <ac_namespace.h>
+#include <ac_model.h>
 
 #include <QGraphicsScene>
 

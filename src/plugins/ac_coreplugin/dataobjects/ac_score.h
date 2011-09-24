@@ -15,12 +15,13 @@
 **
 **************************************************************************/
 
-#ifndef ACSCORE_H
-#define ACSCORE_H
+#ifndef AC_SCORE_H
+#define AC_SCORE_H
 
-#include <acscoreobject.h>
+#include <ac_scoreobject.h>
 
 class Track;
+class ViewSettings;
 
 class QGraphicsItem;
 
@@ -31,6 +32,7 @@ class ScorePrivate : public ScoreObjectPrivate
 public:
     qreal length;
     ObjectList<Track> *tracks;
+    ViewSettings *viewSettings;
 
     ScorePrivate(Score *q);
     void init();
@@ -45,7 +47,7 @@ class AC_CORE_EXPORT Score : public ScoreObject
     Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
-    enum { ModelItemCount = ScoreObject::ModelItemCount + 1 };
+    enum { ModelItemCount = ScoreObject::ModelItemCount + 2 };
 
     explicit Score(QObject *parent = 0);
 
@@ -53,6 +55,7 @@ public:
     void setLength(qreal length);
 
     ObjectList<Track> *tracks() const;
+    ViewSettings *viewSettings() const;
 
     QGraphicsItem *sceneItem(Ac::SceneType type) const;
 
@@ -71,4 +74,4 @@ private:
     Q_DECLARE_PRIVATE(Score)
 };
 
-#endif // ACSCORE_H
+#endif // AC_SCORE_H

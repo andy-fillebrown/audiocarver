@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef ACSCOREOBJECT_H
-#define ACSCOREOBJECT_H
+#ifndef AC_SCOREOBJECT_H
+#define AC_SCOREOBJECT_H
 
-#include <acobjectlist.h>
+#include <ac_objectlist.h>
 
 class ControlCurve;
 class PitchCurve;
@@ -85,4 +85,4 @@ public:
     void updateGraphicsParent();
 };
 
-#endif // ACSCOREOBJECT_H
+#endif // AC_SCOREOBJECT_H

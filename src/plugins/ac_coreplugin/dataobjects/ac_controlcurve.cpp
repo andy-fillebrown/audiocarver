@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "accontrolcurve.h"
+#include "ac_controlcurve.h"
 
-#include <acscoreobject.h>
+#include <ac_scoreobject.h>
 
 #include <QVariant>
 

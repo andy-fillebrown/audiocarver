@@ -18,7 +18,7 @@
 #ifndef AC_GRAPHICSITEM_H
 #define AC_GRAPHICSITEM_H
 
-#include <acpoint.h>
+#include <ac_point.h>
 
 #include <QGraphicsItem>
 #include <QPen>

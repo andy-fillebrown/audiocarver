@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef ACCURVE_H
-#define ACCURVE_H
+#ifndef AC_CURVE_H
+#define AC_CURVE_H
 
-#include <acgraphicsitem.h>
-#include <acobject.h>
-#include <acpoint.h>
+#include <ac_graphicsitem.h>
+#include <ac_object.h>
+#include <ac_point.h>
 
 class ScoreObject;
 
@@ -64,4 +64,4 @@ public:
     virtual void updateGraphicsParent() = 0;
 };
 
-#endif // ACCURVE_H
+#endif // AC_CURVE_H

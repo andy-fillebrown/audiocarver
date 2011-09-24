@@ -15,4 +15,38 @@
 **
 **************************************************************************/
 
-#include "ac_graphicssceneitem.h"
+#ifndef AC_NOTE_H
+#define AC_NOTE_H
+
+#include <ac_scoreobject.h>
+
+class Track;
+
+class NotePrivate;
+class AC_CORE_EXPORT Note : public ScoreObject
+{
+    Q_OBJECT
+    Q_PROPERTY(qreal length READ length WRITE setLength)
+
+public:
+    explicit Note(QObject *parent = 0);
+
+    qreal length() const;
+    void setLength(qreal length);
+
+    ScoreObject *graphicsParent() const
+    {
+        QObject *parent = QObject::parent();
+        return parent ? qobject_cast<ScoreObject*>(parent->parent()) : 0;
+    }
+
+    // IModelItem
+    Ac::ItemType type() const { return Ac::NoteItem; }
+    bool setData(const QVariant &value, int role);
+
+private:
+    Q_DISABLE_COPY(Note)
+    Q_DECLARE_PRIVATE(Note)
+};
+
+#endif // AC_NOTE_H

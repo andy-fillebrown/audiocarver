@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "acpitchcurve.h"
+#include "ac_pitchcurve.h"
 
-#include <acscoreobject.h>
+#include <ac_scoreobject.h>
 
 class PitchCurvePrivate : public CurvePrivate
 {

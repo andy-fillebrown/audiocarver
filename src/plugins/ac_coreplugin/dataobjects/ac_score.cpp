@@ -15,15 +15,17 @@
 **
 **************************************************************************/
 
-#include "acscore.h"
+#include "ac_score.h"
 
-#include <acgraphicsitem.h>
-#include <actrack.h>
+#include <ac_graphicsitem.h>
+#include <ac_track.h>
+#include <ac_viewsettings.h>
 
 ScorePrivate::ScorePrivate(Score *q)
     :   ScoreObjectPrivate(q)
     ,   length(128.0f)
     ,   tracks(0)
+    ,   viewSettings(0)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
         mainGraphicsItems.insert(Ac::SceneType(i), new GraphicsRootItem);
@@ -38,11 +40,13 @@ ScorePrivate::ScorePrivate(Score *q)
 void ScorePrivate::init()
 {
     tracks = new ObjectList<Track>(q_ptr);
+    viewSettings = new ViewSettings(q_ptr);
     ScoreObjectPrivate::init();
 }
 
 ScorePrivate::~ScorePrivate()
 {
+    delete viewSettings;
     qDeleteAll(tracks);
 }
 
@@ -83,6 +87,12 @@ ObjectList<Track> *Score::tracks() const
     return d->tracks;
 }
 
+ViewSettings *Score::viewSettings() const
+{
+    Q_D(const Score);
+    return d->viewSettings;
+}
+
 QGraphicsItem *Score::sceneItem(Ac::SceneType type) const
 {
     Q_D(const Score);
@@ -99,6 +109,8 @@ int Score::modelItemIndex(IModelItem *item) const
     Q_D(const Score);
     if (d->tracks == item)
         return ScoreObject::ModelItemCount;
+    if (d->viewSettings == item)
+        return ScoreObject::ModelItemCount + 1;
     return ScoreObject::modelItemIndex(item);
 }
 
@@ -107,6 +119,8 @@ IModelItem *Score::modelItemAt(int i) const
     switch (i) {
     case ScoreObject::ModelItemCount:
         return tracks();
+    case ScoreObject::ModelItemCount + 1:
+        return viewSettings();
     default:
         return ScoreObject::modelItemAt(i);
     }

@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "acgraphicsitem.h"
+#include "ac_graphicsitem.h"
 
 class GraphicsCurveItemPrivate
 {

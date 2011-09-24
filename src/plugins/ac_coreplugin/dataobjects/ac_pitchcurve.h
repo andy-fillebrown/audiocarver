@@ -15,33 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef ACCONTROLCURVE_H
-#define ACCONTROLCURVE_H
+#ifndef AC_PITCHCURVE_H
+#define AC_PITCHCURVE_H
 
-#include <accurve.h>
+#include <ac_curve.h>
 
-class ControlCurvePrivate;
-class AC_CORE_EXPORT ControlCurve : public Curve
+class PitchCurvePrivate;
+class AC_CORE_EXPORT PitchCurve : public Curve
 {
     Q_OBJECT
-    Q_PROPERTY(int controlId READ controlId WRITE setControlId)
 
 public:
-    explicit ControlCurve(QObject *parent = 0);
-
-    int controlId() const;
-    void setControlId(int controlId);
+    explicit PitchCurve(QObject *parent = 0);
 
     ScoreObject *graphicsParent() const;
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::ControlCurveItem; }
-    QVariant data(int role) const;
-    bool setData(const QVariant &value, int role);
+    Ac::ItemType type() const { return Ac::PitchCurveItem; }
 
 private:
-    Q_DISABLE_COPY(ControlCurve)
-    Q_DECLARE_PRIVATE(ControlCurve)
+    Q_DISABLE_COPY(PitchCurve)
+    Q_DECLARE_PRIVATE(PitchCurve)
 };
 
-#endif // ACCONTROLCURVE_H
+#endif // AC_PITCHCURVE_H

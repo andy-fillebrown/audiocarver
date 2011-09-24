@@ -16,23 +16,72 @@
 **************************************************************************/
 
 #include "ac_model.h"
-#include <ac_item.h>
+
+#include <ac_score.h>
+#include <ac_viewsettings.h>
+
+void ModelPrivate::init()
+{
+    score = new Score(q);
+    score->setModel(q);
+}
+
+ModelPrivate::~ModelPrivate()
+{
+    delete score;
+}
+
+QModelIndex ModelPrivate::indexFromItem(IModelItem *item) const
+{
+    if (!item)
+        return QModelIndex();
+    IModelItem *parentItem = item->parentModelItem();
+    if (!parentItem)
+        return QModelIndex();
+    return q->createIndex(parentItem->modelItemIndex(item), 0, parentItem);
+}
+
+IModelItem *ModelPrivate::itemFromIndex(const QModelIndex &index) const
+{
+    if ((index.row() < 0)
+            || (index.column() < 0)
+            || (index.model() != q))
+        return 0;
+    IModelItem *parentItem = static_cast<IModelItem*>(index.internalPointer());
+    if (!parentItem)
+        return 0;
+    return parentItem->modelItemAt(index.row());
+}
 
 Model::Model(QObject *parent)
-    :   AbstractItemModel(parent)
-    ,   _score(new Score(this))
-    ,   _layoutAboutToBeChangedEmitted(false)
+    :   QAbstractItemModel(parent)
+    ,   d(new ModelPrivate(this))
 {
-    _score->setModel(this);
+    d->init();
+}
+
+Model::~Model()
+{
+    delete d;
+}
+
+Score *Model::score() const
+{
+    return d->score;
+}
+
+QGraphicsItem *Model::sceneItem(Ac::SceneType type) const
+{
+    return d->score ? d->score->sceneItem(type) : 0;
 }
 
 QModelIndex Model::index(int row, int column, const QModelIndex &parent) const
 {
-    Object *parentItem = parent.isValid() ? itemFromIndex(parent) : _score;
+    IModelItem *parentItem = parent.isValid() ? d->itemFromIndex(parent) : d->score;
     if (!parentItem
             || row < 0
             || column < 0
-            || parentItem->componentCount() <= row
+            || parentItem->modelItemCount() <= row
             || 1 <= column)
         return QModelIndex();
     return createIndex(row, column, parentItem);
@@ -40,51 +89,38 @@ QModelIndex Model::index(int row, int column, const QModelIndex &parent) const
 
 QModelIndex Model::parent(const QModelIndex &child) const
 {
-    if (child.row() < 0 || child.column() < 0 || child.model() != this)
+    if (child.row() < 0
+            || child.column() < 0
+            || child.model() != this)
         return QModelIndex();
-    return indexFromItem(static_cast<Object*>(child.internalPointer()));
+    return d->indexFromItem(static_cast<IModelItem*>(child.internalPointer()));
 }
 
 int Model::rowCount(const QModelIndex &parent) const
 {
-    Object *parentItem = parent.isValid() ? itemFromIndex(parent) : _score;
-    return parentItem ? parentItem->componentCount() : 0;
+    IModelItem *parentItem = parent.isValid() ? d->itemFromIndex(parent) : d->score;
+    return parentItem ? parentItem->modelItemCount() : 0;
 }
 
 QVariant Model::data(const QModelIndex &index, int role) const
 {
-    Object *item = index.isValid() ? itemFromIndex(index) : _score;
+    IModelItem *item = index.isValid() ? d->itemFromIndex(index) : d->score;
     return item ? item->data(role) : QVariant();
 }
 
 bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Object *item = index.isValid() ? itemFromIndex(index) : _score;
+    IModelItem *item = index.isValid() ? d->itemFromIndex(index) : d->score;
     return item ? item->setData(value, role) : false;
 }
 
 Qt::ItemFlags Model::flags(const QModelIndex &index) const
 {
-    Object *item = index.isValid() ? itemFromIndex(index) : _score;
+    IModelItem *item = index.isValid() ? d->itemFromIndex(index) : d->score;
     return item ? item->flags() : Qt::NoItemFlags;
 }
 
-QModelIndex Model::indexFromItem(Object *item) const
+QModelIndex Model::viewSettingsIndex() const
 {
-    if (!item)
-        return QModelIndex();
-    Object *parentItem = item->parent();
-    if (!parentItem)
-        return QModelIndex();
-    return createIndex(parentItem->componentIndex(item), 0, parentItem);
-}
-
-Object *Model::itemFromIndex(const QModelIndex &index) const
-{
-    if ((index.row() < 0) || (index.column() < 0) || (index.model() != this))
-        return 0;
-    Object *parentItem = static_cast<Object*>(index.internalPointer());
-    if (!parentItem)
-        return 0;
-    return parentItem->componentAt(index.row());
+    return d->indexFromItem(d->score->viewSettings());
 }

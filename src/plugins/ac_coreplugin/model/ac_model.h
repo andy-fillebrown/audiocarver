@@ -18,35 +18,27 @@
 #ifndef AC_MODEL_H
 #define AC_MODEL_H
 
-#include <ac_core_global.h>
+#include <ac_global.h>
+#include <ac_namespace.h>
 
 #include <QAbstractItemModel>
 
-class Object;
+class IModelItem;
 class Score;
 
-class AC_CORE_EXPORT AbstractItemModel : public QAbstractItemModel
-{
-    Q_OBJECT
+class QGraphicsItem;
 
-public:
-    ~AbstractItemModel() {}
-
-signals:
-    void dataAboutToChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-
-protected:
-    AbstractItemModel(QObject *parent)
-        :   QAbstractItemModel(parent)
-    {}
-};
-
-class AC_CORE_EXPORT Model : public AbstractItemModel
+class ModelPrivate;
+class AC_CORE_EXPORT Model : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
     explicit Model(QObject *parent = 0);
+    ~Model();
+
+    Score *score() const;
+    QGraphicsItem *sceneItem(Ac::SceneType type) const;
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
@@ -56,41 +48,58 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    Score *score() const
-    {
-        return _score;
-    }
-
     QModelIndex index(int row, const QModelIndex &parent = QModelIndex()) const
     {
         return index(row, 0, parent);
     }
 
-protected:
-    QModelIndex indexFromItem(Object *item) const;
-    Object *itemFromIndex(const QModelIndex &index) const;
+    QModelIndex viewSettingsIndex() const;
+
+signals:
+    void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
+private:
+    Q_DISABLE_COPY(Model)
+    ModelPrivate *d;
+
+    friend class ObjectPrivate;
+    friend class ModelPrivate;
+};
+
+class ModelPrivate
+{
+public:
+    Model *q;
+    Score *score;
+    bool layoutAboutToBeChangedEmitted;
+
+    ModelPrivate(Model *q)
+        :   q(q)
+        ,   score(0)
+        ,   layoutAboutToBeChangedEmitted(false)
+    {}
+
+    void init();
+    ~ModelPrivate();
+
+    QModelIndex indexFromItem(IModelItem *item) const;
+    IModelItem *itemFromIndex(const QModelIndex &index) const;
 
     void maybeEmitLayoutAboutToBeChanged()
     {
-        if (_layoutAboutToBeChangedEmitted)
+        if (layoutAboutToBeChangedEmitted)
             return;
-        _layoutAboutToBeChangedEmitted = true;
-        emit layoutAboutToBeChanged();
+        layoutAboutToBeChangedEmitted = true;
+        emit q->layoutAboutToBeChanged();
     }
 
     void maybeEmitLayoutChanged()
     {
-        if (!_layoutAboutToBeChangedEmitted)
+        if (!layoutAboutToBeChangedEmitted)
             return;
-        _layoutAboutToBeChangedEmitted = false;
-        emit layoutChanged();
+        layoutAboutToBeChangedEmitted = false;
+        emit q->layoutChanged();
     }
-
-private:
-    Score *_score;
-    bool _layoutAboutToBeChangedEmitted;
-
-    friend class ObjectPrivate;
 };
 
 #endif // AC_MODEL_H

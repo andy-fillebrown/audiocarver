@@ -17,14 +17,13 @@
 
 #include "ac_guiplugin.h"
 
-#include <acmodel.h>
-#include <acnote.h>
-#include <acpitchcurve.h>
-#include <acscore.h>
-#include <actrack.h>
+#include <ac_model.h>
+#include <ac_note.h>
+#include <ac_pitchcurve.h>
+#include <ac_score.h>
+#include <ac_track.h>
 
 #include <ac_editorimpl.h>
-//#include <ac_graphicsscene.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 

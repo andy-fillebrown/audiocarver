@@ -18,7 +18,7 @@ HEADERS += \
 #    factories/mi_filerfactory.h \
 #    \
     interfaces/mi_idatabase.h \
-    interfaces/miiunknown.h \
+    interfaces/mi_iunknown.h \
     \
 #    tools/mi_scopedsignalblocker.h \
 #    tools/mi_scopedchange.h \

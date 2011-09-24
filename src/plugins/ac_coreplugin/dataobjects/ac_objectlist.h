@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef ACOBJECTLIST_H
-#define ACOBJECTLIST_H
+#ifndef AC_OBJECTLIST_H
+#define AC_OBJECTLIST_H
 
-#include <acobject.h>
+#include <ac_object.h>
 
 #include <QVariant>
 
@@ -162,4 +162,4 @@ void qDeleteAll(ObjectList<T> *list)
         delete object;
 }
 
-#endif // ACOBJECTLIST_H
+#endif // AC_OBJECTLIST_H

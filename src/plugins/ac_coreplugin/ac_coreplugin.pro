@@ -7,31 +7,33 @@ include(ac_coreplugin_dependencies.pri)
 DEFINES += AC_CORE_LIBRARY
 
 HEADERS += \
-    model/interfaces/acimodelitem.h \
+    dataobjects/ac_objectlist.h \
     \
-    accoreglobal.h \
-    accoreenums.h \
+    model/interfaces/ac_imodelitem.h \
+    \
+    tools/ac_point.h \
+    \
+    ac_global.h \
+    ac_namespace.h \
 
 SOURCE_PAIRS += \
-    dataobjects/accontrolcurve \
-    dataobjects/accurve \
-    dataobjects/acnote \
-    dataobjects/acobject \
-    dataobjects/acobjectlist \
-    dataobjects/acpitchcurve \
-    dataobjects/acscore \
-    dataobjects/acscoreobject \
-    dataobjects/actrack \
+    dataobjects/ac_controlcurve \
+    dataobjects/ac_curve \
+    dataobjects/ac_note \
+    dataobjects/ac_object \
+    dataobjects/ac_pitchcurve \
+    dataobjects/ac_score \
+    dataobjects/ac_scoreobject \
+    dataobjects/ac_track \
+    dataobjects/ac_viewsettings \
     \
-    graphicsitems/acgraphicsitem \
+    graphicsitems/ac_graphicsitem \
     \
     implementations/ac_database \
     \
-    model/acmodel \
+    model/ac_model \
     \
-    tools/acpoint \
-    \
-    accoreplugin \
+    ac_coreplugin \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= $${pair}.h

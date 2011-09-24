@@ -15,11 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef ACOBJECT_H
-#define ACOBJECT_H
+#ifndef AC_OBJECT_H
+#define AC_OBJECT_H
 
-#include <accoreglobal.h>
-#include <interfaces/acimodelitem.h>
+#include <ac_global.h>
+#include <interfaces/ac_imodelitem.h>
 
 #include <QObject>
 

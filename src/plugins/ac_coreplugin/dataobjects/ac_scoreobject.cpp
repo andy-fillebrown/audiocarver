@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#include "acscoreobject.h"
+#include "ac_scoreobject.h"
 
-#include <accontrolcurve.h>
-#include <acpitchcurve.h>
+#include <ac_controlcurve.h>
+#include <ac_pitchcurve.h>
 
 #include <QGraphicsItem>
 

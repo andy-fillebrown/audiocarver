@@ -18,7 +18,7 @@
 #ifndef AC_VIEWMANAGER_H
 #define AC_VIEWMANAGER_H
 
-#include <accoreenums.h>
+#include <ac_namespace.h>
 
 #include <QObject>
 

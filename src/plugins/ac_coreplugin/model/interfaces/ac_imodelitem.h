@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef ACIMODELITEM_H
-#define ACIMODELITEM_H
+#ifndef AC_IMODELITEM_H
+#define AC_IMODELITEM_H
 
-#include <accoreenums.h>
+#include <ac_namespace.h>
 
-#include <miiunknown.h>
+#include <mi_iunknown.h>
 
 class QVariant;
 
@@ -39,4 +39,4 @@ public:
     virtual Qt::ItemFlags flags() const = 0;
 };
 
-#endif // ACIMODELITEM_H
+#endif // AC_IMODELITEM_H

@@ -15,9 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_ITEMVIEW_H
-#define AC_ITEMVIEW_H
+#ifndef AC_CONTROLCURVE_H
+#define AC_CONTROLCURVE_H
 
+#include <ac_curve.h>
 
+class ControlCurvePrivate;
+class AC_CORE_EXPORT ControlCurve : public Curve
+{
+    Q_OBJECT
+    Q_PROPERTY(int controlId READ controlId WRITE setControlId)
 
-#endif // AC_ITEMVIEW_H
+public:
+    explicit ControlCurve(QObject *parent = 0);
+
+    int controlId() const;
+    void setControlId(int controlId);
+
+    ScoreObject *graphicsParent() const;
+
+    // IModelItem
+    Ac::ItemType type() const { return Ac::ControlCurveItem; }
+    QVariant data(int role) const;
+    bool setData(const QVariant &value, int role);
+
+private:
+    Q_DISABLE_COPY(ControlCurve)
+    Q_DECLARE_PRIVATE(ControlCurve)
+};
+
+#endif // AC_CONTROLCURVE_H

@@ -35,7 +35,13 @@ enum ItemDataRole {
     HeightRole,
     VolumeRole,
     ColorRole,
-    VisibilityRole
+    VisibilityRole,
+    TimePositionRole,
+    PitchPositionRole,
+    ControlPositionRole,
+    TimeScaleRole,
+    PitchScaleRole,
+    ControlScaleRole
 };
 
 enum ItemType {
@@ -48,7 +54,8 @@ enum ItemType {
     GridSettingsItem,
     TimeLineItem,
     PitchLineItem,
-    ControlLineItem
+    ControlLineItem,
+    ViewSettingsItem
 };
 
 enum CurveType {

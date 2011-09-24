@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#include "acnote.h"
+#include "ac_note.h"
 
-#include <acgraphicsitem.h>
-#include <actrack.h>
+#include <ac_graphicsitem.h>
+#include <ac_track.h>
 
 class NotePrivate : public ScoreObjectPrivate
 {

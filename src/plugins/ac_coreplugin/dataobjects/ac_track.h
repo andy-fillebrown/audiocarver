@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef ACTRACK_H
-#define ACTRACK_H
+#ifndef AC_TRACK_H
+#define AC_TRACK_H
 
-#include <acscoreobject.h>
+#include <ac_scoreobject.h>
 
 #include <QColor>
 
@@ -68,4 +68,4 @@ private:
     Q_DECLARE_PRIVATE(Track)
 };
 
-#endif // ACTRACK_H
+#endif // AC_TRACK_H

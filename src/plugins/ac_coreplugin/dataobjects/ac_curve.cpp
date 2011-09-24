@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "accurve.h"
+#include "ac_curve.h"
 
-#include <acscoreobject.h>
+#include <ac_scoreobject.h>
 
 CurvePrivate::CurvePrivate(Curve *q)
     :   ObjectPrivate(q)

@@ -18,8 +18,8 @@
 #ifndef ACPOINT_H
 #define ACPOINT_H
 
-#include <accoreenums.h>
-#include <accoreglobal.h>
+#include <ac_global.h>
+#include <ac_namespace.h>
 
 #include <QList>
 #include <QMetaType>
