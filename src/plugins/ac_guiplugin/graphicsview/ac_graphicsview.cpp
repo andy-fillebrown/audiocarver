@@ -109,9 +109,15 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    QBitmap mask(32, 32);
-    mask.clear();
-    setCursor(QCursor(QBitmap(":/ac_gui/images/crosshair.png"), mask));
+    QPixmap crosshair(":/ac_gui/images/crosshair.png");
+#   ifdef Q_OS_WIN
+    {
+        QBitmap mask(crosshair.size());
+        mask.clear();
+        crosshair.setMask(mask);
+    }
+#endif // Q_OS_WIN
+    setCursor(crosshair);
 }
 
 AcGraphicsView::~AcGraphicsView()
