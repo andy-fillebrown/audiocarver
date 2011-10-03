@@ -22,6 +22,8 @@
 
 class NotePrivate : public ScoreObjectPrivate
 {
+    Q_DECLARE_PUBLIC(Note)
+
 public:
     qreal length;
 
@@ -34,7 +36,13 @@ public:
     {
         mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
         mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
-        ScoreObjectPrivate::init();
+    }
+
+    GraphicsParentPrivate *graphicsParent() const
+    {
+        Q_Q(const Note);
+        Track *track = q->track();
+        return track ? track->d_func() : 0;
     }
 };
 
@@ -60,6 +68,12 @@ void Note::setLength(qreal length)
     d->beginChangeData();
     d->length = length;
     d->endChangeData();
+}
+
+Track *Note::track() const
+{
+    QObject *parent = QObject::parent();
+    return parent ? qobject_cast<Track*>(parent->parent()) : 0;
 }
 
 bool Note::setData(const QVariant &value, int role)

@@ -52,8 +52,6 @@ public:
     Score *score() const;
     ObjectList<Note> *notes() const;
 
-    ScoreObject *graphicsParent() const;
-
     // IModelItem
     Ac::ItemType type() const { return Ac::TrackItem; }
     int modelItemCount() const { return ModelItemCount; }
@@ -66,6 +64,23 @@ public:
 private:
     Q_DISABLE_COPY(Track)
     Q_DECLARE_PRIVATE(Track)
+
+    friend class NotePrivate;
+};
+
+class TrackPrivate : public ScoreObjectPrivate
+{
+    Q_DECLARE_PUBLIC(Track)
+
+public:
+    QColor color;
+    QString instrument;
+    ObjectList<Note> *notes;
+
+    TrackPrivate(Track *q);
+    void init();
+    ~TrackPrivate();
+    GraphicsParentPrivate *graphicsParent() const;
 };
 
 #endif // AC_TRACK_H

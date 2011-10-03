@@ -21,32 +21,31 @@
 #include <ac_note.h>
 #include <ac_score.h>
 
-class TrackPrivate : public ScoreObjectPrivate
+TrackPrivate::TrackPrivate(Track *q)
+    :   ScoreObjectPrivate(q)
+    ,   color(127.0f, 0.0f, 0.0f)
+    ,   notes(0)
+{}
+
+void TrackPrivate::init()
 {
-public:
-    QColor color;
-    QString instrument;
-    ObjectList<Note> *notes;
+    notes = new ObjectList<Note>(q_ptr);
+    mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+    mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+    ScoreObjectPrivate::init();
+}
 
-    TrackPrivate(Track *q)
-        :   ScoreObjectPrivate(q)
-        ,   color(127.0f, 0.0f, 0.0f)
-        ,   notes(0)
-    {}
+TrackPrivate::~TrackPrivate()
+{
+    qDeleteAll(notes);
+}
 
-    void init()
-    {
-        notes = new ObjectList<Note>(q_ptr);
-        mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
-        mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
-        ScoreObjectPrivate::init();
-    }
-
-    ~TrackPrivate()
-    {
-        qDeleteAll(notes);
-    }
-};
+GraphicsParentPrivate *TrackPrivate::graphicsParent() const
+{
+    Q_Q(const Track);
+    Score *score = q->score();
+    return score ? score->d_func() : 0;
+}
 
 Track::Track(QObject *parent)
     :   ScoreObject(*(new TrackPrivate(this)), parent)
@@ -121,11 +120,6 @@ ObjectList<Note> *Track::notes() const
 {
     Q_D(const Track);
     return d->notes;
-}
-
-ScoreObject *Track::graphicsParent() const
-{
-    return score();
 }
 
 int Track::modelItemIndex(IModelItem *item) const

@@ -52,9 +52,9 @@ enum ItemType {
     PitchCurveItem,
     ControlCurveItem,
     GridSettingsItem,
-    TimeLineItem,
-    PitchLineItem,
-    ControlLineItem,
+    TimeGridLineItem,
+    PitchGridLineItem,
+    ControlGridLineItem,
     ViewSettingsItem
 };
 

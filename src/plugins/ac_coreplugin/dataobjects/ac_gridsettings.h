@@ -15,65 +15,61 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCOREOBJECT_H
-#define AC_SCOREOBJECT_H
+#ifndef AC_GRIDSETTINGS_H
+#define AC_GRIDSETTINGS_H
 
 #include <ac_graphicsparent.h>
 #include <ac_objectlist.h>
 
-class ControlCurve;
-class PitchCurve;
+class ControlGridLine;
+class PitchGridLine;
+class Score;
+class TimeGridLine;
 
-class QGraphicsItem;
-
-class ScoreObjectPrivate;
-class AC_CORE_EXPORT ScoreObject : public GraphicsParent
+class GridSettingsPrivate;
+class AC_CORE_EXPORT GridSettings : public GraphicsParent
 {
     Q_OBJECT
-    Q_PROPERTY(qreal volume READ volume WRITE setVolume)
 
 public:
-    enum { ModelItemCount = 2 };
+    enum { ModelItemCount = 3 };
 
-    virtual qreal length() const = 0;
+    explicit GridSettings(QObject *parent = 0);
 
-    qreal volume() const;
-    void setVolume(qreal volume);
+    Score *score() const;
 
-    PitchCurve *pitchCurve() const;
-    ObjectList<ControlCurve> *controlCurves() const;
+    ObjectList<TimeGridLine> *timeGridLines() const;
+    ObjectList<PitchGridLine> *pitchGridLines() const;
+    ObjectList<ControlGridLine> *controlGridLines() const;
 
     // IModelItem
+    Ac::ItemType type() const { return Ac::GridSettingsItem; }
     int modelItemCount() const { return ModelItemCount; }
     int modelItemIndex(IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
-    IModelItem *findModelItem(Ac::ItemType type) const;
     IModelItem *findModelItemList(Ac::ItemType type) const;
-    QVariant data(int role) const;
-    bool setData(const QVariant &value, int role);
-
-protected:
-    ScoreObject(ScoreObjectPrivate &dd, QObject *parent);
 
 private:
-    Q_DISABLE_COPY(ScoreObject)
-    Q_DECLARE_PRIVATE(ScoreObject)
+    Q_DISABLE_COPY(GridSettings)
+    Q_DECLARE_PRIVATE(GridSettings)
 
-    friend class CurvePrivate;
+    friend class GridLinePrivate;
 };
 
-class ScoreObjectPrivate : public GraphicsParentPrivate
+class GridSettingsPrivate : public GraphicsParentPrivate
 {
-    Q_DECLARE_PUBLIC(ScoreObject)
+    Q_DECLARE_PUBLIC(GridSettings)
 
 public:
-    qreal volume;
-    PitchCurve *pitchCurve;
-    ObjectList<ControlCurve> *controlCurves;
+    ObjectList<TimeGridLine> *timeGridLines;
+    ObjectList<PitchGridLine> *pitchGridLines;
+    ObjectList<ControlGridLine> *controlGridLines;
 
-    ScoreObjectPrivate(ScoreObject *q);
+    GridSettingsPrivate(GridSettings *q);
     void init();
-    ~ScoreObjectPrivate();
+    ~GridSettingsPrivate();
+
+    GraphicsParentPrivate *graphicsParent() const;
 };
 
-#endif // AC_SCOREOBJECT_H
+#endif // AC_GRIDSETTINGS_H

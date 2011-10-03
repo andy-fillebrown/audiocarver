@@ -20,6 +20,7 @@
 
 #include <ac_scoreobject.h>
 
+class GridSettings;
 class Track;
 class ViewSettings;
 
@@ -33,6 +34,7 @@ public:
     qreal length;
     ObjectList<Track> *tracks;
     ViewSettings *viewSettings;
+    GridSettings *gridSettings;
 
     ScorePrivate(Score *q);
     void init();
@@ -47,7 +49,7 @@ class AC_CORE_EXPORT Score : public ScoreObject
     Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
-    enum { ModelItemCount = ScoreObject::ModelItemCount + 2 };
+    enum { ModelItemCount = ScoreObject::ModelItemCount + 3 };
 
     explicit Score(QObject *parent = 0);
 
@@ -56,6 +58,7 @@ public:
 
     ObjectList<Track> *tracks() const;
     ViewSettings *viewSettings() const;
+    GridSettings *gridSettings() const;
 
     QGraphicsItem *sceneItem(Ac::SceneType type) const;
 
@@ -72,6 +75,9 @@ public:
 private:
     Q_DISABLE_COPY(Score)
     Q_DECLARE_PRIVATE(Score)
+
+    friend class GridSettingsPrivate;
+    friend class TrackPrivate;
 };
 
 #endif // AC_SCORE_H

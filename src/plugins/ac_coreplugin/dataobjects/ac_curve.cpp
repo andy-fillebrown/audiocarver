@@ -20,7 +20,7 @@
 #include <ac_scoreobject.h>
 
 CurvePrivate::CurvePrivate(Curve *q)
-    :   ObjectPrivate(q)
+    :   GraphicsObjectPrivate(q)
     ,   graphicsCurveItem(new GraphicsCurveItem)
 {}
 
@@ -29,8 +29,15 @@ CurvePrivate::~CurvePrivate()
     delete graphicsCurveItem;
 }
 
+GraphicsParentPrivate *CurvePrivate::graphicsParent() const
+{
+    Q_Q(const Curve);
+    ScoreObject *scoreObject = q->scoreObject();
+    return scoreObject ? scoreObject->d_func() : 0;
+}
+
 Curve::Curve(CurvePrivate &dd, QObject *parent)
-    :   Object(dd, parent)
+    :   GraphicsObject(dd, parent)
 {}
 
 const PointList &Curve::points() const
@@ -55,13 +62,6 @@ void Curve::setPoints(const PointList &points)
     d->points = newPts;
     d->graphicsCurveItem->setPoints(d->points);
     d->endChangeData();
-}
-
-void Curve::setParent(Object *parent)
-{
-    Q_D(Curve);
-    Object::setParent(parent);
-    d->updateGraphicsParent();
 }
 
 QVariant Curve::data(int role) const

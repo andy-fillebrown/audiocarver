@@ -52,12 +52,8 @@ public:
 
     void updateGraphicsParent()
     {
-        Q_Q(PitchCurve);
-        ScoreObject *graphicsParent = q->graphicsParent();
-        graphicsCurveItem->setParentItem(
-                    graphicsParent ?
-                        graphicsParent->d_func()->mainGraphicsItems[Ac::PitchScene]
-                      : 0);
+        GraphicsParentPrivate *parent = graphicsParent();
+        graphicsCurveItem->setParentItem(parent ? parent->mainGraphicsItems[Ac::PitchScene] : 0);
     }
 };
 
@@ -69,8 +65,7 @@ PitchCurve::PitchCurve(QObject *parent)
     setObjectName("PitchCurve");
 }
 
-ScoreObject *PitchCurve::graphicsParent() const
+ScoreObject *PitchCurve::scoreObject() const
 {
-    QObject *parent = QObject::parent();
-    return parent ? qobject_cast<ScoreObject*>(parent) : 0;
+    return qobject_cast<ScoreObject*>(QObject::parent());
 }

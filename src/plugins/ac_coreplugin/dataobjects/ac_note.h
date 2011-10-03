@@ -34,11 +34,7 @@ public:
     qreal length() const;
     void setLength(qreal length);
 
-    ScoreObject *graphicsParent() const
-    {
-        QObject *parent = QObject::parent();
-        return parent ? qobject_cast<ScoreObject*>(parent->parent()) : 0;
-    }
+    Track *track() const;
 
     // IModelItem
     Ac::ItemType type() const { return Ac::NoteItem; }

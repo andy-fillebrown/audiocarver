@@ -19,11 +19,12 @@
 #define AC_GRAPHICSSCENE_H
 
 #include <ac_namespace.h>
-#include <ac_model.h>
 
 #include <QGraphicsScene>
 
-#include <QAbstractItemModel>
+class Model;
+
+class QModelIndex;
 
 class HScene : public QGraphicsScene
 {
@@ -113,63 +114,26 @@ public:
     }
 };
 
+class SceneManagerPrivate;
 class SceneManager : public QObject
 {
     Q_OBJECT
 
 public:
-    SceneManager(QObject *parent = 0)
-        :   QObject(parent)
-        ,   _model(0)
-        ,   _pitchScene(new PitchScene(this))
-        ,   _controlScene(new ControlScene(this))
-        ,   _timeLabelScene(new TimeLabelScene(this))
-        ,   _pitchLabelScene(new PitchLabelScene(this))
-        ,   _controlLabelScene(new ControlLabelScene(this))
-    {}
+    SceneManager(QObject *parent = 0);
+    ~SceneManager();
 
-    ~SceneManager()
-    {
-        delete _model;
-    }
+    Model *model() const;
+    void setModel(Model *model);
 
-    QAbstractItemModel *model() const { return _model; }
-    void setModel(Model *model)
-    {
-        if (_model == model)
-            return;
-        _model = model;
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-            Ac::SceneType type = Ac::SceneType(i);
-            scene(type)->addItem(_model->sceneItem(type));
-        }
-    }
+    QGraphicsScene *scene(Ac::SceneType type);
 
-    QGraphicsScene *scene(Ac::SceneType type)
-    {
-        switch (type) {
-        case Ac::PitchScene:
-            return _pitchScene;
-        case Ac::ControlScene:
-            return _controlScene;
-        case Ac::TimeLabelScene:
-            return _timeLabelScene;
-        case Ac::PitchLabelScene:
-            return _pitchLabelScene;
-        case Ac::ControlLabelScene:
-            return _controlLabelScene;
-        default:
-            return 0;
-        }
-    }
+public slots:
+    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 private:
-    Model *_model;
-    PitchScene *_pitchScene;
-    ControlScene *_controlScene;
-    TimeLabelScene *_timeLabelScene;
-    PitchLabelScene *_pitchLabelScene;
-    ControlLabelScene *_controlLabelScene;
+    Q_DISABLE_COPY(SceneManager)
+    SceneManagerPrivate *d;
 };
 
 #endif // AC_GRAPHICSSCENE_H

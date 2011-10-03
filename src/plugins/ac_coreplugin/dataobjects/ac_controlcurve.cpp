@@ -54,12 +54,8 @@ public:
 
     void updateGraphicsParent()
     {
-        Q_Q(ControlCurve);
-        ScoreObject *graphicsParent = q->graphicsParent();
-        graphicsCurveItem->setParentItem(
-                    graphicsParent ?
-                        graphicsParent->d_func()->mainGraphicsItems[Ac::ControlScene]
-                      : 0);
+        GraphicsParentPrivate *parent = graphicsParent();
+        graphicsCurveItem->setParentItem(parent ? parent->mainGraphicsItems[Ac::ControlScene] : 0);
     }
 };
 
@@ -87,7 +83,7 @@ void ControlCurve::setControlId(int controlId)
     d->endChangeData();
 }
 
-ScoreObject *ControlCurve::graphicsParent() const
+ScoreObject *ControlCurve::scoreObject() const
 {
     QObject *parent = QObject::parent();
     return parent ? qobject_cast<ScoreObject*>(parent->parent()) : 0;

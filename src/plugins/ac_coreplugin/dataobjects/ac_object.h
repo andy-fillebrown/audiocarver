@@ -130,7 +130,7 @@ public:
     }
 
 protected:
-    Object(ObjectPrivate &dd, QObject *parent = 0)
+    Object(ObjectPrivate &dd, QObject *parent)
         :   QObject(parent)
         ,   d_ptr(&dd)
     {}

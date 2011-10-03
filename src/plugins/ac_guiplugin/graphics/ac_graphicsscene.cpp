@@ -16,3 +16,108 @@
 **************************************************************************/
 
 #include "ac_graphicsscene.h"
+
+#include <ac_model.h>
+
+class SceneManagerPrivate
+{
+public:
+    SceneManager *q;
+    Model *model;
+    PitchScene *pitchScene;
+    ControlScene *controlScene;
+    TimeLabelScene *timeLabelScene;
+    PitchLabelScene *pitchLabelScene;
+    ControlLabelScene *controlLabelScene;
+
+    SceneManagerPrivate(SceneManager *q)
+        :   q(q)
+        ,   model(0)
+        ,   pitchScene(0)
+        ,   controlScene(0)
+        ,   timeLabelScene(0)
+        ,   pitchLabelScene(0)
+        ,   controlLabelScene(0)
+    {}
+
+    void init()
+    {
+        pitchScene = new PitchScene(q);
+        controlScene = new ControlScene(q);
+        timeLabelScene = new TimeLabelScene(q);
+        pitchLabelScene = new PitchLabelScene(q);
+        controlLabelScene = new ControlLabelScene(q);
+    }
+
+    virtual ~SceneManagerPrivate()
+    {
+        delete model;
+    }
+
+    void updateScoreLength()
+    {
+        qreal scoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
+        pitchScene->setWidth(scoreLength);
+        controlScene->setWidth(scoreLength);
+        timeLabelScene->setWidth(scoreLength);
+    }
+};
+
+SceneManager::SceneManager(QObject *parent)
+    :   QObject(parent)
+    ,   d(new SceneManagerPrivate(this))
+{
+    d->init();
+}
+
+SceneManager::~SceneManager()
+{
+    delete d;
+}
+
+Model *SceneManager::model() const
+{
+    return d->model;
+}
+
+void SceneManager::setModel(Model *model)
+{
+    if (d->model == model)
+        return;
+    if (d->model)
+        d->model->disconnect(this);
+    d->model = model;
+    if (d->model) {
+        connect(d->model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
+        d->updateScoreLength();
+    }
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+        Ac::SceneType type = Ac::SceneType(i);
+        scene(type)->addItem(d->model->sceneItem(type));
+    }
+}
+
+QGraphicsScene *SceneManager::scene(Ac::SceneType type)
+{
+    switch (type) {
+    case Ac::PitchScene:
+        return d->pitchScene;
+    case Ac::ControlScene:
+        return d->controlScene;
+    case Ac::TimeLabelScene:
+        return d->timeLabelScene;
+    case Ac::PitchLabelScene:
+        return d->pitchLabelScene;
+    case Ac::ControlLabelScene:
+        return d->controlLabelScene;
+    default:
+        return 0;
+    }
+}
+
+void SceneManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
+{
+    Q_UNUSED(bottomLeft);
+    if (!topRight.isValid())
+        d->updateScoreLength();
+}

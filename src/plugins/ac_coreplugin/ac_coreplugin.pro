@@ -19,6 +19,10 @@ HEADERS += \
 SOURCE_PAIRS += \
     dataobjects/ac_controlcurve \
     dataobjects/ac_curve \
+    dataobjects/ac_graphicsobject \
+    dataobjects/ac_graphicsparent \
+    dataobjects/ac_gridline \
+    dataobjects/ac_gridsettings \
     dataobjects/ac_note \
     dataobjects/ac_object \
     dataobjects/ac_pitchcurve \

@@ -19,13 +19,13 @@
 #define AC_CURVE_H
 
 #include <ac_graphicsitem.h>
-#include <ac_object.h>
+#include <ac_graphicsobject.h>
 #include <ac_point.h>
 
 class ScoreObject;
 
 class CurvePrivate;
-class AC_CORE_EXPORT Curve : public Object
+class AC_CORE_EXPORT Curve : public GraphicsObject
 {
     Q_OBJECT
     Q_PROPERTY(PointList points READ points WRITE setPoints)
@@ -34,9 +34,7 @@ public:
     const PointList &points() const;
     virtual void setPoints(const PointList &points);
 
-    void setParent(Object *parent);
-
-    virtual ScoreObject *graphicsParent() const { return 0; }
+    virtual ScoreObject *scoreObject() const = 0;
 
     // IModelItem
     QVariant data(int role) const;
@@ -50,7 +48,7 @@ private:
     Q_DECLARE_PRIVATE(Curve)
 };
 
-class CurvePrivate : public ObjectPrivate
+class CurvePrivate : public GraphicsObjectPrivate
 {
     Q_DECLARE_PUBLIC(Curve)
 
@@ -61,7 +59,7 @@ public:
     CurvePrivate(Curve *q);
     ~CurvePrivate();
     virtual void conformPoints() = 0;
-    virtual void updateGraphicsParent() = 0;
+    GraphicsParentPrivate *graphicsParent() const;
 };
 
 #endif // AC_CURVE_H

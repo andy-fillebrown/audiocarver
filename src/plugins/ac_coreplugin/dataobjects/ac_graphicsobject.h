@@ -15,27 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHCURVE_H
-#define AC_PITCHCURVE_H
+#ifndef AC_GRAPHICSOBJECT_H
+#define AC_GRAPHICSOBJECT_H
 
-#include <ac_curve.h>
+#include <ac_object.h>
 
-class PitchCurvePrivate;
-class AC_CORE_EXPORT PitchCurve : public Curve
+class GraphicsParentPrivate;
+
+class QGraphicsItem;
+
+class GraphicsObjectPrivate;
+class AC_CORE_EXPORT GraphicsObject : public Object
 {
     Q_OBJECT
 
 public:
-    explicit PitchCurve(QObject *parent = 0);
+    void setParent(Object *parent);
 
-    ScoreObject *scoreObject() const;
-
-    // IModelItem
-    Ac::ItemType type() const { return Ac::PitchCurveItem; }
+protected:
+    GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent);
 
 private:
-    Q_DISABLE_COPY(PitchCurve)
-    Q_DECLARE_PRIVATE(PitchCurve)
+    Q_DISABLE_COPY(GraphicsObject)
+    Q_DECLARE_PRIVATE(GraphicsObject)
 };
 
-#endif // AC_PITCHCURVE_H
+class GraphicsObjectPrivate : public ObjectPrivate
+{
+    Q_DECLARE_PUBLIC(GraphicsObject)
+
+public:
+    GraphicsObjectPrivate(GraphicsObject *q);
+
+    virtual void updateGraphicsParent() {}
+    virtual GraphicsParentPrivate *graphicsParent() const { return 0; }
+};
+
+#endif // AC_GRAPHICSOBJECT_H

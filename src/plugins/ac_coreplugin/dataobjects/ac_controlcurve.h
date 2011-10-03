@@ -32,7 +32,7 @@ public:
     int controlId() const;
     void setControlId(int controlId);
 
-    ScoreObject *graphicsParent() const;
+    ScoreObject *scoreObject() const;
 
     // IModelItem
     Ac::ItemType type() const { return Ac::ControlCurveItem; }
