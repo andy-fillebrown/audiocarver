@@ -25,14 +25,14 @@ TrackPrivate::TrackPrivate(Track *q)
     :   ScoreObjectPrivate(q)
     ,   color(127.0f, 0.0f, 0.0f)
     ,   notes(0)
-{}
+{
+    mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+    mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+}
 
 void TrackPrivate::init()
 {
     notes = new ObjectList<Note>(q_ptr);
-    mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
-    mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
-    ScoreObjectPrivate::init();
 }
 
 TrackPrivate::~TrackPrivate()
