@@ -45,7 +45,7 @@ void populateModel(Model *model)
     Track *track = new Track;
     tracks->append(track);
     ObjectList<Note> *notes = track->notes();
-    for (int i = 0;  i < 1;  ++i) {
+    for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
         pts.append(Point(10 - i, 30 + (5 * i)));
@@ -53,17 +53,17 @@ void populateModel(Model *model)
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
-//    track = new Track;
-//    tracks->append(track);
-//    notes = track->notes();
-//    for (int i = 0;  i < 5;  ++i) {
-//        Note *note = new Note;
-//        PointList pts;
-//        pts.append(Point(10 - i, 60 + (5 * i)));
-//        pts.append(Point(10 - i + 100, 90 + (5 * i)));
-//        note->pitchCurve()->setPoints(pts);
-//        notes->append(note);
-//    }
+    track = new Track;
+    tracks->append(track);
+    notes = track->notes();
+    for (int i = 0;  i < 5;  ++i) {
+        Note *note = new Note;
+        PointList pts;
+        pts.append(Point(10 - i, 60 + (5 * i)));
+        pts.append(Point(10 - i + 100, 90 + (5 * i)));
+        note->pitchCurve()->setPoints(pts);
+        notes->append(note);
+    }
 //    GridSettings *gridSettings = score->gridSettings();
 //    ObjectList<TimeGridLine> *timeGridLines = gridSettings->timeGridLines();
 //    TimeGridLine *timeGridLine = new TimeGridLine;
