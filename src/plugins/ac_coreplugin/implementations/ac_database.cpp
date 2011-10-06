@@ -175,6 +175,7 @@ void AcDatabaseImpl::clear()
 
 void AcDatabaseImpl::read(const QString &fileName)
 {
+    Q_UNUSED(fileName);
 //    QFile file(fileName);
 //    if (!file.open(QFile::ReadOnly))
 //        return;
@@ -188,6 +189,7 @@ void AcDatabaseImpl::read(const QString &fileName)
 
 void AcDatabaseImpl::write(const QString &fileName)
 {
+    Q_UNUSED(fileName);
 //    QFile file(fileName);
 //    if (!file.open(QFile::WriteOnly))
 //        return;

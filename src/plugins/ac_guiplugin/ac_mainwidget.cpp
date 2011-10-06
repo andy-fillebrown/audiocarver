@@ -113,18 +113,21 @@ bool AcMainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) con
 
 void AcMainWidget::resizeEvent(QResizeEvent *event)
 {
+    Q_UNUSED(event);
 //    QWidget::resizeEvent(event);
 //    d->viewManager->updateViews();
 }
 
 void AcMainWidget::showEvent(QShowEvent *event)
 {
+    Q_UNUSED(event);
 //    QWidget::showEvent(event);
 //    d->viewManager->updateViews();
 }
 
 void AcMainWidget::wheelEvent(QWheelEvent *event)
 {
+    Q_UNUSED(event);
 //    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
 //        qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
 //        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
