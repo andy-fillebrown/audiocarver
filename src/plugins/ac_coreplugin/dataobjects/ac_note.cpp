@@ -30,9 +30,6 @@ public:
     NotePrivate(Note *q)
         :   ScoreObjectPrivate(q)
         ,   length(0.0f)
-    {}
-
-    void init()
     {
         mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
         mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
@@ -49,8 +46,6 @@ public:
 Note::Note(QObject *parent)
     :   ScoreObject(*(new NotePrivate(this)), parent)
 {
-    Q_D(Note);
-    d->init();
     setObjectName("Note");
 }
 
