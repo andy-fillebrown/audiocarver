@@ -63,6 +63,6 @@ inline bool operator==(const Point &a, const Point &b)
 }
 
 typedef QList<Point> PointList;
-Q_DECLARE_METATYPE(PointList);
+Q_DECLARE_METATYPE(PointList)
 
 #endif // ACPOINT_H
