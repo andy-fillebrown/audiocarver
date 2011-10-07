@@ -29,4 +29,7 @@
 #define Q_I(Interface) \
     const_cast<Interface*>(dynamic_cast<const Interface*>(this))
 
+#define Q_U(graphicsItem) \
+    reinterpret_cast<IUnknown*>(graphicsItem->data(0).value<quintptr>())
+
 #endif // AC_GLOBAL_H

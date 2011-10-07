@@ -27,10 +27,6 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 
-namespace RootItem {
-static const QTransform xform = QTransform::fromScale(1, -1);
-}
-
 class AcGraphicsViewPrivate
 {
 public:
@@ -63,7 +59,7 @@ public:
 
     void moveGrips(const QPoint &eventPos)
     {
-        QPointF pos = RootItem::xform.map(q->mapToScene(eventPos));
+        QPointF pos = rootItem->transform().map(q->mapToScene(eventPos));
         foreach (IGripItem *grip, gripsBeingDragged)
             grip->setPosition(pos);
         foreach (IEntityItem *entity, entitiesToUpdate)
@@ -146,7 +142,7 @@ void AcGraphicsView::mousePressEvent(QMouseEvent *event)
     d->dragOrigin = event->pos();
     QList<QGraphicsItem*> sceneItems = items(QRect(d->dragOrigin.x() - 1, d->dragOrigin.y() - 1, 2, 2));
     foreach (QGraphicsItem *sceneItem, sceneItems) {
-        IUnknown *unknownItem = reinterpret_cast<IUnknown*>(sceneItem->data(0).value<quintptr>());
+        IUnknown *unknownItem = Q_U(sceneItem);
         if (unknownItem) {
             IGripItem *grip = query<IGripItem>(unknownItem);
             if (grip && !d->gripsBeingDragged.contains(grip)) {
@@ -189,11 +185,11 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         QList<QGraphicsItem*> sceneItems = items(rect);
         QList<IEntity*> entities;
         foreach (QGraphicsItem *sceneItem, sceneItems) {
-            IUnknown *unknown = reinterpret_cast<IUnknown*>(sceneItem->data(0).value<quintptr>());
+            IUnknown *unknown = Q_U(sceneItem);
             if (unknown) {
                 IEntity *entity = query<IEntity>(unknown);
                 if (entity) {
-                    QRegion region = sceneItem->boundingRegion(RootItem::xform * viewportTransform());
+                    QRegion region = sceneItem->boundingRegion(d->rootItem->transform() * viewportTransform());
                     if (region.intersects(rect))
                         entities.append(entity);
                 }
