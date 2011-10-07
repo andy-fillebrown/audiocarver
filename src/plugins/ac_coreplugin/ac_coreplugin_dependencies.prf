@@ -4,6 +4,7 @@ load(../mi_coreplugin/mi_coreplugin.prf)
 DIRS = \
     dataobjects \
     implementations \
+    interfaces \
     graphicsview \
     model \
     tools \

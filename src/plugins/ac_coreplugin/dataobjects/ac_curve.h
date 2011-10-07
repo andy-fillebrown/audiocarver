@@ -18,23 +18,29 @@
 #ifndef AC_CURVE_H
 #define AC_CURVE_H
 
+#include <ac_ientity.h>
+
 #include <ac_graphicsitem.h>
 #include <ac_graphicsobject.h>
-#include <ac_point.h>
 
 class ScoreObject;
 
 class CurvePrivate;
 class AC_CORE_EXPORT Curve : public GraphicsObject
+        ,   public IEntity
 {
     Q_OBJECT
     Q_PROPERTY(PointList points READ points WRITE setPoints)
 
 public:
-    const PointList &points() const;
-    virtual void setPoints(const PointList &points);
-
     virtual ScoreObject *scoreObject() const = 0;
+
+    // IEntity
+    bool isSubEntity() const { return true; }
+    PointList points() const;
+    void setPoints(const PointList &points);
+    void highlight();
+    void unhighlight();
 
     // IModelItem
     QVariant data(int role) const;

@@ -22,7 +22,9 @@
 CurvePrivate::CurvePrivate(Curve *q)
     :   GraphicsObjectPrivate(q)
     ,   graphicsCurveItem(new GraphicsCurveItem)
-{}
+{
+    graphicsCurveItem->setEntity(q);
+}
 
 CurvePrivate::~CurvePrivate()
 {
@@ -40,7 +42,7 @@ Curve::Curve(CurvePrivate &dd, QObject *parent)
     :   GraphicsObject(dd, parent)
 {}
 
-const PointList &Curve::points() const
+PointList Curve::points() const
 {
     Q_D(const Curve);
     return d->points;
@@ -62,6 +64,18 @@ void Curve::setPoints(const PointList &points)
     d->points = newPts;
     d->graphicsCurveItem->setPoints(d->points);
     d->endChangeData();
+}
+
+void Curve::highlight()
+{
+    Q_D(Curve);
+    d->graphicsCurveItem->highlight();
+}
+
+void Curve::unhighlight()
+{
+    Q_D(Curve);
+    d->graphicsCurveItem->unhighlight();
 }
 
 QVariant Curve::data(int role) const

@@ -23,6 +23,8 @@
 #include <QGraphicsItem>
 #include <QPen>
 
+class IEntity;
+
 class GraphicsItem : public QGraphicsItem
 {
 public:
@@ -76,6 +78,8 @@ class GraphicsCurveItem : public GraphicsPathItem
 public:
     explicit GraphicsCurveItem(QGraphicsItem *parent = 0);
     ~GraphicsCurveItem();
+
+    void setEntity(IEntity *entity);
 
     void setPoints(const PointList &points);
 

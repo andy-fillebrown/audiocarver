@@ -17,7 +17,9 @@
 
 #include "ac_note.h"
 
+#include <ac_controlcurve.h>
 #include <ac_graphicsitem.h>
+#include <ac_pitchcurve.h>
 #include <ac_track.h>
 
 class NotePrivate : public ScoreObjectPrivate
@@ -69,6 +71,34 @@ Track *Note::track() const
 {
     QObject *parent = QObject::parent();
     return parent ? qobject_cast<Track*>(parent->parent()) : 0;
+}
+
+PointList Note::points() const
+{
+    return PointList();
+}
+
+void Note::setPoints(const PointList &points)
+{
+    Q_UNUSED(points);
+}
+
+void Note::highlight()
+{
+    Q_D(Note);
+    d->pitchCurve->highlight();
+    int n = d->controlCurves->count();
+    for (int i = 0;  i < n;  ++i)
+        d->controlCurves->at(i)->highlight();
+}
+
+void Note::unhighlight()
+{
+    Q_D(Note);
+    d->pitchCurve->unhighlight();
+    int n = d->controlCurves->count();
+    for (int i = 0;  i < n;  ++i)
+        d->controlCurves->at(i)->unhighlight();
 }
 
 bool Note::setData(const QVariant &value, int role)

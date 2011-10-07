@@ -1,5 +1,5 @@
 
-HEADERS += \
+HEADERS *= \
     ac_objectlist.h \
 
 SOURCE_PAIRS = \

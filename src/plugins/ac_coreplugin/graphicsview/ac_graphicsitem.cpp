@@ -45,6 +45,13 @@ GraphicsCurveItem::~GraphicsCurveItem()
     delete d;
 }
 
+void GraphicsCurveItem::setEntity(IEntity *entity)
+{
+    QVariant data = quintptr(entity);
+    setData(0, data);
+    d->guideItem->setData(0, data);
+}
+
 void GraphicsCurveItem::setPoints(const PointList &points)
 {
     if (points.count() < 2) {

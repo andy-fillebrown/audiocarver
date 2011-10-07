@@ -18,12 +18,15 @@
 #ifndef AC_NOTE_H
 #define AC_NOTE_H
 
+#include <ac_ientity.h>
+
 #include <ac_scoreobject.h>
 
 class Track;
 
 class NotePrivate;
 class AC_CORE_EXPORT Note : public ScoreObject
+        ,   public IEntity
 {
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
@@ -35,6 +38,13 @@ public:
     void setLength(qreal length);
 
     Track *track() const;
+
+    // IEntity
+    bool isSubEntity() const { return false; }
+    PointList points() const;
+    void setPoints(const PointList &points);
+    void highlight();
+    void unhighlight();
 
     // IModelItem
     Ac::ItemType type() const { return Ac::NoteItem; }

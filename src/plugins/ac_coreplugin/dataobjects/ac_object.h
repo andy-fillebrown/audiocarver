@@ -18,8 +18,9 @@
 #ifndef AC_OBJECT_H
 #define AC_OBJECT_H
 
+#include <ac_imodelitem.h>
+
 #include <ac_global.h>
-#include <interfaces/ac_imodelitem.h>
 
 #include <QObject>
 
@@ -124,9 +125,7 @@ public:
 
     Qt::ItemFlags flags() const
     {
-        return Qt::ItemIsSelectable
-                | Qt::ItemIsEditable
-                | Qt::ItemIsEnabled;
+        return Qt::ItemIsEnabled;
     }
 
 protected:
