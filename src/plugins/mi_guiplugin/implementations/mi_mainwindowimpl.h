@@ -20,8 +20,6 @@
 
 #include <imainwindow.h>
 
-namespace Private {
-
 class MiMainWindowImpl : public Core::IMainWindow
 {
     Q_OBJECT
@@ -50,7 +48,5 @@ private slots:
 private:
     Q_DISABLE_COPY(MiMainWindowImpl)
 };
-
-} // namespace Private
 
 #endif // MI_MAINWINDOWIMPL_H

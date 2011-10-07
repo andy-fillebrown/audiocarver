@@ -1,7 +1,7 @@
 TARGET = QtCorePlugin
 TEMPLATE = lib
 
-include(../../plugin.pri)
+load(../../plugin.prf)
 include(coreplugin_dependencies.pri)
 
 QMAKE_SUBSTITUTES += pro_version.h.in

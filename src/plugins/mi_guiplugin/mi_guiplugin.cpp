@@ -16,12 +16,13 @@
 **************************************************************************/
 
 #include "mi_guiplugin.h"
+
 #include <mi_mainwindowimpl.h>
+
 #include <icore.h>
 #include <mainwindow.h>
-#include <QtPlugin>
 
-using namespace Private;
+#include <QtPlugin>
 
 bool MiGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {

@@ -1,28 +1,17 @@
 TARGET = AcGuiPlugin
 TEMPLATE = lib
 
-include(../../plugin.pri)
-include(ac_guiplugin_dependencies.pri)
+load(../../plugin.prf)
+load(../ac_guiplugin/ac_guiplugin_dependencies.prf)
 
-HEADERS += \
+for(dir, DIRS) {
+    include($$dir/$${dir}.pri)
+}
+
+HEADERS *= \
     ac_guiconstants.h \
 
 SOURCE_PAIRS = \
-    graphics/ac_graphicsscene \
-    \
-    graphicsview/ac_editorview \
-    graphicsview/ac_labelview \
-    graphicsview/ac_graphicsview \
-    graphicsview/ac_pitchlabelview \
-    graphicsview/ac_pitchview \
-    graphicsview/ac_timelabelview \
-    graphicsview/ac_viewmanager \
-    graphicsview/ac_volumelabelview \
-    graphicsview/ac_volumeview \
-    \
-    implementations/ac_editorimpl \
-    implementations/ac_mainwindowimpl \
-    \
     ac_guiplugin \
     ac_mainwidget \
 
@@ -31,4 +20,10 @@ for(pair, SOURCE_PAIRS) {
     SOURCES *= $${pair}.cpp
 }
 
-RESOURCES = ac_gui.qrc
+RESOURCES *= \
+    ac_guiplugin.qrc \
+
+OTHER_FILES *= \
+    ac_guiplugin.prf \
+    ac_guiplugin_dependencies.prf \
+    AcGuiPlugin.pluginspec.in \

@@ -109,7 +109,7 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    setCursor(QPixmap(":/ac_gui/images/crosshair.png"));
+    setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
 }
 
 AcGraphicsView::~AcGraphicsView()

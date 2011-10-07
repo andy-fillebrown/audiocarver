@@ -23,8 +23,6 @@
 
 #include <QtPlugin>
 
-using namespace Private;
-
 bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);

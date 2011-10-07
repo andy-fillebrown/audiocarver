@@ -20,8 +20,6 @@
 
 #include <mi_idatabase.h>
 
-namespace Private {
-
 class AcDatabaseImplData;
 
 class AcDatabaseImpl : public IDatabase
@@ -41,7 +39,5 @@ private:
     Q_DISABLE_COPY(AcDatabaseImpl)
     AcDatabaseImplData *d;
 };
-
-} // namespace Private
 
 #endif // AC_DATABASE_H

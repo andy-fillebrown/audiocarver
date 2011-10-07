@@ -16,19 +16,16 @@
 **************************************************************************/
 
 #include "mi_coreplugin.h"
-//#include <mi_listobject.h>
-#include <pluginmanager.h>
-#include <QtPlugin>
-#include <QMetaType>
 
-using namespace Private;
+#include <pluginmanager.h>
+
+#include <QMetaType>
+#include <QtPlugin>
 
 bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-//    qRegisterMetaType<MiObjectList>();
-//    qRegisterMetaType<MiListObject*>();
     return true;
 }
 

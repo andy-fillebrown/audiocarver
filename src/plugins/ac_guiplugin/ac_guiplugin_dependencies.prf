@@ -1,0 +1,14 @@
+
+load(../mi_guiplugin/mi_guiplugin.prf)
+load(../ac_coreplugin/ac_coreplugin.prf)
+
+DIRS = \
+    graphicsview \
+    implementations \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

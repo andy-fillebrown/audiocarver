@@ -20,8 +20,6 @@
 
 #include <iplugin.h>
 
-namespace Private {
-
 class MiCorePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
@@ -36,7 +34,5 @@ public:
 private:
     Q_DISABLE_COPY(MiCorePlugin)
 };
-
-} // namespace Private
 
 #endif // MI_COREPLUGIN_H

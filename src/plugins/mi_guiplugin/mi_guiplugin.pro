@@ -1,37 +1,31 @@
 TARGET = MiGuiPlugin
 TEMPLATE = lib
 
-include(../../plugin.pri)
-include(mi_guiplugin_dependencies.pri)
+load(../../plugin.prf)
+load(../mi_guiplugin/mi_guiplugin_dependencies.prf)
 
-DEFINES += MI_GUI_LIBRARY
+for(dir, DIRS) {
+    include($$dir/$${dir}.pri)
+}
 
-HEADERS += \
-#    graphicsitem/mi_graphicspathitem.h \
-#    \
-    graphicsscene/mi_graphicsscene.h \
-    \
-    graphicsview/mi_graphicsview.h \
-    \
-    implementations/mi_mainwindowimpl.h \
-    \
-    interfaces/mi_ieditor.h \
-    \
-    mi_gui_global.h \
+DEFINES *= \
+    MI_GUI_LIBRARY
+
+HEADERS *= \
     mi_guiconstants.h \
-    mi_guiplugin.h \
 
-SOURCES += \
-#    graphicsitem/mi_graphicspathitem.cpp \
-#    \
-    graphicsscene/mi_graphicsscene.cpp \
-    \
-    graphicsview/mi_graphicsview.cpp \
-    \
-    implementations/mi_mainwindowimpl.cpp \
-    \
-    interfaces/mi_ieditor.cpp \
-    \
-    mi_guiplugin.cpp \
+SOURCE_PAIRS = \
+    mi_guiplugin \
 
-RESOURCES += mi_gui.qrc
+for(pair, SOURCE_PAIRS) {
+    HEADERS *= $${pair}.h
+    SOURCES *= $${pair}.cpp
+}
+
+RESOURCES *= \
+    mi_guiplugin.qrc \
+
+OTHER_FILES *= \
+    mi_guiplugin.prf \
+    mi_guiplugin_dependencies.prf \
+    MiGuiPlugin.pluginspec.in \

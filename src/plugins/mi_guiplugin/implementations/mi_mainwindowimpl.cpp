@@ -29,8 +29,6 @@
 #include <QFileDialog>
 #include <QIcon>
 
-using namespace Private;
-
 void MiMainWindowImpl::initMenuBarGroups(QStringList &groups) const
 {
     const int fileGroupIndex = groups.indexOf(Core::Constants::G_FILE);

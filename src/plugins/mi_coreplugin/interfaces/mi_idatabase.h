@@ -19,7 +19,7 @@
 #define MI_IDATABASE_H
 
 #include <QObject>
-#include <mi_core_global.h>
+#include <mi_global.h>
 
 class MI_CORE_EXPORT IDatabase : public QObject
 {

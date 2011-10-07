@@ -33,10 +33,6 @@
 //#include <QXmlStreamReader>
 //#include <QXmlStreamWriter>
 
-using namespace Private;
-
-namespace Private {
-
 class AcDatabaseImplData
 {
 public:
@@ -139,8 +135,6 @@ public:
 //        delete score;
     }
 };
-
-} // namespace Private
 
 AcDatabaseImpl::AcDatabaseImpl()
     :   d(new AcDatabaseImplData(this))

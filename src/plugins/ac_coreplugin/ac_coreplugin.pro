@@ -1,45 +1,29 @@
 TARGET = AcCorePlugin
 TEMPLATE = lib
 
-include(../../plugin.pri)
-include(ac_coreplugin_dependencies.pri)
+load(../../plugin.prf)
+load(../ac_coreplugin/ac_coreplugin_dependencies.prf)
 
-DEFINES += AC_CORE_LIBRARY
+for(dir, DIRS) {
+    include($$dir/$${dir}.pri)
+}
 
-HEADERS += \
-    dataobjects/ac_objectlist.h \
-    \
-    model/interfaces/ac_imodelitem.h \
-    \
-    tools/ac_point.h \
-    \
+DEFINES *= \
+    AC_CORE_LIBRARY \
+
+HEADERS *= \
     ac_global.h \
     ac_namespace.h \
 
-SOURCE_PAIRS += \
-    dataobjects/ac_controlcurve \
-    dataobjects/ac_curve \
-    dataobjects/ac_graphicsobject \
-    dataobjects/ac_graphicsparent \
-    dataobjects/ac_gridline \
-    dataobjects/ac_gridsettings \
-    dataobjects/ac_note \
-    dataobjects/ac_object \
-    dataobjects/ac_pitchcurve \
-    dataobjects/ac_score \
-    dataobjects/ac_scoreobject \
-    dataobjects/ac_track \
-    dataobjects/ac_viewsettings \
-    \
-    graphicsitems/ac_graphicsitem \
-    \
-    implementations/ac_database \
-    \
-    model/ac_model \
-    \
+SOURCE_PAIRS = \
     ac_coreplugin \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= $${pair}.h
     SOURCES *= $${pair}.cpp
 }
+
+OTHER_FILES *= \
+    ac_coreplugin.prf \
+    ac_coreplugin_dependencies.prf \
+    AcCorePlugin.pluginspec.in \

@@ -20,8 +20,6 @@
 
 #include <iplugin.h>
 
-namespace Private {
-
 class MiGuiPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
@@ -36,7 +34,5 @@ public:
 private:
     Q_DISABLE_COPY(MiGuiPlugin)
 };
-
-} // namespace Private
 
 #endif // MI_GUIPLUGIN_H

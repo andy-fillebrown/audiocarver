@@ -15,29 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef MI_GRAPHICSVIEW_H
-#define MI_GRAPHICSVIEW_H
+#ifndef MI_GRAPHICSSCENE_H
+#define MI_GRAPHICSSCENE_H
 
 #include <mi_global.h>
-#include <QGraphicsView>
+#include <QGraphicsScene>
 
-class MI_GUI_EXPORT MiGraphicsView : public QGraphicsView
+class MI_GUI_EXPORT MiGraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    MiGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0)
-        :   QGraphicsView(scene, parent)
+    MiGraphicsScene(QObject *parent = 0)
+    :   QGraphicsScene(parent)
     {}
 
-    ~MiGraphicsView()
+    ~MiGraphicsScene()
     {}
-
-protected:
-    void wheelEvent(QWheelEvent *event);
 
 private:
-    Q_DISABLE_COPY(MiGraphicsView)
+    Q_DISABLE_COPY(MiGraphicsScene)
 };
 
-#endif // MI_GRAPHICSVIEW_H
+#endif // MI_GRAPHICSSCENE_H
