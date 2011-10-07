@@ -50,18 +50,18 @@ inline void mi_assert(const char *assertion, const char *file, int line)
 #  endif
 #endif
 
-#define Q_DECLARE_PRIVATE_TEMPLATE(Class) \
+#define Q_DECLARE_TEMPLATE_PRIVATE(Class) \
     inline Class##Private<T> *d_func() { return reinterpret_cast<Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
     inline const Class##Private<T> *d_func() const { return reinterpret_cast<const Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
     friend class Class##Private<T>;
 
-#define Q_DECLARE_PUBLIC_TEMPLATE(Class) \
+#define Q_DECLARE_TEMPLATE_PUBLIC(Class) \
     inline Class<T> *q_func() { return static_cast<Class<T>*>(q_ptr); } \
     inline const Class<T> *q_func() const { return static_cast<const Class<T>*>(q_ptr); } \
     friend class Class<T>;
 
-#define Q_D_TEMPLATE(Class) Class##Private<T> *const d = d_func()
-#define Q_Q_TEMPLATE(Class) Class<T> *const q = q_func()
+#define Q_TD(Class) Class##Private<T> *const d = d_func()
+#define Q_TQ(Class) Class<T> *const q = q_func()
 
 template <typename Container, typename LessThan>
 void qSort(Container &c, LessThan lessThan)
@@ -69,5 +69,7 @@ void qSort(Container &c, LessThan lessThan)
     qSort(c.begin(), c.end(), lessThan);
 }
 
-#endif // MI_GLOBAL_H
+#define Q_FLOAT_MIN 1E-37
+#define Q_FLOAT_MAX 1E+37
 
+#endif // MI_GLOBAL_H

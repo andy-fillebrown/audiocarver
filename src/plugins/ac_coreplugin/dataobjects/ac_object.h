@@ -18,9 +18,10 @@
 #ifndef AC_OBJECT_H
 #define AC_OBJECT_H
 
+#include <ac_global.h>
 #include <ac_imodelitem.h>
 
-#include <ac_global.h>
+#include <mi_iunknown.h>
 
 #include <QObject>
 
@@ -126,6 +127,18 @@ public:
     Qt::ItemFlags flags() const
     {
         return Qt::ItemIsEnabled;
+    }
+
+    // IUnknown
+
+    void *query(int type) const
+    {
+        switch (type) {
+        case Ac::ModelItemInterface:
+            return Q_I(IModelItem);
+        default:
+            return 0;
+        }
     }
 
 protected:

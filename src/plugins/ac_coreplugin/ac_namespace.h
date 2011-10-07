@@ -22,6 +22,14 @@
 
 namespace Ac {
 
+enum InterfaceType {
+    ModelItemInterface,
+    EntityInterface,
+    SubEntityInterface,
+    EntityItemInterface,
+    GripItemInterface
+};
+
 enum ItemDataRole {
     ItemTypeRole = Qt::UserRole,
     ListTypeRole,

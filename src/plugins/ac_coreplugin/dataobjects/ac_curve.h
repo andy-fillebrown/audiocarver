@@ -36,7 +36,6 @@ public:
     virtual ScoreObject *scoreObject() const = 0;
 
     // IEntity
-    bool isSubEntity() const { return true; }
     PointList points() const;
     void setPoints(const PointList &points);
     void highlight();
@@ -45,6 +44,16 @@ public:
     // IModelItem
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
+
+    void *query(int type) const
+    {
+        switch (type) {
+        case Ac::EntityInterface:
+            return Q_I(IEntity);
+        default:
+            return GraphicsObject::query(type);
+        }
+    }
 
 protected:
     Curve(CurvePrivate &dd, QObject *parent = 0);
@@ -63,7 +72,9 @@ public:
     GraphicsCurveItem *graphicsCurveItem;
 
     CurvePrivate(Curve *q);
+    void init();
     ~CurvePrivate();
+
     virtual void conformPoints() = 0;
     GraphicsParentPrivate *graphicsParent() const;
 };

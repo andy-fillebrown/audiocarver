@@ -46,13 +46,13 @@ public:
     explicit ObjectList(QObject *parent = 0)
         :   Object(*(new ObjectListPrivate<T>(this)), parent)
     {
-        Q_D_TEMPLATE(ObjectList);
+        Q_TD(ObjectList);
         setObjectName(QString("%1s").arg(d->t().objectName()));
     }
 
     int count() const
     {
-        Q_D_TEMPLATE(const ObjectList);
+        Q_TD(const ObjectList);
         return d->objects.count();
     }
 
@@ -63,13 +63,13 @@ public:
 
     T *at(int i) const
     {
-        Q_D_TEMPLATE(const ObjectList);
+        Q_TD(const ObjectList);
         return d->objects.at(i);
     }
 
     int indexOf(T *object, int from = 0)
     {
-        Q_D_TEMPLATE(ObjectList);
+        Q_TD(ObjectList);
         return d->objects.indexOf(object, from);
     }
 
@@ -80,7 +80,7 @@ public:
 
     void insert(int i, T *object)
     {
-        Q_D_TEMPLATE(ObjectList);
+        Q_TD(ObjectList);
         if (d->objects.contains(object))
             return;
         object->setParent(this);
@@ -91,7 +91,7 @@ public:
 
     void removeAt(int i)
     {
-        Q_D_TEMPLATE(ObjectList);
+        Q_TD(ObjectList);
         Object *object = d->objects[i];
         d->beginRemoveObjects(i, i);
         d->objects.removeAt(i);
@@ -103,7 +103,7 @@ public:
     {
         if (isEmpty())
             return;
-        Q_D_TEMPLATE(ObjectList);
+        Q_TD(ObjectList);
         d->beginRemoveObjects(0, count() - 1);
         d->objects.clear();
         d->endRemoveObjects();
@@ -123,8 +123,8 @@ public:
 
     int modelItemIndex(IModelItem *item) const
     {
-        Q_D_TEMPLATE(const ObjectList);
-        return d->objects.indexOf(item->query<T>());
+        Q_TD(const ObjectList);
+        return d->objects.indexOf(reinterpret_cast<T*>(item));
     }
 
     IModelItem *modelItemAt(int i) const
@@ -135,7 +135,7 @@ public:
     QVariant data(int role) const
     {
         if (Ac::ListTypeRole == role) {
-            Q_D_TEMPLATE(const ObjectList);
+            Q_TD(const ObjectList);
             return d->t().type();
         }
         return Object::data(role);
@@ -143,7 +143,7 @@ public:
 
 private:
     Q_DISABLE_COPY(ObjectList)
-    Q_DECLARE_PRIVATE_TEMPLATE(ObjectList)
+    Q_DECLARE_TEMPLATE_PRIVATE(ObjectList)
 
     friend void qDeleteAll<T>(ObjectList<T>*);
 };

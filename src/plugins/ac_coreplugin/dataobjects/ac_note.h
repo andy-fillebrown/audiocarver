@@ -50,6 +50,17 @@ public:
     Ac::ItemType type() const { return Ac::NoteItem; }
     bool setData(const QVariant &value, int role);
 
+    // IUnknown
+    void *query(int type) const
+    {
+        switch (type) {
+        case Ac::EntityInterface:
+            return Q_I(IEntity);
+        default:
+            return ScoreObject::query(type);
+        }
+    }
+
 private:
     Q_DISABLE_COPY(Note)
     Q_DECLARE_PRIVATE(Note)

@@ -26,4 +26,7 @@
 #  define AC_CORE_EXPORT Q_DECL_IMPORT
 #endif
 
+#define Q_I(Interface) \
+    const_cast<Interface*>(dynamic_cast<const Interface*>(this))
+
 #endif // AC_GLOBAL_H

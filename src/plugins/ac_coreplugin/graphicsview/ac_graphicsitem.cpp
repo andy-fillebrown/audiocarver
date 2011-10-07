@@ -17,6 +17,8 @@
 
 #include "ac_graphicsitem.h"
 
+#include <ac_ientity.h>
+
 class GraphicsCurveItemPrivate
 {
 public:

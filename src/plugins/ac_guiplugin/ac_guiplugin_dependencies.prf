@@ -5,6 +5,7 @@ load(../ac_coreplugin/ac_coreplugin.prf)
 DIRS = \
     graphicsview \
     implementations \
+    interfaces \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

@@ -22,7 +22,11 @@
 CurvePrivate::CurvePrivate(Curve *q)
     :   GraphicsObjectPrivate(q)
     ,   graphicsCurveItem(new GraphicsCurveItem)
+{}
+
+void CurvePrivate::init()
 {
+    Q_Q(Curve);
     graphicsCurveItem->setEntity(q);
 }
 
@@ -40,7 +44,9 @@ GraphicsParentPrivate *CurvePrivate::graphicsParent() const
 
 Curve::Curve(CurvePrivate &dd, QObject *parent)
     :   GraphicsObject(dd, parent)
-{}
+{
+    dd.init();
+}
 
 PointList Curve::points() const
 {

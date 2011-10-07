@@ -22,6 +22,7 @@
 
 class ControlCurvePrivate;
 class AC_CORE_EXPORT ControlCurve : public Curve
+        ,   public ISubEntity
 {
     Q_OBJECT
     Q_PROPERTY(int controlId READ controlId WRITE setControlId)
@@ -34,10 +35,24 @@ public:
 
     ScoreObject *scoreObject() const;
 
+    // ISubEntity
+    IEntity *parentEntity() const;
+
     // IModelItem
     Ac::ItemType type() const { return Ac::ControlCurveItem; }
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
+
+    // IUnknown
+    void *query(int type) const
+    {
+        switch (type) {
+        case Ac::SubEntityInterface:
+            return Q_I(ISubEntity);
+        default:
+            return Curve::query(type);
+        }
+    }
 
 private:
     Q_DISABLE_COPY(ControlCurve)

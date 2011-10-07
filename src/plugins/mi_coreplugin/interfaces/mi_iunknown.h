@@ -23,15 +23,13 @@ class IUnknown
 public:
     virtual ~IUnknown() {}
 
-    template <class T> T *query()
-    {
-        return dynamic_cast<T*>(this);
-    }
-
-    template <class T> const T *query() const
-    {
-        return dynamic_cast<const T*>(this);
-    }
+    virtual void *query(int type) const = 0;
 };
+
+template <class T> inline
+T *query(IUnknown *unknown)
+{
+    return unknown ? reinterpret_cast<T*>(unknown->query(T::Type)) : 0;
+}
 
 #endif // MIIUNKOWN_H

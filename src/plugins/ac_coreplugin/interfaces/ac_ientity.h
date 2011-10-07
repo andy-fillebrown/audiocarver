@@ -18,18 +18,27 @@
 #ifndef AC_IENTITY_H
 #define AC_IENTITY_H
 
-#include <mi_iunknown.h>
-
 #include <ac_point.h>
+
+#include <mi_iunknown.h>
 
 class IEntity : public IUnknown
 {
 public:
-    virtual bool isSubEntity() const = 0;
+    enum { Type = Ac::EntityInterface };
+
     virtual PointList points() const = 0;
     virtual void setPoints(const PointList &points) = 0;
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
+};
+
+class ISubEntity : public IUnknown
+{
+public:
+    enum { Type = Ac::SubEntityInterface };
+
+    virtual IEntity *parentEntity() const = 0;
 };
 
 #endif // AC_IENTITY_H

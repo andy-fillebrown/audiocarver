@@ -15,30 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_IMODELITEM_H
-#define AC_IMODELITEM_H
+#ifndef AC_IENTITYITEM_H
+#define AC_IENTITYITEM_H
 
 #include <ac_namespace.h>
 
 #include <mi_iunknown.h>
 
-class QVariant;
+class IEntity;
 
-class IModelItem : public IUnknown
+class IEntityItem : public IUnknown
 {
 public:
-    enum { Type = Ac::ModelItemInterface };
+    enum { Type = Ac::EntityItemInterface };
 
-    virtual Ac::ItemType type() const = 0;
-    virtual IModelItem *parentModelItem() const = 0;
-    virtual int modelItemCount() const = 0;
-    virtual int modelItemIndex(IModelItem *item) const = 0;
-    virtual IModelItem *modelItemAt(int index) const = 0;
-    virtual IModelItem *findModelItem(Ac::ItemType type) const = 0;
-    virtual IModelItem *findModelItemList(Ac::ItemType type) const = 0;
-    virtual QVariant data(int role) const = 0;
-    virtual bool setData(const QVariant &data, int role) = 0;
-    virtual Qt::ItemFlags flags() const = 0;
+    virtual IEntity *entity() const = 0;
+    virtual void highlight() = 0;
+    virtual void unhighlight() = 0;
+    virtual void updatePoints() = 0;
 };
 
-#endif // AC_IMODELITEM_H
+#endif // AC_IGRIP_H

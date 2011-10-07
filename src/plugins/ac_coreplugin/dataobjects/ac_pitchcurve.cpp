@@ -17,7 +17,7 @@
 
 #include "ac_pitchcurve.h"
 
-#include <ac_scoreobject.h>
+#include <ac_note.h>
 
 class PitchCurvePrivate : public CurvePrivate
 {
@@ -68,4 +68,9 @@ PitchCurve::PitchCurve(QObject *parent)
 ScoreObject *PitchCurve::scoreObject() const
 {
     return qobject_cast<ScoreObject*>(QObject::parent());
+}
+
+IEntity *PitchCurve::parentEntity() const
+{
+    return qobject_cast<Note*>(QObject::parent());
 }

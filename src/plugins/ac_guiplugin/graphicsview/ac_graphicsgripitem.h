@@ -15,42 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHCURVE_H
-#define AC_PITCHCURVE_H
+#ifndef AC_GRAPHICSGRIPITEM_H
+#define AC_GRAPHICSGRIPITEM_H
 
-#include <ac_curve.h>
+#include <ac_igripitem.h>
 
-class PitchCurvePrivate;
-class AC_CORE_EXPORT PitchCurve : public Curve
-        ,   public ISubEntity
+#include <ac_graphicsitem.h>
+
+class GraphicsEntityItem;
+
+class GraphicsGripItemPrivate;
+class GraphicsGripItem : public GraphicsItem
+        ,   public IGripItem
 {
-    Q_OBJECT
-
 public:
-    explicit PitchCurve(QObject *parent = 0);
+    GraphicsGripItem(const QPointF &position);
+    ~GraphicsGripItem();
 
-    ScoreObject *scoreObject() const;
+    IEntityItem *parentEntityItem() const;
 
-    // ISubEntity
-    IEntity *parentEntity() const;
-
-    // IModelItem
-    Ac::ItemType type() const { return Ac::PitchCurveItem; }
+    // IGrip
+    void setPosition(const QPointF &position);
 
     // IUnknown
     void *query(int type) const
     {
         switch (type) {
-        case Ac::SubEntityInterface:
-            return Q_I(ISubEntity);
+        case Ac::GripItemInterface:
+            return Q_I(IGripItem);
         default:
-            return Curve::query(type);
+            return 0;
         }
     }
 
 private:
-    Q_DISABLE_COPY(PitchCurve)
-    Q_DECLARE_PRIVATE(PitchCurve)
+    Q_DISABLE_COPY(GraphicsGripItem)
+
+    GraphicsGripItemPrivate *d;
 };
 
-#endif // AC_PITCHCURVE_H
+#endif // AC_GRAPHICSGRIPITEM_H
