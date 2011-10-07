@@ -30,11 +30,6 @@ public:
     AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcPitchView();
 
-    void updateTransform();
-
-protected:
-    void updateViewSettings() const;
-
 private:
     Q_DISABLE_COPY(AcPitchView)
     AcPitchViewPrivate *d;

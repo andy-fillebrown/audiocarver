@@ -40,24 +40,6 @@ public:
 
     void setModel(Model *model);
 
-//    qreal timePosition() const;
-//    void setTimePosition(qreal position);
-//    qreal pitchPosition() const;
-//    void setPitchPosition(qreal position);
-//    qreal volumePosition() const;
-//    void setVolumePosition(qreal position);
-//    qreal timeScale() const;
-//    void setTimeScale(qreal scale);
-//    qreal pitchScale() const;
-//    void setPitchScale(qreal scale);
-//    qreal volumeScale() const;
-//    void setVolumeScale(qreal scale);
-
-    void updateViews();
-
-//private slots:
-//    void updateViewSettings(int i, const QVariant &value);
-
 private:
     Q_DISABLE_COPY(AcViewManager)
     AcViewManagerPrivate *d;

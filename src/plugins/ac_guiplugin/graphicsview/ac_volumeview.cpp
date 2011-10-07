@@ -16,8 +16,6 @@
 **************************************************************************/
 
 #include "ac_volumeview.h"
-//#include <ac_score.h>
-//#include <ac_viewsettings.h>
 
 class AcVolumeViewPrivate
 {
@@ -37,17 +35,4 @@ AcVolumeView::AcVolumeView(QGraphicsScene *scene, QWidget *parent)
 AcVolumeView::~AcVolumeView()
 {
     delete d;
-}
-
-void AcVolumeView::updateTransform()
-{
-//    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-//    setTransform(QTransform::fromScale(viewSettings->timeScale(), viewSettings->volumeScale()));
-}
-
-void AcVolumeView::updateViewSettings() const
-{
-//    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-//    viewSettings->setTimePosition(center().x());
-//    viewSettings->setVolumePosition(center().y());
 }

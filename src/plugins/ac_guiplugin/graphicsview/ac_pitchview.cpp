@@ -16,8 +16,6 @@
 **************************************************************************/
 
 #include "ac_pitchview.h"
-//#include <ac_score.h>
-//#include <ac_viewsettings.h>
 
 class AcPitchViewPrivate
 {
@@ -37,17 +35,4 @@ AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
 AcPitchView::~AcPitchView()
 {
     delete d;
-}
-
-void AcPitchView::updateTransform()
-{
-//    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-//    setTransform(QTransform::fromScale(viewSettings->timeScale(), viewSettings->pitchScale()));
-}
-
-void AcPitchView::updateViewSettings() const
-{
-//    AcViewSettings *viewSettings = AcScore::instance()->viewSettings();
-//    viewSettings->setTimePosition(center().x());
-//    viewSettings->setPitchPosition(center().y());
 }
