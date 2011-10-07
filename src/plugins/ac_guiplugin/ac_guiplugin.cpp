@@ -48,8 +48,11 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i, 30 + (5 * i)));
-        pts.append(Point(10 - i + 100, 60 + (5 * i)));
+        pts.append(Point(10 - i,       30 + (5 * i)));
+        pts.append(Point(10 - i + 65,  60 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(10 - i + 100, 30 + (5 * i)));
+        pts.append(Point(10 - i + 110, 60 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(10 - i + 150, 30 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
@@ -59,8 +62,11 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i, 60 + (5 * i)));
-        pts.append(Point(10 - i + 100, 90 + (5 * i)));
+        pts.append(Point(10 - i,       60 + (5 * i)));
+        pts.append(Point(10 - i + 65,  90 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(10 - i + 100, 60 + (5 * i)));
+        pts.append(Point(10 - i + 110, 90 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(10 - i + 150, 60 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
