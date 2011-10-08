@@ -26,7 +26,15 @@ GridSettingsPrivate::GridSettingsPrivate(GridSettings *q)
     ,   timeGridLines(0)
     ,   pitchGridLines(0)
     ,   controlGridLines(0)
-{}
+{
+    mainGraphicsItems.insert(Ac::TimeLabelScene, new GraphicsItem);
+    mainGraphicsItems.insert(Ac::PitchLabelScene, new GraphicsItem);
+    mainGraphicsItems.insert(Ac::ControlLabelScene, new GraphicsItem);
+    unitXGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+    unitXGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+    unitYGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+    unitYGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+}
 
 void GridSettingsPrivate::init()
 {

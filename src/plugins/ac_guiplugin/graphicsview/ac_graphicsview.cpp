@@ -141,6 +141,9 @@ AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
+//    setSceneRect(0.0f, 0.0f, 1280.0f, 1270.0f);
+    setAlignment(Qt::AlignVCenter);
+//    setTransform(QTransform::fromScale(5.0f, 1.0f));
 }
 
 AcGraphicsView::~AcGraphicsView()

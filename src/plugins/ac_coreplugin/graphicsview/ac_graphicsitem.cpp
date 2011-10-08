@@ -84,13 +84,17 @@ void GraphicsCurveItem::setPoints(const PointList &points)
 
 void GraphicsCurveItem::highlight()
 {
-    setPen(QPen(pen().color(), 4.0f));
+    QPen litPen(pen().color(), 4.0f);
+    litPen.setCosmetic(true);
+    setPen(litPen);
     d->guideItem->show();
 }
 
 void GraphicsCurveItem::unhighlight()
 {
-    setPen(QPen(pen().color(), 2.0f));
+    QPen unlitPen(pen().color(), 2.0f);
+    unlitPen.setCosmetic(true);
+    setPen(unlitPen);
     d->guideItem->hide();
 }
 

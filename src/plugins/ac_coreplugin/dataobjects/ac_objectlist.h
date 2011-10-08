@@ -124,7 +124,11 @@ public:
     int modelItemIndex(IModelItem *item) const
     {
         Q_TD(const ObjectList);
-        return d->objects.indexOf(reinterpret_cast<T*>(item));
+        int n = d->objects.count();
+        for (int i = 0;  i < n;  ++i)
+            if (item == d->objects.at(i)->query(Ac::ModelItemInterface))
+                return i;
+        return -1;
     }
 
     IModelItem *modelItemAt(int i) const

@@ -26,6 +26,8 @@
 #include <QLayout>
 #include <QWheelEvent>
 
+#include <QModelIndex>
+
 class AcMainWidgetPrivate
 {
 public:
@@ -109,6 +111,11 @@ bool AcMainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) con
     if (controlLabelView->rect().contains(controlLabelView->mapFrom(widget, pos)))
         return true;
     return false;
+}
+
+void AcMainWidget::test()
+{
+    d->viewManager->dataChanged(QModelIndex(), QModelIndex());
 }
 
 void AcMainWidget::resizeEvent(QResizeEvent *event)

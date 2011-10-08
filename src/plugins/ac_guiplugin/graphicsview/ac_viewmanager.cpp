@@ -24,6 +24,8 @@
 #include <ac_volumelabelview.h>
 #include <ac_volumeview.h>
 
+#include <ac_model.h>
+
 #include <QGraphicsView>
 #include <QWidget>
 
@@ -47,6 +49,19 @@ public:
         ,   pitchLabelView(new AcPitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget))
         ,   controlLabelView(new AcVolumeLabelView(sceneManager->scene(Ac::ControlLabelScene), widget))
     {}
+
+    void updateScoreLength()
+    {
+        Model *model = sceneManager->model();
+        qreal scoreLength = model ? model->data(QModelIndex(), Ac::LengthRole).toReal() : 0;
+        pitchView->setSceneRect(0, 0, scoreLength, -127);
+        qreal width = pitchView->width();
+        qreal x = width / scoreLength;
+        qreal y = qreal(pitchView->height()) / 127.0f;
+        pitchView->setTransform(QTransform::fromScale(x, y));
+//        controlView->setSceneRect(0, 0, scoreLength, 1);
+//        timeLabelView->setSceneRect(0, 0, scoreLength, 1);
+    }
 };
 
 AcViewManager::AcViewManager(QWidget *widget)
@@ -73,5 +88,21 @@ QGraphicsView *AcViewManager::view(Ac::SceneType type) const
 
 void AcViewManager::setModel(Model *model)
 {
+    Model *oldModel = d->sceneManager->model();
     d->sceneManager->setModel(model);
+    if (oldModel == model)
+        return;
+    if (oldModel)
+        oldModel->disconnect(this);
+    if (model) {
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
+        d->updateScoreLength();
+    }
+}
+
+void AcViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
+{
+    Q_UNUSED(bottomLeft);
+    if (!topRight.isValid())
+        d->updateScoreLength();
 }

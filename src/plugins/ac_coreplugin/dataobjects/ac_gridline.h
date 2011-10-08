@@ -18,6 +18,7 @@
 #ifndef AC_GRIDLINE_H
 #define AC_GRIDLINE_H
 
+#include <ac_graphicsitem.h>
 #include <ac_graphicsobject.h>
 
 #include <QColor>
@@ -47,6 +48,9 @@ public:
 
     GridSettings *gridSettings() const;
 
+    virtual void show() {}
+    virtual void hide() {}
+
 protected:
     GridLine(GridLinePrivate &dd, QObject *parent);
 
@@ -68,6 +72,7 @@ public:
     GridLinePrivate(GridLine *q);
 
     GraphicsParentPrivate *graphicsParent() const;
+    virtual void updateGraphicsItems() = 0;
 };
 
 class TimeGridLinePrivate;
@@ -80,19 +85,14 @@ public:
 
     Ac::ItemType type() const { return Ac::TimeGridLineItem; }
 
+    void show();
+    void hide();
+
 private:
     Q_DISABLE_COPY(TimeGridLine)
     Q_DECLARE_PRIVATE(TimeGridLine)
 
-    friend class GridSettingsPrivate;
-};
-
-class TimeGridLinePrivate : public GridLinePrivate
-{
-public:
-    TimeGridLinePrivate(TimeGridLine *q)
-        :   GridLinePrivate(q)
-    {}
+//    friend class GridSettingsPrivate;
 };
 
 class PitchGridLinePrivate;
@@ -109,15 +109,7 @@ private:
     Q_DISABLE_COPY(PitchGridLine)
     Q_DECLARE_PRIVATE(PitchGridLine)
 
-    friend class GridSettingsPrivate;
-};
-
-class PitchGridLinePrivate : public GridLinePrivate
-{
-public:
-    PitchGridLinePrivate(PitchGridLine *q)
-        :   GridLinePrivate(q)
-    {}
+//    friend class GridSettingsPrivate;
 };
 
 class ControlGridLinePrivate;
@@ -134,15 +126,7 @@ private:
     Q_DISABLE_COPY(ControlGridLine)
     Q_DECLARE_PRIVATE(ControlGridLine)
 
-    friend class GridSettingsPrivate;
-};
-
-class ControlGridLinePrivate : public GridLinePrivate
-{
-public:
-    ControlGridLinePrivate(ControlGridLine *q)
-        :   GridLinePrivate(q)
-    {}
+//    friend class GridSettingsPrivate;
 };
 
 #endif // AC_GRIDLINE_H

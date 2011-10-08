@@ -54,6 +54,7 @@ void GridLine::setLocation(qreal location)
         return;
     d->beginChangeData();
     d->location = location;
+    d->updateGraphicsItems();
     d->endChangeData();
 }
 
@@ -70,6 +71,7 @@ void GridLine::setLabel(const QString &label)
         return;
     d->beginChangeData();
     d->label = label;
+    d->updateGraphicsItems();
     d->endChangeData();
 }
 
@@ -86,6 +88,7 @@ void GridLine::setPriority(int priority)
         return;
     d->beginChangeData();
     d->priority = priority;
+    d->updateGraphicsItems();
     d->endChangeData();
 }
 
@@ -102,6 +105,7 @@ void GridLine::setColor(const QColor &color)
         return;
     d->beginChangeData();
     d->color = color;
+    d->updateGraphicsItems();
     d->endChangeData();
 }
 
@@ -111,20 +115,153 @@ GridSettings *GridLine::gridSettings() const
     return parent ? qobject_cast<GridSettings*>(parent->parent()) : 0;
 }
 
+class TimeGridLinePrivate : public GridLinePrivate
+{
+public:
+    GraphicsTextItem *timeLabelItem;
+    QGraphicsLineItem *pitchLineItem;
+    QGraphicsLineItem *controlLineItem;
+
+    TimeGridLinePrivate(TimeGridLine *q)
+        :   GridLinePrivate(q)
+        ,   timeLabelItem(new GraphicsTextItem)
+        ,   pitchLineItem(new QGraphicsLineItem)
+        ,   controlLineItem(new QGraphicsLineItem)
+    {}
+
+    void init()
+    {
+        updateGraphicsParent();
+        updateGraphicsItems();
+    }
+
+    ~TimeGridLinePrivate()
+    {
+        delete controlLineItem;
+        delete pitchLineItem;
+        delete timeLabelItem;
+    }
+
+    void updateGraphicsParent()
+    {
+        GraphicsParentPrivate *parent = graphicsParent();
+        if (parent) {
+            timeLabelItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
+            pitchLineItem->setParentItem(parent->unitYGraphicsItems[Ac::PitchScene]);
+            controlLineItem->setParentItem(parent->unitYGraphicsItems[Ac::ControlScene]);
+        } else {
+            timeLabelItem->setParentItem(0);
+            pitchLineItem->setParentItem(0);
+            controlLineItem->setParentItem(0);
+        }
+    }
+
+    void updateGraphicsItems()
+    {
+        timeLabelItem->setText(label);
+        timeLabelItem->setColor(Qt::black);
+        QPen pen(color);
+        pen.setCosmetic(true);
+        pitchLineItem->setPen(pen);
+        controlLineItem->setPen(pen);
+        QLineF line(location, 0.0f, location, 1.0f);
+        pitchLineItem->setLine(line);
+        controlLineItem->setLine(line);
+    }
+};
+
 TimeGridLine::TimeGridLine(QObject *parent)
     :   GridLine(*(new TimeGridLinePrivate(this)), parent)
 {
+    Q_D(TimeGridLine);
+    d->init();
     setObjectName("TimeGridLine");
 }
+
+void TimeGridLine::show()
+{
+    Q_D(TimeGridLine);
+    d->timeLabelItem->show();
+    d->pitchLineItem->show();
+    d->controlLineItem->show();
+}
+
+void TimeGridLine::hide()
+{
+    Q_D(TimeGridLine);
+    d->timeLabelItem->hide();
+    d->pitchLineItem->hide();
+    d->controlLineItem->hide();
+}
+
+class PitchGridLinePrivate : public GridLinePrivate
+{
+public:
+    PitchGridLinePrivate(PitchGridLine *q)
+        :   GridLinePrivate(q)
+    {}
+
+    void init()
+    {
+
+    }
+
+    ~PitchGridLinePrivate()
+    {
+
+    }
+
+    void updateGraphicsParent()
+    {
+
+    }
+
+    void updateGraphicsItems()
+    {
+
+    }
+};
 
 PitchGridLine::PitchGridLine(QObject *parent)
     :   GridLine(*(new PitchGridLinePrivate(this)), parent)
 {
+    Q_D(PitchGridLine);
+    d->init();
     setObjectName("PitchGridLine");
 }
+
+class ControlGridLinePrivate : public GridLinePrivate
+{
+public:
+    ControlGridLinePrivate(ControlGridLine *q)
+        :   GridLinePrivate(q)
+    {}
+
+    void init()
+    {
+
+    }
+
+    ~ControlGridLinePrivate()
+    {
+
+    }
+
+    void updateGraphicsParent()
+    {
+
+    }
+
+    void updateGraphicsItems()
+    {
+
+    }
+};
 
 ControlGridLine::ControlGridLine(QObject *parent)
     :   GridLine(*(new ControlGridLinePrivate(this)), parent)
 {
+    Q_D(ControlGridLine);
+    d->init();
     setObjectName("ControlGridLine");
 }

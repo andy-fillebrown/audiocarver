@@ -56,10 +56,10 @@ public:
 
     void updateScoreLength()
     {
-        qreal scoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
-        pitchScene->setWidth(scoreLength);
-        controlScene->setWidth(scoreLength);
-        timeLabelScene->setWidth(scoreLength);
+//        qreal scoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
+//        pitchScene->setWidth(scoreLength);
+//        controlScene->setWidth(scoreLength);
+//        timeLabelScene->setWidth(scoreLength);
     }
 };
 

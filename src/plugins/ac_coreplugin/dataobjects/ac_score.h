@@ -40,6 +40,7 @@ public:
     void init();
     ~ScorePrivate();
 
+    void updateGraphicsParent() {}
     void updateLength();
 };
 

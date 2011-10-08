@@ -27,6 +27,8 @@ class Model;
 class QGraphicsView;
 class QWidget;
 
+class QModelIndex;
+
 class AcViewManagerPrivate;
 class AcViewManager : public QObject
 {
@@ -39,6 +41,9 @@ public:
     QGraphicsView *view(Ac::SceneType type) const;
 
     void setModel(Model *model);
+
+public slots:
+    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 private:
     Q_DISABLE_COPY(AcViewManager)

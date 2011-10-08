@@ -32,7 +32,7 @@ ScorePrivate::ScorePrivate(Score *q)
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
         mainGraphicsItems.insert(Ac::SceneType(i), new GraphicsRootItem);
     unitXGraphicsItems.insert(Ac::PitchScene, new GraphicsItem(mainGraphicsItems[Ac::PitchScene]));
-    unitXGraphicsItems.insert(Ac::ControlScene, new GraphicsItem(mainGraphicsItems[Ac::PitchScene]));
+    unitXGraphicsItems.insert(Ac::ControlScene, new GraphicsItem(mainGraphicsItems[Ac::ControlScene]));
     unitYGraphicsItems.insert(Ac::PitchScene, new GraphicsItem(mainGraphicsItems[Ac::PitchScene]));
     unitXGraphicsItems[Ac::PitchScene]->setTransform(QTransform::fromScale(length, 1.0f));
     unitXGraphicsItems[Ac::ControlScene]->setTransform(QTransform::fromScale(length, 1.0f));
@@ -56,8 +56,8 @@ ScorePrivate::~ScorePrivate()
 
 void ScorePrivate::updateLength()
 {
-    foreach (QGraphicsItem *item, unitXGraphicsItems)
-        item->setTransform(QTransform::fromScale(length, 1.0f));
+//    foreach (QGraphicsItem *item, unitXGraphicsItems)
+//        item->setTransform(QTransform::fromScale(length, 1.0f));
 }
 
 Score::Score(QObject *parent)

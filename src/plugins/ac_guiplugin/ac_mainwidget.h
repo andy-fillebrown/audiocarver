@@ -35,6 +35,8 @@ public:
 
     bool isPointInControlViews(QWidget *widget, const QPoint &pos) const;
 
+    void test();
+
 protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
@@ -43,6 +45,8 @@ protected:
 private:
     Q_DISABLE_COPY(AcMainWidget)
     AcMainWidgetPrivate *d;
+
+    friend class AcPitchView;
 };
 
 #endif // AC_MAINWIDGET_H

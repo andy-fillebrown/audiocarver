@@ -40,7 +40,7 @@
 void populateModel(Model *model)
 {
     Score *score = model->score();
-    score->setLength(64.0f);
+    score->setLength(128.0f);
     ObjectList<Track> *tracks = score->tracks();
     Track *track = new Track;
     tracks->append(track);
@@ -48,11 +48,11 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i,       30 + (5 * i)));
-        pts.append(Point(10 - i + 65,  60 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(10 - i + 100, 30 + (5 * i)));
-        pts.append(Point(10 - i + 110, 60 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(10 - i + 150, 30 + (5 * i)));
+        pts.append(Point(0,   30 + (5 * i)));
+        pts.append(Point(32,  60 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(64,  30 + (5 * i)));
+        pts.append(Point(108, 60 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(127, 30 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
@@ -62,36 +62,36 @@ void populateModel(Model *model)
     for (int i = 0;  i < 5;  ++i) {
         Note *note = new Note;
         PointList pts;
-        pts.append(Point(10 - i,       60 + (5 * i)));
-        pts.append(Point(10 - i + 65,  90 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(10 - i + 100, 60 + (5 * i)));
-        pts.append(Point(10 - i + 110, 90 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(10 - i + 150, 60 + (5 * i)));
+        pts.append(Point(0,   60 + (5 * i)));
+        pts.append(Point(32,  90 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(64,  60 + (5 * i)));
+        pts.append(Point(108, 90 + (5 * i), Ac::BezierCurve));
+        pts.append(Point(127, 60 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
-//    GridSettings *gridSettings = score->gridSettings();
-//    ObjectList<TimeGridLine> *timeGridLines = gridSettings->timeGridLines();
-//    TimeGridLine *timeGridLine = new TimeGridLine;
-//    timeGridLine->setColor(QColor(0, 127, 0));
-//    timeGridLines->append(timeGridLine);
-//    for (int i = 1;  i < 128;  ++i) {
-//        QString label = QString("%1.%2").arg((i / 4) + 1).arg(i % 4);
-//        if (label.endsWith(".0"))
-//            label.chop(2);
-//        timeGridLine = new TimeGridLine;
-//        timeGridLine->setLocation(i);
-//        timeGridLine->setLabel(label);
-//        timeGridLines->append(timeGridLine);
-//    }
-//    for (int i = 1;  i < 128;  i*=2)
-//        for (int j = i;  j < 128;  j+=i)
-//            timeGridLines->at(j)->setPriority(128 / (i + 1));
-//    timeGridLine = new TimeGridLine;
-//    timeGridLine->setLocation(128);
-//    timeGridLine->setPriority(0);
-//    timeGridLine->setColor(QColor(127, 0, 0));
-//    timeGridLines->append(timeGridLine);
+    GridSettings *gridSettings = score->gridSettings();
+    ObjectList<TimeGridLine> *timeGridLines = gridSettings->timeGridLines();
+    TimeGridLine *timeGridLine = new TimeGridLine;
+    timeGridLine->setColor(QColor(0, 127, 0));
+    timeGridLines->append(timeGridLine);
+    for (int i = 1;  i < 128;  ++i) {
+        QString label = QString("%1.%2").arg((i / 4) + 1).arg(i % 4);
+        if (label.endsWith(".0"))
+            label.chop(2);
+        timeGridLine = new TimeGridLine;
+        timeGridLine->setLocation(i);
+        timeGridLine->setLabel(label);
+        timeGridLines->append(timeGridLine);
+    }
+    for (int i = 1;  i < 128;  i*=2)
+        for (int j = i;  j < 128;  j+=i)
+            timeGridLines->at(j)->setPriority(128 / (i + 1));
+    timeGridLine = new TimeGridLine;
+    timeGridLine->setLocation(128);
+    timeGridLine->setPriority(0);
+    timeGridLine->setColor(QColor(127, 0, 0));
+    timeGridLines->append(timeGridLine);
 }
 
 bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)

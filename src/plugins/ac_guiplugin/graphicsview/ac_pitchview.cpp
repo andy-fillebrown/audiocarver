@@ -17,6 +17,8 @@
 
 #include "ac_pitchview.h"
 
+#include <ac_mainwidget.h>
+
 class AcPitchViewPrivate
 {
 public:
@@ -35,4 +37,13 @@ AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
 AcPitchView::~AcPitchView()
 {
     delete d;
+}
+
+void AcPitchView::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event);
+    AcMainWidget *widget = qobject_cast<AcMainWidget*>(parent());
+    if (!widget)
+        return;
+    widget->test();
 }

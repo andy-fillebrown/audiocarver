@@ -30,6 +30,9 @@ public:
     AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~AcPitchView();
 
+protected:
+    void resizeEvent(QResizeEvent *event);
+
 private:
     Q_DISABLE_COPY(AcPitchView)
     AcPitchViewPrivate *d;
