@@ -80,6 +80,11 @@ enum SceneType {
     SceneTypeCount
 };
 
+enum DragState {
+    Dragging,
+    NotDragging
+};
+
 } // namespace Ac
 
 #endif // AC_CORE_ENUMS_H

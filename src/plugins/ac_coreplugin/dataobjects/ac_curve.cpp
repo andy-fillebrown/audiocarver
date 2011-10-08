@@ -54,7 +54,7 @@ PointList Curve::points() const
     return d->points;
 }
 
-void Curve::setPoints(const PointList &points)
+void Curve::setPoints(const PointList &points, Ac::DragState dragState)
 {
     Q_D(Curve);
     if (d->points == points)
@@ -66,7 +66,8 @@ void Curve::setPoints(const PointList &points)
         return;
     PointList newPts = d->points;
     d->points = oldPts;
-    d->beginChangeData();
+    if (Ac::NotDragging == dragState)
+        d->beginChangeData();
     d->points = newPts;
     d->graphicsCurveItem->setPoints(d->points);
     d->endChangeData();

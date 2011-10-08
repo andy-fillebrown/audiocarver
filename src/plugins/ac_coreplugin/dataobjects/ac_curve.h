@@ -37,7 +37,7 @@ public:
 
     // IEntity
     PointList points() const;
-    void setPoints(const PointList &points);
+    void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);
     void highlight();
     void unhighlight();
 

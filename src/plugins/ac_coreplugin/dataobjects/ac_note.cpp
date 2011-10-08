@@ -78,9 +78,10 @@ PointList Note::points() const
     return PointList();
 }
 
-void Note::setPoints(const PointList &points)
+void Note::setPoints(const PointList &points, Ac::DragState dragState)
 {
     Q_UNUSED(points);
+    Q_UNUSED(dragState);
 }
 
 void Note::highlight()

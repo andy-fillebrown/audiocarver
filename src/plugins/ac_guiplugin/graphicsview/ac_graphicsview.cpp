@@ -57,6 +57,12 @@ public:
     virtual ~AcGraphicsViewPrivate()
     {}
 
+    void startDraggingGrips()
+    {
+        foreach (IEntityItem *entity, entitiesToUpdate)
+            entity->startDraggingPoints();
+    }
+
     void moveGrips(const QPoint &eventPos)
     {
         QPointF pos = rootItem->transform().map(q->mapToScene(eventPos));
@@ -64,6 +70,12 @@ public:
             grip->setPosition(pos);
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->updatePoints();
+    }
+
+    void finishDraggingGrips()
+    {
+        foreach (IEntityItem *entity, entitiesToUpdate)
+            entity->finishDraggingPoints();
     }
 
     bool entityIsSelected(IEntity *entity)
@@ -154,6 +166,8 @@ void AcGraphicsView::mousePressEvent(QMouseEvent *event)
         }
     }
     d->draggingGrips = !d->gripsBeingDragged.isEmpty();
+    if (d->draggingGrips)
+        d->startDraggingGrips();
 }
 
 void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
@@ -175,6 +189,7 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d->draggingGrips) {
         d->moveGrips(event->pos());
+        d->finishDraggingGrips();
     }
     else {
         QRect rect;

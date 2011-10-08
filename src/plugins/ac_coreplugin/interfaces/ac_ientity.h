@@ -28,7 +28,7 @@ public:
     enum { Type = Ac::EntityInterface };
 
     virtual PointList points() const = 0;
-    virtual void setPoints(const PointList &points) = 0;
+    virtual void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging) = 0;
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
 };

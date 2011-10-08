@@ -21,12 +21,24 @@
 
 #include <ac_ientity.h>
 
+static bool gripLessThan(GraphicsGripItem *a, GraphicsGripItem *b)
+{
+    if (a->pos().x() < b->pos().x())
+        return true;
+    if (b->pos().x() < a->pos().x())
+        return false;
+    if (a->pos().y() < b->pos().y())
+        return true;
+    return false;
+}
+
 class GraphicsEntityItemPrivate
 {
 public:
     GraphicsEntityItem *q;
     IEntity *entity;
     QList<GraphicsGripItem*> gripItems;
+    PointList previousPoints;
 
     GraphicsEntityItemPrivate(GraphicsEntityItem *q)
         :   q(q)
@@ -59,6 +71,25 @@ public:
         if (!highlightEntity)
             highlightEntity = entity;
         return highlightEntity;
+    }
+
+    PointList gripPoints()
+    {
+        int n = gripItems.count();
+        PointList points;
+        points.reserve(n);
+        qSort(gripItems.begin(), gripItems.end(), gripLessThan);
+        for (int i = 0;  i < n;  ++i)
+            points.append(Point(gripItems.at(i)->pos(), previousPoints.at(i).curveType));
+        return points;
+    }
+
+    void updateGripPositions()
+    {
+        int n = gripItems.count();
+        PointList points = entity->points();
+        for (int i = 0;  i < n;  ++i)
+            gripItems[i]->setPosition(points.at(i).pos);
     }
 };
 
@@ -97,13 +128,25 @@ void GraphicsEntityItem::unhighlight()
         entity->unhighlight();
 }
 
+void GraphicsEntityItem::startDraggingPoints()
+{
+    if (!d->entity)
+        return;
+    d->previousPoints = d->entity->points();
+}
+
 void GraphicsEntityItem::updatePoints()
 {
     if (!d->entity)
         return;
-    PointList points = d->entity->points();
-    int n = points.count();
-    for (int i = 0;  i < n;  ++i)
-        points[i].pos = d->gripItems.at(i)->pos();
-    d->entity->setPoints(points);
+    d->entity->setPoints(d->previousPoints, Ac::Dragging);
+    d->entity->setPoints(d->gripPoints(), Ac::Dragging);
+    d->updateGripPositions();
+}
+
+void GraphicsEntityItem::finishDraggingPoints()
+{
+    if (!d->entity)
+        return;
+    d->entity->setPoints(d->gripPoints());
 }

@@ -32,12 +32,13 @@ public:
     GraphicsEntityItem(IEntity *entity);
     ~GraphicsEntityItem();
 
-
     // IEntityItem
     IEntity *entity() const;
     void highlight();
     void unhighlight();
+    void startDraggingPoints();
     void updatePoints();
+    void finishDraggingPoints();
 
     // IUnknown
     void *query(int type) const

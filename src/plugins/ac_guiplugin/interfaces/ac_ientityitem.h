@@ -32,7 +32,9 @@ public:
     virtual IEntity *entity() const = 0;
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
+    virtual void startDraggingPoints() = 0;
     virtual void updatePoints() = 0;
+    virtual void finishDraggingPoints() = 0;
 };
 
 #endif // AC_IGRIP_H

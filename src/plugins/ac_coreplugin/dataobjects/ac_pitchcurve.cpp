@@ -33,15 +33,13 @@ public:
 
     void conformPoints()
     {
-        if (points.count() < 2) {
+        int n = points.count();
+        if (n < 2) {
             points.clear();
             points.append(Point(0.0f, 0.0f));
             points.append(Point(1.0f, 0.0f));
         } else {
             qSort(points);
-//            points.first().pos = QPointF();
-//            points.last().pos.rx() = 1.0f;
-            int n = 0;
             for (int i = 0;  i < n;  ++i) {
                 Point &pt = points[i];
                 pt.pos.rx() = qMax(qreal(0.0f), pt.pos.x());
