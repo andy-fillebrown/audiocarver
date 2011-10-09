@@ -56,8 +56,8 @@ ScorePrivate::~ScorePrivate()
 
 void ScorePrivate::updateLength()
 {
-//    foreach (QGraphicsItem *item, unitXGraphicsItems)
-//        item->setTransform(QTransform::fromScale(length, 1.0f));
+    foreach (QGraphicsItem *item, unitXGraphicsItems)
+        item->setTransform(QTransform::fromScale(length, 1.0f));
 }
 
 Score::Score(QObject *parent)

@@ -18,24 +18,24 @@
 #ifndef AC_PITCHVIEW_H
 #define AC_PITCHVIEW_H
 
-#include <ac_editorview.h>
+#include <ac_graphicsview.h>
 
-class AcPitchViewPrivate;
+class PitchViewPrivate;
 
-class AcPitchView : public AcEditorView
+class PitchView : public GraphicsHView
 {
     Q_OBJECT
 
 public:
-    AcPitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcPitchView();
+    PitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~PitchView();
 
 protected:
-    void resizeEvent(QResizeEvent *event);
+    qreal sceneHeight() const { return 127.0f; }
 
 private:
-    Q_DISABLE_COPY(AcPitchView)
-    AcPitchViewPrivate *d;
+    Q_DISABLE_COPY(PitchView)
+    PitchViewPrivate *d;
 };
 
 #endif // AC_PITCHVIEW_H

@@ -15,24 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_VOLUMEVIEW_H
-#define AC_VOLUMEVIEW_H
+#include "ac_controlview.h"
 
-#include <ac_editorview.h>
-
-class AcVolumeViewPrivate;
-
-class AcVolumeView : public AcEditorView
+class ControlViewPrivate
 {
-    Q_OBJECT
-
 public:
-    AcVolumeView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcVolumeView();
+    ControlViewPrivate()
+    {}
 
-private:
-    Q_DISABLE_COPY(AcVolumeView)
-    AcVolumeViewPrivate *d;
+    virtual ~ControlViewPrivate()
+    {}
 };
 
-#endif // AC_VOLUMEVIEW_H
+ControlView::ControlView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsHView(scene, parent)
+    ,   d(new ControlViewPrivate)
+{}
+
+ControlView::~ControlView()
+{
+    delete d;
+}

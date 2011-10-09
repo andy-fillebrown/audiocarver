@@ -17,33 +17,22 @@
 
 #include "ac_pitchview.h"
 
-#include <ac_mainwidget.h>
-
-class AcPitchViewPrivate
+class PitchViewPrivate
 {
 public:
-    AcPitchViewPrivate()
+    PitchViewPrivate()
     {}
 
-    virtual ~AcPitchViewPrivate()
+    virtual ~PitchViewPrivate()
     {}
 };
 
-AcPitchView::AcPitchView(QGraphicsScene *scene, QWidget *parent)
-    :   AcEditorView(scene, parent)
-    ,   d(new AcPitchViewPrivate)
+PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsHView(scene, parent)
+    ,   d(new PitchViewPrivate)
 {}
 
-AcPitchView::~AcPitchView()
+PitchView::~PitchView()
 {
     delete d;
-}
-
-void AcPitchView::resizeEvent(QResizeEvent *event)
-{
-    Q_UNUSED(event);
-    AcMainWidget *widget = qobject_cast<AcMainWidget*>(parent());
-    if (!widget)
-        return;
-    widget->test();
 }

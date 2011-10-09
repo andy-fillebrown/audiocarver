@@ -63,16 +63,24 @@ public:
     }
 };
 
+static SceneManager *instance = 0;
+
 SceneManager::SceneManager(QObject *parent)
     :   QObject(parent)
     ,   d(new SceneManagerPrivate(this))
 {
     d->init();
+    ::instance = this;
 }
 
 SceneManager::~SceneManager()
 {
     delete d;
+}
+
+SceneManager *SceneManager::instance()
+{
+    return ::instance;
 }
 
 Model *SceneManager::model() const

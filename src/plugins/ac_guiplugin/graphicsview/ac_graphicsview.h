@@ -20,25 +20,47 @@
 
 #include <mi_graphicsview.h>
 
-class AcGraphicsViewPrivate;
+class GraphicsViewPrivate;
 
-class AcGraphicsView : public MiGraphicsView
+class GraphicsView : public MiGraphicsView
 {
     Q_OBJECT
 
 public:
-    AcGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcGraphicsView();
+    GraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~GraphicsView();
 
 protected:
+    void resizeEvent(QResizeEvent*);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
+    virtual qreal sceneHeight() const { return 1.0f; }
+
 private:
-    Q_DISABLE_COPY(AcGraphicsView)
-    AcGraphicsViewPrivate *d;
+    Q_DISABLE_COPY(GraphicsView)
+    GraphicsViewPrivate *d;
+    friend class GraphicsViewPrivate;
+
+    friend class GraphicsHView;
+};
+
+class GraphicsHView : public GraphicsView
+{
+    Q_OBJECT
+
+public:
+    GraphicsHView(QGraphicsScene *scene = 0, QWidget *parent = 0)
+        :   GraphicsView(scene, parent)
+    {}
+
+public slots:
+    void scoreDataChanged();
+
+private:
+    Q_DISABLE_COPY(GraphicsHView)
 };
 
 #endif // AC_GRAPHICSVIEW_H

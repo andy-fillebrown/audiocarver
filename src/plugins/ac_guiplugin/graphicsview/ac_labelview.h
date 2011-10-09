@@ -20,19 +20,19 @@
 
 #include <ac_graphicsview.h>
 
-class AcLabelViewPrivate;
+//class AcLabelViewPrivate;
 
-class AcLabelView : public AcGraphicsView
-{
-    Q_OBJECT
+//class AcLabelView : public AcGraphicsView
+//{
+//    Q_OBJECT
 
-public:
-    AcLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcLabelView();
+//public:
+//    AcLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+//    ~AcLabelView();
 
-private:
-    Q_DISABLE_COPY(AcLabelView)
-    AcLabelViewPrivate *d;
-};
+//private:
+//    Q_DISABLE_COPY(AcLabelView)
+//    AcLabelViewPrivate *d;
+//};
 
 #endif // AC_LABELVIEW_H

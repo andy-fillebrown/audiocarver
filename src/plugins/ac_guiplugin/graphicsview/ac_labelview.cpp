@@ -17,22 +17,22 @@
 
 #include "ac_labelview.h"
 
-class AcLabelViewPrivate
-{
-public:
-    AcLabelViewPrivate()
-    {}
+//class AcLabelViewPrivate
+//{
+//public:
+//    AcLabelViewPrivate()
+//    {}
 
-    virtual ~AcLabelViewPrivate()
-    {}
-};
+//    virtual ~AcLabelViewPrivate()
+//    {}
+//};
 
-AcLabelView::AcLabelView(QGraphicsScene *scene, QWidget *parent)
-    :   AcGraphicsView(scene, parent)
-    ,   d(new AcLabelViewPrivate)
-{}
+//AcLabelView::AcLabelView(QGraphicsScene *scene, QWidget *parent)
+//    :   AcGraphicsView(scene, parent)
+//    ,   d(new AcLabelViewPrivate)
+//{}
 
-AcLabelView::~AcLabelView()
-{
-    delete d;
-}
+//AcLabelView::~AcLabelView()
+//{
+//    delete d;
+//}

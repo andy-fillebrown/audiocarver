@@ -19,18 +19,20 @@
 
 #include <ac_graphicsentityitem.h>
 #include <ac_graphicsgripitem.h>
+#include <ac_graphicsscene.h>
 
 #include <ac_ientity.h>
+#include <ac_model.h>
 
 #include <QApplication>
 #include <QBitmap>
 #include <QGraphicsItem>
 #include <QMouseEvent>
 
-class AcGraphicsViewPrivate
+class GraphicsViewPrivate
 {
 public:
-    AcGraphicsView *q;
+    GraphicsView *q;
     bool dragging;
     bool draggingGrips;
     QPoint dragOrigin;
@@ -40,7 +42,7 @@ public:
     GraphicsRootItem *rootItem;
     QGraphicsPolygonItem *selectionRect;
 
-    AcGraphicsViewPrivate(AcGraphicsView *q)
+    GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
         ,   dragging(false)
         ,   draggingGrips(false)
@@ -54,7 +56,7 @@ public:
         selectionRect->hide();
     }
 
-    virtual ~AcGraphicsViewPrivate()
+    virtual ~GraphicsViewPrivate()
     {}
 
     void startDraggingGrips()
@@ -131,27 +133,50 @@ public:
         qDeleteAll(selectedEntities);
         selectedEntities.clear();
     }
+
+    void updateViewMetrics()
+    {
+        qreal margin = 8.0f;
+        qreal halfMargin = margin / 2.0f;
+        qreal rightMarginOffset = 3.0f;
+        qreal sceneWidth = SceneManager::instance()->model()->data(QModelIndex(), Ac::LengthRole).toReal();
+        qreal viewWidth = q->width();
+        qreal viewHeight = q->height();
+        qreal widthScale = viewWidth / sceneWidth;
+        qreal leftMargin = halfMargin / widthScale;
+        qreal rightMargin = leftMargin + (rightMarginOffset / widthScale);
+        qreal topMargin = halfMargin / viewHeight;
+        qreal bottomMargin = halfMargin / viewHeight;
+        qreal actualSceneWidth = sceneWidth + leftMargin + rightMargin;
+        qreal actualSceneHeight = q->sceneHeight() + topMargin + bottomMargin;
+        qreal actualWidthScale = viewWidth / actualSceneWidth;
+        qreal actualHeightScale = viewHeight / actualSceneHeight;
+        q->setSceneRect(-leftMargin, topMargin, actualSceneWidth, -actualSceneHeight);
+        q->setTransform(QTransform::fromScale(actualWidthScale, actualHeightScale));
+    }
 };
 
-AcGraphicsView::AcGraphicsView(QGraphicsScene *scene, QWidget *parent)
+GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   MiGraphicsView(scene, parent)
-    ,   d(new AcGraphicsViewPrivate(this))
+    ,   d(new GraphicsViewPrivate(this))
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
-//    setSceneRect(0.0f, 0.0f, 1280.0f, 1270.0f);
-    setAlignment(Qt::AlignVCenter);
-//    setTransform(QTransform::fromScale(5.0f, 1.0f));
 }
 
-AcGraphicsView::~AcGraphicsView()
+GraphicsView::~GraphicsView()
 {
     delete d;
 }
 
-void AcGraphicsView::mousePressEvent(QMouseEvent *event)
+void GraphicsView::resizeEvent(QResizeEvent*)
+{
+    d->updateViewMetrics();
+}
+
+void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
     d->dragging = true;
     d->dragOrigin = event->pos();
@@ -173,7 +198,7 @@ void AcGraphicsView::mousePressEvent(QMouseEvent *event)
         d->startDraggingGrips();
 }
 
-void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
+void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if (d->draggingGrips) {
         d->moveGrips(event->pos());
@@ -188,7 +213,7 @@ void AcGraphicsView::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
+void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d->draggingGrips) {
         d->moveGrips(event->pos());
@@ -227,10 +252,15 @@ void AcGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     d->entitiesToUpdate.clear();
 }
 
-void AcGraphicsView::keyPressEvent(QKeyEvent *event)
+void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
     if (d->draggingGrips)
         return;
     if (event->key() == Qt::Key_Escape)
         d->clearSelectedEntities();
+}
+
+void GraphicsHView::scoreDataChanged()
+{
+    d->updateViewMetrics();
 }

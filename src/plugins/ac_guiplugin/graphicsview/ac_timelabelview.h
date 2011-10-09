@@ -20,19 +20,19 @@
 
 #include <ac_graphicsview.h>
 
-class AcTimeLabelViewPrivate;
+class TimeLabelViewPrivate;
 
-class AcTimeLabelView : public AcGraphicsView
+class TimeLabelView : public GraphicsHView
 {
     Q_OBJECT
 
 public:
-    AcTimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcTimeLabelView();
+    TimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~TimeLabelView();
 
 private:
-    Q_DISABLE_COPY(AcTimeLabelView)
-    AcTimeLabelViewPrivate *d;
+    Q_DISABLE_COPY(TimeLabelView)
+    TimeLabelViewPrivate *d;
 };
 
 #endif // AC_TIMELABELVIEW_H

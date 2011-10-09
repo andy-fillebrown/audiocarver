@@ -52,7 +52,7 @@ void populateModel(Model *model)
         pts.append(Point(32,  60 + (5 * i), Ac::BezierCurve));
         pts.append(Point(64,  30 + (5 * i)));
         pts.append(Point(108, 60 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(127, 30 + (5 * i)));
+        pts.append(Point(128, 30 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
@@ -66,7 +66,7 @@ void populateModel(Model *model)
         pts.append(Point(32,  90 + (5 * i), Ac::BezierCurve));
         pts.append(Point(64,  60 + (5 * i)));
         pts.append(Point(108, 90 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(127, 60 + (5 * i)));
+        pts.append(Point(128, 60 + (5 * i)));
         note->pitchCurve()->setPoints(pts);
         notes->append(note);
     }
@@ -108,7 +108,7 @@ void AcGuiPlugin::extensionsInitialized()
 {
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
 
-    AcMainWidget *widget = new AcMainWidget(mw);
+    MainWidget *widget = new MainWidget(mw);
     mw->setCentralWidget(widget);
 
     Model *model = new Model;

@@ -123,6 +123,8 @@ public:
     SceneManager(QObject *parent = 0);
     ~SceneManager();
 
+    static SceneManager *instance();
+
     Model *model() const;
     void setModel(Model *model);
 

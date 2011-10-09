@@ -17,64 +17,54 @@
 
 #include "ac_viewmanager.h"
 
+#include <ac_controllabelview.h>
+#include <ac_controlview.h>
+#include <ac_graphicsscene.h>
 #include <ac_pitchlabelview.h>
 #include <ac_pitchview.h>
-#include <ac_graphicsscene.h>
 #include <ac_timelabelview.h>
-#include <ac_volumelabelview.h>
-#include <ac_volumeview.h>
 
 #include <ac_model.h>
 
-#include <QGraphicsView>
 #include <QWidget>
 
-class AcViewManagerPrivate
+class ViewManagerPrivate
 {
 public:
-    AcViewManager *q;
+    ViewManager *q;
     SceneManager *sceneManager;
-    AcPitchView *pitchView;
-    AcVolumeView *controlView;
-    AcTimeLabelView *timeLabelView;
-    AcPitchLabelView *pitchLabelView;
-    AcVolumeLabelView *controlLabelView;
+    PitchView *pitchView;
+    ControlView *controlView;
+    TimeLabelView *timeLabelView;
+    PitchLabelView *pitchLabelView;
+    ControlLabelView *controlLabelView;
 
-    AcViewManagerPrivate(AcViewManager *q, QWidget *widget)
+    ViewManagerPrivate(ViewManager *q, QWidget *widget)
         :   q(q)
         ,   sceneManager(new SceneManager(q))
-        ,   pitchView(new AcPitchView(sceneManager->scene(Ac::PitchScene), widget))
-        ,   controlView(new AcVolumeView(sceneManager->scene(Ac::ControlScene), widget))
-        ,   timeLabelView(new AcTimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget))
-        ,   pitchLabelView(new AcPitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget))
-        ,   controlLabelView(new AcVolumeLabelView(sceneManager->scene(Ac::ControlLabelScene), widget))
+        ,   pitchView(new PitchView(sceneManager->scene(Ac::PitchScene), widget))
+        ,   controlView(new ControlView(sceneManager->scene(Ac::ControlScene), widget))
+        ,   timeLabelView(new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget))
+        ,   pitchLabelView(new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget))
+        ,   controlLabelView(new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), widget))
     {}
-
-    void updateScoreLength()
-    {
-        Model *model = sceneManager->model();
-        qreal scoreLength = model ? model->data(QModelIndex(), Ac::LengthRole).toReal() : 0;
-        pitchView->setSceneRect(0, 0, scoreLength, -127);
-        qreal width = pitchView->width();
-        qreal x = width / scoreLength;
-        qreal y = qreal(pitchView->height()) / 127.0f;
-        pitchView->setTransform(QTransform::fromScale(x, y));
-//        controlView->setSceneRect(0, 0, scoreLength, 1);
-//        timeLabelView->setSceneRect(0, 0, scoreLength, 1);
-    }
 };
 
-AcViewManager::AcViewManager(QWidget *widget)
+ViewManager::ViewManager(QWidget *widget)
     :   QObject(widget)
-    ,   d(new AcViewManagerPrivate(this, widget))
-{}
+    ,   d(new ViewManagerPrivate(this, widget))
+{
+    connect(this, SIGNAL(scoreDataChanged()), d->pitchView, SLOT(scoreDataChanged()));
+    connect(this, SIGNAL(scoreDataChanged()), d->controlView, SLOT(scoreDataChanged()));
+    connect(this, SIGNAL(scoreDataChanged()), d->timeLabelView, SLOT(scoreDataChanged()));
+}
 
-AcViewManager::~AcViewManager()
+ViewManager::~ViewManager()
 {
     delete d;
 }
 
-QGraphicsView *AcViewManager::view(Ac::SceneType type) const
+QGraphicsView *ViewManager::view(Ac::SceneType type) const
 {
     switch (type) {
     case Ac::PitchScene: return d->pitchView;
@@ -86,7 +76,7 @@ QGraphicsView *AcViewManager::view(Ac::SceneType type) const
     }
 }
 
-void AcViewManager::setModel(Model *model)
+void ViewManager::setModel(Model *model)
 {
     Model *oldModel = d->sceneManager->model();
     d->sceneManager->setModel(model);
@@ -96,13 +86,13 @@ void AcViewManager::setModel(Model *model)
         oldModel->disconnect(this);
     if (model) {
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
-        d->updateScoreLength();
+        emit scoreDataChanged();
     }
 }
 
-void AcViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
+void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
     Q_UNUSED(bottomLeft);
     if (!topRight.isValid())
-        d->updateScoreLength();
+        emit scoreDataChanged();
 }

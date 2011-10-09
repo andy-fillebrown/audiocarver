@@ -22,14 +22,14 @@
 
 class Model;
 
-class AcMainWidgetPrivate;
-class AcMainWidget : public QWidget
+class MainWidgetPrivate;
+class MainWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    AcMainWidget(QWidget *parent = 0);
-    ~AcMainWidget();
+    MainWidget(QWidget *parent = 0);
+    ~MainWidget();
 
     void setModel(Model *model);
 
@@ -43,10 +43,8 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 private:
-    Q_DISABLE_COPY(AcMainWidget)
-    AcMainWidgetPrivate *d;
-
-    friend class AcPitchView;
+    Q_DISABLE_COPY(MainWidget)
+    MainWidgetPrivate *d;
 };
 
 #endif // AC_MAINWIDGET_H

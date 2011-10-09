@@ -15,24 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITORVIEW_H
-#define AC_EDITORVIEW_H
+#include "ac_controllabelview.h"
 
-#include <ac_graphicsview.h>
-
-class AcEditorViewPrivate;
-
-class AcEditorView : public AcGraphicsView
+class ControlLabelViewPrivate
 {
-    Q_OBJECT
-
 public:
-    AcEditorView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcEditorView();
+    ControlLabelViewPrivate()
+    {}
 
-private:
-    Q_DISABLE_COPY(AcEditorView)
-    AcEditorViewPrivate *d;
+    virtual ~ControlLabelViewPrivate()
+    {}
 };
 
-#endif // AC_EDITORVIEW_H
+ControlLabelView::ControlLabelView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsView(scene, parent)
+    ,   d(new ControlLabelViewPrivate)
+{}
+
+ControlLabelView::~ControlLabelView()
+{
+    delete d;
+}

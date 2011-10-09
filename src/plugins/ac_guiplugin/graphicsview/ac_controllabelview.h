@@ -15,24 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_volumeview.h"
+#ifndef AC_CONTROLLABELVIEW_H
+#define AC_CONTROLLABELVIEW_H
 
-class AcVolumeViewPrivate
+#include <ac_graphicsview.h>
+
+class ControlLabelViewPrivate;
+
+class ControlLabelView : public GraphicsView
 {
-public:
-    AcVolumeViewPrivate()
-    {}
+    Q_OBJECT
 
-    virtual ~AcVolumeViewPrivate()
-    {}
+public:
+    ControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~ControlLabelView();
+
+private:
+    Q_DISABLE_COPY(ControlLabelView)
+    ControlLabelViewPrivate *d;
 };
 
-AcVolumeView::AcVolumeView(QGraphicsScene *scene, QWidget *parent)
-    :   AcEditorView(scene, parent)
-    ,   d(new AcVolumeViewPrivate)
-{}
-
-AcVolumeView::~AcVolumeView()
-{
-    delete d;
-}
+#endif // AC_CONTROLLABELVIEW_H

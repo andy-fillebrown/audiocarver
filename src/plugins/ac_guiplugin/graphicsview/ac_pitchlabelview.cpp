@@ -17,22 +17,22 @@
 
 #include "ac_pitchlabelview.h"
 
-class AcPitchLabelViewPrivate
+class PitchLabelViewPrivate
 {
 public:
-    AcPitchLabelViewPrivate()
+    PitchLabelViewPrivate()
     {}
 
-    virtual ~AcPitchLabelViewPrivate()
+    virtual ~PitchLabelViewPrivate()
     {}
 };
 
-AcPitchLabelView::AcPitchLabelView(QGraphicsScene *scene, QWidget *parent)
-    :   AcGraphicsView(scene, parent)
-    ,   d(new AcPitchLabelViewPrivate)
+PitchLabelView::PitchLabelView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsView(scene, parent)
+    ,   d(new PitchLabelViewPrivate)
 {}
 
-AcPitchLabelView::~AcPitchLabelView()
+PitchLabelView::~PitchLabelView()
 {
     delete d;
 }

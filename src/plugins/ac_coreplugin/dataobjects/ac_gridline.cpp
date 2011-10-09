@@ -148,7 +148,7 @@ public:
         if (parent) {
             timeLabelItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
             pitchLineItem->setParentItem(parent->unitYGraphicsItems[Ac::PitchScene]);
-            controlLineItem->setParentItem(parent->unitYGraphicsItems[Ac::ControlScene]);
+            controlLineItem->setParentItem(parent->mainGraphicsItems[Ac::ControlScene]);
         } else {
             timeLabelItem->setParentItem(0);
             pitchLineItem->setParentItem(0);

@@ -29,14 +29,14 @@ class QWidget;
 
 class QModelIndex;
 
-class AcViewManagerPrivate;
-class AcViewManager : public QObject
+class ViewManagerPrivate;
+class ViewManager : public QObject
 {
     Q_OBJECT
 
 public:
-    AcViewManager(QWidget *widget);
-    ~AcViewManager();
+    ViewManager(QWidget *widget);
+    ~ViewManager();
 
     QGraphicsView *view(Ac::SceneType type) const;
 
@@ -45,9 +45,12 @@ public:
 public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
+signals:
+    void scoreDataChanged();
+
 private:
-    Q_DISABLE_COPY(AcViewManager)
-    AcViewManagerPrivate *d;
+    Q_DISABLE_COPY(ViewManager)
+    ViewManagerPrivate *d;
 };
 
 #endif // AC_VIEWMANAGER_H

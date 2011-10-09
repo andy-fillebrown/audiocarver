@@ -20,19 +20,22 @@
 
 #include <ac_graphicsview.h>
 
-class AcPitchLabelViewPrivate;
+class PitchLabelViewPrivate;
 
-class AcPitchLabelView : public AcGraphicsView
+class PitchLabelView : public GraphicsView
 {
     Q_OBJECT
 
 public:
-    AcPitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~AcPitchLabelView();
+    PitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~PitchLabelView();
+
+protected:
+    qreal sceneHeight() const { return 127.0f; }
 
 private:
-    Q_DISABLE_COPY(AcPitchLabelView)
-    AcPitchLabelViewPrivate *d;
+    Q_DISABLE_COPY(PitchLabelView)
+    PitchLabelViewPrivate *d;
 };
 
 #endif // AC_PITCHLABELVIEW_H

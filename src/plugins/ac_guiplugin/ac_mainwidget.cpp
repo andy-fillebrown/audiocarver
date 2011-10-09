@@ -28,35 +28,35 @@
 
 #include <QModelIndex>
 
-class AcMainWidgetPrivate
+class MainWidgetPrivate
 {
 public:
-    AcMainWidget *q;
+    MainWidget *q;
     QGridLayout *layout;
-    AcViewManager *viewManager;
+    ViewManager *viewManager;
     MiGraphicsView *topLeft;
 
-    AcMainWidgetPrivate(AcMainWidget *q)
+    MainWidgetPrivate(MainWidget *q)
         :   q(q)
         ,   layout(new QGridLayout(q))
-        ,   viewManager(new AcViewManager(q))
+        ,   viewManager(new ViewManager(q))
         ,   topLeft(new MiGraphicsView)
     {
         layout->setContentsMargins(QMargins(0, 0, 0, 0));
         layout->setSpacing(0);
     }
 
-    virtual ~AcMainWidgetPrivate()
+    virtual ~MainWidgetPrivate()
     {}
 };
 
-AcMainWidget::AcMainWidget(QWidget *parent)
+MainWidget::MainWidget(QWidget *parent)
     :   QWidget(parent)
-    ,   d(new AcMainWidgetPrivate(this))
+    ,   d(new MainWidgetPrivate(this))
 {
-    const int sideWidth = 48;
-    const int sideHeight = 32;
-    const int controlHeight = 192;
+    int sideWidth = 48;
+    int sideHeight = 32;
+    int controlHeight = 192;
 
     d->layout->addWidget(d->topLeft, 0, 0);
     d->topLeft->setFixedSize(sideWidth, sideHeight);
@@ -92,17 +92,17 @@ AcMainWidget::AcMainWidget(QWidget *parent)
 //    d->viewManager->updateViews();
 }
 
-AcMainWidget::~AcMainWidget()
+MainWidget::~MainWidget()
 {
     delete d;
 }
 
-void AcMainWidget::setModel(Model *model)
+void MainWidget::setModel(Model *model)
 {
     d->viewManager->setModel(model);
 }
 
-bool AcMainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) const
+bool MainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) const
 {
     QGraphicsView *controlView = d->viewManager->view(Ac::ControlScene);
     if (controlView->rect().contains(controlView->mapFrom(widget, pos)))
@@ -113,26 +113,26 @@ bool AcMainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) con
     return false;
 }
 
-void AcMainWidget::test()
+void MainWidget::test()
 {
     d->viewManager->dataChanged(QModelIndex(), QModelIndex());
 }
 
-void AcMainWidget::resizeEvent(QResizeEvent *event)
+void MainWidget::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
 //    QWidget::resizeEvent(event);
 //    d->viewManager->updateViews();
 }
 
-void AcMainWidget::showEvent(QShowEvent *event)
+void MainWidget::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
 //    QWidget::showEvent(event);
 //    d->viewManager->updateViews();
 }
 
-void AcMainWidget::wheelEvent(QWheelEvent *event)
+void MainWidget::wheelEvent(QWheelEvent *event)
 {
     Q_UNUSED(event);
 //    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {

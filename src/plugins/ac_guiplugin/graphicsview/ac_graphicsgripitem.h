@@ -50,7 +50,6 @@ public:
 
 private:
     Q_DISABLE_COPY(GraphicsGripItem)
-
     GraphicsGripItemPrivate *d;
 };
 
