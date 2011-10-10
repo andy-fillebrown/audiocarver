@@ -17,14 +17,40 @@
 
 #include "ac_pitchview.h"
 
+#include <ac_graphicsscene.h>
+
+#include <ac_model.h>
+
+#include <QWheelEvent>
+
 class PitchViewPrivate
 {
 public:
+    bool panning;
+    QPoint panStartPos;
+
     PitchViewPrivate()
+        :   panning(false)
     {}
 
     virtual ~PitchViewPrivate()
     {}
+
+    void startPan(const QPoint &pos)
+    {
+        panning = true;
+        panStartPos = pos;
+    }
+
+    void panTo(const QPoint &pos)
+    {
+
+    }
+
+    void endPan()
+    {
+        panning = false;
+    }
 };
 
 PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
@@ -35,4 +61,41 @@ PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
 PitchView::~PitchView()
 {
     delete d;
+}
+
+void PitchView::mousePressEvent(QMouseEvent *event)
+{
+    if (Qt::RightButton == event->button())
+        d->startPan(event->pos());
+    else
+        GraphicsView::mousePressEvent(event);
+}
+
+void PitchView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (d->panning)
+        d->panTo(event->pos());
+    else
+        GraphicsView::mouseMoveEvent(event);
+}
+
+void PitchView::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (Qt::RightButton == event->button())
+        d->endPan();
+    else
+        GraphicsView::mouseReleaseEvent(event);
+}
+
+void PitchView::wheelEvent(QWheelEvent *event)
+{
+    Model *model = SceneManager::instance()->model();
+    QModelIndex viewSettings = model->viewSettingsIndex();
+    qreal timeScale = viewSettings.data(Ac::TimeScaleRole).toReal();
+    qreal pitchScale = viewSettings.data(Ac::PitchScaleRole).toReal();
+    qreal scaleAmount = 1.25f;
+    if (event->delta() < 0)
+        scaleAmount = 1.0f / scaleAmount;
+    model->setData(viewSettings, scaleAmount * timeScale, Ac::TimeScaleRole);
+//    model->setData(viewSettings, scaleAmount * pitchScale, Ac::PitchScaleRole);
 }

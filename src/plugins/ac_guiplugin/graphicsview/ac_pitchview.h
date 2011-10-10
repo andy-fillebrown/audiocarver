@@ -33,6 +33,11 @@ public:
 protected:
     qreal sceneHeight() const { return 127.0f; }
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
+
 private:
     Q_DISABLE_COPY(PitchView)
     PitchViewPrivate *d;

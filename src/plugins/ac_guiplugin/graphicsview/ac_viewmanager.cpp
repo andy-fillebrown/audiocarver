@@ -93,6 +93,7 @@ void ViewManager::setModel(Model *model)
 void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
     Q_UNUSED(bottomLeft);
-    if (!topRight.isValid())
+    if (!topRight.isValid()
+            ||  d->sceneManager->model()->viewSettingsIndex() == topRight)
         emit scoreDataChanged();
 }
