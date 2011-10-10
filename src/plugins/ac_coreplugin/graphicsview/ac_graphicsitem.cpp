@@ -22,15 +22,28 @@
 class GraphicsCurveItemPrivate
 {
 public:
+    GraphicsCurveItem *q;
     GraphicsGuideItem *guideItem;
+    QColor color;
 
     GraphicsCurveItemPrivate(GraphicsCurveItem *q)
-        :   guideItem(new GraphicsGuideItem(q))
+        :   q(q)
+        ,   guideItem(new GraphicsGuideItem(q))
+        ,   color(Qt::red)
     {}
 
     ~GraphicsCurveItemPrivate()
     {
         delete guideItem;
+    }
+
+    void updateColor()
+    {
+        guideItem->setPen(QPen(QBrush(color), 0.0f, Qt::DotLine));
+        QPen pen = q->pen();
+        pen.setColor(color);
+        pen.setWidthF(2.0f);
+        q->setPen(pen);
     }
 };
 
@@ -38,7 +51,10 @@ GraphicsCurveItem::GraphicsCurveItem(QGraphicsItem *parent)
     :   GraphicsPathItem(parent)
     ,   d(new GraphicsCurveItemPrivate(this))
 {
-    setPen(QPen(Qt::red, 2.0f));
+    QPen pen;
+    pen.setCosmetic(true);
+    setPen(pen);
+    d->updateColor();
     unhighlight();
 }
 
@@ -82,19 +98,27 @@ void GraphicsCurveItem::setPoints(const PointList &points)
     d->guideItem->setPath(guidePath);
 }
 
+void GraphicsCurveItem::setColor(const QColor &color)
+{
+    if (d->color == color)
+        return;
+    d->color = color;
+    d->updateColor();
+}
+
 void GraphicsCurveItem::highlight()
 {
-    QPen litPen(pen().color(), 4.0f);
-    litPen.setCosmetic(true);
-    setPen(litPen);
+    QPen pen = this->pen();
+    pen.setWidthF(3.0f);
+    setPen(pen);
     d->guideItem->show();
 }
 
 void GraphicsCurveItem::unhighlight()
 {
-    QPen unlitPen(pen().color(), 2.0f);
-    unlitPen.setCosmetic(true);
-    setPen(unlitPen);
+    QPen pen = this->pen();
+    pen.setWidthF(1.0f);
+    setPen(pen);
     d->guideItem->hide();
 }
 

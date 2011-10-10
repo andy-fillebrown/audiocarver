@@ -67,7 +67,6 @@ public:
         :   GraphicsPathItem(parent)
     {
         setFlag(QGraphicsItem::ItemStacksBehindParent);
-        setPen(QPen(QBrush(Qt::lightGray), 0.0f, Qt::DotLine));
         hide();
     }
 };
@@ -80,8 +79,8 @@ public:
     ~GraphicsCurveItem();
 
     void setEntity(IEntity *entity);
-
     void setPoints(const PointList &points);
+    void setColor(const QColor &color);
 
     void highlight();
     void unhighlight();
