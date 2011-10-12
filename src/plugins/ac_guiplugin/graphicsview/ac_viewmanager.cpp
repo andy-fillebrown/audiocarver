@@ -82,10 +82,17 @@ void ViewManager::setModel(Model *model)
     d->sceneManager->setModel(model);
     if (oldModel == model)
         return;
-    if (oldModel)
+    if (oldModel) {
         oldModel->disconnect(this);
+        oldModel->disconnect(d->timeLabelView);
+        oldModel->disconnect(d->pitchLabelView);
+        oldModel->disconnect(d->controlLabelView);
+    }
     if (model) {
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         emit scoreDataChanged();
     }
 }

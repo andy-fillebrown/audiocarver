@@ -142,7 +142,7 @@ public:
         qreal topMarginOffset = 2.0f;
         Model *model = SceneManager::instance()->model();
         QModelIndex viewSettings = model->viewSettingsIndex();
-        qreal sceneWidth = model->data(QModelIndex(), Ac::LengthRole).toReal() / viewSettings.data(Ac::TimeScaleRole).toReal();
+        qreal sceneWidth = q->sceneWidth() / viewSettings.data(Ac::TimeScaleRole).toReal();
         qreal sceneHeight = q->sceneHeight() / viewSettings.data(Ac::PitchScaleRole).toReal();
         qreal viewWidth = q->width();
         qreal viewHeight = q->height();
@@ -268,7 +268,12 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         d->clearSelectedEntities();
 }
 
-void GraphicsHView::scoreDataChanged()
+void GraphicsView::scoreDataChanged()
 {
     d->updateViewMetrics();
+}
+
+qreal GraphicsHView::sceneWidth() const
+{
+    return SceneManager::instance()->model()->data(QModelIndex(), Ac::LengthRole).toReal();
 }

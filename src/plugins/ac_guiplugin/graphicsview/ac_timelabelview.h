@@ -18,11 +18,11 @@
 #ifndef AC_TIMELABELVIEW_H
 #define AC_TIMELABELVIEW_H
 
-#include <ac_graphicsview.h>
+#include <ac_labelview.h>
 
 class TimeLabelViewPrivate;
 
-class TimeLabelView : public GraphicsHView
+class TimeLabelView : public LabelView
 {
     Q_OBJECT
 
@@ -30,10 +30,11 @@ public:
     TimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~TimeLabelView();
 
-    QPointF sceneCenter() const;
-
 protected:
-    void scoreDataChanged();
+    virtual QModelIndex gridLineListIndex() const;
+
+    qreal sceneWidth() const;
+    QPointF sceneCenter() const;
 
 private:
     Q_DISABLE_COPY(TimeLabelView)

@@ -30,15 +30,19 @@ public:
     GraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~GraphicsView();
 
+public slots:
+    virtual void scoreDataChanged();
+
 protected:
+    virtual qreal sceneWidth() const { return 1.0f; }
+    virtual qreal sceneHeight() const { return 1.0f; }
+    virtual QPointF sceneCenter() const { return QPointF(); }
+
     void resizeEvent(QResizeEvent*);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
-
-    virtual qreal sceneHeight() const { return 1.0f; }
-    virtual QPointF sceneCenter() const { return QPointF(); }
 
 private:
     Q_DISABLE_COPY(GraphicsView)
@@ -57,8 +61,8 @@ public:
         :   GraphicsView(scene, parent)
     {}
 
-public slots:
-    virtual void scoreDataChanged();
+protected:
+    qreal sceneWidth() const;
 
 private:
     Q_DISABLE_COPY(GraphicsHView)

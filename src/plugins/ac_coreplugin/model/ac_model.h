@@ -53,6 +53,7 @@ public:
         return index(row, 0, parent);
     }
 
+    QModelIndex scoreIndex() const { return index(0); }
     QModelIndex viewSettingsIndex() const;
     QModelIndex timeGridLineListIndex() const;
 

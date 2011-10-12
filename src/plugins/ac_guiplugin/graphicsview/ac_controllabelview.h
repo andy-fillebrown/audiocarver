@@ -30,6 +30,7 @@ public:
     ControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~ControlLabelView();
 
+protected:
     QPointF sceneCenter() const;
 
 private:

@@ -20,19 +20,30 @@
 
 #include <ac_graphicsview.h>
 
-//class AcLabelViewPrivate;
+class LabelViewPrivate;
 
-//class AcLabelView : public AcGraphicsView
-//{
-//    Q_OBJECT
+class QModelIndex;
 
-//public:
-//    AcLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-//    ~AcLabelView();
+class LabelView : public GraphicsView
+{
+    Q_OBJECT
 
-//private:
-//    Q_DISABLE_COPY(AcLabelView)
-//    AcLabelViewPrivate *d;
-//};
+public:
+    LabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~LabelView();
+
+public slots:
+    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
+
+protected:
+    virtual QModelIndex gridLineListIndex() const = 0;
+
+    void scoreDataChanged();
+
+private:
+    Q_DISABLE_COPY(LabelView)
+    LabelViewPrivate *d;
+    friend class LabelViewPrivate;
+};
 
 #endif // AC_LABELVIEW_H

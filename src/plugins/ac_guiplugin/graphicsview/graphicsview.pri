@@ -2,6 +2,7 @@
 SOURCE_PAIRS = \
     ac_controllabelview \
     ac_controlview \
+    ac_labelview \
     ac_graphicsentityitem \
     ac_graphicsgripitem \
     ac_graphicsscene \
