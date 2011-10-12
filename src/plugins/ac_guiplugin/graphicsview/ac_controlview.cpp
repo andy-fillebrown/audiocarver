@@ -17,6 +17,10 @@
 
 #include "ac_controlview.h"
 
+#include <ac_graphicsscene.h>
+
+#include <ac_model.h>
+
 class ControlViewPrivate
 {
 public:
@@ -35,4 +39,13 @@ ControlView::ControlView(QGraphicsScene *scene, QWidget *parent)
 ControlView::~ControlView()
 {
     delete d;
+}
+
+QPointF ControlView::sceneCenter() const
+{
+    Model *model = SceneManager::instance()->model();
+    QModelIndex viewSettings = model->viewSettingsIndex();
+    qreal x = viewSettings.data(Ac::TimePositionRole).toReal();
+    qreal y = viewSettings.data(Ac::ControlPositionRole).toReal();
+    return QPointF(x, -y);
 }

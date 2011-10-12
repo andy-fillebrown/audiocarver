@@ -154,7 +154,10 @@ public:
         qreal bottomMargin = topMargin + (topMarginOffset / heightScale);
         qreal actualSceneWidth = sceneWidth + leftMargin + rightMargin;
         qreal actualSceneHeight = sceneHeight + topMargin + bottomMargin;
-        q->setSceneRect(-leftMargin, topMargin, actualSceneWidth, -actualSceneHeight);
+        QRectF sceneRect(-leftMargin, topMargin, actualSceneWidth, -actualSceneHeight);
+        QPointF sceneOffset = q->sceneCenter() - sceneRect.center();
+        sceneRect.translate(sceneOffset);
+        q->setSceneRect(sceneRect);
         qreal actualWidthScale = viewWidth / actualSceneWidth;
         qreal actualHeightScale = viewHeight / actualSceneHeight;
         q->setTransform(QTransform::fromScale(actualWidthScale, actualHeightScale));

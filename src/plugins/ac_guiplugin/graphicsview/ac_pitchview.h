@@ -32,6 +32,7 @@ public:
 
 protected:
     qreal sceneHeight() const { return 127.0f; }
+    QPointF sceneCenter() const;
 
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

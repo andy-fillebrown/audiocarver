@@ -30,6 +30,8 @@ public:
     ControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~ControlView();
 
+    QPointF sceneCenter() const;
+
 private:
     Q_DISABLE_COPY(ControlView)
     ControlViewPrivate *d;

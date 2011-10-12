@@ -26,11 +26,14 @@
 class PitchViewPrivate
 {
 public:
+    PitchView *q;
     bool panning;
-    QPoint panStartPos;
+    QPointF panStartPos;
+    QPointF panStartCenter;
 
-    PitchViewPrivate()
-        :   panning(false)
+    PitchViewPrivate(PitchView *q)
+        :   q(q)
+        ,   panning(false)
     {}
 
     virtual ~PitchViewPrivate()
@@ -39,28 +42,49 @@ public:
     void startPan(const QPoint &pos)
     {
         panning = true;
-        panStartPos = pos;
+        panStartPos = q->mapToScene(pos);
+        QModelIndex viewSettings = SceneManager::instance()->model()->viewSettingsIndex();
+        panStartCenter.setX(viewSettings.data(Ac::TimePositionRole).toReal());
+        panStartCenter.setY(viewSettings.data(Ac::PitchPositionRole).toReal());
     }
 
     void panTo(const QPoint &pos)
     {
-
+        Model *model = SceneManager::instance()->model();
+        QModelIndex viewSettings = model->viewSettingsIndex();
+        model->setData(viewSettings, panStartCenter.x(), Ac::TimePositionRole);
+        model->setData(viewSettings, panStartCenter.y(), Ac::PitchPositionRole);
+        QPointF offset = q->mapToScene(pos) - panStartPos;
+        offset.setY(-offset.y());
+        QPointF center = panStartCenter - offset;
+        model->setData(model->viewSettingsIndex(), center.x(), Ac::TimePositionRole);
+        model->setData(model->viewSettingsIndex(), center.y(), Ac::PitchPositionRole);
     }
 
-    void endPan()
+    void endPan(const QPoint &pos)
     {
+        panTo(pos);
         panning = false;
     }
 };
 
 PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
     :   GraphicsHView(scene, parent)
-    ,   d(new PitchViewPrivate)
+    ,   d(new PitchViewPrivate(this))
 {}
 
 PitchView::~PitchView()
 {
     delete d;
+}
+
+QPointF PitchView::sceneCenter() const
+{
+    Model *model = SceneManager::instance()->model();
+    QModelIndex viewSettings = model->viewSettingsIndex();
+    qreal x = viewSettings.data(Ac::TimePositionRole).toReal();
+    qreal y = viewSettings.data(Ac::PitchPositionRole).toReal();
+    return QPointF(x, -y);
 }
 
 void PitchView::mousePressEvent(QMouseEvent *event)
@@ -82,7 +106,7 @@ void PitchView::mouseMoveEvent(QMouseEvent *event)
 void PitchView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (Qt::RightButton == event->button())
-        d->endPan();
+        d->endPan(event->pos());
     else
         GraphicsView::mouseReleaseEvent(event);
 }

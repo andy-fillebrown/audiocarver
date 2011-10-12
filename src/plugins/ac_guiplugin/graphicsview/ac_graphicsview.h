@@ -38,6 +38,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
     virtual qreal sceneHeight() const { return 1.0f; }
+    virtual QPointF sceneCenter() const { return QPointF(); }
 
 private:
     Q_DISABLE_COPY(GraphicsView)

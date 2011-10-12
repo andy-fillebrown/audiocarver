@@ -71,8 +71,8 @@ public:
 
     ViewSettingsPrivate(ViewSettings *q)
         :   ObjectPrivate(q)
-        ,   timePos(0.0f)
-        ,   pitchPos(60.0f)
+        ,   timePos(64.0f)
+        ,   pitchPos(63.5f)
         ,   controlPos(0.5f)
         ,   timeScale(2.0f)
         ,   pitchScale(1.0f)
