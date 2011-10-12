@@ -56,6 +56,8 @@ public:
     QModelIndex scoreIndex() const { return index(0); }
     QModelIndex viewSettingsIndex() const;
     QModelIndex timeGridLineListIndex() const;
+    QModelIndex pitchGridLineListIndex() const;
+    QModelIndex controlGridLineListIndex() const;
 
 signals:
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);

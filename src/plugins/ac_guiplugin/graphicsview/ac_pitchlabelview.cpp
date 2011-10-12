@@ -17,6 +17,10 @@
 
 #include "ac_pitchlabelview.h"
 
+#include <ac_graphicsscene.h>
+
+#include <ac_model.h>
+
 class PitchLabelViewPrivate
 {
 public:
@@ -28,11 +32,26 @@ public:
 };
 
 PitchLabelView::PitchLabelView(QGraphicsScene *scene, QWidget *parent)
-    :   GraphicsView(scene, parent)
+    :   LabelVView(scene, parent)
     ,   d(new PitchLabelViewPrivate)
 {}
 
 PitchLabelView::~PitchLabelView()
 {
     delete d;
+}
+
+QModelIndex PitchLabelView::gridLineListIndex() const
+{
+    return SceneManager::instance()->model()->pitchGridLineListIndex();
+}
+
+qreal PitchLabelView::sceneHeight() const
+{
+    return 127.0 / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchScaleRole).toReal();
+}
+
+QPointF PitchLabelView::sceneCenter() const
+{
+    return QPointF(0.5f, -SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchPositionRole).toReal());
 }

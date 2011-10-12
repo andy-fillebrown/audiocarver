@@ -1,7 +1,4 @@
 
-HEADERS += \
-    interfaces/ac_imodelitem.h \
-
 SOURCE_PAIRS = \
     ac_model \
 

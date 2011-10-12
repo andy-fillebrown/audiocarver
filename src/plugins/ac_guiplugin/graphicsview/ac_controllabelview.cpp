@@ -32,7 +32,7 @@ public:
 };
 
 ControlLabelView::ControlLabelView(QGraphicsScene *scene, QWidget *parent)
-    :   GraphicsView(scene, parent)
+    :   LabelVView(scene, parent)
     ,   d(new ControlLabelViewPrivate)
 {}
 
@@ -41,10 +41,17 @@ ControlLabelView::~ControlLabelView()
     delete d;
 }
 
+QModelIndex ControlLabelView::gridLineListIndex() const
+{
+    return SceneManager::instance()->model()->controlGridLineListIndex();
+}
+
+qreal ControlLabelView::sceneHeight() const
+{
+    return 1.0 / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::ControlScaleRole).toReal();
+}
+
 QPointF ControlLabelView::sceneCenter() const
 {
-    Model *model = SceneManager::instance()->model();
-    QModelIndex viewSettings = model->viewSettingsIndex();
-    qreal y = viewSettings.data(Ac::TimePositionRole).toReal();
-    return QPointF(0.5f, -y);
+    return QPointF(0.5f, -SceneManager::instance()->model()->viewSettingsIndex().data(Ac::TimePositionRole).toReal());
 }

@@ -130,3 +130,13 @@ QModelIndex Model::timeGridLineListIndex() const
 {
     return d->indexFromItem(d->score->gridSettings()->timeGridLines());
 }
+
+QModelIndex Model::pitchGridLineListIndex() const
+{
+    return d->indexFromItem(d->score->gridSettings()->pitchGridLines());
+}
+
+QModelIndex Model::controlGridLineListIndex() const
+{
+    return d->indexFromItem(d->score->gridSettings()->controlGridLines());
+}

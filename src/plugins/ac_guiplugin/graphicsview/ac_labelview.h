@@ -36,14 +36,33 @@ public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 protected:
+    virtual qreal paddingScale() const = 0;
     virtual QModelIndex gridLineListIndex() const = 0;
 
     void scoreDataChanged();
+
+    void resizeEvent(QResizeEvent *event);
 
 private:
     Q_DISABLE_COPY(LabelView)
     LabelViewPrivate *d;
     friend class LabelViewPrivate;
+};
+
+class LabelVView : public LabelView
+{
+    Q_OBJECT
+
+public:
+    LabelVView(QGraphicsScene *scene = 0, QWidget *parent = 0)
+        :   LabelView(scene, parent)
+    {}
+
+protected:
+    qreal paddingScale() const { return sceneHeight() / height(); }
+
+private:
+    Q_DISABLE_COPY(LabelVView)
 };
 
 #endif // AC_LABELVIEW_H

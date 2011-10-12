@@ -41,11 +41,13 @@ ControlView::~ControlView()
     delete d;
 }
 
+qreal ControlView::sceneHeight() const
+{
+    return 1.0 / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::ControlScaleRole).toReal();
+}
+
 QPointF ControlView::sceneCenter() const
 {
-    Model *model = SceneManager::instance()->model();
-    QModelIndex viewSettings = model->viewSettingsIndex();
-    qreal x = viewSettings.data(Ac::TimePositionRole).toReal();
-    qreal y = viewSettings.data(Ac::ControlPositionRole).toReal();
-    return QPointF(x, -y);
+    QModelIndex viewSettings = SceneManager::instance()->model()->viewSettingsIndex();
+    return QPointF(viewSettings.data(Ac::TimePositionRole).toReal(), -viewSettings.data(Ac::ControlPositionRole).toReal());
 }

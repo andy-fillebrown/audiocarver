@@ -140,10 +140,8 @@ public:
         qreal halfMargin = margin / 2.0f;
         qreal rightMarginOffset = 3.0f;
         qreal topMarginOffset = 2.0f;
-        Model *model = SceneManager::instance()->model();
-        QModelIndex viewSettings = model->viewSettingsIndex();
-        qreal sceneWidth = q->sceneWidth() / viewSettings.data(Ac::TimeScaleRole).toReal();
-        qreal sceneHeight = q->sceneHeight() / viewSettings.data(Ac::PitchScaleRole).toReal();
+        qreal sceneWidth = q->sceneWidth();
+        qreal sceneHeight = q->sceneHeight();
         qreal viewWidth = q->width();
         qreal viewHeight = q->height();
         qreal widthScale = viewWidth / sceneWidth;
@@ -179,8 +177,9 @@ GraphicsView::~GraphicsView()
     delete d;
 }
 
-void GraphicsView::resizeEvent(QResizeEvent*)
+void GraphicsView::resizeEvent(QResizeEvent *event)
 {
+    Q_UNUSED(event);
     d->updateViewMetrics();
 }
 
@@ -275,5 +274,6 @@ void GraphicsView::scoreDataChanged()
 
 qreal GraphicsHView::sceneWidth() const
 {
-    return SceneManager::instance()->model()->data(QModelIndex(), Ac::LengthRole).toReal();
+    Model *model = SceneManager::instance()->model();
+    return model->data(QModelIndex(), Ac::LengthRole).toReal() / model->viewSettingsIndex().data(Ac::TimeScaleRole).toReal();
 }

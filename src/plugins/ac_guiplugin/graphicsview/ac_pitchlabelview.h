@@ -18,11 +18,11 @@
 #ifndef AC_PITCHLABELVIEW_H
 #define AC_PITCHLABELVIEW_H
 
-#include <ac_graphicsview.h>
+#include <ac_labelview.h>
 
 class PitchLabelViewPrivate;
 
-class PitchLabelView : public GraphicsView
+class PitchLabelView : public LabelVView
 {
     Q_OBJECT
 
@@ -31,7 +31,10 @@ public:
     ~PitchLabelView();
 
 protected:
-    qreal sceneHeight() const { return 127.0f; }
+    QModelIndex gridLineListIndex() const;
+
+    qreal sceneHeight() const;
+    QPointF sceneCenter() const;
 
 private:
     Q_DISABLE_COPY(PitchLabelView)

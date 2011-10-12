@@ -30,6 +30,8 @@ public:
     ControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~ControlView();
 
+protected:
+    qreal sceneHeight() const;
     QPointF sceneCenter() const;
 
 private:

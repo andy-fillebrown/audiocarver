@@ -78,13 +78,15 @@ PitchView::~PitchView()
     delete d;
 }
 
+qreal PitchView::sceneHeight() const
+{
+    return 127.0f / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchScaleRole).toReal();
+}
+
 QPointF PitchView::sceneCenter() const
 {
-    Model *model = SceneManager::instance()->model();
-    QModelIndex viewSettings = model->viewSettingsIndex();
-    qreal x = viewSettings.data(Ac::TimePositionRole).toReal();
-    qreal y = viewSettings.data(Ac::PitchPositionRole).toReal();
-    return QPointF(x, -y);
+    QModelIndex viewSettings = SceneManager::instance()->model()->viewSettingsIndex();
+    return QPointF(viewSettings.data(Ac::TimePositionRole).toReal(), -viewSettings.data(Ac::PitchPositionRole).toReal());
 }
 
 void PitchView::mousePressEvent(QMouseEvent *event)

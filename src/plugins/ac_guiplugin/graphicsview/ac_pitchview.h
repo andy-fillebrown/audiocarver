@@ -31,7 +31,7 @@ public:
     ~PitchView();
 
 protected:
-    qreal sceneHeight() const { return 127.0f; }
+    qreal sceneHeight() const;
     QPointF sceneCenter() const;
 
     void mousePressEvent(QMouseEvent *event);

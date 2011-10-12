@@ -51,13 +51,11 @@ QModelIndex TimeLabelView::gridLineListIndex() const
 
 qreal TimeLabelView::sceneWidth() const
 {
-    return SceneManager::instance()->model()->data(QModelIndex(), Ac::LengthRole).toReal();
+    Model *model = SceneManager::instance()->model();
+    return model->data(QModelIndex(), Ac::LengthRole).toReal() / model->viewSettingsIndex().data(Ac::TimeScaleRole).toReal();
 }
 
 QPointF TimeLabelView::sceneCenter() const
 {
-    Model *model = SceneManager::instance()->model();
-    QModelIndex viewSettings = model->viewSettingsIndex();
-    qreal x = viewSettings.data(Ac::TimePositionRole).toReal();
-    return QPointF(x, -0.0f);
+    return QPointF(SceneManager::instance()->model()->viewSettingsIndex().data(Ac::TimePositionRole).toReal(), 0.0f);
 }

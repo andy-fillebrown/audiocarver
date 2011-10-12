@@ -18,11 +18,11 @@
 #ifndef AC_CONTROLLABELVIEW_H
 #define AC_CONTROLLABELVIEW_H
 
-#include <ac_graphicsview.h>
+#include <ac_labelview.h>
 
 class ControlLabelViewPrivate;
 
-class ControlLabelView : public GraphicsView
+class ControlLabelView : public LabelVView
 {
     Q_OBJECT
 
@@ -31,6 +31,9 @@ public:
     ~ControlLabelView();
 
 protected:
+    QModelIndex gridLineListIndex() const;
+
+    qreal sceneHeight() const;
     QPointF sceneCenter() const;
 
 private:
