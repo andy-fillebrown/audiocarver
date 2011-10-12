@@ -72,18 +72,17 @@ void populateModel(Model *model)
     }
     GridSettings *gridSettings = score->gridSettings();
     ObjectList<TimeGridLine> *timeGridLines = gridSettings->timeGridLines();
-    TimeGridLine *timeGridLine = new TimeGridLine;
-    timeGridLine->setColor(QColor(0, 127, 0));
-    timeGridLines->append(timeGridLine);
-    for (int i = 1;  i < 128;  ++i) {
-        QString label = QString("%1.%2").arg((i / 4) + 1).arg(i % 4);
-        if (label.endsWith(".0"))
+    TimeGridLine *timeGridLine = 0;
+    for (int i = 0;  i < 128;  ++i) {
+        QString label = QString("%1.%2").arg((i / 4) + 1).arg((i % 4) + 1);
+        if (label.endsWith(".1"))
             label.chop(2);
         timeGridLine = new TimeGridLine;
         timeGridLine->setLocation(i);
         timeGridLine->setLabel(label);
         timeGridLines->append(timeGridLine);
     }
+    timeGridLines[0].at(0)->setColor(QColor(0, 127, 0));
     for (int i = 1;  i < 128;  i*=2)
         for (int j = i;  j < 128;  j+=i)
             timeGridLines->at(j)->setPriority(128 / (i + 1));

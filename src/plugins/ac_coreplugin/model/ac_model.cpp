@@ -17,6 +17,7 @@
 
 #include "ac_model.h"
 
+#include <ac_gridsettings.h>
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
@@ -123,4 +124,9 @@ Qt::ItemFlags Model::flags(const QModelIndex &index) const
 QModelIndex Model::viewSettingsIndex() const
 {
     return d->indexFromItem(d->score->viewSettings());
+}
+
+QModelIndex Model::timeGridLineListIndex() const
+{
+    return d->indexFromItem(d->score->gridSettings()->timeGridLines());
 }

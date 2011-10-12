@@ -17,22 +17,75 @@
 
 #include "ac_timelabelview.h"
 
+#include <ac_graphicsscene.h>
+
+#include <ac_model.h>
+
 class TimeLabelViewPrivate
 {
 public:
-    TimeLabelViewPrivate()
+    TimeLabelView *q;
+
+    TimeLabelViewPrivate(TimeLabelView *q)
+        :   q(q)
     {}
 
     virtual ~TimeLabelViewPrivate()
     {}
+
+    void updateGridLineVisibilites()
+    {
+        Model *model = SceneManager::instance()->model();
+        QModelIndex viewSettings = model->viewSettingsIndex();
+        qreal padding = 5.0f / viewSettings.data(Ac::TimeScaleRole).toReal();
+        QModelIndex gridLines = model->timeGridLineListIndex();
+        int n = model->rowCount(gridLines);
+        int minPriority = INT_MAX;
+        int prevPriority = 0;
+        qreal prevLocation = -1.0f;
+        for (int i = 0;  i < n;  ++i) {
+            QModelIndex line = model->index(i, gridLines);
+            int curPriority = line.data(Ac::PriorityRole).toInt();
+            if (minPriority && minPriority < curPriority)
+                continue;
+            qreal curLocation = line.data(Ac::LocationRole).toReal();
+            if (curLocation < prevLocation)
+                minPriority = qMin(prevPriority, curPriority);
+            else {
+                prevPriority = curPriority;
+                prevLocation = curLocation + padding;
+            }
+        }
+        for (int i = 0;  i < n;  ++i) {
+            QModelIndex line = model->index(i, gridLines);
+            if (line.data(Ac::PriorityRole).toInt() <= minPriority)
+                model->setData(line, true, Ac::VisibilityRole);
+            else
+                model->setData(line, false, Ac::VisibilityRole);
+        }
+    }
 };
 
 TimeLabelView::TimeLabelView(QGraphicsScene *scene, QWidget *parent)
     :   GraphicsHView(scene, parent)
-    ,   d(new TimeLabelViewPrivate)
+    ,   d(new TimeLabelViewPrivate(this))
 {}
 
 TimeLabelView::~TimeLabelView()
 {
     delete d;
+}
+
+QPointF TimeLabelView::sceneCenter() const
+{
+    Model *model = SceneManager::instance()->model();
+    QModelIndex viewSettings = model->viewSettingsIndex();
+    qreal x = viewSettings.data(Ac::TimePositionRole).toReal();
+    return QPointF(x, -0.0f);
+}
+
+void TimeLabelView::scoreDataChanged()
+{
+    GraphicsHView::scoreDataChanged();
+    d->updateGridLineVisibilites();
 }

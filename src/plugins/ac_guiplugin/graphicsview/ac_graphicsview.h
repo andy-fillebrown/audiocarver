@@ -58,7 +58,7 @@ public:
     {}
 
 public slots:
-    void scoreDataChanged();
+    virtual void scoreDataChanged();
 
 private:
     Q_DISABLE_COPY(GraphicsHView)

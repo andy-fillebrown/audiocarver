@@ -158,6 +158,7 @@ public:
 
     void updateGraphicsItems()
     {
+        timeLabelItem->setPos(location, 0.0f);
         timeLabelItem->setText(label);
         timeLabelItem->setColor(Qt::black);
         QPen pen(color);
@@ -176,6 +177,12 @@ TimeGridLine::TimeGridLine(QObject *parent)
     Q_D(TimeGridLine);
     d->init();
     setObjectName("TimeGridLine");
+}
+
+bool TimeGridLine::isVisible() const
+{
+    Q_D(const TimeGridLine);
+    return d->pitchLineItem->isVisible();
 }
 
 void TimeGridLine::show()

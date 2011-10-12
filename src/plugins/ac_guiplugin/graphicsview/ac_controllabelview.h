@@ -30,6 +30,8 @@ public:
     ControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~ControlLabelView();
 
+    QPointF sceneCenter() const;
+
 private:
     Q_DISABLE_COPY(ControlLabelView)
     ControlLabelViewPrivate *d;

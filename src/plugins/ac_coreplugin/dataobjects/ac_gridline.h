@@ -46,10 +46,58 @@ public:
     const QColor &color() const;
     void setColor(const QColor &color);
 
-    GridSettings *gridSettings() const;
+    virtual bool isVisible() const { return true; }
+    void setVisibility(bool visible)
+    {
+        if (visible)
+            show();
+        else
+            hide();
+    }
 
     virtual void show() {}
     virtual void hide() {}
+
+    GridSettings *gridSettings() const;
+
+    // IModelItem
+
+    QVariant data(int role) const
+    {
+        switch (role) {
+        case Ac::LocationRole:
+            return location();
+        case Ac::LabelRole:
+            return label();
+        case Ac::PriorityRole:
+            return priority();
+        case Ac::ColorRole:
+            return color();
+        case Ac::VisibilityRole:
+            return isVisible();
+        default:
+            return GraphicsObject::data(role);
+        }
+    }
+
+    bool setData(const QVariant &value, int role)
+    {
+        switch (role) {
+        case Ac::LocationRole:
+            setLocation(value.toReal());
+        case Ac::LabelRole:
+            setLabel(value.toString());
+        case Ac::PriorityRole:
+            setPriority(value.toInt());
+        case Ac::ColorRole:
+            setColor(value.value<QColor>());
+        case Ac::VisibilityRole:
+            setVisibility(value.toBool());
+        default:
+            return GraphicsObject::setData(value, role);
+        }
+        return true;
+    }
 
 protected:
     GridLine(GridLinePrivate &dd, QObject *parent);
@@ -85,6 +133,7 @@ public:
 
     Ac::ItemType type() const { return Ac::TimeGridLineItem; }
 
+    bool isVisible() const;
     void show();
     void hide();
 

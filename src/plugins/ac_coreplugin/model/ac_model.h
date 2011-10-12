@@ -54,6 +54,7 @@ public:
     }
 
     QModelIndex viewSettingsIndex() const;
+    QModelIndex timeGridLineListIndex() const;
 
 signals:
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);

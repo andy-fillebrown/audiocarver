@@ -17,6 +17,10 @@
 
 #include "ac_controllabelview.h"
 
+#include <ac_graphicsscene.h>
+
+#include <ac_model.h>
+
 class ControlLabelViewPrivate
 {
 public:
@@ -35,4 +39,12 @@ ControlLabelView::ControlLabelView(QGraphicsScene *scene, QWidget *parent)
 ControlLabelView::~ControlLabelView()
 {
     delete d;
+}
+
+QPointF ControlLabelView::sceneCenter() const
+{
+    Model *model = SceneManager::instance()->model();
+    QModelIndex viewSettings = model->viewSettingsIndex();
+    qreal y = viewSettings.data(Ac::TimePositionRole).toReal();
+    return QPointF(0.5f, -y);
 }

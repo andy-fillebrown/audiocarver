@@ -30,6 +30,11 @@ public:
     TimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~TimeLabelView();
 
+    QPointF sceneCenter() const;
+
+protected:
+    void scoreDataChanged();
+
 private:
     Q_DISABLE_COPY(TimeLabelView)
     TimeLabelViewPrivate *d;
