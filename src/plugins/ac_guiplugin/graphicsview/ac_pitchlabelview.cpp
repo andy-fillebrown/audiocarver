@@ -58,5 +58,5 @@ QPointF PitchLabelView::sceneCenter() const
 
 QPointF PitchLabelView::sceneOffset() const
 {
-    return QPointF(0.0f, 2.5f / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchScaleRole).toReal());
+    return QPointF(0.0f, 4.0f / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchScaleRole).toReal());
 }
