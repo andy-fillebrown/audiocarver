@@ -37,6 +37,7 @@ protected:
     virtual qreal sceneWidth() const { return 1.0f; }
     virtual qreal sceneHeight() const { return 1.0f; }
     virtual QPointF sceneCenter() const { return QPointF(); }
+    virtual QPointF sceneOffset() const { return QPointF(); }
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);

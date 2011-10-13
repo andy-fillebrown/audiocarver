@@ -140,8 +140,6 @@ public:
 private:
     Q_DISABLE_COPY(TimeGridLine)
     Q_DECLARE_PRIVATE(TimeGridLine)
-
-//    friend class GridSettingsPrivate;
 };
 
 class PitchGridLinePrivate;
@@ -154,11 +152,13 @@ public:
 
     Ac::ItemType type() const { return Ac::PitchGridLineItem; }
 
+    bool isVisible() const;
+    void show();
+    void hide();
+
 private:
     Q_DISABLE_COPY(PitchGridLine)
     Q_DECLARE_PRIVATE(PitchGridLine)
-
-//    friend class GridSettingsPrivate;
 };
 
 class ControlGridLinePrivate;
@@ -174,8 +174,6 @@ public:
 private:
     Q_DISABLE_COPY(ControlGridLine)
     Q_DECLARE_PRIVATE(ControlGridLine)
-
-//    friend class GridSettingsPrivate;
 };
 
 #endif // AC_GRIDLINE_H

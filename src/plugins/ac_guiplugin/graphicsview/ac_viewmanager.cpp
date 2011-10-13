@@ -57,6 +57,8 @@ ViewManager::ViewManager(QWidget *widget)
     connect(this, SIGNAL(scoreDataChanged()), d->pitchView, SLOT(scoreDataChanged()));
     connect(this, SIGNAL(scoreDataChanged()), d->controlView, SLOT(scoreDataChanged()));
     connect(this, SIGNAL(scoreDataChanged()), d->timeLabelView, SLOT(scoreDataChanged()));
+    connect(this, SIGNAL(scoreDataChanged()), d->pitchLabelView, SLOT(scoreDataChanged()));
+    connect(this, SIGNAL(scoreDataChanged()), d->controlLabelView, SLOT(scoreDataChanged()));
 }
 
 ViewManager::~ViewManager()
@@ -89,7 +91,7 @@ void ViewManager::setModel(Model *model)
         oldModel->disconnect(d->controlLabelView);
     }
     if (model) {
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));

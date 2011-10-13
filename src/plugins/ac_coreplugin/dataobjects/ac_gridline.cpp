@@ -204,28 +204,48 @@ void TimeGridLine::hide()
 class PitchGridLinePrivate : public GridLinePrivate
 {
 public:
+    GraphicsTextItem *pitchLabelItem;
+    QGraphicsLineItem *pitchLineItem;
+
     PitchGridLinePrivate(PitchGridLine *q)
         :   GridLinePrivate(q)
+        ,   pitchLabelItem(new GraphicsTextItem)
+        ,   pitchLineItem(new QGraphicsLineItem)
     {}
 
     void init()
     {
-
+        updateGraphicsParent();
+        updateGraphicsItems();
     }
 
     ~PitchGridLinePrivate()
     {
-
+        delete pitchLineItem;
+        delete pitchLabelItem;
     }
 
     void updateGraphicsParent()
     {
-
+        GraphicsParentPrivate *parent = graphicsParent();
+        if (parent) {
+            pitchLabelItem->setParentItem(parent->mainGraphicsItems[Ac::PitchLabelScene]);
+            pitchLineItem->setParentItem(parent->unitXGraphicsItems[Ac::PitchScene]);
+        } else {
+            pitchLabelItem->setParentItem(0);
+            pitchLineItem->setParentItem(0);
+        }
     }
 
     void updateGraphicsItems()
     {
-
+        pitchLabelItem->setPos(0.0f, location);
+        pitchLabelItem->setText(label);
+        pitchLabelItem->setColor(Qt::black);
+        QPen pen(color);
+        pen.setCosmetic(true);
+        pitchLineItem->setPen(pen);
+        pitchLineItem->setLine(QLineF(0.0f, location, 1.0f, location));
     }
 };
 
@@ -235,6 +255,26 @@ PitchGridLine::PitchGridLine(QObject *parent)
     Q_D(PitchGridLine);
     d->init();
     setObjectName("PitchGridLine");
+}
+
+bool PitchGridLine::isVisible() const
+{
+    Q_D(const PitchGridLine);
+    return d->pitchLineItem->isVisible();
+}
+
+void PitchGridLine::show()
+{
+    Q_D(PitchGridLine);
+    d->pitchLabelItem->show();
+    d->pitchLineItem->show();
+}
+
+void PitchGridLine::hide()
+{
+    Q_D(PitchGridLine);
+    d->pitchLabelItem->hide();
+    d->pitchLineItem->hide();
 }
 
 class ControlGridLinePrivate : public GridLinePrivate

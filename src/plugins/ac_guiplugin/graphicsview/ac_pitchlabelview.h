@@ -35,6 +35,7 @@ protected:
 
     qreal sceneHeight() const;
     QPointF sceneCenter() const;
+    QPointF sceneOffset() const;
 
 private:
     Q_DISABLE_COPY(PitchLabelView)

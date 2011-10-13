@@ -123,5 +123,5 @@ void PitchView::wheelEvent(QWheelEvent *event)
     if (event->delta() < 0)
         scaleAmount = 1.0f / scaleAmount;
     model->setData(viewSettings, scaleAmount * timeScale, Ac::TimeScaleRole);
-//    model->setData(viewSettings, scaleAmount * pitchScale, Ac::PitchScaleRole);
+    model->setData(viewSettings, scaleAmount * pitchScale, Ac::PitchScaleRole);
 }

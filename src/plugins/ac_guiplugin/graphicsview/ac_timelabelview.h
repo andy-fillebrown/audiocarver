@@ -31,7 +31,7 @@ public:
     ~TimeLabelView();
 
 protected:
-    qreal paddingScale() const { return sceneWidth() / width(); }
+    qreal paddingScale() const { return sceneWidth() / qreal(width()); }
     QModelIndex gridLineListIndex() const;
 
     qreal sceneWidth() const;

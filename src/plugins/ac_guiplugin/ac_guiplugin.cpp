@@ -91,6 +91,48 @@ void populateModel(Model *model)
     timeGridLine->setPriority(0);
     timeGridLine->setColor(QColor(127, 0, 0));
     timeGridLines->append(timeGridLine);
+    ObjectList<PitchGridLine> *pitchGridLines = gridSettings->pitchGridLines();
+    PitchGridLine *pitchGridLine = 0;
+    for (int i = 0;  i < 128;  ++i) {
+        pitchGridLine = new PitchGridLine;
+        pitchGridLine->setLocation(i);
+        pitchGridLine->setLabel(QString("%1.0").arg(i));
+        pitchGridLines->append(pitchGridLine);
+    }
+    for (int i = 0;  i < 128;  i+=12)
+        pitchGridLines->at(i)->setColor(QColor(191, 0, 0));
+    for (int i = 7;  i < 128;  i+=12)
+        pitchGridLines->at(i)->setColor(QColor(0, 0, 191));
+    int octaveMod[] = { 3, 2, 1, 2, 3, 0, 3, 2, 1, 2, 3, 4 };
+    for (int i = 0;  i < 120;  i+=12) {
+        int octave = i % 12;
+        int mod = octaveMod[octave];
+        pitchGridLines->at(i)->setPriority(10 + mod);
+        pitchGridLines->at(i + 1)->setPriority(50 + mod);
+        pitchGridLines->at(i + 2)->setPriority(40 + mod);
+        pitchGridLines->at(i + 3)->setPriority(30 + mod);
+        pitchGridLines->at(i + 4)->setPriority(40 + mod);
+        pitchGridLines->at(i + 5)->setPriority(30 + mod);
+        pitchGridLines->at(i + 6)->setPriority(50 + mod);
+        pitchGridLines->at(i + 7)->setPriority(20 + mod);
+        pitchGridLines->at(i + 8)->setPriority(50 + mod);
+        pitchGridLines->at(i + 9)->setPriority(40 + mod);
+        pitchGridLines->at(i + 10)->setPriority(30 + mod);
+        pitchGridLines->at(i + 11)->setPriority(40 + mod);
+    }
+    int mod = octaveMod[11];
+    pitchGridLines->at(120)->setPriority(10 + mod);
+    pitchGridLines->at(121)->setPriority(50 + mod);
+    pitchGridLines->at(122)->setPriority(40 + mod);
+    pitchGridLines->at(123)->setPriority(30 + mod);
+    pitchGridLines->at(124)->setPriority(40 + mod);
+    pitchGridLines->at(125)->setPriority(30 + mod);
+    pitchGridLines->at(126)->setPriority(50 + mod);
+    pitchGridLines->at(0)->setLabel("");
+    pitchGridLines->at(0)->setPriority(0);
+    pitchGridLines->at(60)->setPriority(0);
+    pitchGridLines->at(127)->setLabel("");
+    pitchGridLines->at(127)->setPriority(0);
 }
 
 bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)

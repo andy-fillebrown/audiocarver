@@ -35,7 +35,7 @@ public:
 
     void updateGridLineVisibilites()
     {
-        qreal padding = 50.0f * q->paddingScale();
+        qreal padding = 75.0f * q->paddingScale();
         QModelIndex gridLines = q->gridLineListIndex();
         Model *model = SceneManager::instance()->model();
         int n = model->rowCount(gridLines);
@@ -45,11 +45,11 @@ public:
         for (int i = 0;  i < n;  ++i) {
             QModelIndex line = model->index(i, gridLines);
             int curPriority = line.data(Ac::PriorityRole).toInt();
-            if (minPriority && minPriority < curPriority)
+            if (minPriority && (minPriority < curPriority))
                 continue;
             qreal curLocation = line.data(Ac::LocationRole).toReal();
             if (curLocation < prevLocation)
-                minPriority = qMin(prevPriority, curPriority);
+                minPriority = qMin(minPriority, qMax(prevPriority, curPriority));
             else {
                 prevPriority = curPriority;
                 prevLocation = curLocation + padding;

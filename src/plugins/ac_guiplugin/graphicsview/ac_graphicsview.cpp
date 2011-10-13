@@ -154,7 +154,7 @@ public:
         qreal actualSceneHeight = sceneHeight + topMargin + bottomMargin;
         QRectF sceneRect(-leftMargin, topMargin, actualSceneWidth, -actualSceneHeight);
         QPointF sceneOffset = q->sceneCenter() - sceneRect.center();
-        sceneRect.translate(sceneOffset);
+        sceneRect.translate(sceneOffset + q->sceneOffset());
         q->setSceneRect(sceneRect);
         qreal actualWidthScale = viewWidth / actualSceneWidth;
         qreal actualHeightScale = viewHeight / actualSceneHeight;
