@@ -239,8 +239,13 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             if (unknown) {
                 IEntity *entity = query<IEntity>(unknown);
                 if (entity) {
-                    QRegion region = sceneItem->boundingRegion(d->rootItem->transform() * viewportTransform());
-                    if (region.intersects(rect))
+                    // To avoid delays and crashes when zoomed in, instead of passing the
+                    // viewport transform directly to sceneItem->boundingRegion, pass the
+                    // identity transform then map the returned region.
+                    QRegion region = sceneItem->boundingRegion(QTransform());
+                    QTransform xform = d->rootItem->transform() * viewportTransform();
+                    QRegion xformRegion = xform.map(region);
+                    if (xformRegion.intersects(rect))
                         entities.append(entity);
                 }
             }
