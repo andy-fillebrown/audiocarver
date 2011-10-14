@@ -46,7 +46,7 @@ public:
     const QColor &color() const;
     void setColor(const QColor &color);
 
-    virtual bool isVisible() const { return true; }
+    virtual bool isVisible() const = 0;
     void setVisibility(bool visible)
     {
         if (visible)
@@ -55,8 +55,8 @@ public:
             hide();
     }
 
-    virtual void show() {}
-    virtual void hide() {}
+    virtual void show() = 0;
+    virtual void hide() = 0;
 
     GridSettings *gridSettings() const;
 
