@@ -18,6 +18,8 @@
 #ifndef AC_GRAPHICSVIEW_H
 #define AC_GRAPHICSVIEW_H
 
+#include <ac_namespace.h>
+
 #include <mi_graphicsview.h>
 
 class GraphicsViewPrivate;
@@ -30,14 +32,22 @@ public:
     GraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~GraphicsView();
 
+    QTransform sceneScale() const;
+    QTransform sceneTransform() const;
+
 public slots:
-    virtual void scoreDataChanged();
+    virtual void viewSettingsChanged();
 
 protected:
     virtual qreal sceneWidth() const { return 1.0f; }
     virtual qreal sceneHeight() const { return 1.0f; }
     virtual QPointF sceneCenter() const { return QPointF(); }
     virtual QPointF sceneOffset() const { return QPointF(); }
+
+//    virtual Ac::ItemDataRole positionXRole() const = 0;
+//    virtual Ac::ItemDataRole positionYRole() const = 0;
+//    virtual Ac::ItemDataRole scaleXRole() const = 0;
+//    virtual Ac::ItemDataRole scaleYRole() const = 0;
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -49,8 +59,6 @@ private:
     Q_DISABLE_COPY(GraphicsView)
     GraphicsViewPrivate *d;
     friend class GraphicsViewPrivate;
-
-    friend class GraphicsHView;
 };
 
 class GraphicsHView : public GraphicsView

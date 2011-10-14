@@ -17,7 +17,7 @@
 
 #include "ac_pitchview.h"
 
-#include <ac_graphicsscene.h>
+#include <ac_viewmanager.h>
 
 #include <ac_model.h>
 
@@ -28,7 +28,7 @@ class PitchViewPrivate
 public:
     PitchView *q;
     bool panning;
-    QPointF panStartPos;
+    QPoint panStartPos;
     QPointF panStartCenter;
 
     PitchViewPrivate(PitchView *q)
@@ -42,23 +42,19 @@ public:
     void startPan(const QPoint &pos)
     {
         panning = true;
-        panStartPos = q->mapToScene(pos);
-        QModelIndex viewSettings = SceneManager::instance()->model()->viewSettingsIndex();
-        panStartCenter.setX(viewSettings.data(Ac::TimePositionRole).toReal());
-        panStartCenter.setY(viewSettings.data(Ac::PitchPositionRole).toReal());
+        panStartPos = pos;
+        ViewManager *vm = ViewManager::instance();
+        panStartCenter.setX(vm->position(Ac::TimePositionRole));
+        panStartCenter.setY(vm->position(Ac::PitchPositionRole));
     }
 
     void panTo(const QPoint &pos)
     {
-        Model *model = SceneManager::instance()->model();
-        QModelIndex viewSettings = model->viewSettingsIndex();
-        model->setData(viewSettings, panStartCenter.x(), Ac::TimePositionRole);
-        model->setData(viewSettings, panStartCenter.y(), Ac::PitchPositionRole);
-        QPointF offset = q->mapToScene(pos) - panStartPos;
-        offset.setY(-offset.y());
+        ViewManager *vm = ViewManager::instance();
+        QPointF offset = q->sceneScale().inverted().map(QPointF(pos - panStartPos));
         QPointF center = panStartCenter - offset;
-        model->setData(model->viewSettingsIndex(), center.x(), Ac::TimePositionRole);
-        model->setData(model->viewSettingsIndex(), center.y(), Ac::PitchPositionRole);
+        vm->setPosition(center.x(), Ac::TimePositionRole);
+        vm->setPosition(center.y(), Ac::PitchPositionRole);
     }
 
     void endPan(const QPoint &pos)
@@ -80,13 +76,13 @@ PitchView::~PitchView()
 
 qreal PitchView::sceneHeight() const
 {
-    return 127.0f / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchScaleRole).toReal();
+    return 127.0f / ViewManager::instance()->scale(Ac::PitchScaleRole);
 }
 
 QPointF PitchView::sceneCenter() const
 {
-    QModelIndex viewSettings = SceneManager::instance()->model()->viewSettingsIndex();
-    return QPointF(viewSettings.data(Ac::TimePositionRole).toReal(), -viewSettings.data(Ac::PitchPositionRole).toReal());
+    ViewManager *vm = ViewManager::instance();
+    return QPointF(vm->position(Ac::TimePositionRole), -vm->position(Ac::PitchPositionRole));
 }
 
 void PitchView::mousePressEvent(QMouseEvent *event)
@@ -99,29 +95,37 @@ void PitchView::mousePressEvent(QMouseEvent *event)
 
 void PitchView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d->panning)
+    if (d->panning) {
         d->panTo(event->pos());
+        emit ViewManager::instance()->viewSettingsChanged();
+    }
     else
         GraphicsView::mouseMoveEvent(event);
 }
 
 void PitchView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (Qt::RightButton == event->button())
+    if (Qt::RightButton == event->button()) {
         d->endPan(event->pos());
+        ViewManager *vm = ViewManager::instance();
+        emit vm->viewSettingsChanged();
+        vm->updateViewSettings();
+    }
     else
         GraphicsView::mouseReleaseEvent(event);
 }
 
 void PitchView::wheelEvent(QWheelEvent *event)
 {
-    Model *model = SceneManager::instance()->model();
-    QModelIndex viewSettings = model->viewSettingsIndex();
-    qreal timeScale = viewSettings.data(Ac::TimeScaleRole).toReal();
-    qreal pitchScale = viewSettings.data(Ac::PitchScaleRole).toReal();
+    if (d->panning)
+        return;
+    ViewManager *vm = ViewManager::instance();
+    qreal timeScale = vm->scale(Ac::TimeScaleRole);
+    qreal pitchScale = vm->scale(Ac::PitchScaleRole);
     qreal scaleAmount = 1.25f;
     if (event->delta() < 0)
         scaleAmount = 1.0f / scaleAmount;
-    model->setData(viewSettings, scaleAmount * timeScale, Ac::TimeScaleRole);
-    model->setData(viewSettings, scaleAmount * pitchScale, Ac::PitchScaleRole);
+    vm->setScale(scaleAmount * timeScale, Ac::TimeScaleRole);
+    vm->setScale(scaleAmount * pitchScale, Ac::PitchScaleRole);
+    emit vm->viewSettingsChanged();
 }

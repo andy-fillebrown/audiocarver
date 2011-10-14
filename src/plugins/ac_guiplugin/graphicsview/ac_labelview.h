@@ -39,7 +39,7 @@ protected:
     virtual qreal paddingScale() const = 0;
     virtual QModelIndex gridLineListIndex() const = 0;
 
-    void scoreDataChanged();
+    void viewSettingsChanged();
 
     void resizeEvent(QResizeEvent *event);
 

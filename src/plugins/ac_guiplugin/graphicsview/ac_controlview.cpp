@@ -17,7 +17,7 @@
 
 #include "ac_controlview.h"
 
-#include <ac_graphicsscene.h>
+#include <ac_viewmanager.h>
 
 #include <ac_model.h>
 
@@ -43,11 +43,11 @@ ControlView::~ControlView()
 
 qreal ControlView::sceneHeight() const
 {
-    return 1.0 / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::ControlScaleRole).toReal();
+    return 1.0 / ViewManager::instance()->scale(Ac::ControlScaleRole);
 }
 
 QPointF ControlView::sceneCenter() const
 {
-    QModelIndex viewSettings = SceneManager::instance()->model()->viewSettingsIndex();
-    return QPointF(viewSettings.data(Ac::TimePositionRole).toReal(), -viewSettings.data(Ac::ControlPositionRole).toReal());
+    ViewManager *vm = ViewManager::instance();
+    return QPointF(vm->position(Ac::TimePositionRole), -vm->position(Ac::ControlPositionRole));
 }

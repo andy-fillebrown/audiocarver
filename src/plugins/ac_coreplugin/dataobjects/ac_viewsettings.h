@@ -74,7 +74,7 @@ public:
         ,   timePos(64.0f)
         ,   pitchPos(63.5f)
         ,   controlPos(0.5f)
-        ,   timeScale(2.0f)
+        ,   timeScale(1.0f)
         ,   pitchScale(1.0f)
         ,   controlScale(1.0f)
     {}

@@ -35,7 +35,7 @@ public:
 
     void updateGridLineVisibilites()
     {
-        qreal padding = 75.0f * q->paddingScale();
+        qreal padding = 150.0f * q->paddingScale();
         QModelIndex gridLines = q->gridLineListIndex();
         Model *model = SceneManager::instance()->model();
         int n = model->rowCount(gridLines);
@@ -82,9 +82,9 @@ void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bott
         d->updateGridLineVisibilites();
 }
 
-void LabelView::scoreDataChanged()
+void LabelView::viewSettingsChanged()
 {
-    GraphicsView::scoreDataChanged();
+    GraphicsView::viewSettingsChanged();
     d->updateGridLineVisibilites();
 }
 

@@ -38,6 +38,14 @@ public:
     TimeLabelView *timeLabelView;
     PitchLabelView *pitchLabelView;
     ControlLabelView *controlLabelView;
+    qreal scoreLength;
+    qreal timePos;
+    qreal pitchPos;
+    qreal controlPos;
+    qreal timeScale;
+    qreal pitchScale;
+    qreal controlScale;
+    bool updatingViewSettings;
 
     ViewManagerPrivate(ViewManager *q, QWidget *widget)
         :   q(q)
@@ -47,23 +55,76 @@ public:
         ,   timeLabelView(new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget))
         ,   pitchLabelView(new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget))
         ,   controlLabelView(new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), widget))
+        ,   updatingViewSettings(false)
     {}
+
+    void updateViewVariables()
+    {
+        Model *model = sceneManager->model();
+        QModelIndex viewSettings = model->viewSettingsIndex();
+        qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
+        qreal modelTimePos = viewSettings.data(Ac::TimePositionRole).toReal();
+        qreal modelPitchPos = viewSettings.data(Ac::PitchPositionRole).toReal();
+        qreal modelControlPos = viewSettings.data(Ac::ControlPositionRole).toReal();
+        qreal modelTimeScale = viewSettings.data(Ac::TimeScaleRole).toReal();
+        qreal modelPitchScale = viewSettings.data(Ac::PitchScaleRole).toReal();
+        qreal modelControlScale = viewSettings.data(Ac::ControlScaleRole).toReal();
+        bool changed = false;
+        if (scoreLength != modelScoreLength) {
+            scoreLength = modelScoreLength;
+            changed = true;
+        }
+        if (timePos != modelTimePos) {
+            timePos = modelTimePos;
+            changed = true;
+        }
+        if (pitchPos != modelPitchPos) {
+            pitchPos = modelPitchPos;
+            changed = true;
+        }
+        if (controlPos != modelControlPos) {
+            controlPos = modelControlPos;
+            changed = true;
+        }
+        if (timeScale != modelTimeScale) {
+            timeScale = modelTimeScale;
+            changed = true;
+        }
+        if (pitchScale != modelPitchScale) {
+            pitchScale = modelPitchScale;
+            changed = true;
+        }
+        if (controlScale != modelControlScale) {
+            controlScale = modelControlScale;
+            changed = true;
+        }
+        if (changed)
+            emit q->viewSettingsChanged();
+    }
 };
+
+static ViewManager *instance = 0;
 
 ViewManager::ViewManager(QWidget *widget)
     :   QObject(widget)
     ,   d(new ViewManagerPrivate(this, widget))
 {
-    connect(this, SIGNAL(scoreDataChanged()), d->pitchView, SLOT(scoreDataChanged()));
-    connect(this, SIGNAL(scoreDataChanged()), d->controlView, SLOT(scoreDataChanged()));
-    connect(this, SIGNAL(scoreDataChanged()), d->timeLabelView, SLOT(scoreDataChanged()));
-    connect(this, SIGNAL(scoreDataChanged()), d->pitchLabelView, SLOT(scoreDataChanged()));
-    connect(this, SIGNAL(scoreDataChanged()), d->controlLabelView, SLOT(scoreDataChanged()));
+    ::instance = this;
+    connect(this, SIGNAL(viewSettingsChanged()), d->pitchView, SLOT(viewSettingsChanged()));
+    connect(this, SIGNAL(viewSettingsChanged()), d->controlView, SLOT(viewSettingsChanged()));
+    connect(this, SIGNAL(viewSettingsChanged()), d->timeLabelView, SLOT(viewSettingsChanged()));
+    connect(this, SIGNAL(viewSettingsChanged()), d->pitchLabelView, SLOT(viewSettingsChanged()));
+    connect(this, SIGNAL(viewSettingsChanged()), d->controlLabelView, SLOT(viewSettingsChanged()));
 }
 
 ViewManager::~ViewManager()
 {
     delete d;
+}
+
+ViewManager *ViewManager::instance()
+{
+    return ::instance;
 }
 
 QGraphicsView *ViewManager::view(Ac::SceneType type) const
@@ -76,6 +137,11 @@ QGraphicsView *ViewManager::view(Ac::SceneType type) const
     case Ac::ControlLabelScene: return d->controlLabelView;
     default: return 0;
     }
+}
+
+Model *ViewManager::model() const
+{
+    return d->sceneManager->model();
 }
 
 void ViewManager::setModel(Model *model)
@@ -95,14 +161,101 @@ void ViewManager::setModel(Model *model)
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        emit scoreDataChanged();
+        d->updateViewVariables();
     }
+}
+
+qreal ViewManager::scoreLength() const
+{
+    return d->scoreLength;
+}
+
+qreal ViewManager::position(Ac::ItemDataRole role) const
+{
+    switch (role) {
+    case Ac::TimePositionRole:
+        return d->timePos;
+    case Ac::PitchPositionRole:
+        return d->pitchPos;
+    case Ac::ControlPositionRole:
+        return d->controlPos;
+    default:
+        qWarning() << "Invalid item data role passed to ViewManager::position.";
+        return 0.0f;
+    }
+}
+
+void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
+{
+    switch (role) {
+    case Ac::TimePositionRole:
+        d->timePos = position;
+        break;
+    case Ac::PitchPositionRole:
+        d->pitchPos = position;
+        break;
+    case Ac::ControlPositionRole:
+        d->controlPos = position;
+        break;
+    default:
+        qWarning() << "Invalid item data role passed to ViewManager::setPosition.";
+        return;
+    }
+}
+
+qreal ViewManager::scale(Ac::ItemDataRole role) const
+{
+    switch (role) {
+    case Ac::TimeScaleRole:
+        return d->timeScale;
+    case Ac::PitchScaleRole:
+        return d->pitchScale;
+    case Ac::ControlScaleRole:
+        return d->controlScale;
+    default:
+        qWarning() << "Invalid item data role passed to ViewManager::scale.";
+        return 1.0f;
+    }
+}
+
+void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
+{
+    if (scale < 1.0f)
+        scale = 1.0f;
+    switch (role) {
+    case Ac::TimeScaleRole:
+        d->timeScale = scale;
+        break;
+    case Ac::PitchScaleRole:
+        d->pitchScale = scale;
+        break;
+    case Ac::ControlScaleRole:
+        d->controlScale = scale;
+        break;
+    default:
+        qWarning() << "Invalid item data role passed to ViewManager::setScale.";
+    }
+}
+
+void ViewManager::updateViewSettings()
+{
+    Model *m = model();
+    QModelIndex viewSettings = m->viewSettingsIndex();
+    d->updatingViewSettings = true;
+    m->setData(viewSettings, d->timePos, Ac::TimePositionRole);
+    m->setData(viewSettings, d->pitchPos, Ac::PitchPositionRole);
+    m->setData(viewSettings, d->controlPos, Ac::ControlPositionRole);
+    m->setData(viewSettings, d->timeScale, Ac::TimeScaleRole);
+    m->setData(viewSettings, d->pitchScale, Ac::PitchScaleRole);
+    m->setData(viewSettings, d->controlScale, Ac::ControlScaleRole);
+    d->updatingViewSettings = false;
 }
 
 void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
     Q_UNUSED(bottomLeft);
-    if (!topRight.isValid()
-            ||  d->sceneManager->model()->viewSettingsIndex() == topRight)
-        emit scoreDataChanged();
+    if (!d->updatingViewSettings
+            && (topRight.isValid()
+                || model()->viewSettingsIndex() == topRight))
+        d->updateViewVariables();
 }

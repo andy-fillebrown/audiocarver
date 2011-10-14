@@ -38,19 +38,33 @@ public:
     ViewManager(QWidget *widget);
     ~ViewManager();
 
+    static ViewManager *instance();
+
     QGraphicsView *view(Ac::SceneType type) const;
 
+    Model *model() const;
     void setModel(Model *model);
+
+    qreal scoreLength() const;
+    qreal position(Ac::ItemDataRole role) const;
+    void setPosition(qreal position, Ac::ItemDataRole role);
+    qreal scale(Ac::ItemDataRole role) const;
+    void setScale(qreal scale, Ac::ItemDataRole role);
+    void updateViewSettings();
 
 public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 signals:
     void scoreDataChanged();
+    void viewSettingsChanged();
 
 private:
     Q_DISABLE_COPY(ViewManager)
     ViewManagerPrivate *d;
+    friend class ViewManagerPrivate;
+
+    friend class PitchView;
 };
 
 #endif // AC_VIEWMANAGER_H

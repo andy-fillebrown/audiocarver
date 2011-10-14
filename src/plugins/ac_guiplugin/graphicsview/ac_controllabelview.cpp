@@ -17,7 +17,7 @@
 
 #include "ac_controllabelview.h"
 
-#include <ac_graphicsscene.h>
+#include <ac_viewmanager.h>
 
 #include <ac_model.h>
 
@@ -43,15 +43,15 @@ ControlLabelView::~ControlLabelView()
 
 QModelIndex ControlLabelView::gridLineListIndex() const
 {
-    return SceneManager::instance()->model()->controlGridLineListIndex();
+    return ViewManager::instance()->model()->controlGridLineListIndex();
 }
 
 qreal ControlLabelView::sceneHeight() const
 {
-    return 1.0 / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::ControlScaleRole).toReal();
+    return 1.0 / ViewManager::instance()->scale(Ac::ControlScaleRole);
 }
 
 QPointF ControlLabelView::sceneCenter() const
 {
-    return QPointF(0.5f, -SceneManager::instance()->model()->viewSettingsIndex().data(Ac::TimePositionRole).toReal());
+    return QPointF(0.5f, -ViewManager::instance()->position(Ac::TimePositionRole));
 }

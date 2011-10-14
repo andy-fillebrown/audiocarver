@@ -20,6 +20,7 @@
 #include <ac_graphicsentityitem.h>
 #include <ac_graphicsgripitem.h>
 #include <ac_graphicsscene.h>
+#include <ac_viewmanager.h>
 
 #include <ac_ientity.h>
 #include <ac_model.h>
@@ -136,31 +137,17 @@ public:
         selectedEntities.clear();
     }
 
-    void updateViewMetrics()
+    void updateViewSettings()
     {
-        qreal margin = 8.0f;
-        qreal halfMargin = margin / 2.0f;
-        qreal rightMarginOffset = 3.0f;
-        qreal topMarginOffset = 2.0f;
         qreal sceneWidth = q->sceneWidth();
         qreal sceneHeight = q->sceneHeight();
         qreal viewWidth = q->width();
         qreal viewHeight = q->height();
-        qreal widthScale = viewWidth / sceneWidth;
-        qreal heightScale = viewHeight / sceneHeight;
-        qreal leftMargin = halfMargin / widthScale;
-        qreal rightMargin = leftMargin + (rightMarginOffset / widthScale);
-        qreal topMargin = halfMargin / heightScale;
-        qreal bottomMargin = topMargin + (topMarginOffset / heightScale);
-        qreal actualSceneWidth = sceneWidth + leftMargin + rightMargin;
-        qreal actualSceneHeight = sceneHeight + topMargin + bottomMargin;
-        QRectF sceneRect(-leftMargin, topMargin, actualSceneWidth, -actualSceneHeight);
+        QRectF sceneRect(0.0f, 0.0f, sceneWidth, sceneHeight);
         QPointF sceneOffset = q->sceneCenter() - sceneRect.center();
         sceneRect.translate(sceneOffset + q->sceneOffset());
         q->setSceneRect(sceneRect);
-        qreal actualWidthScale = viewWidth / actualSceneWidth;
-        qreal actualHeightScale = viewHeight / actualSceneHeight;
-        q->setTransform(QTransform::fromScale(actualWidthScale, actualHeightScale));
+        q->setTransform(QTransform::fromScale(viewWidth / sceneWidth, viewHeight / sceneHeight));
     }
 };
 
@@ -179,10 +166,26 @@ GraphicsView::~GraphicsView()
     delete d;
 }
 
+QTransform GraphicsView::sceneScale() const
+{
+    QTransform xform = sceneTransform();
+    return QTransform::fromScale(xform.m11(), xform.m22());
+}
+
+QTransform GraphicsView::sceneTransform() const
+{
+    return d->rootItem->transform() * viewportTransform();
+}
+
+void GraphicsView::viewSettingsChanged()
+{
+    d->updateViewSettings();
+}
+
 void GraphicsView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    d->updateViewMetrics();
+    d->updateViewSettings();
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
@@ -235,7 +238,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         else
             rect = QRect(d->dragOrigin, event->pos()).normalized();
         QList<QGraphicsItem*> sceneItems = items(rect);
-        QRectF pickRect = (d->rootItem->transform() * viewportTransform()).inverted().mapRect(QRectF(rect));
+        QRectF pickRect = sceneTransform().inverted().mapRect(QRectF(rect));
         QList<IEntity*> entities;
         foreach (QGraphicsItem *sceneItem, sceneItems) {
             IUnknown *unknown = Q_U(sceneItem);
@@ -267,13 +270,8 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         d->clearSelectedEntities();
 }
 
-void GraphicsView::scoreDataChanged()
-{
-    d->updateViewMetrics();
-}
-
 qreal GraphicsHView::sceneWidth() const
 {
-    Model *model = SceneManager::instance()->model();
-    return model->data(QModelIndex(), Ac::LengthRole).toReal() / model->viewSettingsIndex().data(Ac::TimeScaleRole).toReal();
+    ViewManager *vm = ViewManager::instance();
+    return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
 }

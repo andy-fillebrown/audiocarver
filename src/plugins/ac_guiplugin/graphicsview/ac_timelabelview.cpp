@@ -17,7 +17,7 @@
 
 #include "ac_timelabelview.h"
 
-#include <ac_graphicsscene.h>
+#include <ac_viewmanager.h>
 
 #include <ac_model.h>
 
@@ -46,16 +46,17 @@ TimeLabelView::~TimeLabelView()
 
 QModelIndex TimeLabelView::gridLineListIndex() const
 {
-    return SceneManager::instance()->model()->timeGridLineListIndex();
+    return ViewManager::instance()->model()->timeGridLineListIndex();
 }
 
 qreal TimeLabelView::sceneWidth() const
 {
-    Model *model = SceneManager::instance()->model();
-    return model->data(QModelIndex(), Ac::LengthRole).toReal() / model->viewSettingsIndex().data(Ac::TimeScaleRole).toReal();
+    ViewManager *vm = ViewManager::instance();
+    return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
 }
 
 QPointF TimeLabelView::sceneCenter() const
 {
-    return QPointF(SceneManager::instance()->model()->viewSettingsIndex().data(Ac::TimePositionRole).toReal(), 0.0f);
+    ViewManager *vm = ViewManager::instance();
+    return QPointF(vm->position(Ac::TimePositionRole), 0.0f);
 }

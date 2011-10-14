@@ -17,7 +17,7 @@
 
 #include "ac_pitchlabelview.h"
 
-#include <ac_graphicsscene.h>
+#include <ac_viewmanager.h>
 
 #include <ac_model.h>
 
@@ -43,20 +43,20 @@ PitchLabelView::~PitchLabelView()
 
 QModelIndex PitchLabelView::gridLineListIndex() const
 {
-    return SceneManager::instance()->model()->pitchGridLineListIndex();
+    return ViewManager::instance()->model()->pitchGridLineListIndex();
 }
 
 qreal PitchLabelView::sceneHeight() const
 {
-    return 127.0 / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchScaleRole).toReal();
+    return 127.0 / ViewManager::instance()->scale(Ac::PitchScaleRole);
 }
 
 QPointF PitchLabelView::sceneCenter() const
 {
-    return QPointF(0.5f, -SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchPositionRole).toReal());
+    return QPointF(0.5f, -ViewManager::instance()->position(Ac::PitchPositionRole));
 }
 
 QPointF PitchLabelView::sceneOffset() const
 {
-    return QPointF(0.0f, 4.0f / SceneManager::instance()->model()->viewSettingsIndex().data(Ac::PitchScaleRole).toReal());
+    return QPointF(0.0f, 4.0f / ViewManager::instance()->scale(Ac::PitchScaleRole));
 }
