@@ -29,6 +29,8 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 
+#include <qmath.h>
+
 class GraphicsViewPrivate
 {
 public:
@@ -233,21 +235,14 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         else
             rect = QRect(d->dragOrigin, event->pos()).normalized();
         QList<QGraphicsItem*> sceneItems = items(rect);
+        QRectF pickRect = (d->rootItem->transform() * viewportTransform()).inverted().mapRect(QRectF(rect));
         QList<IEntity*> entities;
         foreach (QGraphicsItem *sceneItem, sceneItems) {
             IUnknown *unknown = Q_U(sceneItem);
             if (unknown) {
                 IEntity *entity = query<IEntity>(unknown);
-                if (entity) {
-                    // To avoid delays and crashes when zoomed in, instead of passing the
-                    // viewport transform directly to sceneItem->boundingRegion, pass the
-                    // identity transform then map the returned region.
-                    QRegion region = sceneItem->boundingRegion(QTransform());
-                    QTransform xform = d->rootItem->transform() * viewportTransform();
-                    QRegion xformRegion = xform.map(region);
-                    if (xformRegion.intersects(rect))
-                        entities.append(entity);
-                }
+                if (entity && entity->intersects(pickRect))
+                    entities.append(entity);
             }
         }
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)

@@ -28,7 +28,7 @@ public:
         :   rectItem(new QGraphicsRectItem(q))
     {
         rectItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        rectItem->setRect(-3.0f, -3.0f, 6.0f, 6.0f);
+        rectItem->setRect(-4.0f, -4.0f, 8.0f, 8.0f);
         rectItem->setPen(QPen(Qt::blue));
         rectItem->setBrush(QBrush(Qt::blue));
         rectItem->setData(0, quintptr(query<IGripItem>(q)));

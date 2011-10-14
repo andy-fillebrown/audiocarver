@@ -85,6 +85,12 @@ void Curve::unhighlight()
     d->graphicsCurveItem->unhighlight();
 }
 
+bool Curve::intersects(const QRectF &rect) const
+{
+    Q_D(const Curve);
+    return d->graphicsCurveItem->intersects(rect);
+}
+
 QVariant Curve::data(int role) const
 {
     switch (role) {

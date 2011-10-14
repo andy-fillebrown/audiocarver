@@ -40,6 +40,7 @@ public:
     void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);
     void highlight();
     void unhighlight();
+    bool intersects(const QRectF &rect) const;
 
     // IModelItem
     QVariant data(int role) const;

@@ -45,6 +45,7 @@ public:
     void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);
     void highlight();
     void unhighlight();
+    bool intersects(const QRectF &) const { return false; }
 
     // IModelItem
     Ac::ItemType type() const { return Ac::NoteItem; }

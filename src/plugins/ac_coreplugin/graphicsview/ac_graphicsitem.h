@@ -85,6 +85,8 @@ public:
     void highlight();
     void unhighlight();
 
+    bool intersects(const QRectF &rect) const;
+
 private:
     Q_DISABLE_COPY(GraphicsCurveItem)
     GraphicsCurveItemPrivate *d;

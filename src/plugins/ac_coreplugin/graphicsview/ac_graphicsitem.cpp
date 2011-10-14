@@ -42,7 +42,6 @@ public:
         guideItem->setPen(QPen(QBrush(color), 0.0f, Qt::DotLine));
         QPen pen = q->pen();
         pen.setColor(color);
-        pen.setWidthF(2.0f);
         q->setPen(pen);
     }
 };
@@ -109,7 +108,7 @@ void GraphicsCurveItem::setColor(const QColor &color)
 void GraphicsCurveItem::highlight()
 {
     QPen pen = this->pen();
-    pen.setWidthF(3.0f);
+    pen.setWidthF(5.0f);
     setPen(pen);
     d->guideItem->show();
 }
@@ -117,9 +116,17 @@ void GraphicsCurveItem::highlight()
 void GraphicsCurveItem::unhighlight()
 {
     QPen pen = this->pen();
-    pen.setWidthF(1.0f);
+    pen.setWidthF(3.0f);
     setPen(pen);
     d->guideItem->hide();
+}
+
+bool GraphicsCurveItem::intersects(const QRectF &rect) const
+{
+    QPainterPathStroker stroker;
+    stroker.setWidth(Q_FLOAT_MIN);
+    QPainterPath stroke = stroker.createStroke(path());
+    return stroke.intersects(rect);
 }
 
 class GraphicsTextItemPrivate
