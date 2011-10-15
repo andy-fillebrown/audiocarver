@@ -69,35 +69,20 @@ public:
         qreal modelTimeScale = viewSettings.data(Ac::TimeScaleRole).toReal();
         qreal modelPitchScale = viewSettings.data(Ac::PitchScaleRole).toReal();
         qreal modelControlScale = viewSettings.data(Ac::ControlScaleRole).toReal();
-        bool changed = false;
-        if (scoreLength != modelScoreLength) {
-            scoreLength = modelScoreLength;
-            changed = true;
-        }
-        if (timePos != modelTimePos) {
-            timePos = modelTimePos;
-            changed = true;
-        }
-        if (pitchPos != modelPitchPos) {
-            pitchPos = modelPitchPos;
-            changed = true;
-        }
-        if (controlPos != modelControlPos) {
-            controlPos = modelControlPos;
-            changed = true;
-        }
-        if (timeScale != modelTimeScale) {
-            timeScale = modelTimeScale;
-            changed = true;
-        }
-        if (pitchScale != modelPitchScale) {
-            pitchScale = modelPitchScale;
-            changed = true;
-        }
-        if (controlScale != modelControlScale) {
-            controlScale = modelControlScale;
-            changed = true;
-        }
+        bool changed = scoreLength != modelScoreLength
+                || timePos != modelTimePos
+                || pitchPos != modelPitchPos
+                || controlPos != modelControlPos
+                || timeScale != modelTimeScale
+                || pitchScale != modelPitchScale
+                || controlScale != modelControlScale;
+        scoreLength = modelScoreLength;
+        timePos = modelTimePos;
+        pitchPos = modelPitchPos;
+        controlPos = modelControlPos;
+        timeScale = modelTimeScale;
+        pitchScale = modelPitchScale;
+        controlScale = modelControlScale;
         if (changed)
             emit q->viewSettingsChanged();
     }
@@ -180,7 +165,6 @@ qreal ViewManager::position(Ac::ItemDataRole role) const
     case Ac::ControlPositionRole:
         return d->controlPos;
     default:
-        qWarning() << "Invalid item data role passed to ViewManager::position.";
         return 0.0f;
     }
 }
@@ -189,17 +173,18 @@ void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
 {
     switch (role) {
     case Ac::TimePositionRole:
+        position = qBound(qreal(0.0f), position, d->scoreLength);
         d->timePos = position;
         break;
     case Ac::PitchPositionRole:
+        position = qBound(qreal(0.0f), position, qreal(127.0f));
         d->pitchPos = position;
         break;
     case Ac::ControlPositionRole:
+        position = qBound(qreal(0.0f), position, qreal(1.0f));
         d->controlPos = position;
-        break;
     default:
-        qWarning() << "Invalid item data role passed to ViewManager::setPosition.";
-        return;
+        break;
     }
 }
 
@@ -213,15 +198,14 @@ qreal ViewManager::scale(Ac::ItemDataRole role) const
     case Ac::ControlScaleRole:
         return d->controlScale;
     default:
-        qWarning() << "Invalid item data role passed to ViewManager::scale.";
         return 1.0f;
     }
 }
 
 void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
 {
-    if (scale < 1.0f)
-        scale = 1.0f;
+    if (scale < AC_SCALE_MIN)
+        scale = AC_SCALE_MIN;
     switch (role) {
     case Ac::TimeScaleRole:
         d->timeScale = scale;
@@ -231,9 +215,8 @@ void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
         break;
     case Ac::ControlScaleRole:
         d->controlScale = scale;
-        break;
     default:
-        qWarning() << "Invalid item data role passed to ViewManager::setScale.";
+        break;
     }
 }
 
@@ -255,7 +238,7 @@ void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bo
 {
     Q_UNUSED(bottomLeft);
     if (!d->updatingViewSettings
-            && (topRight.isValid()
+            && (!topRight.isValid()
                 || model()->viewSettingsIndex() == topRight))
         d->updateViewVariables();
 }

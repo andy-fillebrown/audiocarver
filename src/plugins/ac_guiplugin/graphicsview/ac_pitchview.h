@@ -34,10 +34,8 @@ protected:
     qreal sceneHeight() const;
     QPointF sceneCenter() const;
 
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    Ac::ItemDataRole positionYRole() const { return Ac::PitchPositionRole; }
+    Ac::ItemDataRole scaleYRole() const { return Ac::PitchScaleRole; }
 
 private:
     Q_DISABLE_COPY(PitchView)

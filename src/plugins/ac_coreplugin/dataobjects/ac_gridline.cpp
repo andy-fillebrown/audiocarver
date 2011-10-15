@@ -280,28 +280,48 @@ void PitchGridLine::hide()
 class ControlGridLinePrivate : public GridLinePrivate
 {
 public:
+    GraphicsTextItem *controlLabelItem;
+    QGraphicsLineItem *controlLineItem;
+
     ControlGridLinePrivate(ControlGridLine *q)
         :   GridLinePrivate(q)
+        ,   controlLabelItem(new GraphicsTextItem)
+        ,   controlLineItem(new QGraphicsLineItem)
     {}
 
     void init()
     {
-
+        updateGraphicsParent();
+        updateGraphicsItems();
     }
 
     ~ControlGridLinePrivate()
     {
-
+        delete controlLineItem;
+        delete controlLabelItem;
     }
 
     void updateGraphicsParent()
     {
-
+        GraphicsParentPrivate *parent = graphicsParent();
+        if (parent) {
+            controlLabelItem->setParentItem(parent->mainGraphicsItems[Ac::ControlLabelScene]);
+            controlLineItem->setParentItem(parent->unitXGraphicsItems[Ac::ControlScene]);
+        } else {
+            controlLabelItem->setParentItem(0);
+            controlLineItem->setParentItem(0);
+        }
     }
 
     void updateGraphicsItems()
     {
-
+        controlLabelItem->setPos(0.0f, location);
+        controlLabelItem->setText(label);
+        controlLabelItem->setColor(Qt::black);
+        QPen pen(color);
+        pen.setCosmetic(true);
+        controlLineItem->setPen(pen);
+        controlLineItem->setLine(QLineF(0.0f, location, 1.0f, location));
     }
 };
 
@@ -311,4 +331,24 @@ ControlGridLine::ControlGridLine(QObject *parent)
     Q_D(ControlGridLine);
     d->init();
     setObjectName("ControlGridLine");
+}
+
+bool ControlGridLine::isVisible() const
+{
+    Q_D(const ControlGridLine);
+    return d->controlLineItem->isVisible();
+}
+
+void ControlGridLine::show()
+{
+    Q_D(ControlGridLine);
+    d->controlLabelItem->show();
+    d->controlLineItem->show();
+}
+
+void ControlGridLine::hide()
+{
+    Q_D(ControlGridLine);
+    d->controlLabelItem->hide();
+    d->controlLineItem->hide();
 }

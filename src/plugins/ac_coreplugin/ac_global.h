@@ -32,4 +32,6 @@
 #define Q_U(graphicsItem) \
     reinterpret_cast<IUnknown*>(graphicsItem->data(0).value<quintptr>())
 
+#define AC_SCALE_MIN 0.9f
+
 #endif // AC_GLOBAL_H

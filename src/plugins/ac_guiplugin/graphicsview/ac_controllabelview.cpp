@@ -48,10 +48,15 @@ QModelIndex ControlLabelView::gridLineListIndex() const
 
 qreal ControlLabelView::sceneHeight() const
 {
-    return 1.0 / ViewManager::instance()->scale(Ac::ControlScaleRole);
+    return 1.0f / ViewManager::instance()->scale(Ac::ControlScaleRole);
 }
 
 QPointF ControlLabelView::sceneCenter() const
 {
-    return QPointF(0.5f, -ViewManager::instance()->position(Ac::TimePositionRole));
+    return QPointF(0.5f, -ViewManager::instance()->position(Ac::ControlPositionRole));
+}
+
+QPointF ControlLabelView::sceneOffset() const
+{
+    return QPointF(0.0f, 0.075f / ViewManager::instance()->scale(Ac::ControlScaleRole));
 }

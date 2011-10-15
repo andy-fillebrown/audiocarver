@@ -64,7 +64,7 @@ private:
     ViewManagerPrivate *d;
     friend class ViewManagerPrivate;
 
-    friend class PitchView;
+    friend class GraphicsView;
 };
 
 #endif // AC_VIEWMANAGER_H

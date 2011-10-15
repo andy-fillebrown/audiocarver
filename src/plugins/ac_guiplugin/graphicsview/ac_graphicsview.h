@@ -44,15 +44,16 @@ protected:
     virtual QPointF sceneCenter() const { return QPointF(); }
     virtual QPointF sceneOffset() const { return QPointF(); }
 
-//    virtual Ac::ItemDataRole positionXRole() const = 0;
-//    virtual Ac::ItemDataRole positionYRole() const = 0;
-//    virtual Ac::ItemDataRole scaleXRole() const = 0;
-//    virtual Ac::ItemDataRole scaleYRole() const = 0;
+    virtual Ac::ItemDataRole positionXRole() const { return Ac::InvalidRole; }
+    virtual Ac::ItemDataRole positionYRole() const { return Ac::InvalidRole; }
+    virtual Ac::ItemDataRole scaleXRole() const { return Ac::InvalidRole; }
+    virtual Ac::ItemDataRole scaleYRole() const { return Ac::InvalidRole; }
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
 private:
@@ -72,6 +73,9 @@ public:
 
 protected:
     qreal sceneWidth() const;
+
+    Ac::ItemDataRole positionXRole() const { return Ac::TimePositionRole; }
+    Ac::ItemDataRole scaleXRole() const { return Ac::TimeScaleRole; }
 
 private:
     Q_DISABLE_COPY(GraphicsHView)

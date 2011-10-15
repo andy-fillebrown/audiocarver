@@ -59,7 +59,7 @@ public:
     {}
 
 protected:
-    qreal paddingScale() const { return sceneHeight() / qreal(height()); }
+    qreal paddingScale() const { return -sceneTransform().m22(); }
 
 private:
     Q_DISABLE_COPY(LabelVView)

@@ -31,11 +31,14 @@ public:
     ~TimeLabelView();
 
 protected:
-    qreal paddingScale() const { return sceneWidth() / qreal(width()); }
+    qreal paddingScale() const { return 0.5f * sceneTransform().m11(); }
     QModelIndex gridLineListIndex() const;
 
     qreal sceneWidth() const;
     QPointF sceneCenter() const;
+
+    Ac::ItemDataRole positionXRole() const { return Ac::TimePositionRole; }
+    Ac::ItemDataRole scaleXRole() const { return Ac::TimeScaleRole; }
 
 private:
     Q_DISABLE_COPY(TimeLabelView)

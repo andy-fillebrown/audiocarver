@@ -17,6 +17,8 @@
 
 #include "ac_viewsettings.h"
 
+#include <ac_score.h>
+
 #include <QVariant>
 
 ViewSettings::ViewSettings(QObject *parent)
@@ -34,6 +36,7 @@ qreal ViewSettings::timePosition() const
 void ViewSettings::setTimePosition(qreal pos)
 {
     Q_D(ViewSettings);
+    pos = qBound(qreal(0.0f), pos, score()->length());
     if (d->timePos == pos)
         return;
     d->beginChangeData();
@@ -50,6 +53,7 @@ qreal ViewSettings::pitchPosition() const
 void ViewSettings::setPitchPosition(qreal pos)
 {
     Q_D(ViewSettings);
+    pos = qBound(qreal(0.0f), pos, qreal(127.0f));
     if (d->pitchPos == pos)
         return;
     d->beginChangeData();
@@ -66,6 +70,7 @@ qreal ViewSettings::controlPosition() const
 void ViewSettings::setControlPosition(qreal pos)
 {
     Q_D(ViewSettings);
+    pos = qBound(qreal(0.0f), pos, qreal(1.0f));
     if (d->controlPos == pos)
         return;
     d->beginChangeData();
@@ -82,8 +87,8 @@ qreal ViewSettings::timeScale() const
 void ViewSettings::setTimeScale(qreal scale)
 {
     Q_D(ViewSettings);
-    if (scale < 1.0f)
-        scale = 1.0f;
+    if (scale < AC_SCALE_MIN)
+        scale = AC_SCALE_MIN;
     d->beginChangeData();
     d->timeScale = scale;
     d->endChangeData();
@@ -98,8 +103,8 @@ qreal ViewSettings::pitchScale() const
 void ViewSettings::setPitchScale(qreal scale)
 {
     Q_D(ViewSettings);
-    if (scale < 1.0f)
-        scale = 1.0f;
+    if (scale < AC_SCALE_MIN)
+        scale = AC_SCALE_MIN;
     if (d->pitchScale == scale)
         return;
     d->beginChangeData();
@@ -116,13 +121,18 @@ qreal ViewSettings::controlScale() const
 void ViewSettings::setControlScale(qreal scale)
 {
     Q_D(ViewSettings);
-    if (scale < 1.0f)
-        scale = 1.0f;
+    if (scale < AC_SCALE_MIN)
+        scale = AC_SCALE_MIN;
     if (d->controlScale == scale)
         return;
     d->beginChangeData();
     d->controlScale = scale;
     d->endChangeData();
+}
+
+Score *ViewSettings::score() const
+{
+    return qobject_cast<Score*>(QObject::parent());
 }
 
 QVariant ViewSettings::data(int role) const

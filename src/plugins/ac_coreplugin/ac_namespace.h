@@ -49,7 +49,8 @@ enum ItemDataRole {
     ControlPositionRole,
     TimeScaleRole,
     PitchScaleRole,
-    ControlScaleRole
+    ControlScaleRole,
+    InvalidRole
 };
 
 enum ItemType {

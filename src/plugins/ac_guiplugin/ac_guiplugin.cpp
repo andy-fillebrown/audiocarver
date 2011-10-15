@@ -128,11 +128,34 @@ void populateModel(Model *model)
     pitchGridLines->at(124)->setPriority(40 + mod);
     pitchGridLines->at(125)->setPriority(30 + mod);
     pitchGridLines->at(126)->setPriority(50 + mod);
-    pitchGridLines->at(0)->setLabel("");
     pitchGridLines->at(0)->setPriority(0);
     pitchGridLines->at(60)->setPriority(0);
-    pitchGridLines->at(127)->setLabel("");
     pitchGridLines->at(127)->setPriority(0);
+    ObjectList<ControlGridLine> *controlGridLines = gridSettings->controlGridLines();
+    ControlGridLine *controlGridLine = 0;
+    int controlGridLineCount = 128;
+    for (int i = 0;  i < controlGridLineCount;  ++i) {
+        controlGridLine = new ControlGridLine;
+        qreal location = qreal(i) / qreal(controlGridLineCount);
+        controlGridLine->setLocation(location);
+        QString label = QString("%1").arg(location);
+        if ((label.length() - label.indexOf(".")) < 6)
+            controlGridLine->setLabel(label);
+        controlGridLines->append(controlGridLine);
+    }
+    for (int i = 1;  i < controlGridLineCount;  i*=2)
+        for (int j = i;  j < controlGridLineCount;  j+=i)
+            controlGridLines->at(j)->setPriority(controlGridLineCount / (i + 1));
+    controlGridLines->at(0)->setLabel("0.0");
+    controlGridLines->at(0)->setColor(Qt::red);
+    controlGridLines->at(0)->setPriority(0);
+    controlGridLines->at(controlGridLineCount / 2)->setColor(Qt::green);
+    controlGridLine = new ControlGridLine;
+    controlGridLine->setLocation(1.0f);
+    controlGridLine->setLabel("1.0");
+    controlGridLine->setColor(Qt::blue);
+    controlGridLine->setPriority(0);
+    controlGridLines->append(controlGridLine);
 }
 
 bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)

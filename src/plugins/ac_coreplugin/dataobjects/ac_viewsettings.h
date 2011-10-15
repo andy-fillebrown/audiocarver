@@ -20,6 +20,8 @@
 
 #include <ac_object.h>
 
+class Score;
+
 class ViewSettingsPrivate;
 class ViewSettings : public Object
 {
@@ -46,6 +48,8 @@ public:
     void setPitchScale(qreal scale);
     qreal controlScale() const;
     void setControlScale(qreal scale);
+
+    Score *score() const;
 
     // IModelItem
     Ac::ItemType type() const { return Ac::ViewSettingsItem; }

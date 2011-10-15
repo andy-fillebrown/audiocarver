@@ -35,7 +35,7 @@ public:
 
     void updateGridLineVisibilites()
     {
-        qreal padding = 150.0f * q->paddingScale();
+        qreal padding = 50.0f / q->paddingScale();
         QModelIndex gridLines = q->gridLineListIndex();
         Model *model = SceneManager::instance()->model();
         int n = model->rowCount(gridLines);

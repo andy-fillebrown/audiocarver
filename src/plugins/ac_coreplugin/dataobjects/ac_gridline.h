@@ -171,6 +171,10 @@ public:
 
     Ac::ItemType type() const { return Ac::ControlGridLineItem; }
 
+    bool isVisible() const;
+    void show();
+    void hide();
+
 private:
     Q_DISABLE_COPY(ControlGridLine)
     Q_DECLARE_PRIVATE(ControlGridLine)
