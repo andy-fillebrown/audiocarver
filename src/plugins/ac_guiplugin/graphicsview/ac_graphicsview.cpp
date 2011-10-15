@@ -310,8 +310,18 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     if (event->delta() < 0)
         scaleAmount = 1.0f / scaleAmount;
     ViewManager *vm = ViewManager::instance();
-    vm->setScale(scaleAmount * vm->scale(scaleXRole()), scaleXRole());
-    vm->setScale(scaleAmount * vm->scale(scaleYRole()), scaleYRole());
+    qreal scaleX = scaleAmount * vm->scale(scaleXRole());
+    qreal scaleY = scaleAmount * vm->scale(scaleYRole());
+    QTransform xform = sceneTransform();
+    QPointF scenePos = QPointF(xform.inverted().map(QPointF(event->pos())) + sceneOffset());
+    QPointF sceneCtr = QPointF(vm->position(positionXRole()), vm->position(positionYRole()));
+    QPointF viewOffset = sceneScale().map(sceneCtr - scenePos);
+    vm->setScale(scaleX, scaleXRole());
+    vm->setScale(scaleY, scaleYRole());
+    d->updateViewSettings();
+    QPointF newCtr = scenePos + sceneScale().inverted().map(viewOffset);
+    vm->setPosition(newCtr.x(), positionXRole());
+    vm->setPosition(newCtr.y(), positionYRole());
     emit vm->viewSettingsChanged();
 }
 
