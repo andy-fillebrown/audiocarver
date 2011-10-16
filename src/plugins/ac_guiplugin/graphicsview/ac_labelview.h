@@ -39,6 +39,8 @@ protected:
     virtual qreal paddingScale() const = 0;
     virtual QModelIndex gridLineListIndex() const = 0;
 
+    QPointF sceneOffset() const { return QPointF(0.0f, 10.0f / (height() / sceneHeight())); }
+
     void viewSettingsChanged();
 
     void resizeEvent(QResizeEvent *event);
@@ -62,7 +64,6 @@ protected:
     qreal paddingScale() const { return -sceneTransform().m22(); }
 
     QPointF sceneCenter() const;
-    QPointF sceneOffset() const { return QPointF(0.0f, 10.0f / (height() / sceneHeight())); }
 
 private:
     Q_DISABLE_COPY(LabelVView)

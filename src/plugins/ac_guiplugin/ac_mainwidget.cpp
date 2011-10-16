@@ -34,13 +34,13 @@ public:
     MainWidget *q;
     QGridLayout *layout;
     ViewManager *viewManager;
-    MiGraphicsView *topLeft;
+    MiGraphicsView *topRight;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
         ,   layout(new QGridLayout(q))
         ,   viewManager(new ViewManager(q))
-        ,   topLeft(new MiGraphicsView)
+        ,   topRight(new MiGraphicsView)
     {
         layout->setContentsMargins(QMargins(0, 0, 0, 0));
         layout->setSpacing(0);
@@ -55,39 +55,36 @@ MainWidget::MainWidget(QWidget *parent)
     ,   d(new MainWidgetPrivate(this))
 {
     int sideWidth = 48;
-    int sideHeight = 32;
+    int sideHeight = 24;
     int controlHeight = 192;
 
-    d->layout->addWidget(d->topLeft, 0, 0);
-    d->topLeft->setFixedSize(sideWidth, sideHeight);
-    d->topLeft->setFrameShape(QFrame::NoFrame);
-
     QGraphicsView *timeLabelView = d->viewManager->view(Ac::TimeLabelScene);
-    d->layout->addWidget(timeLabelView, 0, 1);
+    d->layout->addWidget(timeLabelView, 0, 0);
     timeLabelView->setFixedHeight(sideHeight);
-    timeLabelView->setFrameShape(QFrame::NoFrame);
+    timeLabelView->setFrameShape(QFrame::HLine);
 
-    QGraphicsView *pitchLabelView = d->viewManager->view(Ac::PitchLabelScene);
-    d->layout->addWidget(pitchLabelView, 1, 0);
-    pitchLabelView->setFixedWidth(sideWidth);
-    pitchLabelView->setFrameShape(QFrame::NoFrame);
+    d->layout->addWidget(d->topRight, 0, 1);
+    d->topRight->setFixedSize(sideWidth, sideHeight);
+    d->topRight->setFrameShape(QFrame::HLine);
 
     QGraphicsView *pitchView = d->viewManager->view(Ac::PitchScene);
-    d->layout->addWidget(pitchView, 1, 1);
-    pitchView->setFrameShape(QFrame::Box);
-    pitchView->setFrameShadow(QFrame::Sunken);
-    pitchView->setLineWidth(1);
+    d->layout->addWidget(pitchView, 1, 0);
+    pitchView->setFrameShape(QFrame::HLine);
 
-    QGraphicsView *controlLabelView = d->viewManager->view(Ac::ControlLabelScene);
-    d->layout->addWidget(controlLabelView, 2, 0);
-    controlLabelView->setFixedSize(sideWidth, controlHeight);
-    controlLabelView->setFrameShape(QFrame::NoFrame);
+    QGraphicsView *pitchLabelView = d->viewManager->view(Ac::PitchLabelScene);
+    d->layout->addWidget(pitchLabelView, 1, 1);
+    pitchLabelView->setFixedWidth(sideWidth);
+    pitchLabelView->setFrameShape(QFrame::HLine);
 
     QGraphicsView *controlView = d->viewManager->view(Ac::ControlScene);
-    d->layout->addWidget(controlView, 2, 1);
+    d->layout->addWidget(controlView, 2, 0);
     controlView->setFixedHeight(controlHeight);
-    controlView->setFrameShape(QFrame::Box);
-    controlView->setFrameShadow(QFrame::Sunken);
+    controlView->setFrameShape(QFrame::HLine);
+
+    QGraphicsView *controlLabelView = d->viewManager->view(Ac::ControlLabelScene);
+    d->layout->addWidget(controlLabelView, 2, 1);
+    controlLabelView->setFixedSize(sideWidth, controlHeight);
+    controlLabelView->setFrameShape(QFrame::HLine);
 }
 
 MainWidget::~MainWidget()
