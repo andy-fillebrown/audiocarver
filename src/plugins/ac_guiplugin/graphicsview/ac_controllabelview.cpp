@@ -58,5 +58,5 @@ QPointF ControlLabelView::sceneCenter() const
 
 QPointF ControlLabelView::sceneOffset() const
 {
-    return QPointF(0.0f, 0.075f / ViewManager::instance()->scale(Ac::ControlScaleRole));
+    return QPointF(0.0f, 10.0f / (height() / sceneHeight()));
 }
