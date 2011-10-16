@@ -178,7 +178,7 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     ,   d(new GraphicsViewPrivate(this))
 {
     setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
-    setFrameShape(QFrame::HLine);
+    setMouseTracking(true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -232,8 +232,10 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
             }
         }
         d->draggingGrips = !d->gripsBeingDragged.isEmpty();
-        if (d->draggingGrips)
+        if (d->draggingGrips) {
+            d->dragging = false;
             d->startDraggingGrips();
+        }
     }
 }
 
@@ -242,8 +244,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     if (d->panning) {
         d->panTo(event->pos());
         emit ViewManager::instance()->viewSettingsChanged();
+        event->accept();
     } else if (d->draggingGrips) {
         d->moveGrips(event->pos());
+        event->accept();
     } else if (d->dragging) {
         if (4 <= (event->pos() - d->dragOrigin).manhattanLength()) {
             QRect rect(d->dragOrigin, event->pos());
@@ -251,7 +255,9 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
             d->selectionRect->setPolygon(polygon);
             d->selectionRect->show();
         }
-    }
+        event->accept();
+    } else
+        event->ignore();
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
@@ -261,40 +267,43 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         ViewManager *vm = ViewManager::instance();
         emit vm->viewSettingsChanged();
         vm->updateViewSettings();
-    } else {
-        if (d->draggingGrips) {
-            d->moveGrips(event->pos());
-            d->finishDraggingGrips();
-        } else {
-            QRect rect;
-            if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
-                rect = QRect(d->dragOrigin.x() - 2, d->dragOrigin.y() - 2, 4, 4);
-            else
-                rect = QRect(d->dragOrigin, event->pos()).normalized();
-            QList<QGraphicsItem*> sceneItems = items(rect);
-            QRectF pickRect = sceneTransform().inverted().mapRect(QRectF(rect));
-            QList<IEntity*> entities;
-            foreach (QGraphicsItem *sceneItem, sceneItems) {
-                IUnknown *unknown = Q_U(sceneItem);
-                if (unknown) {
-                    IEntity *entity = query<IEntity>(unknown);
-                    if (entity && entity->intersects(pickRect))
-                        entities.append(entity);
-                }
-            }
-            if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-                d->appendSelectedEntities(entities);
-            else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-                d->removeSelectedEntities(entities);
-            else
-                d->setSelectedEntities(entities);
-        }
-        d->selectionRect->hide();
-        d->dragging = false;
+        event->accept();
+    } else if (d->draggingGrips) {
+        d->moveGrips(event->pos());
+        d->finishDraggingGrips();
         d->draggingGrips = false;
+        event->accept();
         d->gripsBeingDragged.clear();
         d->entitiesToUpdate.clear();
-    }
+        event->accept();
+    } else if (d->dragging) {
+        QRect rect;
+        if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
+            rect = QRect(d->dragOrigin.x() - 2, d->dragOrigin.y() - 2, 4, 4);
+        else
+            rect = QRect(d->dragOrigin, event->pos()).normalized();
+        QList<QGraphicsItem*> sceneItems = items(rect);
+        QRectF pickRect = sceneTransform().inverted().mapRect(QRectF(rect));
+        QList<IEntity*> entities;
+        foreach (QGraphicsItem *sceneItem, sceneItems) {
+            IUnknown *unknown = Q_U(sceneItem);
+            if (unknown) {
+                IEntity *entity = query<IEntity>(unknown);
+                if (entity && entity->intersects(pickRect))
+                    entities.append(entity);
+            }
+        }
+        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
+            d->appendSelectedEntities(entities);
+        else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+            d->removeSelectedEntities(entities);
+        else
+            d->setSelectedEntities(entities);
+        d->selectionRect->hide();
+        d->dragging = false;
+        event->accept();
+    } else
+        event->ignore();
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
@@ -324,6 +333,19 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         return;
     if (event->key() == Qt::Key_Escape)
         d->clearSelectedEntities();
+}
+
+bool GraphicsView::viewportEvent(QEvent *event)
+{
+    bool result = MiGraphicsView::viewportEvent(event);
+    switch (event->type()) {
+    // Return event "accepted" status for the following event types, so they'll
+    // be passed to the main widget if ignored.
+    case QEvent::MouseMove:
+        return event->isAccepted();
+    default:
+        return result;
+    }
 }
 
 qreal GraphicsHView::sceneWidth() const
