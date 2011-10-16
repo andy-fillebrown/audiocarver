@@ -177,10 +177,11 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   MiGraphicsView(scene, parent)
     ,   d(new GraphicsViewPrivate(this))
 {
+    setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
+    setFrameShape(QFrame::HLine);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
 }
 
 GraphicsView::~GraphicsView()

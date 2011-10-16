@@ -33,6 +33,10 @@ public:
 
     void setModel(Model *model);
 
+protected:
+    void resizeEvent(QResizeEvent *);
+    void showEvent(QShowEvent *);
+
 private:
     Q_DISABLE_COPY(MainWidget)
     MainWidgetPrivate *d;
