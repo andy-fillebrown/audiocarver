@@ -53,14 +53,6 @@ public:
     {
         delete model;
     }
-
-    void updateScoreLength()
-    {
-//        qreal scoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
-//        pitchScene->setWidth(scoreLength);
-//        controlScene->setWidth(scoreLength);
-//        timeLabelScene->setWidth(scoreLength);
-    }
 };
 
 static SceneManager *instance = 0;
@@ -92,16 +84,18 @@ void SceneManager::setModel(Model *model)
 {
     if (d->model == model)
         return;
-    if (d->model)
-        d->model->disconnect(this);
+    if (d->model) {
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            Ac::SceneType type = Ac::SceneType(i);
+            scene(type)->removeItem(d->model->sceneItem(type));
+        }
+    }
     d->model = model;
     if (d->model) {
-        connect(d->model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
-        d->updateScoreLength();
-    }
-    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-        Ac::SceneType type = Ac::SceneType(i);
-        scene(type)->addItem(d->model->sceneItem(type));
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            Ac::SceneType type = Ac::SceneType(i);
+            scene(type)->addItem(d->model->sceneItem(type));
+        }
     }
 }
 
@@ -121,11 +115,4 @@ QGraphicsScene *SceneManager::scene(Ac::SceneType type)
     default:
         return 0;
     }
-}
-
-void SceneManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
-{
-    Q_UNUSED(bottomLeft);
-    if (!topRight.isValid())
-        d->updateScoreLength();
 }

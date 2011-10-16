@@ -45,7 +45,7 @@ public:
     qreal timeScale;
     qreal pitchScale;
     qreal controlScale;
-    bool updatingViewSettings;
+    int updatingViewSettings : 32;
 
     ViewManagerPrivate(ViewManager *q, QWidget *widget)
         :   q(q)

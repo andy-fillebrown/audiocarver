@@ -50,13 +50,3 @@ qreal ControlLabelView::sceneHeight() const
 {
     return 1.0f / ViewManager::instance()->scale(Ac::ControlScaleRole);
 }
-
-QPointF ControlLabelView::sceneCenter() const
-{
-    return QPointF(0.5f, -ViewManager::instance()->position(Ac::ControlPositionRole));
-}
-
-QPointF ControlLabelView::sceneOffset() const
-{
-    return QPointF(0.0f, 10.0f / (height() / sceneHeight()));
-}

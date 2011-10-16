@@ -34,8 +34,6 @@ protected:
     QModelIndex gridLineListIndex() const;
 
     qreal sceneHeight() const;
-    QPointF sceneCenter() const;
-    QPointF sceneOffset() const;
 
     Ac::ItemDataRole positionYRole() const { return Ac::PitchPositionRole; }
     Ac::ItemDataRole scaleYRole() const { return Ac::PitchScaleRole; }

@@ -17,7 +17,7 @@
 
 #include "ac_labelview.h"
 
-#include <ac_graphicsscene.h>
+#include <ac_viewmanager.h>
 
 #include <ac_model.h>
 
@@ -37,7 +37,7 @@ public:
     {
         qreal padding = 50.0f / q->paddingScale();
         QModelIndex gridLines = q->gridLineListIndex();
-        Model *model = SceneManager::instance()->model();
+        Model *model = ViewManager::instance()->model();
         int n = model->rowCount(gridLines);
         int minPriority = INT_MAX;
         int prevPriority = 0;
@@ -92,4 +92,9 @@ void LabelView::resizeEvent(QResizeEvent *event)
 {
     GraphicsView::resizeEvent(event);
     d->updateGridLineVisibilites();
+}
+
+QPointF LabelVView::sceneCenter() const
+{
+    return QPointF(0.5f, -ViewManager::instance()->position(positionYRole()));
 }

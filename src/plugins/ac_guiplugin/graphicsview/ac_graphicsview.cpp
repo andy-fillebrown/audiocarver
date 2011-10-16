@@ -19,28 +19,22 @@
 
 #include <ac_graphicsentityitem.h>
 #include <ac_graphicsgripitem.h>
-#include <ac_graphicsscene.h>
 #include <ac_viewmanager.h>
 
 #include <ac_ientity.h>
-#include <ac_model.h>
 
 #include <QApplication>
-#include <QBitmap>
-#include <QGraphicsItem>
 #include <QMouseEvent>
-
-#include <qmath.h>
 
 class GraphicsViewPrivate
 {
 public:
     GraphicsView *q;
-    bool panning;
+    int panning : 1;
+    int dragging : 1;
+    int draggingGrips : 30;
     QPoint panStartPos;
     QPointF panStartCenter;
-    bool dragging;
-    bool draggingGrips;
     QPoint dragOrigin;
     QList<GraphicsEntityItem*> selectedEntities;
     QList<IEntityItem*> entitiesToUpdate;
@@ -312,16 +306,14 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     ViewManager *vm = ViewManager::instance();
     qreal scaleX = scaleAmount * vm->scale(scaleXRole());
     qreal scaleY = scaleAmount * vm->scale(scaleYRole());
-    QTransform xform = sceneTransform();
-    QPointF scenePos = QPointF(xform.inverted().map(QPointF(event->pos())) + sceneOffset());
-    QPointF sceneCtr = QPointF(vm->position(positionXRole()), vm->position(positionYRole()));
-    QPointF viewOffset = sceneScale().map(sceneCtr - scenePos);
+    QPointF pos = QPointF(sceneTransform().inverted().map(QPointF(event->pos())) + sceneOffset());
+    QPointF center = QPointF(vm->position(positionXRole()), vm->position(positionYRole()));
+    QPointF offset = sceneScale().map(center - pos);
     vm->setScale(scaleX, scaleXRole());
     vm->setScale(scaleY, scaleYRole());
-    d->updateViewSettings();
-    QPointF newCtr = scenePos + sceneScale().inverted().map(viewOffset);
-    vm->setPosition(newCtr.x(), positionXRole());
-    vm->setPosition(newCtr.y(), positionYRole());
+    QPointF newCenter = pos + QTransform::fromScale(sceneWidth() / width(), -sceneHeight() / height()).map(offset);
+    vm->setPosition(newCenter.x(), positionXRole());
+    vm->setPosition(newCenter.y(), positionYRole());
     emit vm->viewSettingsChanged();
 }
 

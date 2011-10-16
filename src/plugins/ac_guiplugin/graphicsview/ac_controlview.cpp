@@ -19,8 +19,6 @@
 
 #include <ac_viewmanager.h>
 
-#include <ac_model.h>
-
 class ControlViewPrivate
 {
 public:

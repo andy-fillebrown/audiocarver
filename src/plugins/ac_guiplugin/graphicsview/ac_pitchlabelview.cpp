@@ -48,15 +48,5 @@ QModelIndex PitchLabelView::gridLineListIndex() const
 
 qreal PitchLabelView::sceneHeight() const
 {
-    return 127.0 / ViewManager::instance()->scale(Ac::PitchScaleRole);
-}
-
-QPointF PitchLabelView::sceneCenter() const
-{
-    return QPointF(0.5f, -ViewManager::instance()->position(Ac::PitchPositionRole));
-}
-
-QPointF PitchLabelView::sceneOffset() const
-{
-    return QPointF(0.0f, 10.0f / (height() / sceneHeight()));
+    return 127.0f / ViewManager::instance()->scale(Ac::PitchScaleRole);
 }

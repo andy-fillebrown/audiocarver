@@ -56,7 +56,6 @@ public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 signals:
-    void scoreDataChanged();
     void viewSettingsChanged();
 
 private:

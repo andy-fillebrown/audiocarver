@@ -130,9 +130,6 @@ public:
 
     QGraphicsScene *scene(Ac::SceneType type);
 
-public slots:
-    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
-
 private:
     Q_DISABLE_COPY(SceneManager)
     SceneManagerPrivate *d;
