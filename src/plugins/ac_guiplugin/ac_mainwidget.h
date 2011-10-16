@@ -33,15 +33,6 @@ public:
 
     void setModel(Model *model);
 
-    bool isPointInControlViews(QWidget *widget, const QPoint &pos) const;
-
-    void test();
-
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void showEvent(QShowEvent *event);
-    void wheelEvent(QWheelEvent *event);
-
 private:
     Q_DISABLE_COPY(MainWidget)
     MainWidgetPrivate *d;

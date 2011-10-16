@@ -88,8 +88,6 @@ MainWidget::MainWidget(QWidget *parent)
     controlView->setFixedHeight(controlHeight);
     controlView->setFrameShape(QFrame::Box);
     controlView->setFrameShadow(QFrame::Sunken);
-
-//    d->viewManager->updateViews();
 }
 
 MainWidget::~MainWidget()
@@ -100,57 +98,4 @@ MainWidget::~MainWidget()
 void MainWidget::setModel(Model *model)
 {
     d->viewManager->setModel(model);
-}
-
-bool MainWidget::isPointInControlViews(QWidget *widget, const QPoint &pos) const
-{
-    QGraphicsView *controlView = d->viewManager->view(Ac::ControlScene);
-    if (controlView->rect().contains(controlView->mapFrom(widget, pos)))
-        return true;
-    QGraphicsView *controlLabelView = d->viewManager->view(Ac::ControlLabelScene);
-    if (controlLabelView->rect().contains(controlLabelView->mapFrom(widget, pos)))
-        return true;
-    return false;
-}
-
-void MainWidget::test()
-{
-    d->viewManager->dataChanged(QModelIndex(), QModelIndex());
-}
-
-void MainWidget::resizeEvent(QResizeEvent *event)
-{
-    Q_UNUSED(event);
-//    QWidget::resizeEvent(event);
-//    d->viewManager->updateViews();
-}
-
-void MainWidget::showEvent(QShowEvent *event)
-{
-    Q_UNUSED(event);
-//    QWidget::showEvent(event);
-//    d->viewManager->updateViews();
-}
-
-void MainWidget::wheelEvent(QWheelEvent *event)
-{
-    Q_UNUSED(event);
-//    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-//        qreal scale = event->delta() < 0 ? 0.8f : 1.25f;
-//        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-//            d->viewManager->setTimeScale(scale * d->viewManager->timeScale());
-//        else if (!isPointInVolumeViews(this, event->pos()))
-//            d->viewManager->setPitchScale(scale * d->viewManager->pitchScale());
-//        else
-//            d->viewManager->setVolumeScale(scale * d->viewManager->volumeScale());
-//    } else {
-//        int offset = event->delta() < 0 ? 100 : -100;
-//        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-//            d->viewManager->setTimePosition(d->viewManager->timePosition() - (offset / d->viewManager->timeScale()));
-//        else if (!isPointInVolumeViews(this, event->pos()))
-//            d->viewManager->setPitchPosition(d->viewManager->pitchPosition() + (offset / d->viewManager->pitchScale()));
-//        else
-//            d->viewManager->setVolumePosition(d->viewManager->volumePosition() + (offset / d->viewManager->volumeScale()));
-//    }
-//    event->accept();
 }
