@@ -265,9 +265,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (Qt::RightButton == event->button()) {
         d->finishPan(event->pos());
-        ViewManager *vm = ViewManager::instance();
-        emit vm->viewSettingsChanged();
-        vm->updateViewSettings();
+        emit ViewManager::instance()->viewSettingsChanged();
         event->accept();
     } else if (d->draggingGrips) {
         d->moveGrips(event->pos());

@@ -33,15 +33,17 @@ public:
     ~LabelView();
 
 public slots:
+    void viewScaleChanged(int role);
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 protected:
     virtual qreal paddingScale() const = 0;
     virtual QModelIndex gridLineListIndex() const = 0;
+    virtual Ac::ItemDataRole scaleRole() const = 0;
 
     QPointF sceneOffset() const { return QPointF(0.0f, 10.0f / (height() / sceneHeight())); }
 
-    void viewSettingsChanged();
+    void viewSettingsChanged(int role);
 
     void resizeEvent(QResizeEvent *event);
 
@@ -62,6 +64,7 @@ public:
 
 protected:
     qreal paddingScale() const { return -sceneTransform().m22(); }
+    Ac::ItemDataRole scaleRole() const { return scaleYRole(); }
 
     QPointF sceneCenter() const;
 

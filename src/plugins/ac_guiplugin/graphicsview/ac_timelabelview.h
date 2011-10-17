@@ -33,6 +33,7 @@ public:
 protected:
     qreal paddingScale() const { return 0.5f * sceneTransform().m11(); }
     QModelIndex gridLineListIndex() const;
+    Ac::ItemDataRole scaleRole() const { return Ac::TimeScaleRole; }
 
     qreal sceneWidth() const;
     QPointF sceneCenter() const;

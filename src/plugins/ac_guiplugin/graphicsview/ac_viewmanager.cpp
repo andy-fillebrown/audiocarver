@@ -69,13 +69,16 @@ public:
         qreal modelTimeScale = viewSettings.data(Ac::TimeScaleRole).toReal();
         qreal modelPitchScale = viewSettings.data(Ac::PitchScaleRole).toReal();
         qreal modelControlScale = viewSettings.data(Ac::ControlScaleRole).toReal();
+        bool timeScaleChanged = timeScale != modelTimeScale;
+        bool pitchScaleChanged = pitchScale != modelPitchScale;
+        bool controlScaleChanged = controlScale != modelControlScale;
         bool changed = scoreLength != modelScoreLength
                 || timePos != modelTimePos
                 || pitchPos != modelPitchPos
                 || controlPos != modelControlPos
-                || timeScale != modelTimeScale
-                || pitchScale != modelPitchScale
-                || controlScale != modelControlScale;
+                || timeScaleChanged
+                || pitchScaleChanged
+                || controlScaleChanged;
         scoreLength = modelScoreLength;
         timePos = modelTimePos;
         pitchPos = modelPitchPos;
@@ -85,6 +88,12 @@ public:
         controlScale = modelControlScale;
         if (changed)
             emit q->viewSettingsChanged();
+        if (timeScaleChanged)
+            emit q->viewScaleChanged(Ac::TimeScaleRole);
+        if (pitchScaleChanged)
+            emit q->viewScaleChanged(Ac::PitchScaleRole);
+        if (controlScaleChanged)
+            emit q->viewScaleChanged(Ac::ControlScaleRole);
     }
 };
 
@@ -98,8 +107,11 @@ ViewManager::ViewManager(QWidget *widget)
     connect(this, SIGNAL(viewSettingsChanged()), d->pitchView, SLOT(viewSettingsChanged()));
     connect(this, SIGNAL(viewSettingsChanged()), d->controlView, SLOT(viewSettingsChanged()));
     connect(this, SIGNAL(viewSettingsChanged()), d->timeLabelView, SLOT(viewSettingsChanged()));
+    connect(this, SIGNAL(viewScaleChanged(int)), d->timeLabelView, SLOT(viewScaleChanged(int)));
     connect(this, SIGNAL(viewSettingsChanged()), d->pitchLabelView, SLOT(viewSettingsChanged()));
+    connect(this, SIGNAL(viewScaleChanged(int)), d->pitchLabelView, SLOT(viewScaleChanged(int)));
     connect(this, SIGNAL(viewSettingsChanged()), d->controlLabelView, SLOT(viewSettingsChanged()));
+    connect(this, SIGNAL(viewScaleChanged(int)), d->controlLabelView, SLOT(viewScaleChanged(int)));
 }
 
 ViewManager::~ViewManager()
@@ -206,15 +218,20 @@ void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
 {
     if (scale < AC_SCALE_MIN)
         scale = AC_SCALE_MIN;
+    if (this->scale(role) == scale)
+        return;
     switch (role) {
     case Ac::TimeScaleRole:
         d->timeScale = scale;
+        emit viewScaleChanged(role);
         break;
     case Ac::PitchScaleRole:
         d->pitchScale = scale;
+        emit viewScaleChanged(role);
         break;
     case Ac::ControlScaleRole:
         d->controlScale = scale;
+        emit viewScaleChanged(role);
     default:
         break;
     }

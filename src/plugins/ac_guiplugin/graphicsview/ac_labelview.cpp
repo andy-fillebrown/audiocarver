@@ -84,10 +84,10 @@ void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bott
         d->updateGridLineVisibilites();
 }
 
-void LabelView::viewSettingsChanged()
+void LabelView::viewScaleChanged(int role)
 {
-    GraphicsView::viewSettingsChanged();
-    d->updateGridLineVisibilites();
+    if (scaleRole() == role)
+        d->updateGridLineVisibilites();
 }
 
 void LabelView::resizeEvent(QResizeEvent *event)
