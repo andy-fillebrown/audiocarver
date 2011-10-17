@@ -38,7 +38,6 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *);
-    void showEvent(QShowEvent *);
 
 private:
     Q_DISABLE_COPY(MainWidget)

@@ -35,7 +35,9 @@ public:
 PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
     :   GraphicsHView(scene, parent)
     ,   d(new PitchViewPrivate(this))
-{}
+{
+    setFrameShape(QFrame::NoFrame);
+}
 
 PitchView::~PitchView()
 {

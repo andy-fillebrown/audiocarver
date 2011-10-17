@@ -68,7 +68,10 @@ public:
 LabelView::LabelView(QGraphicsScene *scene, QWidget *parent)
     :   GraphicsView(scene, parent)
     ,   d(new LabelViewPrivate(this))
-{}
+{
+    setBackgroundRole(QPalette::Window);
+    setFrameShape(QFrame::NoFrame);
+}
 
 LabelView::~LabelView()
 {
