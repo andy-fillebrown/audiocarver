@@ -34,7 +34,9 @@ public:
 PitchLabelView::PitchLabelView(QGraphicsScene *scene, QWidget *parent)
     :   LabelVView(scene, parent)
     ,   d(new PitchLabelViewPrivate)
-{}
+{
+    setStyleSheet("QFrame { border-top: 0px solid black; }");
+}
 
 PitchLabelView::~PitchLabelView()
 {

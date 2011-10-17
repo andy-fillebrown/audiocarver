@@ -37,7 +37,9 @@ public:
 TimeLabelView::TimeLabelView(QGraphicsScene *scene, QWidget *parent)
     :   LabelView(scene, parent)
     ,   d(new TimeLabelViewPrivate(this))
-{}
+{
+    setStyleSheet("QFrame { border-top: 0px solid black; }");
+}
 
 TimeLabelView::~TimeLabelView()
 {

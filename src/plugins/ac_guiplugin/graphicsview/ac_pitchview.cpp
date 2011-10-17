@@ -36,7 +36,7 @@ PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
     :   GraphicsHView(scene, parent)
     ,   d(new PitchViewPrivate(this))
 {
-    setFrameShape(QFrame::NoFrame);
+    setStyleSheet("QFrame { border-top: 0px solid black; }");
 }
 
 PitchView::~PitchView()
