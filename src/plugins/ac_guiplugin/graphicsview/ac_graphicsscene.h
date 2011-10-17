@@ -26,11 +26,25 @@ class Model;
 
 class QModelIndex;
 
-class HScene : public QGraphicsScene
+class Scene : public QGraphicsScene
 {
+    Q_OBJECT
+
+public:
+    Scene(QObject *parent = 0)
+        :   QGraphicsScene(parent)
+    {
+        setItemIndexMethod(NoIndex);
+    }
+};
+
+class HScene : public Scene
+{
+    Q_OBJECT
+
 public:
     HScene(QObject *parent = 0)
-        :   QGraphicsScene(parent)
+        :   Scene(parent)
     {}
 
     void setWidth(qreal w)
@@ -90,25 +104,25 @@ public:
     }
 };
 
-class PitchLabelScene : public QGraphicsScene
+class PitchLabelScene : public Scene
 {
     Q_OBJECT
 
 public:
     PitchLabelScene(QObject *parent = 0)
-        :   QGraphicsScene(parent)
+        :   Scene(parent)
     {
         setSceneRect(0.0f, 0.0f, 10.0f, 127.0f);
     }
 };
 
-class ControlLabelScene : public QGraphicsScene
+class ControlLabelScene : public Scene
 {
     Q_OBJECT
 
 public:
     ControlLabelScene(QObject *parent = 0)
-        :   QGraphicsScene(parent)
+        :   Scene(parent)
     {
         setSceneRect(0.0f, 0.0f, 10.0f, 1.0f);
     }
