@@ -44,9 +44,6 @@ public:
         ,   controlHeightPercentage(0.25f)
         ,   cursorPushed(false)
         ,   draggingSeparator(false)
-    {}
-
-    void init()
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
@@ -121,7 +118,6 @@ MainWidget::MainWidget(QWidget *parent)
     :   QWidget(parent)
     ,   d(new MainWidgetPrivate(this))
 {
-    d->init();
     setMouseTracking(true);
 }
 
