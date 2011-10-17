@@ -108,6 +108,9 @@ protected:
     virtual void changeEvent(QEvent *e);
     virtual void closeEvent(QCloseEvent *event);
 
+    void moveEvent(QMoveEvent *event);
+    void resizeEvent(QResizeEvent *event);
+
 private slots:
     void aboutPlugins();
 
@@ -133,6 +136,8 @@ private:
 
     Internal::GeneralSettings *m_generalSettings;
     Internal::ShortcutSettings *m_shortcutSettings;
+
+    QRect m_normalWindowGeometry;
 
     // actions
     QAction *m_exitAction;

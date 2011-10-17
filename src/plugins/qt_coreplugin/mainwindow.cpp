@@ -169,6 +169,16 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
+void MainWindow::moveEvent(QMoveEvent *event)
+{
+    m_normalWindowGeometry.setTopLeft(isMaximized() ? event->oldPos() : event->pos());
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    m_normalWindowGeometry.setSize(isMaximized() ? event->oldSize() : event->size());
+}
+
 IContext *MainWindow::currentContextObject() const
 {
     return m_activeContext;
@@ -458,38 +468,21 @@ void MainWindow::aboutToShutdown()
 }
 
 static const char *settingsGroup = "MainWindow";
+static const char *windowNormalGeometryKey = "WindowNormalGeometry";
 static const char *windowGeometryKey = "WindowGeometry";
 static const char *windowStateKey = "WindowState";
-
-// TODO compat for <= 2.1, remove later
-static const char *geometryKey = "Geometry";
-static const char *maxKey = "Maximized";
-static const char *fullScreenKey = "FullScreen";
 
 void MainWindow::readSettings()
 {
     m_settings->beginGroup(QLatin1String(settingsGroup));
 
-    // TODO compat for <= 2.1, remove later
-    if (m_settings->contains(QLatin1String(geometryKey))) {
-        const QVariant geom = m_settings->value(QLatin1String(geometryKey));
-        if (geom.isValid()) {
-            setGeometry(geom.toRect());
-        } else {
-            resize(1024, 700);
-        }
-        if (m_settings->value(QLatin1String(maxKey), false).toBool())
-            setWindowState(Qt::WindowMaximized);
-        setFullScreen(m_settings->value(QLatin1String(fullScreenKey), false).toBool());
-
-        m_settings->remove(QLatin1String(geometryKey));
-        m_settings->remove(QLatin1String(maxKey));
-        m_settings->remove(QLatin1String(fullScreenKey));
-    } else {
-        if (!restoreGeometry(m_settings->value(QLatin1String(windowGeometryKey)).toByteArray()))
-            resize(1024, 700);
-        restoreState(m_settings->value(QLatin1String(windowStateKey)).toByteArray());
+    if (!restoreGeometry(m_settings->value(QLatin1String(windowGeometryKey)).toByteArray()))
+        resize(1024, 700);
+    else {
+        m_normalWindowGeometry = m_settings->value(QLatin1String(windowNormalGeometryKey)).toRect();
+        setGeometry(m_normalWindowGeometry);
     }
+    restoreState(m_settings->value(QLatin1String(windowStateKey)).toByteArray());
 
     m_settings->endGroup();
 }
@@ -498,6 +491,7 @@ void MainWindow::writeSettings()
 {
     m_settings->beginGroup(QLatin1String(settingsGroup));
 
+    m_settings->setValue(QLatin1String(windowNormalGeometryKey), m_normalWindowGeometry);
     m_settings->setValue(QLatin1String(windowGeometryKey), saveGeometry());
     m_settings->setValue(QLatin1String(windowStateKey), saveState());
 
