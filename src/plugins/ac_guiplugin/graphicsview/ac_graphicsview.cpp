@@ -276,9 +276,12 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         d->entitiesToUpdate.clear();
         event->accept();
     } else if (d->dragging) {
+        bool pickOne = false;
         QRect rect;
-        if ((event->pos() - d->dragOrigin).manhattanLength() < 4)
+        if ((event->pos() - d->dragOrigin).manhattanLength() < 4) {
+            pickOne = true;
             rect = QRect(d->dragOrigin.x() - 2, d->dragOrigin.y() - 2, 4, 4);
+        }
         else
             rect = QRect(d->dragOrigin, event->pos()).normalized();
         QList<QGraphicsItem*> sceneItems = items(rect);
@@ -288,8 +291,11 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             IUnknown *unknown = Q_U(sceneItem);
             if (unknown) {
                 IEntity *entity = query<IEntity>(unknown);
-                if (entity && entity->intersects(pickRect))
+                if (entity && entity->intersects(pickRect)) {
                     entities.append(entity);
+                    if (pickOne)
+                        break;
+                }
             }
         }
         if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
