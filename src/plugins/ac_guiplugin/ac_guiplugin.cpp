@@ -45,7 +45,7 @@ void populateModel(Model *model)
     Track *track = new Track;
     tracks->append(track);
     ObjectList<Note> *notes = track->notes();
-    for (int i = 0;  i < 5;  ++i) {
+    for (int i = 0;  i < 1000;  ++i) {
         Note *note = new Note;
         PointList pts;
         pts.append(Point(0,   30 + (5 * i)));
@@ -59,7 +59,7 @@ void populateModel(Model *model)
     track = new Track;
     tracks->append(track);
     notes = track->notes();
-    for (int i = 0;  i < 5;  ++i) {
+    for (int i = 0;  i < 1000;  ++i) {
         Note *note = new Note;
         PointList pts;
         pts.append(Point(0,   60 + (5 * i)));
