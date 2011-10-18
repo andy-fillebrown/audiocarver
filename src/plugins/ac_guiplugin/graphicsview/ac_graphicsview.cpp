@@ -179,6 +179,7 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
 {
     setMouseTracking(true);
     setInteractive(false);
+    setOptimizationFlag(DontSavePainterState);
     setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
