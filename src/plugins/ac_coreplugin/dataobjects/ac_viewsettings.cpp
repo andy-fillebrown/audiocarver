@@ -87,8 +87,8 @@ qreal ViewSettings::timeScale() const
 void ViewSettings::setTimeScale(qreal scale)
 {
     Q_D(ViewSettings);
-    if (scale < AC_SCALE_MIN)
-        scale = AC_SCALE_MIN;
+    if (scale < VIEWSCALE_MIN)
+        scale = VIEWSCALE_MIN;
     d->beginChangeData();
     d->timeScale = scale;
     d->endChangeData();
@@ -103,8 +103,8 @@ qreal ViewSettings::pitchScale() const
 void ViewSettings::setPitchScale(qreal scale)
 {
     Q_D(ViewSettings);
-    if (scale < AC_SCALE_MIN)
-        scale = AC_SCALE_MIN;
+    if (scale < VIEWSCALE_MIN)
+        scale = VIEWSCALE_MIN;
     if (d->pitchScale == scale)
         return;
     d->beginChangeData();
@@ -121,8 +121,8 @@ qreal ViewSettings::controlScale() const
 void ViewSettings::setControlScale(qreal scale)
 {
     Q_D(ViewSettings);
-    if (scale < AC_SCALE_MIN)
-        scale = AC_SCALE_MIN;
+    if (scale < VIEWSCALE_MIN)
+        scale = VIEWSCALE_MIN;
     if (d->controlScale == scale)
         return;
     d->beginChangeData();

@@ -24,6 +24,7 @@
 #include <ac_pitchview.h>
 #include <ac_timelabelview.h>
 
+#include <ac_coreconstants.h>
 #include <ac_model.h>
 
 #include <QWidget>
@@ -216,8 +217,8 @@ qreal ViewManager::scale(Ac::ItemDataRole role) const
 
 void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
 {
-    if (scale < AC_SCALE_MIN)
-        scale = AC_SCALE_MIN;
+    if (scale < VIEWSCALE_MIN)
+        scale = VIEWSCALE_MIN;
     if (this->scale(role) == scale)
         return;
     switch (role) {

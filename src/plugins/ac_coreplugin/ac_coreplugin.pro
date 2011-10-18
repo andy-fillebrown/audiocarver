@@ -12,6 +12,7 @@ DEFINES *= \
     AC_CORE_LIBRARY \
 
 HEADERS *= \
+    ac_coreconstants.h \
     ac_global.h \
     ac_namespace.h \
 

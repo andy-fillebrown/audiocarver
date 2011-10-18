@@ -18,6 +18,11 @@
 #include "ac_graphicsgripitem.h"
 
 #include <ac_graphicsentityitem.h>
+#include <ac_guiconstants.h>
+
+const qreal GRIP_SIZE    = 8.0f;
+const qreal GRIP_SIZE_D2 = GRIP_SIZE / 2.0f;
+const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_SIZE);
 
 class GraphicsGripItemPrivate
 {
@@ -28,7 +33,7 @@ public:
         :   rectItem(new QGraphicsRectItem(q))
     {
         rectItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        rectItem->setRect(-4.0f, -4.0f, 8.0f, 8.0f);
+        rectItem->setRect(GRIP_RECT);
         rectItem->setPen(QPen(Qt::blue));
         rectItem->setBrush(QBrush(Qt::blue));
         rectItem->setData(0, quintptr(query<IGripItem>(q)));

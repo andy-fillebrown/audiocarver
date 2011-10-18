@@ -15,21 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef AC_GLOBAL_H
-#define AC_GLOBAL_H
+#ifndef AC_CORECONSTANTS_H
+#define AC_CORECONSTANTS_H
 
-#include <mi_global.h>
+#include <qglobal.h>
 
-#if defined(AC_CORE_LIBRARY)
-#  define AC_CORE_EXPORT Q_DECL_EXPORT
-#else
-#  define AC_CORE_EXPORT Q_DECL_IMPORT
-#endif
+const qreal VIEWSCALE_MIN = 0.9f;
 
-#define Q_I(Interface) \
-    const_cast<Interface*>(dynamic_cast<const Interface*>(this))
-
-#define Q_U(graphicsItem) \
-    reinterpret_cast<IUnknown*>(graphicsItem->data(0).value<quintptr>())
-
-#endif // AC_GLOBAL_H
+#endif // AC_CORECONSTANTS_H

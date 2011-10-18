@@ -18,6 +18,7 @@
 #ifndef AC_VIEWSETTINGS_H
 #define AC_VIEWSETTINGS_H
 
+#include <ac_coreconstants.h>
 #include <ac_object.h>
 
 class Score;
@@ -78,9 +79,9 @@ public:
         ,   timePos(64.0f)
         ,   pitchPos(63.5f)
         ,   controlPos(0.5f)
-        ,   timeScale(1.0f)
-        ,   pitchScale(1.0f)
-        ,   controlScale(1.0f)
+        ,   timeScale(VIEWSCALE_MIN)
+        ,   pitchScale(VIEWSCALE_MIN)
+        ,   controlScale(VIEWSCALE_MIN)
     {}
 };
 
