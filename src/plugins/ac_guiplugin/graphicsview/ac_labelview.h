@@ -41,7 +41,7 @@ protected:
     virtual QModelIndex gridLineListIndex() const = 0;
     virtual Ac::ItemDataRole scaleRole() const = 0;
 
-    QPointF sceneOffset() const { return QPointF(0.0f, 10.0f / (height() / sceneHeight())); }
+    QPointF sceneOffset() const { return QPointF(-2.0f / (width() / sceneWidth()), 10.0f / (height() / sceneHeight())); }
 
     void viewSettingsChanged(int role);
 
