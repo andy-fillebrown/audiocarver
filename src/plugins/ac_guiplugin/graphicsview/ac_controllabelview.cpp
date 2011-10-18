@@ -35,7 +35,12 @@ ControlLabelView::ControlLabelView(QGraphicsScene *scene, QWidget *parent)
     :   LabelVView(scene, parent)
     ,   d(new ControlLabelViewPrivate)
 {
-    setStyleSheet("QFrame { border-top: 1px solid black; }");
+    setStyleSheet("QFrame {"
+                  "border-top: 1px solid black;"
+                  "border-bottom: 0px solid palette(shadow);"
+                  "border-left: 0px solid palette(shadow);"
+                  "border-right: 1px solid palette(shadow);"
+                  "}");
 }
 
 ControlLabelView::~ControlLabelView()

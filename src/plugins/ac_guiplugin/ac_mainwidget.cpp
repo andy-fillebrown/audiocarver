@@ -47,7 +47,12 @@ public:
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
-        topRightView->setFrameShape(QFrame::NoFrame);
+        topRightView->setStyleSheet("QFrame {"
+                                    "border-top: 0px solid palette(shadow);"
+                                    "border-bottom: 0px solid palette(shadow);"
+                                    "border-left: 0px solid palette(shadow);"
+                                    "border-right: 1px solid palette(shadow);"
+                                    "}");
         for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             viewManager->view(Ac::SceneType(i))->setParent(q);
     }

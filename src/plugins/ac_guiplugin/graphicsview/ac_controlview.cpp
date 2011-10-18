@@ -33,7 +33,12 @@ ControlView::ControlView(QGraphicsScene *scene, QWidget *parent)
     :   GraphicsHView(scene, parent)
     ,   d(new ControlViewPrivate)
 {
-    setStyleSheet("QFrame { border-top: 1px solid black; }");
+    setStyleSheet("QFrame {"
+                  "border-top: 1px solid black;"
+                  "border-bottom: 0px solid palette(shadow);"
+                  "border-left: 1px solid palette(shadow);"
+                  "border-right: 1px solid palette(shadow);"
+                  "}");
 }
 
 ControlView::~ControlView()
