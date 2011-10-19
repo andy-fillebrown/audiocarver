@@ -55,7 +55,7 @@ public:
         rootItem->setZValue(Q_FLOAT_MAX - 1.0f);
         scene->addItem(pickBox);
         pickBox->setZValue(Q_FLOAT_MAX);
-        pickBox->setPen(QPen(QColor(0, 0, 255, 63)));
+        pickBox->setPen(QPen(QColor(0, 0, 255)));
         pickBox->setBrush(QBrush(QColor(0, 0, 255, 63)));
         pickBox->hide();
     }
