@@ -1,6 +1,7 @@
 
 HEADERS *= \
     ac_ientity.h \
+    ac_ifiler.h \
     ac_imodelitem.h \
 
 SOURCE_PAIRS = \
