@@ -27,7 +27,7 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new AcDatabaseImpl);
+    addAutoReleasedObject(new Database);
     return true;
 }
 

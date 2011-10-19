@@ -20,13 +20,13 @@
 
 #include <mi_idatabase.h>
 
-class AcDatabaseImplData;
+class DatabasePrivate;
 
-class AcDatabaseImpl : public IDatabase
+class Database : public IDatabase
 {
 public:
-    AcDatabaseImpl();
-    ~AcDatabaseImpl();
+    Database();
+    ~Database();
 
     virtual const QString &fileExtension() const;
     virtual const QString &fileFilter() const;
@@ -36,8 +36,8 @@ public:
     virtual void write(const QString &fileName);
 
 private:
-    Q_DISABLE_COPY(AcDatabaseImpl)
-    AcDatabaseImplData *d;
+    Q_DISABLE_COPY(Database)
+    DatabasePrivate *d;
 };
 
 #endif // AC_DATABASE_H
