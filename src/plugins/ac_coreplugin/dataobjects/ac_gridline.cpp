@@ -20,6 +20,7 @@
 #include <ac_gridsettings.h>
 
 #include <QGraphicsItem>
+#include <QPalette>
 
 GridLinePrivate::GridLinePrivate(GridLine *q)
     :   GraphicsObjectPrivate(q)
@@ -119,14 +120,22 @@ class TimeGridLinePrivate : public GridLinePrivate
 {
 public:
     GraphicsTextItem *timeLabelItem;
+    QGraphicsLineItem *timeLineItem;
     QGraphicsLineItem *pitchLineItem;
+    QGraphicsLineItem *pitchLineLoExtItem;
+    QGraphicsLineItem *pitchLineHiExtItem;
     QGraphicsLineItem *controlLineItem;
+    QGraphicsLineItem *controlLineHiExtItem;
 
     TimeGridLinePrivate(TimeGridLine *q)
         :   GridLinePrivate(q)
         ,   timeLabelItem(new GraphicsTextItem)
+        ,   timeLineItem(new QGraphicsLineItem)
         ,   pitchLineItem(new QGraphicsLineItem)
+        ,   pitchLineLoExtItem(new QGraphicsLineItem(pitchLineItem))
+        ,   pitchLineHiExtItem(new QGraphicsLineItem(pitchLineItem))
         ,   controlLineItem(new QGraphicsLineItem)
+        ,   controlLineHiExtItem(new QGraphicsLineItem(controlLineItem))
     {}
 
     void init()
@@ -139,6 +148,7 @@ public:
     {
         delete controlLineItem;
         delete pitchLineItem;
+        delete timeLineItem;
         delete timeLabelItem;
     }
 
@@ -147,10 +157,12 @@ public:
         GraphicsParentPrivate *parent = graphicsParent();
         if (parent) {
             timeLabelItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
+            timeLineItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
             pitchLineItem->setParentItem(parent->unitYGraphicsItems[Ac::PitchScene]);
             controlLineItem->setParentItem(parent->mainGraphicsItems[Ac::ControlScene]);
         } else {
             timeLabelItem->setParentItem(0);
+            timeLineItem->setParentItem(0);
             pitchLineItem->setParentItem(0);
             controlLineItem->setParentItem(0);
         }
@@ -165,9 +177,17 @@ public:
         pen.setCosmetic(true);
         pitchLineItem->setPen(pen);
         controlLineItem->setPen(pen);
-        QLineF line(location, 0.0f, location, 1.0f);
-        pitchLineItem->setLine(line);
-        controlLineItem->setLine(line);
+        pen.setStyle(Qt::DotLine);
+        timeLineItem->setPen(pen);
+        pitchLineLoExtItem->setPen(pen);
+        pitchLineHiExtItem->setPen(pen);
+        controlLineHiExtItem->setPen(pen);
+        timeLineItem->setLine(location, 10.0f, location, -10.0f);
+        pitchLineItem->setLine(location, 0.0f, location, 1.0f);
+        pitchLineLoExtItem->setLine(location, 0.0f, location, -1.0f);
+        pitchLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
+        controlLineItem->setLine(location, 0.0f, location, 1.0f);
+        controlLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
     }
 };
 
@@ -189,6 +209,7 @@ void TimeGridLine::show()
 {
     Q_D(TimeGridLine);
     d->timeLabelItem->show();
+    d->timeLineItem->show();
     d->pitchLineItem->show();
     d->controlLineItem->show();
 }
@@ -197,6 +218,7 @@ void TimeGridLine::hide()
 {
     Q_D(TimeGridLine);
     d->timeLabelItem->hide();
+    d->timeLineItem->hide();
     d->pitchLineItem->hide();
     d->controlLineItem->hide();
 }
@@ -206,11 +228,13 @@ class PitchGridLinePrivate : public GridLinePrivate
 public:
     GraphicsTextItem *pitchLabelItem;
     QGraphicsLineItem *pitchLineItem;
+    QGraphicsLineItem *pitchLineRightExtItem;
 
     PitchGridLinePrivate(PitchGridLine *q)
         :   GridLinePrivate(q)
         ,   pitchLabelItem(new GraphicsTextItem)
         ,   pitchLineItem(new QGraphicsLineItem)
+        ,   pitchLineRightExtItem(new QGraphicsLineItem(pitchLineItem))
     {}
 
     void init()
@@ -245,7 +269,10 @@ public:
         QPen pen(color);
         pen.setCosmetic(true);
         pitchLineItem->setPen(pen);
-        pitchLineItem->setLine(QLineF(0.0f, location, 1.0f, location));
+        pen.setStyle(Qt::DotLine);
+        pitchLineRightExtItem->setPen(pen);
+        pitchLineItem->setLine(0.0f, location, 1.0f, location);
+        pitchLineRightExtItem->setLine(1.0f, location, 2.0f, location);
     }
 };
 
@@ -282,11 +309,13 @@ class ControlGridLinePrivate : public GridLinePrivate
 public:
     GraphicsTextItem *controlLabelItem;
     QGraphicsLineItem *controlLineItem;
+    QGraphicsLineItem *controlLineRightExtItem;
 
     ControlGridLinePrivate(ControlGridLine *q)
         :   GridLinePrivate(q)
         ,   controlLabelItem(new GraphicsTextItem)
         ,   controlLineItem(new QGraphicsLineItem)
+        ,   controlLineRightExtItem(new QGraphicsLineItem(controlLineItem))
     {}
 
     void init()
@@ -321,7 +350,10 @@ public:
         QPen pen(color);
         pen.setCosmetic(true);
         controlLineItem->setPen(pen);
-        controlLineItem->setLine(QLineF(0.0f, location, 1.0f, location));
+        pen.setStyle(Qt::DotLine);
+        controlLineRightExtItem->setPen(pen);
+        controlLineItem->setLine(0.0f, location, 1.0f, location);
+        controlLineRightExtItem->setLine(1.0f, location, 2.0f, location);
     }
 };
 

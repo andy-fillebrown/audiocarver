@@ -100,7 +100,7 @@ public:
 
     qreal height() const
     {
-        return 10.0f;
+        return 1.0f;
     }
 };
 
