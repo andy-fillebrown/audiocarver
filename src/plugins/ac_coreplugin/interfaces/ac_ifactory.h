@@ -18,12 +18,7 @@
 #ifndef AC_IFACTORY_H
 #define AC_IFACTORY_H
 
-#include <ac_namespace.h>
 #include <ac_object.h>
-
-#include <mi_iunknown.h>
-
-class QVariant;
 
 class IFactory : public QObject
 {
