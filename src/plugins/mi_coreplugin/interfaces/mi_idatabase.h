@@ -27,7 +27,6 @@ class MI_CORE_EXPORT IDatabase : public QObject
 
 public:
     IDatabase();
-    ~IDatabase() {}
 
     static IDatabase *instance();
 
