@@ -15,22 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_coreplugin.h"
+#include "ac_factory.h"
 
-#include <ac_database.h>
-#include <ac_factory.h>
-
-#include <pluginmanager.h>
-
-#include <QtPlugin>
-
-bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+Object *Factory::create(Ac::ItemType type) const
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Database);
-    addAutoReleasedObject(new Factory);
-    return true;
+    switch (type) {
+    case Ac::ScoreItem:
+    case Ac::TrackItem:
+    case Ac::NoteItem:
+    case Ac::PitchCurveItem:
+    case Ac::ControlCurveItem:
+    case Ac::GridSettingsItem:
+    case Ac::TimeGridLineItem:
+    case Ac::PitchGridLineItem:
+    case Ac::ControlGridLineItem:
+    case Ac::ViewSettingsItem:
+    default:
+        return 0;
+    }
 }
-
-Q_EXPORT_PLUGIN(AcCorePlugin)

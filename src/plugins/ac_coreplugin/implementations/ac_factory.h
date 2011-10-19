@@ -15,22 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_coreplugin.h"
+#ifndef AC_FACTORY_H
+#define AC_FACTORY_H
 
-#include <ac_database.h>
-#include <ac_factory.h>
+#include <ac_ifactory.h>
 
-#include <pluginmanager.h>
-
-#include <QtPlugin>
-
-bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+class Factory : public IFactory
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Database);
-    addAutoReleasedObject(new Factory);
-    return true;
-}
+    Q_OBJECT
 
-Q_EXPORT_PLUGIN(AcCorePlugin)
+public:
+    Factory() {}
+
+    Object *create(Ac::ItemType type) const;
+
+private:
+    Q_DISABLE_COPY(Factory)
+};
+
+#endif // AC_FACTORY_H
