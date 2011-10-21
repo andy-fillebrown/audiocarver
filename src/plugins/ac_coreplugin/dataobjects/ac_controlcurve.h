@@ -28,6 +28,8 @@ class AC_CORE_EXPORT ControlCurve : public Curve
     Q_PROPERTY(int controlId READ controlId WRITE setControlId)
 
 public:
+    enum { Type = Ac::ControlCurveItem };
+
     explicit ControlCurve(QObject *parent = 0);
 
     int controlId() const;
@@ -39,7 +41,15 @@ public:
     IEntity *parentEntity() const;
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::ControlCurveItem; }
+    int type() const { return Type; }
+
+    int persistentRoleAt(int i) const
+    {
+        if (metaObject()->propertyOffset() == i)
+            return Ac::ControlIdRole;
+        return Curve::persistentRoleAt(i);
+    }
+
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 

@@ -32,6 +32,8 @@ class AC_CORE_EXPORT Note : public ScoreObject
     Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
+    enum { Type = Ac::NoteItem };
+
     explicit Note(QObject *parent = 0);
 
     qreal length() const;
@@ -48,7 +50,15 @@ public:
     bool intersects(const QRectF &) const { return false; }
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::NoteItem; }
+    int type() const { return Type; }
+
+    int persistentRoleAt(int i) const
+    {
+        if (metaObject()->propertyOffset() == i)
+            return Ac::LengthRole;
+        return ScoreObject::persistentRoleAt(i);
+    }
+
     bool setData(const QVariant &value, int role);
 
     // IUnknown

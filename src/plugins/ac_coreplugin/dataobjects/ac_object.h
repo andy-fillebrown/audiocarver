@@ -78,9 +78,6 @@ public:
     }
 
     // IModelItem
-
-    Ac::ItemType type() const = 0;
-
     IModelItem *parentModelItem() const
     {
         return parent();
@@ -101,19 +98,35 @@ public:
     IModelItem *modelItemAt(int i) const
     {
         Q_UNUSED(i);
+        Q_ASSERT(false);
         return 0;
     }
 
     IModelItem *findModelItem(Ac::ItemType type) const
     {
         Q_UNUSED(type);
+        Q_ASSERT(false);
         return 0;
     }
 
     IModelItem *findModelItemList(Ac::ItemType type) const
     {
         Q_UNUSED(type);
+        Q_ASSERT(false);
         return 0;
+    }
+
+    int persistentRoleCount() const
+    {
+        return metaObject()->propertyCount();
+    }
+
+    int persistentRoleAt(int i) const
+    {
+        if (i == 0)
+            return Qt::DisplayRole;
+        Q_ASSERT(false);
+        return -1;
     }
 
     QVariant data(int role) const;
@@ -121,6 +134,7 @@ public:
     {
         Q_UNUSED(value);
         Q_UNUSED(role);
+        Q_ASSERT(false);
         return false;
     }
 
@@ -130,7 +144,6 @@ public:
     }
 
     // IUnknown
-
     void *query(int type) const
     {
         switch (type) {

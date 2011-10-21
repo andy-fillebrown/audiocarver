@@ -110,8 +110,7 @@ public:
     }
 
     // IModelItem
-
-    Ac::ItemType type() const
+    int type() const
     {
         return Ac::ListItem;
     }

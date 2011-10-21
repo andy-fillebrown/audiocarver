@@ -25,8 +25,6 @@
 
 class GridSettings;
 
-class QGraphicsItem;
-
 class GridLinePrivate;
 class AC_CORE_EXPORT GridLine : public GraphicsObject
 {
@@ -62,6 +60,22 @@ public:
 
     // IModelItem
 
+    int persistentRoleAt(int i) const
+    {
+        switch (i - metaObject()->propertyOffset()) {
+        case 0:
+            return Ac::LocationRole;
+        case 1:
+            return Ac::LabelRole;
+        case 2:
+            return Ac::PriorityRole;
+        case 3:
+            return Ac::ColorRole;
+        default:
+            return Object::persistentRoleAt(i);
+        }
+    }
+
     QVariant data(int role) const
     {
         switch (role) {
@@ -85,14 +99,19 @@ public:
         switch (role) {
         case Ac::LocationRole:
             setLocation(value.toReal());
+            break;
         case Ac::LabelRole:
             setLabel(value.toString());
+            break;
         case Ac::PriorityRole:
             setPriority(value.toInt());
+            break;
         case Ac::ColorRole:
             setColor(value.value<QColor>());
+            break;
         case Ac::VisibilityRole:
             setVisibility(value.toBool());
+            break;
         default:
             return GraphicsObject::setData(value, role);
         }
@@ -129,9 +148,11 @@ class AC_CORE_EXPORT TimeGridLine : public GridLine
     Q_OBJECT
 
 public:
+    enum { Type = Ac::TimeGridLineItem };
+
     explicit TimeGridLine(QObject *parent = 0);
 
-    Ac::ItemType type() const { return Ac::TimeGridLineItem; }
+    int type() const { return Type; }
 
     bool isVisible() const;
     void show();
@@ -148,9 +169,11 @@ class AC_CORE_EXPORT PitchGridLine : public GridLine
     Q_OBJECT
 
 public:
+    enum { Type = Ac::PitchGridLineItem };
+
     explicit PitchGridLine(QObject *parent = 0);
 
-    Ac::ItemType type() const { return Ac::PitchGridLineItem; }
+    int type() const { return Type; }
 
     bool isVisible() const;
     void show();
@@ -169,7 +192,7 @@ class AC_CORE_EXPORT ControlGridLine : public GridLine
 public:
     explicit ControlGridLine(QObject *parent = 0);
 
-    Ac::ItemType type() const { return Ac::ControlGridLineItem; }
+    int type() const { return Ac::ControlGridLineItem; }
 
     bool isVisible() const;
     void show();

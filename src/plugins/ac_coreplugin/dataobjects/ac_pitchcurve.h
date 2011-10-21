@@ -27,6 +27,8 @@ class AC_CORE_EXPORT PitchCurve : public Curve
     Q_OBJECT
 
 public:
+    enum { Type = Ac::PitchCurveItem };
+
     explicit PitchCurve(QObject *parent = 0);
 
     ScoreObject *scoreObject() const;
@@ -35,7 +37,7 @@ public:
     IEntity *parentEntity() const;
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::PitchCurveItem; }
+    int type() const { return Type; }
 
     // IUnknown
     void *query(int type) const

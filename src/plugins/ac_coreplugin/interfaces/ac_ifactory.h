@@ -29,7 +29,9 @@ public:
 
     static IFactory *instance();
 
-    virtual Object *create(Ac::ItemType type) const = 0;
+    virtual Object *create(int type) const = 0;
+
+    template <typename T> T *create() { return qobject_cast<T*>(create(T::Type)); }
 
 private:
     Q_DISABLE_COPY(IFactory)

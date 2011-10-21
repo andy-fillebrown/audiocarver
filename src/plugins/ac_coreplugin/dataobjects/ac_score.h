@@ -50,6 +50,7 @@ class AC_CORE_EXPORT Score : public ScoreObject
     Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
+    enum { Type = Ac::ScoreItem };
     enum { ModelItemCount = ScoreObject::ModelItemCount + 3 };
 
     explicit Score(QObject *parent = 0);
@@ -66,11 +67,19 @@ public:
     void setModel(Model *model);
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::ScoreItem; }
+    int type() const { return Type; }
     int modelItemCount() const { return ModelItemCount; }
     int modelItemIndex(IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
     IModelItem *findModelItemList(Ac::ItemType type) const;
+
+    int persistentRoleAt(int i) const
+    {
+        if (metaObject()->propertyOffset() == i)
+            return Ac::LengthRole;
+        return ScoreObject::persistentRoleAt(i);
+    }
+
     bool setData(const QVariant &value, int role);
 
 private:

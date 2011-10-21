@@ -27,7 +27,7 @@ class Factory : public IFactory
 public:
     Factory() {}
 
-    Object *create(Ac::ItemType type) const;
+    Object *create(int type) const;
 
 private:
     Q_DISABLE_COPY(Factory)

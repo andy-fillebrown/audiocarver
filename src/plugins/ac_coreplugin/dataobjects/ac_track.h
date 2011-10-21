@@ -34,6 +34,7 @@ class AC_CORE_EXPORT Track : public ScoreObject
     Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
 
 public:
+    enum { Type = Ac::TrackItem };
     enum { ModelItemCount = ScoreObject::ModelItemCount + 1 };
 
     explicit Track(QObject *parent = 0);
@@ -53,11 +54,26 @@ public:
     ObjectList<Note> *notes() const;
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::TrackItem; }
+    int type() const { return Type; }
     int modelItemCount() const { return ModelItemCount; }
     int modelItemIndex(IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
     IModelItem *findModelItemList(Ac::ItemType type) const;
+
+    int persistentRoleAt(int i) const
+    {
+        switch (i - metaObject()->propertyOffset()) {
+        case 0:
+            return Ac::ColorRole;
+        case 1:
+            return Ac::InstrumentRole;
+        case 2:
+            return Ac::VisibilityRole;
+        default:
+            return ScoreObject::persistentRoleAt(i);
+        }
+    }
+
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 

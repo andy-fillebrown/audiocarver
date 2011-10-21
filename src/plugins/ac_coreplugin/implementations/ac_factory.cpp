@@ -17,19 +17,26 @@
 
 #include "ac_factory.h"
 
-Object *Factory::create(Ac::ItemType type) const
+#include <ac_controlcurve.h>
+#include <ac_gridline.h>
+#include <ac_note.h>
+#include <ac_track.h>
+
+Object *Factory::create(int type) const
 {
     switch (type) {
-    case Ac::ScoreItem:
     case Ac::TrackItem:
+        return new Track;
     case Ac::NoteItem:
-    case Ac::PitchCurveItem:
+        return new Note;
     case Ac::ControlCurveItem:
-    case Ac::GridSettingsItem:
+        return new ControlCurve;
     case Ac::TimeGridLineItem:
+        return new TimeGridLine;
     case Ac::PitchGridLineItem:
+        return new PitchGridLine;
     case Ac::ControlGridLineItem:
-    case Ac::ViewSettingsItem:
+        return new ControlGridLine;
     default:
         return 0;
     }

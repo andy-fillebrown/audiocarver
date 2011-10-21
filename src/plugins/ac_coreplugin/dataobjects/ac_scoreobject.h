@@ -49,6 +49,14 @@ public:
     IModelItem *modelItemAt(int i) const;
     IModelItem *findModelItem(Ac::ItemType type) const;
     IModelItem *findModelItemList(Ac::ItemType type) const;
+
+    int persistentRoleAt(int i) const
+    {
+        if (metaObject()->propertyOffset() == i)
+            return Ac::VolumeRole;
+        return Object::persistentRoleAt(i);
+    }
+
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 

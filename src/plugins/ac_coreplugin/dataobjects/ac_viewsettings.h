@@ -35,6 +35,8 @@ class ViewSettings : public Object
     Q_PROPERTY(qreal controlScale READ controlScale WRITE setControlScale)
 
 public:
+    enum { Type = Ac::ViewSettingsItem };
+
     explicit ViewSettings(QObject *parent = 0);
 
     qreal timePosition() const;
@@ -53,7 +55,28 @@ public:
     Score *score() const;
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::ViewSettingsItem; }
+    int type() const { return Type; }
+
+    int persistentRoleAt(int i) const
+    {
+        switch (i - metaObject()->propertyOffset()) {
+        case 0:
+            return Ac::TimePositionRole;
+        case 1:
+            return Ac::PitchPositionRole;
+        case 2:
+            return Ac::ControlPositionRole;
+        case 3:
+            return Ac::TimeScaleRole;
+        case 4:
+            return Ac::PitchScaleRole;
+        case 5:
+            return Ac::ControlScaleRole;
+        default:
+            return Object::persistentRoleAt(i);
+        }
+    }
+
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 

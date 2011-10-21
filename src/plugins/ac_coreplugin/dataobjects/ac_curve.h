@@ -43,9 +43,17 @@ public:
     bool intersects(const QRectF &rect) const;
 
     // IModelItem
+    int persistentRoleAt(int i) const
+    {
+        if (metaObject()->propertyOffset() == i)
+            return Ac::PointsRole;
+        return Object::persistentRoleAt(i);
+    }
+
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 
+    // IUnknown
     void *query(int type) const
     {
         switch (type) {

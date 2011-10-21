@@ -32,6 +32,7 @@ class AC_CORE_EXPORT GridSettings : public GraphicsParent
     Q_OBJECT
 
 public:
+    enum { Type = Ac::GridSettingsItem };
     enum { ModelItemCount = 3 };
 
     explicit GridSettings(QObject *parent = 0);
@@ -43,7 +44,7 @@ public:
     ObjectList<ControlGridLine> *controlGridLines() const;
 
     // IModelItem
-    Ac::ItemType type() const { return Ac::GridSettingsItem; }
+    int type() const { return Type; }
     int modelItemCount() const { return ModelItemCount; }
     int modelItemIndex(IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
