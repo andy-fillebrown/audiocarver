@@ -31,24 +31,32 @@ ObjectFactory::ObjectFactory()
         ::parent = new QObject(this);
 }
 
-Object *ObjectFactory::create(int type) const
+IModelItem *ObjectFactory::create(int type) const
 {
+    Object *object = 0;
     switch (type) {
     case Ac::TrackItem:
-        return new Track(::parent);
+        object = new Track(::parent);
+        break;
     case Ac::NoteItem:
-        return new Note(::parent);
+        object = new Note(::parent);
+        break;
     case Ac::ControlCurveItem:
-        return new ControlCurve(::parent);
+        object =  new ControlCurve(::parent);
+        break;
     case Ac::TimeGridLineItem:
-        return new TimeGridLine(::parent);
+        object = new TimeGridLine(::parent);
+        break;
     case Ac::PitchGridLineItem:
-        return new PitchGridLine(::parent);
+        object = new PitchGridLine(::parent);
+        break;
     case Ac::ControlGridLineItem:
-        return new ControlGridLine(::parent);
+        object = new ControlGridLine(::parent);
+        break;
     default:
         return 0;
     }
+    return query<IModelItem>(object);
 }
 
 FilerFactory::FilerFactory()

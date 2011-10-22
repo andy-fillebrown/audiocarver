@@ -48,8 +48,8 @@ public:
     int modelItemCount() const { return ModelItemCount; }
     int modelItemIndex(IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
-    IModelItem *findModelItem(Ac::ItemType type) const;
-    IModelItem *findModelItemList(Ac::ItemType type) const;
+    IModelItem *findModelItem(int type) const;
+    IModelItem *findModelItemList(int type) const;
 
     int persistentRoleAt(int i) const
     {

@@ -140,7 +140,7 @@ IModelItem *Track::modelItemAt(int i) const
     }
 }
 
-IModelItem *Track::findModelItemList(Ac::ItemType type) const
+IModelItem *Track::findModelItemList(int type) const
 {
     switch (type) {
     case Ac::NoteItem:

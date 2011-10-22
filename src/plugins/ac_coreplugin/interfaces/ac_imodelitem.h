@@ -31,11 +31,12 @@ public:
 
     virtual int type() const = 0;
     virtual IModelItem *parentModelItem() const = 0;
+    virtual void setParentModelItem(IModelItem *parent) = 0;
     virtual int modelItemCount() const = 0;
     virtual int modelItemIndex(IModelItem *item) const = 0;
     virtual IModelItem *modelItemAt(int index) const = 0;
-    virtual IModelItem *findModelItem(Ac::ItemType type) const = 0;
-    virtual IModelItem *findModelItemList(Ac::ItemType type) const = 0;
+    virtual IModelItem *findModelItem(int type) const = 0;
+    virtual IModelItem *findModelItemList(int type) const = 0;
     virtual int persistentRoleCount() const = 0;
     virtual int persistentRoleAt(int i) const = 0;
     virtual QVariant data(int role) const = 0;

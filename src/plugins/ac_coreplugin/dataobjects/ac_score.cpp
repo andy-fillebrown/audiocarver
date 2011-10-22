@@ -148,7 +148,19 @@ IModelItem *Score::modelItemAt(int i) const
     }
 }
 
-IModelItem *Score::findModelItemList(Ac::ItemType type) const
+IModelItem *Score::findModelItem(int type) const
+{
+    switch (type) {
+    case Ac::GridSettingsItem:
+        return gridSettings();
+    case Ac::ViewSettingsItem:
+        return viewSettings();
+    default:
+        return ScoreObject::findModelItem(type);
+    }
+}
+
+IModelItem *Score::findModelItemList(int type) const
 {
     switch (type) {
     case Ac::TrackItem:

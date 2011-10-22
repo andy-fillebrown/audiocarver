@@ -67,6 +67,7 @@ void Database::read(const QString &fileName)
 {
     d->reader.setFileName(fileName);
     d->reader.read(query<IModelItem>(Score::instance()));
+    d->reader.close();
 }
 
 void Database::write(const QString &fileName)

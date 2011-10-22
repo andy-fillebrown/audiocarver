@@ -66,7 +66,8 @@ enum ItemType {
     TimeGridLineItem,
     PitchGridLineItem,
     ControlGridLineItem,
-    ViewSettingsItem
+    ViewSettingsItem,
+    UnknownItem
 };
 
 enum CurveType {

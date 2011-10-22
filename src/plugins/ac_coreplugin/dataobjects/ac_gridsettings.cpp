@@ -117,7 +117,7 @@ IModelItem *GridSettings::modelItemAt(int i) const
     }
 }
 
-IModelItem *GridSettings::findModelItemList(Ac::ItemType type) const
+IModelItem *GridSettings::findModelItemList(int type) const
 {
     switch (type) {
     case Ac::TimeGridLineItem:

@@ -79,6 +79,11 @@ public:
         return parent();
     }
 
+    void setParentModelItem(IModelItem *parent)
+    {
+        setParent(dynamic_cast<Object*>(parent));
+    }
+
     int modelItemCount() const
     {
         return 0;
@@ -98,14 +103,14 @@ public:
         return 0;
     }
 
-    IModelItem *findModelItem(Ac::ItemType type) const
+    IModelItem *findModelItem(int type) const
     {
         Q_UNUSED(type);
         Q_ASSERT(false);
         return 0;
     }
 
-    IModelItem *findModelItemList(Ac::ItemType type) const
+    IModelItem *findModelItemList(int type) const
     {
         Q_UNUSED(type);
         Q_ASSERT(false);

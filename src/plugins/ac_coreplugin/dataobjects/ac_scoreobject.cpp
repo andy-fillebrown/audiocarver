@@ -121,7 +121,7 @@ IModelItem *ScoreObject::modelItemAt(int i) const
     }
 }
 
-IModelItem *ScoreObject::findModelItem(Ac::ItemType type) const
+IModelItem *ScoreObject::findModelItem(int type) const
 {
     switch (type) {
     case Ac::PitchCurveItem:
@@ -131,7 +131,7 @@ IModelItem *ScoreObject::findModelItem(Ac::ItemType type) const
     }
 }
 
-IModelItem *ScoreObject::findModelItemList(Ac::ItemType type) const
+IModelItem *ScoreObject::findModelItemList(int type) const
 {
     switch (type) {
     case Ac::ControlCurveItem:

@@ -18,10 +18,11 @@
 #ifndef AC_IFACTORY_H
 #define AC_IFACTORY_H
 
-#include <ac_object.h>
+#include <QObject>
 
 class IFileReader;
 class IFileWriter;
+class IModelItem;
 
 class IObjectFactory : public QObject
 {
@@ -32,12 +33,9 @@ public:
 
     static IObjectFactory *instance();
 
-    virtual Object *create(int type) const = 0;
+    virtual IModelItem *create(int type) const = 0;
 
     template <typename T> T *create() { return qobject_cast<T*>(create(T::Type)); }
-
-private:
-    Q_DISABLE_COPY(IObjectFactory)
 };
 
 class IFilerFactory : public QObject

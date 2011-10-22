@@ -27,10 +27,7 @@ class ObjectFactory : public IObjectFactory
 public:
     ObjectFactory();
 
-    Object *create(int type) const;
-
-private:
-    Q_DISABLE_COPY(ObjectFactory)
+    IModelItem *create(int type) const;
 };
 
 class FilerFactory : public IFilerFactory

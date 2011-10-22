@@ -37,126 +37,126 @@
 
 #include <QtPlugin>
 
-void populateModel(Model *model)
-{
-    Score *score = model->score();
-    score->setLength(128.0f);
-    ObjectList<Track> *tracks = score->tracks();
-    Track *track = new Track;
-    tracks->append(track);
-    ObjectList<Note> *notes = track->notes();
-    for (int i = 0;  i < 5;  ++i) {
-        Note *note = new Note;
-        PointList pts;
-        pts.append(Point(0,   30 + (5 * i)));
-        pts.append(Point(32,  60 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(64,  30 + (5 * i)));
-        pts.append(Point(108, 60 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(128, 30 + (5 * i)));
-        note->pitchCurve()->setPoints(pts);
-        notes->append(note);
-    }
-    track = new Track;
-    tracks->append(track);
-    notes = track->notes();
-    for (int i = 0;  i < 5;  ++i) {
-        Note *note = new Note;
-        PointList pts;
-        pts.append(Point(0,   60 + (5 * i)));
-        pts.append(Point(32,  90 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(64,  60 + (5 * i)));
-        pts.append(Point(108, 90 + (5 * i), Ac::BezierCurve));
-        pts.append(Point(128, 60 + (5 * i)));
-        note->pitchCurve()->setPoints(pts);
-        notes->append(note);
-    }
-    GridSettings *gridSettings = score->gridSettings();
-    ObjectList<TimeGridLine> *timeGridLines = gridSettings->timeGridLines();
-    TimeGridLine *timeGridLine = 0;
-    for (int i = 0;  i < 128;  ++i) {
-        QString label = QString("%1.%2").arg((i / 4) + 1).arg((i % 4) + 1);
-        if (label.endsWith(".1"))
-            label.chop(2);
-        timeGridLine = new TimeGridLine;
-        timeGridLine->setLocation(i);
-        timeGridLine->setLabel(label);
-        timeGridLines->append(timeGridLine);
-    }
-    timeGridLines[0].at(0)->setColor(QColor(0, 127, 0));
-    for (int i = 1;  i < 128;  i*=2)
-        for (int j = i;  j < 128;  j+=i)
-            timeGridLines->at(j)->setPriority(128 / (i + 1));
-    timeGridLine = new TimeGridLine;
-    timeGridLine->setLocation(128);
-    timeGridLine->setPriority(0);
-    timeGridLine->setColor(QColor(127, 0, 0));
-    timeGridLines->append(timeGridLine);
-    ObjectList<PitchGridLine> *pitchGridLines = gridSettings->pitchGridLines();
-    PitchGridLine *pitchGridLine = 0;
-    for (int i = 0;  i < 128;  ++i) {
-        pitchGridLine = new PitchGridLine;
-        pitchGridLine->setLocation(i);
-        pitchGridLine->setLabel(QString("%1.0").arg(i));
-        pitchGridLines->append(pitchGridLine);
-    }
-    for (int i = 0;  i < 128;  i+=12)
-        pitchGridLines->at(i)->setColor(QColor(191, 0, 0));
-    for (int i = 7;  i < 128;  i+=12)
-        pitchGridLines->at(i)->setColor(QColor(0, 0, 191));
-    int octaveMod[] = { 3, 2, 1, 2, 3, 0, 3, 2, 1, 2, 3, 4 };
-    for (int i = 0;  i < 120;  i+=12) {
-        int octave = i % 12;
-        int mod = octaveMod[octave];
-        pitchGridLines->at(i)->setPriority(10 + mod);
-        pitchGridLines->at(i + 1)->setPriority(50 + mod);
-        pitchGridLines->at(i + 2)->setPriority(40 + mod);
-        pitchGridLines->at(i + 3)->setPriority(30 + mod);
-        pitchGridLines->at(i + 4)->setPriority(40 + mod);
-        pitchGridLines->at(i + 5)->setPriority(30 + mod);
-        pitchGridLines->at(i + 6)->setPriority(50 + mod);
-        pitchGridLines->at(i + 7)->setPriority(20 + mod);
-        pitchGridLines->at(i + 8)->setPriority(50 + mod);
-        pitchGridLines->at(i + 9)->setPriority(40 + mod);
-        pitchGridLines->at(i + 10)->setPriority(30 + mod);
-        pitchGridLines->at(i + 11)->setPriority(40 + mod);
-    }
-    int mod = octaveMod[11];
-    pitchGridLines->at(120)->setPriority(10 + mod);
-    pitchGridLines->at(121)->setPriority(50 + mod);
-    pitchGridLines->at(122)->setPriority(40 + mod);
-    pitchGridLines->at(123)->setPriority(30 + mod);
-    pitchGridLines->at(124)->setPriority(40 + mod);
-    pitchGridLines->at(125)->setPriority(30 + mod);
-    pitchGridLines->at(126)->setPriority(50 + mod);
-    pitchGridLines->at(0)->setPriority(0);
-    pitchGridLines->at(60)->setPriority(0);
-    pitchGridLines->at(127)->setPriority(0);
-    ObjectList<ControlGridLine> *controlGridLines = gridSettings->controlGridLines();
-    ControlGridLine *controlGridLine = 0;
-    int controlGridLineCount = 128;
-    for (int i = 0;  i < controlGridLineCount;  ++i) {
-        controlGridLine = new ControlGridLine;
-        qreal location = qreal(i) / qreal(controlGridLineCount);
-        controlGridLine->setLocation(location);
-        QString label = QString("%1").arg(location);
-        if ((label.length() - label.indexOf(".")) < 6)
-            controlGridLine->setLabel(label);
-        controlGridLines->append(controlGridLine);
-    }
-    for (int i = 1;  i < controlGridLineCount;  i*=2)
-        for (int j = i;  j < controlGridLineCount;  j+=i)
-            controlGridLines->at(j)->setPriority(controlGridLineCount / (i + 1));
-    controlGridLines->at(0)->setLabel("0.0");
-    controlGridLines->at(0)->setColor(Qt::red);
-    controlGridLines->at(0)->setPriority(0);
-    controlGridLines->at(controlGridLineCount / 2)->setColor(Qt::green);
-    controlGridLine = new ControlGridLine;
-    controlGridLine->setLocation(1.0f);
-    controlGridLine->setLabel("1.0");
-    controlGridLine->setColor(Qt::blue);
-    controlGridLine->setPriority(0);
-    controlGridLines->append(controlGridLine);
-}
+//void populateModel(Model *model)
+//{
+//    Score *score = model->score();
+//    score->setLength(128.0f);
+//    ObjectList<Track> *tracks = score->tracks();
+//    Track *track = new Track;
+//    tracks->append(track);
+//    ObjectList<Note> *notes = track->notes();
+//    for (int i = 0;  i < 5;  ++i) {
+//        Note *note = new Note;
+//        PointList pts;
+//        pts.append(Point(0,   30 + (5 * i)));
+//        pts.append(Point(32,  60 + (5 * i), Ac::BezierCurve));
+//        pts.append(Point(64,  30 + (5 * i)));
+//        pts.append(Point(108, 60 + (5 * i), Ac::BezierCurve));
+//        pts.append(Point(128, 30 + (5 * i)));
+//        note->pitchCurve()->setPoints(pts);
+//        notes->append(note);
+//    }
+//    track = new Track;
+//    tracks->append(track);
+//    notes = track->notes();
+//    for (int i = 0;  i < 5;  ++i) {
+//        Note *note = new Note;
+//        PointList pts;
+//        pts.append(Point(0,   60 + (5 * i)));
+//        pts.append(Point(32,  90 + (5 * i), Ac::BezierCurve));
+//        pts.append(Point(64,  60 + (5 * i)));
+//        pts.append(Point(108, 90 + (5 * i), Ac::BezierCurve));
+//        pts.append(Point(128, 60 + (5 * i)));
+//        note->pitchCurve()->setPoints(pts);
+//        notes->append(note);
+//    }
+//    GridSettings *gridSettings = score->gridSettings();
+//    ObjectList<TimeGridLine> *timeGridLines = gridSettings->timeGridLines();
+//    TimeGridLine *timeGridLine = 0;
+//    for (int i = 0;  i < 128;  ++i) {
+//        QString label = QString("%1.%2").arg((i / 4) + 1).arg((i % 4) + 1);
+//        if (label.endsWith(".1"))
+//            label.chop(2);
+//        timeGridLine = new TimeGridLine;
+//        timeGridLine->setLocation(i);
+//        timeGridLine->setLabel(label);
+//        timeGridLines->append(timeGridLine);
+//    }
+//    timeGridLines[0].at(0)->setColor(QColor(0, 127, 0));
+//    for (int i = 1;  i < 128;  i*=2)
+//        for (int j = i;  j < 128;  j+=i)
+//            timeGridLines->at(j)->setPriority(128 / (i + 1));
+//    timeGridLine = new TimeGridLine;
+//    timeGridLine->setLocation(128);
+//    timeGridLine->setPriority(0);
+//    timeGridLine->setColor(QColor(127, 0, 0));
+//    timeGridLines->append(timeGridLine);
+//    ObjectList<PitchGridLine> *pitchGridLines = gridSettings->pitchGridLines();
+//    PitchGridLine *pitchGridLine = 0;
+//    for (int i = 0;  i < 128;  ++i) {
+//        pitchGridLine = new PitchGridLine;
+//        pitchGridLine->setLocation(i);
+//        pitchGridLine->setLabel(QString("%1.0").arg(i));
+//        pitchGridLines->append(pitchGridLine);
+//    }
+//    for (int i = 0;  i < 128;  i+=12)
+//        pitchGridLines->at(i)->setColor(QColor(191, 0, 0));
+//    for (int i = 7;  i < 128;  i+=12)
+//        pitchGridLines->at(i)->setColor(QColor(0, 0, 191));
+//    int octaveMod[] = { 3, 2, 1, 2, 3, 0, 3, 2, 1, 2, 3, 4 };
+//    for (int i = 0;  i < 120;  i+=12) {
+//        int octave = i % 12;
+//        int mod = octaveMod[octave];
+//        pitchGridLines->at(i)->setPriority(10 + mod);
+//        pitchGridLines->at(i + 1)->setPriority(50 + mod);
+//        pitchGridLines->at(i + 2)->setPriority(40 + mod);
+//        pitchGridLines->at(i + 3)->setPriority(30 + mod);
+//        pitchGridLines->at(i + 4)->setPriority(40 + mod);
+//        pitchGridLines->at(i + 5)->setPriority(30 + mod);
+//        pitchGridLines->at(i + 6)->setPriority(50 + mod);
+//        pitchGridLines->at(i + 7)->setPriority(20 + mod);
+//        pitchGridLines->at(i + 8)->setPriority(50 + mod);
+//        pitchGridLines->at(i + 9)->setPriority(40 + mod);
+//        pitchGridLines->at(i + 10)->setPriority(30 + mod);
+//        pitchGridLines->at(i + 11)->setPriority(40 + mod);
+//    }
+//    int mod = octaveMod[11];
+//    pitchGridLines->at(120)->setPriority(10 + mod);
+//    pitchGridLines->at(121)->setPriority(50 + mod);
+//    pitchGridLines->at(122)->setPriority(40 + mod);
+//    pitchGridLines->at(123)->setPriority(30 + mod);
+//    pitchGridLines->at(124)->setPriority(40 + mod);
+//    pitchGridLines->at(125)->setPriority(30 + mod);
+//    pitchGridLines->at(126)->setPriority(50 + mod);
+//    pitchGridLines->at(0)->setPriority(0);
+//    pitchGridLines->at(60)->setPriority(0);
+//    pitchGridLines->at(127)->setPriority(0);
+//    ObjectList<ControlGridLine> *controlGridLines = gridSettings->controlGridLines();
+//    ControlGridLine *controlGridLine = 0;
+//    int controlGridLineCount = 128;
+//    for (int i = 0;  i < controlGridLineCount;  ++i) {
+//        controlGridLine = new ControlGridLine;
+//        qreal location = qreal(i) / qreal(controlGridLineCount);
+//        controlGridLine->setLocation(location);
+//        QString label = QString("%1").arg(location);
+//        if ((label.length() - label.indexOf(".")) < 6)
+//            controlGridLine->setLabel(label);
+//        controlGridLines->append(controlGridLine);
+//    }
+//    for (int i = 1;  i < controlGridLineCount;  i*=2)
+//        for (int j = i;  j < controlGridLineCount;  j+=i)
+//            controlGridLines->at(j)->setPriority(controlGridLineCount / (i + 1));
+//    controlGridLines->at(0)->setLabel("0.0");
+//    controlGridLines->at(0)->setColor(Qt::red);
+//    controlGridLines->at(0)->setPriority(0);
+//    controlGridLines->at(controlGridLineCount / 2)->setColor(Qt::green);
+//    controlGridLine = new ControlGridLine;
+//    controlGridLine->setLocation(1.0f);
+//    controlGridLine->setLabel("1.0");
+//    controlGridLine->setColor(Qt::blue);
+//    controlGridLine->setPriority(0);
+//    controlGridLines->append(controlGridLine);
+//}
 
 bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
@@ -186,7 +186,7 @@ void AcGuiPlugin::extensionsInitialized()
     tv->setModel(model);
     dw->setWidget(tv);
 
-    populateModel(model);
+//    populateModel(model);
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)

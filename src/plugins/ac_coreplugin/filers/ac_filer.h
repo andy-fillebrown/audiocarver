@@ -58,7 +58,7 @@ public:
 
     virtual QIODevice::OpenMode openMode() const = 0;
 
-    bool openFile()
+    virtual bool openFile()
     {
         if (file.isOpen())
             return true;
