@@ -15,33 +15,9 @@
 **
 **************************************************************************/
 
-#ifndef AC_FACTORY_H
-#define AC_FACTORY_H
+#include "ac_filer.h"
 
-#include <ac_ifactory.h>
-
-class ObjectFactory : public IObjectFactory
+Filer::~Filer()
 {
-    Q_OBJECT
-
-public:
-    ObjectFactory();
-
-    Object *create(int type) const;
-
-private:
-    Q_DISABLE_COPY(ObjectFactory)
-};
-
-class FilerFactory : public IFilerFactory
-{
-    Q_OBJECT
-
-public:
-    FilerFactory();
-
-    IFileReader *createReader(int type) const;
-    IFileWriter *createWriter(int type) const;
-};
-
-#endif // AC_FACTORY_H
+    delete d_ptr;
+}

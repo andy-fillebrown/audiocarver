@@ -15,33 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_FACTORY_H
-#define AC_FACTORY_H
+#ifndef AC_XMLFILER_H
+#define AC_XMLFILER_H
 
-#include <ac_ifactory.h>
+#include <ac_filer.h>
 
-class ObjectFactory : public IObjectFactory
+class XmlFileReaderPrivate;
+class XmlFileReader : public FileReader
 {
-    Q_OBJECT
-
 public:
-    ObjectFactory();
+    XmlFileReader();
 
-    Object *create(int type) const;
+    // IFileReader
+    bool read(IModelItem *item);
 
 private:
-    Q_DISABLE_COPY(ObjectFactory)
+    Q_DECLARE_PRIVATE(XmlFileReader)
 };
 
-class FilerFactory : public IFilerFactory
+class XmlFileWriterPrivate;
+class XmlFileWriter : public FileWriter
 {
-    Q_OBJECT
-
 public:
-    FilerFactory();
+    XmlFileWriter();
 
-    IFileReader *createReader(int type) const;
-    IFileWriter *createWriter(int type) const;
+    // IFileWriter
+    bool write(IModelItem *item);
+
+private:
+    Q_DECLARE_PRIVATE(XmlFileWriter)
 };
 
-#endif // AC_FACTORY_H
+#endif // AC_XMLFILER_H

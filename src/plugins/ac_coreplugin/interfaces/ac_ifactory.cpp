@@ -17,14 +17,25 @@
 
 #include "ac_ifactory.h"
 
-static IFactory *instance = 0;
+static IObjectFactory *objectFactoryInstance = 0;
+static IFilerFactory *filerFactoryInstance = 0;
 
-IFactory::IFactory()
+IObjectFactory::IObjectFactory()
 {
-    ::instance = this;
+    ::objectFactoryInstance = this;
 }
 
-IFactory *IFactory::instance()
+IObjectFactory *IObjectFactory::instance()
 {
-    return ::instance;
+    return ::objectFactoryInstance;
+}
+
+IFilerFactory::IFilerFactory()
+{
+    ::filerFactoryInstance = this;
+}
+
+IFilerFactory *IFilerFactory::instance()
+{
+    return ::filerFactoryInstance;
 }

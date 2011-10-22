@@ -27,7 +27,7 @@ class IModelItem;
 class IFiler : public IUnknown
 {
 public:
-    virtual bool setFileName(const QString &fileName) = 0;
+    virtual void setFileName(const QString &fileName) = 0;
 };
 
 class IFileReader : public IFiler

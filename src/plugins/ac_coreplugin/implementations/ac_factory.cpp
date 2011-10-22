@@ -21,22 +21,62 @@
 #include <ac_gridline.h>
 #include <ac_note.h>
 #include <ac_track.h>
+#include <ac_undofiler.h>
+#include <ac_xmlfiler.h>
 
-Object *Factory::create(int type) const
+static QObject *parent = 0;
+
+ObjectFactory::ObjectFactory()
+{
+    if (!::parent)
+        ::parent = new QObject(this);
+}
+
+Object *ObjectFactory::create(int type) const
 {
     switch (type) {
     case Ac::TrackItem:
-        return new Track;
+        return new Track(::parent);
     case Ac::NoteItem:
-        return new Note;
+        return new Note(::parent);
     case Ac::ControlCurveItem:
-        return new ControlCurve;
+        return new ControlCurve(::parent);
     case Ac::TimeGridLineItem:
-        return new TimeGridLine;
+        return new TimeGridLine(::parent);
     case Ac::PitchGridLineItem:
-        return new PitchGridLine;
+        return new PitchGridLine(::parent);
     case Ac::ControlGridLineItem:
-        return new ControlGridLine;
+        return new ControlGridLine(::parent);
+    default:
+        return 0;
+    }
+}
+
+FilerFactory::FilerFactory()
+{
+    if (!::parent)
+        ::parent = new QObject(this);
+}
+
+IFileReader *FilerFactory::createReader(int type) const
+{
+    switch (type) {
+    case Ac::UndoFiler:
+        return new UndoReader;
+    case Ac::XmlFiler:
+        return new XmlFileReader;
+    default:
+        return 0;
+    }
+}
+
+IFileWriter *FilerFactory::createWriter(int type) const
+{
+    switch (type) {
+    case Ac::UndoFiler:
+        return new UndoWriter;
+    case Ac::XmlFiler:
+        return new XmlFileWriter;
     default:
         return 0;
     }

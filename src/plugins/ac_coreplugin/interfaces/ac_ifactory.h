@@ -20,21 +20,37 @@
 
 #include <ac_object.h>
 
-class IFactory : public QObject
+class IFileReader;
+class IFileWriter;
+
+class IObjectFactory : public QObject
 {
     Q_OBJECT
 
 public:
-    IFactory();
+    IObjectFactory();
 
-    static IFactory *instance();
+    static IObjectFactory *instance();
 
     virtual Object *create(int type) const = 0;
 
     template <typename T> T *create() { return qobject_cast<T*>(create(T::Type)); }
 
 private:
-    Q_DISABLE_COPY(IFactory)
+    Q_DISABLE_COPY(IObjectFactory)
+};
+
+class IFilerFactory : public QObject
+{
+    Q_OBJECT
+
+public:
+    IFilerFactory();
+
+    static IFilerFactory *instance();
+
+    virtual IFileReader *createReader(int type) const = 0;
+    virtual IFileWriter *createWriter(int type) const = 0;
 };
 
 #endif // AC_IFACTORY_H

@@ -15,33 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_FACTORY_H
-#define AC_FACTORY_H
+#include "ac_undofiler.h"
 
-#include <ac_ifactory.h>
-
-class ObjectFactory : public IObjectFactory
+class UndoReaderPrivate : public FileReaderPrivate
 {
-    Q_OBJECT
-
 public:
-    ObjectFactory();
-
-    Object *create(int type) const;
-
-private:
-    Q_DISABLE_COPY(ObjectFactory)
+    UndoReaderPrivate(UndoReader *q)
+        :   FileReaderPrivate(q)
+    {}
 };
 
-class FilerFactory : public IFilerFactory
+UndoReader::UndoReader()
+    :   FileReader(*(new UndoReaderPrivate(this)))
+{}
+
+bool UndoReader::read(IModelItem *item)
 {
-    Q_OBJECT
+    Q_UNUSED(item);
+    return false;
+}
 
+class UndoWriterPrivate : public FileWriterPrivate
+{
 public:
-    FilerFactory();
-
-    IFileReader *createReader(int type) const;
-    IFileWriter *createWriter(int type) const;
+    UndoWriterPrivate(UndoWriter *q)
+        :   FileWriterPrivate(q)
+    {}
 };
 
-#endif // AC_FACTORY_H
+UndoWriter::UndoWriter()
+    :   FileWriter(*(new UndoWriterPrivate(this)))
+{}
+
+bool UndoWriter::write(IModelItem *item)
+{
+    Q_UNUSED(item);
+    return false;
+}

@@ -3,6 +3,7 @@ load(../mi_coreplugin/mi_coreplugin.prf)
 
 DIRS = \
     dataobjects \
+    filers \
     implementations \
     interfaces \
     graphicsview \
