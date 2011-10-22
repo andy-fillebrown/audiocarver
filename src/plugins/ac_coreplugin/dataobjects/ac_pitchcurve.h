@@ -31,6 +31,7 @@ public:
 
     explicit PitchCurve(QObject *parent = 0);
 
+    // Curve
     ScoreObject *scoreObject() const;
 
     // ISubEntity

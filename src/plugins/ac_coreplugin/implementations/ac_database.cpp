@@ -17,11 +17,14 @@
 
 #include "ac_database.h"
 
+#include <ac_score.h>
+#include <ac_xmlfiler.h>
+
 class DatabasePrivate
 {
 public:
     Database *q;
-    QString fileName;
+    XmlFileReader reader;
 
     DatabasePrivate(Database *q)
         :   q(q)
@@ -52,9 +55,9 @@ const QString &Database::fileFilter() const
     return filter;
 }
 
-const QString &Database::fileName() const
+QString Database::fileName() const
 {
-    return d->fileName;
+    return d->reader.fileName();
 }
 
 void Database::clear()
@@ -62,10 +65,13 @@ void Database::clear()
 
 void Database::read(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    d->reader.setFileName(fileName);
+    d->reader.read(query<IModelItem>(Score::instance()));
 }
 
 void Database::write(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    XmlFileWriter writer;
+    writer.setFileName(fileName);
+    writer.write(query<IModelItem>(Score::instance()));
 }

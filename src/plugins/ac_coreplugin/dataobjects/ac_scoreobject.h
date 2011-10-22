@@ -35,13 +35,14 @@ class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 public:
     enum { ModelItemCount = 2 };
 
-    virtual qreal length() const = 0;
-
-    qreal volume() const;
-    void setVolume(qreal volume);
-
     PitchCurve *pitchCurve() const;
     ObjectList<ControlCurve> *controlCurves() const;
+
+    virtual qreal length() const = 0;
+
+    // Properties
+    qreal volume() const;
+    void setVolume(qreal volume);
 
     // IModelItem
     int modelItemCount() const { return ModelItemCount; }
@@ -52,7 +53,7 @@ public:
 
     int persistentRoleAt(int i) const
     {
-        if (metaObject()->propertyOffset() == i)
+        if (staticMetaObject.propertyOffset() == i)
             return Ac::VolumeRole;
         return Object::persistentRoleAt(i);
     }

@@ -21,7 +21,7 @@
 #include <ac_ifiler.h>
 #include <ac_global.h>
 
-#include <QString>
+#include <QFile>
 
 class FilerPrivate;
 class Filer
@@ -41,7 +41,7 @@ class FilerPrivate
 {
 public:
     Filer *q_ptr;
-    QString fileName;
+    QFile file;
 
     FilerPrivate(Filer *q)
         :   q_ptr(q)
@@ -51,9 +51,24 @@ public:
 
     virtual void setFileName(const QString &fileName)
     {
-        if (this->fileName == fileName)
+        if (file.fileName() == fileName)
             return;
-        this->fileName = fileName;
+        file.setFileName(fileName);
+    }
+
+    virtual QIODevice::OpenMode openMode() const = 0;
+
+    bool openFile()
+    {
+        if (file.isOpen())
+            return true;
+        return file.open(openMode());
+    }
+
+    void closeFile()
+    {
+        if (file.isOpen())
+            file.close();
     }
 };
 
@@ -63,7 +78,9 @@ class FileReader : public Filer
 {
 public:
     // IFiler
+    inline QString fileName() const;
     inline void setFileName(const QString &fileName);
+    inline void close();
 
     // IUnknown
     void *query(int type) const
@@ -95,10 +112,22 @@ inline FileReader::FileReader(FileReaderPrivate &dd)
     :   Filer(dd)
 {}
 
+inline QString FileReader::fileName() const
+{
+    Q_D(const FileReader);
+    return d->file.fileName();
+}
+
 inline void FileReader::setFileName(const QString &fileName)
 {
     Q_D(FileReader);
     d->setFileName(fileName);
+}
+
+inline void FileReader::close()
+{
+    Q_D(FileReader);
+    d->closeFile();
 }
 
 class FileWriterPrivate;
@@ -107,7 +136,9 @@ class FileWriter : public Filer
 {
 public:
     // IFiler
+    inline QString fileName() const;
     inline void setFileName(const QString &fileName);
+    inline void close();
 
     // IUnknown
     void *query(int type) const
@@ -139,10 +170,22 @@ inline FileWriter::FileWriter(FileWriterPrivate &dd)
     :   Filer(dd)
 {}
 
+inline QString FileWriter::fileName() const
+{
+    Q_D(const FileWriter);
+    return d->file.fileName();
+}
+
 inline void FileWriter::setFileName(const QString &fileName)
 {
     Q_D(FileWriter);
     d->setFileName(fileName);
+}
+
+inline void FileWriter::close()
+{
+    Q_D(FileWriter);
+    d->closeFile();
 }
 
 #endif // AC_FILER_H

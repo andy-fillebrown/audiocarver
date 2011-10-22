@@ -39,6 +39,9 @@ public:
 
     explicit ViewSettings(QObject *parent = 0);
 
+    Score *score() const;
+
+    // Properties
     qreal timePosition() const;
     void setTimePosition(qreal pos);
     qreal pitchPosition() const;
@@ -52,14 +55,12 @@ public:
     qreal controlScale() const;
     void setControlScale(qreal scale);
 
-    Score *score() const;
-
     // IModelItem
     int type() const { return Type; }
 
     int persistentRoleAt(int i) const
     {
-        switch (i - metaObject()->propertyOffset()) {
+        switch (i - staticMetaObject.propertyOffset()) {
         case 0:
             return Ac::TimePositionRole;
         case 1:

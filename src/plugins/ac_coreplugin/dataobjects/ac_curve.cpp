@@ -48,7 +48,7 @@ Curve::Curve(CurvePrivate &dd, QObject *parent)
     dd.init();
 }
 
-PointList Curve::points() const
+const PointList &Curve::points() const
 {
     Q_D(const Curve);
     return d->points;

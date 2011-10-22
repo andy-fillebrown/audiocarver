@@ -27,11 +27,8 @@ class NotePrivate : public ScoreObjectPrivate
     Q_DECLARE_PUBLIC(Note)
 
 public:
-    qreal length;
-
     NotePrivate(Note *q)
         :   ScoreObjectPrivate(q)
-        ,   length(0.0f)
     {
         mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
         mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
@@ -51,31 +48,23 @@ Note::Note(QObject *parent)
     setObjectName("Note");
 }
 
-qreal Note::length() const
-{
-    Q_D(const Note);
-    return d->length;
-}
-
-void Note::setLength(qreal length)
-{
-    Q_D(Note);
-    if (d->length == length)
-        return;
-    d->beginChangeData();
-    d->length = length;
-    d->endChangeData();
-}
-
 Track *Note::track() const
 {
     QObject *parent = QObject::parent();
     return parent ? qobject_cast<Track*>(parent->parent()) : 0;
 }
 
-PointList Note::points() const
+qreal Note::length() const
 {
-    return PointList();
+    Q_D(const Note);
+    const PointList &pts = d->pitchCurve->points();
+    return pts.last().pos.x() - pts.first().pos.x();
+}
+
+const PointList &Note::points() const
+{
+    static PointList dummy;
+    return dummy;
 }
 
 void Note::setPoints(const PointList &points, Ac::DragState dragState)
@@ -100,15 +89,4 @@ void Note::unhighlight()
     int n = d->controlCurves->count();
     for (int i = 0;  i < n;  ++i)
         d->controlCurves->at(i)->unhighlight();
-}
-
-bool Note::setData(const QVariant &value, int role)
-{
-    switch (role) {
-    case Ac::LengthRole:
-        setLength(value.toReal());
-        return true;
-    default:
-        return ScoreObject::setData(value, role);
-    }
 }

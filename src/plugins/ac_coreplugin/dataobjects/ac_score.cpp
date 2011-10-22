@@ -26,8 +26,8 @@ ScorePrivate::ScorePrivate(Score *q)
     :   ScoreObjectPrivate(q)
     ,   length(128.0f)
     ,   tracks(0)
-    ,   viewSettings(0)
     ,   gridSettings(0)
+    ,   viewSettings(0)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
         mainGraphicsItems.insert(Ac::SceneType(i), new GraphicsRootItem);
@@ -42,14 +42,14 @@ ScorePrivate::ScorePrivate(Score *q)
 void ScorePrivate::init()
 {
     tracks = new ObjectList<Track>(q_ptr);
-    viewSettings = new ViewSettings(q_ptr);
     gridSettings = new GridSettings(q_ptr);
+    viewSettings = new ViewSettings(q_ptr);
 }
 
 ScorePrivate::~ScorePrivate()
 {
-    delete gridSettings;
     delete viewSettings;
+    delete gridSettings;
     qDeleteAll(tracks);
     delete tracks;
 }
@@ -60,12 +60,20 @@ void ScorePrivate::updateLength()
         item->setTransform(QTransform::fromScale(length, 1.0f));
 }
 
+static Score *instance = 0;
+
 Score::Score(QObject *parent)
     :   ScoreObject(*(new ScorePrivate(this)), parent)
 {
     Q_D(Score);
     d->init();
     setObjectName("Score");
+    ::instance = this;
+}
+
+Score *Score::instance()
+{
+    return ::instance;
 }
 
 qreal Score::length() const
@@ -91,16 +99,16 @@ ObjectList<Track> *Score::tracks() const
     return d->tracks;
 }
 
-ViewSettings *Score::viewSettings() const
-{
-    Q_D(const Score);
-    return d->viewSettings;
-}
-
 GridSettings *Score::gridSettings() const
 {
     Q_D(const Score);
     return d->gridSettings;
+}
+
+ViewSettings *Score::viewSettings() const
+{
+    Q_D(const Score);
+    return d->viewSettings;
 }
 
 QGraphicsItem *Score::sceneItem(Ac::SceneType type) const
@@ -119,9 +127,9 @@ int Score::modelItemIndex(IModelItem *item) const
     Q_D(const Score);
     if (d->tracks == item)
         return ScoreObject::ModelItemCount;
-    if (d->viewSettings == item)
-        return ScoreObject::ModelItemCount + 1;
     if (d->gridSettings == item)
+        return ScoreObject::ModelItemCount + 1;
+    if (d->viewSettings == item)
         return ScoreObject::ModelItemCount + 2;
     return ScoreObject::modelItemIndex(item);
 }
@@ -132,9 +140,9 @@ IModelItem *Score::modelItemAt(int i) const
     case ScoreObject::ModelItemCount:
         return tracks();
     case ScoreObject::ModelItemCount + 1:
-        return viewSettings();
-    case ScoreObject::ModelItemCount + 2:
         return gridSettings();
+    case ScoreObject::ModelItemCount + 2:
+        return viewSettings();
     default:
         return ScoreObject::modelItemAt(i);
     }

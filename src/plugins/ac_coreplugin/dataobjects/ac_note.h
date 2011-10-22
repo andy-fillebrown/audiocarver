@@ -29,21 +29,20 @@ class AC_CORE_EXPORT Note : public ScoreObject
         ,   public IEntity
 {
     Q_OBJECT
-    Q_PROPERTY(qreal length READ length WRITE setLength)
 
 public:
     enum { Type = Ac::NoteItem };
 
     explicit Note(QObject *parent = 0);
 
-    qreal length() const;
-    void setLength(qreal length);
-
     Track *track() const;
+
+    // ScoreObject
+    qreal length() const;
 
     // IEntity
     bool isSubEntity() const { return false; }
-    PointList points() const;
+    const PointList &points() const;
     void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);
     void highlight();
     void unhighlight();
@@ -51,15 +50,6 @@ public:
 
     // IModelItem
     int type() const { return Type; }
-
-    int persistentRoleAt(int i) const
-    {
-        if (metaObject()->propertyOffset() == i)
-            return Ac::LengthRole;
-        return ScoreObject::persistentRoleAt(i);
-    }
-
-    bool setData(const QVariant &value, int role);
 
     // IUnknown
     void *query(int type) const

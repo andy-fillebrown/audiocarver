@@ -115,6 +115,11 @@ public:
         return Ac::ListItem;
     }
 
+    int persistentRoleCount() const
+    {
+        return 0;
+    }
+
     int modelItemCount() const
     {
         return count();

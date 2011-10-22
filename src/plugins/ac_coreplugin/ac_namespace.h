@@ -35,6 +35,7 @@ enum InterfaceType {
 enum ItemDataRole {
     ItemTypeRole = Qt::UserRole,
     ListTypeRole,
+    NameRole,
     PointsRole,
     ControlIdRole,
     LocationRole,
@@ -42,7 +43,6 @@ enum ItemDataRole {
     PriorityRole,
     InstrumentRole,
     LengthRole,
-    HeightRole,
     VolumeRole,
     ColorRole,
     VisibilityRole,
@@ -75,7 +75,6 @@ enum CurveType {
 };
 
 enum FilerType {
-    UndoFiler,
     XmlFiler
 };
 

@@ -69,13 +69,9 @@ public:
     virtual void setParent(Object *parent)
     {
         QObject::setParent(parent);
-        d_ptr->setModel(parent ? parent->model() : 0);
     }
 
-    Model *model() const
-    {
-        return d_ptr->model;
-    }
+    virtual QString name() const { return QString(); }
 
     // IModelItem
     IModelItem *parentModelItem() const
@@ -124,7 +120,7 @@ public:
     int persistentRoleAt(int i) const
     {
         if (i == 0)
-            return Qt::DisplayRole;
+            return Ac::NameRole;
         Q_ASSERT(false);
         return -1;
     }

@@ -35,14 +35,7 @@ class AC_CORE_EXPORT GridLine : public GraphicsObject
     Q_PROPERTY(QColor color READ color WRITE setColor)
 
 public:
-    qreal location() const;
-    void setLocation(qreal location);
-    const QString &label() const;
-    void setLabel(const QString &label);
-    int priority() const;
-    void setPriority(int priority);
-    const QColor &color() const;
-    void setColor(const QColor &color);
+    GridSettings *gridSettings() const;
 
     virtual bool isVisible() const = 0;
     void setVisibility(bool visible)
@@ -56,13 +49,20 @@ public:
     virtual void show() = 0;
     virtual void hide() = 0;
 
-    GridSettings *gridSettings() const;
+    // Properties
+    qreal location() const;
+    void setLocation(qreal location);
+    const QString &label() const;
+    void setLabel(const QString &label);
+    int priority() const;
+    void setPriority(int priority);
+    const QColor &color() const;
+    void setColor(const QColor &color);
 
     // IModelItem
-
     int persistentRoleAt(int i) const
     {
-        switch (i - metaObject()->propertyOffset()) {
+        switch (i - staticMetaObject.propertyOffset()) {
         case 0:
             return Ac::LocationRole;
         case 1:
@@ -152,11 +152,13 @@ public:
 
     explicit TimeGridLine(QObject *parent = 0);
 
-    int type() const { return Type; }
-
+    // GridLine
     bool isVisible() const;
     void show();
     void hide();
+
+    // IModelItem
+    int type() const { return Type; }
 
 private:
     Q_DISABLE_COPY(TimeGridLine)
@@ -173,11 +175,13 @@ public:
 
     explicit PitchGridLine(QObject *parent = 0);
 
-    int type() const { return Type; }
-
+    // GridLine
     bool isVisible() const;
     void show();
     void hide();
+
+    // IModelItem
+    int type() const { return Type; }
 
 private:
     Q_DISABLE_COPY(PitchGridLine)
@@ -190,13 +194,17 @@ class AC_CORE_EXPORT ControlGridLine : public GridLine
     Q_OBJECT
 
 public:
+    enum { Type = Ac::ControlGridLineItem };
+
     explicit ControlGridLine(QObject *parent = 0);
 
-    int type() const { return Ac::ControlGridLineItem; }
-
+    // GridLine
     bool isVisible() const;
     void show();
     void hide();
+
+    // IModelItem
+    int type() const { return Type; }
 
 private:
     Q_DISABLE_COPY(ControlGridLine)

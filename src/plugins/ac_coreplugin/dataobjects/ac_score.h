@@ -33,8 +33,8 @@ class ScorePrivate : public ScoreObjectPrivate
 public:
     qreal length;
     ObjectList<Track> *tracks;
-    ViewSettings *viewSettings;
     GridSettings *gridSettings;
+    ViewSettings *viewSettings;
 
     ScorePrivate(Score *q);
     void init();
@@ -55,16 +55,19 @@ public:
 
     explicit Score(QObject *parent = 0);
 
-    qreal length() const;
-    void setLength(qreal length);
+    static Score *instance();
 
     ObjectList<Track> *tracks() const;
-    ViewSettings *viewSettings() const;
     GridSettings *gridSettings() const;
+    ViewSettings *viewSettings() const;
 
     QGraphicsItem *sceneItem(Ac::SceneType type) const;
 
     void setModel(Model *model);
+
+    // Properties
+    qreal length() const;
+    void setLength(qreal length);
 
     // IModelItem
     int type() const { return Type; }
@@ -75,7 +78,7 @@ public:
 
     int persistentRoleAt(int i) const
     {
-        if (metaObject()->propertyOffset() == i)
+        if (staticMetaObject.propertyOffset() == i)
             return Ac::LengthRole;
         return ScoreObject::persistentRoleAt(i);
     }

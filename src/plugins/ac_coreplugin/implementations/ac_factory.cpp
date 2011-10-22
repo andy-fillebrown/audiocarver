@@ -21,7 +21,6 @@
 #include <ac_gridline.h>
 #include <ac_note.h>
 #include <ac_track.h>
-#include <ac_undofiler.h>
 #include <ac_xmlfiler.h>
 
 static QObject *parent = 0;
@@ -61,8 +60,6 @@ FilerFactory::FilerFactory()
 IFileReader *FilerFactory::createReader(int type) const
 {
     switch (type) {
-    case Ac::UndoFiler:
-        return new UndoReader;
     case Ac::XmlFiler:
         return new XmlFileReader;
     default:
@@ -73,8 +70,6 @@ IFileReader *FilerFactory::createReader(int type) const
 IFileWriter *FilerFactory::createWriter(int type) const
 {
     switch (type) {
-    case Ac::UndoFiler:
-        return new UndoWriter;
     case Ac::XmlFiler:
         return new XmlFileWriter;
     default:

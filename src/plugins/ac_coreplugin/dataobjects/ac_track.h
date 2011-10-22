@@ -39,19 +39,22 @@ public:
 
     explicit Track(QObject *parent = 0);
 
-    qreal length() const;
+    Score *score() const;
+    ObjectList<Note> *notes() const;
 
+    // Properties
     const QColor &color() const;
     void setColor(const QColor &color);
-
     const QString &instrument() const;
     void setInstrument(const QString &instrument);
-
     bool isVisible() const;
     void setVisibility(bool visible);
 
-    Score *score() const;
-    ObjectList<Note> *notes() const;
+    // ScoreObject
+    qreal length() const;
+
+    // Object
+    QString name() const { return objectName(); }
 
     // IModelItem
     int type() const { return Type; }
@@ -62,7 +65,7 @@ public:
 
     int persistentRoleAt(int i) const
     {
-        switch (i - metaObject()->propertyOffset()) {
+        switch (i - staticMetaObject.propertyOffset()) {
         case 0:
             return Ac::ColorRole;
         case 1:

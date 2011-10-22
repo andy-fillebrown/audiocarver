@@ -36,7 +36,7 @@ public:
     virtual ScoreObject *scoreObject() const = 0;
 
     // IEntity
-    PointList points() const;
+    const PointList &points() const;
     void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);
     void highlight();
     void unhighlight();
@@ -45,7 +45,7 @@ public:
     // IModelItem
     int persistentRoleAt(int i) const
     {
-        if (metaObject()->propertyOffset() == i)
+        if (staticMetaObject.propertyOffset() == i)
             return Ac::PointsRole;
         return Object::persistentRoleAt(i);
     }

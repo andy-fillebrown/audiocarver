@@ -30,6 +30,7 @@ class AC_CORE_EXPORT GraphicsObject : public Object
     Q_OBJECT
 
 public:
+    // Object
     void setParent(Object *parent);
 
 protected:

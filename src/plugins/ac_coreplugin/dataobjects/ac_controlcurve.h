@@ -32,9 +32,11 @@ public:
 
     explicit ControlCurve(QObject *parent = 0);
 
+    // Properties
     int controlId() const;
     void setControlId(int controlId);
 
+    // Curve
     ScoreObject *scoreObject() const;
 
     // ISubEntity
@@ -45,7 +47,7 @@ public:
 
     int persistentRoleAt(int i) const
     {
-        if (metaObject()->propertyOffset() == i)
+        if (staticMetaObject.propertyOffset() == i)
             return Ac::ControlIdRole;
         return Curve::persistentRoleAt(i);
     }
