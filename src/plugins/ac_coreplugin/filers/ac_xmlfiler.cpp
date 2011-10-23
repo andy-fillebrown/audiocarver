@@ -174,7 +174,7 @@ bool XmlFileReader::read(IModelItem *item)
                 qWarning() << "XmlFileReader: Invalid attribute role in" << elementName;
                 return false;
             }
-            else if (!item->setData(attribute.value().toString(), role)) {
+            if (!item->setData(attribute.value().toString(), role)) {
                 qWarning() << "XmlFileReader: Set data failed in" << elementName << "at" << attribute.value().toString();
                 return false;
             }
@@ -185,7 +185,7 @@ bool XmlFileReader::read(IModelItem *item)
                 Point point;
                 QXmlStreamAttributes attributes = d->reader.attributes();
                 foreach (const QXmlStreamAttribute &attribute, attributes) {
-                    const QString &data = *attribute.value().string();
+                    const QString &data = attribute.value().toString();
                     if ("position" == attribute.name()) {
                         QStringList coords = data.split(' ');
                         point.pos.setX(coords.at(0).toDouble());
@@ -194,11 +194,11 @@ bool XmlFileReader::read(IModelItem *item)
                         point.curveType = Ac::BezierCurve;
                 }
                 points.append(point);
-                if (!item->setData(QVariant::fromValue(points), Ac::PointsRole)) {
-                    qWarning() << "XmlFileReader: Set data failed in" << elementName << "at point list";
-                    return false;
-                }
                 d->nextElement();
+            }
+            if (!item->setData(QVariant::fromValue(points), Ac::PointsRole)) {
+                qWarning() << "XmlFileReader: Set data failed in" << elementName << "at point list";
+                return false;
             }
         } else {
             while (d->nextElement() == QXmlStreamReader::StartElement) {
