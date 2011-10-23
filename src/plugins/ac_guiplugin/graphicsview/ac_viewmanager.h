@@ -54,6 +54,7 @@ public:
 
 public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
+    void modelReset();
 
 signals:
     void viewSettingsChanged();

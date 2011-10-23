@@ -59,6 +59,7 @@ Model::Model(QObject *parent)
     ,   d(new ModelPrivate(this))
 {
     d->init();
+    connect(d->score, SIGNAL(cleared()), SIGNAL(modelReset()));
 }
 
 Model::~Model()

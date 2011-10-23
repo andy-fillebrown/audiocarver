@@ -77,16 +77,17 @@ LabelView::~LabelView()
     delete d;
 }
 
-void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
-{
-    Q_UNUSED(bottomLeft);
-    if (topRight == gridLineListIndex())
-        d->updateGridLineVisibilites();
-}
-
 void LabelView::viewScaleChanged(int role)
 {
     if (scaleRole() == role)
+        d->updateGridLineVisibilites();
+}
+
+void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
+{
+    Q_UNUSED(bottomLeft);
+    QModelIndex index = gridLineListIndex();
+    if (topRight == gridLineListIndex())
         d->updateGridLineVisibilites();
 }
 

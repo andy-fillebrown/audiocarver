@@ -122,6 +122,18 @@ void Score::setModel(Model *model)
     d_ptr->setModel(model);
 }
 
+void Score::clear()
+{
+    Q_D(Score);
+    d->viewSettings->clear();
+    d->gridSettings->controlGridLines()->clear();
+    d->gridSettings->pitchGridLines()->clear();
+    d->gridSettings->timeGridLines()->clear();
+    d->tracks->clear();
+    d->length = -1.0f;
+    emit cleared();
+}
+
 int Score::modelItemIndex(IModelItem *item) const
 {
     Q_D(const Score);

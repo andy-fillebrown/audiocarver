@@ -135,6 +135,12 @@ Score *ViewSettings::score() const
     return qobject_cast<Score*>(QObject::parent());
 }
 
+void ViewSettings::clear()
+{
+    Q_D(ViewSettings);
+    d->clear();
+}
+
 QVariant ViewSettings::data(int role) const
 {
     switch (role) {

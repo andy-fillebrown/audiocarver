@@ -59,6 +59,21 @@ public:
         ,   updatingViewSettings(false)
     {}
 
+    void clearViewVariables()
+    {
+        scoreLength = -1.0f;
+        timePos = 0;
+        pitchPos = 0;
+        controlPos = 0;
+        timeScale = -1.0f;
+        pitchScale = -1.0f;
+        controlScale = -1.0f;
+        emit q->viewSettingsChanged();
+        emit q->viewScaleChanged(Ac::TimeScaleRole);
+        emit q->viewScaleChanged(Ac::PitchScaleRole);
+        emit q->viewScaleChanged(Ac::ControlScaleRole);
+    }
+
     void updateViewVariables()
     {
         Model *model = sceneManager->model();
@@ -159,6 +174,7 @@ void ViewManager::setModel(Model *model)
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(modelReset()), this, SLOT(modelReset()));
         d->updateViewVariables();
     }
 }
@@ -260,3 +276,9 @@ void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bo
                 || model()->viewSettingsIndex() == topRight))
         d->updateViewVariables();
 }
+
+void ViewManager::modelReset()
+{
+    d->clearViewVariables();
+}
+

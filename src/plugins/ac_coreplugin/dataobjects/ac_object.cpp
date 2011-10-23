@@ -33,10 +33,15 @@ void ObjectPrivate::setModel(Model *model)
     }
 }
 
+QModelIndex ObjectPrivate::modelIndex() const
+{
+    return model ? model->d->indexFromItem(q_ptr) : QModelIndex();
+}
+
 void ObjectPrivate::beginChangeData()
 {
     if (model) {
-        QModelIndex index = model->d->indexFromItem(q_ptr);
+        QModelIndex index = modelIndex();
         emit model->dataAboutToBeChanged(index, index);
     }
 }
@@ -44,33 +49,45 @@ void ObjectPrivate::beginChangeData()
 void ObjectPrivate::endChangeData()
 {
     if (model) {
-        QModelIndex index = model->d->indexFromItem(q_ptr);
+        QModelIndex index = modelIndex();
         emit model->dataChanged(index, index);
     }
 }
 
 void ObjectPrivate::beginInsertObjects(int first, int last)
 {
-    if (model)
-        model->beginInsertColumns(model->d->indexFromItem(q_ptr), first, last);
+    if (model) {
+        QModelIndex index = modelIndex();
+        model->beginInsertColumns(index, first, last);
+        emit model->dataAboutToBeChanged(index, index);
+    }
 }
 
 void ObjectPrivate::endInsertObjects()
 {
-    if (model)
+    if (model) {
+        QModelIndex index = modelIndex();
         model->endInsertColumns();
+        emit model->dataChanged(index, index);
+    }
 }
 
 void ObjectPrivate::beginRemoveObjects(int first, int last)
 {
-    if (model)
-        model->beginRemoveColumns(model->d->indexFromItem(q_ptr), first, last);
+    if (model) {
+        QModelIndex index = modelIndex();
+        model->beginRemoveColumns(index, first, last);
+        emit model->dataAboutToBeChanged(index, index);
+    }
 }
 
 void ObjectPrivate::endRemoveObjects()
 {
-    if (model)
+    if (model) {
+        QModelIndex index = modelIndex();
         model->endRemoveColumns();
+        emit model->dataChanged(index, index);
+    }
 }
 
 void Object::setParent(Object *parent)
@@ -81,6 +98,7 @@ void Object::setParent(Object *parent)
     ObjectList *oldList = qobject_cast<ObjectList*>(oldParent);
     if (oldList)
         oldList->remove(this);
+    d_ptr->setModel(parent ? parent->d_ptr->model : 0);
     QObject::setParent(parent);
     ObjectList *newList = qobject_cast<ObjectList*>(parent);
     if (newList)

@@ -28,6 +28,8 @@
 class Model;
 class Object;
 
+class QModelIndex;
+
 class AC_CORE_EXPORT ObjectPrivate
 {
 public:
@@ -42,6 +44,7 @@ public:
     virtual ~ObjectPrivate() {}
 
     void setModel(Model *model);
+    QModelIndex modelIndex() const;
     void beginChangeData();
     void endChangeData();
     void beginInsertObjects(int first, int last);

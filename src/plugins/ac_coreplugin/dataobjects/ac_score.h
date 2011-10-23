@@ -64,6 +64,7 @@ public:
     QGraphicsItem *sceneItem(Ac::SceneType type) const;
 
     void setModel(Model *model);
+    void clear();
 
     // Properties
     qreal length() const;
@@ -85,6 +86,9 @@ public:
     }
 
     bool setData(const QVariant &value, int role);
+
+signals:
+    void cleared();
 
 private:
     Q_DISABLE_COPY(Score)

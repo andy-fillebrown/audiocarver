@@ -61,10 +61,13 @@ QString Database::fileName() const
 }
 
 void Database::clear()
-{}
+{
+    Score::instance()->clear();
+}
 
 void Database::read(const QString &fileName)
 {
+    clear();
     d->reader.setFileName(fileName);
     d->reader.read(query<IModelItem>(Score::instance()));
     d->reader.close();

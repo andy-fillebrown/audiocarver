@@ -41,6 +41,8 @@ public:
 
     Score *score() const;
 
+    void clear();
+
     // Properties
     qreal timePosition() const;
     void setTimePosition(qreal pos);
@@ -107,6 +109,16 @@ public:
         ,   pitchScale(VIEWSCALE_MIN)
         ,   controlScale(VIEWSCALE_MIN)
     {}
+
+    void clear()
+    {
+        timePos = 0.0f;
+        pitchPos = 0.0f;
+        controlPos = 0.0f;
+        timeScale = -1.0f;
+        pitchScale = -1.0f;
+        controlScale = -1.0f;
+    }
 };
 
 #endif // AC_VIEWSETTINGS_H
