@@ -22,16 +22,42 @@
 
 #include <QVariant>
 
-template <class T> class ObjectList;
+class ObjectList;
+class ObjectListPrivate : public ObjectPrivate
+{
+public:
+    inline ObjectListPrivate(ObjectList *q);
+};
 
-template <class T> inline void qDeleteAll(ObjectList<T> *list);
+class ObjectList : public Object
+{
+    Q_OBJECT
 
-template <class T> class ObjectListPrivate : public ObjectPrivate
+public:
+    virtual void append(Object *object) = 0;
+    virtual void insert(int i, Object *object) = 0;
+    virtual void remove(Object *object) = 0;
+
+protected:
+    ObjectList(ObjectListPrivate &dd, QObject *parent = 0)
+        :   Object(dd, parent)
+    {}
+};
+
+inline ObjectListPrivate::ObjectListPrivate(ObjectList *q)
+    :   ObjectPrivate(q)
+{}
+
+template <class T> class ObjectTList;
+
+template <class T> inline void qDeleteAll(ObjectTList<T> *list);
+
+template <class T> class ObjectTListPrivate : public ObjectListPrivate
 {
 public:
     QList<T*> objects;
 
-    inline ObjectListPrivate(ObjectList<T> *q);
+    inline ObjectTListPrivate(ObjectTList<T> *q);
 
     const T &t() const
     {
@@ -40,19 +66,19 @@ public:
     }
 };
 
-template <class T> class ObjectList : public Object
+template <class T> class ObjectTList : public ObjectList
 {
 public:
-    explicit ObjectList(QObject *parent = 0)
-        :   Object(*(new ObjectListPrivate<T>(this)), parent)
+    explicit ObjectTList(QObject *parent = 0)
+        :   ObjectList(*(new ObjectTListPrivate<T>(this)), parent)
     {
-        Q_TD(ObjectList);
+        Q_TD(ObjectTList);
         setObjectName(QString("%1s").arg(d->t().objectName()));
     }
 
     int count() const
     {
-        Q_TD(const ObjectList);
+        Q_TD(const ObjectTList);
         return d->objects.count();
     }
 
@@ -63,13 +89,13 @@ public:
 
     T *at(int i) const
     {
-        Q_TD(const ObjectList);
+        Q_TD(const ObjectTList);
         return d->objects.at(i);
     }
 
     int indexOf(T *object, int from = 0)
     {
-        Q_TD(ObjectList);
+        Q_TD(ObjectTList);
         return d->objects.indexOf(object, from);
     }
 
@@ -80,7 +106,7 @@ public:
 
     void insert(int i, T *object)
     {
-        Q_TD(ObjectList);
+        Q_TD(ObjectTList);
         if (d->objects.contains(object))
             return;
         object->setParent(this);
@@ -91,7 +117,7 @@ public:
 
     void removeAt(int i)
     {
-        Q_TD(ObjectList);
+        Q_TD(ObjectTList);
         Object *object = d->objects[i];
         d->beginRemoveObjects(i, i);
         d->objects.removeAt(i);
@@ -103,10 +129,32 @@ public:
     {
         if (isEmpty())
             return;
-        Q_TD(ObjectList);
+        Q_TD(ObjectTList);
         d->beginRemoveObjects(0, count() - 1);
         d->objects.clear();
         d->endRemoveObjects();
+    }
+
+    // ObjectList
+    void append(Object *object)
+    {
+        T *t = qobject_cast<T*>(object);
+        if (t)
+            append(t);
+    }
+
+    void insert(int i, Object *object)
+    {
+        T *t = qobject_cast<T*>(object);
+        if (t)
+            insert(i, t);
+    }
+
+    void remove(Object *object)
+    {
+        int i = indexOf(qobject_cast<T*>(object));
+        if (0 <= i && i < count())
+            removeAt(i);
     }
 
     // IModelItem
@@ -127,7 +175,7 @@ public:
 
     int modelItemIndex(IModelItem *item) const
     {
-        Q_TD(const ObjectList);
+        Q_TD(const ObjectTList);
         int n = d->objects.count();
         for (int i = 0;  i < n;  ++i)
             if (item == d->objects.at(i)->query(Ac::ModelItemInterface))
@@ -143,26 +191,26 @@ public:
     QVariant data(int role) const
     {
         if (Ac::ListTypeRole == role) {
-            Q_TD(const ObjectList);
+            Q_TD(const ObjectTList);
             return d->t().type();
         }
         return Object::data(role);
     }
 
 private:
-    Q_DISABLE_COPY(ObjectList)
-    Q_DECLARE_TEMPLATE_PRIVATE(ObjectList)
+    Q_DISABLE_COPY(ObjectTList)
+    Q_DECLARE_TEMPLATE_PRIVATE(ObjectTList)
 
-    friend void qDeleteAll<T>(ObjectList<T>*);
+    friend void qDeleteAll<T>(ObjectTList<T>*);
 };
 
 template <class T> inline
-ObjectListPrivate<T>::ObjectListPrivate(ObjectList<T> *q)
-    :   ObjectPrivate(q)
+ObjectTListPrivate<T>::ObjectTListPrivate(ObjectTList<T> *q)
+    :   ObjectListPrivate(q)
 {}
 
 template <class T> inline
-void qDeleteAll(ObjectList<T> *list)
+void qDeleteAll(ObjectTList<T> *list)
 {
     if (!list)
         return;

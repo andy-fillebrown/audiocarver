@@ -36,7 +36,7 @@ public:
     enum { ModelItemCount = 2 };
 
     PitchCurve *pitchCurve() const;
-    ObjectList<ControlCurve> *controlCurves() const;
+    ObjectTList<ControlCurve> *controlCurves() const;
 
     virtual qreal length() const = 0;
 
@@ -78,7 +78,7 @@ class ScoreObjectPrivate : public GraphicsParentPrivate
 public:
     qreal volume;
     PitchCurve *pitchCurve;
-    ObjectList<ControlCurve> *controlCurves;
+    ObjectTList<ControlCurve> *controlCurves;
 
     ScoreObjectPrivate(ScoreObject *q);
     void init();

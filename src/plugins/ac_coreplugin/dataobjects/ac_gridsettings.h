@@ -39,9 +39,9 @@ public:
 
     Score *score() const;
 
-    ObjectList<TimeGridLine> *timeGridLines() const;
-    ObjectList<PitchGridLine> *pitchGridLines() const;
-    ObjectList<ControlGridLine> *controlGridLines() const;
+    ObjectTList<TimeGridLine> *timeGridLines() const;
+    ObjectTList<PitchGridLine> *pitchGridLines() const;
+    ObjectTList<ControlGridLine> *controlGridLines() const;
 
     // IModelItem
     int type() const { return Type; }
@@ -62,9 +62,9 @@ class GridSettingsPrivate : public GraphicsParentPrivate
     Q_DECLARE_PUBLIC(GridSettings)
 
 public:
-    ObjectList<TimeGridLine> *timeGridLines;
-    ObjectList<PitchGridLine> *pitchGridLines;
-    ObjectList<ControlGridLine> *controlGridLines;
+    ObjectTList<TimeGridLine> *timeGridLines;
+    ObjectTList<PitchGridLine> *pitchGridLines;
+    ObjectTList<ControlGridLine> *controlGridLines;
 
     GridSettingsPrivate(GridSettings *q);
     void init();

@@ -32,7 +32,7 @@ ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)
 void ScoreObjectPrivate::init()
 {
     pitchCurve = new PitchCurve(q_ptr);
-    controlCurves = new ObjectList<ControlCurve>(q_ptr);
+    controlCurves = new ObjectTList<ControlCurve>(q_ptr);
 }
 
 ScoreObjectPrivate::~ScoreObjectPrivate()
@@ -70,7 +70,7 @@ PitchCurve *ScoreObject::pitchCurve() const
     return d->pitchCurve;
 }
 
-ObjectList<ControlCurve> *ScoreObject::controlCurves() const
+ObjectTList<ControlCurve> *ScoreObject::controlCurves() const
 {
     Q_D(const ScoreObject);
     return d->controlCurves;

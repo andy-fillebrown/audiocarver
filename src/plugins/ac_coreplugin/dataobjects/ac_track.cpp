@@ -32,7 +32,7 @@ TrackPrivate::TrackPrivate(Track *q)
 
 void TrackPrivate::init()
 {
-    notes = new ObjectList<Note>(q_ptr);
+    notes = new ObjectTList<Note>(q_ptr);
 }
 
 TrackPrivate::~TrackPrivate()
@@ -116,7 +116,7 @@ Score *Track::score() const
     return parent ? qobject_cast<Score*>(parent->parent()) : 0;
 }
 
-ObjectList<Note> *Track::notes() const
+ObjectTList<Note> *Track::notes() const
 {
     Q_D(const Track);
     return d->notes;

@@ -32,7 +32,7 @@ class ScorePrivate : public ScoreObjectPrivate
 {
 public:
     qreal length;
-    ObjectList<Track> *tracks;
+    ObjectTList<Track> *tracks;
     GridSettings *gridSettings;
     ViewSettings *viewSettings;
 
@@ -57,7 +57,7 @@ public:
 
     static Score *instance();
 
-    ObjectList<Track> *tracks() const;
+    ObjectTList<Track> *tracks() const;
     GridSettings *gridSettings() const;
     ViewSettings *viewSettings() const;
 

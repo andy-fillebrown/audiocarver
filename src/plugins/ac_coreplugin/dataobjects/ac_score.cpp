@@ -41,7 +41,7 @@ ScorePrivate::ScorePrivate(Score *q)
 
 void ScorePrivate::init()
 {
-    tracks = new ObjectList<Track>(q_ptr);
+    tracks = new ObjectTList<Track>(q_ptr);
     gridSettings = new GridSettings(q_ptr);
     viewSettings = new ViewSettings(q_ptr);
 }
@@ -93,7 +93,7 @@ void Score::setLength(qreal length)
     d->endChangeData();
 }
 
-ObjectList<Track> *Score::tracks() const
+ObjectTList<Track> *Score::tracks() const
 {
     Q_D(const Score);
     return d->tracks;

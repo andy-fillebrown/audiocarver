@@ -38,9 +38,9 @@ GridSettingsPrivate::GridSettingsPrivate(GridSettings *q)
 
 void GridSettingsPrivate::init()
 {
-    timeGridLines = new ObjectList<TimeGridLine>(q_ptr);
-    pitchGridLines = new ObjectList<PitchGridLine>(q_ptr);
-    controlGridLines = new ObjectList<ControlGridLine>(q_ptr);
+    timeGridLines = new ObjectTList<TimeGridLine>(q_ptr);
+    pitchGridLines = new ObjectTList<PitchGridLine>(q_ptr);
+    controlGridLines = new ObjectTList<ControlGridLine>(q_ptr);
 }
 
 GridSettingsPrivate::~GridSettingsPrivate()
@@ -73,19 +73,19 @@ Score *GridSettings::score() const
     return qobject_cast<Score*>(QObject::parent());
 }
 
-ObjectList<TimeGridLine> *GridSettings::timeGridLines() const
+ObjectTList<TimeGridLine> *GridSettings::timeGridLines() const
 {
     Q_D(const GridSettings);
     return d->timeGridLines;
 }
 
-ObjectList<PitchGridLine> *GridSettings::pitchGridLines() const
+ObjectTList<PitchGridLine> *GridSettings::pitchGridLines() const
 {
     Q_D(const GridSettings);
     return d->pitchGridLines;
 }
 
-ObjectList<ControlGridLine> *GridSettings::controlGridLines() const
+ObjectTList<ControlGridLine> *GridSettings::controlGridLines() const
 {
     Q_D(const GridSettings);
     return d->controlGridLines;

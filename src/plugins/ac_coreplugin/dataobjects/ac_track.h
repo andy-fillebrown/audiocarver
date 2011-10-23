@@ -40,7 +40,7 @@ public:
     explicit Track(QObject *parent = 0);
 
     Score *score() const;
-    ObjectList<Note> *notes() const;
+    ObjectTList<Note> *notes() const;
 
     // Properties
     const QColor &color() const;
@@ -94,7 +94,7 @@ class TrackPrivate : public ScoreObjectPrivate
 public:
     QColor color;
     QString instrument;
-    ObjectList<Note> *notes;
+    ObjectTList<Note> *notes;
 
     TrackPrivate(Track *q);
     void init();

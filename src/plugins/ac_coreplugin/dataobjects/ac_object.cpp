@@ -18,6 +18,7 @@
 #include "ac_object.h"
 
 #include <ac_model.h>
+#include <ac_objectlist.h>
 
 void ObjectPrivate::setModel(Model *model)
 {
@@ -70,6 +71,20 @@ void ObjectPrivate::endRemoveObjects()
 {
     if (model)
         model->endRemoveColumns();
+}
+
+void Object::setParent(Object *parent)
+{
+    if (parent == QObject::parent())
+        return;
+    QObject *oldParent = QObject::parent();
+    ObjectList *oldList = qobject_cast<ObjectList*>(oldParent);
+    if (oldList)
+        oldList->remove(this);
+    QObject::setParent(parent);
+    ObjectList *newList = qobject_cast<ObjectList*>(parent);
+    if (newList)
+        newList->append(this);
 }
 
 QVariant Object::data(int role) const
