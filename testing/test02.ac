@@ -6,7 +6,7 @@
                 <Note volume="1">
                     <PitchCurve>
                         <Point position="0 0"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="31.308 2.69885" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="128.083 126.72"/>
@@ -14,8 +14,8 @@
                 </Note>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 15.2778"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 19.2775"/>
+                        <Point position="29.5899 24.2896" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="128.093 111.944"/>
@@ -23,8 +23,8 @@
                 </Note>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 30.8333"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 40"/>
+                        <Point position="26.1536 44.3382" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="128.093 99.1667"/>
@@ -32,8 +32,8 @@
                 </Note>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 41.3889"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 45"/>
+                        <Point position="23.6719 62.459" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="128.093 86.9444"/>
@@ -42,7 +42,7 @@
                 <Note volume="1">
                     <PitchCurve>
                         <Point position="0 52.8203"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="32 80" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="128.093 72.7778"/>
@@ -54,8 +54,8 @@
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 61.6667"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 60"/>
+                        <Point position="32 90" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="128.093 58.6111"/>
@@ -63,8 +63,8 @@
                 </Note>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 71.6667"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 69.7845"/>
+                        <Point position="32 95" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="127.977 43.6111"/>
@@ -72,8 +72,8 @@
                 </Note>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 86.1111"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 78.2665"/>
+                        <Point position="32 100" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="128.01 26.9181"/>
@@ -81,8 +81,8 @@
                 </Note>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 102.778"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 91.3752"/>
+                        <Point position="32.8352 110.267" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="127.998 15.9868"/>
@@ -90,8 +90,8 @@
                 </Note>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 127"/>
-                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="0 103.327"/>
+                        <Point position="32.6443 127" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="127.991 0.015271"/>

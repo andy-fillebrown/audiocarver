@@ -31,7 +31,7 @@ public:
     virtual const QString &fileExtension() const;
     virtual const QString &fileFilter() const;
     virtual QString fileName() const;
-    virtual void clear();
+    virtual void reset();
     virtual void read(const QString &fileName);
     virtual void write(const QString &fileName);
 

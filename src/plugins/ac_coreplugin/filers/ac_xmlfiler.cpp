@@ -152,7 +152,6 @@ bool XmlFileReader::read(IModelItem *item)
     Q_D(XmlFileReader);
     if (!item || !d->openFile())
         return false;
-    qDebug() << d->file.pos();
     QString elementName = d->reader.name().toString();
     if (elementName.isEmpty()) {
         qWarning() << "XmlFileReader: Empty element name";

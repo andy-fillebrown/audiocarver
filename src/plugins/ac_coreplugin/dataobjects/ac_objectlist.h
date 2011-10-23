@@ -131,6 +131,7 @@ public:
             return;
         Q_TD(ObjectTList);
         d->beginRemoveObjects(0, count() - 1);
+        qDeleteAll(this);
         d->objects.clear();
         d->endRemoveObjects();
     }

@@ -18,6 +18,7 @@
 #include "ac_score.h"
 
 #include <ac_graphicsitem.h>
+#include <ac_gridline.h>
 #include <ac_gridsettings.h>
 #include <ac_track.h>
 #include <ac_viewsettings.h>
@@ -125,13 +126,14 @@ void Score::setModel(Model *model)
 void Score::clear()
 {
     Q_D(Score);
+    emit aboutToBeReset();
     d->viewSettings->clear();
     d->gridSettings->controlGridLines()->clear();
     d->gridSettings->pitchGridLines()->clear();
     d->gridSettings->timeGridLines()->clear();
     d->tracks->clear();
     d->length = -1.0f;
-    emit cleared();
+    emit reset();
 }
 
 int Score::modelItemIndex(IModelItem *item) const

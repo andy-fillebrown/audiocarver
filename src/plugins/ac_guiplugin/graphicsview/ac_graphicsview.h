@@ -36,6 +36,7 @@ public:
     QTransform sceneTransform() const;
 
 public slots:
+    void modelAboutToBeReset();
     virtual void viewSettingsChanged();
 
 protected:

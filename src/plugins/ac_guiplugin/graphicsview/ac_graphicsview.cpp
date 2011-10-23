@@ -279,6 +279,11 @@ QTransform GraphicsView::sceneTransform() const
     return d->rootItem->transform() * viewportTransform();
 }
 
+void GraphicsView::modelAboutToBeReset()
+{
+    d->clearPickedEntities();
+}
+
 void GraphicsView::viewSettingsChanged()
 {
     d->updateViewSettings();

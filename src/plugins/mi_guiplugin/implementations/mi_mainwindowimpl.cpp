@@ -155,7 +155,7 @@ void MiMainWindowImpl::initActions()
 
 void MiMainWindowImpl::newFile()
 {
-    IDatabase::instance()->clear();
+    IDatabase::instance()->reset();
 }
 
 void MiMainWindowImpl::openFile()

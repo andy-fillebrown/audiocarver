@@ -165,16 +165,23 @@ void ViewManager::setModel(Model *model)
         return;
     if (oldModel) {
         oldModel->disconnect(this);
+        oldModel->disconnect(d->pitchView);
+        oldModel->disconnect(d->controlView);
         oldModel->disconnect(d->timeLabelView);
         oldModel->disconnect(d->pitchLabelView);
         oldModel->disconnect(d->controlLabelView);
     }
     if (model) {
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        connect(model, SIGNAL(modelReset()), this, SLOT(modelReset()));
+        connect(model, SIGNAL(modelAboutToBeReset()), d->pitchView, SLOT(modelAboutToBeReset()));
+        connect(model, SIGNAL(modelAboutToBeReset()), d->controlView, SLOT(modelAboutToBeReset()));
+        connect(model, SIGNAL(modelAboutToBeReset()), d->timeLabelView, SLOT(modelAboutToBeReset()));
+        connect(model, SIGNAL(modelAboutToBeReset()), d->pitchLabelView, SLOT(modelAboutToBeReset()));
+        connect(model, SIGNAL(modelAboutToBeReset()), d->controlLabelView, SLOT(modelAboutToBeReset()));
+        connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
         d->updateViewVariables();
     }
 }

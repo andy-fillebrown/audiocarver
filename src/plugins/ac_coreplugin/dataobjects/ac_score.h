@@ -88,7 +88,8 @@ public:
     bool setData(const QVariant &value, int role);
 
 signals:
-    void cleared();
+    void aboutToBeReset();
+    void reset();
 
 private:
     Q_DISABLE_COPY(Score)
