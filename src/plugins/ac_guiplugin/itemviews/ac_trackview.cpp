@@ -16,3 +16,21 @@
 **************************************************************************/
 
 #include "ac_trackview.h"
+
+#include <QScrollBar>
+
+void TrackView::updateGeometries()
+{
+    int boxWidth = 24;
+    int labelWidth = width() - (3 * boxWidth) - 2;
+    setColumnWidth(0, boxWidth);
+    setColumnWidth(1, labelWidth);
+    setColumnWidth(2, boxWidth);
+    setColumnWidth(3, boxWidth);
+    QAbstractItemModel *m = model();
+    QModelIndex root_index = rootIndex();
+    int rowH = rowHeight(m->index(0, 0, root_index));
+    if (rowH)
+        verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * rowH) - viewport()->height()) / rowH);
+}
+

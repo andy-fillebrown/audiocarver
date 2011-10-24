@@ -27,12 +27,18 @@ class TrackView : public QTreeView
 public:
     TrackView(QWidget *parent = 0)
         :   QTreeView(parent)
-    {}
+    {
+        setHeaderHidden(true);
+        setRootIsDecorated(false);
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    }
 
     void setRootIndex(const QModelIndex &index)
     {
         QTreeView::setRootIndex(model()->index(0, 0, index));
     }
+
+    void updateGeometries();
 };
 
 #endif // AC_TRACKVIEW_H

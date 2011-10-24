@@ -100,6 +100,12 @@
             </NoteList>
         </Track>
         <Track name="Track 3" volume="0.3" color="#0000ff"/>
+        <Track name="Track 4" volume="0.3" color="#0000ff"/>
+        <Track name="Track 5" volume="0.3" color="#0000ff"/>
+        <Track name="Track 6" volume="0.3" color="#0000ff"/>
+        <Track name="Track 7" volume="0.3" color="#0000ff"/>
+        <Track name="Track 8" volume="0.3" color="#0000ff"/>
+        <Track name="Track 9" volume="0.3" color="#0000ff"/>
     </TrackList>
     <GridSettings>
         <TimeGridLineList>

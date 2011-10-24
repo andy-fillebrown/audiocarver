@@ -30,12 +30,12 @@ public:
         :   RolesToColumnsProxyModel(parent)
     {
         RoleMapList roleMaps;
-        roleMaps.append(RoleMap());
-        roleMaps.append(RoleMap());
-        roleMaps.append(RoleMap());
+        for (int i = 0;  i < 4;  ++i)
+            roleMaps.append(RoleMap());
         roleMaps[0].insert(Qt::BackgroundRole, Ac::ColorRole);
         roleMaps[1].insert(Qt::DisplayRole, Ac::NameRole);
-        roleMaps[2].insert(Qt::DisplayRole, Ac::VolumeRole);
+        roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
+        roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
         setRoleMaps(roleMaps);
         setSourceModel(qobject_cast<QAbstractItemModel*>(parent));
     }
