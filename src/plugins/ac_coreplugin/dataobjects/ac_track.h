@@ -31,7 +31,7 @@ class AC_CORE_EXPORT Track : public ScoreObject
     Q_OBJECT
     Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(QString instrument READ instrument WRITE setInstrument)
-    Q_PROPERTY(bool visible READ isVisible WRITE setVisibility)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
 
 public:
     enum { Type = Ac::TrackItem };
@@ -48,7 +48,7 @@ public:
     const QString &instrument() const;
     void setInstrument(const QString &instrument);
     bool isVisible() const;
-    void setVisibility(bool visible);
+    void setVisible(bool visible);
 
     // ScoreObject
     qreal length() const;

@@ -99,7 +99,7 @@ bool Track::isVisible() const
     return d->mainGraphicsItems[Ac::PitchScene]->isVisible();
 }
 
-void Track::setVisibility(bool visible)
+void Track::setVisible(bool visible)
 {
     Q_D(Track);
     if (isVisible() == visible)
