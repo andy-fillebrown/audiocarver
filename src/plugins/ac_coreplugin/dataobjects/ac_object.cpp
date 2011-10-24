@@ -58,7 +58,7 @@ void ObjectPrivate::beginInsertObjects(int first, int last)
 {
     if (model) {
         QModelIndex index = modelIndex();
-        model->beginInsertColumns(index, first, last);
+        model->beginInsertRows(index, first, last);
         emit model->dataAboutToBeChanged(index, index);
     }
 }
@@ -67,7 +67,7 @@ void ObjectPrivate::endInsertObjects()
 {
     if (model) {
         QModelIndex index = modelIndex();
-        model->endInsertColumns();
+        model->endInsertRows();
         emit model->dataChanged(index, index);
     }
 }
@@ -76,7 +76,7 @@ void ObjectPrivate::beginRemoveObjects(int first, int last)
 {
     if (model) {
         QModelIndex index = modelIndex();
-        model->beginRemoveColumns(index, first, last);
+        model->beginRemoveRows(index, first, last);
         emit model->dataAboutToBeChanged(index, index);
     }
 }
@@ -85,7 +85,7 @@ void ObjectPrivate::endRemoveObjects()
 {
     if (model) {
         QModelIndex index = modelIndex();
-        model->endRemoveColumns();
+        model->endRemoveRows();
         emit model->dataChanged(index, index);
     }
 }
