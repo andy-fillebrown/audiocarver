@@ -38,6 +38,7 @@ class XmlFileWriter : public FileWriter
 {
 public:
     XmlFileWriter();
+    ~XmlFileWriter();
 
     // IFileWriter
     bool write(IModelItem *item);

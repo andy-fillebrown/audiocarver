@@ -277,6 +277,12 @@ XmlFileWriter::XmlFileWriter()
     :   FileWriter(*(new XmlFileWriterPrivate(this)))
 {}
 
+XmlFileWriter::~XmlFileWriter()
+{
+    Q_D(XmlFileWriter);
+    d->file.write("\n");
+}
+
 bool XmlFileWriter::write(IModelItem *item)
 {
     Q_D(XmlFileWriter);
