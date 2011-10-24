@@ -8,3 +8,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = src
+
+OTHER_FILES *= \
+    testing/test01.ac \
+    testing/test02.ac \
