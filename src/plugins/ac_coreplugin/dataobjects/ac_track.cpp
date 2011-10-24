@@ -157,6 +157,8 @@ QVariant Track::data(int role) const
         return color();
     case Ac::InstrumentRole:
         return instrument();
+    case Ac::VisibilityRole:
+        return isVisible();
     default:
         return ScoreObject::data(role);
     }
@@ -170,6 +172,9 @@ bool Track::setData(const QVariant &value, int role)
         return true;
     case Ac::InstrumentRole:
         setInstrument(value.toString());
+        return true;
+    case Ac::VisibilityRole:
+        setVisible(value.toBool());
         return true;
     default:
         return ScoreObject::setData(value, role);
