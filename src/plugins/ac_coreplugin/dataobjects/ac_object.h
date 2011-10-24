@@ -131,13 +131,7 @@ public:
     }
 
     QVariant data(int role) const;
-    bool setData(const QVariant &value, int role)
-    {
-        Q_UNUSED(value);
-        Q_UNUSED(role);
-        Q_ASSERT(false);
-        return false;
-    }
+    bool setData(const QVariant &value, int role);
 
     Qt::ItemFlags flags() const
     {

@@ -6,6 +6,7 @@ DIRS = \
     graphicsview \
     implementations \
     interfaces \
+    itemviews \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

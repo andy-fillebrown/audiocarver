@@ -24,10 +24,12 @@
 #include <ac_pitchcurve.h>
 #include <ac_score.h>
 #include <ac_track.h>
+#include <ac_trackmodel.h>
 
 #include <ac_editorimpl.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
+#include <ac_trackview.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -182,8 +184,8 @@ void AcGuiPlugin::extensionsInitialized()
     mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
     dw->setObjectName("Model Dock Widget");
 
-    QTreeView *tv = new QTreeView(dw);
-    tv->setModel(model);
+    TrackView *tv = new TrackView(dw);
+    tv->setModel(new TrackModel(model));
     dw->setWidget(tv);
 
 //    populateModel(model);

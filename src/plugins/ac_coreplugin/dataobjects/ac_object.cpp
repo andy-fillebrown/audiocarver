@@ -112,7 +112,25 @@ QVariant Object::data(int role) const
         return objectName();
     case Ac::ItemTypeRole:
         return type();
+    case Ac::NameRole:
+        return name();
     default:
         return QVariant();
     }
+}
+
+bool Object::setData(const QVariant &value, int role)
+{
+    if (Ac::NameRole != role) {
+        Q_ASSERT(false);
+        return false;
+    } else {
+        QString name = value.toString();
+        if (objectName() != name) {
+            d_ptr->beginChangeData();
+            setObjectName(name);
+            d_ptr->endChangeData();
+        }
+    }
+    return true;
 }
