@@ -32,6 +32,7 @@ class AC_CORE_EXPORT Track : public ScoreObject
     Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(QString instrument READ instrument WRITE setInstrument)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
+    Q_PROPERTY(bool recording READ isRecording WRITE setRecording)
 
 public:
     enum { Type = Ac::TrackItem };
@@ -49,6 +50,8 @@ public:
     void setInstrument(const QString &instrument);
     bool isVisible() const;
     void setVisible(bool visible);
+    bool isRecording() const;
+    void setRecording(bool recording = true);
 
     // ScoreObject
     qreal length() const;
@@ -72,6 +75,8 @@ public:
             return Ac::InstrumentRole;
         case 2:
             return Ac::VisibilityRole;
+        case 3:
+            return Ac::RecordingRole;
         default:
             return ScoreObject::persistentRoleAt(i);
         }
@@ -95,6 +100,7 @@ public:
     QColor color;
     QString instrument;
     ObjectTList<Note> *notes;
+    int recording : 32;
 
     TrackPrivate(Track *q);
     void init();

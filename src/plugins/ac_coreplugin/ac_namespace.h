@@ -46,6 +46,7 @@ enum ItemDataRole {
     VolumeRole,
     ColorRole,
     VisibilityRole,
+    RecordingRole,
     TimePositionRole,
     PitchPositionRole,
     ControlPositionRole,

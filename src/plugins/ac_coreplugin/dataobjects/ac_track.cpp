@@ -25,6 +25,7 @@ TrackPrivate::TrackPrivate(Track *q)
     :   ScoreObjectPrivate(q)
     ,   color(127.0f, 0.0f, 0.0f)
     ,   notes(0)
+    ,   recording(false)
 {
     mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
     mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
@@ -110,6 +111,22 @@ void Track::setVisible(bool visible)
     d->endChangeData();
 }
 
+bool Track::isRecording() const
+{
+    Q_D(const Track);
+    return d->recording;
+}
+
+void Track::setRecording(bool recording)
+{
+    Q_D(Track);
+    if (d->recording == recording)
+        return;
+    d->beginChangeData();
+    d->recording = recording;
+    d->endChangeData();
+}
+
 Score *Track::score() const
 {
     QObject *parent = QObject::parent();
@@ -159,6 +176,8 @@ QVariant Track::data(int role) const
         return instrument();
     case Ac::VisibilityRole:
         return isVisible();
+    case Ac::RecordingRole:
+        return isRecording();
     default:
         return ScoreObject::data(role);
     }
@@ -175,6 +194,9 @@ bool Track::setData(const QVariant &value, int role)
         return true;
     case Ac::VisibilityRole:
         setVisible(value.toBool());
+        return true;
+    case Ac::RecordingRole:
+        setRecording(value.toBool());
         return true;
     default:
         return ScoreObject::setData(value, role);
