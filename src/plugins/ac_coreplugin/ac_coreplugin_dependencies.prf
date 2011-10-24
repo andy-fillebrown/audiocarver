@@ -7,7 +7,7 @@ DIRS = \
     implementations \
     interfaces \
     graphicsview \
-    model \
+    models \
     tools \
 
 for(dir, DIRS) {
