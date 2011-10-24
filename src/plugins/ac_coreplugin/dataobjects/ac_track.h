@@ -105,6 +105,7 @@ public:
     TrackPrivate(Track *q);
     void init();
     ~TrackPrivate();
+
     GraphicsParentPrivate *graphicsParent() const;
 };
 
