@@ -50,12 +50,19 @@ protected:
     virtual Ac::ItemDataRole scaleXRole() const { return Ac::InvalidRole; }
     virtual Ac::ItemDataRole scaleYRole() const { return Ac::InvalidRole; }
 
+    virtual void zoomStarting();
+    virtual void zoomFinished();
+    virtual void panStarting();
+    virtual void panFinished();
+
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+
+    void paintEvent(QPaintEvent *event);
 
 private:
     Q_DISABLE_COPY(GraphicsView)

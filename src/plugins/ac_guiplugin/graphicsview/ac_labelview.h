@@ -20,10 +20,9 @@
 
 #include <ac_graphicsview.h>
 
-class LabelViewPrivate;
-
 class QModelIndex;
 
+class LabelViewPrivate;
 class LabelView : public GraphicsView
 {
     Q_OBJECT
@@ -45,6 +44,11 @@ protected:
 
     void viewSettingsChanged(int role);
 
+    void panFinished();
+    void zoomFinished();
+
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
 
 private:
@@ -68,6 +72,8 @@ protected:
 
     QPointF sceneOffset() const { return QPointF(-2.0f / (width() / sceneWidth()), 10.0f / (height() / sceneHeight())); }
     QPointF sceneCenter() const;
+
+    void zoomStarting();
 
 private:
     Q_DISABLE_COPY(LabelVView)

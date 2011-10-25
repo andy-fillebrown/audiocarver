@@ -247,15 +247,12 @@ void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
     switch (role) {
     case Ac::TimeScaleRole:
         d->timeScale = scale;
-        emit viewScaleChanged(role);
         break;
     case Ac::PitchScaleRole:
         d->pitchScale = scale;
-        emit viewScaleChanged(role);
         break;
     case Ac::ControlScaleRole:
         d->controlScale = scale;
-        emit viewScaleChanged(role);
     default:
         break;
     }

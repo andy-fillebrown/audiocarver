@@ -19,23 +19,41 @@
 
 #include <ac_graphicsentityitem.h>
 #include <ac_graphicsgripitem.h>
-#include <ac_viewmanager.h>
-
 #include <ac_ientity.h>
+#include <ac_viewmanager.h>
 
 #include <QApplication>
 #include <QMouseEvent>
+
+#include <qmath.h>
+
+static const QCursor &crosshair()
+{
+    static QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
+    return cursor;
+}
+
+static const QCursor &zoomCursor()
+{
+    static QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-cursor.png"));
+    return cursor;
+}
 
 class GraphicsViewPrivate
 {
 public:
     GraphicsView *q;
+    int zooming : 1;
     int panning : 1;
     int picking : 1;
-    int draggingGrips : 30;
-    QPoint panStartPos;
+    int draggingGrips : 29;
+    QPoint dragStartPos;
+    QPoint curDragPos;
+    qreal zoomStartScaleX;
+    qreal zoomStartScaleY;
+    QPointF zoomStartPosDC;
+    QPointF zoomCenterOffsetDC;
     QPointF panStartCenter;
-    QPoint pickStartPos;
     QGraphicsRectItem *pickBox;
     QList<GraphicsEntityItem*> pickedEntities;
     QList<IGripItem*> gripsBeingDragged;
@@ -44,6 +62,7 @@ public:
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
+        ,   zooming(false)
         ,   panning(false)
         ,   picking(false)
         ,   draggingGrips(false)
@@ -63,10 +82,60 @@ public:
     virtual ~GraphicsViewPrivate()
     {}
 
+    bool isDragging() const
+    {
+        return panning || picking || zooming || draggingGrips;
+    }
+
+    void startZoom(const QPoint &pos)
+    {
+        q->zoomStarting();
+        zooming = true;
+        dragStartPos = curDragPos = pos;
+        ViewManager *vm = ViewManager::instance();
+        zoomStartScaleX = vm->scale(q->scaleXRole());
+        zoomStartScaleY = vm->scale(q->scaleYRole());
+        zoomStartPosDC = q->sceneTransform().inverted().map(QPointF(pos) + q->sceneOffset());
+        QPointF center = QPointF(vm->position(q->positionXRole()), vm->position(q->positionYRole()));
+        zoomCenterOffsetDC = q->sceneScale().map(center - zoomStartPosDC);
+    }
+
+    void zoomTo(const QPoint &pos)
+    {
+        curDragPos = pos;
+        QPoint offset = pos - dragStartPos;
+        ViewManager *vm = ViewManager::instance();
+        if (offset.x()) {
+            qreal x = offset.x();
+            qreal scale = 1.0f + (qAbs(x) / 10.0f);
+            if (x < 0.0f)
+                scale = 1.0f / scale;
+            vm->setScale(scale * zoomStartScaleX, q->scaleXRole());
+        }
+        if (offset.x()) {
+            qreal y = offset.y();
+            qreal scale = 1.0f + (qAbs(y) / 10.0f);
+            if (0.0f < y)
+                scale = 1.0f / scale;
+            vm->setScale(scale * zoomStartScaleY, q->scaleYRole());
+        }
+        QPointF newCenter = zoomStartPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(zoomCenterOffsetDC);
+        vm->setPosition(newCenter.x(), q->positionXRole());
+        vm->setPosition(newCenter.y(), q->positionYRole());
+    }
+
+    void finishZoom(const QPoint &pos)
+    {
+        zoomTo(pos);
+        zooming = false;
+        q->zoomFinished();
+    }
+
     void startPan(const QPoint &pos)
     {
+        q->panStarting();
         panning = true;
-        panStartPos = pos;
+        dragStartPos = pos;
         ViewManager *vm = ViewManager::instance();
         panStartCenter.setX(vm->position(q->positionXRole()));
         panStartCenter.setY(vm->position(q->positionYRole()));
@@ -74,8 +143,9 @@ public:
 
     void panTo(const QPoint &pos)
     {
+        q->setCursor(Qt::ClosedHandCursor);
         ViewManager *vm = ViewManager::instance();
-        QPointF offset = q->sceneScale().inverted().map(QPointF(pos - panStartPos));
+        QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
         QPointF center = panStartCenter - offset;
         vm->setPosition(center.x(), q->positionXRole());
         vm->setPosition(center.y(), q->positionYRole());
@@ -85,6 +155,7 @@ public:
     {
         panTo(pos);
         panning = false;
+        q->panFinished();
     }
 
     bool selectGrips(const QPoint &pos)
@@ -138,14 +209,14 @@ public:
 
     void startPicking(const QPoint &pos)
     {
-        pickStartPos = pos;
+        dragStartPos = pos;
         picking = true;
     }
 
     void dragPickBoxTo(const QPoint &pos)
     {
-        if (4 <= (pos - pickStartPos).manhattanLength()) {
-            QRect pickRect = QRect(pickStartPos, pos).normalized().intersected(pickBoxBounds());
+        if (4 <= (pos - dragStartPos).manhattanLength()) {
+            QRect pickRect = QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
             pickBox->setRect(QRectF(q->mapToScene(pickRect.topLeft()), q->mapToScene(pickRect.bottomRight())));
             pickBox->show();
         }
@@ -155,10 +226,10 @@ public:
     {
         bool pickOne = false;
         QRect rect;
-        if ((pickOne = (pos - pickStartPos).manhattanLength() < 4))
-            rect = QRect(pickStartPos.x() - 2, pickStartPos.y() - 2, 4, 4);
+        if ((pickOne = (pos - dragStartPos).manhattanLength() < 4))
+            rect = QRect(dragStartPos.x() - 2, dragStartPos.y() - 2, 4, 4);
         else
-            rect = QRect(pickStartPos, pos).normalized().intersected(pickBoxBounds());
+            rect = QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
         QList<IEntity*> entities;
         QList<QGraphicsItem*> items = q->items(rect);
@@ -259,7 +330,7 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setOptimizationFlag(DontSavePainterState);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
+    setCursor(crosshair());
 }
 
 GraphicsView::~GraphicsView()
@@ -288,6 +359,26 @@ void GraphicsView::viewSettingsChanged()
     d->updateViewSettings();
 }
 
+void GraphicsView::zoomStarting()
+{
+    setCursor(zoomCursor());
+}
+
+void GraphicsView::zoomFinished()
+{
+    setCursor(crosshair());
+}
+
+void GraphicsView::panStarting()
+{
+    setCursor(Qt::ClosedHandCursor);
+}
+
+void GraphicsView::panFinished()
+{
+    setCursor(crosshair());
+}
+
 void GraphicsView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -296,9 +387,14 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    if (Qt::RightButton == event->button())
-        d->startPan(event->pos());
-    else if (Qt::LeftButton == event->button()) {
+    if (d->isDragging())
+        return;
+    if (Qt::RightButton == event->button()) {
+        if (event->modifiers() & Qt::ControlModifier)
+            d->startZoom(event->pos());
+        else
+            d->startPan(event->pos());
+    } else if (Qt::LeftButton == event->button()) {
         if (d->selectGrips(event->pos()))
             d->startDraggingGrips();
         else
@@ -308,7 +404,14 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d->panning) {
+    if (d->zooming) {
+        d->zoomTo(event->pos());
+        ViewManager *vm = ViewManager::instance();
+        emit vm->viewScaleChanged(scaleXRole());
+        emit vm->viewScaleChanged(scaleYRole());
+        emit vm->viewSettingsChanged();
+        update();
+    } else if (d->panning) {
         d->panTo(event->pos());
         emit ViewManager::instance()->viewSettingsChanged();
     } else if (d->draggingGrips)
@@ -320,7 +423,11 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (Qt::RightButton == event->button()) {
-        d->finishPan(event->pos());
+        if (d->zooming) {
+            d->finishZoom(event->pos());
+            update();
+        } else if (d->panning)
+            d->finishPan(event->pos());
         emit ViewManager::instance()->viewSettingsChanged();
     } else if (Qt::LeftButton == event->button()) {
         if (d->draggingGrips)
@@ -332,7 +439,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
-    if (d->panning)
+    if (d->zooming || d->panning)
         return;
     qreal scaleAmount = 1.25f;
     if (event->delta() < 0)
@@ -340,14 +447,16 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     ViewManager *vm = ViewManager::instance();
     qreal scaleX = scaleAmount * vm->scale(scaleXRole());
     qreal scaleY = scaleAmount * vm->scale(scaleYRole());
-    QPointF pos = QPointF(sceneTransform().inverted().map(QPointF(event->pos())) + sceneOffset());
+    QPointF posDC = sceneTransform().inverted().map(QPointF(event->pos()) + sceneOffset());
     QPointF center = QPointF(vm->position(positionXRole()), vm->position(positionYRole()));
-    QPointF offset = sceneScale().map(center - pos);
+    QPointF offsetDC = sceneScale().map(center - posDC);
     vm->setScale(scaleX, scaleXRole());
     vm->setScale(scaleY, scaleYRole());
-    QPointF newCenter = pos + QTransform::fromScale(sceneWidth() / width(), -sceneHeight() / height()).map(offset);
+    QPointF newCenter = posDC + QTransform::fromScale(sceneWidth() / width(), -sceneHeight() / height()).map(offsetDC);
     vm->setPosition(newCenter.x(), positionXRole());
     vm->setPosition(newCenter.y(), positionYRole());
+    emit vm->viewScaleChanged(scaleXRole());
+    emit vm->viewScaleChanged(scaleYRole());
     emit vm->viewSettingsChanged();
 }
 
@@ -357,6 +466,16 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         return;
     if (event->key() == Qt::Key_Escape)
         d->clearPickedEntities();
+}
+
+void GraphicsView::paintEvent(QPaintEvent *event)
+{
+    MiGraphicsView::paintEvent(event);
+    if (d->zooming) {
+        QPainter painter(viewport());
+        painter.drawEllipse(d->dragStartPos, 2, 2);
+        painter.drawLine(d->dragStartPos, d->curDragPos);
+    }
 }
 
 qreal GraphicsHView::sceneWidth() const

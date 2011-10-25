@@ -21,6 +21,12 @@
 
 #include <ac_model.h>
 
+static const QCursor &zoomCursor()
+{
+    static QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-h-cursor.png"));
+    return cursor;
+}
+
 class TimeLabelViewPrivate
 {
 public:
@@ -66,4 +72,9 @@ QPointF TimeLabelView::sceneCenter() const
 {
     ViewManager *vm = ViewManager::instance();
     return QPointF(vm->position(Ac::TimePositionRole), 0.0f);
+}
+
+void TimeLabelView::zoomStarting()
+{
+    setCursor(zoomCursor());
 }

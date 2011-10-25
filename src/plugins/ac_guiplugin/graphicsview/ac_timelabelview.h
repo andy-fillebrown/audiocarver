@@ -41,6 +41,8 @@ protected:
     Ac::ItemDataRole positionXRole() const { return Ac::TimePositionRole; }
     Ac::ItemDataRole scaleXRole() const { return Ac::TimeScaleRole; }
 
+    void zoomStarting();
+
 private:
     Q_DISABLE_COPY(TimeLabelView)
     TimeLabelViewPrivate *d;

@@ -21,13 +21,23 @@
 
 #include <ac_model.h>
 
+#include <QMouseEvent>
+
+static const QCursor &zoomCursor()
+{
+    static QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"));
+    return cursor;
+}
+
 class LabelViewPrivate
 {
 public:
     LabelView *q;
+    QCursor zoomCursor;
 
     LabelViewPrivate(LabelView *q)
         :   q(q)
+        ,   zoomCursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"))
     {}
 
     virtual ~LabelViewPrivate()
@@ -70,6 +80,7 @@ LabelView::LabelView(QGraphicsScene *scene, QWidget *parent)
     ,   d(new LabelViewPrivate(this))
 {
     setBackgroundRole(QPalette::Window);
+    setCursor(Qt::OpenHandCursor);
 }
 
 LabelView::~LabelView()
@@ -91,6 +102,30 @@ void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bott
         d->updateGridLineVisibilites();
 }
 
+void LabelView::panFinished()
+{
+    setCursor(Qt::OpenHandCursor);
+}
+
+void LabelView::zoomFinished()
+{
+    setCursor(Qt::OpenHandCursor);
+}
+
+void LabelView::mousePressEvent(QMouseEvent *event)
+{
+    QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
+    GraphicsView::mousePressEvent(e);
+    delete e;
+}
+
+void LabelView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
+    GraphicsView::mouseReleaseEvent(e);
+    delete e;
+}
+
 void LabelView::resizeEvent(QResizeEvent *event)
 {
     GraphicsView::resizeEvent(event);
@@ -100,4 +135,9 @@ void LabelView::resizeEvent(QResizeEvent *event)
 QPointF LabelVView::sceneCenter() const
 {
     return QPointF(0.5f, -ViewManager::instance()->position(positionYRole()));
+}
+
+void LabelVView::zoomStarting()
+{
+    setCursor(zoomCursor());
 }

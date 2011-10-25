@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128">
     <TrackList>
-        <Track name="Track 1" volume="0.1" color="#ff0000">
+        <Track name="Track 1" volume="0.1" color="#ff0000" visibility="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -50,7 +50,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track 2" volume="0.2" color="#00ff00">
+        <Track name="Track 2" volume="0.2" color="#00ff00" visibility="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -99,13 +99,13 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track 3" volume="0.3" color="#0000ff"/>
-        <Track name="Track 4" volume="0.3" color="#0000ff"/>
-        <Track name="Track 5" volume="0.3" color="#0000ff"/>
-        <Track name="Track 6" volume="0.3" color="#0000ff"/>
-        <Track name="Track 7" volume="0.3" color="#0000ff"/>
-        <Track name="Track 8" volume="0.3" color="#0000ff"/>
-        <Track name="Track 9" volume="0.3" color="#0000ff"/>
+        <Track name="Track 3" volume="0.3" color="#0000ff" visibility="true" recording="false"/>
+        <Track name="Track 4" volume="0.3" color="#0000ff" visibility="true" recording="false"/>
+        <Track name="Track 5" volume="0.3" color="#0000ff" visibility="true" recording="false"/>
+        <Track name="Track 6" volume="0.3" color="#0000ff" visibility="true" recording="false"/>
+        <Track name="Track 7" volume="0.3" color="#0000ff" visibility="true" recording="false"/>
+        <Track name="Track 8" volume="0.3" color="#0000ff" visibility="true" recording="false"/>
+        <Track name="Track 9" volume="0.3" color="#0000ff" visibility="true" recording="false"/>
     </TrackList>
     <GridSettings>
         <TimeGridLineList>
