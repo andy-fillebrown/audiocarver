@@ -470,10 +470,11 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 
 void GraphicsView::paintEvent(QPaintEvent *event)
 {
-    MiGraphicsView::paintEvent(event);
+    QGraphicsView::paintEvent(event);
     if (d->zooming) {
         QPainter painter(viewport());
         painter.drawEllipse(d->dragStartPos, 2, 2);
+        painter.setPen(Qt::DotLine);
         painter.drawLine(d->dragStartPos, d->curDragPos);
     }
 }
