@@ -87,6 +87,26 @@ public:
         return panning || picking || zooming || draggingGrips;
     }
 
+    QPointF startPosDC(const QPoint &pos)
+    {
+        return q->sceneTransform().inverted().map(QPointF(pos) + q->sceneOffset());
+    }
+
+    QPointF centerOffsetDC(const QPointF &posDC)
+    {
+        ViewManager *vm = ViewManager::instance();
+        QPointF center = QPointF(vm->position(q->positionXRole()), vm->position(q->positionYRole()));
+        return q->sceneScale().map(center - posDC);
+    }
+
+    void recenter(const QPointF &startPosDC, const QPointF &centerOffsetDC)
+    {
+        ViewManager *vm = ViewManager::instance();
+        QPointF center = startPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(centerOffsetDC);
+        vm->setPosition(center.x(), q->positionXRole());
+        vm->setPosition(center.y(), q->positionYRole());
+    }
+
     void startZoom(const QPoint &pos)
     {
         q->zoomStarting();
@@ -95,9 +115,8 @@ public:
         ViewManager *vm = ViewManager::instance();
         zoomStartScaleX = vm->scale(q->scaleXRole());
         zoomStartScaleY = vm->scale(q->scaleYRole());
-        zoomStartPosDC = q->sceneTransform().inverted().map(QPointF(pos) + q->sceneOffset());
-        QPointF center = QPointF(vm->position(q->positionXRole()), vm->position(q->positionYRole()));
-        zoomCenterOffsetDC = q->sceneScale().map(center - zoomStartPosDC);
+        zoomStartPosDC = startPosDC(pos);
+        zoomCenterOffsetDC = centerOffsetDC(zoomStartPosDC);
     }
 
     void zoomTo(const QPoint &pos)
@@ -119,9 +138,7 @@ public:
                 scale = 1.0f / scale;
             vm->setScale(scale * zoomStartScaleY, q->scaleYRole());
         }
-        QPointF newCenter = zoomStartPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(zoomCenterOffsetDC);
-        vm->setPosition(newCenter.x(), q->positionXRole());
-        vm->setPosition(newCenter.y(), q->positionYRole());
+        recenter(zoomStartPosDC, zoomCenterOffsetDC);
     }
 
     void finishZoom(const QPoint &pos)
@@ -447,14 +464,11 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     ViewManager *vm = ViewManager::instance();
     qreal scaleX = scaleAmount * vm->scale(scaleXRole());
     qreal scaleY = scaleAmount * vm->scale(scaleYRole());
-    QPointF posDC = sceneTransform().inverted().map(QPointF(event->pos()) + sceneOffset());
-    QPointF center = QPointF(vm->position(positionXRole()), vm->position(positionYRole()));
-    QPointF offsetDC = sceneScale().map(center - posDC);
+    QPointF posDC = d->startPosDC(event->pos());
+    QPointF offsetDC = d->centerOffsetDC(posDC);
     vm->setScale(scaleX, scaleXRole());
     vm->setScale(scaleY, scaleYRole());
-    QPointF newCenter = posDC + QTransform::fromScale(sceneWidth() / width(), -sceneHeight() / height()).map(offsetDC);
-    vm->setPosition(newCenter.x(), positionXRole());
-    vm->setPosition(newCenter.y(), positionYRole());
+    d->recenter(posDC, offsetDC);
     emit vm->viewScaleChanged(scaleXRole());
     emit vm->viewScaleChanged(scaleYRole());
     emit vm->viewSettingsChanged();
