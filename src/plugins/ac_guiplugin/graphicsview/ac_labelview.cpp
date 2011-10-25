@@ -132,6 +132,11 @@ void LabelView::resizeEvent(QResizeEvent *event)
     d->updateGridLineVisibilites();
 }
 
+void LabelView::paintEvent(QPaintEvent *event)
+{
+    QGraphicsView::paintEvent(event);
+}
+
 QPointF LabelVView::sceneCenter() const
 {
     return QPointF(0.5f, -ViewManager::instance()->position(positionYRole()));

@@ -51,6 +51,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
 
+    void paintEvent(QPaintEvent *event);
+
 private:
     Q_DISABLE_COPY(LabelView)
     LabelViewPrivate *d;
