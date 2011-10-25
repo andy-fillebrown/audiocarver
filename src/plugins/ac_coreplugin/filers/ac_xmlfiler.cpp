@@ -55,7 +55,7 @@ static void initMaps()
     attributeMap.insert(Ac::LengthRole, "length");
     attributeMap.insert(Ac::VolumeRole, "volume");
     attributeMap.insert(Ac::ColorRole, "color");
-    attributeMap.insert(Ac::VisibilityRole, "visibility");
+    attributeMap.insert(Ac::VisibilityRole, "visible");
     attributeMap.insert(Ac::RecordingRole, "recording");
     attributeMap.insert(Ac::TimePositionRole, "timePosition");
     attributeMap.insert(Ac::PitchPositionRole, "pitchPosition");
