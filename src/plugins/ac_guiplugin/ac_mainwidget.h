@@ -18,12 +18,12 @@
 #ifndef AC_MAINWIDGET_H
 #define AC_MAINWIDGET_H
 
-#include <QWidget>
+#include <QFrame>
 
 class Model;
 
 class MainWidgetPrivate;
-class MainWidget : public QWidget
+class MainWidget : public QFrame
 {
     Q_OBJECT
 

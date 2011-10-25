@@ -37,7 +37,7 @@ PitchLabelView::PitchLabelView(QGraphicsScene *scene, QWidget *parent)
 {
     setStyleSheet("QFrame {"
                   "border-top: 0px solid palette(shadow);"
-                  "border-bottom: 1px solid black;"
+                  "border-bottom: 1px solid palette(shadow);"
                   "border-left: 0px solid palette(shadow);"
                   "border-right: 1px solid palette(shadow);"
                   "}");

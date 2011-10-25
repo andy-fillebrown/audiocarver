@@ -260,7 +260,6 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setCursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
-    setMouseTracking(true);
 }
 
 GraphicsView::~GraphicsView()
@@ -312,15 +311,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     if (d->panning) {
         d->panTo(event->pos());
         emit ViewManager::instance()->viewSettingsChanged();
-        event->accept();
-    } else if (d->draggingGrips) {
+    } else if (d->draggingGrips)
         d->dragGripsTo(event->pos());
-        event->accept();
-    } else if (d->picking) {
+    else if (d->picking)
         d->dragPickBoxTo(event->pos());
-        event->accept();
-    } else
-        event->ignore();
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
@@ -328,17 +322,12 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (Qt::RightButton == event->button()) {
         d->finishPan(event->pos());
         emit ViewManager::instance()->viewSettingsChanged();
-        event->accept();
     } else if (Qt::LeftButton == event->button()) {
-        if (d->draggingGrips) {
+        if (d->draggingGrips)
             d->finishDraggingGrips(event->pos());
-            event->accept();
-        } else if (d->picking) {
+        else if (d->picking)
             d->finishPicking(event->pos());
-            event->accept();
-        }
-    } else
-        event->ignore();
+    }
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
@@ -368,19 +357,6 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         return;
     if (event->key() == Qt::Key_Escape)
         d->clearPickedEntities();
-}
-
-bool GraphicsView::viewportEvent(QEvent *event)
-{
-    bool result = MiGraphicsView::viewportEvent(event);
-    switch (event->type()) {
-    // Return event "accepted" status for the following event types so they'll
-    // be passed to the main widget if ignored.
-    case QEvent::MouseMove:
-        return event->isAccepted();
-    default:
-        return result;
-    }
 }
 
 qreal GraphicsHView::sceneWidth() const
