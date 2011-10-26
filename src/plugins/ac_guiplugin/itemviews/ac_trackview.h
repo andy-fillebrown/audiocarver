@@ -38,7 +38,8 @@ public:
         QTreeView::setRootIndex(model()->index(0, 0, index));
     }
 
-    void updateGeometries();
+protected:
+    void resizeEvent(QResizeEvent *event);
 };
 
 #endif // AC_TRACKVIEW_H

@@ -19,8 +19,9 @@
 
 #include <QScrollBar>
 
-void TrackView::updateGeometries()
+void TrackView::resizeEvent(QResizeEvent *event)
 {
+    Q_UNUSED(event);
     int boxWidth = 24;
     int labelWidth = width() - (3 * boxWidth) - 2;
     setColumnWidth(0, boxWidth);
@@ -33,4 +34,3 @@ void TrackView::updateGeometries()
     if (rowH)
         verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * rowH) - viewport()->height()) / rowH);
 }
-
