@@ -434,9 +434,10 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d->zooming)
+    if (d->zooming) {
+        setUpdatesEnabled(false);
         d->zoomTo(event->pos());
-    else if (d->panning)
+    } else if (d->panning)
         d->panTo(event->pos());
     else if (d->draggingGrips)
         d->dragGripsTo(event->pos());
@@ -447,9 +448,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (Qt::RightButton == event->button()) {
-        if (d->zooming)
+        if (d->zooming) {
+            setUpdatesEnabled(false);
             d->finishZoom(event->pos());
-        else if (d->panning)
+        } else if (d->panning)
             d->finishPan(event->pos());
     } else if (Qt::LeftButton == event->button()) {
         if (d->draggingGrips)

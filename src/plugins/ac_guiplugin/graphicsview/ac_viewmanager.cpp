@@ -340,12 +340,7 @@ void ViewManager::disableUpdates()
 
 void ViewManager::enableUpdates()
 {
-    if (d->updatesEnabled) {
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-            view(i)->update();
-    } else {
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-            view(i)->setUpdatesEnabled(true);
-        d->updatesEnabled = true;
-    }
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+        view(i)->setUpdatesEnabled(true);
+    d->updatesEnabled = true;
 }
