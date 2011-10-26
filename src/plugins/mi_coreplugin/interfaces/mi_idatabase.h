@@ -37,6 +37,10 @@ public:
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
 
+signals:
+    void databaseAboutToBeRead();
+    void databaseRead();
+
 private:
     Q_DISABLE_COPY(IDatabase)
 };

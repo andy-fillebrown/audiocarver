@@ -51,19 +51,21 @@ public:
     qreal scale(Ac::ItemDataRole role) const;
     void setScale(qreal scale, Ac::ItemDataRole role);
     void updateViewSettings();
-
     void setUpdatesEnabled(bool enable);
 
 public slots:
+    void updateViews();
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
     void modelReset();
 
 signals:
-    void viewSettingsChanged();
+    void scoreLengthChanged();
+    void viewPositionChanged(int role);
     void viewScaleChanged(int role);
 
 private slots:
-    void reenableUpdates();
+    void disableUpdates();
+    void enableUpdates();
 
 private:
     Q_DISABLE_COPY(ViewManager)

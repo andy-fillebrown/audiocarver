@@ -35,8 +35,8 @@ protected:
 
     qreal sceneHeight() const;
 
-    Ac::ItemDataRole positionYRole() const { return Ac::ControlPositionRole; }
-    Ac::ItemDataRole scaleYRole() const { return Ac::ControlScaleRole; }
+    Ac::ItemDataRole positionRoleY() const { return Ac::ControlPositionRole; }
+    Ac::ItemDataRole scaleRoleY() const { return Ac::ControlScaleRole; }
 
 private:
     Q_DISABLE_COPY(ControlLabelView)

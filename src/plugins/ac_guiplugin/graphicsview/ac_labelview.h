@@ -31,8 +31,10 @@ public:
     LabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~LabelView();
 
-public slots:
+    // GraphicsView
     void viewScaleChanged(int role);
+
+public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 protected:
@@ -41,8 +43,6 @@ protected:
     virtual Ac::ItemDataRole scaleRole() const = 0;
 
     QPointF sceneOffset() const { return QPointF(0.0f, 10.0f / (height() / sceneHeight())); }
-
-    void viewSettingsChanged(int role);
 
     void panFinished();
     void zoomFinished();
@@ -70,7 +70,7 @@ public:
 
 protected:
     qreal paddingScale() const { return -sceneTransform().m22(); }
-    Ac::ItemDataRole scaleRole() const { return scaleYRole(); }
+    Ac::ItemDataRole scaleRole() const { return scaleRoleY(); }
 
     QPointF sceneOffset() const { return QPointF(-2.0f / (width() / sceneWidth()), 10.0f / (height() / sceneHeight())); }
     QPointF sceneCenter() const;

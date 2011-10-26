@@ -67,10 +67,12 @@ void Database::reset()
 
 void Database::read(const QString &fileName)
 {
+    emit databaseAboutToBeRead();
     reset();
     d->reader.setFileName(fileName);
     d->reader.read(query<IModelItem>(Score::instance()));
     d->reader.close();
+    emit databaseRead();
 }
 
 void Database::write(const QString &fileName)

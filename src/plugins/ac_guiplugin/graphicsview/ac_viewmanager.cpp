@@ -27,6 +27,8 @@
 #include <ac_coreconstants.h>
 #include <ac_model.h>
 
+#include <mi_idatabase.h>
+
 #include <QWidget>
 
 #include <QTimer>
@@ -51,7 +53,7 @@ public:
     qreal controlScale;
     int updatingViewSettings : 1;
     int updatesEnabled : 31;
-    QTimer *reenableUpdatesTimer;
+    QTimer *updateViewsTimer;
 
     ViewManagerPrivate(ViewManager *q, QWidget *parentWidget)
         :   q(q)
@@ -64,10 +66,10 @@ public:
         ,   controlLabelView(0)
         ,   updatingViewSettings(false)
         ,   updatesEnabled(true)
-        ,   reenableUpdatesTimer(new QTimer(q))
+        ,   updateViewsTimer(new QTimer(q))
     {
-        reenableUpdatesTimer->setSingleShot(true);
-        q->connect(reenableUpdatesTimer, SIGNAL(timeout()), q, SLOT(reenableUpdates()));
+        updateViewsTimer->setSingleShot(true);
+        q->connect(updateViewsTimer, SIGNAL(timeout()), q, SLOT(enableUpdates()));
     }
 
     void init()
@@ -88,7 +90,9 @@ public:
         timeScale = -1.0f;
         pitchScale = -1.0f;
         controlScale = -1.0f;
-        emit q->viewSettingsChanged();
+        emit q->viewPositionChanged(Ac::TimePositionRole);
+        emit q->viewPositionChanged(Ac::PitchPositionRole);
+        emit q->viewPositionChanged(Ac::ControlPositionRole);
         emit q->viewScaleChanged(Ac::TimeScaleRole);
         emit q->viewScaleChanged(Ac::PitchScaleRole);
         emit q->viewScaleChanged(Ac::ControlScaleRole);
@@ -99,37 +103,16 @@ public:
         Model *model = sceneManager->model();
         QModelIndex viewSettings = model->viewSettingsIndex();
         qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
-        qreal modelTimePos = viewSettings.data(Ac::TimePositionRole).toReal();
-        qreal modelPitchPos = viewSettings.data(Ac::PitchPositionRole).toReal();
-        qreal modelControlPos = viewSettings.data(Ac::ControlPositionRole).toReal();
-        qreal modelTimeScale = viewSettings.data(Ac::TimeScaleRole).toReal();
-        qreal modelPitchScale = viewSettings.data(Ac::PitchScaleRole).toReal();
-        qreal modelControlScale = viewSettings.data(Ac::ControlScaleRole).toReal();
-        bool timeScaleChanged = timeScale != modelTimeScale;
-        bool pitchScaleChanged = pitchScale != modelPitchScale;
-        bool controlScaleChanged = controlScale != modelControlScale;
-        bool changed = scoreLength != modelScoreLength
-                || timePos != modelTimePos
-                || pitchPos != modelPitchPos
-                || controlPos != modelControlPos
-                || timeScaleChanged
-                || pitchScaleChanged
-                || controlScaleChanged;
-        scoreLength = modelScoreLength;
-        timePos = modelTimePos;
-        pitchPos = modelPitchPos;
-        controlPos = modelControlPos;
-        timeScale = modelTimeScale;
-        pitchScale = modelPitchScale;
-        controlScale = modelControlScale;
-        if (changed)
-            emit q->viewSettingsChanged();
-        if (timeScaleChanged)
-            emit q->viewScaleChanged(Ac::TimeScaleRole);
-        if (pitchScaleChanged)
-            emit q->viewScaleChanged(Ac::PitchScaleRole);
-        if (controlScaleChanged)
-            emit q->viewScaleChanged(Ac::ControlScaleRole);
+        if (scoreLength != modelScoreLength) {
+            scoreLength = modelScoreLength;
+            emit q->scoreLengthChanged();
+        }
+        q->setPosition(viewSettings.data(Ac::TimePositionRole).toReal(), Ac::TimePositionRole);
+        q->setPosition(viewSettings.data(Ac::PitchPositionRole).toReal(), Ac::PitchPositionRole);
+        q->setPosition(viewSettings.data(Ac::ControlPositionRole).toReal(), Ac::ControlPositionRole);
+        q->setScale(viewSettings.data(Ac::TimeScaleRole).toReal(), Ac::TimeScaleRole);
+        q->setScale(viewSettings.data(Ac::PitchScaleRole).toReal(), Ac::PitchScaleRole);
+        q->setScale(viewSettings.data(Ac::ControlScaleRole).toReal(), Ac::ControlScaleRole);
     }
 };
 
@@ -141,13 +124,18 @@ ViewManager::ViewManager(QWidget *widget)
 {
     ::instance = this;
     d->init();
-    connect(this, SIGNAL(viewSettingsChanged()), d->pitchView, SLOT(viewSettingsChanged()));
-    connect(this, SIGNAL(viewSettingsChanged()), d->controlView, SLOT(viewSettingsChanged()));
-    connect(this, SIGNAL(viewSettingsChanged()), d->timeLabelView, SLOT(viewSettingsChanged()));
+    IDatabase *db = IDatabase::instance();
+    connect(db, SIGNAL(databaseAboutToBeRead()), SLOT(disableUpdates()));
+    connect(db, SIGNAL(databaseRead()), SLOT(updateViews()));
+    connect(this, SIGNAL(viewPositionChanged(int)), d->pitchView, SLOT(viewPositionChanged(int)));
+    connect(this, SIGNAL(viewPositionChanged(int)), d->controlView, SLOT(viewPositionChanged(int)));
+    connect(this, SIGNAL(viewPositionChanged(int)), d->timeLabelView, SLOT(viewPositionChanged(int)));
+    connect(this, SIGNAL(viewPositionChanged(int)), d->pitchLabelView, SLOT(viewPositionChanged(int)));
+    connect(this, SIGNAL(viewPositionChanged(int)), d->controlLabelView, SLOT(viewPositionChanged(int)));
+    connect(this, SIGNAL(viewScaleChanged(int)), d->pitchView, SLOT(viewScaleChanged(int)));
+    connect(this, SIGNAL(viewScaleChanged(int)), d->controlView, SLOT(viewScaleChanged(int)));
     connect(this, SIGNAL(viewScaleChanged(int)), d->timeLabelView, SLOT(viewScaleChanged(int)));
-    connect(this, SIGNAL(viewSettingsChanged()), d->pitchLabelView, SLOT(viewSettingsChanged()));
     connect(this, SIGNAL(viewScaleChanged(int)), d->pitchLabelView, SLOT(viewScaleChanged(int)));
-    connect(this, SIGNAL(viewSettingsChanged()), d->controlLabelView, SLOT(viewSettingsChanged()));
     connect(this, SIGNAL(viewScaleChanged(int)), d->controlLabelView, SLOT(viewScaleChanged(int)));
 }
 
@@ -197,6 +185,7 @@ void ViewManager::setModel(Model *model)
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(modelAboutToBeReset()), SLOT(disableUpdates()));
         connect(model, SIGNAL(modelAboutToBeReset()), d->pitchView, SLOT(modelAboutToBeReset()));
         connect(model, SIGNAL(modelAboutToBeReset()), d->controlView, SLOT(modelAboutToBeReset()));
         connect(model, SIGNAL(modelAboutToBeReset()), d->timeLabelView, SLOT(modelAboutToBeReset()));
@@ -204,6 +193,7 @@ void ViewManager::setModel(Model *model)
         connect(model, SIGNAL(modelAboutToBeReset()), d->controlLabelView, SLOT(modelAboutToBeReset()));
         connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
         d->updateViewVariables();
+        updateViews();
     }
 }
 
@@ -231,15 +221,27 @@ void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
     switch (role) {
     case Ac::TimePositionRole:
         position = qBound(qreal(0.0f), position, d->scoreLength);
+        if (d->timePos == position)
+            return;
+        disableUpdates();
         d->timePos = position;
+        emit viewPositionChanged(Ac::TimePositionRole);
         break;
     case Ac::PitchPositionRole:
         position = qBound(qreal(0.0f), position, qreal(127.0f));
+        if (d->pitchPos == position)
+            return;
+        disableUpdates();
         d->pitchPos = position;
+        emit viewPositionChanged(Ac::PitchPositionRole);
         break;
     case Ac::ControlPositionRole:
         position = qBound(qreal(0.0f), position, qreal(1.0f));
+        if (d->controlPos == position)
+            return;
+        disableUpdates();
         d->controlPos = position;
+        emit viewPositionChanged(Ac::ControlPositionRole);
     default:
         break;
     }
@@ -267,13 +269,19 @@ void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
         return;
     switch (role) {
     case Ac::TimeScaleRole:
+        disableUpdates();
         d->timeScale = scale;
+        emit viewScaleChanged(Ac::TimeScaleRole);
         break;
     case Ac::PitchScaleRole:
+        disableUpdates();
         d->pitchScale = scale;
+        emit viewScaleChanged(Ac::PitchScaleRole);
         break;
     case Ac::ControlScaleRole:
+        disableUpdates();
         d->controlScale = scale;
+        emit viewScaleChanged(Ac::ControlScaleRole);
     default:
         break;
     }
@@ -295,15 +303,15 @@ void ViewManager::updateViewSettings()
 
 void ViewManager::setUpdatesEnabled(bool enable)
 {
-    if (d->updatesEnabled == enable)
-        return;
     if (enable)
-        d->reenableUpdatesTimer->start();
-    else {
-        d->updatesEnabled = false;
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-            view(i)->setUpdatesEnabled(false);
-    }
+        updateViews();
+    else
+        disableUpdates();
+}
+
+void ViewManager::updateViews()
+{
+    d->updateViewsTimer->start();
 }
 
 void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
@@ -318,11 +326,26 @@ void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bo
 void ViewManager::modelReset()
 {
     d->clearViewVariables();
+    updateViews();
 }
 
-void ViewManager::reenableUpdates()
+void ViewManager::disableUpdates()
 {
+    if (!d->updatesEnabled)
+        return;
+    d->updatesEnabled = false;
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-        view(i)->setUpdatesEnabled(true);
-    d->updatesEnabled = true;
+        view(i)->setUpdatesEnabled(false);
+}
+
+void ViewManager::enableUpdates()
+{
+    if (d->updatesEnabled) {
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+            view(i)->update();
+    } else {
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+            view(i)->setUpdatesEnabled(true);
+        d->updatesEnabled = true;
+    }
 }

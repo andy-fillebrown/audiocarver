@@ -38,8 +38,8 @@ protected:
     qreal sceneWidth() const;
     QPointF sceneCenter() const;
 
-    Ac::ItemDataRole positionXRole() const { return Ac::TimePositionRole; }
-    Ac::ItemDataRole scaleXRole() const { return Ac::TimeScaleRole; }
+    Ac::ItemDataRole positionRoleX() const { return Ac::TimePositionRole; }
+    Ac::ItemDataRole scaleRoleX() const { return Ac::TimeScaleRole; }
 
     void zoomStarting();
 

@@ -37,7 +37,8 @@ public:
 
 public slots:
     void modelAboutToBeReset();
-    virtual void viewSettingsChanged();
+    virtual void viewPositionChanged(int role);
+    virtual void viewScaleChanged(int role);
 
 protected:
     virtual qreal sceneWidth() const { return 1.0f; }
@@ -45,10 +46,10 @@ protected:
     virtual QPointF sceneCenter() const { return QPointF(); }
     virtual QPointF sceneOffset() const { return QPointF(); }
 
-    virtual Ac::ItemDataRole positionXRole() const { return Ac::InvalidRole; }
-    virtual Ac::ItemDataRole positionYRole() const { return Ac::InvalidRole; }
-    virtual Ac::ItemDataRole scaleXRole() const { return Ac::InvalidRole; }
-    virtual Ac::ItemDataRole scaleYRole() const { return Ac::InvalidRole; }
+    virtual Ac::ItemDataRole positionRoleX() const { return Ac::InvalidRole; }
+    virtual Ac::ItemDataRole positionRoleY() const { return Ac::InvalidRole; }
+    virtual Ac::ItemDataRole scaleRoleX() const { return Ac::InvalidRole; }
+    virtual Ac::ItemDataRole scaleRoleY() const { return Ac::InvalidRole; }
 
     virtual void zoomStarting();
     virtual void zoomFinished();
@@ -84,8 +85,8 @@ public:
 protected:
     qreal sceneWidth() const;
 
-    Ac::ItemDataRole positionXRole() const { return Ac::TimePositionRole; }
-    Ac::ItemDataRole scaleXRole() const { return Ac::TimeScaleRole; }
+    Ac::ItemDataRole positionRoleX() const { return Ac::TimePositionRole; }
+    Ac::ItemDataRole scaleRoleX() const { return Ac::TimeScaleRole; }
 
 private:
     Q_DISABLE_COPY(GraphicsHView)

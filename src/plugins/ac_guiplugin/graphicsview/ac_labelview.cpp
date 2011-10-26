@@ -90,6 +90,7 @@ LabelView::~LabelView()
 
 void LabelView::viewScaleChanged(int role)
 {
+    GraphicsView::viewScaleChanged(role);
     if (scaleRole() == role)
         d->updateGridLineVisibilites();
 }
@@ -139,7 +140,7 @@ void LabelView::paintEvent(QPaintEvent *event)
 
 QPointF LabelVView::sceneCenter() const
 {
-    return QPointF(0.5f, -ViewManager::instance()->position(positionYRole()));
+    return QPointF(0.5f, -ViewManager::instance()->position(positionRoleY()));
 }
 
 void LabelVView::zoomStarting()
