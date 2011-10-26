@@ -29,6 +29,8 @@
 
 #include <QWidget>
 
+#include <QTimer>
+
 class ViewManagerPrivate
 {
 public:
@@ -49,6 +51,7 @@ public:
     qreal controlScale;
     int updatingViewSettings : 1;
     int updatesEnabled : 31;
+    QTimer *reenableUpdatesTimer;
 
     ViewManagerPrivate(ViewManager *q, QWidget *parentWidget)
         :   q(q)
@@ -61,7 +64,11 @@ public:
         ,   controlLabelView(0)
         ,   updatingViewSettings(false)
         ,   updatesEnabled(true)
-    {}
+        ,   reenableUpdatesTimer(new QTimer(q))
+    {
+        reenableUpdatesTimer->setSingleShot(true);
+        q->connect(reenableUpdatesTimer, SIGNAL(timeout()), q, SLOT(reenableUpdates()));
+    }
 
     void init()
     {
@@ -290,12 +297,13 @@ void ViewManager::setUpdatesEnabled(bool enable)
 {
     if (d->updatesEnabled == enable)
         return;
-    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-        QGraphicsView *v = view(i);
-        v->setViewportUpdateMode(enable ? QGraphicsView::MinimalViewportUpdate : QGraphicsView::NoViewportUpdate);
-        v->setUpdatesEnabled(enable);
+    if (enable)
+        d->reenableUpdatesTimer->start();
+    else {
+        d->updatesEnabled = false;
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+            view(i)->setUpdatesEnabled(false);
     }
-    d->updatesEnabled = enable;
 }
 
 void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
@@ -310,4 +318,11 @@ void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bo
 void ViewManager::modelReset()
 {
     d->clearViewVariables();
+}
+
+void ViewManager::reenableUpdates()
+{
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+        view(i)->setUpdatesEnabled(true);
+    d->updatesEnabled = true;
 }

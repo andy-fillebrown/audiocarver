@@ -62,6 +62,9 @@ signals:
     void viewSettingsChanged();
     void viewScaleChanged(int role);
 
+private slots:
+    void reenableUpdates();
+
 private:
     Q_DISABLE_COPY(ViewManager)
     ViewManagerPrivate *d;
