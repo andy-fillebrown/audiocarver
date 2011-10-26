@@ -64,13 +64,13 @@ QModelIndex TimeLabelView::gridLineListIndex() const
 
 qreal TimeLabelView::sceneWidth() const
 {
-    ViewManager *vm = ViewManager::instance();
+    const ViewManager *vm = ViewManager::instance();
     return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
 }
 
 QPointF TimeLabelView::sceneCenter() const
 {
-    ViewManager *vm = ViewManager::instance();
+    const ViewManager *vm = ViewManager::instance();
     return QPointF(vm->position(Ac::TimePositionRole), 0.0f);
 }
 

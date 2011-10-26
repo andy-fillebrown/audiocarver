@@ -50,11 +50,20 @@ public:
     void setPosition(qreal position, Ac::ItemDataRole role);
     qreal scale(Ac::ItemDataRole role) const;
     void setScale(qreal scale, Ac::ItemDataRole role);
-    void updateViewSettings();
-    void setUpdatesEnabled(bool enable);
+
+    void updateDatabase();
+    void updateViews();
+
+    bool databaseIsReading() const;
 
 public slots:
-    void updateViews();
+    void databaseAboutToBeRead();
+    void databaseRead();
+    void databaseAboutToBeWritten();
+
+    void disableUpdates();
+    void enableUpdates();
+
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
     void modelReset();
 
@@ -63,16 +72,10 @@ signals:
     void viewPositionChanged(int role);
     void viewScaleChanged(int role);
 
-private slots:
-    void disableUpdates();
-    void enableUpdates();
-
 private:
     Q_DISABLE_COPY(ViewManager)
     ViewManagerPrivate *d;
     friend class ViewManagerPrivate;
-
-    friend class GraphicsView;
 };
 
 #endif // AC_VIEWMANAGER_H

@@ -142,7 +142,7 @@ public:
     Model *model() const;
     void setModel(Model *model);
 
-    QGraphicsScene *scene(Ac::SceneType type);
+    QGraphicsScene *scene(int type);
 
 private:
     Q_DISABLE_COPY(SceneManager)

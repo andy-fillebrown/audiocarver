@@ -77,7 +77,9 @@ void Database::read(const QString &fileName)
 
 void Database::write(const QString &fileName)
 {
+    emit databaseAboutToBeWritten();
     XmlFileWriter writer;
     writer.setFileName(fileName);
     writer.write(query<IModelItem>(Score::instance()));
+    emit databaseWritten();
 }

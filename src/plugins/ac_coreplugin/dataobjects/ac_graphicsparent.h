@@ -40,9 +40,9 @@ class GraphicsParentPrivate : public GraphicsObjectPrivate
     Q_DECLARE_PUBLIC(GraphicsParent)
 
 public:
-    QMap<Ac::SceneType, QGraphicsItem*> mainGraphicsItems;
-    QMap<Ac::SceneType, QGraphicsItem*> unitXGraphicsItems;
-    QMap<Ac::SceneType, QGraphicsItem*> unitYGraphicsItems;
+    QMap<int, QGraphicsItem*> mainGraphicsItems;
+    QMap<int, QGraphicsItem*> unitXGraphicsItems;
+    QMap<int, QGraphicsItem*> unitYGraphicsItems;
 
     GraphicsParentPrivate(GraphicsObject *q);
     void init();

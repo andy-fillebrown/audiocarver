@@ -112,7 +112,7 @@ ViewSettings *Score::viewSettings() const
     return d->viewSettings;
 }
 
-QGraphicsItem *Score::sceneItem(Ac::SceneType type) const
+QGraphicsItem *Score::sceneItem(int type) const
 {
     Q_D(const Score);
     return d->mainGraphicsItems[type];

@@ -61,7 +61,7 @@ public:
     GridSettings *gridSettings() const;
     ViewSettings *viewSettings() const;
 
-    QGraphicsItem *sceneItem(Ac::SceneType type) const;
+    QGraphicsItem *sceneItem(int type) const;
 
     void setModel(Model *model);
     void clear();

@@ -38,7 +38,7 @@ public:
     ~Model();
 
     Score *score() const;
-    QGraphicsItem *sceneItem(Ac::SceneType type) const;
+    QGraphicsItem *sceneItem(int type) const;
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;

@@ -73,7 +73,7 @@ Score *Model::score() const
     return d->score;
 }
 
-QGraphicsItem *Model::sceneItem(Ac::SceneType type) const
+QGraphicsItem *Model::sceneItem(int type) const
 {
     return d->score ? d->score->sceneItem(type) : 0;
 }

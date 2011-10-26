@@ -19,22 +19,21 @@
 
 #include <QGraphicsItem>
 
-static void setParentGraphicsItems(const QMap<Ac::SceneType, QGraphicsItem*> &items,
-                                   const QMap<Ac::SceneType, QGraphicsItem*> &parentItems)
+static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &items,
+                                   const QMap<int, QGraphicsItem*> &parentItems)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-        Ac::SceneType type = Ac::SceneType(i);
-        QGraphicsItem *parentItem = parentItems.value(type, 0);
-        QGraphicsItem *item = items.value(type, 0);
+        QGraphicsItem *parentItem = parentItems.value(i, 0);
+        QGraphicsItem *item = items.value(i, 0);
         if (item && parentItem)
             item->setParentItem(parentItem);
     }
 }
 
-static void clearParentGraphicsItems(const QMap<Ac::SceneType, QGraphicsItem*> &items)
+static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-        QGraphicsItem *item = items.value(Ac::SceneType(i), 0);
+        QGraphicsItem *item = items.value(i, 0);
         if (item)
             item->setParentItem(0);
     }

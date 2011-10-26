@@ -29,25 +29,29 @@
 
 static const QCursor &crosshair()
 {
-    static QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
+    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
     return cursor;
 }
 
 static const QCursor &zoomCursor()
 {
-    static QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-cursor.png"));
+    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-cursor.png"));
     return cursor;
 }
+
+enum DragState {
+    Zooming = 1,
+    Panning,
+    Picking,
+    DraggingGrips
+};
 
 class GraphicsViewPrivate
 {
 public:
     GraphicsView *q;
     ViewManager *viewMgr;
-    int zooming : 1;
-    int panning : 1;
-    int picking : 1;
-    int draggingGrips : 29;
+    int dragState;
     QPoint dragStartPos;
     QPoint curDragPos;
     qreal zoomStartScaleX;
@@ -64,10 +68,7 @@ public:
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
         ,   viewMgr(ViewManager::instance())
-        ,   zooming(false)
-        ,   panning(false)
-        ,   picking(false)
-        ,   draggingGrips(false)
+        ,   dragState(0)
         ,   pickBox(new QGraphicsRectItem)
         ,   rootItem(new GraphicsRootItem)
     {
@@ -86,7 +87,7 @@ public:
 
     bool isDragging() const
     {
-        return panning || picking || zooming || draggingGrips;
+        return 0 < dragState;
     }
 
     QPointF startPosDC(const QPoint &pos)
@@ -110,7 +111,7 @@ public:
     void startZoom(const QPoint &pos)
     {
         q->zoomStarting();
-        zooming = true;
+        dragState = Zooming;
         dragStartPos = curDragPos = pos;
         zoomStartScaleX = viewMgr->scale(q->scaleRoleX());
         zoomStartScaleY = viewMgr->scale(q->scaleRoleY());
@@ -137,20 +138,20 @@ public:
             viewMgr->setScale(scale * zoomStartScaleY, q->scaleRoleY());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
-        viewMgr->updateViews();
+        q->update();
     }
 
     void finishZoom(const QPoint &pos)
     {
         zoomTo(pos);
-        zooming = false;
+        dragState = 0;
         q->zoomFinished();
     }
 
     void startPan(const QPoint &pos)
     {
         q->panStarting();
-        panning = true;
+        dragState = Panning;
         dragStartPos = pos;
         panStartCenter.setX(viewMgr->position(q->positionRoleX()));
         panStartCenter.setY(viewMgr->position(q->positionRoleY()));
@@ -163,13 +164,12 @@ public:
         QPointF center = panStartCenter - offset;
         viewMgr->setPosition(center.x(), q->positionRoleX());
         viewMgr->setPosition(center.y(), q->positionRoleY());
-        viewMgr->updateViews();
     }
 
     void finishPan(const QPoint &pos)
     {
         panTo(pos);
-        panning = false;
+        dragState = 0;
         q->panFinished();
     }
 
@@ -188,7 +188,9 @@ public:
                 }
             }
         }
-        draggingGrips = !gripsBeingDragged.isEmpty();
+        bool draggingGrips = !gripsBeingDragged.isEmpty();
+        if (draggingGrips)
+            dragState = DraggingGrips;
         return draggingGrips;
     }
 
@@ -200,13 +202,13 @@ public:
 
     void dragGripsTo(const QPoint &pos)
     {
-        viewMgr->setUpdatesEnabled(false);
+        viewMgr->disableUpdates();
         QPointF scenePos = rootItem->transform().map(q->mapToScene(pos));
         foreach (IGripItem *grip, gripsBeingDragged)
             grip->setPosition(scenePos);
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->updatePoints();
-        viewMgr->setUpdatesEnabled(true);
+        viewMgr->enableUpdates();
     }
 
     void finishDraggingGrips(const QPoint &pos)
@@ -216,7 +218,7 @@ public:
             entity->finishDraggingPoints();
         entitiesToUpdate.clear();
         gripsBeingDragged.clear();
-        draggingGrips = false;
+        dragState = 0;
     }
 
     QRect pickBoxBounds() const
@@ -227,13 +229,13 @@ public:
     void startPicking(const QPoint &pos)
     {
         dragStartPos = pos;
-        picking = true;
+        dragState = Picking;
     }
 
     void dragPickBoxTo(const QPoint &pos)
     {
         if (4 <= (pos - dragStartPos).manhattanLength()) {
-            QRect pickRect = QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
+            const QRect pickRect = QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
             pickBox->setRect(QRectF(q->mapToScene(pickRect.topLeft()), q->mapToScene(pickRect.bottomRight())));
             pickBox->show();
         }
@@ -247,9 +249,9 @@ public:
             rect = QRect(dragStartPos.x() - 2, dragStartPos.y() - 2, 4, 4);
         else
             rect = QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
-        QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
+        const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
         QList<IEntity*> entities;
-        QList<QGraphicsItem*> items = q->items(rect);
+        const QList<QGraphicsItem*> items = q->items(rect);
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = Q_U(item);
             if (unknown) {
@@ -268,7 +270,7 @@ public:
         else
             setPickedEntities(entities);
         pickBox->hide();
-        picking = false;
+        dragState = 0;
     }
 
     bool entityIsPicked(IEntity *entity)
@@ -295,7 +297,7 @@ public:
 
     void appendPickedEntities(const QList<IEntity*> &entities)
     {
-        viewMgr->setUpdatesEnabled(false);
+        viewMgr->disableUpdates();
         foreach (IEntity *entity, entities) {
             if (!entityIsPicked(entity)) {
                 GraphicsEntityItem *item = new GraphicsEntityItem(entity);
@@ -304,12 +306,12 @@ public:
                 item->highlight();
             }
         }
-        viewMgr->setUpdatesEnabled(true);
+        viewMgr->enableUpdates();
     }
 
     void removePickedEntities(const QList<IEntity*> &entities)
     {
-        viewMgr->setUpdatesEnabled(false);
+        viewMgr->disableUpdates();
         foreach (IEntity *entity, entities) {
             GraphicsEntityItem *item = findEntityItem(entity);
             if (item) {
@@ -318,27 +320,27 @@ public:
                 delete item;
             }
         }
-        viewMgr->setUpdatesEnabled(true);
+        viewMgr->enableUpdates();
     }
 
     void clearPickedEntities()
     {
-        viewMgr->setUpdatesEnabled(false);
+        viewMgr->disableUpdates();
         foreach (GraphicsEntityItem *item, pickedEntities)
             item->unhighlight();
         qDeleteAll(pickedEntities);
         pickedEntities.clear();
-        viewMgr->setUpdatesEnabled(true);
+        viewMgr->enableUpdates();
     }
 
     void updateViewSettings()
     {
-        qreal sceneWidth = q->sceneWidth();
-        qreal sceneHeight = q->sceneHeight();
-        qreal viewWidth = q->width();
-        qreal viewHeight = q->height();
+        const qreal sceneWidth = q->sceneWidth();
+        const qreal sceneHeight = q->sceneHeight();
+        const qreal viewWidth = q->width();
+        const qreal viewHeight = q->height();
         QRectF sceneRect(0.0f, 0.0f, sceneWidth, sceneHeight);
-        QPointF sceneOffset = q->sceneCenter() - sceneRect.center();
+        const QPointF sceneOffset = q->sceneCenter() - sceneRect.center();
         sceneRect.translate(sceneOffset + q->sceneOffset());
         q->setSceneRect(sceneRect);
         q->setTransform(QTransform::fromScale(viewWidth / sceneWidth, viewHeight / sceneHeight));
@@ -379,12 +381,16 @@ void GraphicsView::modelAboutToBeReset()
 
 void GraphicsView::viewPositionChanged(int role)
 {
+    if (d->viewMgr->databaseIsReading())
+        return;
     if (positionRoleX() == role || positionRoleY() == role)
         d->updateViewSettings();
 }
 
 void GraphicsView::viewScaleChanged(int role)
 {
+    if (d->viewMgr->databaseIsReading())
+        return;
     if (scaleRoleX() == role || scaleRoleY() == role)
         d->updateViewSettings();
 }
@@ -434,53 +440,64 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d->zooming) {
-        setUpdatesEnabled(false);
+    switch (d->dragState) {
+    case Zooming:
         d->zoomTo(event->pos());
-    } else if (d->panning)
+        break;
+    case Panning:
         d->panTo(event->pos());
-    else if (d->draggingGrips)
+        break;
+    case DraggingGrips:
         d->dragGripsTo(event->pos());
-    else if (d->picking)
+        break;
+    case Picking:
         d->dragPickBoxTo(event->pos());
+    }
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (Qt::RightButton == event->button()) {
-        if (d->zooming) {
-            setUpdatesEnabled(false);
+        switch (d->dragState) {
+        case Zooming:
             d->finishZoom(event->pos());
-        } else if (d->panning)
+            break;
+        case Panning:
             d->finishPan(event->pos());
+        default:
+            break;
+        }
     } else if (Qt::LeftButton == event->button()) {
-        if (d->draggingGrips)
+        switch (d->dragState) {
+        case DraggingGrips:
             d->finishDraggingGrips(event->pos());
-        else if (d->picking)
+            break;
+        case Picking:
             d->finishPicking(event->pos());
+        default:
+            break;
+        }
     }
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
-    if (d->zooming || d->panning)
+    if (Zooming == d->dragState || Panning == d->dragState)
         return;
-    qreal scaleAmount = 1.25f;
-    if (event->delta() < 0)
-        scaleAmount = 1.0f / scaleAmount;
-    qreal scaleX = scaleAmount * d->viewMgr->scale(scaleRoleX());
-    qreal scaleY = scaleAmount * d->viewMgr->scale(scaleRoleY());
-    QPointF posDC = d->startPosDC(event->pos());
-    QPointF offsetDC = d->centerOffsetDC(posDC);
-    d->viewMgr->setScale(scaleX, scaleRoleX());
-    d->viewMgr->setScale(scaleY, scaleRoleY());
-    d->recenter(posDC, offsetDC);
-    d->viewMgr->updateViews();
+    const qreal scaleAmount = event->delta() < 0 ? 1.0f / 1.25f : 1.25f;
+    const qreal scaleX = d->viewMgr->scale(scaleRoleX());
+    const qreal scaleY = d->viewMgr->scale(scaleRoleY());
+    const QPointF posDC = d->startPosDC(event->pos());
+    const QPointF offsetDC = d->centerOffsetDC(posDC);
+    d->viewMgr->setScale(scaleAmount * scaleX, scaleRoleX());
+    d->viewMgr->setScale(scaleAmount * scaleY, scaleRoleY());
+    if (!qFuzzyCompare(scaleX, d->viewMgr->scale(scaleRoleX())) || !qFuzzyCompare(scaleY, d->viewMgr->scale(scaleRoleY())))
+        d->recenter(posDC, offsetDC);
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
-    if (d->draggingGrips)
+    if (DraggingGrips == d->dragState)
         return;
     if (event->key() == Qt::Key_Escape)
         d->clearPickedEntities();
@@ -489,7 +506,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 void GraphicsView::paintEvent(QPaintEvent *event)
 {
     QGraphicsView::paintEvent(event);
-    if (d->zooming) {
+    if (Zooming == d->dragState) {
         QPainter painter(viewport());
         painter.drawEllipse(d->dragStartPos, 2, 2);
         painter.setPen(Qt::DotLine);

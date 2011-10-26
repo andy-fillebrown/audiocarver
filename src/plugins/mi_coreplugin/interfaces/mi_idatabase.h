@@ -40,6 +40,8 @@ public:
 signals:
     void databaseAboutToBeRead();
     void databaseRead();
+    void databaseAboutToBeWritten();
+    void databaseWritten();
 
 private:
     Q_DISABLE_COPY(IDatabase)

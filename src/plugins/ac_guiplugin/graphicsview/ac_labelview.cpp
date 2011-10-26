@@ -25,7 +25,7 @@
 
 static const QCursor &zoomCursor()
 {
-    static QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"));
+    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"));
     return cursor;
 }
 
@@ -45,19 +45,19 @@ public:
 
     void updateGridLineVisibilites()
     {
-        qreal padding = 50.0f / q->paddingScale();
-        QModelIndex gridLines = q->gridLineListIndex();
+        const qreal padding = 50.0f / q->paddingScale();
+        const QModelIndex gridLines = q->gridLineListIndex();
         Model *model = ViewManager::instance()->model();
-        int n = model->rowCount(gridLines);
+        const int n = model->rowCount(gridLines);
         int minPriority = INT_MAX;
         int prevPriority = 0;
         qreal prevLocation = -1.0f;
         for (int i = 0;  i < n;  ++i) {
-            QModelIndex line = model->index(i, gridLines);
+            const QModelIndex line = model->index(i, gridLines);
             int curPriority = line.data(Ac::PriorityRole).toInt();
             if (minPriority && (minPriority < curPriority))
                 continue;
-            qreal curLocation = line.data(Ac::LocationRole).toReal();
+            const qreal curLocation = line.data(Ac::LocationRole).toReal();
             if (curLocation < prevLocation)
                 minPriority = qMin(minPriority, qMax(prevPriority, curPriority));
             else {
@@ -66,7 +66,7 @@ public:
             }
         }
         for (int i = 0;  i < n;  ++i) {
-            QModelIndex line = model->index(i, gridLines);
+            const QModelIndex line = model->index(i, gridLines);
             if (line.data(Ac::PriorityRole).toInt() <= minPriority)
                 model->setData(line, true, Ac::VisibilityRole);
             else
@@ -90,6 +90,8 @@ LabelView::~LabelView()
 
 void LabelView::viewScaleChanged(int role)
 {
+    if (ViewManager::instance()->databaseIsReading())
+        return;
     GraphicsView::viewScaleChanged(role);
     if (scaleRole() == role)
         d->updateGridLineVisibilites();
@@ -98,6 +100,8 @@ void LabelView::viewScaleChanged(int role)
 void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
     Q_UNUSED(bottomLeft);
+    if (ViewManager::instance()->databaseIsReading())
+        return;
     QModelIndex index = gridLineListIndex();
     if (topRight == gridLineListIndex())
         d->updateGridLineVisibilites();

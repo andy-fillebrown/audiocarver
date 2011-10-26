@@ -75,7 +75,7 @@ public:
 
     PointList gripPoints()
     {
-        int n = gripItems.count();
+        const int n = gripItems.count();
         PointList points;
         points.reserve(n);
         qSort(gripItems.begin(), gripItems.end(), gripLessThan);
@@ -86,7 +86,7 @@ public:
 
     void updateGripPositions()
     {
-        int n = gripItems.count();
+        const int n = gripItems.count();
         PointList points = entity->points();
         for (int i = 0;  i < n;  ++i)
             gripItems[i]->setPosition(points.at(i).pos);
@@ -99,8 +99,8 @@ GraphicsEntityItem::GraphicsEntityItem(IEntity *entity)
     if (!entity)
         return;
     d->entity = entity;
-    PointList points = entity->points();
-    foreach (Point point, points)
+    const PointList &points = entity->points();
+    foreach (const Point &point, points)
         d->addGripItem(new GraphicsGripItem(point.pos));
 }
 

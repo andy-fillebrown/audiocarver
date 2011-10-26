@@ -85,21 +85,17 @@ void SceneManager::setModel(Model *model)
     if (d->model == model)
         return;
     if (d->model) {
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-            Ac::SceneType type = Ac::SceneType(i);
-            scene(type)->removeItem(d->model->sceneItem(type));
-        }
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+            scene(i)->removeItem(d->model->sceneItem(i));
     }
     d->model = model;
     if (d->model) {
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-            Ac::SceneType type = Ac::SceneType(i);
-            scene(type)->addItem(d->model->sceneItem(type));
-        }
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+            scene(i)->addItem(d->model->sceneItem(i));
     }
 }
 
-QGraphicsScene *SceneManager::scene(Ac::SceneType type)
+QGraphicsScene *SceneManager::scene(int type)
 {
     switch (type) {
     case Ac::PitchScene:
