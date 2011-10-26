@@ -68,6 +68,8 @@ private:
     Q_DISABLE_COPY(GraphicsView)
     GraphicsViewPrivate *d;
     friend class GraphicsViewPrivate;
+
+    friend class GraphicsHView;
 };
 
 class GraphicsHView : public GraphicsView

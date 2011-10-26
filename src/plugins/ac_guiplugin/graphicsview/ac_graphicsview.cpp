@@ -43,6 +43,7 @@ class GraphicsViewPrivate
 {
 public:
     GraphicsView *q;
+    ViewManager *viewMgr;
     int zooming : 1;
     int panning : 1;
     int picking : 1;
@@ -62,6 +63,7 @@ public:
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
+        ,   viewMgr(ViewManager::instance())
         ,   zooming(false)
         ,   panning(false)
         ,   picking(false)
@@ -94,17 +96,15 @@ public:
 
     QPointF centerOffsetDC(const QPointF &posDC)
     {
-        ViewManager *vm = ViewManager::instance();
-        QPointF center = QPointF(vm->position(q->positionXRole()), vm->position(q->positionYRole()));
+        QPointF center = QPointF(viewMgr->position(q->positionXRole()), viewMgr->position(q->positionYRole()));
         return q->sceneScale().map(center - posDC);
     }
 
     void recenter(const QPointF &startPosDC, const QPointF &centerOffsetDC)
     {
-        ViewManager *vm = ViewManager::instance();
         QPointF center = startPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(centerOffsetDC);
-        vm->setPosition(center.x(), q->positionXRole());
-        vm->setPosition(center.y(), q->positionYRole());
+        viewMgr->setPosition(center.x(), q->positionXRole());
+        viewMgr->setPosition(center.y(), q->positionYRole());
     }
 
     void startZoom(const QPoint &pos)
@@ -112,9 +112,8 @@ public:
         q->zoomStarting();
         zooming = true;
         dragStartPos = curDragPos = pos;
-        ViewManager *vm = ViewManager::instance();
-        zoomStartScaleX = vm->scale(q->scaleXRole());
-        zoomStartScaleY = vm->scale(q->scaleYRole());
+        zoomStartScaleX = viewMgr->scale(q->scaleXRole());
+        zoomStartScaleY = viewMgr->scale(q->scaleYRole());
         zoomStartPosDC = startPosDC(pos);
         zoomCenterOffsetDC = centerOffsetDC(zoomStartPosDC);
     }
@@ -123,20 +122,19 @@ public:
     {
         curDragPos = pos;
         QPoint offset = pos - dragStartPos;
-        ViewManager *vm = ViewManager::instance();
         if (offset.x()) {
             qreal x = offset.x();
             qreal scale = 1.0f + (qAbs(x) / 10.0f);
             if (x < 0.0f)
                 scale = 1.0f / scale;
-            vm->setScale(scale * zoomStartScaleX, q->scaleXRole());
+            viewMgr->setScale(scale * zoomStartScaleX, q->scaleXRole());
         }
         if (offset.x()) {
             qreal y = offset.y();
             qreal scale = 1.0f + (qAbs(y) / 10.0f);
             if (0.0f < y)
                 scale = 1.0f / scale;
-            vm->setScale(scale * zoomStartScaleY, q->scaleYRole());
+            viewMgr->setScale(scale * zoomStartScaleY, q->scaleYRole());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
     }
@@ -153,19 +151,17 @@ public:
         q->panStarting();
         panning = true;
         dragStartPos = pos;
-        ViewManager *vm = ViewManager::instance();
-        panStartCenter.setX(vm->position(q->positionXRole()));
-        panStartCenter.setY(vm->position(q->positionYRole()));
+        panStartCenter.setX(viewMgr->position(q->positionXRole()));
+        panStartCenter.setY(viewMgr->position(q->positionYRole()));
     }
 
     void panTo(const QPoint &pos)
     {
         q->setCursor(Qt::ClosedHandCursor);
-        ViewManager *vm = ViewManager::instance();
         QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
         QPointF center = panStartCenter - offset;
-        vm->setPosition(center.x(), q->positionXRole());
-        vm->setPosition(center.y(), q->positionYRole());
+        viewMgr->setPosition(center.x(), q->positionXRole());
+        viewMgr->setPosition(center.y(), q->positionYRole());
     }
 
     void finishPan(const QPoint &pos)
@@ -423,14 +419,13 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if (d->zooming) {
         d->zoomTo(event->pos());
-        ViewManager *vm = ViewManager::instance();
-        emit vm->viewScaleChanged(scaleXRole());
-        emit vm->viewScaleChanged(scaleYRole());
-        emit vm->viewSettingsChanged();
-        update();
+        emit d->viewMgr->viewScaleChanged(scaleXRole());
+        emit d->viewMgr->viewScaleChanged(scaleYRole());
+        emit d->viewMgr->viewSettingsChanged();
+        repaint();
     } else if (d->panning) {
         d->panTo(event->pos());
-        emit ViewManager::instance()->viewSettingsChanged();
+        emit d->viewMgr->viewSettingsChanged();
     } else if (d->draggingGrips)
         d->dragGripsTo(event->pos());
     else if (d->picking)
@@ -442,10 +437,10 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (Qt::RightButton == event->button()) {
         if (d->zooming) {
             d->finishZoom(event->pos());
-            update();
+            repaint();
         } else if (d->panning)
             d->finishPan(event->pos());
-        emit ViewManager::instance()->viewSettingsChanged();
+        emit d->viewMgr->viewSettingsChanged();
     } else if (Qt::LeftButton == event->button()) {
         if (d->draggingGrips)
             d->finishDraggingGrips(event->pos());
@@ -461,17 +456,16 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     qreal scaleAmount = 1.25f;
     if (event->delta() < 0)
         scaleAmount = 1.0f / scaleAmount;
-    ViewManager *vm = ViewManager::instance();
-    qreal scaleX = scaleAmount * vm->scale(scaleXRole());
-    qreal scaleY = scaleAmount * vm->scale(scaleYRole());
+    qreal scaleX = scaleAmount * d->viewMgr->scale(scaleXRole());
+    qreal scaleY = scaleAmount * d->viewMgr->scale(scaleYRole());
     QPointF posDC = d->startPosDC(event->pos());
     QPointF offsetDC = d->centerOffsetDC(posDC);
-    vm->setScale(scaleX, scaleXRole());
-    vm->setScale(scaleY, scaleYRole());
+    d->viewMgr->setScale(scaleX, scaleXRole());
+    d->viewMgr->setScale(scaleY, scaleYRole());
     d->recenter(posDC, offsetDC);
-    emit vm->viewScaleChanged(scaleXRole());
-    emit vm->viewScaleChanged(scaleYRole());
-    emit vm->viewSettingsChanged();
+    emit d->viewMgr->viewScaleChanged(scaleXRole());
+    emit d->viewMgr->viewScaleChanged(scaleYRole());
+    emit d->viewMgr->viewSettingsChanged();
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
@@ -495,6 +489,5 @@ void GraphicsView::paintEvent(QPaintEvent *event)
 
 qreal GraphicsHView::sceneWidth() const
 {
-    ViewManager *vm = ViewManager::instance();
-    return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
+    return d->viewMgr->scoreLength() / d->viewMgr->scale(Ac::TimeScaleRole);
 }

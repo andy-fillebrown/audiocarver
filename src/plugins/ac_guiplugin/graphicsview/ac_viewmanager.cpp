@@ -33,6 +33,7 @@ class ViewManagerPrivate
 {
 public:
     ViewManager *q;
+    QWidget *parentWidget;
     SceneManager *sceneManager;
     PitchView *pitchView;
     ControlView *controlView;
@@ -48,16 +49,26 @@ public:
     qreal controlScale;
     int updatingViewSettings : 32;
 
-    ViewManagerPrivate(ViewManager *q, QWidget *widget)
+    ViewManagerPrivate(ViewManager *q, QWidget *parentWidget)
         :   q(q)
+        ,   parentWidget(parentWidget)
         ,   sceneManager(new SceneManager(q))
-        ,   pitchView(new PitchView(sceneManager->scene(Ac::PitchScene), widget))
-        ,   controlView(new ControlView(sceneManager->scene(Ac::ControlScene), widget))
-        ,   timeLabelView(new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget))
-        ,   pitchLabelView(new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget))
-        ,   controlLabelView(new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), widget))
+        ,   pitchView(0)
+        ,   controlView(0)
+        ,   timeLabelView(0)
+        ,   pitchLabelView(0)
+        ,   controlLabelView(0)
         ,   updatingViewSettings(false)
     {}
+
+    void init()
+    {
+        pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), parentWidget);
+        controlView = new ControlView(sceneManager->scene(Ac::ControlScene), parentWidget);
+        timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), parentWidget);
+        pitchLabelView = new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), parentWidget);
+        controlLabelView = new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), parentWidget);
+    }
 
     void clearViewVariables()
     {
@@ -120,6 +131,7 @@ ViewManager::ViewManager(QWidget *widget)
     ,   d(new ViewManagerPrivate(this, widget))
 {
     ::instance = this;
+    d->init();
     connect(this, SIGNAL(viewSettingsChanged()), d->pitchView, SLOT(viewSettingsChanged()));
     connect(this, SIGNAL(viewSettingsChanged()), d->controlView, SLOT(viewSettingsChanged()));
     connect(this, SIGNAL(viewSettingsChanged()), d->timeLabelView, SLOT(viewSettingsChanged()));
