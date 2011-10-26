@@ -40,7 +40,7 @@ public:
 
     static ViewManager *instance();
 
-    QGraphicsView *view(Ac::SceneType type) const;
+    QGraphicsView *view(int type) const;
 
     Model *model() const;
     void setModel(Model *model);
@@ -51,6 +51,8 @@ public:
     qreal scale(Ac::ItemDataRole role) const;
     void setScale(qreal scale, Ac::ItemDataRole role);
     void updateViewSettings();
+
+    void setUpdatesEnabled(bool enable);
 
 public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);

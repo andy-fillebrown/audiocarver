@@ -120,6 +120,7 @@ public:
 
     void zoomTo(const QPoint &pos)
     {
+        viewMgr->setUpdatesEnabled(false);
         curDragPos = pos;
         QPoint offset = pos - dragStartPos;
         if (offset.x()) {
@@ -137,6 +138,7 @@ public:
             viewMgr->setScale(scale * zoomStartScaleY, q->scaleYRole());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
+        viewMgr->setUpdatesEnabled(true);
     }
 
     void finishZoom(const QPoint &pos)
@@ -157,11 +159,13 @@ public:
 
     void panTo(const QPoint &pos)
     {
+        viewMgr->setUpdatesEnabled(false);
         q->setCursor(Qt::ClosedHandCursor);
         QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
         QPointF center = panStartCenter - offset;
         viewMgr->setPosition(center.x(), q->positionXRole());
         viewMgr->setPosition(center.y(), q->positionYRole());
+        viewMgr->setUpdatesEnabled(true);
     }
 
     void finishPan(const QPoint &pos)
@@ -198,11 +202,13 @@ public:
 
     void dragGripsTo(const QPoint &pos)
     {
+        viewMgr->setUpdatesEnabled(false);
         QPointF scenePos = rootItem->transform().map(q->mapToScene(pos));
         foreach (IGripItem *grip, gripsBeingDragged)
             grip->setPosition(scenePos);
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->updatePoints();
+        viewMgr->setUpdatesEnabled(true);
     }
 
     void finishDraggingGrips(const QPoint &pos)
@@ -291,6 +297,7 @@ public:
 
     void appendPickedEntities(const QList<IEntity*> &entities)
     {
+        viewMgr->setUpdatesEnabled(false);
         foreach (IEntity *entity, entities) {
             if (!entityIsPicked(entity)) {
                 GraphicsEntityItem *item = new GraphicsEntityItem(entity);
@@ -299,10 +306,12 @@ public:
                 item->highlight();
             }
         }
+        viewMgr->setUpdatesEnabled(true);
     }
 
     void removePickedEntities(const QList<IEntity*> &entities)
     {
+        viewMgr->setUpdatesEnabled(false);
         foreach (IEntity *entity, entities) {
             GraphicsEntityItem *item = findEntityItem(entity);
             if (item) {
@@ -311,14 +320,17 @@ public:
                 delete item;
             }
         }
+        viewMgr->setUpdatesEnabled(true);
     }
 
     void clearPickedEntities()
     {
+        viewMgr->setUpdatesEnabled(false);
         foreach (GraphicsEntityItem *item, pickedEntities)
             item->unhighlight();
         qDeleteAll(pickedEntities);
         pickedEntities.clear();
+        viewMgr->setUpdatesEnabled(true);
     }
 
     void updateViewSettings()
@@ -422,7 +434,6 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
         emit d->viewMgr->viewScaleChanged(scaleXRole());
         emit d->viewMgr->viewScaleChanged(scaleYRole());
         emit d->viewMgr->viewSettingsChanged();
-        repaint();
     } else if (d->panning) {
         d->panTo(event->pos());
         emit d->viewMgr->viewSettingsChanged();
@@ -437,7 +448,6 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
     if (Qt::RightButton == event->button()) {
         if (d->zooming) {
             d->finishZoom(event->pos());
-            repaint();
         } else if (d->panning)
             d->finishPan(event->pos());
         emit d->viewMgr->viewSettingsChanged();
@@ -453,6 +463,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
 {
     if (d->zooming || d->panning)
         return;
+    d->viewMgr->setUpdatesEnabled(false);
     qreal scaleAmount = 1.25f;
     if (event->delta() < 0)
         scaleAmount = 1.0f / scaleAmount;
@@ -466,6 +477,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     emit d->viewMgr->viewScaleChanged(scaleXRole());
     emit d->viewMgr->viewScaleChanged(scaleYRole());
     emit d->viewMgr->viewSettingsChanged();
+    d->viewMgr->setUpdatesEnabled(true);
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)

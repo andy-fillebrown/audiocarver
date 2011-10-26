@@ -47,7 +47,8 @@ public:
     qreal timeScale;
     qreal pitchScale;
     qreal controlScale;
-    int updatingViewSettings : 32;
+    int updatingViewSettings : 1;
+    int updatesEnabled : 31;
 
     ViewManagerPrivate(ViewManager *q, QWidget *parentWidget)
         :   q(q)
@@ -59,6 +60,7 @@ public:
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
         ,   updatingViewSettings(false)
+        ,   updatesEnabled(true)
     {}
 
     void init()
@@ -152,7 +154,7 @@ ViewManager *ViewManager::instance()
     return ::instance;
 }
 
-QGraphicsView *ViewManager::view(Ac::SceneType type) const
+QGraphicsView *ViewManager::view(int type) const
 {
     switch (type) {
     case Ac::PitchScene: return d->pitchView;
@@ -284,6 +286,18 @@ void ViewManager::updateViewSettings()
     d->updatingViewSettings = false;
 }
 
+void ViewManager::setUpdatesEnabled(bool enable)
+{
+    if (d->updatesEnabled == enable)
+        return;
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+        QGraphicsView *v = view(i);
+        v->setViewportUpdateMode(enable ? QGraphicsView::MinimalViewportUpdate : QGraphicsView::NoViewportUpdate);
+        v->setUpdatesEnabled(enable);
+    }
+    d->updatesEnabled = enable;
+}
+
 void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
     Q_UNUSED(bottomLeft);
@@ -297,4 +311,3 @@ void ViewManager::modelReset()
 {
     d->clearViewVariables();
 }
-
