@@ -501,5 +501,5 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="105.01259049684" pitchPosition="85.6316576665005" controlPosition="0.5" timeScale="8.3819029494947" pitchScale="8.3819029494947" controlScale="0.899999976158142"/>
+    <ViewSettings timePosition="62.2346622922671" pitchPosition="61.6097395717752" controlPosition="0.5" timeScale="0.900000110268598" pitchScale="0.900000110268598" controlScale="0.899999976158142"/>
 </Score>

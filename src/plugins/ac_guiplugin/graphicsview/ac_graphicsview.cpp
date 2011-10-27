@@ -353,6 +353,7 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
 {
     setInteractive(false);
     setOptimizationFlag(DontSavePainterState);
+    setTransformationAnchor(QGraphicsView::NoAnchor);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setCursor(crosshair());
