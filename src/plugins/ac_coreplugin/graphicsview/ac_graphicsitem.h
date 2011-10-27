@@ -53,9 +53,7 @@ class GraphicsPathItem : public QGraphicsPathItem
 public:
     explicit GraphicsPathItem(QGraphicsItem *parent = 0)
         :   QGraphicsPathItem(parent)
-    {
-        setBoundingRegionGranularity(1.0f);
-    }
+    {}
 
     QPainterPath shape() const { return path(); }
 };
