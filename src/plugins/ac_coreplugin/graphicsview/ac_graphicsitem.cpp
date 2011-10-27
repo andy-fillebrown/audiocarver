@@ -137,6 +137,7 @@ public:
     GraphicsTextItemPrivate(GraphicsTextItem *q)
         :   textItem(new QGraphicsTextItem(q))
     {
+        textItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
         textItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     }
 
