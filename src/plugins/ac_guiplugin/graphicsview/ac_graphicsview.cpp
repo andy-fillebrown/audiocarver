@@ -491,8 +491,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     const QPointF offsetDC = d->centerOffsetDC(posDC);
     d->viewMgr->setScale(scaleAmount * scaleX, scaleRoleX());
     d->viewMgr->setScale(scaleAmount * scaleY, scaleRoleY());
-    if (!qFuzzyCompare(scaleX, d->viewMgr->scale(scaleRoleX())) || !qFuzzyCompare(scaleY, d->viewMgr->scale(scaleRoleY())))
-        d->recenter(posDC, offsetDC);
+    d->recenter(posDC, offsetDC);
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)

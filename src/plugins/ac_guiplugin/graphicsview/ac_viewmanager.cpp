@@ -33,6 +33,11 @@
 
 #include <QTimer>
 
+static bool fuzzyCompare(qreal a, qreal b)
+{
+    return qFuzzyCompare(float(a), float(b));
+}
+
 class ViewManagerPrivate
 {
 public:
@@ -222,21 +227,21 @@ void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
     switch (role) {
     case Ac::TimePositionRole:
         position = qBound(qreal(0.0f), position, d->scoreLength);
-        if (qFuzzyCompare(d->timePos, position))
+        if (fuzzyCompare(d->timePos, position))
             return;
         d->timePos = position;
         emit viewPositionChanged(Ac::TimePositionRole);
         break;
     case Ac::PitchPositionRole:
         position = qBound(qreal(0.0f), position, qreal(127.0f));
-        if (qFuzzyCompare(d->pitchPos, position))
+        if (fuzzyCompare(d->pitchPos, position))
             return;
         d->pitchPos = position;
         emit viewPositionChanged(Ac::PitchPositionRole);
         break;
     case Ac::ControlPositionRole:
         position = qBound(qreal(0.0f), position, qreal(1.0f));
-        if (qFuzzyCompare(d->controlPos, position))
+        if (fuzzyCompare(d->controlPos, position))
             return;
         d->controlPos = position;
         emit viewPositionChanged(Ac::ControlPositionRole);
@@ -263,7 +268,7 @@ void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
 {
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;
-    if (qFuzzyCompare(this->scale(role), scale))
+    if (fuzzyCompare(this->scale(role), scale))
         return;
     switch (role) {
     case Ac::TimeScaleRole:
