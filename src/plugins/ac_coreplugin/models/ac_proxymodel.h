@@ -70,6 +70,18 @@ public:
         return QSortFilterProxyModel::data(index, mappedRole);
     }
 
+    bool setData(const QModelIndex &index, const QVariant &value, int role)
+    {
+        int mappedRole = -1;
+        int column = index.column();
+        const RoleMapList &maps = roleMaps();
+        if (0 < column && column < maps.count())
+            mappedRole = maps.at(column).value(role, -1);
+        if (mappedRole == -1)
+            return false;
+        return QSortFilterProxyModel::setData(index, value, mappedRole);
+    }
+
 private:
     RolesToColumnsProxyModelPrivate *d;
 };
