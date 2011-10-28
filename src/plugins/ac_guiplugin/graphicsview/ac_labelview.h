@@ -32,6 +32,7 @@ public:
     ~LabelView();
 
     // GraphicsView
+    void updateView();
     void viewScaleChanged(int role);
 
 public slots:

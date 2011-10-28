@@ -36,6 +36,7 @@ public:
     QTransform sceneTransform() const;
 
     bool isDirty() const;
+    virtual void updateView();
 
 public slots:
     void modelAboutToBeReset();

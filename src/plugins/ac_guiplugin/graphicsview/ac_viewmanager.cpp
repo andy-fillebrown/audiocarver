@@ -304,15 +304,15 @@ void ViewManager::updateDatabase()
 void ViewManager::updateViews()
 {
     if (d->pitchView->isDirty())
-        d->pitchView->update();
+        d->pitchView->updateView();
     if (d->controlView->isDirty())
-        d->controlView->update();
+        d->controlView->updateView();
     if (d->timeLabelView->isDirty())
-        d->timeLabelView->update();
+        d->timeLabelView->updateView();
     if (d->pitchLabelView->isDirty())
-        d->pitchLabelView->update();
+        d->pitchLabelView->updateView();
     if (d->controlLabelView->isDirty())
-        d->controlLabelView->update();
+        d->controlLabelView->updateView();
 }
 
 bool ViewManager::databaseIsReading() const
@@ -333,6 +333,7 @@ void ViewManager::databaseRead()
     d->databaseReading = false;
     d->emitAllViewSettingsChanged();
     enableUpdates();
+    updateViews();
 }
 
 void ViewManager::databaseAboutToBeWritten()

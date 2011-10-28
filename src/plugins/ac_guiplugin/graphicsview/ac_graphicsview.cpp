@@ -58,6 +58,7 @@ public:
     qreal zoomStartScaleY;
     QPointF zoomStartPosDC;
     QPointF zoomCenterOffsetDC;
+    QRect prevZoomGlyphRect;
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
     QList<GraphicsEntityItem*> pickedEntities;
@@ -110,6 +111,16 @@ public:
         viewMgr->setPosition(center.y(), q->positionRoleY());
     }
 
+    QRect zoomGlyphLineRect() const
+    {
+        return QRect(dragStartPos, curDragPos).normalized().adjusted(-1, -1, 2, 2);
+    }
+
+    QRect zoomGlyphCircleRect() const
+    {
+        return QRect(dragStartPos, dragStartPos).adjusted(-2, -2, 4, 4);
+    }
+
     void startZoom(const QPoint &pos)
     {
         q->zoomStarting();
@@ -119,6 +130,8 @@ public:
         zoomStartScaleY = viewMgr->scale(q->scaleRoleY());
         zoomStartPosDC = startPosDC(pos);
         zoomCenterOffsetDC = centerOffsetDC(zoomStartPosDC);
+        prevZoomGlyphRect = QRect();
+        q->update(zoomGlyphCircleRect());
     }
 
     void zoomTo(const QPoint &pos)
@@ -138,14 +151,18 @@ public:
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
         if (dirty)
             viewMgr->updateViews();
-        else
-            q->update();
+        else {
+            const QRect rect = zoomGlyphLineRect();
+            q->update(prevZoomGlyphRect.united(rect));
+            prevZoomGlyphRect = rect;
+        }
     }
 
     void finishZoom(const QPoint &pos)
     {
         zoomTo(pos);
         dragState = 0;
+        q->update(QRect(dragStartPos, dragStartPos).adjusted(-2, -2, 4, 4));
         q->zoomFinished();
     }
 
@@ -383,6 +400,13 @@ bool GraphicsView::isDirty() const
     return d->dirty;
 }
 
+void GraphicsView::updateView()
+{
+    if (d->dirty)
+        updateViewSettings();
+    update();
+}
+
 void GraphicsView::modelAboutToBeReset()
 {
     d->clearPickedEntities();
@@ -506,6 +530,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     d->viewMgr->setScale(scaleAmount * scaleX, scaleRoleX());
     d->viewMgr->setScale(scaleAmount * scaleY, scaleRoleY());
     d->recenter(posDC, offsetDC);
+    d->viewMgr->updateViews();
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
@@ -518,8 +543,6 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 
 void GraphicsView::paintEvent(QPaintEvent *event)
 {
-    if (d->dirty)
-        updateViewSettings();
     QGraphicsView::paintEvent(event);
     if (Zooming == d->dragState) {
         QPainter painter(viewport());

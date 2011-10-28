@@ -34,10 +34,12 @@ class LabelViewPrivate
 public:
     LabelView *q;
     QCursor zoomCursor;
+    quint32 updatesDisabled : 32;
 
     LabelViewPrivate(LabelView *q)
         :   q(q)
         ,   zoomCursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"))
+        ,   updatesDisabled(false)
     {}
 
     virtual ~LabelViewPrivate()
@@ -67,10 +69,19 @@ public:
         }
         for (int i = 0;  i < n;  ++i) {
             const QModelIndex line = model->index(i, gridLines);
-            if (line.data(Ac::PriorityRole).toInt() <= minPriority)
-                model->setData(line, true, Ac::VisibilityRole);
-            else
-                model->setData(line, false, Ac::VisibilityRole);
+            if (line.data(Ac::PriorityRole).toInt() <= minPriority) {
+                if (!line.data(Ac::VisibilityRole).toBool()) {
+                    q->setUpdatesEnabled(false);
+                    updatesDisabled = true;
+                    model->setData(line, true, Ac::VisibilityRole);
+                }
+            } else {
+                if (line.data(Ac::VisibilityRole).toBool()) {
+                    q->setUpdatesEnabled(false);
+                    updatesDisabled = true;
+                    model->setData(line, false, Ac::VisibilityRole);
+                }
+            }
         }
     }
 };
@@ -86,6 +97,16 @@ LabelView::LabelView(QGraphicsScene *scene, QWidget *parent)
 LabelView::~LabelView()
 {
     delete d;
+}
+
+void LabelView::updateView()
+{
+    if (isDirty())
+        updateViewSettings();
+    if (d->updatesDisabled)
+        setUpdatesEnabled(true);
+    else
+        GraphicsView::updateView();
 }
 
 void LabelView::viewScaleChanged(int role)
