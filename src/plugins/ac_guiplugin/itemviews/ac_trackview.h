@@ -33,6 +33,8 @@ public:
     }
 
 protected:
+    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
     void resizeEvent(QResizeEvent *event);
 };
 

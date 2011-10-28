@@ -51,7 +51,7 @@ public:
     bool isVisible() const;
     void setVisible(bool visible);
     bool isRecording() const;
-    void setRecording(bool recording = true);
+    void setRecording(bool recording);
 
     // ScoreObject
     qreal length() const;

@@ -108,6 +108,8 @@ void Track::setVisible(bool visible)
     d->beginChangeData();
     foreach (QGraphicsItem *item, d->mainGraphicsItems)
         item->setVisible(visible);
+    if (!visible)
+        setRecording(false);
     d->endChangeData();
 }
 
@@ -124,6 +126,8 @@ void Track::setRecording(bool recording)
         return;
     d->beginChangeData();
     d->recording = recording;
+    if (recording)
+        setVisible(true);
     d->endChangeData();
 }
 

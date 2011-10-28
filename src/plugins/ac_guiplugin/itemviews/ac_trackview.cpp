@@ -17,13 +17,15 @@
 
 #include "ac_trackview.h"
 
+#include <QHeaderView>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
 
+#include <QDebug>
+
 static const int colorColumnWidth = 16;
-static const int visibilityColumnWidth = 12;
-static const int recordingColumnWidth = 12;
+static const int buttonColumnWidth = 12;
 
 class Delegate : public QAbstractItemDelegate
 {
@@ -58,12 +60,23 @@ public:
     }
 };
 
-class VisibilityDelegate : public Delegate
+class ToggleButtonDelegate : public Delegate
 {
 public:
-    explicit VisibilityDelegate(QObject *parent = 0)
+    explicit ToggleButtonDelegate(QObject *parent = 0)
         :   Delegate(parent)
     {}
+
+    virtual void setPainterColors(QPainter *painter, const QModelIndex &index) const
+    {
+        if (index.data().toBool())
+            painter->setBrush(Qt::SolidPattern);
+    }
+
+    virtual QRect adjustedButtonRect(const QRect &optionRect) const
+    {
+        return optionRect;
+    }
 
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
     {
@@ -78,37 +91,33 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        // Early out if track is not visible.
-        if (!index.data().toBool())
-            return;
-
-        // Draw black dot if track is visible.
         painter->save();
-        painter->setBrush(Qt::SolidPattern);
-        painter->drawEllipse(option.rect.center(), 2, 2);
+        setPainterColors(painter, index);
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->drawEllipse(adjustedButtonRect(option.rect).center(), 3, 3);
         painter->restore();
     }
 };
 
-class RecordingDelegate : public Delegate
+class RecordButtonDelegate : public ToggleButtonDelegate
 {
 public:
-    explicit RecordingDelegate(QObject *parent = 0)
-        :   Delegate(parent)
+    explicit RecordButtonDelegate(QObject *parent = 0)
+        :   ToggleButtonDelegate(parent)
     {}
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    QRect adjustedButtonRect(const QRect &optionRect) const
     {
-        // Early out if track is not visible.
-        if (!index.data().toBool())
-            return;
+        QRect adjusted = optionRect;
+        adjusted.setWidth(buttonColumnWidth);
+        return adjusted;
+    }
 
-        // Draw red dot if track is recording.
-        painter->save();
+    virtual void setPainterColors(QPainter *painter, const QModelIndex &index) const
+    {
         painter->setPen(Qt::red);
-        painter->setBrush(QBrush(Qt::red));
-        painter->drawEllipse(option.rect.center(), 2, 2);
-        painter->restore();
+        if (index.data().toBool())
+            painter->setBrush(QBrush(Qt::red));
     }
 };
 
@@ -119,22 +128,29 @@ TrackView::TrackView(QWidget *parent)
     setRootIsDecorated(false);
     setAutoScroll(false);
     setItemDelegateForColumn(0, new ColorDelegate(this));
-    setItemDelegateForColumn(2, new VisibilityDelegate(this));
-    setItemDelegateForColumn(3, new RecordingDelegate(this));
+    setItemDelegateForColumn(2, new ToggleButtonDelegate(this));
+    setItemDelegateForColumn(3, new RecordButtonDelegate(this));
     setSelectionMode(NoSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+}
+
+void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+    Q_UNUSED(topLeft);
+    Q_UNUSED(bottomRight);
+    setDirtyRegion(rect());
 }
 
 void TrackView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    setColumnWidth(0, colorColumnWidth);
-    setColumnWidth(1, width() - (colorColumnWidth + visibilityColumnWidth + recordingColumnWidth) - 12);
-    setColumnWidth(2, visibilityColumnWidth);
-    setColumnWidth(3, recordingColumnWidth);
     QAbstractItemModel *m = model();
     QModelIndex root_index = rootIndex();
     const int row_h = rowHeight(m->index(0, 0, root_index));
     if (row_h)
         verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - viewport()->height()) / row_h);
+    setColumnWidth(0, colorColumnWidth);
+    setColumnWidth(1, viewport()->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
+    setColumnWidth(2, buttonColumnWidth);
+    setColumnWidth(3, buttonColumnWidth);
 }
