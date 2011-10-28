@@ -39,10 +39,13 @@ static const QCursor &zoomCursor()
     return cursor;
 }
 
-enum DragState {
+enum ViewState {
     Zooming = 1,
-    Panning,
-    Picking,
+    Panning
+};
+
+enum DragState {
+    Picking = 1,
     DraggingGrips
 };
 
@@ -51,7 +54,6 @@ class GraphicsViewPrivate
 public:
     GraphicsView *q;
     ViewManager *viewMgr;
-    int dragState;
     QPoint dragStartPos;
     QPoint curDragPos;
     qreal zoomStartScaleX;
@@ -65,14 +67,17 @@ public:
     QList<IGripItem*> gripsBeingDragged;
     QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
-    quint32 dirty : 32;
+    quint32 viewState : 2;
+    quint32 dragState : 2;
+    quint32 dirty : 28;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
         ,   viewMgr(ViewManager::instance())
-        ,   dragState(0)
         ,   pickBox(new QGraphicsRectItem)
         ,   rootItem(new GraphicsRootItem)
+        ,   viewState(0)
+        ,   dragState(0)
         ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
@@ -87,11 +92,6 @@ public:
 
     virtual ~GraphicsViewPrivate()
     {}
-
-    bool isDragging() const
-    {
-        return 0 < dragState;
-    }
 
     QPointF startPosDC(const QPoint &pos)
     {
@@ -124,7 +124,7 @@ public:
     void startZoom(const QPoint &pos)
     {
         q->zoomStarting();
-        dragState = Zooming;
+        viewState = Zooming;
         dragStartPos = curDragPos = pos;
         zoomStartScaleX = viewMgr->scale(q->scaleRoleX());
         zoomStartScaleY = viewMgr->scale(q->scaleRoleY());
@@ -161,7 +161,7 @@ public:
     void finishZoom(const QPoint &pos)
     {
         zoomTo(pos);
-        dragState = 0;
+        viewState = 0;
         q->update(QRect(dragStartPos, dragStartPos).adjusted(-2, -2, 4, 4));
         q->zoomFinished();
     }
@@ -169,7 +169,7 @@ public:
     void startPan(const QPoint &pos)
     {
         q->panStarting();
-        dragState = Panning;
+        viewState = Panning;
         dragStartPos = pos;
         panStartCenter.setX(viewMgr->position(q->positionRoleX()));
         panStartCenter.setY(viewMgr->position(q->positionRoleY()));
@@ -188,7 +188,7 @@ public:
     void finishPan(const QPoint &pos)
     {
         panTo(pos);
-        dragState = 0;
+        viewState = 0;
         q->panFinished();
     }
 
@@ -456,7 +456,7 @@ void GraphicsView::updateViewSettings()
 void GraphicsView::paintGlyphs(QPaintEvent *event)
 {
     Q_UNUSED(event);
-    if (Zooming == d->dragState) {
+    if (Zooming == d->viewState) {
         QPainter painter(viewport());
         painter.drawEllipse(d->dragStartPos, 2, 2);
         painter.setPen(Qt::DotLine);
@@ -472,9 +472,9 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    if (d->isDragging())
-        return;
     if (Qt::RightButton == event->button()) {
+        if (Picking == d->dragState)
+            return;
         if (event->modifiers() & Qt::ControlModifier)
             d->startZoom(event->pos());
         else
@@ -489,13 +489,15 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    switch (d->dragState) {
+    switch (d->viewState) {
     case Zooming:
         d->zoomTo(event->pos());
         break;
     case Panning:
         d->panTo(event->pos());
         break;
+    }
+    switch (d->dragState) {
     case DraggingGrips:
         d->dragGripsTo(event->pos());
         break;
@@ -507,14 +509,12 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (Qt::RightButton == event->button()) {
-        switch (d->dragState) {
+        switch (d->viewState) {
         case Zooming:
             d->finishZoom(event->pos());
             break;
         case Panning:
             d->finishPan(event->pos());
-        default:
-            break;
         }
     } else if (Qt::LeftButton == event->button()) {
         switch (d->dragState) {
@@ -523,15 +523,13 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             break;
         case Picking:
             d->finishPicking(event->pos());
-        default:
-            break;
         }
     }
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
-    if (Zooming == d->dragState || Panning == d->dragState)
+    if (0 < d->viewState)
         return;
     const qreal scaleAmount = event->delta() < 0 ? 1.0f / 1.25f : 1.25f;
     const qreal scaleX = d->viewMgr->scale(scaleRoleX());
