@@ -60,6 +60,7 @@ protected:
     virtual void panFinished();
 
     virtual void updateViewSettings();
+    virtual void paintGlyphs(QPaintEvent *event);
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);

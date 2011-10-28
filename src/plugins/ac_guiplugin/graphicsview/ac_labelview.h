@@ -49,6 +49,7 @@ protected:
     void zoomFinished();
 
     void updateViewSettings();
+    void paintGlyphs(QPaintEvent *event) { Q_UNUSED(event); }
 
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

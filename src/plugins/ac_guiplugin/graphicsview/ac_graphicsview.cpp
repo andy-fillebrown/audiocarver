@@ -453,6 +453,17 @@ void GraphicsView::updateViewSettings()
     d->updateViewSettings();
 }
 
+void GraphicsView::paintGlyphs(QPaintEvent *event)
+{
+    Q_UNUSED(event);
+    if (Zooming == d->dragState) {
+        QPainter painter(viewport());
+        painter.drawEllipse(d->dragStartPos, 2, 2);
+        painter.setPen(Qt::DotLine);
+        painter.drawLine(d->dragStartPos, d->curDragPos);
+    }
+}
+
 void GraphicsView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -544,12 +555,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 void GraphicsView::paintEvent(QPaintEvent *event)
 {
     QGraphicsView::paintEvent(event);
-    if (Zooming == d->dragState) {
-        QPainter painter(viewport());
-        painter.drawEllipse(d->dragStartPos, 2, 2);
-        painter.setPen(Qt::DotLine);
-        painter.drawLine(d->dragStartPos, d->curDragPos);
-    }
+    paintGlyphs(event);
 }
 
 qreal GraphicsHView::sceneWidth() const
