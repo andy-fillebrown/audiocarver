@@ -73,9 +73,11 @@ public:
             painter->setBrush(Qt::SolidPattern);
     }
 
-    virtual QRect adjustedButtonRect(const QRect &optionRect) const
+    QRect adjustedButtonRect(const QRect &optionRect) const
     {
-        return optionRect;
+        QRect adjusted = optionRect;
+        adjusted.setWidth(buttonColumnWidth);
+        return adjusted;
     }
 
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
@@ -105,13 +107,6 @@ public:
     explicit RecordButtonDelegate(QObject *parent = 0)
         :   ToggleButtonDelegate(parent)
     {}
-
-    QRect adjustedButtonRect(const QRect &optionRect) const
-    {
-        QRect adjusted = optionRect;
-        adjusted.setWidth(buttonColumnWidth);
-        return adjusted;
-    }
 
     virtual void setPainterColors(QPainter *painter, const QModelIndex &index) const
     {
