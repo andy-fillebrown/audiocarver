@@ -100,13 +100,12 @@ public:
 
     QPointF centerOffsetDC(const QPointF &posDC)
     {
-        QPointF center = QPointF(viewMgr->position(q->positionRoleX()), viewMgr->position(q->positionRoleY()));
-        return q->sceneScale().map(center - posDC);
+        return q->sceneScale().map(QPointF(viewMgr->position(q->positionRoleX()), viewMgr->position(q->positionRoleY())) - posDC);
     }
 
     void recenter(const QPointF &startPosDC, const QPointF &centerOffsetDC)
     {
-        QPointF center = startPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(centerOffsetDC);
+        const QPointF center = startPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(centerOffsetDC);
         viewMgr->setPosition(center.x(), q->positionRoleX());
         viewMgr->setPosition(center.y(), q->positionRoleY());
     }
@@ -145,7 +144,7 @@ public:
         }
         const int y = offset.y();
         if (y) {
-            const qreal scale = 1 + qreal(qAbs(y) / 10.0f);
+            const qreal scale = 1.0f + qreal(qAbs(y) / 10.0f);
             viewMgr->setScale((0 < y ? 1.0f / scale : scale) * zoomStartScaleY, q->scaleRoleY());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
@@ -207,7 +206,7 @@ public:
                 }
             }
         }
-        bool draggingGrips = !gripsBeingDragged.isEmpty();
+        const bool draggingGrips = !gripsBeingDragged.isEmpty();
         if (draggingGrips)
             dragState = DraggingGrips;
         return draggingGrips;
@@ -263,11 +262,9 @@ public:
     void finishPicking(const QPoint &pos)
     {
         bool pickOne = false;
-        QRect rect;
-        if ((pickOne = (pos - dragStartPos).manhattanLength() < 4))
-            rect = QRect(dragStartPos.x() - 2, dragStartPos.y() - 2, 4, 4);
-        else
-            rect = QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
+        const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < 4)
+                ? QRect(dragStartPos.x() - 2, dragStartPos.y() - 2, 4, 4)
+                : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
         QList<IEntity*> entities;
         const QList<QGraphicsItem*> items = q->items(rect);
@@ -495,7 +492,6 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
         break;
     case Panning:
         d->panTo(event->pos());
-        break;
     }
     switch (d->dragState) {
     case DraggingGrips:
@@ -531,13 +527,11 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
 {
     if (0 < d->viewState)
         return;
-    const qreal scaleAmount = event->delta() < 0 ? 1.0f / 1.25f : 1.25f;
-    const qreal scaleX = d->viewMgr->scale(scaleRoleX());
-    const qreal scaleY = d->viewMgr->scale(scaleRoleY());
     const QPointF posDC = d->startPosDC(event->pos());
     const QPointF offsetDC = d->centerOffsetDC(posDC);
-    d->viewMgr->setScale(scaleAmount * scaleX, scaleRoleX());
-    d->viewMgr->setScale(scaleAmount * scaleY, scaleRoleY());
+    const qreal scaleAmount = event->delta() < 0 ? 1.0f / 1.25f : 1.25f;
+    d->viewMgr->setScale(scaleAmount * d->viewMgr->scale(scaleRoleX()), scaleRoleX());
+    d->viewMgr->setScale(scaleAmount * d->viewMgr->scale(scaleRoleY()), scaleRoleY());
     d->recenter(posDC, offsetDC);
     d->viewMgr->updateViews();
 }
@@ -546,7 +540,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
     if (DraggingGrips == d->dragState)
         return;
-    if (event->key() == Qt::Key_Escape)
+    if (Qt::Key_Escape == event->key())
         d->clearPickedEntities();
 }
 
