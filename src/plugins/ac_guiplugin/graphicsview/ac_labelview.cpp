@@ -117,6 +117,12 @@ void LabelView::zoomFinished()
     setCursor(Qt::OpenHandCursor);
 }
 
+void LabelView::updateViewSettings()
+{
+    GraphicsView::updateViewSettings();
+    d->updateGridLineVisibilites();
+}
+
 void LabelView::mousePressEvent(QMouseEvent *event)
 {
     QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
@@ -129,17 +135,6 @@ void LabelView::mouseReleaseEvent(QMouseEvent *event)
     QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
     GraphicsView::mouseReleaseEvent(e);
     delete e;
-}
-
-void LabelView::resizeEvent(QResizeEvent *event)
-{
-    GraphicsView::resizeEvent(event);
-    d->updateGridLineVisibilites();
-}
-
-void LabelView::paintEvent(QPaintEvent *event)
-{
-    QGraphicsView::paintEvent(event);
 }
 
 QPointF LabelVView::sceneCenter() const

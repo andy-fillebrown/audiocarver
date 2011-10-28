@@ -64,6 +64,7 @@ public:
     QList<IGripItem*> gripsBeingDragged;
     QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
+    quint32 dirty : 32;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
@@ -71,6 +72,7 @@ public:
         ,   dragState(0)
         ,   pickBox(new QGraphicsRectItem)
         ,   rootItem(new GraphicsRootItem)
+        ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
         scene->addItem(rootItem);
@@ -123,22 +125,21 @@ public:
     {
         curDragPos = pos;
         QPoint offset = pos - dragStartPos;
-        if (offset.x()) {
-            qreal x = offset.x();
-            qreal scale = 1.0f + (qAbs(x) / 10.0f);
-            if (x < 0.0f)
-                scale = 1.0f / scale;
-            viewMgr->setScale(scale * zoomStartScaleX, q->scaleRoleX());
+        const int x = offset.x();
+        if (x) {
+            qreal scale = 1.0f + (qreal(qAbs(x)) / 10.0f);
+            viewMgr->setScale((x < 0 ? 1.0f / scale : scale) * zoomStartScaleX, q->scaleRoleX());
         }
-        if (offset.x()) {
-            qreal y = offset.y();
-            qreal scale = 1.0f + (qAbs(y) / 10.0f);
-            if (0.0f < y)
-                scale = 1.0f / scale;
-            viewMgr->setScale(scale * zoomStartScaleY, q->scaleRoleY());
+        const int y = offset.y();
+        if (y) {
+            const qreal scale = 1 + qreal(qAbs(y) / 10.0f);
+            viewMgr->setScale((0 < y ? 1.0f / scale : scale) * zoomStartScaleY, q->scaleRoleY());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
-        q->update();
+        if (dirty)
+            viewMgr->updateViews();
+        else
+            q->update();
     }
 
     void finishZoom(const QPoint &pos)
@@ -160,10 +161,11 @@ public:
     void panTo(const QPoint &pos)
     {
         q->setCursor(Qt::ClosedHandCursor);
-        QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
-        QPointF center = panStartCenter - offset;
+        const QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
+        const QPointF center = panStartCenter - offset;
         viewMgr->setPosition(center.x(), q->positionRoleX());
         viewMgr->setPosition(center.y(), q->positionRoleY());
+        viewMgr->updateViews();
     }
 
     void finishPan(const QPoint &pos)
@@ -175,7 +177,7 @@ public:
 
     bool selectGrips(const QPoint &pos)
     {
-        QList<QGraphicsItem*> items = q->items(pos);
+        const QList<QGraphicsItem*> items = q->items(pos);
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = Q_U(item);
             if (unknown) {
@@ -339,11 +341,11 @@ public:
         const qreal sceneHeight = q->sceneHeight();
         const qreal viewWidth = q->width();
         const qreal viewHeight = q->height();
-        QRectF sceneRect(0.0f, 0.0f, sceneWidth, sceneHeight);
+        const QRectF sceneRect(0.0f, 0.0f, sceneWidth, sceneHeight);
         const QPointF sceneOffset = q->sceneCenter() - sceneRect.center();
-        sceneRect.translate(sceneOffset + q->sceneOffset());
-        q->setSceneRect(sceneRect);
+        q->setSceneRect(sceneRect.translated(sceneOffset + q->sceneOffset()));
         q->setTransform(QTransform::fromScale(viewWidth / sceneWidth, viewHeight / sceneHeight));
+        dirty = false;
     }
 };
 
@@ -376,6 +378,11 @@ QTransform GraphicsView::sceneTransform() const
     return d->rootItem->transform() * viewportTransform();
 }
 
+bool GraphicsView::isDirty() const
+{
+    return d->dirty;
+}
+
 void GraphicsView::modelAboutToBeReset()
 {
     d->clearPickedEntities();
@@ -386,7 +393,7 @@ void GraphicsView::viewPositionChanged(int role)
     if (d->viewMgr->databaseIsReading())
         return;
     if (positionRoleX() == role || positionRoleY() == role)
-        d->updateViewSettings();
+        d->dirty = true;
 }
 
 void GraphicsView::viewScaleChanged(int role)
@@ -394,7 +401,7 @@ void GraphicsView::viewScaleChanged(int role)
     if (d->viewMgr->databaseIsReading())
         return;
     if (scaleRoleX() == role || scaleRoleY() == role)
-        d->updateViewSettings();
+        d->dirty = true;
 }
 
 void GraphicsView::zoomStarting()
@@ -417,10 +424,15 @@ void GraphicsView::panFinished()
     setCursor(crosshair());
 }
 
+void GraphicsView::updateViewSettings()
+{
+    d->updateViewSettings();
+}
+
 void GraphicsView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    d->updateViewSettings();
+    d->dirty = true;
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
@@ -506,6 +518,8 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 
 void GraphicsView::paintEvent(QPaintEvent *event)
 {
+    if (d->dirty)
+        updateViewSettings();
     QGraphicsView::paintEvent(event);
     if (Zooming == d->dragState) {
         QPainter painter(viewport());

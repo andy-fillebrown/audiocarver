@@ -303,8 +303,16 @@ void ViewManager::updateDatabase()
 
 void ViewManager::updateViews()
 {
-    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-        view(i)->update();
+    if (d->pitchView->isDirty())
+        d->pitchView->update();
+    if (d->controlView->isDirty())
+        d->controlView->update();
+    if (d->timeLabelView->isDirty())
+        d->timeLabelView->update();
+    if (d->pitchLabelView->isDirty())
+        d->pitchLabelView->update();
+    if (d->controlLabelView->isDirty())
+        d->controlLabelView->update();
 }
 
 bool ViewManager::databaseIsReading() const

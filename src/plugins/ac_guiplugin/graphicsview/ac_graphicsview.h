@@ -35,6 +35,8 @@ public:
     QTransform sceneScale() const;
     QTransform sceneTransform() const;
 
+    bool isDirty() const;
+
 public slots:
     void modelAboutToBeReset();
     virtual void viewPositionChanged(int role);
@@ -55,6 +57,8 @@ protected:
     virtual void zoomFinished();
     virtual void panStarting();
     virtual void panFinished();
+
+    virtual void updateViewSettings();
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);

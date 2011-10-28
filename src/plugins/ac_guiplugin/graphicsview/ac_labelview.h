@@ -47,11 +47,10 @@ protected:
     void panFinished();
     void zoomFinished();
 
+    void updateViewSettings();
+
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    void resizeEvent(QResizeEvent *event);
-
-    void paintEvent(QPaintEvent *event);
 
 private:
     Q_DISABLE_COPY(LabelView)
