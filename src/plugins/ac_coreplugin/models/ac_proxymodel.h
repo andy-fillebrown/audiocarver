@@ -37,6 +37,16 @@ public:
     const RoleMapList &roleMaps() const;
     void setRoleMaps(const RoleMapList &roleMaps);
 
+    int mappedRole(const QModelIndex &index, int proxyRole) const
+    {
+        int role = -1;
+        int column = index.column();
+        const RoleMapList &maps = roleMaps();
+        if (0 <= column && column < maps.count())
+            role = maps.at(column).value(proxyRole, -1);
+        return role;
+    }
+
     // QSortFilterProxyModel
 
     bool filterAcceptsColumn(int, const QModelIndex &) const
@@ -60,26 +70,18 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const
     {
-        int mappedRole = -1;
-        int column = index.column();
-        const RoleMapList &maps = roleMaps();
-        if (0 <= column && column < maps.count())
-            mappedRole = maps.at(column).value(role, -1);
-        if (mappedRole == -1)
+        int mapped_role = mappedRole(index, role);
+        if (mapped_role == -1)
             return QVariant();
-        return QSortFilterProxyModel::data(index, mappedRole);
+        return QSortFilterProxyModel::data(index, mapped_role);
     }
 
     bool setData(const QModelIndex &index, const QVariant &value, int role)
     {
-        int mappedRole = -1;
-        int column = index.column();
-        const RoleMapList &maps = roleMaps();
-        if (0 < column && column < maps.count())
-            mappedRole = maps.at(column).value(role, -1);
-        if (mappedRole == -1)
+        int mapped_role = mappedRole(index, role);
+        if (mapped_role == -1)
             return false;
-        return QSortFilterProxyModel::setData(index, value, mappedRole);
+        return QSortFilterProxyModel::setData(index, value, mapped_role);
     }
 
 private:
