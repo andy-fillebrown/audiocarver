@@ -37,6 +37,8 @@ public:
 
     Track *track() const;
 
+    void setColor(const QColor &color);
+
     // ScoreObject
     qreal length() const;
 

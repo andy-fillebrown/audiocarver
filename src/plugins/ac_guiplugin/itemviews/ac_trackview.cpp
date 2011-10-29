@@ -17,12 +17,10 @@
 
 #include "ac_trackview.h"
 
-#include <QHeaderView>
+#include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
-
-#include <QDebug>
 
 static const int colorColumnWidth = 16;
 static const int buttonColumnWidth = 12;
@@ -48,6 +46,20 @@ public:
     explicit ColorDelegate(QObject *parent = 0)
         :   Delegate(parent)
     {}
+
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+    {
+        Q_UNUSED(option);
+        if (QEvent::MouseButtonPress != event->type())
+            return false;
+        QMouseEvent *e = static_cast<QMouseEvent*>(event);
+        if (Qt::LeftButton != e->button())
+            return false;
+        QColor color = QColorDialog::getColor(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
+        if (color.isValid())
+            model->setData(index, color, Qt::DisplayRole);
+        return true;
+    }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {

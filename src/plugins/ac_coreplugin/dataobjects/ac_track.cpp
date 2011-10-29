@@ -75,6 +75,9 @@ void Track::setColor(const QColor &color)
         return;
     d->beginChangeData();
     d->color = color;
+    const int n = d->notes->count();
+    for (int i = 0;  i < n;  ++i)
+        d->notes->at(i)->setColor(color);
     d->endChangeData();
 }
 

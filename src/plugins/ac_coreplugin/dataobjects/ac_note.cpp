@@ -34,6 +34,16 @@ public:
         mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
     }
 
+    void updateGraphicsParent()
+    {
+        ScoreObjectPrivate::updateGraphicsParent();
+        Q_Q(Note);
+        const Track *track = q->track();
+        if (!track)
+            return;
+        q->setColor(track->color());
+    }
+
     GraphicsParentPrivate *graphicsParent() const
     {
         Q_Q(const Note);
@@ -52,6 +62,15 @@ Track *Note::track() const
 {
     QObject *parent = QObject::parent();
     return parent ? qobject_cast<Track*>(parent->parent()) : 0;
+}
+
+void Note::setColor(const QColor &color)
+{
+    Q_D(Note);
+    d->pitchCurve->setColor(color);
+    const int n = d->controlCurves->count();
+    for (int i = 0;  i < n;  ++i)
+        d->controlCurves->at(i)->setColor(color);
 }
 
 qreal Note::length() const

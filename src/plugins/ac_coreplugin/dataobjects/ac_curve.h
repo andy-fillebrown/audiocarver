@@ -35,6 +35,8 @@ class AC_CORE_EXPORT Curve : public GraphicsObject
 public:
     virtual ScoreObject *scoreObject() const = 0;
 
+    void setColor(const QColor &color);
+
     // IEntity
     const PointList &points() const;
     void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);

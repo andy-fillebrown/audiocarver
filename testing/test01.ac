@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128">
     <TrackList>
-        <Track name="Track 1" volume="0.1" color="#ff0000" visible="false" recording="true">
+        <Track name="Track 1" volume="0.1" color="#aa00ff" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -99,13 +99,13 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track 3" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 4" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 5" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 6" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 7" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 8" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 9" volume="0.3" color="#0000ff" visible="true" recording="false"/>
+        <Track name="Track 3" volume="0.3" color="#ff0000" visible="true" recording="false"/>
+        <Track name="Track 4" volume="0.3" color="#ffaa00" visible="true" recording="false"/>
+        <Track name="Track 5" volume="0.3" color="#aa0000" visible="true" recording="false"/>
+        <Track name="Track 6" volume="0.3" color="#ff0000" visible="true" recording="false"/>
+        <Track name="Track 7" volume="0.3" color="#ffff00" visible="true" recording="false"/>
+        <Track name="Track 8" volume="0.3" color="#00ffff" visible="true" recording="false"/>
+        <Track name="Track 9" volume="0.3" color="#55aa7f" visible="true" recording="false"/>
     </TrackList>
     <GridSettings>
         <TimeGridLineList>
@@ -501,5 +501,5 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="62.2346622922671" pitchPosition="61.6097395717752" controlPosition="0.5" timeScale="0.900000110268598" pitchScale="0.900000110268598" controlScale="0.899999976158142"/>
+    <ViewSettings timePosition="63.9968287684069" pitchPosition="63.8082799370862" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
 </Score>

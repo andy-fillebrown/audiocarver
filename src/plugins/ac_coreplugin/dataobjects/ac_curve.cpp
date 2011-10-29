@@ -48,6 +48,12 @@ Curve::Curve(CurvePrivate &dd, QObject *parent)
     dd.init();
 }
 
+void Curve::setColor(const QColor &color)
+{
+    Q_D(Curve);
+    d->graphicsCurveItem->setColor(color);
+}
+
 const PointList &Curve::points() const
 {
     Q_D(const Curve);
