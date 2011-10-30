@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128">
     <TrackList>
-        <Track name="Track 1" volume="0.1" color="#aa00ff" visible="true" recording="false">
+        <Track name="1" volume="0.1" color="#aa00ff" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -50,7 +50,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track 2" volume="0.2" color="#00ff00" visible="true" recording="false">
+        <Track name="2" volume="0.2" color="#00ff00" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -99,13 +99,13 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track 3" volume="0.3" color="#ff0000" visible="true" recording="false"/>
-        <Track name="Track 4" volume="0.3" color="#ffaa00" visible="true" recording="false"/>
-        <Track name="Track 5" volume="0.3" color="#aa0000" visible="true" recording="false"/>
-        <Track name="Track 6" volume="0.3" color="#ff0000" visible="true" recording="false"/>
-        <Track name="Track 7" volume="0.3" color="#ffff00" visible="true" recording="false"/>
-        <Track name="Track 8" volume="0.3" color="#00ffff" visible="true" recording="false"/>
-        <Track name="Track 9" volume="0.3" color="#55aa7f" visible="true" recording="false"/>
+        <Track name="3" volume="0.3" color="#ff0000" visible="true" recording="false"/>
+        <Track name="4" volume="0.3" color="#ffaa00" visible="true" recording="false"/>
+        <Track name="5" volume="0.3" color="#aa0000" visible="true" recording="false"/>
+        <Track name="6" volume="0.3" color="#ff0000" visible="true" recording="false"/>
+        <Track name="7" volume="0.3" color="#ffff00" visible="true" recording="false"/>
+        <Track name="8" volume="0.3" color="#00ffff" visible="true" recording="false"/>
+        <Track name="9" volume="0.3" color="#55aa7f" visible="true" recording="false"/>
     </TrackList>
     <GridSettings>
         <TimeGridLineList>

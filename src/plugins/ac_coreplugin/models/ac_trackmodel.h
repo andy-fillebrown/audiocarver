@@ -34,6 +34,7 @@ public:
             roleMaps.append(RoleMap());
         roleMaps[0].insert(Qt::DisplayRole, Ac::ColorRole);
         roleMaps[1].insert(Qt::DisplayRole, Ac::NameRole);
+        roleMaps[1].insert(Qt::EditRole, Ac::NameRole);
         roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
         roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
         setRoleMaps(roleMaps);
@@ -56,6 +57,12 @@ public:
                 return true;
         }
         return false;
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const
+    {
+        // Make column one editable.  The other columns use custom delegates.
+        return RolesToColumnsProxyModel::flags(index) | (1 == index.column() ? Qt::ItemIsEditable : Qt::NoItemFlags);
     }
 };
 
