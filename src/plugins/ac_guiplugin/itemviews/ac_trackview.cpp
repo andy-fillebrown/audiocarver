@@ -63,7 +63,7 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        QColor color = index.data().value<QColor>();
+        const QColor color = index.data().value<QColor>();
         painter->save();
         painter->setPen(color);
         painter->setBrush(QBrush(color));
@@ -97,7 +97,7 @@ public:
         Q_UNUSED(option);
         if (QEvent::MouseButtonPress != event->type())
             return false;
-        QMouseEvent *e = static_cast<QMouseEvent*>(event);
+        const QMouseEvent *e = static_cast<const QMouseEvent*>(event);
         if (Qt::LeftButton == e->button())
             model->setData(index, !index.data().toBool(), Qt::DisplayRole);
         return true;
@@ -151,13 +151,14 @@ void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
 void TrackView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    QAbstractItemModel *m = model();
-    QModelIndex root_index = rootIndex();
+    const QAbstractItemModel *m = model();
+    const QModelIndex root_index = rootIndex();
     const int row_h = rowHeight(m->index(0, 0, root_index));
+    const QWidget *vport = viewport();
     if (row_h)
-        verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - viewport()->height()) / row_h);
+        verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
     setColumnWidth(0, colorColumnWidth);
-    setColumnWidth(1, viewport()->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
+    setColumnWidth(1, vport->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
     setColumnWidth(2, buttonColumnWidth);
     setColumnWidth(3, buttonColumnWidth);
 }
