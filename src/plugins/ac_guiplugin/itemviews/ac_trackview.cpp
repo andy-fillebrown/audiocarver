@@ -26,7 +26,6 @@
 #include <QPainter>
 #include <QScrollBar>
 
-static const int colorColumnWidth = 16;
 static const int buttonColumnWidth = 12;
 
 class Delegate : public QAbstractItemDelegate
@@ -154,6 +153,7 @@ void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
     Q_UNUSED(topLeft);
     Q_UNUSED(bottomRight);
     setDirtyRegion(rect());
+    resizeEvent(0);
 }
 
 void TrackView::resizeEvent(QResizeEvent *event)
@@ -165,6 +165,7 @@ void TrackView::resizeEvent(QResizeEvent *event)
     const QWidget *vport = viewport();
     if (row_h)
         verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
+    const int colorColumnWidth = row_h;
     setColumnWidth(0, colorColumnWidth);
     setColumnWidth(1, vport->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
     setColumnWidth(2, buttonColumnWidth);
