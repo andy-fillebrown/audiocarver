@@ -262,7 +262,7 @@ public:
     void finishPicking(const QPoint &pos)
     {
         bool pickOne = false;
-        const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < 4)
+        const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < QApplication::startDragDistance())
                 ? QRect(dragStartPos.x() - 2, dragStartPos.y() - 2, 4, 4)
                 : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
