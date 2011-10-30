@@ -61,9 +61,27 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const
     {
-        // Make column one editable.  The other columns use custom delegates.
-        return RolesToColumnsProxyModel::flags(index) | (1 == index.column() ? Qt::ItemIsEditable : Qt::NoItemFlags);
+        // Make column one editable and drag-and-drop enabled.
+        return RolesToColumnsProxyModel::flags(index)
+                | (1 == index.column()
+                   ? Qt::ItemIsEditable
+                     | Qt::ItemIsSelectable
+                     | Qt::ItemIsDragEnabled
+                     | Qt::ItemIsDropEnabled
+                   : Qt::NoItemFlags);
     }
+
+    Qt::DropActions supportedDragActions() const
+    {
+        return Qt::MoveAction;
+    }
+
+    Qt::DropActions supportedDropActions() const
+    {
+        return Qt::MoveAction;
+    }
+
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 };
 
 #endif // AC_MODEL_H

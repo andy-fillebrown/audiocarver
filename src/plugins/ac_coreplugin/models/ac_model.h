@@ -53,11 +53,15 @@ public:
         return index(row, 0, parent);
     }
 
+    bool insertItem(IModelItem *item, int row, const QModelIndex &parent);
+    IModelItem *takeItem(int row, const QModelIndex &parent);
+
     QModelIndex scoreIndex() const { return index(0); }
-    QModelIndex viewSettingsIndex() const;
+    QModelIndex trackListIndex() const;
     QModelIndex timeGridLineListIndex() const;
     QModelIndex pitchGridLineListIndex() const;
     QModelIndex controlGridLineListIndex() const;
+    QModelIndex viewSettingsIndex() const;
 
 signals:
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);

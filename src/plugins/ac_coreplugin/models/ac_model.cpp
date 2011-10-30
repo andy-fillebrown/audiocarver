@@ -123,9 +123,32 @@ Qt::ItemFlags Model::flags(const QModelIndex &index) const
     return item ? item->flags() : Qt::NoItemFlags;
 }
 
-QModelIndex Model::viewSettingsIndex() const
+bool Model::insertItem(IModelItem *item, int row, const QModelIndex &parent)
 {
-    return d->indexFromItem(d->score->viewSettings());
+    if (Ac::ListItem != parent.data(Ac::ItemTypeRole))
+        return false;
+    ObjectList *list = dynamic_cast<ObjectList*>(d->itemFromIndex(parent));
+    if (!list)
+        return false;
+    list->insert(row, dynamic_cast<Object*>(item));
+    return true;
+}
+
+IModelItem *Model::takeItem(int row, const QModelIndex &parent)
+{
+    if (Ac::ListItem != parent.data(Ac::ItemTypeRole))
+        return false;
+    ObjectList *list = dynamic_cast<ObjectList*>(d->itemFromIndex(parent));
+    if (!list)
+        return false;
+    IModelItem *item = list->modelItemAt(row);
+    list->removeAt(row);
+    return item;
+}
+
+QModelIndex Model::trackListIndex() const
+{
+    return d->indexFromItem(d->score->tracks());
 }
 
 QModelIndex Model::timeGridLineListIndex() const
@@ -141,4 +164,9 @@ QModelIndex Model::pitchGridLineListIndex() const
 QModelIndex Model::controlGridLineListIndex() const
 {
     return d->indexFromItem(d->score->gridSettings()->controlGridLines());
+}
+
+QModelIndex Model::viewSettingsIndex() const
+{
+    return d->indexFromItem(d->score->viewSettings());
 }

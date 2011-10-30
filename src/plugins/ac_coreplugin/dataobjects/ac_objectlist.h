@@ -36,6 +36,7 @@ class ObjectList : public Object
 public:
     virtual void append(Object *object) = 0;
     virtual void insert(int i, Object *object) = 0;
+    virtual void removeAt(int i) = 0;
     virtual void remove(Object *object) = 0;
 
 protected:
@@ -110,6 +111,12 @@ public:
         if (d->objects.contains(object))
             return;
         object->setParent(this);
+        if (!d->objects.isEmpty() && object == d->objects.last()) {
+            const int n = count() - 1;
+            d->beginRemoveObjects(n, n);
+            d->objects.removeLast();
+            d->endRemoveObjects();
+        }
         d->beginInsertObjects(i, i);
         d->objects.insert(i, object);
         d->endInsertObjects();
