@@ -71,7 +71,7 @@ public:
         painter->save();
         painter->setPen(color);
         painter->setBrush(QBrush(color));
-        painter->drawRect(option.rect.adjusted(1, 1, -1, -1));
+        painter->drawRect(option.rect.adjusted(1, 1, -2, -2));
         painter->restore();
     }
 };
@@ -142,8 +142,11 @@ TrackView::TrackView(QWidget *parent)
     setItemDelegateForColumn(0, new ColorDelegate(this));
     setItemDelegateForColumn(2, new ToggleButtonDelegate(this));
     setItemDelegateForColumn(3, new RecordButtonDelegate(this));
-    setSelectionMode(NoSelection);
+    setSelectionMode(SingleSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setDragEnabled(true);
+    setDropIndicatorShown(true);
+    viewport()->setAcceptDrops(true);
 }
 
 void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
