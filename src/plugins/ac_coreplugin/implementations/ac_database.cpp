@@ -17,6 +17,7 @@
 
 #include "ac_database.h"
 
+#include <ac_model.h>
 #include <ac_score.h>
 #include <ac_xmlfiler.h>
 
@@ -24,10 +25,12 @@ class DatabasePrivate
 {
 public:
     Database *q;
+    Model *model;
     XmlFileReader reader;
 
     DatabasePrivate(Database *q)
         :   q(q)
+        ,   model(new Model(q))
     {}
 
     virtual ~DatabasePrivate()
@@ -82,4 +85,9 @@ void Database::write(const QString &fileName)
     writer.setFileName(fileName);
     writer.write(query<IModelItem>(Score::instance()));
     emit databaseWritten();
+}
+
+QAbstractItemModel *Database::model() const
+{
+    return d->model;
 }

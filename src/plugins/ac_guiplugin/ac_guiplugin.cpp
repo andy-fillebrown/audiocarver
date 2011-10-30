@@ -18,12 +18,13 @@
 #include "ac_guiplugin.h"
 
 #include <ac_model.h>
-#include <ac_trackmodel.h>
 
 #include <ac_editorimpl.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindowimpl.h>
 #include <ac_trackview.h>
+
+#include <mi_idatabase.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -47,18 +48,13 @@ void AcGuiPlugin::extensionsInitialized()
     Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
 
     MainWidget *widget = new MainWidget(mw);
+    widget->setModel(qobject_cast<Model*>(IDatabase::instance()->model()));
     mw->setCentralWidget(widget);
 
-    Model *model = new Model;
-    widget->setModel(model);
-
     QDockWidget *dw = new QDockWidget(mw);
+    dw->setObjectName("Track View Dock Widget");
+    dw->setWidget(new TrackView(dw));
     mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
-    dw->setObjectName("Model Dock Widget");
-
-    TrackView *tv = new TrackView(dw);
-    tv->setModel(new TrackModel(model));
-    dw->setWidget(tv);
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)

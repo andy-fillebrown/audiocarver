@@ -17,6 +17,10 @@
 
 #include "ac_trackview.h"
 
+#include <ac_trackmodel.h>
+
+#include <mi_idatabase.h>
+
 #include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
@@ -131,6 +135,7 @@ public:
 TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
 {
+    setModel(new TrackModel(IDatabase::instance()->model()));
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);

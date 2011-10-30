@@ -48,11 +48,6 @@ public:
         pitchLabelScene = new PitchLabelScene(q);
         controlLabelScene = new ControlLabelScene(q);
     }
-
-    virtual ~SceneManagerPrivate()
-    {
-        delete model;
-    }
 };
 
 static SceneManager *instance = 0;

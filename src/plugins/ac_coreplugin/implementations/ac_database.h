@@ -21,19 +21,19 @@
 #include <mi_idatabase.h>
 
 class DatabasePrivate;
-
 class Database : public IDatabase
 {
 public:
     Database();
     ~Database();
 
-    virtual const QString &fileExtension() const;
-    virtual const QString &fileFilter() const;
-    virtual QString fileName() const;
-    virtual void reset();
-    virtual void read(const QString &fileName);
-    virtual void write(const QString &fileName);
+    const QString &fileExtension() const;
+    const QString &fileFilter() const;
+    QString fileName() const;
+    void reset();
+    void read(const QString &fileName);
+    void write(const QString &fileName);
+    QAbstractItemModel *model() const;
 
 private:
     Q_DISABLE_COPY(Database)

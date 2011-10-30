@@ -21,6 +21,8 @@
 #include <QObject>
 #include <mi_global.h>
 
+class QAbstractItemModel;
+
 class MI_CORE_EXPORT IDatabase : public QObject
 {
     Q_OBJECT
@@ -36,6 +38,7 @@ public:
     virtual void reset() = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
+    virtual QAbstractItemModel *model() const = 0;
 
 signals:
     void databaseAboutToBeRead();
