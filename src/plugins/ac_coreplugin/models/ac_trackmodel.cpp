@@ -44,9 +44,9 @@ QMimeData *TrackModel::mimeData(const QModelIndexList &indexes) const
 
 bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    Q_UNUSED(row);
     Q_UNUSED(column);
-    if (Qt::IgnoreAction == action)
+    Q_UNUSED(parent);
+    if (Qt::MoveAction != action)
         return true;
     const QStringList formats = data->formats();
     if (!formats.contains(mimeType))
@@ -62,7 +62,7 @@ bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         stream >> fromRow;
         fromRows.append(fromRow);
     }
-    int toRow = parent.row() + 1;
+    int toRow = row;
     if (fromRows.contains(toRow))
         return false;
     const QModelIndex trackListIndex = model->trackListIndex();

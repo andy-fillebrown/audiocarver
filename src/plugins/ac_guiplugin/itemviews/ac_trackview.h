@@ -20,6 +20,7 @@
 
 #include <QTreeView>
 
+class TrackViewPrivate;
 class TrackView : public QTreeView
 {
     Q_OBJECT
@@ -35,8 +36,17 @@ public:
 protected:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void paintEvent(QPaintEvent *event);
+
+private:
+    TrackViewPrivate *d;
 };
 
 #endif // AC_TRACKVIEW_H

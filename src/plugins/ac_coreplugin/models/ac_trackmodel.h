@@ -65,19 +65,8 @@ public:
         if (1 == index.column())
             extraFlags |= Qt::ItemIsEditable
                     | Qt::ItemIsSelectable
-                    | Qt::ItemIsDragEnabled
-                    | Qt::ItemIsDropEnabled;
+                    | Qt::ItemIsDragEnabled;
         return RolesToColumnsProxyModel::flags(index) | extraFlags;
-    }
-
-    Qt::DropActions supportedDragActions() const
-    {
-        return Qt::MoveAction;
-    }
-
-    Qt::DropActions supportedDropActions() const
-    {
-        return Qt::MoveAction;
     }
 
     QMimeData *mimeData(const QModelIndexList &indexes) const;
