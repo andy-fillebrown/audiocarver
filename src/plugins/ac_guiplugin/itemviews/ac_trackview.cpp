@@ -38,6 +38,7 @@ public:
 
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
+        // Return an empty size.  We're not using it.
         Q_UNUSED(option);
         Q_UNUSED(index);
         return QSize();
@@ -54,22 +55,29 @@ public:
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
     {
         Q_UNUSED(option);
+
+        // We're only interested in left button mouse clicks.
         if (QEvent::MouseButtonPress != event->type())
             return false;
         QMouseEvent *e = static_cast<QMouseEvent*>(event);
         if (Qt::LeftButton != e->button())
             return false;
+
+        // Open a color dialog at the event's position and set the track's
+        // color if the user didn't cancel the dialog.
         QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
         dlg->move(dlg->parentWidget()->mapToGlobal(e->pos()));
         dlg->exec();
         QColor color = dlg->selectedColor();
         if (color.isValid())
             model->setData(index, color, Qt::DisplayRole);
+
         return true;
     }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
+        // Draw the color box.
         const QColor color = index.data().value<QColor>();
         painter->save();
         painter->setPen(color);
@@ -89,11 +97,14 @@ public:
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
     {
         Q_UNUSED(option);
+
+        // Toggle the model data if we got a left button mouse click.
         if (QEvent::MouseButtonPress != event->type())
             return false;
         const QMouseEvent *e = static_cast<const QMouseEvent*>(event);
         if (Qt::LeftButton == e->button())
             model->setData(index, !index.data().toBool(), Qt::DisplayRole);
+
         return true;
     }
 
@@ -105,6 +116,8 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
+        // Draw a circle and fill it if the model data is true (i.e. the button
+        // is pressed).
         painter->save();
         setPainterColors(painter, index);
         painter->setRenderHint(QPainter::Antialiasing);
@@ -175,6 +188,11 @@ void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
 {
     Q_UNUSED(topLeft);
     Q_UNUSED(bottomRight);
+
+    // We're currently only getting invalid indexes for topLeft and bottomRight
+    // even when track data is changed.  It might be an issue in the proxy
+    // models.  Regardless, we need to redraw the entire window and call resize
+    // to update the scrollbar and set the column widths.
     setDirtyRegion(rect());
     resizeEvent(0);
 }
@@ -238,12 +256,19 @@ void TrackView::dropEvent(QDropEvent *event)
 void TrackView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
+
     const QAbstractItemModel *m = model();
     const QModelIndex root_index = rootIndex();
+
+    // Get the row height (assuming all rows are the same height).
     const int row_h = rowHeight(m->index(0, 0, root_index));
+
+    // Update the vertical scrollbar range.
     const QWidget *vport = viewport();
     if (row_h)
         verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
+
+    // Set the column widths.
     const int colorColumnWidth = row_h;
     setColumnWidth(0, colorColumnWidth);
     setColumnWidth(1, vport->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
