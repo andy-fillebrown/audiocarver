@@ -35,6 +35,7 @@ public:
 protected:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
+    void dropEvent(QDropEvent *event);
     void resizeEvent(QResizeEvent *event);
 };
 

@@ -58,7 +58,10 @@ public:
         QMouseEvent *e = static_cast<QMouseEvent*>(event);
         if (Qt::LeftButton != e->button())
             return false;
-        QColor color = QColorDialog::getColor(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
+        QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
+        dlg->move(dlg->parentWidget()->mapToGlobal(e->pos()));
+        dlg->exec();
+        QColor color = dlg->selectedColor();
         if (color.isValid())
             model->setData(index, color, Qt::DisplayRole);
         return true;
@@ -141,8 +144,9 @@ TrackView::TrackView(QWidget *parent)
     setItemDelegateForColumn(0, new ColorDelegate(this));
     setItemDelegateForColumn(2, new ToggleButtonDelegate(this));
     setItemDelegateForColumn(3, new RecordButtonDelegate(this));
-    setSelectionMode(SingleSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setSelectionMode(ExtendedSelection);
+    setDragDropMode(InternalMove);
     setDragEnabled(true);
     setDropIndicatorShown(true);
     viewport()->setAcceptDrops(true);
@@ -154,6 +158,12 @@ void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
     Q_UNUSED(bottomRight);
     setDirtyRegion(rect());
     resizeEvent(0);
+}
+
+void TrackView::dropEvent(QDropEvent *event)
+{
+    QTreeView::dropEvent(event);
+    setCurrentIndex(QModelIndex());
 }
 
 void TrackView::resizeEvent(QResizeEvent *event)

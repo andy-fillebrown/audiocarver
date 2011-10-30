@@ -24,7 +24,23 @@
 #include <QMimeData>
 #include <QStringList>
 
-static const char mimeFormat[] = "application/x-qabstractitemmodeldatalist";
+static const char mimeType[] = "AudioCarver track numbers";
+
+QMimeData *TrackModel::mimeData(const QModelIndexList &indexes) const
+{
+    QList<int> rows;
+    foreach (const QModelIndex &index, indexes)
+        if (!rows.contains(index.row()))
+            rows.append(index.row());
+    qSort(rows);
+    QByteArray b;
+    QDataStream stream(&b, QIODevice::WriteOnly);
+    for (int i = rows.count() - 1;  0 <= i;  --i)
+        stream << rows.at(i);
+    QMimeData *mimeData = RolesToColumnsProxyModel::mimeData(indexes);
+    mimeData->setData(mimeType, b);
+    return mimeData;
+}
 
 bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
@@ -33,20 +49,30 @@ bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     if (Qt::IgnoreAction == action)
         return true;
     const QStringList formats = data->formats();
-    if (!formats.contains(mimeFormat))
+    if (!formats.contains(mimeType))
         return false;
-    QByteArray b = data->data(mimeFormat);
-    QDataStream stream(&b, QIODevice::ReadOnly);
-    int fromRow = -1;
-    stream >> fromRow;
-    const int toRow = parent.row();
-    if (fromRow == toRow)
-        return true;
     Model *model = qobject_cast<Model*>(IDatabase::instance()->model());
     if (!model)
         return false;
-    const QModelIndex trackList = model->trackListIndex();
-    IModelItem *item = model->takeItem(fromRow, trackList);
-    model->insertItem(item, toRow, trackList);
+    QByteArray b = data->data(mimeType);
+    QDataStream stream(&b, QIODevice::ReadOnly);
+    int fromRow = -1;
+    QList<int> fromRows;
+    while (!stream.atEnd()) {
+        stream >> fromRow;
+        fromRows.append(fromRow);
+    }
+    int toRow = parent.row() + 1;
+    if (fromRows.contains(toRow))
+        return false;
+    const QModelIndex trackListIndex = model->trackListIndex();
+    QList<IModelItem*> items;
+    foreach (int row, fromRows) {
+        items.append(model->takeItem(row, trackListIndex));
+        if (row < toRow)
+            --toRow;
+    }
+    foreach (IModelItem *item, items)
+        model->insertItem(item, toRow, trackListIndex);
     return true;
 }
