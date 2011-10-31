@@ -146,6 +146,13 @@ ObjectTList<Note> *Track::notes() const
     return d->notes;
 }
 
+void Track::setZValue(qreal z)
+{
+    Q_D(Track);
+    d->mainGraphicsItems[Ac::PitchScene]->setZValue(z);
+    d->mainGraphicsItems[Ac::ControlScene]->setZValue(z);
+}
+
 int Track::modelItemIndex(IModelItem *item) const
 {
     Q_D(const Track);

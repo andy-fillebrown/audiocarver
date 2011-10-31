@@ -43,6 +43,8 @@ public:
     Score *score() const;
     ObjectTList<Note> *notes() const;
 
+    void setZValue(qreal z);
+
     // Properties
     const QColor &color() const;
     void setColor(const QColor &color);

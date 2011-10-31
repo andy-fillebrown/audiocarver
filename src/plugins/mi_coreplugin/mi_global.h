@@ -55,9 +55,9 @@ inline void mi_assert(const char *assertion, const char *file, int line)
     inline const Class##Private<T> *d_func() const { return reinterpret_cast<const Class##Private<T>*>(qGetPtrHelper(d_ptr)); } \
     friend class Class##Private<T>;
 
-#define Q_DECLARE_TEMPLATE_PUBLIC(Class) \
-    inline Class<T> *q_func() { return static_cast<Class<T>*>(q_ptr); } \
-    inline const Class<T> *q_func() const { return static_cast<const Class<T>*>(q_ptr); } \
+#define Q_DECLARE_TEMPLATE_PUBLIC(Class, Q_PTR_Class) \
+    inline Class<T> *q_func() { return static_cast<Class<T>*>(Q_PTR_Class##Private::q_ptr); } \
+    inline const Class<T> *q_func() const { return static_cast<const Class<T>*>(Q_PTR_Class##Private::q_ptr); } \
     friend class Class<T>;
 
 #define Q_TD(Class) Class##Private<T> *const d = d_func()
