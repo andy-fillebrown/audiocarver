@@ -26,14 +26,15 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
+#include <QStyledItemDelegate>
 
 static const int buttonColumnWidth = 12;
 
-class Delegate : public QAbstractItemDelegate
+class Delegate : public QStyledItemDelegate
 {
 public:
     explicit Delegate(QObject *parent = 0)
-        :   QAbstractItemDelegate(parent)
+        :   QStyledItemDelegate(parent)
     {}
 
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -77,6 +78,10 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
+        // Pass a bogus index so "true" or "false" doesn't get painted under
+        // the color box.
+        Delegate::paint(painter, option, index.model()->index(0, 0));
+
         // Draw the color box.
         const QColor color = index.data().value<QColor>();
         painter->save();
@@ -116,6 +121,10 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
+        // Pass a bogus index so "true" or "false" doesn't get painted under
+        // the button.
+        Delegate::paint(painter, option, index.model()->index(0, 0));
+
         // Draw a circle and fill it if the model data is true (i.e. the button
         // is pressed).
         painter->save();
@@ -182,6 +191,7 @@ TrackView::TrackView(QWidget *parent)
     setSelectionMode(ExtendedSelection);
     setAcceptDrops(true);
     setDragEnabled(true);
+    setAllColumnsShowFocus(true);
 }
 
 void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)

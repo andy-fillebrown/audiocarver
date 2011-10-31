@@ -61,11 +61,9 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const
     {
-        Qt::ItemFlags extraFlags = Qt::NoItemFlags;
+        Qt::ItemFlags extraFlags = Qt::ItemIsSelectable;
         if (1 == index.column())
-            extraFlags |= Qt::ItemIsEditable
-                    | Qt::ItemIsSelectable
-                    | Qt::ItemIsDragEnabled;
+            extraFlags |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
         return RolesToColumnsProxyModel::flags(index) | extraFlags;
     }
 
