@@ -23,6 +23,46 @@
 #include <ac_track.h>
 #include <ac_viewsettings.h>
 
+template <class T> class TrackList : public ObjectTList<T>
+{
+public:
+    TrackList(QObject *parent = 0);
+};
+
+template <class T> class TrackListPrivate : public ObjectTListPrivate<T>
+{
+    Q_DECLARE_TEMPLATE_PUBLIC(TrackList, Object)
+
+public:
+    TrackListPrivate(TrackList<T> *q)
+        :   ObjectTListPrivate<T>(q)
+    {}
+
+    void endInsertObjects()
+    {
+        ObjectTListPrivate<T>::endInsertObjects();
+        updateZValues();
+    }
+
+    void endRemoveObjects()
+    {
+        ObjectTListPrivate<T>::endRemoveObjects();
+        updateZValues();
+    }
+
+    void updateZValues()
+    {
+        Q_TQ(TrackList);
+        const int n = q->count();
+        for (int i = 0;  i < n;  ++i)
+            q->at(i)->setZValue(qreal(-i));
+    }
+};
+
+template <class T> inline TrackList<T>::TrackList(QObject *parent)
+    :   ObjectTList<T>(*(new TrackListPrivate<T>(this)), parent)
+{}
+
 ScorePrivate::ScorePrivate(Score *q)
     :   ScoreObjectPrivate(q)
     ,   length(128.0f)
@@ -42,7 +82,7 @@ ScorePrivate::ScorePrivate(Score *q)
 
 void ScorePrivate::init()
 {
-    tracks = new ObjectTList<Track>(q_ptr);
+    tracks = new TrackList<Track>(q_ptr);
     gridSettings = new GridSettings(q_ptr);
     viewSettings = new ViewSettings(q_ptr);
 }

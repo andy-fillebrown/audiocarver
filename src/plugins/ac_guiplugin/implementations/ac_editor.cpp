@@ -15,26 +15,64 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITORIMPL_H
-#define AC_EDITORIMPL_H
+#include "ac_editor.h"
 
-#include <mi_ieditor.h>
+#include <ac_undo.h>
 
-class AcEditorImpl : public IEditor
+#include <ac_model.h>
+
+#include <mi_idatabase.h>
+
+class EditorPrivate
 {
 public:
-    AcEditorImpl() {}
-    ~AcEditorImpl() {}
+    Editor *q;
+    Model *model;
+    UndoStack *undoStack;
 
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
+    EditorPrivate(Editor *q)
+        :   q(q)
+        ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
+        ,   undoStack(0)
+    {}
 
-private:
-    Q_DISABLE_COPY(AcEditorImpl)
+    void init()
+    {
+        undoStack = new UndoStack(q);
+    }
 };
 
-#endif // AC_EDITORIMPL_H
+Editor::Editor()
+    :   d(new EditorPrivate(this))
+{
+    d->init();
+}
+
+Editor::~Editor()
+{
+    delete d;
+}
+
+void Editor::undo()
+{
+}
+
+void Editor::redo()
+{
+}
+
+void Editor::cut()
+{
+}
+
+void Editor::copy() const
+{
+}
+
+void Editor::paste()
+{
+}
+
+void Editor::selectAll()
+{
+}

@@ -117,11 +117,6 @@ MainWidget::~MainWidget()
     delete d;
 }
 
-void MainWidget::setModel(Model *model)
-{
-    d->viewManager->setModel(model);
-}
-
 void MainWidget::mousePressEvent(QMouseEvent *event)
 {
     if (Qt::LeftButton == event->button())

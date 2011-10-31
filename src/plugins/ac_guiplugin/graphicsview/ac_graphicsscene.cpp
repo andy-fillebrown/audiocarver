@@ -19,11 +19,12 @@
 
 #include <ac_model.h>
 
+#include <mi_idatabase.h>
+
 class SceneManagerPrivate
 {
 public:
     SceneManager *q;
-    Model *model;
     PitchScene *pitchScene;
     ControlScene *controlScene;
     TimeLabelScene *timeLabelScene;
@@ -32,7 +33,6 @@ public:
 
     SceneManagerPrivate(SceneManager *q)
         :   q(q)
-        ,   model(0)
         ,   pitchScene(0)
         ,   controlScene(0)
         ,   timeLabelScene(0)
@@ -47,6 +47,10 @@ public:
         timeLabelScene = new TimeLabelScene(q);
         pitchLabelScene = new PitchLabelScene(q);
         controlLabelScene = new ControlLabelScene(q);
+
+        Model *model = qobject_cast<Model*>(IDatabase::instance()->model());
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+            q->scene(i)->addItem(model->sceneItem(i));
     }
 };
 
@@ -68,26 +72,6 @@ SceneManager::~SceneManager()
 SceneManager *SceneManager::instance()
 {
     return ::instance;
-}
-
-Model *SceneManager::model() const
-{
-    return d->model;
-}
-
-void SceneManager::setModel(Model *model)
-{
-    if (d->model == model)
-        return;
-    if (d->model) {
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-            scene(i)->removeItem(d->model->sceneItem(i));
-    }
-    d->model = model;
-    if (d->model) {
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-            scene(i)->addItem(d->model->sceneItem(i));
-    }
 }
 
 QGraphicsScene *SceneManager::scene(int type)

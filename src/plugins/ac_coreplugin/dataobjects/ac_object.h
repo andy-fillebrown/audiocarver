@@ -48,9 +48,9 @@ public:
     void beginChangeData();
     void endChangeData();
     void beginInsertObjects(int first, int last);
-    void endInsertObjects();
+    virtual void endInsertObjects();
     void beginRemoveObjects(int first, int last);
-    void endRemoveObjects();
+    virtual void endRemoveObjects();
 };
 
 class AC_CORE_EXPORT Object : public QObject

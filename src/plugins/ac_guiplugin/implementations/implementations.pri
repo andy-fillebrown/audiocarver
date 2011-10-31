@@ -1,6 +1,6 @@
 
 SOURCE_PAIRS = \
-    ac_editorimpl \
+    ac_editor \
     ac_mainwindowimpl \
 
 for(pair, SOURCE_PAIRS) {

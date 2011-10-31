@@ -31,8 +31,6 @@ public:
     MainWidget(QWidget *parent = 0);
     ~MainWidget();
 
-    void setModel(Model *model);
-
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

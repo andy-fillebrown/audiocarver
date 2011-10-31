@@ -205,6 +205,13 @@ public:
         return Object::data(role);
     }
 
+protected:
+    ObjectTList(ObjectTListPrivate<T> &dd, QObject *parent)
+        :   ObjectList(dd, parent)
+    {
+        setObjectName(QString("%1s").arg(dd.t().objectName()));
+    }
+
 private:
     Q_DISABLE_COPY(ObjectTList)
     Q_DECLARE_TEMPLATE_PRIVATE(ObjectTList)

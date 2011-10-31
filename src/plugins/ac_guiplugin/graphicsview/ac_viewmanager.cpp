@@ -42,13 +42,13 @@ class ViewManagerPrivate
 {
 public:
     ViewManager *q;
-    QWidget *parentWidget;
     SceneManager *sceneManager;
     PitchView *pitchView;
     ControlView *controlView;
     TimeLabelView *timeLabelView;
     PitchLabelView *pitchLabelView;
     ControlLabelView *controlLabelView;
+    Model *model;
     qreal scoreLength;
     qreal timePos;
     qreal pitchPos;
@@ -59,26 +59,58 @@ public:
     quint32 databaseReading : 1;
     quint32 updatingDatabase : 31;
 
-    ViewManagerPrivate(ViewManager *q, QWidget *parentWidget)
+    ViewManagerPrivate(ViewManager *q)
         :   q(q)
-        ,   parentWidget(parentWidget)
         ,   sceneManager(new SceneManager(q))
         ,   pitchView(0)
         ,   controlView(0)
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
+        ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
         ,   databaseReading(quint32(false))
         ,   updatingDatabase(quint32(false))
     {}
 
     void init()
     {
-        pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), parentWidget);
-        controlView = new ControlView(sceneManager->scene(Ac::ControlScene), parentWidget);
-        timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), parentWidget);
-        pitchLabelView = new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), parentWidget);
-        controlLabelView = new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), parentWidget);
+        QWidget *widget = qobject_cast<QWidget*>(q->parent());
+        pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), widget);
+        controlView = new ControlView(sceneManager->scene(Ac::ControlScene), widget);
+        timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget);
+        pitchLabelView = new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget);
+        controlLabelView = new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), widget);
+
+        q->connect(q, SIGNAL(viewPositionChanged(int)), pitchView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), controlView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), timeLabelView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), pitchLabelView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), controlLabelView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), pitchView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), controlView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), timeLabelView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), pitchLabelView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), controlLabelView, SLOT(viewScaleChanged(int)));
+
+        IDatabase *db = IDatabase::instance();
+        q->connect(db, SIGNAL(databaseAboutToBeRead()), q, SLOT(databaseAboutToBeRead()));
+        q->connect(db, SIGNAL(databaseRead()), q, SLOT(databaseRead()));
+        q->connect(db, SIGNAL(databaseAboutToBeWritten()), q, SLOT(databaseAboutToBeWritten()));
+
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), q, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), q, SLOT(disableUpdates()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), controlView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), timeLabelView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchLabelView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), controlLabelView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelReset()), q, SLOT(modelReset()));
+
+        updateViewVariables();
+        q->updateViews();
     }
 
     void clearViewVariables()
@@ -90,18 +122,20 @@ public:
         timeScale = -1.0f;
         pitchScale = -1.0f;
         controlScale = -1.0f;
+
         emitAllViewSettingsChanged();
     }
 
     void updateViewVariables()
     {
-        const Model *model = sceneManager->model();
         const QModelIndex viewSettings = model->viewSettingsIndex();
+
         const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
         if (scoreLength != modelScoreLength) {
             scoreLength = modelScoreLength;
             emit q->scoreLengthChanged();
         }
+
         q->setPosition(viewSettings.data(Ac::TimePositionRole).toReal(), Ac::TimePositionRole);
         q->setPosition(viewSettings.data(Ac::PitchPositionRole).toReal(), Ac::PitchPositionRole);
         q->setPosition(viewSettings.data(Ac::ControlPositionRole).toReal(), Ac::ControlPositionRole);
@@ -125,24 +159,10 @@ static ViewManager *instance = 0;
 
 ViewManager::ViewManager(QWidget *widget)
     :   QObject(widget)
-    ,   d(new ViewManagerPrivate(this, widget))
+    ,   d(new ViewManagerPrivate(this))
 {
     ::instance = this;
     d->init();
-    IDatabase *db = IDatabase::instance();
-    connect(db, SIGNAL(databaseAboutToBeRead()), SLOT(databaseAboutToBeRead()));
-    connect(db, SIGNAL(databaseRead()), SLOT(databaseRead()));
-    connect(db, SIGNAL(databaseAboutToBeWritten()), SLOT(databaseAboutToBeWritten()));
-    connect(this, SIGNAL(viewPositionChanged(int)), d->pitchView, SLOT(viewPositionChanged(int)));
-    connect(this, SIGNAL(viewPositionChanged(int)), d->controlView, SLOT(viewPositionChanged(int)));
-    connect(this, SIGNAL(viewPositionChanged(int)), d->timeLabelView, SLOT(viewPositionChanged(int)));
-    connect(this, SIGNAL(viewPositionChanged(int)), d->pitchLabelView, SLOT(viewPositionChanged(int)));
-    connect(this, SIGNAL(viewPositionChanged(int)), d->controlLabelView, SLOT(viewPositionChanged(int)));
-    connect(this, SIGNAL(viewScaleChanged(int)), d->pitchView, SLOT(viewScaleChanged(int)));
-    connect(this, SIGNAL(viewScaleChanged(int)), d->controlView, SLOT(viewScaleChanged(int)));
-    connect(this, SIGNAL(viewScaleChanged(int)), d->timeLabelView, SLOT(viewScaleChanged(int)));
-    connect(this, SIGNAL(viewScaleChanged(int)), d->pitchLabelView, SLOT(viewScaleChanged(int)));
-    connect(this, SIGNAL(viewScaleChanged(int)), d->controlLabelView, SLOT(viewScaleChanged(int)));
 }
 
 ViewManager::~ViewManager()
@@ -155,6 +175,11 @@ ViewManager *ViewManager::instance()
     return ::instance;
 }
 
+Model *ViewManager::model() const
+{
+    return d->model;
+}
+
 QGraphicsView *ViewManager::view(int type) const
 {
     switch (type) {
@@ -164,42 +189,6 @@ QGraphicsView *ViewManager::view(int type) const
     case Ac::PitchLabelScene: return d->pitchLabelView;
     case Ac::ControlLabelScene: return d->controlLabelView;
     default: return 0;
-    }
-}
-
-Model *ViewManager::model() const
-{
-    return d->sceneManager->model();
-}
-
-void ViewManager::setModel(Model *model)
-{
-    Model *oldModel = d->sceneManager->model();
-    d->sceneManager->setModel(model);
-    if (oldModel == model)
-        return;
-    if (oldModel) {
-        oldModel->disconnect(this);
-        oldModel->disconnect(d->pitchView);
-        oldModel->disconnect(d->controlView);
-        oldModel->disconnect(d->timeLabelView);
-        oldModel->disconnect(d->pitchLabelView);
-        oldModel->disconnect(d->controlLabelView);
-    }
-    if (model) {
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), d->controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        connect(model, SIGNAL(modelAboutToBeReset()), SLOT(disableUpdates()));
-        connect(model, SIGNAL(modelAboutToBeReset()), d->pitchView, SLOT(modelAboutToBeReset()));
-        connect(model, SIGNAL(modelAboutToBeReset()), d->controlView, SLOT(modelAboutToBeReset()));
-        connect(model, SIGNAL(modelAboutToBeReset()), d->timeLabelView, SLOT(modelAboutToBeReset()));
-        connect(model, SIGNAL(modelAboutToBeReset()), d->pitchLabelView, SLOT(modelAboutToBeReset()));
-        connect(model, SIGNAL(modelAboutToBeReset()), d->controlLabelView, SLOT(modelAboutToBeReset()));
-        connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
-        d->updateViewVariables();
-        updateViews();
     }
 }
 

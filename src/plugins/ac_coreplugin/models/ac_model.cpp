@@ -42,18 +42,6 @@ QModelIndex ModelPrivate::indexFromItem(IModelItem *item) const
     return q->createIndex(parentItem->modelItemIndex(item), 0, parentItem);
 }
 
-IModelItem *ModelPrivate::itemFromIndex(const QModelIndex &index) const
-{
-    if ((index.row() < 0)
-            || (index.column() < 0)
-            || (index.model() != q))
-        return 0;
-    IModelItem *parentItem = static_cast<IModelItem*>(index.internalPointer());
-    if (!parentItem)
-        return 0;
-    return parentItem->modelItemAt(index.row());
-}
-
 Model::Model(QObject *parent)
     :   QAbstractItemModel(parent)
     ,   d(new ModelPrivate(this))
@@ -80,7 +68,7 @@ QGraphicsItem *Model::sceneItem(int type) const
 
 QModelIndex Model::index(int row, int column, const QModelIndex &parent) const
 {
-    IModelItem *parentItem = parent.isValid() ? d->itemFromIndex(parent) : d->score;
+    IModelItem *parentItem = parent.isValid() ? itemFromIndex(parent) : d->score;
     if (!parentItem
             || row < 0
             || column < 0
@@ -101,33 +89,45 @@ QModelIndex Model::parent(const QModelIndex &child) const
 
 int Model::rowCount(const QModelIndex &parent) const
 {
-    IModelItem *parentItem = parent.isValid() ? d->itemFromIndex(parent) : d->score;
+    IModelItem *parentItem = parent.isValid() ? itemFromIndex(parent) : d->score;
     return parentItem ? parentItem->modelItemCount() : 0;
 }
 
 QVariant Model::data(const QModelIndex &index, int role) const
 {
-    IModelItem *item = index.isValid() ? d->itemFromIndex(index) : d->score;
+    IModelItem *item = index.isValid() ? itemFromIndex(index) : d->score;
     return item ? item->data(role) : QVariant();
 }
 
 bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    IModelItem *item = index.isValid() ? d->itemFromIndex(index) : d->score;
+    IModelItem *item = index.isValid() ? itemFromIndex(index) : d->score;
     return item ? item->setData(value, role) : false;
 }
 
 Qt::ItemFlags Model::flags(const QModelIndex &index) const
 {
-    IModelItem *item = index.isValid() ? d->itemFromIndex(index) : d->score;
+    IModelItem *item = index.isValid() ? itemFromIndex(index) : d->score;
     return item ? item->flags() : Qt::NoItemFlags;
+}
+
+IModelItem *Model::itemFromIndex(const QModelIndex &index) const
+{
+    if ((index.row() < 0)
+            || (index.column() < 0)
+            || (index.model() != this))
+        return 0;
+    IModelItem *parentItem = static_cast<IModelItem*>(index.internalPointer());
+    if (!parentItem)
+        return 0;
+    return parentItem->modelItemAt(index.row());
 }
 
 bool Model::insertItem(IModelItem *item, int row, const QModelIndex &parent)
 {
     if (Ac::ListItem != parent.data(Ac::ItemTypeRole))
         return false;
-    ObjectList *list = dynamic_cast<ObjectList*>(d->itemFromIndex(parent));
+    ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
     if (!list)
         return false;
     list->insert(row, dynamic_cast<Object*>(item));
@@ -138,7 +138,7 @@ IModelItem *Model::takeItem(int row, const QModelIndex &parent)
 {
     if (Ac::ListItem != parent.data(Ac::ItemTypeRole))
         return false;
-    ObjectList *list = dynamic_cast<ObjectList*>(d->itemFromIndex(parent));
+    ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
     if (!list)
         return false;
     IModelItem *item = list->modelItemAt(row);

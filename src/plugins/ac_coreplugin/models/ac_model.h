@@ -53,6 +53,7 @@ public:
         return index(row, 0, parent);
     }
 
+    IModelItem *itemFromIndex(const QModelIndex &index) const;
     bool insertItem(IModelItem *item, int row, const QModelIndex &parent);
     IModelItem *takeItem(int row, const QModelIndex &parent);
 
@@ -91,7 +92,6 @@ public:
     ~ModelPrivate();
 
     QModelIndex indexFromItem(IModelItem *item) const;
-    IModelItem *itemFromIndex(const QModelIndex &index) const;
 
     void maybeEmitLayoutAboutToBeChanged()
     {
