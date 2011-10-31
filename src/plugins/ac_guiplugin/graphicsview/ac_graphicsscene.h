@@ -139,9 +139,6 @@ public:
 
     static SceneManager *instance();
 
-    Model *model() const;
-    void setModel(Model *model);
-
     QGraphicsScene *scene(int type);
 
 private:

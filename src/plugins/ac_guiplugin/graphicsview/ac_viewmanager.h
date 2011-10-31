@@ -40,10 +40,8 @@ public:
 
     static ViewManager *instance();
 
-    QGraphicsView *view(int type) const;
-
     Model *model() const;
-    void setModel(Model *model);
+    QGraphicsView *view(int type) const;
 
     qreal scoreLength() const;
     qreal position(Ac::ItemDataRole role) const;

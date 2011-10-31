@@ -15,26 +15,51 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITORIMPL_H
-#define AC_EDITORIMPL_H
+#include "ac_editor.h"
 
-#include <mi_ieditor.h>
+#include <ac_model.h>
 
-class AcEditorImpl : public IEditor
+#include <mi_idatabase.h>
+
+class EditorPrivate
 {
 public:
-    AcEditorImpl() {}
-    ~AcEditorImpl() {}
+    Model *model;
 
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
-
-private:
-    Q_DISABLE_COPY(AcEditorImpl)
+    EditorPrivate()
+        :   model(qobject_cast<Model*>(IDatabase::instance()->model()))
+    {}
 };
 
-#endif // AC_EDITORIMPL_H
+Editor::Editor()
+    :   d(new EditorPrivate)
+{}
+
+Editor::~Editor()
+{
+    delete d;
+}
+
+void Editor::undo()
+{
+}
+
+void Editor::redo()
+{
+}
+
+void Editor::cut()
+{
+}
+
+void Editor::copy() const
+{
+}
+
+void Editor::paste()
+{
+}
+
+void Editor::selectAll()
+{
+}

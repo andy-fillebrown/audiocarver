@@ -15,35 +15,29 @@
 **
 **************************************************************************/
 
-#include "ac_editorimpl.h"
-#include <QDebug>
+#ifndef AC_EDITOR_H
+#define AC_EDITOR_H
 
-void AcEditorImpl::undo()
-{
-    qDebug() << Q_FUNC_INFO;
-}
+#include <mi_ieditor.h>
 
-void AcEditorImpl::redo()
+class EditorPrivate;
+class Editor : public IEditor
 {
-    qDebug() << Q_FUNC_INFO;
-}
+public:
+    Editor();
+    ~Editor();
 
-void AcEditorImpl::cut()
-{
-    qDebug() << Q_FUNC_INFO;
-}
+    // IEditor
+    void undo();
+    void redo();
+    void cut();
+    void copy() const;
+    void paste();
+    void selectAll();
 
-void AcEditorImpl::copy() const
-{
-    qDebug() << Q_FUNC_INFO;
-}
+private:
+    Q_DISABLE_COPY(Editor)
+    EditorPrivate *d;
+};
 
-void AcEditorImpl::paste()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void AcEditorImpl::selectAll()
-{
-    qDebug() << Q_FUNC_INFO;
-}
+#endif // AC_EDITOR_H
