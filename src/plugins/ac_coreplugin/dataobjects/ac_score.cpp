@@ -31,7 +31,7 @@ public:
 
 template <class T> class TrackListPrivate : public ObjectTListPrivate<T>
 {
-    Q_DECLARE_TEMPLATE_PUBLIC(TrackList, Object)
+    Q_DECLARE_TEMPLATE_PUBLIC(TrackList)
 
 public:
     TrackListPrivate(TrackList<T> *q)
