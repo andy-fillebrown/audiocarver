@@ -17,6 +17,8 @@
 
 #include "ac_editor.h"
 
+#include <ac_undo.h>
+
 #include <ac_model.h>
 
 #include <mi_idatabase.h>
@@ -24,16 +26,27 @@
 class EditorPrivate
 {
 public:
+    Editor *q;
     Model *model;
+    UndoStack *undoStack;
 
-    EditorPrivate()
-        :   model(qobject_cast<Model*>(IDatabase::instance()->model()))
+    EditorPrivate(Editor *q)
+        :   q(q)
+        ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
+        ,   undoStack(0)
     {}
+
+    void init()
+    {
+        undoStack = new UndoStack(q);
+    }
 };
 
 Editor::Editor()
-    :   d(new EditorPrivate)
-{}
+    :   d(new EditorPrivate(this))
+{
+    d->init();
+}
 
 Editor::~Editor()
 {
