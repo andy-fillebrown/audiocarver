@@ -31,7 +31,7 @@ public:
     IModelItem *item;
     quint32 enabled : 32;
 
-    UndoCommandPrivate(IModelItem *item)
+    UndoCommandPrivate(IModelItem *item = 0)
         :   item(item)
         ,   enabled(false)
     {}
@@ -53,6 +53,11 @@ UndoCommand::~UndoCommand()
 IModelItem *UndoCommand::item() const
 {
     return d_ptr->item;
+}
+
+void UndoCommand::setItem(IModelItem *item)
+{
+    d_ptr->item = item;
 }
 
 void UndoCommand::enable()
@@ -132,6 +137,11 @@ public:
     int row;
     QModelIndex parentIndex;
 
+    UndoListCommandPrivate(int row, const QModelIndex &parentIndex)
+        :   row(row)
+        ,   parentIndex(parentIndex)
+    {}
+
     UndoListCommandPrivate(IModelItem *item, int row, const QModelIndex &parentIndex)
         :   UndoCommandPrivate(item)
         ,   row(row)
@@ -148,6 +158,18 @@ UndoListCommand::UndoListCommand(UndoListCommandPrivate &dd, QUndoCommand *paren
 
 UndoListCommand::~UndoListCommand()
 {
+}
+
+const QModelIndex &UndoListCommand::parentIndex() const
+{
+    Q_D(const UndoListCommand);
+    return d->parentIndex;
+}
+
+int UndoListCommand::row() const
+{
+    Q_D(const UndoListCommand);
+    return d->row;
 }
 
 void UndoListCommand::insert()
@@ -176,8 +198,8 @@ bool UndoListCommand::mergeWith(const QUndoCommand *other)
     return false;
 }
 
-UndoInsertCommand::UndoInsertCommand(IModelItem *item, int row, const QModelIndex &parentIndex, QUndoCommand *parent)
-    :   UndoListCommand(*(new UndoListCommandPrivate(item, row, parentIndex)), parent)
+UndoInsertCommand::UndoInsertCommand(int row, const QModelIndex &parentIndex, QUndoCommand *parent)
+    :   UndoListCommand(*(new UndoListCommandPrivate(row, parentIndex)), parent)
 {}
 
 UndoRemoveCommand::UndoRemoveCommand(IModelItem *item, int row, const QModelIndex &parentIndex, QUndoCommand *parent)
@@ -237,6 +259,8 @@ void UndoStack::dataAboutToBeChanged(const QModelIndex &topLeft, const QModelInd
     Q_UNUSED(bottomRight);
     if (undoCommandActive || databaseReading)
         return;
+    if (Ac::ListItem == topLeft.data(Ac::ItemTypeRole))
+        return;
     d->dataChanges.append(new UndoDataCommand(d->model->itemFromIndex(topLeft)));
 }
 
@@ -244,6 +268,8 @@ void UndoStack::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
 {
     Q_UNUSED(bottomRight);
     if (undoCommandActive || databaseReading)
+        return;
+    if (Ac::ListItem == topLeft.data(Ac::ItemTypeRole))
         return;
     IModelItem *item = d->model->itemFromIndex(topLeft);
     const int n = d->dataChanges.count();
@@ -269,7 +295,7 @@ void UndoStack::rowsAboutToBeInserted(const QModelIndex &parent, int start, int 
     Q_UNUSED(end);
     if (undoCommandActive || databaseReading)
         return;
-    d->inserts.append(new UndoInsertCommand(d->model->itemFromIndex(d->model->index(start, parent)), start, parent));
+    d->inserts.append(new UndoInsertCommand(start, parent));
 }
 
 void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
@@ -277,14 +303,14 @@ void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
     Q_UNUSED(end);
     if (undoCommandActive || databaseReading)
         return;
-    IModelItem *item = d->model->itemFromIndex(d->model->index(start, parent));
     const int n = d->inserts.count();
     for (int i = 0;  i < n;  ++i) {
         UndoInsertCommand *cmd = d->inserts.at(i);
-        if (item != cmd->item())
+        if (parent != cmd->parentIndex() || start != cmd->row())
             continue;
         d->inserts.removeAt(i);
         push(cmd);
+        cmd->setItem(d->model->itemFromIndex(d->model->index(start, parent)));
         cmd->enable();
         break;
     }
@@ -303,11 +329,10 @@ void UndoStack::rowsRemoved(const QModelIndex &parent, int start, int end)
     Q_UNUSED(end);
     if (undoCommandActive || databaseReading)
         return;
-    IModelItem *item = d->model->itemFromIndex(d->model->index(start, parent));
     const int n = d->removes.count();
     for (int i = 0;  i < n;  ++i) {
         UndoRemoveCommand *cmd = d->removes.at(i);
-        if (item != cmd->item())
+        if (parent != cmd->parentIndex() || start != cmd->row())
             continue;
         d->removes.removeAt(i);
         push(cmd);

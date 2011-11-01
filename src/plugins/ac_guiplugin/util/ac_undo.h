@@ -31,6 +31,7 @@ public:
     ~UndoCommand();
 
     IModelItem *item() const;
+    void setItem(IModelItem *item);
 
     void enable();
 
@@ -64,6 +65,9 @@ class UndoListCommand : public UndoCommand
 public:
     ~UndoListCommand();
 
+    const QModelIndex &parentIndex() const;
+    int row() const;
+
     void insert();
     void remove();
 
@@ -72,17 +76,16 @@ public:
 protected:
     UndoListCommand(UndoListCommandPrivate &dd, QUndoCommand *parent);
 
-private:
     Q_DECLARE_PRIVATE(UndoListCommand)
 };
 
 class UndoInsertCommand : public UndoListCommand
 {
 public:
-    UndoInsertCommand(IModelItem *item, int row, const QModelIndex &parentIndex, QUndoCommand *parent = 0);
+    UndoInsertCommand(int row, const QModelIndex &parentIndex, QUndoCommand *parent = 0);
 
-    void redo() { remove(); }
-    void undo() { insert(); }
+    void redo() { insert(); }
+    void undo() { remove(); }
 };
 
 class UndoRemoveCommand : public UndoListCommand
@@ -90,8 +93,8 @@ class UndoRemoveCommand : public UndoListCommand
 public:
     UndoRemoveCommand(IModelItem *item, int row, const QModelIndex &parentIndex, QUndoCommand *parent = 0);
 
-    void redo() { insert(); }
-    void undo() { remove(); }
+    void redo() { remove(); }
+    void undo() { insert(); }
 };
 
 class UndoStackPrivate;
