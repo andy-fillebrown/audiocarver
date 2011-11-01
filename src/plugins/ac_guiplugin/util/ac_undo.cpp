@@ -139,6 +139,12 @@ public:
         ,   parentIndex(parentIndex)
         ,   deleteItem(false)
     {}
+
+    ~UndoListCommandPrivate()
+    {
+        if (deleteItem)
+            delete item;
+    }
 };
 
 UndoListCommand::UndoListCommand(UndoListCommandPrivate &dd, QUndoCommand *parent)
