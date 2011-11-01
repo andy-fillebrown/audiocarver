@@ -114,6 +114,8 @@ public:
         object->setParent(this);
         if (!d->objects.isEmpty() && object == d->objects.last()) {
             const int n = count() - 1;
+            if (i == n)
+                return;
             d->beginRemoveObjects(n, n);
             d->objects.removeLast();
             d->endRemoveObjects();
