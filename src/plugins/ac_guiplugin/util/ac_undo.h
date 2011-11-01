@@ -30,11 +30,6 @@ class UndoCommand : public QUndoCommand
 public:
     ~UndoCommand();
 
-    IModelItem *item() const;
-    void setItem(IModelItem *item);
-
-    void enable();
-
 protected:
     UndoCommand(UndoCommandPrivate &dd, QUndoCommand *parent)
         :   QUndoCommand(parent)

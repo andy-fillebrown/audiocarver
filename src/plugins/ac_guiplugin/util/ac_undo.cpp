@@ -27,25 +27,30 @@ static bool databaseReading = false;
 
 class UndoCommandPrivate
 {
-public:
     quint32 enabled : 32;
 
+public:
     UndoCommandPrivate()
         :   enabled(false)
     {}
 
     virtual ~UndoCommandPrivate()
     {}
+
+    bool isEnabled() const
+    {
+        return enabled;
+    }
+
+    void enable()
+    {
+        enabled = true;
+    }
 };
 
 UndoCommand::~UndoCommand()
 {
     delete d_ptr;
-}
-
-void UndoCommand::enable()
-{
-    d_ptr->enabled = true;
 }
 
 class UndoModelItemCommandPrivate : public UndoCommandPrivate
@@ -127,9 +132,11 @@ void UndoDataCommand::updateNewData()
 
 void UndoDataCommand::redo()
 {
-    if (!d_ptr->enabled)
-        return;
     Q_D(UndoDataCommand);
+    if (!d->isEnabled()) {
+        d->enable();
+        return;
+    }
     undoCommandActive = true;
     d->setData(d->newData);
     undoCommandActive = false;
@@ -137,8 +144,6 @@ void UndoDataCommand::redo()
 
 void UndoDataCommand::undo()
 {
-    if (!d_ptr->enabled)
-        return;
     Q_D(UndoDataCommand);
     undoCommandActive = true;
     d->setData(d->oldData);
@@ -184,9 +189,11 @@ int UndoListCommand::row() const
 
 void UndoListCommand::insert()
 {
-    if (!d_ptr->enabled)
-        return;
     Q_D(UndoListCommand);
+    if (!d->isEnabled()) {
+        d->enable();
+        return;
+    }
     undoCommandActive = true;
     d->model()->insertItem(item(), d->row, d->parentIndex);
     undoCommandActive = false;
@@ -194,9 +201,11 @@ void UndoListCommand::insert()
 
 void UndoListCommand::remove()
 {
-    if (!d_ptr->enabled)
-        return;
     Q_D(UndoListCommand);
+    if (!d->isEnabled()) {
+        d->enable();
+        return;
+    }
     undoCommandActive = true;
     d->model()->takeItem(d->row, d->parentIndex);
     undoCommandActive = false;
@@ -290,7 +299,6 @@ void UndoStack::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
         cmd->updateNewData();
         d->dataChanges.removeAt(i);
         push(cmd);
-        cmd->enable();
         break;
     }
 }
@@ -321,7 +329,6 @@ void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
         d->inserts.removeAt(i);
         push(cmd);
         cmd->setItem(d->model->itemFromIndex(d->model->index(start, parent)));
-        cmd->enable();
         break;
     }
 }
@@ -346,7 +353,6 @@ void UndoStack::rowsRemoved(const QModelIndex &parent, int start, int end)
             continue;
         d->removes.removeAt(i);
         push(cmd);
-        cmd->enable();
         break;
     }
 }
