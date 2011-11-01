@@ -28,15 +28,33 @@ static bool databaseReading = false;
 class UndoCommandPrivate
 {
 public:
-    IModelItem *item;
     quint32 enabled : 32;
 
-    UndoCommandPrivate(IModelItem *item = 0)
-        :   item(item)
-        ,   enabled(false)
+    UndoCommandPrivate()
+        :   enabled(false)
     {}
 
     virtual ~UndoCommandPrivate()
+    {}
+};
+
+UndoCommand::~UndoCommand()
+{
+    delete d_ptr;
+}
+
+void UndoCommand::enable()
+{
+    d_ptr->enabled = true;
+}
+
+class UndoModelItemCommandPrivate : public UndoCommandPrivate
+{
+public:
+    IModelItem *item;
+
+    UndoModelItemCommandPrivate(IModelItem *item = 0)
+        :   item(item)
     {}
 
     Model *model() const
@@ -45,34 +63,30 @@ public:
     }
 };
 
-UndoCommand::~UndoCommand()
+UndoModelItemCommand::UndoModelItemCommand(UndoModelItemCommandPrivate &dd, QUndoCommand *parent)
+    :   UndoCommand(dd, parent)
+{}
+
+IModelItem *UndoModelItemCommand::item() const
 {
-    delete d_ptr;
+    Q_D(const UndoModelItemCommand);
+    return d->item;
 }
 
-IModelItem *UndoCommand::item() const
+void UndoModelItemCommand::setItem(IModelItem *item)
 {
-    return d_ptr->item;
+    Q_D(UndoModelItemCommand);
+    d->item = item;
 }
 
-void UndoCommand::setItem(IModelItem *item)
-{
-    d_ptr->item = item;
-}
-
-void UndoCommand::enable()
-{
-    d_ptr->enabled = true;
-}
-
-class UndoDataCommandPrivate : public UndoCommandPrivate
+class UndoDataCommandPrivate : public UndoModelItemCommandPrivate
 {
 public:
     QMap<int, QVariant> oldData;
     QMap<int, QVariant> newData;
 
     UndoDataCommandPrivate(IModelItem *item)
-        :   UndoCommandPrivate(item)
+        :   UndoModelItemCommandPrivate(item)
     {}
 
     QMap<int, QVariant> data() const
@@ -99,7 +113,7 @@ public:
 };
 
 UndoDataCommand::UndoDataCommand(IModelItem *item, QUndoCommand *parent)
-    :   UndoCommand(*(new UndoDataCommandPrivate(item)), parent)
+    :   UndoModelItemCommand(*(new UndoDataCommandPrivate(item)), parent)
 {
     Q_D(UndoDataCommand);
     d->oldData = d->data();
@@ -131,7 +145,7 @@ void UndoDataCommand::undo()
     undoCommandActive = false;
 }
 
-class UndoListCommandPrivate : public UndoCommandPrivate
+class UndoListCommandPrivate : public UndoModelItemCommandPrivate
 {
 public:
     int row;
@@ -143,7 +157,7 @@ public:
     {}
 
     UndoListCommandPrivate(IModelItem *item, int row, const QModelIndex &parentIndex)
-        :   UndoCommandPrivate(item)
+        :   UndoModelItemCommandPrivate(item)
         ,   row(row)
         ,   parentIndex(parentIndex)
     {}
@@ -153,12 +167,8 @@ public:
 };
 
 UndoListCommand::UndoListCommand(UndoListCommandPrivate &dd, QUndoCommand *parent)
-    :   UndoCommand(dd, parent)
+    :   UndoModelItemCommand(dd, parent)
 {}
-
-UndoListCommand::~UndoListCommand()
-{
-}
 
 const QModelIndex &UndoListCommand::parentIndex() const
 {

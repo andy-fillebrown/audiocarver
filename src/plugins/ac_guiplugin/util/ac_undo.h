@@ -44,8 +44,22 @@ protected:
     UndoCommandPrivate *d_ptr;
 };
 
+class UndoModelItemCommandPrivate;
+class UndoModelItemCommand : public UndoCommand
+{
+public:
+    IModelItem *item() const;
+    void setItem(IModelItem *item);
+
+protected:
+    UndoModelItemCommand(UndoModelItemCommandPrivate &dd, QUndoCommand *parent);
+
+private:
+    Q_DECLARE_PRIVATE(UndoModelItemCommand)
+};
+
 class UndoDataCommandPrivate;
-class UndoDataCommand : public UndoCommand
+class UndoDataCommand : public UndoModelItemCommand
 {
 public:
     UndoDataCommand(IModelItem *item, QUndoCommand *parent = 0);
@@ -60,11 +74,9 @@ private:
 };
 
 class UndoListCommandPrivate;
-class UndoListCommand : public UndoCommand
+class UndoListCommand : public UndoModelItemCommand
 {
 public:
-    ~UndoListCommand();
-
     const QModelIndex &parentIndex() const;
     int row() const;
 
