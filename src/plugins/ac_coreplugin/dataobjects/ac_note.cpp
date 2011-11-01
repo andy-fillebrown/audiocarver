@@ -109,3 +109,8 @@ void Note::unhighlight()
     for (int i = 0;  i < n;  ++i)
         d->controlCurves->at(i)->unhighlight();
 }
+
+bool Note::isVisible() const
+{
+    return track()->isVisible();
+}

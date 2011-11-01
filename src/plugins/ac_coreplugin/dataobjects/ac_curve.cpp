@@ -113,6 +113,12 @@ bool Curve::intersects(const QRectF &rect) const
     return d->graphicsCurveItem->intersects(rect);
 }
 
+bool Curve::isVisible() const
+{
+    Q_D(const Curve);
+    return d->graphicsCurveItem->isVisible();
+}
+
 QVariant Curve::data(int role) const
 {
     switch (role) {

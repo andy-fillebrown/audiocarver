@@ -43,6 +43,7 @@ public:
     void highlight();
     void unhighlight();
     bool intersects(const QRectF &rect) const;
+    bool isVisible() const;
 
     // IModelItem
     int persistentRoleAt(int i) const

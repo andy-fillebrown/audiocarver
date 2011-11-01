@@ -49,6 +49,7 @@ public:
     void highlight();
     void unhighlight();
     bool intersects(const QRectF &) const { return false; }
+    bool isVisible() const;
 
     // IModelItem
     int type() const { return Type; }

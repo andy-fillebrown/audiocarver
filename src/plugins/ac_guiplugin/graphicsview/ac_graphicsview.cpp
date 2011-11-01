@@ -325,7 +325,7 @@ public:
     {
         viewMgr->disableUpdates();
         foreach (IEntity *entity, entities) {
-            if (!entityIsPicked(entity)) {
+            if (entity->isVisible() && !entityIsPicked(entity)) {
                 GraphicsEntityItem *item = new GraphicsEntityItem(entity);
                 pickedEntities.append(item);
                 item->setParentItem(rootItem);
@@ -357,6 +357,14 @@ public:
         qDeleteAll(pickedEntities);
         pickedEntities.clear();
         viewMgr->enableUpdates();
+    }
+
+    void resetPickedEntities()
+    {
+        QList<IEntity*> entities;
+        foreach (GraphicsEntityItem *item, pickedEntities)
+            entities.append(item->entity());
+        setPickedEntities(entities);
     }
 
     void updateViewSettings()
@@ -417,8 +425,8 @@ void GraphicsView::updateView()
 void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     Q_UNUSED(bottomRight);
-    if (DraggingGrips == d->dragState)
-        return;
+
+    // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
     IModelItem *item = d->viewMgr->model()->itemFromIndex(topLeft);
     IEntity *entity = query<IEntity>(item);
     if (!entity) {
@@ -426,12 +434,16 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
         if (subEntity)
             entity = subEntity->parentEntity();
     }
-    if (!entity)
-        return;
-    GraphicsEntityItem *entityItem = d->findEntityItem(entity);
-    if (!entityItem)
-        return;
-    entityItem->resetGrips();
+    if (entity) {
+        GraphicsEntityItem *entityItem = d->findEntityItem(entity);
+        if (entityItem)
+            entityItem->resetGrips();
+    }
+
+    // If topLeft is a track, gripped entities might have been hidden.
+    // Re-append the selected entities so the hidden ones are filtered out.
+    if (Ac::TrackItem == topLeft.data(Ac::ItemTypeRole))
+        d->resetPickedEntities();
 }
 
 void GraphicsView::modelAboutToBeReset()

@@ -32,6 +32,7 @@ public:
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
+    virtual bool isVisible() const = 0;
 };
 
 class ISubEntity : public IUnknown
