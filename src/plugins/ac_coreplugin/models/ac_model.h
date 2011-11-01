@@ -64,6 +64,9 @@ public:
     QModelIndex controlGridLineListIndex() const;
     QModelIndex viewSettingsIndex() const;
 
+private slots:
+    void deleteOrphans();
+
 signals:
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
@@ -80,11 +83,13 @@ class ModelPrivate
 public:
     Model *q;
     Score *score;
+    QObject *orphanage;
     bool layoutAboutToBeChangedEmitted;
 
     ModelPrivate(Model *q)
         :   q(q)
         ,   score(0)
+        ,   orphanage(0)
         ,   layoutAboutToBeChangedEmitted(false)
     {}
 

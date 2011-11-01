@@ -131,20 +131,15 @@ class UndoListCommandPrivate : public UndoCommandPrivate
 public:
     int row;
     QModelIndex parentIndex;
-    quint32 deleteItem : 32;
 
     UndoListCommandPrivate(IModelItem *item, int row, const QModelIndex &parentIndex)
         :   UndoCommandPrivate(item)
         ,   row(row)
         ,   parentIndex(parentIndex)
-        ,   deleteItem(false)
     {}
 
     ~UndoListCommandPrivate()
-    {
-        if (deleteItem)
-            delete item;
-    }
+    {}
 };
 
 UndoListCommand::UndoListCommand(UndoListCommandPrivate &dd, QUndoCommand *parent)
@@ -162,7 +157,6 @@ void UndoListCommand::insert()
     Q_D(UndoListCommand);
     undoCommandActive = true;
     d->model()->insertItem(item(), d->row, d->parentIndex);
-    d->deleteItem = false;
     undoCommandActive = false;
 }
 
@@ -173,7 +167,6 @@ void UndoListCommand::remove()
     Q_D(UndoListCommand);
     undoCommandActive = true;
     d->model()->takeItem(d->row, d->parentIndex);
-    d->deleteItem = true;
     undoCommandActive = false;
 }
 

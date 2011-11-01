@@ -25,6 +25,8 @@ void ModelPrivate::init()
 {
     score = new Score(q);
     score->setModel(q);
+
+    orphanage = new QObject(q);
 }
 
 ModelPrivate::~ModelPrivate()
@@ -49,6 +51,7 @@ Model::Model(QObject *parent)
     d->init();
     connect(d->score, SIGNAL(aboutToBeReset()), SIGNAL(modelAboutToBeReset()));
     connect(d->score, SIGNAL(reset()), SIGNAL(modelReset()));
+    connect(this, SIGNAL(modelReset()), SLOT(deleteOrphans()));
 }
 
 Model::~Model()
@@ -141,8 +144,10 @@ IModelItem *Model::takeItem(int row, const QModelIndex &parent)
     ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
     if (!list)
         return false;
+    QObject *object = list->objectAt(row);
     IModelItem *item = list->modelItemAt(row);
     list->removeAt(row);
+    object->setParent(d->orphanage);
     return item;
 }
 
@@ -169,4 +174,10 @@ QModelIndex Model::controlGridLineListIndex() const
 QModelIndex Model::viewSettingsIndex() const
 {
     return d->indexFromItem(d->score->viewSettings());
+}
+
+void Model::deleteOrphans()
+{
+    foreach (QObject *child, d->orphanage->children())
+        delete child;
 }

@@ -34,6 +34,7 @@ class ObjectList : public Object
     Q_OBJECT
 
 public:
+    virtual QObject *objectAt(int i) const = 0;
     virtual void append(Object *object) = 0;
     virtual void insert(int i, Object *object) = 0;
     virtual void removeAt(int i) = 0;
@@ -144,6 +145,11 @@ public:
     }
 
     // ObjectList
+    QObject *objectAt(int i) const
+    {
+        return at(i);
+    }
+
     void append(Object *object)
     {
         T *t = qobject_cast<T*>(object);
