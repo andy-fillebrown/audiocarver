@@ -262,7 +262,7 @@ public:
 
     void dragPickBoxTo(const QPoint &pos)
     {
-        if (4 <= (pos - dragStartPos).manhattanLength()) {
+        if (QApplication::startDragDistance() <= (pos - dragStartPos).manhattanLength()) {
             const QRect pickRect = QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
             pickBox->setRect(QRectF(q->mapToScene(pickRect.topLeft()), q->mapToScene(pickRect.bottomRight())));
             pickBox->show();
