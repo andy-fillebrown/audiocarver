@@ -55,10 +55,12 @@ Editor::~Editor()
 
 void Editor::undo()
 {
+    d->undoStack->undo();
 }
 
 void Editor::redo()
 {
+    d->undoStack->redo();
 }
 
 void Editor::cut()

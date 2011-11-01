@@ -30,6 +30,10 @@ class UndoCommand : public QUndoCommand
 public:
     ~UndoCommand();
 
+    IModelItem *item() const;
+
+    void enable();
+
 protected:
     UndoCommand(UndoCommandPrivate &dd, QUndoCommand *parent)
         :   QUndoCommand(parent)
@@ -100,6 +104,8 @@ public:
     ~UndoStack();
 
 private slots:
+    void databaseAboutToBeRead();
+    void databaseRead();
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void modelReset();

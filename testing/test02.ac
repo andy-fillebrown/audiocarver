@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128">
     <TrackList>
-        <Track volume="1" color="#7f0000">
+        <Track name="Track 1" volume="1" color="#0000ff" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -50,7 +50,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track volume="1" color="#7f0000">
+        <Track name="Track 2" volume="1" color="#ff0000" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
