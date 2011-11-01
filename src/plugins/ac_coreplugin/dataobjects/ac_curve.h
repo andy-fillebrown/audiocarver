@@ -80,6 +80,7 @@ class CurvePrivate : public GraphicsObjectPrivate
 
 public:
     PointList points;
+    quint32 dragging : 32;
     GraphicsCurveItem *graphicsCurveItem;
 
     CurvePrivate(Curve *q);

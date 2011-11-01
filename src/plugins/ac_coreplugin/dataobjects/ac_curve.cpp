@@ -21,6 +21,7 @@
 
 CurvePrivate::CurvePrivate(Curve *q)
     :   GraphicsObjectPrivate(q)
+    ,   dragging(false)
     ,   graphicsCurveItem(new GraphicsCurveItem)
 {}
 
@@ -63,20 +64,35 @@ const PointList &Curve::points() const
 void Curve::setPoints(const PointList &points, Ac::DragState dragState)
 {
     Q_D(Curve);
-    if (d->points == points)
+    if (d->points == points) {
+        if (Ac::NotDragging == dragState && d->dragging) {
+            d->endChangeData();
+            d->dragging = false;
+        }
         return;
+    }
     PointList oldPts = d->points;
     d->points = points;
     d->conformPoints();
-    if (d->points == oldPts)
+    if (d->points == oldPts) {
+        if (Ac::NotDragging == dragState && d->dragging) {
+            d->endChangeData();
+            d->dragging = false;
+        }
         return;
+    }
     PointList newPts = d->points;
     d->points = oldPts;
-    if (Ac::NotDragging == dragState)
+    if (Ac::NotDragging == dragState || !d->dragging)
         d->beginChangeData();
+    if (Ac::Dragging == dragState)
+        d->dragging = true;
     d->points = newPts;
     d->graphicsCurveItem->setPoints(d->points);
-    d->endChangeData();
+    if (!d->dragging)
+        d->endChangeData();
+    if (Ac::NotDragging == dragState)
+        d->dragging = false;
 }
 
 void Curve::highlight()

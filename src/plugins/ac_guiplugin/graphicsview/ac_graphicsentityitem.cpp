@@ -62,6 +62,12 @@ public:
         gripItem->setParentItem(0);
     }
 
+    void clearGripItems()
+    {
+        qDeleteAll(gripItems);
+        gripItems.clear();
+    }
+
     IEntity *entityToHighlight() const
     {
         IEntity *highlightEntity = 0;
@@ -96,17 +102,21 @@ public:
 GraphicsEntityItem::GraphicsEntityItem(IEntity *entity)
     :   d(new GraphicsEntityItemPrivate(this))
 {
-    if (!entity)
-        return;
     d->entity = entity;
-    const PointList &points = entity->points();
-    foreach (const Point &point, points)
-        d->addGripItem(new GraphicsGripItem(point.pos));
+    resetGrips();
 }
 
 GraphicsEntityItem::~GraphicsEntityItem()
 {
     delete d;
+}
+
+void GraphicsEntityItem::resetGrips()
+{
+    d->clearGripItems();
+    const PointList &points = d->entity->points();
+    foreach (const Point &point, points)
+        d->addGripItem(new GraphicsGripItem(point.pos));
 }
 
 IEntity *GraphicsEntityItem::entity() const

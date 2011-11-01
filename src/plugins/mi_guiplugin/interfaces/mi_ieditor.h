@@ -37,6 +37,9 @@ public:
     virtual void paste() = 0;
     virtual void selectAll() = 0;
 
+    virtual void beginCommand(const QString &text = QString()) = 0;
+    virtual void endCommand() = 0;
+
 private:
     Q_DISABLE_COPY(IEditor)
 };

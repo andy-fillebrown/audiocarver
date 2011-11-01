@@ -35,6 +35,9 @@ public:
     void paste();
     void selectAll();
 
+    void beginCommand(const QString &text = QString());
+    void endCommand();
+
 private:
     Q_DISABLE_COPY(Editor)
     EditorPrivate *d;

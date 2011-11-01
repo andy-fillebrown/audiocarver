@@ -20,6 +20,7 @@
 #include <ac_trackmodel.h>
 
 #include <mi_idatabase.h>
+#include <mi_ieditor.h>
 
 #include <QApplication>
 #include <QColorDialog>
@@ -29,6 +30,11 @@
 #include <QStyledItemDelegate>
 
 static const int buttonColumnWidth = 12;
+
+static IEditor *editor()
+{
+    return IEditor::instance();
+}
 
 class Delegate : public QStyledItemDelegate
 {
@@ -107,8 +113,11 @@ public:
         if (QEvent::MouseButtonPress != event->type())
             return false;
         const QMouseEvent *e = static_cast<const QMouseEvent*>(event);
-        if (Qt::LeftButton == e->button())
+        if (Qt::LeftButton == e->button()) {
+            editor()->beginCommand();
             model->setData(index, !index.data().toBool(), Qt::DisplayRole);
+            editor()->endCommand();
+        }
 
         return true;
     }
@@ -156,12 +165,14 @@ class TrackViewPrivate
 {
 public:
     TrackView *q;
+    IEditor *editor;
     QPoint dragStartPos;
     quint32 dragging : 32;
     int dropRow;
 
     TrackViewPrivate(TrackView *q)
         :   q(q)
+        ,   editor(IEditor::instance())
         ,   dragging(false)
         ,   dropRow(-1)
     {}
@@ -254,7 +265,9 @@ void TrackView::dropEvent(QDropEvent *event)
 {
     // Drop mime data into the track model.
     d->updateDropRow(event->pos());
+    d->editor->beginCommand();
     model()->dropMimeData(event->mimeData(), event->dropAction(), d->dropRow, 0, QModelIndex());
+    d->editor->endCommand();
 
     d->dragging = false;
 

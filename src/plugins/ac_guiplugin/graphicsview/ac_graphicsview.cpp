@@ -22,10 +22,20 @@
 #include <ac_ientity.h>
 #include <ac_viewmanager.h>
 
+#include <ac_imodelitem.h>
+#include <ac_model.h>
+
+#include <mi_ieditor.h>
+
 #include <QApplication>
 #include <QMouseEvent>
 
 #include <qmath.h>
+
+static IEditor *editor()
+{
+    return IEditor::instance();
+}
 
 static const QCursor &crosshair()
 {
@@ -206,14 +216,13 @@ public:
                 }
             }
         }
-        const bool draggingGrips = !gripsBeingDragged.isEmpty();
-        if (draggingGrips)
-            dragState = DraggingGrips;
-        return draggingGrips;
+        return !gripsBeingDragged.isEmpty();
     }
 
     void startDraggingGrips()
     {
+        editor()->beginCommand();
+        dragState = DraggingGrips;
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->startDraggingPoints();
     }
@@ -237,6 +246,7 @@ public:
         entitiesToUpdate.clear();
         gripsBeingDragged.clear();
         dragState = 0;
+        editor()->endCommand();
     }
 
     QRect pickBoxBounds() const
@@ -402,6 +412,26 @@ void GraphicsView::updateView()
     if (d->dirty)
         updateViewSettings();
     update();
+}
+
+void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+    Q_UNUSED(bottomRight);
+    if (DraggingGrips == d->dragState)
+        return;
+    IModelItem *item = d->viewMgr->model()->itemFromIndex(topLeft);
+    IEntity *entity = query<IEntity>(item);
+    if (!entity) {
+        ISubEntity *subEntity = query<ISubEntity>(item);
+        if (subEntity)
+            entity = subEntity->parentEntity();
+    }
+    if (!entity)
+        return;
+    GraphicsEntityItem *entityItem = d->findEntityItem(entity);
+    if (!entityItem)
+        return;
+    entityItem->resetGrips();
 }
 
 void GraphicsView::modelAboutToBeReset()

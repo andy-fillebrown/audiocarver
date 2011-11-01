@@ -22,8 +22,9 @@
 
 #include <mi_graphicsview.h>
 
-class GraphicsViewPrivate;
+class QModelIndex;
 
+class GraphicsViewPrivate;
 class GraphicsView : public MiGraphicsView
 {
     Q_OBJECT
@@ -39,6 +40,7 @@ public:
     virtual void updateView();
 
 public slots:
+    virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void modelAboutToBeReset();
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);

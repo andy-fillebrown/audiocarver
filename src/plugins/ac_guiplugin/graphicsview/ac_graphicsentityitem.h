@@ -32,6 +32,8 @@ public:
     GraphicsEntityItem(IEntity *entity);
     ~GraphicsEntityItem();
 
+    void resetGrips();
+
     // IEntityItem
     IEntity *entity() const;
     void highlight();

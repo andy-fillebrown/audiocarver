@@ -35,7 +35,6 @@ public:
     void updateView();
     void viewScaleChanged(int role);
 
-public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 protected:

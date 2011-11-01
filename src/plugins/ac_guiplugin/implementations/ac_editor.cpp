@@ -55,12 +55,14 @@ Editor::~Editor()
 
 void Editor::undo()
 {
-    d->undoStack->undo();
+    if (d->undoStack->canUndo())
+        d->undoStack->undo();
 }
 
 void Editor::redo()
 {
-    d->undoStack->redo();
+    if (d->undoStack->canRedo())
+        d->undoStack->redo();
 }
 
 void Editor::cut()
@@ -77,4 +79,14 @@ void Editor::paste()
 
 void Editor::selectAll()
 {
+}
+
+void Editor::beginCommand(const QString &text)
+{
+    d->undoStack->beginMacro(text);
+}
+
+void Editor::endCommand()
+{
+    d->undoStack->endMacro();
 }
