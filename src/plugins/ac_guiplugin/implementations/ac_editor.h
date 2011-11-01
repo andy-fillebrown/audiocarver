@@ -36,6 +36,7 @@ public:
     void selectAll();
 
     void beginCommand(const QString &text = QString());
+    void pushCommand(QUndoCommand *cmd);
     void endCommand();
 
 private:

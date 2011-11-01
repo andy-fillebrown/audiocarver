@@ -29,11 +29,13 @@ public:
     Editor *q;
     Model *model;
     UndoStack *undoStack;
+    quint32 undoing : 32;
 
     EditorPrivate(Editor *q)
         :   q(q)
         ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
         ,   undoStack(0)
+        ,   undoing(false)
     {}
 
     void init()
@@ -55,14 +57,20 @@ Editor::~Editor()
 
 void Editor::undo()
 {
-    if (d->undoStack->canUndo())
+    if (d->undoStack->canUndo()) {
+        d->undoing = true;
         d->undoStack->undo();
+        d->undoing = false;
+    }
 }
 
 void Editor::redo()
 {
-    if (d->undoStack->canRedo())
+    if (d->undoStack->canRedo()) {
+        d->undoing = true;
         d->undoStack->redo();
+        d->undoing = false;
+    }
 }
 
 void Editor::cut()
@@ -84,6 +92,14 @@ void Editor::selectAll()
 void Editor::beginCommand(const QString &text)
 {
     d->undoStack->beginMacro(text);
+}
+
+void Editor::pushCommand(QUndoCommand *cmd)
+{
+    if (!d->undoing)
+        d->undoStack->push(cmd);
+    else
+        delete cmd;
 }
 
 void Editor::endCommand()

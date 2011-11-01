@@ -17,6 +17,8 @@
 
 #include "ac_undo.h"
 
+#include <ac_viewmanager.h>
+
 #include <ac_imodelitem.h>
 #include <ac_model.h>
 
@@ -51,6 +53,90 @@ public:
 UndoCommand::~UndoCommand()
 {
     delete d_ptr;
+}
+
+class UndoViewSettingsCommandPrivate : public UndoCommandPrivate
+{
+public:
+    qreal oldTimePos;
+    qreal oldPitchPos;
+    qreal oldControlPos;
+    qreal oldTimeScale;
+    qreal oldPitchScale;
+    qreal oldControlScale;
+    qreal newTimePos;
+    qreal newPitchPos;
+    qreal newControlPos;
+    qreal newTimeScale;
+    qreal newPitchScale;
+    qreal newControlScale;
+
+    UndoViewSettingsCommandPrivate()
+    {
+        ViewManager *vm = ViewManager::instance();
+        oldTimePos = vm->position(Ac::TimePositionRole);
+        oldPitchPos = vm->position(Ac::PitchPositionRole);
+        oldControlPos = vm->position(Ac::ControlPositionRole);
+        oldTimeScale = vm->scale(Ac::TimeScaleRole);
+        oldPitchScale = vm->scale(Ac::PitchScaleRole);
+        oldControlScale = vm->scale(Ac::ControlScaleRole);
+    }
+
+    void updateNewData()
+    {
+        ViewManager *vm = ViewManager::instance();
+        newTimePos = vm->position(Ac::TimePositionRole);
+        newPitchPos = vm->position(Ac::PitchPositionRole);
+        newControlPos = vm->position(Ac::ControlPositionRole);
+        newTimeScale = vm->scale(Ac::TimeScaleRole);
+        newPitchScale = vm->scale(Ac::PitchScaleRole);
+        newControlScale = vm->scale(Ac::ControlScaleRole);
+    }
+};
+
+UndoViewSettingsCommand::UndoViewSettingsCommand(QUndoCommand *parent)
+    :   UndoCommand(*(new UndoViewSettingsCommandPrivate), parent)
+{}
+
+bool UndoViewSettingsCommand::mergeWith(const QUndoCommand *other)
+{
+    if (Ac::UndoViewSettingsCommandId != other->id()) {
+        return false;
+    }
+    Q_D(UndoViewSettingsCommand);
+    d->updateNewData();
+    return true;
+}
+
+void UndoViewSettingsCommand::redo()
+{
+    Q_D(UndoViewSettingsCommand);
+    if (!d->isEnabled()) {
+        d->updateNewData();
+        d->enable();
+        return;
+    }
+    ViewManager *vm = ViewManager::instance();
+    vm->setPosition(d->newTimePos, Ac::TimePositionRole);
+    vm->setPosition(d->newPitchPos, Ac::PitchPositionRole);
+    vm->setPosition(d->newControlPos, Ac::ControlPositionRole);
+    vm->setScale(d->newTimeScale, Ac::TimeScaleRole);
+    vm->setScale(d->newPitchScale, Ac::PitchScaleRole);
+    vm->setScale(d->newControlScale, Ac::ControlScaleRole);
+    vm->updateViews();
+}
+
+void UndoViewSettingsCommand::undo()
+{
+    Q_D(UndoViewSettingsCommand);
+    ViewManager *vm = ViewManager::instance();
+    vm->setPosition(d->oldTimePos, Ac::TimePositionRole);
+    vm->setPosition(d->oldPitchPos, Ac::PitchPositionRole);
+    vm->setPosition(d->oldControlPos, Ac::ControlPositionRole);
+    vm->setScale(d->oldTimeScale, Ac::TimeScaleRole);
+    vm->setScale(d->oldPitchScale, Ac::PitchScaleRole);
+    vm->setScale(d->oldControlScale, Ac::ControlScaleRole);
+    vm->updateViews();
 }
 
 class UndoModelItemCommandPrivate : public UndoCommandPrivate

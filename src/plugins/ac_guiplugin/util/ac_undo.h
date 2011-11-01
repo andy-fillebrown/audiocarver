@@ -24,6 +24,17 @@ class IModelItem;
 
 class QModelIndex;
 
+namespace Ac {
+
+enum UndoCommandId {
+    UndoViewSettingsCommandId = 1,
+    UndoDataCommandId,
+    UndoInsertCommandId,
+    UndoRemoveCommandId
+};
+
+} // namespace Ac
+
 class UndoCommandPrivate;
 class UndoCommand : public QUndoCommand
 {
@@ -37,6 +48,21 @@ protected:
     {}
 
     UndoCommandPrivate *d_ptr;
+};
+
+class UndoViewSettingsCommandPrivate;
+class UndoViewSettingsCommand : public UndoCommand
+{
+public:
+    UndoViewSettingsCommand(QUndoCommand *parent = 0);
+
+    int id() const { return Ac::UndoViewSettingsCommandId; }
+    bool mergeWith(const QUndoCommand *other);
+    void redo();
+    void undo();
+
+private:
+    Q_DECLARE_PRIVATE(UndoViewSettingsCommand)
 };
 
 class UndoModelItemCommandPrivate;
@@ -61,6 +87,7 @@ public:
 
     void updateNewData();
 
+    int id() const { return Ac::UndoDataCommandId; }
     void redo();
     void undo();
 
@@ -91,6 +118,7 @@ class UndoInsertCommand : public UndoListCommand
 public:
     UndoInsertCommand(int row, const QModelIndex &parentIndex, QUndoCommand *parent = 0);
 
+    int id() const { return Ac::UndoInsertCommandId; }
     void redo() { insert(); }
     void undo() { remove(); }
 };
@@ -100,6 +128,7 @@ class UndoRemoveCommand : public UndoListCommand
 public:
     UndoRemoveCommand(IModelItem *item, int row, const QModelIndex &parentIndex, QUndoCommand *parent = 0);
 
+    int id() const { return Ac::UndoRemoveCommandId; }
     void redo() { remove(); }
     void undo() { insert(); }
 };

@@ -18,8 +18,11 @@
 #ifndef MI_IEDITOR_H
 #define MI_IEDITOR_H
 
-#include <QObject>
 #include <mi_global.h>
+
+#include <QObject>
+
+class QUndoCommand;
 
 class MI_GUI_EXPORT IEditor : public QObject
 {
@@ -38,6 +41,7 @@ public:
     virtual void selectAll() = 0;
 
     virtual void beginCommand(const QString &text = QString()) = 0;
+    virtual void pushCommand(QUndoCommand *cmd) = 0;
     virtual void endCommand() = 0;
 
 private:

@@ -23,11 +23,13 @@
 #include <ac_pitchlabelview.h>
 #include <ac_pitchview.h>
 #include <ac_timelabelview.h>
+#include <ac_undo.h>
 
 #include <ac_coreconstants.h>
 #include <ac_model.h>
 
 #include <mi_idatabase.h>
+#include <mi_ieditor.h>
 
 #include <QWidget>
 
@@ -56,8 +58,10 @@ public:
     qreal timeScale;
     qreal pitchScale;
     qreal controlScale;
+    quint32 initialized : 1;
     quint32 databaseReading : 1;
-    quint32 updatingDatabase : 31;
+    quint32 updatingDatabase : 30;
+    UndoViewSettingsCommand *undoCmd;
 
     ViewManagerPrivate(ViewManager *q)
         :   q(q)
@@ -68,8 +72,10 @@ public:
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
         ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
+        ,   initialized(quint32(false))
         ,   databaseReading(quint32(false))
         ,   updatingDatabase(quint32(false))
+        ,   undoCmd(0)
     {}
 
     void init()
@@ -113,6 +119,13 @@ public:
 
         updateViewVariables();
         q->updateViews();
+
+        initialized = true;
+    }
+
+    ~ViewManagerPrivate()
+    {
+        delete undoCmd;
     }
 
     void clearViewVariables()
@@ -154,6 +167,20 @@ public:
         emit q->viewScaleChanged(Ac::TimeScaleRole);
         emit q->viewScaleChanged(Ac::PitchScaleRole);
         emit q->viewScaleChanged(Ac::ControlScaleRole);
+    }
+
+    void startUndo()
+    {
+        if (!undoCmd && !databaseReading && initialized)
+            undoCmd = new UndoViewSettingsCommand;
+    }
+
+    void finishUndo()
+    {
+        if (undoCmd) {
+            IEditor::instance()->pushCommand(undoCmd);
+            undoCmd = 0;
+        }
     }
 };
 
@@ -220,6 +247,7 @@ void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
         position = qBound(qreal(0.0f), position, d->scoreLength);
         if (fuzzyCompare(d->timePos, position))
             return;
+        d->startUndo();
         d->timePos = position;
         emit viewPositionChanged(Ac::TimePositionRole);
         break;
@@ -227,6 +255,7 @@ void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
         position = qBound(qreal(0.0f), position, qreal(127.0f));
         if (fuzzyCompare(d->pitchPos, position))
             return;
+        d->startUndo();
         d->pitchPos = position;
         emit viewPositionChanged(Ac::PitchPositionRole);
         break;
@@ -234,6 +263,7 @@ void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
         position = qBound(qreal(0.0f), position, qreal(1.0f));
         if (fuzzyCompare(d->controlPos, position))
             return;
+        d->startUndo();
         d->controlPos = position;
         emit viewPositionChanged(Ac::ControlPositionRole);
     default:
@@ -263,14 +293,17 @@ void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
         return;
     switch (role) {
     case Ac::TimeScaleRole:
+        d->startUndo();
         d->timeScale = scale;
         emit viewScaleChanged(Ac::TimeScaleRole);
         break;
     case Ac::PitchScaleRole:
+        d->startUndo();
         d->pitchScale = scale;
         emit viewScaleChanged(Ac::PitchScaleRole);
         break;
     case Ac::ControlScaleRole:
+        d->startUndo();
         d->controlScale = scale;
         emit viewScaleChanged(Ac::ControlScaleRole);
     default:
@@ -304,6 +337,7 @@ void ViewManager::updateViews()
         d->pitchLabelView->updateView();
     if (d->controlLabelView->isDirty())
         d->controlLabelView->updateView();
+    d->finishUndo();
 }
 
 bool ViewManager::databaseIsReading() const
