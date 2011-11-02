@@ -59,8 +59,7 @@ public:
     qreal pitchScale;
     qreal controlScale;
     quint32 initialized : 1;
-    quint32 databaseReading : 1;
-    quint32 updatingDatabase : 30;
+    quint32 updatingDatabase : 31;
     UndoViewSettingsCommand *undoCmd;
 
     ViewManagerPrivate(ViewManager *q)
@@ -73,7 +72,6 @@ public:
         ,   controlLabelView(0)
         ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
         ,   initialized(quint32(false))
-        ,   databaseReading(quint32(false))
         ,   updatingDatabase(quint32(false))
         ,   undoCmd(0)
     {}
@@ -171,7 +169,10 @@ public:
 
     void startUndo()
     {
-        if (!undoCmd && !databaseReading && initialized)
+        if (!undoCmd
+                && initialized
+                && !IDatabase::instance()->isReading()
+                && IEditor::instance()->canPushCommand())
             undoCmd = new UndoViewSettingsCommand;
     }
 
@@ -340,14 +341,8 @@ void ViewManager::updateViews()
     d->finishUndo();
 }
 
-bool ViewManager::databaseIsReading() const
-{
-    return d->databaseReading;
-}
-
 void ViewManager::databaseAboutToBeRead()
 {
-    d->databaseReading = true;
     disableUpdates();
     d->clearViewVariables();
 }
@@ -355,7 +350,6 @@ void ViewManager::databaseAboutToBeRead()
 void ViewManager::databaseRead()
 {
     d->updateViewVariables();
-    d->databaseReading = false;
     d->emitAllViewSettingsChanged();
     enableUpdates();
     updateViews();

@@ -27,15 +27,12 @@
 
 #include <mi_ieditor.h>
 
+#include <mi_idatabase.h>
+
 #include <QApplication>
 #include <QMouseEvent>
 
 #include <qmath.h>
-
-static IEditor *editor()
-{
-    return IEditor::instance();
-}
 
 static const QCursor &crosshair()
 {
@@ -63,7 +60,6 @@ class GraphicsViewPrivate
 {
 public:
     GraphicsView *q;
-    ViewManager *viewMgr;
     QPoint dragStartPos;
     QPoint curDragPos;
     qreal zoomStartScaleX;
@@ -83,7 +79,6 @@ public:
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
-        ,   viewMgr(ViewManager::instance())
         ,   pickBox(new QGraphicsRectItem)
         ,   rootItem(new GraphicsRootItem)
         ,   viewState(0)
@@ -110,14 +105,16 @@ public:
 
     QPointF centerOffsetDC(const QPointF &posDC)
     {
-        return q->sceneScale().map(QPointF(viewMgr->position(q->positionRoleX()), viewMgr->position(q->positionRoleY())) - posDC);
+        const ViewManager *vm = ViewManager::instance();
+        return q->sceneScale().map(QPointF(vm->position(q->positionRoleX()), vm->position(q->positionRoleY())) - posDC);
     }
 
     void recenter(const QPointF &startPosDC, const QPointF &centerOffsetDC)
     {
         const QPointF center = startPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(centerOffsetDC);
-        viewMgr->setPosition(center.x(), q->positionRoleX());
-        viewMgr->setPosition(center.y(), q->positionRoleY());
+        ViewManager *vm = ViewManager::instance();
+        vm->setPosition(center.x(), q->positionRoleX());
+        vm->setPosition(center.y(), q->positionRoleY());
     }
 
     QRect zoomGlyphLineRect() const
@@ -135,8 +132,9 @@ public:
         q->zoomStarting();
         viewState = Zooming;
         dragStartPos = curDragPos = pos;
-        zoomStartScaleX = viewMgr->scale(q->scaleRoleX());
-        zoomStartScaleY = viewMgr->scale(q->scaleRoleY());
+        const ViewManager *vm = ViewManager::instance();
+        zoomStartScaleX = vm->scale(q->scaleRoleX());
+        zoomStartScaleY = vm->scale(q->scaleRoleY());
         zoomStartPosDC = startPosDC(pos);
         zoomCenterOffsetDC = centerOffsetDC(zoomStartPosDC);
         prevZoomGlyphRect = QRect();
@@ -150,16 +148,16 @@ public:
         const int x = offset.x();
         if (x) {
             qreal scale = 1.0f + (qreal(qAbs(x)) / 10.0f);
-            viewMgr->setScale((x < 0 ? 1.0f / scale : scale) * zoomStartScaleX, q->scaleRoleX());
+            ViewManager::instance()->setScale((x < 0 ? 1.0f / scale : scale) * zoomStartScaleX, q->scaleRoleX());
         }
         const int y = offset.y();
         if (y) {
             const qreal scale = 1.0f + qreal(qAbs(y) / 10.0f);
-            viewMgr->setScale((0 < y ? 1.0f / scale : scale) * zoomStartScaleY, q->scaleRoleY());
+            ViewManager::instance()->setScale((0 < y ? 1.0f / scale : scale) * zoomStartScaleY, q->scaleRoleY());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
         if (dirty)
-            viewMgr->updateViews();
+            ViewManager::instance()->updateViews();
         else {
             const QRect rect = zoomGlyphLineRect();
             q->update(prevZoomGlyphRect.united(rect));
@@ -180,8 +178,9 @@ public:
         q->panStarting();
         viewState = Panning;
         dragStartPos = pos;
-        panStartCenter.setX(viewMgr->position(q->positionRoleX()));
-        panStartCenter.setY(viewMgr->position(q->positionRoleY()));
+        const ViewManager *vm = ViewManager::instance();
+        panStartCenter.setX(vm->position(q->positionRoleX()));
+        panStartCenter.setY(vm->position(q->positionRoleY()));
     }
 
     void panTo(const QPoint &pos)
@@ -189,9 +188,10 @@ public:
         q->setCursor(Qt::ClosedHandCursor);
         const QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
         const QPointF center = panStartCenter - offset;
-        viewMgr->setPosition(center.x(), q->positionRoleX());
-        viewMgr->setPosition(center.y(), q->positionRoleY());
-        viewMgr->updateViews();
+        ViewManager *vm = ViewManager::instance();
+        vm->setPosition(center.x(), q->positionRoleX());
+        vm->setPosition(center.y(), q->positionRoleY());
+        vm->updateViews();
     }
 
     void finishPan(const QPoint &pos)
@@ -221,7 +221,7 @@ public:
 
     void startDraggingGrips()
     {
-        editor()->beginCommand();
+        IEditor::instance()->beginCommand();
         dragState = DraggingGrips;
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->startDraggingPoints();
@@ -229,13 +229,14 @@ public:
 
     void dragGripsTo(const QPoint &pos)
     {
-        viewMgr->disableUpdates();
+        ViewManager *vm = ViewManager::instance();
+        vm->disableUpdates();
         QPointF scenePos = rootItem->transform().map(q->mapToScene(pos));
         foreach (IGripItem *grip, gripsBeingDragged)
             grip->setPosition(scenePos);
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->updatePoints();
-        viewMgr->enableUpdates();
+        vm->enableUpdates();
     }
 
     void finishDraggingGrips(const QPoint &pos)
@@ -246,7 +247,7 @@ public:
         entitiesToUpdate.clear();
         gripsBeingDragged.clear();
         dragState = 0;
-        editor()->endCommand();
+        IEditor::instance()->endCommand();
     }
 
     QRect pickBoxBounds() const
@@ -323,7 +324,8 @@ public:
 
     void appendPickedEntities(const QList<IEntity*> &entities)
     {
-        viewMgr->disableUpdates();
+        ViewManager *vm = ViewManager::instance();
+        vm->disableUpdates();
         foreach (IEntity *entity, entities) {
             if (entity->isVisible() && !entityIsPicked(entity)) {
                 GraphicsEntityItem *item = new GraphicsEntityItem(entity);
@@ -332,12 +334,13 @@ public:
                 item->highlight();
             }
         }
-        viewMgr->enableUpdates();
+        vm->enableUpdates();
     }
 
     void removePickedEntities(const QList<IEntity*> &entities)
     {
-        viewMgr->disableUpdates();
+        ViewManager *vm = ViewManager::instance();
+        vm->disableUpdates();
         foreach (IEntity *entity, entities) {
             GraphicsEntityItem *item = findEntityItem(entity);
             if (item) {
@@ -346,17 +349,18 @@ public:
                 delete item;
             }
         }
-        viewMgr->enableUpdates();
+        vm->enableUpdates();
     }
 
     void clearPickedEntities()
     {
-        viewMgr->disableUpdates();
+        ViewManager *vm = ViewManager::instance();
+        vm->disableUpdates();
         foreach (GraphicsEntityItem *item, pickedEntities)
             item->unhighlight();
         qDeleteAll(pickedEntities);
         pickedEntities.clear();
-        viewMgr->enableUpdates();
+        vm->enableUpdates();
     }
 
     void resetPickedEntities()
@@ -428,7 +432,7 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     Q_UNUSED(bottomRight);
 
     // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
-    IModelItem *item = d->viewMgr->model()->itemFromIndex(topLeft);
+    IModelItem *item = ViewManager::instance()->model()->itemFromIndex(topLeft);
     IEntity *entity = query<IEntity>(item);
     if (!entity) {
         ISubEntity *subEntity = query<ISubEntity>(item);
@@ -454,7 +458,7 @@ void GraphicsView::modelAboutToBeReset()
 
 void GraphicsView::viewPositionChanged(int role)
 {
-    if (d->viewMgr->databaseIsReading())
+    if (IDatabase::instance()->isReading())
         return;
     if (positionRoleX() == role || positionRoleY() == role)
         d->dirty = true;
@@ -462,7 +466,7 @@ void GraphicsView::viewPositionChanged(int role)
 
 void GraphicsView::viewScaleChanged(int role)
 {
-    if (d->viewMgr->databaseIsReading())
+    if (IDatabase::instance()->isReading())
         return;
     if (scaleRoleX() == role || scaleRoleY() == role)
         d->dirty = true;
@@ -573,10 +577,11 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     const QPointF posDC = d->startPosDC(event->pos());
     const QPointF offsetDC = d->centerOffsetDC(posDC);
     const qreal scaleAmount = event->delta() < 0 ? 1.0f / 1.25f : 1.25f;
-    d->viewMgr->setScale(scaleAmount * d->viewMgr->scale(scaleRoleX()), scaleRoleX());
-    d->viewMgr->setScale(scaleAmount * d->viewMgr->scale(scaleRoleY()), scaleRoleY());
+    ViewManager *vm = ViewManager::instance();
+    vm->setScale(scaleAmount * vm->scale(scaleRoleX()), scaleRoleX());
+    vm->setScale(scaleAmount * vm->scale(scaleRoleY()), scaleRoleY());
     d->recenter(posDC, offsetDC);
-    d->viewMgr->updateViews();
+    vm->updateViews();
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
@@ -595,5 +600,6 @@ void GraphicsView::paintEvent(QPaintEvent *event)
 
 qreal GraphicsHView::sceneWidth() const
 {
-    return d->viewMgr->scoreLength() / d->viewMgr->scale(Ac::TimeScaleRole);
+    const ViewManager *vm = ViewManager::instance();
+    return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
 }

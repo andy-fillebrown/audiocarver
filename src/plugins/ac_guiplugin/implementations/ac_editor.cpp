@@ -94,6 +94,11 @@ void Editor::beginCommand(const QString &text)
     d->undoStack->beginMacro(text);
 }
 
+bool Editor::canPushCommand() const
+{
+    return !d->undoing;
+}
+
 void Editor::pushCommand(QUndoCommand *cmd)
 {
     if (!d->undoing)

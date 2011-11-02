@@ -52,8 +52,6 @@ public:
     void updateDatabase();
     void updateViews();
 
-    bool databaseIsReading() const;
-
 public slots:
     void databaseAboutToBeRead();
     void databaseRead();

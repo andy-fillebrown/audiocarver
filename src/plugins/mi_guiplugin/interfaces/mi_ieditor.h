@@ -41,8 +41,10 @@ public:
     virtual void selectAll() = 0;
 
     virtual void beginCommand(const QString &text = QString()) = 0;
-    virtual void pushCommand(QUndoCommand *cmd) = 0;
     virtual void endCommand() = 0;
+
+    virtual bool canPushCommand() const = 0;
+    virtual void pushCommand(QUndoCommand *cmd) = 0;
 
 private:
     Q_DISABLE_COPY(IEditor)

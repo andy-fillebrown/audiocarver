@@ -21,6 +21,8 @@
 
 #include <ac_model.h>
 
+#include <mi_idatabase.h>
+
 #include <QMouseEvent>
 
 static const QCursor &zoomCursor()
@@ -39,7 +41,7 @@ public:
     LabelViewPrivate(LabelView *q)
         :   q(q)
         ,   zoomCursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"))
-        ,   updatesDisabled(false)
+        ,   updatesDisabled(quint32(false))
     {}
 
     virtual ~LabelViewPrivate()
@@ -72,13 +74,13 @@ public:
             if (line.data(Ac::PriorityRole).toInt() <= minPriority) {
                 if (!line.data(Ac::VisibilityRole).toBool()) {
                     q->setUpdatesEnabled(false);
-                    updatesDisabled = true;
+                    updatesDisabled = quint32(true);
                     model->setData(line, true, Ac::VisibilityRole);
                 }
             } else {
                 if (line.data(Ac::VisibilityRole).toBool()) {
                     q->setUpdatesEnabled(false);
-                    updatesDisabled = true;
+                    updatesDisabled = quint32(true);
                     model->setData(line, false, Ac::VisibilityRole);
                 }
             }
@@ -103,15 +105,16 @@ void LabelView::updateView()
 {
     if (isDirty())
         updateViewSettings();
-    if (d->updatesDisabled)
+    if (d->updatesDisabled) {
         setUpdatesEnabled(true);
-    else
+        d->updatesDisabled = quint32(false);
+    } else
         GraphicsView::updateView();
 }
 
 void LabelView::viewScaleChanged(int role)
 {
-    if (ViewManager::instance()->databaseIsReading())
+    if (IDatabase::instance()->isReading())
         return;
     GraphicsView::viewScaleChanged(role);
     if (scaleRole() == role)
@@ -121,7 +124,7 @@ void LabelView::viewScaleChanged(int role)
 void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
     Q_UNUSED(bottomLeft);
-    if (ViewManager::instance()->databaseIsReading())
+    if (IDatabase::instance()->isReading())
         return;
     QModelIndex index = gridLineListIndex();
     if (topRight == gridLineListIndex())

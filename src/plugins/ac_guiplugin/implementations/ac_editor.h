@@ -36,8 +36,10 @@ public:
     void selectAll();
 
     void beginCommand(const QString &text = QString());
-    void pushCommand(QUndoCommand *cmd);
     void endCommand();
+
+    bool canPushCommand() const;
+    void pushCommand(QUndoCommand *cmd);
 
 private:
     Q_DISABLE_COPY(Editor)

@@ -40,6 +40,8 @@ public:
     virtual void write(const QString &fileName) = 0;
     virtual QAbstractItemModel *model() const = 0;
 
+    virtual bool isReading() const = 0;
+
 signals:
     void databaseAboutToBeRead();
     void databaseRead();

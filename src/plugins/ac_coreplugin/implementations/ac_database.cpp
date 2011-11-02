@@ -27,10 +27,12 @@ public:
     Database *q;
     Model *model;
     XmlFileReader reader;
+    quint32 reading : 32;
 
     DatabasePrivate(Database *q)
         :   q(q)
         ,   model(new Model(q))
+        ,   reading(quint32(false))
     {}
 
     virtual ~DatabasePrivate()
@@ -71,10 +73,12 @@ void Database::reset()
 void Database::read(const QString &fileName)
 {
     emit databaseAboutToBeRead();
+    d->reading = quint32(true);
     reset();
     d->reader.setFileName(fileName);
     d->reader.read(query<IModelItem>(Score::instance()));
     d->reader.close();
+    d->reading = quint32(false);
     emit databaseRead();
 }
 
@@ -90,4 +94,9 @@ void Database::write(const QString &fileName)
 QAbstractItemModel *Database::model() const
 {
     return d->model;
+}
+
+bool Database::isReading() const
+{
+    return d->reading;
 }

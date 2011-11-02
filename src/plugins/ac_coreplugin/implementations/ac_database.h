@@ -35,6 +35,8 @@ public:
     void write(const QString &fileName);
     QAbstractItemModel *model() const;
 
+    bool isReading() const;
+
 private:
     Q_DISABLE_COPY(Database)
     DatabasePrivate *d;
