@@ -19,11 +19,12 @@
 
 #include <ac_viewmanager.h>
 
-#include <ac_model.h>
-
 #include <mi_idatabase.h>
+#include <mi_imodel.h>
 
 #include <QMouseEvent>
+
+#include <QModelIndex>
 
 static const QCursor &zoomCursor()
 {
@@ -51,7 +52,7 @@ public:
     {
         const qreal padding = 50.0f / q->paddingScale();
         const QModelIndex gridLines = q->gridLineListIndex();
-        Model *model = ViewManager::instance()->model();
+        IModel *model = IDatabase::instance()->model();
         const int n = model->rowCount(gridLines);
         int minPriority = INT_MAX;
         int prevPriority = 0;

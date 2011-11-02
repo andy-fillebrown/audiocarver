@@ -21,6 +21,8 @@
 #include <ac_global.h>
 #include <ac_namespace.h>
 
+#include <mi_imodel.h>
+
 #include <QAbstractItemModel>
 
 class IModelItem;
@@ -30,6 +32,7 @@ class QGraphicsItem;
 
 class ModelPrivate;
 class AC_CORE_EXPORT Model : public QAbstractItemModel
+        ,   public IModel
 {
     Q_OBJECT
 
@@ -48,21 +51,30 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    // IModel
     QModelIndex index(int row, const QModelIndex &parent = QModelIndex()) const
     {
         return index(row, 0, parent);
     }
 
     IModelItem *itemFromIndex(const QModelIndex &index) const;
+    QModelIndex itemIndex(int type) const;
+    QModelIndex listIndex(int type) const;
+
     bool insertItem(IModelItem *item, int row, const QModelIndex &parent);
+    void removeItem(int row, const QModelIndex &parent);
     IModelItem *takeItem(int row, const QModelIndex &parent);
 
-    QModelIndex scoreIndex() const { return index(0); }
-    QModelIndex trackListIndex() const;
-    QModelIndex timeGridLineListIndex() const;
-    QModelIndex pitchGridLineListIndex() const;
-    QModelIndex controlGridLineListIndex() const;
-    QModelIndex viewSettingsIndex() const;
+    // IUnknown
+    void *query(int type) const
+    {
+        switch (type) {
+        case Mi::ModelInterface:
+            return Q_I(IModel);
+        default:
+            return 0;
+        }
+    }
 
 private slots:
     void deleteOrphans();

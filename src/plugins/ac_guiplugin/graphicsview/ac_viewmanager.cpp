@@ -70,7 +70,7 @@ public:
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
-        ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
+        ,   model(dynamic_cast<Model*>(IDatabase::instance()->model()))
         ,   initialized(quint32(false))
         ,   updatingDatabase(quint32(false))
         ,   undoCmd(0)
@@ -141,14 +141,13 @@ public:
 
     void updateViewVariables()
     {
-        const QModelIndex viewSettings = model->viewSettingsIndex();
-
         const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
         if (scoreLength != modelScoreLength) {
             scoreLength = modelScoreLength;
             emit q->scoreLengthChanged();
         }
 
+        const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
         q->setPosition(viewSettings.data(Ac::TimePositionRole).toReal(), Ac::TimePositionRole);
         q->setPosition(viewSettings.data(Ac::PitchPositionRole).toReal(), Ac::PitchPositionRole);
         q->setPosition(viewSettings.data(Ac::ControlPositionRole).toReal(), Ac::ControlPositionRole);
@@ -203,11 +202,6 @@ ViewManager::~ViewManager()
 ViewManager *ViewManager::instance()
 {
     return ::instance;
-}
-
-Model *ViewManager::model() const
-{
-    return d->model;
 }
 
 QGraphicsView *ViewManager::view(int type) const
@@ -314,8 +308,8 @@ void ViewManager::setScale(qreal scale, int role)
 
 void ViewManager::updateDatabase()
 {
-    Model *m = model();
-    const QModelIndex viewSettings = m->viewSettingsIndex();
+    IModel *m = IDatabase::instance()->model();
+    const QModelIndex viewSettings = m->itemIndex(Ac::ViewSettingsItem);
     d->updatingDatabase = true;
     m->setData(viewSettings, d->timePos, Ac::TimePositionRole);
     m->setData(viewSettings, d->pitchPos, Ac::PitchPositionRole);
@@ -377,7 +371,7 @@ void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bo
     Q_UNUSED(bottomLeft);
     if (!d->updatingDatabase
             && (!topRight.isValid()
-                || model()->viewSettingsIndex() == topRight))
+                || IDatabase::instance()->model()->itemIndex(Ac::ViewSettingsItem) == topRight))
         d->updateViewVariables();
 }
 

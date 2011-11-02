@@ -51,9 +51,7 @@ bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     const QStringList formats = data->formats();
     if (!formats.contains(mimeType))
         return false;
-    Model *model = qobject_cast<Model*>(IDatabase::instance()->model());
-    if (!model)
-        return false;
+    IModel *model = IDatabase::instance()->model();
     QByteArray b = data->data(mimeType);
     QDataStream stream(&b, QIODevice::ReadOnly);
     int fromRow = -1;
@@ -65,7 +63,7 @@ bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     int toRow = row;
     if (fromRows.contains(toRow))
         return false;
-    const QModelIndex trackListIndex = model->trackListIndex();
+    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
     QList<IModelItem*> items;
     foreach (int row, fromRows) {
         items.append(model->takeItem(row, trackListIndex));

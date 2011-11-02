@@ -126,6 +126,32 @@ IModelItem *Model::itemFromIndex(const QModelIndex &index) const
     return parentItem->modelItemAt(index.row());
 }
 
+QModelIndex Model::itemIndex(int type) const
+{
+    switch (type) {
+    case Ac::ViewSettingsItem:
+        return d->indexFromItem(d->score->viewSettings());
+    default:
+        return QModelIndex();
+    }
+}
+
+QModelIndex Model::listIndex(int type) const
+{
+    switch (type) {
+    case Ac::TrackItem:
+        return d->indexFromItem(d->score->tracks());
+    case Ac::TimeGridLineItem:
+        return d->indexFromItem(d->score->gridSettings()->timeGridLines());
+    case Ac::PitchGridLineItem:
+        return d->indexFromItem(d->score->gridSettings()->pitchGridLines());
+    case Ac::ControlGridLineItem:
+        return d->indexFromItem(d->score->gridSettings()->controlGridLines());
+    default:
+        return QModelIndex();
+    }
+}
+
 bool Model::insertItem(IModelItem *item, int row, const QModelIndex &parent)
 {
     if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
@@ -137,43 +163,30 @@ bool Model::insertItem(IModelItem *item, int row, const QModelIndex &parent)
     return true;
 }
 
+void Model::removeItem(int row, const QModelIndex &parent)
+{
+    if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
+        return;
+    ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
+    if (!list)
+        return;
+    QObject *object = list->objectAt(row);
+    list->removeAt(row);
+    object->setParent(d->orphanage);
+}
+
 IModelItem *Model::takeItem(int row, const QModelIndex &parent)
 {
     if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
-        return false;
+        return 0;
     ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
     if (!list)
-        return false;
-    QObject *object = list->objectAt(row);
+        return 0;
     IModelItem *item = list->modelItemAt(row);
+    QObject *object = list->objectAt(row);
     list->removeAt(row);
     object->setParent(d->orphanage);
     return item;
-}
-
-QModelIndex Model::trackListIndex() const
-{
-    return d->indexFromItem(d->score->tracks());
-}
-
-QModelIndex Model::timeGridLineListIndex() const
-{
-    return d->indexFromItem(d->score->gridSettings()->timeGridLines());
-}
-
-QModelIndex Model::pitchGridLineListIndex() const
-{
-    return d->indexFromItem(d->score->gridSettings()->pitchGridLines());
-}
-
-QModelIndex Model::controlGridLineListIndex() const
-{
-    return d->indexFromItem(d->score->gridSettings()->controlGridLines());
-}
-
-QModelIndex Model::viewSettingsIndex() const
-{
-    return d->indexFromItem(d->score->viewSettings());
 }
 
 void Model::deleteOrphans()

@@ -24,13 +24,26 @@
 class IModelItem;
 
 class QModelIndex;
+class QVariant;
 
 class IModel : public IUnknown
 {
 public:
     enum { Type = Mi::ModelInterface };
 
+    virtual QModelIndex index(int row, const QModelIndex &parent) const = 0;
+    virtual int rowCount(const QModelIndex &parent) const = 0;
+
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const = 0;
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) = 0;
+
     virtual IModelItem *itemFromIndex(const QModelIndex &index) const = 0;
+    virtual QModelIndex itemIndex(int type) const = 0;
+    virtual QModelIndex listIndex(int type) const = 0;
+
+    virtual bool insertItem(IModelItem *item, int row, const QModelIndex &parent) = 0;
+    virtual void removeItem(int row, const QModelIndex &parent) = 0;
+    virtual IModelItem *takeItem(int row, const QModelIndex &parent) = 0;
 };
 
 #endif // AC_IMODEL_H

@@ -33,7 +33,7 @@ public:
     void reset();
     void read(const QString &fileName);
     void write(const QString &fileName);
-    QAbstractItemModel *model() const;
+    IModel *model() const;
 
     bool isReading() const;
 

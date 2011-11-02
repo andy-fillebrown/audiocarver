@@ -33,9 +33,9 @@ public:
 
     EditorPrivate(Editor *q)
         :   q(q)
-        ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
+        ,   model(dynamic_cast<Model*>(IDatabase::instance()->model()))
         ,   undoStack(0)
-        ,   undoing(false)
+        ,   undoing(quint32(false))
     {}
 
     void init()
@@ -58,18 +58,18 @@ Editor::~Editor()
 void Editor::undo()
 {
     if (d->undoStack->canUndo()) {
-        d->undoing = true;
+        d->undoing = quint32(true);
         d->undoStack->undo();
-        d->undoing = false;
+        d->undoing = quint32(false);
     }
 }
 
 void Editor::redo()
 {
     if (d->undoStack->canRedo()) {
-        d->undoing = true;
+        d->undoing = quint32(true);
         d->undoStack->redo();
-        d->undoing = false;
+        d->undoing = quint32(false);
     }
 }
 

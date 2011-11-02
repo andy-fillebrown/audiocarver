@@ -19,7 +19,10 @@
 
 #include <ac_viewmanager.h>
 
-#include <ac_model.h>
+#include <mi_idatabase.h>
+#include <mi_imodel.h>
+
+#include <QModelIndex>
 
 class ControlLabelViewPrivate
 {
@@ -50,10 +53,10 @@ ControlLabelView::~ControlLabelView()
 
 QModelIndex ControlLabelView::gridLineListIndex() const
 {
-    return ViewManager::instance()->model()->controlGridLineListIndex();
+    return IDatabase::instance()->model()->listIndex(Ac::ControlGridLineItem);
 }
 
 qreal ControlLabelView::sceneHeight() const
 {
-    return 1.0f / ViewManager::instance()->scale(Ac::ControlScaleRole);
+    return qreal(1.0f) / ViewManager::instance()->scale(Ac::ControlScaleRole);
 }

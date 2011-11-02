@@ -19,7 +19,10 @@
 
 #include <ac_viewmanager.h>
 
-#include <ac_model.h>
+#include <mi_idatabase.h>
+#include <mi_imodel.h>
+
+#include <QModelIndex>
 
 static const QCursor &zoomCursor()
 {
@@ -59,7 +62,7 @@ TimeLabelView::~TimeLabelView()
 
 QModelIndex TimeLabelView::gridLineListIndex() const
 {
-    return ViewManager::instance()->model()->timeGridLineListIndex();
+    return IDatabase::instance()->model()->listIndex(Ac::TimeGridLineItem);
 }
 
 qreal TimeLabelView::sceneWidth() const

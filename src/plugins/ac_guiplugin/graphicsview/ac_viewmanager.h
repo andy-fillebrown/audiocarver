@@ -38,7 +38,6 @@ public:
 
     static ViewManager *instance();
 
-    Model *model() const;
     QGraphicsView *view(int type) const;
 
     qreal scoreLength() const;

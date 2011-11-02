@@ -19,7 +19,10 @@
 
 #include <ac_viewmanager.h>
 
-#include <ac_model.h>
+#include <mi_idatabase.h>
+#include <mi_imodel.h>
+
+#include <QModelIndex>
 
 class PitchLabelViewPrivate
 {
@@ -50,10 +53,10 @@ PitchLabelView::~PitchLabelView()
 
 QModelIndex PitchLabelView::gridLineListIndex() const
 {
-    return ViewManager::instance()->model()->pitchGridLineListIndex();
+    return IDatabase::instance()->model()->listIndex(Ac::PitchGridLineItem);
 }
 
 qreal PitchLabelView::sceneHeight() const
 {
-    return 127.0f / ViewManager::instance()->scale(Ac::PitchScaleRole);
+    return qreal(127.0f) / ViewManager::instance()->scale(Ac::PitchScaleRole);
 }

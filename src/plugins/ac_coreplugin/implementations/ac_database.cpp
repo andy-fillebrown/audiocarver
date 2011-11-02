@@ -91,7 +91,7 @@ void Database::write(const QString &fileName)
     emit databaseWritten();
 }
 
-QAbstractItemModel *Database::model() const
+IModel *Database::model() const
 {
     return d->model;
 }

@@ -19,8 +19,10 @@
 
 #include <ac_trackmodel.h>
 
-#include <mi_idatabase.h>
 #include <mi_ieditor.h>
+
+#include <mi_idatabase.h>
+#include <mi_imodel.h>
 
 #include <QApplication>
 #include <QColorDialog>
@@ -191,7 +193,7 @@ TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
     ,   d(new TrackViewPrivate(this))
 {
-    setModel(new TrackModel(IDatabase::instance()->model()));
+    setModel(new TrackModel(dynamic_cast<QAbstractItemModel*>(IDatabase::instance()->model())));
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);

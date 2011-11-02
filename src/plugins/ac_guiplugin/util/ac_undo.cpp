@@ -150,9 +150,9 @@ public:
         :   item(item)
     {}
 
-    Model *model() const
+    IModel *model() const
     {
-        return qobject_cast<Model*>(IDatabase::instance()->model());
+        return IDatabase::instance()->model();
     }
 };
 
@@ -317,14 +317,12 @@ class UndoStackPrivate
 {
 public:
     UndoStack *q;
-    Model *model;
     QList<UndoDataCommand*> dataChanges;
     QList<UndoInsertCommand*> inserts;
     QList<UndoRemoveCommand*> removes;
 
     UndoStackPrivate(UndoStack *q)
         :   q(q)
-        ,   model(qobject_cast<Model*>(IDatabase::instance()->model()))
     {}
 };
 
@@ -336,7 +334,7 @@ UndoStack::UndoStack(QObject *parent)
     connect(db, SIGNAL(databaseAboutToBeRead()), SLOT(databaseAboutToBeRead()));
     connect(db, SIGNAL(databaseRead()), SLOT(databaseRead()));
 
-    Model *model = qobject_cast<Model*>(db->model());
+    Model *model = dynamic_cast<Model*>(db->model());
     connect(model, SIGNAL(dataAboutToBeChanged(QModelIndex,QModelIndex)), SLOT(dataAboutToBeChanged(QModelIndex,QModelIndex)));
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
@@ -368,7 +366,7 @@ void UndoStack::dataAboutToBeChanged(const QModelIndex &topLeft, const QModelInd
         return;
     if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
         return;
-    d->dataChanges.append(new UndoDataCommand(d->model->itemFromIndex(topLeft)));
+    d->dataChanges.append(new UndoDataCommand(IDatabase::instance()->model()->itemFromIndex(topLeft)));
 }
 
 void UndoStack::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
@@ -378,7 +376,7 @@ void UndoStack::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
         return;
     if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
         return;
-    IModelItem *item = d->model->itemFromIndex(topLeft);
+    IModelItem *item = IDatabase::instance()->model()->itemFromIndex(topLeft);
     const int n = d->dataChanges.count();
     for (int i = 0;  i < n;  ++i) {
         UndoDataCommand *cmd = d->dataChanges.at(i);
@@ -416,7 +414,8 @@ void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
             continue;
         d->inserts.removeAt(i);
         push(cmd);
-        cmd->setItem(d->model->itemFromIndex(d->model->index(start, parent)));
+        IModel *model = IDatabase::instance()->model();
+        cmd->setItem(model->itemFromIndex(model->index(start, parent)));
         break;
     }
 }
@@ -426,7 +425,8 @@ void UndoStack::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int e
     Q_UNUSED(end);
     if (undoCommandActive || databaseReading)
         return;
-    d->removes.append(new UndoRemoveCommand(d->model->itemFromIndex(d->model->index(start, parent)), start, parent));
+    IModel *model = IDatabase::instance()->model();
+    d->removes.append(new UndoRemoveCommand(model->itemFromIndex(model->index(start, parent)), start, parent));
 }
 
 void UndoStack::rowsRemoved(const QModelIndex &parent, int start, int end)
