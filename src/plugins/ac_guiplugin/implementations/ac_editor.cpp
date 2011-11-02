@@ -27,13 +27,11 @@ class EditorPrivate
 {
 public:
     Editor *q;
-    Model *model;
     UndoStack *undoStack;
     quint32 undoing : 32;
 
     EditorPrivate(Editor *q)
         :   q(q)
-        ,   model(dynamic_cast<Model*>(IDatabase::instance()->model()))
         ,   undoStack(0)
         ,   undoing(quint32(false))
     {}
