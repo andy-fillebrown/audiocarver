@@ -162,8 +162,7 @@ public:
             viewMgr->updateViews();
         else {
             const QRect rect = zoomGlyphLineRect();
-            const QRect updateRect = prevZoomGlyphRect.united(rect);
-            q->scene()->invalidate(QRectF(q->mapToScene(updateRect.topLeft()), q->mapToScene(updateRect.bottomRight())));
+            q->update(prevZoomGlyphRect.united(rect));
             prevZoomGlyphRect = rect;
         }
     }
@@ -172,8 +171,7 @@ public:
     {
         zoomTo(pos);
         viewState = 0;
-        const QRect updateRect = QRect(dragStartPos, dragStartPos).adjusted(-2, -2, 4, 4);
-        q->scene()->invalidate(QRectF(q->mapToScene(updateRect.topLeft()), q->mapToScene(updateRect.bottomRight())));
+        q->update(QRect(dragStartPos, dragStartPos).adjusted(-2, -2, 4, 4));
         q->zoomFinished();
     }
 
@@ -391,9 +389,9 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setOptimizationFlag(DontAdjustForAntialiasing);
     setOptimizationFlag(DontSavePainterState);
     setTransformationAnchor(NoAnchor);
+    setViewportUpdateMode(FullViewportUpdate);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setAttribute(Qt::WA_PaintOnScreen);
     setCursor(crosshair());
 }
 
