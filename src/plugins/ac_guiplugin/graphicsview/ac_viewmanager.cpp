@@ -70,7 +70,7 @@ public:
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
-        ,   model(dynamic_cast<Model*>(IDatabase::instance()->model()))
+        ,   model(interfaceToObject_cast<Model>(IDatabase::instance()->model()))
         ,   initialized(quint32(false))
         ,   updatingDatabase(quint32(false))
         ,   undoCmd(0)

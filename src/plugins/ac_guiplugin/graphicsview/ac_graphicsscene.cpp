@@ -48,7 +48,7 @@ public:
         pitchLabelScene = new PitchLabelScene(q);
         controlLabelScene = new ControlLabelScene(q);
 
-        Model *model = dynamic_cast<Model*>(IDatabase::instance()->model());
+        Model *model = interfaceToObject_cast<Model>(IDatabase::instance()->model());
         for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             q->scene(i)->addItem(model->sceneItem(i));
     }

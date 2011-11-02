@@ -156,10 +156,10 @@ bool Model::insertItem(IModelItem *item, int row, const QModelIndex &parent)
 {
     if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
         return false;
-    ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
+    ObjectList *list = interfaceToObject_cast<ObjectList>(itemFromIndex(parent));
     if (!list)
         return false;
-    list->insert(row, dynamic_cast<Object*>(item));
+    list->insert(row, interfaceToObject_cast<Object>(item));
     return true;
 }
 
@@ -167,7 +167,7 @@ void Model::removeItem(int row, const QModelIndex &parent)
 {
     if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
         return;
-    ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
+    ObjectList *list = interfaceToObject_cast<ObjectList>(itemFromIndex(parent));
     if (!list)
         return;
     QObject *object = list->objectAt(row);
@@ -179,7 +179,7 @@ IModelItem *Model::takeItem(int row, const QModelIndex &parent)
 {
     if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
         return 0;
-    ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
+    ObjectList *list = interfaceToObject_cast<ObjectList>(itemFromIndex(parent));
     if (!list)
         return 0;
     IModelItem *item = list->modelItemAt(row);

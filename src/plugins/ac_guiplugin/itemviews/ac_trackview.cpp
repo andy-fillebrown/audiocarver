@@ -193,7 +193,7 @@ TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
     ,   d(new TrackViewPrivate(this))
 {
-    setModel(new TrackModel(dynamic_cast<QAbstractItemModel*>(IDatabase::instance()->model())));
+    setModel(new TrackModel(interfaceToObject_cast<QAbstractItemModel>(IDatabase::instance()->model())));
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);

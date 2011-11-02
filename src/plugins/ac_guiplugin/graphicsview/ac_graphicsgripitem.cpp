@@ -58,7 +58,7 @@ GraphicsGripItem::~GraphicsGripItem()
 
 IEntityItem *GraphicsGripItem::parentEntityItem() const
 {
-    return static_cast<GraphicsEntityItem*>(parentItem());
+    return objectToInterface_cast<IEntityItem>(parentItem());
 }
 
 void GraphicsGripItem::setPosition(const QPointF &position)

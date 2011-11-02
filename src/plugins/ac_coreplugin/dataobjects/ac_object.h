@@ -81,7 +81,7 @@ public:
 
     void setParentModelItem(IModelItem *parent)
     {
-        setParent(dynamic_cast<Object*>(parent));
+        setParent(interfaceToObject_cast<Object>(parent));
     }
 
     int modelItemCount() const

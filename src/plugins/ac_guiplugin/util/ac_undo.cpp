@@ -334,7 +334,7 @@ UndoStack::UndoStack(QObject *parent)
     connect(db, SIGNAL(databaseAboutToBeRead()), SLOT(databaseAboutToBeRead()));
     connect(db, SIGNAL(databaseRead()), SLOT(databaseRead()));
 
-    Model *model = dynamic_cast<Model*>(db->model());
+    Model *model = interfaceToObject_cast<Model>(db->model());
     connect(model, SIGNAL(dataAboutToBeChanged(QModelIndex,QModelIndex)), SLOT(dataAboutToBeChanged(QModelIndex,QModelIndex)));
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
