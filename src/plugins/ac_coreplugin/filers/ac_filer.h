@@ -87,7 +87,7 @@ public:
     {
         switch (type) {
         case Ac::FileReaderInterface:
-            return Q_I(IFileReader);
+            return objectToInterface_cast<IFileReader>(this);
         default:
             return 0;
         }
@@ -145,7 +145,7 @@ public:
     {
         switch (type) {
         case Ac::FileWriterInterface:
-            return Q_I(IFileWriter);
+            return objectToInterface_cast<IFileWriter>(this);
         default:
             return 0;
         }

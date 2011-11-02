@@ -25,6 +25,8 @@
 
 class IEntity;
 
+class IUnknown;
+
 class GraphicsItem : public QGraphicsItem
 {
 public:

@@ -42,7 +42,7 @@ public:
     {
         switch (type) {
         case Ac::GripItemInterface:
-            return Q_I(IGripItem);
+            return objectToInterface_cast<IGripItem>(this);
         default:
             return 0;
         }

@@ -15,15 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef AC_GLOBAL_H
-#define AC_GLOBAL_H
+#include <mi_iunknown.h>
 
-#include <mi_global.h>
+#include <QVariant>
 
-#if defined(AC_CORE_LIBRARY)
-#  define AC_CORE_EXPORT Q_DECL_EXPORT
-#else
-#  define AC_CORE_EXPORT Q_DECL_IMPORT
-#endif
-
-#endif // AC_GLOBAL_H
+IUnknown *variantToUnknown_cast(const QVariant &v)
+{
+    return reinterpret_cast<IUnknown*>(v.value<quintptr>());
+}

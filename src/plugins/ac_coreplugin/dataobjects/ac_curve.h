@@ -61,7 +61,7 @@ public:
     {
         switch (type) {
         case Ac::EntityInterface:
-            return Q_I(IEntity);
+            return objectToInterface_cast<IEntity>(this);
         default:
             return GraphicsObject::query(type);
         }

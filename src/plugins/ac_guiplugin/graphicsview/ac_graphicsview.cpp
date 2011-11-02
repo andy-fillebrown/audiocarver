@@ -205,7 +205,7 @@ public:
     {
         const QList<QGraphicsItem*> items = q->items(pos);
         foreach (QGraphicsItem *item, items) {
-            IUnknown *unknown = Q_U(item);
+            IUnknown *unknown = variantToUnknown_cast(item->data(0));
             if (unknown) {
                 IGripItem *grip = query<IGripItem>(unknown);
                 if (grip && !gripsBeingDragged.contains(grip)) {
@@ -280,7 +280,7 @@ public:
         QList<IEntity*> entities;
         const QList<QGraphicsItem*> items = q->items(rect);
         foreach (QGraphicsItem *item, items) {
-            IUnknown *unknown = Q_U(item);
+            IUnknown *unknown = variantToUnknown_cast(item->data(0));
             if (unknown) {
                 IEntity *entity = query<IEntity>(unknown);
                 if (entity && entity->intersects(pickRect)) {

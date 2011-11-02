@@ -18,6 +18,10 @@
 #ifndef MIIUNKOWN_H
 #define MIIUNKOWN_H
 
+#include <mi_global.h>
+
+class QVariant;
+
 class IUnknown
 {
 public:
@@ -31,5 +35,19 @@ T *query(IUnknown *unknown)
 {
     return unknown ? reinterpret_cast<T*>(unknown->query(T::Type)) : 0;
 }
+
+template <typename Interface, typename Object> inline
+Interface *objectToInterface_cast(const Object *object)
+{
+    return const_cast<Interface*>(dynamic_cast<const Interface*>(object));
+}
+
+template <typename Object> inline
+Object *interfaceToObject_cast(IUnknown *interface)
+{
+    return dynamic_cast<Object*>(interface);
+}
+
+MI_CORE_EXPORT IUnknown *variantToUnknown_cast(const QVariant &v);
 
 #endif // MIIUNKOWN_H

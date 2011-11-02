@@ -47,7 +47,7 @@ public:
     {
         switch (type) {
         case Ac::EntityItemInterface:
-            return Q_I(IEntityItem);
+            return objectToInterface_cast<IEntityItem>(this);
         default:
             return 0;
         }

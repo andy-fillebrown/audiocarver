@@ -74,13 +74,13 @@ public:
     explicit ObjectTList(QObject *parent = 0)
         :   ObjectList(*(new ObjectTListPrivate<T>(this)), parent)
     {
-        Q_TD(ObjectTList);
+        Q_D_T(ObjectTList);
         setObjectName(QString("%1s").arg(d->t().objectName()));
     }
 
     int count() const
     {
-        Q_TD(const ObjectTList);
+        Q_D_T(const ObjectTList);
         return d->objects.count();
     }
 
@@ -91,13 +91,13 @@ public:
 
     T *at(int i) const
     {
-        Q_TD(const ObjectTList);
+        Q_D_T(const ObjectTList);
         return d->objects.at(i);
     }
 
     int indexOf(T *object, int from = 0)
     {
-        Q_TD(ObjectTList);
+        Q_D_T(ObjectTList);
         return d->objects.indexOf(object, from);
     }
 
@@ -108,7 +108,7 @@ public:
 
     void insert(int i, T *object)
     {
-        Q_TD(ObjectTList);
+        Q_D_T(ObjectTList);
         if (d->objects.contains(object))
             return;
         object->setParent(this);
@@ -127,7 +127,7 @@ public:
 
     void removeAt(int i)
     {
-        Q_TD(ObjectTList);
+        Q_D_T(ObjectTList);
         Object *object = d->objects[i];
         d->beginRemoveObjects(i, i);
         d->objects.removeAt(i);
@@ -139,7 +139,7 @@ public:
     {
         if (isEmpty())
             return;
-        Q_TD(ObjectTList);
+        Q_D_T(ObjectTList);
         d->beginRemoveObjects(0, count() - 1);
         qDeleteAll(this);
         d->objects.clear();
@@ -191,7 +191,7 @@ public:
 
     int modelItemIndex(IModelItem *item) const
     {
-        Q_TD(const ObjectTList);
+        Q_D_T(const ObjectTList);
         int n = d->objects.count();
         for (int i = 0;  i < n;  ++i)
             if (item == d->objects.at(i)->query(Mi::ModelItemInterface))
@@ -207,7 +207,7 @@ public:
     QVariant data(int role) const
     {
         if (Mi::ListTypeRole == role) {
-            Q_TD(const ObjectTList);
+            Q_D_T(const ObjectTList);
             return d->t().type();
         }
         return Object::data(role);
@@ -222,7 +222,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(ObjectTList)
-    Q_DECLARE_TEMPLATE_PRIVATE(ObjectTList)
+    Q_DECLARE_PRIVATE_TEMPLATE(ObjectTList)
 
     friend void qDeleteAll<T>(ObjectTList<T>*);
 };

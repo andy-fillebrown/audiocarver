@@ -70,7 +70,7 @@ public:
     {
         switch (type) {
         case Mi::ModelInterface:
-            return Q_I(IModel);
+            return objectToInterface_cast<IModel>(this);
         default:
             return 0;
         }

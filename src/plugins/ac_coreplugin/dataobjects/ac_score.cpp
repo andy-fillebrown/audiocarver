@@ -31,7 +31,7 @@ public:
 
 template <class T> class TrackListPrivate : public ObjectTListPrivate<T>
 {
-    Q_DECLARE_TEMPLATE_PUBLIC(TrackList)
+    Q_DECLARE_PUBLIC_TEMPLATE(TrackList)
 
 public:
     TrackListPrivate(TrackList<T> *q)
@@ -52,7 +52,7 @@ public:
 
     void updateZValues()
     {
-        Q_TQ(TrackList);
+        Q_Q_T(TrackList);
         const int n = q->count();
         for (int i = 0;  i < n;  ++i)
             q->at(i)->setZValue(qreal(-i));

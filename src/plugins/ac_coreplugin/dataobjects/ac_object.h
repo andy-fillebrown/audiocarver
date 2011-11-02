@@ -143,7 +143,7 @@ public:
     {
         switch (type) {
         case Mi::ModelItemInterface:
-            return Q_I(IModelItem);
+            return objectToInterface_cast<IModelItem>(this);
         default:
             return 0;
         }

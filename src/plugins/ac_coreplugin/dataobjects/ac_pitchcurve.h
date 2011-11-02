@@ -45,7 +45,7 @@ public:
     {
         switch (type) {
         case Ac::SubEntityInterface:
-            return Q_I(ISubEntity);
+            return objectToInterface_cast<ISubEntity>(this);
         default:
             return Curve::query(type);
         }
