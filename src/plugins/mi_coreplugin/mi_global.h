@@ -69,6 +69,19 @@ void qSort(Container &c, LessThan lessThan)
     qSort(c.begin(), c.end(), lessThan);
 }
 
+template <typename T, typename Object>
+T *object_cast(Object *object)
+{
+    return qobject_cast<T*>(object);
+}
+
+template <typename T, typename Object>
+T *object_cast(const Object *object)
+{
+    return qobject_cast<T*>(object);
+}
+
+
 #define Q_FLOAT_MIN 1E-37
 #define Q_FLOAT_MAX 1E+37
 

@@ -70,7 +70,7 @@ GridSettings::GridSettings(QObject *parent)
 
 Score *GridSettings::score() const
 {
-    return qobject_cast<Score*>(QObject::parent());
+    return object_cast<Score>(QObject::parent());
 }
 
 ObjectTList<TimeGridLine> *GridSettings::timeGridLines() const

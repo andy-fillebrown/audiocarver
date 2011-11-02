@@ -38,7 +38,7 @@ public:
         roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
         roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
         setRoleMaps(roleMaps);
-        setSourceModel(qobject_cast<QAbstractItemModel*>(parent));
+        setSourceModel(object_cast<QAbstractItemModel>(parent));
     }
 
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const

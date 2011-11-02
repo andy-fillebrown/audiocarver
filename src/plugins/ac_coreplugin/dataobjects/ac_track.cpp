@@ -137,7 +137,7 @@ void Track::setRecording(bool recording)
 Score *Track::score() const
 {
     QObject *parent = QObject::parent();
-    return parent ? qobject_cast<Score*>(parent->parent()) : 0;
+    return parent ? object_cast<Score>(parent->parent()) : 0;
 }
 
 ObjectTList<Note> *Track::notes() const

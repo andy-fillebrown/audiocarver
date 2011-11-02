@@ -18,6 +18,8 @@
 #ifndef AC_IFACTORY_H
 #define AC_IFACTORY_H
 
+#include <ac_global.h>
+
 #include <QObject>
 
 class IFileReader;
@@ -35,7 +37,7 @@ public:
 
     virtual IModelItem *create(int type) const = 0;
 
-    template <typename T> T *create() { return qobject_cast<T*>(create(T::Type)); }
+    template <typename T> T *create() { return object_cast<T>(create(T::Type)); }
 };
 
 class IFilerFactory : public QObject

@@ -78,7 +78,7 @@ public:
 
     void init()
     {
-        QWidget *widget = qobject_cast<QWidget*>(q->parent());
+        QWidget *widget = object_cast<QWidget>(q->parent());
         pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), widget);
         controlView = new ControlView(sceneManager->scene(Ac::ControlScene), widget);
         timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget);

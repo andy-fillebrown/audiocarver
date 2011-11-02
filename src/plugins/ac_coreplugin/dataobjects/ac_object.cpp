@@ -27,7 +27,7 @@ void ObjectPrivate::setModel(Model *model)
     this->model = model;
     const QObjectList &qchildren = q_ptr->children();
     foreach (QObject *qchild, qchildren) {
-        Object *child = qobject_cast<Object*>(qchild);
+        Object *child = object_cast<Object>(qchild);
         if (child)
             child->d_ptr->setModel(model);
     }
@@ -95,12 +95,12 @@ void Object::setParent(Object *parent)
     if (parent == QObject::parent())
         return;
     QObject *oldParent = QObject::parent();
-    ObjectList *oldList = qobject_cast<ObjectList*>(oldParent);
+    ObjectList *oldList = object_cast<ObjectList>(oldParent);
     if (oldList)
         oldList->remove(this);
     d_ptr->setModel(parent ? parent->d_ptr->model : 0);
     QObject::setParent(parent);
-    ObjectList *newList = qobject_cast<ObjectList*>(parent);
+    ObjectList *newList = object_cast<ObjectList>(parent);
     if (newList)
         newList->append(this);
 }

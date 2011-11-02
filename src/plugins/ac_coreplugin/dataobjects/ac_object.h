@@ -66,7 +66,7 @@ public:
 
     Object *parent() const
     {
-        return qobject_cast<Object*>(QObject::parent());
+        return object_cast<Object>(QObject::parent());
     }
 
     virtual void setParent(Object *parent);

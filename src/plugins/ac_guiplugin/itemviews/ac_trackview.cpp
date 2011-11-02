@@ -74,7 +74,7 @@ public:
 
         // Open a color dialog at the event's position and set the track's
         // color if the user didn't cancel the dialog.
-        QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
+        QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), object_cast<QWidget>(parent()));
         dlg->move(dlg->parentWidget()->mapToGlobal(e->pos()));
         dlg->exec();
         QColor color = dlg->selectedColor();

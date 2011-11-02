@@ -65,10 +65,10 @@ PitchCurve::PitchCurve(QObject *parent)
 
 ScoreObject *PitchCurve::scoreObject() const
 {
-    return qobject_cast<ScoreObject*>(QObject::parent());
+    return object_cast<ScoreObject>(QObject::parent());
 }
 
 IEntity *PitchCurve::parentEntity() const
 {
-    return qobject_cast<Note*>(QObject::parent());
+    return object_cast<Note>(QObject::parent());
 }

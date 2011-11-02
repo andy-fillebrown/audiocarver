@@ -113,7 +113,7 @@ void GridLine::setColor(const QColor &color)
 GridSettings *GridLine::gridSettings() const
 {
     QObject *parent = QObject::parent();
-    return parent ? qobject_cast<GridSettings*>(parent->parent()) : 0;
+    return parent ? object_cast<GridSettings>(parent->parent()) : 0;
 }
 
 class TimeGridLinePrivate : public GridLinePrivate

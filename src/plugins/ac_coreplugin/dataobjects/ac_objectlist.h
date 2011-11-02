@@ -154,21 +154,21 @@ public:
 
     void append(Object *object)
     {
-        T *t = qobject_cast<T*>(object);
+        T *t = object_cast<T>(object);
         if (t)
             append(t);
     }
 
     void insert(int i, Object *object)
     {
-        T *t = qobject_cast<T*>(object);
+        T *t = object_cast<T>(object);
         if (t)
             insert(i, t);
     }
 
     void remove(Object *object)
     {
-        int i = indexOf(qobject_cast<T*>(object));
+        int i = indexOf(object_cast<T>(object));
         if (0 <= i && i < count())
             removeAt(i);
     }

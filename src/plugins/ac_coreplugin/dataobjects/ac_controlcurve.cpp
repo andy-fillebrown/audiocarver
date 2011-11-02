@@ -86,13 +86,13 @@ void ControlCurve::setControlId(int controlId)
 ScoreObject *ControlCurve::scoreObject() const
 {
     QObject *parent = QObject::parent();
-    return parent ? qobject_cast<ScoreObject*>(parent->parent()) : 0;
+    return parent ? object_cast<ScoreObject>(parent->parent()) : 0;
 }
 
 IEntity *ControlCurve::parentEntity() const
 {
     QObject *parent = QObject::parent();
-    return parent ? qobject_cast<Note*>(parent->parent()) : 0;
+    return parent ? object_cast<Note>(parent->parent()) : 0;
 }
 
 QVariant ControlCurve::data(int role) const

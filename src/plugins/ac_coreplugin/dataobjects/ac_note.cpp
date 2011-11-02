@@ -61,7 +61,7 @@ Note::Note(QObject *parent)
 Track *Note::track() const
 {
     QObject *parent = QObject::parent();
-    return parent ? qobject_cast<Track*>(parent->parent()) : 0;
+    return parent ? object_cast<Track>(parent->parent()) : 0;
 }
 
 void Note::setColor(const QColor &color)

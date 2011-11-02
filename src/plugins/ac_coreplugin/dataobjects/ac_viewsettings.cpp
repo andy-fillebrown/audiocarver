@@ -132,7 +132,7 @@ void ViewSettings::setControlScale(qreal scale)
 
 Score *ViewSettings::score() const
 {
-    return qobject_cast<Score*>(QObject::parent());
+    return object_cast<Score>(QObject::parent());
 }
 
 void ViewSettings::clear()
