@@ -15,19 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_IMODELITEM_H
-#define AC_IMODELITEM_H
-
-#include <ac_namespace.h>
+#ifndef MI_IMODELITEM_H
+#define MI_IMODELITEM_H
 
 #include <mi_iunknown.h>
+#include <mi_namespace.h>
 
 class QVariant;
 
 class IModelItem : public IUnknown
 {
 public:
-    enum { Type = Ac::ModelItemInterface };
+    enum { Type = Mi::ModelItemInterface };
 
     virtual int type() const = 0;
     virtual IModelItem *parentModelItem() const = 0;
@@ -44,4 +43,4 @@ public:
     virtual Qt::ItemFlags flags() const = 0;
 };
 
-#endif // AC_IMODELITEM_H
+#endif // MI_IMODELITEM_H

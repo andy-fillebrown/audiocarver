@@ -13,6 +13,7 @@ DEFINES *= MI_CORE_LIBRARY
 
 HEADERS *= \
     mi_global.h \
+    mi_namespace.h \
 
 SOURCE_PAIRS = \
     mi_coreplugin \

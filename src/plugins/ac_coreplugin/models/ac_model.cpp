@@ -128,7 +128,7 @@ IModelItem *Model::itemFromIndex(const QModelIndex &index) const
 
 bool Model::insertItem(IModelItem *item, int row, const QModelIndex &parent)
 {
-    if (Ac::ListItem != parent.data(Ac::ItemTypeRole))
+    if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
         return false;
     ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
     if (!list)
@@ -139,7 +139,7 @@ bool Model::insertItem(IModelItem *item, int row, const QModelIndex &parent)
 
 IModelItem *Model::takeItem(int row, const QModelIndex &parent)
 {
-    if (Ac::ListItem != parent.data(Ac::ItemTypeRole))
+    if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
         return false;
     ObjectList *list = dynamic_cast<ObjectList*>(itemFromIndex(parent));
     if (!list)

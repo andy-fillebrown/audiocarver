@@ -15,16 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_ENUMS_H
-#define AC_CORE_ENUMS_H
+#ifndef AC_NAMESPACE_H
+#define AC_NAMESPACE_H
 
-#include <qnamespace.h>
+#include <mi_namespace.h>
 
 namespace Ac {
 
 enum InterfaceType {
-    ModelItemInterface,
-    EntityInterface,
+    EntityInterface = Mi::InterfaceTypeCount,
     SubEntityInterface,
     EntityItemInterface,
     GripItemInterface,
@@ -33,10 +32,7 @@ enum InterfaceType {
 };
 
 enum ItemDataRole {
-    ItemTypeRole = Qt::UserRole,
-    ListTypeRole,
-    NameRole,
-    PointsRole,
+    PointsRole = Mi::ItemDataRoleCount,
     ControlIdRole,
     LocationRole,
     LabelRole,
@@ -52,13 +48,11 @@ enum ItemDataRole {
     ControlPositionRole,
     TimeScaleRole,
     PitchScaleRole,
-    ControlScaleRole,
-    InvalidRole
+    ControlScaleRole
 };
 
 enum ItemType {
-    ListItem,
-    ScoreItem,
+    ScoreItem = Mi::ItemTypeCount,
     TrackItem,
     NoteItem,
     PitchCurveItem,
@@ -67,8 +61,7 @@ enum ItemType {
     TimeGridLineItem,
     PitchGridLineItem,
     ControlGridLineItem,
-    ViewSettingsItem,
-    UnknownItem
+    ViewSettingsItem
 };
 
 enum CurveType {
@@ -96,4 +89,4 @@ enum DragState {
 
 } // namespace Ac
 
-#endif // AC_CORE_ENUMS_H
+#endif // AC_NAMESPACE_H

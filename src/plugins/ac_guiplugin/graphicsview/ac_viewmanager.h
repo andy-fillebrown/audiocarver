@@ -18,8 +18,6 @@
 #ifndef AC_VIEWMANAGER_H
 #define AC_VIEWMANAGER_H
 
-#include <ac_namespace.h>
-
 #include <QObject>
 
 class Model;
@@ -44,10 +42,10 @@ public:
     QGraphicsView *view(int type) const;
 
     qreal scoreLength() const;
-    qreal position(Ac::ItemDataRole role) const;
-    void setPosition(qreal position, Ac::ItemDataRole role);
-    qreal scale(Ac::ItemDataRole role) const;
-    void setScale(qreal scale, Ac::ItemDataRole role);
+    qreal position(int role) const;
+    void setPosition(qreal position, int role);
+    qreal scale(int role) const;
+    void setScale(qreal scale, int role);
 
     void updateDatabase();
     void updateViews();

@@ -15,32 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHLABELVIEW_H
-#define AC_PITCHLABELVIEW_H
+#ifndef MI_NAMESPACE_H
+#define MI_NAMESPACE_H
 
-#include <ac_labelview.h>
+#include <qnamespace.h>
 
-class PitchLabelViewPrivate;
+namespace Mi {
 
-class PitchLabelView : public LabelVView
-{
-    Q_OBJECT
-
-public:
-    PitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~PitchLabelView();
-
-protected:
-    QModelIndex gridLineListIndex() const;
-
-    qreal sceneHeight() const;
-
-    int positionRoleY() const { return Ac::PitchPositionRole; }
-    int scaleRoleY() const { return Ac::PitchScaleRole; }
-
-private:
-    Q_DISABLE_COPY(PitchLabelView)
-    PitchLabelViewPrivate *d;
+enum InterfaceType {
+    ModelInterface,
+    ModelItemInterface,
+    InterfaceTypeCount
 };
 
-#endif // AC_PITCHLABELVIEW_H
+enum ItemDataRole {
+    InvalidRole = Qt::UserRole,
+    ItemTypeRole,
+    ListTypeRole,
+    NameRole,
+    ItemDataRoleCount
+};
+
+enum ItemType {
+    UnknownItem,
+    ListItem,
+    ItemTypeCount
+};
+
+} // namespace Mi
+
+#endif // MI_NAMESPACE_H

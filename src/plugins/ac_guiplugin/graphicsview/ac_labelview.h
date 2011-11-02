@@ -40,7 +40,7 @@ public:
 protected:
     virtual qreal paddingScale() const = 0;
     virtual QModelIndex gridLineListIndex() const = 0;
-    virtual Ac::ItemDataRole scaleRole() const = 0;
+    virtual int scaleRole() const = 0;
 
     QPointF sceneOffset() const { return QPointF(0.0f, 10.0f / (height() / sceneHeight())); }
 
@@ -70,7 +70,7 @@ public:
 
 protected:
     qreal paddingScale() const { return -sceneTransform().m22(); }
-    Ac::ItemDataRole scaleRole() const { return scaleRoleY(); }
+    int scaleRole() const { return scaleRoleY(); }
 
     QPointF sceneOffset() const { return QPointF(-2.0f / (width() / sceneWidth()), 10.0f / (height() / sceneHeight())); }
     QPointF sceneCenter() const;

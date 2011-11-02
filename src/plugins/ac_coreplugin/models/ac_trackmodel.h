@@ -33,8 +33,8 @@ public:
         for (int i = 0;  i < 4;  ++i)
             roleMaps.append(RoleMap());
         roleMaps[0].insert(Qt::DisplayRole, Ac::ColorRole);
-        roleMaps[1].insert(Qt::DisplayRole, Ac::NameRole);
-        roleMaps[1].insert(Qt::EditRole, Ac::NameRole);
+        roleMaps[1].insert(Qt::DisplayRole, Mi::NameRole);
+        roleMaps[1].insert(Qt::EditRole, Mi::NameRole);
         roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
         roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
         setRoleMaps(roleMaps);
@@ -48,11 +48,11 @@ public:
         if (!m)
             return false;
         QModelIndex index = m->index(sourceRow, 0, sourceParent);
-        Ac::ItemType type = Ac::ItemType(index.data(Ac::ItemTypeRole).toInt());
+        int type = index.data(Mi::ItemTypeRole).toInt();
         if (Ac::TrackItem == type)
             return true;
-        if (Ac::ListItem == type) {
-            Ac::ItemType listType = Ac::ItemType(index.data(Ac::ListTypeRole).toInt());
+        if (Mi::ListItem == type) {
+            int listType = index.data(Mi::ListTypeRole).toInt();
             if (Ac::TrackItem == listType)
                 return true;
         }

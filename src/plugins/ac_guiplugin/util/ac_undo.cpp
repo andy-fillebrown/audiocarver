@@ -19,10 +19,12 @@
 
 #include <ac_viewmanager.h>
 
-#include <ac_imodelitem.h>
 #include <ac_model.h>
 
+#include <mi_ieditor.h>
+
 #include <mi_idatabase.h>
+#include <mi_imodelitem.h>
 
 static bool undoCommandActive = false;
 static bool databaseReading = false;
@@ -364,7 +366,7 @@ void UndoStack::dataAboutToBeChanged(const QModelIndex &topLeft, const QModelInd
     Q_UNUSED(bottomRight);
     if (undoCommandActive || databaseReading)
         return;
-    if (Ac::ListItem == topLeft.data(Ac::ItemTypeRole))
+    if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
         return;
     d->dataChanges.append(new UndoDataCommand(d->model->itemFromIndex(topLeft)));
 }
@@ -374,7 +376,7 @@ void UndoStack::dataChanged(const QModelIndex &topLeft, const QModelIndex &botto
     Q_UNUSED(bottomRight);
     if (undoCommandActive || databaseReading)
         return;
-    if (Ac::ListItem == topLeft.data(Ac::ItemTypeRole))
+    if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
         return;
     IModelItem *item = d->model->itemFromIndex(topLeft);
     const int n = d->dataChanges.count();

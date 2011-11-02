@@ -176,7 +176,7 @@ public:
     // IModelItem
     int type() const
     {
-        return Ac::ListItem;
+        return Mi::ListItem;
     }
 
     int persistentRoleCount() const
@@ -194,7 +194,7 @@ public:
         Q_TD(const ObjectTList);
         int n = d->objects.count();
         for (int i = 0;  i < n;  ++i)
-            if (item == d->objects.at(i)->query(Ac::ModelItemInterface))
+            if (item == d->objects.at(i)->query(Mi::ModelItemInterface))
                 return i;
         return -1;
     }
@@ -206,7 +206,7 @@ public:
 
     QVariant data(int role) const
     {
-        if (Ac::ListTypeRole == role) {
+        if (Mi::ListTypeRole == role) {
             Q_TD(const ObjectTList);
             return d->t().type();
         }

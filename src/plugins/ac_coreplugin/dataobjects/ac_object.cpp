@@ -110,9 +110,9 @@ QVariant Object::data(int role) const
     switch (role) {
     case Qt::DisplayRole:
         return objectName();
-    case Ac::ItemTypeRole:
+    case Mi::ItemTypeRole:
         return type();
-    case Ac::NameRole:
+    case Mi::NameRole:
         return name();
     default:
         return QVariant();
@@ -121,7 +121,7 @@ QVariant Object::data(int role) const
 
 bool Object::setData(const QVariant &value, int role)
 {
-    if (Ac::NameRole != role) {
+    if (Mi::NameRole != role) {
         Q_ASSERT(false);
         return false;
     } else {

@@ -51,10 +51,10 @@ protected:
     virtual QPointF sceneCenter() const { return QPointF(); }
     virtual QPointF sceneOffset() const { return QPointF(); }
 
-    virtual Ac::ItemDataRole positionRoleX() const { return Ac::InvalidRole; }
-    virtual Ac::ItemDataRole positionRoleY() const { return Ac::InvalidRole; }
-    virtual Ac::ItemDataRole scaleRoleX() const { return Ac::InvalidRole; }
-    virtual Ac::ItemDataRole scaleRoleY() const { return Ac::InvalidRole; }
+    virtual int positionRoleX() const { return Mi::InvalidRole; }
+    virtual int positionRoleY() const { return Mi::InvalidRole; }
+    virtual int scaleRoleX() const { return Mi::InvalidRole; }
+    virtual int scaleRoleY() const { return Mi::InvalidRole; }
 
     virtual void zoomStarting();
     virtual void zoomFinished();
@@ -93,8 +93,8 @@ public:
 protected:
     qreal sceneWidth() const;
 
-    Ac::ItemDataRole positionRoleX() const { return Ac::TimePositionRole; }
-    Ac::ItemDataRole scaleRoleX() const { return Ac::TimeScaleRole; }
+    int positionRoleX() const { return Ac::TimePositionRole; }
+    int scaleRoleX() const { return Ac::TimeScaleRole; }
 
 private:
     Q_DISABLE_COPY(GraphicsHView)

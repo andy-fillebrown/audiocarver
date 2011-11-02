@@ -22,12 +22,12 @@
 #include <ac_ientity.h>
 #include <ac_viewmanager.h>
 
-#include <ac_imodelitem.h>
 #include <ac_model.h>
 
 #include <mi_ieditor.h>
 
 #include <mi_idatabase.h>
+#include <mi_imodelitem.h>
 
 #include <QApplication>
 #include <QMouseEvent>
@@ -447,7 +447,7 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 
     // If topLeft is a track, gripped entities might have been hidden.
     // Re-append the selected entities so the hidden ones are filtered out.
-    if (Ac::TrackItem == topLeft.data(Ac::ItemTypeRole))
+    if (Ac::TrackItem == topLeft.data(Mi::ItemTypeRole))
         d->resetPickedEntities();
 }
 

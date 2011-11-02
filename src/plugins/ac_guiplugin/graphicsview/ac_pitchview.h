@@ -34,8 +34,8 @@ protected:
     qreal sceneHeight() const;
     QPointF sceneCenter() const;
 
-    Ac::ItemDataRole positionRoleY() const { return Ac::PitchPositionRole; }
-    Ac::ItemDataRole scaleRoleY() const { return Ac::PitchScaleRole; }
+    int positionRoleY() const { return Ac::PitchPositionRole; }
+    int scaleRoleY() const { return Ac::PitchScaleRole; }
 
 private:
     Q_DISABLE_COPY(PitchView)

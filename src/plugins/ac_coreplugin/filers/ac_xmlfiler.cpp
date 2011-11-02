@@ -18,8 +18,9 @@
 #include "ac_xmlfiler.h"
 
 #include <ac_ifactory.h>
-#include <ac_imodelitem.h>
 #include <ac_point.h>
+
+#include <mi_imodelitem.h>
 
 #include <QStringList>
 #include <QVariant>
@@ -45,7 +46,7 @@ static void initMaps()
     elementMap.insert(Ac::ControlGridLineItem, "ControlGridLine");
     elementMap.insert(Ac::ViewSettingsItem, "ViewSettings");
 
-    attributeMap.insert(Ac::NameRole, "name");
+    attributeMap.insert(Mi::NameRole, "name");
     attributeMap.insert(Ac::PointsRole, "points");
     attributeMap.insert(Ac::ControlIdRole, "controlId");
     attributeMap.insert(Ac::LocationRole, "location");
@@ -72,14 +73,14 @@ static QString elementName(int type)
 
 static QString elementName(IModelItem *item)
 {
-    if (item->type() == Ac::ListItem)
-        return elementName(item->data(Ac::ListTypeRole).toInt()) + "List";
+    if (Mi::ListItem == item->type())
+        return elementName(item->data(Mi::ListTypeRole).toInt()) + "List";
     return elementName(item->type());
 }
 
 static int elementType(const QString &name)
 {
-    return elementMap.key(name, Ac::UnknownItem);
+    return elementMap.key(name, Mi::UnknownItem);
 }
 
 static QString attributeName(int role)
@@ -89,7 +90,7 @@ static QString attributeName(int role)
 
 static int attributeRole(const QString &name)
 {
-    return attributeMap.key(name, Ac::InvalidRole);
+    return attributeMap.key(name, Mi::InvalidRole);
 }
 
 class XmlFileReaderPrivate : public FileReaderPrivate
@@ -175,7 +176,7 @@ bool XmlFileReader::read(IModelItem *item)
         foreach (const QXmlStreamAttribute &attribute, attributes) {
             QString roleString = attribute.name().toString();
             int role = attributeRole(roleString);
-            if (Ac::InvalidRole == role) {
+            if (Mi::InvalidRole == role) {
                 qWarning() << "XmlFileReader: Invalid attribute role in" << elementName;
                 return false;
             }
@@ -289,7 +290,7 @@ bool XmlFileWriter::write(IModelItem *item)
     Q_D(XmlFileWriter);
     if (!item)
         return false;
-    if (Ac::ListItem == item->type() && 0 == item->modelItemCount())
+    if (Mi::ListItem == item->type() && 0 == item->modelItemCount())
         return true;
     if (Ac::PitchCurveItem == item->type() && item->data(Ac::PointsRole).value<PointList>().isEmpty())
         return true;

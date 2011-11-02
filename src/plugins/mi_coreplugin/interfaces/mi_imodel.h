@@ -15,32 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHLABELVIEW_H
-#define AC_PITCHLABELVIEW_H
+#ifndef AC_IMODEL_H
+#define AC_IMODEL_H
 
-#include <ac_labelview.h>
+#include <mi_iunknown.h>
+#include <mi_namespace.h>
 
-class PitchLabelViewPrivate;
+class IModelItem;
 
-class PitchLabelView : public LabelVView
+class QModelIndex;
+
+class IModel : public IUnknown
 {
-    Q_OBJECT
-
 public:
-    PitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~PitchLabelView();
+    enum { Type = Mi::ModelInterface };
 
-protected:
-    QModelIndex gridLineListIndex() const;
-
-    qreal sceneHeight() const;
-
-    int positionRoleY() const { return Ac::PitchPositionRole; }
-    int scaleRoleY() const { return Ac::PitchScaleRole; }
-
-private:
-    Q_DISABLE_COPY(PitchLabelView)
-    PitchLabelViewPrivate *d;
+    virtual IModelItem *itemFromIndex(const QModelIndex &index) const = 0;
 };
 
-#endif // AC_PITCHLABELVIEW_H
+#endif // AC_IMODEL_H

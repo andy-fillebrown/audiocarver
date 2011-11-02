@@ -227,7 +227,7 @@ qreal ViewManager::scoreLength() const
     return d->scoreLength;
 }
 
-qreal ViewManager::position(Ac::ItemDataRole role) const
+qreal ViewManager::position(int role) const
 {
     switch (role) {
     case Ac::TimePositionRole:
@@ -241,7 +241,7 @@ qreal ViewManager::position(Ac::ItemDataRole role) const
     }
 }
 
-void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
+void ViewManager::setPosition(qreal position, int role)
 {
     switch (role) {
     case Ac::TimePositionRole:
@@ -272,7 +272,7 @@ void ViewManager::setPosition(qreal position, Ac::ItemDataRole role)
     }
 }
 
-qreal ViewManager::scale(Ac::ItemDataRole role) const
+qreal ViewManager::scale(int role) const
 {
     switch (role) {
     case Ac::TimeScaleRole:
@@ -286,7 +286,7 @@ qreal ViewManager::scale(Ac::ItemDataRole role) const
     }
 }
 
-void ViewManager::setScale(qreal scale, Ac::ItemDataRole role)
+void ViewManager::setScale(qreal scale, int role)
 {
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;

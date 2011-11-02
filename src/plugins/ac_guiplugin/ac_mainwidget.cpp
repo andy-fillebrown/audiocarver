@@ -18,6 +18,9 @@
 #include "ac_mainwidget.h"
 
 #include <ac_viewmanager.h>
+
+#include <ac_namespace.h>
+
 #include <mi_graphicsview.h>
 
 #include <QMouseEvent>

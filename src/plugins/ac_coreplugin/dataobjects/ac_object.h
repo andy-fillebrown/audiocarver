@@ -19,9 +19,9 @@
 #define AC_OBJECT_H
 
 #include <ac_global.h>
-#include <ac_imodelitem.h>
+#include <ac_namespace.h>
 
-#include <mi_iunknown.h>
+#include <mi_imodelitem.h>
 
 #include <QObject>
 
@@ -125,7 +125,7 @@ public:
     int persistentRoleAt(int i) const
     {
         if (i == 0)
-            return Ac::NameRole;
+            return Mi::NameRole;
         Q_ASSERT(false);
         return -1;
     }
@@ -142,7 +142,7 @@ public:
     void *query(int type) const
     {
         switch (type) {
-        case Ac::ModelItemInterface:
+        case Mi::ModelItemInterface:
             return Q_I(IModelItem);
         default:
             return 0;
