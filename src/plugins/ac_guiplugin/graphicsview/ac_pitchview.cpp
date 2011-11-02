@@ -52,7 +52,7 @@ PitchView::~PitchView()
 
 qreal PitchView::sceneHeight() const
 {
-    return 127.0f / ViewManager::instance()->scale(Ac::PitchScaleRole);
+    return qreal(127.0f) / ViewManager::instance()->scale(Ac::PitchScaleRole);
 }
 
 QPointF PitchView::sceneCenter() const

@@ -147,13 +147,13 @@ public:
         QPoint offset = pos - dragStartPos;
         const int x = offset.x();
         if (x) {
-            qreal scale = 1.0f + (qreal(qAbs(x)) / 10.0f);
-            ViewManager::instance()->setScale((x < 0 ? 1.0f / scale : scale) * zoomStartScaleX, q->scaleRoleX());
+            qreal scale = qreal(1.0f) + (qreal(qAbs(x)) / qreal(10.0f));
+            ViewManager::instance()->setScale((x < 0 ? qreal(1.0f) / scale : scale) * zoomStartScaleX, q->scaleRoleX());
         }
         const int y = offset.y();
         if (y) {
-            const qreal scale = 1.0f + qreal(qAbs(y) / 10.0f);
-            ViewManager::instance()->setScale((0 < y ? 1.0f / scale : scale) * zoomStartScaleY, q->scaleRoleY());
+            const qreal scale = qreal(1.0f) + qreal(qAbs(y) / qreal(10.0f));
+            ViewManager::instance()->setScale((0 < y ? qreal(1.0f) / scale : scale) * zoomStartScaleY, q->scaleRoleY());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
         if (dirty)
@@ -576,7 +576,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
         return;
     const QPointF posDC = d->startPosDC(event->pos());
     const QPointF offsetDC = d->centerOffsetDC(posDC);
-    const qreal scaleAmount = event->delta() < 0 ? 1.0f / 1.25f : 1.25f;
+    const qreal scaleAmount = event->delta() < 0 ? qreal(1.0f) / qreal(1.25f) : qreal(1.25f);
     ViewManager *vm = ViewManager::instance();
     vm->setScale(scaleAmount * vm->scale(scaleRoleX()), scaleRoleX());
     vm->setScale(scaleAmount * vm->scale(scaleRoleY()), scaleRoleY());

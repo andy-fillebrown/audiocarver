@@ -50,13 +50,13 @@ public:
 
     void updateGridLineVisibilites()
     {
-        const qreal padding = 50.0f / q->paddingScale();
+        const qreal padding = qreal(50.0f) / q->paddingScale();
         const QModelIndex gridLines = q->gridLineListIndex();
         IModel *model = IDatabase::instance()->model();
         const int n = model->rowCount(gridLines);
         int minPriority = INT_MAX;
         int prevPriority = 0;
-        qreal prevLocation = -1.0f;
+        qreal prevLocation = qreal(-1.0f);
         for (int i = 0;  i < n;  ++i) {
             const QModelIndex line = model->index(i, gridLines);
             int curPriority = line.data(Ac::PriorityRole).toInt();
@@ -164,7 +164,7 @@ void LabelView::mouseReleaseEvent(QMouseEvent *event)
 
 QPointF LabelVView::sceneCenter() const
 {
-    return QPointF(0.5f, -ViewManager::instance()->position(positionRoleY()));
+    return QPointF(qreal(0.5f), -ViewManager::instance()->position(positionRoleY()));
 }
 
 void LabelVView::zoomStarting()

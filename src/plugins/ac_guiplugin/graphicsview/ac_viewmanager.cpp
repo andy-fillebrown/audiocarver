@@ -37,7 +37,8 @@
 
 static bool fuzzyCompare(qreal a, qreal b)
 {
-    return qFuzzyCompare(float(a), float(b));
+//    return qFuzzyCompare(float(a), float(b));
+    return qFuzzyCompare(a, b);
 }
 
 class ViewManagerPrivate

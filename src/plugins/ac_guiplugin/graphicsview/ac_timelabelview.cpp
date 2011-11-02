@@ -74,7 +74,7 @@ qreal TimeLabelView::sceneWidth() const
 QPointF TimeLabelView::sceneCenter() const
 {
     const ViewManager *vm = ViewManager::instance();
-    return QPointF(vm->position(Ac::TimePositionRole), 0.0f);
+    return QPointF(vm->position(Ac::TimePositionRole), qreal(0.0f));
 }
 
 void TimeLabelView::zoomStarting()

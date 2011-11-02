@@ -48,7 +48,7 @@ ControlView::~ControlView()
 
 qreal ControlView::sceneHeight() const
 {
-    return 1.0 / ViewManager::instance()->scale(Ac::ControlScaleRole);
+    return qreal(1.0f) / ViewManager::instance()->scale(Ac::ControlScaleRole);
 }
 
 QPointF ControlView::sceneCenter() const

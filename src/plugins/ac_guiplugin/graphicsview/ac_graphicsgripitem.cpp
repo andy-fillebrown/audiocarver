@@ -20,8 +20,8 @@
 #include <ac_graphicsentityitem.h>
 #include <ac_guiconstants.h>
 
-const qreal GRIP_SIZE    = 8.0f;
-const qreal GRIP_SIZE_D2 = GRIP_SIZE / 2.0f;
+const qreal GRIP_SIZE    = qreal(8.0f);
+const qreal GRIP_SIZE_D2 = GRIP_SIZE / qreal(2.0f);
 const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_SIZE);
 
 class GraphicsGripItemPrivate

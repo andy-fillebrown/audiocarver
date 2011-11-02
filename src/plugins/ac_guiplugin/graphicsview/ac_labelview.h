@@ -42,7 +42,7 @@ protected:
     virtual QModelIndex gridLineListIndex() const = 0;
     virtual int scaleRole() const = 0;
 
-    QPointF sceneOffset() const { return QPointF(0.0f, 10.0f / (height() / sceneHeight())); }
+    QPointF sceneOffset() const { return QPointF(0.0f, qreal(10.0f) / (qreal(height()) / sceneHeight())); }
 
     void panFinished();
     void zoomFinished();
@@ -72,7 +72,7 @@ protected:
     qreal paddingScale() const { return -sceneTransform().m22(); }
     int scaleRole() const { return scaleRoleY(); }
 
-    QPointF sceneOffset() const { return QPointF(-2.0f / (width() / sceneWidth()), 10.0f / (height() / sceneHeight())); }
+    QPointF sceneOffset() const { return QPointF(qreal(-2.0f) / (qreal(width()) / sceneWidth()), qreal(10.0f) / (qreal(height()) / sceneHeight())); }
     QPointF sceneCenter() const;
 
     void zoomStarting();
