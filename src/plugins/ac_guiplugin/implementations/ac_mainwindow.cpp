@@ -32,6 +32,8 @@
 #include <QAction>
 #include <QMenu>
 
+#include <QDebug>
+
 class MainWindowPrivate
 {
 public:
@@ -53,25 +55,78 @@ MainWindow::~MainWindow()
 
 void MainWindow::initMenuBarGroups(QStringList &groups) const
 {
-    Q_UNUSED(groups);
+    const int editGroupIndex = groups.indexOf(G_EDIT);
+    groups.insert(editGroupIndex + 1, G_CREATE);
+    groups.insert(editGroupIndex + 2, G_MODIFY);
+    groups.insert(editGroupIndex + 3, G_BUILD);
 }
 
 void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
-    Q_UNUSED(id);
-    Q_UNUSED(title);
-    if (menuBarGroup == Core::Constants::G_HELP)
+    if (G_CREATE == menuBarGroup) {
+        title = tr("&Create");
+        id = M_CREATE;
+        groups << G_CREATE_OTHER;
+    } else if (G_MODIFY == menuBarGroup) {
+        title = tr("&Modify");
+        id = M_MODIFY;
+        groups << G_MODIFY_OTHER;
+    } else if (G_BUILD == menuBarGroup) {
+        title = tr("&Build");
+        id = M_BUILD;
+        groups << G_BUILD_OTHER;
+    } else if (Core::Constants::G_HELP == menuBarGroup)
         groups  << G_HELP_ABOUTAUDIOCARVER;
 }
 
 void MainWindow::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
+
+    Core::ActionContainer *createMenu = am->actionContainer(M_CREATE);
+    Core::ActionContainer *modifyMenu = am->actionContainer(M_MODIFY);
+    Core::ActionContainer *buildMenu = am->actionContainer(M_BUILD);
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
+
     Core::Context globalContext(Core::Constants::C_GLOBAL);
+
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
+
+    // Create Track Action
+    action = new QAction(tr("&Track"), this);
+    cmd = am->registerAction(action, CREATETRACK, globalContext);
+    cmd->setDefaultKeySequence(Qt::Key_Insert);
+    createMenu->addAction(cmd, G_CREATE_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(createTrack()));
+
+    // Create Note Action
+    action = new QAction(tr("&Note"), this);
+    cmd = am->registerAction(action, CREATENOTE, globalContext);
+    createMenu->addAction(cmd, G_CREATE_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(createNote()));
+
+    // Erase Action
+    action = new QAction(tr("&Erase"), this);
+    cmd = am->registerAction(action, ERASE, globalContext);
+    cmd->setDefaultKeySequence(QKeySequence::Delete);
+    modifyMenu->addAction(cmd, G_MODIFY_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(erase()));
+
+    // Build Action
+    action = new QAction(tr("&Build"), this);
+    cmd = am->registerAction(action, BUILD, globalContext);
+    cmd->setDefaultKeySequence(tr("Ctrl+B"));
+    buildMenu->addAction(cmd, G_BUILD_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(build()));
+
+    // Build All Action
+    action = new QAction(tr("Build &All"), this);
+    cmd = am->registerAction(action, BUILDALL, globalContext);
+    cmd->setDefaultKeySequence(tr("Ctrl+Shift+B"));
+    buildMenu->addAction(cmd, G_BUILD_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(buildAll()));
 
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
@@ -107,4 +162,29 @@ void MainWindow::destroyVersionDialog()
         d->versionDialog->deleteLater();
         d->versionDialog = 0;
     }
+}
+
+void MainWindow::createTrack()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindow::createNote()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindow::erase()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindow::build()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindow::buildAll()
+{
+    qDebug() << Q_FUNC_INFO;
 }
