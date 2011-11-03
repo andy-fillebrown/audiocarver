@@ -26,6 +26,11 @@
 
 static const char mimeType[] = "AudioCarver track numbers";
 
+QStringList TrackModel::mimeTypes() const
+{
+    return RolesToColumnsProxyModel::mimeTypes() << mimeType;
+}
+
 QMimeData *TrackModel::mimeData(const QModelIndexList &indexes) const
 {
     QList<int> rows;
@@ -40,37 +45,4 @@ QMimeData *TrackModel::mimeData(const QModelIndexList &indexes) const
     QMimeData *mimeData = RolesToColumnsProxyModel::mimeData(indexes);
     mimeData->setData(mimeType, b);
     return mimeData;
-}
-
-bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
-{
-    Q_UNUSED(column);
-    Q_UNUSED(parent);
-    if (Qt::MoveAction != action)
-        return true;
-    const QStringList formats = data->formats();
-    if (!formats.contains(mimeType))
-        return false;
-    IModel *model = IModel::instance();
-    QByteArray b = data->data(mimeType);
-    QDataStream stream(&b, QIODevice::ReadOnly);
-    int fromRow = -1;
-    QList<int> fromRows;
-    while (!stream.atEnd()) {
-        stream >> fromRow;
-        fromRows.append(fromRow);
-    }
-    int toRow = row;
-    if (fromRows.contains(toRow))
-        return false;
-    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
-    QList<IModelItem*> items;
-    foreach (int row, fromRows) {
-        items.append(model->takeItem(row, trackListIndex));
-        if (row < toRow)
-            --toRow;
-    }
-    foreach (IModelItem *item, items)
-        model->insertItem(item, toRow, trackListIndex);
-    return true;
 }

@@ -267,9 +267,40 @@ void TrackView::dropEvent(QDropEvent *event)
 {
     // Drop mime data into the track model.
     d->updateDropRow(event->pos());
-    d->editor->beginCommand();
-    model()->dropMimeData(event->mimeData(), event->dropAction(), d->dropRow, 0, QModelIndex());
-    d->editor->endCommand();
+    const QStringList formats = event->mimeData()->formats();
+    const QString mimeType = model()->mimeTypes().last();
+    if (formats.contains(mimeType)) {
+        IModel *model = IModel::instance();
+        QByteArray b = event->mimeData()->data(mimeType);
+        QDataStream stream(&b, QIODevice::ReadOnly);
+        int fromRow = -1;
+        QList<int> fromRows;
+        while (!stream.atEnd()) {
+            stream >> fromRow;
+            fromRows.append(fromRow);
+        }
+        int toRow = d->dropRow;
+        if (!fromRows.contains(toRow)) {
+            const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+            QList<IModelItem*> items;
+            bool commandBegun = false;
+            foreach (int row, fromRows) {
+                if (row == toRow)
+                    continue;
+                if (!commandBegun) {
+                    IEditor::instance()->beginCommand();
+                    commandBegun = true;
+                }
+                items.append(model->takeItem(row, trackListIndex));
+                if (row < toRow)
+                    --toRow;
+            }
+            foreach (IModelItem *item, items)
+                model->insertItem(item, toRow, trackListIndex);
+            if (commandBegun)
+                IEditor::instance()->endCommand();
+        }
+    }
 
     d->dragging = false;
 

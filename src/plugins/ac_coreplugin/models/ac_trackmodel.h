@@ -67,8 +67,8 @@ public:
         return RolesToColumnsProxyModel::flags(index) | extraFlags;
     }
 
+    QStringList mimeTypes() const;
     QMimeData *mimeData(const QModelIndexList &indexes) const;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 };
 
 #endif // AC_MODEL_H
