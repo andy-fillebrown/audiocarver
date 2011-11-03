@@ -26,7 +26,7 @@ class IFileReader;
 class IFileWriter;
 class IModelItem;
 
-class IObjectFactory : public QObject
+class AC_CORE_EXPORT IObjectFactory : public QObject
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ public:
     template <typename T> T *create() { return object_cast<T>(create(T::Type)); }
 };
 
-class IFilerFactory : public QObject
+class AC_CORE_EXPORT IFilerFactory : public QObject
 {
     Q_OBJECT
 
