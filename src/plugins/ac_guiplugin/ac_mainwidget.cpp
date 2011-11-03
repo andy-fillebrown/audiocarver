@@ -64,7 +64,10 @@ public:
 
     int labelViewHeight() const
     {
-        return q->style()->pixelMetric(QStyle::PM_TitleBarHeight) + 2;
+        return q->style()->pixelMetric(QStyle::PM_DockWidgetHandleExtent)
+                + (2 * q->style()->pixelMetric(QStyle::PM_DockWidgetTitleBarButtonMargin))
+                + (q->style()->pixelMetric(QStyle::PM_DockWidgetTitleMargin))
+                + 1;
     }
 
     int separatorHeight() const
