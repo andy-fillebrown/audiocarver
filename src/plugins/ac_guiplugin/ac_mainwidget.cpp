@@ -27,6 +27,7 @@
 #include <QStyleOption>
 
 #define LABELVIEW_WIDTH 48
+#define LABELVIEW_HEIGHT 24
 
 class MainWidgetPrivate
 {
@@ -62,14 +63,6 @@ public:
     virtual ~MainWidgetPrivate()
     {}
 
-    int labelViewHeight() const
-    {
-        return q->style()->pixelMetric(QStyle::PM_DockWidgetHandleExtent)
-                + (2 * q->style()->pixelMetric(QStyle::PM_DockWidgetTitleBarButtonMargin))
-                + (q->style()->pixelMetric(QStyle::PM_DockWidgetTitleMargin))
-                + 1;
-    }
-
     int separatorHeight() const
     {
         return q->style()->pixelMetric(QStyle::PM_SplitterWidth);
@@ -88,13 +81,13 @@ public:
 
     int controlViewHeight() const
     {
-        const int h = (q->height() - labelViewHeight()) * controlHeightPercentage;
+        const int h = (q->height() - LABELVIEW_HEIGHT) * controlHeightPercentage;
         return h < 0 ? 0 : h;
     }
 
     int pitchViewHeight() const
     {
-        const int h = q->height() - labelViewHeight() - controlViewHeight();
+        const int h = q->height() - LABELVIEW_HEIGHT - controlViewHeight();
         return h < 0 ? 0 : h;
     }
 
@@ -105,7 +98,7 @@ public:
         if (leftWidth < 1)
             leftWidth = 1;
         const int rightWidth = LABELVIEW_WIDTH;
-        const int topHeight = labelViewHeight();
+        const int topHeight = LABELVIEW_HEIGHT;
         int middleHeight = pitchViewHeight() - (separator_height / 2);
         if (middleHeight < 0)
             middleHeight = 0;
@@ -125,8 +118,8 @@ public:
 
     void moveSeparator(const QPoint &pos)
     {
-        qreal height = q->height() - labelViewHeight();
-        controlHeightPercentage = (height - (qreal(pos.y()) - labelViewHeight())) / height;
+        qreal height = q->height() - LABELVIEW_HEIGHT;
+        controlHeightPercentage = (height - (qreal(pos.y()) - LABELVIEW_HEIGHT)) / height;
         controlHeightPercentage = qBound(qreal(0.0f), controlHeightPercentage, qreal(1.0f));
         updateViewHeights();
     }
