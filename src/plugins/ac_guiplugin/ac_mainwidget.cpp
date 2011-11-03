@@ -27,7 +27,7 @@
 #include <QStyleOption>
 
 #define LABELVIEW_WIDTH 48
-#define LABELVIEW_HEIGHT 24
+#define LABELVIEW_HEIGHT 23
 
 class MainWidgetPrivate
 {
