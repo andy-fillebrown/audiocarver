@@ -1,5 +1,6 @@
 
 SOURCE_PAIRS = \
+    ac_noteselectionmodel \
     ac_proxymodel \
     ac_trackmodel \
     ac_trackselectionmodel \
