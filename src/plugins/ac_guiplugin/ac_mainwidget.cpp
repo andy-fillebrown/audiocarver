@@ -24,10 +24,10 @@
 #include <mi_graphicsview.h>
 
 #include <QMouseEvent>
+#include <QStyleOption>
 
 #define LABELVIEW_WIDTH 48
 #define LABELVIEW_HEIGHT 24
-#define SEPARATOR_HEIGHT 4
 
 class MainWidgetPrivate
 {
@@ -36,20 +36,19 @@ public:
     ViewManager *viewManager;
     MiGraphicsView *topRightView;
     qreal controlHeightPercentage;
-    QCursor prevCursor;
-    bool cursorPushed;
-    bool draggingSeparator;
+    quint32 draggingSeparator;
+    QPoint currentPos;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
         ,   viewManager(new ViewManager(q))
         ,   topRightView(new MiGraphicsView)
         ,   controlHeightPercentage(0.25f)
-        ,   cursorPushed(false)
-        ,   draggingSeparator(false)
+        ,   draggingSeparator(quint32(false))
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
+        topRightView->setCursor(Qt::ArrowCursor);
         topRightView->setStyleSheet("QFrame {"
                                     "border-top: 1px solid palette(shadow);"
                                     "border-bottom: 1px solid palette(shadow);"
@@ -63,28 +62,41 @@ public:
     virtual ~MainWidgetPrivate()
     {}
 
+    int separatorHeight() const
+    {
+        return q->style()->pixelMetric(QStyle::PM_SplitterWidth, 0, q);
+    }
+
+    QRect separatorRect() const
+    {
+        return QRect(0, q->height() - controlViewHeight() - separatorHeight(), q->width(), separatorHeight());
+    }
+
     int controlViewHeight() const
     {
-        return (q->height() - LABELVIEW_HEIGHT) * controlHeightPercentage;
+        const int h = (q->height() - LABELVIEW_HEIGHT) * controlHeightPercentage;
+        return h < 0 ? 0 : h;
     }
 
     int pitchViewHeight() const
     {
-        return q->height() - LABELVIEW_HEIGHT - controlViewHeight();
+        const int h = q->height() - LABELVIEW_HEIGHT - controlViewHeight();
+        return h < 0 ? 0 : h;
     }
 
     void updateViewHeights()
     {
-        int leftWidth = q->width() - LABELVIEW_WIDTH;
-        int rightWidth = LABELVIEW_WIDTH;
-        int topHeight = LABELVIEW_HEIGHT;
-        int middleHeight = pitchViewHeight() - (SEPARATOR_HEIGHT / 2);
+        const int separator_height = separatorHeight();
+        const int leftWidth = q->width() - LABELVIEW_WIDTH;
+        const int rightWidth = LABELVIEW_WIDTH;
+        const int topHeight = LABELVIEW_HEIGHT;
+        int middleHeight = pitchViewHeight() - (separator_height / 2);
         if (middleHeight < 0)
             middleHeight = 0;
-        if (q->height() < (topHeight + middleHeight + SEPARATOR_HEIGHT))
-            middleHeight = q->height() - topHeight - SEPARATOR_HEIGHT;
-        int bottomHeight = q->height() - (topHeight + middleHeight + SEPARATOR_HEIGHT);
-        int bottomPosY = topHeight + middleHeight + SEPARATOR_HEIGHT;
+        if (q->height() < (topHeight + middleHeight + separator_height))
+            middleHeight = q->height() - topHeight - separator_height;
+        const int bottomHeight = q->height() - (topHeight + middleHeight + separator_height);
+        const int bottomPosY = topHeight + middleHeight + separator_height;
         viewManager->view(Ac::TimeLabelScene)->setGeometry(0, 0, leftWidth, topHeight);
         topRightView->setGeometry(QRect(leftWidth, 0, rightWidth, topHeight));
         viewManager->view(Ac::PitchScene)->setGeometry(QRect(0, topHeight, leftWidth, middleHeight));
@@ -98,6 +110,7 @@ public:
     {
         qreal height = q->height() - LABELVIEW_HEIGHT;
         controlHeightPercentage = (height - (qreal(pos.y()) - LABELVIEW_HEIGHT)) / height;
+        controlHeightPercentage = qBound(qreal(0.0f), controlHeightPercentage, qreal(1.0f));
         updateViewHeights();
     }
 };
@@ -112,7 +125,7 @@ MainWidget::MainWidget(QWidget *parent)
                   "border-left: 0px solid palette(shadow);"
                   "border-right: 1px solid palette(shadow);"
                   "}");
-    setCursor(QCursor(Qt::SplitVCursor));
+    setCursor(Qt::SplitVCursor);
 }
 
 MainWidget::~MainWidget()
@@ -122,19 +135,27 @@ MainWidget::~MainWidget()
 
 void MainWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (Qt::LeftButton == event->button())
-        d->draggingSeparator = true;
+    int offset = 0;
+    if (d->controlViewHeight()) {
+        offset = d->separatorHeight();
+        if (d->pitchViewHeight())
+            offset /= 2;
+    }
+    d->draggingSeparator =
+            Qt::LeftButton == event->button()
+            && d->separatorRect().translated(0, offset).contains(event->pos());
 }
 
 void MainWidget::mouseMoveEvent(QMouseEvent *event)
 {
+    d->currentPos = event->pos();
     if (d->draggingSeparator)
         d->moveSeparator(event->pos());
 }
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (Qt::LeftButton == event->button()) {
+    if (Qt::LeftButton == event->button() && d->draggingSeparator) {
         d->moveSeparator(event->pos());
         d->draggingSeparator = false;
     }
@@ -143,4 +164,20 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *event)
 void MainWidget::resizeEvent(QResizeEvent *)
 {
     d->updateViewHeights();
+}
+
+void MainWidget::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    QStyleOption opt(0);
+    opt.rect = d->separatorRect();
+    opt.palette = palette();
+    opt.state = QStyle::State_Horizontal;
+    if (opt.rect.contains(d->currentPos))
+        opt.state |= QStyle::State_MouseOver;
+    if (d->draggingSeparator)
+        opt.state |= QStyle::State_Sunken;
+    if (isEnabled())
+        opt.state |= QStyle::State_Enabled;
+    parentWidget()->style()->drawControl(QStyle::CE_Splitter, &opt, &p, this);
 }
