@@ -26,20 +26,7 @@ class AC_CORE_EXPORT TrackModel : public RolesToColumnsProxyModel
     Q_OBJECT
 
 public:
-    TrackModel(QObject *parent = 0)
-        :   RolesToColumnsProxyModel(parent)
-    {
-        RoleMapList roleMaps;
-        for (int i = 0;  i < 4;  ++i)
-            roleMaps.append(RoleMap());
-        roleMaps[0].insert(Qt::DisplayRole, Ac::ColorRole);
-        roleMaps[1].insert(Qt::DisplayRole, Mi::NameRole);
-        roleMaps[1].insert(Qt::EditRole, Mi::NameRole);
-        roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
-        roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
-        setRoleMaps(roleMaps);
-        setSourceModel(object_cast<QAbstractItemModel>(parent));
-    }
+    TrackModel(QObject *parent = 0);
 
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
     {
@@ -71,4 +58,4 @@ public:
     QMimeData *mimeData(const QModelIndexList &indexes) const;
 };
 
-#endif // AC_MODEL_H
+#endif // AC_TRACKMODEL_H

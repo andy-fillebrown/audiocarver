@@ -18,6 +18,7 @@
 #include "ac_trackmodel.h"
 
 #include <ac_model.h>
+#include <ac_trackselectionmodel.h>
 
 #include <mi_idatabase.h>
 
@@ -25,6 +26,23 @@
 #include <QStringList>
 
 static const char mimeType[] = "AudioCarver track numbers";
+
+TrackModel::TrackModel(QObject *parent)
+    :   RolesToColumnsProxyModel(parent)
+{
+    new TrackSelectionModel(this);
+
+    RoleMapList roleMaps;
+    for (int i = 0;  i < 4;  ++i)
+        roleMaps.append(RoleMap());
+    roleMaps[0].insert(Qt::DisplayRole, Ac::ColorRole);
+    roleMaps[1].insert(Qt::DisplayRole, Mi::NameRole);
+    roleMaps[1].insert(Qt::EditRole, Mi::NameRole);
+    roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
+    roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
+    setRoleMaps(roleMaps);
+    setSourceModel(object_cast<QAbstractItemModel>(parent));
+}
 
 QStringList TrackModel::mimeTypes() const
 {

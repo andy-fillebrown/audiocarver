@@ -18,6 +18,7 @@
 #include "ac_trackview.h"
 
 #include <ac_trackmodel.h>
+#include <ac_trackselectionmodel.h>
 
 #include <mi_ieditor.h>
 
@@ -194,6 +195,7 @@ TrackView::TrackView(QWidget *parent)
     ,   d(new TrackViewPrivate(this))
 {
     setModel(new TrackModel(IModel::instance()));
+    setSelectionModel(TrackSelectionModel::instance());
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);
