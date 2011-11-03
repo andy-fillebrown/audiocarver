@@ -26,15 +26,12 @@
 class FilerPrivate;
 class Filer
 {
-public:
-    ~Filer();
-
 protected:
     Filer(FilerPrivate &dd)
         :   d_ptr(&dd)
     {}
 
-    FilerPrivate *d_ptr;
+    QScopedPointer<FilerPrivate> d_ptr;
 };
 
 class FilerPrivate

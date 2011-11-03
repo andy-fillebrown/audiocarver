@@ -41,11 +41,6 @@ Database::Database()
     :   d(new DatabasePrivate(this))
 {}
 
-Database::~Database()
-{
-    delete d;
-}
-
 const QString &Database::fileExtension() const
 {
     static QString ext = QString::fromLatin1(".ac");

@@ -60,11 +60,6 @@ class MI_CORE_EXPORT Object : public QObject
     Q_OBJECT
 
 public:
-    ~Object()
-    {
-        delete d_ptr;
-    }
-
     Object *parent() const
     {
         return object_cast<Object>(QObject::parent());
@@ -156,7 +151,7 @@ protected:
         ,   d_ptr(&dd)
     {}
 
-    ObjectPrivate *d_ptr;
+    QScopedPointer<ObjectPrivate> d_ptr;
 
 private:
     Q_DECLARE_PRIVATE(Object)

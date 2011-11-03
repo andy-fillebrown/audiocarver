@@ -25,7 +25,6 @@ class Database : public IDatabase
 {
 public:
     Database();
-    ~Database();
 
     const QString &fileExtension() const;
     const QString &fileFilter() const;
@@ -37,7 +36,7 @@ public:
     bool isReading() const;
 
 private:
-    DatabasePrivate *d;
+    QScopedPointer<DatabasePrivate> d;
 };
 
 #endif // AC_DATABASE_H
