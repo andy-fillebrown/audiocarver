@@ -27,7 +27,6 @@
 #include <QStyleOption>
 
 #define LABELVIEW_WIDTH 48
-#define LABELVIEW_HEIGHT 24
 
 class MainWidgetPrivate
 {
@@ -36,21 +35,22 @@ public:
     ViewManager *viewManager;
     MiGraphicsView *topRightView;
     qreal controlHeightPercentage;
-    quint32 draggingSeparator;
-    QPoint currentPos;
+    quint32 hoveringOverSeparator : 1;
+    quint32 draggingSeparator : 31;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
         ,   viewManager(new ViewManager(q))
         ,   topRightView(new MiGraphicsView)
         ,   controlHeightPercentage(0.25f)
+        ,   hoveringOverSeparator(quint32(false))
         ,   draggingSeparator(quint32(false))
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
         topRightView->setCursor(Qt::ArrowCursor);
         topRightView->setStyleSheet("QFrame {"
-                                    "border-top: 1px solid palette(shadow);"
+                                    "border-top: 0px solid palette(shadow);"
                                     "border-bottom: 1px solid palette(shadow);"
                                     "border-left: 0px solid palette(shadow);"
                                     "border-right: 1px solid palette(shadow);"
@@ -62,34 +62,47 @@ public:
     virtual ~MainWidgetPrivate()
     {}
 
+    int labelViewHeight() const
+    {
+        return q->style()->pixelMetric(QStyle::PM_TitleBarHeight) + 2;
+    }
+
     int separatorHeight() const
     {
-        return q->style()->pixelMetric(QStyle::PM_SplitterWidth, 0, q);
+        return q->style()->pixelMetric(QStyle::PM_SplitterWidth);
     }
 
     QRect separatorRect() const
     {
-        return QRect(0, q->height() - controlViewHeight() - separatorHeight(), q->width(), separatorHeight());
+        int offset = 0;
+        if (controlViewHeight()) {
+            offset = separatorHeight();
+            if (pitchViewHeight())
+                offset /= 2;
+        }
+        return QRect(0, q->height() - controlViewHeight() - separatorHeight(), q->width(), separatorHeight()).translated(0, offset);
     }
 
     int controlViewHeight() const
     {
-        const int h = (q->height() - LABELVIEW_HEIGHT) * controlHeightPercentage;
+        const int h = (q->height() - labelViewHeight()) * controlHeightPercentage;
         return h < 0 ? 0 : h;
     }
 
     int pitchViewHeight() const
     {
-        const int h = q->height() - LABELVIEW_HEIGHT - controlViewHeight();
+        const int h = q->height() - labelViewHeight() - controlViewHeight();
         return h < 0 ? 0 : h;
     }
 
     void updateViewHeights()
     {
         const int separator_height = separatorHeight();
-        const int leftWidth = q->width() - LABELVIEW_WIDTH;
+        int leftWidth = q->width() - LABELVIEW_WIDTH;
+        if (leftWidth < 1)
+            leftWidth = 1;
         const int rightWidth = LABELVIEW_WIDTH;
-        const int topHeight = LABELVIEW_HEIGHT;
+        const int topHeight = labelViewHeight();
         int middleHeight = pitchViewHeight() - (separator_height / 2);
         if (middleHeight < 0)
             middleHeight = 0;
@@ -104,12 +117,13 @@ public:
         viewManager->view(Ac::ControlScene)->setGeometry(QRect(0, bottomPosY, leftWidth, bottomHeight));
         viewManager->view(Ac::ControlLabelScene)->setGeometry(QRect(leftWidth, bottomPosY, rightWidth, bottomHeight));
         viewManager->updateViews();
+        q->update(separatorRect());
     }
 
     void moveSeparator(const QPoint &pos)
     {
-        qreal height = q->height() - LABELVIEW_HEIGHT;
-        controlHeightPercentage = (height - (qreal(pos.y()) - LABELVIEW_HEIGHT)) / height;
+        qreal height = q->height() - labelViewHeight();
+        controlHeightPercentage = (height - (qreal(pos.y()) - labelViewHeight())) / height;
         controlHeightPercentage = qBound(qreal(0.0f), controlHeightPercentage, qreal(1.0f));
         updateViewHeights();
     }
@@ -123,9 +137,10 @@ MainWidget::MainWidget(QWidget *parent)
                   "border-top: 0px solid palette(shadow);"
                   "border-bottom: 0px solid palette(shadow);"
                   "border-left: 0px solid palette(shadow);"
-                  "border-right: 1px solid palette(shadow);"
+                  "border-right: 0px solid palette(shadow);"
                   "}");
     setCursor(Qt::SplitVCursor);
+    setMouseTracking(true);
 }
 
 MainWidget::~MainWidget()
@@ -135,20 +150,18 @@ MainWidget::~MainWidget()
 
 void MainWidget::mousePressEvent(QMouseEvent *event)
 {
-    int offset = 0;
-    if (d->controlViewHeight()) {
-        offset = d->separatorHeight();
-        if (d->pitchViewHeight())
-            offset /= 2;
-    }
     d->draggingSeparator =
             Qt::LeftButton == event->button()
-            && d->separatorRect().translated(0, offset).contains(event->pos());
+            && d->separatorRect().contains(event->pos());
 }
 
 void MainWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    d->currentPos = event->pos();
+    const quint32 wasHoveringOverSeparator = d->hoveringOverSeparator;
+    d->hoveringOverSeparator = d->separatorRect().contains(event->pos());
+    if (d->hoveringOverSeparator != wasHoveringOverSeparator)
+        update(d->separatorRect());
+
     if (d->draggingSeparator)
         d->moveSeparator(event->pos());
 }
@@ -161,6 +174,12 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+void MainWidget::leaveEvent(QEvent *)
+{
+    d->hoveringOverSeparator = false;
+    update(d->separatorRect());
+}
+
 void MainWidget::resizeEvent(QResizeEvent *)
 {
     d->updateViewHeights();
@@ -170,10 +189,10 @@ void MainWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
     QStyleOption opt(0);
-    opt.rect = d->separatorRect();
+    opt.rect = d->separatorRect().adjusted(0, 1, 0, 0);
     opt.palette = palette();
-    opt.state = QStyle::State_Horizontal;
-    if (opt.rect.contains(d->currentPos))
+    opt.state = QStyle::State_None;
+    if (d->hoveringOverSeparator)
         opt.state |= QStyle::State_MouseOver;
     if (d->draggingSeparator)
         opt.state |= QStyle::State_Sunken;

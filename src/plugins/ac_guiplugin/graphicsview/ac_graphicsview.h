@@ -70,6 +70,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    bool viewportEvent(QEvent *event);
 
     void paintEvent(QPaintEvent *event);
 

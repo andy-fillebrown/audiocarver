@@ -396,6 +396,7 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setCursor(crosshair());
+    setMouseTracking(true);
 }
 
 GraphicsView::~GraphicsView()
@@ -546,6 +547,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     case Picking:
         d->dragPickBoxTo(event->pos());
     }
+    event->setAccepted(d->viewState || d->dragState);
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
@@ -589,6 +591,19 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         return;
     if (Qt::Key_Escape == event->key())
         d->clearPickedEntities();
+}
+
+bool GraphicsView::viewportEvent(QEvent *event)
+{
+    bool result = MiGraphicsView::viewportEvent(event);
+    switch (event->type()) {
+    // Return event "accepted" status for the following event types, so they'll
+    // be passed to the main widget if ignored.
+    case QEvent::MouseMove:
+        return event->isAccepted();
+    default:
+        return result;
+    }
 }
 
 void GraphicsView::paintEvent(QPaintEvent *event)
