@@ -41,18 +41,17 @@ void MainWindow::initMenuBarGroups(QStringList &groups) const
 
 void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
-    if (menuBarGroup == Core::Constants::G_FILE) {
-        groups  << G_FILE_NEW
-                << G_FILE_OPEN
-                << G_FILE_SAVE;
-    }
-    if (menuBarGroup == G_EDIT) {
+    if (Core::Constants::G_FILE == menuBarGroup) {
+        groups << G_FILE_NEW
+               << G_FILE_OPEN
+               << G_FILE_SAVE;
+    } else if (G_EDIT == menuBarGroup) {
         id = M_EDIT;
         title = tr("&Edit");
-        groups  << G_EDIT_UNDOREDO
-                << G_EDIT_COPYPASTE
-                << G_EDIT_SELECTALL
-                << G_EDIT_OTHER;
+        groups << G_EDIT_UNDOREDO
+               << G_EDIT_COPYPASTE
+               << G_EDIT_SELECTALL
+               << G_EDIT_OTHER;
     }
 }
 
