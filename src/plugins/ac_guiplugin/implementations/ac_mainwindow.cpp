@@ -15,53 +15,48 @@
 **
 **************************************************************************/
 
-#include "ac_mainwindowimpl.h"
+#include "ac_mainwindow.h"
+
 #include <ac_guiconstants.h>
+
+#include <mi_guiconstants.h>
+
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
 #include <icontext.h>
 #include <icore.h>
 #include <mainwindow.h>
-#include <mi_guiconstants.h>
-#include <QAction>
-#include <QMenu>
 #include <versiondialog.h>
 
-class AcMainWindowImplData
+#include <QAction>
+#include <QMenu>
+
+class MainWindowPrivate
 {
 public:
     Core::VersionDialog *versionDialog;
 
-    AcMainWindowImplData()
+    MainWindowPrivate()
         :   versionDialog(0)
     {}
 };
 
-static AcMainWindowImpl *instance = 0;
+MainWindow::MainWindow()
+    :   d(new MainWindowPrivate)
+{}
 
-AcMainWindowImpl::AcMainWindowImpl()
-    :   d(new AcMainWindowImplData)
-{
-    ::instance = this;
-}
-
-AcMainWindowImpl::~AcMainWindowImpl()
+MainWindow::~MainWindow()
 {
     delete d;
 }
 
-AcMainWindowImpl *AcMainWindowImpl::instance()
-{
-    return ::instance;
-}
-
-void AcMainWindowImpl::initMenuBarGroups(QStringList &groups) const
+void MainWindow::initMenuBarGroups(QStringList &groups) const
 {
     Q_UNUSED(groups);
 }
 
-void AcMainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
+void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
     Q_UNUSED(id);
     Q_UNUSED(title);
@@ -69,7 +64,7 @@ void AcMainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, 
         groups  << G_HELP_ABOUTAUDIOCARVER;
 }
 
-void AcMainWindowImpl::initActions()
+void MainWindow::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
@@ -97,7 +92,7 @@ void AcMainWindowImpl::initActions()
     connect(action, SIGNAL(triggered()), SLOT(aboutAudioCarver()));
 }
 
-void AcMainWindowImpl::aboutAudioCarver()
+void MainWindow::aboutAudioCarver()
 {
     if (!d->versionDialog) {
         d->versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
@@ -106,7 +101,7 @@ void AcMainWindowImpl::aboutAudioCarver()
     d->versionDialog->show();
 }
 
-void AcMainWindowImpl::destroyVersionDialog()
+void MainWindow::destroyVersionDialog()
 {
     if (d->versionDialog) {
         d->versionDialog->deleteLater();

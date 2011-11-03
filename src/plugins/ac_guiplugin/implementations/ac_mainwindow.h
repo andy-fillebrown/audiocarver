@@ -15,22 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOWIMPL_H
-#define AC_MAINWINDOWIMPL_H
+#ifndef AC_MAINWINDOW_H
+#define AC_MAINWINDOW_H
 
 #include <imainwindow.h>
 
-class AcMainWindowImplData;
-
-class AcMainWindowImpl : public Core::IMainWindow
+class MainWindowPrivate;
+class MainWindow : public Core::IMainWindow
 {
     Q_OBJECT
 
 public:
-    AcMainWindowImpl();
-    ~AcMainWindowImpl();
-
-    static AcMainWindowImpl *instance();
+    MainWindow();
+    ~MainWindow();
 
     void initMenuBarGroups(QStringList &groups) const;
     void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
@@ -41,8 +38,7 @@ private slots:
     void destroyVersionDialog();
 
 private:
-    Q_DISABLE_COPY(AcMainWindowImpl)
-    AcMainWindowImplData *d;
+    MainWindowPrivate *d;
 };
 
-#endif // AC_MAINWINDOWIMPL_H
+#endif // AC_MAINWINDOW_H

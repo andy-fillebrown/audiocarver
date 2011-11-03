@@ -1,7 +1,7 @@
 
 SOURCE_PAIRS = \
     ac_editor \
-    ac_mainwindowimpl \
+    ac_mainwindow \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= implementations/$${pair}.h
