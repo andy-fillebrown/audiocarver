@@ -21,6 +21,7 @@
 
 #include <ac_ifactory.h>
 #include <ac_namespace.h>
+#include <ac_trackselectionmodel.h>
 
 #include <mi_guiconstants.h>
 #include <mi_ieditor.h>
@@ -187,7 +188,33 @@ void MainWindow::createNote()
 
 void MainWindow::erase()
 {
-    qDebug() << Q_FUNC_INFO;
+    // Erase selected tracks in reverse row order so higher row numbers don't
+    // change if lower row numbers are being erased, too.
+    bool commandBegun = false;
+    IEditor *editor = IEditor::instance();
+    IModel *model = IModel::instance();
+    TrackSelectionModel *trackSSModel = TrackSelectionModel::instance();
+    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+    const QModelIndexList trackSS = trackSSModel->selectedRows();
+    QList<int> rows;
+    rows.reserve(trackSS.count());
+    foreach (const QModelIndex &track, trackSS)
+        rows.append(track.row());
+    qSort(rows);
+    const int n = rows.count();
+    for (int i = n - 1;  0 <= i;  --i) {
+        if (!commandBegun) {
+            editor->beginCommand();
+            commandBegun = true;
+        }
+        const int row = rows.at(i);
+        model->setData(model->index(row, trackListIndex), false, Ac::VisibilityRole);
+        model->removeItem(row, trackListIndex);
+    }
+    if (commandBegun) {
+        editor->endCommand();
+        trackSSModel->clear();
+    }
 }
 
 void MainWindow::build()
