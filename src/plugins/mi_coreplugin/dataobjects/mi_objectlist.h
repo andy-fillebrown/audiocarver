@@ -183,8 +183,6 @@ public:
         int i = indexOf(object_cast<T>(object));
         if (0 <= i && i < count())
             removeAt(i);
-        else
-            Q_ASSERT(false);
     }
 
     // IModelItem
