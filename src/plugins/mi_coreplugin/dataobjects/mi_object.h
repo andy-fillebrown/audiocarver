@@ -159,7 +159,6 @@ protected:
     ObjectPrivate *d_ptr;
 
 private:
-    Q_DISABLE_COPY(Object)
     Q_DECLARE_PRIVATE(Object)
 };
 

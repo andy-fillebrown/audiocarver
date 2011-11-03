@@ -54,7 +54,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    Q_DISABLE_COPY(LabelView)
     LabelViewPrivate *d;
     friend class LabelViewPrivate;
 };
@@ -76,9 +75,6 @@ protected:
     QPointF sceneCenter() const;
 
     void zoomStarting();
-
-private:
-    Q_DISABLE_COPY(LabelVView)
 };
 
 #endif // AC_LABELVIEW_H

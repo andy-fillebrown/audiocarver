@@ -39,7 +39,6 @@ protected:
     GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent);
 
 private:
-    Q_DISABLE_COPY(GraphicsObject)
     Q_DECLARE_PRIVATE(GraphicsObject)
 };
 

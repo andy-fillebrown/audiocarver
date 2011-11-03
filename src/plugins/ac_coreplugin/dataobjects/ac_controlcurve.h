@@ -67,7 +67,6 @@ public:
     }
 
 private:
-    Q_DISABLE_COPY(ControlCurve)
     Q_DECLARE_PRIVATE(ControlCurve)
 };
 

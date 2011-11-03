@@ -54,7 +54,6 @@ public:
     }
 
 private:
-    Q_DISABLE_COPY(GraphicsEntityItem)
     GraphicsEntityItemPrivate *d;
 };
 

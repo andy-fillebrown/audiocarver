@@ -67,7 +67,6 @@ protected:
     ScoreObject(ScoreObjectPrivate &dd, QObject *parent);
 
 private:
-    Q_DISABLE_COPY(ScoreObject)
     Q_DECLARE_PRIVATE(ScoreObject)
 
     friend class CurvePrivate;

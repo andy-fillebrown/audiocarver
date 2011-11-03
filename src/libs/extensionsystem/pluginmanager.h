@@ -53,7 +53,6 @@ class PluginSpec;
 
 class EXTENSIONSYSTEM_EXPORT PluginManager : public QObject
 {
-    Q_DISABLE_COPY(PluginManager)
     Q_OBJECT
 
 public:

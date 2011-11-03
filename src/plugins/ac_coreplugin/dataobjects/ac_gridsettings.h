@@ -53,7 +53,6 @@ public:
     IModelItem *findModelItemList(int type) const;
 
 private:
-    Q_DISABLE_COPY(GridSettings)
     Q_DECLARE_PRIVATE(GridSettings)
 
     friend class GridLinePrivate;

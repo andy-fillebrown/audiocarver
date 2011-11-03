@@ -122,7 +122,6 @@ protected:
     GridLine(GridLinePrivate &dd, QObject *parent);
 
 private:
-    Q_DISABLE_COPY(GridLine)
     Q_DECLARE_PRIVATE(GridLine)
 };
 
@@ -161,7 +160,6 @@ public:
     int type() const { return Type; }
 
 private:
-    Q_DISABLE_COPY(TimeGridLine)
     Q_DECLARE_PRIVATE(TimeGridLine)
 };
 
@@ -184,7 +182,6 @@ public:
     int type() const { return Type; }
 
 private:
-    Q_DISABLE_COPY(PitchGridLine)
     Q_DECLARE_PRIVATE(PitchGridLine)
 };
 
@@ -207,7 +204,6 @@ public:
     int type() const { return Type; }
 
 private:
-    Q_DISABLE_COPY(ControlGridLine)
     Q_DECLARE_PRIVATE(ControlGridLine)
 };
 

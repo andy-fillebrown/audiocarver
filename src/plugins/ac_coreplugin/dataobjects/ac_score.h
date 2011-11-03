@@ -90,7 +90,6 @@ signals:
     void reset();
 
 private:
-    Q_DISABLE_COPY(Score)
     Q_DECLARE_PRIVATE(Score)
 
     friend class GridSettingsPrivate;

@@ -86,7 +86,6 @@ public:
     bool setData(const QVariant &value, int role);
 
 private:
-    Q_DISABLE_COPY(ViewSettings)
     Q_DECLARE_PRIVATE(ViewSettings)
 };
 

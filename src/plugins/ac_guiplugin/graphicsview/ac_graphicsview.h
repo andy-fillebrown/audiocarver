@@ -75,7 +75,6 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    Q_DISABLE_COPY(GraphicsView)
     GraphicsViewPrivate *d;
     friend class GraphicsViewPrivate;
 
@@ -96,9 +95,6 @@ protected:
 
     int positionRoleX() const { return Ac::TimePositionRole; }
     int scaleRoleX() const { return Ac::TimeScaleRole; }
-
-private:
-    Q_DISABLE_COPY(GraphicsHView)
 };
 
 #endif // AC_GRAPHICSVIEW_H

@@ -66,7 +66,6 @@ signals:
     void viewScaleChanged(int role);
 
 private:
-    Q_DISABLE_COPY(ViewManager)
     ViewManagerPrivate *d;
     friend class ViewManagerPrivate;
 };

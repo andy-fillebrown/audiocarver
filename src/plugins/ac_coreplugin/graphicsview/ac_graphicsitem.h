@@ -88,7 +88,6 @@ public:
     bool intersects(const QRectF &rect) const;
 
 private:
-    Q_DISABLE_COPY(GraphicsCurveItem)
     GraphicsCurveItemPrivate *d;
 };
 
@@ -106,7 +105,6 @@ public:
     void setText(const QString &text);
 
 private:
-    Q_DISABLE_COPY(GraphicsTextItem)
     GraphicsTextItemPrivate *d;
 };
 

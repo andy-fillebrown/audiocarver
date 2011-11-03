@@ -52,7 +52,6 @@ public:
     }
 
 private:
-    Q_DISABLE_COPY(PitchCurve)
     Q_DECLARE_PRIVATE(PitchCurve)
 };
 

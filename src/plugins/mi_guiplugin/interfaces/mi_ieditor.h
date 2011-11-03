@@ -45,9 +45,6 @@ public:
 
     virtual bool canPushCommand() const = 0;
     virtual void pushCommand(QUndoCommand *cmd) = 0;
-
-private:
-    Q_DISABLE_COPY(IEditor)
 };
 
 #endif // MI_IEDITOR_H

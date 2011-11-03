@@ -71,7 +71,6 @@ void MainWindow::initActions()
 
     // New Action
     icon = QIcon::fromTheme(QLatin1String("document-new"), QIcon(ICON_NEW));
-    qDebug() << icon.isNull();
     action = new QAction(icon, tr("&New"), this);
     cmd = am->registerAction(action, NEW, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::New);

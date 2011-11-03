@@ -71,7 +71,6 @@ protected:
     Curve(CurvePrivate &dd, QObject *parent = 0);
 
 private:
-    Q_DISABLE_COPY(Curve)
     Q_DECLARE_PRIVATE(Curve)
 };
 

@@ -142,7 +142,6 @@ public:
     QGraphicsScene *scene(int type);
 
 private:
-    Q_DISABLE_COPY(SceneManager)
     SceneManagerPrivate *d;
 };
 

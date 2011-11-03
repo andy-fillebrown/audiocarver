@@ -31,7 +31,6 @@ protected:
     GraphicsParent(GraphicsParentPrivate &dd, QObject *parent);
 
 private:
-    Q_DISABLE_COPY(GraphicsParent)
     Q_DECLARE_PRIVATE(GraphicsParent)
 };
 

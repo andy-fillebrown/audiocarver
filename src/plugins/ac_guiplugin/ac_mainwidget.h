@@ -40,7 +40,6 @@ protected:
     void paintEvent(QPaintEvent *);
 
 private:
-    Q_DISABLE_COPY(MainWidget)
     MainWidgetPrivate *d;
 };
 

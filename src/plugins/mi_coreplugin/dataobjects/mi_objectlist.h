@@ -224,7 +224,6 @@ protected:
     }
 
 private:
-    Q_DISABLE_COPY(ObjectTList)
     Q_DECLARE_PRIVATE_TEMPLATE(ObjectTList)
 
     friend void qDeleteAll<T>(ObjectTList<T>*);

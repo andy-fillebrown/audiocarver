@@ -25,14 +25,8 @@ class MiGuiPlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    MiGuiPlugin() {}
-    ~MiGuiPlugin() {}
-
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized();
-
-private:
-    Q_DISABLE_COPY(MiGuiPlugin)
 };
 
 #endif // MI_GUIPLUGIN_H

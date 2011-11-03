@@ -66,7 +66,6 @@ public:
     }
 
 private:
-    Q_DISABLE_COPY(Note)
     Q_DECLARE_PRIVATE(Note)
 };
 

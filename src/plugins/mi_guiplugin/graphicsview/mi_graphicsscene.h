@@ -27,14 +27,11 @@ class MI_GUI_EXPORT MiGraphicsScene : public QGraphicsScene
 
 public:
     MiGraphicsScene(QObject *parent = 0)
-    :   QGraphicsScene(parent)
+        :   QGraphicsScene(parent)
     {}
 
     ~MiGraphicsScene()
     {}
-
-private:
-    Q_DISABLE_COPY(MiGraphicsScene)
 };
 
 #endif // MI_GRAPHICSSCENE_H

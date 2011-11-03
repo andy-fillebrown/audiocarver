@@ -35,9 +35,6 @@ public:
 
 protected:
     void wheelEvent(QWheelEvent *event);
-
-private:
-    Q_DISABLE_COPY(MiGraphicsView)
 };
 
 #endif // MI_GRAPHICSVIEW_H

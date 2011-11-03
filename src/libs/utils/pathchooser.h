@@ -51,7 +51,6 @@ class PathChooserPrivate;
  */
 class UTILS_EXPORT PathChooser : public QWidget
 {
-    Q_DISABLE_COPY(PathChooser)
     Q_OBJECT
     Q_ENUMS(Kind)
     Q_PROPERTY(QString path READ path WRITE setPath DESIGNABLE true)

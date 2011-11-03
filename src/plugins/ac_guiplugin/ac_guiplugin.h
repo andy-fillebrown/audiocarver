@@ -25,14 +25,8 @@ class AcGuiPlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    AcGuiPlugin() {}
-    ~AcGuiPlugin() {}
-
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized();
-
-private:
-    Q_DISABLE_COPY(AcGuiPlugin)
 };
 
 #endif // AC_GUIPLUGIN_H

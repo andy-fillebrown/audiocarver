@@ -72,7 +72,6 @@ private:
  */
 class UTILS_EXPORT FancyLineEdit : public QLineEdit
 {
-    Q_DISABLE_COPY(FancyLineEdit)
     Q_OBJECT
     Q_ENUMS(Side)
 

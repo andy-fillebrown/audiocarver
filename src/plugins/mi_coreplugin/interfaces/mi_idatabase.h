@@ -45,9 +45,6 @@ signals:
     void databaseRead();
     void databaseAboutToBeWritten();
     void databaseWritten();
-
-private:
-    Q_DISABLE_COPY(IDatabase)
 };
 
 #endif // MI_IDATABASE_H

@@ -37,7 +37,6 @@ public:
     bool isReading() const;
 
 private:
-    Q_DISABLE_COPY(Database)
     DatabasePrivate *d;
 };
 

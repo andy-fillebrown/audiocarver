@@ -38,7 +38,6 @@ protected:
     int scaleRoleY() const { return Ac::ControlScaleRole; }
 
 private:
-    Q_DISABLE_COPY(ControlView)
     ControlViewPrivate *d;
 };
 

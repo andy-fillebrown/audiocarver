@@ -45,7 +45,6 @@ public:
     QModelIndex listIndex(int type) const;
 
 private:
-    Q_DISABLE_COPY(Model)
     ModelPrivate *d;
 };
 

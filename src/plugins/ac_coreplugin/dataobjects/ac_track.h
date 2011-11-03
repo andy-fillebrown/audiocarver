@@ -88,7 +88,6 @@ public:
     bool setData(const QVariant &value, int role);
 
 private:
-    Q_DISABLE_COPY(Track)
     Q_DECLARE_PRIVATE(Track)
 
     friend class NotePrivate;

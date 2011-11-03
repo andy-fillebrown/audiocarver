@@ -44,7 +44,6 @@ protected:
     void zoomStarting();
 
 private:
-    Q_DISABLE_COPY(TimeLabelView)
     TimeLabelViewPrivate *d;
 };
 

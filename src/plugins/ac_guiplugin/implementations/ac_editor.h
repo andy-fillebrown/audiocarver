@@ -42,7 +42,6 @@ public:
     void pushCommand(QUndoCommand *cmd);
 
 private:
-    Q_DISABLE_COPY(Editor)
     EditorPrivate *d;
 };
 

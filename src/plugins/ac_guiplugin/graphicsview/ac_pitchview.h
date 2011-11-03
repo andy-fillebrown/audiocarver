@@ -38,7 +38,6 @@ protected:
     int scaleRoleY() const { return Ac::PitchScaleRole; }
 
 private:
-    Q_DISABLE_COPY(PitchView)
     PitchViewPrivate *d;
 };
 

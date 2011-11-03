@@ -25,14 +25,8 @@ class AcCorePlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    AcCorePlugin() {}
-    ~AcCorePlugin() {}
-
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized() {}
-
-private:
-    Q_DISABLE_COPY(AcCorePlugin)
 };
 
 #endif // AC_COREPLUGIN_H

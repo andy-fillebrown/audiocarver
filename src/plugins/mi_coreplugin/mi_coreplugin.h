@@ -25,14 +25,8 @@ class MiCorePlugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    MiCorePlugin() {}
-    ~MiCorePlugin() {}
-
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized() {}
-
-private:
-    Q_DISABLE_COPY(MiCorePlugin)
 };
 
 #endif // MI_COREPLUGIN_H
