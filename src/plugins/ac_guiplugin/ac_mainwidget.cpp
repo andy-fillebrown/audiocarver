@@ -73,8 +73,13 @@ public:
         int offset = 0;
         if (controlViewHeight()) {
             offset = separatorHeight();
-            if (pitchViewHeight())
+            if (pitchViewHeight()) {
                 offset /= 2;
+#               ifdef Q_OS_WIN
+                {   offset += 1;
+                }
+#               endif
+            }
         }
         return QRect(0, q->height() - controlViewHeight() - separatorHeight(), q->width(), separatorHeight()).translated(0, offset);
     }
