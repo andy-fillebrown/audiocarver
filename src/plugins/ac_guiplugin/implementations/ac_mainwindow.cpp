@@ -19,7 +19,13 @@
 
 #include <ac_guiconstants.h>
 
+#include <ac_ifactory.h>
+#include <ac_namespace.h>
+
 #include <mi_guiconstants.h>
+#include <mi_ieditor.h>
+
+#include <mi_imodel.h>
 
 #include <actioncontainer.h>
 #include <actionmanager.h>
@@ -166,7 +172,12 @@ void MainWindow::destroyVersionDialog()
 
 void MainWindow::createTrack()
 {
-    qDebug() << Q_FUNC_INFO;
+    IEditor *editor = IEditor::instance();
+    editor->beginCommand();
+    IModel *model = IModel::instance();
+    IModelItem *track = IObjectFactory::instance()->create(Ac::TrackItem);
+    model->insertItem(track, 0, model->listIndex(Ac::TrackItem));
+    editor->endCommand();
 }
 
 void MainWindow::createNote()
