@@ -88,6 +88,7 @@ void MainWindow::initActions()
     action = new QAction(this);
     action->setSeparator(true);
     cmd = am->registerAction(action, PRO_NAME_STR".File.Sep.Save", globalContext);
+    fileMenu->addAction(cmd, G_FILE_SAVE);
 
     // Save
     icon = QIcon::fromTheme(QLatin1String("document-save"), QIcon(ICON_SAVE));
