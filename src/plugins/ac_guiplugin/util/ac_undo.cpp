@@ -19,15 +19,15 @@
 
 #include <ac_viewmanager.h>
 
-#include <ac_model.h>
+#include <ac_namespace.h>
 
 #include <mi_ieditor.h>
 
 #include <mi_idatabase.h>
+#include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
 static bool undoCommandActive = false;
-static bool databaseReading = false;
 
 class UndoCommandPrivate
 {
@@ -152,7 +152,7 @@ public:
 
     IModel *model() const
     {
-        return IDatabase::instance()->model();
+        return IModel::instance();
     }
 };
 
@@ -330,11 +330,7 @@ UndoStack::UndoStack(QObject *parent)
     :   QUndoStack(parent)
     ,   d(new UndoStackPrivate(this))
 {
-    IDatabase *db = IDatabase::instance();
-    connect(db, SIGNAL(databaseAboutToBeRead()), SLOT(databaseAboutToBeRead()));
-    connect(db, SIGNAL(databaseRead()), SLOT(databaseRead()));
-
-    Model *model = interfaceToObject_cast<Model>(db->model());
+    IModel *model = IModel::instance();
     connect(model, SIGNAL(dataAboutToBeChanged(QModelIndex,QModelIndex)), SLOT(dataAboutToBeChanged(QModelIndex,QModelIndex)));
     connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
@@ -349,34 +345,24 @@ UndoStack::~UndoStack()
     delete d;
 }
 
-void UndoStack::databaseAboutToBeRead()
-{
-    databaseReading = true;
-}
-
-void UndoStack::databaseRead()
-{
-    databaseReading = false;
-}
-
 void UndoStack::dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     Q_UNUSED(bottomRight);
-    if (undoCommandActive || databaseReading)
+    if (undoCommandActive || IDatabase::instance()->isReading())
         return;
     if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
         return;
-    d->dataChanges.append(new UndoDataCommand(IDatabase::instance()->model()->itemFromIndex(topLeft)));
+    d->dataChanges.append(new UndoDataCommand(IModel::instance()->itemFromIndex(topLeft)));
 }
 
 void UndoStack::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     Q_UNUSED(bottomRight);
-    if (undoCommandActive || databaseReading)
+    if (undoCommandActive || IDatabase::instance()->isReading())
         return;
     if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
         return;
-    IModelItem *item = IDatabase::instance()->model()->itemFromIndex(topLeft);
+    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
     const int n = d->dataChanges.count();
     for (int i = 0;  i < n;  ++i) {
         UndoDataCommand *cmd = d->dataChanges.at(i);
@@ -397,7 +383,7 @@ void UndoStack::modelReset()
 void UndoStack::rowsAboutToBeInserted(const QModelIndex &parent, int start, int end)
 {
     Q_UNUSED(end);
-    if (undoCommandActive || databaseReading)
+    if (undoCommandActive || IDatabase::instance()->isReading())
         return;
     d->inserts.append(new UndoInsertCommand(start, parent));
 }
@@ -405,7 +391,7 @@ void UndoStack::rowsAboutToBeInserted(const QModelIndex &parent, int start, int 
 void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
 {
     Q_UNUSED(end);
-    if (undoCommandActive || databaseReading)
+    if (undoCommandActive || IDatabase::instance()->isReading())
         return;
     const int n = d->inserts.count();
     for (int i = 0;  i < n;  ++i) {
@@ -414,7 +400,7 @@ void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
             continue;
         d->inserts.removeAt(i);
         push(cmd);
-        IModel *model = IDatabase::instance()->model();
+        IModel *model = IModel::instance();
         cmd->setItem(model->itemFromIndex(model->index(start, parent)));
         break;
     }
@@ -423,16 +409,16 @@ void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
 void UndoStack::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     Q_UNUSED(end);
-    if (undoCommandActive || databaseReading)
+    if (undoCommandActive || IDatabase::instance()->isReading())
         return;
-    IModel *model = IDatabase::instance()->model();
+    IModel *model = IModel::instance();
     d->removes.append(new UndoRemoveCommand(model->itemFromIndex(model->index(start, parent)), start, parent));
 }
 
 void UndoStack::rowsRemoved(const QModelIndex &parent, int start, int end)
 {
     Q_UNUSED(end);
-    if (undoCommandActive || databaseReading)
+    if (undoCommandActive || IDatabase::instance()->isReading())
         return;
     const int n = d->removes.count();
     for (int i = 0;  i < n;  ++i) {

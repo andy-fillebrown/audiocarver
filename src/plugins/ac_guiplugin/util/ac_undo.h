@@ -143,8 +143,6 @@ public:
     ~UndoStack();
 
 private slots:
-    void databaseAboutToBeRead();
-    void databaseRead();
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void modelReset();

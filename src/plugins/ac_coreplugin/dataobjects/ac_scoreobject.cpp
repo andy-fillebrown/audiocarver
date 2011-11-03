@@ -99,7 +99,7 @@ bool ScoreObject::setData(const QVariant &value, int role)
     }
 }
 
-int ScoreObject::modelItemIndex(IModelItem *item) const
+int ScoreObject::modelItemIndex(const IModelItem *item) const
 {
     Q_D(const ScoreObject);
     if (d->pitchCurve == item)

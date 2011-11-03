@@ -15,12 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_object.h"
+#include "mi_object.h"
 
-#include <ac_model.h>
-#include <ac_objectlist.h>
+#include <mi_objectlist.h>
 
-void ObjectPrivate::setModel(Model *model)
+#include <QModelIndex>
+
+void ObjectPrivate::setModel(IModel *model)
 {
     if (this->model == model)
         return;
@@ -35,7 +36,7 @@ void ObjectPrivate::setModel(Model *model)
 
 QModelIndex ObjectPrivate::modelIndex() const
 {
-    return model ? model->d->indexFromItem(q_ptr) : QModelIndex();
+    return model ? model->indexFromItem(q_ptr) : QModelIndex();
 }
 
 void ObjectPrivate::beginChangeData()

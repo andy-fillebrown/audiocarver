@@ -15,43 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSOBJECT_H
-#define AC_GRAPHICSOBJECT_H
+#ifndef AC_MODEL_H
+#define AC_MODEL_H
 
 #include <ac_global.h>
+#include <ac_namespace.h>
 
-#include <mi_object.h>
+#include <mi_imodel.h>
 
-class GraphicsParentPrivate;
+class IModelItem;
+class Score;
 
 class QGraphicsItem;
 
-class GraphicsObjectPrivate;
-class AC_CORE_EXPORT GraphicsObject : public Object
+class ModelPrivate;
+class AC_CORE_EXPORT Model : public IModel
 {
     Q_OBJECT
 
 public:
-    // Object
-    void setParent(Object *parent);
+    Model();
+    ~Model();
 
-protected:
-    GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent);
+    QGraphicsItem *sceneItem(int type) const;
+
+    // IModel
+    IModelItem *rootItem() const;
+    QModelIndex itemIndex(int type) const;
+    QModelIndex listIndex(int type) const;
 
 private:
-    Q_DISABLE_COPY(GraphicsObject)
-    Q_DECLARE_PRIVATE(GraphicsObject)
+    Q_DISABLE_COPY(Model)
+    ModelPrivate *d;
 };
 
-class GraphicsObjectPrivate : public ObjectPrivate
-{
-    Q_DECLARE_PUBLIC(GraphicsObject)
-
-public:
-    GraphicsObjectPrivate(GraphicsObject *q);
-
-    virtual void updateGraphicsParent() {}
-    virtual GraphicsParentPrivate *graphicsParent() const { return 0; }
-};
-
-#endif // AC_GRAPHICSOBJECT_H
+#endif // AC_MODEL_H

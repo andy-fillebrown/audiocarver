@@ -64,7 +64,7 @@ public:
     // IModelItem
     int type() const { return Type; }
     int modelItemCount() const { return ModelItemCount; }
-    int modelItemIndex(IModelItem *item) const;
+    int modelItemIndex(const IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
     IModelItem *findModelItemList(int type) const;
 

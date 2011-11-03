@@ -15,26 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_OBJECT_H
-#define AC_OBJECT_H
+#ifndef MI_OBJECT_H
+#define MI_OBJECT_H
 
-#include <ac_global.h>
-#include <ac_namespace.h>
+#include <mi_global.h>
+#include <mi_namespace.h>
 
+#include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
 #include <QObject>
 
-class Model;
+class IModel;
 class Object;
 
 class QModelIndex;
 
-class AC_CORE_EXPORT ObjectPrivate
+class MI_CORE_EXPORT ObjectPrivate
 {
 public:
     Object *q_ptr;
-    Model *model;
+    IModel *model;
 
     ObjectPrivate(Object *q)
         :   q_ptr(q)
@@ -43,7 +44,7 @@ public:
 
     virtual ~ObjectPrivate() {}
 
-    void setModel(Model *model);
+    void setModel(IModel *model);
     QModelIndex modelIndex() const;
     void beginChangeData();
     void endChangeData();
@@ -53,7 +54,7 @@ public:
     virtual void endRemoveObjects();
 };
 
-class AC_CORE_EXPORT Object : public QObject
+class MI_CORE_EXPORT Object : public QObject
         ,   public IModelItem
 {
     Q_OBJECT
@@ -89,7 +90,7 @@ public:
         return 0;
     }
 
-    int modelItemIndex(IModelItem *item) const
+    int modelItemIndex(const IModelItem *item) const
     {
         Q_UNUSED(item);
         Q_ASSERT(false);

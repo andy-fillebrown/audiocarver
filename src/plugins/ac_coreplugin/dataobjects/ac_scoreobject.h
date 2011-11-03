@@ -19,7 +19,9 @@
 #define AC_SCOREOBJECT_H
 
 #include <ac_graphicsparent.h>
-#include <ac_objectlist.h>
+#include <ac_namespace.h>
+
+#include <mi_objectlist.h>
 
 class ControlCurve;
 class PitchCurve;
@@ -46,7 +48,7 @@ public:
 
     // IModelItem
     int modelItemCount() const { return ModelItemCount; }
-    int modelItemIndex(IModelItem *item) const;
+    int modelItemIndex(const IModelItem *item) const;
     IModelItem *modelItemAt(int i) const;
     IModelItem *findModelItem(int type) const;
     IModelItem *findModelItemList(int type) const;

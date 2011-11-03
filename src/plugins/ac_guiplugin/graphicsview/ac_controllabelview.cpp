@@ -19,7 +19,6 @@
 
 #include <ac_viewmanager.h>
 
-#include <mi_idatabase.h>
 #include <mi_imodel.h>
 
 #include <QModelIndex>
@@ -53,7 +52,7 @@ ControlLabelView::~ControlLabelView()
 
 QModelIndex ControlLabelView::gridLineListIndex() const
 {
-    return IDatabase::instance()->model()->listIndex(Ac::ControlGridLineItem);
+    return IModel::instance()->listIndex(Ac::ControlGridLineItem);
 }
 
 qreal ControlLabelView::sceneHeight() const

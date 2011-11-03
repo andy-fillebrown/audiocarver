@@ -153,7 +153,7 @@ void Track::setZValue(qreal z)
     d->mainGraphicsItems[Ac::ControlScene]->setZValue(z);
 }
 
-int Track::modelItemIndex(IModelItem *item) const
+int Track::modelItemIndex(const IModelItem *item) const
 {
     Q_D(const Track);
     if (d->notes == item)

@@ -15,25 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_coreplugin.h"
+#include <mi_objectlist.h>
 
-#include <ac_database.h>
-#include <ac_factory.h>
-#include <ac_model.h>
+#include <QVariant>
 
-#include <pluginmanager.h>
-
-#include <QtPlugin>
-
-bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+QVariant ObjectList::data(int role) const
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Database);
-    addAutoReleasedObject(new Model);
-    addAutoReleasedObject(new FilerFactory);
-    addAutoReleasedObject(new ObjectFactory);
-    return true;
+    if (Mi::ListTypeRole == role)
+        return listType();
+    return Object::data(role);
 }
-
-Q_EXPORT_PLUGIN(AcCorePlugin)

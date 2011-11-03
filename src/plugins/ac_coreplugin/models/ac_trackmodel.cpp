@@ -51,7 +51,7 @@ bool TrackModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     const QStringList formats = data->formats();
     if (!formats.contains(mimeType))
         return false;
-    IModel *model = IDatabase::instance()->model();
+    IModel *model = IModel::instance();
     QByteArray b = data->data(mimeType);
     QDataStream stream(&b, QIODevice::ReadOnly);
     int fromRow = -1;

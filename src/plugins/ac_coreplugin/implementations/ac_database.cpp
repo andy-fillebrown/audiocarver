@@ -25,13 +25,11 @@ class DatabasePrivate
 {
 public:
     Database *q;
-    Model *model;
     XmlFileReader reader;
     quint32 reading : 32;
 
     DatabasePrivate(Database *q)
         :   q(q)
-        ,   model(new Model(q))
         ,   reading(quint32(false))
     {}
 
@@ -89,11 +87,6 @@ void Database::write(const QString &fileName)
     writer.setFileName(fileName);
     writer.write(query<IModelItem>(Score::instance()));
     emit databaseWritten();
-}
-
-IModel *Database::model() const
-{
-    return d->model;
 }
 
 bool Database::isReading() const

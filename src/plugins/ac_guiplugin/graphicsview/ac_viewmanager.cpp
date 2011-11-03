@@ -51,7 +51,6 @@ public:
     TimeLabelView *timeLabelView;
     PitchLabelView *pitchLabelView;
     ControlLabelView *controlLabelView;
-    Model *model;
     qreal scoreLength;
     qreal timePos;
     qreal pitchPos;
@@ -71,7 +70,6 @@ public:
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
-        ,   model(interfaceToObject_cast<Model>(IDatabase::instance()->model()))
         ,   initialized(quint32(false))
         ,   updatingDatabase(quint32(false))
         ,   undoCmd(0)
@@ -102,6 +100,7 @@ public:
         q->connect(db, SIGNAL(databaseRead()), q, SLOT(databaseRead()));
         q->connect(db, SIGNAL(databaseAboutToBeWritten()), q, SLOT(databaseAboutToBeWritten()));
 
+        IModel *model = IModel::instance();
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), q, SLOT(dataChanged(QModelIndex,QModelIndex)));
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlView, SLOT(dataChanged(QModelIndex,QModelIndex)));
@@ -142,6 +141,8 @@ public:
 
     void updateViewVariables()
     {
+        const IModel *model = IModel::instance();
+
         const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
         if (scoreLength != modelScoreLength) {
             scoreLength = modelScoreLength;
@@ -309,15 +310,15 @@ void ViewManager::setScale(qreal scale, int role)
 
 void ViewManager::updateDatabase()
 {
-    IModel *m = IDatabase::instance()->model();
-    const QModelIndex viewSettings = m->itemIndex(Ac::ViewSettingsItem);
+    IModel *model = IModel::instance();
+    const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
     d->updatingDatabase = true;
-    m->setData(viewSettings, d->timePos, Ac::TimePositionRole);
-    m->setData(viewSettings, d->pitchPos, Ac::PitchPositionRole);
-    m->setData(viewSettings, d->controlPos, Ac::ControlPositionRole);
-    m->setData(viewSettings, d->timeScale, Ac::TimeScaleRole);
-    m->setData(viewSettings, d->pitchScale, Ac::PitchScaleRole);
-    m->setData(viewSettings, d->controlScale, Ac::ControlScaleRole);
+    model->setData(viewSettings, d->timePos, Ac::TimePositionRole);
+    model->setData(viewSettings, d->pitchPos, Ac::PitchPositionRole);
+    model->setData(viewSettings, d->controlPos, Ac::ControlPositionRole);
+    model->setData(viewSettings, d->timeScale, Ac::TimeScaleRole);
+    model->setData(viewSettings, d->pitchScale, Ac::PitchScaleRole);
+    model->setData(viewSettings, d->controlScale, Ac::ControlScaleRole);
     d->updatingDatabase = false;
 }
 
@@ -372,7 +373,7 @@ void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bo
     Q_UNUSED(bottomLeft);
     if (!d->updatingDatabase
             && (!topRight.isValid()
-                || IDatabase::instance()->model()->itemIndex(Ac::ViewSettingsItem) == topRight))
+                || IModel::instance()->itemIndex(Ac::ViewSettingsItem) == topRight))
         d->updateViewVariables();
 }
 

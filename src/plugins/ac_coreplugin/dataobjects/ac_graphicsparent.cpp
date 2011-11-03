@@ -17,6 +17,8 @@
 
 #include "ac_graphicsparent.h"
 
+#include <ac_namespace.h>
+
 #include <QGraphicsItem>
 
 static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &items,

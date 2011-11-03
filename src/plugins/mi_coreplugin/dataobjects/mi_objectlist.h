@@ -15,12 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_OBJECTLIST_H
-#define AC_OBJECTLIST_H
+#ifndef MI_OBJECTLIST_H
+#define MI_OBJECTLIST_H
 
-#include <ac_object.h>
-
-#include <QVariant>
+#include <mi_object.h>
 
 class ObjectList;
 class ObjectListPrivate : public ObjectPrivate
@@ -29,16 +27,20 @@ public:
     inline ObjectListPrivate(ObjectList *q);
 };
 
-class ObjectList : public Object
+class MI_CORE_EXPORT ObjectList : public Object
 {
     Q_OBJECT
 
 public:
+    virtual int listType() const = 0;
+
     virtual QObject *objectAt(int i) const = 0;
     virtual void append(Object *object) = 0;
     virtual void insert(int i, Object *object) = 0;
     virtual void removeAt(int i) = 0;
     virtual void remove(Object *object) = 0;
+
+    QVariant data(int role) const;
 
 protected:
     ObjectList(ObjectListPrivate &dd, QObject *parent = 0)
@@ -147,6 +149,12 @@ public:
     }
 
     // ObjectList
+    int listType() const
+    {
+        Q_D_T(const ObjectTList);
+        return d->t().type();
+    }
+
     QObject *objectAt(int i) const
     {
         return at(i);
@@ -189,7 +197,7 @@ public:
         return count();
     }
 
-    int modelItemIndex(IModelItem *item) const
+    int modelItemIndex(const IModelItem *item) const
     {
         Q_D_T(const ObjectTList);
         int n = d->objects.count();
@@ -202,15 +210,6 @@ public:
     IModelItem *modelItemAt(int i) const
     {
         return at(i);
-    }
-
-    QVariant data(int role) const
-    {
-        if (Mi::ListTypeRole == role) {
-            Q_D_T(const ObjectTList);
-            return d->t().type();
-        }
-        return Object::data(role);
     }
 
 protected:

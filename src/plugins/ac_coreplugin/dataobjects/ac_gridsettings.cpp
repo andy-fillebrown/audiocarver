@@ -91,7 +91,7 @@ ObjectTList<ControlGridLine> *GridSettings::controlGridLines() const
     return d->controlGridLines;
 }
 
-int GridSettings::modelItemIndex(IModelItem *item) const
+int GridSettings::modelItemIndex(const IModelItem *item) const
 {
     Q_D(const GridSettings);
     if (d->timeGridLines == item)

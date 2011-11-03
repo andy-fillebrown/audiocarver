@@ -19,8 +19,6 @@
 
 #include <ac_model.h>
 
-#include <mi_idatabase.h>
-
 class SceneManagerPrivate
 {
 public:
@@ -48,7 +46,7 @@ public:
         pitchLabelScene = new PitchLabelScene(q);
         controlLabelScene = new ControlLabelScene(q);
 
-        Model *model = interfaceToObject_cast<Model>(IDatabase::instance()->model());
+        Model *model = object_cast<Model>(IModel::instance());
         for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             q->scene(i)->addItem(model->sceneItem(i));
     }

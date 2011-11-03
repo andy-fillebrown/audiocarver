@@ -15,35 +15,57 @@
 **
 **************************************************************************/
 
-#ifndef AC_IMODEL_H
-#define AC_IMODEL_H
+#ifndef MI_IMODEL_H
+#define MI_IMODEL_H
 
-#include <mi_iunknown.h>
+#include <mi_global.h>
 #include <mi_namespace.h>
+
+#include <QAbstractItemModel>
 
 class IModelItem;
 
-class QModelIndex;
-class QVariant;
-
-class IModel : public IUnknown
+class MI_CORE_EXPORT IModel : public QAbstractItemModel
 {
+    Q_OBJECT
+
 public:
-    enum { Type = Mi::ModelInterface };
+    IModel();
 
-    virtual QModelIndex index(int row, const QModelIndex &parent) const = 0;
-    virtual int rowCount(const QModelIndex &parent) const = 0;
+    static IModel *instance();
 
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const = 0;
-    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) = 0;
-
-    virtual IModelItem *itemFromIndex(const QModelIndex &index) const = 0;
+    virtual IModelItem *rootItem() const = 0;
     virtual QModelIndex itemIndex(int type) const = 0;
     virtual QModelIndex listIndex(int type) const = 0;
 
-    virtual bool insertItem(IModelItem *item, int row, const QModelIndex &parent) = 0;
-    virtual void removeItem(int row, const QModelIndex &parent) = 0;
-    virtual IModelItem *takeItem(int row, const QModelIndex &parent) = 0;
+    QModelIndex index(int row, int column, const QModelIndex &parent) const;
+    QModelIndex parent(const QModelIndex &child) const;
+    int rowCount(const QModelIndex &parent) const;
+    int columnCount(const QModelIndex &) const { return 1; }
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
+    virtual QModelIndex index(int row, const QModelIndex &parent) const
+    {
+        return index(row, 0, parent);
+    }
+
+    virtual IModelItem *itemFromIndex(const QModelIndex &index) const;
+    virtual QModelIndex indexFromItem(const IModelItem *item) const;
+
+    virtual bool insertItem(IModelItem *item, int row, const QModelIndex &parent);
+    virtual void removeItem(int row, const QModelIndex &parent);
+    virtual IModelItem *takeItem(int row, const QModelIndex &parent);
+
+signals:
+    void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
+private slots:
+    void deleteOrphans();
+
+private:
+    friend class ObjectPrivate;
 };
 
-#endif // AC_IMODEL_H
+#endif // MI_IMODEL_H

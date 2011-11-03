@@ -22,11 +22,10 @@
 #include <ac_ientity.h>
 #include <ac_viewmanager.h>
 
-#include <ac_model.h>
-
 #include <mi_ieditor.h>
 
 #include <mi_idatabase.h>
+#include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
 #include <QApplication>
@@ -432,7 +431,7 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     Q_UNUSED(bottomRight);
 
     // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
-    IModelItem *item = IDatabase::instance()->model()->itemFromIndex(topLeft);
+    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
     IEntity *entity = query<IEntity>(item);
     if (!entity) {
         ISubEntity *subEntity = query<ISubEntity>(item);

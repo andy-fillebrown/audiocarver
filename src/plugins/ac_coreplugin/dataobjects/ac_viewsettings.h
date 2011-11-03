@@ -19,7 +19,9 @@
 #define AC_VIEWSETTINGS_H
 
 #include <ac_coreconstants.h>
-#include <ac_object.h>
+#include <ac_namespace.h>
+
+#include <mi_object.h>
 
 class Score;
 

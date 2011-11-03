@@ -32,7 +32,7 @@ public:
     virtual IModelItem *parentModelItem() const = 0;
     virtual void setParentModelItem(IModelItem *parent) = 0;
     virtual int modelItemCount() const = 0;
-    virtual int modelItemIndex(IModelItem *item) const = 0;
+    virtual int modelItemIndex(const IModelItem *item) const = 0;
     virtual IModelItem *modelItemAt(int index) const = 0;
     virtual IModelItem *findModelItem(int type) const = 0;
     virtual IModelItem *findModelItemList(int type) const = 0;

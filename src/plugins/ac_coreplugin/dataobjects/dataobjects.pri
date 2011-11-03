@@ -1,7 +1,4 @@
 
-HEADERS *= \
-    ac_objectlist.h \
-
 SOURCE_PAIRS = \
     ac_controlcurve \
     ac_curve \
@@ -10,7 +7,6 @@ SOURCE_PAIRS = \
     ac_gridline \
     ac_gridsettings \
     ac_note \
-    ac_object \
     ac_pitchcurve \
     ac_score \
     ac_scoreobject \

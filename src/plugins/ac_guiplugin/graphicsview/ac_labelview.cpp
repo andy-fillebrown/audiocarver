@@ -52,7 +52,7 @@ public:
     {
         const qreal padding = qreal(50.0f) / q->paddingScale();
         const QModelIndex gridLines = q->gridLineListIndex();
-        IModel *model = IDatabase::instance()->model();
+        IModel *model = IModel::instance();
         const int n = model->rowCount(gridLines);
         int minPriority = INT_MAX;
         int prevPriority = 0;

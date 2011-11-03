@@ -108,6 +108,7 @@ Score::Score(QObject *parent)
 {
     Q_D(Score);
     d->init();
+    d->setModel(object_cast<IModel>(parent));
     setObjectName("Score");
     ::instance = this;
 }
@@ -158,11 +159,6 @@ QGraphicsItem *Score::sceneItem(int type) const
     return d->mainGraphicsItems[type];
 }
 
-void Score::setModel(Model *model)
-{
-    d_ptr->setModel(model);
-}
-
 void Score::clear()
 {
     Q_D(Score);
@@ -176,7 +172,7 @@ void Score::clear()
     emit reset();
 }
 
-int Score::modelItemIndex(IModelItem *item) const
+int Score::modelItemIndex(const IModelItem *item) const
 {
     Q_D(const Score);
     if (d->tracks == item)

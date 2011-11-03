@@ -18,10 +18,9 @@
 #ifndef MI_IDATABASE_H
 #define MI_IDATABASE_H
 
-#include <QObject>
 #include <mi_global.h>
 
-class IModel;
+#include <QObject>
 
 class MI_CORE_EXPORT IDatabase : public QObject
 {
@@ -38,7 +37,6 @@ public:
     virtual void reset() = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
-    virtual IModel *model() const = 0;
 
     virtual bool isReading() const = 0;
 

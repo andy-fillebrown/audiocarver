@@ -2,6 +2,7 @@
 include(../qt_coreplugin/coreplugin.pri)
 
 DIRS = \
+    dataobjects \
     interfaces \
 
 for(dir, DIRS) {

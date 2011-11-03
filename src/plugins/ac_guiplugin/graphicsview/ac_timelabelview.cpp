@@ -62,7 +62,7 @@ TimeLabelView::~TimeLabelView()
 
 QModelIndex TimeLabelView::gridLineListIndex() const
 {
-    return IDatabase::instance()->model()->listIndex(Ac::TimeGridLineItem);
+    return IModel::instance()->listIndex(Ac::TimeGridLineItem);
 }
 
 qreal TimeLabelView::sceneWidth() const
