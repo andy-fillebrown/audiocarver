@@ -122,16 +122,16 @@ QVariant Object::data(int role) const
 
 bool Object::setData(const QVariant &value, int role)
 {
-    if (Mi::NameRole != role) {
-        Q_ASSERT(false);
-        return false;
-    } else {
+    if (Mi::NameRole == role) {
         QString name = value.toString();
         if (objectName() != name) {
             d_ptr->beginChangeData();
             setObjectName(name);
             d_ptr->endChangeData();
         }
+        return true;
+    } else {
+        Q_ASSERT(false);
+        return false;
     }
-    return true;
 }

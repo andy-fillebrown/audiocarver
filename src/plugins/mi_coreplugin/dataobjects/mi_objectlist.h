@@ -165,6 +165,8 @@ public:
         T *t = object_cast<T>(object);
         if (t)
             append(t);
+        else
+            Q_ASSERT(false);
     }
 
     void insert(int i, Object *object)
@@ -172,6 +174,8 @@ public:
         T *t = object_cast<T>(object);
         if (t)
             insert(i, t);
+        else
+            Q_ASSERT(false);
     }
 
     void remove(Object *object)
@@ -179,6 +183,8 @@ public:
         int i = indexOf(object_cast<T>(object));
         if (0 <= i && i < count())
             removeAt(i);
+        else
+            Q_ASSERT(false);
     }
 
     // IModelItem
