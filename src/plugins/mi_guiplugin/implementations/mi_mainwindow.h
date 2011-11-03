@@ -15,19 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef MI_MAINWINDOWIMPL_H
-#define MI_MAINWINDOWIMPL_H
+#ifndef MI_MAINWINDOW_H
+#define MI_MAINWINDOW_H
 
 #include <imainwindow.h>
 
-class MiMainWindowImpl : public Core::IMainWindow
+class MainWindow : public Core::IMainWindow
 {
     Q_OBJECT
 
 public:
-    MiMainWindowImpl() {}
-    ~MiMainWindowImpl() {}
-
     void initMenuBarGroups(QStringList &groups) const;
     void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
     void initActions();
@@ -44,9 +41,6 @@ private slots:
     void copy();
     void paste();
     void selectAll();
-
-private:
-    Q_DISABLE_COPY(MiMainWindowImpl)
 };
 
-#endif // MI_MAINWINDOWIMPL_H
+#endif // MI_MAINWINDOW_H

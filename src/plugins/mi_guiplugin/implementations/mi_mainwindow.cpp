@@ -15,27 +15,31 @@
 **
 **************************************************************************/
 
-#include "mi_mainwindowimpl.h"
+#include "mi_mainwindow.h"
+
+#include <mi_guiconstants.h>
+#include <mi_ieditor.h>
+
+#include <mi_idatabase.h>
+
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
 #include <icontext.h>
 #include <icore.h>
 #include <mainwindow.h>
-#include <mi_guiconstants.h>
-#include <mi_idatabase.h>
-#include <mi_ieditor.h>
+
 #include <QAction>
 #include <QFileDialog>
 #include <QIcon>
 
-void MiMainWindowImpl::initMenuBarGroups(QStringList &groups) const
+void MainWindow::initMenuBarGroups(QStringList &groups) const
 {
     const int fileGroupIndex = groups.indexOf(Core::Constants::G_FILE);
     groups.insert(fileGroupIndex + 1, G_EDIT);
 }
 
-void MiMainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
+void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
     if (menuBarGroup == Core::Constants::G_FILE) {
         groups  << G_FILE_NEW
@@ -52,37 +56,50 @@ void MiMainWindowImpl::initMenuGroups(const QString &menuBarGroup, QString &id, 
     }
 }
 
-void MiMainWindowImpl::initActions()
+void MainWindow::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
+
     Core::ActionContainer *fileMenu = am->actionContainer(Core::Constants::M_FILE);
     Core::ActionContainer *editMenu = am->actionContainer(M_EDIT);
+
     Core::Context globalContext(Core::Constants::C_GLOBAL);
+
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
+
+    // New Action
     icon = QIcon::fromTheme(QLatin1String("document-new"), QIcon(ICON_NEW));
+    qDebug() << icon.isNull();
     action = new QAction(icon, tr("&New"), this);
     cmd = am->registerAction(action, NEW, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::New);
     fileMenu->addAction(cmd, G_FILE_NEW);
     connect(action, SIGNAL(triggered()), SLOT(newFile()));
+
+    // Open Action
     icon = QIcon::fromTheme(QLatin1String("document-open"), QIcon(ICON_OPEN));
     action = new QAction(icon, tr("&Open"), this);
     cmd = am->registerAction(action, OPEN, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Open);
     fileMenu->addAction(cmd, G_FILE_OPEN);
     connect(action, SIGNAL(triggered()), SLOT(openFile()));
+
+    // Save/Save As Separator
     action = new QAction(this);
     action->setSeparator(true);
     cmd = am->registerAction(action, PRO_NAME_STR".File.Sep.Save", globalContext);
-    fileMenu->addAction(cmd, G_FILE_SAVE);
+
+    // Save
     icon = QIcon::fromTheme(QLatin1String("document-save"), QIcon(ICON_SAVE));
     action = new QAction(icon, tr("&Save"), this);
     cmd = am->registerAction(action, SAVE, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Save);
     fileMenu->addAction(cmd, G_FILE_SAVE);
     connect(action, SIGNAL(triggered()), SLOT(saveFile()));
+
+    // Save As
     action = new QAction(tr("Save &As"), this);
     cmd = am->registerAction(action, SAVEAS, globalContext);
     fileMenu->addAction(cmd, G_FILE_SAVE);
@@ -153,12 +170,12 @@ void MiMainWindowImpl::initActions()
     connect(action, SIGNAL(triggered()), SLOT(selectAll()));
 }
 
-void MiMainWindowImpl::newFile()
+void MainWindow::newFile()
 {
     IDatabase::instance()->reset();
 }
 
-void MiMainWindowImpl::openFile()
+void MainWindow::openFile()
 {
     IDatabase *db = IDatabase::instance();
     QString filename = QFileDialog::getOpenFileName(
@@ -169,7 +186,7 @@ void MiMainWindowImpl::openFile()
     db->read(filename);
 }
 
-void MiMainWindowImpl::saveFile()
+void MainWindow::saveFile()
 {
     IDatabase *db = IDatabase::instance();
     if (db->fileName().isEmpty())
@@ -178,7 +195,7 @@ void MiMainWindowImpl::saveFile()
         db->write(db->fileName());
 }
 
-void MiMainWindowImpl::saveFileAs()
+void MainWindow::saveFileAs()
 {
     IDatabase *db = IDatabase::instance();
     QString filename = QFileDialog::getSaveFileName(
@@ -191,32 +208,32 @@ void MiMainWindowImpl::saveFileAs()
     db->write(filename);
 }
 
-void MiMainWindowImpl::undo()
+void MainWindow::undo()
 {
     IEditor::instance()->undo();
 }
 
-void MiMainWindowImpl::redo()
+void MainWindow::redo()
 {
     IEditor::instance()->redo();
 }
 
-void MiMainWindowImpl::cut()
+void MainWindow::cut()
 {
     IEditor::instance()->cut();
 }
 
-void MiMainWindowImpl::copy()
+void MainWindow::copy()
 {
     IEditor::instance()->copy();
 }
 
-void MiMainWindowImpl::paste()
+void MainWindow::paste()
 {
     IEditor::instance()->paste();
 }
 
-void MiMainWindowImpl::selectAll()
+void MainWindow::selectAll()
 {
     IEditor::instance()->selectAll();
 }

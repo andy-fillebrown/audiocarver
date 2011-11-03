@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/editor">
+    <qresource prefix="/mi_guiplugin">
         <file>images/filesave.png</file>
         <file>images/filenew.png</file>
         <file>images/fileopen.png</file>

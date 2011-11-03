@@ -1,6 +1,6 @@
 
 SOURCE_PAIRS = \
-    mi_mainwindowimpl \
+    mi_mainwindow \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= implementations/$${pair}.h

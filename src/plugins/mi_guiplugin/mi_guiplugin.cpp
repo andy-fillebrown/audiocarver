@@ -17,7 +17,7 @@
 
 #include "mi_guiplugin.h"
 
-#include <mi_mainwindowimpl.h>
+#include <mi_mainwindow.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -28,7 +28,7 @@ bool MiGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new MiMainWindowImpl);
+    addAutoReleasedObject(new MainWindow);
     return true;
 }
 

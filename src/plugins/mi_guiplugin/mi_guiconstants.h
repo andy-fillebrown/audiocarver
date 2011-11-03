@@ -39,13 +39,13 @@ const char * const COPY             = PRO_NAME_STR".Copy";
 const char * const PASTE            = PRO_NAME_STR".Paste";
 const char * const CUT              = PRO_NAME_STR".Cut";
 const char * const SELECTALL        = PRO_NAME_STR".SelectAll";
-const char * const ICON_NEW         = ":/editor/images/filenew.png";
-const char * const ICON_OPEN        = ":/editor/images/fileopen.png";
-const char * const ICON_SAVE        = ":/editor/images/filesave.png";
-const char * const ICON_UNDO        = ":/editor/images/undo.png";
-const char * const ICON_REDO        = ":/editor/images/redo.png";
-const char * const ICON_COPY        = ":/editor/images/editcopy.png";
-const char * const ICON_PASTE       = ":/editor/images/editpaste.png";
-const char * const ICON_CUT         = ":/editor/images/editcut.png";
+const char * const ICON_NEW         = ":/mi_guiplugin/images/filenew.png";
+const char * const ICON_OPEN        = ":/mi_guiplugin/images/fileopen.png";
+const char * const ICON_SAVE        = ":/mi_guiplugin/images/filesave.png";
+const char * const ICON_UNDO        = ":/mi_guiplugin/images/undo.png";
+const char * const ICON_REDO        = ":/mi_guiplugin/images/redo.png";
+const char * const ICON_COPY        = ":/mi_guiplugin/images/editcopy.png";
+const char * const ICON_PASTE       = ":/mi_guiplugin/images/editpaste.png";
+const char * const ICON_CUT         = ":/mi_guiplugin/images/editcut.png";
 
 #endif // MI_GUICONSTANTS_H

@@ -27,25 +27,26 @@
 **
 **************************************************************************/
 
+#include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
-#include <extensionsystem/iplugin.h>
 
-#include <QtCore/QDir>
-#include <QtCore/QUrl>
-#include <QtCore/QTextStream>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QTranslator>
-#include <QtCore/QSettings>
-#include <QtCore/QVariant>
-#include <QtCore/QThreadPool>
-
-#include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
+#include <QtGui/QIcon>
 #include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
+
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QLibraryInfo>
+#include <QtCore/QSettings>
+#include <QtCore/QTextStream>
+#include <QtCore/QThreadPool>
+#include <QtCore/QTimer>
+#include <QtCore/QTranslator>
+#include <QtCore/QUrl>
+#include <QtCore/QVariant>
 
 enum { OptionIndent = 4, DescriptionIndent = 34 };
 
