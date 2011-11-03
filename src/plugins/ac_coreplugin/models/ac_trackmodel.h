@@ -28,6 +28,8 @@ class AC_CORE_EXPORT TrackModel : public RolesToColumnsProxyModel
 public:
     TrackModel(QObject *parent = 0);
 
+    static TrackModel *instance();
+
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
     {
         QAbstractItemModel *m = sourceModel();

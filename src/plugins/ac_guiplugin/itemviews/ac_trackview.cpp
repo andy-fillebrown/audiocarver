@@ -194,7 +194,7 @@ TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
     ,   d(new TrackViewPrivate(this))
 {
-    setModel(new TrackModel(IModel::instance()));
+    setModel(TrackModel::instance());
     setSelectionModel(TrackSelectionModel::instance());
     setHeaderHidden(true);
     setRootIsDecorated(false);

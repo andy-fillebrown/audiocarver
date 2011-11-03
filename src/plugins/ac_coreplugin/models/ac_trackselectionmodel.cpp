@@ -17,6 +17,8 @@
 
 #include "ac_trackselectionmodel.h"
 
+#include <ac_trackmodel.h>
+
 static TrackSelectionModel *instance = 0;
 
 TrackSelectionModel::TrackSelectionModel(QAbstractItemModel *model)
@@ -27,5 +29,7 @@ TrackSelectionModel::TrackSelectionModel(QAbstractItemModel *model)
 
 TrackSelectionModel *TrackSelectionModel::instance()
 {
+    if (!::instance)
+        new TrackSelectionModel(TrackModel::instance());
     return ::instance;
 }
