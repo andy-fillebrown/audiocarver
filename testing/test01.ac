@@ -1,60 +1,11 @@
 
 <Score volume="1" length="128">
     <TrackList>
-        <Track name="1" volume="0.1" color="#aa00ff" visible="true" recording="false">
-            <NoteList>
-                <Note volume="0.74404763875815">
-                    <PitchCurve>
-                        <Point position="10.2796 98.7366"/>
-                        <Point position="63.4672 0" curve="bezier"/>
-                        <Point position="64.525 67.0856"/>
-                        <Point position="64.6254 127" curve="bezier"/>
-                        <Point position="128.083 126.72"/>
-                    </PitchCurve>
-                </Note>
-                <Note volume="0.74404763875815">
-                    <PitchCurve>
-                        <Point position="10.2796 98.7366"/>
-                        <Point position="63.4672 0" curve="bezier"/>
-                        <Point position="64.525 67.0856"/>
-                        <Point position="64.6254 127" curve="bezier"/>
-                        <Point position="128.093 111.944"/>
-                    </PitchCurve>
-                </Note>
-                <Note volume="0.74404763875815">
-                    <PitchCurve>
-                        <Point position="10.2796 98.7366"/>
-                        <Point position="63.4672 0" curve="bezier"/>
-                        <Point position="64.525 67.0856"/>
-                        <Point position="64.6254 127" curve="bezier"/>
-                        <Point position="128.093 99.1667"/>
-                    </PitchCurve>
-                </Note>
-                <Note volume="0.74404763875815">
-                    <PitchCurve>
-                        <Point position="10.2796 98.7366"/>
-                        <Point position="63.4672 0" curve="bezier"/>
-                        <Point position="64.525 67.0856"/>
-                        <Point position="64.6254 127" curve="bezier"/>
-                        <Point position="128.093 86.9444"/>
-                    </PitchCurve>
-                </Note>
-                <Note volume="0.74404763875815">
-                    <PitchCurve>
-                        <Point position="10.2796 98.7366"/>
-                        <Point position="63.4672 0" curve="bezier"/>
-                        <Point position="64.525 67.0856"/>
-                        <Point position="64.6254 127" curve="bezier"/>
-                        <Point position="128.093 72.7778"/>
-                    </PitchCurve>
-                </Note>
-            </NoteList>
-        </Track>
-        <Track name="2" volume="0.2" color="#00ff00" visible="true" recording="false">
+        <Track name="1" volume="0.2" color="#00ff00" visible="true" recording="false">
             <NoteList>
                 <Note volume="0.4960317591721">
                     <PitchCurve>
-                        <Point position="16.2651 52.2481"/>
+                        <Point position="0 49.0821"/>
                         <Point position="63.6292 0" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
@@ -63,7 +14,7 @@
                 </Note>
                 <Note volume="0.4960317591721">
                     <PitchCurve>
-                        <Point position="16.2651 52.2481"/>
+                        <Point position="0 49.0821"/>
                         <Point position="63.6292 0" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
@@ -72,7 +23,7 @@
                 </Note>
                 <Note volume="0.4960317591721">
                     <PitchCurve>
-                        <Point position="16.2651 52.2481"/>
+                        <Point position="0 49.0821"/>
                         <Point position="63.6292 0" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
@@ -81,7 +32,7 @@
                 </Note>
                 <Note volume="0.4960317591721">
                     <PitchCurve>
-                        <Point position="16.2651 52.2481"/>
+                        <Point position="0 49.0821"/>
                         <Point position="63.6292 0" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
@@ -90,11 +41,60 @@
                 </Note>
                 <Note volume="0.4960317591721">
                     <PitchCurve>
-                        <Point position="16.2651 52.2481"/>
+                        <Point position="0 49.0821"/>
                         <Point position="63.6292 0" curve="bezier"/>
                         <Point position="64.525 67.0856"/>
                         <Point position="64.6254 127" curve="bezier"/>
                         <Point position="127.991 0.015271"/>
+                    </PitchCurve>
+                </Note>
+            </NoteList>
+        </Track>
+        <Track name="2" volume="0.1" color="#aa00ff" visible="true" recording="false">
+            <NoteList>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.083 126.72"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 111.944"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 99.1667"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 86.9444"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 72.7778"/>
                     </PitchCurve>
                 </Note>
             </NoteList>
@@ -501,5 +501,5 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="63.9968287684069" pitchPosition="63.8082799370862" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+    <ViewSettings timePosition="64.6935092891647" pitchPosition="62.3105532705273" controlPosition="0.452189709959316" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
 </Score>
