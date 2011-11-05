@@ -55,7 +55,7 @@ public:
         Q_Q_T(TrackList);
         const int n = q->count();
         for (int i = 0;  i < n;  ++i)
-            q->at(i)->setZValue(qreal(-i));
+            q->at(i)->setZValue(qreal(n - i));
     }
 };
 
