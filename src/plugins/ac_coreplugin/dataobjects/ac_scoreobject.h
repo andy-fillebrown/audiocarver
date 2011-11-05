@@ -44,7 +44,9 @@ public:
 
     // Properties
     qreal volume() const;
-    void setVolume(qreal volume);
+    void setVolume(qreal volume, Ac::DragState dragState = Ac::NotDragging);
+
+    virtual void updatePoints() {}
 
     // IModelItem
     int modelItemCount() const { return ModelItemCount; }
@@ -80,6 +82,7 @@ public:
     qreal volume;
     PitchCurve *pitchCurve;
     ObjectTList<ControlCurve> *controlCurves;
+    quint32 dragging : 32;
 
     ScoreObjectPrivate(ScoreObject *q);
     void init();

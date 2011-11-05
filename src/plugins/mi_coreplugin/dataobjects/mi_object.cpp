@@ -91,6 +91,12 @@ void ObjectPrivate::endRemoveObjects()
     }
 }
 
+void ObjectPrivate::emitPointsChanged()
+{
+    if (model)
+        emit model->pointsChanged(modelIndex());
+}
+
 void Object::setParent(Object *parent)
 {
     if (parent == QObject::parent())

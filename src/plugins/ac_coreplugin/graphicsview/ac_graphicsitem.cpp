@@ -64,7 +64,7 @@ GraphicsCurveItem::~GraphicsCurveItem()
 
 void GraphicsCurveItem::setEntity(IEntity *entity)
 {
-    QVariant data = quintptr(entity);
+    const QVariant data = quintptr(entity);
     setData(0, data);
     d->guideItem->setData(0, data);
 }

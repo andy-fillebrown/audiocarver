@@ -327,6 +327,11 @@ public:
         return 0;
     }
 
+    bool entityItemIsBeingDragged(GraphicsEntityItem *entityItem)
+    {
+        return entitiesToUpdate.contains(objectToInterface_cast<IEntityItem>(entityItem));
+    }
+
     void setPickedEntities(const QList<IEntity*> &entities)
     {
         clearPickedEntities();
@@ -458,8 +463,16 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     }
     if (entity) {
         GraphicsEntityItem *entityItem = d->findEntityItem(entity);
-        if (entityItem)
+        if (entityItem && !d->entityItemIsBeingDragged(entityItem))
             entityItem->resetGrips();
+        else {
+            QList<IEntity*> subEntities = entity->subEntities(sceneType());
+            foreach (IEntity* subEntity, subEntities) {
+                entityItem = d->findEntityItem(subEntity);
+                if (entityItem && !d->entityItemIsBeingDragged(entityItem))
+                    entityItem->resetGrips();
+            }
+        }
     }
 
     // If topLeft is a track, gripped entities might have been hidden.

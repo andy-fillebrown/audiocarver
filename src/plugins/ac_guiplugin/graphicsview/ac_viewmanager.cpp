@@ -115,6 +115,8 @@ public:
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex)));
+        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), controlView, SLOT(dataChanged(QModelIndex)));
 
         QItemSelectionModel *noteSSModel = NoteSelectionModel::instance();
         q->connect(noteSSModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), pitchView, SLOT(noteSelectionChanged(QItemSelection,QItemSelection)));

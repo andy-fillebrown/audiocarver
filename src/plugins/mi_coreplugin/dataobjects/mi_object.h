@@ -52,6 +52,8 @@ public:
     virtual void endInsertObjects();
     void beginRemoveObjects(int first, int last);
     virtual void endRemoveObjects();
+
+    void emitPointsChanged();
 };
 
 class MI_CORE_EXPORT Object : public QObject

@@ -22,9 +22,9 @@
 
 #include <mi_graphicsview.h>
 
-class QItemSelection;
+#include <QModelIndex>
 
-class QModelIndex;
+class QItemSelection;
 
 class GraphicsViewPrivate;
 class GraphicsView : public MiGraphicsView
@@ -43,7 +43,7 @@ public:
 
 public slots:
     void modelAboutToBeReset();
-    virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight = QModelIndex());
     virtual void noteSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);

@@ -89,6 +89,7 @@ void Curve::setPoints(const PointList &points, Ac::DragState dragState)
         d->dragging = true;
     d->points = newPts;
     d->graphicsCurveItem->setPoints(d->points);
+    scoreObject()->updatePoints();
     if (!d->dragging)
         d->endChangeData();
     if (Ac::NotDragging == dragState)

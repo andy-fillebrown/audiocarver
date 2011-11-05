@@ -41,6 +41,7 @@ public:
 
     // ScoreObject
     qreal length() const;
+    void updatePoints();
 
     // IEntity
     bool isSubEntity() const { return false; }

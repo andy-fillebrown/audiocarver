@@ -59,6 +59,7 @@ public:
     virtual IModelItem *takeItem(int row, const QModelIndex &parent);
 
 signals:
+    void pointsChanged(const QModelIndex &index);
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
 private slots:
