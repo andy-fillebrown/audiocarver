@@ -31,6 +31,7 @@ public:
     ~ControlView();
 
 protected:
+    int sceneType() const { return Ac::ControlScene; }
     qreal sceneHeight() const;
     QPointF sceneCenter() const;
 

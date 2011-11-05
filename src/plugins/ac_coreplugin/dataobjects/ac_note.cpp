@@ -114,3 +114,24 @@ bool Note::isVisible() const
 {
     return track()->isVisible();
 }
+
+QList<IEntity*> Note::subEntities(int sceneType) const
+{
+    QList<IEntity*> sub_ents;
+    Q_D(const Note);
+    switch(sceneType) {
+    case Ac::PitchScene:
+        sub_ents.append(objectToInterface_cast<IEntity>(d->pitchCurve));
+        break;
+    case Ac::ControlScene: {
+        const int n = d->controlCurves->count();
+        sub_ents.reserve(n);
+        for (int i = 0;  i < n;  ++i)
+            sub_ents.append(objectToInterface_cast<IEntity>(d->controlCurves->at(i)));
+        break;
+    }
+    default:
+        break;
+    }
+    return sub_ents;
+}

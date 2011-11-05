@@ -22,6 +22,8 @@
 #include <ac_ientity.h>
 #include <ac_viewmanager.h>
 
+#include <ac_noteselectionmodel.h>
+
 #include <mi_ieditor.h>
 
 #include <mi_idatabase.h>
@@ -283,18 +285,28 @@ public:
             if (unknown) {
                 IEntity *entity = query<IEntity>(unknown);
                 if (entity && entity->intersects(pickRect)) {
-                    entities.append(entity);
+                    ISubEntity *sub_entity = query<ISubEntity>(unknown);
+                    IEntity *parent_entity = sub_entity->parentEntity();
+                    entities.append(parent_entity);
                     if (pickOne)
                         break;
                 }
             }
         }
-        if (QApplication::keyboardModifiers() & Qt::ShiftModifier)
-            appendPickedEntities(entities);
-        else if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-            removePickedEntities(entities);
-        else
-            setPickedEntities(entities);
+        QItemSelection ss;
+        ss.reserve(entities.count());
+        foreach (IEntity *entity, entities) {
+            const QModelIndex index = IModel::instance()->indexFromItem(query<IModelItem>(entity));
+            ss.select(index, index);
+        }
+        QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
+        if (entities.count())
+            ss_flags = QItemSelectionModel::Select;
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+            ss_flags = QItemSelectionModel::Deselect;
+        else if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
+            ss_flags |= QItemSelectionModel::Clear;
+        NoteSelectionModel::instance()->select(ss, ss_flags);
         pickBox->hide();
         dragState = 0;
     }
@@ -427,6 +439,11 @@ void GraphicsView::updateView()
     update();
 }
 
+void GraphicsView::modelAboutToBeReset()
+{
+    d->clearPickedEntities();
+}
+
 void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     Q_UNUSED(bottomRight);
@@ -451,9 +468,27 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
         d->resetPickedEntities();
 }
 
-void GraphicsView::modelAboutToBeReset()
+void GraphicsView::noteSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
-    d->clearPickedEntities();
+    const IModel *model = IModel::instance();
+
+    const QModelIndexList selectedIndexes = selected.indexes();
+    QList<IEntity*> selectedEntities;
+    foreach (const QModelIndex &index, selectedIndexes) {
+        IEntity *note = query<IEntity>(model->itemFromIndex(index));
+        QList<IEntity*> curves = note->subEntities(sceneType());
+        selectedEntities.append(curves);
+    }
+    d->appendPickedEntities(selectedEntities);
+
+    const QModelIndexList deselectedIndexes = deselected.indexes();
+    QList<IEntity*> deselectedEntities;
+    foreach (const QModelIndex &index, deselectedIndexes) {
+        IEntity *note = query<IEntity>(model->itemFromIndex(index));
+        QList<IEntity*> curves = note->subEntities(sceneType());
+        deselectedEntities.append(curves);
+    }
+    d->removePickedEntities(deselectedEntities);
 }
 
 void GraphicsView::viewPositionChanged(int role)

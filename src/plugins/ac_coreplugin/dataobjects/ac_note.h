@@ -51,6 +51,8 @@ public:
     bool intersects(const QRectF &) const { return false; }
     bool isVisible() const;
 
+    QList<IEntity*> subEntities(int sceneType) const;
+
     // IModelItem
     int type() const { return Type; }
 

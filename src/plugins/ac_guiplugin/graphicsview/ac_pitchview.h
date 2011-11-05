@@ -31,6 +31,7 @@ public:
     ~PitchView();
 
 protected:
+    int sceneType() const { return Ac::PitchScene; }
     qreal sceneHeight() const;
     QPointF sceneCenter() const;
 

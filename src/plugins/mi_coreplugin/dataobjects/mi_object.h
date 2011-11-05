@@ -131,7 +131,7 @@ public:
 
     Qt::ItemFlags flags() const
     {
-        return Qt::ItemIsEnabled;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
     // IUnknown

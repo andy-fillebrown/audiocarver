@@ -45,6 +45,12 @@ public:
     bool intersects(const QRectF &rect) const;
     bool isVisible() const;
 
+    QList<IEntity*> subEntities(int sceneType) const
+    {
+        Q_UNUSED(sceneType);
+        return QList<IEntity*>();
+    }
+
     // IModelItem
     int persistentRoleAt(int i) const
     {

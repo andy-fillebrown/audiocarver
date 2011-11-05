@@ -22,6 +22,8 @@
 
 #include <mi_iunknown.h>
 
+class ISubEntity;
+
 class IEntity : public IUnknown
 {
 public:
@@ -33,6 +35,8 @@ public:
     virtual void unhighlight() = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
     virtual bool isVisible() const = 0;
+
+    virtual QList<IEntity*> subEntities(int sceneType) const = 0;
 };
 
 class ISubEntity : public IUnknown

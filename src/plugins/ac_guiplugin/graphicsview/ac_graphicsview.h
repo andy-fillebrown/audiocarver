@@ -22,6 +22,8 @@
 
 #include <mi_graphicsview.h>
 
+class QItemSelection;
+
 class QModelIndex;
 
 class GraphicsViewPrivate;
@@ -40,12 +42,15 @@ public:
     virtual void updateView();
 
 public slots:
-    virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void modelAboutToBeReset();
+    virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    virtual void noteSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);
 
 protected:
+    virtual int sceneType() const { Q_ASSERT(false);  return -1; }
+
     virtual qreal sceneWidth() const { return 1.0f; }
     virtual qreal sceneHeight() const { return 1.0f; }
     virtual QPointF sceneCenter() const { return QPointF(); }
