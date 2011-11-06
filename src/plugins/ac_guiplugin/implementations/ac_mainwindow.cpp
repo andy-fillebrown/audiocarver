@@ -23,6 +23,7 @@
 
 #include <ac_ifactory.h>
 #include <ac_namespace.h>
+#include <ac_noteselectionmodel.h>
 #include <ac_trackselectionmodel.h>
 
 #include <mi_guiconstants.h>
@@ -185,11 +186,11 @@ void MainWindow::createTrack()
 
 void MainWindow::erase()
 {
-    // Erase selected tracks in reverse row order so higher row numbers don't
-    // change if lower row numbers are being erased, too.
-    bool commandBegun = false;
     IEditor *editor = IEditor::instance();
     IModel *model = IModel::instance();
+
+    // Erase selected tracks in reverse row order so higher row numbers don't
+    // change if lower row numbers are being erased, too.
     TrackSelectionModel *trackSSModel = TrackSelectionModel::instance();
     const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
     const QModelIndexList trackSS = trackSSModel->selectedRows();
@@ -199,18 +200,26 @@ void MainWindow::erase()
         rows.append(track.row());
     qSort(rows);
     const int n = rows.count();
-    for (int i = n - 1;  0 <= i;  --i) {
-        if (!commandBegun) {
-            editor->beginCommand();
-            commandBegun = true;
-        }
-        const int row = rows.at(i);
-//        model->setData(model->index(row, trackListIndex), false, Ac::VisibilityRole);
-        model->removeItem(row, trackListIndex);
-    }
-    if (commandBegun) {
+    if (n) {
+        editor->beginCommand();
+        for (int i = n - 1;  0 <= i;  --i)
+            model->removeItem(rows.at(i), trackListIndex);
         editor->endCommand();
-        trackSSModel->clear();
+        return;
+    }
+
+    // Erase selected notes if no tracks are selected.
+    NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
+    QModelIndexList noteSS = noteSSModel->selectedIndexes();
+    if (!noteSS.isEmpty()) {
+        editor->beginCommand();
+        while (!noteSS.isEmpty()) {
+            const QModelIndex noteIndex = noteSS.last();
+            const QModelIndex noteListIndex = model->parent(noteIndex);
+            model->removeItem(noteIndex.row(), noteListIndex);
+            noteSS = noteSSModel->selectedIndexes();
+        }
+        editor->endCommand();
     }
 }
 
