@@ -17,19 +17,173 @@
 
 #include "ac_pitchview.h"
 
+#include <ac_guiconstants.h>
+#include <ac_ientity.h>
 #include <ac_viewmanager.h>
+
+#include <ac_factory.h>
+
+#include <mi_ieditor.h>
+
+#include <mi_imodel.h>
+#include <mi_imodelitem.h>
+
+#include <QApplication>
+#include <QKeyEvent>
 
 class PitchViewPrivate
 {
 public:
     PitchView *q;
+    quint32 creatingNotes : 1;
+    quint32 notesStarted : 1;
+    quint32 curve : 30;
+    QModelIndexList trackSSIndexes;
+    QList<IEntity*> currentNotes;
+    QList<IEntity*> currentPitchCurves;
+    PointList currentPoints;
 
     PitchViewPrivate(PitchView *q)
         :   q(q)
+        ,   creatingNotes(quint32(false))
+        ,   notesStarted(quint32(false))
+        ,   curve(quint32(false))
     {}
 
-    virtual ~PitchViewPrivate()
-    {}
+    void startNote(const QPoint &pos)
+    {
+        IEditor::instance()->startCreating();
+
+        IModel *model = IModel::instance();
+        const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+
+        const int tracks_n = model->rowCount(trackListIndex);
+        for (int i = 0;  i < tracks_n;  ++i) {
+            const QModelIndex trackIndex = model->index(i, trackListIndex);
+            if (trackIndex.data(Ac::RecordingRole).toBool())
+                trackSSIndexes.append(trackIndex);
+        }
+
+        const int trackSS_n = trackSSIndexes.count();
+
+        currentNotes.reserve(trackSS_n);
+        currentPitchCurves.reserve(trackSS_n);
+
+        for (int i = 0;  i < trackSS_n;  ++i) {
+            const QModelIndex &trackIndex = trackSSIndexes.at(i);
+            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(Ac::NoteItem);
+            const QModelIndex notesIndex = model->indexFromItem(notesItem);
+
+            IModelItem *noteItem = ObjectFactory::instance()->create(Ac::NoteItem);
+            model->insertItem(noteItem, model->rowCount(notesIndex), notesIndex);
+
+            IEntity *noteEntity = query<IEntity>(noteItem);
+            const QList<IEntity*> pitchSubEntities = noteEntity->subEntities(Ac::PitchScene);
+            IEntity *pitchCurveEntity = pitchSubEntities.first();
+
+            trackSSIndexes.append(trackIndex);
+            currentNotes.append(noteEntity);
+            currentPitchCurves.append(pitchCurveEntity);
+        }
+
+        const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
+        currentPoints.append(scenePos);
+
+        addNotePoint(pos);
+        notesStarted = quint32(true);
+    }
+
+    void addNotePoint(const QPoint &pos)
+    {
+        if (Qt::ControlModifier & QApplication::keyboardModifiers())
+            currentPoints.last().curveType = Ac::BezierCurve;
+
+        const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
+        currentPoints.append(scenePos);
+
+        const int notes_n = currentNotes.count();
+        for (int i = 0;  i < notes_n;  ++i)
+            currentPitchCurves.at(i)->setPoints(currentPoints);
+    }
+
+    void moveNotePoint(const QPoint &pos)
+    {
+        const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
+        currentPoints[currentPoints.count() - 1].pos = scenePos;
+
+        const int notes_n = currentNotes.count();
+        for (int i = 0;  i < notes_n;  ++i)
+            currentPitchCurves[i]->setPoints(currentPoints);
+    }
+
+    void finishNote()
+    {
+        if (currentPoints.count() <= 2) {
+            cancelNote();
+            return;
+        }
+
+        currentPoints.removeLast();
+
+        IModel *model = IModel::instance();
+        const int notes_n = currentNotes.count();
+
+        QModelIndexList notesIndexes;
+        notesIndexes.reserve(notes_n);
+
+        QList<IModelItem*> noteItems;
+        noteItems.reserve(notes_n);
+
+        for (int i = 0;  i < notes_n;  ++i) {
+            currentPitchCurves[i]->setPoints(currentPoints);
+
+            const QModelIndex &trackIndex = trackSSIndexes.at(i);
+            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(Ac::NoteItem);
+            const QModelIndex notesIndex = model->indexFromItem(notesItem);
+            model->removeItem(model->rowCount(notesIndex) - 1, notesIndex);
+
+            notesIndexes.append(notesIndex);
+            noteItems.append(query<IModelItem>(currentNotes.at(i)));
+        }
+
+        IEditor *editor = IEditor::instance();
+        editor->finishCreating();
+        editor->beginCommand();
+
+        for (int i = 0;  i < notes_n;  ++i)
+            model->insertItem(noteItems.at(i), model->rowCount(notesIndexes.at(i)), notesIndexes.at(i));
+
+        editor->endCommand();
+        endNote();
+    }
+
+    void cancelNote()
+    {
+        IModel *model = IModel::instance();
+        const int notes_n = currentNotes.count();
+
+        for (int i = 0;  i < notes_n;  ++i) {
+            const QModelIndex &trackIndex = trackSSIndexes.at(i);
+            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(Ac::NoteItem);
+            const QModelIndex notesIndex = model->indexFromItem(notesItem);
+            model->removeItem(model->rowCount(notesIndex) - 1, notesIndex);
+        }
+
+        qDeleteAll(currentNotes);
+
+        IEditor::instance()->finishCreating();
+        endNote();
+    }
+
+    void endNote()
+    {
+        notesStarted = quint32(false);
+        creatingNotes = quint32(false);
+        trackSSIndexes.clear();
+        currentNotes.clear();
+        currentPitchCurves.clear();
+        currentPoints.clear();
+    }
 };
 
 PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
@@ -59,4 +213,59 @@ QPointF PitchView::sceneCenter() const
 {
     ViewManager *vm = ViewManager::instance();
     return QPointF(vm->position(Ac::TimePositionRole), -vm->position(Ac::PitchPositionRole));
+}
+
+void PitchView::createNote()
+{
+    d->creatingNotes = quint32(true);
+}
+
+void PitchView::mousePressEvent(QMouseEvent *event)
+{
+    if (d->creatingNotes) {
+        if (Qt::LeftButton == event->button()) {
+            if (!d->currentPoints.count())
+                d->startNote(event->pos());
+            else
+                d->addNotePoint(event->pos());
+            setFocus(Qt::MouseFocusReason);
+        }
+    } else
+        GraphicsView::mousePressEvent(event);
+}
+
+void PitchView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (d->creatingNotes) {
+        if (d->notesStarted)
+            d->moveNotePoint(event->pos());
+    } else
+        GraphicsView::mouseMoveEvent(event);
+}
+
+void PitchView::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (d->creatingNotes) {
+        if (Qt::RightButton == event->button()) {
+            d->finishNote();
+            event->accept();
+        }
+    } else
+        GraphicsView::mouseReleaseEvent(event);
+}
+
+void PitchView::keyReleaseEvent(QKeyEvent *event)
+{
+    if (d->creatingNotes) {
+        const int key = event->key();
+        switch (key) {
+        case Qt::Key_Enter:
+            d->finishNote();
+            break;
+        case Qt::Key_Escape:
+            d->cancelNote();
+            break;
+        }
+    } else
+        GraphicsView::keyPressEvent(event);
 }

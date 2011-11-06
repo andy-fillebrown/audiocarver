@@ -45,6 +45,10 @@ public:
 
     virtual bool canPushCommand() const = 0;
     virtual void pushCommand(QUndoCommand *cmd) = 0;
+
+    virtual void startCreating() = 0;
+    virtual void finishCreating() = 0;
+    virtual bool isCreating() const = 0;
 };
 
 #endif // MI_IEDITOR_H

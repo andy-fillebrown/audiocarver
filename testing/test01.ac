@@ -99,7 +99,19 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="3" volume="0.3" color="#ff0000" visible="true" recording="false"/>
+        <Track name="3" volume="0.3" color="#ff0000" visible="true" recording="true">
+            <NoteList>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="8.10713 127"/>
+                        <Point position="56.055 23.9385" curve="bezier"/>
+                        <Point position="64.5096 71.8155" curve="bezier"/>
+                        <Point position="72.1535 108.143" curve="bezier"/>
+                        <Point position="120.217 0" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+            </NoteList>
+        </Track>
         <Track name="4" volume="0.3" color="#ffaa00" visible="true" recording="false"/>
         <Track name="5" volume="0.3" color="#aa0000" visible="true" recording="false"/>
         <Track name="6" volume="0.3" color="#ff0000" visible="true" recording="false"/>
@@ -501,5 +513,5 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="64.6935092891647" pitchPosition="62.3105532705273" controlPosition="0.452189709959316" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+    <ViewSettings timePosition="63.8712146600704" pitchPosition="62.5835360819916" controlPosition="0.452189709959316" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
 </Score>

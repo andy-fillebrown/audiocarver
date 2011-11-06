@@ -18,6 +18,8 @@
 #include "ac_mainwindow.h"
 
 #include <ac_guiconstants.h>
+#include <ac_pitchview.h>
+#include <ac_viewmanager.h>
 
 #include <ac_ifactory.h>
 #include <ac_namespace.h>
@@ -112,7 +114,7 @@ void MainWindow::initActions()
     action = new QAction(tr("&Note"), this);
     cmd = am->registerAction(action, CREATENOTE, globalContext);
     createMenu->addAction(cmd, G_CREATE_OTHER);
-    connect(action, SIGNAL(triggered()), SLOT(createNote()));
+    connect(action, SIGNAL(triggered()), object_cast<PitchView>(ViewManager::instance()->view(Ac::PitchScene)), SLOT(createNote()));
 
     // Erase Action
     action = new QAction(tr("&Erase"), this);
@@ -181,11 +183,6 @@ void MainWindow::createTrack()
     editor->endCommand();
 }
 
-void MainWindow::createNote()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
 void MainWindow::erase()
 {
     // Erase selected tracks in reverse row order so higher row numbers don't
@@ -208,7 +205,7 @@ void MainWindow::erase()
             commandBegun = true;
         }
         const int row = rows.at(i);
-        model->setData(model->index(row, trackListIndex), false, Ac::VisibilityRole);
+//        model->setData(model->index(row, trackListIndex), false, Ac::VisibilityRole);
         model->removeItem(row, trackListIndex);
     }
     if (commandBegun) {

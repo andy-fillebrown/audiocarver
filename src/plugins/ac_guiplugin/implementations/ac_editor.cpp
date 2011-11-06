@@ -28,12 +28,14 @@ class EditorPrivate
 public:
     Editor *q;
     UndoStack *undoStack;
-    quint32 undoing : 32;
+    quint32 undoing : 1;
+    quint32 creating : 31;
 
     EditorPrivate(Editor *q)
         :   q(q)
         ,   undoStack(0)
         ,   undoing(quint32(false))
+        ,   creating(quint32(false))
     {}
 
     void init()
@@ -55,7 +57,7 @@ Editor::~Editor()
 
 void Editor::undo()
 {
-    if (d->undoStack->canUndo()) {
+    if (!d->creating && d->undoStack->canUndo()) {
         d->undoing = quint32(true);
         d->undoStack->undo();
         d->undoing = quint32(false);
@@ -64,7 +66,7 @@ void Editor::undo()
 
 void Editor::redo()
 {
-    if (d->undoStack->canRedo()) {
+    if (!d->creating && d->undoStack->canRedo()) {
         d->undoing = quint32(true);
         d->undoStack->redo();
         d->undoing = quint32(false);
@@ -92,6 +94,11 @@ void Editor::beginCommand(const QString &text)
     d->undoStack->beginMacro(text);
 }
 
+void Editor::endCommand()
+{
+    d->undoStack->endMacro();
+}
+
 bool Editor::canPushCommand() const
 {
     return !d->undoing;
@@ -105,7 +112,17 @@ void Editor::pushCommand(QUndoCommand *cmd)
         delete cmd;
 }
 
-void Editor::endCommand()
+void Editor::startCreating()
 {
-    d->undoStack->endMacro();
+    d->creating = quint32(true);
+}
+
+void Editor::finishCreating()
+{
+    d->creating = quint32(false);
+}
+
+bool Editor::isCreating() const
+{
+    return d->creating;
 }

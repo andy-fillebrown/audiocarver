@@ -20,6 +20,7 @@
 #include <ac_namespace.h>
 
 #include <QGraphicsItem>
+#include <QGraphicsScene>
 
 static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &items,
                                    const QMap<int, QGraphicsItem*> &parentItems)
@@ -36,8 +37,12 @@ static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
         QGraphicsItem *item = items.value(i, 0);
-        if (item)
+        if (item) {
             item->setParentItem(0);
+            QGraphicsScene *scene = item->scene();
+            if (scene)
+                scene->removeItem(item);
+        }
     }
 }
 

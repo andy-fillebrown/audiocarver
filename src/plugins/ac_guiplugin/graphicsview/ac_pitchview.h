@@ -30,6 +30,9 @@ public:
     PitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~PitchView();
 
+public slots:
+    void createNote();
+
 protected:
     int sceneType() const { return Ac::PitchScene; }
     qreal sceneHeight() const;
@@ -37,6 +40,11 @@ protected:
 
     int positionRoleY() const { return Ac::PitchPositionRole; }
     int scaleRoleY() const { return Ac::PitchScaleRole; }
+
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 private:
     PitchViewPrivate *d;

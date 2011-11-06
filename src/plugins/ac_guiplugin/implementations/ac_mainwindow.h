@@ -35,15 +35,10 @@ public:
 
 private slots:
     void createTrack();
-    void createNote();
-
     void erase();
-
     void build();
     void buildAll();
-
     void aboutAudioCarver();
-
     void destroyVersionDialog();
 
 private:

@@ -41,6 +41,10 @@ public:
     bool canPushCommand() const;
     void pushCommand(QUndoCommand *cmd);
 
+    void startCreating();
+    void finishCreating();
+    bool isCreating() const;
+
 private:
     EditorPrivate *d;
 };

@@ -607,6 +607,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             break;
         case Panning:
             d->finishPan(event->pos());
+            break;
         }
     } else if (Qt::LeftButton == event->button()) {
         switch (d->dragState) {
@@ -615,6 +616,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             break;
         case Picking:
             d->finishPicking(event->pos());
+            break;
         }
     }
 }
@@ -635,10 +637,11 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
-    if (DraggingGrips == d->dragState)
-        return;
-    if (Qt::Key_Escape == event->key())
+    if (DraggingGrips != d->dragState
+            && Qt::Key_Escape == event->key())
         d->clearPickedEntities();
+    else
+        MiGraphicsView::keyPressEvent(event);
 }
 
 bool GraphicsView::viewportEvent(QEvent *event)
