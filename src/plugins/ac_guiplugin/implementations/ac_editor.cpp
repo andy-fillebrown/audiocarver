@@ -19,9 +19,10 @@
 
 #include <ac_undo.h>
 
-#include <ac_model.h>
+#include <ac_noteselectionmodel.h>
+#include <ac_trackselectionmodel.h>
 
-#include <mi_idatabase.h>
+#include <mi_imodel.h>
 
 class EditorPrivate
 {

@@ -22,8 +22,8 @@
 
 #include <QObject>
 
-class IFileReader;
-class IFileWriter;
+class IReader;
+class IWriter;
 class IModelItem;
 
 class AC_CORE_EXPORT IObjectFactory : public QObject
@@ -49,8 +49,8 @@ public:
 
     static IFilerFactory *instance();
 
-    virtual IFileReader *createReader(int type) const = 0;
-    virtual IFileWriter *createWriter(int type) const = 0;
+    virtual IReader *createReader(int type) const = 0;
+    virtual IWriter *createWriter(int type) const = 0;
 };
 
 #endif // AC_IFACTORY_H

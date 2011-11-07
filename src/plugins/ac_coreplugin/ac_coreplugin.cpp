@@ -29,10 +29,10 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+    addAutoReleasedObject(new ObjectFactory);
+    addAutoReleasedObject(new FilerFactory);
     addAutoReleasedObject(new Database);
     addAutoReleasedObject(new Model);
-    addAutoReleasedObject(new FilerFactory);
-    addAutoReleasedObject(new ObjectFactory);
     return true;
 }
 

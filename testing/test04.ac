@@ -1,0 +1,517 @@
+
+<Score volume="1" length="128">
+    <TrackList>
+        <Track name="1" volume="0.2" color="#00ff00" visible="true" recording="false">
+            <NoteList>
+                <Note volume="0.4960317591721">
+                    <PitchCurve>
+                        <Point position="0 49.0821"/>
+                        <Point position="63.6292 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 58.6111"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.4960317591721">
+                    <PitchCurve>
+                        <Point position="0 49.0821"/>
+                        <Point position="63.6292 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="127.977 43.6111"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.4960317591721">
+                    <PitchCurve>
+                        <Point position="0 49.0821"/>
+                        <Point position="63.6292 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.01 26.9181"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.4960317591721">
+                    <PitchCurve>
+                        <Point position="0 49.0821"/>
+                        <Point position="63.6292 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="127.998 15.9868"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.4960317591721">
+                    <PitchCurve>
+                        <Point position="0 49.0821"/>
+                        <Point position="63.6292 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="127.991 0.015271"/>
+                    </PitchCurve>
+                </Note>
+            </NoteList>
+        </Track>
+        <Track name="2" volume="0.1" color="#aa00ff" visible="true" recording="false">
+            <NoteList>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.083 126.72"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 111.944"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 99.1667"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 86.9444"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="0.74404763875815">
+                    <PitchCurve>
+                        <Point position="0 100.691"/>
+                        <Point position="63.4672 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 72.7778"/>
+                    </PitchCurve>
+                </Note>
+            </NoteList>
+        </Track>
+        <Track name="3" volume="0.3" color="#ff0000" visible="true" recording="true">
+            <NoteList>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="8.10713 127"/>
+                        <Point position="56.055 23.9385" curve="bezier"/>
+                        <Point position="64.5096 71.8155" curve="bezier"/>
+                        <Point position="72.1535 108.143" curve="bezier"/>
+                        <Point position="120.217 0" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+            </NoteList>
+        </Track>
+        <Track name="4" volume="0.3" color="#ffaa00" visible="true" recording="false"/>
+        <Track name="5" volume="0.3" color="#aa0000" visible="true" recording="false"/>
+        <Track name="6" volume="0.3" color="#ff0000" visible="true" recording="false"/>
+        <Track name="7" volume="0.3" color="#ffff00" visible="true" recording="false"/>
+        <Track name="8" volume="0.3" color="#00ffff" visible="true" recording="false"/>
+        <Track name="9" volume="0.3" color="#55aa7f" visible="true" recording="false"/>
+    </TrackList>
+    <GridSettings>
+        <TimeGridLineList>
+            <TimeGridLine location="0" label="1" priority="0" color="#007f00"/>
+            <TimeGridLine location="1" label="1.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="2" label="1.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="3" label="1.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="4" label="2" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="5" label="2.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="6" label="2.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="7" label="2.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="8" label="3" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="9" label="3.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="10" label="3.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="11" label="3.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="12" label="4" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="13" label="4.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="14" label="4.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="15" label="4.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="16" label="5" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="17" label="5.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="18" label="5.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="19" label="5.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="20" label="6" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="21" label="6.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="22" label="6.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="23" label="6.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="24" label="7" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="25" label="7.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="26" label="7.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="27" label="7.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="28" label="8" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="29" label="8.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="30" label="8.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="31" label="8.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="32" label="9" priority="3" color="#c0c0c0"/>
+            <TimeGridLine location="33" label="9.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="34" label="9.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="35" label="9.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="36" label="10" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="37" label="10.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="38" label="10.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="39" label="10.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="40" label="11" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="41" label="11.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="42" label="11.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="43" label="11.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="44" label="12" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="45" label="12.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="46" label="12.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="47" label="12.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="48" label="13" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="49" label="13.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="50" label="13.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="51" label="13.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="52" label="14" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="53" label="14.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="54" label="14.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="55" label="14.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="56" label="15" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="57" label="15.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="58" label="15.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="59" label="15.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="60" label="16" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="61" label="16.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="62" label="16.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="63" label="16.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="64" label="17" priority="1" color="#c0c0c0"/>
+            <TimeGridLine location="65" label="17.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="66" label="17.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="67" label="17.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="68" label="18" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="69" label="18.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="70" label="18.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="71" label="18.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="72" label="19" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="73" label="19.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="74" label="19.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="75" label="19.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="76" label="20" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="77" label="20.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="78" label="20.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="79" label="20.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="80" label="21" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="81" label="21.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="82" label="21.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="83" label="21.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="84" label="22" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="85" label="22.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="86" label="22.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="87" label="22.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="88" label="23" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="89" label="23.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="90" label="23.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="91" label="23.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="92" label="24" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="93" label="24.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="94" label="24.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="95" label="24.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="96" label="25" priority="3" color="#c0c0c0"/>
+            <TimeGridLine location="97" label="25.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="98" label="25.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="99" label="25.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="100" label="26" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="101" label="26.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="102" label="26.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="103" label="26.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="104" label="27" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="105" label="27.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="106" label="27.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="107" label="27.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="108" label="28" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="109" label="28.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="110" label="28.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="111" label="28.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="112" label="29" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="113" label="29.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="114" label="29.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="115" label="29.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="116" label="30" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="117" label="30.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="118" label="30.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="119" label="30.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="120" label="31" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="121" label="31.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="122" label="31.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="123" label="31.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="124" label="32" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="125" label="32.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="126" label="32.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="127" label="32.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="128" priority="0" color="#7f0000"/>
+        </TimeGridLineList>
+        <PitchGridLineList>
+            <PitchGridLine location="0" label="0.0" priority="0" color="#bf0000"/>
+            <PitchGridLine location="1" label="1.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="2" label="2.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="3" label="3.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="4" label="4.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="5" label="5.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="6" label="6.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="7" label="7.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="8" label="8.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="9" label="9.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="10" label="10.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="11" label="11.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="12" label="12.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="13" label="13.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="14" label="14.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="15" label="15.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="16" label="16.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="17" label="17.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="18" label="18.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="19" label="19.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="20" label="20.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="21" label="21.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="22" label="22.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="23" label="23.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="24" label="24.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="25" label="25.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="26" label="26.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="27" label="27.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="28" label="28.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="29" label="29.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="30" label="30.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="31" label="31.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="32" label="32.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="33" label="33.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="34" label="34.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="35" label="35.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="36" label="36.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="37" label="37.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="38" label="38.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="39" label="39.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="40" label="40.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="41" label="41.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="42" label="42.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="43" label="43.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="44" label="44.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="45" label="45.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="46" label="46.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="47" label="47.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="48" label="48.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="49" label="49.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="50" label="50.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="51" label="51.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="52" label="52.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="53" label="53.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="54" label="54.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="55" label="55.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="56" label="56.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="57" label="57.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="58" label="58.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="59" label="59.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="60" label="60.0" priority="0" color="#bf0000"/>
+            <PitchGridLine location="61" label="61.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="62" label="62.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="63" label="63.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="64" label="64.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="65" label="65.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="66" label="66.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="67" label="67.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="68" label="68.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="69" label="69.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="70" label="70.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="71" label="71.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="72" label="72.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="73" label="73.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="74" label="74.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="75" label="75.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="76" label="76.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="77" label="77.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="78" label="78.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="79" label="79.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="80" label="80.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="81" label="81.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="82" label="82.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="83" label="83.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="84" label="84.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="85" label="85.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="86" label="86.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="87" label="87.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="88" label="88.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="89" label="89.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="90" label="90.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="91" label="91.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="92" label="92.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="93" label="93.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="94" label="94.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="95" label="95.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="96" label="96.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="97" label="97.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="98" label="98.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="99" label="99.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="100" label="100.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="101" label="101.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="102" label="102.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="103" label="103.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="104" label="104.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="105" label="105.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="106" label="106.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="107" label="107.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="108" label="108.0" priority="13" color="#bf0000"/>
+            <PitchGridLine location="109" label="109.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="110" label="110.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="111" label="111.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="112" label="112.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="113" label="113.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="114" label="114.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="115" label="115.0" priority="23" color="#0000bf"/>
+            <PitchGridLine location="116" label="116.0" priority="53" color="#c0c0c0"/>
+            <PitchGridLine location="117" label="117.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="118" label="118.0" priority="33" color="#c0c0c0"/>
+            <PitchGridLine location="119" label="119.0" priority="43" color="#c0c0c0"/>
+            <PitchGridLine location="120" label="120.0" priority="14" color="#bf0000"/>
+            <PitchGridLine location="121" label="121.0" priority="54" color="#c0c0c0"/>
+            <PitchGridLine location="122" label="122.0" priority="44" color="#c0c0c0"/>
+            <PitchGridLine location="123" label="123.0" priority="34" color="#c0c0c0"/>
+            <PitchGridLine location="124" label="124.0" priority="44" color="#c0c0c0"/>
+            <PitchGridLine location="125" label="125.0" priority="34" color="#c0c0c0"/>
+            <PitchGridLine location="126" label="126.0" priority="54" color="#c0c0c0"/>
+            <PitchGridLine location="127" label="127.0" priority="0" color="#0000bf"/>
+        </PitchGridLineList>
+        <ControlGridLineList>
+            <ControlGridLine location="0" label="0.0" priority="0" color="#ff0000"/>
+            <ControlGridLine location="0.0078125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.015625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.0234375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.03125" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.0390625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.046875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.0546875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.0625" label="0.0625" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.0703125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.078125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.0859375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.09375" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.1015625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.109375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.1171875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.125" label="0.125" priority="7" color="#c0c0c0"/>
+            <ControlGridLine location="0.1328125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.140625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.1484375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.15625" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.1640625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.171875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.1796875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.1875" label="0.1875" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.1953125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.203125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.2109375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.21875" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.2265625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.234375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.2421875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.25" label="0.25" priority="3" color="#c0c0c0"/>
+            <ControlGridLine location="0.2578125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.265625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.2734375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.28125" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.2890625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.296875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.3046875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.3125" label="0.3125" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.3203125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.328125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.3359375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.34375" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.3515625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.359375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.3671875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.375" label="0.375" priority="7" color="#c0c0c0"/>
+            <ControlGridLine location="0.3828125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.390625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.3984375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.40625" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.4140625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.421875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.4296875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.4375" label="0.4375" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.4453125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.453125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.4609375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.46875" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.4765625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.484375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.4921875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.5" label="0.5" priority="1" color="#00ff00"/>
+            <ControlGridLine location="0.5078125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.515625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.5234375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.53125" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.5390625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.546875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.5546875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.5625" label="0.5625" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.5703125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.578125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.5859375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.59375" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.6015625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.609375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.6171875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.625" label="0.625" priority="7" color="#c0c0c0"/>
+            <ControlGridLine location="0.6328125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.640625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.6484375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.65625" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.6640625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.671875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.6796875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.6875" label="0.6875" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.6953125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.703125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.7109375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.71875" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.7265625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.734375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.7421875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.75" label="0.75" priority="3" color="#c0c0c0"/>
+            <ControlGridLine location="0.7578125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.765625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.7734375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.78125" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.7890625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.796875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.8046875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.8125" label="0.8125" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.8203125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.828125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.8359375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.84375" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.8515625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.859375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.8671875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.875" label="0.875" priority="7" color="#c0c0c0"/>
+            <ControlGridLine location="0.8828125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.890625" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.8984375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.90625" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.9140625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.921875" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.9296875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.9375" label="0.9375" priority="14" color="#c0c0c0"/>
+            <ControlGridLine location="0.9453125" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.953125" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.9609375" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.96875" priority="25" color="#c0c0c0"/>
+            <ControlGridLine location="0.9765625" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="0.984375" priority="42" color="#c0c0c0"/>
+            <ControlGridLine location="0.9921875" priority="64" color="#c0c0c0"/>
+            <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
+        </ControlGridLineList>
+    </GridSettings>
+    <ViewSettings timePosition="63.8712146600704" pitchPosition="62.5835360819916" controlPosition="0.452189709959316" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+</Score>

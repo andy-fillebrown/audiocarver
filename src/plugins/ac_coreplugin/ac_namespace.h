@@ -27,8 +27,10 @@ enum InterfaceType {
     SubEntityInterface,
     EntityItemInterface,
     GripItemInterface,
-    FileReaderInterface,
-    FileWriterInterface
+    ReaderInterface,
+    WriterInterface,
+    FileFilerInterface,
+    CopyFilerInterface
 };
 
 enum ItemDataRole {
@@ -70,7 +72,8 @@ enum CurveType {
 };
 
 enum FilerType {
-    XmlFiler
+    XmlCopyFiler,
+    XmlFileFiler
 };
 
 enum SceneType {

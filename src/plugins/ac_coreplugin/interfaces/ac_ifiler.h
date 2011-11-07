@@ -24,24 +24,38 @@
 
 class IModelItem;
 
-class IFiler : public IUnknown
+class IReader : public IUnknown
 {
 public:
+    enum { Type = Ac::ReaderInterface };
+
+    virtual bool read(IModelItem *item) = 0;
+};
+
+class IWriter : public IUnknown
+{
+public:
+    enum { Type = Ac::WriterInterface };
+
+    virtual bool write(IModelItem *item) = 0;
+};
+
+class IFileFiler : public IUnknown
+{
+public:
+    enum { Type = Ac::FileFilerInterface };
+
     virtual QString fileName() const = 0;
     virtual void setFileName(const QString &fileName) = 0;
     virtual void close() = 0;
 };
 
-class IFileReader : public IFiler
+class ICopyFiler : public IUnknown
 {
 public:
-    virtual bool read(IModelItem *item) = 0;
-};
+    enum { Type = Ac::CopyFilerInterface };
 
-class IFileWriter : public IFiler
-{
-public:
-    virtual bool write(IModelItem *item) = 0;
+    virtual const QString &data() const = 0;
 };
 
 #endif // AC_IFILER_H

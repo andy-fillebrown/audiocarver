@@ -65,20 +65,20 @@ FilerFactory::FilerFactory()
         ::parent = new QObject(this);
 }
 
-IFileReader *FilerFactory::createReader(int type) const
+IReader *FilerFactory::createReader(int type) const
 {
     switch (type) {
-    case Ac::XmlFiler:
+    case Ac::XmlFileFiler:
         return new XmlFileReader;
     default:
         return 0;
     }
 }
 
-IFileWriter *FilerFactory::createWriter(int type) const
+IWriter *FilerFactory::createWriter(int type) const
 {
     switch (type) {
-    case Ac::XmlFiler:
+    case Ac::XmlFileFiler:
         return new XmlFileWriter;
     default:
         return 0;

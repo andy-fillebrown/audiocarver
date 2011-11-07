@@ -12,3 +12,5 @@ SUBDIRS = src
 OTHER_FILES *= \
     testing/test01.ac \
     testing/test02.ac \
+    testing/test03.ac \
+    testing/test04.ac \

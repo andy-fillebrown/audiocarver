@@ -17,19 +17,21 @@
 
 #include "ac_database.h"
 
+#include <ac_ifactory.h>
+#include <ac_ifiler.h>
 #include <ac_model.h>
 #include <ac_score.h>
-#include <ac_xmlfiler.h>
 
 class DatabasePrivate
 {
 public:
     Database *q;
-    XmlFileReader reader;
+    IReader *reader;
     quint32 reading : 32;
 
     DatabasePrivate(Database *q)
         :   q(q)
+        ,   reader(IFilerFactory::instance()->createReader(Ac::XmlFileFiler))
         ,   reading(quint32(false))
     {}
 
@@ -55,7 +57,7 @@ const QString &Database::fileFilter() const
 
 QString Database::fileName() const
 {
-    return d->reader.fileName();
+    return query<IFileFiler>(d->reader)->fileName();
 }
 
 void Database::reset()
@@ -68,9 +70,10 @@ void Database::read(const QString &fileName)
     emit databaseAboutToBeRead();
     d->reading = quint32(true);
     reset();
-    d->reader.setFileName(fileName);
-    d->reader.read(query<IModelItem>(Score::instance()));
-    d->reader.close();
+    IFileFiler *fileFiler = query<IFileFiler>(d->reader);
+    fileFiler->setFileName(fileName);
+    d->reader->read(query<IModelItem>(Score::instance()));
+    fileFiler->close();
     d->reading = quint32(false);
     emit databaseRead();
 }
@@ -78,9 +81,10 @@ void Database::read(const QString &fileName)
 void Database::write(const QString &fileName)
 {
     emit databaseAboutToBeWritten();
-    XmlFileWriter writer;
-    writer.setFileName(fileName);
-    writer.write(query<IModelItem>(Score::instance()));
+    IWriter *writer = IFilerFactory::instance()->createWriter(Ac::XmlFileFiler);
+    query<IFileFiler>(writer)->setFileName(fileName);
+    writer->write(query<IModelItem>(Score::instance()));
+    delete writer;
     emit databaseWritten();
 }
 

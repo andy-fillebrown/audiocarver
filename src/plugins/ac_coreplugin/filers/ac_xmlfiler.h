@@ -21,27 +21,45 @@
 #include <ac_filer.h>
 
 class XmlFileReaderPrivate;
-class XmlFileReader : public FileReader
+class XmlFileReader : public Filer
+        ,   public IReader
 {
 public:
-    XmlFileReader();
+    XmlFileReader(QObject *parent = 0);
 
-    // IFileReader
+    // IReader
     bool read(IModelItem *item);
+
+    // IUnknown
+    void *query(int type) const
+    {
+        if (IReader::Type == type)
+            return objectToInterface_cast<IReader>(this);
+        return Filer::query(type);
+    }
 
 private:
     Q_DECLARE_PRIVATE(XmlFileReader)
 };
 
 class XmlFileWriterPrivate;
-class XmlFileWriter : public FileWriter
+class XmlFileWriter : public Filer
+        ,   public IWriter
 {
 public:
-    XmlFileWriter();
+    XmlFileWriter(QObject *parent = 0);
     ~XmlFileWriter();
 
-    // IFileWriter
+    // IWriter
     bool write(IModelItem *item);
+
+    // IUnknown
+    void *query(int type) const
+    {
+        if (IWriter::Type == type)
+            return objectToInterface_cast<IWriter>(this);
+        return Filer::query(type);
+    }
 
 private:
     Q_DECLARE_PRIVATE(XmlFileWriter)

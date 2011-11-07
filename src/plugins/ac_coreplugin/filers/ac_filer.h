@@ -23,17 +23,7 @@
 
 #include <QFile>
 
-class FilerPrivate;
-class Filer
-{
-protected:
-    Filer(FilerPrivate &dd)
-        :   d_ptr(&dd)
-    {}
-
-    QScopedPointer<FilerPrivate> d_ptr;
-};
-
+class Filer;
 class FilerPrivate
 {
 public:
@@ -46,13 +36,6 @@ public:
 
     virtual ~FilerPrivate() {}
 
-    virtual void setFileName(const QString &fileName)
-    {
-        if (file.fileName() == fileName)
-            return;
-        file.setFileName(fileName);
-    }
-
     virtual QIODevice::OpenMode openMode() const = 0;
 
     virtual bool openFile()
@@ -61,128 +44,46 @@ public:
             return true;
         return file.open(openMode());
     }
-
-    void closeFile()
-    {
-        if (file.isOpen())
-            file.close();
-    }
 };
 
-class FileReaderPrivate;
-class FileReader : public Filer
-        ,   public IFileReader
+class Filer : public QObject
+        ,   public IFileFiler
 {
 public:
-    // IFiler
-    inline QString fileName() const;
-    inline void setFileName(const QString &fileName);
-    inline void close();
+    // IFileFiler
+    QString fileName() const
+    {
+        return d_ptr->file.fileName();
+    }
+
+    void setFileName(const QString &fileName)
+    {
+        if (d_ptr->file.fileName() == fileName)
+            return;
+        d_ptr->file.setFileName(fileName);
+    }
+
+    void close()
+    {
+        if (d_ptr->file.isOpen())
+            d_ptr->file.close();
+    }
 
     // IUnknown
     void *query(int type) const
     {
-        switch (type) {
-        case Ac::FileReaderInterface:
-            return objectToInterface_cast<IFileReader>(this);
-        default:
-            return 0;
-        }
+        if (IFileFiler::Type == type)
+            return objectToInterface_cast<IFileFiler>(this);
+        return 0;
     }
 
 protected:
-    inline FileReader(FileReaderPrivate &dd);
-
-private:
-    Q_DECLARE_PRIVATE(FileReader)
-};
-
-class FileReaderPrivate : public FilerPrivate
-{
-public:
-    FileReaderPrivate(FileReader *q)
-        :   FilerPrivate(q)
+    Filer(FilerPrivate &dd, QObject *parent)
+        :   QObject(parent)
+        ,   d_ptr(&dd)
     {}
+
+    QScopedPointer<FilerPrivate> d_ptr;
 };
-
-inline FileReader::FileReader(FileReaderPrivate &dd)
-    :   Filer(dd)
-{}
-
-inline QString FileReader::fileName() const
-{
-    Q_D(const FileReader);
-    return d->file.fileName();
-}
-
-inline void FileReader::setFileName(const QString &fileName)
-{
-    Q_D(FileReader);
-    d->setFileName(fileName);
-}
-
-inline void FileReader::close()
-{
-    Q_D(FileReader);
-    d->closeFile();
-}
-
-class FileWriterPrivate;
-class FileWriter : public Filer
-        ,   public IFileWriter
-{
-public:
-    // IFiler
-    inline QString fileName() const;
-    inline void setFileName(const QString &fileName);
-    inline void close();
-
-    // IUnknown
-    void *query(int type) const
-    {
-        switch (type) {
-        case Ac::FileWriterInterface:
-            return objectToInterface_cast<IFileWriter>(this);
-        default:
-            return 0;
-        }
-    }
-
-protected:
-    inline FileWriter(FileWriterPrivate &dd);
-
-private:
-    Q_DECLARE_PRIVATE(FileWriter)
-};
-
-class FileWriterPrivate : public FilerPrivate
-{
-public:
-    FileWriterPrivate(FileWriter *q)
-        :   FilerPrivate(q)
-    {}
-};
-
-inline FileWriter::FileWriter(FileWriterPrivate &dd)
-    :   Filer(dd)
-{}
-
-inline QString FileWriter::fileName() const
-{
-    Q_D(const FileWriter);
-    return d->file.fileName();
-}
-
-inline void FileWriter::setFileName(const QString &fileName)
-{
-    Q_D(FileWriter);
-    d->setFileName(fileName);
-}
-
-inline void FileWriter::close()
-{
-    Q_D(FileWriter);
-    d->closeFile();
-}
 
 #endif // AC_FILER_H

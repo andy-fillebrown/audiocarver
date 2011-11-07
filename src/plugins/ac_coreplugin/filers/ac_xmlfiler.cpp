@@ -27,48 +27,53 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-static QMap<int, QString> elementMap;
-static QMap<int, QString> attributeMap;
-
-static void initMaps()
+static const QMap<int, QString> &elementMap()
 {
-    if (!elementMap.isEmpty())
-        return;
+    static QMap<int, QString> map;
+    if (map.isEmpty()) {
+        map.insert(Ac::ScoreItem, "Score");
+        map.insert(Ac::TrackItem, "Track");
+        map.insert(Ac::NoteItem, "Note");
+        map.insert(Ac::PitchCurveItem, "PitchCurve");
+        map.insert(Ac::ControlCurveItem, "ControlCurve");
+        map.insert(Ac::GridSettingsItem, "GridSettings");
+        map.insert(Ac::TimeGridLineItem, "TimeGridLine");
+        map.insert(Ac::PitchGridLineItem, "PitchGridLine");
+        map.insert(Ac::ControlGridLineItem, "ControlGridLine");
+        map.insert(Ac::ViewSettingsItem, "ViewSettings");
+    }
+    return map;
+}
 
-    elementMap.insert(Ac::ScoreItem, "Score");
-    elementMap.insert(Ac::TrackItem, "Track");
-    elementMap.insert(Ac::NoteItem, "Note");
-    elementMap.insert(Ac::PitchCurveItem, "PitchCurve");
-    elementMap.insert(Ac::ControlCurveItem, "ControlCurve");
-    elementMap.insert(Ac::GridSettingsItem, "GridSettings");
-    elementMap.insert(Ac::TimeGridLineItem, "TimeGridLine");
-    elementMap.insert(Ac::PitchGridLineItem, "PitchGridLine");
-    elementMap.insert(Ac::ControlGridLineItem, "ControlGridLine");
-    elementMap.insert(Ac::ViewSettingsItem, "ViewSettings");
-
-    attributeMap.insert(Mi::NameRole, "name");
-    attributeMap.insert(Ac::PointsRole, "points");
-    attributeMap.insert(Ac::ControlIdRole, "controlId");
-    attributeMap.insert(Ac::LocationRole, "location");
-    attributeMap.insert(Ac::LabelRole, "label");
-    attributeMap.insert(Ac::PriorityRole, "priority");
-    attributeMap.insert(Ac::InstrumentRole, "instrument");
-    attributeMap.insert(Ac::LengthRole, "length");
-    attributeMap.insert(Ac::VolumeRole, "volume");
-    attributeMap.insert(Ac::ColorRole, "color");
-    attributeMap.insert(Ac::VisibilityRole, "visible");
-    attributeMap.insert(Ac::RecordingRole, "recording");
-    attributeMap.insert(Ac::TimePositionRole, "timePosition");
-    attributeMap.insert(Ac::PitchPositionRole, "pitchPosition");
-    attributeMap.insert(Ac::ControlPositionRole, "controlPosition");
-    attributeMap.insert(Ac::TimeScaleRole, "timeScale");
-    attributeMap.insert(Ac::PitchScaleRole, "pitchScale");
-    attributeMap.insert(Ac::ControlScaleRole, "controlScale");
+static const QMap<int, QString> &attributeMap()
+{
+    static QMap<int, QString> map;
+    if (map.isEmpty()) {
+        map.insert(Mi::NameRole, "name");
+        map.insert(Ac::PointsRole, "points");
+        map.insert(Ac::ControlIdRole, "controlId");
+        map.insert(Ac::LocationRole, "location");
+        map.insert(Ac::LabelRole, "label");
+        map.insert(Ac::PriorityRole, "priority");
+        map.insert(Ac::InstrumentRole, "instrument");
+        map.insert(Ac::LengthRole, "length");
+        map.insert(Ac::VolumeRole, "volume");
+        map.insert(Ac::ColorRole, "color");
+        map.insert(Ac::VisibilityRole, "visible");
+        map.insert(Ac::RecordingRole, "recording");
+        map.insert(Ac::TimePositionRole, "timePosition");
+        map.insert(Ac::PitchPositionRole, "pitchPosition");
+        map.insert(Ac::ControlPositionRole, "controlPosition");
+        map.insert(Ac::TimeScaleRole, "timeScale");
+        map.insert(Ac::PitchScaleRole, "pitchScale");
+        map.insert(Ac::ControlScaleRole, "controlScale");
+    }
+    return map;
 }
 
 static QString elementName(int type)
 {
-    return elementMap.value(type);
+    return elementMap().value(type);
 }
 
 static QString elementName(IModelItem *item)
@@ -80,116 +85,82 @@ static QString elementName(IModelItem *item)
 
 static int elementType(const QString &name)
 {
-    return elementMap.key(name, Mi::UnknownItem);
+    return elementMap().key(name, Mi::UnknownItem);
 }
 
 static QString attributeName(int role)
 {
-    return attributeMap.value(role);
+    return attributeMap().value(role);
 }
 
 static int attributeRole(const QString &name)
 {
-    return attributeMap.key(name, Mi::InvalidRole);
+    return attributeMap().key(name, Mi::InvalidRole);
 }
 
-class XmlFileReaderPrivate : public FileReaderPrivate
+static bool nextStartElement(QXmlStreamReader &reader)
 {
-public:
-    QXmlStreamReader reader;
-
-    XmlFileReaderPrivate(XmlFileReader *q)
-        :   FileReaderPrivate(q)
-        ,   reader(&file)
-    {
-        initMaps();
+    int tokenType = QXmlStreamReader::NoToken;
+    while (tokenType != QXmlStreamReader::StartElement) {
+        tokenType = reader.readNext();
+        if (reader.atEnd())
+            return false;
     }
+    return true;
+}
 
-    QIODevice::OpenMode openMode() const
-    {
-        return QIODevice::Text | QIODevice::ReadOnly;
-    }
-
-    bool openFile()
-    {
-        if (file.isOpen())
-            return true;
-        if (FileReaderPrivate::openFile()) {
-            reader.setDevice(&file);
-            return nextStartElement();
-        }
-        return false;
-    }
-
-    bool nextStartElement()
-    {
-        int tokenType = QXmlStreamReader::NoToken;
-        while (tokenType != QXmlStreamReader::StartElement) {
-            tokenType = reader.readNext();
-            if (reader.atEnd())
-                return false;
-        }
-        return true;
-    }
-
-    QXmlStreamReader::TokenType nextElement()
-    {
-        QXmlStreamReader::TokenType tokenType = QXmlStreamReader::NoToken;
-        while (tokenType != QXmlStreamReader::StartElement
-               && tokenType != QXmlStreamReader::EndElement) {
-            tokenType = reader.readNext();
-            if (reader.atEnd())
-                return QXmlStreamReader::NoToken;
-        }
-        return tokenType;
-    }
-};
-
-XmlFileReader::XmlFileReader()
-    :   FileReader(*(new XmlFileReaderPrivate(this)))
-{}
-
-bool XmlFileReader::read(IModelItem *item)
+static QXmlStreamReader::TokenType nextElement(QXmlStreamReader &reader)
 {
-    Q_D(XmlFileReader);
-    if (!item || !d->openFile())
-        return false;
-    QString elementName = d->reader.name().toString();
+    QXmlStreamReader::TokenType tokenType = QXmlStreamReader::NoToken;
+    while (tokenType != QXmlStreamReader::StartElement
+           && tokenType != QXmlStreamReader::EndElement) {
+        tokenType = reader.readNext();
+        if (reader.atEnd())
+            return QXmlStreamReader::NoToken;
+    }
+    return tokenType;
+}
+
+static bool readItem(IModelItem *item, QXmlStreamReader &reader)
+{
+    IObjectFactory *factory = IObjectFactory::instance();
+
+    QString elementName = reader.name().toString();
     if (elementName.isEmpty()) {
-        qWarning() << "XmlFileReader: Empty element name";
+        qWarning() << Q_FUNC_INFO << ": Empty element name";
         return false;
     }
     if (elementName.endsWith("List")) {
         QString listElementName = elementName;
         listElementName.chop(4);
         int itemType = elementType(listElementName);
-        while (d->nextElement() == QXmlStreamReader::StartElement) {
-            IModelItem *newItem = IObjectFactory::instance()->create(itemType);
+        while (nextElement(reader) == QXmlStreamReader::StartElement) {
+            IModelItem *newItem = factory->create(itemType);
             newItem->setParentModelItem(item);
-            if (!read(newItem)) {
-                qWarning() << "XmlFileReader: failed to read list item in" << elementName;
+            if (!readItem(newItem, reader)) {
+                qWarning() << Q_FUNC_INFO << ": failed to read list item in" << elementName;
                 return false;
             }
         }
     } else {
-        QXmlStreamAttributes attributes = d->reader.attributes();
+        QXmlStreamAttributes attributes = reader.attributes();
         foreach (const QXmlStreamAttribute &attribute, attributes) {
             QString roleString = attribute.name().toString();
             int role = attributeRole(roleString);
             if (Mi::InvalidRole == role) {
-                qWarning() << "XmlFileReader: Invalid attribute role in" << elementName;
+                qWarning() << Q_FUNC_INFO << ": Invalid attribute role in" << elementName;
                 return false;
             }
             if (!item->setData(attribute.value().toString(), role)) {
-                qWarning() << "XmlFileReader: Set data failed in" << elementName << "at" << attribute.value().toString();
+                qWarning() << Q_FUNC_INFO << ": Set data failed in" << elementName << "at" << attribute.value().toString();
                 return false;
             }
         }
         if (elementName.endsWith("Curve")) {
             PointList points;
-            while (d->nextElement() == QXmlStreamReader::StartElement) {
+            while (nextElement(reader) == QXmlStreamReader::StartElement) {
                 Point point;
-                QXmlStreamAttributes attributes = d->reader.attributes();
+                QXmlStreamAttributes attributes = reader.attributes();
                 foreach (const QXmlStreamAttribute &attribute, attributes) {
                     const QString &data = attribute.value().toString();
                     if ("position" == attribute.name()) {
@@ -200,15 +171,15 @@ bool XmlFileReader::read(IModelItem *item)
                         point.curveType = Ac::BezierCurve;
                 }
                 points.append(point);
-                d->nextElement();
+                nextElement(reader);
             }
             if (!item->setData(QVariant::fromValue(points), Ac::PointsRole)) {
-                qWarning() << "XmlFileReader: Set data failed in" << elementName << "at point list";
+                qWarning() << Q_FUNC_INFO << ": Set data failed in" << elementName << "at point list";
                 return false;
             }
         } else {
-            while (d->nextElement() == QXmlStreamReader::StartElement) {
-                QString subElementName = d->reader.name().toString();
+            while (nextElement(reader) == QXmlStreamReader::StartElement) {
+                QString subElementName = reader.name().toString();
                 IModelItem *subItem = 0;
                 if (subElementName.endsWith("List")) {
                     QString subElementListName = subElementName;
@@ -216,67 +187,123 @@ bool XmlFileReader::read(IModelItem *item)
                     subItem = item->findModelItemList(elementType(subElementListName));
                 } else
                     subItem = item->findModelItem(elementType(subElementName));
-                if (!read(subItem)) {
-                    qWarning() << "XmlFileReader: Sub-item read failed in" << elementName << "at" << subElementName;
+                if (!readItem(subItem, reader)) {
+                    qWarning() << Q_FUNC_INFO << ": Sub-item read failed in" << elementName << "at" << subElementName;
                     return false;
                 }
             }
         }
     }
-    QString endElementName = d->reader.name().toString();
+    QString endElementName = reader.name().toString();
     if (endElementName != elementName)
-        qWarning() << "XmlFileReader: Mismatched element start and end tags (" << elementName << "-->" << endElementName << ")";
+        qWarning() << Q_FUNC_INFO << ": Mismatched element start and end tags (" << elementName << "-->" << endElementName << ")";
     return true;
 }
 
-class XmlFileWriterPrivate : public FileWriterPrivate
+static void writePoints(const PointList &points, QXmlStreamWriter &writer)
+{
+    if (points.isEmpty())
+        return;
+    foreach (const Point &pt, points) {
+        writer.writeStartElement("Point");
+        const QPointF &pos = pt.pos;
+        writer.writeAttribute("position", QString("%1 %2").arg(pos.x()).arg(pos.y()));
+        if (Ac::BezierCurve == pt.curveType)
+            writer.writeAttribute("curve", "bezier");
+        writer.writeEndElement();
+    }
+}
+
+static void writeItemData(IModelItem *item, int roleIndex, QXmlStreamWriter &writer)
+{
+    int role = item->persistentRoleAt(roleIndex);
+    QVariant data = item->data(role);
+    if (Ac::PointsRole == role)
+        writePoints(data.value<PointList>(), writer);
+    else {
+        QString dataString = data.toString();
+        if (!dataString.isEmpty())
+            writer.writeAttribute(attributeName(role), dataString);
+    }
+}
+
+static bool writeItem(IModelItem *item, QXmlStreamWriter &writer)
+{
+    if (Mi::ListItem == item->type() && 0 == item->modelItemCount())
+        return true;
+    if (Ac::PitchCurveItem == item->type() && item->data(Ac::PointsRole).value<PointList>().isEmpty())
+        return true;
+    writer.writeStartElement(elementName(item));
+    int roleCount = item->persistentRoleCount();
+    for (int i = 0;  i < roleCount;  ++i)
+        writeItemData(item, i, writer);
+    int itemCount = item->modelItemCount();
+    for (int i = 0;  i < itemCount;  ++i)
+        if (!writeItem(item->modelItemAt(i), writer))
+            return false;
+    writer.writeEndElement();
+    return true;
+}
+
+class XmlFileReaderPrivate : public FilerPrivate
+{
+public:
+    QXmlStreamReader reader;
+
+    XmlFileReaderPrivate(XmlFileReader *q)
+        :   FilerPrivate(q)
+        ,   reader(&file)
+    {}
+
+    QIODevice::OpenMode openMode() const
+    {
+        return QIODevice::Text | QIODevice::ReadOnly;
+    }
+
+    bool openFile()
+    {
+        if (file.isOpen())
+            return true;
+        if (FilerPrivate::openFile()) {
+            reader.setDevice(&file);
+            return nextStartElement(reader);
+        }
+        return false;
+    }
+};
+
+XmlFileReader::XmlFileReader(QObject *parent)
+    :   Filer(*(new XmlFileReaderPrivate(this)), parent)
+{}
+
+bool XmlFileReader::read(IModelItem *item)
+{
+    Q_D(XmlFileReader);
+    if (!item || !d->openFile())
+        return false;
+    return readItem(item, d->reader);
+}
+
+class XmlFileWriterPrivate : public FilerPrivate
 {
 public:
     QXmlStreamWriter writer;
 
     XmlFileWriterPrivate(XmlFileWriter *q)
-        :   FileWriterPrivate(q)
+        :   FilerPrivate(q)
         ,   writer(&file)
     {
         writer.setAutoFormatting(true);
-        initMaps();
     }
 
     QIODevice::OpenMode openMode() const
     {
         return QIODevice::Text | QIODevice::WriteOnly;
     }
-
-    void writeItemData(IModelItem *item, int roleIndex)
-    {
-        int role = item->persistentRoleAt(roleIndex);
-        QVariant data = item->data(role);
-        if (Ac::PointsRole == role)
-            writePoints(data.value<PointList>());
-        else {
-            QString dataString = data.toString();
-            if (!dataString.isEmpty())
-                writer.writeAttribute(attributeName(role), dataString);
-        }
-    }
-
-    void writePoints(const PointList &points)
-    {
-        if (points.isEmpty())
-            return;
-        foreach (const Point &pt, points) {
-            writer.writeStartElement("Point");
-            const QPointF &pos = pt.pos;
-            writer.writeAttribute("position", QString("%1 %2").arg(pos.x()).arg(pos.y()));
-            if (Ac::BezierCurve == pt.curveType)
-                writer.writeAttribute("curve", "bezier");
-            writer.writeEndElement();
-        }
-    }
 };
 
-XmlFileWriter::XmlFileWriter()
-    :   FileWriter(*(new XmlFileWriterPrivate(this)))
+XmlFileWriter::XmlFileWriter(QObject *parent)
+    :   Filer(*(new XmlFileWriterPrivate(this)), parent)
 {}
 
 XmlFileWriter::~XmlFileWriter()
@@ -288,22 +315,7 @@ XmlFileWriter::~XmlFileWriter()
 bool XmlFileWriter::write(IModelItem *item)
 {
     Q_D(XmlFileWriter);
-    if (!item)
+    if (!item || !d->openFile())
         return false;
-    if (Mi::ListItem == item->type() && 0 == item->modelItemCount())
-        return true;
-    if (Ac::PitchCurveItem == item->type() && item->data(Ac::PointsRole).value<PointList>().isEmpty())
-        return true;
-    if (!d->openFile())
-        return false;
-    d->writer.writeStartElement(elementName(item));
-    int roleCount = item->persistentRoleCount();
-    for (int i = 0;  i < roleCount;  ++i)
-        d->writeItemData(item, i);
-    int itemCount = item->modelItemCount();
-    for (int i = 0;  i < itemCount;  ++i)
-        if (!write(item->modelItemAt(i)))
-            return false;
-    d->writer.writeEndElement();
-    return QFile::NoError == d->file.error();
+    return writeItem(item, d->writer);
 }

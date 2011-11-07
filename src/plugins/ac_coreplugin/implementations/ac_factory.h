@@ -37,8 +37,8 @@ class FilerFactory : public IFilerFactory
 public:
     FilerFactory();
 
-    IFileReader *createReader(int type) const;
-    IFileWriter *createWriter(int type) const;
+    IReader *createReader(int type) const;
+    IWriter *createWriter(int type) const;
 };
 
 #endif // AC_FACTORY_H
