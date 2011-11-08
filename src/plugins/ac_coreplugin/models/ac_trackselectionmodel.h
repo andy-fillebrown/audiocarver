@@ -23,6 +23,8 @@
 
 #include <QItemSelectionModel>
 
+class IModelItem;
+
 class AC_CORE_EXPORT TrackSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
@@ -31,6 +33,8 @@ public:
     TrackSelectionModel(QAbstractItemModel *model);
 
     static TrackSelectionModel *instance();
+
+    QList<IModelItem*> selectedTracks() const;
 };
 
 #endif // AC_TRACKSELECTIONMODEL_H

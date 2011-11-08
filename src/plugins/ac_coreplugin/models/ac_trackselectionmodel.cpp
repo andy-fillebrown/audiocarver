@@ -19,6 +19,8 @@
 
 #include <ac_trackmodel.h>
 
+#include <mi_imodel.h>
+
 static TrackSelectionModel *instance = 0;
 
 TrackSelectionModel::TrackSelectionModel(QAbstractItemModel *model)
@@ -32,4 +34,27 @@ TrackSelectionModel *TrackSelectionModel::instance()
     if (!::instance)
         new TrackSelectionModel(TrackModel::instance());
     return ::instance;
+}
+
+QList<IModelItem*> TrackSelectionModel::selectedTracks() const
+{
+    QList<int> rows;
+
+    TrackModel *trackModel = TrackModel::instance();
+    const QModelIndexList indexes = selectedIndexes();
+    foreach (const QModelIndex &index, indexes) {
+        const QModelIndex sourceIndex = object_cast<QSortFilterProxyModel>(trackModel->sourceModel())->mapToSource(trackModel->mapToSource(index));
+        if (!rows.contains(sourceIndex.row()))
+            rows.append(sourceIndex.row());
+    }
+
+    QList<IModelItem*> tracks;
+
+    IModel *model = IModel::instance();
+    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+    const int n = rows.count();
+    for (int i = 0;  i < n; ++i)
+        tracks.append(model->itemFromIndex(model->index(rows.at(i), trackListIndex)));
+
+    return tracks;
 }
