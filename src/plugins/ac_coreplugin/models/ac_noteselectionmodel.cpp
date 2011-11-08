@@ -44,3 +44,15 @@ void NoteSelectionModel::select(const QItemSelection &selection, SelectionFlags 
 
     QItemSelectionModel::select(ss, command);
 }
+
+QList<IModelItem*> NoteSelectionModel::selectedNotes() const
+{
+    QList<IModelItem*> notes;
+
+    IModel *model = IModel::instance();
+    const QModelIndexList indexes = selectedIndexes();
+    foreach (const QModelIndex &index, indexes)
+        notes.append(model->itemFromIndex(index));
+
+    return notes;
+}

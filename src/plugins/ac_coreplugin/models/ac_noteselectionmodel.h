@@ -23,6 +23,8 @@
 
 #include <QItemSelectionModel>
 
+class IModelItem;
+
 class AC_CORE_EXPORT NoteSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
@@ -33,6 +35,8 @@ public:
     static NoteSelectionModel *instance();
 
     virtual void select(const QItemSelection &selection, SelectionFlags command);
+
+    QList<IModelItem*> selectedNotes() const;
 };
 
 #endif // AC_NOTESELECTIONMODEL_H
