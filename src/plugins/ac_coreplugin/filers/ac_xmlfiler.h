@@ -21,7 +21,7 @@
 #include <ac_filer.h>
 
 class XmlFileReaderPrivate;
-class XmlFileReader : public Filer
+class XmlFileReader : public FileFiler
         ,   public IReader
 {
 public:
@@ -35,7 +35,7 @@ public:
     {
         if (IReader::Type == type)
             return objectToInterface_cast<IReader>(this);
-        return Filer::query(type);
+        return FileFiler::query(type);
     }
 
 private:
@@ -43,7 +43,7 @@ private:
 };
 
 class XmlFileWriterPrivate;
-class XmlFileWriter : public Filer
+class XmlFileWriter : public FileFiler
         ,   public IWriter
 {
 public:
@@ -58,11 +58,65 @@ public:
     {
         if (IWriter::Type == type)
             return objectToInterface_cast<IWriter>(this);
-        return Filer::query(type);
+        return FileFiler::query(type);
     }
 
 private:
     Q_DECLARE_PRIVATE(XmlFileWriter)
+};
+
+class XmlCopyReaderPrivate;
+class XmlCopyReader : public CopyFiler
+        ,   public IReader
+{
+public:
+    XmlCopyReader(QObject *parent = 0);
+
+    // ICopyFiler
+    int nextItemType() const;
+
+    // IReader
+    bool read(IModelItem *item);
+
+    // IUnknown
+    void *query(int type) const
+    {
+        if (IReader::Type == type)
+            return objectToInterface_cast<IReader>(this);
+        return CopyFiler::query(type);
+    }
+
+private:
+    Q_DECLARE_PRIVATE(XmlCopyReader)
+};
+
+class XmlCopyWriterPrivate;
+class XmlCopyWriter : public CopyFiler
+        ,   public IWriter
+{
+public:
+    XmlCopyWriter(QObject *parent = 0);
+    ~XmlCopyWriter();
+
+    // ICopyFiler
+    int nextItemType() const
+    {
+        return Mi::UnknownItem;
+    }
+
+    // IWriter
+    bool write(IModelItem *item);
+
+    // IUnknown
+    void *query(int type) const
+    {
+        if (IWriter::Type == type)
+            return objectToInterface_cast<IWriter>(this);
+        return CopyFiler::query(type);
+    }
+
+private:
+    Q_DECLARE_PRIVATE(XmlCopyWriter)
 };
 
 #endif // AC_XMLFILER_H

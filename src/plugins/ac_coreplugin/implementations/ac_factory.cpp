@@ -69,18 +69,20 @@ IReader *FilerFactory::createReader(int type) const
 {
     switch (type) {
     case Ac::XmlFileFiler:
-        return new XmlFileReader;
-    default:
-        return 0;
+        return new XmlFileReader(::parent);
+    case Ac::XmlCopyFiler:
+        return new XmlCopyReader(::parent);
     }
+    return 0;
 }
 
 IWriter *FilerFactory::createWriter(int type) const
 {
     switch (type) {
     case Ac::XmlFileFiler:
-        return new XmlFileWriter;
-    default:
-        return 0;
+        return new XmlFileWriter(::parent);
+    case Ac::XmlCopyFiler:
+        return new XmlCopyWriter(::parent);
     }
+    return 0;
 }

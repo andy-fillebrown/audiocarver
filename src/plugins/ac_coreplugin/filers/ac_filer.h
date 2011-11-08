@@ -23,18 +23,18 @@
 
 #include <QFile>
 
-class Filer;
-class FilerPrivate
+class FileFiler;
+class FileFilerPrivate
 {
 public:
-    Filer *q_ptr;
+    FileFiler *q_ptr;
     QFile file;
 
-    FilerPrivate(Filer *q)
+    FileFilerPrivate(FileFiler *q)
         :   q_ptr(q)
     {}
 
-    virtual ~FilerPrivate() {}
+    virtual ~FileFilerPrivate() {}
 
     virtual QIODevice::OpenMode openMode() const = 0;
 
@@ -46,7 +46,7 @@ public:
     }
 };
 
-class Filer : public QObject
+class FileFiler : public QObject
         ,   public IFileFiler
 {
 public:
@@ -78,12 +78,51 @@ public:
     }
 
 protected:
-    Filer(FilerPrivate &dd, QObject *parent)
+    FileFiler(FileFilerPrivate &dd, QObject *parent)
         :   QObject(parent)
         ,   d_ptr(&dd)
     {}
 
-    QScopedPointer<FilerPrivate> d_ptr;
+    QScopedPointer<FileFilerPrivate> d_ptr;
+};
+
+class CopyFiler;
+class CopyFilerPrivate
+{
+public:
+    CopyFiler *q_ptr;
+    QString data;
+
+    CopyFilerPrivate(CopyFiler *q)
+        :   q_ptr(q)
+    {}
+};
+
+class CopyFiler : public QObject
+        ,   public ICopyFiler
+{
+public:
+    // ICopyFiler
+    const QString &data() const
+    {
+        return d_ptr->data;
+    }
+
+    // IUnknown
+    void *query(int type) const
+    {
+        if (ICopyFiler::Type == type)
+            return objectToInterface_cast<ICopyFiler>(this);
+        return 0;
+    }
+
+protected:
+    CopyFiler(CopyFilerPrivate &dd, QObject *parent)
+        :   QObject(parent)
+        ,   d_ptr(&dd)
+    {}
+
+    QScopedPointer<CopyFilerPrivate> d_ptr;
 };
 
 #endif // AC_FILER_H

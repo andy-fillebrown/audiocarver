@@ -19,10 +19,16 @@
 
 #include <ac_undo.h>
 
+#include <ac_ifactory.h>
+#include <ac_ifiler.h>
 #include <ac_noteselectionmodel.h>
+#include <ac_trackmodel.h>
 #include <ac_trackselectionmodel.h>
 
 #include <mi_imodel.h>
+
+#include <QApplication>
+#include <QClipboard>
 
 class EditorPrivate
 {
@@ -80,10 +86,61 @@ void Editor::cut()
 
 void Editor::copy() const
 {
+    TrackModel *trackModel = TrackModel::instance();
+    TrackSelectionModel *trackSSModel = TrackSelectionModel::instance();
+
+    QList<int> rows;
+    QModelIndexList trackSS = trackSSModel->selectedIndexes();
+    foreach (const QModelIndex &index, trackSS) {
+        const QModelIndex trackIndex = object_cast<QSortFilterProxyModel>(trackModel->sourceModel())->mapToSource(trackModel->mapToSource(index));
+        if (!rows.contains(trackIndex.row()))
+            rows.append(trackIndex.row());
+    }
+
+    IModel *model = IModel::instance();
+    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+    IWriter *writer = IFilerFactory::instance()->createWriter(Ac::XmlCopyFiler);
+
+    const int n = rows.count();
+    for (int i = 0;  i < n; ++i) {
+        IModelItem *track = model->itemFromIndex(model->index(rows.at(i), trackListIndex));
+        writer->write(track);
+    }
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText("\n<clipboard>\n" + query<ICopyFiler>(writer)->data() + "\n\n</clipboard>\n");
+
+    delete writer;
 }
 
 void Editor::paste()
 {
+    IReader *reader = IFilerFactory::instance()->createReader(Ac::XmlCopyFiler);
+    ICopyFiler *filer = query<ICopyFiler>(reader);
+    if (filer->data().isEmpty())
+        return;
+
+    IObjectFactory *objectFactory = IObjectFactory::instance();
+    IModel *model = IModel::instance();
+    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+
+    int itemType = filer->nextItemType();
+    if (Mi::UnknownItem == itemType)
+        return;
+
+    beginCommand();
+
+    while (Mi::UnknownItem != itemType) {
+        Q_ASSERT(Ac::TrackItem == itemType);
+        IModelItem *track = objectFactory->create(Ac::TrackItem);
+        reader->read(track);
+        model->insertItem(track, model->rowCount(trackListIndex), trackListIndex);
+
+        itemType = filer->nextItemType();
+    }
+
+    endCommand();
+    delete reader;
 }
 
 void Editor::selectAll()
