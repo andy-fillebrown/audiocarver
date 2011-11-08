@@ -78,3 +78,22 @@ QModelIndex Model::listIndex(int type) const
         return QModelIndex();
     }
 }
+
+QList<IModelItem*> Model::findItems(int type, int role, const QVariant &value) const
+{
+    if (Ac::TrackItem == type) {
+        if (Ac::RecordingRole == role) {
+            QList<IModelItem*> tracks;
+            const QModelIndex trackListIndex = listIndex(Ac::TrackItem);
+            const int n = rowCount(trackListIndex);
+            for (int i = 0;  i < n;  ++i) {
+                const QModelIndex trackIndex = index(i, trackListIndex);
+                if (value == trackIndex.data(role))
+                    tracks.append(itemFromIndex(trackIndex));
+            }
+            return tracks;
+        }
+    }
+
+    return IModel::findItems(type, role, value);
+}

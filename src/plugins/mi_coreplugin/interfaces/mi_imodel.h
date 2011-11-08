@@ -58,6 +58,14 @@ public:
     virtual void removeItem(int row, const QModelIndex &parent);
     virtual IModelItem *takeItem(int row, const QModelIndex &parent);
 
+    virtual QList<IModelItem*> findItems(int type, int role, const QVariant &value) const
+    {
+        Q_UNUSED(type);
+        Q_UNUSED(role);
+        Q_UNUSED(value);
+        return QList<IModelItem*>();
+    }
+
 signals:
     void pointsChanged(const QModelIndex &index);
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
