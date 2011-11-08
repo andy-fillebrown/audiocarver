@@ -26,6 +26,7 @@
 #include <ac_trackselectionmodel.h>
 
 #include <mi_imodel.h>
+#include <mi_imodelitem.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -92,6 +93,12 @@ void Editor::copy() const
     foreach (IModelItem *track, tracks)
         writer->write(track);
 
+    if (tracks.isEmpty()) {
+        QList<IModelItem*> notes = NoteSelectionModel::instance()->selectedNotes();
+        foreach (IModelItem *note, notes)
+            writer->write(note);
+    }
+
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText("\n<clipboard>\n" + query<ICopyFiler>(writer)->data() + "\n\n</clipboard>\n");
 
@@ -115,14 +122,40 @@ void Editor::paste()
 
     beginCommand();
 
-    while (Mi::UnknownItem != itemType) {
-        Q_ASSERT(Ac::TrackItem == itemType);
-        IModelItem *track = objectFactory->create(Ac::TrackItem);
-        reader->read(track);
-        model->insertItem(track, model->rowCount(trackListIndex), trackListIndex);
+    if (Ac::TrackItem == itemType) {
+        while (Mi::UnknownItem != itemType) {
+            Q_ASSERT(Ac::TrackItem == itemType);
+            IModelItem *track = objectFactory->create(Ac::TrackItem);
+            reader->read(track);
+            model->insertItem(track, model->rowCount(trackListIndex), trackListIndex);
 
-        itemType = filer->nextItemType();
-    }
+            itemType = filer->nextItemType();
+        }
+    } else if (Ac::NoteItem == itemType) {
+        QList<IModelItem*> recordingTracks = model->findItems(Ac::TrackItem, Ac::RecordingRole, true);
+        QModelIndexList noteListIndexes;
+        foreach (IModelItem *track, recordingTracks)
+            noteListIndexes.append(model->indexFromItem(track->findModelItemList(Ac::NoteItem)));
+        if (!recordingTracks.isEmpty()) {
+            foreach (const QModelIndex &noteListIndex, noteListIndexes) {
+                IReader *cloneReader = IFilerFactory::instance()->createReader(Ac::XmlCopyFiler);
+                ICopyFiler *cloneFiler = query<ICopyFiler>(cloneReader);
+
+                itemType = cloneFiler->nextItemType();
+                while (Mi::UnknownItem != itemType) {
+                    Q_ASSERT(Ac::NoteItem == itemType);
+                    IModelItem *note = objectFactory->create(Ac::NoteItem);
+                    cloneReader->read(note);
+                        model->insertItem(note, model->rowCount(noteListIndex), noteListIndex);
+
+                    itemType = cloneFiler->nextItemType();
+                }
+
+                delete cloneReader;
+            }
+        }
+    } else
+        Q_ASSERT(false);
 
     endCommand();
     delete reader;
