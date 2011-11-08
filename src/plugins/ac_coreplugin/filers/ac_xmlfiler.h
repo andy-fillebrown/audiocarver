@@ -20,6 +20,8 @@
 
 #include <ac_filer.h>
 
+class QXmlStreamReader;
+
 class XmlFileReaderPrivate;
 class XmlFileReader : public FileFiler
         ,   public IReader
@@ -28,6 +30,7 @@ public:
     XmlFileReader(QObject *parent = 0);
 
     // IReader
+    int nextItemType();
     bool read(IModelItem *item);
 
     // IUnknown
@@ -72,10 +75,8 @@ class XmlCopyReader : public CopyFiler
 public:
     XmlCopyReader(QObject *parent = 0);
 
-    // ICopyFiler
-    int nextItemType() const;
-
     // IReader
+    int nextItemType();
     bool read(IModelItem *item);
 
     // IUnknown
@@ -97,12 +98,6 @@ class XmlCopyWriter : public CopyFiler
 public:
     XmlCopyWriter(QObject *parent = 0);
     ~XmlCopyWriter();
-
-    // ICopyFiler
-    int nextItemType() const
-    {
-        return Mi::UnknownItem;
-    }
 
     // IWriter
     bool write(IModelItem *item);

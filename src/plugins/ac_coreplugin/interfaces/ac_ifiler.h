@@ -29,6 +29,7 @@ class IReader : public IUnknown
 public:
     enum { Type = Ac::ReaderInterface };
 
+    virtual int nextItemType() = 0;
     virtual bool read(IModelItem *item) = 0;
 };
 
@@ -56,7 +57,6 @@ public:
     enum { Type = Ac::CopyFilerInterface };
 
     virtual const QString &data() const = 0;
-    virtual int nextItemType() const = 0;
 };
 
 #endif // AC_IFILER_H

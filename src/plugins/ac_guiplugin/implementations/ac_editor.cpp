@@ -100,7 +100,7 @@ void Editor::copy() const
     }
 
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText("\n<clipboard>\n" + query<ICopyFiler>(writer)->data() + "\n\n</clipboard>\n");
+    clipboard->setText(query<ICopyFiler>(writer)->data());
 
     delete writer;
 }
@@ -116,7 +116,7 @@ void Editor::paste()
     IModel *model = IModel::instance();
     const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
 
-    int itemType = filer->nextItemType();
+    int itemType = reader->nextItemType();
     if (Mi::UnknownItem == itemType)
         return;
 
@@ -129,7 +129,7 @@ void Editor::paste()
             reader->read(track);
             model->insertItem(track, model->rowCount(trackListIndex), trackListIndex);
 
-            itemType = filer->nextItemType();
+            itemType = reader->nextItemType();
         }
     } else if (Ac::NoteItem == itemType) {
         QList<IModelItem*> recordingTracks = model->findItems(Ac::TrackItem, Ac::RecordingRole, true);
@@ -139,16 +139,15 @@ void Editor::paste()
         if (!recordingTracks.isEmpty()) {
             foreach (const QModelIndex &noteListIndex, noteListIndexes) {
                 IReader *cloneReader = IFilerFactory::instance()->createReader(Ac::XmlCopyFiler);
-                ICopyFiler *cloneFiler = query<ICopyFiler>(cloneReader);
 
-                itemType = cloneFiler->nextItemType();
+                itemType = cloneReader->nextItemType();
                 while (Mi::UnknownItem != itemType) {
                     Q_ASSERT(Ac::NoteItem == itemType);
                     IModelItem *note = objectFactory->create(Ac::NoteItem);
                     cloneReader->read(note);
                         model->insertItem(note, model->rowCount(noteListIndex), noteListIndex);
 
-                    itemType = cloneFiler->nextItemType();
+                    itemType = cloneReader->nextItemType();
                 }
 
                 delete cloneReader;

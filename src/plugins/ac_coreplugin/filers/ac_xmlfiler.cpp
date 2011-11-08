@@ -253,11 +253,11 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter &writer)
 class XmlFileReaderPrivate : public FileFilerPrivate
 {
 public:
-    QXmlStreamReader reader;
+    QXmlStreamReader xml;
 
     XmlFileReaderPrivate(XmlFileReader *q)
         :   FileFilerPrivate(q)
-        ,   reader(&file)
+        ,   xml(&file)
     {}
 
     QIODevice::OpenMode openMode() const
@@ -270,10 +270,15 @@ public:
         if (file.isOpen())
             return true;
         if (FileFilerPrivate::openFile()) {
-            reader.setDevice(&file);
-            return nextStartElement(reader);
+            xml.setDevice(&file);
+            return nextStartElement(xml);
         }
         return false;
+    }
+
+    QXmlStreamReader &reader()
+    {
+        return xml;
     }
 };
 
@@ -281,29 +286,44 @@ XmlFileReader::XmlFileReader(QObject *parent)
     :   FileFiler(*(new XmlFileReaderPrivate(this)), parent)
 {}
 
+int XmlFileReader::nextItemType()
+{
+    Q_D(XmlFileReader);
+    QXmlStreamReader &reader = d->reader();
+    if (!nextStartElement(reader))
+        return Mi::UnknownItem;
+    const QString elementName = reader.name().toString();
+    return elementType(elementName);
+}
+
 bool XmlFileReader::read(IModelItem *item)
 {
     Q_D(XmlFileReader);
     if (!item || !d->openFile())
         return false;
-    return readItem(item, d->reader);
+    return readItem(item, d->reader());
 }
 
 class XmlFileWriterPrivate : public FileFilerPrivate
 {
 public:
-    QXmlStreamWriter writer;
+    QXmlStreamWriter xml;
 
     XmlFileWriterPrivate(XmlFileWriter *q)
         :   FileFilerPrivate(q)
-        ,   writer(&file)
+        ,   xml(&file)
     {
-        writer.setAutoFormatting(true);
+        xml.setAutoFormatting(true);
     }
 
     QIODevice::OpenMode openMode() const
     {
         return QIODevice::Text | QIODevice::WriteOnly;
+    }
+
+    QXmlStreamWriter &writer()
+    {
+        return xml;
     }
 };
 
@@ -322,24 +342,30 @@ bool XmlFileWriter::write(IModelItem *item)
     Q_D(XmlFileWriter);
     if (!item || !d->openFile())
         return false;
-    return writeItem(item, d->writer);
+    return writeItem(item, d->writer());
 }
 
 class XmlCopyReaderPrivate : public CopyFilerPrivate
 {
 public:
-    QXmlStreamReader *reader;
+    QXmlStreamReader *xml;
 
     XmlCopyReaderPrivate(XmlCopyReader *q)
         :   CopyFilerPrivate(q)
+        ,   xml(0)
     {
-        data = QApplication::clipboard()->text();
-        reader = new QXmlStreamReader(data);
+        data = QString("<clipboard>") + QApplication::clipboard()->text() + "</clipboard>";
+        xml = new QXmlStreamReader(data);
     }
 
     ~XmlCopyReaderPrivate()
     {
-        delete reader;
+        delete xml;
+    }
+
+    QXmlStreamReader &reader()
+    {
+        return *xml;
     }
 };
 
@@ -349,15 +375,16 @@ XmlCopyReader::XmlCopyReader(QObject *parent)
     Q_D(XmlCopyReader);
 
     // First start element is <clipboard>
-    nextStartElement(*(d->reader));
+    nextStartElement(d->reader());
 }
 
-int XmlCopyReader::nextItemType() const
+int XmlCopyReader::nextItemType()
 {
-    Q_D(const XmlCopyReader);
-    if (!nextStartElement(*(d->reader)))
+    Q_D(XmlCopyReader);
+    QXmlStreamReader &reader = d->reader();
+    if (!nextStartElement(reader))
         return Mi::UnknownItem;
-    const QString elementName = d->reader->name().toString();
+    const QString elementName = reader.name().toString();
     return elementType(elementName);
 }
 
@@ -366,19 +393,24 @@ bool XmlCopyReader::read(IModelItem *item)
     Q_D(XmlCopyReader);
     if (!item)
         return false;
-    return readItem(item, *(d->reader));
+    return readItem(item, d->reader());
 }
 
 class XmlCopyWriterPrivate : public CopyFilerPrivate
 {
 public:
-    QXmlStreamWriter writer;
+    QXmlStreamWriter xml;
 
     XmlCopyWriterPrivate(XmlCopyWriter *q)
         :   CopyFilerPrivate(q)
-        ,   writer(&data)
+        ,   xml(&data)
     {
-        writer.setAutoFormatting(true);
+        xml.setAutoFormatting(true);
+    }
+
+    QXmlStreamWriter &writer()
+    {
+        return xml;
     }
 };
 
@@ -397,6 +429,6 @@ bool XmlCopyWriter::write(IModelItem *item)
     Q_D(XmlCopyWriter);
     if (!item)
         return false;
-    bool ret = writeItem(item, d->writer);
+    bool ret = writeItem(item, d->writer());
     return ret;
 }
