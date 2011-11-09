@@ -83,6 +83,55 @@ void Editor::redo()
 
 void Editor::cut()
 {
+    copy();
+
+    IModel *model = IModel::instance();
+
+    const QModelIndexList tracks = TrackSelectionModel::instance()->selectedTrackIndexes();
+    const int tracks_n = tracks.count();
+    if (tracks_n) {
+        QList<int> rows;
+        rows.reserve(tracks_n);
+        foreach (const QModelIndex &track, tracks)
+            rows.append(track.row());
+        qSort(rows);
+
+        const QModelIndex trackList = model->listIndex(Ac::TrackItem);
+
+        beginCommand();
+
+        for (int i = tracks_n - 1;  0 <= i;  --i)
+            model->removeItem(rows.at(i), trackList);
+
+        endCommand();
+    } else {
+        const QModelIndexList notes = NoteSelectionModel::instance()->selectedIndexes();
+        const int notes_n = notes.count();
+        if (notes_n) {
+            QMap<QModelIndex, QModelIndexList> noteListMap;
+            foreach (const QModelIndex note, notes)
+                noteListMap[model->parent(note)].append(note);
+
+            beginCommand();
+
+            QModelIndexList noteLists = noteListMap.keys();
+            foreach (const QModelIndex &noteList, noteLists) {
+                const QModelIndexList &notes = noteListMap.value(noteList);
+                const int notes_n = notes.count();
+
+                QList<int> rows;
+                rows.reserve(notes_n);
+                foreach (const QModelIndex &note, notes)
+                    rows.append(note.row());
+                qSort(rows);
+
+                for (int i = notes_n - 1;  0 <= i;  --i)
+                    model->removeItem(rows.at(i), noteList);
+            }
+
+            endCommand();
+        }
+    }
 }
 
 void Editor::copy() const
