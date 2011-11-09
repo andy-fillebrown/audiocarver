@@ -1,2 +1,5 @@
 
 11/08/11: Velocity change undo is not working.
+11/09/11: Fixed
+
+

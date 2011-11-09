@@ -60,7 +60,7 @@ void ScoreObject::setVolume(qreal volume, Ac::DragState dragState)
     Q_D(ScoreObject);
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
     if (d->volume == volume) {
-        if (Ac::NotDragging == dragState && !d->dragging) {
+        if (Ac::NotDragging == dragState && d->dragging) {
             d->endChangeData();
             d->dragging = false;
         }
