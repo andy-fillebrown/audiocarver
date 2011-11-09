@@ -34,6 +34,7 @@ public:
 
     static TrackSelectionModel *instance();
 
+    QModelIndexList selectedTrackIndexes() const;
     QList<IModelItem*> selectedTracks() const;
 };
 

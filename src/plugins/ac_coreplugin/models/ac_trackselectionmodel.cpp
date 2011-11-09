@@ -36,25 +36,34 @@ TrackSelectionModel *TrackSelectionModel::instance()
     return ::instance;
 }
 
-QList<IModelItem*> TrackSelectionModel::selectedTracks() const
+QModelIndexList TrackSelectionModel::selectedTrackIndexes() const
 {
+    QModelIndexList trackIndexes;
     QList<int> rows;
 
     TrackModel *trackModel = TrackModel::instance();
     const QModelIndexList indexes = selectedIndexes();
     foreach (const QModelIndex &index, indexes) {
         const QModelIndex sourceIndex = object_cast<QSortFilterProxyModel>(trackModel->sourceModel())->mapToSource(trackModel->mapToSource(index));
-        if (!rows.contains(sourceIndex.row()))
+        if (!rows.contains(sourceIndex.row())) {
+            trackIndexes.append(sourceIndex);
             rows.append(sourceIndex.row());
+        }
     }
 
+    return trackIndexes;
+}
+
+QList<IModelItem*> TrackSelectionModel::selectedTracks() const
+{
     QList<IModelItem*> tracks;
 
     IModel *model = IModel::instance();
-    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
-    const int n = rows.count();
+    const QModelIndexList indexes = selectedTrackIndexes();
+
+    const int n = indexes.count();
     for (int i = 0;  i < n; ++i)
-        tracks.append(model->itemFromIndex(model->index(rows.at(i), trackListIndex)));
+        tracks.append(model->itemFromIndex(indexes.at(i)));
 
     return tracks;
 }
