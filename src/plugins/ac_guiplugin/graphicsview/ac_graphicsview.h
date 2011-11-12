@@ -48,6 +48,9 @@ public slots:
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);
 
+    void insertPoints();
+    void removePoints();
+
 protected:
     virtual int sceneType() const { Q_ASSERT(false);  return -1; }
 

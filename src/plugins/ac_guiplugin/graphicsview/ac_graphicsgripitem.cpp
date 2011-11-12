@@ -27,6 +27,7 @@ const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_S
 class GraphicsGripItemPrivate
 {
 public:
+    QPointF originalPos;
     QGraphicsRectItem *rectItem;
 
     GraphicsGripItemPrivate(GraphicsGripItem *q)
@@ -34,8 +35,6 @@ public:
     {
         rectItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
         rectItem->setRect(GRIP_RECT);
-        rectItem->setPen(QPen(Qt::blue));
-        rectItem->setBrush(QBrush(Qt::blue));
         rectItem->setData(0, quintptr(query<IGripItem>(q)));
     }
 
@@ -48,6 +47,8 @@ public:
 GraphicsGripItem::GraphicsGripItem(const QPointF &position)
     :   d(new GraphicsGripItemPrivate(this))
 {
+    unhighlight();
+    d->originalPos = position;
     setPosition(position);
 }
 
@@ -56,12 +57,34 @@ GraphicsGripItem::~GraphicsGripItem()
     delete d;
 }
 
+void GraphicsGripItem::updateOriginalPosition()
+{
+    d->originalPos = pos();
+}
+
 IEntityItem *GraphicsGripItem::parentEntityItem() const
 {
     return objectToInterface_cast<IEntityItem>(parentItem());
 }
 
+const QPointF &GraphicsGripItem::originalPosition() const
+{
+    return d->originalPos;
+}
+
 void GraphicsGripItem::setPosition(const QPointF &position)
 {
     setPos(position);
+}
+
+void GraphicsGripItem::highlight()
+{
+    d->rectItem->setPen(QPen(Qt::red));
+    d->rectItem->setBrush(QBrush(Qt::red));
+}
+
+void GraphicsGripItem::unhighlight()
+{
+    d->rectItem->setPen(QPen(Qt::blue));
+    d->rectItem->setBrush(QBrush(Qt::blue));
 }

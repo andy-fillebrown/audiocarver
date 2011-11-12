@@ -113,10 +113,22 @@ GraphicsEntityItem::~GraphicsEntityItem()
 
 void GraphicsEntityItem::resetGrips()
 {
-    d->clearGripItems();
     const PointList &points = d->entity->points();
-    foreach (const Point &point, points)
-        d->addGripItem(new GraphicsGripItem(point.pos));
+    const int points_n = points.count();
+
+    for (int i = 0;  i < points_n;  ++i) {
+        if (i < d->gripItems.count())
+            d->gripItems[i]->setPosition(points.at(i).pos);
+        else
+            d->addGripItem(new GraphicsGripItem(points.at(i).pos));
+    }
+
+    for (int i = 0;  i < points_n;  ++i)
+        d->gripItems[i]->show();
+
+    const int grips_n = d->gripItems.count();
+    for (int i = points_n;  i < grips_n;  ++i)
+        d->gripItems[i]->hide();
 }
 
 IEntity *GraphicsEntityItem::entity() const
@@ -159,4 +171,7 @@ void GraphicsEntityItem::finishDraggingPoints()
     if (!d->entity)
         return;
     d->entity->setPoints(d->gripPoints());
+
+    foreach (GraphicsGripItem *gripItem, d->gripItems)
+        gripItem->updateOriginalPosition();
 }

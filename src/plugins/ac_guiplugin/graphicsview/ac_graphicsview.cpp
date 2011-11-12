@@ -71,7 +71,9 @@ public:
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
     QList<GraphicsEntityItem*> pickedEntities;
-    QList<IGripItem*> gripsBeingDragged;
+    QList<IGripItem*> pickedGrips;
+    IGripItem *curGrip;
+    QPoint curGripPos;
     QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
     quint32 viewState : 2;
@@ -81,6 +83,7 @@ public:
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
         ,   pickBox(new QGraphicsRectItem)
+        ,   curGrip(0)
         ,   rootItem(new GraphicsRootItem)
         ,   viewState(0)
         ,   dragState(0)
@@ -204,26 +207,49 @@ public:
 
     bool selectGrips(const QPoint &pos)
     {
+        bool selectedGrip = false;
+
         const QList<QGraphicsItem*> items = q->items(pos);
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
             if (unknown) {
                 IGripItem *grip = query<IGripItem>(unknown);
-                if (grip && !gripsBeingDragged.contains(grip)) {
-                    gripsBeingDragged.append(grip);
-                    IEntityItem *entity = grip->parentEntityItem();
-                    if (!entitiesToUpdate.contains(entity))
-                        entitiesToUpdate.append(entity);
+                if (grip) {
+                    selectedGrip = true;
+                    curGrip = grip;
+                    curGripPos = pos;
+
+                    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+                        grip->unhighlight();
+                        pickedGrips.removeOne(grip);
+                    } else {
+                        if (QApplication::keyboardModifiers() & Qt::ShiftModifier) {
+                            foreach (IGripItem *grip, pickedGrips)
+                                grip->unhighlight();
+                            pickedGrips.clear();
+                            entitiesToUpdate.clear();
+                        }
+
+                        grip->highlight();
+                        if (!pickedGrips.contains(grip)) {
+                            pickedGrips.append(grip);
+                            IEntityItem *entity = grip->parentEntityItem();
+                            if (!entitiesToUpdate.contains(entity))
+                                entitiesToUpdate.append(entity);
+                        }
+                    }
                 }
             }
         }
-        return !gripsBeingDragged.isEmpty();
+
+        return selectedGrip;
     }
 
     void startDraggingGrips()
     {
         IEditor::instance()->beginCommand();
         dragState = DraggingGrips;
+
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->startDraggingPoints();
     }
@@ -232,22 +258,30 @@ public:
     {
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
-        QPointF scenePos = rootItem->transform().map(q->mapToScene(pos));
-        foreach (IGripItem *grip, gripsBeingDragged)
-            grip->setPosition(scenePos);
+
+        const QPointF fromScenePos = rootItem->transform().map(q->mapToScene(curGripPos));
+        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
+        const QPointF sceneOffset = toScenePos - fromScenePos;
+
+        foreach (IGripItem *grip, pickedGrips)
+            grip->setPosition(grip->originalPosition() + sceneOffset);
+
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->updatePoints();
+
         vm->enableUpdates();
     }
 
     void finishDraggingGrips(const QPoint &pos)
     {
         dragGripsTo(pos);
+
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->finishDraggingPoints();
-        entitiesToUpdate.clear();
-        gripsBeingDragged.clear();
+
         dragState = 0;
+        curGrip = 0;
+
         IEditor::instance()->endCommand();
     }
 
@@ -278,8 +312,9 @@ public:
                 ? QRect(dragStartPos.x() - 2, dragStartPos.y() - 2, 4, 4)
                 : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
-        QList<IEntity*> entities;
+
         const QList<QGraphicsItem*> items = q->items(rect);
+        QList<IEntity*> entities;
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
             if (unknown) {
@@ -293,12 +328,14 @@ public:
                 }
             }
         }
+
         QItemSelection ss;
         ss.reserve(entities.count());
         foreach (IEntity *entity, entities) {
             const QModelIndex index = IModel::instance()->indexFromItem(query<IModelItem>(entity));
             ss.select(index, index);
         }
+
         QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
         if (entities.count())
             ss_flags = QItemSelectionModel::Select;
@@ -306,7 +343,9 @@ public:
             ss_flags = QItemSelectionModel::Deselect;
         else if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
             ss_flags |= QItemSelectionModel::Clear;
+
         NoteSelectionModel::instance()->select(ss, ss_flags);
+
         pickBox->hide();
         dragState = 0;
     }
@@ -361,6 +400,13 @@ public:
             GraphicsEntityItem *item = findEntityItem(entity);
             if (item) {
                 pickedEntities.removeOne(item);
+                entitiesToUpdate.removeOne(item);
+
+                for (int i = 0;  i < pickedGrips.count();  ++i) {
+                    IGripItem *grip = pickedGrips[i];
+                    if (item == grip->parentEntityItem())
+                        pickedGrips.removeAt(i--);
+                }
                 item->unhighlight();
                 delete item;
             }
@@ -372,10 +418,17 @@ public:
     {
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
+
+        foreach (IGripItem *item, pickedGrips)
+            item->unhighlight();
+        pickedGrips.clear();
+        entitiesToUpdate.clear();
+
         foreach (GraphicsEntityItem *item, pickedEntities)
             item->unhighlight();
         qDeleteAll(pickedEntities);
         pickedEntities.clear();
+
         vm->enableUpdates();
     }
 
@@ -520,6 +573,14 @@ void GraphicsView::viewScaleChanged(int role)
         d->dirty = true;
 }
 
+void GraphicsView::insertPoints()
+{
+}
+
+void GraphicsView::removePoints()
+{
+}
+
 void GraphicsView::zoomStarting()
 {
     setCursor(zoomCursor());
@@ -572,9 +633,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
         else
             d->startPan(event->pos());
     } else if (Qt::LeftButton == event->button()) {
-        if (d->selectGrips(event->pos()))
-            d->startDraggingGrips();
-        else
+        if (!d->selectGrips(event->pos()))
             d->startPicking(event->pos());
     }
 }
@@ -588,6 +647,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     case Panning:
         d->panTo(event->pos());
     }
+
+    if (d->curGrip && QApplication::startDragDistance() <= QPoint(event->pos() - d->curGripPos).manhattanLength())
+        d->startDraggingGrips();
+
     switch (d->dragState) {
     case DraggingGrips:
         d->dragGripsTo(event->pos());
@@ -595,6 +658,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     case Picking:
         d->dragPickBoxTo(event->pos());
     }
+
     event->setAccepted(d->viewState || d->dragState);
 }
 
@@ -617,8 +681,12 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         case Picking:
             d->finishPicking(event->pos());
             break;
+        default:
+            if (!d->curGrip)
+                d->clearPickedEntities();
         }
     }
+    d->curGrip = 0;
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
