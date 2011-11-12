@@ -648,7 +648,9 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
         d->panTo(event->pos());
     }
 
-    if (d->curGrip && QApplication::startDragDistance() <= QPoint(event->pos() - d->curGripPos).manhattanLength())
+    if (d->curGrip
+            && DraggingGrips != d->dragState
+            && QApplication::startDragDistance() <= QPoint(event->pos() - d->curGripPos).manhattanLength())
         d->startDraggingGrips();
 
     switch (d->dragState) {
