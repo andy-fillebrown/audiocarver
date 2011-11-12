@@ -3,3 +3,6 @@
 11/09/11: Fixed
 
 
+11/12/11: Grips are not resetting correctly when undo is called after dragging.
+
+
