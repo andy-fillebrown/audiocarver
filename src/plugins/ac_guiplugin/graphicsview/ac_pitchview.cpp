@@ -267,5 +267,5 @@ void PitchView::keyReleaseEvent(QKeyEvent *event)
             break;
         }
     } else
-        GraphicsView::keyPressEvent(event);
+        GraphicsView::keyReleaseEvent(event);
 }
