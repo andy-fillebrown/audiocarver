@@ -223,7 +223,7 @@ public:
                         grip->unhighlight();
                         pickedGrips.removeOne(grip);
                     } else {
-                        if (QApplication::keyboardModifiers() & Qt::ShiftModifier) {
+                        if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)) {
                             foreach (IGripItem *grip, pickedGrips)
                                 grip->unhighlight();
                             pickedGrips.clear();
