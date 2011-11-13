@@ -73,7 +73,6 @@ public:
     QList<GraphicsEntityItem*> pickedEntities;
     QList<IGripItem*> pickedGrips;
     IGripItem *curGrip;
-    QPoint curGripPos;
     QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
     quint32 viewState : 2;
@@ -216,8 +215,8 @@ public:
                 IGripItem *grip = query<IGripItem>(unknown);
                 if (grip) {
                     selectedGrip = true;
+                    dragStartPos = pos;
                     curGrip = grip;
-                    curGripPos = pos;
 
                     if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
                         grip->unhighlight();
@@ -262,7 +261,7 @@ public:
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
 
-        const QPointF fromScenePos = rootItem->transform().map(q->mapToScene(curGripPos));
+        const QPointF fromScenePos = curGrip->originalPosition();
         const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
         const QPointF sceneOffset = toScenePos - fromScenePos;
 
@@ -653,7 +652,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 
     if (d->curGrip
             && DraggingGrips != d->dragState
-            && QApplication::startDragDistance() <= QPoint(event->pos() - d->curGripPos).manhattanLength())
+            && QApplication::startDragDistance() <= QPoint(event->pos() - d->dragStartPos).manhattanLength())
         d->startDraggingGrips();
 
     switch (d->dragState) {
