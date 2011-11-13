@@ -36,12 +36,14 @@ class EditorPrivate
 public:
     Editor *q;
     UndoStack *undoStack;
+    quint32 undoEnabled : 1;
     quint32 undoing : 1;
-    quint32 creating : 31;
+    quint32 creating : 30;
 
     EditorPrivate(Editor *q)
         :   q(q)
         ,   undoStack(0)
+        ,   undoEnabled(quint32(true))
         ,   undoing(quint32(false))
         ,   creating(quint32(false))
     {}
@@ -65,7 +67,9 @@ Editor::~Editor()
 
 void Editor::undo()
 {
-    if (!d->creating && d->undoStack->canUndo()) {
+    if (d->undoEnabled
+            && !d->creating
+            && d->undoStack->canUndo()) {
         d->undoing = quint32(true);
         d->undoStack->undo();
         d->undoing = quint32(false);
@@ -74,7 +78,9 @@ void Editor::undo()
 
 void Editor::redo()
 {
-    if (!d->creating && d->undoStack->canRedo()) {
+    if (d->undoEnabled
+            && !d->creating
+            && d->undoStack->canRedo()) {
         d->undoing = quint32(true);
         d->undoStack->redo();
         d->undoing = quint32(false);
@@ -211,6 +217,16 @@ void Editor::paste()
 
 void Editor::selectAll()
 {
+}
+
+bool Editor::isUndoEnabled() const
+{
+    return d->undoEnabled;
+}
+
+void Editor::setUndoEnabled(bool enabled)
+{
+    d->undoEnabled = enabled;
 }
 
 void Editor::beginCommand(const QString &text)

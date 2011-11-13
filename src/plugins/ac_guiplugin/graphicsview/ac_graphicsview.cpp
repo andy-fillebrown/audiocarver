@@ -247,7 +247,10 @@ public:
 
     void startDraggingGrips()
     {
-        IEditor::instance()->beginCommand();
+        IEditor *editor = IEditor::instance();
+        editor->setUndoEnabled(false);
+        editor->beginCommand();
+
         dragState = DraggingGrips;
 
         foreach (IEntityItem *entity, entitiesToUpdate)
@@ -276,13 +279,15 @@ public:
     {
         dragGripsTo(pos);
 
-        foreach (IEntityItem *entity, entitiesToUpdate)
-            entity->finishDraggingPoints();
-
         dragState = 0;
         curGrip = 0;
 
-        IEditor::instance()->endCommand();
+        foreach (IEntityItem *entity, entitiesToUpdate)
+            entity->finishDraggingPoints();
+
+        IEditor *editor = IEditor::instance();
+        editor->endCommand();
+        editor->setUndoEnabled(true);
     }
 
     QRect pickBoxBounds() const
@@ -364,11 +369,6 @@ public:
             if (item->entity() == entity)
                 return item;
         return 0;
-    }
-
-    bool entityItemIsBeingDragged(GraphicsEntityItem *entityItem)
-    {
-        return entitiesToUpdate.contains(objectToInterface_cast<IEntityItem>(entityItem));
     }
 
     void setPickedEntities(const QList<IEntity*> &entities)
@@ -506,6 +506,9 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 {
     Q_UNUSED(bottomRight);
 
+    if (DraggingGrips == d->dragState)
+        return;
+
     // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
     IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
     IEntity *entity = query<IEntity>(item);
@@ -516,13 +519,13 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     }
     if (entity) {
         GraphicsEntityItem *entityItem = d->findEntityItem(entity);
-        if (entityItem && !d->entityItemIsBeingDragged(entityItem))
+        if (entityItem)
             entityItem->resetGrips();
         else {
             QList<IEntity*> subEntities = entity->subEntities(sceneType());
             foreach (IEntity* subEntity, subEntities) {
                 entityItem = d->findEntityItem(subEntity);
-                if (entityItem && !d->entityItemIsBeingDragged(entityItem))
+                if (entityItem)
                     entityItem->resetGrips();
             }
         }

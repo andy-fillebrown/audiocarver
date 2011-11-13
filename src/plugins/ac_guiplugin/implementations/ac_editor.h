@@ -35,6 +35,9 @@ public:
     void paste();
     void selectAll();
 
+    bool isUndoEnabled() const;
+    void setUndoEnabled(bool enabled);
+
     void beginCommand(const QString &text = QString());
     void endCommand();
 
