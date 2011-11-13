@@ -28,19 +28,46 @@ class GraphicsGripItemPrivate
 {
 public:
     QPointF originalPos;
-    QGraphicsRectItem *rectItem;
+    QGraphicsRectItem *item;
 
     GraphicsGripItemPrivate(GraphicsGripItem *q)
-        :   rectItem(new QGraphicsRectItem(q))
+        :   item(new QGraphicsRectItem(q))
     {
-        rectItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        rectItem->setRect(GRIP_RECT);
-        rectItem->setData(0, quintptr(query<IGripItem>(q)));
+        item->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        item->setRect(GRIP_RECT);
+        item->setData(0, quintptr(query<IGripItem>(q)));
+
+        QPen pen(Qt::blue, 2, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin);
+        item->setPen(pen);
     }
 
     ~GraphicsGripItemPrivate()
     {
-        delete rectItem;
+        delete item;
+    }
+
+    void setItemColor(const QColor &color)
+    {
+        QPen pen = item->pen();
+        QBrush brush = item->brush();
+
+        pen.setColor(color);
+        brush.setColor(color);
+
+        item->setPen(pen);
+        item->setBrush(brush);
+    }
+
+    void setItemFilled(bool filled)
+    {
+        QBrush brush = item->brush();
+
+        if (filled)
+            brush.setStyle(Qt::SolidPattern);
+        else
+            brush.setStyle(Qt::NoBrush);
+
+        item->setBrush(brush);
     }
 };
 
@@ -57,11 +84,6 @@ GraphicsGripItem::~GraphicsGripItem()
     delete d;
 }
 
-void GraphicsGripItem::updateOriginalPosition()
-{
-    d->originalPos = pos();
-}
-
 IEntityItem *GraphicsGripItem::parentEntityItem() const
 {
     return objectToInterface_cast<IEntityItem>(parentItem());
@@ -72,19 +94,35 @@ const QPointF &GraphicsGripItem::originalPosition() const
     return d->originalPos;
 }
 
+void GraphicsGripItem::updateOriginalPosition()
+{
+    d->originalPos = pos();
+}
+
 void GraphicsGripItem::setPosition(const QPointF &position)
 {
     setPos(position);
 }
 
-void GraphicsGripItem::highlight()
+void GraphicsGripItem::highlight(HighlightType type)
 {
-    d->rectItem->setPen(QPen(Qt::red));
-    d->rectItem->setBrush(QBrush(Qt::red));
+    QPen pen = d->item->pen();
+    QBrush brush = d->item->brush();
+
+    switch (type) {
+    case HoverHighlight:
+        d->setItemColor(Qt::blue);
+        break;
+    case FullHighlight:
+        d->setItemColor(Qt::red);
+        break;
+    }
+
+    d->setItemFilled(true);
 }
 
 void GraphicsGripItem::unhighlight()
 {
-    d->rectItem->setPen(QPen(Qt::blue));
-    d->rectItem->setBrush(QBrush(Qt::blue));
+    d->setItemColor(Qt::blue);
+    d->setItemFilled(false);
 }

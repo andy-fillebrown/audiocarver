@@ -57,6 +57,13 @@ public:
     // IModelItem
     int type() const { return Type; }
 
+    QVariant data(int role) const
+    {
+        if (Ac::VisibilityRole == role)
+            return isVisible();
+        return ScoreObject::data(role);
+    }
+
     // IUnknown
     void *query(int type) const
     {

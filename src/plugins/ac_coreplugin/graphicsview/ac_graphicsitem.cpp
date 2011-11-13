@@ -52,6 +52,7 @@ GraphicsCurveItem::GraphicsCurveItem(QGraphicsItem *parent)
 {
     QPen pen;
     pen.setCosmetic(true);
+    pen.setCapStyle(Qt::RoundCap);
     setPen(pen);
     d->updateColor();
     unhighlight();

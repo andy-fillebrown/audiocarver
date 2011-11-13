@@ -39,7 +39,8 @@ void NoteSelectionModel::select(const QItemSelection &selection, SelectionFlags 
     QItemSelection ss;
     const QModelIndexList indexes = selection.indexes();
     foreach (const QModelIndex &index, indexes)
-        if (Ac::NoteItem == index.data(Mi::ItemTypeRole).toInt())
+        if (Ac::NoteItem == index.data(Mi::ItemTypeRole).toInt()
+                && index.data(Ac::VisibilityRole).toBool())
             ss.select(index, index);
 
     QItemSelectionModel::select(ss, command);

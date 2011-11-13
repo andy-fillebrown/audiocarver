@@ -32,13 +32,13 @@ public:
     GraphicsGripItem(const QPointF &position);
     ~GraphicsGripItem();
 
-    void updateOriginalPosition();
 
     // IGripItem
     IEntityItem *parentEntityItem() const;
     const QPointF &originalPosition() const;
+    void updateOriginalPosition();
     void setPosition(const QPointF &position);
-    void highlight();
+    void highlight(HighlightType type = FullHighlight);
     void unhighlight();
 
     // IUnknown

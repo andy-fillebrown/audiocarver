@@ -31,10 +31,16 @@ class IGripItem : public IUnknown
 public:
     enum { Type = Ac::GripItemInterface };
 
+    enum HighlightType {
+        HoverHighlight,
+        FullHighlight
+    };
+
     virtual IEntityItem *parentEntityItem() const = 0;
     virtual const QPointF &originalPosition() const = 0;
+    virtual void updateOriginalPosition() = 0;
     virtual void setPosition(const QPointF &position) = 0;
-    virtual void highlight() = 0;
+    virtual void highlight(HighlightType type = FullHighlight) = 0;
     virtual void unhighlight() = 0;
 };
 

@@ -62,7 +62,7 @@ class GraphicsViewPrivate
 public:
     GraphicsView *q;
     QPoint dragStartPos;
-    QPoint curDragPos;
+    QPoint curPos;
     qreal zoomStartScaleX;
     qreal zoomStartScaleY;
     QPointF zoomStartPosDC;
@@ -72,8 +72,12 @@ public:
     QGraphicsRectItem *pickBox;
     QList<GraphicsEntityItem*> pickedEntities;
     QList<IGripItem*> pickedGrips;
+    QList<IGripItem*> prevPickedGrips;
     IGripItem *curGrip;
+    QList<IEntity*> hoveredEntities;
+    QList<IGripItem*> hoveredGrips;
     QList<IEntityItem*> entitiesToUpdate;
+    QList<IEntityItem*> prevEntitiesToUpdate;
     GraphicsRootItem *rootItem;
     quint32 viewState : 2;
     quint32 dragState : 2;
@@ -91,8 +95,10 @@ public:
         ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
+
         scene->addItem(rootItem);
         rootItem->setZValue(Q_FLOAT_MAX - 1.0f);
+
         scene->addItem(pickBox);
         pickBox->setZValue(Q_FLOAT_MAX);
         pickBox->setPen(QPen(QColor(0, 0, 255)));
@@ -124,7 +130,7 @@ public:
 
     QRect zoomGlyphLineRect() const
     {
-        return QRect(dragStartPos, curDragPos).normalized().adjusted(-1, -1, 2, 2);
+        return QRect(dragStartPos, curPos).normalized().adjusted(-1, -1, 2, 2);
     }
 
     QRect zoomGlyphCircleRect() const
@@ -132,11 +138,16 @@ public:
         return QRect(dragStartPos, dragStartPos).adjusted(-2, -2, 4, 4);
     }
 
+    QRect pickOneRect(const QPoint &pos) const
+    {
+        return QRect(pos.x() - 4, pos.y() - 4, 8, 8);
+    }
+
     void startZoom(const QPoint &pos)
     {
         q->zoomStarting();
         viewState = Zooming;
-        dragStartPos = curDragPos = pos;
+        dragStartPos = pos;
         const ViewManager *vm = ViewManager::instance();
         zoomStartScaleX = vm->scale(q->scaleRoleX());
         zoomStartScaleY = vm->scale(q->scaleRoleY());
@@ -148,7 +159,6 @@ public:
 
     void zoomTo(const QPoint &pos)
     {
-        curDragPos = pos;
         QPoint offset = pos - dragStartPos;
         const int x = offset.x();
         if (x) {
@@ -206,6 +216,61 @@ public:
         q->panFinished();
     }
 
+    void hover()
+    {
+        if (viewState || Picking == dragState)
+            return;
+
+        clearHovered();
+
+        const QRect viewPickRect = pickOneRect(curPos);
+        const QRectF scenePickRect = q->sceneTransform().inverted().mapRect(QRectF(viewPickRect));
+
+        bool gripIsHovered = false;
+        bool entityIsHovered = false;
+
+        const QList<QGraphicsItem*> items = q->items(viewPickRect);
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = variantToUnknown_cast(item->data(0));
+            if (unknown) {
+                IGripItem *grip = query<IGripItem>(unknown);
+                if (grip) {
+                    gripIsHovered = true;
+                    if (!pickedGrips.contains(grip)) {
+                        grip->highlight(IGripItem::HoverHighlight);
+                        hoveredGrips.append(grip);
+                    }
+                } else if (!gripIsHovered) {
+                    IEntity *entity = query<IEntity>(unknown);
+                    if (entity
+                            && !entityIsPicked(entity)
+                            && entity->intersects(scenePickRect)) {
+                        entityIsHovered = true;
+                        entity->highlight();
+                        hoveredEntities.append(entity);
+                    }
+                }
+
+                if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)
+                        && (gripIsHovered || entityIsHovered))
+                    break;
+            }
+        }
+    }
+
+    void clearHovered()
+    {
+        foreach (IGripItem *grip, hoveredGrips)
+            if (!pickedGrips.contains(grip))
+                grip->unhighlight();
+        hoveredGrips.clear();
+
+        foreach (IEntity *entity, hoveredEntities)
+            if (!entityIsPicked(entity))
+                entity->unhighlight();
+        hoveredEntities.clear();
+    }
+
     bool selectGrips(const QPoint &pos)
     {
         bool selectedGrip = false;
@@ -216,6 +281,9 @@ public:
             if (unknown) {
                 IGripItem *grip = query<IGripItem>(unknown);
                 if (grip) {
+                    if (!selectedGrip)
+                        clearHovered();
+
                     selectedGrip = true;
                     dragStartPos = pos;
                     curGrip = grip;
@@ -224,11 +292,8 @@ public:
                         grip->unhighlight();
                         pickedGrips.removeOne(grip);
                     } else {
-                        if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)) {
+                        if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
                             clearPickedGrips();
-                            lastGripPickWasSingle = true;
-                        } else
-                            lastGripPickWasSingle = false;
 
                         grip->highlight();
                         if (!pickedGrips.contains(grip)) {
@@ -249,8 +314,26 @@ public:
     {
         foreach (IGripItem *grip, pickedGrips)
             grip->unhighlight();
+
+        prevPickedGrips = pickedGrips;
+        prevEntitiesToUpdate = entitiesToUpdate;
+
         pickedGrips.clear();
         entitiesToUpdate.clear();
+    }
+
+    void resetPrevPickedGrips()
+    {
+        QList<IGripItem*> prev_picked_grips = prevPickedGrips;
+        QList<IEntityItem*> prev_entities_to_update = prevEntitiesToUpdate;
+
+        clearPickedGrips();
+
+        pickedGrips = prev_picked_grips;
+        entitiesToUpdate = prev_entities_to_update;
+
+        foreach (IGripItem *grip, pickedGrips)
+            grip->highlight();
     }
 
     void startDraggingGrips()
@@ -325,7 +408,7 @@ public:
     {
         bool pickOne = false;
         const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < QApplication::startDragDistance())
-                ? QRect(dragStartPos.x() - 2, dragStartPos.y() - 2, 4, 4)
+                ? pickOneRect(dragStartPos)
                 : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
 
@@ -339,7 +422,7 @@ public:
                     ISubEntity *sub_entity = query<ISubEntity>(unknown);
                     IEntity *parent_entity = sub_entity->parentEntity();
                     entities.append(parent_entity);
-                    if (pickOne)
+                    if (pickOne && !(QApplication::keyboardModifiers() & Qt::ShiftModifier))
                         break;
                 }
             }
@@ -357,12 +440,14 @@ public:
             ss_flags = QItemSelectionModel::Select;
             if (QApplication::keyboardModifiers() & Qt::ControlModifier)
                 ss_flags = QItemSelectionModel::Deselect;
+            if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
+                ss_flags |= QItemSelectionModel::Clear;
             NoteSelectionModel::instance()->select(ss, ss_flags);
-        } else if (pickedGrips.count() && pickOne)
-            clearPickedGrips();
-        else if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)) {
-            ss_flags |= QItemSelectionModel::Clear;
-            NoteSelectionModel::instance()->select(ss, ss_flags);
+        } else if (pickOne) {
+            if (!pickedGrips.isEmpty())
+                clearPickedGrips();
+            else
+                NoteSelectionModel::instance()->clear();
         }
 
         if (!pickOne)
@@ -372,9 +457,13 @@ public:
 
     bool entityIsPicked(IEntity *entity)
     {
-        foreach (GraphicsEntityItem *item, pickedEntities)
-            if (item->entity() == entity)
+        ISubEntity *subEntity = query<ISubEntity>(entity);
+        IEntity *parentEntity = subEntity ? subEntity->parentEntity() : 0;
+        foreach (GraphicsEntityItem *item, pickedEntities) {
+            const IEntity *itemEntity = item->entity();
+            if (itemEntity == entity || itemEntity == parentEntity)
                 return true;
+        }
         return false;
     }
 
@@ -411,6 +500,7 @@ public:
     {
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
+
         foreach (IEntity *entity, entities) {
             GraphicsEntityItem *item = findEntityItem(entity);
             if (item) {
@@ -426,6 +516,8 @@ public:
                 delete item;
             }
         }
+
+        clearPickedGrips();
         vm->enableUpdates();
     }
 
@@ -435,6 +527,8 @@ public:
         vm->disableUpdates();
 
         clearPickedGrips();
+        prevPickedGrips.clear();
+        prevEntitiesToUpdate.clear();
 
         foreach (GraphicsEntityItem *item, pickedEntities)
             item->unhighlight();
@@ -446,10 +540,11 @@ public:
 
     void resetPickedEntities()
     {
-        QList<IEntity*> entities;
-        foreach (GraphicsEntityItem *item, pickedEntities)
-            entities.append(item->entity());
-        setPickedEntities(entities);
+        clearPickedGrips();
+
+        NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
+        QItemSelection ss = noteSSModel->selection();
+        noteSSModel->select(ss, QItemSelectionModel::ClearAndSelect);
     }
 
     void clearPicks()
@@ -636,7 +731,7 @@ void GraphicsView::paintGlyphs(QPaintEvent *event)
         QPainter painter(viewport());
         painter.drawEllipse(d->dragStartPos, 2, 2);
         painter.setPen(Qt::DotLine);
-        painter.drawLine(d->dragStartPos, d->curDragPos);
+        painter.drawLine(d->dragStartPos, d->curPos);
     }
 }
 
@@ -663,6 +758,8 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
+    d->curPos = event->pos();
+
     switch (d->viewState) {
     case Zooming:
         d->zoomTo(event->pos());
@@ -685,6 +782,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     }
 
     event->setAccepted(d->viewState || d->dragState);
+    d->hover();
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
@@ -712,6 +810,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         }
     }
     d->curGrip = 0;
+    d->hover();
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
@@ -726,15 +825,19 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     vm->setScale(scaleAmount * vm->scale(scaleRoleY()), scaleRoleY());
     d->recenter(posDC, offsetDC);
     vm->updateViews();
+    d->hover();
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
-    if (DraggingGrips != d->dragState
-            && Qt::Key_Escape == event->key())
-        d->clearPicks();
-    else
+    if (DraggingGrips != d->dragState) {
+        if (Qt::Key_Escape == event->key())
+            d->clearPicks();
+        else if (Qt::Key_Space == event->key())
+            d->resetPrevPickedGrips();
+    } else
         MiGraphicsView::keyPressEvent(event);
+    d->hover();
 }
 
 bool GraphicsView::viewportEvent(QEvent *event)
