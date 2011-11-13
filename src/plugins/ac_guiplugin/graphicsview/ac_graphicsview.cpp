@@ -77,7 +77,8 @@ public:
     GraphicsRootItem *rootItem;
     quint32 viewState : 2;
     quint32 dragState : 2;
-    quint32 dirty : 28;
+    quint32 lastGripPickWasSingle : 1;
+    quint32 dirty : 27;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
@@ -86,6 +87,7 @@ public:
         ,   rootItem(new GraphicsRootItem)
         ,   viewState(0)
         ,   dragState(0)
+        ,   lastGripPickWasSingle(true)
         ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
@@ -224,6 +226,9 @@ public:
                     } else {
                         if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)) {
                             clearPickedGrips();
+                            lastGripPickWasSingle = true;
+                        } else
+                            lastGripPickWasSingle = false;
 
                         grip->highlight();
                         if (!pickedGrips.contains(grip)) {
@@ -291,6 +296,9 @@ public:
         IEditor *editor = IEditor::instance();
         editor->endCommand();
         editor->setUndoEnabled(true);
+
+        if (lastGripPickWasSingle)
+            clearPickedGrips();
     }
 
     QRect pickBoxBounds() const
@@ -345,16 +353,20 @@ public:
         }
 
         QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
-        if (entities.count())
+        if (entities.count()) {
             ss_flags = QItemSelectionModel::Select;
-        if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-            ss_flags = QItemSelectionModel::Deselect;
-        else if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
+            if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+                ss_flags = QItemSelectionModel::Deselect;
+            NoteSelectionModel::instance()->select(ss, ss_flags);
+        } else if (pickedGrips.count() && pickOne)
+            clearPickedGrips();
+        else if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)) {
             ss_flags |= QItemSelectionModel::Clear;
+            NoteSelectionModel::instance()->select(ss, ss_flags);
+        }
 
-        NoteSelectionModel::instance()->select(ss, ss_flags);
-
-        pickBox->hide();
+        if (!pickOne)
+            pickBox->hide();
         dragState = 0;
     }
 
@@ -438,6 +450,14 @@ public:
         foreach (GraphicsEntityItem *item, pickedEntities)
             entities.append(item->entity());
         setPickedEntities(entities);
+    }
+
+    void clearPicks()
+    {
+        if (!pickedGrips.isEmpty())
+            clearPickedGrips();
+        else
+            clearPickedEntities();
     }
 
     void updateViewSettings()
@@ -688,7 +708,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             break;
         default:
             if (!d->curGrip)
-                d->clearPickedEntities();
+                d->clearPicks();
         }
     }
     d->curGrip = 0;
@@ -712,7 +732,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
     if (DraggingGrips != d->dragState
             && Qt::Key_Escape == event->key())
-        d->clearPickedEntities();
+        d->clearPicks();
     else
         MiGraphicsView::keyPressEvent(event);
 }
