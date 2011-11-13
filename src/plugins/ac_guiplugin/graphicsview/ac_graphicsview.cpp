@@ -223,11 +223,7 @@ public:
                         pickedGrips.removeOne(grip);
                     } else {
                         if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)) {
-                            foreach (IGripItem *grip, pickedGrips)
-                                grip->unhighlight();
-                            pickedGrips.clear();
-                            entitiesToUpdate.clear();
-                        }
+                            clearPickedGrips();
 
                         grip->highlight();
                         if (!pickedGrips.contains(grip)) {
@@ -242,6 +238,14 @@ public:
         }
 
         return selectedGrip;
+    }
+
+    void clearPickedGrips()
+    {
+        foreach (IGripItem *grip, pickedGrips)
+            grip->unhighlight();
+        pickedGrips.clear();
+        entitiesToUpdate.clear();
     }
 
     void startDraggingGrips()
@@ -418,10 +422,7 @@ public:
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
 
-        foreach (IGripItem *item, pickedGrips)
-            item->unhighlight();
-        pickedGrips.clear();
-        entitiesToUpdate.clear();
+        clearPickedGrips();
 
         foreach (GraphicsEntityItem *item, pickedEntities)
             item->unhighlight();
