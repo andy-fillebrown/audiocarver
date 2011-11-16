@@ -37,6 +37,7 @@ public:
     IEntityItem *parentEntityItem() const;
     const QPointF &originalPosition() const;
     void updateOriginalPosition();
+    QPointF position() const;
     void setPosition(const QPointF &position);
     void highlight(HighlightType type = FullHighlight);
     void unhighlight();

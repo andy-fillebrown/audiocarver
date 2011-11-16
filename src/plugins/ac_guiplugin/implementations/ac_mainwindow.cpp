@@ -187,10 +187,35 @@ void MainWindow::createTrack()
 void MainWindow::erase()
 {
     IEditor *editor = IEditor::instance();
+    bool commandStarted = false;
+
+    // Erase selected points in pitch and control views.
+
+    ViewManager *vm = ViewManager::instance();
+    GraphicsView *view = object_cast<GraphicsView>(vm->view(Ac::PitchScene));
+    if (view->pointsAreSelected()) {
+        editor->beginCommand();
+        commandStarted = true;
+        view->removePoints();
+    }
+    view = object_cast<GraphicsView>(vm->view(Ac::ControlScene));
+    if (view->pointsAreSelected()) {
+        if (!commandStarted) {
+            editor->beginCommand();
+            commandStarted = true;
+        }
+        view->removePoints();
+    }
+    if (commandStarted) {
+        editor->endCommand();
+        return;
+    }
+
+    // If no points are selected, erase selected tracks in reverse row order so
+    // higher rows don't move if lower rows are being erased, too.
+
     IModel *model = IModel::instance();
 
-    // Erase selected tracks in reverse row order so higher row numbers don't
-    // change if lower row numbers are being erased, too.
     TrackSelectionModel *trackSSModel = TrackSelectionModel::instance();
     const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
     const QModelIndexList trackSS = trackSSModel->selectedRows();
@@ -208,7 +233,8 @@ void MainWindow::erase()
         return;
     }
 
-    // Erase selected notes if no tracks are selected.
+    // If no points or tracks are selected, erase selected notes.
+
     NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
     QModelIndexList noteSS = noteSSModel->selectedIndexes();
     if (!noteSS.isEmpty()) {

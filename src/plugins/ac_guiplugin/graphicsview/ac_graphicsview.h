@@ -48,6 +48,7 @@ public slots:
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);
 
+    bool pointsAreSelected() const;
     void insertPoints();
     void removePoints();
 

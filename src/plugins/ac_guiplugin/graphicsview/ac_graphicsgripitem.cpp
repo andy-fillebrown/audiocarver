@@ -99,6 +99,11 @@ void GraphicsGripItem::updateOriginalPosition()
     d->originalPos = pos();
 }
 
+QPointF GraphicsGripItem::position() const
+{
+    return pos();
+}
+
 void GraphicsGripItem::setPosition(const QPointF &position)
 {
     setPos(position);

@@ -72,7 +72,21 @@ void Curve::setPoints(const PointList &points, Ac::DragState dragState)
         return;
     }
     PointList oldPts = d->points;
-    d->points = points;
+    PointList newPts = points;
+    if (newPts.count() < 2) {
+        newPts.clear();
+        newPts.append(oldPts.first());
+        newPts.append(oldPts.last());
+        newPts.last().pos.setY(newPts.first().pos.y());
+    }
+    if (newPts == oldPts) {
+        if (Ac::NotDragging == dragState && d->dragging) {
+            d->endChangeData();
+            d->dragging = false;
+        }
+        return;
+    }
+    d->points = newPts;
     d->conformPoints();
     if (d->points == oldPts) {
         if (Ac::NotDragging == dragState && d->dragging) {
@@ -81,7 +95,7 @@ void Curve::setPoints(const PointList &points, Ac::DragState dragState)
         }
         return;
     }
-    PointList newPts = d->points;
+    newPts = d->points;
     d->points = oldPts;
     if (Ac::NotDragging == dragState || !d->dragging)
         d->beginChangeData();
