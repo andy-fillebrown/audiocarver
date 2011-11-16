@@ -30,6 +30,7 @@
 
 #include <QApplication>
 #include <QKeyEvent>
+#include <QMessageBox>
 
 class PitchViewPrivate
 {
@@ -55,17 +56,8 @@ public:
         IEditor::instance()->startCreating();
 
         IModel *model = IModel::instance();
-        const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
-
-        const int tracks_n = model->rowCount(trackListIndex);
-        for (int i = 0;  i < tracks_n;  ++i) {
-            const QModelIndex trackIndex = model->index(i, trackListIndex);
-            if (trackIndex.data(Ac::RecordingRole).toBool())
-                trackSSIndexes.append(trackIndex);
-        }
 
         const int trackSS_n = trackSSIndexes.count();
-
         currentNotes.reserve(trackSS_n);
         currentPitchCurves.reserve(trackSS_n);
 
@@ -177,8 +169,8 @@ public:
 
     void endNote()
     {
-        notesStarted = quint32(false);
-        creatingNotes = quint32(false);
+        notesStarted = false;
+        creatingNotes = false;
         trackSSIndexes.clear();
         currentNotes.clear();
         currentPitchCurves.clear();
@@ -217,7 +209,11 @@ QPointF PitchView::sceneCenter() const
 
 void PitchView::createNote()
 {
-    d->creatingNotes = quint32(true);
+    d->trackSSIndexes = IModel::instance()->findIndexes(Ac::TrackItem, Ac::RecordingRole, true);
+    if (d->trackSSIndexes.isEmpty())
+        QMessageBox::warning(this, "AudioCarver", "No tracks are recording.");
+    else
+        d->creatingNotes = true;
 }
 
 void PitchView::mousePressEvent(QMouseEvent *event)
