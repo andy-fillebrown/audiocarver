@@ -117,9 +117,11 @@ void GraphicsEntityItem::resetGrips()
     const int points_n = points.count();
 
     for (int i = 0;  i < points_n;  ++i) {
-        if (i < d->gripItems.count())
-            d->gripItems[i]->setPosition(points.at(i).pos);
-        else
+        if (i < d->gripItems.count()) {
+            IGripItem *gripItem = d->gripItems[i];
+            gripItem->setPosition(points.at(i).pos);
+            gripItem->updateOriginalPosition();
+        } else
             d->addGripItem(new GraphicsGripItem(points.at(i).pos));
     }
 
