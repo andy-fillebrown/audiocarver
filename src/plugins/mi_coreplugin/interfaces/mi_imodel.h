@@ -60,10 +60,21 @@ public:
 
     virtual QList<IModelItem*> findItems(int type, int role, const QVariant &value) const
     {
+        QList<IModelItem*> items;
+
+        QModelIndexList indexes = findIndexes(type, role, value);
+        foreach(const QModelIndex &index, indexes)
+            items.append(itemFromIndex(index));
+
+        return items;
+    }
+
+    virtual QModelIndexList findIndexes(int type, int role, const QVariant &value) const
+    {
         Q_UNUSED(type);
         Q_UNUSED(role);
         Q_UNUSED(value);
-        return QList<IModelItem*>();
+        return QModelIndexList();
     }
 
 signals:

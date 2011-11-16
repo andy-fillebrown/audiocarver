@@ -44,7 +44,7 @@ public:
     QModelIndex itemIndex(int type) const;
     QModelIndex listIndex(int type) const;
 
-    QList<IModelItem*> findItems(int type, int role, const QVariant &value) const;
+    QModelIndexList findIndexes(int type, int role, const QVariant &value) const;
 
 private:
     ModelPrivate *d;
