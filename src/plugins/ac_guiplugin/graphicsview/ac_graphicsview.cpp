@@ -144,6 +144,7 @@ public:
     void startZoom(const QPoint &pos)
     {
         q->zoomStarting();
+        clearHovered();
         viewState = Zooming;
         dragStartPos = pos;
         const ViewManager *vm = ViewManager::instance();
@@ -189,6 +190,7 @@ public:
     void startPan(const QPoint &pos)
     {
         q->panStarting();
+        clearHovered();
         viewState = Panning;
         dragStartPos = pos;
         const ViewManager *vm = ViewManager::instance();
@@ -216,10 +218,10 @@ public:
 
     void hover()
     {
+        clearHovered();
+
         if (viewState || Picking == dragState)
             return;
-
-        clearHovered();
 
         const QRect viewPickRect = pickOneRect(curPos);
         const QRectF scenePickRect = q->sceneTransform().inverted().mapRect(QRectF(viewPickRect));
@@ -240,12 +242,15 @@ public:
                     }
                 } else if (!gripIsHovered) {
                     IEntity *entity = query<IEntity>(unknown);
-                    if (entity
-                            && !entityIsPicked(entity)
-                            && entity->intersects(scenePickRect)) {
+                    if (entity && entity->intersects(scenePickRect)) {
                         entityIsHovered = true;
-                        entity->highlight();
-                        hoveredEntities.append(entity);
+                        if (!entityIsPicked(entity)) {
+                            hoveredEntities.append(entity);
+                            ISubEntity *subEntity = query<ISubEntity>(entity);
+                            if (subEntity)
+                                entity = subEntity->parentEntity();
+                            entity->highlight();
+                        }
                     }
                 }
 
@@ -263,9 +268,14 @@ public:
                 grip->unhighlight();
         hoveredGrips.clear();
 
-        foreach (IEntity *entity, hoveredEntities)
-            if (!entityIsPicked(entity))
+        foreach (IEntity *entity, hoveredEntities) {
+            if (!entityIsPicked(entity)) {
+                ISubEntity *subEntity = query<ISubEntity>(entity);
+                if (subEntity)
+                    entity = subEntity->parentEntity();
                 entity->unhighlight();
+            }
+        }
         hoveredEntities.clear();
     }
 
@@ -821,6 +831,12 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
             d->clearPicks();
     } else
         MiGraphicsView::keyPressEvent(event);
+    d->hover();
+}
+
+void GraphicsView::keyReleaseEvent(QKeyEvent *event)
+{
+    MiGraphicsView::keyReleaseEvent(event);
     d->hover();
 }
 
