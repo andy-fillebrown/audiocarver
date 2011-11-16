@@ -72,16 +72,14 @@ public:
     QGraphicsRectItem *pickBox;
     QList<GraphicsEntityItem*> pickedEntities;
     QList<IGripItem*> pickedGrips;
-    QList<IGripItem*> prevPickedGrips;
     IGripItem *curGrip;
     QList<IEntity*> hoveredEntities;
     QList<IGripItem*> hoveredGrips;
     QList<IEntityItem*> entitiesToUpdate;
-    QList<IEntityItem*> prevEntitiesToUpdate;
     GraphicsRootItem *rootItem;
     quint32 viewState : 2;
     quint32 dragState : 2;
-    quint32 lastGripPickWasSingle : 1;
+    quint32 extraGripsPicked : 1;
     quint32 dirty : 27;
 
     GraphicsViewPrivate(GraphicsView *q)
@@ -91,7 +89,7 @@ public:
         ,   rootItem(new GraphicsRootItem)
         ,   viewState(0)
         ,   dragState(0)
-        ,   lastGripPickWasSingle(true)
+        ,   extraGripsPicked(true)
         ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
@@ -275,6 +273,8 @@ public:
     {
         bool selectedGrip = false;
 
+        const int prevPickedGrips_n = pickedGrips.count();
+
         const QList<QGraphicsItem*> items = q->items(pos);
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
@@ -307,33 +307,21 @@ public:
             }
         }
 
+        if (!extraGripsPicked && prevPickedGrips_n != 0)
+            extraGripsPicked = prevPickedGrips_n < pickedGrips.count();
+
         return selectedGrip;
     }
 
     void clearPickedGrips()
     {
+        extraGripsPicked = false;
+
         foreach (IGripItem *grip, pickedGrips)
             grip->unhighlight();
 
-        prevPickedGrips = pickedGrips;
-        prevEntitiesToUpdate = entitiesToUpdate;
-
         pickedGrips.clear();
         entitiesToUpdate.clear();
-    }
-
-    void resetPrevPickedGrips()
-    {
-        QList<IGripItem*> prev_picked_grips = prevPickedGrips;
-        QList<IEntityItem*> prev_entities_to_update = prevEntitiesToUpdate;
-
-        clearPickedGrips();
-
-        pickedGrips = prev_picked_grips;
-        entitiesToUpdate = prev_entities_to_update;
-
-        foreach (IGripItem *grip, pickedGrips)
-            grip->highlight();
     }
 
     void startDraggingGrips()
@@ -380,7 +368,7 @@ public:
         editor->endCommand();
         editor->setUndoEnabled(true);
 
-        if (lastGripPickWasSingle)
+        if (!extraGripsPicked)
             clearPickedGrips();
     }
 
@@ -527,8 +515,6 @@ public:
         vm->disableUpdates();
 
         clearPickedGrips();
-        prevPickedGrips.clear();
-        prevEntitiesToUpdate.clear();
 
         foreach (GraphicsEntityItem *item, pickedEntities)
             item->unhighlight();
@@ -833,8 +819,6 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
     if (DraggingGrips != d->dragState) {
         if (Qt::Key_Escape == event->key())
             d->clearPicks();
-        else if (Qt::Key_Space == event->key())
-            d->resetPrevPickedGrips();
     } else
         MiGraphicsView::keyPressEvent(event);
     d->hover();
