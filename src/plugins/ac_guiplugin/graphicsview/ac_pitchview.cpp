@@ -175,6 +175,7 @@ public:
         currentNotes.clear();
         currentPitchCurves.clear();
         currentPoints.clear();
+        q->setCursor(GraphicsView::normalCrosshair());
     }
 };
 
@@ -211,9 +212,11 @@ void PitchView::createNote()
 {
     d->trackSSIndexes = IModel::instance()->findIndexes(Ac::TrackItem, Ac::RecordingRole, true);
     if (d->trackSSIndexes.isEmpty())
-        QMessageBox::warning(this, "AudioCarver", "No tracks are recording.");
-    else
+        QMessageBox::warning(this, PRO_NAME_STR, "No tracks are recording.");
+    else {
+        setCursor(creationCrosshair());
         d->creatingNotes = true;
+    }
 }
 
 void PitchView::mousePressEvent(QMouseEvent *event)

@@ -35,18 +35,6 @@
 
 #include <qmath.h>
 
-static const QCursor &crosshair()
-{
-    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair.png"));
-    return cursor;
-}
-
-static const QCursor &zoomCursor()
-{
-    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-cursor.png"));
-    return cursor;
-}
-
 enum ViewState {
     Zooming = 1,
     Panning
@@ -80,7 +68,8 @@ public:
     quint32 viewState : 2;
     quint32 dragState : 2;
     quint32 extraGripsPicked : 1;
-    quint32 dirty : 27;
+    quint32 insertingPoints : 1;
+    quint32 dirty : 26;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
@@ -89,7 +78,8 @@ public:
         ,   rootItem(new GraphicsRootItem)
         ,   viewState(0)
         ,   dragState(0)
-        ,   extraGripsPicked(true)
+        ,   extraGripsPicked(false)
+        ,   insertingPoints(false)
         ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
@@ -220,7 +210,7 @@ public:
     {
         clearHovered();
 
-        if (viewState || Picking == dragState)
+        if (viewState || Picking == dragState || insertingPoints)
             return;
 
         const QRect viewPickRect = pickOneRect(curPos);
@@ -557,6 +547,23 @@ public:
             clearPickedEntities();
     }
 
+    void insertPoint(const QPoint &pos)
+    {
+        const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
+
+        foreach (GraphicsEntityItem *entityItem, pickedEntities) {
+            IEntity *entity = entityItem->entity();
+            PointList pts = entity->points();
+
+            Point pt = Point(scenePos);
+            if (Qt::ControlModifier & QApplication::keyboardModifiers())
+                pt.curveType = Ac::BezierCurve;
+
+            pts.append(pt);
+            entity->setPoints(pts);
+        }
+    }
+
     void updateViewSettings()
     {
         const qreal sceneWidth = q->sceneWidth();
@@ -582,13 +589,31 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setViewportUpdateMode(FullViewportUpdate);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setCursor(crosshair());
+    setCursor(normalCrosshair());
     setMouseTracking(true);
 }
 
 GraphicsView::~GraphicsView()
 {
     delete d;
+}
+
+const QCursor &GraphicsView::normalCrosshair()
+{
+    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair-black.png"));
+    return cursor;
+}
+
+const QCursor &GraphicsView::creationCrosshair()
+{
+    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair-red.png"));
+    return cursor;
+}
+
+static const QCursor &zoomCursor()
+{
+    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-cursor.png"));
+    return cursor;
 }
 
 QTransform GraphicsView::sceneScale() const
@@ -612,6 +637,23 @@ void GraphicsView::updateView()
     if (d->dirty)
         updateViewSettings();
     update();
+}
+
+void GraphicsView::startInsertingPoints()
+{
+    d->insertingPoints = true;
+    setCursor(creationCrosshair());
+}
+
+void GraphicsView::finishInsertingPoints()
+{
+    setCursor(normalCrosshair());
+    d->insertingPoints = false;
+}
+
+bool GraphicsView::pointsAreSelected() const
+{
+    return 0 < d->pickedGrips.count();
 }
 
 void GraphicsView::modelAboutToBeReset()
@@ -693,16 +735,6 @@ void GraphicsView::viewScaleChanged(int role)
         d->dirty = true;
 }
 
-bool GraphicsView::pointsAreSelected() const
-{
-    return 0 < d->pickedGrips.count();
-}
-
-void GraphicsView::insertPoints()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
 void GraphicsView::removePoints()
 {
     foreach (IGripItem *grip, d->pickedGrips) {
@@ -727,7 +759,7 @@ void GraphicsView::zoomStarting()
 
 void GraphicsView::zoomFinished()
 {
-    setCursor(crosshair());
+    setCursor(normalCrosshair());
 }
 
 void GraphicsView::panStarting()
@@ -737,7 +769,7 @@ void GraphicsView::panStarting()
 
 void GraphicsView::panFinished()
 {
-    setCursor(crosshair());
+    setCursor(normalCrosshair());
 }
 
 void GraphicsView::updateViewSettings()
@@ -764,6 +796,9 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
+    if (d->insertingPoints)
+        return;
+
     if (Qt::RightButton == event->button()) {
         if (Picking == d->dragState)
             return;
@@ -803,36 +838,46 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     }
 
     event->setAccepted(d->viewState || d->dragState);
+
     d->hover();
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (Qt::RightButton == event->button()) {
-        switch (d->viewState) {
-        case Zooming:
-            d->finishZoom(event->pos());
-            break;
-        case Panning:
-            d->finishPan(event->pos());
-            break;
+        if (d->insertingPoints)
+            ViewManager::instance()->finishInsertingPoints();
+        else {
+            switch (d->viewState) {
+            case Zooming:
+                d->finishZoom(event->pos());
+                break;
+            case Panning:
+                d->finishPan(event->pos());
+                break;
+            }
         }
     } else if (Qt::LeftButton == event->button()) {
-        switch (d->dragState) {
-        case DraggingGrips:
-            d->finishDraggingGrips(event->pos());
-            break;
-        case Picking:
-            d->finishPicking(event->pos());
-            break;
-        default:
-            if (!d->curGrip ||
-                    ((!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
-                    && !(QApplication::keyboardModifiers() & Qt::ControlModifier)))
-                d->clearPicks();
+        if (d->insertingPoints)
+            d->insertPoint(event->pos());
+        else {
+            switch (d->dragState) {
+            case DraggingGrips:
+                d->finishDraggingGrips(event->pos());
+                break;
+            case Picking:
+                d->finishPicking(event->pos());
+                break;
+            default:
+                if (!d->curGrip ||
+                        ((!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
+                        && !(QApplication::keyboardModifiers() & Qt::ControlModifier)))
+                    d->clearPicks();
+            }
         }
+        d->curGrip = 0;
     }
-    d->curGrip = 0;
+
     d->hover();
 }
 
@@ -848,22 +893,32 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     vm->setScale(scaleAmount * vm->scale(scaleRoleY()), scaleRoleY());
     d->recenter(posDC, offsetDC);
     vm->updateViews();
+
     d->hover();
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
-    if (DraggingGrips != d->dragState) {
-        if (Qt::Key_Escape == event->key())
-            d->clearPicks();
-    } else
-        MiGraphicsView::keyPressEvent(event);
+    MiGraphicsView::keyPressEvent(event);
+
     d->hover();
 }
 
 void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
-    MiGraphicsView::keyReleaseEvent(event);
+    if (DraggingGrips != d->dragState) {
+        if (Qt::Key_Escape == event->key()) {
+            if (d->insertingPoints)
+                ViewManager::instance()->finishInsertingPoints();
+            else
+                d->clearPicks();
+        } else if (Qt::Key_Return == event->key() || Qt::Key_Enter == event->key()) {
+            if (d->insertingPoints)
+                ViewManager::instance()->finishInsertingPoints();
+        }
+    } else
+        MiGraphicsView::keyReleaseEvent(event);
+
     d->hover();
 }
 

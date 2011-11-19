@@ -35,11 +35,19 @@ public:
     GraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~GraphicsView();
 
+    static const QCursor &normalCrosshair();
+    static const QCursor &creationCrosshair();
+
     QTransform sceneScale() const;
     QTransform sceneTransform() const;
 
     bool isDirty() const;
     virtual void updateView();
+
+    void startInsertingPoints();
+    void finishInsertingPoints();
+
+    bool pointsAreSelected() const;
 
 public slots:
     void modelAboutToBeReset();
@@ -48,8 +56,6 @@ public slots:
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);
 
-    bool pointsAreSelected() const;
-    void insertPoints();
     void removePoints();
 
 protected:

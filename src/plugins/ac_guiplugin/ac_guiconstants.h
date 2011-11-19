@@ -32,6 +32,7 @@ const char * const M_MODIFY                = PRO_NAME_STR".Menu.Modify";
 const char * const M_BUILD                 = PRO_NAME_STR".Menu.Build";
 const char * const CREATETRACK             = PRO_NAME_STR".CreateTrack";
 const char * const CREATENOTE              = PRO_NAME_STR".CreateNote";
+const char * const INSERTPOINTS            = PRO_NAME_STR".InsertPoints";
 const char * const ERASE                   = PRO_NAME_STR".Erase";
 const char * const BUILD                   = PRO_NAME_STR".Build";
 const char * const BUILDALL                = PRO_NAME_STR".BuildAll";

@@ -60,6 +60,9 @@ public slots:
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
     void modelReset();
 
+    void startInsertingPoints();
+    void finishInsertingPoints();
+
 signals:
     void scoreLengthChanged();
     void viewPositionChanged(int role);

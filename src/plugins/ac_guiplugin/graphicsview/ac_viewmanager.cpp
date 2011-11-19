@@ -32,6 +32,10 @@
 #include <mi_idatabase.h>
 #include <mi_ieditor.h>
 
+#include <icore.h>
+#include <mainwindow.h>
+
+#include <QMessageBox>
 #include <QWidget>
 
 #include <QTimer>
@@ -388,4 +392,20 @@ void ViewManager::modelReset()
 {
     d->clearViewVariables();
     enableUpdates();
+}
+
+void ViewManager::startInsertingPoints()
+{
+    if (NoteSelectionModel::instance()->selection().isEmpty())
+        QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "No notes are selected.");
+    else {
+        d->pitchView->startInsertingPoints();
+        d->controlView->startInsertingPoints();
+    }
+}
+
+void ViewManager::finishInsertingPoints()
+{
+    d->pitchView->finishInsertingPoints();
+    d->controlView->finishInsertingPoints();
 }

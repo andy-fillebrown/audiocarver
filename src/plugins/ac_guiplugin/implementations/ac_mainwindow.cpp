@@ -100,6 +100,8 @@ void MainWindow::initActions()
 
     Core::Context globalContext(Core::Constants::C_GLOBAL);
 
+    ViewManager *viewManager = ViewManager::instance();
+
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
@@ -107,7 +109,6 @@ void MainWindow::initActions()
     // Create Track Action
     action = new QAction(tr("&Track"), this);
     cmd = am->registerAction(action, CREATETRACK, globalContext);
-    cmd->setDefaultKeySequence(Qt::Key_Insert);
     createMenu->addAction(cmd, G_CREATE_OTHER);
     connect(action, SIGNAL(triggered()), SLOT(createTrack()));
 
@@ -115,7 +116,14 @@ void MainWindow::initActions()
     action = new QAction(tr("&Note"), this);
     cmd = am->registerAction(action, CREATENOTE, globalContext);
     createMenu->addAction(cmd, G_CREATE_OTHER);
-    connect(action, SIGNAL(triggered()), object_cast<PitchView>(ViewManager::instance()->view(Ac::PitchScene)), SLOT(createNote()));
+    connect(action, SIGNAL(triggered()), object_cast<PitchView>(viewManager->view(Ac::PitchScene)), SLOT(createNote()));
+
+    // Insert Points Action
+    action = new QAction(tr("&Insert Points"), this);
+    cmd = am->registerAction(action, INSERTPOINTS, globalContext);
+    cmd->setDefaultKeySequence(Qt::Key_Insert);
+    modifyMenu->addAction(cmd, G_MODIFY_OTHER);
+    connect(action, SIGNAL(triggered()), viewManager, SLOT(startInsertingPoints()));
 
     // Erase Action
     action = new QAction(tr("&Erase"), this);
@@ -190,7 +198,6 @@ void MainWindow::erase()
     bool commandStarted = false;
 
     // Erase selected points in pitch and control views.
-
     ViewManager *vm = ViewManager::instance();
     GraphicsView *view = object_cast<GraphicsView>(vm->view(Ac::PitchScene));
     if (view->pointsAreSelected()) {
@@ -212,8 +219,7 @@ void MainWindow::erase()
     }
 
     // If no points are selected, erase selected tracks in reverse row order so
-    // higher rows don't move if lower rows are being erased, too.
-
+    // higher row numbers don't change if lower rows are being erased, too.
     IModel *model = IModel::instance();
 
     TrackSelectionModel *trackSSModel = TrackSelectionModel::instance();
@@ -234,7 +240,6 @@ void MainWindow::erase()
     }
 
     // If no points or tracks are selected, erase selected notes.
-
     NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
     QModelIndexList noteSS = noteSSModel->selectedIndexes();
     if (!noteSS.isEmpty()) {
