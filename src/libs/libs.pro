@@ -8,6 +8,7 @@ win32 {
 
 SUBDIRS += \
     csound \
+    csound/csound64.pro \
     aggregation \
     extensionsystem \
     utils \
