@@ -51,7 +51,9 @@
 #  undef WORDS_BIGENDIAN
 #endif
 
-/*  typedef uint32_t    DWORD; */
+#ifndef WIN32
+typedef uint32_t    DWORD;
+#endif
 /*  typedef int     BOOL; */
 typedef uint8_t     BYTE;
 typedef uint16_t    WORD;

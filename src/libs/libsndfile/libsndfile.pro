@@ -1,4 +1,4 @@
-TARGET = sndfile
+TARGET = mi_sndfile
 TEMPLATE = lib
 
 include(../../library.pri)
@@ -9,7 +9,8 @@ DEFINES -= UNICODE
 
 INCLUDEPATH *= src
 
-windows: INCLUDEPATH += config/windows
+win32: INCLUDEPATH *= config/windows
+else: INCLUDEPATH *= config
 
 HEADERS += \
     src/chanmap.h \
@@ -29,7 +30,8 @@ HEADERS += \
     src/GSM610/gsm.h \
     src/GSM610/gsm610_priv.h \
 
-windows: HEADERS += config/windows/config.h
+win32: HEADERS *= config/windows/config.h
+else: HEADERS *= config/config.h
 
 SOURCES += \
     src/aiff.c \

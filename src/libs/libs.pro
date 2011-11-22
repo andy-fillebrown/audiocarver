@@ -1,8 +1,12 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS = \
-    libsndfile \
+win32 {
+    SUBDIRS = \
+        libsndfile \
+}
+
+SUBDIRS += \
     csound \
     aggregation \
     extensionsystem \
