@@ -1,4 +1,4 @@
-include(../aggregation/aggregation.pri)
+load(../aggregation/aggregation.prf)
 
 INCLUDEPATH *= $$PWD
 DEPENDPATH *= $$PWD

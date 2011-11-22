@@ -1,4 +1,4 @@
-include(../project.pri)
+load(../project.prf)
 
 isEmpty(PROVIDER) {
     PROVIDER = $$PRO_AUTHOR_NOSPACE

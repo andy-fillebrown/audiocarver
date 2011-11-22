@@ -1,9 +1,10 @@
 TARGET = Aggregation
 TEMPLATE = lib
 
-include(../../library.pri)
+load(../../library.prf)
 
-DEFINES += AGGREGATION_LIBRARY
+DEFINES *= \
+    AGGREGATION_LIBRARY \
 
 HEADERS = \
     aggregate.h \
@@ -11,3 +12,6 @@ HEADERS = \
 
 SOURCES = \
     aggregate.cpp \
+
+OTHER_FILES *= \
+    aggregation.prf \

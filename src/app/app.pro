@@ -1,16 +1,18 @@
 TARGET = audiocarver
 TEMPLATE = app
 
-include(../../project.pri)
-include(../rpath.pri)
+load(../../project.prf)
+load(../rpath.prf)
 
 DESTDIR = $$PRO_APP_PATH
 
 QMAKE_SUBSTITUTES = Info.plist.in
 
-DEFINES += PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\"
+DEFINES *= \
+    PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\" \
 
-SOURCES += main.cpp
+SOURCES = \
+    main.cpp \
 
 LIBS *= \
     -l$$qtLibraryName(ExtensionSystem) \
@@ -34,3 +36,8 @@ win32 {
 
 # Remove "d" suffix so QtCreator finds audiocarver.exe
 TARGET = $$PRO_TARGET
+
+OTHER_FILES *= \
+    Info.plist.in \
+    project.ico \
+    project.rc \

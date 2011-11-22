@@ -10,6 +10,9 @@ CONFIG += ordered
 SUBDIRS = src
 
 OTHER_FILES *= \
+    bugs.txt \
+    project.prf \
+    \
     testing/test01.ac \
     testing/test02.ac \
     testing/test03.ac \

@@ -1,0 +1,4 @@
+
+load(../extensionsystem/extensionsystem_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(ExtensionSystem)

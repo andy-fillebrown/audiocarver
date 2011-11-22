@@ -1,5 +1,5 @@
 
-include(../qt_coreplugin/coreplugin.pri)
+load(../qt_coreplugin/qt_coreplugin.prf)
 
 DIRS = \
     dataobjects \

@@ -15,7 +15,8 @@ QMAKE_CXXFLAGS += \
     -fomit-frame-pointer \
     -freorder-blocks \
 
-DEFINES -= UNICODE
+DEFINES -= \
+    UNICODE \
 
 DEFINES *= \
     __BUILDING_LIBCSOUND \
@@ -258,6 +259,11 @@ LIBS *= \
     -lpthread
 
 OTHER_FILES *= \
+    AUTHORS \
+    ChangeLog \
+    COPYING \
+    LICENSE.random \
+    readme.txt \
     readme-parser.txt \
 
 useDoubles {
@@ -266,7 +272,7 @@ useDoubles {
     TARGET = $${TARGET}64
 }
 
-unix {
+unix: !macx: !freebsd* {
     INCLUDEPATH *= \
         ../libsndfile/src \
 

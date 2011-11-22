@@ -2,15 +2,15 @@ TARGET = QtCorePlugin
 TEMPLATE = lib
 
 load(../../plugin.prf)
-include(coreplugin_dependencies.pri)
+load(../qt_coreplugin/qt_coreplugin_dependencies.prf)
 
-QMAKE_SUBSTITUTES += pro_version.h.in
+QMAKE_SUBSTITUTES *= \
+    pro_version.h.in \
 
-win32-msvc*:QMAKE_CXXFLAGS += -wd4251 -wd4290 -wd4250
+DEFINES *= \
+    CORE_LIBRARY \
 
-DEFINES += CORE_LIBRARY
-
-HEADERS += \
+HEADERS = \
     actionmanager/actioncontainer.h \
     actionmanager/actioncontainer_p.h \
     actionmanager/actionmanager.h \
@@ -44,7 +44,7 @@ HEADERS += \
     settingsdatabase.h \
     versiondialog.h \
 
-SOURCES += \
+SOURCES = \
     actionmanager/actioncontainer.cpp \
     actionmanager/actionmanager.cpp \
     actionmanager/command.cpp \
@@ -70,15 +70,29 @@ SOURCES += \
     uniqueidmanager.cpp \
     versiondialog.cpp \
 
-FORMS += \
+FORMS = \
     actionmanager/commandmappings.ui \
     \
     generalsettings.ui \
 
-RESOURCES += core.qrc
+RESOURCES = \
+    core.qrc \
+
+OTHER_FILES *= \
+    pro_version.h.in \
+    qt_coreplugin.prf \
+    qt_coreplugin_dependencies.prf \
+    QtCorePlugin.pluginspec.in \
 
 unix {
     images.files = images/project_logo_*.png
     images.path = /share/pixmaps
     INSTALLS += images
+}
+
+win32-msvc* {
+    QMAKE_CXXFLAGS *= \
+        -wd4251 \
+        -wd4290 \
+        -wd4250 \
 }

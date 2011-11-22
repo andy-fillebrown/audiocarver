@@ -1,14 +1,14 @@
 TARGET   = Utils
 TEMPLATE = lib
 
-include(../../library.pri)
+include(../../library.prf)
 
 DEFINES += UTILS_LIB
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-HEADERS += \
+HEADERS = \
     basevalidatinglineedit.h \
     environment.h \
     fancylineedit.h \
@@ -19,7 +19,7 @@ HEADERS += \
     treewidgetcolumnstretcher.h \
     utils_global.h \
 
-SOURCES += \
+SOURCES = \
     basevalidatinglineedit.cpp \
     environment.cpp \
     fancylineedit.cpp \
@@ -29,7 +29,10 @@ SOURCES += \
     stringutils.cpp \
     treewidgetcolumnstretcher.cpp \
 
+OTHER_FILES *= \
+    utils.prf \
+
 unix: !macx {
-    HEADERS += unixutils.h
-    SOURCES += unixutils.cpp
+    HEADERS *= unixutils.h
+    SOURCES *= unixutils.cpp
 }

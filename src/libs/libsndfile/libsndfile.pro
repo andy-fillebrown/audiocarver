@@ -5,14 +5,13 @@ include(../../library.pri)
 
 CONFIG -= qt
 
-DEFINES -= UNICODE
+DEFINES -= \
+    UNICODE \
 
-INCLUDEPATH *= src
+INCLUDEPATH *= \
+    src \
 
-win32: INCLUDEPATH *= config/windows
-else: INCLUDEPATH *= config
-
-HEADERS += \
+HEADERS = \
     src/chanmap.h \
     src/common.h \
     src/ima_oki_adpcm.h \
@@ -30,10 +29,7 @@ HEADERS += \
     src/GSM610/gsm.h \
     src/GSM610/gsm610_priv.h \
 
-win32: HEADERS *= config/windows/config.h
-else: HEADERS *= config/config.h
-
-SOURCES += \
+SOURCES = \
     src/aiff.c \
     src/alaw.c \
     src/au.c \
@@ -115,4 +111,20 @@ SOURCES += \
     src/GSM610/table.c \
 
 OTHER_FILES *= \
+    AUTHORS \
+    ChangeLog \
+    COPYING \
     libsndfile.prf \
+    README \
+
+win32 {
+    INCLUDEPATH *= \
+        config/windows \
+
+    HEADERS *= \
+        config/windows/config.h
+}
+else {
+    error("libsndfile should only be built for Windows")
+}
+

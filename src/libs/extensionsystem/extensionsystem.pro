@@ -1,12 +1,13 @@
 TARGET = ExtensionSystem
 TEMPLATE = lib
 
-include(../../library.pri)
-include(extensionsystem_dependencies.pri)
+load(../../library.prf)
+load(../extensionsystem/extensionsystem_dependencies.prf)
 
-DEFINES += EXTENSIONSYSTEM_LIBRARY
+DEFINES *= \
+    EXTENSIONSYSTEM_LIBRARY \
 
-HEADERS += \
+HEADERS = \
     pluginerrorview.h \
     plugindetailsview.h \
     iplugin.h \
@@ -21,7 +22,7 @@ HEADERS += \
     optionsparser.h \
     plugincollection.h \
 
-SOURCES += \
+SOURCES = \
     pluginerrorview.cpp \
     plugindetailsview.cpp \
     iplugin.cpp \
@@ -31,11 +32,18 @@ SOURCES += \
     optionsparser.cpp \
     plugincollection.cpp \
 
-FORMS += \
+FORMS = \
     pluginview.ui \
     pluginerrorview.ui \
     plugindetailsview.ui \
 
-RESOURCES += pluginview.qrc
+RESOURCES = pluginview.qrc
 
-unix:!macx:!freebsd*:LIBS += -ldl
+OTHER_FILES *= \
+    extensionsystem.prf \
+    extensionsystem_dependencies.prf \
+
+unix:!macx:!freebsd* {
+    LIBS *= \
+        -ldl \
+}

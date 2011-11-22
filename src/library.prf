@@ -1,10 +1,11 @@
-include(../project.pri)
+load(../project.prf)
 
 win32:DLLDESTDIR = $$PRO_APP_PATH
 DESTDIR = $$PRO_LIBRARY_PATH
 
-include(rpath.pri)
+load(../src/rpath.prf)
 
+CONFIG += plugin plugin_with_soname
 contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 
 !macx {
