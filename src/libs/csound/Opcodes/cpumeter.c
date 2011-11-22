@@ -13,10 +13,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  */
 #include "csdl.h"
-#include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -39,7 +38,7 @@ typedef          long long SIC_t;
 
 typedef struct CPU_t {
    TIC_t u, n, s, i, w, x, y, z; // as represented in /proc/stat
-   TIC_t u_sav, n_sav, s_sav, i_sav, 
+   TIC_t u_sav, n_sav, s_sav, i_sav,
          w_sav, x_sav, y_sav, z_sav;
    unsigned id;  // the CPU ID number
 } CPU_t;
@@ -103,7 +102,7 @@ static int cpupercent_renew(CSOUND *csound, CPUMETER* p)
     rewind(p->fp);
     fflush(p->fp);
     k = p->cpu_max;
-    if (!fgets(buf, SMLBUFSIZ, p->fp)) 
+    if (!fgets(buf, SMLBUFSIZ, p->fp))
       return csound->PerfError(csound,Str("failed /proc/stat read"));
     num = sscanf(buf, "cpu %Lu %Lu %Lu %Lu %Lu %Lu %Lu %Lu",
                  &cpu[k].u, &cpu[k].n, &cpu[k].s, &cpu[k].i,
@@ -194,7 +193,7 @@ static int cpupercent(CSOUND *csound, CPUMETER* p)
       p->cnt = p->trig;
       return n;
     }
-    return OK;   
+    return OK;
 }
 
 #define S(x)    sizeof(x)

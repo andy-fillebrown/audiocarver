@@ -111,3 +111,6 @@ SOURCES += \
     src/GSM610/rpe.c \
     src/GSM610/short_term.c \
     src/GSM610/table.c \
+
+OTHER_FILES *= \
+    libsndfile.prf \
