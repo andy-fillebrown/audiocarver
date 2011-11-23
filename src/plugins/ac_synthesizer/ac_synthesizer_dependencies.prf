@@ -1,0 +1,13 @@
+
+load(../../libs/csound/csound.prf)
+load(../ac_coreplugin/ac_coreplugin.prf)
+
+DIRS = \
+    csound \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

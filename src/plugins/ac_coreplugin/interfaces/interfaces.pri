@@ -5,6 +5,7 @@ HEADERS *= \
 
 SOURCE_PAIRS = \
     ac_ifactory \
+    ac_isynthesizer \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= interfaces/$${pair}.h

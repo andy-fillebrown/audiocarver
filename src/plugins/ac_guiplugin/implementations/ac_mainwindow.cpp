@@ -22,6 +22,7 @@
 #include <ac_viewmanager.h>
 
 #include <ac_ifactory.h>
+#include <ac_isynthesizer.h>
 #include <ac_namespace.h>
 #include <ac_noteselectionmodel.h>
 #include <ac_trackselectionmodel.h>
@@ -38,6 +39,8 @@
 #include <icore.h>
 #include <mainwindow.h>
 #include <versiondialog.h>
+
+#include <pluginmanager.h>
 
 #include <QAction>
 #include <QMenu>
@@ -69,6 +72,7 @@ void MainWindow::initMenuBarGroups(QStringList &groups) const
     groups.insert(editGroupIndex + 1, G_CREATE);
     groups.insert(editGroupIndex + 2, G_MODIFY);
     groups.insert(editGroupIndex + 3, G_BUILD);
+    groups.insert(editGroupIndex + 4, G_PLAYBACK);
 }
 
 void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
@@ -85,6 +89,10 @@ void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QStrin
         title = tr("&Build");
         id = M_BUILD;
         groups << G_BUILD_OTHER;
+    } else if (G_PLAYBACK == menuBarGroup) {
+        title = tr("&Playback");
+        id = M_PLAYBACK;
+        groups << G_PLAYBACK_OTHER;
     } else if (Core::Constants::G_HELP == menuBarGroup)
         groups  << G_HELP_ABOUTAUDIOCARVER;
 }
@@ -96,6 +104,7 @@ void MainWindow::initActions()
     Core::ActionContainer *createMenu = am->actionContainer(M_CREATE);
     Core::ActionContainer *modifyMenu = am->actionContainer(M_MODIFY);
     Core::ActionContainer *buildMenu = am->actionContainer(M_BUILD);
+    Core::ActionContainer *playbackMenu = am->actionContainer(M_PLAYBACK);
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
 
     Core::Context globalContext(Core::Constants::C_GLOBAL);
@@ -145,6 +154,13 @@ void MainWindow::initActions()
     cmd->setDefaultKeySequence(tr("Ctrl+Shift+B"));
     buildMenu->addAction(cmd, G_BUILD_OTHER);
     connect(action, SIGNAL(triggered()), SLOT(buildAll()));
+
+    // Play Action
+    action = new QAction(tr("&Play"), this);
+    cmd = am->registerAction(action, PLAY, globalContext);
+    cmd->setDefaultKeySequence(tr(" "));
+    playbackMenu->addAction(cmd, G_PLAYBACK_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(play()));
 
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
@@ -262,4 +278,12 @@ void MainWindow::build()
 void MainWindow::buildAll()
 {
     qDebug() << Q_FUNC_INFO;
+}
+
+void MainWindow::play()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    ISynthesizer *synth = pm->getObject<ISynthesizer>();
+    if (synth)
+        synth->play();
 }

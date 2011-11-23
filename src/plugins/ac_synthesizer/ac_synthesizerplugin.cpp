@@ -15,35 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#include "ac_synthesizerplugin.h"
 
-#include <imainwindow.h>
+#include <ac_csoundsynthesizer.h>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+#include <QtPlugin>
+
+bool AcSynthesizerPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
-    Q_OBJECT
+    Q_UNUSED(arguments);
+    Q_UNUSED(errorMessage);
+    addAutoReleasedObject(new CsoundSynthesizer);
+    return true;
+}
 
-public:
-    MainWindow();
-    ~MainWindow();
-
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void play();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
-
-private:
-    MainWindowPrivate *d;
-};
-
-#endif // AC_MAINWINDOW_H
+Q_EXPORT_PLUGIN(AcSynthesizerPlugin)

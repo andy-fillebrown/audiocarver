@@ -1,0 +1,4 @@
+
+include(../ac_synthesizer/ac_synthesizer_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(AcSynthesizer)

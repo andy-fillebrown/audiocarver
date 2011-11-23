@@ -15,35 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#ifndef AC_CSOUNDSYNTHESIZER_H
+#define AC_CSOUNDSYNTHESIZER_H
 
-#include <imainwindow.h>
+#include <ac_isynthesizer.h>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+class CsoundSynthesizer : public ISynthesizer
 {
     Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow();
-
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
     void play();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
-
-private:
-    MainWindowPrivate *d;
 };
 
-#endif // AC_MAINWINDOW_H
+#endif // AC_CSOUNDSYNTHESIZER_H
