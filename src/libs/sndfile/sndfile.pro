@@ -1,4 +1,4 @@
-TARGET = mi_sndfile
+TARGET = sndfile
 TEMPLATE = lib
 
 load(../../library.prf)
@@ -114,7 +114,7 @@ OTHER_FILES *= \
     AUTHORS \
     ChangeLog \
     COPYING \
-    libsndfile.prf \
+    sndfile.prf \
     README \
 
 win32 {
@@ -125,6 +125,5 @@ win32 {
         config/windows/config.h
 }
 else {
-    error("mi_sndfile should only be built on Windows")
+    error("sndfile should only be built on Windows")
 }
-

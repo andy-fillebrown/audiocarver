@@ -1,4 +1,4 @@
-TARGET = mi_pthreads
+TARGET = pthreads
 TEMPLATE = lib
 
 load(../../library.prf)
@@ -66,6 +66,6 @@ win32 {
         config/windows/config.h
 }
 else {
-    error("mi_pthreads should only be built on Windows")
+    error("pthreads should only be built on Windows")
 }
 

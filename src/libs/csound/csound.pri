@@ -15,8 +15,8 @@ useDoubles {
 load(../../library.prf)
 
 win32 {
-    load(../libsndfile/libsndfile.prf)
     load(../pthreads/pthreads.prf)
+    load(../sndfile/sndfile.prf)
 }
 
 CONFIG -= qt

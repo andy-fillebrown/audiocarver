@@ -1,4 +1,4 @@
 
 INCLUDEPATH *= $$PWD/src
 
-LIBS *= -l$$qtLibraryName(mi_pthreads)
+LIBS *= -l$$qtLibraryName(pthreads)

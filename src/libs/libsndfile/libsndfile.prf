@@ -1,4 +1,0 @@
-
-INCLUDEPATH *= $$PWD/src
-
-LIBS *= -l$$qtLibraryName(mi_sndfile)

@@ -1,0 +1,4 @@
+
+INCLUDEPATH *= $$PWD/src
+
+LIBS *= -l$$qtLibraryName(sndfile)

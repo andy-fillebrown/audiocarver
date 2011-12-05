@@ -3,8 +3,8 @@ CONFIG += ordered
 
 win32 {
     SUBDIRS = \
-        libsndfile \
         pthreads \
+        sndfile \
 }
 
 SUBDIRS += \
