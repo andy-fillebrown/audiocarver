@@ -4,11 +4,11 @@ CONFIG += ordered
 win32 {
     SUBDIRS = \
         libsndfile \
+        pthreads \
 }
 
 SUBDIRS += \
     csound \
-    csound/csound64.pro \
     aggregation \
     extensionsystem \
     utils \
