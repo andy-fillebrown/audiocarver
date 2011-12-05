@@ -277,10 +277,11 @@ OTHER_FILES *= \
 
 unix: !macx: !freebsd* {
     INCLUDEPATH *= \
-        ../../libsndfile/src \
+        ../../sndfile/src \
 
     LIBS *= \
         -ldl \
+        -lpthread \
         /usr/lib/libsndfile.so.1 \
 }
 
