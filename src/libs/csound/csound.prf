@@ -1,5 +1,0 @@
-
-INCLUDEPATH *= $$PWD/H
-DEPENDPATH *= $$PWD/H
-
-LIBS *= -l$$qtLibraryName(csound)

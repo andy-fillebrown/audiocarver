@@ -1,0 +1,5 @@
+
+INCLUDEPATH *= $$dirname(PWD)/src/H
+DEPENDPATH *= $$dirname(PWD)/src/H
+
+LIBS *= -l$$qtLibraryName(csound64)

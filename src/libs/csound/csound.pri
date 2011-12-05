@@ -1,19 +1,36 @@
 TARGET = csound
 TEMPLATE = lib
 
+CONFIG(debug, debug|release): OBJECTS_DIR = debug
+else: OBJECTS_DIR = release
+
+useDoubles {
+    DEFINES *= USE_DOUBLE
+    OBJECTS_DIR = $$OBJECTS_DIR-double
+    TARGET = $${TARGET}64
+} else {
+    OBJECTS_DIR = $$OBJECTS_DIR-single
+}
+
 load(../../library.prf)
-win32: load(../libsndfile/libsndfile.prf)
+
+win32 {
+    load(../libsndfile/libsndfile.prf)
+    load(../pthreads/pthreads.prf)
+}
 
 CONFIG -= qt
 CONFIG *= warn_off
 
-QMAKE_CFLAGS += \
-    -fomit-frame-pointer \
-    -freorder-blocks \
+CONFIG(debug|release, release) {
+    QMAKE_CFLAGS += \
+        -fomit-frame-pointer \
+        -freorder-blocks \
 
-QMAKE_CXXFLAGS += \
-    -fomit-frame-pointer \
-    -freorder-blocks \
+    QMAKE_CXXFLAGS += \
+        -fomit-frame-pointer \
+        -freorder-blocks \
+}
 
 DEFINES -= \
     UNICODE \
@@ -40,241 +57,233 @@ CONFIG(debug|release, release) {
 }
 
 INCLUDEPATH *= \
-    H \
+    ../src \
+    ../src/H \
 
 HEADERS = \
-    Engine/*.h* \
-    H/*.h* \
-    InOut/*.h* \
-    OOps/*.h* \
-    Opcodes/*.h* \
-    Opcodes/gab/*.h* \
-    Top/*.h* \
+    ../src/Engine/*.h* \
+    ../src/H/*.h* \
+    ../src/InOut/*.h* \
+    ../src/OOps/*.h* \
+    ../src/Opcodes/*.h* \
+    ../src/Opcodes/gab/*.h* \
+    ../src/Top/*.h* \
 
 SOURCES = \
-    Engine/auxfd.c \
-    Engine/cfgvar.c \
-    Engine/corfiles.c \
-    Engine/csound_orc_semantics.c \
-    Engine/csound_orc_expressions.c \
-    Engine/csound_orc_optimize.c \
-    Engine/csound_orc_compile.c \
-    Engine/csound_orclex.c \
-    Engine/csound_orcparse.c \
-    Engine/entry1.c \
-    Engine/envvar.c \
-    Engine/express.c \
-    Engine/extract.c \
-    Engine/fgens.c \
-    Engine/insert.c \
-    Engine/linevent.c \
-    Engine/memalloc.c \
-    Engine/memfiles.c \
-    Engine/musmon.c \
-    Engine/namedins.c \
-    Engine/new_orc_parser.c \
-    Engine/otran.c \
-    Engine/rdorch.c \
-    Engine/rdscor.c \
-    Engine/scsort.c \
-    Engine/scxtract.c \
-    Engine/sort.c \
-    Engine/sread.c \
-    Engine/swrite.c \
-    Engine/swritestr.c \
-    Engine/symbtab.c \
-    Engine/twarp.c \
+    ../src/Engine/auxfd.c \
+    ../src/Engine/cfgvar.c \
+    ../src/Engine/corfiles.c \
+    ../src/Engine/csound_orc_semantics.c \
+    ../src/Engine/csound_orc_expressions.c \
+    ../src/Engine/csound_orc_optimize.c \
+    ../src/Engine/csound_orc_compile.c \
+    ../src/Engine/csound_orclex.c \
+    ../src/Engine/csound_orcparse.c \
+    ../src/Engine/entry1.c \
+    ../src/Engine/envvar.c \
+    ../src/Engine/express.c \
+    ../src/Engine/extract.c \
+    ../src/Engine/fgens.c \
+    ../src/Engine/insert.c \
+    ../src/Engine/linevent.c \
+    ../src/Engine/memalloc.c \
+    ../src/Engine/memfiles.c \
+    ../src/Engine/musmon.c \
+    ../src/Engine/namedins.c \
+    ../src/Engine/new_orc_parser.c \
+    ../src/Engine/otran.c \
+    ../src/Engine/rdorch.c \
+    ../src/Engine/rdscor.c \
+    ../src/Engine/scsort.c \
+    ../src/Engine/scxtract.c \
+    ../src/Engine/sort.c \
+    ../src/Engine/sread.c \
+    ../src/Engine/swrite.c \
+    ../src/Engine/swritestr.c \
+    ../src/Engine/symbtab.c \
+    ../src/Engine/twarp.c \
     \
-    InOut/libsnd.c \
-    InOut/libsnd_u.c \
-    InOut/midifile.c \
-    InOut/midirecv.c \
-    InOut/midisend.c \
-    InOut/winascii.c \
-    InOut/windin.c \
-    InOut/window.c \
-    InOut/winEPS.c \
+    ../src/InOut/libsnd.c \
+    ../src/InOut/libsnd_u.c \
+    ../src/InOut/midifile.c \
+    ../src/InOut/midirecv.c \
+    ../src/InOut/midisend.c \
+    ../src/InOut/winascii.c \
+    ../src/InOut/windin.c \
+    ../src/InOut/window.c \
+    ../src/InOut/winEPS.c \
     \
-    OOps/aops.c \
-    OOps/bus.c \
-    OOps/cmath.c \
-    OOps/diskin.c \
-    OOps/diskin2.c \
-    OOps/disprep.c \
-    OOps/dumpf.c \
-    OOps/fftlib.c \
-    OOps/goto_ops.c \
-    OOps/midiinterop.c \
-    OOps/midiops.c \
-    OOps/midiout.c \
-    OOps/mxfft.c \
-    OOps/oscils.c \
-    OOps/pstream.c \
-    OOps/pvfileio.c \
-    OOps/pvsanal.c \
-    OOps/random.c \
-    OOps/remote.c \
-    OOps/schedule.c \
-    OOps/sndinfUG.c \
-    OOps/str_ops.c \
-    OOps/ugens1.c \
-    OOps/ugens2.c \
-    OOps/ugens3.c \
-    OOps/ugens4.c \
-    OOps/ugens5.c \
-    OOps/ugens6.c \
-    OOps/ugrw1.c \
-    OOps/ugrw2.c \
-    OOps/vdelay.c \
+    ../src/OOps/aops.c \
+    ../src/OOps/bus.c \
+    ../src/OOps/cmath.c \
+    ../src/OOps/diskin.c \
+    ../src/OOps/diskin2.c \
+    ../src/OOps/disprep.c \
+    ../src/OOps/dumpf.c \
+    ../src/OOps/fftlib.c \
+    ../src/OOps/goto_ops.c \
+    ../src/OOps/midiinterop.c \
+    ../src/OOps/midiops.c \
+    ../src/OOps/midiout.c \
+    ../src/OOps/mxfft.c \
+    ../src/OOps/oscils.c \
+    ../src/OOps/pstream.c \
+    ../src/OOps/pvfileio.c \
+    ../src/OOps/pvsanal.c \
+    ../src/OOps/random.c \
+    ../src/OOps/remote.c \
+    ../src/OOps/schedule.c \
+    ../src/OOps/sndinfUG.c \
+    ../src/OOps/str_ops.c \
+    ../src/OOps/ugens1.c \
+    ../src/OOps/ugens2.c \
+    ../src/OOps/ugens3.c \
+    ../src/OOps/ugens4.c \
+    ../src/OOps/ugens5.c \
+    ../src/OOps/ugens6.c \
+    ../src/OOps/ugrw1.c \
+    ../src/OOps/ugrw2.c \
+    ../src/OOps/vdelay.c \
     \
-    Opcodes/ambicode.c \
-    Opcodes/ambicode1.c \
-    Opcodes/babo.c \
-    Opcodes/bbcut.c \
-    Opcodes/bilbar.c \
-    Opcodes/biquad.c \
-    Opcodes/bowedbar.c \
-    Opcodes/butter.c \
-    Opcodes/clfilt.c \
-    Opcodes/compress.c \
-    Opcodes/cpumeter.c \
-    Opcodes/cross2.c \
-    Opcodes/crossfm.c \
-    Opcodes/dam.c \
-    Opcodes/dcblockr.c \
-    Opcodes/dsputil.c \
-    Opcodes/eqfil.c \
-    Opcodes/fareyseq.c \
-    Opcodes/filter.c \
-    Opcodes/flanger.c \
-    Opcodes/fm4op.c \
-    Opcodes/follow.c \
-    Opcodes/fout.c \
-    Opcodes/freeverb.c \
-    Opcodes/ftconv.c \
-    Opcodes/ftest.c \
-    Opcodes/ftgen.c \
-    Opcodes/grain.c \
-    Opcodes/grain4.c \
-    Opcodes/harmon.c \
-    Opcodes/hrtfearly.c \
-    Opcodes/hrtferX.c \
-    Opcodes/hrtfopcodes.c \
-    Opcodes/hrtfreverb.c \
-    Opcodes/ifd.c \
-    Opcodes/locsig.c \
-    Opcodes/loscilx.c \
-    Opcodes/lowpassr.c \
-    Opcodes/mandolin.c \
-    Opcodes/metro.c \
-    Opcodes/midiops2.c \
-    Opcodes/midiops3.c \
-    Opcodes/minmax.c \
-    Opcodes/modal4.c \
-    Opcodes/modmatrix.c \
-    Opcodes/moog1.c \
-    Opcodes/newfils.c \
-    Opcodes/nlfilt.c \
-    Opcodes/oscbnk.c \
-    Opcodes/pan2.c \
-    Opcodes/partials.c \
-    Opcodes/partikkel.c \
-    Opcodes/phisem.c \
-    Opcodes/physmod.c \
-    Opcodes/physutil.c \
-    Opcodes/pitch.c \
-    Opcodes/pitch0.c \
-    Opcodes/pitchtrack.c \
-    Opcodes/psynth.c \
-    Opcodes/pvadd.c \
-    Opcodes/pvinterp.c \
-    Opcodes/pvlock.c \
-    Opcodes/pvoc.c \
-    Opcodes/pvocext.c \
-    Opcodes/pvread.c \
-    Opcodes/pvsbasic.c \
-    Opcodes/pvsbuffer.c \
-    Opcodes/pvscent.c \
-    Opcodes/pvsdemix.c \
-    Opcodes/pvsband.c \
-    Opcodes/pluck.c \
-    Opcodes/pvs_ops.c \
-    Opcodes/repluck.c \
-    Opcodes/reverbsc.c \
-    Opcodes/scoreline.c \
-    Opcodes/seqtime.c \
-    Opcodes/sfont.c \
-    Opcodes/shaker.c \
-    Opcodes/shape.c \
-    Opcodes/singwave.c \
-    Opcodes/sndloop.c \
-    Opcodes/sndwarp.c \
-    Opcodes/space.c \
-    Opcodes/spat3d.c \
-    Opcodes/spectra.c \
-    Opcodes/stackops.c \
-    Opcodes/stdopcod.c \
-    Opcodes/syncgrain.c \
-    Opcodes/tabsum.c \
-    Opcodes/tabvars.c \
-    Opcodes/ugakbari.c \
-    Opcodes/ugens7.c \
-    Opcodes/ugens8.c \
-    Opcodes/ugens9.c \
-    Opcodes/ugensa.c \
-    Opcodes/uggab.c \
-    Opcodes/ugmoss.c \
-    Opcodes/ugnorman.c \
-    Opcodes/ugsc.c \
-    Opcodes/vbap.c \
-    Opcodes/vbap_eight.c \
-    Opcodes/vbap_four.c \
-    Opcodes/vbap_sixteen.c \
-    Opcodes/vbap_zak.c \
-    Opcodes/Vosim.c \
-    Opcodes/vpvoc.c \
-    Opcodes/wave-terrain.c \
+    ../src/Opcodes/ambicode.c \
+    ../src/Opcodes/ambicode1.c \
+    ../src/Opcodes/babo.c \
+    ../src/Opcodes/bbcut.c \
+    ../src/Opcodes/bilbar.c \
+    ../src/Opcodes/biquad.c \
+    ../src/Opcodes/bowedbar.c \
+    ../src/Opcodes/butter.c \
+    ../src/Opcodes/clfilt.c \
+    ../src/Opcodes/compress.c \
+    ../src/Opcodes/cpumeter.c \
+    ../src/Opcodes/cross2.c \
+    ../src/Opcodes/crossfm.c \
+    ../src/Opcodes/dam.c \
+    ../src/Opcodes/dcblockr.c \
+    ../src/Opcodes/dsputil.c \
+    ../src/Opcodes/eqfil.c \
+    ../src/Opcodes/fareyseq.c \
+    ../src/Opcodes/filter.c \
+    ../src/Opcodes/flanger.c \
+    ../src/Opcodes/fm4op.c \
+    ../src/Opcodes/follow.c \
+    ../src/Opcodes/fout.c \
+    ../src/Opcodes/freeverb.c \
+    ../src/Opcodes/ftconv.c \
+    ../src/Opcodes/ftest.c \
+    ../src/Opcodes/ftgen.c \
+    ../src/Opcodes/grain.c \
+    ../src/Opcodes/grain4.c \
+    ../src/Opcodes/harmon.c \
+    ../src/Opcodes/hrtfearly.c \
+    ../src/Opcodes/hrtferX.c \
+    ../src/Opcodes/hrtfopcodes.c \
+    ../src/Opcodes/hrtfreverb.c \
+    ../src/Opcodes/ifd.c \
+    ../src/Opcodes/locsig.c \
+    ../src/Opcodes/loscilx.c \
+    ../src/Opcodes/lowpassr.c \
+    ../src/Opcodes/mandolin.c \
+    ../src/Opcodes/metro.c \
+    ../src/Opcodes/midiops2.c \
+    ../src/Opcodes/midiops3.c \
+    ../src/Opcodes/minmax.c \
+    ../src/Opcodes/modal4.c \
+    ../src/Opcodes/modmatrix.c \
+    ../src/Opcodes/moog1.c \
+    ../src/Opcodes/newfils.c \
+    ../src/Opcodes/nlfilt.c \
+    ../src/Opcodes/oscbnk.c \
+    ../src/Opcodes/pan2.c \
+    ../src/Opcodes/partials.c \
+    ../src/Opcodes/partikkel.c \
+    ../src/Opcodes/phisem.c \
+    ../src/Opcodes/physmod.c \
+    ../src/Opcodes/physutil.c \
+    ../src/Opcodes/pitch.c \
+    ../src/Opcodes/pitch0.c \
+    ../src/Opcodes/pitchtrack.c \
+    ../src/Opcodes/psynth.c \
+    ../src/Opcodes/pvadd.c \
+    ../src/Opcodes/pvinterp.c \
+    ../src/Opcodes/pvlock.c \
+    ../src/Opcodes/pvoc.c \
+    ../src/Opcodes/pvocext.c \
+    ../src/Opcodes/pvread.c \
+    ../src/Opcodes/pvsbasic.c \
+    ../src/Opcodes/pvsbuffer.c \
+    ../src/Opcodes/pvscent.c \
+    ../src/Opcodes/pvsdemix.c \
+    ../src/Opcodes/pvsband.c \
+    ../src/Opcodes/pluck.c \
+    ../src/Opcodes/pvs_ops.c \
+    ../src/Opcodes/repluck.c \
+    ../src/Opcodes/reverbsc.c \
+    ../src/Opcodes/scoreline.c \
+    ../src/Opcodes/seqtime.c \
+    ../src/Opcodes/sfont.c \
+    ../src/Opcodes/shaker.c \
+    ../src/Opcodes/shape.c \
+    ../src/Opcodes/singwave.c \
+    ../src/Opcodes/sndloop.c \
+    ../src/Opcodes/sndwarp.c \
+    ../src/Opcodes/space.c \
+    ../src/Opcodes/spat3d.c \
+    ../src/Opcodes/spectra.c \
+    ../src/Opcodes/stackops.c \
+    ../src/Opcodes/stdopcod.c \
+    ../src/Opcodes/syncgrain.c \
+    ../src/Opcodes/tabsum.c \
+    ../src/Opcodes/tabvars.c \
+    ../src/Opcodes/ugakbari.c \
+    ../src/Opcodes/ugens7.c \
+    ../src/Opcodes/ugens8.c \
+    ../src/Opcodes/ugens9.c \
+    ../src/Opcodes/ugensa.c \
+    ../src/Opcodes/uggab.c \
+    ../src/Opcodes/ugmoss.c \
+    ../src/Opcodes/ugnorman.c \
+    ../src/Opcodes/ugsc.c \
+    ../src/Opcodes/vbap.c \
+    ../src/Opcodes/vbap_eight.c \
+    ../src/Opcodes/vbap_four.c \
+    ../src/Opcodes/vbap_sixteen.c \
+    ../src/Opcodes/vbap_zak.c \
+    ../src/Opcodes/Vosim.c \
+    ../src/Opcodes/vpvoc.c \
+    ../src/Opcodes/wave-terrain.c \
     \
-    Opcodes/gab/gab.c \
-    Opcodes/gab/hvs.c \
-    Opcodes/gab/newgabopc.c \
-    Opcodes/gab/sliderTable.c \
-    Opcodes/gab/tabmorph.c \
-    Opcodes/gab/vectorial.c \
+    ../src/Opcodes/gab/gab.c \
+    ../src/Opcodes/gab/hvs.c \
+    ../src/Opcodes/gab/newgabopc.c \
+    ../src/Opcodes/gab/sliderTable.c \
+    ../src/Opcodes/gab/tabmorph.c \
+    ../src/Opcodes/gab/vectorial.c \
     \
-    Top/argdecode.c \
-    Top/cscore_internal.c \
-    Top/cscorfns.c \
-    Top/csmodule.c \
-    Top/csound.c \
-    Top/getstring.c \
-    Top/main.c \
-    Top/new_opts.c \
-    Top/one_file.c \
-    Top/opcode.c \
-    Top/threads.c \
-    Top/utility.c
-
-LIBS *= \
-    -lpthread
+    ../src/Top/argdecode.c \
+    ../src/Top/cscore_internal.c \
+    ../src/Top/cscorfns.c \
+    ../src/Top/csmodule.c \
+    ../src/Top/csound.c \
+    ../src/Top/getstring.c \
+    ../src/Top/main.c \
+    ../src/Top/new_opts.c \
+    ../src/Top/one_file.c \
+    ../src/Top/opcode.c \
+    ../src/Top/threads.c \
+    ../src/Top/utility.c
 
 OTHER_FILES *= \
-    AUTHORS \
-    ChangeLog \
-    COPYING \
-    LICENSE.random \
-    readme.txt \
-    readme-parser.txt \
-
-useDoubles {
-    DEFINES *= USE_DOUBLE
-    OBJECTS_DIR = $$OBJECTS_DIR-64
-    TARGET = $${TARGET}64
-}
+    ../src/AUTHORS \
+    ../src/ChangeLog \
+    ../src/COPYING \
+    ../src/LICENSE.random \
+    ../src/readme.txt \
+    ../src/readme-parser.txt \
 
 unix: !macx: !freebsd* {
     INCLUDEPATH *= \
-        ../libsndfile/src \
+        ../../libsndfile/src \
 
     LIBS *= \
         -ldl \
@@ -294,5 +303,5 @@ win32 {
         WIN32 \
 
     LIBS *= \
-        -lwsock32
+        -lwsock32 \
 }

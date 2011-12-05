@@ -1,5 +1,6 @@
 
-include(csound.pri)
+TEMPLATE = subdirs
 
-OTHER_FILES *= \
-    csound.prf \
+SUBDIRS = \
+    csound \
+    csound64 \
