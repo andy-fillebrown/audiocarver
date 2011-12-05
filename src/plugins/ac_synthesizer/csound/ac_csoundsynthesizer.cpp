@@ -20,6 +20,7 @@
 #include <csound.h>
 
 #include <QCoreApplication>
+#include <QDir>
 
 void CsoundSynthesizer::play()
 {
@@ -30,6 +31,14 @@ void CsoundSynthesizer::play()
         qDebug() << Q_FUNC_INFO << "Error creating";
         return;
     }
+
+    QDir rootDir(QCoreApplication::applicationDirPath());
+    rootDir.cdUp();
+    const QString rootDirPath = rootDir.absolutePath() + "/";
+
+    const QString opcodeDir = rootDirPath;
+    const QByteArray opcodeDir_ba = opcodeDir.toLocal8Bit();
+    csoundSetGlobalEnv("OPCODEDIR", opcodeDir_ba.constData());
 
     int result = 0;
     result = csoundPreCompile(csound);
@@ -42,10 +51,10 @@ void CsoundSynthesizer::play()
         char arg_n[] = "-odac";
         char arg_d[] = "-d";
 
-        QString csd = QCoreApplication::applicationDirPath();
-        csd.chop(3);
-        csd += "testing/moogladder.csd";
-        char *arg_csd = const_cast<char*>(qPrintable(csd));
+        const QString csd = rootDirPath + "testing/moogladder.csd";
+        QByteArray csd_ba = csd.toLocal8Bit();
+        char *arg_csd = csd_ba.data();
+        qDebug() << arg_csd;
 
         char *args[] = { arg_0, arg_n, arg_d, arg_csd };
         result = csoundCompile(csound, sizeof(*args), args);
