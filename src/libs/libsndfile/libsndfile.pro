@@ -1,7 +1,7 @@
 TARGET = mi_sndfile
 TEMPLATE = lib
 
-include(../../library.pri)
+load(../../library.prf)
 
 CONFIG -= qt
 
@@ -125,6 +125,6 @@ win32 {
         config/windows/config.h
 }
 else {
-    error("libsndfile should only be built for Windows")
+    error("mi_sndfile should only be built on Windows")
 }
 
