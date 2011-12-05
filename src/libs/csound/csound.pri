@@ -1,15 +1,9 @@
 TARGET = csound
 TEMPLATE = lib
 
-CONFIG(debug, debug|release): OBJECTS_DIR = debug
-else: OBJECTS_DIR = release
-
 useDoubles {
     DEFINES *= USE_DOUBLE
-    OBJECTS_DIR = $$OBJECTS_DIR-double
     TARGET = $${TARGET}64
-} else {
-    OBJECTS_DIR = $$OBJECTS_DIR-single
 }
 
 load(../../library.prf)
