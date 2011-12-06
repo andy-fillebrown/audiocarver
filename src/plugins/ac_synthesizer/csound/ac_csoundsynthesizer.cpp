@@ -34,42 +34,35 @@ void CsoundSynthesizer::play()
 
     QDir rootDir(QCoreApplication::applicationDirPath());
     rootDir.cdUp();
-    const QString rootDirPath = rootDir.absolutePath() + "/";
+    const QString rootDirName = rootDir.absolutePath() + "/";
 
-    const QString opcodeDir = rootDirPath;
+    const QString opcodeDir = rootDirName;
     const QByteArray opcodeDir_ba = opcodeDir.toLocal8Bit();
     csoundSetGlobalEnv("OPCODEDIR", opcodeDir_ba.constData());
 
-    int result = 0;
-    result = csoundPreCompile(csound);
-    if (0 != result)
+    if (CSOUND_SUCCESS != csoundPreCompile(csound))
         qDebug() << Q_FUNC_INFO << "Error precompiling";
     else {
         csoundSetHostImplementedAudioIO(csound, 1, 512);
 
-        char arg_0[] = "";
-        char arg_n[] = "-odac";
-        char arg_d[] = "-d";
+        char first_arg[] = "";
+        char output_arg[] = "-odac";
+        char displays_arg[] = "-d";
 
-        const QString csd = rootDirPath + "testing/moogladder.csd";
+        const QString csd = rootDirName + "testing/moogladder.csd";
         QByteArray csd_ba = csd.toLocal8Bit();
-        char *arg_csd = csd_ba.data();
-        qDebug() << arg_csd;
+        char *csd_arg = csd_ba.data();
+        qDebug() << Q_FUNC_INFO << csd_arg;
 
-        char *args[] = { arg_0, arg_n, arg_d, arg_csd };
-        result = csoundCompile(csound, sizeof(*args), args);
-        if (0 != result) {
+        char *args[] = { first_arg, output_arg, displays_arg, csd_arg };
+        if (CSOUND_SUCCESS != csoundCompile(csound, sizeof(*args), args))
             qDebug() << Q_FUNC_INFO << "Error compiling";
-        } else {
+        else {
             float *samples = csoundGetOutputBuffer(csound);
             const long n = csoundGetOutputBufferSize(csound);
             Q_ASSERT(samples && n);
 
-            while (!csoundPerformBuffer(csound)) {
-                for (int i = 0;  i < n;  ++i)
-                    if (0 == (i % 64))
-                        qDebug() << i << samples[i];
-            }
+            while (!csoundPerformBuffer(csound));
         }
     }
     csoundDestroy(csound);
