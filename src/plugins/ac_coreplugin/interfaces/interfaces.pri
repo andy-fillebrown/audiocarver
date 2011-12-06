@@ -4,6 +4,7 @@ HEADERS *= \
     ac_ifiler.h \
 
 SOURCE_PAIRS = \
+    ac_iaudioengine \
     ac_ifactory \
     ac_isynthesizer \
 

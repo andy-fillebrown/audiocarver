@@ -21,6 +21,7 @@
 #include <ac_pitchview.h>
 #include <ac_viewmanager.h>
 
+#include <ac_iaudioengine.h>
 #include <ac_ifactory.h>
 #include <ac_isynthesizer.h>
 #include <ac_namespace.h>
@@ -155,12 +156,24 @@ void MainWindow::initActions()
     buildMenu->addAction(cmd, G_BUILD_OTHER);
     connect(action, SIGNAL(triggered()), SLOT(buildAll()));
 
+    // Play/Stop Action
+    action = new QAction(tr("Play/Stop"), this);
+    cmd = am->registerAction(action, PLAY_STOP, globalContext);
+    cmd->setDefaultKeySequence(tr(" "));
+    playbackMenu->addAction(cmd, G_PLAYBACK_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(playOrStop()));
+
     // Play Action
     action = new QAction(tr("&Play"), this);
     cmd = am->registerAction(action, PLAY, globalContext);
-    cmd->setDefaultKeySequence(tr(" "));
     playbackMenu->addAction(cmd, G_PLAYBACK_OTHER);
     connect(action, SIGNAL(triggered()), SLOT(play()));
+
+    // Stop Action
+    action = new QAction(tr("&Stop"), this);
+    cmd = am->registerAction(action, STOP, globalContext);
+    playbackMenu->addAction(cmd, G_PLAYBACK_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(stop()));
 
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
@@ -280,10 +293,30 @@ void MainWindow::buildAll()
     qDebug() << Q_FUNC_INFO;
 }
 
+void MainWindow::playOrStop()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    if (!audio_engine)
+        return;
+    if (audio_engine->isPlaying())
+        audio_engine->stop();
+    else
+        audio_engine->play();
+}
+
 void MainWindow::play()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    ISynthesizer *synth = pm->getObject<ISynthesizer>();
-    if (synth)
-        synth->play();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    if (audio_engine)
+        audio_engine->play();
+}
+
+void MainWindow::stop()
+{
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    if (audio_engine)
+        audio_engine->stop();
 }

@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#ifndef AC_CSOUNDAUDIOENGINE_H
+#define AC_CSOUNDAUDIOENGINE_H
 
-#include <imainwindow.h>
+#include <ac_iaudioengine.h>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+class CsoundAudioEngine : public IAudioEngine
 {
     Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow();
+   int controlRate() const;
+   void setControlRate(int rate);
 
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
+   int sampleRate() const;
+   void setSampleRate(int rate);
 
-private slots:
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void playOrStop();
-    void play();
-    void stop();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
+   int bitDepth() const;
+   void setBitDepth(int depth);
 
-private:
-    MainWindowPrivate *d;
+   int bufferSize() const;
+   void setBufferSize(int size);
+
+   const QString &deviceName() const;
+   void setDeviceName(const QString &name);
+
+   bool isPlaying() const;
+   void play();
+   void stop();
+
+   void setPlaybackTime(qreal time);
 };
 
-#endif // AC_MAINWINDOW_H
+#endif // AC_CSOUNDAUDIOENGINE_H

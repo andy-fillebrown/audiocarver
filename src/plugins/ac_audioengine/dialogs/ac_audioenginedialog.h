@@ -15,37 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#ifndef AC_AUDIOENGINEDIALOG_H
+#define AC_AUDIOENGINEDIALOG_H
 
-#include <imainwindow.h>
+#include <ioptionspage.h>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+class Ui_AudioEngineDialog;
+
+class AudioEngineDialog : public Core::IOptionsPage
 {
     Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow();
+    AudioEngineDialog(QObject *parent = 0);
+    ~AudioEngineDialog();
 
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
+    // Core::IOptionsPage
+    QString id() const;
+    QString displayName() const;
+    QString category() const;
+    QString displayCategory() const;
+    QIcon categoryIcon() const;
+    QWidget *createPage(QWidget *parent);
+    void apply();
+    void finish();
 
 private slots:
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void playOrStop();
-    void play();
-    void stop();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
+    void updateDeviceList();
 
 private:
-    MainWindowPrivate *d;
+    Ui_AudioEngineDialog *ui;
 };
 
-#endif // AC_MAINWINDOW_H
+#endif // AC_AUDIOENGINEDIALOG_H

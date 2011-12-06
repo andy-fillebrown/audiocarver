@@ -39,7 +39,9 @@ const char * const INSERTPOINTS            = PRO_NAME_STR".InsertPoints";
 const char * const ERASE                   = PRO_NAME_STR".Erase";
 const char * const BUILD                   = PRO_NAME_STR".Build";
 const char * const BUILDALL                = PRO_NAME_STR".BuildAll";
+const char * const PLAY_STOP               = PRO_NAME_STR".Play/Stop";
 const char * const PLAY                    = PRO_NAME_STR".Play";
+const char * const STOP                    = PRO_NAME_STR".Stop";
 const char * const ABOUTAUDIOCARVER        = PRO_NAME_STR".About"PRO_NAME_STR;
 
 #endif // AC_GUICONSTANTS_H

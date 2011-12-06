@@ -9,4 +9,5 @@ SUBDIRS = \
     mi_guiplugin \
     ac_coreplugin \
     ac_guiplugin \
+    ac_audioengine \
     ac_synthesizer \

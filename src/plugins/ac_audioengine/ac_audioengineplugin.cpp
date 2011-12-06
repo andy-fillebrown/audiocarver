@@ -15,37 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#include "ac_audioengineplugin.h"
 
-#include <imainwindow.h>
+#include <ac_audioenginedialog.h>
+#include <ac_csoundaudioengine.h>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+#include <QtPlugin>
+
+using namespace ExtensionSystem;
+
+static AudioEngineDialog *audioEngineDialog = 0;
+
+bool AcAudioEnginePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
-    Q_OBJECT
+    Q_UNUSED(arguments);
+    Q_UNUSED(errorMessage);
+    addAutoReleasedObject(new CsoundAudioEngine);
+    addObject(audioEngineDialog = new AudioEngineDialog);
+    return true;
+}
 
-public:
-    MainWindow();
-    ~MainWindow();
+IPlugin::ShutdownFlag AcAudioEnginePlugin::aboutToShutdown()
+{
+    removeObject(audioEngineDialog);
+    return SynchronousShutdown;
+}
 
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void playOrStop();
-    void play();
-    void stop();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
-
-private:
-    MainWindowPrivate *d;
-};
-
-#endif // AC_MAINWINDOW_H
+Q_EXPORT_PLUGIN(AcAudioEnginePlugin)

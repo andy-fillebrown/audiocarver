@@ -15,37 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#include "ac_iaudioengine.h"
 
-#include <imainwindow.h>
+static IAudioEngine *instance = 0;
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+IAudioEngine::IAudioEngine()
 {
-    Q_OBJECT
+    ::instance = this;
+}
 
-public:
-    MainWindow();
-    ~MainWindow();
-
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void playOrStop();
-    void play();
-    void stop();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
-
-private:
-    MainWindowPrivate *d;
-};
-
-#endif // AC_MAINWINDOW_H
+IAudioEngine *IAudioEngine::instance()
+{
+    return ::instance;
+}
