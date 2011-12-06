@@ -1,5 +1,4 @@
 
-load(../../libs/csound/csound/csound.prf)
 load(../../libs/csound/csound64/csound64.prf)
 load(../ac_coreplugin/ac_coreplugin.prf)
 

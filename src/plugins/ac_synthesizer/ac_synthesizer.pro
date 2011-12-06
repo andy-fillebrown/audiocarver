@@ -4,6 +4,9 @@ TEMPLATE = lib
 load(../../plugin.prf)
 load(../ac_synthesizer/ac_synthesizer_dependencies.prf)
 
+DEFINES *= \
+    USE_DOUBLE \
+
 for(dir, DIRS) {
     include($$dir/$${dir}.pri)
 }

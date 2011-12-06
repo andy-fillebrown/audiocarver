@@ -58,7 +58,7 @@ void CsoundSynthesizer::play()
         if (CSOUND_SUCCESS != csoundCompile(csound, sizeof(*args), args))
             qDebug() << Q_FUNC_INFO << "Error compiling";
         else {
-            float *samples = csoundGetOutputBuffer(csound);
+            double *samples = csoundGetOutputBuffer(csound);
             const long n = csoundGetOutputBufferSize(csound);
             Q_ASSERT(samples && n);
 
