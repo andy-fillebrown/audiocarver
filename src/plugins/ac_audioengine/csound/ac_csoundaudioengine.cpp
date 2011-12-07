@@ -28,15 +28,15 @@ public:
     int sampleSize;
     int bufferSize;
     qreal startTime;
-    uint started : 32;
+    uint started : sizeof(uint);
 
     CsoundAudioEnginePrivate()
         :   controlRate(0)
         ,   sampleRate(0)
         ,   sampleSize(0)
         ,   bufferSize(0)
-        ,   startTime(0.0f)
-        ,   started(uint(false))
+        ,   startTime(0.0)
+        ,   started(false)
     {}
 };
 
