@@ -41,12 +41,8 @@
 #include <mainwindow.h>
 #include <versiondialog.h>
 
-#include <pluginmanager.h>
-
 #include <QAction>
 #include <QMenu>
-
-#include <QDebug>
 
 class MainWindowPrivate
 {
@@ -302,8 +298,7 @@ void MainWindow::buildAll()
 
 void MainWindow::startOrStop()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    IAudioEngine *audio_engine = IAudioEngine::instance();
     if (!audio_engine)
         return;
     if (audio_engine->isStarted())
@@ -314,16 +309,14 @@ void MainWindow::startOrStop()
 
 void MainWindow::start()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->start();
 }
 
 void MainWindow::stop()
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->stop();
 }
