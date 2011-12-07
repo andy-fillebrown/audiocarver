@@ -23,8 +23,6 @@
 
 #include <QAudioDeviceInfo>
 
-#include <QDebug>
-
 using namespace Core;
 
 AudioEngineDialog::AudioEngineDialog(QObject *parent)
@@ -41,7 +39,7 @@ QString AudioEngineDialog::id() const
 
 QString AudioEngineDialog::displayName() const
 {
-    return QString(tr("Audio Engine"));
+    return QString(tr("Sound"));
 }
 
 QString AudioEngineDialog::category() const
@@ -56,7 +54,7 @@ QString AudioEngineDialog::displayCategory() const
 
 QIcon AudioEngineDialog::categoryIcon() const
 {
-    return QIcon();
+    return QIcon(AUDIOENGINE_CATEGORY_ICON);
 }
 
 QWidget *AudioEngineDialog::createPage(QWidget *parent)

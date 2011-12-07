@@ -20,8 +20,8 @@ for(pair, SOURCE_PAIRS) {
     SOURCES *= $${pair}.cpp
 }
 
-#RESOURCES = \
-#    ac_audioengine.qrc \
+RESOURCES = \
+    ac_audioengine.qrc \
 
 OTHER_FILES *= \
     ac_audioengine.prf \

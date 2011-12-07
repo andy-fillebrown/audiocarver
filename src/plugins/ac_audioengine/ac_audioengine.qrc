@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/ac_audioengine">
-        <file>images/refresh.png</file>
+        <file>images/audioengine_category.png</file>
     </qresource>
 </RCC>

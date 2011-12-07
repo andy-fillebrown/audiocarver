@@ -32,9 +32,10 @@
 
 #include <coreconstants.h>
 
-const char * const AUDIOENGINE_CATEGORY    = "B.AudioEngine";
-const char * const AUDIOENGINE_CATEGORY_TR = QT_TRANSLATE_NOOP("AudioEngine", "Audio Engine");
+const char * const AUDIOENGINE_CATEGORY      = "B.AudioEngine";
+const char * const AUDIOENGINE_CATEGORY_TR   = QT_TRANSLATE_NOOP("AudioEngine", "Sound");
+const char * const AUDIOENGINE_CATEGORY_ICON = ":/ac_audioengine/images/audioengine_category.png";
 
-const char * const AUDIOENGINEDIALOG_ID    = "A.AudioEngine";
+const char * const AUDIOENGINEDIALOG_ID      = "A.AudioEngine";
 
 #endif // AC_AUDIOENGINECONSTANTS_H
