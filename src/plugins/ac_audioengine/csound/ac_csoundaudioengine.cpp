@@ -27,6 +27,7 @@ public:
     int sampleRate;
     int sampleSize;
     int bufferSize;
+    int trackCount;
     qreal startTime;
     uint started : sizeof(uint);
 
@@ -35,9 +36,20 @@ public:
         ,   sampleRate(0)
         ,   sampleSize(0)
         ,   bufferSize(0)
+        ,   trackCount(0)
         ,   startTime(0.0)
         ,   started(false)
     {}
+
+    void start()
+    {
+        started = true;
+    }
+
+    void stop()
+    {
+        started = false;
+    }
 };
 
 CsoundAudioEngine::CsoundAudioEngine()
@@ -126,10 +138,10 @@ bool CsoundAudioEngine::isStarted() const
 
 void CsoundAudioEngine::start()
 {
-    d->started = uint(true);
+    d->start();
 }
 
 void CsoundAudioEngine::stop()
 {
-    d->started = uint(false);
+    d->stop();
 }
