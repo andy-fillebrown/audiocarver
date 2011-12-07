@@ -73,7 +73,7 @@ void MainWindow::initMenuBarGroups(QStringList &groups) const
     groups.insert(editGroupIndex + 1, G_CREATE);
     groups.insert(editGroupIndex + 2, G_MODIFY);
     groups.insert(editGroupIndex + 3, G_BUILD);
-    groups.insert(editGroupIndex + 4, G_PLAYBACK);
+    groups.insert(editGroupIndex + 4, G_TRANSPORT);
 }
 
 void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
@@ -90,10 +90,10 @@ void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QStrin
         title = tr("&Build");
         id = M_BUILD;
         groups << G_BUILD_OTHER;
-    } else if (G_PLAYBACK == menuBarGroup) {
-        title = tr("&Playback");
-        id = M_PLAYBACK;
-        groups << G_PLAYBACK_OTHER;
+    } else if (G_TRANSPORT == menuBarGroup) {
+        title = tr("T&ransport");
+        id = M_TRANSPORT;
+        groups << G_TRANSPORT_OTHER;
     } else if (Core::Constants::G_HELP == menuBarGroup)
         groups  << G_HELP_ABOUTAUDIOCARVER;
 }
@@ -105,7 +105,7 @@ void MainWindow::initActions()
     Core::ActionContainer *createMenu = am->actionContainer(M_CREATE);
     Core::ActionContainer *modifyMenu = am->actionContainer(M_MODIFY);
     Core::ActionContainer *buildMenu = am->actionContainer(M_BUILD);
-    Core::ActionContainer *playbackMenu = am->actionContainer(M_PLAYBACK);
+    Core::ActionContainer *transportMenu = am->actionContainer(M_TRANSPORT);
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
 
     Core::Context globalContext(Core::Constants::C_GLOBAL);
@@ -156,23 +156,23 @@ void MainWindow::initActions()
     buildMenu->addAction(cmd, G_BUILD_OTHER);
     connect(action, SIGNAL(triggered()), SLOT(buildAll()));
 
-    // Play/Stop Action
-    action = new QAction(tr("Play/Stop"), this);
-    cmd = am->registerAction(action, PLAY_STOP, globalContext);
+    // Start/Stop Action
+    action = new QAction(tr("&Start/Stop"), this);
+    cmd = am->registerAction(action, START_STOP, globalContext);
     cmd->setDefaultKeySequence(tr(" "));
-    playbackMenu->addAction(cmd, G_PLAYBACK_OTHER);
-    connect(action, SIGNAL(triggered()), SLOT(playOrStop()));
+    transportMenu->addAction(cmd, G_TRANSPORT_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(startOrStop()));
 
-    // Play Action
-    action = new QAction(tr("&Play"), this);
-    cmd = am->registerAction(action, PLAY, globalContext);
-    playbackMenu->addAction(cmd, G_PLAYBACK_OTHER);
-    connect(action, SIGNAL(triggered()), SLOT(play()));
+    // Start Action
+    action = new QAction(tr("S&tart"), this);
+    cmd = am->registerAction(action, START, globalContext);
+    transportMenu->addAction(cmd, G_TRANSPORT_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(start()));
 
     // Stop Action
-    action = new QAction(tr("&Stop"), this);
+    action = new QAction(tr("St&op"), this);
     cmd = am->registerAction(action, STOP, globalContext);
-    playbackMenu->addAction(cmd, G_PLAYBACK_OTHER);
+    transportMenu->addAction(cmd, G_TRANSPORT_OTHER);
     connect(action, SIGNAL(triggered()), SLOT(stop()));
 
     // About Project Action
@@ -293,24 +293,24 @@ void MainWindow::buildAll()
     qDebug() << Q_FUNC_INFO;
 }
 
-void MainWindow::playOrStop()
+void MainWindow::startOrStop()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
     if (!audio_engine)
         return;
-    if (audio_engine->isPlaying())
+    if (audio_engine->isStarted())
         audio_engine->stop();
     else
-        audio_engine->play();
+        audio_engine->start();
 }
 
-void MainWindow::play()
+void MainWindow::start()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
     if (audio_engine)
-        audio_engine->play();
+        audio_engine->start();
 }
 
 void MainWindow::stop()

@@ -37,8 +37,8 @@ public:
     virtual int sampleRate() const = 0;
     virtual void setSampleRate(int rate) = 0;
 
-    virtual int bitDepth() const = 0;
-    virtual void setBitDepth(int depth) = 0;
+    virtual int sampleSize() const = 0;
+    virtual void setSampleSize(int size) = 0;
 
     virtual int bufferSize() const = 0;
     virtual void setBufferSize(int size) = 0;
@@ -46,11 +46,12 @@ public:
     virtual const QString &deviceName() const = 0;
     virtual void setDeviceName(const QString &name) = 0;
 
-    virtual bool isPlaying() const = 0;
-    virtual void play() = 0;
-    virtual void stop() = 0;
+    virtual qreal startTime() const = 0;
+    virtual void setStartTime(qreal time) = 0;
 
-    virtual void setPlaybackTime(qreal time) = 0;
+    virtual bool isStarted() const = 0;
+    virtual void start() = 0;
+    virtual void stop() = 0;
 };
 
 #endif // AC_IAUDIOENGINE_H

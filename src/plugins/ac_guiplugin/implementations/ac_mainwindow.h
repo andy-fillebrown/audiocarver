@@ -38,8 +38,8 @@ private slots:
     void erase();
     void build();
     void buildAll();
-    void playOrStop();
-    void play();
+    void startOrStop();
+    void start();
     void stop();
     void aboutAudioCarver();
     void destroyVersionDialog();

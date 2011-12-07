@@ -88,7 +88,7 @@
         </property>
         <layout class="QVBoxLayout">
          <item>
-          <layout class="QHBoxLayout" name="controlRateLayout" stretch="0,0,0,0">
+          <layout class="QHBoxLayout" name="controlRateLayout" stretch="0,0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
@@ -99,6 +99,12 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
              </property>
              <property name="text">
               <string>Control Rate</string>
@@ -119,41 +125,57 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLineEdit" name="controlRateLineEdit">
+            <widget class="QLabel" name="controlRateLabel_2">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="maximumSize">
+             <property name="text">
+              <string>(samples per second)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="controlRateComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
               <size>
-               <width>64</width>
-               <height>16777215</height>
+               <width>96</width>
+               <height>0</height>
               </size>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="controlRateUnitsLabel">
-             <property name="minimumSize">
+            <spacer name="controlRateSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>64</width>
-               <height>0</height>
+               <width>33</width>
+               <height>20</height>
               </size>
              </property>
-             <property name="text">
-              <string>per second</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="sampleRateLayout" stretch="0,0,0,0">
+          <layout class="QHBoxLayout" name="sampleRateLayout" stretch="0,0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
@@ -164,6 +186,12 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
              </property>
              <property name="text">
               <string>Sample Rate</string>
@@ -184,41 +212,144 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLineEdit" name="sampleRateLineEdit">
+            <widget class="QLabel" name="sampleRateLabel_2">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="maximumSize">
+             <property name="text">
+              <string>(samples per second)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="sampleRateComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
               <size>
-               <width>64</width>
-               <height>16777215</height>
+               <width>96</width>
+               <height>0</height>
               </size>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="sampleRateUnitsLabel">
-             <property name="minimumSize">
+            <spacer name="sampleRateSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>64</width>
-               <height>0</height>
+               <width>33</width>
+               <height>20</height>
               </size>
              </property>
-             <property name="text">
-              <string>per second</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="bufferSizeLayout" stretch="0,0,0,0">
+          <layout class="QHBoxLayout" name="sampleSizeLayout" stretch="0,0,0,0,0">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="sampleSizeLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Sample Size</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="sampleSizeSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="sampleSizeLabel_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>(bits per sample)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="sampleSizeComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>96</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="sampleSizeSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>33</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="bufferSizeLayout" stretch="0,0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
@@ -230,13 +361,19 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
               <string>Buffer Size</string>
              </property>
             </widget>
            </item>
            <item>
-            <spacer name="bufferSizeSpace">
+            <spacer name="bufferSizeSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -249,46 +386,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLineEdit" name="bufferSizeLineEdit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>64</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="bufferSizeUnitsLabel">
-             <property name="minimumSize">
-              <size>
-               <width>64</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>samples</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="bitDepthLayout" stretch="0,0,0,0">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="bitDepthLabel">
+            <widget class="QLabel" name="bufferSizeLabel_2">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -296,54 +394,44 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Bit Depth</string>
+              <string>(samples)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
            <item>
-            <spacer name="bitDepthSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit">
+            <widget class="QComboBox" name="bufferSizeComboBox">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="maximumSize">
+             <property name="minimumSize">
               <size>
-               <width>64</width>
-               <height>16777215</height>
+               <width>96</width>
+               <height>0</height>
               </size>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="bitDepthUnitsLabel">
-             <property name="minimumSize">
+            <spacer name="bufferSizeSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>64</width>
-               <height>0</height>
+               <width>33</width>
+               <height>20</height>
               </size>
              </property>
-             <property name="text">
-              <string>per sample</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </item>

@@ -19,79 +19,107 @@
 
 #include <csound.h>
 
+class CsoundAudioEnginePrivate
+{
+public:
+    QString deviceName;
+    int controlRate;
+    int sampleRate;
+    int sampleSize;
+    int bufferSize;
+    qreal startTime;
+    uint started : 32;
+
+    CsoundAudioEnginePrivate()
+        :   controlRate(0)
+        ,   sampleRate(0)
+        ,   sampleSize(0)
+        ,   bufferSize(0)
+        ,   startTime(0.0f)
+        ,   started(uint(false))
+    {}
+};
+
+CsoundAudioEngine::CsoundAudioEngine()
+    :   d(new CsoundAudioEnginePrivate)
+{}
+
+CsoundAudioEngine::~CsoundAudioEngine()
+{
+    delete d;
+}
+
 int CsoundAudioEngine::controlRate() const
 {
-    return 0;
+    return d->controlRate;
 }
 
 void CsoundAudioEngine::setControlRate(int rate)
 {
-    Q_UNUSED(rate);
-    qDebug() << Q_FUNC_INFO;
+    d->controlRate = rate;
 }
 
 int CsoundAudioEngine::sampleRate() const
 {
-    return 0;
+    return d->sampleRate;
 }
 
 void CsoundAudioEngine::setSampleRate(int rate)
 {
-    Q_UNUSED(rate);
-    qDebug() << Q_FUNC_INFO;
+    d->sampleRate = rate;
 }
 
-int CsoundAudioEngine::bitDepth() const
+int CsoundAudioEngine::sampleSize() const
 {
-    return 0;
+    return d->sampleSize;
 }
 
-void CsoundAudioEngine::setBitDepth(int depth)
+void CsoundAudioEngine::setSampleSize(int size)
 {
-    Q_UNUSED(depth);
-    qDebug() << Q_FUNC_INFO;
+    d->sampleSize = size;
 }
 
 int CsoundAudioEngine::bufferSize() const
 {
-    return 0;
+    return d->bufferSize;
 }
 
 void CsoundAudioEngine::setBufferSize(int size)
 {
-    Q_UNUSED(size);
-    qDebug() << Q_FUNC_INFO;
+    d->bufferSize = size;
 }
 
 const QString &CsoundAudioEngine::deviceName() const
 {
-    static QString name;
-    return name;
+    return d->deviceName;
 }
 
 void CsoundAudioEngine::setDeviceName(const QString &name)
 {
-    Q_UNUSED(name);
-    qDebug() << Q_FUNC_INFO;
+    d->deviceName = name;
 }
 
-bool CsoundAudioEngine::isPlaying() const
+qreal CsoundAudioEngine::startTime() const
 {
-    return false;
+    return d->startTime;
 }
 
-void CsoundAudioEngine::play()
+void CsoundAudioEngine::setStartTime(qreal time)
 {
-    qDebug() << Q_FUNC_INFO;
+    d->startTime = time;
+}
+
+bool CsoundAudioEngine::isStarted() const
+{
+    return d->started;
+}
+
+void CsoundAudioEngine::start()
+{
+    d->started = uint(true);
 }
 
 void CsoundAudioEngine::stop()
 {
-    qDebug() << Q_FUNC_INFO;
-}
-
-void CsoundAudioEngine::setPlaybackTime(qreal time)
-{
-    Q_UNUSED(time);
-    qDebug() << Q_FUNC_INFO;
+    d->started = uint(false);
 }

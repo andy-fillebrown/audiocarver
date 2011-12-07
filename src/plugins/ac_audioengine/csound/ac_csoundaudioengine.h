@@ -20,19 +20,24 @@
 
 #include <ac_iaudioengine.h>
 
+class CsoundAudioEnginePrivate;
+
 class CsoundAudioEngine : public IAudioEngine
 {
     Q_OBJECT
 
 public:
+    CsoundAudioEngine();
+    ~CsoundAudioEngine();
+
    int controlRate() const;
    void setControlRate(int rate);
 
    int sampleRate() const;
    void setSampleRate(int rate);
 
-   int bitDepth() const;
-   void setBitDepth(int depth);
+   int sampleSize() const;
+   void setSampleSize(int size);
 
    int bufferSize() const;
    void setBufferSize(int size);
@@ -40,11 +45,15 @@ public:
    const QString &deviceName() const;
    void setDeviceName(const QString &name);
 
-   bool isPlaying() const;
-   void play();
+   qreal startTime() const;
+   void setStartTime(qreal time);
+
+   bool isStarted() const;
+   void start();
    void stop();
 
-   void setPlaybackTime(qreal time);
+private:
+   CsoundAudioEnginePrivate *d;
 };
 
 #endif // AC_CSOUNDAUDIOENGINE_H
