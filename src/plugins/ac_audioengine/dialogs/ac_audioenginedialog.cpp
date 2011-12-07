@@ -21,7 +21,11 @@
 
 #include <ac_audioengineconstants.h>
 
+#include <ac_iaudioengine.h>
+
 #include <icore.h>
+
+#include <pluginmanager.h>
 
 #include <QAudioDeviceInfo>
 
@@ -194,6 +198,10 @@ void AudioEngineDialog::setControlRate(int rate)
 {
     QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/ControlRate", rate);
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    audio_engine->setControlRate(rate);
 }
 
 int AudioEngineDialog::sampleRate() const
@@ -206,6 +214,10 @@ void AudioEngineDialog::setSampleRate(int rate)
 {
     QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/SampleRate", rate);
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    audio_engine->setSampleRate(rate);
 }
 
 int AudioEngineDialog::sampleSize() const
@@ -218,6 +230,10 @@ void AudioEngineDialog::setSampleSize(int size)
 {
     QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/SampleSize", size);
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    audio_engine->setSampleSize(size);
 }
 
 int AudioEngineDialog::bufferSize() const
@@ -230,6 +246,10 @@ void AudioEngineDialog::setBufferSize(int size)
 {
     QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/BufferSize", size);
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    audio_engine->setBufferSize(size);
 }
 
 QString AudioEngineDialog::deviceName() const
@@ -242,4 +262,8 @@ void AudioEngineDialog::setDeviceName(const QString &name)
 {
     QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/DeviceName", name);
+
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    IAudioEngine *audio_engine = pm->getObject<IAudioEngine>();
+    audio_engine->setDeviceName(name);
 }
