@@ -43,6 +43,7 @@ public:
 private slots:
     void updateDeviceList();
     void updateSettingsLists();
+    void updateControlRateList();
 
 private:
     void initialize();
