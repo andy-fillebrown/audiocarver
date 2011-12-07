@@ -17,53 +17,42 @@
 
 #include <ac_csoundsynthesizer.h>
 
+#include <ac_namespace.h>
+
+#include <mi_imodel.h>
+#include <mi_imodelitem.h>
+
 #include <csound.h>
 
-#include <QCoreApplication>
-#include <QDir>
-
-void CsoundSynthesizer::play()
+class CsoundSynthesizerPrivate
 {
-    csoundInitialize(0, 0, 0);
+public:
+    void renderTrack(const IModelItem *track)
+    {
+        if (!track)
+            return;
 
-    CSOUND *csound = csoundCreate(0);
-    if (!csound) {
-        qDebug() << Q_FUNC_INFO << "Error creating";
-        return;
-    }
+        const QString instrument = track->data(Ac::InstrumentRole).toString();
 
-    QDir rootDir(QCoreApplication::applicationDirPath());
-    rootDir.cdUp();
-    const QString rootDirName = rootDir.absolutePath() + "/";
-
-    const QString opcodeDir = rootDirName;
-    const QByteArray opcodeDir_ba = opcodeDir.toLocal8Bit();
-    csoundSetGlobalEnv("OPCODEDIR", opcodeDir_ba.constData());
-
-    if (CSOUND_SUCCESS != csoundPreCompile(csound))
-        qDebug() << Q_FUNC_INFO << "Error precompiling";
-    else {
-        csoundSetHostImplementedAudioIO(csound, 1, 512);
-
-        char first_arg[] = "";
-        char output_arg[] = "-odac";
-        char displays_arg[] = "-d";
-
-        const QString csd = rootDirName + "testing/moogladder.csd";
-        QByteArray csd_ba = csd.toLocal8Bit();
-        char *csd_arg = csd_ba.data();
-        qDebug() << Q_FUNC_INFO << csd_arg;
-
-        char *args[] = { first_arg, output_arg, displays_arg, csd_arg };
-        if (CSOUND_SUCCESS != csoundCompile(csound, sizeof(*args), args))
-            qDebug() << Q_FUNC_INFO << "Error compiling";
-        else {
-            double *samples = csoundGetOutputBuffer(csound);
-            const long n = csoundGetOutputBufferSize(csound);
-            Q_ASSERT(samples && n);
-
-            while (!csoundPerformBuffer(csound));
+        const IModelItem *notes = track->findModelItemList(Ac::NoteItem);
+        const int n = notes->modelItemCount();
+        for (int i = 0;  i < n;  ++i) {
         }
     }
-    csoundDestroy(csound);
+};
+
+CsoundSynthesizer::CsoundSynthesizer()
+    :   d(new CsoundSynthesizerPrivate)
+{}
+
+CsoundSynthesizer::~CsoundSynthesizer()
+{
+    delete d;
+}
+
+void CsoundSynthesizer::renderTrack(int trackNumber)
+{
+    const IModel *model = IModel::instance();
+    const IModelItem *track = model->itemFromIndex(model->index(trackNumber, model->listIndex(Ac::TrackItem)));
+    d->renderTrack(track);
 }

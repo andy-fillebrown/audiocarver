@@ -20,12 +20,20 @@
 
 #include <ac_isynthesizer.h>
 
+class CsoundSynthesizerPrivate;
+
 class CsoundSynthesizer : public ISynthesizer
 {
     Q_OBJECT
 
 public:
-    void play();
+    CsoundSynthesizer();
+    ~CsoundSynthesizer();
+
+    void renderTrack(int trackNumber);
+
+private:
+    CsoundSynthesizerPrivate *d;
 };
 
 #endif // AC_CSOUNDSYNTHESIZER_H

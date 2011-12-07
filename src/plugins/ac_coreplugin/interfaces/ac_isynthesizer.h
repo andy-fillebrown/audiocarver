@@ -31,7 +31,7 @@ public:
 
     static ISynthesizer *instance();
 
-    virtual void play() = 0;
+    virtual void renderTrack(int trackNumber) = 0;
 };
 
 #endif // AC_ISYNTHESIZER_H

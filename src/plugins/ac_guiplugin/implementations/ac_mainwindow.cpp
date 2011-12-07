@@ -290,7 +290,14 @@ void MainWindow::build()
 
 void MainWindow::buildAll()
 {
-    qDebug() << Q_FUNC_INFO;
+    const IModel *model = IModel::instance();
+    const QModelIndex trackList = model->listIndex(Ac::TrackItem);
+    const int n = model->rowCount(trackList);
+
+    ISynthesizer *synth = ISynthesizer::instance();
+
+    for (int i = 0;  i < n;  ++i)
+        synth->renderTrack(i);
 }
 
 void MainWindow::startOrStop()
