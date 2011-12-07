@@ -18,6 +18,7 @@
 #include "ac_model.h"
 
 #include <ac_gridsettings.h>
+#include <ac_iaudioengine.h>
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
@@ -34,6 +35,10 @@ public:
 Model::Model()
     :   d(new ModelPrivate(this))
 {
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowCountChanged(QModelIndex)));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowCountChanged(QModelIndex)));
+    connect(this, SIGNAL(modelReset()), SLOT(clearTrackCount()));
+
     connect(d->score, SIGNAL(aboutToBeReset()), SIGNAL(modelAboutToBeReset()));
     connect(d->score, SIGNAL(reset()), SIGNAL(modelReset()));
 }
@@ -96,4 +101,15 @@ QModelIndexList Model::findIndexes(int type, int role, const QVariant &value) co
     }
 
     return IModel::findIndexes(type, role, value);
+}
+
+void Model::rowCountChanged(const QModelIndex &parent)
+{
+    if (listIndex(Ac::TrackItem) == parent)
+        IAudioEngine::instance()->setTrackCount(rowCount(parent));
+}
+
+void Model::clearTrackCount()
+{
+    IAudioEngine::instance()->setTrackCount(0);
 }

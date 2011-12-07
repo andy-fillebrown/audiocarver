@@ -46,6 +46,9 @@ public:
     virtual const QString &deviceName() const = 0;
     virtual void setDeviceName(const QString &name) = 0;
 
+    virtual int trackCount() const = 0;
+    virtual void setTrackCount(int count) = 0;
+
     virtual qreal startTime() const = 0;
     virtual void setStartTime(qreal time) = 0;
 

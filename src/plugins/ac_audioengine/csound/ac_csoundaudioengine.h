@@ -45,6 +45,9 @@ public:
    const QString &deviceName() const;
    void setDeviceName(const QString &name);
 
+   int trackCount() const;
+   void setTrackCount(int count);
+
    qreal startTime() const;
    void setStartTime(qreal time);
 

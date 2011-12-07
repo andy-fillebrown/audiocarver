@@ -46,6 +46,10 @@ public:
 
     QModelIndexList findIndexes(int type, int role, const QVariant &value) const;
 
+public slots:
+    void rowCountChanged(const QModelIndex &parent);
+    void clearTrackCount();
+
 private:
     ModelPrivate *d;
 };

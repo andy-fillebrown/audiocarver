@@ -99,6 +99,16 @@ void CsoundAudioEngine::setDeviceName(const QString &name)
     d->deviceName = name;
 }
 
+int CsoundAudioEngine::trackCount() const
+{
+    return d->trackCount;
+}
+
+void CsoundAudioEngine::setTrackCount(int count)
+{
+    d->trackCount = count;
+}
+
 qreal CsoundAudioEngine::startTime() const
 {
     return d->startTime;
