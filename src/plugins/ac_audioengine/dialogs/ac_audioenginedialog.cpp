@@ -25,10 +25,7 @@
 
 #include <QAudioDeviceInfo>
 
-#include <qmath.h>
 #include <QSettings>
-
-using namespace Core;
 
 AudioEngineDialog::AudioEngineDialog(QObject *parent)
     :   IOptionsPage(parent)
@@ -189,60 +186,60 @@ void AudioEngineDialog::updateControlRateList()
 
 int AudioEngineDialog::controlRate() const
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     return settings->value("AudioEngine/ControlRate").toInt();
 }
 
 void AudioEngineDialog::setControlRate(int rate)
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/ControlRate", rate);
 }
 
 int AudioEngineDialog::sampleRate() const
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     return settings->value("AudioEngine/SampleRate").toInt();
 }
 
 void AudioEngineDialog::setSampleRate(int rate)
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/SampleRate", rate);
 }
 
 int AudioEngineDialog::sampleSize() const
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     return settings->value("AudioEngine/SampleSize").toInt();
 }
 
 void AudioEngineDialog::setSampleSize(int size)
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/SampleSize", size);
 }
 
 int AudioEngineDialog::bufferSize() const
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     return settings->value("AudioEngine/BufferSize").toInt();
 }
 
 void AudioEngineDialog::setBufferSize(int size)
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/BufferSize", size);
 }
 
 QString AudioEngineDialog::deviceName() const
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     return settings->value("AudioEngine/DeviceName").toString();
 }
 
 void AudioEngineDialog::setDeviceName(const QString &name)
 {
-    QSettings* settings = ICore::instance()->settings();
+    QSettings* settings = Core::ICore::instance()->settings();
     settings->setValue("AudioEngine/DeviceName", name);
 }
