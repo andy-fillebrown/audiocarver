@@ -118,10 +118,19 @@ void AudioEngineDialog::finish()
 
 void AudioEngineDialog::updateDeviceList()
 {
+    QString device_name = ui->deviceComboBox->currentText();
+
+    // Populate device combo box.
     ui->deviceComboBox->clear();
     const QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
     foreach (const QAudioDeviceInfo &device, devices)
         ui->deviceComboBox->addItem(device.deviceName());
+
+    // Set device combo box index.
+    if (device_name.isEmpty()
+            || -1 == ui->deviceComboBox->findText(device_name))
+        device_name = QAudioDeviceInfo::defaultOutputDevice().deviceName();
+    ui->deviceComboBox->setCurrentIndex(ui->deviceComboBox->findText(device_name));
 }
 
 void AudioEngineDialog::updateSettingsLists()
