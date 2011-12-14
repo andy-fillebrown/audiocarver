@@ -30,33 +30,36 @@ public:
     CsoundAudioEngine();
     ~CsoundAudioEngine();
 
-   int controlRate() const;
-   void setControlRate(int rate);
+    bool controlRateIsValid(int controlRate, int sampleRate) const;
+    int defaultControlRate(int sampleRate) const;
 
-   int sampleRate() const;
-   void setSampleRate(int rate);
+    int controlRate() const;
+    void setControlRate(int rate);
 
-   int sampleSize() const;
-   void setSampleSize(int size);
+    int sampleRate() const;
+    void setSampleRate(int rate);
 
-   int bufferSize() const;
-   void setBufferSize(int size);
+    int sampleSize() const;
+    void setSampleSize(int size);
 
-   const QString &deviceName() const;
-   void setDeviceName(const QString &name);
+    int bufferSize() const;
+    void setBufferSize(int size);
 
-   int trackCount() const;
-   void setTrackCount(int count);
+    const QString &deviceName() const;
+    void setDeviceName(const QString &name);
 
-   qreal startTime() const;
-   void setStartTime(qreal time);
+    int trackCount() const;
+    void setTrackCount(int count);
 
-   bool isStarted() const;
-   void start();
-   void stop();
+    qreal startTime() const;
+    void setStartTime(qreal time);
+
+    bool isStarted() const;
+    void start();
+    void stop();
 
 private:
-   CsoundAudioEnginePrivate *d;
+    CsoundAudioEnginePrivate *d;
 };
 
 #endif // AC_CSOUNDAUDIOENGINE_H

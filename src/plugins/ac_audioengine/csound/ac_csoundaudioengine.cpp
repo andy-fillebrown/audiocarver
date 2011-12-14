@@ -17,7 +17,13 @@
 
 #include <ac_csoundaudioengine.h>
 
+#include <icore.h>
+
 #include <csound.h>
+
+#include <QAudioDeviceInfo>
+
+#include <QSettings>
 
 class CsoundAudioEnginePrivate
 {
@@ -39,7 +45,61 @@ public:
         ,   trackCount(0)
         ,   startTime(0.0)
         ,   started(false)
-    {}
+    {
+        readSettings();
+    }
+
+    ~CsoundAudioEnginePrivate()
+    {
+        writeSettings();
+    }
+
+    void readSettings()
+    {
+        QSettings* settings = Core::ICore::instance()->settings();
+
+        deviceName = settings->value("AudioEngine/DeviceName").toString();
+        if (deviceName.isEmpty())
+            deviceName = QAudioDeviceInfo::defaultOutputDevice().deviceName();
+
+        QAudioDeviceInfo device_info;
+        const QList<QAudioDeviceInfo> devs = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
+        foreach (const QAudioDeviceInfo &dev_info, devs) {
+            if (deviceName == dev_info.deviceName()) {
+                device_info = dev_info;
+                break;
+            }
+        }
+
+        sampleRate = settings->value("AudioEngine/SampleRate").toInt();
+        if (!sampleRate)
+            sampleRate = device_info.preferredFormat().sampleRate();
+
+        sampleSize = settings->value("AudioEngine/SampleSize").toInt();
+        if (!sampleSize)
+            sampleSize = device_info.preferredFormat().sampleSize();
+
+        controlRate = settings->value("AudioEngine/ControlRate").toInt();
+        if (!IAudioEngine::instance()->controlRateIsValid(controlRate, sampleRate))
+            controlRate = IAudioEngine::instance()->defaultControlRate(sampleRate);
+
+        bufferSize = settings->value("AudioEngine/BufferSize").toInt();
+        if (!bufferSize)
+            bufferSize = 2048;
+
+        writeSettings();
+    }
+
+    void writeSettings()
+    {
+        QSettings* settings = Core::ICore::instance()->settings();
+
+        settings->setValue("AudioEngine/DeviceName", deviceName);
+        settings->setValue("AudioEngine/ControlRate", controlRate);
+        settings->setValue("AudioEngine/SampleRate", sampleRate);
+        settings->setValue("AudioEngine/SampleSize", sampleSize);
+        settings->setValue("AudioEngine/BufferSize", bufferSize);
+    }
 
     void start()
     {
@@ -104,6 +164,43 @@ CsoundAudioEngine::~CsoundAudioEngine()
     delete d;
 }
 
+bool CsoundAudioEngine::controlRateIsValid(int controlRate, int sampleRate) const
+{
+    QList<int> control_rates;
+    for (int i = 1;  i <= sampleRate;  ++i) {
+        if (0 == sampleRate % i)
+            control_rates.append(i);
+    }
+
+    return control_rates.contains(controlRate);
+}
+
+int CsoundAudioEngine::defaultControlRate(int sampleRate) const
+{
+    int control_rate = sampleRate / 10;
+
+    QList<int> control_rates;
+    for (int i = 1;  i <= sampleRate;  ++i) {
+        if (0 == sampleRate % i)
+            control_rates.append(i);
+    }
+
+    if (!control_rates.contains(control_rate)) {
+        const int n = control_rates.count();
+        for (int i = 0;  i < n;  ++i) {
+            if (control_rate <= control_rates.at(i)) {
+                control_rate = control_rates.at(i);
+                break;
+            }
+        }
+    }
+
+    if (!control_rates.contains(control_rate))
+        control_rate = sampleRate;
+
+    return control_rate;
+}
+
 int CsoundAudioEngine::controlRate() const
 {
     return d->controlRate;
@@ -111,6 +208,7 @@ int CsoundAudioEngine::controlRate() const
 
 void CsoundAudioEngine::setControlRate(int rate)
 {
+    Core::ICore::instance()->settings()->setValue("AudioEngine/ControlRate", rate);
     d->controlRate = rate;
 }
 
@@ -121,6 +219,7 @@ int CsoundAudioEngine::sampleRate() const
 
 void CsoundAudioEngine::setSampleRate(int rate)
 {
+    Core::ICore::instance()->settings()->setValue("AudioEngine/SampleRate", rate);
     d->sampleRate = rate;
 }
 
@@ -131,6 +230,7 @@ int CsoundAudioEngine::sampleSize() const
 
 void CsoundAudioEngine::setSampleSize(int size)
 {
+    Core::ICore::instance()->settings()->setValue("AudioEngine/SampleSize", size);
     d->sampleSize = size;
 }
 
@@ -141,6 +241,7 @@ int CsoundAudioEngine::bufferSize() const
 
 void CsoundAudioEngine::setBufferSize(int size)
 {
+    Core::ICore::instance()->settings()->setValue("AudioEngine/BufferSize", size);
     d->bufferSize = size;
 }
 
@@ -151,6 +252,7 @@ const QString &CsoundAudioEngine::deviceName() const
 
 void CsoundAudioEngine::setDeviceName(const QString &name)
 {
+    Core::ICore::instance()->settings()->setValue("AudioEngine/DeviceName", name);
     d->deviceName = name;
 }
 

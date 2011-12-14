@@ -20,6 +20,7 @@
 
 #include <ioptionspage.h>
 
+class AudioEngineDialogPrivate;
 class Ui_AudioEngineDialog;
 
 class AudioEngineDialog : public Core::IOptionsPage
@@ -63,7 +64,10 @@ private:
     QString deviceName() const;
     void setDeviceName(const QString &name);
 
+    AudioEngineDialogPrivate *d;
     Ui_AudioEngineDialog *ui;
+
+    friend class AudioEngineDialogPrivate;
 };
 
 #endif // AC_AUDIOENGINEDIALOG_H

@@ -31,6 +31,9 @@ public:
 
     static IAudioEngine *instance();
 
+    virtual bool controlRateIsValid(int controlRate, int sampleRate) const = 0;
+    virtual int defaultControlRate(int sampleRate) const = 0;
+
     virtual int controlRate() const = 0;
     virtual void setControlRate(int rate) = 0;
 

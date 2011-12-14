@@ -23,44 +23,108 @@
 
 #include <ac_iaudioengine.h>
 
-#include <icore.h>
-
 #include <QAudioDeviceInfo>
 
-#include <QSettings>
+class AudioEngineDialogPrivate
+{
+public:
+    AudioEngineDialog *q;
+
+    AudioEngineDialogPrivate(AudioEngineDialog *q)
+        :   q(q)
+    {}
+
+    void init()
+    {
+        updateDeviceList();
+
+        // Set device combo box index.
+        q->ui->deviceComboBox->setCurrentIndex(q->ui->deviceComboBox->findText(q->deviceName()));
+
+        updateSettingsLists();
+
+        // Populate buffer size combo box.
+        int buffer_size = 128;
+        for (int i = 0;  i < 10;  ++i) {
+            q->ui->bufferSizeComboBox->addItem(QString("%1").arg(buffer_size));
+            buffer_size += buffer_size;
+        }
+
+        // Set buffer size combo box index.
+        q->ui->bufferSizeComboBox->setCurrentIndex(q->ui->bufferSizeComboBox->findText(QString("%1").arg(q->bufferSize())));
+    }
+
+    void updateDeviceList()
+    {
+        // Populate device combo box.
+        q->ui->deviceComboBox->clear();
+        const QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
+        foreach (const QAudioDeviceInfo &device, devices)
+            q->ui->deviceComboBox->addItem(device.deviceName());
+    }
+
+    void updateSettingsLists()
+    {
+        const QString device_name = q->ui->deviceComboBox->currentText();
+
+        QAudioDeviceInfo device_info;
+        const QList<QAudioDeviceInfo> devs = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
+        foreach (const QAudioDeviceInfo &dev, devs) {
+            if (device_name == dev.deviceName()) {
+                device_info = dev;
+                break;
+            }
+        }
+
+        // Populate sample rate combo box.
+        q->ui->sampleRateComboBox->clear();
+        const QList<int> sample_rates = device_info.supportedSampleRates();
+        foreach (int rate, sample_rates)
+            q->ui->sampleRateComboBox->addItem(QString("%1").arg(rate));
+
+        // Set sample rate combo box index.
+        q->ui->sampleRateComboBox->setCurrentIndex(q->ui->sampleRateComboBox->findText(QString("%1").arg(q->sampleRate())));
+
+        // Populate sample size combo box.
+        q->ui->sampleSizeComboBox->clear();
+        const QList<int> sample_sizes = device_info.supportedSampleSizes();
+        foreach (int size, sample_sizes)
+            q->ui->sampleSizeComboBox->addItem(QString("%1").arg(size));
+
+        // Set sample size combo box index.
+        q->ui->sampleSizeComboBox->setCurrentIndex(q->ui->sampleSizeComboBox->findText(QString("%1").arg(q->sampleSize())));
+    }
+
+    void updateControlRateList()
+    {
+        const int sample_rate = q->ui->sampleRateComboBox->currentText().toInt();
+
+        // Populate control rate combo box.
+        QList<int> control_rates;
+        for (int i = 1;  i <= sample_rate;  ++i) {
+            if (0 == sample_rate % i)
+                control_rates.append(i);
+        }
+        q->ui->controlRateComboBox->clear();
+        foreach (int rate, control_rates)
+            q->ui->controlRateComboBox->addItem(QString("%1").arg(rate));
+
+        // Set control rate combo box index.
+        int control_rate = q->controlRate();
+        if (!IAudioEngine::instance()->controlRateIsValid(control_rate, sample_rate))
+            control_rate = IAudioEngine::instance()->defaultControlRate(sample_rate);
+        q->ui->controlRateComboBox->setCurrentIndex(q->ui->controlRateComboBox->findText(QString("%1").arg(control_rate)));
+    }
+};
 
 AudioEngineDialog::AudioEngineDialog(QObject *parent)
     :   IOptionsPage(parent)
+    ,   d(new AudioEngineDialogPrivate(this))
 {}
 
 AudioEngineDialog::~AudioEngineDialog()
-{}
-
-void AudioEngineDialog::initialize()
 {
-    updateDeviceList();
-
-    // Set device combo box index.
-    QString device_name = deviceName();
-    int current_index = ui->deviceComboBox->findText(device_name);
-    if (device_name.isEmpty() || current_index < 0)
-        device_name = QAudioDeviceInfo::defaultOutputDevice().deviceName();
-    ui->deviceComboBox->setCurrentIndex(ui->deviceComboBox->findText(device_name));
-
-    updateSettingsLists();
-
-    // Populate buffer size combo box.
-    int buffer_size = 128;
-    for (int i = 0;  i < 10;  ++i) {
-        ui->bufferSizeComboBox->addItem(QString("%1").arg(buffer_size));
-        buffer_size += buffer_size;
-    }
-
-    // Set buffer size combo box index.
-    buffer_size = bufferSize();
-    if (0 == buffer_size)
-        buffer_size = 2048;
-    ui->bufferSizeComboBox->setCurrentIndex(ui->bufferSizeComboBox->findText(QString("%1").arg(buffer_size)));
+    delete d;
 }
 
 QString AudioEngineDialog::id() const
@@ -97,7 +161,7 @@ QWidget *AudioEngineDialog::createPage(QWidget *parent)
     connect(ui->deviceRefreshPushButton, SIGNAL(clicked()), SLOT(updateDeviceList()));
     connect(ui->sampleRateComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateControlRateList()));
 
-    initialize();
+    d->init();
 
     return w;
 }
@@ -116,142 +180,67 @@ void AudioEngineDialog::finish()
     delete ui;
 }
 
-void AudioEngineDialog::updateDeviceList()
-{
-    ui->deviceComboBox->clear();
-    const QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
-    foreach (const QAudioDeviceInfo &device, devices)
-        ui->deviceComboBox->addItem(device.deviceName());
-}
-
-void AudioEngineDialog::updateSettingsLists()
-{
-    const QString device_name = ui->deviceComboBox->currentText();
-    QAudioDeviceInfo device_info;
-    const QList<QAudioDeviceInfo> devices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
-    foreach (const QAudioDeviceInfo &device, devices) {
-        if (device_name == device.deviceName()) {
-            device_info = device;
-            break;
-        }
-    }
-
-    // Populate sample rate combo box.
-    ui->sampleRateComboBox->clear();
-    const QList<int> sample_rates = device_info.supportedSampleRates();
-    foreach (int rate, sample_rates)
-        ui->sampleRateComboBox->addItem(QString("%1").arg(rate));
-
-    // Set sample rate combo box index.
-    int sample_rate = sampleRate();
-    if (!sample_rates.contains(sample_rate))
-        sample_rate = device_info.preferredFormat().sampleRate();
-    ui->sampleRateComboBox->setCurrentIndex(ui->sampleRateComboBox->findText(QString("%1").arg(sample_rate)));
-
-    // Populate sample size combo box.
-    ui->sampleSizeComboBox->clear();
-    const QList<int> sample_sizes = device_info.supportedSampleSizes();
-    foreach (int size, sample_sizes)
-        ui->sampleSizeComboBox->addItem(QString("%1").arg(size));
-
-    // Set sample size combo box index.
-    int sample_size = sampleSize();
-    if (!sample_sizes.contains(sample_size))
-        sample_size = 32;
-    if (!sample_sizes.contains(sample_size))
-        sample_size = device_info.preferredFormat().sampleSize();
-    ui->sampleSizeComboBox->setCurrentIndex(ui->sampleSizeComboBox->findText(QString("%1").arg(sample_size)));
-}
-
-void AudioEngineDialog::updateControlRateList()
-{
-    const int sample_rate = ui->sampleRateComboBox->currentText().toInt();
-
-    // Populate control rate combo box.
-    QList<int> control_rates;
-    for (int i = 1;  i <= sample_rate;  ++i) {
-        if (0 == sample_rate % i)
-            control_rates.append(i);
-    }
-    ui->controlRateComboBox->clear();
-    foreach (int rate, control_rates)
-        ui->controlRateComboBox->addItem(QString("%1").arg(rate));
-
-    // Set control rate combo box index.
-    int control_rate = controlRate();
-    if (!control_rates.contains(control_rate)) {
-        const int n = control_rates.count();
-        control_rate = control_rates.at(n - (n / 4));
-    }
-    ui->controlRateComboBox->setCurrentIndex(ui->controlRateComboBox->findText(QString("%1").arg(control_rate)));
-}
-
 int AudioEngineDialog::controlRate() const
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    return settings->value("AudioEngine/ControlRate").toInt();
+    return IAudioEngine::instance()->controlRate();
 }
 
 void AudioEngineDialog::setControlRate(int rate)
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    settings->setValue("AudioEngine/ControlRate", rate);
-
     IAudioEngine::instance()->setControlRate(rate);
 }
 
 int AudioEngineDialog::sampleRate() const
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    return settings->value("AudioEngine/SampleRate").toInt();
+    return IAudioEngine::instance()->sampleRate();
 }
 
 void AudioEngineDialog::setSampleRate(int rate)
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    settings->setValue("AudioEngine/SampleRate", rate);
-
     IAudioEngine::instance()->setSampleRate(rate);
 }
 
 int AudioEngineDialog::sampleSize() const
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    return settings->value("AudioEngine/SampleSize").toInt();
+    return IAudioEngine::instance()->sampleSize();
 }
 
 void AudioEngineDialog::setSampleSize(int size)
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    settings->setValue("AudioEngine/SampleSize", size);
-
     IAudioEngine::instance()->setSampleSize(size);
 }
 
 int AudioEngineDialog::bufferSize() const
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    return settings->value("AudioEngine/BufferSize").toInt();
+    return IAudioEngine::instance()->bufferSize();
 }
 
 void AudioEngineDialog::setBufferSize(int size)
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    settings->setValue("AudioEngine/BufferSize", size);
-
     IAudioEngine::instance()->setBufferSize(size);
 }
 
 QString AudioEngineDialog::deviceName() const
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    return settings->value("AudioEngine/DeviceName").toString();
+    return IAudioEngine::instance()->deviceName();
 }
 
 void AudioEngineDialog::setDeviceName(const QString &name)
 {
-    QSettings* settings = Core::ICore::instance()->settings();
-    settings->setValue("AudioEngine/DeviceName", name);
-
     IAudioEngine::instance()->setDeviceName(name);
+}
+
+void AudioEngineDialog::updateDeviceList()
+{
+    d->updateDeviceList();
+}
+
+void AudioEngineDialog::updateSettingsLists()
+{
+    d->updateSettingsLists();
+}
+
+void AudioEngineDialog::updateControlRateList()
+{
+    d->updateControlRateList();
 }
