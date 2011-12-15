@@ -5,6 +5,7 @@ load(../ac_coreplugin/ac_coreplugin.prf)
 DIRS = \
     csound \
     dialogs \
+    tools \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir
