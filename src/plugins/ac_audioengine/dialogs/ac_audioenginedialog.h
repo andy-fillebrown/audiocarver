@@ -47,8 +47,6 @@ private slots:
     void updateControlRateList();
 
 private:
-    void initialize();
-
     int controlRate() const;
     void setControlRate(int rate);
 
