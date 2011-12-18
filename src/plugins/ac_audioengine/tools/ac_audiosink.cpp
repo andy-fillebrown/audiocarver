@@ -17,34 +17,83 @@
 
 #include <ac_audiosink.h>
 
+#include <QAudioOutput>
+
+#include <QDebug>
+#include <QIODevice>
+
+class AudioSinkDevice : public QIODevice
+{
+public:
+    int bufferSize;
+    AudioSink::Callback *callback;
+
+    AudioSinkDevice(int bufferSize, AudioSink::Callback *callback, QObject *parent = 0)
+        :   QIODevice(parent)
+        ,   bufferSize(bufferSize)
+        ,   callback(callback)
+    {
+        if (!open(QIODevice::ReadOnly))
+            qDebug() << Q_FUNC_INFO << "Error opening audio sink device";
+    }
+
+    qint64 readData(char *data, qint64 maxSize)
+    {
+        return callback(data, maxSize);
+    }
+
+    qint64 writeData(const char *data, qint64 maxSize)
+    {
+        Q_UNUSED(data);
+        Q_UNUSED(maxSize);
+        return 0;
+    }
+};
+
 class AudioSinkPrivate
 {
 public:
-    AudioSink::Callback *callback;
+    QAudioOutput *output;
+    AudioSinkDevice *device;
+
+    AudioSinkPrivate(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, AudioSink::Callback *callback)
+        :   output(new QAudioOutput(deviceInfo, format))
+        ,   device(new AudioSinkDevice(bufferSize, callback))
+    {
+        Q_ASSERT(format == output->format());
+        output->setBufferSize(format.channelCount() * (format.sampleSize() / 8) * bufferSize);
+    }
+
+    ~AudioSinkPrivate()
+    {
+        delete device;
+        delete output;
+    }
 };
 
-AudioSink::AudioSink(QObject *parent)
+AudioSink::AudioSink(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, Callback *callback, QObject *parent)
     :   QObject(parent)
-    ,   d(new AudioSinkPrivate)
+    ,   d(new AudioSinkPrivate(deviceInfo, format, bufferSize, callback))
 {}
 
 AudioSink::~AudioSink()
 {
+    stop();
     delete d;
 }
 
-void AudioSink::init(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, Callback *callback)
+QAudioFormat AudioSink::format() const
 {
-    Q_UNUSED(deviceInfo);
-    Q_UNUSED(format);
-    Q_UNUSED(bufferSize);
-    Q_UNUSED(callback);
+    return d->output->format();
 }
 
 void AudioSink::start()
 {
+    d->output->start(d->device);
 }
 
 void AudioSink::stop()
 {
+    d->output->stop();
+    d->device->reset();
 }

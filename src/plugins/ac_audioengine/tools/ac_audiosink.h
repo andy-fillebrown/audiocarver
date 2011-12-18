@@ -30,12 +30,12 @@ class AudioSink : public QObject
     Q_OBJECT
 
 public:
-    typedef int (*Callback)(void *buffer, int sampleCount);
+    typedef qint64 (Callback)(char *data, qint64 byteCount);
 
-    AudioSink(QObject *parent = 0);
+    AudioSink(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, Callback *callback, QObject *parent = 0);
     ~AudioSink();
 
-    void init(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, Callback *callback);
+    QAudioFormat format() const;
 
     void start();
     void stop();
