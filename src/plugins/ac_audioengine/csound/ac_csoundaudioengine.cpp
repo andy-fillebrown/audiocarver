@@ -229,12 +229,14 @@ public:
 
     qint64 read(char *data, qint64 byteCount)
     {
-        uchar *output_data = reinterpret_cast<uchar*>(data);
-
         // The csound_buffer_size variable contains the number of bytes that
         // would be in the csound output buffer if it contained sampleSize
         // samples instead of float or double samples.
         const long csound_buffer_size = bytesPerSample * csoundGetOutputBufferSize(csound);
+        if (!csound_buffer_size)
+            return byteCount;
+
+        uchar *output_data = reinterpret_cast<uchar*>(data);
 
         qint64 bytes_read = 0;
         while (bytes_read < byteCount) {
