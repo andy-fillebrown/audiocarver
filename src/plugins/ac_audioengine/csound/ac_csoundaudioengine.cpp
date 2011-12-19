@@ -157,7 +157,7 @@ public:
             csoundSetHostImplementedAudioIO(csound, 1, bufferSize);
 
         char first_arg[] = "";
-        char output_arg[] = "-odac";
+        char output_arg[] = "-+rtaudio=null";
         char displays_arg[] = "-d";
 
         const QString csd = rootDirName + "testing/moogladder.csd";
