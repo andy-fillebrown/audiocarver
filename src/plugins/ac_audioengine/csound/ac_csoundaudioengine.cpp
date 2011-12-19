@@ -76,10 +76,6 @@ public:
         d_instance = this;
 
         csoundInitialize(0, 0, 0);
-
-        log.setFileName("/home/andy/test.log");
-        if (!log.open(QFile::WriteOnly | QFile::Text))
-            qDebug() << Q_FUNC_INFO << "Error opening log file";
     }
 
     ~CsoundAudioEnginePrivate()
@@ -90,8 +86,6 @@ public:
 
         delete sink;
         writeSettings();
-
-        log.close();
     }
 
     void readSettings()
