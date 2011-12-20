@@ -149,7 +149,6 @@ SOURCES = \
     ../src/Opcodes/butter.c \
     ../src/Opcodes/clfilt.c \
     ../src/Opcodes/compress.c \
-    ../src/Opcodes/cpumeter.c \
     ../src/Opcodes/cross2.c \
     ../src/Opcodes/crossfm.c \
     ../src/Opcodes/dam.c \
@@ -238,6 +237,7 @@ SOURCES = \
     ../src/Opcodes/ugmoss.c \
     ../src/Opcodes/ugnorman.c \
     ../src/Opcodes/ugsc.c \
+    ../src/Opcodes/vaops.c \
     ../src/Opcodes/vbap.c \
     ../src/Opcodes/vbap_eight.c \
     ../src/Opcodes/vbap_four.c \

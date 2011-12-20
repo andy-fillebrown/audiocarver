@@ -1,0 +1,14 @@
+
+12/20/11: [Using Csound repository commit 9c175a1 (12/19/2011)]
+
+----------------------------------------------------------------
+Windows 7 (using MinGW 3.81 / GCC 4.4.0 as provided by Nokia/Qt)
+----------------------------------------------------------------
+
+Variable name conflict for 'OUT':
+- 'OUT' defined as a macro in mingw/include/rpcdce.h
+- 'OUT' defined as a struct in csound/src/H/aops.h
+- Fixed by undefining OUT (if defined) at the top of aops.h
+
+Undefined reference to `cpumeter_localops_init':
+- Fixed by removing 'cpumeter_localops_init' function declaration and 'staticmodules' array element

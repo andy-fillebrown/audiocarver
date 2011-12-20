@@ -49,9 +49,11 @@ void scsort(CSOUND *csound, FILE *scin, FILE *scout)
     sfree(csound);              /* return all memory used */
 }
 
+extern void sread_initstr(CSOUND *);
 void scsortstr(CSOUND *csound, CORFIL *scin)
 {
     int     n;
+    int     m = 0;
 
     csound->scoreout = NULL;
     csound->scstr = corfile_create_w();
@@ -62,7 +64,10 @@ void scsortstr(CSOUND *csound, CORFIL *scin)
       sort(csound);
       twarp(csound);
       swritestr(csound);
+      m++;
     }
+    if (m==0) corfile_puts("f0 2147483647.0\ne\n", csound->scstr);
+    else corfile_puts("e\n", csound->scstr);
     corfile_flush(csound->scstr);
     sfree(csound);              /* return all memory used */
 }

@@ -23,6 +23,11 @@
 
 /*                                                      AOPS.H          */
 
+/* AMF: Avoid conflict with OUT macro defined in mingw/include/rpcdce.h */
+#ifdef OUT
+#undef OUT
+#endif
+
 #define CSOUND_SPIN_SPINLOCK csoundSpinLock(&csound->spinlock);
 #define CSOUND_SPIN_SPINUNLOCK csoundSpinUnLock(&csound->spinlock);
 #define CSOUND_SPOUT_SPINLOCK csoundSpinLock(&csound->spoutlock);
@@ -131,33 +136,38 @@ typedef struct {
 
 typedef struct {
     OPDS    h;
+    MYFLT   *asig[VARGMAX];
+} OUT;
+
+typedef struct {
+    OPDS    h;
     MYFLT   *asig;
 } OUTM;
 
-typedef struct {
-    OPDS    h;
-    MYFLT   *asig1, *asig2;
-} OUTS;
+/* typedef struct { */
+/*     OPDS    h; */
+/*     MYFLT   *asig1, *asig2; */
+/* } OUTS; */
 
-typedef struct {
-    OPDS    h;
-    MYFLT   *asig1, *asig2, *asig3, *asig4;
-} OUTQ;
+/* typedef struct { */
+/*     OPDS    h; */
+/*     MYFLT   *asig1, *asig2, *asig3, *asig4; */
+/* } OUTQ; */
 
-typedef struct {
-    OPDS    h;
-    MYFLT   *asig1, *asig2, *asig3, *asig4, *asig5, *asig6;
-} OUTH;
+/* typedef struct { */
+/*     OPDS    h; */
+/*     MYFLT   *asig1, *asig2, *asig3, *asig4, *asig5, *asig6; */
+/* } OUTH; */
 
-typedef struct {
-    OPDS    h;
-    MYFLT   *asig1, *asig2, *asig3, *asig4, *asig5, *asig6, *asig7, *asig8;
-} OUTO;
+/* typedef struct { */
+/*     OPDS    h; */
+/*     MYFLT   *asig1, *asig2, *asig3, *asig4, *asig5, *asig6, *asig7, *asig8; */
+/* } OUTO; */
 
-typedef struct {
-    OPDS    h;
-    MYFLT   *asig[VARGMAX];
-} OUTX;
+/* typedef struct { */
+/*     OPDS    h; */
+/*     MYFLT   *asig[VARGMAX]; */
+/* } OUTX; */
 
 typedef struct {
     OPDS    h;
@@ -191,4 +201,9 @@ typedef struct {
     MYFLT   *valID, *value;
     AUXCH   channelName;
 } OUTVAL;
+
+typedef struct {
+    OPDS    h;
+    MYFLT   *res, *arg;
+} ERRFN;
 
