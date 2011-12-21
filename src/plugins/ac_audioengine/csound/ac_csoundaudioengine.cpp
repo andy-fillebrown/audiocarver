@@ -54,8 +54,6 @@ public:
     QAudioFormat::Endian byteOrder;
     int currentSample;
 
-    QFile log;
-
     CsoundAudioEnginePrivate()
         :   csound(0)
         ,   csoundBuffer(0)
