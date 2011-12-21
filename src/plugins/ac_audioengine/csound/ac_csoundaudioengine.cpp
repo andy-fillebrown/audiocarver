@@ -149,9 +149,10 @@ public:
         const QByteArray opcodeDir_ba = opcodeDir.toLocal8Bit();
         csoundSetGlobalEnv("OPCODEDIR", opcodeDir_ba.constData());
 
-        if (CSOUND_SUCCESS != csoundPreCompile(csound))
+        if (CSOUND_SUCCESS != csoundPreCompile(csound)) {
             qDebug() << Q_FUNC_INFO << "Error precompiling csound";
-        else
+            return;
+        } else
             csoundSetHostImplementedAudioIO(csound, 1, bufferSize);
 
         char first_arg[] = "";
@@ -164,11 +165,15 @@ public:
         qDebug() << Q_FUNC_INFO << csd_arg;
 
         char *args[] = { first_arg, output_arg, displays_arg, csd_arg };
-        if (CSOUND_SUCCESS != csoundCompile(csound, sizeof(*args), args))
+        if (CSOUND_SUCCESS != csoundCompile(csound, sizeof(*args), args)) {
             qDebug() << Q_FUNC_INFO << "Error compiling csound";
-        else {
+            return;
+        } else {
             csoundBuffer = csoundGetOutputBuffer(csound);
-            Q_ASSERT(csoundBuffer);
+            if (!csoundBuffer) {
+                qDebug() << Q_FUNC_INFO << "Error getting csound buffer";
+                return;
+            }
         }
 
         sink->start();
