@@ -61,7 +61,6 @@ public:
         ,   device(new AudioSinkDevice(bufferSize, callback))
     {
         Q_ASSERT(format == output->format());
-        output->setBufferSize(format.channelCount() * (format.sampleSize() / 8) * bufferSize);
     }
 
     ~AudioSinkPrivate()
