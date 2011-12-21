@@ -58,6 +58,7 @@ HEADERS = \
     ../src/Engine/*.h* \
     ../src/H/*.h* \
     ../src/InOut/*.h* \
+    ../src/InOut/libmpadec/*.h* \
     ../src/OOps/*.h* \
     ../src/Opcodes/*.h* \
     ../src/Opcodes/gab/*.h* \
@@ -106,6 +107,14 @@ SOURCES = \
     ../src/InOut/windin.c \
     ../src/InOut/window.c \
     ../src/InOut/winEPS.c \
+    \
+    ../src/InOut/libmpadec/layer1.c \
+    ../src/InOut/libmpadec/layer2.c \
+    ../src/InOut/libmpadec/layer3.c \
+    ../src/InOut/libmpadec/mp3dec.c \
+    ../src/InOut/libmpadec/mpadec.c \
+    ../src/InOut/libmpadec/synth.c \
+    ../src/InOut/libmpadec/tables.c \
     \
     ../src/OOps/aops.c \
     ../src/OOps/bus.c \
@@ -184,6 +193,7 @@ SOURCES = \
     ../src/Opcodes/modal4.c \
     ../src/Opcodes/modmatrix.c \
     ../src/Opcodes/moog1.c \
+    ../src/Opcodes/mp3in.c \
     ../src/Opcodes/newfils.c \
     ../src/Opcodes/nlfilt.c \
     ../src/Opcodes/oscbnk.c \

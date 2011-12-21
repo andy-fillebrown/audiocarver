@@ -23,11 +23,6 @@
 
 /*                                                      AOPS.H          */
 
-/* AMF: Avoid conflict with OUT macro defined in mingw/include/rpcdce.h */
-#ifdef OUT
-#undef OUT
-#endif
-
 #define CSOUND_SPIN_SPINLOCK csoundSpinLock(&csound->spinlock);
 #define CSOUND_SPIN_SPINUNLOCK csoundSpinUnLock(&csound->spinlock);
 #define CSOUND_SPOUT_SPINLOCK csoundSpinLock(&csound->spoutlock);
@@ -137,7 +132,7 @@ typedef struct {
 typedef struct {
     OPDS    h;
     MYFLT   *asig[VARGMAX];
-} OUT;
+} OUTX;
 
 typedef struct {
     OPDS    h;
