@@ -1,5 +1,6 @@
 
 SOURCE_PAIRS = \
+    ac_audioengineutils \
     ac_audiosink \
 
 for(pair, SOURCE_PAIRS) {

@@ -34,6 +34,9 @@ public:
     virtual bool controlRateIsValid(int controlRate, int sampleRate) const = 0;
     virtual int defaultControlRate(int sampleRate) const = 0;
 
+    virtual bool bufferSizeIsValid(int bufferSize, int controlSamples) const = 0;
+    virtual int defaultBufferSize(int controlSamples, int sampleRate) const = 0;
+
     virtual int controlRate() const = 0;
     virtual void setControlRate(int rate) = 0;
 
@@ -48,6 +51,8 @@ public:
 
     virtual const QString &deviceName() const = 0;
     virtual void setDeviceName(const QString &name) = 0;
+
+    virtual void applySettings() = 0;
 
     virtual int trackCount() const = 0;
     virtual void setTrackCount(int count) = 0;

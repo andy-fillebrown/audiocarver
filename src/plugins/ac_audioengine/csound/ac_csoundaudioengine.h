@@ -33,6 +33,9 @@ public:
     bool controlRateIsValid(int controlRate, int sampleRate) const;
     int defaultControlRate(int sampleRate) const;
 
+    bool bufferSizeIsValid(int bufferSize, int controlSamples) const;
+    int defaultBufferSize(int controlSamples, int sampleRate) const;
+
     int controlRate() const;
     void setControlRate(int rate);
 
@@ -47,6 +50,8 @@ public:
 
     const QString &deviceName() const;
     void setDeviceName(const QString &name);
+
+    void applySettings();
 
     int trackCount() const;
     void setTrackCount(int count);

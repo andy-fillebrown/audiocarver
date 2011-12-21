@@ -45,6 +45,7 @@ private slots:
     void updateDeviceList();
     void updateSettingsLists();
     void updateControlRateList();
+    void updateBufferSizeList();
 
 private:
     int controlRate() const;
