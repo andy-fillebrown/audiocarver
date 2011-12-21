@@ -34,7 +34,6 @@ DEFINES *= \
     ENABLE_NEW_PARSER \
     HAVE_DIRENT_H \
     HAVE_FCNTL_H \
-    HAVE_IO_H \
     HAVE_LIBSNDFILE=1017 \
     HAVE_PTHREAD_BARRIER_INIT \
     HAVE_SOCKETS \
@@ -158,6 +157,7 @@ SOURCES = \
     ../src/Opcodes/butter.c \
     ../src/Opcodes/clfilt.c \
     ../src/Opcodes/compress.c \
+    ../src/Opcodes/cpumeter.c \
     ../src/Opcodes/cross2.c \
     ../src/Opcodes/crossfm.c \
     ../src/Opcodes/dam.c \
@@ -286,6 +286,9 @@ OTHER_FILES *= \
     ../src/readme-parser.txt \
 
 unix: !macx: !freebsd* {
+    DEFINES *= \
+        LINUX \
+
     INCLUDEPATH *= \
         ../../sndfile/src \
 
@@ -293,6 +296,11 @@ unix: !macx: !freebsd* {
         -ldl \
         -lpthread \
         /usr/lib/libsndfile.so.1 \
+}
+
+macx {
+    DEFINES *= \
+        __MACH__ \
 }
 
 win32 {
@@ -303,6 +311,7 @@ win32 {
         -mthreads \
 
     DEFINES *= \
+        HAVE_IO_H \
         OS_IS_WIN32 \
         _WIN32 \
         WIN32 \
