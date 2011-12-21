@@ -59,9 +59,7 @@ public:
     AudioSinkPrivate(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, AudioSink::Callback *callback)
         :   output(new QAudioOutput(deviceInfo, format))
         ,   device(new AudioSinkDevice(bufferSize, callback))
-    {
-        Q_ASSERT(format == output->format());
-    }
+    {}
 
     ~AudioSinkPrivate()
     {
