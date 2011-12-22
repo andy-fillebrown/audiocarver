@@ -1,5 +1,6 @@
 
 SOURCE_PAIRS = \
+    ac_audioenginesettings \
     ac_audioengineutils \
     ac_audiosink \
 
