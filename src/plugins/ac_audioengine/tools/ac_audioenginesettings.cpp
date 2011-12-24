@@ -17,7 +17,11 @@
 
 #include <ac_audioenginesettings.h>
 
+#include <ac_audioengineutils.h>
+
 #include <QAudioDeviceInfo>
+
+#include <QSettings>
 
 class AudioEngineSettingsPrivate : public QSharedData
 {
@@ -34,6 +38,45 @@ public:
         ,   controlRate(0)
         ,   bufferSize(0)
     {}
+
+    void read(QSettings *settings)
+    {
+        deviceName = settings->value("AudioEngine/DeviceName").toString();
+        sampleSize = settings->value("AudioEngine/SampleSize").toInt();
+        sampleRate = settings->value("AudioEngine/SampleRate").toInt();
+        controlRate = settings->value("AudioEngine/ControlRate").toInt();
+        bufferSize = settings->value("AudioEngine/BufferSize").toInt();
+        update();
+    }
+
+    void write(QSettings *settings) const
+    {
+        settings->setValue("AudioEngine/DeviceName", deviceName);
+        settings->setValue("AudioEngine/SampleSize", sampleSize);
+        settings->setValue("AudioEngine/SampleRate", sampleRate);
+        settings->setValue("AudioEngine/ControlRate", controlRate);
+        settings->setValue("AudioEngine/BufferSize", bufferSize);
+    }
+
+    void update()
+    {
+        if (deviceName.isEmpty())
+            deviceName = QAudioDeviceInfo::defaultOutputDevice().deviceName();
+
+        QAudioDeviceInfo device_info = Ac::deviceInfo(deviceName);
+
+        if (!sampleSize)
+            sampleSize = device_info.preferredFormat().sampleSize();
+
+        if (!sampleRate)
+            sampleRate = device_info.preferredFormat().sampleRate();
+
+        if (!controlRate || (sampleRate % controlRate))
+            controlRate = Ac::defaultControlRate(sampleRate);
+
+        if (!bufferSize || (bufferSize % (sampleRate / controlRate)))
+            bufferSize = Ac::defaultBufferSize(sampleRate, controlRate);
+    }
 };
 
 AudioEngineSettings::AudioEngineSettings()
@@ -50,14 +93,17 @@ AudioEngineSettings &AudioEngineSettings::operator=(const AudioEngineSettings &o
     return *this;
 }
 
-void AudioEngineSettings::read(QSettings *settings) const
+AudioEngineSettings::~AudioEngineSettings()
+{}
+
+void AudioEngineSettings::read(QSettings *settings)
 {
-    Q_UNUSED(settings);
+    d->read(settings);
 }
 
 void AudioEngineSettings::write(QSettings *settings) const
 {
-    Q_UNUSED(settings);
+    d->write(settings);
 }
 
 const QString &AudioEngineSettings::deviceName() const
@@ -67,8 +113,10 @@ const QString &AudioEngineSettings::deviceName() const
 
 void AudioEngineSettings::setDeviceName(const QString &name)
 {
-    if (name != deviceName())
+    if (name != deviceName()) {
         d->deviceName = name;
+        d->update();
+    }
 }
 
 int AudioEngineSettings::sampleSize() const
@@ -89,8 +137,10 @@ int AudioEngineSettings::sampleRate() const
 
 void AudioEngineSettings::setSampleRate(int rate)
 {
-    if (rate != sampleRate())
+    if (rate != sampleRate()) {
         d->sampleRate = rate;
+        d->update();
+    }
 }
 
 int AudioEngineSettings::controlRate() const
@@ -100,8 +150,10 @@ int AudioEngineSettings::controlRate() const
 
 void AudioEngineSettings::setControlRate(int rate)
 {
-    if (rate != controlRate())
+    if (rate != controlRate()) {
         d->controlRate = rate;
+        d->update();
+    }
 }
 
 int AudioEngineSettings::bufferSize() const
@@ -111,8 +163,10 @@ int AudioEngineSettings::bufferSize() const
 
 void AudioEngineSettings::setBufferSize(int size)
 {
-    if (size != bufferSize())
+    if (size != bufferSize()) {
         d->bufferSize = size;
+        d->update();
+    }
 }
 
 bool AudioEngineSettings::operator==(const AudioEngineSettings &other) const

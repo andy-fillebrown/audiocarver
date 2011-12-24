@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+class AudioEngineSettings;
+
 class AC_CORE_EXPORT IAudioEngine : public QObject
 {
     Q_OBJECT
@@ -31,28 +33,8 @@ public:
 
     static IAudioEngine *instance();
 
-    virtual bool controlRateIsValid(int controlRate, int sampleRate) const = 0;
-    virtual int defaultControlRate(int sampleRate) const = 0;
-
-    virtual bool bufferSizeIsValid(int bufferSize, int controlSamples) const = 0;
-    virtual int defaultBufferSize(int controlSamples, int sampleRate) const = 0;
-
-    virtual int controlRate() const = 0;
-    virtual void setControlRate(int rate) = 0;
-
-    virtual int sampleRate() const = 0;
-    virtual void setSampleRate(int rate) = 0;
-
-    virtual int sampleSize() const = 0;
-    virtual void setSampleSize(int size) = 0;
-
-    virtual int bufferSize() const = 0;
-    virtual void setBufferSize(int size) = 0;
-
-    virtual const QString &deviceName() const = 0;
-    virtual void setDeviceName(const QString &name) = 0;
-
-    virtual void applySettings() = 0;
+    virtual const AudioEngineSettings &settings() const = 0;
+    virtual void setSettings(const AudioEngineSettings &settings) = 0;
 
     virtual int trackCount() const = 0;
     virtual void setTrackCount(int count) = 0;
@@ -63,6 +45,9 @@ public:
     virtual bool isStarted() const = 0;
     virtual void start() = 0;
     virtual void stop() = 0;
+
+signals:
+    void settingsChanged();
 };
 
 #endif // AC_IAUDIOENGINE_H

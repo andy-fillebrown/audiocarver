@@ -42,27 +42,13 @@ public:
     void finish();
 
 private slots:
+    void engineSettingsChanged();
     void updateDeviceList();
-    void updateSettingsLists();
-    void updateControlRateList();
-    void updateBufferSizeList();
+    void deviceChanged();
+    void sampleRateChanged();
+    void controlRateChanged();
 
 private:
-    int controlRate() const;
-    void setControlRate(int rate);
-
-    int sampleRate() const;
-    void setSampleRate(int rate);
-
-    int sampleSize() const;
-    void setSampleSize(int size);
-
-    int bufferSize() const;
-    void setBufferSize(int size);
-
-    QString deviceName() const;
-    void setDeviceName(const QString &name);
-
     AudioEngineDialogPrivate *d;
     Ui_AudioEngineDialog *ui;
 

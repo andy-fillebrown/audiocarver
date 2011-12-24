@@ -21,7 +21,6 @@
 #include <ac_iaudioengine.h>
 
 class CsoundAudioEnginePrivate;
-
 class CsoundAudioEngine : public IAudioEngine
 {
     Q_OBJECT
@@ -30,28 +29,8 @@ public:
     CsoundAudioEngine();
     ~CsoundAudioEngine();
 
-    bool controlRateIsValid(int controlRate, int sampleRate) const;
-    int defaultControlRate(int sampleRate) const;
-
-    bool bufferSizeIsValid(int bufferSize, int controlSamples) const;
-    int defaultBufferSize(int controlSamples, int sampleRate) const;
-
-    int controlRate() const;
-    void setControlRate(int rate);
-
-    int sampleRate() const;
-    void setSampleRate(int rate);
-
-    int sampleSize() const;
-    void setSampleSize(int size);
-
-    int bufferSize() const;
-    void setBufferSize(int size);
-
-    const QString &deviceName() const;
-    void setDeviceName(const QString &name);
-
-    void applySettings();
+    const AudioEngineSettings &settings() const;
+    void setSettings(const AudioEngineSettings &settings);
 
     int trackCount() const;
     void setTrackCount(int count);

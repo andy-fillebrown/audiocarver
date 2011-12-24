@@ -34,4 +34,17 @@ QAudioDeviceInfo deviceInfo(const QString &deviceName)
     return device_info;
 }
 
+int defaultControlRate(int sampleRate)
+{
+    int control_rate = sampleRate / 10;
+    for (int i = 9;  sampleRate % control_rate;  --i)
+        control_rate = sampleRate / i;
+    return control_rate;
+}
+
+int defaultBufferSize(int sampleRate, int controlRate)
+{
+    return 10 * (sampleRate / controlRate);
+}
+
 } // namespace Ac

@@ -24,6 +24,8 @@ class QString;
 namespace Ac {
 
 QAudioDeviceInfo deviceInfo(const QString &deviceName);
+int defaultControlRate(int sampleRate);
+int defaultBufferSize(int sampleRate, int controlRate);
 
 } // namespace Ac
 

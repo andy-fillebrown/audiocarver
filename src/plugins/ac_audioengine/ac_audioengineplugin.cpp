@@ -24,20 +24,17 @@
 
 using namespace ExtensionSystem;
 
-static AudioEngineDialog *audioEngineDialog = 0;
-
 bool AcAudioEnginePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
     addAutoReleasedObject(new CsoundAudioEngine);
-    addObject(audioEngineDialog = new AudioEngineDialog);
+    addAutoReleasedObject(new AudioEngineDialog);
     return true;
 }
 
 IPlugin::ShutdownFlag AcAudioEnginePlugin::aboutToShutdown()
 {
-    removeObject(audioEngineDialog);
     return SynchronousShutdown;
 }
 

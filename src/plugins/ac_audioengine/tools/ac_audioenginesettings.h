@@ -34,10 +34,11 @@ class AudioEngineSettings
 public:
     AudioEngineSettings();
     AudioEngineSettings(const AudioEngineSettings &other);
+    ~AudioEngineSettings();
 
     AudioEngineSettings &operator=(const AudioEngineSettings &other);
 
-    void read(QSettings *settings) const;
+    void read(QSettings *settings);
     void write(QSettings *settings) const;
 
     const QString &deviceName() const;
