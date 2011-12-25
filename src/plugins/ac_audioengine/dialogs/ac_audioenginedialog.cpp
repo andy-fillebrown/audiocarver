@@ -31,6 +31,7 @@ class AudioEngineDialogPrivate
 {
 public:
     AudioEngineDialog *q;
+    QWidget *widget;
     QList<int> sampleSizes;
     QList<int> sampleRates;
     QList<int> controlRates;
@@ -40,11 +41,18 @@ public:
     QStringList sampleRateStrings;
     QStringList controlRateStrings;
     QStringList bufferSizeStrings;
-    QWidget *widget;
+    int prevSampleSize;
+    int prevSampleRate;
+    int prevControlRate;
+    int prevBufferSize;
 
     AudioEngineDialogPrivate(AudioEngineDialog *q)
         :   q(q)
         ,   widget(new QWidget)
+        ,   prevSampleSize(0)
+        ,   prevSampleRate(0)
+        ,   prevControlRate(0)
+        ,   prevBufferSize(0)
     {}
 
     ~AudioEngineDialogPrivate()
@@ -183,25 +191,44 @@ public:
         ui->bufferSizeComboBox->setCurrentIndex(index);
     }
 
+    void resetSampleSize(int sampleSize, const QString &deviceName)
+    {
+        if (!sampleSizes.contains(sampleSize))
+            sampleSize = prevSampleSize;
+        if (!sampleSizes.contains(sampleSize))
+            sampleSize = Ac::deviceInfo(deviceName).preferredFormat().sampleSize();
+        setSampleSizeIndex(sampleSize);
+        prevSampleSize = sampleSize;
+    }
+
     void resetSampleRate(int sampleRate, const QString &deviceName)
     {
         if (!sampleRates.contains(sampleRate))
+            sampleRate = prevSampleRate;
+        if (!sampleRates.contains(sampleRate))
             sampleRate = Ac::deviceInfo(deviceName).preferredFormat().sampleRate();
         setSampleRateIndex(sampleRate);
+        prevSampleRate = sampleRate;
     }
 
     void resetControlRate(int controlRate, int sampleRate)
     {
         if (!Ac::controlRateIsValid(controlRate, sampleRate))
+            controlRate = prevControlRate;
+        if (!Ac::controlRateIsValid(controlRate, sampleRate))
             controlRate = Ac::defaultControlRate(sampleRate);
         setControlRateIndex(controlRate);
+        prevControlRate = controlRate;
     }
 
     void resetBufferSize(int bufferSize, int sampleRate, int controlRate)
     {
         if (!Ac::bufferSizeIsValid(bufferSize, sampleRate, controlRate))
+            bufferSize = prevBufferSize;
+        if (!Ac::bufferSizeIsValid(bufferSize, sampleRate, controlRate))
             bufferSize = Ac::defaultBufferSize(sampleRate, controlRate);
         setBufferSizeIndex(bufferSize);
+        prevBufferSize = bufferSize;
     }
 
     QString uiDeviceName() const
@@ -269,6 +296,11 @@ AudioEngineDialog::AudioEngineDialog(QObject *parent)
     connect(ui->deviceComboBox, SIGNAL(currentIndexChanged(int)), SLOT(deviceChanged()));
     connect(ui->sampleRateComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sampleRateChanged()));
     connect(ui->controlRateComboBox, SIGNAL(currentIndexChanged(int)), SLOT(controlRateChanged()));
+
+    ui->sampleSizeComboBox->installEventFilter(this);
+    ui->sampleRateComboBox->installEventFilter(this);
+    ui->controlRateComboBox->installEventFilter(this);
+    ui->bufferSizeComboBox->installEventFilter(this);
 }
 
 AudioEngineDialog::~AudioEngineDialog()
@@ -304,6 +336,11 @@ QIcon AudioEngineDialog::categoryIcon() const
 
 QWidget *AudioEngineDialog::createPage(QWidget *parent)
 {
+    AudioEngineSettings settings = IAudioEngine::instance()->settings();
+    d->resetSampleRate(settings.sampleRate(), settings.deviceName());
+    d->resetControlRate(settings.controlRate(), settings.sampleRate());
+    d->resetBufferSize(settings.bufferSize(), settings.sampleRate(), settings.controlRate());
+
     d->widget->setParent(parent);
     return d->widget;
 }
@@ -311,6 +348,11 @@ QWidget *AudioEngineDialog::createPage(QWidget *parent)
 void AudioEngineDialog::apply()
 {
     IAudioEngine::instance()->setSettings(d->uiSettings());
+
+    AudioEngineSettings settings = IAudioEngine::instance()->settings();
+    d->resetSampleRate(settings.sampleRate(), settings.deviceName());
+    d->resetControlRate(settings.controlRate(), settings.sampleRate());
+    d->resetBufferSize(settings.bufferSize(), settings.sampleRate(), settings.controlRate());
 }
 
 void AudioEngineDialog::finish()
@@ -389,4 +431,19 @@ void AudioEngineDialog::controlRateChanged()
     d->updateBufferSizes(sample_rate, control_rate);
     d->updateBufferSizesUi();
     d->resetBufferSize(buffer_size, sample_rate, control_rate);
+}
+
+bool AudioEngineDialog::eventFilter(QObject *object, QEvent *event)
+{
+    if (QEvent::FocusOut == event->type()) {
+        if (ui->sampleSizeComboBox == object)
+            d->resetSampleSize(d->uiSampleSize(), d->uiDeviceName());
+        else if (ui->sampleRateComboBox == object)
+            d->resetSampleRate(d->uiSampleRate(), d->uiDeviceName());
+        else if (ui->controlRateComboBox == object)
+            d->resetControlRate(d->uiControlRate(), d->uiSampleRate());
+        else if (ui->bufferSizeComboBox == object)
+            d->resetBufferSize(d->uiBufferSize(), d->uiSampleRate(), d->uiControlRate());
+    }
+    return false;
 }

@@ -57,6 +57,7 @@ bool controlRateIsValid(int controlRate, int sampleRate)
 bool bufferSizeIsValid(int bufferSize, int sampleRate, int controlRate)
 {
     return 0 < bufferSize
+            && bufferSize < sampleRate
             && controlRate <= sampleRate
             && (bufferSize % (sampleRate / controlRate)) == 0;
 }

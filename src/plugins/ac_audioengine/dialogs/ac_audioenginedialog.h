@@ -49,6 +49,8 @@ private slots:
     void controlRateChanged();
 
 private:
+    bool eventFilter(QObject *object, QEvent *event);
+
     AudioEngineDialogPrivate *d;
     Ui_AudioEngineDialog *ui;
 

@@ -154,6 +154,12 @@
                <height>0</height>
               </size>
              </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
+             </property>
             </widget>
            </item>
            <item>
@@ -240,6 +246,12 @@
                <width>96</width>
                <height>0</height>
               </size>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
              </property>
             </widget>
            </item>
@@ -328,6 +340,12 @@
                <height>0</height>
               </size>
              </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
+             </property>
             </widget>
            </item>
            <item>
@@ -414,6 +432,12 @@
                <width>96</width>
                <height>0</height>
               </size>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
              </property>
             </widget>
            </item>
