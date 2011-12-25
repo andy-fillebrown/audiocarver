@@ -312,6 +312,7 @@ void CsoundAudioEngine::setSettings(const AudioEngineSettings &settings)
         return;
     d->settings = settings;
     d->update();
+    settings.write(Core::ICore::instance()->settings());
     emit settingsChanged();
 }
 
