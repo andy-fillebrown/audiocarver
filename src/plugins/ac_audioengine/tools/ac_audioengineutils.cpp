@@ -44,7 +44,21 @@ int defaultControlRate(int sampleRate)
 
 int defaultBufferSize(int sampleRate, int controlRate)
 {
+    if (sampleRate < controlRate)
+        controlRate = sampleRate;
     return 10 * (sampleRate / controlRate);
+}
+
+bool controlRateIsValid(int controlRate, int sampleRate)
+{
+    return (sampleRate % controlRate) == 0;
+}
+
+bool bufferSizeIsValid(int bufferSize, int sampleRate, int controlRate)
+{
+    return 0 < bufferSize
+            && controlRate <= sampleRate
+            && (bufferSize % (sampleRate / controlRate)) == 0;
 }
 
 } // namespace Ac
