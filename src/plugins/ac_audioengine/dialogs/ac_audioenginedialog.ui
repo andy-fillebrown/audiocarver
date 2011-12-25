@@ -88,12 +88,12 @@
         </property>
         <layout class="QVBoxLayout">
          <item>
-          <layout class="QHBoxLayout" name="controlRateLayout" stretch="0,0,0,0,0">
+          <layout class="QHBoxLayout" name="sampleSizeLayout" stretch="0,0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
            <item>
-            <widget class="QLabel" name="controlRateLabel">
+            <widget class="QLabel" name="sampleSizeLabel">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -107,12 +107,12 @@
               </size>
              </property>
              <property name="text">
-              <string>Control Rate</string>
+              <string>Sample Size</string>
              </property>
             </widget>
            </item>
            <item>
-            <spacer name="controlRateSpacer">
+            <spacer name="sampleSizeSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -125,7 +125,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="controlRateLabel_2">
+            <widget class="QLabel" name="sampleSizeLabel_2">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -133,7 +133,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>(samples per second)</string>
+              <string>(bits per sample)</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -141,7 +141,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="controlRateComboBox">
+            <widget class="QComboBox" name="sampleSizeComboBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -157,7 +157,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="controlRateSpacer_2">
+            <spacer name="sampleSizeSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -262,12 +262,12 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="sampleSizeLayout" stretch="0,0,0,0,0">
+          <layout class="QHBoxLayout" name="controlRateLayout" stretch="0,0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
            <item>
-            <widget class="QLabel" name="sampleSizeLabel">
+            <widget class="QLabel" name="controlRateLabel">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -281,12 +281,12 @@
               </size>
              </property>
              <property name="text">
-              <string>Sample Size</string>
+              <string>Control Rate</string>
              </property>
             </widget>
            </item>
            <item>
-            <spacer name="sampleSizeSpacer">
+            <spacer name="controlRateSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -299,7 +299,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="sampleSizeLabel_2">
+            <widget class="QLabel" name="controlRateLabel_2">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -307,7 +307,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>(bits per sample)</string>
+              <string>(samples per second)</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -315,7 +315,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="sampleSizeComboBox">
+            <widget class="QComboBox" name="controlRateComboBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -331,7 +331,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="sampleSizeSpacer_2">
+            <spacer name="controlRateSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
