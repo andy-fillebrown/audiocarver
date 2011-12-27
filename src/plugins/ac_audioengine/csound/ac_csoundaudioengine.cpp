@@ -251,26 +251,41 @@ public:
                 const float x = *csound_data;
                 if (8 == sampleSize) {
                     if (QAudioFormat::UnSignedInt == sampleType) {
-                        const quint8 value = static_cast<quint8>((1.0f + x) / 2 * 255);
+                        const quint8 value = static_cast<quint8>((1.0f + x) / 2.0f * 255.0f);
                         *reinterpret_cast<quint8*>(output_data) = value;
                     } else if (QAudioFormat::SignedInt == sampleType) {
-                        const qint8 value = static_cast<qint8>(x * 127);
+                        const qint8 value = static_cast<qint8>(x * 127.0f);
                         *reinterpret_cast<quint8*>(output_data) = value;
                     }
                 } else if (16 == sampleSize) {
                     if (QAudioFormat::UnSignedInt == sampleType) {
-                        quint16 value = static_cast<quint16>((1.0f + x) / 2 * 65535);
+                        quint16 value = static_cast<quint16>((1.0f + x) / 2.0f * 65535.0f);
                         if (QAudioFormat::LittleEndian == byteOrder)
                             qToLittleEndian<quint16>(value, output_data);
                         else
                             qToBigEndian<quint16>(value, output_data);
                     } else if (QAudioFormat::SignedInt == sampleType) {
-                        qint16 value = static_cast<qint16>(x * 32767);
+                        qint16 value = static_cast<qint16>(x * 32767.0f);
                         if (QAudioFormat::LittleEndian == byteOrder)
                             qToLittleEndian<qint16>(value, output_data);
                         else
                             qToBigEndian<qint16>(value, output_data);
                     }
+                } else if (32 == sampleSize) {
+                    if (QAudioFormat::UnSignedInt == sampleType) {
+                        quint32 value = static_cast<quint32>((1.0f + x) / 2.0f * 4294967295.0f);
+                        if (QAudioFormat::LittleEndian == byteOrder)
+                            qToLittleEndian<quint32>(value, output_data);
+                        else
+                            qToBigEndian<quint32>(value, output_data);
+                    } else if (QAudioFormat::SignedInt == sampleType) {
+                        qint32 value = static_cast<qint32>(x * 2147483647.0f);
+                        if (QAudioFormat::LittleEndian == byteOrder)
+                            qToLittleEndian<qint32>(value, output_data);
+                        else
+                            qToBigEndian<qint32>(value, output_data);
+                    } else if (QAudioFormat::Float == sampleType)
+                        *reinterpret_cast<float*>(output_data) = x;
                 }
 
                 ++csound_data;
