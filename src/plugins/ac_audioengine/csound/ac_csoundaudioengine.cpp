@@ -236,21 +236,22 @@ public:
                 }
             } else {
                 const int current_byte = bytesPerSample * currentSample;
-                if ((bytes_read + (csoundBufferSize - current_byte)) < byteCount)
+                if ((bytes_read + (csoundBufferSize - current_byte)) < byteCount) {
                     n = csoundBufferSize - current_byte;
-                else
+                    currentSample = 0;
+                } else {
                     n = byteCount - bytes_read;
-                currentSample = 0;
+                    currentSample += n / bytesPerSample;
+                }
             }
 
             bytes_read += n;
 
             while (n) {
                 const float x = *csound_data;
-
                 if (8 == sampleSize) {
                     if (QAudioFormat::UnSignedInt == sampleType) {
-                        const quint8 value = static_cast<quint8>((1.0 + x) / 2 * 255);
+                        const quint8 value = static_cast<quint8>((1.0f + x) / 2 * 255);
                         *reinterpret_cast<quint8*>(output_data) = value;
                     } else if (QAudioFormat::SignedInt == sampleType) {
                         const qint8 value = static_cast<qint8>(x * 127);
@@ -258,7 +259,7 @@ public:
                     }
                 } else if (16 == sampleSize) {
                     if (QAudioFormat::UnSignedInt == sampleType) {
-                        quint16 value = static_cast<quint16>((1.0 + x) / 2 * 65535);
+                        quint16 value = static_cast<quint16>((1.0f + x) / 2 * 65535);
                         if (QAudioFormat::LittleEndian == byteOrder)
                             qToLittleEndian<quint16>(value, output_data);
                         else
