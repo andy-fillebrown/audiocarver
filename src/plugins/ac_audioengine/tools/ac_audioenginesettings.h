@@ -57,7 +57,6 @@ public:
     void setBufferSize(int size);
 
     bool operator==(const AudioEngineSettings &other) const;
-    bool operator!=(const AudioEngineSettings &other) const;
 
 private:
     QSharedDataPointer<AudioEngineSettingsPrivate> d;

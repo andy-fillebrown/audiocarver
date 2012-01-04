@@ -178,13 +178,3 @@ bool AudioEngineSettings::operator==(const AudioEngineSettings &other) const
             && d->controlRate == other_d->controlRate
             && d->bufferSize == other_d->bufferSize;
 }
-
-bool AudioEngineSettings::operator!=(const AudioEngineSettings &other) const
-{
-    const AudioEngineSettingsPrivate *other_d = other.d;
-    return d->deviceName != other_d->deviceName
-            || d->sampleSize != other_d->sampleSize
-            || d->sampleRate != other_d->sampleRate
-            || d->controlRate != other_d->controlRate
-            || d->bufferSize != other_d->bufferSize;
-}
