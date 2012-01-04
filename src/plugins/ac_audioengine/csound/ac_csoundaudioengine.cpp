@@ -83,6 +83,7 @@ public:
         ,   trackCount(0)
         ,   startTime(0.0)
         ,   started(false)
+        ,   scoreDone(false)
         ,   stopTimer(new QTimer)
     {
         d_instance = this;
