@@ -43,6 +43,8 @@ public:
     virtual void setStartTime(qreal time) = 0;
 
     virtual bool isStarted() const = 0;
+
+public slots:
     virtual void start() = 0;
     virtual void stop() = 0;
 

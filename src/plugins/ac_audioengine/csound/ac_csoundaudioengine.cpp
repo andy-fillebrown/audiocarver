@@ -30,6 +30,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QSettings>
+#include <QTimer>
 #include <QtEndian>
 
 class CsoundAudioEnginePrivate;
@@ -62,7 +63,9 @@ public:
     QAudioFormat::Endian byteOrder;
     int trackCount;
     qreal startTime;
-    uint started : sizeof(uint);
+    uint started : 1;
+    uint scoreDone : sizeof(uint) - 1;
+    QTimer *stopTimer;
 
     CsoundAudioEnginePrivate()
         :   sink(0)
@@ -80,6 +83,7 @@ public:
         ,   trackCount(0)
         ,   startTime(0.0)
         ,   started(false)
+        ,   stopTimer(new QTimer)
     {
         d_instance = this;
 
@@ -94,6 +98,8 @@ public:
 
         settings.read(Core::ICore::instance()->settings());
         update();
+
+        stopTimer->setSingleShot(true);
     }
 
     ~CsoundAudioEnginePrivate()
@@ -103,6 +109,7 @@ public:
         if (csound)
             csoundDestroy(csound);
 
+        delete stopTimer;
         delete sink;
 
         settings.write(Core::ICore::instance()->settings());
@@ -199,6 +206,7 @@ public:
         sink->stop();
         currentSample = 0;
         csoundRewindScore(csound);
+        scoreDone = false;
         started = false;
     }
 
@@ -220,9 +228,8 @@ public:
 
         qint64 bytes_read = 0;
         while (bytes_read < byteCount) {
-            bool score_done = false;
-            if (currentSample == 0)
-                score_done = csoundPerformBuffer(csound);
+            if (currentSample == 0 && !scoreDone)
+                scoreDone = csoundPerformBuffer(csound);
 
             float *csound_data = csoundBuffer + currentSample;
 
@@ -293,11 +300,12 @@ public:
                 n -= bytesPerSample;
             }
 
-            if (score_done) {
-                stop();
+            if (scoreDone && currentSample == 0)
                 break;
-            }
         }
+
+        if (scoreDone)
+            stopTimer->start();
 
         return byteCount;
     }
@@ -310,7 +318,9 @@ qint64 audioSinkCallback(char *data, qint64 byteCount)
 
 CsoundAudioEngine::CsoundAudioEngine()
     :   d(new CsoundAudioEnginePrivate)
-{}
+{
+    connect(d->stopTimer, SIGNAL(timeout()), SLOT(stop()));
+}
 
 CsoundAudioEngine::~CsoundAudioEngine()
 {

@@ -71,10 +71,7 @@ public:
 AudioSink::AudioSink(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, Callback *callback, QObject *parent)
     :   QObject(parent)
     ,   d(new AudioSinkPrivate(deviceInfo, format, bufferSize, callback))
-{
-    d->output->start(d->device);
-    d->output->suspend();
-}
+{}
 
 AudioSink::~AudioSink()
 {
@@ -89,11 +86,11 @@ QAudioFormat AudioSink::format() const
 
 void AudioSink::start()
 {
-    d->output->resume();
+    d->device->reset();
+    d->output->start(d->device);
 }
 
 void AudioSink::stop()
 {
-    d->output->suspend();
-    d->device->reset();
+    d->output->stop();
 }
