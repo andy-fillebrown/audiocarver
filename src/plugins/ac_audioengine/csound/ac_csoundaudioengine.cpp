@@ -134,12 +134,7 @@ public:
         format.setSampleType(QAudioFormat::SignedInt);
         delete sink;
         sink = new AudioSink(device_info, format, bufferSize, audioSinkCallback);
-
         format = sink->format();
-        if (sampleSize != format.sampleSize())
-            qDebug() << Q_FUNC_INFO << "requested sample size is invalid";
-        if (sampleRate != format.sampleRate())
-            qDebug() << Q_FUNC_INFO << "requested sample rate is invalid";
 
         sampleSize = format.sampleSize();
         sampleRate = format.sampleRate();
