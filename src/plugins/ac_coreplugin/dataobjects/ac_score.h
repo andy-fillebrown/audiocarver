@@ -21,6 +21,7 @@
 #include <ac_scoreobject.h>
 
 class GridSettings;
+class ProjectSettings;
 class Track;
 class ViewSettings;
 
@@ -34,6 +35,7 @@ public:
     ObjectTList<Track> *tracks;
     GridSettings *gridSettings;
     ViewSettings *viewSettings;
+    ProjectSettings *projectSettings;
 
     ScorePrivate(Score *q);
     void init();
@@ -50,7 +52,7 @@ class AC_CORE_EXPORT Score : public ScoreObject
 
 public:
     enum { Type = Ac::ScoreItem };
-    enum { ModelItemCount = ScoreObject::ModelItemCount + 3 };
+    enum { ModelItemCount = ScoreObject::ModelItemCount + 4 };
 
     explicit Score(QObject *parent = 0);
 
@@ -59,6 +61,7 @@ public:
     ObjectTList<Track> *tracks() const;
     GridSettings *gridSettings() const;
     ViewSettings *viewSettings() const;
+    ProjectSettings *projectSettings() const;
 
     QGraphicsItem *sceneItem(int type) const;
 

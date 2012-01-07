@@ -20,6 +20,7 @@
 #include <ac_graphicsitem.h>
 #include <ac_gridline.h>
 #include <ac_gridsettings.h>
+#include <ac_projectsettings.h>
 #include <ac_track.h>
 #include <ac_viewsettings.h>
 
@@ -71,6 +72,7 @@ ScorePrivate::ScorePrivate(Score *q)
     ,   tracks(0)
     ,   gridSettings(0)
     ,   viewSettings(0)
+    ,   projectSettings(0)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
         mainGraphicsItems.insert(Ac::SceneType(i), new GraphicsRootItem);
@@ -87,10 +89,12 @@ void ScorePrivate::init()
     tracks = new TrackList<Track>(q_ptr);
     gridSettings = new GridSettings(q_ptr);
     viewSettings = new ViewSettings(q_ptr);
+    projectSettings = new ProjectSettings(q_ptr);
 }
 
 ScorePrivate::~ScorePrivate()
 {
+    delete projectSettings;
     delete viewSettings;
     delete gridSettings;
     qDeleteAll(tracks);
@@ -155,6 +159,12 @@ ViewSettings *Score::viewSettings() const
     return d->viewSettings;
 }
 
+ProjectSettings *Score::projectSettings() const
+{
+    Q_D(const Score);
+    return d->projectSettings;
+}
+
 QGraphicsItem *Score::sceneItem(int type) const
 {
     Q_D(const Score);
@@ -165,6 +175,7 @@ void Score::clear()
 {
     Q_D(Score);
     emit aboutToBeReset();
+    d->projectSettings->clear();
     d->viewSettings->clear();
     d->gridSettings->controlGridLines()->clear();
     d->gridSettings->pitchGridLines()->clear();
@@ -183,18 +194,22 @@ int Score::modelItemIndex(const IModelItem *item) const
         return ScoreObject::ModelItemCount + 1;
     if (d->viewSettings == item)
         return ScoreObject::ModelItemCount + 2;
+    if (d->projectSettings == item)
+        return ScoreObject::ModelItemCount + 3;
     return ScoreObject::modelItemIndex(item);
 }
 
 IModelItem *Score::modelItemAt(int i) const
 {
-    switch (i) {
-    case ScoreObject::ModelItemCount:
+    switch (i - ScoreObject::ModelItemCount) {
+    case 0:
         return tracks();
-    case ScoreObject::ModelItemCount + 1:
+    case 1:
         return gridSettings();
-    case ScoreObject::ModelItemCount + 2:
+    case 2:
         return viewSettings();
+    case 3:
+        return projectSettings();
     default:
         return ScoreObject::modelItemAt(i);
     }
@@ -207,6 +222,8 @@ IModelItem *Score::findModelItem(int type) const
         return gridSettings();
     case Ac::ViewSettingsItem:
         return viewSettings();
+    case Ac::ProjectSettingsItem:
+        return projectSettings();
     default:
         return ScoreObject::findModelItem(type);
     }

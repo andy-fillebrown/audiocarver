@@ -44,6 +44,7 @@ static const QMap<int, QString> &elementMap()
         map.insert(Ac::PitchGridLineItem, "PitchGridLine");
         map.insert(Ac::ControlGridLineItem, "ControlGridLine");
         map.insert(Ac::ViewSettingsItem, "ViewSettings");
+        map.insert(Ac::ProjectSettingsItem, "ProjectSettings");
     }
     return map;
 }
@@ -70,6 +71,10 @@ static const QMap<int, QString> &attributeMap()
         map.insert(Ac::TimeScaleRole, "timeScale");
         map.insert(Ac::PitchScaleRole, "pitchScale");
         map.insert(Ac::ControlScaleRole, "controlScale");
+        map.insert(Ac::OutputDirectoryRole, "outputDirectory");
+        map.insert(Ac::InstrumentDirectoryRole, "instrumentDirectory");
+        map.insert(Ac::SampleRateRole, "sampleRate");
+        map.insert(Ac::ControlRateRole, "controlRate");
     }
     return map;
 }

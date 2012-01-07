@@ -24,7 +24,7 @@
 ViewSettings::ViewSettings(QObject *parent)
     :   Object(*(new ViewSettingsPrivate(this)), parent)
 {
-    setObjectName("View Settings");
+    setName("View Settings");
 }
 
 qreal ViewSettings::timePosition() const

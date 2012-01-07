@@ -8,6 +8,7 @@ SOURCE_PAIRS = \
     ac_gridsettings \
     ac_note \
     ac_pitchcurve \
+    ac_projectsettings \
     ac_score \
     ac_scoreobject \
     ac_track \

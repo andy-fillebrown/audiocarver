@@ -50,7 +50,11 @@ enum ItemDataRole {
     ControlPositionRole,
     TimeScaleRole,
     PitchScaleRole,
-    ControlScaleRole
+    ControlScaleRole,
+    OutputDirectoryRole,
+    InstrumentDirectoryRole,
+    SampleRateRole,
+    ControlRateRole
 };
 
 enum ItemType {
@@ -63,7 +67,8 @@ enum ItemType {
     TimeGridLineItem,
     PitchGridLineItem,
     ControlGridLineItem,
-    ViewSettingsItem
+    ViewSettingsItem,
+    ProjectSettingsItem
 };
 
 enum CurveType {
