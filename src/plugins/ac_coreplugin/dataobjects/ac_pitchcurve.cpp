@@ -60,7 +60,7 @@ PitchCurve::PitchCurve(QObject *parent)
 {
     Q_D(PitchCurve);
     d->updateGraphicsParent();
-    setObjectName("PitchCurve");
+    setName("PitchCurve");
 }
 
 ScoreObject *PitchCurve::scoreObject() const

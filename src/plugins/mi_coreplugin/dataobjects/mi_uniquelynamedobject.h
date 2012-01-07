@@ -15,19 +15,36 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsobject.h"
+#ifndef MI_UNIQUELYNAMEDOBJECT_H
+#define MI_UNIQUELYNAMEDOBJECT_H
 
-GraphicsObjectPrivate::GraphicsObjectPrivate(GraphicsObject *q)
-    :   ObjectPrivate(q)
-{}
+#include <mi_object.h>
 
-GraphicsObject::GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent)
-    :   UniquelyNamedObject(dd, parent)
-{}
-
-void GraphicsObject::setParent(Object *parent)
+class MI_CORE_EXPORT UniquelyNamedObject : public Object
 {
-    Q_D(GraphicsObject);
-    Object::setParent(parent);
-    d->updateGraphicsParent();
-}
+    Q_OBJECT
+
+public:
+    void setParent(Object *parent)
+    {
+        Object *prev_parent = this->parent();
+        Object::setParent(parent);
+        if (!this->parent())
+            setParent(prev_parent);
+    }
+
+    void setName(const QString &name)
+    {
+        Object *par = parent();
+        if (par && par->findChild<Object*>(name))
+            return;
+        Object::setName(name);
+    }
+
+protected:
+    UniquelyNamedObject(ObjectPrivate &dd, QObject *parent)
+        :   Object(dd, parent)
+    {}
+};
+
+#endif // MI_UNIQUELYNAMEDOBJECT_H

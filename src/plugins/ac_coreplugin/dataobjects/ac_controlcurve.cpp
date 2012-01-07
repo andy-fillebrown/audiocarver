@@ -64,7 +64,7 @@ ControlCurve::ControlCurve(QObject *parent)
 {
     Q_D(ControlCurve);
     d->updateGraphicsParent();
-    setObjectName("ControlCurve");
+    setName("ControlCurve");
 }
 
 int ControlCurve::controlId() const

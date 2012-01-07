@@ -15,19 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsobject.h"
-
-GraphicsObjectPrivate::GraphicsObjectPrivate(GraphicsObject *q)
-    :   ObjectPrivate(q)
-{}
-
-GraphicsObject::GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent)
-    :   UniquelyNamedObject(dd, parent)
-{}
-
-void GraphicsObject::setParent(Object *parent)
-{
-    Q_D(GraphicsObject);
-    Object::setParent(parent);
-    d->updateGraphicsParent();
-}
+#include "mi_uniquelynamedobject.h"

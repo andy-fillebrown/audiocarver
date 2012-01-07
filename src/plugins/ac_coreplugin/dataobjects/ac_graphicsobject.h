@@ -20,14 +20,14 @@
 
 #include <ac_global.h>
 
-#include <mi_object.h>
+#include <mi_uniquelynamedobject.h>
 
 class GraphicsParentPrivate;
 
 class QGraphicsItem;
 
 class GraphicsObjectPrivate;
-class AC_CORE_EXPORT GraphicsObject : public Object
+class AC_CORE_EXPORT GraphicsObject : public UniquelyNamedObject
 {
     Q_OBJECT
 

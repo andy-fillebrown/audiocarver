@@ -23,7 +23,9 @@
 #include <ac_track.h>
 #include <ac_viewsettings.h>
 
-template <class T> class TrackList : public ObjectTList<T>
+#include <mi_uniquelynamedobjectlist.h>
+
+template <class T> class TrackList : public UniquelyNamedObjectTList<T>
 {
 public:
     TrackList(QObject *parent = 0);
@@ -60,7 +62,7 @@ public:
 };
 
 template <class T> inline TrackList<T>::TrackList(QObject *parent)
-    :   ObjectTList<T>(*(new TrackListPrivate<T>(this)), parent)
+    :   UniquelyNamedObjectTList<T>(*(new TrackListPrivate<T>(this)), parent)
 {}
 
 ScorePrivate::ScorePrivate(Score *q)
@@ -109,7 +111,7 @@ Score::Score(QObject *parent)
     Q_D(Score);
     d->init();
     d->setModel(object_cast<IModel>(parent));
-    setObjectName("Score");
+    setName("Score");
     ::instance = this;
 }
 

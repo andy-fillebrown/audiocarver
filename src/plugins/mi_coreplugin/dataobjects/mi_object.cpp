@@ -132,7 +132,7 @@ bool Object::setData(const QVariant &value, int role)
         QString name = value.toString();
         if (objectName() != name) {
             d_ptr->beginChangeData();
-            setObjectName(name);
+            setName(name);
             d_ptr->endChangeData();
         }
         return true;

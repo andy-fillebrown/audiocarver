@@ -65,7 +65,7 @@ GridSettings::GridSettings(QObject *parent)
 {
     Q_D(GridSettings);
     d->init();
-    setObjectName("GridSettings");
+    setName("GridSettings");
 }
 
 Score *GridSettings::score() const

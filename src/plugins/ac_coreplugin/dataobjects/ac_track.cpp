@@ -53,7 +53,7 @@ Track::Track(QObject *parent)
 {
     Q_D(Track);
     d->init();
-    setObjectName("Track");
+    setName("Track");
 }
 
 qreal Track::length() const

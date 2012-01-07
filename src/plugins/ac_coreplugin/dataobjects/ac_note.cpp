@@ -184,7 +184,7 @@ Note::Note(QObject *parent)
 {
     Q_D(Note);
     d->init();
-    setObjectName("Note");
+    setName("Note");
 }
 
 Track *Note::track() const

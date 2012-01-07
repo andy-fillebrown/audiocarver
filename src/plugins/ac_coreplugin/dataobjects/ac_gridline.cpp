@@ -196,7 +196,7 @@ TimeGridLine::TimeGridLine(QObject *parent)
 {
     Q_D(TimeGridLine);
     d->init();
-    setObjectName("TimeGridLine");
+    setName("TimeGridLine");
 }
 
 bool TimeGridLine::isVisible() const
@@ -281,7 +281,7 @@ PitchGridLine::PitchGridLine(QObject *parent)
 {
     Q_D(PitchGridLine);
     d->init();
-    setObjectName("PitchGridLine");
+    setName("PitchGridLine");
 }
 
 bool PitchGridLine::isVisible() const
@@ -362,7 +362,7 @@ ControlGridLine::ControlGridLine(QObject *parent)
 {
     Q_D(ControlGridLine);
     d->init();
-    setObjectName("ControlGridLine");
+    setName("ControlGridLine");
 }
 
 bool ControlGridLine::isVisible() const

@@ -69,7 +69,19 @@ public:
 
     virtual void setParent(Object *parent);
 
-    virtual QString name() const { return QString(); }
+    virtual QString name() const
+    {
+        return QString();
+    }
+
+    virtual void setName(const QString &name)
+    {
+        if (objectName() == name)
+            return;
+        d_ptr->beginChangeData();
+        setObjectName(name);
+        d_ptr->endChangeData();
+    }
 
     // IModelItem
     IModelItem *parentModelItem() const
@@ -159,4 +171,4 @@ private:
     Q_DECLARE_PRIVATE(Object)
 };
 
-#endif // ACOBJECT_H
+#endif // MI_OBJECT_H

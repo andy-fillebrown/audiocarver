@@ -73,7 +73,7 @@ public:
 template <class T> class ObjectTList : public ObjectList
 {
 public:
-    explicit ObjectTList(QObject *parent = 0)
+    ObjectTList(QObject *parent = 0)
         :   ObjectList(*(new ObjectTListPrivate<T>(this)), parent)
     {
         Q_D_T(ObjectTList);
@@ -243,4 +243,4 @@ void qDeleteAll(ObjectTList<T> *list)
         delete object;
 }
 
-#endif // AC_OBJECTLIST_H
+#endif // MI_OBJECTLIST_H
