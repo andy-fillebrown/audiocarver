@@ -41,6 +41,7 @@ public:
     virtual bool isReading() const = 0;
 
 signals:
+    void databaseReset();
     void databaseAboutToBeRead();
     void databaseRead();
     void databaseAboutToBeWritten();

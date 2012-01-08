@@ -63,6 +63,7 @@ QString Database::fileName() const
 void Database::reset()
 {
     Score::instance()->clear();
+    emit databaseReset();
 }
 
 void Database::read(const QString &fileName)

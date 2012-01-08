@@ -31,6 +31,7 @@
 #include <mi_guiconstants.h>
 #include <mi_ieditor.h>
 
+#include <mi_idatabase.h>
 #include <mi_imodel.h>
 
 #include <actioncontainer.h>
@@ -42,7 +43,10 @@
 #include <versiondialog.h>
 
 #include <QAction>
+#include <QFile>
+#include <QFileDialog>
 #include <QMenu>
+#include <QTimer>
 
 class MainWindowPrivate
 {
@@ -56,7 +60,14 @@ public:
 
 MainWindow::MainWindow()
     :   d(new MainWindowPrivate)
-{}
+{
+    connect(IDatabase::instance(), SIGNAL(databaseReset()), SLOT(databaseReset()));
+
+    QTimer *startup_timer = new QTimer;
+    startup_timer->setSingleShot(true);
+    connect(startup_timer, SIGNAL(timeout()), SLOT(databaseReset()));
+    startup_timer->start();
+}
 
 MainWindow::~MainWindow()
 {
@@ -319,4 +330,36 @@ void MainWindow::stop()
     IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->stop();
+}
+
+void MainWindow::databaseReset()
+{
+    static bool resetting = false;
+    if (resetting)
+        return;
+    resetting = true;
+
+    IDatabase *db = IDatabase::instance();
+
+    QString file_name;
+    while (file_name.isEmpty()) {
+        file_name = QFileDialog::getSaveFileName(
+                    Core::ICore::instance()->mainWindow(),
+                    "Create/Open Project",
+                    QDir::convertSeparators(QString("%1/untitled%2")
+                        .arg(QDir::homePath())
+                        .arg(db->fileExtension())),
+                    tr(qPrintable(db->fileFilter())),
+                    0,
+                    QFileDialog::DontConfirmOverwrite);
+    }
+    if (!file_name.endsWith(db->fileExtension()))
+        file_name.append(db->fileExtension());
+
+    if (!QFile::exists(file_name))
+        db->write(file_name);
+
+    db->read(file_name);
+
+    resetting = false;
 }
