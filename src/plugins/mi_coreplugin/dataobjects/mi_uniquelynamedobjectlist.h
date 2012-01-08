@@ -32,7 +32,7 @@ public:
         const QString name = object->name();
         int suffix = 0;
         QString new_name = name;
-        while (QObject::findChild<T*>(new_name))
+        while (this->hasChild(new_name))
             new_name = QString("%1.%2").arg(name).arg(++suffix);
         if (name != new_name)
             object->setName(new_name);

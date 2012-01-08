@@ -83,6 +83,15 @@ public:
         d_ptr->endChangeData();
     }
 
+    bool hasChild(const QString &name)
+    {
+        const QString lower_name = name.toLower();
+        foreach (QObject *child, children())
+            if (child->objectName().toLower() == lower_name)
+                return true;
+        return false;
+    }
+
     // IModelItem
     IModelItem *parentModelItem() const
     {

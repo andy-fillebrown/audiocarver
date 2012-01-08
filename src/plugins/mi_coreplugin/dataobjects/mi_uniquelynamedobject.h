@@ -35,8 +35,10 @@ public:
 
     void setName(const QString &name)
     {
+        if (objectName().toLower() == name.toLower())
+            Object::setName(name);
         Object *par = parent();
-        if (par && par->findChild<Object*>(name))
+        if (par && par->hasChild(name))
             return;
         Object::setName(name);
     }
