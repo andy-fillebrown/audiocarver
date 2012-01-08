@@ -19,6 +19,7 @@
 
 #include <ac_gridsettings.h>
 #include <ac_iaudioengine.h>
+#include <ac_projectsettings.h>
 #include <ac_score.h>
 #include <ac_viewsettings.h>
 
@@ -63,6 +64,8 @@ QModelIndex Model::itemIndex(int type) const
     switch (type) {
     case Ac::ViewSettingsItem:
         return indexFromItem(d->score->viewSettings());
+    case Ac::ProjectSettingsItem:
+        return indexFromItem(d->score->projectSettings());
     default:
         return QModelIndex();
     }
