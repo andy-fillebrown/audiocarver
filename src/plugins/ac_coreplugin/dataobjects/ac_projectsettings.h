@@ -92,7 +92,7 @@ public:
     ProjectSettingsPrivate(ProjectSettings *q)
         :   ObjectPrivate(q)
         ,   outputDirectory("./.output")
-        ,   instrumentDirectory("./.instruments")
+        ,   instrumentDirectory("./instruments")
         ,   sampleRate(48000)
         ,   controlRate(4800)
     {}
