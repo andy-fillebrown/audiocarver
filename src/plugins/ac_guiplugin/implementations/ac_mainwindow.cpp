@@ -201,23 +201,6 @@ void MainWindow::initActions()
     connect(action, SIGNAL(triggered()), SLOT(aboutAudioCarver()));
 }
 
-void MainWindow::aboutAudioCarver()
-{
-    if (!d->versionDialog) {
-        d->versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
-        connect(d->versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
-    }
-    d->versionDialog->show();
-}
-
-void MainWindow::destroyVersionDialog()
-{
-    if (d->versionDialog) {
-        d->versionDialog->deleteLater();
-        d->versionDialog = 0;
-    }
-}
-
 void MainWindow::createTrack()
 {
     IEditor *editor = IEditor::instance();
@@ -330,6 +313,23 @@ void MainWindow::stop()
     IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->stop();
+}
+
+void MainWindow::aboutAudioCarver()
+{
+    if (!d->versionDialog) {
+        d->versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
+        connect(d->versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
+    }
+    d->versionDialog->show();
+}
+
+void MainWindow::destroyVersionDialog()
+{
+    if (d->versionDialog) {
+        d->versionDialog->deleteLater();
+        d->versionDialog = 0;
+    }
 }
 
 void MainWindow::databaseReset()

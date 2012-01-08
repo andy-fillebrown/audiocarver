@@ -38,7 +38,7 @@ public:
     enum { Type = Ac::TrackItem };
     enum { ModelItemCount = ScoreObject::ModelItemCount + 1 };
 
-    explicit Track(QObject *parent = 0);
+    Track(QObject *parent = 0);
 
     Score *score() const;
     ObjectTList<Note> *notes() const;

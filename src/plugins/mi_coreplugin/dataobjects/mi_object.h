@@ -42,7 +42,8 @@ public:
         ,   model(0)
     {}
 
-    virtual ~ObjectPrivate() {}
+    virtual ~ObjectPrivate()
+    {}
 
     void setModel(IModel *model);
     QModelIndex modelIndex() const;
