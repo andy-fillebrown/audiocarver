@@ -1,0 +1,9 @@
+
+<Score volume="1" length="128">
+    <TrackList>
+        <Track name="Track" volume="1" color="#7f0000" visible="true" recording="false"/>
+    </TrackList>
+    <GridSettings/>
+    <ViewSettings timePosition="64" pitchPosition="63.5" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+    <ProjectSettings sampleRate="48000" controlRate="4800"/>
+</Score>

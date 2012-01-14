@@ -73,6 +73,7 @@ static const QMap<int, QString> &attributeMap()
         map.insert(Ac::ControlScaleRole, "controlScale");
         map.insert(Ac::OutputDirectoryRole, "outputDirectory");
         map.insert(Ac::InstrumentDirectoryRole, "instrumentDirectory");
+        map.insert(Ac::AudioFileTypeRole, "audioFileType");
         map.insert(Ac::SampleRateRole, "sampleRate");
         map.insert(Ac::ControlRateRole, "controlRate");
     }

@@ -26,12 +26,11 @@ class DatabasePrivate
 {
 public:
     Database *q;
-    IReader *reader;
+    QString fileName;
     quint32 reading : 32;
 
     DatabasePrivate(Database *q)
         :   q(q)
-        ,   reader(IFilerFactory::instance()->createReader(Ac::XmlFileFiler))
         ,   reading(quint32(false))
     {}
 
@@ -57,25 +56,27 @@ const QString &Database::fileFilter() const
 
 QString Database::fileName() const
 {
-    return query<IFileFiler>(d->reader)->fileName();
+    return d->fileName;
 }
 
 void Database::reset()
 {
     Score::instance()->clear();
+    d->fileName.clear();
     emit databaseReset();
 }
 
 void Database::read(const QString &fileName)
 {
     emit databaseAboutToBeRead();
-    d->reading = quint32(true);
+    d->reading = true;
     reset();
-    IFileFiler *fileFiler = query<IFileFiler>(d->reader);
-    fileFiler->setFileName(fileName);
-    d->reader->read(query<IModelItem>(Score::instance()));
-    fileFiler->close();
-    d->reading = quint32(false);
+    IReader *reader = IFilerFactory::instance()->createReader(Ac::XmlFileFiler);
+    query<IFileFiler>(reader)->setFileName(fileName);
+    reader->read(query<IModelItem>(Score::instance()));
+    delete reader;
+    d->reading = false;
+    d->fileName = fileName;
     emit databaseRead();
 }
 
@@ -86,6 +87,8 @@ void Database::write(const QString &fileName)
     query<IFileFiler>(writer)->setFileName(fileName);
     writer->write(query<IModelItem>(Score::instance()));
     delete writer;
+    if (d->fileName.isEmpty())
+        d->fileName = fileName;
     emit databaseWritten();
 }
 

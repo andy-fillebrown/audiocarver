@@ -53,6 +53,7 @@ enum ItemDataRole {
     ControlScaleRole,
     OutputDirectoryRole,
     InstrumentDirectoryRole,
+    AudioFileTypeRole,
     SampleRateRole,
     ControlRateRole
 };

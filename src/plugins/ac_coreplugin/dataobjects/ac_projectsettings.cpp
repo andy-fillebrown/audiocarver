@@ -43,7 +43,7 @@ void ProjectSettings::setOutputDirectory(const QString &directory)
     d->endChangeData();
 }
 
-const QString &ProjectSettings::instrumentDirectory() const
+QString ProjectSettings::instrumentDirectory() const
 {
     Q_D(const ProjectSettings);
     return d->instrumentDirectory;
@@ -56,6 +56,22 @@ void ProjectSettings::setInstrumentDirectory(const QString &directory)
         return;
     d->beginChangeData();
     d->instrumentDirectory = directory;
+    d->endChangeData();
+}
+
+const QString &ProjectSettings::audioFileType() const
+{
+    Q_D(const ProjectSettings);
+    return d->audioFileType;
+}
+
+void ProjectSettings::setAudioFileType(const QString &fileType)
+{
+    Q_D(ProjectSettings);
+    if (d->audioFileType == fileType)
+        return;
+    d->beginChangeData();
+    d->audioFileType = fileType;
     d->endChangeData();
 }
 
@@ -109,6 +125,8 @@ QVariant ProjectSettings::data(int role) const
         return outputDirectory();
     case Ac::InstrumentDirectoryRole:
         return instrumentDirectory();
+    case Ac::AudioFileTypeRole:
+        return audioFileType();
     case Ac::SampleRateRole:
         return sampleRate();
     case Ac::ControlRateRole:
@@ -126,6 +144,9 @@ bool ProjectSettings::setData(const QVariant &value, int role)
         return true;
     case Ac::InstrumentDirectoryRole:
         setInstrumentDirectory(value.toString());
+        return true;
+    case Ac::AudioFileTypeRole:
+        setAudioFileType(value.toString());
         return true;
     case Ac::SampleRateRole:
         setSampleRate(value.toInt());

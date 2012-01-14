@@ -31,6 +31,7 @@ class ProjectSettings : public Object
     Q_OBJECT
     Q_PROPERTY(QString outputDirectory READ outputDirectory WRITE setOutputDirectory)
     Q_PROPERTY(QString instrumentDirectory READ instrumentDirectory WRITE setInstrumentDirectory)
+    Q_PROPERTY(QString audioFileType READ audioFileType WRITE setAudioFileType)
     Q_PROPERTY(int sampleRate READ sampleRate WRITE setSampleRate)
     Q_PROPERTY(int controlRate READ controlRate WRITE setControlRate)
 
@@ -46,8 +47,10 @@ public:
     // Properties
     const QString &outputDirectory() const;
     void setOutputDirectory(const QString &directory);
-    const QString &instrumentDirectory() const;
+    QString instrumentDirectory() const;
     void setInstrumentDirectory(const QString &directory);
+    const QString &audioFileType() const;
+    void setAudioFileType(const QString &fileType);
     int sampleRate() const;
     void setSampleRate(int rate);
     int controlRate() const;
@@ -64,8 +67,10 @@ public:
         case 1:
             return Ac::InstrumentDirectoryRole;
         case 2:
-            return Ac::SampleRateRole;
+            return Ac::AudioFileTypeRole;
         case 3:
+            return Ac::SampleRateRole;
+        case 4:
             return Ac::ControlRateRole;
         default:
             return Object::persistentRoleAt(i);
@@ -86,21 +91,21 @@ class ProjectSettingsPrivate : public ObjectPrivate
 public:
     QString outputDirectory;
     QString instrumentDirectory;
+    QString audioFileType;
     int sampleRate;
     int controlRate;
 
     ProjectSettingsPrivate(ProjectSettings *q)
         :   ObjectPrivate(q)
-        ,   outputDirectory("./.output")
-        ,   instrumentDirectory("./instruments")
-        ,   sampleRate(48000)
-        ,   controlRate(4800)
-    {}
+    {
+        clear();
+    }
 
     void clear()
     {
-        outputDirectory = "./.output";
-        instrumentDirectory = "./.instruments";
+        outputDirectory.clear();
+        instrumentDirectory.clear();
+        audioFileType.clear();
         sampleRate = 48000;
         controlRate = 4800;
     }

@@ -36,45 +36,81 @@ public:
         if (!track)
             return;
 
-        const QString track_name = track->data(Mi::NameRole).toString().toLower();
-        const QString instrument = track->data(Ac::InstrumentRole).toString();
+        const QString db_file_name = IDatabase::instance()->fileName();
+        if (db_file_name.isEmpty())
+            return;
 
-        IModel *model = IModel::instance();
+        const QString root_dir_name = QFileInfo(db_file_name).path();
+        QDir root_dir(root_dir_name);
+
+        const IModel *model = IModel::instance();
         const IModelItem *project_settings = model->itemFromIndex(model->itemIndex(Ac::ProjectSettingsItem));
-        QDir output_dir = project_settings->data(Ac::OutputDirectoryRole).toString();
-        QDir instrument_dir = project_settings->data(Ac::InstrumentDirectoryRole).toString();
 
-        if (output_dir.isRelative()) {
-            QDir output_root_dir = QFileInfo(IDatabase::instance()->fileName()).canonicalPath();
-            output_dir = QDir(output_root_dir.path() + "/" + output_dir.path());
-        }
-        if (instrument_dir.isRelative()) {
-            QDir instrument_root_dir = QFileInfo(IDatabase::instance()->fileName()).canonicalPath();
-            instrument_dir = QDir(instrument_root_dir.path() + "/" + instrument_dir.path());
-        }
-
-        QFileInfo output_file_name(QDir::convertSeparators(output_dir.path() + "/" + track_name));
-        output_file_name.makeAbsolute();
-
-        QFile output_file(output_file_name.filePath());
-        bool ok = output_file.open(QIODevice::Text | QIODevice::WriteOnly);
-        if (!ok) {
-            qDebug() << Q_FUNC_INFO << output_file_name.filePath();
-            qDebug() << Q_FUNC_INFO << output_file.errorString();
+        QString output_dir_name = project_settings->data(Ac::OutputDirectoryRole).toString();
+        if (output_dir_name.isEmpty())
+            output_dir_name = root_dir_name + "/output";
+        if (!root_dir.mkpath(output_dir_name)) {
+            qDebug() << Q_FUNC_INFO << ": Error making path" << output_dir_name;
             return;
         }
-        output_file.write("test\n");
-        output_file.close();
 
-        const QString instrument_file_name = QFileInfo(instrument_dir.path() + "/" + instrument).filePath();
+        const QString csound_dir_name = output_dir_name + "/csound";
+        if (!root_dir.mkpath(csound_dir_name)) {
+            qDebug() << Q_FUNC_INFO << ": Error making path" << csound_dir_name;
+            return;
+        }
 
-        qDebug() << Q_FUNC_INFO << "output file name:" << QFileInfo(output_file_name).canonicalFilePath();
-        qDebug() << Q_FUNC_INFO << "instrument file name:" << instrument_file_name;
+        const QString track_name = track->data(Mi::NameRole).toString().toLower();
+        const QString csound_file_name_prefix = csound_dir_name + "/" + track_name;
+
+        const QString orc_file_name = csound_file_name_prefix + ".orc";
+        QFile orc_file(orc_file_name);
+        if (!orc_file.open(QIODevice::Text | QIODevice::WriteOnly)) {
+            qDebug() << Q_FUNC_INFO << ": Error opening orc file" << orc_file_name;
+            return;
+        }
+        orc_file.write("test orc\n");
+        orc_file.close();
+
+        const QString sco_file_name = csound_file_name_prefix + ".sco";
+        QFile sco_file(sco_file_name);
+        if (!sco_file.open(QIODevice::Text | QIODevice::WriteOnly)) {
+            qDebug() << Q_FUNC_INFO << ": Error opening sco file" << sco_file_name;
+            return;
+        }
+        sco_file.write("test sco\n");
+        sco_file.close();
+
+        const QString audio_dir_name = output_dir_name + "/audio";
+        if (!root_dir.mkpath(audio_dir_name)) {
+            qDebug() << Q_FUNC_INFO << ": Error making path" << audio_dir_name;
+            return;
+        }
+
+        QString audio_file_type = project_settings->data(Ac::AudioFileTypeRole).toString();
+        if (audio_file_type.isEmpty())
+            audio_file_type = "wav";
+        const QString audio_file_name = audio_dir_name + "/" + track_name + "." + audio_file_type;
+        QFile audio_file(audio_file_name);
+        if (!audio_file.open(QIODevice::WriteOnly)) {
+            qDebug() << Q_FUNC_INFO << ": Error opening audio file" << audio_file_name;
+            return;
+        }
+        audio_file.close();
+
+//        const QString instrument_file_name = track->data(Ac::InstrumentRole).toString();
+//        QFile instrument_file(instrument_file_name);
+//        if (!instrument_file.open(QIODevice::ReadOnly)) {
+//            qDebug() << Q_FUNC_INFO << ": Error opening instrument file" << instrument_file_name;
+//            return;
+//        }
 
         const IModelItem *notes = track->findModelItemList(Ac::NoteItem);
         const int n = notes->modelItemCount();
         for (int i = 0;  i < n;  ++i) {
         }
+
+        qDebug() << Q_FUNC_INFO << ": Passed render test";
     }
 };
 
