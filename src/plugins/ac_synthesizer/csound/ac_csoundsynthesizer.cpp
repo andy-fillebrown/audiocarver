@@ -23,10 +23,10 @@
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
+#include <csound.h>
+
 #include <QDir>
 #include <QFileInfo>
-
-#include <csound.h>
 
 class CsoundSynthesizerPrivate
 {
