@@ -339,6 +339,11 @@ void MainWindow::databaseReset()
         return;
     resetting = true;
 
+    QString home_path = QDir::homePath();
+#   ifdef Q_OS_WIN
+        home_path += "\\Documents";
+#   endif
+
     IDatabase *db = IDatabase::instance();
 
     QString file_name;
@@ -347,7 +352,7 @@ void MainWindow::databaseReset()
                     Core::ICore::instance()->mainWindow(),
                     "Create/Open Project",
                     QDir::convertSeparators(QString("%1/untitled%2")
-                        .arg(QDir::homePath())
+                        .arg(home_path)
                         .arg(db->fileExtension())),
                     tr(qPrintable(db->fileFilter())),
                     0,
