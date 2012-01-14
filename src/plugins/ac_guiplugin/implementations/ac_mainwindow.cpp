@@ -46,6 +46,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMenu>
+#include <QMessageBox>
 #include <QTimer>
 
 class MainWindowPrivate
@@ -56,18 +57,27 @@ public:
     MainWindowPrivate()
         :   versionDialog(0)
     {}
+
+    bool maybeSaveDatabase()
+    {
+        IDatabase *db = IDatabase::instance();
+        if (!db->fileName().isEmpty())
+            return true;
+        QWidget *mw = Core::ICore::instance()->mainWindow();
+        QMessageBox::information(mw, "AudioCarver", "The score must be saved first");
+        QString filename = QFileDialog::getSaveFileName(mw, "", "", QObject::tr(qPrintable(db->fileFilter())));
+        if (filename.isEmpty())
+            return false;
+        if (!filename.endsWith(db->fileExtension()))
+            filename.append(db->fileExtension());
+        db->write(filename);
+        return !db->fileName().isEmpty();
+    }
 };
 
 MainWindow::MainWindow()
     :   d(new MainWindowPrivate)
-{
-    connect(IDatabase::instance(), SIGNAL(databaseReset()), SLOT(databaseReset()));
-
-    QTimer *startup_timer = new QTimer;
-    startup_timer->setSingleShot(true);
-    connect(startup_timer, SIGNAL(timeout()), SLOT(databaseReset()));
-    startup_timer->start();
-}
+{}
 
 MainWindow::~MainWindow()
 {
@@ -275,11 +285,17 @@ void MainWindow::erase()
 
 void MainWindow::build()
 {
+    if (!d->maybeSaveDatabase())
+        return;
+
     qDebug() << Q_FUNC_INFO;
 }
 
 void MainWindow::buildAll()
 {
+    if (!d->maybeSaveDatabase())
+        return;
+
     const IModel *model = IModel::instance();
     const QModelIndex trackList = model->listIndex(Ac::TrackItem);
     const int n = model->rowCount(trackList);
@@ -330,41 +346,4 @@ void MainWindow::destroyVersionDialog()
         d->versionDialog->deleteLater();
         d->versionDialog = 0;
     }
-}
-
-void MainWindow::databaseReset()
-{
-    static bool resetting = false;
-    if (resetting)
-        return;
-    resetting = true;
-
-    QString home_path = QDir::homePath();
-#   ifdef Q_OS_WIN
-        home_path += "\\Documents";
-#   endif
-
-    IDatabase *db = IDatabase::instance();
-
-    QString file_name;
-    while (file_name.isEmpty()) {
-        file_name = QFileDialog::getSaveFileName(
-                    Core::ICore::instance()->mainWindow(),
-                    "Create/Open Project",
-                    QDir::convertSeparators(QString("%1/untitled%2")
-                        .arg(home_path)
-                        .arg(db->fileExtension())),
-                    tr(qPrintable(db->fileFilter())),
-                    0,
-                    QFileDialog::DontConfirmOverwrite);
-    }
-    if (!file_name.endsWith(db->fileExtension()))
-        file_name.append(db->fileExtension());
-
-    if (!QFile::exists(file_name))
-        db->write(file_name);
-
-    db->read(file_name);
-
-    resetting = false;
 }
