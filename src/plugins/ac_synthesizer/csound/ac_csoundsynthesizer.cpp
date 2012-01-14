@@ -36,30 +36,40 @@ public:
         if (!track)
             return;
 
-        const QString database_file_name = IDatabase::instance()->fileName();
-
-        const QString track_name = track->data(Mi::NameRole).toString();
+        const QString track_name = track->data(Mi::NameRole).toString().toLower();
         const QString instrument = track->data(Ac::InstrumentRole).toString();
 
         IModel *model = IModel::instance();
         const IModelItem *project_settings = model->itemFromIndex(model->itemIndex(Ac::ProjectSettingsItem));
-        QString output_dir = project_settings->data(Ac::OutputDirectoryRole).toString();
-        QString instrument_dir = project_settings->data(Ac::InstrumentDirectoryRole).toString();
+        QDir output_dir = project_settings->data(Ac::OutputDirectoryRole).toString();
+        QDir instrument_dir = project_settings->data(Ac::InstrumentDirectoryRole).toString();
 
-        if (QDir::convertSeparators(output_dir).startsWith(QDir::convertSeparators("./")))
-            output_dir = IDatabase::instance()->fileName() + "/" + output_dir;
-        if (QDir::convertSeparators(instrument_dir).startsWith(QDir::convertSeparators("./")))
-            instrument_dir = IDatabase::instance()->fileName() + "/" + instrument_dir;
+        if (output_dir.isRelative()) {
+            QDir output_root_dir = QFileInfo(IDatabase::instance()->fileName()).canonicalPath();
+            output_dir = QDir(output_root_dir.path() + "/" + output_dir.path());
+        }
+        if (instrument_dir.isRelative()) {
+            QDir instrument_root_dir = QFileInfo(IDatabase::instance()->fileName()).canonicalPath();
+            instrument_dir = QDir(instrument_root_dir.path() + "/" + instrument_dir.path());
+        }
 
-        const QString output_file_name = output_dir + "/" + track_name;
-        const QString instrument_file_name = instrument_dir + "/" + instrument;
+        QFileInfo output_file_name(QDir::convertSeparators(output_dir.path() + "/" + track_name));
+        output_file_name.makeAbsolute();
 
-        QFileInfo output_file_info = QFileInfo(output_file_name);
-        QFileInfo instrument_file_info = QFileInfo(instrument_file_name);
+        QFile output_file(output_file_name.filePath());
+        bool ok = output_file.open(QIODevice::Text | QIODevice::WriteOnly);
+        if (!ok) {
+            qDebug() << Q_FUNC_INFO << output_file_name.filePath();
+            qDebug() << Q_FUNC_INFO << output_file.errorString();
+            return;
+        }
+        output_file.write("test\n");
+        output_file.close();
 
-        qDebug() << Q_FUNC_INFO << "filename:" << QDir::convertSeparators(database_file_name);
-        qDebug() << Q_FUNC_INFO << "output:" << QDir::convertSeparators(output_file_info.absoluteFilePath()).toLower();
-        qDebug() << Q_FUNC_INFO << "instrument:" << QDir::convertSeparators(instrument_file_info.absoluteFilePath()).toLower();
+        const QString instrument_file_name = QFileInfo(instrument_dir.path() + "/" + instrument).filePath();
+
+        qDebug() << Q_FUNC_INFO << "output file name:" << QFileInfo(output_file_name).canonicalFilePath();
+        qDebug() << Q_FUNC_INFO << "instrument file name:" << instrument_file_name;
 
         const IModelItem *notes = track->findModelItemList(Ac::NoteItem);
         const int n = notes->modelItemCount();
