@@ -112,7 +112,7 @@ void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QStrin
         id = M_TRANSPORT;
         groups << G_TRANSPORT_OTHER;
     } else if (Core::Constants::G_HELP == menuBarGroup)
-        groups  << G_HELP_ABOUTAUDIOCARVER;
+        groups << G_HELP_ABOUTAUDIOCARVER;
 }
 
 void MainWindow::initActions()
