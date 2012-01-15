@@ -44,8 +44,6 @@ private slots:
     void aboutAudioCarver();
     void destroyVersionDialog();
 
-    void databaseReset();
-
 private:
     MainWindowPrivate *d;
 };
