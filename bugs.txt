@@ -7,5 +7,4 @@
 11/13/11: Fixed
 
 
-
-
+01/16/12: Crashing when deselecting a note by picking nothing too close to a grip.
