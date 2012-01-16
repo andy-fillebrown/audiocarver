@@ -5,11 +5,88 @@
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
-                        <Point position="0 71.6799" curve="bezier"/>
-                        <Point position="6.71538 99.5086" curve="bezier"/>
-                        <Point position="18.3474 110.19" curve="bezier"/>
-                        <Point position="34.6562 121.715" curve="bezier"/>
-                        <Point position="51.4446 114.969" curve="bezier"/>
+                        <Point position="0 0" curve="bezier"/>
+                        <Point position="15.7092 127" curve="bezier"/>
+                        <Point position="44.0097 54.8141" curve="bezier"/>
+                        <Point position="63.0766 111.596" curve="bezier"/>
+                        <Point position="127.952 0" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="105.887 41.6025" curve="bezier"/>
+                        <Point position="108.885 65.4958" curve="bezier"/>
+                        <Point position="112.003 49.7543" curve="bezier"/>
+                        <Point position="115.96 69.7123" curve="bezier"/>
+                        <Point position="117.04 61.5604" curve="bezier"/>
+                        <Point position="123.635 75.3342" curve="bezier"/>
+                        <Point position="125.074 66.058" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="4.43695 83.205" curve="bezier"/>
+                        <Point position="7.43489 107.098" curve="bezier"/>
+                        <Point position="10.5527 91.3568" curve="bezier"/>
+                        <Point position="14.51 111.315" curve="bezier"/>
+                        <Point position="15.5893 103.163" curve="bezier"/>
+                        <Point position="22.1847 116.937" curve="bezier"/>
+                        <Point position="23.6238 107.66" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="31.4184 84.3294" curve="bezier"/>
+                        <Point position="34.4163 108.223" curve="bezier"/>
+                        <Point position="37.5342 92.4812" curve="bezier"/>
+                        <Point position="41.4915 112.439" curve="bezier"/>
+                        <Point position="42.5707 104.287" curve="bezier"/>
+                        <Point position="49.1662 118.061" curve="bezier"/>
+                        <Point position="50.6052 108.785" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="42.8106 79.5507" curve="bezier"/>
+                        <Point position="45.8085 103.444" curve="bezier"/>
+                        <Point position="48.9264 87.7025" curve="bezier"/>
+                        <Point position="52.8836 107.66" curve="bezier"/>
+                        <Point position="53.9629 99.5086" curve="bezier"/>
+                        <Point position="60.5584 113.282" curve="bezier"/>
+                        <Point position="61.9974 104.006" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="68.1132 84.0483" curve="bezier"/>
+                        <Point position="71.1111 107.942" curve="bezier"/>
+                        <Point position="74.229 92.2001" curve="bezier"/>
+                        <Point position="78.1862 112.158" curve="bezier"/>
+                        <Point position="79.2655 104.006" curve="bezier"/>
+                        <Point position="85.861 117.78" curve="bezier"/>
+                        <Point position="87.3 108.504" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="82.6232 73.9287" curve="bezier"/>
+                        <Point position="85.6211 97.822" curve="bezier"/>
+                        <Point position="88.739 82.0806" curve="bezier"/>
+                        <Point position="92.6963 102.039" curve="bezier"/>
+                        <Point position="93.7755 93.8867" curve="bezier"/>
+                        <Point position="100.371 107.66" curve="bezier"/>
+                        <Point position="101.81 98.3842" curve="bezier"/>
+                    </PitchCurve>
+                </Note>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="95.2145 60.436" curve="bezier"/>
+                        <Point position="98.2125 84.3294" curve="bezier"/>
+                        <Point position="101.33 68.5879" curve="bezier"/>
+                        <Point position="105.288 88.5458" curve="bezier"/>
+                        <Point position="106.367 80.394" curve="bezier"/>
+                        <Point position="112.962 94.1678" curve="bezier"/>
+                        <Point position="114.401 84.8915" curve="bezier"/>
                     </PitchCurve>
                 </Note>
             </NoteList>
@@ -409,6 +486,6 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="64.0719505359139" pitchPosition="63.1064630263167" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+    <ViewSettings timePosition="64.0059958779928" pitchPosition="61.0544488063969" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
     <ProjectSettings sampleRate="48000" controlRate="4800"/>
 </Score>

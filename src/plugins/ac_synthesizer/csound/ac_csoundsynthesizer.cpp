@@ -122,7 +122,7 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
         normalized_points.append(QPointF(scale_x * (point.pos.x() - start_x), point.pos.y() - start_y));
 
     const qreal duration = points.last().pos.x() - points.first().pos.x();
-    const int table_count = toPowerOfTwo((duration + 0.5) * (controlRate / 8));
+    const int table_count = toPowerOfTwo((duration + 0.5) * controlRate);
     if (table_count <= 2) {
         qDebug() << Q_FUNC_INFO << ": Table count is less than 2";
         return;
@@ -186,7 +186,10 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
         }
         ++j;
     }
-    table_values[table_count - 1] = normalized_points.last().y();
+    while (i < table_count) {
+        table_values[i] = normalized_points.last().y();
+        ++i;
+    }
 
     // Write table values.
     for (int i = 0;  i < table_count;  ++i) {
