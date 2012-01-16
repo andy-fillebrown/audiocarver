@@ -18,6 +18,7 @@
 #include <ac_csoundsynthesizer.h>
 
 #include <ac_namespace.h>
+#include <ac_point.h>
 
 #include <mi_idatabase.h>
 #include <mi_imodel.h>
@@ -25,8 +26,177 @@
 
 #include <csound.h>
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
+
+static bool isPowerOfTwo(int n)
+{
+    const int size = 8 * sizeof(int);
+    for (int i = 1;  i < size;  i++)
+        if (n == (1 << i))
+            return true;
+    return false;
+}
+
+static int toPowerOfTwo(int n, int min = 4)
+{
+    if (n < min)
+        n = min;
+    if (isPowerOfTwo(n))
+        return n;
+    const int size = 8 * sizeof(int);
+    int i = 0;
+    for (;  i < size;  i++) {
+        if (n == 0) {
+            n = 1 << i;
+            return n;
+        }
+        n = n >> 1;
+        if (isPowerOfTwo(n)) {
+            n = n << (i + 2);
+            return n;
+        }
+    }
+    return min;
+}
+
+static qreal intersectionY(const qreal &x1, // start x
+                           const qreal &x2, // end x
+                           const qreal &y1, // start y
+                           const qreal &y2, // end y
+                           const qreal &intersectionX)
+{
+    qreal intY = 0.0;
+    if (y1 == y2)
+        intY = y1;
+    else {
+        const qreal x2_x1 = x2 - x1;
+        const qreal intX_x1 = intersectionX - x1;
+        if ((x2_x1 == 0.0) || (intX_x1 == 0.0))
+            intY = y1;
+        else
+            intY = y1 + (((y2 - y1) / x2_x1) * intX_x1);
+    }
+    return intY;
+}
+
+static QPointF bezierPoint(const QPointF &pt1, // start point
+                           const QPointF &pt2, // control point
+                           const QPointF &pt3, // end point
+                           const qreal t)
+{
+    const qreal mu2 = t * t;
+    const qreal mum1 = 1 - t;
+    const qreal mum12 = mum1 * mum1;
+    return QPointF(pt1.x() * mum12 + 2 * pt2.x() * mum1 * t + pt3.x() * mu2,
+                   pt1.y() * mum12 + 2 * pt2.y() * mum1 * t + pt3.y() * mu2);
+}
+
+inline qreal round(const qreal from, const qreal to)
+{
+    const qreal r = fmod(from, to);
+    const qreal td2 = to / qreal(2);
+    if (r == 0)
+        return from;
+    else if (r < td2)
+        return from - r;
+    else
+        return from + (to - r);
+}
+
+static void writeTableFile(const QString &fileName, const PointList &points, int controlRate)
+{
+    QFile table_file(fileName);
+    if (!table_file.open(QIODevice::WriteOnly)) {
+        qDebug() << Q_FUNC_INFO << ": Error opening table file for write" << fileName;
+        return;
+    }
+
+    const QPointF &start_point = points.first().pos;
+    const qreal start_x = start_point.x();
+    const qreal scale_x = 1.0 / (points.last().pos.x() - start_x);
+    const qreal start_y = start_point.y();
+    QList<QPointF> normalized_points;
+    foreach (const Point &point, points)
+        normalized_points.append(QPointF(scale_x * (point.pos.x() - start_x), point.pos.y() - start_y));
+
+    const qreal duration = points.last().pos.x() - points.first().pos.x();
+    const int table_count = toPowerOfTwo((duration + 0.5) * (controlRate / 8));
+    if (table_count <= 2) {
+        qDebug() << Q_FUNC_INFO << ": Table count is less than 2";
+        return;
+    }
+
+    // Calculate table values.
+    QVector<qreal> table_values(table_count);
+    const qreal div_x = 1.0 / qreal(table_count - 1);
+    const int n_points = points.count();
+    int i = 0; // current values index
+    int j = 1; // current point index
+    while (i < table_count && j < n_points) {
+        qreal cur_x = 0;
+        const QPointF point_offset = normalized_points[j - 1];
+        if (Ac::BezierCurve != points.at(j).curveType
+                || j == 0
+                || j == n_points - 1) {
+            // Calculate line using 2 points.
+            const QPointF to_point = normalized_points[j] - point_offset;
+            const qreal to_x = round(to_point.x(), div_x);
+            const qreal to_y = to_point.y();
+            const int n_values = (to_x / div_x) + 0.5;
+            for (int k = 0;  k < n_values;  ++k)
+            {
+                table_values[i] = intersectionY(0, to_x, 0, to_y, cur_x);
+                table_values[i] += point_offset.y();
+                cur_x += div_x;
+                ++i;
+            }
+        } else {
+            // Calculate bezier curve using 3 points.
+            const QPointF from_pt;
+            const QPointF ctrl_pt = normalized_points[j] - point_offset;
+            const QPointF to_pt = normalized_points[j + 1] - point_offset;
+            const qreal to_x = to_pt.x();
+            if (qFuzzyCompare(to_x, 0))
+                continue;
+            QList<QPointF> bezier_pts;
+            const qreal norm_div_x = div_x / to_x;
+            const int n_values = (to_x / div_x) + 0.5;
+            for (int k = 0;  k < n_values;  k++)
+            {
+                bezier_pts.append(bezierPoint(from_pt, ctrl_pt, to_pt, cur_x));
+                cur_x += norm_div_x;
+            }
+            bezier_pts.append(to_pt);
+            cur_x = 0;
+            int i_bezier = 1;
+            for (int k = 0;  k < n_values;  k++)
+            {
+                table_values[i] = intersectionY(bezier_pts[i_bezier - 1].x(), bezier_pts[i_bezier].x(),
+                                          bezier_pts[i_bezier - 1].y(), bezier_pts[i_bezier].y(),
+                                          cur_x);
+                table_values[i] += point_offset.y();
+                cur_x += div_x;
+                while (i_bezier < bezier_pts.count() && bezier_pts[i_bezier].x() < cur_x)
+                    ++i_bezier;
+                ++i;
+            }
+            ++j;
+        }
+        ++j;
+    }
+    table_values[table_count - 1] = normalized_points.last().y();
+
+    // Write table values.
+    for (int i = 0;  i < table_count;  ++i) {
+        if (0 < i)
+            table_file.write("\n");
+        table_file.write(qPrintable(QString("%1").arg(table_values[i], 0, 'f', 6)));
+    }
+
+    table_file.close();
+}
 
 class CsoundSynthesizerPrivate
 {
@@ -46,6 +216,8 @@ public:
         const IModel *model = IModel::instance();
         const IModelItem *project_settings = model->itemFromIndex(model->itemIndex(Ac::ProjectSettingsItem));
 
+        const int control_rate = project_settings->data(Ac::ControlRateRole).toInt();
+
         QString output_dir_name = project_settings->data(Ac::OutputDirectoryRole).toString();
         if (output_dir_name.isEmpty())
             output_dir_name = root_dir_name + "/output";
@@ -61,25 +233,7 @@ public:
         }
 
         const QString track_name = track->data(Mi::NameRole).toString().toLower();
-        const QString csound_file_name_prefix = csound_dir_name + "/" + track_name;
-
-        const QString orc_file_name = csound_file_name_prefix + ".orc";
-        QFile orc_file(orc_file_name);
-        if (!orc_file.open(QIODevice::Text | QIODevice::WriteOnly)) {
-            qDebug() << Q_FUNC_INFO << ": Error opening orc file" << orc_file_name;
-            return;
-        }
-        orc_file.write("test orc\n");
-        orc_file.close();
-
-        const QString sco_file_name = csound_file_name_prefix + ".sco";
-        QFile sco_file(sco_file_name);
-        if (!sco_file.open(QIODevice::Text | QIODevice::WriteOnly)) {
-            qDebug() << Q_FUNC_INFO << ": Error opening sco file" << sco_file_name;
-            return;
-        }
-        sco_file.write("test sco\n");
-        sco_file.close();
+        const QString sco_file_name = csound_dir_name + "/" + track_name + ".sco";
 
         const QString table_dir_name = csound_dir_name + "/" + track_name;
         if (!root_dir.mkpath(table_dir_name)) {
@@ -97,26 +251,34 @@ public:
         if (audio_file_type.isEmpty())
             audio_file_type = "wav";
         const QString audio_file_name = audio_dir_name + "/" + track_name + "." + audio_file_type;
-        QFile audio_file(audio_file_name);
-        if (!audio_file.open(QIODevice::WriteOnly)) {
-            qDebug() << Q_FUNC_INFO << ": Error opening audio file" << audio_file_name;
-            return;
-        }
-        audio_file.close();
 
-//        const QString instrument_file_name = track->data(Ac::InstrumentRole).toString();
-//        QFile instrument_file(instrument_file_name);
-//        if (!instrument_file.open(QIODevice::ReadOnly)) {
-//            qDebug() << Q_FUNC_INFO << ": Error opening instrument file" << instrument_file_name;
-//            return;
-//        }
+        QString instrument_dir_name = project_settings->data(Ac::InstrumentDirectoryRole).toString();
+        if (instrument_dir_name.isEmpty())
+            instrument_dir_name = QCoreApplication::applicationDirPath() + "/../instruments";
+
+        QString instrument_file_name = instrument_dir_name + "/" + track->data(Ac::InstrumentRole).toString();
+        if (!instrument_file_name.endsWith(".orc"))
+            instrument_file_name += ".orc";
 
         const IModelItem *notes = track->findModelItemList(Ac::NoteItem);
         const int n = notes->modelItemCount();
+
+        // Write the table files.
         for (int i = 0;  i < n;  ++i) {
+            const QString curve_file_name = table_dir_name + QString("/note.%1.txt").arg(i);
+            IModelItem *note_item = notes->modelItemAt(i);
+            IModelItem *curve_item = note_item->findModelItem(Ac::PitchCurveItem);
+            PointList points = curve_item->data(Ac::PointsRole).value<PointList>();
+            writeTableFile(curve_file_name, points, control_rate);
         }
 
-        qDebug() << Q_FUNC_INFO << ": Passed render test";
+        // Write the .sco file.
+        QFile sco_file(sco_file_name);
+        if (!sco_file.open(QIODevice::Text | QIODevice::WriteOnly)) {
+            qDebug() << Q_FUNC_INFO << ": Error opening sco file" << sco_file_name;
+            return;
+        }
+        sco_file.close();
     }
 };
 

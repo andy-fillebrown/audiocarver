@@ -24,6 +24,7 @@
 TrackPrivate::TrackPrivate(Track *q)
     :   ScoreObjectPrivate(q)
     ,   color(127.0f, 0.0f, 0.0f)
+    ,   instrument("sine")
     ,   notes(0)
     ,   recording(false)
 {
