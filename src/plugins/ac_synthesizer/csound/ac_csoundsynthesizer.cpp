@@ -81,6 +81,12 @@ public:
         sco_file.write("test sco\n");
         sco_file.close();
 
+        const QString table_dir_name = csound_dir_name + "/" + track_name;
+        if (!root_dir.mkpath(table_dir_name)) {
+            qDebug() << Q_FUNC_INFO << ": Error making path" << table_dir_name;
+            return;
+        }
+
         const QString audio_dir_name = output_dir_name + "/audio";
         if (!root_dir.mkpath(audio_dir_name)) {
             qDebug() << Q_FUNC_INFO << ": Error making path" << audio_dir_name;
