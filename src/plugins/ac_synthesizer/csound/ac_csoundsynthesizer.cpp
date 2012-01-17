@@ -220,7 +220,7 @@ public:
 
         QString output_dir_name = project_settings->data(Ac::OutputDirectoryRole).toString();
         if (output_dir_name.isEmpty())
-            output_dir_name = root_dir_name + "/output";
+            output_dir_name = db_file_name + "-output";
         if (!root_dir.mkpath(output_dir_name)) {
             qDebug() << Q_FUNC_INFO << ": Error making path" << output_dir_name;
             return;

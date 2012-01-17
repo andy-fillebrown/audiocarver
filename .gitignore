@@ -107,5 +107,5 @@ tests/auto/profilewriter/tst_profilewriter
 
 # Testing files
 # -------------
-testing/output
+testing/*.ac-output
 
