@@ -145,8 +145,7 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
             const qreal to_x = round(to_point.x(), div_x);
             const qreal to_y = to_point.y();
             const int n_values = (to_x / div_x) + 0.5;
-            for (int k = 0;  k < n_values;  ++k)
-            {
+            for (int k = 0;  k < n_values;  ++k) {
                 table_values[i] = intersectionY(0, to_x, 0, to_y, cur_x);
                 table_values[i] += point_offset.y();
                 cur_x += div_x;
@@ -163,19 +162,17 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
             QList<QPointF> bezier_pts;
             const qreal norm_div_x = div_x / to_x;
             const int n_values = (to_x / div_x) + 0.5;
-            for (int k = 0;  k < n_values;  k++)
-            {
+            for (int k = 0;  k < n_values;  k++) {
                 bezier_pts.append(bezierPoint(from_pt, ctrl_pt, to_pt, cur_x));
                 cur_x += norm_div_x;
             }
             bezier_pts.append(to_pt);
             cur_x = 0;
             int i_bezier = 1;
-            for (int k = 0;  k < n_values;  k++)
-            {
+            for (int k = 0;  k < n_values;  k++) {
                 table_values[i] = intersectionY(bezier_pts[i_bezier - 1].x(), bezier_pts[i_bezier].x(),
-                                          bezier_pts[i_bezier - 1].y(), bezier_pts[i_bezier].y(),
-                                          cur_x);
+                                                bezier_pts[i_bezier - 1].y(), bezier_pts[i_bezier].y(),
+                                                cur_x);
                 table_values[i] += point_offset.y();
                 cur_x += div_x;
                 while (i_bezier < bezier_pts.count() && bezier_pts[i_bezier].x() < cur_x)
