@@ -263,21 +263,49 @@ public:
         const IModelItem *notes = track->findModelItemList(Ac::NoteItem);
         const int n = notes->modelItemCount();
 
-        // Write the table files.
-        for (int i = 0;  i < n;  ++i) {
-            const QString curve_file_name = table_dir_name + QString("/note.%1.txt").arg(i);
-            IModelItem *note_item = notes->modelItemAt(i);
-            IModelItem *curve_item = note_item->findModelItem(Ac::PitchCurveItem);
-            PointList points = curve_item->data(Ac::PointsRole).value<PointList>();
-            writeTableFile(curve_file_name, points, control_rate);
-        }
-
-        // Write the .sco file.
+        // Write table and .sco files.
         QFile sco_file(sco_file_name);
         if (!sco_file.open(QIODevice::Text | QIODevice::WriteOnly)) {
             qDebug() << Q_FUNC_INFO << ": Error opening sco file" << sco_file_name;
             return;
         }
+        for (int i = 0;  i < n;  ++i) {
+            const int id = i + 1;
+
+            const QString curve_file_name = table_dir_name + QString("/note.%1.txt").arg(id);
+            IModelItem *note_item = notes->modelItemAt(i);
+            IModelItem *curve_item = note_item->findModelItem(Ac::PitchCurveItem);
+            PointList points = curve_item->data(Ac::PointsRole).value<PointList>();
+
+            writeTableFile(curve_file_name, points, control_rate);
+
+            qreal start_time = points.first().pos.x();
+            qreal duration = points.last().pos.x() - start_time;
+            qreal pitch = points.first().pos.y();
+            qreal volume = note_item->data(Ac::VolumeRole).toReal();
+
+            const QString table_sco_create_line = QString("f %1 %2\n")
+                    .arg(id)
+                    .arg(start_time, 0, 'f', 6);
+
+            const QString table_sco_destroy_line = QString("f%1 %2\n")
+                    .arg(-id)
+                    .arg(start_time + duration, 0, 'f', 6);
+
+            const QString note_sco_line = QString("i 2 %2 %3 %4 %5 %6 %7\n")
+                    .arg(start_time, 0, 'f', 6)
+                    .arg(duration, 0, 'f', 6)
+                    .arg(pitch, 0, 'f', 6)
+                    .arg(volume, 0, 'f', 6)
+                    .arg(id)
+                    .arg(0);
+
+            sco_file.write(qPrintable(table_sco_create_line));
+            sco_file.write(qPrintable(note_sco_line));
+            sco_file.write(qPrintable(table_sco_destroy_line));
+            sco_file.write("\n");
+        }
+        sco_file.write("e\n");
         sco_file.close();
     }
 };
