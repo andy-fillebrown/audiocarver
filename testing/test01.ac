@@ -546,5 +546,5 @@
         </ControlGridLineList>
     </GridSettings>
     <ViewSettings timePosition="62.5685068757938" pitchPosition="65.7906068740207" controlPosition="0.452189709959316" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
-    <ProjectSettings sampleRate="48000" controlRate="4800"/>
+    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>

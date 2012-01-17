@@ -105,7 +105,7 @@ inline qreal round(const qreal from, const qreal to)
         return from + (to - r);
 }
 
-static void writeTableFile(const QString &fileName, const PointList &points, int controlRate)
+static void writeTableFile(const QString &fileName, const PointList &points, int valueCount)
 {
     QFile table_file(fileName);
     if (!table_file.open(QIODevice::WriteOnly)) {
@@ -121,20 +121,13 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
     foreach (const Point &point, points)
         normalized_points.append(QPointF(scale_x * (point.pos.x() - start_x), point.pos.y() - start_y));
 
-    const qreal duration = points.last().pos.x() - points.first().pos.x();
-    const int table_count = toPowerOfTwo((duration + 0.5) * controlRate);
-    if (table_count <= 2) {
-        qDebug() << Q_FUNC_INFO << ": Table count is less than 2";
-        return;
-    }
-
     // Calculate table values.
-    QVector<qreal> table_values(table_count);
-    const qreal div_x = 1.0 / qreal(table_count - 1);
+    QVector<qreal> table_values(valueCount);
+    const qreal div_x = 1.0 / qreal(valueCount - 1);
     const int n_points = points.count();
     int i = 0; // current values index
     int j = 1; // current point index
-    while (i < table_count && j < n_points) {
+    while (i < valueCount && j < n_points) {
         qreal cur_x = 0;
         const QPointF point_offset = normalized_points[j - 1];
         if (Ac::BezierCurve != points.at(j).curveType
@@ -183,13 +176,13 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
         }
         ++j;
     }
-    while (i < table_count) {
+    while (i < valueCount) {
         table_values[i] = normalized_points.last().y();
         ++i;
     }
 
     // Write table values.
-    for (int i = 0;  i < table_count;  ++i) {
+    for (int i = 0;  i < valueCount;  ++i) {
         if (0 < i)
             table_file.write("\n");
         table_file.write(qPrintable(QString("%1").arg(table_values[i], 0, 'f', 6)));
@@ -216,7 +209,7 @@ public:
         const IModel *model = IModel::instance();
         const IModelItem *project_settings = model->itemFromIndex(model->itemIndex(Ac::ProjectSettingsItem));
 
-        const int control_rate = project_settings->data(Ac::ControlRateRole).toInt();
+        const int curve_rate = project_settings->data(Ac::CurveRateRole).toInt();
 
         QString output_dir_name = project_settings->data(Ac::OutputDirectoryRole).toString();
         if (output_dir_name.isEmpty())
@@ -269,6 +262,8 @@ public:
             qDebug() << Q_FUNC_INFO << ": Error opening sco file" << sco_file_name;
             return;
         }
+        sco_file.write("\n");
+
         for (int i = 0;  i < n;  ++i) {
             const int id = i + 1;
 
@@ -277,20 +272,29 @@ public:
             IModelItem *curve_item = note_item->findModelItem(Ac::PitchCurveItem);
             PointList points = curve_item->data(Ac::PointsRole).value<PointList>();
 
-            writeTableFile(curve_file_name, points, control_rate);
-
             qreal start_time = points.first().pos.x();
             qreal duration = points.last().pos.x() - start_time;
             qreal pitch = points.first().pos.y();
             qreal volume = note_item->data(Ac::VolumeRole).toReal();
 
-            const QString table_sco_create_line = QString("f %1 %2\n")
+            const int table_value_count = toPowerOfTwo((duration + 0.5) * curve_rate);
+            if (table_value_count <= 2) {
+                qDebug() << Q_FUNC_INFO << ": Table count is less than 2";
+                continue;
+            }
+
+            writeTableFile(curve_file_name, points, table_value_count);
+
+            const QString table_sco_create_line = QString("f %1 %2 %3 %4 \"%5\"\n")
                     .arg(id)
-                    .arg(start_time, 0, 'f', 6);
+                    .arg(start_time, 0, 'f', 6)
+                    .arg(table_value_count)
+                    .arg(-23)
+                    .arg(curve_file_name);
 
             const QString table_sco_destroy_line = QString("f%1 %2\n")
                     .arg(-id)
-                    .arg(start_time + duration, 0, 'f', 6);
+                    .arg(start_time + duration + 1.0, 0, 'f', 6);
 
             const QString note_sco_line = QString("i 2 %2 %3 %4 %5 %6 %7\n")
                     .arg(start_time, 0, 'f', 6)

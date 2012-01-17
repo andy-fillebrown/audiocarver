@@ -1,4 +1,6 @@
 
+0dbfs = 1
+
 gk_volume init 1
 
 instr 1

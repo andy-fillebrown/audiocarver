@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128">
     <TrackList>
-        <Track name="Track 1" volume="0.1" color="#ff0000" visible="true" recording="false">
+        <Track name="Track 1" volume="0.1" color="#ff0000" instrument="sine" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -2903,7 +2903,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track 2" volume="0.2" color="#00ff00" visible="true" recording="false">
+        <Track name="Track 2" volume="0.2" color="#00ff00" instrument="sine" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -10044,13 +10044,13 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track 3" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 4" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 5" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 6" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 7" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 8" volume="0.3" color="#0000ff" visible="true" recording="false"/>
-        <Track name="Track 9" volume="0.3" color="#0000ff" visible="true" recording="false"/>
+        <Track name="Track 3" volume="0.3" color="#0000ff" instrument="sine" visible="true" recording="false"/>
+        <Track name="Track 4" volume="0.3" color="#0000ff" instrument="sine" visible="true" recording="false"/>
+        <Track name="Track 5" volume="0.3" color="#0000ff" instrument="sine" visible="true" recording="false"/>
+        <Track name="Track 6" volume="0.3" color="#0000ff" instrument="sine" visible="true" recording="false"/>
+        <Track name="Track 7" volume="0.3" color="#0000ff" instrument="sine" visible="true" recording="false"/>
+        <Track name="Track 8" volume="0.3" color="#0000ff" instrument="sine" visible="true" recording="false"/>
+        <Track name="Track 9" volume="0.3" color="#0000ff" instrument="sine" visible="true" recording="false"/>
     </TrackList>
     <GridSettings>
         <TimeGridLineList>
@@ -10447,4 +10447,5 @@
         </ControlGridLineList>
     </GridSettings>
     <ViewSettings timePosition="63.1932074784015" pitchPosition="63.8866373208298" controlPosition="0.5" timeScale="0.900000083446505" pitchScale="0.900000083446505" controlScale="0.899999976158142"/>
+    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>

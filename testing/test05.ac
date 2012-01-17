@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128">
     <TrackList>
-        <Track name="Track.1" volume="1" color="#0055ff" visible="true" recording="true">
+        <Track name="Track.1" volume="1" color="#0055ff" instrument="sine" visible="true" recording="true">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -68,7 +68,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track.2" volume="1" color="#ff5500" visible="true" recording="false">
+        <Track name="Track.2" volume="1" color="#ff5500" instrument="sine" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -530,5 +530,6 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="58.5848575692116" pitchPosition="60.7847876812539" controlPosition="0.452189709959316" timeScale="0.899999976158144" pitchScale="0.899999976158144" controlScale="0.899999976158142"/>
+    <ViewSettings timePosition="58.5848575692116" pitchPosition="60.7847876812539" controlPosition="0.452189709959316" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>

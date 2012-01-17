@@ -14,15 +14,15 @@
 	if (0 < i_pitchEnvelope) then
 		i_pitchEnvelopeLength = ftlen(i_pitchEnvelope)
 		k_pitchEnvelopeIndex = k_normalizedTime * (i_pitchEnvelopeLength - 1)
-		k_pitchOffset tablei k_pitchEnvelopeIndex, i_pitchEnvelope, 0
+        k_pitchOffset tablei k_pitchEnvelopeIndex, i_pitchEnvelope
 	endif
-	k_pitch = i_pitch + (i_height * k_pitchOffset)
+    k_pitch = i_pitch + k_pitchOffset
 	k_cps = cpsmidinn(k_pitch)
 
 	k_volumeOffset init 1
 	if (0 < i_volumeEnvelope) then
 		i_volumeEnvelopeLength = ftlen(i_volumeEnvelope)
 		k_volumeEnvelopeIndex = k_normalizedTime * (i_volumeEnvelopeLength - 1)
-		k_volumeOffset tablei k_volumeEnvelopeIndex, i_volumeEnvelope, 0
+        k_volumeOffset tablei k_volumeEnvelopeIndex, i_volumeEnvelope
 	endif
 	k_volume = gk_volume * i_volume * k_volumeOffset
