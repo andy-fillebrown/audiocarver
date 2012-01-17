@@ -34,6 +34,7 @@ class ProjectSettings : public Object
     Q_PROPERTY(QString audioFileType READ audioFileType WRITE setAudioFileType)
     Q_PROPERTY(int sampleRate READ sampleRate WRITE setSampleRate)
     Q_PROPERTY(int controlRate READ controlRate WRITE setControlRate)
+    Q_PROPERTY(int curveRate READ curveRate WRITE setCurveRate)
 
 public:
     enum { Type = Ac::ProjectSettingsItem };
@@ -55,6 +56,8 @@ public:
     void setSampleRate(int rate);
     int controlRate() const;
     void setControlRate(int rate);
+    int curveRate() const;
+    void setCurveRate(int rate);
 
     // IModelItem
     int type() const { return Type; }
@@ -72,6 +75,8 @@ public:
             return Ac::SampleRateRole;
         case 4:
             return Ac::ControlRateRole;
+        case 5:
+            return Ac::CurveRateRole;
         default:
             return Object::persistentRoleAt(i);
         }
@@ -94,6 +99,7 @@ public:
     QString audioFileType;
     int sampleRate;
     int controlRate;
+    int curveRate;
 
     ProjectSettingsPrivate(ProjectSettings *q)
         :   ObjectPrivate(q)
@@ -108,6 +114,7 @@ public:
         audioFileType.clear();
         sampleRate = 48000;
         controlRate = 4800;
+        curveRate = 48;
     }
 };
 

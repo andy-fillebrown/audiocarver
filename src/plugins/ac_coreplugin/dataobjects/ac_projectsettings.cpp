@@ -107,6 +107,22 @@ void ProjectSettings::setControlRate(int rate)
     d->endChangeData();
 }
 
+int ProjectSettings::curveRate() const
+{
+    Q_D(const ProjectSettings);
+    return d->curveRate;
+}
+
+void ProjectSettings::setCurveRate(int rate)
+{
+    Q_D(ProjectSettings);
+    if (d->curveRate == rate)
+        return;
+    d->beginChangeData();
+    d->curveRate = rate;
+    d->endChangeData();
+}
+
 Score *ProjectSettings::score() const
 {
     return object_cast<Score>(QObject::parent());
@@ -130,7 +146,9 @@ QVariant ProjectSettings::data(int role) const
     case Ac::SampleRateRole:
         return sampleRate();
     case Ac::ControlRateRole:
-        return controlRate();;
+        return controlRate();
+    case Ac::CurveRateRole:
+        return curveRate();
     default:
         return Object::data(role);
     }
@@ -153,6 +171,9 @@ bool ProjectSettings::setData(const QVariant &value, int role)
         return true;
     case Ac::ControlRateRole:
         setControlRate(value.toInt());
+        return true;
+    case Ac::CurveRateRole:
+        setCurveRate(value.toInt());
         return true;
     default:
         return Object::setData(value, role);

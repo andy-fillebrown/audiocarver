@@ -55,7 +55,8 @@ enum ItemDataRole {
     InstrumentDirectoryRole,
     AudioFileTypeRole,
     SampleRateRole,
-    ControlRateRole
+    ControlRateRole,
+    CurveRateRole
 };
 
 enum ItemType {
