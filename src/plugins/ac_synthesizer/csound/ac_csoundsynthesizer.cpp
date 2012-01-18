@@ -168,7 +168,8 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
                                                 cur_x);
                 table_values[i] += point_offset.y();
                 cur_x += div_x;
-                while (i_bezier < bezier_pts.count() && bezier_pts[i_bezier].x() < cur_x)
+                while (i_bezier < bezier_pts.count()
+                       && bezier_pts[i_bezier].x() < cur_x)
                     ++i_bezier;
                 ++i;
             }
@@ -311,6 +312,9 @@ public:
         }
         sco_file.write("e\n");
         sco_file.close();
+
+        // Render track.
+
     }
 };
 

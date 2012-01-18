@@ -91,7 +91,7 @@ public:
         csoundInitialize(0, 0, 0);
         csound = csoundCreate(0);
         if (!csound)
-            qDebug() << Q_FUNC_INFO << "Error creating csound";
+            qDebug() << Q_FUNC_INFO << ": Error creating csound";
 
         const QString opcodeDir = rootDirName();
         const QByteArray opcodeDir_ba = opcodeDir.toLocal8Bit();
@@ -148,7 +148,7 @@ public:
         csoundReset(csound);
 
         if (CSOUND_SUCCESS != csoundPreCompile(csound)) {
-            qDebug() << Q_FUNC_INFO << "Error precompiling csound";
+            qDebug() << Q_FUNC_INFO << ": Error precompiling csound";
             return;
         } else
             csoundSetHostImplementedAudioIO(csound, 1, bufferSize);
@@ -174,12 +174,12 @@ public:
         for (int i = 1;  i < argc;  ++i)
             qDebug() << Q_FUNC_INFO << "arg" << i << "==" << argv[i];
         if (CSOUND_SUCCESS != csoundCompile(csound, argc, argv)) {
-            qDebug() << Q_FUNC_INFO << "Error compiling csound";
+            qDebug() << Q_FUNC_INFO << ": Error compiling csound";
             return;
         } else {
             csoundBuffer = csoundGetOutputBuffer(csound);
             if (!csoundBuffer) {
-                qDebug() << Q_FUNC_INFO << "Error getting csound buffer";
+                qDebug() << Q_FUNC_INFO << ": Error getting csound buffer";
                 return;
             }
         }
@@ -214,7 +214,7 @@ public:
         if (0 == csoundBufferSize)
             csoundBufferSize = bytesPerSample * csoundGetOutputBufferSize(csound);
         if (0 == csoundBufferSize) {
-            qDebug() << Q_FUNC_INFO << "Csound buffer size is zero";
+            qDebug() << Q_FUNC_INFO << ": Csound buffer size is zero";
             csoundBufferSize = -1;
         }
         if (csoundBufferSize <= 0)
