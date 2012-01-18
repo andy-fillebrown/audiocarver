@@ -347,11 +347,11 @@ public:
         QByteArray control_rate_flag_ba = control_rate_flag.toLocal8Bit();
         char *control_rate_arg = control_rate_flag_ba.data();
 
-        QByteArray orc_file_flag_ba = instrument_file_name.toLocal8Bit();
-        char *orc_arg = orc_file_flag_ba.data();
+        QByteArray orc_file_ba = instrument_file_name.toLocal8Bit();
+        char *orc_arg = orc_file_ba.data();
 
-        QByteArray sco_file_flag_ba = sco_file_name.toLocal8Bit();
-        char *sco_arg = sco_file_flag_ba.data();
+        QByteArray sco_file_ba = sco_file_name.toLocal8Bit();
+        char *sco_arg = sco_file_ba.data();
 
         const int argc = 7;
         char *argv[] = { first_arg, output_arg, displays_arg, sample_rate_arg, control_rate_arg, orc_arg, sco_arg };

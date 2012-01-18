@@ -20,8 +20,12 @@
 #include <ac_audioenginesettings.h>
 #include <ac_audioengineutils.h>
 #include <ac_audiosink.h>
+#include <ac_namespace.h>
 
 #include <mi_coreutils.h>
+#include <mi_idatabase.h>
+#include <mi_imodel.h>
+#include <mi_imodelitem.h>
 
 #include <icore.h>
 
@@ -40,12 +44,69 @@ class CsoundAudioEnginePrivate;
 CsoundAudioEnginePrivate *d_instance = 0;
 static qint64 audioSinkCallback(char *data, qint64 byteCount);
 
-//static QString rootDirName()
-//{
-//    QDir rootDir(QCoreApplication::applicationDirPath());
-//    rootDir.cdUp();
-//    return rootDir.absolutePath() + "/";
-//}
+static QString rootDirectoryName()
+{
+    const QString db_file_name = IDatabase::instance()->fileName();
+    if (db_file_name.isEmpty())
+        return "";
+    return QFileInfo(db_file_name).path();
+}
+
+static QDir rootDirectory()
+{
+    return QDir(rootDirectoryName());
+}
+
+static QString outputFileDirectoryName()
+{
+    const QString db_file_name = IDatabase::instance()->fileName();
+    if (db_file_name.isEmpty())
+        return "";
+
+    QDir root_dir = rootDirectory();
+
+    const IModel *model = IModel::instance();
+    const IModelItem *project_settings = model->itemFromIndex(model->itemIndex(Ac::ProjectSettingsItem));
+
+    QString output_dir_name = project_settings->data(Ac::OutputDirectoryRole).toString();
+    if (output_dir_name.isEmpty())
+        output_dir_name = db_file_name + "-output";
+    if (!root_dir.mkpath(output_dir_name)) {
+        qDebug() << Q_FUNC_INFO << ": Error making path" << output_dir_name;
+        return "";
+    }
+
+    return output_dir_name;
+}
+
+static QString audioFileDirectoryName()
+{
+    return outputFileDirectoryName() + "/audio";
+}
+
+static QString playbackFileDirectory()
+{
+    QDir root_dir = rootDirectory();
+
+    const QString csound_dir_name = outputFileDirectoryName() + "/csound";
+    if (!root_dir.mkpath(csound_dir_name)) {
+        qDebug() << Q_FUNC_INFO << ": Error making path" << csound_dir_name;
+        return "";
+    }
+
+    return csound_dir_name;
+}
+
+static QString playbackOrcFileName()
+{
+
+    return playbackFileDirectory() + "/playback.orc";
+}
+
+static QString playbackScoFileName()
+{
+    return playbackFileDirectory() + "/playback.sco";
+}
 
 class CsoundAudioEnginePrivate
 {
@@ -68,6 +129,7 @@ public:
     uint started : 1;
     uint scoreDone : sizeof(uint) - 1;
     QTimer *stopTimer;
+    QTimer *trackCountTimer;
 
     CsoundAudioEnginePrivate()
         :   sink(0)
@@ -87,6 +149,7 @@ public:
         ,   started(false)
         ,   scoreDone(false)
         ,   stopTimer(new QTimer)
+        ,   trackCountTimer(new QTimer)
     {
         d_instance = this;
 
@@ -100,9 +163,10 @@ public:
         csoundSetGlobalEnv("OPCODEDIR", opcodeDir_ba.constData());
 
         settings.read(Core::ICore::instance()->settings());
-        update();
+        updateCsound();
 
         stopTimer->setSingleShot(true);
+        trackCountTimer->setSingleShot(true);
     }
 
     ~CsoundAudioEnginePrivate()
@@ -112,13 +176,14 @@ public:
         if (csound)
             csoundDestroy(csound);
 
+        delete trackCountTimer;
         delete stopTimer;
         delete sink;
 
         settings.write(Core::ICore::instance()->settings());
     }
 
-    void update()
+    void updateCsound()
     {
         if (!csound)
             return;
@@ -155,24 +220,31 @@ public:
         } else
             csoundSetHostImplementedAudioIO(csound, 1, bufferSize);
 
+        const QString &orc_file_name = playbackOrcFileName();
+        const QString &sco_file_name = playbackScoFileName();
+        updatePlaybackOrc(orc_file_name);
+        updatePlaybackSco();
+
         char first_arg[] = "";
         char output_arg[] = "-+rtaudio=null";
         char displays_arg[] = "-d";
 
-        const QString sample_rate = QString("-r%1").arg(sampleRate);
-        QByteArray sample_rate_ba = sample_rate.toLocal8Bit();
-        char *sample_rate_arg = sample_rate_ba.data();
+        const QString sample_rate_flag = QString("-r%1").arg(sampleRate);
+        QByteArray sample_rate_flag_ba = sample_rate_flag.toLocal8Bit();
+        char *sample_rate_arg = sample_rate_flag_ba.data();
 
-        const QString control_rate = QString("-k%1").arg(controlRate);
-        QByteArray control_rate_ba = control_rate.toLocal8Bit();
-        char *control_rate_arg = control_rate_ba.data();
+        const QString control_rate_flag = QString("-k%1").arg(controlRate);
+        QByteArray control_rate_flag_ba = control_rate_flag.toLocal8Bit();
+        char *control_rate_arg = control_rate_flag_ba.data();
 
-        const QString csd = Mi::applicationTreeDirectory() + "testing/moogladder.csd";
-        QByteArray csd_ba = csd.toLocal8Bit();
-        char *csd_arg = csd_ba.data();
+        QByteArray orc_file_ba = orc_file_name.toLocal8Bit();
+        char *orc_arg = orc_file_ba.data();
 
-        const int argc = 6;
-        char *argv[] = { first_arg, output_arg, displays_arg, sample_rate_arg, control_rate_arg, csd_arg };
+        QByteArray sco_file_ba = sco_file_name.toLocal8Bit();
+        char *sco_arg = sco_file_ba.data();
+
+        const int argc = 7;
+        char *argv[] = { first_arg, output_arg, displays_arg, sample_rate_arg, control_rate_arg, orc_arg, sco_arg };
         for (int i = 1;  i < argc;  ++i)
             qDebug() << Q_FUNC_INFO << "arg" << i << "==" << argv[i];
         if (CSOUND_SUCCESS != csoundCompile(csound, argc, argv)) {
@@ -185,6 +257,74 @@ public:
                 return;
             }
         }
+    }
+
+    void updatePlaybackOrc(const QString &fileName)
+    {
+        QFile orc_file(fileName);
+        if (!orc_file.open(QIODevice::WriteOnly)) {
+            qDebug() << Q_FUNC_INFO << ": Error opening playback csd";
+            return;
+        }
+
+        QTextStream stream(&orc_file);
+        stream  << "0dbfs = 1" << endl
+                << "nchnls = 1" << endl
+                << endl
+                << "instr 1" << endl
+                << "    a_out soundin p4, p5, 0, 0, 1024" << endl
+                << "    out a_out" << endl
+                << "endin" << endl;
+
+        orc_file.close();
+    }
+
+    void updatePlaybackSco()
+    {
+        QFile sco_file(playbackScoFileName());
+        if (!sco_file.open(QIODevice::WriteOnly)) {
+            qDebug() << Q_FUNC_INFO << ": Error opening playback sco file";
+            return;
+        }
+
+        const IModel *model = IModel::instance();
+
+        const IModelItem *project_settings = model->itemFromIndex(model->itemIndex(Ac::ProjectSettingsItem));
+        QString audio_file_type = project_settings->data(Ac::AudioFileTypeRole).toString();
+        if (audio_file_type.isEmpty())
+            audio_file_type = "wav";
+
+        const QModelIndex track_list_index = model->listIndex(Ac::TrackItem);
+        const int n = model->rowCount(track_list_index);
+        Q_ASSERT(n == trackCount);
+
+        const QString audio_dir_name = audioFileDirectoryName();
+
+        int sub_instrument = 1;
+        for (int i = 0;  i < n;  ++i) {
+            const IModelItem *track = model->itemFromIndex(model->index(i, model->listIndex(Ac::TrackItem)));
+            const QString track_name = track->data(Mi::NameRole).toString().toLower();
+            const QString audio_file_name = audio_dir_name + "/" + track_name + "." + audio_file_type;
+
+            const QString sco_line = QString("i1.%1 0 -1 \"%2\" %3\n")
+                    .arg(sub_instrument)
+                    .arg(audio_file_name)
+                    .arg(0);
+
+            sco_file.write(qPrintable(sco_line));
+
+            sub_instrument++;
+            if ((sub_instrument % 10) == 0)
+                sub_instrument++;
+        }
+
+        const qreal score_length = model->rootItem()->data(Ac::LengthRole).toReal();
+        const QString sco_end = QString("e %1")
+                .arg(score_length);
+        sco_file.write(qPrintable(sco_end));
+
+        sco_file.write("\n");
+        sco_file.close();
     }
 
     void start()
@@ -318,6 +458,7 @@ CsoundAudioEngine::CsoundAudioEngine()
     :   d(new CsoundAudioEnginePrivate)
 {
     connect(d->stopTimer, SIGNAL(timeout()), SLOT(stop()));
+    connect(d->trackCountTimer, SIGNAL(timeout()), SLOT(updateTrackCount()));
 }
 
 CsoundAudioEngine::~CsoundAudioEngine()
@@ -335,7 +476,7 @@ void CsoundAudioEngine::setSettings(const AudioEngineSettings &settings)
     if (d->settings == settings)
         return;
     d->settings = settings;
-    d->update();
+    d->updateCsound();
     settings.write(Core::ICore::instance()->settings());
     emit settingsChanged();
 }
@@ -373,4 +514,9 @@ void CsoundAudioEngine::start()
 void CsoundAudioEngine::stop()
 {
     d->stop();
+}
+
+void CsoundAudioEngine::updateTrackCount()
+{
+    d->updatePlaybackSco();
 }

@@ -42,6 +42,9 @@ public:
     void start();
     void stop();
 
+private slots:
+    void updateTrackCount();
+
 private:
     CsoundAudioEnginePrivate *d;
 };
