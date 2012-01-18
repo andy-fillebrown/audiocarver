@@ -20,6 +20,7 @@
 #include <ac_namespace.h>
 #include <ac_point.h>
 
+#include <mi_coreutils.h>
 #include <mi_idatabase.h>
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
@@ -235,20 +236,9 @@ public:
             return;
         }
 
-        const QString audio_dir_name = output_dir_name + "/audio";
-        if (!root_dir.mkpath(audio_dir_name)) {
-            qDebug() << Q_FUNC_INFO << ": Error making path" << audio_dir_name;
-            return;
-        }
-
-        QString audio_file_type = project_settings->data(Ac::AudioFileTypeRole).toString();
-        if (audio_file_type.isEmpty())
-            audio_file_type = "wav";
-        const QString audio_file_name = audio_dir_name + "/" + track_name + "." + audio_file_type;
-
         QString instrument_dir_name = project_settings->data(Ac::InstrumentDirectoryRole).toString();
         if (instrument_dir_name.isEmpty())
-            instrument_dir_name = QCoreApplication::applicationDirPath() + "/../instruments";
+            instrument_dir_name = Mi::applicationTreeDirectory() + "instruments";
 
         QString instrument_file_name = instrument_dir_name + "/" + track->data(Ac::InstrumentRole).toString();
         if (!instrument_file_name.endsWith(".orc"))
@@ -314,7 +304,66 @@ public:
         sco_file.close();
 
         // Render track.
+        csoundInitialize(0, 0, 0);
+        CSOUND *csound = csoundCreate(0);
+        if (!csound)
+            qDebug() << Q_FUNC_INFO << ": Error creating csound";
 
+        const QString opcode_dir = Mi::applicationTreeDirectory();
+        const QByteArray opcode_dir_ba = opcode_dir.toLocal8Bit();
+        csoundSetGlobalEnv("OPCODEDIR64", opcode_dir_ba.constData());
+
+        const QString include_dir = Mi::applicationTreeDirectory() + "instruments";
+        const QByteArray include_dir_ba = include_dir.toLocal8Bit();
+        csoundSetGlobalEnv("INCDIR", include_dir_ba.constData());
+
+        if (CSOUND_SUCCESS != csoundPreCompile(csound)) {
+            qDebug() << Q_FUNC_INFO << ": Error precompiling csound";
+            return;
+        }
+
+        char first_arg[] = "";
+
+        const QString audio_dir_name = output_dir_name + "/audio";
+        if (!root_dir.mkpath(audio_dir_name)) {
+            qDebug() << Q_FUNC_INFO << ": Error making path" << audio_dir_name;
+            return;
+        }
+        QString audio_file_type = project_settings->data(Ac::AudioFileTypeRole).toString();
+        if (audio_file_type.isEmpty())
+            audio_file_type = "wav";
+        const QString audio_file_name = audio_dir_name + "/" + track_name + "." + audio_file_type;
+        const QString output_flag = "-o" + audio_file_name;
+        QByteArray output_flag_ba = output_flag.toLocal8Bit();
+        char *output_arg = output_flag_ba.data();
+
+        char displays_arg[] = "-d";
+
+        const QString sample_rate_flag = QString("-r%1").arg(project_settings->data(Ac::SampleRateRole).toInt());
+        QByteArray sample_rate_flag_ba = sample_rate_flag.toLocal8Bit();
+        char *sample_rate_arg = sample_rate_flag_ba.data();
+
+        const QString control_rate_flag = QString("-k%1").arg(project_settings->data(Ac::ControlRateRole).toInt());
+        QByteArray control_rate_flag_ba = control_rate_flag.toLocal8Bit();
+        char *control_rate_arg = control_rate_flag_ba.data();
+
+        QByteArray orc_file_flag_ba = instrument_file_name.toLocal8Bit();
+        char *orc_arg = orc_file_flag_ba.data();
+
+        QByteArray sco_file_flag_ba = sco_file_name.toLocal8Bit();
+        char *sco_arg = sco_file_flag_ba.data();
+
+        const int argc = 7;
+        char *argv[] = { first_arg, output_arg, displays_arg, sample_rate_arg, control_rate_arg, orc_arg, sco_arg };
+        for (int i = 1;  i < argc;  ++i)
+            qDebug() << Q_FUNC_INFO << "arg" << i << "==" << argv[i];
+        if (CSOUND_SUCCESS != csoundCompile(csound, argc, argv)) {
+            qDebug() << Q_FUNC_INFO << ": Error compiling csound";
+            return;
+        }
+
+        csoundPerform(csound);
+        csoundDestroy(csound);
     }
 };
 

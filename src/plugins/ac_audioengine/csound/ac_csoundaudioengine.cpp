@@ -21,6 +21,8 @@
 #include <ac_audioengineutils.h>
 #include <ac_audiosink.h>
 
+#include <mi_coreutils.h>
+
 #include <icore.h>
 
 #include <csound.h>
@@ -38,12 +40,12 @@ class CsoundAudioEnginePrivate;
 CsoundAudioEnginePrivate *d_instance = 0;
 static qint64 audioSinkCallback(char *data, qint64 byteCount);
 
-static QString rootDirName()
-{
-    QDir rootDir(QCoreApplication::applicationDirPath());
-    rootDir.cdUp();
-    return rootDir.absolutePath() + "/";
-}
+//static QString rootDirName()
+//{
+//    QDir rootDir(QCoreApplication::applicationDirPath());
+//    rootDir.cdUp();
+//    return rootDir.absolutePath() + "/";
+//}
 
 class CsoundAudioEnginePrivate
 {
@@ -93,7 +95,7 @@ public:
         if (!csound)
             qDebug() << Q_FUNC_INFO << ": Error creating csound";
 
-        const QString opcodeDir = rootDirName();
+        const QString opcodeDir = Mi::applicationTreeDirectory();
         const QByteArray opcodeDir_ba = opcodeDir.toLocal8Bit();
         csoundSetGlobalEnv("OPCODEDIR", opcodeDir_ba.constData());
 
@@ -165,7 +167,7 @@ public:
         QByteArray control_rate_ba = control_rate.toLocal8Bit();
         char *control_rate_arg = control_rate_ba.data();
 
-        const QString csd = rootDirName() + "testing/moogladder.csd";
+        const QString csd = Mi::applicationTreeDirectory() + "testing/moogladder.csd";
         QByteArray csd_ba = csd.toLocal8Bit();
         char *csd_arg = csd_ba.data();
 
