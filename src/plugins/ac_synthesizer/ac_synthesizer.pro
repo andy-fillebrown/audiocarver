@@ -19,9 +19,6 @@ for(pair, SOURCE_PAIRS) {
     SOURCES *= $${pair}.cpp
 }
 
-QMAKE_SUBSTITUTES *= \
-    ../../../testing/moogladder.csd.in \
-
 ACI_FILES = \
     instruments/aci/instrument-control.aci \
     instruments/aci/track-control.aci \
