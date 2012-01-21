@@ -44,6 +44,11 @@ class CsoundAudioEnginePrivate;
 CsoundAudioEnginePrivate *d_instance = 0;
 static qint64 audioSinkCallback(char *data, qint64 byteCount);
 
+static bool databaseIsSaved()
+{
+    return !IDatabase::instance()->fileName().isEmpty();
+}
+
 static QString rootDirectoryName()
 {
     const QString db_file_name = IDatabase::instance()->fileName();
@@ -126,10 +131,13 @@ public:
     QAudioFormat::Endian byteOrder;
     int trackCount;
     qreal startTime;
+    QString compiledDatabase;
+    QString previousTrackName;
+    uint compiled : 1;
     uint started : 1;
-    uint scoreDone : sizeof(uint) - 1;
+    uint scoreDone : sizeof(uint) - 2;
     QTimer *stopTimer;
-    QTimer *trackCountTimer;
+    QTimer *compileTimer;
 
     CsoundAudioEnginePrivate()
         :   sink(0)
@@ -146,10 +154,11 @@ public:
         ,   byteOrder(QAudioFormat::LittleEndian)
         ,   trackCount(0)
         ,   startTime(0.0)
+        ,   compiled(false)
         ,   started(false)
         ,   scoreDone(false)
         ,   stopTimer(new QTimer)
-        ,   trackCountTimer(new QTimer)
+        ,   compileTimer(new QTimer)
     {
         d_instance = this;
 
@@ -163,10 +172,10 @@ public:
         csoundSetGlobalEnv("OPCODEDIR", opcodeDir_ba.constData());
 
         settings.read(Core::ICore::instance()->settings());
-        updateCsound();
+        compile();
 
         stopTimer->setSingleShot(true);
-        trackCountTimer->setSingleShot(true);
+        compileTimer->setSingleShot(true);
     }
 
     ~CsoundAudioEnginePrivate()
@@ -176,16 +185,16 @@ public:
         if (csound)
             csoundDestroy(csound);
 
-        delete trackCountTimer;
+        delete compileTimer;
         delete stopTimer;
         delete sink;
 
         settings.write(Core::ICore::instance()->settings());
     }
 
-    void updateCsound()
+    void compile()
     {
-        if (!csound)
+        if (!csound || !databaseIsSaved())
             return;
 
         stop();
@@ -212,6 +221,12 @@ public:
         sampleType = format.sampleType();
         byteOrder = format.byteOrder();
 
+        const QString &orc_file_name = playbackOrcFileName();
+        const QString &sco_file_name = playbackScoFileName();
+        if (!writePlaybackOrc(orc_file_name)
+                || !writePlaybackSco(sco_file_name))
+            return;
+
         csoundReset(csound);
 
         if (CSOUND_SUCCESS != csoundPreCompile(csound)) {
@@ -219,11 +234,6 @@ public:
             return;
         } else
             csoundSetHostImplementedAudioIO(csound, 1, bufferSize);
-
-        const QString &orc_file_name = playbackOrcFileName();
-        const QString &sco_file_name = playbackScoFileName();
-        updatePlaybackOrc(orc_file_name);
-        updatePlaybackSco();
 
         char first_arg[] = "";
         char output_arg[] = "-+rtaudio=null";
@@ -257,15 +267,16 @@ public:
                 return;
             }
         }
+
+        compiledDatabase = IDatabase::instance()->fileName();
+        compiled = true;
     }
 
-    void updatePlaybackOrc(const QString &fileName)
+    bool writePlaybackOrc(const QString &fileName)
     {
         QFile orc_file(fileName);
-        if (!orc_file.open(QIODevice::WriteOnly)) {
-            qDebug() << Q_FUNC_INFO << ": Error opening playback csd";
-            return;
-        }
+        if (!orc_file.open(QIODevice::WriteOnly))
+            return false;
 
         QTextStream stream(&orc_file);
         stream  << "0dbfs = 1" << endl
@@ -277,15 +288,14 @@ public:
                 << "endin" << endl;
 
         orc_file.close();
+        return true;
     }
 
-    void updatePlaybackSco()
+    bool writePlaybackSco(const QString &fileName)
     {
-        QFile sco_file(playbackScoFileName());
-        if (!sco_file.open(QIODevice::WriteOnly)) {
-            qDebug() << Q_FUNC_INFO << ": Error opening playback sco file";
-            return;
-        }
+        QFile sco_file(fileName);
+        if (!sco_file.open(QIODevice::WriteOnly))
+            return false;
 
         const IModel *model = IModel::instance();
 
@@ -325,6 +335,7 @@ public:
 
         sco_file.write("\n");
         sco_file.close();
+        return true;
     }
 
     void start()
@@ -458,7 +469,18 @@ CsoundAudioEngine::CsoundAudioEngine()
     :   d(new CsoundAudioEnginePrivate)
 {
     connect(d->stopTimer, SIGNAL(timeout()), SLOT(stop()));
-    connect(d->trackCountTimer, SIGNAL(timeout()), SLOT(updateTrackCount()));
+    connect(d->compileTimer, SIGNAL(timeout()), SLOT(compile()));
+
+    IDatabase *db = IDatabase::instance();
+    connect(db, SIGNAL(databaseRead()), d->compileTimer, SIGNAL(timeout()));
+    connect(db, SIGNAL(databaseWritten()), d->compileTimer, SIGNAL(timeout()));
+
+    IModel *model = IModel::instance();
+    connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
+    connect(model, SIGNAL(dataAboutToBeChanged(QModelIndex,QModelIndex)), SLOT(modelDataAboutToBeChanged(QModelIndex)));
+    connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(modelDataChanged(QModelIndex)));
+    connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(modelRowsChanged(QModelIndex)));
+    connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(modelRowsChanged(QModelIndex)));
 }
 
 CsoundAudioEngine::~CsoundAudioEngine()
@@ -476,7 +498,7 @@ void CsoundAudioEngine::setSettings(const AudioEngineSettings &settings)
     if (d->settings == settings)
         return;
     d->settings = settings;
-    d->updateCsound();
+    d->compile();
     settings.write(Core::ICore::instance()->settings());
     emit settingsChanged();
 }
@@ -489,6 +511,9 @@ int CsoundAudioEngine::trackCount() const
 void CsoundAudioEngine::setTrackCount(int count)
 {
     d->trackCount = count;
+
+    d->compiled = false;
+    d->compileTimer->start();
 }
 
 qreal CsoundAudioEngine::startTime() const
@@ -516,7 +541,47 @@ void CsoundAudioEngine::stop()
     d->stop();
 }
 
-void CsoundAudioEngine::updateTrackCount()
+void CsoundAudioEngine::modelReset()
 {
-    d->updatePlaybackSco();
+    d->compiledDatabase = "";
+    d->compiled = false;
+}
+
+void CsoundAudioEngine::modelDataAboutToBeChanged(const QModelIndex &topLeft)
+{
+    IModel *model = IModel::instance();
+    if (Ac::TrackItem != model->data(topLeft, Mi::ItemTypeRole).toInt())
+        return;
+
+    d->previousTrackName = model->data(topLeft, Mi::NameRole).toString();
+}
+
+void CsoundAudioEngine::modelDataChanged(const QModelIndex &topLeft)
+{
+    if (Ac::TrackItem != topLeft.data(Mi::ItemTypeRole).toInt())
+        return;
+
+    if (d->previousTrackName != topLeft.data(Mi::NameRole).toString()) {
+        d->compiled = false;
+        d->compileTimer->start();
+    }
+}
+
+void CsoundAudioEngine::modelRowsChanged(const QModelIndex &parent)
+{
+    if (Mi::ListItem != parent.data(Mi::ItemTypeRole).toInt())
+        return;
+    if (Ac::TrackItem != parent.data(Mi::ListTypeRole).toInt())
+        return;
+
+    d->compiled = false;
+    d->compileTimer->start();
+}
+
+void CsoundAudioEngine::compile()
+{
+    if (d->compiledDatabase != IDatabase::instance()->fileName())
+        d->compiled = false;
+    if (!d->compiled)
+        d->compile();
 }

@@ -20,6 +20,8 @@
 
 #include <ac_iaudioengine.h>
 
+class QModelIndex;
+
 class CsoundAudioEnginePrivate;
 class CsoundAudioEngine : public IAudioEngine
 {
@@ -43,7 +45,11 @@ public:
     void stop();
 
 private slots:
-    void updateTrackCount();
+    void modelReset();
+    void modelDataAboutToBeChanged(const QModelIndex &topLeft);
+    void modelDataChanged(const QModelIndex &topLeft);
+    void modelRowsChanged(const QModelIndex &parent);
+    void compile();
 
 private:
     CsoundAudioEnginePrivate *d;
