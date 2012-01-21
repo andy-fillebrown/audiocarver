@@ -87,8 +87,7 @@ void Database::write(const QString &fileName)
     query<IFileFiler>(writer)->setFileName(fileName);
     writer->write(query<IModelItem>(Score::instance()));
     delete writer;
-    if (d->fileName.isEmpty())
-        d->fileName = fileName;
+    d->fileName = fileName;
     emit databaseWritten();
 }
 
