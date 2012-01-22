@@ -5,6 +5,7 @@ DIRS = \
     graphicsview \
     implementations \
     interfaces \
+    models \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

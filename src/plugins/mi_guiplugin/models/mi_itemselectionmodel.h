@@ -15,27 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACKSELECTIONMODEL_H
-#define AC_TRACKSELECTIONMODEL_H
+#ifndef MI_ITEMSELECTIONMODEL_H
+#define MI_ITEMSELECTIONMODEL_H
 
-#include <ac_global.h>
-#include <ac_namespace.h>
+#include <mi_global.h>
 
 #include <QItemSelectionModel>
 
 class IModelItem;
 
-class AC_CORE_EXPORT TrackSelectionModel : public QItemSelectionModel
+class MI_GUI_EXPORT ItemSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
 
 public:
-    TrackSelectionModel(QAbstractItemModel *model);
+    ItemSelectionModel(QAbstractItemModel *model);
 
-    static TrackSelectionModel *instance();
-
-    QModelIndexList selectedTrackIndexes() const;
-    QList<IModelItem*> selectedTracks() const;
+    virtual QList<IModelItem*> selectedItems() const;
 };
 
-#endif // AC_TRACKSELECTIONMODEL_H
+#endif // MI_ITEMSELECTIONMODEL_H

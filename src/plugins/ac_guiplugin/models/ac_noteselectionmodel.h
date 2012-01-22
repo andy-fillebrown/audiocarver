@@ -21,11 +21,9 @@
 #include <ac_global.h>
 #include <ac_namespace.h>
 
-#include <QItemSelectionModel>
+#include <mi_itemselectionmodel.h>
 
-class IModelItem;
-
-class AC_CORE_EXPORT NoteSelectionModel : public QItemSelectionModel
+class AC_CORE_EXPORT NoteSelectionModel : public ItemSelectionModel
 {
     Q_OBJECT
 
@@ -35,8 +33,6 @@ public:
     static NoteSelectionModel *instance();
 
     virtual void select(const QItemSelection &selection, SelectionFlags command);
-
-    QList<IModelItem*> selectedNotes() const;
 };
 
 #endif // AC_NOTESELECTIONMODEL_H

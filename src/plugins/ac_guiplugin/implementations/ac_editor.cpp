@@ -144,12 +144,12 @@ void Editor::copy() const
 {
     IWriter *writer = IFilerFactory::instance()->createWriter(Ac::XmlCopyFiler);
 
-    QList<IModelItem*> tracks = TrackSelectionModel::instance()->selectedTracks();
+    QList<IModelItem*> tracks = TrackSelectionModel::instance()->selectedItems();
     foreach (IModelItem *track, tracks)
         writer->write(track);
 
     if (tracks.isEmpty()) {
-        QList<IModelItem*> notes = NoteSelectionModel::instance()->selectedNotes();
+        QList<IModelItem*> notes = NoteSelectionModel::instance()->selectedItems();
         foreach (IModelItem *note, notes)
             writer->write(note);
     }

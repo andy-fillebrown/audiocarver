@@ -1,7 +1,6 @@
 
 SOURCE_PAIRS = \
-    ac_proxymodel \
-    ac_trackmodel \
+    mi_itemselectionmodel \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= models/$${pair}.h

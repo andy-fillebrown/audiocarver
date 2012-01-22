@@ -24,7 +24,7 @@
 static TrackSelectionModel *instance = 0;
 
 TrackSelectionModel::TrackSelectionModel(QAbstractItemModel *model)
-    :   QItemSelectionModel(model)
+    :   ItemSelectionModel(model)
 {
     ::instance = this;
 }
@@ -54,16 +54,16 @@ QModelIndexList TrackSelectionModel::selectedTrackIndexes() const
     return trackIndexes;
 }
 
-QList<IModelItem*> TrackSelectionModel::selectedTracks() const
+QList<IModelItem*> TrackSelectionModel::selectedItems() const
 {
-    QList<IModelItem*> tracks;
+    QList<IModelItem*> items;
 
     IModel *model = IModel::instance();
     const QModelIndexList indexes = selectedTrackIndexes();
 
     const int n = indexes.count();
     for (int i = 0;  i < n; ++i)
-        tracks.append(model->itemFromIndex(indexes.at(i)));
+        items.append(model->itemFromIndex(indexes.at(i)));
 
-    return tracks;
+    return items;
 }
