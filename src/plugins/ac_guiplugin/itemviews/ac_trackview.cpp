@@ -311,12 +311,6 @@ void TrackView::dropEvent(QDropEvent *event)
     setDirtyRegion(rect());
 }
 
-void TrackView::leaveEvent(QEvent *event)
-{
-    Q_UNUSED(event);
-    setCurrentIndex(QModelIndex());
-}
-
 void TrackView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
