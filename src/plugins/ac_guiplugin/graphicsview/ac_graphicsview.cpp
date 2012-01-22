@@ -510,6 +510,19 @@ public:
                     if (item == grip->parentEntityItem())
                         pickedGrips.removeAt(i--);
                 }
+
+                // Unhighlight and remove any hovered grips on the item before
+                // deleting it.
+                IEntityItem *entity_item = query<IEntityItem>(item);
+                for (int i = 0;  i < hoveredGrips.count();  ++i) {
+                    IGripItem *grip = hoveredGrips[i];
+                    if (entity_item == grip->parentEntityItem()) {
+                        grip->unhighlight();
+                        hoveredGrips.removeAt(i);
+                        --i;
+                    }
+                }
+
                 item->unhighlight();
                 delete item;
             }
