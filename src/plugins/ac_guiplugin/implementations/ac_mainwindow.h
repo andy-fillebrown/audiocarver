@@ -35,7 +35,8 @@ public:
 
 private slots:
     void createTrack();
-    void erase();
+    void eraseTrack();
+    void eraseEntity();
     void build();
     void buildAll();
     void startOrStop();
