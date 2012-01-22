@@ -21,15 +21,23 @@
 #include <QTableView>
 
 class PropertyViewPrivate;
-class PropertyView : public QTableView
+class PropertyView : public QWidget
 {
     Q_OBJECT
 
 public:
     PropertyView(QWidget *parent = 0);
 
+protected:
+    void resizeEvent(QResizeEvent *event);
+
+private slots:
+    void setSelectionModel(const QString &modelName);
+
 private:
     PropertyViewPrivate *d;
 };
+
+
 
 #endif // AC_PROPERTYVIEW_H

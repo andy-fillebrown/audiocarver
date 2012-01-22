@@ -17,17 +17,75 @@
 
 #include "ac_propertyview.h"
 
+#include <ac_noteselectionmodel.h>
+#include <ac_trackselectionmodel.h>
+
+#include <QComboBox>
+
+static const char * const TRACK_MODELNAME = "Track Properties";
+static const char * const NOTE_MODELNAME  = "Note Properties";
+
+class PropertyModelPrivate
+{
+public:
+    PropertyModelPrivate()
+    {}
+};
+
+class PropertyModel : public QAbstractItemModel
+{
+public:
+    PropertyModel()
+    {}
+
+private:
+    PropertyModelPrivate *d;
+};
+
 class PropertyViewPrivate
 {
 public:
     PropertyView *q;
+    QComboBox *itemTypeComboBox;
+    QItemSelectionModel *ssModel;
+    QTableView *ssView;
 
     PropertyViewPrivate(PropertyView *q)
         :   q(q)
-    {}
+        ,   itemTypeComboBox(new QComboBox(q))
+        ,   ssModel(TrackSelectionModel::instance())
+        ,   ssView(new QTableView(q))
+    {
+        itemTypeComboBox->addItem(TRACK_MODELNAME);
+        itemTypeComboBox->addItem(NOTE_MODELNAME);
+    }
+
+    void setSelectionModel(QItemSelectionModel *model)
+    {
+        if (ssModel == model)
+            return;
+        ssModel = model;
+    }
 };
 
 PropertyView::PropertyView(QWidget *parent)
-    :   QTableView(parent)
+    :   QWidget(parent)
     ,   d(new PropertyViewPrivate(this))
-{}
+{
+    connect(d->itemTypeComboBox, SIGNAL(currentIndexChanged(QString)), SLOT(setSelectionModel(QString)));
+}
+
+void PropertyView::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event);
+    d->itemTypeComboBox->setGeometry(0, 0, width(), d->itemTypeComboBox->height());
+    d->ssView->setGeometry(0, d->itemTypeComboBox->height() + 3, width(), height() - (d->itemTypeComboBox->height() + 3));
+}
+
+void PropertyView::setSelectionModel(const QString &modelName)
+{
+    if (TRACK_MODELNAME == modelName)
+        d->setSelectionModel(TrackSelectionModel::instance());
+    else if (NOTE_MODELNAME == modelName)
+        d->setSelectionModel(NoteSelectionModel::instance());
+}
