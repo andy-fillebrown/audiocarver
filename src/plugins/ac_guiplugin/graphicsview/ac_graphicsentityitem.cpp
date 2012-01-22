@@ -85,8 +85,12 @@ public:
         PointList points;
         points.reserve(n);
         qSort(gripItems.begin(), gripItems.end(), gripLessThan);
-        for (int i = 0;  i < n;  ++i)
-            points.append(Point(gripItems.at(i)->pos(), previousPoints.at(i).curveType));
+        for (int i = 0;  i < n;  ++i) {
+            Ac::CurveType curve_type = Ac::NoCurve;
+            if (i < previousPoints.count())
+                curve_type = previousPoints.at(i).curveType;
+            points.append(Point(gripItems.at(i)->pos(), curve_type));
+        }
         return points;
     }
 
