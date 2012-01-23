@@ -18,53 +18,38 @@
 #include "ac_propertyview.h"
 
 #include <ac_noteselectionmodel.h>
+#include <ac_propertymodel.h>
 #include <ac_trackselectionmodel.h>
 
 #include <QComboBox>
+#include <QTableView>
 
 static const char * const TRACK_MODELNAME = "Track Properties";
 static const char * const NOTE_MODELNAME  = "Note Properties";
-
-class PropertyModelPrivate
-{
-public:
-    PropertyModelPrivate()
-    {}
-};
-
-class PropertyModel : public QAbstractItemModel
-{
-public:
-    PropertyModel()
-    {}
-
-private:
-    PropertyModelPrivate *d;
-};
 
 class PropertyViewPrivate
 {
 public:
     PropertyView *q;
     QComboBox *itemTypeComboBox;
-    QItemSelectionModel *ssModel;
-    QTableView *ssView;
+    PropertyModel *propertyModel;
+    QTableView *propertyView;
 
     PropertyViewPrivate(PropertyView *q)
         :   q(q)
         ,   itemTypeComboBox(new QComboBox(q))
-        ,   ssModel(TrackSelectionModel::instance())
-        ,   ssView(new QTableView(q))
+        ,   propertyModel(new PropertyModel(q))
+        ,   propertyView(new QTableView(q))
     {
         itemTypeComboBox->addItem(TRACK_MODELNAME);
         itemTypeComboBox->addItem(NOTE_MODELNAME);
     }
 
-    void setSelectionModel(QItemSelectionModel *model)
+    void init()
     {
-        if (ssModel == model)
-            return;
-        ssModel = model;
+        propertyModel->appendSelectionModel(TrackSelectionModel::instance());
+        propertyModel->appendSelectionModel(NoteSelectionModel::instance());
+        propertyView->setModel(propertyModel);
     }
 };
 
@@ -72,20 +57,12 @@ PropertyView::PropertyView(QWidget *parent)
     :   QWidget(parent)
     ,   d(new PropertyViewPrivate(this))
 {
-    connect(d->itemTypeComboBox, SIGNAL(currentIndexChanged(QString)), SLOT(setSelectionModel(QString)));
+    d->init();
 }
 
 void PropertyView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     d->itemTypeComboBox->setGeometry(0, 0, width(), d->itemTypeComboBox->height());
-    d->ssView->setGeometry(0, d->itemTypeComboBox->height() + 3, width(), height() - (d->itemTypeComboBox->height() + 3));
-}
-
-void PropertyView::setSelectionModel(const QString &modelName)
-{
-    if (TRACK_MODELNAME == modelName)
-        d->setSelectionModel(TrackSelectionModel::instance());
-    else if (NOTE_MODELNAME == modelName)
-        d->setSelectionModel(NoteSelectionModel::instance());
+    d->propertyView->setGeometry(0, d->itemTypeComboBox->height() + 3, width(), height() - (d->itemTypeComboBox->height() + 3));
 }

@@ -18,7 +18,7 @@
 #ifndef AC_PROPERTYVIEW_H
 #define AC_PROPERTYVIEW_H
 
-#include <QTableView>
+#include <QWidget>
 
 class PropertyViewPrivate;
 class PropertyView : public QWidget
@@ -30,9 +30,6 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *event);
-
-private slots:
-    void setSelectionModel(const QString &modelName);
 
 private:
     PropertyViewPrivate *d;
