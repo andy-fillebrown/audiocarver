@@ -18,12 +18,11 @@
 #ifndef AC_TRACKSELECTIONMODEL_H
 #define AC_TRACKSELECTIONMODEL_H
 
-#include <ac_global.h>
 #include <ac_namespace.h>
 
 #include <mi_itemselectionmodel.h>
 
-class AC_CORE_EXPORT TrackSelectionModel : public ItemSelectionModel
+class TrackSelectionModel : public ItemSelectionModel
 {
     Q_OBJECT
 

@@ -18,12 +18,11 @@
 #ifndef AC_NOTESELECTIONMODEL_H
 #define AC_NOTESELECTIONMODEL_H
 
-#include <ac_global.h>
 #include <ac_namespace.h>
 
 #include <mi_itemselectionmodel.h>
 
-class AC_CORE_EXPORT NoteSelectionModel : public ItemSelectionModel
+class NoteSelectionModel : public ItemSelectionModel
 {
     Q_OBJECT
 
