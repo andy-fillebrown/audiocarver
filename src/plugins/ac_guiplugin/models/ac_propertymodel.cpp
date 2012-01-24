@@ -22,20 +22,38 @@
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
+#include <QTimer>
+
 class PropertyModelPrivate
 {
 public:
     PropertyModel *q;
+    QList<const QAbstractItemModel*> models;
     QList<const ItemSelectionModel*> selectionModels;
     QList<const IModelItem*> selectedItems;
     QMap<int, QVariant> dataMap;
+    QTimer *updateTimer;
 
     PropertyModelPrivate(PropertyModel *q)
         :   q(q)
-    {}
+        ,   updateTimer(new QTimer(q))
+    {
+        updateTimer->setSingleShot(true);
+    }
 
     void update()
     {
+        QList<const QAbstractItemModel*> current_models;
+        foreach (const ItemSelectionModel *selection_model, selectionModels)
+            current_models.append(selection_model->model());
+        foreach (const QAbstractItemModel *model, current_models)
+            if (!models.contains(model))
+                updateTimer->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(timeout()));
+        foreach (const QAbstractItemModel *model, models)
+            if (!current_models.contains(model))
+                QObject::disconnect(model, "", updateTimer, "");
+        models = current_models;
+
         selectedItems.clear();
         foreach (const ItemSelectionModel *selection_model, selectionModels) {
             QList<IModelItem*> selected_items = selection_model->selectedItems();
@@ -71,6 +89,7 @@ PropertyModel::PropertyModel(QObject *parent)
     :   QAbstractTableModel(parent)
     ,   d(new PropertyModelPrivate(this))
 {
+    connect(d->updateTimer, SIGNAL(timeout()), SLOT(update()));
     ::instance = this;
 }
 
@@ -86,7 +105,7 @@ PropertyModel *PropertyModel::instance()
 
 void PropertyModel::appendSelectionModel(ItemSelectionModel *selectionModel)
 {
-    if (!connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(selectionChanged()), Qt::UniqueConnection))
+    if (!d->updateTimer->connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(timeout()), Qt::UniqueConnection))
         return;
 
     d->selectionModels.append(selectionModel);
@@ -98,7 +117,7 @@ void PropertyModel::removeSelectionModel(ItemSelectionModel *selectionModel)
     if (!d->selectionModels.contains(selectionModel))
         return;
 
-    selectionModel->disconnect(this);
+    selectionModel->disconnect(d->updateTimer);
     d->selectionModels.removeOne(selectionModel);
     d->update();
 }
@@ -146,7 +165,7 @@ bool PropertyModel::setData(const QModelIndex &index, const QVariant &value, int
     return false;
 }
 
-void PropertyModel::selectionChanged()
+void PropertyModel::update()
 {
     d->update();
 }
