@@ -153,19 +153,12 @@ void MainWindow::initActions()
     modifyMenu->addAction(cmd, G_MODIFY_OTHER);
     connect(action, SIGNAL(triggered()), viewManager, SLOT(startInsertingPoints()));
 
-    // Erase Track Action
-    action = new QAction(tr("Erase &Track"), this);
-    cmd = am->registerAction(action, ERASETRACK, globalContext);
-    cmd->setDefaultKeySequence(QKeySequence("Ctrl+Shift+T"));
-    modifyMenu->addAction(cmd, G_MODIFY_OTHER);
-    connect(action, SIGNAL(triggered()), SLOT(eraseTrack()));
-
-    // Erase Entity Action
-    action = new QAction(tr("Erase &Entity"), this);
-    cmd = am->registerAction(action, ERASEENTITY, globalContext);
+    // Erase Action
+    action = new QAction(tr("&Erase"), this);
+    cmd = am->registerAction(action, ERASE, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Delete);
     modifyMenu->addAction(cmd, G_MODIFY_OTHER);
-    connect(action, SIGNAL(triggered()), SLOT(eraseEntity()));
+    connect(action, SIGNAL(triggered()), SLOT(erase()));
 
     // Build Action
     action = new QAction(tr("&Build"), this);
@@ -229,35 +222,12 @@ void MainWindow::createTrack()
     editor->endCommand();
 }
 
-void MainWindow::eraseTrack()
-{
-    IEditor *editor = IEditor::instance();
-    const QModelIndexList trackSS = TrackSelectionModel::instance()->selectedRows();
-
-    // Erase the selected tracks in reverse row order so higher row numbers
-    // don't change if lower rows are being erased, too.
-    QList<int> rows;
-    rows.reserve(trackSS.count());
-    foreach (const QModelIndex &track, trackSS)
-        rows.append(track.row());
-    qSort(rows);
-    const int n = rows.count();
-    if (n) {
-        IModel *model = IModel::instance();
-        const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
-        editor->beginCommand();
-        for (int i = n - 1;  0 <= i;  --i)
-            model->removeItem(rows.at(i), trackListIndex);
-        editor->endCommand();
-    }
-}
-
-void MainWindow::eraseEntity()
+void MainWindow::erase()
 {
     IEditor *editor = IEditor::instance();
     bool commandStarted = false;
 
-    // Erase the selected points, if any, in the pitch and control views.
+    // Erase selected points in pitch and control views.
     ViewManager *vm = ViewManager::instance();
     GraphicsView *view = object_cast<GraphicsView>(vm->view(Ac::PitchScene));
     if (view->pointsAreSelected()) {
@@ -278,11 +248,31 @@ void MainWindow::eraseEntity()
         return;
     }
 
-    // If no points are selected, erase the selected notes.
+    // If no points are selected, erase selected tracks in reverse row order so
+    // higher row numbers don't change if lower rows are being erased, too.
+    IModel *model = IModel::instance();
+
+    TrackSelectionModel *trackSSModel = TrackSelectionModel::instance();
+    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+    const QModelIndexList trackSS = trackSSModel->selectedRows();
+    QList<int> rows;
+    rows.reserve(trackSS.count());
+    foreach (const QModelIndex &track, trackSS)
+        rows.append(track.row());
+    qSort(rows);
+    const int n = rows.count();
+    if (n) {
+        editor->beginCommand();
+        for (int i = n - 1;  0 <= i;  --i)
+            model->removeItem(rows.at(i), trackListIndex);
+        editor->endCommand();
+        return;
+    }
+
+    // If no points or tracks are selected, erase selected notes.
     NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
     QModelIndexList noteSS = noteSSModel->selectedIndexes();
     if (!noteSS.isEmpty()) {
-        IModel *model = IModel::instance();
         editor->beginCommand();
         while (!noteSS.isEmpty()) {
             const QModelIndex noteIndex = noteSS.last();
