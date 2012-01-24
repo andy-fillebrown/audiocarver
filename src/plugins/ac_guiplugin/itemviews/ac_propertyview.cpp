@@ -21,7 +21,8 @@
 #include <ac_propertymodel.h>
 #include <ac_trackselectionmodel.h>
 
-#include <QComboBox>
+#include <QHeaderView>
+#include <QScrollBar>
 #include <QTableView>
 
 static const char * const TRACK_MODELNAME = "Track Properties";
@@ -31,38 +32,54 @@ class PropertyViewPrivate
 {
 public:
     PropertyView *q;
-    QComboBox *itemTypeComboBox;
     PropertyModel *propertyModel;
-    QTableView *propertyView;
 
     PropertyViewPrivate(PropertyView *q)
         :   q(q)
-        ,   itemTypeComboBox(new QComboBox(q))
         ,   propertyModel(new PropertyModel(q))
-        ,   propertyView(new QTableView(q))
-    {
-        itemTypeComboBox->addItem(TRACK_MODELNAME);
-        itemTypeComboBox->addItem(NOTE_MODELNAME);
-    }
+    {}
 
     void init()
     {
         propertyModel->appendSelectionModel(TrackSelectionModel::instance());
         propertyModel->appendSelectionModel(NoteSelectionModel::instance());
-        propertyView->setModel(propertyModel);
     }
 };
 
 PropertyView::PropertyView(QWidget *parent)
-    :   QWidget(parent)
+    :   QTableView(parent)
     ,   d(new PropertyViewPrivate(this))
 {
     d->init();
+    setModel(d->propertyModel);
+
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    QHeaderView *v_header = verticalHeader();
+    v_header->setDefaultSectionSize(v_header->minimumSectionSize());
+    v_header->hideSection(0);
+    v_header->hide();
+
+    QHeaderView *h_header = horizontalHeader();
+    h_header->setClickable(false);
+    h_header->setDefaultAlignment(Qt::AlignLeft);
+    h_header->setHighlightSections(false);
+    h_header->setStretchLastSection(true);
+    h_header->resizeSections(QHeaderView::ResizeToContents);
 }
 
 void PropertyView::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
-    d->itemTypeComboBox->setGeometry(0, 0, width(), d->itemTypeComboBox->height());
-    d->propertyView->setGeometry(0, d->itemTypeComboBox->height() + 3, width(), height() - (d->itemTypeComboBox->height() + 3));
+    const QAbstractItemModel *m = model();
+    const QModelIndex root_index = rootIndex();
+
+    // Get the row height (assuming all rows are the same height).
+    const int row_h = rowHeight(0);
+
+    // Update the vertical scrollbar range.
+    const QWidget *vport = viewport();
+    if (row_h)
+        verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
+
+    QTableView::resizeEvent(event);
 }

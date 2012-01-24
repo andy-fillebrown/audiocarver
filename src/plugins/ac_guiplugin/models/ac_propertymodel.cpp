@@ -66,6 +66,9 @@ public:
             }
         }
 
+        if (selectedItems.isEmpty())
+            selectedItems.append(IModel::instance()->rootItem());
+
         dataMap.clear();
         foreach (const IModelItem *selected_item, selectedItems) {
             const int role_count = selected_item->persistentRoleCount();
@@ -136,11 +139,32 @@ int PropertyModel::rowCount(const QModelIndex &parent) const
     return d->dataMap.count();
 }
 
+Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
+{
+    const Qt::ItemFlags default_flags = Qt::ItemIsEnabled;
+    if (1 == index.column())
+        return default_flags | Qt::ItemIsEditable;
+    return default_flags;
+}
+
+QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (Qt::DisplayRole != role
+            || Qt::Horizontal != orientation
+            || section < 0 || 1 < section)
+        return QVariant();
+
+    if (0 == section)
+        return "Property";
+    return "Value";
+}
+
 QVariant PropertyModel::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(index);
 
-    if (Qt::DisplayRole != role)
+    if (Qt::DisplayRole != role
+            && Qt::EditRole != role)
         return QVariant();
 
     const int column = index.column();

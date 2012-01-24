@@ -18,10 +18,10 @@
 #ifndef AC_PROPERTYVIEW_H
 #define AC_PROPERTYVIEW_H
 
-#include <QWidget>
+#include <QTableView>
 
 class PropertyViewPrivate;
-class PropertyView : public QWidget
+class PropertyView : public QTableView
 {
     Q_OBJECT
 

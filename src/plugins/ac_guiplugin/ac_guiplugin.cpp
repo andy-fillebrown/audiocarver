@@ -49,13 +49,13 @@ void AcGuiPlugin::extensionsInitialized()
     mw->setCentralWidget(widget);
 
     // Track View Dock Widget
-    QDockWidget *dw = new QDockWidget("Tracks", mw);
+    QDockWidget *dw = new QDockWidget("Track Editor", mw);
     dw->setObjectName("Track View Dock Widget");
     dw->setWidget(new TrackView(dw));
     mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
 
     // Property View Dock Widget
-    dw = new QDockWidget("Properties", mw);
+    dw = new QDockWidget("Property Editor", mw);
     dw->setObjectName("Property View Dock Widget");
     dw->setWidget(new PropertyView(dw));
     mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
