@@ -14,10 +14,10 @@ DEFINES *= \
 HEADERS *= \
     ac_coreconstants.h \
     ac_global.h \
-    ac_namespace.h \
 
 SOURCE_PAIRS = \
     ac_coreplugin \
+    ac_namespace \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= $${pair}.h

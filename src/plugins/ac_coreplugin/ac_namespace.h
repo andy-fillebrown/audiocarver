@@ -18,6 +18,8 @@
 #ifndef AC_NAMESPACE_H
 #define AC_NAMESPACE_H
 
+#include <ac_global.h>
+
 #include <mi_namespace.h>
 
 namespace Ac {
@@ -59,6 +61,9 @@ enum ItemDataRole {
     CurveRateRole
 };
 
+AC_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
+AC_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
+
 enum ItemType {
     ScoreItem = Mi::ItemTypeCount,
     TrackItem,
@@ -72,6 +77,9 @@ enum ItemType {
     ViewSettingsItem,
     ProjectSettingsItem
 };
+
+AC_CORE_EXPORT QString itemTypeString(int itemType);
+AC_CORE_EXPORT int itemType(const QString &itemTypeString);
 
 enum CurveType {
     NoCurve,

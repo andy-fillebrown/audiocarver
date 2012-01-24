@@ -18,6 +18,8 @@
 #ifndef MI_NAMESPACE_H
 #define MI_NAMESPACE_H
 
+#include <mi_global.h>
+
 #include <qnamespace.h>
 
 namespace Mi {
@@ -35,6 +37,9 @@ enum ItemDataRole {
     NameRole,
     ItemDataRoleCount
 };
+
+MI_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
+MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
 
 enum ItemType {
     UnknownItem,

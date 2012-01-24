@@ -30,60 +30,9 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-static const QMap<int, QString> &elementMap()
-{
-    static QMap<int, QString> map;
-    if (map.isEmpty()) {
-        map.insert(Ac::ScoreItem, "Score");
-        map.insert(Ac::TrackItem, "Track");
-        map.insert(Ac::NoteItem, "Note");
-        map.insert(Ac::PitchCurveItem, "PitchCurve");
-        map.insert(Ac::ControlCurveItem, "ControlCurve");
-        map.insert(Ac::GridSettingsItem, "GridSettings");
-        map.insert(Ac::TimeGridLineItem, "TimeGridLine");
-        map.insert(Ac::PitchGridLineItem, "PitchGridLine");
-        map.insert(Ac::ControlGridLineItem, "ControlGridLine");
-        map.insert(Ac::ViewSettingsItem, "ViewSettings");
-        map.insert(Ac::ProjectSettingsItem, "ProjectSettings");
-    }
-    return map;
-}
-
-static const QMap<int, QString> &attributeMap()
-{
-    static QMap<int, QString> map;
-    if (map.isEmpty()) {
-        map.insert(Mi::NameRole, "name");
-        map.insert(Ac::PointsRole, "points");
-        map.insert(Ac::ControlIdRole, "controlId");
-        map.insert(Ac::LocationRole, "location");
-        map.insert(Ac::LabelRole, "label");
-        map.insert(Ac::PriorityRole, "priority");
-        map.insert(Ac::InstrumentRole, "instrument");
-        map.insert(Ac::LengthRole, "length");
-        map.insert(Ac::VolumeRole, "volume");
-        map.insert(Ac::ColorRole, "color");
-        map.insert(Ac::VisibilityRole, "visible");
-        map.insert(Ac::RecordingRole, "recording");
-        map.insert(Ac::TimePositionRole, "timePosition");
-        map.insert(Ac::PitchPositionRole, "pitchPosition");
-        map.insert(Ac::ControlPositionRole, "controlPosition");
-        map.insert(Ac::TimeScaleRole, "timeScale");
-        map.insert(Ac::PitchScaleRole, "pitchScale");
-        map.insert(Ac::ControlScaleRole, "controlScale");
-        map.insert(Ac::OutputDirectoryRole, "outputDirectory");
-        map.insert(Ac::InstrumentDirectoryRole, "instrumentDirectory");
-        map.insert(Ac::AudioFileTypeRole, "audioFileType");
-        map.insert(Ac::SampleRateRole, "sampleRate");
-        map.insert(Ac::ControlRateRole, "controlRate");
-        map.insert(Ac::CurveRateRole, "curveRate");
-    }
-    return map;
-}
-
 static QString elementName(int type)
 {
-    return elementMap().value(type);
+    return Ac::itemTypeString(type);
 }
 
 static QString elementName(IModelItem *item)
@@ -95,17 +44,17 @@ static QString elementName(IModelItem *item)
 
 static int elementType(const QString &name)
 {
-    return elementMap().key(name, Mi::UnknownItem);
+    return Ac::itemType(name);
 }
 
 static QString attributeName(int role)
 {
-    return attributeMap().value(role);
+    return Ac::itemDataRoleString(role);
 }
 
 static int attributeRole(const QString &name)
 {
-    return attributeMap().key(name, Mi::InvalidRole);
+    return Ac::itemDataRole(name);
 }
 
 static bool nextStartElement(QXmlStreamReader &reader)
