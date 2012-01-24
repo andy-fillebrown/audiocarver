@@ -25,9 +25,6 @@
 #include <QScrollBar>
 #include <QTableView>
 
-static const char * const TRACK_MODELNAME = "Track Properties";
-static const char * const NOTE_MODELNAME  = "Note Properties";
-
 class PropertyViewPrivate
 {
 public:

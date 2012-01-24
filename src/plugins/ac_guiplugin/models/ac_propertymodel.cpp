@@ -112,7 +112,6 @@ void PropertyModel::appendSelectionModel(ItemSelectionModel *selectionModel)
 {
     if (!d->updateTimer->connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(timeout()), Qt::UniqueConnection))
         return;
-
     d->selectionModels.append(selectionModel);
     d->update();
 }
@@ -121,7 +120,6 @@ void PropertyModel::removeSelectionModel(ItemSelectionModel *selectionModel)
 {
     if (!d->selectionModels.contains(selectionModel))
         return;
-
     selectionModel->disconnect(d->updateTimer);
     d->selectionModels.removeOne(selectionModel);
     d->update();
@@ -172,11 +170,11 @@ QVariant PropertyModel::data(const QModelIndex &index, int role) const
 
     QVariant value;
     if (0 == column) {
-        QList<int> keys = d->dataMap.keys();
+        const QList<int> keys = d->dataMap.keys();
         if (row < keys.count())
             value = Ac::itemDataRoleString(keys.at(row));
     } else if (1 == column) {
-        QList<QVariant> values = d->dataMap.values();
+        const QList<QVariant> values = d->dataMap.values();
         if (row < values.count())
             value = values.at(row);
     }
