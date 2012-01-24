@@ -17,6 +17,8 @@
 
 #include "ac_propertymodel.h"
 
+#include <ac_namespace.h>
+
 #include <mi_itemselectionmodel.h>
 
 #include <mi_imodel.h>
@@ -148,7 +150,7 @@ QVariant PropertyModel::data(const QModelIndex &index, int role) const
     if (0 == column) {
         QList<int> keys = d->dataMap.keys();
         if (row < keys.count())
-            value = keys.at(row);
+            value = Ac::itemDataRoleString(keys.at(row));
     } else if (1 == column) {
         QList<QVariant> values = d->dataMap.values();
         if (row < values.count())
