@@ -33,6 +33,9 @@ public:
 
     QModelIndexList selectedTrackIndexes() const;
     virtual QList<IModelItem*> selectedItems() const;
+
+    // QItemSelectionModel
+    void select(const QItemSelection &selection, SelectionFlags command);
 };
 
 #endif // AC_TRACKSELECTIONMODEL_H

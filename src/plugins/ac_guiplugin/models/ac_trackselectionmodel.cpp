@@ -17,6 +17,8 @@
 
 #include "ac_trackselectionmodel.h"
 
+#include <ac_noteselectionmodel.h>
+
 #include <ac_trackmodel.h>
 
 #include <mi_imodel.h>
@@ -66,4 +68,12 @@ QList<IModelItem*> TrackSelectionModel::selectedItems() const
         items.append(model->itemFromIndex(indexes.at(i)));
 
     return items;
+}
+
+void TrackSelectionModel::select(const QItemSelection &selection, SelectionFlags command)
+{
+    if (Select & command)
+        NoteSelectionModel::instance()->clear();
+
+    ItemSelectionModel::select(selection, command);
 }

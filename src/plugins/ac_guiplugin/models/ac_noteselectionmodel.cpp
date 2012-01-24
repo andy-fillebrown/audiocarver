@@ -17,6 +17,8 @@
 
 #include "ac_noteselectionmodel.h"
 
+#include <ac_trackselectionmodel.h>
+
 #include <mi_imodel.h>
 
 static NoteSelectionModel *instance = 0;
@@ -36,6 +38,9 @@ NoteSelectionModel *NoteSelectionModel::instance()
 
 void NoteSelectionModel::select(const QItemSelection &selection, SelectionFlags command)
 {
+    if (Select & command)
+        TrackSelectionModel::instance()->clear();
+
     QItemSelection ss;
     const QModelIndexList indexes = selection.indexes();
     foreach (const QModelIndex &index, indexes)

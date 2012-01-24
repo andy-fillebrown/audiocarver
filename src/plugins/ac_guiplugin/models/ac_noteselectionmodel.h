@@ -31,7 +31,8 @@ public:
 
     static NoteSelectionModel *instance();
 
-    virtual void select(const QItemSelection &selection, SelectionFlags command);
+    // QItemSelectionModel
+    void select(const QItemSelection &selection, SelectionFlags command);
 };
 
 #endif // AC_NOTESELECTIONMODEL_H
