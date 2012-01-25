@@ -19,6 +19,7 @@
 
 #include <ac_namespace.h>
 
+#include <mi_ieditor.h>
 #include <mi_itemselectionmodel.h>
 
 #include <mi_imodel.h>
@@ -32,7 +33,7 @@ public:
     PropertyModel *q;
     QList<const QAbstractItemModel*> models;
     QList<const ItemSelectionModel*> selectionModels;
-    QList<const IModelItem*> selectedItems;
+    QList<IModelItem*> selectedItems;
     QMap<int, QVariant> dataMap;
     QTimer *updateTimer;
 
@@ -59,7 +60,7 @@ public:
         selectedItems.clear();
         foreach (const ItemSelectionModel *selection_model, selectionModels) {
             QList<IModelItem*> selected_items = selection_model->selectedItems();
-            foreach (const IModelItem *selected_item, selected_items) {
+            foreach (IModelItem *selected_item, selected_items) {
                 if (selectedItems.contains(selected_item))
                     continue;
                 selectedItems.append(selected_item);
@@ -183,10 +184,19 @@ QVariant PropertyModel::data(const QModelIndex &index, int role) const
 
 bool PropertyModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Q_UNUSED(index);
-    Q_UNUSED(value);
-    Q_UNUSED(role);
-    return false;
+    if (Qt::EditRole != role
+            ||  1 != index.column())
+        return false;
+
+    IEditor *editor = IEditor::instance();
+    editor->beginCommand();
+
+    int property_role = d->dataMap.keys().at(index.row());
+    foreach (IModelItem *item, d->selectedItems)
+        item->setData(value, property_role);
+
+    editor->endCommand();
+    return true;
 }
 
 void PropertyModel::update()
