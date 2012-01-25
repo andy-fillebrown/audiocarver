@@ -748,6 +748,13 @@ void GraphicsView::viewScaleChanged(int role)
         d->dirty = true;
 }
 
+void GraphicsView::scoreLengthChanged()
+{
+    if (IDatabase::instance()->isReading())
+        return;
+    d->updateViewSettings();
+}
+
 void GraphicsView::removePoints()
 {
     foreach (IGripItem *grip, d->pickedGrips) {

@@ -66,6 +66,7 @@ public:
     quint32 initialized : 1;
     quint32 updatingDatabase : 31;
     UndoViewSettingsCommand *undoCmd;
+    QTimer *updateViewsTimer;
 
     ViewManagerPrivate(ViewManager *q)
         :   q(q)
@@ -78,7 +79,10 @@ public:
         ,   initialized(quint32(false))
         ,   updatingDatabase(quint32(false))
         ,   undoCmd(0)
-    {}
+        ,   updateViewsTimer(new QTimer(q))
+    {
+        updateViewsTimer->setSingleShot(true);
+    }
 
     void init()
     {
@@ -99,6 +103,11 @@ public:
         q->connect(q, SIGNAL(viewScaleChanged(int)), timeLabelView, SLOT(viewScaleChanged(int)));
         q->connect(q, SIGNAL(viewScaleChanged(int)), pitchLabelView, SLOT(viewScaleChanged(int)));
         q->connect(q, SIGNAL(viewScaleChanged(int)), controlLabelView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(scoreLengthChanged()), pitchView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), controlView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), timeLabelView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), pitchLabelView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), controlLabelView, SLOT(scoreLengthChanged()));
 
         IDatabase *db = IDatabase::instance();
         q->connect(db, SIGNAL(databaseAboutToBeRead()), q, SLOT(databaseAboutToBeRead()));
@@ -153,14 +162,16 @@ public:
     void updateViewVariables()
     {
         const IModel *model = IModel::instance();
+        const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
 
         const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
         if (scoreLength != modelScoreLength) {
+            q->updateDatabase();
             scoreLength = modelScoreLength;
             emit q->scoreLengthChanged();
+            updateViewsTimer->start();
         }
 
-        const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
         q->setPosition(viewSettings.data(Ac::TimePositionRole).toReal(), Ac::TimePositionRole);
         q->setPosition(viewSettings.data(Ac::PitchPositionRole).toReal(), Ac::PitchPositionRole);
         q->setPosition(viewSettings.data(Ac::ControlPositionRole).toReal(), Ac::ControlPositionRole);
@@ -205,6 +216,7 @@ ViewManager::ViewManager(QWidget *widget)
 {
     ::instance = this;
     d->init();
+    connect(d->updateViewsTimer, SIGNAL(timeout()), SLOT(updateViews()));
 }
 
 ViewManager::~ViewManager()

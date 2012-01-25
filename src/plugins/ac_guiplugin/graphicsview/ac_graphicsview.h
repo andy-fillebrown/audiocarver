@@ -55,6 +55,7 @@ public slots:
     virtual void noteSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);
+    virtual void scoreLengthChanged();
 
     void removePoints();
 

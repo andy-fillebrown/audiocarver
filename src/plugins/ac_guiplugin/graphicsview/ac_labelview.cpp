@@ -122,6 +122,18 @@ void LabelView::viewScaleChanged(int role)
         d->updateGridLineVisibilites();
 }
 
+void LabelView::scoreLengthChanged()
+{
+    if (IDatabase::instance()->isReading())
+        return;
+    GraphicsView::scoreLengthChanged();
+    d->updateGridLineVisibilites();
+    if (d->updatesDisabled) {
+        setUpdatesEnabled(true);
+        d->updatesDisabled = false;
+    }
+}
+
 void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
     Q_UNUSED(bottomLeft);

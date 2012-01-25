@@ -34,6 +34,7 @@ public:
     // GraphicsView
     void updateView();
     void viewScaleChanged(int role);
+    void scoreLengthChanged();
 
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 

@@ -47,9 +47,10 @@ public:
     void setScale(qreal scale, int role);
 
     void updateDatabase();
-    void updateViews();
 
 public slots:
+    void updateViews();
+
     void databaseAboutToBeRead();
     void databaseRead();
     void databaseAboutToBeWritten();
