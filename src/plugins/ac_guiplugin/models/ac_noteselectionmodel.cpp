@@ -38,7 +38,8 @@ NoteSelectionModel *NoteSelectionModel::instance()
 
 void NoteSelectionModel::select(const QItemSelection &selection, SelectionFlags command)
 {
-    if (Select & command)
+    if (Select & command
+            && !selection.isEmpty())
         TrackSelectionModel::instance()->clear();
 
     QItemSelection ss;

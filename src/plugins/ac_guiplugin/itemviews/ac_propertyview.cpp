@@ -22,6 +22,7 @@
 #include <ac_trackselectionmodel.h>
 
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QScrollBar>
 #include <QTableView>
 
@@ -79,4 +80,14 @@ void PropertyView::resizeEvent(QResizeEvent *event)
         verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
 
     QTableView::resizeEvent(event);
+}
+
+void PropertyView::keyReleaseEvent(QKeyEvent *event)
+{
+    if (Qt::Key_Escape == event->key()) {
+        NoteSelectionModel::instance()->clear();
+        TrackSelectionModel::instance()->clear();
+    }
+
+    QTableView::keyReleaseEvent(event);
 }

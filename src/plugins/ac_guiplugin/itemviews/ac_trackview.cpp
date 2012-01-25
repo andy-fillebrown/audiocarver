@@ -17,6 +17,7 @@
 
 #include "ac_trackview.h"
 
+#include <ac_noteselectionmodel.h>
 #include <ac_trackmodel.h>
 #include <ac_trackselectionmodel.h>
 
@@ -345,4 +346,14 @@ void TrackView::paintEvent(QPaintEvent *event)
     QPainter painter(vport);
     const int y = d->dropRow * rowHeight(model()->index(0, 0, rootIndex()));
     painter.drawLine(0, y, vport->width(), y);
+}
+
+void TrackView::keyReleaseEvent(QKeyEvent *event)
+{
+    if (Qt::Key_Escape == event->key()) {
+        NoteSelectionModel::instance()->clear();
+        TrackSelectionModel::instance()->clear();
+    }
+
+    QTreeView::keyReleaseEvent(event);
 }

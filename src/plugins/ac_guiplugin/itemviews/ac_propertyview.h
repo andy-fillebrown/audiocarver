@@ -30,6 +30,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 private:
     PropertyViewPrivate *d;

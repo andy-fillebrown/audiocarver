@@ -23,6 +23,7 @@
 #include <ac_viewmanager.h>
 
 #include <ac_noteselectionmodel.h>
+#include <ac_trackselectionmodel.h>
 
 #include <mi_ieditor.h>
 
@@ -556,8 +557,10 @@ public:
     {
         if (!pickedGrips.isEmpty())
             clearPickedGrips();
-        else
+        else {
             clearPickedEntities();
+            TrackSelectionModel::instance()->clear();
+        }
     }
 
     void insertPoint(const QPoint &pos)

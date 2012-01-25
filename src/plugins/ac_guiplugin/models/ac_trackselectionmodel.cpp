@@ -72,7 +72,8 @@ QList<IModelItem*> TrackSelectionModel::selectedItems() const
 
 void TrackSelectionModel::select(const QItemSelection &selection, SelectionFlags command)
 {
-    if (Select & command)
+    if (Select & command
+            && !selection.isEmpty())
         NoteSelectionModel::instance()->clear();
 
     ItemSelectionModel::select(selection, command);
