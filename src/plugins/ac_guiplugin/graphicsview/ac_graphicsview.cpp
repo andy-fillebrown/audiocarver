@@ -942,6 +942,12 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
     d->hover();
 }
 
+void GraphicsView::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+    d->clearHovered();
+}
+
 bool GraphicsView::viewportEvent(QEvent *event)
 {
     bool result = MiGraphicsView::viewportEvent(event);

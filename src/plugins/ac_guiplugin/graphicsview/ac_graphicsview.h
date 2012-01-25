@@ -87,6 +87,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+    void leaveEvent(QEvent *event);
     bool viewportEvent(QEvent *event);
 
     void paintEvent(QPaintEvent *event);
