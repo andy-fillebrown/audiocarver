@@ -88,10 +88,10 @@ IModelItem *IModel::itemFromIndex(const QModelIndex &index) const
     if ((index.row() < 0)
             || (index.column() < 0)
             || (index.model() != this))
-        return 0;
+        return rootItem();
     IModelItem *parentItem = static_cast<IModelItem*>(index.internalPointer());
     if (!parentItem)
-        return 0;
+        return rootItem();
     return parentItem->modelItemAt(index.row());
 }
 
