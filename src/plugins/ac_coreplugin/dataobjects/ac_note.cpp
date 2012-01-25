@@ -42,6 +42,7 @@ public:
 
         QPen pen;
         pen.setCosmetic(true);
+        pen.setCapStyle(Qt::FlatCap);
         graphicsLineItem->setPen(pen);
         unhighlight();
     }
