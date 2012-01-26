@@ -27,9 +27,11 @@ class ModelPrivate
 {
 public:
     Score *score;
+    uint locked : sizeof(uint);
 
     ModelPrivate(Model *q)
         :   score(new Score(q))
+        ,   locked(false)
     {}
 };
 
@@ -104,6 +106,21 @@ QModelIndexList Model::findIndexes(int type, int role, const QVariant &value) co
     }
 
     return IModel::findIndexes(type, role, value);
+}
+
+bool Model::isLocked() const
+{
+    return d->locked;
+}
+
+void Model::lock()
+{
+    d->locked = true;
+}
+
+void Model::unlock()
+{
+    d->locked = false;
 }
 
 void Model::rowCountChanged(const QModelIndex &parent)

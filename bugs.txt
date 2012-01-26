@@ -12,4 +12,6 @@
 
 
 01/25/12: Track view changes that occur during note creation don't undo.
+01/26/12: Fixed
+
 

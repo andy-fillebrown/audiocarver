@@ -77,6 +77,10 @@ public:
         return QModelIndexList();
     }
 
+    virtual bool isLocked() const = 0;
+    virtual void lock() = 0;
+    virtual void unlock() = 0;
+
 signals:
     void pointsChanged(const QModelIndex &index);
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);

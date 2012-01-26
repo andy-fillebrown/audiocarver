@@ -73,6 +73,8 @@ QVariant IModel::data(const QModelIndex &index, int role) const
 
 bool IModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    if (isLocked())
+        return false;
     IModelItem *item = index.isValid() ? itemFromIndex(index) : rootItem();
     return item ? item->setData(value, role) : false;
 }

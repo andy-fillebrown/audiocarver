@@ -254,12 +254,14 @@ void Editor::pushCommand(QUndoCommand *cmd)
 
 void Editor::startCreating()
 {
+    IModel::instance()->lock();
     d->creating = quint32(true);
 }
 
 void Editor::finishCreating()
 {
     d->creating = quint32(false);
+    IModel::instance()->unlock();
 }
 
 bool Editor::isCreating() const
