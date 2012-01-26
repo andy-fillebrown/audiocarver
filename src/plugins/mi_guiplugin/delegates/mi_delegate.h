@@ -15,30 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROPERTYVIEW_H
-#define AC_PROPERTYVIEW_H
+#ifndef MI_DELEGATE_H
+#define MI_DELEGATE_H
 
-#include <QTableView>
+#include <mi_global.h>
 
-class PropertyViewPrivate;
-class PropertyView : public QTableView
+#include <QStyledItemDelegate>
+
+class DelegatePrivate;
+class MI_GUI_EXPORT Delegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
-    PropertyView(QWidget *parent = 0);
+    Delegate(QObject *parent = 0);
+    ~Delegate();
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+    int customColumn() const;
+    void setCustomColumn(int column);
 
-private slots:
-    void updateDelegates();
+    // QStyledItemDelegate
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+        Q_UNUSED(option);
+        Q_UNUSED(index);
+        return QSize();
+    }
 
 private:
-    PropertyViewPrivate *d;
+    DelegatePrivate *d;
 };
 
-
-
-#endif // AC_PROPERTYVIEW_H
+#endif // MI_DELEGATE_H

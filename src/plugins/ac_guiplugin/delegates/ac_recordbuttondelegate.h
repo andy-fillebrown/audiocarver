@@ -15,30 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROPERTYVIEW_H
-#define AC_PROPERTYVIEW_H
+#ifndef AC_RECORDBUTTONDELEGATE_H
+#define AC_RECORDBUTTONDELEGATE_H
 
-#include <QTableView>
+#include <ac_togglebuttondelegate.h>
 
-class PropertyViewPrivate;
-class PropertyView : public QTableView
+class RecordButtonDelegate : public ToggleButtonDelegate
 {
-    Q_OBJECT
-
 public:
-    PropertyView(QWidget *parent = 0);
+    RecordButtonDelegate(QObject *parent = 0)
+        :   ToggleButtonDelegate(parent)
+    {}
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-
-private slots:
-    void updateDelegates();
-
-private:
-    PropertyViewPrivate *d;
+    // ToggleButtonDelegate
+    void setPainterColors(QPainter *painter, const QModelIndex &index) const;
 };
 
-
-
-#endif // AC_PROPERTYVIEW_H
+#endif // AC_RECORDBUTTONDELEGATE_H

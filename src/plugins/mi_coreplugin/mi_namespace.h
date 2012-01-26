@@ -34,6 +34,7 @@ enum ItemDataRole {
     InvalidRole = Qt::UserRole,
     ItemTypeRole,
     ListTypeRole,
+    RoleTypeRole,
     NameRole,
     ItemDataRoleCount
 };

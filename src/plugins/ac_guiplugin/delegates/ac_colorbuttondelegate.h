@@ -15,30 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROPERTYVIEW_H
-#define AC_PROPERTYVIEW_H
+#ifndef AC_COLORBUTTONDELEGATE_H
+#define AC_COLORBUTTONDELEGATE_H
 
-#include <QTableView>
+#include <mi_delegate.h>
 
-class PropertyViewPrivate;
-class PropertyView : public QTableView
+class ColorButtonDelegate : public Delegate
 {
-    Q_OBJECT
-
 public:
-    PropertyView(QWidget *parent = 0);
+    ColorButtonDelegate(QObject *parent = 0)
+        :   Delegate(parent)
+    {}
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-
-private slots:
-    void updateDelegates();
-
-private:
-    PropertyViewPrivate *d;
+    // QStyledItemDelegate
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-
-
-#endif // AC_PROPERTYVIEW_H
+#endif // AC_COLORBUTTONDELEGATE_H

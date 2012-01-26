@@ -15,30 +15,13 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROPERTYVIEW_H
-#define AC_PROPERTYVIEW_H
+#include "ac_recordbuttondelegate.h"
 
-#include <QTableView>
+#include <QPainter>
 
-class PropertyViewPrivate;
-class PropertyView : public QTableView
+void RecordButtonDelegate::setPainterColors(QPainter *painter, const QModelIndex &index) const
 {
-    Q_OBJECT
-
-public:
-    PropertyView(QWidget *parent = 0);
-
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-
-private slots:
-    void updateDelegates();
-
-private:
-    PropertyViewPrivate *d;
-};
-
-
-
-#endif // AC_PROPERTYVIEW_H
+    painter->setPen(Qt::red);
+    if (index.data().toBool())
+        painter->setBrush(QBrush(Qt::red));
+}

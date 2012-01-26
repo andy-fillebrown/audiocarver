@@ -17,8 +17,10 @@
 
 #include "ac_propertyview.h"
 
+#include <ac_colorbuttondelegate.h>
 #include <ac_noteselectionmodel.h>
 #include <ac_propertymodel.h>
+#include <ac_recordbuttondelegate.h>
 #include <ac_trackselectionmodel.h>
 
 #include <QHeaderView>
@@ -31,11 +33,24 @@ class PropertyViewPrivate
 public:
     PropertyView *q;
     PropertyModel *propertyModel;
+    ColorButtonDelegate *colorButtonDelegate;
+    ToggleButtonDelegate *toggleButtonDelegate;
+    RecordButtonDelegate *recordButtonDelegate;
 
     PropertyViewPrivate(PropertyView *q)
         :   q(q)
         ,   propertyModel(new PropertyModel(q))
-    {}
+        ,   colorButtonDelegate(new ColorButtonDelegate(q))
+        ,   toggleButtonDelegate(new ToggleButtonDelegate(q))
+        ,   recordButtonDelegate(new RecordButtonDelegate(q))
+    {
+        colorButtonDelegate->setCustomColumn(1);
+        toggleButtonDelegate->setCustomColumn(1);
+        recordButtonDelegate->setCustomColumn(1);
+
+        toggleButtonDelegate->setButtonColumnWidth(16);
+        recordButtonDelegate->setButtonColumnWidth(16);
+    }
 
     void init()
     {
@@ -49,7 +64,9 @@ PropertyView::PropertyView(QWidget *parent)
     ,   d(new PropertyViewPrivate(this))
 {
     d->init();
+
     setModel(d->propertyModel);
+    connect(d->propertyModel, SIGNAL(modelReset()), SLOT(updateDelegates()));
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -90,4 +107,25 @@ void PropertyView::keyReleaseEvent(QKeyEvent *event)
     }
 
     QTableView::keyReleaseEvent(event);
+}
+
+void PropertyView::updateDelegates()
+{
+    const int row_count = model()->rowCount();
+    for (int i = 0;  i < row_count;  ++i) {
+        int role_type = model()->data(model()->index(i, 0), Mi::RoleTypeRole).toInt();
+        switch (role_type) {
+        case Ac::ColorRole:
+            setItemDelegateForRow(i, d->colorButtonDelegate);
+            break;
+        case Ac::VisibilityRole:
+            setItemDelegateForRow(i, d->toggleButtonDelegate);
+            break;
+        case Ac::RecordingRole:
+            setItemDelegateForRow(i, d->recordButtonDelegate);
+            break;
+        default:
+            setItemDelegateForRow(i, 0);
+        }
+    }
 }

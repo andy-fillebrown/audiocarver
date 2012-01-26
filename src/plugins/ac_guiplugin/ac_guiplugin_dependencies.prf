@@ -3,6 +3,7 @@ load(../mi_guiplugin/mi_guiplugin.prf)
 load(../ac_coreplugin/ac_coreplugin.prf)
 
 DIRS = \
+    delegates \
     graphicsview \
     implementations \
     interfaces \

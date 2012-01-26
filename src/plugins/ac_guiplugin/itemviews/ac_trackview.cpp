@@ -17,166 +17,33 @@
 
 #include "ac_trackview.h"
 
+#include <ac_colorbuttondelegate.h>
 #include <ac_noteselectionmodel.h>
+#include <ac_recordbuttondelegate.h>
 #include <ac_trackmodel.h>
 #include <ac_trackselectionmodel.h>
 
 #include <mi_ieditor.h>
 
-#include <mi_idatabase.h>
 #include <mi_imodel.h>
 
 #include <QApplication>
-#include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
-#include <QStyledItemDelegate>
 
 static const int buttonColumnWidth = 12;
-
-static IEditor *editor()
-{
-    return IEditor::instance();
-}
-
-class Delegate : public QStyledItemDelegate
-{
-public:
-    explicit Delegate(QObject *parent = 0)
-        :   QStyledItemDelegate(parent)
-    {}
-
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
-    {
-        // Return an empty size.  We're not using it.
-        Q_UNUSED(option);
-        Q_UNUSED(index);
-        return QSize();
-    }
-};
-
-class ColorDelegate : public Delegate
-{
-public:
-    explicit ColorDelegate(QObject *parent = 0)
-        :   Delegate(parent)
-    {}
-
-    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
-    {
-        Q_UNUSED(option);
-
-        // We're only interested in left button mouse clicks.
-        if (QEvent::MouseButtonPress != event->type())
-            return false;
-        QMouseEvent *e = static_cast<QMouseEvent*>(event);
-        if (Qt::LeftButton != e->button())
-            return false;
-
-        // Open a color dialog at the event's position and set the track's
-        // color if the user didn't cancel the dialog.
-        QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), object_cast<QWidget>(parent()));
-        dlg->move(dlg->parentWidget()->mapToGlobal(e->pos()));
-        dlg->exec();
-        QColor color = dlg->selectedColor();
-        if (color.isValid())
-            model->setData(index, color, Qt::DisplayRole);
-
-        return true;
-    }
-
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-    {
-        // Pass a bogus index so "true" or "false" doesn't get painted under
-        // the color box.
-        Delegate::paint(painter, option, index.model()->index(0, 0));
-
-        // Draw the color box.
-        const QColor color = index.data().value<QColor>();
-        painter->save();
-        painter->setPen(color);
-        painter->setBrush(QBrush(color));
-        painter->drawRect(option.rect.adjusted(1, 1, -2, -2));
-        painter->restore();
-    }
-};
-
-class ToggleButtonDelegate : public Delegate
-{
-public:
-    explicit ToggleButtonDelegate(QObject *parent = 0)
-        :   Delegate(parent)
-    {}
-
-    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
-    {
-        Q_UNUSED(option);
-
-        // Toggle the model data if we got a left button mouse click.
-        if (QEvent::MouseButtonPress != event->type())
-            return false;
-        const QMouseEvent *e = static_cast<const QMouseEvent*>(event);
-        if (Qt::LeftButton == e->button()) {
-            editor()->beginCommand();
-            model->setData(index, !index.data().toBool(), Qt::DisplayRole);
-            editor()->endCommand();
-        }
-
-        return true;
-    }
-
-    virtual void setPainterColors(QPainter *painter, const QModelIndex &index) const
-    {
-        if (index.data().toBool())
-            painter->setBrush(QBrush(Qt::SolidPattern));
-    }
-
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-    {
-        // Pass a bogus index so "true" or "false" doesn't get painted under
-        // the button.
-        Delegate::paint(painter, option, index.model()->index(0, 0));
-
-        // Draw a circle and fill it if the model data is true (i.e. the button
-        // is pressed).
-        painter->save();
-        setPainterColors(painter, index);
-        painter->setRenderHint(QPainter::Antialiasing);
-        QRect rect = option.rect;
-        rect.setWidth(buttonColumnWidth);
-        painter->drawEllipse(rect.center(), 3, 3);
-        painter->restore();
-    }
-};
-
-class RecordButtonDelegate : public ToggleButtonDelegate
-{
-public:
-    explicit RecordButtonDelegate(QObject *parent = 0)
-        :   ToggleButtonDelegate(parent)
-    {}
-
-    void setPainterColors(QPainter *painter, const QModelIndex &index) const
-    {
-        painter->setPen(Qt::red);
-        if (index.data().toBool())
-            painter->setBrush(QBrush(Qt::red));
-    }
-};
 
 class TrackViewPrivate
 {
 public:
     TrackView *q;
-    IEditor *editor;
     QPoint dragStartPos;
     quint32 dragging : 32;
     int dropRow;
 
     TrackViewPrivate(TrackView *q)
         :   q(q)
-        ,   editor(IEditor::instance())
         ,   dragging(false)
         ,   dropRow(-1)
     {}
@@ -200,14 +67,25 @@ TrackView::TrackView(QWidget *parent)
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);
-    setItemDelegateForColumn(0, new ColorDelegate(this));
-    setItemDelegateForColumn(2, new ToggleButtonDelegate(this));
-    setItemDelegateForColumn(3, new RecordButtonDelegate(this));
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setSelectionMode(ExtendedSelection);
     setAcceptDrops(true);
     setDragEnabled(true);
     setAllColumnsShowFocus(true);
+
+    ColorButtonDelegate *colorButtonDelegate = new ColorButtonDelegate(this);
+    colorButtonDelegate->setCustomColumn(0);
+    setItemDelegateForColumn(0, colorButtonDelegate);
+
+    ToggleButtonDelegate *toggleButtonDelegate = new ToggleButtonDelegate(this);
+    toggleButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
+    toggleButtonDelegate->setCustomColumn(2);
+    setItemDelegateForColumn(2, toggleButtonDelegate);
+
+    RecordButtonDelegate *recordButtonDelegate = new RecordButtonDelegate(this);
+    recordButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
+    recordButtonDelegate->setCustomColumn(3);
+    setItemDelegateForColumn(3, recordButtonDelegate);
 }
 
 void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)

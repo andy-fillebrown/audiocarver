@@ -162,12 +162,18 @@ QVariant PropertyModel::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(index);
 
+    if (Mi::RoleTypeRole == role)
+        return d->dataMap.keys().at(index.row());
+
     if (Qt::DisplayRole != role
             && Qt::EditRole != role)
         return QVariant();
 
     const int column = index.column();
     const int row = index.row();
+
+    if (0 == row)
+        return QVariant();
 
     QVariant value;
     if (0 == column) {
@@ -184,7 +190,7 @@ QVariant PropertyModel::data(const QModelIndex &index, int role) const
 
 bool PropertyModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (Qt::EditRole != role
+    if ((Qt::DisplayRole != role && Qt::EditRole != role)
             ||  1 != index.column())
         return false;
 
