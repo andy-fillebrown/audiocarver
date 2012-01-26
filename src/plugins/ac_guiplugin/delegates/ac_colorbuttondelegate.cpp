@@ -35,10 +35,8 @@ bool ColorButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, 
     if (Qt::LeftButton != e->button())
         return false;
 
-    // Open a color dialog at the event's position and set the track's
-    // color if the user didn't cancel the dialog.
+    // Open a color dialog and set the track's color if the user didn't cancel the dialog.
     QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), object_cast<QWidget>(parent()));
-    dlg->move(dlg->parentWidget()->mapToGlobal(e->pos()));
     dlg->exec();
     QColor color = dlg->selectedColor();
     if (color.isValid())
