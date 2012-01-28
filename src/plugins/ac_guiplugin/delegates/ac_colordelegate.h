@@ -15,15 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_COLORBUTTONDELEGATE_H
-#define AC_COLORBUTTONDELEGATE_H
+#ifndef AC_COLORDELEGATE_H
+#define AC_COLORDELEGATE_H
 
 #include <mi_delegate.h>
 
-class ColorButtonDelegate : public Delegate
+class ColorDelegate : public Delegate
 {
 public:
-    ColorButtonDelegate(QObject *parent = 0)
+    ColorDelegate(QObject *parent = 0)
         :   Delegate(parent)
     {}
 
@@ -32,4 +32,4 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-#endif // AC_COLORBUTTONDELEGATE_H
+#endif // AC_COLORDELEGATE_H

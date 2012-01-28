@@ -17,7 +17,7 @@
 
 #include "ac_trackview.h"
 
-#include <ac_colorbuttondelegate.h>
+#include <ac_colordelegate.h>
 #include <ac_noteselectionmodel.h>
 #include <ac_recordbuttondelegate.h>
 #include <ac_trackmodel.h>
@@ -73,9 +73,9 @@ TrackView::TrackView(QWidget *parent)
     setDragEnabled(true);
     setAllColumnsShowFocus(true);
 
-    ColorButtonDelegate *colorButtonDelegate = new ColorButtonDelegate(this);
-    colorButtonDelegate->setCustomColumn(0);
-    setItemDelegateForColumn(0, colorButtonDelegate);
+    ColorDelegate *colorDelegate = new ColorDelegate(this);
+    colorDelegate->setCustomColumn(0);
+    setItemDelegateForColumn(0, colorDelegate);
 
     ToggleButtonDelegate *toggleButtonDelegate = new ToggleButtonDelegate(this);
     toggleButtonDelegate->setButtonColumnWidth(buttonColumnWidth);

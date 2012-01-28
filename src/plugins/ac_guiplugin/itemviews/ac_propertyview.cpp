@@ -17,7 +17,7 @@
 
 #include "ac_propertyview.h"
 
-#include <ac_colorbuttondelegate.h>
+#include <ac_colordelegate.h>
 #include <ac_noteselectionmodel.h>
 #include <ac_propertymodel.h>
 #include <ac_recordbuttondelegate.h>
@@ -33,18 +33,19 @@ class PropertyViewPrivate
 public:
     PropertyView *q;
     PropertyModel *propertyModel;
-    ColorButtonDelegate *colorButtonDelegate;
+    InstrumentDelegate *instrumentDelegate;
+    ColorDelegate *colorDelegate;
     ToggleButtonDelegate *toggleButtonDelegate;
     RecordButtonDelegate *recordButtonDelegate;
 
     PropertyViewPrivate(PropertyView *q)
         :   q(q)
         ,   propertyModel(new PropertyModel(q))
-        ,   colorButtonDelegate(new ColorButtonDelegate(q))
+        ,   colorDelegate(new ColorDelegate(q))
         ,   toggleButtonDelegate(new ToggleButtonDelegate(q))
         ,   recordButtonDelegate(new RecordButtonDelegate(q))
     {
-        colorButtonDelegate->setCustomColumn(1);
+        colorDelegate->setCustomColumn(1);
         toggleButtonDelegate->setCustomColumn(1);
         recordButtonDelegate->setCustomColumn(1);
 
@@ -116,7 +117,7 @@ void PropertyView::updateDelegates()
         int role_type = model()->data(model()->index(i, 0), Mi::RoleTypeRole).toInt();
         switch (role_type) {
         case Ac::ColorRole:
-            setItemDelegateForRow(i, d->colorButtonDelegate);
+            setItemDelegateForRow(i, d->colorDelegate);
             break;
         case Ac::VisibilityRole:
             setItemDelegateForRow(i, d->toggleButtonDelegate);

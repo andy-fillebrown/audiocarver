@@ -1,6 +1,6 @@
 
 SOURCE_PAIRS = \
-    ac_colorbuttondelegate \
+    ac_colordelegate \
     ac_recordbuttondelegate \
     ac_togglebuttondelegate \
 

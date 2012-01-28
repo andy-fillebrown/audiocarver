@@ -15,13 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_colorbuttondelegate.h"
+#include "ac_colordelegate.h"
 
 #include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
 
-bool ColorButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     Q_UNUSED(option);
 
@@ -45,7 +45,7 @@ bool ColorButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, 
     return true;
 }
 
-void ColorButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void ColorDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     if (customColumn() != index.column()) {
         Delegate::paint(painter, option, index);
