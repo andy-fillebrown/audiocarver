@@ -1,6 +1,7 @@
 
 SOURCE_PAIRS = \
     ac_colordelegate \
+    ac_instrumentdelegate \
     ac_recordbuttondelegate \
     ac_togglebuttondelegate \
 
