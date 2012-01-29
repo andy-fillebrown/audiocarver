@@ -84,6 +84,7 @@ SelectedItemsPropertyView::SelectedItemsPropertyView(QWidget *parent)
 
     QHeaderView *h_header = horizontalHeader();
     h_header->resizeSections(QHeaderView::ResizeToContents);
+    h_header->resizeSection(1, 0);
 }
 
 SelectedItemsPropertyView::~SelectedItemsPropertyView()
