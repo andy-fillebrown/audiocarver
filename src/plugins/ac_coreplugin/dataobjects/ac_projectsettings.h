@@ -29,9 +29,9 @@ class ProjectSettingsPrivate;
 class ProjectSettings : public Object
 {
     Q_OBJECT
-    Q_PROPERTY(QString outputDirectory READ outputDirectory WRITE setOutputDirectory)
-    Q_PROPERTY(QString instrumentDirectory READ instrumentDirectory WRITE setInstrumentDirectory)
-    Q_PROPERTY(QString audioFileType READ audioFileType WRITE setAudioFileType)
+//    Q_PROPERTY(QString outputDirectory READ outputDirectory WRITE setOutputDirectory)
+//    Q_PROPERTY(QString instrumentDirectory READ instrumentDirectory WRITE setInstrumentDirectory)
+//    Q_PROPERTY(QString audioFileType READ audioFileType WRITE setAudioFileType)
     Q_PROPERTY(int sampleRate READ sampleRate WRITE setSampleRate)
     Q_PROPERTY(int controlRate READ controlRate WRITE setControlRate)
     Q_PROPERTY(int curveRate READ curveRate WRITE setCurveRate)
@@ -46,12 +46,12 @@ public:
     void clear();
 
     // Properties
-    const QString &outputDirectory() const;
-    void setOutputDirectory(const QString &directory);
-    QString instrumentDirectory() const;
-    void setInstrumentDirectory(const QString &directory);
-    const QString &audioFileType() const;
-    void setAudioFileType(const QString &fileType);
+//    const QString &outputDirectory() const;
+//    void setOutputDirectory(const QString &directory);
+//    QString instrumentDirectory() const;
+//    void setInstrumentDirectory(const QString &directory);
+//    const QString &audioFileType() const;
+//    void setAudioFileType(const QString &fileType);
     int sampleRate() const;
     void setSampleRate(int rate);
     int controlRate() const;
@@ -65,17 +65,17 @@ public:
     int persistentRoleAt(int i) const
     {
         switch (i - staticMetaObject.propertyOffset()) {
-        case 0:
-            return Ac::OutputDirectoryRole;
-        case 1:
-            return Ac::InstrumentDirectoryRole;
-        case 2:
-            return Ac::AudioFileTypeRole;
-        case 3:
+//        case 0:
+//            return Ac::OutputDirectoryRole;
+//        case 1:
+//            return Ac::InstrumentDirectoryRole;
+//        case 2:
+//            return Ac::AudioFileTypeRole;
+        case 0://3:
             return Ac::SampleRateRole;
-        case 4:
+        case 1://4:
             return Ac::ControlRateRole;
-        case 5:
+        case 2://5:
             return Ac::CurveRateRole;
         default:
             return Object::persistentRoleAt(i);
@@ -94,9 +94,9 @@ class ProjectSettingsPrivate : public ObjectPrivate
     Q_DECLARE_PUBLIC(ProjectSettings)
 
 public:
-    QString outputDirectory;
-    QString instrumentDirectory;
-    QString audioFileType;
+//    QString outputDirectory;
+//    QString instrumentDirectory;
+//    QString audioFileType;
     int sampleRate;
     int controlRate;
     int curveRate;
@@ -109,9 +109,9 @@ public:
 
     void clear()
     {
-        outputDirectory.clear();
-        instrumentDirectory.clear();
-        audioFileType.clear();
+//        outputDirectory.clear();
+//        instrumentDirectory.clear();
+//        audioFileType.clear();
         sampleRate = 48000;
         controlRate = 4800;
         curveRate = 48;

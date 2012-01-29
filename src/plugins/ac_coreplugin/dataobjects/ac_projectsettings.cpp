@@ -27,53 +27,53 @@ ProjectSettings::ProjectSettings(QObject *parent)
     setName("Project Settings");
 }
 
-const QString &ProjectSettings::outputDirectory() const
-{
-    Q_D(const ProjectSettings);
-    return d->outputDirectory;
-}
+//const QString &ProjectSettings::outputDirectory() const
+//{
+//    Q_D(const ProjectSettings);
+//    return d->outputDirectory;
+//}
 
-void ProjectSettings::setOutputDirectory(const QString &directory)
-{
-    Q_D(ProjectSettings);
-    if (d->outputDirectory == directory)
-        return;
-    d->beginChangeData();
-    d->outputDirectory = directory;
-    d->endChangeData();
-}
+//void ProjectSettings::setOutputDirectory(const QString &directory)
+//{
+//    Q_D(ProjectSettings);
+//    if (d->outputDirectory == directory)
+//        return;
+//    d->beginChangeData();
+//    d->outputDirectory = directory;
+//    d->endChangeData();
+//}
 
-QString ProjectSettings::instrumentDirectory() const
-{
-    Q_D(const ProjectSettings);
-    return d->instrumentDirectory;
-}
+//QString ProjectSettings::instrumentDirectory() const
+//{
+//    Q_D(const ProjectSettings);
+//    return d->instrumentDirectory;
+//}
 
-void ProjectSettings::setInstrumentDirectory(const QString &directory)
-{
-    Q_D(ProjectSettings);
-    if (d->instrumentDirectory == directory)
-        return;
-    d->beginChangeData();
-    d->instrumentDirectory = directory;
-    d->endChangeData();
-}
+//void ProjectSettings::setInstrumentDirectory(const QString &directory)
+//{
+//    Q_D(ProjectSettings);
+//    if (d->instrumentDirectory == directory)
+//        return;
+//    d->beginChangeData();
+//    d->instrumentDirectory = directory;
+//    d->endChangeData();
+//}
 
-const QString &ProjectSettings::audioFileType() const
-{
-    Q_D(const ProjectSettings);
-    return d->audioFileType;
-}
+//const QString &ProjectSettings::audioFileType() const
+//{
+//    Q_D(const ProjectSettings);
+//    return d->audioFileType;
+//}
 
-void ProjectSettings::setAudioFileType(const QString &fileType)
-{
-    Q_D(ProjectSettings);
-    if (d->audioFileType == fileType)
-        return;
-    d->beginChangeData();
-    d->audioFileType = fileType;
-    d->endChangeData();
-}
+//void ProjectSettings::setAudioFileType(const QString &fileType)
+//{
+//    Q_D(ProjectSettings);
+//    if (d->audioFileType == fileType)
+//        return;
+//    d->beginChangeData();
+//    d->audioFileType = fileType;
+//    d->endChangeData();
+//}
 
 int ProjectSettings::sampleRate() const
 {
@@ -137,12 +137,12 @@ void ProjectSettings::clear()
 QVariant ProjectSettings::data(int role) const
 {
     switch (role) {
-    case Ac::OutputDirectoryRole:
-        return outputDirectory();
-    case Ac::InstrumentDirectoryRole:
-        return instrumentDirectory();
-    case Ac::AudioFileTypeRole:
-        return audioFileType();
+//    case Ac::OutputDirectoryRole:
+//        return outputDirectory();
+//    case Ac::InstrumentDirectoryRole:
+//        return instrumentDirectory();
+//    case Ac::AudioFileTypeRole:
+//        return audioFileType();
     case Ac::SampleRateRole:
         return sampleRate();
     case Ac::ControlRateRole:
@@ -157,15 +157,15 @@ QVariant ProjectSettings::data(int role) const
 bool ProjectSettings::setData(const QVariant &value, int role)
 {
     switch (role) {
-    case Ac::OutputDirectoryRole:
-        setOutputDirectory(value.toString());
-        return true;
-    case Ac::InstrumentDirectoryRole:
-        setInstrumentDirectory(value.toString());
-        return true;
-    case Ac::AudioFileTypeRole:
-        setAudioFileType(value.toString());
-        return true;
+//    case Ac::OutputDirectoryRole:
+//        setOutputDirectory(value.toString());
+//        return true;
+//    case Ac::InstrumentDirectoryRole:
+//        setInstrumentDirectory(value.toString());
+//        return true;
+//    case Ac::AudioFileTypeRole:
+//        setAudioFileType(value.toString());
+//        return true;
     case Ac::SampleRateRole:
         setSampleRate(value.toInt());
         return true;
