@@ -15,38 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#include "ac_gridlinedialog.h"
 
-#include <imainwindow.h>
+#include <ui_ac_gridlinedialog.h>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+class GridLineDialogPrivate
 {
-    Q_OBJECT
-
 public:
-    MainWindow();
-    ~MainWindow();
-
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void showGridSettings();
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void startOrStop();
-    void start();
-    void stop();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
-
-private:
-    MainWindowPrivate *d;
+    GridLineDialogPrivate()
+    {}
 };
 
-#endif // AC_MAINWINDOW_H
+GridLineDialog::GridLineDialog(QWidget *parent)
+    :   QDialog(parent)
+    ,   d(new GridLineDialogPrivate)
+    ,   ui(new Ui_GridLineDialog)
+{
+    ui->setupUi(this);
+    connect(ui->addRowButton, SIGNAL(clicked()), SLOT(addRow()));
+}
+
+GridLineDialog::~GridLineDialog()
+{
+    delete ui;
+    delete d;
+}
+
+void GridLineDialog::addRow()
+{
+    GridLineView *view = ui->tabWidget->currentWidget()->findChild<GridLineView*>();
+    view->model()->insertRows(0, 1);
+}

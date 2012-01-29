@@ -15,38 +15,41 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#ifndef AC_GRIDLINEVIEW_H
+#define AC_GRIDLINEVIEW_H
 
-#include <imainwindow.h>
+#include <QTableView>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+class GridLineView : public QTableView
 {
     Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow();
-
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void showGridSettings();
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void startOrStop();
-    void start();
-    void stop();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
-
-private:
-    MainWindowPrivate *d;
+    GridLineView(QWidget *parent = 0);
 };
 
-#endif // AC_MAINWINDOW_H
+class TimeLineView : public GridLineView
+{
+    Q_OBJECT
+
+public:
+    TimeLineView(QWidget *parent = 0);
+};
+
+class PitchLineView : public GridLineView
+{
+    Q_OBJECT
+
+public:
+    PitchLineView(QWidget *parent = 0);
+};
+
+class ControlLineView : public GridLineView
+{
+    Q_OBJECT
+
+public:
+    ControlLineView(QWidget *parent = 0);
+};
+
+#endif // AC_GRIDLINEVIEW_H

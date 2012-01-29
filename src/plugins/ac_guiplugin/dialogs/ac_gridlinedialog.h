@@ -15,38 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#ifndef AC_GRIDLINEDIALOG_H
+#define AC_GRIDLINEDIALOG_H
 
-#include <imainwindow.h>
+#include <QDialog>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+class Ui_GridLineDialog;
+
+class GridLineDialogPrivate;
+class GridLineDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow();
+    GridLineDialog(QWidget *parent = 0);
+    ~GridLineDialog();
 
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void showGridSettings();
-    void createTrack();
-    void erase();
-    void build();
-    void buildAll();
-    void startOrStop();
-    void start();
-    void stop();
-    void aboutAudioCarver();
-    void destroyVersionDialog();
+public slots:
+    void addRow();
 
 private:
-    MainWindowPrivate *d;
+    friend class GridLineDialogPrivate;
+    GridLineDialogPrivate *d;
+    Ui_GridLineDialog *ui;
 };
 
-#endif // AC_MAINWINDOW_H
+#endif // AC_GRIDLINEDIALOG_H

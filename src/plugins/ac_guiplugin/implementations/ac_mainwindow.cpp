@@ -17,6 +17,7 @@
 
 #include "ac_mainwindow.h"
 
+#include <ac_gridlinedialog.h>
 #include <ac_guiconstants.h>
 #include <ac_pitchview.h>
 #include <ac_viewmanager.h>
@@ -95,7 +96,10 @@ void MainWindow::initMenuBarGroups(QStringList &groups) const
 
 void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
-    if (G_CREATE == menuBarGroup) {
+    if (G_EDIT == menuBarGroup) {
+        const int g_edit_other = groups.indexOf(G_EDIT_OTHER);
+        groups.insert(g_edit_other, G_EDIT_SETTINGS);
+    } else if (G_CREATE == menuBarGroup) {
         title = tr("&Create");
         id = M_CREATE;
         groups << G_CREATE_OTHER;
@@ -119,6 +123,7 @@ void MainWindow::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
 
+    Core::ActionContainer *editMenu = am->actionContainer(M_EDIT);
     Core::ActionContainer *createMenu = am->actionContainer(M_CREATE);
     Core::ActionContainer *modifyMenu = am->actionContainer(M_MODIFY);
     Core::ActionContainer *buildMenu = am->actionContainer(M_BUILD);
@@ -132,6 +137,18 @@ void MainWindow::initActions()
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
+
+    // Settings Separator
+    action = new QAction(this);
+    action->setSeparator(true);
+    cmd = am->registerAction(action, PRO_NAME_STR".Edit.Sep.Settings", globalContext);
+    editMenu->addAction(cmd, G_EDIT_SETTINGS);
+
+    // Grid Settings Action
+    action = new QAction(tr("&Grid Settings..."), this);
+    cmd = am->registerAction(action, SHOWGRIDSETTINGS, globalContext);
+    editMenu->addAction(cmd, G_EDIT_SETTINGS);
+    connect(action, SIGNAL(triggered()), SLOT(showGridSettings()));
 
     // Create Track Action
     action = new QAction(tr("&Track"), this);
@@ -210,6 +227,13 @@ void MainWindow::initActions()
     }
 #   endif
     connect(action, SIGNAL(triggered()), SLOT(aboutAudioCarver()));
+}
+
+void MainWindow::showGridSettings()
+{
+    GridLineDialog *dlg = new GridLineDialog(Core::ICore::instance()->mainWindow());
+    dlg->exec();
+    delete dlg;
 }
 
 void MainWindow::createTrack()
