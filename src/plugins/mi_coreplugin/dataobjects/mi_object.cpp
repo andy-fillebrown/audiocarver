@@ -136,8 +136,6 @@ bool Object::setData(const QVariant &value, int role)
             d_ptr->endChangeData();
         }
         return true;
-    } else {
-        Q_ASSERT(false);
-        return false;
     }
+    return false;
 }
