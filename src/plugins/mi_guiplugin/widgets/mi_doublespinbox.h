@@ -15,30 +15,31 @@
 **
 **************************************************************************/
 
-#include "ac_propertymodel.h"
+#ifndef MI_DOUBLESPINBOX_H
+#define MI_DOUBLESPINBOX_H
 
-int PropertyModel::columnCount(const QModelIndex &parent) const
+#include <mi_global.h>
+
+#include <QDoubleSpinBox>
+
+class MI_GUI_EXPORT DoubleSpinBox : public QDoubleSpinBox
 {
-    Q_UNUSED(parent);
-    return 2;
-}
+    Q_OBJECT
 
-Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
-{
-    const Qt::ItemFlags default_flags = Qt::ItemIsEnabled;
-    if (1 == index.column())
-        return default_flags | Qt::ItemIsEditable;
-    return default_flags;
-}
+public:
+    DoubleSpinBox(QWidget *parent = 0)
+        :   QDoubleSpinBox(parent)
+    {}
 
-QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (Qt::DisplayRole != role
-            || Qt::Horizontal != orientation
-            || section < 0 || 1 < section)
-        return QVariant();
+    QString textFromValue(double val) const
+    {
+        QString text = QString("%1").arg(val, 0, 'f', 6);
+        while (text.endsWith('0'))
+            text.chop(1);
+        if (text.endsWith('.'))
+            text.chop(1);
+        return text;
+    }
+};
 
-    if (0 == section)
-        return "Property";
-    return "Value";
-}
+#endif // MI_DOUBLESPINBOX_H

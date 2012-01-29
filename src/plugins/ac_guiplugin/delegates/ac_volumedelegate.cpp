@@ -15,30 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_propertymodel.h"
+#include "ac_volumedelegate.h"
 
-int PropertyModel::columnCount(const QModelIndex &parent) const
+#include <QDoubleSpinBox>
+
+QWidget *VolumeDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    Q_UNUSED(parent);
-    return 2;
-}
-
-Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
-{
-    const Qt::ItemFlags default_flags = Qt::ItemIsEnabled;
-    if (1 == index.column())
-        return default_flags | Qt::ItemIsEditable;
-    return default_flags;
-}
-
-QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (Qt::DisplayRole != role
-            || Qt::Horizontal != orientation
-            || section < 0 || 1 < section)
-        return QVariant();
-
-    if (0 == section)
-        return "Property";
-    return "Value";
+    QWidget *editor = DoubleDelegate::createEditor(parent, option, index);
+    QDoubleSpinBox *spin_box = qobject_cast<QDoubleSpinBox*>(editor);
+    if (spin_box) {
+        spin_box->setDecimals(6);
+        spin_box->setRange(0.0f, 1.0f);
+        spin_box->setSingleStep(0.05f);
+    }
+    return editor;
 }

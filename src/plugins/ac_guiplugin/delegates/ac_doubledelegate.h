@@ -15,30 +15,23 @@
 **
 **************************************************************************/
 
-#include "ac_propertymodel.h"
+#ifndef AC_DOUBLEDELEGATE_H
+#define AC_DOUBLEDELEGATE_H
 
-int PropertyModel::columnCount(const QModelIndex &parent) const
+#include <mi_delegate.h>
+
+class DoubleDelegate : public Delegate
 {
-    Q_UNUSED(parent);
-    return 2;
-}
+public:
+    DoubleDelegate(QObject *parent = 0)
+        :   Delegate(parent)
+    {}
 
-Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
-{
-    const Qt::ItemFlags default_flags = Qt::ItemIsEnabled;
-    if (1 == index.column())
-        return default_flags | Qt::ItemIsEditable;
-    return default_flags;
-}
+    // QStyledItemDelegate
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
 
-QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (Qt::DisplayRole != role
-            || Qt::Horizontal != orientation
-            || section < 0 || 1 < section)
-        return QVariant();
-
-    if (0 == section)
-        return "Property";
-    return "Value";
-}
+#endif // AC_DOUBLEDELEGATE_H

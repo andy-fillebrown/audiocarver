@@ -20,37 +20,19 @@
 
 #include <QAbstractTableModel>
 
-class IModelItem;
-class ItemSelectionModel;
-
-class PropertyModelPrivate;
 class PropertyModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
-    PropertyModel(QObject *parent = 0);
-    ~PropertyModel();
-
-    static PropertyModel *instance();
-
-    void appendSelectionModel(ItemSelectionModel *selectionModel);
-    void removeSelectionModel(ItemSelectionModel *selectionModel);
+    PropertyModel(QObject *parent = 0)
+        :   QAbstractTableModel(parent)
+    {}
 
     // QAbstractItemModel
     int columnCount(const QModelIndex &parent) const;
-    int rowCount(const QModelIndex &parent) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-
-private slots:
-    void update();
-
-private:
-    friend class PropertyModelPrivate;
-    PropertyModelPrivate *d;
 };
 
-#endif // AC_TRACKMODEL_H
+#endif // AC_PROPERTYMODEL_H

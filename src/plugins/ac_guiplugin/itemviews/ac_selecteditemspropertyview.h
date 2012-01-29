@@ -15,30 +15,28 @@
 **
 **************************************************************************/
 
-#include "ac_propertymodel.h"
+#ifndef AC_SELECTEDITEMSPROPERTYVIEW_H
+#define AC_SELECTEDITEMSPROPERTYVIEW_H
 
-int PropertyModel::columnCount(const QModelIndex &parent) const
+#include <ac_propertyview.h>
+
+class SelectedItemsPropertyViewPrivate;
+class SelectedItemsPropertyView : public PropertyView
 {
-    Q_UNUSED(parent);
-    return 2;
-}
+    Q_OBJECT
 
-Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
-{
-    const Qt::ItemFlags default_flags = Qt::ItemIsEnabled;
-    if (1 == index.column())
-        return default_flags | Qt::ItemIsEditable;
-    return default_flags;
-}
+public:
+    SelectedItemsPropertyView(QWidget *parent = 0);
+    ~SelectedItemsPropertyView();
 
-QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (Qt::DisplayRole != role
-            || Qt::Horizontal != orientation
-            || section < 0 || 1 < section)
-        return QVariant();
+protected:
+    void keyReleaseEvent(QKeyEvent *event);
 
-    if (0 == section)
-        return "Property";
-    return "Value";
-}
+private slots:
+    void updateDelegates();
+
+private:
+    SelectedItemsPropertyViewPrivate *d;
+};
+
+#endif // AC_SELECTEDITEMSPROPERTYVIEW_H

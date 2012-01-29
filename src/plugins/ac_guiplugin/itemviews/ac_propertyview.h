@@ -20,7 +20,6 @@
 
 #include <QTableView>
 
-class PropertyViewPrivate;
 class PropertyView : public QTableView
 {
     Q_OBJECT
@@ -30,15 +29,6 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-
-private slots:
-    void updateDelegates();
-
-private:
-    PropertyViewPrivate *d;
 };
-
-
 
 #endif // AC_PROPERTYVIEW_H

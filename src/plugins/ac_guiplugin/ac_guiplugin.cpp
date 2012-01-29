@@ -20,7 +20,7 @@
 #include <ac_editor.h>
 #include <ac_mainwidget.h>
 #include <ac_mainwindow.h>
-#include <ac_propertyview.h>
+#include <ac_selecteditemspropertyview.h>
 #include <ac_trackview.h>
 
 #include <mi_idatabase.h>
@@ -57,7 +57,7 @@ void AcGuiPlugin::extensionsInitialized()
     // Property View Dock Widget
     dw = new QDockWidget("Property Editor", mw);
     dw->setObjectName("Property View Dock Widget");
-    dw->setWidget(new PropertyView(dw));
+    dw->setWidget(new SelectedItemsPropertyView(dw));
     mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
 }
 

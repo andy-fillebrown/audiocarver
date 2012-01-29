@@ -15,30 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_propertymodel.h"
+#ifndef AC_LENGTHDELEGATE_H
+#define AC_LENGTHDELEGATE_H
 
-int PropertyModel::columnCount(const QModelIndex &parent) const
+#include <ac_doubledelegate.h>
+
+class LengthDelegate : public DoubleDelegate
 {
-    Q_UNUSED(parent);
-    return 2;
-}
+public:
+    LengthDelegate(QObject *parent = 0)
+        :   DoubleDelegate(parent)
+    {}
 
-Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
-{
-    const Qt::ItemFlags default_flags = Qt::ItemIsEnabled;
-    if (1 == index.column())
-        return default_flags | Qt::ItemIsEditable;
-    return default_flags;
-}
+    // DoubleDelegate
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
 
-QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (Qt::DisplayRole != role
-            || Qt::Horizontal != orientation
-            || section < 0 || 1 < section)
-        return QVariant();
-
-    if (0 == section)
-        return "Property";
-    return "Value";
-}
+#endif // AC_LENGTHDELEGATE_H

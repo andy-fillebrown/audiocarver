@@ -15,30 +15,4 @@
 **
 **************************************************************************/
 
-#include "ac_propertymodel.h"
-
-int PropertyModel::columnCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent);
-    return 2;
-}
-
-Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
-{
-    const Qt::ItemFlags default_flags = Qt::ItemIsEnabled;
-    if (1 == index.column())
-        return default_flags | Qt::ItemIsEditable;
-    return default_flags;
-}
-
-QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (Qt::DisplayRole != role
-            || Qt::Horizontal != orientation
-            || section < 0 || 1 < section)
-        return QVariant();
-
-    if (0 == section)
-        return "Property";
-    return "Value";
-}
+#include "mi_doublespinbox.h"
