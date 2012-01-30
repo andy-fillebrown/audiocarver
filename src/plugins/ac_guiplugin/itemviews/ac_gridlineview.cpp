@@ -24,9 +24,13 @@
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
+#include <QHeaderView>
+
 GridLineView::GridLineView(QWidget *parent)
     :   QTableView(parent)
-{}
+{
+    horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+}
 
 TimeLineView::TimeLineView(QWidget *parent)
     :   GridLineView(parent)

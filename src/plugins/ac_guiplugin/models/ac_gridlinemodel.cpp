@@ -142,7 +142,9 @@ QVariant GridLineModel::headerData(int section, Qt::Orientation orientation, int
             || section < 0 || columnCount(QModelIndex()) <= section)
         return QVariant();
     const QMetaObject *mo = &GridLine::staticMetaObject;
-    return QString(mo->property(mo->propertyOffset() + section).name());
+    QString label(mo->property(mo->propertyOffset() + section).name());
+    label[0] = label.at(0).toUpper();
+    return label;
 }
 
 QVariant GridLineModel::data(const QModelIndex &index, int role) const
