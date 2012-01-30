@@ -19,6 +19,12 @@
 
 #include <ui_ac_gridlinedialog.h>
 
+#include <ac_gridlinemodel.h>
+
+#include <mi_ieditor.h>
+
+#include <QDialogButtonBox>
+
 class GridLineDialogPrivate
 {
 public:
@@ -32,6 +38,10 @@ GridLineDialog::GridLineDialog(QWidget *parent)
     ,   ui(new Ui_GridLineDialog)
 {
     ui->setupUi(this);
+    connect(ui->buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), SLOT(close()));
+    connect(ui->buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), SLOT(apply()));
+    connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), SLOT(apply()));
+    connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), SLOT(close()));
     connect(ui->addRowButton, SIGNAL(clicked()), SLOT(addRow()));
 }
 
@@ -39,6 +49,25 @@ GridLineDialog::~GridLineDialog()
 {
     delete ui;
     delete d;
+}
+
+void GridLineDialog::apply()
+{
+    GridLineModel *timeLinesModel = qobject_cast<GridLineModel*>(ui->timeLinesView->model());
+    GridLineModel *pitchLinesModel = qobject_cast<GridLineModel*>(ui->pitchLinesView->model());
+    GridLineModel *controlLinesModel = qobject_cast<GridLineModel*>(ui->controlLinesView->model());
+
+    if (!timeLinesModel->isChanged()
+            && !pitchLinesModel->isChanged()
+            && !controlLinesModel->isChanged())
+        return;
+
+    IEditor *editor = IEditor::instance();
+    editor->beginCommand();
+    timeLinesModel->apply();
+    pitchLinesModel->apply();
+    controlLinesModel->apply();
+    editor->endCommand();
 }
 
 void GridLineDialog::addRow()

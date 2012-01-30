@@ -32,6 +32,7 @@ public:
     ~GridLineDialog();
 
 public slots:
+    void apply();
     void addRow();
 
 private:

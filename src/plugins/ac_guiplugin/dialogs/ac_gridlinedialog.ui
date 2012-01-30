@@ -32,7 +32,7 @@
     <attribute name="title">
      <string>Time Lines</string>
     </attribute>
-    <widget class="TimeLineView" name="tableView">
+    <widget class="TimeLineView" name="timeLinesView">
      <property name="geometry">
       <rect>
        <x>-1</x>
@@ -47,7 +47,7 @@
     <attribute name="title">
      <string>Pitch Lines</string>
     </attribute>
-    <widget class="PitchLineView" name="tableView_2">
+    <widget class="PitchLineView" name="pitchLinesView">
      <property name="geometry">
       <rect>
        <x>-1</x>
@@ -62,7 +62,7 @@
     <attribute name="title">
      <string>Control Lines</string>
     </attribute>
-    <widget class="ControlLineView" name="tableView_3">
+    <widget class="ControlLineView" name="controlLinesView">
      <property name="geometry">
       <rect>
        <x>-1</x>

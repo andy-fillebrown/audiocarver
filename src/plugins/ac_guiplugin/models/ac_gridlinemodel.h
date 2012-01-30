@@ -32,6 +32,7 @@ public:
     ~GridLineModel();
 
     void setGridLineType(int type);
+    bool isChanged() const;
 
     // QAbstractItemModel
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
