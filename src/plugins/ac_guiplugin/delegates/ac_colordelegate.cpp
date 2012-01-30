@@ -24,7 +24,6 @@
 bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     Q_UNUSED(option);
-
     if (customColumn() != index.column())
         return false;
 
@@ -40,8 +39,7 @@ bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const 
     dlg->exec();
     QColor color = dlg->selectedColor();
     if (color.isValid())
-        model->setData(index, color, Qt::DisplayRole);
-
+        model->setData(index, color);
     return true;
 }
 
@@ -52,8 +50,7 @@ void ColorDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         return;
     }
 
-    // Pass a bogus index so display role text doesn't get painted under
-    // the color box.
+    // Pass a bogus index to paint highlighting.
     Delegate::paint(painter, option, index.model()->index(0, 0));
 
     // Draw the color box.

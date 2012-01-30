@@ -56,7 +56,6 @@ void ToggleButtonDelegate::setPainterColors(QPainter *painter, const QModelIndex
 bool ToggleButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     Q_UNUSED(option);
-
     if (customColumn() != index.column())
         return false;
 
@@ -70,7 +69,6 @@ bool ToggleButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
         model->setData(index, !index.data().toBool(), Qt::DisplayRole);
         editor->endCommand();
     }
-
     return true;
 }
 
@@ -81,8 +79,7 @@ void ToggleButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
         return;
     }
 
-    // Pass a bogus index so display role text doesn't get painted under the
-    // button.
+    // Pass a bogus index to paint highlighting.
     Delegate::paint(painter, option, index.model()->index(0, 0));
 
     // Draw a circle and fill it if the model data is true (i.e. the button

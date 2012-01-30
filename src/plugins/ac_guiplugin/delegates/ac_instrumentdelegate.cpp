@@ -34,7 +34,6 @@
 bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     Q_UNUSED(option);
-
     if (customColumn() != index.column())
         return false;
 
@@ -51,13 +50,11 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
     QString instrument_dir_name = project_settings->data(Ac::InstrumentDirectoryRole).toString();
     if (instrument_dir_name.isEmpty())
         instrument_dir_name = Mi::applicationTreeDirectory() + "instruments";
-    QString filename = QFileDialog::getOpenFileName(Core::ICore::instance()->mainWindow(), "Open Instrument", instrument_dir_name, QString::fromLatin1("Instrument (*orc)"));
-
+    QString filename = QFileDialog::getOpenFileName(Core::ICore::instance()->mainWindow(), "Open Instrument", instrument_dir_name, QString("Instrument (*orc)"));
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);
         QString abbreviated_filename = instrument_file_info.baseName();
-        model->setData(index, abbreviated_filename, Qt::EditRole);
+        model->setData(index, abbreviated_filename);
     }
-
     return true;
 }

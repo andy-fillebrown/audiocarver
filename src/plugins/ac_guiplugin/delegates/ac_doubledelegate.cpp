@@ -23,14 +23,12 @@ QWidget *DoubleDelegate::createEditor(QWidget *parent, const QStyleOptionViewIte
 {
     if (customColumn() != index.column())
         return Delegate::createEditor(parent, option, index);
-
     return new DoubleSpinBox(parent);
 }
 
 void DoubleDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     qreal value = index.data(Qt::EditRole).toReal();
-
     DoubleSpinBox *spin_box = static_cast<DoubleSpinBox*>(editor);
     spin_box->setValue(value);
 }
@@ -40,13 +38,11 @@ void DoubleDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, co
     DoubleSpinBox *spin_box = static_cast<DoubleSpinBox*>(editor);
     spin_box->interpretText();
     qreal value = spin_box->value();
-
     model->setData(index, value);
 }
 
 void DoubleDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     Q_UNUSED(index);
-
     editor->setGeometry(option.rect);
 }
