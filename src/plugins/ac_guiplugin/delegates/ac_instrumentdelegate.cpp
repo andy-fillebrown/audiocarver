@@ -38,8 +38,8 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
     if (customColumn() != index.column())
         return false;
 
-    // We're only interested in left button mouse clicks.
-    if (QEvent::MouseButtonPress != event->type())
+    // We're only interested in left button mouse double-clicks.
+    if (QEvent::MouseButtonDblClick != event->type())
         return false;
     QMouseEvent *e = static_cast<QMouseEvent*>(event);
     if (Qt::LeftButton != e->button())

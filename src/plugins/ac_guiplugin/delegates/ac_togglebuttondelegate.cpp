@@ -60,8 +60,8 @@ bool ToggleButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     if (customColumn() != index.column())
         return false;
 
-    // Toggle the model data if we got a left button mouse click.
-    if (QEvent::MouseButtonPress != event->type())
+    // Toggle the model data if we got a left button mouse double-click.
+    if (QEvent::MouseButtonDblClick != event->type())
         return false;
     const QMouseEvent *e = static_cast<const QMouseEvent*>(event);
     if (Qt::LeftButton == e->button()) {
