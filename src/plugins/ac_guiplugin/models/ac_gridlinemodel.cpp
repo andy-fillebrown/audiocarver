@@ -132,7 +132,9 @@ bool GridLineModel::insertRows(int row, int count, const QModelIndex &parent)
 Qt::ItemFlags GridLineModel::flags(const QModelIndex &index) const
 {
     Q_UNUSED(index);
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    return Qt::ItemIsEnabled
+            | Qt::ItemIsSelectable
+            | Qt::ItemIsEditable;
 }
 
 QVariant GridLineModel::headerData(int section, Qt::Orientation orientation, int role) const

@@ -29,6 +29,7 @@
 GridLineView::GridLineView(QWidget *parent)
     :   QTableView(parent)
 {
+    setSelectionBehavior(SelectRows);
     horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 }
 
