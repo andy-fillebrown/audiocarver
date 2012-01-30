@@ -17,7 +17,9 @@
 
 #include "ac_gridlineview.h"
 
+#include <ac_colordelegate.h>
 #include <ac_gridlinemodel.h>
+#include <ac_lengthdelegate.h>
 
 #include <ac_namespace.h>
 
@@ -31,6 +33,14 @@ GridLineView::GridLineView(QWidget *parent)
 {
     setSelectionBehavior(SelectRows);
     horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+
+    LengthDelegate *position_delegate = new LengthDelegate(this);
+    position_delegate->setCustomColumn(0);
+    setItemDelegateForColumn(0, position_delegate);
+
+    ColorDelegate *color_delegate = new ColorDelegate(this);
+    color_delegate->setCustomColumn(3);
+    setItemDelegateForColumn(3, color_delegate);
 }
 
 TimeLineView::TimeLineView(QWidget *parent)
