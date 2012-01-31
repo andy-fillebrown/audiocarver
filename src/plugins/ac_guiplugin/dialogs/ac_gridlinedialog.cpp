@@ -100,6 +100,10 @@ void GridLineDialog::reset()
 
 void GridLineDialog::importFromFile()
 {
+    QString fileName = QFileDialog::getOpenFileName(this, "Import Grid", "", "Grid (*.aci-grid)");
+    if (fileName.isEmpty())
+        return;
+    d->currentModel()->importFromFile(fileName);
 }
 
 void GridLineDialog::exportToFile()

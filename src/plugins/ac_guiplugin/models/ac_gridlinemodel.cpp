@@ -209,7 +209,32 @@ bool GridLineModel::setData(const QModelIndex &index, const QVariant &value, int
 
 void GridLineModel::importFromFile(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    ObjectList *list = 0;
+    switch (d->gridLineType) {
+    case Ac::TimeGridLineItem:
+        list = new ObjectTList<TimeGridLine>();
+        break;
+    case Ac::PitchGridLineItem:
+        list = new ObjectTList<PitchGridLine>();
+        break;
+    case Ac::ControlGridLineItem:
+        list = new ObjectTList<ControlGridLine>();
+        break;
+    default:
+        return;
+    }
+    IModelItem *list_item = objectToInterface_cast<IModelItem>(list);
+
+    IReader *reader = IFilerFactory::instance()->createReader(Ac::XmlFileFiler);
+    IFileFiler *filer = query<IFileFiler>(reader);
+    filer->setFileName(fileName);
+    reader->read(list_item);
+
+    d->syncDataToList(list_item);
+    emit layoutChanged();
+
+    delete reader;
+    delete list_item;
 }
 
 void GridLineModel::exportToFile(const QString &fileName)
