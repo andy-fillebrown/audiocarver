@@ -42,7 +42,7 @@ IModelItem *ObjectFactory::create(int type) const
         object = new Note(::parent);
         break;
     case Ac::ControlCurveItem:
-        object =  new ControlCurve(::parent);
+        object = new ControlCurve(::parent);
         break;
     case Ac::TimeGridLineItem:
         object = new TimeGridLine(::parent);

@@ -49,12 +49,16 @@ public:
         QList<const QAbstractItemModel*> current_models;
         foreach (const ItemSelectionModel *selection_model, selectionModels)
             current_models.append(selection_model->model());
-        foreach (const QAbstractItemModel *model, current_models)
-            if (!models.contains(model))
+        foreach (const QAbstractItemModel *model, current_models) {
+            if (!models.contains(model)) {
+                updateTimer->connect(model, SIGNAL(modelReset()), SIGNAL(timeout()));
                 updateTimer->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(timeout()));
-        foreach (const QAbstractItemModel *model, models)
+            }
+        }
+        foreach (const QAbstractItemModel *model, models) {
             if (!current_models.contains(model))
                 QObject::disconnect(model, "", updateTimer, "");
+        }
         models = current_models;
 
         selectedItems.clear();
