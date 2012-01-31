@@ -99,6 +99,14 @@ bool GridLineModel::isChanged() const
     return false;
 }
 
+void GridLineModel::resetData()
+{
+    if (!isChanged())
+        return;
+    d->updateListItem();
+    emit layoutChanged();
+}
+
 int GridLineModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
@@ -125,7 +133,15 @@ bool GridLineModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows(parent, 0, 0);
     d->data.insert(0, item_data);
     endInsertRows();
+    return true;
+}
 
+bool GridLineModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    beginRemoveRows(parent, row, row + count);
+    for (int i = 0;  i < count;  ++i)
+        d->data.removeAt(row);
+    endRemoveRows();
     return true;
 }
 

@@ -32,13 +32,16 @@ public:
     ~GridLineDialog();
 
 public slots:
-    void apply();
     void addRow();
+    void removeRow();
+    void reset();
+    void importFromFile();
+    void exportToFile();
+    void apply();
 
 private:
     friend class GridLineDialogPrivate;
     GridLineDialogPrivate *d;
-    Ui_GridLineDialog *ui;
 };
 
 #endif // AC_GRIDLINEDIALOG_H

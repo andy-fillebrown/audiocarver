@@ -327,12 +327,12 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Import</string>
+          <string>Import...</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="exportButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -340,7 +340,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Export</string>
+          <string>Export...</string>
          </property>
         </widget>
        </item>

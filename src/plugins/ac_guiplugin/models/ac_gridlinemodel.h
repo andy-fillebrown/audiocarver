@@ -33,11 +33,13 @@ public:
 
     void setGridLineType(int type);
     bool isChanged() const;
+    void resetData();
 
     // QAbstractItemModel
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
     Qt::ItemFlags flags(const QModelIndex &index = QModelIndex()) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
