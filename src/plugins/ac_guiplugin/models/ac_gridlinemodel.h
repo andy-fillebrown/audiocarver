@@ -46,6 +46,8 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 public slots:
+    void importFromFile(const QString &fileName);
+    void exportToFile(const QString &fileName);
     void apply();
 
 private:

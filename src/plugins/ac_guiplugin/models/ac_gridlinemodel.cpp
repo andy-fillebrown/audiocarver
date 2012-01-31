@@ -19,9 +19,11 @@
 
 #include <ac_gridline.h>
 #include <ac_ifactory.h>
+#include <ac_ifiler.h>
 
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
+#include <mi_objectlist.h>
 
 #include <QMetaProperty>
 
@@ -48,6 +50,11 @@ public:
     {
         listItem = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(gridLineType);
         Q_ASSERT(listItem);
+        syncDataToList(listItem);
+    }
+
+    void syncDataToList(IModelItem *listItem)
+    {
         data.clear();
         const int row_count = listItem->modelItemCount();
         const int column_count = q->columnCount();
@@ -58,6 +65,23 @@ public:
             for (int j = 0;  j < column_count;  ++j)
                 item_data.append(item->data(item->persistentRoleAt(j + property_offset)));
             data.append(item_data);
+        }
+    }
+
+    void syncListToData(IModelItem *listItem)
+    {
+        const int row_count = data.count();
+        const int column_count = q->columnCount();
+        const int property_offset = GridLine::staticMetaObject.propertyOffset();
+        for (int i = 0;  i < row_count;  ++i) {
+            IModelItem *item = 0;
+            if (listItem->modelItemCount() <= i) {
+                item = IObjectFactory::instance()->create(gridLineType);
+                item->setParentModelItem(listItem);
+            } else
+                item = listItem->modelItemAt(i);
+            for (int j = 0;  j < column_count;  ++j)
+                item->setData(data.at(i).at(j), item->persistentRoleAt(property_offset + j));
         }
     }
 };
@@ -183,22 +207,42 @@ bool GridLineModel::setData(const QModelIndex &index, const QVariant &value, int
     return true;
 }
 
+void GridLineModel::importFromFile(const QString &fileName)
+{
+    Q_UNUSED(fileName);
+}
+
+void GridLineModel::exportToFile(const QString &fileName)
+{
+    ObjectList *list = 0;
+    switch (d->gridLineType) {
+    case Ac::TimeGridLineItem:
+        list = new ObjectTList<TimeGridLine>();
+        break;
+    case Ac::PitchGridLineItem:
+        list = new ObjectTList<PitchGridLine>();
+        break;
+    case Ac::ControlGridLineItem:
+        list = new ObjectTList<ControlGridLine>();
+        break;
+    default:
+        return;
+    }
+    IModelItem *list_item = objectToInterface_cast<IModelItem>(list);
+    d->syncListToData(list_item);
+
+    IWriter *writer = IFilerFactory::instance()->createWriter(Ac::XmlFileFiler);
+    IFileFiler *filer = query<IFileFiler>(writer);
+    filer->setFileName(fileName);
+    writer->write(list_item);
+
+    delete writer;
+    delete list;
+}
+
 void GridLineModel::apply()
 {
     if (!isChanged())
         return;
-    const int row_count = rowCount();
-    const int column_count = columnCount();
-    const int property_offset = GridLine::staticMetaObject.propertyOffset();
-    for (int i = 0;  i < row_count;  ++i) {
-        IModelItem *item = 0;
-        if (d->listItem->modelItemCount() <= i) {
-            item = IObjectFactory::instance()->create(d->gridLineType);
-            IModel *m = IModel::instance();
-            m->insertItem(item, i, m->indexFromItem(d->listItem));
-        } else
-            item = d->listItem->modelItemAt(i);
-        for (int j = 0;  j < column_count;  ++j)
-            item->setData(d->data.at(i).at(j), item->persistentRoleAt(property_offset + j));
-    }
+    d->syncListToData(d->listItem);
 }

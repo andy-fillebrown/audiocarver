@@ -24,6 +24,7 @@
 #include <mi_ieditor.h>
 
 #include <QDialogButtonBox>
+#include <QFileDialog>
 
 class GridLineDialogPrivate
 {
@@ -103,6 +104,12 @@ void GridLineDialog::importFromFile()
 
 void GridLineDialog::exportToFile()
 {
+    QString fileName = QFileDialog::getSaveFileName(this, "Export Grid", "", "Grid (*.aci-grid)");
+    if (fileName.isEmpty())
+        return;
+    if (!fileName.endsWith("aci-grid"))
+        fileName.append(".aci-grid");
+    d->currentModel()->exportToFile(fileName);
 }
 
 void GridLineDialog::apply()
