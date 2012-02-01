@@ -40,12 +40,6 @@
 
 #include <QTimer>
 
-static bool fuzzyCompare(qreal a, qreal b)
-{
-//    return qFuzzyCompare(float(a), float(b));
-    return qFuzzyCompare(a, b);
-}
-
 class ViewManagerPrivate
 {
 public:
@@ -63,8 +57,8 @@ public:
     qreal timeScale;
     qreal pitchScale;
     qreal controlScale;
-    quint32 initialized : 1;
-    quint32 updatingDatabase : 31;
+    uint initialized : 1;
+    uint updatingDatabase : sizeof(uint) - 1;
     UndoViewSettingsCommand *undoCmd;
     QTimer *updateViewsTimer;
 
@@ -76,8 +70,8 @@ public:
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
-        ,   initialized(quint32(false))
-        ,   updatingDatabase(quint32(false))
+        ,   initialized(false)
+        ,   updatingDatabase(false)
         ,   undoCmd(0)
         ,   updateViewsTimer(new QTimer(q))
     {
@@ -251,7 +245,7 @@ void ViewManager::setPosition(qreal position, int role)
     switch (role) {
     case Ac::TimePositionRole:
         position = qBound(qreal(0.0f), position, d->scoreLength);
-        if (fuzzyCompare(d->timePos, position))
+        if (qFuzzyCompare(d->timePos, position))
             return;
         d->startUndo();
         d->timePos = position;
@@ -259,7 +253,7 @@ void ViewManager::setPosition(qreal position, int role)
         break;
     case Ac::PitchPositionRole:
         position = qBound(qreal(0.0f), position, qreal(127.0f));
-        if (fuzzyCompare(d->pitchPos, position))
+        if (qFuzzyCompare(d->pitchPos, position))
             return;
         d->startUndo();
         d->pitchPos = position;
@@ -267,7 +261,7 @@ void ViewManager::setPosition(qreal position, int role)
         break;
     case Ac::ControlPositionRole:
         position = qBound(qreal(0.0f), position, qreal(1.0f));
-        if (fuzzyCompare(d->controlPos, position))
+        if (qFuzzyCompare(d->controlPos, position))
             return;
         d->startUndo();
         d->controlPos = position;
@@ -295,7 +289,7 @@ void ViewManager::setScale(qreal scale, int role)
 {
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;
-    if (fuzzyCompare(this->scale(role), scale))
+    if (qFuzzyCompare(this->scale(role), scale))
         return;
     switch (role) {
     case Ac::TimeScaleRole:
