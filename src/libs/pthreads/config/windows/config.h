@@ -47,7 +47,7 @@
 #undef HAVE_MODE_T
 
 /* Define if you have the timespec struct */
-#undef HAVE_STRUCT_TIMESPEC
+//#undef HAVE_STRUCT_TIMESPEC
 
 /* Define if you don't have the GetProcessAffinityMask() */
 #undef NEED_PROCESS_AFFINITY_MASK

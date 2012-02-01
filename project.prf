@@ -170,3 +170,9 @@ win32-msvc* {
 # Handle S60 support: default on Windows, conditionally built on other platforms.
 macx:SUPPORT_QT_S60 = $$(AUDIOCARVER_WITH_S60)
 else:SUPPORT_QT_S60 = 1
+
+# GCC 4.6/4.7 have the timespec struct (see also pthreads windows/config.h).
+win32-g++ {
+    GCC_VERSION = $$system($$QMAKE_CXX -dumpversion)
+    contains(GCC_VERSION, ^4\\.[6-7]\\..*): DEFINES *= HAVE_STRUCT_TIMESPEC
+}
