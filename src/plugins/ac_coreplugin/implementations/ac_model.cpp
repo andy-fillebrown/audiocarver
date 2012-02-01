@@ -27,7 +27,7 @@ class ModelPrivate
 {
 public:
     Score *score;
-    uint locked : sizeof(uint);
+    uint locked : bitsizeof(uint);
 
     ModelPrivate(Model *q)
         :   score(new Score(q))

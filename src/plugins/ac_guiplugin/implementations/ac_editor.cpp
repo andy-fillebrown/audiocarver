@@ -36,9 +36,9 @@ class EditorPrivate
 public:
     Editor *q;
     UndoStack *undoStack;
-    quint32 undoEnabled : 1;
-    quint32 undoing : 1;
-    quint32 creating : 30;
+    uint undoEnabled : 1;
+    uint undoing : 1;
+    uint creating : bitsizeof(uint) - 2;
 
     EditorPrivate(Editor *q)
         :   q(q)

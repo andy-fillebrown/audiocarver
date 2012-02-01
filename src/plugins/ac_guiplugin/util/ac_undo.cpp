@@ -31,7 +31,7 @@ static bool undoCommandActive = false;
 
 class UndoCommandPrivate
 {
-    quint32 enabled : 32;
+    uint enabled : bitsizeof(uint);
 
 public:
     UndoCommandPrivate()

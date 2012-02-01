@@ -66,11 +66,11 @@ public:
     QList<IGripItem*> hoveredGrips;
     QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
-    quint32 viewState : 2;
-    quint32 dragState : 2;
-    quint32 extraGripsPicked : 1;
-    quint32 insertingPoints : 1;
-    quint32 dirty : 26;
+    uint viewState : 2;
+    uint dragState : 2;
+    uint extraGripsPicked : 1;
+    uint insertingPoints : 1;
+    uint dirty : bitsizeof(uint) - 6;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)

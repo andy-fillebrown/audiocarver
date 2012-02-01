@@ -39,7 +39,7 @@ class TrackViewPrivate
 public:
     TrackView *q;
     QPoint dragStartPos;
-    quint32 dragging : 32;
+    uint dragging : bitsizeof(uint);
     int dropRow;
 
     TrackViewPrivate(TrackView *q)

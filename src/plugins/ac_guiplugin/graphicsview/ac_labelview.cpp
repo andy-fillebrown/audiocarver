@@ -37,7 +37,7 @@ class LabelViewPrivate
 public:
     LabelView *q;
     QCursor zoomCursor;
-    quint32 updatesDisabled : 32;
+    uint updatesDisabled : bitsizeof(uint);
 
     LabelViewPrivate(LabelView *q)
         :   q(q)

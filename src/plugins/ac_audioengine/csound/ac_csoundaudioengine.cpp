@@ -135,7 +135,7 @@ public:
     QString previousTrackName;
     uint compiled : 1;
     uint started : 1;
-    uint scoreDone : sizeof(uint) - 2;
+    uint scoreDone : bitsizeof(uint) - 2;
     QTimer *stopTimer;
     QTimer *compileTimer;
 

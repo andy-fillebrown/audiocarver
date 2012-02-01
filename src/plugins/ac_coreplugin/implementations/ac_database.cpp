@@ -27,11 +27,11 @@ class DatabasePrivate
 public:
     Database *q;
     QString fileName;
-    quint32 reading : 32;
+    uint reading : bitsizeof(uint);
 
     DatabasePrivate(Database *q)
         :   q(q)
-        ,   reading(quint32(false))
+        ,   reading(false)
     {}
 
     virtual ~DatabasePrivate()

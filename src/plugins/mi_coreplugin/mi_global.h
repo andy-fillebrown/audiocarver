@@ -81,6 +81,7 @@ T *object_cast(const Object *object)
     return qobject_cast<T*>(object);
 }
 
+#define bitsizeof(x) (8 * sizeof(x))
 
 #define Q_FLOAT_MIN 1E-37
 #define Q_FLOAT_MAX 1E+37

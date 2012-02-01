@@ -58,7 +58,7 @@ public:
     qreal pitchScale;
     qreal controlScale;
     uint initialized : 1;
-    uint updatingDatabase : sizeof(uint) - 1;
+    uint updatingDatabase : bitsizeof(uint) - 1;
     UndoViewSettingsCommand *undoCmd;
     QTimer *updateViewsTimer;
 

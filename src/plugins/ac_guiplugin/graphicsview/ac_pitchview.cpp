@@ -36,9 +36,9 @@ class PitchViewPrivate
 {
 public:
     PitchView *q;
-    quint32 creatingNotes : 1;
-    quint32 notesStarted : 1;
-    quint32 curve : 30;
+    uint creatingNotes : 1;
+    uint notesStarted : 1;
+    uint curve : bitsizeof(uint) - 2;
     QModelIndexList trackSSIndexes;
     QList<IEntity*> currentNotes;
     QList<IEntity*> currentPitchCurves;

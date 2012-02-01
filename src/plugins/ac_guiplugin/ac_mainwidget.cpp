@@ -36,8 +36,8 @@ public:
     ViewManager *viewManager;
     MiGraphicsView *topRightView;
     qreal controlHeightPercentage;
-    quint32 hoveringOverSeparator : 1;
-    quint32 draggingSeparator : 31;
+    uint hoveringOverSeparator : 1;
+    uint draggingSeparator : bitsizeof(uint) - 1;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
