@@ -140,8 +140,10 @@ void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bott
     if (IDatabase::instance()->isReading())
         return;
     QModelIndex index = gridLineListIndex();
-    if (topRight == gridLineListIndex())
+    if (topRight == gridLineListIndex()) {
         d->updateGridLineVisibilites();
+        updateView();
+    }
 }
 
 void LabelView::panFinished()
