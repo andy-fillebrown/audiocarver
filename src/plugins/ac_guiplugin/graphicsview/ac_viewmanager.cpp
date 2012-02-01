@@ -146,19 +146,6 @@ public:
         delete undoCmd;
     }
 
-    void clearViewVariables()
-    {
-        scoreLength = -1.0f;
-        timePos = 0;
-        pitchPos = 0;
-        controlPos = 0;
-        timeScale = -1.0f;
-        pitchScale = -1.0f;
-        controlScale = -1.0f;
-
-        emitAllViewSettingsChanged();
-    }
-
     void updateViewVariables()
     {
         const IModel *model = IModel::instance();
@@ -166,7 +153,6 @@ public:
 
         const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
         if (scoreLength != modelScoreLength) {
-            q->updateDatabase();
             scoreLength = modelScoreLength;
             emit q->scoreLengthChanged();
             updateViewsTimer->start();
@@ -363,7 +349,6 @@ void ViewManager::updateViews()
 void ViewManager::databaseAboutToBeRead()
 {
     disableUpdates();
-    d->clearViewVariables();
 }
 
 void ViewManager::databaseRead()
@@ -402,7 +387,7 @@ void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bo
 
 void ViewManager::modelReset()
 {
-    d->clearViewVariables();
+    d->updateViewVariables();
     enableUpdates();
 }
 

@@ -181,7 +181,7 @@ void Score::clear()
     d->gridSettings->pitchGridLines()->clear();
     d->gridSettings->timeGridLines()->clear();
     d->tracks->clear();
-    d->length = -1.0f;
+    d->length = 128.0f;
     emit reset();
 }
 

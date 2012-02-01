@@ -103,22 +103,18 @@ public:
 
     ViewSettingsPrivate(ViewSettings *q)
         :   ObjectPrivate(q)
-        ,   timePos(64.0f)
-        ,   pitchPos(63.5f)
-        ,   controlPos(0.5f)
-        ,   timeScale(VIEWSCALE_MIN)
-        ,   pitchScale(VIEWSCALE_MIN)
-        ,   controlScale(VIEWSCALE_MIN)
-    {}
+    {
+        clear();
+    }
 
     void clear()
     {
-        timePos = 0.0f;
-        pitchPos = 0.0f;
-        controlPos = 0.0f;
-        timeScale = -1.0f;
-        pitchScale = -1.0f;
-        controlScale = -1.0f;
+        timePos = 64.0f;
+        pitchPos = 63.5f;
+        controlPos = 0.5f;
+        timeScale = VIEWSCALE_MIN;
+        pitchScale = VIEWSCALE_MIN;
+        controlScale = VIEWSCALE_MIN;
     }
 };
 
