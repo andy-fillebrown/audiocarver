@@ -14,7 +14,7 @@ PLUGINSPEC = $$OUT_PWD/$${PRO_TARGET}.pluginspec
 QMAKE_SUBSTITUTES += $${PLUGINSPEC}.in
 copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripDir}
 copy2build.input = PLUGINSPEC
-isEmpty(vcproj):copy2build.variable_out = PRE_TARGETDEPS
+isEmpty(vcproj): copy2build.variable_out = PRE_TARGETDEPS
 copy2build.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
 copy2build.name = COPY ${QMAKE_FILE_IN}
 copy2build.CONFIG += no_link
@@ -47,5 +47,3 @@ CONFIG += plugin plugin_with_soname
     pluginspec.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
     INSTALLS += target pluginspec
 }
-
-CONFIG(use_mi_assert): DEFINES += USE_MI_ASSERT
