@@ -43,9 +43,9 @@ public:
     EditorPrivate(Editor *q)
         :   q(q)
         ,   undoStack(0)
-        ,   undoEnabled(quint32(true))
-        ,   undoing(quint32(false))
-        ,   creating(quint32(false))
+        ,   undoEnabled(true)
+        ,   undoing(false)
+        ,   creating(false)
     {}
 
     void init()
@@ -70,9 +70,9 @@ void Editor::undo()
     if (d->undoEnabled
             && !d->creating
             && d->undoStack->canUndo()) {
-        d->undoing = quint32(true);
+        d->undoing = true;
         d->undoStack->undo();
-        d->undoing = quint32(false);
+        d->undoing = false;
     }
 }
 
@@ -81,9 +81,9 @@ void Editor::redo()
     if (d->undoEnabled
             && !d->creating
             && d->undoStack->canRedo()) {
-        d->undoing = quint32(true);
+        d->undoing = true;
         d->undoStack->redo();
-        d->undoing = quint32(false);
+        d->undoing = false;
     }
 }
 
@@ -255,12 +255,12 @@ void Editor::pushCommand(QUndoCommand *cmd)
 void Editor::startCreating()
 {
     IModel::instance()->lock();
-    d->creating = quint32(true);
+    d->creating = true;
 }
 
 void Editor::finishCreating()
 {
-    d->creating = quint32(false);
+    d->creating = false;
     IModel::instance()->unlock();
 }
 

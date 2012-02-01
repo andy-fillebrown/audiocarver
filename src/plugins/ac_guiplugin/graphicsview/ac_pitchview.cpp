@@ -46,9 +46,9 @@ public:
 
     PitchViewPrivate(PitchView *q)
         :   q(q)
-        ,   creatingNotes(quint32(false))
-        ,   notesStarted(quint32(false))
-        ,   curve(quint32(false))
+        ,   creatingNotes(false)
+        ,   notesStarted(false)
+        ,   curve(false)
     {}
 
     void startNote(const QPoint &pos)
@@ -82,7 +82,7 @@ public:
         currentPoints.append(scenePos);
 
         addNotePoint(pos);
-        notesStarted = quint32(true);
+        notesStarted = true;
     }
 
     void addNotePoint(const QPoint &pos)

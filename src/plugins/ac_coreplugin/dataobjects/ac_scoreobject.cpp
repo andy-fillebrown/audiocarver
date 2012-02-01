@@ -27,7 +27,7 @@ ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)
     ,   volume(1.0f)
     ,   pitchCurve(0)
     ,   controlCurves(0)
-    ,   dragging(quint32(false))
+    ,   dragging(false)
 {}
 
 void ScoreObjectPrivate::init()

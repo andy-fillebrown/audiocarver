@@ -44,8 +44,8 @@ public:
         ,   viewManager(new ViewManager(q))
         ,   topRightView(new MiGraphicsView)
         ,   controlHeightPercentage(0.25f)
-        ,   hoveringOverSeparator(quint32(false))
-        ,   draggingSeparator(quint32(false))
+        ,   hoveringOverSeparator(false)
+        ,   draggingSeparator(false)
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
@@ -158,7 +158,7 @@ void MainWidget::mousePressEvent(QMouseEvent *event)
 
 void MainWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    const quint32 wasHoveringOverSeparator = d->hoveringOverSeparator;
+    const uint wasHoveringOverSeparator = d->hoveringOverSeparator;
     d->hoveringOverSeparator = d->separatorRect().contains(event->pos());
     if (d->hoveringOverSeparator != wasHoveringOverSeparator)
         update(d->separatorRect());
