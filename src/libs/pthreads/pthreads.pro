@@ -4,9 +4,10 @@ TEMPLATE = lib
 load(../../library.prf)
 
 CONFIG -= qt
+CONFIG *= warn_off
 
 CONFIG(debug|release, release) {
-    QMAKE_CFLAGS += \
+    QMAKE_CFLAGS *= \
         -finline-functions \
 }
 
@@ -59,13 +60,8 @@ OTHER_FILES *= \
     pthreads.prf \
 
 win32 {
-    INCLUDEPATH *= \
-        config/windows \
-
-    HEADERS *= \
-        config/windows/config.h
-}
-else {
+    INCLUDEPATH *= config/windows
+    HEADERS *= config/windows/config.h
+} else {
     error("pthreads should only be built on Windows")
 }
-

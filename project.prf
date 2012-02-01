@@ -1,7 +1,5 @@
-!isEmpty(PROJECT_PRI_INCLUDED):error("$$_FILE_ already included")
+!isEmpty(PROJECT_PRI_INCLUDED): error("$$_FILE_ already included")
 PROJECT_PRI_INCLUDED = 1
-
-!verbose:CONFIG += silent
 
 PRO_NAME           = AudioCarver
 PRO_VERSION        = 1.0.0
@@ -17,14 +15,14 @@ DEFINES *= PRO_AUTHOR_NOSPACE_STR=\\\"$$PRO_AUTHOR_NOSPACE\\\"
 DEFINES *= PRO_YEAR_STR=\\\"$$PRO_YEAR\\\"
 
 defineReplace(cleanPath) {
-    win32:1 ~= s|\\\\|/|g
-    contains(1, ^/.*):pfx = /
+    win32: 1 ~= s|\\\\|/|g
+    contains(1, ^/.*): pfx = /
     else:pfx =
     segs = $$split(1, /)
     out =
     for(seg, segs) {
-        equals(seg, ..):out = $$member(out, 0, -2)
-        else:!equals(seg, .):out += $$seg
+        equals(seg, ..): out = $$member(out, 0, -2)
+        else: !equals(seg, .):out += $$seg
     }
     return($$join(out, /, $$pfx))
 }
@@ -42,7 +40,7 @@ defineReplace(qtLibraryName) {
               else:win32:RET = $$member(LIBRARY_NAME, 0)d
       }
    }
-   isEmpty(RET):RET = $$LIBRARY_NAME
+   isEmpty(RET): RET = $$LIBRARY_NAME
    return($$RET)
 }
 
@@ -66,23 +64,18 @@ defineTest(minQtVersion) {
     return(false)
 }
 
-isEmpty(TARGET) {
-    error("$$_FILE_: You must provide a TARGET")
-}
+isEmpty(TARGET): error("$$_FILE_: You must provide a TARGET")
 PRO_TARGET = $$TARGET
 TARGET = $$qtLibraryName($$TARGET)
 
-# For use in custom compilers which just copy files
+# For use in custom compilers that only copy files
 win32:i_flag = i
 defineReplace(stripDir) {
     return($$basename(1))
 }
 
-isEmpty(PRO_LIBRARY_BASENAME) {
-    PRO_LIBRARY_BASENAME = lib
-}
-
-DEFINES += PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\"
+isEmpty(PRO_LIBRARY_BASENAME): PRO_LIBRARY_BASENAME = lib
+DEFINES *= PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\"
 
 PRO_SOURCE_TREE = $$PWD
 isEmpty(PRO_BUILD_TREE) {
@@ -116,9 +109,9 @@ macx {
     PRO_DATA_PATH    = $$PRO_APP_PATH/$${PRO_APP_TARGET}.app/Contents/Resources
     PRO_DOC_PATH     = $$PRO_DATA_PATH/doc
     PRO_BIN_PATH     = $$PRO_APP_PATH/$${PRO_APP_TARGET}.app/Contents/MacOS
-    contains(QT_CONFIG, ppc):CONFIG += ppc x86
+    contains(QT_CONFIG, ppc): CONFIG += ppc x86
     copydata = 1
-    isEmpty(TIGER_COMPAT_MODE):TIGER_COMPAT_MODE=$$(QTC_TIGER_COMPAT)
+    isEmpty(TIGER_COMPAT_MODE): TIGER_COMPAT_MODE=$$(QTC_TIGER_COMPAT)
     isEmpty(TIGER_COMPAT_MODE) {
         QMAKE_CXXFLAGS *= -mmacosx-version-min=10.5
         QMAKE_LFLAGS *= -mmacosx-version-min=10.5
@@ -134,7 +127,7 @@ macx {
     PRO_DATA_PATH    = $$PRO_BUILD_TREE/share/$$PRO_APP_TARGET
     PRO_DOC_PATH     = $$PRO_BUILD_TREE/share/doc/$$PRO_APP_TARGET
     PRO_BIN_PATH     = $$PRO_APP_PATH
-    !isEqual(PRO_SOURCE_TREE, $$PRO_BUILD_TREE):copydata = 1
+    !isEqual(PRO_SOURCE_TREE, $$PRO_BUILD_TREE): copydata = 1
 }
 
 INCLUDEPATH += $$PRO_SOURCE_TREE/src/libs
@@ -142,15 +135,15 @@ DEPENDPATH += $$PRO_SOURCE_TREE/src/libs
 
 LIBS += -L$$PRO_LIBRARY_PATH
 
-DEFINES += QT_NO_CAST_TO_ASCII
-!macx:DEFINES += QT_USE_FAST_OPERATOR_PLUS QT_USE_FAST_CONCATENATION
+DEFINES *= QT_NO_CAST_TO_ASCII
+!macx :DEFINES *= QT_USE_FAST_OPERATOR_PLUS QT_USE_FAST_CONCATENATION
 
 unix {
-    CONFIG(debug, debug|release):OBJECTS_DIR = $${OUT_PWD}/.obj/debug-shared
-    CONFIG(release, debug|release):OBJECTS_DIR = $${OUT_PWD}/.obj/release-shared
+    CONFIG(debug, debug|release): OBJECTS_DIR = $${OUT_PWD}/.obj/debug-shared
+    CONFIG(release, debug|release): OBJECTS_DIR = $${OUT_PWD}/.obj/release-shared
 
-    CONFIG(debug, debug|release):MOC_DIR = $${OUT_PWD}/.moc/debug-shared
-    CONFIG(release, debug|release):MOC_DIR = $${OUT_PWD}/.moc/release-shared
+    CONFIG(debug, debug|release): MOC_DIR = $${OUT_PWD}/.moc/debug-shared
+    CONFIG(release, debug|release): MOC_DIR = $${OUT_PWD}/.moc/release-shared
 
     RCC_DIR = $${OUT_PWD}/.rcc
     UI_DIR = $${OUT_PWD}/.uic
@@ -164,9 +157,21 @@ linux-g++-* {
 
 win32-msvc* {
     #Don't warn about sprintf, fopen etc being 'unsafe'
-    DEFINES += _CRT_SECURE_NO_WARNINGS
+    DEFINES *= _CRT_SECURE_NO_WARNINGS
 }
 
 # Handle S60 support: default on Windows, conditionally built on other platforms.
 macx:SUPPORT_QT_S60 = $$(AUDIOCARVER_WITH_S60)
 else:SUPPORT_QT_S60 = 1
+
+# Qt's Q_ASSERT doesn't output file/line on Windows.
+# Redefine Q_ASSERT to use mi_assert.
+win32: DEFINES *= USE_MI_ASSERT
+
+# GCC 4.6/4.7 have the timespec struct (see also pthreads windows/config.h).
+win32-g++ {
+    GCC_VERSION = $$system($$QMAKE_CXX -dumpversion)
+    contains(GCC_VERSION, ^4\\.[6-7]\\..*): DEFINES *= HAVE_STRUCT_TIMESPEC
+}
+
+!verbose: CONFIG *= silent

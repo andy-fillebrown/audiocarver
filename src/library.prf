@@ -1,6 +1,6 @@
 load(../project.prf)
 
-win32:DLLDESTDIR = $$PRO_APP_PATH
+win32: DLLDESTDIR = $$PRO_APP_PATH
 DESTDIR = $$PRO_LIBRARY_PATH
 
 load(../src/rpath.prf)
