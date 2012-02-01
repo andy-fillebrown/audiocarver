@@ -42,7 +42,7 @@ public:
     LabelViewPrivate(LabelView *q)
         :   q(q)
         ,   zoomCursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"))
-        ,   updatesDisabled(quint32(false))
+        ,   updatesDisabled(false)
     {}
 
     virtual ~LabelViewPrivate()
@@ -75,13 +75,13 @@ public:
             if (line.data(Ac::PriorityRole).toInt() <= minPriority) {
                 if (!line.data(Ac::VisibilityRole).toBool()) {
                     q->setUpdatesEnabled(false);
-                    updatesDisabled = quint32(true);
+                    updatesDisabled = true;
                     model->setData(line, true, Ac::VisibilityRole);
                 }
             } else {
                 if (line.data(Ac::VisibilityRole).toBool()) {
                     q->setUpdatesEnabled(false);
-                    updatesDisabled = quint32(true);
+                    updatesDisabled = true;
                     model->setData(line, false, Ac::VisibilityRole);
                 }
             }
@@ -108,7 +108,7 @@ void LabelView::updateView()
         updateViewSettings();
     if (d->updatesDisabled) {
         setUpdatesEnabled(true);
-        d->updatesDisabled = quint32(false);
+        d->updatesDisabled = false;
     } else
         GraphicsView::updateView();
 }
@@ -139,7 +139,6 @@ void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bott
     Q_UNUSED(bottomLeft);
     if (IDatabase::instance()->isReading())
         return;
-    QModelIndex index = gridLineListIndex();
     if (topRight == gridLineListIndex()) {
         d->updateGridLineVisibilites();
         updateView();
