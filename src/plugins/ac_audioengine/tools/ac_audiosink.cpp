@@ -17,6 +17,12 @@
 
 #include <ac_audiosink.h>
 
+#include <ac_iaudioengine.h>
+#include <ac_namespace.h>
+
+#include <mi_imodel.h>
+#include <mi_imodelitem.h>
+
 #include <QAudioOutput>
 
 #include <QDebug>
@@ -59,7 +65,9 @@ public:
     AudioSinkPrivate(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, AudioSink::Callback *callback)
         :   output(new QAudioOutput(deviceInfo, format))
         ,   device(new AudioSinkDevice(bufferSize, callback))
-    {}
+    {
+        output->setNotifyInterval(100);
+    }
 
     ~AudioSinkPrivate()
     {
@@ -71,7 +79,9 @@ public:
 AudioSink::AudioSink(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, Callback *callback, QObject *parent)
     :   QObject(parent)
     ,   d(new AudioSinkPrivate(deviceInfo, format, bufferSize, callback))
-{}
+{
+    connect(d->output, SIGNAL(notify()), SLOT(notify()));
+}
 
 AudioSink::~AudioSink()
 {
@@ -92,5 +102,18 @@ void AudioSink::start()
 
 void AudioSink::stop()
 {
+    IModel::instance()->rootItem()->setData(
+                IAudioEngine::instance()->startTime(),
+                Ac::StartTimeRole);
     d->output->stop();
+}
+
+void AudioSink::notify()
+{
+    // For some reason, the elapsed micro seconds is only half the actual
+    // elapsed micro seconds.  Divide by 500000 instead of 1000000 to make up
+    // for it.
+    IModel::instance()->rootItem()->setData(
+                IAudioEngine::instance()->startTime() + (d->output->elapsedUSecs() / 500000.0f),
+                Ac::StartTimeRole);
 }

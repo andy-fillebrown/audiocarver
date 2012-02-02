@@ -58,7 +58,8 @@ enum ItemDataRole {
     AudioFileTypeRole,
     SampleRateRole,
     ControlRateRole,
-    CurveRateRole
+    CurveRateRole,
+    StartTimeRole
 };
 
 AC_CORE_EXPORT QString itemDataRoleString(int itemDataRole);

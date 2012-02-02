@@ -69,10 +69,14 @@ template <class T> inline TrackList<T>::TrackList(QObject *parent)
 ScorePrivate::ScorePrivate(Score *q)
     :   ScoreObjectPrivate(q)
     ,   length(128.0f)
+    ,   startTime(0.0f)
     ,   tracks(0)
     ,   gridSettings(0)
     ,   viewSettings(0)
     ,   projectSettings(0)
+    ,   timeLabelPlayCursor(0)
+    ,   pitchPlayCursor(0)
+    ,   controlPlayCursor(0)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
         mainGraphicsItems.insert(Ac::SceneType(i), new GraphicsRootItem);
@@ -90,10 +94,26 @@ void ScorePrivate::init()
     gridSettings = new GridSettings(q_ptr);
     viewSettings = new ViewSettings(q_ptr);
     projectSettings = new ProjectSettings(q_ptr);
+
+    timeLabelPlayCursor = new QGraphicsLineItem(mainGraphicsItems.value(Ac::TimeLabelScene));
+    pitchPlayCursor = new QGraphicsLineItem(unitYGraphicsItems.value(Ac::PitchScene));
+    controlPlayCursor = new QGraphicsLineItem(mainGraphicsItems.value(Ac::ControlScene));
+
+    QPen cursorPen(QColor(Qt::green));
+    timeLabelPlayCursor->setPen(cursorPen);
+    pitchPlayCursor->setPen(cursorPen);
+    controlPlayCursor->setPen(cursorPen);
+
+    timeLabelPlayCursor->setLine(0.0f, -10.0f, 0.0f, 10.0f);
+    pitchPlayCursor->setLine(0.0f, -1.0f, 0.0f, 2.0f);
+    controlPlayCursor->setLine(0.0f, -1.0f, 0.0f, 2.0f);
 }
 
 ScorePrivate::~ScorePrivate()
 {
+    delete controlPlayCursor;
+    delete pitchPlayCursor;
+    delete timeLabelPlayCursor;
     delete projectSettings;
     delete viewSettings;
     delete gridSettings;
@@ -105,6 +125,13 @@ void ScorePrivate::updateLength()
 {
     foreach (QGraphicsItem *item, unitXGraphicsItems)
         item->setTransform(QTransform::fromScale(length, 1.0f));
+}
+
+void ScorePrivate::updateStartTime()
+{
+    timeLabelPlayCursor->setPos(startTime, 0.0f);
+    pitchPlayCursor->setPos(startTime, 0.0f);
+    controlPlayCursor->setPos(startTime, 0.0f);
 }
 
 static Score *instance = 0;
@@ -133,11 +160,34 @@ qreal Score::length() const
 void Score::setLength(qreal length)
 {
     Q_D(Score);
+    if (length < 1.0f)
+        length = 1.0f;
     if (d->length == length)
         return;
     d->beginChangeData();
     d->length = length;
     d->updateLength();
+    d->endChangeData();
+    if (length <= d->startTime)
+        setStartTime(0.0f);
+}
+
+qreal Score::startTime() const
+{
+    Q_D(const Score);
+    return d->startTime;
+}
+
+void Score::setStartTime(qreal time)
+{
+    Q_D(Score);
+    if (time < 0.0f || d->length <= time)
+        time = 0.0f;
+    if (d->startTime == time)
+        return;
+    d->beginChangeData();
+    d->startTime = time;
+    d->updateStartTime();
     d->endChangeData();
 }
 
@@ -182,6 +232,7 @@ void Score::clear()
     d->gridSettings->timeGridLines()->clear();
     d->tracks->clear();
     d->length = 128.0f;
+    d->startTime = 0.0f;
     emit reset();
 }
 
@@ -244,6 +295,9 @@ bool Score::setData(const QVariant &value, int role)
     switch (role) {
     case Ac::LengthRole:
         setLength(value.toReal());
+        return true;
+    case Ac::StartTimeRole:
+        setStartTime(value.toReal());
         return true;
     default:
         return ScoreObject::setData(value, role);

@@ -25,17 +25,21 @@ class ProjectSettings;
 class Track;
 class ViewSettings;
 
-class QGraphicsItem;
+class QGraphicsLineItem;
 
 class Score;
 class ScorePrivate : public ScoreObjectPrivate
 {
 public:
     qreal length;
+    qreal startTime;
     ObjectTList<Track> *tracks;
     GridSettings *gridSettings;
     ViewSettings *viewSettings;
     ProjectSettings *projectSettings;
+    QGraphicsLineItem *timeLabelPlayCursor;
+    QGraphicsLineItem *pitchPlayCursor;
+    QGraphicsLineItem *controlPlayCursor;
 
     ScorePrivate(Score *q);
     void init();
@@ -43,12 +47,14 @@ public:
 
     void updateGraphicsParent() {}
     void updateLength();
+    void updateStartTime();
 };
 
 class AC_CORE_EXPORT Score : public ScoreObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal length READ length WRITE setLength)
+    Q_PROPERTY(qreal startTime READ startTime WRITE setStartTime)
 
 public:
     enum { Type = Ac::ScoreItem };
@@ -70,6 +76,8 @@ public:
     // Properties
     qreal length() const;
     void setLength(qreal length);
+    qreal startTime() const;
+    void setStartTime(qreal time);
 
     // IModelItem
     int type() const { return Type; }
@@ -81,9 +89,14 @@ public:
 
     int persistentRoleAt(int i) const
     {
-        if (staticMetaObject.propertyOffset() == i)
+        switch (i - staticMetaObject.propertyOffset()) {
+        case 0:
             return Ac::LengthRole;
-        return ScoreObject::persistentRoleAt(i);
+        case 1:
+            return Ac::StartTimeRole;
+        default:
+            return ScoreObject::persistentRoleAt(i);
+        }
     }
 
     bool setData(const QVariant &value, int role);

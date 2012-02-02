@@ -40,6 +40,9 @@ public:
     void start();
     void stop();
 
+private slots:
+    void notify();
+
 private:
     AudioSinkPrivate *d;
 };
