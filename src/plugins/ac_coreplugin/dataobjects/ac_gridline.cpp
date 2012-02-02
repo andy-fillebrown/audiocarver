@@ -223,6 +223,11 @@ void TimeGridLine::hide()
     d->controlLineItem->hide();
 }
 
+int TimeGridLine::type() const
+{
+    return Type;
+}
+
 class PitchGridLinePrivate : public GridLinePrivate
 {
 public:
@@ -304,6 +309,11 @@ void PitchGridLine::hide()
     d->pitchLineItem->hide();
 }
 
+int PitchGridLine::type() const
+{
+    return Type;
+}
+
 class ControlGridLinePrivate : public GridLinePrivate
 {
 public:
@@ -383,4 +393,9 @@ void ControlGridLine::hide()
     Q_D(ControlGridLine);
     d->controlLabelItem->hide();
     d->controlLineItem->hide();
+}
+
+int ControlGridLine::type() const
+{
+    return Type;
 }

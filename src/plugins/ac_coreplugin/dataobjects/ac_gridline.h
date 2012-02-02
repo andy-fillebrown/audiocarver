@@ -157,7 +157,7 @@ public:
     void hide();
 
     // IModelItem
-    int type() const { return Type; }
+    int type() const;
 
 private:
     Q_DECLARE_PRIVATE(TimeGridLine)
@@ -179,7 +179,7 @@ public:
     void hide();
 
     // IModelItem
-    int type() const { return Type; }
+    int type() const;
 
 private:
     Q_DECLARE_PRIVATE(PitchGridLine)
@@ -201,7 +201,7 @@ public:
     void hide();
 
     // IModelItem
-    int type() const { return Type; }
+    int type() const;
 
 private:
     Q_DECLARE_PRIVATE(ControlGridLine)
