@@ -166,7 +166,7 @@ public:
         if (t)
             append(t);
         else
-            Q_ASSERT(false);
+            qWarning() << Q_FUNC_INFO << ": wrong object type";
     }
 
     void insert(int i, Object *object)
