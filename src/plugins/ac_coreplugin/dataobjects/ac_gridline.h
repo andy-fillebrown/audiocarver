@@ -149,7 +149,7 @@ class AC_CORE_EXPORT TimeGridLine : public GridLine
 public:
     enum { Type = Ac::TimeGridLineItem };
 
-    explicit TimeGridLine(QObject *parent = 0);
+    TimeGridLine(QObject *parent = 0);
 
     // GridLine
     bool isVisible() const;
@@ -171,7 +171,7 @@ class AC_CORE_EXPORT PitchGridLine : public GridLine
 public:
     enum { Type = Ac::PitchGridLineItem };
 
-    explicit PitchGridLine(QObject *parent = 0);
+    PitchGridLine(QObject *parent = 0);
 
     // GridLine
     bool isVisible() const;
@@ -193,7 +193,7 @@ class AC_CORE_EXPORT ControlGridLine : public GridLine
 public:
     enum { Type = Ac::ControlGridLineItem };
 
-    explicit ControlGridLine(QObject *parent = 0);
+    ControlGridLine(QObject *parent = 0);
 
     // GridLine
     bool isVisible() const;

@@ -182,9 +182,9 @@ public:
         pitchLineLoExtItem->setPen(pen);
         pitchLineHiExtItem->setPen(pen);
         controlLineHiExtItem->setPen(pen);
-        timeLineItem->setLine(location, 10.0f, location, -10.0f);
+        timeLineItem->setLine(location, -10.0f, location, 10.0f);
         pitchLineItem->setLine(location, 0.0f, location, 1.0f);
-        pitchLineLoExtItem->setLine(location, 0.0f, location, -1.0f);
+        pitchLineLoExtItem->setLine(location, -1.0f, location, 0.0f);
         pitchLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
         controlLineItem->setLine(location, 0.0f, location, 1.0f);
         controlLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
