@@ -283,7 +283,7 @@ public:
                 << "nchnls = 1" << endl
                 << endl
                 << "instr 1" << endl
-                << "    a_out soundin p4, p5, 0, 0, 1024" << endl
+                << "    a_out diskin2 p4, 1, p5, 0, 0, 0, 1024" << endl
                 << "    out a_out" << endl
                 << "endin" << endl;
 
