@@ -44,6 +44,7 @@ static const QMap<int, QString> &itemDataRoleMap()
         map.insert(Ac::SampleRateRole, "sampleRate");
         map.insert(Ac::ControlRateRole, "controlRate");
         map.insert(Ac::CurveRateRole, "curveRate");
+        map.insert(Ac::StartTimeRole, "startTime");
     }
     return map;
 }
