@@ -18,12 +18,20 @@
 #ifndef AC_AUDIOSINK_H
 #define AC_AUDIOSINK_H
 
-#include <QObject>
+#include <QThread>
 
 class AudioSinkPrivate;
 
 class QAudioDeviceInfo;
 class QAudioFormat;
+
+class PlaybackThread : public QThread
+{
+    Q_OBJECT
+
+private slots:
+    virtual void notify() = 0;
+};
 
 class AudioSink : public QObject
 {
@@ -39,9 +47,6 @@ public:
 
     void start();
     void stop();
-
-private slots:
-    void notify();
 
 private:
     AudioSinkPrivate *d;

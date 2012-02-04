@@ -25,8 +25,8 @@
 
 #include <QAudioOutput>
 
-#include <QDebug>
 #include <QIODevice>
+#include <QThread>
 
 class AudioSinkDevice : public QIODevice
 {
@@ -56,32 +56,89 @@ public:
     }
 };
 
+class PlaybackThreadPrivate : public PlaybackThread
+{
+public:
+    QAudioDeviceInfo deviceInfo;
+    QAudioFormat format;
+    AudioSinkDevice *device;
+    QAudioOutput *output;
+    uint stopped : bitsizeof(uint);
+
+    PlaybackThreadPrivate()
+        :   device(0)
+        ,   output(0)
+        ,   stopped(true)
+    {}
+
+    void start(QAudioDeviceInfo &deviceInfo, QAudioFormat format, AudioSinkDevice *device)
+    {
+        this->deviceInfo = deviceInfo;
+        this->format = format;
+        this->device = device;
+        QThread::start(QThread::TimeCriticalPriority);
+    }
+
+    void stop()
+    {
+        quit();
+        while (!stopped)
+            QThread::yieldCurrentThread();
+    }
+
+private:
+    void run()
+    {
+        stopped = false;
+        QAudioOutput audio_output(deviceInfo, format);
+        output = &audio_output;
+        output->setNotifyInterval(10);
+        connect(output, SIGNAL(notify()), SLOT(notify()), Qt::QueuedConnection);
+        output->start(device);
+        exec();
+        output->stop();
+        output = 0;
+        stopped = true;
+    }
+
+    void notify()
+    {
+        if (!output)
+            return;
+
+        // For some reason, the elapsed micro seconds is only half the actual
+        // elapsed micro seconds.  Divide by 500000 instead of 1000000 to make up
+        // for it.
+        IModel::instance()->rootItem()->setData(output->elapsedUSecs() / 500000.0f, Ac::PlaybackTimeRole);
+    }
+};
+
 class AudioSinkPrivate
 {
 public:
-    QAudioOutput *output;
+    QAudioDeviceInfo deviceInfo;
+    QAudioFormat format;
     AudioSinkDevice *device;
+    PlaybackThreadPrivate *playbackThread;
 
     AudioSinkPrivate(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, AudioSink::Callback *callback)
-        :   output(new QAudioOutput(deviceInfo, format))
+        :   deviceInfo(deviceInfo)
+        ,   format(format)
         ,   device(new AudioSinkDevice(bufferSize, callback))
-    {
-        output->setNotifyInterval(100);
-    }
+        ,   playbackThread(new PlaybackThreadPrivate)
+    {}
 
     ~AudioSinkPrivate()
     {
+        delete playbackThread;
         delete device;
-        delete output;
     }
 };
 
 AudioSink::AudioSink(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int bufferSize, Callback *callback, QObject *parent)
     :   QObject(parent)
     ,   d(new AudioSinkPrivate(deviceInfo, format, bufferSize, callback))
-{
-    connect(d->output, SIGNAL(notify()), SLOT(notify()));
-}
+{}
 
 AudioSink::~AudioSink()
 {
@@ -91,29 +148,17 @@ AudioSink::~AudioSink()
 
 QAudioFormat AudioSink::format() const
 {
-    return d->output->format();
+    return d->format;
 }
 
 void AudioSink::start()
 {
     d->device->reset();
-    d->output->start(d->device);
+    d->playbackThread->start(d->deviceInfo, d->format, d->device);
 }
 
 void AudioSink::stop()
 {
-    IModel::instance()->rootItem()->setData(
-                IAudioEngine::instance()->startTime(),
-                Ac::StartTimeRole);
-    d->output->stop();
-}
-
-void AudioSink::notify()
-{
-    // For some reason, the elapsed micro seconds is only half the actual
-    // elapsed micro seconds.  Divide by 500000 instead of 1000000 to make up
-    // for it.
-    IModel::instance()->rootItem()->setData(
-                IAudioEngine::instance()->startTime() + (d->output->elapsedUSecs() / 500000.0f),
-                Ac::StartTimeRole);
+    IModel::instance()->rootItem()->setData(0.0f, Ac::PlaybackTimeRole);
+    d->playbackThread->stop();
 }

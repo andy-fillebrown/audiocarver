@@ -116,6 +116,7 @@ static QString playbackScoFileName()
 class CsoundAudioEnginePrivate
 {
 public:
+    CsoundAudioEngine *q;
     AudioSink *sink;
     CSOUND *csound;
     float *csoundBuffer;
@@ -135,12 +136,15 @@ public:
     QString previousTrackName;
     uint compiled : 1;
     uint started : 1;
-    uint scoreDone : bitsizeof(uint) - 2;
+    uint connected : 1;
+    uint stopping : 1;
+    uint scoreDone : bitsizeof(uint) - 4;
     QTimer *stopTimer;
     QTimer *compileTimer;
 
-    CsoundAudioEnginePrivate()
-        :   sink(0)
+    CsoundAudioEnginePrivate(CsoundAudioEngine *q)
+        :   q(q)
+        ,   sink(0)
         ,   csound(0)
         ,   csoundBuffer(0)
         ,   csoundBufferSize(0)
@@ -156,8 +160,10 @@ public:
         ,   startTime(0.0)
         ,   compiled(false)
         ,   started(false)
+        ,   connected(false)
+        ,   stopping(false)
         ,   scoreDone(false)
-        ,   stopTimer(new QTimer)
+        ,   stopTimer(0)
         ,   compileTimer(new QTimer)
     {
         d_instance = this;
@@ -174,7 +180,6 @@ public:
         settings.read(Core::ICore::instance()->settings());
         compile();
 
-        stopTimer->setSingleShot(true);
         compileTimer->setSingleShot(true);
     }
 
@@ -186,7 +191,6 @@ public:
             csoundDestroy(csound);
 
         delete compileTimer;
-        delete stopTimer;
         delete sink;
 
         settings.write(Core::ICore::instance()->settings());
@@ -352,15 +356,26 @@ public:
     {
         if (!started)
             return;
+        stopping = true;
         sink->stop();
+        stopping = false;
         currentSample = 0;
         csoundRewindScore(csound);
         scoreDone = false;
         started = false;
+        connected = false;
+        delete stopTimer;
     }
 
     qint64 read(char *data, qint64 byteCount)
     {
+        if (!connected) {
+            stopTimer = new QTimer;
+            stopTimer->setSingleShot(true);
+            q->connect(stopTimer, SIGNAL(timeout()), SLOT(stop()));
+            connected = true;
+        }
+
         // The csound_buffer_size variable contains the number of bytes that
         // would be in the csound output buffer if it contained sampleSize
         // samples instead of float or double samples.
@@ -453,7 +468,7 @@ public:
                 break;
         }
 
-        if (scoreDone)
+        if (scoreDone && !stopping)
             stopTimer->start();
 
         return byteCount;
@@ -466,9 +481,8 @@ qint64 audioSinkCallback(char *data, qint64 byteCount)
 }
 
 CsoundAudioEngine::CsoundAudioEngine()
-    :   d(new CsoundAudioEnginePrivate)
+    :   d(new CsoundAudioEnginePrivate(this))
 {
-    connect(d->stopTimer, SIGNAL(timeout()), SLOT(stop()));
     connect(d->compileTimer, SIGNAL(timeout()), SLOT(compile()));
 
     IDatabase *db = IDatabase::instance();
