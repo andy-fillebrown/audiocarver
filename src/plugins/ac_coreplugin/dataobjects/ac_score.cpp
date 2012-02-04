@@ -26,6 +26,8 @@
 
 #include <mi_uniquelynamedobjectlist.h>
 
+#include <QTimer>
+
 template <class T> class TrackList : public UniquelyNamedObjectTList<T>
 {
 public:
@@ -70,6 +72,7 @@ ScorePrivate::ScorePrivate(Score *q)
     :   ScoreObjectPrivate(q)
     ,   length(128.0f)
     ,   startTime(0.0f)
+    ,   playCursorTime(0.0f)
     ,   tracks(0)
     ,   gridSettings(0)
     ,   viewSettings(0)
@@ -77,6 +80,7 @@ ScorePrivate::ScorePrivate(Score *q)
     ,   timeLabelPlayCursor(0)
     ,   pitchPlayCursor(0)
     ,   controlPlayCursor(0)
+    ,   playCursorTimer(0)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
         mainGraphicsItems.insert(Ac::SceneType(i), new GraphicsRootItem);
@@ -107,6 +111,9 @@ void ScorePrivate::init()
     timeLabelPlayCursor->setLine(0.0f, -10.0f, 0.0f, 10.0f);
     pitchPlayCursor->setLine(0.0f, -1.0f, 0.0f, 2.0f);
     controlPlayCursor->setLine(0.0f, -1.0f, 0.0f, 2.0f);
+
+    playCursorTimer = new QTimer(q_ptr);
+    playCursorTimer->setSingleShot(true);
 }
 
 ScorePrivate::~ScorePrivate()
@@ -127,11 +134,11 @@ void ScorePrivate::updateLength()
         item->setTransform(QTransform::fromScale(length, 1.0f));
 }
 
-void ScorePrivate::updateStartTime()
+void ScorePrivate::setPlayCursorTime(qreal time)
 {
-    timeLabelPlayCursor->setPos(startTime, 0.0f);
-    pitchPlayCursor->setPos(startTime, 0.0f);
-    controlPlayCursor->setPos(startTime, 0.0f);
+    timeLabelPlayCursor->setPos(time, 0.0f);
+    pitchPlayCursor->setPos(time, 0.0f);
+    controlPlayCursor->setPos(time, 0.0f);
 }
 
 static Score *instance = 0;
@@ -140,10 +147,11 @@ Score::Score(QObject *parent)
     :   ScoreObject(*(new ScorePrivate(this)), parent)
 {
     Q_D(Score);
+    ::instance = this;
+    setName("Score");
     d->init();
     d->setModel(object_cast<IModel>(parent));
-    setName("Score");
-    ::instance = this;
+    connect(d->playCursorTimer, SIGNAL(timeout()), SLOT(updatePlayCursor()));
 }
 
 Score *Score::instance()
@@ -187,8 +195,15 @@ void Score::setStartTime(qreal time)
         return;
     d->beginChangeData();
     d->startTime = time;
-    d->updateStartTime();
+    d->setPlayCursorTime(time);
     d->endChangeData();
+}
+
+void Score::setPlaybackTime(qreal time)
+{
+    Q_D(Score);
+    d->playCursorTime = time;
+    d->playCursorTimer->start();
 }
 
 ObjectTList<Track> *Score::tracks() const
@@ -290,6 +305,16 @@ IModelItem *Score::findModelItemList(int type) const
     }
 }
 
+QVariant Score::data(int role) const
+{
+    switch (role) {
+    case Ac::StartTimeRole:
+        return startTime();
+    default:
+        return ScoreObject::data(role);
+    }
+}
+
 bool Score::setData(const QVariant &value, int role)
 {
     switch (role) {
@@ -299,7 +324,16 @@ bool Score::setData(const QVariant &value, int role)
     case Ac::StartTimeRole:
         setStartTime(value.toReal());
         return true;
+    case Ac::PlaybackTimeRole:
+        setPlaybackTime(value.toReal());
+        return true;
     default:
         return ScoreObject::setData(value, role);
     }
+}
+
+void Score::updatePlayCursor()
+{
+    Q_D(Score);
+    d->setPlayCursorTime(d->startTime + d->playCursorTime);
 }

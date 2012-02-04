@@ -27,12 +27,15 @@ class ViewSettings;
 
 class QGraphicsLineItem;
 
+class QTimer;
+
 class Score;
 class ScorePrivate : public ScoreObjectPrivate
 {
 public:
     qreal length;
     qreal startTime;
+    qreal playCursorTime;
     ObjectTList<Track> *tracks;
     GridSettings *gridSettings;
     ViewSettings *viewSettings;
@@ -40,6 +43,7 @@ public:
     QGraphicsLineItem *timeLabelPlayCursor;
     QGraphicsLineItem *pitchPlayCursor;
     QGraphicsLineItem *controlPlayCursor;
+    QTimer *playCursorTimer;
 
     ScorePrivate(Score *q);
     void init();
@@ -47,7 +51,7 @@ public:
 
     void updateGraphicsParent() {}
     void updateLength();
-    void updateStartTime();
+    void setPlayCursorTime(qreal time);
 };
 
 class AC_CORE_EXPORT Score : public ScoreObject
@@ -79,6 +83,8 @@ public:
     qreal startTime() const;
     void setStartTime(qreal time);
 
+    void setPlaybackTime(qreal time);
+
     // IModelItem
     int type() const { return Type; }
     int modelItemCount() const { return ModelItemCount; }
@@ -99,11 +105,15 @@ public:
         }
     }
 
+    QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
 
 signals:
     void aboutToBeReset();
     void reset();
+
+private slots:
+    void updatePlayCursor();
 
 private:
     Q_DECLARE_PRIVATE(Score)
