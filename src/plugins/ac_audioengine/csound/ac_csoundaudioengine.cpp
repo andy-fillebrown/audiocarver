@@ -323,7 +323,7 @@ public:
             const QString sco_line = QString("i1.%1 0 -1 \"%2\" %3\n")
                     .arg(sub_instrument)
                     .arg(audio_file_name)
-                    .arg(0);
+                    .arg(startTime);
 
             sco_file.write(qPrintable(sco_line));
 
@@ -573,12 +573,18 @@ void CsoundAudioEngine::modelDataAboutToBeChanged(const QModelIndex &topLeft)
 
 void CsoundAudioEngine::modelDataChanged(const QModelIndex &topLeft)
 {
-    if (Ac::TrackItem != topLeft.data(Mi::ItemTypeRole).toInt())
-        return;
-
-    if (d->previousTrackName != topLeft.data(Mi::NameRole).toString()) {
-        d->compiled = false;
-        d->compileTimer->start();
+    if (Ac::TrackItem == topLeft.data(Mi::ItemTypeRole).toInt()) {
+        if (d->previousTrackName != topLeft.data(Mi::NameRole).toString()) {
+            d->compiled = false;
+            d->compileTimer->start();
+        }
+    } else if (!topLeft.isValid()) {
+        const qreal new_start_time = IModel::instance()->rootItem()->data(Ac::StartTimeRole).toReal();
+        if (d->startTime != new_start_time) {
+            d->startTime = new_start_time;
+            d->compiled = false;
+            d->compileTimer->start();
+        }
     }
 }
 
