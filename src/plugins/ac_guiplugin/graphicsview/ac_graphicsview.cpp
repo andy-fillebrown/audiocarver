@@ -20,6 +20,7 @@
 #include <ac_graphicsentityitem.h>
 #include <ac_graphicsgripitem.h>
 #include <ac_ientity.h>
+#include <ac_iplaycursor.h>
 #include <ac_viewmanager.h>
 
 #include <ac_noteselectionmodel.h>
@@ -66,17 +67,22 @@ public:
     QList<IGripItem*> hoveredGrips;
     QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
+    IPlayCursor *playCursor;
+    QCursor previousCursor;
+    uint playCursorHovered : 1;
     uint viewState : 2;
     uint dragState : 2;
     uint extraGripsPicked : 1;
     uint insertingPoints : 1;
-    uint dirty : bitsizeof(uint) - 6;
+    uint dirty : bitsizeof(uint) - 7;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
         ,   pickBox(new QGraphicsRectItem)
         ,   curGrip(0)
         ,   rootItem(new GraphicsRootItem)
+        ,   playCursor(0)
+        ,   playCursorHovered(false)
         ,   viewState(0)
         ,   dragState(0)
         ,   extraGripsPicked(false)
@@ -224,6 +230,13 @@ public:
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
             if (unknown) {
+                IPlayCursor *cursor = query<IPlayCursor>(unknown);
+                if (cursor) {
+                    playCursorHovered = true;
+                    previousCursor = q->cursor();
+                    q->setCursor(QCursor(Qt::SplitHCursor));
+                    break;
+                }
                 IGripItem *grip = query<IGripItem>(unknown);
                 if (grip) {
                     gripIsHovered = true;
@@ -254,11 +267,14 @@ public:
 
     void clearHovered()
     {
+        if (playCursorHovered) {
+            playCursorHovered = false;
+            q->setCursor(previousCursor);
+        }
         foreach (IGripItem *grip, hoveredGrips)
             if (!pickedGrips.contains(grip))
                 grip->unhighlight();
         hoveredGrips.clear();
-
         foreach (IEntity *entity, hoveredEntities) {
             if (!entityIsPicked(entity)) {
                 ISubEntity *subEntity = query<ISubEntity>(entity);
@@ -268,6 +284,42 @@ public:
             }
         }
         hoveredEntities.clear();
+    }
+
+    bool selectPlayCursor(const QPoint &pos)
+    {
+        playCursor = 0;
+        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = variantToUnknown_cast(item->data(0));
+            if (unknown) {
+                playCursor = query<IPlayCursor>(unknown);
+                if (playCursor)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    void dragPlayCursorTo(const QPoint &pos)
+    {
+        ViewManager *vm = ViewManager::instance();
+        vm->disableUpdates();
+        const qreal fromScenePos = playCursor->playCursorPosition();
+        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
+        const qreal sceneOffset = toScenePos.x() - fromScenePos;
+        playCursor->dragPlayCursorTo(fromScenePos + sceneOffset);
+        vm->enableUpdates();
+    }
+
+    void finishDraggingPlayCursor(const QPoint &pos)
+    {
+        const qreal fromScenePos = playCursor->playCursorPosition();
+        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
+        const qreal sceneOffset = toScenePos.x() - fromScenePos;
+        playCursor->setPlayCursorPosition(fromScenePos + sceneOffset);
+        playCursor = 0;
+        q->setCursor(GraphicsView::normalCrosshair());
     }
 
     bool selectGrips(const QPoint &pos)
@@ -412,10 +464,12 @@ public:
                 IEntity *entity = query<IEntity>(unknown);
                 if (entity && entity->intersects(pickRect)) {
                     ISubEntity *sub_entity = query<ISubEntity>(unknown);
-                    IEntity *parent_entity = sub_entity->parentEntity();
-                    entities.append(parent_entity);
-                    if (pickOne && !(QApplication::keyboardModifiers() & Qt::ShiftModifier))
-                        break;
+                    if (sub_entity) {
+                        IEntity *parent_entity = sub_entity->parentEntity();
+                        entities.append(parent_entity);
+                        if (pickOne && !(QApplication::keyboardModifiers() & Qt::ShiftModifier))
+                            break;
+                    }
                 }
             }
         }
@@ -715,7 +769,6 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 void GraphicsView::noteSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
     const IModel *model = IModel::instance();
-
     const QModelIndexList selectedIndexes = selected.indexes();
     QList<IEntity*> selectedEntities;
     foreach (const QModelIndex &index, selectedIndexes) {
@@ -724,7 +777,6 @@ void GraphicsView::noteSelectionChanged(const QItemSelection &selected, const QI
         selectedEntities.append(curves);
     }
     d->appendPickedEntities(selectedEntities);
-
     const QModelIndexList deselectedIndexes = deselected.indexes();
     QList<IEntity*> deselectedEntities;
     foreach (const QModelIndex &index, deselectedIndexes) {
@@ -821,7 +873,8 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
     if (d->insertingPoints)
         return;
-
+    if (d->selectPlayCursor(event->pos()))
+        return;
     if (Qt::RightButton == event->button()) {
         if (Picking == d->dragState)
             return;
@@ -837,8 +890,11 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
+    if (d->playCursor) {
+        d->dragPlayCursorTo(event->pos());
+        return;
+    }
     d->curPos = event->pos();
-
     switch (d->viewState) {
     case Zooming:
         d->zoomTo(event->pos());
@@ -846,12 +902,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     case Panning:
         d->panTo(event->pos());
     }
-
     if (d->curGrip
             && DraggingGrips != d->dragState
             && QApplication::startDragDistance() <= QPoint(event->pos() - d->dragStartPos).manhattanLength())
         d->startDraggingGrips();
-
     switch (d->dragState) {
     case DraggingGrips:
         d->dragGripsTo(event->pos());
@@ -859,14 +913,16 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     case Picking:
         d->dragPickBoxTo(event->pos());
     }
-
     event->setAccepted(d->viewState || d->dragState);
-
     d->hover();
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (d->playCursor) {
+        d->finishDraggingPlayCursor(event->pos());
+        return;
+    }
     if (Qt::RightButton == event->button()) {
         if (d->insertingPoints)
             ViewManager::instance()->finishInsertingPoints();
@@ -900,7 +956,6 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         }
         d->curGrip = 0;
     }
-
     d->hover();
 }
 
@@ -916,14 +971,12 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     vm->setScale(scaleAmount * vm->scale(scaleRoleY()), scaleRoleY());
     d->recenter(posDC, offsetDC);
     vm->updateViews();
-
     d->hover();
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
     MiGraphicsView::keyPressEvent(event);
-
     d->hover();
 }
 
@@ -941,7 +994,6 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
         }
     } else
         MiGraphicsView::keyReleaseEvent(event);
-
     d->hover();
 }
 

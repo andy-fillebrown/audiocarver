@@ -21,6 +21,7 @@
 #include <ac_scoreobject.h>
 
 class GridSettings;
+class IPlayCursor;
 class ProjectSettings;
 class Track;
 class ViewSettings;
@@ -40,6 +41,7 @@ public:
     GridSettings *gridSettings;
     ViewSettings *viewSettings;
     ProjectSettings *projectSettings;
+    IPlayCursor *playCursorImplementation;
     QGraphicsLineItem *timeLabelPlayCursor;
     QGraphicsLineItem *pitchPlayCursor;
     QGraphicsLineItem *controlPlayCursor;
@@ -83,7 +85,10 @@ public:
     qreal startTime() const;
     void setStartTime(qreal time);
 
+    qreal playCursorTime() const;
     void setPlaybackTime(qreal time);
+    void highlightPlayCursor();
+    void unhighlightPlayCursor();
 
     // IModelItem
     int type() const { return Type; }

@@ -2,6 +2,7 @@
 HEADERS *= \
     ac_ientity.h \
     ac_ifiler.h \
+    ac_iplaycursor.h \
 
 SOURCE_PAIRS = \
     ac_iaudioengine \

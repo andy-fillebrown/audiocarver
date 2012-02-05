@@ -17,9 +17,11 @@
 
 #include "ac_score.h"
 
+#include <ac_ientity.h>
 #include <ac_graphicsitem.h>
 #include <ac_gridline.h>
 #include <ac_gridsettings.h>
+#include <ac_iplaycursor.h>
 #include <ac_projectsettings.h>
 #include <ac_track.h>
 #include <ac_viewsettings.h>
@@ -68,6 +70,87 @@ template <class T> inline TrackList<T>::TrackList(QObject *parent)
     :   UniquelyNamedObjectTList<T>(*(new TrackListPrivate<T>(this)), parent)
 {}
 
+class PlayCursorImplementation
+        :   public IPlayCursor
+        ,   public IEntity
+{
+public:
+    Score *q;
+
+    PlayCursorImplementation(Score *q)
+        :   q(q)
+    {}
+
+    // IPlayCursor
+    qreal playCursorPosition() const
+    {
+        return q->startTime();
+    }
+
+    void dragPlayCursorTo(qreal position)
+    {
+        q->setPlaybackTime(position - q->startTime());
+    }
+
+    void setPlayCursorPosition(qreal position)
+    {
+        q->setStartTime(position);
+    }
+
+    // IEntity
+    const PointList &points() const
+    {
+        static PointList points;
+        return points;
+    }
+
+    void setPoints(const PointList &points, Ac::DragState dragState)
+    {
+        Q_UNUSED(points);
+        Q_UNUSED(dragState);
+    }
+
+    void highlight()
+    {
+        q->highlightPlayCursor();
+    }
+
+    void unhighlight()
+    {
+        q->unhighlightPlayCursor();
+    }
+
+    bool intersects(const QRectF &rect) const
+    {
+        const qreal play_cursor_time = q->playCursorTime();
+        return rect.left() <= play_cursor_time && play_cursor_time <= rect.right();
+    }
+
+    bool isVisible() const
+    {
+        return true;
+    }
+
+    QList<IEntity*> subEntities(int sceneType) const
+    {
+        Q_UNUSED(sceneType);
+        return QList<IEntity*>();
+    }
+
+    // IUnknown
+    void *query(int type) const
+    {
+        switch (type) {
+        case Ac::PlayCursorInterface:
+            return objectToInterface_cast<IPlayCursor>(this);
+        case Ac::EntityInterface:
+            return objectToInterface_cast<IEntity>(this);
+        default:
+            return 0;
+        }
+    }
+};
+
 ScorePrivate::ScorePrivate(Score *q)
     :   ScoreObjectPrivate(q)
     ,   length(128.0f)
@@ -77,6 +160,7 @@ ScorePrivate::ScorePrivate(Score *q)
     ,   gridSettings(0)
     ,   viewSettings(0)
     ,   projectSettings(0)
+    ,   playCursorImplementation(new PlayCursorImplementation(q))
     ,   timeLabelPlayCursor(0)
     ,   pitchPlayCursor(0)
     ,   controlPlayCursor(0)
@@ -103,7 +187,13 @@ void ScorePrivate::init()
     pitchPlayCursor = new QGraphicsLineItem(unitYGraphicsItems.value(Ac::PitchScene));
     controlPlayCursor = new QGraphicsLineItem(mainGraphicsItems.value(Ac::ControlScene));
 
+    QVariant play_cursor_implementation = quintptr(playCursorImplementation);
+    timeLabelPlayCursor->setData(0, play_cursor_implementation);
+    pitchPlayCursor->setData(0, play_cursor_implementation);
+    controlPlayCursor->setData(0, play_cursor_implementation);
+
     QPen cursorPen(QColor(Qt::green));
+    cursorPen.setCosmetic(true);
     timeLabelPlayCursor->setPen(cursorPen);
     pitchPlayCursor->setPen(cursorPen);
     controlPlayCursor->setPen(cursorPen);
@@ -121,6 +211,7 @@ ScorePrivate::~ScorePrivate()
     delete controlPlayCursor;
     delete pitchPlayCursor;
     delete timeLabelPlayCursor;
+    delete playCursorImplementation;
     delete projectSettings;
     delete viewSettings;
     delete gridSettings;
@@ -136,6 +227,10 @@ void ScorePrivate::updateLength()
 
 void ScorePrivate::setPlayCursorTime(qreal time)
 {
+    if (time < 0.0f)
+        time = 0.0f;
+    if (timeLabelPlayCursor->pos().x() == time)
+        return;
     timeLabelPlayCursor->setPos(time, 0.0f);
     pitchPlayCursor->setPos(time, 0.0f);
     controlPlayCursor->setPos(time, 0.0f);
@@ -196,14 +291,43 @@ void Score::setStartTime(qreal time)
     d->beginChangeData();
     d->startTime = time;
     d->setPlayCursorTime(time);
+    d->playCursorTime = 0.0f;
     d->endChangeData();
+}
+
+qreal Score::playCursorTime() const
+{
+    Q_D(const Score);
+    return d->startTime + d->playCursorTime;
 }
 
 void Score::setPlaybackTime(qreal time)
 {
     Q_D(Score);
+    if (time + d->startTime < 0.0f)
+        time = -d->startTime;
     d->playCursorTime = time;
     d->playCursorTimer->start();
+}
+
+void Score::highlightPlayCursor()
+{
+    Q_D(Score);
+    QPen pen = d->timeLabelPlayCursor->pen();
+    pen.setWidth(2);
+    d->timeLabelPlayCursor->setPen(pen);
+    d->pitchPlayCursor->setPen(pen);
+    d->controlPlayCursor->setPen(pen);
+}
+
+void Score::unhighlightPlayCursor()
+{
+    Q_D(Score);
+    QPen pen = d->timeLabelPlayCursor->pen();
+    pen.setWidth(1);
+    d->timeLabelPlayCursor->setPen(pen);
+    d->pitchPlayCursor->setPen(pen);
+    d->controlPlayCursor->setPen(pen);
 }
 
 ObjectTList<Track> *Score::tracks() const

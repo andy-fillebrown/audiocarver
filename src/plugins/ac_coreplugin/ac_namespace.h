@@ -32,7 +32,8 @@ enum InterfaceType {
     ReaderInterface,
     WriterInterface,
     FileFilerInterface,
-    CopyFilerInterface
+    CopyFilerInterface,
+    PlayCursorInterface
 };
 
 enum ItemDataRole {
