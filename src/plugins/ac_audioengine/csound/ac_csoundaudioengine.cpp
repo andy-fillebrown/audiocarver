@@ -358,13 +358,14 @@ public:
             return;
         stopping = true;
         sink->stop();
+        delete stopTimer;
+        stopTimer = 0;
         stopping = false;
         currentSample = 0;
         csoundRewindScore(csound);
         scoreDone = false;
         started = false;
         connected = false;
-        delete stopTimer;
     }
 
     qint64 read(char *data, qint64 byteCount)
