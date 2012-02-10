@@ -8,6 +8,9 @@ useDoubles {
 
 load(../../library.prf)
 
+macx {
+    load(../sndfile/sndfile.prf)
+}
 win32 {
     load(../pthreads/pthreads.prf)
     load(../sndfile/sndfile.prf)
@@ -35,7 +38,6 @@ DEFINES *= \
     HAVE_DIRENT_H \
     HAVE_FCNTL_H \
     HAVE_LIBSNDFILE=1017 \
-    HAVE_PTHREAD_BARRIER_INIT \
     HAVE_SOCKETS \
     HAVE_STDINT_H \
     HAVE_SYS_TIME_H \
@@ -293,16 +295,13 @@ unix: !macx: !freebsd* {
         ../../sndfile/src \
 
     LIBS *= \
-        -ldl \
-        -lpthread \
+#        -ldl \
         /usr/lib/libsndfile.so.1 \
 }
-
 macx {
     DEFINES *= \
         __MACH__ \
 }
-
 win32 {
     QMAKE_CFLAGS *= \
         -mthreads \
@@ -311,6 +310,7 @@ win32 {
         -mthreads \
 
     DEFINES *= \
+       HAVE_PTHREAD_BARRIER_INIT \
         HAVE_IO_H \
         OS_IS_WIN32 \
         _WIN32 \
