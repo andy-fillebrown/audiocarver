@@ -4,6 +4,12 @@ contains(QT_VERSION, ^4\\.[0-6]\\..*) {
     error("Use at least Qt 4.7.")
 }
 
+# check mkspec
+win32*: !win32-g++* {
+    error("Cannot build AudioCarver on Windows without g++." \
+          "Use MinGW.")
+}
+
 TEMPLATE = subdirs
 CONFIG += ordered
 
