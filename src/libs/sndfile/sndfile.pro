@@ -118,10 +118,10 @@ OTHER_FILES *= \
     README \
 
 macx {
-    INCLUDEPATH *= config/mac
-    HEADERS *= config/mac/config.h
+    INCLUDEPATH *= config/macx-g++
+    HEADERS *= config/macx-g++/config.h
 }
-win32 {
-    INCLUDEPATH *= config/windows
-    HEADERS *= config/windows/config.h
+win32-g++* {
+    INCLUDEPATH *= config/win32-g++
+    HEADERS *= config/win32-g++/config.h
 }
