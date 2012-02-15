@@ -1001,6 +1001,7 @@ void GraphicsView::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
     d->clearHovered();
+    MiGraphicsView::leaveEvent(event);
 }
 
 bool GraphicsView::viewportEvent(QEvent *event)
