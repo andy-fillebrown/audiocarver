@@ -5,10 +5,9 @@ DESTDIR = $$PRO_LIBRARY_PATH
 
 load(../src/rpath.prf)
 
-CONFIG += plugin plugin_with_soname
-contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
-
 !macx {
+    CONFIG += plugin plugin_with_soname
+    contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
     win32 {
         target.path = /bin
         target.files = $$DESTDIR/$${TARGET}.dll

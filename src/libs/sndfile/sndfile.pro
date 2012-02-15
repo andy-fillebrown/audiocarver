@@ -117,13 +117,11 @@ OTHER_FILES *= \
     sndfile.prf \
     README \
 
-win32 {
-    INCLUDEPATH *= \
-        config/windows \
-
-    HEADERS *= \
-        config/windows/config.h
+macx {
+    INCLUDEPATH *= config/macx-g++
+    HEADERS *= config/macx-g++/config.h
 }
-else {
-    error("sndfile should only be built on Windows")
+win32-g++* {
+    INCLUDEPATH *= config/win32-g++
+    HEADERS *= config/win32-g++/config.h
 }
