@@ -26,6 +26,11 @@ QString applicationTreeDirectory()
 {
     QDir rootDir(QCoreApplication::applicationDirPath());
     rootDir.cdUp();
+#ifdef Q_OS_MAC
+    rootDir.cdUp();
+    rootDir.cdUp();
+    rootDir.cdUp();
+#endif
     return rootDir.absolutePath() + "/";
 }
 
