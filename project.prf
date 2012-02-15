@@ -69,7 +69,6 @@ PRO_TARGET = $$TARGET
 TARGET = $$qtLibraryName($$TARGET)
 
 # For use in custom compilers that only copy files
-win32:i_flag = i
 defineReplace(stripDir) {
     return($$basename(1))
 }
