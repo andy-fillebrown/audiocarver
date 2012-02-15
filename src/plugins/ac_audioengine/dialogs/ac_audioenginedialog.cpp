@@ -102,6 +102,7 @@ public:
     void updateSampleRates(const QString &deviceName)
     {
         sampleRates = Ac::deviceInfo(deviceName).supportedSampleRates();
+        qSort(sampleRates);
         sampleRateStrings.clear();
         foreach (int rate, sampleRates)
             sampleRateStrings.append(QString("%1").arg(rate));
