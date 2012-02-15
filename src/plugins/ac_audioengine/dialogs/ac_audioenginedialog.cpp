@@ -89,8 +89,14 @@ public:
     {
         sampleSizes = Ac::deviceInfo(deviceName).supportedSampleSizes();
         sampleSizeStrings.clear();
-        foreach (int size, sampleSizes)
-            sampleSizeStrings.append(QString("%1").arg(size));
+        foreach (int size, sampleSizes) {
+            if (size == 8
+                    || size == 16
+                    || size == 32)
+                sampleSizeStrings.append(QString("%1").arg(size));
+            else
+                sampleSizes.removeOne(size);
+        }
     }
 
     void updateSampleRates(const QString &deviceName)
@@ -228,6 +234,8 @@ public:
             sampleSize = prevSampleSize;
         if (!sampleSizes.contains(sampleSize))
             sampleSize = Ac::deviceInfo(deviceName).preferredFormat().sampleSize();
+        if (!sampleSizes.contains(sampleSize) && !sampleSizes.isEmpty())
+            sampleSize = sampleSizes.last();
         setSampleSizeIndex(sampleSize);
         prevSampleSize = sampleSize;
     }

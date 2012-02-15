@@ -65,8 +65,13 @@ public:
 
         QAudioDeviceInfo device_info = Ac::deviceInfo(deviceName);
 
-        if (!sampleSize)
+        if (!sampleSize) {
             sampleSize = device_info.preferredFormat().sampleSize();
+            if (sampleSize != 8
+                    && sampleSize != 16
+                    && sampleSize != 32)
+                sampleSize = 16;
+        }
 
         if (!sampleRate)
             sampleRate = device_info.preferredFormat().sampleRate();
