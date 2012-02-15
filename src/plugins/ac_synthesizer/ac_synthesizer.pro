@@ -36,6 +36,7 @@ ORC_FILES = \
     instruments/pulse.orc \
     instruments/saw.orc \
     instruments/sine.orc \
+    instruments/sine--smooth-envelope.orc \
     instruments/square.orc \
     instruments/triangle.orc \
     instruments/wgbow.orc \

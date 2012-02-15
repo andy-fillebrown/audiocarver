@@ -1,0 +1,150 @@
+
+<Score volume="1" length="128" startTime="0">
+    <TrackList>
+        <Track name="Track" volume="1" color="#7f0000" instrument="sine--smooth-envelope" visible="true" recording="true">
+            <NoteList>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="3.65297 71.8442"/>
+                        <Point position="13.1507 72.1664"/>
+                    </PitchCurve>
+                </Note>
+            </NoteList>
+        </Track>
+    </TrackList>
+    <GridSettings>
+        <TimeGridLineList>
+            <TimeGridLine location="0" label="1" priority="0" color="#007f00"/>
+            <TimeGridLine location="1" label="1.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="2" label="1.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="3" label="1.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="4" label="2" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="5" label="2.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="6" label="2.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="7" label="2.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="8" label="3" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="9" label="3.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="10" label="3.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="11" label="3.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="12" label="4" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="13" label="4.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="14" label="4.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="15" label="4.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="16" label="5" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="17" label="5.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="18" label="5.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="19" label="5.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="20" label="6" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="21" label="6.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="22" label="6.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="23" label="6.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="24" label="7" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="25" label="7.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="26" label="7.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="27" label="7.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="28" label="8" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="29" label="8.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="30" label="8.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="31" label="8.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="32" label="9" priority="3" color="#c0c0c0"/>
+            <TimeGridLine location="33" label="9.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="34" label="9.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="35" label="9.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="36" label="10" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="37" label="10.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="38" label="10.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="39" label="10.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="40" label="11" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="41" label="11.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="42" label="11.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="43" label="11.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="44" label="12" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="45" label="12.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="46" label="12.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="47" label="12.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="48" label="13" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="49" label="13.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="50" label="13.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="51" label="13.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="52" label="14" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="53" label="14.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="54" label="14.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="55" label="14.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="56" label="15" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="57" label="15.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="58" label="15.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="59" label="15.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="60" label="16" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="61" label="16.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="62" label="16.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="63" label="16.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="64" label="17" priority="1" color="#c0c0c0"/>
+            <TimeGridLine location="65" label="17.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="66" label="17.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="67" label="17.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="68" label="18" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="69" label="18.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="70" label="18.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="71" label="18.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="72" label="19" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="73" label="19.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="74" label="19.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="75" label="19.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="76" label="20" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="77" label="20.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="78" label="20.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="79" label="20.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="80" label="21" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="81" label="21.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="82" label="21.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="83" label="21.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="84" label="22" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="85" label="22.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="86" label="22.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="87" label="22.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="88" label="23" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="89" label="23.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="90" label="23.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="91" label="23.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="92" label="24" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="93" label="24.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="94" label="24.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="95" label="24.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="96" label="25" priority="3" color="#c0c0c0"/>
+            <TimeGridLine location="97" label="25.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="98" label="25.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="99" label="25.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="100" label="26" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="101" label="26.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="102" label="26.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="103" label="26.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="104" label="27" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="105" label="27.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="106" label="27.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="107" label="27.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="108" label="28" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="109" label="28.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="110" label="28.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="111" label="28.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="112" label="29" priority="7" color="#c0c0c0"/>
+            <TimeGridLine location="113" label="29.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="114" label="29.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="115" label="29.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="116" label="30" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="117" label="30.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="118" label="30.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="119" label="30.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="120" label="31" priority="14" color="#c0c0c0"/>
+            <TimeGridLine location="121" label="31.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="122" label="31.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="123" label="31.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="124" label="32" priority="25" color="#c0c0c0"/>
+            <TimeGridLine location="125" label="32.2" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="126" label="32.3" priority="42" color="#c0c0c0"/>
+            <TimeGridLine location="127" label="32.4" priority="64" color="#c0c0c0"/>
+            <TimeGridLine location="128" priority="0" color="#7f0000"/>
+        </TimeGridLineList>
+    </GridSettings>
+    <ViewSettings timePosition="64.0121765604443" pitchPosition="63.4156706484964" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
+</Score>
