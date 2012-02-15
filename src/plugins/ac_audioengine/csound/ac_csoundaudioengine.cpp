@@ -305,8 +305,15 @@ public:
 
         const IModelItem *project_settings = model->itemFromIndex(model->itemIndex(Ac::ProjectSettingsItem));
         QString audio_file_type = project_settings->data(Ac::AudioFileTypeRole).toString();
-        if (audio_file_type.isEmpty())
-            audio_file_type = "wav";
+        if (audio_file_type.isEmpty()) {
+#           ifdef Q_OS_MAC
+            {   audio_file_type = "aiff";
+            }
+#           else
+            {   audio_file_type = "wav";
+            }
+#           endif
+        }
 
         const QModelIndex track_list_index = model->listIndex(Ac::TrackItem);
         const int n = model->rowCount(track_list_index);

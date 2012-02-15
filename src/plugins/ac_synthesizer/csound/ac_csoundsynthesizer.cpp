@@ -330,8 +330,15 @@ public:
             return;
         }
         QString audio_file_type = project_settings->data(Ac::AudioFileTypeRole).toString();
-        if (audio_file_type.isEmpty())
-            audio_file_type = "wav";
+        if (audio_file_type.isEmpty()) {
+#           ifdef Q_OS_MAC
+            {   audio_file_type = "aiff";
+            }
+#           else
+            {   audio_file_type = "wav";
+            }
+#           endif
+        }
         const QString audio_file_name = audio_dir_name + "/" + track_name + "." + audio_file_type;
         const QString output_flag = "-o" + audio_file_name;
         QByteArray output_flag_ba = output_flag.toLocal8Bit();
