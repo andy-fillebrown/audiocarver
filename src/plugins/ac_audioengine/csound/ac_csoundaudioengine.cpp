@@ -339,7 +339,8 @@ public:
                 sub_instrument++;
         }
 
-        const qreal score_length = model->rootItem()->data(Ac::LengthRole).toReal();
+        const IModelItem *score_item = model->rootItem();
+        const qreal score_length = score_item->data(Ac::LengthRole).toReal() - score_item->data(Ac::StartTimeRole).toReal();
         const QString sco_end = QString("e %1")
                 .arg(score_length);
         sco_file.write(qPrintable(sco_end));
