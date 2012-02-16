@@ -405,6 +405,7 @@ public:
 
             float *csound_data = csoundBuffer + currentSample;
 
+            // 'n' will be the number of bytes to be read from the csound buffer.
             int n = 0;
             if (currentSample == 0) {
                 if ((bytes_read + csoundBufferSize) < byteCount)

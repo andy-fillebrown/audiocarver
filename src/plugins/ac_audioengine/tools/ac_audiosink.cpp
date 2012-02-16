@@ -76,6 +76,9 @@ public:
         this->deviceInfo = deviceInfo;
         this->format = format;
         this->device = device;
+
+        this->format.setChannelCount(1);
+
         QThread::start(QThread::TimeCriticalPriority);
     }
 
@@ -105,11 +108,7 @@ private:
     {
         if (!output)
             return;
-
-        // For some reason, the elapsed micro seconds is only half the actual
-        // elapsed micro seconds.  Divide by 500000 instead of 1000000 to make up
-        // for it.
-        IModel::instance()->rootItem()->setData(output->elapsedUSecs() / 500000.0f, Ac::PlaybackTimeRole);
+        IModel::instance()->rootItem()->setData(output->elapsedUSecs() / 1000000.0f, Ac::PlaybackTimeRole);
     }
 };
 
