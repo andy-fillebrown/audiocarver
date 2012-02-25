@@ -1,0 +1,4 @@
+
+load(../mi_midifileplugin/mi_midifileplugin_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(MiMidiFilePlugin)
