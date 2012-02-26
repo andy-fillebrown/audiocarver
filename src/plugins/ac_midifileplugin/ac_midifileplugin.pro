@@ -12,6 +12,7 @@ DEFINES *= \
     AC_MIDIFILE_LIBRARY
 
 HEADERS *= \
+    ac_midifileconstants.h \
     ac_midifileglobal.h \
     ac_midifilenamespace.h \
 

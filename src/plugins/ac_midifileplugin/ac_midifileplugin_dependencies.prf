@@ -1,7 +1,8 @@
 
-load(../ac_coreplugin/ac_coreplugin.prf)
+load(../ac_guiplugin/ac_guiplugin.prf)
 
 DIRS = \
+    implementations \
     io \
     tools \
 

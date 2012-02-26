@@ -46,7 +46,8 @@ void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &i
     if (Core::Constants::G_FILE == menuBarGroup) {
         groups << G_FILE_NEW
                << G_FILE_OPEN
-               << G_FILE_SAVE;
+               << G_FILE_SAVE
+               << G_FILE_IMPORT;
     } else if (G_EDIT == menuBarGroup) {
         id = M_EDIT;
         title = tr("&Edit");
