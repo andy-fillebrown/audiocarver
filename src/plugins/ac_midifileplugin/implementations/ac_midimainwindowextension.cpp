@@ -22,8 +22,10 @@
 
 #include <ac_ifactory.h>
 #include <ac_namespace.h>
+#include <ac_point.h>
 
 #include <mi_imodel.h>
+#include <mi_imodelitem.h>
 
 #include <actioncontainer.h>
 #include <actionmanager.h>
@@ -37,13 +39,19 @@
 
 using namespace Ac::Midi;
 
+struct MidiNote {
+    qreal startTime;
+    qreal stopTime;
+    qreal velocity;
+    qreal pitch;
+};
+
+typedef QList<MidiNote*> MidiNotes;
+
 static void importTrack(MidiFileReader &reader, const int trackNumber)
 {
-    IObjectFactory *factory = IObjectFactory::instance();
-    IModel *model = IModel::instance();
     const MidiEventList events = reader.events(trackNumber);
-
-#   if 1
+#   if 0
     {   qDebug() << "Track" << trackNumber;
         foreach (const MidiEvent &e, events) {
             if (MidiEvent::NoteOn == e.type()
@@ -59,6 +67,78 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
         qDebug();
     }
 #   endif
+
+    // Add midi note for NoteOn events to be matched with NoteOff events later.
+    MidiNotes notes;
+    foreach (const MidiEvent &event, events) {
+        if (MidiEvent::NoteOn == event.type()) {
+            MidiNote *note = new MidiNote;
+            note->startTime = reader.ticksToSeconds(event.tick());
+            note->velocity = event.data(1) / qreal(127.0f);
+            note->pitch = event.data(0);
+            notes.append(note);
+        }
+    }
+
+    // Match NoteOff events.
+    MidiNotes matched_notes;
+    const int note_count = notes.size();
+    matched_notes.reserve(note_count);
+    foreach (const MidiEvent &event, events) {
+        if (MidiEvent::NoteOff == event.type()) {
+            const qreal stop_time = reader.ticksToSeconds(event.tick());
+            for (int i = 0;  i < note_count;  ++i) {
+                MidiNote *note = notes.at(i);
+                if (note
+                        && quint8(note->pitch) == event.data(0)
+                        && note->startTime < stop_time) {
+                    // Matching NoteOn event found for NoteOff.
+                    note->stopTime = stop_time;
+                    matched_notes.append(note);
+                    notes[i] = 0;
+                }
+            }
+        }
+    }
+
+    // Print a warning if there are NoteOn events that were not matched with
+    // NoteOff events.
+    notes.removeAll(0);
+    if (!notes.isEmpty()) {
+        qWarning() << Q_FUNC_INFO << ":" << notes.count() << "unmatched note on events found";
+        qDeleteAll(notes);
+    }
+
+    if (matched_notes.isEmpty())
+        return;
+
+    IModelItem *score = IModel::instance()->rootItem();
+
+    // Add new track and notes to the score.
+    IModelItem *track_list = score->findModelItemList(Ac::TrackItem);
+    IObjectFactory *factory = IObjectFactory::instance();
+    IModelItem *track = factory->create(Ac::TrackItem);
+    track->setParentModelItem(track_list);
+    IModelItem *note_list = track->findModelItemList(Ac::NoteItem);
+    foreach (MidiNote *midi_note, matched_notes) {
+        IModelItem *note = factory->create(Ac::NoteItem);
+        IModelItem *pitch_curve = note->findModelItem(Ac::PitchCurveItem);
+        PointList points;
+        points.append(Point(midi_note->startTime, midi_note->pitch));
+        points.append(Point(midi_note->stopTime, midi_note->pitch));
+        pitch_curve->setData(QVariant::fromValue(points), Ac::PointsRole);
+        note->setData(midi_note->velocity, Ac::VolumeRole);
+        note->setParentModelItem(note_list);
+    }
+
+    // Set score length.
+    qreal length = 0.0f;
+    foreach (MidiNote *note, matched_notes)
+        if (length < note->stopTime)
+            length = note->stopTime;
+    score->setData(length, Ac::LengthRole);
+
+    qDeleteAll(matched_notes);
 }
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
@@ -107,7 +187,7 @@ void MainWindowExtension::importMidiFile()
 
     // Import MIDI file.
     MidiFileReader reader(file_name);
-#   if 1
+#   if 0
     {   qDebug();
         qDebug() << file_name;
         qDebug() << "format ==" << reader.format();
