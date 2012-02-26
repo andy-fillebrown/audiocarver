@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#include "mi_midifileplugin.h"
+#include "ac_midifileplugin.h"
 
 #include <QtPlugin>
 
-bool MiMidiFilePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+bool AcMidiFilePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
     return true;
 }
 
-void MiMidiFilePlugin::extensionsInitialized()
+void AcMidiFilePlugin::extensionsInitialized()
 {}
 
-Q_EXPORT_PLUGIN(MiMidiFilePlugin)
+Q_EXPORT_PLUGIN(AcMidiFilePlugin)

@@ -1,6 +1,6 @@
 
 SOURCE_PAIRS = \
-    mi_midifilereader \
+    ac_midifilereader \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= io/$${pair}.h

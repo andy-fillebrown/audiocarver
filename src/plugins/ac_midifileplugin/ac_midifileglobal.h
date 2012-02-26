@@ -15,15 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef MI_MIDIFILEGLOBAL_H
-#define MI_MIDIFILEGLOBAL_H
+#ifndef AC_MIDIFILEGLOBAL_H
+#define AC_MIDIFILEGLOBAL_H
 
-#include <mi_global.h>
+#include <ac_global.h>
 
-#if defined(MI_MIDIFILE_LIBRARY)
-#  define MI_MIDIFILE_EXPORT Q_DECL_EXPORT
+#if defined(AC_MIDIFILE_LIBRARY)
+#  define AC_MIDIFILE_EXPORT Q_DECL_EXPORT
 #else
-#  define MI_MIDIFILE_EXPORT Q_DECL_IMPORT
+#  define AC_MIDIFILE_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // MI_MIDIFILEGLOBAL_H
+#endif // AC_MIDIFILEGLOBAL_H

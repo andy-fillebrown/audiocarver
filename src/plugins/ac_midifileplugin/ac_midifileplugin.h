@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef MI_MIDIFILEPLUGIN_H
-#define MI_MIDIFILEPLUGIN_H
+#ifndef AC_MIDIFILEPLUGIN_H
+#define AC_MIDIFILEPLUGIN_H
 
 #include <iplugin.h>
 
-class MiMidiFilePlugin : public ExtensionSystem::IPlugin
+class AcMidiFilePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
@@ -29,4 +29,4 @@ public:
     void extensionsInitialized();
 };
 
-#endif // MI_MIDIFILEPLUGIN_H
+#endif // AC_MIDIFILEPLUGIN_H

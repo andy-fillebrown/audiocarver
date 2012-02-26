@@ -1,5 +1,5 @@
 
-load(../mi_coreplugin/mi_coreplugin.prf)
+load(../ac_coreplugin/ac_coreplugin.prf)
 
 DIRS = \
     io \

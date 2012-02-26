@@ -24,11 +24,11 @@
 **
 ******************************************************************************/
 
-#ifndef MI_MIDIEVENT_H
-#define MI_MIDIEVENT_H
+#ifndef AC_MIDIEVENT_H
+#define AC_MIDIEVENT_H
 
-#include <mi_midifileglobal.h>
-#include <mi_midifilenamespace.h>
+#include <ac_midifileglobal.h>
+#include <ac_midifilenamespace.h>
 
 #include <QList>
 
@@ -36,7 +36,7 @@ class MidiEvent;
 typedef QList<MidiEvent> MidiEventList;
 typedef QList<quint8> MidiEventBytes;
 
-class MI_MIDIFILE_EXPORT MidiEvent
+class AC_MIDIFILE_EXPORT MidiEvent
 {
 public:
     enum Type
@@ -195,4 +195,4 @@ inline bool MidiEvent::operator<(const MidiEvent &event)
     return false;
 }
 
-#endif // MI_MIDIEVENT_H
+#endif // AC_MIDIEVENT_H

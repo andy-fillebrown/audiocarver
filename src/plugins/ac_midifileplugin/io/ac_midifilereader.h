@@ -24,4 +24,34 @@
 **
 ******************************************************************************/
 
-#include "mi_midievent.h"
+#ifndef AC_MIDIFILEREADER_H
+#define AC_MIDIFILEREADER_H
+
+#include <ac_midievent.h>
+
+#include <QObject>
+
+class MidiFileReaderPrivate;
+
+class AC_MIDIFILE_EXPORT MidiFileReader : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit MidiFileReader(const QString &fileName = QString(), QObject *parent = 0);
+    virtual ~MidiFileReader();
+
+    Midi::Format format() const;
+    qint16 trackCount() const;
+    qint16 division() const;
+    bool isUsingTimeCode() const;
+    MidiEventList events(int track = 0);
+
+    qreal tickRate() const;
+    qreal ticksToSeconds(quint64 tick);
+
+private:
+    MidiFileReaderPrivate *d;
+};
+
+#endif // AC_MIDIFILEREADER_H

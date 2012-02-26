@@ -1,6 +1,6 @@
 
 SOURCE_PAIRS = \
-    mi_midievent \
+    ac_midievent \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= tools/$${pair}.h

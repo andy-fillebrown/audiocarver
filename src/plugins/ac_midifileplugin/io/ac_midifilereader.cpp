@@ -24,12 +24,12 @@
 **
 ******************************************************************************/
 
-// The following code is a Qt-style translation based on the code written by
-//  Gary P. Scavone for the Synthesis Toolkit (STK).
+// The following code is a Qt-style translation of the code written by Gary P.
+// Scavone for the Synthesis Toolkit (STK).
 
-#include "mi_midifilereader.h"
+#include "ac_midifilereader.h"
 
-#include <mi_midievent.h>
+#include <ac_midievent.h>
 
 #include <QFile>
 
@@ -476,7 +476,7 @@ void MidiFileTickConverter::createTempoMap()
     }
     rewind();
 
-#if MIQT_DEBUG && 0
+#if 0
     qDebug() << "\nTempo Map:";
     for (int i = 0;  i < tempoChanges.size();  i++) {
         TempoChange tempo_change = tempoChanges[i];

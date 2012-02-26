@@ -24,8 +24,8 @@
 **
 ******************************************************************************/
 
-#ifndef MI_MIDIFILENAMESPACE_H
-#define MI_MIDIFILENAMESPACE_H
+#ifndef AC_MIDIFILENAMESPACE_H
+#define AC_MIDIFILENAMESPACE_H
 
 namespace Midi
 {
@@ -39,4 +39,4 @@ enum Format
 
 } // namespace Midi
 
-#endif // MQMIDINAMESPACE_H
+#endif // AC_MIDIFILENAMESPACE_H
