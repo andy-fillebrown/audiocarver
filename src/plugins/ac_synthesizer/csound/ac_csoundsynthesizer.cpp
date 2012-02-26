@@ -256,7 +256,7 @@ public:
         sco_file.write("\n");
 
         for (int i = 0;  i < n;  ++i) {
-            const int id = i + 1;
+            const int id = i + 1001;
 
             const QString curve_file_name = table_dir_name + QString("/note.%1.txt").arg(id);
             IModelItem *note_item = notes->modelItemAt(i);
