@@ -142,10 +142,17 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
 }
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
-{}
+{
+    Q_UNUSED(groups);
+}
 
 void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
-{}
+{
+    Q_UNUSED(menuBarGroup);
+    Q_UNUSED(id);
+    Q_UNUSED(title);
+    Q_UNUSED(groups);
+}
 
 void MainWindowExtension::initActions()
 {
