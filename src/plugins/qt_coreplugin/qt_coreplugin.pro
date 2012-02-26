@@ -24,7 +24,7 @@ HEADERS = \
     dialogs/settingsdialog.h \
     dialogs/shortcutsettings.h \
     \
-    interfaces/imainwindow.h \
+    interfaces/imainwindowextension.h \
     \
     core_global.h \
     coreconstants.h \
@@ -55,7 +55,7 @@ SOURCES = \
     dialogs/settingsdialog.cpp \
     dialogs/shortcutsettings.cpp \
     \
-    interfaces/imainwindow.cpp \
+    interfaces/imainwindowextension.cpp \
     \
     coreimpl.cpp \
     coreplugin.cpp \

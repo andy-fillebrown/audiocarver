@@ -29,7 +29,7 @@
 
 #include "mainwindow.h"
 
-#include "interfaces/imainwindow.h"
+#include "interfaces/imainwindowextension.h"
 
 #include "actioncontainer.h"
 #include "command.h"
@@ -138,10 +138,15 @@ bool MainWindow::init(QString *errorMessage)
 
 void MainWindow::extensionsInitialized()
 {
-    // reading the shortcut settings must be done after all shortcuts have been registered
     m_actionManager->initialize();
 
+    registerContainers();
+    registerActions();
+
+    // Reading the shortcut settings must be done after all shortcuts have been
+    // registered.
     readSettings();
+
     updateContext();
 
     emit m_coreImpl->coreAboutToOpen();
@@ -184,9 +189,9 @@ void MainWindow::registerContainers()
             << Constants::G_HELP;
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    QList<IMainWindow*> mwlist = pm->getObjects<IMainWindow>();
-    foreach (IMainWindow *mw, mwlist)
-        mw->initMenuBarGroups(menuBarGroups);
+    QList<IMainWindowExtension*> mwx_list = pm->getObjects<IMainWindowExtension>();
+    foreach (IMainWindowExtension *mwx, mwx_list)
+        mwx->initMenuBarGroups(menuBarGroups);
 
     ActionManagerPrivate *am = m_actionManager;
     ActionContainer *menubar = am->createMenuBar(Constants::MENU_BAR);
@@ -199,21 +204,21 @@ void MainWindow::registerContainers()
         QString id;
         QString title;
         QStringList groups;
-        foreach (IMainWindow *mw, mwlist)
-            mw->initMenuGroups(menuBarGroup, id, title, groups);
-        if (menuBarGroup == Constants::G_FILE) {
+        foreach (IMainWindowExtension *mwx, mwx_list)
+            mwx->initMenuGroups(menuBarGroup, id, title, groups);
+        if (Constants::G_FILE == menuBarGroup) {
             id = Constants::M_FILE;
             title = tr("&File");
             groups  << Constants::G_FILE_OTHER;
-        } else if (menuBarGroup == Constants::G_TOOLS) {
+        } else if (Constants::G_TOOLS == menuBarGroup) {
             id = Constants::M_TOOLS;
             title = tr("&Tools");
-        } else if (menuBarGroup == Constants::G_WINDOW) {
+        } else if (Constants::G_WINDOW == menuBarGroup) {
             id = Constants::M_WINDOW;
             title = tr("&Window");
             groups.insert(0, Constants::G_WINDOW_SIZE);
             groups  << Constants::G_WINDOW_OTHER;
-        } else if (menuBarGroup == Constants::G_HELP) {
+        } else if (Constants::G_HELP == menuBarGroup) {
             id = Constants::M_HELP;
             title = tr("&Help");
             groups  << Constants::G_HELP_ABOUTPLUGINS;
@@ -326,9 +331,9 @@ void MainWindow::registerActions()
 #   endif
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    QList<IMainWindow *> mwlist = pm->getObjects<IMainWindow>();
-    foreach (IMainWindow *mw, mwlist)
-        mw->initActions();
+    QList<IMainWindowExtension*> mwx_list = pm->getObjects<IMainWindowExtension>();
+    foreach (IMainWindowExtension *mwx, mwx_list)
+        mwx->initActions();
 }
 
 bool MainWindow::showOptionsDialog(const QString &category,

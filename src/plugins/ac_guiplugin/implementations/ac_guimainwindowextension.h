@@ -15,19 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWINDOW_H
-#define AC_MAINWINDOW_H
+#ifndef AC_GUIMAINWINDOWEXTENSION_H
+#define AC_GUIMAINWINDOWEXTENSION_H
 
-#include <imainwindow.h>
+#include <imainwindowextension.h>
 
-class MainWindowPrivate;
-class MainWindow : public Core::IMainWindow
+namespace Ac {
+namespace Gui {
+
+class MainWindowExtensionPrivate;
+class MainWindowExtension : public Core::IMainWindowExtension
 {
     Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow();
+    MainWindowExtension();
+    ~MainWindowExtension();
 
     void initMenuBarGroups(QStringList &groups) const;
     void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
@@ -46,7 +49,10 @@ private slots:
     void destroyVersionDialog();
 
 private:
-    MainWindowPrivate *d;
+    MainWindowExtensionPrivate *d;
 };
 
-#endif // AC_MAINWINDOW_H
+} // namespace Gui
+} // namespace Ac
+
+#endif // AC_GUIMAINWINDOWEXTENSION_H

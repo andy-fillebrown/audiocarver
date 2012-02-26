@@ -15,28 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef IMAINWINDOW_H
-#define IMAINWINDOW_H
+#ifndef MI_GUIMAINWINDOWEXTENSION_H
+#define MI_GUIMAINWINDOWEXTENSION_H
 
-#include <qt_coreplugin/core_global.h>
+#include <imainwindowextension.h>
 
-#include <QtCore/QObject>
+namespace Mi {
+namespace Gui {
 
-namespace Core {
-
-class CORE_EXPORT IMainWindow : public QObject
+class MainWindowExtension : public Core::IMainWindowExtension
 {
     Q_OBJECT
 
 public:
-    IMainWindow();
-    virtual ~IMainWindow();
+    void initMenuBarGroups(QStringList &groups) const;
+    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    void initActions();
 
-    virtual void initMenuBarGroups(QStringList &groups) const = 0;
-    virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const = 0;
-    virtual void initActions() = 0;
+private slots:
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveFileAs();
+
+    void undo();
+    void redo();
+    void cut();
+    void copy();
+    void paste();
+    void selectAll();
 };
 
-} // namespace Core
+} // namespace Gui
+} // namespace Mi
 
-#endif // IMAINWINDOW_H
+#endif // MI_GUIMAINWINDOWEXTENSION_H

@@ -26,7 +26,7 @@ class MiGuiPlugin : public ExtensionSystem::IPlugin
 
 public:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
+    void extensionsInitialized() {}
 };
 
 #endif // MI_GUIPLUGIN_H

@@ -17,7 +17,7 @@
 
 #include "mi_guiplugin.h"
 
-#include <mi_mainwindow.h>
+#include <mi_guimainwindowextension.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -28,15 +28,8 @@ bool MiGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new MainWindow);
+    addAutoReleasedObject(new Mi::Gui::MainWindowExtension);
     return true;
-}
-
-void MiGuiPlugin::extensionsInitialized()
-{
-    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
-    mw->registerContainers();
-    mw->registerActions();
 }
 
 Q_EXPORT_PLUGIN(MiGuiPlugin)

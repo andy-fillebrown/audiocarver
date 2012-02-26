@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_mainwindow.h"
+#include "ac_guimainwindowextension.h"
 
 #include <ac_gridlinedialog.h>
 #include <ac_guiconstants.h>
@@ -50,12 +50,17 @@
 #include <QMessageBox>
 #include <QTimer>
 
-class MainWindowPrivate
+using namespace Ac::Gui;
+
+namespace Ac {
+namespace Gui {
+
+class MainWindowExtensionPrivate
 {
 public:
     Core::VersionDialog *versionDialog;
 
-    MainWindowPrivate()
+    MainWindowExtensionPrivate()
         :   versionDialog(0)
     {}
 
@@ -76,16 +81,19 @@ public:
     }
 };
 
-MainWindow::MainWindow()
-    :   d(new MainWindowPrivate)
+} // namespace Gui
+} // namespace Ac
+
+MainWindowExtension::MainWindowExtension()
+    :   d(new MainWindowExtensionPrivate)
 {}
 
-MainWindow::~MainWindow()
+MainWindowExtension::~MainWindowExtension()
 {
     delete d;
 }
 
-void MainWindow::initMenuBarGroups(QStringList &groups) const
+void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
 {
     const int editGroupIndex = groups.indexOf(G_EDIT);
     groups.insert(editGroupIndex + 1, G_CREATE);
@@ -94,7 +102,7 @@ void MainWindow::initMenuBarGroups(QStringList &groups) const
     groups.insert(editGroupIndex + 4, G_TRANSPORT);
 }
 
-void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
+void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
     if (G_EDIT == menuBarGroup) {
         const int g_edit_other = groups.indexOf(G_EDIT_OTHER);
@@ -119,7 +127,7 @@ void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QStrin
         groups << G_HELP_ABOUTAUDIOCARVER;
 }
 
-void MainWindow::initActions()
+void MainWindowExtension::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
 
@@ -229,14 +237,14 @@ void MainWindow::initActions()
     connect(action, SIGNAL(triggered()), SLOT(aboutAudioCarver()));
 }
 
-void MainWindow::showGridSettings()
+void MainWindowExtension::showGridSettings()
 {
     GridLineDialog *dlg = new GridLineDialog(Core::ICore::instance()->mainWindow());
     dlg->exec();
     delete dlg;
 }
 
-void MainWindow::createTrack()
+void MainWindowExtension::createTrack()
 {
     IEditor *editor = IEditor::instance();
     editor->beginCommand();
@@ -246,7 +254,7 @@ void MainWindow::createTrack()
     editor->endCommand();
 }
 
-void MainWindow::erase()
+void MainWindowExtension::erase()
 {
     IEditor *editor = IEditor::instance();
     bool commandStarted = false;
@@ -308,7 +316,7 @@ void MainWindow::erase()
     }
 }
 
-void MainWindow::build()
+void MainWindowExtension::build()
 {
     if (!d->maybeSaveDatabase())
         return;
@@ -316,7 +324,7 @@ void MainWindow::build()
     qDebug() << Q_FUNC_INFO;
 }
 
-void MainWindow::buildAll()
+void MainWindowExtension::buildAll()
 {
     if (!d->maybeSaveDatabase())
         return;
@@ -331,7 +339,7 @@ void MainWindow::buildAll()
         synth->renderTrack(i);
 }
 
-void MainWindow::startOrStop()
+void MainWindowExtension::startOrStop()
 {
     IAudioEngine *audio_engine = IAudioEngine::instance();
     if (!audio_engine)
@@ -342,21 +350,21 @@ void MainWindow::startOrStop()
         audio_engine->start();
 }
 
-void MainWindow::start()
+void MainWindowExtension::start()
 {
     IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->start();
 }
 
-void MainWindow::stop()
+void MainWindowExtension::stop()
 {
     IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->stop();
 }
 
-void MainWindow::aboutAudioCarver()
+void MainWindowExtension::aboutAudioCarver()
 {
     if (!d->versionDialog) {
         d->versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
@@ -365,7 +373,7 @@ void MainWindow::aboutAudioCarver()
     d->versionDialog->show();
 }
 
-void MainWindow::destroyVersionDialog()
+void MainWindowExtension::destroyVersionDialog()
 {
     if (d->versionDialog) {
         d->versionDialog->deleteLater();

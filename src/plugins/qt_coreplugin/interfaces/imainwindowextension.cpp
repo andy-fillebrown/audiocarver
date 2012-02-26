@@ -15,14 +15,14 @@
 **
 **************************************************************************/
 
-#include "imainwindow.h"
+#include "imainwindowextension.h"
 
 using namespace Core;
 
-IMainWindow::IMainWindow()
+IMainWindowExtension::IMainWindowExtension()
 {
 }
 
-IMainWindow::~IMainWindow()
+IMainWindowExtension::~IMainWindowExtension()
 {
 }

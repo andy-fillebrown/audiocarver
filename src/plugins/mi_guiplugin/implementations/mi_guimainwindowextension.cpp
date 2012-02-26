@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "mi_mainwindow.h"
+#include "mi_guimainwindowextension.h"
 
 #include <mi_guiconstants.h>
 #include <mi_ieditor.h>
@@ -33,13 +33,15 @@
 #include <QFileDialog>
 #include <QIcon>
 
-void MainWindow::initMenuBarGroups(QStringList &groups) const
+using namespace Mi::Gui;
+
+void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
 {
     const int fileGroupIndex = groups.indexOf(Core::Constants::G_FILE);
     groups.insert(fileGroupIndex + 1, G_EDIT);
 }
 
-void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
+void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
     if (Core::Constants::G_FILE == menuBarGroup) {
         groups << G_FILE_NEW
@@ -55,7 +57,7 @@ void MainWindow::initMenuGroups(const QString &menuBarGroup, QString &id, QStrin
     }
 }
 
-void MainWindow::initActions()
+void MainWindowExtension::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
 
@@ -169,12 +171,12 @@ void MainWindow::initActions()
     connect(action, SIGNAL(triggered()), SLOT(selectAll()));
 }
 
-void MainWindow::newFile()
+void MainWindowExtension::newFile()
 {
     IDatabase::instance()->reset();
 }
 
-void MainWindow::openFile()
+void MainWindowExtension::openFile()
 {
     IDatabase *db = IDatabase::instance();
     QString filename = QFileDialog::getOpenFileName(
@@ -185,7 +187,7 @@ void MainWindow::openFile()
     db->read(filename);
 }
 
-void MainWindow::saveFile()
+void MainWindowExtension::saveFile()
 {
     IDatabase *db = IDatabase::instance();
     if (db->fileName().isEmpty())
@@ -194,7 +196,7 @@ void MainWindow::saveFile()
         db->write(db->fileName());
 }
 
-void MainWindow::saveFileAs()
+void MainWindowExtension::saveFileAs()
 {
     IDatabase *db = IDatabase::instance();
     QString filename = QFileDialog::getSaveFileName(
@@ -207,32 +209,32 @@ void MainWindow::saveFileAs()
     db->write(filename);
 }
 
-void MainWindow::undo()
+void MainWindowExtension::undo()
 {
     IEditor::instance()->undo();
 }
 
-void MainWindow::redo()
+void MainWindowExtension::redo()
 {
     IEditor::instance()->redo();
 }
 
-void MainWindow::cut()
+void MainWindowExtension::cut()
 {
     IEditor::instance()->cut();
 }
 
-void MainWindow::copy()
+void MainWindowExtension::copy()
 {
     IEditor::instance()->copy();
 }
 
-void MainWindow::paste()
+void MainWindowExtension::paste()
 {
     IEditor::instance()->paste();
 }
 
-void MainWindow::selectAll()
+void MainWindowExtension::selectAll()
 {
     IEditor::instance()->selectAll();
 }

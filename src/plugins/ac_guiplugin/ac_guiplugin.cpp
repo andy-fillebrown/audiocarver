@@ -19,7 +19,7 @@
 
 #include <ac_editor.h>
 #include <ac_mainwidget.h>
-#include <ac_mainwindow.h>
+#include <ac_guimainwindowextension.h>
 #include <ac_selecteditemspropertyview.h>
 #include <ac_trackview.h>
 
@@ -36,7 +36,7 @@ bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new MainWindow);
+    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
     addAutoReleasedObject(new Editor);
     return true;
 }
