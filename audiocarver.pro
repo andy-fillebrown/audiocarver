@@ -18,10 +18,8 @@ SUBDIRS = src
 OTHER_FILES *= \
     scripts/blender/addons/io_scene_audiocarver/* \
     \
+    testing/*.ac \
+    \
+    .gitignore \
     bugs.txt \
     project.prf \
-    \
-    testing/test01.ac \
-    testing/test02.ac \
-    testing/test03.ac \
-    testing/test04.ac \
