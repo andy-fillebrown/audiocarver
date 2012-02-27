@@ -19,7 +19,11 @@ if "bpy" in locals():
         imp.reload(import_ac)
 
 import bpy
-from bpy.props import StringProperty, BoolProperty, EnumProperty
+# from bpy.props import StringProperty, BoolProperty, EnumProperty
+from bpy.props import (FloatProperty,
+                       StringProperty
+                       )
+
 from bpy_extras.io_utils import (ImportHelper,
                                  ExportHelper,
                                  axis_conversion,
@@ -36,43 +40,27 @@ class ImportAudioCarver(bpy.types.Operator, ImportHelper):
     filename_ext = ".ac"
     filter_glob = StringProperty(default="*.ac", options={'HIDDEN'})
 
-    axis_forward = EnumProperty(
-            name="Forward",
-            items=(('X', "X Forward", ""),
-                   ('Y', "Y Forward", ""),
-                   ('Z', "Z Forward", ""),
-                   ('-X', "-X Forward", ""),
-                   ('-Y', "-Y Forward", ""),
-                   ('-Z', "-Z Forward", ""),
-                   ),
-            default='Z',
-            )
-
-    axis_up = EnumProperty(
-            name="Up",
-            items=(('X', "X Up", ""),
-                   ('Y', "Y Up", ""),
-                   ('Z', "Z Up", ""),
-                   ('-X', "-X Up", ""),
-                   ('-Y', "-Y Up", ""),
-                   ('-Z', "-Z Up", ""),
-                   ),
-            default='Y',
-            )
+    pre_roll = FloatProperty(name="Pre-Roll", default=3.0)
+    post_roll = FloatProperty(name="Post-Roll", default=3.0)
+    height = FloatProperty(name="Height", default=10.0)
+    min_pitch = FloatProperty(name="Minimum Pitch", default=0.0)
+    max_pitch = FloatProperty(name="Maximum Pitch", default=127.0)
+    inner_radius = FloatProperty(name="Inner Radius", default=10.0)
+    track_width = FloatProperty(name="Track Width", default=1.0)
 
     def execute(self, context):
         from . import import_ac
-
-        keywords = self.as_keywords(ignore=("axis_forward",
-                                            "axis_up",
-                                            "filter_glob",
-                                            ))
-        global_matrix = axis_conversion(from_forward=self.axis_forward,
-                                        from_up=self.axis_up,
-                                        ).to_4x4()
-        keywords["global_matrix"] = global_matrix
-
-        return import_ac.load(self, context, **keywords)
+        return import_ac.load(self,
+                              context,
+                              self.filepath,
+                              self.pre_roll,
+                              self.post_roll,
+                              self.height,
+                              self.min_pitch,
+                              self.max_pitch,
+                              self.inner_radius,
+                              self.track_width
+                              )
 
 
 def menu_func_import(self, context):
