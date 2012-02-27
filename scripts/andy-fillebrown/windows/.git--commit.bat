@@ -1,0 +1,3 @@
+
+cd repo
+call gitgui
