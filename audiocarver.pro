@@ -16,6 +16,8 @@ CONFIG += ordered
 SUBDIRS = src
 
 OTHER_FILES *= \
+    scripts/blender/addons/io_scene_audiocarver/* \
+    \
     bugs.txt \
     project.prf \
     \
