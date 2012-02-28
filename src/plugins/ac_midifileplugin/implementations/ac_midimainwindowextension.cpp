@@ -24,6 +24,8 @@
 #include <ac_namespace.h>
 #include <ac_point.h>
 
+#include <mi_ieditor.h>
+
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
@@ -36,6 +38,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QMenu>
+#include <QSettings>
 
 using namespace Ac::Midi;
 
@@ -184,13 +187,21 @@ void MainWindowExtension::initActions()
 
 void MainWindowExtension::importMidiFile()
 {
+    QSettings *settings = Core::ICore::instance()->settings();
+    QString mru_dir = settings->value("MidiImport/MRU_Directory").toString();
+
     // Get MIDI file name from user.
     QString file_name = QFileDialog::getOpenFileName(
                 Core::ICore::instance()->mainWindow(),
-                "Import MIDI File", "",
+                "Import MIDI File",
+                mru_dir,
                 "MIDI File (*.mid)");
     if (!QFile::exists(file_name))
         return;
+
+    mru_dir = QDir(file_name).path();
+    settings->setValue("MidiImport/MRU_Directory", mru_dir);
+    settings->sync();
 
     IEditor *editor = IEditor::instance();
     editor->beginCommand();
