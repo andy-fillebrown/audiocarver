@@ -34,6 +34,7 @@
 
 #include <mi_idatabase.h>
 #include <mi_imodel.h>
+#include <mi_imodelitem.h>
 
 #include <actioncontainer.h>
 #include <actionmanager.h>
@@ -250,7 +251,8 @@ void MainWindowExtension::createTrack()
     editor->beginCommand();
     IModel *model = IModel::instance();
     IModelItem *track = IObjectFactory::instance()->create(Ac::TrackItem);
-    model->insertItem(track, 0, model->listIndex(Ac::TrackItem));
+    const IModelItem *track_list = model->rootItem()->findModelItemList(Ac::TrackItem);
+    model->insertItem(track, track_list->modelItemCount(), model->indexFromItem(track_list));
     editor->endCommand();
 }
 
