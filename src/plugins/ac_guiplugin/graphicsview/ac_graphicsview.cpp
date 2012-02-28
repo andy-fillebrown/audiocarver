@@ -873,8 +873,6 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
     if (d->insertingPoints)
         return;
-    if (d->selectPlayCursor(event->pos()))
-        return;
     if (Qt::RightButton == event->button()) {
         if (Picking == d->dragState)
             return;
@@ -884,7 +882,8 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
             d->startPan(event->pos());
     } else if (Qt::LeftButton == event->button()) {
         if (!d->selectGrips(event->pos()))
-            d->startPicking(event->pos());
+            if (!d->selectPlayCursor(event->pos()))
+                d->startPicking(event->pos());
     }
 }
 
