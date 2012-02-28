@@ -134,12 +134,13 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
         note->setParentModelItem(note_list);
     }
 
-    // Set score length.
+    // Extend the score length if the track is longer than the current length.
     qreal length = 0.0f;
     foreach (MidiNote *note, matched_notes)
         if (length < note->stopTime)
             length = note->stopTime;
-    score->setData(length, Ac::LengthRole);
+    if (score->data(Ac::LengthRole).toReal() < length)
+        score->setData(length, Ac::LengthRole);
 
     qDeleteAll(matched_notes);
 }
