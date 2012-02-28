@@ -34,6 +34,17 @@ template <class T> class TrackList : public UniquelyNamedObjectTList<T>
 {
 public:
     TrackList(QObject *parent = 0);
+
+    void insert(int i, Object *object)
+    {
+        int suffix = 1;
+        if ("Track" == object->name()) {
+            while (this->hasChild(QString("Track.%1").arg(suffix)))
+                ++suffix;
+            object->setName(QString("Track.%1").arg(suffix));
+        }
+        UniquelyNamedObjectTList<T>::insert(i, object);
+    }
 };
 
 template <class T> class TrackListPrivate : public ObjectTListPrivate<T>
