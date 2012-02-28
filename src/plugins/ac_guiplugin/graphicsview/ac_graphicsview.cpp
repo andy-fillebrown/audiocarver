@@ -135,7 +135,7 @@ public:
 
     QRect pickOneRect(const QPoint &pos) const
     {
-        return QRect(pos.x() - 4, pos.y() - 4, 8, 8);
+        return QRect(pos.x() - 2, pos.y() - 2, 4, 4);
     }
 
     void startZoom(const QPoint &pos)
