@@ -328,7 +328,7 @@ public:
 
         const int prevPickedGrips_n = pickedGrips.count();
 
-        const QList<QGraphicsItem*> items = q->items(pos);
+        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
             if (unknown) {
