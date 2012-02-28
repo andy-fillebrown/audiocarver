@@ -192,6 +192,9 @@ void MainWindowExtension::importMidiFile()
     if (!QFile::exists(file_name))
         return;
 
+    IEditor *editor = IEditor::instance();
+    editor->beginCommand();
+
     // Import MIDI file.
     MidiFileReader reader(file_name);
 #   if 0
@@ -208,4 +211,6 @@ void MainWindowExtension::importMidiFile()
     const int track_count = reader.trackCount();
     for (int i = 0;  i < track_count;  ++i)
         importTrack(reader, i);
+
+    editor->endCommand();
 }
