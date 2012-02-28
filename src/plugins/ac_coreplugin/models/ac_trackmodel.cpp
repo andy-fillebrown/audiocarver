@@ -35,6 +35,7 @@ TrackModel::TrackModel(QObject *parent)
     for (int i = 0;  i < 4;  ++i)
         roleMaps.append(RoleMap());
     roleMaps[0].insert(Qt::DisplayRole, Ac::ColorRole);
+    roleMaps[0].insert(Qt::EditRole, Ac::ColorRole);
     roleMaps[1].insert(Qt::DisplayRole, Mi::NameRole);
     roleMaps[1].insert(Qt::EditRole, Mi::NameRole);
     roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
