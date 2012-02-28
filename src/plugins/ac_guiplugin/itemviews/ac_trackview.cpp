@@ -228,18 +228,16 @@ void TrackView::paintEvent(QPaintEvent *event)
 
 void TrackView::keyPressEvent(QKeyEvent *event)
 {
-    // To stop the view from moving to the left, do nothing when the right
-    // arrow key is pressed.
-    if (Qt::Key_Right == event->key())
+    switch (event->key()) {
+    case Qt::Key_Right:
+        // Do nothing to stop the view from moving to the left.
         return;
-    QTreeView::keyPressEvent(event);
-}
-
-void TrackView::keyReleaseEvent(QKeyEvent *event)
-{
-    if (Qt::Key_Escape == event->key()) {
+    case Qt::Key_Escape:
         NoteSelectionModel::instance()->clear();
         TrackSelectionModel::instance()->clear();
+        break;
+    default:
+        break;
     }
-    QTreeView::keyReleaseEvent(event);
+    QTreeView::keyPressEvent(event);
 }

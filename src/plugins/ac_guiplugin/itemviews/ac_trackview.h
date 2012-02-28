@@ -45,7 +45,6 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
 
 private:
     TrackViewPrivate *d;
