@@ -115,13 +115,14 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
     if (matched_notes.isEmpty())
         return;
 
-    IModelItem *score = IModel::instance()->rootItem();
+    IModel *model = IModel::instance();
+    IModelItem *score = model->rootItem();
 
     // Add new track and notes to the score.
     IModelItem *track_list = score->findModelItemList(Ac::TrackItem);
     IObjectFactory *factory = IObjectFactory::instance();
     IModelItem *track = factory->create(Ac::TrackItem);
-    track->setParentModelItem(track_list);
+    model->insertItem(track, track_list->modelItemCount(), model->indexFromItem(track_list));
     IModelItem *note_list = track->findModelItemList(Ac::NoteItem);
     foreach (MidiNote *midi_note, matched_notes) {
         IModelItem *note = factory->create(Ac::NoteItem);
