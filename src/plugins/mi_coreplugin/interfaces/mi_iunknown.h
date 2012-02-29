@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MIIUNKOWN_H
-#define MIIUNKOWN_H
+#ifndef MI_IUNKOWN_H
+#define MI_IUNKOWN_H
 
 #include <mi_global.h>
 
@@ -50,4 +50,4 @@ Object *interfaceToObject_cast(IUnknown *interface)
 
 MI_CORE_EXPORT IUnknown *variantToUnknown_cast(const QVariant &v);
 
-#endif // MIIUNKOWN_H
+#endif // MI_IUNKOWN_H
