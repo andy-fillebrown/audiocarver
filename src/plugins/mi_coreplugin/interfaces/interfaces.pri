@@ -1,6 +1,7 @@
 
 HEADERS *= \
     interfaces/mi_imodelitem.h \
+    interfaces/mi_imodelitemlist.h \
 
 SOURCE_PAIRS = \
     mi_idatabase \

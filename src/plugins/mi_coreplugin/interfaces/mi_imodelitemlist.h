@@ -15,40 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef MI_NAMESPACE_H
-#define MI_NAMESPACE_H
+#ifndef MI_IMODELITEMLIST_H
+#define MI_IMODELITEMLIST_H
 
-#include <mi_global.h>
+#include <mi_iunknown.h>
+#include <mi_namespace.h>
 
-#include <qnamespace.h>
+class IModelItem;
 
-namespace Mi {
+class IModelItemList : public IUnknown
+{
+public:
+    enum { Type = Mi::ModelItemListInterface };
 
-enum InterfaceType {
-    ModelInterface,
-    ModelItemInterface,
-    ModelItemListInterface,
-    InterfaceTypeCount
+    virtual int count() const = 0;
+    virtual int indexOf(IModelItem *item) = 0;
+    virtual void insert(int i, IModelItem *item) = 0;
+    virtual bool remove(IModelItem *item) = 0;
+
+    void append(IModelItem *item)
+    {
+        insert(count(), item);
+    }
 };
 
-enum ItemDataRole {
-    InvalidRole = Qt::UserRole,
-    ItemTypeRole,
-    ListTypeRole,
-    RoleTypeRole,
-    NameRole,
-    ItemDataRoleCount
-};
-
-MI_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
-MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
-
-enum ItemType {
-    UnknownItem,
-    ListItem,
-    ItemTypeCount
-};
-
-} // namespace Mi
-
-#endif // MI_NAMESPACE_H
+#endif // MI_IMODELITEMLIST_H
