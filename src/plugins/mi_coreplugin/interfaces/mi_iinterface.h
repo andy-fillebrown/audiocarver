@@ -31,7 +31,7 @@ public:
 template <class T> inline
 T *query(IInterface *interface)
 {
-    return unknown ? reinterpret_cast<T*>(interface->query(T::Type)) : 0;
+    return interface ? reinterpret_cast<T*>(interface->query(T::Type)) : 0;
 }
 
 #endif // MI_IINTERFACE_H
