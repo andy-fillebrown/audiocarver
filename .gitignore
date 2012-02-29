@@ -109,3 +109,8 @@ tests/auto/profilewriter/tst_profilewriter
 # -------------
 testing/*.ac-output
 
+# Blender Scripting Project Files
+# -------------------------------
+scripts/blender/testing/__pycache__
+scripts/blender/testing/testing.blend
+scripts/blender/testing/testing.blend*
