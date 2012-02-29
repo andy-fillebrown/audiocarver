@@ -18,7 +18,7 @@
 		<link>
 			<name>testing.blend</name>
 			<type>1</type>
-			<location>C:/-/home/code/audiocarver-new/repo/scripts/blender/testing/testing.blend</location>
+			<locationURI>PROJECT_LOC/testing.blend</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
