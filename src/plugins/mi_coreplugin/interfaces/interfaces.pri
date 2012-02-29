@@ -1,5 +1,6 @@
 
 HEADERS *= \
+    interfaces/mi_iinterface.h \
     interfaces/mi_imodelitem.h \
     interfaces/mi_imodelitemlist.h \
 
