@@ -23,7 +23,7 @@ class InputVariables:
         print("inner_radius =", self.inner_radius)
         print("track_width  =", self.track_width)
 
-input = InputVariables
+input = InputVariables()
 
 def load(operator,
          context,
@@ -46,7 +46,7 @@ def load(operator,
     input.track_width = track_width
 
     print("\nImporting AudioCarver file ...\n")
-    input.print_values(input)
-    print("\n...done\n")
+    input.print_values()
+    print("\n... done\n")
 
     return {'FINISHED'}
