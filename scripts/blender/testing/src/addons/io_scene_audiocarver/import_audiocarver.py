@@ -1,10 +1,3 @@
-'''
-Created on Mar 3, 2012
-
-@author: Andy
-'''
-
-# <pep8 compliant>
 
 class InputVariables:
     filepath = ""
@@ -17,7 +10,7 @@ class InputVariables:
     track_width = 0.0
 
     def print_values(self):
-        print("filepath     =", self.filepath)
+        print("file_path    =", self.filepath)
         print("pre_roll     =", self.pre_roll)
         print("post_roll    =", self.post_roll)
         print("height       =", self.height)

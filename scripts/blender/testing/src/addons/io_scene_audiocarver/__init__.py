@@ -1,10 +1,3 @@
-'''
-Created on Mar 3, 2012
-
-@author: Andy
-'''
-
-# <pep8-80 compliant>
 
 bl_info = {
     "name": "AudioCarver format",
@@ -30,7 +23,6 @@ from bpy.props import (FloatProperty,
                        )
 
 from bpy_extras.io_utils import (ImportHelper,
-                                 ExportHelper,
                                  axis_conversion,
                                  path_reference_mode,
                                  )
