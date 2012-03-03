@@ -1,3 +1,8 @@
+'''
+Created on Mar 3, 2012
+
+@author: Andy
+'''
 
 # <pep8-80 compliant>
 
@@ -15,8 +20,8 @@ bl_info = {
 
 if "bpy" in locals():
     import imp
-    if "import_ac" in locals():
-        imp.reload(import_ac)
+    if "import_audiocarver" in locals():
+        imp.reload(import_audiocarver)
 
 import bpy
 # from bpy.props import StringProperty, BoolProperty, EnumProperty
@@ -49,8 +54,8 @@ class ImportAudioCarver(bpy.types.Operator, ImportHelper):
     track_width = FloatProperty(name="Track Width", default=1.0)
 
     def execute(self, context):
-        from . import import_ac
-        return import_ac.load(self,
+        from . import import_audiocarver
+        return import_audiocarver.load(self,
                               context,
                               self.filepath,
                               self.pre_roll,

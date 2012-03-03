@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>testing.blend</name>
-			<type>1</type>
-			<locationURI>PROJECT_LOC/testing.blend</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

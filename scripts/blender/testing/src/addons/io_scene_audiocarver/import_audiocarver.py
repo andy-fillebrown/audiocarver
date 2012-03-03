@@ -1,7 +1,10 @@
+'''
+Created on Mar 3, 2012
+
+@author: Andy
+'''
 
 # <pep8 compliant>
-
-import bpy
 
 class InputVariables:
     filepath = ""
@@ -23,7 +26,7 @@ class InputVariables:
         print("inner_radius =", self.inner_radius)
         print("track_width  =", self.track_width)
 
-input = InputVariables()
+input_variables = InputVariables()
 
 def load(operator,
          context,
@@ -36,17 +39,17 @@ def load(operator,
          inner_radius,
          track_width
          ):
-    input.filepath = filepath
-    input.pre_roll = pre_roll
-    input.post_roll = post_roll
-    input.height = height
-    input.min_pitch = min_pitch
-    input.max_pitch = max_pitch
-    input.inner_radius = inner_radius
-    input.track_width = track_width
+    input_variables.filepath = filepath
+    input_variables.pre_roll = pre_roll
+    input_variables.post_roll = post_roll
+    input_variables.height = height
+    input_variables.min_pitch = min_pitch
+    input_variables.max_pitch = max_pitch
+    input_variables.inner_radius = inner_radius
+    input_variables.track_width = track_width
 
-    print("\nImporting AudioCarver file ...\n")
-    input.print_values()
-    print("\n... done\n")
+    print("\nImporting AudioCarver file ...")
+    input_variables.print_values()
+    print("... done\n")
 
     return {'FINISHED'}
