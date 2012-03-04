@@ -47,17 +47,16 @@ class ImportAudioCarver(bpy.types.Operator, ImportHelper):
 
     def execute(self, context):
         from . import import_audiocarver
-        return import_audiocarver.load(self,
-                              context,
-                              self.filepath,
-                              self.pre_roll,
-                              self.post_roll,
-                              self.height,
-                              self.min_pitch,
-                              self.max_pitch,
-                              self.inner_radius,
-                              self.track_width
-                              )
+        input_variables = import_audiocarver.InputVariables()
+        input_variables.filepath = self.filepath
+        input_variables.pre_roll = self.pre_roll
+        input_variables.post_roll = self.post_roll
+        input_variables.height = self.height
+        input_variables.min_pitch = self.min_pitch
+        input_variables.max_pitch = self.max_pitch
+        input_variables.inner_radius = self.inner_radius
+        input_variables.track_width = self.track_width
+        return import_audiocarver.load(self, context, input_variables)
 
 
 def menu_func_import(self, context):
