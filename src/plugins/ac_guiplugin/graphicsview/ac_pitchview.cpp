@@ -253,6 +253,17 @@ void PitchView::mouseReleaseEvent(QMouseEvent *event)
         GraphicsView::mouseReleaseEvent(event);
 }
 
+void PitchView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (d->creatingNotes) {
+        if (Qt::LeftButton == event->button()) {
+            d->finishNote();
+            event->accept();
+        }
+    } else
+        GraphicsView::mouseDoubleClickEvent(event);
+}
+
 void PitchView::keyReleaseEvent(QKeyEvent *event)
 {
     if (d->creatingNotes) {

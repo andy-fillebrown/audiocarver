@@ -979,8 +979,12 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if (Qt::LeftButton == event->button())
-        d->finishDraggingPlayCursor(event->pos());
+    if (Qt::LeftButton == event->button()) {
+        if (d->insertingPoints)
+            ViewManager::instance()->finishInsertingPoints();
+        else
+            d->finishDraggingPlayCursor(event->pos());
+    }
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
