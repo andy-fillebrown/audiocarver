@@ -347,13 +347,19 @@ void MainWindowExtension::startOrStop()
     if (!audio_engine)
         return;
     if (audio_engine->isStarted())
-        audio_engine->stop();
+        stop();
     else
-        audio_engine->start();
+        start();
 }
 
 void MainWindowExtension::start()
 {
+    IModelItem *score = IModel::instance()->rootItem();
+    if (score->data(Ac::StartTimeRole) == score->data(Ac::LengthRole)) {
+        QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
+        return;
+    }
+
     IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->start();
