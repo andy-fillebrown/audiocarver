@@ -908,10 +908,6 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d->playCursor) {
-        d->dragPlayCursorTo(event->pos());
-        return;
-    }
     d->curPos = event->pos();
     switch (d->viewState) {
     case Zooming:
@@ -919,6 +915,10 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
         break;
     case Panning:
         d->panTo(event->pos());
+    }
+    if (d->playCursor) {
+        d->dragPlayCursorTo(event->pos());
+        return;
     }
     if (d->curGrip
             && DraggingGrips != d->dragState
@@ -937,10 +937,6 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (d->playCursor) {
-        d->finishDraggingPlayCursor(event->pos());
-        return;
-    }
     if (Qt::RightButton == event->button()) {
         if (d->insertingPoints)
             ViewManager::instance()->finishInsertingPoints();
@@ -955,6 +951,10 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             }
         }
     } else if (Qt::LeftButton == event->button()) {
+        if (d->playCursor) {
+            d->finishDraggingPlayCursor(event->pos());
+            return;
+        }
         if (d->insertingPoints)
             d->insertPoint(event->pos());
         else {
