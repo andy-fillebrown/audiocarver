@@ -134,6 +134,7 @@ public:
     qreal startTime;
     QString compiledDatabase;
     QString previousTrackName;
+    qreal previousTrackVolume;
     uint compiled : 1;
     uint started : 1;
     uint connected : 1;
@@ -158,6 +159,7 @@ public:
         ,   byteOrder(QAudioFormat::LittleEndian)
         ,   trackCount(0)
         ,   startTime(0.0)
+        ,   previousTrackVolume(-1.0f)
         ,   compiled(false)
         ,   started(false)
         ,   connected(false)
@@ -287,8 +289,9 @@ public:
                 << "nchnls = 1" << endl
                 << endl
                 << "instr 1" << endl
+                << "    i_volume = p6" << endl
                 << "    a_out diskin2 p4, 1, p5, 0, 0, 0, 1024" << endl
-                << "    out a_out" << endl
+                << "    out i_volume * a_out" << endl
                 << "endin" << endl;
 
         orc_file.close();
@@ -327,10 +330,11 @@ public:
             const QString track_name = track->data(Mi::NameRole).toString().toLower();
             const QString audio_file_name = audio_dir_name + "/" + track_name + "." + audio_file_type;
 
-            const QString sco_line = QString("i1.%1 0 -1 \"%2\" %3\n")
+            const QString sco_line = QString("i1.%1 0 -1 \"%2\" %3 %4\n")
                     .arg(sub_instrument)
                     .arg(audio_file_name)
-                    .arg(startTime);
+                    .arg(startTime)
+                    .arg(track->data(Ac::VolumeRole).toReal());
 
             sco_file.write(qPrintable(sco_line));
 
@@ -578,12 +582,14 @@ void CsoundAudioEngine::modelDataAboutToBeChanged(const QModelIndex &topLeft)
         return;
 
     d->previousTrackName = model->data(topLeft, Mi::NameRole).toString();
+    d->previousTrackVolume = model->data(topLeft, Ac::VolumeRole).toReal();
 }
 
 void CsoundAudioEngine::modelDataChanged(const QModelIndex &topLeft)
 {
     if (Ac::TrackItem == topLeft.data(Mi::ItemTypeRole).toInt()) {
-        if (d->previousTrackName != topLeft.data(Mi::NameRole).toString()) {
+        if (d->previousTrackName != topLeft.data(Mi::NameRole).toString()
+                ||  d->previousTrackVolume != topLeft.data(Ac::VolumeRole).toReal()) {
             d->compiled = false;
             d->compileTimer->start();
         }

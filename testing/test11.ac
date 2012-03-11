@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128" startTime="0">
     <TrackList>
-        <Track name="Track" volume="1" color="#7f0000" instrument="sine--smooth-envelope" visible="true" recording="true">
+        <Track name="Track" volume="0.1" color="#7f0000" instrument="sine--smooth-envelope" visible="true" recording="true">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -145,6 +145,5 @@
             <TimeGridLine location="128" priority="0" color="#7f0000"/>
         </TimeGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="64.0121765604443" pitchPosition="63.4156706484964" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
     <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>
