@@ -286,19 +286,24 @@ public:
         hoveredEntities.clear();
     }
 
-    bool selectPlayCursor(const QPoint &pos)
+    IPlayCursor *findPlayCursor(const QList<QGraphicsItem*> &items)
     {
-        playCursor = 0;
-        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
+        IPlayCursor *play_cursor = 0;
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
             if (unknown) {
-                playCursor = query<IPlayCursor>(unknown);
-                if (playCursor)
-                    return true;
+                play_cursor = query<IPlayCursor>(unknown);
+                if (play_cursor)
+                    break;
             }
         }
-        return false;
+        return play_cursor;
+    }
+
+    bool selectPlayCursor(const QPoint &pos)
+    {
+        playCursor = findPlayCursor(q->items(pickOneRect(pos)));
+        return playCursor != 0;
     }
 
     void dragPlayCursorTo(const QPoint &pos)
@@ -314,6 +319,14 @@ public:
 
     void finishDraggingPlayCursor(const QPoint &pos)
     {
+        if (!playCursor) {
+            playCursor = findPlayCursor(q->items());
+            if (!playCursor) {
+                qWarning() << Q_FUNC_INFO << ": play cursor not found";
+                return;
+            }
+        }
+
         // The view manager might have different view settings than the
         // database.  Update the database's view settings so they don't
         // overwrite the view manager's view settings in the view manager's
@@ -962,6 +975,12 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
         d->curGrip = 0;
     }
     d->hover();
+}
+
+void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (Qt::LeftButton == event->button())
+        d->finishDraggingPlayCursor(event->pos());
 }
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
