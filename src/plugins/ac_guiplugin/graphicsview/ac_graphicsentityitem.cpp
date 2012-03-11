@@ -107,34 +107,12 @@ GraphicsEntityItem::GraphicsEntityItem(IEntity *entity)
     :   d(new GraphicsEntityItemPrivate(this))
 {
     d->entity = entity;
-    resetGrips();
+    resetGripItems();
 }
 
 GraphicsEntityItem::~GraphicsEntityItem()
 {
     delete d;
-}
-
-void GraphicsEntityItem::resetGrips()
-{
-    const PointList &points = d->entity->points();
-    const int points_n = points.count();
-
-    for (int i = 0;  i < points_n;  ++i) {
-        if (i < d->gripItems.count()) {
-            IGripItem *gripItem = d->gripItems[i];
-            gripItem->setPosition(points.at(i).pos);
-            gripItem->updateOriginalPosition();
-        } else
-            d->addGripItem(new GraphicsGripItem(points.at(i).pos));
-    }
-
-    for (int i = 0;  i < points_n;  ++i)
-        d->gripItems[i]->show();
-
-    const int grips_n = d->gripItems.count();
-    for (int i = points_n;  i < grips_n;  ++i)
-        d->gripItems[i]->hide();
 }
 
 IEntity *GraphicsEntityItem::entity() const
@@ -154,6 +132,26 @@ void GraphicsEntityItem::unhighlight()
     IEntity *entity = d->entityToHighlight();
     if (entity)
         entity->unhighlight();
+}
+
+void GraphicsEntityItem::resetGripItems()
+{
+    const PointList &points = d->entity->points();
+    const int points_n = points.count();
+
+    for (int i = 0;  i < points_n;  ++i) {
+        if (i < d->gripItems.count()) {
+            IGripItem *gripItem = d->gripItems[i];
+            gripItem->setPosition(points.at(i).pos);
+            gripItem->updateOriginalPosition();
+        } else
+            d->addGripItem(new GraphicsGripItem(points.at(i).pos));
+    }
+
+    while (points_n < d->gripItems.count()) {
+        delete d->gripItems.last();
+        d->gripItems.removeLast();
+    }
 }
 
 void GraphicsEntityItem::startDraggingPoints()

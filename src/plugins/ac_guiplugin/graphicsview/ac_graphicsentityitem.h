@@ -32,12 +32,11 @@ public:
     GraphicsEntityItem(IEntity *entity);
     ~GraphicsEntityItem();
 
-    void resetGrips();
-
     // IEntityItem
     IEntity *entity() const;
     void highlight();
     void unhighlight();
+    void resetGripItems();
     void startDraggingPoints();
     void updatePoints();
     void finishDraggingPoints();

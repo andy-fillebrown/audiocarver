@@ -768,13 +768,13 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     if (entity) {
         GraphicsEntityItem *entityItem = d->findEntityItem(entity);
         if (entityItem)
-            entityItem->resetGrips();
+            entityItem->resetGripItems();
         else {
             QList<IEntity*> subEntities = entity->subEntities(sceneType());
             foreach (IEntity* subEntity, subEntities) {
                 entityItem = d->findEntityItem(subEntity);
                 if (entityItem)
-                    entityItem->resetGrips();
+                    entityItem->resetGripItems();
             }
         }
     }
@@ -831,7 +831,12 @@ void GraphicsView::scoreLengthChanged()
 
 void GraphicsView::removePoints()
 {
-    foreach (IGripItem *grip, d->pickedGrips) {
+    // Store the view's picked grips locally so they can be cleared before
+    // they're deleted by the entity item in resetGrips.
+    QList<IGripItem*> picked_grips = d->pickedGrips;
+    d->clearPickedGrips();
+
+    foreach (IGripItem *grip, picked_grips) {
         IEntity *entity = grip->parentEntityItem()->entity();
         PointList points = entity->points();
         const int n = points.count();
@@ -842,8 +847,10 @@ void GraphicsView::removePoints()
             }
         }
         entity->setPoints(points);
+        GraphicsEntityItem *entity_item = d->findEntityItem(entity);
+        if (entity_item)
+            entity_item->resetGripItems();
     }
-    d->resetPickedEntities();
 }
 
 void GraphicsView::zoomStarting()
