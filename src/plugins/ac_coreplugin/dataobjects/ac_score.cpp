@@ -295,8 +295,10 @@ qreal Score::startTime() const
 void Score::setStartTime(qreal time)
 {
     Q_D(Score);
-    if (time < 0.0f || d->length <= time)
+    if (time < 0.0f)
         time = 0.0f;
+    if (d->length < time)
+        time = d->length;
     if (d->startTime == time)
         return;
     d->beginChangeData();
@@ -317,6 +319,8 @@ void Score::setPlaybackTime(qreal time)
     Q_D(Score);
     if (time + d->startTime < 0.0f)
         time = -d->startTime;
+    if (d->length < time + d->startTime)
+        time = d->length - d->startTime;
     d->playCursorTime = time;
     d->playCursorTimer->start();
 }
