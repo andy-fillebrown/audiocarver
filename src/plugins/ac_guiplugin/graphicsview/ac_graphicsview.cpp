@@ -314,6 +314,12 @@ public:
 
     void finishDraggingPlayCursor(const QPoint &pos)
     {
+        // The view manager might have different view settings than the
+        // database.  Update the database's view settings so they don't
+        // overwrite the view manager's view settings in the view manager's
+        // dataChanged implementation when the cursor position is changed.
+        ViewManager::instance()->updateDatabase();
+
         const qreal fromScenePos = playCursor->playCursorPosition();
         const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
         const qreal sceneOffset = toScenePos.x() - fromScenePos;
