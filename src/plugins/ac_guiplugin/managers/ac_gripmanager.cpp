@@ -68,15 +68,27 @@ GripManager *GripManager::instance()
     return ::instance;
 }
 
-QList<IGripItem*> GripManager::grips(int sceneType) const
+int GripManager::gripCount(int sceneType) const
 {
     switch (sceneType) {
     case Ac::PitchScene:
-        return d->pitchGrips;
+        return d->pitchGrips.count();
     case Ac::ControlScene:
-        return d->controlGrips;
+        return d->controlGrips.count();
     default:
-        return QList<IGripItem*>();
+        return -1;
+    }
+}
+
+IGripItem *GripManager::gripAt(int sceneType, int i) const
+{
+    switch (sceneType) {
+    case Ac::PitchScene:
+        return d->pitchGrips.at(i);
+    case Ac::ControlScene:
+        d->controlGrips.at(i);
+    default:
+        return 0;
     }
 }
 

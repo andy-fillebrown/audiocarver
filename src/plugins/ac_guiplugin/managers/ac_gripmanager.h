@@ -33,7 +33,8 @@ public:
 
     static GripManager *instance();
 
-    QList<IGripItem*> grips(int sceneType) const;
+    int gripCount(int sceneType) const;
+    IGripItem *gripAt(int sceneType, int i) const;
     void appendGrip(int sceneType, IGripItem *grip);
     void removeGrip(int sceneType, IGripItem *grip);
 
