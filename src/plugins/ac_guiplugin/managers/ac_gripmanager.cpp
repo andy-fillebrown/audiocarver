@@ -17,22 +17,35 @@
 
 #include "ac_gripmanager.h"
 
+#include <ac_igripitem.h>
+
+#include <ac_namespace.h>
+
 class GripManagerPrivate
 {
 public:
     GripManager *q;
+    QList<IGripItem*> pitchGrips;
+    QList<IGripItem*> controlGrips;
 
     GripManagerPrivate(GripManager *q)
         :   q(q)
+    {}
+
+    void appendPitchGrip(IGripItem *grip)
     {
+        if (pitchGrips.contains(grip))
+            return;
+        pitchGrips.append(grip);
+        qSort(pitchGrips.begin(), pitchGrips.end(), IGripItem::lessThan);
     }
 
-    void init()
+    void appendControlGrip(IGripItem *grip)
     {
-    }
-
-    ~GripManagerPrivate()
-    {
+        if (controlGrips.contains(grip))
+            return;
+        controlGrips.append(grip);
+        qSort(controlGrips.begin(), controlGrips.end(), IGripItem::lessThan);
     }
 };
 
@@ -43,7 +56,6 @@ GripManager::GripManager(QObject *parent)
     ,   d(new GripManagerPrivate(this))
 {
     ::instance = this;
-    d->init();
 }
 
 GripManager::~GripManager()
@@ -54,4 +66,44 @@ GripManager::~GripManager()
 GripManager *GripManager::instance()
 {
     return ::instance;
+}
+
+QList<IGripItem*> GripManager::grips(int sceneType) const
+{
+    switch (sceneType) {
+    case Ac::PitchScene:
+        return d->pitchGrips;
+    case Ac::ControlScene:
+        return d->controlGrips;
+    default:
+        return QList<IGripItem*>();
+    }
+}
+
+void GripManager::appendGrip(int sceneType, IGripItem *grip)
+{
+    switch (sceneType) {
+    case Ac::PitchScene:
+        d->appendPitchGrip(grip);
+        break;
+    case Ac::ControlScene:
+        d->appendControlGrip(grip);
+        break;
+    default:
+        break;
+    }
+}
+
+void GripManager::removeGrip(int sceneType, IGripItem *grip)
+{
+    switch (sceneType) {
+    case Ac::PitchScene:
+        d->pitchGrips.removeOne(grip);
+        break;
+    case Ac::ControlScene:
+        d->controlGrips.removeOne(grip);
+        break;
+    default:
+        break;
+    }
 }

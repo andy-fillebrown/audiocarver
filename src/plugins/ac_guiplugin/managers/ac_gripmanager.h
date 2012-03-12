@@ -20,6 +20,8 @@
 
 #include <QObject>
 
+class IGripItem;
+
 class GripManagerPrivate;
 class GripManager : public QObject
 {
@@ -30,6 +32,10 @@ public:
     ~GripManager();
 
     static GripManager *instance();
+
+    QList<IGripItem*> grips(int sceneType) const;
+    void appendGrip(int sceneType, IGripItem *grip);
+    void removeGrip(int sceneType, IGripItem *grip);
 
 private:
     GripManagerPrivate *d;
