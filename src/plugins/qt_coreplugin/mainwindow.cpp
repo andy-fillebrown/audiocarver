@@ -182,15 +182,9 @@ IContext *MainWindow::currentContextObject() const
 void MainWindow::registerContainers()
 {
     QStringList menuBarGroups;
-    menuBarGroups << Constants::G_FILE;
-
-    // Tools menu is not needed on Mac, yet.
-#   ifndef Q_WS_MAC
-    {   menuBarGroups << Constants::G_TOOLS;
-    }
-#   endif
-
     menuBarGroups
+            << Constants::G_FILE
+            << Constants::G_TOOLS
             << Constants::G_WINDOW
             << Constants::G_HELP;
 
