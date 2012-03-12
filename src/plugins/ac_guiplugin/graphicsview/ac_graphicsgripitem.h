@@ -32,7 +32,6 @@ public:
     GraphicsGripItem(const QPointF &position);
     ~GraphicsGripItem();
 
-
     // IGripItem
     IEntityItem *parentEntityItem() const;
     const QPointF &originalPosition() const;
