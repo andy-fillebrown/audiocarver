@@ -18,6 +18,7 @@
 #include "ac_graphicsentityitem.h"
 
 #include <ac_graphicsgripitem.h>
+#include <ac_gripmanager.h>
 
 #include <ac_ientity.h>
 
@@ -26,35 +27,41 @@ class GraphicsEntityItemPrivate
 public:
     GraphicsEntityItem *q;
     IEntity *entity;
+    int sceneType;
     QList<GraphicsGripItem*> gripItems;
     PointList previousPoints;
 
     GraphicsEntityItemPrivate(GraphicsEntityItem *q)
         :   q(q)
         ,   entity(0)
+        ,   sceneType(-1)
     {}
 
     ~GraphicsEntityItemPrivate()
     {
-        qDeleteAll(gripItems);
+        deleteGripItems();
     }
 
-    void addGripItem(GraphicsGripItem *gripItem)
+    void newGripItem(const QPointF &pos)
     {
-        gripItems.append(gripItem);
-        gripItem->setParentItem(q);
+        GraphicsGripItem *grip_item = new GraphicsGripItem(pos);
+        grip_item->setParentItem(q);
+        gripItems.append(grip_item);
+        GripManager::instance()->appendGrip(sceneType, query<IGripItem>(grip_item));
     }
 
-    void removeGripItem(GraphicsGripItem *gripItem)
+    void deleteGripItem(GraphicsGripItem *&gripItem)
     {
+        GripManager::instance()->removeGrip(sceneType, query<IGripItem>(gripItem));
         gripItems.removeOne(gripItem);
         gripItem->setParentItem(0);
+        delete gripItem;
     }
 
-    void clearGripItems()
+    void deleteGripItems()
     {
-        qDeleteAll(gripItems);
-        gripItems.clear();
+        while (!gripItems.isEmpty())
+            deleteGripItem(gripItems.last());
     }
 
     IEntity *entityToHighlight() const
@@ -96,6 +103,9 @@ GraphicsEntityItem::GraphicsEntityItem(IEntity *entity)
     :   d(new GraphicsEntityItemPrivate(this))
 {
     d->entity = entity;
+    ISubEntity *sub_entity = ::query<ISubEntity>(entity);
+    if (sub_entity)
+        d->sceneType = sub_entity->sceneType();
     resetGripItems();
 }
 
@@ -134,13 +144,11 @@ void GraphicsEntityItem::resetGripItems()
             gripItem->setPosition(points.at(i).pos);
             gripItem->updateOriginalPosition();
         } else
-            d->addGripItem(new GraphicsGripItem(points.at(i).pos));
+            d->newGripItem(points.at(i).pos);
     }
 
-    while (points_n < d->gripItems.count()) {
-        delete d->gripItems.last();
-        d->gripItems.removeLast();
-    }
+    while (points_n < d->gripItems.count())
+        d->deleteGripItem(d->gripItems.last());
 }
 
 void GraphicsEntityItem::startDraggingPoints()
