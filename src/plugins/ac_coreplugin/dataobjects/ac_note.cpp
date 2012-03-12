@@ -69,6 +69,11 @@ public:
         return objectToInterface_cast<IEntity>(note);
     }
 
+    int sceneType() const
+    {
+        return Ac::ControlScene;
+    }
+
     // IEntity
     const PointList &points() const
     {

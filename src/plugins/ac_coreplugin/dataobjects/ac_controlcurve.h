@@ -42,6 +42,11 @@ public:
     // ISubEntity
     IEntity *parentEntity() const;
 
+    int sceneType() const
+    {
+        return Ac::ControlScene;
+    }
+
     // IModelItem
     int type() const { return Type; }
 
