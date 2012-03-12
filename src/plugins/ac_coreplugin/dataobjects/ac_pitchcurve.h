@@ -42,6 +42,11 @@ public:
         return Ac::PitchScene;
     }
 
+    bool isCurve() const
+    {
+        return true;
+    }
+
     // IModelItem
     int type() const { return Type; }
 

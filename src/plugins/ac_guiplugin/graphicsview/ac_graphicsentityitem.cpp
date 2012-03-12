@@ -28,6 +28,7 @@ public:
     GraphicsEntityItem *q;
     IEntity *entity;
     int sceneType;
+    uint isCurve : bitsizeof(uint);
     QList<GraphicsGripItem*> gripItems;
     PointList previousPoints;
 
@@ -35,6 +36,7 @@ public:
         :   q(q)
         ,   entity(0)
         ,   sceneType(-1)
+        ,   isCurve(false)
     {}
 
     ~GraphicsEntityItemPrivate()
@@ -47,12 +49,14 @@ public:
         GraphicsGripItem *grip_item = new GraphicsGripItem(pos);
         grip_item->setParentItem(q);
         gripItems.append(grip_item);
-        GripManager::instance()->appendGrip(sceneType, query<IGripItem>(grip_item));
+        if (isCurve)
+            GripManager::instance()->appendGrip(sceneType, query<IGripItem>(grip_item));
     }
 
     void deleteGripItem(GraphicsGripItem *&gripItem)
     {
-        GripManager::instance()->removeGrip(sceneType, query<IGripItem>(gripItem));
+        if (isCurve)
+            GripManager::instance()->removeGrip(sceneType, query<IGripItem>(gripItem));
         gripItems.removeOne(gripItem);
         gripItem->setParentItem(0);
         delete gripItem;
@@ -104,8 +108,10 @@ GraphicsEntityItem::GraphicsEntityItem(IEntity *entity)
 {
     d->entity = entity;
     ISubEntity *sub_entity = ::query<ISubEntity>(entity);
-    if (sub_entity)
+    if (sub_entity) {
         d->sceneType = sub_entity->sceneType();
+        d->isCurve = sub_entity->isCurve();
+    }
     resetGripItems();
 }
 

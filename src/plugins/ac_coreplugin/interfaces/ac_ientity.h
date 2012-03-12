@@ -46,6 +46,7 @@ public:
 
     virtual IEntity *parentEntity() const = 0;
     virtual int sceneType() const = 0;
+    virtual bool isCurve() const = 0;
 };
 
 #endif // AC_IENTITY_H

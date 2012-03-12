@@ -47,6 +47,11 @@ public:
         return Ac::ControlScene;
     }
 
+    bool isCurve() const
+    {
+        return true;
+    }
+
     // IModelItem
     int type() const { return Type; }
 

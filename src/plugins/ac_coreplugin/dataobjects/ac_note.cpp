@@ -74,6 +74,11 @@ public:
         return Ac::ControlScene;
     }
 
+    bool isCurve() const
+    {
+        return false;
+    }
+
     // IEntity
     const PointList &points() const
     {
