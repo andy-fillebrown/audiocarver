@@ -17,6 +17,7 @@
 
 #include "ac_mainwidget.h"
 
+#include <ac_gripmanager.h>
 #include <ac_viewmanager.h>
 
 #include <ac_namespace.h>
@@ -33,6 +34,7 @@ class MainWidgetPrivate
 {
 public:
     MainWidget *q;
+    GripManager *gripManager;
     ViewManager *viewManager;
     MiGraphicsView *topRightView;
     qreal controlHeightPercentage;
@@ -41,6 +43,7 @@ public:
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
+        ,   gripManager(new GripManager(q))
         ,   viewManager(new ViewManager(q))
         ,   topRightView(new MiGraphicsView)
         ,   controlHeightPercentage(0.25f)
