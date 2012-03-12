@@ -10,7 +10,6 @@ SOURCE_PAIRS = \
     ac_pitchlabelview \
     ac_pitchview \
     ac_timelabelview \
-    ac_viewmanager \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= graphicsview/$${pair}.h

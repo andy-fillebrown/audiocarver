@@ -9,6 +9,7 @@ DIRS = \
     implementations \
     interfaces \
     itemviews \
+    managers \
     models \
     util \
 
