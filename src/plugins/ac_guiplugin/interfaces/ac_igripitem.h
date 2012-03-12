@@ -36,6 +36,8 @@ public:
         FullHighlight
     };
 
+    static bool lessThan(IGripItem *a, IGripItem *b);
+
     virtual IEntityItem *parentEntityItem() const = 0;
     virtual const QPointF &originalPosition() const = 0;
     virtual void updateOriginalPosition() = 0;

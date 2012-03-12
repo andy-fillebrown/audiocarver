@@ -21,17 +21,6 @@
 
 #include <ac_ientity.h>
 
-static bool gripLessThan(GraphicsGripItem *a, GraphicsGripItem *b)
-{
-    if (a->pos().x() < b->pos().x())
-        return true;
-    if (b->pos().x() < a->pos().x())
-        return false;
-    if (a->pos().y() < b->pos().y())
-        return true;
-    return false;
-}
-
 class GraphicsEntityItemPrivate
 {
 public:
@@ -84,7 +73,7 @@ public:
         const int n = gripItems.count();
         PointList points;
         points.reserve(n);
-        qSort(gripItems.begin(), gripItems.end(), gripLessThan);
+        qSort(gripItems.begin(), gripItems.end(), IGripItem::lessThan);
         for (int i = 0;  i < n;  ++i) {
             Ac::CurveType curve_type = Ac::NoCurve;
             if (i < previousPoints.count())
