@@ -1,5 +1,6 @@
 
 SOURCE_PAIRS = \
+    ac_gripmanager \
     ac_viewmanager \
 
 for(pair, SOURCE_PAIRS) {
