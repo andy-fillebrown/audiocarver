@@ -61,10 +61,10 @@ public:
         ,   hoveringOverSeparator(false)
         ,   draggingSeparator(false)
         ,   trackViewDock(new QDockWidget("Track Editor", q))
-        ,   trackView(new TrackView(q))
+        ,   trackView(new TrackView(trackViewDock))
         ,   propertyViewDock(new QDockWidget("Property Editor", q))
-        ,   propertyView(new SelectedItemsPropertyView)
-        ,   gripView(new QTableView)
+        ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
+        ,   gripView(new QTableView(propertyViewDock))
         ,   gripModel(new GripSelectionModel(q))
     {
         topRightView->setParent(q);
@@ -88,16 +88,9 @@ public:
 
         // Property View Dock Widget
         propertyViewDock->setObjectName("Property View Dock Widget");
-        propertyViewDock->setWidget(propertyView);
         mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
 
         gripView->setModel(gripModel);
-    }
-
-    virtual ~MainWidgetPrivate()
-    {
-        delete gripView;
-        delete propertyView;
     }
 
     int separatorHeight() const
@@ -184,6 +177,7 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(d->gripModel, SIGNAL(gripsSelected()), SLOT(showGripView()));
     connect(d->gripModel, SIGNAL(gripsDeselected()), SLOT(showPropertyView()));
+    showPropertyView();
 
     ::instance = this;
 }
@@ -254,10 +248,14 @@ void MainWidget::paintEvent(QPaintEvent *)
 
 void MainWidget::showGripView()
 {
+    d->propertyView->hide();
     d->propertyViewDock->setWidget(d->gripView);
+    d->gripView->show();
 }
 
 void MainWidget::showPropertyView()
 {
+    d->gripView->hide();
     d->propertyViewDock->setWidget(d->propertyView);
+    d->propertyView->show();
 }
