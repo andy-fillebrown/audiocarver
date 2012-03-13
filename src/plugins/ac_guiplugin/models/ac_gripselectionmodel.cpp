@@ -102,7 +102,7 @@ QVariant GripSelectionModel::headerData(int section, Qt::Orientation orientation
 {
     if (Qt::DisplayRole != role
             || Qt::Horizontal != orientation
-            || section < 0 || 2 < section)
+            || section < 0 || 3 < section)
         return QVariant();
 
     switch (section) {
