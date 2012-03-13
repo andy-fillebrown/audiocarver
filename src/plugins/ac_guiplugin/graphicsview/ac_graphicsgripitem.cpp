@@ -18,6 +18,7 @@
 #include "ac_graphicsgripitem.h"
 
 #include <ac_graphicsentityitem.h>
+#include <ac_gripselectionmodel.h>
 #include <ac_guiconstants.h>
 
 const qreal GRIP_SIZE    = qreal(8.0f);
@@ -69,6 +70,11 @@ public:
 
         item->setBrush(brush);
     }
+
+    bool isFullyHighlighted() const
+    {
+        return QColor(Qt::red) == item->pen().color();
+    }
 };
 
 GraphicsGripItem::GraphicsGripItem(const QPointF &position)
@@ -81,6 +87,7 @@ GraphicsGripItem::GraphicsGripItem(const QPointF &position)
 
 GraphicsGripItem::~GraphicsGripItem()
 {
+    GripSelectionModel::instance()->removeGrip(::query<IGripItem>(this));
     delete d;
 }
 
@@ -107,6 +114,8 @@ QPointF GraphicsGripItem::position() const
 void GraphicsGripItem::setPosition(const QPointF &position)
 {
     setPos(position);
+    if (d->isFullyHighlighted())
+        GripSelectionModel::instance()->update();
 }
 
 void GraphicsGripItem::highlight(HighlightType type)
@@ -120,6 +129,7 @@ void GraphicsGripItem::highlight(HighlightType type)
         break;
     case FullHighlight:
         d->setItemColor(Qt::red);
+        GripSelectionModel::instance()->appendGrip(::query<IGripItem>(this));
         break;
     }
 
@@ -128,6 +138,8 @@ void GraphicsGripItem::highlight(HighlightType type)
 
 void GraphicsGripItem::unhighlight()
 {
+    if (d->isFullyHighlighted())
+        GripSelectionModel::instance()->removeGrip(::query<IGripItem>(this));
     d->setItemColor(Qt::blue);
     d->setItemFilled(false);
 }

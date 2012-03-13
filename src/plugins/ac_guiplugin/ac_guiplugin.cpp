@@ -47,18 +47,6 @@ void AcGuiPlugin::extensionsInitialized()
 
     MainWidget *widget = new MainWidget(mw);
     mw->setCentralWidget(widget);
-
-    // Track View Dock Widget
-    QDockWidget *dw = new QDockWidget("Track Editor", mw);
-    dw->setObjectName("Track View Dock Widget");
-    dw->setWidget(new TrackView(dw));
-    mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
-
-    // Property View Dock Widget
-    dw = new QDockWidget("Property Editor", mw);
-    dw->setObjectName("Property View Dock Widget");
-    dw->setWidget(new SelectedItemsPropertyView(dw));
-    mw->addDockWidget(Qt::LeftDockWidgetArea, dw);
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)

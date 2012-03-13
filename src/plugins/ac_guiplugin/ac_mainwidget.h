@@ -31,6 +31,11 @@ public:
     MainWidget(QWidget *parent = 0);
     ~MainWidget();
 
+    static MainWidget *instance();
+
+    void switchToGripView();
+    void switchToPropertyView();
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

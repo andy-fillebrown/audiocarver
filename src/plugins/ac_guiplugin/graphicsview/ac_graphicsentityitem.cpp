@@ -18,7 +18,6 @@
 #include "ac_graphicsentityitem.h"
 
 #include <ac_graphicsgripitem.h>
-#include <ac_gripmanager.h>
 
 #include <ac_ientity.h>
 
@@ -49,14 +48,10 @@ public:
         GraphicsGripItem *grip_item = new GraphicsGripItem(pos);
         grip_item->setParentItem(q);
         gripItems.append(grip_item);
-        if (isCurve)
-            GripManager::instance()->appendGrip(sceneType, query<IGripItem>(grip_item));
     }
 
     void deleteGripItem(GraphicsGripItem *&gripItem)
     {
-        if (isCurve)
-            GripManager::instance()->removeGrip(sceneType, query<IGripItem>(gripItem));
         gripItems.removeOne(gripItem);
         gripItem->setParentItem(0);
         delete gripItem;

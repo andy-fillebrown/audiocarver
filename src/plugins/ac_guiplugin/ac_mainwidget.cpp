@@ -17,15 +17,22 @@
 
 #include "ac_mainwidget.h"
 
-#include <ac_gripmanager.h>
+#include <ac_gripselectionmodel.h>
+#include <ac_selecteditemspropertyview.h>
+#include <ac_trackview.h>
 #include <ac_viewmanager.h>
 
 #include <ac_namespace.h>
 
 #include <mi_graphicsview.h>
 
+#include <icore.h>
+#include <mainwindow.h>
+
+#include <QDockWidget>
 #include <QMouseEvent>
 #include <QStyleOption>
+#include <QTableView>
 
 #define LABELVIEW_WIDTH 48
 #define LABELVIEW_HEIGHT 23
@@ -34,21 +41,31 @@ class MainWidgetPrivate
 {
 public:
     MainWidget *q;
-    GripManager *gripManager;
     ViewManager *viewManager;
     MiGraphicsView *topRightView;
     qreal controlHeightPercentage;
     uint hoveringOverSeparator : 1;
     uint draggingSeparator : bitsizeof(uint) - 1;
+    QDockWidget *trackViewDock;
+    TrackView *trackView;
+    QDockWidget *propertyViewDock;
+    SelectedItemsPropertyView *propertyView;
+    QTableView *gripView;
+    GripSelectionModel *gripModel;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
-        ,   gripManager(new GripManager(q))
         ,   viewManager(new ViewManager(q))
         ,   topRightView(new MiGraphicsView)
         ,   controlHeightPercentage(0.25f)
         ,   hoveringOverSeparator(false)
         ,   draggingSeparator(false)
+        ,   trackViewDock(new QDockWidget("Track Editor", q))
+        ,   trackView(new TrackView(q))
+        ,   propertyViewDock(new QDockWidget("Property Editor", q))
+        ,   propertyView(new SelectedItemsPropertyView)
+        ,   gripView(new QTableView)
+        ,   gripModel(new GripSelectionModel(q))
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
@@ -61,10 +78,27 @@ public:
                                     "}");
         for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
             viewManager->view(Ac::SceneType(i))->setParent(q);
+
+        Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+
+        // Track View Dock Widget
+        trackViewDock->setObjectName("Track View Dock Widget");
+        trackViewDock->setWidget(trackView);
+        mw->addDockWidget(Qt::LeftDockWidgetArea, trackViewDock);
+
+        // Property View Dock Widget
+        propertyViewDock->setObjectName("Property View Dock Widget");
+        propertyViewDock->setWidget(propertyView);
+        mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
+
+        gripView->setModel(gripModel);
     }
 
     virtual ~MainWidgetPrivate()
-    {}
+    {
+        delete gripView;
+        delete propertyView;
+    }
 
     int separatorHeight() const
     {
@@ -133,6 +167,8 @@ public:
     }
 };
 
+static MainWidget *instance = 0;
+
 MainWidget::MainWidget(QWidget *parent)
     :   QFrame(parent)
     ,   d(new MainWidgetPrivate(this))
@@ -145,11 +181,29 @@ MainWidget::MainWidget(QWidget *parent)
                   "}");
     setCursor(Qt::SplitVCursor);
     setMouseTracking(true);
+
+    ::instance = this;
 }
 
 MainWidget::~MainWidget()
 {
+    ::instance = 0;
     delete d;
+}
+
+MainWidget *MainWidget::instance()
+{
+    return ::instance;
+}
+
+void MainWidget::switchToGripView()
+{
+    d->propertyViewDock->setWidget(d->gripView);
+}
+
+void MainWidget::switchToPropertyView()
+{
+    d->propertyViewDock->setWidget(d->propertyView);
 }
 
 void MainWidget::mousePressEvent(QMouseEvent *event)

@@ -15,16 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRIPMODEL_H
-#define AC_GRIPMODEL_H
+#ifndef AC_GRIPSELECTIONMODEL_H
+#define AC_GRIPSELECTIONMODEL_H
 
 #include <QAbstractTableModel>
 
-class GripModel : public QAbstractTableModel
+class IGripItem;
+
+class GripSelectionModelPrivate;
+class GripSelectionModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
+    GripSelectionModel(QObject *parent = 0);
+    ~GripSelectionModel();
+
+    static GripSelectionModel *instance();
+
     // QAbstractItemModel
     int columnCount(const QModelIndex &parent) const;
     int rowCount(const QModelIndex &parent) const;
@@ -33,38 +41,13 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
-protected:
-    GripModel(QObject *parent = 0)
-        :   QAbstractTableModel(parent)
-    {}
+private:
+    friend class GraphicsGripItem;
+    void appendGrip(IGripItem *grip);
+    void removeGrip(IGripItem *grip);
+    void update();
 
-    virtual int sceneType() const = 0;
+    GripSelectionModelPrivate *d;
 };
 
-class PitchGripModel : public GripModel
-{
-    Q_OBJECT
-
-public:
-    PitchGripModel(QObject *parent = 0)
-        :   GripModel(parent)
-    {}
-
-protected:
-    int sceneType() const;
-};
-
-class ControlGripModel : public GripModel
-{
-    Q_OBJECT
-
-public:
-    ControlGripModel(QObject *parent = 0)
-        :   GripModel(parent)
-    {}
-
-protected:
-    int sceneType() const;
-};
-
-#endif // AC_GRIPMODEL_H
+#endif // AC_GRIPSELECTIONMODEL_H
