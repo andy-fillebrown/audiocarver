@@ -19,7 +19,6 @@
 
 #include <ac_ientityitem.h>
 #include <ac_igripitem.h>
-#include <ac_mainwidget.h>
 
 #include <ac_ientity.h>
 #include <ac_namespace.h>
@@ -158,20 +157,20 @@ void GripSelectionModel::appendGrip(IGripItem *grip)
         return;
     d->grips.append(grip);
     qSort(d->grips.begin(), d->grips.end(), IGripItem::lessThan);
-    if (d->grips.count() == 1)
-        MainWidget::instance()->switchToGripView();
     update();
 }
 
 void GripSelectionModel::removeGrip(IGripItem *grip)
 {
     d->grips.removeOne(grip);
-    if (d->grips.isEmpty())
-        MainWidget::instance()->switchToPropertyView();
     update();
 }
 
 void GripSelectionModel::update()
 {
+    if (d->grips.count() == 1)
+        emit gripsSelected();
+    else if (d->grips.isEmpty())
+        emit gripsDeselected();
     emit layoutChanged();
 }

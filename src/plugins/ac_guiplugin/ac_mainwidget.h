@@ -33,9 +33,6 @@ public:
 
     static MainWidget *instance();
 
-    void switchToGripView();
-    void switchToPropertyView();
-
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -43,6 +40,10 @@ protected:
     void leaveEvent(QEvent *);
     void resizeEvent(QResizeEvent *);
     void paintEvent(QPaintEvent *);
+
+private slots:
+    void showGripView();
+    void showPropertyView();
 
 private:
     MainWidgetPrivate *d;

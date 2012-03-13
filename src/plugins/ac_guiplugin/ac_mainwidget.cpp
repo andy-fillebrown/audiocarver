@@ -182,6 +182,9 @@ MainWidget::MainWidget(QWidget *parent)
     setCursor(Qt::SplitVCursor);
     setMouseTracking(true);
 
+    connect(d->gripModel, SIGNAL(gripsSelected()), SLOT(showGripView()));
+    connect(d->gripModel, SIGNAL(gripsDeselected()), SLOT(showPropertyView()));
+
     ::instance = this;
 }
 
@@ -194,16 +197,6 @@ MainWidget::~MainWidget()
 MainWidget *MainWidget::instance()
 {
     return ::instance;
-}
-
-void MainWidget::switchToGripView()
-{
-    d->propertyViewDock->setWidget(d->gripView);
-}
-
-void MainWidget::switchToPropertyView()
-{
-    d->propertyViewDock->setWidget(d->propertyView);
 }
 
 void MainWidget::mousePressEvent(QMouseEvent *event)
@@ -257,4 +250,14 @@ void MainWidget::paintEvent(QPaintEvent *)
     if (isEnabled())
         opt.state |= QStyle::State_Enabled;
     parentWidget()->style()->drawControl(QStyle::CE_Splitter, &opt, &p, this);
+}
+
+void MainWidget::showGripView()
+{
+    d->propertyViewDock->setWidget(d->gripView);
+}
+
+void MainWidget::showPropertyView()
+{
+    d->propertyViewDock->setWidget(d->propertyView);
 }

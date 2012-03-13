@@ -41,6 +41,10 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
+signals:
+    void gripsSelected();
+    void gripsDeselected();
+
 private:
     friend class GraphicsGripItem;
     void appendGrip(IGripItem *grip);
