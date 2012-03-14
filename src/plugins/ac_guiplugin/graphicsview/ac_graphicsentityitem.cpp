@@ -88,6 +88,14 @@ public:
         for (int i = 0;  i < n;  ++i)
             gripItems[i]->setPosition(points.at(i).pos);
     }
+
+    void updateGripCurveTypes()
+    {
+        const int n = gripItems.count();
+        PointList points = entity->points();
+        for (int i = 0;  i < n;  ++i)
+            gripItems[i]->setCurveType(points.at(i).curveType);
+    }
 };
 
 GraphicsEntityItem::GraphicsEntityItem(IEntity *entity)
@@ -170,4 +178,5 @@ void GraphicsEntityItem::updateCurveTypes()
     if (!d->entity)
         return;
     d->entity->setPoints(d->gripPoints());
+    d->updateGripCurveTypes();
 }
