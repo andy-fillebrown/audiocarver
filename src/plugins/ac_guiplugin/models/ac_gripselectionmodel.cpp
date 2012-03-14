@@ -25,6 +25,16 @@
 
 #include <QPointF>
 
+bool isCurveGrip(IGripItem *grip)
+{
+    IEntityItem *entity_item = grip->parentEntityItem();
+    IEntity *entity = entity_item->entity();
+    ISubEntity *sub_entity = query<ISubEntity>(entity);
+    if (!sub_entity)
+        return false;
+    return sub_entity->isCurve();
+}
+
 int gripType(IGripItem *grip)
 {
     IEntityItem *entity_item = grip->parentEntityItem();
@@ -93,7 +103,10 @@ int GripSelectionModel::rowCount(const QModelIndex &parent) const
 Qt::ItemFlags GripSelectionModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
-    if (0 < index.column())
+    if (0 < index.column() && index.column() < 3)
+        flags |= Qt::ItemIsEditable;
+    else if (3 == index.column()
+            && isCurveGrip(d->grips.at(index.row())))
         flags |= Qt::ItemIsEditable;
     return flags;
 }
@@ -137,6 +150,8 @@ QVariant GripSelectionModel::data(const QModelIndex &index, int role) const
     case 2:
         return grip_item->position().y();
     case 3:
+        if (!isCurveGrip(grip_item))
+            return "n/a";
         if (Ac::BezierCurve == grip_item->curveType())
             return true;
         else
