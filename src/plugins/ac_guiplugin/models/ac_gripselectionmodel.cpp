@@ -23,8 +23,6 @@
 #include <ac_ientity.h>
 #include <ac_namespace.h>
 
-#include <QPointF>
-
 int gripType(IGripItem *grip)
 {
     IEntityItem *entity_item = grip->parentEntityItem();
@@ -39,9 +37,9 @@ QString gripTypeName(IGripItem *grip)
 {
     switch (gripType(grip)) {
     case Ac::PitchScene:
-        return "Pitch Grip";
+        return "pitch";
     case Ac::ControlScene:
-        return "Control Grip";
+        return "control";
     default:
         return "";
     }
@@ -107,13 +105,13 @@ QVariant GripSelectionModel::headerData(int section, Qt::Orientation orientation
 
     switch (section) {
     case 0:
-        return "Grip Type";
+        return "Type";
     case 1:
         return "Time";
     case 2:
         return "Value";
     case 3:
-        return "Curve Type";
+        return "Curved";
     default:
         return "";
     }
@@ -137,7 +135,10 @@ QVariant GripSelectionModel::data(const QModelIndex &index, int role) const
     case 2:
         return grip_item->position().y();
     case 3:
-        return "n/a";
+        if (Ac::BezierCurve == grip_item->curveType())
+            return true;
+        else
+            return false;
     default:
         return QVariant();
     }
@@ -145,9 +146,27 @@ QVariant GripSelectionModel::data(const QModelIndex &index, int role) const
 
 bool GripSelectionModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Q_UNUSED(index);
-    Q_UNUSED(value);
-    Q_UNUSED(role);
+    if (role != Qt::DisplayRole
+            && role != Qt::EditRole)
+        return false;
+
+    IGripItem *grip_item = d->grips.at(index.row());
+    if (!grip_item)
+        return false;
+
+    switch (index.column()) {
+    case 1:
+        grip_item->setPosition(QPointF(value.toReal(), grip_item->position().y()));
+        break;
+    case 2:
+        grip_item->setPosition(QPointF(grip_item->position().x(), value.toReal()));
+        break;
+    case 3:
+        grip_item->setCurveType(value.toInt());
+        break;
+    default:
+        return false;
+    }
     return true;
 }
 

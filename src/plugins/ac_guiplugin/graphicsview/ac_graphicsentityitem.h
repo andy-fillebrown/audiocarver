@@ -40,6 +40,7 @@ public:
     void startDraggingPoints();
     void updatePoints();
     void finishDraggingPoints();
+    void updateCurveTypes();
 
     // IUnknown
     void *query(int type) const

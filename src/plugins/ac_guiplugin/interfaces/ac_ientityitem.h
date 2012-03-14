@@ -36,6 +36,7 @@ public:
     virtual void startDraggingPoints() = 0;
     virtual void updatePoints() = 0;
     virtual void finishDraggingPoints() = 0;
+    virtual void updateCurveTypes() = 0;
 };
 
 #endif // AC_IGRIP_H

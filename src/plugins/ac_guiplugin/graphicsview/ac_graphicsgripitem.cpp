@@ -29,10 +29,12 @@ class GraphicsGripItemPrivate
 {
 public:
     QPointF originalPos;
+    int curveType;
     QGraphicsRectItem *item;
 
     GraphicsGripItemPrivate(GraphicsGripItem *q)
-        :   item(new QGraphicsRectItem(q))
+        :   curveType(Ac::NoCurve)
+        ,   item(new QGraphicsRectItem(q))
     {
         item->setFlag(QGraphicsItem::ItemIgnoresTransformations);
         item->setRect(GRIP_RECT);
@@ -77,11 +79,12 @@ public:
     }
 };
 
-GraphicsGripItem::GraphicsGripItem(const QPointF &position)
+GraphicsGripItem::GraphicsGripItem(const QPointF &position, int curveType)
     :   d(new GraphicsGripItemPrivate(this))
 {
     unhighlight();
     d->originalPos = position;
+    d->curveType = curveType;
     setPosition(position);
 }
 
@@ -116,6 +119,19 @@ void GraphicsGripItem::setPosition(const QPointF &position)
     setPos(position);
     if (d->isFullyHighlighted())
         GripSelectionModel::instance()->update();
+}
+
+int GraphicsGripItem::curveType() const
+{
+    return d->curveType;
+}
+
+void GraphicsGripItem::setCurveType(int curveType)
+{
+    if (d->curveType == curveType)
+        return;
+    d->curveType = curveType;
+    parentEntityItem()->updateCurveTypes();
 }
 
 void GraphicsGripItem::highlight(HighlightType type)

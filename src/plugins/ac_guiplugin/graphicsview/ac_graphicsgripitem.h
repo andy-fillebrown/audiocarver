@@ -29,7 +29,7 @@ class GraphicsGripItem : public GraphicsItem
         ,   public IGripItem
 {
 public:
-    GraphicsGripItem(const QPointF &position);
+    GraphicsGripItem(const QPointF &position, int curveType);
     ~GraphicsGripItem();
 
     // IGripItem
@@ -38,6 +38,8 @@ public:
     void updateOriginalPosition();
     QPointF position() const;
     void setPosition(const QPointF &position);
+    int curveType() const;
+    void setCurveType(int curveType);
     void highlight(HighlightType type = FullHighlight);
     void unhighlight();
 
