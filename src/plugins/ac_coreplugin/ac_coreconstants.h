@@ -20,6 +20,7 @@
 
 #include <qglobal.h>
 
-const qreal VIEWSCALE_MIN = 0.9f;
+const qreal VIEWSCALE_MIN = 0.75f;
+const qreal VIEWSCALE_MAX = 1000000.0f;
 
 #endif // AC_CORECONSTANTS_H

@@ -89,6 +89,8 @@ void ViewSettings::setTimeScale(qreal scale)
     Q_D(ViewSettings);
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;
+    if (VIEWSCALE_MAX < scale)
+        scale = VIEWSCALE_MAX;
     d->beginChangeData();
     d->timeScale = scale;
     d->endChangeData();
@@ -105,6 +107,8 @@ void ViewSettings::setPitchScale(qreal scale)
     Q_D(ViewSettings);
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;
+    if (VIEWSCALE_MAX < scale)
+        scale = VIEWSCALE_MAX;
     if (d->pitchScale == scale)
         return;
     d->beginChangeData();
@@ -123,6 +127,8 @@ void ViewSettings::setControlScale(qreal scale)
     Q_D(ViewSettings);
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;
+    if (VIEWSCALE_MAX < scale)
+        scale = VIEWSCALE_MAX;
     if (d->controlScale == scale)
         return;
     d->beginChangeData();

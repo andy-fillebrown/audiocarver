@@ -289,6 +289,8 @@ void ViewManager::setScale(qreal scale, int role)
 {
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;
+    if (VIEWSCALE_MAX < scale)
+        scale = VIEWSCALE_MAX;
     if (qFuzzyCompare(this->scale(role), scale))
         return;
     switch (role) {
