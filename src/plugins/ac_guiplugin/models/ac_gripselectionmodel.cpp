@@ -91,7 +91,7 @@ GripSelectionModel *GripSelectionModel::instance()
 int GripSelectionModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 4;
+    return 5;
 }
 
 int GripSelectionModel::rowCount(const QModelIndex &parent) const
@@ -103,9 +103,9 @@ int GripSelectionModel::rowCount(const QModelIndex &parent) const
 Qt::ItemFlags GripSelectionModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
-    if (1 < index.column() && index.column() < 3)
+    if (2 < index.column() && index.column() < 4)
         flags |= Qt::ItemIsEditable;
-    else if ((1 == index.column() || 3 == index.column())
+    else if ((2 == index.column() || 4 == index.column())
             && isCurveGrip(d->grips.at(index.row())))
         flags |= Qt::ItemIsEditable;
     return flags;
@@ -115,17 +115,17 @@ QVariant GripSelectionModel::headerData(int section, Qt::Orientation orientation
 {
     if (Qt::DisplayRole != role
             || Qt::Horizontal != orientation
-            || section < 0 || 3 < section)
+            || section < 1 || 4 < section)
         return QVariant();
 
     switch (section) {
-    case 0:
-        return "Type";
     case 1:
-        return "Time";
+        return "Type";
     case 2:
-        return "Value";
+        return "Time";
     case 3:
+        return "Value";
+    case 4:
         return "Curved";
     default:
         return "";
@@ -143,13 +143,13 @@ QVariant GripSelectionModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     switch (index.column()) {
-    case 0:
-        return gripTypeName(grip_item);
     case 1:
-        return grip_item->position().x();
+        return gripTypeName(grip_item);
     case 2:
-        return grip_item->position().y();
+        return grip_item->position().x();
     case 3:
+        return grip_item->position().y();
+    case 4:
         if (!isCurveGrip(grip_item))
             return "n/a";
         if (Ac::BezierCurve == grip_item->curveType())
@@ -172,13 +172,13 @@ bool GripSelectionModel::setData(const QModelIndex &index, const QVariant &value
         return false;
 
     switch (index.column()) {
-    case 1:
+    case 2:
         grip_item->setPosition(QPointF(value.toReal(), grip_item->position().y()));
         break;
-    case 2:
+    case 3:
         grip_item->setPosition(QPointF(grip_item->position().x(), value.toReal()));
         break;
-    case 3:
+    case 4:
         grip_item->setCurveType(value.toInt());
         break;
     default:

@@ -1,6 +1,7 @@
 
 SOURCE_PAIRS = \
     ac_gridlineview \
+    ac_gripitemspropertyview \
     ac_propertyview \
     ac_selecteditemspropertyview \
     ac_trackview \

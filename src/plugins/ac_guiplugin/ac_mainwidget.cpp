@@ -17,6 +17,7 @@
 
 #include "ac_mainwidget.h"
 
+#include <ac_gripitemspropertyview.h>
 #include <ac_gripselectionmodel.h>
 #include <ac_selecteditemspropertyview.h>
 #include <ac_trackview.h>
@@ -50,8 +51,7 @@ public:
     TrackView *trackView;
     QDockWidget *propertyViewDock;
     SelectedItemsPropertyView *propertyView;
-    QTableView *gripView;
-    GripSelectionModel *gripModel;
+    GripItemsPropertyView *gripView;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
@@ -64,8 +64,7 @@ public:
         ,   trackView(new TrackView(trackViewDock))
         ,   propertyViewDock(new QDockWidget("Property Editor", q))
         ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
-        ,   gripView(new QTableView(propertyViewDock))
-        ,   gripModel(new GripSelectionModel(q))
+        ,   gripView(new GripItemsPropertyView(propertyViewDock))
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
@@ -89,8 +88,6 @@ public:
         // Property View Dock Widget
         propertyViewDock->setObjectName("Property View Dock Widget");
         mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
-
-        gripView->setModel(gripModel);
     }
 
     int separatorHeight() const
@@ -175,8 +172,9 @@ MainWidget::MainWidget(QWidget *parent)
     setCursor(Qt::SplitVCursor);
     setMouseTracking(true);
 
-    connect(d->gripModel, SIGNAL(gripsSelected()), SLOT(showGripView()));
-    connect(d->gripModel, SIGNAL(gripsDeselected()), SLOT(showPropertyView()));
+    GripSelectionModel *grip_model = GripSelectionModel::instance();
+    connect(grip_model, SIGNAL(gripsSelected()), SLOT(showGripView()));
+    connect(grip_model, SIGNAL(gripsDeselected()), SLOT(showPropertyView()));
     showPropertyView();
 
     ::instance = this;

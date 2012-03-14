@@ -15,27 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef MI_DELEGATE_H
-#define MI_DELEGATE_H
+#ifndef AC_GRIPITEMSPROPERTYVIEW_H
+#define AC_GRIPITEMSPROPERTYVIEW_H
 
-#include <mi_global.h>
+#include <ac_propertyview.h>
 
-#include <QStyledItemDelegate>
-
-class DelegatePrivate;
-class MI_GUI_EXPORT Delegate : public QStyledItemDelegate
+class GripItemsPropertyViewPrivate;
+class GripItemsPropertyView : public PropertyView
 {
     Q_OBJECT
 
 public:
-    Delegate(QObject *parent = 0);
-    ~Delegate();
+    GripItemsPropertyView(QWidget *parent = 0);
+    ~GripItemsPropertyView();
 
-    int customColumn() const;
-    void setCustomColumn(int column);
+private slots:
+    void updateColumnWidths();
+    void updateMinimumColumnWidth(int column, int oldWidth, int width);
 
 private:
-    DelegatePrivate *d;
+    GripItemsPropertyViewPrivate *d;
 };
 
-#endif // MI_DELEGATE_H
+#endif // AC_GRIPITEMSPROPERTYVIEW_H
