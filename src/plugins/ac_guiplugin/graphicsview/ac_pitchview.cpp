@@ -22,6 +22,7 @@
 #include <ac_viewmanager.h>
 
 #include <ac_factory.h>
+#include <ac_point.h>
 
 #include <mi_ieditor.h>
 

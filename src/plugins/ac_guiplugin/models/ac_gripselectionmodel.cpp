@@ -23,6 +23,8 @@
 #include <ac_ientity.h>
 #include <ac_namespace.h>
 
+#include <QPointF>
+
 int gripType(IGripItem *grip)
 {
     IEntityItem *entity_item = grip->parentEntityItem();

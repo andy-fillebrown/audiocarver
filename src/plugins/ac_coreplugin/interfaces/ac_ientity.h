@@ -18,9 +18,12 @@
 #ifndef AC_IENTITY_H
 #define AC_IENTITY_H
 
-#include <ac_point.h>
+#include <ac_namespace.h>
 
 #include <mi_iunknown.h>
+
+class Point;
+typedef QList<Point> PointList;
 
 class ISubEntity;
 
