@@ -103,9 +103,9 @@ int GripSelectionModel::rowCount(const QModelIndex &parent) const
 Qt::ItemFlags GripSelectionModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
-    if (0 < index.column() && index.column() < 3)
+    if (1 < index.column() && index.column() < 3)
         flags |= Qt::ItemIsEditable;
-    else if (3 == index.column()
+    else if ((1 == index.column() || 3 == index.column())
             && isCurveGrip(d->grips.at(index.row())))
         flags |= Qt::ItemIsEditable;
     return flags;
