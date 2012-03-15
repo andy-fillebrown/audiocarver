@@ -24,13 +24,17 @@ namespace Ac {
 QAudioDeviceInfo deviceInfo(const QString &deviceName)
 {
     QAudioDeviceInfo device_info;
+    bool device_found = false;
     const QList<QAudioDeviceInfo> devs = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
     foreach (const QAudioDeviceInfo &cur_info, devs) {
         if (deviceName == cur_info.deviceName()) {
             device_info = cur_info;
+            device_found = true;
             break;
         }
     }
+    if (!device_found && !devs.isEmpty())
+        device_info = devs.first();
     return device_info;
 }
 
