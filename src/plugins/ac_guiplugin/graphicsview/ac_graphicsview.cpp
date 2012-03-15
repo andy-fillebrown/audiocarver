@@ -19,12 +19,12 @@
 
 #include <ac_graphicsentityitem.h>
 #include <ac_graphicsgripitem.h>
-#include <ac_ientity.h>
-#include <ac_iplaycursor.h>
-#include <ac_viewmanager.h>
-
 #include <ac_noteselectionmodel.h>
 #include <ac_trackselectionmodel.h>
+#include <ac_viewmanager.h>
+
+#include <ac_ientity.h>
+#include <ac_iplaycursor.h>
 
 #include <mi_ieditor.h>
 
