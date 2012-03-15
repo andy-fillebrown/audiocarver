@@ -360,6 +360,10 @@ public:
             return;
         if (started)
             return;
+        if (!compiled)
+            compileTimer->start();
+        while (!compiled)
+            QThread::yieldCurrentThread();
         started = true;
         sink->start();
     }
