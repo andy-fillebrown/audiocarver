@@ -551,7 +551,13 @@ qreal CsoundAudioEngine::startTime() const
 
 void CsoundAudioEngine::setStartTime(qreal time)
 {
+    if (d->startTime == time)
+        return;
+    if (isStarted())
+        stop();
     d->startTime = time;
+    d->compiled = false;
+    d->compileTimer->start();
 }
 
 bool CsoundAudioEngine::isStarted() const
@@ -593,14 +599,8 @@ void CsoundAudioEngine::modelDataChanged(const QModelIndex &topLeft)
             d->compiled = false;
             d->compileTimer->start();
         }
-    } else if (!topLeft.isValid()) {
-        const qreal new_start_time = IModel::instance()->rootItem()->data(Ac::StartTimeRole).toReal();
-        if (d->startTime != new_start_time) {
-            d->startTime = new_start_time;
-            d->compiled = false;
-            d->compileTimer->start();
-        }
-    }
+    } else if (!topLeft.isValid())
+        setStartTime(IModel::instance()->rootItem()->data(Ac::StartTimeRole).toReal());
 }
 
 void CsoundAudioEngine::modelRowsChanged(const QModelIndex &parent)
