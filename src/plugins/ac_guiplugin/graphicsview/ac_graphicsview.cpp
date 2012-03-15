@@ -996,6 +996,11 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
+    // Mac "magic mouse" scroll-wheel handling is annoying and buggy.
+#ifdef Q_WS_MAC
+    return;
+#endif
+
     if (0 < d->viewState)
         return;
     const QPointF posDC = d->startPosDC(event->pos());
