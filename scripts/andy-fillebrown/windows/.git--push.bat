@@ -1,6 +1,6 @@
 
 @cd repo
 @call gitenv
-git push
+git push origin HEAD
 @echo.
 @pause

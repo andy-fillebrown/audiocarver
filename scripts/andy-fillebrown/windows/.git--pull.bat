@@ -1,6 +1,6 @@
 
 @cd repo
 @call gitenv
-git pull
+git pull origin
 @echo.
 @pause
