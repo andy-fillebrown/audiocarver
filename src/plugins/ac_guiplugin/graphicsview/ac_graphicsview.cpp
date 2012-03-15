@@ -902,7 +902,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
     if (Qt::RightButton == event->button()) {
         if (Picking == d->dragState)
             return;
-        if (event->modifiers() & Qt::ControlModifier)
+        if (Qt::ControlModifier & event->modifiers())
             d->startZoom(event->pos());
         else
             d->startPan(event->pos());
@@ -974,8 +974,8 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
                 break;
             default:
                 if (!d->curGrip ||
-                        ((!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
-                        && !(QApplication::keyboardModifiers() & Qt::ControlModifier)))
+                        ((!(Qt::ShiftModifier & QApplication::keyboardModifiers()))
+                        && !(Qt::ControlModifier & QApplication::keyboardModifiers())))
                     d->clearPicks();
             }
         }
