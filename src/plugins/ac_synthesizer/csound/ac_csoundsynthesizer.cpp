@@ -345,6 +345,7 @@ public:
         char *output_arg = output_flag_ba.data();
 
         char displays_arg[] = "-d";
+        char bit_depth_arg[] = "-f";
 
         const QString sample_rate_flag = QString("-r%1").arg(project_settings->data(Ac::SampleRateRole).toInt());
         QByteArray sample_rate_flag_ba = sample_rate_flag.toLocal8Bit();
@@ -360,8 +361,16 @@ public:
         QByteArray sco_file_ba = sco_file_name.toLocal8Bit();
         char *sco_arg = sco_file_ba.data();
 
-        const int argc = 7;
-        char *argv[] = { first_arg, output_arg, displays_arg, sample_rate_arg, control_rate_arg, orc_arg, sco_arg };
+        const int argc = 8;
+        char *argv[argc] = {
+            first_arg,
+            output_arg,
+            displays_arg,
+            bit_depth_arg,
+            sample_rate_arg,
+            control_rate_arg,
+            orc_arg, sco_arg
+        };
         for (int i = 1;  i < argc;  ++i)
             qDebug() << Q_FUNC_INFO << "arg" << i << "==" << argv[i];
         if (CSOUND_SUCCESS != csoundCompile(csound, argc, argv)) {
