@@ -408,7 +408,7 @@ public:
         dragState = DraggingGrips;
 
         foreach (IEntityItem *entity, entitiesToUpdate)
-            entity->startDraggingPoints();
+            entity->startUpdatingPoints();
     }
 
     void dragGripsTo(const QPoint &pos)
@@ -437,7 +437,7 @@ public:
         curGrip = 0;
 
         foreach (IEntityItem *entity, entitiesToUpdate)
-            entity->finishDraggingPoints();
+            entity->finishUpdatingPoints();
 
         IEditor *editor = IEditor::instance();
         editor->endCommand();
@@ -510,7 +510,7 @@ public:
             NoteSelectionModel::instance()->select(ss, ss_flags);
         } else if (pickOne) {
             if (!pickedGrips.isEmpty())
-                clearPickedGrips();
+                ViewManager::instance()->clearPickedGrips();
             else
                 NoteSelectionModel::instance()->clear();
         }
@@ -629,7 +629,7 @@ public:
     void clearPicks()
     {
         if (!pickedGrips.isEmpty())
-            clearPickedGrips();
+            ViewManager::instance()->clearPickedGrips();
         else {
             clearPickedEntities();
             TrackSelectionModel::instance()->clear();
@@ -743,6 +743,11 @@ void GraphicsView::finishInsertingPoints()
 bool GraphicsView::pointsAreSelected() const
 {
     return 0 < d->pickedGrips.count();
+}
+
+void GraphicsView::clearPickedGrips()
+{
+    d->clearPickedGrips();
 }
 
 void GraphicsView::modelAboutToBeReset()

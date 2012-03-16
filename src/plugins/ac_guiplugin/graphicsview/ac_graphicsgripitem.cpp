@@ -90,7 +90,9 @@ GraphicsGripItem::GraphicsGripItem(const QPointF &position, int curveType)
 
 GraphicsGripItem::~GraphicsGripItem()
 {
-    GripSelectionModel::instance()->removeGrip(::query<IGripItem>(this));
+    GripSelectionModel *grip_model = GripSelectionModel::instance();
+    if (grip_model)
+        grip_model->removeGrip(::query<IGripItem>(this));
     delete d;
 }
 

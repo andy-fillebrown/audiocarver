@@ -48,6 +48,8 @@ public:
 
     void updateDatabase();
 
+    void clearPickedGrips();
+
 public slots:
     void updateViews();
 

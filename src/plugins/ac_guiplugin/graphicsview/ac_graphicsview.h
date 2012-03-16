@@ -49,6 +49,8 @@ public:
 
     bool pointsAreSelected() const;
 
+    void clearPickedGrips();
+
 public slots:
     void modelAboutToBeReset();
     virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight = QModelIndex());

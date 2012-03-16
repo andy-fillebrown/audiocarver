@@ -174,9 +174,13 @@ bool GripSelectionModel::setData(const QModelIndex &index, const QVariant &value
     switch (index.column()) {
     case 2:
         grip_item->setPosition(QPointF(value.toReal(), grip_item->position().y()));
+        qSort(d->grips.begin(), d->grips.end(), IGripItem::lessThan);
+        grip_item->parentEntityItem()->finishUpdatingPoints();
         break;
     case 3:
         grip_item->setPosition(QPointF(grip_item->position().x(), value.toReal()));
+        qSort(d->grips.begin(), d->grips.end(), IGripItem::lessThan);
+        grip_item->parentEntityItem()->finishUpdatingPoints();
         break;
     case 4:
         grip_item->setCurveType(value.toInt());

@@ -33,9 +33,9 @@ public:
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
     virtual void resetGripItems() = 0;
-    virtual void startDraggingPoints() = 0;
+    virtual void startUpdatingPoints() = 0;
     virtual void updatePoints() = 0;
-    virtual void finishDraggingPoints() = 0;
+    virtual void finishUpdatingPoints() = 0;
     virtual void updateCurveTypes() = 0;
 };
 

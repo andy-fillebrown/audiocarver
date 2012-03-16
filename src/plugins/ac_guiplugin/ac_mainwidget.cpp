@@ -90,6 +90,13 @@ public:
         mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
     }
 
+    ~MainWidgetPrivate()
+    {
+        // Delete the grip view before the graphics views are destroyed, to
+        // avoid crashing if any grips are selected when the app is closed.
+        delete gripView;
+    }
+
     int separatorHeight() const
     {
         return q->style()->pixelMetric(QStyle::PM_SplitterWidth);

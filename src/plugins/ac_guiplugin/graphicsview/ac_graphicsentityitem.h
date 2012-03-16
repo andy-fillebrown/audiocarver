@@ -37,9 +37,9 @@ public:
     void highlight();
     void unhighlight();
     void resetGripItems();
-    void startDraggingPoints();
+    void startUpdatingPoints();
     void updatePoints();
-    void finishDraggingPoints();
+    void finishUpdatingPoints();
     void updateCurveTypes();
 
     // IUnknown

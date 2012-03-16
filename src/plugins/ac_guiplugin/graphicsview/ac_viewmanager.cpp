@@ -327,6 +327,12 @@ void ViewManager::updateDatabase()
     d->updatingDatabase = false;
 }
 
+void ViewManager::clearPickedGrips()
+{
+    d->pitchView->clearPickedGrips();
+    d->controlView->clearPickedGrips();
+}
+
 void ViewManager::updateViews()
 {
     if (d->pitchView->isDirty())

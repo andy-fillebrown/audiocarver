@@ -147,7 +147,7 @@ void GraphicsEntityItem::resetGripItems()
         d->deleteGripItem(d->gripItems.last());
 }
 
-void GraphicsEntityItem::startDraggingPoints()
+void GraphicsEntityItem::startUpdatingPoints()
 {
     if (!d->entity)
         return;
@@ -163,7 +163,7 @@ void GraphicsEntityItem::updatePoints()
     d->updateGripPositions();
 }
 
-void GraphicsEntityItem::finishDraggingPoints()
+void GraphicsEntityItem::finishUpdatingPoints()
 {
     if (!d->entity)
         return;
