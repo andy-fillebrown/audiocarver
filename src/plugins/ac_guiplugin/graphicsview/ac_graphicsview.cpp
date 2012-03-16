@@ -19,6 +19,7 @@
 
 #include <ac_graphicsentityitem.h>
 #include <ac_graphicsgripitem.h>
+#include <ac_gripselectionmodel.h>
 #include <ac_noteselectionmodel.h>
 #include <ac_trackselectionmodel.h>
 #include <ac_viewmanager.h>
@@ -680,6 +681,9 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setCursor(normalCrosshair());
     setMouseTracking(true);
+
+    GripSelectionModel *grip_model = GripSelectionModel::instance();
+    connect(grip_model, SIGNAL(gripDeselected(IGripItem*)), SLOT(gripDeselected(IGripItem*)));
 }
 
 GraphicsView::~GraphicsView()
@@ -1086,6 +1090,12 @@ void GraphicsView::paintEvent(QPaintEvent *event)
 {
     QGraphicsView::paintEvent(event);
     paintGlyphs(event);
+}
+
+void GraphicsView::gripDeselected(IGripItem *grip)
+{
+    d->hoveredGrips.removeOne(grip);
+    d->pickedGrips.removeOne(grip);
 }
 
 qreal GraphicsHView::sceneWidth() const

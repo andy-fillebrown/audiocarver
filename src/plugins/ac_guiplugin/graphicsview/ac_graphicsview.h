@@ -24,6 +24,8 @@
 
 #include <QModelIndex>
 
+class IGripItem;
+
 class QItemSelection;
 
 class GraphicsViewPrivate;
@@ -99,6 +101,9 @@ protected:
     bool viewportEvent(QEvent *event);
 
     void paintEvent(QPaintEvent *event);
+
+private slots:
+    void gripDeselected(IGripItem *grip);
 
 private:
     GraphicsViewPrivate *d;

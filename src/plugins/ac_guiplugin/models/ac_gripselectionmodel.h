@@ -42,6 +42,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 signals:
+    void gripDeselected(IGripItem *grip);
     void gripsSelected();
     void gripsDeselected();
 

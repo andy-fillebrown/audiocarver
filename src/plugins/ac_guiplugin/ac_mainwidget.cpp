@@ -42,7 +42,6 @@ class MainWidgetPrivate
 {
 public:
     MainWidget *q;
-    ViewManager *viewManager;
     MiGraphicsView *topRightView;
     qreal controlHeightPercentage;
     uint hoveringOverSeparator : 1;
@@ -52,10 +51,10 @@ public:
     QDockWidget *propertyViewDock;
     SelectedItemsPropertyView *propertyView;
     GripItemsPropertyView *gripView;
+    ViewManager *viewManager;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
-        ,   viewManager(new ViewManager(q))
         ,   topRightView(new MiGraphicsView)
         ,   controlHeightPercentage(0.25f)
         ,   hoveringOverSeparator(false)
@@ -65,6 +64,7 @@ public:
         ,   propertyViewDock(new QDockWidget("Property Editor", q))
         ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
         ,   gripView(new GripItemsPropertyView(propertyViewDock))
+        ,   viewManager(new ViewManager(q))
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);
@@ -88,13 +88,6 @@ public:
         // Property View Dock Widget
         propertyViewDock->setObjectName("Property View Dock Widget");
         mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
-    }
-
-    ~MainWidgetPrivate()
-    {
-        // Delete the grip view before the graphics views are destroyed, to
-        // avoid crashing if any grips are selected when the app is closed.
-        delete gripView;
     }
 
     int separatorHeight() const

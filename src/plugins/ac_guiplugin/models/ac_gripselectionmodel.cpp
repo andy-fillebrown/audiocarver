@@ -202,6 +202,12 @@ void GripSelectionModel::appendGrip(IGripItem *grip)
 
 void GripSelectionModel::removeGrip(IGripItem *grip)
 {
+    // Emit gripDeselected, even if it's not selected, so the graphics views
+    // get the signal and remove the grip from thier hovered grip lists.
+    emit gripDeselected(grip);
+
+    if (!d->grips.contains(grip))
+        return;
     d->grips.removeOne(grip);
     update();
 }
