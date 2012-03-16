@@ -36,12 +36,10 @@ class LabelViewPrivate
 {
 public:
     LabelView *q;
-    QCursor zoomCursor;
     uint updatesDisabled : bitsizeof(uint);
 
     LabelViewPrivate(LabelView *q)
         :   q(q)
-        ,   zoomCursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"))
         ,   updatesDisabled(false)
     {}
 
