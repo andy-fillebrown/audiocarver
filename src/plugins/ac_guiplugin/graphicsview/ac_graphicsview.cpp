@@ -894,6 +894,26 @@ void GraphicsView::paintGlyphs(QPaintEvent *event)
     }
 }
 
+bool GraphicsView::isPlayCursorSelected() const
+{
+    return d->playCursor;
+}
+
+bool GraphicsView::selectPlayCursor(const QPoint &pos)
+{
+    return d->selectPlayCursor(pos);
+}
+
+void GraphicsView::dragPlayCursorTo(const QPoint &pos)
+{
+    d->dragPlayCursorTo(pos);
+}
+
+void GraphicsView::finishDraggingPlayCursor(const QPoint &pos)
+{
+    d->finishDraggingPlayCursor(pos);
+}
+
 void GraphicsView::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -913,7 +933,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
             d->startPan(event->pos());
     } else if (Qt::LeftButton == event->button()) {
         if (!d->selectGrips(event->pos()))
-            if (!d->selectPlayCursor(event->pos()))
+            if (!selectPlayCursor(event->pos()))
                 d->startPicking(event->pos());
     }
 }
@@ -928,8 +948,8 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
     case Panning:
         d->panTo(event->pos());
     }
-    if (d->playCursor) {
-        d->dragPlayCursorTo(event->pos());
+    if (isPlayCursorSelected()) {
+        dragPlayCursorTo(event->pos());
         return;
     }
     if (d->curGrip
@@ -963,8 +983,8 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             }
         }
     } else if (Qt::LeftButton == event->button()) {
-        if (d->playCursor) {
-            d->finishDraggingPlayCursor(event->pos());
+        if (isPlayCursorSelected()) {
+            finishDraggingPlayCursor(event->pos());
             return;
         }
         if (d->insertingPoints)
@@ -995,7 +1015,7 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
         if (d->insertingPoints)
             ViewManager::instance()->finishInsertingPoints();
         else
-            d->finishDraggingPlayCursor(event->pos());
+            finishDraggingPlayCursor(event->pos());
     }
 }
 

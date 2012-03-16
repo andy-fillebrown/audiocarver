@@ -163,6 +163,9 @@ void LabelView::updateViewSettings()
 
 void LabelView::mousePressEvent(QMouseEvent *event)
 {
+    if (Qt::LeftButton == event->button())
+        if (selectPlayCursor(event->pos()))
+            return;
     QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
     GraphicsView::mousePressEvent(e);
     delete e;
@@ -170,9 +173,21 @@ void LabelView::mousePressEvent(QMouseEvent *event)
 
 void LabelView::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (Qt::LeftButton == event->button()) {
+        if (isPlayCursorSelected()) {
+            finishDraggingPlayCursor(event->pos());
+            return;
+        }
+    }
     QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
     GraphicsView::mouseReleaseEvent(e);
     delete e;
+}
+
+void LabelView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    GraphicsView::mouseDoubleClickEvent(event);
+    setCursor(Qt::OpenHandCursor);
 }
 
 QPointF LabelVView::sceneCenter() const

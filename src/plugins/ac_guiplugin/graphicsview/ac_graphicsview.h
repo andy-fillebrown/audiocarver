@@ -82,6 +82,11 @@ protected:
     virtual void updateViewSettings();
     virtual void paintGlyphs(QPaintEvent *event);
 
+    bool isPlayCursorSelected() const;
+    bool selectPlayCursor(const QPoint &pos);
+    void dragPlayCursorTo(const QPoint &pos);
+    void finishDraggingPlayCursor(const QPoint &pos);
+
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
