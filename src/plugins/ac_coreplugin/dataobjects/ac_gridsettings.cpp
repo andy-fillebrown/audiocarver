@@ -23,6 +23,7 @@
 
 GridSettingsPrivate::GridSettingsPrivate(GridSettings *q)
     :   GraphicsParentPrivate(q)
+    ,   snapToGrid(true)
     ,   timeGridLines(0)
     ,   pitchGridLines(0)
     ,   controlGridLines(0)
@@ -73,6 +74,22 @@ Score *GridSettings::score() const
     return object_cast<Score>(QObject::parent());
 }
 
+bool GridSettings::snapToGrid() const
+{
+    Q_D(const GridSettings);
+    return d->snapToGrid;
+}
+
+void GridSettings::setSnapToGrid(bool snap)
+{
+    Q_D(GridSettings);
+    if (d->snapToGrid == snap)
+        return;
+    d->beginChangeData();
+    d->snapToGrid = snap;
+    d->endChangeData();
+}
+
 ObjectTList<TimeGridLine> *GridSettings::timeGridLines() const
 {
     Q_D(const GridSettings);
@@ -89,6 +106,15 @@ ObjectTList<ControlGridLine> *GridSettings::controlGridLines() const
 {
     Q_D(const GridSettings);
     return d->controlGridLines;
+}
+
+void GridSettings::clear()
+{
+    Q_D(GridSettings);
+    d->controlGridLines->clear();
+    d->pitchGridLines->clear();
+    d->timeGridLines->clear();
+    d->snapToGrid = true;
 }
 
 int GridSettings::modelItemIndex(const IModelItem *item) const
@@ -128,5 +154,26 @@ IModelItem *GridSettings::findModelItemList(int type) const
         return controlGridLines();
     default:
         return 0;
+    }
+}
+
+QVariant GridSettings::data(int role) const
+{
+    switch (role) {
+    case Ac::SnapRole:
+        return snapToGrid();
+    default:
+        return GraphicsParent::data(role);
+    }
+}
+
+bool GridSettings::setData(const QVariant &value, int role)
+{
+    switch (role) {
+    case Ac::SnapRole:
+        setSnapToGrid(value.toBool());
+        return true;
+    default:
+        return GraphicsParent::setData(value, role);
     }
 }

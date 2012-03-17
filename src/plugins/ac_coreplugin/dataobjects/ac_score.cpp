@@ -381,9 +381,7 @@ void Score::clear()
     emit aboutToBeReset();
     d->projectSettings->clear();
     d->viewSettings->clear();
-    d->gridSettings->controlGridLines()->clear();
-    d->gridSettings->pitchGridLines()->clear();
-    d->gridSettings->timeGridLines()->clear();
+    d->gridSettings->clear();
     d->tracks->clear();
     d->length = 128.0f;
     d->startTime = 0.0f;
