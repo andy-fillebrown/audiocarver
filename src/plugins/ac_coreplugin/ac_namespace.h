@@ -62,7 +62,10 @@ enum ItemDataRole {
     ControlRateRole,
     CurveRateRole,
     PlaybackTimeRole,
-    SnapRole
+    SnapEnabledRole,
+    TimeSnapRole,
+    PitchSnapRole,
+    ControlSnapRole
 };
 
 AC_CORE_EXPORT QString itemDataRoleString(int itemDataRole);

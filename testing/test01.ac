@@ -104,8 +104,8 @@
                 <Note volume="1">
                     <PitchCurve>
                         <Point position="0 127"/>
+                        <Point position="40 60" curve="bezier"/>
                         <Point position="61.8027 0" curve="bezier"/>
-                        <Point position="64.5096 71.8155" curve="bezier"/>
                         <Point position="72.1535 108.143" curve="bezier"/>
                         <Point position="120.217 0" curve="bezier"/>
                     </PitchCurve>
@@ -150,8 +150,8 @@
                 <Note volume="1">
                     <PitchCurve>
                         <Point position="0 61.0738"/>
+                        <Point position="54.25 108" curve="bezier"/>
                         <Point position="64.0823 0" curve="bezier"/>
-                        <Point position="64.5096 71.8155" curve="bezier"/>
                         <Point position="64.5935 112.945" curve="bezier"/>
                         <Point position="72.0609 127" curve="bezier"/>
                     </PitchCurve>
@@ -187,7 +187,7 @@
             </NoteList>
         </Track>
     </TrackList>
-    <GridSettings>
+    <GridSettings snapEnabled="true" timeSnap="0.25" pitchSnap="1" controlSnap="0.125">
         <TimeGridLineList>
             <TimeGridLine location="0" label="1" priority="0" color="#007f00"/>
             <TimeGridLine location="1" label="1.2" priority="64" color="#c0c0c0"/>
@@ -581,6 +581,6 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="64.7531314513336" pitchPosition="66.4041334603328" controlPosition="0.452189709959316" timeScale="0.899999976158148" pitchScale="0.899999976158148" controlScale="0.899999976158142"/>
+    <ViewSettings timePosition="62.8075708132721" pitchPosition="62.9133752668482" controlPosition="0.380646400664845" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
     <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>

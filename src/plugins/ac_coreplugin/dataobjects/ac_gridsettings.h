@@ -32,7 +32,10 @@ class GridSettingsPrivate;
 class AC_CORE_EXPORT GridSettings : public GraphicsParent
 {
     Q_OBJECT
-    Q_PROPERTY(bool snapToGrid READ snapToGrid WRITE setSnapToGrid)
+    Q_PROPERTY(bool snapEnabled READ isSnapEnabled WRITE setSnapEnabled)
+    Q_PROPERTY(qreal timeSnap READ timeSnap WRITE setTimeSnap)
+    Q_PROPERTY(qreal pitchSnap READ pitchSnap WRITE setPitchSnap)
+    Q_PROPERTY(qreal controlSnap READ controlSnap WRITE setControlSnap)
 
 public:
     enum { Type = Ac::GridSettingsItem };
@@ -42,8 +45,14 @@ public:
 
     Score *score() const;
 
-    bool snapToGrid() const;
-    void setSnapToGrid(bool snap);
+    bool isSnapEnabled() const;
+    void setSnapEnabled(bool enabled);
+    qreal timeSnap() const;
+    void setTimeSnap(qreal snap);
+    qreal pitchSnap() const;
+    void setPitchSnap(qreal snap);
+    qreal controlSnap() const;
+    void setControlSnap(qreal snap);
 
     ObjectTList<TimeGridLine> *timeGridLines() const;
     ObjectTList<PitchGridLine> *pitchGridLines() const;
@@ -62,7 +71,13 @@ public:
     {
         switch (i - staticMetaObject.propertyOffset()) {
         case 0:
-            return Ac::SnapRole;
+            return Ac::SnapEnabledRole;
+        case 1:
+            return Ac::TimeSnapRole;
+        case 2:
+            return Ac::PitchSnapRole;
+        case 3:
+            return Ac::ControlSnapRole;
         default:
             return GraphicsParent::persistentRoleAt(i);
         }
@@ -82,7 +97,10 @@ class GridSettingsPrivate : public GraphicsParentPrivate
     Q_DECLARE_PUBLIC(GridSettings)
 
 public:
-    uint snapToGrid : bitsizeof(uint);
+    uint snapEnabled : bitsizeof(uint);
+    qreal timeSnap;
+    qreal pitchSnap;
+    qreal controlSnap;
     ObjectTList<TimeGridLine> *timeGridLines;
     ObjectTList<PitchGridLine> *pitchGridLines;
     ObjectTList<ControlGridLine> *controlGridLines;

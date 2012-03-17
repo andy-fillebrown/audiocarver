@@ -23,7 +23,10 @@
 
 GridSettingsPrivate::GridSettingsPrivate(GridSettings *q)
     :   GraphicsParentPrivate(q)
-    ,   snapToGrid(true)
+    ,   snapEnabled(true)
+    ,   timeSnap(0.125f)
+    ,   pitchSnap(1.0f)
+    ,   controlSnap(0.125f)
     ,   timeGridLines(0)
     ,   pitchGridLines(0)
     ,   controlGridLines(0)
@@ -74,19 +77,73 @@ Score *GridSettings::score() const
     return object_cast<Score>(QObject::parent());
 }
 
-bool GridSettings::snapToGrid() const
+bool GridSettings::isSnapEnabled() const
 {
     Q_D(const GridSettings);
-    return d->snapToGrid;
+    return d->snapEnabled;
 }
 
-void GridSettings::setSnapToGrid(bool snap)
+void GridSettings::setSnapEnabled(bool enabled)
 {
     Q_D(GridSettings);
-    if (d->snapToGrid == snap)
+    if (d->snapEnabled == enabled)
         return;
     d->beginChangeData();
-    d->snapToGrid = snap;
+    d->snapEnabled = enabled;
+    d->endChangeData();
+}
+
+qreal GridSettings::timeSnap() const
+{
+    Q_D(const GridSettings);
+    return d->timeSnap;
+}
+
+void GridSettings::setTimeSnap(qreal snap)
+{
+    Q_D(GridSettings);
+    if (snap < 0.0f)
+        snap = 0.0f;
+    if (d->timeSnap == snap)
+        return;
+    d->beginChangeData();
+    d->timeSnap = snap;
+    d->endChangeData();
+}
+
+qreal GridSettings::pitchSnap() const
+{
+    Q_D(const GridSettings);
+    return d->pitchSnap;
+}
+
+void GridSettings::setPitchSnap(qreal snap)
+{
+    Q_D(GridSettings);
+    if (snap < 0.0f)
+        snap = 0.0f;
+    if (d->pitchSnap == snap)
+        return;
+    d->beginChangeData();
+    d->pitchSnap = snap;
+    d->endChangeData();
+}
+
+qreal GridSettings::controlSnap() const
+{
+    Q_D(const GridSettings);
+    return d->controlSnap;
+}
+
+void GridSettings::setControlSnap(qreal snap)
+{
+    Q_D(GridSettings);
+    if (snap < 0.0f)
+        snap = 0.0f;
+    if (d->controlSnap == snap)
+        return;
+    d->beginChangeData();
+    d->controlSnap = snap;
     d->endChangeData();
 }
 
@@ -114,7 +171,10 @@ void GridSettings::clear()
     d->controlGridLines->clear();
     d->pitchGridLines->clear();
     d->timeGridLines->clear();
-    d->snapToGrid = true;
+    d->controlSnap = 0.125f;
+    d->pitchSnap = 1.0f;
+    d->timeSnap = 0.125f;
+    d->snapEnabled = true;
 }
 
 int GridSettings::modelItemIndex(const IModelItem *item) const
@@ -160,8 +220,14 @@ IModelItem *GridSettings::findModelItemList(int type) const
 QVariant GridSettings::data(int role) const
 {
     switch (role) {
-    case Ac::SnapRole:
-        return snapToGrid();
+    case Ac::SnapEnabledRole:
+        return isSnapEnabled();
+    case Ac::TimeSnapRole:
+        return timeSnap();
+    case Ac::PitchSnapRole:
+        return pitchSnap();
+    case Ac::ControlSnapRole:
+        return controlSnap();
     default:
         return GraphicsParent::data(role);
     }
@@ -170,8 +236,17 @@ QVariant GridSettings::data(int role) const
 bool GridSettings::setData(const QVariant &value, int role)
 {
     switch (role) {
-    case Ac::SnapRole:
-        setSnapToGrid(value.toBool());
+    case Ac::SnapEnabledRole:
+        setSnapEnabled(value.toBool());
+        return true;
+    case Ac::TimeSnapRole:
+        setTimeSnap(value.toReal());
+        return true;
+    case Ac::PitchSnapRole:
+        setPitchSnap(value.toReal());
+        return true;
+    case Ac::ControlSnapRole:
+        setControlSnap(value.toReal());
         return true;
     default:
         return GraphicsParent::setData(value, role);

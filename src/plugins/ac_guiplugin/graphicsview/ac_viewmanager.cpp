@@ -193,13 +193,22 @@ public:
 
     void snapX(QPointF &pos, int role)
     {
-        if (Ac::TimePositionRole != role)
-            return;
-        pos.setX(Mi::roundToNearest(pos.x(), 0.25f));
+        qreal toX = -1.0f;
+        if (Ac::TimePositionRole == role)
+            toX = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::TimeSnapRole).toReal();
+        if (0.0f < toX)
+            pos.setX(Mi::roundToNearest(pos.x(), toX));
     }
 
     void snapY(QPointF &pos, int role)
     {
+        qreal toY = -1.0f;
+        if (Ac::PitchPositionRole == role)
+            toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::PitchSnapRole).toReal();
+        else if (Ac::ControlPositionRole == role)
+            toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::ControlSnapRole).toReal();
+        if (0.0f < toY)
+            pos.setY(Mi::roundToNearest(pos.y(), toY));
     }
 };
 
@@ -352,11 +361,15 @@ QPointF ViewManager::snappedScenePos(const QPointF &pos, int sceneType) const
 {
     IModel *model = IModel::instance();
     IModelItem *gridSettings = model->rootItem()->findModelItem(Ac::GridSettingsItem);
-    bool is_snapping = gridSettings->data(Ac::SnapRole).toBool();
+    bool is_snapping = gridSettings->data(Ac::SnapEnabledRole).toBool();
     if (!is_snapping)
         return pos;
     QPointF snapped_pos = pos;
     d->snapX(snapped_pos, Ac::TimePositionRole);
+    if (Ac::PitchScene == sceneType)
+        d->snapY(snapped_pos, Ac::PitchPositionRole);
+    else if (Ac::ControlScene == sceneType)
+        d->snapY(snapped_pos, Ac::ControlPositionRole);
     return snapped_pos;
 }
 

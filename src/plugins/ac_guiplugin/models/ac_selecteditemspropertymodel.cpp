@@ -76,6 +76,7 @@ public:
             IModelItem *score = model->rootItem();
             selectedItems.append(score);
             selectedItems.append(score->findModelItem(Ac::ProjectSettingsItem));
+            selectedItems.append(score->findModelItem(Ac::GridSettingsItem));
         }
 
         dataMap.clear();
