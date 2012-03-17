@@ -31,6 +31,8 @@
 
 #include <mi_idatabase.h>
 #include <mi_ieditor.h>
+#include <mi_imodelitem.h>
+#include <mi_mathutils.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -39,6 +41,8 @@
 #include <QWidget>
 
 #include <QTimer>
+
+#include <QtGlobal>
 
 class ViewManagerPrivate
 {
@@ -186,6 +190,17 @@ public:
             undoCmd = 0;
         }
     }
+
+    void snapX(QPointF &pos, int role)
+    {
+        if (Ac::TimePositionRole != role)
+            return;
+        pos.setX(Mi::roundToNearest(pos.x(), 0.25f));
+    }
+
+    void snapY(QPointF &pos, int role)
+    {
+    }
 };
 
 static ViewManager *instance = 0;
@@ -331,6 +346,18 @@ void ViewManager::clearPickedGrips()
 {
     d->pitchView->clearPickedGrips();
     d->controlView->clearPickedGrips();
+}
+
+QPointF ViewManager::snappedScenePos(const QPointF &pos, int sceneType) const
+{
+    IModel *model = IModel::instance();
+    IModelItem *gridSettings = model->rootItem()->findModelItem(Ac::GridSettingsItem);
+    bool is_snapping = gridSettings->data(Ac::SnapRole).toBool();
+    if (!is_snapping)
+        return pos;
+    QPointF snapped_pos = pos;
+    d->snapX(snapped_pos, Ac::TimePositionRole);
+    return snapped_pos;
 }
 
 void ViewManager::updateViews()

@@ -313,7 +313,7 @@ public:
         vm->disableUpdates();
         const qreal fromScenePos = playCursor->playCursorPosition();
         const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-        const qreal sceneOffset = toScenePos.x() - fromScenePos;
+        const qreal sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()).x() - fromScenePos;
         playCursor->dragPlayCursorTo(fromScenePos + sceneOffset);
         vm->enableUpdates();
     }
@@ -332,11 +332,12 @@ public:
         // database.  Update the database's view settings so they don't
         // overwrite the view manager's view settings in the view manager's
         // dataChanged implementation when the cursor position is changed.
-        ViewManager::instance()->updateDatabase();
+        ViewManager *vm = ViewManager::instance();
+        vm->updateDatabase();
 
         const qreal fromScenePos = playCursor->playCursorPosition();
         const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-        const qreal sceneOffset = toScenePos.x() - fromScenePos;
+        const qreal sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()).x() - fromScenePos;
         playCursor->setPlayCursorPosition(fromScenePos + sceneOffset);
         playCursor = 0;
         q->setCursor(GraphicsView::normalCrosshair());
@@ -415,7 +416,7 @@ public:
 
         const QPointF fromScenePos = curGrip->originalPosition();
         const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-        const QPointF sceneOffset = toScenePos - fromScenePos;
+        const QPointF sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()) - fromScenePos;
 
         foreach (IGripItem *grip, pickedGrips)
             grip->setPosition(grip->originalPosition() + sceneOffset);
@@ -635,7 +636,7 @@ public:
 
     void insertPoint(const QPoint &pos)
     {
-        const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
+        const QPointF scenePos = ViewManager::instance()->snappedScenePos(q->sceneTransform().inverted().map(QPointF(pos)), q->sceneType());
 
         foreach (GraphicsEntityItem *entityItem, pickedEntities) {
             IEntity *entity = entityItem->entity();

@@ -26,6 +26,7 @@ class QGraphicsView;
 class QWidget;
 
 class QModelIndex;
+class QPointF;
 
 class ViewManagerPrivate;
 class ViewManager : public QObject
@@ -47,8 +48,8 @@ public:
     void setScale(qreal scale, int role);
 
     void updateDatabase();
-
     void clearPickedGrips();
+    QPointF snappedScenePos(const QPointF &pos, int sceneType) const;
 
 public slots:
     void updateViews();
