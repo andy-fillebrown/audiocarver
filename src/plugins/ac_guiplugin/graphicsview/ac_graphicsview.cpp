@@ -73,7 +73,7 @@ public:
     uint playCursorHovered : 1;
     uint viewState : 2;
     uint dragState : 2;
-    uint extraGripsPicked : 1;
+    uint keepGripsPicked : 1;
     uint insertingPoints : 1;
     uint dirty : bitsizeof(uint) - 7;
 
@@ -86,7 +86,7 @@ public:
         ,   playCursorHovered(false)
         ,   viewState(0)
         ,   dragState(0)
-        ,   extraGripsPicked(false)
+        ,   keepGripsPicked(false)
         ,   insertingPoints(false)
         ,   dirty(true)
     {
@@ -346,8 +346,6 @@ public:
     {
         bool selectedGrip = false;
 
-        const int prevPickedGrips_n = pickedGrips.count();
-
         const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
@@ -361,12 +359,13 @@ public:
                     dragStartPos = pos;
                     curGrip = grip;
 
-                    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+                    if (Qt::ControlModifier & QApplication::keyboardModifiers()) {
                         grip->unhighlight();
                         pickedGrips.removeOne(grip);
                     } else {
-                        if ((!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
-                                && !extraGripsPicked)
+                        if (Qt::ShiftModifier & QApplication::keyboardModifiers())
+                            keepGripsPicked = true;
+                        else if (!keepGripsPicked)
                             clearPickedGrips();
 
                         grip->highlight();
@@ -381,15 +380,12 @@ public:
             }
         }
 
-        if (!extraGripsPicked && prevPickedGrips_n != 0)
-            extraGripsPicked = prevPickedGrips_n < pickedGrips.count();
-
         return selectedGrip;
     }
 
     void clearPickedGrips()
     {
-        extraGripsPicked = false;
+        keepGripsPicked = false;
 
         clearHovered();
 
@@ -444,7 +440,7 @@ public:
         editor->endCommand();
         editor->setUndoEnabled(true);
 
-        if (!extraGripsPicked)
+        if (!keepGripsPicked)
             clearPickedGrips();
     }
 
