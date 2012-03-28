@@ -2,6 +2,7 @@
 load(../ac_guiplugin/ac_guiplugin.prf)
 
 DIRS = \
+    dialogs \
     implementations \
     io \
     tools \
