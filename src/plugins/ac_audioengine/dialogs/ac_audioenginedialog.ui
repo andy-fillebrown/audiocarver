@@ -88,7 +88,7 @@
         </property>
         <layout class="QVBoxLayout">
          <item>
-          <layout class="QHBoxLayout" name="sampleSizeLayout" stretch="0,0,0,0,0">
+          <layout class="QHBoxLayout" name="sampleSizeLayout" stretch="0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
@@ -162,26 +162,10 @@
              </property>
             </widget>
            </item>
-           <item>
-            <spacer name="sampleSizeSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>33</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="sampleRateLayout" stretch="0,0,0,0,0">
+          <layout class="QHBoxLayout" name="sampleRateLayout" stretch="0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
@@ -255,26 +239,10 @@
              </property>
             </widget>
            </item>
-           <item>
-            <spacer name="sampleRateSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>33</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="controlRateLayout" stretch="0,0,0,0,0">
+          <layout class="QHBoxLayout" name="controlRateLayout" stretch="0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
@@ -348,26 +316,10 @@
              </property>
             </widget>
            </item>
-           <item>
-            <spacer name="controlRateSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>33</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="bufferSizeLayout" stretch="0,0,0,0,0">
+          <layout class="QHBoxLayout" name="bufferSizeLayout" stretch="0,0,0,0">
            <property name="spacing">
             <number>6</number>
            </property>
@@ -440,22 +392,6 @@
               <enum>QComboBox::NoInsert</enum>
              </property>
             </widget>
-           </item>
-           <item>
-            <spacer name="bufferSizeSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>33</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </item>
