@@ -15,9 +15,8 @@
 **
 **************************************************************************/
 
-#include <ac_audioenginedialog.h>
-
-#include <ui_ac_audioenginedialog.h>
+#include "ac_audioenginedialog.h"
+#include "ui_ac_audioenginedialog.h"
 
 #include <ac_audioengineconstants.h>
 #include <ac_audioenginesettings.h>
