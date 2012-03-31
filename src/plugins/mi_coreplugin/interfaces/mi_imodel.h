@@ -81,6 +81,8 @@ public:
     virtual void lock() = 0;
     virtual void unlock() = 0;
 
+    virtual void clear() = 0;
+
 signals:
     void pointsChanged(const QModelIndex &index);
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);

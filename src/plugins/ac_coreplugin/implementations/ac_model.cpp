@@ -123,6 +123,12 @@ void Model::unlock()
     d->locked = false;
 }
 
+void Model::clear()
+{
+    if (d->score)
+        d->score->clear();
+}
+
 void Model::rowCountChanged(const QModelIndex &parent)
 {
     if (listIndex(Ac::TrackItem) == parent)

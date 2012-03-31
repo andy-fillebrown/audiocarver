@@ -31,6 +31,17 @@
 
 #include <QObject>
 
+namespace Midi {
+
+struct MeterChange
+{
+    qreal time;
+    uint bpm : bitsizeof(uint) / 2;
+    uint denominator : bitsizeof(uint) / 2;
+};
+
+}
+
 class MidiFileReaderPrivate;
 
 class AC_MIDIFILE_EXPORT MidiFileReader : public QObject
@@ -49,6 +60,8 @@ public:
 
     qreal tickRate() const;
     qreal ticksToSeconds(quint64 tick);
+
+    const QList<Midi::MeterChange> &meterChanges();
 
 private:
     MidiFileReaderPrivate *d;

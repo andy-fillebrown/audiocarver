@@ -73,12 +73,19 @@ private:
 
 class MidiFileReaderPrivate
 {
+    QList<quint64> trackPointers;
+    QList<quint64> trackOffsets;
+    QList<quint64> trackLengths;
+    QList<quint64> trackCounters;
+    QList<quint8> trackStatusBytes;
+
+    QString readString(int size);
+    qint16 readValue16();
+    qint32 readValue32();
+    quint64 readVariableLength();
+
 public:
-    MidiFileReaderPrivate(const QString &fileName);
-
-    void rewind(int track = 0);
-    quint64 nextEvent(MidiEventBytes &data, int track = 0);
-
+    MidiFileReader *q;
     QFile file;
     Midi::Format format;
     qint16 trackCount;
@@ -86,22 +93,64 @@ public:
     bool isUsingTimeCode;
 
     MidiFileTickConverter *tickConverter;
+    QList<Midi::MeterChange> meterChanges;
 
-private:
-    QString readString(int size);
-    qint16 readValue16();
-    qint32 readValue32();
-    quint64 readVariableLength();
+    MidiFileReaderPrivate(MidiFileReader *q, const QString &fileName);
 
-    QList<quint64> trackPointers;
-    QList<quint64> trackOffsets;
-    QList<quint64> trackLengths;
-    QList<quint64> trackCounters;
-    QList<quint8> trackStatusBytes;
+    void rewind(int track = 0);
+    quint64 nextEvent(MidiEventBytes &data, int track = 0);
+
+    void updateMeterChanges();
 };
 
-MidiFileReaderPrivate::MidiFileReaderPrivate(const QString &fileName)
-    :   file(fileName)
+QString MidiFileReaderPrivate::readString(int size)
+{
+    char b[size + 1];
+    if (!file.read(b, size))
+        return QString();
+    b[size] = 0;
+    return QString(b);
+}
+
+qint16 MidiFileReaderPrivate::readValue16()
+{
+    char b[2];
+    if (!file.read(b, 2))
+        return -1;
+    quint16 *p = reinterpret_cast<quint16 *>(b);
+    return qFromBigEndian(*p);
+}
+
+qint32 MidiFileReaderPrivate::readValue32()
+{
+    char b[4];
+    if (!file.read(b, 4))
+        return -1;
+    quint32 *p = reinterpret_cast<quint32 *>(b);
+    return qFromBigEndian(*p);
+}
+
+quint64 MidiFileReaderPrivate::readVariableLength()
+{
+    quint64 val = 0;
+    char c = 0;
+    if (!file.read(&c, 1))
+        return 0;
+    val = quint64(c);
+    if (val & 0x80) {
+        val &= 0x7f;
+        do {
+            if (!file.read(&c, 1))
+                return 0;
+            val = (val << 7) + (c & 0x7f);
+        } while (c & 0x80);
+    }
+    return val;
+}
+
+MidiFileReaderPrivate::MidiFileReaderPrivate(MidiFileReader *q, const QString &fileName)
+    :   q(q)
+    ,   file(fileName)
     ,   format(Midi::Format0)
     ,   trackCount(0)
     ,   division(0)
@@ -286,54 +335,29 @@ quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
     return tick;
 }
 
-QString MidiFileReaderPrivate::readString(int size)
+void MidiFileReaderPrivate::updateMeterChanges()
 {
-    char b[size + 1];
-    if (!file.read(b, size))
-        return QString();
-    b[size] = 0;
-    return QString(b);
-}
+    // Create meter changes from track 0.
+    MidiEventList events = q->events(0);
+    foreach (MidiEvent event, events) {
+        if (7 == event.size()
+                && MidiEvent::Meta == event.rawData(0)
+                && MidiEvent::MetaTimeSignature == event.data(0)
+                && 4 == event.data(1)) {
+            Midi::MeterChange meter_change;
+            meter_change.time = q->ticksToSeconds(event.tick());
 
-qint16 MidiFileReaderPrivate::readValue16()
-{
-    char b[2];
-    if (!file.read(b, 2))
-        return -1;
-    quint16 *p = reinterpret_cast<quint16 *>(b);
-    return qFromBigEndian(*p);
-}
+            // TODO:  Convert the time signature event data into
+            // bpm/denominator.
 
-qint32 MidiFileReaderPrivate::readValue32()
-{
-    char b[4];
-    if (!file.read(b, 4))
-        return -1;
-    quint32 *p = reinterpret_cast<quint32 *>(b);
-    return qFromBigEndian(*p);
-}
-
-quint64 MidiFileReaderPrivate::readVariableLength()
-{
-    quint64 val = 0;
-    char c = 0;
-    if (!file.read(&c, 1))
-        return 0;
-    val = quint64(c);
-    if (val & 0x80) {
-        val &= 0x7f;
-        do {
-            if (!file.read(&c, 1))
-                return 0;
-            val = (val << 7) + (c & 0x7f);
-        } while (c & 0x80);
+            meterChanges.append(meter_change);
+        }
     }
-    return val;
 }
 
 MidiFileReader::MidiFileReader(const QString &fileName, QObject *parent)
     :   QObject(parent)
-    ,   d(new MidiFileReaderPrivate(fileName))
+    ,   d(new MidiFileReaderPrivate(this, fileName))
 {}
 
 MidiFileReader::~MidiFileReader()
@@ -405,6 +429,13 @@ qreal MidiFileReader::ticksToSeconds(quint64 tick)
     if (!d->tickConverter)
         d->tickConverter = new MidiFileTickConverter(this);
     return d->tickConverter->ticksToSeconds(tick);
+}
+
+const QList<Midi::MeterChange> &MidiFileReader::meterChanges()
+{
+    if (d->meterChanges.isEmpty())
+        d->updateMeterChanges();
+    return d->meterChanges;
 }
 
 MidiFileTickConverter::MidiFileTickConverter(MidiFileReader *reader)

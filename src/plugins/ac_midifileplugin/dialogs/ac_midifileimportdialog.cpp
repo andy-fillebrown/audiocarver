@@ -154,6 +154,11 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
     qDeleteAll(matched_notes);
 }
 
+static void importBarlines(MidiFileReader &reader)
+{
+    const QList<Midi::MeterChange> &meter_changes = reader.meterChanges();
+}
+
 class MidiFileImportDialogPrivate
 {
 public:
@@ -185,6 +190,9 @@ public:
         if (file_name.isEmpty())
             return;
 
+        if (Overwrite == importType)
+            IModel::instance()->clear();
+
         IEditor *editor = IEditor::instance();
         editor->beginCommand();
 
@@ -203,7 +211,9 @@ public:
     #   endif
         const int track_count = reader.trackCount();
         for (int i = 0;  i < track_count;  ++i)
-            importTrack(reader, i);
+            ::importTrack(reader, i);
+        if (importBarlines)
+            ::importBarlines(reader);
 
         editor->endCommand();
     }
@@ -251,6 +261,16 @@ void MidiFileImportDialog::openFile()
 
 void MidiFileImportDialog::import()
 {
+    if ("Create New Score" == ui->importTypeComboBox->currentText())
+        d->importType = Overwrite;
+    else
+        d->importType = Append;
+
+    if ("Import Barlines" == ui->importBarlinesComboBox->currentText())
+        d->importBarlines = true;
+    else
+        d->importBarlines = false;
+
     d->import();
     close();
 }

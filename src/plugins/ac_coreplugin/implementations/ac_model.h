@@ -50,6 +50,8 @@ public:
     void lock();
     void unlock();
 
+    void clear();
+
 public slots:
     void rowCountChanged(const QModelIndex &parent);
     void clearTrackCount();
