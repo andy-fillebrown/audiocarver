@@ -107,6 +107,7 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
                     note->stopTime = stop_time;
                     matched_notes.append(note);
                     notes[i] = 0;
+                    break;
                 }
             }
         }
