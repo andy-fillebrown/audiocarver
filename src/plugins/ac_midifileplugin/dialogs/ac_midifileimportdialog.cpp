@@ -59,7 +59,8 @@ struct MidiNote {
 
 typedef QList<MidiNote*> MidiNotes;
 
-static void importTrack(MidiFileReader &reader, const int trackNumber)
+// Returns the length of the track, in seconds.
+static qreal importTrack(MidiFileReader &reader, const int trackNumber)
 {
     const MidiEventList events = reader.events(trackNumber);
 #   if 0
@@ -122,7 +123,7 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
     }
 
     if (matched_notes.isEmpty())
-        return;
+        return 0.0f;
 
     IModel *model = IModel::instance();
     IModelItem *score = model->rootItem();
@@ -153,11 +154,85 @@ static void importTrack(MidiFileReader &reader, const int trackNumber)
         score->setData(length, Ac::LengthRole);
 
     qDeleteAll(matched_notes);
+
+    return length;
 }
 
-static void importBarlines(MidiFileReader &reader)
+static IModelItem *createBarline(qreal time, const QColor &color, int priority, const QString &label = QString())
 {
+    IModelItem *barline = IObjectFactory::instance()->create(Ac::TimeGridLineItem);
+    barline->setData(time, Ac::LocationRole);
+    barline->setData(color, Ac::ColorRole);
+    barline->setData(label, Ac::LabelRole);
+    barline->setData(priority, Ac::PriorityRole);
+    return barline;
+}
+
+static int calculatePriority(int value, int maxPower)
+{
+    int power = 2;
+    for (int i = 0;  i < maxPower;  ++i, power += power)
+        if (value % power)
+            return maxPower - i;
+    return 1;
+}
+
+static void importBarlines(MidiFileReader &reader, qreal scoreLength)
+{
+    QList<IModelItem*> barline_items;
     const QList<Midi::MeterChange> &meter_changes = reader.meterChanges();
+    int current_bar_number = 1;
+    int current_tick = 0;
+    qreal current_time = -1.0f;
+
+    // Create the barlines.
+    const int n = meter_changes.count();
+    for (int i = 0;  i < n;  ++i) {
+        const Midi::MeterChange &meter_change = meter_changes.at(i);
+        const int quarters_per_beat = 4 / meter_change.denominator;
+        const int ticks_per_thirtysecond = reader.tickRate() / meter_change.thirtysecondNotesPerQuarterNote;
+        const int ticks_per_barline_subdivision = quarters_per_beat * ticks_per_thirtysecond;
+
+        qreal meter_duration = -1.0f;
+        if (i + 1 < n)
+            meter_duration = meter_changes.at(i).time - meter_change.time;
+        else
+            meter_duration = scoreLength - meter_change.time;
+
+        current_time = meter_change.time;
+        while (current_time < meter_duration) {
+            for (int j = 0;  j < meter_change.numerator;  ++j) {
+                QString bar_label = QString("%1").arg(current_bar_number);
+                if (j == 0)
+                    barline_items.append(createBarline(current_time, QColor(100, 100, 100), 1 + calculatePriority(current_bar_number - 1, 6), bar_label));
+                else {
+                    bar_label.append(QString(".%1").arg(j + 1));
+                    barline_items.append(createBarline(current_time, QColor(175, 175, 175), 10 + calculatePriority(j, 4), bar_label));
+                }
+                current_tick += ticks_per_barline_subdivision;
+                current_time = reader.ticksToSeconds(current_tick);
+
+                for (int k = 1;  k < meter_change.thirtysecondNotesPerQuarterNote;  ++k) {
+                    barline_items.append(createBarline(current_time, QColor(225, 225, 225), 100 + calculatePriority(k, 4)));
+                    current_tick += ticks_per_barline_subdivision;
+                    current_time = reader.ticksToSeconds(current_tick);
+                }
+            }
+            ++current_bar_number;
+        }
+    }
+    if (barline_items.isEmpty())
+        return;
+
+    barline_items.append(createBarline(current_time, QColor(Qt::red), 0));
+    barline_items.first()->setData(0, Ac::PriorityRole);
+
+    // Add the barlines to the model.
+    IModel *model = IModel::instance();
+    IModelItem *barline_item_list = model->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::TimeGridLineItem);
+    const QModelIndex &barline_list_index = model->indexFromItem(barline_item_list);
+    foreach (IModelItem *barline_item, barline_items)
+        model->insertItem(barline_item, barline_item_list->modelItemCount(), barline_list_index);
 }
 
 class MidiFileImportDialogPrivate
@@ -211,10 +286,14 @@ public:
         }
     #   endif
         const int track_count = reader.trackCount();
-        for (int i = 0;  i < track_count;  ++i)
-            ::importTrack(reader, i);
+        qreal scoreLength = 0.0f;
+        for (int i = 0;  i < track_count;  ++i) {
+            const qreal trackLength = ::importTrack(reader, i);
+            if (scoreLength < trackLength)
+                scoreLength = trackLength;
+        }
         if (importBarlines)
-            ::importBarlines(reader);
+            ::importBarlines(reader, scoreLength);
 
         editor->endCommand();
     }

@@ -33,11 +33,20 @@
 
 namespace Midi {
 
-struct MeterChange
+class MeterChange
 {
+public:
     qreal time;
-    uint bpm : bitsizeof(uint) / 2;
-    uint denominator : bitsizeof(uint) / 2;
+    int numerator;
+    int denominator;
+    int thirtysecondNotesPerQuarterNote;
+
+    MeterChange()
+        :   time(0.0f)
+        ,   numerator(4)
+        ,   denominator(4)
+        ,   thirtysecondNotesPerQuarterNote(8)
+    {}
 };
 
 }

@@ -24,14 +24,12 @@
 **
 ******************************************************************************/
 
-// The following code is a Qt-style translation of the code written by Gary P.
-// Scavone for the Synthesis Toolkit (STK).
-
 #include "ac_midifilereader.h"
 
 #include <ac_midievent.h>
 
 #include <QFile>
+#include <qmath.h>
 
 #include <QtEndian>
 
@@ -346,10 +344,9 @@ void MidiFileReaderPrivate::updateMeterChanges()
                 && 4 == event.data(1)) {
             Midi::MeterChange meter_change;
             meter_change.time = q->ticksToSeconds(event.tick());
-
-            // TODO:  Convert the time signature event data into
-            // bpm/denominator.
-
+            meter_change.numerator = event.data(2);
+            meter_change.denominator = qPow(2, event.data(3));
+            meter_change.thirtysecondNotesPerQuarterNote = event.data(5);
             meterChanges.append(meter_change);
         }
     }
