@@ -83,6 +83,17 @@ public:
             for (int j = 0;  j < column_count;  ++j)
                 item->setData(data.at(i).at(j), item->persistentRoleAt(property_offset + j));
         }
+
+        // Remove the remaining items from the list.
+        int item_count = listItem->modelItemCount();
+        if (row_count < item_count) {
+            IModel *model = IModel::instance();
+            const QModelIndex list_index = model->indexFromItem(listItem);
+            while (row_count < item_count) {
+                listItem->modelItemAt(--item_count)->setData(false, Ac::VisibilityRole);
+                model->removeItem(item_count, list_index);
+            }
+        }
     }
 };
 
