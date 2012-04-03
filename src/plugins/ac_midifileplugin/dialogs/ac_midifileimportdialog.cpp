@@ -315,6 +315,8 @@ MidiFileImportDialog::MidiFileImportDialog(QWidget *parent)
     connect(ui->midiFileOpenButton, SIGNAL(clicked()), SLOT(openFile()));
     connect(ui->buttonBox, SIGNAL(accepted()), SLOT(import()));
     connect(ui->buttonBox, SIGNAL(rejected()), SLOT(close()));
+
+    openFile();
 }
 
 MidiFileImportDialog::~MidiFileImportDialog()
