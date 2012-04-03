@@ -61,7 +61,7 @@ public:
             if (minPriority && (minPriority < curPriority))
                 continue;
             const qreal curLocation = line.data(Ac::LocationRole).toReal();
-            if (curLocation < prevLocation)
+            if (curPriority && (curLocation < prevLocation))
                 minPriority = qMin(minPriority, qMax(prevPriority, curPriority));
             else {
                 prevPriority = curPriority;
