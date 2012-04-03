@@ -233,6 +233,11 @@ static void importBarlines(MidiFileReader &reader, qreal scoreLength)
     const QModelIndex &barline_list_index = model->indexFromItem(barline_item_list);
     foreach (IModelItem *barline_item, barline_items)
         model->insertItem(barline_item, barline_item_list->modelItemCount(), barline_list_index);
+
+    // Extend the score length to the last barline, if necessary.
+    IModelItem *score = model->rootItem();
+    if (score->data(Ac::LengthRole).toReal() < current_time)
+        score->setData(current_time, Ac::LengthRole);
 }
 
 class MidiFileImportDialogPrivate
