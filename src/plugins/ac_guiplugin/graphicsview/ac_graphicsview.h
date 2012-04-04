@@ -104,6 +104,7 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private slots:
+    void clearGripSelection();
     void gripDeselected(IGripItem *grip);
 
 private:

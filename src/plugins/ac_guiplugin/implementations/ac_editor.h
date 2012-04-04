@@ -35,6 +35,8 @@ public:
     void paste();
     void selectAll();
 
+    QUndoStack *undoStack() const;
+
     bool isUndoEnabled() const;
     void setUndoEnabled(bool enabled);
 

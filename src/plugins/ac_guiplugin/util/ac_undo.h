@@ -139,7 +139,7 @@ class UndoStack : public QUndoStack
     Q_OBJECT
 
 public:
-    explicit UndoStack(QObject *parent = 0);
+    UndoStack(QObject *parent = 0);
     ~UndoStack();
 
 private slots:

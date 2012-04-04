@@ -23,6 +23,8 @@
 #include <ac_graphicsitem.h>
 #include <ac_graphicsobject.h>
 
+#include <QStack>
+
 class ScoreObject;
 
 class CurvePrivate;
@@ -39,7 +41,9 @@ public:
 
     // IEntity
     const PointList &points() const;
-    void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);
+    void pushPoints(const PointList &points);
+    void popPoints();
+    void setPoints(const PointList &points);
     void highlight();
     void unhighlight();
     bool intersects(const QRectF &rect) const;
@@ -85,8 +89,7 @@ class CurvePrivate : public GraphicsObjectPrivate
     Q_DECLARE_PUBLIC(Curve)
 
 public:
-    PointList points;
-    uint dragging : bitsizeof(uint);
+    QStack<PointList> pointsStack;
     GraphicsCurveItem *graphicsCurveItem;
 
     CurvePrivate(Curve *q);

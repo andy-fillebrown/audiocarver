@@ -46,7 +46,9 @@ public:
     // IEntity
     bool isSubEntity() const { return false; }
     const PointList &points() const;
-    void setPoints(const PointList &points, Ac::DragState dragState = Ac::NotDragging);
+    void pushPoints(const PointList &points);
+    void popPoints();
+    void setPoints(const PointList &points);
     void highlight();
     void unhighlight();
     bool intersects(const QRectF &) const { return false; }

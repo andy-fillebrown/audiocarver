@@ -36,8 +36,8 @@ bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
     addAutoReleasedObject(new Editor);
+    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
     return true;
 }
 

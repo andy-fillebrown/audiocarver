@@ -184,6 +184,7 @@ bool GripSelectionModel::setData(const QModelIndex &index, const QVariant &value
         break;
     case 4:
         grip_item->setCurveType(value.toInt());
+        grip_item->parentEntityItem()->updateCurveTypes();
         break;
     default:
         return false;

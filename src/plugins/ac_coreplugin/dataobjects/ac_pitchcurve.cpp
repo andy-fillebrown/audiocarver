@@ -33,6 +33,8 @@ public:
 
     void conformPoints()
     {
+        Q_Q(const PitchCurve);
+        PointList points = q->points();
         int n = points.count();
         if (n < 2) {
             points.clear();
@@ -46,6 +48,7 @@ public:
                 pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(127.0f));
             }
         }
+        pointsStack.top() = points;
     }
 
     void updateGraphicsParent()

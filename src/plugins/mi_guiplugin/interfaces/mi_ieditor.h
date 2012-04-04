@@ -23,6 +23,7 @@
 #include <QObject>
 
 class QUndoCommand;
+class QUndoStack;
 
 class MI_GUI_EXPORT IEditor : public QObject
 {
@@ -39,6 +40,8 @@ public:
     virtual void copy() const = 0;
     virtual void paste() = 0;
     virtual void selectAll() = 0;
+
+    virtual QUndoStack *undoStack() const = 0;
 
     virtual bool isUndoEnabled() const = 0;
     virtual void setUndoEnabled(bool enabled) = 0;

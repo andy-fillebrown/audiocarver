@@ -35,6 +35,7 @@
 
 #include <QApplication>
 #include <QMouseEvent>
+#include <QUndoStack>
 
 #include <qmath.h>
 
@@ -67,7 +68,6 @@ public:
     QList<IEntity*> hoveredEntities;
     QList<IGripItem*> hoveredGrips;
     QList<IEntityItem*> entitiesToUpdate;
-    QList<PointList> originalEntityPoints;
     GraphicsRootItem *rootItem;
     IPlayCursor *playCursor;
     QCursor previousCursor;
@@ -402,14 +402,10 @@ public:
 
     void startDraggingGrips()
     {
-        IEditor::instance()->setUndoEnabled(false);
-
         dragState = DraggingGrips;
 
-        foreach (IEntityItem *entityItem, entitiesToUpdate) {
+        foreach (IEntityItem *entityItem, entitiesToUpdate)
             entityItem->startUpdatingPoints();
-            originalEntityPoints.append(entityItem->entity()->points());
-        }
     }
 
     void dragGripsTo(const QPoint &pos)
@@ -439,20 +435,17 @@ public:
         dragState = 0;
         curGrip = 0;
 
-        IEditor *editor = IEditor::instance();
-
         if (gripsDragged) {
+            IEditor *editor = IEditor::instance();
             editor->beginCommand();
             foreach (IEntityItem *entityItem, entitiesToUpdate)
                 entityItem->finishUpdatingPoints();
             editor->endCommand();
+            gripsDragged = false;
         }
 
         if (!keepGripsPicked)
             clearPickedGrips();
-
-        originalEntityPoints.clear();
-        editor->setUndoEnabled(true);
     }
 
     void cancelGripDrag()
@@ -462,13 +455,12 @@ public:
 
         const int n = entitiesToUpdate.count();
         for (int i = 0;  i < n;  ++i)
-            entitiesToUpdate.at(i)->entity()->setPoints(originalEntityPoints.at(i));
+            entitiesToUpdate.at(i)->entity()->popPoints();
 
         if (!keepGripsPicked)
             clearPickedGrips();
 
-        originalEntityPoints.clear();
-        IEditor::instance()->setUndoEnabled(true);
+        gripsDragged = false;
     }
 
     QRect pickBoxBounds() const
@@ -669,13 +661,13 @@ public:
         foreach (GraphicsEntityItem *entityItem, pickedEntities) {
             IEntity *entity = entityItem->entity();
             PointList pts = entity->points();
-
             Point pt = Point(scenePos);
             if (Qt::ControlModifier & QApplication::keyboardModifiers())
                 pt.curveType = Ac::BezierCurve;
-
             pts.append(pt);
-            entity->setPoints(pts, Ac::Dragging);
+            entity->popPoints();
+            entity->pushPoints(pts);
+            entityItem->resetGripItems();
         }
     }
 
@@ -707,8 +699,8 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setCursor(normalCrosshair());
     setMouseTracking(true);
 
-    GripSelectionModel *grip_model = GripSelectionModel::instance();
-    connect(grip_model, SIGNAL(gripDeselected(IGripItem*)), SLOT(gripDeselected(IGripItem*)));
+    connect(IEditor::instance()->undoStack(), SIGNAL(indexChanged(int)), SLOT(clearGripSelection()));
+    connect(GripSelectionModel::instance(), SIGNAL(gripDeselected(IGripItem*)), SLOT(gripDeselected(IGripItem*)));
 }
 
 GraphicsView::~GraphicsView()
@@ -760,9 +752,11 @@ void GraphicsView::updateView()
 void GraphicsView::startInsertingPoints()
 {
     d->insertingPoints = true;
+    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
+        IEntity *entity = entityItem->entity();
+        entity->pushPoints(entity->points());
+    }
     setCursor(creationCrosshair());
-    foreach (GraphicsEntityItem *entityItem, d->pickedEntities)
-        d->originalEntityPoints.append(entityItem->entity()->points());
 }
 
 void GraphicsView::finishInsertingPoints()
@@ -770,8 +764,8 @@ void GraphicsView::finishInsertingPoints()
     foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
         IEntity *entity = entityItem->entity();
         entity->setPoints(entity->points());
+        entityItem->resetGripItems();
     }
-    d->originalEntityPoints.clear();
     setCursor(normalCrosshair());
     d->insertingPoints = false;
 }
@@ -780,8 +774,7 @@ void GraphicsView::cancelPointInsertion()
 {
     const int n = d->pickedEntities.count();
     for (int i = 0;  i < n;  ++i)
-        d->pickedEntities.at(i)->entity()->setPoints(d->originalEntityPoints.at(i), Ac::Dragging);
-    d->originalEntityPoints.clear();
+        d->pickedEntities.at(i)->entity()->popPoints();
     setCursor(normalCrosshair());
     d->insertingPoints = false;
 }
@@ -1132,6 +1125,11 @@ void GraphicsView::paintEvent(QPaintEvent *event)
 {
     QGraphicsView::paintEvent(event);
     paintGlyphs(event);
+}
+
+void GraphicsView::clearGripSelection()
+{
+    d->clearPickedGrips();
 }
 
 void GraphicsView::gripDeselected(IGripItem *grip)

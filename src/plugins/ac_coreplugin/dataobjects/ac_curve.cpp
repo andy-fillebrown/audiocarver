@@ -21,9 +21,13 @@
 
 CurvePrivate::CurvePrivate(Curve *q)
     :   GraphicsObjectPrivate(q)
-    ,   dragging(false)
     ,   graphicsCurveItem(new GraphicsCurveItem)
-{}
+{
+    PointList pts;
+    pts.append(Point());
+    pts.append(Point());
+    pointsStack.push(pts);
+}
 
 void CurvePrivate::init()
 {
@@ -58,56 +62,42 @@ void Curve::setColor(const QColor &color)
 const PointList &Curve::points() const
 {
     Q_D(const Curve);
-    return d->points;
+    return d->pointsStack.top();
 }
 
-void Curve::setPoints(const PointList &points, Ac::DragState dragState)
+void Curve::pushPoints(const PointList &points)
 {
     Q_D(Curve);
-    if (d->points == points) {
-        if (Ac::NotDragging == dragState && d->dragging) {
-            d->endChangeData();
-            d->dragging = false;
-        }
-        return;
-    }
-    PointList oldPts = d->points;
-    PointList newPts = points;
-    if (newPts.count() < 2) {
-        newPts.clear();
-        newPts.append(oldPts.first());
-        newPts.append(oldPts.last());
-        newPts.last().pos.setY(newPts.first().pos.y());
-    }
-    if (newPts == oldPts) {
-        if (Ac::NotDragging == dragState && d->dragging) {
-            d->endChangeData();
-            d->dragging = false;
-        }
-        return;
-    }
-    d->points = newPts;
+    d->pointsStack.push(points);
     d->conformPoints();
-    if (d->points == oldPts) {
-        if (Ac::NotDragging == dragState && d->dragging) {
-            d->endChangeData();
-            d->dragging = false;
-        }
+    d->graphicsCurveItem->setPoints(this->points());
+}
+
+void Curve::popPoints()
+{
+    Q_D(Curve);
+    d->pointsStack.pop();
+    d->graphicsCurveItem->setPoints(this->points());
+}
+
+void Curve::setPoints(const PointList &points)
+{
+    Q_D(Curve);
+    PointList new_pts = points;
+    while (1 < d->pointsStack.count())
+        d->pointsStack.pop();
+    PointList old_pts = this->points();
+    d->pointsStack.top() = new_pts;
+    d->conformPoints();
+    new_pts = d->pointsStack.top();
+    d->pointsStack.top() = old_pts;
+    if (this->points() == new_pts)
         return;
-    }
-    newPts = d->points;
-    d->points = oldPts;
-    if (Ac::NotDragging == dragState || !d->dragging)
-        d->beginChangeData();
-    if (Ac::Dragging == dragState)
-        d->dragging = true;
-    d->points = newPts;
-    d->graphicsCurveItem->setPoints(d->points);
+    d->beginChangeData();
+    d->pointsStack.top() = new_pts;
+    d->graphicsCurveItem->setPoints(new_pts);
     scoreObject()->updatePoints();
-    if (!d->dragging)
-        d->endChangeData();
-    if (Ac::NotDragging == dragState)
-        d->dragging = false;
+    d->endChangeData();
 }
 
 void Curve::highlight()

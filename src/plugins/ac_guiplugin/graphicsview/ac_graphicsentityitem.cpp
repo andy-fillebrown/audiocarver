@@ -27,7 +27,6 @@ public:
     GraphicsEntityItem *q;
     IEntity *entity;
     QList<GraphicsGripItem*> gripItems;
-    PointList previousPoints;
 
     GraphicsEntityItemPrivate(GraphicsEntityItem *q)
         :   q(q)
@@ -131,13 +130,15 @@ void GraphicsEntityItem::unhighlight()
 
 void GraphicsEntityItem::resetGripItems()
 {
-    const PointList &points = d->entity->points();
+    const PointList points = d->entity->points();
     const int points_n = points.count();
 
     for (int i = 0;  i < points_n;  ++i) {
         if (i < d->gripItems.count()) {
+            const Point &point = points.at(i);
             IGripItem *gripItem = d->gripItems[i];
-            gripItem->setPosition(points.at(i).pos);
+            gripItem->setPosition(point.pos);
+            gripItem->setCurveType(point.curveType);
             gripItem->updateOriginalPosition();
         } else
             d->newGripItem(points.at(i));
@@ -151,23 +152,21 @@ void GraphicsEntityItem::startUpdatingPoints()
 {
     if (!d->entity)
         return;
-    d->previousPoints = d->entity->points();
+    d->entity->pushPoints(d->gripPoints());
 }
 
 void GraphicsEntityItem::updatePoints()
 {
     if (!d->entity)
         return;
-    d->entity->setPoints(d->previousPoints, Ac::Dragging);
-    d->entity->setPoints(d->gripPoints(), Ac::Dragging);
+    d->entity->popPoints();
+    d->entity->pushPoints(d->gripPoints());
     d->updateGripPositions();
 }
 
 void GraphicsEntityItem::finishUpdatingPoints()
 {
-    if (!d->entity)
-        return;
-    d->entity->setPoints(d->gripPoints());
+    updateCurveTypes();
 
     foreach (GraphicsGripItem *gripItem, d->gripItems)
         gripItem->updateOriginalPosition();

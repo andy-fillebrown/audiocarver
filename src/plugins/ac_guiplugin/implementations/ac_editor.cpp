@@ -219,6 +219,11 @@ void Editor::selectAll()
 {
 }
 
+QUndoStack *Editor::undoStack() const
+{
+    return d->undoStack;
+}
+
 bool Editor::isUndoEnabled() const
 {
     return d->undoEnabled;

@@ -35,6 +35,8 @@ public:
 
     void conformPoints()
     {
+        Q_Q(const ControlCurve);
+        PointList points = q->points();
         if (points.count() < 2) {
             points.clear();
             points.append(Point(0.0f, 0.0f));
@@ -50,6 +52,7 @@ public:
                 pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(1.0f));
             }
         }
+        pointsStack.top() = points;
     }
 
     void updateGraphicsParent()

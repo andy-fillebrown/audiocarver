@@ -22,11 +22,13 @@
 #include <ac_pitchcurve.h>
 #include <ac_track.h>
 
+#include <QStack>
+
 class VelocityItem : public IEntity
         ,   public ISubEntity
 {
     Note *note;
-    PointList pts;
+    QStack<PointList> pointsStack;
 
 public:
     QGraphicsLineItem *graphicsLineItem;
@@ -37,8 +39,9 @@ public:
     {
         graphicsLineItem->setData(0, quintptr(this));
 
+        PointList pts;
         pts.append(Point());
-        updatePoints();
+        pushPoints(pts);
 
         QPen pen;
         pen.setCosmetic(true);
@@ -49,11 +52,29 @@ public:
 
     void updatePoints()
     {
+        updatePoints(note->volume());
+    }
+
+    void updatePoints(qreal y)
+    {
         const PointList &pitchPts = note->pitchCurve()->points();
-        const qreal x = pitchPts.count() ? pitchPts.first().pos.x() : 0;
+        const qreal x = pitchPts.isEmpty() ? 0.0f : pitchPts.first().pos.x();
+        PointList &pts = pointsStack.top();
+        if (pts.isEmpty())
+            return;
         pts[0].pos.setX(x);
-        pts[0].pos.setY(note->volume());
-        graphicsLineItem->setLine(x, 0.0f, x, pts[0].pos.y());
+        pts[0].pos.setY(y);
+        updateGraphicsItems();
+    }
+
+    void updateGraphicsItems()
+    {
+        const PointList &pts = points();
+        if (pts.isEmpty())
+            return;
+        const QPointF &pos = pts.first().pos;
+        const qreal x = pos.x();
+        graphicsLineItem->setLine(x, 0.0f, x, pos.y());
     }
 
     void setColor(const QColor &color)
@@ -82,12 +103,30 @@ public:
     // IEntity
     const PointList &points() const
     {
-        return pts;
+        return pointsStack.top();
     }
 
-    void setPoints(const PointList &points, Ac::DragState dragState)
+    void pushPoints(const PointList &points)
     {
-        note->setVolume(points.first().pos.y(), dragState);
+        pointsStack.push(points);
+        updatePoints(points.first().pos.y());
+    }
+
+    void popPoints()
+    {
+        if (1 == pointsStack.count())
+            return;
+        pointsStack.pop();
+        updateGraphicsItems();
+    }
+
+    void setPoints(const PointList &points)
+    {
+        if (points.isEmpty())
+            return;
+        while (1 < pointsStack.count())
+            pointsStack.pop();
+        note->setVolume(points.first().pos.y());
     }
 
     void highlight()
@@ -234,10 +273,17 @@ const PointList &Note::points() const
     return dummy;
 }
 
-void Note::setPoints(const PointList &points, Ac::DragState dragState)
+void Note::pushPoints(const PointList &points)
 {
     Q_UNUSED(points);
-    Q_UNUSED(dragState);
+}
+
+void Note::popPoints()
+{}
+
+void Note::setPoints(const PointList &points)
+{
+    Q_UNUSED(points);
 }
 
 void Note::highlight()

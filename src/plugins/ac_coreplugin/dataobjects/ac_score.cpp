@@ -115,10 +115,17 @@ public:
         return points;
     }
 
-    void setPoints(const PointList &points, Ac::DragState dragState)
+    void pushPoints(const PointList &points)
     {
         Q_UNUSED(points);
-        Q_UNUSED(dragState);
+    }
+
+    void popPoints()
+    {}
+
+    void setPoints(const PointList &points)
+    {
+        Q_UNUSED(points);
     }
 
     void highlight()

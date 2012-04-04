@@ -133,7 +133,6 @@ void GraphicsGripItem::setCurveType(int curveType)
     if (d->curveType == curveType)
         return;
     d->curveType = curveType;
-    parentEntityItem()->updateCurveTypes();
 }
 
 void GraphicsGripItem::highlight(HighlightType type)

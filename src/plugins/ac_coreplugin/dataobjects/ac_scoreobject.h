@@ -44,7 +44,7 @@ public:
 
     // Properties
     qreal volume() const;
-    void setVolume(qreal volume, Ac::DragState dragState = Ac::NotDragging);
+    void setVolume(qreal volume);
 
     virtual void updatePoints() {}
 
@@ -82,7 +82,6 @@ public:
     qreal volume;
     PitchCurve *pitchCurve;
     ObjectTList<ControlCurve> *controlCurves;
-    uint dragging : bitsizeof(uint);
 
     ScoreObjectPrivate(ScoreObject *q);
     void init();

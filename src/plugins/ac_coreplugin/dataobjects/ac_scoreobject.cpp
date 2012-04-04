@@ -27,7 +27,6 @@ ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)
     ,   volume(1.0f)
     ,   pitchCurve(0)
     ,   controlCurves(0)
-    ,   dragging(false)
 {}
 
 void ScoreObjectPrivate::init()
@@ -55,27 +54,16 @@ qreal ScoreObject::volume() const
     return d->volume;
 }
 
-void ScoreObject::setVolume(qreal volume, Ac::DragState dragState)
+void ScoreObject::setVolume(qreal volume)
 {
     Q_D(ScoreObject);
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
-    if (d->volume == volume) {
-        if (Ac::NotDragging == dragState && d->dragging) {
-            d->endChangeData();
-            d->dragging = false;
-        }
+    if (d->volume == volume)
         return;
-    }
-    if (Ac::NotDragging == dragState || !d->dragging)
-        d->beginChangeData();
-    if (Ac::Dragging == dragState)
-        d->dragging = true;
+    d->beginChangeData();
     d->volume = volume;
     updatePoints();
-    if (!d->dragging)
-        d->endChangeData();
-    if (Ac::NotDragging == dragState)
-        d->dragging = false;
+    d->endChangeData();
 }
 
 PitchCurve *ScoreObject::pitchCurve() const
