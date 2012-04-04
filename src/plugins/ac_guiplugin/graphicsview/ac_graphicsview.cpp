@@ -67,6 +67,7 @@ public:
     QList<IEntity*> hoveredEntities;
     QList<IGripItem*> hoveredGrips;
     QList<IEntityItem*> entitiesToUpdate;
+    QList<PointList> originalEntityPoints;
     GraphicsRootItem *rootItem;
     IPlayCursor *playCursor;
     QCursor previousCursor;
@@ -74,8 +75,9 @@ public:
     uint viewState : 2;
     uint dragState : 2;
     uint keepGripsPicked : 1;
+    uint gripsDragged : 1;
     uint insertingPoints : 1;
-    uint dirty : bitsizeof(uint) - 7;
+    uint dirty : bitsizeof(uint) - 6;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
@@ -87,6 +89,7 @@ public:
         ,   viewState(0)
         ,   dragState(0)
         ,   keepGripsPicked(false)
+        ,   gripsDragged(false)
         ,   insertingPoints(false)
         ,   dirty(true)
     {
@@ -399,14 +402,14 @@ public:
 
     void startDraggingGrips()
     {
-        IEditor *editor = IEditor::instance();
-        editor->setUndoEnabled(false);
-        editor->beginCommand();
+        IEditor::instance()->setUndoEnabled(false);
 
         dragState = DraggingGrips;
 
-        foreach (IEntityItem *entity, entitiesToUpdate)
-            entity->startUpdatingPoints();
+        foreach (IEntityItem *entityItem, entitiesToUpdate) {
+            entityItem->startUpdatingPoints();
+            originalEntityPoints.append(entityItem->entity()->points());
+        }
     }
 
     void dragGripsTo(const QPoint &pos)
@@ -424,6 +427,8 @@ public:
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->updatePoints();
 
+        gripsDragged = true;
+
         vm->enableUpdates();
     }
 
@@ -434,15 +439,36 @@ public:
         dragState = 0;
         curGrip = 0;
 
-        foreach (IEntityItem *entity, entitiesToUpdate)
-            entity->finishUpdatingPoints();
-
         IEditor *editor = IEditor::instance();
-        editor->endCommand();
-        editor->setUndoEnabled(true);
+
+        if (gripsDragged) {
+            editor->beginCommand();
+            foreach (IEntityItem *entityItem, entitiesToUpdate)
+                entityItem->finishUpdatingPoints();
+            editor->endCommand();
+        }
 
         if (!keepGripsPicked)
             clearPickedGrips();
+
+        originalEntityPoints.clear();
+        editor->setUndoEnabled(true);
+    }
+
+    void cancelGripDrag()
+    {
+        dragState = 0;
+        curGrip = 0;
+
+        const int n = entitiesToUpdate.count();
+        for (int i = 0;  i < n;  ++i)
+            entitiesToUpdate.at(i)->entity()->setPoints(originalEntityPoints.at(i));
+
+        if (!keepGripsPicked)
+            clearPickedGrips();
+
+        originalEntityPoints.clear();
+        IEditor::instance()->setUndoEnabled(true);
     }
 
     QRect pickBoxBounds() const
@@ -649,7 +675,7 @@ public:
                 pt.curveType = Ac::BezierCurve;
 
             pts.append(pt);
-            entity->setPoints(pts);
+            entity->setPoints(pts, Ac::Dragging);
         }
     }
 
@@ -735,10 +761,27 @@ void GraphicsView::startInsertingPoints()
 {
     d->insertingPoints = true;
     setCursor(creationCrosshair());
+    foreach (GraphicsEntityItem *entityItem, d->pickedEntities)
+        d->originalEntityPoints.append(entityItem->entity()->points());
 }
 
 void GraphicsView::finishInsertingPoints()
 {
+    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
+        IEntity *entity = entityItem->entity();
+        entity->setPoints(entity->points());
+    }
+    d->originalEntityPoints.clear();
+    setCursor(normalCrosshair());
+    d->insertingPoints = false;
+}
+
+void GraphicsView::cancelPointInsertion()
+{
+    const int n = d->pickedEntities.count();
+    for (int i = 0;  i < n;  ++i)
+        d->pickedEntities.at(i)->entity()->setPoints(d->originalEntityPoints.at(i), Ac::Dragging);
+    d->originalEntityPoints.clear();
     setCursor(normalCrosshair());
     d->insertingPoints = false;
 }
@@ -1050,16 +1093,16 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 
 void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
-    if (DraggingGrips != d->dragState) {
-        if (Qt::Key_Escape == event->key()) {
-            if (d->insertingPoints)
-                ViewManager::instance()->finishInsertingPoints();
-            else
-                d->clearPicks();
-        } else if (Qt::Key_Return == event->key() || Qt::Key_Enter == event->key()) {
-            if (d->insertingPoints)
-                ViewManager::instance()->finishInsertingPoints();
-        }
+    if (Qt::Key_Escape == event->key()) {
+        if (d->insertingPoints)
+            ViewManager::instance()->cancelPointInsertion();
+        else if (DraggingGrips == d->dragState)
+            d->cancelGripDrag();
+        else
+            d->clearPicks();
+    } else if (Qt::Key_Return == event->key() || Qt::Key_Enter == event->key()) {
+        if (d->insertingPoints)
+            ViewManager::instance()->finishInsertingPoints();
     } else
         MiGraphicsView::keyReleaseEvent(event);
     d->hover();

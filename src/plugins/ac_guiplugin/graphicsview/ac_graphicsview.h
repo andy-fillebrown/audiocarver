@@ -48,6 +48,7 @@ public:
 
     void startInsertingPoints();
     void finishInsertingPoints();
+    void cancelPointInsertion();
 
     bool pointsAreSelected() const;
 

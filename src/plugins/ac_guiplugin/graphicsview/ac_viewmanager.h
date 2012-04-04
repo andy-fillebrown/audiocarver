@@ -66,6 +66,7 @@ public slots:
 
     void startInsertingPoints();
     void finishInsertingPoints();
+    void cancelPointInsertion();
 
 signals:
     void scoreLengthChanged();

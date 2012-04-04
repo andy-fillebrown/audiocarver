@@ -448,3 +448,9 @@ void ViewManager::finishInsertingPoints()
     d->pitchView->finishInsertingPoints();
     d->controlView->finishInsertingPoints();
 }
+
+void ViewManager::cancelPointInsertion()
+{
+    d->pitchView->cancelPointInsertion();
+    d->controlView->cancelPointInsertion();
+}
