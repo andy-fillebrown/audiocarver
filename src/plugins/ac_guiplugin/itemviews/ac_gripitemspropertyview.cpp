@@ -42,9 +42,9 @@ public:
         ,   curveButtonDelegate(new ToggleButtonDelegate(q))
         ,   isResizing(false)
     {
-        timeDelegate->setCustomColumn(1);
-        valueDelegate->setCustomColumn(2);
-        curveButtonDelegate->setCustomColumn(3);
+        timeDelegate->setCustomColumn(2);
+        valueDelegate->setCustomColumn(3);
+        curveButtonDelegate->setCustomColumn(4);
         curveButtonDelegate->setButtonColumnWidth(16);
     }
 };
