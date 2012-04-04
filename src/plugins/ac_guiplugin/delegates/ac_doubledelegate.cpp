@@ -19,6 +19,18 @@
 
 #include <mi_doublespinbox.h>
 
+QString DoubleDelegate::displayText(const QVariant &value, const QLocale &locale) const
+{
+    if (QVariant::Double != value.type())
+        return QStyledItemDelegate::displayText(value, locale);
+    QString text = locale.toString(value.toReal(), 'f', 12);
+    while (text.endsWith('0'))
+        text.chop(1);
+    if (text.endsWith('.'))
+        text.chop(1);
+    return text;
+}
+
 QWidget *DoubleDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     if (customColumn() != index.column())
