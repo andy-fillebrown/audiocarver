@@ -509,8 +509,10 @@ public:
         } else if (pickOne) {
             if (!pickedGrips.isEmpty())
                 ViewManager::instance()->clearPickedGrips();
-            else
+            else {
                 NoteSelectionModel::instance()->clear();
+                TrackSelectionModel::instance()->clear();
+            }
         }
 
         if (!pickOne)
