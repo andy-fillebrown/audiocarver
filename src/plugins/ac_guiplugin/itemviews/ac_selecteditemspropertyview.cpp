@@ -130,6 +130,7 @@ void SelectedItemsPropertyView::updateDelegates()
             setItemDelegateForRow(i, d->recordButtonDelegate);
             break;
         case Ac::VisibilityRole:
+        case Ac::SnapEnabledRole:
             setItemDelegateForRow(i, d->toggleButtonDelegate);
             break;
         case Ac::VolumeRole:
