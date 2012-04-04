@@ -85,10 +85,15 @@ void ToggleButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     // Draw a circle and fill it if the model data is true (i.e. the button
     // is pressed).
     painter->save();
+
     setPainterColors(painter, index);
-    painter->setRenderHint(QPainter::Antialiasing);
+
     QRect rect = option.rect;
     rect.setWidth(d->buttonColumnWidth);
-    painter->drawEllipse(rect.center(), 3, 3);
+    QPoint ctr = rect.center();
+    ctr.ry() += 1;
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->drawEllipse(ctr, 2, 2);
+
     painter->restore();
 }
