@@ -29,11 +29,14 @@ class MI_GUI_EXPORT DoubleSpinBox : public QDoubleSpinBox
 public:
     DoubleSpinBox(QWidget *parent = 0)
         :   QDoubleSpinBox(parent)
-    {}
+    {
+        setDecimals(12);
+        setMaximum(Q_FLOAT_MAX);
+    }
 
     QString textFromValue(double val) const
     {
-        QString text = QString("%1").arg(val, 0, 'f', 6);
+        QString text = QString("%1").arg(val, 0, 'f', 12);
         while (text.endsWith('0'))
             text.chop(1);
         if (text.endsWith('.'))
