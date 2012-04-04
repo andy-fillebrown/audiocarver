@@ -76,13 +76,21 @@ GripItemsPropertyView::~GripItemsPropertyView()
 void GripItemsPropertyView::updateColumnWidths()
 {
     d->isResizing = true;
-    resizeColumnsToContents();
-    for (int i = 0;  i < model()->columnCount();  ++i) {
+    for (int i = 1;  i < model()->columnCount() - 1;  ++i) {
+        resizeColumnToContents(i);
         if (columnWidth(i) < d->minColumnWidths.at(i))
             setColumnWidth(i, d->minColumnWidths.at(i));
         else
             d->minColumnWidths[i] = columnWidth(i);
     }
+
+    // The last column is not automatically resizing correctly.
+    // Set the last column's width to zero to make it resize correctly.
+    setColumnWidth(model()->columnCount() - 1, 0);
+
+    // Keep the view from shifting to the left.
+    horizontalHeader()->setOffset(0);
+
     d->isResizing = false;
 }
 
