@@ -48,7 +48,7 @@ public:
 
     void updateGridLineVisibilites()
     {
-        const qreal padding = qreal(50.0f) / q->paddingScale();
+        const qreal padding = qreal(30.0f) / q->paddingScale();
         const QModelIndex gridLines = q->gridLineListIndex();
         IModel *model = IModel::instance();
         const int n = model->rowCount(gridLines);
