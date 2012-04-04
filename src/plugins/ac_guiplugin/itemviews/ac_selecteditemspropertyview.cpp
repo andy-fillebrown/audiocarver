@@ -131,6 +131,7 @@ void SelectedItemsPropertyView::updateDelegates()
             break;
         case Ac::VisibilityRole:
         case Ac::SnapEnabledRole:
+        case Ac::GridSnapEnabledRole:
             setItemDelegateForRow(i, d->toggleButtonDelegate);
             break;
         case Ac::VolumeRole:

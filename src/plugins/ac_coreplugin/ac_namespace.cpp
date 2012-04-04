@@ -46,6 +46,7 @@ static const QMap<int, QString> &itemDataRoleMap()
         map.insert(Ac::CurveRateRole, "curveRate");
         map.insert(Ac::StartTimeRole, "startTime");
         map.insert(Ac::SnapEnabledRole, "snapEnabled");
+        map.insert(Ac::GridSnapEnabledRole, "gridSnapEnabled");
         map.insert(Ac::TimeSnapRole, "timeSnap");
         map.insert(Ac::PitchSnapRole, "pitchSnap");
         map.insert(Ac::ControlSnapRole, "controlSnap");

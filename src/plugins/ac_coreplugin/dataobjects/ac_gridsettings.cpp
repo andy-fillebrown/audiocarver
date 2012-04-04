@@ -24,6 +24,7 @@
 GridSettingsPrivate::GridSettingsPrivate(GridSettings *q)
     :   GraphicsParentPrivate(q)
     ,   snapEnabled(true)
+    ,   gridSnapEnabled(true)
     ,   timeSnap(0.125f)
     ,   pitchSnap(1.0f)
     ,   controlSnap(0.125f)
@@ -90,6 +91,22 @@ void GridSettings::setSnapEnabled(bool enabled)
         return;
     d->beginChangeData();
     d->snapEnabled = enabled;
+    d->endChangeData();
+}
+
+bool GridSettings::isGridSnapEnabled() const
+{
+    Q_D(const GridSettings);
+    return d->gridSnapEnabled;
+}
+
+void GridSettings::setGridSnapEnabled(bool enabled)
+{
+    Q_D(GridSettings);
+    if (d->gridSnapEnabled == enabled)
+        return;
+    d->beginChangeData();
+    d->gridSnapEnabled = enabled;
     d->endChangeData();
 }
 
@@ -174,6 +191,7 @@ void GridSettings::clear()
     d->controlSnap = 0.125f;
     d->pitchSnap = 1.0f;
     d->timeSnap = 0.125f;
+    d->gridSnapEnabled = true;
     d->snapEnabled = true;
 }
 
@@ -222,6 +240,8 @@ QVariant GridSettings::data(int role) const
     switch (role) {
     case Ac::SnapEnabledRole:
         return isSnapEnabled();
+    case Ac::GridSnapEnabledRole:
+        return isGridSnapEnabled();
     case Ac::TimeSnapRole:
         return timeSnap();
     case Ac::PitchSnapRole:
@@ -238,6 +258,9 @@ bool GridSettings::setData(const QVariant &value, int role)
     switch (role) {
     case Ac::SnapEnabledRole:
         setSnapEnabled(value.toBool());
+        return true;
+    case Ac::GridSnapEnabledRole:
+        setGridSnapEnabled(value.toBool());
         return true;
     case Ac::TimeSnapRole:
         setTimeSnap(value.toReal());

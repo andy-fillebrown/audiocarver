@@ -36,10 +36,12 @@ public:
     QList<IModelItem*> selectedItems;
     QMap<int, QVariant> dataMap;
     QTimer *updateTimer;
+    uint nothingSelected : bitsizeof(uint);
 
     SelectedItemsPropertyModelPrivate(SelectedItemsPropertyModel *q)
         :   q(q)
         ,   updateTimer(new QTimer(q))
+        ,   nothingSelected(true)
     {
         updateTimer->setSingleShot(true);
     }
@@ -71,7 +73,8 @@ public:
             }
         }
 
-        if (selectedItems.isEmpty()) {
+        nothingSelected = selectedItems.isEmpty();
+        if (nothingSelected) {
             IModel *model = IModel::instance();
             IModelItem *score = model->rootItem();
             selectedItems.append(score);
@@ -139,6 +142,33 @@ int SelectedItemsPropertyModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return d->dataMap.count();
+}
+
+Qt::ItemFlags SelectedItemsPropertyModel::flags(const QModelIndex &index) const
+{
+    if (d->nothingSelected) {
+        IModelItem *grid_settings = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem);
+        bool snap_enabled = grid_settings->data(Ac::SnapEnabledRole).toBool();
+
+        // Disable snap settings if snap is off or grid snap is on.
+        if (!snap_enabled
+                || grid_settings->data(Ac::GridSnapEnabledRole).toBool()) {
+            switch (index.data(Mi::RoleTypeRole).toInt()) {
+            case Ac::TimeSnapRole:
+            case Ac::PitchSnapRole:
+            case Ac::ControlSnapRole:
+                return Qt::NoItemFlags;
+            default:
+                break;
+            }
+        }
+
+        // Disable grid snap setting if snap is off.
+        if (!snap_enabled
+                && Ac::GridSnapEnabledRole == index.data(Mi::RoleTypeRole).toInt())
+            return Qt::NoItemFlags;
+    }
+    return PropertyModel::flags(index);
 }
 
 QVariant SelectedItemsPropertyModel::data(const QModelIndex &index, int role) const

@@ -63,6 +63,7 @@ enum ItemDataRole {
     CurveRateRole,
     PlaybackTimeRole,
     SnapEnabledRole,
+    GridSnapEnabledRole,
     TimeSnapRole,
     PitchSnapRole,
     ControlSnapRole

@@ -33,6 +33,7 @@ class AC_CORE_EXPORT GridSettings : public GraphicsParent
 {
     Q_OBJECT
     Q_PROPERTY(bool snapEnabled READ isSnapEnabled WRITE setSnapEnabled)
+    Q_PROPERTY(bool gridSnapEnabled READ isGridSnapEnabled WRITE setGridSnapEnabled)
     Q_PROPERTY(qreal timeSnap READ timeSnap WRITE setTimeSnap)
     Q_PROPERTY(qreal pitchSnap READ pitchSnap WRITE setPitchSnap)
     Q_PROPERTY(qreal controlSnap READ controlSnap WRITE setControlSnap)
@@ -47,6 +48,8 @@ public:
 
     bool isSnapEnabled() const;
     void setSnapEnabled(bool enabled);
+    bool isGridSnapEnabled() const;
+    void setGridSnapEnabled(bool enabled);
     qreal timeSnap() const;
     void setTimeSnap(qreal snap);
     qreal pitchSnap() const;
@@ -73,10 +76,12 @@ public:
         case 0:
             return Ac::SnapEnabledRole;
         case 1:
-            return Ac::TimeSnapRole;
+            return Ac::GridSnapEnabledRole;
         case 2:
-            return Ac::PitchSnapRole;
+            return Ac::TimeSnapRole;
         case 3:
+            return Ac::PitchSnapRole;
+        case 4:
             return Ac::ControlSnapRole;
         default:
             return GraphicsParent::persistentRoleAt(i);
@@ -97,7 +102,8 @@ class GridSettingsPrivate : public GraphicsParentPrivate
     Q_DECLARE_PUBLIC(GridSettings)
 
 public:
-    uint snapEnabled : bitsizeof(uint);
+    uint snapEnabled : 1;
+    uint gridSnapEnabled : bitsizeof(uint) - 1;
     qreal timeSnap;
     qreal pitchSnap;
     qreal controlSnap;
