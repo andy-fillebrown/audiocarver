@@ -34,6 +34,7 @@ class SelectedItemsPropertyViewPrivate
 public:
     SelectedItemsPropertyView *q;
     SelectedItemsPropertyModel *selectedItemsPropertyModel;
+    DoubleDelegate *doubleDelegate;
     ColorDelegate *colorDelegate;
     InstrumentDelegate *instrumentDelegate;
     LengthDelegate *lengthDelegate;
@@ -44,6 +45,7 @@ public:
     SelectedItemsPropertyViewPrivate(SelectedItemsPropertyView *q)
         :   q(q)
         ,   selectedItemsPropertyModel(new SelectedItemsPropertyModel(q))
+        ,   doubleDelegate(new DoubleDelegate(q))
         ,   colorDelegate(new ColorDelegate(q))
         ,   instrumentDelegate(new InstrumentDelegate(q))
         ,   lengthDelegate(new LengthDelegate(q))
@@ -51,6 +53,7 @@ public:
         ,   toggleButtonDelegate(new ToggleButtonDelegate(q))
         ,   volumeDelegate(new VolumeDelegate(q))
     {
+        doubleDelegate->setCustomColumn(1);
         colorDelegate->setCustomColumn(1);
         instrumentDelegate->setCustomColumn(1);
         lengthDelegate->setCustomColumn(1);
@@ -108,6 +111,12 @@ void SelectedItemsPropertyView::updateDelegates()
     for (int i = 0;  i < row_count;  ++i) {
         int role_type = model()->data(model()->index(i, 0), Mi::RoleTypeRole).toInt();
         switch (role_type) {
+        case Ac::StartTimeRole:
+        case Ac::TimeSnapRole:
+        case Ac::PitchSnapRole:
+        case Ac::ControlSnapRole:
+            setItemDelegateForRow(i, d->doubleDelegate);
+            break;
         case Ac::ColorRole:
             setItemDelegateForRow(i, d->colorDelegate);
             break;
