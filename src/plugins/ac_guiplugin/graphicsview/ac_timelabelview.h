@@ -35,6 +35,7 @@ protected:
     QModelIndex gridLineListIndex() const;
     int scaleRole() const { return Ac::TimeScaleRole; }
 
+    int sceneType() const { return Ac::TimeLabelScene; }
     qreal sceneWidth() const;
     QPointF sceneCenter() const;
 

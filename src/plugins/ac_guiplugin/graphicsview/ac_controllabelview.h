@@ -33,6 +33,7 @@ public:
 protected:
     QModelIndex gridLineListIndex() const;
 
+    int sceneType() const { return Ac::ControlLabelScene; }
     qreal sceneHeight() const;
 
     int positionRoleY() const { return Ac::ControlPositionRole; }

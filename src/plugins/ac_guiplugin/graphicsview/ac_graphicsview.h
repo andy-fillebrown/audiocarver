@@ -65,7 +65,7 @@ public slots:
     void removePoints();
 
 protected:
-    virtual int sceneType() const { Q_ASSERT(false);  return -1; }
+    virtual int sceneType() const = 0;
 
     virtual qreal sceneWidth() const { return 1.0f; }
     virtual qreal sceneHeight() const { return 1.0f; }
