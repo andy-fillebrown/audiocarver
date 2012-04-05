@@ -29,7 +29,7 @@ static void dumpline(CSOUND *);
 static void flushline(CSOUND *csound)   /* flush scorefile to next newline */
 {
     int     c;
-    while ((c = corfile_getc(csound->scstr)) != '0' && c != '\n')
+    while ((c = corfile_getc(csound->scstr)) != '\0' && c != '\n')
         ;
 }
 
@@ -108,7 +108,9 @@ int rdscor(CSOUND *csound, EVTBLK *e) /* read next score-line from scorefile */
 
     if (csound->scstr == NULL ||
         csound->scstr->body[0] == '\0') {   /* if no concurrent scorefile  */
+#ifdef BETA
       csound->Message(csound, "THIS SHOULD NOT HAPPEN -- CONTACT jpff");
+#endif
       e->opcod = 'f';             /*     return an 'f 0 3600'    */
       e->p[1] = FL(0.0);
       e->p[2] = FL(INF);
@@ -156,6 +158,8 @@ int rdscor(CSOUND *csound, EVTBLK *e) /* read next score-line from scorefile */
         e->opcod = c;
         e->pcnt = 0;
         return(1);
+      case EOF:                          /* necessary for cscoreGetEvent */
+        return(0);
       default:                                /* WARPED scorefile:       */
         if (!csound->warped) goto unwarped;
         e->opcod = c;                                       /* opcod */
@@ -179,7 +183,7 @@ int rdscor(CSOUND *csound, EVTBLK *e) /* read next score-line from scorefile */
                     if (pp >= plim) {
                       MYFLT *q;
                       int c=1;
-                      fprintf(stderr, "Extra p-fields (%d %d %d %d)\n",
+                      csound->DebugMsg(csound, "Extra p-fields (%d %d %d %d)\n",
                               (int)e->p[1],(int)e->p[2],
                               (int)e->p[3],(int)e->p[4]);
                       e->c.extra = (MYFLT*)realloc(e->c.extra,sizeof(MYFLT)*PMAX);
@@ -188,7 +192,7 @@ int rdscor(CSOUND *csound, EVTBLK *e) /* read next score-line from scorefile */
                       while ((corfile_getc(csound->scstr) != '\n') &&
                              (scanflt(csound, &q[c++]))) {
                         if (c > (int) e->c.extra[0]) {
-                          fprintf(stderr, "and more extra p-fields [%d](%d)%d\n",
+                          csound->DebugMsg(csound, "and more extra p-fields [%d](%d)%d\n",
                                   c, (int) e->c.extra[0],
                                   sizeof(MYFLT)*((int)e->c.extra[0]+PMAX) );
                           q = e->c.extra =

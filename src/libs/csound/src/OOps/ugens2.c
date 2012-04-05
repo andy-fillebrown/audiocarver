@@ -87,11 +87,11 @@ int ephsor(CSOUND *csound, EPHSOR *p)
         b *= R;
         if (UNLIKELY(phase >= 1.0)) {
           phase -= 1.0;
-          b = pow(R, 1+phase); 
+          b = pow(R, 1+phase);
         }
         else if (UNLIKELY(phase < 0.0)) {
           phase += 1.0;
-          b = pow(R, 1+phase); 
+          b = pow(R, 1+phase);
         }
       }
     }
@@ -104,11 +104,11 @@ int ephsor(CSOUND *csound, EPHSOR *p)
         b *= R;
         if (UNLIKELY(phase >= 1.0)) {
           phase -= 1.0;
-          b =  pow(R, 1+phase); 
+          b =  pow(R, 1+phase);
         }
         else if (UNLIKELY(phase < 0.0)) {
           phase += 1.0;
-          b = pow(R, 1+phase); 
+          b = pow(R, 1+phase);
         }
       }
     }
@@ -144,8 +144,8 @@ int phsor(CSOUND *csound, PHSOR *p)
         incr = (double)(cps[n] * onedsr);
         rs[n] = (MYFLT)phase;
         phase += incr;
-        if (UNLIKELY((MYFLT)phase >= 1.0)) /* VL convert to MYFLT 
-                                              to avoid rounded output 
+        if (UNLIKELY((MYFLT)phase >= 1.0)) /* VL convert to MYFLT
+                                              to avoid rounded output
                                               exceeding 1.0 on float version */
           phase -= 1.0;
         else if (UNLIKELY((MYFLT)phase < 0.0))
@@ -589,7 +589,7 @@ int ktabli(CSOUND *csound, TABLE   *p)
         indx  = length - 1;
         fract = FL(1.0);
       }
-      else if (UNLIKELY(ndx < 0)) {
+      else if (UNLIKELY(indx < 0L)) {
         indx  = 0L;
         fract = FL(0.0);
       }
@@ -667,7 +667,7 @@ int ktabl3(CSOUND *csound, TABLE   *p)
         indx  = length - 1;
         fract = FL(1.0);
       }
-      else if (UNLIKELY(ndx < 0)) {
+      else if (UNLIKELY(indx < 0L)) {
         indx  = 0L;
         fract = FL(0.0);
       }
@@ -728,7 +728,7 @@ int tabli(CSOUND *csound, TABLE   *p)
          * the offset.  */
         ndx = (pxndx[n] * xbmul) + offset;
         indx = (int32) ndx;
-        if (UNLIKELY(ndx <= FL(0.0))) {
+        if (UNLIKELY(indx <= 0L)) {
           rslt[n] = tab[0];
           continue;
         }
@@ -806,7 +806,7 @@ int tabl3(CSOUND *csound, TABLE *p)     /* Like tabli but cubic interpolation */
           indx  = length - 1;
           fract = FL(1.0);
         }
-        else if (UNLIKELY(ndx < 0)) {
+        else if (UNLIKELY(indx < 0L)) {
           indx  = 0L;
           fract = FL(0.0);
         }
@@ -1589,4 +1589,3 @@ int oscaa3(CSOUND *csound, OSC   *p)
  err1:
     return csound->PerfError(csound, Str("oscil3: not initialised"));
 }
-

@@ -37,11 +37,13 @@ static char   *randramp(CSOUND *,SRTBLK *, char *, int, int);
 static char   *pfStr(CSOUND *,char *, int, int);
 static char   *fpnum(CSOUND *,char *, int, int);
 
-static void fltout(CSOUND *csound, MYFLT n) 
+static void fltout(CSOUND *csound, MYFLT n)
 {
-    char buffer[1024];
+    char *c, buffer[1024];
     sprintf(buffer, "%.6f", n);
-    corfile_puts(buffer, csound->scstr);
+    /* corfile_puts(buffer, csound->scstr); */
+    for (c = buffer; *c != '\0'; c++)
+      corfile_putc(*c, csound->scstr);
 }
 
 void swritestr(CSOUND *csound)
@@ -539,4 +541,3 @@ static char *fpnum(CSOUND *csound,
     }
     return(p);
 }
-

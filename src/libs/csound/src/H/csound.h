@@ -214,7 +214,7 @@
 
 #if (defined(WIN32) || defined(_WIN32)) && !defined(SWIG)
 #  define PUBLIC        __declspec(dllexport)
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && !defined(__MACH__)
 #  define PUBLIC        __attribute__ ( (visibility("default")) )
 #else
 #  define PUBLIC
@@ -954,6 +954,9 @@ extern "C" {
     PUBLIC int csoundScoreEvent(CSOUND *,
             char type, const MYFLT *pFields, long numFields);
 
+    PUBLIC int csoundScoreEventAbsolute(CSOUND *,
+            char type, const MYFLT *pfields, long numFields, double time_ofs);
+
     /*
      * MIDI
      */
@@ -1415,7 +1418,7 @@ extern "C" {
 # define CSOUND_SPIN_UNLOCK csoundSpinUnLock(&spinlock);
 
 #elif defined(MACOSX)
-  
+
 #ifndef SWIG
 
 #include <libkern/OSAtomic.h>
@@ -1968,4 +1971,3 @@ extern "C" {
 #endif
 
 #endif  /* CSOUND_H */
-

@@ -133,7 +133,7 @@ static const char *longUsageList[] = {
   Str_noop("--noheader\t\tRaw format"),
   Str_noop("--nopeaks\t\tDo not write peak information"),
   " ",
-  Str_noop("--nodisplays\t\tsUppress all displays"),
+  Str_noop("--nodisplays\t\tSuppress all displays"),
   Str_noop("--asciidisplay\t\tSuppress graphics, use ascii displays"),
   Str_noop("--postscriptdisplay\tSuppress graphics, use Postscript displays"),
   " ",

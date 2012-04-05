@@ -46,15 +46,26 @@ int mute_inst(CSOUND *csound, MUTE *p)
 
 int instcount(CSOUND *csound, INSTCNT *p)
 {
-    int n = (int) csound->strarg2insno(csound, p->ins, p->XSTRCODE);
+    int n;
+    if (p->XSTRCODE)
+      n = (int) csound->strarg2insno(csound, p->ins, p->XSTRCODE);
+    else
+      n = *p->ins;
     if (n<0 || n > csound->maxinsno || csound->instrtxtp[n] == NULL)
       *p->cnt = FL(0.0);
+    else if (n==0) {  /* Count all instruments */
+      int tot = 1;
+      for (n=1; n<csound->maxinsno; n++)
+        if (csound->instrtxtp[n]) /* If it exists */
+          tot += ((*p->opt) ? csound->instrtxtp[n]->instcnt :
+                              csound->instrtxtp[n]->active);
+      *p->cnt = (MYFLT)tot;
+    }
     else {
       *p->cnt = ((*p->opt) ?
                  (MYFLT) csound->instrtxtp[n]->instcnt :
                  (MYFLT) csound->instrtxtp[n]->active);
     }
-
 
     return OK;
 }
@@ -90,3 +101,32 @@ int pfun(CSOUND *csound, PFUN *p)
     return OK;
 }
 
+int pfunk_init(CSOUND *csound, PFUNK *p)
+{
+    int i, n = (int)MYFLT2LONG(*p->pnum);
+    MYFLT ans, *pfield;
+    if (n<1 || n>PMAX) ans = FL(0.0);
+    else ans = csound->currevent->p[n];
+    /* save the pfields of the current event */
+    csound->AuxAlloc(csound, (csound->currevent->pcnt+1)*sizeof(MYFLT), &p->pfield);
+    pfield = p->pfield.auxp;
+    for (i=1; i<=csound->currevent->pcnt; i++)
+      pfield[i] = csound->currevent->p[i];
+    *p->ans = ans;
+    return OK;
+}
+
+int pfunk(CSOUND *csound, PFUNK *p)
+{
+    int n = (int)MYFLT2LONG(*p->pnum);
+    MYFLT ans, *pfield;
+    if (n<1 || n>PMAX) {
+      ans = FL(0.0);
+    }
+    else {
+      pfield = p->pfield.auxp;
+      ans = pfield[n];
+    }
+    *p->ans = ans;
+    return OK;
+}

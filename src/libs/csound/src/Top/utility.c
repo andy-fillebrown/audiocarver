@@ -23,6 +23,7 @@
 
 #include "csoundCore.h"
 #include <setjmp.h>
+#include "corfile.h"
 
 typedef struct csUtility_s {
     char                *name;
@@ -243,11 +244,19 @@ PUBLIC const char *csoundGetUtilityDescription(CSOUND *csound,
 PUBLIC int csoundScoreSort(CSOUND *csound, FILE *inFile, FILE *outFile)
 {
     int   err;
-
+    CORFIL *inf = corfile_create_w();
+    int c;
     if ((err = setjmp(csound->exitjmp)) != 0) {
       return ((err - CSOUND_EXITJMP_SUCCESS) | CSOUND_EXITJMP_SUCCESS);
     }
-    scsort(csound, inFile, outFile);
+    while ((c=getc(inFile))!=EOF) corfile_putc(c, inf);
+    corfile_rewind(inf);
+    /* scsortstr() ignores the second arg - Jan 5 2012 */
+    csound->scorestr = inf;
+    scsortstr(csound, inf);
+    while ((c=corfile_getc(csound->scstr))!=EOF)
+      putc(c, outFile);
+    corfile_rm(&csound->scstr);
     return 0;
 }
 
@@ -262,11 +271,16 @@ PUBLIC int csoundScoreExtract(CSOUND *csound,
                               FILE *inFile, FILE *outFile, FILE *extractFile)
 {
     int   err;
-
+    CORFIL *inf = corfile_create_w();
+    int c;
     if ((err = setjmp(csound->exitjmp)) != 0) {
       return ((err - CSOUND_EXITJMP_SUCCESS) | CSOUND_EXITJMP_SUCCESS);
     }
-    scxtract(csound, inFile, outFile, extractFile);
+    while ((c=getc(inFile))!=EOF) corfile_putc(c, inf);
+    corfile_rewind(inf);
+    scxtract(csound, inf, extractFile);
+    while ((c=corfile_getc(csound->scstr))!=EOF)
+      putc(c, outFile);
+    corfile_rm(&csound->scstr);
     return 0;
 }
-

@@ -32,6 +32,7 @@ extern int  sread(CSOUND *csound);
 /* called from smain.c or some other main */
 /* reads,sorts,timewarps each score sect in turn */
 
+#ifdef OLD_CODE
 void scsort(CSOUND *csound, FILE *scin, FILE *scout)
 {
     int     n;
@@ -48,6 +49,7 @@ void scsort(CSOUND *csound, FILE *scin, FILE *scout)
     }
     sfree(csound);              /* return all memory used */
 }
+#endif
 
 extern void sread_initstr(CSOUND *);
 void scsortstr(CSOUND *csound, CORFIL *scin)
@@ -66,7 +68,7 @@ void scsortstr(CSOUND *csound, CORFIL *scin)
       swritestr(csound);
       m++;
     }
-    if (m==0) corfile_puts("f0 2147483647.0\ne\n", csound->scstr);
+    if (m==0) corfile_puts("f0 800000000000.0\ne\n", csound->scstr); /* ~25367 years */
     else corfile_puts("e\n", csound->scstr);
     corfile_flush(csound->scstr);
     sfree(csound);              /* return all memory used */

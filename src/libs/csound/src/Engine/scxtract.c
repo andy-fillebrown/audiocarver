@@ -22,16 +22,19 @@
 */
 
 #include "csoundCore.h"                            /*  SCXTRACT.C  */
+#include "corfile.h"
 
 extern void readxfil(CSOUND *, FILE *), extract(CSOUND *), swrite(CSOUND *);
 extern void sfree(CSOUND *csound);
 extern int  sread(CSOUND *csound);
 extern void sread_init(CSOUND *csound);
+extern void swritestr(CSOUND *csound);
 
 /* called from xmain.c or some other main */
 /*   extracts events from each score sect */
 /*   according to the controlling xfile   */
 
+#ifdef OLD_CODE
 int scxtract(CSOUND *csound, FILE *scin, FILE * scout, FILE *xfile)
 {
     int     n;
@@ -52,4 +55,27 @@ int scxtract(CSOUND *csound, FILE *scin, FILE * scout, FILE *xfile)
     sfree(csound);              /* return all memory used */
     return 0;
 }
+#endif
 
+extern void sread_initstr(CSOUND *);
+int scxtract(CSOUND *csound, CORFIL *scin, FILE *xfile)
+{
+    int     n;
+
+    csound->scoreout = NULL;
+    csound->scorestr = scin;
+    csound->scstr = corfile_create_w();
+    csound->sectcnt = 0;
+    readxfil(csound, xfile);
+    sread_initstr(csound);
+
+    while ((n = sread(csound)) > 0) {
+      /*  allout();   */
+      /*  textout();  */
+      extract(csound);
+      swritestr(csound);
+    }
+    corfile_flush(csound->scstr);
+    sfree(csound);              /* return all memory used */
+    return 0;
+}

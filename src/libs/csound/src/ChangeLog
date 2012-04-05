@@ -1,3 +1,11 @@
+2012-02-09  john ffitch  <jpff@codemist.co.uk>
+
+	* Opcodes/ugsc.c (hilbertset): Remove unnecessary arrays
+
+2012-02-06  john ffitch  <jpff@codemist.co.uk>
+
+	* H/version.h: VERSION 5.16.1
+
 2011-11-30  john ffitch  <jpff@codemist.co.uk>
 
 	* Opcodes/pitch.c (impulse): If next is negative time, make it

@@ -228,10 +228,10 @@ static void print_input_backtrace(CSOUND *csound, int needLFs,
                 (lastsource == 0 ? csound->scoLineOffset + curr->line - 1 :
                  csound->scoLineOffset + curr->line), csound->csdname, lf);
       }
-      else {
-        msgfunc(csound, m, (lastsource == 0 ? curr->line - 1 : curr->line),
-                corfile_tell(curr->cf), lf);  /* #include is one line before */
-      }
+      /* else { */
+      /*   msgfunc(csound, m, (lastsource == 0 ? curr->line - 1 : curr->line), */
+      /*           corfile_tell(curr->cf), lf);  /\* #include is one line before *\/ */
+      /* } */
     } while (!lastsource);
     curr--;
     return;
@@ -270,7 +270,7 @@ static int undefine_score_macro(CSOUND *csound, const char *name)
         corfile_rm(&(ST(macros)->body));
       mfree(csound, ST(macros)->name);
  #ifdef MACDEBUG
-     printf("%s(%d): corfile is %p\n", __FILE__, __LINE__, ST(macros)->body);
+     csound->DebugMsg(csound,"%s(%d): corfile is %p\n", __FILE__, __LINE__, ST(macros)->body);
  #endif
      for (i = 0; i < ST(macros)->acnt; i++)
         mfree(csound, ST(macros)->arg[i]);
@@ -319,7 +319,7 @@ static int getscochar(CSOUND *csound, int expand)
     c = corfile_getc(ST(str)->cf);
     if (c == EOF) {
       if (ST(str) == &ST(inputs)[0]) {
-        corfile_ungetc(ST(str)->cf);      /* to ensure repeated EOF */
+        corfile_putc('\n', ST(str)->cf);  /* to ensure repeated EOF */
         return EOF;
       }
       if (ST(str)->mac == 0) {
@@ -333,11 +333,14 @@ static int getscochar(CSOUND *csound, int expand)
       goto top;
     }
 #ifdef MACDEBUG
-    printf("%s(%d): character = %c(%.2d)\n", __FILE__, __LINE__, c, c);
+    csound->DebugMsg(csound,"%s(%d): character = %c(%.2d)\n", __FILE__, __LINE__, c, c);
 #endif
     if (c == '\r') {    /* can only occur in files, and not in macros */
-      if ((c = corfile_getc(ST(str)->cf)) != '\n')
+      if ((c = corfile_getc(ST(str)->cf)) != '\n') {
+        if (c == EOF)
+          goto top;
         corfile_ungetc(ST(str)->cf);
+      }
       c = '\n';
     }
     if (c == '\n') {
@@ -410,9 +413,11 @@ static int getscochar(CSOUND *csound, int expand)
 #endif
           nn->body = corfile_create_w();
 #ifdef MACDEBUG
-          printf("%s(%d): creating\n", __FILE__, __LINE__, nn->body);
+          csound->DebugMsg(csound,"%s(%d): creating\n", __FILE__, __LINE__, nn->body);
 #endif
           while ((c = getscochar(csound, 1))!= term && c != trm1) {
+            if (UNLIKELY(c==EOF))
+              scorerr(csound, Str("Syntax error in macro call"));
             corfile_putc(c, nn->body);
           }
           corfile_rewind(nn->body);
@@ -603,7 +608,7 @@ static int getscochar(CSOUND *csound, int expand)
         strcpy(nn->name, "[");
         nn->body = corfile_create_r(buffer);
 #ifdef MACDEBUG
-        printf("%s(%d): creating arg %p\n", __FILE__, __LINE__, nn->body);
+        csound->DebugMsg(csound,"%s(%d): creating arg %p\n", __FILE__, __LINE__, nn->body);
 #endif
         nn->acnt = 0;   /* No arguments for arguments */
         nn->next = ST(macros);
@@ -661,9 +666,9 @@ static int nested_repeat(CSOUND *csound)                /* gab A9*/
       sscanf(corfile_current(ST(repeat_mm_n)[ST(repeat_index)]->body),
              "%d", &i);
 #ifdef MACDEBUG
-      printf("%s(%d) reset point to %d\n", __FILE__, __LINE__,
+      csound->DebugMsg(csound,"%s(%d) reset point to %d\n", __FILE__, __LINE__,
              ST(repeat_point_n)[ST(repeat_index)], i);
-      printf("%s(%d) corefile: %s %d %d\n", __FILE__, __LINE__, 
+      csound->DebugMsg(csound,"%s(%d) corefile: %s %d %d\n", __FILE__, __LINE__,
              ST(repeat_mm_n)[ST(repeat_index)]->body->body,
              ST(repeat_mm_n)[ST(repeat_index)]->body->p,
              ST(repeat_mm_n)[ST(repeat_index)]->body->len);
@@ -673,13 +678,13 @@ static int nested_repeat(CSOUND *csound)                /* gab A9*/
         char buffer[128];
         sprintf(buffer, "%d", i);
 #ifdef MACDEBUG
-        printf("%s(%d) new i = %s\n", __FILE__, __LINE__,  buffer);
+        csound->DebugMsg(csound,"%s(%d) new i = %s\n", __FILE__, __LINE__,  buffer);
 #endif
         corfile_reset(ST(repeat_mm_n)[ST(repeat_index)]->body);
         corfile_puts(buffer, ST(repeat_mm_n)[ST(repeat_index)]->body);
         corfile_rewind(ST(repeat_mm_n)[ST(repeat_index)]->body);
 #ifdef MACDEBUG
-        printf("%s(%d) corefile: %s %d %d\n", __FILE__, __LINE__, 
+        csound->DebugMsg(csound,"%s(%d) corefile: %s %d %d\n", __FILE__, __LINE__,
                ST(repeat_mm_n)[ST(repeat_index)]->body->body,
                ST(repeat_mm_n)[ST(repeat_index)]->body->p,
                ST(repeat_mm_n)[ST(repeat_index)]->body->len);
@@ -727,7 +732,9 @@ static int do_repeat(CSOUND *csound)
         {
           char buffer[128];
           sprintf(buffer, "%d", i);
+          corfile_reset(ST(repeat_mm)->body);
           corfile_puts(buffer, ST(repeat_mm)->body);
+          corfile_rewind(ST(repeat_mm)->body);
         }
         if (csound->oparms->msglevel & TIMEMSG)
           csound->Message(csound, Str("Repeat section (%d)\n"), i);
@@ -781,16 +788,16 @@ static void init_smacros(CSOUND *csound, NAMES *nn)
         p++;
       mm->body = corfile_create_r(p);
 #ifdef MACDEBUG
-      printf("%s(%d): init %s %p\n", __FILE__, __LINE__, mm->name, mm->body);
+      csound->DebugMsg(csound,"%s(%d): init %s %p\n", __FILE__, __LINE__, mm->name, mm->body);
 #endif
       nn = nn->next;
     }
     mm = (MACRO*) mcalloc(csound, sizeof(MACRO));
     mm->name = (char*)mmalloc(csound,4);
     strcpy(mm->name, "INF");
-    mm->body = corfile_create_r("2147483647.0");
+    mm->body = corfile_create_r("800000000000.0");
 #ifdef MACDEBUG
-    printf("%s(%d): INF %p\n", __FILE__, __LINE__, mm->body);
+    csound->DebugMsg(csound,"%s(%d): INF %p\n", __FILE__, __LINE__, mm->body);
 #endif
     mm->next = ST(macros);
     ST(macros) = mm;
@@ -898,9 +905,10 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
            we must pop those inputs before doing an 'r' repeat. */
         while (ST(str)->is_marked_repeat && ST(input_cnt) > 0) {
           /* close all marked repeat inputs */
-          if (ST(str)->fd != NULL) {
-            csound->FileClose(csound, ST(str)->fd); ST(str)->fd = NULL;
-          }
+          /* if (ST(str)->fd != NULL) { */
+          /*   csound->FileClose(csound, ST(str)->fd); ST(str)->fd = NULL; */
+          /* } */
+          corfile_rm(&(ST(str)->cf));
           ST(str)--; ST(input_cnt)--;
         }
         if (ST(repeat_cnt) != 0) {
@@ -981,7 +989,7 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
           ST(repeat_mm_n)[ST(repeat_index)]->acnt = 0;
           ST(repeat_mm_n)[ST(repeat_index)]->body = corfile_create_r("0");
 #ifdef MACDEBUG
-          printf("%s(%d): repeat %s zero %p\n", __FILE__, __LINE__,
+          csound->DebugMsg(csound,"%s(%d): repeat %s zero %p\n", __FILE__, __LINE__,
                  ST(repeat_name_n)[ST(repeat_index)],
                  ST(repeat_mm_n)[ST(repeat_index)]->body);
 #endif
@@ -990,7 +998,7 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
           flushlin(csound);     /* Ignore rest of line */
           ST(repeat_point_n)[ST(repeat_index)] =
             corfile_tell(ST(str)->cf);
-          
+
           /* { does not start a new section - akozar */
           /* ST(clock_base) = FL(0.0);
           ST(warp_factor) = FL(1.0);
@@ -1008,9 +1016,10 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
         if (ST(str)->is_marked_repeat) {
           while (ST(str)->is_marked_repeat && ST(input_cnt) > 0) {
             /* close all marked repeat inputs */
-            if (ST(str)->fd != NULL) {
-              csound->FileClose(csound, ST(str)->fd); ST(str)->fd = NULL;
-            }
+            /* if (ST(str)->fd != NULL) { */
+            /*   csound->FileClose(csound, ST(str)->fd); ST(str)->fd = NULL; */
+            /* } */
+            corfile_rm(&(ST(str)->cf));
             ST(str)--; ST(input_cnt)--;
           }
           /* last time thru an 'r', cleanup up 'r' before finishing 'n' */
@@ -1065,7 +1074,7 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
             ST(repeat_mm)->acnt = 0;
             ST(repeat_mm)->body = corfile_create_r("1");
 #ifdef MACDEBUG
-            printf("%s(%d): 1 %p\n", __FILE__, __LINE__,ST(repeat_mm)->body);
+            csound->DebugMsg(csound,"%s(%d): 1 %p\n", __FILE__, __LINE__,ST(repeat_mm)->body);
 #endif
             ST(repeat_mm)->next = ST(macros);
             ST(macros) = ST(repeat_mm);
@@ -1101,7 +1110,7 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
           else mfree(csound, ST(names)[j].file);
           ST(names)[ST(next_name)].posit = corfile_tell(ST(str)->cf);
           ST(names)[ST(next_name)].line = ST(str)->line;
-          ST(names)[ST(next_name)].file = 
+          ST(names)[ST(next_name)].file =
             mmalloc(csound, strlen(corfile_body(ST(str)->cf)) + 1);
           strcpy(ST(names)[ST(next_name)].file, corfile_body(ST(str)->cf));
           if (csound->oparms->msglevel & TIMEMSG)
@@ -1144,7 +1153,8 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
             }
             ST(str)++;
             ST(str)->is_marked_repeat = 1;
-            ST(str)->cf = copy_to_corefile(csound, ST(names)[i].file, NULL, 1);
+            /* ST(str)->cf = copy_to_corefile(csound, ST(names)[i].file, NULL, 1); */
+            ST(str)->cf = corfile_create_r(ST(names)[i].file);
 //            ST(str)->cf = corfile_create_r(csound->GetFileName(ST(str)->fd));
             ST(str)->line = ST(names)[i].line;
             corfile_set(ST(str)->cf, ST(names)[i].posit);
@@ -1309,8 +1319,9 @@ static void ifa(CSOUND *csound)
       else switch (ST(bp)->pcnt) {      /*  watch for p1,p2,p3, */
       case 1:                           /*   & MYFLT, setinsno..*/
         if ((ST(op) == 'i' || ST(op) == 'q') && *ST(sp) == '"') {
-        /*   printf("***Entering second dubious code scnt=%d\n", csound->scnt0); */
-        /*   ST(bp)->p1val = ((int[4]){SSTRCOD,SSTRCOD1,SSTRCOD2,SSTRCOD3})[csound->scnt0++]; */
+        /*   csound->DebugMsg(csound,"***Entering second dubious code scnt=%d\n", csound->scnt0); */
+        /*   ST(bp)->p1val = ((int[4]){SSTRCOD,SSTRCOD1,
+                                       SSTRCOD2,SSTRCOD3})[csound->scnt0++]; */
         /*   if (csound->scnt0>3) { */
         /*     csound->scnt0 = 3; */
         /*   } */
@@ -1611,12 +1622,17 @@ static int sget1(CSOUND *csound)    /* get first non-white, non-comment char */
           }
         }
         mm->acnt = arg;
-        while ((c = getscochar(csound, 1)) != '#');   /* Skip to next # */
+        while ((c = getscochar(csound, 1)) != '#') {   /* Skip to next # */
+          if (UNLIKELY(c==EOF))
+            scorerr(csound, Str("Syntax error in macro definition"));
+        }
         mm->body = corfile_create_w();
 #ifdef MACDEBUG
-        printf("%s(%d): macro %s %p\n", __FILE__, __LINE__, mname, mm->body);
+        csound->DebugMsg(csound,"%s(%d): macro %s %p\n", __FILE__, __LINE__, mname, mm->body);
 #endif
         while ((c = getscochar(csound, 0)) != '#') {  /* Do not expand here!! */
+          if (UNLIKELY(c==EOF))
+            scorerr(csound, Str("Syntax error in macro definition"));
           corfile_putc(c, mm->body);
           if (c=='\\') {
             corfile_putc(getscochar(csound, 0), mm->body);    /* Allow escaped # */
@@ -1820,7 +1836,7 @@ MYFLT stof(CSOUND *csound, char s[])            /* convert string to MYFLT  */
     char    *p;
     MYFLT   x = (MYFLT) strtod(s, &p);
 
-    if (*p=='z') return FL(INF); /* Infinity or 7 years */
+    if (*p=='z') return FL(800000000000.0); /* 25367 years */
     if (UNLIKELY(s == p || !(*p == '\0' || isspace(*p)))) {
       csound->Message(csound, Str("sread: illegal number format:  "));
       p = s;
@@ -1834,4 +1850,3 @@ MYFLT stof(CSOUND *csound, char s[])            /* convert string to MYFLT  */
     }
     return x;
 }
-

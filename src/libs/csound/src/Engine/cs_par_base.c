@@ -171,7 +171,7 @@ void csp_barrier_dealloc(CSOUND *csound, pthread_barrier_t **barrier)
 //    if (*sem != NULL) {
 //      int val;
 //      sem_getvalue(*sem, &val);
-//      fprintf(stdout, "Already a semaphore: %d %p\n", val, *sem);
+//      csound->DebugMsg(csound, "Already a semaphore: %d %p\n", val, *sem);
 //      sem_destroy(*sem);
 //      csound->Free(csound, *sem);
 //    }
@@ -201,11 +201,11 @@ void csp_barrier_dealloc(CSOUND *csound, pthread_barrier_t **barrier)
 //    {
 //      /* int val, res; */
 //      /* res = sem_getvalue(sem, &val); */
-//      /* fprintf(stdout, "before sem_wait: %d %i:\t", val, */
+//      /* csound->DebugMsg(csound, "before sem_wait: %d %i:\t", val, */
 //      /*         csp_thread_index_get(csound)); */
 //      sem_wait(sem);
 //      /* res = sem_getvalue(sem, &val); */
-//      /* fprintf(stdout, "after sem_wait: %d %i\n", val, */
+//      /* csound->DebugMsg(csound, "after sem_wait: %d %i\n", val, */
 //      /*         csp_thread_index_get(csound)); */
 //    }
 //    TRACE_1("[%i] continue:\n", csp_thread_index_get(csound));
@@ -215,11 +215,11 @@ void csp_barrier_dealloc(CSOUND *csound, pthread_barrier_t **barrier)
 //{
 //    /* int val, res; */
 //    /* res = sem_getvalue(sem, &val); */
-//    /* fprintf(stdout, "before sem_grow: %d %i\t", 
+//    /* csound->DebugMsg(csound, "before sem_grow: %d %i\t",
 //               val, csp_thread_index_get(csound)); */
 //    sem_post(sem);
 //    /* res = sem_getvalue(sem, &val); */
-//    /* fprintf(stdout, "after sem_grow: %d %i\n",
+//    /* csound->DebugMsg(csound, "after sem_grow: %d %i\n",
 //               val, csp_thread_index_get(csound)); */
 //}
 //
@@ -229,7 +229,7 @@ void csp_barrier_dealloc(CSOUND *csound, pthread_barrier_t **barrier)
 //    /* { */
 //    /*   int val, res; */
 //    /*   res = sem_getvalue(sem, &val); */
-//    /*   fprintf(stdout, "before sem_release: %d %i\n", */
+//    /*   csound->DebugMsg(csound, "before sem_release: %d %i\n", */
 //    /*           val, csp_thread_index_get(csound)); */
 //    /* } */
 //}
@@ -238,21 +238,21 @@ void csp_barrier_dealloc(CSOUND *csound, pthread_barrier_t **barrier)
 //{
 //    /* int val, res; */
 //    /* res = sem_getvalue(sem, &val); */
-//    /* fprintf(stdout, "before sem_release_end: %d %i\t", */
+//    /* csound->DebugMsg(csound, "before sem_release_end: %d %i\t", */
 //    /*         val, csp_thread_index_get(csound)); */
 //    sem_post(sem);
 //    /* res = sem_getvalue(sem, &val); */
-//    /* fprintf(stdout, "after sem_release_end: %d %i\n", */
+//    /* csound->DebugMsg(csound, "after sem_release_end: %d %i\n", */
 //    /*         val, csp_thread_index_get(csound)); */
 //}
 //
 //void csp_semaphore_release_print(CSOUND *csound, sem_t *sem)
 //{
 //    int val, res;
-//    if (UNLIKELY(sem == NULL)) 
+//    if (UNLIKELY(sem == NULL))
 //      csound->Die(csound, "Invalid NULL Parameter sem");
 //    res = sem_getvalue(sem, &val);
-//    fprintf(stdout, "sem_release_print: %d %p\n",
+//    csound->DebugMsg(csound, "sem_release_print: %d %p\n",
 //            val, csp_thread_index_get(csound));
 //}
 //
@@ -260,18 +260,16 @@ void csp_barrier_dealloc(CSOUND *csound, pthread_barrier_t **barrier)
 /***********************************************************************
  * set data structure
  */
-#pragma mark -
-#pragma mark Set
 
 /* static prototypes */
-static int set_element_delloc(CSOUND *csound, 
+static int set_element_delloc(CSOUND *csound,
                               struct set_element_t **set_element);
 static int set_element_alloc(CSOUND *csound,
-                             struct set_element_t **set_element, 
+                             struct set_element_t **set_element,
                              char *data);
 static int set_is_set(CSOUND *csound, struct set_t *set);
 #if 0
-static int 
+static int
   set_element_is_set_element(CSOUND *csound,
                              struct set_element_t *set_element);
 #endif
@@ -358,7 +356,7 @@ static int set_is_set(CSOUND *csound, struct set_t *set)
 }
 
 #if 0
-static int 
+static int
   set_element_is_set_element(CSOUND *csound,
                              struct set_element_t *set_element)
 {
@@ -410,7 +408,7 @@ static int set_update_cache(CSOUND *csound, struct set_t *set)
     if (set->count > 0) {
       struct set_element_t *ele;
       int ctr = 0;
-      set->cache = 
+      set->cache =
         csound->Malloc(csound,
                        sizeof(struct set_element_t *) * set->count);
       ele = set->head;

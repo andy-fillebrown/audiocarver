@@ -39,7 +39,6 @@ extern  int     MIDIinsert(CSOUND *, int, MCHNBLK*, MEVENT*);
 extern  int     insert(CSOUND *, int, EVTBLK*);
 extern  void    MidiOpen(CSOUND *);
 extern  void    m_chn_init_all(CSOUND *);
-extern  void    scsort(CSOUND *, FILE *, FILE *);
 extern  void    scsortstr(CSOUND *, CORFIL *);
 extern  void    infoff(CSOUND*, MYFLT), orcompact(CSOUND*);
 extern  void    beatexpire(CSOUND *, double), timexpire(CSOUND *, double);
@@ -86,7 +85,7 @@ static void settempo(CSOUND *csound, MYFLT tempo)
 {
     if (tempo <= FL(0.0)) return;
     if (csound->oparms->Beatmode==1)
-      csound->ibeatTime = (int)(csound->esr*60.0 / (double) tempo);
+      csound->ibeatTime = (int64_t)(csound->esr*60.0 / (double) tempo);
     csound->curBeat_inc = (double) tempo / (60.0 * (double) csound->global_ekr);
 }
 
@@ -290,20 +289,32 @@ int musmon(CSOUND *csound)
       /* call cscore, optionally re-enter via lplay() */
       csound->cscoreCallback_(csound);
       fclose(csound->oscfp); csound->oscfp = NULL;
-      fclose(csound->scfp); csound->scfp = NULL;
+      if (csound->scfp != NULL) {
+        fclose(csound->scfp);
+        csound->scfp = NULL;
+      }
       if (ST(lplayed))
         return 0;
 
       /*  read from cscore.out */
-      if (UNLIKELY(!(csound->scfp = fopen("cscore.out", "r"))))
+      if (UNLIKELY(!(csound->scfp = fopen("cscore.out", "r")))) {
         csoundDie(csound, Str("cannot reopen cscore.out"));
+      }
+      else {
+        CORFIL *inf = corfile_create_w();
+        int c;
+        while ((c=getc(csound->scfp))!=EOF) corfile_putc(c, inf);
+        corfile_rewind(inf);
+        csound->scorestr = inf;
+        corfile_rm(&csound->scstr);
+      }
       csoundNotifyFileOpened(csound, "cscore.out", CSFTYPE_SCORE_OUT, 0, 0);
       /* write to cscore.srt */
      if (UNLIKELY(!(csound->oscfp = fopen("cscore.srt", "w"))))
         csoundDie(csound, Str("cannot reopen cscore.srt"));
       csoundNotifyFileOpened(csound, "cscore.srt", CSFTYPE_SCORE_OUT, 1, 0);
       csound->Message(csound, Str("sorting cscore.out ..\n"));
-      csound->scorestr = copy_to_corefile(csound, "cscore.srt", NULL, 1);
+      /* csound->scorestr = copy_to_corefile(csound, "cscore.srt", NULL, 1); */
       scsortstr(csound, csound->scorestr);  /* call the sorter again */
       fclose(csound->scfp); csound->scfp = NULL;
       fputs(corfile_body(csound->scstr), csound->oscfp);
@@ -384,7 +395,7 @@ PUBLIC int csoundCleanup(CSOUND *csound)
     }
     orcompact(csound);
     corfile_rm(&csound->scstr);
-  
+
     /* print stats only if musmon was actually run */
     if (UNLIKELY(csound->musmonGlobals != NULL)) {
       csound->Message(csound, Str("end of score.\t\t   overall amps:"));
@@ -406,12 +417,12 @@ PUBLIC int csoundCleanup(CSOUND *csound)
                               csound->perferrcnt);
       print_benchmark_info(csound, Str("end of performance"));
     }
-     
+
     /* close line input (-L) */
     RTclose(csound);
     /* close MIDI input */
     MidiClose(csound);
- 
+
     /* IV - Feb 03 2005: do not need to call rtclose from here, */
     /* as sfclosein/sfcloseout will do that. */
     if (!csound->enableHostImplementedAudioIO) {
@@ -424,7 +435,7 @@ PUBLIC int csoundCleanup(CSOUND *csound)
     if (csound->remoteGlobals) remote_Cleanup(csound);
     if (csound->oparms->ringbell)
       cs_beep(csound);
-   
+
     return dispexit(csound);    /* hold or terminate the display output     */
 }
 
@@ -693,8 +704,8 @@ static int process_score_event(CSOUND *csound, EVTBLK *evt, int rtEvt)
       break;
     case 'a':
       {
-        int kCnt;
-        kCnt = (int) ((double) csound->global_ekr * (double) evt->p[3] + 0.5);
+        int64_t kCnt;
+        kCnt = (int64_t) ((double) csound->global_ekr * (double) evt->p[3] + 0.5);
         if (kCnt > csound->advanceCnt) {
           csound->advanceCnt = kCnt;
           csound->Message(csound,
@@ -713,7 +724,7 @@ static void process_midi_event(CSOUND *csound, MEVENT *mep, MCHNBLK *chn)
 {
     int n, insno = chn->insno;
     if (mep->type == NOTEON_TYPE && mep->dat2) {      /* midi note ON: */
-      if (UNLIKELY((n = MIDIinsert(csound, insno, chn, mep)))) { 
+      if (UNLIKELY((n = MIDIinsert(csound, insno, chn, mep)))) {
         /* alloc,init,activ */
         csound->Message(csound,
                         Str("\t\t   T%7.3f - note deleted. "), csound->curp2);
@@ -794,7 +805,7 @@ static int process_rt_event(CSOUND *csound, int sensType)
     return retval;
 }
 
-#define RNDINT(x) ((int) ((double) (x) + ((double) (x) < 0.0 ? -0.5 : 0.5)))
+#define RNDINT64(x) ((int64_t) ((double) (x) + ((double) (x) < 0.0 ? -0.5 : 0.5)))
 
 extern  int     sensMidi(CSOUND *);
 
@@ -908,10 +919,10 @@ int sensevents(CSOUND *csound)
       /* calculate the number of k-periods remaining until next event */
       if (O->Beatmode)
         csound->cyclesRemaining =
-          RNDINT((csound->nxtbt - csound->curBeat) / csound->curBeat_inc);
+          RNDINT64((csound->nxtbt - csound->curBeat) / csound->curBeat_inc);
       else {
         csound->cyclesRemaining =
-          RNDINT((csound->nxtim*csound->esr - csound->icurTime) / csound->ksmps);
+          RNDINT64((csound->nxtim*csound->esr - csound->icurTime) / csound->ksmps);
         csound->nxtim = (csound->cyclesRemaining*csound->ksmps+csound->icurTime)/csound->esr;
       }
     }
@@ -1018,14 +1029,14 @@ int sensevents(CSOUND *csound)
     return 2;                   /* done with entire score */
 }
 
-static inline uint32 time2kcnt(CSOUND *csound, double tval)
+static inline uint64_t time2kcnt(CSOUND *csound, double tval)
 {
     if (tval > 0.0) {
       tval *= (double) csound->global_ekr;
 #ifdef HAVE_C99
-      return (uint32) llrint(tval);
+      return (uint64_t) llrint(tval);
 #else
-      return (uint32) (tval + 0.5);
+      return (uint64_t) (tval + 0.5);
 #endif
     }
     return 0UL;
@@ -1046,7 +1057,7 @@ static inline uint32 time2kcnt(CSOUND *csound, double tval)
 /* made.                                                              */
 /* Return value is zero on success.                                   */
 
-int insert_score_event_at_sample(CSOUND *csound, EVTBLK *evt, long time_ofs)
+int insert_score_event_at_sample(CSOUND *csound, EVTBLK *evt, int64_t time_ofs)
 {
     double        start_time;
     EVTNODE       *e, *prv;
@@ -1257,4 +1268,3 @@ PUBLIC int csoundRegisterSenseEventCallback(CSOUND *csound,
 
     return 0;
 }
-

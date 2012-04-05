@@ -84,8 +84,8 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
     OPARMS  *O = csound->oparms;
     char    *s;
     char    *sortedscore = NULL;
-    char    *xtractedscore = "score.xtr";
-    FILE    *scorin = NULL, *scorout = NULL, *xfile = NULL;
+    //    char    *xtractedscore = "score.xtr";
+    FILE    *xfile = NULL;
     int     n;
     int     csdFound = 0;
     char    *fileDir;
@@ -313,7 +313,15 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       /*  does not deal with search paths */
       csound->Message(csound, Str("orchname:  %s\n"), csound->orchname);
       csound->orchstr = copy_to_corefile(csound, csound->orchname, NULL, 0);
-      csound->orchname = NULL;
+      if (csound->orchstr==NULL)
+        csound->Die(csound,
+                    Str("Failed to open input file %s\n"), csound->orchname);
+#ifdef ENABLE_NEW_PARSER
+      if (O->newParser) corfile_puts("\n#exit\n", csound->orchstr);
+#endif
+      corfile_putc('\0', csound->orchstr);
+      corfile_putc('\0', csound->orchstr);
+      //csound->orchname = NULL;
     }
     if (csound->xfilename != NULL)
       csound->Message(csound, "xfilename: %s\n", csound->xfilename);
@@ -327,14 +335,14 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
 #ifdef ENABLE_NEW_PARSER
     if (O->newParser) {
       int new_orc_parser(CSOUND *);
-      csound->Message(csound, "********************\n");
-      csound->Message(csound, "* USING NEW PARSER *\n");
-      csound->Message(csound, "********************\n");
       if (new_orc_parser(csound)) {
         csoundDie(csound, Str("Stopping on parser failure\n"));
       }
     }
     else {
+      csound->Message(csound, "********************\n");
+      csound->Message(csound, "* USING OLD PARSER *\n");
+      csound->Message(csound, "********************\n");
       otran(csound);                  /* read orcfile, setup desblks & spaces */
     }
 #else
@@ -377,24 +385,12 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       }
     }
     if (csound->xfilename != NULL) {            /* optionally extract */
-      if (!strcmp(csound->scorename, "score.xtr"))
-        csoundDie(csound, Str("cannot extract %s, name conflict"),
-                  csound->scorename);
       if (!(xfile = fopen(csound->xfilename, "r")))
         csoundDie(csound, Str("cannot open extract file %s"),csound->xfilename);
       csoundNotifyFileOpened(csound, csound->xfilename,
                              CSFTYPE_EXTRACT_PARMS, 0, 0);
-      if (!(scorin = fopen(sortedscore, "r")))
-        csoundDie(csound, Str("cannot reopen %s"), sortedscore);
-      csoundNotifyFileOpened(csound, sortedscore, CSFTYPE_SCORE_OUT,  0,
-                             (csound->tempStatus & csScoSortMask)!=0);
-      if (!(scorout = fopen(xtractedscore, "w")))
-        csoundDie(csound, Str("cannot open %s for writing"), xtractedscore);
-      csoundNotifyFileOpened(csound, xtractedscore, CSFTYPE_SCORE_OUT, 1, 0);
       csound->Message(csound, Str("  ... extracting ...\n"));
-      scxtract(csound, scorin, scorout, xfile);
-      fclose(scorin);
-      fclose(scorout);
+      scxtract(csound, csound->scstr, xfile);
       fclose(xfile);
       csound->tempStatus &= ~csPlayScoMask;
     }

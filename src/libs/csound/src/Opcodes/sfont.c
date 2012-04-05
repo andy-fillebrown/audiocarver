@@ -30,7 +30,7 @@
    directive switch.  */
 
 // #include "csdl.h"
-#include "csoundCore.h"        
+#include "csoundCore.h"
 #include "interlocks.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,7 +67,7 @@ typedef struct _sfontg {
   MYFLT pitches[128];
 } sfontg;
 
-PUBLIC int sfont_ModuleDestroy(CSOUND *csound)
+int sfont_ModuleDestroy(CSOUND *csound)
 {
     int j,k,l;
     SFBANK *sfArray;
@@ -1952,8 +1952,10 @@ static void splitDefaults(splitType *split)
 
 static int chunk_read(FILE *fil, CHUNK *chunk)
 {
-    fread(chunk->ckID,1,4, fil);
-    fread(&chunk->ckSize,4,1,fil);
+    if (UNLIKELY(4 != fread(chunk->ckID,1,4, fil)))
+      return 0;
+    if (UNLIKELY(1 != fread(&chunk->ckSize,4,1,fil)))
+      return 0;
     ChangeByteOrder("d", (char *)&chunk->ckSize, 4);
     chunk->ckDATA = (BYTE *) malloc( chunk->ckSize);
     return fread(chunk->ckDATA,1,chunk->ckSize,fil);
@@ -2525,7 +2527,7 @@ static OENTRY localops[] = {
 { NULL, 0, 0, NULL, NULL, (SUBR) NULL, (SUBR) NULL, (SUBR) NULL }
 };
 
-PUBLIC int sfont_ModuleCreate(CSOUND *csound)
+int sfont_ModuleCreate(CSOUND *csound)
 {
     int j;
     sfontg *globals;
@@ -2546,7 +2548,7 @@ PUBLIC int sfont_ModuleCreate(CSOUND *csound)
     return OK;
 }
 
-PUBLIC int sfont_ModuleInit(CSOUND *csound)
+int sfont_ModuleInit(CSOUND *csound)
 {
     OENTRY  *ep = (OENTRY*) &(localops[0]);
     int     err = 0;
@@ -2562,4 +2564,3 @@ PUBLIC int sfont_ModuleInit(CSOUND *csound)
     }
     return err;
 }
-

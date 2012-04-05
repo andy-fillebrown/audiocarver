@@ -105,7 +105,7 @@ static int pvsgain(CSOUND *csound, PVSGAIN *p)
         p->fout->framecount = p->fa->framecount;
         p->lastframe = p->fout->framecount;
     }
-    return OK;    
+    return OK;
 }
 
 
@@ -148,7 +148,7 @@ static int pvsinit(CSOUND *csound, PVSINI *p)
         }
         bframe = (float *) p->fout->frame.auxp;
         for (i = 0; i < N + 2; i += 2) {
-          bframe[i] = 0.0f;
+          //bframe[i] = 0.0f;
           bframe[i + 1] = (i >>1) * N * csound->onedsr;
         }
       }
@@ -388,26 +388,29 @@ int pvstanalset(CSOUND *csound, PVST *p)
       if (p->fout[i]->frame.auxp == NULL ||
           p->fout[i]->frame.size < sizeof(float) * (N + 2))
         csound->AuxAlloc(csound, (N + 2) * sizeof(float), &p->fout[i]->frame);
+      else
+        memset(p->fout[i]->frame.auxp, 0, sizeof(float)*(N+2));
       if (p->bwin[i].auxp == NULL ||
           p->bwin[i].size < sizeof(MYFLT) * (N + 2))
         csound->AuxAlloc(csound, (N + 2) * sizeof(MYFLT), &p->bwin[i]);
+      else
+        memset(p->bwin[i].auxp, 0, p->bwin[i].size);
       if (p->fwin[i].auxp == NULL ||
           p->fwin[i].size < sizeof(MYFLT) * (N + 2))
         csound->AuxAlloc(csound, (N + 2) * sizeof(MYFLT), &p->fwin[i]);
+      else
+        memset(p->fwin[i].auxp, 0, sizeof(MYFLT)*(N+2));
       if (p->nwin[i].auxp == NULL ||
           p->nwin[i].size < sizeof(MYFLT) * (N + 2))
         csound->AuxAlloc(csound, (N + 2) * sizeof(MYFLT), &p->nwin[i]);
-      memset(p->fwin[i].auxp, 0, sizeof(MYFLT)*(N+2));
-      memset(p->bwin[i].auxp, 0, sizeof(MYFLT)*(N+2));
-      memset(p->nwin[i].auxp, 0, sizeof(MYFLT)*(N+2));
-      memset(p->fout[i]->frame.auxp, 0, sizeof(float)*(N+2));
-
+      else
+        memset(p->nwin[i].auxp, 0, sizeof(MYFLT)*(N+2));
     }
 
     if (p->win.auxp == NULL ||
         p->win.size < sizeof(MYFLT) * (N))
       csound->AuxAlloc(csound, (N) * sizeof(MYFLT), &p->win);
-    p->scale = 0.f;
+    p->scale = 0.0f;
     for (i=0; i < N; i++)
       p->scale += (((MYFLT *)p->win.auxp)[i] = 0.5 - 0.5*cos(i*2*PI/N));
     for (i=0; i < N; i++)
@@ -701,7 +704,7 @@ static int pvsoscset(CSOUND *csound, PVSOSC *p)
           csound->AuxAlloc(csound, (N + 2) * sizeof(float), &p->fout->frame);
         bframe = (float *) p->fout->frame.auxp;
         for (i = 0; i < N + 2; i += 2) {
-          bframe[i] = 0.0f;
+          //bframe[i] = 0.0f;
           bframe[i + 1] = (i / 2) * N * csound->onedsr;
         }
         p->lastframe = 1;
@@ -1419,11 +1422,13 @@ static int pvsshiftset(CSOUND *csound, PVSSHIFT *p)
     if (p->ceps.auxp == NULL ||
         p->ceps.size < sizeof(MYFLT) * (N+2))
       csound->AuxAlloc(csound, sizeof(MYFLT) * (N + 2), &p->ceps);
-    memset(p->ceps.auxp, 0, sizeof(MYFLT)*(N+2));
+    else
+      memset(p->ceps.auxp, 0, sizeof(MYFLT)*(N+2));
     if (p->fenv.auxp == NULL ||
         p->fenv.size < sizeof(MYFLT) * (N+2))
       csound->AuxAlloc(csound, sizeof(MYFLT) * (N + 2), &p->fenv);
-    memset(p->fenv.auxp, 0, sizeof(MYFLT)*(N+2));
+    else
+      memset(p->fenv.auxp, 0, sizeof(MYFLT)*(N+2));
 
     return OK;
 }
@@ -1607,11 +1612,13 @@ static int pvswarpset(CSOUND *csound, PVSWARP *p)
     if (p->ceps.auxp == NULL ||
         p->ceps.size < sizeof(MYFLT) * (N+2))
       csound->AuxAlloc(csound, sizeof(MYFLT) * (N + 2), &p->ceps);
-    memset(p->ceps.auxp, 0, sizeof(MYFLT)*(N+2));
+    else
+      memset(p->ceps.auxp, 0, sizeof(MYFLT)*(N+2));
     if (p->fenv.auxp == NULL ||
         p->fenv.size < sizeof(MYFLT) * (N+2))
       csound->AuxAlloc(csound, sizeof(MYFLT) * (N + 2), &p->fenv);
-    memset(p->fenv.auxp, 0, sizeof(MYFLT)*(N+2));
+    else
+      memset(p->fenv.auxp, 0, sizeof(MYFLT)*(N+2));
 
     return OK;
 }
@@ -2037,11 +2044,13 @@ static int pvsenvwset(CSOUND *csound, PVSENVW *p)
     if (p->ceps.auxp == NULL ||
         p->ceps.size < sizeof(MYFLT) * (N+2))
       csound->AuxAlloc(csound, sizeof(MYFLT) * (N + 2), &p->ceps);
-    memset(p->ceps.auxp, 0, sizeof(MYFLT)*(N+2));
+    else
+      memset(p->ceps.auxp, 0, sizeof(MYFLT)*(N+2));
     if (p->fenv.auxp == NULL ||
         p->fenv.size < sizeof(MYFLT) * (N+2))
       csound->AuxAlloc(csound, sizeof(MYFLT) * (N + 2), &p->fenv);
-    memset(p->fenv.auxp, 0, sizeof(MYFLT)*(N+2));
+    else
+      memset(p->fenv.auxp, 0, sizeof(MYFLT)*(N+2));
 
     return OK;
 }
@@ -2135,33 +2144,34 @@ static int pvsenvw(CSOUND *csound, PVSENVW *p)
 
 }
 
-typedef struct pvs2tab_t { 
+typedef struct pvs2tab_t {
     OPDS h;
     MYFLT *framecount;
     TABDAT *ans;
     PVSDAT *fsig;
 } PVS2TAB_T;
 
-int pvs2tab_init(CSOUND *csound, PVS2TAB_T *p){
-  if (UNLIKELY(!(p->fsig->format == PVS_AMP_FREQ) ||
+int pvs2tab_init(CSOUND *csound, PVS2TAB_T *p)
+{
+    if (UNLIKELY(!(p->fsig->format == PVS_AMP_FREQ) ||
                  (p->fsig->format == PVS_AMP_PHASE)))
       return csound->InitError(csound, Str("pvs2tab: signal format "
                                            "must be amp-phase or amp-freq."));
-  if (LIKELY(p->ans->data)) return OK;
-  return csound->InitError(csound, Str("t-variable not initialised"));
+    if (LIKELY(p->ans->data)) return OK;
+    return csound->InitError(csound, Str("t-variable not initialised"));
 }
 
 int  pvs2tab(CSOUND *csound, PVS2TAB_T *p){
- 
+
   int size = p->ans->size, N = p->fsig->N, i;
   float *fsig = (float *) p->fsig->frame.auxp;
   for(i = 0; i < size && i < N+2; i++)
-      p->ans->data[i] = (MYFLT) fsig[i];   
+      p->ans->data[i] = (MYFLT) fsig[i];
   *p->framecount = (MYFLT) p->fsig->framecount;
-  return OK; 
+  return OK;
 }
 
-typedef struct tab2pvs_t { 
+typedef struct tab2pvs_t {
     OPDS h;
     PVSDAT *fout;
     TABDAT *in;
@@ -2169,38 +2179,40 @@ typedef struct tab2pvs_t {
     uint32  lastframe;
 } TAB2PVS_T;
 
-int tab2pvs_init(CSOUND *csound, TAB2PVS_T *p){
-  if (LIKELY(p->in->data)){
-    int N;
-    p->fout->N = N = p->in->size - 2;
-    p->fout->overlap = (int32)(*p->olap ? *p->olap : N/4);
-    p->fout->winsize = (int32)(*p->winsize ? *p->winsize : N);
-    p->fout->wintype = (int32) *p->wintype;
-    p->fout->format = 0;
-    p->fout->framecount = 1;
-    p->lastframe = 0;
-   if (p->fout->frame.auxp == NULL || p->fout->frame.size < sizeof(float) * (N + 2)) {
-          csound->AuxAlloc(csound, (N + 2) * sizeof(float), &p->fout->frame);
-     }
-
-  memset(p->fout->frame.auxp, sizeof(float)*(N+2), 0);
-  return OK;
-  }
-  else return csound->InitError(csound, Str("t-variable not initialised"));
+int tab2pvs_init(CSOUND *csound, TAB2PVS_T *p)
+{
+    if (LIKELY(p->in->data)){
+      int N;
+      p->fout->N = N = p->in->size - 2;
+      p->fout->overlap = (int32)(*p->olap ? *p->olap : N/4);
+      p->fout->winsize = (int32)(*p->winsize ? *p->winsize : N);
+      p->fout->wintype = (int32) *p->wintype;
+      p->fout->format = 0;
+      p->fout->framecount = 1;
+      p->lastframe = 0;
+      if (p->fout->frame.auxp == NULL ||
+          p->fout->frame.size < sizeof(float) * (N + 2)) {
+        csound->AuxAlloc(csound, (N + 2) * sizeof(float), &p->fout->frame);
+      }
+      else
+        memset(p->fout->frame.auxp, 0, sizeof(float)*(N+2));
+      return OK;
+    }
+    else return csound->InitError(csound, Str("t-variable not initialised"));
 }
 
-int  tab2pvs(CSOUND *csound, TAB2PVS_T *p){
- 
-  int size = p->in->size, i;
-  float *fout = (float *) p->fout->frame.auxp;
-  
-  if(p->lastframe < p->fout->framecount){
-    for(i = 0; i < size; i++){
-      fout[i] = (float) p->in->data[i]; 
-    } 
-    p->lastframe = p->fout->framecount;
-  }
-  return OK;
+int  tab2pvs(CSOUND *csound, TAB2PVS_T *p)
+{
+    int size = p->in->size, i;
+    float *fout = (float *) p->fout->frame.auxp;
+
+    if (p->lastframe < p->fout->framecount){
+      for (i = 0; i < size; i++){
+        fout[i] = (float) p->in->data[i];
+      }
+      p->lastframe = p->fout->framecount;
+    }
+    return OK;
 }
 
 
@@ -2217,7 +2229,7 @@ static OENTRY localops[] = {
    (SUBR) pvsshift},
   {"pvsfilter", sizeof(PVSFILTER), 3, "f", "fffp", (SUBR) pvsfilterset,
    (SUBR) pvsfilter},
-  {"pvscale", sizeof(PVSSCALE), 3, "f", "fkOPO", 
+  {"pvscale", sizeof(PVSSCALE), 3, "f", "fkOPO",
               (SUBR) pvsscaleset, (SUBR) pvsscale},
   {"pvshift", sizeof(PVSSHIFT), 3, "f", "fkkOPO", (SUBR) pvsshiftset,
    (SUBR) pvsshift},
@@ -2253,4 +2265,3 @@ int pvsbasic_init_(CSOUND *csound)
   return csound->AppendOpcodes(csound, &(localops[0]),
                                (int) (sizeof(localops) / sizeof(OENTRY)));
 }
-

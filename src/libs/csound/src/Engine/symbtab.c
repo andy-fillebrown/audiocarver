@@ -139,6 +139,7 @@ void init_symbtab(CSOUND *csound)
     add_token(csound, "ampdbfs", T_FUNCTION);
     add_token(csound, "dbamp", T_FUNCTION);
     add_token(csound, "dbfsamp", T_FUNCTION);
+    add_token_p(csound, "ftcps", T_FUNCTION, TR);
     add_token_p(csound, "ftlen", T_FUNCTION, TR);
     add_token_p(csound, "ftsr", T_FUNCTION, TR);
     add_token_p(csound, "ftlptim", T_FUNCTION, TR);
@@ -180,6 +181,8 @@ void init_symbtab(CSOUND *csound)
     add_token(csound, "pchmidinn", T_FUNCTION);
     add_token(csound, "db", T_FUNCTION);
     add_token(csound, "p", T_FUNCTION);
+    add_token(csound, "qinf", T_FUNCTION);
+    add_token(csound, "qnan", T_FUNCTION);
     add_token(csound, "##error", T_FUNCTION);
 }
 
@@ -203,7 +206,7 @@ ORCTOKEN *add_token(CSOUND *csound, char *s, int type)
     while (a!=NULL) {
       if (strcmp(a->lexeme, s)==0) {
         if (type == a->type) return a;
-        if (type!= T_FUNCTION || a->type!=T_OPCODE) 
+        if (type!= T_FUNCTION || a->type!=T_OPCODE)
           csound->Warning(csound,
                           Str("Type confusion for %s (%d,%d), replacing\n"),
                           s, type, a->type);
@@ -228,7 +231,7 @@ static ORCTOKEN *add_token_p(CSOUND *csound, char *s, int type, int val)
     ans->value = val;
     return ans;
 }
-    
+
 int isUDOArgList(char *s)
 {
     int len = strlen(s) - 1;
@@ -295,7 +298,7 @@ ORCTOKEN *lookup_token(CSOUND *csound, char *s, void *yyscanner)
         if (PARSER_DEBUG)
           csound->Message(csound, "Looking up token for: %d: %d: %s : %s\n",
                           hash("reverb"), hash("a4"), s, a->lexeme);
-			  }
+      }
       if (strcmp(a->lexeme, s)==0) {
         ans = (ORCTOKEN*)mmalloc(csound, sizeof(ORCTOKEN));
         memcpy(ans, a, sizeof(ORCTOKEN));
@@ -306,7 +309,7 @@ ORCTOKEN *lookup_token(CSOUND *csound, char *s, void *yyscanner)
       }
       a = a->next;
     }
-   
+
 
     ans = new_token(csound, T_IDENT);
     ans->lexeme = (char*)mmalloc(csound, 1+strlen(s));
@@ -341,14 +344,14 @@ ORCTOKEN *lookup_token(CSOUND *csound, char *s, void *yyscanner)
       case 'w': type = T_IDENT_GW; break;
       case 't': type = T_IDENT_GT; break;
       case 'S': type = T_IDENT_GS; break;
-      default: 
-        csound->Message(csound, Str("Unknown word type for %s on line %d\n"),
-                        s, csound_orcget_lineno(yyscanner));
-        exit(1);
+      /* default:  */
+      /*   csound->Message(csound, Str("Unknown word type for %s on line %d\n"), */
+      /*                   s, csound_orcget_lineno(yyscanner)); */
+      /*   exit(1); */
       }
     default: /*
-      printf("IDENT Token: %i : %i", ans->type, T_IDENT);
-      printf("Unknown word type for %s on line %d\n", s, yyline);
+      csound->DebugMsg(csound,"IDENT Token: %i : %i", ans->type, T_IDENT);
+      csound->DebugMsg(csound,"Unknown word type for %s on line %d\n", s, yyline);
       exit(1);
              */
       break;
@@ -376,7 +379,7 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
     int     S_incnt, S_outcnt, f_outcnt, f_incnt, t_incnt, t_outcnt;
     int16   *a_inlist, *k_inlist, *i_inlist, *a_outlist, *k_outlist, *i_outlist;
     int16   *S_inlist, *S_outlist, *f_inlist, *f_outlist, *t_inlist, *t_outlist;
-  
+
     /* count the number of arguments, and check types */
     i = i_incnt = S_incnt = a_incnt = k_incnt = f_incnt = f_outcnt =
         i_outcnt = S_outcnt = a_outcnt = k_outcnt = t_incnt = t_outcnt = err = 0;
@@ -492,9 +495,9 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
       }
       i++;
     }
-      
+
     /* put delimiters */
-    *i_inlist = *S_inlist = *a_inlist = *k_inlist = *f_inlist = *t_inlist = -1; 
+    *i_inlist = *S_inlist = *a_inlist = *k_inlist = *f_inlist = *t_inlist = -1;
     i_outlist = inm->out_ndx_list = t_inlist + 1;
     S_outlist = i_outlist + i_outcnt + 1;
     a_outlist = S_outlist + S_outcnt + 1;
@@ -514,7 +517,7 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
       }
       i++;
     }
-    
+
     *i_outlist = *S_outlist = *a_outlist = *k_outlist =
       *f_outlist = *t_outlist = -1;  /* put delimiters */
     return err;

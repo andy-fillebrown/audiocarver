@@ -58,7 +58,7 @@ void    dispinit(CSOUND *);
 int     init0(CSOUND *);
 void    scsort(CSOUND *, FILE *, FILE *);
 void    scsortstr(CSOUND *, CORFIL *);
-int     scxtract(CSOUND *, FILE *, FILE *, FILE *);
+int     scxtract(CSOUND *, CORFIL *, FILE *);
 int     rdscor(CSOUND *, EVTBLK *);
 int     musmon(CSOUND *);
 void    RTLineset(CSOUND *);
@@ -103,7 +103,7 @@ int     csoundCheckOpcodePluginFile(CSOUND *, const char *);
 int     csoundLoadAllPluginOpcodes(CSOUND *);
 int     csoundLoadAndInitModule(CSOUND *, const char *);
 void    csoundNotifyFileOpened(CSOUND *, const char *, int, int, int);
-int     insert_score_event_at_sample(CSOUND *, EVTBLK *, long);
+int     insert_score_event_at_sample(CSOUND *, EVTBLK *, int64_t);
 
 /**
  * Register a function to be called at note deactivation.

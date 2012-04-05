@@ -153,7 +153,7 @@ typedef struct
            coeffs, gain for 3 band pass, same for floor and ceiling] */
         MYFLT *in, *srcx, *srcy, *srcz, *lstnrx, *lstnry, *lstnrz, *ifilel, *ifiler,
               *idefroom, *ofade, *osr, *porder, *othreed, *Oheadrot,
-              *ormx, *ormy, *ormz, *owlh, *owll, *owlg1, *owlg2, *owlg3, *oflh, 
+              *ormx, *ormy, *ormz, *owlh, *owll, *owlg1, *owlg2, *owlg3, *oflh,
               *ofll, *oflg1, *oflg2, *oflg3,*oclh, *ocll, *oclg1, *oclg2, *oclg3;
 
         /* check if relative source has changed, to avoid recalculations */
@@ -325,7 +325,7 @@ static int early_init(CSOUND *csound, early *p)
       return
         csound->InitError(csound,
                           Str("\n\n\nCannot load left data file, exiting\n\n"));
-    
+
     fpr = csound->ldmemfile2withCB(csound, filer, CSFTYPE_FLOATS_BINARY,
                                    swap4bytes);
     if (UNLIKELY(fpr == NULL))
@@ -355,7 +355,7 @@ static int early_init(CSOUND *csound, early *p)
     /* 3 default rooms allowed*/
     if(defroom > 3)
       defroom = 1;
-    
+
     /* setup wall coeffs: walls: plasterboard, ceiling: painted plaster,
        floor: carpet
        if any default room is chosen, default parameters for walls/ceiling/floor */
@@ -433,7 +433,7 @@ static int early_init(CSOUND *csound, early *p)
         rmy = 25;
         rmz = 7;
       }
-    
+
     /* read values if they exist, use medium if not valid (must be at
        least a 2*2*2 room! */
     else
@@ -474,35 +474,53 @@ static int early_init(CSOUND *csound, early *p)
     /* allocate memory, reuse if possible: interpolation buffers */
     if (!p->lowl1.auxp || p->lowl1.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->lowl1);
+    else
+      memset(p->lowl1.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->lowr1.auxp || p->lowr1.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->lowr1);
+    else
+      memset(p->lowr1.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->lowl2.auxp || p->lowl2.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->lowl2);
+    else
+      memset(p->lowl2.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->lowr2.auxp || p->lowr2.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->lowr2);
+    else
+      memset(p->lowr2.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->highl1.auxp || p->highl1.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->highl1);
+    else
+      memset(p->highl1.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->highr1.auxp || p->highr1.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->highr1);
+    else
+      memset(p->highr1.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->highl2.auxp || p->highl2.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->highl2);
+    else
+      memset(p->highl2.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->highr2.auxp || p->highr2.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->highr2);
+    else
+      memset(p->highr2.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->hrtflinterp.auxp || p->hrtflinterp.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->hrtflinterp);
+    else
+      memset(p->hrtflinterp.auxp, 0, irlength * sizeof(MYFLT));
+
     if (!p->hrtfrinterp.auxp || p->hrtfrinterp.size < irlength * sizeof(MYFLT))
       csound->AuxAlloc(csound, irlength * sizeof(MYFLT), &p->hrtfrinterp);
-
-    memset(p->lowl1.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->lowr1.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->lowl2.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->lowr2.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->highl1.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->highl2.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->highr1.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->highr2.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->hrtflinterp.auxp, 0, irlength * sizeof(MYFLT));
-    memset(p->hrtfrinterp.auxp, 0, irlength * sizeof(MYFLT));
+    else
+      memset(p->hrtfrinterp.auxp, 0, irlength * sizeof(MYFLT));
 
     /* hrtf processing buffers */
     if (!p->hrtflpad.auxp || p->hrtflpad.size < irlengthpad * sizeof(MYFLT))
@@ -1605,23 +1623,23 @@ static int early_process(CSOUND *csound, early *p)
                                         band(hrtfrinterp, FL(4000.0), FL(4000.0) / p->q, p->ceilingg3, deldoubler, irlength, sr);
                                       }
                                   }
-                                
+
                                 for(i = 0; i < irlength; i++)
                                   {
                                     hrtflpad[i] = hrtflinterp[i];
                                     hrtfrpad[i] = hrtfrinterp[i];
                                   }
-                                
+
                                 for(i = irlength; i < irlengthpad; i++)
                                   {
                                     hrtflpad[i] = FL(0.0);
                                     hrtfrpad[i] = FL(0.0);
                                   }
-                                
+
                                 /* back to freq domain */
                                 csound->RealFFT(csound, hrtflpad, irlengthpad);
                                 csound->RealFFT(csound, hrtfrpad, irlengthpad);
-                                
+
                                 /* store */
                                 for(i = 0; i < irlengthpad; i++)
                                   {
@@ -1631,7 +1649,7 @@ static int early_process(CSOUND *csound, early *p)
                               }
                           }       /* end of source / listener relative
                                      change process */
-                        
+
                         /* look after overlap add */
                         for(i = 0; i < overlapsize ; i++)
                           {

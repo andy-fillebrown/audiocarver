@@ -148,6 +148,7 @@ extern "C" {
     csoundSetInputValueCallback,
     csoundSetOutputValueCallback,
     csoundScoreEvent,
+    csoundScoreEventAbsolute,
     csoundSetExternalMidiInOpenCallback,
     csoundSetExternalMidiReadCallback,
     csoundSetExternalMidiInCloseCallback,
@@ -654,13 +655,7 @@ extern "C" {
       1,            /*    numThreads        */
       0,            /*    syntaxCheckOnly   */
       1,            /*    useCsdLineCounts  */
-#if defined(PARCS) ||  defined(ENABLE_NEW_PARSER)
-#ifdef BETA
       1,            /*    newParser   */
-#else
-      0,            /*    newParser   */
-#endif
-#endif
       0,            /*    calculateWeights   */
     },
     0L, 0L,         /*  instxtcount, optxtsize  */
@@ -711,8 +706,10 @@ extern "C" {
     {NULL, NULL, NULL}, /* For extra strings in scores */
     {0, 0, 0},      /* For extra strings in scores */
     300,             /* Count for generated labels */
-    NULL,
-    NULL
+    NULL,            /* pow2 table */
+    NULL,            /* cps conv table */
+    NULL,            /* output of preprocessor */
+    { NULL, NULL, NULL}/* for location directory */
   };
 
   /* from threads.c */
@@ -965,8 +962,8 @@ extern "C" {
       if (!(flags & CSOUNDINIT_NO_SIGNAL_HANDLER)) {
         install_signal_handler();
       }
-      if (!(flags & CSOUNDINIT_NO_ATEXIT))
 #if !defined(WIN32)
+      if (!(flags & CSOUNDINIT_NO_ATEXIT))
         atexit(destroy_all_instances);
 #endif
       /*aops_init_tables();*/
@@ -1330,7 +1327,9 @@ extern "C" {
 #ifdef PARCS
   static int inline nodePerf(CSOUND *csound, int index)
   {
-      struct instr_semantics_t *instr = NULL;
+#if (TRACE&4) == 4
+      struct instr_semantics_t *instr;
+#endif
       INSDS *insds = NULL;
       OPDS  *opstart = NULL;
       int update_hdl = -1;
@@ -1346,7 +1345,9 @@ extern "C" {
         }
 
         if (node->hdr.type == DAG_NODE_INDV) {
+#if (TRACE&4) == 4
           instr = node->instr;
+#endif
           insds = node->insds;
           played_count++;
 
@@ -1365,9 +1366,12 @@ extern "C" {
           int node_ctr = 0;
           while (node_ctr < node->count) {
             DAG_NODE *play_node = node->nodes[node_ctr];
+#if (TRACE&4) == 4
             instr = play_node->instr;
+#endif
             insds = play_node->insds;
-            TRACE_1("DAG_NODE_LIST: node->nodes=%p: play_node = %p, instr=%p, insds=%p\n",
+            TRACE_1("DAG_NODE_LIST: node->nodes=%p: play_node = %p, "
+                    "instr=%p, insds=%p\n",
                     node->nodes, play_node, instr, insds);
 
             TRACE_2("[%i] Playing: %s [%p]\n", index, instr->name, insds);
@@ -1482,7 +1486,7 @@ extern "C" {
   int kperf(CSOUND *csound)
   {
 #ifdef PARCS
-      void *barrier1, *barrier2;
+      /* void *barrier1, *barrier2; */
       INSDS *ip;
 #endif /* PARCS */
       /* update orchestra time */
@@ -1553,8 +1557,8 @@ extern "C" {
 #endif
       }
 #else /* PARCS */
-      barrier1 = csound->multiThreadedBarrier1;
-      barrier2 = csound->multiThreadedBarrier2;
+      /* barrier1 = csound->multiThreadedBarrier1; */
+      /* barrier2 = csound->multiThreadedBarrier2; */
       ip = csound->actanchor.nxtact;
 
       if (ip != NULL) {
@@ -1600,7 +1604,8 @@ extern "C" {
           TRACE_1("[%i] Barrier2 Done\n", 0);
           TIMER_END(thread, "");
 
-#if !defined(LINEAR_CACHE) && !defined(HASH_CACHE)
+/* #if !defined(LINEAR_CACHE) && !defined(HASH_CACHE) */
+#if defined(LINEAR_CACHE) || defined(HASH_CACHE)
             csp_dag_dealloc(csound, &dag2);
 #else
           dag2 = NULL;
@@ -2099,8 +2104,22 @@ extern "C" {
         evt.p[i + 1] = pfields[i];
       //memcpy(&evt.p[1],pfields, numFields*sizeof(MYFLT));
       return insert_score_event_at_sample(csound, &evt, csound->icurTime);
-      }
+  }
 
+  PUBLIC int csoundScoreEventAbsolute(CSOUND *csound, char type,
+                                      const MYFLT *pfields, long numFields,
+                                      double time_ofs)
+  {
+      EVTBLK  evt;
+      int     i;
+
+      evt.strarg = NULL;
+      evt.opcod = type;
+      evt.pcnt = (int16) numFields;
+      for (i = 0; i < (int) numFields; i++)
+        evt.p[i + 1] = pfields[i];
+      return insert_score_event(csound, &evt, time_ofs);
+  }
 
   /*
    *    REAL-TIME AUDIO
@@ -2628,9 +2647,10 @@ extern "C" {
       CSOUND    *saved_env;
       void      *p1, *p2;
       uintptr_t length;
-     
+      int n = 0;
+
       csoundCleanup(csound);
- 
+
       /* call registered reset callbacks */
       while (csound->reset_list != NULL) {
         resetCallback_t *p = (resetCallback_t*) csound->reset_list;
@@ -2641,12 +2661,12 @@ extern "C" {
       /* call local destructor routines of external modules */
       /* should check return value... */
       csoundDestroyModules(csound);
- 
+
       /* IV - Feb 01 2005: clean up configuration variables and */
       /* named dynamic "global" variables of Csound instance */
       csoundDeleteAllConfigurationVariables(csound);
       csoundDeleteAllGlobalVariables(csound);
- 
+
 #ifdef CSCORE
       cscoreRESET(csound);
 #endif
@@ -2660,6 +2680,8 @@ extern "C" {
       remove_tmpfiles(csound);
       rlsmemfiles(csound);
       memRESET(csound);
+      while (csound->filedir[n])        /* Clear source directory */
+        free(csound->filedir[n++]);
       /**
        * Copy everything EXCEPT the function pointers.
        * We do it by saving them and copying them back again...
@@ -2680,7 +2702,6 @@ extern "C" {
       memcpy(&(csound->exitjmp), &(saved_env->exitjmp), sizeof(jmp_buf));
       csound->memalloc_db = saved_env->memalloc_db;
       free(saved_env);
-   
   }
 
   PUBLIC int csoundGetDebug(CSOUND *csound)
@@ -3715,4 +3736,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-

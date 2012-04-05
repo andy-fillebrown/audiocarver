@@ -23,6 +23,7 @@
 
 #include "csoundCore.h"     /*                      CSCORFNS.C      */
 #include "cscore.h"
+#include "corfile.h"
 
 #define TYP_FREE   0
 #define TYP_EVENT  1
@@ -171,6 +172,10 @@ PUBLIC EVLIST * cscoreListCreate(CSOUND *csound, int nslots)
     int   needsiz = sizeof(EVLIST) + nslots * sizeof(EVENT *);
     int   minfreesiz = needsiz + sizeof(CSHDR);
 
+    if (minfreesiz > MAXALLOC) {
+      csound->Message(csound, Str("Not enough memory\n"));
+      exit(1);
+    }
     if (nxtfree != NULL && nxtfree->size >= minfreesiz)
       newblk = nxtfree;
     else newblk = getfree(csound, minfreesiz);
@@ -198,6 +203,10 @@ PUBLIC EVENT * cscoreCreateEvent(CSOUND *csound, int pcnt)
     int   needsiz = sizeof(EVENT) + pcnt * sizeof(MYFLT);
     int   minfreesiz = needsiz + sizeof(CSHDR);
 
+    if (minfreesiz > MAXALLOC) {
+      csound->Message(csound, Str("Not enough memory\n"));
+      exit(1);
+    }
     if (nxtfree != NULL && nxtfree->size >= minfreesiz)
       newblk = nxtfree;
     else newblk = getfree(csound, minfreesiz);
@@ -290,7 +299,7 @@ PUBLIC EVENT * cscoreGetEvent(CSOUND *csound)
 {
     EVENT *e;
 
-    if (csound->scfp != NULL && !atEOF && nxtevt->op != '\0')
+    if (!atEOF && nxtevt->op != '\0')
       e = cscoreCopyEvent(csound, nxtevt);
     else e = NULL;
     if (!(rdscor(csound, nxtevtblk))) {
@@ -389,6 +398,8 @@ PUBLIC EVLIST * cscoreListGetSection(CSOUND *csound)
 
     a = cscoreListCreate(csound, NSLOTS);
     p = &a->e[1];
+    if (csound->scstr == NULL || csound->scstr->body[0] == '\0')
+      return a;
     while ((e = cscoreGetEvent(csound)) != NULL) {
       if (e->op == 's' || e->op == 'e')
         break;
@@ -796,7 +807,9 @@ static void makecurrent(CSOUND *csound, FILE *fp)
           atEOF = infp->atEOF;
           csound->warped = infp->warped;
           if (nxtevt->op == '\0')
-            if (!(rdscor(csound, nxtevtblk))) {
+            if (csound->scstr == NULL ||
+                csound->scstr->body[0] == '\0' ||
+                !(rdscor(csound, nxtevtblk))) {
               nxtevt->op = '\0';
               atEOF = 1;
             }
@@ -809,7 +822,7 @@ static void makecurrent(CSOUND *csound, FILE *fp)
 
 /* verify initial scfp, init other data */
 /* record & make all this current       */
-
+#ifdef OLD_CODE
 PUBLIC int csoundInitializeCscore(CSOUND *csound, FILE* insco, FILE* outsco)
 {
     EVENT   *next;
@@ -835,6 +848,38 @@ PUBLIC int csoundInitializeCscore(CSOUND *csound, FILE* insco, FILE* outsco)
 
     return CSOUND_SUCCESS;
 }
+#endif
+
+PUBLIC int csoundInitializeCscore(CSOUND *csound, FILE* insco, FILE* outsco)
+{
+    EVENT  *next;
+
+    if (insco != NULL) {
+      CORFIL *inf = corfile_create_w();
+      int c;
+      while ((c=getc(insco))!=EOF) corfile_putc(c, inf);
+      corfile_rewind(inf);
+      csound->scstr = inf;
+    }
+    if (outsco == NULL) {
+      csound->ErrorMsg(csound,
+                       Str("csoundInitializeCscore: no output score given."));
+      return CSOUND_INITIALIZATION;
+    }
+    csound->scfp = insco;
+    csound->oscfp = outsco;
+
+    next = cscoreCreateEvent(csound, PMAX); /* creat EVENT blk receiving buf */
+    next->op = '\0';
+
+    savinfdata(csound, csound->scfp,
+               next, FL(0.0), 1, 0, 0);    /* curuntil 0, wasend, non-warp, not eof */
+    makecurrent(csound, csound->scfp);  /* make all this current         */
+
+    return CSOUND_SUCCESS;
+}
+
+
 
 /* open new cscore input file, init data */
 /* & save;  no rdscor until made current */
@@ -896,6 +941,17 @@ PUBLIC FILE *cscoreFileGetCurrent(CSOUND *csound)
 
 PUBLIC void cscoreFileSetCurrent(CSOUND *csound, FILE *fp)
 {
+    if (fp != NULL) {
+      CORFIL *inf = corfile_create_w();
+      int c;
+      fseek(fp, 0, SEEK_SET);
+      while ((c=getc(fp))!=EOF) corfile_putc(c, inf);
+      corfile_rewind(inf);
+      corfile_rm(&csound->scstr);
+      csound->scstr = inf;
+      nxtevt->op = '\0';
+      atEOF = 0;
+    }
     if (csound->scfp != NULL)
       savinfdata(csound,
                  csound->scfp, nxtevt, curuntil, wasend, csound->warped, atEOF);

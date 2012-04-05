@@ -75,6 +75,7 @@ SOURCES = \
     ../src/Engine/csound_orc_compile.c \
     ../src/Engine/csound_orclex.c \
     ../src/Engine/csound_orcparse.c \
+    ../src/Engine/csound_prelex.c \
     ../src/Engine/entry1.c \
     ../src/Engine/envvar.c \
     ../src/Engine/express.c \
@@ -141,6 +142,7 @@ SOURCES = \
     ../src/OOps/str_ops.c \
     ../src/OOps/ugens1.c \
     ../src/OOps/ugens2.c \
+    ../src/OOps/ugens2a.c \
     ../src/OOps/ugens3.c \
     ../src/OOps/ugens4.c \
     ../src/OOps/ugens5.c \
@@ -176,6 +178,7 @@ SOURCES = \
     ../src/Opcodes/ftconv.c \
     ../src/Opcodes/ftest.c \
     ../src/Opcodes/ftgen.c \
+    ../src/Opcodes/gendy.c \
     ../src/Opcodes/grain.c \
     ../src/Opcodes/grain4.c \
     ../src/Opcodes/harmon.c \
@@ -265,6 +268,8 @@ SOURCES = \
     ../src/Opcodes/gab/sliderTable.c \
     ../src/Opcodes/gab/tabmorph.c \
     ../src/Opcodes/gab/vectorial.c \
+    \
+    ../src/Opcodes/tl/sc_noise.c \
     \
     ../src/Top/argdecode.c \
     ../src/Top/cscore_internal.c \

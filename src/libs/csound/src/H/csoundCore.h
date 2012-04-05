@@ -35,7 +35,7 @@
 #endif /* PARCS */
 #include <stdarg.h>
 #include <setjmp.h>
- 
+
 /*
 #include <sndfile.h>
 JPff:  But this gives warnings in many files as rewriteheader expects
@@ -798,6 +798,8 @@ typedef struct {
                                                      MYFLT value));
     int (*ScoreEvent)(CSOUND *,
                       char type, const MYFLT *pFields, long numFields);
+    int (*ScoreEventAbsolute)(CSOUND *,
+                      char type, const MYFLT *pFields, long numFields, double time_ofs);
     void (*SetExternalMidiInOpenCallback)(CSOUND *,
                 int (*func)(CSOUND *, void **, const char *));
     void (*SetExternalMidiReadCallback)(CSOUND *,
@@ -1062,12 +1064,12 @@ typedef struct {
     /** start time of current section    */
     double        timeOffs, beatOffs;
     /** current time in seconds, inc. per kprd */
-    long          icurTime;   /* Current time in samples */
+    int64_t       icurTime;   /* Current time in samples */
     double        curTime_inc;
     /** current time in beats, inc per kprd */
     double        curBeat, curBeat_inc;
     /** beat time = 60 / tempo           */
-    long          ibeatTime;   /* Beat time in samples */
+    int64_t       ibeatTime;   /* Beat time in samples */
 #if defined(HAVE_PTHREAD_SPIN_LOCK) && defined(PARCS)
     pthread_spinlock_t spoutlock, spinlock;
 #else
@@ -1186,7 +1188,7 @@ typedef struct {
     EVTNODE       *OrcTrigEvts;             /* List of events to be started */
     EVTNODE       *freeEvtNodes;
     int           csoundIsScorePending_;
-    int           advanceCnt;
+    int64_t       advanceCnt;
     int           initonly;
     int           evt_poll_cnt;
     int           evt_poll_maxcnt;
@@ -1209,7 +1211,7 @@ typedef struct {
     void          **cfgVariableDB;
     double        prvbt, curbt, nxtbt;
     double        curp2, nxtim;
-    int           cyclesRemaining;
+    int64_t       cyclesRemaining;
     EVTBLK        evt;
     void          *memalloc_db;
     MGLOBAL       *midiGlobals;
@@ -1347,7 +1349,7 @@ typedef struct {
     struct global_var_lock_t **global_var_lock_cache;
     int           global_var_lock_count;
     int           opcode_weight_cache_ctr;
-    struct opcode_weight_cache_entry_t 
+    struct opcode_weight_cache_entry_t
                   *opcode_weight_cache[OPCODE_WEIGHT_CACHE_SIZE];
     int           opcode_weight_have_cache;
     struct        dag_cache_entry_t *cache[DAG_2_CACHE_SIZE];
@@ -1367,8 +1369,10 @@ typedef struct {
     char          *sstrbuf0[3]; /* For extra strings in scores */
     int           sstrlen0[3];  /* lengths for extra strings */
     int           genlabs;      /* Count for generated labels */
-    MYFLT  *powerof2;         /* pow2 table */
-    MYFLT  *cpsocfrc;         /* cps conv table */
+    MYFLT         *powerof2;    /* pow2 table */
+    MYFLT         *cpsocfrc;    /* cps conv table */
+    CORFIL*       expanded_orc; /* output of preprocessor */
+    char          *filedir[64]; /* for location directory */
 #endif  /* __BUILDING_LIBCSOUND */
   };
 
@@ -1378,12 +1382,12 @@ typedef struct {
  */
 
 #define LINKAGE1(name)                                         \
-PUBLIC long name##_init(CSOUND *csound, OENTRY **ep)           \
-{   (void) csound; *ep = name; return (long) (sizeof(name));  } 
+long name##_init(CSOUND *csound, OENTRY **ep)           \
+{   (void) csound; *ep = name; return (long) (sizeof(name));  }
 
 #define FLINKAGE1(name)                                                 \
-PUBLIC NGFENS* name##_init(CSOUND *csound)                         \
-{   (void) csound; return name;                                     } 
+NGFENS* name##_init(CSOUND *csound)                         \
+{   (void) csound; return name;                                     }
 
 #ifdef __cplusplus
 }

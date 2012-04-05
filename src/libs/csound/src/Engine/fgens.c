@@ -154,7 +154,7 @@ int hfgens(CSOUND *csound, FUNC **ftpp, const EVTBLK *evtblkp, int mode)
     }
     if (ff.e.pcnt>PMAX) {
 #ifdef BETA
-      fprintf(stderr, "T%d/%d(%d): x=%p memcpy from %p to %p length %d\n",
+      csound->DebugMsg(csound, "T%d/%d(%d): x=%p memcpy from %p to %p length %d\n",
               (int)evtblkp->p[1], (int)evtblkp->p[4], ff.e.pcnt, evtblkp->c.extra,
               &(ff.e.p[2]), &(evtblkp->p[2]), sizeof(MYFLT) * PMAX);
 #endif
@@ -350,7 +350,7 @@ static int gen02(FGDATA *ff, FUNC *ftp)
       *fp++ = *pp++;                            /*   copy into ftable   */
       if (UNLIKELY(nsw && pp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         pp = &(ff->e.c.extra[1]);
@@ -651,7 +651,7 @@ static int gen08(FGDATA *ff, FUNC *ftp)
         f2 = *valp++;                       /*    and the value at x2    */
         if (UNLIKELY(nsw && valp>&ff->e.p[PMAX])) {
 #ifdef BETA
-          fprintf(stderr, "Switch to extra args\n");
+          csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
           nsw = 0;                /* only switch once */
           valp = &(ff->e.c.extra[1]);
@@ -713,7 +713,7 @@ static int gen09(FGDATA *ff, FUNC *ftp)
       inc = *(valp++) * tpdlen;
       if (UNLIKELY(nsw && valp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         valp = &(ff->e.c.extra[1]);
@@ -721,7 +721,7 @@ static int gen09(FGDATA *ff, FUNC *ftp)
       amp = *(valp++);
       if (UNLIKELY(nsw && valp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         valp = &(ff->e.c.extra[1]);
@@ -729,7 +729,7 @@ static int gen09(FGDATA *ff, FUNC *ftp)
       phs = *(valp++) * tpd360;
       if (UNLIKELY(nsw && valp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         valp = &(ff->e.c.extra[1]);
@@ -898,7 +898,7 @@ static int gn1314(FGDATA *ff, FUNC *ftp, MYFLT mxval, MYFLT mxscal)
       sum = *oddhp++;                           /* sum = diag(=1) * this h   */
       if (UNLIKELY(nsw && oddhp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         oddhp = &(ff->e.c.extra[1]);
@@ -908,7 +908,7 @@ static int gn1314(FGDATA *ff, FUNC *ftp, MYFLT mxval, MYFLT mxscal)
         oddhp++;                                /*  + odd terms * h+2,h+4,.. */
         if (UNLIKELY(nnsw && oddhp>&ff->e.p[PMAX])) {
 #ifdef BETA
-          fprintf(stderr, "Switch to extra args\n");
+          csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
           nnsw = 0;                /* only switch once */
           oddhp = &(ff->e.c.extra[1]);
@@ -916,7 +916,7 @@ static int gn1314(FGDATA *ff, FUNC *ftp, MYFLT mxval, MYFLT mxscal)
         sum += *mp++ * *oddhp++;
         if (UNLIKELY(nnsw && oddhp>&ff->e.p[PMAX])) {
 #ifdef BETA
-          fprintf(stderr, "Switch to extra args\n");
+          csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
           nnsw = 0;                /* only switch once */
           oddhp = &(ff->e.c.extra[1]);
@@ -925,7 +925,7 @@ static int gn1314(FGDATA *ff, FUNC *ftp, MYFLT mxval, MYFLT mxscal)
       *hp++ = sum * mxscal;                     /* repl this h w. coef (sum) */
       if (UNLIKELY(nsw && hp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         hp = &(ff->e.c.extra[1]);
@@ -964,7 +964,7 @@ static int gen15(FGDATA *ff, FUNC *ftp)
       h = *fp++;                                /* rpl h,angle pairs */
       if (UNLIKELY(nsw && fp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         fp = &(ff->e.c.extra[1]);
@@ -974,9 +974,9 @@ static int gen15(FGDATA *ff, FUNC *ftp)
       *sinp++ = h * SIN(angle);  /* and save the sine */
     }
     nargs -= nh;
+    ff->e.pcnt = (int16)(nargs + 4);            /* added by F. Pinot 16-01-2012 */
     if (gen13(ff, ftp) != OK)                   /* call gen13   */
       return NOTOK;
-    ftresdisp(ff, ftp);                         /* and display fno   */
     lp13 = (void*) ftp;
     ff->fno++;                                  /* alloc eq. space for fno+1 */
     ftp = ftalloc(ff);                          /* & copy header */
@@ -990,15 +990,20 @@ static int gen15(FGDATA *ff, FUNC *ftp)
       *fp++ = *sinp++;                          /* & copy rem hn*sin */
       if (UNLIKELY(nsw && fp>&ff->e.p[PMAX])) {
 #ifdef BETA
-        fprintf(stderr, "Switch to extra args\n");
+        csound->DebugMsg(csound, "Switch to extra args\n");
 #endif
         nsw = 0;                /* only switch once */
         fp = &(ff->e.c.extra[1]);
       }
     }
     nargs--;
+    ff->e.pcnt = (int16)(nargs + 4);            /* added by F. Pinot 16-01-2012 */
     free(hsin);
-    return gen14(ff, ftp);                      /* now draw ftable   */
+    n = gen14(ff, ftp);                         /* now draw ftable   */
+    ftresdisp(ff, ftp);                         /* added by F. Pinot 16-01-2012 */
+    ff->fno--;                                  /* F. Pinot, the first function table */
+                                                /* is scaled and displayed by hfgens */
+    return n;
 }
 
 static int gen16(FGDATA *ff, FUNC *ftp)
@@ -1326,6 +1331,7 @@ static int gen23(FGDATA *ff, FUNC *ftp)
       /* Allocate memory and read them in now */
   /*  ff->flen      = ff->flen + 2;        ??? */
       ftp           = ftalloc(ff);
+      ftp->lenmask  = 0xFFFFFFFF; /* avoid the error in csoundFTFind */
     }
     fp = ftp->ftable;
     j = 0;
@@ -2131,7 +2137,7 @@ static int gen42(FGDATA *ff, FUNC *ftp) /*gab d5*/
       p3 = *valp++;
       if (UNLIKELY(nsw && valp>=&ff->e.p[PMAX-1]))
         nsw =0, valp = &(ff->e.c.extra[1]);
-      width = (int) ((p3/tot_prob) * ff->flen +FL(0.5)); 
+      width = (int) ((p3/tot_prob) * ff->flen +FL(0.5));
       inc = (p2-p1) / (MYFLT) (width-1);
       for ( k=0; k < width; k++) {
         *fp++ = p1+(inc*k);
@@ -2561,11 +2567,11 @@ static int gen01raw(FGDATA *ff, FUNC *ftp)
     ftp->end1 = ftp->flenfrms;          /* Greg Sullivan */
 #endif      /* HAVE_LIBSNDFILE >= 1013 */
     /* read sound with opt gain */
-   
+
     if (UNLIKELY((inlocs=getsndin(csound, fd, ftp->ftable, table_length, p)) < 0)) {
       return fterror(ff, Str("GEN1 read error"));
     }
-    
+
     if (p->audrem > 0 && !truncmsg && p->framesrem > ff->flen) {
       /* Reduce msg */
       csound->Warning(csound, Str("GEN1: aiff file truncated by ftable size"));
@@ -2578,7 +2584,7 @@ static int gen01raw(FGDATA *ff, FUNC *ftp)
     if (def) {
       MYFLT *tab = (MYFLT *) ftp->ftable;
       ftresdisp(ff, ftp);       /* VL: 11.01.05  for deferred alloc tables */
-      tab[ff->flen] = tab[0];  /* guard point */ 
+      tab[ff->flen] = tab[0];  /* guard point */
       ftp->flen -= 1;  /* exclude guard point */
     }
     return OK;
@@ -2684,7 +2690,7 @@ static int gen49raw(FGDATA *ff, FUNC *ftp)
     uint32_t bufsize, bufused = 0;
     uint8_t *buffer;
     int size = 0x1000;
-    int flen;
+    int flen, nchanls, def = 0;
 
     if (UNLIKELY(ff->e.pcnt < 7)) {
       return fterror(ff, Str("insufficient arguments"));
@@ -2708,7 +2714,6 @@ static int gen49raw(FGDATA *ff, FUNC *ftp)
       else
         sprintf(sfname, "soundin.%d", filno);   /* soundin.filno */
     }
-    skip = ff->e.p[6];
     chan  = (int) MYFLT2LRND(ff->e.p[7]);
     if (UNLIKELY(chan < 0)) {
       return fterror(ff, Str("channel %d illegal"), (int) chan);
@@ -2750,7 +2755,6 @@ static int gen49raw(FGDATA *ff, FUNC *ftp)
       mp3dec_uninit(mpa);
       return fterror(ff, mp3dec_error(r));
     }
-    ftp->gen01args.sample_rate = mpainfo.frequency;
     /* maxsize = mpainfo.decoded_sample_size */
     /*   *mpainfo.decoded_frame_samples */
     /*   *mpainfo.frames; */
@@ -2762,13 +2766,14 @@ static int gen49raw(FGDATA *ff, FUNC *ftp)
       if (mpainfo.layer == 1) strcat(temp, "Layer I");
       else if (mpainfo.layer == 2) strcat(temp, "Layer II");
       else strcat(temp, "Layer III");
-      fprintf(stderr, "Input:  %s, %s, %d kbps, %d Hz  (%d:%02d)\n",
+      csound->DebugMsg(csound, "Input:  %s, %s, %d kbps, %d Hz  (%d:%02d)\n",
               temp, ((mpainfo.channels > 1) ? "stereo" : "mono"),
               mpainfo.bitrate, mpainfo.frequency, mpainfo.duration/60,
               mpainfo.duration%60);
     }
     buffer = (uint8_t *)malloc(size);
     bufsize = size/mpainfo.decoded_sample_size;
+    skip = (int)(ff->e.p[6] * mpainfo.frequency);
     while (skip > 0) {
       uint32_t xx = skip;
       if ((uint32_t)xx > bufsize) xx = bufsize;
@@ -2778,13 +2783,33 @@ static int gen49raw(FGDATA *ff, FUNC *ftp)
     }
     //bufsize *= mpainfo.decoded_sample_size;
     r = mp3dec_decode(mpa, buffer, size, &bufused);
+    nchanls = (chan == 2 && mpainfo.channels == 2 ? 2 : 1);
+    if (ff->flen == 0) {    /* deferred ftalloc */
+      int fsize, frames;
+      frames = mpainfo.frames * mpainfo.decoded_frame_samples;
+      fsize  = frames * nchanls;
+      if (UNLIKELY((ff->flen = fsize) <= 0))
+        return fterror(ff, Str("deferred size, but filesize unknown"));
+      if (UNLIKELY(ff->flen > MAXLEN))
+        return fterror(ff, Str("illegal table length"));
+      if (csound->oparms->msglevel & 7)
+        csound->Message(csound, Str("  defer length %d\n"), ff->flen);
+      ftp = ftalloc(ff);
+      ftp->lenmask  = 0L;
+      ftp->flenfrms = frames;
+      ftp->nchanls  = nchanls;
+      fp = ftp->ftable;
+      def = 1;
+    }
+    ftp->gen01args.sample_rate = mpainfo.frequency;
+    ftp->cvtbas = LOFACT * mpainfo.frequency * csound->onedsr;
     flen = ftp->flen;
     //printf("gen49: flen=%d size=%d bufsize=%d\n", flen, size, bufsize);
     while ((r == MP3DEC_RETCODE_OK) && bufused) {
       int i;
       short *bb = (short*)buffer;
       //printf("gen49: p=%d bufused=%d\n", p, bufused);
-      for (i=0; i<bufused/mpainfo.decoded_sample_size; i++)  {
+      for (i=0; i<bufused*nchanls/mpainfo.decoded_sample_size; i++)  {
         if (p>=flen) {
           free(buffer);
           //printf("gen49: i=%d p=%d exit as at end of table\n", i, p);
@@ -2801,6 +2826,7 @@ static int gen49raw(FGDATA *ff, FUNC *ftp)
 
     free(buffer);
     r |= mp3dec_uninit(mpa);
+    if (def) ftresdisp(ff, ftp);
     return ((r == MP3DEC_RETCODE_OK) ? OK : NOTOK);
 }
 
@@ -2825,6 +2851,7 @@ static int gen49(FGDATA *ff, FUNC *ftp)
     return gen49raw(ff, ftp);
 }
 
+#if 0
 static CS_NOINLINE FUNC *gen49_defer_load(CSOUND *csound, int fno)
 {
     FGDATA  ff;
@@ -2850,6 +2877,7 @@ static CS_NOINLINE FUNC *gen49_defer_load(CSOUND *csound, int fno)
     }
     return csound->flist[fno];
 }
+#endif
 
 static int gen51(FGDATA *ff, FUNC *ftp)    /* Gab 1/3/2005 */
 {
@@ -3162,7 +3190,7 @@ int resize_table(CSOUND *csound, RESIZE *p)
     }
     if ((ftp = csound->FTFind(csound, p->fn)) == NULL)
       return NOTOK;
-    if (ftp->flen<fsize) 
+    if (ftp->flen<fsize)
       ftp = (FUNC*) csound->ReAlloc(csound, ftp, sizeof(FUNC)+sizeof(MYFLT)*fsize);
     ftp->flen = fsize;
     csound->flist[fno] = ftp;

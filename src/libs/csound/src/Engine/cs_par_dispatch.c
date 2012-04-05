@@ -91,8 +91,6 @@ static uint32_t hash_string(char *str, uint32_t hash_size)
 /***********************************************************************
  * Global Var Lock Inserts
  */
-#pragma mark -
-#pragma mark Global Var Lock Inserts
 
 /* global variables lock support */
 struct global_var_lock_t {
@@ -154,7 +152,7 @@ static struct global_var_lock_t *global_var_lock_alloc(CSOUND *csound,
     return ret;
 }
 
-static struct global_var_lock_t 
+static struct global_var_lock_t
   *global_var_lock_find(CSOUND *csound, char *name)
 {
     if (UNLIKELY(name == NULL))
@@ -209,11 +207,17 @@ TREE *csp_locks_insert(CSOUND *csound, TREE *root)
     TREE *previous = NULL;
     INSTR_SEMANTICS *instr = NULL;
 
-    while(current != NULL) {
+    while (current != NULL) {
       switch(current->type) {
       case INSTR_TOKEN:
-        instr = csp_orc_sa_instr_get_by_name(csound,
-                                             current->left->value->lexeme);
+        if (current->left->type == T_INSTLIST) {
+          instr = csp_orc_sa_instr_get_by_name(csound,
+                                               current->left->left->value->lexeme);
+        }
+        else {
+          instr = csp_orc_sa_instr_get_by_name(csound,
+                                               current->left->value->lexeme);
+        }
         if (instr->read_write->count > 0 &&
             instr->read->count == 0 &&
             instr->write->count == 0) {
@@ -225,8 +229,9 @@ TREE *csp_locks_insert(CSOUND *csound, TREE *root)
       case IF_TOKEN:
         break;
 
-      default:
-        if (current->type == '=') {
+      case '=':
+        /*if (current->type == '=')*/
+        {
           struct set_t *left = NULL, *right  = NULL;
           left = csp_orc_sa_globals_find(csound, current->left);
           right = csp_orc_sa_globals_find(csound, current->right);
@@ -251,10 +256,14 @@ TREE *csp_locks_insert(CSOUND *csound, TREE *root)
             ORCTOKEN *unlock_tok = lookup_token(csound, "##globalunlock");
             ORCTOKEN *var_tok    = make_int(csound, buf);
 
-            TREE *lock_leaf = make_leaf(csound, current->line, T_OPCODE, lock_tok);
-            lock_leaf->right = make_leaf(csound, current->line, INTEGER_TOKEN, var_tok);
-            TREE *unlock_leaf = make_leaf(csound, current->line, T_OPCODE, unlock_tok);
-            unlock_leaf->right = make_leaf(csound, current->line, INTEGER_TOKEN, var_tok);
+            TREE *lock_leaf = make_leaf(csound, current->line, current->locn,
+                                        T_OPCODE, lock_tok);
+            lock_leaf->right = make_leaf(csound, current->line, current->locn,
+                                         INTEGER_TOKEN, var_tok);
+            TREE *unlock_leaf = make_leaf(csound, current->line, current->locn,
+                                          T_OPCODE, unlock_tok);
+            unlock_leaf->right = make_leaf(csound, current->line, current->locn,
+                                           INTEGER_TOKEN, var_tok);
 
             if (previous == NULL) {
               TREE *old_current = lock_leaf;
@@ -274,7 +283,8 @@ TREE *csp_locks_insert(CSOUND *csound, TREE *root)
           csp_set_dealloc(csound, &new);
           csp_set_dealloc(csound, &left);
           csp_set_dealloc(csound, &right);
-        }
+       }
+      default:
         break;
       }
 
@@ -316,7 +326,7 @@ void csp_locks_cache_build(CSOUND *csound)
     /* csound->Message(csound, "Global Locks Cache\n");
        ctr = 0;
        while (ctr < csound->global_var_lock_count) {
-       csound->Message(csound, "[%i] %s\n", 
+       csound->Message(csound, "[%i] %s\n",
                        csound->global_var_lock_cache[ctr]->index,
        csound->global_var_lock_cache[ctr]->name);
        ctr++;
@@ -341,10 +351,8 @@ int globalunlock(CSOUND *csound, GLOBAL_LOCK_UNLOCK *p)
 /***********************************************************************
  * weighting
  */
-#pragma mark -
-#pragma mark Instr weightings
 
-/* static struct instr_weight_info_t 
+/* static struct instr_weight_info_t
    *instr_weight_info_alloc(CSOUND *csound)
    {
    struct instr_weight_info_t *ret =
@@ -367,10 +375,10 @@ static void csp_weights_calculate_instr(CSOUND *csound, TREE *root,
     TREE *current = root;
     INSTR_SEMANTICS *nested_instr = NULL;
 
-    while(current != NULL) {
+    while (current != NULL) {
       switch(current->type) {
       case INSTR_TOKEN:
-        nested_instr = 
+        nested_instr =
           csp_orc_sa_instr_get_by_name(csound,
                                        current->left->value->lexeme);
         /* if (nested_instr->weight == NULL) {
@@ -418,15 +426,34 @@ void csp_weights_calculate(CSOUND *csound, TREE *root)
     TREE *current = root;
     INSTR_SEMANTICS *instr = NULL;
 
-    while(current != NULL) {
+    while (current != NULL) {
       switch(current->type) {
       case INSTR_TOKEN:
-        instr = csp_orc_sa_instr_get_by_name(csound,
-                                             current->left->value->lexeme);
-        /* if (instr->weight == NULL) {
-           instr->weight = instr_weight_info_alloc(csound);
-           } */
-        csp_weights_calculate_instr(csound, current->right, instr);
+        if (current->left->type == T_INSTLIST) {
+          TREE *p =  current->left;
+          while (p) {
+            if (p->left) {
+              instr = csp_orc_sa_instr_get_by_name(csound,
+                                                   p->left->value->lexeme);
+              csp_weights_calculate_instr(csound, current->right, instr);
+            }
+            else {
+              instr = csp_orc_sa_instr_get_by_name(csound,
+                                                   p->value->lexeme);
+              csp_weights_calculate_instr(csound, current->right, instr);
+              break;
+            }
+            p = p->right;
+          }
+        }
+        else {
+          instr = csp_orc_sa_instr_get_by_name(csound,
+                                               current->left->value->lexeme);
+          /* if (instr->weight == NULL) {
+             instr->weight = instr_weight_info_alloc(csound);
+             } */
+          csp_weights_calculate_instr(csound, current->right, instr);
+        }
         break;
 
       default:
@@ -444,7 +471,7 @@ static void csp_orc_sa_opcode_dump_instr(CSOUND *csound, TREE *root)
 {
     TREE *current = root;
 
-    while(current != NULL) {
+    while (current != NULL) {
       switch(current->type) {
       case INSTR_TOKEN:
         break;
@@ -473,8 +500,8 @@ void csp_orc_sa_opcode_dump(CSOUND *csound, TREE *root)
 
     TREE *current = root;
 
-    while(current != NULL) {
-      switch(current->type) {
+    while (current != NULL) {
+      switch (current->type) {
       case INSTR_TOKEN:
         csp_orc_sa_opcode_dump_instr(csound, current->right);
         break;
@@ -493,8 +520,6 @@ void csp_orc_sa_opcode_dump(CSOUND *csound, TREE *root)
 /***********************************************************************
  * weights structure
  */
-#pragma mark -
-#pragma mark weights structure
 
 struct opcode_weight_cache_entry_t {
   uint32_t                            hash_val;
@@ -516,7 +541,7 @@ struct opcode_weight_cache_entry_t {
 static void opcode_weight_entry_add(CSOUND *csound,
                                     char *name, uint32_t weight);
 
-static int 
+static int
   opcode_weight_entry_alloc(CSOUND *csound,
                             struct opcode_weight_cache_entry_t **entry,
                             char *name, uint32_t weight, uint32_t hash_val)
@@ -544,7 +569,7 @@ static int
 }
 
 #if 0
-static int 
+static int
   opcode_weight_entry_dealloc(CSOUND *csound,
                               struct opcode_weight_cache_entry_t **entry)
 {
@@ -884,8 +909,6 @@ void csp_weights_load(CSOUND *csound)
 /***********************************************************************
  * weighting decision
  */
-#pragma mark -
-#pragma mark dag weighting decision
 
 /* static struct instr_weight_info_t *weight_info; */
 
@@ -965,8 +988,6 @@ int inline csp_parallel_compute_should(CSOUND *csound, DAG *dag)
 /***********************************************************************
  * dag2 data structure
  */
-#pragma mark -
-#pragma mark Dag2
 
 /* prototypes for dag2 */
 static void dag_node_2_alloc(CSOUND *csound, DAG_NODE **dag_node,
@@ -1124,7 +1145,7 @@ void csp_dag_add(CSOUND *csound, DAG *dag,
     dag_node_2_alloc(csound, &dag_node, instr, insds);
 
     TRACE_1("dag->count = %d\n", dag->count);
-    //    dag->all = 
+    //    dag->all =
     //     (DAG_NODE **)csound->Malloc(csound,
     //                                 sizeof(DAG_NODE *) * (dag->count + 1));
     /* Can not this be done with memcpy or Realloc */
@@ -1232,11 +1253,15 @@ inline static DAG *csp_dag_build_initial(CSOUND *csound, INSDS *chain)
     while (chain != NULL) {
       INSTR_SEMANTICS *current_instr =
         csp_orc_sa_instr_get_by_num(csound, chain->insno);
-      if (current_instr == NULL)
-        csound->Die(csound,
-                    Str("Failed to find semantic information"
-                        " for instrument '%i'"),
-                        chain->insno);
+      if (current_instr == NULL) {
+        current_instr =
+          csp_orc_sa_instr_get_by_name(csound, csound->instrtxtp[chain->insno]->insname);
+        if (current_instr == NULL)
+          csound->Die(csound,
+                      Str("Failed to find semantic information"
+                          " for instrument '%i'"),
+                      chain->insno);
+      }
       csp_dag_add(csound, dag, current_instr, chain);
       dag->weight += current_instr->weight;
       chain = chain->nxtact;
@@ -1270,7 +1295,7 @@ inline static void csp_dag_build_edges(CSOUND *csound, DAG *dag)
         }
         csp_set_dealloc(csound, &write_intersection);
 
-        /* csound->Message(csound, 
+        /* csound->Message(csound,
                            "write_intersection depends: %i\n", depends);
            csp_set_print(csound, dag->all[dag_root_ctr]->instr->write);
            csp_set_print(csound, dag->all[dag_curr_ctr]->instr->read); */
@@ -1313,14 +1338,14 @@ inline static void csp_dag_build_edges(CSOUND *csound, DAG *dag)
         }
         csp_set_dealloc(csound, &readwrite_write_intersection);
 
-        /* csound->Message(csound, 
+        /* csound->Message(csound,
                            "readwrite_write_intersection depends: %i\n",
                            depends);
            csp_set_print(csound, dag->all[dag_root_ctr]->instr->read_write);
            csp_set_print(csound, dag->all[dag_curr_ctr]->instr->write); */
 
         struct set_t *readwrite_read_intersection = NULL;
-        csp_set_intersection(csound, 
+        csp_set_intersection(csound,
                              dag->all[dag_root_ctr]->instr->read_write,
                              dag->all[dag_curr_ctr]->instr->read,
                              &readwrite_read_intersection);
@@ -1332,7 +1357,7 @@ inline static void csp_dag_build_edges(CSOUND *csound, DAG *dag)
         /* csound->Message(csound,
                            "readwrite_read_intersection depends: %i\n",
                            depends);
-           csp_set_print(csound, 
+           csp_set_print(csound,
                          dag->all[dag_root_ctr]->instr->read_write);
            csp_set_print(csound, dag->all[dag_curr_ctr]->instr->write); */
 
@@ -1345,11 +1370,11 @@ inline static void csp_dag_build_edges(CSOUND *csound, DAG *dag)
         }
         csp_set_dealloc(csound, &read_readwrite_intersection);
 
-        /* csound->Message(csound, 
+        /* csound->Message(csound,
                            "read_readwrite_intersection depends: %i\n",
                            depends);
            csp_set_print(csound, dag->all[dag_root_ctr]->instr->read);
-           csp_set_print(csound, 
+           csp_set_print(csound,
                          dag->all[dag_curr_ctr]->instr->read_write); */
 
         struct set_t *write_readwrite_intersection = NULL;
@@ -1383,7 +1408,7 @@ inline static void csp_dag_build_edges(CSOUND *csound, DAG *dag)
                            "readwrite_readwrite_intersection depends: %i\n",
                            depends);
            csp_set_print(csound, dag->all[dag_root_ctr]->instr->read_write);
-           csp_set_print(csound, 
+           csp_set_print(csound,
                          dag->all[dag_curr_ctr]->instr->read_write); */
 
         if (depends & DAG_STRONG_LINK) {
@@ -1828,8 +1853,6 @@ void csp_dag_print(CSOUND *csound, DAG *dag)
 /**********************************************************************************************
  * dag2 optimization structure
  */
-#pragma mark -
-#pragma mark Dag2 optimization
 
 static uint64_t dag_opt_counter;
 
@@ -2154,8 +2177,6 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 /**********************************************************************************************
  * dag2 cache structure
  */
-#pragma mark -
-#pragma mark Dag2 Cache
 
 /* #ifdef LINEAR_CACHE */
 

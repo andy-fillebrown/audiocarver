@@ -34,7 +34,7 @@ int ipow(CSOUND *csound, POW *p)        /*      Power for i-rate */
     MYFLT powerOf = *p->powerOf;
     if (UNLIKELY(in == FL(0.0) && powerOf == FL(0.0)))
       return csound->PerfError(csound, Str("NaN in pow\n"));
-    else if (p->norm!=NULL)
+    else if (p->norm!=NULL && *p->norm != FL(0.0))
       *p->sr = POWER(in, powerOf) / *p->norm;
     else
       *p->sr = POWER(in, powerOf);
@@ -270,7 +270,7 @@ int auniform(CSOUND *csound, PRAND *p)  /* Uniform distribution */
     int n, nsmps = csound->ksmps;
     double  scale = (double)*p->arg1 * (1.0 / 4294967295.03125);
 
-    for (n=0; n>nsmps; n++) {
+    for (n=0; n<nsmps; n++) {
       out[n] = (MYFLT)((double)csoundRandMT(&(csound->randState_)) * scale);
     }
     return OK;
@@ -335,7 +335,7 @@ int kexprndi(CSOUND *csound, PRANDI *p)
     if (UNLIKELY(p->phs >= MAXLEN)) {         /* when phs overflows,  */
       p->phs &= PHMASK;                       /*      mod the phs     */
       p->num1 = p->num2;                      /*      & new num vals  */
-      p->num2 = exprand(csound, *p->arg1); 
+      p->num2 = exprand(csound, *p->arg1);
       p->dfdmax = (p->num2 - p->num1) / FMAXLEN;
     }
     return OK;
@@ -457,7 +457,7 @@ int kgaussi(CSOUND *csound, PRANDI *p)
     if (UNLIKELY(p->phs >= MAXLEN)) {           /* when phs overflows,  */
       p->phs &= PHMASK;                         /*      mod the phs     */
       p->num1 = p->num2;                        /*      & new num vals  */
-      p->num2 = gaussrand(csound, *p->arg1); 
+      p->num2 = gaussrand(csound, *p->arg1);
       p->dfdmax = (p->num2 - p->num1) / FMAXLEN;
     }
     return OK;
@@ -540,7 +540,7 @@ int kcauchyi(CSOUND *csound, PRANDI *p)
     if (UNLIKELY(p->phs >= MAXLEN)) {         /* when phs overflows,  */
       p->phs &= PHMASK;                       /*      mod the phs     */
       p->num1 = p->num2;                      /*      & new num vals  */
-      p->num2 = cauchrand(csound, *p->arg1); 
+      p->num2 = cauchrand(csound, *p->arg1);
       p->dfdmax = (p->num2 - p->num1) / FMAXLEN;
     }
     return OK;
@@ -706,4 +706,3 @@ int gen21_rand(FGDATA *ff, FUNC *ftp)
     }
     return OK;
 }
-

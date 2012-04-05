@@ -414,7 +414,7 @@ static void init_math_constants_macros(CSOUND *csound)
   add_math_const_macro(csound, "2_SQRTPI", "1.12837916709551257390");
   add_math_const_macro(csound, "SQRT2", "1.41421356237309504880");
   add_math_const_macro(csound, "SQRT1_2", "0.70710678118654752440");
-  add_math_const_macro(csound, "INF", "2147483647.0"); /* ~7 years */
+  add_math_const_macro(csound, "INF", "800000000000.0"); /* ~25367 years */
 }
 
 static void init_omacros(CSOUND *csound, NAMES *nn)
@@ -900,7 +900,7 @@ void rdorchfile(CSOUND *csound)     /* read entire orch file into txt space */
           goto ifdefSkipCode;
         if (preprocName == NULL)
           lexerr(csound, Str("Unexpected # character"));
-        else
+        else if (strcmp("exit", preprocName)) /* VL: ignore #exit */
           lexerr(csound, Str("Unknown # option: '%s'"), preprocName);
       }
       free(mname);
@@ -1933,7 +1933,7 @@ TEXT *getoptxt(CSOUND *csound, int *init)
       }
       tfound = argtyp(csound, s);     /* else get arg type */
       /* IV - Oct 31 2002 */
-      
+
       tfound_m = ST(typemask_tabl)[(unsigned char) tfound];
       if (UNLIKELY(!(tfound_m & (ARGTYP_c|ARGTYP_p)) &&
                    !ST(lgprevdef) && *s != '"')) {

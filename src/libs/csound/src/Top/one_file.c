@@ -26,6 +26,7 @@
 int mkstemp(char *);
 #include <ctype.h>
 #include <errno.h>
+#include <stdlib.h>
 #include "corfile.h"
 
 #if defined(LINUX) || defined(__MACH__) || defined(WIN32)
@@ -106,8 +107,19 @@ CS_NOINLINE char *csoundTmpFileName(CSOUND *csound, char *buf, const char *ext)
       do {
 #endif
 #ifndef WIN32
-        if (UNLIKELY(mytmpnam(buf) == NULL))
+        //        if (UNLIKELY(mytmpnam(buf) == NULL))
+        //          csound->Die(csound, Str(" *** cannot create temporary file"));
+        int fd;
+        char *tmpdir = getenv("TMPDIR");
+        if (tmpdir != NULL && tmpdir[0] != '\0')
+          snprintf(buf, nBytes, "%s/csound-XXXXXX", tmpdir);
+        else
+          strcpy(buf, "/tmp/csound-XXXXXX");
+        umask(0077); /* ensure exclusive access on buggy implementations of mkstemp */
+        if (UNLIKELY((fd = mkstemp(buf)) < 0))
           csound->Die(csound, Str(" *** cannot create temporary file"));
+        close(fd);
+        unlink(buf);
 #else
         {
           char  *s = (char*) csoundGetEnv(csound, "SFDIR");
@@ -344,11 +356,16 @@ static int createOrchestra(CSOUND *csound, FILE *unf)
       p = buffer;
       while (*p == ' ' || *p == '\t') p++;
       if (strstr(p, "</CsInstruments>") == p) {
-        corfile_flush(incore);
+        //corfile_flush(incore);
+#ifdef ENABLE_NEW_PARSER
+        if (csound->oparms->newParser) corfile_puts("\n#exit\n", incore);
+#endif
+        corfile_putc('\0', incore);
+        corfile_putc('\0', incore);
         csound->orchstr = incore;
         return TRUE;
       }
-      else 
+      else
         corfile_puts(buffer, incore);
     }
     csoundErrorMsg(csound, Str("Missing end tag </CsInstruments>"));
@@ -370,7 +387,7 @@ static int createScore(CSOUND *csound, FILE *unf)
         csound->scorestr = incore;
         return TRUE;
       }
-      else 
+      else
         corfile_puts(buffer, incore);
     }
     csoundErrorMsg(csound, Str("Missing end tag </CsScore>"));
@@ -419,6 +436,8 @@ static int createExScore(CSOUND *csound, char *p, FILE *unf)
         sprintf(sys, "%s %s %s", prog, extname, ST(sconame));
         if (UNLIKELY(system(sys) != 0)) {
           csoundErrorMsg(csound, Str("External generation failed"));
+          remove(extname);
+          remove(ST(sconame));
           return FALSE;
         }
         remove(extname);
@@ -521,13 +540,13 @@ static int createMIDI2(CSOUND *csound, FILE *unf)
     return FALSE;
 }
 
-static int createSample(CSOUND *csound, FILE *unf)
+static int createSample(CSOUND *csound, char *buffer, FILE *unf)
 {
     int   num;
     FILE  *smpf;
     void  *fd;
     char  sampname[256];
-    char  buffer[CSD_MAX_LINE_LEN];
+    /* char  buffer[CSD_MAX_LINE_LEN]; */
 
     sscanf(buffer, "<CsSampleB filename=\"%d\">", &num);
     sprintf(sampname, "soundin.%d", num);
@@ -556,12 +575,12 @@ static int createSample(CSOUND *csound, FILE *unf)
     return FALSE;
 }
 
-static int createFile(CSOUND *csound, FILE *unf)
+static int createFile(CSOUND *csound, char *buffer, FILE *unf)
 {
     FILE  *smpf;
     void  *fd;
     char  filename[256];
-    char  buffer[CSD_MAX_LINE_LEN];
+    /* char  buffer[CSD_MAX_LINE_LEN]; */
     char *p = buffer, *q;
 
     filename[0] = '\0';
@@ -772,11 +791,11 @@ int read_unified_file(CSOUND *csound, char **pname, char **score)
         result = r && result;
       }
       else if (strstr(p, "<CsSampleB filename=") == p) {
-        r = createSample(csound, unf);
+        r = createSample(csound, buffer,unf);
         result = r && result;
       }
       else if (strstr(p, "<CsFileB filename=") == p) {
-        r = createFile(csound, unf);
+        r = createFile(csound, buffer, unf);
         result = r && result;
       }
       else if (strstr(p, "<CsVersion>") == p) {
@@ -789,7 +808,7 @@ int read_unified_file(CSOUND *csound, char **pname, char **score)
         result = r && result;
       }
       else if (blank_buffer(csound, buffer)) continue;
-      else if (started && strchr(p, '<') == buffer){ 
+      else if (started && strchr(p, '<') == buffer){
         csoundMessage(csound, Str("unknown CSD tag: %s\n"), buffer);
       }
     }
@@ -807,4 +826,3 @@ int read_unified_file(CSOUND *csound, char **pname, char **score)
     csoundFileClose(csound, fd);
     return result;
 }
-
