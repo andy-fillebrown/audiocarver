@@ -34,6 +34,18 @@ static const QFont &gridLabelFont()
     return font;
 }
 
+static Qt::PenStyle gridLinePenStyle()
+{
+    static Qt::PenStyle style = Qt::DotLine;
+    return style;
+}
+
+static Qt::PenStyle gridLineExtPenStyle()
+{
+    static Qt::PenStyle style = Qt::DotLine;
+    return style;
+}
+
 GridLinePrivate::GridLinePrivate(GridLine *q)
     :   GraphicsObjectPrivate(q)
     ,   location(0.0f)
@@ -189,9 +201,10 @@ public:
         timeLabelItem->setColor(Qt::black);
         QPen pen(color);
         pen.setCosmetic(true);
+        pen.setStyle(gridLinePenStyle());
         pitchLineItem->setPen(pen);
         controlLineItem->setPen(pen);
-        pen.setStyle(Qt::DotLine);
+        pen.setStyle(gridLineExtPenStyle());
         timeLineItem->setPen(pen);
         pitchLineLoExtItem->setPen(pen);
         pitchLineHiExtItem->setPen(pen);
@@ -289,8 +302,9 @@ public:
         pitchLabelItem->setColor(Qt::black);
         QPen pen(color);
         pen.setCosmetic(true);
+        pen.setStyle(gridLinePenStyle());
         pitchLineItem->setPen(pen);
-        pen.setStyle(Qt::DotLine);
+        pen.setStyle(gridLineExtPenStyle());
         pitchLineRightExtItem->setPen(pen);
         pitchLineItem->setLine(0.0f, location, 1.0f, location);
         pitchLineRightExtItem->setLine(1.0f, location, 2.0f, location);
@@ -377,8 +391,9 @@ public:
         controlLabelItem->setColor(Qt::black);
         QPen pen(color);
         pen.setCosmetic(true);
+        pen.setStyle(gridLinePenStyle());
         controlLineItem->setPen(pen);
-        pen.setStyle(Qt::DotLine);
+        pen.setStyle(gridLineExtPenStyle());
         controlLineRightExtItem->setPen(pen);
         controlLineItem->setLine(0.0f, location, 1.0f, location);
         controlLineRightExtItem->setLine(1.0f, location, 2.0f, location);
