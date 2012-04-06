@@ -55,9 +55,11 @@ void ColorDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 
     // Draw the color box.
     const QColor color = index.data().value<QColor>();
+    QRect rect = option.rect;
+    rect.setWidth(rect.height());
     painter->save();
     painter->setPen(color);
     painter->setBrush(QBrush(color));
-    painter->drawRect(option.rect.adjusted(1, 1, -2, -2));
+    painter->drawRect(rect.adjusted(1, 1, -2, -2));
     painter->restore();
 }
