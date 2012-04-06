@@ -132,14 +132,14 @@ public:
     void highlight()
     {
         QPen pen = graphicsLineItem->pen();
-        pen.setWidth(5.0f);
+        pen.setWidth(3.0f);
         graphicsLineItem->setPen(pen);
     }
 
     void unhighlight()
     {
         QPen pen = graphicsLineItem->pen();
-        pen.setWidth(3.0f);
+        pen.setWidth(1.0f);
         graphicsLineItem->setPen(pen);
     }
 

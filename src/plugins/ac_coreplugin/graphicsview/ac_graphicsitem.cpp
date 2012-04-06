@@ -111,7 +111,7 @@ void GraphicsCurveItem::setColor(const QColor &color)
 void GraphicsCurveItem::highlight()
 {
     QPen pen = this->pen();
-    pen.setWidthF(5.0f);
+    pen.setWidthF(3.0f);
     setPen(pen);
     d->guideItem->show();
 }
@@ -119,7 +119,7 @@ void GraphicsCurveItem::highlight()
 void GraphicsCurveItem::unhighlight()
 {
     QPen pen = this->pen();
-    pen.setWidthF(3.0f);
+    pen.setWidthF(1.0f);
     setPen(pen);
     d->guideItem->hide();
 }
