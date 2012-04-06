@@ -35,18 +35,12 @@ public:
     {
         Q_Q(const PitchCurve);
         PointList points = q->points();
-        int n = points.count();
-        if (n < 2) {
-            points.clear();
-            points.append(Point(0.0f, 0.0f));
-            points.append(Point(1.0f, 0.0f));
-        } else {
-            qSort(points);
-            for (int i = 0;  i < n;  ++i) {
-                Point &pt = points[i];
-                pt.pos.rx() = qMax(qreal(0.0f), pt.pos.x());
-                pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(127.0f));
-            }
+        qSort(points);
+        const int n = points.count();
+        for (int i = 0;  i < n;  ++i) {
+            Point &pt = points[i];
+            pt.pos.rx() = qMax(qreal(0.0f), pt.pos.x());
+            pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(127.0f));
         }
         pointsStack.top() = points;
     }

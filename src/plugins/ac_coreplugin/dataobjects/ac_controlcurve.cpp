@@ -37,15 +37,11 @@ public:
     {
         Q_Q(const ControlCurve);
         PointList points = q->points();
-        if (points.count() < 2) {
-            points.clear();
-            points.append(Point(0.0f, 0.0f));
-            points.append(Point(1.0f, 0.0f));
-        } else {
-            qSort(points);
+        qSort(points);
+        const int n = points.count();
+        if (2 <= n) {
             points.first().pos = QPointF();
             points.last().pos.rx() = 1.0f;
-            int n = 0;
             for (int i = 0;  i < n;  ++i) {
                 Point &pt = points[i];
                 pt.pos.rx() = qBound(qreal(0.0f), pt.pos.x(), qreal(1.0f));

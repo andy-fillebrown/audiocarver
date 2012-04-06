@@ -24,8 +24,6 @@ CurvePrivate::CurvePrivate(Curve *q)
     ,   graphicsCurveItem(new GraphicsCurveItem)
 {
     PointList pts;
-    pts.append(Point());
-    pts.append(Point());
     pointsStack.push(pts);
 }
 
