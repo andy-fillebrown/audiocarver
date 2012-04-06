@@ -1,7 +1,7 @@
 
 <Score volume="1" length="288" startTime="0">
     <TrackList>
-        <Track name="Track.1" volume="1" color="#ff0000" instrument="sine" visible="true" recording="false">
+        <Track name="Track.1" volume="0.25" color="#ff0000" instrument="sine" visible="true" recording="false">
             <NoteList>
                 <Note volume="0.606299212598425">
                     <PitchCurve>
@@ -1961,7 +1961,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track.2" volume="1" color="#0000ff" instrument="sine" visible="true" recording="false">
+        <Track name="Track.2" volume="0.25" color="#0000ff" instrument="sine" visible="true" recording="false">
             <NoteList>
                 <Note volume="0.669291338582677">
                     <PitchCurve>
@@ -3201,7 +3201,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track.3" volume="1" color="#00aa00" instrument="sine" visible="true" recording="false">
+        <Track name="Track.3" volume="0.25" color="#00aa00" instrument="triangle" visible="true" recording="false">
             <NoteList>
                 <Note volume="0.614173228346457">
                     <PitchCurve>
@@ -4477,7 +4477,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="Track.4" volume="1" color="#aa007f" instrument="sine" visible="true" recording="false">
+        <Track name="Track.4" volume="0.25" color="#aa007f" instrument="saw" visible="true" recording="false">
             <NoteList>
                 <Note volume="0.614173228346457">
                     <PitchCurve>
@@ -7610,6 +7610,6 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="136.973465240493" pitchPosition="61.1574440052689" controlPosition="0.5" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
+    <ViewSettings timePosition="142.625719150337" pitchPosition="59.484189723319" controlPosition="0.5" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
     <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>
