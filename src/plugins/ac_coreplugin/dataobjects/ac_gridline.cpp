@@ -19,8 +19,20 @@
 
 #include <ac_gridsettings.h>
 
+#include <QFont>
 #include <QGraphicsItem>
 #include <QPalette>
+
+static const QFont &gridLabelFont()
+{
+    static QFont font;
+    static bool initialized = false;
+    if (!initialized) {
+        font.setPointSize(6);
+        initialized = true;
+    }
+    return font;
+}
 
 GridLinePrivate::GridLinePrivate(GridLine *q)
     :   GraphicsObjectPrivate(q)
@@ -136,7 +148,9 @@ public:
         ,   pitchLineHiExtItem(new QGraphicsLineItem(pitchLineItem))
         ,   controlLineItem(new QGraphicsLineItem)
         ,   controlLineHiExtItem(new QGraphicsLineItem(controlLineItem))
-    {}
+    {
+        timeLabelItem->setFont(gridLabelFont());
+    }
 
     void init()
     {
@@ -240,7 +254,9 @@ public:
         ,   pitchLabelItem(new GraphicsTextItem)
         ,   pitchLineItem(new QGraphicsLineItem)
         ,   pitchLineRightExtItem(new QGraphicsLineItem(pitchLineItem))
-    {}
+    {
+        pitchLabelItem->setFont(gridLabelFont());
+    }
 
     void init()
     {
@@ -326,7 +342,9 @@ public:
         ,   controlLabelItem(new GraphicsTextItem)
         ,   controlLineItem(new QGraphicsLineItem)
         ,   controlLineRightExtItem(new QGraphicsLineItem(controlLineItem))
-    {}
+    {
+        controlLabelItem->setFont(gridLabelFont());
+    }
 
     void init()
     {

@@ -101,6 +101,9 @@ public:
     QColor color() const;
     void setColor(const QColor &color);
 
+    QFont font() const;
+    void setFont(const QFont &font);
+
     QString text() const;
     void setText(const QString &text);
 

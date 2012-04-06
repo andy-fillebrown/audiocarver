@@ -19,6 +19,8 @@
 
 #include <ac_ientity.h>
 
+#include <QFont>
+
 class GraphicsCurveItemPrivate
 {
 public:
@@ -166,6 +168,16 @@ QColor GraphicsTextItem::color() const
 void GraphicsTextItem::setColor(const QColor &color)
 {
     d->textItem->setDefaultTextColor(color);
+}
+
+QFont GraphicsTextItem::font() const
+{
+    return d->textItem->font();
+}
+
+void GraphicsTextItem::setFont(const QFont &font)
+{
+    d->textItem->setFont(font);
 }
 
 QString GraphicsTextItem::text() const

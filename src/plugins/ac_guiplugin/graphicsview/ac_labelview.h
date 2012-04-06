@@ -73,7 +73,7 @@ protected:
     qreal paddingScale() const { return -sceneTransform().m22(); }
     int scaleRole() const { return scaleRoleY(); }
 
-    QPointF sceneOffset() const { return QPointF(qreal(-2.0f) / (qreal(width()) / sceneWidth()), qreal(10.0f) / (qreal(height()) / sceneHeight())); }
+    QPointF sceneOffset() const { return QPointF(qreal(-2.0f) / (qreal(width()) / sceneWidth()), qreal(8.5f) / (qreal(height()) / sceneHeight())); }
     QPointF sceneCenter() const;
 
     void zoomStarting();
