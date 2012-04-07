@@ -754,7 +754,7 @@ void GraphicsView::startInsertingPoints()
     d->insertingPoints = true;
     foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
         IEntity *entity = entityItem->entity();
-        entity->pushPoints(entity->points());
+        entity->pushPoints();
     }
     setCursor(creationCrosshair());
 }
@@ -763,7 +763,7 @@ void GraphicsView::finishInsertingPoints()
 {
     foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
         IEntity *entity = entityItem->entity();
-        entity->setPoints(entity->points());
+        entity->setPoints();
         entityItem->resetGripItems();
     }
     setCursor(normalCrosshair());

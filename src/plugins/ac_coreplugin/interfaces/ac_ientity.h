@@ -40,8 +40,17 @@ public:
     virtual void unhighlight() = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
     virtual bool isVisible() const = 0;
-
     virtual QList<IEntity*> subEntities(int sceneType) const = 0;
+
+    void pushPoints()
+    {
+        pushPoints(points());
+    }
+
+    void setPoints()
+    {
+        setPoints(points());
+    }
 };
 
 class ISubEntity : public IUnknown
