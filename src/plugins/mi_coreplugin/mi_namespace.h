@@ -24,12 +24,15 @@
 
 namespace Mi {
 
-enum InterfaceType {
-    ModelInterface,
-    ModelItemInterface,
-    ModelItemListInterface,
-    InterfaceTypeCount
+enum ItemType {
+    UnknownItem,
+    ListItem,
+    ItemTypeCount
 };
+
+MI_CORE_EXPORT void appendItemType(int itemType, const QString itemTypeString);
+MI_CORE_EXPORT QString itemTypeString(int itemType);
+MI_CORE_EXPORT int itemType(const QString &itemTypeString);
 
 enum ItemDataRole {
     InvalidRole = Qt::UserRole,
@@ -40,13 +43,17 @@ enum ItemDataRole {
     ItemDataRoleCount
 };
 
+MI_CORE_EXPORT void appendItemDataRole(int itemDataRole, const QString itemDataRoleString);
 MI_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
 MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
 
-enum ItemType {
-    UnknownItem,
-    ListItem,
-    ItemTypeCount
+enum InterfaceType {
+    ObjectInterface,
+    ObjectPrivateInterface,
+    ModelInterface,
+    ModelItemInterface,
+    ModelItemListInterface,
+    InterfaceTypeCount
 };
 
 } // namespace Mi

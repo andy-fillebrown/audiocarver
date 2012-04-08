@@ -20,29 +20,37 @@
 
 #include <mi_objectlist.h>
 
-template <class T> class UniquelyNamedObjectTList : public ObjectTList<T>
+class UniquelyNamedObjectList : public ObjectList
 {
 public:
-    UniquelyNamedObjectTList(QObject *parent = 0)
-        :   ObjectTList<T>(parent)
+    UniquelyNamedObjectList(int listType, QObject *parent = 0)
+        :   ObjectList(*new ObjectListPrivate(this, listType, new ModelItemList(this)), parent)
     {}
-
-    void insert(int i, Object *object)
-    {
-        const QString name = object->name();
-        int suffix = 0;
-        QString new_name = name;
-        while (this->hasChild(new_name))
-            new_name = QString("%1.%2").arg(name).arg(++suffix);
-        if (name != new_name)
-            object->setName(new_name);
-        ObjectTList<T>::insert(i, object);
-    }
 
 protected:
-    UniquelyNamedObjectTList(ObjectTListPrivate<T> &dd, QObject *parent)
-        :   ObjectTList<T>(dd, parent)
-    {}
+   UniquelyNamedObjectList(ObjectListPrivate &dd, QObject *parent)
+       :   ObjectList(dd, parent)
+   {}
+
+    class ModelItemList : public ObjectList::ModelItemList
+    {
+    public:
+        ModelItemList(ObjectList *q)
+            :   ObjectList::ModelItemList(q)
+        {}
+
+        void insert(int i, IModelItem *item)
+        {
+            const QString name = item->name();
+            int suffix = 0;
+            QString new_name = name;
+            while (hasChild(new_name))
+                new_name = QString("%1.%2").arg(name).arg(++suffix);
+            if (name != new_name)
+                item->setName(new_name);
+            ObjectList::ModelItemList::insert(i, item);
+        }
+    };
 };
 
 #endif // MI_UNIQUELYNAMEDOBJECTLIST_H

@@ -17,6 +17,8 @@
 
 #include "mi_coreplugin.h"
 
+#include <mi_namespace.h>
+
 #include <pluginmanager.h>
 
 #include <QMetaType>
@@ -26,6 +28,11 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
+
+    Mi::appendItemDataRole(Mi::ItemTypeRole, "type");
+    Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
+    Mi::appendItemDataRole(Mi::NameRole, "name");
+
     return true;
 }
 

@@ -21,7 +21,6 @@
 #include <mi_global.h>
 #include <mi_namespace.h>
 
-#include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
 #include <QObject>
@@ -36,138 +35,52 @@ class MI_CORE_EXPORT ObjectPrivate
 public:
     Object *q_ptr;
     IModel *model;
+    IModelItem *modelItem_i;
 
-    ObjectPrivate(Object *q)
+    ObjectPrivate(Object *q, IModelItem *modelItem)
         :   q_ptr(q)
         ,   model(0)
+        ,   modelItem_i(modelItem)
     {}
 
     virtual ~ObjectPrivate()
     {}
 
-    void setModel(IModel *model);
-    QModelIndex modelIndex() const;
-    void beginChangeData();
-    void endChangeData();
-    void beginInsertObjects(int first, int last);
-    virtual void endInsertObjects();
-    void beginRemoveObjects(int first, int last);
-    virtual void endRemoveObjects();
+    virtual void setParent(QObject *parent);
+    void clearParent();
 
-    void emitPointsChanged();
+    void setModel(IModel *model);
+    void beginChangeData(int role);
+    void endChangeData(int role);
 };
 
-class MI_CORE_EXPORT Object : public QObject
-        ,   public IModelItem
+#define Q_I_D(Class) Class##Private * const d = static_cast<Class##Private*>(q_func()->d_func())
+
+class MI_CORE_EXPORT ScopedDataChange
 {
-    Q_OBJECT
+    ObjectPrivate *d;
+    int role;
 
 public:
-    Object *parent() const
+    ScopedDataChange(ObjectPrivate *d, int role)
+        :   d(d)
+        ,   role(role)
     {
-        return object_cast<Object>(QObject::parent());
+        d->beginChangeData(role);
     }
 
-    virtual void setParent(Object *parent);
-
-    virtual QString name() const
+    ~ScopedDataChange()
     {
-        return QString();
+        d->endChangeData(role);
     }
+};
 
-    virtual void setName(const QString &name)
-    {
-        if (objectName() == name)
-            return;
-        d_ptr->beginChangeData();
-        setObjectName(name);
-        d_ptr->endChangeData();
-    }
+#define Q_SCOPED_DATA_CHANGE(d, role) \
+    ScopedDataChange scoped_data_change(qGetPtrHelper(d), role);
 
-    bool hasChild(const QString &name)
-    {
-        const QString lower_name = name.toLower();
-        foreach (QObject *child, children())
-            if (child->objectName().toLower() == lower_name)
-                return true;
-        return false;
-    }
-
-    // IModelItem
-    IModelItem *parentModelItem() const
-    {
-        return parent();
-    }
-
-    void setParentModelItem(IModelItem *parent)
-    {
-        setParent(interfaceToObject_cast<Object>(parent));
-    }
-
-    int modelItemCount() const
-    {
-        return 0;
-    }
-
-    int modelItemIndex(const IModelItem *item) const
-    {
-        Q_UNUSED(item);
-        Q_ASSERT(false);
-        return -1;
-    }
-
-    IModelItem *modelItemAt(int i) const
-    {
-        Q_UNUSED(i);
-        Q_ASSERT(false);
-        return 0;
-    }
-
-    IModelItem *findModelItem(int type) const
-    {
-        Q_UNUSED(type);
-        Q_ASSERT(false);
-        return 0;
-    }
-
-    IModelItem *findModelItemList(int type) const
-    {
-        Q_UNUSED(type);
-        Q_ASSERT(false);
-        return 0;
-    }
-
-    int persistentRoleCount() const
-    {
-        return metaObject()->propertyCount();
-    }
-
-    int persistentRoleAt(int i) const
-    {
-        if (i == 0)
-            return Mi::NameRole;
-        Q_ASSERT(false);
-        return -1;
-    }
-
-    QVariant data(int role) const;
-    bool setData(const QVariant &value, int role);
-
-    Qt::ItemFlags flags() const
-    {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    }
-
-    // IUnknown
-    void *query(int type) const
-    {
-        switch (type) {
-        case Mi::ModelItemInterface:
-            return objectToInterface_cast<IModelItem>(this);
-        default:
-            return 0;
-        }
-    }
+class MI_CORE_EXPORT Object : public QObject, public IUnknown
+{
+    Q_OBJECT
 
 protected:
     Object(ObjectPrivate &dd, QObject *parent)
@@ -175,10 +88,212 @@ protected:
         ,   d_ptr(&dd)
     {}
 
+private:
+    Object()
+        :   d_ptr(0)
+    {}
+
+public:
+    Object *parent() const
+    {
+        return object_cast<Object>(QObject::parent());
+    }
+
+protected:
+    void *queryInterface(int interface) const
+    {
+        switch (interface) {
+        case Mi::ObjectInterface:
+            return interfaceToObject_cast<Object>(this);
+        case Mi::ObjectPrivateInterface:
+            return d_ptr.data();
+        case Mi::ModelItemInterface:
+            return d_ptr->modelItem_i;
+        default:
+            return 0;
+        }
+    }
+
+    class ModelItemHelper
+    {
+        Q_DECLARE_PUBLIC(Object)
+
+    public:
+        Object *q_ptr;
+
+        ModelItemHelper(Object *q)
+            :   q_ptr(q)
+        {}
+
+        IModelItem *parent() const
+        {
+            return query<IModelItem>(q_ptr->parent());
+        }
+
+        QString name() const
+        {
+            return q_ptr->objectName();
+        }
+
+        void setName(const QString &name)
+        {
+            if (q_ptr->objectName() == name)
+                return;
+            Q_I_D(Object);
+            Q_SCOPED_DATA_CHANGE(d, Mi::NameRole);
+            q_ptr->setObjectName(name);
+        }
+
+        bool hasChild(const QString &name)
+        {
+            const QString lower_name = name.toLower();
+            foreach (QObject *child, q_ptr->children())
+                if (child->objectName().toLower() == lower_name)
+                    return true;
+            return false;
+        }
+
+        int roleCount() const
+        {
+            return q_ptr->metaObject()->propertyCount();
+        }
+
+        int roleAt(int i) const
+        {
+            if (i == 0)
+                return Mi::NameRole;
+            Q_ASSERT(false);
+            return -1;
+        }
+
+        Qt::ItemFlags flags() const
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
+
+        QVariant data(int role) const;
+        bool setData(const QVariant &value, int role);
+    };
+
+    class ModelItem : public IModelItem
+    {
+        Q_DECLARE_PUBLIC(Object)
+
+    public:
+        Object *q_ptr;
+        ModelItemHelper helper;
+
+        ModelItem(Object *q)
+            :   q_ptr(q)
+            ,   helper(q)
+        {}
+
+        IModelItem *parent() const
+        {
+            return helper.parent();
+        }
+
+        QString name() const
+        {
+            return helper.name();
+        }
+
+        void setName(const QString &name)
+        {
+            helper.setName(name);
+        }
+
+        bool hasChild(const QString &name)
+        {
+            return helper.hasChild(name);
+        }
+
+        int count() const
+        {
+            return 0;
+        }
+
+        int indexOf(const IModelItem *item) const
+        {
+            Q_UNUSED(item);
+            Q_ASSERT(false);
+            return -1;
+        }
+
+        IModelItem *at(int index) const
+        {
+            Q_UNUSED(index);
+            Q_ASSERT(false);
+            return 0;
+        }
+
+        IModelItem *findItem(int type) const
+        {
+            Q_UNUSED(type);
+            Q_ASSERT(false);
+            return 0;
+        }
+
+        IModelItemList *findList(int type) const
+        {
+            Q_UNUSED(type);
+            Q_ASSERT(false);
+            return 0;
+        }
+
+        int roleCount() const
+        {
+            return helper.roleCount();
+        }
+
+        int roleAt(int i) const
+        {
+            return helper.roleAt(i);
+        }
+
+        QVariant data(int role) const
+        {
+            return helper.data(role);
+        }
+
+        bool setData(const QVariant &value, int role)
+        {
+            return helper.setData(value, role);
+        }
+
+        Qt::ItemFlags flags() const
+        {
+            return helper.flags();
+        }
+
+        void *queryInterface(int interface) const
+        {
+            return q_ptr->queryInterface(interface);
+        }
+    };
+
     QScopedPointer<ObjectPrivate> d_ptr;
 
+    const QObjectList &children() const
+    {
+        return QObject::children();
+    }
+
 private:
+    void setParent(QObject *parent)
+    {
+        QObject::setParent(parent);
+    }
+
+    void setObjectName(const QString &name)
+    {
+        QObject::setObjectName(name);
+    }
+
     Q_DECLARE_PRIVATE(Object)
+
+    friend class ObjectList;
+    friend class UniquelyNamedObject;
 };
 
 #endif // MI_OBJECT_H

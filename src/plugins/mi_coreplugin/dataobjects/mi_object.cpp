@@ -17,9 +17,23 @@
 
 #include "mi_object.h"
 
-#include <mi_objectlist.h>
+#include <mi_imodel.h>
 
 #include <QModelIndex>
+
+void ObjectPrivate::setParent(QObject *parent)
+{
+    if (parent == q_ptr->parent())
+        return;
+    q_ptr->setParent(parent);
+    Object *new_parent = object_cast<Object>(parent);
+    setModel(new_parent ? new_parent->d_ptr->model : 0);
+}
+
+void ObjectPrivate::clearParent()
+{
+    setParent(IModel::orphanage());
+}
 
 void ObjectPrivate::setModel(IModel *model)
 {
@@ -34,107 +48,35 @@ void ObjectPrivate::setModel(IModel *model)
     }
 }
 
-QModelIndex ObjectPrivate::modelIndex() const
-{
-    return model ? model->indexFromItem(q_ptr) : QModelIndex();
-}
-
-void ObjectPrivate::beginChangeData()
-{
-    if (model) {
-        QModelIndex index = modelIndex();
-        emit model->dataAboutToBeChanged(index, index);
-    }
-}
-
-void ObjectPrivate::endChangeData()
-{
-    if (model) {
-        QModelIndex index = modelIndex();
-        emit model->dataChanged(index, index);
-    }
-}
-
-void ObjectPrivate::beginInsertObjects(int first, int last)
-{
-    if (model) {
-        QModelIndex index = modelIndex();
-        model->beginInsertRows(index, first, last);
-        emit model->dataAboutToBeChanged(index, index);
-    }
-}
-
-void ObjectPrivate::endInsertObjects()
-{
-    if (model) {
-        QModelIndex index = modelIndex();
-        model->endInsertRows();
-        emit model->dataChanged(index, index);
-    }
-}
-
-void ObjectPrivate::beginRemoveObjects(int first, int last)
-{
-    if (model) {
-        QModelIndex index = modelIndex();
-        model->beginRemoveRows(index, first, last);
-        emit model->dataAboutToBeChanged(index, index);
-    }
-}
-
-void ObjectPrivate::endRemoveObjects()
-{
-    if (model) {
-        QModelIndex index = modelIndex();
-        model->endRemoveRows();
-        emit model->dataChanged(index, index);
-    }
-}
-
-void ObjectPrivate::emitPointsChanged()
+void ObjectPrivate::beginChangeData(int role)
 {
     if (model)
-        emit model->pointsChanged(modelIndex());
+        emit model->dataAboutToBeChanged(modelItem_i, role);
 }
 
-void Object::setParent(Object *parent)
+void ObjectPrivate::endChangeData(int role)
 {
-    if (parent == QObject::parent())
-        return;
-    QObject *oldParent = QObject::parent();
-    ObjectList *oldList = object_cast<ObjectList>(oldParent);
-    if (oldList)
-        oldList->remove(this);
-    d_ptr->setModel(parent ? parent->d_ptr->model : 0);
-    QObject::setParent(parent);
-    ObjectList *newList = object_cast<ObjectList>(parent);
-    if (newList)
-        newList->append(this);
+    if (model)
+        emit model->dataChanged(modelItem_i, role);
 }
 
-QVariant Object::data(int role) const
+QVariant Object::ModelItemHelper::data(int role) const
 {
     switch (role) {
     case Qt::DisplayRole:
-        return objectName();
-    case Mi::ItemTypeRole:
-        return type();
     case Mi::NameRole:
-        return name();
+        return query<IModelItem>(q_ptr)->name();
+    case Mi::ItemTypeRole:
+        return query<IModelItem>(q_ptr)->type();
     default:
         return QVariant();
     }
 }
 
-bool Object::setData(const QVariant &value, int role)
+bool Object::ModelItemHelper::setData(const QVariant &value, int role)
 {
     if (Mi::NameRole == role) {
-        QString name = value.toString();
-        if (objectName() != name) {
-            d_ptr->beginChangeData();
-            setName(name);
-            d_ptr->endChangeData();
-        }
+        query<IModelItem>(q_ptr)->setName(value.toString());
         return true;
     }
     return false;

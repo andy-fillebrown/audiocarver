@@ -23,19 +23,41 @@
 
 class IModelItem;
 
-class IModelItemList : public IUnknown
+class IModelItemList : public IModelItem
 {
 public:
     enum { Type = Mi::ModelItemListInterface };
 
-    virtual int count() const = 0;
-    virtual int indexOf(IModelItem *item) = 0;
+    virtual int listType() const = 0;
     virtual void insert(int i, IModelItem *item) = 0;
-    virtual bool remove(IModelItem *item) = 0;
+    virtual bool removeAt(int i) = 0;
+    virtual void clear() = 0;
+
+    bool isEmpty() const
+    {
+        return count() == 0;
+    }
 
     void append(IModelItem *item)
     {
         insert(count(), item);
+    }
+
+    IModelItem *take(int i)
+    {
+        IModelItem *item = at(i);
+        removeAt(i);
+        return item;
+    }
+
+    bool remove(IModelItem *item)
+    {
+        return removeAt(indexOf(item));
+    }
+
+    bool removeLast()
+    {
+        return removeAt(count() - 1);
     }
 };
 

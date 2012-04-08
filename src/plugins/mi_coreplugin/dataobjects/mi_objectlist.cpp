@@ -17,11 +17,39 @@
 
 #include <mi_objectlist.h>
 
+#include <mi_imodel.h>
+
 #include <QVariant>
 
-QVariant ObjectList::data(int role) const
+void ObjectListPrivate::beginInsertItem(int i)
 {
-    if (Mi::ListTypeRole == role)
-        return listType();
-    return Object::data(role);
+    if (model)
+        emit model->itemAboutToBeInserted(modelItemList_i(), i);
+}
+
+void ObjectListPrivate::endInsertItem(int i)
+{
+    if (model)
+        emit model->itemInserted(modelItemList_i(), i);
+}
+
+void ObjectListPrivate::beginRemoveItem(int i)
+{
+    if (model)
+        emit model->itemAboutToBeRemoved(modelItemList_i(), i);
+}
+
+void ObjectListPrivate::endRemoveItem(int i)
+{
+    if (model)
+        emit model->itemRemoved(modelItemList_i(), i);
+}
+
+QVariant ObjectList::ModelItemList::data(int role) const
+{
+    if (Mi::ListTypeRole == role) {
+        Q_I_D(const ObjectList);
+        return d->listType;
+    }
+    return helper.data(role);
 }

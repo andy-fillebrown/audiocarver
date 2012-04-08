@@ -24,29 +24,33 @@ class MI_CORE_EXPORT UniquelyNamedObject : public Object
 {
     Q_OBJECT
 
-public:
-    void setParent(Object *parent)
-    {
-        Object *prev_parent = this->parent();
-        Object::setParent(parent);
-        if (!this->parent())
-            setParent(prev_parent);
-    }
-
-    void setName(const QString &name)
-    {
-        if (objectName().toLower() == name.toLower())
-            Object::setName(name);
-        Object *par = parent();
-        if (par && par->hasChild(name))
-            return;
-        Object::setName(name);
-    }
-
 protected:
     UniquelyNamedObject(ObjectPrivate &dd, QObject *parent)
         :   Object(dd, parent)
     {}
+
+private:
+    UniquelyNamedObject()
+    {}
+
+public:
+    class ModelItem : Object::ModelItem
+    {
+    public:
+        ModelItem(Object *q)
+            :   Object::ModelItem(q)
+        {}
+
+        void setName(const QString &name)
+        {
+            if (this->name().toLower() == name.toLower())
+                return;
+            IModelItem *parent = this->parent();
+            if (parent && parent->hasChild(name))
+                return;
+            Object::ModelItem::setName(name);
+        }
+    };
 };
 
 #endif // MI_UNIQUELYNAMEDOBJECT_H

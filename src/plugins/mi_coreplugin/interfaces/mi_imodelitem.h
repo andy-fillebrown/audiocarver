@@ -21,6 +21,8 @@
 #include <mi_iunknown.h>
 #include <mi_namespace.h>
 
+class IModelItemList;
+
 class QVariant;
 
 class IModelItem : public IUnknown
@@ -29,15 +31,17 @@ public:
     enum { Type = Mi::ModelItemInterface };
 
     virtual int type() const = 0;
-    virtual IModelItem *parentModelItem() const = 0;
-    virtual void setParentModelItem(IModelItem *parent) = 0;
-    virtual int modelItemCount() const = 0;
-    virtual int modelItemIndex(const IModelItem *item) const = 0;
-    virtual IModelItem *modelItemAt(int index) const = 0;
-    virtual IModelItem *findModelItem(int type) const = 0;
-    virtual IModelItem *findModelItemList(int type) const = 0;
-    virtual int persistentRoleCount() const = 0;
-    virtual int persistentRoleAt(int i) const = 0;
+    virtual IModelItem *parent() const = 0;
+    virtual QString name() const = 0;
+    virtual void setName(const QString &name) = 0;
+    virtual bool hasChild(const QString &name) = 0;
+    virtual int count() const = 0;
+    virtual int indexOf(const IModelItem *item) const = 0;
+    virtual IModelItem *at(int index) const = 0;
+    virtual IModelItem *findItem(int type) const = 0;
+    virtual IModelItemList *findList(int type) const = 0;
+    virtual int roleCount() const = 0;
+    virtual int roleAt(int i) const = 0;
     virtual QVariant data(int role) const = 0;
     virtual bool setData(const QVariant &data, int role) = 0;
     virtual Qt::ItemFlags flags() const = 0;

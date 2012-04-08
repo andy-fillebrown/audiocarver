@@ -19,18 +19,17 @@
 
 #include <mi_objectlist.h>
 
-static QObject *orphanage()
-{
-    static QObject *orphanage = new QObject(IModel::instance());
-    return orphanage;
-}
-
 static IModel *instance = 0;
 
 IModel::IModel()
 {
     ::instance = this;
-    connect(this, SIGNAL(modelReset()), SLOT(deleteOrphans()));
+    connect(this, SIGNAL(dataChanged(IModelItem*,int)), SLOT(_dataChanged(IModelItem*)));
+    connect(this, SIGNAL(itemAboutToBeInserted(IModelItemList*,int)), SLOT(_itemAboutToBeInserted(IModelItemList*,int)));
+    connect(this, SIGNAL(itemInserted(IModelItemList*,int)), SLOT(_itemInserted()));
+    connect(this, SIGNAL(itemAboutToBeRemoved(IModelItemList*,int)), SLOT(_itemAboutToBeRemoved(IModelItemList*,int)));
+    connect(this, SIGNAL(itemRemoved(IModelItemList*,int)), SLOT(_itemRemoved()));
+    connect(this, SIGNAL(modelReset()), SLOT(_deleteOrphans()));
 }
 
 IModel *IModel::instance()
@@ -38,16 +37,44 @@ IModel *IModel::instance()
     return ::instance;
 }
 
+QObject *IModel::orphanage()
+{
+    static QObject *orphanage = new QObject(IModel::instance());
+    return orphanage;
+}
+
+IModelItem *IModel::itemFromIndex(const QModelIndex &index) const
+{
+    if ((index.row() < 0)
+            || (index.column() < 0)
+            || (index.model() != this))
+        return rootItem();
+    IModelItem *parent_item = static_cast<IModelItem*>(index.internalPointer());
+    if (!parent_item)
+        return rootItem();
+    return parent_item->at(index.row());
+}
+
+QModelIndex IModel::indexFromItem(const IModelItem *item) const
+{
+    if (!item)
+        return QModelIndex();
+    IModelItem *parent_item = item->parent();
+    if (!parent_item)
+        return QModelIndex();
+    return createIndex(parent_item->indexOf(item), 0, parent_item);
+}
+
 QModelIndex IModel::index(int row, int column, const QModelIndex &parent) const
 {
-    IModelItem *parentItem = parent.isValid() ? itemFromIndex(parent) : rootItem();
-    if (!parentItem
+    IModelItem *parent_item = parent.isValid() ? itemFromIndex(parent) : rootItem();
+    if (!parent_item
             || row < 0
             || column < 0
-            || parentItem->modelItemCount() <= row
+            || parent_item->count() <= row
             || 1 <= column)
         return QModelIndex();
-    return createIndex(row, column, parentItem);
+    return createIndex(row, column, parent_item);
 }
 
 QModelIndex IModel::parent(const QModelIndex &child) const
@@ -61,8 +88,8 @@ QModelIndex IModel::parent(const QModelIndex &child) const
 
 int IModel::rowCount(const QModelIndex &parent) const
 {
-    IModelItem *parentItem = parent.isValid() ? itemFromIndex(parent) : rootItem();
-    return parentItem ? parentItem->modelItemCount() : 0;
+    IModelItem *parent_item = parent.isValid() ? itemFromIndex(parent) : rootItem();
+    return parent_item ? parent_item->count() : 0;
 }
 
 QVariant IModel::data(const QModelIndex &index, int role) const
@@ -85,66 +112,33 @@ Qt::ItemFlags IModel::flags(const QModelIndex &index) const
     return item ? item->flags() : Qt::NoItemFlags;
 }
 
-IModelItem *IModel::itemFromIndex(const QModelIndex &index) const
+void IModel::_dataChanged(IModelItem *item)
 {
-    if ((index.row() < 0)
-            || (index.column() < 0)
-            || (index.model() != this))
-        return rootItem();
-    IModelItem *parentItem = static_cast<IModelItem*>(index.internalPointer());
-    if (!parentItem)
-        return rootItem();
-    return parentItem->modelItemAt(index.row());
+    QModelIndex index = indexFromItem(item);
+    emit QAbstractItemModel::dataChanged(index, index);
 }
 
-QModelIndex IModel::indexFromItem(const IModelItem *item) const
+void IModel::_itemAboutToBeInserted(IModelItemList *list, int i)
 {
-    if (!item)
-        return QModelIndex();
-    IModelItem *parentItem = item->parentModelItem();
-    if (!parentItem)
-        return QModelIndex();
-    return createIndex(parentItem->modelItemIndex(item), 0, parentItem);
+    beginInsertRows(indexFromItem(list), i, i);
 }
 
-bool IModel::insertItem(IModelItem *item, int row, const QModelIndex &parent)
+void IModel::_itemInserted()
 {
-    if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
-        return false;
-    ObjectList *list = interfaceToObject_cast<ObjectList>(itemFromIndex(parent));
-    if (!list)
-        return false;
-    list->insert(row, interfaceToObject_cast<Object>(item));
-    return true;
+    endInsertRows();
 }
 
-void IModel::removeItem(int row, const QModelIndex &parent)
+void IModel::_itemAboutToBeRemoved(IModelItemList *list, int i)
 {
-    if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
-        return;
-    ObjectList *list = interfaceToObject_cast<ObjectList>(itemFromIndex(parent));
-    if (!list)
-        return;
-    QObject *object = list->objectAt(row);
-    list->removeAt(row);
-    object->setParent(orphanage());
+    beginRemoveRows(indexFromItem(list), i, i);
 }
 
-IModelItem *IModel::takeItem(int row, const QModelIndex &parent)
+void IModel::_itemRemoved()
 {
-    if (Mi::ListItem != parent.data(Mi::ItemTypeRole))
-        return 0;
-    ObjectList *list = interfaceToObject_cast<ObjectList>(itemFromIndex(parent));
-    if (!list)
-        return 0;
-    IModelItem *item = list->modelItemAt(row);
-    QObject *object = list->objectAt(row);
-    list->removeAt(row);
-    object->setParent(orphanage());
-    return item;
+    endRemoveRows();
 }
 
-void IModel::deleteOrphans()
+void IModel::_deleteOrphans()
 {
     foreach (QObject *child, orphanage()->children())
         delete child;

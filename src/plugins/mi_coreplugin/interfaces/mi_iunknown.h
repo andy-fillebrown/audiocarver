@@ -18,7 +18,10 @@
 #ifndef MI_IUNKOWN_H
 #define MI_IUNKOWN_H
 
-#include <mi_global.h>
+#include <mi_namespace.h>
+
+class Object;
+class ObjectPrivate;
 
 class QVariant;
 
@@ -27,13 +30,43 @@ class IUnknown
 public:
     virtual ~IUnknown() {}
 
-    virtual void *query(int type) const = 0;
+    virtual void *queryInterface(int interface) const = 0;
 };
 
 template <class T> inline
-T *query(IUnknown *unknown)
+T *query(const IUnknown *unknown)
 {
-    return unknown ? reinterpret_cast<T*>(unknown->query(T::Type)) : 0;
+    return unknown ? reinterpret_cast<T*>(unknown->queryInterface(T::Type)) : 0;
+}
+
+template <> inline
+Object *query(const IUnknown *unknown)
+{
+    return unknown ? reinterpret_cast<Object*>(unknown->queryInterface(Mi::ObjectInterface)) : 0;
+}
+
+template <> inline
+ObjectPrivate *query(const IUnknown *unknown)
+{
+    return unknown ? reinterpret_cast<ObjectPrivate*>(unknown->queryInterface(Mi::ObjectPrivateInterface)) : 0;
+}
+
+template <typename Interface> inline
+Interface *interface_cast(IUnknown *unknown)
+{
+    return dynamic_cast<Interface*>(unknown);
+}
+
+template <typename Interface> inline
+Interface *interface_cast(const IUnknown *unknown)
+{
+    return dynamic_cast<const Interface*>(unknown);
+}
+
+template <typename Interface, typename Object> inline
+Interface *objectToInterface_cast(Object *object)
+{
+    return dynamic_cast<Interface*>(object);
 }
 
 template <typename Interface, typename Object> inline
@@ -46,6 +79,12 @@ template <typename Object> inline
 Object *interfaceToObject_cast(IUnknown *interface)
 {
     return dynamic_cast<Object*>(interface);
+}
+
+template <typename Object> inline
+Object *interfaceToObject_cast(const IUnknown *interface)
+{
+    return const_cast<Object*>(dynamic_cast<const Object*>(interface));
 }
 
 MI_CORE_EXPORT IUnknown *variantToUnknown_cast(const QVariant &v);

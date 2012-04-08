@@ -24,6 +24,7 @@
 #include <QAbstractItemModel>
 
 class IModelItem;
+class IModelItemList;
 
 class MI_CORE_EXPORT IModel : public QAbstractItemModel
 {
@@ -33,10 +34,37 @@ public:
     IModel();
 
     static IModel *instance();
+    static QObject *orphanage();
 
     virtual IModelItem *rootItem() const = 0;
-    virtual QModelIndex itemIndex(int type) const = 0;
-    virtual QModelIndex listIndex(int type) const = 0;
+    virtual IModelItem *findItem(int type) const = 0;
+    virtual IModelItemList *findList(int type) const = 0;
+
+
+    virtual QList<IModelItem*> findItems(int type, int role, const QVariant &value) const
+    {
+        Q_UNUSED(type);
+        Q_UNUSED(role);
+        Q_UNUSED(value);
+        return QList<IModelItem*>();
+    }
+
+    virtual void clear() = 0;
+
+    virtual bool isLocked() const
+    {
+        return false;
+    }
+
+    virtual void setLocked(bool locked = true)
+    {
+        Q_UNUSED(locked);
+    }
+
+    virtual IModelItem *itemFromIndex(const QModelIndex &index) const;
+
+protected:
+    QModelIndex indexFromItem(const IModelItem *item) const;
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
@@ -51,47 +79,25 @@ public:
         return index(row, 0, parent);
     }
 
-    virtual IModelItem *itemFromIndex(const QModelIndex &index) const;
-    virtual QModelIndex indexFromItem(const IModelItem *item) const;
-
-    virtual bool insertItem(IModelItem *item, int row, const QModelIndex &parent);
-    virtual void removeItem(int row, const QModelIndex &parent);
-    virtual IModelItem *takeItem(int row, const QModelIndex &parent);
-
-    virtual QList<IModelItem*> findItems(int type, int role, const QVariant &value) const
-    {
-        QList<IModelItem*> items;
-
-        QModelIndexList indexes = findIndexes(type, role, value);
-        foreach(const QModelIndex &index, indexes)
-            items.append(itemFromIndex(index));
-
-        return items;
-    }
-
-    virtual QModelIndexList findIndexes(int type, int role, const QVariant &value) const
-    {
-        Q_UNUSED(type);
-        Q_UNUSED(role);
-        Q_UNUSED(value);
-        return QModelIndexList();
-    }
-
-    virtual bool isLocked() const = 0;
-    virtual void lock() = 0;
-    virtual void unlock() = 0;
-
-    virtual void clear() = 0;
-
 signals:
-    void pointsChanged(const QModelIndex &index);
-    void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void dataAboutToBeChanged(IModelItem *item, int role);
+    void dataChanged(IModelItem *item, int role);
+    void itemAboutToBeInserted(IModelItemList *list, int i);
+    void itemInserted(IModelItemList *list, int i);
+    void itemAboutToBeRemoved(IModelItemList *list, int i);
+    void itemRemoved(IModelItemList *list, int i);
 
 private slots:
-    void deleteOrphans();
+    void _dataChanged(IModelItem *item);
+    void _itemAboutToBeInserted(IModelItemList *list, int i);
+    void _itemInserted();
+    void _itemAboutToBeRemoved(IModelItemList *list, int i);
+    void _itemRemoved();
+    void _deleteOrphans();
 
 private:
     friend class ObjectPrivate;
+    friend class ObjectListPrivate;
 };
 
 #endif // MI_IMODEL_H
