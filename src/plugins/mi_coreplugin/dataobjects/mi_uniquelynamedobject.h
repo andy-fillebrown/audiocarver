@@ -20,25 +20,26 @@
 
 #include <mi_object.h>
 
+class UniquelyNamedObjectPrivate;
 class MI_CORE_EXPORT UniquelyNamedObject : public Object
 {
-    Q_OBJECT
-
-protected:
-    UniquelyNamedObject(ObjectPrivate &dd, QObject *parent)
-        :   Object(dd, parent)
-    {}
-
-private:
     UniquelyNamedObject()
     {}
 
+    Q_OBJECT
+
+protected:
+    inline UniquelyNamedObject(UniquelyNamedObjectPrivate &dd, QObject *parent);
+};
+
+class UniquelyNamedObjectPrivate : public ObjectPrivate
+{
 public:
-    class ModelItem : Object::ModelItem
+    class ModelItem : public ObjectPrivate::ModelItem
     {
     public:
         ModelItem(Object *q)
-            :   Object::ModelItem(q)
+            :   ObjectPrivate::ModelItem(q)
         {}
 
         void setName(const QString &name)
@@ -50,9 +51,17 @@ public:
                 if (parent && parent->hasChild(name))
                     return;
             }
-            Object::ModelItem::setName(name);
+            ObjectPrivate::ModelItem::setName(name);
         }
     };
+
+    UniquelyNamedObjectPrivate(UniquelyNamedObject *q, ModelItem *modelItem)
+        :   ObjectPrivate(q, modelItem)
+    {}
 };
+
+inline UniquelyNamedObject::UniquelyNamedObject(UniquelyNamedObjectPrivate &dd, QObject *parent)
+    :   Object(dd, parent)
+{}
 
 #endif // MI_UNIQUELYNAMEDOBJECT_H

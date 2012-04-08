@@ -49,7 +49,6 @@ MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
 
 enum InterfaceType {
     ObjectInterface,
-    ObjectPrivateInterface,
     ModelInterface,
     ModelItemInterface,
     ModelItemListInterface,

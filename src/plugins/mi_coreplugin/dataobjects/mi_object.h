@@ -26,61 +26,30 @@
 #include <QObject>
 
 class IModel;
-class Object;
 
-class QModelIndex;
-
-class MI_CORE_EXPORT ObjectPrivate
-{
-public:
-    Object *q_ptr;
-    IModel *model;
-    IModelItem *modelItem_i;
-
-    ObjectPrivate(Object *q, IModelItem *modelItem)
-        :   q_ptr(q)
-        ,   model(0)
-        ,   modelItem_i(modelItem)
-    {}
-
-    virtual ~ObjectPrivate()
-    {}
-
-    virtual void setParent(QObject *parent);
-    void clearParent();
-
-    void setModel(IModel *model);
-    void beginChangeData(int role);
-    void endChangeData(int role);
-};
-
-#define Q_I_D(Class) Class##Private * const d = static_cast<Class##Private*>(q_func()->d_func())
-
-class MI_CORE_EXPORT ScopedDataChange
-{
-    ObjectPrivate *d;
-    int role;
-
-public:
-    ScopedDataChange(ObjectPrivate *d, int role)
-        :   d(d)
-        ,   role(role)
-    {
-        d->beginChangeData(role);
-    }
-
-    ~ScopedDataChange()
-    {
-        d->endChangeData(role);
-    }
-};
-
-#define Q_SCOPED_DATA_CHANGE(d, role) \
-    ScopedDataChange scoped_data_change(qGetPtrHelper(d), role);
-
+class ObjectPrivate;
 class MI_CORE_EXPORT Object : public QObject, public IUnknown
 {
+    friend class ObjectList;
+    friend class ObjectListPrivate;
+    friend class UniquelyNamedObject;
+
+    Object()
+        :   d_ptr(0)
+    {}
+
+    void setParent(QObject *parent)
+    {
+        QObject::setParent(parent);
+    }
+
+    void setObjectName(const QString &name)
+    {
+        QObject::setObjectName(name);
+    }
+
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Object)
 
 protected:
     Object(ObjectPrivate &dd, QObject *parent)
@@ -88,31 +57,42 @@ protected:
         ,   d_ptr(&dd)
     {}
 
-private:
-    Object()
-        :   d_ptr(0)
-    {}
-
-public:
     Object *parent() const
     {
         return object_cast<Object>(QObject::parent());
     }
 
-protected:
-    void *queryInterface(int interface) const
+    const QObjectList &children() const
     {
-        switch (interface) {
-        case Mi::ObjectInterface:
-            return interfaceToObject_cast<Object>(this);
-        case Mi::ObjectPrivateInterface:
-            return d_ptr.data();
-        case Mi::ModelItemInterface:
-            return d_ptr->modelItem_i;
-        default:
-            return 0;
-        }
+        return QObject::children();
     }
+
+    void *queryInterface(int interface) const;
+
+    QScopedPointer<ObjectPrivate> d_ptr;
+};
+
+#define Q_I_D(Class) Class##Private * const d = static_cast<Class##Private*>(qGetPtrHelper(q_ptr->d_ptr))
+
+class MI_CORE_EXPORT ScopedDataChange
+{
+    ObjectPrivate *d;
+    int role;
+
+public:
+    ScopedDataChange(ObjectPrivate *d, int role);
+    ~ScopedDataChange();
+};
+
+#define Q_SCOPED_DATA_CHANGE(d, role) \
+    ScopedDataChange scoped_data_change(qGetPtrHelper(d), role);
+
+class MI_CORE_EXPORT ObjectPrivate
+{
+public:
+    Object *q_ptr;
+    IModel *model;
+    IModelItem *modelItem;
 
     class ModelItemHelper
     {
@@ -272,28 +252,21 @@ protected:
         }
     };
 
-    QScopedPointer<ObjectPrivate> d_ptr;
+    ObjectPrivate(Object *q, IModelItem *modelItem)
+        :   q_ptr(q)
+        ,   model(0)
+        ,   modelItem(modelItem)
+    {}
 
-    const QObjectList &children() const
-    {
-        return QObject::children();
-    }
+    virtual ~ObjectPrivate()
+    {}
 
-private:
-    void setParent(QObject *parent)
-    {
-        QObject::setParent(parent);
-    }
+    virtual void setParent(QObject *parent);
+    void clearParent();
 
-    void setObjectName(const QString &name)
-    {
-        QObject::setObjectName(name);
-    }
-
-    Q_DECLARE_PRIVATE(Object)
-
-    friend class ObjectList;
-    friend class UniquelyNamedObject;
+    void setModel(IModel *model);
+    void beginChangeData(int role);
+    void endChangeData(int role);
 };
 
 #endif // MI_OBJECT_H

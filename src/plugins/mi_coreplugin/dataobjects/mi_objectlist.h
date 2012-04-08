@@ -21,37 +21,26 @@
 #include <mi_object.h>
 #include <mi_imodelitemlist.h>
 
-class ObjectList;
-class ObjectListPrivate : public ObjectPrivate
+class ObjectListPrivate;
+class MI_CORE_EXPORT ObjectList : public Object
 {
+    friend class ModelItemList;
+
+    ObjectList()
+    {}
+
+    Q_OBJECT
+    Q_DECLARE_PRIVATE(ObjectList)
+
 public:
-    const int listType;
+    enum { Type = Mi::ListItem };
 
-    inline ObjectListPrivate(ObjectList *q, int listType, IModelItemList *modelItemList = 0);
+    inline ObjectList(int listType, QObject *parent = 0);
 
-    void init(QObject *q)
-    {
-        modelItemList_i()->setName(Mi::itemTypeString(listType) + "s");
-        _children = &const_cast<QObjectList&>(q->children());
-    }
+protected:
+    inline ObjectList(ObjectListPrivate &dd, QObject *parent);
 
-    QObjectList &children()
-    {
-        return *_children;
-    }
-
-    IModelItemList *modelItemList_i() const
-    {
-        return interface_cast<IModelItemList>(modelItem_i);
-    }
-
-    void beginInsertItem(int i);
-    virtual void endInsertItem(int i);
-    void beginRemoveItem(int i);
-    virtual void endRemoveItem(int i);
-
-private:
-    QObjectList *_children;
+    void *queryInterface(int interface) const;
 };
 
 class MI_CORE_EXPORT ScopedItemInsertion
@@ -60,17 +49,8 @@ class MI_CORE_EXPORT ScopedItemInsertion
     int i;
 
 public:
-    ScopedItemInsertion(ObjectListPrivate *d, int i)
-        :   d(d)
-        ,   i(i)
-    {
-        d->beginInsertItem(i);
-    }
-
-    ~ScopedItemInsertion()
-    {
-        d->endInsertItem(i);
-    }
+    ScopedItemInsertion(ObjectListPrivate *d, int i);
+    ~ScopedItemInsertion();
 };
 
 #define Q_SCOPED_ITEM_INSERTION(d, i) \
@@ -82,60 +62,17 @@ class MI_CORE_EXPORT ScopedItemRemoval
     int i;
 
 public:
-    ScopedItemRemoval(ObjectListPrivate *d, int i)
-        :   d(d)
-        ,   i(i)
-    {
-        d->beginRemoveItem(i);
-    }
-
-    ~ScopedItemRemoval()
-    {
-        d->endRemoveItem(i);
-    }
+    ScopedItemRemoval(ObjectListPrivate *d, int i);
+    ~ScopedItemRemoval();
 };
 
 #define Q_SCOPED_ITEM_REMOVAL(d, i) \
     ScopedItemRemoval scoped_item_removal(qGetPtrHelper(d), i);
 
-class MI_CORE_EXPORT ObjectList : public Object
+class ObjectListPrivate : public ObjectPrivate
 {
-    Q_OBJECT
-
 public:
-    ObjectList(int listType, QObject *parent = 0)
-        :   Object(*new ObjectListPrivate(this, listType), parent)
-    {
-        Q_D(ObjectList);
-        d->init(this);
-    }
-
-protected:
-    ObjectList(ObjectListPrivate &dd, QObject *parent)
-        :   Object(dd, parent)
-    {
-        Q_D(ObjectList);
-        d->init(this);
-    }
-
-private:
-    ObjectList()
-    {}
-
-public:
-    enum { Type = Mi::ListItem };
-
-protected:
-    void *queryInterface(int interface) const
-    {
-        Q_D(const ObjectList);
-        switch (interface) {
-        case Mi::ModelItemListInterface:
-            return d->modelItemList_i();
-        default:
-            return Object::queryInterface(interface);
-        }
-    }
+    const int listType;
 
     class ModelItemList : public IModelItemList
     {
@@ -143,7 +80,7 @@ protected:
 
     public:
         ObjectList *q_ptr;
-        Object::ModelItemHelper helper;
+        ObjectPrivate::ModelItemHelper helper;
 
         ModelItemList(ObjectList *q)
             :   q_ptr(q)
@@ -230,7 +167,8 @@ protected:
         // IModelItemList
         int listType() const
         {
-            return q_ptr->d_func()->listType;
+            Q_I_D(const ObjectList);
+            return d->listType;
         }
 
         void insert(int i, IModelItem *item)
@@ -243,7 +181,7 @@ protected:
                 return;
             QObjectList &objects = d->children();
             Q_SCOPED_ITEM_INSERTION(d, i);
-            query<ObjectPrivate>(object)->setParent(q_ptr);
+            object->d_ptr->setParent(q_ptr);
             if (i != count() - 1) {
                 objects.removeLast();
                 objects.insert(i, object);
@@ -257,7 +195,7 @@ protected:
             if (!object)
                 return false;
             Q_SCOPED_ITEM_REMOVAL(d, i);
-            query<ObjectPrivate>(object)->clearParent();
+            object->d_ptr->clearParent();
             return true;
         }
 
@@ -275,16 +213,49 @@ protected:
         }
     };
 
-private:
-    Q_DECLARE_PRIVATE(ObjectList)
+    ObjectListPrivate(ObjectList *q, int listType, ModelItemList *modelItemList = 0)
+        :   ObjectPrivate(q, modelItemList ? modelItemList : new ModelItemList(q))
+        ,   listType(listType)
+        ,   _children(0)
+    {}
 
-    friend class ModelItemList;
+    void init(QObject *q)
+    {
+        modelItem->setName(Mi::itemTypeString(listType) + "s");
+        _children = &const_cast<QObjectList&>(q->children());
+    }
+
+    QObjectList &children()
+    {
+        return *_children;
+    }
+
+    IModelItemList *modelItemList() const
+    {
+        return interface_cast<IModelItemList>(modelItem);
+    }
+
+    void beginInsertItem(int i);
+    virtual void endInsertItem(int i);
+    void beginRemoveItem(int i);
+    virtual void endRemoveItem(int i);
+
+private:
+    QObjectList *_children;
 };
 
-inline ObjectListPrivate::ObjectListPrivate(ObjectList *q, int listType, IModelItemList *modelItemList)
-    :   ObjectPrivate(q, modelItemList ? modelItemList : new ObjectList::ModelItemList(q))
-    ,   listType(listType)
-    ,   _children(0)
-{}
+inline ObjectList::ObjectList(int listType, QObject *parent)
+    :   Object(*new ObjectListPrivate(this, listType), parent)
+{
+    Q_D(ObjectList);
+    d->init(this);
+}
+
+inline ObjectList::ObjectList(ObjectListPrivate &dd, QObject *parent)
+    :   Object(dd, parent)
+{
+    Q_D(ObjectList);
+    d->init(this);
+}
 
 #endif // MI_OBJECTLIST_H

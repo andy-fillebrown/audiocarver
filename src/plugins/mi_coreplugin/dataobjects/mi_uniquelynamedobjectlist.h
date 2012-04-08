@@ -20,23 +20,24 @@
 
 #include <mi_objectlist.h>
 
+class UniquelyNamedObjectListPrivate;
 class UniquelyNamedObjectList : public ObjectList
 {
 public:
-    UniquelyNamedObjectList(int listType, QObject *parent = 0)
-        :   ObjectList(*new ObjectListPrivate(this, listType, new ModelItemList(this)), parent)
-    {}
+    inline UniquelyNamedObjectList(int listType, QObject *parent = 0);
 
 protected:
-   UniquelyNamedObjectList(ObjectListPrivate &dd, QObject *parent)
-       :   ObjectList(dd, parent)
-   {}
+    inline UniquelyNamedObjectList(UniquelyNamedObjectListPrivate &dd, QObject *parent);
+};
 
-    class ModelItemList : public ObjectList::ModelItemList
+class UniquelyNamedObjectListPrivate : public ObjectListPrivate
+{
+public:
+    class ModelItemList : public ObjectListPrivate::ModelItemList
     {
     public:
         ModelItemList(ObjectList *q)
-            :   ObjectList::ModelItemList(q)
+            :   ObjectListPrivate::ModelItemList(q)
         {}
 
         void insert(int i, IModelItem *item)
@@ -50,9 +51,21 @@ protected:
                 if (name != new_name)
                     item->setName(new_name);
             }
-            ObjectList::ModelItemList::insert(i, item);
+            ObjectListPrivate::ModelItemList::insert(i, item);
         }
     };
+
+    UniquelyNamedObjectListPrivate(ObjectList *q, int listType, ModelItemList *modelItemList)
+        :   ObjectListPrivate(q, listType, modelItemList)
+    {}
 };
+
+inline UniquelyNamedObjectList::UniquelyNamedObjectList(int listType, QObject *parent)
+    :   ObjectList(*new ObjectListPrivate(this, listType, new UniquelyNamedObjectListPrivate::ModelItemList(this)), parent)
+{}
+
+inline UniquelyNamedObjectList::UniquelyNamedObjectList(UniquelyNamedObjectListPrivate &dd, QObject *parent)
+    :   ObjectList(dd, parent)
+{}
 
 #endif // MI_UNIQUELYNAMEDOBJECTLIST_H

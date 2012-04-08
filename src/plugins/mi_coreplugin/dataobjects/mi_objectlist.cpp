@@ -21,35 +21,70 @@
 
 #include <QVariant>
 
-void ObjectListPrivate::beginInsertItem(int i)
+void *ObjectList::queryInterface(int interface) const
 {
-    if (model)
-        emit model->itemAboutToBeInserted(modelItemList_i(), i);
+    Q_D(const ObjectList);
+    switch (interface) {
+    case Mi::ModelItemListInterface:
+        return d->modelItemList();
+    default:
+        return Object::queryInterface(interface);
+    }
 }
 
-void ObjectListPrivate::endInsertItem(int i)
+ScopedItemInsertion::ScopedItemInsertion(ObjectListPrivate *d, int i)
+    :   d(d)
+    ,   i(i)
 {
-    if (model)
-        emit model->itemInserted(modelItemList_i(), i);
+    d->beginInsertItem(i);
 }
 
-void ObjectListPrivate::beginRemoveItem(int i)
+ScopedItemInsertion::~ScopedItemInsertion()
 {
-    if (model)
-        emit model->itemAboutToBeRemoved(modelItemList_i(), i);
+    d->endInsertItem(i);
 }
 
-void ObjectListPrivate::endRemoveItem(int i)
+ScopedItemRemoval::ScopedItemRemoval(ObjectListPrivate *d, int i)
+    :   d(d)
+    ,   i(i)
 {
-    if (model)
-        emit model->itemRemoved(modelItemList_i(), i);
+    d->beginRemoveItem(i);
 }
 
-QVariant ObjectList::ModelItemList::data(int role) const
+ScopedItemRemoval::~ScopedItemRemoval()
+{
+    d->endRemoveItem(i);
+}
+
+QVariant ObjectListPrivate::ModelItemList::data(int role) const
 {
     if (Mi::ListTypeRole == role) {
         Q_I_D(const ObjectList);
         return d->listType;
     }
     return helper.data(role);
+}
+
+void ObjectListPrivate::beginInsertItem(int i)
+{
+    if (model)
+        emit model->itemAboutToBeInserted(modelItemList(), i);
+}
+
+void ObjectListPrivate::endInsertItem(int i)
+{
+    if (model)
+        emit model->itemInserted(modelItemList(), i);
+}
+
+void ObjectListPrivate::beginRemoveItem(int i)
+{
+    if (model)
+        emit model->itemAboutToBeRemoved(modelItemList(), i);
+}
+
+void ObjectListPrivate::endRemoveItem(int i)
+{
+    if (model)
+        emit model->itemRemoved(modelItemList(), i);
 }

@@ -21,6 +21,52 @@
 
 #include <QModelIndex>
 
+void *Object::queryInterface(int interface) const
+{
+    switch (interface) {
+    case Mi::ObjectInterface:
+        return interfaceToObject_cast<Object>(this);
+    case Mi::ModelItemInterface:
+        return d_ptr->modelItem;
+    default:
+        return 0;
+    }
+}
+
+ScopedDataChange::ScopedDataChange(ObjectPrivate *d, int role)
+    :   d(d)
+    ,   role(role)
+{
+    d->beginChangeData(role);
+}
+
+ScopedDataChange::~ScopedDataChange()
+{
+    d->endChangeData(role);
+}
+
+QVariant ObjectPrivate::ModelItemHelper::data(int role) const
+{
+    switch (role) {
+    case Qt::DisplayRole:
+    case Mi::NameRole:
+        return query<IModelItem>(q_ptr)->name();
+    case Mi::ItemTypeRole:
+        return query<IModelItem>(q_ptr)->type();
+    default:
+        return QVariant();
+    }
+}
+
+bool ObjectPrivate::ModelItemHelper::setData(const QVariant &value, int role)
+{
+    if (Mi::NameRole == role) {
+        query<IModelItem>(q_ptr)->setName(value.toString());
+        return true;
+    }
+    return false;
+}
+
 void ObjectPrivate::setParent(QObject *parent)
 {
     if (parent == q_ptr->parent())
@@ -51,33 +97,11 @@ void ObjectPrivate::setModel(IModel *model)
 void ObjectPrivate::beginChangeData(int role)
 {
     if (model)
-        emit model->dataAboutToBeChanged(modelItem_i, role);
+        emit model->dataAboutToBeChanged(modelItem, role);
 }
 
 void ObjectPrivate::endChangeData(int role)
 {
     if (model)
-        emit model->dataChanged(modelItem_i, role);
-}
-
-QVariant Object::ModelItemHelper::data(int role) const
-{
-    switch (role) {
-    case Qt::DisplayRole:
-    case Mi::NameRole:
-        return query<IModelItem>(q_ptr)->name();
-    case Mi::ItemTypeRole:
-        return query<IModelItem>(q_ptr)->type();
-    default:
-        return QVariant();
-    }
-}
-
-bool Object::ModelItemHelper::setData(const QVariant &value, int role)
-{
-    if (Mi::NameRole == role) {
-        query<IModelItem>(q_ptr)->setName(value.toString());
-        return true;
-    }
-    return false;
+        emit model->dataChanged(modelItem, role);
 }

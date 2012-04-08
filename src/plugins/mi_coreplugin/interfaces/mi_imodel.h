@@ -40,7 +40,6 @@ public:
     virtual IModelItem *findItem(int type) const = 0;
     virtual IModelItemList *findList(int type) const = 0;
 
-
     virtual QList<IModelItem*> findItems(int type, int role, const QVariant &value) const
     {
         Q_UNUSED(type);

@@ -45,12 +45,6 @@ Object *query(const IUnknown *unknown)
     return unknown ? reinterpret_cast<Object*>(unknown->queryInterface(Mi::ObjectInterface)) : 0;
 }
 
-template <> inline
-ObjectPrivate *query(const IUnknown *unknown)
-{
-    return unknown ? reinterpret_cast<ObjectPrivate*>(unknown->queryInterface(Mi::ObjectPrivateInterface)) : 0;
-}
-
 template <typename Interface> inline
 Interface *interface_cast(IUnknown *unknown)
 {
