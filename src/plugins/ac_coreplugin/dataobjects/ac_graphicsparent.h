@@ -26,12 +26,10 @@ class GraphicsParentPrivate;
 class AC_CORE_EXPORT GraphicsParent : public GraphicsObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(GraphicsParent)
 
 protected:
-    GraphicsParent(GraphicsParentPrivate &dd, QObject *parent);
-
-private:
-    Q_DECLARE_PRIVATE(GraphicsParent)
+    inline GraphicsParent(GraphicsParentPrivate &dd, QObject *parent);
 };
 
 class GraphicsParentPrivate : public GraphicsObjectPrivate
@@ -43,11 +41,26 @@ public:
     QMap<int, QGraphicsItem*> unitXGraphicsItems;
     QMap<int, QGraphicsItem*> unitYGraphicsItems;
 
-    GraphicsParentPrivate(GraphicsObject *q);
-    void init();
+    typedef GraphicsObjectPrivate::ModelItem ModelItem;
+
+    GraphicsParentPrivate(GraphicsParent *q, ModelItem *modelItem)
+        :   GraphicsObjectPrivate(q, modelItem)
+    {}
+
     ~GraphicsParentPrivate();
+
+    void init()
+    {
+        updateGraphicsParent();
+    }
 
     void updateGraphicsParent();
 };
+
+inline GraphicsParent::GraphicsParent(GraphicsParentPrivate &dd, QObject *parent)
+    :   GraphicsObject(dd, parent)
+{
+    dd.init();
+}
 
 #endif // AC_GRAPHICSPARENT_H

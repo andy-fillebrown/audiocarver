@@ -25,25 +25,29 @@
 
 class IEntity;
 
-class IUnknown;
-
 class GraphicsItem : public QGraphicsItem
 {
 public:
-    explicit GraphicsItem(QGraphicsItem *parent = 0)
+    GraphicsItem(QGraphicsItem *parent = 0)
         :   QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
     }
 
-    QRectF boundingRect() const { static QRectF r;  return r; }
-    void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*) {}
+    QRectF boundingRect() const
+    {
+        static QRectF r;
+        return r;
+    }
+
+    void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*)
+    {}
 };
 
 class GraphicsRootItem : public GraphicsItem
 {
 public:
-    explicit GraphicsRootItem(QGraphicsItem *parent = 0)
+    GraphicsRootItem(QGraphicsItem *parent = 0)
         :   GraphicsItem(parent)
     {
         setTransform(QTransform::fromScale(1.0f, -1.0f));
@@ -53,17 +57,20 @@ public:
 class GraphicsPathItem : public QGraphicsPathItem
 {
 public:
-    explicit GraphicsPathItem(QGraphicsItem *parent = 0)
+    GraphicsPathItem(QGraphicsItem *parent = 0)
         :   QGraphicsPathItem(parent)
     {}
 
-    QPainterPath shape() const { return path(); }
+    QPainterPath shape() const
+    {
+        return path();
+    }
 };
 
 class GraphicsGuideItem : public GraphicsPathItem
 {
 public:
-    explicit GraphicsGuideItem(QGraphicsItem *parent = 0)
+    GraphicsGuideItem(QGraphicsItem *parent = 0)
         :   GraphicsPathItem(parent)
     {
         setFlag(QGraphicsItem::ItemStacksBehindParent);
@@ -74,8 +81,10 @@ public:
 class GraphicsCurveItemPrivate;
 class GraphicsCurveItem : public GraphicsPathItem
 {
+    GraphicsCurveItemPrivate *d;
+
 public:
-    explicit GraphicsCurveItem(QGraphicsItem *parent = 0);
+    GraphicsCurveItem(QGraphicsItem *parent = 0);
     ~GraphicsCurveItem();
 
     void setEntity(IEntity *entity);
@@ -86,16 +95,15 @@ public:
     void unhighlight();
 
     bool intersects(const QRectF &rect) const;
-
-private:
-    GraphicsCurveItemPrivate *d;
 };
 
 class GraphicsTextItemPrivate;
 class GraphicsTextItem : public GraphicsItem
 {
+    GraphicsTextItemPrivate *d;
+
 public:
-    explicit GraphicsTextItem(QGraphicsItem *parent = 0);
+    GraphicsTextItem(QGraphicsItem *parent = 0);
     ~GraphicsTextItem();
 
     QColor color() const;
@@ -106,9 +114,6 @@ public:
 
     QString text() const;
     void setText(const QString &text);
-
-private:
-    GraphicsTextItemPrivate *d;
 };
 
 #endif // AC_GRAPHICSITEM_H

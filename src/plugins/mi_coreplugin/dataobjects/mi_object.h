@@ -25,6 +25,15 @@
 
 #include <QObject>
 
+#define Q_MI_D(Class) Class##Private * const d = static_cast<Class##Private*>(qGetPtrHelper(q_ptr->d_ptr))
+#define Q_MI_Q(Class) Class * const q = static_cast<Class*>(q_ptr);
+
+#define Q_MI_DEFINE_QUERYINTERFACE \
+    void *queryInterface(int interface) const \
+    { \
+        return q_ptr->queryInterface(interface); \
+    }
+
 class IModel;
 
 class ObjectPrivate;
@@ -67,12 +76,10 @@ protected:
         return QObject::children();
     }
 
-    void *queryInterface(int interface) const;
+    inline void *queryInterface(int interface) const;
 
     QScopedPointer<ObjectPrivate> d_ptr;
 };
-
-#define Q_I_D(Class) Class##Private * const d = static_cast<Class##Private*>(qGetPtrHelper(q_ptr->d_ptr))
 
 class MI_CORE_EXPORT ScopedDataChange
 {
@@ -80,8 +87,8 @@ class MI_CORE_EXPORT ScopedDataChange
     int role;
 
 public:
-    ScopedDataChange(ObjectPrivate *d, int role);
-    ~ScopedDataChange();
+    inline ScopedDataChange(ObjectPrivate *d, int role);
+    inline ~ScopedDataChange();
 };
 
 #define Q_SCOPED_DATA_CHANGE(d, role) \
@@ -89,15 +96,14 @@ public:
 
 class MI_CORE_EXPORT ObjectPrivate
 {
+    QScopedPointer<IModelItem> _modelItem;
+
 public:
     Object *q_ptr;
     IModel *model;
-    IModelItem *modelItem;
 
     class ModelItemHelper
     {
-        Q_DECLARE_PUBLIC(Object)
-
     public:
         Object *q_ptr;
 
@@ -119,7 +125,7 @@ public:
         {
             if (q_ptr->objectName() == name)
                 return;
-            Q_I_D(Object);
+            Q_MI_D(Object);
             Q_SCOPED_DATA_CHANGE(d, Mi::NameRole);
             q_ptr->setObjectName(name);
         }
@@ -152,13 +158,11 @@ public:
         }
 
         QVariant data(int role) const;
-        bool setData(const QVariant &value, int role);
+        bool setData(const QVariant &data, int role);
     };
 
     class ModelItem : public IModelItem
     {
-        Q_DECLARE_PUBLIC(Object)
-
     public:
         Object *q_ptr;
         ModelItemHelper helper;
@@ -246,20 +250,22 @@ public:
             return helper.flags();
         }
 
-        void *queryInterface(int interface) const
-        {
-            return q_ptr->queryInterface(interface);
-        }
+        Q_MI_DEFINE_QUERYINTERFACE
     };
 
     ObjectPrivate(Object *q, IModelItem *modelItem)
-        :   q_ptr(q)
+        :   _modelItem(modelItem)
+        ,   q_ptr(q)
         ,   model(0)
-        ,   modelItem(modelItem)
     {}
 
     virtual ~ObjectPrivate()
     {}
+
+    IModelItem *modelItem() const
+    {
+        return qGetPtrHelper(_modelItem);
+    }
 
     virtual void setParent(QObject *parent);
     void clearParent();
@@ -268,5 +274,29 @@ public:
     void beginChangeData(int role);
     void endChangeData(int role);
 };
+
+inline void *Object::queryInterface(int interface) const
+{
+    switch (interface) {
+    case Mi::ObjectInterface:
+        return interfaceToObject_cast<Object>(this);
+    case Mi::ModelItemInterface:
+        return d_ptr->modelItem();
+    default:
+        return 0;
+    }
+}
+
+inline ScopedDataChange::ScopedDataChange(ObjectPrivate *d, int role)
+    :   d(d)
+    ,   role(role)
+{
+    d->beginChangeData(role);
+}
+
+inline ScopedDataChange::~ScopedDataChange()
+{
+    d->endChangeData(role);
+}
 
 #endif // MI_OBJECT_H

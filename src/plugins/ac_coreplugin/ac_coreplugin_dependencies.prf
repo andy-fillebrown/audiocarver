@@ -3,11 +3,11 @@ load(../mi_coreplugin/mi_coreplugin.prf)
 
 DIRS = \
     dataobjects \
-    filers \
-    implementations \
+#    filers \
+#    implementations \
     interfaces \
     graphicsview \
-    models \
+#    models \
     tools \
 
 for(dir, DIRS) {

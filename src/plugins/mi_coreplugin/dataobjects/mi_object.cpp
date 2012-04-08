@@ -21,30 +21,6 @@
 
 #include <QModelIndex>
 
-void *Object::queryInterface(int interface) const
-{
-    switch (interface) {
-    case Mi::ObjectInterface:
-        return interfaceToObject_cast<Object>(this);
-    case Mi::ModelItemInterface:
-        return d_ptr->modelItem;
-    default:
-        return 0;
-    }
-}
-
-ScopedDataChange::ScopedDataChange(ObjectPrivate *d, int role)
-    :   d(d)
-    ,   role(role)
-{
-    d->beginChangeData(role);
-}
-
-ScopedDataChange::~ScopedDataChange()
-{
-    d->endChangeData(role);
-}
-
 QVariant ObjectPrivate::ModelItemHelper::data(int role) const
 {
     switch (role) {
@@ -58,10 +34,10 @@ QVariant ObjectPrivate::ModelItemHelper::data(int role) const
     }
 }
 
-bool ObjectPrivate::ModelItemHelper::setData(const QVariant &value, int role)
+bool ObjectPrivate::ModelItemHelper::setData(const QVariant &data, int role)
 {
     if (Mi::NameRole == role) {
-        query<IModelItem>(q_ptr)->setName(value.toString());
+        query<IModelItem>(q_ptr)->setName(data.toString());
         return true;
     }
     return false;
@@ -86,22 +62,22 @@ void ObjectPrivate::setModel(IModel *model)
     if (this->model == model)
         return;
     this->model = model;
-    const QObjectList &qchildren = q_ptr->children();
-    foreach (QObject *qchild, qchildren) {
-        Object *child = object_cast<Object>(qchild);
-        if (child)
-            child->d_ptr->setModel(model);
+    const QObjectList &children = q_ptr->children();
+    foreach (QObject *child, children) {
+        Object *object = object_cast<Object>(child);
+        if (object)
+            object->d_ptr->setModel(model);
     }
 }
 
 void ObjectPrivate::beginChangeData(int role)
 {
     if (model)
-        emit model->dataAboutToBeChanged(modelItem, role);
+        emit model->dataAboutToBeChanged(modelItem(), role);
 }
 
 void ObjectPrivate::endChangeData(int role)
 {
     if (model)
-        emit model->dataChanged(modelItem, role);
+        emit model->dataChanged(modelItem(), role);
 }

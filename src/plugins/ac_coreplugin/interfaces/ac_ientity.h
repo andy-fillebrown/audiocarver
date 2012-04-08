@@ -22,25 +22,50 @@
 
 #include <mi_iunknown.h>
 
-class Point;
-typedef QList<Point> PointList;
-
+class IPoints;
 class ISubEntity;
+class Point;
+
+typedef QList<Point> PointList;
 
 class IEntity : public IUnknown
 {
 public:
     enum { Type = Ac::EntityInterface };
 
-    virtual const PointList &points() const = 0;
-    virtual void pushPoints(const PointList &points) = 0;
-    virtual void popPoints() = 0;
-    virtual void setPoints(const PointList &points) = 0;
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
     virtual bool isVisible() const = 0;
-    virtual QList<IEntity*> subEntities(int sceneType) const = 0;
+};
+
+class IParentEntity : public IEntity
+{
+    enum { Type = Ac::ParentEntityInterface };
+
+    virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
+    virtual QList<IPoints*> subEntityPoints(int sceneType) const = 0;
+};
+
+class ISubEntity : public IUnknown
+{
+public:
+    enum { Type = Ac::SubEntityInterface };
+
+    virtual IParentEntity *parentEntity() const = 0;
+    virtual int sceneType() const = 0;
+    virtual bool isCurve() const = 0;
+};
+
+class IPoints : public IUnknown
+{
+public:
+    enum { Type = Ac::PointsInterface };
+
+    virtual const PointList &points() const = 0;
+    virtual void pushPoints(const PointList &points) = 0;
+    virtual void popPoints() = 0;
+    virtual void setPoints(const PointList &points) = 0;
 
     void pushPoints()
     {
@@ -51,16 +76,6 @@ public:
     {
         setPoints(points());
     }
-};
-
-class ISubEntity : public IUnknown
-{
-public:
-    enum { Type = Ac::SubEntityInterface };
-
-    virtual IEntity *parentEntity() const = 0;
-    virtual int sceneType() const = 0;
-    virtual bool isCurve() const = 0;
 };
 
 #endif // AC_IENTITY_H

@@ -26,10 +26,10 @@ static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &items,
                                    const QMap<int, QGraphicsItem*> &parentItems)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-        QGraphicsItem *parentItem = parentItems.value(i, 0);
+        QGraphicsItem *parent_item = parentItems.value(i, 0);
         QGraphicsItem *item = items.value(i, 0);
-        if (item && parentItem)
-            item->setParentItem(parentItem);
+        if (item && parent_item)
+            item->setParentItem(parent_item);
     }
 }
 
@@ -46,16 +46,7 @@ static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
     }
 }
 
-GraphicsParentPrivate::GraphicsParentPrivate(GraphicsObject *q)
-    :   GraphicsObjectPrivate(q)
-{}
-
-void GraphicsParentPrivate::init()
-{
-    updateGraphicsParent();
-}
-
-GraphicsParentPrivate::~GraphicsParentPrivate()
+ GraphicsParentPrivate::~GraphicsParentPrivate()
 {
     qDeleteAll(unitYGraphicsItems);
     qDeleteAll(unitXGraphicsItems);
@@ -74,10 +65,4 @@ void GraphicsParentPrivate::updateGraphicsParent()
         clearParentGraphicsItems(unitXGraphicsItems);
         clearParentGraphicsItems(unitYGraphicsItems);
     }
-}
-
-GraphicsParent::GraphicsParent(GraphicsParentPrivate &dd, QObject *parent)
-    :   GraphicsObject(dd, parent)
-{
-    dd.init();
 }

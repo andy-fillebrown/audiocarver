@@ -24,33 +24,44 @@
 
 class GraphicsParentPrivate;
 
-class QGraphicsItem;
-
 class GraphicsObjectPrivate;
 class AC_CORE_EXPORT GraphicsObject : public UniquelyNamedObject
 {
     Q_OBJECT
-
-public:
-    // Object
-    void setParent(Object *parent);
+    Q_DECLARE_PRIVATE(GraphicsObject)
 
 protected:
-    GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent);
-
-private:
-    Q_DECLARE_PRIVATE(GraphicsObject)
+    inline GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent);
 };
 
-class GraphicsObjectPrivate : public ObjectPrivate
+class GraphicsObjectPrivate : public UniquelyNamedObjectPrivate
 {
     Q_DECLARE_PUBLIC(GraphicsObject)
 
 public:
-    GraphicsObjectPrivate(GraphicsObject *q);
+    typedef UniquelyNamedObjectPrivate::ModelItem ModelItem;
 
-    virtual void updateGraphicsParent() {}
-    virtual GraphicsParentPrivate *graphicsParent() const { return 0; }
+    GraphicsObjectPrivate(GraphicsObject *q, ModelItem *modelItem)
+        :   UniquelyNamedObjectPrivate(q, modelItem)
+    {}
+
+    void setParent(Object *parent)
+    {
+        ObjectPrivate::setParent(parent);
+        updateGraphicsParent();
+    }
+
+    virtual void updateGraphicsParent()
+    {}
+
+    virtual GraphicsParentPrivate *graphicsParent() const
+    {
+        return 0;
+    }
 };
+
+inline GraphicsObject::GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent)
+    :   UniquelyNamedObject(dd, parent)
+{}
 
 #endif // AC_GRAPHICSOBJECT_H

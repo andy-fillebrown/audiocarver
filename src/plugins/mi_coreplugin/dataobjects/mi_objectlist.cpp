@@ -21,45 +21,10 @@
 
 #include <QVariant>
 
-void *ObjectList::queryInterface(int interface) const
-{
-    Q_D(const ObjectList);
-    switch (interface) {
-    case Mi::ModelItemListInterface:
-        return d->modelItemList();
-    default:
-        return Object::queryInterface(interface);
-    }
-}
-
-ScopedItemInsertion::ScopedItemInsertion(ObjectListPrivate *d, int i)
-    :   d(d)
-    ,   i(i)
-{
-    d->beginInsertItem(i);
-}
-
-ScopedItemInsertion::~ScopedItemInsertion()
-{
-    d->endInsertItem(i);
-}
-
-ScopedItemRemoval::ScopedItemRemoval(ObjectListPrivate *d, int i)
-    :   d(d)
-    ,   i(i)
-{
-    d->beginRemoveItem(i);
-}
-
-ScopedItemRemoval::~ScopedItemRemoval()
-{
-    d->endRemoveItem(i);
-}
-
 QVariant ObjectListPrivate::ModelItemList::data(int role) const
 {
     if (Mi::ListTypeRole == role) {
-        Q_I_D(const ObjectList);
+        Q_MI_D(const ObjectList);
         return d->listType;
     }
     return helper.data(role);

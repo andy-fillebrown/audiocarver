@@ -24,16 +24,18 @@
 
 namespace Ac {
 
-enum InterfaceType {
-    EntityInterface = Mi::InterfaceTypeCount,
-    SubEntityInterface,
-    EntityItemInterface,
-    GripItemInterface,
-    ReaderInterface,
-    WriterInterface,
-    FileFilerInterface,
-    CopyFilerInterface,
-    PlayCursorInterface
+enum ItemType {
+    ScoreItem = Mi::ItemTypeCount,
+    TrackItem,
+    NoteItem,
+    PitchCurveItem,
+    ControlCurveItem,
+    GridSettingsItem,
+    TimeGridLineItem,
+    PitchGridLineItem,
+    ControlGridLineItem,
+    ViewSettingsItem,
+    ProjectSettingsItem
 };
 
 enum ItemDataRole {
@@ -69,25 +71,19 @@ enum ItemDataRole {
     ControlSnapRole
 };
 
-AC_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
-AC_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
-
-enum ItemType {
-    ScoreItem = Mi::ItemTypeCount,
-    TrackItem,
-    NoteItem,
-    PitchCurveItem,
-    ControlCurveItem,
-    GridSettingsItem,
-    TimeGridLineItem,
-    PitchGridLineItem,
-    ControlGridLineItem,
-    ViewSettingsItem,
-    ProjectSettingsItem
+enum InterfaceType {
+    EntityInterface = Mi::InterfaceTypeCount,
+    ParentEntityInterface,
+    SubEntityInterface,
+    PointsInterface,
+    PointsItemInterface,
+    GripItemInterface,
+    ReaderInterface,
+    WriterInterface,
+    FileFilerInterface,
+    CopyFilerInterface,
+    PlayCursorInterface
 };
-
-AC_CORE_EXPORT QString itemTypeString(int itemType);
-AC_CORE_EXPORT int itemType(const QString &itemTypeString);
 
 enum CurveType {
     NoCurve,
@@ -106,11 +102,6 @@ enum SceneType {
     PitchLabelScene,
     ControlLabelScene,
     SceneTypeCount
-};
-
-enum DragState {
-    Dragging,
-    NotDragging
 };
 
 } // namespace Ac
