@@ -42,12 +42,14 @@ protected:
         void insert(int i, IModelItem *item)
         {
             const QString name = item->name();
-            int suffix = 0;
-            QString new_name = name;
-            while (hasChild(new_name))
-                new_name = QString("%1.%2").arg(name).arg(++suffix);
-            if (name != new_name)
-                item->setName(new_name);
+            if (!name.isEmpty()) {
+                int suffix = 0;
+                QString new_name = name;
+                while (hasChild(new_name))
+                    new_name = QString("%1.%2").arg(name).arg(++suffix);
+                if (name != new_name)
+                    item->setName(new_name);
+            }
             ObjectList::ModelItemList::insert(i, item);
         }
     };

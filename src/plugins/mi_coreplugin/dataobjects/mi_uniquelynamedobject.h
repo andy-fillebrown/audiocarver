@@ -45,9 +45,11 @@ public:
         {
             if (this->name().toLower() == name.toLower())
                 return;
-            IModelItem *parent = this->parent();
-            if (parent && parent->hasChild(name))
-                return;
+            if (!name.isEmpty()) {
+                IModelItem *parent = this->parent();
+                if (parent && parent->hasChild(name))
+                    return;
+            }
             Object::ModelItem::setName(name);
         }
     };
