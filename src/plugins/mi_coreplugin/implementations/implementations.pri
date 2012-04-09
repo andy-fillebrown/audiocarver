@@ -1,16 +1,8 @@
 
 SOURCE_FILES = \
-#    idatabase \
-    iaggregate \
-    iaggregator \
-    imodel \
-    imodeldata \
-    imodelitem \
-    imodellist \
-    iobject \
-    iunknown \
+    aggregator \
 
-DIR = interfaces
+DIR = implementations
 PREFIX = mi_
 
 for(file, SOURCE_FILES) {

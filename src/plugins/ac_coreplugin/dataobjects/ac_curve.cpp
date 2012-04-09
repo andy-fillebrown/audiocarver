@@ -20,100 +20,83 @@
 #include <ac_graphicsitem.h>
 #include <ac_scoreobject.h>
 
-void Curve::setPoints(const PointList &points)
+#include <mi_scopedchange.h>
+
+Curve::Curve()
+    :   _graphicsCurveItem(new GraphicsCurveItem)
 {
-    Q_D(Curve);
+    static PointList points;
+    _pointsStack.push(points);
+    graphicsCurveItem()->setEntity(query<IEntity>(this));
+}
+
+Curve::~Curve()
+{}
+
+bool Curve::setPoints(const PointList &points)
+{
     PointList new_pts = points;
-    while (1 < d->pointsStack.count())
-        d->pointsStack.pop();
-    PointList old_pts = this->points();
-    d->pointsStack.top() = new_pts;
-    d->conformPoints();
-    new_pts = d->pointsStack.top();
-    d->pointsStack.top() = old_pts;
-    if (this->points() == new_pts)
-        return;
-    Q_SCOPED_DATA_CHANGE(d, Ac::PointsRole);
-    d->pointsStack.top() = new_pts;
-    d->graphicsCurveItem()->setPoints(new_pts);
+    while (1 < _pointsStack.count())
+        _pointsStack.pop();
+    PointList old_pts = _pointsStack.top();
+    _pointsStack.top() = new_pts;
+    conformPoints();
+    new_pts = _pointsStack.top();
+    _pointsStack.top() = old_pts;
+    if (_pointsStack.top() == new_pts)
+        return false;
+    Q_MI_SCOPED_CHANGE(Ac::PointsRole);
+    _pointsStack.top() = new_pts;
+    updateGraphicsItems();
+    return true;
+}
+
+void Curve::updateGraphicsItems()
+{
+    graphicsCurveItem()->setPoints(pointsStack().top());
     scoreObject()->updatePoints();
 }
 
 void Curve::setColor(const QColor &color)
 {
-    Q_D(Curve);
-    d->graphicsCurveItem()->setColor(color);
+    graphicsCurveItem()->setColor(color);
 }
 
-void CurvePrivate::Entity::highlight()
+GraphicsParent *Curve::graphicsParent() const
 {
-    Q_MI_D(Curve);
-    d->graphicsCurveItem()->highlight();
+    return scoreObject();
 }
 
-void CurvePrivate::Entity::unhighlight()
+void Curve::Entity::highlight()
 {
-    Q_MI_D(Curve);
-    d->graphicsCurveItem()->unhighlight();
+    dataObject()->graphicsCurveItem()->highlight();
 }
 
-bool CurvePrivate::Entity::intersects(const QRectF &rect) const
+void Curve::Entity::unhighlight()
 {
-    Q_MI_D(const Curve);
-    return d->graphicsCurveItem()->intersects(rect);
+    dataObject()->graphicsCurveItem()->unhighlight();
 }
 
-bool CurvePrivate::Entity::isVisible() const
+bool Curve::Entity::intersects(const QRectF &rect) const
 {
-    Q_MI_D(const Curve);
-    return d->graphicsCurveItem()->isVisible();
+    return dataObject()->graphicsCurveItem()->intersects(rect);
 }
 
-QVariant CurvePrivate::ModelItem::data(int role) const
+bool Curve::Entity::isVisible() const
 {
-    if (Ac::PointsRole == role) {
-        Q_MI_Q(const Curve);
-        return QVariant::fromValue(q->points());
-    }
-    return GraphicsObjectPrivate::ModelItem::data(role);
+    return dataObject()->graphicsCurveItem()->isVisible();
 }
 
-bool CurvePrivate::ModelItem::setData(const QVariant &data, int role)
+QVariant Curve::ModelData::get(int role) const
 {
-    if (Ac::PointsRole == role) {
-        Q_MI_Q(Curve);
-        q->setPoints(data.value<PointList>());
-        return true;
-    }
-    return GraphicsObjectPrivate::ModelItem::setData(data, role);
+    if (Ac::PointsRole == role)
+        return QVariant::fromValue(dataObject()->pointsStack().top());
+    return GraphicsObject::ModelData::get(role);
 }
 
-CurvePrivate::CurvePrivate(Curve *q, ModelItem *modelItem, SubEntity *subEntity)
-    :   GraphicsObjectPrivate(q, modelItem)
-    ,   _graphicsCurveItem(new GraphicsCurveItem)
-    ,   _entity(new Entity(q))
-    ,   _subEntity(subEntity)
-    ,   _points(new Points(q))
+bool Curve::ModelData::set(const QVariant &data, int role)
 {
-    PointList pts;
-    pointsStack.push(pts);
-}
-
-void CurvePrivate::init()
-{
-    graphicsCurveItem()->setEntity(entity());
-}
-
-GraphicsParentPrivate *CurvePrivate::graphicsParent() const
-{
-    Q_Q(const Curve);
-    ScoreObject *scoreObject = q->scoreObject();
-    return scoreObject ? scoreObject->d_func() : 0;
-}
-
-void CurvePrivate::updateGraphicsItems()
-{
-    Q_Q(Curve);
-    conformPoints();
-    graphicsCurveItem()->setPoints(q->points());
+    if (Ac::PointsRole == role)
+        return dataObject()->setPoints(qvariant_cast<PointList>(data));
+    return GraphicsObject::ModelData::set(data, role);
 }

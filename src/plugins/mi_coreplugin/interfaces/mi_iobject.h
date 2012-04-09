@@ -15,27 +15,56 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELITEM_H
-#define MI_IMODELITEM_H
+#ifndef MI_IOBJECT_H
+#define MI_IOBJECT_H
 
-#include <mi_iaggregate.h>
+#include <mi_namespace.h>
 
-class IModel;
-class IModelList;
+#include <QObject>
 
-class IModelItem : public IAggregate
+
+
+
+#include <mi_iaggregator.h>
+
+class Object : public QObject
+{
+    Q_OBJECT
+
+    IAggregator *_aggregator;
+
+public:
+    Object(IAggregator *aggregator)
+        :   _aggregator(aggregator)
+    {}
+
+    ~Object() {}
+
+    IAggregator *aggregator() const
+    {
+        return qGetPtrHelper(_aggregator);
+    }
+
+    const void *queryInterface(int interfaceType) const
+    {
+        switch (interfaceType) {
+        case Mi::ObjectInterface:
+            return this;
+        default:
+            return aggregator()->queryInterface(interfaceType);
+        }
+    }
+};
+
+
+
+
+class IObject : public Object, public IUnknown
 {
 public:
-    enum { InterfaceType = Mi::ModelItemInterface };
+    enum { InterfaceType = Mi::ObjectInterface };
 
-    virtual int itemType() const = 0;
-    virtual bool isTypeOfItem(int itemType) const = 0;
-    virtual IModelItem *parent() const = 0;
-    virtual int count() const = 0;
-    virtual int indexOf(IModelItem *item) const = 0;
-    virtual IModelItem *at(int i) const = 0;
-    virtual IModelItem *item(int type) const = 0;
-    virtual IModelList *list(int listType) const = 0;
+    virtual const void *queryInterface(int interfaceType) const;
 
     // IUnknown
 
@@ -46,10 +75,8 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-#endif // MI_IMODELITEM_H
+#endif // MI_IOBJECT_H

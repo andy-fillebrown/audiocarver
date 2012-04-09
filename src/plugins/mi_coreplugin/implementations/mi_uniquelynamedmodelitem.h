@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_UNIQUELYNAMEDOBJECT_H
-#define MI_UNIQUELYNAMEDOBJECT_H
+#ifndef MI_UNIQUELYNAMEDMODELITEM_H
+#define MI_UNIQUELYNAMEDMODELITEM_H
 
 #include <mi_object.h>
 
@@ -64,4 +64,4 @@ inline UniquelyNamedObject::UniquelyNamedObject(UniquelyNamedObjectPrivate &dd, 
     :   Object(dd, parent)
 {}
 
-#endif // MI_UNIQUELYNAMEDOBJECT_H
+#endif // MI_UNIQUELYNAMEDMODELITEM_H

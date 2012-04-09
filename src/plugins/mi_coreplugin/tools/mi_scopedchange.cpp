@@ -15,41 +15,23 @@
 **
 **************************************************************************/
 
-#include <mi_objectlist.h>
+#include "mi_scopedchange.h"
 
+#include <mi_dataobject.h>
 #include <mi_imodel.h>
 
-#include <QVariant>
-
-QVariant ObjectListPrivate::ModelItemList::data(int role) const
+ScopedChange::ScopedChange(DataObject *dataObject, int role)
+    :   _modelData(query<IModelData>(dataObject))
+    ,   _role(role)
 {
-    if (Mi::ListTypeRole == role) {
-        Q_MI_D(const ObjectList);
-        return d->listType;
-    }
-    return helper.data(role);
+    IModel *model = IModel::instance();
+    if (model)
+        model->beginChange(_modelData, _role);
 }
 
-void ObjectListPrivate::beginInsertItem(int i)
+ScopedChange::~ScopedChange()
 {
+    IModel *model = IModel::instance();
     if (model)
-        emit model->itemAboutToBeInserted(modelItemList(), i);
-}
-
-void ObjectListPrivate::endInsertItem(int i)
-{
-    if (model)
-        emit model->itemInserted(modelItemList(), i);
-}
-
-void ObjectListPrivate::beginRemoveItem(int i)
-{
-    if (model)
-        emit model->itemAboutToBeRemoved(modelItemList(), i);
-}
-
-void ObjectListPrivate::endRemoveItem(int i)
-{
-    if (model)
-        emit model->itemRemoved(modelItemList(), i);
+        model->endChange(_modelData, _role);
 }

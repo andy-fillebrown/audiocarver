@@ -1,20 +1,26 @@
 
-SOURCE_PAIRS = \
-#    ac_controlcurve \
-    ac_curve \
-    ac_graphicsobject \
-    ac_graphicsparent \
-#    ac_gridline \
-#    ac_gridsettings \
-#    ac_note \
-#    ac_pitchcurve \
-#    ac_projectsettings \
-#    ac_score \
-#    ac_scoreobject \
-#    ac_track \
-#    ac_viewsettings \
+SOURCE_FILES = \
+#    controlcurve \
+    curve \
+    graphicsobject \
+    graphicsparent \
+#    gridline \
+#    gridsettings \
+#    note \
+#    pitchcurve \
+#    projectsettings \
+#    score \
+    scoreobject \
+#    track \
+#    viewsettings \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= dataobjects/$${pair}.h
-    SOURCES *= dataobjects/$${pair}.cpp
+DIR = dataobjects
+PREFIX = ac_
+
+for(file, SOURCE_FILES) {
+    name = $$PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

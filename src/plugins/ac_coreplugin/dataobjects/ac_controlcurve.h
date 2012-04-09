@@ -20,13 +20,8 @@
 
 #include <ac_curve.h>
 
-class ControlCurvePrivate;
 class AC_CORE_EXPORT ControlCurve : public Curve
-        ,   public ISubEntity
 {
-    Q_OBJECT
-    Q_PROPERTY(int controlId READ controlId WRITE setControlId)
-
 public:
     enum { Type = Ac::ControlCurveItem };
 
@@ -57,27 +52,15 @@ public:
 
     int persistentRoleAt(int i) const
     {
-        if (staticMetaObject.propertyOffset() == i)
-            return Ac::ControlIdRole;
-        return Curve::persistentRoleAt(i);
+//        if (staticMetaObject.propertyOffset() == i)
+//            return Ac::ControlIdRole;
+//        return Curve::persistentRoleAt(i);
+        Q_UNUSED(i);
+        return 0;
     }
 
     QVariant data(int role) const;
     bool setData(const QVariant &value, int role);
-
-    // IUnknown
-    void *query(int type) const
-    {
-        switch (type) {
-        case Ac::SubEntityInterface:
-            return objectToInterface_cast<ISubEntity>(this);
-        default:
-            return Curve::query(type);
-        }
-    }
-
-private:
-    Q_DECLARE_PRIVATE(ControlCurve)
 };
 
 #endif // AC_CONTROLCURVE_H

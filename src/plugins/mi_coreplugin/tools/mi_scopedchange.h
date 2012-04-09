@@ -15,31 +15,24 @@
 **
 **************************************************************************/
 
-#include "mi_coreplugin.h"
+#ifndef MI_SCOPEDCHANGE_H
+#define MI_SCOPEDCHANGE_H
 
-#include <mi_namespace.h>
+class DataObject;
 
-#include <pluginmanager.h>
+class IModel;
+class IModelData;
 
-#include <QMetaType>
-#include <QtPlugin>
-
-static void test()
+class ScopedChange
 {
-}
+    IModelData *_modelData;
+    int _role;
 
-bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
+public:
+    ScopedChange(DataObject *dataObject, int role);
+    ~ScopedChange();
+};
 
-    Mi::appendItemDataRole(Mi::ItemTypeRole, "type");
-    Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
-    Mi::appendItemDataRole(Mi::NameRole, "name");
+#define Q_MI_SCOPED_CHANGE(role) ScopedChange scoped_change(this, role);
 
-    test();
-
-    return true;
-}
-
-Q_EXPORT_PLUGIN(MiCorePlugin)
+#endif // MI_SCOPEDCHANGE_H

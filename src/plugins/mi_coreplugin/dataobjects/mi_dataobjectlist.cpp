@@ -15,11 +15,7 @@
 **
 **************************************************************************/
 
-#include <mi_iunknown.h>
+#include "mi_dataobjectlist.h"
 
-#include <QVariant>
-
-IUnknown *variantToUnknown_cast(const QVariant &v)
-{
-    return reinterpret_cast<IUnknown*>(v.value<quintptr>());
-}
+DataObjectList::~DataObjectList()
+{}

@@ -22,6 +22,13 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
+GraphicsParent::~GraphicsParent()
+{
+    qDeleteAll(_unitYGraphicsItems);
+    qDeleteAll(_unitXGraphicsItems);
+    qDeleteAll(_mainGraphicsItems);
+}
+
 static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &items,
                                    const QMap<int, QGraphicsItem*> &parentItems)
 {
@@ -46,23 +53,16 @@ static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
     }
 }
 
- GraphicsParentPrivate::~GraphicsParentPrivate()
+void GraphicsParent::updateGraphicsParent()
 {
-    qDeleteAll(unitYGraphicsItems);
-    qDeleteAll(unitXGraphicsItems);
-    qDeleteAll(mainGraphicsItems);
-}
-
-void GraphicsParentPrivate::updateGraphicsParent()
-{
-    GraphicsParentPrivate *parent = graphicsParent();
+    GraphicsParent *parent = graphicsParent();
     if (parent) {
-        setParentGraphicsItems(mainGraphicsItems, parent->mainGraphicsItems);
-        setParentGraphicsItems(unitXGraphicsItems, parent->unitXGraphicsItems);
-        setParentGraphicsItems(unitYGraphicsItems, parent->unitYGraphicsItems);
+        setParentGraphicsItems(_mainGraphicsItems, parent->_mainGraphicsItems);
+        setParentGraphicsItems(_unitXGraphicsItems, parent->_unitXGraphicsItems);
+        setParentGraphicsItems(_unitYGraphicsItems, parent->_unitYGraphicsItems);
     } else {
-        clearParentGraphicsItems(mainGraphicsItems);
-        clearParentGraphicsItems(unitXGraphicsItems);
-        clearParentGraphicsItems(unitYGraphicsItems);
+        clearParentGraphicsItems(_mainGraphicsItems);
+        clearParentGraphicsItems(_unitXGraphicsItems);
+        clearParentGraphicsItems(_unitYGraphicsItems);
     }
 }

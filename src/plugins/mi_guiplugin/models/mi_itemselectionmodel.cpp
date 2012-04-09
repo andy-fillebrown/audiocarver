@@ -33,7 +33,7 @@ QList<IModelItem*> ItemSelectionModel::selectedItems() const
 
     const int n = indexes.count();
     for (int i = 0;  i < n; ++i)
-        items.append(model->itemFromIndex(indexes.at(i)));
+        items.append(model->item(indexes.at(i)));
 
     return items;
 }

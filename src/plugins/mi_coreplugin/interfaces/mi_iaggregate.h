@@ -15,31 +15,32 @@
 **
 **************************************************************************/
 
-#include "mi_coreplugin.h"
+#ifndef MI_IAGGREGATE_H
+#define MI_IAGGREGATE_H
 
-#include <mi_namespace.h>
+#include <mi_iunknown.h>
 
-#include <pluginmanager.h>
+class IAggregator;
 
-#include <QMetaType>
-#include <QtPlugin>
-
-static void test()
+class MI_CORE_EXPORT IAggregate : public IUnknown
 {
-}
+public:
+    enum { InterfaceType = Mi::AggregateInterface };
 
-bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
+    virtual IAggregator *aggregator() const = 0;
+    virtual const void *queryInterface(int interfaceType) const;
 
-    Mi::appendItemDataRole(Mi::ItemTypeRole, "type");
-    Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
-    Mi::appendItemDataRole(Mi::NameRole, "name");
+    // IUnknown
 
-    test();
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-    return true;
-}
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+};
 
-Q_EXPORT_PLUGIN(MiCorePlugin)
+#endif // MI_IAGGREGATE_H

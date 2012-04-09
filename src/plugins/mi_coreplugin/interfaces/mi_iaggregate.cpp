@@ -15,31 +15,13 @@
 **
 **************************************************************************/
 
-#include "mi_coreplugin.h"
+#include "mi_iaggregate.h"
 
-#include <mi_namespace.h>
+#include <mi_iaggregator.h>
 
-#include <pluginmanager.h>
-
-#include <QMetaType>
-#include <QtPlugin>
-
-static void test()
+const void *IAggregate::queryInterface(int interfaceType) const
 {
+    if (isTypeOfInterface(interfaceType))
+        return this;
+    return aggregator()->queryInterface(interfaceType);
 }
-
-bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-
-    Mi::appendItemDataRole(Mi::ItemTypeRole, "type");
-    Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
-    Mi::appendItemDataRole(Mi::NameRole, "name");
-
-    test();
-
-    return true;
-}
-
-Q_EXPORT_PLUGIN(MiCorePlugin)

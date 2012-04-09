@@ -20,14 +20,13 @@
 
 #include <ac_curve.h>
 
-class PitchCurvePrivate;
 class AC_CORE_EXPORT PitchCurve : public Curve
         ,   public ISubEntity
 {
     Q_OBJECT
 
 public:
-    enum { Type = Ac::PitchCurveItem };
+    enum { ItemType = Ac::PitchCurveItem };
 
     explicit PitchCurve(QObject *parent = 0);
 
@@ -35,7 +34,7 @@ public:
     ScoreObject *scoreObject() const;
 
     // ISubEntity
-    IEntity *parentEntity() const;
+    IParentEntity *parentEntity() const;
 
     int sceneType() const
     {
@@ -48,21 +47,7 @@ public:
     }
 
     // IModelItem
-    int type() const { return Type; }
-
-    // IUnknown
-    void *query(int type) const
-    {
-        switch (type) {
-        case Ac::SubEntityInterface:
-            return objectToInterface_cast<ISubEntity>(this);
-        default:
-            return Curve::query(type);
-        }
-    }
-
-private:
-    Q_DECLARE_PRIVATE(PitchCurve)
+    int itemType() const { return ItemType; }
 };
 
 #endif // AC_PITCHCURVE_H

@@ -20,48 +20,36 @@
 
 #include <ac_global.h>
 
-#include <mi_uniquelynamedobject.h>
+#include <mi_dataobject.h>
 
-class GraphicsParentPrivate;
+class GraphicsParent;
 
-class GraphicsObjectPrivate;
-class AC_CORE_EXPORT GraphicsObject : public UniquelyNamedObject
+class AC_CORE_EXPORT GraphicsObject : public DataObject
 {
-    Q_OBJECT
-    Q_DECLARE_PRIVATE(GraphicsObject)
-
 protected:
-    inline GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent);
-};
-
-class GraphicsObjectPrivate : public UniquelyNamedObjectPrivate
-{
-    Q_DECLARE_PUBLIC(GraphicsObject)
-
-public:
-    typedef UniquelyNamedObjectPrivate::ModelItem ModelItem;
-
-    GraphicsObjectPrivate(GraphicsObject *q, ModelItem *modelItem)
-        :   UniquelyNamedObjectPrivate(q, modelItem)
+    GraphicsObject()
     {}
 
-    void setParent(Object *parent)
+    ~GraphicsObject();
+
+    virtual GraphicsParent *graphicsParent() const
     {
-        ObjectPrivate::setParent(parent);
-        updateGraphicsParent();
+        return 0;
     }
 
     virtual void updateGraphicsParent()
     {}
 
-    virtual GraphicsParentPrivate *graphicsParent() const
-    {
-        return 0;
-    }
-};
+    // DataObject
 
-inline GraphicsObject::GraphicsObject(GraphicsObjectPrivate &dd, QObject *parent)
-    :   UniquelyNamedObject(dd, parent)
-{}
+    void setParent(DataObject *parent)
+    {
+        DataObject::setParent(parent);
+        updateGraphicsParent();
+    }
+
+    typedef DataObject::ModelData ModelData;
+    typedef DataObject::ModelItem ModelItem;
+};
 
 #endif // AC_GRAPHICSOBJECT_H

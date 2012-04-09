@@ -16,3 +16,6 @@
 **************************************************************************/
 
 #include "ac_graphicsobject.h"
+
+GraphicsObject::~GraphicsObject()
+{}

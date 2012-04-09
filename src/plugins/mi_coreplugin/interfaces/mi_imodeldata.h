@@ -15,26 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSPARENT_H
-#define AC_GRAPHICSPARENT_H
+#ifndef MI_IMODELDATA_H
+#define MI_IMODELDATA_H
 
-#include <ac_graphicsobject.h>
+#include <mi_iaggregate.h>
 
-class QGraphicsItem;
+class QVariant;
 
-class AC_CORE_EXPORT GraphicsParent : public GraphicsObject
+class IModelData : public IAggregate
 {
-    QMap<int, QGraphicsItem*> _mainGraphicsItems;
-    QMap<int, QGraphicsItem*> _unitXGraphicsItems;
-    QMap<int, QGraphicsItem*> _unitYGraphicsItems;
+public:
+    enum { InterfaceType = Mi::ModelDataInterface };
 
-protected:
-    GraphicsParent()
-    {}
+    virtual int roleCount() const = 0;
+    virtual int roleAt(int i) const = 0;
+    virtual QVariant get(int role) const = 0;
+    virtual bool set(const QVariant &data, int role) = 0;
+    virtual Qt::ItemFlags flags() const = 0;
 
-    ~GraphicsParent();
+    // IUnknown
 
-    void updateGraphicsParent();
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
 };
 
-#endif // AC_GRAPHICSPARENT_H
+#endif // MI_IMODELDATA_H

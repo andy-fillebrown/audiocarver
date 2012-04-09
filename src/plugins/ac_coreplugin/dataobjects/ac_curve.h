@@ -27,183 +27,177 @@
 class GraphicsCurveItem;
 class ScoreObject;
 
-class CurvePrivate;
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
-    Q_OBJECT
-    Q_PROPERTY(PointList points READ points WRITE setPoints)
-    Q_DECLARE_PRIVATE(Curve)
-
-public:
-    inline const PointList &points() const;
-    void setPoints(const PointList &points);
-
-    virtual ScoreObject *scoreObject() const = 0;
-
-    void setColor(const QColor &color);
+    QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
+    QStack<PointList> _pointsStack;
 
 protected:
-    inline Curve(CurvePrivate &dd, QObject *parent);
-
-    inline void *queryInterface(int interface) const;
-};
-
-class CurvePrivate : public GraphicsObjectPrivate
-{
-    QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
-    QScopedPointer<IEntity> _entity;
-    QScopedPointer<ISubEntity> _subEntity;
-    QScopedPointer<IPoints> _points;
-
-public:
-    QStack<PointList> pointsStack;
-
-    class Entity : public IEntity
-    {
-    public:
-        Curve *q_ptr;
-
-        Entity(Curve *q)
-            :   q_ptr(q)
-        {}
-
-        void highlight();
-        void unhighlight();
-        bool intersects(const QRectF &rect) const;
-        bool isVisible() const;
-
-        Q_MI_DEFINE_QUERYINTERFACE
-        Q_DECLARE_PUBLIC(Curve)
-    };
-
-    class SubEntity : public ISubEntity
-    {
-    public:
-        Curve *q_ptr;
-
-        SubEntity(Curve *q)
-            :   q_ptr(q)
-        {}
-
-        bool isCurve() const
-        {
-            return true;
-        }
-
-        Q_MI_DEFINE_QUERYINTERFACE
-        Q_DECLARE_PUBLIC(Curve)
-    };
-
-    class Points : public IPoints
-    {
-    public:
-        Curve *q_ptr;
-
-        Points(Curve *q)
-            :   q_ptr(q)
-        {}
-
-        const PointList &points() const
-        {
-            Q_MI_D(const Curve);
-            return d->pointsStack.top();
-        }
-
-        void pushPoints(const PointList &points)
-        {
-            Q_MI_D(Curve);
-            d->pointsStack.push(points);
-            d->updateGraphicsItems();
-        }
-
-        void popPoints()
-        {
-            Q_MI_D(Curve);
-            d->pointsStack.pop();
-            d->updateGraphicsItems();
-        }
-
-        void setPoints(const PointList &points)
-        {
-            q_func()->setPoints(points);
-        }
-
-        Q_MI_DEFINE_QUERYINTERFACE
-        Q_DECLARE_PUBLIC(Curve)
-    };
-
-    class ModelItem : public GraphicsObjectPrivate::ModelItem
-    {
-    public:
-        ModelItem(Object *q)
-            :   GraphicsObjectPrivate::ModelItem(q)
-        {}
-
-        int roleAt(int i) const
-        {
-            if (Curve::staticMetaObject.propertyOffset() == i)
-                return Ac::PointsRole;
-            return GraphicsObjectPrivate::ModelItem::roleAt(i);
-        }
-
-        QVariant data(int role) const;
-        bool setData(const QVariant &data, int role);
-    };
-
-    CurvePrivate(Curve *q, ModelItem *modelItem, SubEntity *subEntity);
-    void init();
+    Curve();
+    ~Curve();
 
     GraphicsCurveItem *graphicsCurveItem() const
     {
         return qGetPtrHelper(_graphicsCurveItem);
     }
 
-    IEntity *entity() const
+    QStack<PointList> &pointsStack()
     {
-        return qGetPtrHelper(_entity);
+        return _pointsStack;
     }
 
-    ISubEntity *subEntity() const
-    {
-        return qGetPtrHelper(_subEntity);
-    }
-
-    IPoints *points() const
-    {
-        return qGetPtrHelper(_points);
-    }
-
-    GraphicsParentPrivate *graphicsParent() const;
+    bool setPoints(const PointList &points);
+    virtual void conformPoints() = 0;
     void updateGraphicsItems();
 
-    virtual void conformPoints() = 0;
+    virtual ScoreObject *scoreObject() const = 0;
+    void setColor(const QColor &color);
 
-    Q_DECLARE_PUBLIC(Curve)
-};
+    // GraphicsObject
 
-inline Curve::Curve(CurvePrivate &dd, QObject *parent)
-    :   GraphicsObject(dd, parent)
-{
-    dd.init();
-}
+    GraphicsParent *graphicsParent() const;
 
-inline const PointList &Curve::points() const
-{
-    return d_func()->pointsStack.top();
-}
+    // IAggregator
 
-inline void *Curve::queryInterface(int interface) const
-{
-    switch (interface) {
-    case Ac::EntityInterface:
-        return d_func()->entity();
-    case Ac::SubEntityInterface:
-        return d_func()->subEntity();
-    case Ac::PointsInterface:
-        return d_func()->points();
-    default:
-        return GraphicsObject::queryInterface(interface);
+    void *createAggregate(int interface)
+    {
+        switch (interface) {
+        case Ac::EntityInterface:
+            return appendAggregate(new Entity(this));
+        default:
+            return GraphicsObject::createAggregate(interface);
+        }
     }
-}
+
+    // ------------------------------------------------------------------------
+
+    class Entity : public IEntity
+    {
+        Curve *_aggregator;
+
+    public:
+        Entity(Curve *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        Curve *dataObject() const
+        {
+            return _aggregator;
+        }
+
+        // IEntity
+
+        void highlight();
+        void unhighlight();
+        bool intersects(const QRectF &rect) const;
+        bool isVisible() const;
+
+        // IAggregate
+
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
+    };
+
+    // ------------------------------------------------------------------------
+
+    class SubEntity : public ISubEntity
+    {
+        Curve *_aggregator;
+
+    public:
+        SubEntity(Curve *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        // ISubEntity
+
+        bool isCurve() const
+        {
+            return true;
+        }
+
+        // IAggregate
+
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
+    };
+
+    // ------------------------------------------------------------------------
+
+    class Points : public IPoints
+    {
+        Curve *_aggregator;
+
+    public:
+        Points(Curve *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        Curve *dataObject() const
+        {
+            return qGetPtrHelper(_aggregator);
+        }
+
+        const PointList &points() const
+        {
+            return dataObject()->pointsStack().top();
+        }
+
+        void pushPoints(const PointList &points)
+        {
+            Curve *data_object = dataObject();
+            data_object->pointsStack().push(points);
+            data_object->updateGraphicsItems();
+        }
+
+        void popPoints()
+        {
+            Curve *data_object = dataObject();
+            data_object->pointsStack().pop();
+            data_object->updateGraphicsItems();
+        }
+
+        void setPoints(const PointList &points)
+        {
+            dataObject()->setPoints(points);
+        }
+    };
+
+    // ------------------------------------------------------------------------
+
+    class ModelData : public GraphicsObject::ModelData
+    {
+    public:
+        ModelData(Curve *aggregator)
+            :   GraphicsObject::ModelData(aggregator)
+        {}
+
+        Curve *dataObject() const
+        {
+            return cast<Curve>(GraphicsObject::ModelData::dataObject());
+        }
+
+        int roleCount() const
+        {
+            return GraphicsObject::ModelData::roleCount() + 1;
+        }
+
+        int roleAt(int i) const
+        {
+            if (GraphicsObject::ModelData::roleCount() == i)
+                return Ac::PointsRole;
+            return GraphicsObject::ModelData::roleAt(i);
+        }
+
+        QVariant get(int role) const;
+        bool set(const QVariant &data, int role);
+    };
+
+    typedef GraphicsObject::ModelItem ModelItem;
+};
 
 #endif // AC_CURVE_H

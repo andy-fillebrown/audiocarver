@@ -15,31 +15,23 @@
 **
 **************************************************************************/
 
-#include "mi_coreplugin.h"
+#ifndef MI_IMODELNODE_H
+#define MI_IMODELNODE_H
 
-#include <mi_namespace.h>
+#include <mi_iaggregate.h>
 
-#include <pluginmanager.h>
+class IModelList;
 
-#include <QMetaType>
-#include <QtPlugin>
-
-static void test()
+class IModelNode : public IAggregate
 {
-}
+public:
+    enum { Type = Mi::ModelItemInterface };
 
-bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
+    virtual int count() const = 0;
+    virtual int indexOf(const IModelNode *node) const = 0;
+    virtual const IModelNode *at(int i) const = 0;
+    virtual const IModelNode *findNode(int type) const = 0;
+    virtual const IModelList *findList(int listType) const = 0;
+};
 
-    Mi::appendItemDataRole(Mi::ItemTypeRole, "type");
-    Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
-    Mi::appendItemDataRole(Mi::NameRole, "name");
-
-    test();
-
-    return true;
-}
-
-Q_EXPORT_PLUGIN(MiCorePlugin)
+#endif // MI_IMODELNODE_H

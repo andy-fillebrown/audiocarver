@@ -15,31 +15,4 @@
 **
 **************************************************************************/
 
-#include "mi_coreplugin.h"
-
-#include <mi_namespace.h>
-
-#include <pluginmanager.h>
-
-#include <QMetaType>
-#include <QtPlugin>
-
-static void test()
-{
-}
-
-bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-
-    Mi::appendItemDataRole(Mi::ItemTypeRole, "type");
-    Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
-    Mi::appendItemDataRole(Mi::NameRole, "name");
-
-    test();
-
-    return true;
-}
-
-Q_EXPORT_PLUGIN(MiCorePlugin)
+#include <mi_uniquelynamedobjectlist.h>

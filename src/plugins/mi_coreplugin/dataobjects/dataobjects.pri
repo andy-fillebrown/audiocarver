@@ -1,11 +1,15 @@
 
-SOURCE_PAIRS = \
-    mi_object \
-    mi_objectlist \
-    mi_uniquelynamedobject \
-    mi_uniquelynamedobjectlist \
+SOURCE_FILES = \
+    dataobject \
+    dataobjectlist \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= dataobjects/$${pair}.h
-    SOURCES *= dataobjects/$${pair}.cpp
+DIR = dataobjects
+PREFIX = mi_
+
+for(file, SOURCE_FILES) {
+    name = $$PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

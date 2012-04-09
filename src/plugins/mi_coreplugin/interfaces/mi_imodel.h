@@ -18,85 +18,48 @@
 #ifndef MI_IMODEL_H
 #define MI_IMODEL_H
 
-#include <mi_global.h>
-#include <mi_namespace.h>
+#include <mi_iaggregate.h>
 
-#include <QAbstractItemModel>
-
+class IModelData;
 class IModelItem;
-class IModelItemList;
+class IModelList;
 
-class MI_CORE_EXPORT IModel : public QAbstractItemModel
+class QModelIndex;
+
+class IModel : public IAggregate
 {
-    Q_OBJECT
-
 public:
+    enum { InterfaceType = Mi::ModelInterface };
+
     IModel();
 
     static IModel *instance();
-    static QObject *orphanage();
 
-    virtual IModelItem *rootItem() const = 0;
-    virtual IModelItem *findItem(int type) const = 0;
-    virtual IModelItemList *findList(int type) const = 0;
+    virtual IModelItem *item(const QModelIndex &index) const = 0;
+    virtual QModelIndex index(IModelItem *item) const = 0;
 
-    virtual QList<IModelItem*> findItems(int type, int role, const QVariant &value) const
+    virtual void beginChange(IModelData *data, int role) = 0;
+    virtual void endChange(IModelData *data, int role) = 0;
+    virtual void beginInsert(IModelList *list, int i) = 0;
+    virtual void endInsert(IModelList *list, int i) = 0;
+    virtual void beginRemove(IModelList *list, int i) = 0;
+    virtual void endRemove(IModelList *list, int i) = 0;
+
+    virtual void orphan(IModelItem *item) = 0;
+
+    // IUnknown
+
+    int interfaceType() const
     {
-        Q_UNUSED(type);
-        Q_UNUSED(role);
-        Q_UNUSED(value);
-        return QList<IModelItem*>();
+        return InterfaceType;
     }
 
-    virtual void clear() = 0;
-
-    virtual bool isLocked() const
+    bool isTypeOfInterface(int interfaceType) const
     {
-        return false;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
     }
-
-    virtual void setLocked(bool locked = true)
-    {
-        Q_UNUSED(locked);
-    }
-
-    virtual IModelItem *itemFromIndex(const QModelIndex &index) const;
-
-protected:
-    QModelIndex indexFromItem(const IModelItem *item) const;
-
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    QModelIndex parent(const QModelIndex &child) const;
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &) const { return 1; }
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-
-    virtual QModelIndex index(int row, const QModelIndex &parent) const
-    {
-        return index(row, 0, parent);
-    }
-
-signals:
-    void dataAboutToBeChanged(IModelItem *item, int role);
-    void dataChanged(IModelItem *item, int role);
-    void itemAboutToBeInserted(IModelItemList *list, int i);
-    void itemInserted(IModelItemList *list, int i);
-    void itemAboutToBeRemoved(IModelItemList *list, int i);
-    void itemRemoved(IModelItemList *list, int i);
-
-private slots:
-    void _dataChanged(IModelItem *item);
-    void _itemAboutToBeInserted(IModelItemList *list, int i);
-    void _itemInserted();
-    void _itemAboutToBeRemoved(IModelItemList *list, int i);
-    void _itemRemoved();
-    void _deleteOrphans();
-
-private:
-    friend class ObjectPrivate;
-    friend class ObjectListPrivate;
 };
 
 #endif // MI_IMODEL_H

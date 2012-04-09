@@ -15,22 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELITEMLIST_H
-#define MI_IMODELITEMLIST_H
+#ifndef MI_IMODELLIST_H
+#define MI_IMODELLIST_H
 
-#include <mi_iunknown.h>
-#include <mi_namespace.h>
+#include <mi_imodelitem.h>
 
-class IModelItem;
-
-class IModelItemList : public IModelItem
+class IModelList : public IModelItem
 {
 public:
-    enum { Type = Mi::ModelItemListInterface };
+    enum { InterfaceType = Mi::ModelListInterface };
 
     virtual int listType() const = 0;
+    virtual bool has(const QString &name) const = 0;
     virtual void insert(int i, IModelItem *item) = 0;
-    virtual bool removeAt(int i) = 0;
+    virtual void removeAt(int i) = 0;
     virtual void clear() = 0;
 
     bool isEmpty() const
@@ -43,22 +41,49 @@ public:
         insert(count(), item);
     }
 
-    IModelItem *take(int i)
+    IModelItem *takeAt(int i)
     {
         IModelItem *item = at(i);
         removeAt(i);
         return item;
     }
 
-    bool remove(IModelItem *item)
+    void remove(IModelItem *item)
     {
-        return removeAt(indexOf(item));
+        removeAt(indexOf(item));
     }
 
-    bool removeLast()
+    void removeLast()
     {
-        return removeAt(count() - 1);
+        removeAt(count() - 1);
+    }
+
+    // IModelItem
+
+    int itemType() const
+    {
+        return Mi::ListItem;
+    }
+
+    bool isTypeOfItem(int itemType)
+    {
+        if (Mi::ListItem == itemType)
+            return true;
+    }
+
+    // IUnknown
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IModelItem::isTypeOfInterface(interfaceType);
     }
 };
 
-#endif // MI_IMODELITEMLIST_H
+#endif // MI_IMODELLIST_H

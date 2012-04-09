@@ -22,123 +22,133 @@
 
 #include <QGraphicsItem>
 
-ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)
-    :   GraphicsParentPrivate(q)
-    ,   volume(1.0f)
-    ,   pitchCurve(0)
-    ,   controlCurves(0)
-{}
-
-void ScoreObjectPrivate::init()
+int ScoreObject::ModelItem::indexOf(const IModelItem *item) const
 {
-    pitchCurve = new PitchCurve(q_ptr);
-    controlCurves = new ObjectTList<ControlCurve>(q_ptr);
+    ScoreObject *data_object = dataObject();
+    IAggregator *item_aggregator = item->aggregator();
+    if (data_object->pitchCurve() == item_aggregator)
+        return GraphicsParent::ModelItem::count();
+    if (data_object->controlCurves() == item_aggregator)
+        return GraphicsParent::ModelItem::count() + 1;
+    return GraphicsParent::ModelItem::indexOf(item);
 }
 
-ScoreObjectPrivate::~ScoreObjectPrivate()
-{
-    qDeleteAll(controlCurves);
-    delete pitchCurve;
-    delete controlCurves;
-}
+//ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)
+//    :   GraphicsParentPrivate(q)
+//    ,   volume(1.0f)
+//    ,   pitchCurve(0)
+//    ,   controlCurves(0)
+//{}
 
-ScoreObject::ScoreObject(ScoreObjectPrivate &dd, QObject *parent)
-    :   GraphicsParent(dd, parent)
-{
-    dd.init();
-}
+//void ScoreObjectPrivate::init()
+//{
+//    pitchCurve = new PitchCurve(q_ptr);
+//    controlCurves = new ObjectList(Ac::ControlCurveItem, q_ptr);
+//}
 
-qreal ScoreObject::volume() const
-{
-    Q_D(const ScoreObject);
-    return d->volume;
-}
+//ScoreObjectPrivate::~ScoreObjectPrivate()
+//{
+//    delete pitchCurve;
+//    delete controlCurves;
+//}
 
-void ScoreObject::setVolume(qreal volume)
-{
-    Q_D(ScoreObject);
-    volume = qBound(qreal(0.0f), volume, qreal(1.0f));
-    if (d->volume == volume)
-        return;
-    d->beginChangeData();
-    d->volume = volume;
-    updatePoints();
-    d->endChangeData();
-}
+//ScoreObject::ScoreObject(ScoreObjectPrivate &dd, QObject *parent)
+//    :   GraphicsParent(dd, parent)
+//{
+//    dd.init();
+//}
 
-PitchCurve *ScoreObject::pitchCurve() const
-{
-    Q_D(const ScoreObject);
-    return d->pitchCurve;
-}
+//qreal ScoreObject::volume() const
+//{
+//    Q_D(const ScoreObject);
+//    return d->volume;
+//}
 
-ObjectTList<ControlCurve> *ScoreObject::controlCurves() const
-{
-    Q_D(const ScoreObject);
-    return d->controlCurves;
-}
+//void ScoreObject::setVolume(qreal volume)
+//{
+//    Q_D(ScoreObject);
+//    volume = qBound(qreal(0.0f), volume, qreal(1.0f));
+//    if (d->volume == volume)
+//        return;
+//    d->beginChangeData();
+//    d->volume = volume;
+//    updatePoints();
+//    d->endChangeData();
+//}
 
-QVariant ScoreObject::data(int role) const
-{
-    switch (role) {
-    case Ac::LengthRole:
-        return length();
-    case Ac::VolumeRole:
-        return volume();
-    default:
-        return Object::data(role);
-    }
-}
+//PitchCurve *ScoreObject::pitchCurve() const
+//{
+//    Q_D(const ScoreObject);
+//    return d->pitchCurve;
+//}
 
-bool ScoreObject::setData(const QVariant &value, int role)
-{
-    switch (role) {
-    case Ac::VolumeRole:
-        setVolume(value.toReal());
-        return true;
-    default:
-        return Object::setData(value, role);
-    }
-}
+//ObjectList *ScoreObject::controlCurves() const
+//{
+//    Q_D(const ScoreObject);
+//    return d->controlCurves;
+//}
 
-int ScoreObject::modelItemIndex(const IModelItem *item) const
-{
-    Q_D(const ScoreObject);
-    if (d->pitchCurve == item)
-        return 0;
-    if (d->controlCurves == item)
-        return 1;
-    return Object::modelItemIndex(item);
-}
+//QVariant ScoreObject::data(int role) const
+//{
+//    switch (role) {
+//    case Ac::LengthRole:
+//        return length();
+//    case Ac::VolumeRole:
+//        return volume();
+//    default:
+//        return Object::data(role);
+//    }
+//}
 
-IModelItem *ScoreObject::modelItemAt(int i) const
-{
-    switch (i) {
-    case 0:
-        return pitchCurve();
-    case 1:
-        return controlCurves();
-    default:
-        return 0;
-    }
-}
+//bool ScoreObject::setData(const QVariant &value, int role)
+//{
+//    switch (role) {
+//    case Ac::VolumeRole:
+//        setVolume(value.toReal());
+//        return true;
+//    default:
+//        return Object::setData(value, role);
+//    }
+//}
 
-IModelItem *ScoreObject::findModelItem(int type) const
-{
-    switch (type) {
-    case Ac::PitchCurveItem:
-        return pitchCurve();
-    default:
-        return 0;
-    }
-}
+//int ScoreObject::modelItemIndex(const IModelItem *item) const
+//{
+//    Q_D(const ScoreObject);
+//    if (d->pitchCurve == item)
+//        return 0;
+//    if (d->controlCurves == item)
+//        return 1;
+//    return Object::modelItemIndex(item);
+//}
 
-IModelItem *ScoreObject::findModelItemList(int type) const
-{
-    switch (type) {
-    case Ac::ControlCurveItem:
-        return controlCurves();
-    default:
-        return 0;
-    }
-}
+//IModelItem *ScoreObject::modelItemAt(int i) const
+//{
+//    switch (i) {
+//    case 0:
+//        return pitchCurve();
+//    case 1:
+//        return controlCurves();
+//    default:
+//        return 0;
+//    }
+//}
+
+//IModelItem *ScoreObject::findModelItem(int type) const
+//{
+//    switch (type) {
+//    case Ac::PitchCurveItem:
+//        return pitchCurve();
+//    default:
+//        return 0;
+//    }
+//}
+
+//IModelItemList *ScoreObject::findModelItemList(int type) const
+//{
+//    switch (type) {
+//    case Ac::ControlCurveItem:
+//        return controlCurves();
+//    default:
+//        return 0;
+//    }
+//}

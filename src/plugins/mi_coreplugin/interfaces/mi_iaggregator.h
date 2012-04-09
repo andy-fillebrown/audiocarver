@@ -15,27 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELITEM_H
-#define MI_IMODELITEM_H
+#ifndef MI_IAGGREGATOR_H
+#define MI_IAGGREGATOR_H
 
-#include <mi_iaggregate.h>
+#include <mi_iunknown.h>
 
-class IModel;
-class IModelList;
+class IAggregate;
 
-class IModelItem : public IAggregate
+class IAggregator : public IUnknown
 {
 public:
-    enum { InterfaceType = Mi::ModelItemInterface };
+    enum { InterfaceType = Mi::AggregatorInterface };
 
-    virtual int itemType() const = 0;
-    virtual bool isTypeOfItem(int itemType) const = 0;
-    virtual IModelItem *parent() const = 0;
-    virtual int count() const = 0;
-    virtual int indexOf(IModelItem *item) const = 0;
-    virtual IModelItem *at(int i) const = 0;
-    virtual IModelItem *item(int type) const = 0;
-    virtual IModelList *list(int listType) const = 0;
+    virtual QList<IAggregate*> aggregates() const = 0;
+    virtual bool containsAggregate(int interfaceType) const = 0;
+    virtual void *createAggregate(int interfaceType) = 0;
+    virtual void *appendAggregate(IAggregate* aggregate) = 0;
+    virtual void removeAggregate(IAggregate *aggregate) = 0;
+    virtual void *queryInterface(int interfaceType) = 0;
+    virtual const void *queryInterface(int interfaceType) const = 0;
 
     // IUnknown
 
@@ -46,10 +44,14 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-#endif // MI_IMODELITEM_H
+template <> inline
+QObject *query(IAggregator *aggregator)
+{
+    return aggregator ? cast<QObject>(aggregator->queryInterface(Mi::ObjectInterface)) : 0;
+}
+
+#endif // MI_IAGGREGATE_H
