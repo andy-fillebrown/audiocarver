@@ -31,9 +31,11 @@ class ScoreObject;
 
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
-    Q_DECLARE_AGGREGATOR(Curve, GraphicsObject)
+    Q_DECLARE_AGGREGATOR(Curve, GraphicsObject, 1, 0)
 
     QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
+
+    // Properties
     QStack<PointList> _pointsStack;
 
 protected:
@@ -178,29 +180,36 @@ protected:
 
         int roleCount() const
         {
-            return Base::roleCount() + 1;
+            return TotalRoleCount;
         }
 
         int roleAt(int i) const
         {
-            if (Base::roleCount() == i)
-                return Ac::PointsRole;
+            const int j = i - RoleCount;
+            Q_ASSERT(0 <= j);
+            if (j < RoleCount)
+                return Roles[j];
             return Base::roleAt(i);
         }
 
         QVariant getVariant(int role) const
         {
-            if (Ac::PointsRole == role)
+            switch (role) {
+            case Ac::PointsRole:
                 return QVariant::fromValue(a()->points());
-            return Base::getVariant(role);
-
+            default:
+                return Base::getVariant(role);
+            }
         }
 
         bool setVariant(const QVariant &data, int role)
         {
-            if (Ac::PointsRole == role)
+            switch (role) {
+            case Ac::PointsRole:
                 return a()->setPoints(qvariant_cast<PointList>(data));
-            return Base::setVariant(data, role);
+            default:
+                return Base::setVariant(data, role);
+            }
         }
     };
 };

@@ -24,7 +24,7 @@ class QGraphicsItem;
 
 class AC_CORE_EXPORT GraphicsParent : public GraphicsObject
 {
-    Q_DECLARE_AGGREGATOR(GraphicsParent, GraphicsObject)
+    Q_DECLARE_AGGREGATOR(GraphicsParent, GraphicsObject, 0, 0)
 
     QMap<int, QGraphicsItem*> _mainGraphicsItems;
     QMap<int, QGraphicsItem*> _unitXGraphicsItems;

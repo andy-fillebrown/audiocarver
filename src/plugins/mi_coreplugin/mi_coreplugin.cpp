@@ -24,7 +24,7 @@
 #include <QMetaType>
 #include <QtPlugin>
 
-static void test()
+void test()
 {
 }
 

@@ -32,9 +32,12 @@ class QGraphicsItem;
 
 class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
-    Q_DECLARE_AGGREGATOR(ScoreObject, GraphicsParent)
+    Q_DECLARE_AGGREGATOR(ScoreObject, GraphicsParent, 1, 2)
 
+    // Properties
     qreal _volume;
+
+    // Items
     QScopedPointer<PitchCurve> _pitchCurve;
     QScopedPointer<DataObjectList> _controlCurves;
 
@@ -73,7 +76,7 @@ protected:
 
         int count() const
         {
-            return 2;
+            return TotalRoleCount;
         }
 
         int indexOf(const IModelItem *item) const;

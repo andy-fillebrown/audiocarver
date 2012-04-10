@@ -28,10 +28,10 @@ typedef QList<DataObject*> DataObjects;
 
 class MI_CORE_EXPORT DataObjectList : public DataObject
 {
-    Q_DECLARE_AGGREGATOR(DataObjectList, DataObject)
-
     const int _listType;
     DataObjects _list;
+
+    Q_DECLARE_AGGREGATOR(DataObjectList, DataObject, 0, 0)
 
 protected:
     DataObjectList(int listType = Mi::UnknownItem)

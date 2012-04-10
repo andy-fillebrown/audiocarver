@@ -19,6 +19,10 @@
 
 #include <ac_scoreobject.h>
 
+Q_INIT_AGGREGATOR_ROLES(Curve) {
+    Ac::PointsRole
+};
+
 IAggregator *Curve::init()
 {
     _graphicsCurveItem.reset(new GraphicsCurveItem);

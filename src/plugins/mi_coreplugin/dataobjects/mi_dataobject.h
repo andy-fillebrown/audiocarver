@@ -26,12 +26,15 @@
 #include <mi_imodellist.h>
 #include <mi_scopedchange.h>
 
+
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
-    Q_DECLARE_BASE_AGGREGATOR(DataObject)
-
     DataObject *_parent;
+
+    // Properties
     QString _name;
+
+    Q_DECLARE_BASE_AGGREGATOR(DataObject, 1, 0)
 
 protected:
     DataObject()
@@ -81,18 +84,14 @@ protected:
 
         int roleCount() const
         {
-            return 1;
+            return TotalRoleCount;
         }
 
         int roleAt(int i) const
         {
-            switch (i) {
-            case 1:
-                return Mi::NameRole;
-            default:
-                Q_ASSERT(false);
-                return -1;
-            }
+            const int j = i - RoleCount;
+            Q_ASSERT(0 <= j && j < RoleCount);
+            return Roles[j];
         }
 
         QVariant getVariant(int role) const

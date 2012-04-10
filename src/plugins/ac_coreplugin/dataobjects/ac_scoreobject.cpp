@@ -22,8 +22,19 @@
 
 #include <QGraphicsItem>
 
+Q_INIT_AGGREGATOR_ROLES(ScoreObject) {
+    Ac::VolumeRole
+};
+
+Q_INIT_AGGREGATOR_ITEMTYPES(ScoreObject) {
+    Ac::PitchCurveItem,
+    Mi::ListItem
+};
+
 IAggregator *ScoreObject::init()
 {
+    Q_INIT_AGGREGATOR_ITEMLIST((_pitchCurve.data(),
+                                _controlCurves.data()))
     return Base::init();
 }
 
@@ -31,10 +42,9 @@ int ScoreObject::ModelItem::indexOf(const IModelItem *item) const
 {
     Q_A(const ScoreObject);
     IAggregator *item_a = item->aggregator();
-    if (a->pitchCurve() == item_a)
-        return Base::count();
-    if (a->controlCurves() == item_a)
-        return Base::count() + 1;
+    for (int i = 0;  i < ItemCount;  ++i)
+        if (a->Items[i] == item_a)
+            return A::TotalItemCount + i;
     return Base::indexOf(item);
 }
 

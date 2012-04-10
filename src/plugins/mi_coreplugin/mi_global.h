@@ -63,18 +63,47 @@ inline void mi_assert(const char *assertion, const char *file, int line)
 #define Q_TD(Class) Class##Private<T> *const d = d_func()
 #define Q_TQ(Class) Class<T> *const q = q_func()
 
-#define Q_DECLARE_BASE_AGGREGATOR(Class) \
+#define Q_DECLARE_BASE_AGGREGATOR(Class, ClassRoleCount, ClassItemCount) \
     protected: \
         typedef Class A; \
         virtual IAggregator *init(); \
+        enum { \
+            RoleCount = ClassRoleCount, \
+            TotalRoleCount = RoleCount, \
+            ItemCount = ClassItemCount, \
+            TotalItemCount = ItemCount \
+        }; \
+        static const int Roles[RoleCount]; \
+        static const int ItemTypes[ItemCount]; \
+        DataObject *Items[ItemCount]; \
     private:
 
-#define Q_DECLARE_AGGREGATOR(Class, BaseClass) \
+#define Q_DECLARE_AGGREGATOR(Class, BaseClass, ClassRoleCount, ClassItemCount) \
     protected: \
         typedef Class A; \
         typedef BaseClass Base; \
         IAggregator *init(); \
+        enum { \
+            RoleCount = ClassRoleCount, \
+            TotalRoleCount = Base::TotalRoleCount + RoleCount, \
+            ItemCount = ClassItemCount, \
+            TotalItemCount = Base::TotalItemCount + ItemCount \
+        }; \
+        static const int Roles[RoleCount]; \
+        static const int ItemTypes[ItemCount]; \
+        DataObject *Items[ItemCount]; \
     private:
+
+#define Q_INIT_AGGREGATOR_ROLES(Class) \
+    const int Class::Roles[] =
+
+#define Q_INIT_AGGREGATOR_ITEMTYPES(Class) \
+    const int Class::ItemTypes[] =
+
+#define Q_INIT_AGGREGATOR_ITEMLIST(ItemListInitializer) \
+    DataObject *init_items[ItemCount] = { ItemListInitializer }; \
+    for (int i = 0;  i < ItemCount;  ++i) \
+        Items[i] = init_items[i]; \
 
 #define Q_DECLARE_BASE_AGGREGATE(Class) \
     protected: \
@@ -94,6 +123,10 @@ inline void mi_assert(const char *assertion, const char *file, int line)
     public: \
         IAggregate* init(); \
     protected:
+
+// TODO:
+//#define Q_DECLARE_BASE_MODELDATA_AGGREGATE(Class) \
+//    Q_DECLARE_BASE_AGGREGATE(Class) \
 
 #define Q_CREATE(Class) (new Class)->init()
 #define Q_CREATE_AGGREGATE(Class) Q_CREATE(Class(this))
