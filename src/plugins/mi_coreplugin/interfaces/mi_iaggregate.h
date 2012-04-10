@@ -18,17 +18,21 @@
 #ifndef MI_IAGGREGATE_H
 #define MI_IAGGREGATE_H
 
-#include <mi_iunknown.h>
+#include <mi_iaggregator.h>
 
-class IAggregator;
-
-class MI_CORE_EXPORT IAggregate : public IUnknown
+class IAggregate : public IUnknown
 {
 public:
     enum { InterfaceType = Mi::AggregateInterface };
 
     virtual IAggregator *aggregator() const = 0;
-    virtual const void *queryInterface(int interfaceType) const;
+
+    const void *queryInterface(int interfaceType) const
+    {
+        if (isTypeOfInterface(interfaceType))
+            return this;
+        return aggregator()->queryInterface(interfaceType);
+    }
 
     // IUnknown
 

@@ -19,21 +19,16 @@
 
 #include <mi_iaggregate.h>
 
-Aggregator::~Aggregator()
-{
-    qDeleteAll(_aggregates);
-}
-
 #define Q_MI_QUERYINTERFACE_DEFINITION \
     if (Mi::AggregatorInterface == interfaceType) \
         return this; \
-    Aggregates::ConstIterator end = _aggregates.constEnd(); \
-    for (Aggregates::ConstIterator i = _aggregates.constBegin();  i != end;  ++i) \
+    AggregateHash::ConstIterator end = _aggregates.constEnd(); \
+    for (AggregateHash::ConstIterator i = _aggregates.constBegin();  i != end;  ++i) \
         if ((*i)->interfaceType() == interfaceType) \
-            return *i; \
-    for (Aggregates::ConstIterator i = _aggregates.constBegin();  i != end;  ++i) \
+            return qGetPtrHelper(*i); \
+    for (AggregateHash::ConstIterator i = _aggregates.constBegin();  i != end;  ++i) \
         if ((*i)->isTypeOfInterface(interfaceType)) \
-            return *i; \
+            return qGetPtrHelper(*i); \
 
 bool Aggregator::containsAggregate(int interfaceType) const
 {

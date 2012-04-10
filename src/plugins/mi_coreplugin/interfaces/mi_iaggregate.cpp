@@ -17,11 +17,3 @@
 
 #include "mi_iaggregate.h"
 
-#include <mi_iaggregator.h>
-
-const void *IAggregate::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return this;
-    return aggregator()->queryInterface(interfaceType);
-}

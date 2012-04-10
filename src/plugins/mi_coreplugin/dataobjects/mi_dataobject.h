@@ -18,11 +18,13 @@
 #ifndef MI_DATAOBJECT_H
 #define MI_DATAOBJECT_H
 
-#include <mi_aggregator.h>
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
+#include "mi_aggregator.h"
+#include "mi_imodeldata.h"
+#include "mi_imodelitem.h"
 
-class IModel;
+#include <mi_imodel.h>
+#include <mi_imodellist.h>
+#include <mi_scopedchange.h>
 
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
@@ -34,40 +36,47 @@ protected:
         :   _parent(0)
     {}
 
-public:
-    ~DataObject();
+    virtual IAggregator *_init();
 
+public:
     DataObject *parent() const
     {
         return _parent;
     }
 
-    virtual void setParent(DataObject *parent);
+    virtual void setParent(DataObject *parent)
+    {
+        if (!parent)
+            IModel::instance()->orphan(query<IModelItem>(this));
+        if (_parent == parent)
+            return;
+        _parent = parent;
+    }
 
     const QString &name() const
     {
         return _name;
     }
 
-    bool setName(const QString &name);
+    bool setName(const QString &name)
+    {
+        if (_name == name)
+            return false;
+        if (!name.isEmpty()) {
+            IModelList *list = query<IModelList>(_parent);
+            if (list && list->has(_name))
+                return false;
+        }
+        Q_MI_SCOPED_CHANGE(Mi::NameRole);
+        _name = name;
+        return true;
+    }
 
 protected:
-
-    //-------------------------------------------------------------------------
-
     class ModelData : public IModelData
     {
-        DataObject *_aggregator;
-
-    public:
-        ModelData(DataObject *aggregator)
-            :   _aggregator(aggregator)
-        {}
-
-        DataObject *dataObject() const
-        {
-            return qGetPtrHelper(_aggregator);
-        }
+    protected:
+        Q_DECLARE_BASE_AGGREGATE(ModelData, DataObject)
 
         // IModelData
 
@@ -87,37 +96,40 @@ protected:
             }
         }
 
-        QVariant get(int role) const;
-        bool set(const QVariant &data, int role);
+        QVariant getVariant(int role) const
+        {
+            switch (role) {
+            case Qt::DisplayRole:
+            case Mi::NameRole:
+                return a()->name();
+            default:
+                Q_ASSERT(false);
+                return QVariant();
+            }
+        }
+
+        bool setVariant(const QVariant &data, int role)
+        {
+            switch (role) {
+            case Qt::EditRole:
+            case Mi::NameRole:
+                return a()->setName(data.toString());
+            default:
+                Q_ASSERT(false);
+                return false;
+            }
+        }
 
         Qt::ItemFlags flags() const
         {
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
         }
-
-        // IAggregate
-
-        IAggregator *aggregator() const
-        {
-            return _aggregator;
-        }
     };
-
-    //-------------------------------------------------------------------------
 
     class ModelItem : public IModelItem
     {
-        DataObject *_aggregator;
-
-    public:
-        ModelItem(DataObject *aggregator)
-            :   _aggregator(aggregator)
-        {}
-
-        DataObject *dataObject() const
-        {
-            return qGetPtrHelper(_aggregator);
-        }
+    protected:
+        Q_DECLARE_BASE_AGGREGATE(ModelItem, DataObject)
 
         // IModelItem
 
@@ -135,7 +147,7 @@ protected:
 
         IModelItem *parent() const
         {
-            return query<IModelItem>(dataObject()->parent());
+            return query<IModelItem>(a()->parent());
         }
 
         int count() const
@@ -169,13 +181,6 @@ protected:
             Q_UNUSED(listType);
             Q_ASSERT(false);
             return 0;
-        }
-
-        // IAggregate
-
-        IAggregator *aggregator() const
-        {
-            return _aggregator;
         }
     };
 };

@@ -18,8 +18,10 @@
 #ifndef AC_SCOREOBJECT_H
 #define AC_SCOREOBJECT_H
 
-#include <ac_graphicsparent.h>
+#include "ac_graphicsparent.h"
+
 #include <ac_namespace.h>
+#include <ac_pitchcurve.h>
 
 #include <mi_dataobjectlist.h>
 
@@ -30,25 +32,18 @@ class QGraphicsItem;
 
 class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
+    typedef GraphicsParent Base;
+
     qreal _volume;
-    PitchCurve *_pitchCurve;
-    DataObjectList *_controlCurves;
+    QScopedPointer<PitchCurve> _pitchCurve;
+    QScopedPointer<DataObjectList> _controlCurves;
 
 protected:
-    ScoreObject();
-    ~ScoreObject();
+    ScoreObject()
+        :   _volume(0.0f)
+    {}
 
-    PitchCurve *pitchCurve() const
-    {
-        return _pitchCurve;
-    }
-
-    DataObjectList *controlCurves() const
-    {
-        return _controlCurves;
-    }
-
-    virtual qreal length() const = 0;
+    IAggregator *_init();
 
     qreal volume() const
     {
@@ -57,25 +52,26 @@ protected:
 
     void setVolume(qreal volume);
 
+    PitchCurve *pitchCurve() const
+    {
+        return qGetPtrHelper(_pitchCurve);
+    }
+
+    DataObjectList *controlCurves() const
+    {
+        return qGetPtrHelper(_controlCurves);
+    }
+
+    virtual qreal length() const = 0;
+
 public:
     virtual void updatePoints()
     {}
 
 protected:
-
-    //-------------------------------------------------------------------------
-
     class ModelItem : public GraphicsParent::ModelItem
     {
-    public:
-        ModelItem(DataObject *aggregator)
-            :   GraphicsParent::ModelItem(aggregator)
-        {}
-
-        ScoreObject *dataObject() const
-        {
-            return cast<ScoreObject>(GraphicsParent::ModelItem::dataObject());
-        }
+        Q_DECLARE_AGGREGATE(ModelItem, ScoreObject)
 
         int count() const
         {

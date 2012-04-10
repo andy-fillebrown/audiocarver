@@ -18,8 +18,10 @@
 #ifndef AC_CURVE_H
 #define AC_CURVE_H
 
-#include <ac_ientity.h>
-#include <ac_graphicsobject.h>
+#include "ac_graphicsobject.h"
+#include "ac_ientity.h"
+
+#include <ac_graphicsitem.h>
 #include <ac_point.h>
 
 #include <QStack>
@@ -29,12 +31,19 @@ class ScoreObject;
 
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
+    typedef GraphicsObject Base;
+
     QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
     QStack<PointList> _pointsStack;
 
 protected:
-    Curve();
-    ~Curve();
+    Curve()
+    {}
+
+    IAggregator *_init();
+
+    virtual ScoreObject *scoreObject() const = 0;
+    virtual void conformPoints() = 0;
 
     GraphicsCurveItem *graphicsCurveItem() const
     {
@@ -46,12 +55,35 @@ protected:
         return _pointsStack;
     }
 
-    bool setPoints(const PointList &points);
-    virtual void conformPoints() = 0;
+    PointList &points()
+    {
+        return _pointsStack.top();
+    }
+
+    bool setPoints(const PointList &points)
+    {
+        PointList new_pts = points;
+        while (1 < _pointsStack.count())
+            _pointsStack.pop();
+        PointList old_pts = _pointsStack.top();
+        _pointsStack.top() = new_pts;
+        conformPoints();
+        new_pts = _pointsStack.top();
+        _pointsStack.top() = old_pts;
+        if (_pointsStack.top() == new_pts)
+            return false;
+        Q_MI_SCOPED_CHANGE(Ac::PointsRole);
+        _pointsStack.top() = new_pts;
+        updateGraphicsItems();
+        return true;
+    }
+
     void updateGraphicsItems();
 
-    virtual ScoreObject *scoreObject() const = 0;
-    void setColor(const QColor &color);
+    void setColor(const QColor &color)
+    {
+        graphicsCurveItem()->setColor(color);
+    }
 
     // GraphicsObject
 
@@ -59,57 +91,46 @@ protected:
 
     // IAggregator
 
-    void *createAggregate(int interface)
+    void *createAggregate(int interfaceType)
     {
-        switch (interface) {
+        switch (interfaceType) {
         case Ac::EntityInterface:
-            return appendAggregate(new Entity(this));
+            return appendAggregate(Q_CREATE_AGGREGATE(Entity));
         default:
-            return GraphicsObject::createAggregate(interface);
+            return GraphicsObject::createAggregate(interfaceType);
         }
     }
 
-    // ------------------------------------------------------------------------
-
     class Entity : public IEntity
     {
-        Curve *_aggregator;
-
-    public:
-        Entity(Curve *aggregator)
-            :   _aggregator(aggregator)
-        {}
-
-        Curve *dataObject() const
-        {
-            return _aggregator;
-        }
+        Q_DECLARE_BASE_AGGREGATE(Entity, Curve)
 
         // IEntity
 
-        void highlight();
-        void unhighlight();
-        bool intersects(const QRectF &rect) const;
-        bool isVisible() const;
-
-        // IAggregate
-
-        IAggregator *aggregator() const
+        void highlight()
         {
-            return _aggregator;
+            a()->graphicsCurveItem()->highlight();
+        }
+
+        void unhighlight()
+        {
+            a()->graphicsCurveItem()->unhighlight();
+        }
+
+        bool intersects(const QRectF &rect) const
+        {
+            return a()->graphicsCurveItem()->intersects(rect);
+        }
+
+        bool isVisible() const
+        {
+            return a()->graphicsCurveItem()->isVisible();
         }
     };
 
-    // ------------------------------------------------------------------------
-
     class SubEntity : public ISubEntity
     {
-        Curve *_aggregator;
-
-    public:
-        SubEntity(Curve *aggregator)
-            :   _aggregator(aggregator)
-        {}
+        Q_DECLARE_BASE_AGGREGATE(SubEntity, Curve)
 
         // ISubEntity
 
@@ -117,87 +138,73 @@ protected:
         {
             return true;
         }
-
-        // IAggregate
-
-        IAggregator *aggregator() const
-        {
-            return _aggregator;
-        }
     };
-
-    // ------------------------------------------------------------------------
 
     class Points : public IPoints
     {
-        Curve *_aggregator;
+        Q_DECLARE_BASE_AGGREGATE(Points, Curve)
 
-    public:
-        Points(Curve *aggregator)
-            :   _aggregator(aggregator)
-        {}
-
-        Curve *dataObject() const
-        {
-            return qGetPtrHelper(_aggregator);
-        }
+        // IPoints
 
         const PointList &points() const
         {
-            return dataObject()->pointsStack().top();
+            return a()->pointsStack().top();
         }
 
         void pushPoints(const PointList &points)
         {
-            Curve *data_object = dataObject();
-            data_object->pointsStack().push(points);
-            data_object->updateGraphicsItems();
+            Q_A(Curve);
+            a->pointsStack().push(points);
+            a->updateGraphicsItems();
         }
 
         void popPoints()
         {
-            Curve *data_object = dataObject();
-            data_object->pointsStack().pop();
-            data_object->updateGraphicsItems();
+            Q_A(Curve);
+            a->pointsStack().pop();
+            a->updateGraphicsItems();
         }
 
         void setPoints(const PointList &points)
         {
-            dataObject()->setPoints(points);
+            a()->setPoints(points);
         }
     };
-
-    // ------------------------------------------------------------------------
 
     class ModelData : public GraphicsObject::ModelData
     {
     public:
-        ModelData(Curve *aggregator)
-            :   GraphicsObject::ModelData(aggregator)
-        {}
+        Q_DECLARE_AGGREGATE(ModelData, Curve)
 
-        Curve *dataObject() const
-        {
-            return cast<Curve>(GraphicsObject::ModelData::dataObject());
-        }
+        // IModelData
 
         int roleCount() const
         {
-            return GraphicsObject::ModelData::roleCount() + 1;
+            return Base::roleCount() + 1;
         }
 
         int roleAt(int i) const
         {
-            if (GraphicsObject::ModelData::roleCount() == i)
+            if (Base::roleCount() == i)
                 return Ac::PointsRole;
-            return GraphicsObject::ModelData::roleAt(i);
+            return Base::roleAt(i);
         }
 
-        QVariant get(int role) const;
-        bool set(const QVariant &data, int role);
-    };
+        QVariant getVariant(int role) const
+        {
+            if (Ac::PointsRole == role)
+                return QVariant::fromValue(a()->points());
+            return Base::getVariant(role);
 
-    typedef GraphicsObject::ModelItem ModelItem;
+        }
+
+        bool setVariant(const QVariant &data, int role)
+        {
+            if (Ac::PointsRole == role)
+                return a()->setPoints(qvariant_cast<PointList>(data));
+            return Base::setVariant(data, role);
+        }
+    };
 };
 
 #endif // AC_CURVE_H

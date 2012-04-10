@@ -60,8 +60,30 @@ inline void mi_assert(const char *assertion, const char *file, int line)
     inline const Class<T> *q_func() const { return static_cast<const Class<T>*>(this->q_ptr); } \
     friend class Class<T>;
 
-#define Q_D_T(Class) Class##Private<T> *const d = d_func()
-#define Q_Q_T(Class) Class<T> *const q = q_func()
+#define Q_TD(Class) Class##Private<T> *const d = d_func()
+#define Q_TQ(Class) Class<T> *const q = q_func()
+
+#define Q_DECLARE_BASE_AGGREGATE(AggregateClass, AggregatorClass) \
+    protected: \
+        AggregatorClass *_a; \
+        AggregatorClass *a() const { return _a; } \
+        IAggregator *aggregator() const { return _a; } \
+    public: \
+        AggregateClass(AggregatorClass *aggregator) : _a(aggregator) {} \
+        virtual IAggregate* _init();
+
+#define Q_DECLARE_AGGREGATE(AggregateClass, AggregatorClass) \
+        typedef AggregatorClass::Base::AggregateClass Base; \
+    protected: \
+        AggregateClass(AggregatorClass *aggregator) : AggregateClass::Base::AggregateClass(aggregator) {} \
+        AggregatorClass *a() const { return cast<AggregatorClass>(_a); } \
+    public: \
+        IAggregate* _init();
+
+#define Q_CREATE(Class) (new Class)->_init()
+#define Q_CREATE_AGGREGATE(Class) Q_CREATE(Class(this))
+
+#define Q_A(AggregatorClass) AggregatorClass *a = cast<AggregatorClass>(_a)
 
 template <typename Container, typename LessThan>
 void qSort(Container &c, LessThan lessThan)
@@ -99,7 +121,7 @@ const T *cast(const Object *object)
     return mi_cast<const T*>(object);
 }
 
-#define bitsizeof(x) (8 * sizeof(x))
+#define bitcountof(x) (8 * sizeof(x))
 
 #define Q_FLOAT_MIN 1E-37
 #define Q_FLOAT_MAX 1E+37

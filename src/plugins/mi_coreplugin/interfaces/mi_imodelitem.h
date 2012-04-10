@@ -34,8 +34,10 @@ public:
     virtual int count() const = 0;
     virtual int indexOf(IModelItem *item) const = 0;
     virtual IModelItem *at(int i) const = 0;
-    virtual IModelItem *item(int type) const = 0;
-    virtual IModelList *list(int listType) const = 0;
+    virtual IModelItem *findItem(int itemType) const = 0;
+    virtual IModelList *findList(int listType) const = 0;
+
+    inline IModelList *list() const;
 
     // IUnknown
 
@@ -51,5 +53,14 @@ public:
         return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
+
+#include <mi_iaggregator.h>
+#include <mi_imodellist.h>
+
+inline IModelList *IModelItem::list() const
+{
+    IModelItem *parent = this->parent();
+    return parent ? query<IModelList>(parent->aggregator()) : 0;
+}
 
 #endif // MI_IMODELITEM_H

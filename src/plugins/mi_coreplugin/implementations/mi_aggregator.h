@@ -18,20 +18,22 @@
 #ifndef MI_AGGREGATOR_H
 #define MI_AGGREGATOR_H
 
-#include <mi_iaggregator.h>
+#include "mi_iaggregator.h"
 
-typedef QHash<IAggregate*, IAggregate*> Aggregates;
+#include <mi_iaggregate.h>
+
+#include <QSharedPointer>
+
+typedef QHash<IAggregate*, AggregatePointer> AggregateHash;
 
 class MI_CORE_EXPORT Aggregator : public IAggregator
 {
-    Aggregates _aggregates;
+    AggregateHash _aggregates;
 
-public:
-    ~Aggregator();
-
+protected:
     // IAggregator
 
-    QList<IAggregate*> aggregates() const
+    AggregateList aggregates() const
     {
         return _aggregates.values();
     }
@@ -41,7 +43,7 @@ public:
     void *appendAggregate(IAggregate *aggregate)
     {
         if (!_aggregates.contains(aggregate))
-            _aggregates.insert(aggregate, aggregate);
+            _aggregates.insert(aggregate, AggregatePointer(aggregate));
         return aggregate;
     }
 
@@ -50,6 +52,7 @@ public:
         _aggregates.remove(aggregate);
     }
 
+public:
     void *queryInterface(int interfaceType);
     const void *queryInterface(int interfaceType) const;
 };

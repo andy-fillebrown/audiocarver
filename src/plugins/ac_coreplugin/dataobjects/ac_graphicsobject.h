@@ -47,9 +47,6 @@ protected:
         DataObject::setParent(parent);
         updateGraphicsParent();
     }
-
-    typedef DataObject::ModelData ModelData;
-    typedef DataObject::ModelItem ModelItem;
 };
 
 #endif // AC_GRAPHICSOBJECT_H

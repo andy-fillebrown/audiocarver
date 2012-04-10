@@ -17,55 +17,17 @@
 
 #include "mi_dataobject.h"
 
-#include <mi_imodel.h>
-#include <mi_imodellist.h>
-#include <mi_scopedchange.h>
-
-DataObject::~DataObject()
-{}
-
-void DataObject::setParent(DataObject *parent)
+IAggregator *DataObject::_init()
 {
-    if (_parent == parent)
-        return;
-    if (!parent)
-        IModel::instance()->orphan(query<IModelItem>(this));
+    return this;
 }
 
-bool DataObject::setName(const QString &name)
+IAggregate *DataObject::ModelData::_init()
 {
-    if (_name == name)
-        return false;
-    if (!name.isEmpty()) {
-        IModelList *list = query<IModelList>(_parent);
-        if (list && list->has(_name))
-            return false;
-    }
-    Q_MI_SCOPED_CHANGE(Mi::NameRole);
-    _name = name;
-    return true;
+    return this;
 }
 
-QVariant DataObject::ModelData::get(int role) const
+IAggregate *DataObject::ModelItem::_init()
 {
-    switch (role) {
-    case Qt::DisplayRole:
-    case Mi::NameRole:
-        return dataObject()->name();
-    default:
-        Q_ASSERT(false);
-        return QVariant();
-    }
-}
-
-bool DataObject::ModelData::set(const QVariant &data, int role)
-{
-    switch (role) {
-    case Qt::EditRole:
-    case Mi::NameRole:
-        return dataObject()->setName(data.toString());
-    default:
-        Q_ASSERT(false);
-        return false;
-    }
+    return this;
 }

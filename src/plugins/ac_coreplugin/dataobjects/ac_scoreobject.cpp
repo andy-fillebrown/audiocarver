@@ -22,15 +22,20 @@
 
 #include <QGraphicsItem>
 
+IAggregator *ScoreObject::_init()
+{
+    return GraphicsParent::_init();
+}
+
 int ScoreObject::ModelItem::indexOf(const IModelItem *item) const
 {
-    ScoreObject *data_object = dataObject();
-    IAggregator *item_aggregator = item->aggregator();
-    if (data_object->pitchCurve() == item_aggregator)
-        return GraphicsParent::ModelItem::count();
-    if (data_object->controlCurves() == item_aggregator)
-        return GraphicsParent::ModelItem::count() + 1;
-    return GraphicsParent::ModelItem::indexOf(item);
+    Q_A(const ScoreObject);
+    IAggregator *item_a = item->aggregator();
+    if (a->pitchCurve() == item_a)
+        return Base::count();
+    if (a->controlCurves() == item_a)
+        return Base::count() + 1;
+    return Base::indexOf(item);
 }
 
 //ScoreObjectPrivate::ScoreObjectPrivate(ScoreObject *q)

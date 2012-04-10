@@ -18,16 +18,21 @@
 #ifndef MI_IAGGREGATOR_H
 #define MI_IAGGREGATOR_H
 
-#include <mi_iunknown.h>
+#include "mi_iunknown.h"
 
 class IAggregate;
+
+template <typename T> class QSharedPointer;
+
+typedef QSharedPointer<IAggregate> AggregatePointer;
+typedef QList<AggregatePointer> AggregateList;
 
 class IAggregator : public IUnknown
 {
 public:
     enum { InterfaceType = Mi::AggregatorInterface };
 
-    virtual QList<IAggregate*> aggregates() const = 0;
+    virtual AggregateList aggregates() const = 0;
     virtual bool containsAggregate(int interfaceType) const = 0;
     virtual void *createAggregate(int interfaceType) = 0;
     virtual void *appendAggregate(IAggregate* aggregate) = 0;

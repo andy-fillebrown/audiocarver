@@ -29,9 +29,19 @@ public:
 
     virtual int roleCount() const = 0;
     virtual int roleAt(int i) const = 0;
-    virtual QVariant get(int role) const = 0;
-    virtual bool set(const QVariant &data, int role) = 0;
+    virtual QVariant getVariant(int role) const = 0;
+    virtual bool setVariant(const QVariant &data, int role) = 0;
     virtual Qt::ItemFlags flags() const = 0;
+
+    template <typename T> T get(int role) const
+    {
+        return getVariant(role).value<T>();
+    }
+
+    bool set(const QVariant &data, int role)
+    {
+        return setVariant(data, role);
+    }
 
     // IUnknown
 
