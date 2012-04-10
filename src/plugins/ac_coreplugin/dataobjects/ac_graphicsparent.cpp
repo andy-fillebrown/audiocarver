@@ -22,6 +22,11 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
+IAggregator *GraphicsParent::init()
+{
+    return Base::init();
+}
+
 GraphicsParent::~GraphicsParent()
 {
     qDeleteAll(_unitYGraphicsItems);

@@ -22,9 +22,9 @@
 
 #include <QGraphicsItem>
 
-IAggregator *ScoreObject::_init()
+IAggregator *ScoreObject::init()
 {
-    return GraphicsParent::_init();
+    return Base::init();
 }
 
 int ScoreObject::ModelItem::indexOf(const IModelItem *item) const

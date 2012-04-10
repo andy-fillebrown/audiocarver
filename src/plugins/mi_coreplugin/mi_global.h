@@ -63,24 +63,39 @@ inline void mi_assert(const char *assertion, const char *file, int line)
 #define Q_TD(Class) Class##Private<T> *const d = d_func()
 #define Q_TQ(Class) Class<T> *const q = q_func()
 
-#define Q_DECLARE_BASE_AGGREGATE(AggregateClass, AggregatorClass) \
+#define Q_DECLARE_BASE_AGGREGATOR(Class) \
     protected: \
-        AggregatorClass *_a; \
-        AggregatorClass *a() const { return _a; } \
+        typedef Class A; \
+        virtual IAggregator *init(); \
+    private:
+
+#define Q_DECLARE_AGGREGATOR(Class, BaseClass) \
+    protected: \
+        typedef Class A; \
+        typedef BaseClass Base; \
+        IAggregator *init(); \
+    private:
+
+#define Q_DECLARE_BASE_AGGREGATE(Class) \
+    protected: \
+        A *_a; \
+        A *a() const { return _a; } \
         IAggregator *aggregator() const { return _a; } \
     public: \
-        AggregateClass(AggregatorClass *aggregator) : _a(aggregator) {} \
-        virtual IAggregate* _init();
+        Class(A *aggregator) : _a(aggregator) {} \
+        virtual IAggregate* init(); \
+    protected:
 
-#define Q_DECLARE_AGGREGATE(AggregateClass, AggregatorClass) \
-        typedef AggregatorClass::Base::AggregateClass Base; \
+#define Q_DECLARE_AGGREGATE(Class) \
     protected: \
-        AggregateClass(AggregatorClass *aggregator) : AggregateClass::Base::AggregateClass(aggregator) {} \
-        AggregatorClass *a() const { return cast<AggregatorClass>(_a); } \
+        typedef A::Base::Class Base; \
+        Class(A *aggregator) : Base(aggregator) {} \
+        A *a() const { return cast<A>(_a); } \
     public: \
-        IAggregate* _init();
+        IAggregate* init(); \
+    protected:
 
-#define Q_CREATE(Class) (new Class)->_init()
+#define Q_CREATE(Class) (new Class)->init()
 #define Q_CREATE_AGGREGATE(Class) Q_CREATE(Class(this))
 
 #define Q_A(AggregatorClass) AggregatorClass *a = cast<AggregatorClass>(_a)

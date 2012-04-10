@@ -18,7 +18,7 @@
 #ifndef MI_IMODEL_H
 #define MI_IMODEL_H
 
-#include <mi_iaggregate.h>
+#include "mi_iaggregate.h"
 
 class IModelData;
 class IModelItem;

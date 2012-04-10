@@ -18,6 +18,8 @@
 #ifndef MI_IAGGREGATE_H
 #define MI_IAGGREGATE_H
 
+#include "mi_iunknown.h"
+
 #include <mi_iaggregator.h>
 
 class IAggregate : public IUnknown

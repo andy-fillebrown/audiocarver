@@ -17,5 +17,7 @@
 
 #include "ac_graphicsobject.h"
 
-GraphicsObject::~GraphicsObject()
-{}
+IAggregator *GraphicsObject::init()
+{
+    return Base::init();
+}

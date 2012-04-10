@@ -19,33 +19,33 @@
 
 #include <ac_scoreobject.h>
 
-IAggregator *Curve::_init()
+IAggregator *Curve::init()
 {
     _graphicsCurveItem.reset(new GraphicsCurveItem);
     _graphicsCurveItem->setEntity(query<IEntity>(this));
     static PointList points;
     _pointsStack.push(points);
-    return GraphicsObject::_init();
+    return Base::init();
 }
 
-IAggregate *Curve::Entity::_init()
+IAggregate *Curve::Entity::init()
 {
     return this;
 }
 
-IAggregate *Curve::SubEntity::_init()
+IAggregate *Curve::SubEntity::init()
 {
     return this;
 }
 
-IAggregate *Curve::Points::_init()
+IAggregate *Curve::Points::init()
 {
     return this;
 }
 
-IAggregate *Curve::ModelData::_init()
+IAggregate *Curve::ModelData::init()
 {
-    return Base::_init();
+    return Base::init();
 }
 
 void Curve::updateGraphicsItems()

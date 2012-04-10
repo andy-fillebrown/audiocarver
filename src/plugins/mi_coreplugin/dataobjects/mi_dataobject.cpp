@@ -17,17 +17,17 @@
 
 #include "mi_dataobject.h"
 
-IAggregator *DataObject::_init()
+IAggregator *DataObject::init()
 {
     return this;
 }
 
-IAggregate *DataObject::ModelData::_init()
+IAggregate *DataObject::ModelData::init()
 {
     return this;
 }
 
-IAggregate *DataObject::ModelItem::_init()
+IAggregate *DataObject::ModelItem::init()
 {
     return this;
 }

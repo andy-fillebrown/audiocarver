@@ -28,6 +28,8 @@
 
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
+    Q_DECLARE_BASE_AGGREGATOR(DataObject)
+
     DataObject *_parent;
     QString _name;
 
@@ -35,8 +37,6 @@ protected:
     DataObject()
         :   _parent(0)
     {}
-
-    virtual IAggregator *_init();
 
 public:
     DataObject *parent() const
@@ -75,8 +75,7 @@ public:
 protected:
     class ModelData : public IModelData
     {
-    protected:
-        Q_DECLARE_BASE_AGGREGATE(ModelData, DataObject)
+        Q_DECLARE_BASE_AGGREGATE(ModelData)
 
         // IModelData
 
@@ -128,8 +127,7 @@ protected:
 
     class ModelItem : public IModelItem
     {
-    protected:
-        Q_DECLARE_BASE_AGGREGATE(ModelItem, DataObject)
+        Q_DECLARE_BASE_AGGREGATE(ModelItem)
 
         // IModelItem
 

@@ -18,7 +18,7 @@
 #ifndef MI_IMODELITEM_H
 #define MI_IMODELITEM_H
 
-#include <mi_iaggregate.h>
+#include "mi_iaggregate.h"
 
 class IModel;
 class IModelList;

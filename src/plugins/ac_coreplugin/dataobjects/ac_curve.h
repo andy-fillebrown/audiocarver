@@ -31,7 +31,7 @@ class ScoreObject;
 
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
-    typedef GraphicsObject Base;
+    Q_DECLARE_AGGREGATOR(Curve, GraphicsObject)
 
     QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
     QStack<PointList> _pointsStack;
@@ -39,8 +39,6 @@ class AC_CORE_EXPORT Curve : public GraphicsObject
 protected:
     Curve()
     {}
-
-    IAggregator *_init();
 
     virtual ScoreObject *scoreObject() const = 0;
     virtual void conformPoints() = 0;
@@ -97,13 +95,13 @@ protected:
         case Ac::EntityInterface:
             return appendAggregate(Q_CREATE_AGGREGATE(Entity));
         default:
-            return GraphicsObject::createAggregate(interfaceType);
+            return Base::createAggregate(interfaceType);
         }
     }
 
     class Entity : public IEntity
     {
-        Q_DECLARE_BASE_AGGREGATE(Entity, Curve)
+        Q_DECLARE_BASE_AGGREGATE(Entity)
 
         // IEntity
 
@@ -130,7 +128,7 @@ protected:
 
     class SubEntity : public ISubEntity
     {
-        Q_DECLARE_BASE_AGGREGATE(SubEntity, Curve)
+        Q_DECLARE_BASE_AGGREGATE(SubEntity)
 
         // ISubEntity
 
@@ -142,7 +140,7 @@ protected:
 
     class Points : public IPoints
     {
-        Q_DECLARE_BASE_AGGREGATE(Points, Curve)
+        Q_DECLARE_BASE_AGGREGATE(Points)
 
         // IPoints
 
@@ -171,10 +169,10 @@ protected:
         }
     };
 
-    class ModelData : public GraphicsObject::ModelData
+    class ModelData : public Base::ModelData
     {
     public:
-        Q_DECLARE_AGGREGATE(ModelData, Curve)
+        Q_DECLARE_AGGREGATE(ModelData)
 
         // IModelData
 

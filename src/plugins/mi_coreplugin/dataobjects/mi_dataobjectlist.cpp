@@ -23,7 +23,7 @@ IAggregator *DataObjectList::_init()
     return this;
 }
 
-IAggregate *DataObjectList::ModelList::_init()
+IAggregate *DataObjectList::ModelList::init()
 {
     return this;
 }

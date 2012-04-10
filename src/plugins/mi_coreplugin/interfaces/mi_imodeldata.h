@@ -18,7 +18,7 @@
 #ifndef MI_IMODELDATA_H
 #define MI_IMODELDATA_H
 
-#include <mi_iaggregate.h>
+#include "mi_iaggregate.h"
 
 class QVariant;
 

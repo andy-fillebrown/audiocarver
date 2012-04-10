@@ -18,7 +18,7 @@
 #ifndef MI_IMODELLIST_H
 #define MI_IMODELLIST_H
 
-#include <mi_imodelitem.h>
+#include "mi_imodelitem.h"
 
 class IModelList : public IModelItem
 {

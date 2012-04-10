@@ -32,7 +32,7 @@ class QGraphicsItem;
 
 class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
-    typedef GraphicsParent Base;
+    Q_DECLARE_AGGREGATOR(ScoreObject, GraphicsParent)
 
     qreal _volume;
     QScopedPointer<PitchCurve> _pitchCurve;
@@ -42,8 +42,6 @@ protected:
     ScoreObject()
         :   _volume(0.0f)
     {}
-
-    IAggregator *_init();
 
     qreal volume() const
     {
@@ -71,7 +69,7 @@ public:
 protected:
     class ModelItem : public GraphicsParent::ModelItem
     {
-        Q_DECLARE_AGGREGATE(ModelItem, ScoreObject)
+        Q_DECLARE_AGGREGATE(ModelItem)
 
         int count() const
         {

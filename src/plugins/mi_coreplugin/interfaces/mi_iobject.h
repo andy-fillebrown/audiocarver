@@ -18,6 +18,8 @@
 #ifndef MI_IOBJECT_H
 #define MI_IOBJECT_H
 
+#include "mi_iunknown.h"
+
 #include <mi_namespace.h>
 
 #include <QObject>

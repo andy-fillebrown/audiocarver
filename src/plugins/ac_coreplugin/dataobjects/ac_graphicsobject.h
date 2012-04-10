@@ -18,19 +18,19 @@
 #ifndef AC_GRAPHICSOBJECT_H
 #define AC_GRAPHICSOBJECT_H
 
-#include <ac_global.h>
+#include "mi_dataobject.h"
 
-#include <mi_dataobject.h>
+#include <ac_global.h>
 
 class GraphicsParent;
 
 class AC_CORE_EXPORT GraphicsObject : public DataObject
 {
+    Q_DECLARE_AGGREGATOR(GraphicsObject, DataObject)
+
 protected:
     GraphicsObject()
     {}
-
-    ~GraphicsObject();
 
     virtual GraphicsParent *graphicsParent() const
     {
@@ -44,7 +44,7 @@ protected:
 
     void setParent(DataObject *parent)
     {
-        DataObject::setParent(parent);
+        Base::setParent(parent);
         updateGraphicsParent();
     }
 };
