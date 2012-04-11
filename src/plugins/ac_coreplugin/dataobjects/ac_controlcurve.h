@@ -18,7 +18,7 @@
 #ifndef AC_CONTROLCURVE_H
 #define AC_CONTROLCURVE_H
 
-#include <ac_curve.h>
+#include "ac_curve.h"
 
 class AC_CORE_EXPORT ControlCurve : public Curve
 {

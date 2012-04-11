@@ -26,7 +26,7 @@ class GraphicsParent;
 
 class AC_CORE_EXPORT GraphicsObject : public DataObject
 {
-    Q_DECLARE_AGGREGATOR(GraphicsObject, DataObject)
+    Q_I_DERIVED__AGGREGATOR(GraphicsObject, DataObject)
 
 protected:
     GraphicsObject() {}

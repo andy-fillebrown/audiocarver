@@ -27,8 +27,7 @@ typedef QList<DataObject*> DataObjects;
 
 class MI_CORE_EXPORT DataObjectList : public DataObject
 {
-    Q_DECLARE_AGGREGATOR(DataObjectList, DataObject)
-
+    Q_I_DERIVED__AGGREGATOR(DataObjectList, DataObject)
     const int _listType;
     DataObjects _list;
 
@@ -54,8 +53,8 @@ protected:
     void *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case Mi::ModelListInterface:
-            return appendAggregate(Q_CREATE_AGGREGATE(ModelList));
+        case I::IModelList:
+            return appendAggregate(Q_I_CREATE__AGGREGATE(ModelList));
         default:
             return 0;
         }
@@ -63,8 +62,9 @@ protected:
 
     class ModelList : public IModelList
     {
-        Q_DECLARE_BASE_MODELLIST
-        Q_DECLARE_BASE_MODELITEM_ITEMTYPE(Mi::ListItem)
+        Q_I_BASE__MODEL_LIST
+        Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::ListItem)
+        Q_I_BASE__MODEL_ITEM__PARENT
 
         // IModelList
 
@@ -99,7 +99,7 @@ protected:
                 if (name != new_name)
                     item_data->set(new_name, Mi::NameRole);
             }
-            Q_A(DataObjectList);
+            Q_IA(DataObjectList);
             a->list().insert(i, item_a);
             item_a->setParent(a);
         }
@@ -118,11 +118,6 @@ protected:
 
         // IModelItem
 
-        IModelItem *parent() const
-        {
-            return query<IModelItem>(a()->parent());
-        }
-
         int count() const
         {
             return a()->list().count();
@@ -138,8 +133,8 @@ protected:
             return query<IModelItem>(a()->list().at(i));
         }
 
-        IModelItem *findItem(int) const { return 0; }
-        IModelList *findList(int) const { return 0; }
+        IModelItem *findItem(int itemType) const { Q_ASSERT(0); return 0; }
+        IModelList *findList(int listType) const { Q_ASSERT(0); return 0; }
     };
 };
 

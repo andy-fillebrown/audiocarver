@@ -22,18 +22,18 @@
 
 #include <QGraphicsItem>
 
-Q_INIT_ROLES(ScoreObject) {
+Q_I_INIT__AGGREGATOR__ROLES(ScoreObject) {
     Ac::VolumeRole
 };
 
-Q_INIT_ITEMTYPES(ScoreObject) {
+Q_I_INIT__AGGREGATOR__ITEM_TYPES(ScoreObject) {
     Ac::PitchCurveItem,
     Mi::ListItem
 };
 
 IAggregator *ScoreObject::init()
 {
-    Q_INIT_ITEMLIST((
+    Q_I_INIT__AGGREGATOR__ITEM_LIST((
         qGetPtrHelper(_pitchCurve),
         qGetPtrHelper(_controlCurves)
     ))

@@ -20,6 +20,8 @@
 
 #include "mi_iunknown.h"
 
+#include <mi_interfacedefinitions.h>
+
 class IAggregate;
 
 template <typename T> class QSharedPointer;
@@ -30,7 +32,7 @@ typedef QList<AggregatePointer> AggregateList;
 class IAggregator : public IUnknown
 {
 public:
-    enum { InterfaceType = Mi::AggregatorInterface };
+    Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IAggregator)
 
     virtual AggregateList aggregates() const = 0;
     virtual bool containsAggregate(int interfaceType) const = 0;
@@ -39,24 +41,12 @@ public:
     virtual void removeAggregate(IAggregate *aggregate) = 0;
     virtual void *queryInterface(int interfaceType) = 0;
     virtual const void *queryInterface(int interfaceType) const = 0;
-
-    // IUnknown
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
 };
 
 template <> inline
 QObject *query(IAggregator *aggregator)
 {
-    return aggregator ? cast<QObject>(aggregator->queryInterface(Mi::ObjectInterface)) : 0;
+    return aggregator ? cast<QObject>(aggregator->queryInterface(I::IObject)) : 0;
 }
 
 #endif // MI_IAGGREGATE_H

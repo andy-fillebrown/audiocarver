@@ -22,6 +22,25 @@
 
 #include <mi_namespace.h>
 
+namespace I {
+
+enum AcInterfaces {
+    IEntity = MiInterfaceCount,
+    IParentEntity,
+    ISubEntity,
+    IPoints,
+    IPointsItem,
+    IGripItem,
+    IReader,
+    IWriter,
+    IFileFiler,
+    ICopyFiler,
+    IPlayCursor,
+    AcInterfaceCount
+};
+
+} // namespace I
+
 namespace Ac {
 
 enum ItemType {
@@ -69,20 +88,6 @@ enum ItemDataRole {
     TimeSnapRole,
     PitchSnapRole,
     ControlSnapRole
-};
-
-enum InterfaceType {
-    EntityInterface = Mi::InterfaceTypeCount,
-    ParentEntityInterface,
-    SubEntityInterface,
-    PointsInterface,
-    PointsItemInterface,
-    GripItemInterface,
-    ReaderInterface,
-    WriterInterface,
-    FileFilerInterface,
-    CopyFilerInterface,
-    PlayCursorInterface
 };
 
 enum CurveType {

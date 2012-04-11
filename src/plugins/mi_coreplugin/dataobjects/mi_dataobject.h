@@ -26,18 +26,17 @@
 #include <mi_imodellist.h>
 #include <mi_scopedchange.h>
 
-
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
-    Q_DECLARE_BASE_AGGREGATOR(DataObject)
+    Q_I_BASE__AGGREGATOR(DataObject)
     DataObject *_parent;
 
-    Q_DECLARE_BASE_ROLECOUNT(1)
+    Q_I_BASE__AGGREGATOR__ROLE_COUNT(1)
     QString _name;
 
+protected:
     enum { TotalItemCount = 0 };
 
-protected:
     DataObject()
         :   _parent(0)
     {}
@@ -51,7 +50,7 @@ public:
     virtual void setParent(DataObject *parent)
     {
         if (!parent)
-            IModel::instance()->orphan(query<IModelItem>(this));
+            IModel::instance()->removeParent(query<IModelItem>(this));
         if (_parent == parent)
             return;
         _parent = parent;
@@ -71,7 +70,7 @@ public:
             if (list && list->has(_name))
                 return false;
         }
-        Q_MI_SCOPED_CHANGE(Mi::NameRole);
+        Q_SCOPED_CHANGE(Mi::NameRole);
         _name = name;
         return true;
     }
@@ -79,8 +78,8 @@ public:
 protected:
     class ModelData : public IModelData
     {
-        Q_DECLARE_BASE_MODELDATA
-        Q_DECLARE_BASE_MODELDATA_FUNCTIONS
+        Q_I_BASE__MODEL_DATA
+        Q_I_BASE__MODEL_DATA__ROLE_FUNCTIONS
 
         // IModelData
 
@@ -91,7 +90,7 @@ protected:
             case Mi::NameRole:
                 return a()->name();
             default:
-                Q_ASSERT(false);
+                Q_ASSERT(0);
                 return QVariant();
             }
         }
@@ -103,7 +102,7 @@ protected:
             case Mi::NameRole:
                 return a()->setName(qvariant_cast<QString>(data));
             default:
-                Q_ASSERT(false);
+                Q_ASSERT(0);
                 return false;
             }
         }
@@ -111,21 +110,17 @@ protected:
 
     class ModelItem : public IModelItem
     {
-        Q_DECLARE_BASE_MODELITEM
-        Q_DECLARE_BASE_MODELITEM_ITEMTYPE(Mi::UnknownItem)
+        Q_I_BASE__MODEL_ITEM
+        Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::UnknownItem)
+        Q_I_BASE__MODEL_ITEM__PARENT
 
         // IModelItem
 
-        IModelItem *parent() const
-        {
-            return query<IModelItem>(a()->parent());
-        }
-
-        int count() const { return 0; }
-        int indexOf(IModelItem*) const { return -1; }
-        IModelItem *at(int) const { return 0; }
-        IModelItem *findItem(int) const { return 0; }
-        IModelList *findList(int) const { return 0; }
+        int count() const                           { return -1; }
+        int indexOf(IModelItem *item) const         { Q_ASSERT(0); return -1; }
+        IModelItem *at(int i) const                 { Q_ASSERT(0); return 0; }
+        IModelItem *findItem(int itemType) const    { return 0; }
+        IModelList *findList(int listType) const    { return 0; }
     };
 };
 

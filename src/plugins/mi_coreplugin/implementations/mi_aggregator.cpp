@@ -19,8 +19,8 @@
 
 #include <mi_iaggregate.h>
 
-#define Q_QUERYINTERFACE_DEFINITION \
-    if (Mi::AggregatorInterface == interfaceType) \
+#define Q_I__AGGREGATOR__QUERY_INTERFACE \
+    if (I::IAggregator == interfaceType) \
         return this; \
     AggregateHash::ConstIterator end = _aggregates.constEnd(); \
     for (AggregateHash::ConstIterator i = _aggregates.constBegin();  i != end;  ++i) \
@@ -32,18 +32,18 @@
 
 bool Aggregator::containsAggregate(int interfaceType) const
 {
-    Q_QUERYINTERFACE_DEFINITION
+    Q_I__AGGREGATOR__QUERY_INTERFACE
     return false;
 }
 
 void *Aggregator::queryInterface(int interfaceType)
 {
-    Q_QUERYINTERFACE_DEFINITION
+    Q_I__AGGREGATOR__QUERY_INTERFACE
     return createAggregate(interfaceType);
 }
 
 const void *Aggregator::queryInterface(int interfaceType) const
 {
-    Q_QUERYINTERFACE_DEFINITION
+    Q_I__AGGREGATOR__QUERY_INTERFACE
     return 0;
 }

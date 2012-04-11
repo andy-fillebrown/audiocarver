@@ -25,7 +25,7 @@ class QVariant;
 class IModelData : public IAggregate
 {
 public:
-    enum { InterfaceType = Mi::ModelDataInterface };
+    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModelData, IAggregate)
 
     virtual int roleCount() const = 0;
     virtual int roleAt(int i) const = 0;
@@ -41,20 +41,6 @@ public:
     bool set(const QVariant &data, int role)
     {
         return setVariant(data, role);
-    }
-
-    // IUnknown
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 

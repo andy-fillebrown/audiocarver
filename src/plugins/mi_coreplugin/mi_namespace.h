@@ -22,6 +22,21 @@
 
 #include <qnamespace.h>
 
+namespace I {
+
+enum MiInterfaces {
+    IAggregate,
+    IAggregator,
+    IModel,
+    IModelData,
+    IModelItem,
+    IModelList,
+    IObject,
+    MiInterfaceCount
+};
+
+} // namespace I
+
 namespace Mi {
 
 enum ItemType {
@@ -47,18 +62,8 @@ MI_CORE_EXPORT void appendItemDataRole(int itemDataRole, const QString itemDataR
 MI_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
 MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
 
-enum InterfaceType {
-    AggregateInterface,
-    AggregatorInterface,
-    ModelInterface,
-    ModelItemInterface,
-    ModelDataInterface,
-    ModelNodeInterface,
-    ModelListInterface,
-    ObjectInterface,
-    InterfaceTypeCount
-};
-
 } // namespace Mi
 
 #endif // MI_NAMESPACE_H
+
+// TODO:  Move namespace I to separate header.

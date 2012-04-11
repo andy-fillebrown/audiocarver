@@ -4,13 +4,12 @@ SOURCE_FILES = \
     mathutils \
     scopedchange \
 
-DIR = tools
-PREFIX = mi_
-
+_DIR_ = $$dirname(_FILE_)
+_DIR_ = $$basename(_DIR_)
 for(file, SOURCE_FILES) {
-    name = $$PREFIX$$file
+    name = $$SOURCE_FILE_PREFIX$$file
     header = $${name}.h
     source = $${name}.cpp
-    exists($$header): HEADERS *= $$DIR/$$header
-    exists($$source): SOURCES *= $$DIR/$$source
+    exists($$header): HEADERS *= $$_DIR_/$$header
+    exists($$source): SOURCES *= $$_DIR_/$$source
 }

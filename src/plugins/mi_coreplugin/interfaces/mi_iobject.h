@@ -21,6 +21,7 @@
 #include "mi_iunknown.h"
 #include "QObject"
 
+#include <mi_interfacedefinitions.h>
 #include <mi_namespace.h>
 
 
@@ -49,7 +50,7 @@ public:
     const void *queryInterface(int interfaceType) const
     {
         switch (interfaceType) {
-        case Mi::ObjectInterface:
+        case I::IObject:
             return this;
         default:
             return aggregator()->queryInterface(interfaceType);
@@ -63,21 +64,9 @@ public:
 class IObject : public Object, public IUnknown
 {
 public:
-    enum { InterfaceType = Mi::ObjectInterface };
+    Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IObject)
 
-    virtual const void *queryInterface(int interfaceType) const;
-
-    // IUnknown
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
+    virtual const void *queryInterface(int interfaceType) const = 0;
 };
 
 #endif // MI_IOBJECT_H

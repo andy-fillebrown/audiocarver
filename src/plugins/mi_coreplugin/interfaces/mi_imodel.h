@@ -29,7 +29,7 @@ class QModelIndex;
 class IModel : public IAggregate
 {
 public:
-    enum { InterfaceType = Mi::ModelInterface };
+    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModel, IAggregate)
 
     IModel();
 
@@ -37,29 +37,13 @@ public:
 
     virtual IModelItem *item(const QModelIndex &index) const = 0;
     virtual QModelIndex index(IModelItem *item) const = 0;
-
     virtual void beginChange(IModelData *data, int role) = 0;
     virtual void endChange(IModelData *data, int role) = 0;
     virtual void beginInsert(IModelList *list, int i) = 0;
     virtual void endInsert(IModelList *list, int i) = 0;
     virtual void beginRemove(IModelList *list, int i) = 0;
     virtual void endRemove(IModelList *list, int i) = 0;
-
-    virtual void orphan(IModelItem *item) = 0;
-
-    // IUnknown
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
-    }
+    virtual void removeParent(IModelItem *item) = 0;
 };
 
 #endif // MI_IMODEL_H

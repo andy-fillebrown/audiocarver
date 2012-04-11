@@ -33,6 +33,6 @@ public:
     ~ScopedChange();
 };
 
-#define Q_MI_SCOPED_CHANGE(role) ScopedChange scoped_change(this, role);
+#define Q_SCOPED_CHANGE(role) ScopedChange scoped_change(this, role);
 
 #endif // MI_SCOPEDCHANGE_H

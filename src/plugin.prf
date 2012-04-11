@@ -1,3 +1,9 @@
+
+!isEmpty(TARGET_NAME) {
+    PREFIXED_TARGET_NAME = $$TARGET_PREFIX$$TARGET_NAME
+    TARGET = $$PREFIXED_TARGET_NAME
+}
+
 load(../project.prf)
 
 isEmpty(PROVIDER) {
@@ -46,3 +52,7 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
     pluginspec.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
     INSTALLS += target pluginspec
 }
+
+SOURCE_FILE_PREFIX = $$lower($$TARGET_PREFIX)_
+target_name = $$lower($$TARGET_NAME)
+prefixed_target_name = $$SOURCE_FILE_PREFIX$$target_name

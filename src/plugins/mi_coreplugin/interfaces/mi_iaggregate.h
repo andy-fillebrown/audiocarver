@@ -25,7 +25,7 @@
 class IAggregate : public IUnknown
 {
 public:
-    enum { InterfaceType = Mi::AggregateInterface };
+    Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IAggregate)
 
     virtual IAggregator *aggregator() const = 0;
 
@@ -34,18 +34,6 @@ public:
         if (isTypeOfInterface(interfaceType))
             return this;
         return aggregator()->queryInterface(interfaceType);
-    }
-
-    // IUnknown
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
     }
 };
 

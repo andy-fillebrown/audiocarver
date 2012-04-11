@@ -19,7 +19,7 @@
 
 #include <ac_scoreobject.h>
 
-Q_INIT_ROLES(Curve) {
+Q_I_INIT__AGGREGATOR__ROLES(Curve) {
     Ac::PointsRole
 };
 

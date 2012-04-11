@@ -32,12 +32,12 @@ class QGraphicsItem;
 
 class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
-    Q_DECLARE_AGGREGATOR(ScoreObject, GraphicsParent)
+    Q_I_DERIVED__AGGREGATOR(ScoreObject, GraphicsParent)
 
-    Q_DECLARE_ROLECOUNT(1)
+    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
     qreal _volume;
 
-    Q_DECLARE_ITEMCOUNT(2)
+    Q_I_DERIVED__AGGREGATOR__ITEM_COUNT(2)
     QScopedPointer<PitchCurve> _pitchCurve;
     QScopedPointer<DataObjectList> _controlCurves;
 
@@ -56,7 +56,7 @@ protected:
         volume = qMin(qMax(qreal(0.0f), volume), qreal(1.0f));
         if (_volume == volume)
             return false;
-        Q_MI_SCOPED_CHANGE(Ac::VolumeRole);
+        Q_SCOPED_CHANGE(Ac::VolumeRole);
         _volume = volume;
         updatePoints();
         return true;
@@ -78,10 +78,10 @@ public:
     virtual void updatePoints() {}
 
 protected:
-    class ModelData : public A::Base::ModelData
+    class ModelData : public Base::ModelData
     {
-        Q_DECLARE_MODELDATA
-        Q_DECLARE_MODELDATA_FUNCTIONS
+        Q_I_DERIVED__MODEL_DATA
+        Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
 
         // IModelData
 
@@ -106,10 +106,10 @@ protected:
         }
     };
 
-    class ModelItem : public A::Base::ModelItem
+    class ModelItem : public Base::ModelItem
     {
-        Q_DECLARE_MODELITEM
-        Q_DECLARE_MODELITEM_FUNCTIONS
+        Q_I_DERIVED__MODEL_ITEM
+        Q_I_DERIVED__MODEL_ITEM__ALL_FUNCTIONS
     };
 };
 

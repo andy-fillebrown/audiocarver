@@ -31,10 +31,10 @@ class ScoreObject;
 
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
-    Q_DECLARE_AGGREGATOR(Curve, GraphicsObject)
+    Q_I_DERIVED__AGGREGATOR(Curve, GraphicsObject)
     QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
 
-    Q_DECLARE_ROLECOUNT(1)
+    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
     QStack<PointList> _pointsStack;
 
 protected:
@@ -70,7 +70,7 @@ protected:
         _pointsStack.top() = old_pts;
         if (_pointsStack.top() == new_pts)
             return false;
-        Q_MI_SCOPED_CHANGE(Ac::PointsRole);
+        Q_SCOPED_CHANGE(Ac::PointsRole);
         _pointsStack.top() = new_pts;
         updateGraphicsItems();
         return true;
@@ -92,8 +92,8 @@ protected:
     void *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case Ac::EntityInterface:
-            return appendAggregate(Q_CREATE_AGGREGATE(Entity));
+        case I::IEntity:
+            return appendAggregate(Q_I_CREATE__AGGREGATE(Entity));
         default:
             return Base::createAggregate(interfaceType);
         }
@@ -101,7 +101,7 @@ protected:
 
     class Entity : public IEntity
     {
-        Q_DECLARE_BASE_AGGREGATE(Entity)
+        Q_I_BASE__AGGREGATE(Entity)
 
         // IEntity
 
@@ -128,7 +128,7 @@ protected:
 
     class SubEntity : public ISubEntity
     {
-        Q_DECLARE_BASE_AGGREGATE(SubEntity)
+        Q_I_BASE__AGGREGATE(SubEntity)
 
         // ISubEntity
 
@@ -140,7 +140,7 @@ protected:
 
     class Points : public IPoints
     {
-        Q_DECLARE_BASE_AGGREGATE(Points)
+        Q_I_BASE__AGGREGATE(Points)
 
         // IPoints
 
@@ -151,14 +151,14 @@ protected:
 
         void pushPoints(const PointList &points)
         {
-            Q_A(Curve);
+            Q_IA(Curve);
             a->pointsStack().push(points);
             a->updateGraphicsItems();
         }
 
         void popPoints()
         {
-            Q_A(Curve);
+            Q_IA(Curve);
             a->pointsStack().pop();
             a->updateGraphicsItems();
         }
@@ -172,8 +172,8 @@ protected:
     class ModelData : public Base::ModelData
     {
     public:
-        Q_DECLARE_MODELDATA
-        Q_DECLARE_MODELDATA_FUNCTIONS
+        Q_I_DERIVED__MODEL_DATA
+        Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
 
         // IModelData
 
