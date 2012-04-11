@@ -19,8 +19,7 @@
 #define MI_DATAOBJECTLIST_H
 
 #include "mi_dataobject.h"
-
-#include <mi_imodellist.h>
+#include "mi_imodellist.h"
 
 class DataObject;
 
@@ -28,17 +27,15 @@ typedef QList<DataObject*> DataObjects;
 
 class MI_CORE_EXPORT DataObjectList : public DataObject
 {
+    Q_DECLARE_AGGREGATOR(DataObjectList, DataObject)
+
     const int _listType;
     DataObjects _list;
-
-    Q_DECLARE_AGGREGATOR(DataObjectList, DataObject, 0, 0)
 
 protected:
     DataObjectList(int listType = Mi::UnknownItem)
         :   _listType(listType)
     {}
-
-    IAggregator *_init();
 
 public:
     int listType() const
@@ -66,7 +63,8 @@ protected:
 
     class ModelList : public IModelList
     {
-        Q_DECLARE_BASE_AGGREGATE(ModelList)
+        Q_DECLARE_BASE_MODELLIST
+        Q_DECLARE_BASE_MODELITEM_ITEMTYPE(Mi::ListItem)
 
         // IModelList
 
@@ -120,17 +118,6 @@ protected:
 
         // IModelItem
 
-        int itemType() const
-        {
-            Q_ASSERT(false);
-            return Mi::UnknownItem;
-        }
-
-        bool isTypeOfItem(int itemType) const
-        {
-            return Mi::ListItem == itemType;
-        }
-
         IModelItem *parent() const
         {
             return query<IModelItem>(a()->parent());
@@ -151,19 +138,8 @@ protected:
             return query<IModelItem>(a()->list().at(i));
         }
 
-        IModelItem *findItem(int itemType) const
-        {
-            Q_UNUSED(itemType);
-            Q_ASSERT(false);
-            return 0;
-        }
-
-        IModelList *findList(int listType) const
-        {
-            Q_UNUSED(listType);
-            Q_ASSERT(false);
-            return 0;
-        }
+        IModelItem *findItem(int) const { return 0; }
+        IModelList *findList(int) const { return 0; }
     };
 };
 

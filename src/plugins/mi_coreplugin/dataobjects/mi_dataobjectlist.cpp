@@ -17,7 +17,7 @@
 
 #include "mi_dataobjectlist.h"
 
-IAggregator *DataObjectList::_init()
+IAggregator *DataObjectList::init()
 {
     setName(Mi::itemTypeString(listType()) + "s");
     return this;

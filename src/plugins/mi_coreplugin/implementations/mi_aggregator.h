@@ -31,12 +31,12 @@ class MI_CORE_EXPORT Aggregator : public IAggregator
     AggregateHash _aggregates;
 
 protected:
-    // IAggregator
-
     AggregateList aggregates() const
     {
         return _aggregates.values();
     }
+
+    // IAggregator
 
     bool containsAggregate(int interfaceType) const;
 

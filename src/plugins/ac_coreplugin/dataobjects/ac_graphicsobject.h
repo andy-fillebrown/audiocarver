@@ -26,19 +26,13 @@ class GraphicsParent;
 
 class AC_CORE_EXPORT GraphicsObject : public DataObject
 {
-    Q_DECLARE_AGGREGATOR(GraphicsObject, DataObject, 0, 0)
+    Q_DECLARE_AGGREGATOR(GraphicsObject, DataObject)
 
 protected:
-    GraphicsObject()
-    {}
+    GraphicsObject() {}
 
-    virtual GraphicsParent *graphicsParent() const
-    {
-        return 0;
-    }
-
-    virtual void updateGraphicsParent()
-    {}
+    virtual GraphicsParent *graphicsParent() const { return 0; }
+    virtual void updateGraphicsParent() {}
 
     // DataObject
 

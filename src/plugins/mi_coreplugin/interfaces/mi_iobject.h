@@ -19,10 +19,9 @@
 #define MI_IOBJECT_H
 
 #include "mi_iunknown.h"
+#include "QObject"
 
 #include <mi_namespace.h>
-
-#include <QObject>
 
 
 

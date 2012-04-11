@@ -32,12 +32,12 @@ class QGraphicsItem;
 
 class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
-    Q_DECLARE_AGGREGATOR(ScoreObject, GraphicsParent, 1, 2)
+    Q_DECLARE_AGGREGATOR(ScoreObject, GraphicsParent)
 
-    // Properties
+    Q_DECLARE_ROLECOUNT(1)
     qreal _volume;
 
-    // Items
+    Q_DECLARE_ITEMCOUNT(2)
     QScopedPointer<PitchCurve> _pitchCurve;
     QScopedPointer<DataObjectList> _controlCurves;
 
@@ -51,7 +51,16 @@ protected:
         return _volume;
     }
 
-    void setVolume(qreal volume);
+    bool setVolume(qreal volume)
+    {
+        volume = qMin(qMax(qreal(0.0f), volume), qreal(1.0f));
+        if (_volume == volume)
+            return false;
+        Q_MI_SCOPED_CHANGE(Ac::VolumeRole);
+        _volume = volume;
+        updatePoints();
+        return true;
+    }
 
     PitchCurve *pitchCurve() const
     {
@@ -66,40 +75,42 @@ protected:
     virtual qreal length() const = 0;
 
 public:
-    virtual void updatePoints()
-    {}
+    virtual void updatePoints() {}
 
 protected:
-    class ModelItem : public GraphicsParent::ModelItem
+    class ModelData : public A::Base::ModelData
     {
-        Q_DECLARE_AGGREGATE(ModelItem)
+        Q_DECLARE_MODELDATA
+        Q_DECLARE_MODELDATA_FUNCTIONS
 
-        int count() const
+        // IModelData
+
+        QVariant getVariant(int role) const
         {
-            return TotalRoleCount;
+            switch (role) {
+            case Ac::VolumeRole:
+                return a()->volume();
+            default:
+                return Base::getVariant(role);
+            }
         }
 
-        int indexOf(const IModelItem *item) const;
+        bool setVariant(const QVariant &data, int role)
+        {
+            switch (role) {
+            case Ac::VolumeRole:
+                return a()->setVolume(qvariant_cast<qreal>(data));
+            default:
+                return Base::setVariant(data, role);
+            }
+        }
     };
 
-//    // IModelItem
-//    int modelItemCount() const { return ModelItemCount; }
-//    int modelItemIndex(const IModelItem *item) const;
-//    IModelItem *modelItemAt(int i) const;
-//    IModelItem *findModelItem(int type) const;
-//    IModelItemList *findModelItemList(int type) const;
-
-//    int persistentRoleAt(int i) const
-//    {
-//        if (staticMetaObject.propertyOffset() == i)
-//            return Ac::VolumeRole;
-//        return Object::persistentRoleAt(i);
-//        Q_UNUSED(i);
-//        return 0;
-//    }
-
-//    QVariant data(int role) const;
-//    bool setData(const QVariant &value, int role);
+    class ModelItem : public A::Base::ModelItem
+    {
+        Q_DECLARE_MODELITEM
+        Q_DECLARE_MODELITEM_FUNCTIONS
+    };
 };
 
 #endif // AC_SCOREOBJECT_H

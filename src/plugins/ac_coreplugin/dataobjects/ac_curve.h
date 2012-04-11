@@ -31,16 +31,14 @@ class ScoreObject;
 
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
-    Q_DECLARE_AGGREGATOR(Curve, GraphicsObject, 1, 0)
-
+    Q_DECLARE_AGGREGATOR(Curve, GraphicsObject)
     QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
 
-    // Properties
+    Q_DECLARE_ROLECOUNT(1)
     QStack<PointList> _pointsStack;
 
 protected:
-    Curve()
-    {}
+    Curve() {}
 
     virtual ScoreObject *scoreObject() const = 0;
     virtual void conformPoints() = 0;
@@ -174,23 +172,10 @@ protected:
     class ModelData : public Base::ModelData
     {
     public:
-        Q_DECLARE_AGGREGATE(ModelData)
+        Q_DECLARE_MODELDATA
+        Q_DECLARE_MODELDATA_FUNCTIONS
 
         // IModelData
-
-        int roleCount() const
-        {
-            return TotalRoleCount;
-        }
-
-        int roleAt(int i) const
-        {
-            const int j = i - RoleCount;
-            Q_ASSERT(0 <= j);
-            if (j < RoleCount)
-                return Roles[j];
-            return Base::roleAt(i);
-        }
 
         QVariant getVariant(int role) const
         {

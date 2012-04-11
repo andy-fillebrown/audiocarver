@@ -29,12 +29,13 @@
 
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
+    Q_DECLARE_BASE_AGGREGATOR(DataObject)
     DataObject *_parent;
 
-    // Properties
+    Q_DECLARE_BASE_ROLECOUNT(1)
     QString _name;
 
-    Q_DECLARE_BASE_AGGREGATOR(DataObject, 1, 0)
+    enum { TotalItemCount = 0 };
 
 protected:
     DataObject()
@@ -78,21 +79,10 @@ public:
 protected:
     class ModelData : public IModelData
     {
-        Q_DECLARE_BASE_AGGREGATE(ModelData)
+        Q_DECLARE_BASE_MODELDATA
+        Q_DECLARE_BASE_MODELDATA_FUNCTIONS
 
         // IModelData
-
-        int roleCount() const
-        {
-            return TotalRoleCount;
-        }
-
-        int roleAt(int i) const
-        {
-            const int j = i - RoleCount;
-            Q_ASSERT(0 <= j && j < RoleCount);
-            return Roles[j];
-        }
 
         QVariant getVariant(int role) const
         {
@@ -111,74 +101,31 @@ protected:
             switch (role) {
             case Qt::EditRole:
             case Mi::NameRole:
-                return a()->setName(data.toString());
+                return a()->setName(qvariant_cast<QString>(data));
             default:
                 Q_ASSERT(false);
                 return false;
             }
         }
-
-        Qt::ItemFlags flags() const
-        {
-            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-        }
     };
 
     class ModelItem : public IModelItem
     {
-        Q_DECLARE_BASE_AGGREGATE(ModelItem)
+        Q_DECLARE_BASE_MODELITEM
+        Q_DECLARE_BASE_MODELITEM_ITEMTYPE(Mi::UnknownItem)
 
         // IModelItem
-
-        int itemType() const
-        {
-            Q_ASSERT(false);
-            return Mi::UnknownItem;
-        }
-
-        bool isTypeOfItem(int itemType) const
-        {
-            Q_UNUSED(itemType);
-            return false;
-        }
 
         IModelItem *parent() const
         {
             return query<IModelItem>(a()->parent());
         }
 
-        int count() const
-        {
-            return 0;
-        }
-
-        int indexOf(const IModelItem *item) const
-        {
-            Q_UNUSED(item);
-            Q_ASSERT(false);
-            return -1;
-        }
-
-        IModelItem *at(int i) const
-        {
-            Q_UNUSED(i);
-            Q_ASSERT(false);
-            return 0;
-        }
-
-        IModelItem *item(int type) const
-        {
-            Q_UNUSED(type);
-            Q_ASSERT(false);
-            return 0;
-        }
-
-        IModelList *list(int listType) const
-        {
-            Q_UNUSED(listType);
-            Q_ASSERT(false);
-            return 0;
-        }
+        int count() const { return 0; }
+        int indexOf(IModelItem*) const { return -1; }
+        IModelItem *at(int) const { return 0; }
+        IModelItem *findItem(int) const { return 0; }
+        IModelList *findList(int) const { return 0; }
     };
 };
 

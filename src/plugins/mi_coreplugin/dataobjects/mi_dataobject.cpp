@@ -17,7 +17,7 @@
 
 #include "mi_dataobject.h"
 
-Q_INIT_AGGREGATOR_ROLES(DataObject) {
+Q_INIT_ROLES(DataObject) {
     Mi::NameRole,
 };
 
