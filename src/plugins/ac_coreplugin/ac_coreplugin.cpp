@@ -129,8 +129,24 @@ bool test_2()
     return true;
 }
 
+bool test_3()
+{
+    // Make sure IModelData::item() succeeds.
+    // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
+    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
+    CHECK(control_curve_pointer);
+    IAggregator *control_curve = control_curve_pointer.data();
+    CHECK(control_curve);
+    IModelData *data = query<IModelData>(control_curve);
+    CHECK(data);
+    IModelItem *item = data->item();
+    CHECK(item);
+    return true;
+}
+
 bool test()
 {
+    RUN(test_3);
     RUN(test_2);
     RUN(test_1);
     qDebug() << "AcCorePlugin tests passed.";

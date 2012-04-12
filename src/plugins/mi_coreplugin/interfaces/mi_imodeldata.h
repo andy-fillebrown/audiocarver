@@ -20,6 +20,8 @@
 
 #include "mi_iaggregate.h"
 
+class IModelItem;
+
 class QVariant;
 
 class IModelData : public IAggregate
@@ -27,6 +29,7 @@ class IModelData : public IAggregate
 public:
     Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModelData, IAggregate)
 
+    virtual IModelItem *item() const = 0;
     virtual int roleCount() const = 0;
     virtual int roleAt(int i) const = 0;
     virtual QVariant getVariant(int role) const = 0;

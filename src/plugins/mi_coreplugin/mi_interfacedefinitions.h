@@ -147,7 +147,7 @@
 
 // AGGREGATE
 
-#define Q_I_BASE__AGGREGATE(Class) \
+#define Q_I_BASE_COMMON__AGGREGATE \
     protected: \
         A *_a; \
     \
@@ -162,15 +162,24 @@
         } \
     \
     public: \
-        Class(A *aggregator) \
-            :   _a(aggregator) \
-        {} \
-    \
         virtual IAggregate* init(); \
     \
     protected:
 
-#define Q_I_DERIVED__AGGREGATE(Class) \
+#define Q_I_BASE__AGGREGATE__NO_CONSTRUCTOR \
+    Q_I_BASE_COMMON__AGGREGATE
+
+#define Q_I_BASE__AGGREGATE(Class) \
+    Q_I_BASE_COMMON__AGGREGATE \
+    \
+    public: \
+        Class(A *aggregator) \
+            :   _a(aggregator) \
+        {} \
+    \
+    protected:
+
+#define Q_I_DERIVED_COMMON__AGGREGATE(Class) \
     protected: \
         typedef A::Base::Class Base; \
     \
@@ -180,11 +189,20 @@
         } \
     \
     public: \
+        IAggregate* init(); \
+    \
+    protected:
+
+#define Q_I_DERIVED__AGGREGATE__NO_CONSTRUCTOR(Class) \
+    Q_I_DERIVED_COMMON__AGGREGATE(Class)
+
+#define Q_I_DERIVED__AGGREGATE(Class) \
+    Q_I_DERIVED_COMMON__AGGREGATE(Class) \
+    \
+    public: \
         Class(A *aggregator) \
             :   Base(aggregator) \
         {} \
-    \
-        IAggregate* init(); \
     \
     protected:
 
@@ -195,12 +213,26 @@
 #define Q_I_COMMON__MODEL_DATA \
 
 #define Q_I_BASE__MODEL_DATA \
-    Q_I_BASE__AGGREGATE(ModelData) \
+        IModelItem *_item; \
+    \
+    Q_I_BASE__AGGREGATE__NO_CONSTRUCTOR \
     Q_I_COMMON__MODEL_DATA \
     \
         Qt::ItemFlags flags() const \
         { \
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable; \
+        } \
+    \
+    public: \
+        ModelData(A *aggregator) \
+            :   _item(0) \
+            ,   _a(aggregator) \
+        {} \
+    \
+    protected: \
+        IModelItem *item() const \
+        { \
+            return _item; \
         }
 
 #define Q_I_DERIVED__MODEL_DATA \

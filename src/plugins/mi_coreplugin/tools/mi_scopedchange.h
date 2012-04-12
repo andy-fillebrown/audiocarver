@@ -27,7 +27,6 @@ class IModelItem;
 class ScopedChange
 {
     const IModelData *_modelData;
-    const IModelItem *_modelItem;
     int _role;
 
 public:

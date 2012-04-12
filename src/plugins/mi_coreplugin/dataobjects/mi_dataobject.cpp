@@ -28,6 +28,7 @@ IAggregator *DataObject::init()
 
 IAggregate *DataObject::ModelData::init()
 {
+    _item = query<IModelItem>(a());
     return this;
 }
 
