@@ -5,13 +5,9 @@ TEMPLATE = lib
 QT -= gui
 
 load(../../plugin.prf)
-load(../mi_coreplugin/mi_coreplugin_dependencies.prf)
 
-for(dir, DIRS) {
-    include($$dir/$${dir}.pri)
-}
-
-DEFINES *= MI_CORE_LIBRARY
+DEFINES *= \
+    MI_CORE_LIBRARY
 
 SOURCE_FILES = \
     global \
@@ -34,3 +30,8 @@ exists($$resource): RESOURCES *= $$resource
 exists($$prf): OTHER_FILES *= $$prf
 exists($$dependencies_prf): OTHER_FILES *= $$dependencies_prf
 exists($$pluginspec): OTHER_FILES *= $$pluginspec
+
+load(../$$prefixed_target_name/$$dependencies_prf)
+for(dir, DIRS) {
+    include($$dir/$${dir}.pri)
+}

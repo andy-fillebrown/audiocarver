@@ -1,15 +1,18 @@
 
-HEADERS *= \
-    ac_ientity.h \
-    ac_ifiler.h \
-    ac_iplaycursor.h \
+SOURCE_FILES = \
+    ientity \
+    ifiler \
+    iplaycursor \
+    iaudioengine \
+    ifactory \
+    isynthesizer \
 
-SOURCE_PAIRS = \
-    ac_iaudioengine \
-    ac_ifactory \
-    ac_isynthesizer \
-
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= interfaces/$${pair}.h
-    SOURCES *= interfaces/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    name = $$SOURCE_FILE_PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

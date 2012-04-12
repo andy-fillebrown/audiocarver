@@ -14,11 +14,10 @@ SOURCE_FILES = \
 #    track \
 #    viewsettings \
 
-DIR = dataobjects
-PREFIX = ac_
-
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    name = $$PREFIX$$file
+    name = $$SOURCE_FILE_PREFIX$$file
     header = $${name}.h
     source = $${name}.cpp
     exists($$header): HEADERS *= $$DIR/$$header

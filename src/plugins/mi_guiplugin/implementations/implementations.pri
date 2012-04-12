@@ -1,8 +1,13 @@
 
-SOURCE_PAIRS = \
-    mi_guimainwindowextension \
+SOURCE_FILES = \
+    guimainwindowextension \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= implementations/$${pair}.h
-    SOURCES *= implementations/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    name = $$SOURCE_FILE_PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

@@ -1,8 +1,13 @@
 
-SOURCE_PAIRS = \
-    mi_ieditor \
+SOURCE_FILES = \
+    ieditor \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= interfaces/$${pair}.h
-    SOURCES *= interfaces/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    name = $$SOURCE_FILE_PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

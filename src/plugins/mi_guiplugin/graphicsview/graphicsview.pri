@@ -1,9 +1,14 @@
 
-SOURCE_PAIRS = \
-    mi_graphicsscene \
-    mi_graphicsview \
+SOURCE_FILES = \
+    graphicsscene \
+    graphicsview \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= graphicsview/$${pair}.h
-    SOURCES *= graphicsview/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    name = $$SOURCE_FILE_PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

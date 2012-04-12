@@ -2,12 +2,12 @@
 SOURCE_FILES = \
     aggregator \
 
-_DIR_ = $$dirname(_FILE_)
-_DIR_ = $$basename(_DIR_)
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
     name = $$SOURCE_FILE_PREFIX$$file
     header = $${name}.h
     source = $${name}.cpp
-    exists($$header): HEADERS *= $$_DIR_/$$header
-    exists($$source): SOURCES *= $$_DIR_/$$source
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }
