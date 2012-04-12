@@ -17,7 +17,8 @@
 
 #include "ac_controlcurve.h"
 
-Q_I_INIT__AGGREGATOR__ROLES(ControlCurve) {
+Q_I_INIT__AGGREGATOR__ROLES(ControlCurve)
+{
 Ac::ControlIdRole
 };
 

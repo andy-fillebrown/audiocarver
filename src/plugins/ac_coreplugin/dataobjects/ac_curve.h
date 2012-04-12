@@ -84,26 +84,12 @@ protected:
     }
 
     // GraphicsObject
-
     GraphicsParent *graphicsParent() const;
 
-    // IAggregator
-
-    void *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IEntity:
-            return Q_I_CREATE__AGGREGATE(Entity);
-        default:
-            return Base::createAggregate(interfaceType);
-        }
-    }
-
+    // IEntity
     class Entity : public IEntity
     {
         Q_I_BASE__AGGREGATE(Entity)
-
-        // IEntity
 
         void highlight()
         {
@@ -126,11 +112,10 @@ protected:
         }
     };
 
+    // ISubEntity
     class SubEntity : public ISubEntity
     {
         Q_I_BASE__AGGREGATE(SubEntity)
-
-        // ISubEntity
 
         bool isCurve() const
         {
@@ -138,11 +123,10 @@ protected:
         }
     };
 
+    // IPoints
     class Points : public IPoints
     {
         Q_I_BASE__AGGREGATE(Points)
-
-        // IPoints
 
         const PointList &points() const
         {
@@ -169,13 +153,12 @@ protected:
         }
     };
 
+    // IModelData
     class ModelData : public Base::ModelData
     {
     public:
         Q_I_DERIVED__MODEL_DATA
         Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
-
-        // IModelData
 
         QVariant getVariant(int role) const
         {
@@ -197,6 +180,23 @@ protected:
             }
         }
     };
+
+    // IAggregator
+    void *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IEntity:
+            return Q_I_CREATE__AGGREGATE(Entity);
+        case I::ISubEntity:
+            Q_ASSERT(0); return 0;
+        case I::IPoints:
+            return Q_I_CREATE__AGGREGATE(Points);
+        case I::IModelData:
+            return Q_I_CREATE__AGGREGATE(ModelData);
+        default:
+            return Base::createAggregate(interfaceType);
+        }
+    }
 };
 
 #endif // AC_CURVE_H

@@ -36,37 +36,22 @@ protected:
         :   _listType(listType)
     {}
 
-public:
     int listType() const
     {
         return _listType;
     }
 
-protected:
     DataObjects &list()
     {
         return _list;
     }
 
-    // IAggregator
-
-    void *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IModelList:
-            return Q_I_CREATE__AGGREGATE(ModelList);
-        default:
-            return 0;
-        }
-    }
-
+    // IModelList
     class ModelList : public IModelList
     {
         Q_I_BASE__MODEL_LIST
         Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::ListItem)
         Q_I_BASE__MODEL_ITEM__PARENT
-
-        // IModelList
 
         int listType() const
         {
@@ -117,7 +102,6 @@ protected:
         }
 
         // IModelItem
-
         int count() const
         {
             return a()->list().count();
@@ -136,6 +120,17 @@ protected:
         IModelItem *findItem(int itemType) const { Q_ASSERT(0); return 0; }
         IModelList *findList(int listType) const { Q_ASSERT(0); return 0; }
     };
+
+    // IAggregator
+    void *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelList:
+            return Q_I_CREATE__AGGREGATE(ModelList);
+        default:
+            return 0;
+        }
+    }
 };
 
 #endif // MI_DATAOBJECTLIST_H

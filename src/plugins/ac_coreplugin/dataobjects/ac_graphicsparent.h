@@ -54,6 +54,7 @@ protected:
         return _unitYGraphicsItems;
     }
 
+    // GraphicsObject
     void updateGraphicsParent();
 };
 

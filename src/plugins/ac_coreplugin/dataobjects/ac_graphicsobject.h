@@ -35,7 +35,6 @@ protected:
     virtual void updateGraphicsParent() {}
 
     // DataObject
-
     void setParent(DataObject *parent)
     {
         Base::setParent(parent);

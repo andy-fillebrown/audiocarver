@@ -30,7 +30,7 @@ class AC_CORE_EXPORT ControlCurve : public Curve
     Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
     int _controlId;
 
-public:
+protected:
     ControlCurve(int controlId = 0)
         :   _controlId(controlId)
     {}
@@ -50,7 +50,6 @@ public:
     }
 
     // Curve
-
     ScoreObject *scoreObject() const
     {
         DataObject *parent = this->parent();
@@ -75,35 +74,16 @@ public:
     }
 
     // GraphicsObject
-
     void updateGraphicsParent()
     {
         GraphicsParent *parent = graphicsParent();
         graphicsCurveItem()->setParentItem(parent ? parent->mainGraphicsItems()[Ac::ControlScene] : 0);
     }
 
-    // IAggregator
-
-    void *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::ISubEntity:
-            return Q_I_CREATE__AGGREGATE(SubEntity);
-        case I::IModelData:
-            return Q_I_CREATE__AGGREGATE(ModelData);
-        case I::IModelItem:
-            return Q_I_CREATE__AGGREGATE(ModelItem);
-        default:
-            return Base::createAggregate(interfaceType);
-        }
-    }
-
-protected:
+    // ISubEntity
     class SubEntity : public Base::SubEntity
     {
         Q_I_DERIVED__AGGREGATE(SubEntity)
-
-        // ISubEntity
 
         IParentEntity *parentEntity() const
         {
@@ -116,12 +96,11 @@ protected:
         }
     };
 
+    // IModelData
     class ModelData : public Base::ModelData
     {
         Q_I_DERIVED__MODEL_DATA
         Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
-
-        // IModelData
 
         QVariant getVariant(int role) const
         {
@@ -144,11 +123,27 @@ protected:
         }
     };
 
+    // IModelItem
     class ModelItem : public Base::ModelItem
     {
         Q_I_DERIVED__MODEL_ITEM
         Q_I_DERIVED__MODEL_ITEM__ITEM_TYPE(Ac::ControlCurveItem)
     };
+
+    // IAggregator
+    void *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::ISubEntity:
+            return Q_I_CREATE__AGGREGATE(SubEntity);
+        case I::IModelData:
+            return Q_I_CREATE__AGGREGATE(ModelData);
+        case I::IModelItem:
+            return Q_I_CREATE__AGGREGATE(ModelItem);
+        default:
+            return Base::createAggregate(interfaceType);
+        }
+    }
 };
 
 #endif // AC_CONTROLCURVE_H

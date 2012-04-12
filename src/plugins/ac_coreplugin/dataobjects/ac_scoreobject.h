@@ -32,6 +32,8 @@ class QGraphicsItem;
 
 class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
+    friend class Curve;
+
     Q_I_DERIVED__AGGREGATOR(ScoreObject, GraphicsParent)
 
     Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
@@ -45,6 +47,9 @@ protected:
     ScoreObject()
         :   _volume(0.0f)
     {}
+
+    virtual qreal length() const = 0;
+    virtual void updatePoints() {}
 
     qreal volume() const
     {
@@ -72,32 +77,11 @@ protected:
         return qGetPtrHelper(_controlCurves);
     }
 
-    virtual qreal length() const = 0;
-
-public:
-    virtual void updatePoints() {}
-
-protected:
-    // IAggregator
-
-    void *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IModelData:
-            Q_ASSERT(0);  return 0;
-        case I::IModelItem:
-            Q_ASSERT(0);  return 0;
-        default:
-            return Base::createAggregate(interfaceType);
-        }
-    }
-
+    // IModelData
     class ModelData : public Base::ModelData
     {
         Q_I_DERIVED__MODEL_DATA
         Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
-
-        // IModelData
 
         QVariant getVariant(int role) const
         {
@@ -120,11 +104,25 @@ protected:
         }
     };
 
+    // IModelItem
     class ModelItem : public Base::ModelItem
     {
         Q_I_DERIVED__MODEL_ITEM
         Q_I_DERIVED__MODEL_ITEM__ALL_FUNCTIONS
     };
+
+    // IAggregator
+    void *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelData:
+            Q_ASSERT(0);  return 0;
+        case I::IModelItem:
+            Q_ASSERT(0);  return 0;
+        default:
+            return Base::createAggregate(interfaceType);
+        }
+    }
 };
 
 #endif // AC_SCOREOBJECT_H
