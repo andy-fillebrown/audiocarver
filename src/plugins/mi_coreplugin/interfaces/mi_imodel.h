@@ -37,12 +37,12 @@ public:
 
     virtual IModelItem *item(const QModelIndex &index) const = 0;
     virtual QModelIndex index(IModelItem *item) const = 0;
-    virtual void beginChange(IModelData *data, int role) = 0;
-    virtual void endChange(IModelData *data, int role) = 0;
-    virtual void beginInsert(IModelList *list, int i) = 0;
-    virtual void endInsert(IModelList *list, int i) = 0;
-    virtual void beginRemove(IModelList *list, int i) = 0;
-    virtual void endRemove(IModelList *list, int i) = 0;
+    virtual void beginChange(const IModelData *data, int role) = 0;
+    virtual void endChange(const IModelData *data, int role) = 0;
+    virtual void beginInsert(const IModelList *list, int i) = 0;
+    virtual void endInsert(const IModelList *list, int i) = 0;
+    virtual void beginRemove(const IModelList *list, int i) = 0;
+    virtual void endRemove(const IModelList *list, int i) = 0;
     virtual void removeParent(IModelItem *item) = 0;
 };
 

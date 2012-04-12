@@ -29,6 +29,13 @@ public:
 
     virtual IAggregator *aggregator() const = 0;
 
+    void *queryInterface(int interfaceType)
+    {
+        if (isTypeOfInterface(interfaceType))
+            return this;
+        return aggregator()->queryInterface(interfaceType);
+    }
+
     const void *queryInterface(int interfaceType) const
     {
         if (isTypeOfInterface(interfaceType))

@@ -54,6 +54,7 @@
 #define Q_I_BASE__AGGREGATOR(Class) \
     Q_I_COMMON__AGGREGATOR(Class) \
     \
+    public: \
         virtual IAggregator *init(); \
     \
     private:
@@ -63,6 +64,7 @@
     \
         typedef BaseClass Base; \
     \
+    public: \
         IAggregator *init(); \
     \
     private:
@@ -336,7 +338,7 @@
 // MODEL_ITEM__INDEX_OF
 
 #define Q_I_COMMON__MODEL_ITEM__INDEX_OF(Return) \
-        int indexOf(IModelItem *item) const \
+        int indexOf(const IModelItem *item) const \
         { \
             Q_IA(const A); \
             const IAggregator *item_a = item->aggregator(); \

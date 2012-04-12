@@ -107,7 +107,7 @@ protected:
             return a()->list().count();
         }
 
-        int indexOf(IModelItem *item) const
+        int indexOf(const IModelItem *item) const
         {
             return a()->list().indexOf(cast<DataObject>(item->aggregator()));
         }
@@ -119,10 +119,11 @@ protected:
 
         IModelItem *findItem(int itemType) const { Q_ASSERT(0); return 0; }
         IModelList *findList(int listType) const { Q_ASSERT(0); return 0; }
+        bool dataChanged(const IModelItem *item, int role) { return false; }
     };
 
     // IAggregator
-    void *createAggregate(int interfaceType)
+    IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
         case I::IModelList:

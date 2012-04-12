@@ -24,11 +24,11 @@
 
 #include <QSharedPointer>
 
-typedef QHash<IAggregate*, AggregatePointer> AggregateHash;
+typedef QHash<int, AggregatePointer> InterfaceTypeToAggregateHash;
 
 class MI_CORE_EXPORT Aggregator : public IAggregator
 {
-    AggregateHash _aggregates;
+    InterfaceTypeToAggregateHash _aggregates;
 
 protected:
     AggregateList aggregates() const
@@ -38,18 +38,21 @@ protected:
 
     // IAggregator
     bool containsAggregate(int interfaceType) const;
+    IAggregate *createAggregate(int interfaceType) { return 0; }
 
-    void *appendAggregate(IAggregate *aggregate)
+    IAggregate *appendAggregate(IAggregate *aggregate)
     {
-        if (!_aggregates.contains(aggregate))
-            _aggregates.insert(aggregate, AggregatePointer(aggregate));
+        const int interface_type = aggregate->interfaceType();
+        if (!_aggregates.contains(interface_type))
+            _aggregates.insert(interface_type, AggregatePointer(aggregate));
         return aggregate;
     }
 
     void removeAggregate(IAggregate *aggregate)
     {
-        _aggregates.remove(aggregate);
+        _aggregates.remove(aggregate->interfaceType());
     }
+
 
 public:
     void *queryInterface(int interfaceType);

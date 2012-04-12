@@ -28,8 +28,6 @@
 
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
-    friend class DataObjectList;
-
     Q_I_BASE__AGGREGATOR(DataObject)
     DataObject *_parent;
 
@@ -49,7 +47,6 @@ public:
         return _parent;
     }
 
-protected:
     virtual void setParent(DataObject *parent)
     {
         if (!parent)
@@ -73,7 +70,7 @@ protected:
             if (list && list->has(_name))
                 return false;
         }
-        Q_SCOPED_CHANGE(Mi::NameRole);
+        Q_SCOPED_DATA_CHANGE(Mi::NameRole);
         _name = name;
         return true;
     }
@@ -115,11 +112,12 @@ protected:
         Q_I_BASE__MODEL_ITEM
         Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::UnknownItem)
 
-        int count() const                        { return 0; }
-        int indexOf(IModelItem *item) const      { Q_ASSERT(0); return -1; }
-        IModelItem *at(int i) const              { Q_ASSERT(0); return 0; }
+        int count() const { return 0; }
+        int indexOf(const IModelItem *item) const { Q_ASSERT(0); return -1; }
+        IModelItem *at(int i) const { Q_ASSERT(0); return 0; }
         IModelItem *findItem(int itemType) const { return 0; }
         IModelList *findList(int listType) const { return 0; }
+        bool dataChanged(const IModelItem *item, int role) { return false; }
     };
 };
 

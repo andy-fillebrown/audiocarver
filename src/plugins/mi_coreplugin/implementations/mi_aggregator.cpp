@@ -22,13 +22,9 @@
 #define Q_I__AGGREGATOR__QUERY_INTERFACE \
     if (I::IAggregator == interfaceType) \
         return this; \
-    AggregateHash::ConstIterator end = _aggregates.constEnd(); \
-    for (AggregateHash::ConstIterator i = _aggregates.constBegin();  i != end;  ++i) \
-        if ((*i)->interfaceType() == interfaceType) \
-            return qGetPtrHelper(*i); \
-    for (AggregateHash::ConstIterator i = _aggregates.constBegin();  i != end;  ++i) \
-        if ((*i)->isTypeOfInterface(interfaceType)) \
-            return qGetPtrHelper(*i); \
+    void *interface = qGetPtrHelper(_aggregates.value(interfaceType)); \
+    if (interface) \
+        return interface;
 
 bool Aggregator::containsAggregate(int interfaceType) const
 {

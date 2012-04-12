@@ -77,7 +77,7 @@ protected:
     };
 
     // IAggregator
-    void *createAggregate(int interfaceType)
+    IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
         case I::ISubEntity:

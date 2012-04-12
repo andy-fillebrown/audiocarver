@@ -70,7 +70,7 @@ protected:
         _pointsStack.top() = old_pts;
         if (_pointsStack.top() == new_pts)
             return false;
-        Q_SCOPED_CHANGE(Ac::PointsRole);
+        Q_SCOPED_DATA_CHANGE(Ac::PointsRole);
         _pointsStack.top() = new_pts;
         updateGraphicsItems();
         return true;
@@ -182,7 +182,7 @@ protected:
     };
 
     // IAggregator
-    void *createAggregate(int interfaceType)
+    IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
         case I::IEntity:

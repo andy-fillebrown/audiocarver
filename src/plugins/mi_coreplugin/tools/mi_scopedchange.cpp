@@ -20,7 +20,7 @@
 #include <mi_dataobject.h>
 #include <mi_imodel.h>
 
-ScopedChange::ScopedChange(DataObject *dataObject, int role)
+ScopedChange::ScopedChange(const DataObject *dataObject, int role)
     :   _modelData(query<IModelData>(dataObject))
     ,   _role(role)
 {

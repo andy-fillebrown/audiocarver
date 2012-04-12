@@ -32,10 +32,11 @@ public:
     virtual bool isTypeOfItem(int itemType) const = 0;
     virtual IModelItem *parent() const = 0;
     virtual int count() const = 0;
-    virtual int indexOf(IModelItem *item) const = 0;
+    virtual int indexOf(const IModelItem *item) const = 0;
     virtual IModelItem *at(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelList *findList(int listType) const = 0;
+    virtual bool dataChanged(const IModelItem *item, int role) = 0;
 
     inline IModelList *list() const;
 };

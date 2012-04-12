@@ -30,11 +30,12 @@ class AC_CORE_EXPORT ControlCurve : public Curve
     Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
     int _controlId;
 
-protected:
+public:
     ControlCurve(int controlId = 0)
         :   _controlId(controlId)
     {}
 
+protected:
     int controlId() const
     {
         return _controlId;
@@ -44,7 +45,7 @@ protected:
     {
         if (_controlId == controlId)
             return false;
-        Q_SCOPED_CHANGE(Ac::ControlIdRole)
+        Q_SCOPED_DATA_CHANGE(Ac::ControlIdRole)
         _controlId = controlId;
         return true;
     }
@@ -131,7 +132,7 @@ protected:
     };
 
     // IAggregator
-    void *createAggregate(int interfaceType)
+    IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
         case I::ISubEntity:

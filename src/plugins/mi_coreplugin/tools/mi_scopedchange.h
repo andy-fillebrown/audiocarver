@@ -22,17 +22,19 @@ class DataObject;
 
 class IModel;
 class IModelData;
+class IModelItem;
 
 class ScopedChange
 {
-    IModelData *_modelData;
+    const IModelData *_modelData;
+    const IModelItem *_modelItem;
     int _role;
 
 public:
-    ScopedChange(DataObject *dataObject, int role);
+    ScopedChange(const DataObject *dataObject, int role);
     ~ScopedChange();
 };
 
-#define Q_SCOPED_CHANGE(role) ScopedChange scoped_change(this, role);
+#define Q_SCOPED_DATA_CHANGE(role) ScopedChange scoped_change(this, role);
 
 #endif // MI_SCOPEDCHANGE_H

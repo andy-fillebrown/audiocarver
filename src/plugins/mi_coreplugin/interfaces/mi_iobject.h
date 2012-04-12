@@ -36,6 +36,8 @@ class Object : public QObject
     IAggregator *_aggregator;
 
 public:
+    enum { InterfaceType = I::IObject };
+
     Object(IAggregator *aggregator)
         :   _aggregator(aggregator)
     {}
@@ -65,8 +67,6 @@ class IObject : public Object, public IUnknown
 {
 public:
     Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IObject)
-
-    virtual const void *queryInterface(int interfaceType) const = 0;
 };
 
 #endif // MI_IOBJECT_H

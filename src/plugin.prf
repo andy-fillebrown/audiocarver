@@ -56,3 +56,5 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 SOURCE_FILE_PREFIX = $$lower($$TARGET_PREFIX)_
 target_name = $$lower($$TARGET_NAME)
 prefixed_target_name = $$SOURCE_FILE_PREFIX$$target_name
+
+DEFINES *= USE_MI_ASSERT

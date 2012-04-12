@@ -27,6 +27,10 @@
 
 #include <QtPlugin>
 
+#ifdef QT_DEBUG
+static bool test();
+#endif
+
 bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
@@ -79,7 +83,58 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 //    addAutoReleasedObject(new Database);
 //    addAutoReleasedObject(new Model);
 
+#ifdef QT_DEBUG
+    return test();
+#endif
     return true;
 }
 
 Q_EXPORT_PLUGIN(AcCorePlugin)
+
+
+
+
+#ifdef QT_DEBUG
+
+#include <ac_controlcurve.h>
+
+#include <mi_iobject.h>
+
+#define RUN(x) if (!x()) return false
+#define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
+
+bool test_1()
+{
+    // Make sure querying aggregators succeeds.
+    // Aggregators should create aggregates on demand.
+    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
+    CHECK(control_curve_pointer);
+    IAggregator *control_curve = control_curve_pointer.data();
+    CHECK(control_curve);
+    IModelItem *item = query<IModelItem>(control_curve);
+    CHECK(item);
+    return true;
+}
+
+bool test_2()
+{
+    // Make sure querying constant aggregators fails.
+    // Constant aggregators should not create aggregates on demand.
+    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
+    CHECK(control_curve_pointer);
+    const IAggregator *control_curve = control_curve_pointer.data();
+    CHECK(control_curve);
+    const IModelItem *item = query<IModelItem>(control_curve);
+    CHECK(!item);
+    return true;
+}
+
+bool test()
+{
+    RUN(test_2);
+    RUN(test_1);
+    qDebug() << "AcCorePlugin tests passed.";
+    return true;
+}
+
+#endif // QT_DEBUG

@@ -27,12 +27,20 @@ public:
 
     virtual int interfaceType() const = 0;
     virtual bool isTypeOfInterface(int interfaceType) const = 0;
+    virtual void *queryInterface(int interfaceType) = 0;
+    virtual const void *queryInterface(int interfaceType) const = 0;
 };
 
 template <class T, class Unknown> inline
 T *query(Unknown *unknown)
 {
     return unknown ? cast<T>(unknown->queryInterface(T::InterfaceType)) : 0;
+}
+
+template <class T, class Unknown> inline
+const T *query(const Unknown *unknown)
+{
+    return unknown ? cast<const T>(unknown->queryInterface(T::InterfaceType)) : 0;
 }
 
 #endif // MI_IUNKOWN_H

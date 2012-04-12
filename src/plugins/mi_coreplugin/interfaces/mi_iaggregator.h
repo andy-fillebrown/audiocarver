@@ -36,17 +36,9 @@ public:
 
     virtual AggregateList aggregates() const = 0;
     virtual bool containsAggregate(int interfaceType) const = 0;
-    virtual void *createAggregate(int interfaceType) = 0;
-    virtual void *appendAggregate(IAggregate* aggregate) = 0;
+    virtual IAggregate *createAggregate(int interfaceType) = 0;
+    virtual IAggregate *appendAggregate(IAggregate* aggregate) = 0;
     virtual void removeAggregate(IAggregate *aggregate) = 0;
-    virtual void *queryInterface(int interfaceType) = 0;
-    virtual const void *queryInterface(int interfaceType) const = 0;
 };
-
-template <> inline
-QObject *query(IAggregator *aggregator)
-{
-    return aggregator ? cast<QObject>(aggregator->queryInterface(I::IObject)) : 0;
-}
 
 #endif // MI_IAGGREGATE_H
