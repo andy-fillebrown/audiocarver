@@ -7,7 +7,7 @@ SOURCE_FILES = \
 #    gridline \
 #    gridsettings \
 #    note \
-#    pitchcurve \
+    pitchcurve \
 #    projectsettings \
 #    score \
     scoreobject \

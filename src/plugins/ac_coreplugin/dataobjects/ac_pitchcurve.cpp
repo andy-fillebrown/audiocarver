@@ -17,55 +17,17 @@
 
 #include "ac_pitchcurve.h"
 
-#include <ac_note.h>
-
-class PitchCurvePrivate : public CurvePrivate
+IAggregator *PitchCurve::init()
 {
-    Q_DECLARE_PUBLIC(PitchCurve)
-
-public:
-    PitchCurvePrivate(PitchCurve *q)
-        :   CurvePrivate(q)
-    {}
-
-    ~PitchCurvePrivate()
-    {}
-
-    void conformPoints()
-    {
-        Q_Q(const PitchCurve);
-        PointList points = q->points();
-        qSort(points);
-        const int n = points.count();
-        for (int i = 0;  i < n;  ++i) {
-            Point &pt = points[i];
-            pt.pos.rx() = qMax(qreal(0.0f), pt.pos.x());
-            pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(127.0f));
-        }
-        pointsStack.top() = points;
-    }
-
-    void updateGraphicsParent()
-    {
-        GraphicsParentPrivate *parent = graphicsParent();
-        graphicsCurveItem->setParentItem(parent ? parent->mainGraphicsItems[Ac::PitchScene] : 0);
-    }
-};
-
-PitchCurve::PitchCurve(QObject *parent)
-    :   Curve(*(new PitchCurvePrivate(this)), parent)
-{
-    Q_D(PitchCurve);
-    d->updateGraphicsParent();
-    setName("PitchCurve");
+    return Base::init();
 }
 
-ScoreObject *PitchCurve::scoreObject() const
+IAggregate *PitchCurve::SubEntity::init()
 {
-    return object_cast<ScoreObject>(QObject::parent());
+    return Base::init();
 }
 
-IEntity *PitchCurve::parentEntity() const
+IAggregate *PitchCurve::ModelItem::init()
 {
-    return object_cast<Note>(QObject::parent());
+    return Base::init();
 }

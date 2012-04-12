@@ -18,36 +18,76 @@
 #ifndef AC_PITCHCURVE_H
 #define AC_PITCHCURVE_H
 
-#include <ac_curve.h>
+#include "ac_curve.h"
+
+#include <ac_graphicsparent.h>
 
 class AC_CORE_EXPORT PitchCurve : public Curve
-        ,   public ISubEntity
 {
-    Q_OBJECT
+    Q_I_DERIVED__AGGREGATOR(PitchCurve, Curve)
 
-public:
-    enum { ItemType = Ac::PitchCurveItem };
-
-    explicit PitchCurve(QObject *parent = 0);
-
+protected:
     // Curve
-    ScoreObject *scoreObject() const;
+    ScoreObject *scoreObject() const
+    {
+        return cast<ScoreObject>(parent());
+    }
+
+    void conformPoints()
+    {
+        PointList points = this->points();
+        qSort(points);
+        const int n = points.count();
+        for (int i = 0;  i < n;  ++i) {
+            Point &pt = points[i];
+            pt.pos.rx() = qMax(qreal(0.0f), pt.pos.x());
+            pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(127.0f));
+        }
+        pointsStack().top() = points;
+    }
+
+    // GraphicsObject
+    void updateGraphicsParent()
+    {
+        GraphicsParent *parent = graphicsParent();
+        graphicsCurveItem()->setParentItem(parent ? parent->mainGraphicsItems()[Ac::PitchScene] : 0);
+    }
 
     // ISubEntity
-    IParentEntity *parentEntity() const;
-
-    int sceneType() const
+    class SubEntity : public Base::SubEntity
     {
-        return Ac::PitchScene;
-    }
+        Q_I_DERIVED__AGGREGATE(SubEntity)
 
-    bool isCurve() const
-    {
-        return true;
-    }
+        IParentEntity *parentEntity() const
+        {
+            return query<IParentEntity>(a()->graphicsParent());
+        }
+
+        int sceneType() const
+        {
+            return Ac::PitchScene;
+        }
+    };
 
     // IModelItem
-    int itemType() const { return ItemType; }
+    class ModelItem : public Base::ModelItem
+    {
+        Q_I_DERIVED__MODEL_ITEM
+        Q_I_DERIVED__MODEL_ITEM__ITEM_TYPE(Ac::PitchCurveItem)
+    };
+
+    // IAggregator
+    void *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::ISubEntity:
+            return Q_I_CREATE__AGGREGATE(SubEntity);
+        case I::IModelItem:
+            return Q_I_CREATE__AGGREGATE(ModelItem);
+        default:
+            return Base::createAggregate(interfaceType);
+        }
+    }
 };
 
 #endif // AC_PITCHCURVE_H
