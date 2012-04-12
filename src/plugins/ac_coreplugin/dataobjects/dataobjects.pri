@@ -1,6 +1,6 @@
 
 SOURCE_FILES = \
-#    controlcurve \
+    controlcurve \
     curve \
     graphicsobject \
     graphicsparent \

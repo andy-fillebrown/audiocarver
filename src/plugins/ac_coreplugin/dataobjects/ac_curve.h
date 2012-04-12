@@ -93,7 +93,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IEntity:
-            return appendAggregate(Q_I_CREATE__AGGREGATE(Entity));
+            return Q_I_CREATE__AGGREGATE(Entity);
         default:
             return Base::createAggregate(interfaceType);
         }

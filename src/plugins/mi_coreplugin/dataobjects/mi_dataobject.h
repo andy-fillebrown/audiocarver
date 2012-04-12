@@ -112,11 +112,10 @@ protected:
     {
         Q_I_BASE__MODEL_ITEM
         Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::UnknownItem)
-        Q_I_BASE__MODEL_ITEM__PARENT
 
         // IModelItem
 
-        int count() const                           { return -1; }
+        int count() const                           { return 0; }
         int indexOf(IModelItem *item) const         { Q_ASSERT(0); return -1; }
         IModelItem *at(int i) const                 { Q_ASSERT(0); return 0; }
         IModelItem *findItem(int itemType) const    { return 0; }

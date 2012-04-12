@@ -141,7 +141,7 @@
 
 #define Q_I_CREATE(Class) (new Class)->init()
 #define Q_I_CREATE__AGGREGATOR(Class) Q_I_CREATE(Class)
-#define Q_I_CREATE__AGGREGATE(Class) Q_I_CREATE(Class(this))
+#define Q_I_CREATE__AGGREGATE(Class) appendAggregate(Q_I_CREATE(Class(this)))
 
 // AGGREGATE
 
@@ -254,24 +254,45 @@
 // MODEL_ITEM
 
 #define Q_I_BASE__MODEL_ITEM \
-    Q_I_BASE__AGGREGATE(ModelItem)
+    Q_I_BASE__AGGREGATE(ModelItem) \
+    Q_I_BASE__MODEL_ITEM__PARENT \
 
 #define Q_I_DERIVED__MODEL_ITEM \
     Q_I_DERIVED__AGGREGATE(ModelItem)
 
-#define Q_I_BASE__MODEL_ITEM__ALL_FUNCTIONS \
+#define Q_I_BASE__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
     Q_I_BASE__MODEL_ITEM__COUNT \
     Q_I_BASE__MODEL_ITEM__INDEX_OF \
     Q_I_BASE__MODEL_ITEM__AT \
-    Q_I_BASE__MODEL_ITEM__FIND_ITEM \
-    Q_I_BASE__MODEL_ITEM__FIND_LIST \
 
-#define Q_I_DERIVED__MODEL_ITEM__ALL_FUNCTIONS \
+#define Q_I_DERIVED__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
     Q_I_DERIVED__MODEL_ITEM__COUNT \
     Q_I_DERIVED__MODEL_ITEM__INDEX_OF \
     Q_I_DERIVED__MODEL_ITEM__AT \
+
+#define Q_I_BASE__MODEL_ITEM__ALL_FIND_FUNCTIONS \
+    Q_I_BASE__MODEL_ITEM__FIND_ITEM \
+    Q_I_BASE__MODEL_ITEM__FIND_LIST \
+
+#define Q_I_DERIVED__MODEL_ITEM__ALL_FIND_FUNCTIONS \
     Q_I_DERIVED__MODEL_ITEM__FIND_ITEM \
     Q_I_DERIVED__MODEL_ITEM__FIND_LIST \
+
+#define Q_I_BASE__MODEL_ITEM__ALL_FUNCTIONS \
+    Q_I_BASE__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
+    Q_I_BASE__MODEL_ITEM__ALL_FIND_FUNCTIONS \
+
+#define Q_I_DERIVED__MODEL_ITEM__ALL_FUNCTIONS \
+    Q_I_DERIVED__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
+    Q_I_DERIVED__MODEL_ITEM__ALL_FIND_FUNCTIONS \
+
+// MODEL_ITEM__PARENT
+
+#define Q_I_BASE__MODEL_ITEM__PARENT \
+        IModelItem *parent() const \
+        { \
+            return query<IModelItem>(a()->parent()); \
+        }
 
 // MODEL_ITEM__ITEM_TYPE
 
@@ -299,14 +320,6 @@
             if (ItemType == itemType) \
                 return true; \
             return Base::isTypeOfItem(itemType); \
-        }
-
-// MODEL_ITEM__PARENT
-
-#define Q_I_BASE__MODEL_ITEM__PARENT \
-        IModelItem *parent() const \
-        { \
-            return query<IModelItem>(a()->parent()); \
         }
 
 // MODEL_ITEM__COUNT

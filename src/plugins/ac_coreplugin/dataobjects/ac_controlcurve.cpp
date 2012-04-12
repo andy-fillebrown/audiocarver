@@ -17,100 +17,26 @@
 
 #include "ac_controlcurve.h"
 
-#include <ac_note.h>
-
-#include <QVariant>
-
-class ControlCurvePrivate : public CurvePrivate
-{
-    Q_DECLARE_PUBLIC(ControlCurve)
-
-public:
-    int controlId;
-
-    ControlCurvePrivate(ControlCurve *q)
-        :   CurvePrivate(q)
-        ,   controlId(0)
-    {}
-
-    void conformPoints()
-    {
-        Q_Q(const ControlCurve);
-        PointList points = q->points();
-        qSort(points);
-        const int n = points.count();
-        if (2 <= n) {
-            points.first().pos = QPointF();
-            points.last().pos.rx() = 1.0f;
-            for (int i = 0;  i < n;  ++i) {
-                Point &pt = points[i];
-                pt.pos.rx() = qBound(qreal(0.0f), pt.pos.x(), qreal(1.0f));
-                pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(1.0f));
-            }
-        }
-        pointsStack.top() = points;
-    }
-
-    void updateGraphicsParent()
-    {
-        GraphicsParentPrivate *parent = graphicsParent();
-        graphicsCurveItem->setParentItem(parent ? parent->mainGraphicsItems[Ac::ControlScene] : 0);
-    }
+Q_I_INIT__AGGREGATOR__ROLES(ControlCurve) {
+Ac::ControlIdRole
 };
 
-ControlCurve::ControlCurve(QObject *parent)
-    :   Curve(*(new ControlCurvePrivate(this)), parent)
+IAggregator *ControlCurve::init()
 {
-    Q_D(ControlCurve);
-    d->updateGraphicsParent();
-    setName("ControlCurve");
+    return Base::init();
 }
 
-int ControlCurve::controlId() const
+IAggregate *ControlCurve::SubEntity::init()
 {
-    Q_D(const ControlCurve);
-    return d->controlId;
+    return Base::init();
 }
 
-void ControlCurve::setControlId(int controlId)
+IAggregate *ControlCurve::ModelData::init()
 {
-    Q_D(ControlCurve);
-    if (d->controlId == controlId)
-        return;
-    d->beginChangeData();
-    d->controlId = controlId;
-    d->endChangeData();
+    return Base::init();
 }
 
-ScoreObject *ControlCurve::scoreObject() const
+IAggregate *ControlCurve::ModelItem::init()
 {
-    QObject *parent = QObject::parent();
-    return parent ? object_cast<ScoreObject>(parent->parent()) : 0;
-}
-
-IEntity *ControlCurve::parentEntity() const
-{
-    QObject *parent = QObject::parent();
-    return parent ? object_cast<Note>(parent->parent()) : 0;
-}
-
-QVariant ControlCurve::data(int role) const
-{
-    switch (role) {
-    case Ac::ControlIdRole:
-        return controlId();
-    default:
-        return Curve::data(role);
-    }
-}
-
-bool ControlCurve::setData(const QVariant &value, int role)
-{
-    switch (role) {
-    case Ac::ControlIdRole:
-        setControlId(value.toInt());
-        return true;
-    default:
-        return Curve::setData(value, role);
-    }
+    return Base::init();
 }

@@ -27,6 +27,7 @@ IAggregator *GraphicsParent::init()
     return Base::init();
 }
 
+// TODO:  Remove deconstructor.
 GraphicsParent::~GraphicsParent()
 {
     qDeleteAll(_unitYGraphicsItems);
@@ -34,8 +35,8 @@ GraphicsParent::~GraphicsParent()
     qDeleteAll(_mainGraphicsItems);
 }
 
-static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &items,
-                                   const QMap<int, QGraphicsItem*> &parentItems)
+static void setParentGraphicsItems(const SceneTypeToGraphicsItemMap &items,
+                                   const SceneTypeToGraphicsItemMap &parentItems)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
         QGraphicsItem *parent_item = parentItems.value(i, 0);
@@ -45,7 +46,7 @@ static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &items,
     }
 }
 
-static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
+static void clearParentGraphicsItems(const SceneTypeToGraphicsItemMap &items)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
         QGraphicsItem *item = items.value(i, 0);

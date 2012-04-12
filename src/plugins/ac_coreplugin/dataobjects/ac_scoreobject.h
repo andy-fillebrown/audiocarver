@@ -78,6 +78,20 @@ public:
     virtual void updatePoints() {}
 
 protected:
+    // IAggregator
+
+    void *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelData:
+            Q_ASSERT(0);  return 0;
+        case I::IModelItem:
+            Q_ASSERT(0);  return 0;
+        default:
+            return Base::createAggregate(interfaceType);
+        }
+    }
+
     class ModelData : public Base::ModelData
     {
         Q_I_DERIVED__MODEL_DATA

@@ -22,17 +22,37 @@
 
 class QGraphicsItem;
 
+typedef QMap<int, QGraphicsItem*> SceneTypeToGraphicsItemMap;
+
 class AC_CORE_EXPORT GraphicsParent : public GraphicsObject
 {
+    friend class ControlCurve;
+    friend class PitchCurve;
+
     Q_I_DERIVED__AGGREGATOR(GraphicsParent, GraphicsObject)
 
-    QMap<int, QGraphicsItem*> _mainGraphicsItems;
-    QMap<int, QGraphicsItem*> _unitXGraphicsItems;
-    QMap<int, QGraphicsItem*> _unitYGraphicsItems;
+    SceneTypeToGraphicsItemMap _mainGraphicsItems;
+    SceneTypeToGraphicsItemMap _unitXGraphicsItems;
+    SceneTypeToGraphicsItemMap _unitYGraphicsItems;
 
 protected:
     GraphicsParent() {}
     ~GraphicsParent();
+
+    SceneTypeToGraphicsItemMap &mainGraphicsItems()
+    {
+        return _mainGraphicsItems;
+    }
+
+    SceneTypeToGraphicsItemMap &unitXGraphicsItems()
+    {
+        return _unitXGraphicsItems;
+    }
+
+    SceneTypeToGraphicsItemMap &unitYGraphicsItems()
+    {
+        return _unitYGraphicsItems;
+    }
 
     void updateGraphicsParent();
 };

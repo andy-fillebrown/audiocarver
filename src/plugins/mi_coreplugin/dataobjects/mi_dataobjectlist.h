@@ -54,7 +54,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelList:
-            return appendAggregate(Q_I_CREATE__AGGREGATE(ModelList));
+            return Q_I_CREATE__AGGREGATE(ModelList);
         default:
             return 0;
         }

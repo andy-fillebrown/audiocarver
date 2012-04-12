@@ -20,47 +20,135 @@
 
 #include "ac_curve.h"
 
+#include <ac_graphicsparent.h>
+#include <ac_scoreobject.h>
+
 class AC_CORE_EXPORT ControlCurve : public Curve
 {
+    Q_I_DERIVED__AGGREGATOR(ControlCurve, Curve)
+
+    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
+    int _controlId;
+
 public:
-    enum { Type = Ac::ControlCurveItem };
+    ControlCurve(int controlId = 0)
+        :   _controlId(controlId)
+    {}
 
-    explicit ControlCurve(QObject *parent = 0);
-
-    // Properties
-    int controlId() const;
-    void setControlId(int controlId);
-
-    // Curve
-    ScoreObject *scoreObject() const;
-
-    // ISubEntity
-    IEntity *parentEntity() const;
-
-    int sceneType() const
+    int controlId() const
     {
-        return Ac::ControlScene;
+        return _controlId;
     }
 
-    bool isCurve() const
+    bool setControlId(int controlId)
     {
+        if (_controlId == controlId)
+            return false;
+        Q_SCOPED_CHANGE(Ac::ControlIdRole)
+        _controlId = controlId;
         return true;
     }
 
-    // IModelItem
-    int type() const { return Type; }
+    // Curve
 
-    int persistentRoleAt(int i) const
+    ScoreObject *scoreObject() const
     {
-//        if (staticMetaObject.propertyOffset() == i)
-//            return Ac::ControlIdRole;
-//        return Curve::persistentRoleAt(i);
-        Q_UNUSED(i);
-        return 0;
+        DataObject *parent = this->parent();
+        return parent ? cast<ScoreObject>(parent->parent()) : 0;
     }
 
-    QVariant data(int role) const;
-    bool setData(const QVariant &value, int role);
+    void conformPoints()
+    {
+        PointList points = this->points();
+        qSort(points);
+        const int n = points.count();
+        if (2 <= n) {
+            points.first().pos = QPointF();
+            points.last().pos.rx() = 1.0f;
+            for (int i = 0;  i < n;  ++i) {
+                Point &pt = points[i];
+                pt.pos.rx() = qBound(qreal(0.0f), pt.pos.x(), qreal(1.0f));
+                pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(1.0f));
+            }
+        }
+        pointsStack().top() = points;
+    }
+
+    // GraphicsObject
+
+    void updateGraphicsParent()
+    {
+        GraphicsParent *parent = graphicsParent();
+        graphicsCurveItem()->setParentItem(parent ? parent->mainGraphicsItems()[Ac::ControlScene] : 0);
+    }
+
+    // IAggregator
+
+    void *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::ISubEntity:
+            return Q_I_CREATE__AGGREGATE(SubEntity);
+        case I::IModelData:
+            return Q_I_CREATE__AGGREGATE(ModelData);
+        case I::IModelItem:
+            return Q_I_CREATE__AGGREGATE(ModelItem);
+        default:
+            return Base::createAggregate(interfaceType);
+        }
+    }
+
+protected:
+    class SubEntity : public Base::SubEntity
+    {
+        Q_I_DERIVED__AGGREGATE(SubEntity)
+
+        // ISubEntity
+
+        IParentEntity *parentEntity() const
+        {
+            return query<IParentEntity>(a()->graphicsParent());
+        }
+
+        int sceneType() const
+        {
+            return Ac::ControlScene;
+        }
+    };
+
+    class ModelData : public Base::ModelData
+    {
+        Q_I_DERIVED__MODEL_DATA
+        Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
+
+        // IModelData
+
+        QVariant getVariant(int role) const
+        {
+            switch (role) {
+            case Ac::ControlIdRole:
+                return a()->controlId();
+            default:
+                return Base::getVariant(role);
+            }
+        }
+
+        bool setVariant(const QVariant &data, int role)
+        {
+            switch (role) {
+            case Ac::ControlIdRole:
+                return a()->setControlId(qvariant_cast<int>(data));
+            default:
+                return Base::setVariant(data, role);
+            }
+        }
+    };
+
+    class ModelItem : public Base::ModelItem
+    {
+        Q_I_DERIVED__MODEL_ITEM
+        Q_I_DERIVED__MODEL_ITEM__ITEM_TYPE(Ac::ControlCurveItem)
+    };
 };
 
 #endif // AC_CONTROLCURVE_H

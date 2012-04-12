@@ -41,6 +41,7 @@ public:
 
 class IParentEntity : public IEntity
 {
+public:
     Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IParentEntity, IEntity)
 
     virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
