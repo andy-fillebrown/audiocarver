@@ -18,6 +18,21 @@
 #include "mi_aggregator.h"
 
 #include <mi_iaggregate.h>
+#include <mi_iorphanage.h>
+
+Aggregator::Aggregator()
+{
+    IOrphanage *orphanage = IOrphanage::instance();
+    if (orphanage)
+        orphanage->append(this);
+}
+
+Aggregator::~Aggregator()
+{
+    IOrphanage *orphanage = IOrphanage::instance();
+    if (orphanage)
+        orphanage->remove(this);
+}
 
 #define Q_I__AGGREGATOR__QUERY_INTERFACE \
     if (I::IAggregator == interfaceType) \

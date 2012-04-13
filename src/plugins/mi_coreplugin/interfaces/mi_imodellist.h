@@ -26,7 +26,7 @@ public:
     Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModelList, IModelItem)
 
     virtual int listType() const = 0;
-    virtual bool has(const QString &name) const = 0;
+    virtual bool containsObjectNamed(const QString &name) const = 0;
     virtual void insert(int i, IModelItem *item) = 0;
     virtual void removeAt(int i) = 0;
     virtual void clear() = 0;

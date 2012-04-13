@@ -41,14 +41,7 @@ protected:
         return _controlId;
     }
 
-    bool setControlId(int controlId)
-    {
-        if (_controlId == controlId)
-            return false;
-        Q_DATA_CHANGE((Ac::ControlIdRole))
-        _controlId = controlId;
-        return true;
-    }
+    bool setControlId(int controlId);
 
     // Curve
     ScoreObject *scoreObject() const

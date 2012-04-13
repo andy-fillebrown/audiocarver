@@ -38,16 +38,16 @@ public:
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelList *findList(int listType) const = 0;
 
-    inline IModelList *list() const;
+//    inline IModelList *list() const;
 };
 
 #include <mi_iaggregator.h>
 #include <mi_imodellist.h>
 
-inline IModelList *IModelItem::list() const
-{
-    IModelItem *parent = this->parent();
-    return parent ? query<IModelList>(parent->aggregator()) : 0;
-}
+//inline IModelList *IModelItem::list() const
+//{
+//    IModelItem *parent = this->parent();
+//    return parent ? query<IModelList>(parent->aggregator()) : 0;
+//}
 
 #endif // MI_IMODELITEM_H

@@ -30,14 +30,11 @@ public:
     Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModelData, IAggregate)
 
     virtual IModelItem *item() const = 0;
-    virtual IModelData *parent() const = 0;
     virtual int roleCount() const = 0;
     virtual int roleAt(int i) const = 0;
     virtual QVariant getVariant(int role) const = 0;
     virtual bool setVariant(const QVariant &data, int role) = 0;
     virtual Qt::ItemFlags flags() const = 0;
-    virtual void dataAboutToBeChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags) = 0;
-    virtual void dataChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags) = 0;
 
     template <typename T> T get(int role) const
     {

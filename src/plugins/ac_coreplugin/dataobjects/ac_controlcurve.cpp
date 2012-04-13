@@ -17,6 +17,8 @@
 
 #include "ac_controlcurve.h"
 
+#include <mi_scopeddatachange.h>
+
 Q_I_INIT__AGGREGATOR__ROLES(ControlCurve)
 {
 Ac::ControlIdRole
@@ -40,4 +42,13 @@ IAggregate *ControlCurve::ModelData::init()
 IAggregate *ControlCurve::ModelItem::init()
 {
     return Base::init();
+}
+
+bool ControlCurve::setControlId(int controlId)
+{
+    if (_controlId == controlId)
+        return false;
+    Q_SCOPED_DATA_CHANGE((Ac::ControlIdRole))
+    _controlId = controlId;
+    return true;
 }

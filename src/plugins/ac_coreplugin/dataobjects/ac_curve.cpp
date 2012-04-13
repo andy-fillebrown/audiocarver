@@ -19,6 +19,8 @@
 
 #include <ac_scoreobject.h>
 
+#include <mi_scopeddatachange.h>
+
 Q_I_INIT__AGGREGATOR__ROLES(Curve)
 {
 Ac::PointsRole
@@ -51,6 +53,40 @@ IAggregate *Curve::Points::init()
 IAggregate *Curve::ModelData::init()
 {
     return Base::init();
+}
+
+void Curve::pushPoints(const PointList &points)
+{
+    Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
+    _pointsStack.push(points);
+    updateGraphicsItems();
+}
+
+void Curve::popPoints()
+{
+    if (1 == _pointsStack.count())
+        return;
+    Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
+    _pointsStack.pop();
+    updateGraphicsItems();
+}
+
+bool Curve::setPoints(const PointList &points)
+{
+    PointList new_pts = points;
+    while (1 < _pointsStack.count())
+        _pointsStack.pop();
+    PointList old_pts = _pointsStack.top();
+    _pointsStack.top() = new_pts;
+    conformPoints();
+    new_pts = _pointsStack.top();
+    _pointsStack.top() = old_pts;
+    if (_pointsStack.top() == new_pts)
+        return false;
+    Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyModelAndParent));
+    _pointsStack.top() = new_pts;
+    updateGraphicsItems();
+    return true;
 }
 
 void Curve::updateGraphicsItems()

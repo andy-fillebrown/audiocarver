@@ -31,6 +31,9 @@ class MI_CORE_EXPORT Aggregator : public IAggregator
     InterfaceTypeToAggregateHash _aggregates;
 
 protected:
+    Aggregator();
+    ~Aggregator();
+
     AggregateList aggregates() const
     {
         return _aggregates.values();

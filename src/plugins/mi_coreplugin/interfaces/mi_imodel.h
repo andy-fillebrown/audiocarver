@@ -22,9 +22,6 @@
 
 class IModelData;
 class IModelItem;
-class IModelList;
-
-class QModelIndex;
 
 class MI_CORE_EXPORT IModel : public IAggregate
 {
@@ -35,15 +32,10 @@ public:
 
     static IModel *instance();
 
-    virtual IModelItem *item(const QModelIndex &index) const = 0;
-    virtual QModelIndex index(IModelItem *item) const = 0;
-    virtual void beginChange(const IModelData *data, int role) = 0;
-    virtual void endChange(const IModelData *data, int role) = 0;
-    virtual void beginInsert(const IModelList *list, int i) = 0;
-    virtual void endInsert(const IModelList *list, int i) = 0;
-    virtual void beginRemove(const IModelList *list, int i) = 0;
-    virtual void endRemove(const IModelList *list, int i) = 0;
-    virtual void removeParent(IModelItem *item) = 0;
+    virtual void beginChangeData(const IModelData *data, int role) = 0;
+    virtual void endChangeData(const IModelData *data, int role) = 0;
+    virtual void beginChangeParent(const IModelItem *item) = 0;
+    virtual void endChangeParent(const IModelItem *item) = 0;
 };
 
 #endif // MI_IMODEL_H

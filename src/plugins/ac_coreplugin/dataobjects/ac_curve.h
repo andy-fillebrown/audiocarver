@@ -53,39 +53,9 @@ protected:
         return _pointsStack.top();
     }
 
-    void pushPoints(const PointList &points)
-    {
-        Q_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
-        _pointsStack.push(points);
-        updateGraphicsItems();
-    }
-
-    void popPoints()
-    {
-        if (1 == _pointsStack.count())
-            return;
-        Q_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
-        _pointsStack.pop();
-        updateGraphicsItems();
-    }
-
-    bool setPoints(const PointList &points)
-    {
-        PointList new_pts = points;
-        while (1 < _pointsStack.count())
-            _pointsStack.pop();
-        PointList old_pts = _pointsStack.top();
-        _pointsStack.top() = new_pts;
-        conformPoints();
-        new_pts = _pointsStack.top();
-        _pointsStack.top() = old_pts;
-        if (_pointsStack.top() == new_pts)
-            return false;
-        Q_DATA_CHANGE((Ac::PointsRole, Mi::NotifyModelAndParent));
-        _pointsStack.top() = new_pts;
-        updateGraphicsItems();
-        return true;
-    }
+    void pushPoints(const PointList &points);
+    void popPoints();
+    bool setPoints(const PointList &points);
 
     virtual void updateGraphicsItems();
 

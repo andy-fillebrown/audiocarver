@@ -15,25 +15,24 @@
 **
 **************************************************************************/
 
-#include "mi_itemselectionmodel.h"
+#ifndef MI_IORPHANAGE_H
+#define MI_IORPHANAGE_H
 
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
+#include "mi_iaggregate.h"
 
-ItemSelectionModel::ItemSelectionModel(QAbstractItemModel *model)
-    :   QItemSelectionModel(model)
-{}
+class IAggregator;
 
-QList<IModelItem*> ItemSelectionModel::selectedItems() const
+class MI_CORE_EXPORT IOrphanage : public IAggregate
 {
-    QList<IModelItem*> items;
+public:
+    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IOrphanage, IAggregate)
 
-//    IModel *model = IModel::instance();
-//    const QModelIndexList indexes = selectedIndexes();
+    IOrphanage();
 
-//    const int n = indexes.count();
-//    for (int i = 0;  i < n; ++i)
-//        items.append(model->item(indexes.at(i)));
+    static IOrphanage *instance();
 
-    return items;
-}
+    virtual void append(IAggregator *aggregator) = 0;
+    virtual void remove(IAggregator *aggregator) = 0;
+};
+
+#endif // MI_IORPHANAGE_H

@@ -15,25 +15,16 @@
 **
 **************************************************************************/
 
-#include "mi_itemselectionmodel.h"
+#include <mi_iorphanage.h>
 
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
+static IOrphanage *instance = 0;
 
-ItemSelectionModel::ItemSelectionModel(QAbstractItemModel *model)
-    :   QItemSelectionModel(model)
-{}
-
-QList<IModelItem*> ItemSelectionModel::selectedItems() const
+IOrphanage::IOrphanage()
 {
-    QList<IModelItem*> items;
+    ::instance = this;
+}
 
-//    IModel *model = IModel::instance();
-//    const QModelIndexList indexes = selectedIndexes();
-
-//    const int n = indexes.count();
-//    for (int i = 0;  i < n; ++i)
-//        items.append(model->item(indexes.at(i)));
-
-    return items;
+IOrphanage *IOrphanage::instance()
+{
+    return ::instance;
 }

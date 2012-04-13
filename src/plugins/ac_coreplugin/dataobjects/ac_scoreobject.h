@@ -36,12 +36,12 @@ class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 
     Q_I_DERIVED__AGGREGATOR(ScoreObject, GraphicsParent)
 
-    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
     qreal _volume;
+    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
 
-    Q_I_DERIVED__AGGREGATOR__ITEM_COUNT(2)
     QScopedPointer<PitchCurve> _pitchCurve;
     QScopedPointer<DataObjectList> _controlCurves;
+    Q_I_DERIVED__AGGREGATOR__ITEM_COUNT(2)
 
 protected:
     ScoreObject()
@@ -56,16 +56,7 @@ protected:
         return _volume;
     }
 
-    bool setVolume(qreal volume)
-    {
-        volume = qMin(qMax(qreal(0.0f), volume), qreal(1.0f));
-        if (_volume == volume)
-            return false;
-        Q_DATA_CHANGE((Ac::VolumeRole));
-        _volume = volume;
-        updatePoints();
-        return true;
-    }
+    bool setVolume(qreal volume);
 
     PitchCurve *pitchCurve() const
     {

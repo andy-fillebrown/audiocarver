@@ -22,17 +22,16 @@
 #include "mi_imodeldata.h"
 #include "mi_imodelitem.h"
 
-#include <mi_imodel.h>
-#include <mi_imodellist.h>
-#include <mi_datachange.h> // TODO:  Move to .cpp
+class DataObjectList;
 
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
     Q_I_BASE__AGGREGATOR(DataObject)
-    DataObject *_parent;
 
     Q_I_BASE__AGGREGATOR__ROLE_COUNT(1)
     QString _name;
+
+    DataObject *_parent;
 
 protected:
     enum { TotalItemCount = 0 };
@@ -42,39 +41,37 @@ protected:
     {}
 
 public:
-    DataObject *parent() const
-    {
-        return _parent;
-    }
-
-    virtual void setParent(DataObject *parent)
-    {
-        if (!parent)
-            IModel::instance()->removeParent(query<IModelItem>(this));
-        if (_parent == parent)
-            return;
-        _parent = parent;
-    }
-
     const QString &name() const
     {
         return _name;
     }
 
-    bool setName(const QString &name)
+    bool setName(const QString &name);
+
+    DataObject *parent() const
     {
-        if (_name == name)
-            return false;
-        if (!name.isEmpty()) {
-            IModelList *list = query<IModelList>(_parent);
-            if (list && list->has(_name))
-                return false;
-        }
-        Q_DATA_CHANGE((Mi::NameRole))
-        _name = name;
-        return true;
+        return isList()
+                ? _parent
+                  ? _parent->parent()
+                  : 0
+                : _parent;
     }
 
+    void setParent(DataObject *parent);
+
+    virtual bool isList() const
+    {
+        return false;
+    }
+
+    inline DataObjectList *list() const;
+
+    virtual void dataAboutToBeChanged(const DataObject *dataObject, int role, Mi::NotificationFlags notificationFlags);
+    virtual void dataChanged(const DataObject *dataObject, int role, Mi::NotificationFlags notificationFlags);
+    virtual void parentAboutToBeChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags) {}
+    virtual void parentChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags) {}
+
+protected:
     // IModelData
     class ModelData : public IModelData
     {
@@ -104,9 +101,6 @@ public:
                 return false;
             }
         }
-
-        void dataAboutToBeChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags);
-        void dataChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags);
     };
 
     // IModelItem
@@ -122,5 +116,14 @@ public:
         IModelList *findList(int listType) const { return 0; }
     };
 };
+
+#include <mi_dataobjectlist.h>
+
+inline DataObjectList *DataObject::list() const
+{
+    return _parent->isList()
+            ? cast<DataObjectList>(_parent)
+            : 0;
+}
 
 #endif // MI_DATAOBJECT_H

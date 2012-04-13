@@ -20,6 +20,8 @@
 #include <ac_controlcurve.h>
 #include <ac_pitchcurve.h>
 
+#include <mi_scopeddatachange.h>
+
 #include <QGraphicsItem>
 
 Q_I_INIT__AGGREGATOR__ROLES(ScoreObject)
@@ -49,4 +51,15 @@ IAggregate *ScoreObject::ModelData::init()
 IAggregate *ScoreObject::ModelItem::init()
 {
     return Base::init();
+}
+
+bool ScoreObject::setVolume(qreal volume)
+{
+    volume = qMin(qMax(qreal(0.0f), volume), qreal(1.0f));
+    if (_volume == volume)
+        return false;
+    Q_SCOPED_DATA_CHANGE((Ac::VolumeRole));
+    _volume = volume;
+    updatePoints();
+    return true;
 }

@@ -8,6 +8,7 @@ SOURCE_FILES = \
     imodelitem \
     imodellist \
     iobject \
+    iorphanage \
     iunknown \
 
 DIR = $$dirname(_FILE_)

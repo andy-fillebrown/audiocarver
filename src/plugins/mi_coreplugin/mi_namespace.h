@@ -32,6 +32,7 @@ enum MiInterfaces {
     IModelItem,
     IModelList,
     IObject,
+    IOrphanage,
     MiInterfaceCount
 };
 

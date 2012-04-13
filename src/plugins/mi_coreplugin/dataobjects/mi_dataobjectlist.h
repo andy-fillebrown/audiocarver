@@ -28,8 +28,9 @@ typedef QList<DataObject*> DataObjects;
 class MI_CORE_EXPORT DataObjectList : public DataObject
 {
     Q_I_DERIVED__AGGREGATOR(DataObjectList, DataObject)
+
     const int _listType;
-    DataObjects _list;
+    DataObjects _objects;
 
 protected:
     DataObjectList(int listType = Mi::UnknownItem)
@@ -41,9 +42,56 @@ protected:
         return _listType;
     }
 
-    DataObjects &list()
+    DataObjects &objects()
     {
-        return _list;
+        return _objects;
+    }
+
+    bool containsObjectNamed(const QString &name) const
+    {
+        DataObjects::ConstIterator end = _objects.constEnd();
+        for (DataObjects::ConstIterator i = _objects.constBegin();  i != end;  ++i)
+            if ((*i)->name() == name)
+                return true;
+        return false;
+    }
+
+    void insert(int i, DataObject *dataObject)
+    {
+        DataObjectList *old_list = dataObject->list();
+        if (old_list) {
+            if (old_list == this)
+                return;
+            old_list->_objects.removeOne(dataObject);
+        }
+        const QString name = dataObject->name();
+        if (!name.isEmpty()) {
+            int suffix = 0;
+            QString new_name = name;
+            while (containsObjectNamed(new_name))
+                new_name = QString("%1.%2").arg(name).arg(++suffix);
+            if (name != new_name)
+                dataObject->setName(new_name);
+        }
+        _objects.insert(i, dataObject);
+        dataObject->setParent(this);
+    }
+
+    void clear()
+    {
+        DataObjects::ConstIterator end = _objects.end();
+        for (DataObjects::ConstIterator i = _objects.begin();  i != end;  ++i) {
+            DataObject *object = *i;
+            object->setParent(0);
+            delete object;
+        }
+        _objects.clear();
+    }
+
+    // DataObject
+    bool isList() const
+    {
+        return true;
     }
 
     // IModelList
@@ -57,63 +105,43 @@ protected:
             return a()->listType();
         }
 
-        bool has(const QString &name) const
+        bool containsObjectNamed(const QString &name) const
         {
-            DataObjects &list = a()->list();
-            DataObjects::ConstIterator end = list.constEnd();
-            for (DataObjects::ConstIterator i = list.constBegin();  i != end;  ++i)
-                if ((*i)->name() == name)
-                    return true;
-            return false;
+            return a()->containsObjectNamed(name);
         }
 
         void insert(int i, IModelItem *item)
         {
-            DataObject *item_a = cast<DataObject>(item->aggregator());
-            IModelList *old_item_list = item->list();
-            if (old_item_list)
-                old_item_list->remove(item);
-            IModelData *item_data = query<IModelData>(item->aggregator());
-            const QString name = item_data->get<QString>(Mi::NameRole);
-            if (!name.isEmpty()) {
-                int suffix = 0;
-                QString new_name = name;
-                while (has(new_name))
-                    new_name = QString("%1.%2").arg(name).arg(++suffix);
-                if (name != new_name)
-                    item_data->set(new_name, Mi::NameRole);
-            }
-            Q_IA(DataObjectList);
-            a->list().insert(i, item_a);
-            item_a->setParent(a);
+            a()->insert(i, cast<DataObject>(query<IAggregator>(item)));
         }
 
         void removeAt(int i)
         {
-            a()->list().removeAt(i);
+            DataObjects &a_objects = a()->objects();
+            DataObject *dataObject = a_objects.at(i);
+            dataObject->setParent(0);
+            a_objects.removeAt(i);
         }
 
         void clear()
         {
-            DataObjects &list = a()->list();
-            qDeleteAll(list);
-            list.clear();
+            a()->clear();
         }
 
         // IModelItem
         int count() const
         {
-            return a()->list().count();
+            return a()->objects().count();
         }
 
         int indexOf(const IModelItem *item) const
         {
-            return a()->list().indexOf(cast<DataObject>(item->aggregator()));
+            return a()->objects().indexOf(cast<DataObject>(item->aggregator()));
         }
 
         IModelItem *at(int i) const
         {
-            return query<IModelItem>(a()->list().at(i));
+            return query<IModelItem>(a()->objects().at(i));
         }
 
         IModelItem *findItem(int itemType) const { Q_ASSERT(0); return 0; }

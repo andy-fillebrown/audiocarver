@@ -17,6 +17,10 @@
 
 #include "mi_dataobject.h"
 
+#include <mi_imodel.h>
+#include <mi_iorphanage.h>
+#include <mi_scopeddatachange.h>
+
 Q_I_INIT__AGGREGATOR__ROLES(DataObject) {
 Mi::NameRole
 };
@@ -37,20 +41,56 @@ IAggregate *DataObject::ModelItem::init()
     return this;
 }
 
-void DataObject::ModelData::dataAboutToBeChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags)
+bool DataObject::setName(const QString &name)
 {
-    if (Mi::NotifyModel & notificationFlags) {
-        IModel *model = IModel::instance();
-        if (model)
-            model->beginChange(data, role);
+    if (_name == name)
+        return false;
+    if (!name.isEmpty() && _parent && _parent->isList()) {
+        IModelList *list = query<IModelList>(_parent);
+        if (list && list->containsObjectNamed(_name))
+            return false;
+    }
+    Q_SCOPED_DATA_CHANGE((Mi::NameRole))
+    _name = name;
+    return true;
+}
+
+void DataObject::setParent(DataObject *parent)
+{
+    if (_parent == parent)
+        return;
+    if (!parent) {
+        IOrphanage *orphanage = IOrphanage::instance();
+        if (orphanage)
+            orphanage->append(this);
+    }
+    _parent = parent;
+}
+
+void DataObject::dataAboutToBeChanged(const DataObject *dataObject, int role, Mi::NotificationFlags notificationFlags)
+{
+    if (this == dataObject) {
+        if (Mi::NotifyModel & notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model) {
+                const IModelData *model_data = const_query<IModelData>(this);
+                if (model_data)
+                model->beginChangeData(model_data, role);
+            }
+        }
     }
 }
 
-void DataObject::ModelData::dataChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags)
+void DataObject::dataChanged(const DataObject *dataObject, int role, Mi::NotificationFlags notificationFlags)
 {
-    if (Mi::NotifyModel & notificationFlags) {
-        IModel *model = IModel::instance();
-        if (model)
-            model->endChange(data, role);
+    if (this == dataObject) {
+        if (Mi::NotifyModel & notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model) {
+                const IModelData *model_data = const_query<IModelData>(this);
+                if (model_data)
+                    model->endChangeData(model_data, role);
+            }
+        }
     }
 }
