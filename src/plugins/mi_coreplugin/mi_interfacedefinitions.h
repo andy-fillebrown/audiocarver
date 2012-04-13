@@ -147,14 +147,18 @@
 
 // AGGREGATE
 
-#define Q_I_BASE_COMMON__AGGREGATE \
+#define Q_I_COMMON__AGGREGATE \
     protected: \
-        A *_a; \
     \
         A *a() const \
         { \
-            return _a; \
+            return cast<A>(_a); \
         } \
+
+#define Q_I_BASE_COMMON__AGGREGATE \
+    Q_I_COMMON__AGGREGATE \
+    \
+        IAggregator *_a; \
     \
         IAggregator *aggregator() const \
         { \
@@ -180,13 +184,9 @@
     protected:
 
 #define Q_I_DERIVED_COMMON__AGGREGATE(Class) \
-    protected: \
-        typedef A::Base::Class Base; \
+    Q_I_COMMON__AGGREGATE \
     \
-        A *a() const \
-        { \
-            return cast<A>(_a); \
-        } \
+        typedef A::Base::Class Base; \
     \
     public: \
         IAggregate* init(); \
