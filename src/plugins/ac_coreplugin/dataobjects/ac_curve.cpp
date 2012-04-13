@@ -55,7 +55,7 @@ IAggregate *Curve::ModelData::init()
 
 void Curve::updateGraphicsItems()
 {
-    graphicsCurveItem()->setPoints(pointsStack().top());
+    graphicsCurveItem()->setPoints(points());
     scoreObject()->updatePoints();
 }
 

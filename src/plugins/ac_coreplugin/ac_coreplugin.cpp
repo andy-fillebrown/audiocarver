@@ -144,8 +144,22 @@ bool test_3()
     return true;
 }
 
+bool test_4()
+{
+    // Make sure setting item name succeeds.
+    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
+    CHECK(control_curve_pointer);
+    IAggregator *control_curve = control_curve_pointer.data();
+    CHECK(control_curve);
+    IModelData *data = query<IModelData>(control_curve);
+    CHECK(data);
+    CHECK(data->set("ControlCurve", Mi::NameRole));
+    return true;
+}
+
 bool test()
 {
+    RUN(test_4);
     RUN(test_3);
     RUN(test_2);
     RUN(test_1);

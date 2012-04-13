@@ -26,12 +26,6 @@
     if (interface) \
         return interface;
 
-bool Aggregator::containsAggregate(int interfaceType) const
-{
-    Q_I__AGGREGATOR__QUERY_INTERFACE
-    return false;
-}
-
 void *Aggregator::queryInterface(int interfaceType)
 {
     Q_I__AGGREGATOR__QUERY_INTERFACE

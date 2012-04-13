@@ -2,7 +2,7 @@
 SOURCE_FILES = \
     coreutils \
     mathutils \
-    scopedchange \
+    datachange \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

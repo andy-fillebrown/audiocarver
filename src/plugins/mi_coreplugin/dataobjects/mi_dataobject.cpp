@@ -36,3 +36,21 @@ IAggregate *DataObject::ModelItem::init()
 {
     return this;
 }
+
+void DataObject::ModelData::dataAboutToBeChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags)
+{
+    if (Mi::NotifyModel & notificationFlags) {
+        IModel *model = IModel::instance();
+        if (model)
+            model->beginChange(data, role);
+    }
+}
+
+void DataObject::ModelData::dataChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags)
+{
+    if (Mi::NotifyModel & notificationFlags) {
+        IModel *model = IModel::instance();
+        if (model)
+            model->endChange(data, role);
+    }
+}

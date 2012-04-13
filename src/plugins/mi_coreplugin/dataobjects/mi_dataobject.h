@@ -24,7 +24,7 @@
 
 #include <mi_imodel.h>
 #include <mi_imodellist.h>
-#include <mi_scopedchange.h>
+#include <mi_datachange.h> // TODO:  Move to .cpp
 
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
@@ -70,7 +70,7 @@ public:
             if (list && list->has(_name))
                 return false;
         }
-        Q_SCOPED_DATA_CHANGE(Mi::NameRole);
+        Q_DATA_CHANGE((Mi::NameRole))
         _name = name;
         return true;
     }
@@ -104,6 +104,9 @@ public:
                 return false;
             }
         }
+
+        void dataAboutToBeChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags);
+        void dataChanged(const IModelData *data, int role, Mi::NotificationFlags notificationFlags);
     };
 
     // IModelItem
@@ -117,7 +120,6 @@ public:
         IModelItem *at(int i) const { Q_ASSERT(0); return 0; }
         IModelItem *findItem(int itemType) const { return 0; }
         IModelList *findList(int listType) const { return 0; }
-        bool dataChanged(const IModelItem *item, int role) { return false; }
     };
 };
 

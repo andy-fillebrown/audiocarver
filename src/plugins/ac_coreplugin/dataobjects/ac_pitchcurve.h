@@ -35,15 +35,14 @@ protected:
 
     void conformPoints()
     {
-        PointList points = this->points();
-        qSort(points);
-        const int n = points.count();
+        PointList &pts = points();
+        qSort(pts);
+        const int n = pts.count();
         for (int i = 0;  i < n;  ++i) {
-            Point &pt = points[i];
+            Point &pt = pts[i];
             pt.pos.rx() = qMax(qreal(0.0f), pt.pos.x());
             pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(127.0f));
         }
-        pointsStack().top() = points;
     }
 
     // GraphicsObject

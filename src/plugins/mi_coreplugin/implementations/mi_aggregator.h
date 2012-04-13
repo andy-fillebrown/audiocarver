@@ -37,7 +37,6 @@ protected:
     }
 
     // IAggregator
-    bool containsAggregate(int interfaceType) const;
     IAggregate *createAggregate(int interfaceType) { return 0; }
 
     IAggregate *appendAggregate(IAggregate *aggregate)

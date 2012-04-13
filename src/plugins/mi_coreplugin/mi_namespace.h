@@ -62,6 +62,17 @@ MI_CORE_EXPORT void appendItemDataRole(int itemDataRole, const QString itemDataR
 MI_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
 MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
 
+enum NotificationFlags {
+    NoNotifications = 0x0,
+    NotifyModel = 0x1,
+    NotifyParent = 0x2,
+    NotifyModelAndParent = 0x3,
+    NotifyItems = 0x4,
+    NotifyModelAndItems = 0x5,
+    NotifyParentAndItems = 0x6,
+    NotifyAll = 0x7
+};
+
 } // namespace Mi
 
 #endif // MI_NAMESPACE_H

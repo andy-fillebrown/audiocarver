@@ -61,7 +61,7 @@ protected:
         volume = qMin(qMax(qreal(0.0f), volume), qreal(1.0f));
         if (_volume == volume)
             return false;
-        Q_SCOPED_DATA_CHANGE(Ac::VolumeRole);
+        Q_DATA_CHANGE((Ac::VolumeRole));
         _volume = volume;
         updatePoints();
         return true;

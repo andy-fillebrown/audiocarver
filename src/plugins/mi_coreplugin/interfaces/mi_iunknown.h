@@ -43,4 +43,10 @@ const T *query(const Unknown *unknown)
     return unknown ? cast<const T>(unknown->queryInterface(T::InterfaceType)) : 0;
 }
 
+template <class T, class Unknown> inline
+const T *const_query(const Unknown *unknown)
+{
+    return query<T>(unknown);
+}
+
 #endif // MI_IUNKOWN_H

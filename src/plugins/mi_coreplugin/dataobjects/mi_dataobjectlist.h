@@ -51,7 +51,6 @@ protected:
     {
         Q_I_BASE__MODEL_LIST
         Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::ListItem)
-        Q_I_BASE__MODEL_ITEM__PARENT
 
         int listType() const
         {
@@ -119,7 +118,6 @@ protected:
 
         IModelItem *findItem(int itemType) const { Q_ASSERT(0); return 0; }
         IModelList *findList(int listType) const { Q_ASSERT(0); return 0; }
-        bool dataChanged(const IModelItem *item, int role) { return false; }
     };
 
     // IAggregator

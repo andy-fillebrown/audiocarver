@@ -45,7 +45,7 @@ protected:
     {
         if (_controlId == controlId)
             return false;
-        Q_SCOPED_DATA_CHANGE(Ac::ControlIdRole)
+        Q_DATA_CHANGE((Ac::ControlIdRole))
         _controlId = controlId;
         return true;
     }
@@ -59,19 +59,18 @@ protected:
 
     void conformPoints()
     {
-        PointList points = this->points();
-        qSort(points);
-        const int n = points.count();
+        PointList &pts = points();
+        qSort(pts);
+        const int n = pts.count();
         if (2 <= n) {
-            points.first().pos = QPointF();
-            points.last().pos.rx() = 1.0f;
+            pts.first().pos = QPointF();
+            pts.last().pos.rx() = 1.0f;
             for (int i = 0;  i < n;  ++i) {
-                Point &pt = points[i];
+                Point &pt = pts[i];
                 pt.pos.rx() = qBound(qreal(0.0f), pt.pos.x(), qreal(1.0f));
                 pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(1.0f));
             }
         }
-        pointsStack().top() = points;
     }
 
     // GraphicsObject

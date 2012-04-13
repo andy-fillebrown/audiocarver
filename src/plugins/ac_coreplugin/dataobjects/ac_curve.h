@@ -48,14 +48,25 @@ protected:
         return qGetPtrHelper(_graphicsCurveItem);
     }
 
-    QStack<PointList> &pointsStack()
-    {
-        return _pointsStack;
-    }
-
     PointList &points()
     {
         return _pointsStack.top();
+    }
+
+    void pushPoints(const PointList &points)
+    {
+        Q_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
+        _pointsStack.push(points);
+        updateGraphicsItems();
+    }
+
+    void popPoints()
+    {
+        if (1 == _pointsStack.count())
+            return;
+        Q_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
+        _pointsStack.pop();
+        updateGraphicsItems();
     }
 
     bool setPoints(const PointList &points)
@@ -70,13 +81,13 @@ protected:
         _pointsStack.top() = old_pts;
         if (_pointsStack.top() == new_pts)
             return false;
-        Q_SCOPED_DATA_CHANGE(Ac::PointsRole);
+        Q_DATA_CHANGE((Ac::PointsRole, Mi::NotifyModelAndParent));
         _pointsStack.top() = new_pts;
         updateGraphicsItems();
         return true;
     }
 
-    void updateGraphicsItems();
+    virtual void updateGraphicsItems();
 
     void setColor(const QColor &color)
     {
@@ -130,21 +141,17 @@ protected:
 
         const PointList &points() const
         {
-            return a()->pointsStack().top();
+            return a()->points();
         }
 
         void pushPoints(const PointList &points)
         {
-            Q_IA(Curve);
-            a->pointsStack().push(points);
-            a->updateGraphicsItems();
+            a()->pushPoints(points);
         }
 
         void popPoints()
         {
-            Q_IA(Curve);
-            a->pointsStack().pop();
-            a->updateGraphicsItems();
+            a()->popPoints();
         }
 
         void setPoints(const PointList &points)

@@ -233,6 +233,11 @@
         IModelItem *item() const \
         { \
             return _item; \
+        } \
+    \
+        IModelData *parent() const \
+        { \
+            return query<IModelData>(a()->parent()); \
         }
 
 #define Q_I_DERIVED__MODEL_DATA \
@@ -446,9 +451,19 @@
 // MODEL_LIST
 
 #define Q_I_BASE__MODEL_LIST \
-    Q_I_BASE__AGGREGATE(ModelList)
+    Q_I_BASE__AGGREGATE(ModelList) \
+    Q_I_BASE__MODEL_LIST__PARENT
 
 #define Q_I_DERIVED__MODEL_LIST \
     Q_I_DERIVED__AGGREGATE(ModelList)
+
+// MODEL_ITEM__PARENT
+
+#define Q_I_BASE__MODEL_LIST__PARENT \
+        IModelItem *parent() const \
+        { \
+            DataObject *a_parent = a()->parent(); \
+            return a_parent ? query<IModelItem>(a_parent) : 0; \
+        }
 
 #endif // MI_GLOBALINTERFACE_H

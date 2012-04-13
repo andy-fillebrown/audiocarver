@@ -21,6 +21,7 @@
 #include "mi_iaggregate.h"
 
 class IModel;
+class IModelData;
 class IModelList;
 
 class IModelItem : public IAggregate
@@ -36,7 +37,6 @@ public:
     virtual IModelItem *at(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelList *findList(int listType) const = 0;
-    virtual bool dataChanged(const IModelItem *item, int role) = 0;
 
     inline IModelList *list() const;
 };

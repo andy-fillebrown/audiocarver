@@ -26,7 +26,7 @@ class IModelList;
 
 class QModelIndex;
 
-class IModel : public IAggregate
+class MI_CORE_EXPORT IModel : public IAggregate
 {
 public:
     Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModel, IAggregate)

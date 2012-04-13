@@ -35,7 +35,6 @@ public:
     Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IAggregator)
 
     virtual AggregateList aggregates() const = 0;
-    virtual bool containsAggregate(int interfaceType) const = 0;
     virtual IAggregate *createAggregate(int interfaceType) = 0;
     virtual IAggregate *appendAggregate(IAggregate* aggregate) = 0;
     virtual void removeAggregate(IAggregate *aggregate) = 0;

@@ -18,8 +18,9 @@
 #ifndef MI_GLOBAL_H
 #define MI_GLOBAL_H
 
-#include <qglobal.h>
 #include <QDebug>
+
+#include <QtGlobal>
 
 #if defined(MI_CORE_LIBRARY)
 #  define MI_CORE_EXPORT Q_DECL_EXPORT
