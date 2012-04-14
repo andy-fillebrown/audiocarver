@@ -23,7 +23,7 @@
 class IModelList : public IModelItem
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModelList, IModelItem)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IModelList, IModelItem)
 
     virtual int listType() const = 0;
     virtual bool containsObjectNamed(const QString &name) const = 0;

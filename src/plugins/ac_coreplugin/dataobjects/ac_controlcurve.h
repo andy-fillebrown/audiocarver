@@ -25,10 +25,10 @@
 
 class AC_CORE_EXPORT ControlCurve : public Curve
 {
-    Q_I_DERIVED__AGGREGATOR(ControlCurve, Curve)
+    Q_IAGGREGATOR_DERIVED(ControlCurve, Curve)
 
     int _controlType;
-    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
+    Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
 
 public:
     ControlCurve()
@@ -92,8 +92,8 @@ protected:
     // IModelData
     class ModelData : public Base::ModelData
     {
-        Q_I_DERIVED__MODEL_DATA
-        Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
+        Q_IMODELDATA_DERIVED
+        Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
 
         QVariant getVariant(int role) const
         {
@@ -119,8 +119,8 @@ protected:
     // IModelItem
     class ModelItem : public Base::ModelItem
     {
-        Q_I_DERIVED__MODEL_ITEM
-        Q_I_DERIVED__MODEL_ITEM__ITEM_TYPE(Ac::ControlCurveItem)
+        Q_IMODELITEM_DERIVED
+        Q_IMODELITEM_DERIVED__ITEMTYPE(Ac::ControlCurveItem)
     };
 
     // IAggregator
@@ -130,9 +130,9 @@ protected:
 //        case I::ISubEntity:
 //            return Q_I_NEW__AGGREGATE(SubEntity);
         case I::IModelData:
-            return Q_I_NEW__AGGREGATE(ModelData);
+            return Q_NEW_AGGREGATE(ModelData);
         case I::IModelItem:
-            return Q_I_NEW__AGGREGATE(ModelItem);
+            return Q_NEW_AGGREGATE(ModelItem);
         default:
             return Base::createAggregate(interfaceType);
         }

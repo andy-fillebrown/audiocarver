@@ -29,7 +29,7 @@ typedef QList<IAggregate*> AggregateList;
 class IAggregator : public IUnknown
 {
 public:
-    Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IAggregator)
+    Q_IUNKNOWN_BASE__INTERFACETYPE(IAggregator)
 
     virtual AggregateList aggregates() const = 0;
     virtual IAggregate *createAggregate(int interfaceType) = 0;

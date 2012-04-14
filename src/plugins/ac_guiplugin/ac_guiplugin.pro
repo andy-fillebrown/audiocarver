@@ -9,7 +9,7 @@ SOURCE_FILES = \
 #    guiconstants.h \
 #    mainwidget \
 
-#SOURCE_FILES *= $$target_name
+SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {
     name = $$SOURCE_FILE_PREFIX$$file
     header = $${name}.h

@@ -31,11 +31,11 @@ class ScoreObject;
 
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
-    Q_I_DERIVED__AGGREGATOR(Curve, GraphicsObject)
+    Q_IAGGREGATOR_DERIVED(Curve, GraphicsObject)
 //    GraphicsCurveItem *_graphicsCurveItem;
 
     QStack<PointList> _pointsStack;
-    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
+    Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
 
 protected:
     Curve()
@@ -111,7 +111,7 @@ protected:
     // IPoints
     class Points : public IPoints
     {
-        Q_I_BASE__AGGREGATE(Points)
+        Q_IAGGREGATE_BASE(Points)
 
         const PointList &points() const
         {
@@ -138,8 +138,8 @@ protected:
     class ModelData : public Base::ModelData
     {
     public:
-        Q_I_DERIVED__MODEL_DATA
-        Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
+        Q_IMODELDATA_DERIVED
+        Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
 
         QVariant getVariant(int role) const
         {
@@ -171,9 +171,9 @@ protected:
 //        case I::ISubEntity:
 //            Q_ASSERT(0); return 0;
         case I::IPoints:
-            return Q_I_NEW__AGGREGATE(Points);
+            return Q_NEW_AGGREGATE(Points);
         case I::IModelData:
-            return Q_I_NEW__AGGREGATE(ModelData);
+            return Q_NEW_AGGREGATE(ModelData);
         default:
             return Base::createAggregate(interfaceType);
         }

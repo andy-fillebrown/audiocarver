@@ -25,7 +25,7 @@ typedef QList<DataObject*> DataObjects;
 
 class MI_CORE_EXPORT DataObjectList : public DataObject
 {
-    Q_I_DERIVED__AGGREGATOR(DataObjectList, DataObject)
+    Q_IAGGREGATOR_DERIVED(DataObjectList, DataObject)
 
     const int _listType;
     AggregatorList _objects;
@@ -105,8 +105,8 @@ protected:
     // IModelList
     class ModelList : public IModelList
     {
-        Q_I_BASE__MODEL_LIST
-        Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::ListItem)
+        Q_IMODELLIST_BASE
+        Q_IMODELITEM_BASE__ITEMTYPE(Mi::ListItem)
 
         int listType() const
         {
@@ -161,7 +161,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelList:
-            return Q_I_NEW__AGGREGATE(ModelList);
+            return Q_NEW_AGGREGATE(ModelList);
         default:
             return 0;
         }

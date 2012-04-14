@@ -66,7 +66,7 @@ public:
 class IObject : public Object, public IUnknown
 {
 public:
-    Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IObject)
+    Q_IUNKNOWN_BASE__INTERFACETYPE(IObject)
 };
 
 #endif // MI_IOBJECT_H

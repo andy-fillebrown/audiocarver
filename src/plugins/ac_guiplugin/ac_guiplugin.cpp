@@ -17,18 +17,18 @@
 
 #include "ac_guiplugin.h"
 
-#include <ac_editor.h>
-#include <ac_mainwidget.h>
-#include <ac_guimainwindowextension.h>
-#include <ac_selecteditemspropertyview.h>
-#include <ac_trackview.h>
+//#include <ac_editor.h>
+//#include <ac_mainwidget.h>
+//#include <ac_guimainwindowextension.h>
+//#include <ac_selecteditemspropertyview.h>
+//#include <ac_trackview.h>
 
-#include <mi_idatabase.h>
+//#include <mi_idatabase.h>
 
-#include <icore.h>
-#include <mainwindow.h>
+//#include <icore.h>
+//#include <mainwindow.h>
 
-#include <QDockWidget>
+//#include <QDockWidget>
 
 #include <QtPlugin>
 
@@ -36,17 +36,17 @@ bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Editor);
-    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
+//    addAutoReleasedObject(new Editor);
+//    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
     return true;
 }
 
 void AcGuiPlugin::extensionsInitialized()
 {
-    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+//    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
 
-    MainWidget *widget = new MainWidget(mw);
-    mw->setCentralWidget(widget);
+//    MainWidget *widget = new MainWidget(mw);
+//    mw->setCentralWidget(widget);
 }
 
 Q_EXPORT_PLUGIN(AcGuiPlugin)

@@ -24,9 +24,9 @@ IAggregator *CoreDataObjectFactory::createDataObject(int itemType)
 {
     switch (itemType) {
     case Ac::ControlCurveItem:
-        return Q_I_NEW__DATA_OBJECT(ControlCurve);
+        return Q_NEW_DATAOBJECT(ControlCurve);
     case Ac::PitchCurveItem:
-        return Q_I_NEW__DATA_OBJECT(PitchCurve);
+        return Q_NEW_DATAOBJECT(PitchCurve);
     default:
         return 0;
     }
@@ -36,7 +36,7 @@ IAggregator *CoreDataObjectFactory::createDataObjectList(int itemType, int listT
 {
     switch (listType) {
     case Mi::ListItem:
-        return Q_I_NEW__DATA_OBJECT_LIST(DataObjectList, itemType);
+        return Q_NEW_DATAOBJECTLIST(DataObjectList, itemType);
     default:
         return 0;
     }

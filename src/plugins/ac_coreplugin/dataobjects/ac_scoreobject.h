@@ -29,14 +29,14 @@ class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
     friend class Curve;
 
-    Q_I_DERIVED__AGGREGATOR(ScoreObject, GraphicsParent)
+    Q_IAGGREGATOR_DERIVED(ScoreObject, GraphicsParent)
 
     qreal _volume;
-    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
+    Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
 
     IAggregator *_pitchCurve;
     IAggregator *_controlCurves;
-    Q_I_DERIVED__AGGREGATOR__ITEM_COUNT(2)
+    Q_IAGGREGATOR_DERIVED__ITEMCOUNT(2)
 
 protected:
     ScoreObject()
@@ -70,8 +70,8 @@ protected:
     // IModelData
     class ModelData : public Base::ModelData
     {
-        Q_I_DERIVED__MODEL_DATA
-        Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS
+        Q_IMODELDATA_DERIVED
+        Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
 
         QVariant getVariant(int role) const
         {
@@ -97,8 +97,8 @@ protected:
     // IModelItem
     class ModelItem : public Base::ModelItem
     {
-        Q_I_DERIVED__MODEL_ITEM
-        Q_I_DERIVED__MODEL_ITEM__ALL_FUNCTIONS
+        Q_IMODELITEM_DERIVED
+        Q_IMODELITEM_DERIVED__FUNCTIONS
     };
 
     // IAggregator

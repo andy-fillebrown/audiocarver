@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef MI_GLOBALINTERFACE_H
-#define MI_GLOBALINTERFACE_H
+#ifndef MI_INTERFACEDEFINITIONS_H
+#define MI_INTERFACEDEFINITIONS_H
 
-// UNKNOWN__INTERFACE_TYPE
+// IUNKNOWN  INTERFACETYPE
 
-#define Q_I_COMMON__UNKNOWN__INTERFACE_TYPE(Interface) \
+#define Q_IUNKNOWN_COMMON__INTERFACETYPE(Interface) \
         enum { InterfaceType = I::Interface }; \
     \
         int interfaceType() const \
@@ -28,16 +28,16 @@
             return InterfaceType; \
         } \
 
-#define Q_I_BASE__UNKNOWN__INTERFACE_TYPE(Interface) \
-    Q_I_COMMON__UNKNOWN__INTERFACE_TYPE(Interface) \
+#define Q_IUNKNOWN_BASE__INTERFACETYPE(Interface) \
+    Q_IUNKNOWN_COMMON__INTERFACETYPE(Interface) \
     \
         bool isTypeOfInterface(int interfaceType) const \
         { \
             return InterfaceType == interfaceType; \
         }
 
-#define Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(Interface, BaseInterface) \
-    Q_I_COMMON__UNKNOWN__INTERFACE_TYPE(Interface) \
+#define Q_IUNKNOWN_DERIVED__INTERFACETYPE(Interface, BaseInterface) \
+    Q_IUNKNOWN_COMMON__INTERFACETYPE(Interface) \
     \
         bool isTypeOfInterface(int interfaceType) const \
         { \
@@ -46,21 +46,22 @@
             return BaseInterface::isTypeOfInterface(interfaceType); \
         }
 
+// IAGGREGATOR
 
-#define Q_I_COMMON__AGGREGATOR(Class) \
+#define Q_IAGGREGATOR_COMMON(Class) \
     protected: \
         typedef Class A; \
 
-#define Q_I_BASE__AGGREGATOR(Class) \
-    Q_I_COMMON__AGGREGATOR(Class) \
+#define Q_IAGGREGATOR_BASE(Class) \
+    Q_IAGGREGATOR_COMMON(Class) \
     \
     public: \
         virtual IAggregator *init(); \
     \
     private:
 
-#define Q_I_DERIVED__AGGREGATOR(Class, BaseClass) \
-    Q_I_COMMON__AGGREGATOR(Class) \
+#define Q_IAGGREGATOR_DERIVED(Class, BaseClass) \
+    Q_IAGGREGATOR_COMMON(Class) \
     \
         typedef BaseClass Base; \
     \
@@ -69,16 +70,16 @@
     \
     private:
 
-// AGGREGATOR__ROLE_COUNT
+// IAGGREGATOR  ROLECOUNT
 
-#define Q_I_COMMON__AGGREGATOR__ROLE_COUNT(ClassRoleCount) \
+#define Q_IAGGREGATOR_COMMON__ROLECOUNT(ClassRoleCount) \
     protected: \
         enum { RoleCount = ClassRoleCount }; \
     \
         static const int Roles[RoleCount];
 
-#define Q_I_BASE__AGGREGATOR__ROLE_COUNT(ClassRoleCount) \
-    Q_I_COMMON__AGGREGATOR__ROLE_COUNT(ClassRoleCount) \
+#define Q_IAGGREGATOR_BASE__ROLECOUNT(ClassRoleCount) \
+    Q_IAGGREGATOR_COMMON__ROLECOUNT(ClassRoleCount) \
     \
         enum { \
             RoleCountOffset = 0, \
@@ -87,8 +88,8 @@
     \
     private:
 
-#define Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(ClassRoleCount) \
-    Q_I_COMMON__AGGREGATOR__ROLE_COUNT(ClassRoleCount) \
+#define Q_IAGGREGATOR_DERIVED__ROLECOUNT(ClassRoleCount) \
+    Q_IAGGREGATOR_COMMON__ROLECOUNT(ClassRoleCount) \
     \
         enum { \
             RoleCountOffset = Base::TotalRoleCount, \
@@ -97,17 +98,17 @@
     \
     private: \
 
-// AGGREGATOR__ITEM_COUNT
+// IAGGREGATOR  ITEMCOUNT
 
-#define Q_I_COMMON__AGGREGATOR__ITEM_COUNT(ClassItemCount) \
+#define Q_IAGGREGATOR_COMMON__ITEMCOUNT(ClassItemCount) \
     protected: \
         enum { ItemCount = ClassItemCount }; \
     \
         static const int ItemTypes[ItemCount]; \
         IAggregator *Items[ItemCount];
 
-#define Q_I_BASE__AGGREGATOR__ITEM_COUNT(ClassItemCount) \
-    Q_I_COMMON__AGGREGATOR__ITEM_COUNT(ClassItemCount) \
+#define Q_IAGGREGATOR_BASE__ITEMCOUNT(ClassItemCount) \
+    Q_IAGGREGATOR_COMMON__ITEMCOUNT(ClassItemCount) \
     \
         enum { \
             ItemCountOffset = 0, \
@@ -116,8 +117,8 @@
     \
     private:
 
-#define Q_I_DERIVED__AGGREGATOR__ITEM_COUNT(ClassItemCount) \
-    Q_I_COMMON__AGGREGATOR__ITEM_COUNT(ClassItemCount) \
+#define Q_IAGGREGATOR_DERIVED__ITEMCOUNT(ClassItemCount) \
+    Q_IAGGREGATOR_COMMON__ITEMCOUNT(ClassItemCount) \
     \
         enum { \
             ItemCountOffset = Base::TotalItemCount, \
@@ -126,24 +127,9 @@
     \
     private:
 
-// INIT__AGGREGATOR
+// IAGGREGATE
 
-#define Q_I_INIT__AGGREGATOR__ROLES(Class) \
-    const int Class::Roles[]
-
-#define Q_I_INIT__AGGREGATOR__ITEM_TYPES(Class) \
-    const int Class::ItemTypes[]
-
-#define Q_I_INIT__AGGREGATOR__ITEM_LIST__INITIALIZER \
-    IAggregator *init_items[ItemCount]
-
-#define Q_I_INIT__AGGREGATOR__ITEM_LIST \
-    for (int i = 0;  i < ItemCount;  ++i) \
-        Items[i] = init_items[i]; \
-
-// AGGREGATE
-
-#define Q_I_COMMON__AGGREGATE \
+#define Q_IAGGREGATE_COMMON \
     protected: \
     \
         A *a() const \
@@ -151,8 +137,8 @@
             return cast<A>(_a); \
         } \
 
-#define Q_I_BASE_COMMON__AGGREGATE \
-    Q_I_COMMON__AGGREGATE \
+#define Q_IAGGREGATE_COMMON_BASE \
+    Q_IAGGREGATE_COMMON \
     \
         IAggregator *_a; \
     \
@@ -166,11 +152,11 @@
     \
     protected:
 
-#define Q_I_BASE__AGGREGATE__NO_CONSTRUCTOR \
-    Q_I_BASE_COMMON__AGGREGATE
+#define Q_IAGGREGATE_BASE_NOCONSTRUCTOR \
+    Q_IAGGREGATE_COMMON_BASE
 
-#define Q_I_BASE__AGGREGATE(Class) \
-    Q_I_BASE_COMMON__AGGREGATE \
+#define Q_IAGGREGATE_BASE(Class) \
+    Q_IAGGREGATE_COMMON_BASE \
     \
     public: \
         Class(A *aggregator) \
@@ -179,8 +165,8 @@
     \
     protected:
 
-#define Q_I_DERIVED_COMMON__AGGREGATE(Class) \
-    Q_I_COMMON__AGGREGATE \
+#define Q_IAGGREGATE_COMMON_DERIVED(Class) \
+    Q_IAGGREGATE_COMMON \
     \
         typedef A::Base::Class Base; \
     \
@@ -189,11 +175,11 @@
     \
     protected:
 
-#define Q_I_DERIVED__AGGREGATE__NO_CONSTRUCTOR(Class) \
-    Q_I_DERIVED_COMMON__AGGREGATE(Class)
+#define Q_IAGGREGATE_DERIVED_NOCONSTRUCTOR(Class) \
+    Q_IAGGREGATE_COMMON_DERIVED(Class)
 
-#define Q_I_DERIVED__AGGREGATE(Class) \
-    Q_I_DERIVED_COMMON__AGGREGATE(Class) \
+#define Q_IAGGREGATE_DERIVED(Class) \
+    Q_IAGGREGATE_COMMON_DERIVED(Class) \
     \
     public: \
         Class(A *aggregator) \
@@ -204,15 +190,15 @@
 
 #define Q_IA(AggregatorClass) AggregatorClass *a = cast<AggregatorClass>(_a)
 
-// MODEL_DATA
+// IMODELDATA
 
-#define Q_I_COMMON__MODEL_DATA \
+#define Q_IMODELDATA_COMMON \
 
-#define Q_I_BASE__MODEL_DATA \
+#define Q_IMODELDATA_BASE \
         IModelItem *_item; \
     \
-    Q_I_BASE__AGGREGATE__NO_CONSTRUCTOR \
-    Q_I_COMMON__MODEL_DATA \
+    Q_IAGGREGATE_BASE_NOCONSTRUCTOR \
+    Q_IMODELDATA_COMMON \
     \
         Qt::ItemFlags flags() const \
         { \
@@ -231,32 +217,32 @@
             return _item; \
         } \
 
-#define Q_I_DERIVED__MODEL_DATA \
-    Q_I_DERIVED__AGGREGATE(ModelData) \
-    Q_I_COMMON__MODEL_DATA \
+#define Q_IMODELDATA_DERIVED \
+    Q_IAGGREGATE_DERIVED(ModelData) \
+    Q_IMODELDATA_COMMON \
 
-#define Q_I_BASE__MODEL_DATA__ROLE_FUNCTIONS \
-    Q_I_BASE__MODEL_DATA__ROLE_COUNT \
-    Q_I_BASE__MODEL_DATA__ROLE_AT
+#define Q_IMODELDATA_BASE__ROLE_FUNCTIONS \
+    Q_IMODELDATA_BASE__ROLECOUNT \
+    Q_IMODELDATA_BASE__ROLEAT
 
-#define Q_I_DERIVED__MODEL_DATA__ROLE_FUNCTIONS \
-    Q_I_DERIVED__MODEL_DATA__ROLE_COUNT \
-    Q_I_DERIVED__MODEL_DATA__ROLE_AT
+#define Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS \
+    Q_IMODELDATA_DERIVED__ROLECOUNT \
+    Q_IMODELDATA_DERIVED__ROLEAT
 
-// MODEL_DATA__ROLE_COUNT
+// IMODELDATA  ROLECOUNT
 
-#define Q_I_BASE__MODEL_DATA__ROLE_COUNT \
+#define Q_IMODELDATA_BASE__ROLECOUNT \
         int roleCount() const \
         { \
             return TotalRoleCount; \
         } \
 
-#define Q_I_DERIVED__MODEL_DATA__ROLE_COUNT \
-    Q_I_BASE__MODEL_DATA__ROLE_COUNT
+#define Q_IMODELDATA_DERIVED__ROLECOUNT \
+    Q_IMODELDATA_BASE__ROLECOUNT
 
-// MODEL_DATA__ROLE_AT
+// IMODELDATA  ROLEAT
 
-#define Q_I_BASE__MODEL_DATA__ROLE_AT \
+#define Q_IMODELDATA_BASE__ROLEAT \
         int roleAt(int i) const \
         { \
             Q_ASSERT(0 <= i); \
@@ -266,7 +252,7 @@
             return Roles[i]; \
         }
 
-#define Q_I_DERIVED__MODEL_DATA__ROLE_AT \
+#define Q_IMODELDATA_DERIVED__ROLEAT \
         int roleAt(int i) const \
         { \
             Q_ASSERT(0 <= i); \
@@ -281,52 +267,52 @@
             return Base::roleAt(i); \
         }
 
-// MODEL_ITEM
+// IMODELITEM
 
-#define Q_I_BASE__MODEL_ITEM \
-    Q_I_BASE__AGGREGATE(ModelItem) \
-    Q_I_BASE__MODEL_ITEM__PARENT \
+#define Q_IMODELITEM_BASE \
+    Q_IAGGREGATE_BASE(ModelItem) \
+    Q_IMODELITEM_BASE__PARENT \
 
-#define Q_I_DERIVED__MODEL_ITEM \
-    Q_I_DERIVED__AGGREGATE(ModelItem)
+#define Q_IMODELITEM_DERIVED \
+    Q_IAGGREGATE_DERIVED(ModelItem)
 
-#define Q_I_BASE__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
-    Q_I_BASE__MODEL_ITEM__COUNT \
-    Q_I_BASE__MODEL_ITEM__INDEX_OF \
-    Q_I_BASE__MODEL_ITEM__AT \
+#define Q_IMODELITEM_BASE__ITEM_FUNCTIONS \
+    Q_IMODELITEM_BASE__COUNT \
+    Q_IMODELITEM_BASE__INDEXOF \
+    Q_IMODELITEM_BASE__AT \
 
-#define Q_I_DERIVED__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
-    Q_I_DERIVED__MODEL_ITEM__COUNT \
-    Q_I_DERIVED__MODEL_ITEM__INDEX_OF \
-    Q_I_DERIVED__MODEL_ITEM__AT \
+#define Q_IMODELITEM_DERIVED__ITEM_FUNCTIONS \
+    Q_IMODELITEM_DERIVED__COUNT \
+    Q_IMODELITEM_DERIVED__INDEXOF \
+    Q_IMODELITEM_DERIVED__AT \
 
-#define Q_I_BASE__MODEL_ITEM__ALL_FIND_FUNCTIONS \
+#define Q_IMODELITEM_BASE__FIND_FUNCTIONS \
     Q_I_BASE__MODEL_ITEM__FIND_ITEM \
     Q_I_BASE__MODEL_ITEM__FIND_LIST \
 
-#define Q_I_DERIVED__MODEL_ITEM__ALL_FIND_FUNCTIONS \
-    Q_I_DERIVED__MODEL_ITEM__FIND_ITEM \
-    Q_I_DERIVED__MODEL_ITEM__FIND_LIST \
+#define Q_IMODELITEM_DERIVED__FIND_FUNCTIONS \
+    Q_IMODELITEM_DERIVED__FINDITEM \
+    Q_IMODELITEM_DERIVED__FINDLIST \
 
-#define Q_I_BASE__MODEL_ITEM__ALL_FUNCTIONS \
-    Q_I_BASE__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
-    Q_I_BASE__MODEL_ITEM__ALL_FIND_FUNCTIONS \
+#define Q_IMODELITEM_BASE__FUNCTIONS \
+    Q_IMODELITEM_BASE__ITEM_FUNCTIONS \
+    Q_IMODELITEM_BASE__FIND_FUNCTIONS \
 
-#define Q_I_DERIVED__MODEL_ITEM__ALL_FUNCTIONS \
-    Q_I_DERIVED__MODEL_ITEM__ALL_ITEM_FUNCTIONS \
-    Q_I_DERIVED__MODEL_ITEM__ALL_FIND_FUNCTIONS \
+#define Q_IMODELITEM_DERIVED__FUNCTIONS \
+    Q_IMODELITEM_DERIVED__ITEM_FUNCTIONS \
+    Q_IMODELITEM_DERIVED__FIND_FUNCTIONS \
 
-// MODEL_ITEM__PARENT
+// IMODELITEM  PARENT
 
-#define Q_I_BASE__MODEL_ITEM__PARENT \
+#define Q_IMODELITEM_BASE__PARENT \
         IModelItem *parent() const \
         { \
             return query<IModelItem>(a()->parent()); \
         }
 
-// MODEL_ITEM__ITEM_TYPE
+// IMODELITEM  ITEMTYPE
 
-#define Q_I_COMMON__MODEL_ITEM__ITEM_TYPE(ClassItemType) \
+#define Q_IMODELITEM_COMMON__ITEMTYPE(ClassItemType) \
         enum { ItemType = ClassItemType }; \
     \
         int itemType() const \
@@ -334,16 +320,16 @@
             return ItemType; \
         }
 
-#define Q_I_BASE__MODEL_ITEM__ITEM_TYPE(ClassItemType) \
-    Q_I_COMMON__MODEL_ITEM__ITEM_TYPE(ClassItemType) \
+#define Q_IMODELITEM_BASE__ITEMTYPE(ClassItemType) \
+    Q_IMODELITEM_COMMON__ITEMTYPE(ClassItemType) \
     \
         bool isTypeOfItem(int itemType) const \
         { \
             return ItemType == itemType; \
         }
 
-#define Q_I_DERIVED__MODEL_ITEM__ITEM_TYPE(ClassItemType) \
-    Q_I_COMMON__MODEL_ITEM__ITEM_TYPE(ClassItemType) \
+#define Q_IMODELITEM_DERIVED__ITEMTYPE(ClassItemType) \
+    Q_IMODELITEM_COMMON__ITEMTYPE(ClassItemType) \
     \
         bool isTypeOfItem(int itemType) const \
         { \
@@ -352,20 +338,20 @@
             return Base::isTypeOfItem(itemType); \
         }
 
-// MODEL_ITEM__COUNT
+// IMODELITEM  COUNT
 
-#define Q_I_BASE__MODEL_ITEM__COUNT \
+#define Q_IMODELITEM_BASE__COUNT \
         int count() const \
         { \
             return A::TotalItemCount; \
         }
 
-#define Q_I_DERIVED__MODEL_ITEM__COUNT \
-    Q_I_BASE__MODEL_ITEM__COUNT
+#define Q_IMODELITEM_DERIVED__COUNT \
+    Q_IMODELITEM_BASE__COUNT
 
-// MODEL_ITEM__INDEX_OF
+// IMODELITEM  INDEXOF
 
-#define Q_I_COMMON__MODEL_ITEM__INDEX_OF(Return) \
+#define Q_IMODELITEM_COMMON__INDEXOF(Return) \
         int indexOf(const IModelItem *item) const \
         { \
             Q_IA(const A); \
@@ -376,15 +362,15 @@
             Return; \
         }
 
-#define Q_I_BASE__MODEL_ITEM__INDEX_OF \
-    Q_I_COMMON__MODEL_ITEM__INDEX_OF(return -1)
+#define Q_IMODELITEM_BASE__INDEXOF \
+    Q_IMODELITEM_COMMON__INDEXOF(return -1)
 
-#define Q_I_DERIVED__MODEL_ITEM__INDEX_OF \
-    Q_I_COMMON__MODEL_ITEM__INDEX_OF(return Base::indexOf(item))
+#define Q_IMODELITEM_DERIVED__INDEXOF \
+    Q_IMODELITEM_COMMON__INDEXOF(return Base::indexOf(item))
 
-// MODEL_ITEM__AT
+// IMODELITEM  AT
 
-#define Q_I_COMMON__MODEL_ITEM__AT(Return) \
+#define Q_IMODELITEM_COMMON__AT(Return) \
         IModelItem *at(int i) const \
         { \
             Q_ASSERT(0 <= i); \
@@ -393,15 +379,15 @@
             Return; \
         }
 
-#define Q_I_BASE__MODEL_ITEM__AT \
-    Q_I_COMMON__MODEL_ITEM__AT(return 0)
+#define Q_IMODELITEM_BASE__AT \
+    Q_IMODELITEM_COMMON__AT(return 0)
 
-#define Q_I_DERIVED__MODEL_ITEM__AT \
-    Q_I_COMMON__MODEL_ITEM__AT(return Base::at(i))
+#define Q_IMODELITEM_DERIVED__AT \
+    Q_IMODELITEM_COMMON__AT(return Base::at(i))
 
-// MODEL_ITEM__FIND_ITEM
+// IMODELITEM  FINDITEM
 
-#define Q_I_COMMON__MODEL_ITEM__FIND_ITEM(Return) \
+#define Q_IMODELITEM_COMMON__FINDITEM(Return) \
         IModelItem *findItem(int itemType) const \
         { \
             Q_IA(const A); \
@@ -411,15 +397,15 @@
             Return; \
         }
 
-#define Q_I_BASE__MODEL_ITEM__FIND_ITEM \
-    Q_I_COMMON__MODEL_ITEM__FIND_ITEM(return 0)
+#define Q_IMODELITEM_BASE__FINDITEM \
+    Q_IMODELITEM_COMMON__FINDITEM(return 0)
 
-#define Q_I_DERIVED__MODEL_ITEM__FIND_ITEM \
-    Q_I_COMMON__MODEL_ITEM__FIND_ITEM(return Base::findItem(itemType))
+#define Q_IMODELITEM_DERIVED__FINDITEM \
+    Q_IMODELITEM_COMMON__FINDITEM(return Base::findItem(itemType))
 
-// MODEL_ITEM__FIND_LIST
+// IMODELITEM  FINDLIST
 
-#define Q_I_COMMON__MODEL_ITEM__FIND_LIST(Return) \
+#define Q_IMODELITEM_COMMON__FINDLIST(Return) \
         IModelList *findList(int listType) const \
         { \
             Q_IA(const A); \
@@ -433,25 +419,45 @@
             Return; \
         }
 
-#define Q_I_BASE__MODEL_ITEM__FIND_LIST \
-    Q_I_COMMON__MODEL_ITEM__FIND_LIST(return 0)
+#define Q_IMODELITEM_BASE__FINDLIST \
+    Q_IMODELITEM_COMMON__FINDLIST(return 0)
 
-#define Q_I_DERIVED__MODEL_ITEM__FIND_LIST \
-    Q_I_COMMON__MODEL_ITEM__FIND_LIST(return Base::findList(listType))
+#define Q_IMODELITEM_DERIVED__FINDLIST \
+    Q_IMODELITEM_COMMON__FINDLIST(return Base::findList(listType))
 
-// MODEL_LIST
+// IMODELLIST
 
-#define Q_I_BASE__MODEL_LIST \
-    Q_I_BASE__AGGREGATE(ModelList) \
-    Q_I_BASE__MODEL_ITEM__PARENT
+#define Q_IMODELLIST_BASE \
+    Q_IAGGREGATE_BASE(ModelList) \
+    Q_IMODELITEM_BASE__PARENT
 
-#define Q_I_DERIVED__MODEL_LIST \
-    Q_I_DERIVED__AGGREGATE(ModelList)
+#define Q_IMODELLIST_DERIVED \
+    Q_IAGGREGATE_DERIVED(ModelList)
 
 // NEW
 
-#define Q_I_NEW__AGGREGATE(Class) appendAggregate((new Class(this))->init())
-#define Q_I_NEW__DATA_OBJECT(Class) (new Class)->init()
-#define Q_I_NEW__DATA_OBJECT_LIST(Class, ItemType) (new Class(ItemType))->init()
+#define Q_NEW_AGGREGATE(Class) appendAggregate((new Class(this))->init())
+#define Q_NEW_DATAOBJECT(Class) (new Class)->init()
+#define Q_NEW_DATAOBJECTLIST(Class, ItemType) (new Class(ItemType))->init()
 
-#endif // MI_GLOBALINTERFACE_H
+// IAGGREGATOR  INIT
+
+#define Q_IAGGREGATOR_INIT_ROLES(Class) \
+    const int Class::Roles[]
+
+#define Q_IAGGREGATOR_INIT_ITEMTYPES(Class) \
+    const int Class::ItemTypes[]
+
+#define Q_IAGGREGATOR_INIT_ITEMLIST_INITIALIZER \
+    IAggregator *items[ItemCount]
+
+#define Q_IAGGREGATOR_INIT_ITEMLIST \
+    for (int i = 0;  i < ItemCount;  ++i) { \
+        IAggregator *item = items[i]; \
+        Items[i] = item; \
+        DataObject *object = cast<DataObject>(item); \
+        if (object) \
+            object->setParent(this); \
+    }
+
+#endif // MI_INTERFACEDEFINITIONS_H

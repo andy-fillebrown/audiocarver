@@ -24,7 +24,7 @@
 
 class AC_CORE_EXPORT PitchCurve : public Curve
 {
-    Q_I_DERIVED__AGGREGATOR(PitchCurve, Curve)
+    Q_IAGGREGATOR_DERIVED(PitchCurve, Curve)
 
 protected:
     // Curve
@@ -71,8 +71,8 @@ protected:
     // IModelItem
     class ModelItem : public Base::ModelItem
     {
-        Q_I_DERIVED__MODEL_ITEM
-        Q_I_DERIVED__MODEL_ITEM__ITEM_TYPE(Ac::PitchCurveItem)
+        Q_IMODELITEM_DERIVED
+        Q_IMODELITEM_DERIVED__ITEMTYPE(Ac::PitchCurveItem)
     };
 
     // IAggregator
@@ -82,7 +82,7 @@ protected:
 //        case I::ISubEntity:
 //            return Q_I_NEW__AGGREGATE(SubEntity);
         case I::IModelItem:
-            return Q_I_NEW__AGGREGATE(ModelItem);
+            return Q_NEW_AGGREGATE(ModelItem);
         default:
             return Base::createAggregate(interfaceType);
         }

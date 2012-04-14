@@ -27,7 +27,7 @@ class QVariant;
 class IModelData : public IAggregate
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModelData, IAggregate)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IModelData, IAggregate)
 
     virtual IModelItem *item() const = 0;
     virtual int roleCount() const = 0;

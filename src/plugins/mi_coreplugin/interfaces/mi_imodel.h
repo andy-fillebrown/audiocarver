@@ -26,7 +26,7 @@ class IModelItem;
 class MI_CORE_EXPORT IModel : public IAggregate
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModel, IAggregate)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IModel, IAggregate)
 
     IModel();
     static IModel *instance();

@@ -23,12 +23,12 @@
 #include <mi_idataobjectfactory.h>
 #include <mi_scopeddatachange.h>
 
-Q_I_INIT__AGGREGATOR__ROLES(ScoreObject) =
+Q_IAGGREGATOR_INIT_ROLES(ScoreObject) =
 {
 Ac::VolumeRole
 };
 
-Q_I_INIT__AGGREGATOR__ITEM_TYPES(ScoreObject) =
+Q_IAGGREGATOR_INIT_ITEMTYPES(ScoreObject) =
 {
 Ac::PitchCurveItem,
 Mi::ListItem
@@ -39,11 +39,11 @@ IAggregator *ScoreObject::init()
     IDataObjectFactory *factory = IDataObjectFactory::instance();
     _pitchCurve = factory->createDataObject(Ac::PitchCurveItem);
     _controlCurves = factory->createDataObjectList(Ac::ControlCurveItem);
-    Q_I_INIT__AGGREGATOR__ITEM_LIST__INITIALIZER = {
+    Q_IAGGREGATOR_INIT_ITEMLIST_INITIALIZER = {
         _pitchCurve,
         _controlCurves,
     };
-    Q_I_INIT__AGGREGATOR__ITEM_LIST
+    Q_IAGGREGATOR_INIT_ITEMLIST
     return Base::init();
 }
 

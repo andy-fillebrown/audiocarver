@@ -29,7 +29,7 @@ class AC_CORE_EXPORT GraphicsParent : public GraphicsObject
     friend class ControlCurve;
     friend class PitchCurve;
 
-    Q_I_DERIVED__AGGREGATOR(GraphicsParent, GraphicsObject)
+    Q_IAGGREGATOR_DERIVED(GraphicsParent, GraphicsObject)
 
     SceneTypeToGraphicsItemMap _mainGraphicsItems;
     SceneTypeToGraphicsItemMap _unitXGraphicsItems;

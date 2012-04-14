@@ -29,7 +29,7 @@ typedef QList<Point> PointList;
 class IPoints : public IAggregate
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IPoints, IAggregate)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IPoints, IAggregate)
 
     virtual const PointList &points() const = 0;
     virtual void pushPoints(const PointList &points) = 0;

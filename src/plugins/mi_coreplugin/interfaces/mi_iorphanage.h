@@ -25,7 +25,7 @@ class IAggregator;
 class MI_CORE_EXPORT IOrphanage : public IAggregate
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IOrphanage, IAggregate)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IOrphanage, IAggregate)
 
     IOrphanage();
     static IOrphanage *instance();

@@ -26,10 +26,10 @@ class DataObjectList;
 
 class MI_CORE_EXPORT DataObject : public Aggregator
 {
-    Q_I_BASE__AGGREGATOR(DataObject)
+    Q_IAGGREGATOR_BASE(DataObject)
 
-    Q_I_BASE__AGGREGATOR__ROLE_COUNT(1)
     QString _name;
+    Q_IAGGREGATOR_BASE__ROLECOUNT(1)
 
     DataObject *_parent;
 
@@ -75,8 +75,8 @@ protected:
     // IModelData
     class ModelData : public IModelData
     {
-        Q_I_BASE__MODEL_DATA
-        Q_I_BASE__MODEL_DATA__ROLE_FUNCTIONS
+        Q_IMODELDATA_BASE
+        Q_IMODELDATA_BASE__ROLE_FUNCTIONS
 
         QVariant getVariant(int role) const
         {
@@ -106,8 +106,8 @@ protected:
     // IModelItem
     class ModelItem : public IModelItem
     {
-        Q_I_BASE__MODEL_ITEM
-        Q_I_BASE__MODEL_ITEM__ITEM_TYPE(Mi::UnknownItem)
+        Q_IMODELITEM_BASE
+        Q_IMODELITEM_BASE__ITEMTYPE(Mi::UnknownItem)
 
         int count() const { return 0; }
         int indexOf(const IModelItem *item) const { Q_ASSERT(0); return -1; }

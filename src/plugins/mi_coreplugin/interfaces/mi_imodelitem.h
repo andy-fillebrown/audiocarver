@@ -20,14 +20,12 @@
 
 #include "mi_iaggregate.h"
 
-class IModel;
-class IModelData;
 class IModelList;
 
 class IModelItem : public IAggregate
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModelItem, IAggregate)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IModelItem, IAggregate)
 
     virtual int itemType() const = 0;
     virtual bool isTypeOfItem(int itemType) const = 0;
@@ -37,17 +35,6 @@ public:
     virtual IModelItem *at(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelList *findList(int listType) const = 0;
-
-//    inline IModelList *list() const;
 };
-
-#include <mi_iaggregator.h>
-#include <mi_imodellist.h>
-
-//inline IModelList *IModelItem::list() const
-//{
-//    IModelItem *parent = this->parent();
-//    return parent ? query<IModelList>(parent->aggregator()) : 0;
-//}
 
 #endif // MI_IMODELITEM_H

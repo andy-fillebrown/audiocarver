@@ -25,7 +25,7 @@
 class IAggregate : public IUnknown
 {
 public:
-    Q_I_BASE__UNKNOWN__INTERFACE_TYPE(IAggregate)
+    Q_IUNKNOWN_BASE__INTERFACETYPE(IAggregate)
 
     virtual IAggregator *aggregator() const = 0;
 

@@ -21,7 +21,7 @@
 #include <mi_iorphanage.h>
 #include <mi_scopeddatachange.h>
 
-Q_I_INIT__AGGREGATOR__ROLES(DataObject) =
+Q_IAGGREGATOR_INIT_ROLES(DataObject) =
 {
 Mi::NameRole
 };
