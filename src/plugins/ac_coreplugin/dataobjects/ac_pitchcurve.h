@@ -48,25 +48,25 @@ protected:
     // GraphicsObject
     void updateGraphicsParent()
     {
-        GraphicsParent *parent = graphicsParent();
-        graphicsCurveItem()->setParentItem(parent ? parent->mainGraphicsItems()[Ac::PitchScene] : 0);
+//        GraphicsParent *parent = graphicsParent();
+//        graphicsCurveItem()->setParentItem(parent ? parent->mainGraphicsItems()[Ac::PitchScene] : 0);
     }
 
-    // ISubEntity
-    class SubEntity : public Base::SubEntity
-    {
-        Q_I_DERIVED__AGGREGATE(SubEntity)
+//    // ISubEntity
+//    class SubEntity : public Base::SubEntity
+//    {
+//        Q_I_DERIVED__AGGREGATE(SubEntity)
 
-        IParentEntity *parentEntity() const
-        {
-            return query<IParentEntity>(a()->graphicsParent());
-        }
+//        IParentEntity *parentEntity() const
+//        {
+//            return query<IParentEntity>(a()->graphicsParent());
+//        }
 
-        int sceneType() const
-        {
-            return Ac::PitchScene;
-        }
-    };
+//        int sceneType() const
+//        {
+//            return Ac::PitchScene;
+//        }
+//    };
 
     // IModelItem
     class ModelItem : public Base::ModelItem
@@ -79,8 +79,8 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case I::ISubEntity:
-            return Q_I_NEW__AGGREGATE(SubEntity);
+//        case I::ISubEntity:
+//            return Q_I_NEW__AGGREGATE(SubEntity);
         case I::IModelItem:
             return Q_I_NEW__AGGREGATE(ModelItem);
         default:

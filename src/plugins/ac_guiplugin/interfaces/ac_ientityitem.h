@@ -39,4 +39,4 @@ public:
     virtual void updateCurveTypes() = 0;
 };
 
-#endif // AC_IGRIP_H
+#endif // AC_IENTITYITEM_H

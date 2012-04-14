@@ -19,7 +19,7 @@
 #define AC_CURVE_H
 
 #include "ac_graphicsobject.h"
-#include "ac_ientity.h"
+#include "ac_ipoints.h"
 
 #include <ac_graphicsitem.h>
 #include <ac_point.h>
@@ -32,14 +32,14 @@ class ScoreObject;
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
     Q_I_DERIVED__AGGREGATOR(Curve, GraphicsObject)
-    GraphicsCurveItem *_graphicsCurveItem;
+//    GraphicsCurveItem *_graphicsCurveItem;
 
     QStack<PointList> _pointsStack;
     Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
 
 protected:
     Curve()
-        :   _graphicsCurveItem(0)
+//        :   _graphicsCurveItem(0)
     {}
 
     ~Curve();
@@ -47,10 +47,10 @@ protected:
     virtual ScoreObject *scoreObject() const = 0;
     virtual void conformPoints() = 0;
 
-    GraphicsCurveItem *graphicsCurveItem() const
-    {
-        return _graphicsCurveItem;
-    }
+//    GraphicsCurveItem *graphicsCurveItem() const
+//    {
+//        return _graphicsCurveItem;
+//    }
 
     PointList &points()
     {
@@ -65,48 +65,48 @@ protected:
 
     void setColor(const QColor &color)
     {
-        graphicsCurveItem()->setColor(color);
+//        graphicsCurveItem()->setColor(color);
     }
 
     // GraphicsObject
     GraphicsParent *graphicsParent() const;
 
-    // IEntity
-    class Entity : public IEntity
-    {
-        Q_I_BASE__AGGREGATE(Entity)
+//    // IEntity
+//    class Entity : public IEntity
+//    {
+//        Q_I_BASE__AGGREGATE(Entity)
 
-        void highlight()
-        {
-            a()->graphicsCurveItem()->highlight();
-        }
+//        void highlight()
+//        {
+//            a()->graphicsCurveItem()->highlight();
+//        }
 
-        void unhighlight()
-        {
-            a()->graphicsCurveItem()->unhighlight();
-        }
+//        void unhighlight()
+//        {
+//            a()->graphicsCurveItem()->unhighlight();
+//        }
 
-        bool intersects(const QRectF &rect) const
-        {
-            return a()->graphicsCurveItem()->intersects(rect);
-        }
+//        bool intersects(const QRectF &rect) const
+//        {
+//            return a()->graphicsCurveItem()->intersects(rect);
+//        }
 
-        bool isVisible() const
-        {
-            return a()->graphicsCurveItem()->isVisible();
-        }
-    };
+//        bool isVisible() const
+//        {
+//            return a()->graphicsCurveItem()->isVisible();
+//        }
+//    };
 
-    // ISubEntity
-    class SubEntity : public ISubEntity
-    {
-        Q_I_BASE__AGGREGATE(SubEntity)
+//    // ISubEntity
+//    class SubEntity : public ISubEntity
+//    {
+//        Q_I_BASE__AGGREGATE(SubEntity)
 
-        bool isCurve() const
-        {
-            return true;
-        }
-    };
+//        bool isCurve() const
+//        {
+//            return true;
+//        }
+//    };
 
     // IPoints
     class Points : public IPoints
@@ -166,10 +166,10 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case I::IEntity:
-            return Q_I_NEW__AGGREGATE(Entity);
-        case I::ISubEntity:
-            Q_ASSERT(0); return 0;
+//        case I::IEntity:
+//            return Q_I_NEW__AGGREGATE(Entity);
+//        case I::ISubEntity:
+//            Q_ASSERT(0); return 0;
         case I::IPoints:
             return Q_I_NEW__AGGREGATE(Points);
         case I::IModelData:

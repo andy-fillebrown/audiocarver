@@ -1,6 +1,6 @@
 
 SOURCE_FILES = \
-    graphicsitem \
+#    graphicsitem \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

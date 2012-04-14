@@ -1,11 +1,11 @@
 
 SOURCE_FILES = \
-    ientity \
-    ifiler \
-    iplaycursor \
-    iaudioengine \
-    ifactory \
-    isynthesizer \
+#    ifiler \
+#    iplaycursor \
+    ipoints \
+#    iaudioengine \
+#    ifactory \
+#    isynthesizer \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

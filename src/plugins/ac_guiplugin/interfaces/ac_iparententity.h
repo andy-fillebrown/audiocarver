@@ -15,19 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_pitchcurve.h"
+#ifndef AC_IPARENTENTITY_H
+#define AC_IPARENTENTITY_H
 
-IAggregator *PitchCurve::init()
+#include "ac_ientity.h"
+
+class IPoints;
+class ISubEntity;
+
+class IParentEntity : public IEntity
 {
-    return Base::init();
-}
+public:
+    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IParentEntity, IEntity)
 
-//IAggregate *PitchCurve::SubEntity::init()
-//{
-//    return Base::init();
-//}
+    virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
+    virtual QList<IPoints*> subEntityPoints(int sceneType) const = 0;
+};
 
-IAggregate *PitchCurve::ModelItem::init()
-{
-    return Base::init();
-}
+#endif // AC_IPARENTENTITY_H

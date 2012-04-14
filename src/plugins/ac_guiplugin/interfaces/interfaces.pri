@@ -1,7 +1,17 @@
 
-HEADERS *= \
-    ac_ientityitem.h \
-    ac_igripitem.h \
+SOURCE_FILES *= \
+    ientity \
+#    ientityitem \
+#    igripitem \
+    iparententity \
+    isubentity \
 
-SOURCES *= \
-    ac_igripitem.cpp \
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    name = $$SOURCE_FILE_PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
+}

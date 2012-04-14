@@ -18,7 +18,6 @@
 #ifndef ACPOINT_H
 #define ACPOINT_H
 
-#include <ac_global.h>
 #include <ac_namespace.h>
 
 #include <QList>

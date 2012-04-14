@@ -15,19 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_pitchcurve.h"
+#ifndef AC_IENTITY_H
+#define AC_IENTITY_H
 
-IAggregator *PitchCurve::init()
+#include "mi_iaggregate.h"
+
+class IEntity : public IAggregate
 {
-    return Base::init();
-}
+public:
+    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IEntity, IAggregate)
 
-//IAggregate *PitchCurve::SubEntity::init()
-//{
-//    return Base::init();
-//}
+    virtual void highlight() = 0;
+    virtual void unhighlight() = 0;
+    virtual bool intersects(const QRectF &rect) const = 0;
+    virtual bool isVisible() const = 0;
+};
 
-IAggregate *PitchCurve::ModelItem::init()
-{
-    return Base::init();
-}
+#endif // AC_IENTITY_H

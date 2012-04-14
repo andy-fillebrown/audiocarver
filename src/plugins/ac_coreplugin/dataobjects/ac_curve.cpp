@@ -28,8 +28,8 @@ Ac::PointsRole
 
 IAggregator *Curve::init()
 {
-    _graphicsCurveItem = new GraphicsCurveItem;
-    _graphicsCurveItem->setEntity(query<IEntity>(this));
+//    _graphicsCurveItem = new GraphicsCurveItem;
+//    _graphicsCurveItem->setEntity(query<IEntity>(this));
     static PointList points;
     _pointsStack.push(points);
     return Base::init();
@@ -37,18 +37,18 @@ IAggregator *Curve::init()
 
 Curve::~Curve()
 {
-    delete _graphicsCurveItem;
+//    delete _graphicsCurveItem;
 }
 
-IAggregate *Curve::Entity::init()
-{
-    return this;
-}
+//IAggregate *Curve::Entity::init()
+//{
+//    return this;
+//}
 
-IAggregate *Curve::SubEntity::init()
-{
-    return this;
-}
+//IAggregate *Curve::SubEntity::init()
+//{
+//    return this;
+//}
 
 IAggregate *Curve::Points::init()
 {
@@ -96,7 +96,7 @@ bool Curve::setPoints(const PointList &points)
 
 void Curve::updateGraphicsItems()
 {
-    graphicsCurveItem()->setPoints(points());
+//    graphicsCurveItem()->setPoints(points());
     scoreObject()->updatePoints();
 }
 

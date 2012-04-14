@@ -29,10 +29,10 @@ IAggregator *ControlCurve::init()
     return Base::init();
 }
 
-IAggregate *ControlCurve::SubEntity::init()
-{
-    return Base::init();
-}
+//IAggregate *ControlCurve::SubEntity::init()
+//{
+//    return Base::init();
+//}
 
 IAggregate *ControlCurve::ModelData::init()
 {

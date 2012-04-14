@@ -3,14 +3,14 @@ load(../mi_guiplugin/mi_guiplugin.prf)
 load(../ac_coreplugin/ac_coreplugin.prf)
 
 DIRS = \
-    delegates \
-    dialogs \
-    graphicsview \
-    implementations \
+#    delegates \
+#    dialogs \
+#    graphicsview \
+#    implementations \
     interfaces \
-    itemviews \
-    models \
-    util \
+#    itemviews \
+#    models \
+#    util \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

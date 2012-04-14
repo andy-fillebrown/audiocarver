@@ -15,19 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_pitchcurve.h"
+#ifndef AC_IENTITYITEM_H
+#define AC_IENTITYITEM_H
 
-IAggregator *PitchCurve::init()
+#include "mi_iaggregate.h"
+
+class IParentEntity;
+
+class ISubEntity : public IAggregate
 {
-    return Base::init();
-}
+public:
+    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(ISubEntity, IAggregate)
 
-//IAggregate *PitchCurve::SubEntity::init()
-//{
-//    return Base::init();
-//}
+    virtual IParentEntity *parentEntity() const = 0;
+    virtual int sceneType() const = 0;
+    virtual bool isCurve() const = 0;
+};
 
-IAggregate *PitchCurve::ModelItem::init()
-{
-    return Base::init();
-}
+#endif // AC_IGRIP_H

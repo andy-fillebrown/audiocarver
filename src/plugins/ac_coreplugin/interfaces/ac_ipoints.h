@@ -15,48 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_IENTITY_H
-#define AC_IENTITY_H
+#ifndef AC_IPOINTS_H
+#define AC_IPOINTS_H
+
+#include "mi_iaggregate.h"
 
 #include <ac_namespace.h>
 
-#include <mi_iaggregate.h>
-
-class IPoints;
-class ISubEntity;
 class Point;
 
 typedef QList<Point> PointList;
-
-class IEntity : public IAggregate
-{
-public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IEntity, IAggregate)
-
-    virtual void highlight() = 0;
-    virtual void unhighlight() = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
-    virtual bool isVisible() const = 0;
-};
-
-class IParentEntity : public IEntity
-{
-public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IParentEntity, IEntity)
-
-    virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
-    virtual QList<IPoints*> subEntityPoints(int sceneType) const = 0;
-};
-
-class ISubEntity : public IAggregate
-{
-public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(ISubEntity, IAggregate)
-
-    virtual IParentEntity *parentEntity() const = 0;
-    virtual int sceneType() const = 0;
-    virtual bool isCurve() const = 0;
-};
 
 class IPoints : public IAggregate
 {
@@ -79,6 +47,4 @@ public:
     }
 };
 
-#endif // AC_IENTITY_H
-
-// TODO:  Break up classes into separate headers.
+#endif // AC_IPOINTS_H
