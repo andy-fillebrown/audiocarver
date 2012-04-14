@@ -20,6 +20,7 @@
 #include <ac_controlcurve.h>
 #include <ac_pitchcurve.h>
 
+#include <mi_idataobjectfactory.h>
 #include <mi_scopeddatachange.h>
 
 Q_I_INIT__AGGREGATOR__ROLES(ScoreObject) =
@@ -35,15 +36,14 @@ Mi::ListItem
 
 IAggregator *ScoreObject::init()
 {
-    _pitchCurve = Q_I_NEW__DATA_OBJECT(PitchCurve);
-    _controlCurves = Q_I_NEW__DATA_OBJECT_LIST(Ac::ControlCurveItem);
-
+    IDataObjectFactory *factory = IDataObjectFactory::instance();
+    _pitchCurve = factory->createDataObject(Ac::PitchCurveItem);
+    _controlCurves = factory->createDataObjectList(Ac::ControlCurveItem);
     Q_I_INIT__AGGREGATOR__ITEM_LIST__INITIALIZER = {
         _pitchCurve,
         _controlCurves,
     };
     Q_I_INIT__AGGREGATOR__ITEM_LIST
-
     return Base::init();
 }
 

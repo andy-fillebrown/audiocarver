@@ -15,23 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef MI_IORPHANAGE_H
-#define MI_IORPHANAGE_H
+#ifndef AC_COREDATAOBJECTFACTORY_H
+#define AC_COREDATAOBJECTFACTORY_H
 
-#include "mi_iaggregate.h"
+#include "mi_idataobjectfactory.h"
 
-class IAggregator;
+#include <ac_global.h>
 
-class MI_CORE_EXPORT IOrphanage : public IAggregate
+class AC_CORE_EXPORT CoreDataObjectFactory : public IDataObjectFactory
 {
+protected:
+    IAggregator *createDataObject(int itemType);
+    IAggregator *createDataObjectList(int itemType, int listType = Mi::ListItem);
+
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IOrphanage, IAggregate)
+    // IUnknown
+    void *queryInterface(int interfaceType)
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
 
-    IOrphanage();
-    static IOrphanage *instance();
-
-    virtual void append(IAggregator *aggregator) = 0;
-    virtual void remove(IAggregator *aggregator) = 0;
+    const void *queryInterface(int interfaceType) const
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
 };
 
-#endif // MI_IORPHANAGE_H
+#endif // AC_COREDATAOBJECTFACTORY_H

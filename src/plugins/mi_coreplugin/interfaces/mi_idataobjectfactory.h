@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef MI_IORPHANAGE_H
-#define MI_IORPHANAGE_H
+#ifndef MI_IDATAOBJECTFACTORY_H
+#define MI_IDATAOBJECTFACTORY_H
 
-#include "mi_iaggregate.h"
+#include "mi_iunknown.h"
+
+#include <mi_interfacedefinitions.h>
 
 class IAggregator;
 
-class MI_CORE_EXPORT IOrphanage : public IAggregate
+class MI_CORE_EXPORT IDataObjectFactory : public IUnknown
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IOrphanage, IAggregate)
+    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IDataObjectFactory, IUnknown)
 
-    IOrphanage();
-    static IOrphanage *instance();
+    IDataObjectFactory();
+    static IDataObjectFactory *instance();
 
-    virtual void append(IAggregator *aggregator) = 0;
-    virtual void remove(IAggregator *aggregator) = 0;
+    virtual IAggregator *createDataObject(int itemType) = 0;
+    virtual IAggregator *createDataObjectList(int itemType, int listType = Mi::ListItem) = 0;
 };
 
-#endif // MI_IORPHANAGE_H
+#endif // MI_IDATAOBJECTFACTORY_H

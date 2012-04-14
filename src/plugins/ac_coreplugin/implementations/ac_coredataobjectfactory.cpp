@@ -15,23 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef MI_IORPHANAGE_H
-#define MI_IORPHANAGE_H
+#include "ac_coredataobjectfactory.h"
 
-#include "mi_iaggregate.h"
+#include <ac_controlcurve.h>
+#include <ac_pitchcurve.h>
 
-class IAggregator;
-
-class MI_CORE_EXPORT IOrphanage : public IAggregate
+IAggregator *CoreDataObjectFactory::createDataObject(int itemType)
 {
-public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IOrphanage, IAggregate)
+    switch (itemType) {
+    case Ac::ControlCurveItem:
+        return Q_I_NEW__DATA_OBJECT(ControlCurve);
+    case Ac::PitchCurveItem:
+        return Q_I_NEW__DATA_OBJECT(PitchCurve);
+    default:
+        return 0;
+    }
+}
 
-    IOrphanage();
-    static IOrphanage *instance();
-
-    virtual void append(IAggregator *aggregator) = 0;
-    virtual void remove(IAggregator *aggregator) = 0;
-};
-
-#endif // MI_IORPHANAGE_H
+IAggregator *CoreDataObjectFactory::createDataObjectList(int itemType, int listType)
+{
+    switch (listType) {
+    case Mi::ListItem:
+        return Q_I_NEW__DATA_OBJECT_LIST(DataObjectList, itemType);
+    default:
+        return 0;
+    }
+}

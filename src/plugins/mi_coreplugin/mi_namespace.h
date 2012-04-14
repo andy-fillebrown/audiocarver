@@ -27,6 +27,7 @@ namespace I {
 enum MiInterfaces {
     IAggregate,
     IAggregator,
+    IDataObjectFactory,
     IModel,
     IModelData,
     IModelItem,

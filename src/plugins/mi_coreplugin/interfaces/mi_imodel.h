@@ -29,7 +29,6 @@ public:
     Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IModel, IAggregate)
 
     IModel();
-
     static IModel *instance();
 
     virtual void beginChangeData(const IModelData *data, int role) = 0;

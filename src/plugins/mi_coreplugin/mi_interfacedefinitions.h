@@ -135,7 +135,7 @@
     const int Class::ItemTypes[]
 
 #define Q_I_INIT__AGGREGATOR__ITEM_LIST__INITIALIZER \
-    DataObject *init_items[ItemCount]
+    IAggregator *init_items[ItemCount]
 
 #define Q_I_INIT__AGGREGATOR__ITEM_LIST \
     for (int i = 0;  i < ItemCount;  ++i) \
@@ -450,8 +450,8 @@
 
 // NEW
 
-#define Q_I_NEW__DATA_OBJECT(Class) static_cast<Class*>((new Class)->init())
-#define Q_I_NEW__DATA_OBJECT_LIST(ItemType) static_cast<DataObjectList*>((new DataObjectList(ItemType))->init())
 #define Q_I_NEW__AGGREGATE(Class) appendAggregate((new Class(this))->init())
+#define Q_I_NEW__DATA_OBJECT(Class) (new Class)->init()
+#define Q_I_NEW__DATA_OBJECT_LIST(Class, ItemType) (new Class(ItemType))->init()
 
 #endif // MI_GLOBALINTERFACE_H

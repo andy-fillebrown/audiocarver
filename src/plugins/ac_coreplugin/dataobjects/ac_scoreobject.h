@@ -25,11 +25,6 @@
 
 #include <mi_dataobjectlist.h>
 
-class ControlCurve;
-class PitchCurve;
-
-class QGraphicsItem;
-
 class AC_CORE_EXPORT ScoreObject : public GraphicsParent
 {
     friend class Curve;
@@ -39,8 +34,8 @@ class AC_CORE_EXPORT ScoreObject : public GraphicsParent
     qreal _volume;
     Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
 
-    PitchCurve *_pitchCurve;
-    DataObjectList *_controlCurves;
+    IAggregator *_pitchCurve;
+    IAggregator *_controlCurves;
     Q_I_DERIVED__AGGREGATOR__ITEM_COUNT(2)
 
 protected:
@@ -64,12 +59,12 @@ protected:
 
     PitchCurve *pitchCurve() const
     {
-        return _pitchCurve;
+        return cast<PitchCurve>(_pitchCurve);
     }
 
     DataObjectList *controlCurves() const
     {
-        return _controlCurves;
+        return cast<DataObjectList>(_controlCurves);
     }
 
     // IModelData

@@ -15,23 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef MI_IORPHANAGE_H
-#define MI_IORPHANAGE_H
+#include "mi_idataobjectfactory.h"
 
-#include "mi_iaggregate.h"
+IDataObjectFactory *instance = 0;
 
-class IAggregator;
-
-class MI_CORE_EXPORT IOrphanage : public IAggregate
+class InstanceDeleter
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IOrphanage, IAggregate)
-
-    IOrphanage();
-    static IOrphanage *instance();
-
-    virtual void append(IAggregator *aggregator) = 0;
-    virtual void remove(IAggregator *aggregator) = 0;
+    ~InstanceDeleter()
+    {
+        delete ::instance;
+    }
 };
 
-#endif // MI_IORPHANAGE_H
+static InstanceDeleter instanceDeleter;
+
+IDataObjectFactory::IDataObjectFactory()
+{
+    delete ::instance;
+    ::instance = this;
+}
+
+IDataObjectFactory *IDataObjectFactory::instance()
+{
+    return ::instance;
+}
