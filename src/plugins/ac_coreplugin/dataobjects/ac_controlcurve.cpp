@@ -21,7 +21,7 @@
 
 Q_I_INIT__AGGREGATOR__ROLES(ControlCurve) =
 {
-Ac::ControlIdRole
+Ac::ControlTypeRole
 };
 
 IAggregator *ControlCurve::init()
@@ -44,11 +44,11 @@ IAggregate *ControlCurve::ModelItem::init()
     return Base::init();
 }
 
-bool ControlCurve::setControlId(int controlId)
+bool ControlCurve::setControlType(int controlType)
 {
-    if (_controlId == controlId)
+    if (_controlType == controlType)
         return false;
-    Q_SCOPED_DATA_CHANGE((Ac::ControlIdRole))
-    _controlId = controlId;
+    Q_SCOPED_DATA_CHANGE((Ac::ControlTypeRole))
+    _controlType = controlType;
     return true;
 }

@@ -49,7 +49,7 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Mi::appendItemType(Ac::ProjectSettingsItem, "ProjectSettings");
 
     Mi::appendItemDataRole(Ac::PointsRole, "points");
-    Mi::appendItemDataRole(Ac::ControlIdRole, "controlId");
+    Mi::appendItemDataRole(Ac::ControlTypeRole, "controlType");
     Mi::appendItemDataRole(Ac::LocationRole, "location");
     Mi::appendItemDataRole(Ac::LabelRole, "label");
     Mi::appendItemDataRole(Ac::PriorityRole, "priority");
@@ -107,7 +107,7 @@ bool test_1()
 {
     // Make sure querying aggregators succeeds.
     // Aggregators should create aggregates on demand.
-    ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
+    ControlCurve *control_curve = Q_I_NEW__DATA_OBJECT(ControlCurve);
     CHECK(control_curve);
     IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
@@ -118,7 +118,7 @@ bool test_2()
 {
     // Make sure querying constant aggregators fails.
     // Constant aggregators should not create aggregates on demand.
-    const ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
+    const ControlCurve *control_curve = Q_I_NEW__DATA_OBJECT(ControlCurve);
     CHECK(control_curve);
     const IModelItem *item = query<IModelItem>(control_curve);
     CHECK(!item);
@@ -129,7 +129,7 @@ bool test_3()
 {
     // Make sure IModelData::item() succeeds.
     // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
-    ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
+    ControlCurve *control_curve = Q_I_NEW__DATA_OBJECT(ControlCurve);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -141,7 +141,7 @@ bool test_3()
 bool test_4()
 {
     // Make sure setting item name succeeds.
-    ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
+    ControlCurve *control_curve = Q_I_NEW__DATA_OBJECT(ControlCurve);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);

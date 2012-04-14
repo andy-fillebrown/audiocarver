@@ -27,21 +27,21 @@ class AC_CORE_EXPORT ControlCurve : public Curve
 {
     Q_I_DERIVED__AGGREGATOR(ControlCurve, Curve)
 
+    int _controlType;
     Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
-    int _controlId;
 
 public:
-    ControlCurve(int controlId = 0)
-        :   _controlId(controlId)
+    ControlCurve()
+        :   _controlType(-1)
     {}
 
 protected:
-    int controlId() const
+    int controlType() const
     {
-        return _controlId;
+        return _controlType;
     }
 
-    bool setControlId(int controlId);
+    bool setControlType(int controlType);
 
     // Curve
     ScoreObject *scoreObject() const
@@ -98,8 +98,8 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::ControlIdRole:
-                return a()->controlId();
+            case Ac::ControlTypeRole:
+                return a()->controlType();
             default:
                 return Base::getVariant(role);
             }
@@ -108,8 +108,8 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::ControlIdRole:
-                return a()->setControlId(qvariant_cast<int>(data));
+            case Ac::ControlTypeRole:
+                return a()->setControlType(qvariant_cast<int>(data));
             default:
                 return Base::setVariant(data, role);
             }

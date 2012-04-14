@@ -59,7 +59,7 @@ enum ItemType {
 
 enum ItemDataRole {
     PointsRole = Mi::ItemDataRoleCount,
-    ControlIdRole,
+    ControlTypeRole,
     LocationRole,
     LabelRole,
     PriorityRole,
