@@ -22,14 +22,12 @@
 
 #include <mi_scopeddatachange.h>
 
-#include <QGraphicsItem>
-
-Q_I_INIT__AGGREGATOR__ROLES(ScoreObject)
+Q_I_INIT__AGGREGATOR__ROLES(ScoreObject) =
 {
 Ac::VolumeRole
 };
 
-Q_I_INIT__AGGREGATOR__ITEM_TYPES(ScoreObject)
+Q_I_INIT__AGGREGATOR__ITEM_TYPES(ScoreObject) =
 {
 Ac::PitchCurveItem,
 Mi::ListItem
@@ -37,10 +35,22 @@ Mi::ListItem
 
 IAggregator *ScoreObject::init()
 {
-    Q_I_INIT__AGGREGATOR__ITEM_LIST((qGetPtrHelper(_pitchCurve),
-                                     qGetPtrHelper(_controlCurves)
-                                     ))
+    _pitchCurve = Q_I_NEW__DATA_OBJECT(PitchCurve);
+    _controlCurves = Q_I_NEW__DATA_OBJECT_LIST(Ac::ControlCurveItem);
+
+    Q_I_INIT__AGGREGATOR__ITEM_LIST__INITIALIZER = {
+        _pitchCurve,
+        _controlCurves,
+    };
+    Q_I_INIT__AGGREGATOR__ITEM_LIST
+
     return Base::init();
+}
+
+ScoreObject::~ScoreObject()
+{
+    delete _controlCurves;
+    delete _pitchCurve;
 }
 
 IAggregate *ScoreObject::ModelData::init()

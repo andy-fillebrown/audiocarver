@@ -32,20 +32,24 @@ class ScoreObject;
 class AC_CORE_EXPORT Curve : public GraphicsObject
 {
     Q_I_DERIVED__AGGREGATOR(Curve, GraphicsObject)
-    QScopedPointer<GraphicsCurveItem> _graphicsCurveItem;
+    GraphicsCurveItem *_graphicsCurveItem;
 
-    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
     QStack<PointList> _pointsStack;
+    Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
 
 protected:
-    Curve() {}
+    Curve()
+        :   _graphicsCurveItem(0)
+    {}
+
+    ~Curve();
 
     virtual ScoreObject *scoreObject() const = 0;
     virtual void conformPoints() = 0;
 
     GraphicsCurveItem *graphicsCurveItem() const
     {
-        return qGetPtrHelper(_graphicsCurveItem);
+        return _graphicsCurveItem;
     }
 
     PointList &points()
@@ -163,13 +167,13 @@ protected:
     {
         switch (interfaceType) {
         case I::IEntity:
-            return Q_I_CREATE__AGGREGATE(Entity);
+            return Q_I_NEW__AGGREGATE(Entity);
         case I::ISubEntity:
             Q_ASSERT(0); return 0;
         case I::IPoints:
-            return Q_I_CREATE__AGGREGATE(Points);
+            return Q_I_NEW__AGGREGATE(Points);
         case I::IModelData:
-            return Q_I_CREATE__AGGREGATE(ModelData);
+            return Q_I_NEW__AGGREGATE(ModelData);
         default:
             return Base::createAggregate(interfaceType);
         }

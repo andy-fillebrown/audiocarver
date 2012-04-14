@@ -39,14 +39,18 @@ class AC_CORE_EXPORT ScoreObject : public GraphicsParent
     qreal _volume;
     Q_I_DERIVED__AGGREGATOR__ROLE_COUNT(1)
 
-    QScopedPointer<PitchCurve> _pitchCurve;
-    QScopedPointer<DataObjectList> _controlCurves;
+    PitchCurve *_pitchCurve;
+    DataObjectList *_controlCurves;
     Q_I_DERIVED__AGGREGATOR__ITEM_COUNT(2)
 
 protected:
     ScoreObject()
         :   _volume(0.0f)
+        ,   _pitchCurve(0)
+        ,   _controlCurves(0)
     {}
+
+    ~ScoreObject();
 
     virtual qreal length() const = 0;
     virtual void updatePoints() {}
@@ -60,12 +64,12 @@ protected:
 
     PitchCurve *pitchCurve() const
     {
-        return qGetPtrHelper(_pitchCurve);
+        return _pitchCurve;
     }
 
     DataObjectList *controlCurves() const
     {
-        return qGetPtrHelper(_controlCurves);
+        return _controlCurves;
     }
 
     // IModelData

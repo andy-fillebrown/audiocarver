@@ -21,18 +21,23 @@
 
 #include <mi_scopeddatachange.h>
 
-Q_I_INIT__AGGREGATOR__ROLES(Curve)
+Q_I_INIT__AGGREGATOR__ROLES(Curve) =
 {
 Ac::PointsRole
 };
 
 IAggregator *Curve::init()
 {
-    _graphicsCurveItem.reset(new GraphicsCurveItem);
+    _graphicsCurveItem = new GraphicsCurveItem;
     _graphicsCurveItem->setEntity(query<IEntity>(this));
     static PointList points;
     _pointsStack.push(points);
     return Base::init();
+}
+
+Curve::~Curve()
+{
+    delete _graphicsCurveItem;
 }
 
 IAggregate *Curve::Entity::init()

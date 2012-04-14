@@ -22,9 +22,7 @@
 
 #include <mi_iaggregate.h>
 
-#include <QSharedPointer>
-
-typedef QHash<int, AggregatePointer> InterfaceTypeToAggregateHash;
+typedef QHash<int, IAggregate*> InterfaceTypeToAggregateHash;
 
 class MI_CORE_EXPORT Aggregator : public IAggregator
 {
@@ -46,7 +44,7 @@ protected:
     {
         const int interface_type = aggregate->interfaceType();
         if (!_aggregates.contains(interface_type))
-            _aggregates.insert(interface_type, AggregatePointer(aggregate));
+            _aggregates.insert(interface_type, aggregate);
         return aggregate;
     }
 
@@ -55,6 +53,11 @@ protected:
         _aggregates.remove(aggregate->interfaceType());
     }
 
+    void clear()
+    {
+        qDeleteAll(_aggregates);
+        _aggregates.clear();
+    }
 
 public:
     void *queryInterface(int interfaceType);

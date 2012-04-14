@@ -21,8 +21,6 @@
 #include "mi_dataobject.h"
 #include "mi_imodellist.h"
 
-class DataObject;
-
 typedef QList<DataObject*> DataObjects;
 
 class MI_CORE_EXPORT DataObjectList : public DataObject
@@ -30,27 +28,25 @@ class MI_CORE_EXPORT DataObjectList : public DataObject
     Q_I_DERIVED__AGGREGATOR(DataObjectList, DataObject)
 
     const int _listType;
-    DataObjects _objects;
+    AggregatorList _objects;
 
-protected:
+public:
     DataObjectList(int listType = Mi::UnknownItem)
         :   _listType(listType)
     {}
+
+    ~DataObjectList();
 
     int listType() const
     {
         return _listType;
     }
 
-    DataObjects &objects()
-    {
-        return _objects;
-    }
-
     bool containsObjectNamed(const QString &name) const
     {
-        DataObjects::ConstIterator end = _objects.constEnd();
-        for (DataObjects::ConstIterator i = _objects.constBegin();  i != end;  ++i)
+        const DataObjects &objects = this->objects();
+        DataObjects::ConstIterator end = objects.constEnd();
+        for (DataObjects::ConstIterator i = objects.constBegin();  i != end;  ++i)
             if ((*i)->name() == name)
                 return true;
         return false;
@@ -79,8 +75,9 @@ protected:
 
     void clear()
     {
-        DataObjects::ConstIterator end = _objects.end();
-        for (DataObjects::ConstIterator i = _objects.begin();  i != end;  ++i) {
+        DataObjects &objects = this->objects();
+        DataObjects::ConstIterator end = objects.end();
+        for (DataObjects::ConstIterator i = objects.begin();  i != end;  ++i) {
             DataObject *object = *i;
             object->setParent(0);
             delete object;
@@ -92,6 +89,17 @@ protected:
     bool isList() const
     {
         return true;
+    }
+
+protected:
+    DataObjects &objects()
+    {
+        return *reinterpret_cast<DataObjects*>(&_objects);
+    }
+
+    const DataObjects &objects() const
+    {
+        return *reinterpret_cast<const DataObjects*>(&_objects);
     }
 
     // IModelList
@@ -153,7 +161,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelList:
-            return Q_I_CREATE__AGGREGATE(ModelList);
+            return Q_I_NEW__AGGREGATE(ModelList);
         default:
             return 0;
         }

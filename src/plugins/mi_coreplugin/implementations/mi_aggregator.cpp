@@ -32,12 +32,13 @@ Aggregator::~Aggregator()
     IOrphanage *orphanage = IOrphanage::instance();
     if (orphanage)
         orphanage->remove(this);
+    clear();
 }
 
 #define Q_I__AGGREGATOR__QUERY_INTERFACE \
     if (I::IAggregator == interfaceType) \
         return this; \
-    void *interface = qGetPtrHelper(_aggregates.value(interfaceType)); \
+    void *interface = _aggregates.value(interfaceType); \
     if (interface) \
         return interface;
 

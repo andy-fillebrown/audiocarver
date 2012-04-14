@@ -24,10 +24,7 @@
 
 class IAggregate;
 
-template <typename T> class QSharedPointer;
-
-typedef QSharedPointer<IAggregate> AggregatePointer;
-typedef QList<AggregatePointer> AggregateList;
+typedef QList<IAggregate*> AggregateList;
 
 class IAggregator : public IUnknown
 {
@@ -38,6 +35,9 @@ public:
     virtual IAggregate *createAggregate(int interfaceType) = 0;
     virtual IAggregate *appendAggregate(IAggregate* aggregate) = 0;
     virtual void removeAggregate(IAggregate *aggregate) = 0;
+    virtual void clear() = 0;
 };
+
+typedef QList<IAggregator*> AggregatorList;
 
 #endif // MI_IAGGREGATE_H

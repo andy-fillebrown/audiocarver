@@ -80,9 +80,9 @@ protected:
     {
         switch (interfaceType) {
         case I::ISubEntity:
-            return Q_I_CREATE__AGGREGATE(SubEntity);
+            return Q_I_NEW__AGGREGATE(SubEntity);
         case I::IModelItem:
-            return Q_I_CREATE__AGGREGATE(ModelItem);
+            return Q_I_NEW__AGGREGATE(ModelItem);
         default:
             return Base::createAggregate(interfaceType);
         }

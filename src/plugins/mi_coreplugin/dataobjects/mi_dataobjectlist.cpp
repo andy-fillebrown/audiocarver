@@ -19,8 +19,13 @@
 
 IAggregator *DataObjectList::init()
 {
-    setName(Mi::itemTypeString(listType()) + "s");
     return this;
+    setName(Mi::itemTypeString(_listType) + "s");
+}
+
+DataObjectList::~DataObjectList()
+{
+    clear();
 }
 
 IAggregate *DataObjectList::ModelList::init()

@@ -107,9 +107,7 @@ bool test_1()
 {
     // Make sure querying aggregators succeeds.
     // Aggregators should create aggregates on demand.
-    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
-    CHECK(control_curve_pointer);
-    IAggregator *control_curve = control_curve_pointer.data();
+    ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
     CHECK(control_curve);
     IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
@@ -120,9 +118,7 @@ bool test_2()
 {
     // Make sure querying constant aggregators fails.
     // Constant aggregators should not create aggregates on demand.
-    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
-    CHECK(control_curve_pointer);
-    const IAggregator *control_curve = control_curve_pointer.data();
+    const ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
     CHECK(control_curve);
     const IModelItem *item = query<IModelItem>(control_curve);
     CHECK(!item);
@@ -133,9 +129,7 @@ bool test_3()
 {
     // Make sure IModelData::item() succeeds.
     // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
-    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
-    CHECK(control_curve_pointer);
-    IAggregator *control_curve = control_curve_pointer.data();
+    ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -147,13 +141,12 @@ bool test_3()
 bool test_4()
 {
     // Make sure setting item name succeeds.
-    QScopedPointer<IAggregator> control_curve_pointer(Q_I_CREATE__AGGREGATOR(ControlCurve));
-    CHECK(control_curve_pointer);
-    IAggregator *control_curve = control_curve_pointer.data();
+    ControlCurve *control_curve = Q_I_NEW__AGGREGATOR(ControlCurve,());
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
     CHECK(data->set("ControlCurve", Mi::NameRole));
+    CHECK("ControlCurve" == data->get<QString>(Mi::NameRole));
     return true;
 }
 

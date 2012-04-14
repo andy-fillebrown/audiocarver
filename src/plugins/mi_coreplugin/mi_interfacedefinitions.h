@@ -129,21 +129,17 @@
 // INIT__AGGREGATOR
 
 #define Q_I_INIT__AGGREGATOR__ROLES(Class) \
-    const int Class::Roles[] =
+    const int Class::Roles[]
 
 #define Q_I_INIT__AGGREGATOR__ITEM_TYPES(Class) \
-    const int Class::ItemTypes[] =
+    const int Class::ItemTypes[]
 
-#define Q_I_INIT__AGGREGATOR__ITEM_LIST(ItemListInitializer) \
-    DataObject *init_items[ItemCount] = { ItemListInitializer }; \
+#define Q_I_INIT__AGGREGATOR__ITEM_LIST__INITIALIZER \
+    DataObject *init_items[ItemCount]
+
+#define Q_I_INIT__AGGREGATOR__ITEM_LIST \
     for (int i = 0;  i < ItemCount;  ++i) \
         Items[i] = init_items[i]; \
-
-// CREATE
-
-#define Q_I_CREATE(Class) (new Class)->init()
-#define Q_I_CREATE__AGGREGATOR(Class) Q_I_CREATE(Class)
-#define Q_I_CREATE__AGGREGATE(Class) appendAggregate(Q_I_CREATE(Class(this)))
 
 // AGGREGATE
 
@@ -452,15 +448,10 @@
 #define Q_I_DERIVED__MODEL_LIST \
     Q_I_DERIVED__AGGREGATE(ModelList)
 
-/*
-// MODEL_ITEM__PARENT
+// NEW
 
-#define Q_I_BASE__MODEL_LIST__PARENT \
-        IModelItem *parent() const \
-        { \
-            DataObject *a_parent = a()->parent(); \
-            return a_parent ? query<IModelItem>(a_parent) : 0; \
-        }
-*/
+#define Q_I_NEW__DATA_OBJECT(Class) static_cast<Class*>((new Class)->init())
+#define Q_I_NEW__DATA_OBJECT_LIST(ItemType) static_cast<DataObjectList*>((new DataObjectList(ItemType))->init())
+#define Q_I_NEW__AGGREGATE(Class) appendAggregate((new Class(this))->init())
 
 #endif // MI_GLOBALINTERFACE_H
