@@ -15,4 +15,29 @@
 **
 **************************************************************************/
 
-#include <ac_namespace.h>
+#include "ac_dataobjectfactory.h"
+
+#include <ac_controlcurvedata.h>
+#include <ac_pitchcurvedata.h>
+
+IAggregator *DataObjectFactory::createObject(int itemType)
+{
+    switch (itemType) {
+    case Ac::ControlCurveItem:
+        return Q_NEW_DATAOBJECT(ControlCurveData);
+    case Ac::PitchCurveItem:
+        return Q_NEW_DATAOBJECT(PitchCurveData);
+    default:
+        return 0;
+    }
+}
+
+IAggregator *DataObjectFactory::createObjectList(int itemType, int listType)
+{
+    switch (listType) {
+    case Mi::ListItem:
+        return Q_NEW_DATAOBJECTLIST(DataObjectList, itemType);
+    default:
+        return 0;
+    }
+}

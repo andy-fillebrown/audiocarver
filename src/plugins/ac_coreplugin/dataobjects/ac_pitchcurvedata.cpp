@@ -15,9 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsobject.h"
+#include "ac_pitchcurvedata.h"
 
-IAggregator *GraphicsObject::init()
+IAggregator *PitchCurveData::init()
+{
+    return Base::init();
+}
+
+IAggregate *PitchCurveData::ModelItem::init()
 {
     return Base::init();
 }

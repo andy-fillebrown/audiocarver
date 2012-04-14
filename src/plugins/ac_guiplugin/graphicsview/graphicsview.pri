@@ -1,18 +1,24 @@
 
-SOURCE_PAIRS = \
-    ac_controllabelview \
-    ac_controlview \
-    ac_labelview \
-    ac_graphicsentityitem \
-    ac_graphicsgripitem \
-    ac_graphicsscene \
-    ac_graphicsview \
-    ac_pitchlabelview \
-    ac_pitchview \
-    ac_timelabelview \
-    ac_viewmanager \
+SOURCE_FILES = \
+#    controllabelview \
+#    controlview \
+#    labelview \
+#    graphicsentityitem \
+#    graphicsgripitem \
+    graphicsitem \
+#    graphicsscene \
+#    graphicsview \
+#    pitchlabelview \
+#    pitchview \
+#    timelabelview \
+#    viewmanager \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= graphicsview/$${pair}.h
-    SOURCES *= graphicsview/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    name = $$SOURCE_FILE_PREFIX$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

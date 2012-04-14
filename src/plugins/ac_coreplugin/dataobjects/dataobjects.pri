@@ -1,16 +1,14 @@
 
 SOURCE_FILES = \
-    controlcurve \
-    curve \
-    graphicsobject \
-    graphicsparent \
+    controlcurvedata \
+    curvedataobject \
 #    gridline \
 #    gridsettings \
 #    note \
-    pitchcurve \
+    pitchcurvedata \
 #    projectsettings \
 #    score \
-    scoreobject \
+    scoredataobject \
 #    track \
 #    viewsettings \
 

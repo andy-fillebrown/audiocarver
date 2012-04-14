@@ -18,7 +18,7 @@
 #ifndef MI_DOUBLESPINBOX_H
 #define MI_DOUBLESPINBOX_H
 
-#include <mi_global.h>
+#include <mi_guiglobal.h>
 
 #include <QDoubleSpinBox>
 

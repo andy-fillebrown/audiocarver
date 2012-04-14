@@ -15,27 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLCURVE_H
-#define AC_CONTROLCURVE_H
+#ifndef AC_CONTROLCURVEDATA_H
+#define AC_CONTROLCURVEDATA_H
 
-#include "ac_curve.h"
+#include "ac_curvedataobject.h"
 
-#include <ac_graphicsparent.h>
-#include <ac_scoreobject.h>
-
-class AC_CORE_EXPORT ControlCurve : public Curve
+class AC_CORE_EXPORT ControlCurveData : public CurveDataObject
 {
-    Q_IAGGREGATOR_DERIVED(ControlCurve, Curve)
+    friend class DataObjectFactory;
+
+    Q_IAGGREGATOR_DERIVED(ControlCurveData, CurveDataObject)
 
     int _controlType;
     Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
 
-public:
-    ControlCurve()
+protected:
+    ControlCurveData()
         :   _controlType(-1)
     {}
 
-protected:
     int controlType() const
     {
         return _controlType;
@@ -44,12 +42,6 @@ protected:
     bool setControlType(int controlType);
 
     // Curve
-    ScoreObject *scoreObject() const
-    {
-        DataObject *parent = this->parent();
-        return parent ? cast<ScoreObject>(parent->parent()) : 0;
-    }
-
     void conformPoints()
     {
         PointList &pts = points();
@@ -65,29 +57,6 @@ protected:
             }
         }
     }
-
-    // GraphicsObject
-    void updateGraphicsParent()
-    {
-//        GraphicsParent *parent = graphicsParent();
-//        graphicsCurveItem()->setParentItem(parent ? parent->mainGraphicsItems()[Ac::ControlScene] : 0);
-    }
-
-//    // ISubEntity
-//    class SubEntity : public Base::SubEntity
-//    {
-//        Q_I_DERIVED__AGGREGATE(SubEntity)
-
-//        IParentEntity *parentEntity() const
-//        {
-//            return query<IParentEntity>(a()->graphicsParent());
-//        }
-
-//        int sceneType() const
-//        {
-//            return Ac::ControlScene;
-//        }
-//    };
 
     // IModelData
     class ModelData : public Base::ModelData
@@ -127,8 +96,6 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-//        case I::ISubEntity:
-//            return Q_I_NEW__AGGREGATE(SubEntity);
         case I::IModelData:
             return Q_NEW_AGGREGATE(ModelData);
         case I::IModelItem:
@@ -139,4 +106,4 @@ protected:
     }
 };
 
-#endif // AC_CONTROLCURVE_H
+#endif // AC_CONTROLCURVEDATA_H

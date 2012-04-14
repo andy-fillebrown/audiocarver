@@ -15,31 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSOBJECT_H
-#define AC_GRAPHICSOBJECT_H
+#include "ac_controlcurvegraphics.h"
 
-#include "mi_dataobject.h"
+#include <mi_scopeddatachange.h>
 
-#include <ac_global.h>
-
-class GraphicsParent;
-
-class AC_CORE_EXPORT GraphicsObject : public DataObject
+IAggregator *ControlCurveGraphics::init()
 {
-    Q_IAGGREGATOR_DERIVED(GraphicsObject, DataObject)
+    return Base::init();
+}
 
-protected:
-    GraphicsObject() {}
-
-    virtual GraphicsParent *graphicsParent() const { return 0; }
-    virtual void updateGraphicsParent() {}
-
-    // DataObject
-    void setParent(DataObject *parent)
-    {
-        Base::setParent(parent);
-        updateGraphicsParent();
-    }
-};
-
-#endif // AC_GRAPHICSOBJECT_H
+IAggregate *ControlCurveGraphics::SubEntity::init()
+{
+    return this;
+}

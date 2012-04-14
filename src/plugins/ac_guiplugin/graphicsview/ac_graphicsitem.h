@@ -40,7 +40,7 @@ public:
         return r;
     }
 
-    void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*)
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
     {}
 };
 

@@ -18,7 +18,7 @@
 #ifndef MI_IUNKOWN_H
 #define MI_IUNKOWN_H
 
-#include <mi_namespace.h>
+#include <mi_corenamespace.h>
 
 class IUnknown
 {

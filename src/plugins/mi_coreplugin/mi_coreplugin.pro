@@ -10,9 +10,9 @@ DEFINES *= \
     MI_CORE_LIBRARY
 
 SOURCE_FILES = \
-    global \
-    interfacedefinitions \
-    namespace \
+    coredefs \
+    coreglobal \
+    corenamespace \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {

@@ -15,15 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GLOBAL_H
-#define AC_GLOBAL_H
+#ifndef AC_GUIDEFS_H
+#define AC_GUIDEFS_H
 
-#include <mi_global.h>
+#include <mi_coredefs.h>
 
-#if defined(AC_CORE_LIBRARY)
-#  define AC_CORE_EXPORT Q_DECL_EXPORT
-#else
-#  define AC_CORE_EXPORT Q_DECL_IMPORT
-#endif
+// ISUBENTITY
 
-#endif // AC_GLOBAL_H
+#define Q_ISUBENTITY(ClassIsCurve, ClassSceneType) \
+    Q_IAGGREGATE_BASE(SubEntity) \
+    \
+        IParentEntity *parentEntity() const \
+        { \
+            return query<IParentEntity>(a()->parent()); \
+        } \
+    \
+        bool isCurve() const \
+        { \
+            return ClassIsCurve; \
+        } \
+    \
+        int sceneType() const \
+        { \
+            return ClassSceneType; \
+        }
+
+#endif // AC_GUIDEFS_H

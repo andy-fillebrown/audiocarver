@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef MI_NAMESPACE_H
-#define MI_NAMESPACE_H
+#ifndef MI_CORENAMESPACE_H
+#define MI_CORENAMESPACE_H
 
-#include <mi_global.h>
+#include <mi_coreglobal.h>
 
 #include <qnamespace.h>
 
@@ -77,6 +77,6 @@ enum NotificationFlags {
 
 } // namespace Mi
 
-#endif // MI_NAMESPACE_H
+#endif // MI_CORENAMESPACE_H
 
 // TODO:  Move namespace I to separate header.

@@ -20,7 +20,7 @@
 
 #include "mi_iaggregate.h"
 
-#include <ac_namespace.h>
+#include <ac_corenamespace.h>
 
 class Point;
 

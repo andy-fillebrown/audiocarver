@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_INTERFACEDEFINITIONS_H
-#define MI_INTERFACEDEFINITIONS_H
+#ifndef MI_COREDEFS_H
+#define MI_COREDEFS_H
 
 // IUNKNOWN  INTERFACETYPE
 
@@ -448,7 +448,7 @@
 #define Q_IAGGREGATOR_INIT_ITEMTYPES(Class) \
     const int Class::ItemTypes[]
 
-#define Q_IAGGREGATOR_INIT_ITEMLIST_INITIALIZER \
+#define Q_IAGGREGATOR_INIT_ITEMLIST__INITIALIZER \
     IAggregator *items[ItemCount]
 
 #define Q_IAGGREGATOR_INIT_ITEMLIST \
@@ -460,4 +460,4 @@
             object->setParent(this); \
     }
 
-#endif // MI_INTERFACEDEFINITIONS_H
+#endif // MI_COREDEFS_H

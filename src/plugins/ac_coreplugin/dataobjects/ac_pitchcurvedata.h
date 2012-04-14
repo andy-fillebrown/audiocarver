@@ -15,24 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHCURVE_H
-#define AC_PITCHCURVE_H
+#ifndef AC_PITCHCURVEDATA_H
+#define AC_PITCHCURVEDATA_H
 
-#include "ac_curve.h"
+#include "ac_curvedataobject.h"
 
-#include <ac_graphicsparent.h>
-
-class AC_CORE_EXPORT PitchCurve : public Curve
+class AC_CORE_EXPORT PitchCurveData : public CurveDataObject
 {
-    Q_IAGGREGATOR_DERIVED(PitchCurve, Curve)
+    friend class DataObjectFactory;
+
+    Q_IAGGREGATOR_DERIVED(PitchCurveData, CurveDataObject)
 
 protected:
-    // Curve
-    ScoreObject *scoreObject() const
-    {
-        return cast<ScoreObject>(parent());
-    }
+    PitchCurveData()
+    {}
 
+    // Curve
     void conformPoints()
     {
         PointList &pts = points();
@@ -45,29 +43,6 @@ protected:
         }
     }
 
-    // GraphicsObject
-    void updateGraphicsParent()
-    {
-//        GraphicsParent *parent = graphicsParent();
-//        graphicsCurveItem()->setParentItem(parent ? parent->mainGraphicsItems()[Ac::PitchScene] : 0);
-    }
-
-//    // ISubEntity
-//    class SubEntity : public Base::SubEntity
-//    {
-//        Q_I_DERIVED__AGGREGATE(SubEntity)
-
-//        IParentEntity *parentEntity() const
-//        {
-//            return query<IParentEntity>(a()->graphicsParent());
-//        }
-
-//        int sceneType() const
-//        {
-//            return Ac::PitchScene;
-//        }
-//    };
-
     // IModelItem
     class ModelItem : public Base::ModelItem
     {
@@ -79,8 +54,6 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-//        case I::ISubEntity:
-//            return Q_I_NEW__AGGREGATE(SubEntity);
         case I::IModelItem:
             return Q_NEW_AGGREGATE(ModelItem);
         default:
@@ -89,4 +62,4 @@ protected:
     }
 };
 
-#endif // AC_PITCHCURVE_H
+#endif // AC_PITCHCURVEDATA_H

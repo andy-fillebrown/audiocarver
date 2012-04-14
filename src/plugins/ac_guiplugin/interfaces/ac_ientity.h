@@ -23,7 +23,7 @@
 class IEntity : public IAggregate
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(IEntity, IAggregate)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IEntity, IAggregate)
 
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;

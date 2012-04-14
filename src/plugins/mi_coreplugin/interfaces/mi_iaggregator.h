@@ -20,7 +20,7 @@
 
 #include "mi_iunknown.h"
 
-#include <mi_interfacedefinitions.h>
+#include <mi_coredefs.h>
 
 class IAggregate;
 

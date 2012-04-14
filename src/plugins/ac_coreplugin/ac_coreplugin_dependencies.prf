@@ -6,7 +6,6 @@ DIRS = \
 #    filers \
     implementations \
     interfaces \
-    graphicsview \
 #    models \
     tools \
 

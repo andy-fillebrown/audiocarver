@@ -15,30 +15,4 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREDATAOBJECTFACTORY_H
-#define AC_COREDATAOBJECTFACTORY_H
-
-#include "mi_idataobjectfactory.h"
-
-#include <ac_global.h>
-
-class AC_CORE_EXPORT CoreDataObjectFactory : public IDataObjectFactory
-{
-protected:
-    IAggregator *createDataObject(int itemType);
-    IAggregator *createDataObjectList(int itemType, int listType = Mi::ListItem);
-
-public:
-    // IUnknown
-    void *queryInterface(int interfaceType)
-    {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
-    }
-
-    const void *queryInterface(int interfaceType) const
-    {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
-    }
-};
-
-#endif // AC_COREDATAOBJECTFACTORY_H
+#include "ac_corenamespace.h"

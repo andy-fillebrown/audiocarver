@@ -18,7 +18,7 @@
 #ifndef MI_DELEGATE_H
 #define MI_DELEGATE_H
 
-#include <mi_global.h>
+#include <mi_guiglobal.h>
 
 #include <QStyledItemDelegate>
 

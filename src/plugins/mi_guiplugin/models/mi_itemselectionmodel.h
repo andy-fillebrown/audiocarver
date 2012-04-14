@@ -18,7 +18,7 @@
 #ifndef MI_ITEMSELECTIONMODEL_H
 #define MI_ITEMSELECTIONMODEL_H
 
-#include <mi_global.h>
+#include <mi_guiglobal.h>
 
 #include <QItemSelectionModel>
 

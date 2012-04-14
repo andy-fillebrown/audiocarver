@@ -18,7 +18,7 @@
 #ifndef MI_IDATABASE_H
 #define MI_IDATABASE_H
 
-#include <mi_global.h>
+#include <mi_coreglobal.h>
 
 #include <QObject>
 

@@ -17,7 +17,7 @@
 
 #include "mi_coreplugin.h"
 
-#include <mi_namespace.h>
+#include <mi_corenamespace.h>
 
 #include <pluginmanager.h>
 

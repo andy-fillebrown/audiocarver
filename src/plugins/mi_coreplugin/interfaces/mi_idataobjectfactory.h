@@ -20,7 +20,7 @@
 
 #include "mi_iunknown.h"
 
-#include <mi_interfacedefinitions.h>
+#include <mi_coredefs.h>
 
 class IAggregator;
 
@@ -32,8 +32,8 @@ public:
     IDataObjectFactory();
     static IDataObjectFactory *instance();
 
-    virtual IAggregator *createDataObject(int itemType) = 0;
-    virtual IAggregator *createDataObjectList(int itemType, int listType = Mi::ListItem) = 0;
+    virtual IAggregator *createObject(int itemType) = 0;
+    virtual IAggregator *createObjectList(int itemType, int listType = Mi::ListItem) = 0;
 };
 
 #endif // MI_IDATAOBJECTFACTORY_H

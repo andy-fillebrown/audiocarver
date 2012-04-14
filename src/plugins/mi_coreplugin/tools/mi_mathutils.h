@@ -18,7 +18,7 @@
 #ifndef MI_MATHUTILS_H
 #define MI_MATHUTILS_H
 
-#include <mi_global.h>
+#include <mi_coreglobal.h>
 
 #include <math.h>
 

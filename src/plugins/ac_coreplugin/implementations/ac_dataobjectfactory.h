@@ -15,19 +15,30 @@
 **
 **************************************************************************/
 
-#include "ac_pitchcurve.h"
+#ifndef AC_DATAOBJECTFACTORY_H
+#define AC_DATAOBJECTFACTORY_H
 
-IAggregator *PitchCurve::init()
+#include "mi_idataobjectfactory.h"
+
+#include <ac_coreglobal.h>
+
+class AC_CORE_EXPORT DataObjectFactory : public IDataObjectFactory
 {
-    return Base::init();
-}
+protected:
+    IAggregator *createObject(int itemType);
+    IAggregator *createObjectList(int itemType, int listType = Mi::ListItem);
 
-//IAggregate *PitchCurve::SubEntity::init()
-//{
-//    return Base::init();
-//}
+public:
+    // IUnknown
+    void *queryInterface(int interfaceType)
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
 
-IAggregate *PitchCurve::ModelItem::init()
-{
-    return Base::init();
-}
+    const void *queryInterface(int interfaceType) const
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
+};
+
+#endif // AC_DATAOBJECTFACTORY_H

@@ -1,6 +1,8 @@
 TARGET_PREFIX = Ac
 TARGET_NAME = CorePlugin
 
+#QT -= gui
+
 TEMPLATE = lib
 
 load(../../plugin.prf)
@@ -10,8 +12,8 @@ DEFINES *= \
 
 SOURCE_FILES = \
     coreconstants \
-    global \
-    namespace \
+    coreglobal \
+    corenamespace \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {

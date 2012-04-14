@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_NAMESPACE_H
-#define AC_NAMESPACE_H
+#ifndef AC_CORENAMESPACE_H
+#define AC_CORENAMESPACE_H
 
-#include <ac_global.h>
+#include <ac_coreglobal.h>
 
-#include <mi_namespace.h>
+#include <mi_corenamespace.h>
 
 namespace I {
 
@@ -98,15 +98,6 @@ enum CurveType {
 enum FilerType {
     XmlCopyFiler,
     XmlFileFiler
-};
-
-enum SceneType {
-    PitchScene,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
 };
 
 } // namespace Ac

@@ -15,40 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_controlcurve.h"
+#include "ac_pitchcurvegraphics.h"
 
-#include <mi_scopeddatachange.h>
-
-Q_IAGGREGATOR_INIT_ROLES(ControlCurve) =
-{
-Ac::ControlTypeRole
-};
-
-IAggregator *ControlCurve::init()
+IAggregator *PitchCurveGraphics::init()
 {
     return Base::init();
 }
 
-//IAggregate *ControlCurve::SubEntity::init()
-//{
-//    return Base::init();
-//}
-
-IAggregate *ControlCurve::ModelData::init()
+IAggregate *PitchCurveGraphics::SubEntity::init()
 {
-    return Base::init();
-}
-
-IAggregate *ControlCurve::ModelItem::init()
-{
-    return Base::init();
-}
-
-bool ControlCurve::setControlType(int controlType)
-{
-    if (_controlType == controlType)
-        return false;
-    Q_SCOPED_DATA_CHANGE((Ac::ControlTypeRole))
-    _controlType = controlType;
-    return true;
+    return this;
 }

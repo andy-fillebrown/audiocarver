@@ -10,6 +10,7 @@ DEFINES *= \
 
 SOURCE_FILES = \
     guiconstants \
+    guiglobal \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {

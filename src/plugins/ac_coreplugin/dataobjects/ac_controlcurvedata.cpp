@@ -15,21 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_IPARENTENTITY_H
-#define AC_IPARENTENTITY_H
+#include "ac_controlcurvedata.h"
 
-#include "ac_ientity.h"
+#include <mi_scopeddatachange.h>
 
-class IPoints;
-class ISubEntity;
-
-class IParentEntity : public IEntity
+Q_IAGGREGATOR_INIT_ROLES(ControlCurveData) =
 {
-public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IParentEntity, IEntity)
-
-    virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
-    virtual QList<IPoints*> subEntityPoints(int sceneType) const = 0;
+Ac::ControlTypeRole
 };
 
-#endif // AC_IPARENTENTITY_H
+IAggregator *ControlCurveData::init()
+{
+    return Base::init();
+}
+
+IAggregate *ControlCurveData::ModelData::init()
+{
+    return Base::init();
+}
+
+IAggregate *ControlCurveData::ModelItem::init()
+{
+    return Base::init();
+}
+
+bool ControlCurveData::setControlType(int controlType)
+{
+    if (_controlType == controlType)
+        return false;
+    Q_SCOPED_DATA_CHANGE((Ac::ControlTypeRole))
+    _controlType = controlType;
+    return true;
+}

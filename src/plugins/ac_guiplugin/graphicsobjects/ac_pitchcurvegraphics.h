@@ -15,58 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef MI_IOBJECT_H
-#define MI_IOBJECT_H
+#ifndef AC_PITCHCURVEGRAPHICS_H
+#define AC_PITCHCURVEGRAPHICS_H
 
-#include "mi_iunknown.h"
-#include "QObject"
+#include "ac_pitchcurvedata.h"
+#include "ac_isubentity.h"
 
-#include <mi_coredefs.h>
-#include <mi_corenamespace.h>
+#include <ac_guidefs.h>
+#include <ac_guinamespace.h>
+#include <ac_iparententity.h>
 
-
-
-
-#include <mi_iaggregator.h>
-
-class Object : public QObject
+class AC_CORE_EXPORT PitchCurveGraphics : public PitchCurveData
 {
-    Q_OBJECT
+    Q_IAGGREGATOR_DERIVED(PitchCurveGraphics, PitchCurveData)
 
-    IAggregator *_aggregator;
-
-public:
-    enum { InterfaceType = I::IObject };
-
-    Object(IAggregator *aggregator)
-        :   _aggregator(aggregator)
+protected:
+    PitchCurveGraphics()
     {}
 
-    ~Object() {}
-
-    IAggregator *aggregator() const
+    // ISubEntity
+    class SubEntity : public ISubEntity
     {
-        return qGetPtrHelper(_aggregator);
-    }
+        Q_ISUBENTITY(Ac::IsACurve, Ac::PitchScene)
+    };
 
-    const void *queryInterface(int interfaceType) const
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case I::IObject:
-            return this;
+        case I::ISubEntity:
+            return Q_NEW_AGGREGATE(SubEntity);
         default:
-            return aggregator()->queryInterface(interfaceType);
+            return Base::createAggregate(interfaceType);
         }
     }
 };
 
-
-
-
-class IObject : public Object, public IUnknown
-{
-public:
-    Q_IUNKNOWN_BASE__INTERFACETYPE(IObject)
-};
-
-#endif // MI_IOBJECT_H
+#endif // AC_PITCHCURVEGRAPHICS_H

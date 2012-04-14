@@ -6,7 +6,9 @@ TEMPLATE = lib
 load(../../plugin.prf)
 
 SOURCE_FILES = \
-#    guiconstants.h \
+#    guiconstants \
+    guidefs \
+    guinamespace \
 #    mainwidget \
 
 SOURCE_FILES *= $$target_name

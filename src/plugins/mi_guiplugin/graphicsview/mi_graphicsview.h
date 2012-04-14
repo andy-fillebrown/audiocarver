@@ -18,7 +18,7 @@
 #ifndef MI_GRAPHICSVIEW_H
 #define MI_GRAPHICSVIEW_H
 
-#include <mi_global.h>
+#include <mi_guiglobal.h>
 #include <QGraphicsView>
 
 class MI_GUI_EXPORT MiGraphicsView : public QGraphicsView

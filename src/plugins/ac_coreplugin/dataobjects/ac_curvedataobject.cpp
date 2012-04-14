@@ -15,68 +15,47 @@
 **
 **************************************************************************/
 
-#include "ac_curve.h"
-
-#include <ac_scoreobject.h>
+#include "ac_curvedataobject.h"
 
 #include <mi_scopeddatachange.h>
 
-Q_IAGGREGATOR_INIT_ROLES(Curve) =
+Q_IAGGREGATOR_INIT_ROLES(CurveDataObject) =
 {
 Ac::PointsRole
 };
 
-IAggregator *Curve::init()
+IAggregator *CurveDataObject::init()
 {
-//    _graphicsCurveItem = new GraphicsCurveItem;
-//    _graphicsCurveItem->setEntity(query<IEntity>(this));
     static PointList points;
     _pointsStack.push(points);
     return Base::init();
 }
 
-Curve::~Curve()
-{
-//    delete _graphicsCurveItem;
-}
-
-//IAggregate *Curve::Entity::init()
-//{
-//    return this;
-//}
-
-//IAggregate *Curve::SubEntity::init()
-//{
-//    return this;
-//}
-
-IAggregate *Curve::Points::init()
+IAggregate *CurveDataObject::Points::init()
 {
     return this;
 }
 
-IAggregate *Curve::ModelData::init()
+IAggregate *CurveDataObject::ModelData::init()
 {
     return Base::init();
 }
 
-void Curve::pushPoints(const PointList &points)
+void CurveDataObject::pushPoints(const PointList &points)
 {
     Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
     _pointsStack.push(points);
-    updateGraphicsItems();
 }
 
-void Curve::popPoints()
+void CurveDataObject::popPoints()
 {
     if (1 == _pointsStack.count())
         return;
     Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
     _pointsStack.pop();
-    updateGraphicsItems();
 }
 
-bool Curve::setPoints(const PointList &points)
+bool CurveDataObject::setPoints(const PointList &points)
 {
     PointList new_pts = points;
     while (1 < _pointsStack.count())
@@ -90,17 +69,5 @@ bool Curve::setPoints(const PointList &points)
         return false;
     Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyModelAndParent));
     _pointsStack.top() = new_pts;
-    updateGraphicsItems();
     return true;
-}
-
-void Curve::updateGraphicsItems()
-{
-//    graphicsCurveItem()->setPoints(points());
-    scoreObject()->updatePoints();
-}
-
-GraphicsParent *Curve::graphicsParent() const
-{
-    return scoreObject();
 }

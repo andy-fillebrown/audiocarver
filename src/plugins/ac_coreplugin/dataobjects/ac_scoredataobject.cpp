@@ -15,31 +15,31 @@
 **
 **************************************************************************/
 
-#include "ac_scoreobject.h"
+#include "ac_scoredataobject.h"
 
-#include <ac_controlcurve.h>
-#include <ac_pitchcurve.h>
+#include <ac_controlcurvedata.h>
+#include <ac_pitchcurvedata.h>
 
 #include <mi_idataobjectfactory.h>
 #include <mi_scopeddatachange.h>
 
-Q_IAGGREGATOR_INIT_ROLES(ScoreObject) =
+Q_IAGGREGATOR_INIT_ROLES(ScoreDataObject) =
 {
 Ac::VolumeRole
 };
 
-Q_IAGGREGATOR_INIT_ITEMTYPES(ScoreObject) =
+Q_IAGGREGATOR_INIT_ITEMTYPES(ScoreDataObject) =
 {
 Ac::PitchCurveItem,
 Mi::ListItem
 };
 
-IAggregator *ScoreObject::init()
+IAggregator *ScoreDataObject::init()
 {
     IDataObjectFactory *factory = IDataObjectFactory::instance();
-    _pitchCurve = factory->createDataObject(Ac::PitchCurveItem);
-    _controlCurves = factory->createDataObjectList(Ac::ControlCurveItem);
-    Q_IAGGREGATOR_INIT_ITEMLIST_INITIALIZER = {
+    _pitchCurve = factory->createObject(Ac::PitchCurveItem);
+    _controlCurves = factory->createObjectList(Ac::ControlCurveItem);
+    Q_IAGGREGATOR_INIT_ITEMLIST__INITIALIZER = {
         _pitchCurve,
         _controlCurves,
     };
@@ -47,25 +47,25 @@ IAggregator *ScoreObject::init()
     return Base::init();
 }
 
-ScoreObject::~ScoreObject()
+ScoreDataObject::~ScoreDataObject()
 {
     delete _controlCurves;
     delete _pitchCurve;
 }
 
-IAggregate *ScoreObject::ModelData::init()
+IAggregate *ScoreDataObject::ModelData::init()
 {
     return Base::init();
 }
 
-IAggregate *ScoreObject::ModelItem::init()
+IAggregate *ScoreDataObject::ModelItem::init()
 {
     return Base::init();
 }
 
-bool ScoreObject::setVolume(qreal volume)
+bool ScoreDataObject::setVolume(qreal volume)
 {
-    volume = qMin(qMax(qreal(0.0f), volume), qreal(1.0f));
+    volume = qBound(qreal(0.0f), volume, qreal(1.0f));
     if (_volume == volume)
         return false;
     Q_SCOPED_DATA_CHANGE((Ac::VolumeRole));

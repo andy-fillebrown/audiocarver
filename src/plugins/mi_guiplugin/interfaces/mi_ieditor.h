@@ -18,7 +18,7 @@
 #ifndef MI_IEDITOR_H
 #define MI_IEDITOR_H
 
-#include <mi_global.h>
+#include <mi_guiglobal.h>
 
 #include <QObject>
 

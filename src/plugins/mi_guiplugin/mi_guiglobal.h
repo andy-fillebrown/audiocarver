@@ -15,21 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_IPARENTENTITY_H
-#define AC_IPARENTENTITY_H
+#ifndef MI_GUIGLOBAL_H
+#define MI_GUIGLOBAL_H
 
-#include "ac_ientity.h"
+#include <mi_coreglobal.h>
 
-class IPoints;
-class ISubEntity;
+#if defined(MI_GUI_LIBRARY)
+#  define MI_GUI_EXPORT Q_DECL_EXPORT
+#else
+#  define MI_GUI_EXPORT Q_DECL_IMPORT
+#endif
 
-class IParentEntity : public IEntity
-{
-public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IParentEntity, IEntity)
-
-    virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
-    virtual QList<IPoints*> subEntityPoints(int sceneType) const = 0;
-};
-
-#endif // AC_IPARENTENTITY_H
+#endif // MI_GUIGLOBAL_H

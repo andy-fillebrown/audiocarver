@@ -15,29 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_coredataobjectfactory.h"
+#ifndef AC_GUINAMESPACE_H
+#define AC_GUINAMESPACE_H
 
-#include <ac_controlcurve.h>
-#include <ac_pitchcurve.h>
+namespace Ac {
 
-IAggregator *CoreDataObjectFactory::createDataObject(int itemType)
-{
-    switch (itemType) {
-    case Ac::ControlCurveItem:
-        return Q_NEW_DATAOBJECT(ControlCurve);
-    case Ac::PitchCurveItem:
-        return Q_NEW_DATAOBJECT(PitchCurve);
-    default:
-        return 0;
-    }
-}
+enum SubEntityCurveFlags {
+    IsNotACurve = 0x0,
+    IsACurve = 0x1
+};
 
-IAggregator *CoreDataObjectFactory::createDataObjectList(int itemType, int listType)
-{
-    switch (listType) {
-    case Mi::ListItem:
-        return Q_NEW_DATAOBJECTLIST(DataObjectList, itemType);
-    default:
-        return 0;
-    }
-}
+enum SceneType {
+    PitchScene,
+    ControlScene,
+    TimeLabelScene,
+    PitchLabelScene,
+    ControlLabelScene,
+    SceneTypeCount
+};
+
+} // namespace Ac
+
+#endif // AC_GUINAMESPACE_H

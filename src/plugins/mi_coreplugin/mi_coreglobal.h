@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_GLOBAL_H
-#define MI_GLOBAL_H
+#ifndef MI_COREGLOBAL_H
+#define MI_COREGLOBAL_H
 
 #include <QDebug>
 
@@ -26,12 +26,6 @@
 #  define MI_CORE_EXPORT Q_DECL_EXPORT
 #else
 #  define MI_CORE_EXPORT Q_DECL_IMPORT
-#endif
-
-#if defined(MI_GUI_LIBRARY)
-#  define MI_GUI_EXPORT Q_DECL_EXPORT
-#else
-#  define MI_GUI_EXPORT Q_DECL_IMPORT
 #endif
 
 inline void mi_assert(const char *assertion, const char *file, int line)
@@ -121,4 +115,4 @@ const T *cast(const Object *object)
 #define Q_FLOAT_MIN 1E-37
 #define Q_FLOAT_MAX 1E+37
 
-#endif // MI_GLOBAL_H
+#endif // MI_COREGLOBAL_H

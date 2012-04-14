@@ -44,9 +44,9 @@ public:
 
     bool containsObjectNamed(const QString &name) const
     {
-        const DataObjects &objects = this->objects();
-        DataObjects::ConstIterator end = objects.constEnd();
-        for (DataObjects::ConstIterator i = objects.constBegin();  i != end;  ++i)
+        const DataObjects *objects = dataObjects();
+        DataObjects::ConstIterator end = objects->constEnd();
+        for (DataObjects::ConstIterator i = objects->constBegin();  i != end;  ++i)
             if ((*i)->name() == name)
                 return true;
         return false;
@@ -75,9 +75,9 @@ public:
 
     void clear()
     {
-        DataObjects &objects = this->objects();
-        DataObjects::ConstIterator end = objects.end();
-        for (DataObjects::ConstIterator i = objects.begin();  i != end;  ++i) {
+        DataObjects *objects = dataObjects();
+        DataObjects::ConstIterator end = objects->end();
+        for (DataObjects::ConstIterator i = objects->begin();  i != end;  ++i) {
             DataObject *object = *i;
             object->setParent(0);
             delete object;
@@ -92,14 +92,19 @@ public:
     }
 
 protected:
-    DataObjects &objects()
+    AggregatorList *objects()
     {
-        return *reinterpret_cast<DataObjects*>(&_objects);
+        return &_objects;
     }
 
-    const DataObjects &objects() const
+    DataObjects *dataObjects()
     {
-        return *reinterpret_cast<const DataObjects*>(&_objects);
+        return reinterpret_cast<DataObjects*>(&_objects);
+    }
+
+    const DataObjects *dataObjects() const
+    {
+        return reinterpret_cast<const DataObjects*>(&_objects);
     }
 
     // IModelList
@@ -125,10 +130,10 @@ protected:
 
         void removeAt(int i)
         {
-            DataObjects &a_objects = a()->objects();
-            DataObject *dataObject = a_objects.at(i);
+            DataObjects *a_objects = a()->dataObjects();
+            DataObject *dataObject = a_objects->at(i);
             dataObject->setParent(0);
-            a_objects.removeAt(i);
+            a_objects->removeAt(i);
         }
 
         void clear()
@@ -139,17 +144,17 @@ protected:
         // IModelItem
         int count() const
         {
-            return a()->objects().count();
+            return a()->objects()->count();
         }
 
         int indexOf(const IModelItem *item) const
         {
-            return a()->objects().indexOf(cast<DataObject>(item->aggregator()));
+            return a()->objects()->indexOf(cast<DataObject>(item->aggregator()));
         }
 
         IModelItem *at(int i) const
         {
-            return query<IModelItem>(a()->objects().at(i));
+            return query<IModelItem>(a()->objects()->at(i));
         }
 
         IModelItem *findItem(int itemType) const { Q_ASSERT(0); return 0; }

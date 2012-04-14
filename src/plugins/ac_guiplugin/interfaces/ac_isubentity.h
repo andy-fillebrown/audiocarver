@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_IENTITYITEM_H
-#define AC_IENTITYITEM_H
+#ifndef AC_ISUBENTITYITEM_H
+#define AC_ISUBENTITYITEM_H
 
 #include "mi_iaggregate.h"
 
@@ -25,11 +25,11 @@ class IParentEntity;
 class ISubEntity : public IAggregate
 {
 public:
-    Q_I_DERIVED__UNKNOWN__INTERFACE_TYPE(ISubEntity, IAggregate)
+    Q_IUNKNOWN_DERIVED__INTERFACETYPE(ISubEntity, IAggregate)
 
     virtual IParentEntity *parentEntity() const = 0;
-    virtual int sceneType() const = 0;
     virtual bool isCurve() const = 0;
+    virtual int sceneType() const = 0;
 };
 
-#endif // AC_IGRIP_H
+#endif // AC_ISUBENTITYITEM_H
