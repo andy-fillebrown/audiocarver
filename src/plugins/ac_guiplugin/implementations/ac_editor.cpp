@@ -17,19 +17,24 @@
 
 #include "ac_editor.h"
 
+#include <ac_noteselectionmodel.h>
+#include <ac_trackselectionmodel.h>
 #include <ac_undo.h>
+#include <ac_viewmanager.h>
 
 #include <ac_ifactory.h>
 #include <ac_ifiler.h>
-#include <ac_noteselectionmodel.h>
 #include <ac_trackmodel.h>
-#include <ac_trackselectionmodel.h>
 
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
+#include <icore.h>
+#include <mainwindow.h>
+
 #include <QApplication>
 #include <QClipboard>
+#include <QMessageBox>
 
 class EditorPrivate
 {
@@ -72,6 +77,7 @@ void Editor::undo()
             && d->undoStack->canUndo()) {
         d->undoing = true;
         d->undoStack->undo();
+        emit commandUndone();
         d->undoing = false;
     }
 }
@@ -83,6 +89,7 @@ void Editor::redo()
             && d->undoStack->canRedo()) {
         d->undoing = true;
         d->undoStack->redo();
+        emit commandRedone();
         d->undoing = false;
     }
 }
@@ -167,8 +174,11 @@ void Editor::paste()
             itemType = reader->nextItemType();
         }
     } else if (Ac::NoteItem == itemType) {
+        QList<IModelItem*> created_notes;
         QList<IModelItem*> recordingTracks = model->findItems(Ac::TrackItem, Ac::RecordingRole, true);
-        if (!recordingTracks.isEmpty()) {
+        if (recordingTracks.isEmpty())
+            QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "No tracks are recording.");
+        else {
             QModelIndexList noteListIndexes;
             foreach (IModelItem *track, recordingTracks)
                 noteListIndexes.append(model->indexFromItem(track->findModelItemList(Ac::NoteItem)));
@@ -178,12 +188,22 @@ void Editor::paste()
                 while (Mi::UnknownItem != itemType) {
                     Q_ASSERT(Ac::NoteItem == itemType);
                     IModelItem *note = objectFactory->create(Ac::NoteItem);
+                    created_notes.append(note);
                     cloneReader->read(note);
                         model->insertItem(note, model->rowCount(noteListIndex), noteListIndex);
                     itemType = cloneReader->nextItemType();
                 }
                 delete cloneReader;
             }
+            QItemSelection ss;
+            foreach (IModelItem *note_item, created_notes) {
+                const QModelIndex note_index = model->indexFromItem(note_item);
+                ss.select(note_index, note_index);
+            }
+            NoteSelectionModel *note_ss_model = NoteSelectionModel::instance();
+            note_ss_model->clear();
+            note_ss_model->select(ss, QItemSelectionModel::Select);
+            ViewManager::instance()->startGripDrag();
         }
     } else
         Q_ASSERT(false);
@@ -193,6 +213,7 @@ void Editor::paste()
 
 void Editor::selectAll()
 {
+    ViewManager::instance()->selectAllGrips();
 }
 
 QUndoStack *Editor::undoStack() const

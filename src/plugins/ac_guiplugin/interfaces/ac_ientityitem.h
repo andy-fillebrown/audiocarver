@@ -23,6 +23,7 @@
 #include <mi_iunknown.h>
 
 class IEntity;
+class IGripItem;
 
 class IEntityItem : public IUnknown
 {
@@ -37,6 +38,7 @@ public:
     virtual void updatePoints() = 0;
     virtual void finishUpdatingPoints() = 0;
     virtual void updateCurveTypes() = 0;
+    virtual QList<IGripItem*> gripItems() const = 0;
 };
 
 #endif // AC_IGRIP_H

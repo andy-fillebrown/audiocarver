@@ -90,6 +90,11 @@ public:
         mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
     }
 
+    ~MainWidgetPrivate()
+    {
+        delete viewManager;
+    }
+
     int separatorHeight() const
     {
         return q->style()->pixelMetric(QStyle::PM_SplitterWidth);

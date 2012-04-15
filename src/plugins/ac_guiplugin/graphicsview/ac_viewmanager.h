@@ -68,6 +68,9 @@ public slots:
     void finishInsertingPoints();
     void cancelPointInsertion();
 
+    void selectAllGrips();
+    void startGripDrag();
+
 signals:
     void scoreLengthChanged();
     void viewPositionChanged(int role);

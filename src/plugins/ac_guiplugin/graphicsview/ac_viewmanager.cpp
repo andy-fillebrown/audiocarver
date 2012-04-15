@@ -162,6 +162,11 @@ public:
     ~ViewManagerPrivate()
     {
         delete undoCmd;
+        delete controlLabelView;
+        delete pitchLabelView;
+        delete timeLabelView;
+        delete controlView;
+        delete pitchView;
     }
 
     void updateViewVariables()
@@ -264,6 +269,7 @@ ViewManager::ViewManager(QWidget *widget)
 
 ViewManager::~ViewManager()
 {
+    cancelPointInsertion();
     delete d;
 }
 
@@ -478,22 +484,34 @@ void ViewManager::modelReset()
 
 void ViewManager::startInsertingPoints()
 {
+    IEditor::instance()->startCreating();
     if (NoteSelectionModel::instance()->selection().isEmpty())
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "No notes are selected.");
-    else {
+    else
         d->pitchView->startInsertingPoints();
-        d->controlView->startInsertingPoints();
-    }
 }
 
 void ViewManager::finishInsertingPoints()
 {
+    IEditor::instance()->finishCreating();
     d->pitchView->finishInsertingPoints();
-    d->controlView->finishInsertingPoints();
 }
 
 void ViewManager::cancelPointInsertion()
 {
+    IEditor *editor = IEditor::instance();
+    if (!editor)
+        return;
+    editor->finishCreating();
     d->pitchView->cancelPointInsertion();
-    d->controlView->cancelPointInsertion();
+}
+
+void ViewManager::selectAllGrips()
+{
+    d->pitchView->selectAllGrips();
+}
+
+void ViewManager::startGripDrag()
+{
+    d->pitchView->startGripDrag();
 }

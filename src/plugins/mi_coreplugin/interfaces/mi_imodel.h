@@ -86,6 +86,7 @@ public:
 signals:
     void pointsChanged(const QModelIndex &index);
     void dataAboutToBeChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void modelAboutToBeDestroyed();
 
 private slots:
     void deleteOrphans();

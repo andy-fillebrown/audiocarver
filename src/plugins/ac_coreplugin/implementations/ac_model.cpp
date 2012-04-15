@@ -48,6 +48,7 @@ Model::Model()
 
 Model::~Model()
 {
+    emit modelAboutToBeDestroyed();
     delete d;
 }
 

@@ -41,6 +41,7 @@ public:
     void updatePoints();
     void finishUpdatingPoints();
     void updateCurveTypes();
+    QList<IGripItem*> gripItems() const;
 
     // IUnknown
     void *query(int type) const
