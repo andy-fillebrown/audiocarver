@@ -15,22 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLCURVEDATA_H
-#define AC_CONTROLCURVEDATA_H
+#ifndef AC_CONTROLCURVEDATAOBJECT_H
+#define AC_CONTROLCURVEDATAOBJECT_H
 
-#include "ac_curvedataobject.h"
+#include "ac_abstractcurvedataobject.h"
 
-class AC_CORE_EXPORT ControlCurveData : public CurveDataObject
+class AC_CORE_EXPORT ControlCurveDataObject : public AbstractCurveDataObject
 {
-    friend class DataObjectFactory;
+    friend class CoreDataObjectFactory;
 
-    Q_IAGGREGATOR_DERIVED(ControlCurveData, CurveDataObject)
+    Q_IAGGREGATOR_DERIVED(ControlCurveDataObject, AbstractCurveDataObject)
 
     int _controlType;
     Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
 
 protected:
-    ControlCurveData()
+    ControlCurveDataObject()
         :   _controlType(-1)
     {}
 
@@ -106,4 +106,4 @@ protected:
     }
 };
 
-#endif // AC_CONTROLCURVEDATA_H
+#endif // AC_CONTROLCURVEDATAOBJECT_H

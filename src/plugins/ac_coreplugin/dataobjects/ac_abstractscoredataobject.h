@@ -15,76 +15,66 @@
 **
 **************************************************************************/
 
-#ifndef AC_CURVEDATAOBJECT_H
-#define AC_CURVEDATAOBJECT_H
+#ifndef AC_ABSTRACTSCOREDATAOBJECT_H
+#define AC_ABSTRACTSCOREDATAOBJECT_H
 
 #include "mi_dataobject.h"
-#include "ac_ipoints.h"
 
-#include <ac_point.h>
+#include <ac_pitchcurvedataobject.h>
 
-#include <QStack>
+#include <mi_dataobjectlist.h>
 
-class AC_CORE_EXPORT CurveDataObject : public DataObject
+class AC_CORE_EXPORT AbstractScoreDataObject : public DataObject
 {
-    Q_IAGGREGATOR_DERIVED(CurveDataObject, DataObject)
+    Q_IAGGREGATOR_DERIVED(AbstractScoreDataObject, DataObject)
 
-    QStack<PointList> _pointsStack;
+    qreal _volume;
     Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
 
+    IAggregator *_pitchCurve;
+    IAggregator *_controlCurves;
+    Q_IAGGREGATOR_DERIVED__ITEMCOUNT(2)
+
 protected:
-    CurveDataObject()
+    AbstractScoreDataObject()
+        :   _volume(0.0f)
+        ,   _pitchCurve(0)
+        ,   _controlCurves(0)
     {}
 
-    virtual void conformPoints() = 0;
+    ~AbstractScoreDataObject();
 
-    PointList &points()
+    virtual qreal length() const = 0;
+    virtual void updatePoints() {}
+
+    qreal volume() const
     {
-        return _pointsStack.top();
+        return _volume;
     }
 
-    void pushPoints(const PointList &points);
-    void popPoints();
-    bool setPoints(const PointList &points);
+    bool setVolume(qreal volume);
 
-    // IPoints
-    class Points : public IPoints
+    PitchCurveDataObject *pitchCurve() const
     {
-        Q_IAGGREGATE_BASE(Points)
+        return cast<PitchCurveDataObject>(_pitchCurve);
+    }
 
-        const PointList &points() const
-        {
-            return a()->points();
-        }
-
-        void pushPoints(const PointList &points)
-        {
-            a()->pushPoints(points);
-        }
-
-        void popPoints()
-        {
-            a()->popPoints();
-        }
-
-        void setPoints(const PointList &points)
-        {
-            a()->setPoints(points);
-        }
-    };
+    DataObjectList *controlCurves() const
+    {
+        return cast<DataObjectList>(_controlCurves);
+    }
 
     // IModelData
     class ModelData : public Base::ModelData
     {
-    public:
         Q_IMODELDATA_DERIVED
         Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
 
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::PointsRole:
-                return QVariant::fromValue(a()->points());
+            case Ac::VolumeRole:
+                return a()->volume();
             default:
                 return Base::getVariant(role);
             }
@@ -93,20 +83,25 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::PointsRole:
-                return a()->setPoints(qvariant_cast<PointList>(data));
+            case Ac::VolumeRole:
+                return a()->setVolume(qvariant_cast<qreal>(data));
             default:
                 return Base::setVariant(data, role);
             }
         }
     };
 
+    // IModelItem
+    class ModelItem : public Base::ModelItem
+    {
+        Q_IMODELITEM_DERIVED
+        Q_IMODELITEM_DERIVED__FUNCTIONS
+    };
+
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case I::IPoints:
-            return Q_NEW_AGGREGATE(Points);
         case I::IModelData:
             return Q_NEW_AGGREGATE(ModelData);
         default:
@@ -115,4 +110,4 @@ protected:
     }
 };
 
-#endif // AC_CURVEDATAOBJECT_H
+#endif // AC_ABSTRACTSCOREDATAOBJECT_H

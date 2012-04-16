@@ -15,18 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATAOBJECTFACTORY_H
-#define AC_DATAOBJECTFACTORY_H
+#ifndef AC_GUIDATAOBJECTFACTORY_H
+#define AC_GUIDATAOBJECTFACTORY_H
 
-#include "mi_idataobjectfactory.h"
+#include "ac_coredataobjectfactory.h"
 
-#include <ac_coreglobal.h>
-
-class AC_CORE_EXPORT DataObjectFactory : public IDataObjectFactory
+class GuiDataObjectFactory : public CoreDataObjectFactory
 {
 protected:
+    // IDataObjectFactory
     IAggregator *createObject(int itemType);
-    IAggregator *createObjectList(int itemType, int listType = Mi::ListItem);
 
 public:
     // IUnknown
@@ -41,4 +39,4 @@ public:
     }
 };
 
-#endif // AC_DATAOBJECTFACTORY_H
+#endif // AC_GUIDATAOBJECTFACTORY_H

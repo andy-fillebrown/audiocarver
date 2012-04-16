@@ -3,6 +3,7 @@ SOURCE_FILES = \
     coreutils \
     mathutils \
     scopeddatachange \
+    scopedparentchange \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

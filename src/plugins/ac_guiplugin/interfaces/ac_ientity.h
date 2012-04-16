@@ -20,6 +20,8 @@
 
 #include "mi_iaggregate.h"
 
+#include <ac_guinamespace.h>
+
 class IEntity : public IAggregate
 {
 public:

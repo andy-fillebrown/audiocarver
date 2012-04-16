@@ -17,7 +17,7 @@
 
 #include "ac_coreplugin.h"
 
-#include <ac_dataobjectfactory.h>
+#include <ac_coredataobjectfactory.h>
 //#include <ac_database.h>
 //#include <ac_model.h>
 
@@ -78,21 +78,26 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Mi::appendItemDataRole(Ac::PitchSnapRole, "pitchSnap");
     Mi::appendItemDataRole(Ac::ControlSnapRole, "controlSnap");
 
-    new DataObjectFactory;
+    new CoreDataObjectFactory;
 //    addAutoReleasedObject(new FilerFactory);
 //    addAutoReleasedObject(new Database);
 //    addAutoReleasedObject(new Model);
 
 #ifdef QT_DEBUG
     return test();
-#endif
+#else
     return true;
+#endif
+}
+
+void AcCorePlugin::extensionsInitialized()
+{
+#ifdef QT_DEBUG
+    test();
+#endif
 }
 
 Q_EXPORT_PLUGIN(AcCorePlugin)
-
-
-
 
 #ifdef QT_DEBUG
 

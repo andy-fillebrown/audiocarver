@@ -15,41 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUINAMESPACE_H
-#define AC_GUINAMESPACE_H
+#include "ac_abstractcurvegraphicsobject.h"
 
-#include <ac_corenamespace.h>
+#include <ac_ientity.h>
 
-namespace I {
+IAggregate *CurveSubEntity::init()
+{
+    return this;
+}
 
-enum AcGuiInterfaces {
-    IEntity = AcCoreInterfaceCount,
-    IParentEntity,
-    ISubEntity,
-    IPointsItem,
-    IGripItem,
-    IPlayCursor,
-    AcGuiInterfaceCount
-};
+CurveSubEntity::~CurveSubEntity()
+{}
 
-} // namespace I
+IAggregate *CurveEntity::init()
+{
+    _graphicsCurveItem = new GraphicsCurveItem;
+    _graphicsCurveItem->setEntity(this);
+    return this;
+}
 
-namespace Ac {
-
-enum SubEntityCurveFlags {
-    NonCurveSubEntity = 0x0,
-    CurveSubEntity = 0x1
-};
-
-enum SceneType {
-    PitchScene,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
-};
-
-} // namespace Ac
-
-#endif // AC_GUINAMESPACE_H
+CurveEntity::~CurveEntity()
+{
+    delete _graphicsCurveItem;
+}

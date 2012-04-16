@@ -26,7 +26,7 @@ class AcCorePlugin : public ExtensionSystem::IPlugin
 
 public:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+    void extensionsInitialized();
 };
 
 #endif // AC_COREPLUGIN_H

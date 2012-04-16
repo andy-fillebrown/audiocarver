@@ -20,24 +20,4 @@
 
 #include <mi_coredefs.h>
 
-// ISUBENTITY
-
-#define Q_ISUBENTITY(ClassIsCurve, ClassSceneType) \
-    Q_IAGGREGATE_BASE(SubEntity) \
-    \
-        IParentEntity *parentEntity() const \
-        { \
-            return query<IParentEntity>(a()->parent()); \
-        } \
-    \
-        bool isCurve() const \
-        { \
-            return ClassIsCurve; \
-        } \
-    \
-        int sceneType() const \
-        { \
-            return ClassSceneType; \
-        }
-
 #endif // AC_GUIDEFS_H

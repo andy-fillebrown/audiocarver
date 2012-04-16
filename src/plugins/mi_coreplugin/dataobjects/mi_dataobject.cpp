@@ -20,6 +20,7 @@
 #include <mi_imodel.h>
 #include <mi_iorphanage.h>
 #include <mi_scopeddatachange.h>
+#include <mi_scopedparentchange.h>
 
 Q_IAGGREGATOR_INIT_ROLES(DataObject) =
 {
@@ -60,6 +61,7 @@ void DataObject::setParent(DataObject *parent)
 {
     if (_parent == parent)
         return;
+    Q_SCOPED_PARENT_CHANGE(())
     if (!parent) {
         IOrphanage *orphanage = IOrphanage::instance();
         if (orphanage)
@@ -91,6 +93,34 @@ void DataObject::dataChanged(const DataObject *dataObject, int role, Mi::Notific
                 const IModelData *model_data = const_query<IModelData>(this);
                 if (model_data)
                     model->endChangeData(model_data, role);
+            }
+        }
+    }
+}
+
+void DataObject::parentAboutToBeChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags)
+{
+    if (this == dataObject) {
+        if (Mi::NotifyModel & notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model) {
+                const IModelItem *model_item = const_query<IModelItem>(this);
+                if (model_item)
+                    model->beginChangeParent(model_item);
+            }
+        }
+    }
+}
+
+void DataObject::parentChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags)
+{
+    if (this == dataObject) {
+        if (Mi::NotifyModel & notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model) {
+                const IModelItem *model_item = const_query<IModelItem>(this);
+                if (model_item)
+                    model->endChangeParent(model_item);
             }
         }
     }

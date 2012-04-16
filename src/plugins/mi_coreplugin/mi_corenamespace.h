@@ -24,7 +24,7 @@
 
 namespace I {
 
-enum MiInterfaces {
+enum MiCoreInterfaces {
     IAggregate,
     IAggregator,
     IDataObjectFactory,
@@ -34,7 +34,7 @@ enum MiInterfaces {
     IModelList,
     IObject,
     IOrphanage,
-    MiInterfaceCount
+    MiCoreInterfaceCount
 };
 
 } // namespace I

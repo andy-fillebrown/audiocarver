@@ -1,10 +1,11 @@
 
 SOURCE_FILES = \
-    controlcurvegraphics \
+    abstractcurve \
+    controlcurve \
 #    gridline \
 #    gridsettings \
-#    note \
-    pitchcurvegraphics \
+    note \
+    pitchcurve \
 #    projectsettings \
 #    score \
 #    track \
@@ -12,8 +13,9 @@ SOURCE_FILES = \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
+SUFFIX = graphicsobject
 for(file, SOURCE_FILES) {
-    name = $${SOURCE_FILE_PREFIX}$$file
+    name = $${SOURCE_FILE_PREFIX}$$file$$SUFFIX
     header = $${name}.h
     source = $${name}.cpp
     exists($$header): HEADERS *= $$DIR/$$header

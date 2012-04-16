@@ -15,39 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef MI_SCOPEDDATACHANGE_H
-#define MI_SCOPEDDATACHANGE_H
+#ifndef MI_SCOPEDPARENTCHANGE_H
+#define MI_SCOPEDPARENTCHANGE_H
 
 #include <mi_dataobject.h>
 
 class DataObject;
 
-class ScopedDataChange
+class ScopedParentChange
 {
     DataObject *_dataObject;
-    int _role;
     Mi::NotificationFlags _notificationFlags;
 
 public:
-    ScopedDataChange(DataObject *dataObject)
+    ScopedParentChange(DataObject *dataObject)
         :   _dataObject(dataObject)
     {}
 
-    void init(int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+    void init(Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
     {
-        _role = role;
         _notificationFlags = notificationFlags;
-        _dataObject->dataAboutToBeChanged(_dataObject, _role, _notificationFlags);
+        _dataObject->parentAboutToBeChanged(_dataObject, _notificationFlags);
     }
 
-    ~ScopedDataChange()
+    ~ScopedParentChange()
     {
-        _dataObject->dataChanged(_dataObject, _role, _notificationFlags);
+        _dataObject->parentChanged(_dataObject, _notificationFlags);
     }
 };
 
-#define Q_SCOPED_DATA_CHANGE(Params) \
-    ScopedDataChange data_change_notifier(this); \
-    data_change_notifier.init Params ;
+#define Q_SCOPED_PARENT_CHANGE(Params) \
+    ScopedParentChange parent_change_notifier(this); \
+    parent_change_notifier.init Params ;
 
-#endif // MI_SCOPEDDATACHANGE_H
+#endif // MI_SCOPEDPARENTCHANGE_H

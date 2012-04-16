@@ -15,40 +15,47 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLCURVEGRAPHICS_H
-#define AC_CONTROLCURVEGRAPHICS_H
+#ifndef AC_CONTROLCURVEGRAPHICSOBJECT_H
+#define AC_CONTROLCURVEGRAPHICSOBJECT_H
 
-#include "ac_controlcurvedata.h"
-#include "ac_isubentity.h"
+#include "ac_controlcurvedataobject.h"
+#include "ac_abstractcurvegraphicsobject.h"
 
 #include <ac_guidefs.h>
 #include <ac_guinamespace.h>
 #include <ac_iparententity.h>
 
-class ControlCurveGraphics : public ControlCurveData
+class ControlCurveGraphicsObject : public ControlCurveDataObject
 {
-    Q_IAGGREGATOR_DERIVED(ControlCurveGraphics, ControlCurveData)
+    friend class GuiDataObjectFactory;
+
+    Q_IAGGREGATOR_DERIVED(ControlCurveGraphicsObject, ControlCurveDataObject)
 
 protected:
-    ControlCurveGraphics()
+    ControlCurveGraphicsObject()
+        :   _entity(0)
     {}
 
-    // ISubEntity
-    class SubEntity : public ISubEntity
-    {
-        Q_ISUBENTITY(Ac::IsACurve, Ac::ControlScene)
-    };
+    // DataObject
+    void parentChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags);
 
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
+        case I::IEntity:
+            _entity = new CurveEntity(this);
+            _entity->init();
+            return appendAggregate(_entity);
         case I::ISubEntity:
-            return Q_NEW_AGGREGATE(SubEntity);
+            return Q_NEW_AGGREGATE(ControlCurveSubEntity);
         default:
             return Base::createAggregate(interfaceType);
         }
     }
+
+private:
+    CurveEntity *_entity;
 };
 
-#endif // AC_CONTROLCURVEGRAPHICS_H
+#endif // AC_CONTROLCURVEGRAPHICSOBJECT_H

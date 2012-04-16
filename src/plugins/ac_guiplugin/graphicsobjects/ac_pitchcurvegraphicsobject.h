@@ -15,51 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHCURVEDATA_H
-#define AC_PITCHCURVEDATA_H
+#ifndef AC_PITCHCURVEGRAPHICSOBJECT_H
+#define AC_PITCHCURVEGRAPHICSOBJECT_H
 
-#include "ac_curvedataobject.h"
+#include "ac_abstractcurvegraphicsobject.h"
+#include "ac_pitchcurvedataobject.h"
 
-class AC_CORE_EXPORT PitchCurveData : public CurveDataObject
+class AC_CORE_EXPORT PitchCurveGraphicsObject : public PitchCurveDataObject
 {
-    friend class DataObjectFactory;
+    friend class GuiDataObjectFactory;
 
-    Q_IAGGREGATOR_DERIVED(PitchCurveData, CurveDataObject)
+    Q_IAGGREGATOR_DERIVED(PitchCurveGraphicsObject, PitchCurveDataObject)
 
 protected:
-    PitchCurveData()
+    PitchCurveGraphicsObject()
+        :   _entity(0)
     {}
-
-    // Curve
-    void conformPoints()
-    {
-        PointList &pts = points();
-        qSort(pts);
-        const int n = pts.count();
-        for (int i = 0;  i < n;  ++i) {
-            Point &pt = pts[i];
-            pt.pos.rx() = qMax(qreal(0.0f), pt.pos.x());
-            pt.pos.ry() = qBound(qreal(0.0f), pt.pos.y(), qreal(127.0f));
-        }
-    }
-
-    // IModelItem
-    class ModelItem : public Base::ModelItem
-    {
-        Q_IMODELITEM_DERIVED
-        Q_IMODELITEM_DERIVED__ITEMTYPE(Ac::PitchCurveItem)
-    };
 
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case I::IModelItem:
-            return Q_NEW_AGGREGATE(ModelItem);
+        case I::IEntity:
+            _entity = new CurveEntity(this);
+            _entity->init();
+            return appendAggregate(_entity);
+        case I::ISubEntity:
+            return Q_NEW_AGGREGATE(PitchCurveSubEntity);
         default:
             return Base::createAggregate(interfaceType);
         }
     }
+
+private:
+    CurveEntity *_entity;
 };
 
-#endif // AC_PITCHCURVEDATA_H
+#endif // AC_PITCHCURVEGRAPHICS_H

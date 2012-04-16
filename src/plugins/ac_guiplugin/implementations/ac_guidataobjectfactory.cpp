@@ -15,35 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_controlcurvedata.h"
+#include "ac_guidataobjectfactory.h"
 
-#include <mi_scopeddatachange.h>
+#include <ac_controlcurvegraphicsobject.h>
+#include <ac_notegraphicsobject.h>
+#include <ac_pitchcurvegraphicsobject.h>
 
-Q_IAGGREGATOR_INIT_ROLES(ControlCurveData) =
+IAggregator *GuiDataObjectFactory::createObject(int itemType)
 {
-Ac::ControlTypeRole
-};
-
-IAggregator *ControlCurveData::init()
-{
-    return Base::init();
-}
-
-IAggregate *ControlCurveData::ModelData::init()
-{
-    return Base::init();
-}
-
-IAggregate *ControlCurveData::ModelItem::init()
-{
-    return Base::init();
-}
-
-bool ControlCurveData::setControlType(int controlType)
-{
-    if (_controlType == controlType)
-        return false;
-    Q_SCOPED_DATA_CHANGE((Ac::ControlTypeRole))
-    _controlType = controlType;
-    return true;
+    switch (itemType) {
+    case Ac::ControlCurveItem:
+        return Q_NEW_DATAOBJECT(ControlCurveGraphicsObject);
+    case Ac::NoteItem:
+        return Q_NEW_DATAOBJECT(NoteGraphicsObject);
+    case Ac::PitchCurveItem:
+        return Q_NEW_DATAOBJECT(PitchCurveGraphicsObject);
+    default:
+        return CoreDataObjectFactory::createObject(itemType);
+    }
 }

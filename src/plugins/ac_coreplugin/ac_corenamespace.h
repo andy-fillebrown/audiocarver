@@ -24,19 +24,13 @@
 
 namespace I {
 
-enum AcInterfaces {
-    IEntity = MiInterfaceCount,
-    IParentEntity,
-    ISubEntity,
-    IPoints,
-    IPointsItem,
-    IGripItem,
+enum AcCoreInterfaces {
+    IPoints = MiCoreInterfaceCount,
     IReader,
     IWriter,
     IFileFiler,
     ICopyFiler,
-    IPlayCursor,
-    AcInterfaceCount
+    AcCoreInterfaceCount
 };
 
 } // namespace I

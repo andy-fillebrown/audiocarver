@@ -15,41 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUINAMESPACE_H
-#define AC_GUINAMESPACE_H
+#ifndef AC_COREDATAOBJECTFACTORY_H
+#define AC_COREDATAOBJECTFACTORY_H
 
-#include <ac_corenamespace.h>
+#include "mi_idataobjectfactory.h"
 
-namespace I {
+#include <ac_coreglobal.h>
 
-enum AcGuiInterfaces {
-    IEntity = AcCoreInterfaceCount,
-    IParentEntity,
-    ISubEntity,
-    IPointsItem,
-    IGripItem,
-    IPlayCursor,
-    AcGuiInterfaceCount
+class AC_CORE_EXPORT CoreDataObjectFactory : public IDataObjectFactory
+{
+protected:
+    // IDataObjectFactory
+    IAggregator *createObject(int itemType);
+    IAggregator *createObjectList(int itemType, int listType = Mi::ListItem);
+
+public:
+    // IUnknown
+    void *queryInterface(int interfaceType)
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
+
+    const void *queryInterface(int interfaceType) const
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
 };
 
-} // namespace I
-
-namespace Ac {
-
-enum SubEntityCurveFlags {
-    NonCurveSubEntity = 0x0,
-    CurveSubEntity = 0x1
-};
-
-enum SceneType {
-    PitchScene,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
-};
-
-} // namespace Ac
-
-#endif // AC_GUINAMESPACE_H
+#endif // AC_COREDATAOBJECTFACTORY_H

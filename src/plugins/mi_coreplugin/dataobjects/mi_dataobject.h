@@ -68,8 +68,8 @@ public:
 
     virtual void dataAboutToBeChanged(const DataObject *dataObject, int role, Mi::NotificationFlags notificationFlags);
     virtual void dataChanged(const DataObject *dataObject, int role, Mi::NotificationFlags notificationFlags);
-    virtual void parentAboutToBeChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags) {}
-    virtual void parentChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags) {}
+    virtual void parentAboutToBeChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags);
+    virtual void parentChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags);
 
 protected:
     // IModelData

@@ -7,7 +7,7 @@ DIRS = \
 #    dialogs \
     graphicsobjects \
     graphicsview \
-#    implementations \
+    implementations \
     interfaces \
 #    itemviews \
 #    models \

@@ -15,24 +15,27 @@
 **
 **************************************************************************/
 
-#include "ac_dataobjectfactory.h"
+#include "ac_coredataobjectfactory.h"
 
-#include <ac_controlcurvedata.h>
-#include <ac_pitchcurvedata.h>
+#include <ac_controlcurvedataobject.h>
+#include <ac_notedataobject.h>
+#include <ac_pitchcurvedataobject.h>
 
-IAggregator *DataObjectFactory::createObject(int itemType)
+IAggregator *CoreDataObjectFactory::createObject(int itemType)
 {
     switch (itemType) {
     case Ac::ControlCurveItem:
-        return Q_NEW_DATAOBJECT(ControlCurveData);
+        return Q_NEW_DATAOBJECT(ControlCurveDataObject);
+    case Ac::NoteItem:
+        return Q_NEW_DATAOBJECT(NoteDataObject);
     case Ac::PitchCurveItem:
-        return Q_NEW_DATAOBJECT(PitchCurveData);
+        return Q_NEW_DATAOBJECT(PitchCurveDataObject);
     default:
         return 0;
     }
 }
 
-IAggregator *DataObjectFactory::createObjectList(int itemType, int listType)
+IAggregator *CoreDataObjectFactory::createObjectList(int itemType, int listType)
 {
     switch (listType) {
     case Mi::ListItem:

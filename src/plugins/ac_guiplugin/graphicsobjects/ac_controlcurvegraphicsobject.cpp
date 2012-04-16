@@ -15,14 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_pitchcurvegraphics.h"
+#include "ac_controlcurvegraphicsobject.h"
 
-IAggregator *PitchCurveGraphics::init()
+#include <mi_scopeddatachange.h>
+
+IAggregator *ControlCurveGraphicsObject::init()
 {
     return Base::init();
 }
 
-IAggregate *PitchCurveGraphics::SubEntity::init()
-{
-    return this;
-}
+void ControlCurveGraphicsObject::parentChanged(const DataObject *dataObject, Mi::NotificationFlags notificationFlags)
+{}

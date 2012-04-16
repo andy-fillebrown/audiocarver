@@ -15,16 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_controlcurvegraphics.h"
+#include "ac_pitchcurvedataobject.h"
 
-#include <mi_scopeddatachange.h>
-
-IAggregator *ControlCurveGraphics::init()
+IAggregator *PitchCurveDataObject::init()
 {
     return Base::init();
 }
 
-IAggregate *ControlCurveGraphics::SubEntity::init()
+IAggregate *PitchCurveDataObject::ModelItem::init()
 {
-    return this;
+    return Base::init();
 }

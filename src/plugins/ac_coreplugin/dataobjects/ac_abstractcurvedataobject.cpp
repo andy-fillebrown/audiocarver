@@ -15,39 +15,39 @@
 **
 **************************************************************************/
 
-#include "ac_curvedataobject.h"
+#include "ac_abstractcurvedataobject.h"
 
 #include <mi_scopeddatachange.h>
 
-Q_IAGGREGATOR_INIT_ROLES(CurveDataObject) =
+Q_IAGGREGATOR_INIT_ROLES(AbstractCurveDataObject) =
 {
 Ac::PointsRole
 };
 
-IAggregator *CurveDataObject::init()
+IAggregator *AbstractCurveDataObject::init()
 {
     static PointList points;
     _pointsStack.push(points);
     return Base::init();
 }
 
-IAggregate *CurveDataObject::Points::init()
+IAggregate *AbstractCurveDataObject::Points::init()
 {
     return this;
 }
 
-IAggregate *CurveDataObject::ModelData::init()
+IAggregate *AbstractCurveDataObject::ModelData::init()
 {
     return Base::init();
 }
 
-void CurveDataObject::pushPoints(const PointList &points)
+void AbstractCurveDataObject::pushPoints(const PointList &points)
 {
     Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
     _pointsStack.push(points);
 }
 
-void CurveDataObject::popPoints()
+void AbstractCurveDataObject::popPoints()
 {
     if (1 == _pointsStack.count())
         return;
@@ -55,7 +55,7 @@ void CurveDataObject::popPoints()
     _pointsStack.pop();
 }
 
-bool CurveDataObject::setPoints(const PointList &points)
+bool AbstractCurveDataObject::setPoints(const PointList &points)
 {
     PointList new_pts = points;
     while (1 < _pointsStack.count())

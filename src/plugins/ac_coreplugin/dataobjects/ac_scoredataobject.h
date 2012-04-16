@@ -15,99 +15,116 @@
 **
 **************************************************************************/
 
-#ifndef AC_SCOREDATAOBJECT_H
-#define AC_SCOREDATAOBJECT_H
+#ifndef AC_SCORE_H
+#define AC_SCORE_H
 
-#include "mi_dataobject.h"
+#include <ac_scoreobject.h>
 
-#include <ac_pitchcurvedata.h>
+class GridSettings;
+class IPlayCursor;
+class ProjectSettings;
+class Track;
+class ViewSettings;
 
-#include <mi_dataobjectlist.h>
+class QGraphicsLineItem;
 
-class AC_CORE_EXPORT ScoreDataObject : public DataObject
+class QTimer;
+
+class Score;
+class ScorePrivate : public ScoreObjectPrivate
 {
-    Q_IAGGREGATOR_DERIVED(ScoreDataObject, DataObject)
+public:
+    qreal length;
+    qreal startTime;
+    qreal playCursorTime;
+    ObjectTList<Track> *tracks;
+    GridSettings *gridSettings;
+    ViewSettings *viewSettings;
+    ProjectSettings *projectSettings;
+    IPlayCursor *playCursorImplementation;
+    QGraphicsLineItem *timeLabelPlayCursor;
+    QGraphicsLineItem *pitchPlayCursor;
+    QGraphicsLineItem *controlPlayCursor;
+    QTimer *playCursorTimer;
 
-    qreal _volume;
-    Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
+    ScorePrivate(Score *q);
+    void init();
+    ~ScorePrivate();
 
-    IAggregator *_pitchCurve;
-    IAggregator *_controlCurves;
-    Q_IAGGREGATOR_DERIVED__ITEMCOUNT(2)
-
-protected:
-    ScoreDataObject()
-        :   _volume(0.0f)
-        ,   _pitchCurve(0)
-        ,   _controlCurves(0)
-    {}
-
-    ~ScoreDataObject();
-
-    virtual qreal length() const = 0;
-    virtual void updatePoints() {}
-
-    qreal volume() const
-    {
-        return _volume;
-    }
-
-    bool setVolume(qreal volume);
-
-    PitchCurveData *pitchCurve() const
-    {
-        return cast<PitchCurveData>(_pitchCurve);
-    }
-
-    DataObjectList *controlCurves() const
-    {
-        return cast<DataObjectList>(_controlCurves);
-    }
-
-    // IModelData
-    class ModelData : public Base::ModelData
-    {
-        Q_IMODELDATA_DERIVED
-        Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
-
-        QVariant getVariant(int role) const
-        {
-            switch (role) {
-            case Ac::VolumeRole:
-                return a()->volume();
-            default:
-                return Base::getVariant(role);
-            }
-        }
-
-        bool setVariant(const QVariant &data, int role)
-        {
-            switch (role) {
-            case Ac::VolumeRole:
-                return a()->setVolume(qvariant_cast<qreal>(data));
-            default:
-                return Base::setVariant(data, role);
-            }
-        }
-    };
-
-    // IModelItem
-    class ModelItem : public Base::ModelItem
-    {
-        Q_IMODELITEM_DERIVED
-        Q_IMODELITEM_DERIVED__FUNCTIONS
-    };
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IModelData:
-            return Q_NEW_AGGREGATE(ModelData);
-        default:
-            return Base::createAggregate(interfaceType);
-        }
-    }
+    void updateGraphicsParent() {}
+    void updateLength();
+    void setPlayCursorTime(qreal time);
 };
 
-#endif // AC_SCOREDATAOBJECT_H
+class AC_CORE_EXPORT Score : public ScoreObject
+{
+    Q_OBJECT
+    Q_PROPERTY(qreal length READ length WRITE setLength)
+    Q_PROPERTY(qreal startTime READ startTime WRITE setStartTime)
+
+public:
+    enum { Type = Ac::ScoreItem };
+    enum { ModelItemCount = ScoreObject::ModelItemCount + 4 };
+
+    explicit Score(QObject *parent = 0);
+
+    static Score *instance();
+
+    ObjectTList<Track> *tracks() const;
+    GridSettings *gridSettings() const;
+    ViewSettings *viewSettings() const;
+    ProjectSettings *projectSettings() const;
+
+    QGraphicsItem *sceneItem(int type) const;
+
+    void clear();
+
+    // Properties
+    qreal length() const;
+    void setLength(qreal length);
+    qreal startTime() const;
+    void setStartTime(qreal time);
+
+    qreal playCursorTime() const;
+    void setPlaybackTime(qreal time);
+    void highlightPlayCursor();
+    void unhighlightPlayCursor();
+
+    // IModelItem
+    int type() const { return Type; }
+    int modelItemCount() const { return ModelItemCount; }
+    int modelItemIndex(const IModelItem *item) const;
+    IModelItem *modelItemAt(int i) const;
+    IModelItem *findModelItem(int type) const;
+    IModelItem *findModelItemList(int type) const;
+
+    int persistentRoleAt(int i) const
+    {
+        switch (i - staticMetaObject.propertyOffset()) {
+        case 0:
+            return Ac::LengthRole;
+        case 1:
+            return Ac::StartTimeRole;
+        default:
+            return ScoreObject::persistentRoleAt(i);
+        }
+    }
+
+    QVariant data(int role) const;
+    bool setData(const QVariant &value, int role);
+
+signals:
+    void aboutToBeReset();
+    void reset();
+
+private slots:
+    void updatePlayCursor();
+
+private:
+    Q_DECLARE_PRIVATE(Score)
+
+    friend class GridSettingsPrivate;
+    friend class TrackPrivate;
+};
+
+#endif // AC_SCORE_H

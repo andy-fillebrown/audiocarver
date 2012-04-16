@@ -15,41 +15,9 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUINAMESPACE_H
-#define AC_GUINAMESPACE_H
+#include "ac_pitchcurvegraphicsobject.h"
 
-#include <ac_corenamespace.h>
-
-namespace I {
-
-enum AcGuiInterfaces {
-    IEntity = AcCoreInterfaceCount,
-    IParentEntity,
-    ISubEntity,
-    IPointsItem,
-    IGripItem,
-    IPlayCursor,
-    AcGuiInterfaceCount
-};
-
-} // namespace I
-
-namespace Ac {
-
-enum SubEntityCurveFlags {
-    NonCurveSubEntity = 0x0,
-    CurveSubEntity = 0x1
-};
-
-enum SceneType {
-    PitchScene,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
-};
-
-} // namespace Ac
-
-#endif // AC_GUINAMESPACE_H
+IAggregator *PitchCurveGraphicsObject::init()
+{
+    return Base::init();
+}
