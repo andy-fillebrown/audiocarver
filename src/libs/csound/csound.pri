@@ -300,8 +300,7 @@ unix: !macx: !freebsd* {
         ../../sndfile/src \
 
     LIBS *= \
-#        -ldl \
-        /usr/lib/libsndfile.so.1 \
+        -lsndfile
 }
 macx {
     DEFINES *= \
