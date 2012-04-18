@@ -24,7 +24,7 @@
 namespace Database {
 namespace Gui {
 
-class AC_CORE_EXPORT PitchCurve : public Database::PitchCurve
+class PitchCurve : public Database::PitchCurve
 {
     friend class ObjectFactory;
 

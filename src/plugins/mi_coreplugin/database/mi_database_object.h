@@ -75,7 +75,7 @@ public:
 
 protected:
     // IModelData
-    class ModelData : public IModelData
+    class MI_CORE_EXPORT ModelData : public IModelData
     {
         Q_IMODELDATA_BASE
         Q_IMODELDATA_BASE__ROLE_FUNCTIONS
@@ -106,7 +106,7 @@ protected:
     };
 
     // IModelItem
-    class ModelItem : public IModelItem
+    class MI_CORE_EXPORT ModelItem : public IModelItem
     {
         Q_IMODELITEM_BASE
         Q_IMODELITEM_BASE__ITEMTYPE(Mi::UnknownItem)

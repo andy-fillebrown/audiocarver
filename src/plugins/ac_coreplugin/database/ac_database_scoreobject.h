@@ -67,7 +67,7 @@ protected:
     }
 
     // IModelData
-    class ModelData : public Base::ModelData
+    class AC_CORE_EXPORT ModelData : public Base::ModelData
     {
         Q_IMODELDATA_DERIVED
         Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
@@ -94,7 +94,7 @@ protected:
     };
 
     // IModelItem
-    class ModelItem : public Base::ModelItem
+    class AC_CORE_EXPORT ModelItem : public Base::ModelItem
     {
         Q_IMODELITEM_DERIVED
         Q_IMODELITEM_DERIVED__FUNCTIONS

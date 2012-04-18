@@ -52,7 +52,7 @@ public:
 
 protected:
     // IPoints
-    class Points : public IPoints
+    class AC_CORE_EXPORT Points : public IPoints
     {
         Q_IAGGREGATE_BASE(Points)
 
@@ -78,7 +78,7 @@ protected:
     };
 
     // IModelData
-    class ModelData : public Base::ModelData
+    class AC_CORE_EXPORT ModelData : public Base::ModelData
     {
     public:
         Q_IMODELDATA_DERIVED

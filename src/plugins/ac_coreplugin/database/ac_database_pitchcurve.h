@@ -46,7 +46,7 @@ protected:
     }
 
     // IModelItem
-    class ModelItem : public Base::ModelItem
+    class AC_CORE_EXPORT ModelItem : public Base::ModelItem
     {
         Q_IMODELITEM_DERIVED
         Q_IMODELITEM_DERIVED__ITEMTYPE(Ac::PitchCurveItem)

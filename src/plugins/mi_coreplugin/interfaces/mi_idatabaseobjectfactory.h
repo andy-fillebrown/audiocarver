@@ -27,7 +27,7 @@ class IAggregator;
 class MI_CORE_EXPORT IDatabaseObjectFactory : public IUnknown
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IDatabaseObjectFactory, IUnknown)
+    Q_IUNKNOWN_BASE__INTERFACETYPE(IDatabaseObjectFactory)
 
     IDatabaseObjectFactory();
     static IDatabaseObjectFactory *instance();
