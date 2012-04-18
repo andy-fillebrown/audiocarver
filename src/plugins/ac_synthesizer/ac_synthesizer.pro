@@ -37,6 +37,7 @@ ORC_FILES = \
     instruments/saw.orc \
     instruments/sine.orc \
     instruments/sine--smooth-envelope.orc \
+    instruments/subtractive-synth-01.orc \
     instruments/square.orc \
     instruments/triangle.orc \
     instruments/wgbow.orc \
