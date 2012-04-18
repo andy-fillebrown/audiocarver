@@ -76,6 +76,9 @@ public:
         if (!sampleRate)
             sampleRate = device_info.preferredFormat().sampleRate();
 
+        if (sampleRate <= 0)
+            sampleRate = 44100;
+
         if (!controlRate || (sampleRate % controlRate))
             controlRate = Ac::defaultControlRate(sampleRate);
 
