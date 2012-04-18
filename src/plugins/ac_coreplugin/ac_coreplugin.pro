@@ -1,8 +1,6 @@
 TARGET_PREFIX = Ac
 TARGET_NAME = CorePlugin
 
-#QT -= gui
-
 TEMPLATE = lib
 
 load(../../plugin.prf)

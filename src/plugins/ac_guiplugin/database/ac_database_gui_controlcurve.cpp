@@ -15,39 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef MI_SCOPEDPARENTCHANGE_H
-#define MI_SCOPEDPARENTCHANGE_H
+#include "ac_database_gui_controlcurve.h"
 
-#include <mi_database_object.h>
+#include <mi_scopeddatachange.h>
 
 namespace Database {
+namespace Gui {
 
-class ScopedParentChange
+IAggregator *ControlCurve::init()
 {
-    Object *_object;
-    Mi::NotificationFlags _notificationFlags;
+    return Base::init();
+}
 
-public:
-    ScopedParentChange(Object *object)
-        :   _object(object)
-    {}
+void ControlCurve::parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
+{}
 
-    void init(Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
-    {
-        _notificationFlags = notificationFlags;
-        _object->parentAboutToBeChanged(_object, _notificationFlags);
-    }
-
-    ~ScopedParentChange()
-    {
-        _object->parentChanged(_object, _notificationFlags);
-    }
-};
-
+} // namespace Gui
 } // namespace Database
-
-#define Q_SCOPED_PARENT_CHANGE(Params) \
-    ScopedParentChange parent_change_notifier(this); \
-    parent_change_notifier.init Params ;
-
-#endif // MI_SCOPEDPARENTCHANGE_H

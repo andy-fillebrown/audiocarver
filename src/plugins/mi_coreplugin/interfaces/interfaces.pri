@@ -1,7 +1,7 @@
 
 SOURCE_FILES = \
 #    idatabase \
-    idataobjectfactory \
+    idatabaseobjectfactory \
     iaggregate \
     iaggregator \
     imodel \

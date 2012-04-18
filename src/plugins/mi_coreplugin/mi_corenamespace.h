@@ -27,7 +27,7 @@ namespace I {
 enum MiCoreInterfaces {
     IAggregate,
     IAggregator,
-    IDataObjectFactory,
+    IDatabaseObjectFactory,
     IModel,
     IModelData,
     IModelItem,

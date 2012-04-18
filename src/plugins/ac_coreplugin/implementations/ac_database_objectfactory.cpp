@@ -15,39 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef MI_SCOPEDPARENTCHANGE_H
-#define MI_SCOPEDPARENTCHANGE_H
+#include "ac_database_objectfactory.h"
 
-#include <mi_database_object.h>
+#include <ac_database_controlcurve.h>
+#include <ac_database_note.h>
+#include <ac_database_pitchcurve.h>
 
 namespace Database {
 
-class ScopedParentChange
+IAggregator *ObjectFactory::createObject(int itemType)
 {
-    Object *_object;
-    Mi::NotificationFlags _notificationFlags;
-
-public:
-    ScopedParentChange(Object *object)
-        :   _object(object)
-    {}
-
-    void init(Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
-    {
-        _notificationFlags = notificationFlags;
-        _object->parentAboutToBeChanged(_object, _notificationFlags);
+    switch (itemType) {
+    case Ac::ControlCurveItem:
+        return Q_NEW_OBJECT(ControlCurve);
+    case Ac::NoteItem:
+        return Q_NEW_OBJECT(Note);
+    case Ac::PitchCurveItem:
+        return Q_NEW_OBJECT(PitchCurve);
+    default:
+        return 0;
     }
+}
 
-    ~ScopedParentChange()
-    {
-        _object->parentChanged(_object, _notificationFlags);
+IAggregator *ObjectFactory::createObjectList(int itemType, int listType)
+{
+    switch (listType) {
+    case Mi::ListItem:
+        return Q_NEW_OBJECTLIST(ObjectList, itemType);
+    default:
+        return 0;
     }
-};
+}
 
 } // namespace Database
-
-#define Q_SCOPED_PARENT_CHANGE(Params) \
-    ScopedParentChange parent_change_notifier(this); \
-    parent_change_notifier.init Params ;
-
-#endif // MI_SCOPEDPARENTCHANGE_H

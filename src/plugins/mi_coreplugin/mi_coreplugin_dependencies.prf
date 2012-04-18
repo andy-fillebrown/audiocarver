@@ -2,7 +2,7 @@
 load(../qt_coreplugin/qt_coreplugin.prf)
 
 DIRS = \
-    dataobjects \
+    database \
     implementations \
     interfaces \
     tools \

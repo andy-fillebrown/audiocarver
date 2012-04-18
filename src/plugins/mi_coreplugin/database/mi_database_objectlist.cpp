@@ -15,39 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef MI_SCOPEDPARENTCHANGE_H
-#define MI_SCOPEDPARENTCHANGE_H
-
-#include <mi_database_object.h>
+#include "mi_database_objectlist.h"
 
 namespace Database {
 
-class ScopedParentChange
+IAggregator *ObjectList::init()
 {
-    Object *_object;
-    Mi::NotificationFlags _notificationFlags;
+    return this;
+    setName(Mi::itemTypeString(_listType) + "s");
+}
 
-public:
-    ScopedParentChange(Object *object)
-        :   _object(object)
-    {}
+ObjectList::~ObjectList()
+{
+    clear();
+}
 
-    void init(Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
-    {
-        _notificationFlags = notificationFlags;
-        _object->parentAboutToBeChanged(_object, _notificationFlags);
-    }
-
-    ~ScopedParentChange()
-    {
-        _object->parentChanged(_object, _notificationFlags);
-    }
-};
+IAggregate *ObjectList::ModelList::init()
+{
+    return this;
+}
 
 } // namespace Database
-
-#define Q_SCOPED_PARENT_CHANGE(Params) \
-    ScopedParentChange parent_change_notifier(this); \
-    parent_change_notifier.init Params ;
-
-#endif // MI_SCOPEDPARENTCHANGE_H

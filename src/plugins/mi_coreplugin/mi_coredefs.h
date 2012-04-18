@@ -437,8 +437,8 @@
 // NEW
 
 #define Q_NEW_AGGREGATE(Class) appendAggregate((new Class(this))->init())
-#define Q_NEW_DATAOBJECT(Class) (new Class)->init()
-#define Q_NEW_DATAOBJECTLIST(Class, ItemType) (new Class(ItemType))->init()
+#define Q_NEW_OBJECT(Class) (new Class)->init()
+#define Q_NEW_OBJECTLIST(Class, ItemType) (new Class(ItemType))->init()
 
 // IAGGREGATOR  INIT
 
@@ -455,7 +455,7 @@
     for (int i = 0;  i < ItemCount;  ++i) { \
         IAggregator *item = items[i]; \
         Items[i] = item; \
-        DataObject *object = cast<DataObject>(item); \
+        Object *object = cast<Object>(item); \
         if (object) \
             object->setParent(this); \
     }

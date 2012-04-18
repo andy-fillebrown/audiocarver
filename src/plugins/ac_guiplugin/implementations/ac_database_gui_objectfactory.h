@@ -15,43 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef MI_SCOPEDDATACHANGE_H
-#define MI_SCOPEDDATACHANGE_H
+#ifndef AC_DATABASE_GUI_OBJECTFACTORY_H
+#define AC_DATABASE_GUI_OBJECTFACTORY_H
 
-#include <mi_database_object.h>
+#include "ac_database_objectfactory.h"
 
 namespace Database {
+namespace Gui {
 
-class Object;
-
-class ScopedDataChange
+class ObjectFactory : public Database::ObjectFactory
 {
-    Object *_object;
-    int _role;
-    Mi::NotificationFlags _notificationFlags;
+protected:
+    // IDataObjectFactory
+    IAggregator *createObject(int itemType);
 
 public:
-    ScopedDataChange(Object *object)
-        :   _object(object)
-    {}
-
-    void init(int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+    // IUnknown
+    void *queryInterface(int interfaceType)
     {
-        _role = role;
-        _notificationFlags = notificationFlags;
-        _object->dataAboutToBeChanged(_object, _role, _notificationFlags);
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
     }
 
-    ~ScopedDataChange()
+    const void *queryInterface(int interfaceType) const
     {
-        _object->dataChanged(_object, _role, _notificationFlags);
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
     }
 };
 
+} // namespace Gui
 } // namespace Database
 
-#define Q_SCOPED_DATA_CHANGE(Params) \
-    ScopedDataChange data_change_notifier(this); \
-    data_change_notifier.init Params ;
-
-#endif // MI_SCOPEDDATACHANGE_H
+#endif // AC_DATABASE_GUI_OBJECTFACTORY_H
