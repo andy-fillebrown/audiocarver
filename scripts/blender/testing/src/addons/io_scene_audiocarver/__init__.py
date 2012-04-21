@@ -37,26 +37,9 @@ class ImportAudioCarver(bpy.types.Operator, ImportHelper):
     filename_ext = ".ac"
     filter_glob = StringProperty(default="*.ac", options={'HIDDEN'})
 
-    pre_roll = FloatProperty(name="Pre-Roll", default=3.0)
-    post_roll = FloatProperty(name="Post-Roll", default=3.0)
-    height = FloatProperty(name="Height", default=10.0)
-    min_pitch = FloatProperty(name="Minimum Pitch", default=0.0)
-    max_pitch = FloatProperty(name="Maximum Pitch", default=127.0)
-    inner_radius = FloatProperty(name="Inner Radius", default=10.0)
-    track_width = FloatProperty(name="Track Width", default=1.0)
-
     def execute(self, context):
         from . import import_audiocarver
-        input_variables = import_audiocarver.InputVariables()
-        input_variables.filepath = self.filepath
-        input_variables.pre_roll = self.pre_roll
-        input_variables.post_roll = self.post_roll
-        input_variables.height = self.height
-        input_variables.min_pitch = self.min_pitch
-        input_variables.max_pitch = self.max_pitch
-        input_variables.inner_radius = self.inner_radius
-        input_variables.track_width = self.track_width
-        return import_audiocarver.load(self, context, input_variables)
+        return import_audiocarver.load(self, context, self.filepath)
 
 
 def menu_func_import(self, context):
