@@ -31,6 +31,7 @@ class MI_GUI_EXPORT IEditor : public QObject
 
 public:
     IEditor();
+    ~IEditor();
 
     static IEditor *instance();
 
@@ -55,6 +56,10 @@ public:
     virtual void startCreating() = 0;
     virtual void finishCreating() = 0;
     virtual bool isCreating() const = 0;
+
+signals:
+    void commandUndone();
+    void commandRedone();
 };
 
 #endif // MI_IEDITOR_H

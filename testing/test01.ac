@@ -1,7 +1,7 @@
 
 <Score volume="1" length="128" startTime="0">
     <TrackList>
-        <Track name="1" volume="0.01" color="#00ff00" instrument="sine" visible="true" recording="false">
+        <Track name="1" volume="0.01" color="#00ff00" instrument="sine" visible="true" recording="true">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -112,7 +112,7 @@
                 </Note>
             </NoteList>
         </Track>
-        <Track name="4" volume="0.01" color="#ffaa00" instrument="sine" visible="true" recording="true">
+        <Track name="4" volume="0.01" color="#ffaa00" instrument="sine" visible="true" recording="false">
             <NoteList>
                 <Note volume="1">
                     <PitchCurve>
@@ -187,7 +187,7 @@
             </NoteList>
         </Track>
     </TrackList>
-    <GridSettings snapEnabled="true" timeSnap="0.25" pitchSnap="1" controlSnap="0.125">
+    <GridSettings snapEnabled="true" gridSnapEnabled="true" timeSnap="0.25" pitchSnap="1" controlSnap="0.125">
         <TimeGridLineList>
             <TimeGridLine location="0" label="1" priority="0" color="#007f00"/>
             <TimeGridLine location="1" label="1.2" priority="64" color="#c0c0c0"/>

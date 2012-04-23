@@ -301,6 +301,7 @@ unix: !macx: !freebsd* {
 
     LIBS *= \
         -lsndfile \
+
 }
 macx {
     DEFINES *= \

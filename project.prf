@@ -167,10 +167,13 @@ else:SUPPORT_QT_S60 = 1
 # Redefine Q_ASSERT to use mi_assert.
 win32: DEFINES *= USE_MI_ASSERT
 
-# GCC 4.6/4.7 have the timespec struct (see also pthreads windows/config.h).
-win32-g++ {
+# MinGW g++ has timespec struct since 4.6.
+win32-g++* {
     GCC_VERSION = $$system($$QMAKE_CXX -dumpversion)
-    contains(GCC_VERSION, ^4\\.[6-7]\\..*): DEFINES *= HAVE_STRUCT_TIMESPEC
+    contains(GCC_VERSION, ^4\\.[6-8]\\..*) {
+        DEFINES *= \
+            HAVE_STRUCT_TIMESPEC \
+    }
 }
 
 !verbose: CONFIG *= silent

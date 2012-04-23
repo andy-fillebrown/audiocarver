@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>debug.bat</name>
+			<type>1</type>
+			<locationURI>PROJECT_LOC/debug.bat</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

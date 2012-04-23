@@ -179,3 +179,11 @@ void GraphicsEntityItem::updateCurveTypes()
     d->entity->setPoints(d->gripPoints());
     d->updateGripCurveTypes();
 }
+
+QList<IGripItem*> GraphicsEntityItem::gripItems() const
+{
+    QList<IGripItem*> grip_items;
+    foreach (GraphicsGripItem *grip_item, d->gripItems)
+        grip_items.append(grip_item);
+    return grip_items;
+}

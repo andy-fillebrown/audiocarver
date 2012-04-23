@@ -94,10 +94,8 @@ public:
         ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
-
         scene->addItem(rootItem);
         rootItem->setZValue(Q_FLOAT_MAX - 1.0f);
-
         scene->addItem(pickBox);
         pickBox->setZValue(Q_FLOAT_MAX);
         pickBox->setPen(QPen(QColor(0, 0, 255)));
@@ -220,16 +218,12 @@ public:
     void hover()
     {
         clearHovered();
-
         if (viewState || Picking == dragState || insertingPoints)
             return;
-
         const QRect viewPickRect = pickOneRect(curPos);
         const QRectF scenePickRect = q->sceneTransform().inverted().mapRect(QRectF(viewPickRect));
-
         bool gripIsHovered = false;
         bool entityIsHovered = false;
-
         const QList<QGraphicsItem*> items = q->items(viewPickRect);
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
@@ -261,7 +255,6 @@ public:
                         }
                     }
                 }
-
                 if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)
                         && (gripIsHovered || entityIsHovered))
                     break;
@@ -349,7 +342,6 @@ public:
     bool selectGrips(const QPoint &pos)
     {
         bool selectedGrip = false;
-
         const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = variantToUnknown_cast(item->data(0));
@@ -358,11 +350,11 @@ public:
                 if (grip) {
                     if (!selectedGrip)
                         clearHovered();
-
                     selectedGrip = true;
                     dragStartPos = pos;
                     curGrip = grip;
-
+                    if (pickedGrips.contains(grip))
+                        keepGripsPicked = true;
                     if (Qt::ControlModifier & QApplication::keyboardModifiers()) {
                         grip->unhighlight();
                         pickedGrips.removeOne(grip);
@@ -371,7 +363,6 @@ public:
                             keepGripsPicked = true;
                         else if (!keepGripsPicked)
                             clearPickedGrips();
-
                         grip->highlight();
                         if (!pickedGrips.contains(grip)) {
                             pickedGrips.append(grip);
@@ -383,19 +374,46 @@ public:
                 }
             }
         }
-
         return selectedGrip;
+    }
+
+    void selectAllGrips()
+    {
+        clearPickedGrips();
+        foreach (GraphicsEntityItem *entity_item, pickedEntities) {
+            entitiesToUpdate.append(entity_item);
+            const QList<IGripItem*> &grips = entity_item->gripItems();
+            pickedGrips.append(grips);
+            foreach (IGripItem *grip, grips)
+                grip->highlight();
+        }
+    }
+
+    void startGripDrag()
+    {
+        selectAllGrips();
+        if (pickedGrips.isEmpty())
+            return;
+
+        // Set curGrip to the lowest and earliest grip.
+        curGrip = pickedGrips.first();
+        foreach (IGripItem *grip_item, pickedGrips) {
+            const QPointF pos = grip_item->position();
+            if (pos.x() < curGrip->position().x()
+                    || (pos.x() == curGrip->position().x()
+                        && pos.y() < curGrip->position().y()))
+                curGrip = grip_item;
+        }
+
+        startDraggingGrips();
     }
 
     void clearPickedGrips()
     {
         keepGripsPicked = false;
-
         clearHovered();
-
         foreach (IGripItem *grip, pickedGrips)
             grip->unhighlight();
-
         pickedGrips.clear();
         entitiesToUpdate.clear();
     }
@@ -403,7 +421,6 @@ public:
     void startDraggingGrips()
     {
         dragState = DraggingGrips;
-
         foreach (IEntityItem *entityItem, entitiesToUpdate)
             entityItem->startUpdatingPoints();
     }
@@ -412,29 +429,22 @@ public:
     {
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
-
         const QPointF fromScenePos = curGrip->originalPosition();
         const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
         const QPointF sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()) - fromScenePos;
-
         foreach (IGripItem *grip, pickedGrips)
             grip->setPosition(grip->originalPosition() + sceneOffset);
-
         foreach (IEntityItem *entity, entitiesToUpdate)
             entity->updatePoints();
-
         gripsDragged = true;
-
         vm->enableUpdates();
     }
 
     void finishDraggingGrips(const QPoint &pos)
     {
         dragGripsTo(pos);
-
         dragState = 0;
         curGrip = 0;
-
         if (gripsDragged) {
             IEditor *editor = IEditor::instance();
             editor->beginCommand();
@@ -443,24 +453,17 @@ public:
             editor->endCommand();
             gripsDragged = false;
         }
-
-        if (!keepGripsPicked)
-            clearPickedGrips();
     }
 
     void cancelGripDrag()
     {
         dragState = 0;
         curGrip = 0;
-
         const int n = entitiesToUpdate.count();
         for (int i = 0;  i < n;  ++i)
             entitiesToUpdate.at(i)->entity()->popPoints();
-
-        if (!keepGripsPicked)
-            clearPickedGrips();
-
         gripsDragged = false;
+        resetPickedEntities();
     }
 
     QRect pickBoxBounds() const
@@ -490,7 +493,6 @@ public:
                 ? pickOneRect(dragStartPos)
                 : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
-
         const QList<QGraphicsItem*> items = q->items(rect);
         QList<IEntity*> entities;
         foreach (QGraphicsItem *item, items) {
@@ -508,14 +510,12 @@ public:
                 }
             }
         }
-
         QItemSelection ss;
         ss.reserve(entities.count());
         foreach (IEntity *entity, entities) {
             const QModelIndex index = IModel::instance()->indexFromItem(query<IModelItem>(entity));
             ss.select(index, index);
         }
-
         QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
         if (entities.count()) {
             ss_flags = QItemSelectionModel::Select;
@@ -532,7 +532,6 @@ public:
                 TrackSelectionModel::instance()->clear();
             }
         }
-
         if (!pickOne)
             pickBox->hide();
         dragState = 0;
@@ -568,10 +567,8 @@ public:
     {
         if (entities.isEmpty())
             return;
-
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
-
         foreach (IEntity *entity, entities) {
             if (entity->isVisible() && !entityIsPicked(entity)) {
                 GraphicsEntityItem *item = new GraphicsEntityItem(entity);
@@ -587,16 +584,13 @@ public:
     {
         if (entities.isEmpty())
             return;
-
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
-
         foreach (IEntity *entity, entities) {
             GraphicsEntityItem *item = findEntityItem(entity);
             if (item) {
                 pickedEntities.removeOne(item);
                 entitiesToUpdate.removeOne(item);
-
                 for (int i = 0;  i < pickedGrips.count();  ++i) {
                     IGripItem *grip = pickedGrips[i];
                     if (item == grip->parentEntityItem())
@@ -619,7 +613,6 @@ public:
                 delete item;
             }
         }
-
         clearPickedGrips();
         vm->enableUpdates();
     }
@@ -628,20 +621,18 @@ public:
     {
         ViewManager *vm = ViewManager::instance();
         vm->disableUpdates();
-
         clearPickedGrips();
         NoteSelectionModel::instance()->clear();
-
         vm->enableUpdates();
     }
 
     void resetPickedEntities()
     {
         clearPickedGrips();
-
         NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
         QItemSelection ss = noteSSModel->selection();
-        noteSSModel->select(ss, QItemSelectionModel::ClearAndSelect);
+        noteSSModel->clear();
+        noteSSModel->select(ss, QItemSelectionModel::Select);
     }
 
     void clearPicks()
@@ -657,7 +648,6 @@ public:
     void insertPoint(const QPoint &pos)
     {
         const QPointF scenePos = ViewManager::instance()->snappedScenePos(q->sceneTransform().inverted().map(QPointF(pos)), q->sceneType());
-
         foreach (GraphicsEntityItem *entityItem, pickedEntities) {
             IEntity *entity = entityItem->entity();
             PointList pts = entity->points();
@@ -699,8 +689,10 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setCursor(normalCrosshair());
     setMouseTracking(true);
 
-    connect(IEditor::instance()->undoStack(), SIGNAL(indexChanged(int)), SLOT(clearGripSelection()));
+    connect(IEditor::instance(), SIGNAL(commandUndone()), SLOT(clearGripSelection()));
+    connect(IEditor::instance(), SIGNAL(commandRedone()), SLOT(clearGripSelection()));
     connect(GripSelectionModel::instance(), SIGNAL(gripDeselected(IGripItem*)), SLOT(gripDeselected(IGripItem*)));
+    connect(IModel::instance(), SIGNAL(modelAboutToBeDestroyed()), SLOT(modelAboutToBeDestroyed()));
 }
 
 GraphicsView::~GraphicsView()
@@ -757,6 +749,7 @@ void GraphicsView::startInsertingPoints()
         entity->pushPoints();
     }
     setCursor(creationCrosshair());
+    d->clearPickedGrips();
 }
 
 void GraphicsView::finishInsertingPoints()
@@ -768,6 +761,7 @@ void GraphicsView::finishInsertingPoints()
     }
     setCursor(normalCrosshair());
     d->insertingPoints = false;
+    d->resetPickedEntities();
 }
 
 void GraphicsView::cancelPointInsertion()
@@ -777,11 +771,22 @@ void GraphicsView::cancelPointInsertion()
         d->pickedEntities.at(i)->entity()->popPoints();
     setCursor(normalCrosshair());
     d->insertingPoints = false;
+    d->resetPickedEntities();
 }
 
 bool GraphicsView::pointsAreSelected() const
 {
     return 0 < d->pickedGrips.count();
+}
+
+void GraphicsView::selectAllGrips()
+{
+    d->selectAllGrips();
+}
+
+void GraphicsView::startGripDrag()
+{
+    d->startGripDrag();
 }
 
 void GraphicsView::clearPickedGrips()
@@ -1136,6 +1141,12 @@ void GraphicsView::gripDeselected(IGripItem *grip)
 {
     d->hoveredGrips.removeOne(grip);
     d->pickedGrips.removeOne(grip);
+}
+
+void GraphicsView::modelAboutToBeDestroyed()
+{
+    d->cancelGripDrag();
+    d->clearPickedEntities();
 }
 
 qreal GraphicsHView::sceneWidth() const

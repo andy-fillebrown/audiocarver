@@ -52,6 +52,8 @@ public:
 
     bool pointsAreSelected() const;
 
+    void selectAllGrips();
+    void startGripDrag();
     void clearPickedGrips();
 
 public slots:
@@ -106,6 +108,7 @@ protected:
 private slots:
     void clearGripSelection();
     void gripDeselected(IGripItem *grip);
+    void modelAboutToBeDestroyed();
 
 private:
     GraphicsViewPrivate *d;

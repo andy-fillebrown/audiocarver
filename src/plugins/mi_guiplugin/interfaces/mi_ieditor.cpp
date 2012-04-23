@@ -24,6 +24,11 @@ IEditor::IEditor()
     ::instance = this;
 }
 
+IEditor::~IEditor()
+{
+    ::instance = 0;
+}
+
 IEditor *IEditor::instance()
 {
     return ::instance;
