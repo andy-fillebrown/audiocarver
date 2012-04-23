@@ -60,8 +60,12 @@ OTHER_FILES *= \
     pthreads.prf \
 
 win32 {
-    INCLUDEPATH *= config/windows
-    HEADERS *= config/windows/config.h
+    INCLUDEPATH *= \
+        config/windows \
+
+    HEADERS *= \
+        config/windows/config.h \
+
 } else {
     error("pthreads should only be built on Windows")
 }
