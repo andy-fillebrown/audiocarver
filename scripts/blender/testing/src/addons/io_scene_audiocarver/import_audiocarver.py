@@ -54,7 +54,17 @@ def select_timeline_template_objects():
         obj.select = True
 
 
-def import_note(note_node, color):
+def create_note_material(color = "#ffffff"):
+    template_material = bpy.data.materials["Note.Material.000"]
+    note_material = template_material.copy()
+    note_material.diffuse_color[0] = float((16 * int(color[1:2], 16)) + int(color[2:3], 16)) / 255.0
+    note_material.diffuse_color[1] = float((16 * int(color[3:4], 16)) + int(color[4:5], 16)) / 255.0
+    note_material.diffuse_color[2] = float((16 * int(color[5:6], 16)) + int(color[6:7], 16)) / 255.0
+    note_material.specular_color = note_material.diffuse_color
+    return note_material
+
+
+def import_note(note_node, note_material):
     global note_count
     global note_layer
     global note_object_names
@@ -74,6 +84,10 @@ def import_note(note_node, color):
         obj = bpy.data.objects["Template." + note_object_name + '.001']
         new_name = obj.name[9:-3] + str(note_count)
         obj.name = new_name
+
+    # Set the note mesh's material.
+    obj = bpy.data.objects["Note.Head.Mesh." + str(note_count)]
+    obj.material_slots[0].material = note_material
 
     # Get the first and last pitch point positions.
     pitch_curve_node = Dom.Node
@@ -131,6 +145,8 @@ def import_note(note_node, color):
 
     # Scale the note velocity object to the volume.
     note_volume_scale_object = bpy.data.objects['Note.Velocity.Scale.Y.' + str(note_count)]
+    note_volume_scale_object.scale[0] = velocity
+    note_volume_scale_object.scale[1] = velocity
     note_volume_scale_object.scale[2] = velocity
 
 
@@ -150,12 +166,15 @@ def import_track(track_node):
 
     print(" \"" + track_name + "\"")
 
+    # Create the track's note material.
+    note_material = create_note_material(color)
+
     # Read the track's note list.
     for child_node in track_node.childNodes:
         if "NoteList" == child_node.nodeName:
             for note_node in child_node.childNodes:
                 if "Note" == note_node.nodeName:
-                    import_note(note_node, color)
+                    import_note(note_node, note_material)
 
 
 def import_timeline(timeline_node):
@@ -197,14 +216,14 @@ def import_timelines(timelines_node):
 
     print("\nImporting time lines ...")
 
-    bpy.data.scenes[0].layers[timeline_layer] = True
-    bpy.data.scenes[0].layers[timeline_parent_layer] = True
+    bpy.context.scene.layers[timeline_layer] = True
+    bpy.context.scene.layers[timeline_parent_layer] = True
 
     for child_node in timelines_node.childNodes:
         if "TimeGridLine" == child_node.nodeName:
             import_timeline(child_node)
 
-    bpy.data.scenes[0].layers[timeline_parent_layer] = False
+    bpy.context.scene.layers[timeline_parent_layer] = False
 
 
 def import_node(xml_node):
@@ -239,10 +258,14 @@ def load(operator,
     # Store the current selection set so it can be restored later.
     cur_ss = current_ss()
 
-    # Turn on the note layers so the note template objects can be selected.
-    bpy.data.scenes[0].layers[0] = True
-    bpy.data.scenes[0].layers[1] = True
-    bpy.data.scenes[0].layers[note_layer] = True
+    # Turn on the note layers.
+    bpy.context.scene.layers[0] = True
+    bpy.context.scene.layers[1] = True
+    bpy.context.scene.layers[note_layer] = True
+
+    # Turn on the timeline layers.
+    bpy.context.scene.layers[timeline_layer] = True
+    bpy.context.scene.layers[timeline_parent_layer] = True
 
     # Set note template objects list.
     clear_ss()
@@ -271,10 +294,12 @@ def load(operator,
     select_note_template_objects()
     bpy.ops.object.move_to_layer(layers = note_template_layer_mask)
 
-    # Turn the note layers back off
-    bpy.data.scenes[0].layers[note_layer] = False
-    bpy.data.scenes[0].layers[1] = False
-    bpy.data.scenes[0].layers[0] = False
+    # Turn off the timeline parent objects layer.
+    bpy.context.scene.layers[timeline_parent_layer] = False
+
+    # Turn off the note template layer and note parent objects layer.
+    bpy.context.scene.layers[note_layer] = False
+    bpy.context.scene.layers[0] = False
 
     # Restore the original selection set.
     clear_ss()
