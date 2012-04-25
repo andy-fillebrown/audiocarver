@@ -13,6 +13,7 @@ layer_2_mask = (False, True, False, False, False, False, False, False, False, Fa
 note_template_layer_mask = (False, False, False, False, False, False, False, False, True, False,
                             False, False, False, False, False, False, False, False, False, False)
 
+track_count = 1
 note_count = 1
 note_layer = 8
 note_object_names = {
@@ -29,6 +30,8 @@ timeline_parent_layer = 10
 note_template_objects = None
 timeline_template_objects = None
 
+min_velocity = 0.01
+
 
 def clear_ss():
     bpy.ops.object.select_all(action = 'DESELECT')
@@ -36,6 +39,98 @@ def clear_ss():
 
 def current_ss():
     return bpy.context.selected_objects
+
+
+def simplify_scene():
+    global min_velocity
+
+    print("\nSimplifying scene for render ...")
+
+    # Apply boolean modifier for note head and tail meshes.
+    bpy.context.scene.layers[1] = True
+    clear_ss()
+    bpy.ops.object.select_by_layer(layers = 2)
+    ss = current_ss()
+    clear_ss()
+    for obj in ss:
+        bpy.context.scene.objects.active = obj
+        bpy.ops.object.modifier_apply(modifier = "Boolean")
+
+    # Turn on the note helper objects layer.
+    bpy.context.scene.layers[0] = True
+
+    # Delete note tail scale objects and meshes.
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "Note.Tail.*")
+    bpy.ops.object.delete()
+
+    # Apply velocity scales to note meshes.
+    for obj in ss:
+        constraint = obj.constraints["Copy Scale"]
+        velocity_obj = constraint.target
+        obj.scale = velocity_obj.scale
+        obj.constraints.clear()
+        if obj.scale[0] < min_velocity:
+            obj.scale[0] = min_velocity
+        if obj.scale[1] < min_velocity:
+            obj.scale[1] = min_velocity
+        if obj.scale[2] < min_velocity:
+            obj.scale[2] = min_velocity
+
+    # Delete velocity scale objects.
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "Note.Velocity.Scale.Y.*")
+    bpy.ops.object.delete()
+
+    # Reparent note meshes from their note root object to the track root object.
+    clear_ss()
+    for obj in ss:
+        obj.select = True
+    bpy.ops.object.parent_clear(type = 'CLEAR_KEEP_TRANSFORM')
+    bpy.context.scene.objects.active = bpy.data.objects["Track.Root.Empty"]
+    bpy.ops.object.parent_set()
+
+    # Delete the note root objects.
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "Note.Root.Empty.*")
+    bpy.ops.object.delete()
+
+    # Turn off the note helper objects layer.
+    bpy.context.scene.layers[0] = False
+
+    # Join note meshes that use the same matrial.
+    materials = []
+    for material in bpy.data.materials:
+        if material.name.startswith("Note.Material."):
+            materials.append(material)
+    for material in materials:
+        clear_ss()
+        obj_selected = False
+        for obj in ss:
+            if material == obj.active_material:
+                obj.select = True
+                obj_selected = True
+        if obj_selected:
+            cur_ss = current_ss()
+            bpy.context.scene.objects.active = cur_ss[0]
+            bpy.ops.object.join()
+            bpy.ops.object.select_by_layer(layers = 2)
+            ss = current_ss()
+    clear_ss()
+
+
+class AudioCarverSimplifier(bpy.types.Operator):
+    '''Simplify the AudioCarver scene for rendering.'''
+    bl_idname = "object.scene_simplifier"
+    bl_label = "AudioCarver Scene Simplifier"
+
+    @classmethod
+    def poll(cls, context):
+        return True;
+
+    def execute(self, context):
+        simplify_scene()
+        return {'FINISHED'}
 
 
 def select_note_template_objects():
@@ -57,6 +152,7 @@ def select_timeline_template_objects():
 def create_note_material(color = "#ffffff"):
     template_material = bpy.data.materials["Note.Material.000"]
     note_material = template_material.copy()
+    note_material.name = "Note.Material." + str(track_count)
     note_material.diffuse_color[0] = float((16 * int(color[1:2], 16)) + int(color[2:3], 16)) / 255.0
     note_material.diffuse_color[1] = float((16 * int(color[3:4], 16)) + int(color[4:5], 16)) / 255.0
     note_material.diffuse_color[2] = float((16 * int(color[5:6], 16)) + int(color[6:7], 16)) / 255.0
@@ -151,6 +247,8 @@ def import_note(note_node, note_material):
 
 
 def import_track(track_node):
+    global track_count
+
     # Read the track's attributes.
     color = "#ffffff"
     track_name = ""
@@ -165,6 +263,8 @@ def import_track(track_node):
         i += 1
 
     print(" \"" + track_name + "\"")
+
+    track_count += 1
 
     # Create the track's note material.
     note_material = create_note_material(color)
