@@ -1,4 +1,11 @@
 
+from . import import_audiocarver
+
+import bpy
+from bpy.props import (FloatProperty,
+                       StringProperty
+                       )
+
 bl_info = {
     "name": "AudioCarver format",
     "author": "Andrew Fillebrown, Andy",
@@ -16,11 +23,6 @@ if "bpy" in locals():
     if "import_audiocarver" in locals():
         imp.reload(import_audiocarver)
 
-import bpy
-# from bpy.props import StringProperty, BoolProperty, EnumProperty
-from bpy.props import (FloatProperty,
-                       StringProperty
-                       )
 
 from bpy_extras.io_utils import (ImportHelper,
                                  axis_conversion,
