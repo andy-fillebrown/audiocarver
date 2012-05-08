@@ -26,10 +26,22 @@ class ISubEntity;
 class IParentEntity : public IEntity
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IParentEntity, IEntity)
+    enum { InterfaceType = I::IParentEntity };
 
     virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
-    virtual QList<IPoints*> subEntityPoints(int sceneType) const = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
 };
 
 #endif // AC_IPARENTENTITY_H

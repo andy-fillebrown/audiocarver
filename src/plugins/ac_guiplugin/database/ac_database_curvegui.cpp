@@ -15,28 +15,28 @@
 **
 **************************************************************************/
 
-#include "ac_database_gui_objectfactory.h"
+#include "ac_database_curvegui.h"
 
-#include <ac_database_gui_controlcurve.h>
-#include <ac_database_gui_note.h>
-#include <ac_database_gui_pitchcurve.h>
+#include <ac_ientity.h>
 
 namespace Database {
-namespace Gui {
 
-IAggregator *ObjectFactory::createObject(int itemType)
+IAggregate *CurveGui::Entity::init()
 {
-    switch (itemType) {
-    case Ac::ControlCurveItem:
-        return Q_NEW_OBJECT(ControlCurve);
-    case Ac::NoteItem:
-        return Q_NEW_OBJECT(Note);
-    case Ac::PitchCurveItem:
-        return Q_NEW_OBJECT(PitchCurve);
-    default:
-        return Database::ObjectFactory::createObject(itemType);
-    }
+    _graphicsCurveItem = new GraphicsCurveItem;
+    _graphicsCurveItem->setEntity(this);
+    return this;
 }
 
-} // namespace Gui
+CurveGui::Entity::~Entity()
+{
+    delete _graphicsCurveItem;
+}
+
+IAggregate *CurveGui::SubEntity::init()
+{
+    _graphicsCurveItem = (cast<CurveGui::Entity>(query<IEntity>(a())))->graphicsCurveItem();
+    return this;
+}
+
 } // namespace Database

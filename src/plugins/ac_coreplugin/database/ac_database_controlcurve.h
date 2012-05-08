@@ -26,15 +26,20 @@ class AC_CORE_EXPORT ControlCurve : public Curve
 {
     friend class ObjectFactory;
 
-    Q_IAGGREGATOR_DERIVED(ControlCurve, Curve)
-
     int _controlType;
-    Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
+    enum { RoleCount = 1 };
 
 protected:
+    enum {
+        RoleCountOffset = Object::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
+
     ControlCurve()
         :   _controlType(-1)
     {}
+
+    IAggregator *init();
 
     int controlType() const
     {
@@ -60,11 +65,37 @@ protected:
         }
     }
 
-    // IModelData
-    class AC_CORE_EXPORT ModelData : public Base::ModelData
+    class AC_CORE_EXPORT ModelData : public Curve::ModelData
     {
-        Q_IMODELDATA_DERIVED
-        Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
+        ControlCurve *a() const
+        {
+            return cast<ControlCurve>(Object::ModelData::a());
+        }
+
+    public:
+        ModelData(ControlCurve *aggregator)
+            :   Curve::ModelData(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelData
+        int roleCount() const
+        {
+            return TotalRoleCount;
+        }
+
+        int roleAt(int i) const
+        {
+            Q_ASSERT(0 <= i);
+            switch (i - RoleCountOffset) {
+            case 0:
+                return Ac::ControlTypeRole;
+            default:
+                return Curve::ModelData::roleAt(i);
+            }
+        }
 
         QVariant getVariant(int role) const
         {
@@ -72,7 +103,7 @@ protected:
             case Ac::ControlTypeRole:
                 return a()->controlType();
             default:
-                return Base::getVariant(role);
+                return Curve::ModelData::getVariant(role);
             }
         }
 
@@ -82,16 +113,33 @@ protected:
             case Ac::ControlTypeRole:
                 return a()->setControlType(qvariant_cast<int>(data));
             default:
-                return Base::setVariant(data, role);
+                return Curve::ModelData::setVariant(data, role);
             }
         }
     };
 
-    // IModelItem
-    class AC_CORE_EXPORT ModelItem : public Base::ModelItem
+    class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
     {
-        Q_IMODELITEM_DERIVED
-        Q_IMODELITEM_DERIVED__ITEMTYPE(Ac::ControlCurveItem)
+    public:
+        ModelItem(ControlCurve *aggregator)
+            :   Curve::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelItem
+        int itemType() const
+        {
+            return Ac::ControlCurveItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::ControlCurveItem == itemType)
+                return true;
+            return Curve::ModelItem::isTypeOfItem(itemType);
+        }
     };
 
     // IAggregator
@@ -99,11 +147,11 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelData:
-            return Q_NEW_AGGREGATE(ModelData);
+            return appendAggregate((new ModelData(this))->init());
         case I::IModelItem:
-            return Q_NEW_AGGREGATE(ModelItem);
+            return appendAggregate((new ModelItem(this))->init());
         default:
-            return Base::createAggregate(interfaceType);
+            return Curve::createAggregate(interfaceType);
         }
     }
 };

@@ -21,7 +21,6 @@
 #include "mi_iunknown.h"
 #include "QObject"
 
-#include <mi_coredefs.h>
 #include <mi_corenamespace.h>
 
 
@@ -36,17 +35,16 @@ class Object : public QObject
     IAggregator *_aggregator;
 
 public:
-    enum { InterfaceType = I::IObject };
-
     Object(IAggregator *aggregator)
         :   _aggregator(aggregator)
     {}
 
-    ~Object() {}
+    ~Object()
+    {}
 
     IAggregator *aggregator() const
     {
-        return qGetPtrHelper(_aggregator);
+        return _aggregator;
     }
 
     const void *queryInterface(int interfaceType) const
@@ -66,7 +64,18 @@ public:
 class IObject : public Object, public IUnknown
 {
 public:
-    Q_IUNKNOWN_BASE__INTERFACETYPE(IObject)
+    enum { InterfaceType = I::IObject };
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
 
 #endif // MI_IOBJECT_H

@@ -15,33 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_GUI_PITCHCURVE_H
-#define AC_DATABASE_GUI_PITCHCURVE_H
+#ifndef AC_DATABASE_PITCHCURVEGUI_H
+#define AC_DATABASE_PITCHCURVEGUI_H
 
 #include "ac_database_pitchcurve.h"
-#include "ac_database_gui_curve.h"
+
+#include "ac_database_curvegui.h"
 
 namespace Database {
-namespace Gui {
 
-class PitchCurve : public Database::PitchCurve
+class PitchCurveGui : public PitchCurve
 {
-    friend class ObjectFactory;
+    friend class ObjectGuiFactory;
 
-    Q_IAGGREGATOR_DERIVED(PitchCurve, Database::PitchCurve)
+    CurveGui::Entity *_entity;
 
 protected:
-    PitchCurve()
+    PitchCurveGui()
         :   _entity(0)
     {}
 
-    // ISubEntity
-    class SubEntity : public Gui::Curve::SubEntity
+    IAggregator *init();
+
+    // Object
+    void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags);
+
+    class SubEntity : public CurveGui::SubEntity
     {
     public:
-        SubEntity(Database::Curve *aggregator)
-            :   Gui::Curve::SubEntity(aggregator)
+        SubEntity(Curve *aggregator)
+            :   CurveGui::SubEntity(aggregator)
         {}
+
+        IAggregate *init();
 
     protected:
         // ISubEntity
@@ -51,29 +57,22 @@ protected:
         }
     };
 
-    // IEntity
-    typedef Gui::Curve::Entity Entity;
-
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
         case I::IEntity:
-            _entity = new Entity(this);
+            _entity = new CurveGui::Entity(this);
             _entity->init();
             return appendAggregate(_entity);
         case I::ISubEntity:
-            return Q_NEW_AGGREGATE(SubEntity);
+            return appendAggregate((new SubEntity(this))->init());
         default:
-            return Base::createAggregate(interfaceType);
+            return PitchCurve::createAggregate(interfaceType);
         }
     }
-
-private:
-    Entity *_entity;
 };
 
-} // namespace Gui
 } // namespace Database
 
-#endif // AC_DATABASE_GUI_PITCHCURVE_H
+#endif // AC_DATABASE_PITCHCURVEGUI_H

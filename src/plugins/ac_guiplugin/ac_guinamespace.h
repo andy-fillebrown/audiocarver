@@ -23,7 +23,8 @@
 namespace I {
 
 enum AcGuiInterfaces {
-    IEntity = AcCoreInterfaceCount,
+    IChildEntity = AcCoreInterfaceCount,
+    IEntity,
     IParentEntity,
     ISubEntity,
     IPointsItem,

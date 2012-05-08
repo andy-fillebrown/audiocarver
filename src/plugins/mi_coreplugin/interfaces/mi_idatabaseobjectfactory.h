@@ -20,20 +20,29 @@
 
 #include "mi_iunknown.h"
 
-#include <mi_coredefs.h>
-
 class IAggregator;
 
 class MI_CORE_EXPORT IDatabaseObjectFactory : public IUnknown
 {
 public:
-    Q_IUNKNOWN_BASE__INTERFACETYPE(IDatabaseObjectFactory)
+    enum { InterfaceType = I::IDatabaseObjectFactory };
 
     IDatabaseObjectFactory();
     static IDatabaseObjectFactory *instance();
 
     virtual IAggregator *createObject(int itemType) = 0;
     virtual IAggregator *createObjectList(int itemType, int listType = Mi::ListItem) = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
 
 #endif // MI_IDATABASEOBJECTFACTORY_H

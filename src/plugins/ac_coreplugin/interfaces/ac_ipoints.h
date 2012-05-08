@@ -29,7 +29,7 @@ typedef QList<Point> PointList;
 class IPoints : public IAggregate
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IPoints, IAggregate)
+    enum { InterfaceType = I::IPoints };
 
     virtual const PointList &points() const = 0;
     virtual void pushPoints(const PointList &points) = 0;
@@ -44,6 +44,19 @@ public:
     void setPoints()
     {
         setPoints(points());
+    }
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 

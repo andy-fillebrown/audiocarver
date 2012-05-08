@@ -26,7 +26,7 @@ class IModelItem;
 class MI_CORE_EXPORT IModel : public IAggregate
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IModel, IAggregate)
+    enum { InterfaceType = I::IModel };
 
     IModel();
     static IModel *instance();
@@ -35,6 +35,19 @@ public:
     virtual void endChangeData(const IModelData *data, int role) = 0;
     virtual void beginChangeParent(const IModelItem *item) = 0;
     virtual void endChangeParent(const IModelItem *item) = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
 };
 
 #endif // MI_IMODEL_H

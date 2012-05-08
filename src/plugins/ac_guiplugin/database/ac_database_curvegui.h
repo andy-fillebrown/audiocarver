@@ -15,10 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_GUI_CURVE_H
-#define AC_DATABASE_GUI_CURVE_H
+#ifndef AC_DATABASE_CURVEGUI_H
+#define AC_DATABASE_CURVEGUI_H
 
 #include "ac_database_curve.h"
+
 #include "ac_isubentity.h"
 #include "ac_ientity.h"
 
@@ -28,62 +29,34 @@
 #include <ac_iparententity.h>
 
 namespace Database {
-namespace Gui {
 
-class Curve
+namespace CurveGui
 {
-    friend class ControlCurve;
-    friend class PitchCurve;
-
-protected:
-    class SubEntity : public ISubEntity
-    {
-    protected:
-        Database::Curve *_a;
-
-        SubEntity(Database::Curve *aggregator)
-            :   _a(aggregator)
-        {}
-
-    public:
-        virtual IAggregate *init();
-
-    protected:
-        // ISubEntity
-        bool isCurve() const
-        {
-            return true;
-        }
-
-        IParentEntity *parentEntity() const
-        {
-            return query<IParentEntity>(_a->parent());
-        }
-
-        // IAggregate
-        IAggregator *aggregator() const
-        {
-            return _a;
-        }
-    };
-
     class Entity : public IEntity
     {
+        Curve *_aggregator;
         GraphicsCurveItem *_graphicsCurveItem;
 
-    protected:
-        Database::Curve *_a;
-
     public:
-        Entity(Database::Curve *aggregator)
-            :   _graphicsCurveItem(0)
-            ,   _a(aggregator)
+        Entity(Curve *aggregator)
+            :   _aggregator(aggregator)
+            ,   _graphicsCurveItem(0)
         {}
 
         virtual IAggregate *init();
         ~Entity();
 
+        GraphicsCurveItem *graphicsCurveItem() const
+        {
+            return _graphicsCurveItem;
+        }
+
     protected:
+        Curve *a() const
+        {
+            return _aggregator;
+        }
+
         void setPoints(const PointList &points)
         {
             _graphicsCurveItem->setPoints(points);
@@ -92,11 +65,6 @@ protected:
         void setColor(uint color)
         {
             _graphicsCurveItem->setColor(QColor(QRgb(color)));
-        }
-
-        GraphicsCurveItem *graphicsCurveItem() const
-        {
-            return _graphicsCurveItem;
         }
 
         // IEntity
@@ -123,12 +91,49 @@ protected:
         // IAggregate
         IAggregator *aggregator() const
         {
-            return _a;
+            return _aggregator;
         }
     };
-};
 
-} // namespace Gui
+    class SubEntity : public ISubEntity
+    {
+        Curve *_aggregator;
+        GraphicsCurveItem *_graphicsCurveItem;
+
+    public:
+        SubEntity(Curve *aggregator)
+            :   _aggregator(aggregator)
+            ,   _graphicsCurveItem(0)
+        {}
+
+        virtual IAggregate *init();
+
+    protected:
+        Curve *a() const
+        {
+            return _aggregator;
+        }
+
+        // ISubEntity
+        bool intersects(const QRectF &rect) const
+        {
+            return _graphicsCurveItem->intersects(rect);
+        }
+
+        // IChildEntity
+        IParentEntity *parentEntity() const
+        {
+            return query<IParentEntity>(a()->parent());
+        }
+
+        // IAggregate
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
+    };
+}
+
 } // namespace Database
 
-#endif // AC_DATABASE_GUI_CURVE_H
+#endif // AC_DATABASE_CURVEGUI_H

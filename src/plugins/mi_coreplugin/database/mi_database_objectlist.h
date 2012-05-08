@@ -19,24 +19,22 @@
 #define MI_DATABASE_OBJECTLIST_H
 
 #include "mi_database_object.h"
+
 #include "mi_imodellist.h"
 
 namespace Database {
 
-typedef QList<Object*> Objects;
-
 class MI_CORE_EXPORT ObjectList : public Object
 {
-    Q_IAGGREGATOR_DERIVED(ObjectList, Object)
-
     const int _listType;
-    AggregatorList _objects;
+    QList<IAggregator*> _objects;
 
 public:
     ObjectList(int listType = Mi::UnknownItem)
         :   _listType(listType)
     {}
 
+    IAggregator *init();
     ~ObjectList();
 
     int listType() const
@@ -44,14 +42,24 @@ public:
         return _listType;
     }
 
-    bool containsObjectNamed(const QString &name) const
+    bool contains(const QString &name) const
     {
-        const Objects *objects = this->objects();
-        Objects::ConstIterator end = objects->constEnd();
-        for (Objects::ConstIterator i = objects->constBegin();  i != end;  ++i)
+        const QList<Object*> *objects = this->objects();
+        QList<Object*>::ConstIterator end = objects->constEnd();
+        for (QList<Object*>::ConstIterator i = objects->constBegin();  i != end;  ++i)
             if ((*i)->name() == name)
                 return true;
         return false;
+    }
+
+    int count() const
+    {
+        return _objects.count();
+    }
+
+    IAggregator *at(int i) const
+    {
+        return _objects.at(i);
     }
 
     void insert(int i, Object *object)
@@ -66,7 +74,7 @@ public:
         if (!name.isEmpty()) {
             int suffix = 0;
             QString new_name = name;
-            while (containsObjectNamed(new_name))
+            while (contains(new_name))
                 new_name = QString("%1.%2").arg(name).arg(++suffix);
             if (name != new_name)
                 object->setName(new_name);
@@ -75,11 +83,12 @@ public:
         object->setParent(this);
     }
 
+    // IAggregator
     void clear()
     {
-        Objects *objects = this->objects();
-        Objects::ConstIterator end = objects->end();
-        for (Objects::ConstIterator i = objects->begin();  i != end;  ++i) {
+        QList<Object*> *objects = this->objects();
+        QList<Object*>::ConstIterator end = objects->end();
+        for (QList<Object*>::ConstIterator i = objects->begin();  i != end;  ++i) {
             Object *object = *i;
             object->setParent(0);
             delete object;
@@ -87,29 +96,41 @@ public:
         _objects.clear();
     }
 
-    // DataObject
+    // Object
     bool isList() const
     {
         return true;
     }
 
 protected:
-    Objects *objects()
+    QList<Object*> *objects()
     {
-        return reinterpret_cast<Objects*>(&_objects);
+        return reinterpret_cast<QList<Object*>*>(&_objects);
     }
 
-    const Objects *objects() const
+    const QList<Object*> *objects() const
     {
-        return reinterpret_cast<const Objects*>(&_objects);
+        return reinterpret_cast<const QList<Object*>*>(&_objects);
     }
 
-    // IModelList
     class ModelList : public IModelList
     {
-        Q_IMODELLIST_BASE
-        Q_IMODELITEM_BASE__ITEMTYPE(Mi::ListItem)
+        ObjectList *_aggregator;
 
+    public:
+        ModelList(ObjectList *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        virtual IAggregate *init();
+
+    protected:
+        ObjectList *a() const
+        {
+            return _aggregator;
+        }
+
+        // IModelList
         int listType() const
         {
             return a()->listType();
@@ -117,7 +138,7 @@ protected:
 
         bool containsObjectNamed(const QString &name) const
         {
-            return a()->containsObjectNamed(name);
+            return a()->contains(name);
         }
 
         void insert(int i, IModelItem *item)
@@ -127,10 +148,10 @@ protected:
 
         void removeAt(int i)
         {
-            Objects *a_objects = a()->objects();
-            Object *object = a_objects->at(i);
+            QList<Object*> *objects = a()->objects();
+            Object *object = objects->at(i);
             object->setParent(0);
-            a_objects->removeAt(i);
+            objects->removeAt(i);
         }
 
         void clear()
@@ -139,6 +160,21 @@ protected:
         }
 
         // IModelItem
+        int itemType() const
+        {
+            return Mi::ListItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            return Mi::ListItem == itemType;
+        }
+
+        IModelItem *parent() const
+        {
+            return query<IModelItem>(a()->parent());
+        }
+
         int count() const
         {
             return a()->objects()->count();
@@ -154,8 +190,23 @@ protected:
             return query<IModelItem>(a()->objects()->at(i));
         }
 
-        IModelItem *findItem(int itemType) const { Q_ASSERT(0); return 0; }
-        IModelList *findList(int listType) const { Q_ASSERT(0); return 0; }
+        IModelItem *findItem(int itemType) const
+        {
+            Q_ASSERT(0);
+            return 0;
+        }
+
+        IModelList *findList(int listType) const
+        {
+            Q_ASSERT(0);
+            return 0;
+        }
+
+        // IAggregate
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
     };
 
     // IAggregator
@@ -163,7 +214,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelList:
-            return Q_NEW_AGGREGATE(ModelList);
+            return appendAggregate((new ModelList(this))->init());
         default:
             return 0;
         }

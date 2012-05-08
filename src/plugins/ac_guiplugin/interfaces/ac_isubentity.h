@@ -18,20 +18,30 @@
 #ifndef AC_ISUBENTITYITEM_H
 #define AC_ISUBENTITYITEM_H
 
-#include "mi_iaggregate.h"
-
-#include <ac_guinamespace.h>
+#include "ac_ichildentity.h"
 
 class IParentEntity;
 
-class ISubEntity : public IAggregate
+class ISubEntity : public IChildEntity
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(ISubEntity, IAggregate)
+    enum { InterfaceType = I::ISubEntity };
 
-    virtual IParentEntity *parentEntity() const = 0;
-    virtual bool isCurve() const = 0;
+    virtual bool intersects(const QRectF &rect) const = 0;
     virtual int sceneType() const = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
 };
 
 #endif // AC_ISUBENTITYITEM_H

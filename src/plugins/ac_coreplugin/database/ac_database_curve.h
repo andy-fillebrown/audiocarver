@@ -29,14 +29,19 @@ namespace Database {
 
 class AC_CORE_EXPORT Curve : public Object
 {
-    Q_IAGGREGATOR_DERIVED(Curve, Object)
-
     QStack<PointList> _pointsStack;
-    Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
+    enum { RoleCount = 1 };
 
 protected:
+    enum {
+        RoleCountOffset = Object::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
+
     Curve()
     {}
+
+    IAggregator *init();
 
     virtual void conformPoints() = 0;
 
@@ -51,11 +56,24 @@ public:
     bool setPoints(const PointList &points);
 
 protected:
-    // IPoints
     class AC_CORE_EXPORT Points : public IPoints
     {
-        Q_IAGGREGATE_BASE(Points)
+        Curve *_aggregator;
 
+    public:
+        Points(Curve *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        virtual IAggregate *init();
+
+    protected:
+        Curve *a() const
+        {
+            return _aggregator;
+        }
+
+        // IPoints
         const PointList &points() const
         {
             return a()->points();
@@ -75,14 +93,45 @@ protected:
         {
             a()->setPoints(points);
         }
+
+        // IAggregate
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
     };
 
-    // IModelData
-    class AC_CORE_EXPORT ModelData : public Base::ModelData
+    class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
+        Curve *a() const
+        {
+            return cast<Curve>(Object::ModelData::a());
+        }
+
     public:
-        Q_IMODELDATA_DERIVED
-        Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
+        ModelData(Curve *aggregator)
+            :   Object::ModelData(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelData
+        int roleCount() const
+        {
+            return TotalRoleCount;
+        }
+
+        int roleAt(int i) const
+        {
+            Q_ASSERT(0 <= i);
+            switch (i - RoleCountOffset) {
+            case 0:
+                return Ac::PointsRole;
+            default:
+                return Object::ModelData::roleAt(i);
+            }
+        }
 
         QVariant getVariant(int role) const
         {
@@ -90,7 +139,7 @@ protected:
             case Ac::PointsRole:
                 return QVariant::fromValue(a()->points());
             default:
-                return Base::getVariant(role);
+                return Object::ModelData::getVariant(role);
             }
         }
 
@@ -100,7 +149,7 @@ protected:
             case Ac::PointsRole:
                 return a()->setPoints(qvariant_cast<PointList>(data));
             default:
-                return Base::setVariant(data, role);
+                return Object::ModelData::setVariant(data, role);
             }
         }
     };
@@ -110,11 +159,11 @@ protected:
     {
         switch (interfaceType) {
         case I::IPoints:
-            return Q_NEW_AGGREGATE(Points);
+            return appendAggregate((new Points(this))->init());
         case I::IModelData:
-            return Q_NEW_AGGREGATE(ModelData);
+            return appendAggregate((new ModelData(this))->init());
         default:
-            return Base::createAggregate(interfaceType);
+            return Object::createAggregate(interfaceType);
         }
     }
 };

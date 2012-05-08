@@ -25,12 +25,24 @@
 class IEntity : public IAggregate
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IEntity, IAggregate)
+    enum { InterfaceType = I::IEntity };
 
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
     virtual bool isVisible() const = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
 };
 
 #endif // AC_IENTITY_H

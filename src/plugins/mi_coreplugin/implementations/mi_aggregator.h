@@ -15,32 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMPLEMENT_AGGREGATOR_H
-#define MI_IMPLEMENT_AGGREGATOR_H
+#ifndef MI_AGGREGATOR_H
+#define MI_AGGREGATOR_H
 
 #include "mi_iaggregator.h"
 
 #include <mi_iaggregate.h>
 
-namespace Implement {
-
-typedef QHash<int, IAggregate*> InterfaceTypeToAggregateHash;
-
 class MI_CORE_EXPORT Aggregator : public IAggregator
 {
-    InterfaceTypeToAggregateHash _aggregates;
+    QHash<int, IAggregate*> _aggregates;
 
 protected:
     Aggregator();
     ~Aggregator();
 
-    AggregateList aggregates() const
+    QList<IAggregate*> aggregates() const
     {
         return _aggregates.values();
     }
 
     // IAggregator
-    IAggregate *createAggregate(int interfaceType) { return 0; }
+    IAggregate *createAggregate(int interfaceType)
+    {
+        return 0;
+    }
 
     IAggregate *appendAggregate(IAggregate *aggregate)
     {
@@ -66,6 +65,4 @@ public:
     const void *queryInterface(int interfaceType) const;
 };
 
-} // namespace Implement
-
-#endif // MI_IMPLEMENT_AGGREGATOR_H
+#endif // MI_AGGREGATOR_H

@@ -26,11 +26,11 @@ class AC_CORE_EXPORT PitchCurve : public Curve
 {
     friend class ObjectFactory;
 
-    Q_IAGGREGATOR_DERIVED(PitchCurve, Curve)
-
 protected:
     PitchCurve()
     {}
+
+    IAggregator *init();
 
     // Curve
     void conformPoints()
@@ -45,11 +45,28 @@ protected:
         }
     }
 
-    // IModelItem
-    class AC_CORE_EXPORT ModelItem : public Base::ModelItem
+    class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
     {
-        Q_IMODELITEM_DERIVED
-        Q_IMODELITEM_DERIVED__ITEMTYPE(Ac::PitchCurveItem)
+    public:
+        ModelItem(PitchCurve *aggregator)
+            :   Curve::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelItem
+        int itemType() const
+        {
+            return Ac::PitchCurveItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::PitchCurveItem == itemType)
+                return true;
+            return Curve::ModelItem::isTypeOfItem(itemType);
+        }
     };
 
     // IAggregator
@@ -57,9 +74,9 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelItem:
-            return Q_NEW_AGGREGATE(ModelItem);
+            return appendAggregate((new ModelItem(this))->init());
         default:
-            return Base::createAggregate(interfaceType);
+            return Curve::createAggregate(interfaceType);
         }
     }
 };

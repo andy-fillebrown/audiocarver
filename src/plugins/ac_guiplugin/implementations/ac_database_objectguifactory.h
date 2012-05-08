@@ -15,9 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUIDEFS_H
-#define AC_GUIDEFS_H
+#ifndef AC_DATABASE_OBJECTGUIFACTORY_H
+#define AC_DATABASE_OBJECTGUIFACTORY_H
 
-#include <mi_coredefs.h>
+#include "ac_database_objectfactory.h"
 
-#endif // AC_GUIDEFS_H
+namespace Database {
+
+class ObjectGuiFactory : public ObjectFactory
+{
+protected:
+    // IDataObjectFactory
+    IAggregator *createObject(int itemType);
+
+public:
+    // IUnknown
+    void *queryInterface(int interfaceType)
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
+
+    const void *queryInterface(int interfaceType) const
+    {
+        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    }
+};
+
+} // namespace Database
+
+#endif // AC_DATABASE_OBJECTGUIFACTORY_H

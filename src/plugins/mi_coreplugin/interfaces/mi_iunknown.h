@@ -23,7 +23,8 @@
 class IUnknown
 {
 protected:
-    virtual ~IUnknown() {}
+    virtual ~IUnknown()
+    {}
 
 public:
     virtual int interfaceType() const = 0;
@@ -35,13 +36,17 @@ public:
 template <class T, class Unknown> inline
 T *query(Unknown *unknown)
 {
-    return unknown ? cast<T>(unknown->queryInterface(T::InterfaceType)) : 0;
+    if (unknown)
+        return cast<T>(unknown->queryInterface(T::InterfaceType));
+    return 0;
 }
 
 template <class T, class Unknown> inline
 const T *query(const Unknown *unknown)
 {
-    return unknown ? cast<const T>(unknown->queryInterface(T::InterfaceType)) : 0;
+    if (unknown)
+        return cast<const T>(unknown->queryInterface(T::InterfaceType));
+    return 0;
 }
 
 template <class T, class Unknown> inline

@@ -10,7 +10,6 @@ DEFINES *= \
     MI_CORE_LIBRARY
 
 SOURCE_FILES = \
-    coredefs \
     coreglobal \
     corenamespace \
 

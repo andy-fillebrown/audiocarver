@@ -22,8 +22,6 @@
 
 namespace Database {
 
-class Object;
-
 class ScopedDataChange
 {
     Object *_object;
@@ -31,14 +29,11 @@ class ScopedDataChange
     Mi::NotificationFlags _notificationFlags;
 
 public:
-    ScopedDataChange(Object *object)
+    ScopedDataChange(Object *object, int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
         :   _object(object)
-    {}
-
-    void init(int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+        ,   _role(role)
+        ,   _notificationFlags(notificationFlags)
     {
-        _role = role;
-        _notificationFlags = notificationFlags;
         _object->dataAboutToBeChanged(_object, _role, _notificationFlags);
     }
 
@@ -49,9 +44,5 @@ public:
 };
 
 } // namespace Database
-
-#define Q_SCOPED_DATA_CHANGE(Params) \
-    ScopedDataChange data_change_notifier(this); \
-    data_change_notifier.init Params ;
 
 #endif // MI_SCOPEDDATACHANGE_H

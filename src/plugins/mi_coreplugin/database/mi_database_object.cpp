@@ -24,11 +24,6 @@
 
 namespace Database {
 
-Q_IAGGREGATOR_INIT_ROLES(Object) =
-{
-Mi::NameRole
-};
-
 IAggregator *Object::init()
 {
     return this;
@@ -54,7 +49,7 @@ bool Object::setName(const QString &name)
         if (list && list->containsObjectNamed(_name))
             return false;
     }
-    Q_SCOPED_DATA_CHANGE((Mi::NameRole))
+    ScopedDataChange data_change(this, Mi::NameRole);
     _name = name;
     return true;
 }
@@ -63,7 +58,7 @@ void Object::setParent(Object *parent)
 {
     if (_parent == parent)
         return;
-    Q_SCOPED_PARENT_CHANGE(())
+    ScopedParentChange parent_change(this);
     if (!parent) {
         IOrphanage *orphanage = IOrphanage::instance();
         if (orphanage)

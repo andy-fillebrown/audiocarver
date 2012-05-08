@@ -22,28 +22,12 @@
 
 namespace Database {
 
-Q_IAGGREGATOR_INIT_ROLES(ScoreObject) =
-{
-Ac::VolumeRole
-};
-
-Q_IAGGREGATOR_INIT_ITEMTYPES(ScoreObject) =
-{
-Ac::PitchCurveItem,
-Mi::ListItem
-};
-
 IAggregator *ScoreObject::init()
 {
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _pitchCurve = factory->createObject(Ac::PitchCurveItem);
     _controlCurves = factory->createObjectList(Ac::ControlCurveItem);
-    Q_IAGGREGATOR_INIT_ITEMLIST__INITIALIZER = {
-        _pitchCurve,
-        _controlCurves,
-    };
-    Q_IAGGREGATOR_INIT_ITEMLIST
-    return Base::init();
+    return Object::init();
 }
 
 ScoreObject::~ScoreObject()
@@ -54,12 +38,12 @@ ScoreObject::~ScoreObject()
 
 IAggregate *ScoreObject::ModelData::init()
 {
-    return Base::init();
+    return Object::ModelData::init();
 }
 
 IAggregate *ScoreObject::ModelItem::init()
 {
-    return Base::init();
+    return Object::ModelItem::init();
 }
 
 bool ScoreObject::setVolume(qreal volume)
@@ -67,7 +51,7 @@ bool ScoreObject::setVolume(qreal volume)
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
     if (_volume == volume)
         return false;
-    Q_SCOPED_DATA_CHANGE((Ac::VolumeRole));
+    ScopedDataChange data_change(this, Ac::VolumeRole);
     _volume = volume;
     updatePoints();
     return true;

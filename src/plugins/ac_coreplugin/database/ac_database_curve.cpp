@@ -21,16 +21,11 @@
 
 namespace Database {
 
-Q_IAGGREGATOR_INIT_ROLES(Curve) =
-{
-Ac::PointsRole
-};
-
 IAggregator *Curve::init()
 {
     static PointList points;
     _pointsStack.push(points);
-    return Base::init();
+    return Object::init();
 }
 
 IAggregate *Curve::Points::init()
@@ -40,12 +35,12 @@ IAggregate *Curve::Points::init()
 
 IAggregate *Curve::ModelData::init()
 {
-    return Base::init();
+    return Object::ModelData::init();
 }
 
 void Curve::pushPoints(const PointList &points)
 {
-    Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
+    ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyParent);
     _pointsStack.push(points);
 }
 
@@ -53,7 +48,7 @@ void Curve::popPoints()
 {
     if (1 == _pointsStack.count())
         return;
-    Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyParent))
+    ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyParent);
     _pointsStack.pop();
 }
 
@@ -69,7 +64,7 @@ bool Curve::setPoints(const PointList &points)
     _pointsStack.top() = old_pts;
     if (_pointsStack.top() == new_pts)
         return false;
-    Q_SCOPED_DATA_CHANGE((Ac::PointsRole, Mi::NotifyModelAndParent));
+    ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyModelAndParent);
     _pointsStack.top() = new_pts;
     return true;
 }

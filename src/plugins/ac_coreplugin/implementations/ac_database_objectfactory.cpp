@@ -27,11 +27,11 @@ IAggregator *ObjectFactory::createObject(int itemType)
 {
     switch (itemType) {
     case Ac::ControlCurveItem:
-        return Q_NEW_OBJECT(ControlCurve);
+        return (new ControlCurve)->init();
     case Ac::NoteItem:
-        return Q_NEW_OBJECT(Note);
+        return (new Note)->init();
     case Ac::PitchCurveItem:
-        return Q_NEW_OBJECT(PitchCurve);
+        return (new PitchCurve)->init();
     default:
         return 0;
     }
@@ -41,7 +41,7 @@ IAggregator *ObjectFactory::createObjectList(int itemType, int listType)
 {
     switch (listType) {
     case Mi::ListItem:
-        return Q_NEW_OBJECTLIST(ObjectList, itemType);
+        return (new ObjectList(itemType))->init();
     default:
         return 0;
     }

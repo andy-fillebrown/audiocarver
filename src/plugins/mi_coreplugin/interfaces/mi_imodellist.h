@@ -23,7 +23,7 @@
 class IModelList : public IModelItem
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IModelList, IModelItem)
+    enum { InterfaceType = I::IModelItem };
 
     virtual int listType() const = 0;
     virtual bool containsObjectNamed(const QString &name) const = 0;
@@ -56,6 +56,19 @@ public:
     void removeLast()
     {
         removeAt(count() - 1);
+    }
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IModelItem::isTypeOfInterface(interfaceType);
     }
 };
 

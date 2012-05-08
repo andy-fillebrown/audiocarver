@@ -21,12 +21,12 @@ namespace Database {
 
 IAggregator *Note::init()
 {
-    return Base::init();
+    return ScoreObject::init();
 }
 
 IAggregate *Note::ModelItem::init()
 {
-    return Base::init();
+    return ScoreObject::ModelItem::init();
 }
 
 } // namespace Database

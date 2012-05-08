@@ -28,26 +28,34 @@ namespace Database {
 
 class AC_CORE_EXPORT ScoreObject : public Object
 {
-    Q_IAGGREGATOR_DERIVED(ScoreObject, Object)
-
     qreal _volume;
-    Q_IAGGREGATOR_DERIVED__ROLECOUNT(1)
+    enum { RoleCount = 1 };
 
     IAggregator *_pitchCurve;
     IAggregator *_controlCurves;
-    Q_IAGGREGATOR_DERIVED__ITEMCOUNT(2)
+    enum { ItemCount = 2 };
 
 protected:
+    enum {
+        RoleCountOffset = Object::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount,
+        ItemCountOffset = Object::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount
+    };
+
     ScoreObject()
         :   _volume(0.0f)
         ,   _pitchCurve(0)
         ,   _controlCurves(0)
     {}
 
+    IAggregator *init();
     ~ScoreObject();
 
     virtual qreal length() const = 0;
-    virtual void updatePoints() {}
+
+    virtual void updatePoints()
+    {}
 
     qreal volume() const
     {
@@ -66,11 +74,37 @@ protected:
         return cast<ObjectList>(_controlCurves);
     }
 
-    // IModelData
-    class AC_CORE_EXPORT ModelData : public Base::ModelData
+    class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
-        Q_IMODELDATA_DERIVED
-        Q_IMODELDATA_DERIVED__ROLE_FUNCTIONS
+        ScoreObject *a() const
+        {
+            return cast<ScoreObject>(Object::ModelData::a());
+        }
+
+    public:
+        ModelData(ScoreObject *aggregator)
+            :   Object::ModelData(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelData
+        int roleCount() const
+        {
+            return TotalRoleCount;
+        }
+
+        int roleAt(int i) const
+        {
+            Q_ASSERT(0 <= i);
+            switch (i - RoleCountOffset) {
+            case 0:
+                return Ac::VolumeRole;
+            default:
+                return Object::ModelData::roleAt(i);
+            }
+        }
 
         QVariant getVariant(int role) const
         {
@@ -78,7 +112,7 @@ protected:
             case Ac::VolumeRole:
                 return a()->volume();
             default:
-                return Base::getVariant(role);
+                return Object::ModelData::getVariant(role);
             }
         }
 
@@ -88,16 +122,54 @@ protected:
             case Ac::VolumeRole:
                 return a()->setVolume(qvariant_cast<qreal>(data));
             default:
-                return Base::setVariant(data, role);
+                return Object::ModelData::setVariant(data, role);
             }
         }
     };
 
-    // IModelItem
-    class AC_CORE_EXPORT ModelItem : public Base::ModelItem
+    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
     {
-        Q_IMODELITEM_DERIVED
-        Q_IMODELITEM_DERIVED__FUNCTIONS
+        ScoreObject *a() const
+        {
+            return cast<ScoreObject>(Object::ModelItem::a());
+        }
+
+    public:
+        ModelItem(Object *aggregator)
+            :   Object::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelItem
+        int count() const
+        {
+            return TotalItemCount;
+        }
+
+        int indexOf(const IModelItem *item) const
+        {
+            const ScoreObject *a = this->a();
+            if (query<IModelItem>(a->pitchCurve()) == item)
+                return ItemCountOffset;
+            if (query<IModelItem>(a->controlCurves()) == item)
+                return ItemCountOffset + 1;
+            return Object::ModelItem::indexOf(item);
+        }
+
+        IModelItem *at(int i) const
+        {
+            Q_ASSERT(0 <= i);
+            switch (i - ItemCountOffset) {
+            case 0:
+                return query<IModelItem>(a()->pitchCurve());
+            case 1:
+                return query<IModelItem>(a()->controlCurves());
+            default:
+                return Object::ModelItem::at(i);
+            }
+        }
     };
 
     // IAggregator
@@ -105,9 +177,9 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelData:
-            return Q_NEW_AGGREGATE(ModelData);
+            return appendAggregate((new ModelData(this))->init());
         default:
-            return Base::createAggregate(interfaceType);
+            return Object::createAggregate(interfaceType);
         }
     }
 };

@@ -18,7 +18,8 @@
 #ifndef MI_DATABASE_OBJECT_H
 #define MI_DATABASE_OBJECT_H
 
-#include "mi_implement_aggregator.h"
+#include "mi_aggregator.h"
+
 #include "mi_imodeldata.h"
 #include "mi_imodelitem.h"
 
@@ -26,21 +27,28 @@ namespace Database {
 
 class ObjectList;
 
-class MI_CORE_EXPORT Object : public Implement::Aggregator
+class MI_CORE_EXPORT Object : public Aggregator
 {
-    Q_IAGGREGATOR_BASE(Object)
-
     QString _name;
-    Q_IAGGREGATOR_BASE__ROLECOUNT(1)
+    enum { RoleCount = 1 };
+
+    enum { ItemCount = 0 };
 
     Object *_parent;
 
 protected:
-    enum { TotalItemCount = 0 };
+    enum {
+        RoleCountOffset = 0,
+        TotalRoleCount = RoleCount,
+        ItemCountOffset = 0,
+        TotalItemCount = ItemCount
+    };
 
     Object()
         :   _parent(0)
     {}
+
+    virtual IAggregator *init();
 
 public:
     const QString &name() const
@@ -52,11 +60,10 @@ public:
 
     Object *parent() const
     {
-        return isList()
-                ? _parent
-                  ? _parent->parent()
-                  : 0
-                : _parent;
+        if (isList() && _parent)
+            return _parent->parent();
+        else
+            return _parent;
     }
 
     void setParent(Object *parent);
@@ -74,11 +81,48 @@ public:
     virtual void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags);
 
 protected:
-    // IModelData
     class MI_CORE_EXPORT ModelData : public IModelData
     {
-        Q_IMODELDATA_BASE
-        Q_IMODELDATA_BASE__ROLE_FUNCTIONS
+        Object *_aggregator;
+        IModelItem *_item;
+
+    protected:
+        ModelData(Object *aggregator)
+            :   _aggregator(aggregator)
+            ,   _item(0)
+        {}
+
+        virtual IAggregate *init();
+
+        Object *a() const
+        {
+            return _aggregator;
+        }
+
+        // IModelData
+        IModelItem *item() const
+        {
+            return _item;
+        }
+
+        int roleCount() const
+        {
+            return TotalRoleCount;
+        }
+
+        int roleAt(int i) const
+        {
+            Q_ASSERT(0 <= i);
+            Q_ASSERT(i < RoleCount);
+            if (i < 0 || RoleCount <= i)
+                return -1;
+            return Mi::NameRole;
+        }
+
+        Qt::ItemFlags flags() const
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
 
         QVariant getVariant(int role) const
         {
@@ -103,19 +147,78 @@ protected:
                 return false;
             }
         }
+
+        // IAggregate
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
     };
 
-    // IModelItem
     class MI_CORE_EXPORT ModelItem : public IModelItem
     {
-        Q_IMODELITEM_BASE
-        Q_IMODELITEM_BASE__ITEMTYPE(Mi::UnknownItem)
+        IAggregator *_aggregator;
 
-        int count() const { return 0; }
-        int indexOf(const IModelItem *item) const { Q_ASSERT(0); return -1; }
-        IModelItem *at(int i) const { Q_ASSERT(0); return 0; }
-        IModelItem *findItem(int itemType) const { return 0; }
-        IModelList *findList(int listType) const { return 0; }
+    protected:
+        ModelItem(Object *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        virtual IAggregate *init();
+
+        Object *a() const
+        {
+            return cast<Object>(_aggregator);
+        }
+
+        // IModelItem
+        int itemType() const
+        {
+            return Mi::UnknownItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            return Mi::UnknownItem == itemType;
+        }
+
+        IModelItem *parent() const
+        {
+            return query<IModelItem>(a()->parent());
+        }
+
+        int count() const
+        {
+            return 0;
+        }
+
+        int indexOf(const IModelItem *item) const
+        {
+            Q_ASSERT(0);
+            return -1;
+        }
+
+        IModelItem *at(int i) const
+        {
+            Q_ASSERT(0);
+            return 0;
+        }
+
+        IModelItem *findItem(int itemType) const
+        {
+            return 0;
+        }
+
+        IModelList *findList(int listType) const
+        {
+            return 0;
+        }
+
+        // IAggregate
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
     };
 };
 
@@ -127,9 +230,9 @@ namespace Database {
 
 inline ObjectList *Object::list() const
 {
-    return _parent->isList()
-            ? cast<ObjectList>(_parent)
-            : 0;
+    if (_parent->isList())
+        return cast<ObjectList>(_parent);
+    return 0;
 }
 
 } // namespace Database

@@ -1,5 +1,6 @@
 
 SOURCE_FILES *= \
+    ichildentity \
     ientity \
 #    ientityitem \
 #    igripitem \

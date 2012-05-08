@@ -28,13 +28,10 @@ class ScopedParentChange
     Mi::NotificationFlags _notificationFlags;
 
 public:
-    ScopedParentChange(Object *object)
+    ScopedParentChange(Object *object, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
         :   _object(object)
-    {}
-
-    void init(Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+        ,   _notificationFlags(notificationFlags)
     {
-        _notificationFlags = notificationFlags;
         _object->parentAboutToBeChanged(_object, _notificationFlags);
     }
 
@@ -45,9 +42,5 @@ public:
 };
 
 } // namespace Database
-
-#define Q_SCOPED_PARENT_CHANGE(Params) \
-    ScopedParentChange parent_change_notifier(this); \
-    parent_change_notifier.init Params ;
 
 #endif // MI_SCOPEDPARENTCHANGE_H

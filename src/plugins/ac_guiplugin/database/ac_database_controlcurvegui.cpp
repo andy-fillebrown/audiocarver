@@ -15,29 +15,23 @@
 **
 **************************************************************************/
 
-#include "ac_database_gui_curve.h"
+#include "ac_database_controlcurvegui.h"
 
-#include <ac_ientity.h>
+#include <mi_scopeddatachange.h>
 
 namespace Database {
-namespace Gui {
 
-IAggregate *Curve::SubEntity::init()
+IAggregator *ControlCurveGui::init()
 {
-    return this;
+    return ControlCurve::init();
 }
 
-IAggregate *Curve::Entity::init()
+IAggregate *ControlCurveGui::SubEntity::init()
 {
-    _graphicsCurveItem = new GraphicsCurveItem;
-    _graphicsCurveItem->setEntity(this);
-    return this;
+    return CurveGui::SubEntity::init();
 }
 
-Curve::Entity::~Entity()
-{
-    delete _graphicsCurveItem;
-}
+void ControlCurveGui::parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
+{}
 
 } // namespace Database
-} // namespace Gui

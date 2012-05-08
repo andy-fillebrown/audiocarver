@@ -21,31 +21,26 @@
 
 namespace Database {
 
-Q_IAGGREGATOR_INIT_ROLES(ControlCurve) =
-{
-Ac::ControlTypeRole
-};
-
 IAggregator *ControlCurve::init()
 {
-    return Base::init();
+    return Curve::init();
 }
 
 IAggregate *ControlCurve::ModelData::init()
 {
-    return Base::init();
+    return Curve::ModelData::init();
 }
 
 IAggregate *ControlCurve::ModelItem::init()
 {
-    return Base::init();
+    return Curve::ModelItem::init();
 }
 
 bool ControlCurve::setControlType(int controlType)
 {
     if (_controlType == controlType)
         return false;
-    Q_SCOPED_DATA_CHANGE((Ac::ControlTypeRole))
+    ScopedDataChange data_change(this, Ac::ControlTypeRole);
     _controlType = controlType;
     return true;
 }

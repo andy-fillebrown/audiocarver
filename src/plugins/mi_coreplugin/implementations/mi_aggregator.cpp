@@ -15,12 +15,10 @@
 **
 **************************************************************************/
 
-#include "mi_implement_aggregator.h"
+#include "mi_aggregator.h"
 
 #include <mi_iaggregate.h>
 #include <mi_iorphanage.h>
-
-namespace Implement {
 
 Aggregator::Aggregator()
 {
@@ -37,23 +35,22 @@ Aggregator::~Aggregator()
     clear();
 }
 
-#define Q_I__AGGREGATOR__QUERY_INTERFACE \
-    if (I::IAggregator == interfaceType) \
-        return this; \
-    void *interface = _aggregates.value(interfaceType); \
-    if (interface) \
-        return interface;
-
 void *Aggregator::queryInterface(int interfaceType)
 {
-    Q_I__AGGREGATOR__QUERY_INTERFACE
+    if (I::IAggregator == interfaceType)
+        return this;
+    IAggregate *interface = _aggregates.value(interfaceType);
+    if (interface)
+        return interface;
     return createAggregate(interfaceType);
 }
 
 const void *Aggregator::queryInterface(int interfaceType) const
 {
-    Q_I__AGGREGATOR__QUERY_INTERFACE
+    if (I::IAggregator == interfaceType)
+        return this;
+    IAggregate *interface = _aggregates.value(interfaceType);
+    if (interface)
+        return interface;
     return 0;
 }
-
-} // namespace Implement

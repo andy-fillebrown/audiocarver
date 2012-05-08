@@ -15,17 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_database_gui_note.h"
+#include "ac_database_notegui.h"
 
 namespace Database {
-namespace Gui {
 
-IAggregator *Note::init()
+IAggregator *NoteGui::init()
 {
-    return Base::init();
+    return Note::init();
 }
 
-} // namespace Gui
+IAggregate *NoteGui::ParentEntity::init()
+{
+    return this;
+}
+
+IAggregate *NoteGui::ChildEntity::init()
+{
+    return this;
+}
+
 } // namespace Database
 
 //#include "ac_note.h"

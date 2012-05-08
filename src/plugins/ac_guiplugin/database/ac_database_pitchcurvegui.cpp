@@ -15,20 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_database_gui_controlcurve.h"
-
-#include <mi_scopeddatachange.h>
+#include "ac_database_pitchcurvegui.h"
 
 namespace Database {
-namespace Gui {
 
-IAggregator *ControlCurve::init()
+IAggregator *PitchCurveGui::init()
 {
-    return Base::init();
+    return PitchCurve::init();
 }
 
-void ControlCurve::parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
+IAggregate *PitchCurveGui::SubEntity::init()
+{
+    return CurveGui::SubEntity::init();
+}
+
+void PitchCurveGui::parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
 {}
 
-} // namespace Gui
 } // namespace Database

@@ -26,10 +26,10 @@ class AC_CORE_EXPORT Note : public ScoreObject
 {
     friend class ObjectFactory;
 
-    Q_IAGGREGATOR_DERIVED(Note, ScoreObject)
-
 public:
-    // AbstractScoreObject
+    IAggregator *init();
+
+    // ScoreObject
     qreal length() const
     {
         const PointList &pts = pitchCurve()->points();
@@ -37,11 +37,27 @@ public:
     }
 
 protected:
-    // IModelItem
-    class AC_CORE_EXPORT ModelItem : public Base::ModelItem
+    class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
     {
-        Q_IMODELITEM_DERIVED
-        Q_IMODELITEM_DERIVED__ITEMTYPE(Ac::NoteItem)
+    public:
+        ModelItem(Note *aggregator)
+            :   ScoreObject::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+        // IModelItem
+        int itemType() const
+        {
+            return Ac::NoteItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::NoteItem == itemType)
+                return true;
+            return ScoreObject::ModelItem::isTypeOfItem(itemType);
+        }
     };
 
     // IAggregator
@@ -49,66 +65,13 @@ protected:
     {
         switch (interfaceType) {
         case I::IModelItem:
-            return Q_NEW_AGGREGATE(ModelItem);
+            return appendAggregate((new ModelItem(this))->init());
         default:
-            return Base::createAggregate(interfaceType);
+            return ScoreObject::createAggregate(interfaceType);
         }
     }
 };
 
 } // namespace Database
-
-//class AC_CORE_EXPORT Note : public AbstractScoreDataObject
-//{
-//public:
-//    enum { Type = Ac::NoteItem };
-
-//    explicit Note(QObject *parent = 0);
-
-//    Track *track() const;
-
-//    void setColor(const QColor &color);
-
-//    // ScoreObject
-//    qreal length() const;
-//    void updatePoints();
-
-//    // IEntity
-//    bool isSubEntity() const { return false; }
-//    const PointList &points() const;
-//    void pushPoints(const PointList &points);
-//    void popPoints();
-//    void setPoints(const PointList &points);
-//    void highlight();
-//    void unhighlight();
-//    bool intersects(const QRectF &) const { return false; }
-//    bool isVisible() const;
-
-//    QList<IEntity*> subEntities(int sceneType) const;
-
-//    // IModelItem
-//    int type() const { return Type; }
-
-//    QVariant data(int role) const
-//    {
-//        if (Ac::VisibilityRole == role)
-//            return isVisible();
-//        return ScoreObject::data(role);
-//    }
-
-//    // IUnknown
-//    void *query(int type) const
-//    {
-//        switch (type) {
-//        case Ac::EntityInterface:
-//            return objectToInterface_cast<IEntity>(this);
-//        default:
-//            return ScoreObject::query(type);
-//        }
-//    }
-
-//private:
-//    Q_DECLARE_PRIVATE(Note)
-//};
 
 #endif // AC_DATABASE_NOTE_H

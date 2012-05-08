@@ -15,34 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_GUI_OBJECTFACTORY_H
-#define AC_DATABASE_GUI_OBJECTFACTORY_H
+#include "ac_database_objectguifactory.h"
 
-#include "ac_database_objectfactory.h"
+#include <ac_database_controlcurvegui.h>
+#include <ac_database_notegui.h>
+#include <ac_database_pitchcurvegui.h>
 
 namespace Database {
-namespace Gui {
 
-class ObjectFactory : public Database::ObjectFactory
+IAggregator *ObjectGuiFactory::createObject(int itemType)
 {
-protected:
-    // IDataObjectFactory
-    IAggregator *createObject(int itemType);
-
-public:
-    // IUnknown
-    void *queryInterface(int interfaceType)
-    {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
+    switch (itemType) {
+    case Ac::ControlCurveItem:
+        return (new ControlCurveGui)->init();
+    case Ac::NoteItem:
+        return (new NoteGui)->init();
+    case Ac::PitchCurveItem:
+        return (new PitchCurveGui)->init();
+    default:
+        return ObjectFactory::createObject(itemType);
     }
+}
 
-    const void *queryInterface(int interfaceType) const
-    {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
-    }
-};
-
-} // namespace Gui
 } // namespace Database
-
-#endif // AC_DATABASE_GUI_OBJECTFACTORY_H

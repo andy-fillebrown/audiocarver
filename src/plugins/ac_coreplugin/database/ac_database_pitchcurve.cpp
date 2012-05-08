@@ -21,12 +21,12 @@ namespace Database {
 
 IAggregator *PitchCurve::init()
 {
-    return Base::init();
+    return Curve::init();
 }
 
 IAggregate *PitchCurve::ModelItem::init()
 {
-    return Base::init();
+    return Curve::ModelItem::init();
 }
 
 } // namespace Database

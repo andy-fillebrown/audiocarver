@@ -15,15 +15,34 @@
 **
 **************************************************************************/
 
-#include "ac_database_gui_pitchcurve.h"
+#ifndef AC_ICHILDENTITY_H
+#define AC_ICHILDENTITY_H
 
-namespace Database {
-namespace Gui {
+#include "mi_iaggregate.h"
 
-IAggregator *PitchCurve::init()
+#include <ac_guinamespace.h>
+
+class IParentEntity;
+
+class IChildEntity : public IAggregate
 {
-    return Base::init();
-}
+public:
+    enum { InterfaceType = I::IChildEntity };
 
-} // namespace Gui
-} // namespace Database
+    virtual IParentEntity *parentEntity() const = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
+};
+
+#endif // AC_ICHILDENTITY_H

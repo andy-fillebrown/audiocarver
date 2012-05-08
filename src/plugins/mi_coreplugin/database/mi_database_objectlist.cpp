@@ -21,8 +21,8 @@ namespace Database {
 
 IAggregator *ObjectList::init()
 {
-    return this;
     setName(Mi::itemTypeString(_listType) + "s");
+    return Object::init();
 }
 
 ObjectList::~ObjectList()

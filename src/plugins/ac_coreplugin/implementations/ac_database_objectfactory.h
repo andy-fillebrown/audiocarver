@@ -35,12 +35,16 @@ public:
     // IUnknown
     void *queryInterface(int interfaceType)
     {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
+        if (this->isTypeOfInterface(interfaceType))
+            return this;
+        return 0;
     }
 
     const void *queryInterface(int interfaceType) const
     {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
+        if (this->isTypeOfInterface(interfaceType))
+            return this;
+        return 0;
     }
 };
 

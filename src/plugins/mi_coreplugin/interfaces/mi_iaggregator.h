@@ -20,24 +20,29 @@
 
 #include "mi_iunknown.h"
 
-#include <mi_coredefs.h>
-
 class IAggregate;
-
-typedef QList<IAggregate*> AggregateList;
 
 class IAggregator : public IUnknown
 {
 public:
-    Q_IUNKNOWN_BASE__INTERFACETYPE(IAggregator)
+    enum { InterfaceType = I::IAggregator };
 
-    virtual AggregateList aggregates() const = 0;
+    virtual QList<IAggregate*> aggregates() const = 0;
     virtual IAggregate *createAggregate(int interfaceType) = 0;
     virtual IAggregate *appendAggregate(IAggregate* aggregate) = 0;
     virtual void removeAggregate(IAggregate *aggregate) = 0;
     virtual void clear() = 0;
-};
 
-typedef QList<IAggregator*> AggregatorList;
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+};
 
 #endif // MI_IAGGREGATE_H

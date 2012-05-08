@@ -25,9 +25,20 @@
 class IAggregate : public IUnknown
 {
 public:
-    Q_IUNKNOWN_BASE__INTERFACETYPE(IAggregate)
+    enum { InterfaceType = I::IAggregate };
 
     virtual IAggregator *aggregator() const = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 
     void *queryInterface(int interfaceType)
     {

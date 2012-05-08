@@ -25,7 +25,7 @@ class IModelList;
 class IModelItem : public IAggregate
 {
 public:
-    Q_IUNKNOWN_DERIVED__INTERFACETYPE(IModelItem, IAggregate)
+    enum { InterfaceType = I::IModelItem };
 
     virtual int itemType() const = 0;
     virtual bool isTypeOfItem(int itemType) const = 0;
@@ -35,6 +35,19 @@ public:
     virtual IModelItem *at(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelList *findList(int listType) const = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
 };
 
 #endif // MI_IMODELITEM_H

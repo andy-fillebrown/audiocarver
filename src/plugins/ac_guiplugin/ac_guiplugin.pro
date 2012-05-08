@@ -7,7 +7,6 @@ load(../../plugin.prf)
 
 SOURCE_FILES = \
 #    guiconstants \
-    guidefs \
     guinamespace \
 #    mainwidget \
 

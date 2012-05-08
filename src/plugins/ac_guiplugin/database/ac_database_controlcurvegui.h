@@ -15,41 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_GUI_CONTROLCURVE_H
-#define AC_DATABASE_GUI_CONTROLCURVE_H
+#ifndef AC_DATABASE_CONTROLCURVEGUI_H
+#define AC_DATABASE_CONTROLCURVEGUI_H
 
 #include "ac_database_controlcurve.h"
-#include "ac_database_gui_curve.h"
 
-#include <ac_guidefs.h>
+#include "ac_database_curvegui.h"
+
 #include <ac_guinamespace.h>
-#include <ac_iparententity.h>
 
 namespace Database {
-namespace Gui {
 
-class ControlCurve : public Database::ControlCurve
+class ControlCurveGui : public ControlCurve
 {
-    friend class ObjectFactory;
+    friend class ObjectGuiFactory;
 
-    Q_IAGGREGATOR_DERIVED(ControlCurve, Database::ControlCurve)
+    CurveGui::Entity *_entity;
 
 protected:
-    ControlCurve()
+    ControlCurveGui()
         :   _entity(0)
     {}
+
+    IAggregator *init();
 
     // Object
     void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags);
 
-    // ISubEntity
-    class SubEntity : public Gui::Curve::SubEntity
+    class SubEntity : public CurveGui::SubEntity
     {
     public:
-        SubEntity(Database::Curve *aggregator)
-            :   Gui::Curve::SubEntity(aggregator)
+        SubEntity(Curve *aggregator)
+            :   CurveGui::SubEntity(aggregator)
         {}
 
+        IAggregate *init();
+
+    protected:
         // ISubEntity
         int sceneType() const
         {
@@ -57,29 +59,22 @@ protected:
         }
     };
 
-    // IEntity
-    typedef Gui::Curve::Entity Entity;
-
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
         case I::IEntity:
-            _entity = new Entity(this);
+            _entity = new CurveGui::Entity(this);
             _entity->init();
             return appendAggregate(_entity);
         case I::ISubEntity:
-            return Q_NEW_AGGREGATE(SubEntity);
+            return appendAggregate((new SubEntity(this))->init());
         default:
-            return Base::createAggregate(interfaceType);
+            return ControlCurve::createAggregate(interfaceType);
         }
     }
-
-private:
-    Entity *_entity;
 };
 
-} // namespace Gui
 } // namespace Database
 
-#endif // AC_DATABASE_GUI_CONTROLCURVE_H
+#endif // AC_DATABASE_CONTROLCURVEGUI_H
