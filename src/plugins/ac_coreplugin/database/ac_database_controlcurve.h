@@ -26,8 +26,9 @@ class AC_CORE_EXPORT ControlCurve : public Curve
 {
     friend class ObjectFactory;
 
-    int _controlType;
     enum { RoleCount = 1 };
+
+    int _controlType;
 
 protected:
     enum {

@@ -26,17 +26,15 @@ class AC_CORE_EXPORT Note : public ScoreObject
 {
     friend class ObjectFactory;
 
-public:
+protected:
     IAggregator *init();
 
-    // ScoreObject
-    qreal length() const
+    qreal duration() const
     {
         const PointList &pts = pitchCurve()->points();
         return pts.last().pos.x() - pts.first().pos.x();
     }
 
-protected:
     class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
     {
     public:

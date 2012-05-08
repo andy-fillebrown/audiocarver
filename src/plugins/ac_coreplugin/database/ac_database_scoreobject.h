@@ -28,12 +28,13 @@ namespace Database {
 
 class AC_CORE_EXPORT ScoreObject : public Object
 {
-    qreal _volume;
     enum { RoleCount = 1 };
+    enum { ItemCount = 2 };
+
+    qreal _volume;
 
     IAggregator *_pitchCurve;
     IAggregator *_controlCurves;
-    enum { ItemCount = 2 };
 
 protected:
     enum {
@@ -51,11 +52,6 @@ protected:
 
     IAggregator *init();
     ~ScoreObject();
-
-    virtual qreal length() const = 0;
-
-    virtual void updatePoints()
-    {}
 
     qreal volume() const
     {

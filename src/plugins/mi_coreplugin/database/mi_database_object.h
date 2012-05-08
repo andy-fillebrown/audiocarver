@@ -29,10 +29,10 @@ class ObjectList;
 
 class MI_CORE_EXPORT Object : public Aggregator
 {
-    QString _name;
     enum { RoleCount = 1 };
-
     enum { ItemCount = 0 };
+
+    QString _name;
 
     Object *_parent;
 

@@ -53,7 +53,6 @@ bool ScoreObject::setVolume(qreal volume)
         return false;
     ScopedDataChange data_change(this, Ac::VolumeRole);
     _volume = volume;
-    updatePoints();
     return true;
 }
 

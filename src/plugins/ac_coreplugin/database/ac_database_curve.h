@@ -29,8 +29,9 @@ namespace Database {
 
 class AC_CORE_EXPORT Curve : public Object
 {
-    QStack<PointList> _pointsStack;
     enum { RoleCount = 1 };
+
+    QStack<PointList> _pointsStack;
 
 protected:
     enum {

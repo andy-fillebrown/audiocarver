@@ -83,19 +83,6 @@ public:
         object->setParent(this);
     }
 
-    // IAggregator
-    void clear()
-    {
-        QList<Object*> *objects = this->objects();
-        QList<Object*>::ConstIterator end = objects->end();
-        for (QList<Object*>::ConstIterator i = objects->begin();  i != end;  ++i) {
-            Object *object = *i;
-            object->setParent(0);
-            delete object;
-        }
-        _objects.clear();
-    }
-
     // Object
     bool isList() const
     {
@@ -218,6 +205,18 @@ protected:
         default:
             return 0;
         }
+    }
+
+    void clear()
+    {
+        QList<Object*> *objects = this->objects();
+        QList<Object*>::ConstIterator end = objects->end();
+        for (QList<Object*>::ConstIterator i = objects->begin();  i != end;  ++i) {
+            Object *object = *i;
+            object->setParent(0);
+            delete object;
+        }
+        _objects.clear();
     }
 };
 
