@@ -9,7 +9,7 @@ SOURCE_FILES = \
     scoreobject \
 #    projectsettings \
 #    score \
-#    track \
+    track \
 #    viewsettings \
 
 DIR = $$dirname(_FILE_)

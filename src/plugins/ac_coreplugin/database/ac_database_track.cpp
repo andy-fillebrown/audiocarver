@@ -15,205 +15,233 @@
 **
 **************************************************************************/
 
-#include "ac_track.h"
+#include "ac_database_track.h"
 
-#include <ac_graphicsitem.h>
-#include <ac_note.h>
-#include <ac_score.h>
+#include <mi_idatabaseobjectfactory.h>
+#include <mi_scopeddatachange.h>
 
-TrackPrivate::TrackPrivate(Track *q)
-    :   ScoreObjectPrivate(q)
-    ,   color(127.0f, 0.0f, 0.0f)
-    ,   instrument("sine")
-    ,   notes(0)
-    ,   recording(false)
+namespace Database {
+
+IAggregator *Track::init()
 {
-    mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
-    mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+    _notes = IDatabaseObjectFactory::instance()->createObjectList(Ac::NoteItem);
+    return ScoreObject::init();
 }
 
-void TrackPrivate::init()
+Track::~Track()
 {
-    notes = new ObjectTList<Note>(q_ptr);
+    delete _notes;
 }
 
-TrackPrivate::~TrackPrivate()
+IAggregate *Track::ModelData::init()
 {
-    qDeleteAll(notes);
+    return ScoreObject::ModelData::init();
 }
 
-GraphicsParentPrivate *TrackPrivate::graphicsParent() const
+IAggregate *Track::ModelItem::init()
 {
-    Q_Q(const Track);
-    Score *score = q->score();
-    return score ? score->d_func() : 0;
+    return ScoreObject::ModelItem::init();
 }
 
-Track::Track(QObject *parent)
-    :   ScoreObject(*(new TrackPrivate(this)), parent)
-{
-    Q_D(Track);
-    d->init();
-    setName("Track");
-}
+} // namespace Database
 
-qreal Track::length() const
-{
-    Score *score = this->score();
-    return score ? score->length() : 0.0f;
-}
+//#include <ac_graphicsitem.h>
+//#include <ac_note.h>
+//#include <ac_score.h>
 
-const QColor &Track::color() const
-{
-    Q_D(const Track);
-    return d->color;
-}
+//TrackPrivate::TrackPrivate(Track *q)
+//    :   ScoreObjectPrivate(q)
+//    ,   color(127.0f, 0.0f, 0.0f)
+//    ,   instrument("sine")
+//    ,   notes(0)
+//    ,   recording(false)
+//{
+//    mainGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+//    mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+//}
 
-void Track::setColor(const QColor &color)
-{
-    Q_D(Track);
-    if (d->color == color)
-        return;
-    d->beginChangeData();
-    d->color = color;
-    const int n = d->notes->count();
-    for (int i = 0;  i < n;  ++i)
-        d->notes->at(i)->setColor(color);
-    d->endChangeData();
-}
+//void TrackPrivate::init()
+//{
+//    notes = new ObjectTList<Note>(q_ptr);
+//}
 
-const QString &Track::instrument() const
-{
-    Q_D(const Track);
-    return d->instrument;
-}
+//TrackPrivate::~TrackPrivate()
+//{
+//    qDeleteAll(notes);
+//}
 
-void Track::setInstrument(const QString &instrument)
-{
-    Q_D(Track);
-    if (d->instrument == instrument)
-        return;
-    d->beginChangeData();
-    d->instrument = instrument;
-    d->endChangeData();
-}
+//GraphicsParentPrivate *TrackPrivate::graphicsParent() const
+//{
+//    Q_Q(const Track);
+//    Score *score = q->score();
+//    return score ? score->d_func() : 0;
+//}
 
-bool Track::isVisible() const
-{
-    Q_D(const Track);
-    return d->mainGraphicsItems[Ac::PitchScene]->isVisible();
-}
+//Track::Track(QObject *parent)
+//    :   ScoreObject(*(new TrackPrivate(this)), parent)
+//{
+//    Q_D(Track);
+//    d->init();
+//    setName("Track");
+//}
 
-void Track::setVisible(bool visible)
-{
-    Q_D(Track);
-    if (isVisible() == visible)
-        return;
-    d->beginChangeData();
-    foreach (QGraphicsItem *item, d->mainGraphicsItems)
-        item->setVisible(visible);
-    if (!visible)
-        setRecording(false);
-    d->endChangeData();
-}
+//qreal Track::length() const
+//{
+//    Score *score = this->score();
+//    return score ? score->length() : 0.0f;
+//}
 
-bool Track::isRecording() const
-{
-    Q_D(const Track);
-    return d->recording;
-}
+//const QColor &Track::color() const
+//{
+//    Q_D(const Track);
+//    return d->color;
+//}
 
-void Track::setRecording(bool recording)
-{
-    Q_D(Track);
-    if (d->recording == recording)
-        return;
-    d->beginChangeData();
-    d->recording = recording;
-    if (recording)
-        setVisible(true);
-    d->endChangeData();
-}
+//void Track::setColor(const QColor &color)
+//{
+//    Q_D(Track);
+//    if (d->color == color)
+//        return;
+//    d->beginChangeData();
+//    d->color = color;
+//    const int n = d->notes->count();
+//    for (int i = 0;  i < n;  ++i)
+//        d->notes->at(i)->setColor(color);
+//    d->endChangeData();
+//}
 
-Score *Track::score() const
-{
-    QObject *parent = QObject::parent();
-    return parent ? object_cast<Score>(parent->parent()) : 0;
-}
+//const QString &Track::instrument() const
+//{
+//    Q_D(const Track);
+//    return d->instrument;
+//}
 
-ObjectTList<Note> *Track::notes() const
-{
-    Q_D(const Track);
-    return d->notes;
-}
+//void Track::setInstrument(const QString &instrument)
+//{
+//    Q_D(Track);
+//    if (d->instrument == instrument)
+//        return;
+//    d->beginChangeData();
+//    d->instrument = instrument;
+//    d->endChangeData();
+//}
 
-void Track::setZValue(qreal z)
-{
-    Q_D(Track);
-    d->mainGraphicsItems[Ac::PitchScene]->setZValue(z);
-    d->mainGraphicsItems[Ac::ControlScene]->setZValue(z);
-}
+//bool Track::isVisible() const
+//{
+//    Q_D(const Track);
+//    return d->mainGraphicsItems[Ac::PitchScene]->isVisible();
+//}
 
-int Track::modelItemIndex(const IModelItem *item) const
-{
-    Q_D(const Track);
-    if (d->notes == item)
-        return ScoreObject::ModelItemCount;
-    return ScoreObject::modelItemIndex(item);
-}
+//void Track::setVisible(bool visible)
+//{
+//    Q_D(Track);
+//    if (isVisible() == visible)
+//        return;
+//    d->beginChangeData();
+//    foreach (QGraphicsItem *item, d->mainGraphicsItems)
+//        item->setVisible(visible);
+//    if (!visible)
+//        setRecording(false);
+//    d->endChangeData();
+//}
 
-IModelItem *Track::modelItemAt(int i) const
-{
-    switch (i) {
-    case ScoreObject::ModelItemCount:
-        return notes();
-    default:
-        return ScoreObject::modelItemAt(i);
-    }
-}
+//bool Track::isRecording() const
+//{
+//    Q_D(const Track);
+//    return d->recording;
+//}
 
-IModelItem *Track::findModelItemList(int type) const
-{
-    switch (type) {
-    case Ac::NoteItem:
-        return notes();
-    default:
-        return ScoreObject::findModelItemList(type);
-    }
-}
+//void Track::setRecording(bool recording)
+//{
+//    Q_D(Track);
+//    if (d->recording == recording)
+//        return;
+//    d->beginChangeData();
+//    d->recording = recording;
+//    if (recording)
+//        setVisible(true);
+//    d->endChangeData();
+//}
 
-QVariant Track::data(int role) const
-{
-    switch (role) {
-    case Ac::ColorRole:
-        return color();
-    case Ac::InstrumentRole:
-        return instrument();
-    case Ac::VisibilityRole:
-        return isVisible();
-    case Ac::RecordingRole:
-        return isRecording();
-    default:
-        return ScoreObject::data(role);
-    }
-}
+//Score *Track::score() const
+//{
+//    QObject *parent = QObject::parent();
+//    return parent ? object_cast<Score>(parent->parent()) : 0;
+//}
 
-bool Track::setData(const QVariant &value, int role)
-{
-    switch (role) {
-    case Ac::ColorRole:
-        setColor(value.value<QColor>());
-        return true;
-    case Ac::InstrumentRole:
-        setInstrument(value.toString());
-        return true;
-    case Ac::VisibilityRole:
-        setVisible(value.toBool());
-        return true;
-    case Ac::RecordingRole:
-        setRecording(value.toBool());
-        return true;
-    default:
-        return ScoreObject::setData(value, role);
-    }
-}
+//ObjectTList<Note> *Track::notes() const
+//{
+//    Q_D(const Track);
+//    return d->notes;
+//}
+
+//void Track::setZValue(qreal z)
+//{
+//    Q_D(Track);
+//    d->mainGraphicsItems[Ac::PitchScene]->setZValue(z);
+//    d->mainGraphicsItems[Ac::ControlScene]->setZValue(z);
+//}
+
+//int Track::modelItemIndex(const IModelItem *item) const
+//{
+//    Q_D(const Track);
+//    if (d->notes == item)
+//        return ScoreObject::ModelItemCount;
+//    return ScoreObject::modelItemIndex(item);
+//}
+
+//IModelItem *Track::modelItemAt(int i) const
+//{
+//    switch (i) {
+//    case ScoreObject::ModelItemCount:
+//        return notes();
+//    default:
+//        return ScoreObject::modelItemAt(i);
+//    }
+//}
+
+//IModelItem *Track::findModelItemList(int type) const
+//{
+//    switch (type) {
+//    case Ac::NoteItem:
+//        return notes();
+//    default:
+//        return ScoreObject::findModelItemList(type);
+//    }
+//}
+
+//QVariant Track::data(int role) const
+//{
+//    switch (role) {
+//    case Ac::ColorRole:
+//        return color();
+//    case Ac::InstrumentRole:
+//        return instrument();
+//    case Ac::VisibilityRole:
+//        return isVisible();
+//    case Ac::RecordingRole:
+//        return isRecording();
+//    default:
+//        return ScoreObject::data(role);
+//    }
+//}
+
+//bool Track::setData(const QVariant &value, int role)
+//{
+//    switch (role) {
+//    case Ac::ColorRole:
+//        setColor(value.value<QColor>());
+//        return true;
+//    case Ac::InstrumentRole:
+//        setInstrument(value.toString());
+//        return true;
+//    case Ac::VisibilityRole:
+//        setVisible(value.toBool());
+//        return true;
+//    case Ac::RecordingRole:
+//        setRecording(value.toBool());
+//        return true;
+//    default:
+//        return ScoreObject::setData(value, role);
+//    }
+//}
