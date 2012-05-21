@@ -352,7 +352,7 @@ def load(operator,
     for xml_node in dom.childNodes:
         import_node(xml_node)
 
-    return { 'FINISHED' }
+    return {'FINISHED'}
 
     # Move the note objects off the note template object layer.
     clear_ss()
@@ -425,7 +425,7 @@ def set_keyframes():
 
 
 class AudioCarverSetKeyframes(bpy.types.Operator):
-    '''Set the keyframes for teh AudioCarver scene.'''
+    '''Set the keyframes for the AudioCarver scene.'''
     bl_idname = "object.set_keyframes"
     bl_label = "AudioCarver Set Keyframes"
 
