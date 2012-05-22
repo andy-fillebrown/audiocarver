@@ -20,23 +20,11 @@ note_object_names = {"Note.Start",
                      "Note.Duration",
                      "Note.End",
                      "Note.Velocity",
-                     "Note.Body.ShrinkWrap.Target",
                      "Note.Head",
                      "Note.Body",
                      "Note.Tail"}
-track_count = 0
-track_count_string = "000"
-track_layer = 19
-timeline_count = 1
-pitchline_layer = 6
-pitchline_parent_layer = 16
-timeline_layer = 7
-timeline_parent_layer = 17
-
 note_template_objects = []
-track_template_objects = None
-timeline_template_objects = None
-
+track_count = 1
 min_velocity = 0.01
 
 
@@ -70,22 +58,6 @@ def select_note_template_objects():
         obj.select = True
 
 
-def select_track_template_objects():
-    global track_template_objects
-
-    clear_ss()
-    for obj in track_template_objects:
-        obj.select = True
-
-
-def select_timeline_template_objects():
-    global timeline_template_objects
-
-    clear_ss()
-    for obj in timeline_template_objects:
-        obj.select = True
-
-
 def create_note_material(color = "#ffffff"):
     template_material = bpy.data.materials["Note.Material.000"]
     note_material = template_material.copy()
@@ -99,17 +71,12 @@ def create_note_material(color = "#ffffff"):
 
 def import_note(note_node, note_material):
     global note_count
-    global note_head_scale
-    global note_layer
-    global note_object_names
-    global root_scale_x
-    global track_scale_x
 
     if "Note" != note_node.nodeName:
         print("Xml node is not a note.")
         return
 
-    note_name_suffix = to_zero_prefixed_string(note_count) + "." + track_count_string
+    note_name_suffix = to_zero_prefixed_string(note_count)
 
     # Select and duplicate the note template objects.
     select_note_template_objects()
@@ -121,13 +88,15 @@ def import_note(note_node, note_material):
         new_name = obj.name[0 : -3] + note_name_suffix
         obj.name = new_name
 
+    # Get the note head, body, and tail mesh objects.
+    head_obj = bpy.data.objects["Note.Head." + note_name_suffix]
+    body_obj = bpy.data.objects["Note.Body." + note_name_suffix]
+    tail_obj = bpy.data.objects["Note.Tail." + note_name_suffix]    
+
     # Set the note mesh materials.
-    obj = bpy.data.objects["Note.Head." + note_name_suffix]
-    obj.material_slots[0].material = note_material
-    obj = bpy.data.objects["Note.Body." + note_name_suffix]
-    obj.material_slots[0].material = note_material
-    obj = bpy.data.objects["Note.Tail." + note_name_suffix]
-    obj.material_slots[0].material = note_material
+    head_obj.material_slots[0].material = note_material
+    body_obj.material_slots[0].material = note_material
+    tail_obj.material_slots[0].material = note_material
 
     # Get the first and last pitch point positions.
     pitch_curve_node = Dom.Node
@@ -167,8 +136,7 @@ def import_note(note_node, note_material):
     # Move the note root object to the first pitch point.
     note_root_object = bpy.data.objects["Note.Start." + note_name_suffix]
     note_root_object.location[0] = first_pt_x
-    note_location_object_name = "Note.Location." + to_zero_prefixed_string(first_pt_y) + "." + track_count_string
-    note_root_object.parent = bpy.data.objects[note_location_object_name]
+    note_root_object.location[2] = first_pt_y
 
     # Scale the note duration object to the pitch curve length
     note_tail_scale_object = bpy.data.objects["Note.Duration." + note_name_suffix]
@@ -194,13 +162,8 @@ def import_note(note_node, note_material):
 
 
 def import_track(track_node):
-    global note_count
     global track_count
-    global track_count_string
-
-    track_count_string = to_zero_prefixed_string(track_count)
-    note_count = 0
-
+    
     # Read the track's attributes.
     color = "#ffffff"
     track_name = ""
@@ -216,11 +179,6 @@ def import_track(track_node):
 
     print(" \"" + track_name + "\"")
 
-    # Duplicate the track and note template objects.
-    if 0 < track_count:
-        select_track_template_objects()
-        bpy.ops.object.duplicate()
-
     # Create the track's note material.
     note_material = create_note_material(color)
 
@@ -230,57 +188,8 @@ def import_track(track_node):
             for note_node in child_node.childNodes:
                 if "Note" == note_node.nodeName:
                     import_note(note_node, note_material)
-
+                    
     track_count += 1
-
-
-def import_timeline(timeline_node):
-    global timeline_count
-
-    timeline_label = ""
-    timeline_location = 0.0
-    attributes = timeline_node.attributes
-    i = 0
-    while i < attributes.length:
-        attribute = attributes.item(i)
-        if "label" == attribute.name:
-            timeline_label = attribute.value
-        elif "location" == attribute.name:
-            timeline_location = float(attribute.value)
-        i += 1
-
-    if "" == timeline_label:
-        return
-    if -1 != timeline_label.find("."):
-        return
-    if 0.0 == timeline_location:
-        return
-
-    timeline_count += 1
-
-    select_timeline_template_objects()
-    bpy.ops.object.duplicate(linked = True)
-
-    clear_ss()
-    timeline_parent = bpy.data.objects["Time.Line.Location.001"]
-    timeline_parent.name = timeline_parent.name[0:-3] + str(timeline_count)
-    timeline_parent.location[0] = timeline_location
-
-
-def import_timelines(timelines_node):
-    global timeline_layer
-    global timeline_parent_layer
-
-    print("\nImporting time lines ...")
-
-    bpy.context.scene.layers[timeline_layer] = True
-    bpy.context.scene.layers[timeline_parent_layer] = True
-
-    for child_node in timelines_node.childNodes:
-        if "TimeGridLine" == child_node.nodeName:
-            import_timeline(child_node)
-
-    bpy.context.scene.layers[timeline_parent_layer] = False
 
 
 def import_node(xml_node):
@@ -288,9 +197,6 @@ def import_node(xml_node):
         return
     if "Track" == xml_node.nodeName:
         import_track(xml_node)
-#    elif "TimeGridLineList" == xml_node.nodeName:
-#        import_timelines(xml_node)
-#        return
     else:
         for child_node in xml_node.childNodes:
             import_node(child_node)
@@ -302,74 +208,51 @@ def load(operator,
     global layer_1_mask
     global layer_2_mask
     global note_layer
+    global note_parent_layer
     global note_object_names
     global note_template_layer_mask
     global note_template_objects
-    global timeline_count
-    global timeline_template_objects
-    global track_template_objects
     global track_count
 
     print("\nImporting AudioCarver file", file_name, "...")
 
     start_time = time.time()
-    track_count = 0
 
     # Store the current selection set so it can be restored later.
     cur_ss = current_ss()
 
     # Turn on the note layers.
-    bpy.context.scene.layers[0] = True
-    bpy.context.scene.layers[1] = True
     bpy.context.scene.layers[note_layer] = True
     bpy.context.scene.layers[note_parent_layer] = True
-
-    # Turn on the track template object layer.
-    bpy.context.scene.layers[track_layer] = True
-
-    # Turn on the timeline layers.
-    bpy.context.scene.layers[timeline_layer] = True
-    bpy.context.scene.layers[timeline_parent_layer] = True
 
     # Set the note template objects list.
     for note_object_name in note_object_names:
         note_template_objects.append(bpy.data.objects[note_object_name + ".000"])
 
-    # Set the track template objects list.
-    clear_ss()
-    bpy.ops.object.select_by_layer(extend = False, layers = track_layer + 1)
-    track_template_objects = current_ss()
-
-    # Set the timeline template objects list.
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Time.Line*.000")
-    timeline_template_objects = current_ss()
-
     print("\nImporting tracks ...")
+    track_count = 1
 
     # Parse the input file.
     dom = Xml.parse(file_name)
     for xml_node in dom.childNodes:
         import_node(xml_node)
 
-    return {'FINISHED'}
-
-    # Move the note objects off the note template object layer.
-    clear_ss()
-    bpy.ops.object.select_by_layer(layers = note_layer + 1)
-    bpy.ops.object.move_to_layer(layers = layer_1_mask)
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Note.Head.Mesh.*")
-    bpy.ops.object.move_to_layer(layers = layer_2_mask)
-    select_note_template_objects()
-    bpy.ops.object.move_to_layer(layers = note_template_layer_mask)
-
-    # Turn off the timeline parent objects layer.
-    bpy.context.scene.layers[timeline_parent_layer] = False
-
-    # Turn off the note template layer and note parent objects layer.
-    bpy.context.scene.layers[note_layer] = False
-    bpy.context.scene.layers[note_parent_layer] = False
+#    # Move the note objects off the note template object layer.
+#    clear_ss()
+#    bpy.ops.object.select_by_layer(layers = note_layer + 1)
+#    bpy.ops.object.move_to_layer(layers = layer_1_mask)
+#    clear_ss()
+#    bpy.ops.object.select_pattern(pattern = "Note.Head.Mesh.*")
+#    bpy.ops.object.move_to_layer(layers = layer_2_mask)
+#    select_note_template_objects()
+#    bpy.ops.object.move_to_layer(layers = note_template_layer_mask)
+#
+#    # Turn off the timeline parent objects layer.
+#    bpy.context.scene.layers[timeline_parent_layer] = False
+#
+#    # Turn off the note template layer and note parent objects layer.
+#    bpy.context.scene.layers[note_layer] = False
+#    bpy.context.scene.layers[note_parent_layer] = False
 
     # Restore the original selection set.
     clear_ss()
@@ -377,8 +260,6 @@ def load(operator,
         obj.select = True
 
     print("\n... done in %.3f seconds" % (time.time() - start_time))
-
-    timeline_count = 1
 
     return {'FINISHED'}
 
