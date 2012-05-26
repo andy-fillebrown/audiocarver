@@ -160,6 +160,11 @@ protected:
 
     class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
     {
+        Track *a() const
+        {
+            return cast<Track>(Object::ModelItem::a());
+        }
+
     public:
         ModelItem(Track *aggregator)
             :   ScoreObject::ModelItem(aggregator)
@@ -167,11 +172,7 @@ protected:
 
         IAggregate *init();
 
-        Track *a() const
-        {
-            return cast<Track>(Object::ModelItem::a());
-        }
-
+    protected:
         // IModelItem
         int itemType() const
         {
