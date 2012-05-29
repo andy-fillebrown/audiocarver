@@ -327,58 +327,112 @@ def load(operator,
     return {'FINISHED'}
 
 
-def set_keyframes():
-    # Get scale values needed for calculating note head size.
-    notehead_scale = bpy.data.objects["Note.Head.Scale.XYZ"].scale[0]
-    root_scale = bpy.data.objects["Root.Scale.Object.XY"].scale[0]
-    track_scale = bpy.data.objects["Track.Scale.Object.X"].scale[0]
+def note_string(note_number):
+    mod = int(note_number) % 12
+    if 0 == mod:
+        return "C"
+    if 2 == mod:
+        return "D"
+    if 4 == mod:
+        return "E"
+    if 5 == mod:
+        return "F"
+    if 7 == mod:
+        return "G"
+    if 9 == mod:
+        return "A"
+    if 11 == mod:
+        return "B"
+    return ""
 
-    print("\nSetting keyframes ...")
 
-    bpy.context.scene.layers[1] = True
+def prepare_for_render():
+    # Turn on the note parent layer.
+    bpy.context.scene.layers[note_parent_layer] = True
+
+    # Calculate note pitch range.
+    pitch_min = 128
+    pitch_max = -1
+    bpy.ops.object.select_pattern(pattern = "Note.Start.*", extend = False)
+    notes = current_ss()
+    for note in notes:
+        y = note.location[2]
+        if y < pitch_min:
+            pitch_min = y
+        if pitch_max < y:
+            pitch_max = y
+
+    # Create pitch line text objects for each note in the note pitch range.
+    i = pitch_min
+    while i < pitch_max:
+        i_string = str(int(i))
+        text_string = note_string(i)
+        has_text = "" != text_string
+
+        # Duplicate pitch line text template objects.
+        clear_ss()
+        bpy.data.objects[".PitchLine.Text.Locator"].select = True
+        bpy.data.objects["PitchLine.Text.Arrow.0"].select = True
+        if has_text:
+            bpy.data.objects["PitchLine.Text.0"].select = True
+        bpy.ops.object.duplicate()
+
+        # Setup pitch line text locator.
+        clear_ss()
+        obj = bpy.data.objects[".PitchLine.Text.Locator.001"]
+        obj.location[2] = i
+        obj.select = True
+        bpy.context.scene.objects.active = obj
+        bpy.ops.object.parent_clear(type = 'CLEAR_KEEP_TRANSFORM')
+        bpy.ops.object.transform_apply(location = True, scale = True)
+        bpy.ops.object.modifier_apply(modifier = "Curve")
+        location = obj.data.vertices[0].co
+
+        # Setup pitch line text arrow.
+        obj = bpy.data.objects["PitchLine.Text.Arrow.001"]
+        obj.location[2] = i
+        obj.name = "PitchLine.Text.Arrow." + i_string
+
+        if has_text:
+            # Setup pitch line text.
+            obj = bpy.data.objects["PitchLine.Text.001"]
+            obj.location = location
+            obj.data.body = note_string(i)
+            obj.name = "PitchLine.Text." + i_string
+
+            # Center pitch line text.
+            bbox = obj.bound_box
+            x_offset = bbox[0][1] + ((bbox[2][1] - bbox[0][1]) / 2.0)
+            y_offset = bbox[0][0] + (bbox[4][0] - bbox[0][0])
+            obj.location[1] += y_offset
+            obj.location[2] -= x_offset
+
+        # Delete pitch line text locator.
+        clear_ss()
+        bpy.data.objects[".PitchLine.Text.Locator.001"].select = True
+        bpy.ops.object.delete()
+
+        i += 1
+
+    # Delete pitch line text template objects.
     clear_ss()
-    bpy.ops.object.select_by_layer(layers = 2)
-    ss = current_ss()
-    clear_ss()
-
-    for obj in ss:
-        obj_n = object_number(obj)
-        first_pt_x = obj.parent.location[0]
-        first_pt_y = obj.parent.location[2]
-        last_pt_x = first_pt_x + bpy.data.objects["Note.Tail.Scale.X." + obj_n].scale[0]
-        velocity = bpy.data.objects["Note.Velocity.Scale.Y." + obj_n].scale[1]
-
-        # Create the pitch line material action if it doesn't exist, yet.
-        material_name = "PitchLine.Material." + to_zero_prefixed_string(first_pt_y)
-        action_name = material_name + "Action"
-        if 0 == bpy.data.actions.keys().count(action_name):
-            bpy.data.materials[material_name].keyframe_insert("alpha")
-
-        # Get pitch line material action keyframe points.
-        keyframe_points = bpy.data.actions[action_name].fcurves[0].keyframe_points
-
-        # Calculate the note head peak according to the note head scale and velocity.
-        peak_offset = (velocity * notehead_scale) / track_scale / root_scale
-        peak_frame = 30.0 * (first_pt_x + peak_offset)
-
-        # Add the keyframe points for the current note.
-        keyframe_points.insert(frame = 30 * first_pt_x, value = 0)
-        keyframe_points.insert(frame = peak_frame, value = velocity)
-        keyframe_points.insert(frame = peak_frame + (30.0 * peak_offset), value = 0.75 * velocity)
-        keyframe_points.insert(frame = 30.0 * last_pt_x, value = 0)
+    bpy.data.objects[".PitchLine.Text.Locator"].select = True
+    bpy.data.objects["PitchLine.Text.0"].select = True
+    bpy.data.objects["PitchLine.Text.Arrow.0"].select = True
+    bpy.ops.object.delete()
 
 
-class AudioCarverSetKeyframes(bpy.types.Operator):
-    '''Set the keyframes for the AudioCarver scene.'''
-    bl_idname = "object.set_keyframes"
-    bl_label = "AudioCarver Set Keyframes"
+class AudioCarverPrepareForRender(bpy.types.Operator):
+    '''Prepare the AudioCarver scene for render.'''
+    bl_idname = "object.prepare_for_render"
+    bl_label = "AudioCarver Prepare for Render"
 
     @classmethod
     def poll(cls, context):
         return True;
 
     def execute(self, context):
-        set_keyframes()
+        prepare_for_render()
         return {'FINISHED'}
 
 
