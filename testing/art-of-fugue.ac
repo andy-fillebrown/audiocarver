@@ -7936,7 +7936,7 @@
             <TimeGridLine location="157.8125" priority="104" color="#e1e1e1"/>
             <TimeGridLine location="157.875" priority="103" color="#e1e1e1"/>
             <TimeGridLine location="157.9375" priority="104" color="#e1e1e1"/>
-            <TimeGridLine location="158" priority="0" color="#ff0000"/>
+            <TimeGridLine location="158" label="Fine" priority="0" color="#ff0000"/>
         </TimeGridLineList>
         <PitchGridLineList>
             <PitchGridLine location="0" label="0.0" priority="0" color="#bf0000"/>
