@@ -364,7 +364,7 @@ def prepare_for_render():
 
     # Create pitch line text objects for each note in the note pitch range.
     i = pitch_min
-    while i < pitch_max:
+    while i <= pitch_max:
         i_string = str(int(i))
         text_string = note_string(i)
         has_text = "" != text_string
