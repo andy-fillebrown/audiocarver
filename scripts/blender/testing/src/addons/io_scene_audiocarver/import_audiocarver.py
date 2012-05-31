@@ -322,7 +322,7 @@ def load(operator,
     for obj in cur_ss:
         obj.select = True
 
-    print("\n... done in %.3f seconds" % (time.time() - start_time))
+    print("\n... done in %.3f seconds\n" % (time.time() - start_time))
 
     return {'FINISHED'}
 
@@ -346,7 +346,7 @@ def note_string(note_number):
     return ""
 
 
-def prepare_for_render():
+def create_pitch_lines():
     # Turn on the note parent layer.
     bpy.context.scene.layers[note_parent_layer] = True
 
@@ -422,101 +422,125 @@ def prepare_for_render():
     bpy.ops.object.delete()
 
 
-class AudioCarverPrepareForRender(bpy.types.Operator):
-    '''Prepare the AudioCarver scene for render.'''
-    bl_idname = "object.prepare_for_render"
-    bl_label = "AudioCarver Prepare for Render"
+def simplify_note_head(note_head):
+    # Apply child-of constraints.
+    note_number_string = note_head.name.replace("Note.Head.", "")
+    note_velocity = bpy.data.objects["Note.Velocity." + note_number_string]
+    note_head.scale[0] *= note_velocity.scale[0]
+    note_head.scale[1] *= note_velocity.scale[1]
+    note_head.scale[2] *= note_velocity.scale[2]
+    note_scale = bpy.data.objects[".Note.Scale.YZ"]
+    note_head.scale[0] *= note_scale.scale[0]
+    note_head.scale[1] *= note_scale.scale[1]
+    note_head.scale[2] *= note_scale.scale[2]
+    note_start = bpy.data.objects["Note.Start." + note_number_string]
+    note_head.location = note_start.location
+    note_location = bpy.data.objects[".Note.Location"]
+    note_head.location[2] *= note_location.scale[2]
+    note_head.location[2] += note_location.location[2]
+    note_head.scale[0] /= bpy.data.objects[".Track.Scale.X"].scale[0]
 
-    @classmethod
-    def poll(cls, context):
-        return True;
+    # Change note velocity child-of constraint to track location x child-of constraint.
+    constraint = note_head.constraints[0]
+    constraint.target = bpy.data.objects[".Track.Location.X"]
+    constraint.use_location_y = False
+    constraint.use_location_z = False
+    constraint.use_rotation_x = False
+    constraint.use_rotation_y = False
+    constraint.use_rotation_z = False
+    constraint.use_scale_y = False
+    constraint.use_scale_z = False
 
-    def execute(self, context):
-        prepare_for_render()
-        return {'FINISHED'}
+    # Apply curve modifier.
+    note_head.select = True
+    bpy.context.scene.objects.active = note_head
+    bpy.ops.object.modifier_apply(modifier = "Curve")
 
 
-def simplify_scene():
-    global min_velocity
-    global pitchline_layer
-    global pitchline_parent_layer
-    global timeline_layer
-    global timeline_parent_layer
+def simplify_note_body(note_body):
+    # Apply modifiers.
+    note_body.select = True
+    bpy.context.scene.objects.active = note_body
+    bpy.ops.object.modifier_apply(modifier = note_body.modifiers[0].name)
+    bpy.ops.object.modifier_apply(modifier = note_body.modifiers[0].name)
+    bpy.ops.object.modifier_apply(modifier = note_body.modifiers[0].name)
 
-    print("\nSimplifying scene for render ...")
-
-    # Apply boolean modifier for note head and tail meshes.
-    bpy.context.scene.layers[1] = True
+    # Join note body to note head.
     clear_ss()
-    bpy.ops.object.select_by_layer(layers = 2)
-    ss = current_ss()
-    clear_ss()
-    for obj in ss:
-        bpy.context.scene.objects.active = obj
-        bpy.ops.object.modifier_apply(modifier = "Boolean")
+    note_head = bpy.data.objects["Note.Head." + note_body.name.replace("Note.Body.", "")]
+    note_body.select = True
+    note_head.select = True
+    bpy.context.scene.objects.active = note_head
+    bpy.ops.object.join()
 
-    # Delete unused pitch lines.
-    bpy.context.scene.layers[pitchline_parent_layer] = True
-    bpy.context.scene.layers[pitchline_layer] = True
-    used_pitches = []
-    for obj in ss:
-        pitch = obj.parent.location[2]
-        if 0 == used_pitches.count(pitch):
-            used_pitches.append(pitch)
-    clear_ss()
-    i = 0
-    while i < 128:
-        if 0 == used_pitches.count(i):
-            n = to_zero_prefixed_string(i)
-            bpy.data.objects["PitchLine.Object." + n].select = True
-            bpy.data.objects["PitchLine.Parent." + n].select = True
-        i += 1
-    bpy.ops.object.delete()
-    bpy.context.scene.layers[pitchline_parent_layer] = False
 
-    # Turn on the note helper objects layer.
-    bpy.context.scene.layers[0] = True
+def simplify_note_tail(note_tail):
+    # Apply modifiers.
+    note_tail.select = True
+    bpy.context.scene.objects.active = note_tail
+    bpy.ops.object.modifier_apply(modifier = note_tail.modifiers[0].name)
 
-    # Delete note tail scale objects and meshes.
+    # Join note tail to joined note head/body.
     clear_ss()
+    note_head = bpy.data.objects["Note.Head." + note_tail.name.replace("Note.Tail.", "")]
+    note_tail.select = True
+    note_head.select = True
+    bpy.context.scene.objects.active = note_head
+    bpy.ops.object.join()
+
+
+def prepare_for_render():
+    prev_active_obj = bpy.context.scene.objects.active
+    prev_ss = current_ss()
+
+    start_time = time.time()
+
+    print ("Preparing scene for render ...")
+
+    print(" creating pitch lines ...")
+    create_pitch_lines()
+
+    # Turn on note parent layer.
+    bpy.context.scene.layers[note_parent_layer] = True
+
+    # Simplify note head objects.
+    print(" simplifying note head objects ...")
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "Note.Head.*")
+    note_heads = current_ss()
+    for note_head in note_heads:
+        simplify_note_head(note_head)
+
+    # Simplify note body objects.
+    print(" simplifying note body objects ...")
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "Note.Body.*")
+    note_bodies = current_ss()
+    for note_body in note_bodies:
+        simplify_note_body(note_body)
+
+    # Simplify note tail objects.
+    clear_ss()
+    print(" simplifying note tail objects ...")
     bpy.ops.object.select_pattern(pattern = "Note.Tail.*")
+    note_tails = current_ss()
+    for note_tail in note_tails:
+        simplify_note_tail(note_tail)
+
+    # Delete note template parent objects.
+    print(" Deleting note template parent objects ...")
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "Note.Start.*")
+    bpy.ops.object.select_pattern(pattern = "Note.Duration.*")
+    bpy.ops.object.select_pattern(pattern = "Note.End.*")
+    bpy.ops.object.select_pattern(pattern = "Note.Velocity.*")
     bpy.ops.object.delete()
 
-    # Apply velocity scales to note meshes.
-    for obj in ss:
-        constraint = obj.constraints["Copy Scale"]
-        velocity_obj = constraint.target
-        obj.scale = velocity_obj.scale
-        obj.constraints.clear()
-        if obj.scale[0] < min_velocity:
-            obj.scale[0] = min_velocity
-        if obj.scale[1] < min_velocity:
-            obj.scale[1] = min_velocity
-        if obj.scale[2] < min_velocity:
-            obj.scale[2] = min_velocity
-
-    # Delete velocity scale objects.
+    # Join note objects that use the same matrial.
+    print(" joining note objects with common materials ...")
     clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Note.Velocity.Scale.Y.*")
-    bpy.ops.object.delete()
-
-    # Reparent note meshes from their note root object to the track root object.
-    clear_ss()
-    for obj in ss:
-        obj.select = True
-    bpy.ops.object.parent_clear(type = 'CLEAR_KEEP_TRANSFORM')
-    bpy.context.scene.objects.active = bpy.data.objects["Track.Root.Empty"]
-    bpy.ops.object.parent_set()
-
-    # Delete the note root objects.
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Note.Root.Empty.*")
-    bpy.ops.object.delete()
-
-    # Turn off the note helper objects layer.
-    bpy.context.scene.layers[0] = False
-
-    # Join note meshes that use the same matrial.
+    bpy.ops.object.select_pattern(pattern = "Note.Head.*")
+    ss = current_ss()
     materials = []
     for material in bpy.data.materials:
         if material.name.startswith("Note.Material."):
@@ -532,61 +556,81 @@ def simplify_scene():
             cur_ss = current_ss()
             bpy.context.scene.objects.active = cur_ss[0]
             bpy.ops.object.join()
-            bpy.ops.object.select_by_layer(layers = 2)
+            bpy.ops.object.select_by_layer(layers = note_layer + 1)
             ss = current_ss()
     clear_ss()
 
-    # Turn on the time line parent objects layer.
-    bpy.context.scene.layers[timeline_layer - 1] = True
-
-    # Reparent time lines from their time line parent to the track root object.
+    # Join time line objects.
+    print(" joining time line objects ...")
     clear_ss()
-    bpy.ops.object.select_pattern(pattern = "TimeLine.Object.*")
+    bpy.ops.object.select_pattern(pattern = "TimeLine.*")
+    bpy.data.objects["TimeLine.Ring"].select = False
     ss = current_ss()
     for obj in ss:
-        obj.parent.modifiers.clear()
-    bpy.ops.object.parent_clear(type = 'CLEAR_KEEP_TRANSFORM')
-    for obj in ss:
-        obj.constraints.clear()
-    bpy.context.scene.objects.active = bpy.data.objects["Track.Root.Empty"]
-    bpy.ops.object.parent_set()
+        if obj.name.startswith("TimeLine.Text."):
+            obj.select = False
+    ss = current_ss()
+    bpy.context.scene.objects.active = ss[0]
+    bpy.ops.object.join()
 
-    # Add curve modifier to time line objects.
+    # Join pitch line text arrow objects with the time line ring.
+    print(" joining pitch line text arrow objects with the time line ring ...")
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "PitchLine.Text.Arrow.*")
+    ss = current_ss()
     for obj in ss:
         bpy.context.scene.objects.active = obj
-        bpy.ops.object.modifier_add(type = 'CURVE')
-        curve_modifier = obj.modifiers[0]
-        curve_modifier.object = bpy.data.objects["Curve.X"]
+        bpy.ops.object.modifier_apply(modifier = obj.modifiers[0].name)
+    bpy.data.objects["TimeLine.Ring"].select = True
+    bpy.context.scene.objects.active = bpy.data.objects["TimeLine.Ring"]
+    bpy.ops.object.join()
 
-    # Delete time line parent objects.
-    bpy.context.scene.layers[timeline_parent_layer - 1] = True
+    # Join pitch line text objects.
+    print(" joining pitch line text objects ...")
     clear_ss()
-    bpy.ops.object.select_pattern(pattern = "TimeLine.Parent.*")
-    bpy.ops.object.delete()
-
-    # Remove top and bottom pitch line object parents and constraints.
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "PitchLine.Object.*")
-    bpy.ops.object.parent_clear(type = 'CLEAR_KEEP_TRANSFORM')
+    bpy.ops.object.select_pattern(pattern = "PitchLine.Text.*")
     ss = current_ss()
     for obj in ss:
-        obj.constraints.clear()
+        bpy.context.scene.objects.active = obj
+        bpy.ops.object.convert(target = 'MESH')
+    bpy.context.scene.objects.active = current_ss()[0]
+    bpy.ops.object.join()
 
-    # Delete pitch line parent objects.
+    # Join time line text objects.
+    print(" joining time line text objects ...")
     clear_ss()
-    bpy.ops.object.select_pattern(pattern = "PitchLine.Parent.*")
+    bpy.ops.object.select_pattern(pattern = "TimeLine.Text.*")
+    ss = current_ss()
+    for obj in ss:
+        bpy.context.scene.objects.active = obj
+        bpy.ops.object.convert(target = 'MESH')
+    bpy.context.scene.objects.active = current_ss()[0]
+    bpy.ops.object.join()
+
+    # Delete pitch line location curve.
+    print(" deleting the pitch location curve ...")
+    clear_ss()
+    bpy.data.objects[".Pitch.Location.Curve.Y"].select
     bpy.ops.object.delete()
 
+    # Restore previous selection.
+    clear_ss()
+    bpy.context.scene.objects.active = prev_active_obj
+    for obj in prev_ss:
+        obj.select = True
 
-class AudioCarverSimplifyScene(bpy.types.Operator):
-    '''Simplify the AudioCarver scene for effecient rendering.'''
-    bl_idname = "object.simplify_scene"
-    bl_label = "AudioCarver Simplify Scene"
+    print("\n... done in %.3f seconds\n" % (time.time() - start_time))
+
+
+class AudioCarverPrepareForRender(bpy.types.Operator):
+    '''Prepare the AudioCarver scene for render.'''
+    bl_idname = "object.prepare_for_render"
+    bl_label = "AudioCarver Prepare for Render"
 
     @classmethod
     def poll(cls, context):
         return True;
 
     def execute(self, context):
-        simplify_scene()
+        prepare_for_render()
         return {'FINISHED'}
