@@ -1,27 +1,16 @@
 
 import bpy
-
 import xml.dom as Dom
 import xml.dom.minidom as Xml
-
 import time
 
-note_count = 1
+note_suffix_number = 2
 note_layer = 18
-note_parent_layer = 8
-note_object_names = {"Note.Start",
-                     "Note.Duration",
-                     "Note.End",
-                     "Note.Velocity",
-                     "Note.Head",
-                     "Note.Body",
-                     "Note.Tail"}
-note_template_objects = []
+note_template_object = None
 track_count = 1
 timeline_count = 0
 timeline_layer = 17
 timeline_text_layer = 16
-min_velocity = 0.01
 
 
 def clear_ss():
@@ -46,12 +35,9 @@ def to_zero_prefixed_string(number):
     return zero_prefixed_string
 
 
-def select_note_template_objects():
-    global note_template_objects
-
+def select_note_template_object():
     clear_ss()
-    for obj in note_template_objects:
-        obj.select = True
+    note_template_object.select = True
 
 
 def create_note_material(color = "#ffffff"):
@@ -83,33 +69,22 @@ def create_note_material(color = "#ffffff"):
 
 
 def import_note(note_node, note_material):
-    global note_count
+    global note_suffix_number
 
     if "Note" != note_node.nodeName:
         print("Xml node is not a note.")
         return
 
-    note_name_suffix = to_zero_prefixed_string(note_count)
-
     # Select and duplicate the note template objects.
-    select_note_template_objects()
+    select_note_template_object()
     bpy.ops.object.duplicate()
 
-    # Rename the new note objects.
-    for note_object_name in note_object_names:
-        obj = bpy.data.objects[note_object_name + ".001"]
-        new_name = obj.name[0 : -3] + note_name_suffix
-        obj.name = new_name
-
-    # Get the note head, body, and tail mesh objects.
-    head_obj = bpy.data.objects["Note.Head." + note_name_suffix]
-    body_obj = bpy.data.objects["Note.Body." + note_name_suffix]
-    tail_obj = bpy.data.objects["Note.Tail." + note_name_suffix]
+    # Rename the new note object.
+    obj = bpy.data.objects["Note.001"]
+    obj.name = obj.name[0 : -3] + to_zero_prefixed_string(note_suffix_number)
 
     # Set the note mesh materials.
-    head_obj.material_slots[0].material = note_material
-    body_obj.material_slots[0].material = note_material
-    tail_obj.material_slots[0].material = note_material
+    obj.material_slots[0].material = note_material
 
     # Get the first and last pitch point positions.
     pitch_curve_node = Dom.Node
@@ -147,13 +122,11 @@ def import_note(note_node, note_material):
     last_pt_x = float(last_pt_pos_value[0])
 
     # Move the note root object to the first pitch point.
-    note_root_object = bpy.data.objects["Note.Start." + note_name_suffix]
-    note_root_object.location[0] = first_pt_x
-    note_root_object.location[2] = first_pt_y
+    obj.location[0] = first_pt_x
+    obj.location[2] = first_pt_y
 
-    # Scale the note duration object to the pitch curve length
-    note_tail_scale_object = bpy.data.objects["Note.Duration." + note_name_suffix]
-    note_tail_scale_object.scale[0] = last_pt_x - first_pt_x
+    # Scale the note duration to the pitch curve's duration.
+    obj.scale[0] = last_pt_x - first_pt_x
 
     # Get the note's velocity/volume.
     velocity = 1.0
@@ -165,13 +138,15 @@ def import_note(note_node, note_material):
             break;
         i += 1
 
-    # Scale the note velocity object to the volume.
-    note_volume_scale_object = bpy.data.objects["Note.Velocity." + note_name_suffix]
-    note_volume_scale_object.scale[0] = velocity
-    note_volume_scale_object.scale[1] = velocity
-    note_volume_scale_object.scale[2] = velocity
+    # Scale the note vertices y and z coordinates to the volume.
+    verts = obj.data.vertices
+    i = len(verts) - 1
+    while 0 <= i:
+        verts[i].co[1] *= velocity
+        verts[i].co[2] *= velocity
+        i -= 1
 
-    note_count += 1
+    note_suffix_number += 1
 
 
 def import_track(track_node):
@@ -281,13 +256,8 @@ def import_node(xml_node):
 def load(operator,
          context,
          file_name):
-    global layer_1_mask
-    global layer_2_mask
     global note_layer
-    global note_parent_layer
-    global note_object_names
-    global note_template_layer_mask
-    global note_template_objects
+    global note_template_object
     global track_count
 
     print("\nImporting AudioCarver file", file_name, "...")
@@ -299,11 +269,9 @@ def load(operator,
 
     # Turn on the note layers.
     bpy.context.scene.layers[note_layer] = True
-    bpy.context.scene.layers[note_parent_layer] = True
 
-    # Set the note template objects list.
-    for note_object_name in note_object_names:
-        note_template_objects.append(bpy.data.objects[note_object_name + ".0"])
+    # Set the note template object.
+    note_template_object = bpy.data.objects["Note.0"]
 
     print("\nImporting tracks ...")
     track_count = 1
@@ -314,7 +282,7 @@ def load(operator,
         import_node(xml_node)
 
     # Delete the note template objects.
-    select_note_template_objects()
+    select_note_template_object()
     bpy.ops.object.delete()
 
     # Restore the original selection set.
@@ -347,13 +315,10 @@ def note_string(note_number):
 
 
 def create_pitch_lines():
-    # Turn on the note parent layer.
-    bpy.context.scene.layers[note_parent_layer] = True
-
     # Calculate note pitch range.
     pitch_min = 128
     pitch_max = -1
-    bpy.ops.object.select_pattern(pattern = "Note.Start.*", extend = False)
+    bpy.ops.object.select_pattern(pattern = "Note.*", extend = False)
     notes = current_ss()
     for note in notes:
         y = note.location[2]
@@ -422,71 +387,11 @@ def create_pitch_lines():
     bpy.ops.object.delete()
 
 
-def simplify_note_head(note_head):
-    # Apply child-of constraints.
-    note_number_string = note_head.name.replace("Note.Head.", "")
-    note_velocity = bpy.data.objects["Note.Velocity." + note_number_string]
-    note_head.scale[0] *= note_velocity.scale[0]
-    note_head.scale[1] *= note_velocity.scale[1]
-    note_head.scale[2] *= note_velocity.scale[2]
-    note_scale = bpy.data.objects[".Note.Scale.YZ"]
-    note_head.scale[0] *= note_scale.scale[0]
-    note_head.scale[1] *= note_scale.scale[1]
-    note_head.scale[2] *= note_scale.scale[2]
-    note_start = bpy.data.objects["Note.Start." + note_number_string]
-    note_head.location = note_start.location
-    note_location = bpy.data.objects[".Note.Location"]
-    note_head.location[2] *= note_location.scale[2]
-    note_head.location[2] += note_location.location[2]
-    note_head.scale[0] /= bpy.data.objects[".Track.Scale.X"].scale[0]
-
-    # Change note velocity child-of constraint to track location x child-of constraint.
-    constraint = note_head.constraints[0]
-    constraint.target = bpy.data.objects[".Track.Location.X"]
-    constraint.use_location_y = False
-    constraint.use_location_z = False
-    constraint.use_rotation_x = False
-    constraint.use_rotation_y = False
-    constraint.use_rotation_z = False
-    constraint.use_scale_y = False
-    constraint.use_scale_z = False
-
-    # Apply curve modifier.
-    note_head.select = True
-    bpy.context.scene.objects.active = note_head
-    bpy.ops.object.modifier_apply(modifier = "Curve")
-
-
-def simplify_note_body(note_body):
+def apply_note_modifiers(note):
     # Apply modifiers.
-    note_body.select = True
-    bpy.context.scene.objects.active = note_body
-    bpy.ops.object.modifier_apply(modifier = note_body.modifiers[0].name)
-    bpy.ops.object.modifier_apply(modifier = note_body.modifiers[0].name)
-    bpy.ops.object.modifier_apply(modifier = note_body.modifiers[0].name)
-
-    # Join note body to note head.
-    clear_ss()
-    note_head = bpy.data.objects["Note.Head." + note_body.name.replace("Note.Body.", "")]
-    note_body.select = True
-    note_head.select = True
-    bpy.context.scene.objects.active = note_head
-    bpy.ops.object.join()
-
-
-def simplify_note_tail(note_tail):
-    # Apply modifiers.
-    note_tail.select = True
-    bpy.context.scene.objects.active = note_tail
-    bpy.ops.object.modifier_apply(modifier = note_tail.modifiers[0].name)
-
-    # Join note tail to joined note head/body.
-    clear_ss()
-    note_head = bpy.data.objects["Note.Head." + note_tail.name.replace("Note.Tail.", "")]
-    note_tail.select = True
-    note_head.select = True
-    bpy.context.scene.objects.active = note_head
-    bpy.ops.object.join()
+    note.select = True
+    bpy.context.scene.objects.active = note
+    bpy.ops.object.modifier_apply(modifier = note.modifiers[0].name)
 
 
 def prepare_for_render():
@@ -500,112 +405,13 @@ def prepare_for_render():
     print(" creating pitch lines ...")
     create_pitch_lines()
 
-    # Turn on note parent layer.
-    bpy.context.scene.layers[note_parent_layer] = True
-
-    # Simplify note head objects.
-    print(" simplifying note head objects ...")
+    # Apply note modifiers.
+    print(" applying note modifiers ...")
     clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Note.Head.*")
-    note_heads = current_ss()
-    for note_head in note_heads:
-        simplify_note_head(note_head)
-
-    # Simplify note body objects.
-    print(" simplifying note body objects ...")
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Note.Body.*")
-    note_bodies = current_ss()
-    for note_body in note_bodies:
-        simplify_note_body(note_body)
-
-    # Simplify note tail objects.
-    clear_ss()
-    print(" simplifying note tail objects ...")
-    bpy.ops.object.select_pattern(pattern = "Note.Tail.*")
-    note_tails = current_ss()
-    for note_tail in note_tails:
-        simplify_note_tail(note_tail)
-
-    # Delete note template parent objects.
-    print(" Deleting note template parent objects ...")
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Note.Start.*")
-    bpy.ops.object.select_pattern(pattern = "Note.Duration.*")
-    bpy.ops.object.select_pattern(pattern = "Note.End.*")
-    bpy.ops.object.select_pattern(pattern = "Note.Velocity.*")
-    bpy.ops.object.delete()
-
-    # Join note objects that use the same matrial.
-    print(" joining note objects with common materials ...")
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "Note.Head.*")
-    ss = current_ss()
-    materials = []
-    for material in bpy.data.materials:
-        if material.name.startswith("Note.Material."):
-            materials.append(material)
-    for material in materials:
-        clear_ss()
-        obj_selected = False
-        for obj in ss:
-            if material == obj.active_material:
-                obj.select = True
-                obj_selected = True
-        if obj_selected:
-            cur_ss = current_ss()
-            bpy.context.scene.objects.active = cur_ss[0]
-            bpy.ops.object.join()
-            bpy.ops.object.select_by_layer(layers = note_layer + 1)
-            ss = current_ss()
-    clear_ss()
-
-    # Join time line objects.
-    print(" joining time line objects ...")
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "TimeLine.*")
-    bpy.data.objects["TimeLine.Ring"].select = False
-    ss = current_ss()
-    for obj in ss:
-        if obj.name.startswith("TimeLine.Text."):
-            obj.select = False
-    ss = current_ss()
-    bpy.context.scene.objects.active = ss[0]
-    bpy.ops.object.join()
-
-    # Join pitch line text arrow objects with the time line ring.
-    print(" joining pitch line text arrow objects with the time line ring ...")
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "PitchLine.Text.Arrow.*")
-    ss = current_ss()
-    for obj in ss:
-        bpy.context.scene.objects.active = obj
-        bpy.ops.object.modifier_apply(modifier = obj.modifiers[0].name)
-    bpy.data.objects["TimeLine.Ring"].select = True
-    bpy.context.scene.objects.active = bpy.data.objects["TimeLine.Ring"]
-    bpy.ops.object.join()
-
-    # Join pitch line text objects.
-    print(" joining pitch line text objects ...")
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "PitchLine.Text.*")
-    ss = current_ss()
-    for obj in ss:
-        bpy.context.scene.objects.active = obj
-        bpy.ops.object.convert(target = 'MESH')
-    bpy.context.scene.objects.active = current_ss()[0]
-    bpy.ops.object.join()
-
-    # Join time line text objects.
-    print(" joining time line text objects ...")
-    clear_ss()
-    bpy.ops.object.select_pattern(pattern = "TimeLine.Text.*")
-    ss = current_ss()
-    for obj in ss:
-        bpy.context.scene.objects.active = obj
-        bpy.ops.object.convert(target = 'MESH')
-    bpy.context.scene.objects.active = current_ss()[0]
-    bpy.ops.object.join()
+    bpy.ops.object.select_pattern(pattern = "Note.*")
+    notes = current_ss()
+    for note in notes:
+        apply_note_modifiers(note)
 
     # Delete pitch line location curve.
     print(" deleting the pitch location curve ...")
