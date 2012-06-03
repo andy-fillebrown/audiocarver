@@ -59,9 +59,11 @@ void Object::setParent(Object *parent)
     if (_parent == parent)
         return;
     ScopedParentChange parent_change(this);
-    if (!parent) {
-        IOrphanage *orphanage = IOrphanage::instance();
-        if (orphanage)
+    IOrphanage *orphanage = IOrphanage::instance();
+    if (orphanage) {
+        if (!_parent)
+            orphanage->remove(this);
+        if (!parent)
             orphanage->append(this);
     }
     _parent = parent;
