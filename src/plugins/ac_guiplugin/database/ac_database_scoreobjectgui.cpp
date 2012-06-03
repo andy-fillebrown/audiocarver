@@ -17,6 +17,9 @@
 
 #include "ac_database_scoreobjectgui.h"
 
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+
 namespace Database {
 
 namespace ScoreObjectGui {
@@ -24,6 +27,30 @@ namespace ScoreObjectGui {
 IAggregate *ParentEntity::init()
 {
     return this;
+}
+
+void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &parentItems,
+                            const QMap<int, QGraphicsItem*> &items)
+{
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+        QGraphicsItem *parentItem = parentItems.value(i, 0);
+        QGraphicsItem *item = items.value(i, 0);
+        if (item && parentItem)
+            item->setParentItem(parentItem);
+    }
+}
+
+void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
+{
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+        QGraphicsItem *item = items.value(i, 0);
+        if (item) {
+            item->setParentItem(0);
+            QGraphicsScene *scene = item->scene();
+            if (scene)
+                scene->removeItem(item);
+        }
+    }
 }
 
 } // namespace ScoreObjectGui
