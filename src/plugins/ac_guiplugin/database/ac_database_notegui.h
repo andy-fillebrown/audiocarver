@@ -85,7 +85,7 @@ protected:
 
         bool isVisible() const
         {
-            Q_ASSERT(false && "Note implemented yet.");
+            Q_ASSERT(false && "Not implemented yet.");
             return false;
         }
 

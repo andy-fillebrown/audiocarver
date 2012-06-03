@@ -62,9 +62,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IEntity:
-            _entity = new CurveGui::Entity(this);
-            _entity->init();
-            return appendAggregate(_entity);
+            return appendAggregate((_entity = new CurveGui::Entity(this))->init());
         case I::ISubEntity:
             return appendAggregate((new SubEntity(this))->init());
         default:
