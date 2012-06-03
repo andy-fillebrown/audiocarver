@@ -30,8 +30,7 @@ namespace Database {
 
 namespace ScoreObjectGui
 {
-    void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &parentItems, const QMap<int, QGraphicsItem*> &items);
-    void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items);
+    void parentChanged(ScoreObject *scoreObject);
 
     class ParentEntity : public IParentEntity
     {
@@ -47,31 +46,17 @@ namespace ScoreObjectGui
 
         virtual IAggregate *init();
 
-        static void clearGraphicsItems(ParentEntity *child)
-        {
-            ScoreObjectGui::clearParentGraphicsItems(child->_mainGraphicsItems);
-            ScoreObjectGui::clearParentGraphicsItems(child->_unitXGraphicsItems);
-            ScoreObjectGui::clearParentGraphicsItems(child->_unitYGraphicsItems);
-        }
-
-        static void setGraphicsItems(ParentEntity *parent, ParentEntity *child)
-        {
-            if (!parent)
-                return;
-            ScoreObjectGui::setParentGraphicsItems(parent->_mainGraphicsItems, child->_mainGraphicsItems);
-        }
-
         const QMap<int, QGraphicsItem*> &mainGraphicsItems() const
         {
             return _mainGraphicsItems;
         }
 
-        const QMap<int, QGraphicsItem*> &unitXGraphicsItem() const
+        const QMap<int, QGraphicsItem*> &unitXGraphicsItems() const
         {
             return _unitXGraphicsItems;
         }
 
-        const QMap<int, QGraphicsItem*> &unitYGraphicsItem() const
+        const QMap<int, QGraphicsItem*> &unitYGraphicsItems() const
         {
             return _unitYGraphicsItems;
         }

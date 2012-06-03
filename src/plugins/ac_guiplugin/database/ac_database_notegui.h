@@ -32,32 +32,17 @@ class NoteGui : public Note
 {
     friend class ObjectGuiFactory;
 
-    ParentEntity *_parentEntityInterface;
-
-    ParentEntity *parentEntityInterface()
-    {
-        if (!_parentEntityInterface)
-            query<IParentEntity>(this);
-        return _parentEntityInterface;
-    }
-
 protected:
     NoteGui()
-        :   _parentEntityInterface(0)
     {}
 
     IAggregator *init();
 
     // Object
-    void parentAboutToBeChanged(const Object *object, Mi::NotificationFlags notificationFlags)
-    {
-        ParentEntity::clearGraphicsItems(parentEntityInterface());
-        Note::parentAboutToBeChanged(object, notificationFlags);
-    }
-
     void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
     {
-        ParentEntity::setGraphicsItems(dynamic_cast<ParentEntity*>(query<IParentEntity>(parent())), parentEntityInterface());
+        if (this == object)
+            ScoreObjectGui::parentChanged(this);
         Note::parentChanged(object, notificationFlags);
     }
 
@@ -96,7 +81,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IParentEntity:
-            return appendAggregate((_parentEntityInterface = new ParentEntity(this))->init());
+            return appendAggregate((new ParentEntity(this))->init());
         case I::IChildEntity:
             return appendAggregate((new ChildEntity(this))->init());
         default:

@@ -22,15 +22,8 @@
 
 namespace Database {
 
-namespace ScoreObjectGui {
-
-IAggregate *ParentEntity::init()
-{
-    return this;
-}
-
-void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &parentItems,
-                            const QMap<int, QGraphicsItem*> &items)
+static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &parentItems,
+                                   const QMap<int, QGraphicsItem*> &items)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
         QGraphicsItem *parentItem = parentItems.value(i, 0);
@@ -40,7 +33,7 @@ void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &parentItems,
     }
 }
 
-void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
+static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
 {
     for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
         QGraphicsItem *item = items.value(i, 0);
@@ -53,6 +46,41 @@ void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
     }
 }
 
-} // namespace ScoreObjectGui
+static void clearGraphicsItems(IParentEntity *child)
+{
+    ScoreObjectGui::ParentEntity *child_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(child);
+    if (!child_implementation)
+        return;
+    clearParentGraphicsItems(child_implementation->mainGraphicsItems());
+    clearParentGraphicsItems(child_implementation->unitXGraphicsItems());
+    clearParentGraphicsItems(child_implementation->unitYGraphicsItems());
+}
+
+static void setGraphicsItems(IParentEntity *parent, IParentEntity *child)
+{
+    if (!parent)
+        return;
+    ScoreObjectGui::ParentEntity *parent_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(parent);
+    if (!parent_implementation)
+        return;
+    ScoreObjectGui::ParentEntity *child_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(child);
+    if (!child_implementation)
+        return;
+    setParentGraphicsItems(parent_implementation->mainGraphicsItems(), child_implementation->mainGraphicsItems());
+}
+
+void ScoreObjectGui::parentChanged(ScoreObject *scoreObject)
+{
+    Object *parent = scoreObject->parent();
+    if (parent)
+        setGraphicsItems(query<IParentEntity>(parent), query<IParentEntity>(scoreObject));
+    else
+        clearGraphicsItems(query<IParentEntity>(scoreObject));
+}
+
+IAggregate *ScoreObjectGui::ParentEntity::init()
+{
+    return this;
+}
 
 } // namespace Database
