@@ -60,6 +60,7 @@ protected:
 
     bool setVolume(qreal volume);
 
+public:
     PitchCurve *pitchCurve() const
     {
         return cast<PitchCurve>(_pitchCurve);
@@ -70,6 +71,7 @@ protected:
         return cast<ObjectList>(_controlCurves);
     }
 
+protected:
     class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
         ScoreObject *a() const

@@ -24,11 +24,6 @@ IAggregator *NoteGui::init()
     return Note::init();
 }
 
-IAggregate *NoteGui::ParentEntity::init()
-{
-    return this;
-}
-
 IAggregate *NoteGui::ChildEntity::init()
 {
     return this;

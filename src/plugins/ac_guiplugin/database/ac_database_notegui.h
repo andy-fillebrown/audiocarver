@@ -23,7 +23,7 @@
 #include "ac_ichildentity.h"
 #include "ac_iparententity.h"
 
-#include <ac_isubentity.h>
+#include <ac_database_scoreobjectgui.h>
 
 namespace Database {
 
@@ -33,68 +33,6 @@ class NoteGui : public Note
 
 protected:
     IAggregator *init();
-
-    class ParentEntity : public IParentEntity
-    {
-        NoteGui *_aggregator;
-
-    public:
-        ParentEntity(NoteGui *aggregator)
-            :   _aggregator(aggregator)
-        {}
-
-        virtual IAggregate *init();
-
-    protected:
-        NoteGui *a() const
-        {
-            return _aggregator;
-        }
-
-        // IParentEntity
-        QList<ISubEntity*> subEntities(int sceneType) const
-        {
-            QList<ISubEntity*> sub_entities;
-            switch (sceneType) {
-            case Ac::PitchScene:
-                sub_entities.append(query<ISubEntity>(a()->pitchCurve()));
-                break;
-            case Ac::ControlScene: {
-                ObjectList *control_curves = a()->controlCurves();
-                const int n = control_curves->count();
-                for (int i = 0;  i < n;  ++i)
-                    sub_entities.append(query<ISubEntity>(control_curves->at(i)));
-                break;
-            }
-            default:
-                break;
-            }
-            return sub_entities;
-        }
-
-        // IEntity
-        void highlight()
-        {
-            Q_ASSERT(false && "Not implemented yet.");
-        }
-
-        void unhighlight()
-        {
-            Q_ASSERT(false && "Not implemented yet.");
-        }
-
-        bool isVisible() const
-        {
-            Q_ASSERT(false && "Not implemented yet.");
-            return false;
-        }
-
-        // IAggregate
-        IAggregator *aggregator() const
-        {
-            return _aggregator;
-        }
-    };
 
     class ChildEntity : public IChildEntity
     {
@@ -131,7 +69,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IParentEntity:
-            return appendAggregate((new ParentEntity(this))->init());
+            return appendAggregate((new ScoreObjectGui::ParentEntity(this))->init());
         case I::IChildEntity:
             return appendAggregate((new ChildEntity(this))->init());
         default:

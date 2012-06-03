@@ -6,6 +6,7 @@ SOURCE_FILES = \
 #    gridsettings \
     note \
     pitchcurve \
+    scoreobject \
 #    projectsettings \
 #    score \
 #    track \
