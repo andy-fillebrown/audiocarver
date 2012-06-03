@@ -17,9 +17,45 @@
 
 #include "ac_database_curvegui.h"
 
-#include <ac_ientity.h>
+#include <ac_database_scoreobjectgui.h>
+
+#include <QGraphicsScene>
 
 namespace Database {
+
+static void setGraphicsItemParent(IParentEntity *parent, IEntity *curve)
+{
+    ScoreObjectGui::ParentEntity *parent_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(parent);
+    if (!parent_implementation)
+        return;
+    CurveGui::Entity *curve_implementation = dynamic_cast<CurveGui::Entity*>(curve);
+    if (!curve_implementation)
+        return;
+    curve_implementation->graphicsCurveItem()->setParentItem(parent_implementation->mainGraphicsItems().value((query<ISubEntity>(curve))->sceneType()));
+}
+
+static void clearGraphicsItemParent(IEntity *curve)
+{
+    CurveGui::Entity *curve_implementation = dynamic_cast<CurveGui::Entity*>(curve);
+    if (!curve_implementation)
+        return;
+    QGraphicsItem *item = curve_implementation->graphicsCurveItem();
+    if (!item)
+        return;
+    item->setParentItem(0);
+    QGraphicsScene *scene = item->scene();
+    if (scene)
+        scene->removeItem(item);
+}
+
+void CurveGui::parentChanged(Curve *curve)
+{
+    Object *parent = curve->parent();
+    if (parent)
+        setGraphicsItemParent(query<IParentEntity>(parent), query<IEntity>(curve));
+    else
+        clearGraphicsItemParent(query<IEntity>(curve));
+}
 
 IAggregate *CurveGui::Entity::init()
 {

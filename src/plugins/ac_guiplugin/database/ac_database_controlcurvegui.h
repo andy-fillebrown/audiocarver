@@ -26,21 +26,22 @@
 
 namespace Database {
 
+using namespace CurveGui;
+
 class ControlCurveGui : public ControlCurve
 {
     friend class ObjectGuiFactory;
 
-    CurveGui::Entity *_entity;
-
 protected:
-    ControlCurveGui()
-        :   _entity(0)
-    {}
-
     IAggregator *init();
 
     // Object
-    void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags);
+    void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
+    {
+        if (this == object)
+            CurveGui::parentChanged(this);
+        ControlCurve::parentChanged(object, notificationFlags);
+    }
 
     class SubEntity : public CurveGui::SubEntity
     {
@@ -64,7 +65,7 @@ protected:
     {
         switch (interfaceType) {
         case I::IEntity:
-            return appendAggregate((_entity = new CurveGui::Entity(this))->init());
+            return appendAggregate((new Entity(this))->init());
         case I::ISubEntity:
             return appendAggregate((new SubEntity(this))->init());
         default:

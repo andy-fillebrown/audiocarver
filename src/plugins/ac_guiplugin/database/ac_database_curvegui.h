@@ -32,6 +32,8 @@ namespace Database {
 
 namespace CurveGui
 {
+    void parentChanged(Curve *curve);
+
     class Entity : public IEntity
     {
         Curve *_aggregator;

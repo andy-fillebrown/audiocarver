@@ -17,8 +17,6 @@
 
 #include "ac_database_controlcurvegui.h"
 
-#include <mi_scopeddatachange.h>
-
 namespace Database {
 
 IAggregator *ControlCurveGui::init()
@@ -30,8 +28,5 @@ IAggregate *ControlCurveGui::SubEntity::init()
 {
     return CurveGui::SubEntity::init();
 }
-
-void ControlCurveGui::parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
-{}
 
 } // namespace Database

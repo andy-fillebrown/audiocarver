@@ -29,7 +29,4 @@ IAggregate *PitchCurveGui::SubEntity::init()
     return CurveGui::SubEntity::init();
 }
 
-void PitchCurveGui::parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
-{}
-
 } // namespace Database
