@@ -400,23 +400,42 @@ def prepare_for_render():
 
     start_time = time.time()
 
-    print ("Preparing scene for render ...")
+    print ("\nPreparing scene for render ...\n")
 
-    print(" creating pitch lines ...")
+    print(" ... creating pitch lines")
     create_pitch_lines()
 
     # Apply note modifiers.
-    print(" applying note modifiers ...")
+    print(" ... applying note modifiers")
     clear_ss()
     bpy.ops.object.select_pattern(pattern = "Note.*")
     notes = current_ss()
     for note in notes:
-        apply_note_modifiers(note)
+        note.select = True
+        bpy.context.scene.objects.active = note
+        bpy.ops.object.modifier_apply(modifier = note.modifiers[0].name)
+
+    # Apply pitch line text arrow modifiers.
+    print(" ... applying pitch line text arrow modifiers")
+    clear_ss()
+    bpy.ops.object.select_pattern(pattern = "PitchLine.Text.Arrow.*")
+    ss = current_ss()
+    for obj in ss:
+        obj.select = True
+        bpy.context.scene.objects.active = obj
+        bpy.ops.object.modifier_apply(modifier = obj.modifiers[0].name)
 
     # Delete pitch line location curve.
-    print(" deleting the pitch location curve ...")
+    print(" ... deleting the pitch location curve")
     clear_ss()
-    bpy.data.objects[".Pitch.Location.Curve.Y"].select
+    bpy.data.objects[".Pitch.Location.Curve.Y"].select = True
+    bpy.ops.object.delete()
+
+    # Delete pitch location guides.
+    print(" ... deleting the pitch location guides")
+    clear_ss()
+    bpy.data.objects[".Note.Location.Guide.Low"].select = True
+    bpy.data.objects[".Note.Location.Guide.High"].select = True
     bpy.ops.object.delete()
 
     # Restore previous selection.
