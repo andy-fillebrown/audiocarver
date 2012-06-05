@@ -21,10 +21,6 @@ def current_ss():
     return bpy.context.selected_objects
 
 
-def object_number(obj):
-    return obj.name[obj.name.rfind(".") + 1 : len(obj.name)]
-
-
 def to_zero_prefixed_string(number):
     zero_prefixed_string = ""
     if number < 100:
@@ -33,11 +29,6 @@ def to_zero_prefixed_string(number):
         zero_prefixed_string += "0"
     zero_prefixed_string += str(int(number))
     return zero_prefixed_string
-
-
-def select_note_template_object():
-    clear_ss()
-    note_template_object.select = True
 
 
 def create_note_material(color = "#ffffff"):
@@ -76,7 +67,8 @@ def import_note(note_node, note_material):
         return
 
     # Select and duplicate the note template objects.
-    select_note_template_object()
+    clear_ss()
+    note_template_object.select = True
     bpy.ops.object.duplicate()
 
     # Rename the new note object.
@@ -282,7 +274,8 @@ def load(operator,
         import_node(xml_node)
 
     # Delete the note template objects.
-    select_note_template_object()
+    clear_ss()
+    note_template_object.select = True
     bpy.ops.object.delete()
 
     # Restore the original selection set.
