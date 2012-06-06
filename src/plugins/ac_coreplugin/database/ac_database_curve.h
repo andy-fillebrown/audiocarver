@@ -39,9 +39,6 @@ protected:
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    Curve()
-    {}
-
     IAggregator *init();
 
     virtual void conformPoints() = 0;

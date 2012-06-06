@@ -28,16 +28,6 @@ IAggregator *Curve::init()
     return Object::init();
 }
 
-IAggregate *Curve::Points::init()
-{
-    return this;
-}
-
-IAggregate *Curve::ModelData::init()
-{
-    return Object::ModelData::init();
-}
-
 void Curve::pushPoints(const PointList &points)
 {
     ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyParent);
@@ -68,6 +58,16 @@ bool Curve::setPoints(const PointList &points)
     ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyModelAndParent);
     _pointsStack.top() = new_pts;
     return true;
+}
+
+IAggregate *Curve::Points::init()
+{
+    return this;
+}
+
+IAggregate *Curve::ModelData::init()
+{
+    return Object::ModelData::init();
 }
 
 } // namespace Database
