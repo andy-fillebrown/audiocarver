@@ -42,6 +42,7 @@ void Curve::pushPoints(const PointList &points)
 {
     ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyParent);
     _pointsStack.push(points);
+    conformPoints();
 }
 
 void Curve::popPoints()
