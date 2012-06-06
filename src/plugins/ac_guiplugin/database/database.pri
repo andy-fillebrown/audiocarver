@@ -7,6 +7,7 @@ SOURCE_FILES = \
     note \
     pitchcurve \
     scoreobject \
+    track \
 #    projectsettings \
 #    score \
 #    track \
