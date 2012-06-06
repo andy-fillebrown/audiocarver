@@ -15,107 +15,137 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROJECTSETTINGS_H
-#define AC_PROJECTSETTINGS_H
+#ifndef AC_DATABASE_PROJECTSETTINGS_H
+#define AC_DATABASE_PROJECTSETTINGS_H
 
-#include <ac_coreconstants.h>
-#include <ac_namespace.h>
+#include "mi_database_object.h"
 
-#include <mi_object.h>
+#include <ac_corenamespace.h>
 
-class Score;
+namespace Database {
 
-class ProjectSettingsPrivate;
 class ProjectSettings : public Object
 {
-    Q_OBJECT
-//    Q_PROPERTY(QString outputDirectory READ outputDirectory WRITE setOutputDirectory)
-//    Q_PROPERTY(QString instrumentDirectory READ instrumentDirectory WRITE setInstrumentDirectory)
-//    Q_PROPERTY(QString audioFileType READ audioFileType WRITE setAudioFileType)
-    Q_PROPERTY(int sampleRate READ sampleRate WRITE setSampleRate)
-    Q_PROPERTY(int controlRate READ controlRate WRITE setControlRate)
-    Q_PROPERTY(int curveRate READ curveRate WRITE setCurveRate)
+    friend class ObjectFactory;
 
-public:
-    enum { Type = Ac::ProjectSettingsItem };
+    enum { RoleCount = 3 };
 
-    ProjectSettings(QObject *parent = 0);
+    int _sampleRate;
+    int _controlRate;
+    int _curveRate;
 
-    Score *score() const;
+protected:
+    enum {
+        RoleCountOffset = Object::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
-    void clear();
+    ProjectSettings()
+        :   _sampleRate(48000)
+        ,   _controlRate(4800)
+        ,   _curveRate(48)
+    {}
 
-    // Properties
-//    const QString &outputDirectory() const;
-//    void setOutputDirectory(const QString &directory);
-//    QString instrumentDirectory() const;
-//    void setInstrumentDirectory(const QString &directory);
-//    const QString &audioFileType() const;
-//    void setAudioFileType(const QString &fileType);
-    int sampleRate() const;
-    void setSampleRate(int rate);
-    int controlRate() const;
-    void setControlRate(int rate);
-    int curveRate() const;
-    void setCurveRate(int rate);
+    IAggregator *init();
 
-    // IModelItem
-    int type() const { return Type; }
-
-    int persistentRoleAt(int i) const
+    int sampleRate() const
     {
-        switch (i - staticMetaObject.propertyOffset()) {
-//        case 0:
-//            return Ac::OutputDirectoryRole;
-//        case 1:
-//            return Ac::InstrumentDirectoryRole;
-//        case 2:
-//            return Ac::AudioFileTypeRole;
-        case 0://3:
-            return Ac::SampleRateRole;
-        case 1://4:
-            return Ac::ControlRateRole;
-        case 2://5:
-            return Ac::CurveRateRole;
+        return _sampleRate;
+    }
+
+    bool setSampleRate(int rate);
+
+    int controlRate() const
+    {
+        return _controlRate;
+    }
+
+    bool setControlRate(int rate);
+
+    int curveRate() const
+    {
+        return _curveRate;
+    }
+
+    bool setCurveRate(int rate);
+
+    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    {
+        ProjectSettings *a() const
+        {
+            return static_cast<ProjectSettings*>(Object::ModelData::a());
+        }
+
+    public:
+        ModelData(ProjectSettings *aggregator)
+            :   Object::ModelData(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelData
+        int roleCount() const
+        {
+            return TotalRoleCount;
+        }
+
+        int roleAt(int i) const
+        {
+            Q_ASSERT(i <= 0);
+            switch (i - RoleCountOffset) {
+            case 0:
+                return Ac::SampleRateRole;
+            case 1:
+                return Ac::ControlRateRole;
+            case 2:
+                return Ac::CurveRateRole;
+            default:
+                return Object::ModelData::roleAt(i);
+            }
+        }
+
+        QVariant getVariant(int role) const
+        {
+            switch (role) {
+            case Ac::SampleRateRole:
+                return a()->sampleRate();
+            case Ac::ControlRateRole:
+                return a()->controlRate();
+            case Ac::CurveRateRole:
+                return a()->curveRate();
+            default:
+                return Object::ModelData::getVariant(role);
+            }
+        }
+
+        bool setVariant(const QVariant &data, int role)
+        {
+            switch (role) {
+            case Ac::SampleRateRole:
+                return a()->setSampleRate(qvariant_cast<int>(data));
+            case Ac::ControlRateRole:
+                return a()->setControlRate(qvariant_cast<int>(data));
+            case Ac::CurveRateRole:
+                return a()->setCurveRate(qvariant_cast<int>(data));
+            default:
+                return Object::ModelData::setVariant(data, role);
+            }
+        }
+    };
+
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelData:
+            return appendAggregate((new ModelData(this))->init());
         default:
-            return Object::persistentRoleAt(i);
+            return Object::createAggregate(interfaceType);
         }
     }
-
-    QVariant data(int role) const;
-    bool setData(const QVariant &value, int role);
-
-private:
-    Q_DECLARE_PRIVATE(ProjectSettings)
 };
 
-class ProjectSettingsPrivate : public ObjectPrivate
-{
-    Q_DECLARE_PUBLIC(ProjectSettings)
+} // namespace Database
 
-public:
-//    QString outputDirectory;
-//    QString instrumentDirectory;
-//    QString audioFileType;
-    int sampleRate;
-    int controlRate;
-    int curveRate;
-
-    ProjectSettingsPrivate(ProjectSettings *q)
-        :   ObjectPrivate(q)
-    {
-        clear();
-    }
-
-    void clear()
-    {
-//        outputDirectory.clear();
-//        instrumentDirectory.clear();
-//        audioFileType.clear();
-        sampleRate = 48000;
-        controlRate = 4800;
-        curveRate = 48;
-    }
-};
-
-#endif // AC_PROJECTSETTINGS_H
+#endif // AC_DATABASE_PROJECTSETTINGS_H
