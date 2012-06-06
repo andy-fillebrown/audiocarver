@@ -20,6 +20,7 @@
 
 #include "ac_database_scoreobject.h"
 
+#include "ac_ichildentity.h"
 #include "ac_iparententity.h"
 
 #include <ac_isubentity.h>
@@ -118,6 +119,36 @@ namespace ScoreObjectGui
         {
             Q_ASSERT(false && "Not implemented yet.");
             return false;
+        }
+
+        // IAggregate
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
+    };
+
+    class ChildEntity : public IChildEntity
+    {
+        ScoreObject *_aggregator;
+
+    public:
+        ChildEntity(ScoreObject *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        virtual IAggregate *init();
+
+    protected:
+        ScoreObject *a() const
+        {
+            return _aggregator;
+        }
+
+        // IChildEntity
+        IParentEntity *parentEntity() const
+        {
+            return query<IParentEntity>(a()->parent());
         }
 
         // IAggregate

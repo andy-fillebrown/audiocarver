@@ -24,11 +24,6 @@ IAggregator *NoteGui::init()
     return Note::init();
 }
 
-IAggregate *NoteGui::ChildEntity::init()
-{
-    return this;
-}
-
 } // namespace Database
 
 //#include "ac_note.h"

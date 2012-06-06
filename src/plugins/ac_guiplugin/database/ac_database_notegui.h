@@ -33,9 +33,6 @@ class NoteGui : public Note
     friend class ObjectGuiFactory;
 
 protected:
-    NoteGui()
-    {}
-
     IAggregator *init();
 
     // Object
@@ -45,36 +42,6 @@ protected:
             ScoreObjectGui::parentChanged(this);
         Note::parentChanged(object, notificationFlags);
     }
-
-    class ChildEntity : public IChildEntity
-    {
-        NoteGui *_aggregator;
-
-    public:
-        ChildEntity(NoteGui *aggregator)
-            :   _aggregator(aggregator)
-        {}
-
-        virtual IAggregate *init();
-
-    protected:
-        NoteGui *a() const
-        {
-            return _aggregator;
-        }
-
-        // IChildEntity
-        IParentEntity *parentEntity() const
-        {
-            return query<IParentEntity>(a()->parent());
-        }
-
-        // IAggregate
-        IAggregator *aggregator() const
-        {
-            return _aggregator;
-        }
-    };
 
     // IAggregator
     IAggregate *createAggregate(int interfaceType)

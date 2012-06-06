@@ -83,4 +83,9 @@ IAggregate *ScoreObjectGui::ParentEntity::init()
     return this;
 }
 
+IAggregate *ScoreObjectGui::ChildEntity::init()
+{
+    return this;
+}
+
 } // namespace Database
