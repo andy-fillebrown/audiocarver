@@ -61,14 +61,14 @@ protected:
     bool setVolume(qreal volume);
 
 public:
-    PitchCurve *pitchCurve() const
+    IAggregator *pitchCurve() const
     {
-        return cast<PitchCurve>(_pitchCurve);
+        return _pitchCurve;
     }
 
-    ObjectList *controlCurves() const
+    IAggregator *controlCurves() const
     {
-        return cast<ObjectList>(_controlCurves);
+        return _controlCurves;
     }
 
 protected:

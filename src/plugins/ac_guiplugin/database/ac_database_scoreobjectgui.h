@@ -92,7 +92,7 @@ namespace ScoreObjectGui
                 sub_entities.append(query<ISubEntity>(a()->pitchCurve()));
                 break;
             case Ac::ControlScene: {
-                ObjectList *control_curves = a()->controlCurves();
+                IModelList *control_curves = query<IModelList>(a()->controlCurves());
                 const int n = control_curves->count();
                 for (int i = 0;  i < n;  ++i)
                     sub_entities.append(query<ISubEntity>(control_curves->at(i)));

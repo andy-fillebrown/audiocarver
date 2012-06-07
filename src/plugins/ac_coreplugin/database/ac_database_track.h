@@ -82,9 +82,9 @@ protected:
 
     bool setRecording(bool recording);
 
-    ObjectList *notes() const
+    IAggregator *notes() const
     {
-        return cast<ObjectList>(_notes);
+        return _notes;
     }
 
     class AC_CORE_EXPORT ModelData : public ScoreObject::ModelData
