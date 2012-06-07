@@ -15,263 +15,329 @@
 **
 **************************************************************************/
 
-#include "ac_gridsettings.h"
+#include "ac_database_gridsettings.h"
 
-#include <ac_graphicsitem.h>
-#include <ac_gridline.h>
-#include <ac_score.h>
+#include <mi_scopeddatachange.h>
 
-GridSettingsPrivate::GridSettingsPrivate(GridSettings *q)
-    :   GraphicsParentPrivate(q)
-    ,   snapEnabled(true)
-    ,   gridSnapEnabled(true)
-    ,   timeSnap(0.125f)
-    ,   pitchSnap(1.0f)
-    ,   controlSnap(0.125f)
-    ,   timeGridLines(0)
-    ,   pitchGridLines(0)
-    ,   controlGridLines(0)
+namespace Database {
+
+IAggregator *GridSettings::init()
 {
-    mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
-    mainGraphicsItems.insert(Ac::TimeLabelScene, new GraphicsItem);
-    mainGraphicsItems.insert(Ac::PitchLabelScene, new GraphicsItem);
-    mainGraphicsItems.insert(Ac::ControlLabelScene, new GraphicsItem);
-    unitXGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
-    unitXGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
-    unitYGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+    return Object::init();
 }
 
-void GridSettingsPrivate::init()
+bool GridSettings::setSnapEnabled(bool enabled)
 {
-    timeGridLines = new ObjectTList<TimeGridLine>(q_ptr);
-    pitchGridLines = new ObjectTList<PitchGridLine>(q_ptr);
-    controlGridLines = new ObjectTList<ControlGridLine>(q_ptr);
+    if (_snapEnabled == enabled)
+        return false;
+    ScopedDataChange data_change(this, Ac::SnapEnabledRole);
+    _snapEnabled = enabled;
+    return true;
 }
 
-GridSettingsPrivate::~GridSettingsPrivate()
+bool GridSettings::setGridSnapEnabled(bool enabled)
 {
-    qDeleteAll(controlGridLines);
-    qDeleteAll(pitchGridLines);
-    qDeleteAll(timeGridLines);
-    delete controlGridLines;
-    delete pitchGridLines;
-    delete timeGridLines;
+    if (_gridSnapEnabled == enabled)
+        return false;
+    ScopedDataChange data_change(this, Ac::GridSnapEnabledRole);
+    _gridSnapEnabled = enabled;
+    return true;
 }
 
-GraphicsParentPrivate *GridSettingsPrivate::graphicsParent() const
+bool GridSettings::setTimeSnap(qreal snap)
 {
-    Q_Q(const GridSettings);
-    Score *score = q->score();
-    return score ? score->d_func() : 0;
+    snap = qMax(qreal(0.0f), snap);
+    if (_timeSnap == snap)
+        return false;
+    ScopedDataChange data_change(this, Ac::TimeSnapRole);
+    _timeSnap = snap;
+    return true;
 }
 
-GridSettings::GridSettings(QObject *parent)
-    :   GraphicsParent(*(new GridSettingsPrivate(this)), parent)
+bool GridSettings::setPitchSnap(qreal snap)
 {
-    Q_D(GridSettings);
-    d->init();
-    setName("GridSettings");
+    snap = qMax(qreal(0.0f), snap);
+    if (_pitchSnap == snap)
+        return false;
+    ScopedDataChange data_change(this, Ac::PitchSnapRole);
+    _pitchSnap = snap;
+    return true;
 }
 
-Score *GridSettings::score() const
+bool GridSettings::setControlSnap(qreal snap)
 {
-    return object_cast<Score>(QObject::parent());
+    snap = qMax(qreal(0.0f), snap);
+    if (_controlSnap == snap)
+        return false;
+    ScopedDataChange data_change(this, Ac::ControlSnapRole);
+    _controlSnap = snap;
+    return true;
 }
 
-bool GridSettings::isSnapEnabled() const
+IAggregate *GridSettings::ModelData::init()
 {
-    Q_D(const GridSettings);
-    return d->snapEnabled;
+    return Object::ModelData::init();
 }
 
-void GridSettings::setSnapEnabled(bool enabled)
-{
-    Q_D(GridSettings);
-    if (d->snapEnabled == enabled)
-        return;
-    d->beginChangeData();
-    d->snapEnabled = enabled;
-    d->endChangeData();
-}
+} // namespace Database
 
-bool GridSettings::isGridSnapEnabled() const
-{
-    Q_D(const GridSettings);
-    return d->gridSnapEnabled;
-}
+//#include "ac_gridsettings.h"
 
-void GridSettings::setGridSnapEnabled(bool enabled)
-{
-    Q_D(GridSettings);
-    if (d->gridSnapEnabled == enabled)
-        return;
-    d->beginChangeData();
-    d->gridSnapEnabled = enabled;
-    d->endChangeData();
-}
+//#include <ac_graphicsitem.h>
+//#include <ac_gridline.h>
+//#include <ac_score.h>
 
-qreal GridSettings::timeSnap() const
-{
-    Q_D(const GridSettings);
-    return d->timeSnap;
-}
+//GridSettingsPrivate::GridSettingsPrivate(GridSettings *q)
+//    :   GraphicsParentPrivate(q)
+//    ,   snapEnabled(true)
+//    ,   gridSnapEnabled(true)
+//    ,   timeSnap(0.125f)
+//    ,   pitchSnap(1.0f)
+//    ,   controlSnap(0.125f)
+//    ,   timeGridLines(0)
+//    ,   pitchGridLines(0)
+//    ,   controlGridLines(0)
+//{
+//    mainGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+//    mainGraphicsItems.insert(Ac::TimeLabelScene, new GraphicsItem);
+//    mainGraphicsItems.insert(Ac::PitchLabelScene, new GraphicsItem);
+//    mainGraphicsItems.insert(Ac::ControlLabelScene, new GraphicsItem);
+//    unitXGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+//    unitXGraphicsItems.insert(Ac::ControlScene, new GraphicsItem);
+//    unitYGraphicsItems.insert(Ac::PitchScene, new GraphicsItem);
+//}
 
-void GridSettings::setTimeSnap(qreal snap)
-{
-    Q_D(GridSettings);
-    if (snap < 0.0f)
-        snap = 0.0f;
-    if (d->timeSnap == snap)
-        return;
-    d->beginChangeData();
-    d->timeSnap = snap;
-    d->endChangeData();
-}
+//void GridSettingsPrivate::init()
+//{
+//    timeGridLines = new ObjectTList<TimeGridLine>(q_ptr);
+//    pitchGridLines = new ObjectTList<PitchGridLine>(q_ptr);
+//    controlGridLines = new ObjectTList<ControlGridLine>(q_ptr);
+//}
 
-qreal GridSettings::pitchSnap() const
-{
-    Q_D(const GridSettings);
-    return d->pitchSnap;
-}
+//GridSettingsPrivate::~GridSettingsPrivate()
+//{
+//    qDeleteAll(controlGridLines);
+//    qDeleteAll(pitchGridLines);
+//    qDeleteAll(timeGridLines);
+//    delete controlGridLines;
+//    delete pitchGridLines;
+//    delete timeGridLines;
+//}
 
-void GridSettings::setPitchSnap(qreal snap)
-{
-    Q_D(GridSettings);
-    if (snap < 0.0f)
-        snap = 0.0f;
-    if (d->pitchSnap == snap)
-        return;
-    d->beginChangeData();
-    d->pitchSnap = snap;
-    d->endChangeData();
-}
+//GraphicsParentPrivate *GridSettingsPrivate::graphicsParent() const
+//{
+//    Q_Q(const GridSettings);
+//    Score *score = q->score();
+//    return score ? score->d_func() : 0;
+//}
 
-qreal GridSettings::controlSnap() const
-{
-    Q_D(const GridSettings);
-    return d->controlSnap;
-}
+//GridSettings::GridSettings(QObject *parent)
+//    :   GraphicsParent(*(new GridSettingsPrivate(this)), parent)
+//{
+//    Q_D(GridSettings);
+//    d->init();
+//    setName("GridSettings");
+//}
 
-void GridSettings::setControlSnap(qreal snap)
-{
-    Q_D(GridSettings);
-    if (snap < 0.0f)
-        snap = 0.0f;
-    if (d->controlSnap == snap)
-        return;
-    d->beginChangeData();
-    d->controlSnap = snap;
-    d->endChangeData();
-}
+//Score *GridSettings::score() const
+//{
+//    return object_cast<Score>(QObject::parent());
+//}
 
-ObjectTList<TimeGridLine> *GridSettings::timeGridLines() const
-{
-    Q_D(const GridSettings);
-    return d->timeGridLines;
-}
+//bool GridSettings::isSnapEnabled() const
+//{
+//    Q_D(const GridSettings);
+//    return d->snapEnabled;
+//}
 
-ObjectTList<PitchGridLine> *GridSettings::pitchGridLines() const
-{
-    Q_D(const GridSettings);
-    return d->pitchGridLines;
-}
+//void GridSettings::setSnapEnabled(bool enabled)
+//{
+//    Q_D(GridSettings);
+//    if (d->snapEnabled == enabled)
+//        return;
+//    d->beginChangeData();
+//    d->snapEnabled = enabled;
+//    d->endChangeData();
+//}
 
-ObjectTList<ControlGridLine> *GridSettings::controlGridLines() const
-{
-    Q_D(const GridSettings);
-    return d->controlGridLines;
-}
+//bool GridSettings::isGridSnapEnabled() const
+//{
+//    Q_D(const GridSettings);
+//    return d->gridSnapEnabled;
+//}
 
-void GridSettings::clear()
-{
-    Q_D(GridSettings);
-    d->controlGridLines->clear();
-    d->pitchGridLines->clear();
-    d->timeGridLines->clear();
-    d->controlSnap = 0.125f;
-    d->pitchSnap = 1.0f;
-    d->timeSnap = 0.125f;
-    d->gridSnapEnabled = true;
-    d->snapEnabled = true;
-}
+//void GridSettings::setGridSnapEnabled(bool enabled)
+//{
+//    Q_D(GridSettings);
+//    if (d->gridSnapEnabled == enabled)
+//        return;
+//    d->beginChangeData();
+//    d->gridSnapEnabled = enabled;
+//    d->endChangeData();
+//}
 
-int GridSettings::modelItemIndex(const IModelItem *item) const
-{
-    Q_D(const GridSettings);
-    if (d->timeGridLines == item)
-        return 0;
-    if (d->pitchGridLines == item)
-        return 1;
-    if (d->controlGridLines == item)
-        return 2;
-    return Object::modelItemIndex(item);
-}
+//qreal GridSettings::timeSnap() const
+//{
+//    Q_D(const GridSettings);
+//    return d->timeSnap;
+//}
 
-IModelItem *GridSettings::modelItemAt(int i) const
-{
-    switch (i) {
-    case 0:
-        return timeGridLines();
-    case 1:
-        return pitchGridLines();
-    case 2:
-        return controlGridLines();
-    default:
-        return 0;
-    }
-}
+//void GridSettings::setTimeSnap(qreal snap)
+//{
+//    Q_D(GridSettings);
+//    if (snap < 0.0f)
+//        snap = 0.0f;
+//    if (d->timeSnap == snap)
+//        return;
+//    d->beginChangeData();
+//    d->timeSnap = snap;
+//    d->endChangeData();
+//}
 
-IModelItem *GridSettings::findModelItemList(int type) const
-{
-    switch (type) {
-    case Ac::TimeGridLineItem:
-        return timeGridLines();
-    case Ac::PitchGridLineItem:
-        return pitchGridLines();
-    case Ac::ControlGridLineItem:
-        return controlGridLines();
-    default:
-        return 0;
-    }
-}
+//qreal GridSettings::pitchSnap() const
+//{
+//    Q_D(const GridSettings);
+//    return d->pitchSnap;
+//}
 
-QVariant GridSettings::data(int role) const
-{
-    switch (role) {
-    case Ac::SnapEnabledRole:
-        return isSnapEnabled();
-    case Ac::GridSnapEnabledRole:
-        return isGridSnapEnabled();
-    case Ac::TimeSnapRole:
-        return timeSnap();
-    case Ac::PitchSnapRole:
-        return pitchSnap();
-    case Ac::ControlSnapRole:
-        return controlSnap();
-    default:
-        return GraphicsParent::data(role);
-    }
-}
+//void GridSettings::setPitchSnap(qreal snap)
+//{
+//    Q_D(GridSettings);
+//    if (snap < 0.0f)
+//        snap = 0.0f;
+//    if (d->pitchSnap == snap)
+//        return;
+//    d->beginChangeData();
+//    d->pitchSnap = snap;
+//    d->endChangeData();
+//}
 
-bool GridSettings::setData(const QVariant &value, int role)
-{
-    switch (role) {
-    case Ac::SnapEnabledRole:
-        setSnapEnabled(value.toBool());
-        return true;
-    case Ac::GridSnapEnabledRole:
-        setGridSnapEnabled(value.toBool());
-        return true;
-    case Ac::TimeSnapRole:
-        setTimeSnap(value.toReal());
-        return true;
-    case Ac::PitchSnapRole:
-        setPitchSnap(value.toReal());
-        return true;
-    case Ac::ControlSnapRole:
-        setControlSnap(value.toReal());
-        return true;
-    default:
-        return GraphicsParent::setData(value, role);
-    }
-}
+//qreal GridSettings::controlSnap() const
+//{
+//    Q_D(const GridSettings);
+//    return d->controlSnap;
+//}
+
+//void GridSettings::setControlSnap(qreal snap)
+//{
+//    Q_D(GridSettings);
+//    if (snap < 0.0f)
+//        snap = 0.0f;
+//    if (d->controlSnap == snap)
+//        return;
+//    d->beginChangeData();
+//    d->controlSnap = snap;
+//    d->endChangeData();
+//}
+
+//ObjectTList<TimeGridLine> *GridSettings::timeGridLines() const
+//{
+//    Q_D(const GridSettings);
+//    return d->timeGridLines;
+//}
+
+//ObjectTList<PitchGridLine> *GridSettings::pitchGridLines() const
+//{
+//    Q_D(const GridSettings);
+//    return d->pitchGridLines;
+//}
+
+//ObjectTList<ControlGridLine> *GridSettings::controlGridLines() const
+//{
+//    Q_D(const GridSettings);
+//    return d->controlGridLines;
+//}
+
+//void GridSettings::clear()
+//{
+//    Q_D(GridSettings);
+//    d->controlGridLines->clear();
+//    d->pitchGridLines->clear();
+//    d->timeGridLines->clear();
+//    d->controlSnap = 0.125f;
+//    d->pitchSnap = 1.0f;
+//    d->timeSnap = 0.125f;
+//    d->gridSnapEnabled = true;
+//    d->snapEnabled = true;
+//}
+
+//int GridSettings::modelItemIndex(const IModelItem *item) const
+//{
+//    Q_D(const GridSettings);
+//    if (d->timeGridLines == item)
+//        return 0;
+//    if (d->pitchGridLines == item)
+//        return 1;
+//    if (d->controlGridLines == item)
+//        return 2;
+//    return Object::modelItemIndex(item);
+//}
+
+//IModelItem *GridSettings::modelItemAt(int i) const
+//{
+//    switch (i) {
+//    case 0:
+//        return timeGridLines();
+//    case 1:
+//        return pitchGridLines();
+//    case 2:
+//        return controlGridLines();
+//    default:
+//        return 0;
+//    }
+//}
+
+//IModelItem *GridSettings::findModelItemList(int type) const
+//{
+//    switch (type) {
+//    case Ac::TimeGridLineItem:
+//        return timeGridLines();
+//    case Ac::PitchGridLineItem:
+//        return pitchGridLines();
+//    case Ac::ControlGridLineItem:
+//        return controlGridLines();
+//    default:
+//        return 0;
+//    }
+//}
+
+//QVariant GridSettings::data(int role) const
+//{
+//    switch (role) {
+//    case Ac::SnapEnabledRole:
+//        return isSnapEnabled();
+//    case Ac::GridSnapEnabledRole:
+//        return isGridSnapEnabled();
+//    case Ac::TimeSnapRole:
+//        return timeSnap();
+//    case Ac::PitchSnapRole:
+//        return pitchSnap();
+//    case Ac::ControlSnapRole:
+//        return controlSnap();
+//    default:
+//        return GraphicsParent::data(role);
+//    }
+//}
+
+//bool GridSettings::setData(const QVariant &value, int role)
+//{
+//    switch (role) {
+//    case Ac::SnapEnabledRole:
+//        setSnapEnabled(value.toBool());
+//        return true;
+//    case Ac::GridSnapEnabledRole:
+//        setGridSnapEnabled(value.toBool());
+//        return true;
+//    case Ac::TimeSnapRole:
+//        setTimeSnap(value.toReal());
+//        return true;
+//    case Ac::PitchSnapRole:
+//        setPitchSnap(value.toReal());
+//        return true;
+//    case Ac::ControlSnapRole:
+//        setControlSnap(value.toReal());
+//        return true;
+//    default:
+//        return GraphicsParent::setData(value, role);
+//    }
+//}

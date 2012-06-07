@@ -3,7 +3,7 @@ SOURCE_FILES = \
     curve \
     controlcurve \
     gridline \
-#    gridsettings \
+    gridsettings \
     note \
     pitchcurve \
     scoreobject \
