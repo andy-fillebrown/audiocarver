@@ -199,6 +199,17 @@ protected:
             return ScoreObject::ModelItem::indexOf(item);
         }
 
+        IModelItem *at(int i) const
+        {
+            Q_ASSERT(0 <= (TotalItemCount - i));
+            switch (TotalItemCount - i) {
+            case 0:
+                return query<IModelItem>(a()->notes());
+            default:
+                return ScoreObject::ModelItem::at(i);
+            }
+        }
+
         IModelList *findList(int listType) const
         {
             switch (listType) {
