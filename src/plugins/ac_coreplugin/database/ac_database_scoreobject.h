@@ -158,7 +158,7 @@ protected:
 
         IModelItem *at(int i) const
         {
-            Q_ASSERT(0 <= i);
+            Q_ASSERT(0 <= (i - ItemCountOffset));
             switch (i - ItemCountOffset) {
             case 0:
                 return query<IModelItem>(a()->pitchCurve());
