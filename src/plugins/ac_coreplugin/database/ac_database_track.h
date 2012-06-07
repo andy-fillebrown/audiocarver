@@ -45,7 +45,7 @@ protected:
     };
 
     Track()
-        :   _color(0)
+        :   _color(Ac::red)
         ,   _visible(false)
         ,   _recording(false)
         ,   _notes(0)
