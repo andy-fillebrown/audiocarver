@@ -97,7 +97,7 @@ protected:
 
     bool setControlScale(qreal scale);
 
-    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    class ModelData : public Object::ModelData
     {
         ViewSettings *a() const
         {
