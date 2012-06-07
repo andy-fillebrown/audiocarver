@@ -45,7 +45,7 @@ protected:
     };
 
     ViewSettings()
-        :   _timePosition(64.0f)
+        :   _timePosition(30.0f)
         ,   _pitchPosition(63.5f)
         ,   _controlPosition(0.5f)
         ,   _timeScale(VIEWSCALE_MIN)
