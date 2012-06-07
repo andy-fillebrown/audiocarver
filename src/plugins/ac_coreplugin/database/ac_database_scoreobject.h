@@ -168,6 +168,17 @@ protected:
                 return Object::ModelItem::at(i);
             }
         }
+
+        IModelItem *findItem(int itemType) const
+        {
+            switch (itemType) {
+            case Ac::PitchCurveItem:
+                return query<IModelItem>(a()->pitchCurve());
+            default:
+                return Object::ModelItem::findItem(itemType);
+            }
+        }
+
     };
 
     // IAggregator
