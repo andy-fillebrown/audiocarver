@@ -8,7 +8,7 @@ SOURCE_FILES = \
     pitchcurve \
     scoreobject \
     projectsettings \
-#    score \
+    score \
     track \
     viewsettings \
 
