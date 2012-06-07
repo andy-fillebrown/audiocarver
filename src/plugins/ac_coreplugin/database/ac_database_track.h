@@ -22,7 +22,7 @@
 
 namespace Database {
 
-class Track : public ScoreObject
+class AC_CORE_EXPORT Track : public ScoreObject
 {
     friend class ObjectFactory;
 
