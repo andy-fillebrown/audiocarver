@@ -25,7 +25,7 @@ namespace Database {
 
 IAggregator *ViewSettings::init()
 {
-    return this;
+    return Object::init();
 }
 
 bool ViewSettings::setTimePosition(qreal position)

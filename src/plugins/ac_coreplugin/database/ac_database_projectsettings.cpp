@@ -23,7 +23,7 @@ namespace Database {
 
 IAggregator *ProjectSettings::init()
 {
-    return this;
+    return Object::init();
 }
 
 bool ProjectSettings::setSampleRate(int rate)
