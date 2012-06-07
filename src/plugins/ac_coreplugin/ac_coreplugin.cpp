@@ -83,11 +83,7 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
 //    addAutoReleasedObject(new Database);
 //    addAutoReleasedObject(new Model);
 
-#ifdef QT_DEBUG
-    return test();
-#else
     return true;
-#endif
 }
 
 void AcCorePlugin::extensionsInitialized()
