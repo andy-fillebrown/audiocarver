@@ -94,6 +94,11 @@ enum FilerType {
     XmlFileFiler
 };
 
+enum Color {
+    red = 0xff000,
+    lightGray = 0xc0c0c0
+};
+
 } // namespace Ac
 
 #endif // AC_NAMESPACE_H
