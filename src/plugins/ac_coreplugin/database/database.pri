@@ -10,7 +10,7 @@ SOURCE_FILES = \
     projectsettings \
 #    score \
     track \
-#    viewsettings \
+    viewsettings \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

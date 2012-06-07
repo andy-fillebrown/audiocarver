@@ -15,180 +15,77 @@
 **
 **************************************************************************/
 
-#include "ac_viewsettings.h"
+#include "ac_database_viewsettings.h"
 
-#include <ac_score.h>
+#include <ac_database_score.h>
 
-#include <QVariant>
+#include <mi_scopeddatachange.h>
 
-ViewSettings::ViewSettings(QObject *parent)
-    :   Object(*(new ViewSettingsPrivate(this)), parent)
+namespace Database {
+
+IAggregator *ViewSettings::init()
 {
-    setName("View Settings");
+    return this;
 }
 
-qreal ViewSettings::timePosition() const
+bool ViewSettings::setTimePosition(qreal position)
 {
-    Q_D(const ViewSettings);
-    return d->timePos;
+    position = qBound(qreal(0.0f), position, Score::instance()->length());
+    if (_timePosition == position)
+        return false;
+    ScopedDataChange data_change(this, Ac::TimePositionRole);
+    _timePosition = position;
+    return true;
 }
 
-void ViewSettings::setTimePosition(qreal pos)
+bool ViewSettings::setPitchPosition(qreal position)
 {
-    Q_D(ViewSettings);
-    pos = qBound(qreal(0.0f), pos, score()->length());
-    if (d->timePos == pos)
-        return;
-    d->beginChangeData();
-    d->timePos = pos;
-    d->endChangeData();
+    position = qBound(qreal(0.0f), position, qreal(127.0f));
+    if (_pitchPosition == position)
+        return false;
+    ScopedDataChange data_change(this, Ac::PitchPositionRole);
+    _pitchPosition = position;
+    return true;
 }
 
-qreal ViewSettings::pitchPosition() const
+bool ViewSettings::setControlPosition(qreal position)
 {
-    Q_D(const ViewSettings);
-    return d->pitchPos;
+    position = qBound(qreal(0.0f), position, qreal(1.0f));
+    if (_controlPosition == position)
+        return false;
+    ScopedDataChange data_change(this, Ac::ControlPositionRole);
+    _controlPosition = position;
+    return true;
 }
 
-void ViewSettings::setPitchPosition(qreal pos)
+bool ViewSettings::setTimeScale(qreal scale)
 {
-    Q_D(ViewSettings);
-    pos = qBound(qreal(0.0f), pos, qreal(127.0f));
-    if (d->pitchPos == pos)
-        return;
-    d->beginChangeData();
-    d->pitchPos = pos;
-    d->endChangeData();
+    scale = qBound(VIEWSCALE_MIN, scale, VIEWSCALE_MAX);
+    if (_timeScale == scale)
+        return false;
+    ScopedDataChange data_change(this, Ac::TimeScaleRole);
+    _timeScale = scale;
+    return true;
 }
 
-qreal ViewSettings::controlPosition() const
+bool ViewSettings::setPitchScale(qreal scale)
 {
-    Q_D(const ViewSettings);
-    return d->controlPos;
+    scale = qBound(VIEWSCALE_MIN, scale, VIEWSCALE_MAX);
+    if (_pitchScale == scale)
+        return false;
+    ScopedDataChange data_change(this, Ac::PitchScaleRole);
+    _pitchScale = scale;
+    return true;
 }
 
-void ViewSettings::setControlPosition(qreal pos)
+bool ViewSettings::setControlScale(qreal scale)
 {
-    Q_D(ViewSettings);
-    pos = qBound(qreal(0.0f), pos, qreal(1.0f));
-    if (d->controlPos == pos)
-        return;
-    d->beginChangeData();
-    d->controlPos = pos;
-    d->endChangeData();
+    scale = qBound(VIEWSCALE_MIN, scale, VIEWSCALE_MAX);
+    if (_controlScale == scale)
+        return false;
+    ScopedDataChange data_change(this, Ac::ControlScaleRole);
+    _controlScale = scale;
+    return true;
 }
 
-qreal ViewSettings::timeScale() const
-{
-    Q_D(const ViewSettings);
-    return d->timeScale;
-}
-
-void ViewSettings::setTimeScale(qreal scale)
-{
-    Q_D(ViewSettings);
-    if (scale < VIEWSCALE_MIN)
-        scale = VIEWSCALE_MIN;
-    if (VIEWSCALE_MAX < scale)
-        scale = VIEWSCALE_MAX;
-    d->beginChangeData();
-    d->timeScale = scale;
-    d->endChangeData();
-}
-
-qreal ViewSettings::pitchScale() const
-{
-    Q_D(const ViewSettings);
-    return d->pitchScale;
-}
-
-void ViewSettings::setPitchScale(qreal scale)
-{
-    Q_D(ViewSettings);
-    if (scale < VIEWSCALE_MIN)
-        scale = VIEWSCALE_MIN;
-    if (VIEWSCALE_MAX < scale)
-        scale = VIEWSCALE_MAX;
-    if (d->pitchScale == scale)
-        return;
-    d->beginChangeData();
-    d->pitchScale = scale;
-    d->endChangeData();
-}
-
-qreal ViewSettings::controlScale() const
-{
-    Q_D(const ViewSettings);
-    return d->controlScale;
-}
-
-void ViewSettings::setControlScale(qreal scale)
-{
-    Q_D(ViewSettings);
-    if (scale < VIEWSCALE_MIN)
-        scale = VIEWSCALE_MIN;
-    if (VIEWSCALE_MAX < scale)
-        scale = VIEWSCALE_MAX;
-    if (d->controlScale == scale)
-        return;
-    d->beginChangeData();
-    d->controlScale = scale;
-    d->endChangeData();
-}
-
-Score *ViewSettings::score() const
-{
-    return object_cast<Score>(QObject::parent());
-}
-
-void ViewSettings::clear()
-{
-    Q_D(ViewSettings);
-    d->clear();
-}
-
-QVariant ViewSettings::data(int role) const
-{
-    switch (role) {
-    case Ac::TimePositionRole:
-        return timePosition();
-    case Ac::PitchPositionRole:
-        return pitchPosition();
-    case Ac::ControlPositionRole:
-        return controlPosition();
-    case Ac::TimeScaleRole:
-        return timeScale();
-    case Ac::PitchScaleRole:
-        return pitchScale();
-    case Ac::ControlScaleRole:
-        return controlScale();
-    default:
-        return Object::data(role);
-    }
-}
-
-bool ViewSettings::setData(const QVariant &value, int role)
-{
-    switch (role) {
-    case Ac::TimePositionRole:
-        setTimePosition(value.toReal());
-        return true;
-    case Ac::PitchPositionRole:
-        setPitchPosition(value.toReal());
-        return true;
-    case Ac::ControlPositionRole:
-        setControlPosition(value.toReal());
-        return true;
-    case Ac::TimeScaleRole:
-        setTimeScale(value.toReal());
-        return true;
-    case Ac::PitchScaleRole:
-        setPitchScale(value.toReal());
-        return true;
-    case Ac::ControlScaleRole:
-        setControlScale(value.toReal());
-        return true;
-    default:
-        return Object::setData(value, role);
-    }
-}
+} // namespace Database

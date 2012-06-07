@@ -15,107 +15,183 @@
 **
 **************************************************************************/
 
-#ifndef AC_VIEWSETTINGS_H
-#define AC_VIEWSETTINGS_H
+#ifndef AC_DATABASE_VIEWSETTINGS_H
+#define AC_DATABASE_VIEWSETTINGS_H
+
+#include "mi_database_object.h"
 
 #include <ac_coreconstants.h>
-#include <ac_namespace.h>
+#include <ac_corenamespace.h>
 
-#include <mi_object.h>
+namespace Database {
 
-class Score;
-
-class ViewSettingsPrivate;
 class ViewSettings : public Object
 {
-    Q_OBJECT
-    Q_PROPERTY(qreal timePosition READ timePosition WRITE setTimePosition)
-    Q_PROPERTY(qreal pitchPosition READ pitchPosition WRITE setPitchPosition)
-    Q_PROPERTY(qreal controlPosition READ controlPosition WRITE setControlPosition)
-    Q_PROPERTY(qreal timeScale READ timeScale WRITE setTimeScale)
-    Q_PROPERTY(qreal pitchScale READ pitchScale WRITE setPitchScale)
-    Q_PROPERTY(qreal controlScale READ controlScale WRITE setControlScale)
+    friend class ObjectFactory;
 
-public:
-    enum { Type = Ac::ViewSettingsItem };
+    enum { RoleCount = 6 };
 
-    explicit ViewSettings(QObject *parent = 0);
+    qreal _timePosition;
+    qreal _pitchPosition;
+    qreal _controlPosition;
+    qreal _timeScale;
+    qreal _pitchScale;
+    qreal _controlScale;
 
-    Score *score() const;
+protected:
+    enum {
+        RoleCountOffset = Object::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
-    void clear();
+    ViewSettings()
+        :   _timePosition(64.0f)
+        ,   _pitchPosition(63.5f)
+        ,   _controlPosition(0.5f)
+        ,   _timeScale(VIEWSCALE_MIN)
+        ,   _pitchScale(VIEWSCALE_MIN)
+        ,   _controlScale(VIEWSCALE_MIN)
+    {}
 
-    // Properties
-    qreal timePosition() const;
-    void setTimePosition(qreal pos);
-    qreal pitchPosition() const;
-    void setPitchPosition(qreal pos);
-    qreal controlPosition() const;
-    void setControlPosition(qreal pos);
-    qreal timeScale() const;
-    void setTimeScale(qreal scale);
-    qreal pitchScale() const;
-    void setPitchScale(qreal scale);
-    qreal controlScale() const;
-    void setControlScale(qreal scale);
+    IAggregator *init();
 
-    // IModelItem
-    int type() const { return Type; }
-
-    int persistentRoleAt(int i) const
+    qreal timePosition() const
     {
-        switch (i - staticMetaObject.propertyOffset()) {
-        case 0:
-            return Ac::TimePositionRole;
-        case 1:
-            return Ac::PitchPositionRole;
-        case 2:
-            return Ac::ControlPositionRole;
-        case 3:
-            return Ac::TimeScaleRole;
-        case 4:
-            return Ac::PitchScaleRole;
-        case 5:
-            return Ac::ControlScaleRole;
+        return _timePosition;
+    }
+
+    bool setTimePosition(qreal position);
+
+    qreal pitchPosition() const
+    {
+        return _pitchPosition;
+    }
+
+    bool setPitchPosition(qreal position);
+
+    qreal controlPosition() const
+    {
+        return _controlPosition;
+    }
+
+    bool setControlPosition(qreal position);
+
+    qreal timeScale() const
+    {
+        return _timeScale;
+    }
+
+    bool setTimeScale(qreal scale);
+
+    qreal pitchScale() const
+    {
+        return _pitchScale;
+    }
+
+    bool setPitchScale(qreal scale);
+
+    qreal controlScale() const
+    {
+        return _controlScale;
+    }
+
+    bool setControlScale(qreal scale);
+
+    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    {
+        ViewSettings *a() const
+        {
+            return static_cast<ViewSettings*>(Object::ModelData::a());
+        }
+
+    public:
+        ModelData(ViewSettings *aggregator)
+            :   Object::ModelData(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelData
+        int roleCount() const
+        {
+            return TotalRoleCount;
+        }
+
+        int roleAt(int i) const
+        {
+            Q_ASSERT(i <= 0);
+            switch (i - RoleCountOffset) {
+            case 0:
+                return Ac::TimePositionRole;
+            case 1:
+                return Ac::PitchPositionRole;
+            case 2:
+                return Ac::ControlPositionRole;
+            case 3:
+                return Ac::TimeScaleRole;
+            case 4:
+                return Ac::PitchScaleRole;
+            case 5:
+                return Ac::ControlScaleRole;
+            default:
+                return Object::ModelData::roleAt(i);
+            }
+        }
+
+        QVariant getVariant(int role) const
+        {
+            switch (role) {
+            case Ac::TimePositionRole:
+                return a()->timePosition();
+            case Ac::PitchPositionRole:
+                return a()->pitchPosition();
+            case Ac::ControlPositionRole:
+                return a()->controlPosition();
+            case Ac::TimeScaleRole:
+                return a()->timeScale();
+            case Ac::PitchScaleRole:
+                return a()->pitchScale();
+            case Ac::ControlScaleRole:
+                return a()->controlScale();
+            default:
+                return Object::ModelData::getVariant(role);
+            }
+        }
+
+        bool setVariant(const QVariant &data, int role)
+        {
+            switch (role) {
+            case Ac::TimePositionRole:
+                return a()->setTimePosition(qvariant_cast<qreal>(data));
+            case Ac::PitchPositionRole:
+                return a()->setPitchPosition(qvariant_cast<qreal>(data));
+            case Ac::ControlPositionRole:
+                return a()->setControlPosition(qvariant_cast<qreal>(data));
+            case Ac::TimeScaleRole:
+                return a()->setTimeScale(qvariant_cast<qreal>(data));
+            case Ac::PitchScaleRole:
+                return a()->setPitchScale(qvariant_cast<qreal>(data));
+            case Ac::ControlScaleRole:
+                return a()->setControlScale(qvariant_cast<qreal>(data));
+            default:
+                return Object::ModelData::setVariant(data, role);
+            }
+        }
+    };
+
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelData:
+            return appendAggregate((new ModelData(this))->init());
         default:
-            return Object::persistentRoleAt(i);
+            return Object::createAggregate(interfaceType);
         }
     }
-
-    QVariant data(int role) const;
-    bool setData(const QVariant &value, int role);
-
-private:
-    Q_DECLARE_PRIVATE(ViewSettings)
 };
 
-class ViewSettingsPrivate : public ObjectPrivate
-{
-    Q_DECLARE_PUBLIC(ViewSettings)
+} // namespace Database
 
-public:
-    qreal timePos;
-    qreal pitchPos;
-    qreal controlPos;
-    qreal timeScale;
-    qreal pitchScale;
-    qreal controlScale;
-
-    ViewSettingsPrivate(ViewSettings *q)
-        :   ObjectPrivate(q)
-    {
-        clear();
-    }
-
-    void clear()
-    {
-        timePos = 64.0f;
-        pitchPos = 63.5f;
-        controlPos = 0.5f;
-        timeScale = VIEWSCALE_MIN;
-        pitchScale = VIEWSCALE_MIN;
-        controlScale = VIEWSCALE_MIN;
-    }
-};
-
-#endif // AC_VIEWSETTINGS_H
+#endif // AC_DATABASE_VIEWSETTINGS_H
