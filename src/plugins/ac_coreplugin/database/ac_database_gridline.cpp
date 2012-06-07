@@ -15,420 +15,477 @@
 **
 **************************************************************************/
 
-#include "ac_gridline.h"
+#include "ac_database_gridline.h"
 
-#include <ac_gridsettings.h>
+#include <mi_scopeddatachange.h>
 
-#include <QFont>
-#include <QGraphicsItem>
-#include <QPalette>
+namespace Database {
 
-static const QFont &gridLabelFont()
+IAggregator *GridLine::init()
 {
-    static QFont font;
-    static bool initialized = false;
-    if (!initialized) {
-        font.setPointSize(6);
-        initialized = true;
-    }
-    return font;
+    return Object::init();
 }
 
-static Qt::PenStyle gridLinePenStyle()
+bool GridLine::setLocation(qreal location)
 {
-    static Qt::PenStyle style = Qt::DotLine;
-    return style;
+    location = qMax(qreal(0.0f), location);
+    if (_location == location)
+        return false;
+    ScopedDataChange data_change(this, Ac::LocationRole);
+    _location = location;
+    return true;
 }
 
-static Qt::PenStyle gridLineExtPenStyle()
+bool GridLine::setLabel(const QString &label)
 {
-    static Qt::PenStyle style = Qt::DotLine;
-    return style;
+    if (_label == label)
+        return false;
+    ScopedDataChange data_change(this, Ac::LabelRole);
+    _label = label;
+    return true;
 }
 
-GridLinePrivate::GridLinePrivate(GridLine *q)
-    :   GraphicsObjectPrivate(q)
-    ,   location(0.0f)
-    ,   priority(0)
-    ,   color(Qt::lightGray)
-{}
-
-GraphicsParentPrivate *GridLinePrivate::graphicsParent() const
+bool GridLine::setPriority(int priority)
 {
-    Q_Q(const GridLine);
-    GridSettings *gridSettings = q->gridSettings();
-    return gridSettings ? gridSettings->d_func() : 0;
+    priority = qMax(0, priority);
+    if (_priority == priority)
+        return false;
+    ScopedDataChange data_change(this, Ac::PriorityRole);
+    _priority = priority;
+    return true;
 }
 
-GridLine::GridLine(GridLinePrivate &dd, QObject *parent)
-    :   GraphicsObject(dd, parent)
-{}
-
-qreal GridLine::location() const
+bool GridLine::setColor(int color)
 {
-    Q_D(const GridLine);
-    return d->location;
+    color = qBound(0x000000, color, 0xffffff);
+    if (_color == color)
+        return false;
+    ScopedDataChange data_change(this, Ac::ColorRole);
+    _color = color;
+    return true;
 }
 
-void GridLine::setLocation(qreal location)
+IAggregate *GridLine::ModelData::init()
 {
-    Q_D(GridLine);
-    if (location < 0.0f)
-        location = 0.0f;
-    if (d->location == location)
-        return;
-    d->beginChangeData();
-    d->location = location;
-    d->updateGraphicsItems();
-    d->endChangeData();
+    return Object::ModelData::init();
 }
 
-const QString &GridLine::label() const
-{
-    Q_D(const GridLine);
-    return d->label;
-}
+} // namespace Database
 
-void GridLine::setLabel(const QString &label)
-{
-    Q_D(GridLine);
-    if (d->label == label)
-        return;
-    d->beginChangeData();
-    d->label = label;
-    d->updateGraphicsItems();
-    d->endChangeData();
-}
+//#include "ac_gridline.h"
 
-int GridLine::priority() const
-{
-    Q_D(const GridLine);
-    return d->priority;
-}
+//#include <ac_gridsettings.h>
 
-void GridLine::setPriority(int priority)
-{
-    Q_D(GridLine);
-    if (d->priority == priority)
-        return;
-    d->beginChangeData();
-    d->priority = priority;
-    d->updateGraphicsItems();
-    d->endChangeData();
-}
+//#include <QFont>
+//#include <QGraphicsItem>
+//#include <QPalette>
 
-const QColor &GridLine::color() const
-{
-    Q_D(const GridLine);
-    return d->color;
-}
+//static const QFont &gridLabelFont()
+//{
+//    static QFont font;
+//    static bool initialized = false;
+//    if (!initialized) {
+//        font.setPointSize(6);
+//        initialized = true;
+//    }
+//    return font;
+//}
 
-void GridLine::setColor(const QColor &color)
-{
-    Q_D(GridLine);
-    if (d->color == color)
-        return;
-    d->beginChangeData();
-    d->color = color;
-    d->updateGraphicsItems();
-    d->endChangeData();
-}
+//static Qt::PenStyle gridLinePenStyle()
+//{
+//    static Qt::PenStyle style = Qt::DotLine;
+//    return style;
+//}
 
-GridSettings *GridLine::gridSettings() const
-{
-    QObject *parent = QObject::parent();
-    return parent ? object_cast<GridSettings>(parent->parent()) : 0;
-}
+//static Qt::PenStyle gridLineExtPenStyle()
+//{
+//    static Qt::PenStyle style = Qt::DotLine;
+//    return style;
+//}
 
-class TimeGridLinePrivate : public GridLinePrivate
-{
-public:
-    GraphicsTextItem *timeLabelItem;
-    QGraphicsLineItem *timeLineItem;
-    QGraphicsLineItem *pitchLineItem;
-    QGraphicsLineItem *pitchLineLoExtItem;
-    QGraphicsLineItem *pitchLineHiExtItem;
-    QGraphicsLineItem *controlLineItem;
-    QGraphicsLineItem *controlLineHiExtItem;
+//GridLinePrivate::GridLinePrivate(GridLine *q)
+//    :   GraphicsObjectPrivate(q)
+//    ,   location(0.0f)
+//    ,   priority(0)
+//    ,   color(Qt::lightGray)
+//{}
 
-    TimeGridLinePrivate(TimeGridLine *q)
-        :   GridLinePrivate(q)
-        ,   timeLabelItem(new GraphicsTextItem)
-        ,   timeLineItem(new QGraphicsLineItem)
-        ,   pitchLineItem(new QGraphicsLineItem)
-        ,   pitchLineLoExtItem(new QGraphicsLineItem(pitchLineItem))
-        ,   pitchLineHiExtItem(new QGraphicsLineItem(pitchLineItem))
-        ,   controlLineItem(new QGraphicsLineItem)
-        ,   controlLineHiExtItem(new QGraphicsLineItem(controlLineItem))
-    {
-        timeLabelItem->setFont(gridLabelFont());
-    }
+//GraphicsParentPrivate *GridLinePrivate::graphicsParent() const
+//{
+//    Q_Q(const GridLine);
+//    GridSettings *gridSettings = q->gridSettings();
+//    return gridSettings ? gridSettings->d_func() : 0;
+//}
 
-    void init()
-    {
-        updateGraphicsParent();
-        updateGraphicsItems();
-    }
+//GridLine::GridLine(GridLinePrivate &dd, QObject *parent)
+//    :   GraphicsObject(dd, parent)
+//{}
 
-    ~TimeGridLinePrivate()
-    {
-        delete controlLineItem;
-        delete pitchLineItem;
-        delete timeLineItem;
-        delete timeLabelItem;
-    }
+//qreal GridLine::location() const
+//{
+//    Q_D(const GridLine);
+//    return d->location;
+//}
 
-    void updateGraphicsParent()
-    {
-        GraphicsParentPrivate *parent = graphicsParent();
-        if (parent) {
-            timeLabelItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
-            timeLineItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
-            pitchLineItem->setParentItem(parent->unitYGraphicsItems[Ac::PitchScene]);
-            controlLineItem->setParentItem(parent->mainGraphicsItems[Ac::ControlScene]);
-        } else {
-            timeLabelItem->setParentItem(0);
-            timeLineItem->setParentItem(0);
-            pitchLineItem->setParentItem(0);
-            controlLineItem->setParentItem(0);
-        }
-    }
+//void GridLine::setLocation(qreal location)
+//{
+//    Q_D(GridLine);
+//    if (location < 0.0f)
+//        location = 0.0f;
+//    if (d->location == location)
+//        return;
+//    d->beginChangeData();
+//    d->location = location;
+//    d->updateGraphicsItems();
+//    d->endChangeData();
+//}
 
-    void updateGraphicsItems()
-    {
-        timeLabelItem->setPos(location, 0.0f);
-        timeLabelItem->setText(label);
-        timeLabelItem->setColor(Qt::black);
-        QPen pen(color);
-        pen.setCosmetic(true);
-        pen.setStyle(gridLinePenStyle());
-        pitchLineItem->setPen(pen);
-        controlLineItem->setPen(pen);
-        pen.setStyle(gridLineExtPenStyle());
-        timeLineItem->setPen(pen);
-        pitchLineLoExtItem->setPen(pen);
-        pitchLineHiExtItem->setPen(pen);
-        controlLineHiExtItem->setPen(pen);
-        timeLineItem->setLine(location, -10.0f, location, 10.0f);
-        pitchLineItem->setLine(location, 0.0f, location, 1.0f);
-        pitchLineLoExtItem->setLine(location, -1.0f, location, 0.0f);
-        pitchLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
-        controlLineItem->setLine(location, 0.0f, location, 1.0f);
-        controlLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
-    }
-};
+//const QString &GridLine::label() const
+//{
+//    Q_D(const GridLine);
+//    return d->label;
+//}
 
-TimeGridLine::TimeGridLine(QObject *parent)
-    :   GridLine(*(new TimeGridLinePrivate(this)), parent)
-{
-    Q_D(TimeGridLine);
-    d->init();
-    setName("TimeGridLine");
-}
+//void GridLine::setLabel(const QString &label)
+//{
+//    Q_D(GridLine);
+//    if (d->label == label)
+//        return;
+//    d->beginChangeData();
+//    d->label = label;
+//    d->updateGraphicsItems();
+//    d->endChangeData();
+//}
 
-bool TimeGridLine::isVisible() const
-{
-    Q_D(const TimeGridLine);
-    return d->pitchLineItem->isVisible();
-}
+//int GridLine::priority() const
+//{
+//    Q_D(const GridLine);
+//    return d->priority;
+//}
 
-void TimeGridLine::show()
-{
-    Q_D(TimeGridLine);
-    d->timeLabelItem->show();
-    d->timeLineItem->show();
-    d->pitchLineItem->show();
-    d->controlLineItem->show();
-}
+//void GridLine::setPriority(int priority)
+//{
+//    Q_D(GridLine);
+//    if (d->priority == priority)
+//        return;
+//    d->beginChangeData();
+//    d->priority = priority;
+//    d->updateGraphicsItems();
+//    d->endChangeData();
+//}
 
-void TimeGridLine::hide()
-{
-    Q_D(TimeGridLine);
-    d->timeLabelItem->hide();
-    d->timeLineItem->hide();
-    d->pitchLineItem->hide();
-    d->controlLineItem->hide();
-}
+//const QColor &GridLine::color() const
+//{
+//    Q_D(const GridLine);
+//    return d->color;
+//}
 
-int TimeGridLine::type() const
-{
-    return Type;
-}
+//void GridLine::setColor(const QColor &color)
+//{
+//    Q_D(GridLine);
+//    if (d->color == color)
+//        return;
+//    d->beginChangeData();
+//    d->color = color;
+//    d->updateGraphicsItems();
+//    d->endChangeData();
+//}
 
-class PitchGridLinePrivate : public GridLinePrivate
-{
-public:
-    GraphicsTextItem *pitchLabelItem;
-    QGraphicsLineItem *pitchLineItem;
-    QGraphicsLineItem *pitchLineRightExtItem;
+//GridSettings *GridLine::gridSettings() const
+//{
+//    QObject *parent = QObject::parent();
+//    return parent ? object_cast<GridSettings>(parent->parent()) : 0;
+//}
 
-    PitchGridLinePrivate(PitchGridLine *q)
-        :   GridLinePrivate(q)
-        ,   pitchLabelItem(new GraphicsTextItem)
-        ,   pitchLineItem(new QGraphicsLineItem)
-        ,   pitchLineRightExtItem(new QGraphicsLineItem(pitchLineItem))
-    {
-        pitchLabelItem->setFont(gridLabelFont());
-    }
+//class TimeGridLinePrivate : public GridLinePrivate
+//{
+//public:
+//    GraphicsTextItem *timeLabelItem;
+//    QGraphicsLineItem *timeLineItem;
+//    QGraphicsLineItem *pitchLineItem;
+//    QGraphicsLineItem *pitchLineLoExtItem;
+//    QGraphicsLineItem *pitchLineHiExtItem;
+//    QGraphicsLineItem *controlLineItem;
+//    QGraphicsLineItem *controlLineHiExtItem;
 
-    void init()
-    {
-        updateGraphicsParent();
-        updateGraphicsItems();
-    }
+//    TimeGridLinePrivate(TimeGridLine *q)
+//        :   GridLinePrivate(q)
+//        ,   timeLabelItem(new GraphicsTextItem)
+//        ,   timeLineItem(new QGraphicsLineItem)
+//        ,   pitchLineItem(new QGraphicsLineItem)
+//        ,   pitchLineLoExtItem(new QGraphicsLineItem(pitchLineItem))
+//        ,   pitchLineHiExtItem(new QGraphicsLineItem(pitchLineItem))
+//        ,   controlLineItem(new QGraphicsLineItem)
+//        ,   controlLineHiExtItem(new QGraphicsLineItem(controlLineItem))
+//    {
+//        timeLabelItem->setFont(gridLabelFont());
+//    }
 
-    ~PitchGridLinePrivate()
-    {
-        delete pitchLineItem;
-        delete pitchLabelItem;
-    }
+//    void init()
+//    {
+//        updateGraphicsParent();
+//        updateGraphicsItems();
+//    }
 
-    void updateGraphicsParent()
-    {
-        GraphicsParentPrivate *parent = graphicsParent();
-        if (parent) {
-            pitchLabelItem->setParentItem(parent->mainGraphicsItems[Ac::PitchLabelScene]);
-            pitchLineItem->setParentItem(parent->unitXGraphicsItems[Ac::PitchScene]);
-        } else {
-            pitchLabelItem->setParentItem(0);
-            pitchLineItem->setParentItem(0);
-        }
-    }
+//    ~TimeGridLinePrivate()
+//    {
+//        delete controlLineItem;
+//        delete pitchLineItem;
+//        delete timeLineItem;
+//        delete timeLabelItem;
+//    }
 
-    void updateGraphicsItems()
-    {
-        pitchLabelItem->setPos(0.0f, location);
-        pitchLabelItem->setText(label);
-        pitchLabelItem->setColor(Qt::black);
-        QPen pen(color);
-        pen.setCosmetic(true);
-        pen.setStyle(gridLinePenStyle());
-        pitchLineItem->setPen(pen);
-        pen.setStyle(gridLineExtPenStyle());
-        pitchLineRightExtItem->setPen(pen);
-        pitchLineItem->setLine(0.0f, location, 1.0f, location);
-        pitchLineRightExtItem->setLine(1.0f, location, 2.0f, location);
-    }
-};
+//    void updateGraphicsParent()
+//    {
+//        GraphicsParentPrivate *parent = graphicsParent();
+//        if (parent) {
+//            timeLabelItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
+//            timeLineItem->setParentItem(parent->mainGraphicsItems[Ac::TimeLabelScene]);
+//            pitchLineItem->setParentItem(parent->unitYGraphicsItems[Ac::PitchScene]);
+//            controlLineItem->setParentItem(parent->mainGraphicsItems[Ac::ControlScene]);
+//        } else {
+//            timeLabelItem->setParentItem(0);
+//            timeLineItem->setParentItem(0);
+//            pitchLineItem->setParentItem(0);
+//            controlLineItem->setParentItem(0);
+//        }
+//    }
 
-PitchGridLine::PitchGridLine(QObject *parent)
-    :   GridLine(*(new PitchGridLinePrivate(this)), parent)
-{
-    Q_D(PitchGridLine);
-    d->init();
-    setName("PitchGridLine");
-}
+//    void updateGraphicsItems()
+//    {
+//        timeLabelItem->setPos(location, 0.0f);
+//        timeLabelItem->setText(label);
+//        timeLabelItem->setColor(Qt::black);
+//        QPen pen(color);
+//        pen.setCosmetic(true);
+//        pen.setStyle(gridLinePenStyle());
+//        pitchLineItem->setPen(pen);
+//        controlLineItem->setPen(pen);
+//        pen.setStyle(gridLineExtPenStyle());
+//        timeLineItem->setPen(pen);
+//        pitchLineLoExtItem->setPen(pen);
+//        pitchLineHiExtItem->setPen(pen);
+//        controlLineHiExtItem->setPen(pen);
+//        timeLineItem->setLine(location, -10.0f, location, 10.0f);
+//        pitchLineItem->setLine(location, 0.0f, location, 1.0f);
+//        pitchLineLoExtItem->setLine(location, -1.0f, location, 0.0f);
+//        pitchLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
+//        controlLineItem->setLine(location, 0.0f, location, 1.0f);
+//        controlLineHiExtItem->setLine(location, 1.0f, location, 2.0f);
+//    }
+//};
 
-bool PitchGridLine::isVisible() const
-{
-    Q_D(const PitchGridLine);
-    return d->pitchLineItem->isVisible();
-}
+//TimeGridLine::TimeGridLine(QObject *parent)
+//    :   GridLine(*(new TimeGridLinePrivate(this)), parent)
+//{
+//    Q_D(TimeGridLine);
+//    d->init();
+//    setName("TimeGridLine");
+//}
 
-void PitchGridLine::show()
-{
-    Q_D(PitchGridLine);
-    d->pitchLabelItem->show();
-    d->pitchLineItem->show();
-}
+//bool TimeGridLine::isVisible() const
+//{
+//    Q_D(const TimeGridLine);
+//    return d->pitchLineItem->isVisible();
+//}
 
-void PitchGridLine::hide()
-{
-    Q_D(PitchGridLine);
-    d->pitchLabelItem->hide();
-    d->pitchLineItem->hide();
-}
+//void TimeGridLine::show()
+//{
+//    Q_D(TimeGridLine);
+//    d->timeLabelItem->show();
+//    d->timeLineItem->show();
+//    d->pitchLineItem->show();
+//    d->controlLineItem->show();
+//}
 
-int PitchGridLine::type() const
-{
-    return Type;
-}
+//void TimeGridLine::hide()
+//{
+//    Q_D(TimeGridLine);
+//    d->timeLabelItem->hide();
+//    d->timeLineItem->hide();
+//    d->pitchLineItem->hide();
+//    d->controlLineItem->hide();
+//}
 
-class ControlGridLinePrivate : public GridLinePrivate
-{
-public:
-    GraphicsTextItem *controlLabelItem;
-    QGraphicsLineItem *controlLineItem;
-    QGraphicsLineItem *controlLineRightExtItem;
+//int TimeGridLine::type() const
+//{
+//    return Type;
+//}
 
-    ControlGridLinePrivate(ControlGridLine *q)
-        :   GridLinePrivate(q)
-        ,   controlLabelItem(new GraphicsTextItem)
-        ,   controlLineItem(new QGraphicsLineItem)
-        ,   controlLineRightExtItem(new QGraphicsLineItem(controlLineItem))
-    {
-        controlLabelItem->setFont(gridLabelFont());
-    }
+//class PitchGridLinePrivate : public GridLinePrivate
+//{
+//public:
+//    GraphicsTextItem *pitchLabelItem;
+//    QGraphicsLineItem *pitchLineItem;
+//    QGraphicsLineItem *pitchLineRightExtItem;
 
-    void init()
-    {
-        updateGraphicsParent();
-        updateGraphicsItems();
-    }
+//    PitchGridLinePrivate(PitchGridLine *q)
+//        :   GridLinePrivate(q)
+//        ,   pitchLabelItem(new GraphicsTextItem)
+//        ,   pitchLineItem(new QGraphicsLineItem)
+//        ,   pitchLineRightExtItem(new QGraphicsLineItem(pitchLineItem))
+//    {
+//        pitchLabelItem->setFont(gridLabelFont());
+//    }
 
-    ~ControlGridLinePrivate()
-    {
-        delete controlLineItem;
-        delete controlLabelItem;
-    }
+//    void init()
+//    {
+//        updateGraphicsParent();
+//        updateGraphicsItems();
+//    }
 
-    void updateGraphicsParent()
-    {
-        GraphicsParentPrivate *parent = graphicsParent();
-        if (parent) {
-            controlLabelItem->setParentItem(parent->mainGraphicsItems[Ac::ControlLabelScene]);
-            controlLineItem->setParentItem(parent->unitXGraphicsItems[Ac::ControlScene]);
-        } else {
-            controlLabelItem->setParentItem(0);
-            controlLineItem->setParentItem(0);
-        }
-    }
+//    ~PitchGridLinePrivate()
+//    {
+//        delete pitchLineItem;
+//        delete pitchLabelItem;
+//    }
 
-    void updateGraphicsItems()
-    {
-        controlLabelItem->setPos(0.0f, location);
-        controlLabelItem->setText(label);
-        controlLabelItem->setColor(Qt::black);
-        QPen pen(color);
-        pen.setCosmetic(true);
-        pen.setStyle(gridLinePenStyle());
-        controlLineItem->setPen(pen);
-        pen.setStyle(gridLineExtPenStyle());
-        controlLineRightExtItem->setPen(pen);
-        controlLineItem->setLine(0.0f, location, 1.0f, location);
-        controlLineRightExtItem->setLine(1.0f, location, 2.0f, location);
-    }
-};
+//    void updateGraphicsParent()
+//    {
+//        GraphicsParentPrivate *parent = graphicsParent();
+//        if (parent) {
+//            pitchLabelItem->setParentItem(parent->mainGraphicsItems[Ac::PitchLabelScene]);
+//            pitchLineItem->setParentItem(parent->unitXGraphicsItems[Ac::PitchScene]);
+//        } else {
+//            pitchLabelItem->setParentItem(0);
+//            pitchLineItem->setParentItem(0);
+//        }
+//    }
 
-ControlGridLine::ControlGridLine(QObject *parent)
-    :   GridLine(*(new ControlGridLinePrivate(this)), parent)
-{
-    Q_D(ControlGridLine);
-    d->init();
-    setName("ControlGridLine");
-}
+//    void updateGraphicsItems()
+//    {
+//        pitchLabelItem->setPos(0.0f, location);
+//        pitchLabelItem->setText(label);
+//        pitchLabelItem->setColor(Qt::black);
+//        QPen pen(color);
+//        pen.setCosmetic(true);
+//        pen.setStyle(gridLinePenStyle());
+//        pitchLineItem->setPen(pen);
+//        pen.setStyle(gridLineExtPenStyle());
+//        pitchLineRightExtItem->setPen(pen);
+//        pitchLineItem->setLine(0.0f, location, 1.0f, location);
+//        pitchLineRightExtItem->setLine(1.0f, location, 2.0f, location);
+//    }
+//};
 
-bool ControlGridLine::isVisible() const
-{
-    Q_D(const ControlGridLine);
-    return d->controlLineItem->isVisible();
-}
+//PitchGridLine::PitchGridLine(QObject *parent)
+//    :   GridLine(*(new PitchGridLinePrivate(this)), parent)
+//{
+//    Q_D(PitchGridLine);
+//    d->init();
+//    setName("PitchGridLine");
+//}
 
-void ControlGridLine::show()
-{
-    Q_D(ControlGridLine);
-    d->controlLabelItem->show();
-    d->controlLineItem->show();
-}
+//bool PitchGridLine::isVisible() const
+//{
+//    Q_D(const PitchGridLine);
+//    return d->pitchLineItem->isVisible();
+//}
 
-void ControlGridLine::hide()
-{
-    Q_D(ControlGridLine);
-    d->controlLabelItem->hide();
-    d->controlLineItem->hide();
-}
+//void PitchGridLine::show()
+//{
+//    Q_D(PitchGridLine);
+//    d->pitchLabelItem->show();
+//    d->pitchLineItem->show();
+//}
 
-int ControlGridLine::type() const
-{
-    return Type;
-}
+//void PitchGridLine::hide()
+//{
+//    Q_D(PitchGridLine);
+//    d->pitchLabelItem->hide();
+//    d->pitchLineItem->hide();
+//}
+
+//int PitchGridLine::type() const
+//{
+//    return Type;
+//}
+
+//class ControlGridLinePrivate : public GridLinePrivate
+//{
+//public:
+//    GraphicsTextItem *controlLabelItem;
+//    QGraphicsLineItem *controlLineItem;
+//    QGraphicsLineItem *controlLineRightExtItem;
+
+//    ControlGridLinePrivate(ControlGridLine *q)
+//        :   GridLinePrivate(q)
+//        ,   controlLabelItem(new GraphicsTextItem)
+//        ,   controlLineItem(new QGraphicsLineItem)
+//        ,   controlLineRightExtItem(new QGraphicsLineItem(controlLineItem))
+//    {
+//        controlLabelItem->setFont(gridLabelFont());
+//    }
+
+//    void init()
+//    {
+//        updateGraphicsParent();
+//        updateGraphicsItems();
+//    }
+
+//    ~ControlGridLinePrivate()
+//    {
+//        delete controlLineItem;
+//        delete controlLabelItem;
+//    }
+
+//    void updateGraphicsParent()
+//    {
+//        GraphicsParentPrivate *parent = graphicsParent();
+//        if (parent) {
+//            controlLabelItem->setParentItem(parent->mainGraphicsItems[Ac::ControlLabelScene]);
+//            controlLineItem->setParentItem(parent->unitXGraphicsItems[Ac::ControlScene]);
+//        } else {
+//            controlLabelItem->setParentItem(0);
+//            controlLineItem->setParentItem(0);
+//        }
+//    }
+
+//    void updateGraphicsItems()
+//    {
+//        controlLabelItem->setPos(0.0f, location);
+//        controlLabelItem->setText(label);
+//        controlLabelItem->setColor(Qt::black);
+//        QPen pen(color);
+//        pen.setCosmetic(true);
+//        pen.setStyle(gridLinePenStyle());
+//        controlLineItem->setPen(pen);
+//        pen.setStyle(gridLineExtPenStyle());
+//        controlLineRightExtItem->setPen(pen);
+//        controlLineItem->setLine(0.0f, location, 1.0f, location);
+//        controlLineRightExtItem->setLine(1.0f, location, 2.0f, location);
+//    }
+//};
+
+//ControlGridLine::ControlGridLine(QObject *parent)
+//    :   GridLine(*(new ControlGridLinePrivate(this)), parent)
+//{
+//    Q_D(ControlGridLine);
+//    d->init();
+//    setName("ControlGridLine");
+//}
+
+//bool ControlGridLine::isVisible() const
+//{
+//    Q_D(const ControlGridLine);
+//    return d->controlLineItem->isVisible();
+//}
+
+//void ControlGridLine::show()
+//{
+//    Q_D(ControlGridLine);
+//    d->controlLabelItem->show();
+//    d->controlLineItem->show();
+//}
+
+//void ControlGridLine::hide()
+//{
+//    Q_D(ControlGridLine);
+//    d->controlLabelItem->hide();
+//    d->controlLineItem->hide();
+//}
+
+//int ControlGridLine::type() const
+//{
+//    return Type;
+//}

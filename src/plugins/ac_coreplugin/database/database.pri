@@ -2,7 +2,7 @@
 SOURCE_FILES = \
     curve \
     controlcurve \
-#    gridline \
+    gridline \
 #    gridsettings \
     note \
     pitchcurve \
