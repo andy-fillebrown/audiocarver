@@ -88,4 +88,9 @@ bool ViewSettings::setControlScale(qreal scale)
     return true;
 }
 
+IAggregate *ViewSettings::ModelData::init()
+{
+    return Object::ModelData::init();
+}
+
 } // namespace Database
