@@ -179,6 +179,15 @@ protected:
             }
         }
 
+        IModelList *findList(int listType) const
+        {
+            switch (listType) {
+            case Ac::ControlCurveItem:
+                return query<IModelList>(a()->controlCurves());
+            default:
+                return Object::ModelItem::findList(listType);
+            }
+        }
     };
 
     // IAggregator
