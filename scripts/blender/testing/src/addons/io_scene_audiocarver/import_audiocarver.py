@@ -6,11 +6,13 @@ import time
 
 note_suffix_number = 2
 note_layer = 18
+note_scale = 0.01
 note_template_object = None
 track_count = 1
 timeline_count = 0
 timeline_layer = 17
 timeline_text_layer = 16
+track_scale = 1.0
 
 
 def clear_ss():
@@ -109,16 +111,13 @@ def import_note(note_node, note_material):
             last_pt_pos_value = attribute.value.split(" ")
             break
 
-    first_pt_x = float(first_pt_pos_value[0])
+    first_pt_x = track_scale * float(first_pt_pos_value[0])
     first_pt_y = float(first_pt_pos_value[1])
-    last_pt_x = float(last_pt_pos_value[0])
+    duration = (track_scale * float(last_pt_pos_value[0])) - first_pt_x
 
     # Move the note root object to the first pitch point.
     obj.location[0] = first_pt_x
     obj.location[2] = first_pt_y
-
-    # Scale the note duration to the pitch curve's duration.
-    obj.scale[0] = last_pt_x - first_pt_x
 
     # Get the note's velocity/volume.
     velocity = 1.0
@@ -130,10 +129,11 @@ def import_note(note_node, note_material):
             break;
         i += 1
 
-    # Scale the note vertices y and z coordinates to the volume.
+    # Scale the note vertices.
     verts = obj.data.vertices
     i = len(verts) - 1
     while 0 <= i:
+        verts[i].co[0] *= duration
         verts[i].co[1] *= velocity
         verts[i].co[2] *= velocity
         i -= 1
@@ -251,6 +251,7 @@ def load(operator,
     global note_layer
     global note_template_object
     global track_count
+    global track_scale
 
     print("\nImporting AudioCarver file", file_name, "...")
 
@@ -264,6 +265,9 @@ def load(operator,
 
     # Set the note template object.
     note_template_object = bpy.data.objects["Note.0"]
+
+    # Set the track scale.
+    track_scale = bpy.data.objects[".Track.Scale.X"].scale[0]
 
     print("\nImporting tracks ...")
     track_count = 1
