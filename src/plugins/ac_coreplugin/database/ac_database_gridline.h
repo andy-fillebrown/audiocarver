@@ -143,6 +143,24 @@ protected:
         }
     };
 
+    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    {
+    protected:
+        ModelItem(GridLine *aggregator)
+            :   Object::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+        // IModelItem
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::GridLine == itemType)
+                return true;
+            return Object::ModelItem::isTypeOfItem(itemType);
+        }
+    };
+
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {

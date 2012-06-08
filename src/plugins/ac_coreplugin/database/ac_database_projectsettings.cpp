@@ -61,4 +61,9 @@ IAggregate *ProjectSettings::ModelData::init()
     return Object::ModelData::init();
 }
 
+IAggregate *ProjectSettings::ModelItem::init()
+{
+    return Object::ModelItem::init();
+}
+
 } // namespace Database

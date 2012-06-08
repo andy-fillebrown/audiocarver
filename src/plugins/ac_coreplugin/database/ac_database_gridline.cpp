@@ -70,6 +70,11 @@ IAggregate *GridLine::ModelData::init()
     return Object::ModelData::init();
 }
 
+IAggregate *GridLine::ModelItem::init()
+{
+    return Object::ModelItem::init();
+}
+
 } // namespace Database
 
 //#include "ac_gridline.h"

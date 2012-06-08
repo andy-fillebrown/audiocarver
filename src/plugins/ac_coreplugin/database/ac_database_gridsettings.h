@@ -164,12 +164,38 @@ protected:
         }
     };
 
+    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    {
+        friend class GridSettings;
+
+    protected:
+        ModelItem(GridSettings *aggregator)
+            :   Object::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+        int itemType() const
+        {
+            return Ac::GridSettingsItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::GridSettingsItem == itemType)
+                return true;
+            return Object::ModelItem::isTypeOfItem(itemType);
+        }
+    };
+
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
         case I::IModelData:
             return appendAggregate((new ModelData(this))->init());
+        case I::IModelItem:
+            return appendAggregate((new ModelItem(this))->init());
         default:
             return Object::createAggregate(interfaceType);
         }

@@ -93,4 +93,9 @@ IAggregate *ViewSettings::ModelData::init()
     return Object::ModelData::init();
 }
 
+IAggregate *ViewSettings::ModelItem::init()
+{
+    return Object::ModelItem::init();
+}
+
 } // namespace Database
