@@ -38,13 +38,15 @@ enum AcCoreInterfaces {
 namespace Ac {
 
 enum ItemType {
-    ScoreItem = Mi::ItemTypeCount,
+    ScoreObjectItem = Mi::ItemTypeCount,
+    ScoreItem,
     TrackItem,
     NoteItem,
     CurveItem,
     PitchCurveItem,
     ControlCurveItem,
     GridSettingsItem,
+    GridLine,
     TimeGridLineItem,
     PitchGridLineItem,
     ControlGridLineItem,
