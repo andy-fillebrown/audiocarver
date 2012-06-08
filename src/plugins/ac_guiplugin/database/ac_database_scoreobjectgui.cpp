@@ -50,10 +50,10 @@ void ScoreObjectGui::ParentEntity::setGraphicsItems(IParentEntity *parent, IPare
 {
     if (!parent)
         return;
-    ScoreObjectGui::ParentEntity *parent_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(parent);
+    ParentEntity *parent_implementation = dynamic_cast<ParentEntity*>(parent);
     if (!parent_implementation)
         return;
-    ScoreObjectGui::ParentEntity *child_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(child);
+    ParentEntity *child_implementation = dynamic_cast<ParentEntity*>(child);
     if (!child_implementation)
         return;
     setParentGraphicsItems(parent_implementation->mainGraphicsItems(), child_implementation->mainGraphicsItems());
@@ -61,7 +61,7 @@ void ScoreObjectGui::ParentEntity::setGraphicsItems(IParentEntity *parent, IPare
 
 void ScoreObjectGui::ParentEntity::clearGraphicsItems(IParentEntity *child)
 {
-    ScoreObjectGui::ParentEntity *child_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(child);
+    ParentEntity *child_implementation = dynamic_cast<ParentEntity*>(child);
     if (!child_implementation)
         return;
     clearParentGraphicsItems(child_implementation->mainGraphicsItems());

@@ -36,16 +36,6 @@ ScoreObject::~ScoreObject()
     delete _pitchCurve;
 }
 
-IAggregate *ScoreObject::ModelData::init()
-{
-    return Object::ModelData::init();
-}
-
-IAggregate *ScoreObject::ModelItem::init()
-{
-    return Object::ModelItem::init();
-}
-
 bool ScoreObject::setVolume(qreal volume)
 {
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
@@ -54,6 +44,16 @@ bool ScoreObject::setVolume(qreal volume)
     ScopedDataChange data_change(this, Ac::VolumeRole);
     _volume = volume;
     return true;
+}
+
+IAggregate *ScoreObject::ModelData::init()
+{
+    return Object::ModelData::init();
+}
+
+IAggregate *ScoreObject::ModelItem::init()
+{
+    return Object::ModelItem::init();
 }
 
 } // namespace Database

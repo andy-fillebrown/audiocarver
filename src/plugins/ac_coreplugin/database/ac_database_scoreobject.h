@@ -85,11 +85,6 @@ protected:
         IAggregate *init();
 
         // IModelData
-        int roleCount() const
-        {
-            return TotalRoleCount;
-        }
-
         int roleAt(int i) const
         {
             switch (i - RoleCountOffset) {
@@ -136,11 +131,6 @@ protected:
         IAggregate *init();
 
         // IModelItem
-        int count() const
-        {
-            return TotalItemCount;
-        }
-
         int indexOf(const IModelItem *item) const
         {
             const ScoreObject *a = this->a();
@@ -183,17 +173,6 @@ protected:
             }
         }
     };
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IModelData:
-            return appendAggregate((new ModelData(this))->init());
-        default:
-            return Object::createAggregate(interfaceType);
-        }
-    }
 };
 
 } // namespace Database

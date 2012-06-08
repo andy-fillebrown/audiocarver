@@ -23,12 +23,15 @@
 
 namespace Database {
 
+using namespace CurveGui;
+using namespace ScoreObjectGui;
+
 void CurveGui::Entity::setGraphicsItemParent(IParentEntity *parent, IEntity *curve)
 {
-    ScoreObjectGui::ParentEntity *parent_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(parent);
+    ParentEntity *parent_implementation = dynamic_cast<ParentEntity*>(parent);
     if (!parent_implementation)
         return;
-    CurveGui::Entity *curve_implementation = dynamic_cast<CurveGui::Entity*>(curve);
+    Entity *curve_implementation = dynamic_cast<Entity*>(curve);
     if (!curve_implementation)
         return;
     curve_implementation->graphicsCurveItem()->setParentItem(parent_implementation->mainGraphicsItems().value((query<ISubEntity>(curve))->sceneType()));
@@ -36,7 +39,7 @@ void CurveGui::Entity::setGraphicsItemParent(IParentEntity *parent, IEntity *cur
 
 void CurveGui::Entity::clearGraphicsItemParent(IEntity *curve)
 {
-    CurveGui::Entity *curve_implementation = dynamic_cast<CurveGui::Entity*>(curve);
+    Entity *curve_implementation = dynamic_cast<Entity*>(curve);
     if (!curve_implementation)
         return;
     QGraphicsItem *item = curve_implementation->graphicsCurveItem();
@@ -71,7 +74,7 @@ CurveGui::Entity::~Entity()
 
 IAggregate *CurveGui::SubEntity::init()
 {
-    _graphicsCurveItem = (static_cast<CurveGui::Entity*>(query<IEntity>(a())))->graphicsCurveItem();
+    _graphicsCurveItem = (static_cast<Entity*>(query<IEntity>(a())))->graphicsCurveItem();
     return this;
 }
 

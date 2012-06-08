@@ -26,6 +26,9 @@ IAggregator *TrackGui::init()
 
 } // namespace Database
 
+
+
+
 //#include "ac_note.h"
 
 //#include <ac_controlcurve.h>

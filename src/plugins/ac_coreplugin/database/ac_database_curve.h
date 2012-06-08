@@ -164,11 +164,6 @@ protected:
         IAggregate *init();
 
         // IModelItem
-        int itemType() const
-        {
-            return Ac::CurveItem;
-        }
-
         bool isTypeOfItem(int itemType) const
         {
             if (Ac::CurveItem == itemType)
@@ -185,8 +180,6 @@ protected:
             return appendAggregate((new Points(this))->init());
         case I::IModelData:
             return appendAggregate((new ModelData(this))->init());
-        case I::IModelItem:
-            return appendAggregate((new ModelItem(this))->init());
         default:
             return Object::createAggregate(interfaceType);
         }
