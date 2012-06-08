@@ -99,19 +99,20 @@ protected:
 
     class ModelData : public Object::ModelData
     {
+        friend class ViewSettings;
+
         ViewSettings *a() const
         {
             return static_cast<ViewSettings*>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(ViewSettings *aggregator)
             :   Object::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {

@@ -33,6 +33,9 @@ class TrackGui : public Track
     friend class ObjectGuiFactory;
 
 protected:
+    TrackGui()
+    {}
+
     IAggregator *init();
 
     // Object

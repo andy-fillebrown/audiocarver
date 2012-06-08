@@ -46,17 +46,7 @@ static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
     }
 }
 
-static void clearGraphicsItems(IParentEntity *child)
-{
-    ScoreObjectGui::ParentEntity *child_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(child);
-    if (!child_implementation)
-        return;
-    clearParentGraphicsItems(child_implementation->mainGraphicsItems());
-    clearParentGraphicsItems(child_implementation->unitXGraphicsItems());
-    clearParentGraphicsItems(child_implementation->unitYGraphicsItems());
-}
-
-static void setGraphicsItems(IParentEntity *parent, IParentEntity *child)
+void ScoreObjectGui::ParentEntity::setGraphicsItems(IParentEntity *parent, IParentEntity *child)
 {
     if (!parent)
         return;
@@ -69,13 +59,23 @@ static void setGraphicsItems(IParentEntity *parent, IParentEntity *child)
     setParentGraphicsItems(parent_implementation->mainGraphicsItems(), child_implementation->mainGraphicsItems());
 }
 
+void ScoreObjectGui::ParentEntity::clearGraphicsItems(IParentEntity *child)
+{
+    ScoreObjectGui::ParentEntity *child_implementation = dynamic_cast<ScoreObjectGui::ParentEntity*>(child);
+    if (!child_implementation)
+        return;
+    clearParentGraphicsItems(child_implementation->mainGraphicsItems());
+    clearParentGraphicsItems(child_implementation->unitXGraphicsItems());
+    clearParentGraphicsItems(child_implementation->unitYGraphicsItems());
+}
+
 void ScoreObjectGui::parentChanged(ScoreObject *scoreObject)
 {
     Object *parent = scoreObject->parent();
     if (parent)
-        setGraphicsItems(query<IParentEntity>(parent), query<IParentEntity>(scoreObject));
+        ParentEntity::setGraphicsItems(query<IParentEntity>(parent), query<IParentEntity>(scoreObject));
     else
-        clearGraphicsItems(query<IParentEntity>(scoreObject));
+        ParentEntity::clearGraphicsItems(query<IParentEntity>(scoreObject));
 }
 
 IAggregate *ScoreObjectGui::ParentEntity::init()

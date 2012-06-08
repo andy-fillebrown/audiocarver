@@ -29,18 +29,36 @@ class QGraphicsItem;
 
 namespace Database {
 
+class NoteGui;
+class TrackGui;
+
+namespace CurveGui {
+
+class Entity;
+
+} // namespace CurveGui
+
 namespace ScoreObjectGui
 {
     void parentChanged(ScoreObject *scoreObject);
 
     class ParentEntity : public IParentEntity
     {
+        friend class CurveGui::Entity;
+
+        friend class Database::NoteGui;
+        friend class Database::TrackGui;
+
         ScoreObject *_aggregator;
         QMap<int, QGraphicsItem*> _mainGraphicsItems;
         QMap<int, QGraphicsItem*> _unitXGraphicsItems;
         QMap<int, QGraphicsItem*> _unitYGraphicsItems;
 
     public:
+        static void setGraphicsItems(IParentEntity *parent, IParentEntity *child);
+        static void clearGraphicsItems(IParentEntity *child);
+
+    protected:
         ParentEntity(ScoreObject *aggregator)
             :   _aggregator(aggregator)
         {}
@@ -62,7 +80,6 @@ namespace ScoreObjectGui
             return _unitYGraphicsItems;
         }
 
-    protected:
         ScoreObject *a() const
         {
             return _aggregator;
@@ -88,11 +105,13 @@ namespace ScoreObjectGui
         {
             QList<ISubEntity*> sub_entities;
             switch (sceneType) {
-            case Ac::PitchScene:
-                sub_entities.append(query<ISubEntity>(a()->pitchCurve()));
+            case Ac::PitchScene: {
+                IModelItem *pitch_curve = query<IModelItem>(a())->findItem(Ac::PitchCurveItem);
+                sub_entities.append(query<ISubEntity>(pitch_curve));
                 break;
+            }
             case Ac::ControlScene: {
-                IModelList *control_curves = query<IModelList>(a()->controlCurves());
+                IModelList *control_curves = query<IModelItem>(a())->findList(Ac::ControlCurveItem);
                 const int n = control_curves->count();
                 for (int i = 0;  i < n;  ++i)
                     sub_entities.append(query<ISubEntity>(control_curves->at(i)));
@@ -130,16 +149,18 @@ namespace ScoreObjectGui
 
     class ChildEntity : public IChildEntity
     {
+        friend class Database::NoteGui;
+        friend class Database::TrackGui;
+
         ScoreObject *_aggregator;
 
-    public:
+    protected:
         ChildEntity(ScoreObject *aggregator)
             :   _aggregator(aggregator)
         {}
 
         virtual IAggregate *init();
 
-    protected:
         ScoreObject *a() const
         {
             return _aggregator;

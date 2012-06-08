@@ -71,19 +71,20 @@ protected:
 
     class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
+        friend class ProjectSettings;
+
         ProjectSettings *a() const
         {
             return static_cast<ProjectSettings*>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(ProjectSettings *aggregator)
             :   Object::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {

@@ -27,11 +27,16 @@ class AC_CORE_EXPORT Note : public ScoreObject
     friend class ObjectFactory;
 
 protected:
+    Note()
+    {}
+
     IAggregator *init();
 
     class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
     {
-    public:
+        friend class Note;
+
+    protected:
         ModelItem(Note *aggregator)
             :   ScoreObject::ModelItem(aggregator)
         {}

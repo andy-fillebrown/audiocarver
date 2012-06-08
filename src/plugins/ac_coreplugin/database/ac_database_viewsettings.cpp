@@ -30,7 +30,7 @@ IAggregator *ViewSettings::init()
 
 bool ViewSettings::setTimePosition(qreal position)
 {
-    position = qBound(qreal(0.0f), position, Score::instance()->length());
+    position = qBound(qreal(0.0f), position, query<IModelData>(Score::instance())->get<qreal>(Ac::LengthRole));
     if (_timePosition == position)
         return false;
     ScopedDataChange data_change(this, Ac::TimePositionRole);

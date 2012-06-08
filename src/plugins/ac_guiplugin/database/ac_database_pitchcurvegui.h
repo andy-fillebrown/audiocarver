@@ -31,6 +31,9 @@ class PitchCurveGui : public PitchCurve
     friend class ObjectGuiFactory;
 
 protected:
+    PitchCurveGui()
+    {}
+
     IAggregator *init();
 
     // Object
@@ -43,14 +46,15 @@ protected:
 
     class SubEntity : public CurveGui::SubEntity
     {
-    public:
+        friend class PitchCurveGui;
+
+    protected:
         SubEntity(Curve *aggregator)
             :   CurveGui::SubEntity(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // ISubEntity
         int sceneType() const
         {

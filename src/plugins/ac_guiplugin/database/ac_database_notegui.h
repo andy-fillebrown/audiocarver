@@ -33,6 +33,9 @@ class NoteGui : public Note
     friend class ObjectGuiFactory;
 
 protected:
+    NoteGui()
+    {}
+
     IAggregator *init();
 
     // Object

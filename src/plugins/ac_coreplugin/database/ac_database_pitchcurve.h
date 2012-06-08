@@ -47,14 +47,15 @@ protected:
 
     class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
     {
-    public:
+        friend class PitchCurve;
+
+    protected:
         ModelItem(PitchCurve *aggregator)
             :   Curve::ModelItem(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelItem
         int itemType() const
         {

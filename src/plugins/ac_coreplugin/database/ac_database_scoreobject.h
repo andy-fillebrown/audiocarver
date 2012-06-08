@@ -60,7 +60,6 @@ protected:
 
     bool setVolume(qreal volume);
 
-public:
     IAggregator *pitchCurve() const
     {
         return _pitchCurve;
@@ -71,7 +70,6 @@ public:
         return _controlCurves;
     }
 
-protected:
     class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
         ScoreObject *a() const
@@ -79,14 +77,13 @@ protected:
             return cast<ScoreObject>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(ScoreObject *aggregator)
             :   Object::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {
@@ -131,14 +128,13 @@ protected:
             return cast<ScoreObject>(Object::ModelItem::a());
         }
 
-    public:
+    protected:
         ModelItem(Object *aggregator)
             :   Object::ModelItem(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelItem
         int count() const
         {

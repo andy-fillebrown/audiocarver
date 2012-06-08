@@ -45,14 +45,15 @@ protected:
 
     class SubEntity : public CurveGui::SubEntity
     {
-    public:
+        friend class ControlCurveGui;
+
+    protected:
         SubEntity(Curve *aggregator)
             :   CurveGui::SubEntity(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // ISubEntity
         int sceneType() const
         {

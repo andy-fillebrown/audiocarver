@@ -37,6 +37,9 @@ class AC_CORE_EXPORT Score : public ScoreObject
     IAggregator *_projectSettings;
     IAggregator *_viewSettings;
 
+public:
+    static Score *instance();
+
 protected:
     enum {
         RoleCountOffset = Object::TotalRoleCount,
@@ -60,15 +63,11 @@ protected:
     IAggregator *init();
     ~Score();
 
-public:
-    static Score *instance();
-
     qreal length() const
     {
         return _length;
     }
 
-protected:
     bool setLength(qreal length);
 
     qreal startTime() const
@@ -115,19 +114,20 @@ protected:
 
     class AC_CORE_EXPORT ModelData : public ScoreObject::ModelData
     {
+        friend class Score;
+
         Score *a() const
         {
             return static_cast<Score*>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(Score *aggregator)
             :   ScoreObject::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {
@@ -173,19 +173,20 @@ protected:
 
     class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
     {
+        friend class Score;
+
         Score *a() const
         {
             return static_cast<Score*>(Object::ModelItem::a());
         }
 
-    public:
+    protected:
         ModelItem(Score *aggregator)
             :   ScoreObject::ModelItem(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelItem
         int itemType() const
         {

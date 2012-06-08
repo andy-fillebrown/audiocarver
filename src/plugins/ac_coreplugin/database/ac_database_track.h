@@ -89,19 +89,20 @@ protected:
 
     class AC_CORE_EXPORT ModelData : public ScoreObject::ModelData
     {
+        friend class Track;
+
         Track *a() const
         {
             return cast<Track>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(Track *aggregator)
             :   ScoreObject::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {
@@ -159,19 +160,20 @@ protected:
 
     class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
     {
+        friend class Track;
+
         Track *a() const
         {
             return cast<Track>(Object::ModelItem::a());
         }
 
-    public:
+    protected:
         ModelItem(Track *aggregator)
             :   ScoreObject::ModelItem(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelItem
         int itemType() const
         {

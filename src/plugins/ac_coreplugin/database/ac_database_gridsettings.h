@@ -89,19 +89,20 @@ protected:
 
     class ModelData : public Object::ModelData
     {
+        friend class GridSettings;
+
         GridSettings *a() const
         {
             return static_cast<GridSettings*>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(GridSettings *aggregator)
             :   Object::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {

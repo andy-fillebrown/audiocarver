@@ -24,6 +24,11 @@ static Database::Score *instance = 0;
 
 namespace Database {
 
+Score *Score::instance()
+{
+    return ::instance;
+}
+
 IAggregator *Score::init()
 {
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
@@ -47,11 +52,6 @@ Score::~Score()
     delete _pitchGridLines;
     delete _timeGridLines;
     delete _tracks;
-}
-
-Score *Score::instance()
-{
-    return ::instance;
 }
 
 bool Score::setLength(qreal length)

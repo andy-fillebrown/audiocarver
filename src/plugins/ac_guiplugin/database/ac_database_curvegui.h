@@ -30,16 +30,27 @@
 
 namespace Database {
 
+class ControlCurveGui;
+class PitchCurveGui;
+
 namespace CurveGui
 {
     void parentChanged(Curve *curve);
 
     class Entity : public IEntity
     {
+        friend class Database::ControlCurveGui;
+        friend class Database::PitchCurveGui;
+        friend class SubEntity;
+
         Curve *_aggregator;
         GraphicsCurveItem *_graphicsCurveItem;
 
     public:
+        static void setGraphicsItemParent(IParentEntity *parent, IEntity *curve);
+        static void clearGraphicsItemParent(IEntity *curve);
+
+    protected:
         Entity(Curve *aggregator)
             :   _aggregator(aggregator)
             ,   _graphicsCurveItem(0)
@@ -53,7 +64,6 @@ namespace CurveGui
             return _graphicsCurveItem;
         }
 
-    protected:
         Curve *a() const
         {
             return _aggregator;
@@ -102,7 +112,7 @@ namespace CurveGui
         Curve *_aggregator;
         GraphicsCurveItem *_graphicsCurveItem;
 
-    public:
+    protected:
         SubEntity(Curve *aggregator)
             :   _aggregator(aggregator)
             ,   _graphicsCurveItem(0)
@@ -110,7 +120,6 @@ namespace CurveGui
 
         virtual IAggregate *init();
 
-    protected:
         Curve *a() const
         {
             return _aggregator;

@@ -23,8 +23,6 @@ namespace Database {
 
 class AC_CORE_EXPORT GridLine : public Object
 {
-    friend class ObjectFactory;
-
     enum { RoleCount = 4 };
 
     qreal _location;
@@ -76,19 +74,20 @@ protected:
 
     class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
+        friend class GridLine;
+
         GridLine *a() const
         {
             return static_cast<GridLine*>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(GridLine *aggregator)
             :   Object::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {

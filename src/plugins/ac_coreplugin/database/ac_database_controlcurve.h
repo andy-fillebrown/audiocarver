@@ -68,19 +68,20 @@ protected:
 
     class AC_CORE_EXPORT ModelData : public Curve::ModelData
     {
+        friend class ControlCurve;
+
         ControlCurve *a() const
         {
             return cast<ControlCurve>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(ControlCurve *aggregator)
             :   Curve::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {
@@ -120,14 +121,15 @@ protected:
 
     class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
     {
-    public:
+        friend class ControlCurve;
+
+    protected:
         ModelItem(ControlCurve *aggregator)
             :   Curve::ModelItem(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelItem
         int itemType() const
         {

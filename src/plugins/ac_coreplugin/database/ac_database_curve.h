@@ -39,11 +39,13 @@ protected:
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
+    Curve()
+    {}
+
     IAggregator *init();
 
     virtual void conformPoints() = 0;
 
-public:
     PointList &points()
     {
         return _pointsStack.top();
@@ -53,19 +55,19 @@ public:
     void popPoints();
     bool setPoints(const PointList &points);
 
-protected:
     class AC_CORE_EXPORT Points : public IPoints
     {
+        friend class Curve;
+
         Curve *_aggregator;
 
-    public:
+    protected:
         Points(Curve *aggregator)
             :   _aggregator(aggregator)
         {}
 
         virtual IAggregate *init();
 
-    protected:
         Curve *a() const
         {
             return _aggregator;
@@ -101,19 +103,20 @@ protected:
 
     class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
+        friend class Curve;
+
         Curve *a() const
         {
             return cast<Curve>(Object::ModelData::a());
         }
 
-    public:
+    protected:
         ModelData(Curve *aggregator)
             :   Object::ModelData(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelData
         int roleCount() const
         {
@@ -153,14 +156,13 @@ protected:
 
     class AC_CORE_EXPORT ModelItem : public Object::ModelItem
     {
-    public:
+    protected:
         ModelItem(Curve *aggregator)
             :   Object::ModelItem(aggregator)
         {}
 
         IAggregate *init();
 
-    protected:
         // IModelItem
         int itemType() const
         {
