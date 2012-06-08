@@ -24,7 +24,7 @@
 
 namespace Database {
 
-class ProjectSettings : public Object
+class AC_CORE_EXPORT ProjectSettings : public Object
 {
     friend class ObjectFactory;
 

@@ -25,7 +25,7 @@
 
 namespace Database {
 
-class ViewSettings : public Object
+class AC_CORE_EXPORT ViewSettings : public Object
 {
     friend class ObjectFactory;
 
@@ -97,7 +97,7 @@ protected:
 
     bool setControlScale(qreal scale);
 
-    class ModelData : public Object::ModelData
+    class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
         friend class ViewSettings;
 

@@ -87,7 +87,7 @@ protected:
 
     bool setControlSnap(qreal snap);
 
-    class ModelData : public Object::ModelData
+    class AC_CORE_EXPORT ModelData : public Object::ModelData
     {
         friend class GridSettings;
 
