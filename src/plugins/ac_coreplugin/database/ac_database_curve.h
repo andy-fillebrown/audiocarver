@@ -152,6 +152,30 @@ protected:
         }
     };
 
+    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    {
+    public:
+        ModelItem(Curve *aggregator)
+            :   Object::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+    protected:
+        // IModelItem
+        int itemType() const
+        {
+            return Ac::CurveItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::CurveItem == itemType)
+                return true;
+            return Object::ModelItem::isTypeOfItem(itemType);
+        }
+    };
+
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
@@ -160,6 +184,8 @@ protected:
             return appendAggregate((new Points(this))->init());
         case I::IModelData:
             return appendAggregate((new ModelData(this))->init());
+        case I::IModelItem:
+            return appendAggregate((new ModelItem(this))->init());
         default:
             return Object::createAggregate(interfaceType);
         }

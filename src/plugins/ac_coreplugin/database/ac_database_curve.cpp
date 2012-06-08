@@ -70,4 +70,9 @@ IAggregate *Curve::ModelData::init()
     return Object::ModelData::init();
 }
 
+IAggregate *Curve::ModelItem::init()
+{
+    return Object::ModelItem::init();
+}
+
 } // namespace Database

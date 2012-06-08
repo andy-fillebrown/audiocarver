@@ -41,6 +41,7 @@ enum ItemType {
     ScoreItem = Mi::ItemTypeCount,
     TrackItem,
     NoteItem,
+    CurveItem,
     PitchCurveItem,
     ControlCurveItem,
     GridSettingsItem,
