@@ -173,6 +173,144 @@ protected:
     }
 };
 
+class AC_CORE_EXPORT TimeGridLine : public GridLine
+{
+    friend class ObjectFactory;
+
+protected:
+    TimeGridLine()
+    {}
+
+    IAggregator *init();
+
+    class AC_CORE_EXPORT ModelItem : public GridLine::ModelItem
+    {
+        friend class TimeGridLine;
+
+    protected:
+        ModelItem(TimeGridLine *aggregator)
+            :   GridLine::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+        int itemType() const
+        {
+            return Ac::TimeGridLineItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::TimeGridLineItem == itemType)
+                return true;
+            return GridLine::ModelItem::isTypeOfItem(itemType);
+        }
+    };
+
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelItem:
+            return appendAggregate((new ModelItem(this))->init());
+        default:
+            return GridLine::createAggregate(interfaceType);
+        }
+    }
+};
+
+class AC_CORE_EXPORT PitchGridLine : public GridLine
+{
+    friend class ObjectFactory;
+
+protected:
+    PitchGridLine()
+    {}
+
+    IAggregator *init();
+
+    class AC_CORE_EXPORT ModelItem : public GridLine::ModelItem
+    {
+        friend class PitchGridLine;
+
+    protected:
+        ModelItem(PitchGridLine *aggregator)
+            :   GridLine::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+        int itemType() const
+        {
+            return Ac::PitchGridLineItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::PitchGridLineItem == itemType)
+                return true;
+            return GridLine::ModelItem::isTypeOfItem(itemType);
+        }
+    };
+
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelItem:
+            return appendAggregate((new ModelItem(this))->init());
+        default:
+            return GridLine::createAggregate(interfaceType);
+        }
+    }
+};
+
+class AC_CORE_EXPORT ControlGridLine : public GridLine
+{
+    friend class ObjectFactory;
+
+protected:
+    ControlGridLine()
+    {}
+
+    IAggregator *init();
+
+    class AC_CORE_EXPORT ModelItem : public GridLine::ModelItem
+    {
+        friend class ControlGridLine;
+
+    protected:
+        ModelItem(ControlGridLine *aggregator)
+            :   GridLine::ModelItem(aggregator)
+        {}
+
+        IAggregate *init();
+
+        int itemType() const
+        {
+            return Ac::ControlGridLineItem;
+        }
+
+        bool isTypeOfItem(int itemType) const
+        {
+            if (Ac::ControlGridLineItem == itemType)
+                return true;
+            return GridLine::ModelItem::isTypeOfItem(itemType);
+        }
+    };
+
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelItem:
+            return appendAggregate((new ModelItem(this))->init());
+        default:
+            return GridLine::createAggregate(interfaceType);
+        }
+    }
+};
+
 } // namespace Database
 
 //#ifndef AC_GRIDLINE_H

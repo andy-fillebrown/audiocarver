@@ -75,7 +75,40 @@ IAggregate *GridLine::ModelItem::init()
     return Object::ModelItem::init();
 }
 
+IAggregator *TimeGridLine::init()
+{
+    return GridLine::init();
+}
+
+IAggregate *TimeGridLine::ModelItem::init()
+{
+    return GridLine::ModelItem::init();
+}
+
+IAggregator *PitchGridLine::init()
+{
+    return GridLine::init();
+}
+
+IAggregate *PitchGridLine::ModelItem::init()
+{
+    return GridLine::ModelItem::init();
+}
+
+IAggregator *ControlGridLine::init()
+{
+    return GridLine::init();
+}
+
+IAggregate *ControlGridLine::ModelItem::init()
+{
+    return GridLine::ModelItem::init();
+}
+
 } // namespace Database
+
+
+
 
 //#include "ac_gridline.h"
 
