@@ -92,25 +92,6 @@ T *object_cast(const Object *object)
     return qobject_cast<T*>(object);
 }
 
-#ifdef Q_MI_NO_REINTERPRET_CAST
-#   define mi_cast static_cast
-#else
-#   define mi_cast reinterpret_cast
-#endif
-
-template <typename T, typename Object>
-T *cast(Object *object)
-{
-    return mi_cast<T*>(object);
-}
-
-template <typename T, typename Object>
-const T *cast(const Object *object)
-{
-    return mi_cast<const T*>(object);
-}
-
-#define bitcountof(x) (8 * sizeof(x))
 
 #define Q_FLOAT_MIN 1E-37
 #define Q_FLOAT_MAX 1E+37

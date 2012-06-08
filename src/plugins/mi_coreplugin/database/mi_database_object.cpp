@@ -17,6 +17,7 @@
 
 #include "mi_database_object.h"
 
+#include <mi_database_objectlist.h>
 #include <mi_imodel.h>
 #include <mi_iorphanage.h>
 #include <mi_scopeddatachange.h>
@@ -67,6 +68,13 @@ void Object::setParent(Object *parent)
             orphanage->append(this);
     }
     _parent = parent;
+}
+
+ObjectList *Object::list() const
+{
+    if (_parent->isList())
+        return dynamic_cast<ObjectList*>(_parent);
+    return 0;
 }
 
 void Object::dataAboutToBeChanged(const Object *object, int role, Mi::NotificationFlags notificationFlags)

@@ -93,7 +93,7 @@ protected:
 
         Track *a() const
         {
-            return cast<Track>(Object::ModelData::a());
+            return static_cast<Track*>(Object::ModelData::a());
         }
 
     protected:
@@ -164,7 +164,7 @@ protected:
 
         Track *a() const
         {
-            return cast<Track>(Object::ModelItem::a());
+            return static_cast<Track*>(Object::ModelItem::a());
         }
 
     protected:

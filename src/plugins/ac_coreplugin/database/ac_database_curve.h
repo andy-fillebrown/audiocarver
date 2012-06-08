@@ -107,7 +107,7 @@ protected:
 
         Curve *a() const
         {
-            return cast<Curve>(Object::ModelData::a());
+            return static_cast<Curve*>(Object::ModelData::a());
         }
 
     protected:

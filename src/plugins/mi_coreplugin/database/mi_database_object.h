@@ -73,7 +73,7 @@ public:
         return false;
     }
 
-    inline ObjectList *list() const;
+    ObjectList *list() const;
 
     virtual void dataAboutToBeChanged(const Object *object, int role, Mi::NotificationFlags notificationFlags);
     virtual void dataChanged(const Object *object, int role, Mi::NotificationFlags notificationFlags);
@@ -168,7 +168,7 @@ protected:
 
         Object *a() const
         {
-            return cast<Object>(_aggregator);
+            return static_cast<Object*>(_aggregator);
         }
 
         // IModelItem
@@ -221,19 +221,6 @@ protected:
         }
     };
 };
-
-} // namespace Database
-
-#include <mi_database_objectlist.h>
-
-namespace Database {
-
-inline ObjectList *Object::list() const
-{
-    if (_parent->isList())
-        return cast<ObjectList>(_parent);
-    return 0;
-}
 
 } // namespace Database
 

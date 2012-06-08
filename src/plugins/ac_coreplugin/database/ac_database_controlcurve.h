@@ -72,7 +72,7 @@ protected:
 
         ControlCurve *a() const
         {
-            return cast<ControlCurve>(Object::ModelData::a());
+            return static_cast<ControlCurve*>(Object::ModelData::a());
         }
 
     protected:

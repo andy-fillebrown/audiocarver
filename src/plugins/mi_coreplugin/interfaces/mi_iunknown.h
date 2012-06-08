@@ -37,7 +37,7 @@ template <class T, class Unknown> inline
 T *query(Unknown *unknown)
 {
     if (unknown)
-        return cast<T>(unknown->queryInterface(T::InterfaceType));
+        return static_cast<T*>(unknown->queryInterface(T::InterfaceType));
     return 0;
 }
 
@@ -45,7 +45,7 @@ template <class T, class Unknown> inline
 const T *query(const Unknown *unknown)
 {
     if (unknown)
-        return cast<const T>(unknown->queryInterface(T::InterfaceType));
+        return static_cast<const T*>(unknown->queryInterface(T::InterfaceType));
     return 0;
 }
 

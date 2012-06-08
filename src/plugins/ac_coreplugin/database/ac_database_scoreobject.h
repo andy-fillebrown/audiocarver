@@ -74,7 +74,7 @@ protected:
     {
         ScoreObject *a() const
         {
-            return cast<ScoreObject>(Object::ModelData::a());
+            return static_cast<ScoreObject*>(Object::ModelData::a());
         }
 
     protected:
@@ -120,7 +120,7 @@ protected:
     {
         ScoreObject *a() const
         {
-            return cast<ScoreObject>(Object::ModelItem::a());
+            return static_cast<ScoreObject*>(Object::ModelItem::a());
         }
 
     protected:

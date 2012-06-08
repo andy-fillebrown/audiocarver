@@ -130,7 +130,7 @@ protected:
 
         void insert(int i, IModelItem *item)
         {
-            a()->insert(i, cast<Object>(query<IAggregator>(item)));
+            a()->insert(i, dynamic_cast<Object*>(query<IAggregator>(item)));
         }
 
         void removeAt(int i)
@@ -169,7 +169,7 @@ protected:
 
         int indexOf(const IModelItem *item) const
         {
-            return a()->objects()->indexOf(cast<Object>(item->aggregator()));
+            return a()->objects()->indexOf(dynamic_cast<Object*>(item->aggregator()));
         }
 
         IModelItem *at(int i) const
