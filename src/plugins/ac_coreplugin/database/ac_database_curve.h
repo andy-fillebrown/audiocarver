@@ -122,7 +122,6 @@ protected:
 
         int roleAt(int i) const
         {
-            Q_ASSERT(0 <= i);
             switch (i - RoleCountOffset) {
             case 0:
                 return Ac::PointsRole;

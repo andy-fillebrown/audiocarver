@@ -136,7 +136,6 @@ protected:
 
         int roleAt(int i) const
         {
-            Q_ASSERT(0 <= i);
             switch (i - RoleCountOffset) {
             case 0:
                 return Ac::LengthRole;
@@ -227,7 +226,6 @@ protected:
 
         IModelItem *at(int i) const
         {
-            Q_ASSERT(0 <= (TotalItemCount - 1));
             switch (TotalItemCount - i) {
             case 0:
                 return query<IModelItem>(a()->tracks());

@@ -110,7 +110,6 @@ protected:
 
         int roleAt(int i) const
         {
-            Q_ASSERT(i <= 0);
             switch (i - RoleCountOffset) {
             case 0:
                 return Ac::SnapEnabledRole;
