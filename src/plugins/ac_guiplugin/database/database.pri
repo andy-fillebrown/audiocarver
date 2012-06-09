@@ -9,7 +9,7 @@ SOURCE_FILES = \
     scoreobject \
     track \
 #    projectsettings \
-#    score \
+    score \
 #    track \
 #    viewsettings \
 

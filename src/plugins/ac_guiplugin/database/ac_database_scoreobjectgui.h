@@ -30,6 +30,7 @@ class QGraphicsItem;
 namespace Database {
 
 class NoteGui;
+class ScoreGui;
 class TrackGui;
 
 namespace CurveGui {
@@ -47,6 +48,7 @@ namespace ScoreObjectGui
         friend class CurveGui::Entity;
 
         friend class Database::NoteGui;
+        friend class Database::ScoreGui;
         friend class Database::TrackGui;
 
         ScoreObject *_aggregator;
