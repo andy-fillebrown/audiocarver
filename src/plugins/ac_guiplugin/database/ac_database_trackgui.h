@@ -20,8 +20,6 @@
 
 #include "ac_database_track.h"
 
-#include "ac_ichildentity.h"
-
 #include <ac_database_scoreobjectgui.h>
 
 namespace Database {
