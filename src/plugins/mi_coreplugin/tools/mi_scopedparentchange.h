@@ -20,24 +20,46 @@
 
 #include <mi_database_object.h>
 
+#include <mi_imodel.h>
+#include <mi_imodelitem.h>
+#include <mi_imodelitemwatcher.h>
+
 namespace Database {
 
 class ScopedParentChange
 {
-    Object *_object;
+    const IModelItem *_item;
+    const QList<IModelItemWatcher*> &_watchers;
     Mi::NotificationFlags _notificationFlags;
 
 public:
     ScopedParentChange(Object *object, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
-        :   _object(object)
+        :   _item(query<IModelItem>(object))
+        ,   _watchers(object->itemWatchers())
         ,   _notificationFlags(notificationFlags)
     {
-        _object->parentAboutToBeChanged(_object, _notificationFlags);
+        if (!_item)
+            return;
+        foreach (IModelItemWatcher *watcher, _watchers)
+            watcher->parentAboutToBeChanged(_item);
+        if (Mi::NotifyModel & _notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model)
+                model->beginChangeParent(_item);
+        }
     }
 
     ~ScopedParentChange()
     {
-        _object->parentChanged(_object, _notificationFlags);
+        if (!_item)
+            return;
+        foreach (IModelItemWatcher *watcher, _watchers)
+            watcher->parentChanged(_item);
+        if (Mi::NotifyModel & _notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model)
+                model->endChangeParent(_item);
+        }
     }
 };
 

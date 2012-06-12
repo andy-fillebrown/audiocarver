@@ -40,7 +40,7 @@ protected:
     {
         if (this == object)
             CurveGui::parentChanged(this);
-        ControlCurve::parentChanged(object, notificationFlags);
+//        ControlCurve::parentChanged(object, notificationFlags);
     }
 
     class SubEntity : public CurveGui::SubEntity

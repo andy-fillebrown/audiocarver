@@ -43,7 +43,7 @@ protected:
     {
         if (this == object)
             ScoreObjectGui::parentChanged(this);
-        Note::parentChanged(object, notificationFlags);
+//        Note::parentChanged(object, notificationFlags);
     }
 
     // IAggregator

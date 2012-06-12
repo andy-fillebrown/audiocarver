@@ -41,7 +41,7 @@ protected:
     {
         if (this == object)
             CurveGui::parentChanged(this);
-        PitchCurve::parentChanged(object, notificationFlags);
+//        PitchCurve::parentChanged(object, notificationFlags);
     }
 
     class SubEntity : public CurveGui::SubEntity

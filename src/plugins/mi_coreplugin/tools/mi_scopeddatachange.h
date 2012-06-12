@@ -20,26 +20,48 @@
 
 #include <mi_database_object.h>
 
+#include <mi_imodel.h>
+#include <mi_imodeldata.h>
+#include <mi_imodeldatawatcher.h>
+
 namespace Database {
 
 class ScopedDataChange
 {
-    Object *_object;
-    int _role;
-    Mi::NotificationFlags _notificationFlags;
+    const IModelData *_data;
+    const QList<IModelDataWatcher*> &_watchers;
+    const int _role;
+    const Mi::NotificationFlags _notificationFlags;
 
 public:
     ScopedDataChange(Object *object, int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
-        :   _object(object)
+        :   _data(const_query<IModelData>(object))
+        ,   _watchers(object->dataWatchers())
         ,   _role(role)
         ,   _notificationFlags(notificationFlags)
     {
-        _object->dataAboutToBeChanged(_object, _role, _notificationFlags);
+        if (!_data)
+            return;
+        foreach (IModelDataWatcher *watcher, _watchers)
+            watcher->dataAboutToBeChanged(_data, _role);
+        if (Mi::NotifyModel & _notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model)
+                model->beginChangeData(_data, _role);
+        }
     }
 
     ~ScopedDataChange()
     {
-        _object->dataChanged(_object, _role, _notificationFlags);
+        if (!_data)
+            return;
+        foreach (IModelDataWatcher *watcher, _watchers)
+            watcher->dataChanged(_data, _role);
+        if (Mi::NotifyModel & _notificationFlags) {
+            IModel *model = IModel::instance();
+            if (model)
+                model->endChangeData(_data, _role);
+        }
     }
 };
 

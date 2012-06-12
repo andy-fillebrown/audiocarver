@@ -94,11 +94,6 @@ protected:
 
     ObjectList *list() const;
 
-    virtual void dataAboutToBeChanged(const Object *object, int role, Mi::NotificationFlags notificationFlags);
-    virtual void dataChanged(const Object *object, int role, Mi::NotificationFlags notificationFlags);
-    virtual void parentAboutToBeChanged(const Object *object, Mi::NotificationFlags notificationFlags);
-    virtual void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags);
-
     class MI_CORE_EXPORT ModelData : public IModelData
     {
         Object *_aggregator;
