@@ -32,6 +32,10 @@ class ObjectList;
 
 class MI_CORE_EXPORT Object : public Aggregator
 {
+    friend class ObjectList;
+    friend class ScopedDataChange;
+    friend class ScopedParentChange;
+
     enum { RoleCount = 1 };
     enum { ItemCount = 0 };
 
