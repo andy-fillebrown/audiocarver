@@ -23,6 +23,9 @@
 #include "mi_imodeldata.h"
 #include "mi_imodelitem.h"
 
+class IModelDataWatcher;
+class IModelItemWatcher;
+
 namespace Database {
 
 class ObjectList;
@@ -35,6 +38,9 @@ class MI_CORE_EXPORT Object : public Aggregator
     QString _name;
 
     Object *_parent;
+
+    QList<IModelDataWatcher*> _dataWatchers;
+    QList<IModelItemWatcher*> _itemWatchers;
 
 protected:
     enum {
@@ -70,6 +76,16 @@ protected:
     virtual bool isList() const
     {
         return false;
+    }
+
+    QList<IModelDataWatcher*> &dataWatchers()
+    {
+        return _dataWatchers;
+    }
+
+    QList<IModelItemWatcher*> &itemWatchers()
+    {
+        return _itemWatchers;
     }
 
     ObjectList *list() const;
@@ -146,6 +162,19 @@ protected:
             }
         }
 
+        void appendWatcher(IModelDataWatcher *watcher)
+        {
+            QList<IModelDataWatcher*> &watchers = a()->dataWatchers();
+            if (watchers.contains(watcher))
+                return;
+            watchers.append(watcher);
+        }
+
+        void removeWatcher(IModelDataWatcher *watcher)
+        {
+            a()->dataWatchers().removeOne(watcher);
+        }
+
         // IAggregate
         IAggregator *aggregator() const
         {
@@ -210,6 +239,19 @@ protected:
         IModelList *findList(int listType) const
         {
             return 0;
+        }
+
+        void appendWatcher(IModelItemWatcher *watcher)
+        {
+            QList<IModelItemWatcher*> &watchers = a()->itemWatchers();
+            if (watchers.contains(watcher))
+                return;
+            watchers.append(watcher);
+        }
+
+        void removeWatcher(IModelItemWatcher *watcher)
+        {
+            a()->itemWatchers().removeOne(watcher);
         }
 
         // IAggregate

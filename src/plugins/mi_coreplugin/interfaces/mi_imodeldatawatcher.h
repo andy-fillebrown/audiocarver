@@ -15,29 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELITEM_H
-#define MI_IMODELITEM_H
+#ifndef MI_IMODELDATAWATCHER_H
+#define MI_IMODELDATAWATCHER_H
 
 #include "mi_iaggregate.h"
 
-class IModelItemWatcher;
-class IModelList;
+class IModelData;
 
-class IModelItem : public IAggregate
+class IModelDataWatcher : public IAggregate
 {
 public:
-    enum { InterfaceType = I::IModelItem };
+    enum { InterfaceType = I::IModelDataWatcher };
 
-    virtual int itemType() const = 0;
-    virtual bool isTypeOfItem(int itemType) const = 0;
-    virtual IModelItem *parent() const = 0;
-    virtual int count() const = 0;
-    virtual int indexOf(const IModelItem *item) const = 0;
-    virtual IModelItem *at(int i) const = 0;
-    virtual IModelItem *findItem(int itemType) const = 0;
-    virtual IModelList *findList(int listType) const = 0;
-    virtual void appendWatcher(IModelItemWatcher *watcher) = 0;
-    virtual void removeWatcher(IModelItemWatcher *watcher) = 0;
+    virtual void dataAboutToBeChanged(const IModelData *data, int role) = 0;
+    virtual void dataChanged(const IModelData *data, int role) = 0;
 
     // IUnknown
     int interfaceType() const
@@ -53,4 +44,4 @@ public:
     }
 };
 
-#endif // MI_IMODELITEM_H
+#endif // MI_IMODELDATAWATCHER_H
