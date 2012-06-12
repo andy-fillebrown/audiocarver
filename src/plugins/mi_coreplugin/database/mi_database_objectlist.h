@@ -103,16 +103,17 @@ protected:
 
     class ModelList : public IModelList
     {
+        friend class ObjectList;
+
         ObjectList *_aggregator;
 
-    public:
+    protected:
         ModelList(ObjectList *aggregator)
             :   _aggregator(aggregator)
         {}
 
         virtual IAggregate *init();
 
-    protected:
         ObjectList *a() const
         {
             return _aggregator;
