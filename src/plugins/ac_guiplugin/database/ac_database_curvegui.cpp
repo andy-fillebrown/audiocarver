@@ -74,7 +74,6 @@ CurveGui::Entity::~Entity()
 
 IAggregate *CurveGui::SubEntity::init()
 {
-    _graphicsCurveItem = (static_cast<Entity*>(query<IEntity>(a())))->graphicsCurveItem();
     return this;
 }
 

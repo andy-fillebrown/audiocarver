@@ -59,45 +59,45 @@ namespace CurveGui
         virtual IAggregate *init();
         ~Entity();
 
-        GraphicsCurveItem *graphicsCurveItem() const
-        {
-            return _graphicsCurveItem;
-        }
-
         Curve *a() const
         {
             return _aggregator;
         }
 
+        GraphicsCurveItem *graphicsCurveItem() const
+        {
+            return _graphicsCurveItem;
+        }
+
         void setPoints(const PointList &points)
         {
-            _graphicsCurveItem->setPoints(points);
+            graphicsCurveItem()->setPoints(points);
         }
 
         void setColor(uint color)
         {
-            _graphicsCurveItem->setColor(QColor(QRgb(color)));
+            graphicsCurveItem()->setColor(QColor(QRgb(color)));
         }
 
         // IEntity
         void highlight()
         {
-            _graphicsCurveItem->highlight();
+            graphicsCurveItem()->highlight();
         }
 
         void unhighlight()
         {
-            _graphicsCurveItem->unhighlight();
+            graphicsCurveItem()->unhighlight();
         }
 
         bool intersects(const QRectF &rect) const
         {
-            return _graphicsCurveItem->intersects(rect);
+            return graphicsCurveItem()->intersects(rect);
         }
 
         bool isVisible() const
         {
-            return _graphicsCurveItem->isVisible();
+            return graphicsCurveItem()->isVisible();
         }
 
         // IAggregate
@@ -110,12 +110,20 @@ namespace CurveGui
     class SubEntity : public ISubEntity
     {
         Curve *_aggregator;
-        GraphicsCurveItem *_graphicsCurveItem;
+
+        Entity *entity() const
+        {
+            return dynamic_cast<Entity*>(query<IEntity>(_aggregator));
+        }
+
+        GraphicsCurveItem *graphicsCurveItem() const
+        {
+            return entity()->graphicsCurveItem();
+        }
 
     protected:
         SubEntity(Curve *aggregator)
             :   _aggregator(aggregator)
-            ,   _graphicsCurveItem(0)
         {}
 
         virtual IAggregate *init();
@@ -128,13 +136,13 @@ namespace CurveGui
         // ISubEntity
         bool intersects(const QRectF &rect) const
         {
-            return _graphicsCurveItem->intersects(rect);
+            return graphicsCurveItem()->intersects(rect);
         }
 
         // IChildEntity
         IParentEntity *parentEntity() const
         {
-            return query<IParentEntity>(a()->parent());
+            return query<IParentEntity>(query<IModelItem>(a())->parent());
         }
 
         // IAggregate

@@ -85,7 +85,7 @@ void Object::dataAboutToBeChanged(const Object *object, int role, Mi::Notificati
             if (model) {
                 const IModelData *model_data = const_query<IModelData>(this);
                 if (model_data)
-                model->beginChangeData(model_data, role);
+                    model->beginChangeData(model_data, role);
             }
         }
     }
