@@ -26,10 +26,12 @@ namespace Database {
 
 class MI_CORE_EXPORT ObjectList : public Object
 {
+    friend class ObjectFactory;
+
     const int _listType;
     QList<IAggregator*> _objects;
 
-public:
+protected:
     ObjectList(int listType = Mi::UnknownItem)
         :   _listType(listType)
     {}
@@ -89,7 +91,6 @@ public:
         return true;
     }
 
-protected:
     QList<Object*> *objects()
     {
         return reinterpret_cast<QList<Object*>*>(&_objects);
