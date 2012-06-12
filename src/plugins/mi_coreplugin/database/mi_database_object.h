@@ -50,7 +50,6 @@ protected:
 
     virtual IAggregator *init();
 
-public:
     const QString &name() const
     {
         return _name;
@@ -80,7 +79,6 @@ public:
     virtual void parentAboutToBeChanged(const Object *object, Mi::NotificationFlags notificationFlags);
     virtual void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags);
 
-protected:
     class MI_CORE_EXPORT ModelData : public IModelData
     {
         Object *_aggregator;

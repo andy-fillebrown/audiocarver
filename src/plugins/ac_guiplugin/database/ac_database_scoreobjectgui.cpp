@@ -71,7 +71,7 @@ void ScoreObjectGui::ParentEntity::clearGraphicsItems(IParentEntity *child)
 
 void ScoreObjectGui::parentChanged(ScoreObject *scoreObject)
 {
-    Object *parent = scoreObject->parent();
+    IModelItem *parent = query<IModelItem>(scoreObject)->parent();
     if (parent)
         ParentEntity::setGraphicsItems(query<IParentEntity>(parent), query<IParentEntity>(scoreObject));
     else

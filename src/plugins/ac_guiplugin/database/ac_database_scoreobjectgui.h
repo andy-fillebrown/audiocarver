@@ -171,7 +171,7 @@ namespace ScoreObjectGui
         // IChildEntity
         IParentEntity *parentEntity() const
         {
-            return query<IParentEntity>(a()->parent());
+            return query<IParentEntity>(query<IModelItem>(a())->parent());
         }
 
         // IAggregate

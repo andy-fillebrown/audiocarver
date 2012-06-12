@@ -53,7 +53,7 @@ void CurveGui::Entity::clearGraphicsItemParent(IEntity *curve)
 
 void CurveGui::parentChanged(Curve *curve)
 {
-    Object *parent = curve->parent();
+    IModelItem *parent = query<IModelItem>(curve)->parent();
     if (parent)
         Entity::setGraphicsItemParent(query<IParentEntity>(parent), query<IEntity>(curve));
     else
