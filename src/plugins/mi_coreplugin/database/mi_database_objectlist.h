@@ -56,10 +56,8 @@ protected:
 
     bool contains(const QString &name) const
     {
-        const QList<IAggregator*> &objects = this->objects();
-        QList<IAggregator*>::ConstIterator end = objects.constEnd();
-        for (QList<IAggregator*>::ConstIterator i = objects.constBegin();  i != end;  ++i)
-            if (query<IModelData>(*i)->get<QString>(Mi::NameRole) == name)
+        foreach (IAggregator *object, objects())
+            if (query<IModelData>(object)->get<QString>(Mi::NameRole) == name)
                 return true;
         return false;
     }
@@ -233,10 +231,7 @@ protected:
 
     void clear()
     {
-        QList<IAggregator*> &objects = this->objects();
-        QList<IAggregator*>::ConstIterator end = objects.end();
-        for (QList<IAggregator*>::ConstIterator i = objects.begin();  i != end;  ++i) {
-            IAggregator *object = *i;
+        foreach (IAggregator *object, objects()) {
             query<IModelItem>(object)->setParent(0);
             delete object;
         }

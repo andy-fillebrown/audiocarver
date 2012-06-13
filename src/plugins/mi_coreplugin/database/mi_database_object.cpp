@@ -17,11 +17,11 @@
 
 #include "mi_database_object.h"
 
+#include <mi_iorphanage.h>
+
 #include <mi_database_objectlist.h>
 #include <mi_scopeddatachange.h>
 #include <mi_scopedparentchange.h>
-
-#include <mi_iorphanage.h>
 
 namespace Database {
 
@@ -68,13 +68,6 @@ void Object::setParent(Object *parent)
             orphanage->append(this);
     }
     _parent = parent;
-}
-
-ObjectList *Object::list() const
-{
-    if (_parent->isList())
-        return dynamic_cast<ObjectList*>(_parent);
-    return 0;
 }
 
 } // namespace Database

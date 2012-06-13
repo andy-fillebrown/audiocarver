@@ -23,19 +23,10 @@
 #include "mi_imodeldata.h"
 #include "mi_imodelitem.h"
 
-class IModelDataWatcher;
-class IModelItemWatcher;
-
 namespace Database {
-
-class ObjectList;
 
 class MI_CORE_EXPORT Object : public Aggregator
 {
-    friend class ObjectList;
-    friend class ScopedDataChange;
-    friend class ScopedParentChange;
-
     enum { RoleCount = 1 };
     enum { ItemCount = 0 };
 
@@ -78,8 +69,6 @@ protected:
     {
         return false;
     }
-
-    ObjectList *list() const;
 
     class MI_CORE_EXPORT ModelData : public IModelData
     {
