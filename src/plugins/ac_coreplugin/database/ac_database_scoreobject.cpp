@@ -25,9 +25,9 @@ namespace Database {
 
 IAggregator *ScoreObject::init()
 {
-    IFactory *factory = Database::Factory::instance();
-    _pitchCurve = factory->createItem(Ac::PitchCurveItem);
-    _controlCurves = factory->createList(Ac::ControlCurveItem);
+    IFactory *factory = Factory::instance();
+    _pitchCurve = factory->create(Ac::PitchCurveItem);
+    _controlCurves = factory->create(Ac::ControlCurveListItem);
     return Object::init();
 }
 

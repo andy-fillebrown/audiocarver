@@ -27,8 +27,7 @@ class MI_CORE_EXPORT IFactory : public IUnknown
 public:
     enum { InterfaceType = I::IFactory };
 
-    virtual IAggregator *createItem(int itemType) = 0;
-    virtual IAggregator *createList(int itemType, int listType = Mi::ListItem) = 0;
+    virtual IAggregator *create(int itemType) = 0;
 
     // IUnknown
     int interfaceType() const

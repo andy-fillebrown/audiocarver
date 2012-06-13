@@ -37,8 +37,7 @@ protected:
     Factory();
 
     // IFactory
-    IAggregator *createItem(int itemType);
-    IAggregator *createList(int itemType, int listType = Mi::ListItem);
+    IAggregator *create(int itemType);
 
     // IUnknown
     void *queryInterface(int interfaceType)

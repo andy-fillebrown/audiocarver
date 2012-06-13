@@ -43,39 +43,41 @@ Factory::Factory()
     ::instance = this;
 }
 
-IAggregator *Factory::createItem(int itemType)
+IAggregator *Factory::create(int itemType)
 {
     switch (itemType) {
     case Ac::ControlCurveItem:
         return (new ControlCurve)->init();
+    case Ac::ControlCurveListItem:
+        return (new ObjectList(Ac::ControlCurveItem))->init();
     case Ac::ControlGridLineItem:
         return (new ControlGridLine)->init();
+    case Ac::ControlGridLineListItem:
+        return (new ObjectList(Ac::ControlGridLineItem))->init();
     case Ac::GridSettingsItem:
         return (new GridSettings)->init();
     case Ac::NoteItem:
         return (new Note)->init();
+    case Ac::NoteListItem:
+        return (new ObjectList(Ac::NoteItem))->init();
     case Ac::PitchCurveItem:
         return (new PitchCurve)->init();
     case Ac::PitchGridLineItem:
         return (new PitchGridLine)->init();
+    case Ac::PitchGridLineListItem:
+        return (new ObjectList(Ac::PitchGridLineItem))->init();
     case Ac::ScoreItem:
         return (new Score)->init();
     case Ac::TimeGridLineItem:
         return (new TimeGridLine)->init();
+    case Ac::TimeGridLineListItem:
+        return (new ObjectList(Ac::TimeGridLineItem))->init();
     case Ac::TrackItem:
         return (new Track)->init();
+    case Ac::TrackListItem:
+        return (new ObjectList(Ac::TrackItem))->init();
     case Ac::ViewSettingsItem:
         return (new ViewSettings)->init();
-    default:
-        return 0;
-    }
-}
-
-IAggregator *Factory::createList(int itemType, int listType)
-{
-    switch (listType) {
-    case Mi::ListItem:
-        return (new ObjectList(itemType))->init();
     default:
         return 0;
     }

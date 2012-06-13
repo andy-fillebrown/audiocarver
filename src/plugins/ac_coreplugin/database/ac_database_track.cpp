@@ -25,7 +25,7 @@ namespace Database {
 
 IAggregator *Track::init()
 {
-    _notes = Database::Factory::instance()->createList(Ac::NoteItem);
+    _notes = Factory::instance()->create(Ac::NoteListItem);
     return ScoreObject::init();
 }
 

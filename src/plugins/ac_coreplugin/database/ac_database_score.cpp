@@ -32,14 +32,14 @@ Score *Score::instance()
 
 IAggregator *Score::init()
 {
-    IFactory *factory = Database::Factory::instance();
-    _tracks = factory->createList(Ac::TrackItem);
-    _timeGridLines = factory->createList(Ac::TimeGridLineItem);
-    _pitchGridLines = factory->createList(Ac::PitchGridLineItem);
-    _controlGridLines = factory->createList(Ac::ControlGridLineItem);
-    _gridSettings = factory->createItem(Ac::GridSettingsItem);
-    _projectSettings = factory->createItem(Ac::ProjectSettingsItem);
-    _viewSettings = factory->createItem(Ac::ViewSettingsItem);
+    IFactory *factory = Factory::instance();
+    _tracks = factory->create(Ac::TrackListItem);
+    _timeGridLines = factory->create(Ac::TimeGridLineListItem);
+    _pitchGridLines = factory->create(Ac::PitchGridLineListItem);
+    _controlGridLines = factory->create(Ac::ControlGridLineListItem);
+    _gridSettings = factory->create(Ac::GridSettingsItem);
+    _projectSettings = factory->create(Ac::ProjectSettingsItem);
+    _viewSettings = factory->create(Ac::ViewSettingsItem);
     ScoreObject::init();
     return ::instance = this;
 }
