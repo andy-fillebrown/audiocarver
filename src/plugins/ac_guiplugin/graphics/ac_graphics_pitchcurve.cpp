@@ -15,39 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_SCOREGUI_H
-#define AC_DATABASE_SCOREGUI_H
+#include "ac_graphics_pitchcurve.h"
 
-#include "ac_database_score.h"
+namespace Graphics {
 
-#include <ac_database_scoreobjectgui.h>
-
-namespace Database {
-
-using namespace ScoreObjectGui;
-
-class ScoreGui : public Score
+IAggregator *PitchCurve::init()
 {
-    friend class ObjectGuiFactory;
+    return Curve::init();
+}
 
-protected:
-    ScoreGui()
-    {}
+IAggregate *PitchCurve::SubEntity::init()
+{
+    return Curve::SubEntity::init();
+}
 
-    IAggregator *init();
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IParentEntity:
-            return appendAggregate((new ParentEntity(this))->init());
-        default:
-            return Score::createAggregate(interfaceType);
-        }
-    }
-};
-
-} // namespace Database
-
-#endif // AC_DATABASE_SCOREGUI_H
+} // namespace Graphics

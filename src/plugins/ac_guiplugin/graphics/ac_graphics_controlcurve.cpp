@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_database_controlcurvegui.h"
+#include "ac_graphics_controlcurve.h"
 
-namespace Database {
+namespace Graphics {
 
-IAggregator *ControlCurveGui::init()
+IAggregator *ControlCurve::init()
 {
-    return ControlCurve::init();
+    return Curve::init();
 }
 
-IAggregate *ControlCurveGui::SubEntity::init()
+IAggregate *ControlCurve::SubEntity::init()
 {
-    return CurveGui::SubEntity::init();
+    return Curve::SubEntity::init();
 }
 
-} // namespace Database
+} // namespace Graphics

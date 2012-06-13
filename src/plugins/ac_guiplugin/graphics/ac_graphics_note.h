@@ -15,32 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_OBJECTGUIFACTORY_H
-#define AC_DATABASE_OBJECTGUIFACTORY_H
+#ifndef AC_GRAPHICS_NOTE_H
+#define AC_GRAPHICS_NOTE_H
 
-#include "ac_database_objectfactory.h"
+#include "ac_graphics_scoreobject.h"
 
-namespace Database {
+namespace Graphics {
 
-class ObjectGuiFactory : public ObjectFactory
+class Note : public ScoreObject
 {
+    friend class GraphicsFactory;
+
 protected:
-    // IDataObjectFactory
-    IAggregator *createObject(int itemType);
+    Note()
+    {}
 
-public:
-    // IUnknown
-    void *queryInterface(int interfaceType)
-    {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
-    }
+    IAggregator *init();
 
-    const void *queryInterface(int interfaceType) const
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
     {
-        return this->isTypeOfInterface(interfaceType) ? this : 0;
+        return ScoreObject::createAggregate(interfaceType);
     }
 };
 
-} // namespace Database
+} // namespace Graphics
 
-#endif // AC_DATABASE_OBJECTGUIFACTORY_H
+#endif // AC_GRAPHICS_NOTE_H

@@ -15,42 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_PITCHCURVEGUI_H
-#define AC_DATABASE_PITCHCURVEGUI_H
+#ifndef AC_GRAPHICS_PITCHCURVE_H
+#define AC_GRAPHICS_PITCHCURVE_H
 
-#include "ac_database_pitchcurve.h"
+#include "ac_graphics_curve.h"
 
-#include "ac_database_curvegui.h"
+namespace Graphics {
 
-namespace Database {
-
-using namespace CurveGui;
-
-class PitchCurveGui : public PitchCurve
+class PitchCurve : public Curve
 {
-    friend class ObjectGuiFactory;
+    friend class GraphicsFactory;
 
 protected:
-    PitchCurveGui()
+    PitchCurve()
     {}
 
     IAggregator *init();
 
-    // Object
-    void parentChanged(const Object *object, Mi::NotificationFlags notificationFlags)
+    class SubEntity : public Curve::SubEntity
     {
-        if (this == object)
-            CurveGui::parentChanged(this);
-//        PitchCurve::parentChanged(object, notificationFlags);
-    }
-
-    class SubEntity : public CurveGui::SubEntity
-    {
-        friend class PitchCurveGui;
+        friend class PitchCurve;
 
     protected:
         SubEntity(Curve *aggregator)
-            :   CurveGui::SubEntity(aggregator)
+            :   Curve::SubEntity(aggregator)
         {}
 
         IAggregate *init();
@@ -66,16 +54,14 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
-        case I::IEntity:
-            return appendAggregate((new Entity(this))->init());
         case I::ISubEntity:
             return appendAggregate((new SubEntity(this))->init());
         default:
-            return PitchCurve::createAggregate(interfaceType);
+            return Curve::createAggregate(interfaceType);
         }
     }
 };
 
-} // namespace Database
+} // namespace Graphics
 
-#endif // AC_DATABASE_PITCHCURVEGUI_H
+#endif // AC_GRAPHICS_PITCHCURVE_H

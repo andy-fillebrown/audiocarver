@@ -15,40 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_CURVEGUI_H
-#define AC_DATABASE_CURVEGUI_H
+#ifndef AC_GRAPHICS_CURVE_H
+#define AC_GRAPHICS_CURVE_H
 
-#include "ac_database_curve.h"
+#include "mi_aggregator.h"
 
 #include "ac_isubentity.h"
 #include "ac_ientity.h"
 
-#include <ac_database_curve.h>
-
-#include <ac_graphicsitem.h>
 #include <ac_iparententity.h>
 
-namespace Database {
+#include <mi_imodelitem.h>
 
-class ControlCurveGui;
-class PitchCurveGui;
+#include <ac_graphicsitem.h>
 
-namespace CurveGui
+namespace Graphics {
+
+class Curve : public Aggregator
 {
-    void parentChanged(Curve *curve);
+protected:
+    class SubEntity;
+
+    Curve()
+    {}
+
+    virtual IAggregator *init();
 
     class Entity : public IEntity
     {
-        friend class Database::ControlCurveGui;
-        friend class Database::PitchCurveGui;
+        friend class Curve;
         friend class SubEntity;
 
         Curve *_aggregator;
         GraphicsCurveItem *_graphicsCurveItem;
-
-    public:
-        static void setGraphicsItemParent(IParentEntity *parent, IEntity *curve);
-        static void clearGraphicsItemParent(IEntity *curve);
 
     protected:
         Entity(Curve *aggregator)
@@ -151,8 +150,19 @@ namespace CurveGui
             return _aggregator;
         }
     };
-}
 
-} // namespace Database
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IEntity:
+            return appendAggregate((new Entity(this))->init());
+        default:
+            return Curve::createAggregate(interfaceType);
+        }
+    }
+};
 
-#endif // AC_DATABASE_CURVEGUI_H
+} // namespace Graphics
+
+#endif // AC_GRAPHICS_CURVE_H

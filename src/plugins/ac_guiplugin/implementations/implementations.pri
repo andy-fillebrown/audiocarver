@@ -1,7 +1,6 @@
 
 SOURCE_FILES = \
 #    editor \
-    database_objectguifactory \
 #    guimainwindowextension \
 
 DIR = $$dirname(_FILE_)

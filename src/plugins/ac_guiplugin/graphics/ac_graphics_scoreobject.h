@@ -15,50 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_SCOREOBJECTGUI_H
-#define AC_DATABASE_SCOREOBJECTGUI_H
+#ifndef AC_GRAPHICS_SCOREOBJECT_H
+#define AC_GRAPHICS_SCOREOBJECT_H
 
-#include "ac_database_scoreobject.h"
+
+#include "mi_aggregator.h"
 
 #include "ac_ichildentity.h"
 #include "ac_iparententity.h"
 
 #include <ac_isubentity.h>
 
+#include <mi_imodellist.h>
+
 class QGraphicsItem;
 
-namespace Database {
+namespace Graphics {
 
-class NoteGui;
-class ScoreGui;
-class TrackGui;
-
-namespace CurveGui {
-
-class Entity;
-
-} // namespace CurveGui
-
-namespace ScoreObjectGui
+class ScoreObject : public Aggregator
 {
-    void parentChanged(ScoreObject *scoreObject);
+protected:
+    ScoreObject()
+    {}
+
+    virtual IAggregator *init();
 
     class ParentEntity : public IParentEntity
     {
-        friend class CurveGui::Entity;
-
-        friend class Database::NoteGui;
-        friend class Database::ScoreGui;
-        friend class Database::TrackGui;
+        friend class ScoreObject;
 
         ScoreObject *_aggregator;
         QMap<int, QGraphicsItem*> _mainGraphicsItems;
         QMap<int, QGraphicsItem*> _unitXGraphicsItems;
         QMap<int, QGraphicsItem*> _unitYGraphicsItems;
-
-    public:
-        static void setGraphicsItems(IParentEntity *parent, IParentEntity *child);
-        static void clearGraphicsItems(IParentEntity *child);
 
     protected:
         ParentEntity(ScoreObject *aggregator)
@@ -151,8 +140,7 @@ namespace ScoreObjectGui
 
     class ChildEntity : public IChildEntity
     {
-        friend class Database::NoteGui;
-        friend class Database::TrackGui;
+        friend class ScoreObject;
 
         ScoreObject *_aggregator;
 
@@ -180,8 +168,21 @@ namespace ScoreObjectGui
             return _aggregator;
         }
     };
-}
 
-} // namespace Database
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IParentEntity:
+            return appendAggregate((new ParentEntity(this))->init());
+        case I::IChildEntity:
+            return appendAggregate((new ChildEntity(this))->init());
+        default:
+            return 0;
+        }
+    }
+};
 
-#endif // AC_DATABASE_SCOREOBJECTGUI_H
+} // namespace Graphics
+
+#endif // AC_GRAPHICS_SCOREOBJECT_H

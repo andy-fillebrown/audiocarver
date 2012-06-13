@@ -15,16 +15,16 @@
 **
 **************************************************************************/
 
-#include "ac_database_scoregui.h"
+#include "ac_graphics_track.h"
 
-namespace Database {
+namespace Graphics {
 
-IAggregator *ScoreGui::init()
+IAggregator *Track::init()
 {
-    return Score::init();
+    return ScoreObject::init();
 }
 
-} // namespace Database
+} // namespace Graphics
 
 
 

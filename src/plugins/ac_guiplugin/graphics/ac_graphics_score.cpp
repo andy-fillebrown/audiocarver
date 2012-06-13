@@ -15,16 +15,19 @@
 **
 **************************************************************************/
 
-#include "ac_database_notegui.h"
+#include "ac_graphics_score.h"
 
-namespace Database {
+namespace Graphics {
 
-IAggregator *NoteGui::init()
+IAggregator *Score::init()
 {
-    return Note::init();
+    return ScoreObject::init();
 }
 
-} // namespace Database
+} // namespace Graphics
+
+
+
 
 //#include "ac_note.h"
 

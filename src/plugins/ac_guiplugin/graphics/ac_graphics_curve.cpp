@@ -15,26 +15,30 @@
 **
 **************************************************************************/
 
-#include "ac_database_objectguifactory.h"
+#include "ac_graphics_curve.h"
 
-#include <ac_database_controlcurvegui.h>
-#include <ac_database_notegui.h>
-#include <ac_database_pitchcurvegui.h>
+namespace Graphics {
 
-namespace Database {
-
-IAggregator *ObjectGuiFactory::createObject(int itemType)
+IAggregator *Curve::init()
 {
-    switch (itemType) {
-    case Ac::ControlCurveItem:
-        return (new ControlCurveGui)->init();
-    case Ac::NoteItem:
-        return (new NoteGui)->init();
-    case Ac::PitchCurveItem:
-        return (new PitchCurveGui)->init();
-    default:
-        return ObjectFactory::createObject(itemType);
-    }
+    return this;
 }
 
-} // namespace Database
+IAggregate *Curve::Entity::init()
+{
+    _graphicsCurveItem = new GraphicsCurveItem;
+    _graphicsCurveItem->setEntity(this);
+    return this;
+}
+
+Curve::Entity::~Entity()
+{
+    delete _graphicsCurveItem;
+}
+
+IAggregate *Curve::SubEntity::init()
+{
+    return this;
+}
+
+} // namespace Graphics

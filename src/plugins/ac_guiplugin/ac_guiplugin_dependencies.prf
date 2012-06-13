@@ -3,9 +3,9 @@ load(../mi_guiplugin/mi_guiplugin.prf)
 load(../ac_coreplugin/ac_coreplugin.prf)
 
 DIRS = \
-    database \
 #    delegates \
 #    dialogs \
+    graphics \
     graphicsview \
     implementations \
     interfaces \

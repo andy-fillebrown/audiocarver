@@ -15,18 +15,35 @@
 **
 **************************************************************************/
 
-#include "ac_database_pitchcurvegui.h"
+#ifndef AC_GRAPHICS_SCORE_H
+#define AC_GRAPHICS_SCORE_H
 
-namespace Database {
+#include "ac_graphics_scoreobject.h"
 
-IAggregator *PitchCurveGui::init()
+namespace Graphics {
+
+class Score : public ScoreObject
 {
-    return PitchCurve::init();
-}
+    friend class GraphicsFactory;
 
-IAggregate *PitchCurveGui::SubEntity::init()
-{
-    return CurveGui::SubEntity::init();
-}
+protected:
+    Score()
+    {}
 
-} // namespace Database
+    IAggregator *init();
+
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IChildEntity:
+            return 0;
+        default:
+            return ScoreObject::createAggregate(interfaceType);
+        }
+    }
+};
+
+} // namespace Graphics
+
+#endif // AC_GRAPHICS_SCORE_H

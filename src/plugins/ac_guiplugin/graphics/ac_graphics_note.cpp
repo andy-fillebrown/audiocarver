@@ -15,16 +15,16 @@
 **
 **************************************************************************/
 
-#include "ac_database_trackgui.h"
+#include "ac_graphics_note.h"
 
-namespace Database {
+namespace Graphics {
 
-IAggregator *TrackGui::init()
+IAggregator *Note::init()
 {
-    return Track::init();
+    return Note::init();
 }
 
-} // namespace Database
+} // namespace Graphics
 
 
 
