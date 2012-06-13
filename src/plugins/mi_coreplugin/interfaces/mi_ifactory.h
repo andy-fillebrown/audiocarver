@@ -15,28 +15,31 @@
 **
 **************************************************************************/
 
-#include "mi_idatabaseobjectfactory.h"
+#ifndef MI_IFACTORY_H
+#define MI_IFACTORY_H
 
-IDatabaseObjectFactory *instance = 0;
+#include "mi_iunknown.h"
 
-class InstanceDeleter
+class IAggregator;
+
+class MI_CORE_EXPORT IFactory : public IUnknown
 {
 public:
-    ~InstanceDeleter()
+    enum { InterfaceType = I::IFactory };
+
+    virtual IAggregator *createItem(int itemType) = 0;
+    virtual IAggregator *createList(int itemType, int listType = Mi::ListItem) = 0;
+
+    // IUnknown
+    int interfaceType() const
     {
-        delete ::instance;
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
     }
 };
 
-static InstanceDeleter instanceDeleter;
-
-IDatabaseObjectFactory::IDatabaseObjectFactory()
-{
-    delete ::instance;
-    ::instance = this;
-}
-
-IDatabaseObjectFactory *IDatabaseObjectFactory::instance()
-{
-    return ::instance;
-}
+#endif // MI_IFACTORY_H

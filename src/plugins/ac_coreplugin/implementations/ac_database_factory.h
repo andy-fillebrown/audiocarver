@@ -15,23 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_OBJECTFACTORY_H
-#define AC_DATABASE_OBJECTFACTORY_H
+#ifndef AC_DATABASE_FACTORY_H
+#define AC_DATABASE_FACTORY_H
 
-#include "mi_idatabaseobjectfactory.h"
+#include "mi_ifactory.h"
 
 #include <ac_coreglobal.h>
 
+class AcCorePlugin;
+
 namespace Database {
 
-class AC_CORE_EXPORT ObjectFactory : public IDatabaseObjectFactory
+class Factory : public IFactory
 {
-protected:
-    // IDataObjectFactory
-    IAggregator *createObject(int itemType);
-    IAggregator *createObjectList(int itemType, int listType = Mi::ListItem);
+    friend class ::AcCorePlugin;
 
 public:
+    static IFactory *instance();
+
+protected:
+    Factory();
+
+    // IFactory
+    IAggregator *createItem(int itemType);
+    IAggregator *createList(int itemType, int listType = Mi::ListItem);
+
     // IUnknown
     void *queryInterface(int interfaceType)
     {
@@ -50,4 +58,4 @@ public:
 
 } // namespace Database
 
-#endif // AC_DATABASE_OBJECTFACTORY_H
+#endif // AC_DATABASE_FACTORY_H

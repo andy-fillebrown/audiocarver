@@ -17,7 +17,7 @@
 
 #include "ac_coreplugin.h"
 
-#include <ac_database_objectfactory.h>
+#include <ac_database_factory.h>
 //#include <ac_database.h>
 //#include <ac_model.h>
 
@@ -78,7 +78,7 @@ bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Mi::appendItemDataRole(Ac::PitchSnapRole, "pitchSnap");
     Mi::appendItemDataRole(Ac::ControlSnapRole, "controlSnap");
 
-    new Database::ObjectFactory;
+    new Database::Factory;
 //    addAutoReleasedObject(new FilerFactory);
 //    addAutoReleasedObject(new Database);
 //    addAutoReleasedObject(new Model);
@@ -97,7 +97,7 @@ Q_EXPORT_PLUGIN(AcCorePlugin)
 
 #ifdef QT_DEBUG
 
-#include <mi_idatabaseobjectfactory.h>
+#include <mi_ifactory.h>
 #include <mi_imodeldata.h>
 #include <mi_imodelitem.h>
 #include <mi_iobject.h>
@@ -109,7 +109,7 @@ bool test_1()
 {
     // Make sure querying aggregators succeeds.
     // Aggregators should create aggregates on demand.
-    IAggregator *control_curve = IDatabaseObjectFactory::instance()->createObject(Ac::ControlCurveItem);
+    IAggregator *control_curve = Database::Factory::instance()->createItem(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
@@ -120,7 +120,7 @@ bool test_2()
 {
     // Make sure querying constant aggregators fails.
     // Constant aggregators should not create aggregates on demand.
-    const IAggregator *control_curve = IDatabaseObjectFactory::instance()->createObject(Ac::ControlCurveItem);
+    const IAggregator *control_curve = Database::Factory::instance()->createItem(Ac::ControlCurveItem);
     CHECK(control_curve);
     const IModelItem *item = query<IModelItem>(control_curve);
     CHECK(!item);
@@ -131,7 +131,7 @@ bool test_3()
 {
     // Make sure IModelData::item() succeeds.
     // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
-    IAggregator *control_curve = IDatabaseObjectFactory::instance()->createObject(Ac::ControlCurveItem);
+    IAggregator *control_curve = Database::Factory::instance()->createItem(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -143,7 +143,7 @@ bool test_3()
 bool test_4()
 {
     // Make sure setting item name succeeds.
-    IAggregator *control_curve = IDatabaseObjectFactory::instance()->createObject(Ac::ControlCurveItem);
+    IAggregator *control_curve = Database::Factory::instance()->createItem(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);

@@ -24,7 +24,7 @@ namespace Database {
 
 class AC_CORE_EXPORT PitchCurve : public Curve
 {
-    friend class ObjectFactory;
+    friend class Factory;
 
 protected:
     PitchCurve()

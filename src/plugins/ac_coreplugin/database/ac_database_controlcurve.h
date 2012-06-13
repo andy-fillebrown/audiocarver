@@ -24,7 +24,7 @@ namespace Database {
 
 class AC_CORE_EXPORT ControlCurve : public Curve
 {
-    friend class ObjectFactory;
+    friend class Factory;
 
     enum { RoleCount = 1 };
 

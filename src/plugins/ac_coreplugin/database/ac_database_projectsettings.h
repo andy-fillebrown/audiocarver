@@ -26,7 +26,7 @@ namespace Database {
 
 class AC_CORE_EXPORT ProjectSettings : public Object
 {
-    friend class ObjectFactory;
+    friend class Factory;
 
     enum { RoleCount = 3 };
 

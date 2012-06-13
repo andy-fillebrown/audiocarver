@@ -1,7 +1,7 @@
 
 SOURCE_PAIRS = \
 #    ac_database \
-    ac_database_objectfactory \
+    ac_database_factory \
 #    ac_factory \
 #    ac_model \
 

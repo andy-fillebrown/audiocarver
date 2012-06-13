@@ -17,7 +17,8 @@
 
 #include "ac_database_score.h"
 
-#include <mi_idatabaseobjectfactory.h>
+#include <ac_database_factory.h>
+
 #include <mi_scopeddatachange.h>
 
 static Database::Score *instance = 0;
@@ -31,14 +32,14 @@ Score *Score::instance()
 
 IAggregator *Score::init()
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _tracks = factory->createObjectList(Ac::TrackItem);
-    _timeGridLines = factory->createObjectList(Ac::TimeGridLineItem);
-    _pitchGridLines = factory->createObjectList(Ac::PitchGridLineItem);
-    _controlGridLines = factory->createObjectList(Ac::ControlGridLineItem);
-    _gridSettings = factory->createObject(Ac::GridSettingsItem);
-    _projectSettings = factory->createObject(Ac::ProjectSettingsItem);
-    _viewSettings = factory->createObject(Ac::ViewSettingsItem);
+    IFactory *factory = Database::Factory::instance();
+    _tracks = factory->createList(Ac::TrackItem);
+    _timeGridLines = factory->createList(Ac::TimeGridLineItem);
+    _pitchGridLines = factory->createList(Ac::PitchGridLineItem);
+    _controlGridLines = factory->createList(Ac::ControlGridLineItem);
+    _gridSettings = factory->createItem(Ac::GridSettingsItem);
+    _projectSettings = factory->createItem(Ac::ProjectSettingsItem);
+    _viewSettings = factory->createItem(Ac::ViewSettingsItem);
     ScoreObject::init();
     return ::instance = this;
 }

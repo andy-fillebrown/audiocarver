@@ -17,14 +17,15 @@
 
 #include "ac_database_track.h"
 
-#include <mi_idatabaseobjectfactory.h>
+#include <ac_database_factory.h>
+
 #include <mi_scopeddatachange.h>
 
 namespace Database {
 
 IAggregator *Track::init()
 {
-    _notes = IDatabaseObjectFactory::instance()->createObjectList(Ac::NoteItem);
+    _notes = Database::Factory::instance()->createList(Ac::NoteItem);
     return ScoreObject::init();
 }
 
@@ -44,6 +45,9 @@ IAggregate *Track::ModelItem::init()
 }
 
 } // namespace Database
+
+
+
 
 //#include <ac_graphicsitem.h>
 //#include <ac_note.h>

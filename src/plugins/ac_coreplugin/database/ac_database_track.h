@@ -24,7 +24,7 @@ namespace Database {
 
 class AC_CORE_EXPORT Track : public ScoreObject
 {
-    friend class ObjectFactory;
+    friend class Factory;
 
     enum { RoleCount = 4 };
     enum { ItemCount = 1 };

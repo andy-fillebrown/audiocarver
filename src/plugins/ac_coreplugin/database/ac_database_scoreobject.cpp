@@ -17,16 +17,17 @@
 
 #include "ac_database_scoreobject.h"
 
-#include <mi_idatabaseobjectfactory.h>
+#include <ac_database_factory.h>
+
 #include <mi_scopeddatachange.h>
 
 namespace Database {
 
 IAggregator *ScoreObject::init()
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _pitchCurve = factory->createObject(Ac::PitchCurveItem);
-    _controlCurves = factory->createObjectList(Ac::ControlCurveItem);
+    IFactory *factory = Database::Factory::instance();
+    _pitchCurve = factory->createItem(Ac::PitchCurveItem);
+    _controlCurves = factory->createList(Ac::ControlCurveItem);
     return Object::init();
 }
 

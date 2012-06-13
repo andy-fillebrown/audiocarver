@@ -26,7 +26,7 @@ namespace Database {
 
 class AC_CORE_EXPORT GridSettings : public Object
 {
-    friend class ObjectFactory;
+    friend class Factory;
 
     enum { RoleCount = 5 };
 

@@ -15,29 +15,63 @@
 **
 **************************************************************************/
 
-#include "ac_database_objectfactory.h"
+#include "ac_database_factory.h"
 
 #include <ac_database_controlcurve.h>
+#include <ac_database_gridline.h>
+#include <ac_database_gridsettings.h>
 #include <ac_database_note.h>
 #include <ac_database_pitchcurve.h>
+#include <ac_database_projectsettings.h>
+#include <ac_database_score.h>
+#include <ac_database_track.h>
+#include <ac_database_viewsettings.h>
+
+static IFactory *instance = 0;
 
 namespace Database {
 
-IAggregator *ObjectFactory::createObject(int itemType)
+IFactory *Factory::instance()
+{
+    return ::instance;
+}
+
+Factory::Factory()
+{
+    if (::instance)
+        delete ::instance;
+    ::instance = this;
+}
+
+IAggregator *Factory::createItem(int itemType)
 {
     switch (itemType) {
     case Ac::ControlCurveItem:
         return (new ControlCurve)->init();
+    case Ac::ControlGridLineItem:
+        return (new ControlGridLine)->init();
+    case Ac::GridSettingsItem:
+        return (new GridSettings)->init();
     case Ac::NoteItem:
         return (new Note)->init();
     case Ac::PitchCurveItem:
         return (new PitchCurve)->init();
+    case Ac::PitchGridLineItem:
+        return (new PitchGridLine)->init();
+    case Ac::ScoreItem:
+        return (new Score)->init();
+    case Ac::TimeGridLineItem:
+        return (new TimeGridLine)->init();
+    case Ac::TrackItem:
+        return (new Track)->init();
+    case Ac::ViewSettingsItem:
+        return (new ViewSettings)->init();
     default:
         return 0;
     }
 }
 
-IAggregator *ObjectFactory::createObjectList(int itemType, int listType)
+IAggregator *Factory::createList(int itemType, int listType)
 {
     switch (listType) {
     case Mi::ListItem:
