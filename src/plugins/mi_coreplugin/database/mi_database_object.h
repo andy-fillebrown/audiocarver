@@ -33,6 +33,7 @@ class MI_CORE_EXPORT Object : public Aggregator
     QString _name;
 
     Object *_parent;
+    QList<IModelDataWatcher*> _dataWatchers;
 
 protected:
     enum {
@@ -64,6 +65,11 @@ protected:
     }
 
     void setParent(Object *parent);
+
+    QList<IModelDataWatcher*> *dataWatchers()
+    {
+        return &_dataWatchers;
+    }
 
     virtual bool isList() const
     {
@@ -139,17 +145,20 @@ protected:
 
         const QList<IModelDataWatcher*> *watchers() const
         {
-            return 0;
+            return a()->dataWatchers();
         }
 
         void appendWatcher(IModelDataWatcher *watcher)
         {
-            Q_ASSERT(0);
+            QList<IModelDataWatcher*> *watchers = a()->dataWatchers();
+            if (watchers->contains(watcher))
+                return;
+            watchers->append(watcher);
         }
 
         void removeWatcher(IModelDataWatcher *watcher)
         {
-            Q_ASSERT(0);
+            a()->dataWatchers()->removeOne(watcher);
         }
 
         // IAggregate
