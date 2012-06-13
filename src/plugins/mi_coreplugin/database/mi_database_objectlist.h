@@ -114,16 +114,16 @@ protected:
         ObjectList *_aggregator;
 
     protected:
+        ObjectList *a() const
+        {
+            return _aggregator;
+        }
+
         ModelList(ObjectList *aggregator)
             :   _aggregator(aggregator)
         {}
 
         virtual IAggregate *init();
-
-        ObjectList *a() const
-        {
-            return _aggregator;
-        }
 
         // IModelList
         int listType() const
