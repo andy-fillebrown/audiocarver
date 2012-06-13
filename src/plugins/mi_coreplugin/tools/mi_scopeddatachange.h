@@ -18,8 +18,7 @@
 #ifndef MI_SCOPEDDATACHANGE_H
 #define MI_SCOPEDDATACHANGE_H
 
-#include <mi_database_object.h>
-
+#include <mi_iaggregator.h>
 #include <mi_imodel.h>
 #include <mi_imodeldata.h>
 #include <mi_imodeldatawatcher.h>
@@ -29,21 +28,23 @@ namespace Database {
 class ScopedDataChange
 {
     const IModelData *_data;
-    const QList<IModelDataWatcher*> &_watchers;
+    const QList<IModelDataWatcher*> *_watchers;
     const int _role;
     const Mi::NotificationFlags _notificationFlags;
 
 public:
-    ScopedDataChange(Object *object, int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
-        :   _data(const_query<IModelData>(object))
-        ,   _watchers(object->dataWatchers())
+    ScopedDataChange(const IAggregator *aggregator, int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+        :   _data(const_query<IModelData>(aggregator))
+        ,   _watchers(_data ? _data->watchers() : 0)
         ,   _role(role)
         ,   _notificationFlags(notificationFlags)
     {
         if (!_data)
             return;
-        foreach (IModelDataWatcher *watcher, _watchers)
-            watcher->dataAboutToBeChanged(_data, _role);
+        if (_watchers) {
+            foreach (IModelDataWatcher *watcher, *_watchers)
+                watcher->dataAboutToBeChanged(_data, _role);
+        }
         if (Mi::NotifyModel & _notificationFlags) {
             IModel *model = IModel::instance();
             if (model)
@@ -55,8 +56,10 @@ public:
     {
         if (!_data)
             return;
-        foreach (IModelDataWatcher *watcher, _watchers)
-            watcher->dataChanged(_data, _role);
+        if (_watchers) {
+            foreach (IModelDataWatcher *watcher, *_watchers)
+                watcher->dataChanged(_data, _role);
+        }
         if (Mi::NotifyModel & _notificationFlags) {
             IModel *model = IModel::instance();
             if (model)

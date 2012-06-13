@@ -191,17 +191,19 @@ protected:
             return 0;
         }
 
+        QList<IModelItemWatcher*> *watchers() const
+        {
+            return 0;
+        }
+
         void appendWatcher(IModelItemWatcher *watcher)
         {
-            QList<IModelItemWatcher*> &watchers = a()->itemWatchers();
-            if (watchers.contains(watcher))
-                return;
-            watchers.append(watcher);
+            Q_ASSERT(0);
         }
 
         void removeWatcher(IModelItemWatcher *watcher)
         {
-            a()->itemWatchers().removeOne(watcher);
+            Q_ASSERT(0);
         }
 
         // IAggregate

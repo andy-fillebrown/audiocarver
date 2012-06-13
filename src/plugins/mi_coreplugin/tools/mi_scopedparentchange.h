@@ -18,8 +18,7 @@
 #ifndef MI_SCOPEDPARENTCHANGE_H
 #define MI_SCOPEDPARENTCHANGE_H
 
-#include <mi_database_object.h>
-
+#include <mi_iaggregator.h>
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 #include <mi_imodelitemwatcher.h>
@@ -29,19 +28,21 @@ namespace Database {
 class ScopedParentChange
 {
     const IModelItem *_item;
-    const QList<IModelItemWatcher*> &_watchers;
+    const QList<IModelItemWatcher*> *_watchers;
     Mi::NotificationFlags _notificationFlags;
 
 public:
-    ScopedParentChange(Object *object, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
-        :   _item(query<IModelItem>(object))
-        ,   _watchers(object->itemWatchers())
+    ScopedParentChange(const IAggregator *aggregator, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+        :   _item(const_query<IModelItem>(aggregator))
+        ,   _watchers(_item ? _item->watchers() : 0)
         ,   _notificationFlags(notificationFlags)
     {
         if (!_item)
             return;
-        foreach (IModelItemWatcher *watcher, _watchers)
-            watcher->parentAboutToBeChanged(_item);
+        if (_watchers) {
+            foreach (IModelItemWatcher *watcher, *_watchers)
+                watcher->parentAboutToBeChanged(_item);
+        }
         if (Mi::NotifyModel & _notificationFlags) {
             IModel *model = IModel::instance();
             if (model)
@@ -53,8 +54,10 @@ public:
     {
         if (!_item)
             return;
-        foreach (IModelItemWatcher *watcher, _watchers)
-            watcher->parentChanged(_item);
+        if (_watchers) {
+            foreach (IModelItemWatcher *watcher, *_watchers)
+                watcher->parentChanged(_item);
+        }
         if (Mi::NotifyModel & _notificationFlags) {
             IModel *model = IModel::instance();
             if (model)
