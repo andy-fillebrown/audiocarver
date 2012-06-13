@@ -36,7 +36,7 @@ public:
     virtual QVariant getVariant(int role) const = 0;
     virtual bool setVariant(const QVariant &data, int role) = 0;
     virtual Qt::ItemFlags flags() const = 0;
-    virtual QList<IModelDataWatcher*> *watchers() const = 0;
+    virtual const QList<IModelDataWatcher*> *watchers() const = 0;
     virtual void appendWatcher(IModelDataWatcher *watcher) = 0;
     virtual void removeWatcher(IModelDataWatcher *watcher) = 0;
 

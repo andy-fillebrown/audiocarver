@@ -196,7 +196,7 @@ protected:
             return 0;
         }
 
-        QList<IModelItemWatcher*> *watchers() const
+        const QList<IModelItemWatcher*> *watchers() const
         {
             return 0;
         }

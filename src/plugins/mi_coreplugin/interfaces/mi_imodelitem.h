@@ -37,7 +37,7 @@ public:
     virtual IModelItem *at(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelList *findList(int listType) const = 0;
-    virtual QList<IModelItemWatcher*> *watchers() const = 0;
+    virtual const QList<IModelItemWatcher*> *watchers() const = 0;
     virtual void appendWatcher(IModelItemWatcher *watcher) = 0;
     virtual void removeWatcher(IModelItemWatcher *watcher) = 0;
 

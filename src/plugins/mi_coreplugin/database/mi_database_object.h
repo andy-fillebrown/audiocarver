@@ -137,7 +137,7 @@ protected:
             }
         }
 
-        QList<IModelDataWatcher*> *watchers() const
+        const QList<IModelDataWatcher*> *watchers() const
         {
             return 0;
         }
@@ -223,7 +223,7 @@ protected:
             return 0;
         }
 
-        QList<IModelItemWatcher*> *watchers() const
+        const QList<IModelItemWatcher*> *watchers() const
         {
             return 0;
         }
