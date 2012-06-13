@@ -22,11 +22,10 @@
 
 class IUnknown
 {
-protected:
+public:
     virtual ~IUnknown()
     {}
 
-public:
     virtual int interfaceType() const = 0;
     virtual bool isTypeOfInterface(int interfaceType) const = 0;
     virtual void *queryInterface(int interfaceType) = 0;
