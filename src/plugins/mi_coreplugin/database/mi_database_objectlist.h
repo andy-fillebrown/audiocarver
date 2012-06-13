@@ -44,12 +44,22 @@ protected:
         return _listType;
     }
 
+    QList<IAggregator*> &objects()
+    {
+        return _objects;
+    }
+
+    const QList<IAggregator*> &objects() const
+    {
+        return _objects;
+    }
+
     bool contains(const QString &name) const
     {
-        const QList<Object*> *objects = this->objects();
-        QList<Object*>::ConstIterator end = objects->constEnd();
-        for (QList<Object*>::ConstIterator i = objects->constBegin();  i != end;  ++i)
-            if ((*i)->name() == name)
+        const QList<IAggregator*> &objects = this->objects();
+        QList<IAggregator*>::ConstIterator end = objects.constEnd();
+        for (QList<IAggregator*>::ConstIterator i = objects.constBegin();  i != end;  ++i)
+            if (query<IModelData>(*i)->get<QString>(Mi::NameRole) == name)
                 return true;
         return false;
     }
@@ -64,41 +74,33 @@ protected:
         return _objects.at(i);
     }
 
-    void insert(int i, Object *object)
+    void insert(int i, IAggregator *object)
     {
-        ObjectList *old_list = object->list();
+        IModelItem *item = query<IModelItem>(object);
+        IModelList *old_list = query<IModelList>(item->parent());
         if (old_list) {
-            if (old_list == this)
+            if (old_list == query<IModelList>(this))
                 return;
-            old_list->_objects.removeOne(object);
+            old_list->remove(item);
         }
-        const QString name = object->name();
+        IModelData *data = query<IModelData>(object);
+        const QString name = data->get<QString>(Mi::NameRole);
         if (!name.isEmpty()) {
             int suffix = 0;
             QString new_name = name;
             while (contains(new_name))
                 new_name = QString("%1.%2").arg(name).arg(++suffix);
             if (name != new_name)
-                object->setName(new_name);
+                data->set(new_name, Mi::NameRole);
         }
         _objects.insert(i, object);
-        object->setParent(this);
+        item->setParent(query<IModelItem>(this));
     }
 
     // Object
     bool isList() const
     {
         return true;
-    }
-
-    QList<Object*> *objects()
-    {
-        return reinterpret_cast<QList<Object*>*>(&_objects);
-    }
-
-    const QList<Object*> *objects() const
-    {
-        return reinterpret_cast<const QList<Object*>*>(&_objects);
     }
 
     class ModelList : public IModelList
@@ -137,10 +139,10 @@ protected:
 
         void removeAt(int i)
         {
-            QList<Object*> *objects = a()->objects();
-            Object *object = objects->at(i);
-            object->setParent(0);
-            objects->removeAt(i);
+            QList<IAggregator*> &objects = a()->objects();
+            IAggregator *object = objects.at(i);
+            query<IModelItem>(object)->setParent(0);
+            objects.removeAt(i);
         }
 
         void clear()
@@ -164,19 +166,24 @@ protected:
             return query<IModelItem>(a()->parent());
         }
 
+        void setParent(IModelItem *parent)
+        {
+            a()->setParent(dynamic_cast<Object*>(query<IAggregator>(parent)));
+        }
+
         int count() const
         {
-            return a()->objects()->count();
+            return a()->objects().count();
         }
 
         int indexOf(const IModelItem *item) const
         {
-            return a()->objects()->indexOf(dynamic_cast<Object*>(item->aggregator()));
+            return a()->objects().indexOf(item->aggregator());
         }
 
         IModelItem *at(int i) const
         {
-            return query<IModelItem>(a()->objects()->at(i));
+            return query<IModelItem>(a()->objects().at(i));
         }
 
         IModelItem *findItem(int itemType) const
@@ -226,11 +233,11 @@ protected:
 
     void clear()
     {
-        QList<Object*> *objects = this->objects();
-        QList<Object*>::ConstIterator end = objects->end();
-        for (QList<Object*>::ConstIterator i = objects->begin();  i != end;  ++i) {
-            Object *object = *i;
-            object->setParent(0);
+        QList<IAggregator*> &objects = this->objects();
+        QList<IAggregator*>::ConstIterator end = objects.end();
+        for (QList<IAggregator*>::ConstIterator i = objects.begin();  i != end;  ++i) {
+            IAggregator *object = *i;
+            query<IModelItem>(object)->setParent(0);
             delete object;
         }
         _objects.clear();

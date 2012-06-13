@@ -202,6 +202,11 @@ protected:
             return query<IModelItem>(a()->parent());
         }
 
+        void setParent(IModelItem *parent)
+        {
+            a()->setParent(dynamic_cast<Object*>(query<IAggregator>(parent)));
+        }
+
         int count() const
         {
             return 0;
