@@ -1,6 +1,5 @@
 
 SOURCE_FILES = \
-#    ifiler \
 #    iplaycursor \
     ipoints \
 #    iaudioengine \

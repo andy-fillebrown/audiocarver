@@ -26,10 +26,6 @@ namespace I {
 
 enum AcCoreInterfaces {
     IPoints = MiCoreInterfaceCount,
-    IReader,
-    IWriter,
-    IFileFiler,
-    ICopyFiler,
     AcCoreInterfaceCount
 };
 

@@ -27,7 +27,9 @@ namespace I {
 enum MiCoreInterfaces {
     IAggregate,
     IAggregator,
+    ICopyFiler,
     IFactory,
+    IFileFiler,
     IModel,
     IModelData,
     IModelDataWatcher,
@@ -36,6 +38,8 @@ enum MiCoreInterfaces {
     IModelList,
     IObject,
     IOrphanage,
+    IReader,
+    IWriter,
     MiCoreInterfaceCount
 };
 
