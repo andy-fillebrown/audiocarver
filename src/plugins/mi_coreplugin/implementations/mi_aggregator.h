@@ -61,6 +61,7 @@ protected:
     }
 
 public:
+    // IUnknown
     void *queryInterface(int interfaceType);
     const void *queryInterface(int interfaceType) const;
 };

@@ -18,6 +18,7 @@
 #include "mi_aggregator.h"
 
 #include <mi_iaggregate.h>
+
 #include <mi_iorphanage.h>
 
 Aggregator::Aggregator()

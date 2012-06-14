@@ -26,7 +26,11 @@ class MiCorePlugin : public ExtensionSystem::IPlugin
 
 public:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+
+    void extensionsInitialized()
+    {}
+
+    ~MiCorePlugin();
 };
 
 #endif // MI_COREPLUGIN_H

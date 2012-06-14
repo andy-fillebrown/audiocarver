@@ -21,12 +21,7 @@
 
 #include <pluginmanager.h>
 
-#include <QMetaType>
 #include <QtPlugin>
-
-void test()
-{
-}
 
 bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
@@ -37,7 +32,6 @@ bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessag
     Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
     Mi::appendItemDataRole(Mi::NameRole, "name");
 
-    test();
 
     return true;
 }
