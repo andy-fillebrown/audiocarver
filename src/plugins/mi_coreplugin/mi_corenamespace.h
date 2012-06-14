@@ -28,6 +28,7 @@ enum MiCoreInterfaces {
     IAggregate,
     IAggregator,
     ICopyFiler,
+    IDatabase,
     IFactory,
     IFileFiler,
     IModel,

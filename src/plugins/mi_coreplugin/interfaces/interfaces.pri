@@ -1,6 +1,6 @@
 
 SOURCE_FILES = \
-#    idatabase \
+    idatabase \
     ifactory \
     ifiler \
     iaggregate \

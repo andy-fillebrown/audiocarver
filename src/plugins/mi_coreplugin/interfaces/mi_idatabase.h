@@ -18,18 +18,12 @@
 #ifndef MI_IDATABASE_H
 #define MI_IDATABASE_H
 
-#include <mi_coreglobal.h>
+#include "mi_iunknown.h"
 
-#include <QObject>
-
-class MI_CORE_EXPORT IDatabase : public QObject
+class IDatabase : public IUnknown
 {
-    Q_OBJECT
-
 public:
-    IDatabase();
-
-    static IDatabase *instance();
+    enum { InterfaceType = I::IDatabase };
 
     virtual const QString &fileExtension() const = 0;
     virtual const QString &fileFilter() const = 0;
@@ -37,15 +31,20 @@ public:
     virtual void reset() = 0;
     virtual void read(const QString &fileName) = 0;
     virtual void write(const QString &fileName) = 0;
-
     virtual bool isReading() const = 0;
 
-signals:
-    void databaseReset();
-    void databaseAboutToBeRead();
-    void databaseRead();
-    void databaseAboutToBeWritten();
-    void databaseWritten();
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    virtual bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return false;
+    }
 };
 
 #endif // MI_IDATABASE_H
