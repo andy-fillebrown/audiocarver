@@ -17,6 +17,7 @@
 
 #include "mi_database_object.h"
 
+#include <mi_idatabase.h>
 #include <mi_iorphanage.h>
 
 #include <mi_database_objectlist.h>
@@ -60,7 +61,7 @@ void Object::setParent(Object *parent)
     if (_parent == parent)
         return;
     ScopedParentChange parent_change(this);
-    IOrphanage *orphanage = IOrphanage::instance();
+    IOrphanage *orphanage = query<IOrphanage>(IDatabase::instance());
     if (orphanage) {
         if (!_parent)
             orphanage->remove(this);

@@ -15,29 +15,43 @@
 **
 **************************************************************************/
 
-#include "mi_aggregator.h"
+#include "mi_database.h"
 
 #include <mi_iaggregate.h>
 
-#include <mi_idatabase.h>
-#include <mi_iorphanage.h>
+static IDatabase *instance = 0;
 
-Aggregator::Aggregator()
+IDatabase *IDatabase::instance()
 {
-    IOrphanage *orphanage = query<IOrphanage>(IDatabase::instance());
-    if (orphanage)
-        orphanage->append(this);
+    return ::instance;
 }
 
-Aggregator::~Aggregator()
+namespace Mi {
+
+void Database::destroy()
 {
-    IOrphanage *orphanage = query<IOrphanage>(IDatabase::instance());
-    if (orphanage)
-        orphanage->remove(this);
+    delete ::instance;
+    ::instance = 0;
+}
+
+Database::Database()
+{
+    if (::instance)
+        delete ::instance;
+    ::instance = this;
+}
+
+IAggregator *Database::init()
+{
+    return this;
+}
+
+Database::~Database()
+{
     clear();
 }
 
-IAggregate *Aggregator::appendAggregate(IAggregate *aggregate)
+IAggregate *Database::appendAggregate(IAggregate *aggregate)
 {
     const int interface_type = aggregate->interfaceType();
     if (!_aggregates.contains(interface_type))
@@ -45,13 +59,20 @@ IAggregate *Aggregator::appendAggregate(IAggregate *aggregate)
     return aggregate;
 }
 
-void Aggregator::removeAggregate(IAggregate *aggregate)
+void Database::removeAggregate(IAggregate *aggregate)
 {
     _aggregates.remove(aggregate->interfaceType());
 }
 
-void Aggregator::clear()
+void Database::clear()
 {
     qDeleteAll(_aggregates);
     _aggregates.clear();
 }
+
+IAggregate *Database::Orphanage::init()
+{
+    return this;
+}
+
+} // namespace Mi

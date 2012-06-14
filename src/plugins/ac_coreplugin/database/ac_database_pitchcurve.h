@@ -24,7 +24,7 @@ namespace Database {
 
 class AC_CORE_EXPORT PitchCurve : public Curve
 {
-    friend class Factory;
+    friend class ::DatabaseFactory;
 
 protected:
     PitchCurve()

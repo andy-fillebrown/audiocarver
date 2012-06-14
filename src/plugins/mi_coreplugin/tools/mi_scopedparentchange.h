@@ -18,7 +18,7 @@
 #ifndef MI_SCOPEDPARENTCHANGE_H
 #define MI_SCOPEDPARENTCHANGE_H
 
-#include <mi_iaggregator.h>
+#include <mi_idatabase.h>
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 #include <mi_imodelitemwatcher.h>
@@ -44,7 +44,7 @@ public:
                 watcher->parentAboutToBeChanged(_item);
         }
         if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = IModel::instance();
+            IModel *model = query<IModel>(IDatabase::instance());
             if (model)
                 model->beginChangeParent(_item);
         }
@@ -59,7 +59,7 @@ public:
                 watcher->parentChanged(_item);
         }
         if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = IModel::instance();
+            IModel *model = query<IModel>(IDatabase::instance());
             if (model)
                 model->endChangeParent(_item);
         }

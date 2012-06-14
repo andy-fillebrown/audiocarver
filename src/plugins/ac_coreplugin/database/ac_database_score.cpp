@@ -17,7 +17,8 @@
 
 #include "ac_database_score.h"
 
-#include <ac_database_factory.h>
+#include <mi_idatabase.h>
+#include <mi_ifactory.h>
 
 #include <mi_scopeddatachange.h>
 
@@ -32,7 +33,7 @@ Score *Score::instance()
 
 IAggregator *Score::init()
 {
-    IFactory *factory = Factory::instance();
+    IFactory *factory = query<IFactory>(IDatabase::instance());
     _tracks = factory->create(Ac::TrackListItem);
     _timeGridLines = factory->create(Ac::TimeGridLineListItem);
     _pitchGridLines = factory->create(Ac::PitchGridLineListItem);

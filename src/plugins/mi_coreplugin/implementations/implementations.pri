@@ -1,6 +1,9 @@
 
 SOURCE_FILES = \
     aggregator \
+    database \
+#    model \
+#    orphanage \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

@@ -18,11 +18,11 @@
 #ifndef MI_IFACTORY_H
 #define MI_IFACTORY_H
 
-#include "mi_iunknown.h"
+#include "mi_iaggregate.h"
 
 class IAggregator;
 
-class MI_CORE_EXPORT IFactory : public IUnknown
+class MI_CORE_EXPORT IFactory : public IAggregate
 {
 public:
     enum { InterfaceType = I::IFactory };
@@ -37,7 +37,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 

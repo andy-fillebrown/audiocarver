@@ -17,11 +17,8 @@
 
 #include "ac_coreplugin.h"
 
-#include <ac_database_factory.h>
-//#include <ac_database.h>
-//#include <ac_model.h>
-
 #include <ac_corenamespace.h>
+#include <ac_database.h>
 
 #include <pluginmanager.h>
 
@@ -31,69 +28,72 @@
 static bool test();
 #endif
 
-bool AcCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+namespace Ac {
+
+using namespace Mi;
+
+bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
 
-    Mi::appendItemType(Ac::ScoreItem, "Score");
-    Mi::appendItemType(Ac::TrackItem, "Track");
-    Mi::appendItemType(Ac::NoteItem, "Note");
-    Mi::appendItemType(Ac::PitchCurveItem, "PitchCurve");
-    Mi::appendItemType(Ac::ControlCurveItem, "ControlCurve");
-    Mi::appendItemType(Ac::GridSettingsItem, "GridSettings");
-    Mi::appendItemType(Ac::TimeGridLineItem, "TimeGridLine");
-    Mi::appendItemType(Ac::PitchGridLineItem, "PitchGridLine");
-    Mi::appendItemType(Ac::ControlGridLineItem, "ControlGridLine");
-    Mi::appendItemType(Ac::ViewSettingsItem, "ViewSettings");
-    Mi::appendItemType(Ac::ProjectSettingsItem, "ProjectSettings");
+    appendItemType(ScoreItem, "Score");
+    appendItemType(TrackItem, "Track");
+    appendItemType(NoteItem, "Note");
+    appendItemType(PitchCurveItem, "PitchCurve");
+    appendItemType(ControlCurveItem, "ControlCurve");
+    appendItemType(GridSettingsItem, "GridSettings");
+    appendItemType(TimeGridLineItem, "TimeGridLine");
+    appendItemType(PitchGridLineItem, "PitchGridLine");
+    appendItemType(ControlGridLineItem, "ControlGridLine");
+    appendItemType(ViewSettingsItem, "ViewSettings");
+    appendItemType(ProjectSettingsItem, "ProjectSettings");
 
-    Mi::appendItemDataRole(Ac::PointsRole, "points");
-    Mi::appendItemDataRole(Ac::ControlTypeRole, "controlType");
-    Mi::appendItemDataRole(Ac::LocationRole, "location");
-    Mi::appendItemDataRole(Ac::LabelRole, "label");
-    Mi::appendItemDataRole(Ac::PriorityRole, "priority");
-    Mi::appendItemDataRole(Ac::InstrumentRole, "instrument");
-    Mi::appendItemDataRole(Ac::LengthRole, "length");
-    Mi::appendItemDataRole(Ac::VolumeRole, "volume");
-    Mi::appendItemDataRole(Ac::ColorRole, "color");
-    Mi::appendItemDataRole(Ac::VisibilityRole, "visible");
-    Mi::appendItemDataRole(Ac::RecordingRole, "recording");
-    Mi::appendItemDataRole(Ac::TimePositionRole, "timePosition");
-    Mi::appendItemDataRole(Ac::PitchPositionRole, "pitchPosition");
-    Mi::appendItemDataRole(Ac::ControlPositionRole, "controlPosition");
-    Mi::appendItemDataRole(Ac::TimeScaleRole, "timeScale");
-    Mi::appendItemDataRole(Ac::PitchScaleRole, "pitchScale");
-    Mi::appendItemDataRole(Ac::ControlScaleRole, "controlScale");
-    Mi::appendItemDataRole(Ac::OutputDirectoryRole, "outputDirectory");
-    Mi::appendItemDataRole(Ac::InstrumentDirectoryRole, "instrumentDirectory");
-    Mi::appendItemDataRole(Ac::AudioFileTypeRole, "audioFileType");
-    Mi::appendItemDataRole(Ac::SampleRateRole, "sampleRate");
-    Mi::appendItemDataRole(Ac::ControlRateRole, "controlRate");
-    Mi::appendItemDataRole(Ac::CurveRateRole, "curveRate");
-    Mi::appendItemDataRole(Ac::StartTimeRole, "startTime");
-    Mi::appendItemDataRole(Ac::SnapEnabledRole, "snapEnabled");
-    Mi::appendItemDataRole(Ac::GridSnapEnabledRole, "gridSnapEnabled");
-    Mi::appendItemDataRole(Ac::TimeSnapRole, "timeSnap");
-    Mi::appendItemDataRole(Ac::PitchSnapRole, "pitchSnap");
-    Mi::appendItemDataRole(Ac::ControlSnapRole, "controlSnap");
+    appendItemDataRole(PointsRole, "points");
+    appendItemDataRole(ControlTypeRole, "controlType");
+    appendItemDataRole(LocationRole, "location");
+    appendItemDataRole(LabelRole, "label");
+    appendItemDataRole(PriorityRole, "priority");
+    appendItemDataRole(InstrumentRole, "instrument");
+    appendItemDataRole(LengthRole, "length");
+    appendItemDataRole(VolumeRole, "volume");
+    appendItemDataRole(ColorRole, "color");
+    appendItemDataRole(VisibilityRole, "visible");
+    appendItemDataRole(RecordingRole, "recording");
+    appendItemDataRole(TimePositionRole, "timePosition");
+    appendItemDataRole(PitchPositionRole, "pitchPosition");
+    appendItemDataRole(ControlPositionRole, "controlPosition");
+    appendItemDataRole(TimeScaleRole, "timeScale");
+    appendItemDataRole(PitchScaleRole, "pitchScale");
+    appendItemDataRole(ControlScaleRole, "controlScale");
+    appendItemDataRole(OutputDirectoryRole, "outputDirectory");
+    appendItemDataRole(InstrumentDirectoryRole, "instrumentDirectory");
+    appendItemDataRole(AudioFileTypeRole, "audioFileType");
+    appendItemDataRole(SampleRateRole, "sampleRate");
+    appendItemDataRole(ControlRateRole, "controlRate");
+    appendItemDataRole(CurveRateRole, "curveRate");
+    appendItemDataRole(StartTimeRole, "startTime");
+    appendItemDataRole(SnapEnabledRole, "snapEnabled");
+    appendItemDataRole(GridSnapEnabledRole, "gridSnapEnabled");
+    appendItemDataRole(TimeSnapRole, "timeSnap");
+    appendItemDataRole(PitchSnapRole, "pitchSnap");
+    appendItemDataRole(ControlSnapRole, "controlSnap");
 
-    new Database::Factory;
-//    addAutoReleasedObject(new FilerFactory);
-//    addAutoReleasedObject(new Database);
-//    addAutoReleasedObject(new Model);
+    new Database;
 
     return true;
 }
 
-void AcCorePlugin::extensionsInitialized()
+void CorePlugin::extensionsInitialized()
 {
 #ifdef QT_DEBUG
     test();
 #endif
 }
 
-Q_EXPORT_PLUGIN(AcCorePlugin)
+} // namespace Ac
+
+Q_EXPORT_PLUGIN(Ac::CorePlugin)
 
 #ifdef QT_DEBUG
 
@@ -109,7 +109,7 @@ bool test_1()
 {
     // Make sure querying aggregators succeeds.
     // Aggregators should create aggregates on demand.
-    IAggregator *control_curve = Database::Factory::instance()->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
@@ -120,7 +120,7 @@ bool test_2()
 {
     // Make sure querying constant aggregators fails.
     // Constant aggregators should not create aggregates on demand.
-    const IAggregator *control_curve = Database::Factory::instance()->create(Ac::ControlCurveItem);
+    const IAggregator *control_curve = query<IFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     const IModelItem *item = query<IModelItem>(control_curve);
     CHECK(!item);
@@ -131,7 +131,7 @@ bool test_3()
 {
     // Make sure IModelData::item() succeeds.
     // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
-    IAggregator *control_curve = Database::Factory::instance()->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -143,7 +143,7 @@ bool test_3()
 bool test_4()
 {
     // Make sure setting item name succeeds.
-    IAggregator *control_curve = Database::Factory::instance()->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);

@@ -20,7 +20,9 @@
 
 #include <iplugin.h>
 
-class AcCorePlugin : public ExtensionSystem::IPlugin
+namespace Ac {
+
+class CorePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
@@ -28,5 +30,7 @@ public:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
     void extensionsInitialized();
 };
+
+} // namespace Ac
 
 #endif // AC_COREPLUGIN_H

@@ -17,23 +17,31 @@
 
 #include "mi_coreplugin.h"
 
-#include <mi_corenamespace.h>
+#include <mi_database.h>
 
 #include <pluginmanager.h>
 
 #include <QtPlugin>
 
-bool MiCorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+namespace Mi {
+
+bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
 
-    Mi::appendItemDataRole(Mi::ItemTypeRole, "type");
-    Mi::appendItemDataRole(Mi::ListTypeRole, "listType");
-    Mi::appendItemDataRole(Mi::NameRole, "name");
-
+    appendItemDataRole(ItemTypeRole, "type");
+    appendItemDataRole(ListTypeRole, "listType");
+    appendItemDataRole(NameRole, "name");
 
     return true;
 }
 
-Q_EXPORT_PLUGIN(MiCorePlugin)
+CorePlugin::~CorePlugin()
+{
+    Database::destroy();
+}
+
+} // namespace Mi
+
+Q_EXPORT_PLUGIN(Mi::CorePlugin)

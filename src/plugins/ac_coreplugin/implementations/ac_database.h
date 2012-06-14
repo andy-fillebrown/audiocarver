@@ -18,13 +18,32 @@
 #ifndef AC_DATABASE_H
 #define AC_DATABASE_H
 
-#include <mi_idatabase.h>
+#include "mi_database.h"
 
-class DatabasePrivate;
-class Database : public IDatabase
+#include "mi_ifactory.h"
+#include "mi_ifiler.h"
+#include "mi_imodel.h"
+
+#include <ac_coreglobal.h>
+
+namespace Ac {
+
+class Database : public Mi::Database
 {
-public:
-    Database();
+    friend class CorePlugin;
+
+    IAggregator *_score;
+
+protected:
+    Database()
+    {}
+
+    IAggregator *init();
+
+    IAggregator *score() const
+    {
+        return _score;
+    }
 
     const QString &fileExtension() const;
     const QString &fileFilter() const;
@@ -32,11 +51,49 @@ public:
     void reset();
     void read(const QString &fileName);
     void write(const QString &fileName);
-
     bool isReading() const;
 
-private:
-    QScopedPointer<DatabasePrivate> d;
+    // IAggregator
+    inline IAggregate *createAggregate(int interfaceType);
 };
+
+} // namespace Ac
+
+class DatabaseFactory : public IFactory
+{
+    friend class Ac::Database;
+
+    Ac::Database *_aggregator;
+
+protected:
+    Ac::Database *a() const
+    {
+        return _aggregator;
+    }
+
+    DatabaseFactory(Ac::Database *aggregator)
+        :   _aggregator(aggregator)
+    {}
+
+    virtual IAggregate *init();
+    IAggregator *create(int itemType);
+
+    // IAggregate
+    IAggregator *aggregator() const
+    {
+        return _aggregator;
+    }
+};
+
+// IAggregator
+inline IAggregate *Ac::Database::createAggregate(int interfaceType)
+{
+    switch (interfaceType) {
+    case I::IFactory:
+        return appendAggregate((new DatabaseFactory(this))->init());
+    default:
+        return 0;
+    }
+}
 
 #endif // AC_DATABASE_H

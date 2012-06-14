@@ -15,16 +15,44 @@
 **
 **************************************************************************/
 
-#include <mi_iorphanage.h>
+#include "mi_orphanage.h"
+
+#include <mi_iaggregator.h>
 
 static IOrphanage *instance = 0;
-
-IOrphanage::IOrphanage()
-{
-    ::instance = this;
-}
 
 IOrphanage *IOrphanage::instance()
 {
     return ::instance;
+}
+
+void Orphanage::destroy()
+{
+    delete ::instance;
+    ::instance = 0;
+}
+
+Orphanage::Orphanage()
+{
+    if (::instance)
+        delete ::instance;
+    ::instance = this;
+}
+
+Orphanage::~Orphanage()
+{
+    qDeleteAll(_orphans);
+    _orphans.clear();
+}
+
+void Orphanage::append(IAggregator *aggregator)
+{
+    if (_orphans.contains(aggregator))
+        return;
+    _orphans.append(aggregator);
+}
+
+void Orphanage::remove(IAggregator *aggregator)
+{
+    _orphans.removeOne(aggregator);
 }

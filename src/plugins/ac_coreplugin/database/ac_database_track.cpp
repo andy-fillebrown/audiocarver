@@ -17,7 +17,8 @@
 
 #include "ac_database_track.h"
 
-#include <ac_database_factory.h>
+#include <mi_idatabase.h>
+#include <mi_ifactory.h>
 
 #include <mi_scopeddatachange.h>
 
@@ -25,7 +26,7 @@ namespace Database {
 
 IAggregator *Track::init()
 {
-    _notes = Factory::instance()->create(Ac::NoteListItem);
+    _notes = query<IFactory>(IDatabase::instance())->create(Ac::NoteListItem);
     return ScoreObject::init();
 }
 

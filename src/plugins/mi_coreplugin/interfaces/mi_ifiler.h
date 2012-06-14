@@ -18,11 +18,11 @@
 #ifndef MI_IFILER_H
 #define MI_IFILER_H
 
-#include "mi_iunknown.h"
+#include "mi_iaggregate.h"
 
 class IModelItem;
 
-class IReader : public IUnknown
+class IReader : public IAggregate
 {
 public:
     enum { InterfaceType = I::IReader };
@@ -40,11 +40,11 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return false;
+        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 
-class IWriter : public IUnknown
+class IWriter : public IAggregate
 {
 public:
     enum { InterfaceType = I::IWriter };
@@ -61,11 +61,11 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return false;
+        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 
-class IFileFiler : public IUnknown
+class IFileFiler : public IAggregate
 {
 public:
     enum { InterfaceType = I::IFileFiler };
@@ -84,11 +84,11 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return false;
+        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 
-class ICopyFiler : public IUnknown
+class ICopyFiler : public IAggregate
 {
 public:
     enum { InterfaceType = I::ICopyFiler };
@@ -105,7 +105,7 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return false;
+        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 

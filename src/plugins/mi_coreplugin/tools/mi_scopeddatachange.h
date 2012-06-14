@@ -18,7 +18,7 @@
 #ifndef MI_SCOPEDDATACHANGE_H
 #define MI_SCOPEDDATACHANGE_H
 
-#include <mi_iaggregator.h>
+#include <mi_idatabase.h>
 #include <mi_imodel.h>
 #include <mi_imodeldata.h>
 #include <mi_imodeldatawatcher.h>
@@ -46,7 +46,7 @@ public:
                 watcher->dataAboutToBeChanged(_data, _role);
         }
         if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = IModel::instance();
+            IModel *model = query<IModel>(IDatabase::instance());
             if (model)
                 model->beginChangeData(_data, _role);
         }
@@ -61,7 +61,7 @@ public:
                 watcher->dataChanged(_data, _role);
         }
         if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = IModel::instance();
+            IModel *model = query<IModel>(IDatabase::instance());
             if (model)
                 model->endChangeData(_data, _role);
         }

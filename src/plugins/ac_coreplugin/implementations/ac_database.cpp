@@ -17,30 +17,22 @@
 
 #include "ac_database.h"
 
-#include <ac_ifactory.h>
-#include <ac_ifiler.h>
-#include <ac_model.h>
-#include <ac_score.h>
+#include <ac_database_controlcurve.h>
+#include <ac_database_gridline.h>
+#include <ac_database_gridsettings.h>
+#include <ac_database_note.h>
+#include <ac_database_pitchcurve.h>
+#include <ac_database_projectsettings.h>
+#include <ac_database_score.h>
+#include <ac_database_track.h>
+#include <ac_database_viewsettings.h>
 
-class DatabasePrivate
+namespace Ac {
+
+IAggregator *Database::init()
 {
-public:
-    Database *q;
-    QString fileName;
-    uint reading : bitsizeof(uint);
-
-    DatabasePrivate(Database *q)
-        :   q(q)
-        ,   reading(false)
-    {}
-
-    virtual ~DatabasePrivate()
-    {}
-};
-
-Database::Database()
-    :   d(new DatabasePrivate(this))
-{}
+    return Mi::Database::init();
+}
 
 const QString &Database::fileExtension() const
 {
@@ -56,42 +48,91 @@ const QString &Database::fileFilter() const
 
 QString Database::fileName() const
 {
-    return d->fileName;
+    return "";
 }
 
 void Database::reset()
 {
-    Score::instance()->clear();
-    d->fileName.clear();
-    emit databaseReset();
+    score()->clear();
 }
 
 void Database::read(const QString &fileName)
 {
-    emit databaseAboutToBeRead();
-    d->reading = true;
-    reset();
-    IReader *reader = IFilerFactory::instance()->createReader(Ac::XmlFileFiler);
-    query<IFileFiler>(reader)->setFileName(fileName);
-    reader->read(query<IModelItem>(Score::instance()));
-    delete reader;
-    d->reading = false;
-    d->fileName = fileName;
-    emit databaseRead();
+//    emit databaseAboutToBeRead();
+//    d->reading = true;
+//    reset();
+//    IReader *reader = IFilerFactory::instance()->createReader(Ac::XmlFileFiler);
+//    query<IFileFiler>(reader)->setFileName(fileName);
+//    reader->read(query<IModelItem>(Score::instance()));
+//    delete reader;
+//    d->reading = false;
+//    d->fileName = fileName;
+//    emit databaseRead();
 }
 
 void Database::write(const QString &fileName)
 {
-    emit databaseAboutToBeWritten();
-    IWriter *writer = IFilerFactory::instance()->createWriter(Ac::XmlFileFiler);
-    query<IFileFiler>(writer)->setFileName(fileName);
-    writer->write(query<IModelItem>(Score::instance()));
-    delete writer;
-    d->fileName = fileName;
-    emit databaseWritten();
+//    emit databaseAboutToBeWritten();
+//    IWriter *writer = IFilerFactory::instance()->createWriter(Ac::XmlFileFiler);
+//    query<IFileFiler>(writer)->setFileName(fileName);
+//    writer->write(query<IModelItem>(Score::instance()));
+//    delete writer;
+//    d->fileName = fileName;
+//    emit databaseWritten();
 }
 
 bool Database::isReading() const
 {
-    return d->reading;
+//    return d->reading;
+    return false;
+}
+
+} // namespace Ac
+
+using namespace Ac;
+using namespace Database;
+
+IAggregate *DatabaseFactory::init()
+{
+    return this;
+}
+
+IAggregator *DatabaseFactory::create(int itemType)
+{
+    switch (itemType) {
+    case ControlCurveItem:
+        return (new ControlCurve)->init();
+    case ControlCurveListItem:
+        return (new ObjectList(ControlCurveItem))->init();
+    case ControlGridLineItem:
+        return (new ControlGridLine)->init();
+    case ControlGridLineListItem:
+        return (new ObjectList(ControlGridLineItem))->init();
+    case GridSettingsItem:
+        return (new GridSettings)->init();
+    case NoteItem:
+        return (new Note)->init();
+    case NoteListItem:
+        return (new ObjectList(NoteItem))->init();
+    case PitchCurveItem:
+        return (new PitchCurve)->init();
+    case PitchGridLineItem:
+        return (new PitchGridLine)->init();
+    case PitchGridLineListItem:
+        return (new ObjectList(PitchGridLineItem))->init();
+    case ScoreItem:
+        return (new Score)->init();
+    case TimeGridLineItem:
+        return (new TimeGridLine)->init();
+    case TimeGridLineListItem:
+        return (new ObjectList(TimeGridLineItem))->init();
+    case TrackItem:
+        return (new Track)->init();
+    case TrackListItem:
+        return (new ObjectList(TrackItem))->init();
+    case ViewSettingsItem:
+        return (new ViewSettings)->init();
+    default:
+        return 0;
+    }
 }

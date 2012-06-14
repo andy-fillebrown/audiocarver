@@ -26,7 +26,7 @@ namespace Database {
 
 class MI_CORE_EXPORT ObjectList : public Object
 {
-    friend class Factory;
+    friend class ::DatabaseFactory;
 
     const int _listType;
     QList<IAggregator*> _objects;

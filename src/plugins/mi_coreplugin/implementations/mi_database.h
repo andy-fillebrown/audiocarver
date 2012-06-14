@@ -15,18 +15,76 @@
 **
 **************************************************************************/
 
-#ifndef MI_AGGREGATOR_H
-#define MI_AGGREGATOR_H
+#ifndef MI_DATABASE_H
+#define MI_DATABASE_H
 
-#include "mi_iaggregator.h"
+#include "mi_idatabase.h"
 
-class MI_CORE_EXPORT Aggregator : public IAggregator
+#include "mi_iorphanage.h"
+
+namespace Mi {
+
+class MI_CORE_EXPORT Database : public IDatabase
 {
+    friend class CorePlugin;
+
+    static IDatabase *instance()
+    {
+        return IDatabase::instance();
+    }
+
+    static void destroy();
+
     QHash<int, IAggregate*> _aggregates;
+    QList<IAggregator*> _orphans;
 
 protected:
-    Aggregator();
-    ~Aggregator();
+    Database();
+    virtual IAggregator *init();
+    virtual ~Database();
+
+    QList<IAggregator*> &orphans()
+    {
+        return _orphans;
+    }
+
+    class Orphanage : public IOrphanage
+    {
+        friend class Database;
+
+        Database *_aggregator;
+
+    protected:
+        Database *a() const
+        {
+            return _aggregator;
+        }
+
+        Orphanage(Database *aggregator)
+            :   _aggregator(aggregator)
+        {}
+
+        virtual IAggregate *init();
+
+        void append(IAggregator *aggregator)
+        {
+            QList<IAggregator*> &orphans = a()->orphans();
+            if (orphans.contains(aggregator))
+                return;
+            orphans.append(aggregator);
+        }
+
+        void remove(IAggregator *aggregator)
+        {
+            a()->orphans().removeOne(aggregator);
+        }
+
+        // IAggregate
+        IAggregator *aggregator() const
+        {
+            return _aggregator;
+        }
+    };
 
     // IAggregator
     QList<IAggregate*> aggregates() const
@@ -36,14 +94,18 @@ protected:
 
     IAggregate *createAggregate(int interfaceType)
     {
-        return 0;
+        switch (interfaceType) {
+        case I::IOrphanage:
+            return (new Orphanage(this))->init();
+        default:
+            return 0;
+        }
     }
 
     IAggregate *appendAggregate(IAggregate *aggregate);
     void removeAggregate(IAggregate *aggregate);
     void clear();
 
-public:
     // IUnknown
     void *queryInterface(int interfaceType)
     {
@@ -66,4 +128,6 @@ public:
     }
 };
 
-#endif // MI_AGGREGATOR_H
+} // namespace Mi
+
+#endif // MI_DATABASE_H

@@ -28,8 +28,20 @@ public:
 
     virtual int interfaceType() const = 0;
     virtual bool isTypeOfInterface(int interfaceType) const = 0;
-    virtual void *queryInterface(int interfaceType) = 0;
-    virtual const void *queryInterface(int interfaceType) const = 0;
+
+    virtual void *queryInterface(int interfaceType)
+    {
+        if (isTypeOfInterface(interfaceType))
+            return this;
+        return 0;
+    }
+
+    virtual const void *queryInterface(int interfaceType) const
+    {
+        if (isTypeOfInterface(interfaceType))
+            return this;
+        return 0;
+    }
 };
 
 template <class T, class Unknown> inline

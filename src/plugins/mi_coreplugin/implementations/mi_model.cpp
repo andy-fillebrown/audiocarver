@@ -15,33 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef MI_IORPHANAGE_H
-#define MI_IORPHANAGE_H
+#include "mi_model.h"
 
-#include "mi_iaggregate.h"
+static IModel *instance = 0;
 
-class IAggregator;
-
-class MI_CORE_EXPORT IOrphanage : public IAggregate
+IModel *IModel::instance()
 {
-public:
-    enum { InterfaceType = I::IOrphanage };
+    return ::instance;
+}
 
-    virtual void append(IAggregator *aggregator) = 0;
-    virtual void remove(IAggregator *aggregator) = 0;
+void Model::destroy()
+{
+    delete ::instance;
+    ::instance = 0;
+}
 
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
-    }
-};
-
-#endif // MI_IORPHANAGE_H
+Model::Model()
+{
+    if (::instance)
+        delete ::instance;
+    ::instance = this;
+}

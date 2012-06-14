@@ -15,46 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_FACTORY_H
-#define AC_DATABASE_FACTORY_H
+#ifndef MI_ORPHANAGE_H
+#define MI_ORPHANAGE_H
 
-#include "mi_ifactory.h"
+#include "mi_iorphanage.h"
 
-#include <ac_coreglobal.h>
-
-class AcCorePlugin;
-
-namespace Database {
-
-class Factory : public IFactory
+class MI_CORE_EXPORT Orphanage : public IOrphanage
 {
-    friend class ::AcCorePlugin;
+    friend class MiCorePlugin;
 
-public:
-    static IFactory *instance();
+    QList<IAggregator*> _orphans;
 
-protected:
-    Factory();
-
-    // IFactory
-    IAggregator *create(int itemType);
-
-    // IUnknown
-    void *queryInterface(int interfaceType)
+    static IOrphanage *instance()
     {
-        if (this->isTypeOfInterface(interfaceType))
-            return this;
-        return 0;
+        return IOrphanage::instance();
     }
 
-    const void *queryInterface(int interfaceType) const
-    {
-        if (this->isTypeOfInterface(interfaceType))
-            return this;
-        return 0;
-    }
+    static void destroy();
+
+    Orphanage();
+    ~Orphanage();
+
+    void append(IAggregator *aggregator);
+    void remove(IAggregator *aggregator);
 };
 
-} // namespace Database
-
-#endif // AC_DATABASE_FACTORY_H
+#endif // MI_ORPHANAGE_H

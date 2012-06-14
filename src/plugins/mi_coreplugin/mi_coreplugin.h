@@ -20,7 +20,9 @@
 
 #include <iplugin.h>
 
-class MiCorePlugin : public ExtensionSystem::IPlugin
+namespace Mi {
+
+class CorePlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
@@ -30,7 +32,9 @@ public:
     void extensionsInitialized()
     {}
 
-    ~MiCorePlugin();
+    ~CorePlugin();
 };
+
+} // namespace Mi
 
 #endif // MI_COREPLUGIN_H
