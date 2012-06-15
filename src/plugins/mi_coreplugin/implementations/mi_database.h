@@ -66,6 +66,7 @@ protected:
 
         virtual IAggregate *init();
 
+        // IOrphanage
         void append(IAggregator *aggregator)
         {
             QList<IAggregator*> &orphans = a()->orphans();
