@@ -59,7 +59,10 @@ protected:
 
 } // namespace Ac
 
-class DatabaseFactory : public IFactory
+
+namespace Database {
+
+class Factory : public IFactory
 {
     friend class Ac::Database;
 
@@ -71,7 +74,7 @@ protected:
         return _aggregator;
     }
 
-    DatabaseFactory(Ac::Database *aggregator)
+    Factory(Ac::Database *aggregator)
         :   _aggregator(aggregator)
     {}
 
@@ -85,12 +88,13 @@ protected:
     }
 };
 
-// IAggregator
+} // namespace Database
+
 inline IAggregate *Ac::Database::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
     case I::IFactory:
-        return appendAggregate((new DatabaseFactory(this))->init());
+        return appendAggregate((new ::Database::Factory(this))->init());
     default:
         return 0;
     }

@@ -92,12 +92,12 @@ bool Database::isReading() const
 using namespace Ac;
 using namespace Database;
 
-IAggregate *DatabaseFactory::init()
+IAggregate *Database::Factory::init()
 {
     return this;
 }
 
-IAggregator *DatabaseFactory::create(int itemType)
+IAggregator *Database::Factory::create(int itemType)
 {
     switch (itemType) {
     case ControlCurveItem:

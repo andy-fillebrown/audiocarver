@@ -175,7 +175,7 @@ protected:
 
 class AC_CORE_EXPORT TimeGridLine : public GridLine
 {
-    friend class ::DatabaseFactory;
+    friend class Factory;
 
 protected:
     TimeGridLine()
@@ -221,7 +221,7 @@ protected:
 
 class AC_CORE_EXPORT PitchGridLine : public GridLine
 {
-    friend class ::DatabaseFactory;
+    friend class Factory;
 
 protected:
     PitchGridLine()
@@ -267,7 +267,7 @@ protected:
 
 class AC_CORE_EXPORT ControlGridLine : public GridLine
 {
-    friend class ::DatabaseFactory;
+    friend class Factory;
 
 protected:
     ControlGridLine()

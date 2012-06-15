@@ -21,7 +21,7 @@ namespace Database {
 
 class AC_CORE_EXPORT Score : public ScoreObject
 {
-    friend class ::DatabaseFactory;
+    friend class Factory;
 
     enum { RoleCount = 2 };
     enum { ItemCount = 7 };

@@ -23,8 +23,6 @@
 #include "mi_imodeldata.h"
 #include "mi_imodelitem.h"
 
-class DatabaseFactory;
-
 namespace Database {
 
 class MI_CORE_EXPORT Object : public Aggregator

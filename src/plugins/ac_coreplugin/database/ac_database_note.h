@@ -24,7 +24,7 @@ namespace Database {
 
 class AC_CORE_EXPORT Note : public ScoreObject
 {
-    friend class ::DatabaseFactory;
+    friend class Factory;
 
 protected:
     Note()
