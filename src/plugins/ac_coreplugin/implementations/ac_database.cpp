@@ -144,3 +144,28 @@ IAggregator *Database::Factory::create(int itemType)
         return 0;
     }
 }
+
+IAggregate *Database::Model::init()
+{
+    return this;
+}
+
+void Database::Model::beginChangeData(const IModelData *data, int role)
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Database::Model::endChangeData(const IModelData *data, int role)
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Database::Model::beginChangeParent(const IModelItem *item)
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Database::Model::endChangeParent(const IModelItem *item)
+{
+    qDebug() << Q_FUNC_INFO;
+}
