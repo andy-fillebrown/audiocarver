@@ -107,6 +107,7 @@ protected:
     void removeAggregate(IAggregate *aggregate);
     void clear();
 
+public:
     // IUnknown
     void *queryInterface(int interfaceType)
     {

@@ -79,7 +79,7 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
 
-    new Database;
+    (new Database)->init();
 
     return true;
 }

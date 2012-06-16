@@ -39,6 +39,7 @@ protected:
     {}
 
     IAggregator *init();
+    ~Database();
 
     IAggregator *score() const
     {
@@ -99,5 +100,6 @@ inline IAggregate *Ac::Database::createAggregate(int interfaceType)
         return 0;
     }
 }
+
 
 #endif // AC_DATABASE_H

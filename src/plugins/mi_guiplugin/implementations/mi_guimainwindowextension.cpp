@@ -174,40 +174,40 @@ void MainWindowExtension::initActions()
 
 void MainWindowExtension::newFile()
 {
-//    IDatabase::instance()->reset();
+    IDatabase::instance()->reset();
 }
 
 void MainWindowExtension::openFile()
 {
-//    IDatabase *db = IDatabase::instance();
-//    QString filename = QFileDialog::getOpenFileName(
-//                Core::ICore::instance()->mainWindow(), "", "",
-//                tr(qPrintable(db->fileFilter())));
-//    if (!QFile::exists(filename))
-//        return;
-//    db->read(filename);
+    IDatabase *db = IDatabase::instance();
+    QString filename = QFileDialog::getOpenFileName(
+                Core::ICore::instance()->mainWindow(), "", "",
+                tr(qPrintable(db->fileFilter())));
+    if (!QFile::exists(filename))
+        return;
+    db->read(filename);
 }
 
 void MainWindowExtension::saveFile()
 {
-//    IDatabase *db = IDatabase::instance();
-//    if (db->fileName().isEmpty())
-//        saveFileAs();
-//    else
-//        db->write(db->fileName());
+    IDatabase *db = IDatabase::instance();
+    if (db->fileName().isEmpty())
+        saveFileAs();
+    else
+        db->write(db->fileName());
 }
 
 void MainWindowExtension::saveFileAs()
 {
-//    IDatabase *db = IDatabase::instance();
-//    QString filename = QFileDialog::getSaveFileName(
-//                Core::ICore::instance()->mainWindow(), "", "",
-//                tr(qPrintable(db->fileFilter())));
-//    if (filename.isEmpty())
-//        return;
-//    if (!filename.endsWith(db->fileExtension()))
-//        filename.append(db->fileExtension());
-//    db->write(filename);
+    IDatabase *db = IDatabase::instance();
+    QString filename = QFileDialog::getSaveFileName(
+                Core::ICore::instance()->mainWindow(), "", "",
+                tr(qPrintable(db->fileFilter())));
+    if (filename.isEmpty())
+        return;
+    if (!filename.endsWith(db->fileExtension()))
+        filename.append(db->fileExtension());
+    db->write(filename);
 }
 
 void MainWindowExtension::undo()

@@ -29,9 +29,17 @@
 
 namespace Ac {
 
+using namespace Database;
+
 IAggregator *Database::init()
 {
+    _score = query<Factory>(this)->create(Ac::ScoreItem);
     return Mi::Database::init();
+}
+
+Database::~Database()
+{
+    delete _score;
 }
 
 const QString &Database::fileExtension() const
