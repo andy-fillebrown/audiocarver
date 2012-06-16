@@ -46,6 +46,7 @@ protected:
         return _score;
     }
 
+    // IDatabase
     const QString &fileExtension() const;
     const QString &fileFilter() const;
     QString fileName() const;
@@ -80,6 +81,8 @@ protected:
     {}
 
     virtual IAggregate *init();
+
+    // IFactory
     IAggregator *create(int itemType);
 
     // IAggregate
