@@ -51,7 +51,7 @@ namespace Mi {
 enum ItemType {
     UnknownItem,
     ListItem,
-    ItemTypeCount
+    CoreItemTypeCount
 };
 
 MI_CORE_EXPORT void appendItemType(int itemType, const QString itemTypeString);
@@ -80,5 +80,3 @@ enum NotificationFlags {
 } // namespace Mi
 
 #endif // MI_CORENAMESPACE_H
-
-// TODO:  Move namespace I to separate header.

@@ -18,6 +18,7 @@
 #ifndef AC_GUINAMESPACE_H
 #define AC_GUINAMESPACE_H
 
+#include <ac_corenamespace.h>
 #include <mi_guinamespace.h>
 
 namespace I {
@@ -40,6 +41,13 @@ enum AcGuiInterfaces {
 } // namespace I
 
 namespace Ac {
+
+enum GuiItemType {
+    GraphicsSceneItem = CoreItemTypeCount,
+    GraphicsViewItem,
+    GraphicsViewGroupItem,
+    GuiItemTypeCount
+};
 
 enum SubEntityCurveFlags {
     NonCurveSubEntity = 0x0,

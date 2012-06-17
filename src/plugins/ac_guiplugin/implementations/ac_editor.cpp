@@ -17,6 +17,7 @@
 
 #include "ac_editor.h"
 
+#include <ac_igraphicsviewgroup.h>
 namespace Ac {
 
 IAggregator *Editor::init()
@@ -26,6 +27,8 @@ IAggregator *Editor::init()
 
 Editor::~Editor()
 {
+    qDeleteAll(_viewGroups);
+    _viewGroups.clear();
 }
 
 void Editor::undo()

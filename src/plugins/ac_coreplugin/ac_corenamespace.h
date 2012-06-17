@@ -34,7 +34,7 @@ enum AcCoreInterfaces {
 namespace Ac {
 
 enum ItemType {
-    ScoreObjectItem = Mi::ItemTypeCount,
+    ScoreObjectItem = Mi::CoreItemTypeCount,
     ScoreItem,
     TrackItem,
     TrackListItem,
@@ -53,7 +53,8 @@ enum ItemType {
     ControlGridLineItem,
     ControlGridLineListItem,
     ViewSettingsItem,
-    ProjectSettingsItem
+    ProjectSettingsItem,
+    CoreItemTypeCount
 };
 
 enum ItemDataRole {

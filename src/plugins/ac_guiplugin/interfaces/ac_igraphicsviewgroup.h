@@ -24,7 +24,7 @@
 
 class IGraphicsView;
 
-class ISceneGroup : public IAggregator
+class IGraphicsViewGroup : public IAggregator
 {
 public:
     enum { InterfaceType = I::IGraphicsViewGroup };

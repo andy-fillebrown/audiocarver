@@ -18,9 +18,9 @@
 #ifndef AC_EDITOR_H
 #define AC_EDITOR_H
 
-#include <mi_editor.h>
+#include "mi_editor.h"
 
-class ISceneGroup;
+#include <ac_igraphicsviewmanager.h>
 
 namespace Ac {
 
@@ -28,7 +28,7 @@ class Editor : public Mi::Editor
 {
     friend class GuiPlugin;
 
-    QList<ISceneGroup*> _sceneGroups;
+    QList<IGraphicsViewGroup*> _viewGroups;
 
 protected:
     Editor()
@@ -36,6 +36,11 @@ protected:
 
     IAggregator *init();
     ~Editor();
+
+    QList<IGraphicsViewGroup*> &viewGroups()
+    {
+        return _viewGroups;
+    }
 
     // IEditor
     void undo();
