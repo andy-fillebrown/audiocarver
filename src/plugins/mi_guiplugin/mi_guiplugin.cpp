@@ -17,6 +17,7 @@
 
 #include "mi_guiplugin.h"
 
+#include <mi_editor.h>
 #include <mi_guimainwindowextension.h>
 
 #include <icore.h>
@@ -24,12 +25,21 @@
 
 #include <QtPlugin>
 
-bool MiGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
+namespace Mi {
+
+bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Mi::Gui::MainWindowExtension);
+    addAutoReleasedObject(new Gui::MainWindowExtension);
     return true;
 }
 
-Q_EXPORT_PLUGIN(MiGuiPlugin)
+GuiPlugin::~GuiPlugin()
+{
+    Editor::destroy();
+}
+
+} // namespace Mi
+
+Q_EXPORT_PLUGIN(Mi::GuiPlugin)

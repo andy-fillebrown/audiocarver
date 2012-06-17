@@ -18,12 +18,12 @@
 #ifndef AC_GUINAMESPACE_H
 #define AC_GUINAMESPACE_H
 
-#include <ac_corenamespace.h>
+#include <mi_guinamespace.h>
 
 namespace I {
 
 enum AcGuiInterfaces {
-    IChildEntity = AcCoreInterfaceCount,
+    IChildEntity = MiGuiInterfaceCount,
     IEntity,
     IParentEntity,
     ISubEntity,

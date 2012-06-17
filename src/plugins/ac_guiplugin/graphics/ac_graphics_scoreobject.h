@@ -28,6 +28,8 @@
 
 #include <mi_imodellist.h>
 
+#include <ac_corenamespace.h>
+
 class QGraphicsItem;
 
 namespace Graphics {

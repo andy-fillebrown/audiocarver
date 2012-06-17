@@ -20,13 +20,21 @@
 
 #include <iplugin.h>
 
-class MiGuiPlugin : public ExtensionSystem::IPlugin
+namespace Mi {
+
+class GuiPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
 public:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+
+    void extensionsInitialized()
+    {}
+
+    ~GuiPlugin();
 };
+
+} // namespace Mi
 
 #endif // MI_GUIPLUGIN_H

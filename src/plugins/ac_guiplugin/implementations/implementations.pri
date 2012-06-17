@@ -1,6 +1,6 @@
 
 SOURCE_FILES = \
-#    editor \
+    editor \
 #    guimainwindowextension \
 
 DIR = $$dirname(_FILE_)

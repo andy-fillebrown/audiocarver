@@ -17,7 +17,7 @@
 
 #include "ac_guiplugin.h"
 
-//#include <ac_editor.h>
+#include <ac_editor.h>
 //#include <ac_mainwidget.h>
 //#include <ac_guimainwindowextension.h>
 //#include <ac_selecteditemspropertyview.h>
@@ -32,16 +32,19 @@
 
 #include <QtPlugin>
 
-bool AcGuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
+namespace Ac {
+
+bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-//    addAutoReleasedObject(new Editor);
+
+    (new Editor)->init();
 //    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
     return true;
 }
 
-void AcGuiPlugin::extensionsInitialized()
+void GuiPlugin::extensionsInitialized()
 {
 //    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
 
@@ -49,4 +52,6 @@ void AcGuiPlugin::extensionsInitialized()
 //    mw->setCentralWidget(widget);
 }
 
-Q_EXPORT_PLUGIN(AcGuiPlugin)
+} // namespace Ac
+
+Q_EXPORT_PLUGIN(Ac::GuiPlugin)

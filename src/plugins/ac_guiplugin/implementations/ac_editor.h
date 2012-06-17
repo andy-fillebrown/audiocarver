@@ -18,13 +18,23 @@
 #ifndef AC_EDITOR_H
 #define AC_EDITOR_H
 
-#include <mi_ieditor.h>
+#include <mi_editor.h>
 
-class EditorPrivate;
-class Editor : public IEditor
+class ISceneGroup;
+
+namespace Ac {
+
+class Editor : public Mi::Editor
 {
-public:
-    Editor();
+    friend class GuiPlugin;
+
+    QList<ISceneGroup*> _sceneGroups;
+
+protected:
+    Editor()
+    {}
+
+    IAggregator *init();
     ~Editor();
 
     // IEditor
@@ -35,23 +45,17 @@ public:
     void paste();
     void selectAll();
 
-    QUndoStack *undoStack() const;
-
-    bool isUndoEnabled() const;
-    void setUndoEnabled(bool enabled);
-
-    void beginCommand(const QString &text = QString());
-    void endCommand();
-
-    bool canPushCommand() const;
-    void pushCommand(QUndoCommand *cmd);
-
-    void startCreating();
-    void finishCreating();
-    bool isCreating() const;
-
-private:
-    EditorPrivate *d;
+    inline IAggregate *createAggregate(int interfaceType);
 };
+
+} // namespace Ac
+
+inline IAggregate *Ac::Editor::createAggregate(int interfaceType)
+{
+    switch (interfaceType) {
+    default:
+        return Mi::Editor::createAggregate(interfaceType);
+    }
+}
 
 #endif // AC_EDITOR_H

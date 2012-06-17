@@ -18,20 +18,14 @@
 #ifndef MI_IEDITOR_H
 #define MI_IEDITOR_H
 
-#include <mi_guiglobal.h>
+#include "mi_iaggregator.h"
 
-#include <QObject>
+#include <mi_guinamespace.h>
 
-class QUndoCommand;
-class QUndoStack;
-
-class MI_GUI_EXPORT IEditor : public QObject
+class MI_GUI_EXPORT IEditor : public IAggregator
 {
-    Q_OBJECT
-
 public:
-    IEditor();
-    ~IEditor();
+    enum { InterfaceType = I::IEditor };
 
     static IEditor *instance();
 
@@ -42,24 +36,18 @@ public:
     virtual void paste() = 0;
     virtual void selectAll() = 0;
 
-    virtual QUndoStack *undoStack() const = 0;
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-    virtual bool isUndoEnabled() const = 0;
-    virtual void setUndoEnabled(bool enabled) = 0;
-
-    virtual void beginCommand(const QString &text = QString()) = 0;
-    virtual void endCommand() = 0;
-
-    virtual bool canPushCommand() const = 0;
-    virtual void pushCommand(QUndoCommand *cmd) = 0;
-
-    virtual void startCreating() = 0;
-    virtual void finishCreating() = 0;
-    virtual bool isCreating() const = 0;
-
-signals:
-    void commandUndone();
-    void commandRedone();
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregator::isTypeOfInterface(interfaceType);
+    }
 };
 
 #endif // MI_IEDITOR_H

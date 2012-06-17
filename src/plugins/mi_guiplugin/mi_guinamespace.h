@@ -15,21 +15,20 @@
 **
 **************************************************************************/
 
-#include "mi_ieditor.h"
+#ifndef MI_GUINAMESPACE_H
+#define MI_GUINAMESPACE_H
 
-static IEditor *instance = 0;
+#include <mi_guiglobal.h>
 
-IEditor::IEditor()
-{
-    ::instance = this;
-}
+#include <mi_corenamespace.h>
 
-IEditor::~IEditor()
-{
-    ::instance = 0;
-}
+namespace I {
 
-IEditor *IEditor::instance()
-{
-    return ::instance;
-}
+enum MiGuiInterfaces {
+    IEditor = MiCoreInterfaceCount + 1000,
+    MiGuiInterfaceCount
+};
+
+} // namespace I
+
+#endif // MI_GUINAMESPACE_H
