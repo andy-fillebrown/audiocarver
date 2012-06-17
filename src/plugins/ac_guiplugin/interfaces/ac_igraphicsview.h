@@ -15,46 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUINAMESPACE_H
-#define AC_GUINAMESPACE_H
+#ifndef AC_IGRAPHICSVIEW_H
+#define AC_IGRAPHICSVIEW_H
 
-#include <mi_guinamespace.h>
+#include "mi_iaggregator.h"
 
-namespace I {
+#include <ac_guinamespace.h>
 
-enum AcGuiInterfaces {
-    IChildEntity = MiGuiInterfaceCount,
-    IEntity,
-    IParentEntity,
-    ISubEntity,
-    IPointsItem,
-    IGripItem,
-    IPlayCursor,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    AcGuiInterfaceCount
+class IGraphicsView : public IAggregator
+{
+public:
+    enum { InterfaceType = I::IGraphicsView };
+
+    virtual int sceneType() const = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregator::isTypeOfInterface(interfaceType);
+    }
 };
 
-} // namespace I
-
-namespace Ac {
-
-enum SubEntityCurveFlags {
-    NonCurveSubEntity = 0x0,
-    CurveSubEntity = 0x1
-};
-
-enum SceneType {
-    PitchScene,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
-};
-
-} // namespace Ac
-
-#endif // AC_GUINAMESPACE_H
+#endif // AC_IGRAPHICSVIEW_H

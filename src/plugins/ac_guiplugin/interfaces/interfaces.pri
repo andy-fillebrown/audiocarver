@@ -3,6 +3,10 @@ SOURCE_FILES *= \
     ichildentity \
     ientity \
 #    ientityitem \
+    igraphicsscene \
+    igraphicsview \
+    igraphicsviewgroup \
+    igraphicsviewmanager \
 #    igripitem \
     iparententity \
     isubentity \
