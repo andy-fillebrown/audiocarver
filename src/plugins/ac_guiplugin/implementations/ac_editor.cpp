@@ -18,6 +18,7 @@
 #include "ac_editor.h"
 
 #include <ac_igraphicsviewgroup.h>
+
 namespace Ac {
 
 IAggregator *Editor::init()
@@ -62,3 +63,67 @@ void Editor::selectAll()
 }
 
 } // namespace Ac
+
+namespace Graphics {
+
+using namespace Ac;
+
+IAggregate *ViewManager::init()
+{
+    return this;
+}
+
+IAggregate *Factory::init()
+{
+    return this;
+}
+
+IAggregator *Factory::create(int itemType)
+{
+    switch (itemType) {
+    case ScoreItem:
+        return 0;
+    case TrackItem:
+        return 0;
+    case TrackListItem:
+        return 0;
+    case NoteItem:
+        return 0;
+    case NoteListItem:
+        return 0;
+    case CurveItem:
+        return 0;
+    case PitchCurveItem:
+        return 0;
+    case ControlCurveItem:
+        return 0;
+    case ControlCurveListItem:
+        return 0;
+    case GridSettingsItem:
+        return 0;
+    case GridLine:
+        return 0;
+    case TimeGridLineItem:
+        return 0;
+    case TimeGridLineListItem:
+        return 0;
+    case PitchGridLineItem:
+        return 0;
+    case PitchGridLineListItem:
+        return 0;
+    case ControlGridLineItem:
+        return 0;
+    case ControlGridLineListItem:
+        return 0;
+    case GraphicsSceneItem:
+        return 0;
+    case GraphicsViewItem:
+        return 0;
+    case GraphicsViewGroupItem:
+        return 0;
+    default:
+        return 0;
+    }
+}
+
+} // namespace Graphics

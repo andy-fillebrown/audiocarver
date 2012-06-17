@@ -22,11 +22,18 @@
 
 #include <ac_igraphicsviewmanager.h>
 
+#include <mi_ifactory.h>
+
+namespace Graphics {
+class ViewManager;
+} // namespace Graphics
+
 namespace Ac {
 
 class Editor : public Mi::Editor
 {
     friend class GuiPlugin;
+    friend class Graphics::ViewManager;
 
     QList<IGraphicsViewGroup*> _viewGroups;
 
@@ -55,9 +62,94 @@ protected:
 
 } // namespace Ac
 
+namespace Graphics {
+
+class ViewManager : public IGraphicsViewManager
+{
+    friend class Ac::Editor;
+
+    Ac::Editor *_aggregator;
+
+protected:
+    Ac::Editor *a() const
+    {
+        return _aggregator;
+    }
+
+    ViewManager(Ac::Editor *aggregator)
+        :   _aggregator(aggregator)
+    {}
+
+    IAggregate *init();
+
+    // IGraphicsViewManager
+    int count() const
+    {
+        return a()->viewGroups().count();
+    }
+
+    IGraphicsViewGroup *at(int i) const
+    {
+        return a()->viewGroups().at(i);
+    }
+
+    void append(IGraphicsViewGroup *group)
+    {
+        QList<IGraphicsViewGroup*> &viewGroups = a()->viewGroups();
+        if (viewGroups.contains(group))
+            return;
+        viewGroups.append(group);
+    }
+
+    void remove(IGraphicsViewGroup *group)
+    {
+        a()->viewGroups().removeOne(group);
+    }
+
+    // IAggregate
+    IAggregator *aggregator() const
+    {
+        return _aggregator;
+    }
+};
+
+class Factory : public IFactory
+{
+    friend class Ac::Editor;
+
+    Ac::Editor *_aggregator;
+
+protected:
+    Ac::Editor *a() const
+    {
+        return _aggregator;
+    }
+
+    Factory(Ac::Editor *aggregator)
+        :   _aggregator(aggregator)
+    {}
+
+    IAggregate *init();
+
+    // IFactory
+    IAggregator *create(int itemType);
+
+    // IAggregate
+    IAggregator *aggregator() const
+    {
+        return _aggregator;
+    }
+};
+
+} // namespace Graphics
+
 inline IAggregate *Ac::Editor::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
+    case I::IGraphicsViewManager:
+        return appendAggregate((new ::Graphics::ViewManager(this))->init());
+    case I::IFactory:
+        return appendAggregate((new ::Graphics::Factory(this))->init());
     default:
         return Mi::Editor::createAggregate(interfaceType);
     }
