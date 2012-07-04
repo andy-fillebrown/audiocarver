@@ -21,7 +21,7 @@ namespace Graphics {
 
 IAggregator *Note::init()
 {
-    return Note::init();
+    return ScoreObject::init();
 }
 
 } // namespace Graphics
