@@ -20,12 +20,6 @@
 
 #include "mi_database.h"
 
-#include "mi_ifactory.h"
-#include "mi_ifiler.h"
-#include "mi_imodel.h"
-
-#include <ac_coreglobal.h>
-
 namespace Database {
 class Model;
 } // namespace Database

@@ -18,8 +18,6 @@
 #ifndef AC_MODEL_H
 #define AC_MODEL_H
 
-#include <ac_coreglobal.h>
-
 #include <mi_imodel.h>
 
 namespace Ac {

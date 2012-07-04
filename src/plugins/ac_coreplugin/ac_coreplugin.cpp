@@ -158,8 +158,8 @@ bool test()
     RUN(test_3);
     RUN(test_2);
     RUN(test_1);
-    qDebug() << "AcCorePlugin tests passed.";
+    qDebug() << "Ac::CorePlugin tests passed.";
     return true;
 }
 
-#endif // QT_DEBUG
+#endif // #ifdef QT_DEBUG
