@@ -17,15 +17,8 @@
 
 #include "ac_database.h"
 
-#include <ac_database_controlcurve.h>
-#include <ac_database_gridline.h>
-#include <ac_database_gridsettings.h>
-#include <ac_database_note.h>
-#include <ac_database_pitchcurve.h>
-#include <ac_database_projectsettings.h>
-#include <ac_database_score.h>
-#include <ac_database_track.h>
-#include <ac_database_viewsettings.h>
+#include <ac_corenamespace.h>
+#include <ac_factory.h>
 #include <ac_model.h>
 
 namespace Ac {
@@ -101,7 +94,7 @@ IAggregate *Database::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
     case I::IFactory:
-        return appendAggregate((new ::Database::Factory(this))->init());
+        return appendAggregate((new Factory(this))->init());
     case I::IModel:
         return appendAggregate((new Model(this))->init());
     default:
@@ -110,51 +103,3 @@ IAggregate *Database::createAggregate(int interfaceType)
 }
 
 } // namespace Ac
-
-using namespace Ac;
-using namespace Database;
-
-IAggregate *Database::Factory::init()
-{
-    return this;
-}
-
-IAggregator *Database::Factory::create(int itemType)
-{
-    switch (itemType) {
-    case ControlCurveItem:
-        return (new ControlCurve)->init();
-    case ControlCurveListItem:
-        return (new ObjectList(ControlCurveItem))->init();
-    case ControlGridLineItem:
-        return (new ControlGridLine)->init();
-    case ControlGridLineListItem:
-        return (new ObjectList(ControlGridLineItem))->init();
-    case GridSettingsItem:
-        return (new GridSettings)->init();
-    case NoteItem:
-        return (new Note)->init();
-    case NoteListItem:
-        return (new ObjectList(NoteItem))->init();
-    case PitchCurveItem:
-        return (new PitchCurve)->init();
-    case PitchGridLineItem:
-        return (new PitchGridLine)->init();
-    case PitchGridLineListItem:
-        return (new ObjectList(PitchGridLineItem))->init();
-    case ScoreItem:
-        return (new Score)->init();
-    case TimeGridLineItem:
-        return (new TimeGridLine)->init();
-    case TimeGridLineListItem:
-        return (new ObjectList(TimeGridLineItem))->init();
-    case TrackItem:
-        return (new Track)->init();
-    case TrackListItem:
-        return (new ObjectList(TrackItem))->init();
-    case ViewSettingsItem:
-        return (new ViewSettings)->init();
-    default:
-        return 0;
-    }
-}

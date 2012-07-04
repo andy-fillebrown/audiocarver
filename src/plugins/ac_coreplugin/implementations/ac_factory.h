@@ -18,27 +18,39 @@
 #ifndef AC_FACTORY_H
 #define AC_FACTORY_H
 
-#include <ac_ifactory.h>
+#include <mi_ifactory.h>
 
-class ObjectFactory : public IObjectFactory
+namespace Ac {
+class Database;
+} // namespace Ac
+
+namespace Database {
+
+class Factory : public IFactory
 {
-    Q_OBJECT
+    friend class Ac::Database;
 
-public:
-    ObjectFactory();
+    Ac::Database *_aggregator;
 
-    IModelItem *create(int type) const;
+protected:
+    Ac::Database *a() const
+    {
+        return _aggregator;
+    }
+
+    Factory(Ac::Database *aggregator)
+        :   _aggregator(aggregator)
+    {}
+
+    virtual IAggregate *init();
+
+    // IFactory
+    IAggregator *create(int itemType);
+
+    // IAggregate
+    IAggregator *aggregator() const;
 };
 
-class FilerFactory : public IFilerFactory
-{
-    Q_OBJECT
-
-public:
-    FilerFactory();
-
-    IReader *createReader(int type) const;
-    IWriter *createWriter(int type) const;
-};
+} // namespace Database
 
 #endif // AC_FACTORY_H

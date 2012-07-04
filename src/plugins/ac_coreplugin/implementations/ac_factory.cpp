@@ -17,72 +17,69 @@
 
 #include "ac_factory.h"
 
-#include <ac_controlcurve.h>
-#include <ac_gridline.h>
-#include <ac_note.h>
-#include <ac_track.h>
-#include <ac_xmlfiler.h>
+#include <ac_database.h>
+#include <ac_database_controlcurve.h>
+#include <ac_database_gridline.h>
+#include <ac_database_gridsettings.h>
+#include <ac_database_note.h>
+#include <ac_database_pitchcurve.h>
+#include <ac_database_projectsettings.h>
+#include <ac_database_score.h>
+#include <ac_database_track.h>
+#include <ac_database_viewsettings.h>
 
-static QObject *parent = 0;
+using namespace Ac;
 
-ObjectFactory::ObjectFactory()
+namespace Database {
+
+IAggregate *Factory::init()
 {
-    if (!::parent)
-        ::parent = new QObject(this);
+    return this;
 }
 
-IModelItem *ObjectFactory::create(int type) const
+IAggregator *Factory::create(int itemType)
 {
-    Object *object = 0;
-    switch (type) {
-    case Ac::TrackItem:
-        object = new Track(::parent);
-        break;
-    case Ac::NoteItem:
-        object = new Note(::parent);
-        break;
-    case Ac::ControlCurveItem:
-        object = new ControlCurve(::parent);
-        break;
-    case Ac::TimeGridLineItem:
-        object = new TimeGridLine(::parent);
-        break;
-    case Ac::PitchGridLineItem:
-        object = new PitchGridLine(::parent);
-        break;
-    case Ac::ControlGridLineItem:
-        object = new ControlGridLine(::parent);
-        break;
+    switch (itemType) {
+    case ControlCurveItem:
+        return (new ControlCurve)->init();
+    case ControlCurveListItem:
+        return (new ObjectList(ControlCurveItem))->init();
+    case ControlGridLineItem:
+        return (new ControlGridLine)->init();
+    case ControlGridLineListItem:
+        return (new ObjectList(ControlGridLineItem))->init();
+    case GridSettingsItem:
+        return (new GridSettings)->init();
+    case NoteItem:
+        return (new Note)->init();
+    case NoteListItem:
+        return (new ObjectList(NoteItem))->init();
+    case PitchCurveItem:
+        return (new PitchCurve)->init();
+    case PitchGridLineItem:
+        return (new PitchGridLine)->init();
+    case PitchGridLineListItem:
+        return (new ObjectList(PitchGridLineItem))->init();
+    case ScoreItem:
+        return (new Score)->init();
+    case TimeGridLineItem:
+        return (new TimeGridLine)->init();
+    case TimeGridLineListItem:
+        return (new ObjectList(TimeGridLineItem))->init();
+    case TrackItem:
+        return (new Track)->init();
+    case TrackListItem:
+        return (new ObjectList(TrackItem))->init();
+    case ViewSettingsItem:
+        return (new ViewSettings)->init();
     default:
         return 0;
     }
-    return query<IModelItem>(object);
 }
 
-FilerFactory::FilerFactory()
+IAggregator *Factory::aggregator() const
 {
-    if (!::parent)
-        ::parent = new QObject(this);
+    return _aggregator;
 }
 
-IReader *FilerFactory::createReader(int type) const
-{
-    switch (type) {
-    case Ac::XmlFileFiler:
-        return new XmlFileReader(::parent);
-    case Ac::XmlCopyFiler:
-        return new XmlCopyReader(::parent);
-    }
-    return 0;
-}
-
-IWriter *FilerFactory::createWriter(int type) const
-{
-    switch (type) {
-    case Ac::XmlFileFiler:
-        return new XmlFileWriter(::parent);
-    case Ac::XmlCopyFiler:
-        return new XmlCopyWriter(::parent);
-    }
-    return 0;
-}
+} // namespace Database

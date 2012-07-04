@@ -67,36 +67,4 @@ protected:
 } // namespace Ac
 
 
-namespace Database {
-
-class Factory : public IFactory
-{
-    friend class Ac::Database;
-
-    Ac::Database *_aggregator;
-
-protected:
-    Ac::Database *a() const
-    {
-        return _aggregator;
-    }
-
-    Factory(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int itemType);
-
-    // IAggregate
-    IAggregator *aggregator() const
-    {
-        return _aggregator;
-    }
-};
-
-} // namespace Database
-
 #endif // AC_DATABASE_H
