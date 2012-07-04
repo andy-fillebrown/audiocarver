@@ -28,6 +28,7 @@ class MI_CORE_EXPORT IModel : public IAggregate
 public:
     enum { InterfaceType = I::IModel };
 
+    virtual IModelItem *rootItem() const = 0;
     virtual void beginChangeData(const IModelData *data, int role) = 0;
     virtual void endChangeData(const IModelData *data, int role) = 0;
     virtual void beginChangeParent(const IModelItem *item) = 0;

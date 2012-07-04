@@ -26,6 +26,7 @@
 #include <ac_database_score.h>
 #include <ac_database_track.h>
 #include <ac_database_viewsettings.h>
+#include <ac_model.h>
 
 namespace Ac {
 
@@ -95,6 +96,19 @@ bool Database::isReading() const
     return false;
 }
 
+
+IAggregate *Database::createAggregate(int interfaceType)
+{
+    switch (interfaceType) {
+    case I::IFactory:
+        return appendAggregate((new ::Database::Factory(this))->init());
+    case I::IModel:
+        return appendAggregate((new Model(this))->init());
+    default:
+        return 0;
+    }
+}
+
 } // namespace Ac
 
 using namespace Ac;
@@ -143,29 +157,4 @@ IAggregator *Database::Factory::create(int itemType)
     default:
         return 0;
     }
-}
-
-IAggregate *Database::Model::init()
-{
-    return this;
-}
-
-void Database::Model::beginChangeData(const IModelData *data, int role)
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Database::Model::endChangeData(const IModelData *data, int role)
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Database::Model::beginChangeParent(const IModelItem *item)
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Database::Model::endChangeParent(const IModelItem *item)
-{
-    qDebug() << Q_FUNC_INFO;
 }

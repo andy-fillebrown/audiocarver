@@ -18,46 +18,47 @@
 #ifndef AC_MODEL_H
 #define AC_MODEL_H
 
-#include <ac_global.h>
-#include <ac_namespace.h>
+#include <ac_coreglobal.h>
 
 #include <mi_imodel.h>
 
+namespace Ac {
+class Database;
+} // namespace Ac
+
 class IModelItem;
-class Score;
 
-class QGraphicsItem;
+namespace Database {
 
-class ModelPrivate;
-class AC_CORE_EXPORT Model : public IModel
+class Model : public IModel
 {
-    Q_OBJECT
+    friend class Ac::Database;
 
-public:
-    Model();
-    ~Model();
+    Ac::Database *_aggregator;
 
-    QGraphicsItem *sceneItem(int type) const;
+protected:
+    Ac::Database *a() const
+    {
+        return _aggregator;
+    }
+
+    Model(Ac::Database *aggregator)
+        :   _aggregator(aggregator)
+    {}
+
+    virtual IAggregate *init();
 
     // IModel
     IModelItem *rootItem() const;
-    QModelIndex itemIndex(int type) const;
-    QModelIndex listIndex(int type) const;
+    void beginChangeData(const IModelData *data, int role);
+    void endChangeData(const IModelData *data, int role);
+    void beginChangeParent(const IModelItem *item);
+    void endChangeParent(const IModelItem *item);
 
-    QModelIndexList findIndexes(int type, int role, const QVariant &value) const;
-
-    bool isLocked() const;
-    void lock();
-    void unlock();
-
-    void clear();
-
-public slots:
-    void rowCountChanged(const QModelIndex &parent);
-    void clearTrackCount();
-
-private:
-    ModelPrivate *d;
+    // IAggregate
+    IAggregator *aggregator() const;
 };
+
+} // namespace Database
 
 #endif // AC_MODEL_H

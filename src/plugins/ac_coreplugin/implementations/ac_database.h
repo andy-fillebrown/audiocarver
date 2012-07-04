@@ -26,11 +26,16 @@
 
 #include <ac_coreglobal.h>
 
+namespace Database {
+class Model;
+} // namespace Database
+
 namespace Ac {
 
 class Database : public Mi::Database
 {
     friend class CorePlugin;
+    friend class ::Database::Model;
 
     IAggregator *_score;
 
@@ -56,7 +61,7 @@ protected:
     bool isReading() const;
 
     // IAggregator
-    inline IAggregate *createAggregate(int interfaceType);
+    IAggregate *createAggregate(int interfaceType);
 };
 
 } // namespace Ac
@@ -92,50 +97,6 @@ protected:
     }
 };
 
-class Model : public IModel
-{
-    friend class Ac::Database;
-
-    Ac::Database *_aggregator;
-
-protected:
-    Ac::Database *a() const
-    {
-        return _aggregator;
-    }
-
-    Model(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IModel
-    void beginChangeData(const IModelData *data, int role);
-    void endChangeData(const IModelData *data, int role);
-    void beginChangeParent(const IModelItem *item);
-    void endChangeParent(const IModelItem *item);
-
-    // IAggregate
-    IAggregator *aggregator() const
-    {
-        return _aggregator;
-    }
-};
-
 } // namespace Database
-
-inline IAggregate *Ac::Database::createAggregate(int interfaceType)
-{
-    switch (interfaceType) {
-    case I::IFactory:
-        return appendAggregate((new ::Database::Factory(this))->init());
-    case I::IModel:
-        return appendAggregate((new ::Database::Model(this))->init());
-    default:
-        return 0;
-    }
-}
-
 
 #endif // AC_DATABASE_H
