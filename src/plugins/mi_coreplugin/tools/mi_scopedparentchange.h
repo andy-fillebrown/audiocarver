@@ -21,28 +21,21 @@
 #include <mi_idatabase.h>
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
-#include <mi_imodelitemwatcher.h>
 
 namespace Database {
 
 class ScopedParentChange
 {
     const IModelItem *_item;
-    const QList<IModelItemWatcher*> *_watchers;
     Mi::NotificationFlags _notificationFlags;
 
 public:
     ScopedParentChange(const IAggregator *aggregator, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
         :   _item(const_query<IModelItem>(aggregator))
-        ,   _watchers(_item ? _item->watchers() : 0)
         ,   _notificationFlags(notificationFlags)
     {
         if (!_item)
             return;
-        if (_watchers) {
-            foreach (IModelItemWatcher *watcher, *_watchers)
-                watcher->parentAboutToBeChanged(_item);
-        }
         if (Mi::NotifyModel & _notificationFlags) {
             IModel *model = query<IModel>(IDatabase::instance());
             if (model)
@@ -54,10 +47,6 @@ public:
     {
         if (!_item)
             return;
-        if (_watchers) {
-            foreach (IModelItemWatcher *watcher, *_watchers)
-                watcher->parentChanged(_item);
-        }
         if (Mi::NotifyModel & _notificationFlags) {
             IModel *model = query<IModel>(IDatabase::instance());
             if (model)

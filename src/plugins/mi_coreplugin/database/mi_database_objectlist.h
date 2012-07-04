@@ -30,7 +30,6 @@ class MI_CORE_EXPORT ObjectList : public Object
 
     const int _listType;
     QList<IAggregator*> _objects;
-    QList<IModelItemWatcher*> _itemWatchers;
 
 protected:
     ObjectList(int listType = Mi::UnknownItem)
@@ -53,11 +52,6 @@ protected:
     const QList<IAggregator*> &objects() const
     {
         return _objects;
-    }
-
-    QList<IModelItemWatcher*> *itemWatchers()
-    {
-        return &_itemWatchers;
     }
 
     bool contains(const QString &name) const
@@ -202,24 +196,6 @@ protected:
             return 0;
         }
 
-        const QList<IModelItemWatcher*> *watchers() const
-        {
-            return a()->itemWatchers();
-        }
-
-        void appendWatcher(IModelItemWatcher *watcher)
-        {
-            QList<IModelItemWatcher*> *watchers = a()->itemWatchers();
-            if (watchers->contains(watcher))
-                return;
-            watchers->append(watcher);
-        }
-
-        void removeWatcher(IModelItemWatcher *watcher)
-        {
-            a()->itemWatchers()->removeOne(watcher);
-        }
-
         // IAggregate
         IAggregator *aggregator() const
         {
@@ -245,7 +221,6 @@ protected:
             delete object;
         }
         _objects.clear();
-        _itemWatchers.clear();
     }
 };
 

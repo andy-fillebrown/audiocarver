@@ -7,9 +7,7 @@ SOURCE_FILES = \
     iaggregator \
     imodel \
     imodeldata \
-    imodeldatawatcher \
     imodelitem \
-    imodelitemwatcher \
     imodellist \
     iobject \
     iorphanage \
