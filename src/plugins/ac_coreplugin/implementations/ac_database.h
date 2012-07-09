@@ -35,6 +35,7 @@ class Database : public Mi::Database
 
 protected:
     Database()
+        :   _score(0)
     {}
 
     IAggregator *init();
