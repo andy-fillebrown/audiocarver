@@ -24,8 +24,6 @@ namespace Ac {
 class Database;
 } // namespace Ac
 
-class IModelItem;
-
 namespace Database {
 
 class Model : public IModel
