@@ -30,6 +30,7 @@ enum MiCoreInterfaces {
     ICopyFiler,
     IDatabase,
     IFileFiler,
+    IFilerFactory,
     IModel,
     IModelData,
     IModelDataWatcher,

@@ -18,6 +18,7 @@
 #include "ac_database.h"
 
 #include <ac_corenamespace.h>
+#include <ac_filerfactory.h>
 #include <ac_model.h>
 #include <ac_objectfactory.h>
 
@@ -93,6 +94,8 @@ bool Database::isReading() const
 IAggregate *Database::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
+    case I::IFilerFactory:
+        return appendAggregate((new FilerFactory(this))->init());
     case I::IModel:
         return appendAggregate((new Model(this))->init());
     case I::IObjectFactory:

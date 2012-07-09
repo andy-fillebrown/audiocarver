@@ -2,6 +2,7 @@
 SOURCE_FILES = \
     idatabase \
     ifiler \
+    ifilerfactory \
     iaggregate \
     iaggregator \
     imodel \
