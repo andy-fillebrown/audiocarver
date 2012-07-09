@@ -33,12 +33,12 @@ IModelItem *Model::rootItem() const
     return query<IModelItem>(a()->score());
 }
 
-void Model::beginChangeData(const IModelData *data, int role)
+void Model::beginChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType)
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-void Model::endChangeData(const IModelData *data, int role)
+void Model::endChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType)
 {
     qDebug() << Q_FUNC_INFO;
 }

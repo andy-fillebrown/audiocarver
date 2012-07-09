@@ -27,31 +27,25 @@ namespace Database {
 class ScopedParentChange
 {
     const IModelItem *_item;
-    Mi::NotificationFlags _notificationFlags;
+    IModel *_model;
 
 public:
-    ScopedParentChange(const IAggregator *aggregator, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+    ScopedParentChange(const IAggregator *aggregator)
         :   _item(const_query<IModelItem>(aggregator))
-        ,   _notificationFlags(notificationFlags)
+        ,   _model(query<IModel>(IDatabase::instance()))
     {
         if (!_item)
             return;
-        if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = query<IModel>(IDatabase::instance());
-            if (model)
-                model->beginChangeParent(_item);
-        }
+        if (_model)
+            _model->beginChangeParent(_item);
     }
 
     ~ScopedParentChange()
     {
         if (!_item)
             return;
-        if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = query<IModel>(IDatabase::instance());
-            if (model)
-                model->endChangeParent(_item);
-        }
+        if (_model)
+            _model->endChangeParent(_item);
     }
 };
 

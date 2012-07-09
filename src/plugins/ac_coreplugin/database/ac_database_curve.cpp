@@ -30,7 +30,7 @@ IAggregator *Curve::init()
 
 void Curve::pushPoints(const PointList &points)
 {
-    ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyParent);
+    ScopedDataChange data_change(this, Ac::PointsRole, Mi::TemporarayDataChange);
     _pointsStack.push(points);
     conformPoints();
 }
@@ -39,7 +39,7 @@ void Curve::popPoints()
 {
     if (1 == _pointsStack.count())
         return;
-    ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyParent);
+    ScopedDataChange data_change(this, Ac::PointsRole, Mi::TemporarayDataChange);
     _pointsStack.pop();
 }
 
@@ -55,7 +55,7 @@ bool Curve::setPoints(const PointList &points)
     _pointsStack.top() = old_pts;
     if (_pointsStack.top() == new_pts)
         return false;
-    ScopedDataChange data_change(this, Ac::PointsRole, Mi::NotifyModelAndParent);
+    ScopedDataChange data_change(this, Ac::PointsRole);
     _pointsStack.top() = new_pts;
     return true;
 }

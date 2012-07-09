@@ -48,8 +48,8 @@ protected:
 
     // IModel
     IModelItem *rootItem() const;
-    void beginChangeData(const IModelData *data, int role);
-    void endChangeData(const IModelData *data, int role);
+    void beginChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType);
+    void endChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType);
     void beginChangeParent(const IModelItem *item);
     void endChangeParent(const IModelItem *item);
 

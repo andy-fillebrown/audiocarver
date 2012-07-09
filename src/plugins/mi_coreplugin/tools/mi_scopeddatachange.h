@@ -28,32 +28,28 @@ class ScopedDataChange
 {
     const IModelData *_data;
     const int _role;
-    const Mi::NotificationFlags _notificationFlags;
+    const Mi::DataChangeType _dataChangeType;
+    IModel *_model;
 
 public:
-    ScopedDataChange(const IAggregator *aggregator, int role, Mi::NotificationFlags notificationFlags = Mi::NotifyModel)
+    ScopedDataChange(const IAggregator *aggregator, int role, Mi::DataChangeType dataChangeType = Mi::PermanentDataChange)
         :   _data(const_query<IModelData>(aggregator))
         ,   _role(role)
-        ,   _notificationFlags(notificationFlags)
+        ,   _dataChangeType(dataChangeType)
+        ,   _model(query<IModel>(IDatabase::instance()))
     {
         if (!_data)
             return;
-        if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = query<IModel>(IDatabase::instance());
-            if (model)
-                model->beginChangeData(_data, _role);
-        }
+        if (_model)
+            _model->beginChangeData(_data, _role, _dataChangeType);
     }
 
     ~ScopedDataChange()
     {
         if (!_data)
             return;
-        if (Mi::NotifyModel & _notificationFlags) {
-            IModel *model = query<IModel>(IDatabase::instance());
-            if (model)
-                model->endChangeData(_data, _role);
-        }
+        if (_model)
+            _model->endChangeData(_data, _role, _dataChangeType);
     }
 };
 
