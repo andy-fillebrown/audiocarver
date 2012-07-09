@@ -73,12 +73,12 @@ IAggregate *ViewManager::init()
     return this;
 }
 
-IAggregate *Factory::init()
+IAggregate *ObjectFactory::init()
 {
     return this;
 }
 
-IAggregator *Factory::create(int itemType)
+IAggregator *ObjectFactory::create(int itemType)
 {
     switch (itemType) {
     case ScoreItem:

@@ -1,7 +1,6 @@
 
 SOURCE_FILES = \
     idatabase \
-    ifactory \
     ifiler \
     iaggregate \
     iaggregator \
@@ -10,6 +9,7 @@ SOURCE_FILES = \
     imodelitem \
     imodellist \
     iobject \
+    iobjectfactory \
     iorphanage \
     iunknown \
 

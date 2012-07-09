@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_factory.h"
+#include "ac_objectfactory.h"
 
 #include <ac_database.h>
 #include <ac_database_controlcurve.h>
@@ -32,12 +32,12 @@ using namespace Ac;
 
 namespace Database {
 
-IAggregate *Factory::init()
+IAggregate *ObjectFactory::init()
 {
     return this;
 }
 
-IAggregator *Factory::create(int itemType)
+IAggregator *ObjectFactory::create(int itemType)
 {
     switch (itemType) {
     case ControlCurveItem:
@@ -77,7 +77,7 @@ IAggregator *Factory::create(int itemType)
     }
 }
 
-IAggregator *Factory::aggregator() const
+IAggregator *ObjectFactory::aggregator() const
 {
     return _aggregator;
 }

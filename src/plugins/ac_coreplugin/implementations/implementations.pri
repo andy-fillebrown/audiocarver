@@ -1,8 +1,8 @@
 
 SOURCE_PAIRS = \
     ac_database \
-    ac_factory \
     ac_model \
+    ac_objectfactory \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= implementations/$${pair}.h

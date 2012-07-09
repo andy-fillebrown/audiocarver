@@ -18,8 +18,8 @@
 #include "ac_database.h"
 
 #include <ac_corenamespace.h>
-#include <ac_factory.h>
 #include <ac_model.h>
+#include <ac_objectfactory.h>
 
 namespace Ac {
 
@@ -27,7 +27,7 @@ using namespace Database;
 
 IAggregator *Database::init()
 {
-    _score = query<Factory>(this)->create(Ac::ScoreItem);
+    _score = query<IObjectFactory>(this)->create(Ac::ScoreItem);
     return Mi::Database::init();
 }
 
@@ -93,10 +93,10 @@ bool Database::isReading() const
 IAggregate *Database::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
-    case I::IFactory:
-        return appendAggregate((new Factory(this))->init());
     case I::IModel:
         return appendAggregate((new Model(this))->init());
+    case I::IObjectFactory:
+        return appendAggregate((new ObjectFactory(this))->init());
     default:
         return 0;
     }

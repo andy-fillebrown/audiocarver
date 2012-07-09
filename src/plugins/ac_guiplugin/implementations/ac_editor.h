@@ -22,7 +22,7 @@
 
 #include <ac_igraphicsviewmanager.h>
 
-#include <mi_ifactory.h>
+#include <mi_iobjectfactory.h>
 
 namespace Graphics {
 class ViewManager;
@@ -113,7 +113,7 @@ protected:
     }
 };
 
-class Factory : public IFactory
+class ObjectFactory : public IObjectFactory
 {
     friend class Ac::Editor;
 
@@ -125,7 +125,7 @@ protected:
         return _aggregator;
     }
 
-    Factory(Ac::Editor *aggregator)
+    ObjectFactory(Ac::Editor *aggregator)
         :   _aggregator(aggregator)
     {}
 
@@ -148,8 +148,8 @@ inline IAggregate *Ac::Editor::createAggregate(int interfaceType)
     switch (interfaceType) {
     case I::IGraphicsViewManager:
         return appendAggregate((new ::Graphics::ViewManager(this))->init());
-    case I::IFactory:
-        return appendAggregate((new ::Graphics::Factory(this))->init());
+    case I::IObjectFactory:
+        return appendAggregate((new ::Graphics::ObjectFactory(this))->init());
     default:
         return Mi::Editor::createAggregate(interfaceType);
     }
