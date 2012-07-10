@@ -20,7 +20,7 @@
 
 #include "ac_database_scoreobject.h"
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT Note : public ScoreObject
 {
@@ -69,6 +69,6 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_DATABASE_NOTE_H

@@ -19,7 +19,7 @@
 
 #include <mi_scopeddatachange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *ProjectSettings::init()
 {
@@ -66,4 +66,4 @@ IAggregate *ProjectSettings::ModelItem::init()
     return Object::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core

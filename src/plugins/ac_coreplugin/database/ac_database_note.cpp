@@ -17,7 +17,7 @@
 
 #include "ac_database_note.h"
 
-namespace Database {
+namespace Core {
 
 IAggregator *Note::init()
 {
@@ -29,7 +29,10 @@ IAggregate *Note::ModelItem::init()
     return ScoreObject::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core
+
+
+
 
 //#include "ac_note.h"
 

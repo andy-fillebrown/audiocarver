@@ -18,13 +18,13 @@
 #ifndef AC_DATABASE_SCOREOBJECT_H
 #define AC_DATABASE_SCOREOBJECT_H
 
-#include "mi_database_object.h"
+#include "mi_core_object.h"
 
 #include <ac_database_pitchcurve.h>
 
-#include <mi_database_objectlist.h>
+#include <mi_core_objectlist.h>
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT ScoreObject : public Object
 {
@@ -175,6 +175,6 @@ protected:
     };
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_DATABASE_SCOREOBJECT_H

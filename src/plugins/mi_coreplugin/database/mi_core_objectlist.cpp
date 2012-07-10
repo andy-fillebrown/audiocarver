@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "mi_database_objectlist.h"
+#include "mi_core_objectlist.h"
 
-namespace Database {
+namespace Core {
 
 IAggregator *ObjectList::init()
 {
@@ -35,4 +35,4 @@ IAggregate *ObjectList::ModelList::init()
     return this;
 }
 
-} // namespace Database
+} // namespace Core

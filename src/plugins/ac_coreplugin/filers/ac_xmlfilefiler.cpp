@@ -21,7 +21,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-namespace Database {
+namespace Core {
 
 IAggregator *XmlFileFiler::init()
 {
@@ -64,4 +64,4 @@ IAggregate *XmlFileFiler::Writer::init()
     return XmlWriter::init();
 }
 
-} // namespace Database
+} // namespace Core

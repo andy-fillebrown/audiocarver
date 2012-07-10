@@ -26,7 +26,7 @@
 
 class QFile;
 
-namespace Database {
+namespace Core {
 
 class XmlFileFiler : public Aggregator
 {
@@ -136,6 +136,6 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_XMLFILEFILER_H

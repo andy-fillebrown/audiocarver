@@ -15,14 +15,14 @@
 **
 **************************************************************************/
 
-#ifndef MI_DATABASE_OBJECTLIST_H
-#define MI_DATABASE_OBJECTLIST_H
+#ifndef MI_CORE_OBJECTLIST_H
+#define MI_CORE_OBJECTLIST_H
 
-#include "mi_database_object.h"
+#include "mi_core_object.h"
 
 #include "mi_imodellist.h"
 
-namespace Database {
+namespace Core {
 
 class MI_CORE_EXPORT ObjectList : public Object
 {
@@ -224,6 +224,6 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
-#endif // MI_DATABASE_OBJECTLIST_H
+#endif // MI_CORE_OBJECTLIST_H

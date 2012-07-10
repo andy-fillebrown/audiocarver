@@ -22,7 +22,7 @@
 
 #include <ac_coreglobal.h>
 
-namespace Database {
+namespace Core {
 class Model;
 } // namespace Database
 
@@ -31,7 +31,7 @@ namespace Ac {
 class AC_CORE_EXPORT Database : public Mi::Database
 {
     friend class CorePlugin;
-    friend class ::Database::Model;
+    friend class Core::Model;
 
     IAggregator *_score;
 

@@ -19,7 +19,7 @@
 
 #include <mi_scopeddatachange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *GridSettings::init()
 {
@@ -84,7 +84,7 @@ IAggregate *GridSettings::ModelItem::init()
     return Object::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core
 
 
 

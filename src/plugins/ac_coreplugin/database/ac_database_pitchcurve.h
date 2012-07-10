@@ -20,7 +20,7 @@
 
 #include "ac_database_curve.h"
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT PitchCurve : public Curve
 {
@@ -82,6 +82,6 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_DATABASE_PITCHCURVE_H

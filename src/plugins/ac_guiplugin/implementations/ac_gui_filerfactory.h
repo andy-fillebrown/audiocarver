@@ -25,7 +25,7 @@ namespace Gui {
 
 class Database;
 
-class FilerFactory : public ::Database::FilerFactory
+class FilerFactory : public Core::FilerFactory
 {
     friend class Database;
 

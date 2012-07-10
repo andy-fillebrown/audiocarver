@@ -19,7 +19,7 @@
 
 #include <mi_scopeddatachange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *ControlCurve::init()
 {
@@ -45,4 +45,4 @@ bool ControlCurve::setControlType(int controlType)
     return true;
 }
 
-} // Database
+} // namespace Core

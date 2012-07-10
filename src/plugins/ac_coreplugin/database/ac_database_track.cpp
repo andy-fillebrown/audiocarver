@@ -22,7 +22,7 @@
 
 #include <mi_scopeddatachange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *Track::init()
 {
@@ -45,7 +45,7 @@ IAggregate *Track::ModelItem::init()
     return ScoreObject::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core
 
 
 

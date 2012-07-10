@@ -21,7 +21,7 @@
 
 #include <ac_database.h>
 
-namespace Database {
+namespace Core {
 
 IAggregate *Model::init()
 {
@@ -58,4 +58,4 @@ IAggregator *Model::aggregator() const
     return _aggregator;
 }
 
-} // namespace Database
+} // namespace Core

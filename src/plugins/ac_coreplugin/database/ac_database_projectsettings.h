@@ -18,11 +18,11 @@
 #ifndef AC_DATABASE_PROJECTSETTINGS_H
 #define AC_DATABASE_PROJECTSETTINGS_H
 
-#include "mi_database_object.h"
+#include "mi_core_object.h"
 
 #include <ac_corenamespace.h>
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT ProjectSettings : public Object
 {
@@ -173,6 +173,6 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_DATABASE_PROJECTSETTINGS_H

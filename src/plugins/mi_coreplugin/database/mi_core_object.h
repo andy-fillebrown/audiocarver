@@ -15,15 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef MI_DATABASE_OBJECT_H
-#define MI_DATABASE_OBJECT_H
+#ifndef MI_CORE_OBJECT_H
+#define MI_CORE_OBJECT_H
 
 #include "mi_aggregator.h"
 
 #include "mi_imodeldata.h"
 #include "mi_imodelitem.h"
 
-namespace Database {
+namespace Core {
 
 class MI_CORE_EXPORT Object : public Aggregator
 {
@@ -216,6 +216,6 @@ protected:
     };
 };
 
-} // namespace Database
+} // namespace Core
 
-#endif // MI_DATABASE_OBJECT_H
+#endif // MI_CORE_OBJECT_H

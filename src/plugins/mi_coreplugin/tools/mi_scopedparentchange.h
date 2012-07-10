@@ -22,7 +22,7 @@
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
-namespace Database {
+namespace Core {
 
 class ScopedParentChange
 {
@@ -49,6 +49,6 @@ public:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // MI_SCOPEDPARENTCHANGE_H

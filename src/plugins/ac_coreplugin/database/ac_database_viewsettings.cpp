@@ -21,7 +21,7 @@
 
 #include <mi_scopeddatachange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *ViewSettings::init()
 {
@@ -98,4 +98,4 @@ IAggregate *ViewSettings::ModelItem::init()
     return Object::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core

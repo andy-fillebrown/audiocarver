@@ -22,7 +22,7 @@
 namespace Ac {
 namespace Gui {
 
-using namespace Database;
+using namespace Core;
 
 IAggregator *Database::init()
 {

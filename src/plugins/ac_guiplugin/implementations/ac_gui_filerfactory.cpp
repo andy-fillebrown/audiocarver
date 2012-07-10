@@ -35,7 +35,7 @@ IAggregator *FilerFactory::create(int filerType)
     case Ac::XmlCopyFiler:
         return (new XmlCopyFiler)->init();
     default:
-        return ::Database::FilerFactory::create(filerType);
+        return Core::FilerFactory::create(filerType);
     }
 }
 

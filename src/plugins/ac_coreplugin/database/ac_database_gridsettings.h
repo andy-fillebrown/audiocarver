@@ -18,11 +18,11 @@
 #ifndef AC_DATABASE_GRIDSETTINGS_H
 #define AC_DATABASE_GRIDSETTINGS_H
 
-#include "mi_database_object.h"
+#include "mi_core_object.h"
 
 #include <ac_corenamespace.h>
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT GridSettings : public Object
 {
@@ -202,7 +202,7 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_DATABASE_GRIDSETTINGS_H
 

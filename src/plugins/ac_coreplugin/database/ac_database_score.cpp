@@ -22,13 +22,13 @@
 
 #include <mi_scopeddatachange.h>
 
-static Database::Score *instance = 0;
+namespace Core {
 
-namespace Database {
+static Score *instance = 0;
 
 Score *Score::instance()
 {
-    return ::instance;
+    return Core::instance;
 }
 
 IAggregator *Score::init()
@@ -42,7 +42,7 @@ IAggregator *Score::init()
     _projectSettings = factory->create(Ac::ProjectSettingsItem);
     _viewSettings = factory->create(Ac::ViewSettingsItem);
     ScoreObject::init();
-    return ::instance = this;
+    return Core::instance = this;
 }
 
 Score::~Score()
@@ -86,7 +86,7 @@ IAggregate *Score::ModelItem::init()
     return ScoreObject::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core
 
 
 

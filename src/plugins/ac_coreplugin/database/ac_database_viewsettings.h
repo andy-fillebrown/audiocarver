@@ -18,12 +18,12 @@
 #ifndef AC_DATABASE_VIEWSETTINGS_H
 #define AC_DATABASE_VIEWSETTINGS_H
 
-#include "mi_database_object.h"
+#include "mi_core_object.h"
 
 #include <ac_coreconstants.h>
 #include <ac_corenamespace.h>
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT ViewSettings : public Object
 {
@@ -219,6 +219,6 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_DATABASE_VIEWSETTINGS_H

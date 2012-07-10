@@ -30,7 +30,7 @@
 
 using namespace Ac;
 
-namespace Database {
+namespace Core {
 
 IAggregate *ObjectFactory::init()
 {
@@ -82,4 +82,4 @@ IAggregator *ObjectFactory::aggregator() const
     return _aggregator;
 }
 
-} // namespace Database
+} // namespace Core

@@ -24,7 +24,7 @@ namespace Ac {
 class Database;
 } // namespace Ac
 
-namespace Database {
+namespace Core {
 
 class ObjectFactory : public IObjectFactory
 {
@@ -51,6 +51,6 @@ protected:
     IAggregator *aggregator() const;
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_OBJECTFACTORY_H

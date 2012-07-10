@@ -24,7 +24,7 @@ namespace Ac {
 class Database;
 } // namespace Ac
 
-namespace Database {
+namespace Core {
 
 class Model : public IModel
 {
@@ -55,6 +55,6 @@ protected:
     IAggregator *aggregator() const;
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_MODEL_H

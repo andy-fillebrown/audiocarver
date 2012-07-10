@@ -26,7 +26,7 @@ namespace Ac {
 class Database;
 } // namespace Ac
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT FilerFactory : public IFilerFactory
 {
@@ -53,6 +53,6 @@ protected:
     IAggregator *aggregator() const;
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // AC_FILERFACTORY_H

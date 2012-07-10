@@ -19,7 +19,7 @@
 
 #include <mi_scopeddatachange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *GridLine::init()
 {
@@ -105,7 +105,7 @@ IAggregate *ControlGridLine::ModelItem::init()
     return GridLine::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core
 
 
 

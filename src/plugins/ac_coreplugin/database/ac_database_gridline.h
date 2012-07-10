@@ -15,11 +15,11 @@
 **
 **************************************************************************/
 
-#include "mi_database_object.h"
+#include "mi_core_object.h"
 
 #include <ac_corenamespace.h>
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT GridLine : public Object
 {
@@ -311,7 +311,10 @@ protected:
     }
 };
 
-} // namespace Database
+} // namespace Core
+
+
+
 
 //#ifndef AC_GRIDLINE_H
 //#define AC_GRIDLINE_H

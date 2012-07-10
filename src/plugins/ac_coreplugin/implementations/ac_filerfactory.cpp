@@ -21,7 +21,7 @@
 #include <ac_database.h>
 #include <ac_xmlfilefiler.h>
 
-namespace Database {
+namespace Core {
 
 IAggregate *FilerFactory::init()
 {
@@ -43,4 +43,4 @@ IAggregator *FilerFactory::aggregator() const
     return _aggregator;
 }
 
-} // namespace Database
+} // namespace Core

@@ -19,7 +19,7 @@
 
 #include <mi_scopeddatachange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *Curve::init()
 {
@@ -75,4 +75,4 @@ IAggregate *Curve::ModelItem::init()
     return Object::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core

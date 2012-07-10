@@ -17,7 +17,7 @@
 
 #include "ac_database_pitchcurve.h"
 
-namespace Database {
+namespace Core {
 
 IAggregator *PitchCurve::init()
 {
@@ -29,4 +29,4 @@ IAggregate *PitchCurve::ModelItem::init()
     return Curve::ModelItem::init();
 }
 
-} // namespace Database
+} // namespace Core

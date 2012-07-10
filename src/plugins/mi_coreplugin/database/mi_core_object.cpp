@@ -15,16 +15,16 @@
 **
 **************************************************************************/
 
-#include "mi_database_object.h"
+#include "mi_core_object.h"
 
 #include <mi_idatabase.h>
 #include <mi_iorphanage.h>
 
-#include <mi_database_objectlist.h>
+#include <mi_core_objectlist.h>
 #include <mi_scopeddatachange.h>
 #include <mi_scopedparentchange.h>
 
-namespace Database {
+namespace Core {
 
 IAggregator *Object::init()
 {
@@ -71,4 +71,4 @@ void Object::setParent(Object *parent)
     _parent = parent;
 }
 
-} // namespace Database
+} // namespace Core

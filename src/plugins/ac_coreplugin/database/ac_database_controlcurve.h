@@ -20,7 +20,7 @@
 
 #include "ac_database_curve.h"
 
-namespace Database {
+namespace Core {
 
 class AC_CORE_EXPORT ControlCurve : public Curve
 {
@@ -158,6 +158,6 @@ protected:
     }
 };
 
-} // Database
+} // Core
 
 #endif // AC_DATABASE_CONTROLCURVE_H

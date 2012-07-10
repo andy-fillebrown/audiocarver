@@ -22,7 +22,7 @@
 #include <mi_imodel.h>
 #include <mi_imodeldata.h>
 
-namespace Database {
+namespace Core {
 
 class ScopedDataChange
 {
@@ -53,6 +53,6 @@ public:
     }
 };
 
-} // namespace Database
+} // namespace Core
 
 #endif // MI_SCOPEDDATACHANGE_H
