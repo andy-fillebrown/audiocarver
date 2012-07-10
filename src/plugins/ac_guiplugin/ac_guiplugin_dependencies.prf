@@ -5,6 +5,7 @@ load(../ac_coreplugin/ac_coreplugin.prf)
 DIRS = \
 #    delegates \
 #    dialogs \
+    filers \
     graphics \
     graphicsview \
     implementations \

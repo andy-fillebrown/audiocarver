@@ -18,6 +18,7 @@
 #include "ac_guiplugin.h"
 
 #include <ac_editor.h>
+#include <ac_gui_database.h>
 //#include <ac_mainwidget.h>
 //#include <ac_guimainwindowextension.h>
 //#include <ac_selecteditemspropertyview.h>
@@ -39,6 +40,7 @@ bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
 
+    (new Gui::Database())->init();
     (new Editor)->init();
 //    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
     return true;

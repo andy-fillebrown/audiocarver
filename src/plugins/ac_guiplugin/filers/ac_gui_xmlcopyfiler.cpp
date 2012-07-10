@@ -15,44 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_FILERFACTORY_H
-#define AC_FILERFACTORY_H
+#include "ac_gui_xmlcopyfiler.h"
 
-#include "mi_ifilerfactory.h"
+#include <QApplication>
+#include <QClipboard>
 
-#include <ac_coreglobal.h>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 namespace Ac {
-class Database;
-} // namespace Ac
+namespace Gui {
 
-namespace Database {
-
-class AC_CORE_EXPORT FilerFactory : public IFilerFactory
+IAggregator *XmlCopyFiler::init()
 {
-    friend class Ac::Database;
+    return this;
+}
 
-    Ac::Database *_aggregator;
+IAggregate *XmlCopyFiler::Reader::init()
+{
+    QString *data = a()->data();
+    *data = QString("<clipboard>") + QApplication::clipboard()->text() + "</clipboard>";
+    setStream(new QXmlStreamReader(*data));
+    return XmlReader::init();
+}
 
-protected:
-    Ac::Database *a() const
-    {
-        return _aggregator;
-    }
+IAggregate *XmlCopyFiler::Writer::init()
+{
+    setStream(new QXmlStreamWriter(a()->data()));
+    return XmlWriter::init();
+}
 
-    FilerFactory(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int filerType);
-
-    // IAggregate
-    IAggregator *aggregator() const;
-};
-
-} // namespace Database
-
-#endif // AC_FILERFACTORY_H
+} // namespace Gui
+} // namespace Ac

@@ -15,44 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_FILERFACTORY_H
-#define AC_FILERFACTORY_H
+#include "ac_gui_filerfactory.h"
 
-#include "mi_ifilerfactory.h"
+#include <ac_gui_xmlcopyfiler.h>
 
-#include <ac_coreglobal.h>
+#include <ac_corenamespace.h>
 
 namespace Ac {
-class Database;
-} // namespace Ac
+namespace Gui {
 
-namespace Database {
-
-class AC_CORE_EXPORT FilerFactory : public IFilerFactory
+IAggregate *FilerFactory::init()
 {
-    friend class Ac::Database;
+    return this;
+}
 
-    Ac::Database *_aggregator;
-
-protected:
-    Ac::Database *a() const
-    {
-        return _aggregator;
+IAggregator *FilerFactory::create(int filerType)
+{
+    switch (filerType) {
+    case Ac::XmlCopyFiler:
+        return (new XmlCopyFiler)->init();
+    default:
+        return ::Database::FilerFactory::create(filerType);
     }
+}
 
-    FilerFactory(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int filerType);
-
-    // IAggregate
-    IAggregator *aggregator() const;
-};
-
-} // namespace Database
-
-#endif // AC_FILERFACTORY_H
+} // namespace Gui
+} // namespace Ac

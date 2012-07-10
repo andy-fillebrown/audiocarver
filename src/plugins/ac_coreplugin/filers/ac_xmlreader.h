@@ -15,44 +15,50 @@
 **
 **************************************************************************/
 
-#ifndef AC_FILERFACTORY_H
-#define AC_FILERFACTORY_H
+#ifndef AC_XMLREADER_H
+#define AC_XMLREADER_H
 
-#include "mi_ifilerfactory.h"
+#include "mi_ifiler.h"
 
 #include <ac_coreglobal.h>
 
-namespace Ac {
-class Database;
-} // namespace Ac
+class QXmlStreamReader;
 
-namespace Database {
-
-class AC_CORE_EXPORT FilerFactory : public IFilerFactory
+class AC_CORE_EXPORT XmlReader : public IReader
 {
-    friend class Ac::Database;
-
-    Ac::Database *_aggregator;
+    IAggregator *_aggregator;
+    QXmlStreamReader *_stream;
 
 protected:
-    Ac::Database *a() const
+    XmlReader(IAggregator *aggregator)
+        :   _aggregator(aggregator)
+        ,   _stream(0)
+    {}
+
+    virtual IAggregate *init();
+    ~XmlReader();
+
+    IAggregator *a() const
     {
         return _aggregator;
     }
 
-    FilerFactory(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
+    QXmlStreamReader *stream()
+    {
+        return _stream;
+    }
 
-    virtual IAggregate *init();
+    void setStream(QXmlStreamReader *stream);
 
-    // IFactory
-    IAggregator *create(int filerType);
+    // IReader
+    int nextItemType();
+    bool read(IModelItem *item);
 
     // IAggregate
-    IAggregator *aggregator() const;
+    IAggregator *aggregator() const
+    {
+        return _aggregator;
+    }
 };
 
-} // namespace Database
-
-#endif // AC_FILERFACTORY_H
+#endif // AC_XMLREADER_H

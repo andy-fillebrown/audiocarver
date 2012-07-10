@@ -1,8 +1,6 @@
 
 SOURCE_PAIRS = \
-    ac_xmlfilefiler \
-    ac_xmlreader \
-    ac_xmlwriter \
+    ac_gui_xmlcopyfiler \
 
 for(pair, SOURCE_PAIRS) {
     HEADERS *= filers/$${pair}.h

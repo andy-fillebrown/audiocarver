@@ -15,44 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_FILERFACTORY_H
-#define AC_FILERFACTORY_H
+#include "ac_xmlreader.h"
 
-#include "mi_ifilerfactory.h"
+#include <QXmlStreamReader>
 
-#include <ac_coreglobal.h>
-
-namespace Ac {
-class Database;
-} // namespace Ac
-
-namespace Database {
-
-class AC_CORE_EXPORT FilerFactory : public IFilerFactory
+IAggregate *XmlReader::init()
 {
-    friend class Ac::Database;
+    return this;
+}
 
-    Ac::Database *_aggregator;
+XmlReader::~XmlReader()
+{
+    delete _stream;
+}
 
-protected:
-    Ac::Database *a() const
-    {
-        return _aggregator;
-    }
+void XmlReader::setStream(QXmlStreamReader *stream)
+{
+    if (_stream == stream)
+        return;
+    delete _stream;
+    _stream = stream;
+}
 
-    FilerFactory(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
+int XmlReader::nextItemType()
+{
+    return 0;
+}
 
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int filerType);
-
-    // IAggregate
-    IAggregator *aggregator() const;
-};
-
-} // namespace Database
-
-#endif // AC_FILERFACTORY_H
+bool XmlReader::read(IModelItem *item)
+{
+    return false;
+}

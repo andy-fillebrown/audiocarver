@@ -15,44 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_FILERFACTORY_H
-#define AC_FILERFACTORY_H
+#include "ac_gui_database.h"
 
-#include "mi_ifilerfactory.h"
-
-#include <ac_coreglobal.h>
+#include "ac_gui_filerfactory.h"
 
 namespace Ac {
-class Database;
-} // namespace Ac
+namespace Gui {
 
-namespace Database {
+using namespace Database;
 
-class AC_CORE_EXPORT FilerFactory : public IFilerFactory
+IAggregator *Database::init()
 {
-    friend class Ac::Database;
+    return Ac::Database::init();
+}
 
-    Ac::Database *_aggregator;
-
-protected:
-    Ac::Database *a() const
-    {
-        return _aggregator;
+IAggregate *Database::createAggregate(int interfaceType)
+{
+    switch (interfaceType) {
+    case I::IFilerFactory:
+        return appendAggregate((new FilerFactory(this))->init());
+    default:
+        return Ac::Database::createAggregate(interfaceType);
     }
+}
 
-    FilerFactory(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int filerType);
-
-    // IAggregate
-    IAggregator *aggregator() const;
-};
-
-} // namespace Database
-
-#endif // AC_FILERFACTORY_H
+} // namespace Gui
+} // namespace Ac

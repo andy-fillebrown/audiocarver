@@ -72,28 +72,6 @@ public:
 
     virtual QString fileName() const = 0;
     virtual void setFileName(const QString &fileName) = 0;
-    virtual void close() = 0;
-
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    virtual bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
-    }
-};
-
-class ICopyFiler : public IAggregate
-{
-public:
-    enum { InterfaceType = I::ICopyFiler };
-
-    virtual const QString &data() const = 0;
 
     // IUnknown
     int interfaceType() const

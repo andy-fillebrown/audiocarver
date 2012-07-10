@@ -17,9 +17,9 @@
 
 #include "ac_filerfactory.h"
 
+#include <ac_corenamespace.h>
 #include <ac_database.h>
-
-using namespace Ac;
+#include <ac_xmlfilefiler.h>
 
 namespace Database {
 
@@ -31,6 +31,8 @@ IAggregate *FilerFactory::init()
 IAggregator *FilerFactory::create(int filerType)
 {
     switch (filerType) {
+    case Ac::XmlFileFiler:
+        return (new XmlFileFiler)->init();
     default:
         return 0;
     }

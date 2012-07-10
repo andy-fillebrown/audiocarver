@@ -20,13 +20,15 @@
 
 #include "mi_database.h"
 
+#include <ac_coreglobal.h>
+
 namespace Database {
 class Model;
 } // namespace Database
 
 namespace Ac {
 
-class Database : public Mi::Database
+class AC_CORE_EXPORT Database : public Mi::Database
 {
     friend class CorePlugin;
     friend class ::Database::Model;

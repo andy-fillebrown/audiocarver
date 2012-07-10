@@ -3,7 +3,7 @@ load(../mi_coreplugin/mi_coreplugin.prf)
 
 DIRS = \
     database \
-#    filers \
+    filers \
     implementations \
     interfaces \
 #    models \

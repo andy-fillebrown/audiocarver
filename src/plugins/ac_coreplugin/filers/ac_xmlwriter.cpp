@@ -15,44 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_FILERFACTORY_H
-#define AC_FILERFACTORY_H
+#include "ac_xmlwriter.h"
 
-#include "mi_ifilerfactory.h"
+#include <QXmlStreamWriter>
 
-#include <ac_coreglobal.h>
-
-namespace Ac {
-class Database;
-} // namespace Ac
-
-namespace Database {
-
-class AC_CORE_EXPORT FilerFactory : public IFilerFactory
+IAggregate *XmlWriter::init()
 {
-    friend class Ac::Database;
+    return this;
+}
 
-    Ac::Database *_aggregator;
+XmlWriter::~XmlWriter()
+{
+    delete _stream;
+}
 
-protected:
-    Ac::Database *a() const
-    {
-        return _aggregator;
-    }
+void XmlWriter::setStream(QXmlStreamWriter *stream)
+{
+    if (_stream == stream)
+        return;
+    delete _stream;
+    _stream = stream;
+}
 
-    FilerFactory(Ac::Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int filerType);
-
-    // IAggregate
-    IAggregator *aggregator() const;
-};
-
-} // namespace Database
-
-#endif // AC_FILERFACTORY_H
+bool XmlWriter::write(IModelItem *item)
+{
+    return false;
+}

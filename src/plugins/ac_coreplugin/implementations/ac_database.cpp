@@ -17,10 +17,11 @@
 
 #include "ac_database.h"
 
+#include "ac_filerfactory.h"
+#include "ac_model.h"
+#include "ac_objectfactory.h"
+
 #include <ac_corenamespace.h>
-#include <ac_filerfactory.h>
-#include <ac_model.h>
-#include <ac_objectfactory.h>
 
 namespace Ac {
 

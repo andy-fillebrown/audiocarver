@@ -2,6 +2,8 @@
 SOURCE_FILES = \
     editor \
 #    guimainwindowextension \
+    gui_database \
+    gui_filerfactory \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
