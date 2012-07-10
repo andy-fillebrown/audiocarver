@@ -1,9 +1,0 @@
-
-load(../qt_coreplugin/qt_coreplugin_dependencies.prf)
-
-# for pro_version.h
-INCLUDEPATH *= $$PRO_BUILD_TREE/src/plugins/qt_coreplugin
-DEPENDPATH *= $$PRO_BUILD_TREE/src/plugins/qt_coreplugin
-
-LIBS *= -L$$PRO_PLUGIN_PATH
-LIBS *= -l$$qtLibraryName(QtCorePlugin)

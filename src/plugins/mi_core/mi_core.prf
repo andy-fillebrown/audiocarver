@@ -1,0 +1,4 @@
+
+load(../mi_core/mi_core_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(MiCorePlugin)

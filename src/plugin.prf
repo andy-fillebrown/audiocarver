@@ -13,10 +13,10 @@ isEmpty(PROVIDER) {
 DESTDIR = $$PRO_PLUGIN_PATH/$$PROVIDER
 LIBS += -L$$DESTDIR
 
-PLUGINSPEC = $$_PRO_FILE_PWD_/$${PRO_TARGET}.pluginspec
+PLUGINSPEC = $$_PRO_FILE_PWD_/$$basename(_PRO_FILE_PWD_).pluginspec
 PLUGINSPEC_IN = $${PLUGINSPEC}.in
 OTHER_FILES += $$PLUGINSPEC_IN
-PLUGINSPEC = $$OUT_PWD/$${PRO_TARGET}.pluginspec
+PLUGINSPEC = $$OUT_PWD/$$basename(_PRO_FILE_PWD_).pluginspec
 QMAKE_SUBSTITUTES += $${PLUGINSPEC}.in
 copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripDir}
 copy2build.input = PLUGINSPEC
@@ -53,8 +53,6 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
     INSTALLS += target pluginspec
 }
 
-SOURCE_FILE_PREFIX = $$lower($$TARGET_PREFIX)_
-target_name = $$lower($$TARGET_NAME)
-prefixed_target_name = $$SOURCE_FILE_PREFIX$$target_name
+SOURCE_FILE_PREFIX = $$basename(_PRO_FILE_PWD_)
 
 DEFINES *= USE_MI_ASSERT
