@@ -19,8 +19,14 @@
 
 #include <QWheelEvent>
 
-void MiGraphicsView::wheelEvent(QWheelEvent *event)
+namespace Mi {
+namespace Gui {
+
+void GraphicsView::wheelEvent(QWheelEvent *event)
 {
     // Ignore event so parent widget's wheelEvent gets called.
     event->ignore();
 }
+
+} // namespace Gui
+} // namespace Mi

@@ -15,7 +15,6 @@ LIBS += -L$$DESTDIR
 
 PLUGINSPEC = $$_PRO_FILE_PWD_/$$basename(_PRO_FILE_PWD_).pluginspec
 PLUGINSPEC_IN = $${PLUGINSPEC}.in
-OTHER_FILES += $$PLUGINSPEC_IN
 PLUGINSPEC = $$OUT_PWD/$$basename(_PRO_FILE_PWD_).pluginspec
 QMAKE_SUBSTITUTES += $${PLUGINSPEC}.in
 copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripDir}

@@ -15,12 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_xmlfilefiler.h"
+#include "ac_core_xmlfilefiler.h"
 
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+namespace Ac {
 namespace Core {
 
 IAggregator *XmlFileFiler::init()
@@ -65,3 +66,4 @@ IAggregate *XmlFileFiler::Writer::init()
 }
 
 } // namespace Core
+} // namespace Ac

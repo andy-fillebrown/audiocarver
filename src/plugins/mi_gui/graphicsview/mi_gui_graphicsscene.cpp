@@ -16,3 +16,9 @@
 **************************************************************************/
 
 #include "mi_gui_graphicsscene.h"
+
+namespace Mi {
+namespace Gui {
+
+} // namespace Gui
+} // namespace Mi

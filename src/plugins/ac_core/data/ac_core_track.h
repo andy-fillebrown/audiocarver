@@ -15,11 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACK_H
-#define AC_TRACK_H
+#ifndef AC_CORE_TRACK_H
+#define AC_CORE_TRACK_H
 
-#include "ac_database_scoreobject.h"
+#include "ac_core_scoreobject.h"
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT Track : public ScoreObject
@@ -38,9 +39,9 @@ class AC_CORE_EXPORT Track : public ScoreObject
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount,
-        ItemCountOffset = Object::TotalItemCount,
+        ItemCountOffset = DataObject::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
@@ -93,7 +94,7 @@ protected:
 
         Track *a() const
         {
-            return static_cast<Track*>(Object::ModelData::a());
+            return static_cast<Track*>(DataObject::ModelData::a());
         }
 
     protected:
@@ -164,7 +165,7 @@ protected:
 
         Track *a() const
         {
-            return static_cast<Track*>(Object::ModelItem::a());
+            return static_cast<Track*>(DataObject::ModelItem::a());
         }
 
     protected:
@@ -237,6 +238,9 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
+
+#endif // AC_CORE_TRACK_H
 
 
 
@@ -329,4 +333,4 @@ protected:
 //    GraphicsParentPrivate *graphicsParent() const;
 //};
 
-#endif // AC_TRACK_H
+//#endif // AC_TRACK_H

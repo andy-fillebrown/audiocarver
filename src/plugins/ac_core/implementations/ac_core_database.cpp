@@ -15,22 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_database.h"
+#include "ac_core_database.h"
 
-#include "ac_filerfactory.h"
-#include "ac_model.h"
-#include "ac_objectfactory.h"
+#include "ac_core_filerfactory.h"
+#include "ac_core_model.h"
+#include "ac_core_objectfactory.h"
 
-#include <ac_corenamespace.h>
+#include <ac_core_namespace.h>
 
 namespace Ac {
-
-using namespace Core;
+namespace Core {
 
 IAggregator *Database::init()
 {
     _score = query<IObjectFactory>(this)->create(Ac::ScoreItem);
-    return Mi::Database::init();
+    return Mi::Core::Database::init();
 }
 
 Database::~Database()
@@ -106,4 +105,5 @@ IAggregate *Database::createAggregate(int interfaceType)
     }
 }
 
+} // namespace Core
 } // namespace Ac

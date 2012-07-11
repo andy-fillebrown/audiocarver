@@ -15,9 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_xmlreader.h"
+#include "ac_core_xmlreader.h"
 
 #include <QXmlStreamReader>
+
+namespace Ac {
+namespace Core {
 
 IAggregate *XmlReader::init()
 {
@@ -46,3 +49,6 @@ bool XmlReader::read(IModelItem *item)
 {
     return false;
 }
+
+} // namespace Core
+} // namespace Ac

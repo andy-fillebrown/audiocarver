@@ -15,34 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_core_filerfactory.h"
-
-#include "ac_core_xmlfilefiler.h"
-
-#include <ac_core_database.h>
-#include <ac_core_namespace.h>
+#include "ac_core_dataobjectlist.h"
 
 namespace Ac {
 namespace Core {
 
-IAggregate *FilerFactory::init()
+IAggregator *DataObjectList::init()
 {
-    return this;
-}
-
-IAggregator *FilerFactory::create(int filerType)
-{
-    switch (filerType) {
-    case Ac::XmlFileFiler:
-        return (new XmlFileFiler)->init();
-    default:
-        return 0;
-    }
-}
-
-IAggregator *FilerFactory::aggregator() const
-{
-    return _aggregator;
+    return Mi::Core::DataObjectList::init();
 }
 
 } // namespace Core

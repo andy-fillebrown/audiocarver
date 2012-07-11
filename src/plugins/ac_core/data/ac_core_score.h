@@ -15,8 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_database_scoreobject.h"
+#ifndef AC_CORE_SCORE_H
+#define AC_CORE_SCORE_H
 
+#include "ac_core_scoreobject.h"
+
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT Score : public ScoreObject
@@ -42,9 +46,9 @@ public:
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount,
-        ItemCountOffset = Object::TotalItemCount,
+        ItemCountOffset = DataObject::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
@@ -118,7 +122,7 @@ protected:
 
         Score *a() const
         {
-            return static_cast<Score*>(Object::ModelData::a());
+            return static_cast<Score*>(DataObject::ModelData::a());
         }
 
     protected:
@@ -177,7 +181,7 @@ protected:
 
         Score *a() const
         {
-            return static_cast<Score*>(Object::ModelItem::a());
+            return static_cast<Score*>(DataObject::ModelItem::a());
         }
 
     protected:
@@ -293,6 +297,9 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
+
+#endif // AC_CORE_SCORE_H
 
 
 

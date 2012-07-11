@@ -15,11 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_database_controlcurve.h"
+#include "ac_core_controlcurve.h"
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *ControlCurve::init()
 {
@@ -46,3 +49,4 @@ bool ControlCurve::setControlType(int controlType)
 }
 
 } // namespace Core
+} // namespace Ac

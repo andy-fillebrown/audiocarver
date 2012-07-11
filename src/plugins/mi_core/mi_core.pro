@@ -27,7 +27,7 @@ for(file, SOURCE_FILES) {
 resource = $${SOURCE_FILE_PREFIX}.qrc
 prf = $${SOURCE_FILE_PREFIX}.prf
 dependencies_prf = $${SOURCE_FILE_PREFIX}_dependencies.prf
-pluginspec = $${PREFIXED_TARGET_NAME}.pluginspec.in
+pluginspec = $${SOURCE_FILE_PREFIX}.pluginspec.in
 exists($$resource): RESOURCES *= $$resource
 exists($$prf): OTHER_FILES *= $$prf
 exists($$dependencies_prf): OTHER_FILES *= $$dependencies_prf

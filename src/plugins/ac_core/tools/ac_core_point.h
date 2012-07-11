@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_POINT_H
-#define AC_POINT_H
+#ifndef AC_CORE_POINT_H
+#define AC_CORE_POINT_H
 
-#include <ac_corenamespace.h>
+#include <ac_core_namespace.h>
 
 #include <QList>
 #include <QMetaType>
@@ -64,4 +64,4 @@ inline bool operator==(const Point &a, const Point &b)
 typedef QList<Point> PointList;
 Q_DECLARE_METATYPE(PointList)
 
-#endif // AC_POINT_H
+#endif // AC_CORE_POINT_H

@@ -15,11 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_PITCHCURVE_H
-#define AC_DATABASE_PITCHCURVE_H
+#ifndef AC_CORE_PITCHCURVE_H
+#define AC_CORE_PITCHCURVE_H
 
-#include "ac_database_curve.h"
+#include "ac_core_curve.h"
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT PitchCurve : public Curve
@@ -83,5 +84,6 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_DATABASE_PITCHCURVE_H
+#endif // AC_CORE_PITCHCURVE_H

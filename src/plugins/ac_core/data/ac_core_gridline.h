@@ -15,13 +15,17 @@
 **
 **************************************************************************/
 
-#include "mi_core_object.h"
+#ifndef AC_CORE_GRIDLINE_H
+#define AC_CORE_GRIDLINE_H
 
-#include <ac_corenamespace.h>
+#include "mi_core_dataobject.h"
 
+#include <ac_core_namespace.h>
+
+namespace Ac {
 namespace Core {
 
-class AC_CORE_EXPORT GridLine : public Object
+class AC_CORE_EXPORT GridLine : public Mi::Core::DataObject
 {
     enum { RoleCount = 4 };
 
@@ -32,7 +36,7 @@ class AC_CORE_EXPORT GridLine : public Object
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
@@ -72,18 +76,18 @@ protected:
 
     bool setColor(int color);
 
-    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    class AC_CORE_EXPORT ModelData : public DataObject::ModelData
     {
         friend class GridLine;
 
         GridLine *a() const
         {
-            return static_cast<GridLine*>(Object::ModelData::a());
+            return static_cast<GridLine*>(DataObject::ModelData::a());
         }
 
     protected:
         ModelData(GridLine *aggregator)
-            :   Object::ModelData(aggregator)
+            :   DataObject::ModelData(aggregator)
         {}
 
         IAggregate *init();
@@ -106,7 +110,7 @@ protected:
             case 3:
                 return Ac::ColorRole;
             default:
-                return Object::ModelData::roleAt(i);
+                return DataObject::ModelData::roleAt(i);
             }
         }
 
@@ -122,7 +126,7 @@ protected:
             case Ac::ColorRole:
                 return a()->color();
             default:
-                return Object::ModelData::getVariant(role);
+                return DataObject::ModelData::getVariant(role);
             }
         }
 
@@ -138,16 +142,16 @@ protected:
             case Ac::ColorRole:
                 return a()->setColor(qvariant_cast<int>(data));
             default:
-                return Object::ModelData::setVariant(data, role);
+                return DataObject::ModelData::setVariant(data, role);
             }
         }
     };
 
-    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    class AC_CORE_EXPORT ModelItem : public DataObject::ModelItem
     {
     protected:
         ModelItem(GridLine *aggregator)
-            :   Object::ModelItem(aggregator)
+            :   DataObject::ModelItem(aggregator)
         {}
 
         IAggregate *init();
@@ -157,7 +161,7 @@ protected:
         {
             if (Ac::GridLine == itemType)
                 return true;
-            return Object::ModelItem::isTypeOfItem(itemType);
+            return DataObject::ModelItem::isTypeOfItem(itemType);
         }
     };
 
@@ -168,7 +172,7 @@ protected:
         case I::IModelData:
             return appendAggregate((new ModelData(this))->init());
         default:
-            return Object::createAggregate(interfaceType);
+            return DataObject::createAggregate(interfaceType);
         }
     }
 };
@@ -312,6 +316,9 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
+
+#endif // AC_CORE_GRIDLINE_H
 
 
 

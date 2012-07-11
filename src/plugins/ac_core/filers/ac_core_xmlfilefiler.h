@@ -15,20 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_XMLFILEFILER_H
-#define AC_XMLFILEFILER_H
+#ifndef AC_CORE_XMLFILEFILER_H
+#define AC_CORE_XMLFILEFILER_H
 
-#include "mi_aggregator.h"
+#include "mi_core_aggregator.h"
 
-#include "ac_xmlreader.h"
-#include "ac_xmlwriter.h"
+#include "ac_core_xmlreader.h"
+#include "ac_core_xmlwriter.h"
 #include "mi_ifiler.h"
 
 class QFile;
 
+namespace Ac {
 namespace Core {
 
-class XmlFileFiler : public Aggregator
+class XmlFileFiler : public Mi::Core::Aggregator
 {
     friend class FilerFactory;
 
@@ -137,5 +138,6 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_XMLFILEFILER_H
+#endif // AC_CORE_XMLFILEFILER_H

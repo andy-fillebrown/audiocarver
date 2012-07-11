@@ -15,16 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_PROJECTSETTINGS_H
-#define AC_DATABASE_PROJECTSETTINGS_H
+#ifndef AC_CORE_PROJECTSETTINGS_H
+#define AC_CORE_PROJECTSETTINGS_H
 
-#include "mi_core_object.h"
+#include "mi_core_dataobject.h"
 
-#include <ac_corenamespace.h>
+#include <ac_core_namespace.h>
 
+namespace Ac {
 namespace Core {
 
-class AC_CORE_EXPORT ProjectSettings : public Object
+class AC_CORE_EXPORT ProjectSettings : public Mi::Core::DataObject
 {
     friend class ObjectFactory;
 
@@ -36,7 +37,7 @@ class AC_CORE_EXPORT ProjectSettings : public Object
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
@@ -69,18 +70,18 @@ protected:
 
     bool setCurveRate(int rate);
 
-    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    class AC_CORE_EXPORT ModelData : public DataObject::ModelData
     {
         friend class ProjectSettings;
 
         ProjectSettings *a() const
         {
-            return static_cast<ProjectSettings*>(Object::ModelData::a());
+            return static_cast<ProjectSettings*>(DataObject::ModelData::a());
         }
 
     protected:
         ModelData(ProjectSettings *aggregator)
-            :   Object::ModelData(aggregator)
+            :   DataObject::ModelData(aggregator)
         {}
 
         IAggregate *init();
@@ -101,7 +102,7 @@ protected:
             case 2:
                 return Ac::CurveRateRole;
             default:
-                return Object::ModelData::roleAt(i);
+                return DataObject::ModelData::roleAt(i);
             }
         }
 
@@ -115,7 +116,7 @@ protected:
             case Ac::CurveRateRole:
                 return a()->curveRate();
             default:
-                return Object::ModelData::getVariant(role);
+                return DataObject::ModelData::getVariant(role);
             }
         }
 
@@ -129,18 +130,18 @@ protected:
             case Ac::CurveRateRole:
                 return a()->setCurveRate(qvariant_cast<int>(data));
             default:
-                return Object::ModelData::setVariant(data, role);
+                return DataObject::ModelData::setVariant(data, role);
             }
         }
     };
 
-    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    class AC_CORE_EXPORT ModelItem : public DataObject::ModelItem
     {
         friend class ProjectSettings;
 
     protected:
         ModelItem(ProjectSettings *aggregator)
-            :   Object::ModelItem(aggregator)
+            :   DataObject::ModelItem(aggregator)
         {}
 
         IAggregate *init();
@@ -155,7 +156,7 @@ protected:
         {
             if (Ac::ProjectSettingsItem == itemType)
                 return true;
-            return Object::ModelItem::isTypeOfItem(itemType);
+            return DataObject::ModelItem::isTypeOfItem(itemType);
         }
     };
 
@@ -168,11 +169,12 @@ protected:
         case I::IModelItem:
             return appendAggregate((new ModelItem(this))->init());
         default:
-            return Object::createAggregate(interfaceType);
+            return DataObject::createAggregate(interfaceType);
         }
     }
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_DATABASE_PROJECTSETTINGS_H
+#endif // AC_CORE_PROJECTSETTINGS_H

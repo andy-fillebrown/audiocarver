@@ -15,14 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_XMLWRITER_H
-#define AC_XMLWRITER_H
+#ifndef AC_CORE_XMLWRITER_H
+#define AC_CORE_XMLWRITER_H
 
 #include "mi_ifiler.h"
 
-#include <ac_coreglobal.h>
+#include <ac_core_global.h>
 
 class QXmlStreamWriter;
+
+namespace Ac {
+namespace Core {
 
 class AC_CORE_EXPORT XmlWriter : public IWriter
 {
@@ -60,4 +63,7 @@ protected:
     }
 };
 
-#endif // AC_XMLWRITER_H
+} // namespace Core
+} // namespace Ac
+
+#endif // AC_CORE_XMLWRITER_H

@@ -15,11 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_NOTE_H
-#define AC_DATABASE_NOTE_H
+#ifndef AC_CORE_NOTE_H
+#define AC_CORE_NOTE_H
 
-#include "ac_database_scoreobject.h"
+#include "ac_core_scoreobject.h"
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT Note : public ScoreObject
@@ -70,5 +71,6 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_DATABASE_NOTE_H
+#endif // AC_CORE_NOTE_H

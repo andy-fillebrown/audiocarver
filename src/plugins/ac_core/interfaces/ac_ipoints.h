@@ -20,10 +20,9 @@
 
 #include "mi_iaggregate.h"
 
-#include <ac_corenamespace.h>
+#include <ac_core_namespace.h>
 
 class Point;
-
 typedef QList<Point> PointList;
 
 class IPoints : public IAggregate

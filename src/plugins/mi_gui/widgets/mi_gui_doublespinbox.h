@@ -15,12 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef MI_DOUBLESPINBOX_H
-#define MI_DOUBLESPINBOX_H
+#ifndef MI_GUI_DOUBLESPINBOX_H
+#define MI_GUI_DOUBLESPINBOX_H
 
 #include "QDoubleSpinBox"
 
 #include <mi_gui_global.h>
+
+namespace Mi {
+namespace Gui {
 
 class MI_GUI_EXPORT DoubleSpinBox : public QDoubleSpinBox
 {
@@ -45,4 +48,7 @@ public:
     }
 };
 
-#endif // MI_DOUBLESPINBOX_H
+} // namespace Gui
+} // namespace Mi
+
+#endif // MI_GUI_DOUBLESPINBOX_H

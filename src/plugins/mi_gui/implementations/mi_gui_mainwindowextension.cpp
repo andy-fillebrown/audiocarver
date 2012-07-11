@@ -33,7 +33,8 @@
 #include <QFileDialog>
 #include <QIcon>
 
-using namespace Mi::Gui;
+namespace Mi {
+namespace Gui {
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
 {
@@ -239,3 +240,6 @@ void MainWindowExtension::selectAll()
 {
     IEditor::instance()->selectAll();
 }
+
+} // namespace Gui
+} // namespace Mi

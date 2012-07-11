@@ -20,6 +20,9 @@
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
+namespace Mi {
+namespace Gui {
+
 ItemSelectionModel::ItemSelectionModel(QAbstractItemModel *model)
     :   QItemSelectionModel(model)
 {}
@@ -37,3 +40,6 @@ QList<IModelItem*> ItemSelectionModel::selectedItems() const
 
     return items;
 }
+
+} // namespace Gui
+} // namespace Mi

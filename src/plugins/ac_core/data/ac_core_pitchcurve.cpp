@@ -15,8 +15,9 @@
 **
 **************************************************************************/
 
-#include "ac_database_pitchcurve.h"
+#include "ac_core_pitchcurve.h"
 
+namespace Ac {
 namespace Core {
 
 IAggregator *PitchCurve::init()
@@ -30,3 +31,4 @@ IAggregate *PitchCurve::ModelItem::init()
 }
 
 } // namespace Core
+} // namespace Ac

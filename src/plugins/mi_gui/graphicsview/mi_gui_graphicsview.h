@@ -15,27 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef MI_GRAPHICSVIEW_H
-#define MI_GRAPHICSVIEW_H
+#ifndef MI_GUI_GRAPHICSVIEW_H
+#define MI_GUI_GRAPHICSVIEW_H
 
 #include "QGraphicsView"
 
 #include <mi_gui_global.h>
 
-class MI_GUI_EXPORT MiGraphicsView : public QGraphicsView
+namespace Mi {
+namespace Gui {
+
+class MI_GUI_EXPORT GraphicsView : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    MiGraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0)
+    GraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0)
         :   QGraphicsView(scene, parent)
     {}
 
-    ~MiGraphicsView()
+    ~GraphicsView()
     {}
 
 protected:
     void wheelEvent(QWheelEvent *event);
 };
 
-#endif // MI_GRAPHICSVIEW_H
+} // namespace Gui
+} // namespace Mi
+
+#endif // MI_GUI_GRAPHICSVIEW_H

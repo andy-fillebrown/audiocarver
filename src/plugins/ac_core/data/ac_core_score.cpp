@@ -15,14 +15,17 @@
 **
 **************************************************************************/
 
-#include "ac_database_score.h"
+#include "ac_core_score.h"
 
 #include <mi_idatabase.h>
 #include <mi_iobjectfactory.h>
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 static Score *instance = 0;
 
@@ -87,6 +90,7 @@ IAggregate *Score::ModelItem::init()
 }
 
 } // namespace Core
+} // namespace Ac
 
 
 

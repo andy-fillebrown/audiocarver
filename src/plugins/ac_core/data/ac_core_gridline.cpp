@@ -15,15 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_database_gridline.h"
+#include "ac_core_gridline.h"
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *GridLine::init()
 {
-    return Object::init();
+    return DataObject::init();
 }
 
 bool GridLine::setLocation(qreal location)
@@ -67,12 +70,12 @@ bool GridLine::setColor(int color)
 
 IAggregate *GridLine::ModelData::init()
 {
-    return Object::ModelData::init();
+    return DataObject::ModelData::init();
 }
 
 IAggregate *GridLine::ModelItem::init()
 {
-    return Object::ModelItem::init();
+    return DataObject::ModelItem::init();
 }
 
 IAggregator *TimeGridLine::init()
@@ -106,6 +109,7 @@ IAggregate *ControlGridLine::ModelItem::init()
 }
 
 } // namespace Core
+} // namespace Ac
 
 
 

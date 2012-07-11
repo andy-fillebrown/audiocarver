@@ -15,9 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_xmlwriter.h"
+#include "ac_core_xmlwriter.h"
 
 #include <QXmlStreamWriter>
+
+namespace Ac {
+namespace Core {
 
 IAggregate *XmlWriter::init()
 {
@@ -41,3 +44,6 @@ bool XmlWriter::write(IModelItem *item)
 {
     return false;
 }
+
+} // namespace Core
+} // namespace Ac

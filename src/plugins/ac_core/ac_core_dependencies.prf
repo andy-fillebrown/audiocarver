@@ -1,8 +1,8 @@
 
-load(../mi_coreplugin/mi_coreplugin.prf)
+load(../mi_core/mi_core.prf)
 
 DIRS = \
-    database \
+    data \
     filers \
     implementations \
     interfaces \

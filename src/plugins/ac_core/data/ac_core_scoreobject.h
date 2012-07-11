@@ -15,18 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_SCOREOBJECT_H
-#define AC_DATABASE_SCOREOBJECT_H
+#ifndef AC_CORE_SCOREOBJECT_H
+#define AC_CORE_SCOREOBJECT_H
 
-#include "mi_core_object.h"
+#include "mi_core_dataobject.h"
 
-#include <ac_database_pitchcurve.h>
+#include <ac_core_pitchcurve.h>
 
-#include <mi_core_objectlist.h>
+#include <mi_core_dataobjectlist.h>
 
+namespace Ac {
 namespace Core {
 
-class AC_CORE_EXPORT ScoreObject : public Object
+class AC_CORE_EXPORT ScoreObject : public Mi::Core::DataObject
 {
     enum { RoleCount = 1 };
     enum { ItemCount = 2 };
@@ -38,9 +39,9 @@ class AC_CORE_EXPORT ScoreObject : public Object
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount,
-        ItemCountOffset = Object::TotalItemCount,
+        ItemCountOffset = DataObject::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
@@ -70,16 +71,16 @@ protected:
         return _controlCurves;
     }
 
-    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    class AC_CORE_EXPORT ModelData : public DataObject::ModelData
     {
         ScoreObject *a() const
         {
-            return static_cast<ScoreObject*>(Object::ModelData::a());
+            return static_cast<ScoreObject*>(DataObject::ModelData::a());
         }
 
     protected:
         ModelData(ScoreObject *aggregator)
-            :   Object::ModelData(aggregator)
+            :   DataObject::ModelData(aggregator)
         {}
 
         IAggregate *init();
@@ -91,7 +92,7 @@ protected:
             case 0:
                 return Ac::VolumeRole;
             default:
-                return Object::ModelData::roleAt(i);
+                return DataObject::ModelData::roleAt(i);
             }
         }
 
@@ -101,7 +102,7 @@ protected:
             case Ac::VolumeRole:
                 return a()->volume();
             default:
-                return Object::ModelData::getVariant(role);
+                return DataObject::ModelData::getVariant(role);
             }
         }
 
@@ -111,21 +112,21 @@ protected:
             case Ac::VolumeRole:
                 return a()->setVolume(qvariant_cast<qreal>(data));
             default:
-                return Object::ModelData::setVariant(data, role);
+                return DataObject::ModelData::setVariant(data, role);
             }
         }
     };
 
-    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    class AC_CORE_EXPORT ModelItem : public DataObject::ModelItem
     {
         ScoreObject *a() const
         {
-            return static_cast<ScoreObject*>(Object::ModelItem::a());
+            return static_cast<ScoreObject*>(DataObject::ModelItem::a());
         }
 
     protected:
-        ModelItem(Object *aggregator)
-            :   Object::ModelItem(aggregator)
+        ModelItem(DataObject *aggregator)
+            :   DataObject::ModelItem(aggregator)
         {}
 
         IAggregate *init();
@@ -138,7 +139,7 @@ protected:
                 return ItemCountOffset;
             if (query<IModelItem>(a->controlCurves()) == item)
                 return ItemCountOffset + 1;
-            return Object::ModelItem::indexOf(item);
+            return DataObject::ModelItem::indexOf(item);
         }
 
         IModelItem *at(int i) const
@@ -149,7 +150,7 @@ protected:
             case 1:
                 return query<IModelItem>(a()->controlCurves());
             default:
-                return Object::ModelItem::at(i);
+                return DataObject::ModelItem::at(i);
             }
         }
 
@@ -159,7 +160,7 @@ protected:
             case Ac::PitchCurveItem:
                 return query<IModelItem>(a()->pitchCurve());
             default:
-                return Object::ModelItem::findItem(itemType);
+                return DataObject::ModelItem::findItem(itemType);
             }
         }
 
@@ -169,12 +170,13 @@ protected:
             case Ac::ControlCurveItem:
                 return query<IModelList>(a()->controlCurves());
             default:
-                return Object::ModelItem::findList(listType);
+                return DataObject::ModelItem::findList(listType);
             }
         }
     };
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_DATABASE_SCOREOBJECT_H
+#endif // AC_CORE_SCOREOBJECT_H

@@ -17,6 +17,9 @@
 
 #include "mi_gui_delegate.h"
 
+namespace Mi {
+namespace Gui {
+
 class DelegatePrivate
 {
 public:
@@ -46,3 +49,6 @@ void Delegate::setCustomColumn(int column)
 {
     d->customColumn = column;
 }
+
+} // namespace Gui
+} // namespace Mi

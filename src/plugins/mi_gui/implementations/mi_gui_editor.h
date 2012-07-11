@@ -15,16 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef MI_EDITOR_H
-#define MI_EDITOR_H
+#ifndef MI_GUI_EDITOR_H
+#define MI_GUI_EDITOR_H
 
 #include "mi_ieditor.h"
 
 namespace Mi {
 
+class GuiPlugin;
+
+namespace Gui {
+
 class MI_GUI_EXPORT Editor : public IEditor
 {
-    friend class GuiPlugin;
+    friend class Mi::GuiPlugin;
 
     static IEditor *instance()
     {
@@ -73,6 +77,7 @@ public:
     }
 };
 
+} // namespace Gui
 } // namespace Mi
 
-#endif // MI_EDITOR_H
+#endif // MI_GUI_EDITOR_H

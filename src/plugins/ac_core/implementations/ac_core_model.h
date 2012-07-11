@@ -15,30 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_MODEL_H
-#define AC_MODEL_H
+#ifndef AC_CORE_MODEL_H
+#define AC_CORE_MODEL_H
 
 #include <mi_imodel.h>
 
 namespace Ac {
-class Database;
-} // namespace Ac
-
 namespace Core {
+
+class Database;
 
 class Model : public IModel
 {
-    friend class Ac::Database;
+    friend class Database;
 
-    Ac::Database *_aggregator;
+    Database *_aggregator;
 
 protected:
-    Ac::Database *a() const
+    Database *a() const
     {
         return _aggregator;
     }
 
-    Model(Ac::Database *aggregator)
+    Model(Database *aggregator)
         :   _aggregator(aggregator)
     {}
 
@@ -56,5 +55,6 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_MODEL_H
+#endif // AC_CORE_MODEL_H

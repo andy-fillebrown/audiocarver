@@ -15,24 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef MI_GRAPHICSSCENE_H
-#define MI_GRAPHICSSCENE_H
+#ifndef MI_GUI_GRAPHICSSCENE_H
+#define MI_GUI_GRAPHICSSCENE_H
 
 #include "QGraphicsScene"
 
 #include <mi_gui_global.h>
 
-class MI_GUI_EXPORT MiGraphicsScene : public QGraphicsScene
+namespace Mi {
+namespace Gui {
+
+class MI_GUI_EXPORT GraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    MiGraphicsScene(QObject *parent = 0)
+    GraphicsScene(QObject *parent = 0)
         :   QGraphicsScene(parent)
     {}
 
-    ~MiGraphicsScene()
+    ~GraphicsScene()
     {}
 };
 
-#endif // MI_GRAPHICSSCENE_H
+} // namespace Gui
+} // namespace Mi
+
+#endif // MI_GUI_GRAPHICSSCENE_H

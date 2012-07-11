@@ -27,6 +27,7 @@ IEditor *IEditor::instance()
 }
 
 namespace Mi {
+namespace Gui {
 
 void Editor::destroy()
 {
@@ -70,4 +71,5 @@ void Editor::clear()
     _aggregates.clear();
 }
 
+} // namespace Gui
 } // namespace Mi

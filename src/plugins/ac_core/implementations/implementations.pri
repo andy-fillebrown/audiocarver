@@ -1,11 +1,16 @@
 
-SOURCE_PAIRS = \
-    ac_database \
-    ac_filerfactory \
-    ac_model \
-    ac_objectfactory \
+SOURCE_FILES = \
+    database \
+    filerfactory \
+    model \
+    objectfactory \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= implementations/$${pair}.h
-    SOURCES *= implementations/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    name = $${SOURCE_FILE_PREFIX}_$$file
+    header = $${name}.h
+    source = $${name}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

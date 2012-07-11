@@ -15,15 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_database_gridsettings.h"
+#include "ac_core_gridsettings.h"
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *GridSettings::init()
 {
-    return Object::init();
+    return DataObject::init();
 }
 
 bool GridSettings::setSnapEnabled(bool enabled)
@@ -76,15 +79,16 @@ bool GridSettings::setControlSnap(qreal snap)
 
 IAggregate *GridSettings::ModelData::init()
 {
-    return Object::ModelData::init();
+    return DataObject::ModelData::init();
 }
 
 IAggregate *GridSettings::ModelItem::init()
 {
-    return Object::ModelItem::init();
+    return DataObject::ModelItem::init();
 }
 
 } // namespace Core
+} // namespace Ac
 
 
 

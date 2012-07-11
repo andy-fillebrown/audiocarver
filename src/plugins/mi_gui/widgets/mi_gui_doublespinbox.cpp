@@ -16,3 +16,11 @@
 **************************************************************************/
 
 #include "mi_gui_doublespinbox.h"
+
+namespace Mi {
+namespace Gui {
+
+
+
+} // namespace Gui
+} // namespace Mi

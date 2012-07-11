@@ -15,19 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_CURVE_H
-#define AC_DATABASE_CURVE_H
+#ifndef AC_CORE_CURVE_H
+#define AC_CORE_CURVE_H
 
-#include "mi_core_object.h"
+#include "mi_core_dataobject.h"
+
 #include "ac_ipoints.h"
 
-#include <ac_point.h>
+#include <ac_core_point.h>
 
 #include <QStack>
 
+namespace Ac {
 namespace Core {
 
-class AC_CORE_EXPORT Curve : public Object
+class AC_CORE_EXPORT Curve : public Mi::Core::DataObject
 {
     enum { RoleCount = 1 };
 
@@ -35,7 +37,7 @@ class AC_CORE_EXPORT Curve : public Object
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
@@ -101,18 +103,18 @@ protected:
         }
     };
 
-    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    class AC_CORE_EXPORT ModelData : public DataObject::ModelData
     {
         friend class Curve;
 
         Curve *a() const
         {
-            return static_cast<Curve*>(Object::ModelData::a());
+            return static_cast<Curve*>(DataObject::ModelData::a());
         }
 
     protected:
         ModelData(Curve *aggregator)
-            :   Object::ModelData(aggregator)
+            :   DataObject::ModelData(aggregator)
         {}
 
         IAggregate *init();
@@ -129,7 +131,7 @@ protected:
             case 0:
                 return Ac::PointsRole;
             default:
-                return Object::ModelData::roleAt(i);
+                return DataObject::ModelData::roleAt(i);
             }
         }
 
@@ -139,7 +141,7 @@ protected:
             case Ac::PointsRole:
                 return QVariant::fromValue(a()->points());
             default:
-                return Object::ModelData::getVariant(role);
+                return DataObject::ModelData::getVariant(role);
             }
         }
 
@@ -149,16 +151,16 @@ protected:
             case Ac::PointsRole:
                 return a()->setPoints(qvariant_cast<PointList>(data));
             default:
-                return Object::ModelData::setVariant(data, role);
+                return DataObject::ModelData::setVariant(data, role);
             }
         }
     };
 
-    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    class AC_CORE_EXPORT ModelItem : public DataObject::ModelItem
     {
     protected:
         ModelItem(Curve *aggregator)
-            :   Object::ModelItem(aggregator)
+            :   DataObject::ModelItem(aggregator)
         {}
 
         IAggregate *init();
@@ -168,7 +170,7 @@ protected:
         {
             if (Ac::CurveItem == itemType)
                 return true;
-            return Object::ModelItem::isTypeOfItem(itemType);
+            return DataObject::ModelItem::isTypeOfItem(itemType);
         }
     };
 
@@ -181,11 +183,12 @@ protected:
         case I::IModelData:
             return appendAggregate((new ModelData(this))->init());
         default:
-            return Object::createAggregate(interfaceType);
+            return DataObject::createAggregate(interfaceType);
         }
     }
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_DATABASE_CURVE_H
+#endif // AC_CORE_CURVE_H

@@ -15,11 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_CONTROLCURVE_H
-#define AC_DATABASE_CONTROLCURVE_H
+#ifndef AC_CORE_CONTROLCURVE_H
+#define AC_CORE_CONTROLCURVE_H
 
-#include "ac_database_curve.h"
+#include "ac_core_curve.h"
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT ControlCurve : public Curve
@@ -32,7 +33,7 @@ class AC_CORE_EXPORT ControlCurve : public Curve
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
@@ -72,7 +73,7 @@ protected:
 
         ControlCurve *a() const
         {
-            return static_cast<ControlCurve*>(Object::ModelData::a());
+            return static_cast<ControlCurve*>(DataObject::ModelData::a());
         }
 
     protected:
@@ -158,6 +159,7 @@ protected:
     }
 };
 
-} // Core
+} // namespace Core
+} // namespace Ac
 
-#endif // AC_DATABASE_CONTROLCURVE_H
+#endif // AC_CORE_CONTROLCURVE_H

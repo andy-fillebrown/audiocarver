@@ -15,21 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_database_scoreobject.h"
+#include "ac_core_scoreobject.h"
 
 #include <mi_idatabase.h>
 #include <mi_iobjectfactory.h>
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *ScoreObject::init()
 {
     IObjectFactory *factory = query<IObjectFactory>(IDatabase::instance());
     _pitchCurve = factory->create(Ac::PitchCurveItem);
     _controlCurves = factory->create(Ac::ControlCurveListItem);
-    return Object::init();
+    return DataObject::init();
 }
 
 ScoreObject::~ScoreObject()
@@ -50,12 +53,13 @@ bool ScoreObject::setVolume(qreal volume)
 
 IAggregate *ScoreObject::ModelData::init()
 {
-    return Object::ModelData::init();
+    return DataObject::ModelData::init();
 }
 
 IAggregate *ScoreObject::ModelItem::init()
 {
-    return Object::ModelItem::init();
+    return DataObject::ModelItem::init();
 }
 
 } // namespace Core
+} // namespace Ac

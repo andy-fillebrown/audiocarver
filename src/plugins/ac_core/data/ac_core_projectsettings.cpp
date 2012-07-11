@@ -15,15 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_database_projectsettings.h"
+#include "ac_core_projectsettings.h"
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *ProjectSettings::init()
 {
-    return Object::init();
+    return DataObject::init();
 }
 
 bool ProjectSettings::setSampleRate(int rate)
@@ -58,12 +61,13 @@ bool ProjectSettings::setCurveRate(int rate)
 
 IAggregate *ProjectSettings::ModelData::init()
 {
-    return Object::ModelData::init();
+    return DataObject::ModelData::init();
 }
 
 IAggregate *ProjectSettings::ModelItem::init()
 {
-    return Object::ModelItem::init();
+    return DataObject::ModelItem::init();
 }
 
 } // namespace Core
+} // namespace Ac

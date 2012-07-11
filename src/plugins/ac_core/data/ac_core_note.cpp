@@ -15,8 +15,9 @@
 **
 **************************************************************************/
 
-#include "ac_database_note.h"
+#include "ac_core_note.h"
 
+namespace Ac {
 namespace Core {
 
 IAggregator *Note::init()
@@ -30,6 +31,7 @@ IAggregate *Note::ModelItem::init()
 }
 
 } // namespace Core
+} // namespace Ac
 
 
 

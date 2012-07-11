@@ -8,14 +8,17 @@ load(../../plugin.prf)
 DEFINES *= \
     MI_GUI_LIBRARY
 
+HEADERS *= mi_guiplugin.h
+SOURCES *= mi_guiplugin.cpp
+
 SOURCE_FILES = \
-    guiconstants \
-    guiglobal \
-    guinamespace \
+    constants \
+    global \
+    namespace \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {
-    name = $$SOURCE_FILE_PREFIX$$file
+    name = $${SOURCE_FILE_PREFIX}_$$file
     header = $${name}.h
     source = $${name}.cpp
     exists($$header): HEADERS *= $$header
@@ -24,7 +27,7 @@ for(file, SOURCE_FILES) {
 resource = $${SOURCE_FILE_PREFIX}.qrc
 prf = $${SOURCE_FILE_PREFIX}.prf
 dependencies_prf = $${SOURCE_FILE_PREFIX}_dependencies.prf
-pluginspec = $${PREFIXED_TARGET_NAME}.pluginspec.in
+pluginspec = $${SOURCE_FILE_PREFIX}.pluginspec.in
 exists($$resource): RESOURCES *= $$resource
 exists($$prf): OTHER_FILES *= $$prf
 exists($$dependencies_prf): OTHER_FILES *= $$dependencies_prf

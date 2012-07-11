@@ -15,16 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_GRIDSETTINGS_H
-#define AC_DATABASE_GRIDSETTINGS_H
+#ifndef AC_CORE_GRIDSETTINGS_H
+#define AC_CORE_GRIDSETTINGS_H
 
-#include "mi_core_object.h"
+#include "mi_core_dataobject.h"
 
-#include <ac_corenamespace.h>
+#include <ac_core_namespace.h>
 
+namespace Ac {
 namespace Core {
 
-class AC_CORE_EXPORT GridSettings : public Object
+class AC_CORE_EXPORT GridSettings : public Mi::Core::DataObject
 {
     friend class ObjectFactory;
 
@@ -38,7 +39,7 @@ class AC_CORE_EXPORT GridSettings : public Object
 
 protected:
     enum {
-        RoleCountOffset = Object::TotalRoleCount,
+        RoleCountOffset = DataObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
@@ -87,18 +88,18 @@ protected:
 
     bool setControlSnap(qreal snap);
 
-    class AC_CORE_EXPORT ModelData : public Object::ModelData
+    class AC_CORE_EXPORT ModelData : public DataObject::ModelData
     {
         friend class GridSettings;
 
         GridSettings *a() const
         {
-            return static_cast<GridSettings*>(Object::ModelData::a());
+            return static_cast<GridSettings*>(DataObject::ModelData::a());
         }
 
     protected:
         ModelData(GridSettings *aggregator)
-            :   Object::ModelData(aggregator)
+            :   DataObject::ModelData(aggregator)
         {}
 
         IAggregate *init();
@@ -123,7 +124,7 @@ protected:
             case 4:
                 return Ac::ControlSnapRole;
             default:
-                return Object::ModelData::roleAt(i);
+                return DataObject::ModelData::roleAt(i);
             }
         }
 
@@ -141,7 +142,7 @@ protected:
             case Ac::ControlSnapRole:
                 return a()->controlSnap();
             default:
-                return Object::ModelData::getVariant(role);
+                return DataObject::ModelData::getVariant(role);
             }
         }
 
@@ -159,18 +160,18 @@ protected:
             case Ac::ControlSnapRole:
                 return a()->setControlSnap(qvariant_cast<qreal>(data));
             default:
-                return Object::ModelData::setVariant(data, role);
+                return DataObject::ModelData::setVariant(data, role);
             }
         }
     };
 
-    class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+    class AC_CORE_EXPORT ModelItem : public DataObject::ModelItem
     {
         friend class GridSettings;
 
     protected:
         ModelItem(GridSettings *aggregator)
-            :   Object::ModelItem(aggregator)
+            :   DataObject::ModelItem(aggregator)
         {}
 
         IAggregate *init();
@@ -184,7 +185,7 @@ protected:
         {
             if (Ac::GridSettingsItem == itemType)
                 return true;
-            return Object::ModelItem::isTypeOfItem(itemType);
+            return DataObject::ModelItem::isTypeOfItem(itemType);
         }
     };
 
@@ -197,14 +198,15 @@ protected:
         case I::IModelItem:
             return appendAggregate((new ModelItem(this))->init());
         default:
-            return Object::createAggregate(interfaceType);
+            return DataObject::createAggregate(interfaceType);
         }
     }
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_DATABASE_GRIDSETTINGS_H
+#endif // AC_CORE_GRIDSETTINGS_H
 
 
 

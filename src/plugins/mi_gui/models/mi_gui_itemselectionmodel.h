@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_ITEMSELECTIONMODEL_H
-#define MI_ITEMSELECTIONMODEL_H
+#ifndef MI_GUI_ITEMSELECTIONMODEL_H
+#define MI_GUI_ITEMSELECTIONMODEL_H
 
 #include "QItemSelectionModel"
 
@@ -24,6 +24,9 @@
 
 
 class IModelItem;
+
+namespace Mi {
+namespace Gui {
 
 class MI_GUI_EXPORT ItemSelectionModel : public QItemSelectionModel
 {
@@ -35,4 +38,7 @@ public:
     virtual QList<IModelItem*> selectedItems() const;
 };
 
-#endif // MI_ITEMSELECTIONMODEL_H
+} // namespace Gui
+} // namespace Mi
+
+#endif // MI_GUI_ITEMSELECTIONMODEL_H

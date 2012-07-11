@@ -15,32 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_FILERFACTORY_H
-#define AC_FILERFACTORY_H
+#ifndef AC_CORE_FILERFACTORY_H
+#define AC_CORE_FILERFACTORY_H
 
 #include "mi_ifilerfactory.h"
 
-#include <ac_coreglobal.h>
+#include <ac_core_global.h>
 
 namespace Ac {
-class Database;
-} // namespace Ac
-
 namespace Core {
+
+class Database;
 
 class AC_CORE_EXPORT FilerFactory : public IFilerFactory
 {
-    friend class Ac::Database;
+    friend class Database;
 
-    Ac::Database *_aggregator;
+    Database *_aggregator;
 
 protected:
-    Ac::Database *a() const
+    Database *a() const
     {
         return _aggregator;
     }
 
-    FilerFactory(Ac::Database *aggregator)
+    FilerFactory(Database *aggregator)
         :   _aggregator(aggregator)
     {}
 
@@ -54,5 +53,6 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_FILERFACTORY_H
+#endif // AC_CORE_FILERFACTORY_H

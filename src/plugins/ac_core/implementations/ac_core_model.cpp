@@ -15,12 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_model.h"
+#include "ac_core_model.h"
 
 #include <mi_imodelitem.h>
 
-#include <ac_database.h>
+#include <ac_core_database.h>
 
+namespace Ac {
 namespace Core {
 
 IAggregate *Model::init()
@@ -59,3 +60,4 @@ IAggregator *Model::aggregator() const
 }
 
 } // namespace Core
+} // namespace Ac

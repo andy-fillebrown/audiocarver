@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_DATABASE_H
-#define AC_DATABASE_H
+#ifndef AC_CORE_DATABASE_H
+#define AC_CORE_DATABASE_H
 
-#include "mi_database.h"
+#include "mi_core_database.h"
 
-#include <ac_coreglobal.h>
-
-namespace Core {
-class Model;
-} // namespace Database
+#include <ac_core_global.h>
 
 namespace Ac {
 
-class AC_CORE_EXPORT Database : public Mi::Database
+class CorePlugin;
+
+namespace Core {
+
+class Model;
+
+class AC_CORE_EXPORT Database : public Mi::Core::Database
 {
-    friend class CorePlugin;
-    friend class Core::Model;
+    friend class Ac::CorePlugin;
+    friend class Model;
 
     IAggregator *_score;
 
@@ -61,7 +63,7 @@ protected:
     IAggregate *createAggregate(int interfaceType);
 };
 
+} // namespace Core
 } // namespace Ac
 
-
-#endif // AC_DATABASE_H
+#endif // AC_CORE_DATABASE_H

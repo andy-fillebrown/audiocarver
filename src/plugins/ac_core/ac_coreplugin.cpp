@@ -17,8 +17,8 @@
 
 #include "ac_coreplugin.h"
 
-#include <ac_corenamespace.h>
-#include <ac_database.h>
+#include <ac_core_namespace.h>
+#include <ac_core_database.h>
 
 #include <pluginmanager.h>
 
@@ -79,7 +79,7 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
 
-    (new Database)->init();
+    (new Core::Database)->init();
 
     return true;
 }

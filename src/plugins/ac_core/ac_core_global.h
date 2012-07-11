@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREGLOBAL_H
-#define AC_COREGLOBAL_H
+#ifndef AC_CORE_GLOBAL_H
+#define AC_CORE_GLOBAL_H
 
-#include <mi_coreglobal.h>
+#include <mi_core_global.h>
 
 #if defined(AC_CORE_LIBRARY)
 #  define AC_CORE_EXPORT Q_DECL_EXPORT
@@ -26,4 +26,4 @@
 #  define AC_CORE_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // AC_COREGLOBAL_H
+#endif // AC_CORE_GLOBAL_H

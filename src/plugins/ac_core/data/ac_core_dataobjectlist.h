@@ -15,4 +15,29 @@
 **
 **************************************************************************/
 
-#include "ac_corenamespace.h"
+#ifndef AC_CORE_DATAOBJECTLIST_H
+#define AC_CORE_DATAOBJECTLIST_H
+
+#include "mi_core_dataobjectlist.h"
+
+#include <ac_core_global.h>
+
+namespace Ac {
+namespace Core {
+
+class AC_CORE_EXPORT DataObjectList : public Mi::Core::DataObjectList
+{
+    friend class ObjectFactory;
+
+protected:
+    DataObjectList(int listType = Mi::UnknownItem)
+        :   Mi::Core::DataObjectList(listType)
+    {}
+
+    IAggregator *init();
+};
+
+} // namespace Core
+} // namespace Ac
+
+#endif // AC_CORE_DATAOBJECTLIST_H

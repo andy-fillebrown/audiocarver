@@ -15,17 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_database_viewsettings.h"
+#include "ac_core_viewsettings.h"
 
-#include <ac_database_score.h>
+#include <ac_core_score.h>
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *ViewSettings::init()
 {
-    return Object::init();
+    return DataObject::init();
 }
 
 bool ViewSettings::setTimePosition(qreal position)
@@ -90,12 +93,13 @@ bool ViewSettings::setControlScale(qreal scale)
 
 IAggregate *ViewSettings::ModelData::init()
 {
-    return Object::ModelData::init();
+    return DataObject::ModelData::init();
 }
 
 IAggregate *ViewSettings::ModelItem::init()
 {
-    return Object::ModelItem::init();
+    return DataObject::ModelItem::init();
 }
 
 } // namespace Core
+} // namespace Ac

@@ -15,14 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_XMLREADER_H
-#define AC_XMLREADER_H
+#ifndef AC_CORE_XMLREADER_H
+#define AC_CORE_XMLREADER_H
 
 #include "mi_ifiler.h"
 
-#include <ac_coreglobal.h>
+#include <ac_core_global.h>
 
 class QXmlStreamReader;
+
+namespace Ac {
+namespace Core {
 
 class AC_CORE_EXPORT XmlReader : public IReader
 {
@@ -61,4 +64,7 @@ protected:
     }
 };
 
-#endif // AC_XMLREADER_H
+} // namespace Core
+} // namespace Ac
+
+#endif // AC_CORE_XMLREADER_H

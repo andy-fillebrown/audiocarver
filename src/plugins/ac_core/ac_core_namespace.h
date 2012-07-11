@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORENAMESPACE_H
-#define AC_CORENAMESPACE_H
+#ifndef AC_CORE_NAMESPACE_H
+#define AC_CORE_NAMESPACE_H
 
-#include <ac_coreglobal.h>
+#include <ac_core_global.h>
 
-#include <mi_corenamespace.h>
+#include <mi_core_namespace.h>
 
 namespace I {
 
@@ -107,4 +107,4 @@ enum Color {
 
 } // namespace Ac
 
-#endif // AC_NAMESPACE_H
+#endif // AC_CORE_NAMESPACE_H

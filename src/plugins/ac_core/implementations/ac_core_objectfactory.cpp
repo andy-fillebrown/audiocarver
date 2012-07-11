@@ -15,21 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_objectfactory.h"
+#include "ac_core_objectfactory.h"
 
-#include <ac_database.h>
-#include <ac_database_controlcurve.h>
-#include <ac_database_gridline.h>
-#include <ac_database_gridsettings.h>
-#include <ac_database_note.h>
-#include <ac_database_pitchcurve.h>
-#include <ac_database_projectsettings.h>
-#include <ac_database_score.h>
-#include <ac_database_track.h>
-#include <ac_database_viewsettings.h>
+#include <ac_core_database.h>
+#include <ac_core_dataobjectlist.h>
+#include <ac_core_controlcurve.h>
+#include <ac_core_gridline.h>
+#include <ac_core_gridsettings.h>
+#include <ac_core_note.h>
+#include <ac_core_pitchcurve.h>
+#include <ac_core_projectsettings.h>
+#include <ac_core_score.h>
+#include <ac_core_track.h>
+#include <ac_core_viewsettings.h>
 
-using namespace Ac;
-
+namespace Ac {
 namespace Core {
 
 IAggregate *ObjectFactory::init()
@@ -43,33 +43,33 @@ IAggregator *ObjectFactory::create(int itemType)
     case ControlCurveItem:
         return (new ControlCurve)->init();
     case ControlCurveListItem:
-        return (new ObjectList(ControlCurveItem))->init();
+        return (new DataObjectList(ControlCurveItem))->init();
     case ControlGridLineItem:
         return (new ControlGridLine)->init();
     case ControlGridLineListItem:
-        return (new ObjectList(ControlGridLineItem))->init();
+        return (new DataObjectList(ControlGridLineItem))->init();
     case GridSettingsItem:
         return (new GridSettings)->init();
     case NoteItem:
         return (new Note)->init();
     case NoteListItem:
-        return (new ObjectList(NoteItem))->init();
+        return (new DataObjectList(NoteItem))->init();
     case PitchCurveItem:
         return (new PitchCurve)->init();
     case PitchGridLineItem:
         return (new PitchGridLine)->init();
     case PitchGridLineListItem:
-        return (new ObjectList(PitchGridLineItem))->init();
+        return (new DataObjectList(PitchGridLineItem))->init();
     case ScoreItem:
         return (new Score)->init();
     case TimeGridLineItem:
         return (new TimeGridLine)->init();
     case TimeGridLineListItem:
-        return (new ObjectList(TimeGridLineItem))->init();
+        return (new DataObjectList(TimeGridLineItem))->init();
     case TrackItem:
         return (new Track)->init();
     case TrackListItem:
-        return (new ObjectList(TrackItem))->init();
+        return (new DataObjectList(TrackItem))->init();
     case ViewSettingsItem:
         return (new ViewSettings)->init();
     default:
@@ -83,3 +83,4 @@ IAggregator *ObjectFactory::aggregator() const
 }
 
 } // namespace Core
+} // namespace Ac

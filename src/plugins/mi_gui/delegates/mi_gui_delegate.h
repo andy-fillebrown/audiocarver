@@ -15,12 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef MI_DELEGATE_H
-#define MI_DELEGATE_H
+#ifndef MI_GUI_DELEGATE_H
+#define MI_GUI_DELEGATE_H
 
 #include "QStyledItemDelegate"
 
 #include <mi_gui_global.h>
+
+namespace Mi {
+namespace Gui {
 
 class DelegatePrivate;
 class MI_GUI_EXPORT Delegate : public QStyledItemDelegate
@@ -38,4 +41,7 @@ private:
     DelegatePrivate *d;
 };
 
-#endif // MI_DELEGATE_H
+} // namespace Gui
+} // namespace Mi
+
+#endif // MI_GUI_DELEGATE_H

@@ -15,30 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_OBJECTFACTORY_H
-#define AC_OBJECTFACTORY_H
+#ifndef AC_CORE_OBJECTFACTORY_H
+#define AC_CORE_OBJECTFACTORY_H
 
 #include <mi_iobjectfactory.h>
 
 namespace Ac {
-class Database;
-} // namespace Ac
-
 namespace Core {
+
+class Database;
 
 class ObjectFactory : public IObjectFactory
 {
-    friend class Ac::Database;
+    friend class Database;
 
-    Ac::Database *_aggregator;
+    Database *_aggregator;
 
 protected:
-    Ac::Database *a() const
+    Database *a() const
     {
         return _aggregator;
     }
 
-    ObjectFactory(Ac::Database *aggregator)
+    ObjectFactory(Database *aggregator)
         :   _aggregator(aggregator)
     {}
 
@@ -52,5 +51,6 @@ protected:
 };
 
 } // namespace Core
+} // namespace Ac
 
-#endif // AC_OBJECTFACTORY_H
+#endif // AC_CORE_OBJECTFACTORY_H

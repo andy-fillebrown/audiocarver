@@ -15,14 +15,17 @@
 **
 **************************************************************************/
 
-#include "ac_database_track.h"
+#include "ac_core_track.h"
 
 #include <mi_idatabase.h>
 #include <mi_iobjectfactory.h>
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *Track::init()
 {
@@ -46,6 +49,7 @@ IAggregate *Track::ModelItem::init()
 }
 
 } // namespace Core
+} // namespace Ac
 
 
 

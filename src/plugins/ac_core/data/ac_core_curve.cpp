@@ -15,17 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_database_curve.h"
+#include "ac_core_curve.h"
 
-#include <mi_scopeddatachange.h>
+#include <mi_core_scopeddatachange.h>
 
+namespace Ac {
 namespace Core {
+
+using namespace Mi::Core;
 
 IAggregator *Curve::init()
 {
     static PointList points;
     _pointsStack.push(points);
-    return Object::init();
+    return DataObject::init();
 }
 
 void Curve::pushPoints(const PointList &points)
@@ -67,12 +70,13 @@ IAggregate *Curve::Points::init()
 
 IAggregate *Curve::ModelData::init()
 {
-    return Object::ModelData::init();
+    return DataObject::ModelData::init();
 }
 
 IAggregate *Curve::ModelItem::init()
 {
-    return Object::ModelItem::init();
+    return DataObject::ModelItem::init();
 }
 
 } // namespace Core
+} // namespace Ac
