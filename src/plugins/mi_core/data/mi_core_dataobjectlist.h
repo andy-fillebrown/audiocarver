@@ -100,7 +100,7 @@ protected:
         return true;
     }
 
-    class ModelList : public IModelList
+    class MI_CORE_EXPORT ModelList : public IModelList
     {
         friend class DataObjectList;
 

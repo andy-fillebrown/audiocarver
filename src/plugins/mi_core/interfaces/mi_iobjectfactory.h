@@ -22,7 +22,7 @@
 
 class IAggregator;
 
-class MI_CORE_EXPORT IObjectFactory : public IAggregate
+class IObjectFactory : public IAggregate
 {
 public:
     enum { InterfaceType = I::IObjectFactory };

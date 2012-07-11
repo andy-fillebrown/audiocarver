@@ -49,6 +49,11 @@ void XmlFileFiler::setFileName(const QString &fileName)
     _file = new QFile(fileName);
 }
 
+IAggregate *XmlFileFiler::FileFiler::init()
+{
+    return this;
+}
+
 IAggregate *XmlFileFiler::Reader::init()
 {
     QFile *file = a()->file();

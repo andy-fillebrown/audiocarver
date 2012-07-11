@@ -38,6 +38,42 @@ Track::~Track()
     delete _notes;
 }
 
+bool Track::setColor(int color)
+{
+    if (_color == color)
+        return false;
+    ScopedDataChange data_change(this, Ac::ColorRole);
+    _color = color;
+    return true;
+}
+
+bool Track::setInstrument(const QString &instrument)
+{
+    if (_instrument == instrument)
+        return false;
+    ScopedDataChange data_change(this, Ac::InstrumentRole);
+    _instrument = instrument;
+    return true;
+}
+
+bool Track::setVisible(bool visible)
+{
+    if (_visible == visible)
+        return false;
+    ScopedDataChange data_change(this, Ac::VisibilityRole);
+    _visible = visible;
+    return true;
+}
+
+bool Track::setRecording(bool recording)
+{
+    if (_recording == recording)
+        return false;
+    ScopedDataChange data_change(this, Ac::RecordingRole);
+    _recording = recording;
+    return true;
+}
+
 IAggregate *Track::ModelData::init()
 {
     return ScoreObject::ModelData::init();
