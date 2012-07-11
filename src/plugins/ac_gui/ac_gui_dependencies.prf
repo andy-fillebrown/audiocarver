@@ -1,6 +1,6 @@
 
-load(../mi_guiplugin/mi_guiplugin.prf)
-load(../ac_coreplugin/ac_coreplugin.prf)
+load(../mi_gui/mi_gui.prf)
+load(../ac_core/ac_core.prf)
 
 DIRS = \
 #    delegates \

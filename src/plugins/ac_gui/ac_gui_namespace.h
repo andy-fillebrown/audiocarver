@@ -15,11 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUINAMESPACE_H
-#define AC_GUINAMESPACE_H
+#ifndef AC_GUI_NAMESPACE_H
+#define AC_GUI_NAMESPACE_H
 
-#include <ac_corenamespace.h>
-#include <mi_guinamespace.h>
+#include <ac_core_namespace.h>
+
+#include <mi_gui_namespace.h>
 
 namespace I {
 
@@ -65,4 +66,4 @@ enum SceneType {
 
 } // namespace Ac
 
-#endif // AC_GUINAMESPACE_H
+#endif // AC_GUI_NAMESPACE_H

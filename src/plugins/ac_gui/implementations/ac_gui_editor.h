@@ -18,10 +18,9 @@
 #ifndef AC_EDITOR_H
 #define AC_EDITOR_H
 
-#include "mi_editor.h"
+#include "mi_gui_editor.h"
 
 #include <ac_igraphicsviewmanager.h>
-
 #include <mi_iobjectfactory.h>
 
 namespace Graphics {
@@ -30,7 +29,7 @@ class ViewManager;
 
 namespace Ac {
 
-class Editor : public Mi::Editor
+class Editor : public Mi::Gui::Editor
 {
     friend class GuiPlugin;
     friend class Graphics::ViewManager;
@@ -151,7 +150,7 @@ inline IAggregate *Ac::Editor::createAggregate(int interfaceType)
     case I::IObjectFactory:
         return appendAggregate((new ::Graphics::ObjectFactory(this))->init());
     default:
-        return Mi::Editor::createAggregate(interfaceType);
+        return 0;
     }
 }
 

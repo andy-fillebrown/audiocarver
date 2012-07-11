@@ -18,15 +18,15 @@
 #ifndef AC_GUI_XMLCOPYFILER_H
 #define AC_GUI_XMLCOPYFILER_H
 
-#include "mi_aggregator.h"
+#include "mi_core_aggregator.h"
 
-#include "ac_xmlreader.h"
-#include "ac_xmlwriter.h"
+#include "ac_core_xmlreader.h"
+#include "ac_core_xmlwriter.h"
 
 namespace Ac {
 namespace Gui {
 
-class XmlCopyFiler : public Aggregator
+class XmlCopyFiler : public Mi::Core::Aggregator
 {
     friend class FilerFactory;
 
@@ -43,7 +43,7 @@ protected:
         return &_data;
     }
 
-    class Reader : public XmlReader
+    class Reader : public Core::XmlReader
     {
         friend class XmlCopyFiler;
 
@@ -60,7 +60,7 @@ protected:
         }
     };
 
-    class Writer : public XmlWriter
+    class Writer : public Core::XmlWriter
     {
         friend class XmlCopyFiler;
 

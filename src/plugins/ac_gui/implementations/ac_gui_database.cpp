@@ -22,11 +22,9 @@
 namespace Ac {
 namespace Gui {
 
-using namespace Core;
-
 IAggregator *Database::init()
 {
-    return Ac::Database::init();
+    return Core::Database::init();
 }
 
 IAggregate *Database::createAggregate(int interfaceType)
@@ -35,7 +33,7 @@ IAggregate *Database::createAggregate(int interfaceType)
     case I::IFilerFactory:
         return appendAggregate((new FilerFactory(this))->init());
     default:
-        return Ac::Database::createAggregate(interfaceType);
+        return Core::Database::createAggregate(interfaceType);
     }
 }
 

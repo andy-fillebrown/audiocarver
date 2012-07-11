@@ -15,33 +15,9 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_DATABASE_H
-#define AC_GUI_DATABASE_H
+#ifndef AC_GUI__GLOBAL_H
+#define AC_GUI_GLOBAL_H
 
-#include "ac_core_database.h"
+#include <ac_core_global.h>
 
-namespace Ac {
-
-class GuiPlugin;
-
-namespace Gui {
-
-class Database : public Ac::Core::Database
-{
-    friend class Ac::GuiPlugin;
-
-protected:
-    Database()
-    {}
-
-    IAggregator *init();
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType);
-};
-
-} // namespace Gui
-} // namespace Ac
-
-
-#endif // AC_DATABASE_H
+#endif // AC_GUI_GLOBAL_H

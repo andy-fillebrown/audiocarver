@@ -17,7 +17,7 @@
 
 #include "ac_guiplugin.h"
 
-#include <ac_editor.h>
+#include <ac_gui_editor.h>
 #include <ac_gui_database.h>
 //#include <ac_mainwidget.h>
 //#include <ac_guimainwindowextension.h>

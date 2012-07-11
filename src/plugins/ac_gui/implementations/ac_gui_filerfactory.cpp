@@ -17,12 +17,17 @@
 
 #include "ac_gui_filerfactory.h"
 
+#include <ac_gui_database.h>
 #include <ac_gui_xmlcopyfiler.h>
 
-#include <ac_corenamespace.h>
+#include <ac_core_namespace.h>
 
 namespace Ac {
 namespace Gui {
+
+FilerFactory::FilerFactory(Database *aggregator)
+    :   Core::FilerFactory(aggregator)
+{}
 
 IAggregate *FilerFactory::init()
 {

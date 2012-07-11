@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_editor.h"
+#include "ac_gui_editor.h"
 
 #include <ac_igraphicsviewgroup.h>
 
@@ -23,7 +23,7 @@ namespace Ac {
 
 IAggregator *Editor::init()
 {
-    return Mi::Editor::init();
+    return Mi::Gui::Editor::init();
 }
 
 Editor::~Editor()
