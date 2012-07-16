@@ -15,30 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICS_TRACK_H
-#define AC_GRAPHICS_TRACK_H
+#include "ac_gui_controlcurve.h"
 
-#include "ac_graphics_scoreobject.h"
+namespace Ac {
+namespace Gui {
 
-namespace Graphics {
-
-class Track : public ScoreObject
+IAggregator *ControlCurve::init()
 {
-    friend class GraphicsFactory;
+    return Curve::init();
+}
 
-protected:
-    Track()
-    {}
+IAggregate *ControlCurve::SubEntity::init()
+{
+    return Curve::SubEntity::init();
+}
 
-    IAggregator *init();
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        return Track::createAggregate(interfaceType);
-    }
-};
-
-} // namespace Graphics
-
-#endif // AC_GRAPHICS_TRACK_H
+} // namespace Gui
+} // namespace Ac

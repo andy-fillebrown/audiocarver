@@ -15,15 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSITEM_H
-#define AC_GRAPHICSITEM_H
+#ifndef AC_GUI_GRAPHICSITEM_H
+#define AC_GUI_GRAPHICSITEM_H
 
-#include <ac_point.h>
+#include <ac_core_point.h>
 
 #include <QGraphicsItem>
 #include <QPen>
 
 class IEntity;
+
+namespace Ac {
+namespace Gui {
 
 class GraphicsItem : public QGraphicsItem
 {
@@ -116,4 +119,7 @@ public:
     void setText(const QString &text);
 };
 
-#endif // AC_GRAPHICSITEM_H
+} // namespace Gui
+} // namespace Ac
+
+#endif // AC_GUI_GRAPHICSITEM_H

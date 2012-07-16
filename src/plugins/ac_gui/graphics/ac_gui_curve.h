@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICS_CURVE_H
-#define AC_GRAPHICS_CURVE_H
+#ifndef AC_GUI_CURVE_H
+#define AC_GUI_CURVE_H
 
-#include "mi_aggregator.h"
+#include "mi_core_aggregator.h"
 
 #include "ac_isubentity.h"
 #include "ac_ientity.h"
@@ -27,11 +27,12 @@
 
 #include <mi_imodelitem.h>
 
-#include <ac_graphicsitem.h>
+#include <ac_gui_graphicsitem.h>
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
-class Curve : public Aggregator
+class Curve : public Mi::Core::Aggregator
 {
 protected:
     class SubEntity;
@@ -163,6 +164,7 @@ protected:
     }
 };
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac
 
-#endif // AC_GRAPHICS_CURVE_H
+#endif // AC_GUI_CURVE_H

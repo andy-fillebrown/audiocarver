@@ -15,11 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICS_SCOREOBJECT_H
-#define AC_GRAPHICS_SCOREOBJECT_H
+#ifndef AC_GUI_SCOREOBJECT_H
+#define AC_GUI_SCOREOBJECT_H
 
-
-#include "mi_aggregator.h"
+#include "mi_core_aggregator.h"
 
 #include "ac_ichildentity.h"
 #include "ac_iparententity.h"
@@ -30,9 +29,10 @@
 
 class QGraphicsItem;
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
-class ScoreObject : public Aggregator
+class ScoreObject : public Mi::Core::Aggregator
 {
 protected:
     ScoreObject()
@@ -183,6 +183,7 @@ protected:
     }
 };
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac
 
-#endif // AC_GRAPHICS_SCOREOBJECT_H
+#endif // AC_GUI_SCOREOBJECT_H

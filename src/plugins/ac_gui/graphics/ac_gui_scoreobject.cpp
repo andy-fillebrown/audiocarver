@@ -15,12 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_graphics_scoreobject.h"
+#include "ac_gui_scoreobject.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
 //static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &parentItems,
 //                                   const QMap<int, QGraphicsItem*> &items)
@@ -93,4 +94,5 @@ IAggregate *ScoreObject::ChildEntity::init()
     return this;
 }
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac

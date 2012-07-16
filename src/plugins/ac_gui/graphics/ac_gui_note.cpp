@@ -15,16 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_graphics_score.h"
+#include "ac_gui_note.h"
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
-IAggregator *Score::init()
+IAggregator *Note::init()
 {
     return ScoreObject::init();
 }
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac
 
 
 

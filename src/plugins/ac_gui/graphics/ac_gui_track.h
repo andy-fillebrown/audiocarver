@@ -15,19 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICS_SCORE_H
-#define AC_GRAPHICS_SCORE_H
+#ifndef AC_GUI_TRACK_H
+#define AC_GUI_TRACK_H
 
-#include "ac_graphics_scoreobject.h"
+#include "ac_gui_scoreobject.h"
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
-class Score : public ScoreObject
+class Track : public ScoreObject
 {
     friend class GraphicsFactory;
 
 protected:
-    Score()
+    Track()
     {}
 
     IAggregator *init();
@@ -35,15 +36,11 @@ protected:
     // IAggregator
     IAggregate *createAggregate(int interfaceType)
     {
-        switch (interfaceType) {
-        case I::IChildEntity:
-            return 0;
-        default:
-            return ScoreObject::createAggregate(interfaceType);
-        }
+        return Track::createAggregate(interfaceType);
     }
 };
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac
 
-#endif // AC_GRAPHICS_SCORE_H
+#endif // AC_GUI_TRACK_H

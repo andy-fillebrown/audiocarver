@@ -15,24 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_EDITOR_H
-#define AC_EDITOR_H
+#ifndef AC_GUI_EDITOR_H
+#define AC_GUI_EDITOR_H
 
 #include "mi_gui_editor.h"
 
 #include <ac_igraphicsviewmanager.h>
 #include <mi_iobjectfactory.h>
 
-namespace Graphics {
-class ViewManager;
-} // namespace Graphics
-
 namespace Ac {
+
+class GuiPlugin;
+
+namespace Gui {
 
 class Editor : public Mi::Gui::Editor
 {
-    friend class GuiPlugin;
-    friend class Graphics::ViewManager;
+    friend class Ac::GuiPlugin;
+    friend class ViewManager;
 
     QList<IGraphicsViewGroup*> _viewGroups;
 
@@ -59,23 +59,19 @@ protected:
     inline IAggregate *createAggregate(int interfaceType);
 };
 
-} // namespace Ac
-
-namespace Graphics {
-
 class ViewManager : public IGraphicsViewManager
 {
-    friend class Ac::Editor;
+    friend class Editor;
 
-    Ac::Editor *_aggregator;
+    Editor *_aggregator;
 
 protected:
-    Ac::Editor *a() const
+    Editor *a() const
     {
         return _aggregator;
     }
 
-    ViewManager(Ac::Editor *aggregator)
+    ViewManager(Editor *aggregator)
         :   _aggregator(aggregator)
     {}
 
@@ -114,17 +110,17 @@ protected:
 
 class ObjectFactory : public IObjectFactory
 {
-    friend class Ac::Editor;
+    friend class Editor;
 
-    Ac::Editor *_aggregator;
+    Editor *_aggregator;
 
 protected:
-    Ac::Editor *a() const
+    Editor *a() const
     {
         return _aggregator;
     }
 
-    ObjectFactory(Ac::Editor *aggregator)
+    ObjectFactory(Editor *aggregator)
         :   _aggregator(aggregator)
     {}
 
@@ -140,18 +136,19 @@ protected:
     }
 };
 
-} // namespace Graphics
-
-inline IAggregate *Ac::Editor::createAggregate(int interfaceType)
+inline IAggregate *Editor::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
     case I::IGraphicsViewManager:
-        return appendAggregate((new ::Graphics::ViewManager(this))->init());
+        return appendAggregate((new ViewManager(this))->init());
     case I::IObjectFactory:
-        return appendAggregate((new ::Graphics::ObjectFactory(this))->init());
+        return appendAggregate((new ObjectFactory(this))->init());
     default:
         return 0;
     }
 }
 
-#endif // AC_EDITOR_H
+} // namespace Gui
+} // namespace Ac
+
+#endif // AC_GUI_EDITOR_H

@@ -20,6 +20,7 @@
 #include <ac_igraphicsviewgroup.h>
 
 namespace Ac {
+namespace Gui {
 
 IAggregator *Editor::init()
 {
@@ -61,12 +62,6 @@ void Editor::selectAll()
 {
     qDebug() << Q_FUNC_INFO;
 }
-
-} // namespace Ac
-
-namespace Graphics {
-
-using namespace Ac;
 
 IAggregate *ViewManager::init()
 {
@@ -126,4 +121,5 @@ IAggregator *ObjectFactory::create(int itemType)
     }
 }
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac

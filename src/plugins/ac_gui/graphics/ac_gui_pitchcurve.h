@@ -15,23 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICS_CONTROLCURVE_H
-#define AC_GRAPHICS_CONTROLCURVE_H
+#ifndef AC_GUI_PITCHCURVE_H
+#define AC_GUI_PITCHCURVE_H
 
-#include "ac_graphics_curve.h"
+#include "ac_gui_curve.h"
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
-class ControlCurve : public Curve
+class PitchCurve : public Curve
 {
     friend class GraphicsFactory;
 
 protected:
+    PitchCurve()
+    {}
+
     IAggregator *init();
 
     class SubEntity : public Curve::SubEntity
     {
-        friend class ControlCurve;
+        friend class PitchCurve;
 
     protected:
         SubEntity(Curve *aggregator)
@@ -43,7 +47,7 @@ protected:
         // ISubEntity
         int sceneType() const
         {
-            return Ac::ControlScene;
+            return Ac::PitchScene;
         }
     };
 
@@ -59,6 +63,7 @@ protected:
     }
 };
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac
 
-#endif // AC_GRAPHICS_CONTROLCURVE_H
+#endif // AC_GUI_PITCHCURVE_H

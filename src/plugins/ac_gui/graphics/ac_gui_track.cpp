@@ -15,16 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_graphics_track.h"
+#include "ac_gui_track.h"
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
 IAggregator *Track::init()
 {
     return ScoreObject::init();
 }
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac
 
 
 

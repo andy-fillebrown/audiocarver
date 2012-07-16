@@ -15,18 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_graphics_controlcurve.h"
+#include "ac_gui_pitchcurve.h"
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
-IAggregator *ControlCurve::init()
+IAggregator *PitchCurve::init()
 {
     return Curve::init();
 }
 
-IAggregate *ControlCurve::SubEntity::init()
+IAggregate *PitchCurve::SubEntity::init()
 {
     return Curve::SubEntity::init();
 }
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac

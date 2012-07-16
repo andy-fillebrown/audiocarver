@@ -15,11 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsitem.h"
+#include "ac_gui_graphicsitem.h"
 
 #include <ac_ientity.h>
 
 #include <QFont>
+
+namespace Ac {
+namespace Gui {
 
 class GraphicsCurveItemPrivate
 {
@@ -204,3 +207,6 @@ void GraphicsTextItem::setText(const QString &text)
 {
     d->textItem->setPlainText(text);
 }
+
+} // namespace Gui
+} // namespace Ac

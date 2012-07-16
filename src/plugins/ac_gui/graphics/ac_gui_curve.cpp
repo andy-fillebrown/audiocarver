@@ -15,9 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_graphics_curve.h"
+#include "ac_gui_curve.h"
 
-namespace Graphics {
+namespace Ac {
+namespace Gui {
 
 IAggregator *Curve::init()
 {
@@ -41,4 +42,5 @@ IAggregate *Curve::SubEntity::init()
     return this;
 }
 
-} // namespace Graphics
+} // namespace Gui
+} // namespace Ac

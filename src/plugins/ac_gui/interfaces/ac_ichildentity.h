@@ -20,7 +20,7 @@
 
 #include "mi_iaggregate.h"
 
-#include <ac_guinamespace.h>
+#include <ac_gui_namespace.h>
 
 class IParentEntity;
 
