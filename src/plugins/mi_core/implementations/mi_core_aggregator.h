@@ -32,11 +32,6 @@ protected:
     ~Aggregator();
 
     // IAggregator
-    QList<IAggregate*> aggregates() const
-    {
-        return _aggregates.values();
-    }
-
     IAggregate *createAggregate(int interfaceType)
     {
         return 0;

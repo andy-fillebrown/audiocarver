@@ -27,7 +27,6 @@ class IAggregator : public IUnknown
 public:
     enum { InterfaceType = I::IAggregator };
 
-    virtual QList<IAggregate*> aggregates() const = 0;
     virtual IAggregate *createAggregate(int interfaceType) = 0;
     virtual IAggregate *appendAggregate(IAggregate* aggregate) = 0;
     virtual void removeAggregate(IAggregate *aggregate) = 0;
