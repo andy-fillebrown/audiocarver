@@ -28,6 +28,9 @@ class ControlCurve : public Curve
     friend class GraphicsFactory;
 
 protected:
+    ControlCurve()
+    {}
+
     IAggregator *init();
 
     class Entity : public Curve::Entity
