@@ -2,6 +2,7 @@
 SOURCE_FILES = \
     aggregator \
     database \
+    superaggregator \
 #    model \
 #    orphanage \
 
