@@ -34,21 +34,51 @@ namespace Gui {
 
 class ScoreObject : public Mi::Core::Aggregator
 {
+    QMap<int, QGraphicsItem*> _mainGraphicsItems;
+    QMap<int, QGraphicsItem*> _unitXGraphicsItems;
+    QMap<int, QGraphicsItem*> _unitYGraphicsItems;
+
 protected:
     ScoreObject()
     {}
 
     virtual IAggregator *init();
 
+    const QMap<int, QGraphicsItem*> &mainGraphicsItems() const
+    {
+        return _mainGraphicsItems;
+    }
+
+    void setMainGraphicsItem(int sceneType, QGraphicsItem *item)
+    {
+        _mainGraphicsItems.insert(sceneType, item);
+    }
+
+    const QMap<int, QGraphicsItem*> &unitXGraphicsItems() const
+    {
+        return _unitXGraphicsItems;
+    }
+
+    void setUnitXGraphicsItem(int sceneType, QGraphicsItem *item)
+    {
+        _unitXGraphicsItems.insert(sceneType, item);
+    }
+
+    const QMap<int, QGraphicsItem*> &unitYGraphicsItems() const
+    {
+        return _unitYGraphicsItems;
+    }
+
+    void setUnitYGraphicsItem(int sceneType, QGraphicsItem *item)
+    {
+        _unitYGraphicsItems.insert(sceneType, item);
+    }
+
     class ParentEntity : public IParentEntity
     {
         friend class ScoreObject;
 
         ScoreObject *_aggregator;
-        QMap<int, QGraphicsItem*> _mainGraphicsItems;
-        QMap<int, QGraphicsItem*> _unitXGraphicsItems;
-        QMap<int, QGraphicsItem*> _unitYGraphicsItems;
-
     protected:
         ParentEntity(ScoreObject *aggregator)
             :   _aggregator(aggregator)
@@ -56,39 +86,9 @@ protected:
 
         virtual IAggregate *init();
 
-        const QMap<int, QGraphicsItem*> &mainGraphicsItems() const
-        {
-            return _mainGraphicsItems;
-        }
-
-        const QMap<int, QGraphicsItem*> &unitXGraphicsItems() const
-        {
-            return _unitXGraphicsItems;
-        }
-
-        const QMap<int, QGraphicsItem*> &unitYGraphicsItems() const
-        {
-            return _unitYGraphicsItems;
-        }
-
         ScoreObject *a() const
         {
             return _aggregator;
-        }
-
-        void setMainGraphicsItem(int sceneType, QGraphicsItem *item)
-        {
-            _mainGraphicsItems.insert(sceneType, item);
-        }
-
-        void setUnitXGraphicsItem(int sceneType, QGraphicsItem *item)
-        {
-            _unitXGraphicsItems.insert(sceneType, item);
-        }
-
-        void setUnitYGraphicsItem(int sceneType, QGraphicsItem *item)
-        {
-            _unitYGraphicsItems.insert(sceneType, item);
         }
 
         // IParentEntity
@@ -96,13 +96,13 @@ protected:
         {
             QList<ISubEntity*> sub_entities;
             switch (sceneType) {
-            case Ac::PitchScene: {
-                IModelItem *pitch_curve = query<IModelItem>(a())->findItem(Ac::PitchCurveItem);
+            case PitchScene: {
+                IModelItem *pitch_curve = query<IModelItem>(a())->findItem(PitchCurveItem);
                 sub_entities.append(query<ISubEntity>(pitch_curve));
                 break;
             }
-            case Ac::ControlScene: {
-                IModelList *control_curves = query<IModelItem>(a())->findList(Ac::ControlCurveItem);
+            case ControlScene: {
+                IModelList *control_curves = query<IModelItem>(a())->findList(ControlCurveItem);
                 const int n = control_curves->count();
                 for (int i = 0;  i < n;  ++i)
                     sub_entities.append(query<ISubEntity>(control_curves->at(i)));
@@ -128,6 +128,8 @@ protected:
                 return 0;
             }
         }
+
+        void update(int role);
 
         void highlight()
         {

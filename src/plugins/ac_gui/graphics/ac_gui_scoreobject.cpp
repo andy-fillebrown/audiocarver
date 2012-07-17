@@ -23,62 +23,6 @@
 namespace Ac {
 namespace Gui {
 
-//static void setParentGraphicsItems(const QMap<int, QGraphicsItem*> &parentItems,
-//                                   const QMap<int, QGraphicsItem*> &items)
-//{
-//    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-//        QGraphicsItem *parentItem = parentItems.value(i, 0);
-//        QGraphicsItem *item = items.value(i, 0);
-//        if (item && parentItem)
-//            item->setParentItem(parentItem);
-//    }
-//}
-
-//static void clearParentGraphicsItems(const QMap<int, QGraphicsItem*> &items)
-//{
-//    for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-//        QGraphicsItem *item = items.value(i, 0);
-//        if (item) {
-//            item->setParentItem(0);
-//            QGraphicsScene *scene = item->scene();
-//            if (scene)
-//                scene->removeItem(item);
-//        }
-//    }
-//}
-
-//void ScoreObjectGui::ParentEntity::setGraphicsItems(IParentEntity *parent, IParentEntity *child)
-//{
-//    if (!parent)
-//        return;
-//    ParentEntity *parent_implementation = dynamic_cast<ParentEntity*>(parent);
-//    if (!parent_implementation)
-//        return;
-//    ParentEntity *child_implementation = dynamic_cast<ParentEntity*>(child);
-//    if (!child_implementation)
-//        return;
-//    setParentGraphicsItems(parent_implementation->mainGraphicsItems(), child_implementation->mainGraphicsItems());
-//}
-
-//void ScoreObjectGui::ParentEntity::clearGraphicsItems(IParentEntity *child)
-//{
-//    ParentEntity *child_implementation = dynamic_cast<ParentEntity*>(child);
-//    if (!child_implementation)
-//        return;
-//    clearParentGraphicsItems(child_implementation->mainGraphicsItems());
-//    clearParentGraphicsItems(child_implementation->unitXGraphicsItems());
-//    clearParentGraphicsItems(child_implementation->unitYGraphicsItems());
-//}
-
-//void ScoreObjectGui::parentChanged(ScoreObject *scoreObject)
-//{
-//    IModelItem *parent = query<IModelItem>(scoreObject)->parent();
-//    if (parent)
-//        ParentEntity::setGraphicsItems(query<IParentEntity>(parent), query<IParentEntity>(scoreObject));
-//    else
-//        ParentEntity::clearGraphicsItems(query<IParentEntity>(scoreObject));
-//}
-
 IAggregator *ScoreObject::init()
 {
     return this;
@@ -87,6 +31,31 @@ IAggregator *ScoreObject::init()
 IAggregate *ScoreObject::ParentEntity::init()
 {
     return this;
+}
+
+void ScoreObject::ParentEntity::update(int role)
+{
+    switch (role) {
+    case Mi::ParentRole: {
+        IParentEntity *parent = query<IChildEntity>(a())->parentEntity();
+        if (!parent)
+            return;
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            for (int j = 0;  j < Ac::GraphicsItemTransformTypeCount;  ++j) {
+                QGraphicsItem *parent_item = parent->graphicsItem(i, j);
+                QGraphicsItem *child_item = graphicsItem(i, j);
+                if (!child_item)
+                    continue;
+                child_item->setParentItem(parent_item);
+                if (!parent_item) {
+                    QGraphicsScene *scene = child_item->scene();
+                    if (scene)
+                        scene->removeItem(child_item);
+                }
+            }
+        }
+    }
+    }
 }
 
 IAggregate *ScoreObject::ChildEntity::init()

@@ -17,6 +17,8 @@
 
 #include "ac_gui_curve.h"
 
+#include <mi_imodeldata.h>
+
 namespace Ac {
 namespace Gui {
 
@@ -35,6 +37,14 @@ IAggregate *Curve::Entity::init()
 Curve::Entity::~Entity()
 {
     delete _graphicsCurveItem;
+}
+
+void Curve::Entity::update(int role)
+{
+    switch (role) {
+    case Ac::PointsRole:
+        graphicsCurveItem()->setPoints(query<IModelData>(a())->get<PointList>(Ac::PointsRole));
+    }
 }
 
 IAggregate *Curve::SubEntity::init()

@@ -30,6 +30,7 @@ public:
     enum { InterfaceType = I::IEntity };
 
     virtual QGraphicsItem *graphicsItem(int sceneType, int transformType) const = 0;
+    virtual void update(int role) = 0;
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
     virtual bool isVisible() const = 0;

@@ -80,6 +80,8 @@ protected:
         }
 
         // IEntity
+        void update(int role);
+
         void highlight()
         {
             graphicsCurveItem()->highlight();

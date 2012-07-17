@@ -32,6 +32,7 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 
     appendItemDataRole(ItemTypeRole, "type");
     appendItemDataRole(ListTypeRole, "listType");
+    appendItemDataRole(ParentRole, "parent");
     appendItemDataRole(NameRole, "name");
 
     return true;
