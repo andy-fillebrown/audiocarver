@@ -18,7 +18,7 @@
 #ifndef AC_GUI_CURVE_H
 #define AC_GUI_CURVE_H
 
-#include "mi_core_aggregator.h"
+#include "ac_gui_graphicsobject.h"
 
 #include "ac_isubentity.h"
 #include "ac_ientity.h"
@@ -32,7 +32,7 @@
 namespace Ac {
 namespace Gui {
 
-class Curve : public Mi::Core::Aggregator
+class Curve : public GraphicsObject
 {
 protected:
     class SubEntity;

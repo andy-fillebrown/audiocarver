@@ -18,7 +18,7 @@
 #ifndef AC_GUI_SCOREOBJECT_H
 #define AC_GUI_SCOREOBJECT_H
 
-#include "mi_core_aggregator.h"
+#include "ac_gui_graphicsobject.h"
 
 #include "ac_ichildentity.h"
 #include "ac_iparententity.h"
@@ -32,7 +32,7 @@ class QGraphicsItem;
 namespace Ac {
 namespace Gui {
 
-class ScoreObject : public Mi::Core::Aggregator
+class ScoreObject : public GraphicsObject
 {
     QMap<int, QGraphicsItem*> _mainGraphicsItems;
     QMap<int, QGraphicsItem*> _unitXGraphicsItems;
