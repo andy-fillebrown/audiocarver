@@ -47,11 +47,6 @@ IAggregate *Aggregator::appendAggregate(IAggregate *aggregate)
     return aggregate;
 }
 
-void Aggregator::removeAggregate(IAggregate *aggregate)
-{
-    _aggregates.remove(aggregate->interfaceType());
-}
-
 void Aggregator::clear()
 {
     qDeleteAll(_aggregates);

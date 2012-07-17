@@ -29,7 +29,6 @@ public:
 
     virtual IAggregate *createAggregate(int interfaceType) = 0;
     virtual IAggregate *appendAggregate(IAggregate* aggregate) = 0;
-    virtual void removeAggregate(IAggregate *aggregate) = 0;
     virtual void clear() = 0;
 
     // IUnknown

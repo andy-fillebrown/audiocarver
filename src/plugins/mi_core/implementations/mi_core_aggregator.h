@@ -38,7 +38,6 @@ protected:
     }
 
     IAggregate *appendAggregate(IAggregate *aggregate);
-    void removeAggregate(IAggregate *aggregate);
     void clear();
 
 public:
