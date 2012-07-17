@@ -17,6 +17,11 @@
 
 #include "ac_gui_scoreobject.h"
 
+#include <ac_isubentity.h>
+#include <mi_imodellist.h>
+
+#include <mi_core_dataobject.h>
+
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
@@ -31,6 +36,28 @@ IAggregator *ScoreObject::init()
 IAggregate *ScoreObject::ParentEntity::init()
 {
     return this;
+}
+
+QList<ISubEntity*> ScoreObject::ParentEntity::subEntities(int sceneType) const
+{
+    QList<ISubEntity*> sub_entities;
+    switch (sceneType) {
+    case PitchScene: {
+        IModelItem *pitch_curve = query<IModelItem>(a()->dataObject())->findItem(PitchCurveItem);
+        sub_entities.append(query<ISubEntity>(pitch_curve));
+        break;
+    }
+    case ControlScene: {
+        IModelList *control_curves = query<IModelItem>(a()->dataObject())->findList(ControlCurveItem);
+        const int n = control_curves->count();
+        for (int i = 0;  i < n;  ++i)
+            sub_entities.append(query<ISubEntity>(control_curves->at(i)));
+        break;
+    }
+    default:
+        break;
+    }
+    return sub_entities;
 }
 
 void ScoreObject::ParentEntity::update(int role)
@@ -61,6 +88,11 @@ void ScoreObject::ParentEntity::update(int role)
 IAggregate *ScoreObject::ChildEntity::init()
 {
     return this;
+}
+
+IParentEntity *ScoreObject::ChildEntity::parentEntity() const
+{
+    return query<IParentEntity>(query<IModelItem>(a())->parent());
 }
 
 } // namespace Gui

@@ -23,10 +23,6 @@
 #include "ac_ichildentity.h"
 #include "ac_iparententity.h"
 
-#include <ac_isubentity.h>
-
-#include <mi_imodellist.h>
-
 class QGraphicsItem;
 
 namespace Ac {
@@ -92,27 +88,7 @@ protected:
         }
 
         // IParentEntity
-        QList<ISubEntity*> subEntities(int sceneType) const
-        {
-            QList<ISubEntity*> sub_entities;
-            switch (sceneType) {
-            case PitchScene: {
-                IModelItem *pitch_curve = query<IModelItem>(a())->findItem(PitchCurveItem);
-                sub_entities.append(query<ISubEntity>(pitch_curve));
-                break;
-            }
-            case ControlScene: {
-                IModelList *control_curves = query<IModelItem>(a())->findList(ControlCurveItem);
-                const int n = control_curves->count();
-                for (int i = 0;  i < n;  ++i)
-                    sub_entities.append(query<ISubEntity>(control_curves->at(i)));
-                break;
-            }
-            default:
-                break;
-            }
-            return sub_entities;
-        }
+        QList<ISubEntity*> subEntities(int sceneType) const;
 
         // IEntity
         QGraphicsItem *graphicsItem(int sceneType, int transformType) const
@@ -173,10 +149,7 @@ protected:
         }
 
         // IChildEntity
-        IParentEntity *parentEntity() const
-        {
-            return query<IParentEntity>(query<IModelItem>(a())->parent());
-        }
+        IParentEntity *parentEntity() const;
 
         // IAggregate
         IAggregator *aggregator() const
