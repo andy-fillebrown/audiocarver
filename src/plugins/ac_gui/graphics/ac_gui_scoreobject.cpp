@@ -43,12 +43,12 @@ QList<ISubEntity*> ScoreObject::ParentEntity::subEntities(int sceneType) const
     QList<ISubEntity*> sub_entities;
     switch (sceneType) {
     case PitchScene: {
-        IModelItem *pitch_curve = query<IModelItem>(a()->dataObject())->findItem(PitchCurveItem);
+        IModelItem *pitch_curve = query<IModelItem>(a())->findItem(PitchCurveItem);
         sub_entities.append(query<ISubEntity>(pitch_curve));
         break;
     }
     case ControlScene: {
-        IModelList *control_curves = query<IModelItem>(a()->dataObject())->findList(ControlCurveItem);
+        IModelList *control_curves = query<IModelItem>(a())->findList(ControlCurveItem);
         const int n = control_curves->count();
         for (int i = 0;  i < n;  ++i)
             sub_entities.append(query<ISubEntity>(control_curves->at(i)));

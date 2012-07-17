@@ -17,13 +17,33 @@
 
 #include "mi_core_superaggregator.h"
 
+#include <mi_core_subaggregator.h>
+
 namespace Mi {
 namespace Core {
 
 SuperAggregator::~SuperAggregator()
 {
-    qDeleteAll(_aggregators);
-    _aggregators.clear();
+    qDeleteAll(_subAggregators);
+    _subAggregators.clear();
+}
+
+IAggregate *SuperAggregator::createAggregate(int interfaceType)
+{
+    foreach (IAggregator *sub_aggregator, _subAggregators) {
+        IAggregate *aggregate = sub_aggregator->createAggregate(interfaceType);
+        if (aggregate)
+            return aggregate;
+    }
+    return 0;
+}
+
+void SuperAggregator::appendSubAggregator(SubAggregator *subAggregator)
+{
+    if (_subAggregators.contains(subAggregator))
+        return;
+    _subAggregators.append(subAggregator);
+    subAggregator->setSuperAggregator(this);
 }
 
 } // namespace Core

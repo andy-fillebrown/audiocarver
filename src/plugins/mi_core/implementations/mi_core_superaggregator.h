@@ -23,9 +23,11 @@
 namespace Mi {
 namespace Core {
 
+class SubAggregator;
+
 class MI_CORE_EXPORT SuperAggregator : public Aggregator
 {
-    QList<IAggregator*> _aggregators;
+    QList<IAggregator*> _subAggregators;
 
 protected:
     SuperAggregator()
@@ -34,28 +36,10 @@ protected:
     ~SuperAggregator();
 
     // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        foreach (IAggregator *aggregator, _aggregators) {
-            IAggregate *aggregate = aggregator->createAggregate(interfaceType);
-            if (aggregate)
-                return appendAggregate(aggregate);
-        }
-        return 0;
-    }
+    IAggregate *createAggregate(int interfaceType);
 
 public:
-    void appendAggregator(IAggregator *aggregator)
-    {
-        if (_aggregators.contains(aggregator))
-            return;
-        _aggregators.append(aggregator);
-    }
-
-    void removeAggregator(IAggregator *aggregator)
-    {
-        _aggregators.removeOne(aggregator);
-    }
+    void appendSubAggregator(SubAggregator *subAggregator);
 };
 
 } // namespace Core

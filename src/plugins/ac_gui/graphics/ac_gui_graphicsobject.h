@@ -18,41 +18,18 @@
 #ifndef AC_GUI_GRAPHICSOBJECT_H
 #define AC_GUI_GRAPHICSOBJECT_H
 
-#include "mi_core_aggregator.h"
-
-namespace Mi {
-namespace Core {
-
-class DataObject;
-
-} // namespace Core
-} // namespace Mi
+#include "mi_core_subaggregator.h"
 
 namespace Ac {
 namespace Gui {
 
-class Viewport;
-
-class GraphicsObject : public Mi::Core::Aggregator
+class GraphicsObject : public Mi::Core::SubAggregator
 {
-    Mi::Core::DataObject *_dataObject;
-
 protected:
     GraphicsObject()
-        :   _dataObject(0)
     {}
 
     virtual IAggregator *init();
-
-    Mi::Core::DataObject *dataObject() const
-    {
-        return _dataObject;
-    }
-
-    void setDataObject(Mi::Core::DataObject *dataObject)
-    {
-        _dataObject = dataObject;
-    }
 };
 
 } // namespace Gui

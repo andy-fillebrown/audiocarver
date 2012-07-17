@@ -25,6 +25,8 @@ namespace Core {
 
 class MI_CORE_EXPORT Aggregator : public IAggregator
 {
+    friend class SubAggregator;
+
     QHash<int, IAggregate*> _aggregates;
 
 protected:
