@@ -18,7 +18,6 @@
 #include "mi_core_aggregator.h"
 
 #include <mi_iaggregate.h>
-
 #include <mi_idatabase.h>
 #include <mi_iorphanage.h>
 
