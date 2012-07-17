@@ -18,7 +18,7 @@
 #ifndef MI_CORE_DATAOBJECT_H
 #define MI_CORE_DATAOBJECT_H
 
-#include "mi_core_aggregator.h"
+#include "mi_core_superaggregator.h"
 
 #include "mi_imodeldata.h"
 #include "mi_imodelitem.h"
@@ -26,7 +26,7 @@
 namespace Mi {
 namespace Core {
 
-class MI_CORE_EXPORT DataObject : public Aggregator
+class MI_CORE_EXPORT DataObject : public SuperAggregator
 {
     enum { RoleCount = 1 };
     enum { ItemCount = 0 };
