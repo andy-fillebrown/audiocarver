@@ -64,6 +64,13 @@ enum SceneType {
     SceneTypeCount
 };
 
+enum GraphicsItemTransformType {
+    MainTransform,
+    UnitXTransform,
+    UnitYTransform,
+    GraphicsItemTransformTypeCount
+};
+
 } // namespace Ac
 
 #endif // AC_GUI_NAMESPACE_H

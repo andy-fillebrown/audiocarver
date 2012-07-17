@@ -115,6 +115,20 @@ protected:
         }
 
         // IEntity
+        QGraphicsItem *graphicsItem(int sceneType, int transformType) const
+        {
+            switch (transformType) {
+            case MainTransform:
+                return a()->mainGraphicsItems().value(sceneType);
+            case UnitXTransform:
+                return a()->unitXGraphicsItems().value(sceneType);
+            case UnitYTransform:
+                return a()->unitYGraphicsItems().value(sceneType);
+            default:
+                return 0;
+            }
+        }
+
         void highlight()
         {
             Q_ASSERT(false && "Not implemented yet.");

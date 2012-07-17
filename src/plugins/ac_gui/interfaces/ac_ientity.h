@@ -22,11 +22,14 @@
 
 #include <ac_gui_namespace.h>
 
+class QGraphicsItem;
+
 class IEntity : public IAggregate
 {
 public:
     enum { InterfaceType = I::IEntity };
 
+    virtual QGraphicsItem *graphicsItem(int sceneType, int transformType) const = 0;
     virtual void highlight() = 0;
     virtual void unhighlight() = 0;
     virtual bool isVisible() const = 0;

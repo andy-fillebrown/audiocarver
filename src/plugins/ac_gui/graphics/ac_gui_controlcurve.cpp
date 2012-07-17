@@ -25,6 +25,11 @@ IAggregator *ControlCurve::init()
     return Curve::init();
 }
 
+IAggregate *ControlCurve::Entity::init()
+{
+    return Curve::Entity::init();
+}
+
 IAggregate *ControlCurve::SubEntity::init()
 {
     return Curve::SubEntity::init();

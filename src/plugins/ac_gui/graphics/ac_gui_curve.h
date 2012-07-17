@@ -151,17 +151,6 @@ protected:
             return _aggregator;
         }
     };
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IEntity:
-            return appendAggregate((new Entity(this))->init());
-        default:
-            return Curve::createAggregate(interfaceType);
-        }
-    }
 };
 
 } // namespace Gui

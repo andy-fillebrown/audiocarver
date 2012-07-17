@@ -25,6 +25,11 @@ IAggregator *PitchCurve::init()
     return Curve::init();
 }
 
+IAggregate *PitchCurve::Entity::init()
+{
+    return Curve::Entity::init();
+}
+
 IAggregate *PitchCurve::SubEntity::init()
 {
     return Curve::SubEntity::init();

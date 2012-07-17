@@ -33,6 +33,26 @@ protected:
 
     IAggregator *init();
 
+    class Entity : public Curve::Entity
+    {
+        friend class PitchCurve;
+
+    protected:
+        Entity(PitchCurve *aggregator)
+            :   Curve::Entity(aggregator)
+        {}
+
+        IAggregate *init();
+
+        // IEntity
+        QGraphicsItem *graphicsItem(int sceneType, int transformType) const
+        {
+            if (PitchScene == sceneType && MainTransform == transformType)
+                return graphicsCurveItem();
+            return 0;
+        }
+    };
+
     class SubEntity : public Curve::SubEntity
     {
         friend class PitchCurve;
@@ -55,6 +75,8 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
+        case I::IEntity:
+            return appendAggregate((new Entity(this))->init());
         case I::ISubEntity:
             return appendAggregate((new SubEntity(this))->init());
         default:

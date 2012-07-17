@@ -30,6 +30,26 @@ class ControlCurve : public Curve
 protected:
     IAggregator *init();
 
+    class Entity : public Curve::Entity
+    {
+        friend class ControlCurve;
+
+    protected:
+        Entity(ControlCurve *aggregator)
+            :   Curve::Entity(aggregator)
+        {}
+
+        IAggregate *init();
+
+        // IEntity
+        QGraphicsItem *graphicsItem(int sceneType, int transformType) const
+        {
+            if (ControlScene == sceneType && MainTransform == transformType)
+                return graphicsCurveItem();
+            return 0;
+        }
+    };
+
     class SubEntity : public Curve::SubEntity
     {
         friend class ControlCurve;
@@ -52,6 +72,8 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
+        case I::IEntity:
+            return appendAggregate((new Entity(this))->init());
         case I::ISubEntity:
             return appendAggregate((new SubEntity(this))->init());
         default:
