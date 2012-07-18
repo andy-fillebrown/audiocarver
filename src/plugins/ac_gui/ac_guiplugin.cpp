@@ -136,8 +136,33 @@ bool test_5()
     return true;
 }
 
+bool test_6()
+{
+    // Make sure all item types can be created.
+    IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
+    CHECK(factory->create(Ac::ScoreItem));
+    CHECK(factory->create(Ac::TrackItem));
+    CHECK(factory->create(Ac::TrackListItem));
+    CHECK(factory->create(Ac::NoteItem));
+    CHECK(factory->create(Ac::NoteListItem));
+    CHECK(factory->create(Ac::PitchCurveItem));
+    CHECK(factory->create(Ac::ControlCurveItem));
+    CHECK(factory->create(Ac::ControlCurveListItem));
+    CHECK(factory->create(Ac::GridSettingsItem));
+    CHECK(factory->create(Ac::TimeGridLineItem));
+    CHECK(factory->create(Ac::TimeGridLineListItem));
+    CHECK(factory->create(Ac::PitchGridLineItem));
+    CHECK(factory->create(Ac::PitchGridLineListItem));
+    CHECK(factory->create(Ac::ControlGridLineItem));
+    CHECK(factory->create(Ac::ControlGridLineListItem));
+    CHECK(factory->create(Ac::ViewSettingsItem));
+    CHECK(factory->create(Ac::ProjectSettingsItem));
+    return true;
+}
+
 bool test()
 {
+    RUN(test_6);
     RUN(test_5);
     RUN(test_4);
     RUN(test_3);

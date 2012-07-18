@@ -35,6 +35,7 @@ class AC_CORE_EXPORT Database : public Mi::Core::Database
     friend class Ac::CorePlugin;
     friend class Model;
 
+    QString _fileName;
     IAggregator *_score;
 
 protected:

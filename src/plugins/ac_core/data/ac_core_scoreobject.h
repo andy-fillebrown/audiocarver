@@ -73,6 +73,8 @@ protected:
 
     class AC_CORE_EXPORT ModelData : public DataObject::ModelData
     {
+        friend class ScoreObject;
+
         ScoreObject *a() const
         {
             return static_cast<ScoreObject*>(DataObject::ModelData::a());
@@ -174,6 +176,17 @@ protected:
             }
         }
     };
+
+    // IAggregator
+    IAggregate *createAggregate(int interfaceType)
+    {
+        switch (interfaceType) {
+        case I::IModelData:
+            return appendAggregate((new ModelData(this))->init());
+        default:
+            return ScoreObject::createAggregate(interfaceType);
+        }
+    }
 };
 
 } // namespace Core

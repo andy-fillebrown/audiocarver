@@ -60,6 +60,8 @@ IAggregator *DataObjectFactory::create(int itemType)
         return (new PitchGridLine)->init();
     case PitchGridLineListItem:
         return (new DataObjectList(PitchGridLineItem))->init();
+    case ProjectSettingsItem:
+        return (new ProjectSettings)->init();
     case ScoreItem:
         return (new Score)->init();
     case TimeGridLineItem:

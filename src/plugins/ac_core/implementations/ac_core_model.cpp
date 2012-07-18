@@ -36,22 +36,22 @@ IModelItem *Model::rootItem() const
 
 void Model::beginChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType)
 {
-    qDebug() << Q_FUNC_INFO;
+//    qDebug() << Q_FUNC_INFO;
 }
 
 void Model::endChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType)
 {
-    qDebug() << Q_FUNC_INFO;
+//    qDebug() << Q_FUNC_INFO;
 }
 
 void Model::beginChangeParent(const IModelItem *item)
 {
-    qDebug() << Q_FUNC_INFO;
+//    qDebug() << Q_FUNC_INFO;
 }
 
 void Model::endChangeParent(const IModelItem *item)
 {
-    qDebug() << Q_FUNC_INFO;
+//    qDebug() << Q_FUNC_INFO;
 }
 
 IAggregator *Model::aggregator() const

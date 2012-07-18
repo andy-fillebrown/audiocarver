@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSVIEW_H
-#define AC_GRAPHICSVIEW_H
+#ifndef AC_GUI_GRAPHICSVIEW_H
+#define AC_GUI_GRAPHICSVIEW_H
 
-#include <ac_namespace.h>
+#include <ac_core_namespace.h>
 
-#include <mi_graphicsview.h>
+#include <mi_gui_graphicsview.h>
 
 #include <QModelIndex>
 
@@ -29,7 +29,7 @@ class IGripItem;
 class QItemSelection;
 
 class GraphicsViewPrivate;
-class GraphicsView : public MiGraphicsView
+class GraphicsView : public Mi::Gui::GraphicsView
 {
     Q_OBJECT
 
@@ -133,4 +133,4 @@ protected:
     int scaleRoleX() const { return Ac::TimeScaleRole; }
 };
 
-#endif // AC_GRAPHICSVIEW_H
+#endif // AC_GUI_GRAPHICSVIEW_H

@@ -64,7 +64,7 @@ IAggregator *DataObjectFactory::create(int itemType)
         super_aggregator->appendSubAggregator(graphics_object);
         return graphics_object->init();
     }
-    return 0;
+    return super_aggregator;
 }
 
 } // namespace Core

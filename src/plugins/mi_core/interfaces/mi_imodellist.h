@@ -23,7 +23,7 @@
 class IModelList : public IModelItem
 {
 public:
-    enum { InterfaceType = I::IModelItem };
+    enum { InterfaceType = I::IModelList };
 
     virtual int listType() const = 0;
     virtual bool containsObjectNamed(const QString &name) const = 0;

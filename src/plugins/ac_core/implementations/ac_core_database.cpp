@@ -21,6 +21,9 @@
 #include "ac_core_filerfactory.h"
 #include "ac_core_model.h"
 
+#include <mi_ifiler.h>
+#include <mi_imodelitem.h>
+
 #include <ac_core_namespace.h>
 
 namespace Ac {
@@ -51,7 +54,7 @@ const QString &Database::fileFilter() const
 
 QString Database::fileName() const
 {
-    return "";
+    return _fileName;
 }
 
 void Database::reset()
@@ -61,16 +64,12 @@ void Database::reset()
 
 void Database::read(const QString &fileName)
 {
-//    emit databaseAboutToBeRead();
-//    d->reading = true;
-//    reset();
-//    IReader *reader = IFilerFactory::instance()->createReader(Ac::XmlFileFiler);
-//    query<IFileFiler>(reader)->setFileName(fileName);
-//    reader->read(query<IModelItem>(Score::instance()));
-//    delete reader;
-//    d->reading = false;
-//    d->fileName = fileName;
-//    emit databaseRead();
+    reset();
+    IAggregator *filer = query<IFilerFactory>(this)->create(Ac::XmlFileFiler);
+    query<IFileFiler>(filer)->setFileName(fileName);
+    query<IReader>(filer)->read(query<IModelItem>(_score));
+    delete filer;
+    _fileName = fileName;
 }
 
 void Database::write(const QString &fileName)

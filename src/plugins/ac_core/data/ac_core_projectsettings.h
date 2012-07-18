@@ -27,7 +27,7 @@ namespace Core {
 
 class AC_CORE_EXPORT ProjectSettings : public Mi::Core::DataObject
 {
-    friend class ObjectFactory;
+    friend class DataObjectFactory;
 
     enum { RoleCount = 3 };
 
