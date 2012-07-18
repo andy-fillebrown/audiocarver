@@ -20,6 +20,8 @@
 
 #include "ac_core_scoreobject.h"
 
+#include <ac_core_constants.h>
+
 namespace Ac {
 namespace Core {
 
@@ -50,8 +52,8 @@ protected:
     };
 
     Score()
-        :   _length(60.0f)
-        ,   _startTime(0.0f)
+        :   _length(DEFAULT_SCORE_LENGTH)
+        ,   _startTime(DEFAULT_SCORE_STARTTIME)
         ,   _tracks(0)
         ,   _gridSettings(0)
         ,   _projectSettings(0)

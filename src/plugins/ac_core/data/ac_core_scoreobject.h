@@ -22,6 +22,7 @@
 
 #include <mi_imodellist.h>
 
+#include <ac_core_constants.h>
 #include <ac_core_namespace.h>
 
 namespace Ac {
@@ -46,7 +47,7 @@ protected:
     };
 
     ScoreObject()
-        :   _volume(0.0f)
+        :   _volume(DEFAULT_SCOREOBJECT_VOLUME)
         ,   _pitchCurve(0)
         ,   _controlCurves(0)
     {}

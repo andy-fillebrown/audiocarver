@@ -22,6 +22,7 @@
 
 #include <mi_imodellist.h>
 
+#include <ac_core_constants.h>
 #include <ac_core_namespace.h>
 
 namespace Ac {
@@ -53,11 +54,11 @@ protected:
     };
 
     GridSettings()
-        :   _snapEnabled(true)
-        ,   _gridSnapEnabled(true)
-        ,   _timeSnap(0.125f)
-        ,   _pitchSnap(1.0f)
-        ,   _controlSnap(0.125f)
+        :   _snapEnabled(DEFAULT_GRIDSETTINGS_SNAPENABLED)
+        ,   _gridSnapEnabled(DEFAULT_GRIDSETTINGS_GRIDSNAPENABLED)
+        ,   _timeSnap(DEFAULT_GRIDSETTINGS_TIMESNAP)
+        ,   _pitchSnap(DEFAULT_GRIDSETTINGS_PITCHSNAP)
+        ,   _controlSnap(DEFAULT_GRIDSETTINGS_CONTROLSNAP)
         ,   _timeGridLines(0)
         ,   _pitchGridLines(0)
         ,   _controlGridLines(0)

@@ -20,6 +20,7 @@
 
 #include "mi_core_dataobject.h"
 
+#include <ac_core_constants.h>
 #include <ac_core_namespace.h>
 
 namespace Ac {
@@ -42,9 +43,9 @@ protected:
     };
 
     ProjectSettings()
-        :   _sampleRate(48000)
-        ,   _controlRate(4800)
-        ,   _curveRate(48)
+        :   _sampleRate(DEFAULT_PROJECTSETTINGS_SAMPLERATE)
+        ,   _controlRate(DEFAULT_PROJECTSETTINGS_CONTROLRATE)
+        ,   _curveRate(DEFAULT_PROJECTSETTINGS_CURVERATE)
     {}
 
     IAggregator *init();
