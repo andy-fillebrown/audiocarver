@@ -51,7 +51,7 @@ public:
     {
         if (isTypeOfInterface(interfaceType))
             return this;
-        return aggregator()->queryInterface(interfaceType);
+        return const_cast<const IAggregator*>(aggregator())->queryInterface(interfaceType);
     }
 };
 
