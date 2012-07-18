@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_guimainwindowextension.h"
+#include "ac_gui_mainwindowextension.h"
 
 #include <ac_gridlinedialog.h>
 #include <ac_guiconstants.h>
@@ -81,9 +81,6 @@ public:
         return !db->fileName().isEmpty();
     }
 };
-
-} // namespace Gui
-} // namespace Ac
 
 MainWindowExtension::MainWindowExtension()
     :   d(new MainWindowExtensionPrivate)
@@ -388,3 +385,6 @@ void MainWindowExtension::destroyVersionDialog()
         d->versionDialog = 0;
     }
 }
+
+} // namespace Gui
+} // namespace Ac

@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUIMAINWINDOWEXTENSION_H
-#define AC_GUIMAINWINDOWEXTENSION_H
+#ifndef AC_GUI_MAINWINDOWEXTENSION_H
+#define AC_GUI_MAINWINDOWEXTENSION_H
 
 #include <imainwindowextension.h>
 
@@ -55,4 +55,4 @@ private:
 } // namespace Gui
 } // namespace Ac
 
-#endif // AC_GUIMAINWINDOWEXTENSION_H
+#endif // AC_GUI_MAINWINDOWEXTENSION_H

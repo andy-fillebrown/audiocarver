@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUICONSTANTS_H
-#define AC_GUICONSTANTS_H
+#ifndef AC_GUI_CONSTANTS_H
+#define AC_GUI_CONSTANTS_H
 
-#include <coreconstants.h>
+#include <qt_core_constants.h>
 
 const char * const G_CREATE                = PRO_NAME_STR".Group.Create";
 const char * const G_MODIFY                = PRO_NAME_STR".Group.Modify";
@@ -46,4 +46,4 @@ const char * const START                   = PRO_NAME_STR".Start";
 const char * const STOP                    = PRO_NAME_STR".Stop";
 const char * const ABOUTAUDIOCARVER        = PRO_NAME_STR".About"PRO_NAME_STR;
 
-#endif // AC_GUICONSTANTS_H
+#endif // AC_GUI_CONSTANTS_H
