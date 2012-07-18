@@ -20,7 +20,7 @@
 
 #include "mi_iaggregator.h"
 
-#include <ac_guinamespace.h>
+#include <ac_gui_namespace.h>
 
 class IGraphicsView : public IAggregator
 {
