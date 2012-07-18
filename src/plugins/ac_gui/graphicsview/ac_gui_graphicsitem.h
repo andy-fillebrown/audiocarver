@@ -91,7 +91,7 @@ public:
     ~GraphicsCurveItem();
 
     void setEntity(IEntity *entity);
-    void setPoints(const PointList &points);
+    void setPoints(const Core::PointList &points);
     void setColor(const QColor &color);
 
     void highlight();

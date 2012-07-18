@@ -20,6 +20,9 @@
 #include <mi_imodeldata.h>
 
 namespace Ac {
+
+using namespace Core;
+
 namespace Gui {
 
 IAggregator *Curve::init()
@@ -42,8 +45,8 @@ Curve::Entity::~Entity()
 void Curve::Entity::update(int role)
 {
     switch (role) {
-    case Ac::PointsRole:
-        graphicsCurveItem()->setPoints(query<IModelData>(a())->get<PointList>(Ac::PointsRole));
+    case PointsRole:
+        graphicsCurveItem()->setPoints(query<IModelData>(a())->get<PointList>(PointsRole));
     }
 }
 

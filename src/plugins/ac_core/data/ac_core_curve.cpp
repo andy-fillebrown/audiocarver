@@ -19,10 +19,11 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi;
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
-
-using namespace Mi::Core;
 
 IAggregator *Curve::init()
 {
@@ -33,7 +34,7 @@ IAggregator *Curve::init()
 
 void Curve::pushPoints(const PointList &points)
 {
-    ScopedDataChange data_change(this, Ac::PointsRole, Mi::TemporarayDataChange);
+    ScopedDataChange data_change(this, PointsRole, TemporarayDataChange);
     _pointsStack.push(points);
     conformPoints();
 }
@@ -42,7 +43,7 @@ void Curve::popPoints()
 {
     if (1 == _pointsStack.count())
         return;
-    ScopedDataChange data_change(this, Ac::PointsRole, Mi::TemporarayDataChange);
+    ScopedDataChange data_change(this, PointsRole, TemporarayDataChange);
     _pointsStack.pop();
 }
 
@@ -58,7 +59,7 @@ bool Curve::setPoints(const PointList &points)
     _pointsStack.top() = old_pts;
     if (_pointsStack.top() == new_pts)
         return false;
-    ScopedDataChange data_change(this, Ac::PointsRole);
+    ScopedDataChange data_change(this, PointsRole);
     _pointsStack.top() = new_pts;
     return true;
 }

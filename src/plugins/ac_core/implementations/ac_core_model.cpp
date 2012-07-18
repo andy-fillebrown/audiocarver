@@ -21,6 +21,8 @@
 
 #include <ac_core_database.h>
 
+using namespace Mi;
+
 namespace Ac {
 namespace Core {
 
@@ -34,12 +36,12 @@ IModelItem *Model::rootItem() const
     return query<IModelItem>(a()->score());
 }
 
-void Model::beginChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType)
+void Model::beginChangeData(const IModelData *data, int role, int dataChangeType)
 {
 //    qDebug() << Q_FUNC_INFO;
 }
 
-void Model::endChangeData(const IModelData *data, int role, Mi::DataChangeType dataChangeType)
+void Model::endChangeData(const IModelData *data, int role, int dataChangeType)
 {
 //    qDebug() << Q_FUNC_INFO;
 }

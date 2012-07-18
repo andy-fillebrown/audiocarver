@@ -60,12 +60,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Ac::PitchCurveItem;
+            return PitchCurveItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::PitchCurveItem == itemType)
+            if (PitchCurveItem == itemType)
                 return true;
             return Curve::ModelItem::isTypeOfItem(itemType);
         }

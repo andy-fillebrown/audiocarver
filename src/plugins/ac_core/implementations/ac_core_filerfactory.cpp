@@ -33,7 +33,7 @@ IAggregate *FilerFactory::init()
 IAggregator *FilerFactory::create(int filerType)
 {
     switch (filerType) {
-    case Ac::XmlFileFiler:
+    case FileFiler:
         return (new XmlFileFiler)->init();
     default:
         return 0;

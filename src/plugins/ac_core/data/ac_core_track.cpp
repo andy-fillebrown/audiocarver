@@ -22,14 +22,14 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
 
-using namespace Mi::Core;
-
 IAggregator *Track::init()
 {
-    _notes = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::NoteListItem);
+    _notes = query<IDataObjectFactory>(IDatabase::instance())->create(NoteListItem);
     return ScoreObject::init();
 }
 
@@ -42,7 +42,7 @@ bool Track::setColor(int color)
 {
     if (_color == color)
         return false;
-    ScopedDataChange data_change(this, Ac::ColorRole);
+    ScopedDataChange data_change(this, ColorRole);
     _color = color;
     return true;
 }
@@ -51,7 +51,7 @@ bool Track::setInstrument(const QString &instrument)
 {
     if (_instrument == instrument)
         return false;
-    ScopedDataChange data_change(this, Ac::InstrumentRole);
+    ScopedDataChange data_change(this, InstrumentRole);
     _instrument = instrument;
     return true;
 }
@@ -60,7 +60,7 @@ bool Track::setVisible(bool visible)
 {
     if (_visible == visible)
         return false;
-    ScopedDataChange data_change(this, Ac::VisibilityRole);
+    ScopedDataChange data_change(this, VisibilityRole);
     _visible = visible;
     return true;
 }
@@ -69,7 +69,7 @@ bool Track::setRecording(bool recording)
 {
     if (_recording == recording)
         return false;
-    ScopedDataChange data_change(this, Ac::RecordingRole);
+    ScopedDataChange data_change(this, RecordingRole);
     _recording = recording;
     return true;
 }

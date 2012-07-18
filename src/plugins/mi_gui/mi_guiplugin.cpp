@@ -27,11 +27,13 @@
 
 namespace Mi {
 
+using namespace Gui;
+
 bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Gui::MainWindowExtension);
+    addAutoReleasedObject(new MainWindowExtension);
     return true;
 }
 

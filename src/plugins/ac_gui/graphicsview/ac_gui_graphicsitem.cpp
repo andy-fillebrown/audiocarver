@@ -21,7 +21,12 @@
 
 #include <QFont>
 
+using namespace Qt;
+
 namespace Ac {
+
+using namespace Core;
+
 namespace Gui {
 
 class GraphicsCurveItemPrivate
@@ -51,7 +56,7 @@ public:
 
     void updateColor()
     {
-        guideItem->setPen(QPen(QBrush(color), 0.0f, Qt::DotLine));
+        guideItem->setPen(QPen(QBrush(color), 0.0f, DotLine));
         QPen pen = q->pen();
         pen.setColor(color);
         q->setPen(pen);
@@ -99,7 +104,7 @@ void GraphicsCurveItem::setPoints(const PointList &points)
     int n = points.count();
     for (int i = 1;  i < n;  ++i) {
         const Point &curPt = points.at(i);
-        if ((Ac::NoCurve == curPt.curveType)
+        if ((NoCurve == curPt.curveType)
                 || i == n - 1)
             curvePath.lineTo(curPt.pos);
         else {

@@ -97,11 +97,11 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::SampleRateRole;
+                return SampleRateRole;
             case 1:
-                return Ac::ControlRateRole;
+                return ControlRateRole;
             case 2:
-                return Ac::CurveRateRole;
+                return CurveRateRole;
             default:
                 return DataObject::ModelData::roleAt(i);
             }
@@ -110,11 +110,11 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::SampleRateRole:
+            case SampleRateRole:
                 return a()->sampleRate();
-            case Ac::ControlRateRole:
+            case ControlRateRole:
                 return a()->controlRate();
-            case Ac::CurveRateRole:
+            case CurveRateRole:
                 return a()->curveRate();
             default:
                 return DataObject::ModelData::getVariant(role);
@@ -124,11 +124,11 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::SampleRateRole:
+            case SampleRateRole:
                 return a()->setSampleRate(qvariant_cast<int>(data));
-            case Ac::ControlRateRole:
+            case ControlRateRole:
                 return a()->setControlRate(qvariant_cast<int>(data));
-            case Ac::CurveRateRole:
+            case CurveRateRole:
                 return a()->setCurveRate(qvariant_cast<int>(data));
             default:
                 return DataObject::ModelData::setVariant(data, role);
@@ -150,12 +150,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Ac::ProjectSettingsItem;
+            return ProjectSettingsItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::ProjectSettingsItem == itemType)
+            if (ProjectSettingsItem == itemType)
                 return true;
             return DataObject::ModelItem::isTypeOfItem(itemType);
         }

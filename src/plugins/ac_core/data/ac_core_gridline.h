@@ -102,13 +102,13 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::LocationRole;
+                return LocationRole;
             case 1:
-                return Ac::LabelRole;
+                return LabelRole;
             case 2:
-                return Ac::PriorityRole;
+                return PriorityRole;
             case 3:
-                return Ac::ColorRole;
+                return ColorRole;
             default:
                 return DataObject::ModelData::roleAt(i);
             }
@@ -117,13 +117,13 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::LocationRole:
+            case LocationRole:
                 return a()->location();
-            case Ac::LabelRole:
+            case LabelRole:
                 return a()->label();
-            case Ac::PriorityRole:
+            case PriorityRole:
                 return a()->priority();
-            case Ac::ColorRole:
+            case ColorRole:
                 return a()->color();
             default:
                 return DataObject::ModelData::getVariant(role);
@@ -133,13 +133,13 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::LocationRole:
+            case LocationRole:
                 return a()->setLocation(qvariant_cast<qreal>(data));
-            case Ac::LabelRole:
+            case LabelRole:
                 return a()->setLabel(qvariant_cast<QString>(data));
-            case Ac::PriorityRole:
+            case PriorityRole:
                 return a()->setPriority(qvariant_cast<int>(data));
-            case Ac::ColorRole:
+            case ColorRole:
                 return a()->setColor(qvariant_cast<int>(data));
             default:
                 return DataObject::ModelData::setVariant(data, role);
@@ -159,7 +159,7 @@ protected:
         // IModelItem
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::GridLineItem == itemType)
+            if (GridLineItem == itemType)
                 return true;
             return DataObject::ModelItem::isTypeOfItem(itemType);
         }
@@ -200,12 +200,12 @@ protected:
 
         int itemType() const
         {
-            return Ac::TimeGridLineItem;
+            return TimeGridLineItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::TimeGridLineItem == itemType)
+            if (TimeGridLineItem == itemType)
                 return true;
             return GridLine::ModelItem::isTypeOfItem(itemType);
         }
@@ -246,12 +246,12 @@ protected:
 
         int itemType() const
         {
-            return Ac::PitchGridLineItem;
+            return PitchGridLineItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::PitchGridLineItem == itemType)
+            if (PitchGridLineItem == itemType)
                 return true;
             return GridLine::ModelItem::isTypeOfItem(itemType);
         }
@@ -292,12 +292,12 @@ protected:
 
         int itemType() const
         {
-            return Ac::ControlGridLineItem;
+            return ControlGridLineItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::ControlGridLineItem == itemType)
+            if (ControlGridLineItem == itemType)
                 return true;
             return GridLine::ModelItem::isTypeOfItem(itemType);
         }

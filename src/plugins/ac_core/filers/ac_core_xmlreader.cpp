@@ -28,14 +28,19 @@
 #include <QStringList>
 #include <QXmlStreamReader>
 
+using namespace Mi;
+
+namespace Ac {
+namespace Core {
+
 static int elementType(const QString &name)
 {
-    return Mi::itemType(name);
+    return itemType(name);
 }
 
 static int attributeRole(const QString &name)
 {
-    return Mi::itemDataRole(name);
+    return itemDataRole(name);
 }
 
 static bool nextStartElement(QXmlStreamReader *reader)
@@ -94,7 +99,7 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
         foreach (const QXmlStreamAttribute &attribute, attributes) {
             QString roleString = attribute.name().toString();
             int role = attributeRole(roleString);
-            if (Mi::InvalidRole == role) {
+            if (InvalidRole == role) {
                 qWarning() << Q_FUNC_INFO << ": Invalid attribute role in" << elementName;
                 return false;
             }
@@ -112,12 +117,12 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
                         point.pos.setX(coords.at(0).toDouble());
                         point.pos.setY(coords.at(1).toDouble());
                     } else if ("curve" == attribute.name() && "bezier" == data)
-                        point.curveType = Ac::BezierCurve;
+                        point.curveType = BezierCurve;
                 }
                 points.append(point);
                 nextElement(reader);
             }
-            data->set(QVariant::fromValue(points), Ac::PointsRole);
+            data->set(QVariant::fromValue(points), PointsRole);
         } else {
             while (nextElement(reader) == QXmlStreamReader::StartElement) {
                 QString subElementName = reader->name().toString();
@@ -140,9 +145,6 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
         qWarning() << Q_FUNC_INFO << ": Mismatched element start and end tags (" << elementName << "-->" << endElementName << ")";
     return true;
 }
-
-namespace Ac {
-namespace Core {
 
 IAggregate *XmlReader::init()
 {
@@ -168,7 +170,7 @@ int XmlReader::nextItemType()
     if (!reader)
         return -1;
     if (!nextStartElement(reader))
-        return Mi::UnknownItem;
+        return UnknownItem;
     const QString elementName = reader->name().toString();
     return elementType(elementName);
 }

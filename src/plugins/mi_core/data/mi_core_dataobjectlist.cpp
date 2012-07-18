@@ -22,7 +22,7 @@ namespace Core {
 
 IAggregator *DataObjectList::init()
 {
-    setName(Mi::itemTypeString(_listType) + "s");
+    setName(itemTypeString(_listType) + "s");
     return DataObject::init();
 }
 

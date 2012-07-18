@@ -123,9 +123,9 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::LengthRole;
+                return LengthRole;
             case 1:
-                return Ac::StartTimeRole;
+                return StartTimeRole;
             default:
                 return ScoreObject::ModelData::roleAt(i);
             }
@@ -134,9 +134,9 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::LengthRole:
+            case LengthRole:
                 return a()->length();
-            case Ac::StartTimeRole:
+            case StartTimeRole:
                 return a()->startTime();
             default:
                 return ScoreObject::ModelData::getVariant(role);
@@ -146,9 +146,9 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::LengthRole:
+            case LengthRole:
                 return a()->setLength(qvariant_cast<qreal>(data));
-            case Ac::StartTimeRole:
+            case StartTimeRole:
                 return a()->setStartTime(qvariant_cast<qreal>(data));
             default:
                 return ScoreObject::ModelData::setVariant(data, role);
@@ -175,12 +175,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Ac::ScoreItem;
+            return ScoreItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::ScoreItem == itemType)
+            if (ScoreItem == itemType)
                 return true;
             return ScoreObject::ModelItem::isTypeOfItem(itemType);
         }
@@ -223,11 +223,11 @@ protected:
         IModelItem *findItem(int itemType) const
         {
             switch (itemType) {
-            case Ac::GridSettingsItem:
+            case GridSettingsItem:
                 return query<IModelItem>(a()->gridSettings());
-            case Ac::ProjectSettingsItem:
+            case ProjectSettingsItem:
                 return query<IModelItem>(a()->projectSettings());
-            case Ac::ViewSettingsItem:
+            case ViewSettingsItem:
                 return query<IModelItem>(a()->viewSettings());
             default:
                 return ScoreObject::ModelItem::findItem(itemType);
@@ -237,7 +237,7 @@ protected:
         IModelList *findList(int listType) const
         {
             switch (listType) {
-            case Ac::TrackItem:
+            case TrackItem:
                 return query<IModelList>(a()->tracks());
             default:
                 return ScoreObject::ModelItem::findList(listType);

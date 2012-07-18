@@ -47,12 +47,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Ac::NoteItem;
+            return NoteItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::NoteItem == itemType)
+            if (NoteItem == itemType)
                 return true;
             return ScoreObject::ModelItem::isTypeOfItem(itemType);
         }

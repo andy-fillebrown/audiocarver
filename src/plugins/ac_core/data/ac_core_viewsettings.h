@@ -124,17 +124,17 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::TimePositionRole;
+                return TimePositionRole;
             case 1:
-                return Ac::PitchPositionRole;
+                return PitchPositionRole;
             case 2:
-                return Ac::ControlPositionRole;
+                return ControlPositionRole;
             case 3:
-                return Ac::TimeScaleRole;
+                return TimeScaleRole;
             case 4:
-                return Ac::PitchScaleRole;
+                return PitchScaleRole;
             case 5:
-                return Ac::ControlScaleRole;
+                return ControlScaleRole;
             default:
                 return DataObject::ModelData::roleAt(i);
             }
@@ -143,17 +143,17 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::TimePositionRole:
+            case TimePositionRole:
                 return a()->timePosition();
-            case Ac::PitchPositionRole:
+            case PitchPositionRole:
                 return a()->pitchPosition();
-            case Ac::ControlPositionRole:
+            case ControlPositionRole:
                 return a()->controlPosition();
-            case Ac::TimeScaleRole:
+            case TimeScaleRole:
                 return a()->timeScale();
-            case Ac::PitchScaleRole:
+            case PitchScaleRole:
                 return a()->pitchScale();
-            case Ac::ControlScaleRole:
+            case ControlScaleRole:
                 return a()->controlScale();
             default:
                 return DataObject::ModelData::getVariant(role);
@@ -163,17 +163,17 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::TimePositionRole:
+            case TimePositionRole:
                 return a()->setTimePosition(qvariant_cast<qreal>(data));
-            case Ac::PitchPositionRole:
+            case PitchPositionRole:
                 return a()->setPitchPosition(qvariant_cast<qreal>(data));
-            case Ac::ControlPositionRole:
+            case ControlPositionRole:
                 return a()->setControlPosition(qvariant_cast<qreal>(data));
-            case Ac::TimeScaleRole:
+            case TimeScaleRole:
                 return a()->setTimeScale(qvariant_cast<qreal>(data));
-            case Ac::PitchScaleRole:
+            case PitchScaleRole:
                 return a()->setPitchScale(qvariant_cast<qreal>(data));
-            case Ac::ControlScaleRole:
+            case ControlScaleRole:
                 return a()->setControlScale(qvariant_cast<qreal>(data));
             default:
                 return DataObject::ModelData::setVariant(data, role);
@@ -195,12 +195,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Ac::ViewSettingsItem;
+            return ViewSettingsItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::ViewSettingsItem == itemType)
+            if (ViewSettingsItem == itemType)
                 return true;
             return DataObject::ModelItem::isTypeOfItem(itemType);
         }

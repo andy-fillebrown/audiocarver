@@ -19,10 +19,10 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
-
-using namespace Mi::Core;
 
 IAggregator *ProjectSettings::init()
 {
@@ -34,7 +34,7 @@ bool ProjectSettings::setSampleRate(int rate)
     rate = qMax(44100, rate);
     if (_sampleRate == rate)
         return false;
-    ScopedDataChange data_change(this, Ac::SampleRateRole);
+    ScopedDataChange data_change(this, SampleRateRole);
     _sampleRate = rate;
     return true;
 }
@@ -44,7 +44,7 @@ bool ProjectSettings::setControlRate(int rate)
     rate = qMax(1, rate);
     if (_controlRate == rate)
         return false;
-    ScopedDataChange data_change(this, Ac::ControlRateRole);
+    ScopedDataChange data_change(this, ControlRateRole);
     _controlRate = rate;
     return true;
 }
@@ -54,7 +54,7 @@ bool ProjectSettings::setCurveRate(int rate)
     rate = qMax(1, rate);
     if (_curveRate == rate)
         return false;
-    ScopedDataChange data_change(this, Ac::CurveRateRole);
+    ScopedDataChange data_change(this, CurveRateRole);
     _curveRate = rate;
     return true;
 }

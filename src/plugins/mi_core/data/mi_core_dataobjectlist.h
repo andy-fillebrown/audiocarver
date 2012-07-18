@@ -31,7 +31,7 @@ class MI_CORE_EXPORT DataObjectList : public DataObject
     QList<IAggregator*> _objects;
 
 protected:
-    DataObjectList(int listType = Mi::UnknownItem)
+    DataObjectList(int listType = UnknownItem)
         :   _listType(listType)
     {}
 
@@ -56,7 +56,7 @@ protected:
     bool contains(const QString &name) const
     {
         foreach (IAggregator *object, objects())
-            if (query<IModelData>(object)->get<QString>(Mi::NameRole) == name)
+            if (query<IModelData>(object)->get<QString>(NameRole) == name)
                 return true;
         return false;
     }
@@ -81,14 +81,14 @@ protected:
             old_list->remove(item);
         }
         IModelData *data = query<IModelData>(object);
-        const QString name = data->get<QString>(Mi::NameRole);
+        const QString name = data->get<QString>(NameRole);
         if (!name.isEmpty()) {
             int suffix = 0;
             QString new_name = name;
             while (contains(new_name))
                 new_name = QString("%1.%2").arg(name).arg(++suffix);
             if (name != new_name)
-                data->set(new_name, Mi::NameRole);
+                data->set(new_name, NameRole);
         }
         _objects.insert(i, object);
         item->setParent(query<IModelItem>(this));
@@ -150,12 +150,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Mi::ListItem;
+            return ListItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            return Mi::ListItem == itemType;
+            return ListItem == itemType;
         }
 
         IModelItem *parent() const

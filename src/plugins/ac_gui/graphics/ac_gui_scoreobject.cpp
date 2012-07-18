@@ -25,6 +25,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
+using namespace Mi;
+
 namespace Ac {
 namespace Gui {
 
@@ -63,12 +65,12 @@ QList<ISubEntity*> ScoreObject::ParentEntity::subEntities(int sceneType) const
 void ScoreObject::ParentEntity::update(int role)
 {
     switch (role) {
-    case Mi::ParentRole: {
+    case ParentRole: {
         IParentEntity *parent = query<IChildEntity>(a())->parentEntity();
         if (!parent)
             return;
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-            for (int j = 0;  j < Ac::GraphicsItemTransformTypeCount;  ++j) {
+        for (int i = 0;  i < SceneTypeCount;  ++i) {
+            for (int j = 0;  j < GraphicsItemTransformTypeCount;  ++j) {
                 QGraphicsItem *parent_item = parent->graphicsItem(i, j);
                 QGraphicsItem *child_item = graphicsItem(i, j);
                 if (!child_item)

@@ -37,7 +37,7 @@ IAggregate *FilerFactory::init()
 IAggregator *FilerFactory::create(int filerType)
 {
     switch (filerType) {
-    case Ac::XmlCopyFiler:
+    case CopyFiler:
         return (new XmlCopyFiler)->init();
     default:
         return Core::FilerFactory::create(filerType);

@@ -31,7 +31,7 @@ namespace Core {
 
 IAggregator *Database::init()
 {
-    _score = query<IDataObjectFactory>(this)->create(Ac::ScoreItem);
+    _score = query<IDataObjectFactory>(this)->create(ScoreItem);
     return Mi::Core::Database::init();
 }
 
@@ -66,7 +66,7 @@ void Database::reset()
 void Database::read(const QString &fileName)
 {
     reset();
-    IAggregator *filer = query<IFilerFactory>(this)->create(Ac::XmlFileFiler);
+    IAggregator *filer = query<IFilerFactory>(this)->create(FileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
     if (query<IReader>(filer)->read(query<IModelItem>(_score)))
         _fileName = fileName;
@@ -76,7 +76,7 @@ void Database::read(const QString &fileName)
 void Database::write(const QString &fileName)
 {
 //    emit databaseAboutToBeWritten();
-//    IWriter *writer = IFilerFactory::instance()->createWriter(Ac::XmlFileFiler);
+//    IWriter *writer = IFilerFactory::instance()->createWriter(FileFiler);
 //    query<IFileFiler>(writer)->setFileName(fileName);
 //    writer->write(query<IModelItem>(Score::instance()));
 //    delete writer;

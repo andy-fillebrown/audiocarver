@@ -39,13 +39,15 @@ static bool test();
 
 namespace Ac {
 
+using namespace Gui;
+
 bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments);
     Q_UNUSED(errorMessage);
 
-    (new Gui::Database())->init();
-    (new Gui::Editor)->init();
+    (new Database())->init();
+    (new Editor)->init();
 //    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
     return true;
 }
@@ -76,11 +78,13 @@ Q_EXPORT_PLUGIN(Ac::GuiPlugin)
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
 
+using namespace Ac;
+
 bool test_1()
 {
     // Make sure querying super-aggregators succeeds.
     // Super-aggregators should create aggregates on demand.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     IEntity *entity = query<IEntity>(control_curve);
     CHECK(entity);
@@ -91,7 +95,7 @@ bool test_2()
 {
     // Make sure querying constant super-aggregators fails.
     // Constant super-aggregators should not create aggregates on demand.
-    const IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    const IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     const IEntity *entity = query<IEntity>(control_curve);
     CHECK(!entity);
@@ -102,7 +106,7 @@ bool test_3()
 {
     // Make sure querying aggregates for other aggregates succeeds.
     // Aggregates should pass the query to their aggregator.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -114,7 +118,7 @@ bool test_3()
 bool test_4()
 {
     // Make sure querying constant aggregates for other aggregates does not create aggregates on demand.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     const IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -126,7 +130,7 @@ bool test_4()
 bool test_5()
 {
     // Make sure querying constant aggregates succeeds for an aggregate that was previously created on demand.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     IEntity *entity = query<IEntity>(control_curve);
     CHECK(entity);
@@ -140,23 +144,23 @@ bool test_6()
 {
     // Make sure all item types can be created.
     IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
-    CHECK(factory->create(Ac::ScoreItem));
-    CHECK(factory->create(Ac::TrackItem));
-    CHECK(factory->create(Ac::TrackListItem));
-    CHECK(factory->create(Ac::NoteItem));
-    CHECK(factory->create(Ac::NoteListItem));
-    CHECK(factory->create(Ac::PitchCurveItem));
-    CHECK(factory->create(Ac::ControlCurveItem));
-    CHECK(factory->create(Ac::ControlCurveListItem));
-    CHECK(factory->create(Ac::GridSettingsItem));
-    CHECK(factory->create(Ac::TimeGridLineItem));
-    CHECK(factory->create(Ac::TimeGridLineListItem));
-    CHECK(factory->create(Ac::PitchGridLineItem));
-    CHECK(factory->create(Ac::PitchGridLineListItem));
-    CHECK(factory->create(Ac::ControlGridLineItem));
-    CHECK(factory->create(Ac::ControlGridLineListItem));
-    CHECK(factory->create(Ac::ViewSettingsItem));
-    CHECK(factory->create(Ac::ProjectSettingsItem));
+    CHECK(factory->create(ScoreItem));
+    CHECK(factory->create(TrackItem));
+    CHECK(factory->create(TrackListItem));
+    CHECK(factory->create(NoteItem));
+    CHECK(factory->create(NoteListItem));
+    CHECK(factory->create(PitchCurveItem));
+    CHECK(factory->create(ControlCurveItem));
+    CHECK(factory->create(ControlCurveListItem));
+    CHECK(factory->create(GridSettingsItem));
+    CHECK(factory->create(TimeGridLineItem));
+    CHECK(factory->create(TimeGridLineListItem));
+    CHECK(factory->create(PitchGridLineItem));
+    CHECK(factory->create(PitchGridLineListItem));
+    CHECK(factory->create(ControlGridLineItem));
+    CHECK(factory->create(ControlGridLineListItem));
+    CHECK(factory->create(ViewSettingsItem));
+    CHECK(factory->create(ProjectSettingsItem));
     return true;
 }
 

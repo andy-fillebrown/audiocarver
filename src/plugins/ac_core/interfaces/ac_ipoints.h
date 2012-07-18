@@ -22,18 +22,24 @@
 
 #include <ac_core_namespace.h>
 
+namespace Ac {
+namespace Core {
+
 class Point;
 typedef QList<Point> PointList;
+
+} // namespace Core
+} // namespace Ac
 
 class IPoints : public IAggregate
 {
 public:
     enum { InterfaceType = I::IPoints };
 
-    virtual const PointList &points() const = 0;
-    virtual void pushPoints(const PointList &points) = 0;
+    virtual const Ac::Core::PointList &points() const = 0;
+    virtual void pushPoints(const Ac::Core::PointList &points) = 0;
     virtual void popPoints() = 0;
-    virtual void setPoints(const PointList &points) = 0;
+    virtual void setPoints(const Ac::Core::PointList &points) = 0;
 
     void pushPoints()
     {

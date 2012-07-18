@@ -93,7 +93,7 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::VolumeRole;
+                return VolumeRole;
             default:
                 return DataObject::ModelData::roleAt(i);
             }
@@ -102,7 +102,7 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::VolumeRole:
+            case VolumeRole:
                 return a()->volume();
             default:
                 return DataObject::ModelData::getVariant(role);
@@ -112,7 +112,7 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::VolumeRole:
+            case VolumeRole:
                 return a()->setVolume(qvariant_cast<qreal>(data));
             default:
                 return DataObject::ModelData::setVariant(data, role);
@@ -160,7 +160,7 @@ protected:
         IModelItem *findItem(int itemType) const
         {
             switch (itemType) {
-            case Ac::PitchCurveItem:
+            case PitchCurveItem:
                 return query<IModelItem>(a()->pitchCurve());
             default:
                 return DataObject::ModelItem::findItem(itemType);
@@ -170,7 +170,7 @@ protected:
         IModelList *findList(int listType) const
         {
             switch (listType) {
-            case Ac::ControlCurveItem:
+            case ControlCurveItem:
                 return query<IModelList>(a()->controlCurves());
             default:
                 return DataObject::ModelItem::findList(listType);

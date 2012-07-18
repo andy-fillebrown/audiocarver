@@ -106,7 +106,7 @@ protected:
             Q_ASSERT(i < RoleCount);
             if (i < 0 || RoleCount <= i)
                 return -1;
-            return Mi::NameRole;
+            return NameRole;
         }
 
         Qt::ItemFlags flags() const
@@ -118,7 +118,7 @@ protected:
         {
             switch (role) {
             case Qt::DisplayRole:
-            case Mi::NameRole:
+            case NameRole:
                 return a()->name();
             default:
                 Q_ASSERT(0);
@@ -130,7 +130,7 @@ protected:
         {
             switch (role) {
             case Qt::EditRole:
-            case Mi::NameRole:
+            case NameRole:
                 return a()->setName(qvariant_cast<QString>(data));
             default:
                 Q_ASSERT(0);
@@ -164,12 +164,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Mi::UnknownItem;
+            return UnknownItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            return Mi::UnknownItem == itemType;
+            return UnknownItem == itemType;
         }
 
         IModelItem *parent() const

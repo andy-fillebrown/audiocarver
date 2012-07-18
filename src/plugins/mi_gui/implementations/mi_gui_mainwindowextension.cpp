@@ -33,18 +33,20 @@
 #include <QFileDialog>
 #include <QIcon>
 
+using namespace Core;
+
 namespace Mi {
 namespace Gui {
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
 {
-    const int fileGroupIndex = groups.indexOf(Core::Constants::G_FILE);
+    const int fileGroupIndex = groups.indexOf(Constants::G_FILE);
     groups.insert(fileGroupIndex + 1, G_EDIT);
 }
 
 void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
 {
-    if (Core::Constants::G_FILE == menuBarGroup) {
+    if (Constants::G_FILE == menuBarGroup) {
         groups << G_FILE_NEW
                << G_FILE_OPEN
                << G_FILE_SAVE
@@ -61,16 +63,16 @@ void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &i
 
 void MainWindowExtension::initActions()
 {
-    Core::ActionManager *am = Core::ICore::instance()->actionManager();
+    ActionManager *am = Core::ICore::instance()->actionManager();
 
-    Core::ActionContainer *fileMenu = am->actionContainer(Core::Constants::M_FILE);
-    Core::ActionContainer *editMenu = am->actionContainer(M_EDIT);
+    ActionContainer *fileMenu = am->actionContainer(Constants::M_FILE);
+    ActionContainer *editMenu = am->actionContainer(M_EDIT);
 
-    Core::Context globalContext(Core::Constants::C_GLOBAL);
+    Context globalContext(Constants::C_GLOBAL);
 
     QIcon icon;
     QAction *action = 0;
-    Core::Command *cmd = 0;
+    Command *cmd = 0;
 
     // New Action
     icon = QIcon::fromTheme(QLatin1String("document-new"), QIcon(ICON_NEW));
@@ -113,7 +115,7 @@ void MainWindowExtension::initActions()
     action = new QAction(icon, tr("&Undo"), this);
     cmd = am->registerAction(action, UNDO, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Undo);
-    cmd->setAttribute(Core::Command::CA_UpdateText);
+    cmd->setAttribute(Command::CA_UpdateText);
     cmd->setDefaultText(tr("&Undo"));
     editMenu->addAction(cmd, G_EDIT_UNDOREDO);
     connect(action, SIGNAL(triggered()), SLOT(undo()));
@@ -123,7 +125,7 @@ void MainWindowExtension::initActions()
     action = new QAction(icon, tr("&Redo"), this);
     cmd = am->registerAction(action, REDO, globalContext);
     cmd->setDefaultKeySequence(QKeySequence::Redo);
-    cmd->setAttribute(Core::Command::CA_UpdateText);
+    cmd->setAttribute(Command::CA_UpdateText);
     cmd->setDefaultText(tr("&Redo"));
     editMenu->addAction(cmd, G_EDIT_UNDOREDO);
     connect(action, SIGNAL(triggered()), SLOT(redo()));
@@ -181,9 +183,7 @@ void MainWindowExtension::newFile()
 void MainWindowExtension::openFile()
 {
     IDatabase *db = IDatabase::instance();
-    QString filename = QFileDialog::getOpenFileName(
-                Core::ICore::instance()->mainWindow(), "", "",
-                tr(qPrintable(db->fileFilter())));
+    QString filename = QFileDialog::getOpenFileName(ICore::instance()->mainWindow(), "", "", tr(qPrintable(db->fileFilter())));
     if (!QFile::exists(filename))
         return;
     db->read(filename);
@@ -201,9 +201,7 @@ void MainWindowExtension::saveFile()
 void MainWindowExtension::saveFileAs()
 {
     IDatabase *db = IDatabase::instance();
-    QString filename = QFileDialog::getSaveFileName(
-                Core::ICore::instance()->mainWindow(), "", "",
-                tr(qPrintable(db->fileFilter())));
+    QString filename = QFileDialog::getSaveFileName(ICore::instance()->mainWindow(), "", "", tr(qPrintable(db->fileFilter())));
     if (filename.isEmpty())
         return;
     if (!filename.endsWith(db->fileExtension()))

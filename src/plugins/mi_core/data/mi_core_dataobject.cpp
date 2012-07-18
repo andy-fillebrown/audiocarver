@@ -52,7 +52,7 @@ bool DataObject::setName(const QString &name)
         if (list && list->containsObjectNamed(_name))
             return false;
     }
-    ScopedDataChange data_change(this, Mi::NameRole);
+    ScopedDataChange data_change(this, NameRole);
     _name = name;
     return true;
 }

@@ -22,10 +22,10 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
-
-using namespace Mi::Core;
 
 static Score *instance = 0;
 
@@ -58,7 +58,7 @@ bool Score::setLength(qreal length)
     length = qMax(qreal(1.0f), length);
     if (_length == length)
         return false;
-    ScopedDataChange data_change(this, Ac::LengthRole);
+    ScopedDataChange data_change(this, LengthRole);
     _length = length;
     return true;
 }
@@ -68,7 +68,7 @@ bool Score::setStartTime(qreal time)
     time = qBound(qreal(0.0f), time, length());
     if (_startTime == time)
         return false;
-    ScopedDataChange data_change(this, Ac::StartTimeRole);
+    ScopedDataChange data_change(this, StartTimeRole);
     _startTime = time;
     return true;
 }

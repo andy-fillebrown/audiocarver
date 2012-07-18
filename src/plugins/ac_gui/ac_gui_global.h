@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI__GLOBAL_H
+#ifndef AC_GUI_GLOBAL_H
 #define AC_GUI_GLOBAL_H
 
 #include <ac_core_global.h>

@@ -19,10 +19,10 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
-
-using namespace Mi::Core;
 
 IAggregator *GridLine::init()
 {
@@ -34,7 +34,7 @@ bool GridLine::setLocation(qreal location)
     location = qMax(qreal(0.0f), location);
     if (_location == location)
         return false;
-    ScopedDataChange data_change(this, Ac::LocationRole);
+    ScopedDataChange data_change(this, LocationRole);
     _location = location;
     return true;
 }
@@ -43,7 +43,7 @@ bool GridLine::setLabel(const QString &label)
 {
     if (_label == label)
         return false;
-    ScopedDataChange data_change(this, Ac::LabelRole);
+    ScopedDataChange data_change(this, LabelRole);
     _label = label;
     return true;
 }
@@ -53,7 +53,7 @@ bool GridLine::setPriority(int priority)
     priority = qMax(0, priority);
     if (_priority == priority)
         return false;
-    ScopedDataChange data_change(this, Ac::PriorityRole);
+    ScopedDataChange data_change(this, PriorityRole);
     _priority = priority;
     return true;
 }
@@ -63,7 +63,7 @@ bool GridLine::setColor(int color)
     color = qBound(0x000000, color, 0xffffff);
     if (_color == color)
         return false;
-    ScopedDataChange data_change(this, Ac::ColorRole);
+    ScopedDataChange data_change(this, ColorRole);
     _color = color;
     return true;
 }

@@ -27,6 +27,8 @@
 
 #include <mi_core_superaggregator.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Gui {
 
@@ -41,7 +43,7 @@ IAggregate *DataObjectFactory::init()
 
 IAggregator *DataObjectFactory::create(int itemType)
 {
-    Mi::Core::SuperAggregator *super_aggregator = dynamic_cast<Mi::Core::SuperAggregator*>(Core::DataObjectFactory::create(itemType));
+    SuperAggregator *super_aggregator = dynamic_cast<SuperAggregator*>(Core::DataObjectFactory::create(itemType));
     GraphicsObject *graphics_object = 0;
     switch (itemType) {
     case ControlCurveItem:

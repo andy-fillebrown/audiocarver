@@ -22,10 +22,10 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
-
-using namespace Mi::Core;
 
 IAggregator *ScoreObject::init()
 {
@@ -46,7 +46,7 @@ bool ScoreObject::setVolume(qreal volume)
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
     if (_volume == volume)
         return false;
-    ScopedDataChange data_change(this, Ac::VolumeRole);
+    ScopedDataChange data_change(this, VolumeRole);
     _volume = volume;
     return true;
 }

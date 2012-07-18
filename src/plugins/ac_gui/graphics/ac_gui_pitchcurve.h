@@ -67,7 +67,7 @@ protected:
         // ISubEntity
         int sceneType() const
         {
-            return Ac::PitchScene;
+            return PitchScene;
         }
     };
 

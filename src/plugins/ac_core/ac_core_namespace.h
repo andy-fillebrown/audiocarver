@@ -96,8 +96,8 @@ enum CurveType {
 };
 
 enum FilerType {
-    XmlCopyFiler,
-    XmlFileFiler
+    CopyFiler,
+    FileFiler
 };
 
 enum Color {

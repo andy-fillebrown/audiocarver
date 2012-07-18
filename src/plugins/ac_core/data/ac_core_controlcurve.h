@@ -93,7 +93,7 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::ControlTypeRole;
+                return ControlTypeRole;
             default:
                 return Curve::ModelData::roleAt(i);
             }
@@ -102,7 +102,7 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::ControlTypeRole:
+            case ControlTypeRole:
                 return a()->controlType();
             default:
                 return Curve::ModelData::getVariant(role);
@@ -112,7 +112,7 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::ControlTypeRole:
+            case ControlTypeRole:
                 return a()->setControlType(qvariant_cast<int>(data));
             default:
                 return Curve::ModelData::setVariant(data, role);
@@ -134,12 +134,12 @@ protected:
         // IModelItem
         int itemType() const
         {
-            return Ac::ControlCurveItem;
+            return ControlCurveItem;
         }
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::ControlCurveItem == itemType)
+            if (ControlCurveItem == itemType)
                 return true;
             return Curve::ModelItem::isTypeOfItem(itemType);
         }

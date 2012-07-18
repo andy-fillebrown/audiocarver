@@ -46,7 +46,7 @@ protected:
     };
 
     Track()
-        :   _color(Ac::red)
+        :   _color(red)
         ,   _visible(false)
         ,   _recording(false)
         ,   _notes(0)
@@ -114,13 +114,13 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::ColorRole;
+                return ColorRole;
             case 1:
-                return Ac::InstrumentRole;
+                return InstrumentRole;
             case 2:
-                return Ac::VisibilityRole;
+                return VisibilityRole;
             case 3:
-                return Ac::RecordingRole;
+                return RecordingRole;
             default:
                 return ScoreObject::ModelData::roleAt(i);
             }
@@ -129,13 +129,13 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::ColorRole:
+            case ColorRole:
                 return a()->color();
-            case Ac::InstrumentRole:
+            case InstrumentRole:
                 return a()->instrument();
-            case Ac::VisibilityRole:
+            case VisibilityRole:
                 return a()->isVisible();
-            case Ac::RecordingRole:
+            case RecordingRole:
                 return a()->isRecording();
             default:
                 return ScoreObject::ModelData::getVariant(role);
@@ -145,13 +145,13 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::ColorRole:
+            case ColorRole:
                 return a()->setColor(qvariant_cast<int>(data));
-            case Ac::InstrumentRole:
+            case InstrumentRole:
                 return a()->setInstrument(qvariant_cast<QString>(data));
-            case Ac::VisibilityRole:
+            case VisibilityRole:
                 return a()->setVisible(qvariant_cast<bool>(data));
-            case Ac::RecordingRole:
+            case RecordingRole:
                 return a()->setRecording(qvariant_cast<bool>(data));
             default:
                 return ScoreObject::ModelData::setVariant(data, role);
@@ -183,7 +183,7 @@ protected:
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::TrackItem == itemType)
+            if (TrackItem == itemType)
                 return true;
             return ScoreObject::ModelItem::isTypeOfItem(itemType);
         }
@@ -215,7 +215,7 @@ protected:
         IModelList *findList(int listType) const
         {
             switch (listType) {
-            case Ac::NoteItem:
+            case NoteItem:
                 return query<IModelList>(a()->notes());
             default:
                 return ScoreObject::ModelItem::findList(listType);

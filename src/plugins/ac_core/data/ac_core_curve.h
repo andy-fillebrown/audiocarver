@@ -129,7 +129,7 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::PointsRole;
+                return PointsRole;
             default:
                 return DataObject::ModelData::roleAt(i);
             }
@@ -138,7 +138,7 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::PointsRole:
+            case PointsRole:
                 return QVariant::fromValue(a()->points());
             default:
                 return DataObject::ModelData::getVariant(role);
@@ -148,7 +148,7 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::PointsRole:
+            case PointsRole:
                 return a()->setPoints(qvariant_cast<PointList>(data));
             default:
                 return DataObject::ModelData::setVariant(data, role);
@@ -168,7 +168,7 @@ protected:
         // IModelItem
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::CurveItem == itemType)
+            if (CurveItem == itemType)
                 return true;
             return DataObject::ModelItem::isTypeOfItem(itemType);
         }

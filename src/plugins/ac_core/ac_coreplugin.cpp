@@ -28,9 +28,11 @@
 static bool test();
 #endif
 
+using namespace Mi;
+
 namespace Ac {
 
-using namespace Mi;
+using namespace Core;
 
 bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
@@ -79,7 +81,7 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
 
-    (new Core::Database)->init();
+    (new Database)->init();
 
     return true;
 }
@@ -104,11 +106,13 @@ Q_EXPORT_PLUGIN(Ac::CorePlugin)
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
 
+using namespace Ac;
+
 bool test_1()
 {
     // Make sure querying aggregators succeeds.
     // Aggregators should create aggregates on demand.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
@@ -119,7 +123,7 @@ bool test_2()
 {
     // Make sure querying constant aggregators fails.
     // Constant aggregators should not create aggregates on demand.
-    const IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    const IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     const IModelItem *item = query<IModelItem>(control_curve);
     CHECK(!item);
@@ -130,7 +134,7 @@ bool test_3()
 {
     // Make sure IModelData::item() succeeds.
     // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -142,12 +146,12 @@ bool test_3()
 bool test_4()
 {
     // Make sure setting item name succeeds.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
-    CHECK(data->set("ControlCurve", Mi::NameRole));
-    CHECK("ControlCurve" == data->get<QString>(Mi::NameRole));
+    CHECK(data->set("ControlCurve", NameRole));
+    CHECK("ControlCurve" == data->get<QString>(NameRole));
     return true;
 }
 

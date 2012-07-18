@@ -22,10 +22,10 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
-
-using namespace Mi::Core;
 
 IAggregator *GridSettings::init()
 {
@@ -47,7 +47,7 @@ bool GridSettings::setSnapEnabled(bool enabled)
 {
     if (_snapEnabled == enabled)
         return false;
-    ScopedDataChange data_change(this, Ac::SnapEnabledRole);
+    ScopedDataChange data_change(this, SnapEnabledRole);
     _snapEnabled = enabled;
     return true;
 }
@@ -56,7 +56,7 @@ bool GridSettings::setGridSnapEnabled(bool enabled)
 {
     if (_gridSnapEnabled == enabled)
         return false;
-    ScopedDataChange data_change(this, Ac::GridSnapEnabledRole);
+    ScopedDataChange data_change(this, GridSnapEnabledRole);
     _gridSnapEnabled = enabled;
     return true;
 }
@@ -66,7 +66,7 @@ bool GridSettings::setTimeSnap(qreal snap)
     snap = qMax(qreal(0.0f), snap);
     if (_timeSnap == snap)
         return false;
-    ScopedDataChange data_change(this, Ac::TimeSnapRole);
+    ScopedDataChange data_change(this, TimeSnapRole);
     _timeSnap = snap;
     return true;
 }
@@ -76,7 +76,7 @@ bool GridSettings::setPitchSnap(qreal snap)
     snap = qMax(qreal(0.0f), snap);
     if (_pitchSnap == snap)
         return false;
-    ScopedDataChange data_change(this, Ac::PitchSnapRole);
+    ScopedDataChange data_change(this, PitchSnapRole);
     _pitchSnap = snap;
     return true;
 }
@@ -86,7 +86,7 @@ bool GridSettings::setControlSnap(qreal snap)
     snap = qMax(qreal(0.0f), snap);
     if (_controlSnap == snap)
         return false;
-    ScopedDataChange data_change(this, Ac::ControlSnapRole);
+    ScopedDataChange data_change(this, ControlSnapRole);
     _controlSnap = snap;
     return true;
 }

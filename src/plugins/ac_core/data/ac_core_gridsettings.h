@@ -143,15 +143,15 @@ protected:
         {
             switch (i - RoleCountOffset) {
             case 0:
-                return Ac::SnapEnabledRole;
+                return SnapEnabledRole;
             case 1:
-                return Ac::GridSnapEnabledRole;
+                return GridSnapEnabledRole;
             case 2:
-                return Ac::TimeSnapRole;
+                return TimeSnapRole;
             case 3:
-                return Ac::PitchSnapRole;
+                return PitchSnapRole;
             case 4:
-                return Ac::ControlSnapRole;
+                return ControlSnapRole;
             default:
                 return DataObject::ModelData::roleAt(i);
             }
@@ -160,15 +160,15 @@ protected:
         QVariant getVariant(int role) const
         {
             switch (role) {
-            case Ac::SnapEnabledRole:
+            case SnapEnabledRole:
                 return a()->isSnapEnabled();
-            case Ac::GridSnapEnabledRole:
+            case GridSnapEnabledRole:
                 return a()->isGridSnapEnabled();
-            case Ac::TimeSnapRole:
+            case TimeSnapRole:
                 return a()->timeSnap();
-            case Ac::PitchSnapRole:
+            case PitchSnapRole:
                 return a()->pitchSnap();
-            case Ac::ControlSnapRole:
+            case ControlSnapRole:
                 return a()->controlSnap();
             default:
                 return DataObject::ModelData::getVariant(role);
@@ -178,15 +178,15 @@ protected:
         bool setVariant(const QVariant &data, int role)
         {
             switch (role) {
-            case Ac::SnapEnabledRole:
+            case SnapEnabledRole:
                 return a()->setSnapEnabled(qvariant_cast<bool>(data));
-            case Ac::GridSnapEnabledRole:
+            case GridSnapEnabledRole:
                 return a()->setGridSnapEnabled(qvariant_cast<bool>(data));
-            case Ac::TimeSnapRole:
+            case TimeSnapRole:
                 return a()->setTimeSnap(qvariant_cast<qreal>(data));
-            case Ac::PitchSnapRole:
+            case PitchSnapRole:
                 return a()->setPitchSnap(qvariant_cast<qreal>(data));
-            case Ac::ControlSnapRole:
+            case ControlSnapRole:
                 return a()->setControlSnap(qvariant_cast<qreal>(data));
             default:
                 return DataObject::ModelData::setVariant(data, role);
@@ -217,7 +217,7 @@ protected:
 
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::GridSettingsItem == itemType)
+            if (GridSettingsItem == itemType)
                 return true;
             return DataObject::ModelItem::isTypeOfItem(itemType);
         }
@@ -256,11 +256,11 @@ protected:
         IModelList *findList(int listType) const
         {
             switch (listType) {
-            case Ac::TimeGridLineItem:
+            case TimeGridLineItem:
                 return query<IModelList>(a()->timeGridLines());
-            case Ac::PitchGridLineItem:
+            case PitchGridLineItem:
                 return query<IModelList>(a()->pitchGridLines());
-            case Ac::ControlGridLineItem:
+            case ControlGridLineItem:
                 return query<IModelList>(a()->controlGridLines());
             default:
                 return DataObject::ModelItem::findList(listType);

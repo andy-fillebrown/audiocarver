@@ -29,11 +29,11 @@ class ScopedDataChange
 {
     const IModelData *_data;
     const int _role;
-    const Mi::DataChangeType _dataChangeType;
+    const DataChangeType _dataChangeType;
     IModel *_model;
 
 public:
-    ScopedDataChange(const IAggregator *aggregator, int role, Mi::DataChangeType dataChangeType = Mi::PermanentDataChange)
+    ScopedDataChange(const IAggregator *aggregator, int role, DataChangeType dataChangeType = PermanentDataChange)
         :   _data(const_query<IModelData>(aggregator))
         ,   _role(role)
         ,   _dataChangeType(dataChangeType)

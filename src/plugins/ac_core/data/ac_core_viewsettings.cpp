@@ -21,10 +21,10 @@
 
 #include <mi_core_scopeddatachange.h>
 
+using namespace Mi::Core;
+
 namespace Ac {
 namespace Core {
-
-using namespace Mi::Core;
 
 IAggregator *ViewSettings::init()
 {
@@ -33,10 +33,10 @@ IAggregator *ViewSettings::init()
 
 bool ViewSettings::setTimePosition(qreal position)
 {
-    position = qBound(qreal(0.0f), position, query<IModelData>(Score::instance())->get<qreal>(Ac::LengthRole));
+    position = qBound(qreal(0.0f), position, query<IModelData>(Score::instance())->get<qreal>(LengthRole));
     if (_timePosition == position)
         return false;
-    ScopedDataChange data_change(this, Ac::TimePositionRole);
+    ScopedDataChange data_change(this, TimePositionRole);
     _timePosition = position;
     return true;
 }
@@ -46,7 +46,7 @@ bool ViewSettings::setPitchPosition(qreal position)
     position = qBound(qreal(0.0f), position, qreal(127.0f));
     if (_pitchPosition == position)
         return false;
-    ScopedDataChange data_change(this, Ac::PitchPositionRole);
+    ScopedDataChange data_change(this, PitchPositionRole);
     _pitchPosition = position;
     return true;
 }
@@ -56,7 +56,7 @@ bool ViewSettings::setControlPosition(qreal position)
     position = qBound(qreal(0.0f), position, qreal(1.0f));
     if (_controlPosition == position)
         return false;
-    ScopedDataChange data_change(this, Ac::ControlPositionRole);
+    ScopedDataChange data_change(this, ControlPositionRole);
     _controlPosition = position;
     return true;
 }
@@ -66,7 +66,7 @@ bool ViewSettings::setTimeScale(qreal scale)
     scale = qBound(VIEWSCALE_MIN, scale, VIEWSCALE_MAX);
     if (_timeScale == scale)
         return false;
-    ScopedDataChange data_change(this, Ac::TimeScaleRole);
+    ScopedDataChange data_change(this, TimeScaleRole);
     _timeScale = scale;
     return true;
 }
@@ -76,7 +76,7 @@ bool ViewSettings::setPitchScale(qreal scale)
     scale = qBound(VIEWSCALE_MIN, scale, VIEWSCALE_MAX);
     if (_pitchScale == scale)
         return false;
-    ScopedDataChange data_change(this, Ac::PitchScaleRole);
+    ScopedDataChange data_change(this, PitchScaleRole);
     _pitchScale = scale;
     return true;
 }
@@ -86,7 +86,7 @@ bool ViewSettings::setControlScale(qreal scale)
     scale = qBound(VIEWSCALE_MIN, scale, VIEWSCALE_MAX);
     if (_controlScale == scale)
         return false;
-    ScopedDataChange data_change(this, Ac::ControlScaleRole);
+    ScopedDataChange data_change(this, ControlScaleRole);
     _controlScale = scale;
     return true;
 }

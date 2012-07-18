@@ -69,7 +69,7 @@ protected:
             return _graphicsCurveItem;
         }
 
-        void setPoints(const PointList &points)
+        void setPoints(const Core::PointList &points)
         {
             graphicsCurveItem()->setPoints(points);
         }
