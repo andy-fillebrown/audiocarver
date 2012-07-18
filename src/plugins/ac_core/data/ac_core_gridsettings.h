@@ -280,6 +280,19 @@ protected:
             return DataObject::createAggregate(interfaceType);
         }
     }
+
+    void clear()
+    {
+        _controlGridLines->clear();
+        _pitchGridLines->clear();
+        _timeGridLines->clear();
+        setControlSnap(DEFAULT_GRIDSETTINGS_CONTROLSNAP);
+        setPitchSnap(DEFAULT_GRIDSETTINGS_PITCHSNAP);
+        setTimeSnap(DEFAULT_GRIDSETTINGS_TIMESNAP);
+        setGridSnapEnabled(DEFAULT_GRIDSETTINGS_GRIDSNAPENABLED);
+        setSnapEnabled(DEFAULT_GRIDSETTINGS_SNAPENABLED);
+        Mi::Core::DataObject::clear();
+    }
 };
 
 } // namespace Core

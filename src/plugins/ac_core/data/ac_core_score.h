@@ -257,6 +257,17 @@ protected:
             return ScoreObject::createAggregate(interfaceType);
         }
     }
+
+    void clear()
+    {
+        _viewSettings->clear();
+        _projectSettings->clear();
+        _gridSettings->clear();
+        _tracks->clear();
+        setLength(DEFAULT_SCORE_LENGTH);
+        setStartTime(DEFAULT_SCORE_STARTTIME);
+        ScoreObject::clear();
+    }
 };
 
 } // namespace Core

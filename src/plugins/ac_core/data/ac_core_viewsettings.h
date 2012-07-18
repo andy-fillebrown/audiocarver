@@ -218,6 +218,17 @@ protected:
             return DataObject::createAggregate(interfaceType);
         }
     }
+
+    void clear()
+    {
+        setControlScale(VIEWSCALE_MIN);
+        setPitchScale(VIEWSCALE_MIN);
+        setTimeScale(VIEWSCALE_MIN);
+        setControlPosition(DEFAULT_VIEWSETTINGS_CONTROLPOSITION);
+        setPitchPosition(DEFAULT_VIEWSETTINGS_PITCHPOSITION);
+        setTimePosition(DEFAULT_VIEWSETTINGS_TIMEPOSITION);
+        Mi::Core::DataObject::clear();
+    }
 };
 
 } // namespace Core

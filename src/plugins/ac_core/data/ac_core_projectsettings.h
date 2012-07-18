@@ -173,6 +173,14 @@ protected:
             return DataObject::createAggregate(interfaceType);
         }
     }
+
+    void clear()
+    {
+        setCurveRate(DEFAULT_PROJECTSETTINGS_CURVERATE);
+        setControlRate(DEFAULT_PROJECTSETTINGS_CONTROLRATE);
+        setSampleRate(DEFAULT_PROJECTSETTINGS_SAMPLERATE);
+        Mi::Core::DataObject::clear();
+    }
 };
 
 } // namespace Core

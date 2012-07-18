@@ -188,6 +188,14 @@ protected:
             return ScoreObject::createAggregate(interfaceType);
         }
     }
+
+    void clear()
+    {
+        _controlCurves->clear();
+        _pitchCurve->clear();
+        setVolume(DEFAULT_SCOREOBJECT_VOLUME);
+        Mi::Core::DataObject::clear();
+    }
 };
 
 } // namespace Core
