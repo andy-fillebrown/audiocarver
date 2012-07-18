@@ -72,12 +72,13 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
         return false;
     }
     if (elementName.endsWith("List")) {
+        IModelList *list = query<IModelList>(item);
         QString listElementName = elementName;
         listElementName.chop(4);
         int itemType = elementType(listElementName);
         while (nextElement(reader) == QXmlStreamReader::StartElement) {
             IModelItem *newItem = query<IModelItem>(factory->create(itemType));
-            newItem->setParent(item);
+            list->append(newItem);
             if (!readItem(newItem, reader)) {
                 qWarning() << Q_FUNC_INFO << ": failed to read list item in" << elementName;
                 return false;
