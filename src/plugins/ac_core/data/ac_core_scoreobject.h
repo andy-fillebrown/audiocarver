@@ -20,9 +20,9 @@
 
 #include "mi_core_dataobject.h"
 
-#include <ac_core_pitchcurve.h>
+#include <mi_imodellist.h>
 
-#include <mi_core_dataobjectlist.h>
+#include <ac_core_namespace.h>
 
 namespace Ac {
 namespace Core {

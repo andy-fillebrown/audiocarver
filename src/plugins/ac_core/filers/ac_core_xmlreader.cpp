@@ -182,8 +182,7 @@ bool XmlReader::read(IModelItem *item)
         return false;
     if (!nextStartElement(reader))
         return false;
-    bool ok = readItem(item, reader);
-    return ok;
+    return readItem(item, reader);
 }
 
 } // namespace Core
