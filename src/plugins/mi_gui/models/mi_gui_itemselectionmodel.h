@@ -22,7 +22,6 @@
 
 #include <mi_gui_global.h>
 
-
 class IModelItem;
 
 namespace Mi {
