@@ -67,9 +67,9 @@ void Database::read(const QString &fileName)
     reset();
     IAggregator *filer = query<IFilerFactory>(this)->create(Ac::XmlFileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
-    query<IReader>(filer)->read(query<IModelItem>(_score));
+    if (query<IReader>(filer)->read(query<IModelItem>(_score)))
+        _fileName = fileName;
     delete filer;
-    _fileName = fileName;
 }
 
 void Database::write(const QString &fileName)
