@@ -91,7 +91,7 @@ protected:
                 data->set(new_name, NameRole);
         }
         _objects.insert(i, object);
-        item->setParent(query<IModelItem>(this));
+        dynamic_cast<DataObject*>(item->aggregator())->setParent(this);
     }
 
     // Object
@@ -131,14 +131,13 @@ protected:
 
         void insert(int i, IModelItem *item)
         {
-            a()->insert(i, dynamic_cast<DataObject*>(query<IAggregator>(item)));
+            a()->insert(i, dynamic_cast<DataObject*>(item->aggregator()));
         }
 
         void removeAt(int i)
         {
             QList<IAggregator*> &objects = a()->objects();
-            IAggregator *object = objects.at(i);
-            query<IModelItem>(object)->setParent(0);
+            dynamic_cast<DataObject*>(objects.at(i))->setParent(0);
             objects.removeAt(i);
         }
 
@@ -161,11 +160,6 @@ protected:
         IModelItem *parent() const
         {
             return query<IModelItem>(a()->parent());
-        }
-
-        void setParent(IModelItem *parent)
-        {
-            a()->setParent(dynamic_cast<DataObject*>(query<IAggregator>(parent)));
         }
 
         int count() const
@@ -216,7 +210,7 @@ protected:
     void clear()
     {
         foreach (IAggregator *object, objects()) {
-            query<IModelItem>(object)->setParent(0);
+            dynamic_cast<DataObject*>(object)->setParent(0);
             delete object;
         }
         _objects.clear();

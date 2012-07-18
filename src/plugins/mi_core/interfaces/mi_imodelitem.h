@@ -30,7 +30,6 @@ public:
     virtual int itemType() const = 0;
     virtual bool isTypeOfItem(int itemType) const = 0;
     virtual IModelItem *parent() const = 0;
-    virtual void setParent(IModelItem *parent) = 0;
     virtual int count() const = 0;
     virtual int indexOf(const IModelItem *item) const = 0;
     virtual IModelItem *at(int i) const = 0;

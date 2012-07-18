@@ -28,6 +28,8 @@ namespace Core {
 
 class MI_CORE_EXPORT DataObject : public SuperAggregator
 {
+    friend class DataObjectList;
+
     enum { RoleCount = 1 };
     enum { ItemCount = 0 };
 
@@ -64,7 +66,7 @@ protected:
             return _parent;
     }
 
-    void setParent(DataObject *parent);
+    virtual void setParent(DataObject *parent);
 
     virtual bool isList() const
     {
@@ -175,11 +177,6 @@ protected:
         IModelItem *parent() const
         {
             return query<IModelItem>(a()->parent());
-        }
-
-        void setParent(IModelItem *parent)
-        {
-            a()->setParent(dynamic_cast<DataObject*>(query<IAggregator>(parent)));
         }
 
         int count() const
