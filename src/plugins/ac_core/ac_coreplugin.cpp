@@ -100,7 +100,6 @@ Q_EXPORT_PLUGIN(Ac::CorePlugin)
 #include <mi_idataobjectfactory.h>
 #include <mi_imodeldata.h>
 #include <mi_imodelitem.h>
-#include <mi_iobject.h>
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
