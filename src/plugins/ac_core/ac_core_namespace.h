@@ -45,7 +45,7 @@ enum ItemType {
     ControlCurveItem,
     ControlCurveListItem,
     GridSettingsItem,
-    GridLine,
+    GridLineItem,
     TimeGridLineItem,
     TimeGridLineListItem,
     PitchGridLineItem,

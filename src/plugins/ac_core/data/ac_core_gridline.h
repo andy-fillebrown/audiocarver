@@ -159,7 +159,7 @@ protected:
         // IModelItem
         bool isTypeOfItem(int itemType) const
         {
-            if (Ac::GridLine == itemType)
+            if (Ac::GridLineItem == itemType)
                 return true;
             return DataObject::ModelItem::isTypeOfItem(itemType);
         }
