@@ -17,9 +17,9 @@
 
 #include "ac_core_database.h"
 
+#include "ac_core_dataobjectfactory.h"
 #include "ac_core_filerfactory.h"
 #include "ac_core_model.h"
-#include "ac_core_objectfactory.h"
 
 #include <ac_core_namespace.h>
 
@@ -28,7 +28,7 @@ namespace Core {
 
 IAggregator *Database::init()
 {
-    _score = query<IObjectFactory>(this)->create(Ac::ScoreItem);
+    _score = query<IDataObjectFactory>(this)->create(Ac::ScoreItem);
     return Mi::Core::Database::init();
 }
 
@@ -90,16 +90,15 @@ bool Database::isReading() const
     return false;
 }
 
-
 IAggregate *Database::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
+    case I::IDataObjectFactory:
+        return appendAggregate((new DataObjectFactory(this))->init());
     case I::IFilerFactory:
         return appendAggregate((new FilerFactory(this))->init());
     case I::IModel:
         return appendAggregate((new Model(this))->init());
-    case I::IObjectFactory:
-        return appendAggregate((new ObjectFactory(this))->init());
     default:
         return 0;
     }

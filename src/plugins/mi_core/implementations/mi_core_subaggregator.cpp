@@ -20,9 +20,5 @@
 namespace Mi {
 namespace Core {
 
-SubAggregator::~SubAggregator()
-{
-}
-
 } // namespace Core
 } // namespace Mi

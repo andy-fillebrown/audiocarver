@@ -18,7 +18,7 @@
 #include "ac_core_scoreobject.h"
 
 #include <mi_idatabase.h>
-#include <mi_iobjectfactory.h>
+#include <mi_idataobjectfactory.h>
 
 #include <mi_core_scopeddatachange.h>
 
@@ -29,7 +29,7 @@ using namespace Mi::Core;
 
 IAggregator *ScoreObject::init()
 {
-    IObjectFactory *factory = query<IObjectFactory>(IDatabase::instance());
+    IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
     _pitchCurve = factory->create(Ac::PitchCurveItem);
     _controlCurves = factory->create(Ac::ControlCurveListItem);
     return DataObject::init();

@@ -97,10 +97,10 @@ Q_EXPORT_PLUGIN(Ac::CorePlugin)
 
 #ifdef QT_DEBUG
 
+#include <mi_idataobjectfactory.h>
 #include <mi_imodeldata.h>
 #include <mi_imodelitem.h>
 #include <mi_iobject.h>
-#include <mi_iobjectfactory.h>
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
@@ -109,7 +109,7 @@ bool test_1()
 {
     // Make sure querying aggregators succeeds.
     // Aggregators should create aggregates on demand.
-    IAggregator *control_curve = query<IObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
@@ -120,7 +120,7 @@ bool test_2()
 {
     // Make sure querying constant aggregators fails.
     // Constant aggregators should not create aggregates on demand.
-    const IAggregator *control_curve = query<IObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    const IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     const IModelItem *item = query<IModelItem>(control_curve);
     CHECK(!item);
@@ -131,7 +131,7 @@ bool test_3()
 {
     // Make sure IModelData::item() succeeds.
     // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
-    IAggregator *control_curve = query<IObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);
@@ -143,7 +143,7 @@ bool test_3()
 bool test_4()
 {
     // Make sure setting item name succeeds.
-    IAggregator *control_curve = query<IObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
+    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);

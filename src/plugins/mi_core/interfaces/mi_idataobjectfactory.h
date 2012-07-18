@@ -15,42 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_OBJECTFACTORY_H
-#define AC_CORE_OBJECTFACTORY_H
+#ifndef MI_IDATAOBJECTFACTORY_H
+#define MI_IDATAOBJECTFACTORY_H
 
-#include <mi_iobjectfactory.h>
+#include "mi_iaggregate.h"
 
-namespace Ac {
-namespace Core {
+class IAggregator;
 
-class Database;
-
-class ObjectFactory : public IObjectFactory
+class IDataObjectFactory : public IAggregate
 {
-    friend class Database;
+public:
+    enum { InterfaceType = I::IDataObjectFactory };
 
-    Database *_aggregator;
+    virtual IAggregator *create(int itemType) = 0;
 
-protected:
-    Database *a() const
+    // IUnknown
+    int interfaceType() const
     {
-        return _aggregator;
+        return InterfaceType;
     }
 
-    ObjectFactory(Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int itemType);
-
-    // IAggregate
-    IAggregator *aggregator() const;
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
 };
 
-} // namespace Core
-} // namespace Ac
-
-#endif // AC_CORE_OBJECTFACTORY_H
+#endif // MI_IDATAOBJECTFACTORY_H

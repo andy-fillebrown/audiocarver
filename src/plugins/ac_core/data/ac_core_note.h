@@ -25,7 +25,7 @@ namespace Core {
 
 class AC_CORE_EXPORT Note : public ScoreObject
 {
-    friend class ObjectFactory;
+    friend class DataObjectFactory;
 
 protected:
     Note()

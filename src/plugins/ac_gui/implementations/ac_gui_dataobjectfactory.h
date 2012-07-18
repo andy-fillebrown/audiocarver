@@ -15,32 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef MI_IAGGREGATOR_H
-#define MI_IAGGREGATOR_H
+#ifndef AC_GUI_DATAOBJECTFACTORY_H
+#define AC_GUI_DATAOBJECTFACTORY_H
 
-#include "mi_iunknown.h"
+#include <ac_core_dataobjectfactory.h>
 
-class IAggregate;
+namespace Ac {
+namespace Gui {
 
-class IAggregator : public IUnknown
+class Database;
+
+class DataObjectFactory : public Core::DataObjectFactory
 {
-public:
-    enum { InterfaceType = I::IAggregator };
+    friend class Database;
 
-    virtual IAggregate *createAggregate(int interfaceType) = 0;
-    virtual IAggregate *appendAggregate(IAggregate *aggregate) = 0;
-    virtual void clear() = 0;
+protected:
+    DataObjectFactory(Database *aggregator);
+    virtual IAggregate *init();
 
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
+    // IFactory
+    IAggregator *create(int itemType);
 };
 
-#endif // MI_IAGGREGATE_H
+} // namespace Gui
+} // namespace Ac
+
+#endif // AC_GUI_DATAOBJECTFACTORY_H

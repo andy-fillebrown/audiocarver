@@ -179,7 +179,7 @@ protected:
 
 class AC_CORE_EXPORT TimeGridLine : public GridLine
 {
-    friend class ObjectFactory;
+    friend class DataObjectFactory;
 
 protected:
     TimeGridLine()
@@ -225,7 +225,7 @@ protected:
 
 class AC_CORE_EXPORT PitchGridLine : public GridLine
 {
-    friend class ObjectFactory;
+    friend class DataObjectFactory;
 
 protected:
     PitchGridLine()
@@ -271,7 +271,7 @@ protected:
 
 class AC_CORE_EXPORT ControlGridLine : public GridLine
 {
-    friend class ObjectFactory;
+    friend class DataObjectFactory;
 
 protected:
     ControlGridLine()

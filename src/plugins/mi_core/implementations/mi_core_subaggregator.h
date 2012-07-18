@@ -33,8 +33,6 @@ protected:
     SubAggregator()
     {}
 
-    ~SubAggregator();
-
     void setSuperAggregator(Aggregator *superAggregator)
     {
         _superAggregator = superAggregator;
@@ -60,7 +58,7 @@ public:
 
     const void *queryInterface(int interfaceType) const
     {
-        return _superAggregator->queryInterface(interfaceType);
+        return const_cast<const Aggregator*>(_superAggregator)->queryInterface(interfaceType);
     }
 };
 

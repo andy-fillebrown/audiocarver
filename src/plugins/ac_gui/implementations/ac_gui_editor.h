@@ -21,7 +21,6 @@
 #include "mi_gui_editor.h"
 
 #include <ac_igraphicsviewmanager.h>
-#include <mi_iobjectfactory.h>
 
 namespace Ac {
 
@@ -108,41 +107,11 @@ protected:
     }
 };
 
-class ObjectFactory : public IObjectFactory
-{
-    friend class Editor;
-
-    Editor *_aggregator;
-
-protected:
-    Editor *a() const
-    {
-        return _aggregator;
-    }
-
-    ObjectFactory(Editor *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int itemType);
-
-    // IAggregate
-    IAggregator *aggregator() const
-    {
-        return _aggregator;
-    }
-};
-
 inline IAggregate *Editor::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
     case I::IGraphicsViewManager:
         return appendAggregate((new ViewManager(this))->init());
-    case I::IObjectFactory:
-        return appendAggregate((new ObjectFactory(this))->init());
     default:
         return 0;
     }

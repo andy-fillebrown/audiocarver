@@ -68,58 +68,5 @@ IAggregate *ViewManager::init()
     return this;
 }
 
-IAggregate *ObjectFactory::init()
-{
-    return this;
-}
-
-IAggregator *ObjectFactory::create(int itemType)
-{
-    switch (itemType) {
-    case ScoreItem:
-        return 0;
-    case TrackItem:
-        return 0;
-    case TrackListItem:
-        return 0;
-    case NoteItem:
-        return 0;
-    case NoteListItem:
-        return 0;
-    case CurveItem:
-        return 0;
-    case PitchCurveItem:
-        return 0;
-    case ControlCurveItem:
-        return 0;
-    case ControlCurveListItem:
-        return 0;
-    case GridSettingsItem:
-        return 0;
-    case GridLine:
-        return 0;
-    case TimeGridLineItem:
-        return 0;
-    case TimeGridLineListItem:
-        return 0;
-    case PitchGridLineItem:
-        return 0;
-    case PitchGridLineListItem:
-        return 0;
-    case ControlGridLineItem:
-        return 0;
-    case ControlGridLineListItem:
-        return 0;
-    case GraphicsSceneItem:
-        return 0;
-    case GraphicsViewItem:
-        return 0;
-    case GraphicsViewGroupItem:
-        return 0;
-    default:
-        return 0;
-    }
-}
-
 } // namespace Gui
 } // namespace Ac

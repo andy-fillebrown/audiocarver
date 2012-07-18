@@ -1,6 +1,7 @@
 
 SOURCE_FILES = \
     database \
+    dataobjectfactory \
     editor \
     filerfactory \
 #    mainwindowextension \

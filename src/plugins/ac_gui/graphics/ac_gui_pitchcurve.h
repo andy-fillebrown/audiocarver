@@ -25,7 +25,7 @@ namespace Gui {
 
 class PitchCurve : public Curve
 {
-    friend class GraphicsFactory;
+    friend class DataObjectFactory;
 
 protected:
     PitchCurve()

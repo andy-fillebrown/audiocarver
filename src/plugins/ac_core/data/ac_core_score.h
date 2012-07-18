@@ -25,7 +25,7 @@ namespace Core {
 
 class AC_CORE_EXPORT Score : public ScoreObject
 {
-    friend class ObjectFactory;
+    friend class DataObjectFactory;
 
     enum { RoleCount = 2 };
     enum { ItemCount = 7 };

@@ -25,7 +25,7 @@ namespace Gui {
 
 class Score : public ScoreObject
 {
-    friend class GraphicsFactory;
+    friend class DataObjectFactory;
 
 protected:
     Score()

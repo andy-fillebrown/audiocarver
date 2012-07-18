@@ -25,7 +25,7 @@ namespace Gui {
 
 class ControlCurve : public Curve
 {
-    friend class GraphicsFactory;
+    friend class DataObjectFactory;
 
 protected:
     ControlCurve()

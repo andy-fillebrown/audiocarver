@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_core_objectfactory.h"
+#include "ac_core_dataobjectfactory.h"
 
 #include <ac_core_database.h>
 #include <ac_core_dataobjectlist.h>
@@ -32,12 +32,12 @@
 namespace Ac {
 namespace Core {
 
-IAggregate *ObjectFactory::init()
+IAggregate *DataObjectFactory::init()
 {
     return this;
 }
 
-IAggregator *ObjectFactory::create(int itemType)
+IAggregator *DataObjectFactory::create(int itemType)
 {
     switch (itemType) {
     case ControlCurveItem:
@@ -77,7 +77,7 @@ IAggregator *ObjectFactory::create(int itemType)
     }
 }
 
-IAggregator *ObjectFactory::aggregator() const
+IAggregator *DataObjectFactory::aggregator() const
 {
     return _aggregator;
 }

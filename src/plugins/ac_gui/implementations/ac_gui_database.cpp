@@ -17,6 +17,7 @@
 
 #include "ac_gui_database.h"
 
+#include "ac_gui_dataobjectfactory.h"
 #include "ac_gui_filerfactory.h"
 
 namespace Ac {
@@ -30,6 +31,8 @@ IAggregator *Database::init()
 IAggregate *Database::createAggregate(int interfaceType)
 {
     switch (interfaceType) {
+    case I::IDataObjectFactory:
+        return appendAggregate((new DataObjectFactory(this))->init());
     case I::IFilerFactory:
         return appendAggregate((new FilerFactory(this))->init());
     default:

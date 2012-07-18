@@ -27,7 +27,7 @@ namespace Core {
 
 class AC_CORE_EXPORT DataObjectList : public Mi::Core::DataObjectList
 {
-    friend class ObjectFactory;
+    friend class DataObjectFactory;
 
 protected:
     DataObjectList(int listType = Mi::UnknownItem)

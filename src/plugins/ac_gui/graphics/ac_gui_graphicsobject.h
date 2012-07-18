@@ -25,11 +25,17 @@ namespace Gui {
 
 class GraphicsObject : public Mi::Core::SubAggregator
 {
+    friend class DataObjectFactory;
+
 protected:
     GraphicsObject()
     {}
 
-    virtual IAggregator *init();
+    IAggregator *init();
+
+    // IAggregator
+    void clear()
+    {}
 };
 
 } // namespace Gui

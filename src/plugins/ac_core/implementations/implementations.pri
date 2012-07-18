@@ -1,9 +1,9 @@
 
 SOURCE_FILES = \
     database \
+    dataobjectfactory \
     filerfactory \
     model \
-    objectfactory \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

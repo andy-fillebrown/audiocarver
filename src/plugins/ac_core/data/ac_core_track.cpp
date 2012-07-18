@@ -18,7 +18,7 @@
 #include "ac_core_track.h"
 
 #include <mi_idatabase.h>
-#include <mi_iobjectfactory.h>
+#include <mi_idataobjectfactory.h>
 
 #include <mi_core_scopeddatachange.h>
 
@@ -29,7 +29,7 @@ using namespace Mi::Core;
 
 IAggregator *Track::init()
 {
-    _notes = query<IObjectFactory>(IDatabase::instance())->create(Ac::NoteListItem);
+    _notes = query<IDataObjectFactory>(IDatabase::instance())->create(Ac::NoteListItem);
     return ScoreObject::init();
 }
 
