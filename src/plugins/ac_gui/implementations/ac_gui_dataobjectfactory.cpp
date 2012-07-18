@@ -62,7 +62,7 @@ IAggregator *DataObjectFactory::create(int itemType)
     }
     if (graphics_object) {
         super_aggregator->appendSubAggregator(graphics_object);
-        return graphics_object->init();
+        graphics_object->init();
     }
     return super_aggregator;
 }
