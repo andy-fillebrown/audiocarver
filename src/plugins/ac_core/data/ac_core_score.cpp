@@ -38,9 +38,6 @@ IAggregator *Score::init()
 {
     IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
     _tracks = factory->create(Ac::TrackListItem);
-    _timeGridLines = factory->create(Ac::TimeGridLineListItem);
-    _pitchGridLines = factory->create(Ac::PitchGridLineListItem);
-    _controlGridLines = factory->create(Ac::ControlGridLineListItem);
     _gridSettings = factory->create(Ac::GridSettingsItem);
     _projectSettings = factory->create(Ac::ProjectSettingsItem);
     _viewSettings = factory->create(Ac::ViewSettingsItem);
@@ -53,9 +50,6 @@ Score::~Score()
     delete _viewSettings;
     delete _projectSettings;
     delete _gridSettings;
-    delete _controlGridLines;
-    delete _pitchGridLines;
-    delete _timeGridLines;
     delete _tracks;
 }
 

@@ -20,6 +20,8 @@
 
 #include "mi_core_dataobject.h"
 
+#include <mi_imodellist.h>
+
 #include <ac_core_namespace.h>
 
 namespace Ac {
@@ -30,6 +32,7 @@ class AC_CORE_EXPORT GridSettings : public Mi::Core::DataObject
     friend class DataObjectFactory;
 
     enum { RoleCount = 5 };
+    enum { ItemCount = 3 };
 
     int _snapEnabled : 1;
     int _gridSnapEnabled : 1;
@@ -37,10 +40,16 @@ class AC_CORE_EXPORT GridSettings : public Mi::Core::DataObject
     qreal _pitchSnap;
     qreal _controlSnap;
 
+    IAggregator *_timeGridLines;
+    IAggregator *_pitchGridLines;
+    IAggregator *_controlGridLines;
+
 protected:
     enum {
         RoleCountOffset = DataObject::TotalRoleCount,
-        TotalRoleCount = RoleCountOffset + RoleCount
+        TotalRoleCount = RoleCountOffset + RoleCount,
+        ItemCountOffset = DataObject::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount
     };
 
     GridSettings()
@@ -49,9 +58,13 @@ protected:
         ,   _timeSnap(0.125f)
         ,   _pitchSnap(1.0f)
         ,   _controlSnap(0.125f)
+        ,   _timeGridLines(0)
+        ,   _pitchGridLines(0)
+        ,   _controlGridLines(0)
     {}
 
     IAggregator *init();
+    ~GridSettings();
 
     bool isSnapEnabled() const
     {
@@ -87,6 +100,21 @@ protected:
     }
 
     bool setControlSnap(qreal snap);
+
+    IAggregator *timeGridLines() const
+    {
+        return _timeGridLines;
+    }
+
+    IAggregator *pitchGridLines() const
+    {
+        return _pitchGridLines;
+    }
+
+    IAggregator *controlGridLines() const
+    {
+        return _controlGridLines;
+    }
 
     class AC_CORE_EXPORT ModelData : public DataObject::ModelData
     {
@@ -169,6 +197,11 @@ protected:
     {
         friend class GridSettings;
 
+        GridSettings *a() const
+        {
+            return static_cast<GridSettings*>(DataObject::ModelItem::a());
+        }
+
     protected:
         ModelItem(GridSettings *aggregator)
             :   DataObject::ModelItem(aggregator)
@@ -186,6 +219,51 @@ protected:
             if (Ac::GridSettingsItem == itemType)
                 return true;
             return DataObject::ModelItem::isTypeOfItem(itemType);
+        }
+
+        int count() const
+        {
+            return TotalItemCount;
+        }
+
+        int indexOf(const IModelItem *item) const
+        {
+            const GridSettings *a = this->a();
+            if (query<IModelItem>(a->timeGridLines()) == item)
+                return ItemCountOffset;
+            if (query<IModelItem>(a->pitchGridLines()) == item)
+                return ItemCountOffset + 1;
+            if (query<IModelItem>(a->controlGridLines()) == item)
+                return ItemCountOffset + 2;
+            return DataObject::ModelItem::indexOf(item);
+        }
+
+        IModelItem *at(int i) const
+        {
+            switch (TotalItemCount - i) {
+            case 0:
+                return query<IModelItem>(a()->timeGridLines());
+            case 1:
+                return query<IModelItem>(a()->pitchGridLines());
+            case 2:
+                return query<IModelItem>(a()->controlGridLines());
+            default:
+                return DataObject::ModelItem::at(i);
+            }
+        }
+
+        IModelList *findList(int listType) const
+        {
+            switch (listType) {
+            case Ac::TimeGridLineItem:
+                return query<IModelList>(a()->timeGridLines());
+            case Ac::PitchGridLineItem:
+                return query<IModelList>(a()->pitchGridLines());
+            case Ac::ControlGridLineItem:
+                return query<IModelList>(a()->controlGridLines());
+            default:
+                return DataObject::ModelItem::findList(listType);
+            }
         }
     };
 

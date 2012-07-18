@@ -17,6 +17,9 @@
 
 #include "ac_core_gridsettings.h"
 
+#include <mi_idatabase.h>
+#include <mi_idataobjectfactory.h>
+
 #include <mi_core_scopeddatachange.h>
 
 namespace Ac {
@@ -26,7 +29,18 @@ using namespace Mi::Core;
 
 IAggregator *GridSettings::init()
 {
+    IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
+    _timeGridLines = factory->create(Ac::TimeGridLineListItem);
+    _pitchGridLines = factory->create(Ac::PitchGridLineListItem);
+    _controlGridLines = factory->create(Ac::ControlGridLineListItem);
     return DataObject::init();
+}
+
+GridSettings::~GridSettings()
+{
+    delete _controlGridLines;
+    delete _pitchGridLines;
+    delete _timeGridLines;
 }
 
 bool GridSettings::setSnapEnabled(bool enabled)

@@ -28,15 +28,12 @@ class AC_CORE_EXPORT Score : public ScoreObject
     friend class DataObjectFactory;
 
     enum { RoleCount = 2 };
-    enum { ItemCount = 7 };
+    enum { ItemCount = 4 };
 
     qreal _length;
     qreal _startTime;
 
     IAggregator *_tracks;
-    IAggregator *_timeGridLines;
-    IAggregator *_pitchGridLines;
-    IAggregator *_controlGridLines;
     IAggregator *_gridSettings;
     IAggregator *_projectSettings;
     IAggregator *_viewSettings;
@@ -56,9 +53,6 @@ protected:
         :   _length(60.0f)
         ,   _startTime(0.0f)
         ,   _tracks(0)
-        ,   _timeGridLines(0)
-        ,   _pitchGridLines(0)
-        ,   _controlGridLines(0)
         ,   _gridSettings(0)
         ,   _projectSettings(0)
         ,   _viewSettings(0)
@@ -84,21 +78,6 @@ protected:
     IAggregator *tracks() const
     {
         return _tracks;
-    }
-
-    IAggregator *timeGridLines() const
-    {
-        return _timeGridLines;
-    }
-
-    IAggregator *pitchGridLines() const
-    {
-        return _pitchGridLines;
-    }
-
-    IAggregator *controlGridLines() const
-    {
-        return _controlGridLines;
     }
 
     IAggregator *gridSettings() const
@@ -214,18 +193,12 @@ protected:
             const Score *a = this->a();
             if (query<IModelItem>(a->tracks()) == item)
                 return ItemCountOffset;
-            if (query<IModelItem>(a->timeGridLines()) == item)
-                return ItemCountOffset + 1;
-            if (query<IModelItem>(a->pitchGridLines()) == item)
-                return ItemCountOffset + 2;
-            if (query<IModelItem>(a->controlGridLines()) == item)
-                return ItemCountOffset + 3;
             if (query<IModelItem>(a->gridSettings()) == item)
-                return ItemCountOffset + 4;
+                return ItemCountOffset + 1;
             if (query<IModelItem>(a->projectSettings()) == item)
-                return ItemCountOffset + 5;
+                return ItemCountOffset + 2;
             if (query<IModelItem>(a->viewSettings()) == item)
-                return ItemCountOffset + 6;
+                return ItemCountOffset + 3;
             return ScoreObject::ModelItem::indexOf(item);
         }
 
@@ -235,16 +208,10 @@ protected:
             case 0:
                 return query<IModelItem>(a()->tracks());
             case 1:
-                return query<IModelItem>(a()->timeGridLines());
-            case 2:
-                return query<IModelItem>(a()->pitchGridLines());
-            case 3:
-                return query<IModelItem>(a()->controlGridLines());
-            case 4:
                 return query<IModelItem>(a()->gridSettings());
-            case 5:
+            case 2:
                 return query<IModelItem>(a()->projectSettings());
-            case 6:
+            case 3:
                 return query<IModelItem>(a()->viewSettings());
             default:
                 return ScoreObject::ModelItem::at(i);
@@ -270,12 +237,6 @@ protected:
             switch (listType) {
             case Ac::TrackItem:
                 return query<IModelList>(a()->tracks());
-            case Ac::TimeGridLineItem:
-                return query<IModelList>(a()->timeGridLines());
-            case Ac::PitchGridLineItem:
-                return query<IModelList>(a()->pitchGridLines());
-            case Ac::ControlGridLineItem:
-                return query<IModelList>(a()->controlGridLines());
             default:
                 return ScoreObject::ModelItem::findList(listType);
             }
