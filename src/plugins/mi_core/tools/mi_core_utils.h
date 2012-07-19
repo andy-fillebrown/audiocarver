@@ -25,6 +25,16 @@ namespace Core {
 
 MI_CORE_EXPORT QString applicationTreeDirectory();
 
+inline QString intToColorString(int color)
+{
+    return QString("#%1").arg(color, 6, 16, QChar('0'));
+}
+
+inline int colorStringToInt(QString color)
+{
+    return color.remove("#").toInt(0, 16);
+}
+
 } // namespace Core
 } // namespace Mi
 

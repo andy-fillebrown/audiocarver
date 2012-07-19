@@ -126,11 +126,11 @@ protected:
     {
         switch (interfaceType) {
         case I::IFileFiler:
-            return (new FileFiler(this))->init();
+            return appendAggregate((new FileFiler(this))->init());
         case I::IReader:
-            return (new Reader(this))->init();
+            return appendAggregate((new Reader(this))->init());
         case I::IWriter:
-            return (new Writer(this))->init();
+            return appendAggregate((new Writer(this))->init());
         default:
             return Aggregator::createAggregate(interfaceType);
         }

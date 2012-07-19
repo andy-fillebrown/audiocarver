@@ -200,6 +200,7 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
+        case I::IModelItem:
         case I::IModelList:
             return appendAggregate((new ModelList(this))->init());
         default:

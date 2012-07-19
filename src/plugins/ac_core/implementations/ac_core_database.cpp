@@ -75,13 +75,10 @@ void Database::read(const QString &fileName)
 
 void Database::write(const QString &fileName)
 {
-//    emit databaseAboutToBeWritten();
-//    IWriter *writer = IFilerFactory::instance()->createWriter(FileFiler);
-//    query<IFileFiler>(writer)->setFileName(fileName);
-//    writer->write(query<IModelItem>(Score::instance()));
-//    delete writer;
-//    d->fileName = fileName;
-//    emit databaseWritten();
+    IAggregator *filer = query<IFilerFactory>(this)->create(FileFiler);
+    query<IFileFiler>(filer)->setFileName(fileName);
+    query<IWriter>(filer)->write(query<IModelItem>(_score));
+    delete filer;
 }
 
 bool Database::isReading() const

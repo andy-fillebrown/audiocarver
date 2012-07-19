@@ -140,27 +140,37 @@ bool test_5()
     return true;
 }
 
+bool test_create_item(IDataObjectFactory *factory, int itemType)
+{
+    IAggregator *item = factory->create(itemType);
+    if (!item)
+        return false;
+    delete item;
+    return true;
+}
+
 bool test_6()
 {
     // Make sure all item types can be created.
     IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
-    CHECK(factory->create(ScoreItem));
-    CHECK(factory->create(TrackItem));
-    CHECK(factory->create(TrackListItem));
-    CHECK(factory->create(NoteItem));
-    CHECK(factory->create(NoteListItem));
-    CHECK(factory->create(PitchCurveItem));
-    CHECK(factory->create(ControlCurveItem));
-    CHECK(factory->create(ControlCurveListItem));
-    CHECK(factory->create(GridSettingsItem));
-    CHECK(factory->create(TimeGridLineItem));
-    CHECK(factory->create(TimeGridLineListItem));
-    CHECK(factory->create(PitchGridLineItem));
-    CHECK(factory->create(PitchGridLineListItem));
-    CHECK(factory->create(ControlGridLineItem));
-    CHECK(factory->create(ControlGridLineListItem));
-    CHECK(factory->create(ViewSettingsItem));
-    CHECK(factory->create(ProjectSettingsItem));
+    // Don't create a score item since it makes Score::instance() return an
+    // unused score.
+    CHECK(test_create_item(factory, TrackItem));
+    CHECK(test_create_item(factory, TrackListItem));
+    CHECK(test_create_item(factory, NoteItem));
+    CHECK(test_create_item(factory, NoteListItem));
+    CHECK(test_create_item(factory, PitchCurveItem));
+    CHECK(test_create_item(factory, ControlCurveItem));
+    CHECK(test_create_item(factory, ControlCurveListItem));
+    CHECK(test_create_item(factory, GridSettingsItem));
+    CHECK(test_create_item(factory, TimeGridLineItem));
+    CHECK(test_create_item(factory, TimeGridLineListItem));
+    CHECK(test_create_item(factory, PitchGridLineItem));
+    CHECK(test_create_item(factory, PitchGridLineListItem));
+    CHECK(test_create_item(factory, ControlGridLineItem));
+    CHECK(test_create_item(factory, ControlGridLineListItem));
+    CHECK(test_create_item(factory, ViewSettingsItem));
+    CHECK(test_create_item(factory, ProjectSettingsItem));
     return true;
 }
 

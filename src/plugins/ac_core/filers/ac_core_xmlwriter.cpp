@@ -17,10 +17,70 @@
 
 #include "ac_core_xmlwriter.h"
 
+#include <mi_imodeldata.h>
+#include <mi_imodellist.h>
+
+#include <ac_core_point.h>
+
 #include <QXmlStreamWriter>
+
+using namespace Mi;
 
 namespace Ac {
 namespace Core {
+
+static void writePoints(const PointList &points, QXmlStreamWriter *writer)
+{
+    if (points.isEmpty())
+        return;
+    foreach (const Point &pt, points) {
+        writer->writeStartElement("Point");
+        const QPointF &pos = pt.pos;
+        writer->writeAttribute("position", QString("%1 %2").arg(pos.x()).arg(pos.y()));
+        if (BezierCurve == pt.curveType)
+            writer->writeAttribute("curve", "bezier");
+        writer->writeEndElement();
+    }
+}
+
+static void writeItemData(IModelData *data, int roleIndex, QXmlStreamWriter *writer)
+{
+    int role = data->roleAt(roleIndex);
+    QVariant variant = data->getVariant(role);
+    if (PointsRole == role)
+        writePoints(variant.value<PointList>(), writer);
+    else {
+        QString value_string = variant.toString();
+        if (!value_string.isEmpty())
+            writer->writeAttribute(itemDataRoleString(role), value_string);
+    }
+}
+
+static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
+{
+    IModelData *data = query<IModelData>(item);
+    if (data) {
+        if (item->isTypeOfItem(CurveItem) && data->get<PointList>(PointsRole).isEmpty())
+            return true;
+        writer->writeStartElement(itemTypeString(item->itemType()));
+        int roleCount = data->roleCount();
+        for (int i = 0;  i < roleCount;  ++i)
+            writeItemData(data, i, writer);
+    } else {
+        if (item->isTypeOfItem(ListItem)) {
+            if (0 == item->count())
+                return true;
+            writer->writeStartElement(itemTypeString(query<IModelList>(item)->listType()) + "List");
+        } else
+            writer->writeStartElement(itemTypeString(item->itemType()));
+    }
+    int item_count = item->count();
+    for (int i = 0;  i < item_count;  ++i)
+        if (!writeItem(item->at(i), writer))
+            return false;
+    writer->writeEndElement();
+    return true;
+}
 
 IAggregate *XmlWriter::init()
 {
@@ -29,6 +89,8 @@ IAggregate *XmlWriter::init()
 
 XmlWriter::~XmlWriter()
 {
+    if (_stream)
+        _stream->device()->write("\n");
     delete _stream;
 }
 
@@ -38,11 +100,17 @@ void XmlWriter::setStream(QXmlStreamWriter *stream)
         return;
     delete _stream;
     _stream = stream;
+    _stream->setAutoFormatting(true);
 }
 
 bool XmlWriter::write(IModelItem *item)
 {
-    return false;
+    if (!item)
+        return false;
+    QXmlStreamWriter *writer = stream();
+    if (!writer)
+        return false;
+    return writeItem(item, writer);
 }
 
 } // namespace Core

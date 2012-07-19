@@ -241,7 +241,7 @@ protected:
 
         IModelItem *at(int i) const
         {
-            switch (TotalItemCount - i) {
+            switch (i - ItemCountOffset) {
             case 0:
                 return query<IModelItem>(a()->timeGridLines());
             case 1:

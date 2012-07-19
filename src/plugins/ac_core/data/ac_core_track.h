@@ -20,6 +20,8 @@
 
 #include "ac_core_scoreobject.h"
 
+#include <mi_core_utils.h>
+
 namespace Ac {
 namespace Core {
 
@@ -39,9 +41,9 @@ class AC_CORE_EXPORT Track : public ScoreObject
 
 protected:
     enum {
-        RoleCountOffset = DataObject::TotalRoleCount,
+        RoleCountOffset = ScoreObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount,
-        ItemCountOffset = DataObject::TotalItemCount,
+        ItemCountOffset = ScoreObject::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
@@ -130,7 +132,7 @@ protected:
         {
             switch (role) {
             case ColorRole:
-                return a()->color();
+                return Mi::Core::intToColorString(a()->color());
             case InstrumentRole:
                 return a()->instrument();
             case VisibilityRole:
@@ -146,7 +148,7 @@ protected:
         {
             switch (role) {
             case ColorRole:
-                return a()->setColor(qvariant_cast<int>(data));
+                return a()->setColor(Mi::Core::colorStringToInt(qvariant_cast<QString>(data)));
             case InstrumentRole:
                 return a()->setInstrument(qvariant_cast<QString>(data));
             case VisibilityRole:
@@ -204,7 +206,7 @@ protected:
         IModelItem *at(int i) const
         {
             Q_ASSERT(0 <= (TotalItemCount - i));
-            switch (TotalItemCount - i) {
+            switch (i - ItemCountOffset) {
             case 0:
                 return query<IModelItem>(a()->notes());
             default:

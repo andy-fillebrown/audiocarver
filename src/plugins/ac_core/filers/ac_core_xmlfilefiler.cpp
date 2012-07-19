@@ -31,6 +31,7 @@ IAggregator *XmlFileFiler::init()
 
 XmlFileFiler::~XmlFileFiler()
 {
+    clear();
     delete _file;
 }
 

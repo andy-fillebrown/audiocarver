@@ -22,6 +22,8 @@
 
 #include <ac_core_namespace.h>
 
+#include <mi_core_utils.h>
+
 namespace Ac {
 namespace Core {
 
@@ -124,7 +126,7 @@ protected:
             case PriorityRole:
                 return a()->priority();
             case ColorRole:
-                return a()->color();
+                return Mi::Core::intToColorString(a()->color());
             default:
                 return DataObject::ModelData::getVariant(role);
             }
@@ -140,7 +142,7 @@ protected:
             case PriorityRole:
                 return a()->setPriority(qvariant_cast<int>(data));
             case ColorRole:
-                return a()->setColor(qvariant_cast<int>(data));
+                return a()->setColor(Mi::Core::colorStringToInt(qvariant_cast<QString>(data)));
             default:
                 return DataObject::ModelData::setVariant(data, role);
             }

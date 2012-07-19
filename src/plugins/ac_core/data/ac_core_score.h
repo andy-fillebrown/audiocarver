@@ -45,9 +45,9 @@ public:
 
 protected:
     enum {
-        RoleCountOffset = DataObject::TotalRoleCount,
+        RoleCountOffset = ScoreObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount,
-        ItemCountOffset = DataObject::TotalItemCount,
+        ItemCountOffset = ScoreObject::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
@@ -206,7 +206,7 @@ protected:
 
         IModelItem *at(int i) const
         {
-            switch (TotalItemCount - i) {
+            switch (i - ItemCountOffset) {
             case 0:
                 return query<IModelItem>(a()->tracks());
             case 1:

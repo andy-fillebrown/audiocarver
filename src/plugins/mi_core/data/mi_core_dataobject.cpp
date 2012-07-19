@@ -49,7 +49,7 @@ bool DataObject::setName(const QString &name)
         return false;
     if (!name.isEmpty() && _parent && _parent->isList()) {
         IModelList *list = query<IModelList>(_parent);
-        if (list && list->containsObjectNamed(_name))
+        if (list && list->containsObjectNamed(name))
             return false;
     }
     ScopedDataChange data_change(this, NameRole);

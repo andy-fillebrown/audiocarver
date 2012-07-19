@@ -581,6 +581,6 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ViewSettings timePosition="62.8075708132721" pitchPosition="62.9133752668482" controlPosition="0.380646400664845" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
     <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
+    <ViewSettings timePosition="62.8075708132721" pitchPosition="62.9133752668482" controlPosition="0.380646400664845" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
 </Score>
