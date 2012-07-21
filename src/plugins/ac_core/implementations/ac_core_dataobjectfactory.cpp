@@ -17,6 +17,8 @@
 
 #include "ac_core_dataobjectfactory.h"
 
+#include <mi_imodelitem.h>
+
 #include <ac_core_database.h>
 #include <ac_core_dataobjectlist.h>
 #include <ac_core_controlcurve.h>
@@ -37,46 +39,67 @@ IAggregate *DataObjectFactory::init()
     return this;
 }
 
-IAggregator *DataObjectFactory::create(int itemType)
+IAggregator *DataObjectFactory::create(int itemType, IModelItem *parent)
 {
+    IAggregator *aggregator = 0;
     switch (itemType) {
     case ControlCurveItem:
-        return (new ControlCurve)->init();
+        aggregator = (new ControlCurve)->init();
+        break;
     case ControlCurveListItem:
-        return (new DataObjectList(ControlCurveItem))->init();
+        aggregator = (new DataObjectList(ControlCurveItem))->init();
+        break;
     case ControlGridLineItem:
-        return (new ControlGridLine)->init();
+        aggregator = (new ControlGridLine)->init();
+        break;
     case ControlGridLineListItem:
-        return (new DataObjectList(ControlGridLineItem))->init();
+        aggregator = (new DataObjectList(ControlGridLineItem))->init();
+        break;
     case GridSettingsItem:
-        return (new GridSettings)->init();
+        aggregator = (new GridSettings)->init();
+        break;
     case NoteItem:
-        return (new Note)->init();
+        aggregator = (new Note)->init();
+        break;
     case NoteListItem:
-        return (new DataObjectList(NoteItem))->init();
+        aggregator = (new DataObjectList(NoteItem))->init();
+        break;
     case PitchCurveItem:
-        return (new PitchCurve)->init();
+        aggregator = (new PitchCurve)->init();
+        break;
     case PitchGridLineItem:
-        return (new PitchGridLine)->init();
+        aggregator = (new PitchGridLine)->init();
+        break;
     case PitchGridLineListItem:
-        return (new DataObjectList(PitchGridLineItem))->init();
+        aggregator = (new DataObjectList(PitchGridLineItem))->init();
+        break;
     case ProjectSettingsItem:
-        return (new ProjectSettings)->init();
+        aggregator = (new ProjectSettings)->init();
+        break;
     case ScoreItem:
-        return (new Score)->init();
+        aggregator = (new Score)->init();
+        break;
     case TimeGridLineItem:
-        return (new TimeGridLine)->init();
+        aggregator = (new TimeGridLine)->init();
+        break;
     case TimeGridLineListItem:
-        return (new DataObjectList(TimeGridLineItem))->init();
+        aggregator = (new DataObjectList(TimeGridLineItem))->init();
+        break;
     case TrackItem:
-        return (new Track)->init();
+        aggregator = (new Track)->init();
+        break;
     case TrackListItem:
-        return (new DataObjectList(TrackItem))->init();
+        aggregator = (new DataObjectList(TrackItem))->init();
+        break;
     case ViewSettingsItem:
-        return (new ViewSettings)->init();
+        aggregator = (new ViewSettings)->init();
+        break;
     default:
         return 0;
     }
+    if (parent)
+        query<IModelItem>(aggregator)->setParent(parent);
+    return aggregator;
 }
 
 IAggregator *DataObjectFactory::aggregator() const

@@ -30,8 +30,9 @@ namespace Core {
 IAggregator *ScoreObject::init()
 {
     IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
-    _pitchCurve = factory->create(Ac::PitchCurveItem);
-    _controlCurves = factory->create(Ac::ControlCurveListItem);
+    IModelItem *this_item = query<IModelItem>(this);
+    _pitchCurve = factory->create(Ac::PitchCurveItem, this_item);
+    _controlCurves = factory->create(Ac::ControlCurveListItem, this_item);
     return DataObject::init();
 }
 

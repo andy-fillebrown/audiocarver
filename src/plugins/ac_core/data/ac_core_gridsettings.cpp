@@ -30,9 +30,10 @@ namespace Core {
 IAggregator *GridSettings::init()
 {
     IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
-    _timeGridLines = factory->create(Ac::TimeGridLineListItem);
-    _pitchGridLines = factory->create(Ac::PitchGridLineListItem);
-    _controlGridLines = factory->create(Ac::ControlGridLineListItem);
+    IModelItem *this_item = query<IModelItem>(this);
+    _timeGridLines = factory->create(Ac::TimeGridLineListItem, this_item);
+    _pitchGridLines = factory->create(Ac::PitchGridLineListItem, this_item);
+    _controlGridLines = factory->create(Ac::ControlGridLineListItem, this_item);
     return DataObject::init();
 }
 

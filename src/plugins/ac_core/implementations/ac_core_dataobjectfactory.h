@@ -46,7 +46,7 @@ protected:
     virtual IAggregate *init();
 
     // IFactory
-    IAggregator *create(int itemType);
+    IAggregator *create(int itemType, IModelItem *parent = 0);
 
     // IAggregate
     IAggregator *aggregator() const;

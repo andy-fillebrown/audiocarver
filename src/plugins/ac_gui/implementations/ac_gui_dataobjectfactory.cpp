@@ -41,9 +41,9 @@ IAggregate *DataObjectFactory::init()
     return Core::DataObjectFactory::init();
 }
 
-IAggregator *DataObjectFactory::create(int itemType)
+IAggregator *DataObjectFactory::create(int itemType, IModelItem *parent)
 {
-    SuperAggregator *super_aggregator = dynamic_cast<SuperAggregator*>(Core::DataObjectFactory::create(itemType));
+    SuperAggregator *super_aggregator = dynamic_cast<SuperAggregator*>(Core::DataObjectFactory::create(itemType, parent));
     GraphicsObject *graphics_object = 0;
     switch (itemType) {
     case ControlCurveItem:

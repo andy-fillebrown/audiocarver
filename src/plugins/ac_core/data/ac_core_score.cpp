@@ -37,10 +37,11 @@ Score *Score::instance()
 IAggregator *Score::init()
 {
     IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
-    _tracks = factory->create(Ac::TrackListItem);
-    _gridSettings = factory->create(Ac::GridSettingsItem);
-    _projectSettings = factory->create(Ac::ProjectSettingsItem);
-    _viewSettings = factory->create(Ac::ViewSettingsItem);
+    IModelItem *this_item = query<IModelItem>(this);
+    _tracks = factory->create(Ac::TrackListItem, this_item);
+    _gridSettings = factory->create(Ac::GridSettingsItem, this_item);
+    _projectSettings = factory->create(Ac::ProjectSettingsItem, this_item);
+    _viewSettings = factory->create(Ac::ViewSettingsItem, this_item);
     ScoreObject::init();
     return Core::instance = this;
 }

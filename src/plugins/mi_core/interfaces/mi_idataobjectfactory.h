@@ -21,13 +21,14 @@
 #include "mi_iaggregate.h"
 
 class IAggregator;
+class IModelItem;
 
 class IDataObjectFactory : public IAggregate
 {
 public:
     enum { InterfaceType = I::IDataObjectFactory };
 
-    virtual IAggregator *create(int itemType) = 0;
+    virtual IAggregator *create(int itemType, IModelItem *parent = 0) = 0;
 
     // IUnknown
     int interfaceType() const

@@ -179,6 +179,16 @@ protected:
             return query<IModelItem>(a()->parent());
         }
 
+        void setParent(IModelItem *parent)
+        {
+            if (!parent) {
+                a()->setParent(0);
+                return;
+            }
+            DataObject *parent_a = dynamic_cast<DataObject*>(parent->aggregator());
+            a()->setParent(parent_a);
+        }
+
         int count() const
         {
             return 0;

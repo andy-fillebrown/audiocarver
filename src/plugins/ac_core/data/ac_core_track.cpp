@@ -29,7 +29,7 @@ namespace Core {
 
 IAggregator *Track::init()
 {
-    _notes = query<IDataObjectFactory>(IDatabase::instance())->create(NoteListItem);
+    _notes = query<IDataObjectFactory>(IDatabase::instance())->create(NoteListItem, query<IModelItem>(this));
     return ScoreObject::init();
 }
 
