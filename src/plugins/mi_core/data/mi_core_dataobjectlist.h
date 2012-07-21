@@ -94,7 +94,7 @@ protected:
         dynamic_cast<DataObject*>(item->aggregator())->setParent(this);
     }
 
-    // Object
+    // DataObject
     bool isList() const
     {
         return true;

@@ -43,4 +43,4 @@ public:
     }
 };
 
-#endif // MI_IAGGREGATE_H
+#endif // MI_IAGGREGATOR_H

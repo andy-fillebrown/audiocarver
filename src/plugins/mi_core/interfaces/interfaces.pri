@@ -1,11 +1,11 @@
 
 SOURCE_FILES = \
+    iaggregate \
+    iaggregator \
     idatabase \
     idataobjectfactory \
     ifiler \
     ifilerfactory \
-    iaggregate \
-    iaggregator \
     imodel \
     imodeldata \
     imodelitem \
