@@ -15,13 +15,17 @@
 **
 **************************************************************************/
 
-#include "ac_controllabelview.h"
+#include "ac_gui_controllabelview.h"
 
-#include <ac_viewmanager.h>
-
+#include <mi_idatabase.h>
 #include <mi_imodel.h>
+#include <mi_imodelitem.h>
+
+#include <ac_gui_viewmanager.h>
 
 #include <QModelIndex>
+
+using namespace Ac;
 
 class ControlLabelViewPrivate
 {
@@ -50,12 +54,12 @@ ControlLabelView::~ControlLabelView()
     delete d;
 }
 
-QModelIndex ControlLabelView::gridLineListIndex() const
+IModelList *ControlLabelView::gridLineList() const
 {
-    return IModel::instance()->listIndex(Ac::ControlGridLineItem);
+    return query<IModel>(IDatabase::instance())->rootItem()->findList(ControlGridLineItem);
 }
 
 qreal ControlLabelView::sceneHeight() const
 {
-    return qreal(1.0f) / ViewManager::instance()->scale(Ac::ControlScaleRole);
+    return qreal(1.0f) / ViewManager::instance()->scale(ControlScaleRole);
 }

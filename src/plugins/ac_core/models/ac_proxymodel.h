@@ -18,7 +18,7 @@
 #ifndef AC_PROXYMODEL_H
 #define AC_PROXYMODEL_H
 
-#include <ac_global.h>
+#include <ac_core_global.h>
 
 #include <QSortFilterProxyModel>
 

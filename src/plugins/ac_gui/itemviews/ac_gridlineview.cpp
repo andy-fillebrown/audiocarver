@@ -17,16 +17,17 @@
 
 #include "ac_gridlineview.h"
 
-#include <ac_colordelegate.h>
-#include <ac_gridlinemodel.h>
-#include <ac_lengthdelegate.h>
-
-#include <ac_namespace.h>
-
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
+#include <ac_colordelegate.h>
+#include <ac_gridlinemodel.h>
+#include <ac_gui_namespace.h>
+#include <ac_lengthdelegate.h>
+
 #include <QHeaderView>
+
+using namespace Ac::Core;
 
 GridLineView::GridLineView(QWidget *parent)
     :   QTableView(parent)

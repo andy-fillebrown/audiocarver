@@ -17,9 +17,10 @@
 
 #include "ac_noteselectionmodel.h"
 
-#include <ac_trackselectionmodel.h>
+#include <mi_idatabase.h>
+#include <mi_core_qmodel.h>
 
-#include <mi_imodel.h>
+#include <ac_trackselectionmodel.h>
 
 static NoteSelectionModel *instance = 0;
 
@@ -31,8 +32,8 @@ NoteSelectionModel::NoteSelectionModel(QAbstractItemModel *model)
 
 NoteSelectionModel *NoteSelectionModel::instance()
 {
-    if (!::instance)
-        new NoteSelectionModel(IModel::instance());
+//    if (!::instance)
+//        new NoteSelectionModel(query<IQModel>(IDatabase::instance()));
     return ::instance;
 }
 

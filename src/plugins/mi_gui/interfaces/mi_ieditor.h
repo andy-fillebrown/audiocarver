@@ -22,6 +22,8 @@
 
 #include <mi_gui_namespace.h>
 
+class QUndoCommand;
+
 class MI_GUI_EXPORT IEditor : public IAggregator
 {
 public:
@@ -35,6 +37,15 @@ public:
     virtual void copy() const = 0;
     virtual void paste() = 0;
     virtual void selectAll() = 0;
+
+    virtual bool isInCommand() const = 0;
+    virtual void beginCommand() = 0;
+    virtual void endCommand() = 0;
+    virtual void pushCommand(QUndoCommand *command) = 0;
+
+    virtual bool isCreating() const = 0;
+    virtual void startCreating() = 0;
+    virtual void finishCreating() = 0;
 
     // IUnknown
     int interfaceType() const

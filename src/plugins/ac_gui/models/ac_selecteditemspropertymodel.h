@@ -21,7 +21,14 @@
 #include <ac_propertymodel.h>
 
 class IModelItem;
+
+namespace Mi {
+namespace Gui {
+
 class ItemSelectionModel;
+
+} // namespace Gui
+} // namespace Mi
 
 class SelectedItemsPropertyModelPrivate;
 class SelectedItemsPropertyModel : public PropertyModel
@@ -34,8 +41,8 @@ public:
 
     static SelectedItemsPropertyModel *instance();
 
-    void appendSelectionModel(ItemSelectionModel *selectionModel);
-    void removeSelectionModel(ItemSelectionModel *selectionModel);
+    void appendSelectionModel(Mi::Gui::ItemSelectionModel *selectionModel);
+    void removeSelectionModel(Mi::Gui::ItemSelectionModel *selectionModel);
 
     // QAbstractItemModel
     int rowCount(const QModelIndex &parent) const;

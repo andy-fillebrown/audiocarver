@@ -18,9 +18,9 @@
 #ifndef AC_DOUBLEDELEGATE_H
 #define AC_DOUBLEDELEGATE_H
 
-#include <mi_delegate.h>
+#include <mi_gui_delegate.h>
 
-class DoubleDelegate : public Delegate
+class DoubleDelegate : public Mi::Gui::Delegate
 {
 public:
     DoubleDelegate(QObject *parent = 0)

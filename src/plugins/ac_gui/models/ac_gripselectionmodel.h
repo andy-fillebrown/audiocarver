@@ -20,7 +20,7 @@
 
 #include <QAbstractTableModel>
 
-class IGripItem;
+class IGrip;
 
 class GripSelectionModelPrivate;
 class GripSelectionModel : public QAbstractTableModel
@@ -42,14 +42,14 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 signals:
-    void gripDeselected(IGripItem *grip);
+    void gripDeselected(IGrip *grip);
     void gripsSelected();
     void gripsDeselected();
 
 private:
     friend class GraphicsGripItem;
-    void appendGrip(IGripItem *grip);
-    void removeGrip(IGripItem *grip);
+    void appendGrip(IGrip *grip);
+    void removeGrip(IGrip *grip);
     void update();
 
     GripSelectionModelPrivate *d;

@@ -15,9 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsscene.h"
+#include "ac_gui_graphicsscene.h"
 
-#include <ac_model.h>
+#include <ac_ientity.h>
+#include <mi_idatabase.h>
+#include <mi_imodel.h>
+#include <mi_imodelitem.h>
 
 class SceneManagerPrivate
 {
@@ -46,9 +49,13 @@ public:
         pitchLabelScene = new PitchLabelScene(q);
         controlLabelScene = new ControlLabelScene(q);
 
-        Model *model = object_cast<Model>(IModel::instance());
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-            q->scene(i)->addItem(model->sceneItem(i));
+        // Add the root entity's graphics items to the scenes.
+        IEntity *root_entity = query<IEntity>(query<IModel>(IDatabase::instance())->rootItem());
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+            QGraphicsScene *scene = q->scene(i);
+            for (int j = 0;  j < Ac::GraphicsItemTransformTypeCount;  ++j)
+                scene->addItem(root_entity->graphicsItem(i, j));
+        }
     }
 };
 

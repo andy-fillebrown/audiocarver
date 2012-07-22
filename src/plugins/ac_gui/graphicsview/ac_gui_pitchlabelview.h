@@ -15,30 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef AC_IENTITYITEM_H
-#define AC_IENTITYITEM_H
+#ifndef AC_PITCHLABELVIEW_H
+#define AC_PITCHLABELVIEW_H
 
-#include <ac_namespace.h>
+#include <ac_gui_labelview.h>
 
-#include <mi_iunknown.h>
+#include <ac_gui_namespace.h>
 
-class IEntity;
-class IGripItem;
+class PitchLabelViewPrivate;
 
-class IEntityItem : public IUnknown
+class PitchLabelView : public LabelVView
 {
-public:
-    enum { Type = Ac::EntityItemInterface };
+    Q_OBJECT
 
-    virtual IEntity *entity() const = 0;
-    virtual void highlight() = 0;
-    virtual void unhighlight() = 0;
-    virtual void resetGripItems() = 0;
-    virtual void startUpdatingPoints() = 0;
-    virtual void updatePoints() = 0;
-    virtual void finishUpdatingPoints() = 0;
-    virtual void updateCurveTypes() = 0;
-    virtual QList<IGripItem*> gripItems() const = 0;
+public:
+    PitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~PitchLabelView();
+
+protected:
+    IModelList *gridLineList() const;
+
+    int sceneType() const { return Ac::PitchLabelScene; }
+    qreal sceneHeight() const;
+
+    int positionRoleY() const { return Ac::PitchPositionRole; }
+    int scaleRoleY() const { return Ac::PitchScaleRole; }
+
+private:
+    PitchLabelViewPrivate *d;
 };
 
-#endif // AC_IENTITYITEM_H
+#endif // AC_PITCHLABELVIEW_H

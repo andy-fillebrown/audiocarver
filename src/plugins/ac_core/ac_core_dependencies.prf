@@ -6,7 +6,7 @@ DIRS = \
     filers \
     implementations \
     interfaces \
-#    models \
+    models \
     tools \
 
 for(dir, DIRS) {

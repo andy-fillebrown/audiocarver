@@ -15,32 +15,46 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLLABELVIEW_H
-#define AC_CONTROLLABELVIEW_H
+#ifndef MI_CORE_QDATAMODEL_H
+#define MI_CORE_QDATAMODEL_H
 
-#include <ac_labelview.h>
+#include "mi_iunknown.h"
 
-class ControlLabelViewPrivate;
+#include <QAbstractItemModel>
 
-class ControlLabelView : public LabelVView
+class IAggregator;
+
+class MI_CORE_EXPORT QModel : public QAbstractItemModel, public IUnknown
 {
     Q_OBJECT
 
+    IAggregator *_aggregator;
+
 public:
-    ControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~ControlLabelView();
+    enum { InterfaceType = I::QModel };
 
-protected:
-    QModelIndex gridLineListIndex() const;
+    static QModel *instance();
 
-    int sceneType() const { return Ac::ControlLabelScene; }
-    qreal sceneHeight() const;
+    QModel(IAggregator *aggregator);
+    ~QModel();
 
-    int positionRoleY() const { return Ac::ControlPositionRole; }
-    int scaleRoleY() const { return Ac::ControlScaleRole; }
+    virtual QObject *init();
 
-private:
-    ControlLabelViewPrivate *d;
+    // QAbstractItemModel
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+
+    void *queryInterface(int interfaceType);
+    const void *queryInterface(int interfaceType) const;
 };
 
-#endif // AC_CONTROLLABELVIEW_H
+#endif // MI_CORE_QDATAMODEL_H

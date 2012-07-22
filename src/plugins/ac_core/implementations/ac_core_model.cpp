@@ -21,20 +21,44 @@
 
 #include <ac_core_database.h>
 
-using namespace Mi;
-
 namespace Ac {
 namespace Core {
 
+Model::Model(Database *aggregator)
+    :   Mi::Core::Model(aggregator)
+{}
+
 IAggregate *Model::init()
 {
-    return this;
+    return Mi::Core::Model::init();
+}
+
+Database *Model::a() const
+{
+    return static_cast<Database*>(Mi::Core::Model::a());
+}
+
+Mi::Core::QDataModel *Model::q() const
+{
+    return 0;
 }
 
 IModelItem *Model::rootItem() const
 {
     return query<IModelItem>(a()->score());
 }
+
+//IModelItem *Model::itemFromIndex(const QModelIndex &index) const
+//{
+//    if ((index.row() < 0)
+//            || (index.column() < 0)
+//            || (index.model() != query<IQModel>(this)))
+//        return rootItem();
+//    IModelItem *parent_item = static_cast<IModelItem*>(index.internalPointer());
+//    if (!parent_item)
+//        return rootItem();
+//    return parent_item->at(index.row());
+//}
 
 void Model::beginChangeData(const IModelData *data, int role, int dataChangeType)
 {
@@ -54,11 +78,6 @@ void Model::beginChangeParent(const IModelItem *item)
 void Model::endChangeParent(const IModelItem *item)
 {
 //    qDebug() << Q_FUNC_INFO;
-}
-
-IAggregator *Model::aggregator() const
-{
-    return _aggregator;
 }
 
 } // namespace Core

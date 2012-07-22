@@ -15,32 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHLABELVIEW_H
-#define AC_PITCHLABELVIEW_H
+#include "mi_core_qmodel.h"
 
-#include <ac_labelview.h>
+#include <mi_iaggregator.h>
 
-class PitchLabelViewPrivate;
+static QModel *instance = 0;
 
-class PitchLabelView : public LabelVView
+QModel *QModel::instance()
 {
-    Q_OBJECT
+    return ::instance;
+}
 
-public:
-    PitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~PitchLabelView();
+QModel::QModel(IAggregator *aggregator)
+    :   _aggregator(aggregator)
+{
+    ::instance = this;
+}
 
-protected:
-    QModelIndex gridLineListIndex() const;
+QModel::~QModel()
+{
+    ::instance = 0;
+}
 
-    int sceneType() const { return Ac::PitchLabelScene; }
-    qreal sceneHeight() const;
+QObject *QModel::init()
+{
+    return this;
+}
 
-    int positionRoleY() const { return Ac::PitchPositionRole; }
-    int scaleRoleY() const { return Ac::PitchScaleRole; }
+void *QModel::queryInterface(int interfaceType)
+{
+    if (isTypeOfInterface(interfaceType))
+        return this;
+    return _aggregator->queryInterface(interfaceType);
+}
 
-private:
-    PitchLabelViewPrivate *d;
-};
-
-#endif // AC_PITCHLABELVIEW_H
+const void *QModel::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return this;
+    return const_cast<const IAggregator*>(_aggregator)->queryInterface(interfaceType);
+}

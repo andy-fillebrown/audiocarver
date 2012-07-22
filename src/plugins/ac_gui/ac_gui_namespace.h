@@ -29,8 +29,7 @@ enum AcGuiInterfaces {
     IEntity,
     IParentEntity,
     ISubEntity,
-    IPointsItem,
-    IGripItem,
+    IGrip,
     IPlayCursor,
     IGraphicsScene,
     IGraphicsView,
@@ -69,6 +68,11 @@ enum GraphicsItemTransformType {
     UnitXTransform,
     UnitYTransform,
     GraphicsItemTransformTypeCount
+};
+
+enum HighlightType {
+    HoverHighlight,
+    FullHighlight
 };
 
 } // namespace Ac

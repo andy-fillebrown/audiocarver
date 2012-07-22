@@ -18,7 +18,7 @@
 #ifndef AC_ISYNTHESIZER_H
 #define AC_ISYNTHESIZER_H
 
-#include <ac_global.h>
+#include <ac_core_global.h>
 
 #include <QObject>
 

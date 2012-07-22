@@ -12,7 +12,7 @@ SOURCE_FILES = \
 #    constants \
     global \
     namespace \
-#    mainwidget \
+    mainwidget \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {

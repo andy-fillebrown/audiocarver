@@ -17,40 +17,35 @@
 
 #include "ac_gripselectionmodel.h"
 
-#include <ac_ientityitem.h>
-#include <ac_igripitem.h>
-
-#include <ac_ientity.h>
-#include <ac_namespace.h>
+#include <ac_igrip.h>
+#include <ac_isubentity.h>
 
 #include <QPointF>
 
-bool isCurveGrip(IGripItem *grip)
+using namespace Ac;
+
+bool isCurveGrip(IGrip *grip)
 {
-    IEntityItem *entity_item = grip->parentEntityItem();
-    IEntity *entity = entity_item->entity();
-    ISubEntity *sub_entity = query<ISubEntity>(entity);
+    ISubEntity *sub_entity = grip->entity();
     if (!sub_entity)
         return false;
     return sub_entity->isCurve();
 }
 
-int gripType(IGripItem *grip)
+int gripType(IGrip *grip)
 {
-    IEntityItem *entity_item = grip->parentEntityItem();
-    IEntity *entity = entity_item->entity();
-    ISubEntity *sub_entity = query<ISubEntity>(entity);
+    ISubEntity *sub_entity = grip->entity();
     if (!sub_entity)
         return -1;
     return sub_entity->sceneType();
 }
 
-QString gripTypeName(IGripItem *grip)
+QString gripTypeName(IGrip *grip)
 {
     switch (gripType(grip)) {
-    case Ac::PitchScene:
+    case PitchScene:
         return "pitch";
-    case Ac::ControlScene:
+    case ControlScene:
         return "control";
     default:
         return "";
@@ -61,7 +56,7 @@ class GripSelectionModelPrivate
 {
 public:
     GripSelectionModel *q;
-    QList<IGripItem*> grips;
+    QList<IGrip*> grips;
 
     GripSelectionModelPrivate(GripSelectionModel *q)
         :   q(q)
@@ -138,21 +133,21 @@ QVariant GripSelectionModel::data(const QModelIndex &index, int role) const
             && role != Qt::EditRole)
         return QVariant();
 
-    IGripItem *grip_item = d->grips.at(index.row());
-    if (!grip_item)
+    IGrip *grip = d->grips.at(index.row());
+    if (!grip)
         return QVariant();
 
     switch (index.column()) {
     case 1:
-        return gripTypeName(grip_item);
+        return gripTypeName(grip);
     case 2:
-        return grip_item->position().x();
+        return grip->position().x();
     case 3:
-        return grip_item->position().y();
+        return grip->position().y();
     case 4:
-        if (!isCurveGrip(grip_item))
+        if (!isCurveGrip(grip))
             return "n/a";
-        if (Ac::BezierCurve == grip_item->curveType())
+        if (Ac::BezierCurve == grip->curveType())
             return true;
         else
             return false;
@@ -166,25 +161,23 @@ bool GripSelectionModel::setData(const QModelIndex &index, const QVariant &value
     if (role != Qt::DisplayRole
             && role != Qt::EditRole)
         return false;
-
-    IGripItem *grip_item = d->grips.at(index.row());
-    if (!grip_item)
+    IGrip *grip = d->grips.at(index.row());
+    if (!grip)
         return false;
-
     switch (index.column()) {
     case 2:
-        grip_item->setPosition(QPointF(value.toReal(), grip_item->position().y()));
-        qSort(d->grips.begin(), d->grips.end(), IGripItem::lessThan);
-        grip_item->parentEntityItem()->finishUpdatingPoints();
+        grip->setPosition(QPointF(value.toReal(), grip->position().y()));
+        qSort(d->grips.begin(), d->grips.end(), IGrip::lessThan);
+        grip->entity()->finishUpdatingPoints();
         break;
     case 3:
-        grip_item->setPosition(QPointF(grip_item->position().x(), value.toReal()));
-        qSort(d->grips.begin(), d->grips.end(), IGripItem::lessThan);
-        grip_item->parentEntityItem()->finishUpdatingPoints();
+        grip->setPosition(QPointF(grip->position().x(), value.toReal()));
+        qSort(d->grips.begin(), d->grips.end(), IGrip::lessThan);
+        grip->entity()->finishUpdatingPoints();
         break;
     case 4:
-        grip_item->setCurveType(value.toInt());
-        grip_item->parentEntityItem()->updateCurveTypes();
+        grip->setCurveType(value.toInt());
+        grip->entity()->updateCurveTypes();
         break;
     default:
         return false;
@@ -192,21 +185,20 @@ bool GripSelectionModel::setData(const QModelIndex &index, const QVariant &value
     return true;
 }
 
-void GripSelectionModel::appendGrip(IGripItem *grip)
+void GripSelectionModel::appendGrip(IGrip *grip)
 {
     if (d->grips.contains(grip))
         return;
     d->grips.append(grip);
-    qSort(d->grips.begin(), d->grips.end(), IGripItem::lessThan);
+    qSort(d->grips.begin(), d->grips.end(), IGrip::lessThan);
     update();
 }
 
-void GripSelectionModel::removeGrip(IGripItem *grip)
+void GripSelectionModel::removeGrip(IGrip *grip)
 {
     // Emit gripDeselected, even if it's not selected, so the graphics views
     // get the signal and remove the grip from thier hovered grip lists.
     emit gripDeselected(grip);
-
     if (!d->grips.contains(grip))
         return;
     d->grips.removeOne(grip);

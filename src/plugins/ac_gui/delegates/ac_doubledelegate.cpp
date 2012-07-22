@@ -17,7 +17,9 @@
 
 #include "ac_doubledelegate.h"
 
-#include <mi_doublespinbox.h>
+#include <mi_gui_doublespinbox.h>
+
+using namespace Mi::Gui;
 
 QString DoubleDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {

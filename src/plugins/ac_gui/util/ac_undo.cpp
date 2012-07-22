@@ -17,21 +17,25 @@
 
 #include "ac_undo.h"
 
-#include <ac_viewmanager.h>
-
-#include <ac_namespace.h>
-
-#include <mi_ieditor.h>
-
 #include <mi_idatabase.h>
+#include <mi_ieditor.h>
 #include <mi_imodel.h>
-#include <mi_imodelitem.h>
+#include <mi_imodeldata.h>
+#include <mi_imodellist.h>
+
+#include <ac_gui_viewmanager.h>
+
+#include <ac_gui_namespace.h>
+
+#include <mi_core_qmodel.h>
+
+#include <QModelIndex>
 
 static bool undoCommandActive = false;
 
 class UndoCommandPrivate
 {
-    uint enabled : bitsizeof(uint);
+    uint enabled : 1;
 
 public:
     UndoCommandPrivate()
@@ -152,7 +156,7 @@ public:
 
     IModel *model() const
     {
-        return IModel::instance();
+        return query<IModel>(IDatabase::instance());
     }
 };
 
@@ -184,23 +188,25 @@ public:
 
     QMap<int, QVariant> data() const
     {
-        QMap<int, QVariant> map;
-        const int n = item->persistentRoleCount();
+        QMap<int, QVariant> values;
+        IModelData *data = query<IModelData>(item);
+        const int n = data->roleCount();
         for (int i = 0;  i < n;  ++i) {
-            const int role = item->persistentRoleAt(i);
-            const QVariant data = item->data(role);
-            map.insert(role, data);
+            const int role = data->roleAt(i);
+            const QVariant value = data->getVariant(role);
+            values.insert(role, value);
         }
-        return map;
+        return values;
     }
 
-    void setData(const QMap<int, QVariant> &data)
+    void setData(const QMap<int, QVariant> &values)
     {
-        const QList<int> keys = data.keys();
+        IModelData *data = query<IModelData>(item);
+        const QList<int> keys = values.keys();
         const int n = keys.count();
         for (int i = 0;  i < n;  ++i) {
             const int &role = keys.at(i);
-            item->setData(data.value(role), role);
+            data->set(values.value(role), role);
         }
     }
 };
@@ -242,17 +248,17 @@ class UndoListCommandPrivate : public UndoModelItemCommandPrivate
 {
 public:
     int row;
-    QModelIndex parentIndex;
+    IModelList *list;
 
-    UndoListCommandPrivate(int row, const QModelIndex &parentIndex)
+    UndoListCommandPrivate(int row, IModelList *list)
         :   row(row)
-        ,   parentIndex(parentIndex)
+        ,   list(list)
     {}
 
-    UndoListCommandPrivate(IModelItem *item, int row, const QModelIndex &parentIndex)
+    UndoListCommandPrivate(IModelItem *item, int row, IModelList *list)
         :   UndoModelItemCommandPrivate(item)
         ,   row(row)
-        ,   parentIndex(parentIndex)
+        ,   list(list)
     {}
 
     ~UndoListCommandPrivate()
@@ -263,10 +269,10 @@ UndoListCommand::UndoListCommand(UndoListCommandPrivate &dd, QUndoCommand *paren
     :   UndoModelItemCommand(dd, parent)
 {}
 
-const QModelIndex &UndoListCommand::parentIndex() const
+IModelList *UndoListCommand::list() const
 {
     Q_D(const UndoListCommand);
-    return d->parentIndex;
+    return d->list;
 }
 
 int UndoListCommand::row() const
@@ -283,7 +289,7 @@ void UndoListCommand::insert()
         return;
     }
     undoCommandActive = true;
-    d->model()->insertItem(item(), d->row, d->parentIndex);
+    list()->insert(d->row, item());
     undoCommandActive = false;
 }
 
@@ -295,7 +301,7 @@ void UndoListCommand::remove()
         return;
     }
     undoCommandActive = true;
-    d->model()->takeItem(d->row, d->parentIndex);
+    list()->removeAt(row());
     undoCommandActive = false;
 }
 
@@ -305,12 +311,12 @@ bool UndoListCommand::mergeWith(const QUndoCommand *other)
     return false;
 }
 
-UndoInsertCommand::UndoInsertCommand(int row, const QModelIndex &parentIndex, QUndoCommand *parent)
-    :   UndoListCommand(*(new UndoListCommandPrivate(row, parentIndex)), parent)
+UndoInsertCommand::UndoInsertCommand(int row, IModelList *list, QUndoCommand *parent)
+    :   UndoListCommand(*(new UndoListCommandPrivate(row, list)), parent)
 {}
 
-UndoRemoveCommand::UndoRemoveCommand(IModelItem *item, int row, const QModelIndex &parentIndex, QUndoCommand *parent)
-    :   UndoListCommand(*(new UndoListCommandPrivate(item, row, parentIndex)), parent)
+UndoRemoveCommand::UndoRemoveCommand(IModelItem *item, int row, IModelList *list, QUndoCommand *parent)
+    :   UndoListCommand(*(new UndoListCommandPrivate(item, row, list)), parent)
 {}
 
 class UndoStackPrivate
@@ -330,14 +336,14 @@ UndoStack::UndoStack(QObject *parent)
     :   QUndoStack(parent)
     ,   d(new UndoStackPrivate(this))
 {
-    IModel *model = IModel::instance();
-    connect(model, SIGNAL(dataAboutToBeChanged(QModelIndex,QModelIndex)), SLOT(dataAboutToBeChanged(QModelIndex,QModelIndex)));
-    connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
-    connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
-    connect(model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)), SLOT(rowsAboutToBeInserted(QModelIndex,int,int)));
-    connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
-    connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), SLOT(rowsAboutToBeRemoved(QModelIndex,int,int)));
-    connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
+//    IQModel *model = query<IQModel>(IDatabase::instance());
+//    connect(model, SIGNAL(dataAboutToBeChanged(QModelIndex,QModelIndex)), SLOT(dataAboutToBeChanged(QModelIndex,QModelIndex)));
+//    connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(dataChanged(QModelIndex,QModelIndex)));
+//    connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
+//    connect(model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)), SLOT(rowsAboutToBeInserted(QModelIndex,int,int)));
+//    connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(rowsInserted(QModelIndex,int,int)));
+//    connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), SLOT(rowsAboutToBeRemoved(QModelIndex,int,int)));
+//    connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(rowsRemoved(QModelIndex,int,int)));
 }
 
 UndoStack::~UndoStack()
@@ -354,29 +360,28 @@ void UndoStack::dataAboutToBeChanged(const QModelIndex &topLeft, const QModelInd
         return;
     if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
         return;
-    d->dataChanges.append(new UndoDataCommand(IModel::instance()->itemFromIndex(topLeft)));
+//    d->dataChanges.append(new UndoDataCommand(query<IModel>(IDatabase::instance())->itemFromIndex(topLeft)));
 }
 
 void UndoStack::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    Q_UNUSED(bottomRight);
-    if (undoCommandActive
-            || IDatabase::instance()->isReading()
-            || IEditor::instance()->isCreating())
-        return;
-    if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
-        return;
-    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
-    const int n = d->dataChanges.count();
-    for (int i = 0;  i < n;  ++i) {
-        UndoDataCommand *cmd = d->dataChanges.at(i);
-        if (item != cmd->item())
-            continue;
-        cmd->updateNewData();
-        d->dataChanges.removeAt(i);
-        push(cmd);
-        break;
-    }
+//    if (undoCommandActive
+//            || IDatabase::instance()->isReading()
+//            || IEditor::instance()->isCreating())
+//        return;
+//    if (Mi::ListItem == topLeft.data(Mi::ItemTypeRole))
+//        return;
+//    IModelItem *item = query<IModel>(IDatabase::instance())->itemFromIndex(topLeft);
+//    const int n = d->dataChanges.count();
+//    for (int i = 0;  i < n;  ++i) {
+//        UndoDataCommand *cmd = d->dataChanges.at(i);
+//        if (item != cmd->item())
+//            continue;
+//        cmd->updateNewData();
+//        d->dataChanges.removeAt(i);
+//        push(cmd);
+//        break;
+//    }
 }
 
 void UndoStack::modelReset()
@@ -386,57 +391,59 @@ void UndoStack::modelReset()
 
 void UndoStack::rowsAboutToBeInserted(const QModelIndex &parent, int start, int end)
 {
-    Q_UNUSED(end);
-    if (undoCommandActive || IDatabase::instance()->isReading())
-        return;
-    d->inserts.append(new UndoInsertCommand(start, parent));
+//    if (undoCommandActive || IDatabase::instance()->isReading())
+//        return;
+//    d->inserts.append(new UndoInsertCommand(start, query<IModelList>(query<IModel>(IDatabase::instance())->itemFromIndex(parent))));
 }
 
 void UndoStack::rowsInserted(const QModelIndex &parent, int start, int end)
 {
-    Q_UNUSED(end);
-    if (undoCommandActive
-            || IDatabase::instance()->isReading()
-            || IEditor::instance()->isCreating())
-        return;
-    const int n = d->inserts.count();
-    for (int i = 0;  i < n;  ++i) {
-        UndoInsertCommand *cmd = d->inserts.at(i);
-        if (parent != cmd->parentIndex() || start != cmd->row())
-            continue;
-        d->inserts.removeAt(i);
-        push(cmd);
-        IModel *model = IModel::instance();
-        cmd->setItem(model->itemFromIndex(model->index(start, parent)));
-        break;
-    }
+//    IDatabase *db = IDatabase::instance();
+//    if (undoCommandActive
+//            || db->isReading()
+//            || IEditor::instance()->isCreating())
+//        return;
+//    IModel *model = query<IModel>(db);
+//    const int n = d->inserts.count();
+//    for (int i = 0;  i < n;  ++i) {
+//        UndoInsertCommand *cmd = d->inserts.at(i);
+//        if (query<IModelList>(model->itemFromIndex(parent)) != cmd->list() || start != cmd->row())
+//            continue;
+//        d->inserts.removeAt(i);
+//        push(cmd);
+//        cmd->setItem(model->itemFromIndex(query<IQModel>(db)->index(start, 0, parent)));
+//        break;
+//    }
 }
 
 void UndoStack::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
-    Q_UNUSED(end);
-    if (undoCommandActive
-            || IDatabase::instance()->isReading()
-            || IEditor::instance()->isCreating())
-        return;
-    IModel *model = IModel::instance();
-    d->removes.append(new UndoRemoveCommand(model->itemFromIndex(model->index(start, parent)), start, parent));
+//    IDatabase *db = IDatabase::instance();
+//    if (undoCommandActive
+//            || IDatabase::instance()->isReading()
+//            || IEditor::instance()->isCreating())
+//        return;
+//    IModel *model = query<IModel>(db);
+//    IModelList *list = query<IModelList>(model->itemFromIndex(parent));
+//    IModelItem *item = list->at(start);
+//    d->removes.append(new UndoRemoveCommand(item, start, list));
 }
 
 void UndoStack::rowsRemoved(const QModelIndex &parent, int start, int end)
 {
-    Q_UNUSED(end);
-    if (undoCommandActive
-            || IDatabase::instance()->isReading()
-            || IEditor::instance()->isCreating())
-        return;
-    const int n = d->removes.count();
-    for (int i = 0;  i < n;  ++i) {
-        UndoRemoveCommand *cmd = d->removes.at(i);
-        if (parent != cmd->parentIndex() || start != cmd->row())
-            continue;
-        d->removes.removeAt(i);
-        push(cmd);
-        break;
-    }
+//    IDatabase *db = IDatabase::instance();
+//    if (undoCommandActive
+//            || IDatabase::instance()->isReading()
+//            || IEditor::instance()->isCreating())
+//        return;
+//    IModelList *list = query<IModelList>(query<IModel>(db)->itemFromIndex(parent));
+//    const int n = d->removes.count();
+//    for (int i = 0;  i < n;  ++i) {
+//        UndoRemoveCommand *cmd = d->removes.at(i);
+//        if (list != cmd->list() || start != cmd->row())
+//            continue;
+//        d->removes.removeAt(i);
+//        push(cmd);
+//        break;
+//    }
 }

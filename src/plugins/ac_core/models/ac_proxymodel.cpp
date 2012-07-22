@@ -22,7 +22,7 @@ class RolesToColumnsProxyModelHelper : public QSortFilterProxyModel
 public:
     RolesToColumnsProxyModelHelper(QObject *parent = 0)
         :   QSortFilterProxyModel(parent)
-        ,   parentModel(object_cast<RolesToColumnsProxyModel>(parent))
+        ,   parentModel(qobject_cast<RolesToColumnsProxyModel*>(parent))
     {}
 
     int columnCount(const QModelIndex &) const { return parentModel ? parentModel->columnCount(QModelIndex()) : 0; }

@@ -17,7 +17,7 @@
 
 #include "ac_trackmodel.h"
 
-#include <ac_model.h>
+#include <ac_core_model.h>
 
 #include <mi_idatabase.h>
 
@@ -42,15 +42,15 @@ TrackModel::TrackModel(QObject *parent)
     roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
     setRoleMaps(roleMaps);
 
-    setSourceModel(object_cast<QAbstractItemModel>(parent));
+    setSourceModel(qobject_cast<QAbstractItemModel*>(parent));
 
     ::instance = this;
 }
 
 TrackModel *TrackModel::instance()
 {
-    if (!::instance)
-        new TrackModel(IModel::instance());
+//    if (!::instance)
+//        new TrackModel(query<IModel>(IDatabase::instance())->q());
     return ::instance;
 }
 

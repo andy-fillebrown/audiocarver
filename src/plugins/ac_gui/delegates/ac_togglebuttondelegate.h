@@ -18,10 +18,10 @@
 #ifndef AC_TOGGLEBUTTONDELEGATE_H
 #define AC_TOGGLEBUTTONDELEGATE_H
 
-#include <mi_delegate.h>
+#include <mi_gui_delegate.h>
 
 class ToggleButtonDelegatePrivate;
-class ToggleButtonDelegate : public Delegate
+class ToggleButtonDelegate : public Mi::Gui::Delegate
 {
 public:
     ToggleButtonDelegate(QObject *parent = 0);

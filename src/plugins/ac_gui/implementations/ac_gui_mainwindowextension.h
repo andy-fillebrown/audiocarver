@@ -24,7 +24,7 @@ namespace Ac {
 namespace Gui {
 
 class MainWindowExtensionPrivate;
-class MainWindowExtension : public Core::IMainWindowExtension
+class MainWindowExtension : public ::Core::IMainWindowExtension
 {
     Q_OBJECT
 

@@ -195,7 +195,7 @@ protected:
         case I::IModelData:
             return appendAggregate((new ModelData(this))->init());
         default:
-            return ScoreObject::createAggregate(interfaceType);
+            return Mi::Core::DataObject::createAggregate(interfaceType);
         }
     }
 

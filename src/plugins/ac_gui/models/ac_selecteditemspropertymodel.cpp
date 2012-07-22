@@ -17,15 +17,22 @@
 
 #include "ac_selecteditemspropertymodel.h"
 
-#include <ac_namespace.h>
-
+#include <mi_idatabase.h>
 #include <mi_ieditor.h>
-#include <mi_itemselectionmodel.h>
-
 #include <mi_imodel.h>
+#include <mi_imodeldata.h>
 #include <mi_imodelitem.h>
 
+#include <ac_gui_namespace.h>
+
+#include <mi_gui_itemselectionmodel.h>
+
 #include <QTimer>
+
+using namespace Ac;
+using namespace Mi;
+using namespace Mi::Gui;
+using namespace Qt;
 
 class SelectedItemsPropertyModelPrivate
 {
@@ -36,7 +43,7 @@ public:
     QList<IModelItem*> selectedItems;
     QMap<int, QVariant> dataMap;
     QTimer *updateTimer;
-    uint nothingSelected : bitsizeof(uint);
+    uint nothingSelected : 1;
 
     SelectedItemsPropertyModelPrivate(SelectedItemsPropertyModel *q)
         :   q(q)
@@ -75,19 +82,19 @@ public:
 
         nothingSelected = selectedItems.isEmpty();
         if (nothingSelected) {
-            IModel *model = IModel::instance();
-            IModelItem *score = model->rootItem();
+            IModelItem *score = query<IModel>(IDatabase::instance())->rootItem();
             selectedItems.append(score);
-            selectedItems.append(score->findModelItem(Ac::ProjectSettingsItem));
-            selectedItems.append(score->findModelItem(Ac::GridSettingsItem));
+            selectedItems.append(score->findItem(ProjectSettingsItem));
+            selectedItems.append(score->findItem(GridSettingsItem));
         }
 
         dataMap.clear();
-        foreach (const IModelItem *selected_item, selectedItems) {
-            const int role_count = selected_item->persistentRoleCount();
+        foreach (IModelItem *selected_item, selectedItems) {
+            IModelData *selected_data = query<IModelData>(selected_item);
+            const int role_count = selected_data->roleCount();
             for (int i = 0;  i < role_count;  ++i) {
-                const int role = selected_item->persistentRoleAt(i);
-                const QVariant data = selected_item->data(role);
+                const int role = selected_data->roleAt(i);
+                const QVariant data = selected_data->getVariant(role);
                 if (!dataMap.contains(role))
                     dataMap.insert(role, data);
                 else if (data != dataMap.value(role)) {
@@ -123,7 +130,7 @@ SelectedItemsPropertyModel *SelectedItemsPropertyModel::instance()
 
 void SelectedItemsPropertyModel::appendSelectionModel(ItemSelectionModel *selectionModel)
 {
-    if (!d->updateTimer->connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(timeout()), Qt::UniqueConnection))
+    if (!d->updateTimer->connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(timeout()), UniqueConnection))
         return;
     d->selectionModels.append(selectionModel);
     d->update();
@@ -140,24 +147,23 @@ void SelectedItemsPropertyModel::removeSelectionModel(ItemSelectionModel *select
 
 int SelectedItemsPropertyModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
     return d->dataMap.count();
 }
 
-Qt::ItemFlags SelectedItemsPropertyModel::flags(const QModelIndex &index) const
+ItemFlags SelectedItemsPropertyModel::flags(const QModelIndex &index) const
 {
     if (d->nothingSelected) {
-        IModelItem *grid_settings = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem);
-        bool snap_enabled = grid_settings->data(Ac::SnapEnabledRole).toBool();
+        IModelData *grid_settings = query<IModelData>(query<IModel>(IDatabase::instance())->rootItem()->findItem(GridSettingsItem));
+        bool snap_enabled = grid_settings->get<bool>(SnapEnabledRole);
 
         // Disable snap settings if snap is off or grid snap is on.
         if (!snap_enabled
-                || grid_settings->data(Ac::GridSnapEnabledRole).toBool()) {
-            switch (index.data(Mi::RoleTypeRole).toInt()) {
-            case Ac::TimeSnapRole:
-            case Ac::PitchSnapRole:
-            case Ac::ControlSnapRole:
-                return Qt::NoItemFlags;
+                || grid_settings->get<bool>(GridSnapEnabledRole)) {
+            switch (index.data(RoleTypeRole).toInt()) {
+            case TimeSnapRole:
+            case PitchSnapRole:
+            case ControlSnapRole:
+                return NoItemFlags;
             default:
                 break;
             }
@@ -165,8 +171,8 @@ Qt::ItemFlags SelectedItemsPropertyModel::flags(const QModelIndex &index) const
 
         // Disable grid snap setting if snap is off.
         if (!snap_enabled
-                && Ac::GridSnapEnabledRole == index.data(Mi::RoleTypeRole).toInt())
-            return Qt::NoItemFlags;
+                && GridSnapEnabledRole == index.data(RoleTypeRole).toInt())
+            return NoItemFlags;
     }
     return PropertyModel::flags(index);
 }
@@ -192,7 +198,7 @@ QVariant SelectedItemsPropertyModel::data(const QModelIndex &index, int role) co
     if (0 == column) {
         const QList<int> keys = d->dataMap.keys();
         if (row < keys.count())
-            value = Ac::itemDataRoleString(keys.at(row));
+            value = itemDataRoleString(keys.at(row));
     } else if (1 == column) {
         const QList<QVariant> values = d->dataMap.values();
         if (row < values.count())
@@ -203,17 +209,14 @@ QVariant SelectedItemsPropertyModel::data(const QModelIndex &index, int role) co
 
 bool SelectedItemsPropertyModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if ((Qt::DisplayRole != role && Qt::EditRole != role)
+    if ((DisplayRole != role && EditRole != role)
             ||  1 != index.column())
         return false;
-
     IEditor *editor = IEditor::instance();
     editor->beginCommand();
-
     int property_role = d->dataMap.keys().at(index.row());
     foreach (IModelItem *item, d->selectedItems)
-        item->setData(value, property_role);
-
+        query<IModelData>(item)->set(value, property_role);
     editor->endCommand();
     return true;
 }

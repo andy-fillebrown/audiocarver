@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "ac_controlview.h"
+#include "ac_gui_controlview.h"
 
-#include <ac_viewmanager.h>
+#include <ac_gui_viewmanager.h>
 
 class ControlViewPrivate
 {

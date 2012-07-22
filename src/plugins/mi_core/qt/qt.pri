@@ -1,12 +1,6 @@
 
 SOURCE_FILES = \
-    aggregator \
-    database \
-    model \
-    qaggregator \
-    subaggregator \
-    superaggregator \
-#    orphanage \
+    qmodel \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

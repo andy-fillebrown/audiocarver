@@ -15,17 +15,17 @@
 **
 **************************************************************************/
 
-#include "ac_mainwidget.h"
+#include "ac_gui_mainwidget.h"
 
 #include <ac_gripitemspropertyview.h>
 #include <ac_gripselectionmodel.h>
 #include <ac_selecteditemspropertyview.h>
 #include <ac_trackview.h>
-#include <ac_viewmanager.h>
+#include <ac_gui_viewmanager.h>
 
-#include <ac_namespace.h>
+#include <ac_gui_namespace.h>
 
-#include <mi_graphicsview.h>
+#include <mi_gui_graphicsview.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -42,29 +42,29 @@ class MainWidgetPrivate
 {
 public:
     MainWidget *q;
-    MiGraphicsView *topRightView;
+    Mi::Gui::GraphicsView *topRightView;
     qreal controlHeightPercentage;
-    uint hoveringOverSeparator : 1;
-    uint draggingSeparator : bitsizeof(uint) - 1;
     QDockWidget *trackViewDock;
     TrackView *trackView;
     QDockWidget *propertyViewDock;
     SelectedItemsPropertyView *propertyView;
     GripItemsPropertyView *gripView;
     ViewManager *viewManager;
+    uint hoveringOverSeparator : 1;
+    uint draggingSeparator : 1;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
-        ,   topRightView(new MiGraphicsView)
+        ,   topRightView(new Mi::Gui::GraphicsView)
         ,   controlHeightPercentage(0.25f)
-        ,   hoveringOverSeparator(false)
-        ,   draggingSeparator(false)
         ,   trackViewDock(new QDockWidget("Track Editor", q))
         ,   trackView(new TrackView(trackViewDock))
         ,   propertyViewDock(new QDockWidget("Property Editor", q))
         ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
         ,   gripView(new GripItemsPropertyView(propertyViewDock))
         ,   viewManager(new ViewManager(q))
+        ,   hoveringOverSeparator(false)
+        ,   draggingSeparator(false)
     {
         topRightView->setParent(q);
         topRightView->setBackgroundRole(QPalette::Window);

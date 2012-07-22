@@ -17,11 +17,12 @@
 
 #include "ac_trackselectionmodel.h"
 
+#include <mi_idatabase.h>
+#include <mi_imodel.h>
+
 #include <ac_noteselectionmodel.h>
 
 #include <ac_trackmodel.h>
-
-#include <mi_imodel.h>
 
 static TrackSelectionModel *instance = 0;
 
@@ -46,7 +47,7 @@ QModelIndexList TrackSelectionModel::selectedTrackIndexes() const
     TrackModel *trackModel = TrackModel::instance();
     const QModelIndexList indexes = selectedIndexes();
     foreach (const QModelIndex &index, indexes) {
-        const QModelIndex sourceIndex = object_cast<QSortFilterProxyModel>(trackModel->sourceModel())->mapToSource(trackModel->mapToSource(index));
+        const QModelIndex sourceIndex = qobject_cast<QSortFilterProxyModel*>(trackModel->sourceModel())->mapToSource(trackModel->mapToSource(index));
         if (!rows.contains(sourceIndex.row())) {
             trackIndexes.append(sourceIndex);
             rows.append(sourceIndex.row());
@@ -60,12 +61,12 @@ QList<IModelItem*> TrackSelectionModel::selectedItems() const
 {
     QList<IModelItem*> items;
 
-    IModel *model = IModel::instance();
-    const QModelIndexList indexes = selectedTrackIndexes();
+//    IModel *model = query<IModel>(IDatabase::instance());
+//    const QModelIndexList indexes = selectedTrackIndexes();
 
-    const int n = indexes.count();
-    for (int i = 0;  i < n; ++i)
-        items.append(model->itemFromIndex(indexes.at(i)));
+//    const int n = indexes.count();
+//    for (int i = 0;  i < n; ++i)
+//        items.append(model->itemFromIndex(indexes.at(i)));
 
     return items;
 }

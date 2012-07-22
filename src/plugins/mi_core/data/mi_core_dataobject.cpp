@@ -18,6 +18,7 @@
 #include "mi_core_dataobject.h"
 
 #include <mi_idatabase.h>
+#include <mi_imodellist.h>
 #include <mi_iorphanage.h>
 
 #include <mi_core_dataobjectlist.h>
@@ -70,6 +71,25 @@ void DataObject::setParent(DataObject *parent)
             orphanage->append(this);
     }
     _parent = parent;
+}
+
+DataObjectList *DataObject::list() const
+{
+    if (_parent && _parent->isList())
+        return dynamic_cast<DataObjectList*>(_parent);
+    return 0;
+}
+
+IModelList *DataObject::ModelItem::list() const
+{
+    return query<IModelList>(a()->list());
+}
+
+void DataObject::ModelItem::remove()
+{
+    IModelList *list = this->list();
+    if (list)
+        list->remove(this);
 }
 
 } // namespace Core

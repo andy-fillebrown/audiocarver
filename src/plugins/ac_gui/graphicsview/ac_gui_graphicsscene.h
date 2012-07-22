@@ -18,7 +18,7 @@
 #ifndef AC_GRAPHICSSCENE_H
 #define AC_GRAPHICSSCENE_H
 
-#include <ac_namespace.h>
+#include <ac_gui_namespace.h>
 
 #include <QGraphicsScene>
 

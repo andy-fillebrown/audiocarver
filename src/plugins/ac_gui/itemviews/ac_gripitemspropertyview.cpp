@@ -32,7 +32,7 @@ public:
     DoubleDelegate *valueDelegate;
     ToggleButtonDelegate *curveButtonDelegate;
     QList<int> minColumnWidths;
-    uint isResizing : bitsizeof(uint);
+    uint isResizing : 1;
 
     GripItemsPropertyViewPrivate(GripItemsPropertyView *q)
         :   q(q)

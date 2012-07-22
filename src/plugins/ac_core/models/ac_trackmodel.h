@@ -18,7 +18,7 @@
 #ifndef AC_TRACKMODEL_H
 #define AC_TRACKMODEL_H
 
-#include <ac_namespace.h>
+#include <ac_core_namespace.h>
 #include <ac_proxymodel.h>
 
 class AC_CORE_EXPORT TrackModel : public RolesToColumnsProxyModel

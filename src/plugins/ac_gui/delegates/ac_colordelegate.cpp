@@ -35,7 +35,7 @@ bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const 
         return false;
 
     // Open a color dialog and set the track's color if the user didn't cancel the dialog.
-    QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), object_cast<QWidget>(parent()));
+    QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
     dlg->exec();
     QColor color = dlg->selectedColor();
     if (color.isValid())

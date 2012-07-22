@@ -18,14 +18,14 @@
 #ifndef AC_IPLAYCURSOR_H
 #define AC_IPLAYCURSOR_H
 
-#include <ac_namespace.h>
+#include <ac_core_namespace.h>
 
 #include <mi_iunknown.h>
 
 class IPlayCursor : public IUnknown
 {
 public:
-    enum { Type = Ac::PlayCursorInterface };
+    enum { Type = I::IPlayCursor };
 
     virtual qreal playCursorPosition() const = 0;
     virtual void dragPlayCursorTo(qreal position) = 0;

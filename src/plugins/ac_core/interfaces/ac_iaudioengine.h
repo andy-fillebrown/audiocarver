@@ -18,7 +18,7 @@
 #ifndef AC_IAUDIOENGINE_H
 #define AC_IAUDIOENGINE_H
 
-#include <ac_global.h>
+#include <ac_core_global.h>
 
 #include <QObject>
 

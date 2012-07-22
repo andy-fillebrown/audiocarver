@@ -1,17 +1,17 @@
 
 SOURCE_FILES = \
-#    controllabelview \
-#    controlview \
-#    labelview \
-#    graphicsentityitem \
-#    graphicsgripitem \
+    controllabelview \
+    controlview \
+    labelview \
+    graphicsentityitem \
+    graphicsgripitem \
     graphicsitem \
-#    graphicsscene \
-#    graphicsview \
-#    pitchlabelview \
-#    pitchview \
-#    timelabelview \
-#    viewmanager \
+    graphicsscene \
+    graphicsview \
+    pitchlabelview \
+    pitchview \
+    timelabelview \
+    viewmanager \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

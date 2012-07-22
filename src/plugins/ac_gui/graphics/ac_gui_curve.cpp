@@ -55,5 +55,30 @@ IAggregate *Curve::SubEntity::init()
     return this;
 }
 
+void Curve::SubEntity::startUpdatingPoints()
+{
+}
+
+void Curve::SubEntity::updatePoints()
+{
+}
+
+void Curve::SubEntity::finishUpdatingPoints()
+{
+}
+
+void Curve::SubEntity::updateCurveTypes()
+{
+}
+
+QList<IGrip*> Curve::SubEntity::grips() const
+{
+    return QList<IGrip*>();
+}
+
+void Curve::SubEntity::resetGrips()
+{
+}
+
 } // namespace Gui
 } // namespace Ac

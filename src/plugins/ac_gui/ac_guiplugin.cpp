@@ -19,15 +19,15 @@
 
 #include <ac_gui_database.h>
 #include <ac_gui_editor.h>
-//#include <ac_mainwidget.h>
-//#include <ac_guimainwindowextension.h>
+#include <ac_gui_mainwidget.h>
+#include <ac_gui_mainwindowextension.h>
 //#include <ac_selecteditemspropertyview.h>
 //#include <ac_trackview.h>
 
 //#include <mi_idatabase.h>
 
-//#include <icore.h>
-//#include <mainwindow.h>
+#include <icore.h>
+#include <mainwindow.h>
 
 //#include <QDockWidget>
 
@@ -48,13 +48,13 @@ bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 
     (new Database())->init();
     (new Editor)->init();
-//    addAutoReleasedObject(new Ac::Gui::MainWindowExtension);
+//    addAutoReleasedObject(new MainWindowExtension);
     return true;
 }
 
 void GuiPlugin::extensionsInitialized()
 {
-//    Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+//    ::Core::MainWindow *mw = ::Core::ICore::instance()->mainWindow();
 
 //    MainWidget *widget = new MainWidget(mw);
 //    mw->setCentralWidget(widget);

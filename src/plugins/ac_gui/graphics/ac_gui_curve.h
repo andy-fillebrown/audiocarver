@@ -136,10 +136,22 @@ protected:
         }
 
         // ISubEntity
+        bool isCurve() const
+        {
+            return true;
+        }
+
         bool intersects(const QRectF &rect) const
         {
             return graphicsCurveItem()->intersects(rect);
         }
+
+        void startUpdatingPoints();
+        void updatePoints();
+        void finishUpdatingPoints();
+        void updateCurveTypes();
+        QList<IGrip*> grips() const;
+        void resetGrips();
 
         // IChildEntity
         IParentEntity *parentEntity() const

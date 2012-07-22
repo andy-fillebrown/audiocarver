@@ -15,31 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLVIEW_H
-#define AC_CONTROLVIEW_H
+#include "mi_core_qaggregator.h"
 
-#include <ac_graphicsview.h>
+namespace Mi {
+namespace Core {
 
-class ControlViewPrivate;
-
-class ControlView : public GraphicsHView
+QAggregator::~QAggregator()
 {
-    Q_OBJECT
+    clear();
+}
 
-public:
-    ControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~ControlView();
+void QAggregator::clear()
+{
+    qDeleteAll(_qobjects);
+    _qobjects.clear();
+}
 
-protected:
-    int sceneType() const { return Ac::ControlScene; }
-    qreal sceneHeight() const;
-    QPointF sceneCenter() const;
-
-    int positionRoleY() const { return Ac::ControlPositionRole; }
-    int scaleRoleY() const { return Ac::ControlScaleRole; }
-
-private:
-    ControlViewPrivate *d;
-};
-
-#endif // AC_CONTROLVIEW_H
+} // namespace Core
+} // namespace Mi

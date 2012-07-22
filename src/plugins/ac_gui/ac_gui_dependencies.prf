@@ -3,16 +3,16 @@ load(../mi_gui/mi_gui.prf)
 load(../ac_core/ac_core.prf)
 
 DIRS = \
-#    delegates \
-#    dialogs \
+    delegates \
+    dialogs \
     filers \
     graphics \
     graphicsview \
     implementations \
     interfaces \
-#    itemviews \
-#    models \
-#    util \
+    itemviews \
+    models \
+    util \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

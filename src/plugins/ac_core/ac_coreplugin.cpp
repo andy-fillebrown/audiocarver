@@ -91,6 +91,12 @@ void CorePlugin::extensionsInitialized()
 #ifdef QT_DEBUG
     test();
 #endif
+
+    QObject *object = new QObject();
+    object->setObjectName("test");
+    void *void_ptr = object;
+    QObject *object_ptr = static_cast<QObject*>(void_ptr);
+    qDebug() << Q_FUNC_INFO << object_ptr->objectName();
 }
 
 } // namespace Ac

@@ -18,40 +18,34 @@
 #ifndef AC_CORE_MODEL_H
 #define AC_CORE_MODEL_H
 
-#include <mi_imodel.h>
+#include "mi_core_model.h"
+
+#include <ac_core_global.h>
+
+class QAbstractItemModel;
 
 namespace Ac {
 namespace Core {
 
 class Database;
 
-class Model : public IModel
+class AC_CORE_EXPORT Model : public Mi::Core::Model
 {
     friend class Database;
 
-    Database *_aggregator;
-
 protected:
-    Database *a() const
-    {
-        return _aggregator;
-    }
+    Model(Database *aggregator);
 
-    Model(Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
+    IAggregate *init();
+    Database *a() const;
 
     // IModel
+    Mi::Core::QDataModel *q() const;
     IModelItem *rootItem() const;
     void beginChangeData(const IModelData *data, int role, int dataChangeType);
     void endChangeData(const IModelData *data, int role, int dataChangeType);
     void beginChangeParent(const IModelItem *item);
     void endChangeParent(const IModelItem *item);
-
-    // IAggregate
-    IAggregator *aggregator() const;
 };
 
 } // namespace Core

@@ -26,6 +26,8 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 
+using namespace Ac::Core;
+
 class GridLineDialogPrivate
 {
 public:

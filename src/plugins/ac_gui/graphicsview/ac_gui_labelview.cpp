@@ -15,16 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_labelview.h"
-
-#include <ac_viewmanager.h>
+#include "ac_gui_labelview.h"
 
 #include <mi_idatabase.h>
 #include <mi_imodel.h>
+#include <mi_imodeldata.h>
+#include <mi_imodellist.h>
+
+#include <ac_gui_viewmanager.h>
 
 #include <QMouseEvent>
 
 #include <QModelIndex>
+
+using namespace Ac;
 
 static const QCursor &zoomCursor()
 {
@@ -36,7 +40,7 @@ class LabelViewPrivate
 {
 public:
     LabelView *q;
-    uint updatesDisabled : bitsizeof(uint);
+    uint updatesDisabled : 1;
 
     LabelViewPrivate(LabelView *q)
         :   q(q)
@@ -49,18 +53,17 @@ public:
     void updateGridLineVisibilites()
     {
         const qreal padding = qreal(30.0f) / q->paddingScale();
-        const QModelIndex gridLines = q->gridLineListIndex();
-        IModel *model = IModel::instance();
-        const int n = model->rowCount(gridLines);
+        IModelList *grid_lines = q->gridLineList();
+        const int n = grid_lines->count();
         int minPriority = INT_MAX;
         int prevPriority = 0;
         qreal prevLocation = qreal(-1.0f);
         for (int i = 0;  i < n;  ++i) {
-            const QModelIndex line = model->index(i, gridLines);
-            int curPriority = line.data(Ac::PriorityRole).toInt();
+            IModelData *line = query<IModelData>(grid_lines->at(i));
+            int curPriority = line->get<int>(PriorityRole);
             if (minPriority && (minPriority < curPriority))
                 continue;
-            const qreal curLocation = line.data(Ac::LocationRole).toReal();
+            const qreal curLocation = line->get<qreal>(LocationRole);
             if (curPriority && (curLocation < prevLocation))
                 minPriority = qMin(minPriority, qMax(prevPriority, curPriority));
             else {
@@ -69,18 +72,18 @@ public:
             }
         }
         for (int i = 0;  i < n;  ++i) {
-            const QModelIndex line = model->index(i, gridLines);
-            if (line.data(Ac::PriorityRole).toInt() <= minPriority) {
-                if (!line.data(Ac::VisibilityRole).toBool()) {
+            IModelData *line = query<IModelData>(grid_lines->at(i));
+            if (line->get<int>(PriorityRole) <= minPriority) {
+                if (!line->get<bool>(VisibilityRole)) {
                     q->setUpdatesEnabled(false);
                     updatesDisabled = true;
-                    model->setData(line, true, Ac::VisibilityRole);
+                    line->set(true, VisibilityRole);
                 }
             } else {
-                if (line.data(Ac::VisibilityRole).toBool()) {
+                if (line->get<bool>(VisibilityRole)) {
                     q->setUpdatesEnabled(false);
                     updatesDisabled = true;
-                    model->setData(line, false, Ac::VisibilityRole);
+                    line->set(false, VisibilityRole);
                 }
             }
         }
@@ -134,13 +137,14 @@ void LabelView::scoreLengthChanged()
 
 void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
-    Q_UNUSED(bottomLeft);
-    if (IDatabase::instance()->isReading())
+    IDatabase *db = IDatabase::instance();
+    if (db->isReading())
         return;
-    if (topRight == gridLineListIndex()) {
-        d->updateGridLineVisibilites();
-        updateView();
-    }
+//    IModelList *top_right = query<IModelList>(query<IModel>(db)->itemFromIndex(topRight));
+//    if (top_right == gridLineList()) {
+//        d->updateGridLineVisibilites();
+//        updateView();
+//    }
 }
 
 void LabelView::panFinished()

@@ -15,7 +15,9 @@
 **
 **************************************************************************/
 
-#include "mi_model.h"
+#include "mi_core_model.h"
+
+#include <mi_core_database.h>
 
 static IModel *instance = 0;
 
@@ -24,15 +26,29 @@ IModel *IModel::instance()
     return ::instance;
 }
 
-void Model::destroy()
+namespace Mi {
+namespace Core {
+
+Model::Model(Database *aggregator)
+    :   _aggregator(aggregator)
 {
-    delete ::instance;
+    ::instance = this;
+}
+
+IAggregate *Model::init()
+{
+    return this;
+}
+
+Model::~Model()
+{
     ::instance = 0;
 }
 
-Model::Model()
+IAggregator *Model::aggregator() const
 {
-    if (::instance)
-        delete ::instance;
-    ::instance = this;
+    return _aggregator;
 }
+
+} // namespace Core
+} // namespace Mi

@@ -15,27 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACKSELECTIONMODEL_H
-#define AC_TRACKSELECTIONMODEL_H
+#ifndef AC_TIMELABELVIEW_H
+#define AC_TIMELABELVIEW_H
+
+#include <ac_gui_labelview.h>
 
 #include <ac_gui_namespace.h>
 
-#include <mi_gui_itemselectionmodel.h>
+class TimeLabelViewPrivate;
 
-class TrackSelectionModel : public Mi::Gui::ItemSelectionModel
+class TimeLabelView : public LabelView
 {
     Q_OBJECT
 
 public:
-    TrackSelectionModel(QAbstractItemModel *model);
+    TimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~TimeLabelView();
 
-    static TrackSelectionModel *instance();
+protected:
+    qreal paddingScale() const { return qreal(0.5f) * sceneTransform().m11(); }
+    IModelList *gridLineList() const;
+    int scaleRole() const { return Ac::TimeScaleRole; }
 
-    QModelIndexList selectedTrackIndexes() const;
-    virtual QList<IModelItem*> selectedItems() const;
+    int sceneType() const { return Ac::TimeLabelScene; }
+    qreal sceneWidth() const;
+    QPointF sceneCenter() const;
 
-    // QItemSelectionModel
-    void select(const QItemSelection &selection, SelectionFlags command);
+    int positionRoleX() const { return Ac::TimePositionRole; }
+    int scaleRoleX() const { return Ac::TimeScaleRole; }
+
+    void zoomStarting();
+
+private:
+    TimeLabelViewPrivate *d;
 };
 
-#endif // AC_TRACKSELECTIONMODEL_H
+#endif // AC_TIMELABELVIEW_H

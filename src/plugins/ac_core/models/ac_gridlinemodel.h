@@ -20,16 +20,31 @@
 
 #include <QAbstractTableModel>
 
-class IModelItem;
+#include <ac_core_global.h>
 
-class GridLineModelPrivate;
-class GridLineModel : public QAbstractTableModel
+class IModelList;
+
+namespace Ac {
+namespace Core {
+
+class AC_CORE_EXPORT GridLineModel : public QAbstractTableModel
 {
     Q_OBJECT
 
+    int _gridLineType;
+    IModelList *_list;
+    QList<QList<QVariant> > _valueLists;
+
+    void updateList();
+    void syncDataToList(IModelList *list);
+    void syncListToData(IModelList *list);
+
 public:
-    GridLineModel(QObject *parent = 0);
-    ~GridLineModel();
+    GridLineModel(QObject *parent = 0)
+        :   QAbstractTableModel(parent)
+        ,   _gridLineType(0)
+        ,   _list(0)
+    {}
 
     void setGridLineType(int type);
     bool isChanged() const;
@@ -49,10 +64,9 @@ public slots:
     void importFromFile(const QString &fileName);
     void exportToFile(const QString &fileName);
     void apply();
-
-private:
-    friend class GridLineModelPrivate;
-    GridLineModelPrivate *d;
 };
+
+} // namespace Core
+} // namespace Ac
 
 #endif // AC_GRIDLINEMODEL_H

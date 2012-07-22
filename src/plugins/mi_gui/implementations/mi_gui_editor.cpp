@@ -36,6 +36,7 @@ void Editor::destroy()
 }
 
 Editor::Editor()
+    :   _isInCommand(false)
 {
     if (::instance)
         delete ::instance;

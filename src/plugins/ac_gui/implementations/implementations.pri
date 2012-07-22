@@ -4,7 +4,7 @@ SOURCE_FILES = \
     dataobjectfactory \
     editor \
     filerfactory \
-#    mainwindowextension \
+    mainwindowextension \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

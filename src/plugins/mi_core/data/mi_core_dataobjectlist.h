@@ -172,6 +172,14 @@ protected:
             a()->setParent(parent_a);
         }
 
+        IModelList *list() const
+        {
+            return 0;
+        }
+
+        void remove()
+        {}
+
         int count() const
         {
             return a()->objects().count();

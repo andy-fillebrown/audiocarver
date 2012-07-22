@@ -5,6 +5,7 @@ DIRS = \
     data \
     implementations \
     interfaces \
+    qt \
     tools \
 
 for(dir, DIRS) {

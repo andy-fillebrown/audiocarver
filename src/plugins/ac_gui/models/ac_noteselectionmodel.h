@@ -18,11 +18,11 @@
 #ifndef AC_NOTESELECTIONMODEL_H
 #define AC_NOTESELECTIONMODEL_H
 
-#include <ac_namespace.h>
+#include <ac_gui_namespace.h>
 
-#include <mi_itemselectionmodel.h>
+#include <mi_gui_itemselectionmodel.h>
 
-class NoteSelectionModel : public ItemSelectionModel
+class NoteSelectionModel : public Mi::Gui::ItemSelectionModel
 {
     Q_OBJECT
 

@@ -38,11 +38,48 @@ class MI_GUI_EXPORT Editor : public IEditor
     static void destroy();
 
     QHash<int, IAggregate*> _aggregates;
+    int _isInCommand : 1;
+    int _isCreating : 1;
 
 protected:
     Editor();
     virtual IAggregator *init();
     virtual ~Editor();
+
+    // IEditor
+    bool isInCommand() const
+    {
+        return _isInCommand;
+    }
+
+    void beginCommand()
+    {
+        _isInCommand = true;
+    }
+
+    void endCommand()
+    {
+        _isInCommand = false;
+    }
+
+    void pushCommand(QUndoCommand *command)
+    {
+    }
+
+    bool isCreating() const
+    {
+        return false;
+    }
+
+    void startCreating()
+    {
+        _isCreating = true;
+    }
+
+    void finishCreating()
+    {
+        _isCreating = false;
+    }
 
     // IAggregator
     QList<IAggregate*> aggregates() const

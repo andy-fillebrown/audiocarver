@@ -21,6 +21,7 @@
 #include <QUndoStack>
 
 class IModelItem;
+class IModelList;
 
 class QModelIndex;
 
@@ -99,7 +100,7 @@ class UndoListCommandPrivate;
 class UndoListCommand : public UndoModelItemCommand
 {
 public:
-    const QModelIndex &parentIndex() const;
+    IModelList *list() const;
     int row() const;
 
     void insert();
@@ -116,7 +117,7 @@ protected:
 class UndoInsertCommand : public UndoListCommand
 {
 public:
-    UndoInsertCommand(int row, const QModelIndex &parentIndex, QUndoCommand *parent = 0);
+    UndoInsertCommand(int row, IModelList *list, QUndoCommand *parent = 0);
 
     int id() const { return Ac::UndoInsertCommandId; }
     void redo() { insert(); }
@@ -126,7 +127,7 @@ public:
 class UndoRemoveCommand : public UndoListCommand
 {
 public:
-    UndoRemoveCommand(IModelItem *item, int row, const QModelIndex &parentIndex, QUndoCommand *parent = 0);
+    UndoRemoveCommand(IModelItem *item, int row, IModelList *list, QUndoCommand *parent = 0);
 
     int id() const { return Ac::UndoRemoveCommandId; }
     void redo() { remove(); }

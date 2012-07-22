@@ -15,24 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_viewmanager.h"
+#include "ac_gui_viewmanager.h"
 
-#include <ac_controllabelview.h>
-#include <ac_controlview.h>
-#include <ac_graphicsscene.h>
-#include <ac_pitchlabelview.h>
-#include <ac_pitchview.h>
-#include <ac_timelabelview.h>
+#include <ac_gui_controllabelview.h>
+#include <ac_gui_controlview.h>
+#include <ac_gui_graphicsscene.h>
+#include <ac_gui_pitchlabelview.h>
+#include <ac_gui_pitchview.h>
+#include <ac_gui_timelabelview.h>
 #include <ac_undo.h>
 
-#include <ac_coreconstants.h>
-#include <ac_model.h>
+#include <ac_core_constants.h>
+#include <mi_imodel.h>
 #include <ac_noteselectionmodel.h>
 
 #include <mi_idatabase.h>
 #include <mi_ieditor.h>
 #include <mi_imodelitem.h>
-#include <mi_mathutils.h>
+#include <mi_core_math.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -44,25 +44,25 @@
 
 #include <QtGlobal>
 
-static qreal closestGridlineLocation(qreal location, const IModelItem *gridlineListItem)
-{
-    qreal min_offset = Q_FLOAT_MAX;
-    qreal closest_location = location;
+//static qreal closestGridlineLocation(qreal location, const IModelItem *gridlineListItem)
+//{
+//    qreal min_offset = Q_FLOAT_MAX;
+//    qreal closest_location = location;
 
-    const int n = gridlineListItem->modelItemCount();
-    for (int i = 0;  i < n;  ++i) {
-        const IModelItem *gridline = gridlineListItem->modelItemAt(i);
-        if (gridline->data(Ac::VisibilityRole).toBool()) {
-            const qreal current_location = gridline->data(Ac::LocationRole).toReal();
-            const qreal current_offset = qAbs(location - current_location);
-            if (current_offset < min_offset) {
-                min_offset = current_offset;
-                closest_location = current_location;
-            }
-        }
-    }
-    return closest_location;
-}
+//    const int n = gridlineListItem->modelItemCount();
+//    for (int i = 0;  i < n;  ++i) {
+//        const IModelItem *gridline = gridlineListItem->modelItemAt(i);
+//        if (gridline->data(Ac::VisibilityRole).toBool()) {
+//            const qreal current_location = gridline->data(Ac::LocationRole).toReal();
+//            const qreal current_offset = qAbs(location - current_location);
+//            if (current_offset < min_offset) {
+//                min_offset = current_offset;
+//                closest_location = current_location;
+//            }
+//        }
+//    }
+//    return closest_location;
+//}
 
 class ViewManagerPrivate
 {
@@ -81,10 +81,10 @@ public:
     qreal timeScale;
     qreal pitchScale;
     qreal controlScale;
-    uint initialized : 1;
-    uint updatingDatabase : bitsizeof(uint) - 1;
     UndoViewSettingsCommand *undoCmd;
     QTimer *updateViewsTimer;
+    uint initialized : 1;
+    uint updatingDatabase : 1;
 
     ViewManagerPrivate(ViewManager *q)
         :   q(q)
@@ -94,17 +94,17 @@ public:
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
-        ,   initialized(false)
-        ,   updatingDatabase(false)
         ,   undoCmd(0)
         ,   updateViewsTimer(new QTimer(q))
+        ,   initialized(false)
+        ,   updatingDatabase(false)
     {
         updateViewsTimer->setSingleShot(true);
     }
 
     void init()
     {
-        QWidget *widget = object_cast<QWidget>(q->parent());
+        QWidget *widget = qobject_cast<QWidget*>(q->parent());
         pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), widget);
         controlView = new ControlView(sceneManager->scene(Ac::ControlScene), widget);
         timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget);
@@ -127,27 +127,27 @@ public:
         q->connect(q, SIGNAL(scoreLengthChanged()), pitchLabelView, SLOT(scoreLengthChanged()));
         q->connect(q, SIGNAL(scoreLengthChanged()), controlLabelView, SLOT(scoreLengthChanged()));
 
-        IDatabase *db = IDatabase::instance();
-        q->connect(db, SIGNAL(databaseAboutToBeRead()), q, SLOT(databaseAboutToBeRead()));
-        q->connect(db, SIGNAL(databaseRead()), q, SLOT(databaseRead()));
-        q->connect(db, SIGNAL(databaseAboutToBeWritten()), q, SLOT(databaseAboutToBeWritten()));
+//        IDatabase *db = IDatabase::instance();
+//        q->connect(db, SIGNAL(databaseAboutToBeRead()), q, SLOT(databaseAboutToBeRead()));
+//        q->connect(db, SIGNAL(databaseRead()), q, SLOT(databaseRead()));
+//        q->connect(db, SIGNAL(databaseAboutToBeWritten()), q, SLOT(databaseAboutToBeWritten()));
 
-        IModel *model = IModel::instance();
-        q->connect(model, SIGNAL(modelAboutToBeReset()), q, SLOT(disableUpdates()));
-        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchView, SLOT(modelAboutToBeReset()));
-        q->connect(model, SIGNAL(modelAboutToBeReset()), controlView, SLOT(modelAboutToBeReset()));
-        q->connect(model, SIGNAL(modelAboutToBeReset()), timeLabelView, SLOT(modelAboutToBeReset()));
-        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchLabelView, SLOT(modelAboutToBeReset()));
-        q->connect(model, SIGNAL(modelAboutToBeReset()), controlLabelView, SLOT(modelAboutToBeReset()));
-        q->connect(model, SIGNAL(modelReset()), q, SLOT(modelReset()));
-        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), q, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex)));
-        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), controlView, SLOT(dataChanged(QModelIndex)));
+//        IModel *model = IModel::instance();
+//        q->connect(model, SIGNAL(modelAboutToBeReset()), q, SLOT(disableUpdates()));
+//        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchView, SLOT(modelAboutToBeReset()));
+//        q->connect(model, SIGNAL(modelAboutToBeReset()), controlView, SLOT(modelAboutToBeReset()));
+//        q->connect(model, SIGNAL(modelAboutToBeReset()), timeLabelView, SLOT(modelAboutToBeReset()));
+//        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchLabelView, SLOT(modelAboutToBeReset()));
+//        q->connect(model, SIGNAL(modelAboutToBeReset()), controlLabelView, SLOT(modelAboutToBeReset()));
+//        q->connect(model, SIGNAL(modelReset()), q, SLOT(modelReset()));
+//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), q, SLOT(dataChanged(QModelIndex,QModelIndex)));
+//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+//        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex)));
+//        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), controlView, SLOT(dataChanged(QModelIndex)));
 
         QItemSelectionModel *noteSSModel = NoteSelectionModel::instance();
         q->connect(noteSSModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), pitchView, SLOT(noteSelectionChanged(QItemSelection,QItemSelection)));
@@ -171,22 +171,22 @@ public:
 
     void updateViewVariables()
     {
-        const IModel *model = IModel::instance();
-        const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
+//        const IModel *model = IModel::instance();
+//        const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
 
-        const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
-        if (scoreLength != modelScoreLength) {
-            scoreLength = modelScoreLength;
-            emit q->scoreLengthChanged();
-            updateViewsTimer->start();
-        }
+//        const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
+//        if (scoreLength != modelScoreLength) {
+//            scoreLength = modelScoreLength;
+//            emit q->scoreLengthChanged();
+//            updateViewsTimer->start();
+//        }
 
-        q->setPosition(viewSettings.data(Ac::TimePositionRole).toReal(), Ac::TimePositionRole);
-        q->setPosition(viewSettings.data(Ac::PitchPositionRole).toReal(), Ac::PitchPositionRole);
-        q->setPosition(viewSettings.data(Ac::ControlPositionRole).toReal(), Ac::ControlPositionRole);
-        q->setScale(viewSettings.data(Ac::TimeScaleRole).toReal(), Ac::TimeScaleRole);
-        q->setScale(viewSettings.data(Ac::PitchScaleRole).toReal(), Ac::PitchScaleRole);
-        q->setScale(viewSettings.data(Ac::ControlScaleRole).toReal(), Ac::ControlScaleRole);
+//        q->setPosition(viewSettings.data(Ac::TimePositionRole).toReal(), Ac::TimePositionRole);
+//        q->setPosition(viewSettings.data(Ac::PitchPositionRole).toReal(), Ac::PitchPositionRole);
+//        q->setPosition(viewSettings.data(Ac::ControlPositionRole).toReal(), Ac::ControlPositionRole);
+//        q->setScale(viewSettings.data(Ac::TimeScaleRole).toReal(), Ac::TimeScaleRole);
+//        q->setScale(viewSettings.data(Ac::PitchScaleRole).toReal(), Ac::PitchScaleRole);
+//        q->setScale(viewSettings.data(Ac::ControlScaleRole).toReal(), Ac::ControlScaleRole);
     }
 
     void emitAllViewSettingsChanged()
@@ -204,7 +204,7 @@ public:
         if (!undoCmd
                 && initialized
                 && !IDatabase::instance()->isReading()
-                && IEditor::instance()->canPushCommand())
+                && !IEditor::instance()->isInCommand())
             undoCmd = new UndoViewSettingsCommand;
     }
 
@@ -218,41 +218,41 @@ public:
 
     void snapX(QPointF &pos, int role, bool snapToGrid)
     {
-        qreal toX = -1.0f;
+//        qreal toX = -1.0f;
 
-        if (Ac::TimePositionRole == role) {
-            if (snapToGrid)
-                toX = ::closestGridlineLocation(pos.x(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::TimeGridLineItem));
-            else
-                toX = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::TimeSnapRole).toReal();
-        }
+//        if (Ac::TimePositionRole == role) {
+//            if (snapToGrid)
+//                toX = ::closestGridlineLocation(pos.x(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::TimeGridLineItem));
+//            else
+//                toX = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::TimeSnapRole).toReal();
+//        }
 
-        if (snapToGrid)
-            pos.setX(toX);
-        else if (0.0f < toX)
-            pos.setX(Mi::roundToNearest(pos.x(), toX));
+//        if (snapToGrid)
+//            pos.setX(toX);
+//        else if (0.0f < toX)
+//            pos.setX(Mi::roundToNearest(pos.x(), toX));
     }
 
     void snapY(QPointF &pos, int role, bool snapToGrid)
     {
-        qreal toY = -1.0f;
+//        qreal toY = -1.0f;
 
-        if (Ac::PitchPositionRole == role) {
-            if (snapToGrid)
-                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::PitchGridLineItem));
-            else
-                toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::PitchSnapRole).toReal();
-        } else if (Ac::ControlPositionRole == role) {
-            if (snapToGrid)
-                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::ControlGridLineItem));
-            else
-                toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::ControlSnapRole).toReal();
-        }
+//        if (Ac::PitchPositionRole == role) {
+//            if (snapToGrid)
+//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::PitchGridLineItem));
+//            else
+//                toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::PitchSnapRole).toReal();
+//        } else if (Ac::ControlPositionRole == role) {
+//            if (snapToGrid)
+//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::ControlGridLineItem));
+//            else
+//                toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::ControlSnapRole).toReal();
+//        }
 
-        if (snapToGrid)
-            pos.setY(toY);
-        else if (0.0f < toY)
-            pos.setY(Mi::roundToNearest(pos.y(), toY));
+//        if (snapToGrid)
+//            pos.setY(toY);
+//        else if (0.0f < toY)
+//            pos.setY(Mi::roundToNearest(pos.y(), toY));
     }
 };
 
@@ -384,16 +384,16 @@ void ViewManager::setScale(qreal scale, int role)
 
 void ViewManager::updateDatabase()
 {
-    IModel *model = IModel::instance();
-    const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
-    d->updatingDatabase = true;
-    model->setData(viewSettings, d->timePos, Ac::TimePositionRole);
-    model->setData(viewSettings, d->pitchPos, Ac::PitchPositionRole);
-    model->setData(viewSettings, d->controlPos, Ac::ControlPositionRole);
-    model->setData(viewSettings, d->timeScale, Ac::TimeScaleRole);
-    model->setData(viewSettings, d->pitchScale, Ac::PitchScaleRole);
-    model->setData(viewSettings, d->controlScale, Ac::ControlScaleRole);
-    d->updatingDatabase = false;
+//    IModel *model = IModel::instance();
+//    const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
+//    d->updatingDatabase = true;
+//    model->setData(viewSettings, d->timePos, Ac::TimePositionRole);
+//    model->setData(viewSettings, d->pitchPos, Ac::PitchPositionRole);
+//    model->setData(viewSettings, d->controlPos, Ac::ControlPositionRole);
+//    model->setData(viewSettings, d->timeScale, Ac::TimeScaleRole);
+//    model->setData(viewSettings, d->pitchScale, Ac::PitchScaleRole);
+//    model->setData(viewSettings, d->controlScale, Ac::ControlScaleRole);
+//    d->updatingDatabase = false;
 }
 
 void ViewManager::clearPickedGrips()
@@ -404,21 +404,21 @@ void ViewManager::clearPickedGrips()
 
 QPointF ViewManager::snappedScenePos(const QPointF &pos, int sceneType) const
 {
-    IModel *model = IModel::instance();
-    IModelItem *gridSettings = model->rootItem()->findModelItem(Ac::GridSettingsItem);
+//    IModel *model = IModel::instance();
+//    IModelItem *gridSettings = model->rootItem()->findModelItem(Ac::GridSettingsItem);
 
-    bool is_snapping = gridSettings->data(Ac::SnapEnabledRole).toBool();
-    if (!is_snapping)
-        return pos;
+//    bool is_snapping = gridSettings->data(Ac::SnapEnabledRole).toBool();
+//    if (!is_snapping)
+//        return pos;
 
-    bool snap_to_grid = gridSettings->data(Ac::GridSnapEnabledRole).toBool();
+//    bool snap_to_grid = gridSettings->data(Ac::GridSnapEnabledRole).toBool();
 
     QPointF snapped_pos = pos;
-    d->snapX(snapped_pos, Ac::TimePositionRole, snap_to_grid);
-    if (Ac::PitchScene == sceneType)
-        d->snapY(snapped_pos, Ac::PitchPositionRole, snap_to_grid);
-    else if (Ac::ControlScene == sceneType)
-        d->snapY(snapped_pos, Ac::ControlPositionRole, snap_to_grid);
+//    d->snapX(snapped_pos, Ac::TimePositionRole, snap_to_grid);
+//    if (Ac::PitchScene == sceneType)
+//        d->snapY(snapped_pos, Ac::PitchPositionRole, snap_to_grid);
+//    else if (Ac::ControlScene == sceneType)
+//        d->snapY(snapped_pos, Ac::ControlPositionRole, snap_to_grid);
     return snapped_pos;
 }
 
@@ -469,11 +469,10 @@ void ViewManager::enableUpdates()
 
 void ViewManager::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
 {
-    Q_UNUSED(bottomLeft);
-    if (!d->updatingDatabase
-            && (!topRight.isValid()
-                || IModel::instance()->itemIndex(Ac::ViewSettingsItem) == topRight))
-        d->updateViewVariables();
+//    if (!d->updatingDatabase
+//            && (!topRight.isValid()
+//                || IModel::instance()->itemIndex(Ac::ViewSettingsItem) == topRight))
+//        d->updateViewVariables();
 }
 
 void ViewManager::modelReset()

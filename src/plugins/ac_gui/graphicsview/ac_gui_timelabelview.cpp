@@ -15,12 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_timelabelview.h"
+#include "ac_gui_timelabelview.h"
 
-#include <ac_viewmanager.h>
+#include <ac_gui_viewmanager.h>
 
 #include <mi_idatabase.h>
 #include <mi_imodel.h>
+#include <mi_imodelitem.h>
 
 #include <QModelIndex>
 
@@ -60,9 +61,9 @@ TimeLabelView::~TimeLabelView()
     delete d;
 }
 
-QModelIndex TimeLabelView::gridLineListIndex() const
+IModelList *TimeLabelView::gridLineList() const
 {
-    return IModel::instance()->listIndex(Ac::TimeGridLineItem);
+    return query<IModel>(IDatabase::instance())->rootItem()->findList(Ac::TimeGridLineItem);
 }
 
 qreal TimeLabelView::sceneWidth() const

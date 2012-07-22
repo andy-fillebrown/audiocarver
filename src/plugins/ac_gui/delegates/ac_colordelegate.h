@@ -18,9 +18,9 @@
 #ifndef AC_COLORDELEGATE_H
 #define AC_COLORDELEGATE_H
 
-#include <mi_delegate.h>
+#include <mi_gui_delegate.h>
 
-class ColorDelegate : public Delegate
+class ColorDelegate : public Mi::Gui::Delegate
 {
 public:
     ColorDelegate(QObject *parent = 0)

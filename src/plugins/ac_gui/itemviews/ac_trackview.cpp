@@ -17,20 +17,24 @@
 
 #include "ac_trackview.h"
 
+#include <mi_idatabase.h>
+#include <mi_ieditor.h>
+#include <mi_imodel.h>
+#include <mi_imodellist.h>
+
 #include <ac_colordelegate.h>
 #include <ac_noteselectionmodel.h>
 #include <ac_recordbuttondelegate.h>
 #include <ac_trackmodel.h>
 #include <ac_trackselectionmodel.h>
 
-#include <mi_ieditor.h>
-
-#include <mi_imodel.h>
-
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
+
+using namespace Ac;
+using namespace Qt;
 
 static const int buttonColumnWidth = 12;
 
@@ -39,13 +43,13 @@ class TrackViewPrivate
 public:
     TrackView *q;
     QPoint dragStartPos;
-    uint dragging : bitsizeof(uint);
     int dropRow;
+    uint dragging : 1;
 
     TrackViewPrivate(TrackView *q)
         :   q(q)
-        ,   dragging(false)
         ,   dropRow(-1)
+        ,   dragging(false)
     {}
 
     void updateDropRow(const QPoint &pos)
@@ -67,7 +71,7 @@ TrackView::TrackView(QWidget *parent)
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(ScrollBarAlwaysOff);
     setSelectionMode(ExtendedSelection);
     setAcceptDrops(true);
     setDragEnabled(true);
@@ -151,7 +155,6 @@ void TrackView::dropEvent(QDropEvent *event)
     const QStringList formats = event->mimeData()->formats();
     const QString mimeType = model()->mimeTypes().last();
     if (formats.contains(mimeType)) {
-        IModel *model = IModel::instance();
         QByteArray b = event->mimeData()->data(mimeType);
         QDataStream stream(&b, QIODevice::ReadOnly);
         int fromRow = -1;
@@ -161,25 +164,23 @@ void TrackView::dropEvent(QDropEvent *event)
             fromRows.append(fromRow);
         }
         int toRow = d->dropRow;
+        IEditor *editor = IEditor::instance();
         if (!fromRows.contains(toRow)) {
-            const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
+            IModelList *track_list = query<IModel>(IDatabase::instance())->rootItem()->findList(TrackItem);
             QList<IModelItem*> items;
-            bool commandBegun = false;
             foreach (int row, fromRows) {
                 if (row == toRow)
                     continue;
-                if (!commandBegun) {
-                    IEditor::instance()->beginCommand();
-                    commandBegun = true;
-                }
-                items.append(model->takeItem(row, trackListIndex));
+                if (!editor->isInCommand())
+                    editor->beginCommand();
+                items.append(track_list->takeAt(row));
                 if (row < toRow)
                     --toRow;
             }
             foreach (IModelItem *item, items)
-                model->insertItem(item, toRow, trackListIndex);
-            if (commandBegun)
-                IEditor::instance()->endCommand();
+                track_list->insert(toRow, item);
+            if (editor->isInCommand())
+                editor->endCommand();
         }
     }
 

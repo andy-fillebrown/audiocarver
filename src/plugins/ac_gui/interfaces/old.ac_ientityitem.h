@@ -15,41 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_ISUBENTITYITEM_H
-#define AC_ISUBENTITYITEM_H
+#ifndef AC_IENTITYITEM_H
+#define AC_IENTITYITEM_H
 
-#include "ac_ichildentity.h"
+#include <ac_core_namespace.h>
 
-class IGrip;
-class IParentEntity;
+#include <mi_iunknown.h>
 
-class ISubEntity : public IChildEntity
+class IEntity;
+class IGripItem;
+
+class IEntityItem : public IUnknown
 {
 public:
-    enum { InterfaceType = I::ISubEntity };
+    enum { Type = Ac::EntityItemInterface };
 
-    virtual int sceneType() const = 0;
-    virtual bool isCurve() const = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
+    virtual IEntity *entity() const = 0;
+    virtual void highlight() = 0;
+    virtual void unhighlight() = 0;
+    virtual void resetGripItems() = 0;
     virtual void startUpdatingPoints() = 0;
     virtual void updatePoints() = 0;
     virtual void finishUpdatingPoints() = 0;
     virtual void updateCurveTypes() = 0;
-    virtual QList<IGrip*> grips() const = 0;
-    virtual void resetGrips() = 0;
-
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
-    }
+    virtual QList<IGripItem*> gripItems() const = 0;
 };
 
-#endif // AC_ISUBENTITYITEM_H
+#endif // AC_IENTITYITEM_H

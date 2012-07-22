@@ -15,29 +15,30 @@
 **
 **************************************************************************/
 
-#include "ac_graphicsview.h"
-
-#include <ac_graphicsentityitem.h>
-#include <ac_graphicsgripitem.h>
-#include <ac_gripselectionmodel.h>
-#include <ac_noteselectionmodel.h>
-#include <ac_trackselectionmodel.h>
-#include <ac_viewmanager.h>
+#include "ac_gui_graphicsview.h"
 
 #include <ac_ientity.h>
 #include <ac_iplaycursor.h>
-
-#include <mi_ieditor.h>
-
 #include <mi_idatabase.h>
+#include <mi_ieditor.h>
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
+
+#include <ac_gui_graphicsentityitem.h>
+#include <ac_gui_graphicsgripitem.h>
+#include <ac_gui_graphicsitem.h>
+#include <ac_gripselectionmodel.h>
+#include <ac_noteselectionmodel.h>
+#include <ac_trackselectionmodel.h>
+#include <ac_gui_viewmanager.h>
 
 #include <QApplication>
 #include <QMouseEvent>
 #include <QUndoStack>
 
 #include <qmath.h>
+
+using namespace Ac::Gui;
 
 enum ViewState {
     Zooming = 1,
@@ -62,12 +63,12 @@ public:
     QRect prevZoomGlyphRect;
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
-    QList<GraphicsEntityItem*> pickedEntities;
+//    QList<GraphicsEntityItem*> pickedEntities;
     QList<IGripItem*> pickedGrips;
     IGripItem *curGrip;
     QList<IEntity*> hoveredEntities;
     QList<IGripItem*> hoveredGrips;
-    QList<IEntityItem*> entitiesToUpdate;
+//    QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
     IPlayCursor *playCursor;
     QCursor previousCursor;
@@ -77,7 +78,7 @@ public:
     uint keepGripsPicked : 1;
     uint gripsDragged : 1;
     uint insertingPoints : 1;
-    uint dirty : bitsizeof(uint) - 6;
+    uint dirty : 1;
 
     GraphicsViewPrivate(GraphicsView *q)
         :   q(q)
@@ -217,83 +218,83 @@ public:
 
     void hover()
     {
-        clearHovered();
-        if (viewState || Picking == dragState || insertingPoints)
-            return;
-        const QRect viewPickRect = pickOneRect(curPos);
-        const QRectF scenePickRect = q->sceneTransform().inverted().mapRect(QRectF(viewPickRect));
-        bool gripIsHovered = false;
-        bool entityIsHovered = false;
-        const QList<QGraphicsItem*> items = q->items(viewPickRect);
-        foreach (QGraphicsItem *item, items) {
-            IUnknown *unknown = variantToUnknown_cast(item->data(0));
-            if (unknown) {
-                IPlayCursor *cursor = query<IPlayCursor>(unknown);
-                if (cursor) {
-                    playCursorHovered = true;
-                    previousCursor = q->cursor();
-                    q->setCursor(QCursor(Qt::SplitHCursor));
-                    break;
-                }
-                IGripItem *grip = query<IGripItem>(unknown);
-                if (grip) {
-                    gripIsHovered = true;
-                    if (!pickedGrips.contains(grip)) {
-                        grip->highlight(IGripItem::HoverHighlight);
-                        hoveredGrips.append(grip);
-                    }
-                } else if (!gripIsHovered) {
-                    IEntity *entity = query<IEntity>(unknown);
-                    if (entity && entity->intersects(scenePickRect)) {
-                        entityIsHovered = true;
-                        if (!entityIsPicked(entity)) {
-                            hoveredEntities.append(entity);
-                            ISubEntity *subEntity = query<ISubEntity>(entity);
-                            if (subEntity)
-                                entity = subEntity->parentEntity();
-                            entity->highlight();
-                        }
-                    }
-                }
-                if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)
-                        && (gripIsHovered || entityIsHovered))
-                    break;
-            }
-        }
+//        clearHovered();
+//        if (viewState || Picking == dragState || insertingPoints)
+//            return;
+//        const QRect viewPickRect = pickOneRect(curPos);
+//        const QRectF scenePickRect = q->sceneTransform().inverted().mapRect(QRectF(viewPickRect));
+//        bool gripIsHovered = false;
+//        bool entityIsHovered = false;
+//        const QList<QGraphicsItem*> items = q->items(viewPickRect);
+//        foreach (QGraphicsItem *item, items) {
+//            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
+//            if (unknown) {
+//                IPlayCursor *cursor = query<IPlayCursor>(unknown);
+//                if (cursor) {
+//                    playCursorHovered = true;
+//                    previousCursor = q->cursor();
+//                    q->setCursor(QCursor(Qt::SplitHCursor));
+//                    break;
+//                }
+//                IGripItem *grip = query<IGripItem>(unknown);
+//                if (grip) {
+//                    gripIsHovered = true;
+//                    if (!pickedGrips.contains(grip)) {
+//                        grip->highlight(IGripItem::HoverHighlight);
+//                        hoveredGrips.append(grip);
+//                    }
+//                } else if (!gripIsHovered) {
+//                    IEntity *entity = query<IEntity>(unknown);
+//                    if (entity && entity->intersects(scenePickRect)) {
+//                        entityIsHovered = true;
+//                        if (!entityIsPicked(entity)) {
+//                            hoveredEntities.append(entity);
+//                            ISubEntity *subEntity = query<ISubEntity>(entity);
+//                            if (subEntity)
+//                                entity = subEntity->parentEntity();
+//                            entity->highlight();
+//                        }
+//                    }
+//                }
+//                if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)
+//                        && (gripIsHovered || entityIsHovered))
+//                    break;
+//            }
+//        }
     }
 
     void clearHovered()
     {
-        if (playCursorHovered) {
-            playCursorHovered = false;
-            q->setCursor(previousCursor);
-        }
-        foreach (IGripItem *grip, hoveredGrips)
-            if (!pickedGrips.contains(grip))
-                grip->unhighlight();
-        hoveredGrips.clear();
-        foreach (IEntity *entity, hoveredEntities) {
-            if (!entityIsPicked(entity)) {
-                ISubEntity *subEntity = query<ISubEntity>(entity);
-                if (subEntity)
-                    entity = subEntity->parentEntity();
-                entity->unhighlight();
-            }
-        }
-        hoveredEntities.clear();
+//        if (playCursorHovered) {
+//            playCursorHovered = false;
+//            q->setCursor(previousCursor);
+//        }
+//        foreach (IGripItem *grip, hoveredGrips)
+//            if (!pickedGrips.contains(grip))
+//                grip->unhighlight();
+//        hoveredGrips.clear();
+//        foreach (IEntity *entity, hoveredEntities) {
+//            if (!entityIsPicked(entity)) {
+//                ISubEntity *subEntity = query<ISubEntity>(entity);
+//                if (subEntity)
+//                    entity = subEntity->parentEntity();
+//                entity->unhighlight();
+//            }
+//        }
+//        hoveredEntities.clear();
     }
 
     IPlayCursor *findPlayCursor(const QList<QGraphicsItem*> &items)
     {
         IPlayCursor *play_cursor = 0;
-        foreach (QGraphicsItem *item, items) {
-            IUnknown *unknown = variantToUnknown_cast(item->data(0));
-            if (unknown) {
-                play_cursor = query<IPlayCursor>(unknown);
-                if (play_cursor)
-                    break;
-            }
-        }
+//        foreach (QGraphicsItem *item, items) {
+//            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
+//            if (unknown) {
+//                play_cursor = query<IPlayCursor>(unknown);
+//                if (play_cursor)
+//                    break;
+//            }
+//        }
         return play_cursor;
     }
 
@@ -341,129 +342,130 @@ public:
 
     bool selectGrips(const QPoint &pos)
     {
-        bool selectedGrip = false;
-        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
-        foreach (QGraphicsItem *item, items) {
-            IUnknown *unknown = variantToUnknown_cast(item->data(0));
-            if (unknown) {
-                IGripItem *grip = query<IGripItem>(unknown);
-                if (grip) {
-                    if (!selectedGrip)
-                        clearHovered();
-                    selectedGrip = true;
-                    dragStartPos = pos;
-                    curGrip = grip;
-                    if (pickedGrips.contains(grip))
-                        keepGripsPicked = true;
-                    if (Qt::ControlModifier & QApplication::keyboardModifiers()) {
-                        grip->unhighlight();
-                        pickedGrips.removeOne(grip);
-                    } else {
-                        if (Qt::ShiftModifier & QApplication::keyboardModifiers())
-                            keepGripsPicked = true;
-                        else if (!keepGripsPicked)
-                            clearPickedGrips();
-                        grip->highlight();
-                        if (!pickedGrips.contains(grip)) {
-                            pickedGrips.append(grip);
-                            IEntityItem *entity = grip->parentEntityItem();
-                            if (!entitiesToUpdate.contains(entity))
-                                entitiesToUpdate.append(entity);
-                        }
-                    }
-                }
-            }
-        }
-        return selectedGrip;
+//        bool selectedGrip = false;
+//        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
+//        foreach (QGraphicsItem *item, items) {
+//            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
+//            if (unknown) {
+//                IGripItem *grip = query<IGripItem>(unknown);
+//                if (grip) {
+//                    if (!selectedGrip)
+//                        clearHovered();
+//                    selectedGrip = true;
+//                    dragStartPos = pos;
+//                    curGrip = grip;
+//                    if (pickedGrips.contains(grip))
+//                        keepGripsPicked = true;
+//                    if (Qt::ControlModifier & QApplication::keyboardModifiers()) {
+//                        grip->unhighlight();
+//                        pickedGrips.removeOne(grip);
+//                    } else {
+//                        if (Qt::ShiftModifier & QApplication::keyboardModifiers())
+//                            keepGripsPicked = true;
+//                        else if (!keepGripsPicked)
+//                            clearPickedGrips();
+//                        grip->highlight();
+//                        if (!pickedGrips.contains(grip)) {
+//                            pickedGrips.append(grip);
+//                            IEntityItem *entity = grip->parentEntityItem();
+//                            if (!entitiesToUpdate.contains(entity))
+//                                entitiesToUpdate.append(entity);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return selectedGrip;
+        return false;
     }
 
     void selectAllGrips()
     {
-        clearPickedGrips();
-        foreach (GraphicsEntityItem *entity_item, pickedEntities) {
-            entitiesToUpdate.append(entity_item);
-            const QList<IGripItem*> &grips = entity_item->gripItems();
-            pickedGrips.append(grips);
-            foreach (IGripItem *grip, grips)
-                grip->highlight();
-        }
+//        clearPickedGrips();
+//        foreach (GraphicsEntityItem *entity_item, pickedEntities) {
+//            entitiesToUpdate.append(entity_item);
+//            const QList<IGripItem*> &grips = entity_item->gripItems();
+//            pickedGrips.append(grips);
+//            foreach (IGripItem *grip, grips)
+//                grip->highlight();
+//        }
     }
 
     void startGripDrag()
     {
-        selectAllGrips();
-        if (pickedGrips.isEmpty())
-            return;
+//        selectAllGrips();
+//        if (pickedGrips.isEmpty())
+//            return;
 
-        // Set curGrip to the lowest and earliest grip.
-        curGrip = pickedGrips.first();
-        foreach (IGripItem *grip_item, pickedGrips) {
-            const QPointF pos = grip_item->position();
-            if (pos.x() < curGrip->position().x()
-                    || (pos.x() == curGrip->position().x()
-                        && pos.y() < curGrip->position().y()))
-                curGrip = grip_item;
-        }
+//        // Set curGrip to the lowest and earliest grip.
+//        curGrip = pickedGrips.first();
+//        foreach (IGripItem *grip_item, pickedGrips) {
+//            const QPointF pos = grip_item->position();
+//            if (pos.x() < curGrip->position().x()
+//                    || (pos.x() == curGrip->position().x()
+//                        && pos.y() < curGrip->position().y()))
+//                curGrip = grip_item;
+//        }
 
-        startDraggingGrips();
+//        startDraggingGrips();
     }
 
     void clearPickedGrips()
     {
-        keepGripsPicked = false;
-        clearHovered();
-        foreach (IGripItem *grip, pickedGrips)
-            grip->unhighlight();
-        pickedGrips.clear();
-        entitiesToUpdate.clear();
+//        keepGripsPicked = false;
+//        clearHovered();
+//        foreach (IGripItem *grip, pickedGrips)
+//            grip->unhighlight();
+//        pickedGrips.clear();
+//        entitiesToUpdate.clear();
     }
 
     void startDraggingGrips()
     {
-        dragState = DraggingGrips;
-        foreach (IEntityItem *entityItem, entitiesToUpdate)
-            entityItem->startUpdatingPoints();
+//        dragState = DraggingGrips;
+//        foreach (IEntityItem *entityItem, entitiesToUpdate)
+//            entityItem->startUpdatingPoints();
     }
 
     void dragGripsTo(const QPoint &pos)
     {
-        ViewManager *vm = ViewManager::instance();
-        vm->disableUpdates();
-        const QPointF fromScenePos = curGrip->originalPosition();
-        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-        const QPointF sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()) - fromScenePos;
-        foreach (IGripItem *grip, pickedGrips)
-            grip->setPosition(grip->originalPosition() + sceneOffset);
-        foreach (IEntityItem *entity, entitiesToUpdate)
-            entity->updatePoints();
-        gripsDragged = true;
-        vm->enableUpdates();
+//        ViewManager *vm = ViewManager::instance();
+//        vm->disableUpdates();
+//        const QPointF fromScenePos = curGrip->originalPosition();
+//        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
+//        const QPointF sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()) - fromScenePos;
+//        foreach (IGripItem *grip, pickedGrips)
+//            grip->setPosition(grip->originalPosition() + sceneOffset);
+//        foreach (IEntityItem *entity, entitiesToUpdate)
+//            entity->updatePoints();
+//        gripsDragged = true;
+//        vm->enableUpdates();
     }
 
     void finishDraggingGrips(const QPoint &pos)
     {
-        dragGripsTo(pos);
-        dragState = 0;
-        curGrip = 0;
-        if (gripsDragged) {
-            IEditor *editor = IEditor::instance();
-            editor->beginCommand();
-            foreach (IEntityItem *entityItem, entitiesToUpdate)
-                entityItem->finishUpdatingPoints();
-            editor->endCommand();
-            gripsDragged = false;
-        }
+//        dragGripsTo(pos);
+//        dragState = 0;
+//        curGrip = 0;
+//        if (gripsDragged) {
+//            IEditor *editor = IEditor::instance();
+//            editor->beginCommand();
+//            foreach (IEntityItem *entityItem, entitiesToUpdate)
+//                entityItem->finishUpdatingPoints();
+//            editor->endCommand();
+//            gripsDragged = false;
+//        }
     }
 
     void cancelGripDrag()
     {
-        dragState = 0;
-        curGrip = 0;
-        const int n = entitiesToUpdate.count();
-        for (int i = 0;  i < n;  ++i)
-            entitiesToUpdate.at(i)->entity()->popPoints();
-        gripsDragged = false;
-        resetPickedEntities();
+//        dragState = 0;
+//        curGrip = 0;
+//        const int n = entitiesToUpdate.count();
+//        for (int i = 0;  i < n;  ++i)
+//            entitiesToUpdate.at(i)->entity()->popPoints();
+//        gripsDragged = false;
+//        resetPickedEntities();
     }
 
     QRect pickBoxBounds() const
@@ -489,49 +491,49 @@ public:
     void finishPicking(const QPoint &pos)
     {
         bool pickOne = false;
-        const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < QApplication::startDragDistance())
-                ? pickOneRect(dragStartPos)
-                : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
-        const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
-        const QList<QGraphicsItem*> items = q->items(rect);
-        QList<IEntity*> entities;
-        foreach (QGraphicsItem *item, items) {
-            IUnknown *unknown = variantToUnknown_cast(item->data(0));
-            if (unknown) {
-                IEntity *entity = query<IEntity>(unknown);
-                if (entity && entity->intersects(pickRect)) {
-                    ISubEntity *sub_entity = query<ISubEntity>(unknown);
-                    if (sub_entity) {
-                        IEntity *parent_entity = sub_entity->parentEntity();
-                        entities.append(parent_entity);
-                        if (pickOne && !(QApplication::keyboardModifiers() & Qt::ShiftModifier))
-                            break;
-                    }
-                }
-            }
-        }
-        QItemSelection ss;
-        ss.reserve(entities.count());
-        foreach (IEntity *entity, entities) {
-            const QModelIndex index = IModel::instance()->indexFromItem(query<IModelItem>(entity));
-            ss.select(index, index);
-        }
-        QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
-        if (entities.count()) {
-            ss_flags = QItemSelectionModel::Select;
-            if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-                ss_flags = QItemSelectionModel::Deselect;
-            if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
-                ss_flags |= QItemSelectionModel::Clear;
-            NoteSelectionModel::instance()->select(ss, ss_flags);
-        } else if (pickOne) {
-            if (!pickedGrips.isEmpty())
-                ViewManager::instance()->clearPickedGrips();
-            else {
-                NoteSelectionModel::instance()->clear();
-                TrackSelectionModel::instance()->clear();
-            }
-        }
+//        const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < QApplication::startDragDistance())
+//                ? pickOneRect(dragStartPos)
+//                : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
+//        const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
+//        const QList<QGraphicsItem*> items = q->items(rect);
+//        QList<IEntity*> entities;
+//        foreach (QGraphicsItem *item, items) {
+//            IUnknown *unknown = variantToUnknown_cast(item->data(0));
+//            if (unknown) {
+//                IEntity *entity = query<IEntity>(unknown);
+//                if (entity && entity->intersects(pickRect)) {
+//                    ISubEntity *sub_entity = query<ISubEntity>(unknown);
+//                    if (sub_entity) {
+//                        IEntity *parent_entity = sub_entity->parentEntity();
+//                        entities.append(parent_entity);
+//                        if (pickOne && !(QApplication::keyboardModifiers() & Qt::ShiftModifier))
+//                            break;
+//                    }
+//                }
+//            }
+//        }
+//        QItemSelection ss;
+//        ss.reserve(entities.count());
+//        foreach (IEntity *entity, entities) {
+//            const QModelIndex index = IModel::instance()->indexFromItem(query<IModelItem>(entity));
+//            ss.select(index, index);
+//        }
+//        QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
+//        if (entities.count()) {
+//            ss_flags = QItemSelectionModel::Select;
+//            if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+//                ss_flags = QItemSelectionModel::Deselect;
+//            if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier))
+//                ss_flags |= QItemSelectionModel::Clear;
+//            NoteSelectionModel::instance()->select(ss, ss_flags);
+//        } else if (pickOne) {
+//            if (!pickedGrips.isEmpty())
+//                ViewManager::instance()->clearPickedGrips();
+//            else {
+//                NoteSelectionModel::instance()->clear();
+//                TrackSelectionModel::instance()->clear();
+//            }
+//        }
         if (!pickOne)
             pickBox->hide();
         dragState = 0;
@@ -539,23 +541,23 @@ public:
 
     bool entityIsPicked(IEntity *entity)
     {
-        ISubEntity *subEntity = query<ISubEntity>(entity);
-        IEntity *parentEntity = subEntity ? subEntity->parentEntity() : 0;
-        foreach (GraphicsEntityItem *item, pickedEntities) {
-            const IEntity *itemEntity = item->entity();
-            if (itemEntity == entity || itemEntity == parentEntity)
-                return true;
-        }
+//        ISubEntity *subEntity = query<ISubEntity>(entity);
+//        IEntity *parentEntity = subEntity ? subEntity->parentEntity() : 0;
+//        foreach (GraphicsEntityItem *item, pickedEntities) {
+//            const IEntity *itemEntity = item->entity();
+//            if (itemEntity == entity || itemEntity == parentEntity)
+//                return true;
+//        }
         return false;
     }
 
-    GraphicsEntityItem *findEntityItem(IEntity *entity)
-    {
-        foreach (GraphicsEntityItem *item, pickedEntities)
-            if (item->entity() == entity)
-                return item;
-        return 0;
-    }
+//    GraphicsEntityItem *findEntityItem(IEntity *entity)
+//    {
+//        foreach (GraphicsEntityItem *item, pickedEntities)
+//            if (item->entity() == entity)
+//                return item;
+//        return 0;
+//    }
 
     void setPickedEntities(const QList<IEntity*> &entities)
     {
@@ -565,100 +567,100 @@ public:
 
     void appendPickedEntities(const QList<IEntity*> &entities)
     {
-        if (entities.isEmpty())
-            return;
-        ViewManager *vm = ViewManager::instance();
-        vm->disableUpdates();
-        foreach (IEntity *entity, entities) {
-            if (entity->isVisible() && !entityIsPicked(entity)) {
-                GraphicsEntityItem *item = new GraphicsEntityItem(entity);
-                pickedEntities.append(item);
-                item->setParentItem(rootItem);
-                item->highlight();
-            }
-        }
-        vm->enableUpdates();
+//        if (entities.isEmpty())
+//            return;
+//        ViewManager *vm = ViewManager::instance();
+//        vm->disableUpdates();
+//        foreach (IEntity *entity, entities) {
+//            if (entity->isVisible() && !entityIsPicked(entity)) {
+//                GraphicsEntityItem *item = new GraphicsEntityItem(entity);
+//                pickedEntities.append(item);
+//                item->setParentItem(rootItem);
+//                item->highlight();
+//            }
+//        }
+//        vm->enableUpdates();
     }
 
     void removePickedEntities(const QList<IEntity*> &entities)
     {
-        if (entities.isEmpty())
-            return;
-        ViewManager *vm = ViewManager::instance();
-        vm->disableUpdates();
-        foreach (IEntity *entity, entities) {
-            GraphicsEntityItem *item = findEntityItem(entity);
-            if (item) {
-                pickedEntities.removeOne(item);
-                entitiesToUpdate.removeOne(item);
-                for (int i = 0;  i < pickedGrips.count();  ++i) {
-                    IGripItem *grip = pickedGrips[i];
-                    if (item == grip->parentEntityItem())
-                        pickedGrips.removeAt(i--);
-                }
+//        if (entities.isEmpty())
+//            return;
+//        ViewManager *vm = ViewManager::instance();
+//        vm->disableUpdates();
+//        foreach (IEntity *entity, entities) {
+//            GraphicsEntityItem *item = findEntityItem(entity);
+//            if (item) {
+//                pickedEntities.removeOne(item);
+//                entitiesToUpdate.removeOne(item);
+//                for (int i = 0;  i < pickedGrips.count();  ++i) {
+//                    IGripItem *grip = pickedGrips[i];
+//                    if (item == grip->parentEntityItem())
+//                        pickedGrips.removeAt(i--);
+//                }
 
-                // Unhighlight and remove any hovered grips on the item before
-                // deleting it.
-                IEntityItem *entity_item = query<IEntityItem>(item);
-                for (int i = 0;  i < hoveredGrips.count();  ++i) {
-                    IGripItem *grip = hoveredGrips[i];
-                    if (entity_item == grip->parentEntityItem()) {
-                        grip->unhighlight();
-                        hoveredGrips.removeAt(i);
-                        --i;
-                    }
-                }
+//                // Unhighlight and remove any hovered grips on the item before
+//                // deleting it.
+//                IEntityItem *entity_item = query<IEntityItem>(item);
+//                for (int i = 0;  i < hoveredGrips.count();  ++i) {
+//                    IGripItem *grip = hoveredGrips[i];
+//                    if (entity_item == grip->parentEntityItem()) {
+//                        grip->unhighlight();
+//                        hoveredGrips.removeAt(i);
+//                        --i;
+//                    }
+//                }
 
-                item->unhighlight();
-                delete item;
-            }
-        }
-        clearPickedGrips();
-        vm->enableUpdates();
+//                item->unhighlight();
+//                delete item;
+//            }
+//        }
+//        clearPickedGrips();
+//        vm->enableUpdates();
     }
 
     void clearPickedEntities()
     {
-        ViewManager *vm = ViewManager::instance();
-        vm->disableUpdates();
-        clearPickedGrips();
-        NoteSelectionModel::instance()->clear();
-        vm->enableUpdates();
+//        ViewManager *vm = ViewManager::instance();
+//        vm->disableUpdates();
+//        clearPickedGrips();
+//        NoteSelectionModel::instance()->clear();
+//        vm->enableUpdates();
     }
 
     void resetPickedEntities()
     {
-        clearPickedGrips();
-        NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
-        QItemSelection ss = noteSSModel->selection();
-        noteSSModel->clear();
-        noteSSModel->select(ss, QItemSelectionModel::Select);
+//        clearPickedGrips();
+//        NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
+//        QItemSelection ss = noteSSModel->selection();
+//        noteSSModel->clear();
+//        noteSSModel->select(ss, QItemSelectionModel::Select);
     }
 
     void clearPicks()
     {
-        if (!pickedGrips.isEmpty())
-            ViewManager::instance()->clearPickedGrips();
-        else {
-            clearPickedEntities();
-            TrackSelectionModel::instance()->clear();
-        }
+//        if (!pickedGrips.isEmpty())
+//            ViewManager::instance()->clearPickedGrips();
+//        else {
+//            clearPickedEntities();
+//            TrackSelectionModel::instance()->clear();
+//        }
     }
 
     void insertPoint(const QPoint &pos)
     {
-        const QPointF scenePos = ViewManager::instance()->snappedScenePos(q->sceneTransform().inverted().map(QPointF(pos)), q->sceneType());
-        foreach (GraphicsEntityItem *entityItem, pickedEntities) {
-            IEntity *entity = entityItem->entity();
-            PointList pts = entity->points();
-            Point pt = Point(scenePos);
-            if (Qt::ControlModifier & QApplication::keyboardModifiers())
-                pt.curveType = Ac::BezierCurve;
-            pts.append(pt);
-            entity->popPoints();
-            entity->pushPoints(pts);
-            entityItem->resetGripItems();
-        }
+//        const QPointF scenePos = ViewManager::instance()->snappedScenePos(q->sceneTransform().inverted().map(QPointF(pos)), q->sceneType());
+//        foreach (GraphicsEntityItem *entityItem, pickedEntities) {
+//            IEntity *entity = entityItem->entity();
+//            PointList pts = entity->points();
+//            Point pt = Point(scenePos);
+//            if (Qt::ControlModifier & QApplication::keyboardModifiers())
+//                pt.curveType = Ac::BezierCurve;
+//            pts.append(pt);
+//            entity->popPoints();
+//            entity->pushPoints(pts);
+//            entityItem->resetGripItems();
+//        }
     }
 
     void updateViewSettings()
@@ -676,7 +678,7 @@ public:
 };
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
-    :   MiGraphicsView(scene, parent)
+    :   Mi::Gui::GraphicsView(scene, parent)
     ,   d(new GraphicsViewPrivate(this))
 {
     setInteractive(false);
@@ -689,10 +691,10 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setCursor(normalCrosshair());
     setMouseTracking(true);
 
-    connect(IEditor::instance(), SIGNAL(commandUndone()), SLOT(clearGripSelection()));
-    connect(IEditor::instance(), SIGNAL(commandRedone()), SLOT(clearGripSelection()));
-    connect(GripSelectionModel::instance(), SIGNAL(gripDeselected(IGripItem*)), SLOT(gripDeselected(IGripItem*)));
-    connect(IModel::instance(), SIGNAL(modelAboutToBeDestroyed()), SLOT(modelAboutToBeDestroyed()));
+//    connect(IEditor::instance(), SIGNAL(commandUndone()), SLOT(clearGripSelection()));
+//    connect(IEditor::instance(), SIGNAL(commandRedone()), SLOT(clearGripSelection()));
+//    connect(GripSelectionModel::instance(), SIGNAL(gripDeselected(IGripItem*)), SLOT(gripDeselected(IGripItem*)));
+//    connect(IModel::instance(), SIGNAL(modelAboutToBeDestroyed()), SLOT(modelAboutToBeDestroyed()));
 }
 
 GraphicsView::~GraphicsView()
@@ -743,35 +745,35 @@ void GraphicsView::updateView()
 
 void GraphicsView::startInsertingPoints()
 {
-    d->insertingPoints = true;
-    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
-        IEntity *entity = entityItem->entity();
-        entity->pushPoints();
-    }
-    setCursor(creationCrosshair());
-    d->clearPickedGrips();
+//    d->insertingPoints = true;
+//    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
+//        IEntity *entity = entityItem->entity();
+//        entity->pushPoints();
+//    }
+//    setCursor(creationCrosshair());
+//    d->clearPickedGrips();
 }
 
 void GraphicsView::finishInsertingPoints()
 {
-    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
-        IEntity *entity = entityItem->entity();
-        entity->setPoints();
-        entityItem->resetGripItems();
-    }
-    setCursor(normalCrosshair());
-    d->insertingPoints = false;
-    d->resetPickedEntities();
+//    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
+//        IEntity *entity = entityItem->entity();
+//        entity->setPoints();
+//        entityItem->resetGripItems();
+//    }
+//    setCursor(normalCrosshair());
+//    d->insertingPoints = false;
+//    d->resetPickedEntities();
 }
 
 void GraphicsView::cancelPointInsertion()
 {
-    const int n = d->pickedEntities.count();
-    for (int i = 0;  i < n;  ++i)
-        d->pickedEntities.at(i)->entity()->popPoints();
-    setCursor(normalCrosshair());
-    d->insertingPoints = false;
-    d->resetPickedEntities();
+//    const int n = d->pickedEntities.count();
+//    for (int i = 0;  i < n;  ++i)
+//        d->pickedEntities.at(i)->entity()->popPoints();
+//    setCursor(normalCrosshair());
+//    d->insertingPoints = false;
+//    d->resetPickedEntities();
 }
 
 bool GraphicsView::pointsAreSelected() const
@@ -801,58 +803,56 @@ void GraphicsView::modelAboutToBeReset()
 
 void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    Q_UNUSED(bottomRight);
+//    if (DraggingGrips == d->dragState)
+//        return;
 
-    if (DraggingGrips == d->dragState)
-        return;
+//    // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
+//    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
+//    IEntity *entity = query<IEntity>(item);
+//    if (!entity) {
+//        ISubEntity *subEntity = query<ISubEntity>(item);
+//        if (subEntity)
+//            entity = subEntity->parentEntity();
+//    }
+//    if (entity) {
+//        GraphicsEntityItem *entityItem = d->findEntityItem(entity);
+//        if (entityItem)
+//            entityItem->resetGripItems();
+//        else {
+//            QList<IEntity*> subEntities = entity->subEntities(sceneType());
+//            foreach (IEntity* subEntity, subEntities) {
+//                entityItem = d->findEntityItem(subEntity);
+//                if (entityItem)
+//                    entityItem->resetGripItems();
+//            }
+//        }
+//    }
 
-    // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
-    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
-    IEntity *entity = query<IEntity>(item);
-    if (!entity) {
-        ISubEntity *subEntity = query<ISubEntity>(item);
-        if (subEntity)
-            entity = subEntity->parentEntity();
-    }
-    if (entity) {
-        GraphicsEntityItem *entityItem = d->findEntityItem(entity);
-        if (entityItem)
-            entityItem->resetGripItems();
-        else {
-            QList<IEntity*> subEntities = entity->subEntities(sceneType());
-            foreach (IEntity* subEntity, subEntities) {
-                entityItem = d->findEntityItem(subEntity);
-                if (entityItem)
-                    entityItem->resetGripItems();
-            }
-        }
-    }
-
-    // If topLeft is a track, gripped entities might have been hidden.
-    // Re-append the selected entities so the hidden ones are filtered out.
-    if (Ac::TrackItem == topLeft.data(Mi::ItemTypeRole))
-        d->resetPickedEntities();
+//    // If topLeft is a track, gripped entities might have been hidden.
+//    // Re-append the selected entities so the hidden ones are filtered out.
+//    if (Ac::TrackItem == topLeft.data(Mi::ItemTypeRole))
+//        d->resetPickedEntities();
 }
 
 void GraphicsView::noteSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
-    const IModel *model = IModel::instance();
-    const QModelIndexList selectedIndexes = selected.indexes();
-    QList<IEntity*> selectedEntities;
-    foreach (const QModelIndex &index, selectedIndexes) {
-        IEntity *note = query<IEntity>(model->itemFromIndex(index));
-        QList<IEntity*> curves = note->subEntities(sceneType());
-        selectedEntities.append(curves);
-    }
-    d->appendPickedEntities(selectedEntities);
-    const QModelIndexList deselectedIndexes = deselected.indexes();
-    QList<IEntity*> deselectedEntities;
-    foreach (const QModelIndex &index, deselectedIndexes) {
-        IEntity *note = query<IEntity>(model->itemFromIndex(index));
-        QList<IEntity*> curves = note->subEntities(sceneType());
-        deselectedEntities.append(curves);
-    }
-    d->removePickedEntities(deselectedEntities);
+//    const IModel *model = IModel::instance();
+//    const QModelIndexList selectedIndexes = selected.indexes();
+//    QList<IEntity*> selectedEntities;
+//    foreach (const QModelIndex &index, selectedIndexes) {
+//        IEntity *note = query<IEntity>(model->itemFromIndex(index));
+//        QList<IEntity*> curves = note->subEntities(sceneType());
+//        selectedEntities.append(curves);
+//    }
+//    d->appendPickedEntities(selectedEntities);
+//    const QModelIndexList deselectedIndexes = deselected.indexes();
+//    QList<IEntity*> deselectedEntities;
+//    foreach (const QModelIndex &index, deselectedIndexes) {
+//        IEntity *note = query<IEntity>(model->itemFromIndex(index));
+//        QList<IEntity*> curves = note->subEntities(sceneType());
+//        deselectedEntities.append(curves);
+//    }
+//    d->removePickedEntities(deselectedEntities);
 }
 
 void GraphicsView::viewPositionChanged(int role)
@@ -880,26 +880,26 @@ void GraphicsView::scoreLengthChanged()
 
 void GraphicsView::removePoints()
 {
-    // Store the view's picked grips locally so they can be cleared before
-    // they're deleted by the entity item in resetGrips.
-    QList<IGripItem*> picked_grips = d->pickedGrips;
-    d->clearPickedGrips();
+//    // Store the view's picked grips locally so they can be cleared before
+//    // they're deleted by the entity item in resetGrips.
+//    QList<IGripItem*> picked_grips = d->pickedGrips;
+//    d->clearPickedGrips();
 
-    foreach (IGripItem *grip, picked_grips) {
-        IEntity *entity = grip->parentEntityItem()->entity();
-        PointList points = entity->points();
-        const int n = points.count();
-        for (int i = 0;  i < n;  ++i) {
-            if (grip->position() == points.at(i).pos) {
-                points.removeAt(i);
-                break;
-            }
-        }
-        entity->setPoints(points);
-        GraphicsEntityItem *entity_item = d->findEntityItem(entity);
-        if (entity_item)
-            entity_item->resetGripItems();
-    }
+//    foreach (IGripItem *grip, picked_grips) {
+//        IEntity *entity = grip->parentEntityItem()->entity();
+//        PointList points = entity->points();
+//        const int n = points.count();
+//        for (int i = 0;  i < n;  ++i) {
+//            if (grip->position() == points.at(i).pos) {
+//                points.removeAt(i);
+//                break;
+//            }
+//        }
+//        entity->setPoints(points);
+//        GraphicsEntityItem *entity_item = d->findEntityItem(entity);
+//        if (entity_item)
+//            entity_item->resetGripItems();
+//    }
 }
 
 void GraphicsView::zoomStarting()
@@ -1085,7 +1085,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
-    MiGraphicsView::keyPressEvent(event);
+    Mi::Gui::GraphicsView::keyPressEvent(event);
     d->hover();
 }
 
@@ -1102,20 +1102,19 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
         if (d->insertingPoints)
             ViewManager::instance()->finishInsertingPoints();
     } else
-        MiGraphicsView::keyReleaseEvent(event);
+        Mi::Gui::GraphicsView::keyReleaseEvent(event);
     d->hover();
 }
 
 void GraphicsView::leaveEvent(QEvent *event)
 {
-    Q_UNUSED(event);
     d->clearHovered();
-    MiGraphicsView::leaveEvent(event);
+    Mi::Gui::GraphicsView::leaveEvent(event);
 }
 
 bool GraphicsView::viewportEvent(QEvent *event)
 {
-    bool result = MiGraphicsView::viewportEvent(event);
+    bool result = Mi::Gui::GraphicsView::viewportEvent(event);
     switch (event->type()) {
     // Return event "accepted" status for the following event types, so they'll
     // be passed to the main widget if ignored.

@@ -26,6 +26,8 @@
 namespace Mi {
 namespace Core {
 
+class DataObjectList;
+
 class MI_CORE_EXPORT DataObject : public SuperAggregator
 {
     friend class DataObjectList;
@@ -72,6 +74,8 @@ protected:
     {
         return false;
     }
+
+    DataObjectList *list() const;
 
     class MI_CORE_EXPORT ModelData : public IModelData
     {
@@ -188,6 +192,9 @@ protected:
             DataObject *parent_a = dynamic_cast<DataObject*>(parent->aggregator());
             a()->setParent(parent_a);
         }
+
+        IModelList *list() const;
+        void remove();
 
         int count() const
         {

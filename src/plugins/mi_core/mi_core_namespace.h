@@ -24,7 +24,7 @@
 
 namespace I {
 
-enum MiCoreInterfaces {
+enum MiCoreInterface {
     IAggregate,
     IAggregator,
     ICopyFiler,
@@ -40,6 +40,7 @@ enum MiCoreInterfaces {
     IOrphanage,
     IReader,
     IWriter,
+    QModel,
     MiCoreInterfaceCount
 };
 

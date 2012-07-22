@@ -17,24 +17,26 @@
 
 #include "ac_gui_mainwindowextension.h"
 
-#include <ac_gridlinedialog.h>
-#include <ac_guiconstants.h>
-#include <ac_pitchview.h>
-#include <ac_viewmanager.h>
-
 #include <ac_iaudioengine.h>
-#include <ac_ifactory.h>
 #include <ac_isynthesizer.h>
-#include <ac_namespace.h>
+#include <mi_idatabase.h>
+#include <mi_idataobjectfactory.h>
+#include <mi_ieditor.h>
+#include <mi_imodel.h>
+#include <mi_imodeldata.h>
+#include <mi_imodelitem.h>
+#include <mi_imodellist.h>
+
+#include <ac_gridlinedialog.h>
+#include <ac_gui_constants.h>
+#include <ac_gui_pitchview.h>
+#include <ac_gui_viewmanager.h>
+
+#include <ac_gui_namespace.h>
 #include <ac_noteselectionmodel.h>
 #include <ac_trackselectionmodel.h>
 
-#include <mi_guiconstants.h>
-#include <mi_ieditor.h>
-
-#include <mi_idatabase.h>
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
+#include <mi_gui_constants.h>
 
 #include <actioncontainer.h>
 #include <actionmanager.h>
@@ -167,7 +169,7 @@ void MainWindowExtension::initActions()
     action = new QAction(tr("&Note"), this);
     cmd = am->registerAction(action, CREATENOTE, globalContext);
     createMenu->addAction(cmd, G_CREATE_OTHER);
-    connect(action, SIGNAL(triggered()), object_cast<PitchView>(viewManager->view(Ac::PitchScene)), SLOT(createNote()));
+    connect(action, SIGNAL(triggered()), qobject_cast<PitchView*>(viewManager->view(PitchScene)), SLOT(createNote()));
 
     // Insert Points Action
     action = new QAction(tr("&Insert Points"), this);
@@ -246,73 +248,66 @@ void MainWindowExtension::createTrack()
 {
     IEditor *editor = IEditor::instance();
     editor->beginCommand();
-    IModel *model = IModel::instance();
-    IModelItem *track = IObjectFactory::instance()->create(Ac::TrackItem);
-    const IModelItem *track_list = model->rootItem()->findModelItemList(Ac::TrackItem);
-    model->insertItem(track, track_list->modelItemCount(), model->indexFromItem(track_list));
+    IDatabase *db = IDatabase::instance();
+    IModelItem *track = query<IModelItem>(query<IDataObjectFactory>(db)->create(TrackItem));
+    IModelList *track_list = query<IModel>(db)->rootItem()->findList(TrackItem);
+    track_list->append(track);
     editor->endCommand();
 }
 
 void MainWindowExtension::erase()
 {
     IEditor *editor = IEditor::instance();
-    bool commandStarted = false;
 
     // Erase selected points in pitch and control views.
     ViewManager *vm = ViewManager::instance();
-    GraphicsView *view = object_cast<GraphicsView>(vm->view(Ac::PitchScene));
+    GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
     if (view->pointsAreSelected()) {
         editor->beginCommand();
-        commandStarted = true;
         view->removePoints();
     }
-    view = object_cast<GraphicsView>(vm->view(Ac::ControlScene));
+    view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
     if (view->pointsAreSelected()) {
-        if (!commandStarted) {
+        if (!editor->isInCommand())
             editor->beginCommand();
-            commandStarted = true;
-        }
         view->removePoints();
     }
-    if (commandStarted) {
+    if (editor->isInCommand()) {
         editor->endCommand();
         return;
     }
 
     // If no points are selected, erase selected tracks in reverse row order so
     // higher row numbers don't change if lower rows are being erased, too.
-    IModel *model = IModel::instance();
+    IModel *model = query<IModel>(IDatabase::instance());
 
-    TrackSelectionModel *trackSSModel = TrackSelectionModel::instance();
-    const QModelIndex trackListIndex = model->listIndex(Ac::TrackItem);
-    const QModelIndexList trackSS = trackSSModel->selectedRows();
+    const QModelIndexList track_ss = TrackSelectionModel::instance()->selectedRows();
     QList<int> rows;
-    rows.reserve(trackSS.count());
-    foreach (const QModelIndex &track, trackSS)
+    rows.reserve(track_ss.count());
+    foreach (const QModelIndex &track, track_ss)
         rows.append(track.row());
     qSort(rows);
     const int n = rows.count();
+    IModelList *track_list = model->rootItem()->findList(TrackItem);
     if (n) {
         editor->beginCommand();
         for (int i = n - 1;  0 <= i;  --i)
-            model->removeItem(rows.at(i), trackListIndex);
+            track_list->removeAt(rows.at(i));
         editor->endCommand();
         return;
     }
 
     // If no points or tracks are selected, erase selected notes.
-    NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
-    QModelIndexList noteSS = noteSSModel->selectedIndexes();
-    if (!noteSS.isEmpty()) {
-        editor->beginCommand();
-        while (!noteSS.isEmpty()) {
-            const QModelIndex noteIndex = noteSS.last();
-            const QModelIndex noteListIndex = model->parent(noteIndex);
-            model->removeItem(noteIndex.row(), noteListIndex);
-            noteSS = noteSSModel->selectedIndexes();
-        }
-        editor->endCommand();
-    }
+//    QModelIndexList note_ss = NoteSelectionModel::instance()->selectedIndexes();
+//    if (!note_ss.isEmpty()) {
+//        editor->beginCommand();
+//        while (!note_ss.isEmpty()) {
+//            IModelItem *note_item = model->itemFromIndex(note_ss.last());
+//            note_item->list()->remove(note_item);
+//            note_ss.removeLast();
+//        }
+//        editor->endCommand();
+//    }
 }
 
 void MainWindowExtension::build()
@@ -327,14 +322,9 @@ void MainWindowExtension::buildAll()
 {
     if (!d->maybeSaveDatabase())
         return;
-
-    const IModel *model = IModel::instance();
-    const QModelIndex trackList = model->listIndex(Ac::TrackItem);
-    const int n = model->rowCount(trackList);
-
+    const int track_count = query<IModel>(IDatabase::instance())->rootItem()->findList(TrackItem)->count();
     ISynthesizer *synth = ISynthesizer::instance();
-
-    for (int i = 0;  i < n;  ++i)
+    for (int i = 0;  i < track_count;  ++i)
         synth->renderTrack(i);
 }
 
@@ -351,12 +341,11 @@ void MainWindowExtension::startOrStop()
 
 void MainWindowExtension::start()
 {
-    IModelItem *score = IModel::instance()->rootItem();
-    if (score->data(Ac::StartTimeRole) == score->data(Ac::LengthRole)) {
+    IModelData *score = query<IModelData>(query<IModel>(IDatabase::instance())->rootItem());
+    if (score->get<int>(StartTimeRole) == score->get<int>(LengthRole)) {
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
         return;
     }
-
     IAudioEngine *audio_engine = IAudioEngine::instance();
     if (audio_engine)
         audio_engine->start();

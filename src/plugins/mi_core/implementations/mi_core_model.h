@@ -15,23 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef MI_MODEL_H
-#define MI_MODEL_H
+#ifndef MI_CORE_MODEL_H
+#define MI_CORE_MODEL_H
 
 #include "mi_imodel.h"
 
+namespace Mi {
+namespace Core {
+
+class Database;
+
 class MI_CORE_EXPORT Model : public IModel
 {
-    friend class MiCorePlugin;
-
     static IModel *instance()
     {
         return IModel::instance();
     }
 
-    static void destroy();
+    Database *_aggregator;
 
-    Model();
+protected:
+    Database *a() const
+    {
+        return _aggregator;
+    }
+
+    Model(Mi::Core::Database *aggregator);
+    virtual IAggregate *init();
+    ~Model();
+
+    IAggregator *aggregator() const;
 };
 
-#endif // MI_MODEL_H
+} // namespace Core
+} // namespace Mi
+
+#endif // MI_CORE_MODEL_H

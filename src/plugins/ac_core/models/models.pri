@@ -1,5 +1,6 @@
 
 SOURCE_PAIRS = \
+    ac_gridlinemodel \
     ac_proxymodel \
     ac_trackmodel \
 

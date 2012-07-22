@@ -18,7 +18,7 @@
 #ifndef AC_IGRIPITEM_H
 #define AC_IGRIPITEM_H
 
-#include <ac_namespace.h>
+#include <ac_gui_namespace.h>
 
 #include <mi_iunknown.h>
 

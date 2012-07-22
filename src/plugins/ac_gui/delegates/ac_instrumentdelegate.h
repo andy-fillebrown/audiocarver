@@ -18,9 +18,9 @@
 #ifndef AC_INSTRUMENTDELEGATE_H
 #define AC_INSTRUMENTDELEGATE_H
 
-#include <mi_delegate.h>
+#include <mi_gui_delegate.h>
 
-class InstrumentDelegate : public Delegate
+class InstrumentDelegate : public Mi::Gui::Delegate
 {
 public:
     InstrumentDelegate(QObject *parent = 0)

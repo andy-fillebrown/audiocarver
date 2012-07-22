@@ -162,6 +162,7 @@ protected:
     IAggregate *createAggregate(int interfaceType)
     {
         switch (interfaceType) {
+        case I::IEntity:
         case I::IParentEntity:
             return appendAggregate((new ParentEntity(this))->init());
         case I::IChildEntity:

@@ -1,6 +1,5 @@
 
 SOURCE_PAIRS = \
-    ac_gridlinemodel \
     ac_gripselectionmodel \
     ac_propertymodel \
     ac_selecteditemspropertymodel \

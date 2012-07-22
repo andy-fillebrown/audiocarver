@@ -19,8 +19,9 @@
 #define MI_CORE_DATABASE_H
 
 #include "mi_idatabase.h"
-
 #include "mi_iorphanage.h"
+
+#include "mi_core_qaggregator.h"
 
 namespace Mi {
 

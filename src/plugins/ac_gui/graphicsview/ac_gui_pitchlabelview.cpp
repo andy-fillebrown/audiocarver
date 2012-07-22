@@ -15,13 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_pitchlabelview.h"
+#include "ac_gui_pitchlabelview.h"
 
-#include <ac_viewmanager.h>
+#include <ac_gui_viewmanager.h>
 
+#include <mi_idatabase.h>
 #include <mi_imodel.h>
-
-#include <QModelIndex>
+#include <mi_imodelitem.h>
 
 class PitchLabelViewPrivate
 {
@@ -50,9 +50,9 @@ PitchLabelView::~PitchLabelView()
     delete d;
 }
 
-QModelIndex PitchLabelView::gridLineListIndex() const
+IModelList *PitchLabelView::gridLineList() const
 {
-    return IModel::instance()->listIndex(Ac::PitchGridLineItem);
+    return query<IModel>(IDatabase::instance())->rootItem()->findList(Ac::PitchGridLineItem);
 }
 
 qreal PitchLabelView::sceneHeight() const

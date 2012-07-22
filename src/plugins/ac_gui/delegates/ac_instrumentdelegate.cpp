@@ -17,11 +17,14 @@
 
 #include "ac_instrumentdelegate.h"
 
-#include <ac_namespace.h>
-
-#include <mi_coreutils.h>
+#include <mi_idatabase.h>
 #include <mi_imodel.h>
+#include <mi_imodeldata.h>
 #include <mi_imodelitem.h>
+
+#include <ac_gui_namespace.h>
+
+#include <mi_core_utils.h>
 
 #include <icore.h>
 #include <mainwindow.h>
@@ -30,6 +33,9 @@
 #include <QFileDialog>
 #include <QMouseEvent>
 #include <QPainter>
+
+using namespace Ac;
+using namespace Mi::Core;
 
 bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
@@ -45,11 +51,11 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
         return false;
 
     // Open a file-open dialog and set the track's instrument if the user didn't cancel the dialog.
-    const IModel *m = IModel::instance();
-    const IModelItem *project_settings = m->itemFromIndex(m->itemIndex(Ac::ProjectSettingsItem));
-    QString instrument_dir_name = project_settings->data(Ac::InstrumentDirectoryRole).toString();
+    const IModel *m = query<IModel>(IDatabase::instance());
+    const IModelData *project_settings = query<IModelData>(m->rootItem()->findItem(ProjectSettingsItem));
+    QString instrument_dir_name = project_settings->get<QString>(InstrumentDirectoryRole);
     if (instrument_dir_name.isEmpty())
-        instrument_dir_name = Mi::applicationTreeDirectory() + "instruments";
+        instrument_dir_name = applicationTreeDirectory() + "instruments";
     QString filename = QFileDialog::getOpenFileName(Core::ICore::instance()->mainWindow(), "Open Instrument", instrument_dir_name, QString("Instrument (*orc)"));
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);

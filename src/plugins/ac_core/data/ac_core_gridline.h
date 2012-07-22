@@ -29,6 +29,8 @@ namespace Core {
 
 class AC_CORE_EXPORT GridLine : public Mi::Core::DataObject
 {
+    friend class GridLineModel;
+
     enum { RoleCount = 4 };
 
     qreal _location;

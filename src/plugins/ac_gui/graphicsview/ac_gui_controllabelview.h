@@ -15,37 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMELABELVIEW_H
-#define AC_TIMELABELVIEW_H
+#ifndef AC_CONTROLLABELVIEW_H
+#define AC_CONTROLLABELVIEW_H
 
-#include <ac_labelview.h>
+#include <ac_gui_labelview.h>
 
-class TimeLabelViewPrivate;
+#include <ac_gui_namespace.h>
 
-class TimeLabelView : public LabelView
+class ControlLabelViewPrivate;
+class ControlLabelView : public LabelVView
 {
     Q_OBJECT
 
 public:
-    TimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~TimeLabelView();
+    ControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+    ~ControlLabelView();
 
 protected:
-    qreal paddingScale() const { return qreal(0.5f) * sceneTransform().m11(); }
-    QModelIndex gridLineListIndex() const;
-    int scaleRole() const { return Ac::TimeScaleRole; }
+    IModelList *gridLineList() const;
 
-    int sceneType() const { return Ac::TimeLabelScene; }
-    qreal sceneWidth() const;
-    QPointF sceneCenter() const;
+    int sceneType() const { return Ac::ControlLabelScene; }
+    qreal sceneHeight() const;
 
-    int positionRoleX() const { return Ac::TimePositionRole; }
-    int scaleRoleX() const { return Ac::TimeScaleRole; }
-
-    void zoomStarting();
+    int positionRoleY() const { return Ac::ControlPositionRole; }
+    int scaleRoleY() const { return Ac::ControlScaleRole; }
 
 private:
-    TimeLabelViewPrivate *d;
+    ControlLabelViewPrivate *d;
 };
 
-#endif // AC_TIMELABELVIEW_H
+#endif // AC_CONTROLLABELVIEW_H
