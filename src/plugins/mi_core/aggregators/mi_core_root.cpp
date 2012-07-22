@@ -15,65 +15,40 @@
 **
 **************************************************************************/
 
-#include "mi_core_database.h"
+#include "mi_core_root.h"
 
 #include <mi_iaggregate.h>
 
-static IDatabase *instance = 0;
+#include <mi_core_model.h>
+#include <mi_core_orphanage.h>
 
-IDatabase *IDatabase::instance()
-{
-    return ::instance;
-}
+static Mi::Core::Root *instance = 0;
 
 namespace Mi {
 namespace Core {
 
-void Database::destroy()
+Root *Root::instance()
 {
-    delete ::instance;
-    ::instance = 0;
+    return ::instance;
 }
 
-Database::Database()
+Root::Root()
 {
     if (::instance)
         delete ::instance;
     ::instance = this;
 }
 
-IAggregator *Database::init()
+IAggregator *Root::init()
 {
-    return this;
+    setAggregate(I::IOrphanage, (new Orphanage(this))->init());
+    setAggregate(I::IModel, (new Model(this))->init());
+    return QAggregator::init();
 }
 
-Database::~Database()
+Root::~Root()
 {
-    clear();
-}
-
-IAggregate *Database::appendAggregate(IAggregate *aggregate)
-{
-    const int interface_type = aggregate->interfaceType();
-    if (!_aggregates.contains(interface_type))
-        _aggregates.insert(interface_type, aggregate);
-    return aggregate;
-}
-
-void Database::removeAggregate(IAggregate *aggregate)
-{
-    _aggregates.remove(aggregate->interfaceType());
-}
-
-void Database::clear()
-{
-    qDeleteAll(_aggregates);
-    _aggregates.clear();
-}
-
-IAggregate *Database::Orphanage::init()
-{
-    return this;
+    ::instance = 0;
 }
 
 } // namespace Core

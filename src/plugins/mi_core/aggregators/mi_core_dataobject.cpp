@@ -35,7 +35,7 @@ IAggregator *DataObject::init()
 
 IAggregate *DataObject::ModelData::init()
 {
-    _item = query<IModelItem>(a());
+    _item = query<IModelItem>(aggregator());
     return this;
 }
 
@@ -63,7 +63,7 @@ void DataObject::setParent(DataObject *parent)
     if (_parent == parent)
         return;
     ScopedParentChange parent_change(this);
-    IOrphanage *orphanage = query<IOrphanage>(IDatabase::instance());
+    IOrphanage *orphanage = IOrphanage::instance();
     if (orphanage) {
         if (!_parent)
             orphanage->remove(this);
@@ -82,14 +82,7 @@ DataObjectList *DataObject::list() const
 
 IModelList *DataObject::ModelItem::list() const
 {
-    return query<IModelList>(a()->list());
-}
-
-void DataObject::ModelItem::remove()
-{
-    IModelList *list = this->list();
-    if (list)
-        list->remove(this);
+    return query<IModelList>(aggregator()->list());
 }
 
 } // namespace Core

@@ -2,10 +2,9 @@
 load(../qt_core/qt_core.prf)
 
 DIRS = \
-    data \
-    implementations \
+    aggregates \
+    aggregators \
     interfaces \
-    qt \
     tools \
 
 for(dir, DIRS) {

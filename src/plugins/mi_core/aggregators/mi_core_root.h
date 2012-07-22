@@ -15,29 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef MI_ORPHANAGE_H
-#define MI_ORPHANAGE_H
+#ifndef MI_CORE_ROOT_H
+#define MI_CORE_ROOT_H
 
-#include "mi_iorphanage.h"
+#include "mi_core_qaggregator.h"
 
-class MI_CORE_EXPORT Orphanage : public IOrphanage
+#include <mi_iorphanage.h>
+
+namespace Mi {
+
+class CorePlugin;
+
+namespace Core {
+
+class MI_CORE_EXPORT Root : public QAggregator
 {
-    friend class MiCorePlugin;
+    friend class Mi::CorePlugin;
+    friend class Orphanage;
 
     QList<IAggregator*> _orphans;
 
-    static IOrphanage *instance()
+protected:
+    static Root *instance();
+
+    Root();
+    virtual ~Root();
+    IAggregator *init();
+
+    QList<IAggregator*> &orphans()
     {
-        return IOrphanage::instance();
+        return _orphans;
     }
-
-    static void destroy();
-
-    Orphanage();
-    ~Orphanage();
-
-    void append(IAggregator *aggregator);
-    void remove(IAggregator *aggregator);
 };
 
-#endif // MI_ORPHANAGE_H
+} // namespace Core
+} // namespace Mi
+
+#endif // MI_CORE_ROOT_H

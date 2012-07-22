@@ -27,20 +27,19 @@ class MI_CORE_EXPORT IOrphanage : public IAggregate
 public:
     enum { InterfaceType = I::IOrphanage };
 
-    virtual void append(IAggregator *aggregator) = 0;
-    virtual void remove(IAggregator *aggregator) = 0;
+    static IOrphanage *instance();
+
+    IOrphanage(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
+    virtual void append(IAggregator *orphan) = 0;
+    virtual void remove(IAggregator *orphan) = 0;
 
     // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 

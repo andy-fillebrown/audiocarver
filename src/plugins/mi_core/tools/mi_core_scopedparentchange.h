@@ -18,7 +18,6 @@
 #ifndef MI_CORE_SCOPEDPARENTCHANGE_H
 #define MI_CORE_SCOPEDPARENTCHANGE_H
 
-#include <mi_idatabase.h>
 #include <mi_imodel.h>
 #include <mi_imodelitem.h>
 
@@ -32,8 +31,8 @@ class ScopedParentChange
 
 public:
     ScopedParentChange(const IAggregator *aggregator)
-        :   _item(const_query<IModelItem>(aggregator))
-        ,   _model(query<IModel>(IDatabase::instance()))
+        :   _item(query<IModelItem>(aggregator))
+        ,   _model(IModel::instance())
     {
         if (!_item)
             return;

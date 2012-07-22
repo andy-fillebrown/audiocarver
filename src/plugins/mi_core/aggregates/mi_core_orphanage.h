@@ -15,39 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODEL_H
-#define MI_CORE_MODEL_H
+#ifndef MI_CORE_ORPHANAGE_H
+#define MI_CORE_ORPHANAGE_H
 
-#include "mi_imodel.h"
+#include "mi_iorphanage.h"
 
 namespace Mi {
+
+class CorePlugin;
+
 namespace Core {
 
-class Database;
+class Root;
 
-class MI_CORE_EXPORT Model : public IModel
+class MI_CORE_EXPORT Orphanage : public IOrphanage
 {
-    static IModel *instance()
-    {
-        return IModel::instance();
-    }
-
-    Database *_aggregator;
+    friend class Root;
 
 protected:
-    Database *a() const
-    {
-        return _aggregator;
-    }
+    Orphanage(Root *aggregator);
+    ~Orphanage();
+    IAggregate *init();
 
-    Model(Mi::Core::Database *aggregator);
-    virtual IAggregate *init();
-    ~Model();
+    Root *aggregator() const;
 
-    IAggregator *aggregator() const;
+    // IOrphanage
+    void append(IAggregator *orphan);
+    void remove(IAggregator *orphan);
 };
 
 } // namespace Core
 } // namespace Mi
 
-#endif // MI_CORE_MODEL_H
+#endif // MI_CORE_ORPHANAGE_H

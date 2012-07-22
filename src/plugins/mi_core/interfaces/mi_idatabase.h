@@ -18,14 +18,18 @@
 #ifndef MI_IDATABASE_H
 #define MI_IDATABASE_H
 
-#include "mi_iaggregator.h"
+#include "mi_iaggregate.h"
 
-class MI_CORE_EXPORT IDatabase : public IAggregator
+class MI_CORE_EXPORT IDatabase : public IAggregate
 {
 public:
     enum { InterfaceType = I::IDatabase };
 
     static IDatabase *instance();
+
+    IDatabase(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
 
     virtual const QString &fileExtension() const = 0;
     virtual const QString &fileFilter() const = 0;
@@ -39,13 +43,6 @@ public:
     int interfaceType() const
     {
         return InterfaceType;
-    }
-
-    virtual bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregator::isTypeOfInterface(interfaceType);
     }
 };
 

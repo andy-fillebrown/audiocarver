@@ -15,54 +15,45 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_SUBAGGREGATOR_H
-#define MI_CORE_SUBAGGREGATOR_H
+#ifndef MI_CORE_AGGREGATOR_H
+#define MI_CORE_AGGREGATOR_H
 
-#include "mi_core_aggregator.h"
+#include "mi_iaggregator.h"
 
 namespace Mi {
 namespace Core {
 
-class MI_CORE_EXPORT SubAggregator : public IAggregator
+class MI_CORE_EXPORT Aggregator : public IAggregator
 {
-    friend class SuperAggregator;
-
-    Aggregator *_superAggregator;
+    QHash<int, IAggregate*> _aggregates;
 
 protected:
-    SubAggregator()
-    {}
+    Aggregator();
+    ~Aggregator();
+    IAggregator *init();
 
-    void setSuperAggregator(Aggregator *superAggregator)
+    QList<IAggregate*> aggregates() const
     {
-        _superAggregator = superAggregator;
+        return _aggregates.values();
     }
 
     // IAggregator
-    IAggregate *createAggregate(int interfaceType)
+    void *setAggregate(int interfaceType, IAggregate *aggregate);
+
+    void *setObject(int interfaceType, QObject *object)
     {
         return 0;
     }
 
-    IAggregate *appendAggregate(IAggregate *aggregate)
-    {
-        return _superAggregator->appendAggregate(aggregate);
-    }
+    void clear()
+    {}
 
 public:
     // IUnknown
-    void *queryInterface(int interfaceType)
-    {
-        return _superAggregator->queryInterface(interfaceType);
-    }
-
-    const void *queryInterface(int interfaceType) const
-    {
-        return const_cast<const Aggregator*>(_superAggregator)->queryInterface(interfaceType);
-    }
+    void *queryInterface(int interfaceType) const;
 };
 
 } // namespace Core
 } // namespace Mi
 
-#endif // MI_CORE_SUBAGGREGATOR_H
+#endif // MI_CORE_AGGREGATOR_H

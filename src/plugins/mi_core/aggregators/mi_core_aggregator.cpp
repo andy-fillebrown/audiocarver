@@ -15,20 +15,44 @@
 **
 **************************************************************************/
 
-#include "mi_core_qaggregator.h"
+#include "mi_core_aggregator.h"
+
+#include <mi_iaggregate.h>
+#include <mi_iorphanage.h>
 
 namespace Mi {
 namespace Core {
 
-QAggregator::~QAggregator()
+Aggregator::Aggregator()
 {
-    clear();
+    IOrphanage *orphanage = IOrphanage::instance();
+    if (orphanage)
+        orphanage->append(this);
 }
 
-void QAggregator::clear()
+Aggregator::~Aggregator()
 {
-    qDeleteAll(_qobjects);
-    _qobjects.clear();
+    IOrphanage *orphanage = IOrphanage::instance();
+    if (orphanage)
+        orphanage->remove(this);
+    qDeleteAll(_aggregates);
+    _aggregates.clear();
+}
+
+IAggregator *Aggregator::init()
+{
+    return this;
+}
+
+void *Aggregator::setAggregate(int interfaceType, IAggregate *aggregate)
+{
+    _aggregates.insert(interfaceType, aggregate);
+    return aggregate;
+}
+
+void *Aggregator::queryInterface(int interfaceType) const
+{
+    return _aggregates.value(interfaceType);
 }
 
 } // namespace Core

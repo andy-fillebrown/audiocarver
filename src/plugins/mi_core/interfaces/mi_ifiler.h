@@ -22,10 +22,40 @@
 
 class IModelItem;
 
+class IFileFiler : public IAggregate
+{
+public:
+    enum { InterfaceType = I::IFileFiler };
+
+    IFileFiler(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
+    virtual QString fileName() const = 0;
+    virtual void setFileName(const QString &fileName) = 0;
+
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    virtual bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IAggregate::isTypeOfInterface(interfaceType);
+    }
+};
+
 class IReader : public IAggregate
 {
 public:
     enum { InterfaceType = I::IReader };
+
+    IReader(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
 
     virtual int nextItemType() = 0;
     virtual bool read(IModelItem *item) = 0;
@@ -49,29 +79,11 @@ class IWriter : public IAggregate
 public:
     enum { InterfaceType = I::IWriter };
 
+    IWriter(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
     virtual bool write(IModelItem *item) = 0;
-
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    virtual bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
-    }
-};
-
-class IFileFiler : public IAggregate
-{
-public:
-    enum { InterfaceType = I::IFileFiler };
-
-    virtual QString fileName() const = 0;
-    virtual void setFileName(const QString &fileName) = 0;
 
     // IUnknown
     int interfaceType() const

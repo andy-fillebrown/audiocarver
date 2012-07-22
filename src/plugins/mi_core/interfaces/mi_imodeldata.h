@@ -29,6 +29,10 @@ class IModelData : public IAggregate
 public:
     enum { InterfaceType = I::IModelData };
 
+    IModelData(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
     virtual IModelItem *item() const = 0;
     virtual int roleCount() const = 0;
     virtual int roleAt(int i) const = 0;
@@ -50,13 +54,6 @@ public:
     int interfaceType() const
     {
         return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 

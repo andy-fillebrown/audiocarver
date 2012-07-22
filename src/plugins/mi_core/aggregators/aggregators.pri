@@ -1,12 +1,10 @@
 
 SOURCE_FILES = \
     aggregator \
-    database \
-    model \
+    dataobject \
+    dataobjectlist \
     qaggregator \
-    subaggregator \
-    superaggregator \
-#    orphanage \
+    root \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

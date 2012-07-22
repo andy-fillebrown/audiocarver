@@ -18,15 +18,24 @@
 #ifndef MI_IMODELLIST_H
 #define MI_IMODELLIST_H
 
-#include "mi_imodelitem.h"
+#include "mi_iaggregate.h"
 
-class IModelList : public IModelItem
+class IModelItem;
+
+class IModelList : public IAggregate
 {
 public:
     enum { InterfaceType = I::IModelList };
 
+    IModelList(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
     virtual int listType() const = 0;
     virtual bool containsObjectNamed(const QString &name) const = 0;
+    virtual int count() const = 0;
+    virtual int indexOf(const IModelItem *item) const = 0;
+    virtual IModelItem *at(int i) const = 0;
     virtual void insert(int i, IModelItem *item) = 0;
     virtual void removeAt(int i) = 0;
     virtual void clear() = 0;
@@ -62,13 +71,6 @@ public:
     int interfaceType() const
     {
         return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IModelItem::isTypeOfInterface(interfaceType);
     }
 };
 

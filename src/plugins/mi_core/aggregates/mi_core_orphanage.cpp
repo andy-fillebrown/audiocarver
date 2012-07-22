@@ -15,35 +15,54 @@
 **
 **************************************************************************/
 
-#include "mi_core_superaggregator.h"
+#include "mi_core_orphanage.h"
 
-#include <mi_core_subaggregator.h>
+#include <mi_core_root.h>
+
+static IOrphanage *instance = 0;
+
+IOrphanage *IOrphanage::instance()
+{
+    return ::instance;
+}
 
 namespace Mi {
 namespace Core {
 
-SuperAggregator::~SuperAggregator()
+Orphanage::Orphanage(Root *aggregator)
+    :   IOrphanage(aggregator)
 {
-    qDeleteAll(_subAggregators);
-    _subAggregators.clear();
+    if (::instance)
+        delete ::instance;
+    ::instance = this;
 }
 
-IAggregate *SuperAggregator::createAggregate(int interfaceType)
+Orphanage::~Orphanage()
 {
-    foreach (IAggregator *sub_aggregator, _subAggregators) {
-        IAggregate *aggregate = sub_aggregator->createAggregate(interfaceType);
-        if (aggregate)
-            return aggregate;
-    }
-    return 0;
+    ::instance = 0;
 }
 
-void SuperAggregator::appendSubAggregator(SubAggregator *subAggregator)
+IAggregate *Orphanage::init()
 {
-    if (_subAggregators.contains(subAggregator))
+    return this;
+}
+
+Root *Orphanage::aggregator() const
+{
+    return static_cast<Root*>(IAggregate::aggregator());
+}
+
+void Orphanage::append(IAggregator *orphan)
+{
+    QList<IAggregator*> &orphans = aggregator()->orphans();
+    if (orphans.contains(orphan))
         return;
-    _subAggregators.append(subAggregator);
-    subAggregator->setSuperAggregator(this);
+    orphans.append(orphan);
+}
+
+void Orphanage::remove(IAggregator *orphan)
+{
+    aggregator()->orphans().removeOne(orphan);
 }
 
 } // namespace Core

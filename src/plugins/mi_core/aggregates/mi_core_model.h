@@ -15,34 +15,44 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_SUPERAGGREGATOR_H
-#define MI_CORE_SUPERAGGREGATOR_H
+#ifndef MI_CORE_MODEL_H
+#define MI_CORE_MODEL_H
 
-#include "mi_core_aggregator.h"
+#include "mi_imodel.h"
 
 namespace Mi {
 namespace Core {
 
-class SubAggregator;
+class Root;
 
-class MI_CORE_EXPORT SuperAggregator : public Aggregator
+class MI_CORE_EXPORT Model : public IModel
 {
-    QList<IAggregator*> _subAggregators;
+    friend class Root;
 
 protected:
-    SuperAggregator()
+    Model(Root *aggregator);
+    ~Model();
+    IAggregate *init();
+
+    IModelItem *rootItem() const
+    {
+        return 0;
+    }
+
+    void beginChangeData(const IModelData *data, int role, int dataChangeType)
     {}
 
-    ~SuperAggregator();
+    void endChangeData(const IModelData *data, int role, int dataChangeType)
+    {}
 
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType);
+    void beginChangeParent(const IModelItem *item)
+    {}
 
-public:
-    void appendSubAggregator(SubAggregator *subAggregator);
+    void endChangeParent(const IModelItem *item)
+    {}
 };
 
 } // namespace Core
 } // namespace Mi
 
-#endif // MI_CORE_SUPERAGGREGATOR_H
+#endif // MI_CORE_MODEL_H

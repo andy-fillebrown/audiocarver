@@ -38,6 +38,10 @@ public:
 
     static IModel *instance();
 
+    IModel(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
     virtual IModelItem *rootItem() const = 0;
     virtual void beginChangeData(const IModelData *data, int role, int dataChangeType) = 0;
     virtual void endChangeData(const IModelData *data, int role, int dataChangeType) = 0;
@@ -48,13 +52,6 @@ public:
     int interfaceType() const
     {
         return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
     }
 };
 

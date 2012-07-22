@@ -1,7 +1,7 @@
 
 SOURCE_FILES = \
-    dataobject \
-    dataobjectlist \
+    model \
+    orphanage \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

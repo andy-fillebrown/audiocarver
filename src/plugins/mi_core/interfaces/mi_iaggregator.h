@@ -25,22 +25,10 @@ class IAggregate;
 class IAggregator : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IAggregator };
-
-    virtual IAggregate *createAggregate(int interfaceType) = 0;
-    virtual IAggregate *appendAggregate(IAggregate *aggregate) = 0;
+    virtual IAggregator *init() = 0;
+    virtual void *setAggregate(int interfaceType, IAggregate *aggregate) = 0;
+    virtual void *setObject(int interfaceType, QObject *qobject) = 0;
     virtual void clear() = 0;
-
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
 };
 
 #endif // MI_IAGGREGATOR_H

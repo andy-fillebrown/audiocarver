@@ -15,44 +15,31 @@
 **
 **************************************************************************/
 
-#include "mi_orphanage.h"
+#include "mi_core_dataobjectlist.h"
 
-#include <mi_iaggregator.h>
+namespace Mi {
+namespace Core {
 
-static IOrphanage *instance = 0;
-
-IOrphanage *IOrphanage::instance()
+IAggregator *DataObjectList::init()
 {
-    return ::instance;
+    setName(itemTypeString(_listType) + "s");
+    return DataObject::init();
 }
 
-void Orphanage::destroy()
+DataObjectList::~DataObjectList()
 {
-    delete ::instance;
-    ::instance = 0;
+    clear();
 }
 
-Orphanage::Orphanage()
+IAggregate *DataObjectList::ModelItem::init()
 {
-    if (::instance)
-        delete ::instance;
-    ::instance = this;
+    return this;
 }
 
-Orphanage::~Orphanage()
+IAggregate *DataObjectList::ModelList::init()
 {
-    qDeleteAll(_orphans);
-    _orphans.clear();
+    return this;
 }
 
-void Orphanage::append(IAggregator *aggregator)
-{
-    if (_orphans.contains(aggregator))
-        return;
-    _orphans.append(aggregator);
-}
-
-void Orphanage::remove(IAggregator *aggregator)
-{
-    _orphans.removeOne(aggregator);
-}
+} // namespace Core
+} // namespace Mi

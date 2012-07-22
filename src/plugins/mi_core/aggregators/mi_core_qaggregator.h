@@ -28,51 +28,28 @@ class MI_CORE_EXPORT QAggregator : public Aggregator
     QHash<int, QObject*> _qobjects;
 
 protected:
-    QAggregator()
-    {}
-
+    QAggregator();
     ~QAggregator();
+    IAggregator *init();
 
-    virtual QObject *createQObject(int interfaceType)
+    void *setObject(int interfaceType, QObject *qobject)
     {
-        return 0;
-    }
-
-    virtual QObject *appendQObject(int interfaceType, QObject *qobject)
-    {
-        if (!_qobjects.contains(interfaceType))
-            _qobjects.insert(interfaceType, qobject);
+        _qobjects.insert(interfaceType, qobject);
         return qobject;
     }
 
-    void clear();
-
 public:
     // IUnknown
-    void *queryInterface(int interfaceType)
+    void *queryInterface(int interfaceType) const
     {
-        void *interface = Aggregator::queryInterface(interfaceType);
+        void *interface = _qobjects.value(interfaceType);
         if (interface)
             return interface;
-        interface = _qobjects.value(interfaceType);
-        if (interface)
-            return interface;
-        return createQObject(interfaceType);
-    }
-
-    const void *queryInterface(int interfaceType) const
-    {
-        const void *interface = Aggregator::queryInterface(interfaceType);
-        if (interface)
-            return interface;
-        interface = _qobjects.value(interfaceType);
-        if (interface)
-            return interface;
-        return 0;
+        return Aggregator::queryInterface(interfaceType);
     }
 };
 
 } // namespace Core
 } // namespace Mi
 
-#endif // MI_CORE_AGGREGATOR_H
+#endif // MI_CORE_QAGGREGATOR_H

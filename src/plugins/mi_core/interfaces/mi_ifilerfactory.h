@@ -27,6 +27,10 @@ class IFilerFactory : public IAggregate
 public:
     enum { InterfaceType = I::IFilerFactory };
 
+    IFilerFactory(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
     virtual IAggregator *create(int filerType) = 0;
 
     // IUnknown

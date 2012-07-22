@@ -28,6 +28,10 @@ class IDataObjectFactory : public IAggregate
 public:
     enum { InterfaceType = I::IDataObjectFactory };
 
+    IDataObjectFactory(IAggregator *aggregator)
+        :   IAggregate(aggregator)
+    {}
+
     virtual IAggregator *create(int itemType, IModelItem *parent = 0) = 0;
 
     // IUnknown

@@ -15,10 +15,35 @@
 **
 **************************************************************************/
 
-#include "mi_core_subaggregator.h"
+#include "mi_core_model.h"
+
+#include <mi_core_root.h>
+
+static IModel *instance = 0;
+
+IModel *IModel::instance()
+{
+    return ::instance;
+}
 
 namespace Mi {
 namespace Core {
+
+Model::Model(Root *aggregator)
+    :   IModel(aggregator)
+{
+    ::instance = this;
+}
+
+IAggregate *Model::init()
+{
+    return this;
+}
+
+Model::~Model()
+{
+    ::instance = 0;
+}
 
 } // namespace Core
 } // namespace Mi

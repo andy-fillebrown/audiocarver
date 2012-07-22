@@ -18,17 +18,17 @@
 #ifndef MI_CORE_DATAOBJECT_H
 #define MI_CORE_DATAOBJECT_H
 
-#include "mi_core_superaggregator.h"
+#include "mi_core_aggregator.h"
 
-#include "mi_imodeldata.h"
-#include "mi_imodelitem.h"
+#include <mi_imodeldata.h>
+#include <mi_imodelitem.h>
 
 namespace Mi {
 namespace Core {
 
 class DataObjectList;
 
-class MI_CORE_EXPORT DataObject : public SuperAggregator
+class MI_CORE_EXPORT DataObject : public Aggregator
 {
     friend class DataObjectList;
 
@@ -51,7 +51,7 @@ protected:
         :   _parent(0)
     {}
 
-    virtual IAggregator *init();
+    IAggregator *init();
 
     const QString &name() const
     {
@@ -79,20 +79,19 @@ protected:
 
     class MI_CORE_EXPORT ModelData : public IModelData
     {
-        DataObject *_aggregator;
         IModelItem *_item;
 
     protected:
         ModelData(DataObject *aggregator)
-            :   _aggregator(aggregator)
+            :   IModelData(aggregator)
             ,   _item(0)
         {}
 
-        virtual IAggregate *init();
+        IAggregate *init();
 
-        DataObject *a() const
+        DataObject *aggregator() const
         {
-            return _aggregator;
+            return static_cast<DataObject*>(IModelData::aggregator());
         }
 
         // IModelData
@@ -125,7 +124,7 @@ protected:
             switch (role) {
             case Qt::DisplayRole:
             case NameRole:
-                return a()->name();
+                return aggregator()->name();
             default:
                 Q_ASSERT(0);
                 return QVariant();
@@ -137,34 +136,26 @@ protected:
             switch (role) {
             case Qt::EditRole:
             case NameRole:
-                return a()->setName(qvariant_cast<QString>(data));
+                return aggregator()->setName(qvariant_cast<QString>(data));
             default:
                 Q_ASSERT(0);
                 return false;
             }
         }
-
-        // IAggregate
-        IAggregator *aggregator() const
-        {
-            return _aggregator;
-        }
     };
 
     class MI_CORE_EXPORT ModelItem : public IModelItem
     {
-        IAggregator *_aggregator;
-
     protected:
         ModelItem(DataObject *aggregator)
-            :   _aggregator(aggregator)
+            :   IModelItem(aggregator)
         {}
 
-        virtual IAggregate *init();
+        IAggregate *init();
 
-        DataObject *a() const
+        DataObject *aggregator() const
         {
-            return static_cast<DataObject*>(_aggregator);
+            return static_cast<DataObject*>(IModelItem::aggregator());
         }
 
         // IModelItem
@@ -180,21 +171,20 @@ protected:
 
         IModelItem *parent() const
         {
-            return query<IModelItem>(a()->parent());
+            return query<IModelItem>(aggregator()->parent());
         }
 
         void setParent(IModelItem *parent)
         {
             if (!parent) {
-                a()->setParent(0);
+                aggregator()->setParent(0);
                 return;
             }
-            DataObject *parent_a = dynamic_cast<DataObject*>(parent->aggregator());
-            a()->setParent(parent_a);
+            DataObject *parent_aggregator = dynamic_cast<DataObject*>(parent->aggregator());
+            aggregator()->setParent(parent_aggregator);
         }
 
         IModelList *list() const;
-        void remove();
 
         int count() const
         {
@@ -221,12 +211,6 @@ protected:
         IModelList *findList(int listType) const
         {
             return 0;
-        }
-
-        // IAggregate
-        IAggregator *aggregator() const
-        {
-            return _aggregator;
         }
     };
 };

@@ -24,34 +24,29 @@
 
 class IAggregate : public IUnknown
 {
-public:
-    enum { InterfaceType = I::IAggregate };
+    IAggregator *_aggregator;
 
-    virtual IAggregator *aggregator() const = 0;
+public:
+    IAggregate(IAggregator *aggregator)
+        :   _aggregator(aggregator)
+    {}
+
+    virtual IAggregate *init() = 0;
+
+    IAggregator *aggregator() const
+    {
+        return _aggregator;
+    }
+
+    virtual void update(int role)
+    {}
 
     // IUnknown
-    int interfaceType() const
+    void *queryInterface(int interfaceType) const
     {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
-
-    void *queryInterface(int interfaceType)
-    {
-        if (isTypeOfInterface(interfaceType))
-            return this;
+        if (this->interfaceType() == interfaceType)
+            return const_cast<IAggregate*>(this);
         return aggregator()->queryInterface(interfaceType);
-    }
-
-    const void *queryInterface(int interfaceType) const
-    {
-        if (isTypeOfInterface(interfaceType))
-            return this;
-        return const_cast<const IAggregator*>(aggregator())->queryInterface(interfaceType);
     }
 };
 

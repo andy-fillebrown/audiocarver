@@ -17,7 +17,8 @@
 
 #include "mi_coreplugin.h"
 
-#include <mi_core_database.h>
+#include <mi_core_root.h>
+#include <mi_core_namespace.h>
 
 #include <pluginmanager.h>
 
@@ -40,7 +41,7 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 
 CorePlugin::~CorePlugin()
 {
-    Core::Database::destroy();
+    delete Core::Root::instance();
 }
 
 } // namespace Mi

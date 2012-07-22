@@ -18,7 +18,6 @@
 #ifndef MI_CORE_SCOPEDDATACHANGE_H
 #define MI_CORE_SCOPEDDATACHANGE_H
 
-#include <mi_idatabase.h>
 #include <mi_imodel.h>
 #include <mi_imodeldata.h>
 
@@ -27,17 +26,17 @@ namespace Core {
 
 class ScopedDataChange
 {
-    const IModelData *_data;
+    IModelData *_data;
     const int _role;
     const DataChangeType _dataChangeType;
     IModel *_model;
 
 public:
     ScopedDataChange(const IAggregator *aggregator, int role, DataChangeType dataChangeType = PermanentDataChange)
-        :   _data(const_query<IModelData>(aggregator))
+        :   _data(query<IModelData>(aggregator))
         ,   _role(role)
         ,   _dataChangeType(dataChangeType)
-        ,   _model(query<IModel>(IDatabase::instance()))
+        ,   _model(IModel::instance())
     {
         if (!_data)
             return;
