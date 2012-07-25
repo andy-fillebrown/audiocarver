@@ -18,34 +18,50 @@
 #ifndef MI_IMODELITEM_H
 #define MI_IMODELITEM_H
 
-#include "mi_iaggregate.h"
+#include "mi_iunknown.h"
 
 class IModelList;
 
-class IModelItem : public IAggregate
+class IModelItem : public IUnknown
 {
 public:
     enum { InterfaceType = I::IModelItem };
-
-    IModelItem(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
 
     virtual int itemType() const = 0;
     virtual bool isTypeOfItem(int itemType) const = 0;
     virtual IModelItem *parent() const = 0;
     virtual void setParent(IModelItem *parent) = 0;
     virtual IModelList *list() const = 0;
-    virtual int count() const = 0;
-    virtual int indexOf(const IModelItem *item) const = 0;
-    virtual IModelItem *at(int i) const = 0;
+    virtual int roleCount() const = 0;
+    virtual int roleAt(int i) const = 0;
+    virtual QVariant getValue(int role) const = 0;
+    virtual bool setValue(const QVariant &value, int role) = 0;
+    virtual Qt::ItemFlags itemFlags() const = 0;
+    virtual int itemCount() const = 0;
+    virtual int indexOfItem(const IModelItem *item) const = 0;
+    virtual IModelItem *itemAt(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelList *findList(int listType) const = 0;
+
+    template <typename T> T get(int role) const
+    {
+        return getValue(role).value<T>();
+    }
+
+    bool set(const QVariant &value, int role)
+    {
+        return setValue(value, role);
+    }
 
     // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
     }
 };
 

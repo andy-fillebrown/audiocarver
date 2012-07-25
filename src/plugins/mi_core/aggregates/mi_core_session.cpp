@@ -15,44 +15,52 @@
 **
 **************************************************************************/
 
-#include "mi_core_aggregator.h"
+#include "mi_core_session.h"
 
-#include <mi_iaggregate.h>
-#include <mi_iorphanage.h>
+#include "mi_core_model.h"
+#include "mi_core_qmodel.h"
+
+static Mi::Core::Session *instance = 0;
 
 namespace Mi {
 namespace Core {
 
-Aggregator::Aggregator()
+Session *Session::instance()
 {
-    IOrphanage *orphanage = IOrphanage::instance();
-    if (orphanage)
-        orphanage->append(this);
+    return ::instance;
 }
 
-Aggregator::~Aggregator()
+Session::Session()
 {
-    IOrphanage *orphanage = IOrphanage::instance();
-    if (orphanage)
-        orphanage->remove(this);
-    qDeleteAll(_aggregates);
-    _aggregates.clear();
+    delete ::instance;
+    ::instance = this;
 }
 
-IAggregator *Aggregator::init()
+QObject *Session::initialize()
 {
+    (new Model(this))->initialize();
+    (new QModel(this))->initialize();
     return this;
 }
 
-void *Aggregator::setAggregate(int interfaceType, IAggregate *aggregate)
+Session::~Session()
 {
-    _aggregates.insert(interfaceType, aggregate);
-    return aggregate;
+    ::instance = 0;
 }
 
-void *Aggregator::queryInterface(int interfaceType) const
+void *Session::queryInterface(int interfaceType) const
 {
-    return _aggregates.value(interfaceType);
+    foreach (QObject *child, children()) {
+        QObject *interface = 0;
+        switch (interfaceType) {
+        case I::QModel:
+            interface = qobject_cast<QModel*>(child);
+            break;
+        }
+        if (interface)
+            return interface;
+    }
+    return Aggregate::queryInterface(interfaceType);
 }
 
 } // namespace Core

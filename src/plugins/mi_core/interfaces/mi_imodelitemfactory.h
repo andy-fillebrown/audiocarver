@@ -15,46 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELDATA_H
-#define MI_IMODELDATA_H
+#ifndef MI_IDATAOBJECTFACTORY_H
+#define MI_IDATAOBJECTFACTORY_H
 
-#include "mi_iaggregate.h"
+#include "mi_iunknown.h"
 
 class IModelItem;
 
-class QVariant;
-
-class IModelData : public IAggregate
+class IDataObjectFactory : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IModelData };
+    enum { InterfaceType = I::IDataObjectFactory };
 
-    IModelData(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
-
-    virtual IModelItem *item() const = 0;
-    virtual int roleCount() const = 0;
-    virtual int roleAt(int i) const = 0;
-    virtual QVariant getVariant(int role) const = 0;
-    virtual bool setVariant(const QVariant &data, int role) = 0;
-    virtual Qt::ItemFlags flags() const = 0;
-
-    template <typename T> T get(int role) const
-    {
-        return getVariant(role).value<T>();
-    }
-
-    bool set(const QVariant &data, int role)
-    {
-        return setVariant(data, role);
-    }
+    virtual IModelItem *create(int itemType, IModelItem *parent = 0) = 0;
 
     // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
     }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
 
-#endif // MI_IMODELDATA_H
+#endif // MI_IDATAOBJECTFACTORY_H

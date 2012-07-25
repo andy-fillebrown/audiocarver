@@ -18,24 +18,23 @@
 #ifndef MI_IUNKOWN_H
 #define MI_IUNKOWN_H
 
-#include <mi_core_namespace.h>
+#include "mi_core_namespace.h"
 
 class IUnknown
 {
 public:
-    virtual ~IUnknown()
-    {}
-
+    virtual ~IUnknown() {}
     virtual int interfaceType() const = 0;
+    virtual bool isTypeOfInterface(int interfaceType) const = 0;
     virtual void *queryInterface(int interfaceType) const = 0;
 };
 
 template <class T, class Unknown> inline
 T *query(const Unknown *unknown)
 {
-    if (unknown)
-        return static_cast<T*>(unknown->queryInterface(T::InterfaceType));
-    return 0;
+    if (!unknown)
+        return 0;
+    return static_cast<T*>(unknown->queryInterface(T::InterfaceType));
 }
 
 #endif // MI_IUNKOWN_H

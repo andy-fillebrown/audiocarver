@@ -15,41 +15,45 @@
 **
 **************************************************************************/
 
-#include "mi_core_root.h"
+#ifndef MI_CORE_AGGREGATE_H
+#define MI_CORE_AGGREGATE_H
 
-#include <mi_iaggregate.h>
+#include <QObject>
 
-#include <mi_core_model.h>
-#include <mi_core_orphanage.h>
+#include "mi_core_global.h"
 
-static Mi::Core::Root *instance = 0;
+class IUnknown;
 
 namespace Mi {
 namespace Core {
 
-Root *Root::instance()
+class MI_CORE_EXPORT Aggregate : public QObject
 {
-    return ::instance;
-}
+    Q_OBJECT
 
-Root::Root()
-{
-    if (::instance)
-        delete ::instance;
-    ::instance = this;
-}
+    QList<IUnknown*> _components;
 
-IAggregator *Root::init()
-{
-    setAggregate(I::IOrphanage, (new Orphanage(this))->init());
-    setAggregate(I::IModel, (new Model(this))->init());
-    return QAggregator::init();
-}
+public:
+    Aggregate();
+    ~Aggregate();
+    virtual QObject *initialize();
 
-Root::~Root()
-{
-    ::instance = 0;
-}
+    const QList<IUnknown*> &components() const
+    {
+        return _components;
+    }
+
+    void appendComponent(IUnknown *component)
+    {
+        if (_components.contains(component))
+            return;
+        _components.append(component);
+    }
+
+    virtual void *queryInterface(int interfaceType) const;
+};
 
 } // namespace Core
 } // namespace Mi
+
+#endif // MI_CORE_AGGREGATE_H

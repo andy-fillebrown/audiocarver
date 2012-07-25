@@ -18,59 +18,57 @@
 #ifndef MI_IMODELLIST_H
 #define MI_IMODELLIST_H
 
-#include "mi_iaggregate.h"
+#include "mi_imodelitem.h"
 
-class IModelItem;
-
-class IModelList : public IAggregate
+class IModelList : public IModelItem
 {
 public:
     enum { InterfaceType = I::IModelList };
 
-    IModelList(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
-
     virtual int listType() const = 0;
-    virtual bool containsObjectNamed(const QString &name) const = 0;
-    virtual int count() const = 0;
-    virtual int indexOf(const IModelItem *item) const = 0;
-    virtual IModelItem *at(int i) const = 0;
-    virtual void insert(int i, IModelItem *item) = 0;
-    virtual void removeAt(int i) = 0;
-    virtual void clear() = 0;
+    virtual bool containsItemNamed(const QString &name) const = 0;
+    virtual void insertItem(int i, IModelItem *item) = 0;
+    virtual void removeItemAt(int i) = 0;
+    virtual void clearItems() = 0;
 
-    bool isEmpty() const
+    bool hasItems() const
     {
-        return count() == 0;
+        return itemCount() != 0;
     }
 
-    void append(IModelItem *item)
+    void appendItem(IModelItem *item)
     {
-        insert(count(), item);
+        insert(itemCount(), item);
     }
 
-    IModelItem *takeAt(int i)
+    IModelItem *takeItemAt(int i)
     {
-        IModelItem *item = at(i);
-        removeAt(i);
+        IModelItem *item = itemAt(i);
+        removeItemAt(i);
         return item;
     }
 
-    void remove(IModelItem *item)
+    void removeItem(IModelItem *item)
     {
-        removeAt(indexOf(item));
+        removeItemAt(indexOfItem(item));
     }
 
-    void removeLast()
+    void removeLastItem()
     {
-        removeAt(count() - 1);
+        removeItemAt(count() - 1);
     }
 
     // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IModelItem::isTypeOfInterface(interfaceType);
     }
 };
 

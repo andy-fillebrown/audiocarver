@@ -3,7 +3,7 @@ load(../qt_core/qt_core.prf)
 
 DIRS = \
     aggregates \
-    aggregators \
+    components \
     interfaces \
     tools \
 

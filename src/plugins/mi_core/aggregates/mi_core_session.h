@@ -15,37 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef MI_IDATAOBJECTFACTORY_H
-#define MI_IDATAOBJECTFACTORY_H
+#ifndef MI_CORE_SESSION_H
+#define MI_CORE_SESSION_H
 
-#include "mi_iaggregate.h"
+#include "mi_core_aggregate.h"
 
-class IAggregator;
-class IModelItem;
+namespace Mi {
+namespace Core {
 
-class IDataObjectFactory : public IAggregate
+class MI_CORE_EXPORT Session : public Aggregate
 {
+    Q_OBJECT
+
 public:
-    enum { InterfaceType = I::IDataObjectFactory };
+    static Session *instance();
 
-    IDataObjectFactory(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
+    Session();
+    virtual ~Session();
+    QObject *initialize();
 
-    virtual IAggregator *create(int itemType, IModelItem *parent = 0) = 0;
-
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
-    }
+    void *queryInterface(int interfaceType) const;
 };
 
-#endif // MI_IDATAOBJECTFACTORY_H
+} // namespace Core
+} // namespace Mi
+
+#endif // MI_CORE_SESSION_H

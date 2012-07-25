@@ -15,36 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_ORPHANAGE_H
-#define MI_CORE_ORPHANAGE_H
+#ifndef MI_IORPHANAGE_H
+#define MI_IORPHANAGE_H
 
-#include "mi_iorphanage.h"
+#include "mi_iunknown.h"
 
-namespace Mi {
-
-class CorePlugin;
-
-namespace Core {
-
-class Root;
-
-class MI_CORE_EXPORT Orphanage : public IOrphanage
+class MI_CORE_EXPORT IOrphanage : public IUnknown
 {
-    friend class Root;
+public:
+    enum { InterfaceType = I::IOrphanage };
 
-protected:
-    Orphanage(Root *aggregator);
-    ~Orphanage();
-    IAggregate *init();
+    static IOrphanage *instance();
 
-    Root *aggregator() const;
+    virtual void append(IUnknown *orphan) = 0;
+    virtual void remove(IUnknown *orphan) = 0;
 
-    // IOrphanage
-    void append(IAggregator *orphan);
-    void remove(IAggregator *orphan);
+    // IUnknown
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
 
-} // namespace Core
-} // namespace Mi
-
-#endif // MI_CORE_ORPHANAGE_H
+#endif // MI_IORPHANAGE_H

@@ -15,23 +15,33 @@
 **
 **************************************************************************/
 
-#include "mi_core_qaggregator.h"
+#include "mi_core_aggregate.h"
+
+#include "mi_iunknown.h"
 
 namespace Mi {
 namespace Core {
 
-QAggregator::QAggregator()
+Aggregate::Aggregate()
 {}
 
-QAggregator::~QAggregator()
+Aggregate::~Aggregate()
 {
-    qDeleteAll(_qobjects);
-    _qobjects.clear();
+    qDeleteAll(_components);
+    _components.clear();
 }
 
-IAggregator *QAggregator::init()
+QObject *Aggregate::initialize()
 {
-    return Aggregator::init();
+    return this;
+}
+
+void *Aggregate::queryInterface(int interfaceType) const
+{
+    foreach (IUnknown *component, _components)
+        if (component->isTypeOfInterface(interfaceType))
+            return component;
+    return 0;
 }
 
 } // namespace Core

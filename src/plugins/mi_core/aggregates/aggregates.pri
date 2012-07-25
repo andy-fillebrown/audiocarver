@@ -1,7 +1,7 @@
 
 SOURCE_FILES = \
-    model \
-    orphanage \
+    aggregate \
+    session \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

@@ -15,55 +15,51 @@
 **
 **************************************************************************/
 
-#include "mi_core_orphanage.h"
+#ifndef MI_CORE_MODEL_H
+#define MI_CORE_MODEL_H
 
-#include <mi_core_root.h>
-
-static IOrphanage *instance = 0;
-
-IOrphanage *IOrphanage::instance()
-{
-    return ::instance;
-}
+#include "mi_imodel.h"
 
 namespace Mi {
 namespace Core {
 
-Orphanage::Orphanage(Root *aggregator)
-    :   IOrphanage(aggregator)
-{
-    if (::instance)
-        delete ::instance;
-    ::instance = this;
-}
+class Session;
 
-Orphanage::~Orphanage()
+class MI_CORE_EXPORT Model : public IModel
 {
-    ::instance = 0;
-}
+    Session *_aggregate;
 
-IAggregate *Orphanage::init()
-{
-    return this;
-}
+public:
+    Model(Session *aggregate);
+    ~Model();
+    virtual IUnknown *initialize();
 
-Root *Orphanage::aggregator() const
-{
-    return static_cast<Root*>(IAggregate::aggregator());
-}
+    Session *aggregate() const
+    {
+        return _aggregate;
+    }
 
-void Orphanage::append(IAggregator *orphan)
-{
-    QList<IAggregator*> &orphans = aggregator()->orphans();
-    if (orphans.contains(orphan))
-        return;
-    orphans.append(orphan);
-}
+    IModelItem *rootItem() const
+    {
+        return 0;
+    }
 
-void Orphanage::remove(IAggregator *orphan)
-{
-    aggregator()->orphans().removeOne(orphan);
-}
+    void beginChangeData(const IModelItem *item, int role, int dataChangeType)
+    {}
+
+    void endChangeData(const IModelItem *item, int role, int dataChangeType)
+    {}
+
+    void beginChangeParent(const IModelItem *item)
+    {}
+
+    void endChangeParent(const IModelItem *item)
+    {}
+
+    void *queryInterface(int interfaceType) const;
+};
 
 } // namespace Core
 } // namespace Mi
+
+#endif // MI_CORE_MODEL_H

@@ -18,20 +18,14 @@
 #ifndef MI_IFILERFACTORY_H
 #define MI_IFILERFACTORY_H
 
-#include "mi_iaggregate.h"
+#include "mi_iunknown.h"
 
-class IAggregator;
-
-class IFilerFactory : public IAggregate
+class IFilerFactory : public IUnknown
 {
 public:
     enum { InterfaceType = I::IFilerFactory };
 
-    IFilerFactory(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
-
-    virtual IAggregator *create(int filerType) = 0;
+    virtual IUnknown *create(int filerType) = 0;
 
     // IUnknown
     int interfaceType() const
@@ -41,9 +35,7 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 

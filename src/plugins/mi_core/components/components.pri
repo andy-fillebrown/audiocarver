@@ -1,10 +1,7 @@
 
 SOURCE_FILES = \
-    aggregator \
-    dataobject \
-    dataobjectlist \
-    qaggregator \
-    root \
+    model \
+    qmodel \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

@@ -15,20 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef MI_IAGGREGATOR_H
-#define MI_IAGGREGATOR_H
+#include "mi_core_model.h"
 
-#include "mi_iunknown.h"
+#include <mi_core_session.h>
 
-class IAggregate;
+static IModel *instance = 0;
 
-class IAggregator : public IUnknown
+IModel *IModel::instance()
 {
-public:
-    virtual IAggregator *init() = 0;
-    virtual void *setAggregate(int interfaceType, IAggregate *aggregate) = 0;
-    virtual void *setObject(int interfaceType, QObject *qobject) = 0;
-    virtual void clear() = 0;
-};
+    return ::instance;
+}
 
-#endif // MI_IAGGREGATOR_H
+namespace Mi {
+namespace Core {
+
+Model::Model(Session *aggregate)
+    :   _aggregate(aggregate)
+{
+    ::instance = this;
+}
+
+Model::~Model()
+{
+    ::instance = 0;
+}
+
+IUnknown *Model::initialize()
+{
+    aggregate()->appendComponent(this);
+    return this;
+}
+
+void *Model::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Model*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
+} // namespace Core
+} // namespace Mi

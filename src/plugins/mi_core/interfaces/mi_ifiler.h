@@ -18,18 +18,14 @@
 #ifndef MI_IFILER_H
 #define MI_IFILER_H
 
-#include "mi_iaggregate.h"
+#include "mi_iunknown.h"
 
 class IModelItem;
 
-class IFileFiler : public IAggregate
+class IFileFiler : public IUnknown
 {
 public:
     enum { InterfaceType = I::IFileFiler };
-
-    IFileFiler(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
 
     virtual QString fileName() const = 0;
     virtual void setFileName(const QString &fileName) = 0;
@@ -40,22 +36,16 @@ public:
         return InterfaceType;
     }
 
-    virtual bool isTypeOfInterface(int interfaceType) const
+    bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-class IReader : public IAggregate
+class IReader : public IUnknown
 {
 public:
     enum { InterfaceType = I::IReader };
-
-    IReader(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
 
     virtual int nextItemType() = 0;
     virtual bool read(IModelItem *item) = 0;
@@ -66,22 +56,16 @@ public:
         return InterfaceType;
     }
 
-    virtual bool isTypeOfInterface(int interfaceType) const
+    bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-class IWriter : public IAggregate
+class IWriter : public IUnknown
 {
 public:
     enum { InterfaceType = I::IWriter };
-
-    IWriter(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
 
     virtual bool write(IModelItem *item) = 0;
 
@@ -91,11 +75,9 @@ public:
         return InterfaceType;
     }
 
-    virtual bool isTypeOfInterface(int interfaceType) const
+    bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 

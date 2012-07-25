@@ -15,39 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef MI_IAGGREGATE_H
-#define MI_IAGGREGATE_H
+#ifndef MI_IMODELITEMWATCHER_H
+#define MI_IMODELITEMWATCHER_H
 
 #include "mi_iunknown.h"
 
-#include <mi_iaggregator.h>
+class IModelItem;
 
-class IAggregate : public IUnknown
+class IModelItemWatcher : public IUnknown
 {
-    IAggregator *_aggregator;
-
 public:
-    IAggregate(IAggregator *aggregator)
-        :   _aggregator(aggregator)
-    {}
+    enum { InterfaceType = I::IModelItemWatcher };
 
-    virtual IAggregate *init() = 0;
-
-    IAggregator *aggregator() const
-    {
-        return _aggregator;
-    }
-
-    virtual void update(int role)
-    {}
+    virtual void beginChangeData(const IModelItem *item, int role, int dataChangeType) = 0;
+    virtual void endChangeData(const IModelItem *item, int role, int dataChangeType) = 0;
+    virtual void beginChangeParent(const IModelItem *item) = 0;
+    virtual void endChangeParent(const IModelItem *item) = 0;
 
     // IUnknown
-    void *queryInterface(int interfaceType) const
+    int interfaceType() const
     {
-        if (this->interfaceType() == interfaceType)
-            return const_cast<IAggregate*>(this);
-        return aggregator()->queryInterface(interfaceType);
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
     }
 };
 
-#endif // MI_IAGGREGATE_H
+#endif // MI_IMODELITEMWATCHER_H

@@ -1,16 +1,13 @@
 
 SOURCE_FILES = \
-    iaggregate \
-    iaggregator \
     idatabase \
     idataobjectfactory \
     ifiler \
     ifilerfactory \
     imodel \
-    imodeldata \
     imodelitem \
+    imodelitemwatcher \
     imodellist \
-    iobject \
     iorphanage \
     iunknown \
 

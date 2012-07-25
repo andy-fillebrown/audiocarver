@@ -18,40 +18,30 @@
 #ifndef MI_IMODEL_H
 #define MI_IMODEL_H
 
-#include "mi_iaggregate.h"
+#include "mi_imodelitemwatcher.h"
 
-class IModelData;
 class IModelItem;
 
-namespace Mi {
-namespace Core {
-
-class QDataModel;
-
-} // namespace Core
-} // namespace Mi
-
-class MI_CORE_EXPORT IModel : public IAggregate
+class MI_CORE_EXPORT IModel : public IModelItemWatcher
 {
 public:
     enum { InterfaceType = I::IModel };
 
     static IModel *instance();
 
-    IModel(IAggregator *aggregator)
-        :   IAggregate(aggregator)
-    {}
-
     virtual IModelItem *rootItem() const = 0;
-    virtual void beginChangeData(const IModelData *data, int role, int dataChangeType) = 0;
-    virtual void endChangeData(const IModelData *data, int role, int dataChangeType) = 0;
-    virtual void beginChangeParent(const IModelItem *item) = 0;
-    virtual void endChangeParent(const IModelItem *item) = 0;
 
     // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IModelItemWatcher::isTypeOfInterface(interfaceType);
     }
 };
 
