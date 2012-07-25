@@ -15,30 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELITEMWATCHER_H
-#define MI_IMODELITEMWATCHER_H
+#ifndef MI_QIMODEL_H
+#define MI_QIMODEL_H
 
-#include "mi_iunknown.h"
+#include <QAbstractItemModel>
 
-class IModelItem;
+#include <mi_core_namespace.h>
 
-class IModelItemWatcher : public IUnknown
+class MI_CORE_EXPORT QIModel : public QAbstractItemModel
 {
+    Q_OBJECT
+
 public:
-    enum { InterfaceType = I::IModelItemWatcher };
+    enum { InterfaceType = I::QIModel };
 
-    virtual void beginChangeParent(const IModelItem *item) = 0;
-    virtual void endChangeParent(const IModelItem *item) = 0;
+    static QIModel *instance();
 
-    int interfaceType() const
+    QIModel(QObject *parent)
+        :   QAbstractItemModel(parent)
+    {}
+
+    virtual int interfaceType() const
     {
         return InterfaceType;
     }
 
-    bool isTypeOfInterface(int interfaceType) const
+    virtual bool isTypeOfInterface(int interfaceType) const
     {
         return InterfaceType == interfaceType;
     }
+
+    virtual void *queryInterface(int interfaceType) const = 0;
 };
 
-#endif // MI_IMODELITEMWATCHER_H
+#endif // MI_QIMODEL_H

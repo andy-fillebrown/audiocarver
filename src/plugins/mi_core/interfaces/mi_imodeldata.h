@@ -15,20 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELITEMWATCHER_H
-#define MI_IMODELITEMWATCHER_H
+#ifndef MI_IMODELDATA_H
+#define MI_IMODELDATA_H
 
 #include "mi_iunknown.h"
 
-class IModelItem;
-
-class IModelItemWatcher : public IUnknown
+class IModelData : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IModelItemWatcher };
+    enum { InterfaceType = I::IModelData };
 
-    virtual void beginChangeParent(const IModelItem *item) = 0;
-    virtual void endChangeParent(const IModelItem *item) = 0;
+    virtual int roleCount() const = 0;
+    virtual int roleAt(int i) const = 0;
+    virtual QVariant getValue(int role) const = 0;
+    virtual bool setValue(const QVariant &value, int role) = 0;
+    virtual Qt::ItemFlags flags() const = 0;
+
+    template <typename T> T get(int role) const
+    {
+        return getValue(role).value<T>();
+    }
+
+    bool set(const QVariant &value, int role)
+    {
+        return setValue(value, role);
+    }
 
     int interfaceType() const
     {
@@ -41,4 +52,4 @@ public:
     }
 };
 
-#endif // MI_IMODELITEMWATCHER_H
+#endif // MI_IMODELDATA_H

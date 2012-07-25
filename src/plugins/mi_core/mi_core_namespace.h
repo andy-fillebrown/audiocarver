@@ -32,13 +32,14 @@ enum MiCoreInterface {
     IFilerFactory,
     IModel,
     IModelData,
+    IModelDataWatcher,
     IModelItem,
+    IModelItemWatcher,
     IModelList,
-    IObject,
     IOrphanage,
     IReader,
     IWriter,
-    QModel,
+    QIModel,
     MiCoreInterfaceCount
 };
 

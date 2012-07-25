@@ -15,30 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELITEMWATCHER_H
-#define MI_IMODELITEMWATCHER_H
+#ifndef MI_CORE_QMODEL_H
+#define MI_CORE_QMODEL_H
 
-#include "mi_iunknown.h"
+#include "mi_qimodel.h"
 
-class IModelItem;
+namespace Mi {
+namespace Core {
 
-class IModelItemWatcher : public IUnknown
+class Session;
+
+class MI_CORE_EXPORT QModel : public QIModel
 {
+    Q_OBJECT
+
 public:
-    enum { InterfaceType = I::IModelItemWatcher };
+    QModel(Session *aggregate);
+    ~QModel();
+    virtual QObject *initialize();
 
-    virtual void beginChangeParent(const IModelItem *item) = 0;
-    virtual void endChangeParent(const IModelItem *item) = 0;
+    Session *aggregate() const;
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+    QModelIndex index(int row, int column, const QModelIndex &parent) const;
+    QModelIndex parent(const QModelIndex &child) const;
+    int rowCount(const QModelIndex &parent) const;
+    int columnCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
+    void *queryInterface(int interfaceType) const;
 };
 
-#endif // MI_IMODELITEMWATCHER_H
+} // namespace Core
+} // namespace Mi
+
+#endif // MI_CORE_MODEL_H

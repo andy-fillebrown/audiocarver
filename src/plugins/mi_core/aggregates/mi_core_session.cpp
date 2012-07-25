@@ -53,8 +53,8 @@ void *Session::queryInterface(int interfaceType) const
     foreach (QObject *child, children()) {
         QObject *interface = 0;
         switch (interfaceType) {
-        case I::QModel:
-            interface = qobject_cast<QModel*>(child);
+        case I::QIModel:
+            interface = qobject_cast<QIModel*>(child);
             break;
         }
         if (interface)

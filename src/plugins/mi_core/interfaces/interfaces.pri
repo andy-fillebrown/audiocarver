@@ -5,11 +5,14 @@ SOURCE_FILES = \
     ifiler \
     ifilerfactory \
     imodel \
+    imodeldata \
+    imodeldatawatcher \
     imodelitem \
+    imodelitemlist \
     imodelitemwatcher \
-    imodellist \
     iorphanage \
     iunknown \
+    qimodel \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

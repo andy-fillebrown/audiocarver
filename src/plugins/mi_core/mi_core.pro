@@ -9,12 +9,10 @@ load(../../plugin.prf)
 DEFINES *= \
     MI_CORE_LIBRARY
 
-HEADERS *= mi_coreplugin.h
-SOURCES *= mi_coreplugin.cpp
-
 SOURCE_FILES = \
     global \
     namespace \
+    plugin \
 
 for(file, SOURCE_FILES) {
     name = $${SOURCE_FILE_PREFIX}_$$file

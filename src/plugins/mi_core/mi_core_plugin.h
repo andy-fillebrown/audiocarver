@@ -15,31 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef MI_IORPHANAGE_H
-#define MI_IORPHANAGE_H
+#ifndef MI_CORE_PLUGIN_H
+#define MI_CORE_PLUGIN_H
 
-#include "mi_iunknown.h"
+#include <iplugin.h>
 
-class MI_CORE_EXPORT IOrphanage : public IUnknown
+namespace Mi {
+namespace Core {
+
+class Plugin : public ExtensionSystem::IPlugin
 {
-public:
-    enum { InterfaceType = I::IOrphanage };
+    Q_OBJECT
 
-    static IOrphanage *instance();
+protected:
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
 
-    virtual void append(IUnknown *orphan) = 0;
-    virtual void remove(IUnknown *orphan) = 0;
+    void extensionsInitialized()
+    {}
 
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
+    ~Plugin();
 };
 
-#endif // MI_IORPHANAGE_H
+} // namespace Core
+} // namespace Mi
+
+#endif // MI_CORE_PLUGIN_H

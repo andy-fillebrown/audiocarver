@@ -26,39 +26,38 @@ public:
     enum { InterfaceType = I::IModelList };
 
     virtual int listType() const = 0;
-    virtual bool containsItemNamed(const QString &name) const = 0;
-    virtual void insertItem(int i, IModelItem *item) = 0;
-    virtual void removeItemAt(int i) = 0;
-    virtual void clearItems() = 0;
+    virtual bool contains(const QString &name) const = 0;
+    virtual void insert(int i, IModelItem *item) = 0;
+    virtual void removeAt(int i) = 0;
+    virtual void clear() = 0;
 
-    bool hasItems() const
+    bool isEmpty() const
     {
-        return itemCount() != 0;
+        return count() == 0;
     }
 
-    void appendItem(IModelItem *item)
+    void append(IModelItem *item)
     {
         insert(itemCount(), item);
     }
 
-    IModelItem *takeItemAt(int i)
+    IModelItem *takeAt(int i)
     {
-        IModelItem *item = itemAt(i);
-        removeItemAt(i);
+        IModelItem *item = at(i);
+        removeAt(i);
         return item;
     }
 
-    void removeItem(IModelItem *item)
+    void remove(IModelItem *item)
     {
-        removeItemAt(indexOfItem(item));
+        removeAt(indexOfItem(item));
     }
 
-    void removeLastItem()
+    void removeLast()
     {
-        removeItemAt(count() - 1);
+        removeAt(count() - 1);
     }
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;

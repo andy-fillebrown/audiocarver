@@ -15,26 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef MI_COREPLUGIN_H
-#define MI_COREPLUGIN_H
+#ifndef MI_IMODELDATAWATCHER_H
+#define MI_IMODELDATAWATCHER_H
 
-#include <iplugin.h>
+#include "mi_iunknown.h"
 
-namespace Mi {
-
-class CorePlugin : public ExtensionSystem::IPlugin
+class IModelDataWatcher : public IUnknown
 {
-    Q_OBJECT
+public:
+    enum { InterfaceType = I::IModelDataWatcher };
 
-protected:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    virtual void beginChangeData(const IModelItem *item, int role, int dataChangeType) = 0;
+    virtual void endChangeData(const IModelItem *item, int role, int dataChangeType) = 0;
 
-    void extensionsInitialized()
-    {}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-    ~CorePlugin();
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
 
-} // namespace Mi
-
-#endif // MI_COREPLUGIN_H
+#endif // MI_IMODELDATAWATCHER_H

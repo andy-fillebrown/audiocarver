@@ -18,11 +18,11 @@
 #ifndef MI_IMODEL_H
 #define MI_IMODEL_H
 
-#include "mi_imodelitemwatcher.h"
+#include "mi_iunknown.h"
 
 class IModelItem;
 
-class MI_CORE_EXPORT IModel : public IModelItemWatcher
+class MI_CORE_EXPORT IModel : public IUnknown
 {
 public:
     enum { InterfaceType = I::IModel };
@@ -31,7 +31,6 @@ public:
 
     virtual IModelItem *rootItem() const = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -39,9 +38,7 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IModelItemWatcher::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 

@@ -30,7 +30,6 @@ public:
     virtual QString fileName() const = 0;
     virtual void setFileName(const QString &fileName) = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -50,7 +49,6 @@ public:
     virtual int nextItemType() = 0;
     virtual bool read(IModelItem *item) = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -69,7 +67,6 @@ public:
 
     virtual bool write(IModelItem *item) = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;

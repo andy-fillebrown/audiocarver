@@ -27,7 +27,6 @@ public:
 
     virtual IUnknown *create(int filerType) = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
