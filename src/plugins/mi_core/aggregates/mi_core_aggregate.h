@@ -18,39 +18,33 @@
 #ifndef MI_CORE_AGGREGATE_H
 #define MI_CORE_AGGREGATE_H
 
-#include <QObject>
-
-#include "mi_core_global.h"
-
-class IUnknown;
+#include "mi_iaggregate.h"
 
 namespace Mi {
 namespace Core {
 
-class MI_CORE_EXPORT Aggregate : public QObject
+class MI_CORE_EXPORT Aggregate : public IAggregate
 {
-    Q_OBJECT
-
     QList<IUnknown*> _components;
 
 public:
     Aggregate();
     ~Aggregate();
-    virtual QObject *initialize();
+    virtual IAggregate *initialize();
 
     const QList<IUnknown*> &components() const
     {
         return _components;
     }
 
-    void appendComponent(IUnknown *component)
+    IUnknown *append(IUnknown *component)
     {
-        if (_components.contains(component))
-            return;
-        _components.append(component);
+        if (!_components.contains(component))
+            _components.append(component);
+        return component;
     }
 
-    virtual void *queryInterface(int interfaceType) const;
+    void *queryInterface(int interfaceType) const;
 };
 
 } // namespace Core

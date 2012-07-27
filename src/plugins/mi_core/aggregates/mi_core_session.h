@@ -25,16 +25,15 @@ namespace Core {
 
 class MI_CORE_EXPORT Session : public Aggregate
 {
-    Q_OBJECT
-
 public:
     static Session *instance();
 
     Session();
     virtual ~Session();
-    QObject *initialize();
+    IAggregate *initialize();
 
-    void *queryInterface(int interfaceType) const;
+    void clear()
+    {}
 };
 
 } // namespace Core

@@ -20,21 +20,23 @@
 
 #include "mi_qimodel.h"
 
+class IAggregate;
+
 namespace Mi {
 namespace Core {
-
-class Session;
 
 class MI_CORE_EXPORT QModel : public QIModel
 {
     Q_OBJECT
 
+    IAggregate *_aggregate;
+
 public:
-    QModel(Session *aggregate);
+    QModel(IAggregate *aggregate);
     ~QModel();
     virtual QObject *initialize();
 
-    Session *aggregate() const;
+    IAggregate *aggregate() const;
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;

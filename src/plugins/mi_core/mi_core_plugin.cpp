@@ -18,8 +18,8 @@
 #include "mi_core_plugin.h"
 
 #include <mi_imodel.h>
+#include <mi_qimodel.h>
 
-#include "mi_core_qmodel.h"
 #include "mi_core_session.h"
 
 #include <pluginmanager.h>
@@ -63,16 +63,26 @@ using namespace Mi::Core;
 
 bool test_1()
 {
-    // Make sure query works.
+    // Make sure querying for interfaces works correctly.
     Session *session = Session::instance();
-    IModel *imodel = query<IModel>(session);
-    CHECK(imodel);
-    QModel *qmodel = query<QModel>(session);
-    CHECK(qmodel);
-    IModel *imodel_from_qmodel = query<IModel>(qmodel);
-    CHECK(imodel_from_qmodel);
-    QModel *qmodel_from_imodel = query<QModel>(imodel);
-    CHECK(qmodel_from_imodel);
+    IModel *model_i = 0;
+    QIModel *model_qi = 0;
+    model_i = IModel::instance();
+    CHECK(model_i);
+    model_qi = QIModel::instance();
+    CHECK(model_qi);
+    model_i = 0;
+    model_i = query<IModel>(session);
+    CHECK(model_i);
+    model_qi = 0;
+    model_qi = query<QIModel>(session);
+    CHECK(model_qi);
+    model_i = 0;
+    model_i = query<IModel>(model_qi);
+    CHECK(model_i);
+    model_qi = 0;
+    model_qi = query<QIModel>(model_i);
+    CHECK(model_qi);
     return true;
 }
 

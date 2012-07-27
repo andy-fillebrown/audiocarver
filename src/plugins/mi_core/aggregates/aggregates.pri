@@ -1,6 +1,8 @@
 
 SOURCE_FILES = \
     aggregate \
+    databaseobject \
+    databaseobjectlist \
     session \
 
 DIR = $$dirname(_FILE_)

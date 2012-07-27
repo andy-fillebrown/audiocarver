@@ -15,42 +15,30 @@
 **
 **************************************************************************/
 
-#include "mi_core_dataobject.h"
+#include "mi_core_databaseobject.h"
 
 #include <mi_idatabase.h>
-#include <mi_imodellist.h>
-#include <mi_iorphanage.h>
+#include <mi_imodelitemlist.h>
 
-#include <mi_core_dataobjectlist.h>
+#include <mi_core_databaseobjectlist.h>
 #include <mi_core_scopeddatachange.h>
 #include <mi_core_scopedparentchange.h>
 
 namespace Mi {
 namespace Core {
 
-IAggregator *DataObject::init()
+IAggregate *DatabaseObject::initialize()
 {
     return this;
 }
 
-IAggregate *DataObject::ModelData::init()
-{
-    _item = query<IModelItem>(aggregator());
-    return this;
-}
-
-IAggregate *DataObject::ModelItem::init()
-{
-    return this;
-}
-
-bool DataObject::setName(const QString &name)
+bool DatabaseObject::setName(const QString &name)
 {
     if (_name == name)
         return false;
     if (!name.isEmpty() && _parent && _parent->isList()) {
-        IModelList *list = query<IModelList>(_parent);
-        if (list && list->containsObjectNamed(name))
+        IModelItemList *list = query<IModelItemList>(_parent);
+        if (list && list->contains(name))
             return false;
     }
     ScopedDataChange data_change(this, NameRole);
@@ -58,31 +46,35 @@ bool DataObject::setName(const QString &name)
     return true;
 }
 
-void DataObject::setParent(DataObject *parent)
+void DatabaseObject::setParent(DatabaseObject *parent)
 {
     if (_parent == parent)
         return;
     ScopedParentChange parent_change(this);
-    IOrphanage *orphanage = IOrphanage::instance();
-    if (orphanage) {
-        if (!_parent)
-            orphanage->remove(this);
-        if (!parent)
-            orphanage->append(this);
-    }
     _parent = parent;
 }
 
-DataObjectList *DataObject::list() const
+DatabaseObjectList *DatabaseObject::list() const
 {
     if (_parent && _parent->isList())
-        return dynamic_cast<DataObjectList*>(_parent);
+        return dynamic_cast<DatabaseObjectList*>(_parent);
     return 0;
 }
 
-IModelList *DataObject::ModelItem::list() const
+IUnknown *DatabaseObject::ModelData::initialize()
 {
-    return query<IModelList>(aggregator()->list());
+    _item = query<IModelItem>(aggregate());
+    return this;
+}
+
+IUnknown *DatabaseObject::ModelItem::initialize()
+{
+    return this;
+}
+
+IModelItemList *DatabaseObject::ModelItem::list() const
+{
+    return query<IModelItemList>(aggregate()->list());
 }
 
 } // namespace Core

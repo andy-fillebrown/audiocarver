@@ -1,5 +1,6 @@
 
 SOURCE_FILES = \
+    database \
     model \
     qmodel \
 

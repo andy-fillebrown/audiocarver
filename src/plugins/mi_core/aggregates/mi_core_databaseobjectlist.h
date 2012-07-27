@@ -18,44 +18,44 @@
 #ifndef MI_CORE_DATAOBJECTLIST_H
 #define MI_CORE_DATAOBJECTLIST_H
 
-#include "mi_core_dataobject.h"
+#include "mi_core_databaseobject.h"
 
-#include "mi_imodellist.h"
+#include "mi_imodelitemlist.h"
 
 namespace Mi {
 namespace Core {
 
-class MI_CORE_EXPORT DataObjectList : public DataObject
+class MI_CORE_EXPORT DatabaseObjectList : public DatabaseObject
 {
     const int _listType;
-    QList<IAggregator*> _objects;
+    QList<IAggregate*> _objects;
 
 protected:
-    DataObjectList(int listType = UnknownItem)
+    DatabaseObjectList(int listType = UnknownItem)
         :   _listType(listType)
     {}
 
-    IAggregator *init();
-    ~DataObjectList();
+    IAggregate *initialize();
+    ~DatabaseObjectList();
 
     int listType() const
     {
         return _listType;
     }
 
-    QList<IAggregator*> &objects()
+    QList<IAggregate*> &objects()
     {
         return _objects;
     }
 
-    const QList<IAggregator*> &objects() const
+    const QList<IAggregate*> &objects() const
     {
         return _objects;
     }
 
     bool contains(const QString &name) const
     {
-        foreach (IAggregator *object, objects())
+        foreach (IAggregate *object, objects())
             if (query<IModelData>(object)->get<QString>(NameRole) == name)
                 return true;
         return false;
@@ -66,17 +66,17 @@ protected:
         return _objects.count();
     }
 
-    IAggregator *at(int i) const
+    IAggregate *at(int i) const
     {
         return _objects.at(i);
     }
 
-    void insert(int i, IAggregator *object)
+    void insert(int i, IAggregate *object)
     {
         IModelItem *item = query<IModelItem>(object);
-        IModelList *old_list = query<IModelList>(item->parent());
+        IModelItemList *old_list = query<IModelItemList>(item->parent());
         if (old_list) {
-            if (old_list == query<IModelList>(this))
+            if (old_list == query<IModelItemList>(this))
                 return;
             old_list->remove(item);
         }
@@ -91,29 +91,39 @@ protected:
                 data->set(new_name, NameRole);
         }
         _objects.insert(i, object);
-        dynamic_cast<DataObject*>(item->aggregator())->setParent(this);
+        dynamic_cast<DatabaseObject*>(query<IAggregate>(item))->setParent(this);
     }
 
-    // DataObject
     bool isList() const
     {
         return true;
     }
 
-    class MI_CORE_EXPORT ModelItem : public IModelItem
+    void clear()
+    {
+        foreach (IAggregate *object, objects()) {
+            dynamic_cast<DatabaseObject*>(object)->setParent(0);
+            delete object;
+        }
+        _objects.clear();
+    }
+
+    class MI_CORE_EXPORT ModelItemList : public IModelItemList
     {
         friend class DataObjectList;
 
+        DatabaseObjectList *_aggregate;
+
     protected:
-        ModelItem(DataObjectList *aggregator)
-            :   IModelItem(aggregator)
+        ModelItemList(DatabaseObjectList *aggregate)
+            :   _aggregate(aggregate)
         {}
 
-        IAggregate *init();
+        IUnknown *initialize();
 
-        DataObjectList *aggregator() const
+        DatabaseObjectList *aggregate() const
         {
-            return static_cast<DataObjectList*>(IAggregate::aggregator());
+            return _aggregate;
         }
 
         // IModelItem
@@ -129,37 +139,37 @@ protected:
 
         IModelItem *parent() const
         {
-            return query<IModelItem>(aggregator()->parent());
+            return query<IModelItem>(aggregate()->parent());
         }
 
         void setParent(IModelItem *parent)
         {
             if (!parent) {
-                aggregator()->setParent(0);
+                aggregate()->setParent(0);
                 return;
             }
-            DataObject *parent_aggregator = dynamic_cast<DataObject*>(parent->aggregator());
-            aggregator()->setParent(parent_aggregator);
+            DatabaseObject *parent_aggregate = dynamic_cast<DatabaseObject*>(query<IAggregate>(parent));
+            aggregate()->setParent(parent_aggregate);
         }
 
-        IModelList *list() const
+        IModelItemList *list() const
         {
             return 0;
         }
 
         int count() const
         {
-            return aggregator()->objects().count();
+            return aggregate()->objects().count();
         }
 
         int indexOf(const IModelItem *item) const
         {
-            return aggregator()->objects().indexOf(item->aggregator());
+            return aggregate()->objects().indexOf(query<IAggregate>(item));
         }
 
         IModelItem *at(int i) const
         {
-            return query<IModelItem>(aggregator()->objects().at(i));
+            return query<IModelItem>(aggregate()->objects().at(i));
         }
 
         IModelItem *findItem(int itemType) const
@@ -168,82 +178,39 @@ protected:
             return 0;
         }
 
-        IModelList *findList(int listType) const
+        IModelItemList *findList(int listType) const
         {
             Q_ASSERT(0);
             return 0;
         }
-    };
 
-    class MI_CORE_EXPORT ModelList : public IModelList
-    {
-        friend class DataObjectList;
-
-    protected:
-        ModelList(DataObjectList *aggregator)
-            :   IModelList(aggregator)
-        {}
-
-        IAggregate *init();
-
-        DataObjectList *aggregator() const
-        {
-            return static_cast<DataObjectList*>(IAggregate::aggregator());
-        }
-
-        // IModelList
         int listType() const
         {
-            return aggregator()->listType();
+            return aggregate()->listType();
         }
 
-        bool containsObjectNamed(const QString &name) const
+        bool contains(const QString &name) const
         {
-            return aggregator()->contains(name);
-        }
-
-        int count() const
-        {
-            return query<IModelItem>(aggregator())->count();
-        }
-
-        int indexOf(const IModelItem *item) const
-        {
-            return query<IModelItem>(aggregator())->indexOf(item);
-        }
-
-        IModelItem *at(int i) const
-        {
-            return query<IModelItem>(aggregator())->at(i);
+            return aggregate()->contains(name);
         }
 
         void insert(int i, IModelItem *item)
         {
-            aggregator()->insert(i, dynamic_cast<DataObject*>(item->aggregator()));
+            aggregate()->insert(i, dynamic_cast<DatabaseObject*>(query<IAggregate>(item)));
         }
 
         void removeAt(int i)
         {
-            QList<IAggregator*> &objects = aggregator()->objects();
-            dynamic_cast<DataObject*>(objects.at(i))->setParent(0);
+            QList<IAggregate*> &objects = aggregate()->objects();
+            dynamic_cast<DatabaseObject*>(objects.at(i))->setParent(0);
             objects.removeAt(i);
         }
 
         void clear()
         {
-            aggregator()->clear();
+            aggregate()->clear();
         }
     };
-
-    // IAggregator
-    void clear()
-    {
-        foreach (IAggregator *object, objects()) {
-            dynamic_cast<DataObject*>(object)->setParent(0);
-            delete object;
-        }
-        _objects.clear();
-    }
 };
 
 } // namespace Core

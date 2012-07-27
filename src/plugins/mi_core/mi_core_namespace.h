@@ -25,17 +25,18 @@
 namespace I {
 
 enum MiCoreInterface {
+    IAggregate,
+    IClassFactory,
     ICopyFiler,
     IDatabase,
-    IDataObjectFactory,
     IFileFiler,
     IFilerFactory,
     IModel,
     IModelData,
     IModelDataWatcher,
     IModelItem,
+    IModelItemList,
     IModelItemWatcher,
-    IModelList,
     IOrphanage,
     IReader,
     IWriter,

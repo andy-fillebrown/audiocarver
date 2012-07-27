@@ -25,8 +25,8 @@ class IModelDataWatcher : public IUnknown
 public:
     enum { InterfaceType = I::IModelDataWatcher };
 
-    virtual void beginChangeData(const IModelItem *item, int role, int dataChangeType) = 0;
-    virtual void endChangeData(const IModelItem *item, int role, int dataChangeType) = 0;
+    virtual void beginChangeData(const IModelData *data, int role, int dataChangeType) = 0;
+    virtual void endChangeData(const IModelData *data, int role, int dataChangeType) = 0;
 
     int interfaceType() const
     {

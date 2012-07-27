@@ -17,6 +17,7 @@
 
 #include "mi_core_session.h"
 
+#include "mi_core_database.h"
 #include "mi_core_model.h"
 #include "mi_core_qmodel.h"
 
@@ -36,8 +37,9 @@ Session::Session()
     ::instance = this;
 }
 
-QObject *Session::initialize()
+IAggregate *Session::initialize()
 {
+//    (new Database(this))->initialize();
     (new Model(this))->initialize();
     (new QModel(this))->initialize();
     return this;
@@ -46,21 +48,6 @@ QObject *Session::initialize()
 Session::~Session()
 {
     ::instance = 0;
-}
-
-void *Session::queryInterface(int interfaceType) const
-{
-    foreach (QObject *child, children()) {
-        QObject *interface = 0;
-        switch (interfaceType) {
-        case I::QIModel:
-            interface = qobject_cast<QIModel*>(child);
-            break;
-        }
-        if (interface)
-            return interface;
-    }
-    return Aggregate::queryInterface(interfaceType);
 }
 
 } // namespace Core

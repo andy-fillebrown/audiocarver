@@ -15,34 +15,30 @@
 **
 **************************************************************************/
 
-#include "mi_core_aggregate.h"
+#ifndef MI_ICLASSFACTORY_H
+#define MI_ICLASSFACTORY_H
 
 #include "mi_iunknown.h"
 
-namespace Mi {
-namespace Core {
+class IAggregate;
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class IClassFactory : public IUnknown
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+public:
+    enum { InterfaceType = I::IClassFactory };
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+    virtual IAggregate *createAggregate(int itemType) = 0;
+    virtual IUnknown *createComponent(int interfaceType) = 0;
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-} // namespace Core
-} // namespace Mi
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+};
+
+#endif // MI_ICLASSFACTORY_H

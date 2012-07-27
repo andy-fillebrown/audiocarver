@@ -15,34 +15,34 @@
 **
 **************************************************************************/
 
-#include "mi_core_aggregate.h"
+#ifndef MI_CORE_DATABASE_H
+#define MI_CORE_DATABASE_H
 
-#include "mi_iunknown.h"
+#include "mi_idatabase.h"
+
+class IAggregate;
 
 namespace Mi {
 namespace Core {
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class MI_CORE_EXPORT Database : public IDatabase
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+    IAggregate *_aggregate;
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+protected:
+    Database(IAggregate *aggregate);
+    ~Database();
+    virtual IUnknown *initialize();
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    void *queryInterface(int interfaceType) const;
+};
 
 } // namespace Core
 } // namespace Mi
+
+#endif // MI_CORE_DATABASE_H

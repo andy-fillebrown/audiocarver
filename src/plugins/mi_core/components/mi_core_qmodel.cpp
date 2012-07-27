@@ -17,15 +17,20 @@
 
 #include "mi_core_qmodel.h"
 
-#include <mi_core_session.h>
+#include "mi_core_session.h"
 
 static Mi::Core::QModel *instance = 0;
+
+QIModel *QIModel::instance()
+{
+    return ::instance;
+}
 
 namespace Mi {
 namespace Core {
 
-QModel::QModel(Session *aggregate)
-    :   QIModel(aggregate)
+QModel::QModel(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
     ::instance = this;
 }
@@ -37,12 +42,13 @@ QModel::~QModel()
 
 QObject *QModel::initialize()
 {
+    aggregate()->append(this);
     return this;
 }
 
-Session *QModel::aggregate() const
+IAggregate *QModel::aggregate() const
 {
-    return qobject_cast<Session*>(QObject::parent());
+    return _aggregate;
 }
 
 QModelIndex QModel::index(int row, int column, const QModelIndex &parent) const
@@ -72,8 +78,9 @@ QVariant QModel::data(const QModelIndex &index, int role) const
 
 void *QModel::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<QModel*>(this);
+    void *interface = QIModel::queryInterface(interfaceType);
+    if (interface)
+        return interface;
     return aggregate()->queryInterface(interfaceType);
 }
 

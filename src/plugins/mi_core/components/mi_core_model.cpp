@@ -17,7 +17,7 @@
 
 #include "mi_core_model.h"
 
-#include <mi_core_session.h>
+#include "mi_core_session.h"
 
 static IModel *instance = 0;
 
@@ -42,7 +42,7 @@ Model::~Model()
 
 IUnknown *Model::initialize()
 {
-    aggregate()->appendComponent(this);
+    aggregate()->append(this);
     return this;
 }
 

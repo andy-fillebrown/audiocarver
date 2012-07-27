@@ -15,29 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_DATAOBJECT_H
-#define MI_CORE_DATAOBJECT_H
+#ifndef MI_CORE_DATABASEOBJECT_H
+#define MI_CORE_DATABASEOBJECT_H
 
-#include "mi_core_aggregator.h"
+#include "mi_core_aggregate.h"
 
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
+#include "mi_imodeldata.h"
+#include "mi_imodelitem.h"
 
 namespace Mi {
 namespace Core {
 
-class DataObjectList;
+class DatabaseObjectList;
 
-class MI_CORE_EXPORT DataObject : public Aggregator
+class MI_CORE_EXPORT DatabaseObject : public Aggregate
 {
-    friend class DataObjectList;
+    friend class DatabaseObjectList;
 
     enum { RoleCount = 1 };
     enum { ItemCount = 0 };
 
     QString _name;
 
-    DataObject *_parent;
+    DatabaseObject *_parent;
 
 protected:
     enum {
@@ -47,11 +47,10 @@ protected:
         TotalItemCount = ItemCount
     };
 
-    DataObject()
-        :   _parent(0)
+    DatabaseObject()
     {}
 
-    IAggregator *init();
+    IAggregate *initialize();
 
     const QString &name() const
     {
@@ -60,38 +59,38 @@ protected:
 
     bool setName(const QString &name);
 
-    DataObject *parent() const
+    DatabaseObject *parent() const
     {
         if (isList() && _parent)
             return _parent->parent();
-        else
-            return _parent;
+        return _parent;
     }
 
-    virtual void setParent(DataObject *parent);
+    virtual void setParent(DatabaseObject *parent);
 
     virtual bool isList() const
     {
         return false;
     }
 
-    DataObjectList *list() const;
+    DatabaseObjectList *list() const;
 
     class MI_CORE_EXPORT ModelData : public IModelData
     {
+        DatabaseObject *_aggregate;
         IModelItem *_item;
 
     protected:
-        ModelData(DataObject *aggregator)
-            :   IModelData(aggregator)
+        ModelData(DatabaseObject *aggregate)
+            :   _aggregate(aggregate)
             ,   _item(0)
         {}
 
-        IAggregate *init();
+        virtual IUnknown *initialize();
 
-        DataObject *aggregator() const
+        DatabaseObject *aggregate() const
         {
-            return static_cast<DataObject*>(IModelData::aggregator());
+            return _aggregate;
         }
 
         // IModelData
@@ -119,24 +118,24 @@ protected:
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
         }
 
-        QVariant getVariant(int role) const
+        QVariant getValue(int role) const
         {
             switch (role) {
             case Qt::DisplayRole:
             case NameRole:
-                return aggregator()->name();
+                return aggregate()->name();
             default:
                 Q_ASSERT(0);
                 return QVariant();
             }
         }
 
-        bool setVariant(const QVariant &data, int role)
+        bool setValue(const QVariant &value, int role)
         {
             switch (role) {
             case Qt::EditRole:
             case NameRole:
-                return aggregator()->setName(qvariant_cast<QString>(data));
+                return aggregate()->setName(qvariant_cast<QString>(value));
             default:
                 Q_ASSERT(0);
                 return false;
@@ -146,16 +145,18 @@ protected:
 
     class MI_CORE_EXPORT ModelItem : public IModelItem
     {
+        DatabaseObject *_aggregate;
+
     protected:
-        ModelItem(DataObject *aggregator)
-            :   IModelItem(aggregator)
+        ModelItem(DatabaseObject *aggregate)
+            :   _aggregate(aggregate)
         {}
 
-        IAggregate *init();
+        virtual IUnknown *initialize();
 
-        DataObject *aggregator() const
+        DatabaseObject *aggregate() const
         {
-            return static_cast<DataObject*>(IModelItem::aggregator());
+            return _aggregate;
         }
 
         // IModelItem
@@ -171,20 +172,20 @@ protected:
 
         IModelItem *parent() const
         {
-            return query<IModelItem>(aggregator()->parent());
+            return query<IModelItem>(aggregate()->parent());
         }
 
         void setParent(IModelItem *parent)
         {
             if (!parent) {
-                aggregator()->setParent(0);
+                aggregate()->setParent(0);
                 return;
             }
-            DataObject *parent_aggregator = dynamic_cast<DataObject*>(parent->aggregator());
-            aggregator()->setParent(parent_aggregator);
+            DatabaseObject *parent_aggregate = dynamic_cast<DatabaseObject*>(query<IAggregate>(parent));
+            aggregate()->setParent(parent_aggregate);
         }
 
-        IModelList *list() const;
+        IModelItemList *list() const;
 
         int count() const
         {
@@ -208,7 +209,7 @@ protected:
             return 0;
         }
 
-        IModelList *findList(int listType) const
+        IModelItemList *findList(int listType) const
         {
             return 0;
         }
@@ -218,4 +219,4 @@ protected:
 } // namespace Core
 } // namespace Mi
 
-#endif // MI_CORE_DATAOBJECT_H
+#endif // MI_CORE_DATABASEOBJECT_H

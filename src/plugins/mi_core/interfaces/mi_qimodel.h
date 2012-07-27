@@ -20,9 +20,10 @@
 
 #include <QAbstractItemModel>
 
-#include <mi_core_namespace.h>
+#include "mi_iunknown.h"
 
 class MI_CORE_EXPORT QIModel : public QAbstractItemModel
+        ,   public IUnknown
 {
     Q_OBJECT
 
@@ -31,21 +32,25 @@ public:
 
     static QIModel *instance();
 
-    QIModel(QObject *parent)
-        :   QAbstractItemModel(parent)
+    QIModel()
     {}
 
-    virtual int interfaceType() const
+    int interfaceType() const
     {
         return InterfaceType;
     }
 
-    virtual bool isTypeOfInterface(int interfaceType) const
+    bool isTypeOfInterface(int interfaceType) const
     {
         return InterfaceType == interfaceType;
     }
 
-    virtual void *queryInterface(int interfaceType) const = 0;
+    void *queryInterface(int interfaceType) const
+    {
+        if (isTypeOfInterface(interfaceType))
+            return const_cast<QIModel*>(this);
+        return 0;
+    }
 };
 
 #endif // MI_QIMODEL_H

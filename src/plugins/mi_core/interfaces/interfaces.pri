@@ -1,5 +1,7 @@
 
 SOURCE_FILES = \
+    iaggregate \
+    iclassfactory \
     idatabase \
     idataobjectfactory \
     ifiler \

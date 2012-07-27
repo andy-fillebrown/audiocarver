@@ -18,8 +18,9 @@
 #ifndef MI_CORE_SCOPEDPARENTCHANGE_H
 #define MI_CORE_SCOPEDPARENTCHANGE_H
 
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
+#include "mi_iaggregate.h"
+#include "mi_imodelitem.h"
+#include "mi_imodelitemwatcher.h"
 
 namespace Mi {
 namespace Core {
@@ -27,25 +28,28 @@ namespace Core {
 class ScopedParentChange
 {
     const IModelItem *_item;
-    IModel *_model;
+    QList<IModelItemWatcher*> _watchers;
 
 public:
-    ScopedParentChange(const IAggregator *aggregator)
-        :   _item(query<IModelItem>(aggregator))
-        ,   _model(IModel::instance())
+    ScopedParentChange(const IAggregate *aggregate)
+        :   _item(query<IModelItem>(aggregate))
     {
         if (!_item)
             return;
-        if (_model)
-            _model->beginChangeParent(_item);
+        const QList<IUnknown*> &components = query<IAggregate>(_item)->components();
+        foreach (IUnknown *component, components)
+            if (component->isTypeOfInterface(I::IModelItemWatcher))
+                _watchers.append(query<IModelItemWatcher>(component));
+        foreach (IModelItemWatcher *watcher, _watchers)
+            watcher->beginChangeParent(_item);
     }
 
     ~ScopedParentChange()
     {
         if (!_item)
             return;
-        if (_model)
-            _model->endChangeParent(_item);
+        foreach (IModelItemWatcher *watcher, _watchers)
+            watcher->endChangeParent(_item);
     }
 };
 

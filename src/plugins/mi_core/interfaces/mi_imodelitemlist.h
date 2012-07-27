@@ -15,15 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef MI_IMODELLIST_H
-#define MI_IMODELLIST_H
+#ifndef MI_IMODELITEMLIST_H
+#define MI_IMODELITEMLIST_H
 
 #include "mi_imodelitem.h"
 
-class IModelList : public IModelItem
+class IModelItemList : public IModelItem
 {
 public:
-    enum { InterfaceType = I::IModelList };
+    enum { InterfaceType = I::IModelItemList };
 
     virtual int listType() const = 0;
     virtual bool contains(const QString &name) const = 0;
@@ -38,7 +38,7 @@ public:
 
     void append(IModelItem *item)
     {
-        insert(itemCount(), item);
+        insert(count(), item);
     }
 
     IModelItem *takeAt(int i)
@@ -50,7 +50,7 @@ public:
 
     void remove(IModelItem *item)
     {
-        removeAt(indexOfItem(item));
+        removeAt(indexOf(item));
     }
 
     void removeLast()
@@ -71,4 +71,4 @@ public:
     }
 };
 
-#endif // MI_IMODELLIST_H
+#endif // MI_IMODELITEMLIST_H

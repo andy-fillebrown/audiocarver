@@ -15,33 +15,25 @@
 **
 **************************************************************************/
 
-#include "mi_core_aggregate.h"
-
-#include "mi_iunknown.h"
+#include "mi_core_databaseobjectlist.h"
 
 namespace Mi {
 namespace Core {
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+IAggregate *DatabaseObjectList::initialize()
 {
-    qDeleteAll(_components);
-    _components.clear();
+    setName(itemTypeString(_listType) + "s");
+    return DatabaseObject::initialize();
 }
 
-IAggregate *Aggregate::initialize()
+DatabaseObjectList::~DatabaseObjectList()
+{
+    clear();
+}
+
+IUnknown *DatabaseObjectList::ModelItemList::initialize()
 {
     return this;
-}
-
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
 }
 
 } // namespace Core
