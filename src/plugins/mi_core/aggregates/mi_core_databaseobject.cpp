@@ -17,12 +17,12 @@
 
 #include "mi_core_databaseobject.h"
 
-#include <mi_idatabase.h>
-#include <mi_imodelitemlist.h>
+#include "mi_idatabase.h"
+#include "mi_imodelitemlist.h"
 
-#include <mi_core_databaseobjectlist.h>
-#include <mi_core_scopeddatachange.h>
-#include <mi_core_scopedparentchange.h>
+#include "mi_core_databaseobjectlist.h"
+#include "mi_core_scopeddatachange.h"
+#include "mi_core_scopedparentchange.h"
 
 namespace Mi {
 namespace Core {

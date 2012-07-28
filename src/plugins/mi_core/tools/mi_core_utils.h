@@ -18,7 +18,7 @@
 #ifndef MI_CORE_UTILS_H
 #define MI_CORE_UTILS_H
 
-#include <mi_core_global.h>
+#include "mi_core_global.h"
 
 namespace Mi {
 namespace Core {
