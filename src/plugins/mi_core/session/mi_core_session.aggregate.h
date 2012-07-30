@@ -15,43 +15,35 @@
 **
 **************************************************************************/
 
-#include "mi_core_model.h"
+#ifndef MI_CORE_SESSION_AGGREGATE_H
+#define MI_CORE_SESSION_AGGREGATE_H
 
-#include "mi_core_session.h"
-
-static IModel *instance = 0;
-
-IModel *IModel::instance()
-{
-    return ::instance;
-}
+#include "mi_core_aggregate.h"
 
 namespace Mi {
 namespace Core {
 
-Model::Model(Session *aggregate)
-    :   _aggregate(aggregate)
+class Plugin;
+
+namespace Session {
+
+class MI_CORE_EXPORT Aggregate : public Core::Aggregate
 {
-    ::instance = this;
+    friend class Core::Plugin;
+
+protected:
+    Aggregate();
+    virtual ~Aggregate();
+    IAggregate *initialize();
+
+    void clear()
+    {}
+};
+
+MI_CORE_EXPORT Aggregate *instance();
+
+}
+}
 }
 
-Model::~Model()
-{
-    ::instance = 0;
-}
-
-IUnknown *Model::initialize()
-{
-    aggregate()->append(this);
-    return this;
-}
-
-void *Model::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Model*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
-} // namespace Core
-} // namespace Mi
+#endif

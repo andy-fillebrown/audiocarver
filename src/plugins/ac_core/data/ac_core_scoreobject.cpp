@@ -18,7 +18,7 @@
 #include "ac_core_scoreobject.h"
 
 #include <mi_idatabase.h>
-#include <mi_idataobjectfactory.h>
+#include <mi_iclassfactory.h>
 
 #include <mi_core_scopeddatachange.h>
 
@@ -27,13 +27,13 @@ using namespace Mi::Core;
 namespace Ac {
 namespace Core {
 
-IAggregator *ScoreObject::init()
+IAggregate *ScoreObject::initialize()
 {
-    IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
+    IClassFactory *factory = query<IClassFactory>(IDatabase::instance());
     IModelItem *this_item = query<IModelItem>(this);
-    _pitchCurve = factory->create(Ac::PitchCurveItem, this_item);
-    _controlCurves = factory->create(Ac::ControlCurveListItem, this_item);
-    return DataObject::init();
+    _pitchCurve = factory->createAggregate(Ac::PitchCurveItem, this_item);
+    _controlCurves = factory->createAggregate(Ac::ControlCurveListItem, this_item);
+    return DatabaseObject::initialize();
 }
 
 ScoreObject::~ScoreObject()
@@ -52,14 +52,14 @@ bool ScoreObject::setVolume(qreal volume)
     return true;
 }
 
-IAggregate *ScoreObject::ModelData::init()
+IUnknown *ScoreObject::ModelData::initialize()
 {
-    return DataObject::ModelData::init();
+    return DatabaseObject::ModelData::initialize();
 }
 
-IAggregate *ScoreObject::ModelItem::init()
+IUnknown *ScoreObject::ModelItem::initialize()
 {
-    return DataObject::ModelItem::init();
+    return DatabaseObject::ModelItem::initialize();
 }
 
 } // namespace Core

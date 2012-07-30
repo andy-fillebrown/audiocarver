@@ -15,43 +15,38 @@
 **
 **************************************************************************/
 
-#include "mi_core_database.h"
+#ifndef MI_CORE_SESSION_QMODEL_H
+#define MI_CORE_SESSION_QMODEL_H
 
-#include "mi_core_session.h"
+#include "mi_qimodel.h"
 
-static IDatabase *instance = 0;
-
-IDatabase *IDatabase::instance()
-{
-    return ::instance;
-}
+class IAggregate;
 
 namespace Mi {
 namespace Core {
+namespace Session {
 
-Database::Database(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+class MI_CORE_EXPORT QModel : public QIModel
 {
-    ::instance = this;
+    Q_OBJECT
+
+    IAggregate *_aggregate;
+
+public:
+    QModel(IAggregate *aggregate);
+    ~QModel();
+    virtual QObject *initialize();
+    IAggregate *aggregate() const;
+    QModelIndex index(int row, int column, const QModelIndex &parent) const;
+    QModelIndex parent(const QModelIndex &child) const;
+    int rowCount(const QModelIndex &parent) const;
+    int columnCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
+    void *queryInterface(int interfaceType) const;
+};
+
+}
+}
 }
 
-Database::~Database()
-{
-    ::instance = 0;
-}
-
-IUnknown *Database::initialize()
-{
-    aggregate()->append(this);
-    return this;
-}
-
-void *Database::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Database*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
-} // namespace Core
-} // namespace Mi
+#endif

@@ -36,14 +36,14 @@ class AC_CORE_EXPORT Database : public Mi::Core::Database
     friend class Model;
 
     QString _fileName;
-    IAggregator *_score;
+    IAggregate *_score;
 
 protected:
     Database()
         :   _score(0)
     {}
 
-    IAggregator *init();
+    IAggregate *initialize();
     ~Database();
 
     IAggregator *score() const

@@ -15,46 +15,48 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_QDATAMODEL_H
-#define MI_CORE_QDATAMODEL_H
+#ifndef MI_CORE_DATABASE_OBJECT_MODELDATA_H
+#define MI_CORE_DATABASE_OBJECT_MODELDATA_H
 
-#include "mi_iunknown.h"
+#include "mi_imodeldata.h"
 
-#include <QAbstractItemModel>
+class IAggregate;
 
-class IAggregator;
+namespace Mi {
+namespace Core {
+namespace Database {
+namespace Object {
 
-class MI_CORE_EXPORT QModel : public QAbstractItemModel, public IUnknown
+class Aggregate;
+
+class MI_CORE_EXPORT ModelData : public IModelData
 {
-    Q_OBJECT
+    Aggregate *_aggregate;
 
-    IAggregator *_aggregator;
+protected:
+    ModelData(IAggregate *aggregate);
+    virtual IUnknown *initialize();
 
-public:
-    enum { InterfaceType = I::QModel };
-
-    static QModel *instance();
-
-    QModel(IAggregator *aggregator);
-    ~QModel();
-
-    virtual QObject *init();
-
-    // QAbstractItemModel
-
-    // IUnknown
-    int interfaceType() const
+    Aggregate *aggregate() const
     {
-        return InterfaceType;
+        return _aggregate;
     }
 
-    bool isTypeOfInterface(int interfaceType) const
+    int roleCount() const;
+    int roleAt(int i) const;
+
+    Qt::ItemFlags flags() const
     {
-        return InterfaceType == interfaceType;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
-    void *queryInterface(int interfaceType);
-    const void *queryInterface(int interfaceType) const;
+    QVariant getValue(int role) const;
+    bool setValue(const QVariant &value, int role);
 };
 
-#endif // MI_CORE_QDATAMODEL_H
+}
+}
+}
+}
+
+#endif

@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_QIAGGREGATE_H
-#define MI_QIAGGREGATE_H
+#ifndef MI_IAGGREGATE_H
+#define MI_IAGGREGATE_H
 
 #include "mi_iunknown.h"
 
@@ -47,4 +47,4 @@ public:
     }
 };
 
-#endif // MI_QIAGGREGATE_H
+#endif // MI_IAGGREGATE_H

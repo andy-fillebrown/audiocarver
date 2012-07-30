@@ -1,17 +1,17 @@
 
 SOURCE_FILES = \
-    curve \
-    controlcurve \
-    dataobjectlist \
-    gridline \
-    gridsettings \
-    note \
-    pitchcurve \
+#    curve \
+#    controlcurve \
+#    dataobjectlist \
+#    gridline \
+#    gridsettings \
+#    note \
+#    pitchcurve \
+#    projectsettings \
+#    score \
     scoreobject \
-    projectsettings \
-    score \
-    track \
-    viewsettings \
+#    track \
+#    viewsettings \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

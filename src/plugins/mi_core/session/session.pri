@@ -1,14 +1,14 @@
 
 SOURCE_FILES = \
     aggregate \
-    databaseobject \
-    databaseobjectlist \
-    session \
+    database \
+    model \
+    qmodel \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    name = $${SOURCE_FILE_PREFIX}_$$file
+    name = $${SOURCE_FILE_PREFIX}_session.$$file
     header = $${name}.h
     source = $${name}.cpp
     exists($$header): HEADERS *= $$DIR/$$header

@@ -15,24 +15,26 @@
 **
 **************************************************************************/
 
-#include "mi_core_databaseobject.h"
+#include "mi_core_database_object.aggregate.h"
 
 #include "mi_idatabase.h"
 #include "mi_imodelitemlist.h"
 
-#include "mi_core_databaseobjectlist.h"
+#include "mi_core_database_objectlist.aggregate.h"
 #include "mi_core_scopeddatachange.h"
 #include "mi_core_scopedparentchange.h"
 
 namespace Mi {
 namespace Core {
+namespace Database {
+namespace Object {
 
-IAggregate *DatabaseObject::initialize()
+IAggregate *Aggregate::initialize()
 {
     return this;
 }
 
-bool DatabaseObject::setName(const QString &name)
+bool Aggregate::setName(const QString &name)
 {
     if (_name == name)
         return false;
@@ -46,7 +48,7 @@ bool DatabaseObject::setName(const QString &name)
     return true;
 }
 
-void DatabaseObject::setParent(DatabaseObject *parent)
+void Aggregate::setParent(Aggregate *parent)
 {
     if (_parent == parent)
         return;
@@ -54,28 +56,14 @@ void DatabaseObject::setParent(DatabaseObject *parent)
     _parent = parent;
 }
 
-DatabaseObjectList *DatabaseObject::list() const
+ObjectList::Aggregate *Aggregate::list() const
 {
     if (_parent && _parent->isList())
-        return dynamic_cast<DatabaseObjectList*>(_parent);
+        return dynamic_cast<ObjectList::Aggregate*>(_parent);
     return 0;
 }
 
-IUnknown *DatabaseObject::ModelData::initialize()
-{
-    _item = query<IModelItem>(aggregate());
-    return this;
 }
-
-IUnknown *DatabaseObject::ModelItem::initialize()
-{
-    return this;
 }
-
-IModelItemList *DatabaseObject::ModelItem::list() const
-{
-    return query<IModelItemList>(aggregate()->list());
 }
-
-} // namespace Core
-} // namespace Mi
+}

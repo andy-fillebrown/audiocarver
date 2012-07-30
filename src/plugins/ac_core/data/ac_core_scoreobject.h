@@ -18,31 +18,31 @@
 #ifndef AC_CORE_SCOREOBJECT_H
 #define AC_CORE_SCOREOBJECT_H
 
-#include "mi_core_dataobject.h"
+#include <mi_core_databaseobject.h>
 
-#include <mi_imodellist.h>
+#include <mi_imodelitemlist.h>
 
-#include <ac_core_constants.h>
-#include <ac_core_namespace.h>
+#include "ac_core_constants.h"
+#include "ac_core_namespace.h"
 
 namespace Ac {
 namespace Core {
 
-class AC_CORE_EXPORT ScoreObject : public Mi::Core::DataObject
+class AC_CORE_EXPORT ScoreObject : public Mi::Core::DatabaseObject
 {
     enum { RoleCount = 1 };
     enum { ItemCount = 2 };
 
     qreal _volume;
 
-    IAggregator *_pitchCurve;
-    IAggregator *_controlCurves;
+    IAggregate *_pitchCurve;
+    IAggregate *_controlCurves;
 
 protected:
     enum {
-        RoleCountOffset = DataObject::TotalRoleCount,
+        RoleCountOffset = DatabaseObject::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount,
-        ItemCountOffset = DataObject::TotalItemCount,
+        ItemCountOffset = DatabaseObject::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
@@ -52,7 +52,7 @@ protected:
         ,   _controlCurves(0)
     {}
 
-    IAggregator *init();
+    IAggregate *initialize();
     ~ScoreObject();
 
     qreal volume() const
@@ -62,31 +62,31 @@ protected:
 
     bool setVolume(qreal volume);
 
-    IAggregator *pitchCurve() const
+    IAggregate *pitchCurve() const
     {
         return _pitchCurve;
     }
 
-    IAggregator *controlCurves() const
+    IAggregate *controlCurves() const
     {
         return _controlCurves;
     }
 
-    class AC_CORE_EXPORT ModelData : public DataObject::ModelData
+    class AC_CORE_EXPORT ModelData : public DatabaseObject::ModelData
     {
         friend class ScoreObject;
 
-        ScoreObject *a() const
+        ScoreObject *aggregate() const
         {
-            return static_cast<ScoreObject*>(DataObject::ModelData::a());
+            return static_cast<ScoreObject*>(DatabaseObject::ModelData::aggregate());
         }
 
     protected:
-        ModelData(ScoreObject *aggregator)
-            :   DataObject::ModelData(aggregator)
+        ModelData(ScoreObject *aggregate)
+            :   DatabaseObject::ModelData(aggregate)
         {}
 
-        IAggregate *init();
+        IUnknown *initialize();
 
         // IModelData
         int roleCount() const
@@ -100,44 +100,44 @@ protected:
             case 0:
                 return VolumeRole;
             default:
-                return DataObject::ModelData::roleAt(i);
+                return DatabaseObject::ModelData::roleAt(i);
             }
         }
 
-        QVariant getVariant(int role) const
+        QVariant getValue(int role) const
         {
             switch (role) {
             case VolumeRole:
-                return a()->volume();
+                return aggregate()->volume();
             default:
-                return DataObject::ModelData::getVariant(role);
+                return DatabaseObject::ModelData::getValue(role);
             }
         }
 
-        bool setVariant(const QVariant &data, int role)
+        bool setValue(const QVariant &value, int role)
         {
             switch (role) {
             case VolumeRole:
-                return a()->setVolume(qvariant_cast<qreal>(data));
+                return aggregate()->setVolume(qvariant_cast<qreal>(value));
             default:
-                return DataObject::ModelData::setVariant(data, role);
+                return DatabaseObject::ModelData::setValue(value, role);
             }
         }
     };
 
-    class AC_CORE_EXPORT ModelItem : public DataObject::ModelItem
+    class AC_CORE_EXPORT ModelItem : public DatabaseObject::ModelItem
     {
-        ScoreObject *a() const
+        ScoreObject *aggregate() const
         {
-            return static_cast<ScoreObject*>(DataObject::ModelItem::a());
+            return static_cast<ScoreObject*>(DatabaseObject::ModelItem::aggregate());
         }
 
     protected:
-        ModelItem(DataObject *aggregator)
-            :   DataObject::ModelItem(aggregator)
+        ModelItem(ScoreObject *aggregate)
+            :   DatabaseObject::ModelItem(aggregate)
         {}
 
-        IAggregate *init();
+        IUnknown *initialize();
 
         // IModelItem
         int count() const
@@ -147,23 +147,23 @@ protected:
 
         int indexOf(const IModelItem *item) const
         {
-            const ScoreObject *a = this->a();
-            if (query<IModelItem>(a->pitchCurve()) == item)
+            const ScoreObject *aggregate = this->aggregate();
+            if (query<IModelItem>(aggregate->pitchCurve()) == item)
                 return ItemCountOffset;
-            if (query<IModelItem>(a->controlCurves()) == item)
+            if (query<IModelItem>(aggregate->controlCurves()) == item)
                 return ItemCountOffset + 1;
-            return DataObject::ModelItem::indexOf(item);
+            return DatabaseObject::ModelItem::indexOf(item);
         }
 
         IModelItem *at(int i) const
         {
             switch (i - ItemCountOffset) {
             case 0:
-                return query<IModelItem>(a()->pitchCurve());
+                return query<IModelItem>(aggregate()->pitchCurve());
             case 1:
-                return query<IModelItem>(a()->controlCurves());
+                return query<IModelItem>(aggregate()->controlCurves());
             default:
-                return DataObject::ModelItem::at(i);
+                return DatabaseObject::ModelItem::at(i);
             }
         }
 
@@ -171,40 +171,29 @@ protected:
         {
             switch (itemType) {
             case PitchCurveItem:
-                return query<IModelItem>(a()->pitchCurve());
+                return query<IModelItem>(aggregate()->pitchCurve());
             default:
-                return DataObject::ModelItem::findItem(itemType);
+                return DatabaseObject::ModelItem::findItem(itemType);
             }
         }
 
-        IModelList *findList(int listType) const
+        IModelItemList *findList(int listType) const
         {
             switch (listType) {
             case ControlCurveItem:
-                return query<IModelList>(a()->controlCurves());
+                return query<IModelItemList>(aggregate()->controlCurves());
             default:
-                return DataObject::ModelItem::findList(listType);
+                return DatabaseObject::ModelItem::findList(listType);
             }
         }
     };
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IModelData:
-            return appendAggregate((new ModelData(this))->init());
-        default:
-            return Mi::Core::DataObject::createAggregate(interfaceType);
-        }
-    }
 
     void clear()
     {
         _controlCurves->clear();
         _pitchCurve->clear();
         setVolume(DEFAULT_SCOREOBJECT_VOLUME);
-        Mi::Core::DataObject::clear();
+        Mi::Core::DatabaseObject::clear();
     }
 };
 

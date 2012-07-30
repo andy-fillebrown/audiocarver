@@ -15,11 +15,11 @@
 **
 **************************************************************************/
 
-#include "mi_core_qmodel.h"
+#include "mi_core_session.qmodel.h"
 
-#include "mi_core_session.h"
+#include "mi_core_session.aggregate.h"
 
-static Mi::Core::QModel *instance = 0;
+static QIModel *instance = 0;
 
 QIModel *QIModel::instance()
 {
@@ -28,6 +28,7 @@ QIModel *QIModel::instance()
 
 namespace Mi {
 namespace Core {
+namespace Session {
 
 QModel::QModel(IAggregate *aggregate)
     :   _aggregate(aggregate)
@@ -84,5 +85,6 @@ void *QModel::queryInterface(int interfaceType) const
     return aggregate()->queryInterface(interfaceType);
 }
 
-} // namespace Core
-} // namespace Mi
+}
+}
+}

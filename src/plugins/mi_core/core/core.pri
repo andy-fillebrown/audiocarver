@@ -1,8 +1,6 @@
 
 SOURCE_FILES = \
-    database \
-    model \
-    qmodel \
+    aggregate \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

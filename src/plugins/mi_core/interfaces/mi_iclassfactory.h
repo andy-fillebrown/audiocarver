@@ -21,14 +21,15 @@
 #include "mi_iunknown.h"
 
 class IAggregate;
+class IModelItem;
 
 class IClassFactory : public IUnknown
 {
 public:
     enum { InterfaceType = I::IClassFactory };
 
-    virtual IAggregate *createAggregate(int itemType) = 0;
-    virtual IUnknown *createComponent(int interfaceType) = 0;
+    virtual IAggregate *createAggregate(int itemType, IModelItem *parent = 0) = 0;
+    virtual IUnknown *createComponent(int interfaceType, IAggregate *aggregate) = 0;
 
     int interfaceType() const
     {

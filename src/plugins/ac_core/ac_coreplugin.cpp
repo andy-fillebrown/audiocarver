@@ -18,7 +18,7 @@
 #include "ac_coreplugin.h"
 
 #include <ac_core_namespace.h>
-#include <ac_core_database.h>
+//#include <ac_core_database.h>
 
 #include <pluginmanager.h>
 
@@ -32,7 +32,7 @@ using namespace Mi;
 
 namespace Ac {
 
-using namespace Core;
+//using namespace Core;
 
 bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
@@ -81,7 +81,7 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
 
-    (new Database)->init();
+//    (new Database)->init();
 
     return true;
 }
@@ -91,84 +91,78 @@ void CorePlugin::extensionsInitialized()
 #ifdef QT_DEBUG
     test();
 #endif
-
-    QObject *object = new QObject();
-    object->setObjectName("test");
-    void *void_ptr = object;
-    QObject *object_ptr = static_cast<QObject*>(void_ptr);
-    qDebug() << Q_FUNC_INFO << object_ptr->objectName();
 }
 
 } // namespace Ac
 
 Q_EXPORT_PLUGIN(Ac::CorePlugin)
 
-#ifdef QT_DEBUG
+//#ifdef QT_DEBUG
 
-#include <mi_idataobjectfactory.h>
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
+//#include <mi_iclassfactory.h>
+//#include <mi_imodeldata.h>
+//#include <mi_imodelitem.h>
 
-#define RUN(x) if (!x()) return false
-#define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
+//#define RUN(x) if (!x()) return false
+//#define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
 
-using namespace Ac;
+//using namespace Ac;
 
-bool test_1()
-{
-    // Make sure querying aggregators succeeds.
-    // Aggregators should create aggregates on demand.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
-    CHECK(control_curve);
-    IModelItem *item = query<IModelItem>(control_curve);
-    CHECK(item);
-    return true;
-}
+//bool test_1()
+//{
+//    // Make sure querying aggregators succeeds.
+//    // Aggregators should create aggregates on demand.
+//    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
+//    CHECK(control_curve);
+//    IModelItem *item = query<IModelItem>(control_curve);
+//    CHECK(item);
+//    return true;
+//}
 
-bool test_2()
-{
-    // Make sure querying constant aggregators fails.
-    // Constant aggregators should not create aggregates on demand.
-    const IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
-    CHECK(control_curve);
-    const IModelItem *item = query<IModelItem>(control_curve);
-    CHECK(!item);
-    return true;
-}
+//bool test_2()
+//{
+//    // Make sure querying constant aggregators fails.
+//    // Constant aggregators should not create aggregates on demand.
+//    const IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
+//    CHECK(control_curve);
+//    const IModelItem *item = query<IModelItem>(control_curve);
+//    CHECK(!item);
+//    return true;
+//}
 
-bool test_3()
-{
-    // Make sure IModelData::item() succeeds.
-    // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
-    CHECK(control_curve);
-    IModelData *data = query<IModelData>(control_curve);
-    CHECK(data);
-    IModelItem *item = data->item();
-    CHECK(item);
-    return true;
-}
+//bool test_3()
+//{
+//    // Make sure IModelData::item() succeeds.
+//    // DataObject::ModelData::_item should be set in DataObject::ModelData::init().
+//    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
+//    CHECK(control_curve);
+//    IModelData *data = query<IModelData>(control_curve);
+//    CHECK(data);
+//    IModelItem *item = data->item();
+//    CHECK(item);
+//    return true;
+//}
 
-bool test_4()
-{
-    // Make sure setting item name succeeds.
-    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
-    CHECK(control_curve);
-    IModelData *data = query<IModelData>(control_curve);
-    CHECK(data);
-    CHECK(data->set("ControlCurve", NameRole));
-    CHECK("ControlCurve" == data->get<QString>(NameRole));
-    return true;
-}
+//bool test_4()
+//{
+//    // Make sure setting item name succeeds.
+//    IAggregator *control_curve = query<IDataObjectFactory>(IDatabase::instance())->create(ControlCurveItem);
+//    CHECK(control_curve);
+//    IModelData *data = query<IModelData>(control_curve);
+//    CHECK(data);
+//    CHECK(data->set("ControlCurve", NameRole));
+//    CHECK("ControlCurve" == data->get<QString>(NameRole));
+//    return true;
+//}
 
-bool test()
-{
-    RUN(test_4);
-    RUN(test_3);
-    RUN(test_2);
-    RUN(test_1);
-    qDebug() << "Ac::CorePlugin tests passed.";
-    return true;
-}
+//bool test()
+//{
+//    RUN(test_4);
+//    RUN(test_3);
+//    RUN(test_2);
+//    RUN(test_1);
+//    qDebug() << "Ac::CorePlugin tests passed.";
+//    return true;
+//}
 
-#endif // #ifdef QT_DEBUG
+//#endif // #ifdef QT_DEBUG

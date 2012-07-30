@@ -15,43 +15,35 @@
 **
 **************************************************************************/
 
-#include "mi_core_qmodel.h"
+#include "mi_core_session.aggregate.h"
 
-#include <mi_iaggregator.h>
+static Mi::Core::Session::Aggregate *instance = 0;
 
-static QModel *instance = 0;
+namespace Mi {
+namespace Core {
+namespace Session {
 
-QModel *QModel::instance()
+Aggregate::Aggregate()
 {
-    return ::instance;
-}
-
-QModel::QModel(IAggregator *aggregator)
-    :   _aggregator(aggregator)
-{
+    delete ::instance;
     ::instance = this;
 }
 
-QModel::~QModel()
-{
-    ::instance = 0;
-}
-
-QObject *QModel::init()
+IAggregate *Aggregate::initialize()
 {
     return this;
 }
 
-void *QModel::queryInterface(int interfaceType)
+Aggregate::~Aggregate()
 {
-    if (isTypeOfInterface(interfaceType))
-        return this;
-    return _aggregator->queryInterface(interfaceType);
+    ::instance = 0;
 }
 
-const void *QModel::queryInterface(int interfaceType) const
+Aggregate *instance()
 {
-    if (isTypeOfInterface(interfaceType))
-        return this;
-    return const_cast<const IAggregator*>(_aggregator)->queryInterface(interfaceType);
+    return ::instance;
+}
+
+}
+}
 }

@@ -18,7 +18,7 @@
 #ifndef AC_CORE_XMLFILEFILER_H
 #define AC_CORE_XMLFILEFILER_H
 
-#include "mi_core_aggregator.h"
+#include "mi_core_aggregate.h"
 
 #include "ac_core_xmlreader.h"
 #include "ac_core_xmlwriter.h"

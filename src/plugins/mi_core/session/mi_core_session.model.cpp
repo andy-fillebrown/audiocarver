@@ -15,40 +15,48 @@
 **
 **************************************************************************/
 
-#include "mi_core_session.h"
+#include "mi_core_session.model.h"
 
-#include "mi_core_database.h"
-#include "mi_core_model.h"
-#include "mi_core_qmodel.h"
+#include "mi_iaggregate.h"
 
-static Mi::Core::Session *instance = 0;
+#include "mi_core_session.aggregate.h"
 
-namespace Mi {
-namespace Core {
+static IModel *instance = 0;
 
-Session *Session::instance()
+IModel *IModel::instance()
 {
     return ::instance;
 }
 
-Session::Session()
+namespace Mi {
+namespace Core {
+namespace Session {
+
+Model::Model(IAggregate *aggregate)
+    :   _aggregate(static_cast<Aggregate*>(aggregate))
 {
-    delete ::instance;
+    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
     ::instance = this;
 }
 
-IAggregate *Session::initialize()
-{
-//    (new Database(this))->initialize();
-    (new Model(this))->initialize();
-    (new QModel(this))->initialize();
-    return this;
-}
-
-Session::~Session()
+Model::~Model()
 {
     ::instance = 0;
 }
 
-} // namespace Core
-} // namespace Mi
+IUnknown *Model::initialize()
+{
+    aggregate()->append(this);
+    return this;
+}
+
+void *Model::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Model*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
+}
+}
+}

@@ -15,26 +15,48 @@
 **
 **************************************************************************/
 
-#include "mi_core_databaseobjectlist.h"
+#include "mi_core_session.database.h"
+
+#include "mi_iaggregate.h"
+
+#include "mi_core_session.aggregate.h"
+
+static IDatabase *instance = 0;
+
+IDatabase *IDatabase::instance()
+{
+    return ::instance;
+}
 
 namespace Mi {
 namespace Core {
+namespace Session {
 
-IAggregate *DatabaseObjectList::initialize()
+Database::Database(IAggregate *aggregate)
+    :   _aggregate(static_cast<Aggregate*>(aggregate))
 {
-    setName(itemTypeString(_listType) + "s");
-    return DatabaseObject::initialize();
+    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
+    ::instance = this;
 }
 
-DatabaseObjectList::~DatabaseObjectList()
+Database::~Database()
 {
-    clear();
+    ::instance = 0;
 }
 
-IUnknown *DatabaseObjectList::ModelItemList::initialize()
+IUnknown *Database::initialize()
 {
+    aggregate()->append(this);
     return this;
 }
 
-} // namespace Core
-} // namespace Mi
+void *Database::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Database*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
+}
+}
+}

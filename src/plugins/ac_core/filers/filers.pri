@@ -1,8 +1,8 @@
 
 SOURCE_FILES = \
-    xmlfilefiler \
-    xmlreader \
-    xmlwriter \
+#    xmlfilefiler \
+#    xmlreader \
+#    xmlwriter \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

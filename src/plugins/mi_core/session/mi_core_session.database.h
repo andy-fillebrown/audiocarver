@@ -15,39 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_QMODEL_H
-#define MI_CORE_QMODEL_H
+#ifndef MI_CORE_SESSION_DATABASE_H
+#define MI_CORE_SESSION_DATABASE_H
 
-#include "mi_qimodel.h"
+#include "mi_idatabase.h"
 
 class IAggregate;
 
 namespace Mi {
 namespace Core {
+namespace Session {
 
-class MI_CORE_EXPORT QModel : public QIModel
+class Aggregate;
+
+class MI_CORE_EXPORT Database : public IDatabase
 {
-    Q_OBJECT
+    Aggregate *_aggregate;
 
-    IAggregate *_aggregate;
+protected:
+    Database(IAggregate *aggregate);
+    ~Database();
+    virtual IUnknown *initialize();
 
-public:
-    QModel(IAggregate *aggregate);
-    ~QModel();
-    virtual QObject *initialize();
-
-    IAggregate *aggregate() const;
-
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    QModelIndex parent(const QModelIndex &child) const;
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    Aggregate *aggregate() const
+    {
+        return _aggregate;
+    }
 
     void *queryInterface(int interfaceType) const;
 };
 
-} // namespace Core
-} // namespace Mi
+}
+}
+}
 
-#endif // MI_CORE_MODEL_H
+#endif

@@ -15,26 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODEL_H
-#define MI_CORE_MODEL_H
+#ifndef MI_CORE_SESSION_MODEL_H
+#define MI_CORE_SESSION_MODEL_H
 
 #include "mi_imodel.h"
 
+class IAggregate;
+
 namespace Mi {
 namespace Core {
+namespace Session {
 
-class Session;
+class Aggregate;
 
 class MI_CORE_EXPORT Model : public IModel
 {
-    Session *_aggregate;
+    Aggregate *_aggregate;
 
 public:
-    Model(Session *aggregate);
+    Model(IAggregate *aggregate);
     ~Model();
     virtual IUnknown *initialize();
 
-    Session *aggregate() const
+    Aggregate *aggregate() const
     {
         return _aggregate;
     }
@@ -44,22 +47,11 @@ public:
         return 0;
     }
 
-    void beginChangeData(const IModelItem *item, int role, int dataChangeType)
-    {}
-
-    void endChangeData(const IModelItem *item, int role, int dataChangeType)
-    {}
-
-    void beginChangeParent(const IModelItem *item)
-    {}
-
-    void endChangeParent(const IModelItem *item)
-    {}
-
     void *queryInterface(int interfaceType) const;
 };
 
-} // namespace Core
-} // namespace Mi
+}
+}
+}
 
-#endif // MI_CORE_MODEL_H
+#endif

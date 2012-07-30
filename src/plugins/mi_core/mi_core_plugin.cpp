@@ -20,7 +20,7 @@
 #include <mi_imodel.h>
 #include <mi_qimodel.h>
 
-#include "mi_core_session.h"
+#include "mi_core_session.aggregate.h"
 
 #include <pluginmanager.h>
 
@@ -37,7 +37,7 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(ListTypeRole, "listType");
     appendItemDataRole(ParentRole, "parent");
     appendItemDataRole(NameRole, "name");
-    (new Session)->initialize();
+    (new Session::Aggregate)->initialize();
 #ifdef QT_DEBUG
     test();
 #endif
@@ -64,7 +64,7 @@ using namespace Mi::Core;
 bool test_1()
 {
     // Make sure querying for interfaces works correctly.
-    Session *session = Session::instance();
+    Session::Aggregate *session = Session::instance();
     IModel *model_i = 0;
     QIModel *model_qi = 0;
     model_i = IModel::instance();
