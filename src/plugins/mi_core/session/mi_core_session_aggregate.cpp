@@ -15,35 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_SESSION_AGGREGATE_H
-#define MI_CORE_SESSION_AGGREGATE_H
+#include "mi_core_session_aggregate.h"
 
-#include "mi_core_aggregate.h"
+#include "mi_isession.h"
+
+static Mi::Core::Session::Aggregate *instance = 0;
+
+IAggregate *ISession::instance()
+{
+    return ::instance;
+}
 
 namespace Mi {
 namespace Core {
-
-class Plugin;
-
 namespace Session {
 
-class MI_CORE_EXPORT Aggregate : public Core::Aggregate
+Aggregate::Aggregate()
 {
-    friend class Core::Plugin;
+    delete ::instance;
+    ::instance = this;
+}
 
-protected:
-    Aggregate();
-    virtual ~Aggregate();
-    IAggregate *initialize();
+IAggregate *Aggregate::initialize()
+{
+    return this;
+}
 
-    void clear()
-    {}
-};
-
-MI_CORE_EXPORT Aggregate *instance();
+Aggregate::~Aggregate()
+{
+    ::instance = 0;
+}
 
 }
 }
 }
-
-#endif

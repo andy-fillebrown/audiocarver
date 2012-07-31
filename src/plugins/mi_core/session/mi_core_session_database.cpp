@@ -15,38 +15,48 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_SESSION_DATABASE_H
-#define MI_CORE_SESSION_DATABASE_H
+#include "mi_core_session_database.h"
 
-#include "mi_idatabase.h"
+#include "mi_iaggregate.h"
 
-class IAggregate;
+#include "mi_core_session_aggregate.h"
+
+static IDatabase *instance = 0;
+
+IDatabase *IDatabase::instance()
+{
+    return ::instance;
+}
 
 namespace Mi {
 namespace Core {
 namespace Session {
 
-class Aggregate;
-
-class MI_CORE_EXPORT Database : public IDatabase
+Database::Database(IAggregate *aggregate)
+    :   _aggregate(static_cast<Aggregate*>(aggregate))
 {
-    Aggregate *_aggregate;
+    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
+    ::instance = this;
+}
 
-protected:
-    Database(IAggregate *aggregate);
-    ~Database();
-    virtual IUnknown *initialize();
+Database::~Database()
+{
+    ::instance = 0;
+}
 
-    Aggregate *aggregate() const
-    {
-        return _aggregate;
-    }
+IUnknown *Database::initialize()
+{
+    aggregate()->append(this);
+    return this;
+}
 
-    void *queryInterface(int interfaceType) const;
-};
+void *Database::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Database*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
 
 }
 }
 }
-
-#endif

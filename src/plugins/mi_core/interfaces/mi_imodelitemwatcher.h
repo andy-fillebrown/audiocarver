@@ -41,4 +41,4 @@ public:
     }
 };
 
-#endif // MI_IMODELITEMWATCHER_H
+#endif

@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "mi_core_database_objectlist.aggregate.h"
+#include "mi_core_database_objectlist_aggregate.h"
 
 #include "mi_imodeldata.h"
 #include "mi_imodelitemlist.h"

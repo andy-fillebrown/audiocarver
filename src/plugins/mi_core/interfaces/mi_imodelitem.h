@@ -49,4 +49,4 @@ public:
     }
 };
 
-#endif // MI_IMODELITEM_H
+#endif

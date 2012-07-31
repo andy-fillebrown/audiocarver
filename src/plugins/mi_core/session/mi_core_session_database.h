@@ -15,35 +15,40 @@
 **
 **************************************************************************/
 
-#include "mi_core_session.aggregate.h"
+#ifndef MI_CORE_SESSION_DATABASE_H
+#define MI_CORE_SESSION_DATABASE_H
 
-static Mi::Core::Session::Aggregate *instance = 0;
+#include "mi_idatabase.h"
+
+class IAggregate;
 
 namespace Mi {
 namespace Core {
 namespace Session {
 
-Aggregate::Aggregate()
+class Aggregate;
+
+class MI_CORE_EXPORT Database : public IDatabase
 {
-    delete ::instance;
-    ::instance = this;
+    friend class Aggregate;
+
+    Aggregate *_aggregate;
+
+protected:
+    Database(IAggregate *aggregate);
+    ~Database();
+    virtual IUnknown *initialize();
+
+    Aggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    void *queryInterface(int interfaceType) const;
+};
+
+}
+}
 }
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
-
-Aggregate::~Aggregate()
-{
-    ::instance = 0;
-}
-
-Aggregate *instance()
-{
-    return ::instance;
-}
-
-}
-}
-}
+#endif

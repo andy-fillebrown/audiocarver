@@ -54,4 +54,4 @@ void qSort(Container &c, LessThan lessThan)
 #define Q_FLOAT_MIN 1E-37
 #define Q_FLOAT_MAX 1E+37
 
-#endif // MI_CORE_GLOBAL_H
+#endif

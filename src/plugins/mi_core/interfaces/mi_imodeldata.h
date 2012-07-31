@@ -52,4 +52,4 @@ public:
     }
 };
 
-#endif // MI_IMODELDATA_H
+#endif

@@ -78,4 +78,4 @@ public:
     }
 };
 
-#endif // MI_IFILER_H
+#endif

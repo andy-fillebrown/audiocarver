@@ -46,4 +46,4 @@ public:
     }
 };
 
-#endif // MI_IDATABASE_H
+#endif

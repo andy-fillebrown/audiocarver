@@ -17,10 +17,9 @@
 
 #include "mi_core_plugin.h"
 
-#include <mi_imodel.h>
-#include <mi_qimodel.h>
+#include "mi_isession.h"
 
-#include "mi_core_session.aggregate.h"
+#include "mi_core_session_aggregate.h"
 
 #include <pluginmanager.h>
 
@@ -46,15 +45,18 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 
 Plugin::~Plugin()
 {
-    delete Session::instance();
+    delete ISession::instance();
 }
 
-} // namespace Core
-} // namespace Mi
+}
+}
 
 Q_EXPORT_PLUGIN(Mi::Core::Plugin)
 
 #ifdef QT_DEBUG
+
+#include "mi_imodel.h"
+#include "mi_qimodel.h"
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
@@ -64,7 +66,7 @@ using namespace Mi::Core;
 bool test_1()
 {
     // Make sure querying for interfaces works correctly.
-    Session::Aggregate *session = Session::instance();
+    IAggregate *session = ISession::instance();
     IModel *model_i = 0;
     QIModel *model_qi = 0;
     model_i = IModel::instance();
@@ -93,4 +95,4 @@ bool test()
     return true;
 }
 
-#endif // #ifdef QT_DEBUG
+#endif

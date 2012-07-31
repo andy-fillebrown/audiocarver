@@ -36,7 +36,7 @@ protected:
     ~Plugin();
 };
 
-} // namespace Core
-} // namespace Mi
+}
+}
 
-#endif // MI_CORE_PLUGIN_H
+#endif

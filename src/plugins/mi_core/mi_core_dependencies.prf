@@ -2,7 +2,7 @@
 load(../qt_core/qt_core.prf)
 
 DIRS = \
-    core \
+    base \
     database \
     interfaces \
     session \

@@ -37,7 +37,7 @@ inline qreal roundToNearest(const qreal from, const qreal to)
         return from + (to - r);
 }
 
-} // namespace Core
-} // namespace Mi
+}
+}
 
-#endif // MI_CORE_MATH_H
+#endif

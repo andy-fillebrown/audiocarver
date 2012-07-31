@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#include "mi_core_database_object.modelitem.h"
+#include "mi_core_database_object_modelitem.h"
 
 #include "mi_iaggregate.h"
 #include "mi_imodelitemlist.h"
 
-#include "mi_core_database_objectlist.aggregate.h"
+#include "mi_core_database_objectlist_aggregate.h"
 
 namespace Mi {
 namespace Core {
@@ -35,6 +35,7 @@ ModelItem::ModelItem(IAggregate *aggregate)
 
 IUnknown *ModelItem::initialize()
 {
+    aggregate()->append(this);
     return this;
 }
 

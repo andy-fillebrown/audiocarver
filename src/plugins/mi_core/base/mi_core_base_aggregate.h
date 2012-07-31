@@ -15,48 +15,41 @@
 **
 **************************************************************************/
 
-#include "mi_core_session.model.h"
+#ifndef MI_CORE_BASE_AGGREGATE_H
+#define MI_CORE_BASE_AGGREGATE_H
 
 #include "mi_iaggregate.h"
 
-#include "mi_core_session.aggregate.h"
-
-static IModel *instance = 0;
-
-IModel *IModel::instance()
-{
-    return ::instance;
-}
-
 namespace Mi {
 namespace Core {
-namespace Session {
+namespace Base {
 
-Model::Model(IAggregate *aggregate)
-    :   _aggregate(static_cast<Aggregate*>(aggregate))
+class MI_CORE_EXPORT Aggregate : public IAggregate
 {
-    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
-    ::instance = this;
+    QList<IUnknown*> _components;
+
+public:
+    Aggregate();
+    ~Aggregate();
+    virtual IAggregate *initialize();
+
+    const QList<IUnknown*> &components() const
+    {
+        return _components;
+    }
+
+    IUnknown *append(IUnknown *component)
+    {
+        if (!_components.contains(component))
+            _components.append(component);
+        return component;
+    }
+
+    void *queryInterface(int interfaceType) const;
+};
+
+}
+}
 }
 
-Model::~Model()
-{
-    ::instance = 0;
-}
-
-IUnknown *Model::initialize()
-{
-    aggregate()->append(this);
-    return this;
-}
-
-void *Model::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Model*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
-}
-}
-}
+#endif

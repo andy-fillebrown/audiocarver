@@ -15,39 +15,48 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_AGGREGATE_H
-#define MI_CORE_AGGREGATE_H
+#include "mi_core_session_classfactory.h"
 
 #include "mi_iaggregate.h"
 
+#include "mi_core_session_aggregate.h"
+
+static IClassFactory *instance = 0;
+
+IClassFactory *IClassFactory::instance()
+{
+    return ::instance;
+}
+
 namespace Mi {
 namespace Core {
+namespace Session {
 
-class MI_CORE_EXPORT Aggregate : public IAggregate
+ClassFactory::ClassFactory(IAggregate *aggregate)
+    :   _aggregate(static_cast<Aggregate*>(aggregate))
 {
-    QList<IUnknown*> _components;
+    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
+    ::instance = this;
+}
 
-public:
-    Aggregate();
-    ~Aggregate();
-    virtual IAggregate *initialize();
+ClassFactory::~ClassFactory()
+{
+    ::instance = 0;
+}
 
-    const QList<IUnknown*> &components() const
-    {
-        return _components;
-    }
+IUnknown *ClassFactory::initialize()
+{
+    aggregate()->append(this);
+    return this;
+}
 
-    IUnknown *append(IUnknown *component)
-    {
-        if (!_components.contains(component))
-            _components.append(component);
-        return component;
-    }
+void *ClassFactory::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ClassFactory*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
 
-    void *queryInterface(int interfaceType) const;
-};
-
-} // namespace Core
-} // namespace Mi
-
-#endif // MI_CORE_AGGREGATE_H
+}
+}
+}

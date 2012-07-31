@@ -53,4 +53,4 @@ public:
     }
 };
 
-#endif // MI_QIMODEL_H
+#endif

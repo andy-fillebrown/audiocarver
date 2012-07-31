@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "mi_core_database_object.modeldata.h"
+#include "mi_core_database_object_modeldata.h"
 
-#include "mi_core_database_object.aggregate.h"
+#include "mi_core_database_object_aggregate.h"
 
 namespace Mi {
 namespace Core {
@@ -32,6 +32,7 @@ ModelData::ModelData(IAggregate *aggregate)
 
 IUnknown *ModelData::initialize()
 {
+    aggregate()->append(this);
     return this;
 }
 

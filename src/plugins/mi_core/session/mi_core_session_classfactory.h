@@ -15,48 +15,40 @@
 **
 **************************************************************************/
 
-#include "mi_core_session.database.h"
+#ifndef MI_CORE_SESSION_CLASSFACTORY_H
+#define MI_CORE_SESSION_CLASSFACTORY_H
 
-#include "mi_iaggregate.h"
+#include "mi_iclassfactory.h"
 
-#include "mi_core_session.aggregate.h"
-
-static IDatabase *instance = 0;
-
-IDatabase *IDatabase::instance()
-{
-    return ::instance;
-}
+class IAggregate;
 
 namespace Mi {
 namespace Core {
 namespace Session {
 
-Database::Database(IAggregate *aggregate)
-    :   _aggregate(static_cast<Aggregate*>(aggregate))
-{
-    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
-    ::instance = this;
-}
+class Aggregate;
 
-Database::~Database()
+class MI_CORE_EXPORT ClassFactory : public IClassFactory
 {
-    ::instance = 0;
-}
+    friend class Aggregate;
 
-IUnknown *Database::initialize()
-{
-    aggregate()->append(this);
-    return this;
-}
+    Aggregate *_aggregate;
 
-void *Database::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Database*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
+protected:
+    ClassFactory(IAggregate *aggregate);
+    ~ClassFactory();
+    virtual IUnknown *initialize();
+
+    Aggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    void *queryInterface(int interfaceType) const;
+};
 
 }
 }
 }
+
+#endif

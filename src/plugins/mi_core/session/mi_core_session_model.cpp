@@ -15,13 +15,15 @@
 **
 **************************************************************************/
 
-#include "mi_core_session.qmodel.h"
+#include "mi_core_session_model.h"
 
-#include "mi_core_session.aggregate.h"
+#include "mi_iaggregate.h"
 
-static QIModel *instance = 0;
+#include "mi_core_session_aggregate.h"
 
-QIModel *QIModel::instance()
+static IModel *instance = 0;
+
+IModel *IModel::instance()
 {
     return ::instance;
 }
@@ -30,58 +32,28 @@ namespace Mi {
 namespace Core {
 namespace Session {
 
-QModel::QModel(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+Model::Model(IAggregate *aggregate)
+    :   _aggregate(static_cast<Aggregate*>(aggregate))
 {
+    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
     ::instance = this;
 }
 
-QModel::~QModel()
+Model::~Model()
 {
     ::instance = 0;
 }
 
-QObject *QModel::initialize()
+IUnknown *Model::initialize()
 {
     aggregate()->append(this);
     return this;
 }
 
-IAggregate *QModel::aggregate() const
+void *Model::queryInterface(int interfaceType) const
 {
-    return _aggregate;
-}
-
-QModelIndex QModel::index(int row, int column, const QModelIndex &parent) const
-{
-    return QModelIndex();
-}
-
-QModelIndex QModel::parent(const QModelIndex &child) const
-{
-    return QModelIndex();
-}
-
-int QModel::rowCount(const QModelIndex &parent) const
-{
-    return 0;
-}
-
-int QModel::columnCount(const QModelIndex &parent) const
-{
-    return 1;
-}
-
-QVariant QModel::data(const QModelIndex &index, int role) const
-{
-    return QVariant();
-}
-
-void *QModel::queryInterface(int interfaceType) const
-{
-    void *interface = QIModel::queryInterface(interfaceType);
-    if (interface)
-        return interface;
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Model*>(this);
     return aggregate()->queryInterface(interfaceType);
 }
 

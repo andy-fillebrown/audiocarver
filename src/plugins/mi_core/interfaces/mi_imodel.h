@@ -42,4 +42,4 @@ public:
     }
 };
 
-#endif // MI_IMODEL_H
+#endif

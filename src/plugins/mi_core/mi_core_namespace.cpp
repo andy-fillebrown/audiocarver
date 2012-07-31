@@ -72,4 +72,4 @@ int itemDataRole(const QString &itemDataRoleString)
     return -1;
 }
 
-} // namespace Mi
+}

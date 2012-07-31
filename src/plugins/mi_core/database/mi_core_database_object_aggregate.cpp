@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#include "mi_core_database_object.aggregate.h"
+#include "mi_core_database_object_aggregate.h"
 
 #include "mi_idatabase.h"
 #include "mi_imodelitemlist.h"
 
-#include "mi_core_database_objectlist.aggregate.h"
+#include "mi_core_database_objectlist_aggregate.h"
 #include "mi_core_scopeddatachange.h"
 #include "mi_core_scopedparentchange.h"
 

@@ -47,4 +47,4 @@ public:
     }
 };
 
-#endif // MI_IAGGREGATE_H
+#endif

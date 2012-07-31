@@ -39,12 +39,13 @@ enum MiCoreInterface {
     IModelItemWatcher,
     IOrphanage,
     IReader,
+    ISession,
     IWriter,
     QIModel,
     MiCoreInterfaceCount
 };
 
-} // namespace I
+}
 
 namespace Mi {
 
@@ -77,6 +78,6 @@ enum DataChangeType {
     PermanentDataChange
 };
 
-} // namespace Mi
+}
 
-#endif // MI_CORE_NAMESPACE_H
+#endif

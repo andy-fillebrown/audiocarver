@@ -38,4 +38,4 @@ public:
     }
 };
 
-#endif // MI_IFILERFACTORY_H
+#endif

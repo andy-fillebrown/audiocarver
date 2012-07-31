@@ -18,22 +18,20 @@
 #ifndef MI_CORE_DATABASE_OBJECT_AGGREGATE_H
 #define MI_CORE_DATABASE_OBJECT_AGGREGATE_H
 
-#include "mi_core_aggregate.h"
+#include "mi_core_base_aggregate.h"
 
 namespace Mi {
 namespace Core {
 namespace Database {
 
 namespace ObjectList {
-
 class Aggregate;
 class ModelItemList;
-
 }
 
 namespace Object {
 
-class MI_CORE_EXPORT Aggregate : public Mi::Core::Aggregate
+class MI_CORE_EXPORT Aggregate : public Base::Aggregate
 {
     friend class ObjectList::Aggregate;
     friend class ObjectList::ModelItemList;

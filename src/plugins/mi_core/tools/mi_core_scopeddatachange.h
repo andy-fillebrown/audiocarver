@@ -57,7 +57,7 @@ public:
     }
 };
 
-} // namespace Core
-} // namespace Mi
+}
+}
 
-#endif // MI_CORE_SCOPEDDATACHANGE_H
+#endif

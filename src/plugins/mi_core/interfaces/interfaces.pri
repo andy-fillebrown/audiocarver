@@ -13,6 +13,7 @@ SOURCE_FILES = \
     imodelitemlist \
     imodelitemwatcher \
     iorphanage \
+    isession \
     iunknown \
     qimodel \
 

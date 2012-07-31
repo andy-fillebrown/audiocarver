@@ -71,4 +71,4 @@ public:
     }
 };
 
-#endif // MI_IMODELITEMLIST_H
+#endif

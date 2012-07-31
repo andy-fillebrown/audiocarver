@@ -35,7 +35,7 @@ inline int colorStringToInt(QString color)
     return color.remove("#").toInt(0, 16);
 }
 
-} // namespace Core
-} // namespace Mi
+}
+}
 
-#endif // MI_CORE_UTILS_H
+#endif

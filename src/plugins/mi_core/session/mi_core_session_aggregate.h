@@ -15,26 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef MI_IUNKOWN_H
-#define MI_IUNKOWN_H
+#ifndef MI_CORE_SESSION_AGGREGATE_H
+#define MI_CORE_SESSION_AGGREGATE_H
 
-#include "mi_core_namespace.h"
+#include "mi_core_base_aggregate.h"
 
-class IUnknown
+namespace Mi {
+namespace Core {
+
+class Plugin;
+
+namespace Session {
+
+class MI_CORE_EXPORT Aggregate : public Base::Aggregate
 {
-public:
-    virtual ~IUnknown() {}
-    virtual int interfaceType() const = 0;
-    virtual bool isTypeOfInterface(int interfaceType) const = 0;
-    virtual void *queryInterface(int interfaceType) const = 0;
+    friend class Core::Plugin;
+
+protected:
+    Aggregate();
+    virtual ~Aggregate();
+    IAggregate *initialize();
+
+    void clear()
+    {}
 };
 
-template <class T, class Unknown> inline
-T *query(const Unknown *unknown)
-{
-    if (!unknown)
-        return 0;
-    return static_cast<T*>(unknown->queryInterface(T::InterfaceType));
+}
+}
 }
 
 #endif

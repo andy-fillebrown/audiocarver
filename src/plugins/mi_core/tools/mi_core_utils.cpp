@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include <mi_core_utils.h>
+#include "mi_core_utils.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -35,5 +35,5 @@ QString applicationTreeDirectory()
     return rootDir.absolutePath() + "/";
 }
 
-} // namespace Core
-} // namespace Mi
+}
+}

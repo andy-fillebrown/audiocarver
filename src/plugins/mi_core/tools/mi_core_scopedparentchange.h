@@ -53,7 +53,7 @@ public:
     }
 };
 
-} // namespace Core
-} // namespace Mi
+}
+}
 
-#endif // MI_CORE_SCOPEDPARENTCHANGE_H
+#endif

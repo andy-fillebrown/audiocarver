@@ -39,4 +39,4 @@ public:
     }
 };
 
-#endif // MI_IMODELDATAWATCHER_H
+#endif

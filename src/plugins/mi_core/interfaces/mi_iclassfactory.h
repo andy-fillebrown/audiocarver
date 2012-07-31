@@ -28,6 +28,8 @@ class IClassFactory : public IUnknown
 public:
     enum { InterfaceType = I::IClassFactory };
 
+    static IClassFactory *instance();
+
     virtual IAggregate *createAggregate(int itemType, IModelItem *parent = 0) = 0;
     virtual IUnknown *createComponent(int interfaceType, IAggregate *aggregate) = 0;
 
@@ -42,4 +44,4 @@ public:
     }
 };
 
-#endif // MI_ICLASSFACTORY_H
+#endif

@@ -18,7 +18,7 @@
 #ifndef MI_CORE_DATABASE_OBJECTLIST_AGGREGATE_H
 #define MI_CORE_DATABASE_OBJECTLIST_AGGREGATE_H
 
-#include "mi_core_database_object.aggregate.h"
+#include "mi_core_database_object_aggregate.h"
 
 namespace Mi {
 namespace Core {
