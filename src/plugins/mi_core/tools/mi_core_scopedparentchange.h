@@ -31,8 +31,8 @@ class ScopedParentChange
     QList<IModelItemWatcher*> _watchers;
 
 public:
-    ScopedParentChange(const IAggregate *aggregate)
-        :   _item(query<IModelItem>(aggregate))
+    ScopedParentChange(const IModelItem *item)
+        :   _item(item)
     {
         if (!_item)
             return;

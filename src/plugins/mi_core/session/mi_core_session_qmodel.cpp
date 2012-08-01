@@ -47,11 +47,6 @@ QObject *QModel::initialize()
     return this;
 }
 
-IAggregate *QModel::aggregate() const
-{
-    return _aggregate;
-}
-
 QModelIndex QModel::index(int row, int column, const QModelIndex &parent) const
 {
     return QModelIndex();

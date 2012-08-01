@@ -17,18 +17,15 @@
 
 #include "mi_core_database_object_modeldata.h"
 
+#include "mi_imodelitemlist.h"
+
 #include "mi_core_database_object_aggregate.h"
+#include "mi_core_scopeddatachange.h"
 
 namespace Mi {
 namespace Core {
 namespace Database {
 namespace Object {
-
-ModelData::ModelData(IAggregate *aggregate)
-    :   _aggregate(static_cast<Aggregate*>(aggregate))
-{
-    Q_ASSERT(dynamic_cast<Aggregate*>(_aggregate));
-}
 
 IUnknown *ModelData::initialize()
 {
@@ -36,9 +33,19 @@ IUnknown *ModelData::initialize()
     return this;
 }
 
-int ModelData::roleCount() const
+bool ModelData::setName(const QString &name)
 {
-    return Aggregate::TotalRoleCount;
+    if (_name == name)
+        return false;
+    IModelItem *parent = query<IModelItem>(this)->parent();
+    if (!name.isEmpty() && parent && parent->isList()) {
+        IModelItemList *list = query<IModelItemList>(parent);
+        if (list && list->contains(name))
+            return false;
+    }
+    ScopedDataChange data_change(this, NameRole);
+    _name = name;
+    return true;
 }
 
 int ModelData::roleAt(int i) const
@@ -55,7 +62,7 @@ QVariant ModelData::getValue(int role) const
     switch (role) {
     case Qt::DisplayRole:
     case NameRole:
-        return aggregate()->name();
+        return name();
     default:
         Q_ASSERT(0);
         return QVariant();
@@ -67,7 +74,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     switch (role) {
     case Qt::EditRole:
     case NameRole:
-        return aggregate()->setName(qvariant_cast<QString>(value));
+        return setName(qvariant_cast<QString>(value));
     default:
         Q_ASSERT(0);
         return false;

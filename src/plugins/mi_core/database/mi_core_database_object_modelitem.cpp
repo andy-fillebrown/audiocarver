@@ -17,21 +17,15 @@
 
 #include "mi_core_database_object_modelitem.h"
 
-#include "mi_iaggregate.h"
 #include "mi_imodelitemlist.h"
 
 #include "mi_core_database_objectlist_aggregate.h"
+#include "mi_core_scopedparentchange.h"
 
 namespace Mi {
 namespace Core {
 namespace Database {
 namespace Object {
-
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   _aggregate(static_cast<Aggregate*>(aggregate))
-{
-    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
-}
 
 IUnknown *ModelItem::initialize()
 {
@@ -39,24 +33,17 @@ IUnknown *ModelItem::initialize()
     return this;
 }
 
-IModelItem *ModelItem::parent() const
-{
-    return query<IModelItem>(aggregate()->parent());
-}
-
 void ModelItem::setParent(IModelItem *parent)
 {
-    if (!parent) {
-        aggregate()->setParent(0);
+    if (_parent == parent)
         return;
-    }
-    Aggregate *parent_aggregate = dynamic_cast<Aggregate*>(query<IAggregate>(parent));
-    aggregate()->setParent(parent_aggregate);
+    ScopedParentChange parent_change(this);
+    _parent = parent;
 }
 
 IModelItemList *ModelItem::list() const
 {
-    return query<IModelItemList>(aggregate()->list());
+    return query<IModelItemList>(parent());
 }
 
 }

@@ -31,15 +31,21 @@ class Aggregate;
 
 class MI_CORE_EXPORT ModelItemList : public IModelItemList
 {
-    friend class Aggregate;
-
-    Aggregate *_aggregate;
+    IAggregate *_aggregate;
+    IModelItem *_parent;
+    const int _listType;
+    QList<IModelItem*> _items;
 
 protected:
-    ModelItemList(IAggregate *aggregate);
+    ModelItemList(IAggregate *aggregate, int listType)
+        :   _aggregate(aggregate)
+        ,   _parent(0)
+        ,   _listType(listType)
+    {}
+
     virtual IUnknown *initialize();
 
-    Aggregate *aggregate() const
+    IAggregate *aggregate() const
     {
         return _aggregate;
     }
@@ -54,7 +60,11 @@ protected:
         return ListItem == itemType;
     }
 
-    IModelItem *parent() const;
+    IModelItem *parent() const
+    {
+        return _parent;
+    }
+
     void setParent(IModelItem *parent);
 
     IModelItemList *list() const
@@ -62,9 +72,20 @@ protected:
         return 0;
     }
 
-    int count() const;
-    int indexOf(const IModelItem *item) const;
-    IModelItem *at(int i) const;
+    int count() const
+    {
+        return _items.count();
+    }
+
+    int indexOf(IModelItem *item) const
+    {
+        return _items.indexOf(item);
+    }
+
+    IModelItem *at(int i) const
+    {
+        return _items.at(i);
+    }
 
     IModelItem *findItem(int itemType) const
     {
@@ -78,7 +99,11 @@ protected:
         return 0;
     }
 
-    int listType() const;
+    int listType() const
+    {
+        return _listType;
+    }
+
     bool contains(const QString &name) const;
     void insert(int i, IModelItem *item);
     void removeAt(int i);

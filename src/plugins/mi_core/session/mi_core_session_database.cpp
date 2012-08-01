@@ -19,8 +19,6 @@
 
 #include "mi_iaggregate.h"
 
-#include "mi_core_session_aggregate.h"
-
 static IDatabase *instance = 0;
 
 IDatabase *IDatabase::instance()
@@ -33,9 +31,8 @@ namespace Core {
 namespace Session {
 
 Database::Database(IAggregate *aggregate)
-    :   _aggregate(static_cast<Aggregate*>(aggregate))
+    :   _aggregate(aggregate)
 {
-    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
     ::instance = this;
 }
 

@@ -27,22 +27,39 @@ namespace Core {
 namespace Database {
 namespace Object {
 
-class Aggregate;
-
 class MI_CORE_EXPORT ModelData : public IModelData
 {
-    Aggregate *_aggregate;
+    IAggregate *_aggregate;
+
+    QString _name;
+
+public:
+    enum { RoleCount = 1 };
 
 protected:
-    ModelData(IAggregate *aggregate);
+    ModelData(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+    {}
+
     virtual IUnknown *initialize();
 
-    Aggregate *aggregate() const
+    IAggregate *aggregate() const
     {
         return _aggregate;
     }
 
-    int roleCount() const;
+    const QString &name() const
+    {
+        return _name;
+    }
+
+    bool setName(const QString &name);
+
+    int roleCount() const
+    {
+        return RoleCount;
+    }
+
     int roleAt(int i) const;
 
     Qt::ItemFlags flags() const

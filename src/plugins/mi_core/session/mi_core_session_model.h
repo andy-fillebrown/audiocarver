@@ -26,25 +26,18 @@ namespace Mi {
 namespace Core {
 namespace Session {
 
-class Aggregate;
-
 class MI_CORE_EXPORT Model : public IModel
 {
-    Aggregate *_aggregate;
+    IAggregate *_aggregate;
 
 public:
     Model(IAggregate *aggregate);
     ~Model();
     virtual IUnknown *initialize();
 
-    Aggregate *aggregate() const
+    IAggregate *aggregate() const
     {
         return _aggregate;
-    }
-
-    IModelItem *rootItem() const
-    {
-        return 0;
     }
 
     void *queryInterface(int interfaceType) const;

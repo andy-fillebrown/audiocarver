@@ -27,17 +27,20 @@ namespace Core {
 namespace Database {
 namespace Object {
 
-class Aggregate;
-
 class MI_CORE_EXPORT ModelItem : public IModelItem
 {
-    Aggregate *_aggregate;
+    IAggregate *_aggregate;
+    IModelItem *_parent;
 
 protected:
-    ModelItem(IAggregate *aggregate);
+    ModelItem(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+        ,   _parent(0)
+    {}
+
     virtual IUnknown *initialize();
 
-    Aggregate *aggregate() const
+    IAggregate *aggregate() const
     {
         return _aggregate;
     }
@@ -52,7 +55,11 @@ protected:
         return UnknownItem == itemType;
     }
 
-    IModelItem *parent() const;
+    IModelItem *parent() const
+    {
+        return _parent;
+    }
+
     void setParent(IModelItem *parent);
     IModelItemList *list() const;
 
@@ -61,7 +68,7 @@ protected:
         return 0;
     }
 
-    int indexOf(const IModelItem *item) const
+    int indexOf(IModelItem *item) const
     {
         Q_ASSERT(false);
         return -1;

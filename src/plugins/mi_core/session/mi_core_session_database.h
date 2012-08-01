@@ -26,20 +26,16 @@ namespace Mi {
 namespace Core {
 namespace Session {
 
-class Aggregate;
-
 class MI_CORE_EXPORT Database : public IDatabase
 {
-    friend class Aggregate;
-
-    Aggregate *_aggregate;
+    IAggregate *_aggregate;
 
 protected:
     Database(IAggregate *aggregate);
     ~Database();
     virtual IUnknown *initialize();
 
-    Aggregate *aggregate() const
+    IAggregate *aggregate() const
     {
         return _aggregate;
     }

@@ -27,14 +27,14 @@ namespace Core {
 
 class ScopedDataChange
 {
-    IModelData *_data;
+    const IModelData *_data;
     const int _role;
     const DataChangeType _dataChangeType;
     QList<IModelDataWatcher*> _watchers;
 
 public:
-    ScopedDataChange(const IAggregate *aggregate, int role, DataChangeType dataChangeType = PermanentDataChange)
-        :   _data(query<IModelData>(aggregate))
+    ScopedDataChange(const IModelData *data, int role, DataChangeType dataChangeType = PermanentDataChange)
+        :   _data(data)
         ,   _role(role)
         ,   _dataChangeType(dataChangeType)
     {

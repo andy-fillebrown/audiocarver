@@ -1,9 +1,7 @@
 
 SOURCE_FILES = \
-    object_aggregate \
     object_modeldata \
     object_modelitem \
-    objectlist_aggregate \
     objectlist_modelitemlist \
 
 DIR = $$dirname(_FILE_)

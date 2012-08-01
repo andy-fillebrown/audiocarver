@@ -25,6 +25,11 @@ class IModelItemList : public IModelItem
 public:
     enum { InterfaceType = I::IModelItemList };
 
+    bool isList() const
+    {
+        return true;
+    }
+
     virtual int listType() const = 0;
     virtual bool contains(const QString &name) const = 0;
     virtual void insert(int i, IModelItem *item) = 0;

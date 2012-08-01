@@ -18,19 +18,15 @@
 #include "mi_core_database_objectlist_modelitemlist.h"
 
 #include "mi_iaggregate.h"
+#include "mi_imodeldata.h"
 
 #include "mi_core_database_objectlist_aggregate.h"
+#include "mi_core_scopedparentchange.h"
 
 namespace Mi {
 namespace Core {
 namespace Database {
 namespace ObjectList {
-
-ModelItemList::ModelItemList(IAggregate *aggregate)
-    :   _aggregate(static_cast<Aggregate*>(aggregate))
-{
-    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
-}
 
 IUnknown *ModelItemList::initialize()
 {
@@ -38,61 +34,54 @@ IUnknown *ModelItemList::initialize()
     return this;
 }
 
-IModelItem *ModelItemList::parent() const
-{
-    return query<IModelItem>(aggregate()->parent());
-}
-
 void ModelItemList::setParent(IModelItem *parent)
 {
-    if (!parent) {
-        aggregate()->setParent(0);
+    if (_parent == parent)
         return;
-    }
-    Object::Aggregate *parent_aggregate = dynamic_cast<Object::Aggregate*>(query<IAggregate>(parent));
-    aggregate()->setParent(parent_aggregate);
-}
-
-int ModelItemList::count() const
-{
-    return aggregate()->objects().count();
-}
-
-int ModelItemList::indexOf(const IModelItem *item) const
-{
-    return aggregate()->objects().indexOf(query<IAggregate>(item));
-}
-
-IModelItem *ModelItemList::at(int i) const
-{
-    return query<IModelItem>(aggregate()->objects().at(i));
-}
-
-int ModelItemList::listType() const
-{
-    return aggregate()->listType();
+    ScopedParentChange parent_change(this);
+    _parent = parent;
 }
 
 bool ModelItemList::contains(const QString &name) const
 {
-    return aggregate()->contains(name);
+    foreach (IModelItem *item, _items)
+        if (query<IModelData>(item)->get<QString>(NameRole) == name)
+            return true;
+    return false;
 }
 
 void ModelItemList::insert(int i, IModelItem *item)
 {
-    aggregate()->insert(i, dynamic_cast<Object::Aggregate*>(query<IAggregate>(item)));
+    IModelItemList *old_list = item->list();
+    if (old_list) {
+        if (old_list == list())
+            return;
+        old_list->remove(item);
+    }
+    IModelData *data = query<IModelData>(item);
+    const QString name = data->get<QString>(NameRole);
+    if (!name.isEmpty()) {
+        int suffix = 0;
+        QString new_name = name;
+        while (contains(new_name))
+            new_name = QString("%1.%2").arg(name).arg(++suffix);
+        if (name != new_name)
+            data->set(new_name, NameRole);
+    }
+    _items.insert(i, item);
+    item->setParent(this);
 }
 
 void ModelItemList::removeAt(int i)
 {
-    QList<IAggregate*> &objects = aggregate()->objects();
-    dynamic_cast<Object::Aggregate*>(objects.at(i))->setParent(0);
-    objects.removeAt(i);
+    _items.removeAt(i);
 }
 
 void ModelItemList::clear()
 {
-    aggregate()->clear();
+    foreach (IModelItem *item, _items)
+        delete query<IAggregate>(item);
+    _items.clear();
 }
 
 }
