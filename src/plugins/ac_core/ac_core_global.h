@@ -26,4 +26,4 @@
 #  define AC_CORE_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // AC_CORE_GLOBAL_H
+#endif

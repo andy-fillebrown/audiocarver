@@ -18,7 +18,7 @@
 #ifndef AC_CORE_POINT_H
 #define AC_CORE_POINT_H
 
-#include <ac_core_namespace.h>
+#include "ac_core_namespace.h"
 
 #include <QList>
 #include <QMetaType>

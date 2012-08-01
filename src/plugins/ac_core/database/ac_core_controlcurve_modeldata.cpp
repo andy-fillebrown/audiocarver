@@ -15,22 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREPLUGIN_H
-#define AC_COREPLUGIN_H
+#include "ac_core_controlcurve.h"
 
-#include <iplugin.h>
+#include <mi_core_scopeddatachange.h>
+
+using namespace Mi::Core;
 
 namespace Ac {
+namespace Core {
 
-class CorePlugin : public ExtensionSystem::IPlugin
+IAggregator *ControlCurve::init()
 {
-    Q_OBJECT
-
-public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
-};
-
+    return Curve::init();
 }
 
-#endif
+IAggregate *ControlCurve::ModelData::init()
+{
+    return Curve::ModelData::init();
+}
+
+IAggregate *ControlCurve::ModelItem::init()
+{
+    return Curve::ModelItem::init();
+}
+
+bool ControlCurve::setControlType(int controlType)
+{
+    if (_controlType == controlType)
+        return false;
+    ScopedDataChange data_change(this, ControlTypeRole);
+    _controlType = controlType;
+    return true;
+}
+
+} // namespace Core
+} // namespace Ac

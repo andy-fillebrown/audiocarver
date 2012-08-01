@@ -15,71 +15,63 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_DATABASE_OBJECT_AGGREGATE_H
-#define MI_CORE_DATABASE_OBJECT_AGGREGATE_H
+#ifndef AC_CORE_DATABASE_SCOREOBJECT_AGGREGATE_H
+#define AC_CORE_DATABASE_SCOREOBJECT_AGGREGATE_H
 
-#include "mi_core_base_aggregate.h"
+#include <mi_core_database_object_aggregate.h>
 
-namespace Mi {
+#include "ac_core_global.h"
+
+namespace Ac {
 namespace Core {
 namespace Database {
+namespace ScoreObject {
 
-namespace ObjectList {
-    class Aggregate;
-    class ModelItemList;
-}
+typedef Mi::Core::Database::Object::Aggregate Aggregate_BaseClass;
 
-namespace Object {
-
-class MI_CORE_EXPORT Aggregate : public Base::Aggregate
+class AC_CORE_EXPORT Aggregate : public Aggregate_BaseClass
 {
-    friend class ObjectList::Aggregate;
-    friend class ObjectList::ModelItemList;
     friend class ModelData;
     friend class ModelItem;
 
     enum { RoleCount = 1 };
-    enum { ItemCount = 0 };
+    enum { ItemCount = 2 };
 
-    QString _name;
+    qreal _volume;
 
-    Aggregate *_parent;
+    IAggregate *_pitchCurve;
+    IAggregate *_controlCurves;
 
 protected:
     enum {
-        RoleCountOffset = 0,
-        TotalRoleCount = RoleCount,
-        ItemCountOffset = 0,
-        TotalItemCount = ItemCount
+        RoleCountOffset = Aggregate_BaseClass::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount,
+        ItemCountOffset = Aggregate_BaseClass::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    Aggregate()
-    {}
-
+    Aggregate();
     IAggregate *initialize();
+    ~Aggregate();
 
-    const QString &name() const
+    qreal volume() const
     {
-        return _name;
+        return _volume;
     }
 
-    bool setName(const QString &name);
+    bool setVolume(qreal volume);
 
-    Aggregate *parent() const
+    IAggregate *pitchCurve() const
     {
-        if (isList() && _parent)
-            return _parent->parent();
-        return _parent;
+        return _pitchCurve;
     }
 
-    virtual void setParent(Aggregate *parent);
-
-    virtual bool isList() const
+    IAggregate *controlCurves() const
     {
-        return false;
+        return _controlCurves;
     }
 
-    ObjectList::Aggregate *list() const;
+    void clear();
 };
 
 }

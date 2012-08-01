@@ -15,15 +15,40 @@
 **
 **************************************************************************/
 
-#include "ac_core_dataobjectlist.h"
+#ifndef AC_CORE_DATABASE_OBJECTLIST_AGGREGATE_H
+#define AC_CORE_DATABASE_OBJECTLIST_AGGREGATE_H
+
+#include "mi_core_database_objectlist_aggregate.h"
+
+#include <ac_core_global.h>
 
 namespace Ac {
 namespace Core {
 
-IAggregator *DataObjectList::init()
-{
-    return Mi::Core::DataObjectList::init();
+namespace Session {
+    class ClassFactory;
 }
 
-} // namespace Core
-} // namespace Ac
+namespace Database {
+namespace ObjectList {
+
+typedef Mi::Core::Database::ObjectList::Aggregate Aggregate_BaseClass;
+
+class AC_CORE_EXPORT Aggregate : public Aggregate_BaseClass
+{
+    friend class Session::ClassFactory;
+
+protected:
+    Aggregate(int listType = Mi::UnknownItem)
+        :   Aggregate_BaseClass(listType)
+    {}
+
+    IAggregate *initialize();
+};
+
+}
+}
+}
+}
+
+#endif

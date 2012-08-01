@@ -15,22 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREPLUGIN_H
-#define AC_COREPLUGIN_H
+#include "ac_core_database_curve_modelitem.h"
 
-#include <iplugin.h>
+#include "ac_core_database_curve_aggregate.h"
+#include "ac_core_namespace.h"
+#include "ac_core_point.h"
 
 namespace Ac {
+namespace Core {
+namespace Database {
+namespace Curve {
 
-class CorePlugin : public ExtensionSystem::IPlugin
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   ModelItem_BaseClass(aggregate)
 {
-    Q_OBJECT
-
-public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
-};
-
+    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
 }
 
-#endif
+IUnknown *ModelItem::initialize()
+{
+    return ModelItem_BaseClass::initialize();
+}
+
+bool ModelItem::isTypeOfItem(int itemType) const
+{
+    if (CurveItem == itemType)
+        return true;
+    return ModelItem_BaseClass::isTypeOfItem(itemType);
+}
+
+}
+}
+}
+}

@@ -2,7 +2,7 @@
 load(../mi_core/mi_core.prf)
 
 DIRS = \
-    data \
+    database \
     filers \
     implementations \
     interfaces \

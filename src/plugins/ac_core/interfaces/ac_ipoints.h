@@ -18,18 +18,16 @@
 #ifndef AC_IPOINTS_H
 #define AC_IPOINTS_H
 
-#include "mi_iaggregate.h"
+#include <mi_iaggregate.h>
 
-#include <ac_core_namespace.h>
+#include "ac_core_namespace.h"
 
 namespace Ac {
 namespace Core {
-
-class Point;
-typedef QList<Point> PointList;
-
-} // namespace Core
-} // namespace Ac
+    class Point;
+    typedef QList<Point> PointList;
+}
+}
 
 class IPoints : public IAggregate
 {
@@ -51,7 +49,6 @@ public:
         setPoints(points());
     }
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -65,4 +62,4 @@ public:
     }
 };
 
-#endif // AC_IPOINTS_H
+#endif

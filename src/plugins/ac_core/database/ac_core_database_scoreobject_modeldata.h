@@ -15,29 +15,42 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATAOBJECTLIST_H
-#define AC_CORE_DATAOBJECTLIST_H
+#ifndef AC_CORE_DATABASE_SCOREOBJECT_MODELDATA_H
+#define AC_CORE_DATABASE_SCOREOBJECT_MODELDATA_H
 
-#include "mi_core_dataobjectlist.h"
+#include <mi_core_database_object_modeldata.h>
 
-#include <ac_core_global.h>
+#include <mi_imodelitemlist.h>
+
+#include "ac_core_global.h"
 
 namespace Ac {
 namespace Core {
+namespace Database {
+namespace ScoreObject {
 
-class AC_CORE_EXPORT DataObjectList : public Mi::Core::DataObjectList
+class Aggregate;
+typedef Mi::Core::Database::Object::ModelData ModelData_BaseClass;
+
+class AC_CORE_EXPORT ModelData : public ModelData_BaseClass
 {
-    friend class DataObjectFactory;
+    friend class Aggregate;
+
+    Aggregate *aggregate() const;
 
 protected:
-    DataObjectList(int listType = Mi::UnknownItem)
-        :   Mi::Core::DataObjectList(listType)
-    {}
+    ModelData(IAggregate *aggregate);
+    IUnknown *initialize();
 
-    IAggregator *init();
+    int roleCount() const;
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(const QVariant &value, int role);
 };
 
-} // namespace Core
-} // namespace Ac
+}
+}
+}
+}
 
-#endif // AC_CORE_DATAOBJECTLIST_H
+#endif

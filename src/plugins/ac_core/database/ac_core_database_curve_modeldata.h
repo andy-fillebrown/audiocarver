@@ -15,22 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREPLUGIN_H
-#define AC_COREPLUGIN_H
+#ifndef AC_CORE_DATABASE_CURVE_MODELDATA_H
+#define AC_CORE_DATABASE_CURVE_MODELDATA_H
 
-#include <iplugin.h>
+#include <mi_core_database_object_modeldata.h>
+
+#include "ac_core_global.h"
 
 namespace Ac {
+namespace Core {
+namespace Database {
+namespace Curve {
 
-class CorePlugin : public ExtensionSystem::IPlugin
+class Aggregate;
+typedef Mi::Core::Database::Object::ModelData ModelData_BaseClass;
+
+class AC_CORE_EXPORT ModelData : public ModelData_BaseClass
 {
-    Q_OBJECT
+    Aggregate *aggregate() const;
 
-public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
+protected:
+    ModelData(IAggregate *aggregate);
+    IUnknown *initialize();
+
+    int roleCount() const;
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(const QVariant &value, int role);
 };
 
+}
+}
+}
 }
 
 #endif

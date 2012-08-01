@@ -15,22 +15,48 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREPLUGIN_H
-#define AC_COREPLUGIN_H
+#include "ac_core_database_curve_points.h"
 
-#include <iplugin.h>
+#include "ac_core_database_curve_aggregate.h"
+#include "ac_core_point.h"
 
 namespace Ac {
+namespace Core {
+namespace Database {
+namespace Curve {
 
-class CorePlugin : public ExtensionSystem::IPlugin
+Points::Points(IAggregate *aggregate)
+    :   _aggregate(static_cast<Aggregate*>(aggregate))
 {
-    Q_OBJECT
-
-public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
-};
-
+    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
 }
 
-#endif
+IUnknown *Points::initialize()
+{
+    return this;
+}
+
+const PointList &Points::points() const
+{
+    return aggregate()->points();
+}
+
+void Points::pushPoints(const PointList &points)
+{
+    aggregate()->pushPoints(points);
+}
+
+void Points::popPoints()
+{
+    aggregate()->popPoints();
+}
+
+void Points::setPoints(const PointList &points)
+{
+    aggregate()->setPoints(points);
+}
+
+}
+}
+}
+}

@@ -15,7 +15,9 @@
 **
 **************************************************************************/
 
-#include "ac_core_curve.h"
+#include "ac_core_database_curve_aggregate.h"
+
+#include "ac_core_point.h"
 
 #include <mi_core_scopeddatachange.h>
 
@@ -24,22 +26,24 @@ using namespace Mi::Core;
 
 namespace Ac {
 namespace Core {
+namespace Database {
+namespace Curve {
 
-IAggregator *Curve::init()
+IAggregate *Aggregate::initialize()
 {
     static PointList points;
     _pointsStack.push(points);
-    return DataObject::init();
+    return Aggregate_BaseClass::initialize();
 }
 
-void Curve::pushPoints(const PointList &points)
+void Aggregate::pushPoints(const PointList &points)
 {
     ScopedDataChange data_change(this, PointsRole, TemporarayDataChange);
     _pointsStack.push(points);
     conformPoints();
 }
 
-void Curve::popPoints()
+void Aggregate::popPoints()
 {
     if (1 == _pointsStack.count())
         return;
@@ -47,7 +51,7 @@ void Curve::popPoints()
     _pointsStack.pop();
 }
 
-bool Curve::setPoints(const PointList &points)
+bool Aggregate::setPoints(const PointList &points)
 {
     PointList new_pts = points;
     while (1 < _pointsStack.count())
@@ -64,20 +68,7 @@ bool Curve::setPoints(const PointList &points)
     return true;
 }
 
-IAggregate *Curve::Points::init()
-{
-    return this;
 }
-
-IAggregate *Curve::ModelData::init()
-{
-    return DataObject::ModelData::init();
 }
-
-IAggregate *Curve::ModelItem::init()
-{
-    return DataObject::ModelItem::init();
 }
-
-} // namespace Core
-} // namespace Ac
+}

@@ -15,10 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_core_scoreobject.h"
+#include "ac_core_database_scoreobject_aggregate.h"
 
 #include <mi_idatabase.h>
 #include <mi_iclassfactory.h>
+#include <mi_imodelitem.h>
+
+#include "ac_core_constants.h"
+#include "ac_core_namespace.h"
 
 #include <mi_core_scopeddatachange.h>
 
@@ -26,23 +30,31 @@ using namespace Mi::Core;
 
 namespace Ac {
 namespace Core {
+namespace Database {
+namespace ScoreObject {
 
-IAggregate *ScoreObject::initialize()
-{
-    IClassFactory *factory = query<IClassFactory>(IDatabase::instance());
-    IModelItem *this_item = query<IModelItem>(this);
-    _pitchCurve = factory->createAggregate(Ac::PitchCurveItem, this_item);
-    _controlCurves = factory->createAggregate(Ac::ControlCurveListItem, this_item);
-    return DatabaseObject::initialize();
-}
+Aggregate::Aggregate()
+    :   _volume(DEFAULT_SCOREOBJECT_VOLUME)
+    ,   _pitchCurve(0)
+    ,   _controlCurves(0)
+{}
 
-ScoreObject::~ScoreObject()
+Aggregate::~Aggregate()
 {
     delete _controlCurves;
     delete _pitchCurve;
 }
 
-bool ScoreObject::setVolume(qreal volume)
+IAggregate *Aggregate::initialize()
+{
+    IClassFactory *factory = IClassFactory::instance();
+    IModelItem *this_item = query<IModelItem>(this);
+    _pitchCurve = factory->createAggregate(PitchCurveItem, this_item);
+    _controlCurves = factory->createAggregate(ControlCurveListItem, this_item);
+    return Aggregate_BaseClass::initialize();
+}
+
+bool Aggregate::setVolume(qreal volume)
 {
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
     if (_volume == volume)
@@ -52,15 +64,15 @@ bool ScoreObject::setVolume(qreal volume)
     return true;
 }
 
-IUnknown *ScoreObject::ModelData::initialize()
+void Aggregate::clear()
 {
-    return DatabaseObject::ModelData::initialize();
+    _controlCurves->clear();
+    _pitchCurve->clear();
+    setVolume(DEFAULT_SCOREOBJECT_VOLUME);
+    Aggregate_BaseClass::clear();
 }
 
-IUnknown *ScoreObject::ModelItem::initialize()
-{
-    return DatabaseObject::ModelItem::initialize();
 }
-
-} // namespace Core
-} // namespace Ac
+}
+}
+}

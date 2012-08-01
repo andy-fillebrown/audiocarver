@@ -18,7 +18,7 @@
 #ifndef AC_CORE_NAMESPACE_H
 #define AC_CORE_NAMESPACE_H
 
-#include <ac_core_global.h>
+#include "ac_core_global.h"
 
 #include <mi_core_namespace.h>
 
@@ -29,7 +29,7 @@ enum AcCoreInterfaces {
     AcCoreInterfaceCount
 };
 
-} // namespace I
+}
 
 namespace Ac {
 
@@ -105,6 +105,6 @@ enum Color {
     lightGray = 0xc0c0c0
 };
 
-} // namespace Ac
+}
 
-#endif // AC_CORE_NAMESPACE_H
+#endif

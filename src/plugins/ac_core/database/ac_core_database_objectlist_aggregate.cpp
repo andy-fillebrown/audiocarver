@@ -15,22 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREPLUGIN_H
-#define AC_COREPLUGIN_H
-
-#include <iplugin.h>
+#include "ac_core_database_objectlist_aggregate.h"
 
 namespace Ac {
+namespace Core {
+namespace Database {
+namespace ObjectList {
 
-class CorePlugin : public ExtensionSystem::IPlugin
+IAggregate *Aggregate::initialize()
 {
-    Q_OBJECT
-
-public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
-};
-
+    return Aggregate_BaseClass::initialize();
 }
 
-#endif
+}
+}
+}
+}

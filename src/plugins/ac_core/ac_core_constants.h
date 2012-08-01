@@ -42,4 +42,4 @@ const qreal DEFAULT_VIEWSETTINGS_CONTROLPOSITION = 0.5f;
 const qreal VIEWSCALE_MIN = 0.75f;
 const qreal VIEWSCALE_MAX = 1000.0f;
 
-#endif // AC_CORE_CONSTANTS_H
+#endif

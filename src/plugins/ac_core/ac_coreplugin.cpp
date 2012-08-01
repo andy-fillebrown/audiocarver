@@ -17,16 +17,16 @@
 
 #include "ac_coreplugin.h"
 
-#include <ac_core_namespace.h>
-//#include <ac_core_database.h>
+#include "ac_core_namespace.h"
+//#include "ac_core_database.h"
 
 #include <pluginmanager.h>
 
 #include <QtPlugin>
 
-#ifdef QT_DEBUG
-static bool test();
-#endif
+//#ifdef QT_DEBUG
+//static bool test();
+//#endif
 
 using namespace Mi;
 
@@ -88,9 +88,9 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
 
 void CorePlugin::extensionsInitialized()
 {
-#ifdef QT_DEBUG
-    test();
-#endif
+//#ifdef QT_DEBUG
+//    test();
+//#endif
 }
 
 } // namespace Ac
