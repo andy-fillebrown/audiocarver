@@ -17,7 +17,6 @@
 
 #include "ac_core_controlcurve_modeldata.h"
 #include "ac_core_namespace.h"
-#include "ac_core_point.h"
 #include <mi_core_scopeddatachange.h>
 
 using namespace Ac;

@@ -21,6 +21,7 @@
 #include "mi_core_iaggregate.h"
 #include "mi_core_imodelitem.h"
 #include "mi_core_imodelitemwatcher.h"
+#include <QList>
 
 class ScopedParentChange
 {

@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_core_pitchcurve_modeldata.h"
-#include "ac_core_point.h"
 
 namespace PitchCurve {
 

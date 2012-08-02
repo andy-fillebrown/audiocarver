@@ -20,6 +20,7 @@
 
 #include "mi_core_imodelitemlist.h"
 #include "mi_core_global.h"
+#include <QList>
 
 class IAggregate;
 

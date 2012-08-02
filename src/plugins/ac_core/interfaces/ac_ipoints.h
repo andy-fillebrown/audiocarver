@@ -18,25 +18,21 @@
 #ifndef AC_IPOINTS_H
 #define AC_IPOINTS_H
 
-#include <mi_core_iaggregate.h>
-#include "ac_core_namespace.h"
+#include <mi_core_iunknown.h>
 
-namespace Ac {
-namespace Core {
-    class Point;
-    typedef QList<Point> PointList;
-}
-}
+class Point;
+template <typename T> class QList;
+typedef QList<Point> PointList;
 
-class IPoints : public IAggregate
+class IPoints : public IUnknown
 {
 public:
     enum { InterfaceType = I::IPoints };
 
-    virtual const Ac::Core::PointList &points() const = 0;
-    virtual void pushPoints(const Ac::Core::PointList &points) = 0;
+    virtual const PointList &points() const = 0;
+    virtual void pushPoints(const PointList &points) = 0;
     virtual void popPoints() = 0;
-    virtual void setPoints(const Ac::Core::PointList &points) = 0;
+    virtual void setPoints(const PointList &points) = 0;
 
     void pushPoints()
     {
@@ -55,9 +51,7 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 

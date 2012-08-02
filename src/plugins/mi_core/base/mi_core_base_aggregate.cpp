@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_core_base_aggregate.h"
-#include "mi_core_iunknown.h"
 
 namespace Base {
 

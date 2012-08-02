@@ -16,6 +16,8 @@
 **************************************************************************/
 
 #include "mi_core_namespace.h"
+#include <QMap>
+#include <QString>
 
 static QMap<int, QString> item_type_map;
 static QMap<int, QString> item_data_role_map;

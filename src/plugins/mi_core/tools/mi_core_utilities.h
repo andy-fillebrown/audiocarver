@@ -19,6 +19,7 @@
 #define MI_CORE_UTILITIES_H
 
 #include "mi_core_global.h"
+#include <QString>
 
 MI_CORE_EXPORT QString applicationTreeDirectory();
 

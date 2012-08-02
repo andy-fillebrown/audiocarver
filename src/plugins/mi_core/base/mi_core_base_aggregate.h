@@ -20,6 +20,7 @@
 
 #include "mi_core_iaggregate.h"
 #include "mi_core_global.h"
+#include <QList>
 
 namespace Base {
 

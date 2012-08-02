@@ -94,6 +94,7 @@ Q_EXPORT_PLUGIN(Ac::Core::Plugin)
 #include <mi_core_iclassfactory.h>
 #include <mi_core_imodeldata.h>
 #include <mi_core_imodelitem.h>
+#include <QtDebug>
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }

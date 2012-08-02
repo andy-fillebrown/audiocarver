@@ -19,9 +19,7 @@
 #define AC_CORE_CURVE_MODELDATA_H
 
 #include <mi_core_base_modeldata.h>
-
-class Point;
-typedef QList<Point> PointList;
+#include "ac_core_point.h"
 
 namespace Curve {
 
