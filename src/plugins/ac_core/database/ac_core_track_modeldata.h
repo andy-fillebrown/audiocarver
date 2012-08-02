@@ -30,7 +30,7 @@ class ModelData : public ScoreObject::ModelData
     int _recording : 1;
     enum { RoleCount = 4 };
 
-protected:
+public:
     enum {
         RoleCountOffset = ScoreObject::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
@@ -39,6 +39,7 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
+protected:
     int color() const
     {
         return _color;

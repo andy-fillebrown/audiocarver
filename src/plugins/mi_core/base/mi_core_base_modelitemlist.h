@@ -33,7 +33,7 @@ class MI_CORE_EXPORT ModelItemList : public IModelItemList
     const int _listType;
     QList<IModelItem*> _items;
 
-protected:
+public:
     ModelItemList(IAggregate *aggregate, int listType)
         :   _aggregate(aggregate)
         ,   _parent(0)
@@ -42,6 +42,9 @@ protected:
 
     virtual IUnknown *initialize();
 
+    void *queryInterface(int interfaceType) const;
+
+protected:
     IAggregate *aggregate() const
     {
         return _aggregate;

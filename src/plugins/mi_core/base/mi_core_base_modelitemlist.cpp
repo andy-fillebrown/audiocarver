@@ -30,6 +30,13 @@ IUnknown *ModelItemList::initialize()
     return this;
 }
 
+void *ModelItemList::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ModelItemList*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
 void ModelItemList::setParent(IModelItem *parent)
 {
     if (_parent == parent)

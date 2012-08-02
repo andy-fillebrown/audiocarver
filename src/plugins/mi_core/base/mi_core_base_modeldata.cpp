@@ -24,6 +24,13 @@ using namespace Qt;
 
 namespace Base {
 
+void *ModelData::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ModelData*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
 IUnknown *ModelData::initialize()
 {
     aggregate()->append(this);

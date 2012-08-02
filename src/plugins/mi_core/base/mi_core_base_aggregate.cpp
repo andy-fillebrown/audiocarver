@@ -23,15 +23,15 @@ namespace Base {
 Aggregate::Aggregate()
 {}
 
+IAggregate *Aggregate::initialize()
+{
+    return this;
+}
+
 Aggregate::~Aggregate()
 {
     qDeleteAll(_components);
     _components.clear();
-}
-
-IAggregate *Aggregate::initialize()
-{
-    return this;
 }
 
 void *Aggregate::queryInterface(int interfaceType) const

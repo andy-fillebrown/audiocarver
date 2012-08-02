@@ -31,6 +31,9 @@ class MI_CORE_EXPORT ModelItem : public IModelItem
 
     enum { ItemCount = 0 };
 
+public:
+    void *queryInterface(int interfaceType) const;
+
 protected:
     enum {
         ItemCountOffset = 0,

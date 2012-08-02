@@ -32,7 +32,7 @@ class ModelData : public Base::ModelData
     qreal _controlScale;
     enum { RoleCount = 6 };
 
-protected:
+public:
     enum {
         RoleCountOffset = Base::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
@@ -41,6 +41,7 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
+protected:
     qreal timePosition() const
     {
         return _timePosition;

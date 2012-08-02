@@ -27,7 +27,7 @@ class ModelItem : public ScoreObject::ModelItem
     IAggregate *_notes;
     enum { ItemCount = 1 };
 
-protected:
+public:
     enum {
         ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
@@ -39,6 +39,8 @@ protected:
     {}
 
     IUnknown *initialize();
+
+protected:
     ~ModelItem();
 
     IAggregate *notes() const

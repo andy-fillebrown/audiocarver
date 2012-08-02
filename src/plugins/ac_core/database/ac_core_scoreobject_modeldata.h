@@ -28,7 +28,7 @@ class ModelData : public Base::ModelData
     qreal _volume;
     enum { RoleCount = 1 };
 
-protected:
+public:
     enum {
         RoleCountOffset = Base::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
@@ -37,6 +37,7 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
+protected:
     qreal volume() const
     {
         return _volume;

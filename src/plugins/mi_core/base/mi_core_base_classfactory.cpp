@@ -17,6 +17,7 @@
 
 #include "mi_core_base_classfactory.h"
 #include "mi_core_iaggregate.h"
+#include "mi_core_isession.h"
 
 static IClassFactory *instance = 0;
 
@@ -27,9 +28,9 @@ IClassFactory *IClassFactory::instance()
 
 namespace Base {
 
-ClassFactory::ClassFactory(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+ClassFactory::ClassFactory()
 {
+    ISession::instance()->remove(IClassFactory::instance());
     ::instance = this;
 }
 
@@ -40,7 +41,7 @@ ClassFactory::~ClassFactory()
 
 IUnknown *ClassFactory::initialize()
 {
-    aggregate()->append(this);
+    ISession::instance()->append(this);
     return this;
 }
 
@@ -48,7 +49,7 @@ void *ClassFactory::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
         return const_cast<ClassFactory*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    return ISession::instance()->queryInterface(interfaceType);
 }
 
 }

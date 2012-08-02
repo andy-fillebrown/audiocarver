@@ -23,15 +23,14 @@
 class IAggregate;
 class IModelItem;
 
-class IClassFactory : public IUnknown
+class MI_CORE_EXPORT IClassFactory : public IUnknown
 {
 public:
     enum { InterfaceType = I::IClassFactory };
 
     static IClassFactory *instance();
 
-    virtual IAggregate *createAggregate(int itemType, IModelItem *parent = 0) = 0;
-    virtual IUnknown *createComponent(int interfaceType, IAggregate *aggregate) = 0;
+    virtual IAggregate *create(int itemType, IModelItem *parent = 0) = 0;
 
     int interfaceType() const
     {

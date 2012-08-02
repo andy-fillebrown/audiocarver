@@ -24,12 +24,14 @@ namespace ControlCurve {
 
 class ModelItem : public Curve::ModelItem
 {
-protected:
+public:
     ModelItem(IAggregate *aggregate)
         :   Curve::ModelItem(aggregate)
     {}
 
     IUnknown *initialize();
+
+protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
 };

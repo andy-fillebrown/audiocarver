@@ -30,15 +30,17 @@ class ModelData : public Base::ModelData
     int _color;
     enum { RoleCount = 4 };
 
-protected:
+public:
     enum {
         RoleCountOffset = Base::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
     ModelData(IAggregate *aggregate);
+
     IUnknown *initialize();
 
+protected:
     qreal location() const
     {
         return _location;

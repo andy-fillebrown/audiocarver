@@ -7,6 +7,7 @@ DIRS = \
     implementations \
     interfaces \
     models \
+    session \
     tools \
 
 for(dir, DIRS) {

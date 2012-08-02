@@ -30,7 +30,7 @@ class ModelItem : public ScoreObject::ModelItem
     IAggregate *_viewSettings;
     enum { ItemCount = 4 };
 
-protected:
+public:
     enum {
         ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
@@ -45,6 +45,8 @@ protected:
     {}
 
     IUnknown *initialize();
+
+protected:
     ~ModelItem();
 
     IAggregate *tracks() const

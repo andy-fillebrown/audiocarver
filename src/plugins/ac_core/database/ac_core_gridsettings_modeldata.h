@@ -31,7 +31,7 @@ class ModelData : public Base::ModelData
     qreal _controlSnap;
     enum { RoleCount = 5 };
 
-protected:
+public:
     enum {
         RoleCountOffset = Base::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
@@ -40,6 +40,7 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
+protected:
     bool isSnapEnabled() const
     {
         return _snapEnabled;

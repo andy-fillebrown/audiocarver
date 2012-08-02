@@ -29,7 +29,7 @@ class ModelItem : public Base::ModelItem
     IAggregate *_controlGridLines;
     enum { ItemCount = 3 };
 
-protected:
+public:
     enum {
         ItemCountOffset = Base::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
@@ -43,6 +43,8 @@ protected:
     {}
 
     IUnknown *initialize();
+
+protected:
     ~ModelItem();
 
     IAggregate *timeGridLines() const

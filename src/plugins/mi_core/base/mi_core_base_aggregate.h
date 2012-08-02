@@ -28,9 +28,11 @@ class MI_CORE_EXPORT Aggregate : public IAggregate
 
 public:
     Aggregate();
-    ~Aggregate();
     virtual IAggregate *initialize();
+    ~Aggregate();
+    void *queryInterface(int interfaceType) const;
 
+protected:
     const QList<IUnknown*> &components() const
     {
         return _components;
@@ -43,7 +45,10 @@ public:
         return component;
     }
 
-    void *queryInterface(int interfaceType) const;
+    void remove(IUnknown *component)
+    {
+        _components.removeOne(component);
+    }
 };
 
 }

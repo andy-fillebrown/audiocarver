@@ -27,7 +27,7 @@ class ModelData : public Curve::ModelData
     int _controlType;
     enum { RoleCount = 1 };
 
-protected:
+public:
     enum {
         RoleCountOffset = Curve::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
@@ -39,6 +39,8 @@ protected:
     {}
 
     IUnknown *initialize();
+
+protected:
     void conformPoints();
 
     int controlType() const

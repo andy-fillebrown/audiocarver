@@ -21,8 +21,9 @@
 #include <iplugin.h>
 
 namespace Ac {
+namespace Core {
 
-class CorePlugin : public ExtensionSystem::IPlugin
+class Plugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
@@ -31,6 +32,7 @@ public:
     void extensionsInitialized();
 };
 
+}
 }
 
 #endif

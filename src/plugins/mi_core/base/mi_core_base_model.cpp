@@ -17,6 +17,7 @@
 
 #include "mi_core_base_model.h"
 #include "mi_core_iaggregate.h"
+#include "mi_core_isession.h"
 
 static IModel *instance = 0;
 
@@ -27,9 +28,9 @@ IModel *IModel::instance()
 
 namespace Base {
 
-Model::Model(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+Model::Model()
 {
+    ISession::instance()->remove(IModel::instance());
     ::instance = this;
 }
 
@@ -40,7 +41,7 @@ Model::~Model()
 
 IUnknown *Model::initialize()
 {
-    aggregate()->append(this);
+    ISession::instance()->append(this);
     return this;
 }
 
@@ -48,7 +49,7 @@ void *Model::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
         return const_cast<Model*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    return ISession::instance()->queryInterface(interfaceType);
 }
 
 }

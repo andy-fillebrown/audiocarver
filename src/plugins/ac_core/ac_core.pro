@@ -8,13 +8,11 @@ load(../../plugin.prf)
 DEFINES *= \
     AC_CORE_LIBRARY \
 
-HEADERS *= ac_coreplugin.h
-SOURCES *= ac_coreplugin.cpp
-
 SOURCE_FILES = \
     constants \
     global \
     namespace \
+    plugin \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {

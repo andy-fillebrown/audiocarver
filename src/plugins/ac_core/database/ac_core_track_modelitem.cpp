@@ -27,7 +27,7 @@ namespace Track {
 
 IUnknown *ModelItem::initialize()
 {
-    _notes = IClassFactory::instance()->createAggregate(NoteListItem, this);
+    _notes = IClassFactory::instance()->create(NoteListItem, this);
     return ScoreObject::ModelItem::initialize();
 }
 

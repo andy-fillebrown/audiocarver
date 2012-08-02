@@ -29,7 +29,7 @@ class ModelData : public Base::ModelData
     int _curveRate;
     enum { RoleCount = 3 };
 
-protected:
+public:
     enum {
         RoleCountOffset = Base::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
@@ -38,6 +38,7 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
+protected:
     int sampleRate() const
     {
         return _sampleRate;

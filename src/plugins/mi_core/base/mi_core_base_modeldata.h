@@ -31,6 +31,9 @@ class MI_CORE_EXPORT ModelData : public IModelData
     QString _name;
     enum { RoleCount = 1 };
 
+public:
+    void *queryInterface(int interfaceType) const;
+
 protected:
     enum {
         RoleCountOffset = 0,

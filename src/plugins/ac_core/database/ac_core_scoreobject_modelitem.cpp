@@ -40,8 +40,8 @@ ModelItem::~ModelItem()
 IUnknown *ModelItem::initialize()
 {
     IClassFactory *factory = IClassFactory::instance();
-    _pitchCurve = factory->createAggregate(PitchCurveItem, this);
-    _controlCurves = factory->createAggregate(ControlCurveListItem, this);
+    _pitchCurve = factory->create(PitchCurveItem, this);
+    _controlCurves = factory->create(ControlCurveListItem, this);
     return Base::ModelItem::initialize();
 }
 

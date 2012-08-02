@@ -28,10 +28,10 @@ namespace Score {
 IUnknown *ModelItem::initialize()
 {
     IClassFactory *factory = IClassFactory::instance();
-    _tracks = factory->createAggregate(Ac::TrackListItem, this);
-    _gridSettings = factory->createAggregate(Ac::GridSettingsItem, this);
-    _projectSettings = factory->createAggregate(Ac::ProjectSettingsItem, this);
-    _viewSettings = factory->createAggregate(Ac::ViewSettingsItem, this);
+    _tracks = factory->create(TrackListItem, this);
+    _gridSettings = factory->create(GridSettingsItem, this);
+    _projectSettings = factory->create(ProjectSettingsItem, this);
+    _viewSettings = factory->create(ViewSettingsItem, this);
     return ScoreObject::ModelItem::initialize();
 }
 

@@ -27,7 +27,7 @@ public:
 
     virtual const QList<IUnknown*> &components() const = 0;
     virtual IUnknown *append(IUnknown *component) = 0;
-    virtual void clear() = 0;
+    virtual void remove(IUnknown *component) = 0;
 
     int interfaceType() const
     {

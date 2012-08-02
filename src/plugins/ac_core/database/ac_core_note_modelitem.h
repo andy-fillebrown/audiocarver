@@ -24,13 +24,14 @@ namespace Note {
 
 class ModelItem : public ScoreObject::ModelItem
 {
-protected:
+public:
     ModelItem(IAggregate *aggregate)
         :   ScoreObject::ModelItem(aggregate)
     {}
 
     IUnknown *initialize();
 
+protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
 };

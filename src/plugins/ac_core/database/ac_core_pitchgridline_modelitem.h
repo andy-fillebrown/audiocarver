@@ -24,12 +24,14 @@ namespace PitchGridLine {
 
 class ModelItem : public GridLine::ModelItem
 {
-protected:
+public:
     ModelItem(IAggregate *aggregate)
         :   GridLine::ModelItem(aggregate)
     {}
 
     IUnknown *initialize();
+
+protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
 };

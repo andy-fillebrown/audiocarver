@@ -24,12 +24,14 @@ namespace PitchCurve {
 
 class ModelData : public Curve::ModelData
 {
-protected:
+public:
     ModelData(IAggregate *aggregate)
         :   Curve::ModelData(aggregate)
     {}
 
     IUnknown *initialize();
+
+protected:
     void conformPoints();
 };
 

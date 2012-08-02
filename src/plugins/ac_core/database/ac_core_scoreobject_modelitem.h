@@ -28,15 +28,17 @@ class ModelItem : public Base::ModelItem
     IAggregate *_controlCurves;
     enum { ItemCount = 2 };
 
-protected:
+public:
     enum {
         ItemCountOffset = Base::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
     ModelItem(IAggregate *aggregate);
-    ~ModelItem();
     IUnknown *initialize();
+
+protected:
+    ~ModelItem();
 
     IAggregate *pitchCurve() const
     {

@@ -26,18 +26,10 @@ namespace Base {
 
 class MI_CORE_EXPORT Database : public IDatabase
 {
-    IAggregate *_aggregate;
-
 protected:
-    Database(IAggregate *aggregate);
+    Database();
     ~Database();
     virtual IUnknown *initialize();
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
     void *queryInterface(int interfaceType) const;
 };
 

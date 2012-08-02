@@ -28,18 +28,10 @@ class MI_CORE_EXPORT QModel : public IQModel
 {
     Q_OBJECT
 
-    IAggregate *_aggregate;
-
 public:
-    QModel(IAggregate *aggregate);
+    QModel();
     ~QModel();
     virtual QObject *initialize();
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
     int rowCount(const QModelIndex &parent) const;

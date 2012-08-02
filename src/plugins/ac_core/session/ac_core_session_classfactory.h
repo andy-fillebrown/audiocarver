@@ -15,44 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATAOBJECTFACTORY_H
-#define AC_CORE_DATAOBJECTFACTORY_H
+#ifndef AC_CORE_SESSION_CLASSFACTORY_H
+#define AC_CORE_SESSION_CLASSFACTORY_H
 
-#include <mi_idataobjectfactory.h>
+#include <mi_core_base_classfactory.h>
+#include "ac_core_global.h"
 
-#include <ac_core_global.h>
+namespace Session {
 
-namespace Ac {
-namespace Core {
-
-class Database;
-
-class AC_CORE_EXPORT DataObjectFactory : public IDataObjectFactory
+class AC_CORE_EXPORT ClassFactory : public Base::ClassFactory
 {
-    friend class Database;
-
-    Database *_aggregator;
+public:
+    IUnknown *initialize();
 
 protected:
-    Database *a() const
-    {
-        return _aggregator;
-    }
-
-    DataObjectFactory(Database *aggregator)
-        :   _aggregator(aggregator)
-    {}
-
-    virtual IAggregate *init();
-
-    // IFactory
-    IAggregator *create(int itemType, IModelItem *parent = 0);
-
-    // IAggregate
-    IAggregator *aggregator() const;
+    IAggregate *create(int itemType, IModelItem *parent = 0);
 };
 
-} // namespace Core
-} // namespace Ac
+}
 
-#endif // AC_CORE_DATAOBJECTFACTORY_H
+#endif

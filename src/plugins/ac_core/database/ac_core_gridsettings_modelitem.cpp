@@ -28,9 +28,9 @@ namespace GridSettings {
 IUnknown *ModelItem::initialize()
 {
     IClassFactory *factory = IClassFactory::instance();
-    _timeGridLines = factory->createAggregate(Ac::TimeGridLineListItem, this);
-    _pitchGridLines = factory->createAggregate(Ac::PitchGridLineListItem, this);
-    _controlGridLines = factory->createAggregate(Ac::ControlGridLineListItem, this);
+    _timeGridLines = factory->create(TimeGridLineListItem, this);
+    _pitchGridLines = factory->create(PitchGridLineListItem, this);
+    _controlGridLines = factory->create(ControlGridLineListItem, this);
     return Base::ModelItem::initialize();
 }
 

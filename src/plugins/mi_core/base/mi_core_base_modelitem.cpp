@@ -21,6 +21,13 @@
 
 namespace Base {
 
+void *ModelItem::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ModelItem*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
 IUnknown *ModelItem::initialize()
 {
     aggregate()->append(this);

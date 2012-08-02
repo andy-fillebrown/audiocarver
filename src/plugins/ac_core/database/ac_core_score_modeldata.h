@@ -28,7 +28,7 @@ class ModelData : public ScoreObject::ModelData
     qreal _startTime;
     enum { RoleCount = 2 };
 
-protected:
+public:
     enum {
         RoleCountOffset = ScoreObject::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
@@ -37,6 +37,7 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
+protected:
     qreal length() const
     {
         return _length;

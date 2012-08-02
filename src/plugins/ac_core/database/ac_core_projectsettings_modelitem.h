@@ -24,12 +24,14 @@ namespace ProjectSettings {
 
 class ModelItem : public Base::ModelItem
 {
-protected:
+public:
     ModelItem(IAggregate *aggregate)
         :   Base::ModelItem(aggregate)
     {}
 
     IUnknown *initialize();
+
+protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
 };

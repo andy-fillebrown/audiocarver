@@ -17,6 +17,7 @@
 
 #include "mi_core_base_qmodel.h"
 #include "mi_core_iaggregate.h"
+#include "mi_core_isession.h"
 
 static IQModel *instance = 0;
 
@@ -27,9 +28,9 @@ IQModel *IQModel::instance()
 
 namespace Base {
 
-QModel::QModel(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+QModel::QModel()
 {
+    ISession::instance()->remove(IQModel::instance());
     ::instance = this;
 }
 
@@ -40,7 +41,7 @@ QModel::~QModel()
 
 QObject *QModel::initialize()
 {
-    aggregate()->append(this);
+    ISession::instance()->append(this);
     return this;
 }
 
@@ -74,7 +75,7 @@ void *QModel::queryInterface(int interfaceType) const
     void *interface = IQModel::queryInterface(interfaceType);
     if (interface)
         return interface;
-    return aggregate()->queryInterface(interfaceType);
+    return ISession::instance()->queryInterface(interfaceType);
 }
 
 }

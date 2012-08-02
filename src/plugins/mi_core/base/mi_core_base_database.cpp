@@ -17,6 +17,7 @@
 
 #include "mi_core_base_database.h"
 #include "mi_core_iaggregate.h"
+#include "mi_core_isession.h"
 
 static IDatabase *instance = 0;
 
@@ -27,9 +28,9 @@ IDatabase *IDatabase::instance()
 
 namespace Base {
 
-Database::Database(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+Database::Database()
 {
+    ISession::instance()->remove(IDatabase::instance());
     ::instance = this;
 }
 
@@ -40,7 +41,7 @@ Database::~Database()
 
 IUnknown *Database::initialize()
 {
-    aggregate()->append(this);
+    ISession::instance()->append(this);
     return this;
 }
 
@@ -48,7 +49,7 @@ void *Database::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
         return const_cast<Database*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    return ISession::instance()->queryInterface(interfaceType);
 }
 
 }

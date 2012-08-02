@@ -26,18 +26,10 @@ namespace Base {
 
 class MI_CORE_EXPORT Model : public IModel
 {
-    IAggregate *_aggregate;
-
 public:
-    Model(IAggregate *aggregate);
+    Model();
     ~Model();
     virtual IUnknown *initialize();
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
     void *queryInterface(int interfaceType) const;
 };
 

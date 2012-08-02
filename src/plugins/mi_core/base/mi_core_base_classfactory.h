@@ -26,18 +26,10 @@ namespace Base {
 
 class MI_CORE_EXPORT ClassFactory : public IClassFactory
 {
-    IAggregate *_aggregate;
-
 protected:
-    ClassFactory(IAggregate *aggregate);
+    ClassFactory();
     ~ClassFactory();
     virtual IUnknown *initialize();
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
     void *queryInterface(int interfaceType) const;
 };
 
