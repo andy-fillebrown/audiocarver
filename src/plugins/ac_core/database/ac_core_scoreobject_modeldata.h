@@ -15,40 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATABASE_OBJECTLIST_AGGREGATE_H
-#define AC_CORE_DATABASE_OBJECTLIST_AGGREGATE_H
+#ifndef AC_CORE_SCOREOBJECT_MODELDATA_H
+#define AC_CORE_SCOREOBJECT_MODELDATA_H
 
-#include "mi_core_database_objectlist_aggregate.h"
+#include <mi_core_base_modeldata.h>
+#include "ac_core_global.h"
 
-#include <ac_core_global.h>
+namespace ScoreObject {
 
-namespace Ac {
-namespace Core {
-
-namespace Session {
-    class ClassFactory;
-}
-
-namespace Database {
-namespace ObjectList {
-
-typedef Mi::Core::Database::ObjectList::Aggregate Aggregate_BaseClass;
-
-class AC_CORE_EXPORT Aggregate : public Aggregate_BaseClass
+class AC_CORE_EXPORT ModelData : public Base::ModelData
 {
-    friend class Session::ClassFactory;
+    qreal _volume;
+    enum { RoleCount = 1 };
 
 protected:
-    Aggregate(int listType = Mi::UnknownItem)
-        :   Aggregate_BaseClass(listType)
-    {}
+    enum {
+        RoleCountOffset = Base::ModelData::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
-    IAggregate *initialize();
+    ModelData(IAggregate *aggregate);
+    IUnknown *initialize();
+
+    qreal volume() const
+    {
+        return _volume;
+    }
+
+    bool setVolume(qreal volume);
+    int roleCount() const;
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(const QVariant &value, int role);
 };
 
-}
-}
-}
 }
 
 #endif

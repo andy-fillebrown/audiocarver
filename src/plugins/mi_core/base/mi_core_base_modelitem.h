@@ -29,7 +29,14 @@ class MI_CORE_EXPORT ModelItem : public IModelItem
     IAggregate *_aggregate;
     IModelItem *_parent;
 
+    enum { ItemCount = 0 };
+
 protected:
+    enum {
+        ItemCountOffset = 0,
+        TotalItemCount = ItemCount
+    };
+
     ModelItem(IAggregate *aggregate)
         :   _aggregate(aggregate)
         ,   _parent(0)
@@ -40,16 +47,6 @@ protected:
     IAggregate *aggregate() const
     {
         return _aggregate;
-    }
-
-    int itemType() const
-    {
-        return Mi::UnknownItem;
-    }
-
-    bool isTypeOfItem(int itemType) const
-    {
-        return Mi::UnknownItem == itemType;
     }
 
     IModelItem *parent() const

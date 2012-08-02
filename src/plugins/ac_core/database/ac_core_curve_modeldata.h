@@ -15,42 +15,50 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATABASE_SCOREOBJECT_MODELDATA_H
-#define AC_CORE_DATABASE_SCOREOBJECT_MODELDATA_H
+#ifndef AC_CORE_CURVE_MODELDATA_H
+#define AC_CORE_CURVE_MODELDATA_H
 
-#include <mi_core_database_object_modeldata.h>
-
-#include <mi_imodelitemlist.h>
-
+#include <mi_core_base_modeldata.h>
 #include "ac_core_global.h"
 
-namespace Ac {
-namespace Core {
-namespace Database {
-namespace ScoreObject {
+class Point;
+typedef QList<Point> PointList;
 
-class Aggregate;
-typedef Mi::Core::Database::Object::ModelData ModelData_BaseClass;
+namespace Curve {
 
-class AC_CORE_EXPORT ModelData : public ModelData_BaseClass
+class AC_CORE_EXPORT ModelData : public Base::ModelData
 {
-    friend class Aggregate;
-
-    Aggregate *aggregate() const;
+    PointList _points;
+    enum { RoleCount = 1 };
 
 protected:
+    enum {
+        RoleCountOffset = Base::ModelData::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
+
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
-    int roleCount() const;
+    const PointList &points() const
+    {
+        return _points;
+    }
+
+    bool setPoints(const PointList &points);
+
+    virtual void conformPoints() = 0;
+
+    int roleCount() const
+    {
+        return RoleCount;
+    }
+
     int roleAt(int i) const;
     QVariant getValue(int role) const;
     bool setValue(const QVariant &value, int role);
 };
 
-}
-}
-}
 }
 
 #endif

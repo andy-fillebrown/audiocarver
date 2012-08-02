@@ -16,9 +16,7 @@
 **************************************************************************/
 
 #include "mi_core_base_modeldata.h"
-
 #include "mi_core_imodelitemlist.h"
-
 #include "mi_core_scopeddatachange.h"
 
 using namespace Mi;

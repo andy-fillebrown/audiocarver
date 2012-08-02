@@ -15,46 +15,44 @@
 **
 **************************************************************************/
 
-#include "ac_core_database_curve_modeldata.h"
-
-#include "ac_core_database_curve_aggregate.h"
+#include "ac_core_curve_modeldata.h"
 #include "ac_core_point.h"
-
 #include <mi_core_scopeddatachange.h>
 
-namespace Ac {
-namespace Core {
-namespace Database {
+using namespace Ac;
+
 namespace Curve {
 
-Aggregate *ModelData::aggregate() const
-{
-    return static_cast<Aggregate*>(ModelData_BaseClass::aggregate());
-}
-
 ModelData::ModelData(IAggregate *aggregate)
-    :   ModelData_BaseClass(aggregate)
-{
-    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
-}
+    :   Base::ModelData(aggregate)
+{}
 
 IUnknown *ModelData::initialize()
 {
-    return ModelData_BaseClass::initialize();
+    return Base::ModelData::initialize();
 }
 
-int ModelData::roleCount() const
+bool ModelData::setPoints(const PointList &points)
 {
-    return Aggregate::TotalRoleCount;
+    const PointList &old_points = _points;
+    _points = points;
+    conformPoints();
+    if (_points == old_points)
+        return false;
+    const PointList &new_points = _points;
+    _points = old_points;
+    ScopedDataChange data_change(this, PointsRole);
+    _points = new_points;
+    return true;
 }
 
 int ModelData::roleAt(int i) const
 {
-    switch (i - Aggregate::RoleCountOffset) {
+    switch (i - RoleCountOffset) {
     case 0:
         return PointsRole;
     default:
-        return ModelData_BaseClass::roleAt(i);
+        return Base::ModelData::roleAt(i);
     }
 }
 
@@ -62,9 +60,9 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case PointsRole:
-        return QVariant::fromValue(aggregate()->points());
+        return QVariant::fromValue(points());
     default:
-        return ModelData_BaseClass::getValue(role);
+        return Base::ModelData::getValue(role);
     }
 }
 
@@ -72,13 +70,10 @@ bool ModelData::setValue(const QVariant &value, int role)
 {
     switch (role) {
     case PointsRole:
-        return aggregate()->setPoints(qvariant_cast<PointList>(value));
+        return setPoints(qvariant_cast<PointList>(value));
     default:
-        return ModelData_BaseClass::setValue(value, role);
+        return Base::ModelData::setValue(value, role);
     }
 }
 
-}
-}
-}
 }

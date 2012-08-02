@@ -15,32 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATABASE_CURVE_MODELITEM_H
-#define AC_CORE_DATABASE_CURVE_MODELITEM_H
+#ifndef AC_CORE_CURVE_MODELITEM_H
+#define AC_CORE_CURVE_MODELITEM_H
 
-#include "mi_core_database_object_modelitem.h"
-
+#include <mi_core_base_modelitem.h>
 #include "ac_core_global.h"
 
-namespace Ac {
-namespace Core {
-namespace Database {
 namespace Curve {
 
-class Aggregate;
-typedef Mi::Core::Database::Object::ModelItem ModelItem_BaseClass;
-
-class AC_CORE_EXPORT ModelItem : public ModelItem_BaseClass
+class AC_CORE_EXPORT ModelItem : public Base::ModelItem
 {
 protected:
     ModelItem(IAggregate *aggregate);
     IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const;
+    bool isTypeOfItem(int itemType) const = 0;
 };
 
-}
-}
-}
 }
 
 #endif

@@ -29,11 +29,14 @@ class MI_CORE_EXPORT ModelData : public IModelData
     IAggregate *_aggregate;
 
     QString _name;
-
-public:
     enum { RoleCount = 1 };
 
 protected:
+    enum {
+        RoleCountOffset = 0,
+        TotalRoleCount = RoleCount
+    };
+
     ModelData(IAggregate *aggregate)
         :   _aggregate(aggregate)
     {}

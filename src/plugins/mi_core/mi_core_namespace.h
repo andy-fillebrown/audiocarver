@@ -19,7 +19,6 @@
 #define MI_CORE_NAMESPACE_H
 
 #include "mi_core_global.h"
-
 #include <qnamespace.h>
 
 namespace I {

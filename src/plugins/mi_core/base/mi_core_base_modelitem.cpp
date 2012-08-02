@@ -16,9 +16,7 @@
 **************************************************************************/
 
 #include "mi_core_base_modelitem.h"
-
 #include "mi_core_imodelitemlist.h"
-
 #include "mi_core_scopedparentchange.h"
 
 namespace Base {

@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_core_utilities.h"
-
 #include <QCoreApplication>
 #include <QDir>
 

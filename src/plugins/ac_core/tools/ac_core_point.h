@@ -19,27 +19,26 @@
 #define AC_CORE_POINT_H
 
 #include "ac_core_namespace.h"
-
 #include <QList>
 #include <QMetaType>
 #include <QPointF>
 
-namespace Ac {
-namespace Core {
-
 class Point
 {
 public:
-    Point(CurveType curveType = NoCurve)
+    QPointF pos;
+    Ac::CurveType curveType;
+
+    Point(Ac::CurveType curveType = Ac::NoCurve)
         :   curveType(curveType)
     {}
 
-    Point(qreal x, qreal y, CurveType curveType = NoCurve)
+    Point(qreal x, qreal y, Ac::CurveType curveType = Ac::NoCurve)
         :   pos(x, y)
         ,   curveType(curveType)
     {}
 
-    Point(const QPointF &pos, CurveType curveType = NoCurve)
+    Point(const QPointF &pos, Ac::CurveType curveType = Ac::NoCurve)
         :   pos(pos)
         ,   curveType(curveType)
     {}
@@ -54,21 +53,15 @@ public:
             return true;
         return false;
     }
-
-    QPointF pos;
-    CurveType curveType;
 };
 
 typedef QList<Point> PointList;
 
-} // namespace Core
-} // namespace Ac
-
-inline bool operator==(const Ac::Core::Point &a, const Ac::Core::Point &b)
+inline bool operator==(const Point &a, const Point &b)
 {
     return (a.pos == b.pos && a.curveType == b.curveType);
 }
 
-Q_DECLARE_METATYPE(Ac::Core::PointList)
+Q_DECLARE_METATYPE(PointList)
 
-#endif // AC_CORE_POINT_H
+#endif

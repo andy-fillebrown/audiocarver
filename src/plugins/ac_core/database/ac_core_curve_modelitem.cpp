@@ -15,36 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_core_database_curve_modelitem.h"
-
-#include "ac_core_database_curve_aggregate.h"
+#include "ac_core_curve_modelitem.h"
 #include "ac_core_namespace.h"
-#include "ac_core_point.h"
 
-namespace Ac {
-namespace Core {
-namespace Database {
+using namespace Ac;
+
 namespace Curve {
 
 ModelItem::ModelItem(IAggregate *aggregate)
-    :   ModelItem_BaseClass(aggregate)
-{
-    Q_ASSERT(dynamic_cast<Aggregate*>(aggregate));
-}
+    :   Base::ModelItem(aggregate)
+{}
 
 IUnknown *ModelItem::initialize()
 {
-    return ModelItem_BaseClass::initialize();
+    return Base::ModelItem::initialize();
 }
 
 bool ModelItem::isTypeOfItem(int itemType) const
 {
-    if (CurveItem == itemType)
-        return true;
-    return ModelItem_BaseClass::isTypeOfItem(itemType);
+    return CurveItem == itemType;
 }
 
-}
-}
-}
 }

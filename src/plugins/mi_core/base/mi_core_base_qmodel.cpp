@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_core_base_qmodel.h"
-
 #include "mi_core_iaggregate.h"
 
 static IQModel *instance = 0;

@@ -15,46 +15,26 @@
 **
 **************************************************************************/
 
-#include "ac_core_database_scoreobject_aggregate.h"
-
-#include <mi_idatabase.h>
-#include <mi_iclassfactory.h>
-#include <mi_imodelitem.h>
-
+#include "ac_core_scoreobject_modeldata.h"
 #include "ac_core_constants.h"
 #include "ac_core_namespace.h"
-
 #include <mi_core_scopeddatachange.h>
 
-using namespace Mi::Core;
+using namespace Ac;
 
-namespace Ac {
-namespace Core {
-namespace Database {
 namespace ScoreObject {
 
-Aggregate::Aggregate()
-    :   _volume(DEFAULT_SCOREOBJECT_VOLUME)
-    ,   _pitchCurve(0)
-    ,   _controlCurves(0)
+ModelData::ModelData(IAggregate *aggregate)
+    :   Base::ModelData(aggregate)
+    ,   _volume(DEFAULT_SCOREOBJECT_VOLUME)
 {}
 
-Aggregate::~Aggregate()
+IUnknown *ModelData::initialize()
 {
-    delete _controlCurves;
-    delete _pitchCurve;
+    return Base::ModelData::initialize();
 }
 
-IAggregate *Aggregate::initialize()
-{
-    IClassFactory *factory = IClassFactory::instance();
-    IModelItem *this_item = query<IModelItem>(this);
-    _pitchCurve = factory->createAggregate(PitchCurveItem, this_item);
-    _controlCurves = factory->createAggregate(ControlCurveListItem, this_item);
-    return Aggregate_BaseClass::initialize();
-}
-
-bool Aggregate::setVolume(qreal volume)
+bool ModelData::setVolume(qreal volume)
 {
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
     if (_volume == volume)
@@ -64,15 +44,39 @@ bool Aggregate::setVolume(qreal volume)
     return true;
 }
 
-void Aggregate::clear()
+int ModelData::roleCount() const
 {
-    _controlCurves->clear();
-    _pitchCurve->clear();
-    setVolume(DEFAULT_SCOREOBJECT_VOLUME);
-    Aggregate_BaseClass::clear();
+    return TotalRoleCount;
 }
 
+int ModelData::roleAt(int i) const
+{
+    switch (i - RoleCountOffset) {
+    case 0:
+        return VolumeRole;
+    default:
+        return Base::ModelData::roleAt(i);
+    }
 }
+
+QVariant ModelData::getValue(int role) const
+{
+    switch (role) {
+    case VolumeRole:
+        return volume();
+    default:
+        return Base::ModelData::getValue(role);
+    }
 }
+
+bool ModelData::setValue(const QVariant &value, int role)
+{
+    switch (role) {
+    case VolumeRole:
+        return setVolume(qvariant_cast<qreal>(value));
+    default:
+        return Base::ModelData::setValue(value, role);
+    }
 }
+
 }

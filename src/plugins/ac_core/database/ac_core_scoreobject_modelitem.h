@@ -15,51 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATABASE_SCOREOBJECT_AGGREGATE_H
-#define AC_CORE_DATABASE_SCOREOBJECT_AGGREGATE_H
+#ifndef AC_CORE_SCOREOBJECT_MODELITEM_H
+#define AC_CORE_SCOREOBJECT_MODELITEM_H
 
-#include <mi_core_database_object_aggregate.h>
-
+#include <mi_core_base_modelitem.h>
 #include "ac_core_global.h"
 
-namespace Ac {
-namespace Core {
-namespace Database {
 namespace ScoreObject {
 
-typedef Mi::Core::Database::Object::Aggregate Aggregate_BaseClass;
-
-class AC_CORE_EXPORT Aggregate : public Aggregate_BaseClass
+class AC_CORE_EXPORT ModelItem : public Base::ModelItem
 {
-    friend class ModelData;
-    friend class ModelItem;
-
-    enum { RoleCount = 1 };
-    enum { ItemCount = 2 };
-
-    qreal _volume;
-
     IAggregate *_pitchCurve;
     IAggregate *_controlCurves;
+    enum { ItemCount = 2 };
 
 protected:
     enum {
-        RoleCountOffset = Aggregate_BaseClass::TotalRoleCount,
-        TotalRoleCount = RoleCountOffset + RoleCount,
-        ItemCountOffset = Aggregate_BaseClass::TotalItemCount,
+        ItemCountOffset = Base::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    Aggregate();
-    IAggregate *initialize();
-    ~Aggregate();
-
-    qreal volume() const
-    {
-        return _volume;
-    }
-
-    bool setVolume(qreal volume);
+    ModelItem(IAggregate *aggregate);
+    ~ModelItem();
+    IUnknown *initialize();
 
     IAggregate *pitchCurve() const
     {
@@ -71,12 +49,14 @@ protected:
         return _controlCurves;
     }
 
-    void clear();
+    bool isTypeOfItem(int itemType) const = 0;
+    int count() const;
+    int indexOf(IModelItem *item) const;
+    IModelItem *at(int i) const;
+    IModelItem *findItem(int itemType) const;
+    IModelItemList *findList(int listType) const;
 };
 
-}
-}
-}
 }
 
 #endif

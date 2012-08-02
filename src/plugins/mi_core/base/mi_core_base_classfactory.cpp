@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_core_base_classfactory.h"
-
 #include "mi_core_iaggregate.h"
 
 static IClassFactory *instance = 0;

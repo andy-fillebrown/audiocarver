@@ -18,8 +18,7 @@
 #ifndef AC_IPOINTS_H
 #define AC_IPOINTS_H
 
-#include <mi_iaggregate.h>
-
+#include <mi_core_iaggregate.h>
 #include "ac_core_namespace.h"
 
 namespace Ac {

@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_core_base_model.h"
-
 #include "mi_core_iaggregate.h"
 
 static IModel *instance = 0;

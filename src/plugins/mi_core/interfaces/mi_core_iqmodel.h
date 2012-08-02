@@ -19,7 +19,6 @@
 #define MI_CORE_IQMODEL_H
 
 #include <QAbstractItemModel>
-
 #include "mi_core_iunknown.h"
 
 class MI_CORE_EXPORT IQModel : public QAbstractItemModel

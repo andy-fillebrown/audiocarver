@@ -19,7 +19,6 @@
 #define AC_CORE_NAMESPACE_H
 
 #include "ac_core_global.h"
-
 #include <mi_core_namespace.h>
 
 namespace I {

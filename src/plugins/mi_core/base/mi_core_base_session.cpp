@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_core_base_session.h"
-
 #include "mi_core_isession.h"
 
 static IAggregate *instance = 0;

@@ -16,10 +16,8 @@
 **************************************************************************/
 
 #include "mi_core_base_modelitemlist.h"
-
 #include "mi_core_iaggregate.h"
 #include "mi_core_imodeldata.h"
-
 #include "mi_core_scopedparentchange.h"
 
 using namespace Mi;

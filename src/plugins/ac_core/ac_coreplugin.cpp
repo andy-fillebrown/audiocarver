@@ -16,12 +16,9 @@
 **************************************************************************/
 
 #include "ac_coreplugin.h"
-
 #include "ac_core_namespace.h"
 //#include "ac_core_database.h"
-
 #include <pluginmanager.h>
-
 #include <QtPlugin>
 
 //#ifdef QT_DEBUG

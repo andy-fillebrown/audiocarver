@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "mi_core_base_database.h"
-
 #include "mi_core_iaggregate.h"
 
 static IDatabase *instance = 0;
