@@ -15,37 +15,41 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_BASE_AGGREGATE_H
-#define MI_CORE_BASE_AGGREGATE_H
+#ifndef MI_CORE_IMODELDATA_H
+#define MI_CORE_IMODELDATA_H
 
-#include "mi_core_iaggregate.h"
+#include "mi_core_iunknown.h"
 
-namespace Base {
-
-class MI_CORE_EXPORT Aggregate : public IAggregate
+class IModelData : public IUnknown
 {
-    QList<IUnknown*> _components;
-
 public:
-    Aggregate();
-    ~Aggregate();
-    virtual IAggregate *initialize();
+    enum { InterfaceType = I::IModelData };
 
-    const QList<IUnknown*> &components() const
+    virtual int roleCount() const = 0;
+    virtual int roleAt(int i) const = 0;
+    virtual QVariant getValue(int role) const = 0;
+    virtual bool setValue(const QVariant &value, int role) = 0;
+    virtual Qt::ItemFlags flags() const = 0;
+
+    template <typename T> T get(int role) const
     {
-        return _components;
+        return getValue(role).value<T>();
     }
 
-    IUnknown *append(IUnknown *component)
+    bool set(const QVariant &value, int role)
     {
-        if (!_components.contains(component))
-            _components.append(component);
-        return component;
+        return setValue(value, role);
     }
 
-    void *queryInterface(int interfaceType) const;
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
-
-}
 
 #endif

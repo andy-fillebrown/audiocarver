@@ -15,32 +15,32 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_BASE_MODEL_H
+#define MI_CORE_BASE_MODEL_H
 
-#include "mi_core_iunknown.h"
+#include "mi_core_imodel.h"
+
+class IAggregate;
 
 namespace Base {
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class MI_CORE_EXPORT Model : public IModel
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+    IAggregate *_aggregate;
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+public:
+    Model(IAggregate *aggregate);
+    ~Model();
+    virtual IUnknown *initialize();
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    void *queryInterface(int interfaceType) const;
+};
 
 }
+
+#endif

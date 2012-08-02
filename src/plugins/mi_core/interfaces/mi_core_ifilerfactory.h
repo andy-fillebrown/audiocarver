@@ -15,32 +15,27 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_IFILERFACTORY_H
+#define MI_CORE_IFILERFACTORY_H
 
 #include "mi_core_iunknown.h"
 
-namespace Base {
-
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class IFilerFactory : public IUnknown
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+public:
+    enum { InterfaceType = I::IFilerFactory };
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+    virtual IUnknown *create(int filerType) = 0;
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-}
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+};
+
+#endif

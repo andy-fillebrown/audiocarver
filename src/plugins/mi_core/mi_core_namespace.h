@@ -37,11 +37,10 @@ enum MiCoreInterface {
     IModelItem,
     IModelItemList,
     IModelItemWatcher,
-    IOrphanage,
+    IQModel,
     IReader,
     ISession,
     IWriter,
-    QIModel,
     MiCoreInterfaceCount
 };
 
@@ -55,10 +54,6 @@ enum ItemType {
     CoreItemTypeCount
 };
 
-MI_CORE_EXPORT void appendItemType(int itemType, const QString itemTypeString);
-MI_CORE_EXPORT QString itemTypeString(int itemType);
-MI_CORE_EXPORT int itemType(const QString &itemTypeString);
-
 enum ItemDataRole {
     InvalidRole = Qt::UserRole,
     ItemTypeRole,
@@ -69,15 +64,18 @@ enum ItemDataRole {
     ItemDataRoleCount
 };
 
-MI_CORE_EXPORT void appendItemDataRole(int itemDataRole, const QString itemDataRoleString);
-MI_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
-MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
-
 enum DataChangeType {
     TemporarayDataChange,
     PermanentDataChange
 };
 
 }
+
+MI_CORE_EXPORT void appendItemType(int itemType, const QString itemTypeString);
+MI_CORE_EXPORT QString itemTypeString(int itemType);
+MI_CORE_EXPORT int itemType(const QString &itemTypeString);
+MI_CORE_EXPORT void appendItemDataRole(int itemDataRole, const QString itemDataRoleString);
+MI_CORE_EXPORT QString itemDataRoleString(int itemDataRole);
+MI_CORE_EXPORT int itemDataRole(const QString &itemDataRoleString);
 
 #endif

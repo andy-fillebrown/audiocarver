@@ -15,32 +15,42 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_IQMODEL_H
+#define MI_CORE_IQMODEL_H
+
+#include <QAbstractItemModel>
 
 #include "mi_core_iunknown.h"
 
-namespace Base {
-
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class MI_CORE_EXPORT IQModel : public QAbstractItemModel
+        ,   public IUnknown
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+    Q_OBJECT
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+public:
+    enum { InterfaceType = I::IQModel };
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    static IQModel *instance();
 
-}
+    IQModel()
+    {}
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+
+    void *queryInterface(int interfaceType) const
+    {
+        if (isTypeOfInterface(interfaceType))
+            return const_cast<IQModel*>(this);
+        return 0;
+    }
+};
+
+#endif

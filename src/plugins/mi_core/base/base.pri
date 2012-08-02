@@ -1,6 +1,14 @@
 
 SOURCE_FILES = \
     aggregate \
+    classfactory \
+    database \
+    model \
+    modeldata \
+    modelitem \
+    modelitemlist \
+    qmodel \
+    session \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

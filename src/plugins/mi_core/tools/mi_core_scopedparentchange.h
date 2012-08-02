@@ -18,12 +18,9 @@
 #ifndef MI_CORE_SCOPEDPARENTCHANGE_H
 #define MI_CORE_SCOPEDPARENTCHANGE_H
 
-#include "mi_iaggregate.h"
-#include "mi_imodelitem.h"
-#include "mi_imodelitemwatcher.h"
-
-namespace Mi {
-namespace Core {
+#include "mi_core_iaggregate.h"
+#include "mi_core_imodelitem.h"
+#include "mi_core_imodelitemwatcher.h"
 
 class ScopedParentChange
 {
@@ -52,8 +49,5 @@ public:
             watcher->endChangeParent(_item);
     }
 };
-
-}
-}
 
 #endif

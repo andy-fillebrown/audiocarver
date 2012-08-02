@@ -15,32 +15,35 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_IDATABASE_H
+#define MI_CORE_IDATABASE_H
 
 #include "mi_core_iunknown.h"
 
-namespace Base {
-
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class MI_CORE_EXPORT IDatabase : public IUnknown
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+public:
+    enum { InterfaceType = I::IDatabase };
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+    static IDatabase *instance();
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    virtual const QString &fileExtension() const = 0;
+    virtual const QString &fileFilter() const = 0;
+    virtual QString fileName() const = 0;
+    virtual void reset() = 0;
+    virtual void read(const QString &fileName) = 0;
+    virtual void write(const QString &fileName) = 0;
+    virtual bool isReading() const = 0;
 
-}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+};
+
+#endif

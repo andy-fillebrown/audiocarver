@@ -15,32 +15,32 @@
 **
 **************************************************************************/
 
+#ifndef MI_CORE_BASE_SESSION_H
+#define MI_CORE_BASE_SESSION_H
+
 #include "mi_core_base_aggregate.h"
 
-#include "mi_core_iunknown.h"
+namespace Mi {
+namespace Core {
+    class Plugin;
+}
+}
 
 namespace Base {
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class MI_CORE_EXPORT Session : public Aggregate
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+    friend class Mi::Core::Plugin;
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+protected:
+    Session();
+    virtual ~Session();
+    IAggregate *initialize();
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    void clear()
+    {}
+};
 
 }
+
+#endif

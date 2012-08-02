@@ -1,9 +1,9 @@
 
 SOURCE_FILES = \
-    math \
+    math_utilities \
     scopeddatachange \
     scopedparentchange \
-    utils \
+    utilities \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

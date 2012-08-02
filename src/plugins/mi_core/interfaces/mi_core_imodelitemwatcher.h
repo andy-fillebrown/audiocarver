@@ -15,32 +15,30 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_IMODELITEMWATCHER_H
+#define MI_CORE_IMODELITEMWATCHER_H
 
 #include "mi_core_iunknown.h"
 
-namespace Base {
+class IModelItem;
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class IModelItemWatcher : public IUnknown
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+public:
+    enum { InterfaceType = I::IModelItemWatcher };
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
+    virtual void beginChangeParent(const IModelItem *item) = 0;
+    virtual void endChangeParent(const IModelItem *item) = 0;
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-}
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+};
+
+#endif

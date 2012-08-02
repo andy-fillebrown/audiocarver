@@ -15,32 +15,21 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_UTILITIES_H
+#define MI_CORE_UTILITIES_H
 
-#include "mi_core_iunknown.h"
+#include "mi_core_global.h"
 
-namespace Base {
+MI_CORE_EXPORT QString applicationTreeDirectory();
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+inline QString intToColorString(int color)
 {
-    qDeleteAll(_components);
-    _components.clear();
+    return QString("#%1").arg(color, 6, 16, QChar('0'));
 }
 
-IAggregate *Aggregate::initialize()
+inline int colorStringToInt(QString color)
 {
-    return this;
+    return color.remove("#").toInt(0, 16);
 }
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
-
-}
+#endif

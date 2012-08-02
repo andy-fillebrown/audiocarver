@@ -15,32 +15,41 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#include "mi_core_base_database.h"
 
-#include "mi_core_iunknown.h"
+#include "mi_core_iaggregate.h"
+
+static IDatabase *instance = 0;
+
+IDatabase *IDatabase::instance()
+{
+    return ::instance;
+}
 
 namespace Base {
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+Database::Database(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    qDeleteAll(_components);
-    _components.clear();
+    ::instance = this;
 }
 
-IAggregate *Aggregate::initialize()
+Database::~Database()
 {
+    ::instance = 0;
+}
+
+IUnknown *Database::initialize()
+{
+    aggregate()->append(this);
     return this;
 }
 
-void *Aggregate::queryInterface(int interfaceType) const
+void *Database::queryInterface(int interfaceType) const
 {
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Database*>(this);
+    return aggregate()->queryInterface(interfaceType);
 }
 
 }

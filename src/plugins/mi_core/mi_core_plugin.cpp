@@ -17,13 +17,15 @@
 
 #include "mi_core_plugin.h"
 
-#include "mi_isession.h"
+#include "mi_core_isession.h"
 
-#include "mi_core_session_aggregate.h"
+#include "mi_core_base_session.h"
 
 #include <pluginmanager.h>
 
 #include <QtPlugin>
+
+using namespace Base;
 
 static bool test();
 
@@ -36,7 +38,7 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(ListTypeRole, "listType");
     appendItemDataRole(ParentRole, "parent");
     appendItemDataRole(NameRole, "name");
-    (new Session::Aggregate)->initialize();
+    (new Session)->initialize();
 #ifdef QT_DEBUG
     test();
 #endif
@@ -55,8 +57,8 @@ Q_EXPORT_PLUGIN(Mi::Core::Plugin)
 
 #ifdef QT_DEBUG
 
-#include "mi_imodel.h"
-#include "mi_qimodel.h"
+#include "mi_core_imodel.h"
+#include "mi_core_iqmodel.h"
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
@@ -68,22 +70,22 @@ bool test_1()
     // Make sure querying for interfaces works correctly.
     IAggregate *session = ISession::instance();
     IModel *model_i = 0;
-    QIModel *model_qi = 0;
+    IQModel *model_qi = 0;
     model_i = IModel::instance();
     CHECK(model_i);
-    model_qi = QIModel::instance();
+    model_qi = IQModel::instance();
     CHECK(model_qi);
     model_i = 0;
     model_i = query<IModel>(session);
     CHECK(model_i);
     model_qi = 0;
-    model_qi = query<QIModel>(session);
+    model_qi = query<IQModel>(session);
     CHECK(model_qi);
     model_i = 0;
     model_i = query<IModel>(model_qi);
     CHECK(model_i);
     model_qi = 0;
-    model_qi = query<QIModel>(model_i);
+    model_qi = query<IQModel>(model_i);
     CHECK(model_qi);
     return true;
 }

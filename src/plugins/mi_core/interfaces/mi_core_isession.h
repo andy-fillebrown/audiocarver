@@ -15,32 +15,17 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_ISESSION_H
+#define MI_CORE_ISESSION_H
 
 #include "mi_core_iunknown.h"
 
-namespace Base {
+class IAggregate;
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class MI_CORE_EXPORT ISession
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+public:
+    static IAggregate *instance();
+};
 
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
-
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
-
-}
+#endif

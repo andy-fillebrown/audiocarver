@@ -15,32 +15,41 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#include "mi_core_base_classfactory.h"
 
-#include "mi_core_iunknown.h"
+#include "mi_core_iaggregate.h"
+
+static IClassFactory *instance = 0;
+
+IClassFactory *IClassFactory::instance()
+{
+    return ::instance;
+}
 
 namespace Base {
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+ClassFactory::ClassFactory(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    qDeleteAll(_components);
-    _components.clear();
+    ::instance = this;
 }
 
-IAggregate *Aggregate::initialize()
+ClassFactory::~ClassFactory()
 {
+    ::instance = 0;
+}
+
+IUnknown *ClassFactory::initialize()
+{
+    aggregate()->append(this);
     return this;
 }
 
-void *Aggregate::queryInterface(int interfaceType) const
+void *ClassFactory::queryInterface(int interfaceType) const
 {
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ClassFactory*>(this);
+    return aggregate()->queryInterface(interfaceType);
 }
 
 }

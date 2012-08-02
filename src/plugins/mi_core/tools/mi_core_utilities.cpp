@@ -15,32 +15,19 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#include "mi_core_utilities.h"
 
-#include "mi_core_iunknown.h"
+#include <QCoreApplication>
+#include <QDir>
 
-namespace Base {
-
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+QString applicationTreeDirectory()
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
-
-IAggregate *Aggregate::initialize()
-{
-    return this;
-}
-
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
-
+    QDir rootDir(QCoreApplication::applicationDirPath());
+    rootDir.cdUp();
+#ifdef Q_OS_MAC
+    rootDir.cdUp();
+    rootDir.cdUp();
+    rootDir.cdUp();
+#endif
+    return rootDir.absolutePath() + "/";
 }

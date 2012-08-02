@@ -15,34 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_BASE_AGGREGATE_H
-#define MI_CORE_BASE_AGGREGATE_H
+#ifndef MI_CORE_BASE_QMODEL_H
+#define MI_CORE_BASE_QMODEL_H
 
-#include "mi_core_iaggregate.h"
+#include "mi_core_iqmodel.h"
+
+class IAggregate;
 
 namespace Base {
 
-class MI_CORE_EXPORT Aggregate : public IAggregate
+class MI_CORE_EXPORT QModel : public IQModel
 {
-    QList<IUnknown*> _components;
+    Q_OBJECT
+
+    IAggregate *_aggregate;
 
 public:
-    Aggregate();
-    ~Aggregate();
-    virtual IAggregate *initialize();
+    QModel(IAggregate *aggregate);
+    ~QModel();
+    virtual QObject *initialize();
 
-    const QList<IUnknown*> &components() const
+    IAggregate *aggregate() const
     {
-        return _components;
+        return _aggregate;
     }
 
-    IUnknown *append(IUnknown *component)
-    {
-        if (!_components.contains(component))
-            _components.append(component);
-        return component;
-    }
-
+    QModelIndex index(int row, int column, const QModelIndex &parent) const;
+    QModelIndex parent(const QModelIndex &child) const;
+    int rowCount(const QModelIndex &parent) const;
+    int columnCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
     void *queryInterface(int interfaceType) const;
 };
 

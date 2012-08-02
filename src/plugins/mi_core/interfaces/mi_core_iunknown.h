@@ -15,32 +15,26 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#ifndef MI_CORE_IUNKOWN_H
+#define MI_CORE_IUNKOWN_H
 
-#include "mi_core_iunknown.h"
+#include "mi_core_namespace.h"
 
-namespace Base {
-
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+class IUnknown
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
+public:
+    virtual ~IUnknown() {}
+    virtual int interfaceType() const = 0;
+    virtual bool isTypeOfInterface(int interfaceType) const = 0;
+    virtual void *queryInterface(int interfaceType) const = 0;
+};
 
-IAggregate *Aggregate::initialize()
+template <class T, class Unknown> inline
+T *query(const Unknown *unknown)
 {
-    return this;
+    if (!unknown)
+        return 0;
+    return static_cast<T*>(unknown->queryInterface(T::InterfaceType));
 }
 
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
-}
-
-}
+#endif

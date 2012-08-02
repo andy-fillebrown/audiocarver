@@ -15,32 +15,31 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_aggregate.h"
+#include "mi_core_base_modelitem.h"
 
-#include "mi_core_iunknown.h"
+#include "mi_core_imodelitemlist.h"
+
+#include "mi_core_scopedparentchange.h"
 
 namespace Base {
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+IUnknown *ModelItem::initialize()
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
-
-IAggregate *Aggregate::initialize()
-{
+    aggregate()->append(this);
     return this;
 }
 
-void *Aggregate::queryInterface(int interfaceType) const
+void ModelItem::setParent(IModelItem *parent)
 {
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
+    if (_parent == parent)
+        return;
+    ScopedParentChange parent_change(this);
+    _parent = parent;
+}
+
+IModelItemList *ModelItem::list() const
+{
+    return query<IModelItemList>(parent());
 }
 
 }

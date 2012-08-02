@@ -20,8 +20,6 @@
 static QMap<int, QString> item_type_map;
 static QMap<int, QString> item_data_role_map;
 
-namespace Mi {
-
 void appendItemType(int itemType, const QString itemTypeString)
 {
     QMap<int, QString> &map = item_type_map;
@@ -70,6 +68,4 @@ int itemDataRole(const QString &itemDataRoleString)
     if (values.contains(itemDataRoleString))
         return map.keys().at(values.indexOf(itemDataRoleString));
     return -1;
-}
-
 }

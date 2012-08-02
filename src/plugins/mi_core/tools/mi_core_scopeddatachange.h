@@ -18,22 +18,19 @@
 #ifndef MI_CORE_SCOPEDDATACHANGE_H
 #define MI_CORE_SCOPEDDATACHANGE_H
 
-#include "mi_iaggregate.h"
-#include "mi_imodeldata.h"
-#include "mi_imodeldatawatcher.h"
-
-namespace Mi {
-namespace Core {
+#include "mi_core_iaggregate.h"
+#include "mi_core_imodeldata.h"
+#include "mi_core_imodeldatawatcher.h"
 
 class ScopedDataChange
 {
     const IModelData *_data;
     const int _role;
-    const DataChangeType _dataChangeType;
+    const int _dataChangeType;
     QList<IModelDataWatcher*> _watchers;
 
 public:
-    ScopedDataChange(const IModelData *data, int role, DataChangeType dataChangeType = PermanentDataChange)
+    ScopedDataChange(const IModelData *data, int role, int dataChangeType = Mi::PermanentDataChange)
         :   _data(data)
         ,   _role(role)
         ,   _dataChangeType(dataChangeType)
@@ -56,8 +53,5 @@ public:
             watcher->beginChangeData(_data, _role, _dataChangeType);
     }
 };
-
-}
-}
 
 #endif
