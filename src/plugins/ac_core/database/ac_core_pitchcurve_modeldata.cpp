@@ -15,24 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#include "ac_core_pitchcurve_modeldata.h"
+#include "ac_core_point.h"
 
-#include <mi_core_base_modelitem.h>
+namespace PitchCurve {
 
-namespace Curve {
-
-class ModelItem : public Base::ModelItem
+IUnknown *ModelData::initialize()
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
-    {}
-
-    IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
-};
-
+    return Curve::ModelData::initialize();
 }
 
-#endif
+void ModelData::conformPoints()
+{
+    PointList &points = this->points();
+    qSort(points);
+    const int n = points.count();
+    for (int i = 0;  i < n;  ++i) {
+        Point &point = points[i];
+        point.pos.rx() = qMax(qreal(0.0f), point.pos.x());
+        point.pos.ry() = qBound(qreal(0.0f), point.pos.y(), qreal(127.0f));
+    }
+}
+
+}

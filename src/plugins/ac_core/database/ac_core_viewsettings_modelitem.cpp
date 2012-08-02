@@ -15,24 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#include "ac_core_viewsettings_modelitem.h"
+#include "ac_core_namespace.h"
 
-#include <mi_core_base_modelitem.h>
+using namespace Ac;
 
-namespace Curve {
+namespace ViewSettings {
 
-class ModelItem : public Base::ModelItem
+IUnknown *ModelItem::initialize()
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
-    {}
-
-    IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
-};
-
+    return Base::ModelItem::initialize();
 }
 
-#endif
+int ModelItem::itemType() const
+{
+    return ViewSettingsItem;
+}
+
+bool ModelItem::isTypeOfItem(int itemType) const
+{
+    if (ViewSettingsItem == itemType)
+        return true;
+    return Base::ModelItem::isTypeOfItem(itemType);
+}
+
+}

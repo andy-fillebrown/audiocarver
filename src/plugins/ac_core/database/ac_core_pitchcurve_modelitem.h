@@ -15,38 +15,26 @@
 **
 **************************************************************************/
 
-#include "ac_core_controlcurve.h"
+#ifndef AC_CORE_PITCHCURVE_MODELITEM_H
+#define AC_CORE_PITCHCURVE_MODELITEM_H
 
-#include <mi_core_scopeddatachange.h>
+#include "ac_core_curve_modelitem.h"
 
-using namespace Mi::Core;
+namespace PitchCurve {
 
-namespace Ac {
-namespace Core {
-
-IAggregator *ControlCurve::init()
+class ModelItem : public Curve::ModelItem
 {
-    return Curve::init();
+protected:
+    ModelItem(IAggregate *aggregate)
+        :   Curve::ModelItem(aggregate)
+    {}
+
+    IUnknown *initialize();
+
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+};
+
 }
 
-IAggregate *ControlCurve::ModelData::init()
-{
-    return Curve::ModelData::init();
-}
-
-IAggregate *ControlCurve::ModelItem::init()
-{
-    return Curve::ModelItem::init();
-}
-
-bool ControlCurve::setControlType(int controlType)
-{
-    if (_controlType == controlType)
-        return false;
-    ScopedDataChange data_change(this, ControlTypeRole);
-    _controlType = controlType;
-    return true;
-}
-
-} // namespace Core
-} // namespace Ac
+#endif

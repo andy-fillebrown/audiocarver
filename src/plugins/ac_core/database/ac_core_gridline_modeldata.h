@@ -15,20 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELDATA_H
-#define AC_CORE_CURVE_MODELDATA_H
+#ifndef AC_CORE_GRIDLINE_MODELDATA_H
+#define AC_CORE_GRIDLINE_MODELDATA_H
 
 #include <mi_core_base_modeldata.h>
 
-class Point;
-typedef QList<Point> PointList;
-
-namespace Curve {
+namespace GridLine {
 
 class ModelData : public Base::ModelData
 {
-    PointList _points;
-    enum { RoleCount = 1 };
+    qreal _location;
+    QString _label;
+    int _priority;
+    int _color;
+    enum { RoleCount = 4 };
 
 protected:
     enum {
@@ -39,22 +39,41 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
-    PointList &points()
+    qreal location() const
     {
-        return _points;
+        return _location;
     }
 
-    bool setPoints(const PointList &points);
+    bool setLocation(qreal location);
 
-    virtual void conformPoints() = 0;
+    QString label() const
+    {
+        return _label;
+    }
+
+    bool setLabel(const QString &label);
+
+    int priority() const
+    {
+        return _priority;
+    }
+
+    bool setPriority(int priority);
+
+    int color() const
+    {
+        return _color;
+    }
+
+    bool setColor(int color);
 
     int roleCount() const
     {
-        return RoleCount;
+        return TotalRoleCount;
     }
 
     int roleAt(int i) const;
-    QVariant getValue(int role) const;
+    QVariant getVariant(int role) const;
     bool setValue(const QVariant &value, int role);
 };
 

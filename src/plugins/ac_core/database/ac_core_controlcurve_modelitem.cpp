@@ -15,38 +15,28 @@
 **
 **************************************************************************/
 
-#include "ac_core_controlcurve.h"
+#include "ac_core_controlcurve_modelitem.h"
+#include "ac_core_namespace.h"
 
-#include <mi_core_scopeddatachange.h>
+using namespace Ac;
 
-using namespace Mi::Core;
+namespace ControlCurve {
 
-namespace Ac {
-namespace Core {
-
-IAggregator *ControlCurve::init()
+IUnknown *ModelItem::initialize()
 {
-    return Curve::init();
+    return Curve::ModelItem::initialize();
 }
 
-IAggregate *ControlCurve::ModelData::init()
+int ModelItem::itemType() const
 {
-    return Curve::ModelData::init();
+    return ControlCurveItem;
 }
 
-IAggregate *ControlCurve::ModelItem::init()
+bool ModelItem::isTypeOfItem(int itemType) const
 {
-    return Curve::ModelItem::init();
+    if (ControlCurveItem == itemType)
+        return true;
+    return Curve::ModelItem::isTypeOfItem(itemType);
 }
 
-bool ControlCurve::setControlType(int controlType)
-{
-    if (_controlType == controlType)
-        return false;
-    ScopedDataChange data_change(this, ControlTypeRole);
-    _controlType = controlType;
-    return true;
 }
-
-} // namespace Core
-} // namespace Ac

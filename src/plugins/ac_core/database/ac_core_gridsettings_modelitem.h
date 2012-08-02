@@ -15,18 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_SCOREOBJECT_MODELITEM_H
-#define AC_CORE_SCOREOBJECT_MODELITEM_H
+#ifndef AC_CORE_GRIDSETTINGS_MODELITEM_H
+#define AC_CORE_GRIDSETTINGS_MODELITEM_H
 
 #include <mi_core_base_modelitem.h>
 
-namespace ScoreObject {
+namespace GridSettings {
 
 class ModelItem : public Base::ModelItem
 {
-    IAggregate *_pitchCurve;
-    IAggregate *_controlCurves;
-    enum { ItemCount = 2 };
+    IAggregate *_timeGridLines;
+    IAggregate *_pitchGridLines;
+    IAggregate *_controlGridLines;
+    enum { ItemCount = 3 };
 
 protected:
     enum {
@@ -34,25 +35,41 @@ protected:
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    ModelItem(IAggregate *aggregate);
-    ~ModelItem();
+    ModelItem(IAggregate *aggregate)
+        :   Base::ModelItem(aggregate)
+        ,   _timeGridLines(0)
+        ,   _pitchGridLines(0)
+        ,   _controlGridLines(0)
+    {}
+
     IUnknown *initialize();
+    ~ModelItem();
 
-    IAggregate *pitchCurve() const
+    IAggregate *timeGridLines() const
     {
-        return _pitchCurve;
+        return _timeGridLines;
     }
 
-    IAggregate *controlCurves() const
+    IAggregate *pitchGridLines() const
     {
-        return _controlCurves;
+        return _pitchGridLines;
     }
 
-    bool isTypeOfItem(int itemType) const = 0;
-    int count() const;
+    IAggregate *controlGridLines() const
+    {
+        return _controlGridLines;
+    }
+
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+
+    int count() const
+    {
+        return TotalItemCount;
+    }
+
     int indexOf(IModelItem *item) const;
     IModelItem *at(int i) const;
-    IModelItem *findItem(int itemType) const;
     IModelItemList *findList(int listType) const;
 };
 

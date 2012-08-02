@@ -15,34 +15,43 @@
 **
 **************************************************************************/
 
-#include "ac_core_curve_modeldata.h"
-#include "ac_core_point.h"
+#include "ac_core_score_modeldata.h"
+#include "ac_core_constants.h"
+#include "ac_core_namespace.h"
 #include <mi_core_scopeddatachange.h>
 
 using namespace Ac;
 
-namespace Curve {
+namespace Score {
 
 ModelData::ModelData(IAggregate *aggregate)
-    :   Base::ModelData(aggregate)
+    :   ScoreObject::ModelData(aggregate)
+    ,   _length(DEFAULT_SCORE_LENGTH)
+    ,   _startTime(DEFAULT_SCORE_STARTTIME)
 {}
 
 IUnknown *ModelData::initialize()
 {
-    return Base::ModelData::initialize();
+    return ScoreObject::ModelData::initialize();
 }
 
-bool ModelData::setPoints(const PointList &points)
+bool ModelData::setLength(qreal length)
 {
-    const PointList &old_points = _points;
-    _points = points;
-    conformPoints();
-    if (_points == old_points)
+    length = qMax(qreal(1.0f), length);
+    if (_length == length)
         return false;
-    const PointList &new_points = _points;
-    _points = old_points;
-    ScopedDataChange data_change(this, PointsRole);
-    _points = new_points;
+    ScopedDataChange data_change(this, LengthRole);
+    _length = length;
+    return true;
+}
+
+bool ModelData::setStartTime(qreal time)
+{
+    time = qBound(qreal(0.0f), time, length());
+    if (_startTime == time)
+        return false;
+    ScopedDataChange data_change(this, StartTimeRole);
+    _startTime = time;
     return true;
 }
 
@@ -50,29 +59,35 @@ int ModelData::roleAt(int i) const
 {
     switch (i - RoleCountOffset) {
     case 0:
-        return PointsRole;
+        return LengthRole;
+    case 1:
+        return StartTimeRole;
     default:
-        return Base::ModelData::roleAt(i);
+        return ScoreObject::ModelData::roleAt(i);
     }
 }
 
 QVariant ModelData::getValue(int role) const
 {
     switch (role) {
-    case PointsRole:
-        return QVariant::fromValue(_points);
+    case LengthRole:
+        return length();
+    case StartTimeRole:
+        return startTime();
     default:
-        return Base::ModelData::getValue(role);
+        return ScoreObject::ModelData::getValue(role);
     }
 }
 
 bool ModelData::setValue(const QVariant &value, int role)
 {
     switch (role) {
-    case PointsRole:
-        return setPoints(qvariant_cast<PointList>(value));
+    case LengthRole:
+        return setLength(qvariant_cast<qreal>(value));
+    case StartTimeRole:
+        return setStartTime(qvariant_cast<qreal>(value));
     default:
-        return Base::ModelData::setValue(value, role);
+        return ScoreObject::ModelData::setValue(value, role);
     }
 }
 

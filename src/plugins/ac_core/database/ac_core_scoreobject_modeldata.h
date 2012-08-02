@@ -23,7 +23,7 @@
 
 namespace ScoreObject {
 
-class AC_CORE_EXPORT ModelData : public Base::ModelData
+class ModelData : public Base::ModelData
 {
     qreal _volume;
     enum { RoleCount = 1 };

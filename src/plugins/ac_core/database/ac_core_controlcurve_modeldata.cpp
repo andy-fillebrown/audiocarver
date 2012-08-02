@@ -15,31 +15,37 @@
 **
 **************************************************************************/
 
-#include "ac_core_controlcurve.h"
-
+#include "ac_core_controlcurve_modeldata.h"
+#include "ac_core_namespace.h"
+#include "ac_core_point.h"
 #include <mi_core_scopeddatachange.h>
 
-using namespace Mi::Core;
+using namespace Ac;
 
-namespace Ac {
-namespace Core {
+namespace ControlCurve {
 
-IAggregator *ControlCurve::init()
+IUnknown *ModelData::initialize()
 {
-    return Curve::init();
+    return Curve::ModelData::initialize();
 }
 
-IAggregate *ControlCurve::ModelData::init()
+void ModelData::conformPoints()
 {
-    return Curve::ModelData::init();
+    PointList &points = this->points();
+    qSort(points);
+    const int n = points.count();
+    if (2 <= n) {
+        points.first().pos = QPointF();
+        points.last().pos.rx() = 1.0f;
+        for (int i = 0;  i < n;  ++i) {
+            Point &point = points[i];
+            point.pos.rx() = qBound(qreal(0.0f), point.pos.x(), qreal(1.0f));
+            point.pos.ry() = qBound(qreal(0.0f), point.pos.y(), qreal(1.0f));
+        }
+    }
 }
 
-IAggregate *ControlCurve::ModelItem::init()
-{
-    return Curve::ModelItem::init();
-}
-
-bool ControlCurve::setControlType(int controlType)
+bool ModelData::setControlType(int controlType)
 {
     if (_controlType == controlType)
         return false;
@@ -48,5 +54,34 @@ bool ControlCurve::setControlType(int controlType)
     return true;
 }
 
-} // namespace Core
-} // namespace Ac
+int ModelData::roleAt(int i) const
+{
+    switch (i - RoleCountOffset) {
+    case 0:
+        return ControlTypeRole;
+    default:
+        return Curve::ModelData::roleAt(i);
+    }
+}
+
+QVariant ModelData::getValue(int role) const
+{
+    switch (role) {
+    case ControlTypeRole:
+        return controlType();
+    default:
+        return Curve::ModelData::getValue(role);
+    }
+}
+
+bool ModelData::setValue(const QVariant &value, int role)
+{
+    switch (role) {
+    case ControlTypeRole:
+        return setControlType(qvariant_cast<int>(value));
+    default:
+        return Curve::ModelData::setValue(value, role);
+    }
+}
+
+}

@@ -15,24 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#include "ac_core_pitchcurve_modelitem.h"
+#include "ac_core_namespace.h"
 
-#include <mi_core_base_modelitem.h>
+using namespace Ac;
 
-namespace Curve {
+namespace PitchCurve {
 
-class ModelItem : public Base::ModelItem
+IUnknown *ModelItem::initialize()
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
-    {}
-
-    IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
-};
-
+    return Curve::ModelItem::initialize();
 }
 
-#endif
+int ModelItem::itemType() const
+{
+    return PitchCurveItem;
+}
+
+bool ModelItem::isTypeOfItem(int itemType) const
+{
+    if (PitchCurveItem == itemType)
+        return true;
+    return Curve::ModelItem::isTypeOfItem(itemType);
+}
+
+}

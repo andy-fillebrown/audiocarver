@@ -22,10 +22,6 @@ using namespace Ac;
 
 namespace Curve {
 
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   Base::ModelItem(aggregate)
-{}
-
 IUnknown *ModelItem::initialize()
 {
     return Base::ModelItem::initialize();

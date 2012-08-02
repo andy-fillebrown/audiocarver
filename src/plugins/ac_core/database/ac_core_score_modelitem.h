@@ -15,41 +15,66 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_SCOREOBJECT_MODELITEM_H
-#define AC_CORE_SCOREOBJECT_MODELITEM_H
+#ifndef AC_CORE_SCORE_MODELITEM_H
+#define AC_CORE_SCORE_MODELITEM_H
 
-#include <mi_core_base_modelitem.h>
+#include "ac_core_scoreobject_modelitem.h"
 
-namespace ScoreObject {
+namespace Score {
 
-class ModelItem : public Base::ModelItem
+class ModelItem : public ScoreObject::ModelItem
 {
-    IAggregate *_pitchCurve;
-    IAggregate *_controlCurves;
-    enum { ItemCount = 2 };
+    IAggregate *_tracks;
+    IAggregate *_gridSettings;
+    IAggregate *_projectSettings;
+    IAggregate *_viewSettings;
+    enum { ItemCount = 4 };
 
 protected:
     enum {
-        ItemCountOffset = Base::ModelItem::TotalItemCount,
+        ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    ModelItem(IAggregate *aggregate);
-    ~ModelItem();
+    ModelItem(IAggregate *aggregate)
+        :  ScoreObject::ModelItem(aggregate)
+        ,   _tracks(0)
+        ,   _gridSettings(0)
+        ,   _projectSettings(0)
+        ,   _viewSettings(0)
+    {}
+
     IUnknown *initialize();
+    ~ModelItem();
 
-    IAggregate *pitchCurve() const
+    IAggregate *tracks() const
     {
-        return _pitchCurve;
+        return _tracks;
     }
 
-    IAggregate *controlCurves() const
+    IAggregate *gridSettings() const
     {
-        return _controlCurves;
+        return _gridSettings;
     }
 
-    bool isTypeOfItem(int itemType) const = 0;
-    int count() const;
+    IAggregate *projectSettings() const
+    {
+        return _projectSettings;
+    }
+
+    IAggregate *viewSettings() const
+    {
+        return _viewSettings;
+    }
+
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+
+    int count() const
+    {
+        return TotalItemCount;
+    }
+
     int indexOf(IModelItem *item) const;
     IModelItem *at(int i) const;
     IModelItem *findItem(int itemType) const;

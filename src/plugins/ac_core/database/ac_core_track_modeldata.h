@@ -15,42 +15,61 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELDATA_H
-#define AC_CORE_CURVE_MODELDATA_H
+#ifndef AC_CORE_TRACK_MODELDATA_H
+#define AC_CORE_TRACK_MODELDATA_H
 
-#include <mi_core_base_modeldata.h>
+#include "ac_core_scoreobject_modeldata.h"
 
-class Point;
-typedef QList<Point> PointList;
+namespace Track {
 
-namespace Curve {
-
-class ModelData : public Base::ModelData
+class ModelData : public ScoreObject::ModelData
 {
-    PointList _points;
-    enum { RoleCount = 1 };
+    int _color;
+    QString _instrument;
+    int _visible : 1;
+    int _recording : 1;
+    enum { RoleCount = 4 };
 
 protected:
     enum {
-        RoleCountOffset = Base::ModelData::TotalRoleCount,
+        RoleCountOffset = ScoreObject::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
-    PointList &points()
+    int color() const
     {
-        return _points;
+        return _color;
     }
 
-    bool setPoints(const PointList &points);
+    bool setColor(int color);
 
-    virtual void conformPoints() = 0;
+    QString instrument() const
+    {
+        return _instrument;
+    }
+
+    bool setInstrument(const QString &instrument);
+
+    bool isVisible() const
+    {
+        return _visible;
+    }
+
+    bool setVisible(bool visible);
+
+    bool isRecording() const
+    {
+        return _recording;
+    }
+
+    bool setRecording(bool recording);
 
     int roleCount() const
     {
-        return RoleCount;
+        return TotalRoleCount;
     }
 
     int roleAt(int i) const;

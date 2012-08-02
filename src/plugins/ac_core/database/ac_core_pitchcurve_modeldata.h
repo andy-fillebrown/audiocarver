@@ -15,22 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#ifndef AC_CORE_PITCHCURVE_MODELDATA_H
+#define AC_CORE_PITCHCURVE_MODELDATA_H
 
-#include <mi_core_base_modelitem.h>
+#include "ac_core_curve_modeldata.h"
 
-namespace Curve {
+namespace PitchCurve {
 
-class ModelItem : public Base::ModelItem
+class ModelData : public Curve::ModelData
 {
 protected:
-    ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
+    ModelData(IAggregate *aggregate)
+        :   Curve::ModelData(aggregate)
     {}
 
     IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
+    void conformPoints();
 };
 
 }

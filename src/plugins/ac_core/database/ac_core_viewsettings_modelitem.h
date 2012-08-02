@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#ifndef AC_CORE_VIEWSETTINGS_MODELITEM_H
+#define AC_CORE_VIEWSETTINGS_MODELITEM_H
 
 #include <mi_core_base_modelitem.h>
 
-namespace Curve {
+namespace ViewSettings {
 
 class ModelItem : public Base::ModelItem
 {
@@ -30,7 +30,8 @@ protected:
     {}
 
     IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
 };
 
 }

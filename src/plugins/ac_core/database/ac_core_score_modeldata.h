@@ -15,45 +15,50 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_SCOREOBJECT_MODELITEM_H
-#define AC_CORE_SCOREOBJECT_MODELITEM_H
+#ifndef AC_CORE_SCORE_MODELDATA_H
+#define AC_CORE_SCORE_MODELDATA_H
 
-#include <mi_core_base_modelitem.h>
+#include "ac_core_scoreobject_modeldata.h"
 
-namespace ScoreObject {
+namespace Score {
 
-class ModelItem : public Base::ModelItem
+class ModelData : public ScoreObject::ModelData
 {
-    IAggregate *_pitchCurve;
-    IAggregate *_controlCurves;
-    enum { ItemCount = 2 };
+    qreal _length;
+    qreal _startTime;
+    enum { RoleCount = 2 };
 
 protected:
     enum {
-        ItemCountOffset = Base::ModelItem::TotalItemCount,
-        TotalItemCount = ItemCountOffset + ItemCount
+        RoleCountOffset = ScoreObject::ModelData::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelItem(IAggregate *aggregate);
-    ~ModelItem();
+    ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
-    IAggregate *pitchCurve() const
+    qreal length() const
     {
-        return _pitchCurve;
+        return _length;
     }
 
-    IAggregate *controlCurves() const
+    bool setLength(qreal length);
+
+    qreal startTime() const
     {
-        return _controlCurves;
+        return _startTime;
     }
 
-    bool isTypeOfItem(int itemType) const = 0;
-    int count() const;
-    int indexOf(IModelItem *item) const;
-    IModelItem *at(int i) const;
-    IModelItem *findItem(int itemType) const;
-    IModelItemList *findList(int listType) const;
+    bool setStartTime(qreal time);
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(const QVariant &value, int role);
 };
 
 }

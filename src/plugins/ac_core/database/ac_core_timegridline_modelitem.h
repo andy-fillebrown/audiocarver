@@ -15,22 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#ifndef AC_CORE_TIMEGRIDLINE_MODELITEM_H
+#define AC_CORE_TIMEGRIDLINE_MODELITEM_H
 
-#include <mi_core_base_modelitem.h>
+#include "ac_core_gridline_modelitem.h"
 
-namespace Curve {
+namespace TimeGridLine {
 
-class ModelItem : public Base::ModelItem
+class ModelItem : public GridLine::ModelItem
 {
 protected:
     ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
+        :   GridLine::ModelItem(aggregate)
     {}
 
     IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
 };
 
 }

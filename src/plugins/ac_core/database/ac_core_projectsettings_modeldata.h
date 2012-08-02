@@ -15,20 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELDATA_H
-#define AC_CORE_CURVE_MODELDATA_H
+#ifndef AC_CORE_PROJECTSETTINGS_MODELDATA_H
+#define AC_CORE_PROJECTSETTINGS_MODELDATA_H
 
 #include <mi_core_base_modeldata.h>
 
-class Point;
-typedef QList<Point> PointList;
-
-namespace Curve {
+namespace ProjectSettings {
 
 class ModelData : public Base::ModelData
 {
-    PointList _points;
-    enum { RoleCount = 1 };
+    int _sampleRate;
+    int _controlRate;
+    int _curveRate;
+    enum { RoleCount = 3 };
 
 protected:
     enum {
@@ -39,18 +38,30 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
-    PointList &points()
+    int sampleRate() const
     {
-        return _points;
+        return _sampleRate;
     }
 
-    bool setPoints(const PointList &points);
+    bool setSampleRate(int rate);
 
-    virtual void conformPoints() = 0;
+    int controlRate() const
+    {
+        return _controlRate;
+    }
+
+    bool setControlRate(int rate);
+
+    int curveRate() const
+    {
+        return _curveRate;
+    }
+
+    bool setCurveRate(int rate);
 
     int roleCount() const
     {
-        return RoleCount;
+        return TotalRoleCount;
     }
 
     int roleAt(int i) const;

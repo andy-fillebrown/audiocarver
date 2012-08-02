@@ -15,24 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#include "ac_core_controlgridline_modelitem.h"
+#include "ac_core_namespace.h"
 
-#include <mi_core_base_modelitem.h>
+using namespace Ac;
 
-namespace Curve {
+namespace ControlGridLine {
 
-class ModelItem : public Base::ModelItem
+IUnknown *ModelItem::initialize()
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
-    {}
-
-    IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
-};
-
+    return GridLine::ModelItem::initialize();
 }
 
-#endif
+int ModelItem::itemType() const
+{
+    return ControlGridLineItem;
+}
+
+bool ModelItem::isTypeOfItem(int itemType) const
+{
+    if (ControlGridLineItem == itemType)
+        return true;
+    return GridLine::ModelItem::isTypeOfItem(itemType);
+}
+
+}

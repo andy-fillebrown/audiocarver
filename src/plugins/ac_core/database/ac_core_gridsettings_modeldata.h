@@ -15,20 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELDATA_H
-#define AC_CORE_CURVE_MODELDATA_H
+#ifndef AC_CORE_GRIDSETTINGS_MODELDATA_H
+#define AC_CORE_GRIDSETTINGS_MODELDATA_H
 
 #include <mi_core_base_modeldata.h>
 
-class Point;
-typedef QList<Point> PointList;
-
-namespace Curve {
+namespace GridSettings {
 
 class ModelData : public Base::ModelData
 {
-    PointList _points;
-    enum { RoleCount = 1 };
+    int _snapEnabled : 1;
+    int _gridSnapEnabled : 1;
+    qreal _timeSnap;
+    qreal _pitchSnap;
+    qreal _controlSnap;
+    enum { RoleCount = 5 };
 
 protected:
     enum {
@@ -39,18 +40,44 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
-    PointList &points()
+    bool isSnapEnabled() const
     {
-        return _points;
+        return _snapEnabled;
     }
 
-    bool setPoints(const PointList &points);
+    bool setSnapEnabled(bool enabled);
 
-    virtual void conformPoints() = 0;
+    bool isGridSnapEnabled() const
+    {
+        return _gridSnapEnabled;
+    }
+
+    bool setGridSnapEnabled(bool enabled);
+
+    qreal timeSnap() const
+    {
+        return _timeSnap;
+    }
+
+    bool setTimeSnap(qreal snap);
+
+    qreal pitchSnap() const
+    {
+        return _pitchSnap;
+    }
+
+    bool setPitchSnap(qreal snap);
+
+    qreal controlSnap() const
+    {
+        return _controlSnap;
+    }
+
+    bool setControlSnap(qreal snap);
 
     int roleCount() const
     {
-        return RoleCount;
+        return TotalRoleCount;
     }
 
     int roleAt(int i) const;

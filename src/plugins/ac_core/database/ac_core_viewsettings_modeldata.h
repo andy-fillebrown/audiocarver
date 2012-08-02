@@ -15,20 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELDATA_H
-#define AC_CORE_CURVE_MODELDATA_H
+#ifndef AC_CORE_VIEWSETTINGS_MODELDATA_H
+#define AC_CORE_VIEWSETTINGS_MODELDATA_H
 
 #include <mi_core_base_modeldata.h>
 
-class Point;
-typedef QList<Point> PointList;
-
-namespace Curve {
+namespace ViewSettings {
 
 class ModelData : public Base::ModelData
 {
-    PointList _points;
-    enum { RoleCount = 1 };
+    qreal _timePosition;
+    qreal _pitchPosition;
+    qreal _controlPosition;
+    qreal _timeScale;
+    qreal _pitchScale;
+    qreal _controlScale;
+    enum { RoleCount = 6 };
 
 protected:
     enum {
@@ -39,18 +41,51 @@ protected:
     ModelData(IAggregate *aggregate);
     IUnknown *initialize();
 
-    PointList &points()
+    qreal timePosition() const
     {
-        return _points;
+        return _timePosition;
     }
 
-    bool setPoints(const PointList &points);
+    bool setTimePosition(qreal position);
 
-    virtual void conformPoints() = 0;
+    qreal pitchPosition() const
+    {
+        return _pitchPosition;
+    }
+
+    bool setPitchPosition(qreal position);
+
+    qreal controlPosition() const
+    {
+        return _controlPosition;
+    }
+
+    bool setControlPosition(qreal position);
+
+    qreal timeScale() const
+    {
+        return _timeScale;
+    }
+
+    bool setTimeScale(qreal scale);
+
+    qreal pitchScale() const
+    {
+        return _pitchScale;
+    }
+
+    bool setPitchScale(qreal scale);
+
+    qreal controlScale() const
+    {
+        return _controlScale;
+    }
+
+    bool setControlScale(qreal scale);
 
     int roleCount() const
     {
-        return RoleCount;
+        return TotalRoleCount;
     }
 
     int roleAt(int i) const;

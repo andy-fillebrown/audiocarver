@@ -15,22 +15,48 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#ifndef AC_CORE_TRACK_MODELITEM_H
+#define AC_CORE_TRACK_MODELITEM_H
 
-#include <mi_core_base_modelitem.h>
+#include "ac_core_scoreobject_modelitem.h"
 
-namespace Curve {
+namespace Track {
 
-class ModelItem : public Base::ModelItem
+class ModelItem : public ScoreObject::ModelItem
 {
+    IAggregate *_notes;
+    enum { ItemCount = 1 };
+
 protected:
+    enum {
+        ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount
+    };
+
     ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
+        :   ScoreObject::ModelItem(aggregate)
+        ,   _notes(0)
     {}
 
     IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
+    ~ModelItem();
+
+    IAggregate *notes() const
+    {
+        return _notes;
+    }
+
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+
+    int count() const
+    {
+        return TotalItemCount;
+    }
+
+    int indexOf(IModelItem *item) const;
+    IModelItem *at(int i) const;
+    IModelItemList *findList(int listType) const;
 };
 
 }

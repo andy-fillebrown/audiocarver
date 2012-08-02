@@ -15,20 +15,28 @@
 **
 **************************************************************************/
 
-#include "ac_core_pitchcurve.h"
+#include "ac_core_pitchgridline_modelitem.h"
+#include "ac_core_namespace.h"
 
-namespace Ac {
-namespace Core {
+using namespace Ac;
 
-IAggregator *PitchCurve::init()
+namespace PitchGridLine {
+
+IUnknown *ModelItem::initialize()
 {
-    return Curve::init();
+    return GridLine::ModelItem::initialize();
 }
 
-IAggregate *PitchCurve::ModelItem::init()
+int ModelItem::itemType() const
 {
-    return Curve::ModelItem::init();
+    return PitchGridLineItem;
 }
 
-} // namespace Core
-} // namespace Ac
+bool ModelItem::isTypeOfItem(int itemType) const
+{
+    if (PitchGridLineItem == itemType)
+        return true;
+    return GridLine::ModelItem::isTypeOfItem(itemType);
+}
+
+}
