@@ -15,18 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILER_H
-#define MI_CORE_IFILER_H
+#ifndef MI_CORE_IREADER_H
+#define MI_CORE_IREADER_H
 
 #include "mi_core_iunknown.h"
 
-class IFileFiler : public IUnknown
+class IModelItem;
+
+class IReader : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IFileFiler };
+    enum { InterfaceType = I::IReader };
 
-    virtual QString fileName() const = 0;
-    virtual void setFileName(const QString &fileName) = 0;
+    virtual int nextItemType() = 0;
+    virtual bool read(IModelItem *item) = 0;
 
     int interfaceType() const
     {

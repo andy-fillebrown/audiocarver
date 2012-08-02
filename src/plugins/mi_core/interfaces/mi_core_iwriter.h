@@ -15,18 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILER_H
-#define MI_CORE_IFILER_H
+#ifndef MI_CORE_IWRITER_H
+#define MI_CORE_IWRITER_H
 
 #include "mi_core_iunknown.h"
 
-class IFileFiler : public IUnknown
+class IModelItem;
+
+class IWriter : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IFileFiler };
+    enum { InterfaceType = I::IWriter };
 
-    virtual QString fileName() const = 0;
-    virtual void setFileName(const QString &fileName) = 0;
+    virtual bool write(IModelItem *item) = 0;
 
     int interfaceType() const
     {
