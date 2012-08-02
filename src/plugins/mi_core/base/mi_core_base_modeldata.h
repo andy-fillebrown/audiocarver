@@ -19,6 +19,7 @@
 #define MI_CORE_BASE_MODELDATA_H
 
 #include "mi_core_imodeldata.h"
+#include "mi_core_global.h"
 
 class IAggregate;
 
@@ -65,7 +66,7 @@ protected:
 
     int roleAt(int i) const;
 
-    Qt::ItemFlags flags() const
+    int flags() const
     {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }

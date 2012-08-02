@@ -19,6 +19,8 @@
 #define MI_CORE_ICLASSFACTORY_H
 
 #include "mi_core_iunknown.h"
+#include "mi_core_global.h"
+#include "mi_core_interfaces.h"
 
 class IAggregate;
 class IModelItem;

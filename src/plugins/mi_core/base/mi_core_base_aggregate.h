@@ -19,6 +19,7 @@
 #define MI_CORE_BASE_AGGREGATE_H
 
 #include "mi_core_iaggregate.h"
+#include "mi_core_global.h"
 
 namespace Base {
 

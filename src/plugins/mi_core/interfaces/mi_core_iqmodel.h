@@ -20,6 +20,8 @@
 
 #include <QAbstractItemModel>
 #include "mi_core_iunknown.h"
+#include "mi_core_global.h"
+#include "mi_core_interfaces.h"
 
 class MI_CORE_EXPORT IQModel : public QAbstractItemModel
         ,   public IUnknown

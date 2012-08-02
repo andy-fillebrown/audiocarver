@@ -19,6 +19,7 @@
 #define MI_CORE_BASE_MODELITEM_H
 
 #include "mi_core_imodelitem.h"
+#include "mi_core_global.h"
 
 class IAggregate;
 

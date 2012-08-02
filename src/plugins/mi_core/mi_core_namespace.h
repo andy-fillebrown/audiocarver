@@ -21,30 +21,6 @@
 #include "mi_core_global.h"
 #include <qnamespace.h>
 
-namespace I {
-
-enum MiCoreInterface {
-    IAggregate,
-    IClassFactory,
-    ICopyFiler,
-    IDatabase,
-    IFileFiler,
-    IFilerFactory,
-    IModel,
-    IModelData,
-    IModelDataWatcher,
-    IModelItem,
-    IModelItemList,
-    IModelItemWatcher,
-    IQModel,
-    IReader,
-    ISession,
-    IWriter,
-    MiCoreInterfaceCount
-};
-
-}
-
 namespace Mi {
 
 enum ItemType {

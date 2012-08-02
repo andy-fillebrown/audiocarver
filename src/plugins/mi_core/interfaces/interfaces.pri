@@ -14,8 +14,10 @@ SOURCE_FILES = \
     imodelitemwatcher \
     iorphanage \
     iqmodel \
+    ireader \
     isession \
     iunknown \
+    iwriter \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

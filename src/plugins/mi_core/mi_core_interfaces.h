@@ -15,24 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IUNKOWN_H
-#define MI_CORE_IUNKOWN_H
+#ifndef MI_CORE_INTERFACES_H
+#define MI_CORE_INTERFACES_H
 
-class IUnknown
-{
-public:
-    virtual ~IUnknown() {}
-    virtual int interfaceType() const = 0;
-    virtual bool isTypeOfInterface(int interfaceType) const = 0;
-    virtual void *queryInterface(int interfaceType) const = 0;
+namespace I {
+
+enum MiCoreInterface {
+    IAggregate,
+    IClassFactory,
+    ICopyFiler,
+    IDatabase,
+    IFileFiler,
+    IFilerFactory,
+    IModel,
+    IModelData,
+    IModelDataWatcher,
+    IModelItem,
+    IModelItemList,
+    IModelItemWatcher,
+    IQModel,
+    IReader,
+    ISession,
+    IWriter,
+    MiCoreInterfaceCount
 };
 
-template <class T, class Unknown> inline
-T *query(const Unknown *unknown)
-{
-    if (!unknown)
-        return 0;
-    return static_cast<T*>(unknown->queryInterface(T::InterfaceType));
 }
 
 #endif

@@ -18,6 +18,7 @@
 #include "mi_core_base_modelitemlist.h"
 #include "mi_core_iaggregate.h"
 #include "mi_core_imodeldata.h"
+#include "mi_core_namespace.h"
 #include "mi_core_scopedparentchange.h"
 
 using namespace Mi;
@@ -35,6 +36,16 @@ void *ModelItemList::queryInterface(int interfaceType) const
     if (isTypeOfInterface(interfaceType))
         return const_cast<ModelItemList*>(this);
     return aggregate()->queryInterface(interfaceType);
+}
+
+int ModelItemList::itemType() const
+{
+    return ListItem;
+}
+
+bool ModelItemList::isTypeOfItem(int itemType) const
+{
+    return ListItem == itemType;
 }
 
 void ModelItemList::setParent(IModelItem *parent)

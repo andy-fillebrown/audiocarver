@@ -21,6 +21,7 @@
 #include "mi_core_iaggregate.h"
 #include "mi_core_imodeldata.h"
 #include "mi_core_imodeldatawatcher.h"
+#include "mi_core_namespace.h"
 
 class ScopedDataChange
 {

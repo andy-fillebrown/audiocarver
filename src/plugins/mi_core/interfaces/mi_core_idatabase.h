@@ -19,6 +19,8 @@
 #define MI_CORE_IDATABASE_H
 
 #include "mi_core_iunknown.h"
+#include "mi_core_global.h"
+#include "mi_core_interfaces.h"
 
 class MI_CORE_EXPORT IDatabase : public IUnknown
 {

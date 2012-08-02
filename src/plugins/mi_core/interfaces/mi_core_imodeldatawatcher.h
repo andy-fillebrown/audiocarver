@@ -19,6 +19,7 @@
 #define MI_CORE_IMODELDATAWATCHER_H
 
 #include "mi_core_iunknown.h"
+#include "mi_core_interfaces.h"
 
 class IModelDataWatcher : public IUnknown
 {

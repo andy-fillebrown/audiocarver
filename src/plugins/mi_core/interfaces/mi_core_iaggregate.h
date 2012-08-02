@@ -18,7 +18,10 @@
 #ifndef MI_CORE_IAGGREGATE_H
 #define MI_CORE_IAGGREGATE_H
 
+#include "mi_core_interfaces.h"
 #include "mi_core_iunknown.h"
+
+template <typename T> class QList;
 
 class IAggregate : public IUnknown
 {

@@ -11,6 +11,7 @@ DEFINES *= \
 
 SOURCE_FILES = \
     global \
+    interfaces \
     namespace \
     plugin \
 

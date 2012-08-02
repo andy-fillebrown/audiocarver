@@ -21,15 +21,6 @@
 #include "ac_core_global.h"
 #include <mi_core_namespace.h>
 
-namespace I {
-
-enum AcCoreInterfaces {
-    IPoints = MiCoreInterfaceCount,
-    AcCoreInterfaceCount
-};
-
-}
-
 namespace Ac {
 
 enum ItemType {

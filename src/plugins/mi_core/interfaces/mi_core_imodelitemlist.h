@@ -20,6 +20,8 @@
 
 #include "mi_core_imodelitem.h"
 
+class QString;
+
 class IModelItemList : public IModelItem
 {
 public:

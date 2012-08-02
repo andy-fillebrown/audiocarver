@@ -19,6 +19,8 @@
 #define MI_CORE_IMODELDATA_H
 
 #include "mi_core_iunknown.h"
+#include "mi_core_interfaces.h"
+#include <QVariant>
 
 class IModelData : public IUnknown
 {
@@ -29,7 +31,7 @@ public:
     virtual int roleAt(int i) const = 0;
     virtual QVariant getValue(int role) const = 0;
     virtual bool setValue(const QVariant &value, int role) = 0;
-    virtual Qt::ItemFlags flags() const = 0;
+    virtual int flags() const = 0;
 
     template <typename T> T get(int role) const
     {

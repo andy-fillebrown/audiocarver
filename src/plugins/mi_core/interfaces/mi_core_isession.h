@@ -19,6 +19,7 @@
 #define MI_CORE_ISESSION_H
 
 #include "mi_core_iunknown.h"
+#include "mi_core_global.h"
 
 class IAggregate;
 

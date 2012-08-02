@@ -19,6 +19,7 @@
 #define MI_CORE_BASE_MODELITEMLIST_H
 
 #include "mi_core_imodelitemlist.h"
+#include "mi_core_global.h"
 
 class IAggregate;
 
@@ -50,15 +51,8 @@ protected:
         return _aggregate;
     }
 
-    int itemType() const
-    {
-        return Mi::ListItem;
-    }
-
-    bool isTypeOfItem(int itemType) const
-    {
-        return Mi::ListItem == itemType;
-    }
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
 
     IModelItem *parent() const
     {
