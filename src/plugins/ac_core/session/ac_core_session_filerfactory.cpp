@@ -15,33 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILERFACTORY_H
-#define MI_CORE_IFILERFACTORY_H
+#include "ac_core_session_filerfactory.h"
+#include "ac_core_namespace.h"
+#include "ac_core_xml_filefiler.h"
+#include "ac_core_xml_reader.h"
+#include "ac_core_xml_writer.h"
+#include <mi_core_base_aggregate.h>
 
-#include "mi_core_iunknown.h"
-#include "mi_core_interfaces.h"
-#include "mi_core_global.h"
+using namespace Ac;
 
-class IAggregate;
+namespace Session {
 
-class MI_CORE_EXPORT IFilerFactory : public IUnknown
+IUnknown *FilerFactory::initialize()
 {
-public:
-    enum { InterfaceType = I::IFilerFactory };
+    return Base::FilerFactory::initialize();
+}
 
-    static IFilerFactory *instance();
-
-    virtual IAggregate *create(int filerType) = 0;
-
-    int interfaceType() const
-    {
-        return InterfaceType;
+IAggregate *FilerFactory::create(int filerType)
+{
+    IAggregate *aggregate = (new Base::Aggregate)->initialize();
+    switch (filerType) {
+    case FileFiler:
+        (new Xml::FileFiler(aggregate))->initialize();
+        (new Xml::Reader(aggregate))->initialize();
+        (new Xml::Writer(aggregate))->initialize();
+        break;
+    default:
+        return 0;
     }
+    return aggregate;
+}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
-};
-
-#endif
+}

@@ -15,33 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILERFACTORY_H
-#define MI_CORE_IFILERFACTORY_H
+#ifndef MI_CORE_BASE_FILERFACTORY_H
+#define MI_CORE_BASE_FILERFACTORY_H
 
-#include "mi_core_iunknown.h"
-#include "mi_core_interfaces.h"
-#include "mi_core_global.h"
+#include "mi_core_ifilerfactory.h"
 
-class IAggregate;
+namespace Base {
 
-class MI_CORE_EXPORT IFilerFactory : public IUnknown
+class MI_CORE_EXPORT FilerFactory : public IFilerFactory
 {
-public:
-    enum { InterfaceType = I::IFilerFactory };
-
-    static IFilerFactory *instance();
-
-    virtual IAggregate *create(int filerType) = 0;
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
+protected:
+    FilerFactory();
+    ~FilerFactory();
+    virtual IUnknown *initialize();
+    void *queryInterface(int interfaceType) const;
 };
+
+}
 
 #endif

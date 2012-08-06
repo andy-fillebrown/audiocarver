@@ -33,12 +33,12 @@ IUnknown *ModelData::initialize()
 
 bool ModelData::setPoints(const PointList &points)
 {
-    const PointList &old_points = _points;
+    const PointList old_points = _points;
     _points = points;
     conformPoints();
     if (_points == old_points)
         return false;
-    const PointList &new_points = _points;
+    const PointList new_points = _points;
     _points = old_points;
     ScopedDataChange data_change(this, PointsRole);
     _points = new_points;

@@ -15,35 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_XMLREADER_H
-#define AC_CORE_XMLREADER_H
+#ifndef AC_CORE_XML_READER_H
+#define AC_CORE_XML_READER_H
 
-#include "mi_ifiler.h"
+#include <mi_core_ireader.h>
+#include "ac_core_global.h"
 
-#include <ac_core_global.h>
-
+class IAggregate;
 class QXmlStreamReader;
 
-namespace Ac {
-namespace Core {
+namespace Xml {
 
-class AC_CORE_EXPORT XmlReader : public IReader
+class AC_CORE_EXPORT Reader : public IReader
 {
-    IAggregator *_aggregator;
+    IAggregate *_aggregate;
     QXmlStreamReader *_stream;
 
-protected:
-    XmlReader(IAggregator *aggregator)
-        :   _aggregator(aggregator)
+public:
+    Reader(IAggregate *aggregate)
+        :   _aggregate(aggregate)
         ,   _stream(0)
     {}
 
-    virtual IAggregate *init();
-    ~XmlReader();
+    virtual IUnknown *initialize();
+    ~Reader();
+    void *queryInterface(int interfaceType) const;
 
-    IAggregator *a() const
+protected:
+    IAggregate *aggregate() const
     {
-        return _aggregator;
+        return _aggregate;
     }
 
     QXmlStreamReader *stream()
@@ -53,18 +54,10 @@ protected:
 
     void setStream(QXmlStreamReader *stream);
 
-    // IReader
     int nextItemType();
     bool read(IModelItem *item);
-
-    // IAggregate
-    IAggregator *aggregator() const
-    {
-        return _aggregator;
-    }
 };
 
-} // namespace Core
-} // namespace Ac
+}
 
-#endif // AC_CORE_XMLREADER_H
+#endif

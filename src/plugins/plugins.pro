@@ -6,7 +6,7 @@ CONFIG *= \
 SUBDIRS = \
     qt_core \
     mi_core \
-#    mi_gui \
+    mi_gui \
     ac_core \
 #    ac_gui \
 #    ac_audioengine \

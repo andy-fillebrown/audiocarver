@@ -1,7 +1,7 @@
 
 SOURCE_FILES = \
+#    editor \
     mainwindowextension \
-    editor \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

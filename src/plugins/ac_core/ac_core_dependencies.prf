@@ -3,12 +3,12 @@ load(../mi_core/mi_core.prf)
 
 DIRS = \
     database \
-    filers \
     implementations \
     interfaces \
     models \
     session \
     tools \
+    xml \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

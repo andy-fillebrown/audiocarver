@@ -18,6 +18,8 @@
 #include "ac_core_plugin.h"
 #include "ac_core_namespace.h"
 #include "ac_core_session_classfactory.h"
+#include "ac_core_session_database.h"
+#include "ac_core_session_filerfactory.h"
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -73,6 +75,8 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
     (new Session::ClassFactory)->initialize();
+    (new Session::Database)->initialize();
+    (new Session::FilerFactory)->initialize();
     return true;
 }
 

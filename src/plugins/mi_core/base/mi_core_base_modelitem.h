@@ -53,6 +53,13 @@ protected:
         return _aggregate;
     }
 
+    int itemType() const;
+
+    bool isTypeOfItem(int itemType) const
+    {
+        return false;
+    }
+
     IModelItem *parent() const
     {
         return _parent;

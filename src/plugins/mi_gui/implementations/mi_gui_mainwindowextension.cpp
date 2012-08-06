@@ -19,8 +19,8 @@
 
 #include <icontext.h>
 #include <icore.h>
-#include <mi_idatabase.h>
-#include <mi_ieditor.h>
+#include <mi_core_idatabase.h>
+//#include <mi_ieditor.h>
 
 #include <mi_gui_constants.h>
 
@@ -211,32 +211,32 @@ void MainWindowExtension::saveFileAs()
 
 void MainWindowExtension::undo()
 {
-    IEditor::instance()->undo();
+//    IEditor::instance()->undo();
 }
 
 void MainWindowExtension::redo()
 {
-    IEditor::instance()->redo();
+//    IEditor::instance()->redo();
 }
 
 void MainWindowExtension::cut()
 {
-    IEditor::instance()->cut();
+//    IEditor::instance()->cut();
 }
 
 void MainWindowExtension::copy()
 {
-    IEditor::instance()->copy();
+//    IEditor::instance()->copy();
 }
 
 void MainWindowExtension::paste()
 {
-    IEditor::instance()->paste();
+//    IEditor::instance()->paste();
 }
 
 void MainWindowExtension::selectAll()
 {
-    IEditor::instance()->selectAll();
+//    IEditor::instance()->selectAll();
 }
 
 } // namespace Gui

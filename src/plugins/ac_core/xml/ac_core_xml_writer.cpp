@@ -15,19 +15,19 @@
 **
 **************************************************************************/
 
-#include "ac_core_xmlwriter.h"
-
-#include <mi_imodeldata.h>
-#include <mi_imodellist.h>
-
-#include <ac_core_point.h>
-
+#include "ac_core_xml_writer.h"
+#include <mi_core_iaggregate.h>
+#include <mi_core_ifilefiler.h>
+#include <mi_core_imodeldata.h>
+#include <mi_core_imodelitemlist.h>
+#include "ac_core_point.h"
+#include <QFile>
 #include <QXmlStreamWriter>
 
 using namespace Mi;
+using namespace Ac;
 
-namespace Ac {
-namespace Core {
+namespace Xml {
 
 static void writePoints(const PointList &points, QXmlStreamWriter *writer)
 {
@@ -46,7 +46,7 @@ static void writePoints(const PointList &points, QXmlStreamWriter *writer)
 static void writeItemData(IModelData *data, int roleIndex, QXmlStreamWriter *writer)
 {
     int role = data->roleAt(roleIndex);
-    QVariant variant = data->getVariant(role);
+    QVariant variant = data->getValue(role);
     if (PointsRole == role)
         writePoints(variant.value<PointList>(), writer);
     else {
@@ -67,10 +67,10 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
         for (int i = 0;  i < roleCount;  ++i)
             writeItemData(data, i, writer);
     } else {
-        if (item->isTypeOfItem(ListItem)) {
+        if (item->isList()) {
             if (0 == item->count())
                 return true;
-            writer->writeStartElement(itemTypeString(query<IModelList>(item)->listType()) + "List");
+            writer->writeStartElement(itemTypeString(query<IModelItemList>(item)->listType()) + "List");
         } else
             writer->writeStartElement(itemTypeString(item->itemType()));
     }
@@ -82,19 +82,25 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
     return true;
 }
 
-IAggregate *XmlWriter::init()
+IUnknown *Writer::initialize()
 {
+    aggregate()->append(this);
     return this;
 }
 
-XmlWriter::~XmlWriter()
+Writer::~Writer()
 {
-    if (_stream)
-        _stream->device()->write("\n");
     delete _stream;
 }
 
-void XmlWriter::setStream(QXmlStreamWriter *stream)
+void *Writer::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Writer*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
+void Writer::setStream(QXmlStreamWriter *stream)
 {
     if (_stream == stream)
         return;
@@ -103,15 +109,21 @@ void XmlWriter::setStream(QXmlStreamWriter *stream)
     _stream->setAutoFormatting(true);
 }
 
-bool XmlWriter::write(IModelItem *item)
+bool Writer::write(IModelItem *item)
 {
     if (!item)
         return false;
+    QFile *file = query<IFileFiler>(this)->file();
+    if (file && file->open(QIODevice::WriteOnly))
+        setStream(new QXmlStreamWriter(file));
     QXmlStreamWriter *writer = stream();
     if (!writer)
         return false;
-    return writeItem(item, writer);
+    if (writeItem(item, writer)) {
+        writer->writeCharacters("\n");
+        return true;
+    }
+    return false;
 }
 
-} // namespace Core
-} // namespace Ac
+}

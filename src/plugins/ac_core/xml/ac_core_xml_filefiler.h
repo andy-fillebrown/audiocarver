@@ -15,29 +15,46 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILER_H
-#define MI_CORE_IFILER_H
+#ifndef AC_CORE_XML_FILEFILER_H
+#define AC_CORE_XML_FILEFILER_H
 
-#include "mi_core_iunknown.h"
-#include "mi_core_interfaces.h"
+#include <mi_core_ifilefiler.h>
 
-class IFileFiler : public IUnknown
+class IAggregate;
+class QFile;
+
+namespace Xml {
+
+class FileFiler : public IFileFiler
 {
+    IAggregate *_aggregate;
+    QFile *_file;
+
 public:
-    enum { InterfaceType = I::IFileFiler };
+    FileFiler(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+        ,   _file(0)
+    {}
 
-    virtual QString fileName() const = 0;
-    virtual void setFileName(const QString &fileName) = 0;
+    virtual IUnknown *initialize();
+    ~FileFiler();
+    void *queryInterface(int interfaceType) const;
 
-    int interfaceType() const
+protected:
+    IAggregate *aggregate() const
     {
-        return InterfaceType;
+        return _aggregate;
     }
 
-    bool isTypeOfInterface(int interfaceType) const
+    QFile *file() const
     {
-        return InterfaceType == interfaceType;
+        return _file;
     }
+
+    QString fileName() const;
+    void setFileName(const QString &fileName);
 };
+
+}
 
 #endif

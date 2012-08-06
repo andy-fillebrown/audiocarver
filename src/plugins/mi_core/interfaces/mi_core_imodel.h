@@ -31,8 +31,6 @@ public:
 
     static IModel *instance();
 
-    virtual IModelItem *rootItem() const = 0;
-
     int interfaceType() const
     {
         return InterfaceType;

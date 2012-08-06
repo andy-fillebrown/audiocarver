@@ -15,34 +15,38 @@
 **
 **************************************************************************/
 
-#include "ac_core_xmlfilefiler.h"
-
+#include "ac_core_xml_filefiler.h"
+#include <mi_core_iaggregate.h>
 #include <QFile>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
 
-namespace Ac {
-namespace Core {
+namespace Xml {
 
-IAggregator *XmlFileFiler::init()
+IUnknown *FileFiler::initialize()
 {
+    aggregate()->append(this);
     return this;
 }
 
-XmlFileFiler::~XmlFileFiler()
+FileFiler::~FileFiler()
 {
-    clear();
     delete _file;
 }
 
-QString XmlFileFiler::fileName() const
+void *FileFiler::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<FileFiler*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
+QString FileFiler::fileName() const
 {
     if (!_file)
         return QString();
     return _file->fileName();
 }
 
-void XmlFileFiler::setFileName(const QString &fileName)
+void FileFiler::setFileName(const QString &fileName)
 {
     if (this->fileName() == fileName)
         return;
@@ -50,26 +54,4 @@ void XmlFileFiler::setFileName(const QString &fileName)
     _file = new QFile(fileName);
 }
 
-IAggregate *XmlFileFiler::FileFiler::init()
-{
-    return this;
 }
-
-IAggregate *XmlFileFiler::Reader::init()
-{
-    QFile *file = a()->file();
-    if (file && file->open(QIODevice::ReadOnly))
-        setStream(new QXmlStreamReader(file));
-    return XmlReader::init();
-}
-
-IAggregate *XmlFileFiler::Writer::init()
-{
-    QFile *file = a()->file();
-    if (file && file->open(QIODevice::WriteOnly))
-        setStream(new QXmlStreamWriter(file));
-    return XmlWriter::init();
-}
-
-} // namespace Core
-} // namespace Ac

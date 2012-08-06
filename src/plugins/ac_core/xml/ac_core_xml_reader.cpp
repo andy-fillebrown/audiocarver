@@ -15,23 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_core_xmlreader.h"
-
-#include <mi_idatabase.h>
-#include <mi_idataobjectfactory.h>
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
-#include <mi_imodellist.h>
-
-#include <ac_core_point.h>
-
+#include "ac_core_xml_reader.h"
+#include <mi_core_iaggregate.h>
+#include <mi_core_iclassfactory.h>
+#include <mi_core_ifilefiler.h>
+#include <mi_core_imodeldata.h>
+#include <mi_core_imodelitemlist.h>
+#include "ac_core_point.h"
+#include <QDebug>
+#include <QFile>
 #include <QStringList>
 #include <QXmlStreamReader>
 
 using namespace Mi;
+using namespace Ac;
 
-namespace Ac {
-namespace Core {
+namespace Xml {
 
 static int elementType(const QString &name)
 {
@@ -70,14 +69,14 @@ static QXmlStreamReader::TokenType nextElement(QXmlStreamReader *reader)
 
 static bool readItem(IModelItem *item, QXmlStreamReader *reader)
 {
-    IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
+    IClassFactory *factory = IClassFactory::instance();
     QString elementName = reader->name().toString();
     if (elementName.isEmpty()) {
         qWarning() << Q_FUNC_INFO << ": Empty element name";
         return false;
     }
     if (elementName.endsWith("List")) {
-        IModelList *list = query<IModelList>(item);
+        IModelItemList *list = query<IModelItemList>(item);
         QString listElementName = elementName;
         listElementName.chop(4);
         int itemType = elementType(listElementName);
@@ -146,17 +145,25 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
     return true;
 }
 
-IAggregate *XmlReader::init()
+IUnknown *Reader::initialize()
 {
+    aggregate()->append(this);
     return this;
 }
 
-XmlReader::~XmlReader()
+Reader::~Reader()
 {
     delete _stream;
 }
 
-void XmlReader::setStream(QXmlStreamReader *stream)
+void *Reader::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Reader*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
+void Reader::setStream(QXmlStreamReader *stream)
 {
     if (_stream == stream)
         return;
@@ -164,7 +171,7 @@ void XmlReader::setStream(QXmlStreamReader *stream)
     _stream = stream;
 }
 
-int XmlReader::nextItemType()
+int Reader::nextItemType()
 {
     QXmlStreamReader *reader = stream();
     if (!reader)
@@ -175,10 +182,13 @@ int XmlReader::nextItemType()
     return elementType(elementName);
 }
 
-bool XmlReader::read(IModelItem *item)
+bool Reader::read(IModelItem *item)
 {
     if (!item)
         return false;
+    QFile *file = query<IFileFiler>(this)->file();
+    if (file && file->open(QIODevice::ReadOnly))
+        setStream(new QXmlStreamReader(file));
     QXmlStreamReader *reader = stream();
     if (!reader)
         return false;
@@ -187,5 +197,4 @@ bool XmlReader::read(IModelItem *item)
     return readItem(item, reader);
 }
 
-} // namespace Core
-} // namespace Ac
+}

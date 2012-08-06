@@ -15,33 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILERFACTORY_H
-#define MI_CORE_IFILERFACTORY_H
+#include "ac_core_session_model.h"
+#include <mi_core_imodelitem.h>
+#include <mi_core_idatabase.h>
 
-#include "mi_core_iunknown.h"
-#include "mi_core_interfaces.h"
-#include "mi_core_global.h"
+namespace Session {
 
-class IAggregate;
-
-class MI_CORE_EXPORT IFilerFactory : public IUnknown
+IUnknown *Model::initialize()
 {
-public:
-    enum { InterfaceType = I::IFilerFactory };
+    return Base::Model::initialize();
+}
 
-    static IFilerFactory *instance();
-
-    virtual IAggregate *create(int filerType) = 0;
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
-};
-
-#endif
+}

@@ -2,12 +2,12 @@
 load(../mi_core/mi_core.prf)
 
 DIRS = \
-    delegates \
-    graphicsview \
+#    delegates \
+#    graphicsview \
     implementations \
-    interfaces \
-    models \
-    widgets \
+#    interfaces \
+#    models \
+#    widgets \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

@@ -3,6 +3,7 @@ SOURCE_FILES = \
     aggregate \
     classfactory \
     database \
+    filerfactory \
     model \
     modeldata \
     modelitem \

@@ -17,7 +17,7 @@
 
 #include "mi_guiplugin.h"
 
-#include <mi_gui_editor.h>
+//#include <mi_gui_editor.h>
 #include <mi_gui_mainwindowextension.h>
 
 #include <icore.h>
@@ -39,7 +39,7 @@ bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 
 GuiPlugin::~GuiPlugin()
 {
-    Gui::Editor::destroy();
+//    Gui::Editor::destroy();
 }
 
 } // namespace Mi

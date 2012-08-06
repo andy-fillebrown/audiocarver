@@ -15,4 +15,23 @@
 **
 **************************************************************************/
 
-#include "ac_filer.h"
+#ifndef AC_CORE_SESSION_FILERFACTORY_H
+#define AC_CORE_SESSION_FILERFACTORY_H
+
+#include <mi_core_base_filerfactory.h>
+#include "ac_core_global.h"
+
+namespace Session {
+
+class AC_CORE_EXPORT FilerFactory : public Base::FilerFactory
+{
+public:
+    IUnknown *initialize();
+
+protected:
+    IAggregate *create(int filerType);
+};
+
+}
+
+#endif

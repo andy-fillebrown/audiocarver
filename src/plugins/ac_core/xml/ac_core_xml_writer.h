@@ -15,35 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_XMLWRITER_H
-#define AC_CORE_XMLWRITER_H
+#ifndef AC_CORE_XML_WRITER_H
+#define AC_CORE_XML_WRITER_H
 
-#include "mi_ifiler.h"
+#include <mi_core_iwriter.h>
+#include "ac_core_global.h"
 
-#include <ac_core_global.h>
-
+class IAggregate;
 class QXmlStreamWriter;
 
-namespace Ac {
-namespace Core {
+namespace Xml {
 
-class AC_CORE_EXPORT XmlWriter : public IWriter
+class AC_CORE_EXPORT Writer : public IWriter
 {
-    IAggregator *_aggregator;
+    IAggregate *_aggregate;
     QXmlStreamWriter *_stream;
 
-protected:
-    XmlWriter(IAggregator *aggregator)
-        :   _aggregator(aggregator)
+public:
+    Writer(IAggregate *aggregate)
+        :   _aggregate(aggregate)
         ,   _stream(0)
     {}
 
-    virtual IAggregate *init();
-    ~XmlWriter();
+    virtual IUnknown *initialize();
+    ~Writer();
+    void *queryInterface(int interfaceType) const;
 
-    IAggregator *a() const
+protected:
+    IAggregate *aggregate() const
     {
-        return _aggregator;
+        return _aggregate;
     }
 
     QXmlStreamWriter *stream()
@@ -52,18 +53,9 @@ protected:
     }
 
     void setStream(QXmlStreamWriter *stream);
-
-    // IWriter
     bool write(IModelItem *item);
-
-    // IAggregate
-    IAggregator *aggregator() const
-    {
-        return _aggregator;
-    }
 };
 
-} // namespace Core
-} // namespace Ac
+}
 
-#endif // AC_CORE_XMLWRITER_H
+#endif

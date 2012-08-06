@@ -4,7 +4,7 @@ SOURCE_FILES = \
     iclassfactory \
     idatabase \
     idataobjectfactory \
-    ifiler \
+    ifilefiler \
     ifilerfactory \
     imodel \
     imodeldata \

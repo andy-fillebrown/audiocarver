@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_core_viewsettings_modeldata.h"
-#include <mi_core_imodel.h>
+#include <mi_core_idatabase.h>
 #include <mi_core_imodelitem.h>
 #include <mi_core_isession.h>
 #include "ac_core_constants.h"
@@ -44,8 +44,7 @@ IUnknown *ModelData::initialize()
 
 bool ModelData::setTimePosition(qreal position)
 {
-    IModel *model = query<IModel>(ISession::instance());
-    IModelData *score_data = query<IModelData>(model->rootItem());
+    IModelData *score_data = query<IModelData>(IDatabase::instance()->rootItem());
     position = qBound(qreal(0.0f), position, score_data->get<qreal>(LengthRole));
     if (_timePosition == position)
         return false;

@@ -15,33 +15,41 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILERFACTORY_H
-#define MI_CORE_IFILERFACTORY_H
+#include "mi_core_base_filerfactory.h"
+#include "mi_core_iaggregate.h"
+#include "mi_core_isession.h"
 
-#include "mi_core_iunknown.h"
-#include "mi_core_interfaces.h"
-#include "mi_core_global.h"
+static IFilerFactory *instance = 0;
 
-class IAggregate;
-
-class MI_CORE_EXPORT IFilerFactory : public IUnknown
+IFilerFactory *IFilerFactory::instance()
 {
-public:
-    enum { InterfaceType = I::IFilerFactory };
+    return ::instance;
+}
 
-    static IFilerFactory *instance();
+namespace Base {
 
-    virtual IAggregate *create(int filerType) = 0;
+FilerFactory::FilerFactory()
+{
+    ISession::instance()->remove(IFilerFactory::instance());
+    ::instance = this;
+}
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+FilerFactory::~FilerFactory()
+{
+    ::instance = 0;
+}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
-};
+IUnknown *FilerFactory::initialize()
+{
+    ISession::instance()->append(this);
+    return this;
+}
 
-#endif
+void *FilerFactory::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<FilerFactory*>(this);
+    return ISession::instance()->queryInterface(interfaceType);
+}
+
+}

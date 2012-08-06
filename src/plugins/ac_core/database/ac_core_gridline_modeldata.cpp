@@ -91,7 +91,7 @@ int ModelData::roleAt(int i) const
     }
 }
 
-QVariant ModelData::getVariant(int role) const
+QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case LocationRole:

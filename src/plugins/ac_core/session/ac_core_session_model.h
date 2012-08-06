@@ -15,45 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELDATA_H
-#define AC_CORE_CURVE_MODELDATA_H
+#ifndef AC_CORE_SESSION_MODEL_H
+#define AC_CORE_SESSION_MODEL_H
 
-#include <mi_core_base_modeldata.h>
-#include "ac_core_point.h"
+#include <mi_core_base_model.h>
+#include "ac_core_global.h"
 
-namespace Curve {
+class QAbstractItemModel;
 
-class ModelData : public Base::ModelData
+namespace Session {
+
+class AC_CORE_EXPORT Model : public Base::Model
 {
-    PointList _points;
-    enum { RoleCount = 1 };
-
 protected:
-    enum {
-        RoleCountOffset = Base::ModelData::TotalRoleCount,
-        TotalRoleCount = RoleCountOffset + RoleCount
-    };
+    Model()
+    {}
 
-    ModelData(IAggregate *aggregate);
     IUnknown *initialize();
-
-    PointList &points()
-    {
-        return _points;
-    }
-
-    bool setPoints(const PointList &points);
-
-    virtual void conformPoints() = 0;
-
-    int roleCount() const
-    {
-        return TotalRoleCount;
-    }
-
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(const QVariant &value, int role);
 };
 
 }

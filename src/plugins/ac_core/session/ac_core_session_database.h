@@ -15,43 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATABASE_H
-#define AC_CORE_DATABASE_H
+#ifndef AC_CORE_SESSION_DATABASE_H
+#define AC_CORE_SESSION_DATABASE_H
 
-#include "mi_core_database.h"
-
-#include <ac_core_global.h>
+#include <mi_core_base_database.h>
+#include "ac_core_global.h"
+#include <QString>
 
 namespace Ac {
+    class CorePlugin;
+}
 
-class CorePlugin;
+namespace Session {
 
-namespace Core {
-
-class Model;
-
-class AC_CORE_EXPORT Database : public Mi::Core::Database
+class AC_CORE_EXPORT Database : public Base::Database
 {
-    friend class Ac::CorePlugin;
-    friend class Model;
-
     QString _fileName;
     IAggregate *_score;
 
-protected:
+public:
     Database()
         :   _score(0)
     {}
 
-    IAggregate *initialize();
+    IUnknown *initialize();
     ~Database();
 
-    IAggregator *score() const
+protected:
+    IAggregate *score() const
     {
         return _score;
     }
 
-    // IDatabase
+    IModelItem *rootItem() const;
     const QString &fileExtension() const;
     const QString &fileFilter() const;
     QString fileName() const;
@@ -59,12 +55,8 @@ protected:
     void read(const QString &fileName);
     void write(const QString &fileName);
     bool isReading() const;
-
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType);
 };
 
-} // namespace Core
-} // namespace Ac
+}
 
-#endif // AC_CORE_DATABASE_H
+#endif

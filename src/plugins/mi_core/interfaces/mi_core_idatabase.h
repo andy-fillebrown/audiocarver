@@ -22,6 +22,8 @@
 #include "mi_core_global.h"
 #include "mi_core_interfaces.h"
 
+class IModelItem;
+
 class MI_CORE_EXPORT IDatabase : public IUnknown
 {
 public:
@@ -29,6 +31,7 @@ public:
 
     static IDatabase *instance();
 
+    virtual IModelItem *rootItem() const = 0;
     virtual const QString &fileExtension() const = 0;
     virtual const QString &fileFilter() const = 0;
     virtual QString fileName() const = 0;

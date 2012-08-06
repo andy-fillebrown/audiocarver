@@ -15,29 +15,35 @@
 **
 **************************************************************************/
 
-#include "ac_core_database.h"
+#include "ac_core_session_database.h"
+#include <mi_core_iaggregate.h>
+#include <mi_core_iclassfactory.h>
+#include <mi_core_ifilefiler.h>
+#include <mi_core_ifilerfactory.h>
+#include <mi_core_imodel.h>
+#include <mi_core_imodelitem.h>
+#include <mi_core_ireader.h>
+#include <mi_core_iwriter.h>
+#include "ac_core_namespace.h"
 
-#include "ac_core_dataobjectfactory.h"
-#include "ac_core_filerfactory.h"
-#include "ac_core_model.h"
+using namespace Ac;
 
-#include <mi_ifiler.h>
-#include <mi_imodelitem.h>
+namespace Session {
 
-#include <ac_core_namespace.h>
-
-namespace Ac {
-namespace Core {
-
-IAggregator *Database::init()
+IUnknown *Database::initialize()
 {
-    _score = query<IDataObjectFactory>(this)->create(ScoreItem);
-    return Mi::Core::Database::init();
+    _score = IClassFactory::instance()->create(ScoreItem);
+    return Base::Database::initialize();
 }
 
 Database::~Database()
 {
     delete _score;
+}
+
+IModelItem *Database::rootItem() const
+{
+    return query<IModelItem>(_score);
 }
 
 const QString &Database::fileExtension() const
@@ -59,25 +65,24 @@ QString Database::fileName() const
 
 void Database::reset()
 {
-    score()->clear();
     _fileName.clear();
 }
 
 void Database::read(const QString &fileName)
 {
     reset();
-    IAggregator *filer = query<IFilerFactory>(this)->create(FileFiler);
+    IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
-    if (query<IReader>(filer)->read(query<IModelItem>(_score)))
+    if (query<IReader>(filer)->read(rootItem()))
         _fileName = fileName;
     delete filer;
 }
 
 void Database::write(const QString &fileName)
 {
-    IAggregator *filer = query<IFilerFactory>(this)->create(FileFiler);
+    IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
-    query<IWriter>(filer)->write(query<IModelItem>(_score));
+    query<IWriter>(filer)->write(rootItem());
     delete filer;
 }
 
@@ -87,19 +92,4 @@ bool Database::isReading() const
     return false;
 }
 
-IAggregate *Database::createAggregate(int interfaceType)
-{
-    switch (interfaceType) {
-    case I::IDataObjectFactory:
-        return appendAggregate((new DataObjectFactory(this))->init());
-    case I::IFilerFactory:
-        return appendAggregate((new FilerFactory(this))->init());
-    case I::IModel:
-        return appendAggregate((new Model(this))->init());
-    default:
-        return 0;
-    }
 }
-
-} // namespace Core
-} // namespace Ac

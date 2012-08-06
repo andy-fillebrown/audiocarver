@@ -15,23 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_IFILERFACTORY_H
-#define MI_CORE_IFILERFACTORY_H
+#ifndef MI_CORE_IFILEFILER_H
+#define MI_CORE_IFILEFILER_H
 
 #include "mi_core_iunknown.h"
 #include "mi_core_interfaces.h"
-#include "mi_core_global.h"
 
-class IAggregate;
+class QFile;
+class QString;
 
-class MI_CORE_EXPORT IFilerFactory : public IUnknown
+class IFileFiler : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IFilerFactory };
+    enum { InterfaceType = I::IFileFiler };
 
-    static IFilerFactory *instance();
-
-    virtual IAggregate *create(int filerType) = 0;
+    virtual QFile *file() const = 0;
+    virtual QString fileName() const = 0;
+    virtual void setFileName(const QString &fileName) = 0;
 
     int interfaceType() const
     {

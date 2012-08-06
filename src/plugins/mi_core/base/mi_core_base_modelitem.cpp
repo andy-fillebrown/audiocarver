@@ -17,7 +17,10 @@
 
 #include "mi_core_base_modelitem.h"
 #include "mi_core_imodelitemlist.h"
+#include "mi_core_namespace.h"
 #include "mi_core_scopedparentchange.h"
+
+using namespace Mi;
 
 namespace Base {
 
@@ -32,6 +35,11 @@ IUnknown *ModelItem::initialize()
 {
     aggregate()->append(this);
     return this;
+}
+
+int ModelItem::itemType() const
+{
+    return UnknownItem;
 }
 
 void ModelItem::setParent(IModelItem *parent)
