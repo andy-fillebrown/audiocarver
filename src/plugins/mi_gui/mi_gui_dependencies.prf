@@ -5,8 +5,9 @@ DIRS = \
 #    delegates \
 #    graphicsview \
     implementations \
-#    interfaces \
+    interfaces \
 #    models \
+    session \
 #    widgets \
 
 for(dir, DIRS) {

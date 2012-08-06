@@ -11,7 +11,7 @@ DEFINES *= \
 SOURCE_FILES = \
     constants \
     global \
-    namespace \
+    interfaces \
     plugin \
 
 SOURCE_FILES *= $$target_name

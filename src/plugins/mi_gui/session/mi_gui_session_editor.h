@@ -15,38 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef MI_GUI_EDITOR_H
-#define MI_GUI_EDITOR_H
+#ifndef MI_GUI_SESSION_EDITOR_H
+#define MI_GUI_SESSION_EDITOR_H
 
-#include "mi_ieditor.h"
+#include "mi_gui_ieditor.h"
 
-namespace Mi {
-
-class GuiPlugin;
-
-namespace Gui {
+namespace Session {
 
 class MI_GUI_EXPORT Editor : public IEditor
 {
-    friend class Mi::GuiPlugin;
-
-    static IEditor *instance()
-    {
-        return IEditor::instance();
-    }
-
-    static void destroy();
-
-    QHash<int, IAggregate*> _aggregates;
     int _isInCommand : 1;
     int _isCreating : 1;
 
-protected:
+public:
     Editor();
-    virtual IAggregator *init();
+    virtual IUnknown *initialize();
     virtual ~Editor();
+    void *queryInterface(int interfaceType) const;
 
-    // IEditor
+protected:
     bool isInCommand() const
     {
         return _isInCommand;
@@ -80,41 +67,8 @@ protected:
     {
         _isCreating = false;
     }
-
-    // IAggregator
-    QList<IAggregate*> aggregates() const
-    {
-        return _aggregates.values();
-    }
-
-    IAggregate *appendAggregate(IAggregate *aggregate);
-    void removeAggregate(IAggregate *aggregate);
-    void clear();
-
-public:
-    // IUnknown
-    void *queryInterface(int interfaceType)
-    {
-        if (I::IAggregator == interfaceType)
-            return this;
-        IAggregate *interface = _aggregates.value(interfaceType);
-        if (interface)
-            return interface;
-        return createAggregate(interfaceType);
-    }
-
-    const void *queryInterface(int interfaceType) const
-    {
-        if (I::IAggregator == interfaceType)
-            return this;
-        IAggregate *interface = _aggregates.value(interfaceType);
-        if (interface)
-            return interface;
-        return 0;
-    }
 };
 
-} // namespace Gui
-} // namespace Mi
+}
 
-#endif // MI_GUI_EDITOR_H
+#endif

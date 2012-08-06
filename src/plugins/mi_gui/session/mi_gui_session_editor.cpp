@@ -15,9 +15,9 @@
 **
 **************************************************************************/
 
-#include "mi_gui_editor.h"
-
-#include <mi_iaggregate.h>
+#include "mi_gui_session_editor.h"
+#include <mi_core_iaggregate.h>
+#include <mi_core_isession.h>
 
 static IEditor *instance = 0;
 
@@ -26,51 +26,31 @@ IEditor *IEditor::instance()
     return ::instance;
 }
 
-namespace Mi {
-namespace Gui {
-
-void Editor::destroy()
-{
-    delete ::instance;
-    ::instance = 0;
-}
+namespace Session {
 
 Editor::Editor()
     :   _isInCommand(false)
 {
-    if (::instance)
-        delete ::instance;
+    ISession::instance()->remove(::instance);
+    delete ::instance;
     ::instance = this;
 }
 
-IAggregator *Editor::init()
+IUnknown *Editor::initialize()
 {
-    return this;
+    return ISession::instance()->append(this);
 }
 
 Editor::~Editor()
 {
-    clear();
+    ::instance = 0;
 }
 
-IAggregate *Editor::appendAggregate(IAggregate *aggregate)
+void *Editor::queryInterface(int interfaceType) const
 {
-    const int interface_type = aggregate->interfaceType();
-    if (!_aggregates.contains(interface_type))
-        _aggregates.insert(interface_type, aggregate);
-    return aggregate;
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<Editor*>(this);
+    return ISession::instance()->queryInterface(interfaceType);
 }
 
-void Editor::removeAggregate(IAggregate *aggregate)
-{
-    _aggregates.remove(aggregate->interfaceType());
 }
-
-void Editor::clear()
-{
-    qDeleteAll(_aggregates);
-    _aggregates.clear();
-}
-
-} // namespace Gui
-} // namespace Mi

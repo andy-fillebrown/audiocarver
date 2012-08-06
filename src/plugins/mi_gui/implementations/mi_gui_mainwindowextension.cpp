@@ -16,16 +16,15 @@
 **************************************************************************/
 
 #include "mi_gui_mainwindowextension.h"
+#include "mi_gui_ieditor.h"
 #include <mi_core_idatabase.h>
 #include <icontext.h>
 #include <icore.h>
-//#include <mi_ieditor.h>
 #include "mi_gui_constants.h"
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
 #include <mainwindow.h>
-
 #include <QAction>
 #include <QFileDialog>
 #include <QIcon>
@@ -61,12 +60,9 @@ void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &i
 void MainWindowExtension::initActions()
 {
     ActionManager *am = Core::ICore::instance()->actionManager();
-
     ActionContainer *fileMenu = am->actionContainer(Constants::M_FILE);
     ActionContainer *editMenu = am->actionContainer(M_EDIT);
-
     Context globalContext(Constants::C_GLOBAL);
-
     QIcon icon;
     QAction *action = 0;
     Command *cmd = 0;
@@ -208,32 +204,32 @@ void MainWindowExtension::saveFileAs()
 
 void MainWindowExtension::undo()
 {
-//    IEditor::instance()->undo();
+    IEditor::instance()->undo();
 }
 
 void MainWindowExtension::redo()
 {
-//    IEditor::instance()->redo();
+    IEditor::instance()->redo();
 }
 
 void MainWindowExtension::cut()
 {
-//    IEditor::instance()->cut();
+    IEditor::instance()->cut();
 }
 
 void MainWindowExtension::copy()
 {
-//    IEditor::instance()->copy();
+    IEditor::instance()->copy();
 }
 
 void MainWindowExtension::paste()
 {
-//    IEditor::instance()->paste();
+    IEditor::instance()->paste();
 }
 
 void MainWindowExtension::selectAll()
 {
-//    IEditor::instance()->selectAll();
+    IEditor::instance()->selectAll();
 }
 
 }
