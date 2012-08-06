@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_GUIMAINWINDOWEXTENSION_H
-#define MI_GUIMAINWINDOWEXTENSION_H
+#ifndef MI_GUI_MAINWINDOWEXTENSION_H
+#define MI_GUI_MAINWINDOWEXTENSION_H
 
 #include <imainwindowextension.h>
 
@@ -46,7 +46,7 @@ private slots:
     void selectAll();
 };
 
-} // namespace Gui
-} // namespace Mi
+}
+}
 
-#endif // MI_GUIMAINWINDOWEXTENSION_H
+#endif

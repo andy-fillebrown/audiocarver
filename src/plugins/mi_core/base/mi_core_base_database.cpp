@@ -30,7 +30,8 @@ namespace Base {
 
 Database::Database()
 {
-    ISession::instance()->remove(IDatabase::instance());
+    ISession::instance()->remove(::instance);
+    delete ::instance;
     ::instance = this;
 }
 
@@ -41,8 +42,7 @@ Database::~Database()
 
 IUnknown *Database::initialize()
 {
-    ISession::instance()->append(this);
-    return this;
+    return ISession::instance()->append(this);
 }
 
 void *Database::queryInterface(int interfaceType) const

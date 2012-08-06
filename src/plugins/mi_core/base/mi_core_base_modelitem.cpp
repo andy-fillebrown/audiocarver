@@ -33,8 +33,7 @@ void *ModelItem::queryInterface(int interfaceType) const
 
 IUnknown *ModelItem::initialize()
 {
-    aggregate()->append(this);
-    return this;
+    return aggregate()->append(this);
 }
 
 int ModelItem::itemType() const

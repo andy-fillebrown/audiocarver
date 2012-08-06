@@ -27,8 +27,7 @@ namespace Base {
 
 IUnknown *ModelItemList::initialize()
 {
-    aggregate()->append(this);
-    return this;
+    return aggregate()->append(this);
 }
 
 void *ModelItemList::queryInterface(int interfaceType) const

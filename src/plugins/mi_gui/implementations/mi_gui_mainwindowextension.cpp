@@ -16,14 +16,11 @@
 **************************************************************************/
 
 #include "mi_gui_mainwindowextension.h"
-
+#include <mi_core_idatabase.h>
 #include <icontext.h>
 #include <icore.h>
-#include <mi_core_idatabase.h>
 //#include <mi_ieditor.h>
-
-#include <mi_gui_constants.h>
-
+#include "mi_gui_constants.h"
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
@@ -239,5 +236,5 @@ void MainWindowExtension::selectAll()
 //    IEditor::instance()->selectAll();
 }
 
-} // namespace Gui
-} // namespace Mi
+}
+}

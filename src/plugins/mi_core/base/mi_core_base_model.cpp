@@ -30,7 +30,8 @@ namespace Base {
 
 Model::Model()
 {
-    ISession::instance()->remove(IModel::instance());
+    ISession::instance()->remove(::instance);
+    delete ::instance;
     ::instance = this;
 }
 
@@ -41,8 +42,7 @@ Model::~Model()
 
 IUnknown *Model::initialize()
 {
-    ISession::instance()->append(this);
-    return this;
+    return ISession::instance()->append(this);
 }
 
 void *Model::queryInterface(int interfaceType) const

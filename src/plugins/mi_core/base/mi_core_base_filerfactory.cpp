@@ -30,7 +30,8 @@ namespace Base {
 
 FilerFactory::FilerFactory()
 {
-    ISession::instance()->remove(IFilerFactory::instance());
+    ISession::instance()->remove(::instance);
+    delete ::instance;
     ::instance = this;
 }
 
@@ -41,8 +42,7 @@ FilerFactory::~FilerFactory()
 
 IUnknown *FilerFactory::initialize()
 {
-    ISession::instance()->append(this);
-    return this;
+    return ISession::instance()->append(this);
 }
 
 void *FilerFactory::queryInterface(int interfaceType) const

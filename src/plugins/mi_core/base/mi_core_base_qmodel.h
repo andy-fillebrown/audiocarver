@@ -20,7 +20,7 @@
 
 #include "mi_core_iqmodel.h"
 
-class IAggregate;
+class IUnknown;
 
 namespace Base {
 
@@ -31,7 +31,7 @@ class MI_CORE_EXPORT QModel : public IQModel
 public:
     QModel();
     ~QModel();
-    virtual QObject *initialize();
+    virtual IUnknown *initialize();
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
     int rowCount(const QModelIndex &parent) const;

@@ -33,8 +33,7 @@ void *ModelData::queryInterface(int interfaceType) const
 
 IUnknown *ModelData::initialize()
 {
-    aggregate()->append(this);
-    return this;
+    return aggregate()->append(this);
 }
 
 bool ModelData::setName(const QString &name)

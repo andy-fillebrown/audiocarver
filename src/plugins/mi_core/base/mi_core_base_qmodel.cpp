@@ -30,7 +30,8 @@ namespace Base {
 
 QModel::QModel()
 {
-    ISession::instance()->remove(IQModel::instance());
+    ISession::instance()->remove(::instance);
+    delete ::instance;
     ::instance = this;
 }
 
@@ -39,10 +40,9 @@ QModel::~QModel()
     ::instance = 0;
 }
 
-QObject *QModel::initialize()
+IUnknown *QModel::initialize()
 {
-    ISession::instance()->append(this);
-    return this;
+    return ISession::instance()->append(this);
 }
 
 QModelIndex QModel::index(int row, int column, const QModelIndex &parent) const

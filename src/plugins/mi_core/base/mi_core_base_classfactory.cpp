@@ -30,7 +30,8 @@ namespace Base {
 
 ClassFactory::ClassFactory()
 {
-    ISession::instance()->remove(IClassFactory::instance());
+    ISession::instance()->remove(::instance);
+    delete ::instance;
     ::instance = this;
 }
 
@@ -41,8 +42,7 @@ ClassFactory::~ClassFactory()
 
 IUnknown *ClassFactory::initialize()
 {
-    ISession::instance()->append(this);
-    return this;
+    return ISession::instance()->append(this);
 }
 
 void *ClassFactory::queryInterface(int interfaceType) const

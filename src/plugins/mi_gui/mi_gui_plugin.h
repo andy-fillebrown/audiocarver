@@ -15,33 +15,26 @@
 **
 **************************************************************************/
 
-#include "mi_guiplugin.h"
+#ifndef MI_GUI_PLUGIN_H
+#define MI_GUI_PLUGIN_H
 
-//#include <mi_gui_editor.h>
-#include <mi_gui_mainwindowextension.h>
-
-#include <icore.h>
-#include <mainwindow.h>
-
-#include <QtPlugin>
+#include <iplugin.h>
 
 namespace Mi {
+namespace Gui {
 
-using namespace Gui;
-
-bool GuiPlugin::initialize(const QStringList &arguments, QString *errorMessage)
+class Plugin : public ExtensionSystem::IPlugin
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new MainWindowExtension);
-    return true;
+    Q_OBJECT
+
+public:
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+
+    void extensionsInitialized()
+    {}
+};
+
+}
 }
 
-GuiPlugin::~GuiPlugin()
-{
-//    Gui::Editor::destroy();
-}
-
-} // namespace Mi
-
-Q_EXPORT_PLUGIN(Mi::GuiPlugin)
+#endif

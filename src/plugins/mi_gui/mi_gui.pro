@@ -8,13 +8,11 @@ load(../../plugin.prf)
 DEFINES *= \
     MI_GUI_LIBRARY
 
-HEADERS *= mi_guiplugin.h
-SOURCES *= mi_guiplugin.cpp
-
 SOURCE_FILES = \
     constants \
     global \
     namespace \
+    plugin \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {
