@@ -36,7 +36,6 @@ public:
     virtual bool contains(const QString &name) const = 0;
     virtual void insert(int i, IModelItem *item) = 0;
     virtual void removeAt(int i) = 0;
-    virtual void clear() = 0;
 
     bool isEmpty() const
     {

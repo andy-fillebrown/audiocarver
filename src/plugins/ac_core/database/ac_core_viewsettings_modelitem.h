@@ -34,6 +34,7 @@ public:
 protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
+    void reset();
 };
 
 }

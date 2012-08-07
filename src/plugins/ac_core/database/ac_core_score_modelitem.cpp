@@ -18,6 +18,7 @@
 #include "ac_core_score_modelitem.h"
 #include <mi_core_iclassfactory.h>
 #include <mi_core_imodelitemlist.h>
+#include "ac_core_constants.h"
 #include "ac_core_namespace.h"
 #include <mi_core_scopeddatachange.h>
 
@@ -106,6 +107,14 @@ IModelItemList *ModelItem::findList(int listType) const
     default:
         return ScoreObject::ModelItem::findList(listType);
     }
+}
+
+void ModelItem::reset()
+{
+    IModelData *data = query<IModelData>(this);
+    data->set(DEFAULT_SCORE_LENGTH, LengthRole);
+    data->set(DEFAULT_SCORE_STARTTIME, StartTimeRole);
+    ScoreObject::ModelItem::reset();
 }
 
 }

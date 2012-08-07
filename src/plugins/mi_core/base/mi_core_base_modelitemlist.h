@@ -102,7 +102,7 @@ protected:
     bool contains(const QString &name) const;
     void insert(int i, IModelItem *item);
     void removeAt(int i);
-    void clear();
+    void reset();
 };
 
 }

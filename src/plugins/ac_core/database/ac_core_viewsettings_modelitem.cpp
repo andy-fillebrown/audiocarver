@@ -16,6 +16,8 @@
 **************************************************************************/
 
 #include "ac_core_viewsettings_modelitem.h"
+#include <mi_core_imodeldata.h>
+#include "ac_core_constants.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;
@@ -37,6 +39,18 @@ bool ModelItem::isTypeOfItem(int itemType) const
     if (ViewSettingsItem == itemType)
         return true;
     return Base::ModelItem::isTypeOfItem(itemType);
+}
+
+void ModelItem::reset()
+{
+    IModelData *data = query<IModelData>(this);
+    data->set(DEFAULT_VIEWSETTINGS_TIMEPOSITION, TimePositionRole);
+    data->set(DEFAULT_VIEWSETTINGS_PITCHPOSITION, PitchPositionRole);
+    data->set(DEFAULT_VIEWSETTINGS_CONTROLPOSITION, ControlPositionRole);
+    data->set(VIEWSCALE_MIN, TimeScaleRole);
+    data->set(VIEWSCALE_MIN, PitchScaleRole);
+    data->set(VIEWSCALE_MIN, ControlScaleRole);
+    Base::ModelItem::reset();
 }
 
 }

@@ -73,6 +73,7 @@ protected:
     int indexOf(IModelItem *item) const;
     IModelItem *at(int i) const;
     IModelItemList *findList(int listType) const;
+    void reset();
 };
 
 }

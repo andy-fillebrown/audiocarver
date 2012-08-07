@@ -90,7 +90,7 @@ void ModelItemList::removeAt(int i)
     _items.removeAt(i);
 }
 
-void ModelItemList::clear()
+void ModelItemList::reset()
 {
     foreach (IModelItem *item, _items)
         delete query<IAggregate>(item);

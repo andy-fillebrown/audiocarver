@@ -94,6 +94,13 @@ protected:
     {
         return 0;
     }
+
+    void reset()
+    {
+        const int item_count = count();
+        for (int i = 0;  i < item_count;  ++i)
+            at(i)->reset();
+    }
 };
 
 }

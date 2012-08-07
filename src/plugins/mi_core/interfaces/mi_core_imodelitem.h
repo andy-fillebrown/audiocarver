@@ -44,6 +44,7 @@ public:
     virtual IModelItem *at(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
     virtual IModelItemList *findList(int listType) const = 0;
+    virtual void reset() = 0;
 
     int interfaceType() const
     {

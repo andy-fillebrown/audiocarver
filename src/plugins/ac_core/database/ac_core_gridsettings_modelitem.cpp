@@ -18,7 +18,9 @@
 #include "ac_core_gridsettings_modelitem.h"
 #include <mi_core_iaggregate.h>
 #include <mi_core_iclassfactory.h>
+#include <mi_core_imodeldata.h>
 #include <mi_core_imodelitemlist.h>
+#include "ac_core_constants.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;
@@ -90,6 +92,17 @@ IModelItemList *ModelItem::findList(int listType) const
     default:
         return Base::ModelItem::findList(listType);
     }
+}
+
+void ModelItem::reset()
+{
+    IModelData *data = query<IModelData>(this);
+    data->set(DEFAULT_GRIDSETTINGS_SNAPENABLED, SnapEnabledRole);
+    data->set(DEFAULT_GRIDSETTINGS_GRIDSNAPENABLED, GridSnapEnabledRole);
+    data->set(DEFAULT_GRIDSETTINGS_TIMESNAP, TimeSnapRole);
+    data->set(DEFAULT_GRIDSETTINGS_PITCHSNAP, PitchSnapRole);
+    data->set(DEFAULT_GRIDSETTINGS_CONTROLSNAP, ControlSnapRole);
+    Base::ModelItem::reset();
 }
 
 }

@@ -65,6 +65,7 @@ QString Database::fileName() const
 
 void Database::reset()
 {
+    rootItem()->reset();
     _fileName.clear();
 }
 
