@@ -12,6 +12,7 @@ SOURCE_FILES = \
     constants \
     global \
     interfaces \
+    mainwindowextension \
     plugin \
 
 SOURCE_FILES *= $$target_name

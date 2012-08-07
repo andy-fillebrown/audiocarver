@@ -37,7 +37,6 @@ private slots:
     void openFile();
     void saveFile();
     void saveFileAs();
-
     void undo();
     void redo();
     void cut();
