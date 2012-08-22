@@ -26,4 +26,4 @@
 #  define MI_GUI_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // MI_GUIGLOBAL_H
+#endif

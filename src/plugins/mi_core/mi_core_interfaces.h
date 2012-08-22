@@ -22,9 +22,9 @@ namespace I {
 
 enum MiCoreInterface {
     IAggregate,
-    IClassFactory,
     ICopyFiler,
     IDatabase,
+    IDatabaseObjectFactory,
     IFileFiler,
     IFilerFactory,
     IModel,

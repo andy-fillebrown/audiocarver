@@ -3,7 +3,6 @@ load(../mi_core/mi_core.prf)
 
 DIRS = \
     database \
-    implementations \
     interfaces \
     models \
     session \

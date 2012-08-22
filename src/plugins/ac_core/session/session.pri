@@ -1,14 +1,14 @@
 
 SOURCE_FILES = \
-    classfactory \
     database \
+    databaseobjectfactory \
     filerfactory \
     model \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    name = $${SOURCE_FILE_PREFIX}_$${DIR}_$$file
+    name = $${SOURCE_FILE_PREFIX}_$$file
     header = $${name}.h
     source = $${name}.cpp
     exists($$header): HEADERS *= $$DIR/$$header

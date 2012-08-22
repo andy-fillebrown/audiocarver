@@ -17,9 +17,9 @@
 
 #include "ac_core_plugin.h"
 #include "ac_core_namespace.h"
-#include "ac_core_session_classfactory.h"
-#include "ac_core_session_database.h"
-#include "ac_core_session_filerfactory.h"
+#include "ac_core_database.h"
+#include "ac_core_databaseobjectfactory.h"
+#include "ac_core_filerfactory.h"
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -74,7 +74,7 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(TimeSnapRole, "timeSnap");
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
-    (new Session::ClassFactory)->initialize();
+    (new Session::DatabaseObjectFactory)->initialize();
     (new Session::Database)->initialize();
     (new Session::FilerFactory)->initialize();
     return true;
@@ -94,10 +94,10 @@ Q_EXPORT_PLUGIN(Ac::Core::Plugin)
 
 #ifdef QT_DEBUG
 
-#include <mi_core_iaggregate.h>
-#include <mi_core_iclassfactory.h>
-#include <mi_core_imodeldata.h>
-#include <mi_core_imodelitem.h>
+#include <mi_iaggregate.h>
+#include <mi_idatabaseobjectfactory.h>
+#include <mi_imodeldata.h>
+#include <mi_imodelitem.h>
 #include <QtDebug>
 
 #define RUN(x) if (!x()) return false
@@ -108,7 +108,7 @@ using namespace Ac;
 bool test_1()
 {
     // Make sure querying aggregates succeeds.
-    IAggregate *control_curve = IClassFactory::instance()->create(ControlCurveItem);
+    IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
     CHECK(control_curve);
     IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
@@ -119,7 +119,7 @@ bool test_1()
 bool test_2()
 {
     // Make sure setting item name succeeds.
-    IAggregate *control_curve = IClassFactory::instance()->create(ControlCurveItem);
+    IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
     CHECK(control_curve);
     IModelData *data = query<IModelData>(control_curve);
     CHECK(data);

@@ -2,8 +2,10 @@
 load(../qt_core/qt_core.prf)
 
 DIRS = \
-    base \
+    common \
+    database \
     interfaces \
+    session \
     tools \
 
 for(dir, DIRS) {

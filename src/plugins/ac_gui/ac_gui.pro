@@ -5,14 +5,12 @@ TEMPLATE = lib
 
 load(../../plugin.prf)
 
-HEADERS *= ac_guiplugin.h
-SOURCES *= ac_guiplugin.cpp
-
 SOURCE_FILES = \
 #    constants \
     global \
     namespace \
     mainwidget \
+    plugin \
 
 SOURCE_FILES *= $$target_name
 for(file, SOURCE_FILES) {

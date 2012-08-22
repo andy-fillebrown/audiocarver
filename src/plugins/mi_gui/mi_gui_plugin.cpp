@@ -17,9 +17,6 @@
 
 #include "mi_gui_plugin.h"
 #include "mi_gui_mainwindowextension.h"
-#include "mi_gui_session_editor.h"
-#include <icore.h>
-#include <mainwindow.h>
 #include <QtPlugin>
 
 namespace Mi {

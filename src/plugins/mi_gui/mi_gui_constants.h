@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_GUICONSTANTS_H
-#define MI_GUICONSTANTS_H
+#ifndef MI_GUI_CONSTANTS_H
+#define MI_GUI_CONSTANTS_H
 
 #include <qt_core_constants.h>
 
@@ -50,4 +50,4 @@ const char * const ICON_COPY        = ":/mi_guiplugin/images/editcopy.png";
 const char * const ICON_PASTE       = ":/mi_guiplugin/images/editpaste.png";
 const char * const ICON_CUT         = ":/mi_guiplugin/images/editcut.png";
 
-#endif // MI_GUICONSTANTS_H
+#endif

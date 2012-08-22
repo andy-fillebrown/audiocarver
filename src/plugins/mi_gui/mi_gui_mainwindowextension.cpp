@@ -16,14 +16,14 @@
 **************************************************************************/
 
 #include "mi_gui_mainwindowextension.h"
-#include "mi_gui_ieditor.h"
-#include <mi_core_idatabase.h>
-#include <icontext.h>
-#include <icore.h>
 #include "mi_gui_constants.h"
+#include "mi_ieditor.h"
+#include <mi_idatabase.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
+#include <icontext.h>
+#include <icore.h>
 #include <mainwindow.h>
 #include <QAction>
 #include <QFileDialog>

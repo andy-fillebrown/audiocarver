@@ -1,9 +1,8 @@
 
 SOURCE_FILES = \
     iaggregate \
-    iclassfactory \
     idatabase \
-    idataobjectfactory \
+    idatabaseobjectfactory \
     ifilefiler \
     ifilerfactory \
     imodel \
@@ -22,9 +21,6 @@ SOURCE_FILES = \
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    name = $${SOURCE_FILE_PREFIX}_$$file
-    header = $${name}.h
-    source = $${name}.cpp
+    header = mi_$${file}.h
     exists($$header): HEADERS *= $$DIR/$$header
-    exists($$source): SOURCES *= $$DIR/$$source
 }
