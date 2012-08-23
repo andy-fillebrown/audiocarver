@@ -17,8 +17,8 @@
 
 #include "mi_gui_mainwindowextension.h"
 #include "mi_gui_constants.h"
-#include "mi_ieditor.h"
-#include <mi_idatabase.h>
+#include <interfaces/idatabase.h>
+#include <interfaces/ieditor.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>

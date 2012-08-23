@@ -2,15 +2,9 @@
 load(../qt_core/qt_core.prf)
 
 DIRS = \
-    common \
-    database \
+    base \
     interfaces \
-    session \
     tools \
 
-for(dir, DIRS) {
-    INCLUDEPATH *= $$PWD/$$dir
-    DEPENDPATH *= $$PWD/$$dir
-}
 INCLUDEPATH *= $$PWD
 DEPENDPATH *= $$PWD

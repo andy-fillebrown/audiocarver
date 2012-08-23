@@ -9,9 +9,5 @@ DIRS = \
     tools \
     xml \
 
-for(dir, DIRS) {
-    INCLUDEPATH *= $$PWD/$$dir
-    DEPENDPATH *= $$PWD/$$dir
-}
 INCLUDEPATH *= $$PWD
 DEPENDPATH *= $$PWD
