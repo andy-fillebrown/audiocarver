@@ -15,30 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_ISUBENTITYITEM_H
-#define AC_ISUBENTITYITEM_H
+#ifndef ISYNTHESIZER_H
+#define ISYNTHESIZER_H
 
-#include "ac_ichildentity.h"
+#include <iunknown.h>
+#include "ac_gui_global.h"
+#include "ac_gui_interfaces.h"
 
-class IGrip;
-class IParentEntity;
-
-class ISubEntity : public IChildEntity
+class ISynthesizer : public IUnknown
 {
 public:
-    enum { InterfaceType = I::ISubEntity };
+    enum { InterfaceType = I::ISynthesizer };
+    static ISynthesizer *instance();
 
-    virtual int sceneType() const = 0;
-    virtual bool isCurve() const = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
-    virtual void startUpdatingPoints() = 0;
-    virtual void updatePoints() = 0;
-    virtual void finishUpdatingPoints() = 0;
-    virtual void updateCurveTypes() = 0;
-    virtual QList<IGrip*> grips() const = 0;
-    virtual void resetGrips() = 0;
+    virtual void renderTrack(int trackNumber) = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -46,10 +37,8 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-#endif // AC_ISUBENTITYITEM_H
+#endif

@@ -15,23 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_ISYNTHESIZER_H
-#define AC_ISYNTHESIZER_H
+#ifndef AC_CORE_INTERFACES_H
+#define AC_CORE_INTERFACES_H
 
-#include <ac_core_global.h>
+#include <mi_gui_interfaces.h>
 
-#include <QObject>
+namespace I {
 
-class AC_CORE_EXPORT ISynthesizer : public QObject
-{
-    Q_OBJECT
-
-public:
-    ISynthesizer();
-
-    static ISynthesizer *instance();
-
-    virtual void renderTrack(int trackNumber) = 0;
+enum AcCoreInterfaces {
+    AcCoreInterfaceCount = MiGuiInterfaceCount
 };
 
-#endif // AC_ISYNTHESIZER_H
+}
+
+#endif

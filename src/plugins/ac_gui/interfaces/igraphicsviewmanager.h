@@ -15,21 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_IPLAYCURSOR_H
-#define AC_IPLAYCURSOR_H
+#ifndef IGRAPHICSVIEWMANAGER_H
+#define IGRAPHICSVIEWMANAGER_H
 
-#include <ac_core_namespace.h>
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
 
-#include <mi_iunknown.h>
+class IGraphicsViewGroup;
 
-class IPlayCursor : public IUnknown
+class IGraphicsViewManager : public IUnknown
 {
 public:
-    enum { Type = I::IPlayCursor };
+    enum { InterfaceType = I::IGraphicsViewManager };
 
-    virtual qreal playCursorPosition() const = 0;
-    virtual void dragPlayCursorTo(qreal position) = 0;
-    virtual void setPlayCursorPosition(qreal position) = 0;
+    virtual int count() const = 0;
+    virtual IGraphicsViewGroup *at(int i) const = 0;
+    virtual void append(IGraphicsViewGroup *group) = 0;
+    virtual void remove(IGraphicsViewGroup *group) = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
 
-#endif // AC_IPLAYCURSOR_H
+#endif

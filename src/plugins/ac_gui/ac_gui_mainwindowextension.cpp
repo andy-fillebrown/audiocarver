@@ -16,82 +16,41 @@
 **************************************************************************/
 
 #include "ac_gui_mainwindowextension.h"
-
-#include <ac_iaudioengine.h>
-#include <ac_isynthesizer.h>
-#include <mi_idatabase.h>
-#include <mi_idataobjectfactory.h>
-#include <mi_ieditor.h>
-#include <mi_imodel.h>
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
-#include <mi_imodellist.h>
-
-#include <ac_gridlinedialog.h>
-#include <ac_gui_constants.h>
-#include <ac_gui_pitchview.h>
-#include <ac_gui_viewmanager.h>
-
-#include <ac_gui_namespace.h>
-#include <ac_noteselectionmodel.h>
-#include <ac_trackselectionmodel.h>
-
+//#include "ac_gridlinedialog.h"
+#include "ac_gui_constants.h"
+//#include "ac_gui_pitchview.h"
+//#include "ac_gui_viewmanager.h"
+#include "ac_gui_interfaces.h"
+//#include "ac_noteselectionmodel.h"
+//#include "ac_trackselectionmodel.h"
+#include <ac_core_namespace.h>
+#include <iaggregate.h>
+#include <icontext.h>
+#include <icore.h>
+#include <idatabase.h>
+#include <idatabaseobjectfactory.h>
+#include <ieditor.h>
+#include <imodel.h>
+#include <imodeldata.h>
+#include <imodelitemlist.h>
+#include <iqaudioengine.h>
+#include <isynthesizer.h>
 #include <mi_gui_constants.h>
-
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
-#include <icontext.h>
-#include <icore.h>
 #include <mainwindow.h>
 #include <versiondialog.h>
-
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QTimer>
-
-using namespace Ac::Gui;
+#include <QtDebug>
 
 namespace Ac {
 namespace Gui {
-
-class MainWindowExtensionPrivate
-{
-public:
-    Core::VersionDialog *versionDialog;
-
-    MainWindowExtensionPrivate()
-        :   versionDialog(0)
-    {}
-
-    bool maybeSaveDatabase()
-    {
-        IDatabase *db = IDatabase::instance();
-        if (!db->fileName().isEmpty())
-            return true;
-        QWidget *mw = Core::ICore::instance()->mainWindow();
-        QMessageBox::information(mw, "AudioCarver", "The score must be saved first");
-        QString filename = QFileDialog::getSaveFileName(mw, "", "", QObject::tr(qPrintable(db->fileFilter())));
-        if (filename.isEmpty())
-            return false;
-        if (!filename.endsWith(db->fileExtension()))
-            filename.append(db->fileExtension());
-        db->write(filename);
-        return !db->fileName().isEmpty();
-    }
-};
-
-MainWindowExtension::MainWindowExtension()
-    :   d(new MainWindowExtensionPrivate)
-{}
-
-MainWindowExtension::~MainWindowExtension()
-{
-    delete d;
-}
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
 {
@@ -130,18 +89,14 @@ void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &i
 void MainWindowExtension::initActions()
 {
     Core::ActionManager *am = Core::ICore::instance()->actionManager();
-
     Core::ActionContainer *editMenu = am->actionContainer(M_EDIT);
     Core::ActionContainer *createMenu = am->actionContainer(M_CREATE);
     Core::ActionContainer *modifyMenu = am->actionContainer(M_MODIFY);
     Core::ActionContainer *buildMenu = am->actionContainer(M_BUILD);
     Core::ActionContainer *transportMenu = am->actionContainer(M_TRANSPORT);
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
-
     Core::Context globalContext(Core::Constants::C_GLOBAL);
-
-    ViewManager *viewManager = ViewManager::instance();
-
+//    ViewManager *viewManager = ViewManager::instance();
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
@@ -169,14 +124,14 @@ void MainWindowExtension::initActions()
     action = new QAction(tr("&Note"), this);
     cmd = am->registerAction(action, CREATENOTE, globalContext);
     createMenu->addAction(cmd, G_CREATE_OTHER);
-    connect(action, SIGNAL(triggered()), qobject_cast<PitchView*>(viewManager->view(PitchScene)), SLOT(createNote()));
+//    connect(action, SIGNAL(triggered()), qobject_cast<PitchView*>(viewManager->view(PitchScene)), SLOT(createNote()));
 
     // Insert Points Action
     action = new QAction(tr("&Insert Points"), this);
     cmd = am->registerAction(action, INSERTPOINTS, globalContext);
     cmd->setDefaultKeySequence(Qt::Key_Insert);
     modifyMenu->addAction(cmd, G_MODIFY_OTHER);
-    connect(action, SIGNAL(triggered()), viewManager, SLOT(startInsertingPoints()));
+//    connect(action, SIGNAL(triggered()), viewManager, SLOT(startInsertingPoints()));
 
     // Erase Action
     action = new QAction(tr("&Erase"), this);
@@ -239,18 +194,17 @@ void MainWindowExtension::initActions()
 
 void MainWindowExtension::showGridSettings()
 {
-    GridLineDialog *dlg = new GridLineDialog(Core::ICore::instance()->mainWindow());
-    dlg->exec();
-    delete dlg;
+//    GridLineDialog *dlg = new GridLineDialog(Core::ICore::instance()->mainWindow());
+//    dlg->exec();
+//    delete dlg;
 }
 
 void MainWindowExtension::createTrack()
 {
     IEditor *editor = IEditor::instance();
     editor->beginCommand();
-    IDatabase *db = IDatabase::instance();
-    IModelItem *track = query<IModelItem>(query<IDataObjectFactory>(db)->create(TrackItem));
-    IModelList *track_list = query<IModel>(db)->rootItem()->findList(TrackItem);
+    IModelItemList *track_list = IDatabase::instance()->rootItem()->findList(TrackItem);
+    IModelItem *track = query<IModelItem>(IDatabaseObjectFactory::instance()->create(TrackItem));
     track_list->append(track);
     editor->endCommand();
 }
@@ -260,18 +214,18 @@ void MainWindowExtension::erase()
     IEditor *editor = IEditor::instance();
 
     // Erase selected points in pitch and control views.
-    ViewManager *vm = ViewManager::instance();
-    GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
-    if (view->pointsAreSelected()) {
-        editor->beginCommand();
-        view->removePoints();
-    }
-    view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
-    if (view->pointsAreSelected()) {
-        if (!editor->isInCommand())
-            editor->beginCommand();
-        view->removePoints();
-    }
+//    ViewManager *vm = ViewManager::instance();
+//    GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
+//    if (view->pointsAreSelected()) {
+//        editor->beginCommand();
+//        view->removePoints();
+//    }
+//    view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
+//    if (view->pointsAreSelected()) {
+//        if (!editor->isInCommand())
+//            editor->beginCommand();
+//        view->removePoints();
+//    }
     if (editor->isInCommand()) {
         editor->endCommand();
         return;
@@ -279,23 +233,22 @@ void MainWindowExtension::erase()
 
     // If no points are selected, erase selected tracks in reverse row order so
     // higher row numbers don't change if lower rows are being erased, too.
-    IModel *model = query<IModel>(IDatabase::instance());
-
-    const QModelIndexList track_ss = TrackSelectionModel::instance()->selectedRows();
-    QList<int> rows;
-    rows.reserve(track_ss.count());
-    foreach (const QModelIndex &track, track_ss)
-        rows.append(track.row());
-    qSort(rows);
-    const int n = rows.count();
-    IModelList *track_list = model->rootItem()->findList(TrackItem);
-    if (n) {
-        editor->beginCommand();
-        for (int i = n - 1;  0 <= i;  --i)
-            track_list->removeAt(rows.at(i));
-        editor->endCommand();
-        return;
-    }
+//    IModel *model = query<IModel>(IDatabase::instance());
+//    const QModelIndexList track_ss = TrackSelectionModel::instance()->selectedRows();
+//    QList<int> rows;
+//    rows.reserve(track_ss.count());
+//    foreach (const QModelIndex &track, track_ss)
+//        rows.append(track.row());
+//    qSort(rows);
+//    const int n = rows.count();
+//    IModelList *track_list = model->rootItem()->findList(TrackItem);
+//    if (n) {
+//        editor->beginCommand();
+//        for (int i = n - 1;  0 <= i;  --i)
+//            track_list->removeAt(rows.at(i));
+//        editor->endCommand();
+//        return;
+//    }
 
     // If no points or tracks are selected, erase selected notes.
 //    QModelIndexList note_ss = NoteSelectionModel::instance()->selectedIndexes();
@@ -312,17 +265,16 @@ void MainWindowExtension::erase()
 
 void MainWindowExtension::build()
 {
-    if (!d->maybeSaveDatabase())
+    if (!maybeSaveDatabase())
         return;
-
     qDebug() << Q_FUNC_INFO;
 }
 
 void MainWindowExtension::buildAll()
 {
-    if (!d->maybeSaveDatabase())
+    if (!maybeSaveDatabase())
         return;
-    const int track_count = query<IModel>(IDatabase::instance())->rootItem()->findList(TrackItem)->count();
+    const int track_count = IDatabase::instance()->rootItem()->findList(TrackItem)->count();
     ISynthesizer *synth = ISynthesizer::instance();
     for (int i = 0;  i < track_count;  ++i)
         synth->renderTrack(i);
@@ -330,7 +282,7 @@ void MainWindowExtension::buildAll()
 
 void MainWindowExtension::startOrStop()
 {
-    IAudioEngine *audio_engine = IAudioEngine::instance();
+    IQAudioEngine *audio_engine = IQAudioEngine::instance();
     if (!audio_engine)
         return;
     if (audio_engine->isStarted())
@@ -341,39 +293,55 @@ void MainWindowExtension::startOrStop()
 
 void MainWindowExtension::start()
 {
-    IModelData *score = query<IModelData>(query<IModel>(IDatabase::instance())->rootItem());
+    IModelData *score = query<IModelData>(IDatabase::instance()->rootItem());
     if (score->get<int>(StartTimeRole) == score->get<int>(LengthRole)) {
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
         return;
     }
-    IAudioEngine *audio_engine = IAudioEngine::instance();
+    IQAudioEngine *audio_engine = IQAudioEngine::instance();
     if (audio_engine)
         audio_engine->start();
 }
 
 void MainWindowExtension::stop()
 {
-    IAudioEngine *audio_engine = IAudioEngine::instance();
+    IQAudioEngine *audio_engine = IQAudioEngine::instance();
     if (audio_engine)
         audio_engine->stop();
 }
 
 void MainWindowExtension::aboutAudioCarver()
 {
-    if (!d->versionDialog) {
-        d->versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
-        connect(d->versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
+    if (!_versionDialog) {
+        _versionDialog = new Core::VersionDialog(Core::ICore::instance()->mainWindow());
+        connect(_versionDialog, SIGNAL(finished(int)), SLOT(destroyVersionDialog()));
     }
-    d->versionDialog->show();
+    _versionDialog->show();
 }
 
 void MainWindowExtension::destroyVersionDialog()
 {
-    if (d->versionDialog) {
-        d->versionDialog->deleteLater();
-        d->versionDialog = 0;
+    if (_versionDialog) {
+        _versionDialog->deleteLater();
+        _versionDialog = 0;
     }
 }
 
-} // namespace Gui
-} // namespace Ac
+bool MainWindowExtension::maybeSaveDatabase()
+{
+    IDatabase *database = IDatabase::instance();
+    if (!database->fileName().isEmpty())
+        return true;
+    QWidget *main_window = Core::ICore::instance()->mainWindow();
+    QMessageBox::information(main_window, "AudioCarver", "The score must be saved first");
+    QString filename = QFileDialog::getSaveFileName(main_window, "", "", QObject::tr(qPrintable(database->fileFilter())));
+    if (filename.isEmpty())
+        return false;
+    if (!filename.endsWith(database->fileExtension()))
+        filename.append(database->fileExtension());
+    database->write(filename);
+    return !database->fileName().isEmpty();
+}
+
+}
+}

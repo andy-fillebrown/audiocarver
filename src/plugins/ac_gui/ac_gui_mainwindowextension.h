@@ -20,6 +20,10 @@
 
 #include <imainwindowextension.h>
 
+namespace Core {
+    class VersionDialog;
+}
+
 namespace Ac {
 namespace Gui {
 
@@ -28,9 +32,12 @@ class MainWindowExtension : public ::Core::IMainWindowExtension
 {
     Q_OBJECT
 
+    Core::VersionDialog *_versionDialog;
+
 public:
-    MainWindowExtension();
-    ~MainWindowExtension();
+    MainWindowExtension()
+        :   _versionDialog(0)
+    {}
 
     void initMenuBarGroups(QStringList &groups) const;
     void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
@@ -49,10 +56,10 @@ private slots:
     void destroyVersionDialog();
 
 private:
-    MainWindowExtensionPrivate *d;
+    bool maybeSaveDatabase();
 };
 
-} // namespace Gui
-} // namespace Ac
+}
+}
 
-#endif // AC_GUI_MAINWINDOWEXTENSION_H
+#endif

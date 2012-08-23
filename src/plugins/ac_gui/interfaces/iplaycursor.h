@@ -15,33 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_IPARENTENTITY_H
-#define AC_IPARENTENTITY_H
+#ifndef IPLAYCURSOR_H
+#define IPLAYCURSOR_H
 
-#include "ac_ientity.h"
+#include <iunknown.h>
+#include "ac_core_interfaces.h"
 
-class IPoints;
-class ISubEntity;
-
-class IParentEntity : public IEntity
+class IPlayCursor : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IParentEntity };
+    enum { Type = I::IPlayCursor };
 
-    virtual QList<ISubEntity*> subEntities(int sceneType) const = 0;
-
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
-    }
+    virtual qreal playCursorPosition() const = 0;
+    virtual void dragPlayCursorTo(qreal position) = 0;
+    virtual void setPlayCursorPosition(qreal position) = 0;
 };
 
-#endif // AC_IPARENTENTITY_H
+#endif

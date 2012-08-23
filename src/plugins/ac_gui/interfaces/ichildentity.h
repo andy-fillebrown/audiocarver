@@ -15,25 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_IGRAPHICSSCENE_H
-#define AC_IGRAPHICSSCENE_H
+#ifndef ICHILDENTITY_H
+#define ICHILDENTITY_H
 
-#include "mi_iaggregate.h"
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
 
-#include <ac_gui_namespace.h>
+class IParentEntity;
 
-class IGraphicsItem;
-
-class IGraphicsScene : public IAggregate
+class IChildEntity : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IGraphicsScene };
+    enum { InterfaceType = I::IChildEntity };
 
-    virtual int sceneType() const = 0;
-    virtual void appendItem(IGraphicsItem *item) = 0;
-    virtual void removeItem(IGraphicsItem *item) = 0;
+    virtual IParentEntity *parentEntity() const = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -41,10 +37,8 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-#endif // AC_IGRAPHICSSCENE_H
+#endif // AC_ICHILDENTITY_H

@@ -5,11 +5,16 @@ TEMPLATE = lib
 
 load(../../plugin.prf)
 
+DEFINES *= \
+    AC_CORE_LIBRARY \
+
 SOURCE_FILES = \
-#    constants \
+    constants \
     global \
+    interfaces \
     namespace \
     mainwidget \
+    mainwindowextension \
     plugin \
 
 SOURCE_FILES *= $$target_name
@@ -31,5 +36,8 @@ exists($$pluginspec): OTHER_FILES *= $$pluginspec
 
 load(../$$SOURCE_FILE_PREFIX/$$dependencies_prf)
 for(dir, DIRS) {
-    include($$dir/$${dir}.pri)
+    pri_file = $$dir/$${dir}.pri
+    exists($$pri_file): include($$pri_file)
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
 }

@@ -15,34 +15,50 @@
 **
 **************************************************************************/
 
-#ifndef AC_IAUDIOENGINE_H
-#define AC_IAUDIOENGINE_H
-
-#include <ac_core_global.h>
+#ifndef IQAUDIOENGINE_H
+#define IQAUDIOENGINE_H
 
 #include <QObject>
+#include <iqmodel.h>
+#include "ac_gui_global.h"
+#include "ac_gui_interfaces.h"
 
 class AudioEngineSettings;
 
-class AC_CORE_EXPORT IAudioEngine : public QObject
+class AC_GUI_EXPORT IQAudioEngine : public QObject
+        ,   public IUnknown
 {
     Q_OBJECT
 
 public:
-    IAudioEngine();
+    enum { InterfaceType = I::IQAudioEngine };
 
-    static IAudioEngine *instance();
+    static IQAudioEngine *instance();
 
     virtual const AudioEngineSettings &settings() const = 0;
     virtual void setSettings(const AudioEngineSettings &settings) = 0;
-
     virtual int trackCount() const = 0;
     virtual void setTrackCount(int count) = 0;
-
     virtual qreal startTime() const = 0;
     virtual void setStartTime(qreal time) = 0;
-
     virtual bool isStarted() const = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+
+    void *queryInterface(int interfaceType) const
+    {
+        if (isTypeOfInterface(interfaceType))
+            return const_cast<IQAudioEngine*>(this);
+        return 0;
+    }
 
 public slots:
     virtual void start() = 0;
@@ -52,4 +68,4 @@ signals:
     void settingsChanged();
 };
 
-#endif // AC_IAUDIOENGINE_H
+#endif

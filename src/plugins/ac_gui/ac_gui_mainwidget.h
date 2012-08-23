@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_MAINWIDGET_H
-#define AC_MAINWIDGET_H
+#ifndef AC_GUI_MAINWIDGET_H
+#define AC_GUI_MAINWIDGET_H
 
 #include <QFrame>
 
@@ -49,4 +49,4 @@ private:
     MainWidgetPrivate *d;
 };
 
-#endif // AC_MAINWIDGET_H
+#endif

@@ -15,58 +15,38 @@
 **
 **************************************************************************/
 
-#include "ac_gui_editor.h"
+#ifndef GUI_EDITOR_H
+#define GUI_EDITOR_H
 
-#include <ac_igraphicsviewgroup.h>
+#include <base/editor.h>
+#include <QList>
 
-namespace Ac {
+class IGraphicsViewGroup;
+
+namespace Session {
 namespace Gui {
 
-IAggregator *Editor::init()
+class Editor : public Base::Editor
 {
-    return Mi::Gui::Editor::init();
+    QList<IGraphicsViewGroup*> _viewGroups;
+
+public:
+    Editor()
+    {}
+
+    IUnknown *initialize();
+    ~Editor();
+
+protected:
+    void undo();
+    void redo();
+    void cut();
+    void copy() const;
+    void paste();
+    void selectAll();
+};
+
+}
 }
 
-Editor::~Editor()
-{
-    qDeleteAll(_viewGroups);
-    _viewGroups.clear();
-}
-
-void Editor::undo()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Editor::redo()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Editor::cut()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Editor::copy() const
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Editor::paste()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void Editor::selectAll()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-IAggregate *ViewManager::init()
-{
-    return this;
-}
-
-} // namespace Gui
-} // namespace Ac
+#endif

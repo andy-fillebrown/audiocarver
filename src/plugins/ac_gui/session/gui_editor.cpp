@@ -15,32 +15,49 @@
 **
 **************************************************************************/
 
-#ifndef AC_IGRAPHICSVIEW_H
-#define AC_IGRAPHICSVIEW_H
+#include "gui_editor.h"
+#include <QtDebug>
 
-#include "mi_iaggregator.h"
+namespace Session {
+namespace Gui {
 
-#include <ac_gui_namespace.h>
-
-class IGraphicsView : public IAggregator
+IUnknown *Editor::initialize()
 {
-public:
-    enum { InterfaceType = I::IGraphicsView };
+    return Base::Editor::initialize();
+}
 
-    virtual int sceneType() const = 0;
+Editor::~Editor()
+{}
 
-    // IUnknown
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+void Editor::undo()
+{
+    qDebug() << Q_FUNC_INFO;
+}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregator::isTypeOfInterface(interfaceType);
-    }
-};
+void Editor::redo()
+{
+    qDebug() << Q_FUNC_INFO;
+}
 
-#endif // AC_IGRAPHICSVIEW_H
+void Editor::cut()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor::copy() const
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor::paste()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor::selectAll()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+}
+}

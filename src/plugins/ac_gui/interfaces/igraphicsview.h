@@ -15,26 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_IGRAPHICSVIEWMANAGER_H
-#define AC_IGRAPHICSVIEWMANAGER_H
+#ifndef IGRAPHICSVIEW_H
+#define IGRAPHICSVIEW_H
 
-#include "mi_iaggregate.h"
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
 
-#include <ac_gui_namespace.h>
-
-class IGraphicsViewGroup;
-
-class IGraphicsViewManager : public IAggregate
+class IGraphicsView : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IGraphicsViewManager };
+    enum { InterfaceType = I::IGraphicsView };
 
-    virtual int count() const = 0;
-    virtual IGraphicsViewGroup *at(int i) const = 0;
-    virtual void append(IGraphicsViewGroup *group) = 0;
-    virtual void remove(IGraphicsViewGroup *group) = 0;
+    virtual int sceneType() const = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -42,10 +35,8 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-#endif // AC_IGRAPHICSVIEWMANAGER_H
+#endif

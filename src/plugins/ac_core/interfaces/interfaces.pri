@@ -1,17 +1,13 @@
 
 SOURCE_FILES = \
-#    iplaycursor \
+    iplaycursor \
     ipoints \
-#    iaudioengine \
-#    ifactory \
-#    isynthesizer \
+    iqaudioengine \
+    isynthesizer \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    name = ac_$$file
-    header = $${name}.h
-    source = $${name}.cpp
-    exists($$header): HEADERS *= $$DIR/$$header
-    exists($$source): SOURCES *= $$DIR/$$source
+    file = $${file}.h
+    exists($$file): HEADERS *= $$DIR/$$file
 }

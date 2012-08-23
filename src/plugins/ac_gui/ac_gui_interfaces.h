@@ -15,66 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_NAMESPACE_H
-#define AC_GUI_NAMESPACE_H
+#ifndef AC_GUI_INTERFACES_H
+#define AC_GUI_INTERFACES_H
 
-#include <ac_core_namespace.h>
-
-#include <mi_gui_namespace.h>
+#include <ac_core_interfaces.h>
 
 namespace I {
 
 enum AcGuiInterfaces {
-    IChildEntity = MiGuiInterfaceCount,
+    IChildEntity = AcCoreInterfaceCount,
     IEntity,
     IParentEntity,
     ISubEntity,
     IGrip,
     IPlayCursor,
+    IPoints,
     IGraphicsScene,
     IGraphicsView,
     IGraphicsViewGroup,
     IGraphicsViewManager,
+    IQAudioEngine,
+    ISynthesizer,
     AcGuiInterfaceCount
 };
 
-} // namespace I
+}
 
-namespace Ac {
-
-enum GuiItemType {
-    GraphicsSceneItem = CoreItemTypeCount,
-    GraphicsViewItem,
-    GraphicsViewGroupItem,
-    GuiItemTypeCount
-};
-
-enum SubEntityCurveFlags {
-    NonCurveSubEntity = 0x0,
-    CurveSubEntity = 0x1
-};
-
-enum SceneType {
-    PitchScene,
-    ControlScene,
-    TimeLabelScene,
-    PitchLabelScene,
-    ControlLabelScene,
-    SceneTypeCount
-};
-
-enum GraphicsItemTransformType {
-    MainTransform,
-    UnitXTransform,
-    UnitYTransform,
-    GraphicsItemTransformTypeCount
-};
-
-enum HighlightType {
-    HoverHighlight,
-    FullHighlight
-};
-
-} // namespace Ac
-
-#endif // AC_GUI_NAMESPACE_H
+#endif

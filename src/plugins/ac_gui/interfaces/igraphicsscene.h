@@ -15,59 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef BASE_EDITOR_H
-#define BASE_EDITOR_H
+#ifndef IGRAPHICSSCENE_H
+#define IGRAPHICSSCENE_H
 
-#include <ieditor.h>
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
 
-namespace Base {
+class IGraphicsItem;
 
-class MI_GUI_EXPORT Editor : public IEditor
+class IGraphicsScene : public IUnknown
 {
-    int _isInCommand : 1;
-    int _isCreating : 1;
-
 public:
-    Editor();
-    virtual IUnknown *initialize();
-    virtual ~Editor();
-    void *queryInterface(int interfaceType) const;
+    enum { InterfaceType = I::IGraphicsScene };
 
-protected:
-    bool isInCommand() const
+    virtual int sceneType() const = 0;
+    virtual void appendItem(IGraphicsItem *item) = 0;
+    virtual void removeItem(IGraphicsItem *item) = 0;
+
+    int interfaceType() const
     {
-        return _isInCommand;
+        return InterfaceType;
     }
 
-    void beginCommand()
+    bool isTypeOfInterface(int interfaceType) const
     {
-        _isInCommand = true;
-    }
-
-    void endCommand()
-    {
-        _isInCommand = false;
-    }
-
-    void pushCommand(QUndoCommand *command)
-    {}
-
-    bool isCreating() const
-    {
-        return false;
-    }
-
-    void startCreating()
-    {
-        _isCreating = true;
-    }
-
-    void finishCreating()
-    {
-        _isCreating = false;
+        return InterfaceType == interfaceType;
     }
 };
-
-}
 
 #endif

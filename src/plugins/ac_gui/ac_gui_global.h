@@ -18,6 +18,10 @@
 #ifndef AC_GUI_GLOBAL_H
 #define AC_GUI_GLOBAL_H
 
-#include <ac_core_global.h>
+#if defined(AC_GUI_LIBRARY)
+#  define AC_GUI_EXPORT Q_DECL_EXPORT
+#else
+#  define AC_GUI_EXPORT Q_DECL_IMPORT
+#endif
 
-#endif // AC_GUI_GLOBAL_H
+#endif

@@ -9,15 +9,11 @@ DIRS = \
 #    graphics \
 #    graphicsview \
 #    implementations \
-#    interfaces \
+    interfaces \
 #    itemviews \
 #    models \
     session \
 #    util \
 
-for(dir, DIRS) {
-    INCLUDEPATH *= $$PWD/$$dir
-    DEPENDPATH *= $$PWD/$$dir
-}
 INCLUDEPATH *= $$PWD
 DEPENDPATH *= $$PWD

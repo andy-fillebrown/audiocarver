@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/ac_guiplugin">
+    <qresource prefix="/ac_gui">
         <file>images/crosshair-black.png</file>
         <file>images/crosshair-red.png</file>
         <file>images/zoom-cursor.png</file>

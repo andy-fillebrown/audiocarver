@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_ICHILDENTITY_H
-#define AC_ICHILDENTITY_H
+#ifndef IENTITY_H
+#define IENTITY_H
 
-#include "mi_iaggregate.h"
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
 
-#include <ac_gui_namespace.h>
+class QGraphicsItem;
 
-class IParentEntity;
-
-class IChildEntity : public IAggregate
+class IEntity : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IChildEntity };
+    enum { InterfaceType = I::IEntity };
 
-    virtual IParentEntity *parentEntity() const = 0;
+    virtual QGraphicsItem *graphicsItem(int sceneType, int transformType) const = 0;
+    virtual void update(int role) = 0;
+    virtual void highlight() = 0;
+    virtual void unhighlight() = 0;
+    virtual bool isVisible() const = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -39,10 +41,8 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IAggregate::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 
-#endif // AC_ICHILDENTITY_H
+#endif

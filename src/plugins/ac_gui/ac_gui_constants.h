@@ -46,4 +46,4 @@ const char * const START                   = PRO_NAME_STR".Start";
 const char * const STOP                    = PRO_NAME_STR".Stop";
 const char * const ABOUTAUDIOCARVER        = PRO_NAME_STR".About"PRO_NAME_STR;
 
-#endif // AC_GUI_CONSTANTS_H
+#endif

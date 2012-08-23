@@ -23,7 +23,7 @@
 namespace I {
 
 enum MiGuiInterfaces {
-    IEditor = MiCoreInterfaceCount + 1000,
+    IEditor = MiCoreInterfaceCount,
     MiGuiInterfaceCount
 };
 

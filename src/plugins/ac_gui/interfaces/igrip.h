@@ -15,13 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef AC_IGRIP_H
-#define AC_IGRIP_H
+#ifndef IGRIP_H
+#define IGRIP_H
 
-#include <ac_gui_namespace.h>
-
-#include <mi_iunknown.h>
-
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
 #include <QPointF>
 
 class ISubEntity;
@@ -52,7 +50,6 @@ public:
     virtual void highlight(Ac::HighlightType type = Ac::FullHighlight) = 0;
     virtual void unhighlight() = 0;
 
-    // IUnknown
     int interfaceType() const
     {
         return InterfaceType;
@@ -64,4 +61,4 @@ public:
     }
 };
 
-#endif // AC_IGRIP_H
+#endif
