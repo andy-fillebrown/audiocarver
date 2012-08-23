@@ -17,9 +17,9 @@
 
 #include "ac_core_plugin.h"
 #include "ac_core_namespace.h"
-#include "ac_core_database.h"
-#include "ac_core_databaseobjectfactory.h"
-#include "ac_core_filerfactory.h"
+#include "session/core_database.h"
+#include "session/core_databaseobjectfactory.h"
+#include "session/core_filerfactory.h"
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -27,7 +27,7 @@
 static bool test();
 #endif
 
-using namespace Mi;
+using namespace Core;
 
 namespace Ac {
 namespace Core {
@@ -74,9 +74,9 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(TimeSnapRole, "timeSnap");
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
-    (new Session::DatabaseObjectFactory)->initialize();
-    (new Session::Database)->initialize();
-    (new Session::FilerFactory)->initialize();
+    (new DatabaseObjectFactory)->initialize();
+    (new Database)->initialize();
+    (new FilerFactory)->initialize();
     return true;
 }
 
@@ -94,16 +94,17 @@ Q_EXPORT_PLUGIN(Ac::Core::Plugin)
 
 #ifdef QT_DEBUG
 
-#include <mi_iaggregate.h>
-#include <mi_idatabaseobjectfactory.h>
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
+#include <iaggregate.h>
+#include <idatabaseobjectfactory.h>
+#include <imodeldata.h>
+#include <imodelitem.h>
 #include <QtDebug>
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
 
 using namespace Ac;
+using namespace Mi;
 
 bool test_1()
 {

@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/mi_guiplugin">
+    <qresource prefix="/mi_gui">
         <file>images/filesave.png</file>
         <file>images/filenew.png</file>
         <file>images/fileopen.png</file>

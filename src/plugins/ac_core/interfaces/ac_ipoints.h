@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_IPOINTS_H
-#define AC_IPOINTS_H
+#ifndef IPOINTS_H
+#define IPOINTS_H
 
-#include <mi_core_iunknown.h>
+#include <iunknown.h>
 
 class Point;
 template <typename T> class QList;

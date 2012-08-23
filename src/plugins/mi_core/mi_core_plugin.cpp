@@ -16,9 +16,9 @@
 **************************************************************************/
 
 #include "mi_core_plugin.h"
-#include "mi_isession.h"
 #include "mi_core_namespace.h"
-#include "mi_session.h"
+#include <isession.h>
+#include <base/session.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -54,8 +54,8 @@ Q_EXPORT_PLUGIN(Mi::Core::Plugin)
 
 #ifdef QT_DEBUG
 
-#include "mi_imodel.h"
-#include "mi_iqmodel.h"
+#include <imodel.h>
+#include <iqmodel.h>
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }

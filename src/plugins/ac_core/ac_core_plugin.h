@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_COREPLUGIN_H
-#define AC_COREPLUGIN_H
+#ifndef AC_CORE_PLUGIN_H
+#define AC_CORE_PLUGIN_H
 
 #include <iplugin.h>
 
