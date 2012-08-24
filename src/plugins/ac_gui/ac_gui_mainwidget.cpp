@@ -21,7 +21,7 @@
 //#include "ac_gripselectionmodel.h"
 //#include "ac_gui_viewmanager.h"
 //#include "ac_selecteditemspropertyview.h"
-//#include "ac_trackview.h"
+#include "trackview.h"
 //#include <mi_gui_graphicsview.h>
 #include <mainwindow.h>
 #include <QDockWidget>
@@ -40,8 +40,8 @@ public:
 //    Mi::Gui::GraphicsView *topRightView;
     qreal controlHeightPercentage;
     QDockWidget *trackViewDock;
-//    TrackView *trackView;
-    QDockWidget *propertyViewDock;
+    TrackView *trackView;
+//    QDockWidget *propertyViewDock;
 //    SelectedItemsPropertyView *propertyView;
 //    GripItemsPropertyView *gripView;
 //    ViewManager *viewManager;
@@ -53,8 +53,8 @@ public:
 //        ,   topRightView(new Mi::Gui::GraphicsView)
         ,   controlHeightPercentage(0.25f)
         ,   trackViewDock(new QDockWidget("Track Editor", q))
-//        ,   trackView(new TrackView(trackViewDock))
-        ,   propertyViewDock(new QDockWidget("Property Editor", q))
+        ,   trackView(new TrackView(trackViewDock))
+//        ,   propertyViewDock(new QDockWidget("Property Editor", q))
 //        ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
 //        ,   gripView(new GripItemsPropertyView(propertyViewDock))
 //        ,   viewManager(new ViewManager(q))
@@ -75,10 +75,10 @@ public:
 
 //        Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
 
-//        // Track View Dock Widget
-//        trackViewDock->setObjectName("Track View Dock Widget");
-//        trackViewDock->setWidget(trackView);
-//        mw->addDockWidget(Qt::LeftDockWidgetArea, trackViewDock);
+        // Track View Dock Widget
+        trackViewDock->setObjectName("Track View Dock Widget");
+        trackViewDock->setWidget(trackView);
+        main_window->addDockWidget(Qt::LeftDockWidgetArea, trackViewDock);
 
 //        // Property View Dock Widget
 //        propertyViewDock->setObjectName("Property View Dock Widget");

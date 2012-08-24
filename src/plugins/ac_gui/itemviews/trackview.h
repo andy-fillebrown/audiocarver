@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACKVIEW_H
-#define AC_TRACKVIEW_H
+#ifndef TRACKVIEW_H
+#define TRACKVIEW_H
 
 #include <QTreeView>
 
@@ -35,7 +35,6 @@ public:
 
 protected:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
@@ -50,4 +49,4 @@ private:
     TrackViewPrivate *d;
 };
 
-#endif // AC_TRACKVIEW_H
+#endif

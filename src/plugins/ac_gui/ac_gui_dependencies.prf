@@ -10,7 +10,7 @@ DIRS = \
 #    graphicsview \
 #    implementations \
     interfaces \
-#    itemviews \
+    itemviews \
 #    models \
     session \
 #    util \

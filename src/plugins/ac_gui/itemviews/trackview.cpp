@@ -15,19 +15,17 @@
 **
 **************************************************************************/
 
-#include "ac_trackview.h"
-
-#include <mi_idatabase.h>
-#include <mi_ieditor.h>
-#include <mi_imodel.h>
-#include <mi_imodellist.h>
-
-#include <ac_colordelegate.h>
-#include <ac_noteselectionmodel.h>
-#include <ac_recordbuttondelegate.h>
-#include <ac_trackmodel.h>
-#include <ac_trackselectionmodel.h>
-
+#include "trackview.h"
+#include <idatabase.h>
+#include <ieditor.h>
+#include <imodel.h>
+#include <imodelitemlist.h>
+//#include "ac_colordelegate.h"
+//#include "ac_noteselectionmodel.h"
+//#include "ac_recordbuttondelegate.h"
+//#include "ac_trackmodel.h"
+//#include "ac_trackselectionmodel.h"
+#include <ac_core_namespace.h>
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
@@ -66,8 +64,8 @@ TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
     ,   d(new TrackViewPrivate(this))
 {
-    setModel(TrackModel::instance());
-    setSelectionModel(TrackSelectionModel::instance());
+//    setModel(TrackModel::instance());
+//    setSelectionModel(TrackSelectionModel::instance());
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);
@@ -77,30 +75,27 @@ TrackView::TrackView(QWidget *parent)
     setDragEnabled(true);
     setAllColumnsShowFocus(true);
 
-    ColorDelegate *colorDelegate = new ColorDelegate(this);
-    colorDelegate->setCustomColumn(0);
-    setItemDelegateForColumn(0, colorDelegate);
+//    ColorDelegate *colorDelegate = new ColorDelegate(this);
+//    colorDelegate->setCustomColumn(0);
+//    setItemDelegateForColumn(0, colorDelegate);
 
-    ToggleButtonDelegate *toggleButtonDelegate = new ToggleButtonDelegate(this);
-    toggleButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
-    toggleButtonDelegate->setCustomColumn(2);
-    setItemDelegateForColumn(2, toggleButtonDelegate);
+//    ToggleButtonDelegate *toggleButtonDelegate = new ToggleButtonDelegate(this);
+//    toggleButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
+//    toggleButtonDelegate->setCustomColumn(2);
+//    setItemDelegateForColumn(2, toggleButtonDelegate);
 
-    RecordButtonDelegate *recordButtonDelegate = new RecordButtonDelegate(this);
-    recordButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
-    recordButtonDelegate->setCustomColumn(3);
-    setItemDelegateForColumn(3, recordButtonDelegate);
+//    RecordButtonDelegate *recordButtonDelegate = new RecordButtonDelegate(this);
+//    recordButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
+//    recordButtonDelegate->setCustomColumn(3);
+//    setItemDelegateForColumn(3, recordButtonDelegate);
 }
 
 void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    Q_UNUSED(topLeft);
-    Q_UNUSED(bottomRight);
-
-    // We're currently only getting invalid indexes for topLeft and bottomRight
-    // even when track data is changed.  It might be an issue in the proxy
-    // models.  Regardless, we need to redraw the entire window and call resize
-    // to update the scrollbar and set the column widths.
+    // We're currently only getting invalid indexes for 'topLeft' and
+    // 'bottomRight' even when the track data is changed. It might be an issue
+    // in the proxy models. Regardless, we need to redraw the entire window,
+    // then call resizeEvent to update the scrollbar and set the column widths.
     setDirtyRegion(rect());
     resizeEvent(0);
 }
@@ -166,7 +161,7 @@ void TrackView::dropEvent(QDropEvent *event)
         int toRow = d->dropRow;
         IEditor *editor = IEditor::instance();
         if (!fromRows.contains(toRow)) {
-            IModelList *track_list = query<IModel>(IDatabase::instance())->rootItem()->findList(TrackItem);
+            IModelItemList *track_list = IDatabase::instance()->rootItem()->findList(TrackItem);
             QList<IModelItem*> items;
             foreach (int row, fromRows) {
                 if (row == toRow)
@@ -183,7 +178,6 @@ void TrackView::dropEvent(QDropEvent *event)
                 editor->endCommand();
         }
     }
-
     d->dragging = false;
 
     // Clear current index and redraw.
@@ -193,25 +187,23 @@ void TrackView::dropEvent(QDropEvent *event)
 
 void TrackView::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
+//    const QAbstractItemModel *m = model();
+//    const QModelIndex root_index = rootIndex();
 
-    const QAbstractItemModel *m = model();
-    const QModelIndex root_index = rootIndex();
+//    // Get the row height (assuming all rows are the same height).
+//    const int row_h = rowHeight(m->index(0, 0, root_index));
 
-    // Get the row height (assuming all rows are the same height).
-    const int row_h = rowHeight(m->index(0, 0, root_index));
+//    // Update the vertical scrollbar range.
+//    const QWidget *vport = viewport();
+//    if (row_h)
+//        verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
 
-    // Update the vertical scrollbar range.
-    const QWidget *vport = viewport();
-    if (row_h)
-        verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
-
-    // Set the column widths.
-    const int colorColumnWidth = row_h;
-    setColumnWidth(0, colorColumnWidth);
-    setColumnWidth(1, vport->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
-    setColumnWidth(2, buttonColumnWidth);
-    setColumnWidth(3, buttonColumnWidth);
+//    // Set the column widths.
+//    const int colorColumnWidth = row_h;
+//    setColumnWidth(0, colorColumnWidth);
+//    setColumnWidth(1, vport->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
+//    setColumnWidth(2, buttonColumnWidth);
+//    setColumnWidth(3, buttonColumnWidth);
 }
 
 void TrackView::paintEvent(QPaintEvent *event)
@@ -231,11 +223,11 @@ void TrackView::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Right:
-        // Do nothing to stop the view from moving to the left.
+        // Doing nothing here stops the view from moving to the left.
         return;
     case Qt::Key_Escape:
-        NoteSelectionModel::instance()->clear();
-        TrackSelectionModel::instance()->clear();
+//        NoteSelectionModel::instance()->clear();
+//        TrackSelectionModel::instance()->clear();
         break;
     default:
         break;
