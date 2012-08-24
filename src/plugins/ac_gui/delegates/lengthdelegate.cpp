@@ -15,8 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_lengthdelegate.h"
-
+#include "lengthdelegate.h"
 #include <QDoubleSpinBox>
 
 QWidget *LengthDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

@@ -15,20 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef AC_VOLUMEDELEGATE_H
-#define AC_VOLUMEDELEGATE_H
+#ifndef DOUBLESPINBOX_H
+#define DOUBLESPINBOX_H
 
-#include <ac_doubledelegate.h>
+#include <QDoubleSpinBox>
+#include "mi_gui_global.h"
 
-class VolumeDelegate : public DoubleDelegate
+namespace Base {
+
+class MI_GUI_EXPORT DoubleSpinBox : public QDoubleSpinBox
 {
-public:
-    VolumeDelegate(QObject *parent = 0)
-        :   DoubleDelegate(parent)
-    {}
+    Q_OBJECT
 
-    // DoubleDelegate
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+public:
+    DoubleSpinBox(QWidget *parent = 0)
+        :   QDoubleSpinBox(parent)
+    {
+        setDecimals(12);
+        setMaximum(Q_FLOAT_MAX);
+    }
+
+    QString textFromValue(double val) const
+    {
+        QString text = QString("%1").arg(val, 0, 'f', 12);
+        while (text.endsWith('0'))
+            text.chop(1);
+        if (text.endsWith('.'))
+            text.chop(1);
+        return text;
+    }
 };
 
-#endif // AC_VOLUMEDELEGATE_H
+}
+
+#endif

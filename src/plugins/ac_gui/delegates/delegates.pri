@@ -1,14 +1,18 @@
 
-SOURCE_PAIRS = \
-    ac_colordelegate \
-    ac_doubledelegate \
-    ac_instrumentdelegate \
-    ac_lengthdelegate \
-    ac_recordbuttondelegate \
-    ac_togglebuttondelegate \
-    ac_volumedelegate \
+SOURCE_FILES = \
+    colordelegate \
+    doubledelegate \
+    instrumentdelegate \
+    lengthdelegate \
+    recordbuttondelegate \
+    togglebuttondelegate \
+    volumedelegate \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= delegates/$${pair}.h
-    SOURCES *= delegates/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    header = $${file}.h
+    source = $${file}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

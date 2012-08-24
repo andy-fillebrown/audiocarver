@@ -3,7 +3,6 @@ load(../mi_core/mi_core.prf)
 
 DIRS = \
     base \
-#    delegates \
 #    graphicsview \
     interfaces \
 #    models \

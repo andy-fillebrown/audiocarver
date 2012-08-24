@@ -15,20 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_LENGTHDELEGATE_H
-#define AC_LENGTHDELEGATE_H
+#ifndef TOGGLEBUTTONDELEGATE_H
+#define TOGGLEBUTTONDELEGATE_H
 
-#include <ac_doubledelegate.h>
+#include <base/delegate.h>
 
-class LengthDelegate : public DoubleDelegate
+class ToggleButtonDelegatePrivate;
+class ToggleButtonDelegate : public Base::Delegate
 {
 public:
-    LengthDelegate(QObject *parent = 0)
-        :   DoubleDelegate(parent)
+    ToggleButtonDelegate(QObject *parent = 0)
+        :   Delegate(parent)
+        ,   _buttonColumnWidth(0)
     {}
 
-    // DoubleDelegate
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void setButtonColumnWidth(int width)
+    {
+        _buttonColumnWidth = width;
+    }
+
+    virtual void setPainterColors(QPainter *painter, const QModelIndex &index) const;
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+private:
+    int _buttonColumnWidth;
 };
 
-#endif // AC_LENGTHDELEGATE_H
+#endif

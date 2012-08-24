@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#include "mi_gui_doublespinbox.h"
+#include "recordbuttondelegate.h"
+#include <QPainter>
 
-namespace Mi {
-namespace Gui {
-
-
-
-} // namespace Gui
-} // namespace Mi
+void RecordButtonDelegate::setPainterColors(QPainter *painter, const QModelIndex &index) const
+{
+    painter->setPen(Qt::red);
+    if (index.data().toBool())
+        painter->setBrush(QBrush(Qt::red));
+}

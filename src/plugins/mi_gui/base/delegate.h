@@ -15,13 +15,38 @@
 **
 **************************************************************************/
 
-#include "ac_recordbuttondelegate.h"
+#ifndef DELEGATE_H
+#define DELEGATE_H
 
-#include <QPainter>
+#include <QStyledItemDelegate>
+#include "mi_gui_global.h"
 
-void RecordButtonDelegate::setPainterColors(QPainter *painter, const QModelIndex &index) const
+namespace Base {
+
+class MI_GUI_EXPORT Delegate : public QStyledItemDelegate
 {
-    painter->setPen(Qt::red);
-    if (index.data().toBool())
-        painter->setBrush(QBrush(Qt::red));
+    Q_OBJECT
+
+public:
+    Delegate(QObject *parent = 0)
+        :   QStyledItemDelegate(parent)
+        ,   _customColumn(-1)
+    {}
+
+    int customColumn() const
+    {
+        return _customColumn;
+    }
+
+    void setCustomColumn(int column)
+    {
+        _customColumn = column;
+    }
+
+private:
+    int _customColumn;
+};
+
 }
+
+#endif

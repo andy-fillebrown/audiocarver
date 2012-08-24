@@ -15,11 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_doubledelegate.h"
+#include "doubledelegate.h"
+#include <base/doublespinbox.h>
 
-#include <mi_gui_doublespinbox.h>
-
-using namespace Mi::Gui;
+using namespace Base;
 
 QString DoubleDelegate::displayText(const QVariant &value, const QLocale &locale) const
 {
@@ -57,6 +56,5 @@ void DoubleDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, co
 
 void DoubleDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    Q_UNUSED(index);
     editor->setGeometry(option.rect);
 }

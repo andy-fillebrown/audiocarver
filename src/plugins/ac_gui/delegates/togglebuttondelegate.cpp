@@ -15,37 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_togglebuttondelegate.h"
-
-#include <mi_ieditor.h>
-
+#include "togglebuttondelegate.h"
+#include <ieditor.h>
 #include <QMouseEvent>
 #include <QPainter>
 
-class ToggleButtonDelegatePrivate
-{
-public:
-    int buttonColumnWidth;
-
-    ToggleButtonDelegatePrivate()
-        :   buttonColumnWidth(0)
-    {}
-};
-
-ToggleButtonDelegate::ToggleButtonDelegate(QObject *parent)
-    :   Delegate(parent)
-    ,   d(new ToggleButtonDelegatePrivate)
-{}
-
-ToggleButtonDelegate::~ToggleButtonDelegate()
-{
-    delete d;
-}
-
-void ToggleButtonDelegate::setButtonColumnWidth(int width)
-{
-    d->buttonColumnWidth = width;
-}
+using namespace Qt;
 
 void ToggleButtonDelegate::setPainterColors(QPainter *painter, const QModelIndex &index) const
 {
@@ -55,18 +30,15 @@ void ToggleButtonDelegate::setPainterColors(QPainter *painter, const QModelIndex
 
 bool ToggleButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
-    Q_UNUSED(option);
     if (customColumn() != index.column())
         return false;
-
-    // Toggle the model data if we got a left button mouse double-click.
     if (QEvent::MouseButtonDblClick != event->type())
         return false;
-    const QMouseEvent *e = static_cast<const QMouseEvent*>(event);
-    if (Qt::LeftButton == e->button()) {
+    const QMouseEvent *mouse_event = static_cast<const QMouseEvent*>(event);
+    if (Qt::LeftButton == mouse_event->button()) {
         IEditor *editor = IEditor::instance();
         editor->beginCommand();
-        model->setData(index, !index.data().toBool(), Qt::DisplayRole);
+        model->setData(index, !index.data().toBool(), DisplayRole);
         editor->endCommand();
     }
     return true;
@@ -85,15 +57,12 @@ void ToggleButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     // Draw a circle and fill it if the model data is true (i.e. the button
     // is pressed).
     painter->save();
-
     setPainterColors(painter, index);
-
     QRect rect = option.rect;
-    rect.setWidth(d->buttonColumnWidth);
+    rect.setWidth(_buttonColumnWidth);
     QPoint ctr = rect.center();
     ctr.ry() += 1;
     painter->setRenderHint(QPainter::Antialiasing);
     painter->drawEllipse(ctr, 2, 2);
-
     painter->restore();
 }

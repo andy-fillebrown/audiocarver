@@ -15,33 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef MI_GUI_DELEGATE_H
-#define MI_GUI_DELEGATE_H
+#ifndef RECORDBUTTONDELEGATE_H
+#define RECORDBUTTONDELEGATE_H
 
-#include "QStyledItemDelegate"
+#include "togglebuttondelegate.h"
 
-#include <mi_gui_global.h>
-
-namespace Mi {
-namespace Gui {
-
-class DelegatePrivate;
-class MI_GUI_EXPORT Delegate : public QStyledItemDelegate
+class RecordButtonDelegate : public ToggleButtonDelegate
 {
-    Q_OBJECT
-
 public:
-    Delegate(QObject *parent = 0);
-    ~Delegate();
+    RecordButtonDelegate(QObject *parent = 0)
+        :   ToggleButtonDelegate(parent)
+    {}
 
-    int customColumn() const;
-    void setCustomColumn(int column);
-
-private:
-    DelegatePrivate *d;
+    void setPainterColors(QPainter *painter, const QModelIndex &index) const;
 };
 
-} // namespace Gui
-} // namespace Mi
-
-#endif // MI_GUI_DELEGATE_H
+#endif

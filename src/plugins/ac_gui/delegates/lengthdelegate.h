@@ -15,21 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_COLORDELEGATE_H
-#define AC_COLORDELEGATE_H
+#ifndef LENGTHDELEGATE_H
+#define LENGTHDELEGATE_H
 
-#include <mi_gui_delegate.h>
+#include "doubledelegate.h"
 
-class ColorDelegate : public Mi::Gui::Delegate
+class LengthDelegate : public DoubleDelegate
 {
 public:
-    ColorDelegate(QObject *parent = 0)
-        :   Delegate(parent)
+    LengthDelegate(QObject *parent = 0)
+        :   DoubleDelegate(parent)
     {}
 
-    // QStyledItemDelegate
-    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-#endif // AC_COLORDELEGATE_H
+#endif

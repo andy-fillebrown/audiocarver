@@ -1,5 +1,7 @@
 
 SOURCE_FILES = \
+    delegate \
+    doublespinbox \
     editor \
 
 DIR = $$dirname(_FILE_)

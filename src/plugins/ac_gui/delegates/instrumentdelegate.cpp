@@ -15,52 +15,45 @@
 **
 **************************************************************************/
 
-#include "ac_instrumentdelegate.h"
-
-#include <mi_idatabase.h>
-#include <mi_imodel.h>
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
-
-#include <ac_gui_namespace.h>
-
-#include <mi_core_utils.h>
-
-#include <icore.h>
+#include "instrumentdelegate.h"
+#include "ac_core_namespace.h"
+#include <base/utilities.h>
 #include <mainwindow.h>
-
+#include <icore.h>
+#include <idatabase.h>
+#include <imodeldata.h>
+#include <imodelitem.h>
+#include <iqmodel.h>
 #include <QDir>
 #include <QFileDialog>
 #include <QMouseEvent>
-#include <QPainter>
 
 using namespace Ac;
-using namespace Mi::Core;
+using namespace Core;
 
 bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
-    Q_UNUSED(option);
     if (customColumn() != index.column())
         return false;
 
     // We're only interested in left button mouse double-clicks.
     if (QEvent::MouseButtonDblClick != event->type())
         return false;
-    QMouseEvent *e = static_cast<QMouseEvent*>(event);
-    if (Qt::LeftButton != e->button())
+    QMouseEvent *mouse_event = static_cast<QMouseEvent*>(event);
+    if (Qt::LeftButton != mouse_event->button())
         return false;
 
     // Open a file-open dialog and set the track's instrument if the user didn't cancel the dialog.
-    const IModel *m = query<IModel>(IDatabase::instance());
-    const IModelData *project_settings = query<IModelData>(m->rootItem()->findItem(ProjectSettingsItem));
+    const IModelData *project_settings = query<IModelData>(IDatabase::instance()->rootItem()->findItem(ProjectSettingsItem));
     QString instrument_dir_name = project_settings->get<QString>(InstrumentDirectoryRole);
     if (instrument_dir_name.isEmpty())
-        instrument_dir_name = applicationTreeDirectory() + "instruments";
-    QString filename = QFileDialog::getOpenFileName(Core::ICore::instance()->mainWindow(), "Open Instrument", instrument_dir_name, QString("Instrument (*orc)"));
+        instrument_dir_name = Base::applicationTreeDirectory() + "instruments";
+    QString filename = QFileDialog::getOpenFileName(ICore::instance()->mainWindow(), "Open Instrument", instrument_dir_name, QString("Instrument (*orc)"));
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);
-        QString abbreviated_filename = instrument_file_info.baseName();
-        model->setData(index, abbreviated_filename);
+        QString instrument_basename = instrument_file_info.baseName();
+        IModelData *track = query<IModelData>(IQModel::instance()->itemFromIndex(index));
+        track->set(instrument_basename, InstrumentRole);
     }
     return true;
 }

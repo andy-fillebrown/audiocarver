@@ -15,40 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef MI_GUI_DOUBLESPINBOX_H
-#define MI_GUI_DOUBLESPINBOX_H
+#include "volumedelegate.h"
+#include <QDoubleSpinBox>
 
-#include "QDoubleSpinBox"
-
-#include <mi_gui_global.h>
-
-namespace Mi {
-namespace Gui {
-
-class MI_GUI_EXPORT DoubleSpinBox : public QDoubleSpinBox
+QWidget *VolumeDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    Q_OBJECT
-
-public:
-    DoubleSpinBox(QWidget *parent = 0)
-        :   QDoubleSpinBox(parent)
-    {
-        setDecimals(12);
-        setMaximum(Q_FLOAT_MAX);
+    QWidget *editor = DoubleDelegate::createEditor(parent, option, index);
+    QDoubleSpinBox *spin_box = qobject_cast<QDoubleSpinBox*>(editor);
+    if (spin_box) {
+        spin_box->setDecimals(6);
+        spin_box->setRange(0.0f, 1.0f);
+        spin_box->setSingleStep(0.05f);
     }
-
-    QString textFromValue(double val) const
-    {
-        QString text = QString("%1").arg(val, 0, 'f', 12);
-        while (text.endsWith('0'))
-            text.chop(1);
-        if (text.endsWith('.'))
-            text.chop(1);
-        return text;
-    }
-};
-
-} // namespace Gui
-} // namespace Mi
-
-#endif // MI_GUI_DOUBLESPINBOX_H
+    return editor;
+}

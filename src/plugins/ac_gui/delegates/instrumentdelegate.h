@@ -15,20 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_RECORDBUTTONDELEGATE_H
-#define AC_RECORDBUTTONDELEGATE_H
+#ifndef INSTRUMENTDELEGATE_H
+#define INSTRUMENTDELEGATE_H
 
-#include <ac_togglebuttondelegate.h>
+#include <base/delegate.h>
 
-class RecordButtonDelegate : public ToggleButtonDelegate
+class InstrumentDelegate : public Base::Delegate
 {
 public:
-    RecordButtonDelegate(QObject *parent = 0)
-        :   ToggleButtonDelegate(parent)
+    InstrumentDelegate(QObject *parent = 0)
+        :   Delegate(parent)
     {}
 
-    // ToggleButtonDelegate
-    void setPainterColors(QPainter *painter, const QModelIndex &index) const;
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 };
 
-#endif // AC_RECORDBUTTONDELEGATE_H
+#endif

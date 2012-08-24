@@ -15,27 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_TOGGLEBUTTONDELEGATE_H
-#define AC_TOGGLEBUTTONDELEGATE_H
+#ifndef DOUBLEDELEGATE_H
+#define DOUBLEDELEGATE_H
 
-#include <mi_gui_delegate.h>
+#include <base/delegate.h>
 
-class ToggleButtonDelegatePrivate;
-class ToggleButtonDelegate : public Mi::Gui::Delegate
+class DoubleDelegate : public Base::Delegate
 {
 public:
-    ToggleButtonDelegate(QObject *parent = 0);
-    ~ToggleButtonDelegate();
+    DoubleDelegate(QObject *parent = 0)
+        :   Delegate(parent)
+    {}
 
-    void setButtonColumnWidth(int width);
-    virtual void setPainterColors(QPainter *painter, const QModelIndex &index) const;
-
-    // QStyledItemDelegate
-    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-
-private:
-    ToggleButtonDelegatePrivate *d;
+protected:
+    QString displayText(const QVariant &value, const QLocale &locale) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-#endif // AC_TOGGLEBUTTONDELEGATE_H
+#endif

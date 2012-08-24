@@ -23,6 +23,8 @@
 #include "mi_core_global.h"
 #include "mi_core_interfaces.h"
 
+class IModelItem;
+
 class MI_CORE_EXPORT IQModel : public QAbstractItemModel
         ,   public IUnknown
 {
@@ -35,6 +37,8 @@ public:
 
     IQModel()
     {}
+
+    virtual IModelItem *itemFromIndex(const QModelIndex &index) = 0;
 
     int interfaceType() const
     {

@@ -16,16 +16,16 @@
 **************************************************************************/
 
 #include "trackview.h"
+#include "colordelegate.h"
+#include "recordbuttondelegate.h"
+//#include "ac_noteselectionmodel.h"
+//#include "ac_trackmodel.h"
+//#include "ac_trackselectionmodel.h"
+#include <ac_core_namespace.h>
 #include <idatabase.h>
 #include <ieditor.h>
 #include <imodel.h>
 #include <imodelitemlist.h>
-//#include "ac_colordelegate.h"
-//#include "ac_noteselectionmodel.h"
-//#include "ac_recordbuttondelegate.h"
-//#include "ac_trackmodel.h"
-//#include "ac_trackselectionmodel.h"
-#include <ac_core_namespace.h>
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
@@ -74,20 +74,17 @@ TrackView::TrackView(QWidget *parent)
     setAcceptDrops(true);
     setDragEnabled(true);
     setAllColumnsShowFocus(true);
-
-//    ColorDelegate *colorDelegate = new ColorDelegate(this);
-//    colorDelegate->setCustomColumn(0);
-//    setItemDelegateForColumn(0, colorDelegate);
-
-//    ToggleButtonDelegate *toggleButtonDelegate = new ToggleButtonDelegate(this);
-//    toggleButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
-//    toggleButtonDelegate->setCustomColumn(2);
-//    setItemDelegateForColumn(2, toggleButtonDelegate);
-
-//    RecordButtonDelegate *recordButtonDelegate = new RecordButtonDelegate(this);
-//    recordButtonDelegate->setButtonColumnWidth(buttonColumnWidth);
-//    recordButtonDelegate->setCustomColumn(3);
-//    setItemDelegateForColumn(3, recordButtonDelegate);
+    ColorDelegate *color_delegate = new ColorDelegate(this);
+    color_delegate->setCustomColumn(0);
+    setItemDelegateForColumn(0, color_delegate);
+    ToggleButtonDelegate *toggle_button_delegate = new ToggleButtonDelegate(this);
+    toggle_button_delegate->setButtonColumnWidth(buttonColumnWidth);
+    toggle_button_delegate->setCustomColumn(2);
+    setItemDelegateForColumn(2, toggle_button_delegate);
+    RecordButtonDelegate *record_button_delegate = new RecordButtonDelegate(this);
+    record_button_delegate->setButtonColumnWidth(buttonColumnWidth);
+    record_button_delegate->setCustomColumn(3);
+    setItemDelegateForColumn(3, record_button_delegate);
 }
 
 void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
@@ -136,9 +133,8 @@ void TrackView::dragMoveEvent(QDragMoveEvent *event)
 
 void TrackView::dragLeaveEvent(QDragLeaveEvent *event)
 {
-    Q_UNUSED(event);
-
-    // Turn off the dragging flag and redraw so the drop indicator goes away.
+    // Turn off the dragging flag and redraw the view so the drop indicator
+    // disappears.
     d->dragging = false;
     setDirtyRegion(rect());
 }
@@ -148,32 +144,32 @@ void TrackView::dropEvent(QDropEvent *event)
     // Drop mime data into the track model.
     d->updateDropRow(event->pos());
     const QStringList formats = event->mimeData()->formats();
-    const QString mimeType = model()->mimeTypes().last();
-    if (formats.contains(mimeType)) {
-        QByteArray b = event->mimeData()->data(mimeType);
-        QDataStream stream(&b, QIODevice::ReadOnly);
-        int fromRow = -1;
-        QList<int> fromRows;
-        while (!stream.atEnd()) {
-            stream >> fromRow;
-            fromRows.append(fromRow);
+    const QString mime_type = model()->mimeTypes().last();
+    if (formats.contains(mime_type)) {
+        QByteArray mime_data = event->mimeData()->data(mime_type);
+        QDataStream mime_stream(&mime_data, QIODevice::ReadOnly);
+        int from_row = -1;
+        QList<int> from_rows;
+        while (!mime_stream.atEnd()) {
+            mime_stream >> from_row;
+            from_rows.append(from_row);
         }
-        int toRow = d->dropRow;
+        int to_row = d->dropRow;
         IEditor *editor = IEditor::instance();
-        if (!fromRows.contains(toRow)) {
+        if (!from_rows.contains(to_row)) {
             IModelItemList *track_list = IDatabase::instance()->rootItem()->findList(TrackItem);
             QList<IModelItem*> items;
-            foreach (int row, fromRows) {
-                if (row == toRow)
+            foreach (int row, from_rows) {
+                if (row == to_row)
                     continue;
                 if (!editor->isInCommand())
                     editor->beginCommand();
                 items.append(track_list->takeAt(row));
-                if (row < toRow)
-                    --toRow;
+                if (row < to_row)
+                    --to_row;
             }
             foreach (IModelItem *item, items)
-                track_list->insert(toRow, item);
+                track_list->insert(to_row, item);
             if (editor->isInCommand())
                 editor->endCommand();
         }
@@ -213,10 +209,10 @@ void TrackView::paintEvent(QPaintEvent *event)
     // Draw the drop indicator if we're dragging track(s).
     if (!d->dragging)
         return;
-    QWidget *vport = viewport();
-    QPainter painter(vport);
+    QWidget *viewport = this->viewport();
+    QPainter painter(viewport);
     const int y = d->dropRow * rowHeight(model()->index(0, 0, rootIndex()));
-    painter.drawLine(0, y, vport->width(), y);
+    painter.drawLine(0, y, viewport->width(), y);
 }
 
 void TrackView::keyPressEvent(QKeyEvent *event)

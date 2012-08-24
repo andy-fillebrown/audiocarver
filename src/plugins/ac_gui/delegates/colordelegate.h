@@ -15,40 +15,20 @@
 **
 **************************************************************************/
 
-#include "mi_gui_delegate.h"
+#ifndef COLORDELEGATE_H
+#define COLORDELEGATE_H
 
-namespace Mi {
-namespace Gui {
+#include <base/delegate.h>
 
-class DelegatePrivate
+class ColorDelegate : public Base::Delegate
 {
 public:
-    int customColumn;
-
-    DelegatePrivate()
-        :   customColumn(-1)
+    ColorDelegate(QObject *parent = 0)
+        :   Delegate(parent)
     {}
+
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-Delegate::Delegate(QObject *parent)
-    :   QStyledItemDelegate(parent)
-    ,   d(new DelegatePrivate)
-{}
-
-Delegate::~Delegate()
-{
-    delete d;
-}
-
-int Delegate::customColumn() const
-{
-    return d->customColumn;
-}
-
-void Delegate::setCustomColumn(int column)
-{
-    d->customColumn = column;
-}
-
-} // namespace Gui
-} // namespace Mi
+#endif

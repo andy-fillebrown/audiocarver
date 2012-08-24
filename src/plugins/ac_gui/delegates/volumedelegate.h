@@ -15,20 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_INSTRUMENTDELEGATE_H
-#define AC_INSTRUMENTDELEGATE_H
+#ifndef VOLUMEDELEGATE_H
+#define VOLUMEDELEGATE_H
 
-#include <mi_gui_delegate.h>
+#include <doubledelegate.h>
 
-class InstrumentDelegate : public Mi::Gui::Delegate
+class VolumeDelegate : public DoubleDelegate
 {
 public:
-    InstrumentDelegate(QObject *parent = 0)
-        :   Delegate(parent)
+    VolumeDelegate(QObject *parent = 0)
+        :   DoubleDelegate(parent)
     {}
 
-    // QStyledItemDelegate
-    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-#endif // AC_INSTRUMENTDELEGATE_H
+#endif

@@ -15,29 +15,27 @@
 **
 **************************************************************************/
 
-#include "ac_colordelegate.h"
-
+#include "colordelegate.h"
 #include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
 
 bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
-    Q_UNUSED(option);
     if (customColumn() != index.column())
         return false;
 
     // We're only interested in left button mouse double-clicks.
     if (QEvent::MouseButtonDblClick != event->type())
         return false;
-    QMouseEvent *e = static_cast<QMouseEvent*>(event);
-    if (Qt::LeftButton != e->button())
+    QMouseEvent *mouse_event = static_cast<QMouseEvent*>(event);
+    if (Qt::LeftButton != mouse_event->button())
         return false;
 
     // Open a color dialog and set the track's color if the user didn't cancel the dialog.
-    QColorDialog *dlg = new QColorDialog(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
-    dlg->exec();
-    QColor color = dlg->selectedColor();
+    QColorDialog *dialog = new QColorDialog(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
+    dialog->exec();
+    QColor color = dialog->selectedColor();
     if (color.isValid())
         model->setData(index, color);
     return true;
