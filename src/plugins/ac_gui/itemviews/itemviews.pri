@@ -1,8 +1,12 @@
 
 SOURCE_FILES = \
+#    gridlineview \
+#    gripitemspropertyview \
+#    propertyview \
+#    selecteditemspropertyview \
     trackview \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= itemviews/$${pair}.h
-    SOURCES *= itemviews/$${pair}.cpp
+for(file, SOURCE_FILES) {
+    HEADERS *= itemviews/$${file}.h
+    SOURCES *= itemviews/$${file}.cpp
 }

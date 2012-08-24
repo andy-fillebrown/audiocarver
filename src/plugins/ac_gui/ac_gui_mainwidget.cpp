@@ -33,6 +33,9 @@
 #define LABELVIEW_WIDTH 48
 #define LABELVIEW_HEIGHT 23
 
+using namespace Core;
+using namespace Qt;
+
 class MainWidgetPrivate
 {
 public:
@@ -73,7 +76,7 @@ public:
 //        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
 //            viewManager->view(Ac::SceneType(i))->setParent(q);
 
-//        Core::MainWindow *mw = Core::ICore::instance()->mainWindow();
+        MainWindow *main_window = ICore::instance()->mainWindow();
 
         // Track View Dock Widget
         trackViewDock->setObjectName("Track View Dock Widget");
@@ -200,9 +203,8 @@ void MainWidget::mouseMoveEvent(QMouseEvent *event)
 {
     const uint wasHoveringOverSeparator = d->hoveringOverSeparator;
     d->hoveringOverSeparator = d->separatorRect().contains(event->pos());
-    if (d->hoveringOverSeparator != wasHoveringOverSeparator)
+    if (wasHoveringOverSeparator != d->hoveringOverSeparator)
         update(d->separatorRect());
-
     if (d->draggingSeparator)
         d->moveSeparator(event->pos());
 }
