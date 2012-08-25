@@ -16,14 +16,14 @@
 **************************************************************************/
 
 #include "ac_gui_mainwidget.h"
-#include <icore.h>
+#include "ac_gui_trackview.h"
 //#include "ac_gripitemspropertyview.h"
 //#include "ac_gripselectionmodel.h"
 //#include "ac_gui_viewmanager.h"
 //#include "ac_selecteditemspropertyview.h"
-#include "trackview.h"
 //#include <mi_gui_graphicsview.h>
 #include <mainwindow.h>
+#include <icore.h>
 #include <QDockWidget>
 #include <QMouseEvent>
 #include <QPainter>

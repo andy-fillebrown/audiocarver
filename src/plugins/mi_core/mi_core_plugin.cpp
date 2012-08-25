@@ -17,8 +17,8 @@
 
 #include "mi_core_plugin.h"
 #include "mi_core_namespace.h"
+#include "mi_core_session.h"
 #include <isession.h>
-#include <base/session.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
 

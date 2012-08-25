@@ -2,13 +2,14 @@
 load(../qt_core/qt_core.prf)
 
 DIRS = \
-    base \
+    database \
     interfaces \
+    session \
     tools \
 
-HEADERPATH *= \
-    $$PWD \
-    $$PWD/interfaces \
-
+for(dir, DIRS) {
+    HEADERPATH *= $$PWD/$$dir
+}
+HEADERPATH *= $$PWD
 INCLUDEPATH *= $$HEADERPATH
 DEPENDPATH *= $$HEADERPATH

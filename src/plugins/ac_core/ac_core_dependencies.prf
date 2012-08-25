@@ -3,11 +3,15 @@ load(../mi_core/mi_core.prf)
 
 DIRS = \
     database \
+    filers \
     interfaces \
     models \
     session \
     tools \
-    xml \
 
-INCLUDEPATH *= $$PWD
-DEPENDPATH *= $$PWD
+for(dir, DIRS) {
+    HEADERPATH *= $$PWD/$$dir
+}
+HEADERPATH *= $$PWD
+INCLUDEPATH *= $$HEADERPATH
+DEPENDPATH *= $$HEADERPATH

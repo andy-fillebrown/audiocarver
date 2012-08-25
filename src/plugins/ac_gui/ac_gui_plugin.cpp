@@ -16,15 +16,15 @@
 **************************************************************************/
 
 #include "ac_gui_plugin.h"
-#include <icore.h>
 //#include "ac_gui_database.h"
+#include "ac_gui_editor.h"
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindowextension.h"
 //#include "ac_selecteditemspropertyview.h"
 //#include "ac_trackview.h"
 #include <ac_core_namespace.h>
-#include "session/gui_editor.h"
 #include <mainwindow.h>
+#include <icore.h>
 #include <QtPlugin>
 
 #ifdef QT_DEBUG
@@ -32,7 +32,7 @@ static bool test();
 #endif
 
 using namespace Core;
-using namespace Session::Gui;
+using namespace Gui;
 
 namespace Ac {
 namespace Gui {
