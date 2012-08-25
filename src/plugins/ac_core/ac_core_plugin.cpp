@@ -16,11 +16,11 @@
 **************************************************************************/
 
 #include "ac_core_plugin.h"
-#include "ac_core_namespace.h"
 #include "ac_core_database.h"
 #include "ac_core_databaseobjectfactory.h"
 #include "ac_core_filerfactory.h"
 #include "ac_core_model.h"
+#include "ac_core_namespace.h"
 #include <pluginmanager.h>
 #include <QtPlugin>
 
