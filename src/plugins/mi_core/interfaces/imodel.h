@@ -38,10 +38,10 @@ public:
 
     virtual IModelData *indexData(const QModelIndex &index) const = 0;
     virtual IModelItem *indexItem(const QModelIndex &index) const = 0;
-    virtual void beginChangeData(IModelData *data, int role, int dataChangeType) = 0;
-    virtual void endChangeData(IModelData *data, int role, int dataChangeType) = 0;
-    virtual void beginChangeParent(IModelItem* item) = 0;
-    virtual void endChangeParent(IModelItem *item) = 0;
+    virtual void beginChangeData(const IModelData *data, int role, int changeType) = 0;
+    virtual void endChangeData(const IModelData *data, int role, int changeType) = 0;
+    virtual void beginChangeParent(const IModelItem* item) = 0;
+    virtual void endChangeParent(const IModelItem *item) = 0;
 
     int interfaceType() const
     {
@@ -61,10 +61,10 @@ public:
     }
 
 signals:
-    void dataAboutToBeChanged(IModelData *data, int role, int dataChangeType);
-    void dataChanged(IModelData *data, int role, int dataChangeType);
-    void parentAboutToBeChanged(IModelItem *item);
-    void parentChanged(IModelItem *item);
+    void dataAboutToBeChanged(const IModelData *data, int role, int changeType);
+    void dataChanged(const IModelData *data, int role, int changeType);
+    void parentAboutToBeChanged(const IModelItem *item);
+    void parentChanged(const IModelItem *item);
 };
 
 #endif

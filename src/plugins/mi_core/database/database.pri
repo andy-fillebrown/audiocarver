@@ -7,8 +7,10 @@ SOURCE_FILES = \
     math \
     model \
     modeldata \
+    modeldatawatcher \
     modelitem \
     modelitemlist \
+    modelitemwatcher \
     qmodel \
     session \
     utilities \

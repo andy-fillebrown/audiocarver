@@ -55,20 +55,24 @@ void *Model::queryInterface(int interfaceType) const
     return ISession::instance()->queryInterface(interfaceType);
 }
 
-void Model::beginChangeData(IModelData *data, int role, int dataChangeType)
+void Model::beginChangeData(const IModelData *data, int role, int changeType)
 {
+    emit dataAboutToBeChanged(data, role, changeType);
 }
 
-void Model::endChangeData(IModelData *data, int role, int dataChangeType)
+void Model::endChangeData(const IModelData *data, int role, int changeType)
 {
+    emit dataChanged(data, role, changeType);
 }
 
-void Model::beginChangeParent(IModelItem *item)
+void Model::beginChangeParent(const IModelItem *item)
 {
+    emit parentAboutToBeChanged(item);
 }
 
-void Model::endChangeParent(IModelItem *item)
+void Model::endChangeParent(const IModelItem *item)
 {
+    emit parentChanged(item);
 }
 
 IModelData *Model::indexData(const QModelIndex &index) const

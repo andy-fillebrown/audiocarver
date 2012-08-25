@@ -31,7 +31,7 @@ class ScopedDataChange
     QList<IModelDataWatcher*> _watchers;
 
 public:
-    ScopedDataChange(const IModelData *data, int role, int dataChangeType = Mi::PermanentDataChange)
+    ScopedDataChange(const IModelData *data, int role, int dataChangeType = Mi::PermanentChange)
         :   _data(data)
         ,   _role(role)
         ,   _dataChangeType(dataChangeType)

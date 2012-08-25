@@ -15,31 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef IMODELDATAWATCHER_H
-#define IMODELDATAWATCHER_H
+#include "mi_core_modelitemwatcher.h"
+#include <iaggregate.h>
+#include <imodel.h>
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+namespace Base {
 
-class IModelData;
-
-class IModelDataWatcher : public IUnknown
+IUnknown *ModelItemWatcher::initialize()
 {
-public:
-    enum { InterfaceType = I::IModelDataWatcher };
+    return aggregate()->append(this);
+}
 
-    virtual void beginChangeData(const IModelData *data, int role, int changeType) = 0;
-    virtual void endChangeData(const IModelData *data, int role, int changeType) = 0;
+void *ModelItemWatcher::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ModelItemWatcher*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+void ModelItemWatcher::beginChangeParent(const IModelItem *item)
+{
+    IModel::instance()->beginChangeParent(item);
+}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
-};
+void ModelItemWatcher::endChangeParent(const IModelItem *item)
+{
+    IModel::instance()->endChangeParent(item);
+}
 
-#endif
+}

@@ -38,7 +38,9 @@
 #include "ac_core_viewsettings_modeldata.h"
 #include "ac_core_viewsettings_modelitem.h"
 #include <mi_core_aggregate.h>
+#include <mi_core_modeldatawatcher.h>
 #include <mi_core_modelitemlist.h>
+#include <mi_core_modelitemwatcher.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -55,6 +57,8 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
     IAggregate *aggregate = (new Base::Aggregate)->initialize();
     switch (itemType) {
     case ControlCurveItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
+        (new Base::ModelItemWatcher(aggregate))->initialize();
         (new ControlCurve::ModelData(aggregate))->initialize();
         (new ControlCurve::ModelItem(aggregate))->initialize();
         break;
@@ -62,6 +66,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Base::ModelItemList(aggregate, ControlCurveItem))->initialize();
         break;
     case ControlGridLineItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new GridLine::ModelData(aggregate))->initialize();
         (new ControlGridLine::ModelItem(aggregate))->initialize();
         break;
@@ -69,10 +74,12 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Base::ModelItemList(aggregate, ControlGridLineItem))->initialize();
         break;
     case GridSettingsItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new GridSettings::ModelData(aggregate))->initialize();
         (new GridSettings::ModelItem(aggregate))->initialize();
         break;
     case NoteItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new ScoreObject::ModelData(aggregate))->initialize();
         (new Note::ModelItem(aggregate))->initialize();
         break;
@@ -80,10 +87,12 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Base::ModelItemList(aggregate, NoteItem))->initialize();
         break;
     case PitchCurveItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new PitchCurve::ModelData(aggregate))->initialize();
         (new PitchCurve::ModelItem(aggregate))->initialize();
         break;
     case PitchGridLineItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new GridLine::ModelData(aggregate))->initialize();
         (new PitchGridLine::ModelItem(aggregate))->initialize();
         break;
@@ -91,14 +100,17 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Base::ModelItemList(aggregate, PitchGridLineItem))->initialize();
         break;
     case ProjectSettingsItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new ProjectSettings::ModelData(aggregate))->initialize();
         (new ProjectSettings::ModelItem(aggregate))->initialize();
         break;
     case ScoreItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new Score::ModelData(aggregate))->initialize();
         (new Score::ModelItem(aggregate))->initialize();
         break;
     case TimeGridLineItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new GridLine::ModelData(aggregate))->initialize();
         (new TimeGridLine::ModelItem(aggregate))->initialize();
         break;
@@ -106,6 +118,8 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Base::ModelItemList(aggregate, TimeGridLineItem))->initialize();
         break;
     case TrackItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
+        (new Base::ModelItemWatcher(aggregate))->initialize();
         (new Track::ModelData(aggregate))->initialize();
         (new Track::ModelItem(aggregate))->initialize();
         break;
@@ -113,6 +127,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Base::ModelItemList(aggregate, TrackItem))->initialize();
         break;
     case ViewSettingsItem:
+        (new Base::ModelDataWatcher(aggregate))->initialize();
         (new ViewSettings::ModelData(aggregate))->initialize();
         (new ViewSettings::ModelItem(aggregate))->initialize();
         break;

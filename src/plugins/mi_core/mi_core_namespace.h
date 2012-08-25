@@ -39,9 +39,9 @@ enum ItemDataRole {
     ItemDataRoleCount
 };
 
-enum DataChangeType {
-    TemporarayDataChange,
-    PermanentDataChange
+enum ChangeType {
+    TemporarayChange,
+    PermanentChange
 };
 
 }

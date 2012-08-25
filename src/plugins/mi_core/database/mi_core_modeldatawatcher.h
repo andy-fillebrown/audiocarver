@@ -15,40 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODEL_H
-#define MI_CORE_MODEL_H
+#ifndef MI_CORE_MODELDATAWATCHER_H
+#define MI_CORE_MODELDATAWATCHER_H
 
-#include <imodel.h>
+#include <imodeldatawatcher.h>
+#include "mi_core_global.h"
 
 class IAggregate;
 
 namespace Base {
 
-class MI_CORE_EXPORT Model : public IModel
+class MI_CORE_EXPORT ModelDataWatcher : public IModelDataWatcher
 {
+    IAggregate *_aggregate;
+
 public:
-    Model();
-    ~Model();
+    ModelDataWatcher(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+    {}
+
     virtual IUnknown *initialize();
     void *queryInterface(int interfaceType) const;
 
 protected:
-    void beginChangeData(const IModelData *data, int role, int changeType);
-    void endChangeData(const IModelData *data, int role, int changeType);
-    void beginChangeParent(const IModelItem* item);
-    void endChangeParent(const IModelItem *item);
-    IModelData *indexData(const QModelIndex &index) const;
-    IModelItem *indexItem(const QModelIndex &index) const;
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    QModelIndex parent(const QModelIndex &child) const;
-
-    int columnCount(const QModelIndex &parent) const
+    IAggregate *aggregate() const
     {
-        return 1;
+        return _aggregate;
     }
 
-    int rowCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    void beginChangeData(const IModelData *data, int role, int changeType);
+    void endChangeData(const IModelData *data, int role, int changeType);
 };
 
 }
