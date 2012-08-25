@@ -17,6 +17,9 @@
 
 #include "mi_core_model.h"
 #include <iaggregate.h>
+#include <imodel.h>
+#include <imodeldata.h>
+#include <imodelitem.h>
 #include <isession.h>
 
 static IModel *instance = 0;
@@ -50,6 +53,52 @@ void *Model::queryInterface(int interfaceType) const
     if (isTypeOfInterface(interfaceType))
         return const_cast<Model*>(this);
     return ISession::instance()->queryInterface(interfaceType);
+}
+
+void Model::beginChangeData(IModelData *data, int role, int dataChangeType)
+{
+}
+
+void Model::endChangeData(IModelData *data, int role, int dataChangeType)
+{
+}
+
+void Model::beginChangeParent(IModelItem *item)
+{
+}
+
+void Model::endChangeParent(IModelItem *item)
+{
+}
+
+IModelData *Model::indexData(const QModelIndex &index) const
+{
+    return query<IModelData>(indexItem(index));
+}
+
+IModelItem *Model::indexItem(const QModelIndex &index) const
+{
+    return static_cast<IModelItem*>(index.internalPointer());
+}
+
+QModelIndex Model::index(int row, int column, const QModelIndex &parent) const
+{
+    return QModelIndex();
+}
+
+QModelIndex Model::parent(const QModelIndex &child) const
+{
+    return QModelIndex();
+}
+
+int Model::rowCount(const QModelIndex &parent) const
+{
+    return 0;
+}
+
+QVariant Model::data(const QModelIndex &index, int role) const
+{
+    return indexData(index)->getValue(role);
 }
 
 }

@@ -19,7 +19,7 @@
 #define IQAUDIOENGINE_H
 
 #include <QObject>
-#include <iqmodel.h>
+#include <imodel.h>
 #include "ac_gui_global.h"
 #include "ac_gui_interfaces.h"
 

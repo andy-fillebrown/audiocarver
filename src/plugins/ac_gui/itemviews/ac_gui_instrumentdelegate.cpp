@@ -21,9 +21,9 @@
 #include <mainwindow.h>
 #include <icore.h>
 #include <idatabase.h>
+#include <imodel.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
-#include <iqmodel.h>
 #include <QDir>
 #include <QFileDialog>
 #include <QMouseEvent>
@@ -53,7 +53,7 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);
         QString instrument_basename = instrument_file_info.baseName();
-        IModelData *track = query<IModelData>(IQModel::instance()->itemFromIndex(index));
+        IModelData *track = query<IModelData>(IModel::instance()->indexItem(index));
         track->set(instrument_basename, InstrumentRole);
     }
     return true;

@@ -20,6 +20,7 @@
 #include "ac_core_database.h"
 #include "ac_core_databaseobjectfactory.h"
 #include "ac_core_filerfactory.h"
+#include "ac_core_model.h"
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -77,6 +78,7 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     (new DatabaseObjectFactory)->initialize();
     (new Database)->initialize();
     (new FilerFactory)->initialize();
+    (new Model)->initialize();
     return true;
 }
 

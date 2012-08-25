@@ -27,7 +27,7 @@ namespace Core {
 
 class AC_CORE_EXPORT Model : public Base::Model
 {
-protected:
+public:
     Model()
     {}
 

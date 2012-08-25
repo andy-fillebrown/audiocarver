@@ -33,7 +33,6 @@ enum MiCoreInterface {
     IModelItem,
     IModelItemList,
     IModelItemWatcher,
-    IQModel,
     IReader,
     ISession,
     IWriter,

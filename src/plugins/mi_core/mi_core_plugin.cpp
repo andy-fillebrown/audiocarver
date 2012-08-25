@@ -20,6 +20,7 @@
 #include "mi_core_session.h"
 #include <isession.h>
 #include <pluginmanager.h>
+#include <QtDebug>
 #include <QtPlugin>
 
 using namespace Base;
@@ -55,7 +56,7 @@ Q_EXPORT_PLUGIN(Mi::Core::Plugin)
 #ifdef QT_DEBUG
 
 #include <imodel.h>
-#include <iqmodel.h>
+#include <imodel.h>
 
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
@@ -64,33 +65,13 @@ using namespace Mi::Core;
 
 bool test_1()
 {
-    // Make sure querying for interfaces works correctly.
-    IAggregate *session = ISession::instance();
-    IModel *model_i = 0;
-    IQModel *model_qi = 0;
-    model_i = IModel::instance();
-    CHECK(model_i);
-    model_qi = IQModel::instance();
-    CHECK(model_qi);
-    model_i = 0;
-    model_i = query<IModel>(session);
-    CHECK(model_i);
-    model_qi = 0;
-    model_qi = query<IQModel>(session);
-    CHECK(model_qi);
-    model_i = 0;
-    model_i = query<IModel>(model_qi);
-    CHECK(model_i);
-    model_qi = 0;
-    model_qi = query<IQModel>(model_i);
-    CHECK(model_qi);
     return true;
 }
 
 bool test()
 {
-//    RUN(test_1);
-//    qDebug() << "Mi::Core::Plugin tests passed.";
+    RUN(test_1);
+    qDebug() << "Mi::Core::Plugin tests passed.";
     return true;
 }
 

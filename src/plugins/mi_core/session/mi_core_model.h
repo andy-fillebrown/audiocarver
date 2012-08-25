@@ -31,6 +31,24 @@ public:
     ~Model();
     virtual IUnknown *initialize();
     void *queryInterface(int interfaceType) const;
+
+protected:
+    void beginChangeData(IModelData *data, int role, int dataChangeType);
+    void endChangeData(IModelData *data, int role, int dataChangeType);
+    void beginChangeParent(IModelItem* item);
+    void endChangeParent(IModelItem *item);
+    IModelData *indexData(const QModelIndex &index) const;
+    IModelItem *indexItem(const QModelIndex &index) const;
+    QModelIndex index(int row, int column, const QModelIndex &parent) const;
+    QModelIndex parent(const QModelIndex &child) const;
+
+    int columnCount(const QModelIndex &parent) const
+    {
+        return 1;
+    }
+
+    int rowCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
 };
 
 }
