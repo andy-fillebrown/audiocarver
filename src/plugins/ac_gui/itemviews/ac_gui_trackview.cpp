@@ -65,7 +65,10 @@ TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
     ,   d(new TrackViewPrivate(this))
 {
-    setModel(TrackModel::instance());
+    TrackModel *model = TrackModel::instance();
+    setModel(model);
+    connect(model, SIGNAL(rowsInserted(const QModelIndex&,int,int)), SLOT(rowsChanged()));
+    connect(model, SIGNAL(rowsRemoved(const QModelIndex&,int,int)), SLOT(rowsChanged()));
 //    setSelectionModel(TrackSelectionModel::instance());
     setHeaderHidden(true);
     setRootIsDecorated(false);
@@ -86,16 +89,6 @@ TrackView::TrackView(QWidget *parent)
     record_button_delegate->setButtonColumnWidth(buttonColumnWidth);
     record_button_delegate->setCustomColumn(3);
     setItemDelegateForColumn(3, record_button_delegate);
-}
-
-void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
-{
-    // We're currently getting invalid indexes for 'topLeft' and 'bottomRight',
-    // even when the track data is changed. It might be an issue in the proxy
-    // models. Regardless, we need to redraw the entire window, then call
-    // resizeEvent to update the scrollbar and set the column widths.
-    setDirtyRegion(rect());
-    resizeEvent(0);
 }
 
 void TrackView::mousePressEvent(QMouseEvent *event)
@@ -142,7 +135,6 @@ void TrackView::dragLeaveEvent(QDragLeaveEvent *event)
 
 void TrackView::dropEvent(QDropEvent *event)
 {
-    // Drop mime data into the track model.
     d->updateDropRow(event->pos());
     const QStringList formats = event->mimeData()->formats();
     const QString mime_type = model()->mimeTypes().last();
@@ -177,7 +169,7 @@ void TrackView::dropEvent(QDropEvent *event)
     }
     d->dragging = false;
 
-    // Clear current index and redraw.
+    // Clear the current index and redraw.
     setCurrentIndex(QModelIndex());
     setDirtyRegion(rect());
 }
@@ -187,10 +179,11 @@ void TrackView::resizeEvent(QResizeEvent *event)
     const QAbstractItemModel *model = this->model();
     const QModelIndex root_index = rootIndex();
 
-    // Get the row height (assuming all rows are the same height).
+    // Get the first row's height.
     const int row_height = rowHeight(model->index(0, 0, root_index));
 
-    // Update the vertical scrollbar range.
+    // Update the vertical scrollbar range assuming every row is the same
+    // height.
     const QWidget *viewport = this->viewport();
     if (row_height)
         verticalScrollBar()->setRange(0, (((model->rowCount(root_index) + 1) * row_height) - viewport->height()) / row_height);
@@ -207,7 +200,7 @@ void TrackView::paintEvent(QPaintEvent *event)
 {
     QTreeView::paintEvent(event);
 
-    // Draw the drop indicator if we're dragging track(s).
+    // Draw the drop indicator if we're dragging a track.
     if (!d->dragging)
         return;
     QWidget *viewport = this->viewport();
@@ -231,4 +224,10 @@ void TrackView::keyPressEvent(QKeyEvent *event)
         break;
     }
     QTreeView::keyPressEvent(event);
+}
+
+void TrackView::rowsChanged()
+{
+    setDirtyRegion(rect());
+    resizeEvent(0);
 }

@@ -66,8 +66,7 @@ void Model::beginChangeData(const IModelData *data, int role, int changeType)
 void Model::endChangeData(const IModelData *data, int role, int changeType)
 {
     emit dataChanged(data, role, changeType);
-    const QModelIndex data_index = indexFromData(data);
-    QAbstractItemModel::emit dataChanged(data_index, data_index);
+    emit dataChanged(indexFromData(data));
 }
 
 void Model::beginInsertItem(const IModelItem *parent, int index)
@@ -80,23 +79,18 @@ void Model::endInsertItem(const IModelItem *parent, int index)
 {
     emit itemInserted(parent, index);
     endInsertRows();
-    QModelIndex parent_index = indexFromItem(parent);
-    emit QAbstractItemModel::emit dataChanged(parent_index, parent_index);
 }
 
 void Model::beginRemoveItem(const IModelItem *parent, int index)
 {
     emit itemAboutToBeRemoved(parent, index);
-    QModelIndex parent_index = indexFromItem(parent);
-    beginRemoveRows(parent_index, index, index);
+    beginRemoveRows(indexFromItem(parent), index, index);
 }
 
 void Model::endRemoveItem(const IModelItem *parent, int index)
 {
     emit itemRemoved(parent, index);
     endRemoveRows();
-    QModelIndex parent_index = indexFromItem(parent);
-    emit QAbstractItemModel::emit dataChanged(parent_index, parent_index);
 }
 
 IModelData *Model::dataFromIndex(const QModelIndex &index) const
@@ -127,8 +121,6 @@ QModelIndex Model::indexFromItem(const IModelItem *item) const
     if (!parent)
         return QModelIndex();
     QModelIndex index = createIndex(parent->indexOf(item), 0, parent);
-    if (!index.isValid())
-        index = createIndex(parent->indexOf(item), 0, parent);
     Q_ASSERT(index.isValid());
     return index;
 }

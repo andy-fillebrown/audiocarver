@@ -25,6 +25,8 @@ class TrackView : public QTreeView
 {
     Q_OBJECT
 
+    TrackViewPrivate *d;
+
 public:
     TrackView(QWidget *parent = 0);
 
@@ -34,7 +36,6 @@ public:
     }
 
 protected:
-    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
@@ -45,8 +46,8 @@ protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
-private:
-    TrackViewPrivate *d;
+private slots:
+    void rowsChanged();
 };
 
 #endif

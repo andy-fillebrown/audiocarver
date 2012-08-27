@@ -69,7 +69,6 @@ QVariant ModelData::getValue(int role) const
     case ItemTypeRole:
         return query<IModelItem>(this)->itemType();
     default:
-        Q_ASSERT(0);
         return QVariant();
     }
 }

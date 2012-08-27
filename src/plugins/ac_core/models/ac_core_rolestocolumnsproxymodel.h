@@ -21,12 +21,6 @@
 #include <QSortFilterProxyModel>
 #include "ac_core_global.h"
 
-#include <ac_core_namespace.h>
-#include <idatabase.h>
-#include <imodelitem.h>
-#include <QtDebug>
-
-
 namespace Core {
 
 typedef QMap<int, int> RoleMap;

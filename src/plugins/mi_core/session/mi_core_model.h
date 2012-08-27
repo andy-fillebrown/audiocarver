@@ -54,6 +54,17 @@ protected:
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
+
+signals:
+    void dataChanged(const IModelData *data, int role, int changeType)
+    {
+        IModel::emit dataChanged(data, role, changeType);
+    }
+
+    void dataChanged(const QModelIndex &index)
+    {
+        QAbstractItemModel::emit dataChanged(index, index);
+    }
 };
 
 }
