@@ -18,15 +18,11 @@
 #ifndef AC_GUI_GRAPHICSITEM_H
 #define AC_GUI_GRAPHICSITEM_H
 
-#include <ac_core_point.h>
-
 #include <QGraphicsItem>
+#include <ac_core_point.h>
 #include <QPen>
 
 class IEntity;
-
-namespace Ac {
-namespace Gui {
 
 class GraphicsItem : public QGraphicsItem
 {
@@ -91,7 +87,7 @@ public:
     ~GraphicsCurveItem();
 
     void setEntity(IEntity *entity);
-    void setPoints(const Core::PointList &points);
+    void setPoints(const PointList &points);
     void setColor(const QColor &color);
 
     void highlight();
@@ -119,7 +115,4 @@ public:
     void setText(const QString &text);
 };
 
-} // namespace Gui
-} // namespace Ac
-
-#endif // AC_GUI_GRAPHICSITEM_H
+#endif

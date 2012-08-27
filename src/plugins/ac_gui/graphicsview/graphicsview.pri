@@ -5,8 +5,8 @@ SOURCE_FILES = \
     labelview \
 #    graphicsentityitem \
 #    graphicsgripitem \
-#    graphicsitem \
-#    graphicsscene \
+    graphicsitem \
+    graphicsscene \
     graphicsview \
     graphicsviewmanager \
     pitchlabelview \

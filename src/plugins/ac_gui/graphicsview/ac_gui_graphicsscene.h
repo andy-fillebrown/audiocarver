@@ -15,14 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSSCENE_H
-#define AC_GRAPHICSSCENE_H
-
-#include <ac_gui_namespace.h>
+#ifndef AC_GUI_GRAPHICSSCENE_H
+#define AC_GUI_GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
-
-class Model;
+#include "ac_gui_namespace.h"
 
 class QModelIndex;
 
@@ -133,6 +130,8 @@ class SceneManager : public QObject
 {
     Q_OBJECT
 
+    SceneManagerPrivate *d;
+
 public:
     SceneManager(QObject *parent = 0);
     ~SceneManager();
@@ -140,9 +139,6 @@ public:
     static SceneManager *instance();
 
     QGraphicsScene *scene(int type);
-
-private:
-    SceneManagerPrivate *d;
 };
 
-#endif // AC_GRAPHICSSCENE_H
+#endif

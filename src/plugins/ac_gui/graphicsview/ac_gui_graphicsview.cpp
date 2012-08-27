@@ -18,7 +18,7 @@
 #include "ac_gui_graphicsview.h"
 //#include <ac_gui_graphicsentityitem.h>
 //#include <ac_gui_graphicsgripitem.h>
-//#include <ac_gui_graphicsitem.h>
+#include <ac_gui_graphicsitem.h>
 #include "ac_gui_graphicsviewmanager.h"
 //#include <ac_gripselectionmodel.h>
 //#include <ac_noteselectionmodel.h>
@@ -67,7 +67,7 @@ public:
     QList<IEntity*> hoveredEntities;
     QList<IGripItem*> hoveredGrips;
 //    QList<IEntityItem*> entitiesToUpdate;
-//    GraphicsRootItem *rootItem;
+    GraphicsRootItem *rootItem;
     IPlayCursor *playCursor;
     QCursor previousCursor;
     uint playCursorHovered : 1;
@@ -82,7 +82,7 @@ public:
         :   q(q)
         ,   pickBox(new QGraphicsRectItem)
         ,   curGrip(0)
-//        ,   rootItem(new GraphicsRootItem)
+        ,   rootItem(new GraphicsRootItem)
         ,   playCursor(0)
         ,   playCursorHovered(false)
         ,   viewState(0)
@@ -93,8 +93,8 @@ public:
         ,   dirty(true)
     {
         QGraphicsScene *scene = q->scene();
-//        scene->addItem(rootItem);
-//        rootItem->setZValue(Q_FLOAT_MAX - 1.0f);
+        scene->addItem(rootItem);
+        rootItem->setZValue(Q_FLOAT_MAX - 1.0f);
         scene->addItem(pickBox);
         pickBox->setZValue(Q_FLOAT_MAX);
         pickBox->setPen(QPen(QColor(0, 0, 255)));
@@ -702,19 +702,19 @@ GraphicsView::~GraphicsView()
 
 const QCursor &GraphicsView::normalCrosshair()
 {
-    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair-black.png"));
+    static const QCursor cursor(QPixmap(":/ac_gui/images/crosshair-black.png"));
     return cursor;
 }
 
 const QCursor &GraphicsView::creationCrosshair()
 {
-    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/crosshair-red.png"));
+    static const QCursor cursor(QPixmap(":/ac_gui/images/crosshair-red.png"));
     return cursor;
 }
 
 static const QCursor &zoomCursor()
 {
-    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-cursor.png"));
+    static const QCursor cursor(QPixmap(":/ac_gui/images/zoom-cursor.png"));
     return cursor;
 }
 
@@ -726,9 +726,7 @@ QTransform GraphicsView::sceneScale() const
 
 QTransform GraphicsView::sceneTransform() const
 {
-//    return d->rootItem->transform() * viewportTransform();
-    Q_ASSERT(0);
-    return QTransform();
+    return d->rootItem->transform() * viewportTransform();
 }
 
 bool GraphicsView::isDirty() const
@@ -745,13 +743,13 @@ void GraphicsView::updateView()
 
 void GraphicsView::startInsertingPoints()
 {
-//    d->insertingPoints = true;
+    d->insertingPoints = true;
 //    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
 //        IEntity *entity = entityItem->entity();
 //        entity->pushPoints();
 //    }
-//    setCursor(creationCrosshair());
-//    d->clearPickedGrips();
+    setCursor(creationCrosshair());
+    d->clearPickedGrips();
 }
 
 void GraphicsView::finishInsertingPoints()
@@ -761,9 +759,9 @@ void GraphicsView::finishInsertingPoints()
 //        entity->setPoints();
 //        entityItem->resetGripItems();
 //    }
-//    setCursor(normalCrosshair());
-//    d->insertingPoints = false;
-//    d->resetPickedEntities();
+    setCursor(normalCrosshair());
+    d->insertingPoints = false;
+    d->resetPickedEntities();
 }
 
 void GraphicsView::cancelPointInsertion()
@@ -771,9 +769,9 @@ void GraphicsView::cancelPointInsertion()
 //    const int n = d->pickedEntities.count();
 //    for (int i = 0;  i < n;  ++i)
 //        d->pickedEntities.at(i)->entity()->popPoints();
-//    setCursor(normalCrosshair());
-//    d->insertingPoints = false;
-//    d->resetPickedEntities();
+    setCursor(normalCrosshair());
+    d->insertingPoints = false;
+    d->resetPickedEntities();
 }
 
 bool GraphicsView::pointsAreSelected() const
@@ -803,8 +801,8 @@ void GraphicsView::modelAboutToBeReset()
 
 void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-//    if (DraggingGrips == d->dragState)
-//        return;
+    if (DraggingGrips == d->dragState)
+        return;
 
 //    // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
 //    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);

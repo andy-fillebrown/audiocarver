@@ -18,6 +18,7 @@
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_trackview.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_namespace.h"
 //#include "ac_gripitemspropertyview.h"
 //#include "ac_gripselectionmodel.h"
 //#include "ac_selecteditemspropertyview.h"
@@ -74,17 +75,12 @@ public:
                                     "border-left: 0px solid palette(shadow);"
                                     "border-right: 1px solid palette(shadow);"
                                     "}");
-//        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-//            viewManager->view(Ac::SceneType(i))->setParent(q);
-
+        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+            graphicsViewManager->view(Ac::SceneType(i))->setParent(q);
         MainWindow *main_window = ICore::instance()->mainWindow();
-
-        // Track View Dock Widget
         trackViewDock->setObjectName("Track View Dock Widget");
         trackViewDock->setWidget(trackView);
         main_window->addDockWidget(LeftDockWidgetArea, trackViewDock);
-
-//        // Property View Dock Widget
 //        propertyViewDock->setObjectName("Property View Dock Widget");
 //        mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
     }
@@ -140,15 +136,15 @@ public:
             middleHeight = 0;
         if (q->height() < (topHeight + middleHeight + separator_height))
             middleHeight = q->height() - topHeight - separator_height;
-//        const int bottomHeight = q->height() - (topHeight + middleHeight + separator_height);
-//        const int bottomPosY = topHeight + middleHeight + separator_height;
-//        viewManager->view(Ac::TimeLabelScene)->setGeometry(0, 0, leftWidth, topHeight);
+        const int bottomHeight = q->height() - (topHeight + middleHeight + separator_height);
+        const int bottomPosY = topHeight + middleHeight + separator_height;
+        graphicsViewManager->view(Ac::TimeLabelScene)->setGeometry(0, 0, leftWidth, topHeight);
         topRightView->setGeometry(QRect(leftWidth, 0, rightWidth, topHeight));
-//        viewManager->view(Ac::PitchScene)->setGeometry(QRect(0, topHeight, leftWidth, middleHeight));
-//        viewManager->view(Ac::PitchLabelScene)->setGeometry(QRect(leftWidth, topHeight, rightWidth, middleHeight));
-//        viewManager->view(Ac::ControlScene)->setGeometry(QRect(0, bottomPosY, leftWidth, bottomHeight));
-//        viewManager->view(Ac::ControlLabelScene)->setGeometry(QRect(leftWidth, bottomPosY, rightWidth, bottomHeight));
-//        viewManager->updateViews();
+        graphicsViewManager->view(Ac::PitchScene)->setGeometry(QRect(0, topHeight, leftWidth, middleHeight));
+        graphicsViewManager->view(Ac::PitchLabelScene)->setGeometry(QRect(leftWidth, topHeight, rightWidth, middleHeight));
+        graphicsViewManager->view(Ac::ControlScene)->setGeometry(QRect(0, bottomPosY, leftWidth, bottomHeight));
+        graphicsViewManager->view(Ac::ControlLabelScene)->setGeometry(QRect(leftWidth, bottomPosY, rightWidth, bottomHeight));
+        graphicsViewManager->updateViews();
         q->update(separatorRect());
     }
 

@@ -29,6 +29,13 @@ enum SceneType {
     SceneTypeCount
 };
 
+enum TransformType {
+    MainTransform,
+    UnitXTransform,
+    UnitYTransform,
+    TransformTypeCount
+};
+
 }
 
 #endif

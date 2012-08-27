@@ -16,11 +16,11 @@
 **************************************************************************/
 
 #include "ac_gui_graphicsviewmanager.h"
-//#include "ac_gui_controllabelview.h"
-//#include "ac_gui_controlview.h"
-//#include "ac_gui_graphicsscene.h"
-//#include "ac_gui_pitchlabelview.h"
-//#include "ac_gui_pitchview.h"
+#include "ac_gui_controllabelview.h"
+#include "ac_gui_controlview.h"
+#include "ac_gui_graphicsscene.h"
+#include "ac_gui_pitchlabelview.h"
+#include "ac_gui_pitchview.h"
 #include "ac_gui_timelabelview.h"
 //#include "ac_undo.h"
 #include <ac_core_constants.h>
@@ -67,12 +67,12 @@ class GraphicsViewManagerPrivate
 {
 public:
     GraphicsViewManager *q;
-//    SceneManager *sceneManager;
-//    PitchView *pitchView;
-//    ControlView *controlView;
+    SceneManager *sceneManager;
+    PitchView *pitchView;
+    ControlView *controlView;
     TimeLabelView *timeLabelView;
-//    PitchLabelView *pitchLabelView;
-//    ControlLabelView *controlLabelView;
+    PitchLabelView *pitchLabelView;
+    ControlLabelView *controlLabelView;
     qreal scoreLength;
     qreal timePos;
     qreal pitchPos;
@@ -87,12 +87,12 @@ public:
 
     GraphicsViewManagerPrivate(GraphicsViewManager *q)
         :   q(q)
-//        ,   sceneManager(new SceneManager(q))
-//        ,   pitchView(0)
-//        ,   controlView(0)
+        ,   sceneManager(new SceneManager(q))
+        ,   pitchView(0)
+        ,   controlView(0)
         ,   timeLabelView(0)
-//        ,   pitchLabelView(0)
-//        ,   controlLabelView(0)
+        ,   pitchLabelView(0)
+        ,   controlLabelView(0)
 //        ,   undoCmd(0)
         ,   updateViewsTimer(new QTimer(q))
         ,   initialized(false)
@@ -103,46 +103,45 @@ public:
 
     void init()
     {
-//        QWidget *widget = qobject_cast<QWidget*>(q->parent());
-//        pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), widget);
-//        controlView = new ControlView(sceneManager->scene(Ac::ControlScene), widget);
-//        timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget);
-//        pitchLabelView = new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget);
-//        controlLabelView = new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), widget);
+        QWidget *widget = qobject_cast<QWidget*>(q->parent());
+        pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), widget);
+        controlView = new ControlView(sceneManager->scene(Ac::ControlScene), widget);
+        timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget);
+        pitchLabelView = new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget);
+        controlLabelView = new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), widget);
 
-//        q->connect(q, SIGNAL(viewPositionChanged(int)), pitchView, SLOT(viewPositionChanged(int)));
-//        q->connect(q, SIGNAL(viewPositionChanged(int)), controlView, SLOT(viewPositionChanged(int)));
-//        q->connect(q, SIGNAL(viewPositionChanged(int)), timeLabelView, SLOT(viewPositionChanged(int)));
-//        q->connect(q, SIGNAL(viewPositionChanged(int)), pitchLabelView, SLOT(viewPositionChanged(int)));
-//        q->connect(q, SIGNAL(viewPositionChanged(int)), controlLabelView, SLOT(viewPositionChanged(int)));
-//        q->connect(q, SIGNAL(viewScaleChanged(int)), pitchView, SLOT(viewScaleChanged(int)));
-//        q->connect(q, SIGNAL(viewScaleChanged(int)), controlView, SLOT(viewScaleChanged(int)));
-//        q->connect(q, SIGNAL(viewScaleChanged(int)), timeLabelView, SLOT(viewScaleChanged(int)));
-//        q->connect(q, SIGNAL(viewScaleChanged(int)), pitchLabelView, SLOT(viewScaleChanged(int)));
-//        q->connect(q, SIGNAL(viewScaleChanged(int)), controlLabelView, SLOT(viewScaleChanged(int)));
-//        q->connect(q, SIGNAL(scoreLengthChanged()), pitchView, SLOT(scoreLengthChanged()));
-//        q->connect(q, SIGNAL(scoreLengthChanged()), controlView, SLOT(scoreLengthChanged()));
-//        q->connect(q, SIGNAL(scoreLengthChanged()), timeLabelView, SLOT(scoreLengthChanged()));
-//        q->connect(q, SIGNAL(scoreLengthChanged()), pitchLabelView, SLOT(scoreLengthChanged()));
-//        q->connect(q, SIGNAL(scoreLengthChanged()), controlLabelView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), pitchView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), controlView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), timeLabelView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), pitchLabelView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewPositionChanged(int)), controlLabelView, SLOT(viewPositionChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), pitchView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), controlView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), timeLabelView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), pitchLabelView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(viewScaleChanged(int)), controlLabelView, SLOT(viewScaleChanged(int)));
+        q->connect(q, SIGNAL(scoreLengthChanged()), pitchView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), controlView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), timeLabelView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), pitchLabelView, SLOT(scoreLengthChanged()));
+        q->connect(q, SIGNAL(scoreLengthChanged()), controlLabelView, SLOT(scoreLengthChanged()));
 
 //        IDatabase *db = IDatabase::instance();
 //        q->connect(db, SIGNAL(databaseAboutToBeRead()), q, SLOT(databaseAboutToBeRead()));
 //        q->connect(db, SIGNAL(databaseRead()), q, SLOT(databaseRead()));
 //        q->connect(db, SIGNAL(databaseAboutToBeWritten()), q, SLOT(databaseAboutToBeWritten()));
 
-//        IModel *model = IModel::instance();
-//        q->connect(model, SIGNAL(modelAboutToBeReset()), q, SLOT(disableUpdates()));
-//        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchView, SLOT(modelAboutToBeReset()));
-//        q->connect(model, SIGNAL(modelAboutToBeReset()), controlView, SLOT(modelAboutToBeReset()));
-//        q->connect(model, SIGNAL(modelAboutToBeReset()), timeLabelView, SLOT(modelAboutToBeReset()));
-//        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchLabelView, SLOT(modelAboutToBeReset()));
-//        q->connect(model, SIGNAL(modelAboutToBeReset()), controlLabelView, SLOT(modelAboutToBeReset()));
-//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-//        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        IModel *model = IModel::instance();
+        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), controlView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), timeLabelView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), pitchLabelView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(modelAboutToBeReset()), controlLabelView, SLOT(modelAboutToBeReset()));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
+        q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
 //        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex)));
 //        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), controlView, SLOT(dataChanged(QModelIndex)));
 
@@ -158,11 +157,11 @@ public:
     ~GraphicsViewManagerPrivate()
     {
 //        delete undoCmd;
-//        delete controlLabelView;
-//        delete pitchLabelView;
-//        delete timeLabelView;
-//        delete controlView;
-//        delete pitchView;
+        delete controlLabelView;
+        delete pitchLabelView;
+        delete timeLabelView;
+        delete controlView;
+        delete pitchView;
     }
 
     void updateViewVariables()
@@ -260,6 +259,7 @@ GraphicsViewManager::GraphicsViewManager(QWidget *widget)
     d->init();
     IModel *model = IModel::instance();
     connect(model, SIGNAL(dataChanged(const IModelData*,int,int)), SLOT(dataChanged(const IModelData*)));
+    connect(model, SIGNAL(modelAboutToBeReset()), SLOT(disableUpdates()));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
     connect(d->updateViewsTimer, SIGNAL(timeout()), SLOT(updateViews()));
 }
@@ -278,11 +278,11 @@ GraphicsViewManager *GraphicsViewManager::instance()
 QGraphicsView *GraphicsViewManager::view(int type) const
 {
     switch (type) {
-//    case Ac::PitchScene: return d->pitchView;
-//    case Ac::ControlScene: return d->controlView;
-//    case Ac::TimeLabelScene: return d->timeLabelView;
-//    case Ac::PitchLabelScene: return d->pitchLabelView;
-//    case Ac::ControlLabelScene: return d->controlLabelView;
+    case Ac::PitchScene: return d->pitchView;
+    case Ac::ControlScene: return d->controlView;
+    case Ac::TimeLabelScene: return d->timeLabelView;
+    case Ac::PitchLabelScene: return d->pitchLabelView;
+    case Ac::ControlLabelScene: return d->controlLabelView;
     default: return 0;
     }
 }
@@ -395,8 +395,8 @@ void GraphicsViewManager::updateDatabase()
 
 void GraphicsViewManager::clearPickedGrips()
 {
-//    d->pitchView->clearPickedGrips();
-//    d->controlView->clearPickedGrips();
+    d->pitchView->clearPickedGrips();
+    d->controlView->clearPickedGrips();
 }
 
 QPointF GraphicsViewManager::snappedScenePos(const QPointF &pos, int sceneType) const
@@ -421,16 +421,16 @@ QPointF GraphicsViewManager::snappedScenePos(const QPointF &pos, int sceneType) 
 
 void GraphicsViewManager::updateViews()
 {
-//    if (d->pitchView->isDirty())
-//        d->pitchView->updateView();
-//    if (d->controlView->isDirty())
-//        d->controlView->updateView();
-//    if (d->timeLabelView->isDirty())
-//        d->timeLabelView->updateView();
-//    if (d->pitchLabelView->isDirty())
-//        d->pitchLabelView->updateView();
-//    if (d->controlLabelView->isDirty())
-//        d->controlLabelView->updateView();
+    if (d->pitchView->isDirty())
+        d->pitchView->updateView();
+    if (d->controlView->isDirty())
+        d->controlView->updateView();
+    if (d->timeLabelView->isDirty())
+        d->timeLabelView->updateView();
+    if (d->pitchLabelView->isDirty())
+        d->pitchLabelView->updateView();
+    if (d->controlLabelView->isDirty())
+        d->controlLabelView->updateView();
     d->finishUndo();
 }
 
@@ -454,14 +454,14 @@ void GraphicsViewManager::databaseAboutToBeWritten()
 
 void GraphicsViewManager::disableUpdates()
 {
-//    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-//        view(i)->setUpdatesEnabled(false);
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+        view(i)->setUpdatesEnabled(false);
 }
 
 void GraphicsViewManager::enableUpdates()
 {
-//    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-//        view(i)->setUpdatesEnabled(true);
+    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+        view(i)->setUpdatesEnabled(true);
 }
 
 void GraphicsViewManager::dataChanged(const IModelData *data)
@@ -489,7 +489,7 @@ void GraphicsViewManager::startInsertingPoints()
 void GraphicsViewManager::finishInsertingPoints()
 {
     IEditor::instance()->finishCreating();
-//    d->pitchView->finishInsertingPoints();
+    d->pitchView->finishInsertingPoints();
 }
 
 void GraphicsViewManager::cancelPointInsertion()
@@ -498,15 +498,15 @@ void GraphicsViewManager::cancelPointInsertion()
     if (!editor)
         return;
     editor->finishCreating();
-//    d->pitchView->cancelPointInsertion();
+    d->pitchView->cancelPointInsertion();
 }
 
 void GraphicsViewManager::selectAllGrips()
 {
-//    d->pitchView->selectAllGrips();
+    d->pitchView->selectAllGrips();
 }
 
 void GraphicsViewManager::startGripDrag()
 {
-//    d->pitchView->startGripDrag();
+    d->pitchView->startGripDrag();
 }

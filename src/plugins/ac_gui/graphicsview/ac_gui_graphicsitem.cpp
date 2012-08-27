@@ -16,18 +16,11 @@
 **************************************************************************/
 
 #include "ac_gui_graphicsitem.h"
-
-#include <ac_ientity.h>
-
+#include <ientity.h>
 #include <QFont>
 
+using namespace Ac;
 using namespace Qt;
-
-namespace Ac {
-
-using namespace Core;
-
-namespace Gui {
 
 class GraphicsCurveItemPrivate
 {
@@ -71,8 +64,8 @@ GraphicsCurveItem::GraphicsCurveItem(QGraphicsItem *parent)
 {
     QPen pen;
     pen.setCosmetic(true);
-    pen.setCapStyle(Qt::FlatCap);
-    pen.setJoinStyle(Qt::MiterJoin);
+    pen.setCapStyle(FlatCap);
+    pen.setJoinStyle(MiterJoin);
     setPen(pen);
     d->updateColor();
     unhighlight();
@@ -212,6 +205,3 @@ void GraphicsTextItem::setText(const QString &text)
 {
     d->textItem->setPlainText(text);
 }
-
-} // namespace Gui
-} // namespace Ac

@@ -16,11 +16,12 @@
 **************************************************************************/
 
 #include "ac_gui_graphicsscene.h"
+#include <ientity.h>
+#include <idatabase.h>
+#include <imodel.h>
+#include <imodelitem.h>
 
-#include <ac_ientity.h>
-#include <mi_idatabase.h>
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
+static SceneManager *instance = 0;
 
 class SceneManagerPrivate
 {
@@ -50,16 +51,14 @@ public:
         controlLabelScene = new ControlLabelScene(q);
 
         // Add the root entity's graphics items to the scenes.
-        IEntity *root_entity = query<IEntity>(query<IModel>(IDatabase::instance())->rootItem());
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-            QGraphicsScene *scene = q->scene(i);
-            for (int j = 0;  j < Ac::GraphicsItemTransformTypeCount;  ++j)
-                scene->addItem(root_entity->graphicsItem(i, j));
-        }
+//        IEntity *root_entity = query<IEntity>(IDatabase::instance()->rootItem());
+//        for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
+//            QGraphicsScene *scene = q->scene(i);
+//            for (int j = 0;  j < Ac::TransformTypeCount;  ++j)
+//                scene->addItem(root_entity->graphicsItem(i, j));
+//        }
     }
 };
-
-static SceneManager *instance = 0;
 
 SceneManager::SceneManager(QObject *parent)
     :   QObject(parent)

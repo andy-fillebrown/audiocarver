@@ -98,7 +98,6 @@ protected:
             if (list)
                 return list;
         }
-        Q_ASSERT(0);
         return 0;
     }
 

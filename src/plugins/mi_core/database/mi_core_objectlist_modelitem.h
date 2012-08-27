@@ -92,7 +92,6 @@ protected:
 
     IModelItemList *findList(int listType) const
     {
-        Q_ASSERT(0);
         return 0;
     }
 
