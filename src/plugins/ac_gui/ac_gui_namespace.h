@@ -15,30 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CONTROLVIEW_H
-#define AC_GUI_CONTROLVIEW_H
+#ifndef AC_GUI_NAMESPACE_H
+#define AC_GUI_NAMESPACE_H
 
-#include "ac_gui_graphicsview.h"
-#include "ac_gui_namespace.h"
+namespace Ac {
 
-class ControlViewPrivate;
-class ControlView : public GraphicsHView
-{
-    Q_OBJECT
-
-    ControlViewPrivate *d;
-
-public:
-    ControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~ControlView();
-
-protected:
-    int sceneType() const { return Ac::ControlScene; }
-    qreal sceneHeight() const;
-    QPointF sceneCenter() const;
-
-    int positionRoleY() const { return Ac::ControlPositionRole; }
-    int scaleRoleY() const { return Ac::ControlScaleRole; }
+enum SceneType {
+    ControlLabelScene,
+    ControlScene,
+    PitchLabelScene,
+    PitchScene,
+    TimeLabelScene,
+    SceneTypeCount
 };
+
+}
 
 #endif

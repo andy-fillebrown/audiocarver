@@ -25,13 +25,16 @@
 #include <QModelIndex>
 
 class IGripItem;
-
 class QItemSelection;
 
 class GraphicsViewPrivate;
-class GraphicsView : public Mi::Gui::GraphicsView
+class GraphicsView : public Base::GraphicsView
 {
     Q_OBJECT
+
+    friend class GraphicsViewPrivate;
+    friend class GraphicsHView;
+    GraphicsViewPrivate *d;
 
 public:
     GraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
@@ -109,12 +112,6 @@ private slots:
     void clearGripSelection();
     void gripDeselected(IGripItem *grip);
     void modelAboutToBeDestroyed();
-
-private:
-    GraphicsViewPrivate *d;
-    friend class GraphicsViewPrivate;
-
-    friend class GraphicsHView;
 };
 
 class GraphicsHView : public GraphicsView
@@ -133,4 +130,4 @@ protected:
     int scaleRoleX() const { return Ac::TimeScaleRole; }
 };
 
-#endif // AC_GUI_GRAPHICSVIEW_H
+#endif

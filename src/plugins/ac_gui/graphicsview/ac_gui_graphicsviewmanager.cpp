@@ -21,7 +21,7 @@
 //#include "ac_gui_graphicsscene.h"
 //#include "ac_gui_pitchlabelview.h"
 //#include "ac_gui_pitchview.h"
-//#include "ac_gui_timelabelview.h"
+#include "ac_gui_timelabelview.h"
 //#include "ac_undo.h"
 #include <ac_core_constants.h>
 #include <ac_core_namespace.h>
@@ -70,7 +70,7 @@ public:
 //    SceneManager *sceneManager;
 //    PitchView *pitchView;
 //    ControlView *controlView;
-//    TimeLabelView *timeLabelView;
+    TimeLabelView *timeLabelView;
 //    PitchLabelView *pitchLabelView;
 //    ControlLabelView *controlLabelView;
     qreal scoreLength;
@@ -90,7 +90,7 @@ public:
 //        ,   sceneManager(new SceneManager(q))
 //        ,   pitchView(0)
 //        ,   controlView(0)
-//        ,   timeLabelView(0)
+        ,   timeLabelView(0)
 //        ,   pitchLabelView(0)
 //        ,   controlLabelView(0)
 //        ,   undoCmd(0)

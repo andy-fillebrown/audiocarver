@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_TIMELABELVIEW_H
-#define AC_TIMELABELVIEW_H
+#ifndef AC_GUI_TIMELABELVIEW_H
+#define AC_GUI_TIMELABELVIEW_H
 
-#include <ac_gui_labelview.h>
-
-#include <ac_gui_namespace.h>
+#include "ac_gui_labelview.h"
+#include "ac_gui_namespace.h"
 
 class TimeLabelViewPrivate;
-
 class TimeLabelView : public LabelView
 {
     Q_OBJECT
+
+    TimeLabelViewPrivate *d;
 
 public:
     TimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
@@ -34,7 +34,7 @@ public:
 
 protected:
     qreal paddingScale() const { return qreal(0.5f) * sceneTransform().m11(); }
-    IModelList *gridLineList() const;
+    IModelItem *gridLineList() const;
     int scaleRole() const { return Ac::TimeScaleRole; }
 
     int sceneType() const { return Ac::TimeLabelScene; }
@@ -45,9 +45,6 @@ protected:
     int scaleRoleX() const { return Ac::TimeScaleRole; }
 
     void zoomStarting();
-
-private:
-    TimeLabelViewPrivate *d;
 };
 
-#endif // AC_TIMELABELVIEW_H
+#endif

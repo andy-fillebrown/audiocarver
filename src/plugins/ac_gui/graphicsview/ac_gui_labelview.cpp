@@ -16,19 +16,16 @@
 **************************************************************************/
 
 #include "ac_gui_labelview.h"
-
-#include <mi_idatabase.h>
-#include <mi_imodel.h>
-#include <mi_imodeldata.h>
-#include <mi_imodellist.h>
-
-#include <ac_gui_viewmanager.h>
-
+#include "ac_gui_graphicsviewmanager.h"
+#include <idatabase.h>
+#include <imodel.h>
+#include <imodeldata.h>
+#include <imodelitem.h>
 #include <QMouseEvent>
-
 #include <QModelIndex>
 
 using namespace Ac;
+using namespace Qt;
 
 static const QCursor &zoomCursor()
 {
@@ -53,7 +50,7 @@ public:
     void updateGridLineVisibilites()
     {
         const qreal padding = qreal(30.0f) / q->paddingScale();
-        IModelList *grid_lines = q->gridLineList();
+        IModelItem *grid_lines = q->gridLineList();
         const int n = grid_lines->count();
         int minPriority = INT_MAX;
         int prevPriority = 0;
@@ -95,7 +92,7 @@ LabelView::LabelView(QGraphicsScene *scene, QWidget *parent)
     ,   d(new LabelViewPrivate(this))
 {
     setBackgroundRole(QPalette::Window);
-    setCursor(Qt::OpenHandCursor);
+    setCursor(OpenHandCursor);
 }
 
 LabelView::~LabelView()
@@ -149,12 +146,12 @@ void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bott
 
 void LabelView::panFinished()
 {
-    setCursor(Qt::OpenHandCursor);
+    setCursor(OpenHandCursor);
 }
 
 void LabelView::zoomFinished()
 {
-    setCursor(Qt::OpenHandCursor);
+    setCursor(OpenHandCursor);
 }
 
 void LabelView::updateViewSettings()
@@ -165,23 +162,23 @@ void LabelView::updateViewSettings()
 
 void LabelView::mousePressEvent(QMouseEvent *event)
 {
-    if (Qt::LeftButton == event->button())
+    if (LeftButton == event->button())
         if (selectPlayCursor(event->pos()))
             return;
-    QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
+    QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), RightButton, event->buttons(), event->modifiers());
     GraphicsView::mousePressEvent(e);
     delete e;
 }
 
 void LabelView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (Qt::LeftButton == event->button()) {
+    if (LeftButton == event->button()) {
         if (isPlayCursorSelected()) {
             finishDraggingPlayCursor(event->pos());
             return;
         }
     }
-    QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), Qt::RightButton, event->buttons(), event->modifiers());
+    QMouseEvent *e = new QMouseEvent(QEvent::MouseButtonPress, event->pos(), RightButton, event->buttons(), event->modifiers());
     GraphicsView::mouseReleaseEvent(e);
     delete e;
 }
@@ -189,12 +186,12 @@ void LabelView::mouseReleaseEvent(QMouseEvent *event)
 void LabelView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     GraphicsView::mouseDoubleClickEvent(event);
-    setCursor(Qt::OpenHandCursor);
+    setCursor(OpenHandCursor);
 }
 
 QPointF LabelVView::sceneCenter() const
 {
-    return QPointF(qreal(0.5f), -ViewManager::instance()->position(positionRoleY()));
+    return QPointF(qreal(0.5f), -GraphicsViewManager::instance()->position(positionRoleY()));
 }
 
 void LabelVView::zoomStarting()

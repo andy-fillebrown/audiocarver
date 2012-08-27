@@ -16,18 +16,17 @@
 **************************************************************************/
 
 #include "ac_gui_timelabelview.h"
-
-#include <ac_gui_viewmanager.h>
-
-#include <mi_idatabase.h>
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
-
+#include "ac_gui_graphicsviewmanager.h"
+#include <idatabase.h>
+#include <imodel.h>
+#include <imodelitemlist.h>
 #include <QModelIndex>
+
+using namespace Ac;
 
 static const QCursor &zoomCursor()
 {
-    static QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-h-cursor.png"));
+    static QCursor cursor(QPixmap(":/ac_gui/images/zoom-h-cursor.png"));
     return cursor;
 }
 
@@ -61,21 +60,21 @@ TimeLabelView::~TimeLabelView()
     delete d;
 }
 
-IModelList *TimeLabelView::gridLineList() const
+IModelItem *TimeLabelView::gridLineList() const
 {
-    return query<IModel>(IDatabase::instance())->rootItem()->findList(Ac::TimeGridLineItem);
+    return IDatabase::instance()->rootItem()->findList(TimeGridLineItem);
 }
 
 qreal TimeLabelView::sceneWidth() const
 {
-    const ViewManager *vm = ViewManager::instance();
-    return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
+    const GraphicsViewManager *vm = GraphicsViewManager::instance();
+    return vm->scoreLength() / vm->scale(TimeScaleRole);
 }
 
 QPointF TimeLabelView::sceneCenter() const
 {
-    const ViewManager *vm = ViewManager::instance();
-    return QPointF(vm->position(Ac::TimePositionRole), qreal(0.0f));
+    const GraphicsViewManager *vm = GraphicsViewManager::instance();
+    return QPointF(vm->position(TimePositionRole), qreal(0.0f));
 }
 
 void TimeLabelView::zoomStarting()

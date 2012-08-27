@@ -16,8 +16,9 @@
 **************************************************************************/
 
 #include "ac_gui_controlview.h"
+#include "ac_gui_graphicsviewmanager.h"
 
-#include <ac_gui_viewmanager.h>
+using namespace Ac;
 
 class ControlViewPrivate
 {
@@ -48,11 +49,11 @@ ControlView::~ControlView()
 
 qreal ControlView::sceneHeight() const
 {
-    return qreal(1.0f) / ViewManager::instance()->scale(Ac::ControlScaleRole);
+    return qreal(1.0f) / GraphicsViewManager::instance()->scale(Ac::ControlScaleRole);
 }
 
 QPointF ControlView::sceneCenter() const
 {
-    ViewManager *vm = ViewManager::instance();
-    return QPointF(vm->position(Ac::TimePositionRole), -vm->position(Ac::ControlPositionRole));
+    GraphicsViewManager *vm = GraphicsViewManager::instance();
+    return QPointF(vm->position(TimePositionRole), -vm->position(ControlPositionRole));
 }

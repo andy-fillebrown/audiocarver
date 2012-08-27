@@ -15,33 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_CONTROLLABELVIEW_H
-#define AC_CONTROLLABELVIEW_H
+#ifndef AC_GUI_CONTROLLABELVIEW_H
+#define AC_GUI_CONTROLLABELVIEW_H
 
-#include <ac_gui_labelview.h>
-
-#include <ac_gui_namespace.h>
+#include "ac_gui_labelview.h"
+#include "ac_gui_namespace.h"
 
 class ControlLabelViewPrivate;
 class ControlLabelView : public LabelVView
 {
     Q_OBJECT
 
+    ControlLabelViewPrivate *d;
+
 public:
     ControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~ControlLabelView();
 
 protected:
-    IModelList *gridLineList() const;
+    IModelItem *gridLineList() const;
 
     int sceneType() const { return Ac::ControlLabelScene; }
     qreal sceneHeight() const;
 
     int positionRoleY() const { return Ac::ControlPositionRole; }
     int scaleRoleY() const { return Ac::ControlScaleRole; }
-
-private:
-    ControlLabelViewPrivate *d;
 };
 
-#endif // AC_CONTROLLABELVIEW_H
+#endif

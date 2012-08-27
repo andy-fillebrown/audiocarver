@@ -16,24 +16,21 @@
 **************************************************************************/
 
 #include "ac_gui_pitchview.h"
-
-#include <ac_gui_constants.h>
-#include <ac_ientity.h>
-#include <ac_gui_viewmanager.h>
-
-#include <mi_idataobjectfactory.h>
+#include "ac_gui_constants.h"
+#include "ac_gui_graphicsviewmanager.h"
 #include <ac_core_point.h>
-
-#include <mi_ieditor.h>
-
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
-
+#include <idatabaseobjectfactory.h>
+#include <ieditor.h>
+#include <ientity.h>
+#include <imodel.h>
+#include <imodelitem.h>
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
-
 #include <QModelIndexList>
+
+using namespace Ac;
+using namespace Qt;
 
 class PitchViewPrivate
 {
@@ -42,7 +39,7 @@ public:
     QModelIndexList trackSSIndexes;
     QList<IEntity*> currentNotes;
     QList<IEntity*> currentPitchCurves;
-    Ac::Core::PointList currentPoints;
+    PointList currentPoints;
     uint creatingNotes : 1;
     uint notesStarted : 1;
     uint curve : 1;
@@ -66,14 +63,14 @@ public:
 
 //        for (int i = 0;  i < trackSS_n;  ++i) {
 //            const QModelIndex &trackIndex = trackSSIndexes.at(i);
-//            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(Ac::NoteItem);
+//            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(NoteItem);
 //            const QModelIndex notesIndex = model->indexFromItem(notesItem);
 
-//            IModelItem *noteItem = ObjectFactory::instance()->create(Ac::NoteItem);
+//            IModelItem *noteItem = ObjectFactory::instance()->create(NoteItem);
 //            model->insertItem(noteItem, model->rowCount(notesIndex), notesIndex);
 
 //            IEntity *noteEntity = query<IEntity>(noteItem);
-//            const QList<IEntity*> pitchSubEntities = noteEntity->subEntities(Ac::PitchScene);
+//            const QList<IEntity*> pitchSubEntities = noteEntity->subEntities(PitchScene);
 //            IEntity *pitchCurveEntity = pitchSubEntities.first();
 
 //            trackSSIndexes.append(trackIndex);
@@ -90,8 +87,8 @@ public:
 
     void addNotePoint(const QPoint &pos)
     {
-//        if (Qt::ControlModifier & QApplication::keyboardModifiers())
-//            currentPoints.last().curveType = Ac::BezierCurve;
+//        if (ControlModifier & QApplication::keyboardModifiers())
+//            currentPoints.last().curveType = BezierCurve;
 
 //        const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
 //        currentPoints.append(scenePos);
@@ -133,7 +130,7 @@ public:
 //            currentPitchCurves[i]->setPoints(currentPoints);
 
 //            const QModelIndex &trackIndex = trackSSIndexes.at(i);
-//            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(Ac::NoteItem);
+//            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(NoteItem);
 //            const QModelIndex notesIndex = model->indexFromItem(notesItem);
 //            model->removeItem(model->rowCount(notesIndex) - 1, notesIndex);
 
@@ -159,7 +156,7 @@ public:
 
 //        for (int i = 0;  i < notes_n;  ++i) {
 //            const QModelIndex &trackIndex = trackSSIndexes.at(i);
-//            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(Ac::NoteItem);
+//            IModelItem *notesItem = model->itemFromIndex(trackIndex)->findModelItemList(NoteItem);
 //            const QModelIndex notesIndex = model->indexFromItem(notesItem);
 //            model->removeItem(model->rowCount(notesIndex) - 1, notesIndex);
 //        }
@@ -202,18 +199,18 @@ PitchView::~PitchView()
 
 qreal PitchView::sceneHeight() const
 {
-    return qreal(127.0f) / ViewManager::instance()->scale(Ac::PitchScaleRole);
+    return qreal(127.0f) / GraphicsViewManager::instance()->scale(PitchScaleRole);
 }
 
 QPointF PitchView::sceneCenter() const
 {
-    ViewManager *vm = ViewManager::instance();
-    return QPointF(vm->position(Ac::TimePositionRole), -vm->position(Ac::PitchPositionRole));
+    GraphicsViewManager *vm = GraphicsViewManager::instance();
+    return QPointF(vm->position(TimePositionRole), -vm->position(PitchPositionRole));
 }
 
 void PitchView::createNote()
 {
-//    d->trackSSIndexes = IModel::instance()->findIndexes(Ac::TrackItem, Ac::RecordingRole, true);
+//    d->trackSSIndexes = IModel::instance()->findIndexes(TrackItem, RecordingRole, true);
 //    if (d->trackSSIndexes.isEmpty())
 //        QMessageBox::warning(this, PRO_NAME_STR, "No tracks are recording.");
 //    else {
@@ -225,12 +222,12 @@ void PitchView::createNote()
 void PitchView::mousePressEvent(QMouseEvent *event)
 {
     if (d->creatingNotes) {
-        if (Qt::LeftButton == event->button()) {
+        if (LeftButton == event->button()) {
             if (!d->currentPoints.count())
                 d->startNote(event->pos());
             else
                 d->addNotePoint(event->pos());
-            setFocus(Qt::MouseFocusReason);
+            setFocus(MouseFocusReason);
         }
     } else
         GraphicsView::mousePressEvent(event);
@@ -248,7 +245,7 @@ void PitchView::mouseMoveEvent(QMouseEvent *event)
 void PitchView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d->creatingNotes) {
-        if (Qt::RightButton == event->button()) {
+        if (RightButton == event->button()) {
             d->finishNote();
             event->accept();
         }
@@ -259,7 +256,7 @@ void PitchView::mouseReleaseEvent(QMouseEvent *event)
 void PitchView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (d->creatingNotes) {
-        if (Qt::LeftButton == event->button()) {
+        if (LeftButton == event->button()) {
             d->finishNote();
             event->accept();
         }
@@ -272,10 +269,10 @@ void PitchView::keyReleaseEvent(QKeyEvent *event)
     if (d->creatingNotes) {
         const int key = event->key();
         switch (key) {
-        case Qt::Key_Enter:
+        case Key_Enter:
             d->finishNote();
             break;
-        case Qt::Key_Escape:
+        case Key_Escape:
             d->cancelNote();
             break;
         }

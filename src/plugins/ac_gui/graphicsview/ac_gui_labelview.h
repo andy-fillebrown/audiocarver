@@ -15,13 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_LABELVIEW_H
-#define AC_LABELVIEW_H
+#ifndef AC_GUI_LABELVIEW_H
+#define AC_GUI_LABELVIEW_H
 
-#include <ac_gui_graphicsview.h>
+#include "ac_gui_graphicsview.h"
 
-class IModelList;
-
+class IModelItem;
 class QModelIndex;
 
 class LabelViewPrivate;
@@ -29,11 +28,13 @@ class LabelView : public GraphicsView
 {
     Q_OBJECT
 
+    friend class LabelViewPrivate;
+    LabelViewPrivate *d;
+
 public:
     LabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~LabelView();
 
-    // GraphicsView
     void updateView();
     void viewScaleChanged(int role);
     void scoreLengthChanged();
@@ -42,7 +43,7 @@ public:
 
 protected:
     virtual qreal paddingScale() const = 0;
-    virtual IModelList *gridLineList() const = 0;
+    virtual IModelItem *gridLineList() const = 0;
     virtual int scaleRole() const = 0;
 
     QPointF sceneOffset() const { return QPointF(0.0f, qreal(10.0f) / (qreal(height()) / sceneHeight())); }
@@ -56,10 +57,6 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
-
-private:
-    LabelViewPrivate *d;
-    friend class LabelViewPrivate;
 };
 
 class LabelVView : public LabelView
@@ -81,4 +78,4 @@ protected:
     void zoomStarting();
 };
 
-#endif // AC_LABELVIEW_H
+#endif

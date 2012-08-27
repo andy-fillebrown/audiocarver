@@ -16,12 +16,12 @@
 **************************************************************************/
 
 #include "ac_gui_pitchlabelview.h"
+#include "ac_gui_graphicsviewmanager.h"
+#include <idatabase.h>
+#include <imodel.h>
+#include <imodelitemlist.h>
 
-#include <ac_gui_viewmanager.h>
-
-#include <mi_idatabase.h>
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
+using namespace Ac;
 
 class PitchLabelViewPrivate
 {
@@ -50,12 +50,12 @@ PitchLabelView::~PitchLabelView()
     delete d;
 }
 
-IModelList *PitchLabelView::gridLineList() const
+IModelItem *PitchLabelView::gridLineList() const
 {
-    return query<IModel>(IDatabase::instance())->rootItem()->findList(Ac::PitchGridLineItem);
+    return IDatabase::instance()->rootItem()->findList(PitchGridLineItem);
 }
 
 qreal PitchLabelView::sceneHeight() const
 {
-    return qreal(127.0f) / ViewManager::instance()->scale(Ac::PitchScaleRole);
+    return qreal(127.0f) / GraphicsViewManager::instance()->scale(PitchScaleRole);
 }

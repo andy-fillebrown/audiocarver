@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHVIEW_H
-#define AC_PITCHVIEW_H
+#ifndef AC_GUI_PITCHVIEW_H
+#define AC_GUI_PITCHVIEW_H
 
-#include <ac_gui_graphicsview.h>
-
-#include <ac_gui_namespace.h>
+#include "ac_gui_graphicsview.h"
+#include "ac_gui_namespace.h"
 
 class PitchViewPrivate;
-
 class PitchView : public GraphicsHView
 {
     Q_OBJECT
+
+    PitchViewPrivate *d;
 
 public:
     PitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
@@ -48,9 +48,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-
-private:
-    PitchViewPrivate *d;
 };
 
-#endif // AC_PITCHVIEW_H
+#endif

@@ -15,34 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_PITCHLABELVIEW_H
-#define AC_PITCHLABELVIEW_H
+#ifndef AC_GUI_PITCHLABELVIEW_H
+#define AC_GUI_PITCHLABELVIEW_H
 
-#include <ac_gui_labelview.h>
-
-#include <ac_gui_namespace.h>
+#include "ac_gui_labelview.h"
+#include "ac_gui_namespace.h"
 
 class PitchLabelViewPrivate;
-
 class PitchLabelView : public LabelVView
 {
     Q_OBJECT
+
+    PitchLabelViewPrivate *d;
 
 public:
     PitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~PitchLabelView();
 
 protected:
-    IModelList *gridLineList() const;
+    IModelItem *gridLineList() const;
 
     int sceneType() const { return Ac::PitchLabelScene; }
     qreal sceneHeight() const;
 
     int positionRoleY() const { return Ac::PitchPositionRole; }
     int scaleRoleY() const { return Ac::PitchScaleRole; }
-
-private:
-    PitchLabelViewPrivate *d;
 };
 
-#endif // AC_PITCHLABELVIEW_H
+#endif
