@@ -15,33 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef ISUBENTITY_H
-#define ISUBENTITY_H
+#include "ac_gui_curve_graphicsitem.h"
+#include "ac_gui_graphicsitem.h"
+#include <ientity.h>
 
-#include <ichildentity.h>
+using namespace Ac;
 
-class QRectF;
+namespace Curve {
 
-class ISubEntity : public IChildEntity
+GraphicsItem::~GraphicsItem()
 {
-public:
-    enum { InterfaceType = I::ISubEntity };
+    delete _graphicsCurveItem;
+}
 
-    virtual int sceneType() const = 0;
-    virtual bool isCurve() const = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
+IUnknown *GraphicsItem::initialize()
+{
+    _graphicsCurveItem = new GraphicsCurveItem;
+    _graphicsCurveItem->setEntity(query<IEntity>(this));
+    return this;
+}
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+void GraphicsItem::highlight()
+{
+    _graphicsCurveItem->highlight();
+}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IChildEntity::isTypeOfInterface(interfaceType);
-    }
-};
+void GraphicsItem::unhighlight()
+{
+    _graphicsCurveItem->unhighlight();
+}
 
-#endif
+bool GraphicsItem::isVisible() const
+{
+    return _graphicsCurveItem->isVisible();
+}
+
+}

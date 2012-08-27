@@ -28,7 +28,7 @@ class IChildEntity : public IUnknown
 public:
     enum { InterfaceType = I::IChildEntity };
 
-    virtual IParentEntity *parentEntity() const = 0;
+    virtual IParentEntity *parent() const = 0;
 
     int interfaceType() const
     {
@@ -41,4 +41,4 @@ public:
     }
 };
 
-#endif // AC_ICHILDENTITY_H
+#endif

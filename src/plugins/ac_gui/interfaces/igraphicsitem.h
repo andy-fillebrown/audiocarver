@@ -15,21 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef ISUBENTITY_H
-#define ISUBENTITY_H
+#ifndef IGRAPHICSITEM_H
+#define IGRAPHICSITEM_H
 
-#include <ichildentity.h>
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
+#include <ac_core_point.h>
 
 class QRectF;
 
-class ISubEntity : public IChildEntity
+class IGraphicsItem : public IUnknown
 {
 public:
-    enum { InterfaceType = I::ISubEntity };
+    enum { InterfaceType = I::IGraphicsItem };
 
-    virtual int sceneType() const = 0;
-    virtual bool isCurve() const = 0;
+    virtual void setPoints(const PointList &points) = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
+    virtual void highlight() = 0;
+    virtual void unhighlight() = 0;
+    virtual bool isVisible() const = 0;
 
     int interfaceType() const
     {
@@ -38,9 +42,7 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IChildEntity::isTypeOfInterface(interfaceType);
+        return InterfaceType == interfaceType;
     }
 };
 

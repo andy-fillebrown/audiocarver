@@ -2,6 +2,7 @@
 SOURCE_FILES *= \
     ichildentity \
     ientity \
+    igraphicsitem \
     igraphicsscene \
     igraphicsview \
     igraphicsviewgroup \

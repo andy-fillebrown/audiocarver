@@ -27,6 +27,7 @@ enum AcGuiInterfaces {
     IEntity,
     IParentEntity,
     ISubEntity,
+    IGraphicsItem,
     IGrip,
     IPlayCursor,
     IPoints,

@@ -3,9 +3,9 @@ load(../mi_gui/mi_gui.prf)
 load(../ac_core/ac_core.prf)
 
 DIRS = \
+    database \
 #    dialogs \
 #    filers \
-#    graphics \
     graphicsview \
 #    implementations \
     interfaces \

@@ -15,33 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef ISUBENTITY_H
-#define ISUBENTITY_H
+#ifndef AC_GUI_CURVE_SUBENTITY_H
+#define AC_GUI_CURVE_SUBENTITY_H
 
-#include <ichildentity.h>
+#include <isubentity.h>
 
-class QRectF;
+class IAggregate;
 
-class ISubEntity : public IChildEntity
+namespace Curve {
+
+class SubEntity : public ISubEntity
 {
+    IAggregate *_aggregate;
+
 public:
-    enum { InterfaceType = I::ISubEntity };
+    void *queryInterface(int interfaceType) const;
 
-    virtual int sceneType() const = 0;
-    virtual bool isCurve() const = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
+protected:
+    SubEntity(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+    {}
 
-    int interfaceType() const
+    virtual IUnknown *initialize();
+
+    IParentEntity *parent() const;
+
+    bool isCurve() const
     {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IChildEntity::isTypeOfInterface(interfaceType);
+        return true;
     }
 };
+
+}
 
 #endif
