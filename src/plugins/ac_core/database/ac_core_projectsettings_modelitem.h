@@ -18,15 +18,15 @@
 #ifndef AC_CORE_PROJECTSETTINGS_MODELITEM_H
 #define AC_CORE_PROJECTSETTINGS_MODELITEM_H
 
-#include <mi_core_modelitem.h>
+#include <mi_core_object_modelitem.h>
 
 namespace ProjectSettings {
 
-class ModelItem : public Base::ModelItem
+class ModelItem : public Object::ModelItem
 {
 public:
     ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
+        :   Object::ModelItem(aggregate)
     {}
 
     IUnknown *initialize();

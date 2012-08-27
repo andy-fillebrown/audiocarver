@@ -1,19 +1,12 @@
 
 SOURCE_FILES = \
     aggregate \
-    database \
-    databaseobjectfactory \
-    filerfactory \
-    math \
-    model \
-    modeldata \
-    modeldatawatcher \
-    modelitem \
-    modelitemlist \
-    modelitemwatcher \
-    qmodel \
-    session \
-    utilities \
+    object_modeldata \
+    object_modeldatawatcher \
+    object_modelitem \
+    objectlist_modeldata \
+    objectlist_modelitem \
+    objectlist_modelitemwatcher \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

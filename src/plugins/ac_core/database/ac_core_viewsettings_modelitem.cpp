@@ -26,7 +26,7 @@ namespace ViewSettings {
 
 IUnknown *ModelItem::initialize()
 {
-    return Base::ModelItem::initialize();
+    return Object::ModelItem::initialize();
 }
 
 int ModelItem::itemType() const
@@ -38,7 +38,7 @@ bool ModelItem::isTypeOfItem(int itemType) const
 {
     if (ViewSettingsItem == itemType)
         return true;
-    return Base::ModelItem::isTypeOfItem(itemType);
+    return Object::ModelItem::isTypeOfItem(itemType);
 }
 
 void ModelItem::reset()
@@ -50,7 +50,7 @@ void ModelItem::reset()
     data->set(VIEWSCALE_MIN, TimeScaleRole);
     data->set(VIEWSCALE_MIN, PitchScaleRole);
     data->set(VIEWSCALE_MIN, ControlScaleRole);
-    Base::ModelItem::reset();
+    Object::ModelItem::reset();
 }
 
 }

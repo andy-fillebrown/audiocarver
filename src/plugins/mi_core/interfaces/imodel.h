@@ -36,12 +36,21 @@ public:
 
     static IModel *instance();
 
-    virtual IModelData *indexData(const QModelIndex &index) const = 0;
-    virtual IModelItem *indexItem(const QModelIndex &index) const = 0;
+    virtual IModelData *dataFromIndex(const QModelIndex &index) const = 0;
+    virtual QModelIndex indexFromData(const IModelData *data) const = 0;
+    virtual IModelItem *itemFromIndex(const QModelIndex &index) const = 0;
+    virtual QModelIndex indexFromItem(const IModelItem *item) const = 0;
     virtual void beginChangeData(const IModelData *data, int role, int changeType) = 0;
     virtual void endChangeData(const IModelData *data, int role, int changeType) = 0;
-    virtual void beginChangeParent(const IModelItem* item) = 0;
-    virtual void endChangeParent(const IModelItem *item) = 0;
+    virtual void beginInsertItem(const IModelItem* parent, int index) = 0;
+    virtual void endInsertItem(const IModelItem *parent, int index) = 0;
+    virtual void beginRemoveItem(const IModelItem *parent, int index) = 0;
+    virtual void endRemoveItem(const IModelItem *parent, int index) = 0;
+
+    virtual void reset()
+    {
+        QAbstractItemModel::reset();
+    }
 
     int interfaceType() const
     {
@@ -63,8 +72,10 @@ public:
 signals:
     void dataAboutToBeChanged(const IModelData *data, int role, int changeType);
     void dataChanged(const IModelData *data, int role, int changeType);
-    void parentAboutToBeChanged(const IModelItem *item);
-    void parentChanged(const IModelItem *item);
+    void itemAboutToBeInserted(const IModelItem *parent, int index);
+    void itemInserted(const IModelItem *parent, int index);
+    void itemAboutToBeRemoved(const IModelItem *parent, int index);
+    void itemRemoved(const IModelItem *parent, int index);
 };
 
 #endif

@@ -15,35 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODELITEM_H
-#define MI_CORE_MODELITEM_H
+#ifndef MI_CORE_OBJECT_MODELDATA_H
+#define MI_CORE_OBJECT_MODELDATA_H
 
-#include <imodelitem.h>
+#include <imodeldata.h>
 #include "mi_core_global.h"
 
 class IAggregate;
 
-namespace Base {
+namespace Object {
 
-class MI_CORE_EXPORT ModelItem : public IModelItem
+class MI_CORE_EXPORT ModelData : public IModelData
 {
     IAggregate *_aggregate;
-    IModelItem *_parent;
 
-    enum { ItemCount = 0 };
+    QString _name;
+    enum { RoleCount = 1 };
 
 public:
     void *queryInterface(int interfaceType) const;
 
 protected:
     enum {
-        ItemCountOffset = 0,
-        TotalItemCount = ItemCount
+        RoleCountOffset = 0,
+        TotalRoleCount = RoleCount
     };
 
-    ModelItem(IAggregate *aggregate)
+    ModelData(IAggregate *aggregate)
         :   _aggregate(aggregate)
-        ,   _parent(0)
     {}
 
     virtual IUnknown *initialize();
@@ -53,54 +52,27 @@ protected:
         return _aggregate;
     }
 
-    int itemType() const;
-
-    bool isTypeOfItem(int itemType) const
+    const QString &name() const
     {
-        return false;
+        return _name;
     }
 
-    IModelItem *parent() const
+    bool setName(const QString &name);
+
+    int roleCount() const
     {
-        return _parent;
+        return RoleCount;
     }
 
-    void setParent(IModelItem *parent);
-    IModelItemList *list() const;
+    int roleAt(int i) const;
 
-    int count() const
+    int flags() const
     {
-        return 0;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
-    int indexOf(IModelItem *item) const
-    {
-        Q_ASSERT(false);
-        return -1;
-    }
-
-    IModelItem *at(int i) const
-    {
-        Q_ASSERT(false);
-        return 0;
-    }
-
-    IModelItem *findItem(int itemType) const
-    {
-        return 0;
-    }
-
-    IModelItemList *findList(int listType) const
-    {
-        return 0;
-    }
-
-    void reset()
-    {
-        const int item_count = count();
-        for (int i = 0;  i < item_count;  ++i)
-            at(i)->reset();
-    }
+    QVariant getValue(int role) const;
+    bool setValue(const QVariant &value, int role);
 };
 
 }

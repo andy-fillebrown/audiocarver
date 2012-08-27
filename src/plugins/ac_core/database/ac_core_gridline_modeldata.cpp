@@ -26,7 +26,7 @@ using namespace Mi;
 namespace GridLine {
 
 ModelData::ModelData(IAggregate *aggregate)
-    :   Base::ModelData(aggregate)
+    :   Object::ModelData(aggregate)
     ,   _location(0.0f)
     ,   _priority(0)
     ,   _color(lightGray)
@@ -34,7 +34,7 @@ ModelData::ModelData(IAggregate *aggregate)
 
 IUnknown *ModelData::initialize()
 {
-    return Base::ModelData::initialize();
+    return Object::ModelData::initialize();
 }
 
 bool ModelData::setLocation(qreal location)
@@ -88,7 +88,7 @@ int ModelData::roleAt(int i) const
     case 3:
         return ColorRole;
     default:
-        return Base::ModelData::roleAt(i);
+        return Object::ModelData::roleAt(i);
     }
 }
 
@@ -104,7 +104,7 @@ QVariant ModelData::getValue(int role) const
     case ColorRole:
         return intToColorString(color());
     default:
-        return Base::ModelData::getValue(role);
+        return Object::ModelData::getValue(role);
     }
 }
 
@@ -120,7 +120,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     case ColorRole:
         return setColor(colorStringToInt(qvariant_cast<QString>(value)));
     default:
-        return Base::ModelData::setValue(value, role);
+        return Object::ModelData::setValue(value, role);
     }
 }
 

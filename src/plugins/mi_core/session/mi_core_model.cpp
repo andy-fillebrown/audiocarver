@@ -17,10 +17,13 @@
 
 #include "mi_core_model.h"
 #include <iaggregate.h>
+#include <idatabase.h>
 #include <imodel.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
 #include <isession.h>
+
+using namespace Qt;
 
 static IModel *instance = 0;
 
@@ -63,46 +66,112 @@ void Model::beginChangeData(const IModelData *data, int role, int changeType)
 void Model::endChangeData(const IModelData *data, int role, int changeType)
 {
     emit dataChanged(data, role, changeType);
+    const QModelIndex data_index = indexFromData(data);
+    QAbstractItemModel::emit dataChanged(data_index, data_index);
 }
 
-void Model::beginChangeParent(const IModelItem *item)
+void Model::beginInsertItem(const IModelItem *parent, int index)
 {
-    emit parentAboutToBeChanged(item);
+    emit itemAboutToBeInserted(parent, index);
+    beginInsertRows(indexFromItem(parent), index, index);
 }
 
-void Model::endChangeParent(const IModelItem *item)
+void Model::endInsertItem(const IModelItem *parent, int index)
 {
-    emit parentChanged(item);
+    emit itemInserted(parent, index);
+    endInsertRows();
+    QModelIndex parent_index = indexFromItem(parent);
+    emit QAbstractItemModel::emit dataChanged(parent_index, parent_index);
 }
 
-IModelData *Model::indexData(const QModelIndex &index) const
+void Model::beginRemoveItem(const IModelItem *parent, int index)
 {
-    return query<IModelData>(indexItem(index));
+    emit itemAboutToBeRemoved(parent, index);
+    QModelIndex parent_index = indexFromItem(parent);
+    beginRemoveRows(parent_index, index, index);
 }
 
-IModelItem *Model::indexItem(const QModelIndex &index) const
+void Model::endRemoveItem(const IModelItem *parent, int index)
 {
-    return static_cast<IModelItem*>(index.internalPointer());
+    emit itemRemoved(parent, index);
+    endRemoveRows();
+    QModelIndex parent_index = indexFromItem(parent);
+    emit QAbstractItemModel::emit dataChanged(parent_index, parent_index);
+}
+
+IModelData *Model::dataFromIndex(const QModelIndex &index) const
+{
+    return query<IModelData>(itemFromIndex(index));
+}
+
+IModelItem *Model::itemFromIndex(const QModelIndex &index) const
+{
+    if ((index.row() < 0)
+            || (index.column() < 0)
+            || (index.model() != this))
+        return IDatabase::instance()->rootItem();
+    IModelItem *parent_item = static_cast<IModelItem*>(index.internalPointer());
+    return parent_item ? parent_item->at(index.row()) : IDatabase::instance()->rootItem();
+}
+
+QModelIndex Model::indexFromData(const IModelData *data) const
+{
+    return indexFromItem(query<IModelItem>(data));
+}
+
+QModelIndex Model::indexFromItem(const IModelItem *item) const
+{
+    if (!item)
+        return QModelIndex();
+    IModelItem *parent = item->parent();
+    if (!parent)
+        return QModelIndex();
+    QModelIndex index = createIndex(parent->indexOf(item), 0, parent);
+    if (!index.isValid())
+        index = createIndex(parent->indexOf(item), 0, parent);
+    Q_ASSERT(index.isValid());
+    return index;
 }
 
 QModelIndex Model::index(int row, int column, const QModelIndex &parent) const
 {
-    return QModelIndex();
+    IModelItem *parent_item = parent.isValid() ? itemFromIndex(parent) : IDatabase::instance()->rootItem();
+    if (!parent_item
+            || row < 0
+            || column < 0
+            || parent_item->count() <= row
+            || 1 <= column)
+        return QModelIndex();
+    QModelIndex index = createIndex(row, column, parent_item);
+    Q_ASSERT(index.isValid());
+    return index;
 }
 
 QModelIndex Model::parent(const QModelIndex &child) const
 {
-    return QModelIndex();
+    if (child.row() < 0
+            || child.column() < 0
+            || child.model() != this)
+        return QModelIndex();
+    return indexFromItem(static_cast<IModelItem*>(child.internalPointer()));
 }
 
 int Model::rowCount(const QModelIndex &parent) const
 {
-    return 0;
+    IModelItem *parent_item = itemFromIndex(parent);
+    return parent_item ? parent_item->count() : 0;
 }
 
 QVariant Model::data(const QModelIndex &index, int role) const
 {
-    return indexData(index)->getValue(role);
+    IModelData *index_data = dataFromIndex(index);
+    return index_data ? index_data->getValue(role) : QVariant();
+}
+
+ItemFlags Model::flags(const QModelIndex &index) const
+{
+    IModelData *index_data = index.isValid() ? dataFromIndex(index) : query<IModelData>(IDatabase::instance()->rootItem());
+    return index_data ? ItemFlags(index_data->flags()) : NoItemFlags;
 }
 
 }

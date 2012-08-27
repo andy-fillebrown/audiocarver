@@ -18,19 +18,19 @@
 #ifndef AC_CORE_CURVE_MODELDATA_H
 #define AC_CORE_CURVE_MODELDATA_H
 
-#include <mi_core_modeldata.h>
+#include <mi_core_object_modeldata.h>
 #include "ac_core_point.h"
 
 namespace Curve {
 
-class ModelData : public Base::ModelData
+class ModelData : public Object::ModelData
 {
     PointList _points;
     enum { RoleCount = 1 };
 
 protected:
     enum {
-        RoleCountOffset = Base::ModelData::TotalRoleCount,
+        RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 

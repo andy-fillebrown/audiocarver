@@ -35,10 +35,14 @@ public:
 protected:
     void beginChangeData(const IModelData *data, int role, int changeType);
     void endChangeData(const IModelData *data, int role, int changeType);
-    void beginChangeParent(const IModelItem* item);
-    void endChangeParent(const IModelItem *item);
-    IModelData *indexData(const QModelIndex &index) const;
-    IModelItem *indexItem(const QModelIndex &index) const;
+    void beginInsertItem(const IModelItem* parent, int index);
+    void endInsertItem(const IModelItem *parent, int index);
+    void beginRemoveItem(const IModelItem *parent, int index);
+    void endRemoveItem(const IModelItem *parent, int index);
+    IModelData *dataFromIndex(const QModelIndex &index) const;
+    IModelItem *itemFromIndex(const QModelIndex &index) const;
+    QModelIndex indexFromData(const IModelData *data) const;
+    QModelIndex indexFromItem(const IModelItem *item) const;
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
 
@@ -49,6 +53,7 @@ protected:
 
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 };
 
 }

@@ -15,12 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROXYMODEL_H
-#define AC_PROXYMODEL_H
-
-#include <ac_core_global.h>
+#ifndef AC_CORE_ROLESTOCOLUMNSPROXYMODEL_H
+#define AC_CORE_ROLESTOCOLUMNSPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include "ac_core_global.h"
+
+#include <ac_core_namespace.h>
+#include <idatabase.h>
+#include <imodelitem.h>
+#include <QtDebug>
+
+
+namespace Core {
 
 typedef QMap<int, int> RoleMap;
 typedef QList<RoleMap> RoleMapList;
@@ -29,6 +36,8 @@ class RolesToColumnsProxyModelPrivate;
 class AC_CORE_EXPORT RolesToColumnsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+
+    RolesToColumnsProxyModelPrivate *d;
 
 public:
     explicit RolesToColumnsProxyModel(QObject *parent = 0);
@@ -47,8 +56,6 @@ public:
         return role;
     }
 
-    // QSortFilterProxyModel
-
     bool filterAcceptsColumn(int, const QModelIndex &) const
     {
         return true;
@@ -60,8 +67,6 @@ public:
     }
 
     void setSourceModel(QAbstractItemModel *sourceModel);
-
-    // QAbstractItemModel
 
     int columnCount(const QModelIndex &) const
     {
@@ -83,9 +88,8 @@ public:
             return false;
         return QSortFilterProxyModel::setData(index, value, mapped_role);
     }
-
-private:
-    RolesToColumnsProxyModelPrivate *d;
 };
 
-#endif // AC_PROXYMODEL_H
+}
+
+#endif

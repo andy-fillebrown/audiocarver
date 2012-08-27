@@ -15,14 +15,14 @@
 **
 **************************************************************************/
 
-#include "mi_core_modeldata.h"
+#include "mi_core_object_modeldata.h"
 #include "mi_core_scopeddatachange.h"
 #include <imodelitemlist.h>
 
 using namespace Mi;
 using namespace Qt;
 
-namespace Base {
+namespace Object {
 
 void *ModelData::queryInterface(int interfaceType) const
 {
@@ -66,6 +66,8 @@ QVariant ModelData::getValue(int role) const
     case DisplayRole:
     case NameRole:
         return name();
+    case ItemTypeRole:
+        return query<IModelItem>(this)->itemType();
     default:
         Q_ASSERT(0);
         return QVariant();

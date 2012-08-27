@@ -25,13 +25,13 @@ using namespace Ac;
 namespace ScoreObject {
 
 ModelData::ModelData(IAggregate *aggregate)
-    :   Base::ModelData(aggregate)
+    :   Object::ModelData(aggregate)
     ,   _volume(DEFAULT_SCOREOBJECT_VOLUME)
 {}
 
 IUnknown *ModelData::initialize()
 {
-    return Base::ModelData::initialize();
+    return Object::ModelData::initialize();
 }
 
 bool ModelData::setVolume(qreal volume)
@@ -55,7 +55,7 @@ int ModelData::roleAt(int i) const
     case 0:
         return VolumeRole;
     default:
-        return Base::ModelData::roleAt(i);
+        return Object::ModelData::roleAt(i);
     }
 }
 
@@ -65,7 +65,7 @@ QVariant ModelData::getValue(int role) const
     case VolumeRole:
         return volume();
     default:
-        return Base::ModelData::getValue(role);
+        return Object::ModelData::getValue(role);
     }
 }
 
@@ -75,7 +75,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     case VolumeRole:
         return setVolume(qvariant_cast<qreal>(value));
     default:
-        return Base::ModelData::setValue(value, role);
+        return Object::ModelData::setValue(value, role);
     }
 }
 

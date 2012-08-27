@@ -15,34 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODELDATA_H
-#define MI_CORE_MODELDATA_H
+#ifndef MI_CORE_OBJECT_MODELITEM_H
+#define MI_CORE_OBJECT_MODELITEM_H
 
-#include <imodeldata.h>
+#include <imodelitem.h>
 #include "mi_core_global.h"
 
 class IAggregate;
 
-namespace Base {
+namespace Object {
 
-class MI_CORE_EXPORT ModelData : public IModelData
+class MI_CORE_EXPORT ModelItem : public IModelItem
 {
     IAggregate *_aggregate;
+    IModelItem *_parent;
 
-    QString _name;
-    enum { RoleCount = 1 };
+    enum { ItemCount = 0 };
 
 public:
     void *queryInterface(int interfaceType) const;
 
 protected:
     enum {
-        RoleCountOffset = 0,
-        TotalRoleCount = RoleCount
+        ItemCountOffset = 0,
+        TotalItemCount = ItemCount
     };
 
-    ModelData(IAggregate *aggregate)
+    ModelItem(IAggregate *aggregate)
         :   _aggregate(aggregate)
+        ,   _parent(0)
     {}
 
     virtual IUnknown *initialize();
@@ -52,27 +53,53 @@ protected:
         return _aggregate;
     }
 
-    const QString &name() const
+    int itemType() const;
+
+    bool isTypeOfItem(int itemType) const
     {
-        return _name;
+        return false;
     }
 
-    bool setName(const QString &name);
-
-    int roleCount() const
+    IModelItem *parent() const
     {
-        return RoleCount;
+        return _parent;
     }
 
-    int roleAt(int i) const;
+    void setParent(IModelItem *parent);
+    IModelItemList *list() const;
 
-    int flags() const
+    int count() const
     {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return 0;
     }
 
-    QVariant getValue(int role) const;
-    bool setValue(const QVariant &value, int role);
+    int indexOf(const IModelItem *item) const
+    {
+        return -1;
+    }
+
+    IModelItem *at(int i) const
+    {
+        Q_ASSERT(false);
+        return 0;
+    }
+
+    IModelItem *findItem(int itemType) const
+    {
+        return 0;
+    }
+
+    IModelItemList *findList(int listType) const
+    {
+        return 0;
+    }
+
+    void reset()
+    {
+        const int item_count = count();
+        for (int i = 0;  i < item_count;  ++i)
+            at(i)->reset();
+    }
 };
 
 }

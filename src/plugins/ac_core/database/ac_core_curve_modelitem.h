@@ -18,15 +18,15 @@
 #ifndef AC_CORE_CURVE_MODELITEM_H
 #define AC_CORE_CURVE_MODELITEM_H
 
-#include <mi_core_modelitem.h>
+#include <mi_core_object_modelitem.h>
 
 namespace Curve {
 
-class ModelItem : public Base::ModelItem
+class ModelItem : public Object::ModelItem
 {
 protected:
     ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
+        :   Object::ModelItem(aggregate)
     {}
 
     IUnknown *initialize();

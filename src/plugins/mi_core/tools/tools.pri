@@ -2,7 +2,8 @@
 SOURCE_FILES = \
     math \
     scopeddatachange \
-    scopedparentchange \
+    scopediteminsert \
+    scopeditemremove \
     utilities \
 
 DIR = $$dirname(_FILE_)

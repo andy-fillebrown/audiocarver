@@ -15,43 +15,37 @@
 **
 **************************************************************************/
 
-#include "mi_core_modelitem.h"
-#include "mi_core_namespace.h"
-#include "mi_core_scopedparentchange.h"
+#include "mi_core_objectlist_modeldata.h"
+#include "mi_core_scopeddatachange.h"
 #include <imodelitemlist.h>
 
 using namespace Mi;
+using namespace Qt;
 
-namespace Base {
+namespace ObjectList {
 
-void *ModelItem::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItem*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
-IUnknown *ModelItem::initialize()
+IUnknown *ModelData::initialize()
 {
     return aggregate()->append(this);
 }
 
-int ModelItem::itemType() const
+void *ModelData::queryInterface(int interfaceType) const
 {
-    return UnknownItem;
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ModelData*>(this);
+    return aggregate()->queryInterface(interfaceType);
 }
 
-void ModelItem::setParent(IModelItem *parent)
+QVariant ModelData::getValue(int role) const
 {
-    if (_parent == parent)
-        return;
-    ScopedParentChange parent_change(this);
-    _parent = parent;
-}
-
-IModelItemList *ModelItem::list() const
-{
-    return query<IModelItemList>(parent());
+    switch (role) {
+    case ItemTypeRole:
+        return query<IModelItem>(this)->itemType();
+    case ListTypeRole:
+        return query<IModelItemList>(this)->listType();
+    default:
+        return QVariant();
+    }
 }
 
 }

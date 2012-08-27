@@ -1,10 +1,15 @@
 
-SOURCE_PAIRS = \
+SOURCE_FILES = \
 #    ac_gridlinemodel \
-#    ac_proxymodel \
-#    ac_trackmodel \
+    rolestocolumnsproxymodel \
+    trackmodel \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= models/$${pair}.h
-    SOURCES *= models/$${pair}.cpp
+DIR = $$dirname(_FILE_)
+DIR = $$basename(DIR)
+for(file, SOURCE_FILES) {
+    file = $${SOURCE_FILE_PREFIX}_$$file
+    header = $${file}.h
+    source = $${file}.cpp
+    exists($$header): HEADERS *= $$DIR/$$header
+    exists($$source): SOURCES *= $$DIR/$$source
 }

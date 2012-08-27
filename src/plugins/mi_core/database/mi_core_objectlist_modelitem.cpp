@@ -15,47 +15,47 @@
 **
 **************************************************************************/
 
-#include "mi_core_modelitemlist.h"
+#include "mi_core_objectlist_modelitem.h"
 #include "mi_core_namespace.h"
-#include "mi_core_scopedparentchange.h"
+#include "mi_core_scopediteminsert.h"
+#include "mi_core_scopeditemremove.h"
 #include <iaggregate.h>
 #include <imodeldata.h>
 
 using namespace Mi;
 
-namespace Base {
+namespace ObjectList {
 
-IUnknown *ModelItemList::initialize()
+IUnknown *ModelItem::initialize()
 {
     return aggregate()->append(this);
 }
 
-void *ModelItemList::queryInterface(int interfaceType) const
+void *ModelItem::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItemList*>(this);
+        return const_cast<ModelItem*>(this);
     return aggregate()->queryInterface(interfaceType);
 }
 
-int ModelItemList::itemType() const
+int ModelItem::itemType() const
 {
     return ListItem;
 }
 
-bool ModelItemList::isTypeOfItem(int itemType) const
+bool ModelItem::isTypeOfItem(int itemType) const
 {
     return ListItem == itemType;
 }
 
-void ModelItemList::setParent(IModelItem *parent)
+void ModelItem::setParent(IModelItem *parent)
 {
     if (_parent == parent)
         return;
-    ScopedParentChange parent_change(this);
     _parent = parent;
 }
 
-bool ModelItemList::contains(const QString &name) const
+bool ModelItem::contains(const QString &name) const
 {
     foreach (IModelItem *item, _items)
         if (query<IModelData>(item)->get<QString>(NameRole) == name)
@@ -63,7 +63,7 @@ bool ModelItemList::contains(const QString &name) const
     return false;
 }
 
-void ModelItemList::insert(int i, IModelItem *item)
+void ModelItem::insert(int i, IModelItem *item)
 {
     IModelItemList *old_list = item->list();
     if (old_list) {
@@ -81,16 +81,19 @@ void ModelItemList::insert(int i, IModelItem *item)
         if (name != new_name)
             data->set(new_name, NameRole);
     }
+    ScopedItemInsert item_insert(this, i);
     _items.insert(i, item);
     item->setParent(this);
 }
 
-void ModelItemList::removeAt(int i)
+void ModelItem::removeAt(int i)
 {
+    ScopedItemRemove item_remove(this, i);
+    _items.at(i)->setParent(0);
     _items.removeAt(i);
 }
 
-void ModelItemList::reset()
+void ModelItem::reset()
 {
     foreach (IModelItem *item, _items)
         delete query<IAggregate>(item);

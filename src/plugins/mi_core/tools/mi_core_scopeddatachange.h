@@ -51,7 +51,7 @@ public:
         if (!_data)
             return;
         foreach (IModelDataWatcher *watcher, _watchers)
-            watcher->beginChangeData(_data, _role, _dataChangeType);
+            watcher->endChangeData(_data, _role, _dataChangeType);
     }
 };
 

@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODELITEMLIST_H
-#define MI_CORE_MODELITEMLIST_H
+#ifndef MI_CORE_OBJECTLIST_MODELITEM_H
+#define MI_CORE_OBJECTLIST_MODELITEM_H
 
 #include <imodelitemlist.h>
 #include "mi_core_global.h"
@@ -24,11 +24,11 @@
 
 class IAggregate;
 
-namespace Base {
+namespace ObjectList {
 
 class Aggregate;
 
-class MI_CORE_EXPORT ModelItemList : public IModelItemList
+class MI_CORE_EXPORT ModelItem : public IModelItemList
 {
     IAggregate *_aggregate;
     IModelItem *_parent;
@@ -36,7 +36,7 @@ class MI_CORE_EXPORT ModelItemList : public IModelItemList
     QList<IModelItem*> _items;
 
 public:
-    ModelItemList(IAggregate *aggregate, int listType)
+    ModelItem(IAggregate *aggregate, int listType)
         :   _aggregate(aggregate)
         ,   _parent(0)
         ,   _listType(listType)
@@ -72,14 +72,16 @@ protected:
         return _items.count();
     }
 
-    int indexOf(IModelItem *item) const
+    int indexOf(const IModelItem *item) const
     {
-        return _items.indexOf(item);
+        return _items.indexOf(const_cast<IModelItem*>(item));
     }
 
     IModelItem *at(int i) const
     {
-        return _items.at(i);
+        if (i < count())
+            return _items.at(i);
+        return 0;
     }
 
     IModelItem *findItem(int itemType) const

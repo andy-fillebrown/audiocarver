@@ -24,7 +24,7 @@ namespace ProjectSettings {
 
 IUnknown *ModelItem::initialize()
 {
-    return Base::ModelItem::initialize();
+    return Object::ModelItem::initialize();
 }
 
 int ModelItem::itemType() const
@@ -36,7 +36,7 @@ bool ModelItem::isTypeOfItem(int itemType) const
 {
     if (ProjectSettingsItem == itemType)
         return true;
-    return Base::ModelItem::isTypeOfItem(itemType);
+    return Object::ModelItem::isTypeOfItem(itemType);
 }
 
 }

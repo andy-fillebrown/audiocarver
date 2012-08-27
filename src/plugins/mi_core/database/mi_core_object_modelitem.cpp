@@ -15,32 +15,42 @@
 **
 **************************************************************************/
 
-#include "mi_core_modelitemwatcher.h"
+#include "mi_core_object_modelitem.h"
+#include "mi_core_namespace.h"
 #include <iaggregate.h>
-#include <imodel.h>
+#include <imodelitemlist.h>
 
-namespace Base {
+using namespace Mi;
 
-IUnknown *ModelItemWatcher::initialize()
+namespace Object {
+
+void *ModelItem::queryInterface(int interfaceType) const
+{
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ModelItem*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
+
+IUnknown *ModelItem::initialize()
 {
     return aggregate()->append(this);
 }
 
-void *ModelItemWatcher::queryInterface(int interfaceType) const
+int ModelItem::itemType() const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItemWatcher*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    return UnknownItem;
 }
 
-void ModelItemWatcher::beginChangeParent(const IModelItem *item)
+void ModelItem::setParent(IModelItem *parent)
 {
-    IModel::instance()->beginChangeParent(item);
+    if (_parent == parent)
+        return;
+    _parent = parent;
 }
 
-void ModelItemWatcher::endChangeParent(const IModelItem *item)
+IModelItemList *ModelItem::list() const
 {
-    IModel::instance()->endChangeParent(item);
+    return query<IModelItemList>(parent());
 }
 
 }

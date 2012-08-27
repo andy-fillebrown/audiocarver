@@ -28,7 +28,7 @@ using namespace Ac;
 namespace ViewSettings {
 
 ModelData::ModelData(IAggregate *aggregate)
-    :   Base::ModelData(aggregate)
+    :   Object::ModelData(aggregate)
     ,   _timePosition(DEFAULT_VIEWSETTINGS_TIMEPOSITION)
     ,   _pitchPosition(DEFAULT_VIEWSETTINGS_PITCHPOSITION)
     ,   _controlPosition(DEFAULT_VIEWSETTINGS_CONTROLPOSITION)
@@ -39,7 +39,7 @@ ModelData::ModelData(IAggregate *aggregate)
 
 IUnknown *ModelData::initialize()
 {
-    return Base::ModelData::initialize();
+    return Object::ModelData::initialize();
 }
 
 bool ModelData::setTimePosition(qreal position)
@@ -119,7 +119,7 @@ int ModelData::roleAt(int i) const
     case 5:
         return ControlScaleRole;
     default:
-        return Base::ModelData::roleAt(i);
+        return Object::ModelData::roleAt(i);
     }
 }
 
@@ -139,7 +139,7 @@ QVariant ModelData::getValue(int role) const
     case ControlScaleRole:
         return controlScale();
     default:
-        return Base::ModelData::getValue(role);
+        return Object::ModelData::getValue(role);
     }
 }
 
@@ -159,7 +159,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     case ControlScaleRole:
         return setControlScale(qvariant_cast<qreal>(value));
     default:
-        return Base::ModelData::setValue(value, role);
+        return Object::ModelData::setValue(value, role);
     }
 }
 

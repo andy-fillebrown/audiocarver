@@ -19,9 +19,9 @@
 #include "ac_gui_colordelegate.h"
 #include "ac_gui_recordbuttondelegate.h"
 //#include "ac_noteselectionmodel.h"
-//#include "ac_trackmodel.h"
 //#include "ac_trackselectionmodel.h"
 #include <ac_core_namespace.h>
+#include <ac_core_trackmodel.h>
 #include <idatabase.h>
 #include <ieditor.h>
 #include <imodel.h>
@@ -31,6 +31,7 @@
 #include <QPainter>
 #include <QScrollBar>
 
+using namespace Core;
 using namespace Ac;
 using namespace Qt;
 
@@ -64,7 +65,7 @@ TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
     ,   d(new TrackViewPrivate(this))
 {
-//    setModel(TrackModel::instance());
+    setModel(TrackModel::instance());
 //    setSelectionModel(TrackSelectionModel::instance());
     setHeaderHidden(true);
     setRootIsDecorated(false);
@@ -89,10 +90,10 @@ TrackView::TrackView(QWidget *parent)
 
 void TrackView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    // We're currently only getting invalid indexes for 'topLeft' and
-    // 'bottomRight' even when the track data is changed. It might be an issue
-    // in the proxy models. Regardless, we need to redraw the entire window,
-    // then call resizeEvent to update the scrollbar and set the column widths.
+    // We're currently getting invalid indexes for 'topLeft' and 'bottomRight',
+    // even when the track data is changed. It might be an issue in the proxy
+    // models. Regardless, we need to redraw the entire window, then call
+    // resizeEvent to update the scrollbar and set the column widths.
     setDirtyRegion(rect());
     resizeEvent(0);
 }
@@ -183,23 +184,23 @@ void TrackView::dropEvent(QDropEvent *event)
 
 void TrackView::resizeEvent(QResizeEvent *event)
 {
-//    const QAbstractItemModel *m = model();
-//    const QModelIndex root_index = rootIndex();
+    const QAbstractItemModel *model = this->model();
+    const QModelIndex root_index = rootIndex();
 
-//    // Get the row height (assuming all rows are the same height).
-//    const int row_h = rowHeight(m->index(0, 0, root_index));
+    // Get the row height (assuming all rows are the same height).
+    const int row_height = rowHeight(model->index(0, 0, root_index));
 
-//    // Update the vertical scrollbar range.
-//    const QWidget *vport = viewport();
-//    if (row_h)
-//        verticalScrollBar()->setRange(0, (((m->rowCount(root_index) + 1) * row_h) - vport->height()) / row_h);
+    // Update the vertical scrollbar range.
+    const QWidget *viewport = this->viewport();
+    if (row_height)
+        verticalScrollBar()->setRange(0, (((model->rowCount(root_index) + 1) * row_height) - viewport->height()) / row_height);
 
-//    // Set the column widths.
-//    const int colorColumnWidth = row_h;
-//    setColumnWidth(0, colorColumnWidth);
-//    setColumnWidth(1, vport->width() - (colorColumnWidth + buttonColumnWidth + buttonColumnWidth));
-//    setColumnWidth(2, buttonColumnWidth);
-//    setColumnWidth(3, buttonColumnWidth);
+    // Set the column widths.
+    const int color_column_width = row_height;
+    setColumnWidth(0, color_column_width);
+    setColumnWidth(1, viewport->width() - (color_column_width + buttonColumnWidth + buttonColumnWidth));
+    setColumnWidth(2, buttonColumnWidth);
+    setColumnWidth(3, buttonColumnWidth);
 }
 
 void TrackView::paintEvent(QPaintEvent *event)
@@ -219,7 +220,8 @@ void TrackView::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Right:
-        // Doing nothing here stops the view from moving to the left.
+        // Doing nothing here keeps the view from moving to the left when the
+        // right arrow key is pressed.
         return;
     case Qt::Key_Escape:
 //        NoteSelectionModel::instance()->clear();

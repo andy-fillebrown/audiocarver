@@ -15,11 +15,11 @@
 **
 **************************************************************************/
 
-#include "mi_core_modeldatawatcher.h"
+#include "mi_core_object_modeldatawatcher.h"
 #include <iaggregate.h>
 #include <imodel.h>
 
-namespace Base {
+namespace Object {
 
 void *ModelDataWatcher::queryInterface(int interfaceType) const
 {

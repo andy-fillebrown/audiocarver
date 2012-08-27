@@ -24,7 +24,7 @@ namespace Curve {
 
 IUnknown *ModelItem::initialize()
 {
-    return Base::ModelItem::initialize();
+    return Object::ModelItem::initialize();
 }
 
 bool ModelItem::isTypeOfItem(int itemType) const

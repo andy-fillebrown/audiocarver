@@ -18,11 +18,11 @@
 #ifndef AC_CORE_SCOREOBJECT_MODELITEM_H
 #define AC_CORE_SCOREOBJECT_MODELITEM_H
 
-#include <mi_core_modelitem.h>
+#include <mi_core_object_modelitem.h>
 
 namespace ScoreObject {
 
-class ModelItem : public Base::ModelItem
+class ModelItem : public Object::ModelItem
 {
     IAggregate *_pitchCurve;
     IAggregate *_controlCurves;
@@ -30,7 +30,7 @@ class ModelItem : public Base::ModelItem
 
 public:
     enum {
-        ItemCountOffset = Base::ModelItem::TotalItemCount,
+        ItemCountOffset = Object::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
@@ -52,7 +52,7 @@ protected:
 
     bool isTypeOfItem(int itemType) const = 0;
     int count() const;
-    int indexOf(IModelItem *item) const;
+    int indexOf(const IModelItem *item) const;
     IModelItem *at(int i) const;
     IModelItem *findItem(int itemType) const;
     IModelItemList *findList(int listType) const;

@@ -26,7 +26,7 @@ using namespace Ac;
 namespace ScoreObject {
 
 ModelItem::ModelItem(IAggregate *aggregate)
-    :   Base::ModelItem(aggregate)
+    :   Object::ModelItem(aggregate)
     ,   _pitchCurve(0)
     ,   _controlCurves(0)
 {}
@@ -42,7 +42,7 @@ IUnknown *ModelItem::initialize()
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _pitchCurve = factory->create(PitchCurveItem, this);
     _controlCurves = factory->create(ControlCurveListItem, this);
-    return Base::ModelItem::initialize();
+    return Object::ModelItem::initialize();
 }
 
 bool ModelItem::isTypeOfItem(int itemType) const
@@ -55,13 +55,13 @@ int ModelItem::count() const
     return TotalItemCount;
 }
 
-int ModelItem::indexOf(IModelItem *item) const
+int ModelItem::indexOf(const IModelItem *item) const
 {
     if (query<IModelItem>(pitchCurve()) == item)
         return ItemCountOffset;
     if (query<IModelItem>(controlCurves()) == item)
         return ItemCountOffset + 1;
-    return Base::ModelItem::indexOf(item);
+    return Object::ModelItem::indexOf(item);
 }
 
 IModelItem *ModelItem::at(int i) const
@@ -72,7 +72,7 @@ IModelItem *ModelItem::at(int i) const
     case 1:
         return query<IModelItem>(controlCurves());
     default:
-        return Base::ModelItem::at(i);
+        return Object::ModelItem::at(i);
     }
 }
 
@@ -82,7 +82,7 @@ IModelItem *ModelItem::findItem(int itemType) const
     case PitchCurveItem:
         return query<IModelItem>(pitchCurve());
     default:
-        return Base::ModelItem::findItem(itemType);
+        return Object::ModelItem::findItem(itemType);
     }
 }
 
@@ -92,7 +92,7 @@ IModelItemList *ModelItem::findList(int listType) const
     case ControlCurveItem:
         return query<IModelItemList>(controlCurves());
     default:
-        return Base::ModelItem::findList(listType);
+        return Object::ModelItem::findList(listType);
     }
 }
 

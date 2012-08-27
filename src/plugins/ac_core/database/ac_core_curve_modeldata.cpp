@@ -23,12 +23,12 @@ using namespace Ac;
 namespace Curve {
 
 ModelData::ModelData(IAggregate *aggregate)
-    :   Base::ModelData(aggregate)
+    :   Object::ModelData(aggregate)
 {}
 
 IUnknown *ModelData::initialize()
 {
-    return Base::ModelData::initialize();
+    return Object::ModelData::initialize();
 }
 
 bool ModelData::setPoints(const PointList &points)
@@ -51,7 +51,7 @@ int ModelData::roleAt(int i) const
     case 0:
         return PointsRole;
     default:
-        return Base::ModelData::roleAt(i);
+        return Object::ModelData::roleAt(i);
     }
 }
 
@@ -61,7 +61,7 @@ QVariant ModelData::getValue(int role) const
     case PointsRole:
         return QVariant::fromValue(_points);
     default:
-        return Base::ModelData::getValue(role);
+        return Object::ModelData::getValue(role);
     }
 }
 
@@ -71,7 +71,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     case PointsRole:
         return setPoints(qvariant_cast<PointList>(value));
     default:
-        return Base::ModelData::setValue(value, role);
+        return Object::ModelData::setValue(value, role);
     }
 }
 

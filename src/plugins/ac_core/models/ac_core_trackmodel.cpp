@@ -15,43 +15,53 @@
 **
 **************************************************************************/
 
-#include "ac_trackmodel.h"
-
-#include <ac_core_model.h>
-
-#include <mi_idatabase.h>
-
+#include "ac_core_trackmodel.h"
+#include "ac_core_model.h"
+#include "ac_core_namespace.h"
+#include <idatabase.h>
+#include <imodelitemlist.h>
 #include <QMimeData>
 #include <QStringList>
 
-static const char mimeType[] = "AudioCarver track numbers";
+using namespace Ac;
+using namespace Mi;
+using namespace Qt;
+using namespace Core;
 
 static TrackModel *instance = 0;
+static const char mimeType[] = "AudioCarver track numbers";
+
+namespace Core {
 
 TrackModel::TrackModel(QObject *parent)
     :   RolesToColumnsProxyModel(parent)
 {
-    RoleMapList roleMaps;
+    RoleMapList role_maps;
     for (int i = 0;  i < 4;  ++i)
-        roleMaps.append(RoleMap());
-    roleMaps[0].insert(Qt::DisplayRole, Ac::ColorRole);
-    roleMaps[0].insert(Qt::EditRole, Ac::ColorRole);
-    roleMaps[1].insert(Qt::DisplayRole, Mi::NameRole);
-    roleMaps[1].insert(Qt::EditRole, Mi::NameRole);
-    roleMaps[2].insert(Qt::DisplayRole, Ac::VisibilityRole);
-    roleMaps[3].insert(Qt::DisplayRole, Ac::RecordingRole);
-    setRoleMaps(roleMaps);
-
+        role_maps.append(RoleMap());
+    role_maps[0].insert(DisplayRole, ColorRole);
+    role_maps[0].insert(EditRole, ColorRole);
+    role_maps[1].insert(DisplayRole, NameRole);
+    role_maps[1].insert(EditRole, NameRole);
+    role_maps[2].insert(DisplayRole, VisibilityRole);
+    role_maps[3].insert(DisplayRole, RecordingRole);
+    setRoleMaps(role_maps);
     setSourceModel(qobject_cast<QAbstractItemModel*>(parent));
-
     ::instance = this;
 }
 
 TrackModel *TrackModel::instance()
 {
-//    if (!::instance)
-//        new TrackModel(query<IModel>(IDatabase::instance())->q());
     return ::instance;
+}
+
+bool TrackModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+{
+    QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+    int type = index.data(ItemTypeRole).toInt();
+    if (TrackItem == type)
+        return true;
+    return ListItem == type && TrackItem == index.data(ListTypeRole).toInt();
 }
 
 QStringList TrackModel::mimeTypes() const
@@ -66,11 +76,13 @@ QMimeData *TrackModel::mimeData(const QModelIndexList &indexes) const
         if (!rows.contains(index.row()))
             rows.append(index.row());
     qSort(rows);
-    QByteArray b;
-    QDataStream stream(&b, QIODevice::WriteOnly);
+    QByteArray mime_stream_data;
+    QDataStream mime_stream(&mime_stream_data, QIODevice::WriteOnly);
     for (int i = rows.count() - 1;  0 <= i;  --i)
-        stream << rows.at(i);
-    QMimeData *mimeData = RolesToColumnsProxyModel::mimeData(indexes);
-    mimeData->setData(mimeType, b);
-    return mimeData;
+        mime_stream << rows.at(i);
+    QMimeData *mime_data = RolesToColumnsProxyModel::mimeData(indexes);
+    mime_data->setData(mimeType, mime_stream_data);
+    return mime_data;
+}
+
 }

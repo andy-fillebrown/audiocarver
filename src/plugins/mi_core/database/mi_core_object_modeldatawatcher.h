@@ -15,38 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_SCOREOBJECT_MODELDATA_H
-#define AC_CORE_SCOREOBJECT_MODELDATA_H
+#ifndef MI_CORE_OBJECT_MODELDATAWATCHER_H
+#define MI_CORE_OBJECT_MODELDATAWATCHER_H
 
-#include <mi_core_object_modeldata.h>
+#include <imodeldatawatcher.h>
+#include "mi_core_global.h"
 
-namespace ScoreObject {
+class IAggregate;
 
-class ModelData : public Object::ModelData
+namespace Object {
+
+class MI_CORE_EXPORT ModelDataWatcher : public IModelDataWatcher
 {
-    qreal _volume;
-    enum { RoleCount = 1 };
+    IAggregate *_aggregate;
 
 public:
-    enum {
-        RoleCountOffset = Object::ModelData::TotalRoleCount,
-        TotalRoleCount = RoleCountOffset + RoleCount
-    };
+    ModelDataWatcher(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+    {}
 
-    ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
+    virtual IUnknown *initialize();
+    void *queryInterface(int interfaceType) const;
 
 protected:
-    qreal volume() const
+    IAggregate *aggregate() const
     {
-        return _volume;
+        return _aggregate;
     }
 
-    bool setVolume(qreal volume);
-    int roleCount() const;
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(const QVariant &value, int role);
+    void beginChangeData(const IModelData *data, int role, int changeType);
+    void endChangeData(const IModelData *data, int role, int changeType);
 };
 
 }

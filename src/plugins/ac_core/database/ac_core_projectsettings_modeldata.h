@@ -18,11 +18,11 @@
 #ifndef AC_CORE_PROJECTSETTINGS_MODELDATA_H
 #define AC_CORE_PROJECTSETTINGS_MODELDATA_H
 
-#include <mi_core_modeldata.h>
+#include <mi_core_object_modeldata.h>
 
 namespace ProjectSettings {
 
-class ModelData : public Base::ModelData
+class ModelData : public Object::ModelData
 {
     int _sampleRate;
     int _controlRate;
@@ -31,7 +31,7 @@ class ModelData : public Base::ModelData
 
 public:
     enum {
-        RoleCountOffset = Base::ModelData::TotalRoleCount,
+        RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 

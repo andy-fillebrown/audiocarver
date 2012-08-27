@@ -15,22 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODELITEMWATCHER_H
-#define MI_CORE_MODELITEMWATCHER_H
+#ifndef MI_CORE_OBJECTLIST_MODELDATA_H
+#define MI_CORE_OBJECTLIST_MODELDATA_H
 
-#include <imodelitemwatcher.h>
+#include <imodeldata.h>
 #include "mi_core_global.h"
 
 class IAggregate;
 
-namespace Base {
+namespace ObjectList {
 
-class MI_CORE_EXPORT ModelItemWatcher : public IModelItemWatcher
+class MI_CORE_EXPORT ModelData : public IModelData
 {
     IAggregate *_aggregate;
 
+    enum { RoleCount = 0 };
+
 public:
-    ModelItemWatcher(IAggregate *aggregate)
+    ModelData(IAggregate *aggregate)
         :   _aggregate(aggregate)
     {}
 
@@ -38,13 +40,38 @@ public:
     void *queryInterface(int interfaceType) const;
 
 protected:
+    enum {
+        RoleCountOffset = 0,
+        TotalRoleCount = 0
+    };
+
     IAggregate *aggregate() const
     {
         return _aggregate;
     }
 
-    void beginChangeParent(const IModelItem *item);
-    void endChangeParent(const IModelItem *item);
+    int roleCount() const
+    {
+        return RoleCount;
+    }
+
+    int roleAt(int i) const
+    {
+        return 0;
+    }
+
+    int flags() const
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
+
+    QVariant getValue(int role) const;
+
+    bool setValue(const QVariant &value, int role)
+    {
+        Q_ASSERT(0);
+        return false;
+    }
 };
 
 }

@@ -18,11 +18,11 @@
 #ifndef AC_CORE_GRIDSETTINGS_MODELDATA_H
 #define AC_CORE_GRIDSETTINGS_MODELDATA_H
 
-#include <mi_core_modeldata.h>
+#include <mi_core_object_modeldata.h>
 
 namespace GridSettings {
 
-class ModelData : public Base::ModelData
+class ModelData : public Object::ModelData
 {
     int _snapEnabled : 1;
     int _gridSnapEnabled : 1;
@@ -33,7 +33,7 @@ class ModelData : public Base::ModelData
 
 public:
     enum {
-        RoleCountOffset = Base::ModelData::TotalRoleCount,
+        RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 

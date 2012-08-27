@@ -25,7 +25,7 @@ using namespace Ac;
 namespace ProjectSettings {
 
 ModelData::ModelData(IAggregate *aggregate)
-    :   Base::ModelData(aggregate)
+    :   Object::ModelData(aggregate)
     ,   _sampleRate(DEFAULT_PROJECTSETTINGS_SAMPLERATE)
     ,   _controlRate(DEFAULT_PROJECTSETTINGS_CONTROLRATE)
     ,   _curveRate(DEFAULT_PROJECTSETTINGS_CURVERATE)
@@ -33,7 +33,7 @@ ModelData::ModelData(IAggregate *aggregate)
 
 IUnknown *ModelData::initialize()
 {
-    return Base::ModelData::initialize();
+    return Object::ModelData::initialize();
 }
 
 bool ModelData::setSampleRate(int rate)
@@ -76,7 +76,7 @@ int ModelData::roleAt(int i) const
     case 2:
         return CurveRateRole;
     default:
-        return Base::ModelData::roleAt(i);
+        return Object::ModelData::roleAt(i);
     }
 }
 
@@ -90,7 +90,7 @@ QVariant ModelData::getValue(int role) const
     case CurveRateRole:
         return curveRate();
     default:
-        return Base::ModelData::getValue(role);
+        return Object::ModelData::getValue(role);
     }
 }
 
@@ -104,7 +104,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     case CurveRateRole:
         return setCurveRate(qvariant_cast<int>(value));
     default:
-        return Base::ModelData::setValue(value, role);
+        return Object::ModelData::setValue(value, role);
     }
 }
 

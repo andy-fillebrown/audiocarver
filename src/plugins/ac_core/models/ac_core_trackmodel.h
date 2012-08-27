@@ -15,11 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACKMODEL_H
-#define AC_TRACKMODEL_H
+#ifndef AC_CORE_TRACKMODEL_H
+#define AC_CORE_TRACKMODEL_H
 
-#include <ac_core_namespace.h>
-#include <ac_proxymodel.h>
+#include "ac_core_rolestocolumnsproxymodel.h"
+
+namespace Core {
 
 class AC_CORE_EXPORT TrackModel : public RolesToColumnsProxyModel
 {
@@ -30,34 +31,20 @@ public:
 
     static TrackModel *instance();
 
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
-    {
-        QAbstractItemModel *m = sourceModel();
-        Q_ASSERT(m);
-        if (!m)
-            return false;
-        QModelIndex index = m->index(sourceRow, 0, sourceParent);
-        int type = index.data(Mi::ItemTypeRole).toInt();
-        if (Ac::TrackItem == type)
-            return true;
-        if (Mi::ListItem == type) {
-            int listType = index.data(Mi::ListTypeRole).toInt();
-            if (Ac::TrackItem == listType)
-                return true;
-        }
-        return false;
-    }
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
     Qt::ItemFlags flags(const QModelIndex &index) const
     {
         Qt::ItemFlags extraFlags = Qt::ItemIsSelectable;
         if (1 == index.column())
             extraFlags |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
-        return RolesToColumnsProxyModel::flags(index) | extraFlags;
+        return  extraFlags | RolesToColumnsProxyModel::flags(index);
     }
 
     QStringList mimeTypes() const;
     QMimeData *mimeData(const QModelIndexList &indexes) const;
 };
 
-#endif // AC_TRACKMODEL_H
+}
+
+#endif

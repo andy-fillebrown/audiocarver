@@ -33,7 +33,7 @@ IUnknown *ModelItem::initialize()
     _timeGridLines = factory->create(TimeGridLineListItem, this);
     _pitchGridLines = factory->create(PitchGridLineListItem, this);
     _controlGridLines = factory->create(ControlGridLineListItem, this);
-    return Base::ModelItem::initialize();
+    return Object::ModelItem::initialize();
 }
 
 ModelItem::~ModelItem()
@@ -52,10 +52,10 @@ bool ModelItem::isTypeOfItem(int itemType) const
 {
     if (GridSettingsItem == itemType)
         return true;
-    return Base::ModelItem::isTypeOfItem(itemType);
+    return Object::ModelItem::isTypeOfItem(itemType);
 }
 
-int ModelItem::indexOf(IModelItem *item) const
+int ModelItem::indexOf(const IModelItem *item) const
 {
     if (query<IModelItem>(timeGridLines()) == item)
         return ItemCountOffset;
@@ -63,7 +63,7 @@ int ModelItem::indexOf(IModelItem *item) const
         return ItemCountOffset + 1;
     if (query<IModelItem>(controlGridLines()) == item)
         return ItemCountOffset + 2;
-    return Base::ModelItem::indexOf(item);
+    return Object::ModelItem::indexOf(item);
 }
 
 IModelItem *ModelItem::at(int i) const
@@ -76,7 +76,7 @@ IModelItem *ModelItem::at(int i) const
     case 2:
         return query<IModelItem>(controlGridLines());
     default:
-        return Base::ModelItem::at(i);
+        return Object::ModelItem::at(i);
     }
 }
 
@@ -90,7 +90,7 @@ IModelItemList *ModelItem::findList(int listType) const
     case ControlGridLineItem:
         return query<IModelItemList>(controlGridLines());
     default:
-        return Base::ModelItem::findList(listType);
+        return Object::ModelItem::findList(listType);
     }
 }
 
@@ -102,7 +102,7 @@ void ModelItem::reset()
     data->set(DEFAULT_GRIDSETTINGS_TIMESNAP, TimeSnapRole);
     data->set(DEFAULT_GRIDSETTINGS_PITCHSNAP, PitchSnapRole);
     data->set(DEFAULT_GRIDSETTINGS_CONTROLSNAP, ControlSnapRole);
-    Base::ModelItem::reset();
+    Object::ModelItem::reset();
 }
 
 }

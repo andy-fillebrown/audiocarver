@@ -15,39 +15,41 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_SCOPEDPARENTCHANGE_H
-#define MI_CORE_SCOPEDPARENTCHANGE_H
+#ifndef MI_CORE_SCOPEDITEMINSERT_H
+#define MI_CORE_SCOPEDITEMINSERT_H
 
 #include <iaggregate.h>
 #include <imodelitem.h>
 #include <imodelitemwatcher.h>
 #include <QList>
 
-class ScopedParentChange
+class ScopedItemInsert
 {
-    const IModelItem *_item;
+    const IModelItem *_parent;
+    const int _index;
     QList<IModelItemWatcher*> _watchers;
 
 public:
-    ScopedParentChange(const IModelItem *item)
-        :   _item(item)
+    ScopedItemInsert(const IModelItem *parent, int index)
+        :   _parent(parent)
+        ,   _index(index)
     {
-        if (!_item)
+        if (!_parent)
             return;
-        const QList<IUnknown*> &components = query<IAggregate>(_item)->components();
+        const QList<IUnknown*> &components = query<IAggregate>(_parent)->components();
         foreach (IUnknown *component, components)
             if (component->isTypeOfInterface(I::IModelItemWatcher))
                 _watchers.append(query<IModelItemWatcher>(component));
         foreach (IModelItemWatcher *watcher, _watchers)
-            watcher->beginChangeParent(_item);
+            watcher->beginInsertItem(_parent, index);
     }
 
-    ~ScopedParentChange()
+    ~ScopedItemInsert()
     {
-        if (!_item)
+        if (!_parent)
             return;
         foreach (IModelItemWatcher *watcher, _watchers)
-            watcher->endChangeParent(_item);
+            watcher->endInsertItem(_parent, _index);
     }
 };
 

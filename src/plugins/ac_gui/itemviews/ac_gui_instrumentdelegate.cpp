@@ -53,7 +53,7 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);
         QString instrument_basename = instrument_file_info.baseName();
-        IModelData *track = query<IModelData>(IModel::instance()->indexItem(index));
+        IModelData *track = query<IModelData>(IModel::instance()->itemFromIndex(index));
         track->set(instrument_basename, InstrumentRole);
     }
     return true;

@@ -77,7 +77,7 @@ protected:
         return TotalItemCount;
     }
 
-    int indexOf(IModelItem *item) const;
+    int indexOf(const IModelItem *item) const;
     IModelItem *at(int i) const;
     IModelItem *findItem(int itemType) const;
     IModelItemList *findList(int listType) const;

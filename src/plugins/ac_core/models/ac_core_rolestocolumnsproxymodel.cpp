@@ -15,22 +15,34 @@
 **
 **************************************************************************/
 
-#include "ac_proxymodel.h"
+#include "ac_core_rolestocolumnsproxymodel.h"
+
+namespace Core {
 
 class RolesToColumnsProxyModelHelper : public QSortFilterProxyModel
 {
 public:
+    RolesToColumnsProxyModel *parentModel;
+
     RolesToColumnsProxyModelHelper(QObject *parent = 0)
         :   QSortFilterProxyModel(parent)
         ,   parentModel(qobject_cast<RolesToColumnsProxyModel*>(parent))
     {}
 
-    int columnCount(const QModelIndex &) const { return parentModel ? parentModel->columnCount(QModelIndex()) : 0; }
+    int columnCount(const QModelIndex &) const
+    {
+        return parentModel ? parentModel->columnCount(QModelIndex()) : 0;
+    }
 
-    bool filterAcceptsColumn(int, const QModelIndex &) const { return true; }
-    bool filterAcceptsRow(int, const QModelIndex &) const { return true; }
+    bool filterAcceptsColumn(int, const QModelIndex &) const
+    {
+        return true;
+    }
 
-    RolesToColumnsProxyModel *parentModel;
+    bool filterAcceptsRow(int, const QModelIndex &) const
+    {
+        return true;
+    }
 };
 
 class RolesToColumnsProxyModelPrivate
@@ -77,4 +89,6 @@ void RolesToColumnsProxyModel::setRoleMaps(const RoleMapList &roleMaps)
 void RolesToColumnsProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
     d->helper->setSourceModel(sourceModel);
+}
+
 }

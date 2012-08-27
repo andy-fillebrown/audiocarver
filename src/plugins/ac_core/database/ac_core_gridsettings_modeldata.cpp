@@ -25,7 +25,7 @@ using namespace Ac;
 namespace GridSettings {
 
 ModelData::ModelData(IAggregate *aggregate)
-    :   Base::ModelData(aggregate)
+    :   Object::ModelData(aggregate)
     ,   _snapEnabled(DEFAULT_GRIDSETTINGS_SNAPENABLED)
     ,   _gridSnapEnabled(DEFAULT_GRIDSETTINGS_GRIDSNAPENABLED)
     ,   _timeSnap(DEFAULT_GRIDSETTINGS_TIMESNAP)
@@ -35,7 +35,7 @@ ModelData::ModelData(IAggregate *aggregate)
 
 IUnknown *ModelData::initialize()
 {
-    return Base::ModelData::initialize();
+    return Object::ModelData::initialize();
 }
 
 bool ModelData::setSnapEnabled(bool enabled)
@@ -100,7 +100,7 @@ int ModelData::roleAt(int i) const
     case 4:
         return ControlSnapRole;
     default:
-        return Base::ModelData::roleAt(i);
+        return Object::ModelData::roleAt(i);
     }
 }
 
@@ -118,7 +118,7 @@ QVariant ModelData::getValue(int role) const
     case ControlSnapRole:
         return controlSnap();
     default:
-        return Base::ModelData::getValue(role);
+        return Object::ModelData::getValue(role);
     }
 }
 
@@ -136,7 +136,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     case ControlSnapRole:
         return setControlSnap(qvariant_cast<qreal>(value));
     default:
-        return Base::ModelData::setValue(value, role);
+        return Object::ModelData::setValue(value, role);
     }
 }
 

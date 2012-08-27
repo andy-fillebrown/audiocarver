@@ -48,7 +48,7 @@ bool ModelItem::isTypeOfItem(int itemType) const
     return ScoreObject::ModelItem::isTypeOfItem(itemType);
 }
 
-int ModelItem::indexOf(IModelItem *item) const
+int ModelItem::indexOf(const IModelItem *item) const
 {
     if (query<IModelItem>(notes()) == item)
         return ItemCountOffset;

@@ -28,8 +28,10 @@ class IModelItemWatcher : public IUnknown
 public:
     enum { InterfaceType = I::IModelItemWatcher };
 
-    virtual void beginChangeParent(const IModelItem *item) = 0;
-    virtual void endChangeParent(const IModelItem *item) = 0;
+    virtual void beginInsertItem(const IModelItem *parent, int index) = 0;
+    virtual void endInsertItem(const IModelItem *parent, int index) = 0;
+    virtual void beginRemoveItem(const IModelItem *parent, int index) = 0;
+    virtual void endRemoveItem(const IModelItem *parent, int index) = 0;
 
     int interfaceType() const
     {

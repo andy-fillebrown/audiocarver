@@ -18,11 +18,11 @@
 #ifndef AC_CORE_GRIDSETTINGS_MODELITEM_H
 #define AC_CORE_GRIDSETTINGS_MODELITEM_H
 
-#include <mi_core_modelitem.h>
+#include <mi_core_object_modelitem.h>
 
 namespace GridSettings {
 
-class ModelItem : public Base::ModelItem
+class ModelItem : public Object::ModelItem
 {
     IAggregate *_timeGridLines;
     IAggregate *_pitchGridLines;
@@ -31,12 +31,12 @@ class ModelItem : public Base::ModelItem
 
 public:
     enum {
-        ItemCountOffset = Base::ModelItem::TotalItemCount,
+        ItemCountOffset = Object::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
     ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
+        :   Object::ModelItem(aggregate)
         ,   _timeGridLines(0)
         ,   _pitchGridLines(0)
         ,   _controlGridLines(0)
@@ -70,7 +70,7 @@ protected:
         return TotalItemCount;
     }
 
-    int indexOf(IModelItem *item) const;
+    int indexOf(const IModelItem *item) const;
     IModelItem *at(int i) const;
     IModelItemList *findList(int listType) const;
     void reset();
