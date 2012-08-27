@@ -91,6 +91,14 @@ protected:
 
     IModelItemList *findList(int listType) const
     {
+        IModelItemList *list = 0;
+        const int count = this->count();
+        for (int i = 0;  i < count;  ++i) {
+            list = at(i)->findList(listType);
+            if (list)
+                return list;
+        }
+        Q_ASSERT(0);
         return 0;
     }
 
