@@ -33,8 +33,8 @@
 #include <imodel.h>
 #include <imodeldata.h>
 #include <imodelitemlist.h>
-#include <iqaudioengine.h>
-#include <isynthesizer.h>
+//#include <iqaudioengine.h>
+//#include <isynthesizer.h>
 #include <mi_gui_constants.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
@@ -274,21 +274,21 @@ void MainWindowExtension::buildAll()
 {
     if (!maybeSaveDatabase())
         return;
-    const int track_count = IDatabase::instance()->rootItem()->findList(TrackItem)->count();
-    ISynthesizer *synth = ISynthesizer::instance();
-    for (int i = 0;  i < track_count;  ++i)
-        synth->renderTrack(i);
+//    const int track_count = IDatabase::instance()->rootItem()->findList(TrackItem)->count();
+//    ISynthesizer *synth = ISynthesizer::instance();
+//    for (int i = 0;  i < track_count;  ++i)
+//        synth->renderTrack(i);
 }
 
 void MainWindowExtension::startOrStop()
 {
-    IQAudioEngine *audio_engine = IQAudioEngine::instance();
-    if (!audio_engine)
-        return;
-    if (audio_engine->isStarted())
-        stop();
-    else
-        start();
+//    IQAudioEngine *audio_engine = IQAudioEngine::instance();
+//    if (!audio_engine)
+//        return;
+//    if (audio_engine->isStarted())
+//        stop();
+//    else
+//        start();
 }
 
 void MainWindowExtension::start()
@@ -298,16 +298,16 @@ void MainWindowExtension::start()
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
         return;
     }
-    IQAudioEngine *audio_engine = IQAudioEngine::instance();
-    if (audio_engine)
-        audio_engine->start();
+//    IQAudioEngine *audio_engine = IQAudioEngine::instance();
+//    if (audio_engine)
+//        audio_engine->start();
 }
 
 void MainWindowExtension::stop()
 {
-    IQAudioEngine *audio_engine = IQAudioEngine::instance();
-    if (audio_engine)
-        audio_engine->stop();
+//    IQAudioEngine *audio_engine = IQAudioEngine::instance();
+//    if (audio_engine)
+//        audio_engine->stop();
 }
 
 void MainWindowExtension::aboutAudioCarver()

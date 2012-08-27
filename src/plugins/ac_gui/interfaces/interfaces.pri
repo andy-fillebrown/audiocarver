@@ -10,9 +10,9 @@ SOURCE_FILES *= \
     iparententity \
     iplaycursor \
     ipoint \
-    iqaudioengine \
+#    iqaudioengine \
     isubentity \
-    isynthesizer \
+#    isynthesizer \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
