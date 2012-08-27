@@ -6,7 +6,7 @@ DIRS = \
 #    dialogs \
 #    filers \
 #    graphics \
-#    graphicsview \
+    graphicsview \
 #    implementations \
     interfaces \
     itemviews \

@@ -15,59 +15,54 @@
 **
 **************************************************************************/
 
-#ifndef AC_VIEWMANAGER_H
-#define AC_VIEWMANAGER_H
+#ifndef AC_GUI_GRAPHICSVIEWMANAGER_H
+#define AC_GUI_GRAPHICSVIEWMANAGER_H
 
 #include <QObject>
 
-class Model;
-
+class IModelData;
+class IModelItem;
 class QGraphicsView;
-class QWidget;
-
 class QModelIndex;
 class QPointF;
+class QWidget;
 
-class ViewManagerPrivate;
-class ViewManager : public QObject
+class GraphicsViewManagerPrivate;
+class GraphicsViewManager : public QObject
 {
     Q_OBJECT
 
-public:
-    ViewManager(QWidget *widget);
-    ~ViewManager();
+    friend class GraphicsViewManagerPrivate;
+    GraphicsViewManagerPrivate *d;
 
-    static ViewManager *instance();
+public:
+    GraphicsViewManager(QWidget *widget);
+    ~GraphicsViewManager();
+
+    static GraphicsViewManager *instance();
 
     QGraphicsView *view(int type) const;
-
     qreal scoreLength() const;
     qreal position(int role) const;
     void setPosition(qreal position, int role);
     qreal scale(int role) const;
     void setScale(qreal scale, int role);
-
     void updateDatabase();
     void clearPickedGrips();
     QPointF snappedScenePos(const QPointF &pos, int sceneType) const;
 
 public slots:
     void updateViews();
-
     void databaseAboutToBeRead();
     void databaseRead();
     void databaseAboutToBeWritten();
-
     void disableUpdates();
     void enableUpdates();
-
-    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
+    void dataChanged(const IModelData *data);
     void modelReset();
-
     void startInsertingPoints();
     void finishInsertingPoints();
     void cancelPointInsertion();
-
     void selectAllGrips();
     void startGripDrag();
 
@@ -75,10 +70,6 @@ signals:
     void scoreLengthChanged();
     void viewPositionChanged(int role);
     void viewScaleChanged(int role);
-
-private:
-    ViewManagerPrivate *d;
-    friend class ViewManagerPrivate;
 };
 
-#endif // AC_VIEWMANAGER_H
+#endif

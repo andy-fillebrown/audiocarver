@@ -16,11 +16,9 @@
 **************************************************************************/
 
 #include "mi_gui_graphicsview.h"
-
 #include <QWheelEvent>
 
-namespace Mi {
-namespace Gui {
+namespace Base {
 
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
@@ -28,5 +26,4 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     event->ignore();
 }
 
-} // namespace Gui
-} // namespace Mi
+}

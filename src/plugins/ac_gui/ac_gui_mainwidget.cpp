@@ -17,11 +17,11 @@
 
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_trackview.h"
+#include "ac_gui_graphicsviewmanager.h"
 //#include "ac_gripitemspropertyview.h"
 //#include "ac_gripselectionmodel.h"
-//#include "ac_gui_viewmanager.h"
 //#include "ac_selecteditemspropertyview.h"
-//#include <mi_gui_graphicsview.h>
+#include <mi_gui_graphicsview.h>
 #include <mainwindow.h>
 #include <icore.h>
 #include <QDockWidget>
@@ -33,6 +33,7 @@
 #define LABELVIEW_WIDTH 48
 #define LABELVIEW_HEIGHT 23
 
+using namespace Base;
 using namespace Core;
 using namespace Qt;
 
@@ -40,39 +41,39 @@ class MainWidgetPrivate
 {
 public:
     MainWidget *q;
-//    Mi::Gui::GraphicsView *topRightView;
+    GraphicsView *topRightView;
     qreal controlHeightPercentage;
     QDockWidget *trackViewDock;
     TrackView *trackView;
 //    QDockWidget *propertyViewDock;
 //    SelectedItemsPropertyView *propertyView;
 //    GripItemsPropertyView *gripView;
-//    ViewManager *viewManager;
+    GraphicsViewManager *graphicsViewManager;
     uint hoveringOverSeparator : 1;
     uint draggingSeparator : 1;
 
     MainWidgetPrivate(MainWidget *q)
         :   q(q)
-//        ,   topRightView(new Mi::Gui::GraphicsView)
+        ,   topRightView(new GraphicsView)
         ,   controlHeightPercentage(0.25f)
         ,   trackViewDock(new QDockWidget("Track Editor", q))
         ,   trackView(new TrackView(trackViewDock))
 //        ,   propertyViewDock(new QDockWidget("Property Editor", q))
 //        ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
 //        ,   gripView(new GripItemsPropertyView(propertyViewDock))
-//        ,   viewManager(new ViewManager(q))
+        ,   graphicsViewManager(new GraphicsViewManager(q))
         ,   hoveringOverSeparator(false)
         ,   draggingSeparator(false)
     {
-//        topRightView->setParent(q);
-//        topRightView->setBackgroundRole(QPalette::Window);
-//        topRightView->setCursor(Qt::ArrowCursor);
-//        topRightView->setStyleSheet("QFrame {"
-//                                    "border-top: 0px solid palette(shadow);"
-//                                    "border-bottom: 1px solid palette(shadow);"
-//                                    "border-left: 0px solid palette(shadow);"
-//                                    "border-right: 1px solid palette(shadow);"
-//                                    "}");
+        topRightView->setParent(q);
+        topRightView->setBackgroundRole(QPalette::Window);
+        topRightView->setCursor(ArrowCursor);
+        topRightView->setStyleSheet("QFrame {"
+                                    "border-top: 0px solid palette(shadow);"
+                                    "border-bottom: 1px solid palette(shadow);"
+                                    "border-left: 0px solid palette(shadow);"
+                                    "border-right: 1px solid palette(shadow);"
+                                    "}");
 //        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
 //            viewManager->view(Ac::SceneType(i))->setParent(q);
 
@@ -90,7 +91,7 @@ public:
 
     ~MainWidgetPrivate()
     {
-//        delete viewManager;
+        delete graphicsViewManager;
     }
 
     int separatorHeight() const
@@ -132,7 +133,7 @@ public:
         int leftWidth = q->width() - LABELVIEW_WIDTH;
         if (leftWidth < 1)
             leftWidth = 1;
-//        const int rightWidth = LABELVIEW_WIDTH;
+        const int rightWidth = LABELVIEW_WIDTH;
         const int topHeight = LABELVIEW_HEIGHT;
         int middleHeight = pitchViewHeight() - (separator_height / 2);
         if (middleHeight < 0)
@@ -142,7 +143,7 @@ public:
 //        const int bottomHeight = q->height() - (topHeight + middleHeight + separator_height);
 //        const int bottomPosY = topHeight + middleHeight + separator_height;
 //        viewManager->view(Ac::TimeLabelScene)->setGeometry(0, 0, leftWidth, topHeight);
-//        topRightView->setGeometry(QRect(leftWidth, 0, rightWidth, topHeight));
+        topRightView->setGeometry(QRect(leftWidth, 0, rightWidth, topHeight));
 //        viewManager->view(Ac::PitchScene)->setGeometry(QRect(0, topHeight, leftWidth, middleHeight));
 //        viewManager->view(Ac::PitchLabelScene)->setGeometry(QRect(leftWidth, topHeight, rightWidth, middleHeight));
 //        viewManager->view(Ac::ControlScene)->setGeometry(QRect(0, bottomPosY, leftWidth, bottomHeight));

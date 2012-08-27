@@ -18,12 +18,10 @@
 #ifndef MI_GUI_GRAPHICSVIEW_H
 #define MI_GUI_GRAPHICSVIEW_H
 
-#include "QGraphicsView"
+#include <QGraphicsView>
+#include "mi_gui_global.h"
 
-#include <mi_gui_global.h>
-
-namespace Mi {
-namespace Gui {
+namespace Base {
 
 class MI_GUI_EXPORT GraphicsView : public QGraphicsView
 {
@@ -41,7 +39,6 @@ protected:
     void wheelEvent(QWheelEvent *event);
 };
 
-} // namespace Gui
-} // namespace Mi
+}
 
-#endif // MI_GUI_GRAPHICSVIEW_H
+#endif
