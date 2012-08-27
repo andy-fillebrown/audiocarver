@@ -160,6 +160,12 @@ QVariant Model::data(const QModelIndex &index, int role) const
     return index_data ? index_data->getValue(role) : QVariant();
 }
 
+bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    IModelData *index_data = dataFromIndex(index);
+    return index_data ? index_data->setValue(value, role) : false;
+}
+
 ItemFlags Model::flags(const QModelIndex &index) const
 {
     IModelData *index_data = index.isValid() ? dataFromIndex(index) : query<IModelData>(IDatabase::instance()->rootItem());
