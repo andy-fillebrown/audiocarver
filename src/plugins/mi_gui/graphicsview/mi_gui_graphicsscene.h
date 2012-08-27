@@ -18,11 +18,9 @@
 #ifndef MI_GUI_GRAPHICSSCENE_H
 #define MI_GUI_GRAPHICSSCENE_H
 
-#include "QGraphicsScene"
+#include <QGraphicsScene>
+#include "mi_gui_global.h"
 
-#include <mi_gui_global.h>
-
-namespace Mi {
 namespace Gui {
 
 class MI_GUI_EXPORT GraphicsScene : public QGraphicsScene
@@ -38,7 +36,6 @@ public:
     {}
 };
 
-} // namespace Gui
-} // namespace Mi
+}
 
-#endif // MI_GUI_GRAPHICSSCENE_H
+#endif

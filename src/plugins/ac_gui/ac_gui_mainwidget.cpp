@@ -82,7 +82,7 @@ public:
         // Track View Dock Widget
         trackViewDock->setObjectName("Track View Dock Widget");
         trackViewDock->setWidget(trackView);
-        main_window->addDockWidget(Qt::LeftDockWidgetArea, trackViewDock);
+        main_window->addDockWidget(LeftDockWidgetArea, trackViewDock);
 
 //        // Property View Dock Widget
 //        propertyViewDock->setObjectName("Property View Dock Widget");
@@ -173,7 +173,7 @@ MainWidget::MainWidget(QWidget *parent)
                   "border-left: 0px solid palette(shadow);"
                   "border-right: 0px solid palette(shadow);"
                   "}");
-    setCursor(Qt::SplitVCursor);
+    setCursor(SplitVCursor);
     setMouseTracking(true);
 //    GripSelectionModel *grip_model = GripSelectionModel::instance();
 //    connect(grip_model, SIGNAL(gripsSelected()), SLOT(showGripView()));
@@ -196,7 +196,7 @@ MainWidget *MainWidget::instance()
 void MainWidget::mousePressEvent(QMouseEvent *event)
 {
     d->draggingSeparator =
-            Qt::LeftButton == event->button()
+            LeftButton == event->button()
             && d->separatorRect().contains(event->pos());
 }
 
@@ -212,7 +212,7 @@ void MainWidget::mouseMoveEvent(QMouseEvent *event)
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (Qt::LeftButton == event->button() && d->draggingSeparator) {
+    if (LeftButton == event->button() && d->draggingSeparator) {
         d->moveSeparator(event->pos());
         d->draggingSeparator = false;
     }
