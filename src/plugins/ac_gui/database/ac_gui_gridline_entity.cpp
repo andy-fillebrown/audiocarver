@@ -15,15 +15,40 @@
 **
 **************************************************************************/
 
-#include "ac_gui_graphicsobject.h"
+#include "ac_gui_gridline_entity.h"
+#include "ac_gui_graphicsitem.h"
+#include <imodeldata.h>
 
-namespace Ac {
-namespace Gui {
+using namespace Ac;
 
-IAggregator *GraphicsObject::init()
+namespace GridLine {
+
+Entity::~Entity()
 {
-    return this;
+    delete _labelLineItem;
+    delete _labelTextItem;
+    delete _labelRootItem;
 }
 
-} // namespace Gui
-} // namespace Ac
+IUnknown *Entity::initialize()
+{
+    _labelRootItem = new GraphicsItem;
+    _labelTextItem = new GraphicsTextItem(_labelRootItem);
+    _labelLineItem = new QGraphicsLineItem(_labelRootItem);
+    return Object::Entity::initialize();
+}
+
+void Entity::update(int role)
+{
+    switch (role) {
+    case LabelRole:
+        labelTextItem()->setText(query<IModelData>(this)->get<QString>(LabelRole));
+    }
+}
+
+bool Entity::isVisible() const
+{
+    return labelRootItem()->isVisible();
+}
+
+}

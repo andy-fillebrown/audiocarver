@@ -15,37 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SCORE_H
-#define AC_GUI_SCORE_H
+#ifndef AC_GUI_PITCHCURVE_SUBENTITY_H
+#define AC_GUI_PITCHCURVE_SUBENTITY_H
 
-#include "ac_gui_scoreobject.h"
+#include "ac_gui_curve_subentity.h"
 
-namespace Ac {
-namespace Gui {
+namespace PitchCurve {
 
-class Score : public ScoreObject
+class SubEntity : public Curve::SubEntity
 {
-    friend class DataObjectFactory;
-
-protected:
-    Score()
+public:
+    SubEntity(IAggregate *aggregate)
+        :   Curve::SubEntity(aggregate)
     {}
 
-    IAggregator *init();
+    IUnknown *initialize();
 
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        switch (interfaceType) {
-        case I::IChildEntity:
-            return 0;
-        default:
-            return ScoreObject::createAggregate(interfaceType);
-        }
-    }
+protected:
+    int sceneType() const;
 };
 
-} // namespace Gui
-} // namespace Ac
+}
 
-#endif // AC_GUI_SCORE_H
+#endif

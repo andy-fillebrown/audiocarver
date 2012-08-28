@@ -15,32 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_NOTE_H
-#define AC_GUI_NOTE_H
+#include "ac_gui_horizontalgridline_entity.h"
+#include <QGraphicsLineItem>
 
-#include "ac_gui_scoreobject.h"
+namespace HorizontalGridLine {
 
-namespace Ac {
-namespace Gui {
-
-class Note : public ScoreObject
+Entity::~Entity()
 {
-    friend class DataObjectFactory;
+    delete _sceneLineItem;
+}
 
-protected:
-    Note()
-    {}
+IUnknown *Entity::initialize()
+{
+    _sceneLineItem = new QGraphicsLineItem;
+    return GridLine::Entity::initialize();
+}
 
-    IAggregator *init();
+void Entity::update(int role)
+{
+    GridLine::Entity::update(role);
+}
 
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
-    {
-        return ScoreObject::createAggregate(interfaceType);
-    }
-};
-
-} // namespace Gui
-} // namespace Ac
-
-#endif // AC_GUI_NOTE_H
+}

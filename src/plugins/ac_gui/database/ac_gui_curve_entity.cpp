@@ -26,7 +26,12 @@ namespace Curve {
 
 IUnknown *Entity::initialize()
 {
-    return this;
+    return Object::Entity::initialize();
+}
+
+QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
+{
+    return query<IGraphicsItem>(this)->graphicsItem(sceneType, transformType);
 }
 
 void Entity::update(int role)

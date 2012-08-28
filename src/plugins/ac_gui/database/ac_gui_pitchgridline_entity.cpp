@@ -15,30 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSOBJECT_H
-#define AC_GUI_GRAPHICSOBJECT_H
+#include "ac_gui_pitchgridline_entity.h"
+#include "ac_gui_graphicsitem.h"
+#include "ac_gui_namespace.h"
+#include <QGraphicsLineItem>
 
-#include "mi_core_subaggregator.h"
+using namespace Ac;
 
-namespace Ac {
-namespace Gui {
+namespace PitchGridLine {
 
-class GraphicsObject : public Mi::Core::SubAggregator
+IUnknown *Entity::initialize()
 {
-    friend class DataObjectFactory;
+    return HorizontalGridLine::Entity::initialize();
+}
 
-protected:
-    GraphicsObject()
-    {}
+QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
+{
+    if (PitchScene == sceneType && UnitXTransform == transformType)
+        return sceneLineItem();
+    if (PitchLabelScene == sceneType && MainTransform == transformType)
+        return labelRootItem();
+    return HorizontalGridLine::Entity::graphicsItem(sceneType, transformType);
+}
 
-    IAggregator *init();
+void Entity::update(int role)
+{
+    HorizontalGridLine::Entity::update(role);
+}
 
-    // IAggregator
-    void clear()
-    {}
-};
-
-} // namespace Gui
-} // namespace Ac
-
-#endif // AC_GUI_GRAPHICSOBJECT_H
+}

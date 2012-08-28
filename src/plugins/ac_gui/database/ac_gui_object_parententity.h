@@ -15,32 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_TRACK_H
-#define AC_GUI_TRACK_H
+#ifndef AC_GUI_OBJECT_PARENTENTITY_H
+#define AC_GUI_OBJECT_PARENTENTITY_H
 
-#include "ac_gui_scoreobject.h"
+#include <iparententity.h>
 
-namespace Ac {
-namespace Gui {
+class IAggregate;
 
-class Track : public ScoreObject
+namespace Object {
+
+class ParentEntity : public IParentEntity
 {
-    friend class DataObjectFactory;
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
 
 protected:
-    Track()
+    ParentEntity(IAggregate *aggregate)
+        :   _aggregate(aggregate)
     {}
 
-    IAggregator *init();
+    virtual IUnknown *initialize();
 
-    // IAggregator
-    IAggregate *createAggregate(int interfaceType)
+    IAggregate *aggregate() const
     {
-        return Track::createAggregate(interfaceType);
+        return _aggregate;
     }
 };
 
-} // namespace Gui
-} // namespace Ac
+}
 
-#endif // AC_GUI_TRACK_H
+#endif

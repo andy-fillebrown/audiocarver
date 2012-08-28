@@ -15,25 +15,26 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchcurve.h"
+#ifndef AC_GUI_CONTROLGRIDLINE_ENTITY_H
+#define AC_GUI_CONTROLGRIDLINE_ENTITY_H
 
-namespace Ac {
-namespace Gui {
+#include "ac_gui_horizontalgridline_entity.h"
 
-IAggregator *PitchCurve::init()
+namespace ControlGridLine {
+
+class Entity : public HorizontalGridLine::Entity
 {
-    return Curve::init();
+public:
+    Entity(IAggregate *aggregate)
+        :   HorizontalGridLine::Entity(aggregate)
+    {}
+
+    virtual IUnknown *initialize();
+
+    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+    void update(int role);
+};
+
 }
 
-IAggregate *PitchCurve::Entity::init()
-{
-    return Curve::Entity::init();
-}
-
-IAggregate *PitchCurve::SubEntity::init()
-{
-    return Curve::SubEntity::init();
-}
-
-} // namespace Gui
-} // namespace Ac
+#endif

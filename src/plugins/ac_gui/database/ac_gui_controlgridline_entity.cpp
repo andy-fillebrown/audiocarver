@@ -15,28 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#include "ac_gui_controlgridline_entity.h"
+#include "ac_gui_graphicsitem.h"
+#include "ac_gui_namespace.h"
+#include <QGraphicsLineItem>
 
-#include "ac_gui_object_subentity.h"
+using namespace Ac;
 
-namespace Curve {
+namespace ControlGridLine {
 
-class SubEntity : public Object::SubEntity
+IUnknown *Entity::initialize()
 {
-protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
-
-    bool isCurve() const
-    {
-        return true;
-    }
-};
-
+    return HorizontalGridLine::Entity::initialize();
 }
 
-#endif
+QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
+{
+    if (ControlScene == sceneType && UnitXTransform == transformType)
+        return sceneLineItem();
+    if (ControlLabelScene == sceneType && MainTransform == transformType)
+        return labelRootItem();
+    return HorizontalGridLine::Entity::graphicsItem(sceneType, transformType);
+}
+
+void Entity::update(int role)
+{
+    HorizontalGridLine::Entity::update(role);
+}
+
+}

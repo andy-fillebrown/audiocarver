@@ -29,7 +29,6 @@ public:
 
     virtual int sceneType() const = 0;
     virtual bool isCurve() const = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
 
     int interfaceType() const
     {

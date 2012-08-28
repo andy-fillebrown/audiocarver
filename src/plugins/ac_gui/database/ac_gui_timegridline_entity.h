@@ -15,26 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#ifndef AC_GUI_TIMEGRIDLINE_ENTITY_H
+#define AC_GUI_TIMEGRIDLINE_ENTITY_H
 
-#include "ac_gui_object_subentity.h"
+#include "ac_gui_gridline_entity.h"
 
-namespace Curve {
+namespace TimeGridLine {
 
-class SubEntity : public Object::SubEntity
+class Entity : public GridLine::Entity
 {
+    QGraphicsLineItem *_pitchSceneLineItem;
+    QGraphicsLineItem *_controlSceneLineItem;
+
 protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
+    Entity(IAggregate *aggregate)
+        :   GridLine::Entity(aggregate)
+        ,   _pitchSceneLineItem(0)
+        ,   _controlSceneLineItem(0)
     {}
 
+    ~Entity();
     virtual IUnknown *initialize();
 
-    bool isCurve() const
+    QGraphicsLineItem *pitchSceneLineItem() const
     {
-        return true;
+        return _pitchSceneLineItem;
     }
+
+    QGraphicsLineItem *controlSceneLineItem() const
+    {
+        return _controlSceneLineItem;
+    }
+
+    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+    void update(int role);
 };
 
 }

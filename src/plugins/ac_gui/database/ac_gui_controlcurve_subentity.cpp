@@ -15,28 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#include "ac_gui_controlcurve_subentity.h"
+#include "ac_gui_namespace.h"
 
-#include "ac_gui_object_subentity.h"
+using namespace Ac;
 
-namespace Curve {
+namespace ControlCurve {
 
-class SubEntity : public Object::SubEntity
+IUnknown *SubEntity::initialize()
 {
-protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
-
-    bool isCurve() const
-    {
-        return true;
-    }
-};
-
+    return Curve::SubEntity::initialize();
 }
 
-#endif
+int SubEntity::sceneType() const
+{
+    return ControlScene;
+}
+
+}

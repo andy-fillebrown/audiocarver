@@ -16,21 +16,12 @@
 **************************************************************************/
 
 #include "ac_gui_curve_subentity.h"
-#include <imodelitem.h>
-#include <iparententity.h>
 
 namespace Curve {
 
 IUnknown *SubEntity::initialize()
 {
-    return this;
+    return Object::SubEntity::initialize();
 }
-
-IParentEntity *SubEntity::parent() const
-{
-    return query<IParentEntity>(query<IModelItem>(this)->parent());
-}
-
-
 
 }

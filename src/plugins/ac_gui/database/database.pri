@@ -1,20 +1,21 @@
 
 SOURCE_FILES = \
-#    controlcurve \
+    controlcurve_subentity \
+    controlgridline_entity \
     curve_entity \
     curve_graphicsitem \
     curve_subentity \
-#    graphicsobject \
-#    gridline \
-#    gridsettings \
-#    note \
-#    pitchcurve \
-#    scoreobject \
-#    track \
-#    projectsettings \
-#    score \
-#    track \
-#    viewsettings \
+    gridline_entity \
+    horizontalgridline_entity \
+    note_entity \
+    object_entity \
+    object_graphicsitem \
+    object_parententity \
+    object_subentity \
+    pitchcurve_subentity \
+    pitchgridline_entity \
+    scoreobject_entity \
+    timegridline_entity \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

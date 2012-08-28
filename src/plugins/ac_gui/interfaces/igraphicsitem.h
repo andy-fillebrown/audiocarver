@@ -22,6 +22,7 @@
 #include "ac_gui_interfaces.h"
 #include <ac_core_point.h>
 
+class QGraphicsItem;
 class QRectF;
 
 class IGraphicsItem : public IUnknown
@@ -29,6 +30,7 @@ class IGraphicsItem : public IUnknown
 public:
     enum { InterfaceType = I::IGraphicsItem };
 
+    virtual QGraphicsItem *graphicsItem(int sceneType, int transformType) const = 0;
     virtual void setPoints(const PointList &points) = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
     virtual void highlight() = 0;

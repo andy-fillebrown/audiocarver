@@ -15,25 +15,42 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#ifndef AC_GUI_SCOREOBJECT_ENTITY_H
+#define AC_GUI_SCOREOBJECT_ENTITY_H
 
-#include "ac_gui_object_subentity.h"
+#include "ac_gui_object_parententity.h"
+#include <QMap>
 
-namespace Curve {
+namespace ScoreObject {
 
-class SubEntity : public Object::SubEntity
+class Entity : public Object::ParentEntity
 {
+    QMap<int, QGraphicsItem*> _graphicsItems;
+
 protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
+    Entity(IAggregate *aggregate)
+        :   Object::ParentEntity(aggregate)
     {}
 
     virtual IUnknown *initialize();
 
-    bool isCurve() const
+    QList<ISubEntity*> subEntities(int sceneType) const;
+    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+
+    void highlight()
     {
-        return true;
+        Q_ASSERT(false && "Not implemented yet.");
+    }
+
+    void unhighlight()
+    {
+        Q_ASSERT(false && "Not implemented yet.");
+    }
+
+    bool isVisible() const
+    {
+        Q_ASSERT(false && "Not implemented yet.");
+        return false;
     }
 };
 

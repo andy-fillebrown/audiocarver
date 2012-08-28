@@ -15,26 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#ifndef AC_GUI_NOTE_ENTITY_H
+#define AC_GUI_NOTE_ENTITY_H
 
-#include "ac_gui_object_subentity.h"
+#include "ac_gui_scoreobject_entity.h"
 
-namespace Curve {
+namespace Note {
 
-class SubEntity : public Object::SubEntity
+class Entity : public ScoreObject::Entity
 {
-protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
+    IAggregate *_velocity;
+
+public:
+    Entity(IAggregate *aggregate)
+        :   ScoreObject::Entity(aggregate)
+        ,   _velocity(0)
     {}
 
-    virtual IUnknown *initialize();
+    ~Entity();
+    IUnknown *initialize();
 
-    bool isCurve() const
+protected:
+    IAggregate *velocity() const
     {
-        return true;
+        return _velocity;
     }
+
+    QList<ISubEntity*> subEntities(int sceneType) const;
 };
 
 }

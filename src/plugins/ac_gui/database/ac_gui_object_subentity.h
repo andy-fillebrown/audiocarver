@@ -15,26 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#ifndef AC_GUI_OBJECT_SUBENTITY_H
+#define AC_GUI_OBJECT_SUBENTITY_H
 
-#include "ac_gui_object_subentity.h"
+#include <isubentity.h>
 
-namespace Curve {
+class IAggregate;
 
-class SubEntity : public Object::SubEntity
+namespace Object {
+
+class SubEntity : public ISubEntity
 {
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
+
 protected:
     SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
+        :   _aggregate(aggregate)
     {}
 
     virtual IUnknown *initialize();
 
-    bool isCurve() const
+    IAggregate *aggregate() const
     {
-        return true;
+        return _aggregate;
     }
+
+    IParentEntity *parent() const;
 };
 
 }

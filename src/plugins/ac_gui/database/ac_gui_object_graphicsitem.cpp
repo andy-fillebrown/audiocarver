@@ -15,28 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#include "ac_gui_object_graphicsitem.h"
+#include <iaggregate.h>
 
-#include "ac_gui_object_subentity.h"
+namespace Object {
 
-namespace Curve {
-
-class SubEntity : public Object::SubEntity
+void *GraphicsItem::queryInterface(int interfaceType) const
 {
-protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
-
-    bool isCurve() const
-    {
-        return true;
-    }
-};
-
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<GraphicsItem*>(this);
+    return aggregate()->queryInterface(interfaceType);
 }
 
-#endif
+IUnknown *GraphicsItem::initialize()
+{
+    aggregate()->append(this);
+    return this;
+}
+
+}

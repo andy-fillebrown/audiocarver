@@ -32,7 +32,7 @@ IUnknown *GraphicsItem::initialize()
 {
     _graphicsCurveItem = new GraphicsCurveItem;
     _graphicsCurveItem->setEntity(query<IEntity>(this));
-    return this;
+    return Object::GraphicsItem::initialize();
 }
 
 void GraphicsItem::highlight()

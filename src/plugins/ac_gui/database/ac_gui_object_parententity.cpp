@@ -15,25 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_gui_controlcurve.h"
+#include "ac_gui_object_parententity.h"
+#include <iaggregate.h>
 
-namespace Ac {
-namespace Gui {
+namespace Object {
 
-IAggregator *ControlCurve::init()
+void *ParentEntity::queryInterface(int interfaceType) const
 {
-    return Curve::init();
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<ParentEntity*>(this);
+    return aggregate()->queryInterface(interfaceType);
 }
 
-IAggregate *ControlCurve::Entity::init()
+IUnknown *ParentEntity::initialize()
 {
-    return Curve::Entity::init();
+    aggregate()->append(this);
+    return this;
 }
 
-IAggregate *ControlCurve::SubEntity::init()
-{
-    return Curve::SubEntity::init();
 }
-
-} // namespace Gui
-} // namespace Ac

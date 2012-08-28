@@ -15,28 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
-
 #include "ac_gui_object_subentity.h"
+#include <iaggregate.h>
+#include <imodelitem.h>
+#include <iparententity.h>
 
-namespace Curve {
+namespace Object {
 
-class SubEntity : public Object::SubEntity
+void *SubEntity::queryInterface(int interfaceType) const
 {
-protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
-
-    bool isCurve() const
-    {
-        return true;
-    }
-};
-
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<SubEntity*>(this);
+    return aggregate()->queryInterface(interfaceType);
 }
 
-#endif
+IUnknown *SubEntity::initialize()
+{
+    aggregate()->append(this);
+    return this;
+}
+
+IParentEntity *SubEntity::parent() const
+{
+    return query<IParentEntity>(query<IModelItem>(this)->parent());
+}
+
+}

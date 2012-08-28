@@ -15,26 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_SUBENTITY_H
-#define AC_GUI_CURVE_SUBENTITY_H
+#ifndef AC_GUI_PITCHGRIDLINE_ENTITY_H
+#define AC_GUI_PITCHGRIDLINE_ENTITY_H
 
-#include "ac_gui_object_subentity.h"
+#include "ac_gui_horizontalgridline_entity.h"
 
-namespace Curve {
+namespace PitchGridLine {
 
-class SubEntity : public Object::SubEntity
+class Entity : public HorizontalGridLine::Entity
 {
-protected:
-    SubEntity(IAggregate *aggregate)
-        :   Object::SubEntity(aggregate)
+public:
+    Entity(IAggregate *aggregate)
+        :   HorizontalGridLine::Entity(aggregate)
     {}
 
     virtual IUnknown *initialize();
 
-    bool isCurve() const
-    {
-        return true;
-    }
+    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+    void update(int role);
 };
 
 }
