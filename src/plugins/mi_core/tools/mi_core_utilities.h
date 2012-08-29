@@ -19,20 +19,20 @@
 #define MI_CORE_UTILITIES_H
 
 #include "mi_core_global.h"
-#include <QString>
+#include <QVariant>
 
 namespace Mi {
 
 MI_CORE_EXPORT QString applicationTreeDirectory();
 
-inline QString intToColorString(int color)
+inline QString colorFromInt(int color)
 {
     return QString("#%1").arg(color, 6, 16, QChar('0'));
 }
 
-inline int colorStringToInt(QString color)
+inline int intFromColor(QVariant colorStringVariant)
 {
-    return color.remove("#").toInt(0, 16);
+    return colorStringVariant.toString().remove("#").toInt(0, 16);
 }
 
 }

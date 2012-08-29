@@ -93,7 +93,7 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case ColorRole:
-        return intToColorString(color());
+        return colorFromInt(color());
     case InstrumentRole:
         return instrument();
     case VisibilityRole:
@@ -109,7 +109,7 @@ bool ModelData::setValue(const QVariant &value, int role)
 {
     switch (role) {
     case ColorRole:
-        return setColor(colorStringToInt(qvariant_cast<QString>(value)));
+        return setColor(intFromColor(value));
     case InstrumentRole:
         return setInstrument(qvariant_cast<QString>(value));
     case VisibilityRole:

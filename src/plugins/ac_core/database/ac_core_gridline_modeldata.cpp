@@ -102,7 +102,7 @@ QVariant ModelData::getValue(int role) const
     case PriorityRole:
         return priority();
     case ColorRole:
-        return intToColorString(color());
+        return colorFromInt(color());
     default:
         return Object::ModelData::getValue(role);
     }
@@ -118,7 +118,7 @@ bool ModelData::setValue(const QVariant &value, int role)
     case PriorityRole:
         return setPriority(qvariant_cast<int>(value));
     case ColorRole:
-        return setColor(colorStringToInt(qvariant_cast<QString>(value)));
+        return setColor(intFromColor(value));
     default:
         return Object::ModelData::setValue(value, role);
     }
