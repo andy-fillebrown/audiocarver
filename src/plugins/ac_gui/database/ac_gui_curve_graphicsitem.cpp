@@ -35,6 +35,16 @@ IUnknown *GraphicsItem::initialize()
     return Object::GraphicsItem::initialize();
 }
 
+void GraphicsItem::setPoints(const PointList &points)
+{
+    _graphicsCurveItem->setPoints(points);
+}
+
+bool GraphicsItem::intersects(const QRectF &rect) const
+{
+    return graphicsCurveItem()->intersects(rect);
+}
+
 void GraphicsItem::highlight()
 {
     _graphicsCurveItem->highlight();

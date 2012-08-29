@@ -27,7 +27,7 @@ class Entity : public GridLine::Entity
     QGraphicsLineItem *_pitchSceneLineItem;
     QGraphicsLineItem *_controlSceneLineItem;
 
-protected:
+public:
     Entity(IAggregate *aggregate)
         :   GridLine::Entity(aggregate)
         ,   _pitchSceneLineItem(0)
@@ -37,6 +37,7 @@ protected:
     ~Entity();
     virtual IUnknown *initialize();
 
+protected:
     QGraphicsLineItem *pitchSceneLineItem() const
     {
         return _pitchSceneLineItem;

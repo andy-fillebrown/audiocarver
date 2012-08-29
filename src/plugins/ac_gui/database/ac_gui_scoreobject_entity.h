@@ -25,15 +25,16 @@ namespace ScoreObject {
 
 class Entity : public Object::ParentEntity
 {
-    QMap<int, QGraphicsItem*> _graphicsItems;
+    QMap<int, QGraphicsItem*> _mainGraphicsItems;
 
-protected:
+public:
     Entity(IAggregate *aggregate)
         :   Object::ParentEntity(aggregate)
     {}
 
     virtual IUnknown *initialize();
 
+protected:
     QList<ISubEntity*> subEntities(int sceneType) const;
     QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
 

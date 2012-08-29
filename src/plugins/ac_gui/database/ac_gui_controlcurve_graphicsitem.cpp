@@ -15,25 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_gui_horizontalgridline_entity.h"
-#include <QGraphicsLineItem>
+#include "ac_gui_controlcurve_graphicsitem.h"
+#include "ac_gui_graphicsitem.h"
+#include "ac_gui_namespace.h"
 
-namespace HorizontalGridLine {
+using namespace Ac;
 
-Entity::~Entity()
+namespace ControlCurve {
+
+IUnknown *GraphicsItem::initialize()
 {
-    delete _editorSceneLineItem;
+    return Curve::GraphicsItem::initialize();
 }
 
-IUnknown *Entity::initialize()
+QGraphicsItem *GraphicsItem::graphicsItem(int sceneType, int transformType) const
 {
-    _editorSceneLineItem = new QGraphicsLineItem;
-    return GridLine::Entity::initialize();
-}
-
-void Entity::update(int role)
-{
-    GridLine::Entity::update(role);
+    if (ControlScene == sceneType && MainTransform == transformType)
+        return graphicsCurveItem();
+    return 0;
 }
 
 }

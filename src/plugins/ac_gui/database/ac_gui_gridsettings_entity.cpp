@@ -15,46 +15,30 @@
 **
 **************************************************************************/
 
-#include "ac_gui_scoreobject_entity.h"
+#include "ac_gui_gridsettings_entity.h"
 #include "ac_gui_graphicsitem.h"
 #include "ac_gui_namespace.h"
-#include <ac_core_namespace.h>
-#include <imodelitemlist.h>
 #include <isubentity.h>
-#include <QGraphicsScene>
 
 using namespace Ac;
-using namespace Mi;
 
-namespace ScoreObject {
+namespace GridSettings {
 
 IUnknown *Entity::initialize()
 {
-    _mainGraphicsItems.insert(PitchScene, new GraphicsItem);
-    _mainGraphicsItems.insert(ControlScene, new GraphicsItem);
+    _mainGraphicsItems.insert(TimeLabelScene, new GraphicsItem);
+    _mainGraphicsItems.insert(PitchLabelScene, new GraphicsItem);
+    _mainGraphicsItems.insert(ControlLabelScene, new GraphicsItem);
+    _unitXGraphicsItems.insert(PitchScene, new GraphicsItem);
+    _unitXGraphicsItems.insert(ControlScene, new GraphicsItem);
+    _unitYGraphicsItems.insert(PitchScene, new GraphicsItem);
+    _unitYGraphicsItems.insert(ControlScene, new GraphicsItem);
     return Object::ParentEntity::initialize();
 }
 
 QList<ISubEntity*> Entity::subEntities(int sceneType) const
 {
-    QList<ISubEntity*> sub_entities;
-    switch (sceneType) {
-    case PitchScene: {
-        IModelItem *pitch_curve = query<IModelItem>(this)->findItem(PitchCurveItem);
-        sub_entities.append(query<ISubEntity>(pitch_curve));
-        break;
-    }
-    case ControlScene: {
-        IModelItemList *control_curves = query<IModelItem>(this)->findList(ControlCurveItem);
-        const int n = control_curves->count();
-        for (int i = 0;  i < n;  ++i)
-            sub_entities.append(query<ISubEntity>(control_curves->at(i)));
-        break;
-    }
-    default:
-        break;
-    }
-    return sub_entities;
+    return QList<ISubEntity*>();
 }
 
 QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
@@ -62,6 +46,10 @@ QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
     switch (transformType) {
     case MainTransform:
         return _mainGraphicsItems.value(sceneType);
+    case UnitXTransform:
+        return _unitXGraphicsItems.value(sceneType);
+    case UnitYTransform:
+        return _unitYGraphicsItems.value(sceneType);
     default:
         return 0;
     }

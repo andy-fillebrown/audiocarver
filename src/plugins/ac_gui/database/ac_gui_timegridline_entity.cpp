@@ -47,7 +47,7 @@ QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
             return pitchSceneLineItem();
         }
     } else if (MainTransform == transformType && TimeLabelScene == sceneType)
-        return labelRootItem();
+        return labelSceneRootItem();
     return 0;
 }
 

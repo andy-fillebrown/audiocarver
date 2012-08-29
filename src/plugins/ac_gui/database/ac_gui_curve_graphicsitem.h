@@ -28,7 +28,7 @@ class GraphicsItem : public Object::GraphicsItem
 {
     GraphicsCurveItem *_graphicsCurveItem;
 
-public:
+protected:
     GraphicsItem(IAggregate *aggregate)
         :   Object::GraphicsItem(aggregate)
         ,   _graphicsCurveItem(0)
@@ -37,8 +37,11 @@ public:
     ~GraphicsItem();
     virtual IUnknown *initialize();
 
-protected:
-    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+    GraphicsCurveItem *graphicsCurveItem() const
+    {
+        return _graphicsCurveItem;
+    }
+
     void setPoints(const PointList &points);
     bool intersects(const QRectF &rect) const;
     void highlight();

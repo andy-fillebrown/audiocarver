@@ -15,32 +15,46 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_HORIZONTALGRIDLINE_ENTITY_H
-#define AC_GUI_HORIZONTALGRIDLINE_ENTITY_H
+#ifndef AC_GUI_GRIDSETTINGS_ENTITY_H
+#define AC_GUI_GRIDSETTINGS_ENTITY_H
 
-#include "ac_gui_gridline_entity.h"
+#include "ac_gui_object_parententity.h"
+#include <QMap>
 
-namespace HorizontalGridLine {
+namespace GridSettings {
 
-class Entity : public GridLine::Entity
+class Entity : public Object::ParentEntity
 {
-    QGraphicsLineItem *_editorSceneLineItem;
+    QMap<int, QGraphicsItem*> _mainGraphicsItems;
+    QMap<int, QGraphicsItem*> _unitXGraphicsItems;
+    QMap<int, QGraphicsItem*> _unitYGraphicsItems;
 
-protected:
+public:
     Entity(IAggregate *aggregate)
-        :   GridLine::Entity(aggregate)
-        ,   _editorSceneLineItem(0)
+        :   Object::ParentEntity(aggregate)
     {}
 
-    ~Entity();
     virtual IUnknown *initialize();
 
-    QGraphicsLineItem *editorSceneLineItem() const
+protected:
+    QList<ISubEntity*> subEntities(int sceneType) const;
+    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+
+    void highlight()
     {
-        return _editorSceneLineItem;
+        Q_ASSERT(false && "Not implemented yet.");
     }
 
-    void update(int role);
+    void unhighlight()
+    {
+        Q_ASSERT(false && "Not implemented yet.");
+    }
+
+    bool isVisible() const
+    {
+        Q_ASSERT(false && "Not implemented yet.");
+        return false;
+    }
 };
 
 }

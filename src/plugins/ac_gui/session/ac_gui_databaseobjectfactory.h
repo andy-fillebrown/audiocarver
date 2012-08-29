@@ -15,25 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_gui_horizontalgridline_entity.h"
-#include <QGraphicsLineItem>
+#ifndef AC_GUI_DATABASEOBJECTFACTORY_H
+#define AC_GUI_DATABASEOBJECTFACTORY_H
 
-namespace HorizontalGridLine {
+#include <ac_core_databaseobjectfactory.h>
 
-Entity::~Entity()
+namespace Gui {
+
+class DatabaseObjectFactory : public Core::DatabaseObjectFactory
 {
-    delete _editorSceneLineItem;
-}
+public:
+    IUnknown *initialize();
 
-IUnknown *Entity::initialize()
-{
-    _editorSceneLineItem = new QGraphicsLineItem;
-    return GridLine::Entity::initialize();
-}
-
-void Entity::update(int role)
-{
-    GridLine::Entity::update(role);
-}
+protected:
+    IAggregate *create(int itemType, IModelItem *parent = 0);
+};
 
 }
+
+#endif

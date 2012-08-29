@@ -15,25 +15,34 @@
 **
 **************************************************************************/
 
-#include "ac_gui_horizontalgridline_entity.h"
-#include <QGraphicsLineItem>
+#include "ac_gui_score_entity.h"
+#include "ac_gui_graphicsitem.h"
+#include "ac_gui_namespace.h"
+#include <imodelitem.h>
 
-namespace HorizontalGridLine {
+using namespace Ac;
 
-Entity::~Entity()
-{
-    delete _editorSceneLineItem;
-}
+namespace Score {
 
 IUnknown *Entity::initialize()
 {
-    _editorSceneLineItem = new QGraphicsLineItem;
-    return GridLine::Entity::initialize();
+    for (int i = 0;  i < SceneTypeCount;  ++i) {
+        _unitXGraphicsItems.insert(i, new GraphicsItem);
+        _unitYGraphicsItems.insert(i, new GraphicsItem);
+    }
+    return Object::ParentEntity::initialize();
 }
 
-void Entity::update(int role)
+QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
 {
-    GridLine::Entity::update(role);
+    switch (transformType) {
+    case UnitXTransform:
+        return _unitXGraphicsItems.value(sceneType);
+    case UnitYTransform:
+        return _unitYGraphicsItems.value(sceneType);
+    default:
+        return ScoreObject::Entity::graphicsItem(sceneType, transformType);
+    }
 }
 
 }

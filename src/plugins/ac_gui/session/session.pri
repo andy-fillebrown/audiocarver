@@ -1,5 +1,6 @@
 
 SOURCE_FILES = \
+    databaseobjectfactory \
     editor \
 
 DIR = $$dirname(_FILE_)

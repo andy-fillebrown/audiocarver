@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #ifndef AC_GUI_OBJECT_ENTITY_H
-#define AC_GUI_OBJECT_ENTTIY_H
+#define AC_GUI_OBJECT_ENTITY_H
 
 #include <ientity.h>
 

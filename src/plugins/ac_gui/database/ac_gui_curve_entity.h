@@ -25,15 +25,13 @@ namespace Curve {
 class Entity : public Object::Entity
 {
 public:
-    void *queryInterface(int interfaceType) const;
-
-protected:
     Entity(IAggregate *aggregate)
         :   Object::Entity(aggregate)
     {}
 
     virtual IUnknown *initialize();
 
+protected:
     QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
     void update(int role);
     void highlight();

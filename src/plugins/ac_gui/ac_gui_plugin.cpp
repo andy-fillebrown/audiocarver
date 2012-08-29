@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_plugin.h"
-//#include "ac_gui_database.h"
+#include "ac_gui_databaseobjectfactory.h"
 #include "ac_gui_editor.h"
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindowextension.h"
@@ -39,7 +39,7 @@ namespace Gui {
 
 bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
-//    (new Database())->init();
+    (new ::Gui::DatabaseObjectFactory)->initialize();
     (new Editor)->initialize();
     addAutoReleasedObject(new MainWindowExtension);
     return true;

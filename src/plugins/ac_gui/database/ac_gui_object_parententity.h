@@ -42,6 +42,9 @@ protected:
     {
         return _aggregate;
     }
+
+    void update(int role)
+    {}
 };
 
 }

@@ -32,9 +32,9 @@ IUnknown *Entity::initialize()
 QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
 {
     if (PitchScene == sceneType && UnitXTransform == transformType)
-        return sceneLineItem();
+        return editorSceneLineItem();
     if (PitchLabelScene == sceneType && MainTransform == transformType)
-        return labelRootItem();
+        return labelSceneRootItem();
     return HorizontalGridLine::Entity::graphicsItem(sceneType, transformType);
 }
 

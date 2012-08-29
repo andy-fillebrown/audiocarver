@@ -28,34 +28,34 @@ namespace GridLine {
 
 class Entity : public Object::Entity
 {
-    GraphicsItem * _labelRootItem;
-    GraphicsTextItem *_labelTextItem;
-    QGraphicsLineItem *_labelLineItem;
+    GraphicsItem * _labelSceneRootItem;
+    GraphicsTextItem *_labelSceneTextItem;
+    QGraphicsLineItem *_labelSceneLineItem;
 
 protected:
     Entity(IAggregate *aggregate)
         :   Object::Entity(aggregate)
-        ,   _labelRootItem(0)
-        ,   _labelTextItem(0)
-        ,   _labelLineItem(0)
+        ,   _labelSceneRootItem(0)
+        ,   _labelSceneTextItem(0)
+        ,   _labelSceneLineItem(0)
     {}
 
     ~Entity();
     virtual IUnknown *initialize();
 
-    GraphicsItem *labelRootItem() const
+    GraphicsItem *labelSceneRootItem() const
     {
-        return _labelRootItem;
+        return _labelSceneRootItem;
     }
 
-    GraphicsTextItem *labelTextItem() const
+    GraphicsTextItem *labelSceneTextItem() const
     {
-        return _labelTextItem;
+        return _labelSceneTextItem;
     }
 
-    QGraphicsLineItem *labelLineItem() const
+    QGraphicsLineItem *labelSceneLineItem() const
     {
-        return _labelLineItem;
+        return _labelSceneLineItem;
     }
 
     void update(int role);

@@ -15,32 +15,44 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_HORIZONTALGRIDLINE_ENTITY_H
-#define AC_GUI_HORIZONTALGRIDLINE_ENTITY_H
+#ifndef AC_GUI_SCORE_ENTITY_H
+#define AC_GUI_SCORE_ENTITY_H
 
-#include "ac_gui_gridline_entity.h"
+#include "ac_gui_scoreobject_entity.h"
+#include <QMap>
 
-namespace HorizontalGridLine {
+namespace Score {
 
-class Entity : public GridLine::Entity
+class Entity : public ScoreObject::Entity
 {
-    QGraphicsLineItem *_editorSceneLineItem;
+    QMap<int, QGraphicsItem*> _unitXGraphicsItems;
+    QMap<int, QGraphicsItem*> _unitYGraphicsItems;
 
-protected:
+public:
     Entity(IAggregate *aggregate)
-        :   GridLine::Entity(aggregate)
-        ,   _editorSceneLineItem(0)
+        :   ScoreObject::Entity(aggregate)
     {}
 
-    ~Entity();
     virtual IUnknown *initialize();
 
-    QGraphicsLineItem *editorSceneLineItem() const
+protected:
+    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+
+    void highlight()
     {
-        return _editorSceneLineItem;
+        Q_ASSERT(false && "Not implemented yet.");
     }
 
-    void update(int role);
+    void unhighlight()
+    {
+        Q_ASSERT(false && "Not implemented yet.");
+    }
+
+    bool isVisible() const
+    {
+        Q_ASSERT(false && "Not implemented yet.");
+        return false;
+    }
 };
 
 }

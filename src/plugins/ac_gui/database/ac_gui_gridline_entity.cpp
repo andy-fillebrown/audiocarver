@@ -25,16 +25,16 @@ namespace GridLine {
 
 Entity::~Entity()
 {
-    delete _labelLineItem;
-    delete _labelTextItem;
-    delete _labelRootItem;
+    delete _labelSceneLineItem;
+    delete _labelSceneTextItem;
+    delete _labelSceneRootItem;
 }
 
 IUnknown *Entity::initialize()
 {
-    _labelRootItem = new GraphicsItem;
-    _labelTextItem = new GraphicsTextItem(_labelRootItem);
-    _labelLineItem = new QGraphicsLineItem(_labelRootItem);
+    _labelSceneRootItem = new GraphicsItem;
+    _labelSceneTextItem = new GraphicsTextItem(_labelSceneRootItem);
+    _labelSceneLineItem = new QGraphicsLineItem(_labelSceneRootItem);
     return Object::Entity::initialize();
 }
 
@@ -42,13 +42,13 @@ void Entity::update(int role)
 {
     switch (role) {
     case LabelRole:
-        labelTextItem()->setText(query<IModelData>(this)->get<QString>(LabelRole));
+        labelSceneTextItem()->setText(query<IModelData>(this)->get<QString>(LabelRole));
     }
 }
 
 bool Entity::isVisible() const
 {
-    return labelRootItem()->isVisible();
+    return labelSceneRootItem()->isVisible();
 }
 
 }
