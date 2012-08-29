@@ -35,7 +35,7 @@ QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
         return editorSceneLineItem();
     if (PitchLabelScene == sceneType && MainTransform == transformType)
         return labelSceneRootItem();
-    return HorizontalGridLine::Entity::graphicsItem(sceneType, transformType);
+    return 0;
 }
 
 void Entity::update(int role)
