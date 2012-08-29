@@ -22,6 +22,7 @@
 #include "ac_gui_mainwindowextension.h"
 //#include "ac_selecteditemspropertyview.h"
 //#include "ac_trackview.h"
+#include <ac_core_database.h>
 #include <ac_core_namespace.h>
 #include <mainwindow.h>
 #include <icore.h>
@@ -40,6 +41,7 @@ namespace Gui {
 bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     (new ::Gui::DatabaseObjectFactory)->initialize();
+    (new Core::Database)->initialize();
     (new Editor)->initialize();
     addAutoReleasedObject(new MainWindowExtension);
     return true;
