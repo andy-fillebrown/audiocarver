@@ -30,6 +30,8 @@ class ModelData : public Object::ModelData
     int _color;
     enum { RoleCount = 4 };
 
+    int _visible : 1;
+
 public:
     enum {
         RoleCountOffset = Object::ModelData::TotalRoleCount,
@@ -68,6 +70,13 @@ protected:
     }
 
     bool setColor(int color);
+
+    bool isVisible() const
+    {
+        return _visible;
+    }
+
+    bool setVisible(bool visible);
 
     int roleCount() const
     {

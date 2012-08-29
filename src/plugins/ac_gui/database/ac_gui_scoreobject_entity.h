@@ -35,6 +35,11 @@ public:
     virtual IUnknown *initialize();
 
 protected:
+    QMap<int, QGraphicsItem*> &mainGraphicsItems()
+    {
+        return _mainGraphicsItems;
+    }
+
     QList<ISubEntity*> subEntities(int sceneType) const;
     QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
 

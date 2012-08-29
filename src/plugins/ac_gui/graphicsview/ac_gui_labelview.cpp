@@ -29,7 +29,7 @@ using namespace Qt;
 
 static const QCursor &zoomCursor()
 {
-    static const QCursor cursor(QPixmap(":/ac_guiplugin/images/zoom-v-cursor.png"));
+    static const QCursor cursor(QPixmap(":/ac_gui/images/zoom-v-cursor.png"));
     return cursor;
 }
 
@@ -137,11 +137,11 @@ void LabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bott
     IDatabase *db = IDatabase::instance();
     if (db->isReading())
         return;
-//    IModelList *top_right = query<IModelList>(query<IModel>(db)->itemFromIndex(topRight));
-//    if (top_right == gridLineList()) {
-//        d->updateGridLineVisibilites();
-//        updateView();
-//    }
+    IModelItem *top_right_item = IModel::instance()->itemFromIndex(topRight);
+    if (top_right_item == gridLineList()) {
+        d->updateGridLineVisibilites();
+        updateView();
+    }
 }
 
 void LabelView::panFinished()

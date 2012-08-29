@@ -166,32 +166,31 @@ public:
 
     void updateViewVariables()
     {
-//        const IModel *model = IModel::instance();
-//        const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
-
-//        const qreal modelScoreLength = model->data(QModelIndex(), Ac::LengthRole).toReal();
-//        if (scoreLength != modelScoreLength) {
-//            scoreLength = modelScoreLength;
-//            emit q->scoreLengthChanged();
-//            updateViewsTimer->start();
-//        }
-
-//        q->setPosition(viewSettings.data(Ac::TimePositionRole).toReal(), Ac::TimePositionRole);
-//        q->setPosition(viewSettings.data(Ac::PitchPositionRole).toReal(), Ac::PitchPositionRole);
-//        q->setPosition(viewSettings.data(Ac::ControlPositionRole).toReal(), Ac::ControlPositionRole);
-//        q->setScale(viewSettings.data(Ac::TimeScaleRole).toReal(), Ac::TimeScaleRole);
-//        q->setScale(viewSettings.data(Ac::PitchScaleRole).toReal(), Ac::PitchScaleRole);
-//        q->setScale(viewSettings.data(Ac::ControlScaleRole).toReal(), Ac::ControlScaleRole);
+        IModelItem *score_item = IDatabase::instance()->rootItem();
+        IModelData *score_data = query<IModelData>(score_item);
+        const qreal score_length = score_data->get<qreal>(LengthRole);
+        if (scoreLength != score_length) {
+            scoreLength = score_length;
+            emit q->scoreLengthChanged();
+            updateViewsTimer->start();
+        }
+        IModelData *view_settings_data = query<IModelData>(score_item->findItem(ViewSettingsItem));
+        q->setPosition(view_settings_data->get<qreal>(TimePositionRole), TimePositionRole);
+        q->setPosition(view_settings_data->get<qreal>(PitchPositionRole), PitchPositionRole);
+        q->setPosition(view_settings_data->get<qreal>(ControlPositionRole), ControlPositionRole);
+        q->setScale(view_settings_data->get<qreal>(TimeScaleRole), TimeScaleRole);
+        q->setScale(view_settings_data->get<qreal>(PitchScaleRole), PitchScaleRole);
+        q->setScale(view_settings_data->get<qreal>(ControlScaleRole), ControlScaleRole);
     }
 
     void emitAllViewSettingsChanged()
     {
-        emit q->viewPositionChanged(Ac::TimePositionRole);
-        emit q->viewPositionChanged(Ac::PitchPositionRole);
-        emit q->viewPositionChanged(Ac::ControlPositionRole);
-        emit q->viewScaleChanged(Ac::TimeScaleRole);
-        emit q->viewScaleChanged(Ac::PitchScaleRole);
-        emit q->viewScaleChanged(Ac::ControlScaleRole);
+        emit q->viewPositionChanged(TimePositionRole);
+        emit q->viewPositionChanged(PitchPositionRole);
+        emit q->viewPositionChanged(ControlPositionRole);
+        emit q->viewScaleChanged(TimeScaleRole);
+        emit q->viewScaleChanged(PitchScaleRole);
+        emit q->viewScaleChanged(ControlScaleRole);
     }
 
     void startUndo()

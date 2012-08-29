@@ -30,6 +30,7 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _location(0.0f)
     ,   _priority(0)
     ,   _color(lightGray)
+    ,   _visible(true)
 {}
 
 IUnknown *ModelData::initialize()
@@ -76,6 +77,15 @@ bool ModelData::setColor(int color)
     return true;
 }
 
+bool ModelData::setVisible(bool visible)
+{
+    if (_visible == visible)
+        return false;
+    ScopedDataChange data_change(this, VisibilityRole);
+    _visible = visible;
+    return true;
+}
+
 int ModelData::roleAt(int i) const
 {
     switch (i - RoleCountOffset) {
@@ -103,6 +113,8 @@ QVariant ModelData::getValue(int role) const
         return priority();
     case ColorRole:
         return colorFromInt(color());
+    case VisibilityRole:
+        return isVisible();
     default:
         return Object::ModelData::getValue(role);
     }
@@ -119,6 +131,8 @@ bool ModelData::setValue(const QVariant &value, int role)
         return setPriority(qvariant_cast<int>(value));
     case ColorRole:
         return setColor(intFromColor(value));
+    case VisibilityRole:
+        return setVisible(qvariant_cast<bool>(value));
     default:
         return Object::ModelData::setValue(value, role);
     }
