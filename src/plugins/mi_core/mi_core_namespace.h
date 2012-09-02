@@ -34,7 +34,6 @@ enum ItemDataRole {
     ItemTypeRole,
     ListTypeRole,
     RoleTypeRole,
-    ParentRole,
     NameRole,
     ItemDataRoleCount
 };

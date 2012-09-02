@@ -41,7 +41,7 @@
 #include <mi_core_object_modeldatawatcher.h>
 #include <mi_core_objectlist_modeldata.h>
 #include <mi_core_objectlist_modelitem.h>
-#include <mi_core_objectlist_modelitemwatcher.h>
+#include <mi_core_objectlist_modelitemlistwatcher.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -56,6 +56,14 @@ IUnknown *DatabaseObjectFactory::initialize()
 IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
 {
     IAggregate *aggregate = (new Base::Aggregate)->initialize();
+    create(itemType, aggregate);
+    if (parent)
+        query<IModelItem>(aggregate)->setParent(parent);
+    return aggregate;
+}
+
+IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
+{
     switch (itemType) {
     case ControlCurveItem:
         (new Object::ModelDataWatcher(aggregate))->initialize();
@@ -63,7 +71,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new ControlCurve::ModelItem(aggregate))->initialize();
         break;
     case ControlCurveListItem:
-        (new ObjectList::ModelItemWatcher(aggregate))->initialize();
+        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
         (new ObjectList::ModelItem(aggregate, ControlCurveItem))->initialize();
         (new ObjectList::ModelData(aggregate))->initialize();
         break;
@@ -73,7 +81,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new GridLine::ModelData(aggregate))->initialize();
         break;
     case ControlGridLineListItem:
-        (new ObjectList::ModelItemWatcher(aggregate))->initialize();
+        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
         (new ObjectList::ModelItem(aggregate, ControlGridLineItem))->initialize();
         (new ObjectList::ModelData(aggregate))->initialize();
         break;
@@ -88,7 +96,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new ScoreObject::ModelData(aggregate))->initialize();
         break;
     case NoteListItem:
-        (new ObjectList::ModelItemWatcher(aggregate))->initialize();
+        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
         (new ObjectList::ModelItem(aggregate, NoteItem))->initialize();
         (new ObjectList::ModelData(aggregate))->initialize();
         break;
@@ -103,7 +111,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new GridLine::ModelData(aggregate))->initialize();
         break;
     case PitchGridLineListItem:
-        (new ObjectList::ModelItemWatcher(aggregate))->initialize();
+        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
         (new ObjectList::ModelItem(aggregate, PitchGridLineItem))->initialize();
         (new ObjectList::ModelData(aggregate))->initialize();
         break;
@@ -123,7 +131,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new GridLine::ModelData(aggregate))->initialize();
         break;
     case TimeGridLineListItem:
-        (new ObjectList::ModelItemWatcher(aggregate))->initialize();
+        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
         (new ObjectList::ModelItem(aggregate, TimeGridLineItem))->initialize();
         (new ObjectList::ModelData(aggregate))->initialize();
         break;
@@ -133,7 +141,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Track::ModelData(aggregate))->initialize();
         break;
     case TrackListItem:
-        (new ObjectList::ModelItemWatcher(aggregate))->initialize();
+        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
         (new ObjectList::ModelItem(aggregate, TrackItem))->initialize();
         (new ObjectList::ModelData(aggregate))->initialize();
         break;
@@ -143,10 +151,10 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new ViewSettings::ModelData(aggregate))->initialize();
         break;
     default:
+        Q_ASSERT(0);
+        delete aggregate;
         return 0;
     }
-    if (parent)
-        query<IModelItem>(aggregate)->setParent(parent);
     return aggregate;
 }
 

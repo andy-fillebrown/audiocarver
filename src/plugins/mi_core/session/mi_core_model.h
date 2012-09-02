@@ -35,10 +35,10 @@ public:
 protected:
     void beginChangeData(const IModelData *data, int role, int changeType);
     void endChangeData(const IModelData *data, int role, int changeType);
-    void beginInsertItem(const IModelItem* parent, int index);
-    void endInsertItem(const IModelItem *parent, int index);
-    void beginRemoveItem(const IModelItem *parent, int index);
-    void endRemoveItem(const IModelItem *parent, int index);
+    void beginInsertItem(const IModelItemList* list, int index);
+    void endInsertItem(const IModelItemList *list, int index);
+    void beginRemoveItem(const IModelItemList *list, int index);
+    void endRemoveItem(const IModelItemList *list, int index);
     IModelData *dataFromIndex(const QModelIndex &index) const;
     IModelItem *itemFromIndex(const QModelIndex &index) const;
     QModelIndex indexFromData(const IModelData *data) const;

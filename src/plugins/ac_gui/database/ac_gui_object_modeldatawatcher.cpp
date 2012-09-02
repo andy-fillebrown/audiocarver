@@ -15,34 +15,37 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_entity.h"
+#include "ac_gui_object_modeldatawatcher.h"
 #include "ac_gui_namespace.h"
-#include <ac_core_namespace.h>
 #include <iaggregate.h>
-#include <ichildentity.h>
-#include <iparententity.h>
-#include <QGraphicsItem>
-#include <QGraphicsScene>
+#include <ientity.h>
+#include <imodeldata.h>
 
 using namespace Ac;
-using namespace Mi;
 
 namespace Object {
 
-void *Entity::queryInterface(int interfaceType) const
+IUnknown *ModelDataWatcher::initialize()
+{
+    return aggregate()->append(this);
+}
+
+void *ModelDataWatcher::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
-        return const_cast<Entity*>(this);
+        return const_cast<ModelDataWatcher*>(this);
     return aggregate()->queryInterface(interfaceType);
 }
 
-IUnknown *Entity::initialize()
-{
-    aggregate()->append(this);
-    return this;
-}
-
-void Entity::update(int role)
+void ModelDataWatcher::beginChangeData(const IModelData *data, int role, int changeType)
 {}
+
+void ModelDataWatcher::endChangeData(const IModelData *data, int role, int changeType)
+{
+    IEntity *data_entity = query<IEntity>(data);
+    if (!data_entity)
+        return;
+    data_entity->update(role);
+}
 
 }

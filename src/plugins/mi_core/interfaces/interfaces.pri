@@ -10,6 +10,7 @@ SOURCE_FILES = \
     imodeldatawatcher \
     imodelitem \
     imodelitemlist \
+    imodelitemlistwatcher \
     imodelitemwatcher \
     iorphanage \
     iqmodel \

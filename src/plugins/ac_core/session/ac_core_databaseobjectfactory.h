@@ -30,6 +30,7 @@ public:
 
 protected:
     IAggregate *create(int itemType, IModelItem *parent = 0);
+    IAggregate *create(int itemType, IAggregate *aggregate);
 };
 
 }

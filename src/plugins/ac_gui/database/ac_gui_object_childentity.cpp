@@ -15,42 +15,32 @@
 **
 **************************************************************************/
 
-#include "mi_core_objectlist_modelitemwatcher.h"
+#include "ac_gui_object_childentity.h"
 #include <iaggregate.h>
-#include <imodel.h>
+#include <imodelitem.h>
+#include <iparententity.h>
 
-namespace ObjectList {
+namespace Object {
 
-IUnknown *ModelItemWatcher::initialize()
+IUnknown *ChildEntity::initialize()
 {
-    return aggregate()->append(this);
+    aggregate()->append(this);
+    return this;
 }
 
-void *ModelItemWatcher::queryInterface(int interfaceType) const
+void *ChildEntity::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItemWatcher*>(this);
+        return const_cast<ChildEntity*>(this);
     return aggregate()->queryInterface(interfaceType);
 }
 
-void ModelItemWatcher::beginInsertItem(const IModelItem *parent, int index)
+IParentEntity *ChildEntity::parent() const
 {
-    IModel::instance()->beginInsertItem(parent, index);
-}
-
-void ModelItemWatcher::endInsertItem(const IModelItem *parent, int index)
-{
-    IModel::instance()->endInsertItem(parent, index);
-}
-
-void ModelItemWatcher::beginRemoveItem(const IModelItem *parent, int index)
-{
-    IModel::instance()->beginRemoveItem(parent, index);
-}
-
-void ModelItemWatcher::endRemoveItem(const IModelItem *parent, int index)
-{
-    IModel::instance()->endRemoveItem(parent, index);
+    IModelItem *parent = query<IModelItem>(this)->parent();
+    if (parent && parent->isList())
+        parent = parent->parent();
+    return query<IParentEntity>(parent);
 }
 
 }

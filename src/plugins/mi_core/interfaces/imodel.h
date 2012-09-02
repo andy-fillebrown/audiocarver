@@ -25,6 +25,7 @@
 
 class IModelData;
 class IModelItem;
+class IModelItemList;
 
 class MI_CORE_EXPORT IModel : public QAbstractItemModel
         ,   public IUnknown
@@ -42,10 +43,10 @@ public:
     virtual QModelIndex indexFromItem(const IModelItem *item) const = 0;
     virtual void beginChangeData(const IModelData *data, int role, int changeType) = 0;
     virtual void endChangeData(const IModelData *data, int role, int changeType) = 0;
-    virtual void beginInsertItem(const IModelItem* parent, int index) = 0;
-    virtual void endInsertItem(const IModelItem *parent, int index) = 0;
-    virtual void beginRemoveItem(const IModelItem *parent, int index) = 0;
-    virtual void endRemoveItem(const IModelItem *parent, int index) = 0;
+    virtual void beginInsertItem(const IModelItemList* list, int index) = 0;
+    virtual void endInsertItem(const IModelItemList *list, int index) = 0;
+    virtual void beginRemoveItem(const IModelItemList *list, int index) = 0;
+    virtual void endRemoveItem(const IModelItemList *list, int index) = 0;
 
     virtual void reset()
     {
@@ -72,10 +73,10 @@ public:
 signals:
     void dataAboutToBeChanged(const IModelData *data, int role, int changeType);
     void dataChanged(const IModelData *data, int role, int changeType);
-    void itemAboutToBeInserted(const IModelItem *parent, int index);
-    void itemInserted(const IModelItem *parent, int index);
-    void itemAboutToBeRemoved(const IModelItem *parent, int index);
-    void itemRemoved(const IModelItem *parent, int index);
+    void itemAboutToBeInserted(const IModelItemList *list, int index);
+    void itemInserted(const IModelItemList *list, int index);
+    void itemAboutToBeRemoved(const IModelItemList *list, int index);
+    void itemRemoved(const IModelItemList *list, int index);
 };
 
 #endif

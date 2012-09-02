@@ -37,7 +37,10 @@ IUnknown *SubEntity::initialize()
 
 IParentEntity *SubEntity::parent() const
 {
-    return query<IParentEntity>(query<IModelItem>(this)->parent());
+    IModelItem *parent = query<IModelItem>(this)->parent();
+    if (parent && parent->isList())
+        parent = parent->parent();
+    return query<IParentEntity>(parent);
 }
 
 }

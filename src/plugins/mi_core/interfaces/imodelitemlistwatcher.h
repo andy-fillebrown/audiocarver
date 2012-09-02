@@ -15,21 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef IMODELITEMWATCHER_H
-#define IMODELITEMWATCHER_H
+#ifndef IMODELITEMLISTWATCHER_H
+#define IMODELITEMLISTWATCHER_H
 
 #include <iunknown.h>
 #include "mi_core_interfaces.h"
 
-class IModelItem;
+class IModelItemList;
 
-class IModelItemWatcher : public IUnknown
+class IModelItemListWatcher : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IModelItemWatcher };
+    enum { InterfaceType = I::IModelItemListWatcher };
 
-    virtual void beginChangeParent(const IModelItem *child) = 0;
-    virtual void endChangeParent(const IModelItem *child) = 0;
+    virtual void beginInsertItem(const IModelItemList *parent, int index) = 0;
+    virtual void endInsertItem(const IModelItemList *parent, int index) = 0;
+    virtual void beginRemoveItem(const IModelItemList *parent, int index) = 0;
+    virtual void endRemoveItem(const IModelItemList *parent, int index) = 0;
 
     int interfaceType() const
     {

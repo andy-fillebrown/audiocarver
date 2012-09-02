@@ -20,7 +20,7 @@
 #include <idatabase.h>
 #include <imodel.h>
 #include <imodeldata.h>
-#include <imodelitem.h>
+#include <imodelitemlist.h>
 #include <isession.h>
 
 using namespace Qt;
@@ -69,27 +69,27 @@ void Model::endChangeData(const IModelData *data, int role, int changeType)
     emit dataChanged(indexFromData(data));
 }
 
-void Model::beginInsertItem(const IModelItem *parent, int index)
+void Model::beginInsertItem(const IModelItemList *list, int index)
 {
-    emit itemAboutToBeInserted(parent, index);
-    beginInsertRows(indexFromItem(parent), index, index);
+    emit itemAboutToBeInserted(list, index);
+    beginInsertRows(indexFromItem(list), index, index);
 }
 
-void Model::endInsertItem(const IModelItem *parent, int index)
+void Model::endInsertItem(const IModelItemList *list, int index)
 {
-    emit itemInserted(parent, index);
+    emit itemInserted(list, index);
     endInsertRows();
 }
 
-void Model::beginRemoveItem(const IModelItem *parent, int index)
+void Model::beginRemoveItem(const IModelItemList *list, int index)
 {
-    emit itemAboutToBeRemoved(parent, index);
-    beginRemoveRows(indexFromItem(parent), index, index);
+    emit itemAboutToBeRemoved(list, index);
+    beginRemoveRows(indexFromItem(list), index, index);
 }
 
-void Model::endRemoveItem(const IModelItem *parent, int index)
+void Model::endRemoveItem(const IModelItemList *list, int index)
 {
-    emit itemRemoved(parent, index);
+    emit itemRemoved(list, index);
     endRemoveRows();
 }
 

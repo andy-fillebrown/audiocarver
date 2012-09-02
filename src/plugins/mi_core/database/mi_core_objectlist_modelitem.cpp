@@ -19,6 +19,7 @@
 #include "mi_core_namespace.h"
 #include "mi_core_scopediteminsert.h"
 #include "mi_core_scopeditemremove.h"
+#include "mi_core_scopedparentchange.h"
 #include <iaggregate.h>
 #include <imodeldata.h>
 
@@ -52,6 +53,7 @@ void ModelItem::setParent(IModelItem *parent)
 {
     if (_parent == parent)
         return;
+    ScopedParentChange parent_change(this);
     _parent = parent;
 }
 

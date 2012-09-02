@@ -4,6 +4,7 @@ SOURCE_FILES = \
     scopeddatachange \
     scopediteminsert \
     scopeditemremove \
+    scopedparentchange \
     utilities \
 
 DIR = $$dirname(_FILE_)

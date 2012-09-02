@@ -15,22 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_OBJECTLIST_MODELITEMWATCHER_H
-#define MI_CORE_OBJECTLIST_MODELITEMWATCHER_H
+#ifndef AC_GUI_OBJECT_CHILDENTITY_H
+#define AC_GUI_OBJECT_CHILDENTITY_H
 
-#include <imodelitemwatcher.h>
-#include "mi_core_global.h"
+#include <ichildentity.h>
 
 class IAggregate;
 
-namespace ObjectList {
+namespace Object {
 
-class MI_CORE_EXPORT ModelItemWatcher : public IModelItemWatcher
+class ChildEntity : public IChildEntity
 {
     IAggregate *_aggregate;
 
 public:
-    ModelItemWatcher(IAggregate *aggregate)
+    ChildEntity(IAggregate *aggregate)
         :   _aggregate(aggregate)
     {}
 
@@ -43,10 +42,7 @@ protected:
         return _aggregate;
     }
 
-    void beginInsertItem(const IModelItem *parent, int index);
-    void endInsertItem(const IModelItem *parent, int index);
-    void beginRemoveItem(const IModelItem *parent, int index);
-    void endRemoveItem(const IModelItem *parent, int index);
+    IParentEntity *parent() const;
 };
 
 }

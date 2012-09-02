@@ -34,7 +34,6 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     appendItemDataRole(ItemTypeRole, "type");
     appendItemDataRole(ListTypeRole, "listType");
-    appendItemDataRole(ParentRole, "parent");
     appendItemDataRole(NameRole, "name");
     (new Session)->initialize();
 #ifdef QT_DEBUG

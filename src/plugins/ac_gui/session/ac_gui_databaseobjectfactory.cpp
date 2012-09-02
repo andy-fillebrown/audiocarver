@@ -23,12 +23,17 @@
 #include "ac_gui_curve_graphicsitem.h"
 #include "ac_gui_gridsettings_entity.h"
 #include "ac_gui_note_entity.h"
+#include "ac_gui_object_childentity.h"
+#include "ac_gui_object_modeldatawatcher.h"
+#include "ac_gui_object_modelitemwatcher.h"
 #include "ac_gui_pitchcurve_graphicsitem.h"
 #include "ac_gui_pitchcurve_subentity.h"
 #include "ac_gui_pitchgridline_entity.h"
 #include "ac_gui_score_entity.h"
 #include "ac_gui_timegridline_entity.h"
 #include <ac_core_namespace.h>
+#include <mi_core_aggregate.h>
+#include <imodelitem.h>
 
 using namespace Ac;
 
@@ -41,40 +46,63 @@ IUnknown *DatabaseObjectFactory::initialize()
 
 IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
 {
-    IAggregate *aggregate = Core::DatabaseObjectFactory::create(itemType, parent);
+    IAggregate *aggregate = (new Base::Aggregate)->initialize();
     switch (itemType) {
     case ControlCurveItem:
         (new Curve::Entity(aggregate))->initialize();
         (new ControlCurve::SubEntity(aggregate))->initialize();
         (new ControlCurve::GraphicsItem(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case ControlGridLineItem:
         (new ControlGridLine::Entity(aggregate))->initialize();
+        (new Object::ChildEntity(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case GridSettingsItem:
         (new GridSettings::Entity(aggregate))->initialize();
+        (new Object::ChildEntity(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
         break;
     case NoteItem:
         (new Note::Entity(aggregate))->initialize();
+        (new Object::ChildEntity(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case PitchCurveItem:
         (new Curve::Entity(aggregate))->initialize();
         (new PitchCurve::SubEntity(aggregate))->initialize();
         (new PitchCurve::GraphicsItem(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case PitchGridLineItem:
         (new PitchGridLine::Entity(aggregate))->initialize();
+        (new Object::ChildEntity(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case ScoreItem:
         (new Score::Entity(aggregate))->initialize();
         break;
     case TimeGridLineItem:
         (new TimeGridLine::Entity(aggregate))->initialize();
+        (new Object::ChildEntity(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case TrackItem:
         (new ScoreObject::Entity(aggregate))->initialize();
+        (new Object::ChildEntity(aggregate))->initialize();
+        (new Object::ModelItemWatcher(aggregate))->initialize();
         break;
     }
+    Core::DatabaseObjectFactory::create(itemType, aggregate);
+    if (parent)
+        query<IModelItem>(aggregate)->setParent(parent);
     return aggregate;
 }
 

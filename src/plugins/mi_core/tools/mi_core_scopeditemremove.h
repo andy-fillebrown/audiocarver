@@ -19,37 +19,37 @@
 #define MI_CORE_SCOPEDITEMREMOVE_H
 
 #include <iaggregate.h>
-#include <imodelitem.h>
-#include <imodelitemwatcher.h>
+#include <imodelitemlist.h>
+#include <imodelitemlistwatcher.h>
 #include <QList>
 
 class ScopedItemRemove
 {
-    const IModelItem *_parent;
+    const IModelItemList *_list;
     const int _index;
-    QList<IModelItemWatcher*> _watchers;
+    QList<IModelItemListWatcher*> _watchers;
 
 public:
-    ScopedItemRemove(const IModelItem *parent, int index)
-        :   _parent(parent)
+    ScopedItemRemove(const IModelItemList *list, int index)
+        :   _list(list)
         ,   _index(index)
     {
-        if (!_parent)
+        if (!_list)
             return;
-        const QList<IUnknown*> &components = query<IAggregate>(_parent)->components();
+        const QList<IUnknown*> &components = query<IAggregate>(_list)->components();
         foreach (IUnknown *component, components)
-            if (component->isTypeOfInterface(I::IModelItemWatcher))
-                _watchers.append(query<IModelItemWatcher>(component));
-        foreach (IModelItemWatcher *watcher, _watchers)
-            watcher->beginRemoveItem(_parent, index);
+            if (component->isTypeOfInterface(I::IModelItemListWatcher))
+                _watchers.append(query<IModelItemListWatcher>(component));
+        foreach (IModelItemListWatcher *watcher, _watchers)
+            watcher->beginRemoveItem(_list, index);
     }
 
     ~ScopedItemRemove()
     {
-        if (!_parent)
+        if (!_list)
             return;
-        foreach (IModelItemWatcher *watcher, _watchers)
-            watcher->endRemoveItem(_parent, _index);
+        foreach (IModelItemListWatcher *watcher, _watchers)
+            watcher->endRemoveItem(_list, _index);
     }
 };
 

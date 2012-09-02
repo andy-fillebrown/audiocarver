@@ -15,29 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_INTERFACES_H
-#define MI_CORE_INTERFACES_H
+#ifndef AC_GUI_OBJECT_MODELDATAWATCHER_H
+#define AC_GUI_OBJECT_MODELDATAWATCHER_H
 
-namespace I {
+#include <imodeldatawatcher.h>
+#include "mi_core_global.h"
 
-enum MiCoreInterface {
-    IAggregate,
-    ICopyFiler,
-    IDatabase,
-    IDatabaseObjectFactory,
-    IFileFiler,
-    IFilerFactory,
-    IModel,
-    IModelData,
-    IModelDataWatcher,
-    IModelItem,
-    IModelItemList,
-    IModelItemListWatcher,
-    IModelItemWatcher,
-    IReader,
-    ISession,
-    IWriter,
-    MiCoreInterfaceCount
+class IAggregate;
+
+namespace Object {
+
+class MI_CORE_EXPORT ModelDataWatcher : public IModelDataWatcher
+{
+    IAggregate *_aggregate;
+
+public:
+    ModelDataWatcher(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+    {}
+
+    virtual IUnknown *initialize();
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    void beginChangeData(const IModelData *data, int role, int changeType);
+    void endChangeData(const IModelData *data, int role, int changeType);
 };
 
 }

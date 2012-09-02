@@ -6,7 +6,7 @@ SOURCE_FILES = \
     object_modelitem \
     objectlist_modeldata \
     objectlist_modelitem \
-    objectlist_modelitemwatcher \
+    objectlist_modelitemlistwatcher \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

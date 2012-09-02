@@ -39,10 +39,11 @@ ModelItem::~ModelItem()
 
 IUnknown *ModelItem::initialize()
 {
+    Object::ModelItem::initialize();
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _pitchCurve = factory->create(PitchCurveItem, this);
     _controlCurves = factory->create(ControlCurveListItem, this);
-    return Object::ModelItem::initialize();
+    return this;
 }
 
 bool ModelItem::isTypeOfItem(int itemType) const
