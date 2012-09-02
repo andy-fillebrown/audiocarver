@@ -19,13 +19,12 @@
 #define AC_GUI_OBJECT_MODELDATAWATCHER_H
 
 #include <imodeldatawatcher.h>
-#include "mi_core_global.h"
 
 class IAggregate;
 
 namespace Object {
 
-class MI_CORE_EXPORT ModelDataWatcher : public IModelDataWatcher
+class ModelDataWatcher : public IModelDataWatcher
 {
     IAggregate *_aggregate;
 
