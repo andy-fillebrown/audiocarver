@@ -42,8 +42,6 @@ protected:
         return _aggregate;
     }
 
-    virtual void updateParent(const IModelItem *child);
-
     void beginChangeParent(const IModelItem *child);
     void endChangeParent(const IModelItem *child);
 };

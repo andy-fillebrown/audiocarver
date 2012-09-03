@@ -32,7 +32,7 @@ public:
     virtual IUnknown *initialize();
 
 protected:
-    void updateParent(const IModelItem *child);
+    void endChangeParent(const IModelItem *child);
 };
 
 }

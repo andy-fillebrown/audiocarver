@@ -30,7 +30,6 @@ namespace Object {
 
 IUnknown *ModelItemWatcher::initialize()
 {
-    updateParent(query<IModelItem>(this));
     return aggregate()->append(this);
 }
 
@@ -41,7 +40,10 @@ void *ModelItemWatcher::queryInterface(int interfaceType) const
     return aggregate()->queryInterface(interfaceType);
 }
 
-void ModelItemWatcher::updateParent(const IModelItem *child)
+void ModelItemWatcher::beginChangeParent(const IModelItem *child)
+{}
+
+void ModelItemWatcher::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
@@ -61,14 +63,6 @@ void ModelItemWatcher::updateParent(const IModelItem *child)
             }
         }
     }
-}
-
-void ModelItemWatcher::beginChangeParent(const IModelItem *child)
-{}
-
-void ModelItemWatcher::endChangeParent(const IModelItem *child)
-{
-    updateParent(child);
 }
 
 }

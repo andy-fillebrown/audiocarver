@@ -29,11 +29,11 @@ IUnknown *ModelItemWatcher::initialize()
     return Object::ModelItemWatcher::initialize();
 }
 
-void ModelItemWatcher::updateParent(const IModelItem *child)
+void ModelItemWatcher::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
-    Object::ModelItemWatcher::updateParent(child);
+    Object::ModelItemWatcher::endChangeParent(child);
     IEntity *child_entity = query<IEntity>(child);
     if (!child_entity)
         return;
