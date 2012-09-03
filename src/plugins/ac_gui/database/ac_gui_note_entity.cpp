@@ -60,13 +60,15 @@ protected:
         switch (role) {
         case VolumeRole: {
             PointList pitch_points = query<IModelData>(query<IModelItem>(_noteEntity)->findItem(PitchCurveItem))->get<PointList>(PointsRole);
+            if (pitch_points.isEmpty())
+                return;
             qreal volume = query<IModelData>(_noteEntity)->get<qreal>(VolumeRole);
             PointList velocity_line_points;
             qreal x = pitch_points.first().pos.x();
             velocity_line_points.append(Point(x, 0.0f));
             velocity_line_points.append(Point(x, volume));
             query<IGraphicsItem>(this)->setPoints(velocity_line_points);
-        }
+        } break;
         }
     }
 
@@ -104,6 +106,7 @@ public:
     IUnknown *initialize()
     {
         _graphicsLineItem = new QGraphicsLineItem;
+        _graphicsLineItem->setParentItem(query<IChildEntity>(this)->parent()->graphicsItem(ControlScene, MainTransform));
         _graphicsLineItem->setData(0, quintptr(query<IEntity>(this)));
         return Object::GraphicsItem::initialize();
     }
@@ -208,12 +211,13 @@ Entity::~Entity()
 
 IUnknown *Entity::initialize()
 {
+    ScoreObject::Entity::initialize();
     _velocity = new Base::Aggregate;
     (new Velocity::Entity(_velocity, this))->initialize();
-    (new Velocity::GraphicsItem(_velocity))->initialize();
     (new Velocity::SubEntity(_velocity, this))->initialize();
-    return ScoreObject::Entity::initialize();
+    (new Velocity::GraphicsItem(_velocity))->initialize();
     update(ColorRole);
+    return this;
 }
 
 QList<ISubEntity*> Entity::subEntities(int sceneType) const
@@ -245,6 +249,18 @@ void Entity::update(int role)
             }
         }
     } break;
+    default: {
+        for (int i = 0;  i < SceneTypeCount;  ++i) {
+            QList<ISubEntity*> sub_entities = subEntities(i);
+            foreach (ISubEntity *sub_entity, sub_entities) {
+                IEntity *entity = query<IEntity>(sub_entity);
+                if (!entity)
+                    return;
+                entity->update(role);
+            }
+        }
+    } break;
+    }
 }
 
 }

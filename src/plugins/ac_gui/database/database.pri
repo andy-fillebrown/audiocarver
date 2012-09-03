@@ -18,6 +18,7 @@ SOURCE_FILES = \
     object_modelitemwatcher \
     object_parententity \
     object_subentity \
+    pitchcurve_entity \
     pitchcurve_graphicsitem \
     pitchcurve_subentity \
     pitchgridline_entity \

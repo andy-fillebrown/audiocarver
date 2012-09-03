@@ -27,6 +27,7 @@
 #include "ac_gui_object_childentity.h"
 #include "ac_gui_object_modeldatawatcher.h"
 #include "ac_gui_object_modelitemwatcher.h"
+#include "ac_gui_pitchcurve_entity.h"
 #include "ac_gui_pitchcurve_graphicsitem.h"
 #include "ac_gui_pitchcurve_subentity.h"
 #include "ac_gui_pitchgridline_entity.h"
@@ -75,7 +76,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case PitchCurveItem:
-        (new Curve::Entity(aggregate))->initialize();
+        (new PitchCurve::Entity(aggregate))->initialize();
         (new PitchCurve::SubEntity(aggregate))->initialize();
         (new PitchCurve::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
