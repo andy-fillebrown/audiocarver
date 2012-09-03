@@ -15,39 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_GRAPHICSITEM_H
-#define AC_GUI_CURVE_GRAPHICSITEM_H
+#ifndef AC_GUI_NOTE_MODELITEMWATCHER_H
+#define AC_GUI_NOTE_MODELITEMWATCHER_H
 
-#include "ac_gui_object_graphicsitem.h"
+#include "ac_gui_object_modelitemwatcher.h"
 
-class GraphicsCurveItem;
+namespace Note {
 
-namespace Curve {
-
-class GraphicsItem : public Object::GraphicsItem
+class ModelItemWatcher : public Object::ModelItemWatcher
 {
-    GraphicsCurveItem *_graphicsCurveItem;
-
-protected:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsItem(aggregate)
-        ,   _graphicsCurveItem(0)
+public:
+    ModelItemWatcher(IAggregate *aggregate)
+        :   Object::ModelItemWatcher(aggregate)
     {}
 
-    ~GraphicsItem();
     virtual IUnknown *initialize();
 
-    GraphicsCurveItem *graphicsCurveItem() const
-    {
-        return _graphicsCurveItem;
-    }
-
-    void setColor(int color);
-    void setPoints(const PointList &points);
-    bool intersects(const QRectF &rect) const;
-    void highlight();
-    void unhighlight();
-    bool isVisible() const;
+protected:
+    void updateParent(const IModelItem *child);
 };
 
 }

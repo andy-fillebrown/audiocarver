@@ -22,12 +22,14 @@
 #include "ac_gui_object_subentity.h"
 #include <ac_core_namespace.h>
 #include <mi_core_aggregate.h>
+#include <mi_core_utilities.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
 #include <QGraphicsLineItem>
 #include <QPen>
 
 using namespace Ac;
+using namespace Mi;
 
 namespace Note {
 namespace Velocity {
@@ -113,6 +115,13 @@ protected:
                 && MainTransform == transformType)
             return _graphicsLineItem;
         return 0;
+    }
+
+    void setColor(int color)
+    {
+        QPen pen = _graphicsLineItem->pen();
+        pen.setColor(color);
+        _graphicsLineItem->setPen(pen);
     }
 
     void setPoints(const PointList &points)
@@ -204,6 +213,7 @@ IUnknown *Entity::initialize()
     (new Velocity::GraphicsItem(_velocity))->initialize();
     (new Velocity::SubEntity(_velocity, this))->initialize();
     return ScoreObject::Entity::initialize();
+    update(ColorRole);
 }
 
 QList<ISubEntity*> Entity::subEntities(int sceneType) const
@@ -212,6 +222,29 @@ QList<ISubEntity*> Entity::subEntities(int sceneType) const
     if (ControlScene == sceneType)
         sub_entities.append(query<ISubEntity>(velocity()));
     return sub_entities;
+}
+
+void Entity::update(int role)
+{
+    switch (role) {
+    case ColorRole: {
+        IChildEntity *child_entity = query<IChildEntity>(this);
+        if (!child_entity)
+            return;
+        IModelData *parent_data = query<IModelData>(child_entity->parent());
+        if (!parent_data)
+            return;
+        int color = intFromColor(parent_data->get<QString>(ColorRole));
+        for (int i = 0;  i < SceneTypeCount;  ++i) {
+            QList<ISubEntity*> sub_entities = subEntities(i);
+            foreach (ISubEntity *sub_entity, sub_entities) {
+                IGraphicsItem *graphics_item = query<IGraphicsItem>(sub_entity);
+                if (!graphics_item)
+                    return;
+                graphics_item->setColor(color);
+            }
+        }
+    } break;
 }
 
 }

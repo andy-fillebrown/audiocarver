@@ -10,6 +10,7 @@ SOURCE_FILES = \
     gridsettings_entity \
     horizontalgridline_entity \
     note_entity \
+    note_modelitemwatcher \
     object_childentity \
     object_entity \
     object_graphicsitem \
@@ -23,6 +24,7 @@ SOURCE_FILES = \
     score_entity \
     scoreobject_entity \
     timegridline_entity \
+    track_entity \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

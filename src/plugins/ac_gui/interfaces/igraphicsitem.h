@@ -31,6 +31,7 @@ public:
     enum { InterfaceType = I::IGraphicsItem };
 
     virtual QGraphicsItem *graphicsItem(int sceneType, int transformType) const = 0;
+    virtual void setColor(int color) = 0;
     virtual void setPoints(const PointList &points) = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
     virtual void highlight() = 0;

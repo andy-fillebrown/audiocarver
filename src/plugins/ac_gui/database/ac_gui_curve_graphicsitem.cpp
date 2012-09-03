@@ -35,6 +35,11 @@ IUnknown *GraphicsItem::initialize()
     return Object::GraphicsItem::initialize();
 }
 
+void GraphicsItem::setColor(int color)
+{
+    _graphicsCurveItem->setColor(color);
+}
+
 void GraphicsItem::setPoints(const PointList &points)
 {
     _graphicsCurveItem->setPoints(points);

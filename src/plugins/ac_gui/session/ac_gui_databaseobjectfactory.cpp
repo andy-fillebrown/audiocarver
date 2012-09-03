@@ -23,6 +23,7 @@
 #include "ac_gui_curve_graphicsitem.h"
 #include "ac_gui_gridsettings_entity.h"
 #include "ac_gui_note_entity.h"
+#include "ac_gui_note_modelitemwatcher.h"
 #include "ac_gui_object_childentity.h"
 #include "ac_gui_object_modeldatawatcher.h"
 #include "ac_gui_object_modelitemwatcher.h"
@@ -31,6 +32,7 @@
 #include "ac_gui_pitchgridline_entity.h"
 #include "ac_gui_score_entity.h"
 #include "ac_gui_timegridline_entity.h"
+#include "ac_gui_track_entity.h"
 #include <ac_core_namespace.h>
 #include <mi_core_aggregate.h>
 #include <imodelitem.h>
@@ -69,7 +71,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
     case NoteItem:
         (new Note::Entity(aggregate))->initialize();
         (new Object::ChildEntity(aggregate))->initialize();
-        (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Note::ModelItemWatcher(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case PitchCurveItem:
@@ -95,9 +97,10 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case TrackItem:
-        (new ScoreObject::Entity(aggregate))->initialize();
+        (new Track::Entity(aggregate))->initialize();
         (new Object::ChildEntity(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     }
     Core::DatabaseObjectFactory::create(itemType, aggregate);
