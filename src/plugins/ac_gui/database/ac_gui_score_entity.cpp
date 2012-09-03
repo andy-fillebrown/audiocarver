@@ -27,14 +27,12 @@ namespace Score {
 IUnknown *Entity::initialize()
 {
     QMap<int, QGraphicsItem*> &main_graphics_items = mainGraphicsItems();
-    main_graphics_items.insert(TimeLabelScene, new GraphicsItem);
-    main_graphics_items.insert(PitchLabelScene, new GraphicsItem);
-    main_graphics_items.insert(ControlLabelScene, new GraphicsItem);
     for (int i = 0;  i < SceneTypeCount;  ++i) {
+        main_graphics_items.insert(i, new GraphicsRootItem);
         _unitXGraphicsItems.insert(i, new GraphicsItem);
         _unitYGraphicsItems.insert(i, new GraphicsItem);
     }
-    return ScoreObject::Entity::initialize();
+    return Object::ParentEntity::initialize();
 }
 
 QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
