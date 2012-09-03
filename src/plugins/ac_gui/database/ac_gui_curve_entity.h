@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #ifndef AC_GUI_CURVE_ENTITY_H
-#define AC_GUI_CURVE_ENTTIY_H
+#define AC_GUI_CURVE_ENTITY_H
 
 #include "ac_gui_object_entity.h"
 
