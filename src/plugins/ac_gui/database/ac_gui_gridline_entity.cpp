@@ -17,15 +17,40 @@
 
 #include "ac_gui_gridline_entity.h"
 #include "ac_gui_graphicsitem.h"
+#include <ac_core_constants.h>
+#include <mi_core_utilities.h>
 #include <imodeldata.h>
+#include <QApplication>
+#include <QFont>
 
 using namespace Ac;
+using namespace Mi;
 
 namespace GridLine {
 
+const QFont &Entity::gridLabelFont()
+{
+    static QFont font;
+    static bool initialized = false;
+    if (!initialized) {
+        initialized = true;
+        font = QApplication::font();
+    }
+    return font;
+}
+
+Qt::PenStyle Entity::gridLinePenStyle()
+{
+    return Qt::DotLine;
+}
+
+Qt::PenStyle Entity::gridLineExtensionPenStyle()
+{
+    return Qt::DotLine;
+}
+
 Entity::~Entity()
 {
-    delete _labelSceneLineItem;
     delete _labelSceneTextItem;
     delete _labelSceneRootItem;
 }
@@ -34,21 +59,32 @@ IUnknown *Entity::initialize()
 {
     _labelSceneRootItem = new GraphicsItem;
     _labelSceneTextItem = new GraphicsTextItem(_labelSceneRootItem);
-    _labelSceneLineItem = new QGraphicsLineItem(_labelSceneRootItem);
+    _labelSceneTextItem->setFont(gridLabelFont());
     return Object::Entity::initialize();
 }
 
 void Entity::update(int role)
 {
     switch (role) {
-    case LabelRole:
-        labelSceneTextItem()->setText(query<IModelData>(this)->get<QString>(LabelRole));
+    case VisibilityRole: {
+        IModelData *data = query<IModelData>(this);
+        if (!data)
+            return;
+        _labelSceneRootItem->setVisible(data->get<bool>(VisibilityRole));
+    }   break;
+    case LabelRole: {
+        IModelData *data = query<IModelData>(this);
+        if (!data)
+            return;
+        _labelSceneTextItem->setText(data->get<QString>(LabelRole));
+    }   break;
     }
+    Object::Entity::update(role);
 }
 
 bool Entity::isVisible() const
 {
-    return labelSceneRootItem()->isVisible();
+    return _labelSceneRootItem->isVisible();
 }
 
 }

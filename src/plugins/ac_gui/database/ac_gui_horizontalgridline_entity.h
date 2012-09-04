@@ -20,16 +20,20 @@
 
 #include "ac_gui_gridline_entity.h"
 
+class QGraphicsLineItem;
+
 namespace HorizontalGridLine {
 
 class Entity : public GridLine::Entity
 {
     QGraphicsLineItem *_editorSceneLineItem;
+    QGraphicsLineItem *_editorSceneLineExtensionItem;
 
 protected:
     Entity(IAggregate *aggregate)
         :   GridLine::Entity(aggregate)
         ,   _editorSceneLineItem(0)
+        ,   _editorSceneLineExtensionItem(0)
     {}
 
     ~Entity();
@@ -38,6 +42,11 @@ protected:
     QGraphicsLineItem *editorSceneLineItem() const
     {
         return _editorSceneLineItem;
+    }
+
+    QGraphicsLineItem *editorSceneLineExtensionItem() const
+    {
+        return _editorSceneLineExtensionItem;
     }
 
     void update(int role);

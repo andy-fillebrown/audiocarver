@@ -20,34 +20,34 @@
 
 #include "ac_gui_gridline_entity.h"
 
+class QGraphicsLineItem;
+
 namespace TimeGridLine {
 
 class Entity : public GridLine::Entity
 {
+    QGraphicsLineItem *_labelSceneLineItem;
     QGraphicsLineItem *_pitchSceneLineItem;
+    QGraphicsLineItem *_pitchSceneLineHighExtensionItem;
+    QGraphicsLineItem *_pitchSceneLineLowExtensionItem;
     QGraphicsLineItem *_controlSceneLineItem;
+    QGraphicsLineItem *_controlSceneLineExtensionItem;
 
 public:
     Entity(IAggregate *aggregate)
         :   GridLine::Entity(aggregate)
+        ,   _labelSceneLineItem(0)
         ,   _pitchSceneLineItem(0)
+        ,   _pitchSceneLineHighExtensionItem(0)
+        ,   _pitchSceneLineLowExtensionItem(0)
         ,   _controlSceneLineItem(0)
+        ,   _controlSceneLineExtensionItem(0)
     {}
 
     ~Entity();
     virtual IUnknown *initialize();
 
 protected:
-    QGraphicsLineItem *pitchSceneLineItem() const
-    {
-        return _pitchSceneLineItem;
-    }
-
-    QGraphicsLineItem *controlSceneLineItem() const
-    {
-        return _controlSceneLineItem;
-    }
-
     QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
     void update(int role);
 };

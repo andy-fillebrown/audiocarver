@@ -16,23 +16,68 @@
 **************************************************************************/
 
 #include "ac_gui_horizontalgridline_entity.h"
-#include <QGraphicsLineItem>
+#include "ac_gui_graphicsitem.h"
+#include <ac_core_constants.h>
+#include <mi_core_utilities.h>
+#include <imodeldata.h>
+
+using namespace Ac;
+using namespace Mi;
 
 namespace HorizontalGridLine {
 
 Entity::~Entity()
 {
+    delete _editorSceneLineExtensionItem;
     delete _editorSceneLineItem;
 }
 
 IUnknown *Entity::initialize()
 {
     _editorSceneLineItem = new QGraphicsLineItem;
+    _editorSceneLineExtensionItem = new QGraphicsLineItem(_editorSceneLineItem);
+    QPen pen(DEFAULT_GRIDLINE_COLOR);
+    pen.setCosmetic(true);
+    pen.setStyle(GridLine::Entity::gridLinePenStyle());
+    _editorSceneLineItem->setPen(pen);
+    pen.setStyle(GridLine::Entity::gridLineExtensionPenStyle());
+    _editorSceneLineExtensionItem->setPen(pen);
     return GridLine::Entity::initialize();
 }
 
 void Entity::update(int role)
 {
+    switch (role) {
+    case VisibilityRole: {
+        IModelData *data = query<IModelData>(this);
+        if (!data)
+            return;
+        const bool visible = data->get<bool>(VisibilityRole);
+        _editorSceneLineItem->setVisible(visible);
+        _editorSceneLineExtensionItem->setVisible(visible);
+    }   break;
+    case LocationRole: {
+        IModelData *data = query<IModelData>(this);
+        if (!data)
+            return;
+        qreal location = data->get<qreal>(LocationRole);
+        labelSceneRootItem()->setPos(0.0f, location);
+        _editorSceneLineItem->setLine(0.0f, location, 1.0f, location);
+        _editorSceneLineExtensionItem->setLine(1.0f, location, 2.0f, location);
+    } break;
+    case ColorRole: {
+        IModelData *data = query<IModelData>(this);
+        if (!data)
+            return;
+        const int color = intFromColor(data->get<QString>(ColorRole));
+        QPen pen = _editorSceneLineItem->pen();
+        pen.setColor(color);
+        _editorSceneLineItem->setPen(pen);
+        pen = _editorSceneLineExtensionItem->pen();
+        pen.setColor(color);
+        _editorSceneLineExtensionItem->setPen(pen);
+    } break;
+    }
     GridLine::Entity::update(role);
 }
 

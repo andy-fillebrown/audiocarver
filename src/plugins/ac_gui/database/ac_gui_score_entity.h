@@ -37,6 +37,7 @@ public:
 
 protected:
     QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+    void update(int role);
 
     void highlight()
     {

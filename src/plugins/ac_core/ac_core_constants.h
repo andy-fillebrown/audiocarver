@@ -18,7 +18,7 @@
 #ifndef AC_CORE_CONSTANTS_H
 #define AC_CORE_CONSTANTS_H
 
-#include <qglobal.h>
+#include "ac_core_namespace.h"
 
 const qreal DEFAULT_SCOREOBJECT_VOLUME = 0.75f;
 
@@ -38,6 +38,9 @@ const qreal DEFAULT_PROJECTSETTINGS_CURVERATE = 48;
 const qreal DEFAULT_VIEWSETTINGS_TIMEPOSITION = DEFAULT_SCORE_LENGTH / 2.0f;
 const qreal DEFAULT_VIEWSETTINGS_PITCHPOSITION = 63.5f;
 const qreal DEFAULT_VIEWSETTINGS_CONTROLPOSITION = 0.5f;
+
+const int DEFAULT_GRIDLINE_COLOR = Ac::lightGray;
+const int DEFAULT_TRACK_COLOR = Ac::red;
 
 const qreal VIEWSCALE_MIN = 0.75f;
 const qreal VIEWSCALE_MAX = 1000.0f;

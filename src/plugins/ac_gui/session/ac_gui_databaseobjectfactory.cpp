@@ -90,6 +90,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
         break;
     case ScoreItem:
         (new Score::Entity(aggregate))->initialize();
+        (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case TimeGridLineItem:
         (new TimeGridLine::Entity(aggregate))->initialize();

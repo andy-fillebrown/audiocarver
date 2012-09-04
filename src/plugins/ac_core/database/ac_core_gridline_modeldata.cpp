@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_core_gridline_modeldata.h"
-#include "ac_core_namespace.h"
+#include "ac_core_constants.h"
 #include <mi_core_scopeddatachange.h>
 #include <mi_core_utilities.h>
 
@@ -27,9 +27,9 @@ namespace GridLine {
 
 ModelData::ModelData(IAggregate *aggregate)
     :   Object::ModelData(aggregate)
-    ,   _location(0.0f)
+    ,   _location(Q_FLOAT_MIN)
     ,   _priority(0)
-    ,   _color(lightGray)
+    ,   _color(DEFAULT_GRIDLINE_COLOR)
     ,   _visible(true)
 {}
 

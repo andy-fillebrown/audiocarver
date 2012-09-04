@@ -18,6 +18,8 @@
 #include "ac_gui_score_entity.h"
 #include "ac_gui_graphicsitem.h"
 #include "ac_gui_namespace.h"
+#include <ac_core_constants.h>
+#include <imodeldata.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -28,10 +30,14 @@ IUnknown *Entity::initialize()
 {
     QMap<int, QGraphicsItem*> &main_graphics_items = mainGraphicsItems();
     for (int i = 0;  i < SceneTypeCount;  ++i) {
-        main_graphics_items.insert(i, new GraphicsRootItem);
-        _unitXGraphicsItems.insert(i, new GraphicsItem);
-        _unitYGraphicsItems.insert(i, new GraphicsItem);
+        QGraphicsItem *main_graphics_item = new GraphicsRootItem;
+        main_graphics_items.insert(i, main_graphics_item);
+        _unitXGraphicsItems.insert(i, new GraphicsItem(main_graphics_item));
+        _unitYGraphicsItems.insert(i, new GraphicsItem(main_graphics_item));
     }
+    _unitXGraphicsItems[PitchScene]->setTransform(QTransform::fromScale(DEFAULT_SCORE_LENGTH, 1.0f));
+    _unitXGraphicsItems[ControlScene]->setTransform(QTransform::fromScale(DEFAULT_SCORE_LENGTH, 1.0f));
+    _unitYGraphicsItems[PitchScene]->setTransform(QTransform::fromScale(1.0f, 127.0f));
     return Object::ParentEntity::initialize();
 }
 
@@ -45,6 +51,21 @@ QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
     default:
         return ScoreObject::Entity::graphicsItem(sceneType, transformType);
     }
+}
+
+void Entity::update(int role)
+{
+    switch (role) {
+    case LengthRole: {
+        IModelData *data = query<IModelData>(this);
+        if (!data)
+            return;
+        qreal score_length = data->get<qreal>(LengthRole);
+        _unitXGraphicsItems[PitchScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
+        _unitXGraphicsItems[ControlScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
+    }   break;
+    }
+    ScoreObject::Entity::update(role);
 }
 
 }

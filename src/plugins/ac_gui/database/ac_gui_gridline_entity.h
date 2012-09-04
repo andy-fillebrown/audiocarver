@@ -19,10 +19,11 @@
 #define AC_GUI_GRIDLINE_ENTITY_H
 
 #include "ac_gui_object_entity.h"
+#include <qnamespace.h>
 
 class GraphicsItem;
 class GraphicsTextItem;
-class QGraphicsLineItem;
+class QFont;
 
 namespace GridLine {
 
@@ -30,14 +31,16 @@ class Entity : public Object::Entity
 {
     GraphicsItem * _labelSceneRootItem;
     GraphicsTextItem *_labelSceneTextItem;
-    QGraphicsLineItem *_labelSceneLineItem;
 
 protected:
+    static const QFont &gridLabelFont();
+    static Qt::PenStyle gridLinePenStyle();
+    static Qt::PenStyle gridLineExtensionPenStyle();
+
     Entity(IAggregate *aggregate)
         :   Object::Entity(aggregate)
         ,   _labelSceneRootItem(0)
         ,   _labelSceneTextItem(0)
-        ,   _labelSceneLineItem(0)
     {}
 
     ~Entity();
@@ -51,11 +54,6 @@ protected:
     GraphicsTextItem *labelSceneTextItem() const
     {
         return _labelSceneTextItem;
-    }
-
-    QGraphicsLineItem *labelSceneLineItem() const
-    {
-        return _labelSceneLineItem;
     }
 
     void update(int role);

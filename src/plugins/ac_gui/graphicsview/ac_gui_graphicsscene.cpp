@@ -50,12 +50,10 @@ public:
         pitchLabelScene = new PitchLabelScene(q);
         controlLabelScene = new ControlLabelScene(q);
 
-        // Add the root entity's graphics items to the scenes.
+        // Add the root entity's main graphics items to the scenes.
         IEntity *root_entity = query<IEntity>(IDatabase::instance()->rootItem());
         for (int i = 0;  i < Ac::SceneTypeCount;  ++i) {
-            QGraphicsScene *scene = q->scene(i);
-            for (int j = 0;  j < Ac::TransformTypeCount;  ++j)
-                scene->addItem(root_entity->graphicsItem(i, j));
+            q->scene(i)->addItem(root_entity->graphicsItem(i, Ac::MainTransform));
         }
     }
 };
