@@ -16,8 +16,11 @@
 **************************************************************************/
 
 #include "ac_gui_track_entity.h"
+#include "ac_gui_namespace.h"
 #include <ac_core_namespace.h>
+#include <imodeldata.h>
 #include <imodelitemlist.h>
+#include <QGraphicsItem>
 
 using namespace Ac;
 
@@ -44,6 +47,14 @@ void Entity::update(int role)
             note_entity->update(ColorRole);
         }
     } break;
+    case VisibilityRole: {
+        IModelData *data = query<IModelData>(this);
+        if (!data)
+            return;
+        const bool visible = data->get<bool>(VisibilityRole);
+        graphicsItem(PitchScene, MainTransform)->setVisible(visible);
+        graphicsItem(ControlScene, MainTransform)->setVisible(visible);
+    }   break;
     }
 }
 
