@@ -25,7 +25,9 @@
 
 using namespace Base;
 
+#ifdef QT_DEBUG
 static bool test();
+#endif
 
 namespace Mi {
 namespace Core {

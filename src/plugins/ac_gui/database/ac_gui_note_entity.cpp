@@ -238,7 +238,7 @@ void Entity::update(int role)
         IModelData *parent_data = query<IModelData>(child_entity->parent());
         if (!parent_data)
             return;
-        int color = intFromColor(parent_data->get<QString>(ColorRole));
+        const int color = intFromColor(parent_data->get<QString>(ColorRole));
         for (int i = 0;  i < SceneTypeCount;  ++i) {
             QList<ISubEntity*> sub_entities = subEntities(i);
             foreach (ISubEntity *sub_entity, sub_entities) {

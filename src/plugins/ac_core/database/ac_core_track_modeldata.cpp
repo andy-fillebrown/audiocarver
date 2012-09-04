@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_core_track_modeldata.h"
-#include "ac_core_namespace.h"
+#include "ac_core_constants.h"
 #include <mi_core_utilities.h>
 #include <mi_core_scopeddatachange.h>
 
@@ -27,7 +27,7 @@ namespace Track {
 
 ModelData::ModelData(IAggregate *aggregate)
     :   ScoreObject::ModelData(aggregate)
-    ,   _color(red)
+    ,   _color(DEFAULT_TRACK_COLOR)
     ,   _visible(false)
     ,   _recording(false)
 {}
