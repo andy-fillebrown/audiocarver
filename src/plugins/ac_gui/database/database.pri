@@ -26,6 +26,7 @@ SOURCE_FILES = \
     scoreobject_entity \
     timegridline_entity \
     track_entity \
+    tracklist_modelitemlistwatcher \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)
