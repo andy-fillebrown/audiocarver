@@ -15,31 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CONTROLLABELVIEW_H
-#define AC_GUI_CONTROLLABELVIEW_H
+#ifndef AC_GUI_GRAPHICSTIMELABELSCENE_H
+#define AC_GUI_GRAPHICSTIMELABELSCENE_H
 
-#include "ac_gui_labelview.h"
-#include "ac_gui_namespace.h"
+#include "ac_gui_graphicshorizontalscene.h"
 
-class ControlLabelViewPrivate;
-class ControlLabelView : public LabelVView
+class GraphicsTimeLabelScene : public GraphicsHorizontalScene
 {
-    Q_OBJECT
-
-    ControlLabelViewPrivate *d;
-
 public:
-    ControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~ControlLabelView();
+    GraphicsTimeLabelScene(QObject *parent = 0)
+        :   GraphicsHorizontalScene(parent)
+    {}
 
-protected:
-    IModelItem *gridLineList() const;
-
-    int sceneType() const { return Ac::ControlLabelScene; }
-    qreal sceneHeight() const;
-
-    int positionRoleY() const { return Ac::ControlPositionRole; }
-    int scaleRoleY() const { return Ac::ControlScaleRole; }
+    qreal height() const
+    {
+        return 1.0f;
+    }
 };
 
 #endif

@@ -15,67 +15,43 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_LABELVIEW_H
-#define AC_GUI_LABELVIEW_H
+#ifndef AC_GUI_GRAPHICSLABELVIEW_H
+#define AC_GUI_GRAPHICSLABELVIEW_H
 
 #include "ac_gui_graphicsview.h"
 
-class IModelItem;
+class IModelItemList;
 class QModelIndex;
 
-class LabelViewPrivate;
-class LabelView : public GraphicsView
+class GraphicsLabelView : public GraphicsView
 {
-    Q_OBJECT
-
-    friend class LabelViewPrivate;
-    LabelViewPrivate *d;
+    uint _updatesDisabled : 1;
 
 public:
-    LabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~LabelView();
-
     void updateView();
-    void viewScaleChanged(int role);
-    void scoreLengthChanged();
-
-    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
 
 protected:
+    GraphicsLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+
+    void updateGridLineVisibilities();
+    void viewScaleChanged(int role);
+    void scoreLengthChanged();
+    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
     virtual qreal paddingScale() const = 0;
-    virtual IModelItem *gridLineList() const = 0;
+    virtual IModelItemList *gridLineList() const = 0;
     virtual int scaleRole() const = 0;
 
-    QPointF sceneOffset() const { return QPointF(0.0f, qreal(10.0f) / (qreal(height()) / sceneHeight())); }
+    QPointF sceneOffset() const
+    {
+        return QPointF(0.0f, qreal(10.0f) / (qreal(height()) / sceneHeight()));
+    }
 
     void panFinished();
     void zoomFinished();
-
     void updateViewSettings();
-    void paintGlyphs(QPaintEvent *event) { Q_UNUSED(event); }
-
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
-};
-
-class LabelVView : public LabelView
-{
-    Q_OBJECT
-
-public:
-    LabelVView(QGraphicsScene *scene = 0, QWidget *parent = 0)
-        :   LabelView(scene, parent)
-    {}
-
-protected:
-    qreal paddingScale() const { return -sceneTransform().m22(); }
-    int scaleRole() const { return scaleRoleY(); }
-
-    QPointF sceneOffset() const { return QPointF(qreal(-2.0f) / (qreal(width()) / sceneWidth()), qreal(8.5f) / (qreal(height()) / sceneHeight())); }
-    QPointF sceneCenter() const;
-
-    void zoomStarting();
 };
 
 #endif

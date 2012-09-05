@@ -16,12 +16,13 @@
 **************************************************************************/
 
 #include "ac_gui_graphicsviewmanager.h"
-#include "ac_gui_controllabelview.h"
-#include "ac_gui_controlview.h"
-#include "ac_gui_graphicsscene.h"
-#include "ac_gui_pitchlabelview.h"
-#include "ac_gui_pitchview.h"
-#include "ac_gui_timelabelview.h"
+#include "ac_gui_graphicscontrolview.h"
+#include "ac_gui_graphicscontrollabelview.h"
+#include "ac_gui_graphicsscenemanager.h"
+#include "ac_gui_namespace.h"
+#include "ac_gui_graphicspitchlabelview.h"
+#include "ac_gui_graphicspitchview.h"
+#include "ac_gui_graphicstimelabelview.h"
 //#include "ac_undo.h"
 #include <ac_core_constants.h>
 #include <ac_core_namespace.h>
@@ -51,8 +52,8 @@ static GraphicsViewManager *instance = 0;
 //    const int n = gridlineListItem->modelItemCount();
 //    for (int i = 0;  i < n;  ++i) {
 //        const IModelItem *gridline = gridlineListItem->modelItemAt(i);
-//        if (gridline->data(Ac::VisibilityRole).toBool()) {
-//            const qreal current_location = gridline->data(Ac::LocationRole).toReal();
+//        if (gridline->data(VisibilityRole).toBool()) {
+//            const qreal current_location = gridline->data(LocationRole).toReal();
 //            const qreal current_offset = qAbs(location - current_location);
 //            if (current_offset < min_offset) {
 //                min_offset = current_offset;
@@ -67,12 +68,12 @@ class GraphicsViewManagerPrivate
 {
 public:
     GraphicsViewManager *q;
-    SceneManager *sceneManager;
-    PitchView *pitchView;
-    ControlView *controlView;
-    TimeLabelView *timeLabelView;
-    PitchLabelView *pitchLabelView;
-    ControlLabelView *controlLabelView;
+    GraphicsSceneManager *sceneManager;
+    GraphicsPitchView *pitchView;
+    GraphicsControlView *controlView;
+    GraphicsTimeLabelView *timeLabelView;
+    GraphicsPitchLabelView *pitchLabelView;
+    GraphicsControlLabelView *controlLabelView;
     qreal scoreLength;
     qreal timePos;
     qreal pitchPos;
@@ -87,7 +88,7 @@ public:
 
     GraphicsViewManagerPrivate(GraphicsViewManager *q)
         :   q(q)
-        ,   sceneManager(new SceneManager(q))
+        ,   sceneManager(new GraphicsSceneManager(q))
         ,   pitchView(0)
         ,   controlView(0)
         ,   timeLabelView(0)
@@ -104,11 +105,11 @@ public:
     void init()
     {
         QWidget *widget = qobject_cast<QWidget*>(q->parent());
-        pitchView = new PitchView(sceneManager->scene(Ac::PitchScene), widget);
-        controlView = new ControlView(sceneManager->scene(Ac::ControlScene), widget);
-        timeLabelView = new TimeLabelView(sceneManager->scene(Ac::TimeLabelScene), widget);
-        pitchLabelView = new PitchLabelView(sceneManager->scene(Ac::PitchLabelScene), widget);
-        controlLabelView = new ControlLabelView(sceneManager->scene(Ac::ControlLabelScene), widget);
+        pitchView = new GraphicsPitchView(sceneManager->scene(PitchScene), widget);
+        controlView = new GraphicsControlView(sceneManager->scene(ControlScene), widget);
+        timeLabelView = new GraphicsTimeLabelView(sceneManager->scene(TimeLabelScene), widget);
+        pitchLabelView = new GraphicsPitchLabelView(sceneManager->scene(PitchLabelScene), widget);
+        controlLabelView = new GraphicsControlLabelView(sceneManager->scene(ControlLabelScene), widget);
 
         q->connect(q, SIGNAL(viewPositionChanged(int)), pitchView, SLOT(viewPositionChanged(int)));
         q->connect(q, SIGNAL(viewPositionChanged(int)), controlView, SLOT(viewPositionChanged(int)));
@@ -214,11 +215,11 @@ public:
     {
 //        qreal toX = -1.0f;
 
-//        if (Ac::TimePositionRole == role) {
+//        if (TimePositionRole == role) {
 //            if (snapToGrid)
-//                toX = ::closestGridlineLocation(pos.x(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::TimeGridLineItem));
+//                toX = ::closestGridlineLocation(pos.x(), IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->findModelItemList(TimeGridLineItem));
 //            else
-//                toX = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::TimeSnapRole).toReal();
+//                toX = IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->data(TimeSnapRole).toReal();
 //        }
 
 //        if (snapToGrid)
@@ -231,16 +232,16 @@ public:
     {
 //        qreal toY = -1.0f;
 
-//        if (Ac::PitchPositionRole == role) {
+//        if (PitchPositionRole == role) {
 //            if (snapToGrid)
-//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::PitchGridLineItem));
+//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->findModelItemList(PitchGridLineItem));
 //            else
-//                toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::PitchSnapRole).toReal();
-//        } else if (Ac::ControlPositionRole == role) {
+//                toY = IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->data(PitchSnapRole).toReal();
+//        } else if (ControlPositionRole == role) {
 //            if (snapToGrid)
-//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::ControlGridLineItem));
+//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->findModelItemList(ControlGridLineItem));
 //            else
-//                toY = IModel::instance()->rootItem()->findModelItem(Ac::GridSettingsItem)->data(Ac::ControlSnapRole).toReal();
+//                toY = IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->data(ControlSnapRole).toReal();
 //        }
 
 //        if (snapToGrid)
@@ -277,11 +278,11 @@ GraphicsViewManager *GraphicsViewManager::instance()
 QGraphicsView *GraphicsViewManager::view(int type) const
 {
     switch (type) {
-    case Ac::PitchScene: return d->pitchView;
-    case Ac::ControlScene: return d->controlView;
-    case Ac::TimeLabelScene: return d->timeLabelView;
-    case Ac::PitchLabelScene: return d->pitchLabelView;
-    case Ac::ControlLabelScene: return d->controlLabelView;
+    case PitchScene: return d->pitchView;
+    case ControlScene: return d->controlView;
+    case TimeLabelScene: return d->timeLabelView;
+    case PitchLabelScene: return d->pitchLabelView;
+    case ControlLabelScene: return d->controlLabelView;
     default: return 0;
     }
 }
@@ -294,11 +295,11 @@ qreal GraphicsViewManager::scoreLength() const
 qreal GraphicsViewManager::position(int role) const
 {
     switch (role) {
-    case Ac::TimePositionRole:
+    case TimePositionRole:
         return d->timePos;
-    case Ac::PitchPositionRole:
+    case PitchPositionRole:
         return d->pitchPos;
-    case Ac::ControlPositionRole:
+    case ControlPositionRole:
         return d->controlPos;
     default:
         return 0.0f;
@@ -308,29 +309,29 @@ qreal GraphicsViewManager::position(int role) const
 void GraphicsViewManager::setPosition(qreal position, int role)
 {
     switch (role) {
-    case Ac::TimePositionRole:
+    case TimePositionRole:
         position = qBound(qreal(0.0f), position, d->scoreLength);
         if (qFuzzyCompare(d->timePos, position))
             return;
         d->startUndo();
         d->timePos = position;
-        emit viewPositionChanged(Ac::TimePositionRole);
+        emit viewPositionChanged(TimePositionRole);
         break;
-    case Ac::PitchPositionRole:
+    case PitchPositionRole:
         position = qBound(qreal(0.0f), position, qreal(127.0f));
         if (qFuzzyCompare(d->pitchPos, position))
             return;
         d->startUndo();
         d->pitchPos = position;
-        emit viewPositionChanged(Ac::PitchPositionRole);
+        emit viewPositionChanged(PitchPositionRole);
         break;
-    case Ac::ControlPositionRole:
+    case ControlPositionRole:
         position = qBound(qreal(0.0f), position, qreal(1.0f));
         if (qFuzzyCompare(d->controlPos, position))
             return;
         d->startUndo();
         d->controlPos = position;
-        emit viewPositionChanged(Ac::ControlPositionRole);
+        emit viewPositionChanged(ControlPositionRole);
     default:
         break;
     }
@@ -339,11 +340,11 @@ void GraphicsViewManager::setPosition(qreal position, int role)
 qreal GraphicsViewManager::scale(int role) const
 {
     switch (role) {
-    case Ac::TimeScaleRole:
+    case TimeScaleRole:
         return d->timeScale;
-    case Ac::PitchScaleRole:
+    case PitchScaleRole:
         return d->pitchScale;
-    case Ac::ControlScaleRole:
+    case ControlScaleRole:
         return d->controlScale;
     default:
         return 1.0f;
@@ -359,20 +360,20 @@ void GraphicsViewManager::setScale(qreal scale, int role)
     if (qFuzzyCompare(this->scale(role), scale))
         return;
     switch (role) {
-    case Ac::TimeScaleRole:
+    case TimeScaleRole:
         d->startUndo();
         d->timeScale = scale;
-        emit viewScaleChanged(Ac::TimeScaleRole);
+        emit viewScaleChanged(TimeScaleRole);
         break;
-    case Ac::PitchScaleRole:
+    case PitchScaleRole:
         d->startUndo();
         d->pitchScale = scale;
-        emit viewScaleChanged(Ac::PitchScaleRole);
+        emit viewScaleChanged(PitchScaleRole);
         break;
-    case Ac::ControlScaleRole:
+    case ControlScaleRole:
         d->startUndo();
         d->controlScale = scale;
-        emit viewScaleChanged(Ac::ControlScaleRole);
+        emit viewScaleChanged(ControlScaleRole);
     default:
         break;
     }
@@ -381,14 +382,14 @@ void GraphicsViewManager::setScale(qreal scale, int role)
 void GraphicsViewManager::updateDatabase()
 {
 //    IModel *model = IModel::instance();
-//    const QModelIndex viewSettings = model->itemIndex(Ac::ViewSettingsItem);
+//    const QModelIndex viewSettings = model->itemIndex(ViewSettingsItem);
 //    d->updatingDatabase = true;
-//    model->setData(viewSettings, d->timePos, Ac::TimePositionRole);
-//    model->setData(viewSettings, d->pitchPos, Ac::PitchPositionRole);
-//    model->setData(viewSettings, d->controlPos, Ac::ControlPositionRole);
-//    model->setData(viewSettings, d->timeScale, Ac::TimeScaleRole);
-//    model->setData(viewSettings, d->pitchScale, Ac::PitchScaleRole);
-//    model->setData(viewSettings, d->controlScale, Ac::ControlScaleRole);
+//    model->setData(viewSettings, d->timePos, TimePositionRole);
+//    model->setData(viewSettings, d->pitchPos, PitchPositionRole);
+//    model->setData(viewSettings, d->controlPos, ControlPositionRole);
+//    model->setData(viewSettings, d->timeScale, TimeScaleRole);
+//    model->setData(viewSettings, d->pitchScale, PitchScaleRole);
+//    model->setData(viewSettings, d->controlScale, ControlScaleRole);
 //    d->updatingDatabase = false;
 }
 
@@ -401,20 +402,20 @@ void GraphicsViewManager::clearPickedGrips()
 QPointF GraphicsViewManager::snappedScenePos(const QPointF &pos, int sceneType) const
 {
 //    IModel *model = IModel::instance();
-//    IModelItem *gridSettings = model->rootItem()->findModelItem(Ac::GridSettingsItem);
+//    IModelItem *gridSettings = model->rootItem()->findModelItem(GridSettingsItem);
 
-//    bool is_snapping = gridSettings->data(Ac::SnapEnabledRole).toBool();
+//    bool is_snapping = gridSettings->data(SnapEnabledRole).toBool();
 //    if (!is_snapping)
 //        return pos;
 
-//    bool snap_to_grid = gridSettings->data(Ac::GridSnapEnabledRole).toBool();
+//    bool snap_to_grid = gridSettings->data(GridSnapEnabledRole).toBool();
 
     QPointF snapped_pos = pos;
-//    d->snapX(snapped_pos, Ac::TimePositionRole, snap_to_grid);
-//    if (Ac::PitchScene == sceneType)
-//        d->snapY(snapped_pos, Ac::PitchPositionRole, snap_to_grid);
-//    else if (Ac::ControlScene == sceneType)
-//        d->snapY(snapped_pos, Ac::ControlPositionRole, snap_to_grid);
+//    d->snapX(snapped_pos, TimePositionRole, snap_to_grid);
+//    if (PitchScene == sceneType)
+//        d->snapY(snapped_pos, PitchPositionRole, snap_to_grid);
+//    else if (ControlScene == sceneType)
+//        d->snapY(snapped_pos, ControlPositionRole, snap_to_grid);
     return snapped_pos;
 }
 
@@ -453,13 +454,13 @@ void GraphicsViewManager::databaseAboutToBeWritten()
 
 void GraphicsViewManager::disableUpdates()
 {
-    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+    for (int i = 0;  i < SceneTypeCount;  ++i)
         view(i)->setUpdatesEnabled(false);
 }
 
 void GraphicsViewManager::enableUpdates()
 {
-    for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
+    for (int i = 0;  i < SceneTypeCount;  ++i)
         view(i)->setUpdatesEnabled(true);
 }
 

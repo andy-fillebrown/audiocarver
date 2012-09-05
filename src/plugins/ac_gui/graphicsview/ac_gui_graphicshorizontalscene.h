@@ -15,19 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSSCENE_H
-#define AC_GUI_GRAPHICSSCENE_H
+#ifndef AC_GUI_GRAPHICSHORIZONTALSCENE_H
+#define AC_GUI_GRAPHICSHORIZONTALSCENE_H
 
-#include <mi_gui_graphicsscene.h>
+#include "ac_gui_graphicsscene.h"
 
-class GraphicsScene : public Base::GraphicsScene
+class GraphicsHorizontalScene : public GraphicsScene
 {
 public:
-    GraphicsScene(QObject *parent = 0)
-        :   Base::GraphicsScene(parent)
+    GraphicsHorizontalScene(QObject *parent = 0)
+        :   GraphicsScene(parent)
+    {}
+
+    void setWidth(qreal w)
     {
-        setItemIndexMethod(NoIndex);
+        if (w < 0.0f)
+            w = 0.0f;
+        if (width() == w)
+            return;
+        setSceneRect(0.0f, 0.0f, w, height());
     }
+
+    virtual qreal height() const = 0;
 };
 
 #endif

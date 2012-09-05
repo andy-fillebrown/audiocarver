@@ -15,28 +15,17 @@
 **
 **************************************************************************/
 
-#include "ac_gui_controllabelview.h"
+#include "ac_gui_graphicscontrollabelview.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_namespace.h"
+#include <ac_core_namespace.h>
 #include <idatabase.h>
-#include <imodel.h>
-#include <imodelitemlist.h>
-#include <QModelIndex>
+#include <imodelitem.h>
 
 using namespace Ac;
 
-class ControlLabelViewPrivate
-{
-public:
-    ControlLabelViewPrivate()
-    {}
-
-    virtual ~ControlLabelViewPrivate()
-    {}
-};
-
-ControlLabelView::ControlLabelView(QGraphicsScene *scene, QWidget *parent)
-    :   LabelVView(scene, parent)
-    ,   d(new ControlLabelViewPrivate)
+GraphicsControlLabelView::GraphicsControlLabelView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsVerticalLabelView(scene, parent)
 {
     setStyleSheet("QFrame {"
                   "border-top: 1px solid palette(shadow);"
@@ -46,17 +35,27 @@ ControlLabelView::ControlLabelView(QGraphicsScene *scene, QWidget *parent)
                   "}");
 }
 
-ControlLabelView::~ControlLabelView()
-{
-    delete d;
-}
-
-IModelItem *ControlLabelView::gridLineList() const
+IModelItemList *GraphicsControlLabelView::gridLineList() const
 {
     return IDatabase::instance()->rootItem()->findList(ControlGridLineItem);
 }
 
-qreal ControlLabelView::sceneHeight() const
+int GraphicsControlLabelView::verticalPositionRole() const
+{
+    return ControlPositionRole;
+}
+
+int GraphicsControlLabelView::verticalScaleRole() const
+{
+    return ControlScaleRole;
+}
+
+int GraphicsControlLabelView::sceneType() const
+{
+    return ControlLabelScene;
+}
+
+qreal GraphicsControlLabelView::sceneHeight() const
 {
     return qreal(1.0f) / GraphicsViewManager::instance()->scale(ControlScaleRole);
 }

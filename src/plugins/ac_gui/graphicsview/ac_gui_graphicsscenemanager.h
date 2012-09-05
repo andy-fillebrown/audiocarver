@@ -15,30 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CONTROLVIEW_H
-#define AC_GUI_CONTROLVIEW_H
+#ifndef AC_GUI_GRAPHICSSCENEMANAGER_H
+#define AC_GUI_GRAPHICSSCENEMANAGER_H
 
-#include "ac_gui_graphicsview.h"
-#include "ac_gui_namespace.h"
+#include <QObject>
 
-class ControlViewPrivate;
-class ControlView : public GraphicsHView
+class QGraphicsScene;
+
+class GraphicsSceneManager : public QObject
 {
-    Q_OBJECT
-
-    ControlViewPrivate *d;
+    QGraphicsScene *_controlScene;
+    QGraphicsScene *_controlLabelScene;
+    QGraphicsScene *_pitchScene;
+    QGraphicsScene *_pitchLabelScene;
+    QGraphicsScene *_timeLabelScene;
 
 public:
-    ControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~ControlView();
+//    static GraphicsSceneManager *instance();
 
-protected:
-    int sceneType() const { return Ac::ControlScene; }
-    qreal sceneHeight() const;
-    QPointF sceneCenter() const;
+    GraphicsSceneManager(QObject *parent = 0);
 
-    int positionRoleY() const { return Ac::ControlPositionRole; }
-    int scaleRoleY() const { return Ac::ControlScaleRole; }
+    QGraphicsScene *scene(int type);
 };
 
 #endif

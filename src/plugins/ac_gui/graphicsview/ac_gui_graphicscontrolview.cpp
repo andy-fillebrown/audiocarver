@@ -15,47 +15,46 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchlabelview.h"
+#include "ac_gui_graphicscontrolview.h"
 #include "ac_gui_graphicsviewmanager.h"
-#include <idatabase.h>
-#include <imodel.h>
-#include <imodelitemlist.h>
+#include "ac_gui_namespace.h"
+#include <ac_core_namespace.h>
 
 using namespace Ac;
 
-class PitchLabelViewPrivate
-{
-public:
-    PitchLabelViewPrivate()
-    {}
-
-    virtual ~PitchLabelViewPrivate()
-    {}
-};
-
-PitchLabelView::PitchLabelView(QGraphicsScene *scene, QWidget *parent)
-    :   LabelVView(scene, parent)
-    ,   d(new PitchLabelViewPrivate)
+GraphicsControlView::GraphicsControlView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsHorizontalView(scene, parent)
 {
     setStyleSheet("QFrame {"
-                  "border-top: 0px solid palette(shadow);"
+                  "border-top: 1px solid palette(shadow);"
                   "border-bottom: 1px solid palette(shadow);"
-                  "border-left: 0px solid palette(shadow);"
+                  "border-left: 1px solid palette(shadow);"
                   "border-right: 1px solid palette(shadow);"
                   "}");
 }
 
-PitchLabelView::~PitchLabelView()
+int GraphicsControlView::sceneType() const
 {
-    delete d;
+    return ControlScene;
 }
 
-IModelItem *PitchLabelView::gridLineList() const
+int GraphicsControlView::verticalPositionRole() const
 {
-    return IDatabase::instance()->rootItem()->findList(PitchGridLineItem);
+    return ControlPositionRole;
 }
 
-qreal PitchLabelView::sceneHeight() const
+int GraphicsControlView::verticalScaleRole() const
 {
-    return qreal(127.0f) / GraphicsViewManager::instance()->scale(PitchScaleRole);
+    return ControlScaleRole;
+}
+
+qreal GraphicsControlView::sceneHeight() const
+{
+    return qreal(1.0f) / GraphicsViewManager::instance()->scale(Ac::ControlScaleRole);
+}
+
+QPointF GraphicsControlView::sceneCenter() const
+{
+    GraphicsViewManager *vm = GraphicsViewManager::instance();
+    return QPointF(vm->position(TimePositionRole), -vm->position(ControlPositionRole));
 }

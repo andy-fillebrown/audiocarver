@@ -15,45 +15,48 @@
 **
 **************************************************************************/
 
-#include "ac_gui_controlview.h"
+#include "ac_gui_graphicspitchlabelview.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_namespace.h"
+#include <ac_core_namespace.h>
+#include <idatabase.h>
+#include <imodel.h>
+#include <imodelitemlist.h>
 
 using namespace Ac;
 
-class ControlViewPrivate
-{
-public:
-    ControlViewPrivate()
-    {}
-
-    virtual ~ControlViewPrivate()
-    {}
-};
-
-ControlView::ControlView(QGraphicsScene *scene, QWidget *parent)
-    :   GraphicsHView(scene, parent)
-    ,   d(new ControlViewPrivate)
+GraphicsPitchLabelView::GraphicsPitchLabelView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsVerticalLabelView(scene, parent)
 {
     setStyleSheet("QFrame {"
-                  "border-top: 1px solid palette(shadow);"
+                  "border-top: 0px solid palette(shadow);"
                   "border-bottom: 1px solid palette(shadow);"
-                  "border-left: 1px solid palette(shadow);"
+                  "border-left: 0px solid palette(shadow);"
                   "border-right: 1px solid palette(shadow);"
                   "}");
 }
 
-ControlView::~ControlView()
+IModelItemList *GraphicsPitchLabelView::gridLineList() const
 {
-    delete d;
+    return IDatabase::instance()->rootItem()->findList(PitchGridLineItem);
 }
 
-qreal ControlView::sceneHeight() const
+int GraphicsPitchLabelView::sceneType() const
 {
-    return qreal(1.0f) / GraphicsViewManager::instance()->scale(Ac::ControlScaleRole);
+    return PitchLabelScene;
 }
 
-QPointF ControlView::sceneCenter() const
+int GraphicsPitchLabelView::verticalPositionRole() const
 {
-    GraphicsViewManager *vm = GraphicsViewManager::instance();
-    return QPointF(vm->position(TimePositionRole), -vm->position(ControlPositionRole));
+    return PitchPositionRole;
+}
+
+int GraphicsPitchLabelView::verticalScaleRole() const
+{
+    return PitchScaleRole;
+}
+
+qreal GraphicsPitchLabelView::sceneHeight() const
+{
+    return qreal(127.0f) / GraphicsViewManager::instance()->scale(PitchScaleRole);
 }

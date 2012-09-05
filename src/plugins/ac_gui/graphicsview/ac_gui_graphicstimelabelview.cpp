@@ -15,12 +15,12 @@
 **
 **************************************************************************/
 
-#include "ac_gui_timelabelview.h"
+#include "ac_gui_graphicstimelabelview.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_namespace.h"
+#include <ac_core_namespace.h>
 #include <idatabase.h>
-#include <imodel.h>
-#include <imodelitemlist.h>
-#include <QModelIndex>
+#include <imodelitem.h>
 
 using namespace Ac;
 
@@ -30,22 +30,8 @@ static const QCursor &zoomCursor()
     return cursor;
 }
 
-class TimeLabelViewPrivate
-{
-public:
-    TimeLabelView *q;
-
-    TimeLabelViewPrivate(TimeLabelView *q)
-        :   q(q)
-    {}
-
-    virtual ~TimeLabelViewPrivate()
-    {}
-};
-
-TimeLabelView::TimeLabelView(QGraphicsScene *scene, QWidget *parent)
-    :   LabelView(scene, parent)
-    ,   d(new TimeLabelViewPrivate(this))
+GraphicsTimeLabelView::GraphicsTimeLabelView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsLabelView(scene, parent)
 {
     setStyleSheet("QFrame {"
                   "border-top: 0px solid palette(shadow);"
@@ -55,29 +41,44 @@ TimeLabelView::TimeLabelView(QGraphicsScene *scene, QWidget *parent)
                   "}");
 }
 
-TimeLabelView::~TimeLabelView()
-{
-    delete d;
-}
-
-IModelItem *TimeLabelView::gridLineList() const
+IModelItemList *GraphicsTimeLabelView::gridLineList() const
 {
     return IDatabase::instance()->rootItem()->findList(TimeGridLineItem);
 }
 
-qreal TimeLabelView::sceneWidth() const
+int GraphicsTimeLabelView::scaleRole() const
+{
+    return TimeScaleRole;
+}
+
+int GraphicsTimeLabelView::sceneType() const
+{
+    return TimeLabelScene;
+}
+
+int GraphicsTimeLabelView::horizontalPositionRole() const
+{
+    return TimePositionRole;
+}
+
+int GraphicsTimeLabelView::horizontalScaleRole() const
+{
+    return TimeScaleRole;
+}
+
+qreal GraphicsTimeLabelView::sceneWidth() const
 {
     const GraphicsViewManager *vm = GraphicsViewManager::instance();
     return vm->scoreLength() / vm->scale(TimeScaleRole);
 }
 
-QPointF TimeLabelView::sceneCenter() const
+QPointF GraphicsTimeLabelView::sceneCenter() const
 {
     const GraphicsViewManager *vm = GraphicsViewManager::instance();
     return QPointF(vm->position(TimePositionRole), qreal(0.0f));
 }
 
-void TimeLabelView::zoomStarting()
+void GraphicsTimeLabelView::zoomStarting()
 {
     setCursor(zoomCursor());
 }

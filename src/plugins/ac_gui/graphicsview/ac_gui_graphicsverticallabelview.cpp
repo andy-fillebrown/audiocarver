@@ -15,19 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSSCENE_H
-#define AC_GUI_GRAPHICSSCENE_H
+#include "ac_gui_graphicsverticallabelview.h"
+#include "ac_gui_graphicsviewmanager.h"
 
-#include <mi_gui_graphicsscene.h>
-
-class GraphicsScene : public Base::GraphicsScene
+static const QCursor &zoomCursor()
 {
-public:
-    GraphicsScene(QObject *parent = 0)
-        :   Base::GraphicsScene(parent)
-    {
-        setItemIndexMethod(NoIndex);
-    }
-};
+    static const QCursor cursor(QPixmap(":/ac_gui/images/zoom-v-cursor.png"));
+    return cursor;
+}
 
-#endif
+QPointF GraphicsVerticalLabelView::sceneCenter() const
+{
+    return QPointF(qreal(0.5f), -GraphicsViewManager::instance()->position(verticalPositionRole()));
+}
+
+void GraphicsVerticalLabelView::zoomStarting()
+{
+    setCursor(zoomCursor());
+}

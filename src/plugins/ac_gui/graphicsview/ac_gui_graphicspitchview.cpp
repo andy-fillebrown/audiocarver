@@ -15,9 +15,11 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchview.h"
+#include "ac_gui_graphicspitchview.h"
 #include "ac_gui_constants.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_namespace.h"
+#include <ac_core_namespace.h>
 #include <ac_core_point.h>
 #include <idatabaseobjectfactory.h>
 #include <ieditor.h>
@@ -32,10 +34,10 @@
 using namespace Ac;
 using namespace Qt;
 
-class PitchViewPrivate
+class GraphicsPitchViewPrivate
 {
 public:
-    PitchView *q;
+    GraphicsPitchView *q;
     QModelIndexList trackSSIndexes;
     QList<IEntity*> currentNotes;
     QList<IEntity*> currentPitchCurves;
@@ -44,7 +46,7 @@ public:
     uint notesStarted : 1;
     uint curve : 1;
 
-    PitchViewPrivate(PitchView *q)
+    GraphicsPitchViewPrivate(GraphicsPitchView *q)
         :   q(q)
         ,   creatingNotes(false)
         ,   notesStarted(false)
@@ -179,9 +181,9 @@ public:
     }
 };
 
-PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
-    :   GraphicsHView(scene, parent)
-    ,   d(new PitchViewPrivate(this))
+GraphicsPitchView::GraphicsPitchView(QGraphicsScene *scene, QWidget *parent)
+    :   GraphicsHorizontalView(scene, parent)
+    ,   d(new GraphicsPitchViewPrivate(this))
 {
     setObjectName("PitchView");
     setStyleSheet("QFrame {"
@@ -192,23 +194,38 @@ PitchView::PitchView(QGraphicsScene *scene, QWidget *parent)
                   "}");
 }
 
-PitchView::~PitchView()
+GraphicsPitchView::~GraphicsPitchView()
 {
     delete d;
 }
 
-qreal PitchView::sceneHeight() const
+int GraphicsPitchView::sceneType() const
+{
+    return PitchScene;
+}
+
+int GraphicsPitchView::verticalPositionRole() const
+{
+    return PitchPositionRole;
+}
+
+int GraphicsPitchView::verticalScaleRole() const
+{
+    return PitchScaleRole;
+}
+
+qreal GraphicsPitchView::sceneHeight() const
 {
     return qreal(127.0f) / GraphicsViewManager::instance()->scale(PitchScaleRole);
 }
 
-QPointF PitchView::sceneCenter() const
+QPointF GraphicsPitchView::sceneCenter() const
 {
     GraphicsViewManager *vm = GraphicsViewManager::instance();
     return QPointF(vm->position(TimePositionRole), -vm->position(PitchPositionRole));
 }
 
-void PitchView::createNote()
+void GraphicsPitchView::createNote()
 {
 //    d->trackSSIndexes = IModel::instance()->findIndexes(TrackItem, RecordingRole, true);
 //    if (d->trackSSIndexes.isEmpty())
@@ -219,7 +236,7 @@ void PitchView::createNote()
 //    }
 }
 
-void PitchView::mousePressEvent(QMouseEvent *event)
+void GraphicsPitchView::mousePressEvent(QMouseEvent *event)
 {
     if (d->creatingNotes) {
         if (LeftButton == event->button()) {
@@ -230,19 +247,19 @@ void PitchView::mousePressEvent(QMouseEvent *event)
             setFocus(MouseFocusReason);
         }
     } else
-        GraphicsView::mousePressEvent(event);
+        GraphicsHorizontalView::mousePressEvent(event);
 }
 
-void PitchView::mouseMoveEvent(QMouseEvent *event)
+void GraphicsPitchView::mouseMoveEvent(QMouseEvent *event)
 {
     if (d->creatingNotes) {
         if (d->notesStarted)
             d->moveNotePoint(event->pos());
     } else
-        GraphicsView::mouseMoveEvent(event);
+        GraphicsHorizontalView::mouseMoveEvent(event);
 }
 
-void PitchView::mouseReleaseEvent(QMouseEvent *event)
+void GraphicsPitchView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d->creatingNotes) {
         if (RightButton == event->button()) {
@@ -250,10 +267,10 @@ void PitchView::mouseReleaseEvent(QMouseEvent *event)
             event->accept();
         }
     } else
-        GraphicsView::mouseReleaseEvent(event);
+        GraphicsHorizontalView::mouseReleaseEvent(event);
 }
 
-void PitchView::mouseDoubleClickEvent(QMouseEvent *event)
+void GraphicsPitchView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (d->creatingNotes) {
         if (LeftButton == event->button()) {
@@ -261,10 +278,10 @@ void PitchView::mouseDoubleClickEvent(QMouseEvent *event)
             event->accept();
         }
     } else
-        GraphicsView::mouseDoubleClickEvent(event);
+        GraphicsHorizontalView::mouseDoubleClickEvent(event);
 }
 
-void PitchView::keyReleaseEvent(QKeyEvent *event)
+void GraphicsPitchView::keyReleaseEvent(QKeyEvent *event)
 {
     if (d->creatingNotes) {
         const int key = event->key();
@@ -277,5 +294,5 @@ void PitchView::keyReleaseEvent(QKeyEvent *event)
             break;
         }
     } else
-        GraphicsView::keyReleaseEvent(event);
+        GraphicsHorizontalView::keyReleaseEvent(event);
 }

@@ -15,19 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSSCENE_H
-#define AC_GUI_GRAPHICSSCENE_H
+#ifndef AC_GUI_GRAPHICSPITCHLABELVIEW_H
+#define AC_GUI_GRAPHICSPITCHLABELVIEW_H
 
-#include <mi_gui_graphicsscene.h>
+#include "ac_gui_graphicsverticallabelview.h"
 
-class GraphicsScene : public Base::GraphicsScene
+class GraphicsPitchLabelView : public GraphicsVerticalLabelView
 {
 public:
-    GraphicsScene(QObject *parent = 0)
-        :   Base::GraphicsScene(parent)
-    {
-        setItemIndexMethod(NoIndex);
-    }
+    GraphicsPitchLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+
+protected:
+    IModelItemList *gridLineList() const;
+    int sceneType() const;
+    int verticalPositionRole() const;
+    int verticalScaleRole() const;
+    qreal sceneHeight() const;
 };
 
 #endif

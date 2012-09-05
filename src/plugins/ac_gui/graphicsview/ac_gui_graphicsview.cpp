@@ -23,6 +23,7 @@
 //#include <ac_gripselectionmodel.h>
 //#include <ac_noteselectionmodel.h>
 //#include <ac_trackselectionmodel.h>
+#include <ac_core_namespace.h>
 #include <idatabase.h>
 #include <ieditor.h>
 #include <ientity.h>
@@ -36,6 +37,8 @@
 #include <QUndoStack>
 #include <QtDebug>
 
+using namespace Ac;
+using namespace Mi;
 using namespace Qt;
 
 enum ViewState {
@@ -113,15 +116,15 @@ public:
     QPointF centerOffsetDC(const QPointF &posDC)
     {
         const GraphicsViewManager *vm = GraphicsViewManager::instance();
-        return q->sceneScale().map(QPointF(vm->position(q->positionRoleX()), vm->position(q->positionRoleY())) - posDC);
+        return q->sceneScale().map(QPointF(vm->position(q->horizontalPositionRole()), vm->position(q->verticalPositionRole())) - posDC);
     }
 
     void recenter(const QPointF &startPosDC, const QPointF &centerOffsetDC)
     {
         const QPointF center = startPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(centerOffsetDC);
         GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->setPosition(center.x(), q->positionRoleX());
-        vm->setPosition(center.y(), q->positionRoleY());
+        vm->setPosition(center.x(), q->horizontalPositionRole());
+        vm->setPosition(center.y(), q->verticalPositionRole());
     }
 
     QRect zoomGlyphLineRect() const
@@ -146,8 +149,8 @@ public:
         viewState = Zooming;
         dragStartPos = pos;
         const GraphicsViewManager *vm = GraphicsViewManager::instance();
-        zoomStartScaleX = vm->scale(q->scaleRoleX());
-        zoomStartScaleY = vm->scale(q->scaleRoleY());
+        zoomStartScaleX = vm->scale(q->horizontalScaleRole());
+        zoomStartScaleY = vm->scale(q->verticalScaleRole());
         zoomStartPosDC = startPosDC(pos);
         zoomCenterOffsetDC = centerOffsetDC(zoomStartPosDC);
         prevZoomGlyphRect = QRect();
@@ -160,12 +163,12 @@ public:
         const int x = offset.x();
         if (x) {
             qreal scale = qreal(1.0f) + (qreal(qAbs(x)) / qreal(10.0f));
-            GraphicsViewManager::instance()->setScale((x < 0 ? qreal(1.0f) / scale : scale) * zoomStartScaleX, q->scaleRoleX());
+            GraphicsViewManager::instance()->setScale((x < 0 ? qreal(1.0f) / scale : scale) * zoomStartScaleX, q->horizontalScaleRole());
         }
         const int y = offset.y();
         if (y) {
             const qreal scale = qreal(1.0f) + qreal(qAbs(y) / qreal(10.0f));
-            GraphicsViewManager::instance()->setScale((0 < y ? qreal(1.0f) / scale : scale) * zoomStartScaleY, q->scaleRoleY());
+            GraphicsViewManager::instance()->setScale((0 < y ? qreal(1.0f) / scale : scale) * zoomStartScaleY, q->verticalScaleRole());
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
         if (dirty)
@@ -192,8 +195,8 @@ public:
         viewState = Panning;
         dragStartPos = pos;
         const GraphicsViewManager *vm = GraphicsViewManager::instance();
-        panStartCenter.setX(vm->position(q->positionRoleX()));
-        panStartCenter.setY(vm->position(q->positionRoleY()));
+        panStartCenter.setX(vm->position(q->horizontalPositionRole()));
+        panStartCenter.setY(vm->position(q->verticalPositionRole()));
     }
 
     void panTo(const QPoint &pos)
@@ -202,8 +205,8 @@ public:
         const QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
         const QPointF center = panStartCenter - offset;
         GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->setPosition(center.x(), q->positionRoleX());
-        vm->setPosition(center.y(), q->positionRoleY());
+        vm->setPosition(center.x(), q->horizontalPositionRole());
+        vm->setPosition(center.y(), q->verticalPositionRole());
         vm->updateViews();
     }
 
@@ -653,7 +656,7 @@ public:
 //            PointList pts = entity->points();
 //            Point pt = Point(scenePos);
 //            if (ControlModifier & QApplication::keyboardModifiers())
-//                pt.curveType = Ac::BezierCurve;
+//                pt.curveType = BezierCurve;
 //            pts.append(pt);
 //            entity->popPoints();
 //            entity->pushPoints(pts);
@@ -674,6 +677,24 @@ public:
         dirty = false;
     }
 };
+
+const QCursor &GraphicsView::normalCrosshair()
+{
+    static const QCursor cursor(QPixmap(":/ac_gui/images/crosshair-black.png"));
+    return cursor;
+}
+
+const QCursor &GraphicsView::creationCrosshair()
+{
+    static const QCursor cursor(QPixmap(":/ac_gui/images/crosshair-red.png"));
+    return cursor;
+}
+
+static const QCursor &zoomCursor()
+{
+    static const QCursor cursor(QPixmap(":/ac_gui/images/zoom-cursor.png"));
+    return cursor;
+}
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     :   Base::GraphicsView(scene, parent)
@@ -698,24 +719,6 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
 GraphicsView::~GraphicsView()
 {
     delete d;
-}
-
-const QCursor &GraphicsView::normalCrosshair()
-{
-    static const QCursor cursor(QPixmap(":/ac_gui/images/crosshair-black.png"));
-    return cursor;
-}
-
-const QCursor &GraphicsView::creationCrosshair()
-{
-    static const QCursor cursor(QPixmap(":/ac_gui/images/crosshair-red.png"));
-    return cursor;
-}
-
-static const QCursor &zoomCursor()
-{
-    static const QCursor cursor(QPixmap(":/ac_gui/images/zoom-cursor.png"));
-    return cursor;
 }
 
 QTransform GraphicsView::sceneScale() const
@@ -828,7 +831,7 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 
 //    // If topLeft is a track, gripped entities might have been hidden.
 //    // Re-append the selected entities so the hidden ones are filtered out.
-//    if (Ac::TrackItem == topLeft.data(Mi::ItemTypeRole))
+//    if (TrackItem == topLeft.data(ItemTypeRole))
 //        d->resetPickedEntities();
 }
 
@@ -857,7 +860,7 @@ void GraphicsView::viewPositionChanged(int role)
 {
     if (IDatabase::instance()->isReading())
         return;
-    if (positionRoleX() == role || positionRoleY() == role)
+    if (horizontalPositionRole() == role || verticalPositionRole() == role)
         d->dirty = true;
 }
 
@@ -865,7 +868,7 @@ void GraphicsView::viewScaleChanged(int role)
 {
     if (IDatabase::instance()->isReading())
         return;
-    if (scaleRoleX() == role || scaleRoleY() == role)
+    if (horizontalScaleRole() == role || verticalScaleRole() == role)
         d->dirty = true;
 }
 
@@ -898,6 +901,26 @@ void GraphicsView::removePoints()
 //        if (entity_item)
 //            entity_item->resetGripItems();
 //    }
+}
+
+int GraphicsView::horizontalPositionRole() const
+{
+    return InvalidRole;
+}
+
+int GraphicsView::verticalPositionRole() const
+{
+    return InvalidRole;
+}
+
+int GraphicsView::horizontalScaleRole() const
+{
+    return InvalidRole;
+}
+
+int GraphicsView::verticalScaleRole() const
+{
+    return InvalidRole;
 }
 
 void GraphicsView::zoomStarting()
@@ -1074,8 +1097,10 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     const QPointF offsetDC = d->centerOffsetDC(posDC);
     const qreal scaleAmount = event->delta() < 0 ? qreal(1.0f) / qreal(1.25f) : qreal(1.25f);
     GraphicsViewManager *vm = GraphicsViewManager::instance();
-    vm->setScale(scaleAmount * vm->scale(scaleRoleX()), scaleRoleX());
-    vm->setScale(scaleAmount * vm->scale(scaleRoleY()), scaleRoleY());
+    const int horizontal_scale_role = horizontalScaleRole();
+    const int vertical_scale_role = verticalScaleRole();
+    vm->setScale(scaleAmount * vm->scale(horizontal_scale_role), horizontal_scale_role);
+    vm->setScale(scaleAmount * vm->scale(vertical_scale_role), vertical_scale_role);
     d->recenter(posDC, offsetDC);
     vm->updateViews();
     d->hover();
@@ -1144,10 +1169,4 @@ void GraphicsView::modelAboutToBeDestroyed()
 {
     d->cancelGripDrag();
     d->clearPickedEntities();
-}
-
-qreal GraphicsHView::sceneWidth() const
-{
-    const GraphicsViewManager *vm = GraphicsViewManager::instance();
-    return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
 }

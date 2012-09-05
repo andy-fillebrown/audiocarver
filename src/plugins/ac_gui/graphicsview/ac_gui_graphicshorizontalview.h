@@ -15,36 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_TIMELABELVIEW_H
-#define AC_GUI_TIMELABELVIEW_H
+#ifndef AC_GUI_GRAPHICSHORIZONTALVIEW_H
+#define AC_GUI_GRAPHICSHORIZONTALVIEW_H
 
-#include "ac_gui_labelview.h"
-#include "ac_gui_namespace.h"
+#include "ac_gui_graphicsview.h"
 
-class TimeLabelViewPrivate;
-class TimeLabelView : public LabelView
+class GraphicsHorizontalView : public GraphicsView
 {
-    Q_OBJECT
-
-    TimeLabelViewPrivate *d;
-
 public:
-    TimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~TimeLabelView();
+    GraphicsHorizontalView(QGraphicsScene *scene = 0, QWidget *parent = 0)
+        :   GraphicsView(scene, parent)
+    {}
 
 protected:
-    qreal paddingScale() const { return qreal(0.5f) * sceneTransform().m11(); }
-    IModelItem *gridLineList() const;
-    int scaleRole() const { return Ac::TimeScaleRole; }
-
-    int sceneType() const { return Ac::TimeLabelScene; }
+    int horizontalPositionRole() const;
+    int horizontalScaleRole() const;
     qreal sceneWidth() const;
-    QPointF sceneCenter() const;
-
-    int positionRoleX() const { return Ac::TimePositionRole; }
-    int scaleRoleX() const { return Ac::TimeScaleRole; }
-
-    void zoomStarting();
 };
 
 #endif

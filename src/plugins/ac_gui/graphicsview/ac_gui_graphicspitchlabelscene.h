@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSSCENE_H
-#define AC_GUI_GRAPHICSSCENE_H
+#ifndef AC_GUI_GRAPHICSPITCHLABELSCENE_H
+#define AC_GUI_GRAPHICSPITCHLABELSCENE_H
 
-#include <mi_gui_graphicsscene.h>
+#include "ac_gui_graphicsscene.h"
 
-class GraphicsScene : public Base::GraphicsScene
+class GraphicsPitchLabelScene : public GraphicsScene
 {
 public:
-    GraphicsScene(QObject *parent = 0)
-        :   Base::GraphicsScene(parent)
+    GraphicsPitchLabelScene(QObject *parent = 0)
+        :   GraphicsScene(parent)
     {
-        setItemIndexMethod(NoIndex);
+        setSceneRect(0.0f, 0.0f, 10.0f, 127.0f);
     }
 };
 

@@ -15,19 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSSCENE_H
-#define AC_GUI_GRAPHICSSCENE_H
+#ifndef AC_GUI_GRAPHICSTIMELABELVIEW_H
+#define AC_GUI_GRAPHICSTIMELABELVIEW_H
 
-#include <mi_gui_graphicsscene.h>
+#include "ac_gui_graphicslabelview.h"
 
-class GraphicsScene : public Base::GraphicsScene
+class GraphicsTimeLabelView : public GraphicsLabelView
 {
 public:
-    GraphicsScene(QObject *parent = 0)
-        :   Base::GraphicsScene(parent)
+    GraphicsTimeLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
+
+protected:
+    qreal paddingScale() const
     {
-        setItemIndexMethod(NoIndex);
+        return qreal(0.5f) * sceneTransform().m11();
     }
+
+    IModelItemList *gridLineList() const;
+    int scaleRole() const;
+    int sceneType() const;
+    int horizontalPositionRole() const;
+    int horizontalScaleRole() const;
+    qreal sceneWidth() const;
+    QPointF sceneCenter() const;
+    void zoomStarting();
 };
 
 #endif

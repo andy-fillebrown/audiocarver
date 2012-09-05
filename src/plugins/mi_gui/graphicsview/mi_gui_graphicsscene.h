@@ -21,7 +21,7 @@
 #include <QGraphicsScene>
 #include "mi_gui_global.h"
 
-namespace Gui {
+namespace Base {
 
 class MI_GUI_EXPORT GraphicsScene : public QGraphicsScene
 {

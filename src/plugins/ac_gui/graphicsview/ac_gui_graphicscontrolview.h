@@ -15,39 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_PITCHVIEW_H
-#define AC_GUI_PITCHVIEW_H
+#ifndef AC_GUI_GRAPHICSCONTROLVIEW_H
+#define AC_GUI_GRAPHICSCONTROLVIEW_H
 
-#include "ac_gui_graphicsview.h"
-#include "ac_gui_namespace.h"
+#include "ac_gui_graphicshorizontalview.h"
 
-class PitchViewPrivate;
-class PitchView : public GraphicsHView
+class GraphicsControlView : public GraphicsHorizontalView
 {
-    Q_OBJECT
-
-    PitchViewPrivate *d;
-
 public:
-    PitchView(QGraphicsScene *scene = 0, QWidget *parent = 0);
-    ~PitchView();
-
-public slots:
-    void createNote();
+    GraphicsControlView(QGraphicsScene *scene = 0, QWidget *parent = 0);
 
 protected:
-    int sceneType() const { return Ac::PitchScene; }
+    int sceneType() const;
+    int verticalPositionRole() const;
+    int verticalScaleRole() const;
     qreal sceneHeight() const;
     QPointF sceneCenter() const;
-
-    int positionRoleY() const { return Ac::PitchPositionRole; }
-    int scaleRoleY() const { return Ac::PitchScaleRole; }
-
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
 };
 
 #endif

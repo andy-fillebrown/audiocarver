@@ -15,19 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSSCENE_H
-#define AC_GUI_GRAPHICSSCENE_H
+#include "ac_gui_graphicshorizontalview.h"
+#include "ac_gui_graphicsviewmanager.h"
+#include <ac_core_namespace.h>
 
-#include <mi_gui_graphicsscene.h>
+using namespace Ac;
 
-class GraphicsScene : public Base::GraphicsScene
+int GraphicsHorizontalView::horizontalPositionRole() const
 {
-public:
-    GraphicsScene(QObject *parent = 0)
-        :   Base::GraphicsScene(parent)
-    {
-        setItemIndexMethod(NoIndex);
-    }
-};
+    return TimePositionRole;
+}
 
-#endif
+int GraphicsHorizontalView::horizontalScaleRole() const
+{
+    return TimeScaleRole;
+}
+
+qreal GraphicsHorizontalView::sceneWidth() const
+{
+    const GraphicsViewManager *vm = GraphicsViewManager::instance();
+    return vm->scoreLength() / vm->scale(Ac::TimeScaleRole);
+}

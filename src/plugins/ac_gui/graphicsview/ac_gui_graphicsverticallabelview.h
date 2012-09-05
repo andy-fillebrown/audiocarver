@@ -15,19 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSSCENE_H
-#define AC_GUI_GRAPHICSSCENE_H
+#ifndef AC_GUI_GRAPHICSVERTICALLABELVIEW_H
+#define AC_GUI_GRAPHICSVERTICALLABELVIEW_H
 
-#include <mi_gui_graphicsscene.h>
+#include "ac_gui_graphicslabelview.h"
 
-class GraphicsScene : public Base::GraphicsScene
+class GraphicsVerticalLabelView : public GraphicsLabelView
 {
-public:
-    GraphicsScene(QObject *parent = 0)
-        :   Base::GraphicsScene(parent)
+protected:
+    GraphicsVerticalLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0)
+        :   GraphicsLabelView(scene, parent)
+    {}
+
+    qreal paddingScale() const
     {
-        setItemIndexMethod(NoIndex);
+        return -sceneTransform().m22();
     }
+
+    int scaleRole() const
+    {
+        return verticalScaleRole();
+    }
+
+    QPointF sceneOffset() const
+    {
+        return QPointF(qreal(-2.0f) / (qreal(width()) / sceneWidth()), qreal(8.5f) / (qreal(height()) / sceneHeight()));
+    }
+
+    QPointF sceneCenter() const;
+    void zoomStarting();
 };
 
 #endif
