@@ -3,10 +3,6 @@ SOURCE_FILES *= \
     ichildentity \
     ientity \
     igraphicsitem \
-    igraphicsscene \
-    igraphicsview \
-    igraphicsviewgroup \
-    igraphicsviewmanager \
     igrip \
     iparententity \
     iplaycursor \
