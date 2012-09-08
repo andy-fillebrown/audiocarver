@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_controlcurve_graphicsitem.h"
-#include "ac_gui_graphicsitem.h"
+#include "ac_gui_graphicscurveitem.h"
 #include "ac_gui_namespace.h"
 
 using namespace Ac;

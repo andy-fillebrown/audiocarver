@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_gridline_entity.h"
-#include "ac_gui_graphicsitem.h"
+#include "ac_gui_graphicstextitem.h"
 #include <ac_core_constants.h>
 #include <mi_core_utilities.h>
 #include <imodeldata.h>

@@ -18,7 +18,7 @@
 #include "ac_gui_graphicsview.h"
 //#include <ac_gui_graphicsentityitem.h>
 //#include <ac_gui_graphicsgripitem.h>
-#include <ac_gui_graphicsitem.h>
+#include "ac_gui_graphicsrootitem.h"
 #include "ac_gui_graphicsviewmanager.h"
 //#include <ac_gripselectionmodel.h>
 //#include <ac_noteselectionmodel.h>

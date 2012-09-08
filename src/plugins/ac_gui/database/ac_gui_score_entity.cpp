@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_score_entity.h"
-#include "ac_gui_graphicsitem.h"
+#include "ac_gui_graphicsrootitem.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_constants.h>
 #include <imodeldata.h>

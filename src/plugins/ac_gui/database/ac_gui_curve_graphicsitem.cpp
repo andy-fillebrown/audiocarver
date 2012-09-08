@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_curve_graphicsitem.h"
-#include "ac_gui_graphicsitem.h"
+#include "ac_gui_graphicscurveitem.h"
 #include <ientity.h>
 
 using namespace Ac;

@@ -15,28 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSITEM_H
-#define AC_GUI_GRAPHICSITEM_H
+#ifndef AC_GUI_GRAPHICSGUIDEITEM_H
+#define AC_GUI_GRAPHICSGUIDEITEM_H
 
-#include <QGraphicsItem>
+#include "ac_gui_graphicspathitem.h"
 
-class GraphicsItem : public QGraphicsItem
+class GraphicsGuideItem : public GraphicsPathItem
 {
 public:
-    GraphicsItem(QGraphicsItem *parent = 0)
-        :   QGraphicsItem(parent)
+    GraphicsGuideItem(QGraphicsItem *parent = 0)
+        :   GraphicsPathItem(parent)
     {
-        setFlag(QGraphicsItem::ItemHasNoContents);
+        setFlag(QGraphicsItem::ItemStacksBehindParent);
+        hide();
     }
-
-    QRectF boundingRect() const
-    {
-        static QRectF r;
-        return r;
-    }
-
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-    {}
 };
 
 #endif

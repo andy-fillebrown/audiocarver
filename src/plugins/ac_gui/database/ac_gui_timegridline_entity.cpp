@@ -21,6 +21,7 @@
 #include <ac_core_constants.h>
 #include <mi_core_utilities.h>
 #include <imodeldata.h>
+#include <QPen>
 
 using namespace Ac;
 using namespace Mi;

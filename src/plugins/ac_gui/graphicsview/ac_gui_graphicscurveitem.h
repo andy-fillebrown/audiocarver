@@ -15,28 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRAPHICSITEM_H
-#define AC_GUI_GRAPHICSITEM_H
+#ifndef AC_GUI_GRAPHICSCURVEITEM_H
+#define AC_GUI_GRAPHICSCURVEITEM_H
 
-#include <QGraphicsItem>
+#include "ac_gui_graphicspathitem.h"
+#include <ac_core_point.h>
 
-class GraphicsItem : public QGraphicsItem
+class GraphicsGuideItem;
+class IEntity;
+
+class GraphicsCurveItem : public GraphicsPathItem
 {
+    GraphicsGuideItem *_guideItem;
+    QGraphicsRectItem *_noteHead;
+
 public:
-    GraphicsItem(QGraphicsItem *parent = 0)
-        :   QGraphicsItem(parent)
-    {
-        setFlag(QGraphicsItem::ItemHasNoContents);
-    }
+    GraphicsCurveItem(QGraphicsItem *parent = 0);
 
-    QRectF boundingRect() const
-    {
-        static QRectF r;
-        return r;
-    }
-
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-    {}
+    bool intersects(const QRectF &rect) const;
+    void setEntity(IEntity *entity);
+    void setPoints(const PointList &points);
+    void setColor(const QColor &color);
+    void highlight();
+    void unhighlight();
 };
 
 #endif
