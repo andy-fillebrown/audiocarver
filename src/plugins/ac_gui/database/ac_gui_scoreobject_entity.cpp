@@ -19,12 +19,26 @@
 #include "ac_gui_graphicsitem.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_namespace.h>
+#include <igraphicsitem.h>
 #include <imodelitemlist.h>
 #include <isubentity.h>
 #include <QGraphicsScene>
 
 using namespace Ac;
 using namespace Mi;
+
+static void highlightHelper(IParentEntity *entity, int sceneType, bool highlight)
+{
+    foreach (ISubEntity *sub_entity, entity->subEntities(sceneType)) {
+        IGraphicsItem *graphics_item = query<IGraphicsItem>(sub_entity);
+        if (graphics_item) {
+            if (highlight)
+                graphics_item->highlight();
+            else
+                graphics_item->unhighlight();
+        }
+    }
+}
 
 namespace ScoreObject {
 
@@ -65,6 +79,18 @@ QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
     default:
         return 0;
     }
+}
+
+void Entity::highlight()
+{
+    highlightHelper(this, PitchScene, true);
+    highlightHelper(this, ControlScene, true);
+}
+
+void Entity::unhighlight()
+{
+    highlightHelper(this, PitchScene, false);
+    highlightHelper(this, ControlScene, false);
 }
 
 }

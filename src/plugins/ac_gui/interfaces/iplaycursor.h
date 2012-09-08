@@ -19,12 +19,12 @@
 #define IPLAYCURSOR_H
 
 #include <iunknown.h>
-#include "ac_core_interfaces.h"
+#include "ac_gui_interfaces.h"
 
 class IPlayCursor : public IUnknown
 {
 public:
-    enum { Type = I::IPlayCursor };
+    enum { InterfaceType = I::IPlayCursor };
 
     virtual qreal playCursorPosition() const = 0;
     virtual void dragPlayCursorTo(qreal position) = 0;

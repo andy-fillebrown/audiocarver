@@ -43,15 +43,8 @@ protected:
     QList<ISubEntity*> subEntities(int sceneType) const;
     QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
 
-    void highlight()
-    {
-        Q_ASSERT(false && "Not implemented yet.");
-    }
-
-    void unhighlight()
-    {
-        Q_ASSERT(false && "Not implemented yet.");
-    }
+    void highlight();
+    void unhighlight();
 
     bool isVisible() const
     {

@@ -21,7 +21,7 @@
 #include <mi_gui_graphicsview.h>
 #include <QModelIndex>
 
-class IGripItem;
+class IGrip;
 class QItemSelection;
 
 class GraphicsViewPrivate;
@@ -30,7 +30,6 @@ class GraphicsView : public Base::GraphicsView
     Q_OBJECT
 
     friend class GraphicsViewPrivate;
-    friend class GraphicsHView;
     GraphicsViewPrivate *d;
 
 public:
@@ -95,7 +94,7 @@ protected:
 
 private slots:
     void clearGripSelection();
-    void gripDeselected(IGripItem *grip);
+    void gripDeselected(IGrip *grip);
     void modelAboutToBeDestroyed();
 };
 

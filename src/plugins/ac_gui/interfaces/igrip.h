@@ -20,6 +20,7 @@
 
 #include <iunknown.h>
 #include "ac_gui_interfaces.h"
+#include "ac_gui_namespace.h"
 #include <QPointF>
 
 class ISubEntity;

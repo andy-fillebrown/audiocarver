@@ -24,17 +24,21 @@
 //#include <ac_noteselectionmodel.h>
 //#include <ac_trackselectionmodel.h>
 #include <ac_core_namespace.h>
+#include <ichildentity.h>
 #include <idatabase.h>
 #include <ieditor.h>
-#include <ientity.h>
+#include <igraphicsitem.h>
+#include <igrip.h>
 #include <imodel.h>
 #include <imodelitem.h>
+#include <iparententity.h>
 #include <iplaycursor.h>
-#include <qmath.h>
 #include <QApplication>
 #include <QGraphicsRectItem>
 #include <QMouseEvent>
 #include <QUndoStack>
+#include <qmath.h>
+
 #include <QtDebug>
 
 using namespace Ac;
@@ -65,10 +69,10 @@ public:
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
 //    QList<GraphicsEntityItem*> pickedEntities;
-    QList<IGripItem*> pickedGrips;
-    IGripItem *curGrip;
+    QList<IGrip*> pickedGrips;
+    IGrip *curGrip;
     QList<IEntity*> hoveredEntities;
-    QList<IGripItem*> hoveredGrips;
+    QList<IGrip*> hoveredGrips;
 //    QList<IEntityItem*> entitiesToUpdate;
     GraphicsRootItem *rootItem;
     IPlayCursor *playCursor;
@@ -219,70 +223,71 @@ public:
 
     void hover()
     {
-//        clearHovered();
-//        if (viewState || Picking == dragState || insertingPoints)
-//            return;
-//        const QRect viewPickRect = pickOneRect(curPos);
-//        const QRectF scenePickRect = q->sceneTransform().inverted().mapRect(QRectF(viewPickRect));
-//        bool gripIsHovered = false;
-//        bool entityIsHovered = false;
-//        const QList<QGraphicsItem*> items = q->items(viewPickRect);
-//        foreach (QGraphicsItem *item, items) {
-//            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
-//            if (unknown) {
-//                IPlayCursor *cursor = query<IPlayCursor>(unknown);
-//                if (cursor) {
-//                    playCursorHovered = true;
-//                    previousCursor = q->cursor();
-//                    q->setCursor(QCursor(SplitHCursor));
-//                    break;
-//                }
-//                IGripItem *grip = query<IGripItem>(unknown);
-//                if (grip) {
-//                    gripIsHovered = true;
-//                    if (!pickedGrips.contains(grip)) {
-//                        grip->highlight(IGripItem::HoverHighlight);
-//                        hoveredGrips.append(grip);
-//                    }
-//                } else if (!gripIsHovered) {
-//                    IEntity *entity = query<IEntity>(unknown);
-//                    if (entity && entity->intersects(scenePickRect)) {
-//                        entityIsHovered = true;
-//                        if (!entityIsPicked(entity)) {
-//                            hoveredEntities.append(entity);
-//                            ISubEntity *subEntity = query<ISubEntity>(entity);
-//                            if (subEntity)
-//                                entity = subEntity->parentEntity();
-//                            entity->highlight();
-//                        }
-//                    }
-//                }
-//                if (!(QApplication::keyboardModifiers() & ShiftModifier)
-//                        && (gripIsHovered || entityIsHovered))
-//                    break;
-//            }
-//        }
+        clearHovered();
+        if (viewState || Picking == dragState || insertingPoints)
+            return;
+        const QRect view_pick_rect = pickOneRect(curPos);
+        const QRectF scene_pick_rect = q->sceneTransform().inverted().mapRect(QRectF(view_pick_rect));
+        bool grip_is_hovered = false;
+        bool entity_is_hovered = false;
+        const QList<QGraphicsItem*> items = q->items(view_pick_rect);
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
+            if (unknown) {
+                IPlayCursor *cursor = query<IPlayCursor>(unknown);
+                if (cursor) {
+                    playCursorHovered = true;
+                    previousCursor = q->cursor();
+                    q->setCursor(QCursor(SplitHCursor));
+                    break;
+                }
+                IGrip *grip = query<IGrip>(unknown);
+                if (grip) {
+                    grip_is_hovered = true;
+                    if (!pickedGrips.contains(grip)) {
+                        grip->highlight(HoverHighlight);
+                        hoveredGrips.append(grip);
+                    }
+                } else if (!grip_is_hovered) {
+                    IGraphicsItem *graphics_item = query<IGraphicsItem>(unknown);
+                    if (graphics_item && graphics_item->intersects(scene_pick_rect)) {
+                        entity_is_hovered = true;
+                        IEntity *entity = query<IEntity>(unknown);
+                        if (!entityIsPicked(entity)) {
+                            hoveredEntities.append(entity);
+                            IChildEntity *child_entity = query<IChildEntity>(unknown);
+                            if (child_entity)
+                                entity = child_entity->parent();
+                            entity->highlight();
+                        }
+                    }
+                }
+                if (!(ShiftModifier & QApplication::keyboardModifiers())
+                        && (grip_is_hovered || entity_is_hovered))
+                    break;
+            }
+        }
     }
 
     void clearHovered()
     {
-//        if (playCursorHovered) {
-//            playCursorHovered = false;
-//            q->setCursor(previousCursor);
-//        }
-//        foreach (IGripItem *grip, hoveredGrips)
-//            if (!pickedGrips.contains(grip))
-//                grip->unhighlight();
-//        hoveredGrips.clear();
-//        foreach (IEntity *entity, hoveredEntities) {
-//            if (!entityIsPicked(entity)) {
-//                ISubEntity *subEntity = query<ISubEntity>(entity);
-//                if (subEntity)
-//                    entity = subEntity->parentEntity();
-//                entity->unhighlight();
-//            }
-//        }
-//        hoveredEntities.clear();
+        if (playCursorHovered) {
+            playCursorHovered = false;
+            q->setCursor(previousCursor);
+        }
+        foreach (IGrip *grip, hoveredGrips)
+            if (!pickedGrips.contains(grip))
+                grip->unhighlight();
+        hoveredGrips.clear();
+        foreach (IEntity *entity, hoveredEntities) {
+            if (!entityIsPicked(entity)) {
+                IChildEntity *child_entity = query<IChildEntity>(entity);
+                if (child_entity)
+                    entity = child_entity->parent();
+                entity->unhighlight();
+            }
+        }
+        hoveredEntities.clear();
     }
 
     IPlayCursor *findPlayCursor(const QList<QGraphicsItem*> &items)
@@ -1159,7 +1164,7 @@ void GraphicsView::clearGripSelection()
     d->clearPickedGrips();
 }
 
-void GraphicsView::gripDeselected(IGripItem *grip)
+void GraphicsView::gripDeselected(IGrip *grip)
 {
     d->hoveredGrips.removeOne(grip);
     d->pickedGrips.removeOne(grip);

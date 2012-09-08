@@ -108,6 +108,10 @@ public:
         _graphicsLineItem = new QGraphicsLineItem;
         _graphicsLineItem->setParentItem(query<IChildEntity>(this)->parent()->graphicsItem(ControlScene, MainTransform));
         _graphicsLineItem->setData(0, quintptr(query<IEntity>(this)));
+        QPen pen;
+        pen.setCosmetic(true);
+        _graphicsLineItem->setPen(pen);
+        unhighlight();
         return Object::GraphicsItem::initialize();
     }
 

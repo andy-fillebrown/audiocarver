@@ -36,6 +36,11 @@ enum TransformType {
     TransformTypeCount
 };
 
+enum HighlightType {
+    FullHighlight,
+    HoverHighlight
+};
+
 }
 
 #endif
