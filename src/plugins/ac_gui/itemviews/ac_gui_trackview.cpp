@@ -200,7 +200,7 @@ void TrackView::paintEvent(QPaintEvent *event)
 {
     QTreeView::paintEvent(event);
 
-    // Draw the drop indicator if we're dragging a track.
+    // Draw the drop indicator if a track is being dragged.
     if (!d->dragging)
         return;
     QWidget *viewport = this->viewport();
@@ -213,7 +213,7 @@ void TrackView::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Right:
-        // Doing nothing here keeps the view from moving to the left when the
+        // Do nothing here to keep the view from moving to the left when the
         // right arrow key is pressed.
         return;
     case Qt::Key_Escape:
