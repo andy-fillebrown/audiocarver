@@ -18,25 +18,17 @@
 #ifndef IMAINWINDOWEXTENSION_H
 #define IMAINWINDOWEXTENSION_H
 
-#include <qt_core_global.h>
-
 #include <QObject>
-
-namespace Core {
+#include "qt_core_global.h"
 
 class CORE_EXPORT IMainWindowExtension : public QObject
 {
     Q_OBJECT
 
 public:
-    IMainWindowExtension();
-    virtual ~IMainWindowExtension();
-
     virtual void initMenuBarGroups(QStringList &groups) const = 0;
     virtual void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const = 0;
     virtual void initActions() = 0;
 };
 
-} // namespace Core
-
-#endif // IMAINWINDOWEXTENSION_H
+#endif

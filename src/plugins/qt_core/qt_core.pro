@@ -55,8 +55,6 @@ SOURCES = \
     dialogs/settingsdialog.cpp \
     dialogs/shortcutsettings.cpp \
     \
-    interfaces/imainwindowextension.cpp \
-    \
     coreimpl.cpp \
     eventfilteringmainwindow.cpp \
     filemanager.cpp \

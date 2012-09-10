@@ -31,8 +31,7 @@
 
 using namespace Core;
 
-namespace Mi {
-namespace Gui {
+namespace Base {
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
 {
@@ -232,5 +231,4 @@ void MainWindowExtension::selectAll()
     IEditor::instance()->selectAll();
 }
 
-}
 }

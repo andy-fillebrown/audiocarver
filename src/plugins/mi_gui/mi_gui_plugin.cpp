@@ -19,6 +19,8 @@
 #include "mi_gui_mainwindowextension.h"
 #include <QtPlugin>
 
+using namespace Base;
+
 namespace Mi {
 namespace Gui {
 

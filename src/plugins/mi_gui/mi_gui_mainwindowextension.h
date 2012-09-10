@@ -20,14 +20,13 @@
 
 #include <imainwindowextension.h>
 
-namespace Mi {
-namespace Gui {
+namespace Base {
 
-class MainWindowExtension : public Core::IMainWindowExtension
+class MainWindowExtension : public IMainWindowExtension
 {
     Q_OBJECT
 
-public:
+protected:
     void initMenuBarGroups(QStringList &groups) const;
     void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
     void initActions();
@@ -45,7 +44,6 @@ private slots:
     void selectAll();
 };
 
-}
 }
 
 #endif

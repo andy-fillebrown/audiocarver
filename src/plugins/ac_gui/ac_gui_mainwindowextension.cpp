@@ -49,7 +49,8 @@
 #include <QTimer>
 #include <QtDebug>
 
-namespace Ac {
+using namespace Ac;
+
 namespace Gui {
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
@@ -343,5 +344,4 @@ bool MainWindowExtension::maybeSaveDatabase()
     return !database->fileName().isEmpty();
 }
 
-}
 }

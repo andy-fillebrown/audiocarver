@@ -24,11 +24,10 @@ namespace Core {
     class VersionDialog;
 }
 
-namespace Ac {
 namespace Gui {
 
 class MainWindowExtensionPrivate;
-class MainWindowExtension : public ::Core::IMainWindowExtension
+class MainWindowExtension : public IMainWindowExtension
 {
     Q_OBJECT
 
@@ -39,6 +38,7 @@ public:
         :   _versionDialog(0)
     {}
 
+protected:
     void initMenuBarGroups(QStringList &groups) const;
     void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
     void initActions();
@@ -59,7 +59,6 @@ private:
     bool maybeSaveDatabase();
 };
 
-}
 }
 
 #endif
