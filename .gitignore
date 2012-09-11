@@ -112,3 +112,8 @@ testing/*.ac-output
 # Python cache files generated when running Blender
 # -------------------------------------------------
 *__pycache__*
+
+# Blender backup files
+# --------------------
+*.blend1
+*.blend2
