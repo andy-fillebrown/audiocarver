@@ -189,7 +189,7 @@ static void importBarlines(MidiFileReader &reader, qreal scoreLength)
     const int n = meter_changes.count();
     for (int i = 0;  i < n;  ++i) {
         const Midi::MeterChange &meter_change = meter_changes.at(i);
-        const int quarters_per_beat = 4 / meter_change.denominator;
+        const float quarters_per_beat = 4.0f / float(meter_change.denominator);
         const int ticks_per_thirtysecond = reader.tickRate() / meter_change.thirtysecondNotesPerQuarterNote;
         const int ticks_per_barline_subdivision = quarters_per_beat * ticks_per_thirtysecond;
 
