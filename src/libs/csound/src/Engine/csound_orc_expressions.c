@@ -546,8 +546,8 @@ TREE * create_boolean_expression(CSOUND *csound, TREE *root, int line, int locn)
     TREE *anchor = NULL, *last;
     TREE * opTree;
 
-    /*   if (UNLIKELY(PARSER_DEBUG)) */
-    csound->Message(csound, "Creating boolean expression\n");
+    if (UNLIKELY(PARSER_DEBUG))
+      csound->Message(csound, "Creating boolean expression\n");
     /* HANDLE SUB EXPRESSIONS */
     if (is_boolean_expression_node(root->left)) {
       anchor = create_boolean_expression(csound, root->left, line, locn);
@@ -873,11 +873,11 @@ TREE *csound_orc_expand_expressions(CSOUND * csound, TREE *root)
                 gotoToken->next = statements;
                 /* VL: added as means of dealing with empty conditionals,
                    may need revision */
-                if(statements == NULL)
-                   csound->Die(csound,
-                               Str("error: non-existent statement in "
-                                   "conditional, line %d \n"),
-                               last->right->line);
+                if (statements == NULL)
+                  csound->Warning(csound,
+                                  Str("Empty statement in "
+                                      "conditional, line %d \n"),
+                                  last->right->line);
                 while (statements->next != NULL) {
                   statements = statements->next;
                 }
@@ -1059,7 +1059,7 @@ TREE *csound_orc_expand_expressions(CSOUND * csound, TREE *root)
               break;
             }
             else if (anstype=='k' && argtype=='i') {
-              TREE* opTree = create_opcode_token(csound, "k.i");
+              TREE* opTree = create_opcode_token(csound, "=.k");
               opTree->right = make_leaf(csound, current->line, current->locn,
                                         T_IDENT_K, currentArg->left->value);
               opTree->left = current->left;

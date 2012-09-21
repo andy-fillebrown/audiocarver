@@ -1,5 +1,11 @@
 
-INCLUDEPATH *= $$dirname(PWD)/src/H
-DEPENDPATH *= $$dirname(PWD)/src/H
+SRC_DIR = $$dirname(PWD)/src
+
+INCLUDE_DIRS *= \
+    $$SRC_DIR/Engine \
+    $$SRC_DIR/H \
+
+INCLUDEPATH *= $$INCLUDE_DIRS
+DEPENDPATH *= $$INCLUDE_DIRS
 
 LIBS *= -l$$qtLibraryName(csound64)

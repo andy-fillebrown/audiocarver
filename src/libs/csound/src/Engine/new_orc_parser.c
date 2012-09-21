@@ -24,12 +24,10 @@
 */
 
 #include "csoundCore.h"
-#include "csound_orcparse.h"
 #include "csound_orc.h"
-#include "parse_param.h"
+#include "csound_orcparse.h"
+//#include "parse_param.h"
 #include "corfile.h"
-
-#define ST(x)   (((RDORCH_GLOBALS*) csound->rdorchGlobals)->x)
 
 extern void csound_orcrestart(FILE*, void *);
 
@@ -65,10 +63,9 @@ void csp_weights_calculate(CSOUND *, TREE *);
 void csound_print_preextra(CSOUND *csound, PRE_PARM  *x)
 {
     csound->DebugMsg(csound,"********* Extra Pre Data %p *********\n", x);
-    csound->DebugMsg(csound,"macros = %p, macro_stack_ptr = %u, ifdefStack=%p, isIfndef=%d\n"
-           "isInclude=%d, clearBufferAfterEOF=%d, line=%d\n",
-           x->macros, x->macro_stack_ptr, x->ifdefStack, x->isIfndef,
-           x->isInclude, x->clearBufferAfterEOF, x->line);
+    csound->DebugMsg(csound,"macros = %p, macro_stack_ptr = %u, ifdefStack=%p,\n"
+           "isIfndef=%d\n, line=%d\n",
+           x->macros, x->macro_stack_ptr, x->ifdefStack, x->isIfndef, x->line);
     csound->DebugMsg(csound,"******************\n");
 }
 
@@ -120,7 +117,8 @@ int new_orc_parser(CSOUND *csound)
         csound->LongJmp(csound, 1);
       }
       csound_prelex_destroy(qq.yyscanner);
-      csound->DebugMsg(csound, "yielding >>%s<<\n", corfile_body(csound->expanded_orc));
+      csound->DebugMsg(csound, "yielding >>%s<<\n",
+                       corfile_body(csound->expanded_orc));
       corfile_rm(&csound->orchstr);
     }
     {

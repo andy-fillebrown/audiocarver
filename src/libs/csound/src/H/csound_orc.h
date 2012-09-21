@@ -1,6 +1,7 @@
 #ifndef __CSOUND_ORC_H
 
 #define __CSOUND_ORC_H
+#include "parse_param.h"
 #include "tok.h"
 typedef struct TREE {
   int           type;

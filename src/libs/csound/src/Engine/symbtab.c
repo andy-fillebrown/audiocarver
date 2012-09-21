@@ -27,7 +27,7 @@
 #include <string.h>
 #include "csoundCore.h"
 #include "tok.h"
-#include "csound_orcparse.h"
+#include "csound_orc.h"
 #include "insert.h"
 #include "namedins.h"
 #include "interlocks.h"
@@ -132,6 +132,7 @@ void init_symbtab(CSOUND *csound)
     add_token(csound, "cosinv", T_FUNCTION);
     add_token(csound, "taninv", T_FUNCTION);
     add_token(csound, "log10", T_FUNCTION);
+    add_token(csound, "log2", T_FUNCTION);
     add_token(csound, "sinh", T_FUNCTION);
     add_token(csound, "cosh", T_FUNCTION);
     add_token(csound, "tanh", T_FUNCTION);
@@ -237,7 +238,7 @@ int isUDOArgList(char *s)
     int len = strlen(s) - 1;
 
     while (len >= 0) {
-      if (UNLIKELY(strchr("aijkftKopS0", s[len]) == NULL)) {
+      if (UNLIKELY(strchr("aijkftKOPVopS0", s[len]) == NULL)) {
         /* printf("Invalid char '%c' in '%s'", *p, s); */
         return 0;
       }
@@ -368,7 +369,8 @@ ORCTOKEN *lookup_token(CSOUND *csound, char *s, void *yyscanner)
 /* UDO code below was from otran, broken out and modified for new parser by
  * SYY
  */
-/* VL -- I have made the modifications below to allow for f-sigs & t-sigs and on line 224 and 238*/
+/* VL -- I have made the modifications below to allow for f-sigs & t-sigs
+   and on line 224 and 238*/
 
 /* IV - Oct 12 2002: new function to parse arguments of opcode definitions */
 static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
@@ -392,6 +394,12 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
       case 'a':
         a_incnt++; *otypes++ = *types;
         break;
+      case 'O':
+        k_incnt++; *otypes++ = 'O'; break;
+      case 'P':
+         k_incnt++;*otypes++ = 'P'; break;
+      case 'V':
+         k_incnt++;*otypes++ = 'V'; break;
       case 'K':
         i_incnt++;              /* also updated at i-time */
       case 'k':
@@ -483,9 +491,13 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
     while (*types) {
       switch (*types++) {
         case 'a': *a_inlist++ = i; break;
+        case 'O':
+        case 'P':
+        case 'V':
         case 'k': *k_inlist++ = i; break;
         case 'f': *f_inlist++ = i; break;
         case 't': *t_inlist++ = i; break;
+
         case 'K': *k_inlist++ = i;      /* also updated at i-time */
         case 'i':
         case 'o':

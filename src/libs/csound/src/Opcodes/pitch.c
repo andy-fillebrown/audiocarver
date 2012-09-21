@@ -420,8 +420,7 @@ int pitch(CSOUND *csound, PITCH *p)
       kval = realbin / specp->nfreqs;           /*     & cvt to true decoct */
 
       if (p->playing == STARTING) {             /* STARTING mode:           */
-        if ((absdiff = kval - p->kvalsav) < FL(0.0))
-          absdiff = -absdiff;
+        absdiff = FABS(kval - p->kvalsav);// < FL(0.0)) absdiff = -absdiff;
         confirms = (int)(absdiff * p->confact); /* get interval dependency  */
         if (UNLIKELY(p->jmpcount < confirms)) {
           p->jmpcount += 1;               /* if not enough confirms,  */
@@ -433,8 +432,7 @@ int pitch(CSOUND *csound, PITCH *p)
           p->kinc = FL(0.0);
         }
       } else {                                  /* PLAYING mode:            */
-        if ((absdiff = kval - p->kval) < FL(0.0))
-          absdiff = -absdiff;
+        absdiff = FABS(kval - p->kval);
         confirms = (int)(absdiff * p->confact); /* get interval dependency  */
         if (p->jmpcount < confirms) {
           p->jmpcount += 1;               /* if not enough confirms,  */
@@ -584,7 +582,7 @@ int adsyntset(CSOUND *csound, ADSYNT *p)
       count = 1;
     p->count = count;
 
-    if (LIKELY((ftp = csound->FTFind(csound, p->ifreqtbl)) != NULL)) {
+    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifreqtbl)) != NULL)) {
       p->freqtp = ftp;
     }
     else {
@@ -597,7 +595,7 @@ int adsyntset(CSOUND *csound, ADSYNT *p)
                     "adsynt: partial count is greater than freqtable size!"));
     }
 
-    if (LIKELY((ftp = csound->FTFind(csound, p->iamptbl)) != NULL)) {
+    if (LIKELY((ftp = csound->FTnp2Find(csound, p->iamptbl)) != NULL)) {
       p->amptp = ftp;
     }
     else {
@@ -676,7 +674,7 @@ int hsboscset(CSOUND *csound, HSBOSC *p)
     FUNC        *ftp;
     int         octcnt, i;
 
-    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL)) {
+    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL)) {
       p->ftp = ftp;
       if (UNLIKELY(*p->ioctcnt < 2))
         octcnt = 3;
@@ -691,7 +689,7 @@ int hsboscset(CSOUND *csound, HSBOSC *p)
       }
     }
     else p->ftp = NULL;
-    if (LIKELY((ftp = csound->FTFind(csound, p->imixtbl)) != NULL)) {
+    if (LIKELY((ftp = csound->FTnp2Find(csound, p->imixtbl)) != NULL)) {
       p->mixtp = ftp;
     }
     else p->mixtp = NULL;
@@ -1408,7 +1406,7 @@ int GardnerPink_perf(CSOUND *csound, PINKISH *p)
       /* Increment and mask index. */
       rowIndex = (rowIndex + 1) & indexMask;
 
-      /* If index is zero, don't update any random values. */
+      /* If index is zero, do not update any random values. */
       if ( rowIndex != 0 ) {
         /* Determine how many trailing zeros in PinkIndex. */
         /* This algorithm will hang if n==0 so test first. */
@@ -1467,9 +1465,8 @@ int clip_set(CSOUND *csound, CLIP *p)
 {
     int meth = (int)MYFLT2LONG(*p->imethod);
     p->meth = meth;
-    p->arg = *p->iarg;
+    p->arg = FABS(*p->iarg);
     p->lim = *p->limit;
-    if (p->arg < FL(0.0)) p->arg = - p->arg;
     switch (meth) {
     case 0:                     /* Bram de Jong method */
       if (p->arg > FL(1.0) || p->arg < FL(0.0)) p->arg = FL(0.999);

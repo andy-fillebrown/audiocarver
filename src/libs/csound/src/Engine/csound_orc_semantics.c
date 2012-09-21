@@ -136,10 +136,10 @@ static TREE * verify_tree1(CSOUND *csound, TREE *root)
           rval = (root->right->type == INTEGER_TOKEN ?
                   (double)root->right->value->value :root->right->value->fvalue);
           ans = root->left;
-          ans->type = ans->value->type = NUMBER_TOKEN;
           /* **** Something wrong here -- subtraction confuses memory **** */
           switch (root->type) {
           case '+':
+            ans->type = ans->value->type = NUMBER_TOKEN;
             ans->value->fvalue = lval+rval;
             ans->value->lexeme =
               (char*)mrealloc(csound, ans->value->lexeme, 24);
@@ -149,6 +149,7 @@ static TREE * verify_tree1(CSOUND *csound, TREE *root)
             //mfree(csound, root); mfree(csound root->right);
             return ans;
           case '-':
+            ans->type = ans->value->type = NUMBER_TOKEN;
             ans->value->fvalue = lval-rval;
             ans->value->lexeme =
               (char*)mrealloc(csound, ans->value->lexeme, 24);
@@ -158,6 +159,7 @@ static TREE * verify_tree1(CSOUND *csound, TREE *root)
             //mfree(csound, root); mfree(csound, root->right);
             return ans;
           case '*':
+            ans->type = ans->value->type = NUMBER_TOKEN;
             ans->value->fvalue = lval*rval;
             ans->value->lexeme =
               (char*)mrealloc(csound, ans->value->lexeme, 24);
@@ -167,6 +169,7 @@ static TREE * verify_tree1(CSOUND *csound, TREE *root)
             //mfree(csound, root); mfree(csound, root->right);
             return ans;
           case '/':
+            ans->type = ans->value->type = NUMBER_TOKEN;
             ans->value->fvalue = lval/rval;
             ans->value->lexeme =
               (char*)mrealloc(csound, ans->value->lexeme, 24);
@@ -791,36 +794,42 @@ void handle_optional_args(CSOUND *csound, TREE *l)
         switch (ep->intypes[incnt]) {
         case 'O':             /* Will this work?  Doubtful code.... */
         case 'o':
-          temp = make_leaf(csound, l->line, l->locn, INTEGER_TOKEN, make_int(csound, "0"));
+          temp = make_leaf(csound, l->line, l->locn,
+                           INTEGER_TOKEN, make_int(csound, "0"));
           if (l->right==NULL) l->right = temp;
           else appendToTree(csound, l->right, temp);
           break;
         case 'P':
         case 'p':
-          temp = make_leaf(csound, l->line, l->locn, INTEGER_TOKEN, make_int(csound, "1"));
+          temp = make_leaf(csound, l->line, l->locn,
+                           INTEGER_TOKEN, make_int(csound, "1"));
           if (l->right==NULL) l->right = temp;
           else appendToTree(csound, l->right, temp);
           break;
         case 'q':
-          temp = make_leaf(csound, l->line, l->locn, INTEGER_TOKEN, make_int(csound, "10"));
+          temp = make_leaf(csound, l->line, l->locn,
+                           INTEGER_TOKEN, make_int(csound, "10"));
           if (l->right==NULL) l->right = temp;
           else appendToTree(csound, l->right, temp);
           break;
 
         case 'V':
         case 'v':
-          temp = make_leaf(csound, l->line, l->locn, NUMBER_TOKEN, make_num(csound, ".5"));
+          temp = make_leaf(csound, l->line, l->locn,
+                           NUMBER_TOKEN, make_num(csound, ".5"));
           if (l->right==NULL) l->right = temp;
           else appendToTree(csound, l->right, temp);
           break;
         case 'h':
-          temp = make_leaf(csound, l->line, l->locn, INTEGER_TOKEN, make_int(csound, "127"));
+          temp = make_leaf(csound, l->line, l->locn,
+                           INTEGER_TOKEN, make_int(csound, "127"));
           if (l->right==NULL) l->right = temp;
           else appendToTree(csound, l->right, temp);
           break;
         case 'J':
         case 'j':
-          temp = make_leaf(csound, l->line, l->locn, INTEGER_TOKEN, make_int(csound, "-1"));
+          temp = make_leaf(csound, l->line, l->locn,
+                           INTEGER_TOKEN, make_int(csound, "-1"));
           if (l->right==NULL) l->right = temp;
           else appendToTree(csound, l->right, temp);
           break;
@@ -831,7 +840,8 @@ void handle_optional_args(CSOUND *csound, TREE *l)
           break;
         default:
           synterr(csound,
-                  Str("insufficient required arguments for opcode %s on line %d\n"),
+                  Str("insufficient required arguments for "
+                      "opcode %s on line %d\n"),
                   ep->opname, l->line, l->locn);
         }
         incnt++;

@@ -146,7 +146,8 @@ static int compare(presetType * elem1, presetType *elem2)
 
 static char *Gfname;
 
-static int SfLoad(CSOUND *csound, SFLOAD *p) /* open a file and return its handle */
+static int SfLoad(CSOUND *csound, SFLOAD *p)
+                                       /* open a file and return its handle */
 {                                      /* the handle is simply a stack index */
     char *fname;
     SFBANK *sf;
@@ -1059,7 +1060,8 @@ static int SfInstrPlay3(CSOUND *csound, SFIPLAY *p)
     MYFLT *out1= p->out1, *out2= p->out2,*env =p->env;
     int n, nsmps= csound->ksmps, j = p->spltNum, arate;
     SHORT **base = p->base;
-    DWORD *end= p->end,  *startloop= p->startloop, *endloop= p->endloop, *tinc = p->ti;
+    DWORD *end= p->end,  *startloop= p->startloop,
+          *endloop= p->endloop, *tinc = p->ti;
     SHORT *mode = p->mode;
     double *sampinc = p->si, *phs = p->phs;
     MYFLT *left= p->leftlevel, *right= p->rightlevel,
@@ -1311,7 +1313,8 @@ static int SfInstrPlayMono3(CSOUND *csound, SFIPLAYMONO *p)
     MYFLT *out1= p->out1, *env = p->env  ;
     int n, nsmps= csound->ksmps, j = p->spltNum, arate;
     SHORT **base = p->base;
-    DWORD *end= p->end,  *startloop= p->startloop, *endloop= p->endloop, *tinc = p->ti;
+    DWORD *end= p->end,  *startloop= p->startloop,
+          *endloop= p->endloop, *tinc = p->ti;
     SHORT *mode = p->mode;
     double *sampinc = p->si, *phs = p->phs;
     MYFLT *attenuation = p->attenuation,*attack = p->attack, *decr = p->decr,
@@ -2240,7 +2243,7 @@ static int sflooper_init(CSOUND *csound, sflooper *p)
       }
     }
   p->spltNum = spltNum;
-  if (*p->ifn2 != 0) p->efunc = csound->FTFind(csound, p->ifn2);
+  if (*p->ifn2 != 0) p->efunc = csound->FTnp2Find(csound, p->ifn2);
   else p->efunc = NULL;
 
   if (*p->iskip == 0){

@@ -65,6 +65,7 @@ static void set_xtratim(CSOUND *csound, INSDS *ip)
                   csound->ksmps * (double) ip->xtratim)/csound->esr;
     ip->offbet = csound->curBeat + (csound->curBeat_inc * (double) ip->xtratim);
     ip->relesing = 1;
+    csound->instrtxtp[ip->insno]->pending_release++;
 }
 
 /* insert an instr copy into active list */
@@ -563,6 +564,8 @@ static void deact(CSOUND *csound, INSDS *ip)
     if (ip->nxtd != NULL)
       csoundDeinitialiseOpcodes(csound, ip);
     csound->instrtxtp[ip->insno]->active--; /* remove an active instrument */
+    if (ip->xtratim > 0)
+      csound->instrtxtp[ip->insno]->pending_release--;
     csound->cpu_power_busy -= csound->instrtxtp[ip->insno]->cpuload;
     /* IV - Sep 8 2002: free subinstr instances */
     /* that would otherwise result in a memory leak */
@@ -724,7 +727,7 @@ void infoff(CSOUND *csound, MYFLT p1)   /* turn off an indef copy of instr p1 */
             cannot be removed, as it breaks turning off extratime instances */
             && ip->p1 == p1) {
           if (UNLIKELY(csound->oparms->odebug))
-            csound->Message(csound, "turning off inf copy of instr %d\n",
+            csound->Message(csound, Str("turning off inf copy of instr %d\n"),
                                     insno);
           xturnoff(csound, ip);
           return;                       /*      turn it off  */
@@ -1163,7 +1166,8 @@ int xoutset(CSOUND *csound, XOUT *p)
     tmp = buf->iobufp_ptrs;
     /* VL: needs to check if there are not 4 nulls in a sequence, which
        would indicate no a, k, f or t sigs */
-    if (*tmp || *(tmp + 1) || *(tmp + 2) || *(tmp + 3)) tmp += (inm->perf_incnt << 1);
+    if (*tmp || *(tmp + 1) || *(tmp + 2) || *(tmp + 3))
+      tmp += (inm->perf_incnt << 1);
     tmp += 4;  /* VL: this was 2, now 4 with fsigs and tsigs added */
     if (*tmp || *(tmp + 1))
     return OK;
@@ -1294,7 +1298,7 @@ INSDS *insert_event(CSOUND *csound,
     }
     /* Insert this event into event queue */
     if (UNLIKELY(O->odebug))
-      csound->Message(csound, "activating instr %d\n", insno);
+      csound->Message(csound, Str("activating instr %d\n"), insno);
     if (UNLIKELY((tp->mdepends & 4) && !midi)) {
       char *name = csound->instrtxtp[ip->insno]->insname;
       if (name)
@@ -1421,7 +1425,7 @@ INSDS *insert_event(CSOUND *csound,
       ip->offtim = -1.0;        /* else mark indef */
     }
     if (UNLIKELY(O->odebug)) {
-      csound->Message(csound, "instr %d now active:\n", insno);
+      csound->Message(csound, Str("instr %d now active:\n"), insno);
       showallocs(csound);
     }
  endsched:
@@ -1464,7 +1468,7 @@ void beatexpire(CSOUND *csound, double beat)
       while ((ip = ip->nxtoff) != NULL && ip->offbet <= beat);
       csound->frstoff = ip;
       if (UNLIKELY(csound->oparms->odebug)) {
-        csound->Message(csound, "deactivated all notes to beat %7.3f\n", beat);
+        csound->Message(csound, Str("deactivated all notes to beat %7.3f\n"), beat);
         csound->Message(csound, "frstoff = %p\n", (void*) csound->frstoff);
       }
     }
@@ -1501,7 +1505,7 @@ void timexpire(CSOUND *csound, double time)
       while ((ip = ip->nxtoff) != NULL && ip->offtim <= time);
       csound->frstoff = ip;
       if (UNLIKELY(csound->oparms->odebug)) {
-        csound->Message(csound, "deactivated all notes to time %7.3f\n", time);
+        csound->Message(csound, Str("deactivated all notes to time %7.3f\n"), time);
         csound->Message(csound, "frstoff = %p\n", (void*) csound->frstoff);
       }
     }
@@ -1697,7 +1701,8 @@ int useropcd2(CSOUND *csound, UOPCODE *p)
 
      if (!(csound->pds = (OPDS*) (p->ip->nxtp))) goto endop; /* no perf code */
 
-    //csound->Message(csound, "end input\n"); /* FOR SOME REASON the opcode has no perf code */
+    //csound->Message(csound, "end input\n");
+    /* FOR SOME REASON the opcode has no perf code */
     /* IV - Nov 16 2002: update release flag */
     p->ip->relesing = p->parent_ip->relesing;
 
@@ -1824,7 +1829,8 @@ static void instance(CSOUND *csound, int insno)
     if (O->midiVelocity>n) n = O->midiVelocity;
     if (O->midiVelocityAmp>n) n = O->midiVelocityAmp;
     pextra = n-3;
-    pextent = sizeof(INSDS) + tp->pextrab + pextra*sizeof(MYFLT *);      /* alloc new space,  */
+    /* alloc new space  */
+    pextent = sizeof(INSDS) + tp->pextrab + pextra*sizeof(MYFLT *);
     ip = (INSDS*) mcalloc(csound, (size_t) pextent + tp->localen + tp->opdstot);
     ip->csound = csound;
     ip->m_chnbp = (MCHNBLK*) NULL;
@@ -1901,7 +1907,8 @@ static void instance(CSOUND *csound, int insno)
       if ((n = ep->thread & 06) != 0) {         /* thread 2 OR 4:   */
         prvpds = prvpds->nxtp = opds;           /* link into pchain */
         if (!(n & 04) ||
-            (ttp->pftype == 'k' && ep->kopadr != NULL))
+            ((ttp->pftype == 'k' || ttp->pftype == 'c') &&
+             ep->kopadr != NULL))
           opds->opadr = ep->kopadr;             /*      krate or    */
         else opds->opadr = ep->aopadr;          /*      arate       */
         if (UNLIKELY(odebug))

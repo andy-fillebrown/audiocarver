@@ -230,7 +230,7 @@ static void print_input_backtrace(CSOUND *csound, int needLFs,
       }
       /* else { */
       /*   msgfunc(csound, m, (lastsource == 0 ? curr->line - 1 : curr->line), */
-      /*           corfile_tell(curr->cf), lf);  /\* #include is one line before *\/ */
+      /*      corfile_tell(curr->cf), lf); /\* #include is one line before *\/ */
       /* } */
     } while (!lastsource);
     curr--;
@@ -270,7 +270,8 @@ static int undefine_score_macro(CSOUND *csound, const char *name)
         corfile_rm(&(ST(macros)->body));
       mfree(csound, ST(macros)->name);
  #ifdef MACDEBUG
-     csound->DebugMsg(csound,"%s(%d): corfile is %p\n", __FILE__, __LINE__, ST(macros)->body);
+     csound->DebugMsg(csound,"%s(%d): corfile is %p\n",
+                      __FILE__, __LINE__, ST(macros)->body);
  #endif
      for (i = 0; i < ST(macros)->acnt; i++)
         mfree(csound, ST(macros)->arg[i]);
@@ -333,7 +334,8 @@ static int getscochar(CSOUND *csound, int expand)
       goto top;
     }
 #ifdef MACDEBUG
-    csound->DebugMsg(csound,"%s(%d): character = %c(%.2d)\n", __FILE__, __LINE__, c, c);
+    csound->DebugMsg(csound,"%s(%d): character = %c(%.2d)\n",
+                     __FILE__, __LINE__, c, c);
 #endif
     if (c == '\r') {    /* can only occur in files, and not in macros */
       if ((c = corfile_getc(ST(str)->cf)) != '\n') {
@@ -413,7 +415,8 @@ static int getscochar(CSOUND *csound, int expand)
 #endif
           nn->body = corfile_create_w();
 #ifdef MACDEBUG
-          csound->DebugMsg(csound,"%s(%d): creating\n", __FILE__, __LINE__, nn->body);
+          csound->DebugMsg(csound,"%s(%d): creating\n",
+                           __FILE__, __LINE__, nn->body);
 #endif
           while ((c = getscochar(csound, 1))!= term && c != trm1) {
             if (UNLIKELY(c==EOF))
@@ -601,14 +604,15 @@ static int getscochar(CSOUND *csound, int expand)
         }
       } while (c != '$');
       /* Make string macro or value */
-      sprintf(buffer, "%f", *pv);
+      sprintf(buffer, "%g", *pv);
       {
         MACRO *nn = (MACRO*) mmalloc(csound, sizeof(MACRO));
         nn->name = mmalloc(csound, 2);
         strcpy(nn->name, "[");
         nn->body = corfile_create_r(buffer);
 #ifdef MACDEBUG
-        csound->DebugMsg(csound,"%s(%d): creating arg %p\n", __FILE__, __LINE__, nn->body);
+        csound->DebugMsg(csound,"%s(%d): creating arg %p\n",
+                         __FILE__, __LINE__, nn->body);
 #endif
         nn->acnt = 0;   /* No arguments for arguments */
         nn->next = ST(macros);
@@ -678,7 +682,8 @@ static int nested_repeat(CSOUND *csound)                /* gab A9*/
         char buffer[128];
         sprintf(buffer, "%d", i);
 #ifdef MACDEBUG
-        csound->DebugMsg(csound,"%s(%d) new i = %s\n", __FILE__, __LINE__,  buffer);
+        csound->DebugMsg(csound,"%s(%d) new i = %s\n",
+                         __FILE__, __LINE__,  buffer);
 #endif
         corfile_reset(ST(repeat_mm_n)[ST(repeat_index)]->body);
         corfile_puts(buffer, ST(repeat_mm_n)[ST(repeat_index)]->body);
@@ -788,7 +793,8 @@ static void init_smacros(CSOUND *csound, NAMES *nn)
         p++;
       mm->body = corfile_create_r(p);
 #ifdef MACDEBUG
-      csound->DebugMsg(csound,"%s(%d): init %s %p\n", __FILE__, __LINE__, mm->name, mm->body);
+      csound->DebugMsg(csound,"%s(%d): init %s %p\n",
+                       __FILE__, __LINE__, mm->name, mm->body);
 #endif
       nn = nn->next;
     }
@@ -1052,7 +1058,8 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
             ST(repeat_cnt) = 10 * ST(repeat_cnt) + c - '0';
             c = getscochar(csound, 1);
           }
-          if (UNLIKELY(ST(repeat_cnt) <= 0 || (c != ' ' && c != '\t' && c != '\n')))
+          if (UNLIKELY(ST(repeat_cnt) <= 0 ||
+                       (c != ' ' && c != '\t' && c != '\n')))
             scorerr(csound, Str("r: invalid repeat count"));
           if (csound->oparms->msglevel & TIMEMSG)
             csound->Message(csound, Str("Repeats=%d\n"), ST(repeat_cnt));
@@ -1074,7 +1081,8 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
             ST(repeat_mm)->acnt = 0;
             ST(repeat_mm)->body = corfile_create_r("1");
 #ifdef MACDEBUG
-            csound->DebugMsg(csound,"%s(%d): 1 %p\n", __FILE__, __LINE__,ST(repeat_mm)->body);
+            csound->DebugMsg(csound,"%s(%d): 1 %p\n",
+                             __FILE__, __LINE__,ST(repeat_mm)->body);
 #endif
             ST(repeat_mm)->next = ST(macros);
             ST(macros) = ST(repeat_mm);
@@ -1153,7 +1161,7 @@ int sread(CSOUND *csound)       /*  called from main,  reads from SCOREIN   */
             }
             ST(str)++;
             ST(str)->is_marked_repeat = 1;
-            /* ST(str)->cf = copy_to_corefile(csound, ST(names)[i].file, NULL, 1); */
+/*          ST(str)->cf = copy_to_corefile(csound, ST(names)[i].file, NULL, 1); */
             ST(str)->cf = corfile_create_r(ST(names)[i].file);
 //            ST(str)->cf = corfile_create_r(csound->GetFileName(ST(str)->fd));
             ST(str)->line = ST(names)[i].line;
@@ -1319,7 +1327,8 @@ static void ifa(CSOUND *csound)
       else switch (ST(bp)->pcnt) {      /*  watch for p1,p2,p3, */
       case 1:                           /*   & MYFLT, setinsno..*/
         if ((ST(op) == 'i' || ST(op) == 'q') && *ST(sp) == '"') {
-        /*   csound->DebugMsg(csound,"***Entering second dubious code scnt=%d\n", csound->scnt0); */
+        /*   csound->DebugMsg(csound,"***Entering second dubious code scnt=%d\n",
+             csound->scnt0); */
         /*   ST(bp)->p1val = ((int[4]){SSTRCOD,SSTRCOD1,
                                        SSTRCOD2,SSTRCOD3})[csound->scnt0++]; */
         /*   if (csound->scnt0>3) { */
@@ -1628,7 +1637,8 @@ static int sget1(CSOUND *csound)    /* get first non-white, non-comment char */
         }
         mm->body = corfile_create_w();
 #ifdef MACDEBUG
-        csound->DebugMsg(csound,"%s(%d): macro %s %p\n", __FILE__, __LINE__, mname, mm->body);
+        csound->DebugMsg(csound,"%s(%d): macro %s %p\n",
+                         __FILE__, __LINE__, mname, mm->body);
 #endif
         while ((c = getscochar(csound, 0)) != '#') {  /* Do not expand here!! */
           if (UNLIKELY(c==EOF))
