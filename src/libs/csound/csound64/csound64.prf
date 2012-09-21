@@ -1,11 +1,4 @@
 
-SRC_DIR = $$dirname(PWD)/src
-
-INCLUDE_DIRS *= \
-    $$SRC_DIR/Engine \
-    $$SRC_DIR/H \
-
-INCLUDEPATH *= $$INCLUDE_DIRS
-DEPENDPATH *= $$INCLUDE_DIRS
+load(../csound_common.prf)
 
 LIBS *= -l$$qtLibraryName(csound64)
