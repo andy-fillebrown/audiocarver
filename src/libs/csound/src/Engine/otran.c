@@ -125,6 +125,12 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
       case 'a':
         a_incnt++; *otypes++ = *types;
         break;
+      case 'O':
+        k_incnt++; *otypes++ = 'O'; break;
+      case 'P':
+         k_incnt++;*otypes++ = 'P'; break;
+      case 'V':
+         k_incnt++;*otypes++ = 'V'; break;
       case 'K':
         i_incnt++;              /* also updated at i-time */
       case 'k':
@@ -216,9 +222,13 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
     while (*types) {
       switch (*types++) {
         case 'a': *a_inlist++ = i; break;
+        case 'O':
+        case 'P':
+        case 'V':
         case 'k': *k_inlist++ = i; break;
         case 'f': *f_inlist++ = i; break;
         case 't': *t_inlist++ = i; break;
+
         case 'K': *k_inlist++ = i;      /* also updated at i-time */
         case 'i':
         case 'o':
@@ -228,7 +238,8 @@ static int parse_opcode_args(CSOUND *csound, OENTRY *opc)
       }
       i++;
     }
-    *i_inlist = *S_inlist = *a_inlist = *k_inlist = *f_inlist = *t_inlist = -1;     /* put delimiters */
+    *i_inlist = *S_inlist = *a_inlist =
+      *k_inlist = *f_inlist = *t_inlist = -1;     /* put delimiters */
     i_outlist = inm->out_ndx_list = t_inlist + 1;
     S_outlist = i_outlist + i_outcnt + 1;
     a_outlist = S_outlist + S_outcnt + 1;
@@ -1222,24 +1233,29 @@ void oload(CSOUND *p)
     int     *strConstIndexList;
     MYFLT   ensmps;
 
-    p->esr = p->tran_sr; p->ekr = p->tran_kr;
-    p->e0dbfs = p->tran_0dbfs;
-    p->ksmps = (int) ((ensmps = p->tran_ksmps) + FL(0.5));
-    ip = p->instxtanchor.nxtinstxt;        /* for instr 0 optxts:  */
-    optxt = (OPTXT *) ip;
-    while ((optxt = optxt->nxtop) !=  NULL) {
-      TEXT  *ttp = &optxt->t;
-      ARGOFFS *inoffp, *outoffp;
-      int opnum = ttp->opnum;
-      if (opnum == ENDIN) break;
-      if (opnum == LABEL) continue;
-      outoffp = ttp->outoffs;           /* use unexpanded ndxes */
-      inoffp = ttp->inoffs;             /* to find sr.. assigns */
-      if (outoffp->count == 1 && inoffp->count == 1) {
-        int rindex = (int) outoffp->indx[0] - (int) p->poolcount;
-        if (rindex > 0 && rindex <= 6) {
-          MYFLT conval = p->pool[inoffp->indx[0] - 1];
-          switch (rindex) {
+    if (O->newParser) {
+      p->esr = p->tran_sr; p->ekr = p->tran_kr; p->ksmps = ensmps = p->tran_ksmps;
+      p->nchnls = p->tran_nchnls;
+      p->e0dbfs = p->tran_0dbfs;
+    }
+    else {
+      p->esr = p->tran_sr; p->ekr = p->tran_kr; p->ksmps = ensmps = p->tran_ksmps;
+      p->e0dbfs = p->tran_0dbfs;
+      ip = p->instxtanchor.nxtinstxt;        /* for instr 0 optxts:  */
+      optxt = (OPTXT *) ip;
+      while ((optxt = optxt->nxtop) !=  NULL) {
+        TEXT  *ttp = &optxt->t;
+        ARGOFFS *inoffp, *outoffp;
+        int opnum = ttp->opnum;
+        if (opnum == ENDIN) break;
+        if (opnum == LABEL) continue;
+        outoffp = ttp->outoffs;           /* use unexpanded ndxes */
+        inoffp = ttp->inoffs;             /* to find sr.. assigns */
+        if (outoffp->count == 1 && inoffp->count == 1) {
+          int rindex = (int) outoffp->indx[0] - (int) p->poolcount;
+          if (rindex > 0 && rindex <= 6) {
+            MYFLT conval = p->pool[inoffp->indx[0] - 1];
+            switch (rindex) {
             case 1:  p->esr = conval;   break;  /* & use those values */
             case 2:  p->ekr = conval;   break;  /*  to set params now */
             case 3:  p->ksmps = (int) ((ensmps = conval) + FL(0.5)); break;
@@ -1247,17 +1263,18 @@ void oload(CSOUND *p)
             case 5:  p->inchnls = (int) (conval + FL(0.5));  break;
             case 6:
             default: p->e0dbfs = conval; break;
+            }
           }
         }
       }
+      /* why I want oload() to return an error value.... */
+      if (UNLIKELY(p->e0dbfs <= FL(0.0)))
+        p->Die(p, Str("bad value for 0dbfs: must be positive."));
+      if (UNLIKELY(O->odebug))
+        p->Message(p, "esr = %7.1f, ekr = %7.1f, ksmps = %d, nchnls = %d "
+                   "0dbfs = %.1f\n",
+                   p->esr, p->ekr, p->ksmps, p->nchnls, p->e0dbfs);
     }
-    /* why I want oload() to return an error value.... */
-    if (UNLIKELY(p->e0dbfs <= FL(0.0)))
-      p->Die(p, Str("bad value for 0dbfs: must be positive."));
-    if (UNLIKELY(O->odebug))
-      p->Message(p, "esr = %7.1f, ekr = %7.1f, ksmps = %d, nchnls = %d "
-                    "0dbfs = %.1f\n",
-                    p->esr, p->ekr, p->ksmps, p->nchnls, p->e0dbfs);
     if (O->sr_override) {        /* if command-line overrides, apply now */
       p->esr = (MYFLT) O->sr_override;
       p->ekr = (MYFLT) O->kr_override;
@@ -1265,7 +1282,7 @@ void oload(CSOUND *p)
                                    / (MYFLT) O->kr_override)) + FL(0.5));
       p->Message(p, Str("sample rate overrides: "
                         "esr = %7.4f, ekr = %7.4f, ksmps = %d\n"),
-                    p->esr, p->ekr, p->ksmps);
+                 p->esr, p->ekr, p->ksmps);
     }
     /* number of MYFLT locations to allocate for a string variable */
     p->strVarSamples = (p->strVarMaxLen + (int) sizeof(MYFLT) - 1)
