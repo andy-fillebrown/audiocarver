@@ -54,7 +54,7 @@ static CS_NOINLINE int fout_deinit_callback(CSOUND *csound, void *p_)
           pp->name = (char*) NULL;
           pp->do_scale = 0;
           pp->refCount = 0U;
-
+      
           if (pp->fd != NULL) {
             if ((csound->oparms->msglevel & 7) == 7)
               csound->Message(csound, Str("Closing file '%s'...\n"),
@@ -176,6 +176,7 @@ static CS_NOINLINE int fout_open_file(CSOUND *csound, FOUT_FILE *p, void *fp,
       void    *fd;
       int     buf_reqd, do_scale = 0;
 
+      buf_reqd = (int) ((SF_INFO*) fileParams)->channels;
       if (fileType == CSFILE_SND_W) {
         do_scale = ((SF_INFO*) fileParams)->format;
         csFileType = csound->sftype2csfiletype(do_scale);
@@ -200,11 +201,10 @@ static CS_NOINLINE int fout_open_file(CSOUND *csound, FOUT_FILE *p, void *fp,
         sf_command(sf, SFC_SET_NORM_FLOAT, NULL, SF_FALSE);
 #endif
       }
-      if (csound->ksmps >= 512)
-        buf_reqd = csound->ksmps * ((SF_INFO*) fileParams)->channels;
-      else
-        buf_reqd = (1 + (int)(512 / csound->ksmps)) * csound->ksmps
-                   * ((SF_INFO*) fileParams)->channels;
+      /* reallocate buffer if necessary */
+      if ((int) ((SF_INFO*) fileParams)->channels > buf_reqd)
+        buf_reqd = (int) ((SF_INFO*) fileParams)->channels;
+      buf_reqd *= csound->ksmps;
       if (UNLIKELY(buf_reqd > pp->buf_size)) {
         pp->buf_size = buf_reqd;
         pp->buf = (MYFLT*) csound->ReAlloc(csound, pp->buf, sizeof(MYFLT)
@@ -263,18 +263,14 @@ static int outfile(CSOUND *csound, OUTFILE *p)
       }
     }
     else {
-      for (j = 0, k = p->buf_pos; j < nsmps; j++)
+      for (j = k = 0; j < nsmps; j++)
         for (i = 0; i < nargs; i++)
           pp->buf[k++] = p->argums[i][j] * p->scaleFac;
-      p->buf_pos = k;
-      if (p->buf_pos >= p->guard_pos) {
 #ifndef USE_DOUBLE
-        sf_write_float(p->f.sf, (float*) pp->buf, p->buf_pos);
+      sf_writef_float(p->f.sf, (float*) pp->buf, nsmps);
 #else
-        sf_write_double(p->f.sf, (double*) pp->buf, p->buf_pos);
+      sf_writef_double(p->f.sf, (double*) pp->buf, nsmps);
 #endif
-        p->buf_pos = 0;
-      }
     }
     return OK;
 }
@@ -310,20 +306,6 @@ static const int fout_format_table[50] = {
     (SF_FORMAT_PCM_24 | SF_FORMAT_IRCAM), (SF_FORMAT_DOUBLE | SF_FORMAT_IRCAM)
 };
 
-static int fout_flush_callback(CSOUND *csound, void *p_)
-{
-    OUTFILE            *p = (OUTFILE*) p_;
-    STDOPCOD_GLOBALS  *pp = (STDOPCOD_GLOBALS*) csound->stdOp_Env;
-
-    if (p->f.sf != NULL && p->buf_pos > 0)
-#ifndef USE_DOUBLE
-      sf_write_float(p->f.sf, (float*) pp->buf, p->buf_pos);
-#else
-      sf_write_double(p->f.sf, (double*) pp->buf, p->buf_pos);
-#endif
-    return OK;
-}
-
 static int outfile_set(CSOUND *csound, OUTFILE *p)
 {
     SF_INFO sfinfo;
@@ -341,13 +323,6 @@ static int outfile_set(CSOUND *csound, OUTFILE *p)
       sfinfo.format |= TYPE2SF(csound->oparms->filetyp);
     sfinfo.samplerate = (int) MYFLT2LRND(csound->esr);
     p->nargs = p->INOCOUNT - 2;
-    p->buf_pos = 0;
-
-    if (csound->ksmps >= 512)
-      p->guard_pos = csound->ksmps * p->nargs;
-    else
-      p->guard_pos = 512 * p->nargs;
-
     sfinfo.channels = p->nargs;
     n = fout_open_file(csound, &(p->f), NULL, CSFILE_SND_W,
                        p->fname, p->XSTRCODE, &sfinfo);
@@ -359,27 +334,22 @@ static int outfile_set(CSOUND *csound, OUTFILE *p)
     else
       p->scaleFac = FL(1.0);
 
-    csound->RegisterDeinitCallback(csound, p, fout_flush_callback);
     return OK;
 }
 
 static int koutfile(CSOUND *csound, KOUTFILE *p)
 {
     STDOPCOD_GLOBALS  *pp = (STDOPCOD_GLOBALS*) csound->stdOp_Env;
-    int   i, k;
+    int   i;
     int nargs = p->nargs;
 
-    for (i = 0, k = p->buf_pos; i < nargs; i++)
-      pp->buf[k++] = p->argums[i][0] * p->scaleFac;
-    p->buf_pos = k;
-    if (p->buf_pos >= p->guard_pos) {
+    for (i = 0; i < nargs; i++)
+      pp->buf[i] = p->argums[i][0] * p->scaleFac;
 #ifndef USE_DOUBLE
-      sf_write_float(p->f.sf, (float*) pp->buf, p->buf_pos);
+    sf_writef_float(p->f.sf, (float*) pp->buf, 1);
 #else
-      sf_write_double(p->f.sf, (double*) pp->buf, p->buf_pos);
+    sf_writef_double(p->f.sf, (double*) pp->buf, 1);
 #endif
-      p->buf_pos = 0;
-    }
     return OK;
 }
 
@@ -390,13 +360,6 @@ static int koutfile_set(CSOUND *csound, KOUTFILE *p)
 
     memset(&sfinfo, 0, sizeof(SF_INFO));
     p->nargs = p->INOCOUNT - 2;
-    p->buf_pos = 0;
-
-    if (csound->ksmps >= 512)
-      p->guard_pos = csound->ksmps * p->nargs;
-    else
-      p->guard_pos = 512 * p->nargs;
-
     sfinfo.channels = p->nargs;
     sfinfo.samplerate = (int) MYFLT2LRND(csound->ekr);
     format_ = (int) MYFLT2LRND(*p->iflag);
@@ -414,7 +377,6 @@ static int koutfile_set(CSOUND *csound, KOUTFILE *p)
     else
       p->scaleFac = FL(1.0);
 
-    csound->RegisterDeinitCallback(csound, p, fout_flush_callback);
     return OK;
 }
 
@@ -656,50 +618,31 @@ static int infile_set(CSOUND *csound, INFILE *p)
     p->currpos = MYFLT2LRND(*p->iskpfrms);
     p->flag = 1;
 
-    if (csound->ksmps >= 512)
-      p->frames = csound->ksmps;
-    else
-      p->frames = (int)(512 / csound->ksmps) * csound->ksmps;
-
-    p->guard_pos = p->frames * p->nargs;
-    p->buf_pos = p->guard_pos;
-
     return OK;
 }
 
 static int infile_act(CSOUND *csound, INFILE *p)
 {
     STDOPCOD_GLOBALS  *pp = (STDOPCOD_GLOBALS*) csound->stdOp_Env;
-    int   i, j = 0, k;
+    int   i, j = 0, k = 0, n;
     int nsmps = csound->ksmps, nargs = p->nargs;
 
     if (p->flag) {
-      if (p->buf_pos >= p->guard_pos) {
-        sf_seek(p->f.sf, p->currpos, SEEK_SET);
-        p->currpos += p->frames;
+      sf_seek(p->f.sf, p->currpos, SEEK_SET);
+      p->currpos += nsmps;
 #ifndef USE_DOUBLE
-        p->remain = (int) sf_readf_float(p->f.sf, (float*) pp->buf, p->frames);
+      n = (int) sf_readf_float(p->f.sf, (float*) pp->buf, nsmps);
 #else
-        p->remain = (int) sf_readf_double(p->f.sf, (double*) pp->buf, p->frames);
+      n = (int) sf_readf_double(p->f.sf, (double*) pp->buf, nsmps);
 #endif
-        p->buf_pos = 0;
-      }
-      if (p->remain < nsmps)
-        nsmps = p->remain;
-      for (k = p->buf_pos; j < nsmps; j++)
+      for ( ; j < n; j++)
         for (i = 0; i < nargs; i++)
           p->argums[i][j] = pp->buf[k++] * p->scaleFac;
-      p->buf_pos = k;
-      p->remain -= csound->ksmps;
-      if (p->remain <= 0 && p->buf_pos < p->guard_pos) {
-        p->flag = 0;
-        for (; j < csound->ksmps; j++)
-          for (i = 0; i < nargs; i++)
-            p->argums[i][j] = FL(0.0);
-      }
-      return OK;
+      if (n >= csound->ksmps)
+        return OK;
+      p->flag = 0;
     }
-    for ( ; j < csound->ksmps; j++)
+    for ( ; j < nsmps; j++)
       for (i = 0; i < nargs; i++)
         p->argums[i][j] = FL(0.0);
 
@@ -733,39 +676,26 @@ static int kinfile_set(CSOUND *csound, KINFILE *p)
     p->currpos = MYFLT2LRND(*p->iskpfrms);
     p->flag = 1;
 
-    if (csound->ksmps >= 512)
-      p->frames = csound->ksmps;
-    else
-      p->frames = (int)(512 / csound->ksmps) * csound->ksmps;
-
-    p->guard_pos = p->frames * p->nargs;
-    p->buf_pos = p->guard_pos;
-
     return OK;
 }
 
 static int kinfile(CSOUND *csound, KINFILE *p)
 {
     STDOPCOD_GLOBALS  *pp = (STDOPCOD_GLOBALS*) csound->stdOp_Env;
-    int   i, k;
+    int   i, n;
     int nargs = p->nargs;
 
     if (p->flag) {
-      if (p->buf_pos >= p->guard_pos) {
-        sf_seek(p->f.sf, p->currpos, SEEK_SET);
-        p->currpos += p->frames;
+      sf_seek(p->f.sf, p->currpos, SEEK_SET);
+       p->currpos++;
 #ifndef USE_DOUBLE
-        p->remain = (int) sf_readf_float(p->f.sf, (float*) pp->buf, p->frames);
+      n = (int) sf_readf_float(p->f.sf, (float*) pp->buf, 1);
 #else
-        p->remain = (int) sf_readf_double(p->f.sf, (double*) pp->buf, p->frames);
+      n = (int) sf_readf_double(p->f.sf, (double*) pp->buf, 1);
 #endif
-        p->buf_pos = 0;
-      }
-      if (p->remain > 0) {
-        for (i = 0, k = p->buf_pos; i < nargs; i++)
-          p->argums[i][0] = pp->buf[k++] * p->scaleFac;
-        p->buf_pos = k;
-        p->remain--;
+      if (n > 0) {
+        for (i = 0; i < nargs; i++)
+          p->argums[i][0] = pp->buf[i] * p->scaleFac;
         return OK;
       }
       p->flag = 0;
@@ -869,7 +799,7 @@ static int incr(CSOUND *csound, INCR *p)
 static int clear(CSOUND *csound, CLEARS *p)
 {
     int   nsmps = csound->ksmps, j;
-
+    
     for (j = 0; j < p->INOCOUNT; j++) {
       memset(p->argums[j], 0, sizeof(MYFLT)*nsmps);
     }
@@ -1012,7 +942,7 @@ static void sprints(char *outstring, char *fmt, MYFLT **kvals, int32 numVals)
 
           switch (*segwaiting) {
           case '%':
-            sprintf(outstring, "%%");
+            sprintf(outstring, "%");
             j--;
             break;
           case 'd':
@@ -1063,7 +993,7 @@ static void sprints(char *outstring, char *fmt, MYFLT **kvals, int32 numVals)
       if (segwaiting) {
         switch (*segwaiting) {
           case '%':
-            sprintf(outstring, "%%");
+            sprintf(outstring, "%");
             j--;
             break;
         case 'd':

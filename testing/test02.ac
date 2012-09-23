@@ -1,5 +1,5 @@
 
-<Score volume="1" length="128" startTime="0">
+<Score volume="1" length="128">
     <TrackList>
         <Track name="Track 1" volume="1" color="#0000ff" instrument="sine" visible="true" recording="false">
             <NoteList>
@@ -100,7 +100,7 @@
             </NoteList>
         </Track>
     </TrackList>
-    <GridSettings snapEnabled="true" gridSnapEnabled="true" timeSnap="0.125" pitchSnap="1" controlSnap="0.125">
+    <GridSettings>
         <TimeGridLineList>
             <TimeGridLine location="0" label="1" priority="0" color="#007f00"/>
             <TimeGridLine location="1" label="1.2" priority="64" color="#c0c0c0"/>
@@ -494,6 +494,6 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
     <ViewSettings timePosition="64" pitchPosition="63.5" controlPosition="0.5" timeScale="0.899999976158142" pitchScale="0.899999976158142" controlScale="0.899999976158142"/>
+    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>

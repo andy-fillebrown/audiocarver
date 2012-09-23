@@ -28,11 +28,7 @@
 #include <time.h>
 
 #define POW2TABSIZI 4096
-#if ULONG_MAX == 18446744073709551615UL
-#  define POW2MAX   (24.0)
-#else
-#  define POW2MAX   (15.0)
-#endif
+#define POW2MAX   24.0
 #define EIPT3       (25.0/3.0)
 #define LOGTWO      (0.69314718055994530942)
 #define STEPS       (32768)
@@ -52,36 +48,29 @@
     for (i = 0; i < OCTRES; i++)
       cpsocfrc[i] = POWER(FL(2.0), (MYFLT)i / OCTRES) * ONEPT;
     for (i = 0; i < POW2TABSIZI; i++)
-      powerof2[i] = POWER(FL(2.0),
-                          (MYFLT)i * (MYFLT)(1.0/POW2TABSIZI) - FL(POW2MAX));
+      powerof2[i] = POWER(FL(2.0), (MYFLT)i * (MYFLT)(1.0/POW2TABSIZI) - FL(POW2MAX));
 }*/
 
 /* initialise the tables, called by csoundPreCompile() */
 void csound_aops_init_tables(CSOUND *csound)
 {
     int   i;
-    if (csound->cpsocfrc==NULL)
-      csound->cpsocfrc = (MYFLT *) csound->Malloc(csound, sizeof(MYFLT)*OCTRES);
-    if (csound->powerof2==NULL)
-      csound->powerof2 = (MYFLT *) csound->Malloc(csound,
-                                                  sizeof(MYFLT)*POW2TABSIZI);
+    if(csound->cpsocfrc==NULL)csound->cpsocfrc = (MYFLT *) csound->Malloc(csound, sizeof(MYFLT)*OCTRES);
+    if(csound->powerof2==NULL) csound->powerof2 = (MYFLT *) csound->Malloc(csound, sizeof(MYFLT)*POW2TABSIZI);
     for (i = 0; i < OCTRES; i++)
       csound->cpsocfrc[i] = POWER(FL(2.0), (MYFLT)i / OCTRES) * ONEPT;
-    for (i = 0; i < POW2TABSIZI; i++) {
-      csound->powerof2[i] =
-        POWER(FL(2.0), (MYFLT)i * (MYFLT)(1.0/POW2TABSIZI) - FL(POW2MAX));
-    }
+    for (i = 0; i < POW2TABSIZI; i++)
+      csound->powerof2[i] = POWER(FL(2.0), (MYFLT)i * (MYFLT)(1.0/POW2TABSIZI) - FL(POW2MAX));
 }
 
 
-MYFLT csoundPow2(CSOUND *csound, MYFLT a)
-{
-    int n;
-    if (a > POW2MAX) a = POW2MAX;
-    else if (a < -POW2MAX) a = -POW2MAX;
-  /* 4096 * 15 */
-    n = (int)MYFLT2LRND(a * FL(POW2TABSIZI)) + POW2MAX*POW2TABSIZI;
+MYFLT csoundPow2(CSOUND *csound, MYFLT a){
+
+  if(a > POW2MAX) a = POW2MAX;
+  else if(a < -POW2MAX) a = -POW2MAX;
+    int n = (int)MYFLT2LRND(a * FL(POW2TABSIZI)) + POW2MAX*POW2TABSIZI;   /* 4096 * 15 */
     return ((MYFLT) (1UL << (n >> 12)) * csound->powerof2[n & (POW2TABSIZI-1)]);
+
 }
 
 
@@ -573,7 +562,6 @@ LIB1(sinh1,SINH)
 LIB1(cosh1,COSH)
 LIB1(tanh1,TANH)
 LIB1(log101,LOG10)
-LIB1(log21,LOG2)
 
 int atan21(CSOUND *csound, AOP *p)
 {
@@ -605,7 +593,6 @@ LIBA(sinha,SINH)
 LIBA(cosha,COSH)
 LIBA(tanha,TANH)
 LIBA(log10a,LOG10)
-LIBA(log2a,LOG2)
 
 int atan2aa(CSOUND *csound, AOP *p)
 {

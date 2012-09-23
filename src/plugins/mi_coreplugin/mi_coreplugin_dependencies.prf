@@ -1,0 +1,14 @@
+
+load(../qt_coreplugin/qt_coreplugin.prf)
+
+DIRS = \
+    dataobjects \
+    interfaces \
+    tools \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

@@ -123,14 +123,13 @@ static const char *shortUsageList[] = {
 
 static const char *longUsageList[] = {
   "--format={wav,aiff,au,raw,paf,svx,nist,voc,ircam,w64,mat4,mat5",
-  "          pvf,xi,htk,sds,avr,wavex,sd2,flac,caf,wve,ogg,mpc2k,rf64}",
-  "--format={alaw,ulaw,schar,uchar,float,double,short,long,24bit,vorbis}",
+  "          pvf,xi,htk,sds,avr,wavex,sd2,flac,caf,WVE,ogg,MPC,W64}",
+  "--format={alaw,ulaw,schar,uchar,float,short,long,24bit}",
   Str_noop("\t\t\tSet output file format"),
   Str_noop("--aiff\t\t\tSet AIFF format"),
   Str_noop("--au\t\t\tSet AU format"),
   Str_noop("--wave\t\t\tSet WAV format"),
   Str_noop("--ircam\t\t\tSet IRCAM format"),
-  Str_noop("--ogg\t\t\tSet OGG/VORBIS format"),
   Str_noop("--noheader\t\tRaw format"),
   Str_noop("--nopeaks\t\tDo not write peak information"),
   " ",
@@ -139,36 +138,30 @@ static const char *longUsageList[] = {
   Str_noop("--postscriptdisplay\tSuppress graphics, use Postscript displays"),
   " ",
   Str_noop("--defer-gen1\t\tDefer GEN01 soundfile loads until performance time"),
-  Str_noop("--iobufsamps=N\t\tSample frames (or -kprds) per software "
-           "sound I/O buffer"),
+  Str_noop("--iobufsamps=N\t\tSample frames (or -kprds) per software sound I/O buffer"),
   Str_noop("--hardwarebufsamps=N\tSamples per hardware sound I/O buffer"),
   Str_noop("--cscore\t\tUse Cscore processing of scorefile"),
-  Str_noop("--orc\t\t\tUse orchfile without scorefile"),
   " ",
   Str_noop("--midifile=FNAME\tRead MIDIfile event stream from file"),
   Str_noop("--midioutfile=FNAME\tWrite MIDI output to file FNAME"),
   Str_noop("--midi-device=FNAME\tRead MIDI realtime events from device"),
   Str_noop("--terminate-on-midi\tTerminate the performance when miditrack is done"),
   " ",
-  Str_noop("--heartbeat=N\t\tPrint a heartbeat style 1, 2 or 3 at each "
-           "soundfile write"),
+  Str_noop("--heartbeat=N\t\tPrint a heartbeat style 1, 2 or 3 at each soundfile write"),
   Str_noop("--notify\t\tNotify (ring the bell) when score or miditrack is done"),
-  Str_noop("--rewrite\t\tContinually rewrite header while writing soundfile "
-           "(WAV/AIFF)"),
+  Str_noop("--rewrite\t\tContinually rewrite header while writing soundfile (WAV/AIFF)"),
   " ",
   Str_noop("--input=FNAME\t\tSound input filename"),
   Str_noop("--output=FNAME\t\tSound output filename"),
   Str_noop("--logfile=FNAME\t\tLog output to file"),
   " ",
   Str_noop("--nosound\t\tNo sound onto disk or device"),
-  Str_noop("--tempo=N\t\tUse uninterpreted beats of the score, "
-           "initially at tempo N"),
+  Str_noop("--tempo=N\t\tUse uninterpreted beats of the score, initially at tempo N"),
   Str_noop("--i-only\t\tI-time only orch run"),
   Str_noop("--syntax-check-only\tStop after checking orchestra and score syntax"),
   Str_noop("--control-rate=N\tOrchestra krate override"),
   Str_noop("--sample-rate=N\t\tOrchestra srate override"),
-  Str_noop("--score-in=FNAME\tRead Line-oriented realtime score events "
-           "from device"),
+  Str_noop("--score-in=FNAME\tRead Line-oriented realtime score events from device"),
   Str_noop("--messagelevel=N\ttty message level, sum of:"),
   Str_noop("--messageolevel=O\ttty message level in octal, of:"),
   Str_noop("\t\t\t\t1=note amps, 2=out-of-range msg, 4=warnings,"),
@@ -216,10 +209,10 @@ static const char *longUsageList[] = {
   Str_noop("--midi-velocity-amp=N\tRoute MIDI note on message"),
   Str_noop("\t\t\tvelocity number to pfield N as amplitude"),
   Str_noop("--no-default-paths\tTurn off relative paths from CSD/ORC/SCO"),
-  //#if ENABLE_NEW_PARSER
+#if ENABLE_NEW_PARSER
   Str_noop("--new-parser\t\tUse new Bison-based parser"),
   Str_noop("--old-parser\t\tUse old parser"),
-  //#endif
+#endif
   " ",
   Str_noop("--help\t\t\tLong help"),
   NULL
@@ -288,10 +281,6 @@ void set_output_format(OPARMS *O, char c)
       O->outformat = AE_FLOAT;   /* float soundfile */
       break;
 
-    case 'd':
-      O->outformat = AE_DOUBLE;  /* double soundfile */
-      break;
-
     case 's':
       O->outformat = AE_SHORT;   /* short_int soundfile*/
       break;
@@ -312,10 +301,6 @@ void set_output_format(OPARMS *O, char c)
       O->outformat = AE_FLOAT;   /* float soundfile (for rescaling) */
       break;
 
-    case 'v':
-      O->outformat = AE_VORBIS;  /* Xiph Vorbis encoding */
-      break;
-
     default:
       return; /* do nothing */
     };
@@ -328,9 +313,9 @@ typedef struct  {
 
 static const SAMPLE_FORMAT_ENTRY sample_format_map[] = {
   { "alaw",   'a' },  { "schar",  'c' },  { "uchar",  '8' },
-  { "float",  'f' },  { "double", 'd' },  { "long",   'l' },
+  { "float",  'f' },  { "long",   'l' },
   { "short",  's' },  { "ulaw",   'u' },  { "24bit",  '3' },
-  { "vorbis", 'v' },  { NULL, '\0' }
+  { NULL, '\0' }
 };
 
 typedef struct {
@@ -348,10 +333,18 @@ static const SOUNDFILE_TYPE_ENTRY file_type_map[] = {
     { "pvf",    TYP_PVF   },  { "xi",     TYP_XI    },
     { "htk",    TYP_HTK   },  { "sds",    TYP_SDS   },
     { "avr",    TYP_AVR   },  { "wavex",  TYP_WAVEX },
+#if defined(HAVE_LIBSNDFILE) && HAVE_LIBSNDFILE >= 1011
     { "sd2",    TYP_SD2   },
+#  if HAVE_LIBSNDFILE >= 1013
     { "flac",   TYP_FLAC  },  { "caf",    TYP_CAF   },
-    { "wve",    TYP_WVE   },  { "ogg",    TYP_OGG   },
-    { "mpc2k",  TYP_MPC2K },  { "rf64",   TYP_RF64  },
+#  endif
+#  if HAVE_LIBSNDFILE >= 1018
+    { "WVE",    TYP_WVE   },  { "ogg",    TYP_OGG   },
+#  endif
+#  if HAVE_LIBSNDFILE >= 1019
+    { "MPC",    TYPE_MPC2K }, { "W64",    TYP_RF64  },
+#  endif
+#endif
     { NULL , -1 }
 };
 
@@ -425,10 +418,6 @@ static int decode_long(CSOUND *csound, char *s, int argc, char **argv)
       O->inbufsamps = O->outbufsamps = atoi(s);
       return 1;
     }
-    else if (!(strcmp (s, "orc"))) {
-      csound->use_only_orchfile = 1;    /* orchfile without scorefile */
-      return 1;
-    }
     else if (!(strcmp (s, "cscore"))) {
       O->usingcscore = 1;               /* use cscore processing  */
       return 1;
@@ -468,12 +457,12 @@ static int decode_long(CSOUND *csound, char *s, int argc, char **argv)
     }
     /* -g */
     else if (!(strcmp (s, "asciidisplay"))) {
-      O->graphsoff = 1;                 /* do not use graphics but ASCII */
+      O->graphsoff = 1;                 /* don't use graphics but ASCII */
       return 1;
     }
     /* -G */
     else if (!(strcmp (s, "postscriptdisplay"))) {
-      O->postscript = 1;                /* do not use graphics but PostScript */
+      O->postscript = 1;                /* don't use graphics but PostScript */
       return 1;
     }
     /* -h */
@@ -527,11 +516,6 @@ static int decode_long(CSOUND *csound, char *s, int argc, char **argv)
      */
     else if (!(strcmp (s, "ircam"))) {
       O->filetyp = TYP_IRCAM;           /* IRCAM output request */
-      return 1;
-    }
-    else if (!(strcmp (s, "ogg"))) {
-      O->filetyp = TYP_OGG;             /* OGG output request   */
-      O->outformat = AE_VORBIS;         /* Xiph Vorbis encoding */
       return 1;
     }
     /*
@@ -870,7 +854,7 @@ static int decode_long(CSOUND *csound, char *s, int argc, char **argv)
       longusage(csound);
       csound->LongJmp(csound, 0);
     }
-    //#ifdef ENABLE_NEW_PARSER
+#ifdef ENABLE_NEW_PARSER
     else if (!(strcmp(s, "new-parser"))) {
       O->newParser = 1;             /* Use New Parser */
       return 1;
@@ -903,7 +887,7 @@ static int decode_long(CSOUND *csound, char *s, int argc, char **argv)
       O->newParser = 0;             /* Use Old Parser */
       return 1;
     }
-    //#endif
+#endif
 
     csoundErrorMsg(csound, Str("unknown long option: '--%s'"), s);
     return 0;
@@ -1044,7 +1028,7 @@ int argdecode(CSOUND *csound, int argc, char **argv_)
             O->displays = 0;              /* no func displays */
             break;
           case 'g':
-            O->graphsoff = 1;             /* do not use graphics */
+            O->graphsoff = 1;             /* don't use graphics */
             break;
           case 'G':
             O->postscript = 1;            /* Postscript graphics*/

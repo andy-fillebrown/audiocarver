@@ -24,8 +24,6 @@
 */
 
 #include "csoundCore.h"
-        /* needed for bison 2.6 */
-#include "parse_param.h"
 #include "csound_orc.h"
 #include <math.h>
 #include <ctype.h>
@@ -139,7 +137,7 @@ static void intyperr(CSOUND *csound, int n, char *s, char *opname,
       break;
     case '?': strcpy(t,"?");
       break;
-    }
+  }
     synterr(csound, Str("input arg %d '%s' of type %s not allowed when "
                         "expecting %c (for opcode %s), line %d\n"),
             n+1, s, t, expect, opname, line);
@@ -303,7 +301,7 @@ void set_xincod(CSOUND *csound, TEXT *tp, OENTRY *ep, int line)
       csound->DebugMsg(csound, "%s(%d): treqd: %c, tfound %c\n",
                        __FILE__, __LINE__,treqd, tfound);
       csound->DebugMsg(csound, "treqd %c, tfound_m %d ST(lgprevdef) %d\n",
-                       treqd, tfound_m, ST(lgprevdef));
+                       treqd, tfound_m);
       if (!(tfound_m & (ARGTYP_c|ARGTYP_p)) && !ST(lgprevdef) && *s != '"') {
         synterr(csound,
                 Str("input arg '%s' used before defined (in opcode %s),"
@@ -317,30 +315,30 @@ void set_xincod(CSOUND *csound, TEXT *tp, OENTRY *ep, int line)
         tp->xincod_str |= (1 << n);
       /* IV - Oct 31 2002: simplified code */
       if (!(tfound_m & ST(typemask_tabl_in)[(unsigned char) treqd])) {
-        /* check for exceptional types */
-        switch (treqd) {
-        case 'Z':                             /* indef kakaka ... */
-          if (!(tfound_m & (n & 1 ? ARGTYP_a : ARGTYP_ipcrk)))
-            intyperr(csound, n, s, ep->opname, tfound, treqd, line);
-          break;
-        case 'x':
-          treqd_m = ARGTYP_ipcr;              /* also allows i-rate */
-        case 's':                             /* a- or k-rate */
-          treqd_m |= ARGTYP_a | ARGTYP_k;
-          if (tfound_m & treqd_m) {
-            if (tfound == 'a' && tp->outlist->count != 0) {
-              long outyp_m =                  /* ??? */
-                ST(typemask_tabl)[(unsigned char) argtyp2(csound,
-                                                          tp->outlist->arg[0])];
-              if (outyp_m & (ARGTYP_a | ARGTYP_w)) break;
-            }
-            else
-              break;
-          }
-        default:
+      /* check for exceptional types */
+      switch (treqd) {
+      case 'Z':                             /* indef kakaka ... */
+        if (!(tfound_m & (n & 1 ? ARGTYP_a : ARGTYP_ipcrk)))
           intyperr(csound, n, s, ep->opname, tfound, treqd, line);
-          break;
+        break;
+      case 'x':
+        treqd_m = ARGTYP_ipcr;              /* also allows i-rate */
+      case 's':                             /* a- or k-rate */
+      treqd_m |= ARGTYP_a | ARGTYP_k;
+      if (tfound_m & treqd_m) {
+        if (tfound == 'a' && tp->outlist->count != 0) {
+          long outyp_m =                  /* ??? */
+            ST(typemask_tabl)[(unsigned char) argtyp2(csound,
+                                                     tp->outlist->arg[0])];
+          if (outyp_m & (ARGTYP_a | ARGTYP_w)) break;
         }
+        else
+          break;
+      }
+      default:
+        intyperr(csound, n, s, ep->opname, tfound, treqd, line);
+        break;
+      }
       }
     }
     csound->DebugMsg(csound, "xincod = %d", tp->xincod);
@@ -397,7 +395,7 @@ void set_xoutcod(CSOUND *csound, TEXT *tp, OENTRY *ep, int line)
 
 /**
  * Create an Opcode (OPTXT) from the AST node given. Called from
- * create_instrument.
+ * create_udo and create_instrument.
  */
 OPTXT *create_opcode(CSOUND *csound, TREE *root, INSTRTXT *ip)
 {
@@ -500,27 +498,15 @@ OPTXT *create_opcode(CSOUND *csound, TREE *root, INSTRTXT *ip)
 
         /* update_lclcount(csound, ip, root->right); */
 
-      }
-      /* update_lclcount(csound, ip, root->left); */
+        argcount = 0;
 
-
-      /* VERIFY ARG LISTS MATCH OPCODE EXPECTED TYPES */
-
-      {
-        OENTRY *ep = csound->opcodlst + tp->opnum;
-        int argcount = 0;
-        //        csound->Message(csound, "Opcode InTypes: %s\n", ep->intypes);
-        //        csound->Message(csound, "Opcode OutTypes: %s\n", ep->outypes);
-
-        for (outargs = root->left; outargs != NULL; outargs = outargs->next) {
-          arg = outargs->value->lexeme;
-          tp->outlist->arg[argcount++] = strsav_string(csound, arg);
-        }
-        set_xincod(csound, tp, ep, root->line);
         /* OUTARGS */
         for (outargs = root->left; outargs != NULL; outargs = outargs->next) {
 
           arg = outargs->value->lexeme;
+
+          tp->outlist->arg[argcount++] =
+            strsav_string(csound, arg);
 
           if ((n = pnum(arg)) >= 0) {
             if (n > ip->pmax)  ip->pmax = n;
@@ -536,6 +522,19 @@ OPTXT *create_opcode(CSOUND *csound, TREE *root, INSTRTXT *ip)
           }
 
         }
+      }
+      /* update_lclcount(csound, ip, root->left); */
+
+
+      /* VERIFY ARG LISTS MATCH OPCODE EXPECTED TYPES */
+
+      {
+        OENTRY *ep = csound->opcodlst + tp->opnum;
+
+        //        csound->Message(csound, "Opcode InTypes: %s\n", ep->intypes);
+        //        csound->Message(csound, "Opcode OutTypes: %s\n", ep->outypes);
+
+        set_xincod(csound, tp, ep, root->line);
         set_xoutcod(csound, tp, ep, root->line);
 
         if (root->right != NULL) {
@@ -577,6 +576,16 @@ OPTXT *create_opcode(CSOUND *csound, TREE *root, INSTRTXT *ip)
 }
 
 
+
+/**
+ * Create a UDO (INSTRTXT) from the AST node given. Called from
+ * csound_orc_compile.
+ */
+INSTRTXT *create_udo(CSOUND *csound, TREE *root)
+{
+    INSTRTXT *ip = (INSTRTXT *) mcalloc(csound, sizeof(INSTRTXT));
+    return ip;
+}
 
 /**
  * Create an Instrument (INSTRTXT) from the AST node given for use as
@@ -635,7 +644,7 @@ INSTRTXT *create_instrument0(CSOUND *csound, TREE *root)
           csound->Message(csound, "In INSTR 0: %s\n", current->value->lexeme);
 
         if (current->type == '='
-            && strcmp(current->value->lexeme, "=.r") == 0) {
+           && strcmp(current->value->lexeme, "=.r") == 0) {
 
           MYFLT val = csound->pool[constndx(csound,
                                             current->right->value->lexeme)];
@@ -677,8 +686,8 @@ INSTRTXT *create_instrument0(CSOUND *csound, TREE *root)
 
         op = last_optxt(op);
 
-      }
-      current = current->next;
+        }
+        current = current->next;
     }
 
     close_instrument(csound, ip);
@@ -746,22 +755,21 @@ INSTRTXT *create_instrument(CSOUND *csound, TREE *root)
       c = csound->Malloc(csound, 10); /* arbritrarily chosen number of digits */
       sprintf(c, "%ld", instrNum);
 
-      if (UNLIKELY(PARSER_DEBUG))
+      if (PARSER_DEBUG)
           csound->Message(csound,
                           Str("create_instrument: instr num %ld\n"), instrNum);
 
       ip->t.inlist->arg[0] = strsav_string(csound, c);
 
       csound->Free(csound, c);
-    }
-    else if (root->left->type == T_IDENT &&
-             !(root->left->left != NULL &&
-               root->left->left->type == UDO_ANS_TOKEN)) { /* named instrument */
+    } else if (root->left->type == T_IDENT &&
+               !(root->left->left != NULL &&
+                 root->left->left->type == UDO_ANS_TOKEN)) { /* named instrument */
       int32  insno_priority = -1L;
       c = root->left->value->lexeme;
 
-      if (UNLIKELY(PARSER_DEBUG))
-        csound->Message(csound, Str("create_instrument: instr name %s\n"), c);
+      if (PARSER_DEBUG)
+          csound->Message(csound, Str("create_instrument: instr name %s\n"), c);
 
       if (UNLIKELY(root->left->rate == (int) '+')) {
         insno_priority--;
@@ -778,15 +786,16 @@ INSTRTXT *create_instrument(CSOUND *csound, TREE *root)
 
     }
 
+
     current = statements;
 
     while (current != NULL) {
-      OPTXT * optxt = create_opcode(csound, current, ip);
+        OPTXT * optxt = create_opcode(csound, current, ip);
 
-      op->nxtop = optxt;
-      op = last_optxt(op);
+        op->nxtop = optxt;
+        op = last_optxt(op);
 
-      current = current->next;
+        current = current->next;
     }
 
     close_instrument(csound, ip);
@@ -810,7 +819,7 @@ void close_instrument(CSOUND *csound, INSTRTXT * ip)
     current = (OPTXT *)ip;
 
     while (current->nxtop != NULL) {
-      current = current->nxtop;
+        current = current->nxtop;
     }
 
     current->nxtop = bp;
@@ -851,13 +860,13 @@ void close_instrument(CSOUND *csound, INSTRTXT * ip)
     /* align to 8 bytes for "spectral" types */
 
     /*if ((int) sizeof(MYFLT) < 8 &&
-      (ST(lclnxtwcnt) + ST(lclnxtpcnt)) > 0)
+        (ST(lclnxtwcnt) + ST(lclnxtpcnt)) > 0)
       ip->lclkcnt = (ip->lclkcnt + 1) & (~1);
-      ip->lclwcnt = ST(lclnxtwcnt);
-      ip->lclacnt = ST(lclnxtacnt);
-      ip->lclpcnt = ST(lclnxtpcnt);
-      ip->lclscnt = ST(lclnxtscnt);
-      ip->lclfixed = ST(lclnxtkcnt) + ST(lclnxtwcnt) * Wfloats
+    ip->lclwcnt = ST(lclnxtwcnt);
+    ip->lclacnt = ST(lclnxtacnt);
+    ip->lclpcnt = ST(lclnxtpcnt);
+    ip->lclscnt = ST(lclnxtscnt);
+    ip->lclfixed = ST(lclnxtkcnt) + ST(lclnxtwcnt) * Wfloats
                                   + ST(lclnxtpcnt) * Pfloats;*/
     /*ip->opdstot = opdstot;*/      /* store total opds reqd */
     /*ip->muted = 1;*/              /* Allow to play */
@@ -898,22 +907,20 @@ void insert_instrtxt(CSOUND *csound, INSTRTXT *instrtxt, int32 instrNum) {
     int i;
 
     if (UNLIKELY(instrNum > csound->maxinsno)) {
-      int old_maxinsno = csound->maxinsno;
+        int old_maxinsno = csound->maxinsno;
 
-      /* expand */
-      while (instrNum > csound->maxinsno) {
-        csound->maxinsno += MAXINSNO;
-      }
+        /* expand */
+        while (instrNum > csound->maxinsno) {
+            csound->maxinsno += MAXINSNO;
+        }
 
-      csound->instrtxtp =
-        (INSTRTXT**)mrealloc(csound,
-                             csound->instrtxtp,
-                             (1 + csound->maxinsno) * sizeof(INSTRTXT*));
+        csound->instrtxtp = (INSTRTXT**)mrealloc(csound,
+                csound->instrtxtp, (1 + csound->maxinsno) * sizeof(INSTRTXT*));
 
-      /* Array expected to be nulled so.... */
-      for (i = old_maxinsno + 1; i <= csound->maxinsno; i++) {
-        csound->instrtxtp[i] = NULL;
-      }
+        /* Array expected to be nulled so.... */
+        for (i = old_maxinsno + 1; i <= csound->maxinsno; i++) {
+              csound->instrtxtp[i] = NULL;
+        }
     }
 
     if (UNLIKELY(csound->instrtxtp[instrNum] != NULL)) {
@@ -929,15 +936,15 @@ OPCODINFO *find_opcode_info(CSOUND *csound, char *opname)
     OPCODINFO *opinfo = csound->opcodeInfo;
     if (UNLIKELY(opinfo == NULL)) {
       csound->Message(csound, Str("!!! csound->opcodeInfo is NULL !!!\n"));
-      return NULL;
+        return NULL;
     }
 
     while (opinfo != NULL) {
-      //csound->Message(csound, "%s : %s\n", opinfo->name, opname);
-      if (UNLIKELY(strcmp(opinfo->name, opname) == 0)) {
-        return opinfo;
-      }
-      opinfo = opinfo->prv;   /* Move on: JPff suggestion */
+        csound->Message(csound, "%s : %s\n", opinfo->name, opname);
+        if (UNLIKELY(strcmp(opinfo->name, opname) == 0)) {
+            return opinfo;
+        }
+        opinfo = opinfo->prv;   /* Move on: JPff suggestion */
     }
 
     return NULL;
@@ -1043,7 +1050,7 @@ void csound_orc_compile(CSOUND *csound, TREE *root)
           TREE *p =  current->left;
           //printf("instlist case:\n"); /* This code is suspect */
           while (p) {
-            if (UNLIKELY(PARSER_DEBUG)) print_tree(csound, "Top of loop\n", p);
+            if (PARSER_DEBUG) print_tree(csound, "Top of loop\n", p);
             if (p->left) {
               //print_tree(csound, "Left\n", p->left);
               if (p->left->type == INTEGER_TOKEN) {
@@ -1060,8 +1067,7 @@ void csound_orc_compile(CSOUND *csound, TREE *root)
                 if (UNLIKELY(!check_instr_name(c))) {
                   synterr(csound, Str("invalid name for instrument"));
                 }
-                if (UNLIKELY(!named_instr_alloc(csound,
-                                                c, instrtxt, insno_priority))) {
+                if (UNLIKELY(!named_instr_alloc(csound, c, instrtxt, insno_priority))) {
                   synterr(csound, Str("instr %s redefined"), c);
                 }
                 instrtxt->insname = c;
@@ -1082,8 +1088,7 @@ void csound_orc_compile(CSOUND *csound, TREE *root)
                 if (UNLIKELY(!check_instr_name(c))) {
                   synterr(csound, Str("invalid name for instrument"));
                 }
-                if (UNLIKELY(!named_instr_alloc(csound, c,
-                                                instrtxt, insno_priority))) {
+                if (UNLIKELY(!named_instr_alloc(csound, c, instrtxt, insno_priority))) {
                   synterr(csound, Str("instr %s redefined"), c);
                 }
                 instrtxt->insname = c;
@@ -1135,7 +1140,7 @@ void csound_orc_compile(CSOUND *csound, TREE *root)
         csound->Message(csound,
                         Str("Unknown TREE node of type %d found in root.\n"),
                         current->type);
-        if (UNLIKELY(PARSER_DEBUG)) print_tree(csound, NULL, current);
+        if (PARSER_DEBUG) print_tree(csound, NULL, current);
       }
 
       current = current->next;
@@ -1185,21 +1190,21 @@ void csound_orc_compile(CSOUND *csound, TREE *root)
     }
     /* That deals with missing values, however we do need ksmps to be integer */
     {
+      CSOUND    *p = (CSOUND*) csound;
       char      err_msg[128];
       sprintf(err_msg, "sr = %.7g, kr = %.7g, ksmps = %.7g\nerror:",
-                       csound->tran_sr, csound->tran_kr, csound->tran_ksmps);
-      if (UNLIKELY(csound->tran_sr <= FL(0.0)))
-        synterr(csound, Str("%s invalid sample rate"), err_msg);
-      if (UNLIKELY(csound->tran_kr <= FL(0.0)))
-        synterr(csound, Str("%s invalid control rate"), err_msg);
-      else if (UNLIKELY(csound->tran_ksmps < FL(0.75) ||
-                        FLOAT_COMPARE(csound->tran_ksmps,
-                                      MYFLT2LRND(csound->tran_ksmps))))
-        synterr(csound, Str("%s invalid ksmps value"), err_msg);
-      else
-        if (UNLIKELY(FLOAT_COMPARE(csound->tran_sr,
-                                   (double) csound->tran_kr * csound->tran_ksmps)))
-        synterr(csound, Str("%s inconsistent sr, kr, ksmps"), err_msg);
+                       p->tran_sr, p->tran_kr, p->tran_ksmps);
+      if (UNLIKELY(p->tran_sr <= FL(0.0)))
+        synterr(p, Str("%s invalid sample rate"), err_msg);
+      if (UNLIKELY(p->tran_kr <= FL(0.0)))
+        synterr(p, Str("%s invalid control rate"), err_msg);
+      else if (UNLIKELY(p->tran_ksmps < FL(0.75) ||
+                        FLOAT_COMPARE(p->tran_ksmps,
+                                      MYFLT2LRND(p->tran_ksmps))))
+        synterr(p, Str("%s invalid ksmps value"), err_msg);
+      else if (UNLIKELY(FLOAT_COMPARE(p->tran_sr,
+                                      (double) p->tran_kr * p->tran_ksmps)))
+        synterr(p, Str("%s inconsistent sr, kr, ksmps"), err_msg);
     }
 
     ip = csound->instxtanchor.nxtinstxt;
@@ -1209,7 +1214,7 @@ void csound_orc_compile(CSOUND *csound, TREE *root)
       int thread, opnum = bp->t.opnum;
       if (opnum == ENDIN) break;
       if (opnum == LABEL) continue;
-  if (UNLIKELY(PARSER_DEBUG))
+      if (PARSER_DEBUG)
         csound->DebugMsg(csound, "Instr 0 check on opcode=%s\n", bp->t.opcod);
       if (UNLIKELY((thread = csound->opcodlst[opnum].thread) & 06 ||
                    (!thread && bp->t.pftype != 'b'))) {
@@ -1253,7 +1258,7 @@ void csound_orc_compile(CSOUND *csound, TREE *root)
         TEXT *ttp = &optxt->t;
         optxtcount += 1;
         if (ttp->opnum == ENDIN                     /*    (until ENDIN)      */
-            || ttp->opnum == ENDOP) break;   /* (IV - Oct 26 2002: or ENDOP) */
+            || ttp->opnum == ENDOP) break;  /* (IV - Oct 26 2002: or ENDOP) */
         if ((count = ttp->inlist->count)!=0)
           sumcount += count +1;                     /* count the non-nullist */
         if ((count = ttp->outlist->count)!=0)       /* slots in all arglists */
@@ -1350,7 +1355,7 @@ static void insprep(CSOUND *csound, INSTRTXT *tp)
           csound->nlabels += NLABELS;
           if (lblsp - labels >= csound->nlabels)
             csound->nlabels = lblsp - labels + 2;
-          if (UNLIKELY(PARSER_DEBUG && csound->oparms->msglevel))
+          if (csound->oparms->msglevel)
             csound->Message(csound,
                             Str("LABELS list is full...extending to %d\n"),
                             csound->nlabels);
@@ -1388,7 +1393,7 @@ static void insprep(CSOUND *csound, INSTRTXT *tp)
             if (largp - larg >= csound->ngotos) {
               int oldn = csound->ngotos;
               csound->ngotos += NGOTOS;
-              if (UNLIKELY(PARSER_DEBUG && csound->oparms->msglevel))
+              if (csound->oparms->msglevel)
                 csound->Message(csound,
                                 Str("GOTOS list is full..extending to %d\n"),
                                 csound->ngotos);
@@ -1576,7 +1581,7 @@ static int constndx(CSOUND *csound, const char *s)
     n = ST(poolcount)++;
     if (n >= ST(nconsts)) {
       ST(nconsts) = ((ST(nconsts) + (ST(nconsts) >> 3)) | (NCONSTS - 1)) + 1;
-      if (UNLIKELY(PARSER_DEBUG && csound->oparms->msglevel))
+      if (UNLIKELY(csound->oparms->msglevel))
         csound->Message(csound, Str("extending Floating pool to %d\n"),
                                 ST(nconsts));
       csound->pool = (MYFLT*) mrealloc(csound, csound->pool, ST(nconsts)
@@ -1856,7 +1861,7 @@ char argtyp2(CSOUND *csound, char *s)
 }
 
 /* For diagnostics map file name or macro name to an index */
-uint8_t file_to_int(CSOUND *csound, const char *name)
+int file_to_int(CSOUND *csound, const char *name)
 {
     extern char *strdup(const char *);
     int n = 0;

@@ -225,7 +225,7 @@ int plukset(CSOUND *csound, PLUCK *p)
     if (*p->ifn == 0.0)
       for (n=npts; n--; )                       /* f0: fill w. rands */
         *ap++ = (MYFLT) rand16(csound) * DV32768;
-    else if ((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL) {
+    else if ((ftp = csound->FTFind(csound, p->ifn)) != NULL) {
       fp = ftp->ftable;                         /* else from ftable  */
       phs = FL(0.0);
       phsinc = (MYFLT)(ftp->flen/npts);
@@ -294,7 +294,7 @@ int pluck(CSOUND *csound, PLUCK *p)
     phsinc = (int32)(*p->kcps * p->sicps);
     phs256 = p->phs256;
     ltwopi = p->npts << 8;
-    if (UNLIKELY(phsinc > ltwopi)) goto err2;
+    if (phsinc > ltwopi) goto err2;
     for (n=0; n<nsmps; n++) {
       offset = phs256 >> 8;
       fp = (MYFLT *)p->auxch.auxp + offset;     /* lookup position   */
@@ -417,7 +417,7 @@ static int16 rand15(CSOUND *csound)
  */
 
 #define BIPOLAR 0x7FFFFFFF      /* Constant to make bipolar */
-#define RIA (16807)             /* multiplier */
+#define RIA 16807               /* multiplier */
 #define RIM 0x7FFFFFFFL         /* 2**31 - 1 */
 
 #define dv2_31          (FL(4.656612873077392578125e-10))

@@ -27,9 +27,9 @@
 #include "csmodule.h"
 #include "corfile.h"
 
-//#ifdef ENABLE_NEW_PARSER
+#ifdef ENABLE_NEW_PARSER
 #include "csound_orc.h"
-//#endif
+#endif
 
 #ifdef PARCS
 #include "cs_par_base.h"
@@ -51,10 +51,10 @@ extern  void    openMIDIout(CSOUND *);
 extern  int     read_unified_file(CSOUND *, char **, char **);
 extern  OENTRY  opcodlst_1[];
 extern  uintptr_t  kperfThread(void * cs);
-//#if defined(ENABLE_NEW_PARSER)
-extern void cs_init_math_constants_macros(CSOUND *csound,PRE_PARM *yyscanner);
-extern void cs_init_omacros(CSOUND *csound, PRE_PARM* yyscanner, NAMES *nn);
-//#endif
+#if defined(ENABLE_NEW_PARSER)
+extern void cs_init_math_constants_macros(CSOUND *csound,void *yyscanner);
+extern void cs_init_omacros(CSOUND *csound, NAMES *nn);
+#endif
 
 static void create_opcodlst(CSOUND *csound)
 {
@@ -103,7 +103,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
 
     init_pvsys(csound);
     /* utilities depend on this as well as orchs; may get changed by an orch */
-    /* dbfs_init(csound, DFLT_DBFS); */
+    dbfs_init(csound, DFLT_DBFS);
     csound->csRtClock = (RTCLOCK*) csound->Calloc(csound, sizeof(RTCLOCK));
     csoundInitTimerStruct(csound->csRtClock);
     csound->engineState |= CS_STATE_COMP | CS_STATE_CLN;
@@ -128,7 +128,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
     {
       char buffer[128];
       sf_command(NULL, SFC_GET_LIB_VERSION, buffer, 128);
-      csound->DebugMsg(csound, "%s\n", buffer);
+      csound->Message(csound, "%s\n", buffer);
     }
 
     /* do not know file type yet */
@@ -184,7 +184,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       if (fd != NULL) {
         readOptions(csound, csrc, 0);
         csound->Message(csound,
-                        Str("Reading options from local directory .csoundrc \n"));
+                        "Reading options from local directory .csoundrc \n");
         csound->FileClose(csound, fd);
       }
     }
@@ -197,31 +197,35 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
     /* check for CSD file */
     if (csound->orchname == NULL)
       dieu(csound, Str("no orchestra name"));
-    else if (csound->use_only_orchfile == 0
-             && (csound->scorename == NULL || csound->scorename[0] == (char) 0)
-             && csound->orchname[0] != '\0') {
-      /* FIXME: allow orc/sco/csd name in CSD file: does this work ? */
-      csound->orcname_mode = 0;
-      csound->Message(csound, "UnifiedCSD: %s\n", csound->orchname);
+    else if (csound->scorename == NULL || csound->scorename[0] == (char) 0) {
+      int   tmp = (int) strlen(csound->orchname) - 4;
+      if (tmp >= 0 && csound->orchname[tmp] == '.' &&
+          tolower(csound->orchname[tmp + 1]) == 'c' &&
+          tolower(csound->orchname[tmp + 2]) == 's' &&
+          tolower(csound->orchname[tmp + 3]) == 'd') {
+        /* FIXME: allow orc/sco/csd name in CSD file: does this work ? */
+        csound->orcname_mode = 0;
+        csound->Message(csound, "UnifiedCSD:  %s\n", csound->orchname);
 
-      /* Add directory of CSD file to search paths before orchname gets
-       * replaced with temp orch name if default paths is enabled */
-      if (!O->noDefaultPaths) {
-        fileDir = csoundGetDirectoryForPath(csound, csound->orchname);
-        csoundAppendEnv(csound, "SADIR", fileDir);
-        csoundAppendEnv(csound, "SSDIR", fileDir);
-        csoundAppendEnv(csound, "INCDIR", fileDir);
-        csoundAppendEnv(csound, "MFDIR", fileDir);
-        mfree(csound, fileDir);
+        /* Add directory of CSD file to search paths before orchname gets
+         * replaced with temp orch name if default paths is enabled */
+        if (!O->noDefaultPaths) {
+          fileDir = csoundGetDirectoryForPath(csound, csound->orchname);
+          csoundAppendEnv(csound, "SADIR", fileDir);
+          csoundAppendEnv(csound, "SSDIR", fileDir);
+          csoundAppendEnv(csound, "INCDIR", fileDir);
+          csoundAppendEnv(csound, "MFDIR", fileDir);
+          mfree(csound, fileDir);
+        }
+
+        csound->csdname = csound->orchname; /* save original CSD name */
+        if (!read_unified_file(csound, &(csound->orchname),
+                                       &(csound->scorename))) {
+          csound->Die(csound, Str("Reading CSD failed ... stopping"));
+        }
+
+        csdFound = 1;
       }
-
-      csound->csdname = csound->orchname; /* save original CSD name */
-      if (!read_unified_file(csound, &(csound->orchname),
-                             &(csound->scorename))) {
-        csound->Die(csound, Str("Reading CSD failed ... stopping"));
-      }
-
-      csdFound = 1;
     }
 
     /* IV - Feb 19 2005: run a second pass of argdecode so that */
@@ -281,7 +285,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
 
     if (csound->scorename == NULL && csound->scorestr==NULL) {
       /* No scorename yet */
-      csound->scorestr = corfile_create_r("f0 800000000000.0\n");
+      csound->scorestr = corfile_create_r("f0 42000\n");
       corfile_flush(csound->scorestr);
       if (O->RTevents)
         csound->Message(csound, Str("realtime performance using dummy "
@@ -307,14 +311,14 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
 
     if (csound->orchstr==NULL) {
       /*  does not deal with search paths */
-      csound->Message(csound, Str("orchname: %s\n"), csound->orchname);
+      csound->Message(csound, Str("orchname:  %s\n"), csound->orchname);
       csound->orchstr = copy_to_corefile(csound, csound->orchname, NULL, 0);
       if (csound->orchstr==NULL)
         csound->Die(csound,
                     Str("Failed to open input file %s\n"), csound->orchname);
-      //#ifdef ENABLE_NEW_PARSER
+#ifdef ENABLE_NEW_PARSER
       if (O->newParser) corfile_puts("\n#exit\n", csound->orchstr);
-      //#endif
+#endif
       corfile_putc('\0', csound->orchstr);
       corfile_putc('\0', csound->orchstr);
       //csound->orchname = NULL;
@@ -328,7 +332,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
     if (csoundInitModules(csound) != 0)
       csound->LongJmp(csound, 1);
 
-    //#ifdef ENABLE_NEW_PARSER
+#ifdef ENABLE_NEW_PARSER
     if (O->newParser) {
       int new_orc_parser(CSOUND *);
       if (new_orc_parser(csound)) {
@@ -336,18 +340,18 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       }
     }
     else {
-      csound->Message(csound,     "********************\n");
-      csound->Message(csound, Str("* USING OLD PARSER *\n"));
-      csound->Message(csound,     "********************\n");
+      csound->Message(csound, "********************\n");
+      csound->Message(csound, "* USING OLD PARSER *\n");
+      csound->Message(csound, "********************\n");
       otran(csound);                  /* read orcfile, setup desblks & spaces */
     }
-    //#else
-    //    otran(csound);                  /* read orcfile, setup desblks & spaces */
-    //#endif
+#else
+    otran(csound);                  /* read orcfile, setup desblks & spaces */
+#endif
 #if defined(USE_OPENMP)
     if (csound->oparms->numThreads > 1) {
       omp_set_num_threads(csound->oparms->numThreads);
-      csound->Message(csound, Str("OpenMP enabled: requested %d threads.\n"),
+      csound->Message(csound, "OpenMP enabled: requested %d threads.\n",
                       csound->oparms->numThreads);
     }
 #endif
@@ -357,8 +361,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
     if (!csoundYield(csound))
       return -1;
     /* IV - Oct 31 2002: now we can read and sort the score */
-    if (csound->scorename != NULL &&
-        (n = strlen(csound->scorename)) > 4 &&  /* if score ?.srt or ?.xtr */
+    if ((n = strlen(csound->scorename)) > 4 &&  /* if score ?.srt or ?.xtr */
         (!strcmp(csound->scorename + (n - 4), ".srt") ||
          !strcmp(csound->scorename + (n - 4), ".xtr"))) {
       csound->Message(csound, Str("using previous %s\n"), csound->scorename);
@@ -373,7 +376,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
         if (csound->scorestr==NULL)
           csoundDie(csound, Str("cannot open scorefile %s"), csound->scorename);
       }
-      csound->Message(csound, Str("Sorting score\n"));
+      csound->Message(csound, Str("sorting score ...\n"));
       scsortstr(csound, csound->scorestr);
       if (csound->keep_tmp) {
         FILE *ff = fopen("score.srt", "w");
@@ -391,7 +394,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       fclose(xfile);
       csound->tempStatus &= ~csPlayScoMask;
     }
-    /* csound->Message(csound, Str("\t... done\n")); */
+    csound->Message(csound, Str("\t... done\n"));
     /* copy sorted score name */
     O->playscore = csound->scstr;
     /* IV - Jan 28 2005 */

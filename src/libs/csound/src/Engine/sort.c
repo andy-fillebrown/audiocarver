@@ -125,7 +125,7 @@ static void inline sift(SRTBLK *A[], int data[])
 
 static void inline trinkle(SRTBLK *A[], int data[])
 {
-    int p1, r2, r3, r0, temp;
+    int p1,r2,r3, r0, temp;
     SRTBLK * T;
     p1 = p; b1 = b; c1 = c;
     r0 = r1; T = A[r0];
@@ -140,13 +140,13 @@ static void inline trinkle(SRTBLK *A[], int data[])
         p1--;
         if (b1==1) {
           A[r1] = A[r3];
-          r1    = r3;
+          r1 = r3;
         }
         else
           if (b1 >= 3) {
             r2 = r1-b1+c1;
             if (! ordering(A[r1-1],A[r2])) {
-              r2   = r1-1;
+              r2 = r1-1;
               DOWN(b1,c1)
               p1 <<= 1;
             }
@@ -179,8 +179,7 @@ static void inline semitrinkle(SRTBLK *A[], int data[])
 static void smoothsort(SRTBLK *A[], const int N)
 {
     int temp;
-    int data[] = {/*q*/ 1, /*r*/  0, /*p*/  1, /*b*/  1,
-                  /*c*/ 1, /*r1*/ 0, /*b1*/ 0, /*c1*/ 0};
+    int data[] = {/*q*/ 1, /*r*/ 0, /*p*/ 1, /*b*/ 1, /*c*/ 1, 0,0,0};
 
     /* building tree */
     while (q < N) {
@@ -199,7 +198,7 @@ static void smoothsort(SRTBLK *A[], const int N)
         p <<= 1;
         while (b > 1) {
           DOWN(b,c)
-          p <<= 1;
+            p <<= 1;
         }
         p++;
       }

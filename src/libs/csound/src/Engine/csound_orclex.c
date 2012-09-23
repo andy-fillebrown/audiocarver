@@ -701,9 +701,8 @@ static yyconst flex_int16_t yy_chk[632] =
 #define YYLTYPE ORCTOKEN*
 #include "tok.h"
 #define YY_DECL int csound_orclex (YYLTYPE *lvalp, CSOUND *csound, yyscan_t yyscanner)
-//#include "parse_param.h"
-#include "csound_orc.h"
 #include "csound_orcparse.h"
+#include "csound_orc.h"
 #include "corfile.h"
 YYSTYPE *yylval_param;
 YYLTYPE *yylloc_param;
@@ -739,7 +738,7 @@ int get_next_char(char *, int, struct yyguts_t*);
 
 
 
-#line 743 "Engine/csound_orclex.c"
+#line 742 "Engine/csound_orclex.c"
 
 #define INITIAL 0
 #define line 1
@@ -991,9 +990,9 @@ YY_DECL
 	register int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-#line 98 "csound_orc.l"
+#line 97 "csound_orc.l"
 
-#line 997 "Engine/csound_orclex.c"
+#line 996 "Engine/csound_orclex.c"
 
     yylval = yylval_param;
 
@@ -1083,13 +1082,13 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 99 "csound_orc.l"
+#line 98 "csound_orc.l"
 { } /* EATUP THIS PART OF WINDOWS NEWLINE */
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 101 "csound_orc.l"
+#line 100 "csound_orc.l"
 { csound_orcset_lineno(1+csound_orcget_lineno(yyscanner),
                                        yyscanner);
  }
@@ -1097,302 +1096,302 @@ YY_RULE_SETUP
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 104 "csound_orc.l"
+#line 103 "csound_orc.l"
 { csound_orcset_lineno(1+csound_orcget_lineno(yyscanner),
                                        yyscanner);
                   return NEWLINE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 107 "csound_orc.l"
+#line 106 "csound_orc.l"
 { return '('; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 108 "csound_orc.l"
+#line 107 "csound_orc.l"
 { return ')'; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 109 "csound_orc.l"
+#line 108 "csound_orc.l"
 { return '['; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 110 "csound_orc.l"
+#line 109 "csound_orc.l"
 { return ']'; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 111 "csound_orc.l"
+#line 110 "csound_orc.l"
 { return '+'; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 112 "csound_orc.l"
+#line 111 "csound_orc.l"
 { return '-'; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 113 "csound_orc.l"
+#line 112 "csound_orc.l"
 { return '*'; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 114 "csound_orc.l"
+#line 113 "csound_orc.l"
 { return '/'; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 115 "csound_orc.l"
+#line 114 "csound_orc.l"
 { return '%'; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 116 "csound_orc.l"
+#line 115 "csound_orc.l"
 { return '^'; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 117 "csound_orc.l"
+#line 116 "csound_orc.l"
 { return '?'; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 118 "csound_orc.l"
+#line 117 "csound_orc.l"
 { return ':'; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 119 "csound_orc.l"
+#line 118 "csound_orc.l"
 { return ','; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 120 "csound_orc.l"
+#line 119 "csound_orc.l"
 { return '!'; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 121 "csound_orc.l"
+#line 120 "csound_orc.l"
 { return S_NEQ; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 122 "csound_orc.l"
+#line 121 "csound_orc.l"
 { return S_AND; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 123 "csound_orc.l"
+#line 122 "csound_orc.l"
 { return S_OR; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 124 "csound_orc.l"
+#line 123 "csound_orc.l"
 { return S_BITSHIFT_LEFT; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 125 "csound_orc.l"
+#line 124 "csound_orc.l"
 { return S_BITSHIFT_RIGHT; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 126 "csound_orc.l"
+#line 125 "csound_orc.l"
 { return S_LT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 127 "csound_orc.l"
+#line 126 "csound_orc.l"
 { return S_LE; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 128 "csound_orc.l"
+#line 127 "csound_orc.l"
 { return S_EQ; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 129 "csound_orc.l"
+#line 128 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = '=';
                   return '='; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 132 "csound_orc.l"
+#line 131 "csound_orc.l"
 { return S_GT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 133 "csound_orc.l"
+#line 132 "csound_orc.l"
 { return S_GE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 134 "csound_orc.l"
+#line 133 "csound_orc.l"
 { return '|'; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 135 "csound_orc.l"
+#line 134 "csound_orc.l"
 { return '&'; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 136 "csound_orc.l"
+#line 135 "csound_orc.l"
 { return '#'; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 137 "csound_orc.l"
+#line 136 "csound_orc.l"
 { return '~'; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 138 "csound_orc.l"
+#line 137 "csound_orc.l"
 { return '~'; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 139 "csound_orc.l"
+#line 138 "csound_orc.l"
 { *lvalp = do_at(csound, 1, yyg); return INTEGER_TOKEN; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 140 "csound_orc.l"
+#line 139 "csound_orc.l"
 { *lvalp = do_at(csound, 0, yyg); return INTEGER_TOKEN; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 141 "csound_orc.l"
+#line 140 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = IF_TOKEN;
                   return IF_TOKEN; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 144 "csound_orc.l"
+#line 143 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = THEN_TOKEN;
                   return THEN_TOKEN; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 147 "csound_orc.l"
+#line 146 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = ITHEN_TOKEN;
                   return ITHEN_TOKEN; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 150 "csound_orc.l"
+#line 149 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = KTHEN_TOKEN;
                   return KTHEN_TOKEN; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 153 "csound_orc.l"
+#line 152 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = ELSEIF_TOKEN;
                   return ELSEIF_TOKEN; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 156 "csound_orc.l"
+#line 155 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = ELSE_TOKEN;
                   return ELSE_TOKEN; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 159 "csound_orc.l"
+#line 158 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = ENDIF_TOKEN;
                   return ENDIF_TOKEN; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 162 "csound_orc.l"
+#line 161 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = UNTIL_TOKEN;
                   return UNTIL_TOKEN; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 165 "csound_orc.l"
+#line 164 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = DO_TOKEN;
                   return DO_TOKEN; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 168 "csound_orc.l"
+#line 167 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = OD_TOKEN;
                   return OD_TOKEN; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 172 "csound_orc.l"
+#line 171 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = GOTO_TOKEN;
                   return GOTO_TOKEN; };
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 175 "csound_orc.l"
+#line 174 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = IGOTO_TOKEN;
                   return IGOTO_TOKEN; };
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 178 "csound_orc.l"
+#line 177 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = KGOTO_TOKEN;
                   return KGOTO_TOKEN; };
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 182 "csound_orc.l"
+#line 181 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = SRATE_TOKEN;
                   return SRATE_TOKEN; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 185 "csound_orc.l"
+#line 184 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = KRATE_TOKEN;
                   return KRATE_TOKEN; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 188 "csound_orc.l"
+#line 187 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = KSMPS_TOKEN;
                   return KSMPS_TOKEN; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 191 "csound_orc.l"
+#line 190 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = NCHNLS_TOKEN;
                   return NCHNLS_TOKEN; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 194 "csound_orc.l"
+#line 193 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = NCHNLSI_TOKEN;
                   return NCHNLSI_TOKEN; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 197 "csound_orc.l"
+#line 196 "csound_orc.l"
 {
                   namedInstrFlag = 1;
                   return INSTR_TOKEN;
@@ -1400,15 +1399,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 201 "csound_orc.l"
+#line 200 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = ENDIN_TOKEN;
                   return ENDIN_TOKEN; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 204 "csound_orc.l"
+#line 203 "csound_orc.l"
 {
+                  PARM->clearBufferAfterEOF = 0;
                   return UDOSTART_DEFINITION;
                 }
 	YY_BREAK
@@ -1416,12 +1416,13 @@ case 57:
 YY_RULE_SETUP
 #line 207 "csound_orc.l"
 {
+                  PARM->clearBufferAfterEOF = 0;
                   *lvalp = new_token(csound, UDOEND_TOKEN); return UDOEND_TOKEN;
                 }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 211 "csound_orc.l"
+#line 212 "csound_orc.l"
 { char *pp = yytext;
                   while (*pp==' ' || *pp=='\t') pp++;
                   *lvalp = make_label(csound, pp); return LABEL_TOKEN;
@@ -1429,7 +1430,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 216 "csound_orc.l"
+#line 217 "csound_orc.l"
 {
                   PARM->xstrbuff = (char *)malloc(128);
                   PARM->xstrptr = 0; PARM->xstrmax = 128;
@@ -1440,7 +1441,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 224 "csound_orc.l"
+#line 225 "csound_orc.l"
 {
                   BEGIN(INITIAL);
                   PARM->xstrbuff[PARM->xstrptr++] = '"';
@@ -1453,7 +1454,7 @@ YY_RULE_SETUP
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 233 "csound_orc.l"
+#line 234 "csound_orc.l"
 { /* THe next two should be one case but I cannot get that to work */
                   if (PARM->xstrptr+2==PARM->xstrmax) {
                       PARM->xstrbuff = (char *)realloc(PARM->xstrbuff,
@@ -1467,12 +1468,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 244 "csound_orc.l"
+#line 245 "csound_orc.l"
 { }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 245 "csound_orc.l"
+#line 246 "csound_orc.l"
 { if (PARM->xstrptr+2==PARM->xstrmax) {
                       PARM->xstrbuff = (char *)realloc(PARM->xstrbuff,
                                                        PARM->xstrmax+=80);
@@ -1486,7 +1487,7 @@ YY_RULE_SETUP
 case 64:
 /* rule 64 can match eol */
 YY_RULE_SETUP
-#line 255 "csound_orc.l"
+#line 256 "csound_orc.l"
 { *lvalp = make_string(csound, yytext); return (STRING_TOKEN); }
 	YY_BREAK
 case 65:
@@ -1495,7 +1496,7 @@ case 65:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 257 "csound_orc.l"
+#line 258 "csound_orc.l"
 { *lvalp = make_string(csound, yytext);
                   csound->Message(csound,
                           Str("unterminated string found on line %d >>%s<<\n"),
@@ -1505,7 +1506,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 264 "csound_orc.l"
+#line 265 "csound_orc.l"
 { *lvalp = make_token(csound, yytext);
                   (*lvalp)->type = ZERODBFS_TOKEN;
                   /* csound->Message(csound,"%d\n", (*lvalp)->type); */
@@ -1513,7 +1514,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 268 "csound_orc.l"
+#line 269 "csound_orc.l"
 { *lvalp = lookup_token(csound, yytext, yyscanner);
                   /* csound->Message(csound,"%s -> %d\n",
                                      yytext, (*lvalp)->type); */
@@ -1521,7 +1522,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 272 "csound_orc.l"
+#line 273 "csound_orc.l"
 {
                     if (udoflag == 0) {
                         *lvalp = make_string(csound, yytext);
@@ -1539,61 +1540,61 @@ YY_RULE_SETUP
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 286 "csound_orc.l"
+#line 287 "csound_orc.l"
 { *lvalp = make_num(csound, yytext); return (NUMBER_TOKEN); }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 287 "csound_orc.l"
+#line 288 "csound_orc.l"
 { }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 289 "csound_orc.l"
+#line 290 "csound_orc.l"
 { BEGIN(line); }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 291 "csound_orc.l"
+#line 292 "csound_orc.l"
 /* eat the whitespace */
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 292 "csound_orc.l"
+#line 293 "csound_orc.l"
 { csound_orcset_lineno(atoi(yytext), yyscanner); }
 	YY_BREAK
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 293 "csound_orc.l"
+#line 294 "csound_orc.l"
 {BEGIN(INITIAL);}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 295 "csound_orc.l"
+#line 296 "csound_orc.l"
 { BEGIN(src); }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 297 "csound_orc.l"
+#line 298 "csound_orc.l"
 /* eat the whitespace */
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 298 "csound_orc.l"
+#line 299 "csound_orc.l"
 { PARM->locn = atoi(yytext); }
 	YY_BREAK
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 299 "csound_orc.l"
+#line 300 "csound_orc.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(line):
 case YY_STATE_EOF(src):
 case YY_STATE_EOF(xstr):
-#line 302 "csound_orc.l"
+#line 303 "csound_orc.l"
 {
                   yyterminate();
                   /* int n; */
@@ -1634,10 +1635,10 @@ case YY_STATE_EOF(xstr):
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 340 "csound_orc.l"
+#line 341 "csound_orc.l"
 ECHO;
 	YY_BREAK
-#line 1641 "Engine/csound_orclex.c"
+#line 1642 "Engine/csound_orclex.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2817,7 +2818,7 @@ void csound_orcfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 340 "csound_orc.l"
+#line 341 "csound_orc.l"
 
 
 

@@ -121,8 +121,8 @@ void csp_orc_sa_global_read_write_add_list(CSOUND *csound,
     }
     else if (UNLIKELY(write == NULL  || read == NULL)) {
       csound->Die(csound,
-                  Str("Invalid NULL parameter set to add to global read, "
-                      "write lists\n"));
+                  "Invalid NULL parameter set to add to global read, "
+                  "write lists\n");
     }
     else {
       struct set_t *new = NULL;
@@ -147,11 +147,11 @@ void csp_orc_sa_global_write_add_list(CSOUND *csound, struct set_t *set)
 {
     if (csound->instCurr == NULL) {
       csound->Message(csound,
-                      Str("Add a global write_list without any instruments\n"));
+                      "Add a global write_list without any instruments\n");
     }
     else if (UNLIKELY(set == NULL)) {
       csound->Die(csound,
-                  Str("Invalid NULL parameter set to add to a global write_list\n"));
+                  "Invalid NULL parameter set to add to a global write_list\n");
     }
     else {
       struct set_t *new = NULL;
@@ -167,14 +167,11 @@ void csp_orc_sa_global_write_add_list(CSOUND *csound, struct set_t *set)
 void csp_orc_sa_global_read_add_list(CSOUND *csound, struct set_t *set)
 {
     if (csound->instCurr == NULL) {
-      if (UNLIKELY(PARSER_DEBUG))
-          csound->Message(csound,
-                          Str("add a global read_list without any instruments\n"));
+      csound->Message(csound, "add a global read_list without any instruments\n");
     }
     else if (UNLIKELY(set == NULL)) {
       csound->Die(csound,
-                  Str("Invalid NULL parameter set to add to a "
-                      "global read_list\n"));
+                  "Invalid NULL parameter set to add to a global read_list\n");
     }
     else {
       struct set_t *new = NULL;
@@ -195,15 +192,37 @@ void csp_orc_sa_interlocksf(CSOUND *csound, int code)
       struct set_t *ww = NULL;
       csp_set_alloc_string(csound, &ww);
       csp_set_alloc_string(csound, &rr);
-      if (code&ZR) csp_set_add(csound, rr, "##zak");
-      if (code&ZW) csp_set_add(csound, ww, "##zak");
-      if (code&TR) csp_set_add(csound, rr, "##tab");
-      if (code&TW) csp_set_add(csound, ww, "##tab");
-      if (code&CR) csp_set_add(csound, rr, "##chn");
-      if (code&CW) csp_set_add(csound, ww, "##chn");
-      if (code&SB) {
-        csp_set_add(csound, rr, "##stk");
-        csp_set_add(csound, ww, "##stk");
+      switch (code&0xfff8) {
+      case ZR:
+        csp_set_add(csound, rr, "##zak");
+        break;
+      case ZW:
+        csp_set_add(csound, ww, "##zak");
+        break;
+      case ZB:
+        csp_set_add(csound, rr, "##zak");
+        csp_set_add(csound, ww, "##zak");
+        break;
+      case TR:
+        csp_set_add(csound, rr, "##tab");
+        break;
+      case TW:
+        csp_set_add(csound, ww, "##tab");
+        break;
+      case TB:
+        csp_set_add(csound, rr, "##tab");
+        csp_set_add(csound, ww, "##tab");
+        break;
+      case CR:
+        csp_set_add(csound, rr, "##chn");
+        break;
+      case CW:
+        csp_set_add(csound, ww, "##chn");
+        break;
+      case CB:
+        csp_set_add(csound, rr, "##chn");
+        csp_set_add(csound, ww, "##chn");
+        break;
       }
       csp_orc_sa_global_read_write_add_list(csound, ww, rr);
     }
@@ -256,8 +275,8 @@ void csp_orc_sa_instr_add_tree(CSOUND *csound, TREE *x)
         return;
       }
       if (UNLIKELY(x->type != T_INSTLIST)) {
-        csound->DebugMsg(csound,Str("type %d not T_INSTLIST\n"), x->type);
-        csound->Die(csound, Str("Not a proper list of ints"));
+        csound->DebugMsg(csound,"type %d not T_INSTLIST\n", x->type);
+        csound->Die(csound, "Not a proper list of ints");
       }
       csp_orc_sa_instr_add(csound, x->left->value->lexeme);
       x = x->right;

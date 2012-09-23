@@ -40,14 +40,14 @@ static int make_Modal4(CSOUND *csound,
 {
     FUNC        *ftp;
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound,ifn)) != NULL))
+    if (LIKELY((ftp = csound->FTFind(csound,ifn)) != NULL))
       m->vibr = ftp;
     else {                                              /* Expect sine wave */
       return csound->PerfError(csound, Str("No table for Modal4 case"));
     }
     make_Envelope(&m->envelope);
-        /*  We do not make the excitation wave here yet,   */
-        /*  because we do not know what it's going to be.  */
+        /*  We don't make the excitation wave here yet,   */
+        /*  because we don't know what it's going to be.  */
     make_BiQuad(&m->filters[0]);
     make_BiQuad(&m->filters[1]);
     make_BiQuad(&m->filters[2]);
@@ -240,15 +240,14 @@ int marimbaset(CSOUND *csound, MARIMBA *p)
     int         itemp;
     FUNC        *ftp;
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL))
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL))
       p->m4.wave = ftp;
     else {                                    /* Expect an impulslything */
       return csound->InitError(csound, Str("No table for Marimba strike"));
     }
 
     if (UNLIKELY(make_Modal4(csound,
-                             m, p->ivfn, *p->vibAmt, *p->vibFreq)==NOTOK))
-      return NOTOK;
+                             m, p->ivfn, *p->vibAmt, *p->vibFreq)==NOTOK)) return NOTOK;
     p->m4.w_phaseOffset = FL(0.0);
 /*     p->m4.w_rate = 0.5; */
     Modal4_setRatioAndReson(csound,m,0, FL(1.00), FL(0.9996)); /* Set all 132.0 */
@@ -355,14 +354,14 @@ int vibraphnset(CSOUND *csound, VIBRAPHN *p)
     MYFLT       temp;
     FUNC        *ftp;
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL))
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL))
       p->m4.wave = ftp;         /* Expect an impulslything */
     else {
       return csound->InitError(csound, Str("No table for Vibraphone strike"));
     }
 
-    if (UNLIKELY(make_Modal4(csound, m, p->ivfn, *p->vibAmt, *p->vibFreq)==NOTOK))
-      return NOTOK;
+    if (UNLIKELY(make_Modal4(csound,
+                             m, p->ivfn, *p->vibAmt, *p->vibFreq)==NOTOK)) return NOTOK;
 
     p->m4.w_phaseOffset = FL(0.0);
 /*     p->m4.w_rate = 13.33; */
@@ -437,13 +436,13 @@ int agogobelset(CSOUND *csound, VIBRAPHN *p)
     MYFLT       temp;
 
     /* Expect an impulslything */
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL)) p->m4.wave = ftp;
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL)) p->m4.wave = ftp;
     else {
       return csound->InitError(csound, Str("No table for Agogobell strike"));
     }
 
-    if (UNLIKELY(make_Modal4(csound, m, p->ivfn, *p->vibAmt, *p->vibFreq)==NOTOK))
-      return NOTOK;
+    if (UNLIKELY(make_Modal4(csound,
+                             m, p->ivfn, *p->vibAmt, *p->vibFreq)==NOTOK)) return NOTOK;
 
     p->m4.w_phaseOffset = FL(0.0);
 /*     p->m4.w_rate = 7.0; */

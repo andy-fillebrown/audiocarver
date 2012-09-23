@@ -1,4 +1,5 @@
 
-load(../csound_common.prf)
+INCLUDEPATH *= $$dirname(PWD)/src/H
+DEPENDPATH *= $$dirname(PWD)/src/H
 
 LIBS *= -l$$qtLibraryName(csound)

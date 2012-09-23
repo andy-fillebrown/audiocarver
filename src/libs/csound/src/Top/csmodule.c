@@ -81,8 +81,7 @@
 #if defined(__MACH__)
 #include <TargetConditionals.h>
 #if (TARGET_OS_IPHONE == 0) && (TARGET_IPHONE_SIMULATOR == 0)
-#if defined(MAC_OS_X_VERSION_10_6) && \
-  (MAC_OS_X_VERSION_MIN_REQUIRED>=MAC_OS_X_VERSION_10_6)
+#if defined(MAC_OS_X_VERSION_10_6) && (MAC_OS_X_VERSION_MIN_REQUIRED>=MAC_OS_X_VERSION_10_6)
 #define NEW_MACH_CODE
 #else
 #define OLD_MACH_CODE
@@ -543,8 +542,7 @@ static OSErr GetFragmentName(CSOUND* csound, FSSpecPtr libr, char* name)
 }
 
 /* Examine each file in theFolder and load it if it is a Csound plugin */
-static OSErr SearchFolderAndLoadPlugins(CSOUND *csound,
-                                        FSSpecPtr theFolder, int* cserr)
+static OSErr SearchFolderAndLoadPlugins(CSOUND *csound, FSSpecPtr theFolder, int* cserr)
 {
     OSErr      err, err2;
     int        result;
@@ -575,15 +573,13 @@ static OSErr SearchFolderAndLoadPlugins(CSOUND *csound,
                 catinfo.hFileInfo.ioFlFndrInfo.fdCreator == 'Csnd') {
                 /* this is a Csound plugin library */
                 err2 = FSMakeFSSpec(catinfo.hFileInfo.ioVRefNum,
-                      catinfo.hFileInfo.ioFlParID, catinfo.hFileInfo.ioNamePtr,
-                                    &spec);
+                      catinfo.hFileInfo.ioFlParID, catinfo.hFileInfo.ioNamePtr, &spec);
                 if (err2 != noErr) continue; /* this really should not happen */
                 err2 = GetFragmentName(csound, &spec, fragname);
                 result = CSOUND_SUCCESS;
                 if (err2 == noErr) result = csoundLoadExternal(csound, fragname);
                 /* record serious errors */
-                if (result != CSOUND_SUCCESS && result != CSOUND_ERROR)
-                  *cserr = result;
+                if (result != CSOUND_SUCCESS && result != CSOUND_ERROR) *cserr = result;
                 /* continue to search folder when one file fails to load */
             }
         }
@@ -655,7 +651,7 @@ int csoundLoadModules(CSOUND *csound)
     err = FindCsoundExtensionsFolder(&pluginDir);
     if  (err == noErr)
         SearchFolderAndLoadPlugins(csound, &pluginDir, &cserr);
-    /* ignore errors from search & we do not care if unable to locate */
+    /* ignore errors from search & we don't care if unable to locate */
 
     return cserr;
 }
@@ -1081,7 +1077,7 @@ int csoundOpenLibrary(void **library, const char *libraryPath)
     case NSObjectFileImageSuccess:
       /* It was okay, so use NSLinkModule to link in the image */
       *library = NSLinkModule(ofi, libraryPath, flags);
-      /* do not forget to destroy the object file
+      /* Don't forget to destroy the object file
          image, unless you like leaks */
       NSDestroyObjectFileImage(ofi);
       /* If the mode was global, then change the module, this avoids
@@ -1307,6 +1303,7 @@ extern long hrtfearly_localops_init(CSOUND *, void *);
 extern long minmax_localops_init(CSOUND *, void *);
 
 extern long stackops_localops_init(CSOUND *, void *);
+extern long vbap_localops_init(CSOUND *, void *);
 extern long vaops_localops_init(CSOUND *, void*);
 extern long ugakbari_localops_init(CSOUND *, void *);
 extern long harmon_localops_init(CSOUND *, void *);
@@ -1340,7 +1337,7 @@ const INITFN staticmodules[] = { hrtfopcodes_localops_init, babo_localops_init,
                                  hrtferX_localops_init, loscilx_localops_init,
                                  pan2_localops_init, tabvars_localops_init,
                                  phisem_localops_init, pvoc_localops_init,
-                                 stackops_localops_init,
+                                 stackops_localops_init, vbap_localops_init,
                                  ugakbari_localops_init, harmon_localops_init,
                                  pitchtrack_localops_init, partikkel_localops_init,
                                  shape_localops_init, tabsum_localops_init,

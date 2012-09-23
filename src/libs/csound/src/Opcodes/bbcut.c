@@ -347,8 +347,7 @@ static int BBCutStereo(CSOUND *csound, BBCUTSTEREO *p)
     MYFLT envmult,out1,out2;/* intermediates for enveloping grains */
 
     for (i=0;i<nsmps;i++) {
-      /* a new phrase of cuts */
-      if (UNLIKELY((p->unitsdone+FL(0.000001))>=p->totalunits)) {
+      if (UNLIKELY((p->unitsdone+FL(0.000001))>=p->totalunits)) {/* a new phrase of cuts */
         p->numbarsnow  = random_number(csound, 1, p->Phrasebars);
         p->totalunits  = p->numbarsnow*p->Subdiv;
 

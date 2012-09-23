@@ -1,0 +1,18 @@
+
+load(../mi_coreplugin/mi_coreplugin.prf)
+
+DIRS = \
+    dataobjects \
+    filers \
+    implementations \
+    interfaces \
+    graphicsview \
+    models \
+    tools \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

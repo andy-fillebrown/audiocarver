@@ -40,7 +40,7 @@
 static int syncgrain_init(CSOUND *csound, syncgrain *p)
 {
     int size;
-    p->efunc = csound->FTnp2Find(csound, p->ifn2);
+    p->efunc = csound->FTFind(csound, p->ifn2);
     if (UNLIKELY(p->efunc == NULL))
       return NOTOK;
 
@@ -91,8 +91,8 @@ static int syncgrain_process(CSOUND *csound, syncgrain *p)
     int     datasize = p->datasize, envtablesize = p->envtablesize;
 
     pitch  = *p->pitch;
-    fperiod = FABS(csound->esr/(*p->fr));
-    //if (UNLIKELY(fperiod  < 0)) fperiod = -fperiod;
+    fperiod = csound->esr/(*p->fr);
+    if (UNLIKELY(fperiod  < 0)) fperiod = -fperiod;
     amp =    *p->amp;
     grsize = csound->esr * *p->grsize;
     if (UNLIKELY(grsize<1)) goto err1;
@@ -179,7 +179,7 @@ static int syncgrain_process(CSOUND *csound, syncgrain *p)
 
 static int syncgrainloop_init(CSOUND *csound, syncgrainloop *p)
 {
-    p->efunc = csound->FTnp2Find(csound, p->ifn2);
+    p->efunc = csound->FTFind(csound, p->ifn2);
     if (UNLIKELY(p->efunc == NULL))
       return NOTOK;
 
@@ -244,8 +244,8 @@ static int syncgrainloop_process(CSOUND *csound, syncgrainloop *p)
                               loop_start, loop_end, loopsize);     */
 
     pitch  = *p->pitch;
-    fperiod = FABS(csound->esr/(*p->fr));
-    //if (UNLIKELY(fperiod  < 0)) fperiod = -fperiod;
+    fperiod = csound->esr/(*p->fr);
+    if (UNLIKELY(fperiod  < 0)) fperiod = -fperiod;
     amp =    *p->amp;
     grsize = csound->esr * *p->grsize;
     if (UNLIKELY(grsize<1)) goto err1;
@@ -387,7 +387,7 @@ static int filegrain_init(CSOUND *csound, filegrain *p)
       return csound->InitError(csound,
                                Str("diskgrain: invalid number of channels"));
     }
-    p->efunc = csound->FTnp2Find(csound, p->ifn2);
+    p->efunc = csound->FTFind(csound, p->ifn2);
     if (UNLIKELY(p->efunc == NULL))
       return NOTOK;
 
@@ -479,8 +479,8 @@ static int filegrain_process(CSOUND *csound, filegrain *p)
     hdatasize = hdataframes*chans;
 
     pitch  = *p->pitch;
-    fperiod = FABS(csound->esr/(*p->fr));
-    //if (UNLIKELY(fperiod  < FL(0.0))) fperiod = -fperiod;
+    fperiod = csound->esr/(*p->fr);
+    if (UNLIKELY(fperiod  < FL(0.0))) fperiod = -fperiod;
     amp =    *p->amp;
     grsize = csound->esr * *p->grsize;
     if (UNLIKELY(grsize<1)) goto err1;

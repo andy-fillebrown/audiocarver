@@ -117,7 +117,7 @@ int clarinset(CSOUND *csound, CLARIN *p)
 {
     FUNC        *ftp;
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL)) p->vibr = ftp;
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL)) p->vibr = ftp;
     else {                                      /* Expect sine wave */
       return csound->InitError(csound, Str("No table for Clarinet"));
     }
@@ -279,7 +279,7 @@ int fluteset(CSOUND *csound, FLUTE *p)
     FUNC        *ftp;
     int32        length;
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL)) p->vibr = ftp;
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL)) p->vibr = ftp;
     else {                                   /* Expect sine wave */
       return csound->InitError(csound, Str("No table for Flute"));
     }
@@ -477,7 +477,7 @@ int bowedset(CSOUND *csound, BOWED *p)
     FUNC        *ftp;
     MYFLT       amp = (*p->amp)*AMP_RSCALE; /* Normalise */
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL)) p->vibr = ftp;
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL)) p->vibr = ftp;
     else {                                      /* Expect sine wave */
       return csound->InitError(csound, Str("No table for wgbow vibrato"));
     }
@@ -752,7 +752,7 @@ int brassset(CSOUND *csound, BRASS *p)
     FUNC        *ftp;
     MYFLT amp = (*p->amp)*AMP_RSCALE; /* Normalise */
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL)) p->vibr = ftp;
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL)) p->vibr = ftp;
     else {                                      /* Expect sine wave */
       return csound->InitError(csound, Str("No table for Brass"));
     }
@@ -921,21 +921,20 @@ int bowedbarset(void*,void*);
 int bowedbar(void*,void*);
 
 static OENTRY physmod_localops[] = {
-{ "wgclar",  S(CLARIN),TR|5, "a", "kkkiikkkio",(SUBR)clarinset,NULL, (SUBR)clarin },
-{ "wgflute", S(FLUTE), TR|5, "a", "kkkiikkkiovv",(SUBR)fluteset,NULL, (SUBR)flute },
-{ "wgbow",   S(BOWED), TR|5, "a", "kkkkkkio", (SUBR)bowedset, NULL,   (SUBR)bowed },
-{ "wgbrass", S(BRASS), TR|5, "a", "kkkikkio", (SUBR)brassset, NULL,    (SUBR)brass},
-{ "mandol", S(MANDOL), TR|5, "a", "kkkkkkio",(SUBR)mandolinset,NULL,(SUBR)mandolin},
-{ "voice", S(VOICF),   TR|5, "a", "kkkkkkii",(SUBR)voicformset,NULL,(SUBR)voicform},
+{ "wgclar",  S(CLARIN),TR|5, "a", "kkkiikkkio",(SUBR)clarinset,NULL,   (SUBR)clarin},
+{ "wgflute", S(FLUTE), TR|5, "a", "kkkiikkkiovv",(SUBR)fluteset,NULL,  (SUBR)flute },
+{ "wgbow",   S(BOWED), TR|5, "a", "kkkkkkio", (SUBR)bowedset, NULL,    (SUBR)bowed },
+{ "wgbrass", S(BRASS), TR|5, "a", "kkkikkio", (SUBR)brassset, NULL,     (SUBR)brass},
+{ "mandol", S(MANDOL), TR|5, "a", "kkkkkkio", (SUBR)mandolinset, NULL,(SUBR)mandolin},
+{ "voice", S(VOICF),   TR|5, "a", "kkkkkkii", (SUBR)voicformset, NULL,(SUBR)voicform},
 { "fmbell",  S(FM4OP), TR|5, "a", "kkkkkkiiiiio",
                                             (SUBR)tubebellset,NULL,(SUBR)tubebell},
-{ "fmrhode", S(FM4OP), TR|5, "a", "kkkkkkiiiii",(SUBR)rhodeset,NULL,(SUBR)tubebell},
-{ "fmwurlie", S(FM4OP),TR|5, "a", "kkkkkkiiiii",(SUBR)wurleyset,NULL,(SUBR)wurley },
+{ "fmrhode", S(FM4OP), TR|5, "a", "kkkkkkiiiii",(SUBR)rhodeset,NULL,  (SUBR)tubebell},
+{ "fmwurlie", S(FM4OP),TR|5, "a", "kkkkkkiiiii",(SUBR)wurleyset, NULL,(SUBR) wurley },
 { "fmmetal", S(FM4OP), TR|5, "a", "kkkkkkiiiii",
                                           (SUBR)heavymetset, NULL, (SUBR)heavymet},
-{ "fmb3", S(FM4OP),    TR|5, "a", "kkkkkkiiiii", (SUBR)b3set,NULL,(SUBR)hammondB3 },
-{ "fmvoice", S(FM4OPV),TR|5, "a", "kkkkkkiiiii",
-                                       (SUBR)FMVoiceset,NULL,(SUBR)FMVoice},
+{ "fmb3", S(FM4OP),    TR|5, "a", "kkkkkkiiiii", (SUBR)b3set, NULL, (SUBR)hammondB3 },
+{ "fmvoice", S(FM4OPV),TR|5, "a", "kkkkkkiiiii",(SUBR)FMVoiceset,NULL,(SUBR)FMVoice},
 { "fmpercfl", S(FM4OP),TR|5, "a", "kkkkkkiiiii",
                                         (SUBR)percfluteset, NULL, (SUBR)percflute},
 { "moog", S(MOOG1),    TR|5, "a", "kkkkkkiii", (SUBR)Moog1set, NULL, (SUBR)Moog1  },

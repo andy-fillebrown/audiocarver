@@ -12,7 +12,7 @@
             </NoteList>
         </Track>
     </TrackList>
-    <GridSettings snapEnabled="true" gridSnapEnabled="true" timeSnap="0.125" pitchSnap="1" controlSnap="0.125">
+    <GridSettings>
         <TimeGridLineList>
             <TimeGridLine location="0" label="1" priority="0" color="#007f00"/>
             <TimeGridLine location="1" label="1.2" priority="64" color="#c0c0c0"/>
@@ -146,5 +146,4 @@
         </TimeGridLineList>
     </GridSettings>
     <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
-    <ViewSettings timePosition="16" pitchPosition="63.5" controlPosition="0.5" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
 </Score>

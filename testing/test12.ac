@@ -972,6 +972,6 @@
             <ControlGridLine location="1" label="1.0" priority="0" color="#0000ff"/>
         </ControlGridLineList>
     </GridSettings>
-    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
     <ViewSettings timePosition="19.6635160680529" pitchPosition="78.5780876494022" controlPosition="0.5" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
+    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
 </Score>

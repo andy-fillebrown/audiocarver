@@ -190,7 +190,7 @@ int dsplay(CSOUND *csound, DSPLAY *p)
     return OK;
 }
 
-/* Write window coefs into buffer, do not malloc */
+/* Write window coefs into buffer, don't malloc */
 static void FillHalfWin(MYFLT *wBuf, int32 size, MYFLT max, int hannq)
     /* 1 => hanning window else hamming */
 {

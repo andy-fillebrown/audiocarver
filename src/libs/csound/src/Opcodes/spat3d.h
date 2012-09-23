@@ -43,8 +43,7 @@
 
 /* calculate distance */
 
-#define SPAT3D_XYZ2DIST(x,y,z)  \
-                ((MYFLT) sqrt ((double) ((x) * (x) + (y) * (y) + (z) * (z))))
+#define SPAT3D_XYZ2DIST(x,y,z)  ((MYFLT) sqrt ((double) ((x) * (x) + (y) * (y) + (z) * (z))))
 
 /* limit a number to a specified range */
 

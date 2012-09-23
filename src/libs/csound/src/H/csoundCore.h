@@ -201,10 +201,10 @@ typedef struct {
     int     numThreads;
     int     syntaxCheckOnly;
     int     useCsdLineCounts;
-    //#ifdef ENABLE_NEW_PARSER
+#ifdef ENABLE_NEW_PARSER
     int     newParser; /* SYY - July 30, 2006: for --new-parser */
     int     calculateWeights;
-    //#endif /* ENABLE_NEW_PARSE */
+#endif /* ENABLE_NEW_PARSE */
   } OPARMS;
 
   typedef struct arglst {
@@ -262,7 +262,6 @@ typedef struct {
                                     /* (pointer to next one is INSDS.nxtact) */
     struct instr * nxtinstxt;       /* Next instrument in orch (num order) */
     int     active;                 /* To count activations for control */
-    int     pending_release;        /* To count instruments in release phase */
     int     maxalloc;
     MYFLT   cpuload;                /* % load this instrumemnt makes */
     struct opcodinfo *opcode_info;  /* IV - Nov 10 2002 */
@@ -1292,7 +1291,6 @@ typedef struct {
     int           stdin_assign_flg;
     int           stdout_assign_flg;
     int           orcname_mode;         /* 0: normal, 1: ignore, 2: fail */
-    int           use_only_orchfile;
     void          *csmodule_db;
     char          *dl_opcodes_oplibs;
     char          *SF_csd_licence;

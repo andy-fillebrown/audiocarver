@@ -79,8 +79,7 @@ static int compress(CSOUND *csound, CMPRS *p)
     MYFLT       *ar, *ainp, *cinp;
     int32        nsmps = csound->ksmps;
     int         n;
-    /* VL: scale by 0dbfs, code is tuned to work in 16bit range */
-    MYFLT scal = 32768./csound->e0dbfs;
+    MYFLT scal = 32768./csound->e0dbfs;  /* VL: scale by 0dbfs, code is tuned to work in 16bit range */
 
     if (*p->kthresh != p->thresh) {             /* check for changes:   */
       p->thresh = *p->kthresh;
@@ -130,8 +129,8 @@ static int compress(CSOUND *csound, CMPRS *p)
       asig = *p->aptr;                  /* get signals from delay line  */
       csig = *p->cptr;
       *p->aptr = ainp[n]*scal;               /*   & replace with incoming    */
-      lsig = FABS(cinp[n]*scal);
-      //lsig = -lsig;                   /*   made abs for control       */
+      if ((lsig = cinp[n]*scal) < FL(0.0))
+        lsig = -lsig;                   /*   made abs for control       */
       *p->cptr = lsig;
       if (p->cptr == p->lmaxp) {        /* if prev ctrl was old lamax   */
         MYFLT *lap, newmax = FL(0.0);
@@ -190,7 +189,7 @@ static int distset(CSOUND *csound, DIST *p)
     double  b;
     FUNC    *ftp;
 
-    if (UNLIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) == NULL)) return NOTOK;
+    if (UNLIKELY((ftp = csound->FTFind(csound, p->ifn)) == NULL)) return NOTOK;
     p->ftp = ftp;
     p->maxphs = (MYFLT)ftp->flen;       /* set ftable params    */
     p->midphs = p->maxphs * FL(0.5);

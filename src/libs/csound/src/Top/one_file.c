@@ -115,8 +115,7 @@ CS_NOINLINE char *csoundTmpFileName(CSOUND *csound, char *buf, const char *ext)
           snprintf(buf, nBytes, "%s/csound-XXXXXX", tmpdir);
         else
           strcpy(buf, "/tmp/csound-XXXXXX");
-        umask(0077); /* ensure exclusive access on buggy i
-                        mplementations of mkstemp */
+        umask(0077); /* ensure exclusive access on buggy implementations of mkstemp */
         if (UNLIKELY((fd = mkstemp(buf)) < 0))
           csound->Die(csound, Str(" *** cannot create temporary file"));
         close(fd);
@@ -287,15 +286,9 @@ int readOptions(CSOUND *csound, FILE *unf, int readingCsOptions)
               csoundDie(csound, Str("More than %d arguments in <CsOptions>"),
                         CSD_MAX_ARGS);
             argv[++argc] = ++p;
-            while (*p != '"' && *p != '\0') {
-              if (*p == '\\' && *(p+1) != '\0')
-                p++;
-              p++;
-            }
-            if (*p == '"') {
-              /* ETX char used to mark the limits of a string */
-              *p = (isspace(*(p+1)) ? '\0' : 3);
-            }
+            while (*p != '"' && *p != '\0') p++;
+
+            if (*p == '"') *p = '\0';
             break;
           }
 
@@ -325,27 +318,6 @@ int readOptions(CSOUND *csound, FILE *unf, int readingCsOptions)
         else if (*p=='\n') {
           *p = '\0';
           break;
-        }
-        else if (*p=='"') {
-          int is_escape = 0;
-          char *old;
-          *p=3; /* ETX char used to mark the limits of a string */
-          while ((*p != '"' || is_escape) && *p != '\0') {
-            if (is_escape)
-              *old = 0x18; /* CAN char used to mark a removable character */
-            is_escape = (*p == '\\' ? !is_escape : 0);
-            old = p;
-            p++;
-          }
-          if (*p == '"') {
-            if (isspace(*(p+1))) {
-              *p = '\0';
-              break;
-            }
-            else {
-              *p = 3;
-            }
-          }
         }
         p++;
       }
@@ -385,9 +357,9 @@ static int createOrchestra(CSOUND *csound, FILE *unf)
       while (*p == ' ' || *p == '\t') p++;
       if (strstr(p, "</CsInstruments>") == p) {
         //corfile_flush(incore);
-        //#ifdef ENABLE_NEW_PARSER
+#ifdef ENABLE_NEW_PARSER
         if (csound->oparms->newParser) corfile_puts("\n#exit\n", incore);
-        //#endif
+#endif
         corfile_putc('\0', incore);
         corfile_putc('\0', incore);
         csound->orchstr = incore;
@@ -403,18 +375,20 @@ static int createOrchestra(CSOUND *csound, FILE *unf)
 static int createScore(CSOUND *csound, FILE *unf)
 {
     char   *p;
+    CORFIL *incore = corfile_create_w();
     char   buffer[CSD_MAX_LINE_LEN];
 
-    if (csound->scorestr == NULL)
-      csound->scorestr = corfile_create_w();
     csound->scoLineOffset = ST(csdlinecount);
     while (my_fgets(csound, buffer, CSD_MAX_LINE_LEN, unf)!= NULL) {
       p = buffer;
       while (*p == ' ' || *p == '\t') p++;
-      if (strstr(p, "</CsScore>") == p)
+      if (strstr(p, "</CsScore>") == p) {
+        corfile_flush(incore);
+        csound->scorestr = incore;
         return TRUE;
+      }
       else
-        corfile_puts(buffer, csound->scorestr);
+        corfile_puts(buffer, incore);
     }
     csoundErrorMsg(csound, Str("Missing end tag </CsScore>"));
     return FALSE;
@@ -467,17 +441,7 @@ static int createExScore(CSOUND *csound, char *p, FILE *unf)
           return FALSE;
         }
         remove(extname);
-        if (csound->scorestr == NULL)
-          csound->scorestr = corfile_create_w();
-        fd = csoundFileOpen(csound, &scof, CSFILE_STD, ST(sconame), "r", NULL);
-        if (UNLIKELY(fd == NULL)) {
-          remove(ST(sconame));
-          return FALSE;
-        }
-        while (my_fgets(csound, buffer, CSD_MAX_LINE_LEN, scof)!= NULL)
-          corfile_puts(buffer, csound->scorestr);
-        csoundFileClose(csound, fd);
-        remove(ST(sconame));
+        add_tmpfile(csound, ST(sconame));           /* IV - Feb 03 2005 */
         return TRUE;
       }
       else fputs(buffer, scof);
@@ -628,7 +592,12 @@ static int createFile(CSOUND *csound, char *buffer, FILE *unf)
     else
       q = strchr(p, '>');
     if (q) *q='\0';
+    //  printf("p=>>%s<<\n", p);
     strcpy(filename, p);
+//sscanf(buffer, "<CsFileB filename=\"%s\">", filename);
+//    if (filename[0] != '\0' &&
+//       filename[strlen(filename) - 1] == '>' && filename[strlen(filename) - 2] == '"')
+//    filename[strlen(filename) - 2] = '\0';
     if (UNLIKELY((smpf = fopen(filename, "rb")) != NULL)) {
       fclose(smpf);
       csoundDie(csound, Str("File %s already exists"), filename);
@@ -765,13 +734,11 @@ int read_unified_file(CSOUND *csound, char **pname, char **score)
       while (*p == ' ' || *p == '\t') p++;
       if (strstr(p, "<CsoundSynthesizer>") == p ||
           strstr(p, "<CsoundSynthesiser>") == p) {
-        csoundDebugMsg(csound, Str("STARTING FILE\n"));
+        csoundMessage(csound, Str("STARTING FILE\n"));
         started = TRUE;
       }
       else if (strstr(p, "</CsoundSynthesizer>") == p ||
                strstr(p, "</CsoundSynthesiser>") == p) {
-        if (csound->scorestr != NULL)
-          corfile_flush(csound->scorestr);
         *pname = ST(orcname);
         *score = ST(sconame);
         if (ST(midiSet)) {

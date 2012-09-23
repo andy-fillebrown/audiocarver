@@ -61,11 +61,7 @@ typedef uint32_t uintptr_t;
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_IO_H
-#ifdef LINUX
-#include <sys/io.h>
-#else
 #include <io.h>
-#endif
 #endif
 
 #undef FALSE

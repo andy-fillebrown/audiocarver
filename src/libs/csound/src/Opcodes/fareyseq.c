@@ -313,7 +313,7 @@ int tableifilter (CSOUND *csound, TABFILT *p)
     if (p->pdft != (int)*p->dft) {
       /* Get pointer to the function table data structure.
        * csoundFTFindP() for perf time. csoundFTFind() for init time. */
-      if (UNLIKELY((p->funcd = csound->FTnp2Find(csound, p->dft)) == NULL)) {
+      if (UNLIKELY((p->funcd = csound->FTFind(csound, p->dft)) == NULL)) {
         return
           csound->InitError(csound,
                             Str("Farey: Destination dft table %.2f not found."),
@@ -325,7 +325,7 @@ int tableifilter (CSOUND *csound, TABFILT *p)
     }
     /* Source  */
     if (p->psft != (int)*p->sft) {
-      if (UNLIKELY((p->funcs = csound->FTnp2Find(csound, p->sft)) == NULL)) {
+      if (UNLIKELY((p->funcs = csound->FTFind(csound, p->sft)) == NULL)) {
         return csound->InitError(csound,
                                  Str("Farey: Source sft table %.2f not found."),
                                  *p->sft);
@@ -470,7 +470,7 @@ int tableishuffle (CSOUND *csound, TABSHUFFLE *p) {
 
     /* Source  */
     if (p->psft != (int)*p->sft) {
-      if (UNLIKELY((p->funcs = csound->FTnp2Find(csound, p->sft)) == NULL)) {
+      if (UNLIKELY((p->funcs = csound->FTFind(csound, p->sft)) == NULL)) {
         return csound->InitError(csound,
                                  Str("Source sft table %.2f not found."),
                                  *p->sft);
@@ -490,19 +490,19 @@ static int dotableshuffle (CSOUND *csound, TABSHUFFLE *p)
 {
     time_t now;
     unsigned int seed = (unsigned int) time (&now);
+    srand (seed);
 
     MYFLT *bases;       /* Base address of the source table.*/
-    MYFLT *temp;
     int32 sourcelength;
     int32 i = 0;
 
-    srand (seed);
     sourcelength = p->funcs->flen;
 
     /* Now get the base address of the table. */
     bases = p->funcs->ftable;
 
-    temp = (MYFLT*) calloc (sourcelength, sizeof(MYFLT));
+    MYFLT* temp; 
+    temp = (MYFLT*) calloc (sourcelength, sizeof(MYFLT)); 
     memset (temp, 0, sizeof(MYFLT) * sourcelength);
 
     for (i = 0; i < sourcelength; i++) {

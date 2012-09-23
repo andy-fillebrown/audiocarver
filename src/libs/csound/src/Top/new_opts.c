@@ -167,27 +167,14 @@ int parse_option_as_cfgvar(CSOUND *csound, const char *s)
       }
     }
     else if (LIKELY((int) strlen(s) > 3)) {
-      char *buf, *val, *tmp;
+      char *buf, *val;
       int  retval;
       buf = (char*) malloc(sizeof(char) * (size_t) ((int) strlen(s) - 1));
       if (UNLIKELY(buf == NULL)) {
         csound->Message(csound, Str(" *** memory allocation failure\n"));
         return -1;
       }
-      /* strcpy(buf, s + 2); */
-      val = (char*) s+2;
-      tmp = buf;
-      while (*val!='\0') {
-        /* 
-         * CAN char used during the parsing in CsOptions to mark
-         * the removable characters '\'. ETX char used to mark
-         * the limits of a string.
-         */
-        if (*val != 0x18 && *val != 3)
-          *tmp++ = *val;
-        val++;
-      }
-      *tmp='\0';
+      strcpy(buf, s + 2);
       val = strchr(buf, '=');
       *(val++) = '\0';  /* 'buf' is now the name, 'val' is the value string */
       retval = csoundParseConfigurationVariable(csound, buf, val);

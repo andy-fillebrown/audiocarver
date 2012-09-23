@@ -224,8 +224,7 @@ static int rezzy(CSOUND *csound, REZZY *p)
     /* Try to keep the resonance under control     */
     if (rez < 1.0) rez = 1.0;
     if (*p->mode == FL(0.0)) {    /* Low Pass */
-      if (UNLIKELY((p->rezcod==0) && (p->fcocod==0))) {
-        /* Only need to calculate once */
+      if (UNLIKELY((p->rezcod==0) && (p->fcocod==0))) {/* Only need to calculate once */
         double c = fqcadj/fco;    /* Filter constant c=1/Fco * adjustment */
         double rez2 = rez/(1.0 + exp(fco/11000.0));
         double b;
@@ -253,8 +252,7 @@ static int rezzy(CSOUND *csound, REZZY *p)
         }
         xn = (double)in[n];             /* Get the next sample */
         /* Mikelson Biquad Filter Guts*/
-        //yn = (1.0/sqrt(1.0+rez)*xn - (-a-2.0*csq)*ynm1 - csq*ynm2)*invb;
-        yn = (1.0/sqrt(1.0+rez)*xn - csq*((-a-2.0)*ynm1 + ynm2))*invb;
+        yn = (1.0/sqrt(1.0+rez)*xn - (-a-2.0*csq)*ynm1 - csq*ynm2)*invb;
 
         xnm2 = xnm1; /* Update Xn-2 */
         xnm1 = xn;   /* Update Xn-1 */
@@ -266,8 +264,7 @@ static int rezzy(CSOUND *csound, REZZY *p)
     }
     else { /* High Pass Rezzy */
       double c=0.0, rez2=0.0;
-      if (UNLIKELY(p->fcocod==0 && p->rezcod==0)) {
-        /* Only need to calculate once */
+      if (UNLIKELY(p->fcocod==0 && p->rezcod==0)) {/* Only need to calculate once */
         double b;
         c = fqcadj/fco;    /* Filter constant c=1/Fco * adjustment */
         rez2 = rez/(1.0 + sqrt(sqrt(1.0/c)));
@@ -551,7 +548,7 @@ static int vco(CSOUND *csound, VCO *p)
         v2 = (v1 < (maxd - 1L) ? v1 + 1L : 0L);
         out1 = buf[v1] + fv1 * (buf[v2] - buf[v1]);
 
-        if (UNLIKELY(++indx == maxd)) indx = 0;  /* Advance current pointer */
+        if (UNLIKELY(++indx == maxd)) indx = 0;             /* Advance current pointer */
         /* End of VDelay */
 
         /* Integrate twice and ouput */
@@ -789,8 +786,7 @@ static int nestedapset(CSOUND *csound, NESTEDAP *p)
     npts1 = (int32)(*p->del1 * csound->esr) - npts2 -npts3;
 
     if (UNLIKELY(((int32)(*p->del1 * csound->esr)) <=
-                 ((int32)(*p->del2 * csound->esr) +
-                  (int32)(*p->del3 * csound->esr)))) {
+                 ((int32)(*p->del2 * csound->esr) + (int32)(*p->del3 * csound->esr)))) {
       return csound->InitError(csound, Str("illegal delay time"));
     }
     npts = npts1 + npts2 + npts3;
@@ -1262,32 +1258,30 @@ static int mode(CSOUND *csound, MODE *p)
 {
     int   n = 0, nsmps = csound->ksmps;
 
-    double kfreq  = *p->kfreq*TWOPI;
+    double kfreq = *p->kfreq*2*PI;
     double kalpha = (csound->esr/kfreq);
     double kbeta  = kalpha*kalpha;
-    double d      = 0.5*kalpha;
 
-    double a0     = 1.0/ (kbeta+d/(*p->kq));
-    double a1     = a0 * (1.0-2.0*kbeta);
-    double a2     = a0 * (kbeta-d/(*p->kq));
+    double a0 = 1/ (kbeta+kalpha/(2* *p->kq));
+    double a1 = a0 * (1-2*kbeta);
+    double a2 = a0 * (kbeta-kalpha/(2* *p->kq));
 
     double xn, yn;
-    double xnm1 = p->xnm1, ynm1 = p->ynm1, ynm2 = p->ynm2;
 
     for (n=0; n<nsmps; n++) {
       xn = (double)p->ain[n];
 
-      yn = a0*xnm1 - a1*ynm1 - a2*ynm2;
+      yn = a0*p->xnm1 - a1*p->ynm1 - a2*p->ynm2;
 
-      xnm1 = xn;
-      ynm2 = ynm1;
-      ynm1 = yn;
+      p->xnm1 = xn;
+      p->ynm2 = p->ynm1;
+      p->ynm1 = yn;
 
-      yn = yn*d;
+      yn = yn*csound->esr/(2*kfreq);
 
       p->aout[n] = (MYFLT)yn;
     }
-    p->xnm1 = xnm1;  p->ynm1 = ynm1;  p->ynm2 = ynm2;
+
     return OK;
 }
 

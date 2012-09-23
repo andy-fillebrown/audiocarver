@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/ac_gui">
-        <file>images/crosshair-black.png</file>
-        <file>images/crosshair-red.png</file>
-        <file>images/zoom-cursor.png</file>
-        <file>images/zoom-h-cursor.png</file>
-        <file>images/zoom-v-cursor.png</file>
-    </qresource>
-</RCC>

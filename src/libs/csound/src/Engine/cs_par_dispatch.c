@@ -26,7 +26,7 @@
 
 #include "csoundCore.h"
 #include "csound_orc.h"
-//#include "tok.h"
+#include "tok.h"
 #include "cs_par_base.h"
 #include "cs_par_orc_semantics.h"
 #include "cs_par_dispatch.h"
@@ -199,7 +199,7 @@ static struct global_var_lock_t
 TREE *csp_locks_insert(CSOUND *csound, TREE *root)
 {
     csound->Message(csound,
-                    Str("Inserting Parallelism Constructs into AST\n"));
+                    "Inserting Parallelism Constructs into AST\n");
 
     TREE *anchor = NULL;
 
@@ -211,9 +211,8 @@ TREE *csp_locks_insert(CSOUND *csound, TREE *root)
       switch(current->type) {
       case INSTR_TOKEN:
         if (current->left->type == T_INSTLIST) {
-          instr =
-            csp_orc_sa_instr_get_by_name(csound,
-                                         current->left->left->value->lexeme);
+          instr = csp_orc_sa_instr_get_by_name(csound,
+                                               current->left->left->value->lexeme);
         }
         else {
           instr = csp_orc_sa_instr_get_by_name(csound,
@@ -299,7 +298,7 @@ TREE *csp_locks_insert(CSOUND *csound, TREE *root)
     }
 
     csound->Message(csound,
-                    Str("[End Inserting Parallelism Constructs into AST]\n"));
+                    "[End Inserting Parallelism Constructs into AST]\n");
 
     return anchor;
 }
@@ -371,7 +370,7 @@ int globalunlock(CSOUND *csound, GLOBAL_LOCK_UNLOCK *p)
 static void csp_weights_calculate_instr(CSOUND *csound, TREE *root,
                                         INSTR_SEMANTICS *instr)
 {
-    csound->Message(csound, Str("Calculating Instrument weight from AST\n"));
+    csound->Message(csound, "Calculating Instrument weight from AST\n");
 
     TREE *current = root;
     INSTR_SEMANTICS *nested_instr = NULL;
@@ -407,8 +406,8 @@ static void csp_weights_calculate_instr(CSOUND *csound, TREE *root,
 
       default:
         csound->Message(csound,
-                        Str("WARNING: Unexpected node type in weight "
-                            "calculation walk %i\n"), current->type);
+                        "WARNING: Unexpected node type in weight "
+                        "calculation walk %i\n", current->type);
         instr->weight += WEIGHT_UNKNOWN_NODE;
         break;
       }
@@ -417,12 +416,12 @@ static void csp_weights_calculate_instr(CSOUND *csound, TREE *root,
     }
 
     csound->Message(csound,
-                    Str("[End Calculating Instrument weight from AST]\n"));
+                    "[End Calculating Instrument weight from AST]\n");
 }
 
 void csp_weights_calculate(CSOUND *csound, TREE *root)
 {
-    csound->Message(csound, Str("Calculating Instrument weights from AST\n"));
+    csound->Message(csound, "Calculating Instrument weights from AST\n");
 
     TREE *current = root;
     INSTR_SEMANTICS *instr = NULL;
@@ -465,7 +464,7 @@ void csp_weights_calculate(CSOUND *csound, TREE *root)
     }
 
     csound->Message(csound,
-                    Str("[End Calculating Instrument weights from AST]\n"));
+                    "[End Calculating Instrument weights from AST]\n");
 }
 
 static void csp_orc_sa_opcode_dump_instr(CSOUND *csound, TREE *root)
@@ -486,8 +485,8 @@ static void csp_orc_sa_opcode_dump_instr(CSOUND *csound, TREE *root)
         break;
 
       default:
-        csound->Message(csound, Str("WARNING: Unexpected node type in weight "
-                                    "calculation walk %i\n"), current->type);
+        csound->Message(csound, "WARNING: Unexpected node type in weight "
+                        "calculation walk %i\n", current->type);
         break;
       }
 
@@ -608,7 +607,7 @@ uint32_t csp_opcode_weight_fetch(CSOUND *csound, char *name)
       }
       /* no weight for this opcode use default */
       csound->Message(csound,
-                      Str("WARNING: no weight found for opcode: %s\n"), name);
+                      "WARNING: no weight found for opcode: %s\n", name);
       return WEIGHT_OPCODE_NODE;
     }
 }
@@ -687,7 +686,7 @@ void csp_weights_dump(CSOUND *csound)
 {
     if (UNLIKELY(csound->opcode_weight_have_cache == 0)) {
           csound->Message(csound,
-                          "No Weights to Dump (Using Defaults)\n");
+                          Str("No Weights to Dump (Using Defaults)\n"));
       return;
     }
     else {
@@ -1256,8 +1255,7 @@ inline static DAG *csp_dag_build_initial(CSOUND *csound, INSDS *chain)
         csp_orc_sa_instr_get_by_num(csound, chain->insno);
       if (current_instr == NULL) {
         current_instr =
-          csp_orc_sa_instr_get_by_name(csound,
-                                       csound->instrtxtp[chain->insno]->insname);
+          csp_orc_sa_instr_get_by_name(csound, csound->instrtxtp[chain->insno]->insname);
         if (current_instr == NULL)
           csound->Die(csound,
                       Str("Failed to find semantic information"
@@ -1852,7 +1850,7 @@ void csp_dag_print(CSOUND *csound, DAG *dag)
 #endif
 }
 
-/************************************************************************
+/**********************************************************************************************
  * dag2 optimization structure
  */
 
@@ -2093,8 +2091,7 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 #if TRACE > 1
         ctr = 0;
         while (ctr < dag->count) {
-          csound->Message(csound,
-                          "%i -> %i\n", ctr, map_old_to_new_locations[ctr]);
+          csound->Message(csound, "%i -> %i\n", ctr, map_old_to_new_locations[ctr]);
           ctr++;
         }
 #endif
@@ -2177,7 +2174,7 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 #endif
 }
 
-/*********************************************************************
+/**********************************************************************************************
  * dag2 cache structure
  */
 
@@ -2200,8 +2197,7 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 /* #define DAG_2_CACHE_SIZE     100 */
 /* #define DAG_2_DECAY_COMP     1 */
 /* #define DAG_2_MIN_USE_LIMIT  5000 */
-/* /\* aiming for 8 passes of the cache update before a new entry must */
-/*     exist solely on its usage *\/ */
+/* /\* aiming for 8 passes of the cache update before a new entry must exist solely on its usage *\/ */
 /* #define DAG_2_MIN_AGE_LIMIT  256 */
 /* #define DAG_2_AGE_START      131072 */
 
@@ -2210,9 +2206,8 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 /* static int csp_dag_cache_entry_alloc(CSOUND *csound, */
 /*                                      struct dag_cache_entry_t **entry, */
 /*                                      INSDS *chain); */
-/* static int csp_dag_cache_compare(CSOUND *csound, */
-/*                                  struct dag_cache_entry_t *entry, */
-/*                                  INSDS *chain); */
+/* static int csp_dag_cache_compare(CSOUND *csound */
+/*                                  , struct dag_cache_entry_t *entry, INSDS *chain); */
 /* static void csp_dag_cache_update(CSOUND *csound); */
 
 /* void csp_dag_cache_print(CSOUND *csound) */
@@ -2235,8 +2230,7 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 /* } */
 
 /* static int csp_dag_cache_entry_alloc(CSOUND *csound, */
-/*                                      struct dag_cache_entry_t **entry, */
-/*                                      INSDS *chain) */
+/*                                      struct dag_cache_entry_t **entry, INSDS *chain) */
 /* { */
 /*     int ctr = 0; */
 /*     INSDS *current_insds = chain; */
@@ -2254,12 +2248,11 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 /*     } */
 
 /*     *entry = csound->Malloc(csound, */
-/*                             sizeof(struct dag_cache_entry_t) + */
-/*                             sizeof(int16) * ctr); */
+/*                             sizeof(struct dag_cache_entry_t) + sizeof(int16) * ctr); */
 /*     if (UNLIKELY(*entry == NULL)) { */
 /*       csound->Die(csound, Str("Failed to allocate Dag2 cache")); */
 /*     } */
-/*     memset(*entry, 0, sizeof(struct dag_cache_entry_t)+sizeof(int16)*ctr); */
+/*     memset(*entry, 0, sizeof(struct dag_cache_entry_t) + sizeof(int16) * ctr); */
 /*     (*entry)->uses   = 1; */
 /*     (*entry)->age    = DAG_2_AGE_START; */
 /*     (*entry)->instrs = ctr; */
@@ -2323,15 +2316,14 @@ void csp_dag_optimization(CSOUND *csound, DAG *dag)
 /* } */
 
 /* static int csp_dag_cache_compare(CSOUND *csound, */
-/*                                  struct dag_cache_entry_t *entry, */
-/*                                  INSDS *chain) */
+/*                                  struct dag_cache_entry_t *entry, INSDS *chain) */
 /* { */
 /*     INSDS *current_insds = chain; */
 /*     int32_t ctr = 0; */
 
 /* #ifdef CAUTIOUS */
-/*   if (entry == NULL) csound->Die(csound, Str("Invalid NULL Parameter entry")); */
-/*   if (chain == NULL) csound->Die(csound, Str("Invalid NULL Parameter chain")); */
+/*     if (entry == NULL) csound->Die(csound, Str("Invalid NULL Parameter entry")); */
+/*     if (chain == NULL) csound->Die(csound, Str("Invalid NULL Parameter chain")); */
 /* #endif */
 
 /*     while (current_insds != NULL && ctr < entry->instrs) { */

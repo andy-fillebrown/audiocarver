@@ -7,7 +7,7 @@ PRO_AUTHOR         = Andrew Fillebrown
 PRO_AUTHOR_NOSPACE = AndyFillebrown
 PRO_AUTHOR_EMAIL   = andy.fillebrown@gmail.com
 PRO_YEAR           = 2012
-PRO_URL            = http://sourceforge.net/projects/audiocarver/
+PRO_URL            = http://gitorious.org/audiocarver
 
 DEFINES *= PRO_NAME_STR=\\\"$$PRO_NAME\\\"
 DEFINES *= PRO_NAME_LC_STR=\\\"$$lower($$PRO_NAME)\\\"
@@ -177,5 +177,3 @@ win32-g++* {
 }
 
 !verbose: CONFIG *= silent
-
-QMAKE_CXXFLAGS_WARN_ON *= -Wno-unused-parameter

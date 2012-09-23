@@ -67,8 +67,7 @@ static int scanflt(CSOUND *csound, MYFLT *pfld)
           *sstrp++ = c;
         }
         *sstrp++ = '\0';
-        *pfld = ((int[4]){SSTRCOD,SSTRCOD1,
-                          SSTRCOD2,SSTRCOD3})[n]; /* flag with hifloat */
+        *pfld = ((int[4]){SSTRCOD,SSTRCOD1,SSTRCOD2,SSTRCOD3})[n]; /* flag with hifloat */
                                                           /* Net  line is wrong*/
         csound->sstrlen0[n] = sstrp - csound->sstrbuf0[n];  /* & overall length */
       }
@@ -119,8 +118,7 @@ int rdscor(CSOUND *csound, EVTBLK *e) /* read next score-line from scorefile */
       e->pcnt = 2;
       return(1);
     }
-                                  /* else read the real score */
-    while ((c = corfile_getc(csound->scstr)) != '\0') {
+    while ((c = corfile_getc(csound->scstr)) != '\0') {  /* else read the real score */
       csound->scnt0 = 0;
       switch (c) {
       case ' ':
@@ -194,8 +192,7 @@ int rdscor(CSOUND *csound, EVTBLK *e) /* read next score-line from scorefile */
                       while ((corfile_getc(csound->scstr) != '\n') &&
                              (scanflt(csound, &q[c++]))) {
                         if (c > (int) e->c.extra[0]) {
-                          csound->DebugMsg(csound,
-                                           "and more extra p-fields [%d](%d)%d\n",
+                          csound->DebugMsg(csound, "and more extra p-fields [%d](%d)%d\n",
                                   c, (int) e->c.extra[0],
                                   sizeof(MYFLT)*((int)e->c.extra[0]+PMAX) );
                           q = e->c.extra =
@@ -228,3 +225,5 @@ int rdscor(CSOUND *csound, EVTBLK *e) /* read next score-line from scorefile */
     corfile_rm(&(csound->scstr));
     return 0;
 }
+
+

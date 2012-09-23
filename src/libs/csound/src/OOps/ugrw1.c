@@ -898,7 +898,7 @@ int itblchkw(CSOUND *csound, TABLEW *p)
      * It also checks for numbers < 0, and table 0 is never valid, so we
      * do not need to check here for the table number being < 1.  */
 
-    if (UNLIKELY((p->ftp = csound->FTnp2Find(csound, p->xfn)) == NULL))
+    if (UNLIKELY((p->ftp = csound->FTFind(csound, p->xfn)) == NULL))
       return NOTOK;
     /* Although TABLEW has an integer variable for the table number
      * (p->pfn) we do not need to * write it.  We know that the * k
@@ -1540,7 +1540,7 @@ int itablemix(CSOUND *csound, TABLEMIX *p)
      * csoundFTFind() for init time.
      */
 
-    if (UNLIKELY((p->funcd = csound->FTnp2Find(csound, p->dft)) == NULL)) {
+    if (UNLIKELY((p->funcd = csound->FTFind(csound, p->dft)) == NULL)) {
       return csound->InitError(csound,
                                Str("Destination dft table %.2f not found."),
                                *p->dft);
@@ -1551,7 +1551,7 @@ int itablemix(CSOUND *csound, TABLEMIX *p)
     p->pdft = (int)*p->dft;
 
     /* Source 1 */
-    if (UNLIKELY((p->funcs1 = csound->FTnp2Find(csound, p->s1ft)) == NULL)) {
+    if (UNLIKELY((p->funcs1 = csound->FTFind(csound, p->s1ft)) == NULL)) {
       return csound->InitError(csound,
                                Str("Source 1 s1ft table %.2f not found."),
                                *p->s1ft);
@@ -1559,7 +1559,7 @@ int itablemix(CSOUND *csound, TABLEMIX *p)
     p->ps1ft = (int)*p->s1ft;
 
     /* Source 2 */
-    if (UNLIKELY((p->funcs2 = csound->FTnp2Find(csound, p->s2ft)) == NULL)) {
+    if (UNLIKELY((p->funcs2 = csound->FTFind(csound, p->s2ft)) == NULL)) {
       return csound->InitError(csound,
                                Str("Source 2 s2ft table %.2f not found."),
                                *p->s2ft);
@@ -1592,7 +1592,7 @@ int itablemix(CSOUND *csound, TABLEMIX *p)
  *
  * The offsets could be anything whatsoever - these will be added
  * to index to produce integers which are rounded by the lenmask
- * of each table. So we do not mind if the offsets are all over the place.
+ * of each table. So we don't mind if the offsets are all over the place.
  *
  * Likewise the gain parameters for source tables 1 and 2, except
  * that if the gain of source 2 is 0, then we do not bother reading
@@ -1793,7 +1793,7 @@ int itablecopy(CSOUND *csound, TABLECOPY *p)
     if (p->pdft != (int)*p->dft) {
       /* Get pointer to the function table data structure.
        * csoundFTFindP() for perf time. csoundFTFind() for init time. */
-      if (UNLIKELY((p->funcd = csound->FTnp2Find(csound, p->dft)) == NULL)) {
+      if (UNLIKELY((p->funcd = csound->FTFind(csound, p->dft)) == NULL)) {
         return csound->InitError(csound,
                                  Str("Destination dft table %.2f not found."),
                                  *p->dft);
@@ -1804,7 +1804,7 @@ int itablecopy(CSOUND *csound, TABLECOPY *p)
     }
     /* Source  */
     if (p->psft != (int)*p->sft) {
-      if (UNLIKELY((p->funcs = csound->FTnp2Find(csound, p->sft)) == NULL)) {
+      if (UNLIKELY((p->funcs = csound->FTFind(csound, p->sft)) == NULL)) {
         return csound->InitError(csound,
                                  Str("Source sft table %.2f not found."),
                                  *p->sft);
@@ -3000,13 +3000,14 @@ void sprints(char *outstring, char *fmt, MYFLT **kvals, int32 numVals)
     char strseg[8192];
     int i = 0, j = 0;
     char *segwaiting = 0;
+
     while (*fmt) {
       if (*fmt == '%') {
         /* if already a segment waiting, then lets print it */
         if (segwaiting) {
           MYFLT xx = (j>=numVals? FL(0.0) : *kvals[j]);
-          /* printf("***xx = %f (int)(xx+.5)=%d round=%d mode=%d\n", */
-          /*        xx, (int)(xx+.5), MYFLT2LRND(xx), fegetround()); */
+          /* printf("***xx = %f (int)(xx+.5)=%d round=%d\n", */
+          /*        xx, (int)(xx+.5), MYFLT2LRND(xx)); */
           strseg[i] = '\0';
 
           switch (*segwaiting) {
@@ -3056,9 +3057,7 @@ void sprints(char *outstring, char *fmt, MYFLT **kvals, int32 numVals)
       strseg[i] = '\0';
       if (segwaiting) {
         MYFLT xx = (j>=numVals? FL(0.0) : *kvals[j]);
-           /* printf("***xx = %f (int)(xx+.5)=%d round=%d mode=%d\n", */
-           /*       xx, (int)(xx+.5), MYFLT2LRND(xx), fegetround()); */
-       switch (*segwaiting) {
+        switch (*segwaiting) {
         case 'd':
         case 'i':
         case 'o':
@@ -3066,13 +3065,13 @@ void sprints(char *outstring, char *fmt, MYFLT **kvals, int32 numVals)
         case 'X':
         case 'u':
         case 'c':
-          sprintf(outstring, strseg, (int)MYFLT2LRND(xx));
+          sprintf(outstring, strseg, (int)(xx+FL(0.5)));
           break;
         case 'h':
-          sprintf(outstring, strseg, (int16)MYFLT2LRND(xx));
+          sprintf(outstring, strseg, (int16)(xx+FL(0.5)));
           break;
         case 'l':
-          sprintf(outstring, strseg, (int32)MYFLT2LRND(xx));
+          sprintf(outstring, strseg, (int32)(xx+FL(0.5)));
           break;
 
         default:

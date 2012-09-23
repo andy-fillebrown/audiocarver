@@ -76,7 +76,6 @@ typedef struct {
         MYFLT   *cnt;
         MYFLT   *ins;
         MYFLT   *opt;
-        MYFLT   *norel;
 } INSTCNT;
 
 typedef struct {
