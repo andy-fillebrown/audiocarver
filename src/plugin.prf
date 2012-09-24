@@ -1,3 +1,9 @@
+
+!isEmpty(TARGET_NAME) {
+    PREFIXED_TARGET_NAME = $$TARGET_PREFIX$$TARGET_NAME
+    TARGET = $$PREFIXED_TARGET_NAME
+}
+
 load(../project.prf)
 
 isEmpty(PROVIDER) {
@@ -7,10 +13,9 @@ isEmpty(PROVIDER) {
 DESTDIR = $$PRO_PLUGIN_PATH/$$PROVIDER
 LIBS += -L$$DESTDIR
 
-PLUGINSPEC = $$_PRO_FILE_PWD_/$${PRO_TARGET}.pluginspec
+PLUGINSPEC = $$_PRO_FILE_PWD_/$$basename(_PRO_FILE_PWD_).pluginspec
 PLUGINSPEC_IN = $${PLUGINSPEC}.in
-OTHER_FILES += $$PLUGINSPEC_IN
-PLUGINSPEC = $$OUT_PWD/$${PRO_TARGET}.pluginspec
+PLUGINSPEC = $$OUT_PWD/$$basename(_PRO_FILE_PWD_).pluginspec
 QMAKE_SUBSTITUTES += $${PLUGINSPEC}.in
 copy2build.output = $$DESTDIR/${QMAKE_FUNC_FILE_IN_stripDir}
 copy2build.input = PLUGINSPEC
@@ -46,3 +51,5 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
     pluginspec.path = /$$PRO_LIBRARY_BASENAME/$$PRO_APP_TARGET/plugins/$$PROVIDER
     INSTALLS += target pluginspec
 }
+
+SOURCE_FILE_PREFIX = $$basename(_PRO_FILE_PWD_)

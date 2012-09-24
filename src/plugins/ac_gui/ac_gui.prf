@@ -1,0 +1,4 @@
+
+include(../ac_gui/ac_gui_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(AcGuiPlugin)

@@ -51,9 +51,13 @@ CONFIG(debug|release, release) {
         _CSOUND_RELEASE_ \
 }
 
-INCLUDEPATH *= \
+INCLUDE_DIRS *= \
     ../src \
+    ../src/Engine \
     ../src/H \
+
+INCLUDEPATH *= $$INCLUDE_DIRS
+DEPENDPATH *= $$INCLUDE_DIRS
 
 HEADERS = \
     ../src/Engine/*.h* \
@@ -253,11 +257,6 @@ SOURCES = \
     ../src/Opcodes/ugnorman.c \
     ../src/Opcodes/ugsc.c \
     ../src/Opcodes/vaops.c \
-    ../src/Opcodes/vbap.c \
-    ../src/Opcodes/vbap_eight.c \
-    ../src/Opcodes/vbap_four.c \
-    ../src/Opcodes/vbap_sixteen.c \
-    ../src/Opcodes/vbap_zak.c \
     ../src/Opcodes/Vosim.c \
     ../src/Opcodes/vpvoc.c \
     ../src/Opcodes/wave-terrain.c \
@@ -300,7 +299,8 @@ unix: !macx: !freebsd* {
         ../../sndfile/src \
 
     LIBS *= \
-        -lsndfile
+        -lsndfile \
+
 }
 macx {
     DEFINES *= \

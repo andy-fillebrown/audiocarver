@@ -1,0 +1,9 @@
+
+load(../qt_core/qt_core_dependencies.prf)
+
+# for pro_version.h
+INCLUDEPATH *= $$PRO_BUILD_TREE/src/plugins/qt_core
+DEPENDPATH *= $$PRO_BUILD_TREE/src/plugins/qt_core
+
+LIBS *= -L$$PRO_PLUGIN_PATH
+LIBS *= -l$$qtLibraryName(QtCorePlugin)

@@ -178,23 +178,23 @@ int musmon(CSOUND *csound)
 {
     OPARMS  *O = csound->oparms;
 
-#ifdef USE_DOUBLE
-#ifdef BETA
-    csound->Message(csound, Str("Csound version %s beta (double samples) %s\n"),
-                            CS_PACKAGE_VERSION, __DATE__);
-#else
-    csound->Message(csound, Str("Csound version %s (double samples) %s\n"),
-                            CS_PACKAGE_VERSION, __DATE__);
-#endif
-#else
-#ifdef BETA
-    csound->Message(csound, Str("Csound version %s beta (float samples) %s\n"),
-                            CS_PACKAGE_VERSION, __DATE__);
-#else
-    csound->Message(csound, Str("Csound version %s (float samples) %s\n"),
-                            CS_PACKAGE_VERSION, __DATE__);
-#endif
-#endif
+/* #ifdef USE_DOUBLE */
+/* #ifdef BETA */
+/*     csound->Message(csound, Str("Csound version %s beta (double samples) %s\n"), */
+/*                             CS_PACKAGE_VERSION, __DATE__); */
+/* #else */
+/*     csound->Message(csound, Str("Csound version %s (double samples) %s\n"), */
+/*                             CS_PACKAGE_VERSION, __DATE__); */
+/* #endif */
+/* #else */
+/* #ifdef BETA */
+/*     csound->Message(csound, Str("Csound version %s beta (float samples) %s\n"), */
+/*                             CS_PACKAGE_VERSION, __DATE__); */
+/* #else */
+/*     csound->Message(csound, Str("Csound version %s (float samples) %s\n"), */
+/*                             CS_PACKAGE_VERSION, __DATE__); */
+/* #endif */
+/* #endif */
     if (LIKELY(csound->musmonGlobals == NULL))
       csound->musmonGlobals = csound->Calloc(csound, sizeof(MUSMON_GLOBALS));
     /* initialise search path cache */
@@ -614,9 +614,10 @@ static int process_score_event(CSOUND *csound, EVTBLK *evt, int rtEvt)
       return (evt->opcod == 'l' ? 3 : (evt->opcod == 's' ? 1 : 2));
     case 'q':
       if (evt->p[1] == SSTRCOD && evt->strarg) {    /* IV - Oct 31 2002 */
-        if (UNLIKELY((insno = (int) named_instr_find(csound, evt->strarg)) < 1)) {
-          printScoreError(csound, rtEvt, Str(" - note deleted. instr %s undefined"),
-                                    evt->strarg);
+        if (UNLIKELY((insno = (int)named_instr_find(csound, evt->strarg)) < 1)) {
+          printScoreError(csound, rtEvt,
+                          Str(" - note deleted. instr %s undefined"),
+                          evt->strarg);
           break;
         }
         csound->Message(csound, Str("Setting instrument %s %s\n"),
@@ -656,7 +657,8 @@ static int process_score_event(CSOUND *csound, EVTBLK *evt, int rtEvt)
         evt->p[1] = (MYFLT) insno;
         if (csound->oparms->Beatmode && !rtEvt && evt->p3orig > FL(0.0))
           evt->p[3] = evt->p3orig * (MYFLT) csound->ibeatTime/csound->esr;
-        if (UNLIKELY((n = insert(csound, insno, evt)))) {  /* else alloc, init, activate */
+        if (UNLIKELY((n = insert(csound, insno, evt)))) {
+          /* else alloc, init, activate */
           printScoreError(csound, rtEvt,
                           Str(" - note deleted.  i%d (%s) had %d init errors"),
                           insno, evt->strarg, n);
@@ -901,7 +903,7 @@ int sensevents(CSOUND *csound)
           csound->nxtbt = (double) e->p2orig + csound->beatOffs;
           if (e->opcod=='i')
             if (UNLIKELY(csound->oparms->odebug))
-              csound->Message(csound, "new event: %16.13lf %16.13lf\n",
+              csound->Message(csound, Str("new event: %16.13lf %16.13lf\n"),
                               csound->nxtim, csound->nxtbt);
           break;
         case 'e':
@@ -923,7 +925,8 @@ int sensevents(CSOUND *csound)
       else {
         csound->cyclesRemaining =
           RNDINT64((csound->nxtim*csound->esr - csound->icurTime) / csound->ksmps);
-        csound->nxtim = (csound->cyclesRemaining*csound->ksmps+csound->icurTime)/csound->esr;
+        csound->nxtim =
+          (csound->cyclesRemaining*csound->ksmps+csound->icurTime)/csound->esr;
       }
     }
 
@@ -976,8 +979,8 @@ int sensevents(CSOUND *csound)
                 MEVENT *mep = (MEVENT *)bp->data;
                 if (UNLIKELY(mep->type == 0xFF && mep->dat1 == 0x2F)) {
                   csound->MTrkend = 1;                     /* catch a Trkend    */
-                  csound->Message(csound, "SERVER%c: ", remoteID(csound));
-                  csound->Message(csound, "caught a Trkend\n");
+                  csound->Message(csound, Str("SERVER%c: "), remoteID(csound));
+                  csound->Message(csound, Str("caught a Trkend\n"));
                   /*csoundCleanup(csound);
                   exit(0);*/
                   return 2;  /* end of performance */
@@ -1013,7 +1016,8 @@ int sensevents(CSOUND *csound)
       delete_pending_rt_events(csound);
       if (O->Beatmode)
         csound->curbt = csound->curBeat;
-      csound->curp2 = csound->nxtim = csound->timeOffs = csound->icurTime/csound->esr;
+      csound->curp2 = csound->nxtim =
+        csound->timeOffs = csound->icurTime/csound->esr;
       csound->prvbt = csound->nxtbt = csound->beatOffs = csound->curbt;
       section_amps(csound, 1);
     }

@@ -20,3 +20,9 @@ No issues.
 
 -------------------------------------------------------------------------------
 
+9/23/12: [Using Csound repository commit 23a9788 (9/23/2012)]
+
+Undefined references to vbap init functions:
+- Fixed by removing vbap opcodes
+
+-------------------------------------------------------------------------------

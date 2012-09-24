@@ -1,0 +1,4 @@
+
+load(../mi_gui/mi_gui_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(MiGuiPlugin)

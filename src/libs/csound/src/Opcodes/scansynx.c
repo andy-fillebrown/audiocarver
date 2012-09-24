@@ -83,7 +83,7 @@ static void unquote(char *dst, char *src)
 static int scsnux_initw(CSOUND *csound, PSCSNUX *p)
 {
     int32 len = p->len;
-    FUNC *fi = csound->FTFind(csound, p->i_init);
+    FUNC *fi = csound->FTnp2Find(csound, p->i_init);
     if (UNLIKELY(fi == NULL)) {
       return csound->InitError(csound,
                                Str("scanux: Could not find ifnnit ftable"));
@@ -113,12 +113,12 @@ static int scsnux_hammer(CSOUND *csound, PSCSNUX *p, MYFLT pos, MYFLT sgn)
     int i, i1, i2;
     FUNC *fi;
     MYFLT *f;
-    MYFLT tab = *p->i_init;
+    MYFLT tab = FABS(*p->i_init);
     int32 len  = p->len;
 
     /* Get table */
-    if (UNLIKELY(tab<FL(0.0))) tab = -tab;   /* JPff fix here */
-    if (UNLIKELY((fi = csound->FTFind(csound, &tab)) == NULL)) {
+    //if (UNLIKELY(tab<FL(0.0))) tab = -tab;   /* JPff fix here */
+    if (UNLIKELY((fi = csound->FTnp2Find(csound, &tab)) == NULL)) {
       return csound->InitError(csound,
                                Str("scanux: Could not find ifninit ftable"));
     }
@@ -224,7 +224,7 @@ static int scsnux_init(CSOUND *csound, PSCSNUX *p)
     int     i;
 
     /* Mass */
-    if (UNLIKELY((f = csound->FTFind(csound, p->i_m)) == NULL)) {
+    if (UNLIKELY((f = csound->FTnp2Find(csound, p->i_m)) == NULL)) {
       return csound->InitError(csound,
                                Str("scanux: Could not find ifnmass table"));
     }
@@ -232,7 +232,7 @@ static int scsnux_init(CSOUND *csound, PSCSNUX *p)
     p->m = f->ftable;
 
     /* Centering */
-    if (UNLIKELY((f = csound->FTFind(csound, p->i_c)) == NULL)) {
+    if (UNLIKELY((f = csound->FTnp2Find(csound, p->i_c)) == NULL)) {
       return csound->InitError(csound,
                                Str("scanux: Could not find ifncentr table"));
     }
@@ -242,7 +242,7 @@ static int scsnux_init(CSOUND *csound, PSCSNUX *p)
     p->c = f->ftable;
 
     /* Damping */
-    if (UNLIKELY((f = csound->FTFind(csound, p->i_d)) == NULL)) {
+    if (UNLIKELY((f = csound->FTnp2Find(csound, p->i_d)) == NULL)) {
       return csound->InitError(csound,
                                Str("scanux: Could not find ifndamp table"));
     }
@@ -256,7 +256,7 @@ static int scsnux_init(CSOUND *csound, PSCSNUX *p)
       int j, ilen;
 
       /* Get the table */
-      if (UNLIKELY((f = csound->FTFind(csound, p->i_f)) == NULL)) {
+      if (UNLIKELY((f = csound->FTnp2Find(csound, p->i_f)) == NULL)) {
         return csound->InitError(csound,
                                  Str("scanux: Could not find ifnstiff table"));
       }
@@ -301,7 +301,8 @@ static int scsnux_init(CSOUND *csound, PSCSNUX *p)
         unquote(filnam, csound->currevent->strarg);
       else strcpy(filnam, (char*) p->i_f);
       /* readfile if reqd */
-      if (UNLIKELY((mfp = csound->ldmemfile2(csound, filnam, CSFTYPE_XSCANU_MATRIX)) == NULL)) {
+      if (UNLIKELY((mfp = csound->ldmemfile2(csound, filnam,
+                                             CSFTYPE_XSCANU_MATRIX)) == NULL)) {
         return csound->InitError(csound, Str("SCANU cannot load %s"), filnam);
       }
       else {
@@ -395,7 +396,7 @@ static int scsnux_init(CSOUND *csound, PSCSNUX *p)
 
     /* Velocity gets presidential treatment */
     {
-      FUNC *f = csound->FTFind(csound, p->i_v);
+      FUNC *f = csound->FTnp2Find(csound, p->i_v);
       if (UNLIKELY(f == NULL)) {
         return csound->InitError(csound,
                                  Str("scanux: Could not find ifnvel table"));
@@ -570,7 +571,7 @@ static int scsnsx_init(CSOUND *csound, PSCSNSX *p)
     {
       int i;
       int oscil_interp = (int)*p->interp;
-      FUNC *t = csound->FTFind(csound, p->i_trj);
+      FUNC *t = csound->FTnp2Find(csound, p->i_trj);
       if (UNLIKELY(t == NULL)) {
         return csound->InitError(csound, Str("scans: Could not find "
                                              "the ifntraj table"));

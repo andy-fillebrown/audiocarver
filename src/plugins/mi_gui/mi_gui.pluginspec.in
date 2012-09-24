@@ -1,0 +1,15 @@
+<plugin name=\"$$PRO_TARGET\" version=\"$$PRO_VERSION\" compatVersion=\"$$PRO_VERSION\" unloadable=\"false\">
+    <vendor>$$PRO_AUTHOR_NOSPACE</vendor>
+    <copyright>(C) $$PRO_YEAR $$PRO_AUTHOR</copyright>
+    <license>
+GNU Lesser General Public License Usage
+
+This plugin may be used under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.  Please review the following information to ensure the GNU Lesser General Public License version 2.1 requirements will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+    </license>
+    <category>$$PRO_NAME</category>
+    <description>The gui plugin for $${PRO_NAME}.</description>
+    <url>$$PRO_URL</url>
+    <dependencyList>
+        <dependency name=\"MiCorePlugin\" version=\"$$PRO_VERSION\"/>
+    </dependencyList>
+</plugin>

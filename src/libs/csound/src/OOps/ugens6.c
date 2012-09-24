@@ -817,7 +817,7 @@ int comb(CSOUND *csound, COMB *p)
        * The argument to exp() in the following is sometimes a small
        * enough negative number to result in a denormal (or worse)
        * on Alpha. So if the result would be less than 1.0e-16, we
-       * just say it's zero and don't call exp().  heh 981101
+       * just say it is zero and do not call exp().  heh 981101
        */
       double exp_arg = (double)(log001 * *p->ilpt / p->prvt);
       if (UNLIKELY(exp_arg < -36.8413615))    /* ln(1.0e-16) */
@@ -993,7 +993,7 @@ int panset(CSOUND *csound, PAN *p)
 {
     FUNC  *ftp;
 
-    if (UNLIKELY((ftp = csound->FTFind(csound, p->ifn)) == NULL))
+    if (UNLIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) == NULL))
       return NOTOK;
     p->ftp = ftp;
     p->xmul = (*p->imode == FL(0.0) ? FL(1.0) : (MYFLT)ftp->flen);

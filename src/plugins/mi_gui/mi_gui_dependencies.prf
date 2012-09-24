@@ -1,0 +1,17 @@
+
+load(../mi_core/mi_core.prf)
+
+DIRS = \
+    graphicsview \
+    interfaces \
+    itemviews \
+#    models \
+    session \
+    widgets \
+
+for(dir, DIRS) {
+    HEADERPATH *= $$PWD/$$dir
+}
+HEADERPATH *= $$PWD
+INCLUDEPATH *= $$HEADERPATH
+DEPENDPATH *= $$HEADERPATH

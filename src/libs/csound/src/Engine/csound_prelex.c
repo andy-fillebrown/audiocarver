@@ -1263,9 +1263,6 @@ case YY_STATE_EOF(ifdef):
                   /* csound->DebugMsg(csound,"End of input; popping to %p\n", */
                   /*         YY_CURRENT_BUFFER); */
                   csound_pre_line(csound->expanded_orc, yyscanner);
-                  if (PARM->clearBufferAfterEOF)
-                    PARM->clearBufferAfterEOF =
-                      PARM->isInclude = 0;
                   n = PARM->alt_stack[--PARM->macro_stack_ptr].n;
                   csound_preset_lineno(PARM->alt_stack[PARM->macro_stack_ptr].line,
                                        yyscanner);
@@ -1301,7 +1298,7 @@ case YY_STATE_EOF(ifdef):
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 416 "csound_pre.lex"
+#line 413 "csound_pre.lex"
 {
                   if (PARM->isString != 1)
                     BEGIN(macro);
@@ -1311,12 +1308,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 422 "csound_pre.lex"
+#line 419 "csound_pre.lex"
 /* eat the whitespace */
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 423 "csound_pre.lex"
+#line 420 "csound_pre.lex"
 {
                   yytext[yyleng-1] = '\0';
                   /* csound->DebugMsg(csound,"Define macro with args %s\n", yytext); */
@@ -1328,7 +1325,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 431 "csound_pre.lex"
+#line 428 "csound_pre.lex"
 {
                   /* csound->DebugMsg(csound,"Define macro %s\n", yytext); */
                   /* print_csound_predata(csound,"Before do_macro", yyscanner); */
@@ -1339,7 +1336,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 438 "csound_pre.lex"
+#line 435 "csound_pre.lex"
 {
                   if (PARM->isString != 1)
                     BEGIN(umacro);
@@ -1349,12 +1346,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 444 "csound_pre.lex"
+#line 441 "csound_pre.lex"
 /* eat the whitespace */
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 445 "csound_pre.lex"
+#line 442 "csound_pre.lex"
 {
                   /* csound->DebugMsg(csound,"Undefine macro %s\n", yytext); */
                   do_umacro(csound, yytext, yyscanner);
@@ -1363,7 +1360,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 451 "csound_pre.lex"
+#line 448 "csound_pre.lex"
 {
                   if (PARM->isString != 1) {
                     PARM->isIfndef = (yytext[3] == 'n');  /* #ifdef or #ifndef */
@@ -1380,12 +1377,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 464 "csound_pre.lex"
+#line 461 "csound_pre.lex"
 /* eat the whitespace */
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 465 "csound_pre.lex"
+#line 462 "csound_pre.lex"
 {
                   do_ifdef(csound, yytext, yyscanner);
                   BEGIN(INITIAL);
@@ -1396,7 +1393,7 @@ case 27:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 469 "csound_pre.lex"
+#line 466 "csound_pre.lex"
 { 
                   if (PARM->isString != 1) {
                     if (PARM->ifdefStack == NULL) {
@@ -1422,7 +1419,7 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 490 "csound_pre.lex"
+#line 487 "csound_pre.lex"
 {
                   if (PARM->isString != 1) {
                     IFDEFSTACK *pp = PARM->ifdefStack;
@@ -1444,15 +1441,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 508 "csound_pre.lex"
+#line 505 "csound_pre.lex"
 { corfile_putc(yytext[0], csound->expanded_orc); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 510 "csound_pre.lex"
+#line 507 "csound_pre.lex"
 ECHO;
 	YY_BREAK
-#line 1456 "Engine/csound_prelex.c"
+#line 1453 "Engine/csound_prelex.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2605,7 +2602,7 @@ void csound_prefree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 510 "csound_pre.lex"
+#line 507 "csound_pre.lex"
 
 
 void comment(yyscan_t yyscanner)              /* Skip until nextline */
@@ -2702,7 +2699,6 @@ void do_include(CSOUND *csound, int term, yyscan_t yyscanner)
     PARM->alt_stack[PARM->macro_stack_ptr].n = 0;
     PARM->alt_stack[PARM->macro_stack_ptr].line = csound_preget_lineno(yyscanner);
     PARM->alt_stack[PARM->macro_stack_ptr++].s = NULL;
-    PARM->isInclude = PARM->clearBufferAfterEOF = 1;
     csound_prepush_buffer_state(YY_CURRENT_BUFFER, yyscanner);
     csound_pre_scan_string(cf->body, yyscanner);
     corfile_rm(&cf);

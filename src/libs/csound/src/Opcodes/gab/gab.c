@@ -417,7 +417,7 @@ static int adsynt2_set(CSOUND *csound,ADSYNT2 *p)
 
     p->inerr = 0;
 
-    if (LIKELY((ftp = csound->FTnp2Find(csound, p->ifn)) != NULL)) {
+    if (LIKELY((ftp = csound->FTFind(csound, p->ifn)) != NULL)) {
       p->ftp = ftp;
     }
     else {

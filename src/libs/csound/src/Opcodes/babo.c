@@ -722,7 +722,7 @@ set_expert_values(CSOUND *csound, BABO *p)
     int      n      = 0;
 
     if (p->expert_values > 0)
-        ftp = csound->FTFind(csound, &(p->expert_values));
+        ftp = csound->FTnp2Find(csound, &(p->expert_values));
 
     p->decay        = load_value_or_default(ftp, n++, BABO_DEFAULT_DECAY);
     p->hidecay      = load_value_or_default(ftp, n++, BABO_DEFAULT_HIDECAY);
@@ -738,7 +738,9 @@ set_expert_values(CSOUND *csound, BABO *p)
 static void
 verify_coherence(CSOUND *csound, BABO *p)
 {
-    if (UNLIKELY(*(p->lx) <= FL(0.0) || *(p->ly) <= FL(0.0) || *(p->lz) <= FL(0.0))) {
+    if (UNLIKELY(*(p->lx) <= FL(0.0) ||
+                 *(p->ly) <= FL(0.0) ||
+                 *(p->lz) <= FL(0.0))) {
       csound->Die(csound, Str("Babo: resonator dimensions are incorrect "
                               "(%.1f, %.1f, %.1f)"),
                   *(p->lx), *(p->ly), *(p->lz));
@@ -825,4 +827,3 @@ static OENTRY babo_localops[] = {
 };
 
 LINKAGE1(babo_localops)
-
