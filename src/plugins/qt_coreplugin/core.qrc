@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/core">
+        <file>images/next.png</file>
+        <file>images/prev.png</file>
+        <file>images/reset.png</file>
+        <file>images/category_environment.png</file>
+        <file>images/project_logo_32.png</file>
+        <file>images/project_logo_128.png</file>
+        <file>images/editclear.png</file>
+    </qresource>
+</RCC>
