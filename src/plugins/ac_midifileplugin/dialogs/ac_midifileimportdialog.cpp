@@ -195,12 +195,13 @@ static void importBarlines(MidiFileReader &reader, qreal scoreLength)
 
         qreal meter_duration = -1.0f;
         if (i + 1 < n)
-            meter_duration = meter_changes.at(i).time - meter_change.time;
+            meter_duration = meter_changes.at(i + 1).time - meter_change.time;
         else
             meter_duration = scoreLength - meter_change.time;
+        const qreal meter_end_time = meter_change.time + meter_duration;
 
         current_time = meter_change.time;
-        while (current_time < meter_duration) {
+        while (current_time < meter_end_time) {
             for (int j = 0;  j < meter_change.numerator;  ++j) {
                 QString bar_label = QString("%1").arg(current_bar_number);
                 if (j == 0)
