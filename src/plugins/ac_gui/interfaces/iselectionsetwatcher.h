@@ -15,33 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef ISELECTIONSETWATCHER_H
+#define ISELECTIONSETWATCHER_H
 
-#include <ac_core_interfaces.h>
+#include <iunknown.h>
+#include "ac_gui_interfaces.h"
 
-namespace I {
+class ISelectionSet;
 
-enum AcGuiInterfaces {
-    IChildEntity = AcCoreInterfaceCount,
-    IEntity,
-    IParentEntity,
-    ISubEntity,
-    IGraphicsItem,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+class ISelectionSetWatcher : public IUnknown
+{
+public:
+    enum { InterfaceType = I::ISelectionSetWatcher };
+
+    virtual void beginChangeSelection(ISelectionSet *selectionSet) = 0;
+    virtual void endChangeSelection(ISelectionSet *selectionSet) = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
-
-}
 
 #endif
