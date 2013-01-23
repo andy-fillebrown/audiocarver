@@ -6,7 +6,7 @@ TEMPLATE = lib
 load(../../plugin.prf)
 
 DEFINES *= \
-    AC_CORE_LIBRARY \
+    AC_GUI_LIBRARY \
 
 SOURCE_FILES = \
     constants \

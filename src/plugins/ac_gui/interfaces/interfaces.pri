@@ -8,6 +8,8 @@ SOURCE_FILES *= \
     iplaycursor \
     ipoint \
 #    iqaudioengine \
+    iselectionset \
+    iselectionsetwatcher \
     isubentity \
 #    isynthesizer \
 
