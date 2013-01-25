@@ -12,3 +12,6 @@ SUBDIRS = \
 #    ac_audioengine \
 #    ac_midifileplugin \
 #    ac_synthesizer \
+
+OTHER_FILES *= \
+    Doxyfile \

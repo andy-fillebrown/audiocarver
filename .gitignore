@@ -109,6 +109,10 @@ tests/auto/profilewriter/tst_profilewriter
 # -------------
 testing/*.ac-output
 
+# Documentation build
+# -------------------
+doc-build
+
 # Python cache files generated when running Blender
 # -------------------------------------------------
 *__pycache__*
