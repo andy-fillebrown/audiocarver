@@ -15,47 +15,47 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRAPHICSGRIPITEM_H
-#define AC_GRAPHICSGRIPITEM_H
+#ifndef AC_GUI_GRAPHICSGRIPITEM_H
+#define AC_GUI_GRAPHICSGRIPITEM_H
 
-//#include <ac_igrip.h>
+#include <igrip.h>
 
-//#include <ac_gui_graphicsitem.h>
+#include <ac_gui_graphicsitem.h>
 
-//class GraphicsEntityItem;
+class GraphicsEntityItem;
 
-//class GraphicsGripItemPrivate;
-//class GraphicsGripItem : public GraphicsItem
-//        ,   public IGripItem
-//{
-//public:
-//    GraphicsGripItem(const QPointF &position, int curveType);
-//    ~GraphicsGripItem();
+class GraphicsGripItemPrivate;
+class GraphicsGripItem : public GraphicsItem
+        ,   public IGrip
+{
+public:
+    GraphicsGripItem(const QPointF &position, int curveType);
+    ~GraphicsGripItem();
 
-//    // IGripItem
-//    IEntityItem *parentEntityItem() const;
-//    const QPointF &originalPosition() const;
-//    void updateOriginalPosition();
-//    QPointF position() const;
-//    void setPosition(const QPointF &position);
-//    int curveType() const;
-//    void setCurveType(int curveType);
-//    void highlight(HighlightType type = FullHighlight);
-//    void unhighlight();
+    // IGrip
+    IEntityItem *parentEntityItem() const;
+    const QPointF &originalPosition() const;
+    void updateOriginalPosition();
+    QPointF position() const;
+    void setPosition(const QPointF &position);
+    int curveType() const;
+    void setCurveType(int curveType);
+    void highlight(HighlightType type = FullHighlight);
+    void unhighlight();
 
-//    // IUnknown
-//    void *query(int type) const
-//    {
-//        switch (type) {
-//        case Ac::GripItemInterface:
-//            return objectToInterface_cast<IGripItem>(this);
-//        default:
-//            return 0;
-//        }
-//    }
+    // IUnknown
+    void *query(int type) const
+    {
+        switch (type) {
+        case Ac::GripItemInterface:
+            return objectToInterface_cast<IGripItem>(this);
+        default:
+            return 0;
+        }
+    }
 
-//private:
-//    GraphicsGripItemPrivate *d;
-//};
+private:
+    GraphicsGripItemPrivate *d;
+};
 
 #endif // AC_GRAPHICSGRIPITEM_H

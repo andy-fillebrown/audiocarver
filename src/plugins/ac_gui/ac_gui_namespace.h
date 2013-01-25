@@ -41,6 +41,11 @@ enum HighlightType {
     HoverHighlight
 };
 
+enum DragType {
+    Dragging,
+    NotDragging
+};
+
 }
 
 #endif

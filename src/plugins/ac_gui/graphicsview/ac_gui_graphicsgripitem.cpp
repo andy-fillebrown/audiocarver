@@ -16,13 +16,10 @@
 **************************************************************************/
 
 #include "ac_gui_graphicsgripitem.h"
-
-#include <ac_gripselectionmodel.h>
+//#include <ac_gripselectionmodel.h>
 #include <ac_gui_graphicsentityitem.h>
 #include <ac_gui_constants.h>
-
 #include <QGraphicsRectItem>
-
 #include <QRect>
 
 const qreal GRIP_SIZE    = qreal(8.0f);
