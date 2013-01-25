@@ -50,14 +50,9 @@ bool GraphicsItem::intersects(const QRectF &rect) const
     return graphicsCurveItem()->intersects(rect);
 }
 
-void GraphicsItem::highlight()
+void GraphicsItem::highlight(bool on)
 {
-    _graphicsCurveItem->highlight();
-}
-
-void GraphicsItem::unhighlight()
-{
-    _graphicsCurveItem->unhighlight();
+    _graphicsCurveItem->highlight(on);
 }
 
 bool GraphicsItem::isVisible() const

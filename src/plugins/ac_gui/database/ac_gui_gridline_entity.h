@@ -58,10 +58,7 @@ protected:
 
     void update(int role);
 
-    void highlight()
-    {}
-
-    void unhighlight()
+    void highlight(bool on)
     {}
 
     bool isVisible() const;

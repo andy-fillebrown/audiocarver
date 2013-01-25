@@ -36,8 +36,7 @@ public:
     void setEntity(IEntity *entity);
     void setPoints(const PointList &points);
     void setColor(const QColor &color);
-    void highlight();
-    void unhighlight();
+    void highlight(bool on);
 };
 
 #endif

@@ -37,7 +37,7 @@ GraphicsCurveItem::GraphicsCurveItem(QGraphicsItem *parent)
     pen.setJoinStyle(MiterJoin);
     setPen(pen);
     setColor(DEFAULT_TRACK_COLOR);
-    unhighlight();
+    highlight(false);
 }
 
 bool GraphicsCurveItem::intersects(const QRectF &rect) const
@@ -98,18 +98,15 @@ void GraphicsCurveItem::setColor(const QColor &color)
     _noteHead->setBrush(QBrush(color));
 }
 
-void GraphicsCurveItem::highlight()
+void GraphicsCurveItem::highlight(bool on)
 {
     QPen pen = this->pen();
-    pen.setWidthF(3.0f);
+    if (on) {
+        pen.setWidthF(3.0f);
+        _guideItem->show();
+    } else {
+        pen.setWidth(1.0f);
+        _guideItem->hide();
+    }
     setPen(pen);
-    _guideItem->show();
-}
-
-void GraphicsCurveItem::unhighlight()
-{
-    QPen pen = this->pen();
-    pen.setWidthF(1.0f);
-    setPen(pen);
-    _guideItem->hide();
 }

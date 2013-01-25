@@ -48,8 +48,7 @@ public:
     virtual void setPosition(const QPointF &position) = 0;
     virtual int curveType() const = 0;
     virtual void setCurveType(int curveType) = 0;
-    virtual void highlight(Ac::HighlightType type = Ac::FullHighlight) = 0;
-    virtual void unhighlight() = 0;
+    virtual void highlight(bool on = true, Ac::HighlightType type = Ac::FullHighlight) = 0;
 
     int interfaceType() const
     {

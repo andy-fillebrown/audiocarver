@@ -42,14 +42,9 @@ void Entity::update(int role)
     }
 }
 
-void Entity::highlight()
+void Entity::highlight(bool on)
 {
-    query<IGraphicsItem>(this)->highlight();
-}
-
-void Entity::unhighlight()
-{
-    query<IGraphicsItem>(this)->unhighlight();
+    query<IGraphicsItem>(this)->highlight(on);
 }
 
 bool Entity::isVisible() const

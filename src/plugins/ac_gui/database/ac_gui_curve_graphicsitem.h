@@ -45,8 +45,7 @@ protected:
     void setColor(int color);
     void setPoints(const PointList &points);
     bool intersects(const QRectF &rect) const;
-    void highlight();
-    void unhighlight();
+    void highlight(bool on);
     bool isVisible() const;
 };
 

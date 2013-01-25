@@ -277,14 +277,14 @@ public:
         }
         foreach (IGrip *grip, hoveredGrips)
             if (!pickedGrips.contains(grip))
-                grip->unhighlight();
+                grip->highlight(false);
         hoveredGrips.clear();
         foreach (IEntity *entity, hoveredEntities) {
             if (!entityIsPicked(entity)) {
                 IChildEntity *child_entity = query<IChildEntity>(entity);
                 if (child_entity)
                     entity = child_entity->parent();
-                entity->unhighlight();
+                entity->highlight(false);
             }
         }
         hoveredEntities.clear();

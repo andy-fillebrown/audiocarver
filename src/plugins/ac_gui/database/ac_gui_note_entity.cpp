@@ -72,14 +72,9 @@ protected:
         }
     }
 
-    void highlight()
+    void highlight(bool on)
     {
-        query<IGraphicsItem>(this)->highlight();
-    }
-
-    void unhighlight()
-    {
-        query<IGraphicsItem>(this)->unhighlight();
+        query<IGraphicsItem>(this)->highlight(on);
     }
 
     bool isVisible() const
@@ -111,7 +106,7 @@ public:
         QPen pen;
         pen.setCosmetic(true);
         _graphicsLineItem->setPen(pen);
-        unhighlight();
+        highlight(false);
         return Object::GraphicsItem::initialize();
     }
 
@@ -154,17 +149,13 @@ protected:
         return false;
     }
 
-    void highlight()
+    void highlight(bool on)
     {
         QPen pen = _graphicsLineItem->pen();
-        pen.setWidth(3.0f);
-        _graphicsLineItem->setPen(pen);
-    }
-
-    void unhighlight()
-    {
-        QPen pen = _graphicsLineItem->pen();
-        pen.setWidth(1.0f);
+        if (on)
+            pen.setWidth(3.0f);
+        else
+            pen.setWidth(1.0f);
         _graphicsLineItem->setPen(pen);
     }
 

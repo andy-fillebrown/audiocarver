@@ -34,8 +34,7 @@ public:
     virtual void setColor(int color) = 0;
     virtual void setPoints(const PointList &points) = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
-    virtual void highlight() = 0;
-    virtual void unhighlight() = 0;
+    virtual void highlight(bool on = true) = 0;
     virtual bool isVisible() const = 0;
 
     int interfaceType() const

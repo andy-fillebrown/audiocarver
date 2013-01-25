@@ -31,12 +31,8 @@ static void highlightHelper(IParentEntity *entity, int sceneType, bool highlight
 {
     foreach (ISubEntity *sub_entity, entity->subEntities(sceneType)) {
         IGraphicsItem *graphics_item = query<IGraphicsItem>(sub_entity);
-        if (graphics_item) {
-            if (highlight)
-                graphics_item->highlight();
-            else
-                graphics_item->unhighlight();
-        }
+        if (graphics_item)
+            graphics_item->highlight(highlight);
     }
 }
 
@@ -81,16 +77,10 @@ QGraphicsItem *Entity::graphicsItem(int sceneType, int transformType) const
     }
 }
 
-void Entity::highlight()
+void Entity::highlight(bool on)
 {
-    highlightHelper(this, PitchScene, true);
-    highlightHelper(this, ControlScene, true);
-}
-
-void Entity::unhighlight()
-{
-    highlightHelper(this, PitchScene, false);
-    highlightHelper(this, ControlScene, false);
+    highlightHelper(this, PitchScene, on);
+    highlightHelper(this, ControlScene, on);
 }
 
 }

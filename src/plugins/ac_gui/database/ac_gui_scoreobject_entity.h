@@ -43,8 +43,7 @@ protected:
     QList<ISubEntity*> subEntities(int sceneType) const;
     QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
 
-    void highlight();
-    void unhighlight();
+    void highlight(bool on);
 
     bool isVisible() const
     {
