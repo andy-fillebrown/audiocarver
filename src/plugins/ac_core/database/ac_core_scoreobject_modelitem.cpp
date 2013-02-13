@@ -25,18 +25,6 @@ using namespace Ac;
 
 namespace ScoreObject {
 
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   Object::ModelItem(aggregate)
-    ,   _pitchCurve(0)
-    ,   _controlCurves(0)
-{}
-
-ModelItem::~ModelItem()
-{
-    delete _controlCurves;
-    delete _pitchCurve;
-}
-
 IUnknown *ModelItem::initialize()
 {
     Object::ModelItem::initialize();
@@ -44,6 +32,12 @@ IUnknown *ModelItem::initialize()
     _pitchCurve = factory->create(PitchCurveItem, this);
     _controlCurves = factory->create(ControlCurveListItem, this);
     return this;
+}
+
+ModelItem::~ModelItem()
+{
+    delete _controlCurves;
+    delete _pitchCurve;
 }
 
 bool ModelItem::isTypeOfItem(int itemType) const

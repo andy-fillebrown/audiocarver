@@ -4,23 +4,22 @@ SOURCE_FILES = \
     graphicscontrollabelview \
     graphicscontrolscene \
     graphicscontrolview \
-    graphicscurveitem \
-#    graphicsentityitem \
-#    graphicsgripitem \
-    graphicsguideitem \
+    graphicscurvenode \
+    graphicsgripnode \
+    graphicsguidenode \
     graphicshorizontalscene \
     graphicshorizontalview \
-    graphicsitem \
+    graphicsnode \
     graphicslabelview \
-    graphicspathitem \
+    graphicspathnode \
     graphicspitchlabelscene \
     graphicspitchlabelview \
     graphicspitchscene \
     graphicspitchview \
-    graphicsrootitem \
+    graphicsrootnode \
     graphicsscene \
     graphicsscenemanager \
-    graphicstextitem \
+    graphicstextnode \
     graphicstimelabelscene \
     graphicstimelabelview \
     graphicsverticallabelview \

@@ -32,7 +32,8 @@ public:
     virtual IUnknown *initialize();
 
 protected:
-    QGraphicsItem *graphicsItem(int sceneType, int transformType) const;
+    QGraphicsItem *node(int sceneType, int transformType) const;
+    void update(int role);
 };
 
 }

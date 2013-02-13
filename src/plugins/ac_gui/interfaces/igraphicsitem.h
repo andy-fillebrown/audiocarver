@@ -23,19 +23,20 @@
 #include <ac_core_point.h>
 
 class QGraphicsItem;
-class QRectF;
 
 class IGraphicsItem : public IUnknown
 {
 public:
     enum { InterfaceType = I::IGraphicsItem };
 
-    virtual QGraphicsItem *graphicsItem(int sceneType, int transformType) const = 0;
-    virtual void setColor(int color) = 0;
-    virtual void setPoints(const PointList &points) = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
-    virtual void highlight(bool on = true) = 0;
-    virtual bool isVisible() const = 0;
+    virtual QGraphicsItem *node(int sceneType, int transformType) const = 0;
+//    virtual QGraphicsItem *node(int sceneType, int transformType) const
+//    {
+//        Q_ASSERT(false);
+//        return 0;
+//    }
+
+    virtual void update(int role) = 0;
 
     int interfaceType() const
     {

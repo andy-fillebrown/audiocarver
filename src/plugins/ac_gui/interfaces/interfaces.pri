@@ -1,16 +1,14 @@
 
 SOURCE_FILES *= \
-    ichildentity \
-    ientity \
+    igraphicscurve \
+    igraphicsentity \
     igraphicsitem \
     igrip \
-    iparententity \
     iplaycursor \
     ipoint \
 #    iqaudioengine \
     iselectionset \
     iselectionsetwatcher \
-    isubentity \
 #    isynthesizer \
 
 DIR = $$dirname(_FILE_)

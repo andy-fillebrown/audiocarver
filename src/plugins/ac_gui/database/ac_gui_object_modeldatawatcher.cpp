@@ -18,7 +18,7 @@
 #include "ac_gui_object_modeldatawatcher.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
-#include <ientity.h>
+#include <igraphicsitem.h>
 #include <imodeldata.h>
 
 using namespace Ac;
@@ -42,10 +42,10 @@ void ModelDataWatcher::beginChangeData(const IModelData *data, int role, int cha
 
 void ModelDataWatcher::endChangeData(const IModelData *data, int role, int changeType)
 {
-    IEntity *data_entity = query<IEntity>(data);
-    if (!data_entity)
+    IGraphicsItem *graphics_item = query<IGraphicsItem>(data);
+    if (!graphics_item)
         return;
-    data_entity->update(role);
+    graphics_item->update(role);
 }
 
 }

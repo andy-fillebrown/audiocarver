@@ -16,48 +16,65 @@
 **************************************************************************/
 
 #include "ac_gui_curve_graphicsitem.h"
-#include "ac_gui_graphicscurveitem.h"
-#include <ientity.h>
+#include "ac_gui_graphicscurvenode.h"
+#include <imodeldata.h>
+#include <imodelitem.h>
+#include <iaggregate.h>
 
 using namespace Ac;
 
 namespace Curve {
 
-GraphicsItem::~GraphicsItem()
+void *GraphicsItem::queryInterface(int interfaceType) const
 {
-    delete _graphicsCurveItem;
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<GraphicsItem*>(this);
+    return aggregate()->queryInterface(interfaceType);
 }
 
 IUnknown *GraphicsItem::initialize()
 {
-    _graphicsCurveItem = new GraphicsCurveItem;
-    _graphicsCurveItem->setEntity(query<IEntity>(this));
-    return Object::GraphicsItem::initialize();
+    _curveNode = new GraphicsCurveNode;
+    _curveNode->setModelItem(query<IModelItem>(this));
+    return aggregate()->append(this);
+}
+
+GraphicsItem::~GraphicsItem()
+{
+    delete _curveNode;
 }
 
 void GraphicsItem::setColor(int color)
 {
-    _graphicsCurveItem->setColor(color);
+    curveNode()->setColor(color);
 }
 
 void GraphicsItem::setPoints(const PointList &points)
 {
-    _graphicsCurveItem->setPoints(points);
+    curveNode()->setPoints(points);
 }
 
 bool GraphicsItem::intersects(const QRectF &rect) const
 {
-    return graphicsCurveItem()->intersects(rect);
+    return curveNode()->intersects(rect);
 }
 
 void GraphicsItem::highlight(bool on)
 {
-    _graphicsCurveItem->highlight(on);
+    curveNode()->highlight(on);
 }
 
 bool GraphicsItem::isVisible() const
 {
-    return _graphicsCurveItem->isVisible();
+    return curveNode()->isVisible();
+}
+
+void GraphicsItem::update(int role)
+{
+    switch (role) {
+    case PointsRole:
+        query<IGraphicsCurve>(this)->setPoints(query<IModelData>(this)->get<PointList>(PointsRole));
+    }
 }
 
 }

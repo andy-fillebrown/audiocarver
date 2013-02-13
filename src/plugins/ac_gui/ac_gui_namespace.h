@@ -18,7 +18,15 @@
 #ifndef AC_GUI_NAMESPACE_H
 #define AC_GUI_NAMESPACE_H
 
+#include <ac_core_namespace.h>
+
 namespace Ac {
+
+enum GuiItemType {
+    VelocityItem = Ac::CoreItemTypeCount,
+    GripsItem,
+    GuiItemTypeCount
+};
 
 enum SceneType {
     ControlLabelScene,

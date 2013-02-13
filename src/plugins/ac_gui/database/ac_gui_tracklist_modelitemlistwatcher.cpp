@@ -18,7 +18,7 @@
 #include "ac_gui_tracklist_modelitemlistwatcher.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
-#include <ientity.h>
+#include <igraphicsitem.h>
 #include <imodelitemlist.h>
 #include <QGraphicsItem>
 
@@ -43,9 +43,9 @@ void ModelItemListWatcher::updateZValues(const IModelItemList *parent)
     const int item_count = parent->count();
     for (int i = 0;  i < item_count;  ++i) {
         const int z_value = item_count - i;
-        IEntity *item_entity = query<IEntity>(parent->at(i));
-        item_entity->graphicsItem(PitchScene, MainTransform)->setZValue(z_value);
-        item_entity->graphicsItem(ControlScene, MainTransform)->setZValue(z_value);
+        IGraphicsItem *graphics_item = query<IGraphicsItem>(parent->at(i));
+        graphics_item->node(PitchScene, MainTransform)->setZValue(z_value);
+        graphics_item->node(ControlScene, MainTransform)->setZValue(z_value);
     }
 }
 

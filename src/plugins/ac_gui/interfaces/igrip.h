@@ -43,7 +43,8 @@ public:
 
     virtual ISubEntity *entity() const = 0;
     virtual QPointF position() const = 0;
-    virtual void resetPosition(const QPointF &position = QPoint(-1, -1), int = Ac::NotDragging) = 0;
+    virtual void setPosition(const QPointF &position, int dragging = Ac::NotDragging) = 0;
+    virtual void resetPosition() = 0;
     virtual int curveType() const = 0;
     virtual void setCurveType(int curveType) = 0;
     virtual void highlight(bool on = true, Ac::HighlightType type = Ac::FullHighlight) = 0;

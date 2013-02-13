@@ -18,9 +18,8 @@
 #include "ac_gui_object_modelitemwatcher.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
-#include <ichildentity.h>
+#include <igraphicsitem.h>
 #include <imodelitem.h>
-#include <iparententity.h>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
@@ -47,19 +46,23 @@ void ModelItemWatcher::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
-    IEntity *child_entity = query<IEntity>(child);
-    IEntity *parent_entity = query<IChildEntity>(child)->parent();
+    IGraphicsItem *parent_graphics_item = 0;
+    IModelItem *parent_model_item = child->parent();
+    if (parent_model_item && parent_model_item->isList())
+        parent_model_item = parent_model_item->parent();
+    parent_graphics_item = query<IGraphicsItem>(parent_model_item);
+    IGraphicsItem *child_graphics_item = query<IGraphicsItem>(child);
     for (int i = 0;  i < SceneTypeCount;  ++i) {
         for (int j = 0;  j < TransformTypeCount;  ++j) {
-            QGraphicsItem *child_graphics_item = child_entity->graphicsItem(i, j);
-            if (!child_graphics_item)
+            QGraphicsItem *child_node = child_graphics_item ? child_graphics_item->node(i, j) : 0;
+            if (!child_node)
                 continue;
-            QGraphicsItem *parent_graphics_item = parent_entity ? parent_entity->graphicsItem(i, j) : 0;
-            child_graphics_item->setParentItem(parent_graphics_item);
-            if (!parent_graphics_item) {
-                QGraphicsScene *scene = child_graphics_item->scene();
+            QGraphicsItem *parent_node = parent_graphics_item ? parent_graphics_item->node(i, j) : 0;
+            child_node->setParentItem(parent_node);
+            if (!parent_node) {
+                QGraphicsScene *scene = child_node->scene();
                 if (scene)
-                    scene->removeItem(child_graphics_item);
+                    scene->removeItem(child_node);
             }
         }
     }

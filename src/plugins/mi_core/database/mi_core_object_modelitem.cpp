@@ -52,7 +52,7 @@ void ModelItem::setParent(IModelItem *parent)
 
 IModelItemList *ModelItem::list() const
 {
-    return query<IModelItemList>(parent());
+    return query<IModelItemList>(_parent);
 }
 
 }

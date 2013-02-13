@@ -23,7 +23,7 @@
 #include <ac_core_point.h>
 #include <idatabaseobjectfactory.h>
 #include <ieditor.h>
-#include <ientity.h>
+#include <igraphicsitem.h>
 #include <imodel.h>
 #include <imodelitem.h>
 #include <QApplication>
@@ -39,8 +39,8 @@ class GraphicsPitchViewPrivate
 public:
     GraphicsPitchView *q;
     QModelIndexList trackSSIndexes;
-    QList<IEntity*> currentNotes;
-    QList<IEntity*> currentPitchCurves;
+    QList<IGraphicsItem*> currentNotes;
+    QList<IGraphicsItem*> currentPitchCurves;
     PointList currentPoints;
     uint creatingNotes : 1;
     uint notesStarted : 1;

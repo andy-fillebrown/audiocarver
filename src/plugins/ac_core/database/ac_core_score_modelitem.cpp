@@ -28,12 +28,13 @@ namespace Score {
 
 IUnknown *ModelItem::initialize()
 {
+    ScoreObject::ModelItem::initialize();
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _tracks = factory->create(TrackListItem, this);
     _gridSettings = factory->create(GridSettingsItem, this);
     _projectSettings = factory->create(ProjectSettingsItem, this);
     _viewSettings = factory->create(ViewSettingsItem, this);
-    return ScoreObject::ModelItem::initialize();
+    return this;
 }
 
 ModelItem::~ModelItem()

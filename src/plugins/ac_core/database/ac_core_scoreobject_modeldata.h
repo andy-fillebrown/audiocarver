@@ -19,10 +19,11 @@
 #define AC_CORE_SCOREOBJECT_MODELDATA_H
 
 #include <mi_core_object_modeldata.h>
+#include "ac_core_global.h"
 
 namespace ScoreObject {
 
-class ModelData : public Object::ModelData
+class AC_CORE_EXPORT ModelData : public Object::ModelData
 {
     qreal _volume;
     enum { RoleCount = 1 };

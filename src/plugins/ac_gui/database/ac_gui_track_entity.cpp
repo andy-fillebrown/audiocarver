@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_track_entity.h"
+#include "ac_gui_track_graphicsitem.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_namespace.h>
 #include <imodeldata.h>
@@ -26,12 +26,12 @@ using namespace Ac;
 
 namespace Track {
 
-IUnknown *Entity::initialize()
+IUnknown *GraphicsItem::initialize()
 {
-    return ScoreObject::Entity::initialize();
+    return ScoreObject::GraphicsItem::initialize();
 }
 
-void Entity::update(int role)
+void GraphicsItem::update(int role)
 {
     switch (role) {
     case ColorRole: {
@@ -41,10 +41,10 @@ void Entity::update(int role)
         IModelItemList *note_list = track_item->findList(NoteItem);
         const int note_count = note_list->count();
         for (int i = 0;  i < note_count;  ++i) {
-            IEntity *note_entity = query<IEntity>(note_list->at(i));
-            if (!note_entity)
+            IGraphicsItem *note_item = query<IGraphicsItem>(note_list->at(i));
+            if (!note_item)
                 continue;
-            note_entity->update(ColorRole);
+            note_item->update(ColorRole);
         }
     } break;
     case VisibilityRole: {
@@ -52,8 +52,8 @@ void Entity::update(int role)
         if (!data)
             return;
         const bool visible = data->get<bool>(VisibilityRole);
-        graphicsItem(PitchScene, MainTransform)->setVisible(visible);
-        graphicsItem(ControlScene, MainTransform)->setVisible(visible);
+        node(PitchScene, MainTransform)->setVisible(visible);
+        node(ControlScene, MainTransform)->setVisible(visible);
     }   break;
     }
 }

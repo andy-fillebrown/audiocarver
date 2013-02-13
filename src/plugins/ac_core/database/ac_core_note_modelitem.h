@@ -19,10 +19,11 @@
 #define AC_CORE_NOTE_MODELITEM_H
 
 #include "ac_core_scoreobject_modelitem.h"
+#include "ac_core_global.h"
 
 namespace Note {
 
-class ModelItem : public ScoreObject::ModelItem
+class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
 {
 public:
     ModelItem(IAggregate *aggregate)

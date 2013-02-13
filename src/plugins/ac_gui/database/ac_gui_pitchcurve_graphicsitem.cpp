@@ -16,8 +16,9 @@
 **************************************************************************/
 
 #include "ac_gui_pitchcurve_graphicsitem.h"
-#include "ac_gui_graphicscurveitem.h"
+#include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
+#include <imodelitem.h>
 
 using namespace Ac;
 
@@ -28,11 +29,25 @@ IUnknown *GraphicsItem::initialize()
     return Curve::GraphicsItem::initialize();
 }
 
-QGraphicsItem *GraphicsItem::graphicsItem(int sceneType, int transformType) const
+QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
 {
     if (PitchScene == sceneType && MainTransform == transformType)
-        return graphicsCurveItem();
+        return curveNode();
     return 0;
+}
+
+void GraphicsItem::update(int role)
+{
+    Curve::GraphicsItem::update(role);
+    if (PointsRole == role) {
+        IModelItem *this_item = query<IModelItem>(this);
+        if (!this_item)
+            return;
+        IGraphicsItem *note_graphic = query<IGraphicsItem>(this_item->parent());
+        if (!note_graphic)
+            return;
+        note_graphic->update(VolumeRole);
+    }
 }
 
 }

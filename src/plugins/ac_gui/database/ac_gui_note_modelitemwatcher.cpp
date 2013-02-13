@@ -17,7 +17,7 @@
 
 #include "ac_gui_note_modelitemwatcher.h"
 #include <ac_core_namespace.h>
-#include <ientity.h>
+#include <igraphicsitem.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -34,10 +34,10 @@ void ModelItemWatcher::endChangeParent(const IModelItem *child)
     if (!child)
         return;
     Object::ModelItemWatcher::endChangeParent(child);
-    IEntity *child_entity = query<IEntity>(child);
-    if (!child_entity)
+    IGraphicsItem *child_graphics = query<IGraphicsItem>(child);
+    if (!child_graphics)
         return;
-    child_entity->update(ColorRole);
+    child_graphics->update(ColorRole);
 }
 
 }

@@ -15,36 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_NOTE_ENTITY_H
-#define AC_GUI_NOTE_ENTITY_H
+//#ifndef AC_GUI_NOTE_ENTITY_H
+//#define AC_GUI_NOTE_ENTITY_H
 
-#include "ac_gui_scoreobject_entity.h"
+//#include "ac_gui_scoreobject_entity.h"
 
-namespace Note {
+//namespace Note {
 
-class Entity : public ScoreObject::Entity
-{
-    IAggregate *_velocity;
+//class Entity : public ScoreObject::Entity
+//{
+//    IAggregate *_velocity;
 
-public:
-    Entity(IAggregate *aggregate)
-        :   ScoreObject::Entity(aggregate)
-        ,   _velocity(0)
-    {}
+//public:
+//    Entity(IAggregate *aggregate)
+//        :   ScoreObject::Entity(aggregate)
+//        ,   _velocity(0)
+//    {}
 
-    ~Entity();
-    IUnknown *initialize();
+//    ~Entity();
+//    IUnknown *initialize();
 
-protected:
-    IAggregate *velocity() const
-    {
-        return _velocity;
-    }
+//protected:
+//    IAggregate *velocity() const
+//    {
+//        return _velocity;
+//    }
 
-    QList<ISubEntity*> subEntities(int sceneType) const;
-    void update(int role);
-};
+//    QList<ISubEntity*> subEntities(int sceneType) const;
+//    void update(int role);
+//};
 
-}
+//}
 
-#endif
+//#endif

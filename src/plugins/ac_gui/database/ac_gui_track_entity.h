@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_TRACK_ENTITY_H
-#define AC_GUI_TRACK_ENTITY_H
+#ifndef AC_GUI_TRACK_GRAPHICSITEM_H
+#define AC_GUI_TRACK_GRAPHICSITEM_H
 
-#include "ac_gui_scoreobject_entity.h"
+#include "ac_gui_scoreobject_graphicsitem.h"
 
 namespace Track {
 
-class Entity : public ScoreObject::Entity
+class GraphicsItem : public ScoreObject::GraphicsItem
 {
 public:
-    Entity(IAggregate *aggregate)
-        :   ScoreObject::Entity(aggregate)
+    GraphicsItem(IAggregate *aggregate)
+        :   ScoreObject::GraphicsItem(aggregate)
     {}
 
     virtual IUnknown *initialize();

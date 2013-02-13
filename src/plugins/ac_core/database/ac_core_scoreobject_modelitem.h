@@ -18,11 +18,12 @@
 #ifndef AC_CORE_SCOREOBJECT_MODELITEM_H
 #define AC_CORE_SCOREOBJECT_MODELITEM_H
 
+#include "ac_core_global.h"
 #include <mi_core_object_modelitem.h>
 
 namespace ScoreObject {
 
-class ModelItem : public Object::ModelItem
+class AC_CORE_EXPORT ModelItem : public Object::ModelItem
 {
     IAggregate *_pitchCurve;
     IAggregate *_controlCurves;
@@ -34,7 +35,12 @@ public:
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    ModelItem(IAggregate *aggregate);
+    ModelItem(IAggregate *aggregate)
+        :   Object::ModelItem(aggregate)
+        ,   _pitchCurve(0)
+        ,   _controlCurves(0)
+    {}
+
     IUnknown *initialize();
 
 protected:

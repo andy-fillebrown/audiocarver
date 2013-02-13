@@ -18,28 +18,38 @@
 #ifndef AC_GUI_CURVE_GRAPHICSITEM_H
 #define AC_GUI_CURVE_GRAPHICSITEM_H
 
-#include "ac_gui_object_graphicsitem.h"
+#include <igraphicscurve.h>
 
-class GraphicsCurveItem;
+class GraphicsCurveNode;
+class IAggregate;
 
 namespace Curve {
 
-class GraphicsItem : public Object::GraphicsItem
+class GraphicsItem : public IGraphicsCurve
 {
-    GraphicsCurveItem *_graphicsCurveItem;
+    IAggregate *_aggregate;
+    GraphicsCurveNode *_curveNode;
+
+public:
+    void *queryInterface(int interfaceType) const;
 
 protected:
     GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsItem(aggregate)
-        ,   _graphicsCurveItem(0)
+        :   _aggregate(aggregate)
+        ,   _curveNode(0)
     {}
 
-    ~GraphicsItem();
     virtual IUnknown *initialize();
+    ~GraphicsItem();
 
-    GraphicsCurveItem *graphicsCurveItem() const
+    IAggregate *aggregate() const
     {
-        return _graphicsCurveItem;
+        return _aggregate;
+    }
+
+    GraphicsCurveNode *curveNode() const
+    {
+        return _curveNode;
     }
 
     void setColor(int color);
@@ -47,6 +57,7 @@ protected:
     bool intersects(const QRectF &rect) const;
     void highlight(bool on);
     bool isVisible() const;
+    void update(int role);
 };
 
 }
