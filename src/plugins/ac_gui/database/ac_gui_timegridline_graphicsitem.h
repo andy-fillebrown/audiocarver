@@ -44,10 +44,11 @@ public:
         ,   _controlSceneLineExtensionNode(0)
     {}
 
-    ~GraphicsItem();
     virtual IUnknown *initialize();
 
 protected:
+    ~GraphicsItem();
+
     QGraphicsItem *node(int sceneType, int transformType) const;
     void setColor(int color);
     void update(int role);

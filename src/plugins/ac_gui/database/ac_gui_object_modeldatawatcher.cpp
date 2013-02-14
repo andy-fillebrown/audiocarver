@@ -25,16 +25,16 @@ using namespace Ac;
 
 namespace Object {
 
-IUnknown *ModelDataWatcher::initialize()
-{
-    return aggregate()->append(this);
-}
-
 void *ModelDataWatcher::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
         return const_cast<ModelDataWatcher*>(this);
     return aggregate()->queryInterface(interfaceType);
+}
+
+IUnknown *ModelDataWatcher::initialize()
+{
+    return aggregate()->append(this);
 }
 
 void ModelDataWatcher::beginChangeData(const IModelData *data, int role, int changeType)

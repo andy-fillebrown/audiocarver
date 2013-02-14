@@ -21,7 +21,6 @@
 #include "ac_gui_curve_graphicsitem.h"
 #include "ac_gui_gridsettings_graphicsitem.h"
 #include "ac_gui_namespace.h"
-#include "ac_gui_note_entity.h"
 #include "ac_gui_note_graphicsitem.h"
 #include "ac_gui_note_modelitem.h"
 #include "ac_gui_note_modelitemwatcher.h"

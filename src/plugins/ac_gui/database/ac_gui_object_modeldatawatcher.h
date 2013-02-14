@@ -29,12 +29,13 @@ class ModelDataWatcher : public IModelDataWatcher
     IAggregate *_aggregate;
 
 public:
+    void *queryInterface(int interfaceType) const;
+
     ModelDataWatcher(IAggregate *aggregate)
         :   _aggregate(aggregate)
     {}
 
     virtual IUnknown *initialize();
-    void *queryInterface(int interfaceType) const;
 
 protected:
     IAggregate *aggregate() const

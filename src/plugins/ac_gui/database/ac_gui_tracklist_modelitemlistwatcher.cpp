@@ -26,16 +26,16 @@ using namespace Ac;
 
 namespace TrackList {
 
-IUnknown *ModelItemListWatcher::initialize()
-{
-    return aggregate()->append(this);
-}
-
 void *ModelItemListWatcher::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
         return const_cast<ModelItemListWatcher*>(this);
     return aggregate()->queryInterface(interfaceType);
+}
+
+IUnknown *ModelItemListWatcher::initialize()
+{
+    return aggregate()->append(this);
 }
 
 void ModelItemListWatcher::updateZValues(const IModelItemList *parent)

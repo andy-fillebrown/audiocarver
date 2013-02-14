@@ -6,7 +6,6 @@ SOURCE_FILES = \
     gridline_graphicsitem \
     gridsettings_graphicsitem \
     horizontalgridline_graphicsitem \
-    note_entity \
     note_graphicsitem \
     note_modelitem \
     note_modelitemwatcher \

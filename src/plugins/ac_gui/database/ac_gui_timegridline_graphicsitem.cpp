@@ -28,13 +28,6 @@ using namespace Mi;
 
 namespace TimeGridLine {
 
-GraphicsItem::~GraphicsItem()
-{
-    delete _controlSceneLineNode;
-    delete _pitchSceneLineNode;
-    delete _labelSceneLineNode;
-}
-
 IUnknown *GraphicsItem::initialize()
 {
     GridLine::GraphicsItem::initialize();
@@ -56,6 +49,13 @@ IUnknown *GraphicsItem::initialize()
     _pitchSceneLineLowExtensionNode->setPen(pen);
     _controlSceneLineExtensionNode->setPen(pen);
     return this;
+}
+
+GraphicsItem::~GraphicsItem()
+{
+    delete _controlSceneLineNode;
+    delete _pitchSceneLineNode;
+    delete _labelSceneLineNode;
 }
 
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
