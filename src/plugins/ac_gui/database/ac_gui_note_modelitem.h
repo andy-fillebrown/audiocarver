@@ -35,6 +35,8 @@ public:
     IUnknown *initialize();
 
 protected:
+    ~ModelItem();
+
     IAggregate *velocity() const
     {
         return _velocity;

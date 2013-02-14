@@ -33,6 +33,11 @@ IUnknown *ModelItem::initialize()
     return this;
 }
 
+ModelItem::~ModelItem()
+{
+    delete _velocity;
+}
+
 IModelItem *ModelItem::findItem(int itemType) const
 {
     if (VelocityItem == itemType) {

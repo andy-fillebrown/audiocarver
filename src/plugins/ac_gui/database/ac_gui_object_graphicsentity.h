@@ -38,12 +38,12 @@ protected:
         :   _aggregate(aggregate)
     {}
 
+    virtual IUnknown *initialize();
+
     IAggregate *aggregate() const
     {
         return _aggregate;
     }
-
-    virtual IUnknown *initialize();
 
     QMap<int, QGraphicsItem*> &mainNodes()
     {

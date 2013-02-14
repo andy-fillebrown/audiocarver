@@ -53,8 +53,8 @@ protected:
         return _labelSceneTextNode;
     }
 
-    ~GraphicsItem();
     virtual IUnknown *initialize();
+    ~GraphicsItem();
 
     void setColor(int color);
     void update(int role);

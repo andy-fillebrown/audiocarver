@@ -27,16 +27,16 @@ using namespace Ac;
 
 namespace Object {
 
-IUnknown *ModelItemWatcher::initialize()
-{
-    return aggregate()->append(this);
-}
-
 void *ModelItemWatcher::queryInterface(int interfaceType) const
 {
     if (isTypeOfInterface(interfaceType))
         return const_cast<ModelItemWatcher*>(this);
     return aggregate()->queryInterface(interfaceType);
+}
+
+IUnknown *ModelItemWatcher::initialize()
+{
+    return aggregate()->append(this);
 }
 
 void ModelItemWatcher::beginChangeParent(const IModelItem *child)

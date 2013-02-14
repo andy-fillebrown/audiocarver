@@ -31,6 +31,7 @@ public:
 
     virtual IUnknown *initialize();
 
+protected:
     QList<IGraphicsEntity*> subentities() const;
 
     void setColor(int color);
