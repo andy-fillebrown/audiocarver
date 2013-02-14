@@ -61,8 +61,9 @@ void GraphicsItem::update(int role)
         if (!data)
             return;
         qreal score_length = data->get<qreal>(LengthRole);
-        unitXNodes()[PitchScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
-        unitYNodes()[ControlScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
+        const QMap<int, QGraphicsItem*> &unitXNodes = this->unitXNodes();
+        unitXNodes[PitchScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
+        unitXNodes[ControlScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
     }   break;
     }
     ScoreObject::GraphicsItem::update(role);

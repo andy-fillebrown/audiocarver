@@ -69,9 +69,9 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         (new Object::ModelDataWatcher(aggregate))->initialize();
         break;
     case GridSettingsItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new GridSettings::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case NoteItem:
         (new ScoreObject::ModelData(aggregate))->initialize();
