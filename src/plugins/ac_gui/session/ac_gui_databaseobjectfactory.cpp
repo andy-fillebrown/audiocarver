@@ -57,16 +57,16 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
 {
     switch (itemType) {
     case ControlCurveItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new ControlCurve::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case ControlGridLineItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new ControlGridLine::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case GridSettingsItem:
         (new GridSettings::GraphicsItem(aggregate))->initialize();
@@ -82,38 +82,38 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         (new Note::Gui::ModelItem(aggregate))->initialize();
         break;
     case PitchCurveItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new PitchCurve::GraphicsItem(aggregate))->initialize();
         (new PitchCurve::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case PitchGridLineItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new PitchGridLine::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case ScoreItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new Score::GraphicsItem(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case TimeGridLineItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new TimeGridLine::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case TrackItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new ScoreObject::GraphicsItem(aggregate))->initialize();
         (new Object::ModelItemWatcher(aggregate))->initialize();
         (new Object::ModelDataWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case TrackListItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         (new TrackList::ModelItemListWatcher(aggregate))->initialize();
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case VelocityItem:
         (new Velocity::ModelItem(aggregate))->initialize();
