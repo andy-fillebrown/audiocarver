@@ -201,7 +201,8 @@ static void importBarlines(MidiFileReader &reader, qreal scoreLength)
         const qreal meter_end_time = meter_change.time + meter_duration;
 
         current_time = meter_change.time;
-        while (current_time < meter_end_time) {
+        while (current_time < meter_end_time
+               && !qFuzzyCompare(current_time, meter_end_time)) {
             for (int j = 0;  j < meter_change.numerator;  ++j) {
                 QString bar_label = QString("%1").arg(current_bar_number);
                 if (j == 0)
@@ -212,7 +213,6 @@ static void importBarlines(MidiFileReader &reader, qreal scoreLength)
                 }
                 current_tick += ticks_per_barline_subdivision;
                 current_time = reader.ticksToSeconds(current_tick);
-
                 for (int k = 1;  k < meter_change.thirtysecondNotesPerQuarterNote;  ++k) {
                     barline_items.append(createBarline(current_time, QColor(225, 225, 225), 100 + calculatePriority(k, 4)));
                     current_tick += ticks_per_barline_subdivision;
