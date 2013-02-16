@@ -35,7 +35,7 @@ void *GraphicsItem::queryInterface(int interfaceType) const
 IUnknown *GraphicsItem::initialize()
 {
     _curveNode = new GraphicsCurveNode;
-    _curveNode->setModelItem(query<IModelItem>(this));
+    _curveNode->setGraphicsItem(this);
     return aggregate()->append(this);
 }
 

@@ -66,7 +66,7 @@ public:
     QRect prevZoomGlyphRect;
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
-//    QList<GraphicsEntityItem*> pickedEntities;
+    QList<IGraphicsEntity*> pickedEntities;
     QList<IGrip*> pickedGrips;
     IGrip *curGrip;
     QList<IGraphicsEntity*> hoveredEntities;
@@ -247,18 +247,16 @@ public:
                         hoveredGrips.append(grip);
                     }
                 } else if (!grip_is_hovered) {
-//                    IGraphicsCurveItem *curve_item = query<IGraphicsCurveItem>(unknown);
-//                    if (curve_item && curve_item->intersects(scene_pick_rect)) {
-//                        entity_is_hovered = true;
-//                        IEntity *entity = query<IEntity>(unknown);
-//                        if (!entityIsPicked(entity)) {
-//                            hoveredEntities.append(entity);
-//                            IChildEntity *child_entity = query<IChildEntity>(unknown);
-//                            if (child_entity)
-//                                entity = child_entity->parent();
-//                            query<IVisibleGraphicsItem>(entity)->highlight();
-//                        }
-//                    }
+                    IGraphicsCurve *curve_graphic = query<IGraphicsCurve>(unknown);
+                    if (curve_graphic && curve_graphic->intersects(scene_pick_rect)) {
+                        entity_is_hovered = true;
+                        IModelItem *curve_item = query<IModelItem>(curve_graphic);
+                        IGraphicsEntity *parent_graphic = query<IGraphicsEntity>(curve_item->parent());
+                        if (parent_graphic && !pickedEntities.contains(parent_graphic)) {
+                            hoveredEntities.append(parent_graphic);
+                            parent_graphic->highlight();
+                        }
+                    }
                 }
                 if (!(ShiftModifier & QApplication::keyboardModifiers())
                         && (grip_is_hovered || entity_is_hovered))

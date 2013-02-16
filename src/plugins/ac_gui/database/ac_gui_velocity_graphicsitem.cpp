@@ -37,6 +37,7 @@ void *GraphicsItem::queryInterface(int interfaceType) const
 IUnknown *GraphicsItem::initialize()
 {
     _lineNode = new QGraphicsLineItem;
+    _lineNode->setData(0, quintptr(this));
     IGraphicsItem *parent_graphics = query<IGraphicsItem>(parent());
     QGraphicsItem *parent_node = parent_graphics ? parent_graphics->node(ControlScene, MainTransform) : 0;
     _lineNode->setParentItem(parent_node);

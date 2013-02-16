@@ -68,7 +68,6 @@ void GraphicsItem::highlight(bool on)
     QList<IGraphicsEntity*> subents = subentities();
     foreach (IGraphicsEntity *subent, subents)
         subent->highlight(on);
-    Object::GraphicsEntity::highlight(on);
 }
 
 void GraphicsItem::update(int role)

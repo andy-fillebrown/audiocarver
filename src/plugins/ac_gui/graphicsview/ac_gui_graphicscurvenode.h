@@ -22,7 +22,7 @@
 #include <ac_core_point.h>
 
 class GraphicsGuideNode;
-class IModelItem;
+class IGraphicsItem;
 
 class GraphicsCurveNode : public GraphicsPathNode
 {
@@ -33,7 +33,7 @@ public:
     GraphicsCurveNode(QGraphicsItem *parent = 0);
 
     bool intersects(const QRectF &rect) const;
-    void setModelItem(IModelItem *modelItem);
+    void setGraphicsItem(IGraphicsItem *graphicsItem);
     void setPoints(const PointList &points);
     void setColor(const QColor &color);
     void highlight(bool on);

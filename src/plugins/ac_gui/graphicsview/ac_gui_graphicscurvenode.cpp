@@ -48,9 +48,9 @@ bool GraphicsCurveNode::intersects(const QRectF &rect) const
     return stroke.intersects(rect);
 }
 
-void GraphicsCurveNode::setModelItem(IModelItem *modelItem)
+void GraphicsCurveNode::setGraphicsItem(IGraphicsItem *graphicsItem)
 {
-    const QVariant data = quintptr(modelItem);
+    const QVariant data = quintptr(graphicsItem);
     setData(0, data);
     _guide->setData(0, data);
     _noteHead->setData(0, data);

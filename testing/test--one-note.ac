@@ -1,0 +1,28 @@
+
+<Score volume="1" length="128" startTime="0">
+    <TrackList>
+        <Track name="1" volume="0.01" color="#00ff00" instrument="sine" visible="true" recording="true">
+            <NoteList>
+                <Note volume="1">
+                    <PitchCurve>
+                        <Point position="0 49.0821"/>
+                        <Point position="63.6292 0" curve="bezier"/>
+                        <Point position="64.525 67.0856"/>
+                        <Point position="64.6254 127" curve="bezier"/>
+                        <Point position="128.093 58.6111"/>
+                    </PitchCurve>
+                </Note>
+            </NoteList>
+        </Track>
+    </TrackList>
+    <GridSettings snapEnabled="true" gridSnapEnabled="true" timeSnap="0.25" pitchSnap="1" controlSnap="0.125">
+        <TimeGridLineList>
+        </TimeGridLineList>
+        <PitchGridLineList>
+        </PitchGridLineList>
+        <ControlGridLineList>
+       </ControlGridLineList>
+    </GridSettings>
+    <ProjectSettings sampleRate="48000" controlRate="4800" curveRate="48"/>
+    <ViewSettings timePosition="62.8075708132721" pitchPosition="62.9133752668482" controlPosition="0.380646400664845" timeScale="0.75" pitchScale="0.75" controlScale="0.75"/>
+</Score>

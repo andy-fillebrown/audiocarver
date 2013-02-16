@@ -18,14 +18,15 @@
 #ifndef AC_GUI_VELOCITY_GRAPHICSITEM_H
 #define AC_GUI_VELOCITY_GRAPHICSITEM_H
 
-#include "ac_gui_curve_graphicsitem.h"
+#include <igraphicscurve.h>
 
+class IAggregate;
 class IModelItem;
 class QGraphicsLineItem;
 
 namespace Velocity {
 
-class GraphicsItem : public IGraphicsEntity
+class GraphicsItem : public IGraphicsCurve
 {
     IAggregate *_aggregate;
     QGraphicsLineItem *_lineNode;
