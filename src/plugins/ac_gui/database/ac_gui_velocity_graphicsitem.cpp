@@ -102,11 +102,6 @@ void GraphicsItem::highlight(bool on)
     _lineNode->setPen(pen);
 }
 
-bool GraphicsItem::isVisible() const
-{
-    return _lineNode->isVisible();
-}
-
 void GraphicsItem::update(int role)
 {
     if (VolumeRole == role) {

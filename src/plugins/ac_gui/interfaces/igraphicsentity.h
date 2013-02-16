@@ -26,12 +26,7 @@ class IGraphicsEntity : public IGraphicsItem
 public:
     enum { InterfaceType = I::IGraphicsEntity };
 
-//    virtual void setColor(int color) = 0;
-    virtual void setColor(int color)
-    {
-        Q_ASSERT(false);
-    }
-
+    virtual void setColor(int color) = 0;
     virtual void highlight(bool on = true) = 0;
 
     int interfaceType() const

@@ -54,7 +54,6 @@ protected:
     void setPoints(const PointList &points);
     bool intersects(const QRectF &rect) const;
     void highlight(bool on);
-    bool isVisible() const;
     virtual void update(int role);
 
     IModelItem *parent() const;

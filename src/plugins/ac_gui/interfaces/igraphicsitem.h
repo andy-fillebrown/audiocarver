@@ -30,12 +30,6 @@ public:
     enum { InterfaceType = I::IGraphicsItem };
 
     virtual QGraphicsItem *node(int sceneType, int transformType) const = 0;
-//    virtual QGraphicsItem *node(int sceneType, int transformType) const
-//    {
-//        Q_ASSERT(false);
-//        return 0;
-//    }
-
     virtual void update(int role) = 0;
 
     int interfaceType() const
