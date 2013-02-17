@@ -47,7 +47,6 @@ protected:
     void setPoints(const PointList &points);
     bool intersects(const QRectF &rect) const;
     void highlight(bool on);
-    bool isVisible() const;
     void update(int role);
 };
 

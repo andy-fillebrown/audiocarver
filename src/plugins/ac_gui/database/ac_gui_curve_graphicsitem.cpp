@@ -57,11 +57,6 @@ void GraphicsItem::highlight(bool on)
     curveNode()->highlight(on);
 }
 
-bool GraphicsItem::isVisible() const
-{
-    return curveNode()->isVisible();
-}
-
 void GraphicsItem::update(int role)
 {
     switch (role) {
