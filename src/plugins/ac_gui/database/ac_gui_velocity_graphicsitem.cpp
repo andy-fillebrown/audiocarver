@@ -27,19 +27,12 @@ using namespace Ac;
 
 namespace Velocity {
 
-void *GraphicsItem::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<GraphicsItem*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
 IUnknown *GraphicsItem::initialize()
 {
     _lineNode = new QGraphicsLineItem;
     _lineNode->setData(0, quintptr(this));
-    IGraphicsItem *parent_graphics = query<IGraphicsItem>(parent());
-    QGraphicsItem *parent_node = parent_graphics ? parent_graphics->node(ControlScene, MainTransform) : 0;
+    IGraphicsItem *parent_graphic = parent();
+    QGraphicsItem *parent_node = parent_graphic ? parent_graphic->node(ControlScene, MainTransform) : 0;
     _lineNode->setParentItem(parent_node);
     _lineNode->setData(0, quintptr(this));
     QPen pen;
@@ -105,7 +98,7 @@ void GraphicsItem::highlight(bool on)
 void GraphicsItem::update(int role)
 {
     if (VolumeRole == role) {
-        IModelItem *parent_item = parent();
+        IModelItem *parent_item = parentItem();
         if (!parent_item)
             return;
         PointList pitch_points = query<IModelData>(parent_item->findItem(PitchCurveItem))->get<PointList>(PointsRole);
@@ -120,7 +113,7 @@ void GraphicsItem::update(int role)
     }
 }
 
-IModelItem *GraphicsItem::parent() const
+IModelItem *GraphicsItem::parentItem() const
 {
     return query<IModelItem>(this)->parent();
 }

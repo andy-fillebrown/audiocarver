@@ -18,34 +18,25 @@
 #ifndef AC_GUI_CURVE_GRAPHICSITEM_H
 #define AC_GUI_CURVE_GRAPHICSITEM_H
 
-#include <igraphicscurve.h>
+#include <ac_gui_object_graphicscurve.h>
 
 class GraphicsCurveNode;
 class IAggregate;
 
 namespace Curve {
 
-class GraphicsItem : public IGraphicsCurve
+class GraphicsItem : public Object::GraphicsCurve
 {
-    IAggregate *_aggregate;
     GraphicsCurveNode *_curveNode;
-
-public:
-    void *queryInterface(int interfaceType) const;
 
 protected:
     GraphicsItem(IAggregate *aggregate)
-        :   _aggregate(aggregate)
+        :   Object::GraphicsCurve(aggregate)
         ,   _curveNode(0)
     {}
 
     virtual IUnknown *initialize();
     ~GraphicsItem();
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
 
     GraphicsCurveNode *curveNode() const
     {

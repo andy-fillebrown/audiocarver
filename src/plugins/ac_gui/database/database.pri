@@ -9,6 +9,7 @@ SOURCE_FILES = \
     note_graphicsitem \
     note_modelitem \
     note_modelitemwatcher \
+    object_graphicscurve \
     object_graphicsentity \
     object_graphicsitem \
     object_modeldatawatcher \

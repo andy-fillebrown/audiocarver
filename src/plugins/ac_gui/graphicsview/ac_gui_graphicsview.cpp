@@ -250,8 +250,7 @@ public:
                     IGraphicsCurve *curve_graphic = query<IGraphicsCurve>(unknown);
                     if (curve_graphic && curve_graphic->intersects(scene_pick_rect)) {
                         entity_is_hovered = true;
-                        IModelItem *curve_item = query<IModelItem>(curve_graphic);
-                        IGraphicsEntity *parent_graphic = query<IGraphicsEntity>(curve_item->parent());
+                        IGraphicsEntity *parent_graphic = curve_graphic->parent();
                         if (parent_graphic && !pickedEntities.contains(parent_graphic)) {
                             hoveredEntities.append(parent_graphic);
                             parent_graphic->highlight();

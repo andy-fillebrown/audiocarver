@@ -25,13 +25,6 @@ using namespace Ac;
 
 namespace Curve {
 
-void *GraphicsItem::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<GraphicsItem*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
 IUnknown *GraphicsItem::initialize()
 {
     _curveNode = new GraphicsCurveNode;

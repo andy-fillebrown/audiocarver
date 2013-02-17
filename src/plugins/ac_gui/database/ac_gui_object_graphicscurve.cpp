@@ -15,34 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSCURVE_H
-#define IGRAPHICSCURVE_H
+#include "ac_gui_object_graphicscurve.h"
+#include "ac_gui_namespace.h"
+#include "ac_gui_graphicsnode.h"
+#include <iaggregate.h>
+#include <imodelitem.h>
 
-#include <igraphicsentity.h>
-#include <ac_core_point.h>
+using namespace Ac;
 
-class QRectF;
+namespace Object {
 
-class IGraphicsCurve : public IGraphicsEntity
+void *GraphicsCurve::queryInterface(int interfaceType) const
 {
-public:
-    enum { InterfaceType = I::IGraphicsCurve };
+    if (isTypeOfInterface(interfaceType))
+        return const_cast<GraphicsCurve*>(this);
+    return aggregate()->queryInterface(interfaceType);
+}
 
-    virtual IGraphicsEntity *parent() const = 0;
-    virtual bool intersects(const QRectF &rect) const = 0;
-    virtual void setPoints(const PointList &points) = 0;
+IUnknown *GraphicsCurve::initialize()
+{
+    return aggregate()->append(this);
+}
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+IGraphicsEntity *GraphicsCurve::parent() const
+{
+    IModelItem *this_item = query<IModelItem>(this);
+    if (!this_item)
+        return 0;
+    return query<IGraphicsEntity>(this_item->parent());
+}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IGraphicsEntity::isTypeOfInterface(interfaceType);
-    }
-};
-
-#endif
+}

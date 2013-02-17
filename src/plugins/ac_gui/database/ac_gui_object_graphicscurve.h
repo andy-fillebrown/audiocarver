@@ -15,40 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_VELOCITY_GRAPHICSITEM_H
-#define AC_GUI_VELOCITY_GRAPHICSITEM_H
+#ifndef AC_GUI_OBJECT_GRAPHICSCURVE_H
+#define AC_GUI_OBJECT_GRAPHICSCURVE_H
 
-#include <ac_gui_object_graphicscurve.h>
+#include <igraphicscurve.h>
 
 class IAggregate;
-class IModelItem;
-class QGraphicsLineItem;
 
-namespace Velocity {
+namespace Object {
 
-class GraphicsItem : public Object::GraphicsCurve
+class GraphicsCurve : public IGraphicsCurve
 {
-    QGraphicsLineItem *_lineNode;
+    IAggregate *_aggregate;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsCurve(aggregate)
-        ,   _lineNode(0)
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    GraphicsCurve(IAggregate *aggregate)
+        :   _aggregate(aggregate)
     {}
 
     virtual IUnknown *initialize();
 
-protected:
-    ~GraphicsItem();
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
 
-    QGraphicsItem *node(int sceneType, int transformType) const;
-    void setColor(int color);
-    void setPoints(const PointList &points);
-    bool intersects(const QRectF &rect) const;
-    void highlight(bool on);
-    virtual void update(int role);
-
-    IModelItem *parentItem() const;
+    IGraphicsEntity *parent() const;
 };
 
 }
