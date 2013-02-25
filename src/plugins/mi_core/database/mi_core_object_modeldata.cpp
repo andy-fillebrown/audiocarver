@@ -17,6 +17,7 @@
 
 #include "mi_core_object_modeldata.h"
 #include "mi_core_scopeddatachange.h"
+#include <iaggregate.h>
 #include <imodelitemlist.h>
 
 using namespace Mi;
@@ -26,14 +27,14 @@ namespace Object {
 
 void *ModelData::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelData*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-IUnknown *ModelData::initialize()
+ModelData::ModelData(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    return aggregate()->append(this);
+    _aggregate->append(this);
 }
 
 bool ModelData::setName(const QString &name)

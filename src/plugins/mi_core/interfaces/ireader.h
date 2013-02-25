@@ -18,12 +18,11 @@
 #ifndef IREADER_H
 #define IREADER_H
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+#include <icomponent.h>
 
 class IModelItem;
 
-class IReader : public IUnknown
+class IReader : public IComponent
 {
 public:
     enum { InterfaceType = I::IReader };
@@ -38,7 +37,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

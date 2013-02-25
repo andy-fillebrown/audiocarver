@@ -15,38 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_MODELITEMWATCHER_H
-#define AC_GUI_OBJECT_MODELITEMWATCHER_H
+#include "ac_gui_object_graphicsdataupdater.h"
+#include "ac_gui_namespace.h"
+#include <iaggregate.h>
+#include <igraphicsdata.h>
+#include <imodeldata.h>
 
-#include <imodelitemwatcher.h>
-
-class IAggregate;
+using namespace Ac;
 
 namespace Object {
 
-class ModelItemWatcher : public IModelItemWatcher
+GraphicsDataUpdater::GraphicsDataUpdater(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    IAggregate *_aggregate;
-
-public:
-    void *queryInterface(int interfaceType) const;
-
-    ModelItemWatcher(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
-
-protected:
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    void beginChangeParent(const IModelItem *child);
-    void endChangeParent(const IModelItem *child);
-};
-
+    _aggregate->append(this);
 }
 
-#endif
+void *GraphicsDataUpdater::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
+
+void GraphicsDataUpdater::endChangeData(const IModelData *data, int role, int changeType)
+{
+    IGraphicsData *gdata = query<IGraphicsData>(data);
+    if (gdata)
+        gdata->update(role);
+}
+
+}

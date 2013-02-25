@@ -26,23 +26,20 @@ using namespace Ac;
 
 namespace Core {
 
-IUnknown *FilerFactory::initialize()
-{
-    return Base::FilerFactory::initialize();
-}
-
 IAggregate *FilerFactory::create(int filerType)
 {
-    IAggregate *aggregate = (new Base::Aggregate)->initialize();
+    IAggregate *aggregate = new Base::Aggregate;
     switch (filerType) {
     case FileFiler:
-        (new Xml::FileFiler(aggregate))->initialize();
-        (new Xml::Reader(aggregate))->initialize();
-        (new Xml::Writer(aggregate))->initialize();
+        new Xml::FileFiler(aggregate);
+        new Xml::Reader(aggregate);
+        new Xml::Writer(aggregate);
         break;
     default:
+        delete aggregate;
         return 0;
     }
+    aggregate->initialize();
     return aggregate;
 }
 

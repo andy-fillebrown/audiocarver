@@ -30,11 +30,6 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _startTime(DEFAULT_SCORE_STARTTIME)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return ScoreObject::ModelData::initialize();
-}
-
 bool ModelData::setLength(qreal length)
 {
     length = qMax(qreal(1.0f), length);
@@ -47,7 +42,7 @@ bool ModelData::setLength(qreal length)
 
 bool ModelData::setStartTime(qreal time)
 {
-    time = qBound(qreal(0.0f), time, length());
+    time = qBound(qreal(0.0f), time, _length);
     if (_startTime == time)
         return false;
     ScopedDataChange data_change(this, StartTimeRole);
@@ -71,9 +66,9 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case LengthRole:
-        return length();
+        return _length;
     case StartTimeRole:
-        return startTime();
+        return _startTime;
     default:
         return ScoreObject::ModelData::getValue(role);
     }

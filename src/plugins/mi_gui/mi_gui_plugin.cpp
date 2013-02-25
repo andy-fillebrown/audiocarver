@@ -24,12 +24,9 @@ using namespace Base;
 namespace Mi {
 namespace Gui {
 
-bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
+Plugin::Plugin()
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
     addAutoReleasedObject(new MainWindowExtension);
-    return true;
 }
 
 }

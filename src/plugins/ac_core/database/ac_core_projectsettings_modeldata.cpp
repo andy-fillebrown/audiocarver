@@ -31,11 +31,6 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _curveRate(DEFAULT_PROJECTSETTINGS_CURVERATE)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return Object::ModelData::initialize();
-}
-
 bool ModelData::setSampleRate(int rate)
 {
     rate = qMax(44100, rate);
@@ -84,11 +79,11 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case SampleRateRole:
-        return sampleRate();
+        return _sampleRate;
     case ControlRateRole:
-        return controlRate();
+        return _controlRate;
     case CurveRateRole:
-        return curveRate();
+        return _curveRate;
     default:
         return Object::ModelData::getValue(role);
     }

@@ -30,9 +30,11 @@ namespace Base {
 
 DatabaseObjectFactory::DatabaseObjectFactory()
 {
-    ISession::instance()->remove(::instance);
+    IAggregate *aggregate = ISession::instance();
+    aggregate->remove(::instance);
     delete ::instance;
     ::instance = this;
+    aggregate->append(this);
 }
 
 DatabaseObjectFactory::~DatabaseObjectFactory()
@@ -40,16 +42,10 @@ DatabaseObjectFactory::~DatabaseObjectFactory()
     ::instance = 0;
 }
 
-IUnknown *DatabaseObjectFactory::initialize()
-{
-    return ISession::instance()->append(this);
-}
-
 void *DatabaseObjectFactory::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<DatabaseObjectFactory*>(this);
-    return ISession::instance()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
 }
 
 }

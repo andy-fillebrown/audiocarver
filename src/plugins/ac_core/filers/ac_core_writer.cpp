@@ -82,11 +82,10 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
     return true;
 }
 
-IUnknown *Writer::initialize()
-{
-    aggregate()->append(this);
-    return this;
-}
+Writer::Writer(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+    ,   _stream(0)
+{}
 
 Writer::~Writer()
 {
@@ -95,9 +94,8 @@ Writer::~Writer()
 
 void *Writer::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Writer*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IWriter::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
 void Writer::setStream(QXmlStreamWriter *stream)
@@ -116,7 +114,7 @@ bool Writer::write(IModelItem *item)
     QFile *file = query<IFileFiler>(this)->file();
     if (file && file->open(QIODevice::WriteOnly))
         setStream(new QXmlStreamWriter(file));
-    QXmlStreamWriter *writer = stream();
+    QXmlStreamWriter *writer = _stream;
     if (!writer)
         return false;
     if (writeItem(item, writer)) {

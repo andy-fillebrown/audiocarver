@@ -18,19 +18,18 @@
 #ifndef IAGGREGATE_H
 #define IAGGREGATE_H
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+#include <icomponent.h>
 
 template <typename T> class QList;
 
-class IAggregate : public IUnknown
+class IAggregate : public IComponent
 {
 public:
     enum { InterfaceType = I::IAggregate };
 
-    virtual const QList<IUnknown*> &components() const = 0;
-    virtual IUnknown *append(IUnknown *component) = 0;
-    virtual void remove(IUnknown *component) = 0;
+    virtual const QList<IComponent*> &components() const = 0;
+    virtual IUnknown *append(IComponent *component) = 0;
+    virtual void remove(IComponent *component) = 0;
 
     int interfaceType() const
     {
@@ -39,14 +38,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
-    }
-
-    void *queryInterface(int interfaceType) const
-    {
-        if (isTypeOfInterface(interfaceType))
-            return const_cast<IAggregate*>(this);
-        return 0;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

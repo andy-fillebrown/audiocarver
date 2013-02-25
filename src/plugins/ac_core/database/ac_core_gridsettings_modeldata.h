@@ -32,48 +32,18 @@ class ModelData : public Object::ModelData
     enum { RoleCount = 5 };
 
 public:
+    ModelData(IAggregate *aggregate);
+
+protected:
     enum {
         RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
-
-protected:
-    bool isSnapEnabled() const
-    {
-        return _snapEnabled;
-    }
-
     bool setSnapEnabled(bool enabled);
-
-    bool isGridSnapEnabled() const
-    {
-        return _gridSnapEnabled;
-    }
-
     bool setGridSnapEnabled(bool enabled);
-
-    qreal timeSnap() const
-    {
-        return _timeSnap;
-    }
-
     bool setTimeSnap(qreal snap);
-
-    qreal pitchSnap() const
-    {
-        return _pitchSnap;
-    }
-
     bool setPitchSnap(qreal snap);
-
-    qreal controlSnap() const
-    {
-        return _controlSnap;
-    }
-
     bool setControlSnap(qreal snap);
 
     int roleCount() const

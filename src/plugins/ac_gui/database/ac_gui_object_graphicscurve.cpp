@@ -27,22 +27,14 @@ namespace Object {
 
 void *GraphicsCurve::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<GraphicsCurve*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
-IUnknown *GraphicsCurve::initialize()
-{
-    return aggregate()->append(this);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : aggregate()->queryInterface(interfaceType);
 }
 
 IGraphicsEntity *GraphicsCurve::parent() const
 {
     IModelItem *this_item = query<IModelItem>(this);
-    if (!this_item)
-        return 0;
-    return query<IGraphicsEntity>(this_item->parent());
+    return this_item ? query<IGraphicsEntity>(this_item->parent()) : 0;
 }
 
 }

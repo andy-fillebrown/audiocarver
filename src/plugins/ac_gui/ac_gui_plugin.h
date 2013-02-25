@@ -28,7 +28,14 @@ class Plugin : public ExtensionSystem::IPlugin
     Q_OBJECT
 
 public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    Plugin();
+
+protected:
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0)
+    {
+        return true;
+    }
+
     void extensionsInitialized();
 };
 

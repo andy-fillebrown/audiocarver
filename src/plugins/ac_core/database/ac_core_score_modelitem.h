@@ -31,43 +31,15 @@ class ModelItem : public ScoreObject::ModelItem
     enum { ItemCount = 4 };
 
 public:
+    ModelItem(IAggregate *aggregate);
+
+protected:
     enum {
         ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    ModelItem(IAggregate *aggregate)
-        :  ScoreObject::ModelItem(aggregate)
-        ,   _tracks(0)
-        ,   _gridSettings(0)
-        ,   _projectSettings(0)
-        ,   _viewSettings(0)
-    {}
-
-    IUnknown *initialize();
-
-protected:
     ~ModelItem();
-
-    IAggregate *tracks() const
-    {
-        return _tracks;
-    }
-
-    IAggregate *gridSettings() const
-    {
-        return _gridSettings;
-    }
-
-    IAggregate *projectSettings() const
-    {
-        return _projectSettings;
-    }
-
-    IAggregate *viewSettings() const
-    {
-        return _viewSettings;
-    }
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;

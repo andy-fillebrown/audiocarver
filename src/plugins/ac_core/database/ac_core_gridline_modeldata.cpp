@@ -33,11 +33,6 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _visible(true)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return Object::ModelData::initialize();
-}
-
 bool ModelData::setLocation(qreal location)
 {
     location = qMax(qreal(0.0f), location);
@@ -106,15 +101,15 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case LocationRole:
-        return location();
+        return _location;
     case LabelRole:
-        return label();
+        return _label;
     case PriorityRole:
-        return priority();
+        return _priority;
     case ColorRole:
-        return colorFromInt(color());
+        return colorFromInt(_color);
     case VisibilityRole:
-        return isVisible();
+        return _visible;
     default:
         return Object::ModelData::getValue(role);
     }

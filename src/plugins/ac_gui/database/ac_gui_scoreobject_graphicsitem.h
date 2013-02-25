@@ -28,11 +28,7 @@ class GraphicsItem : public Object::GraphicsItem
     QMap<int, QGraphicsItem*> _mainNodes;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsItem(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
     QMap<int, QGraphicsItem*> &mainNodes()

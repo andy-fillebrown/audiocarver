@@ -25,12 +25,11 @@ using namespace Ac;
 namespace Note {
 namespace Gui {
 
-IUnknown *ModelItem::initialize()
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   Note::ModelItem(aggregate)
 {
-    Note::ModelItem::initialize();
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _velocity = factory->create(VelocityItem, this);
-    return this;
 }
 
 ModelItem::~ModelItem()
@@ -40,10 +39,7 @@ ModelItem::~ModelItem()
 
 IModelItem *ModelItem::findItem(int itemType) const
 {
-    if (VelocityItem == itemType) {
-        return query<IModelItem>(velocity());
-    }
-    return Note::ModelItem::findItem(itemType);
+    return VelocityItem == itemType ? query<IModelItem>(velocity()) : Note::ModelItem::findItem(itemType);
 }
 
 }

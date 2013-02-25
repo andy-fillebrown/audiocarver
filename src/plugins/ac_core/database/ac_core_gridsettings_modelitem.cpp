@@ -27,13 +27,16 @@ using namespace Ac;
 
 namespace GridSettings {
 
-IUnknown *ModelItem::initialize()
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   Object::ModelItem(aggregate)
+    ,   _timeGridLines(0)
+    ,   _pitchGridLines(0)
+    ,   _controlGridLines(0)
 {
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _timeGridLines = factory->create(TimeGridLineListItem, this);
     _pitchGridLines = factory->create(PitchGridLineListItem, this);
     _controlGridLines = factory->create(ControlGridLineListItem, this);
-    return Object::ModelItem::initialize();
 }
 
 ModelItem::~ModelItem()
@@ -57,11 +60,11 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 int ModelItem::indexOf(const IModelItem *item) const
 {
-    if (query<IModelItem>(timeGridLines()) == item)
+    if (query<IModelItem>(_timeGridLines) == item)
         return ItemCountOffset;
-    if (query<IModelItem>(pitchGridLines()) == item)
+    if (query<IModelItem>(_pitchGridLines) == item)
         return ItemCountOffset + 1;
-    if (query<IModelItem>(controlGridLines()) == item)
+    if (query<IModelItem>(_controlGridLines) == item)
         return ItemCountOffset + 2;
     return Object::ModelItem::indexOf(item);
 }
@@ -70,11 +73,11 @@ IModelItem *ModelItem::at(int i) const
 {
     switch (i - ItemCountOffset) {
     case 0:
-        return query<IModelItem>(timeGridLines());
+        return query<IModelItem>(_timeGridLines);
     case 1:
-        return query<IModelItem>(pitchGridLines());
+        return query<IModelItem>(_pitchGridLines);
     case 2:
-        return query<IModelItem>(controlGridLines());
+        return query<IModelItem>(_controlGridLines);
     default:
         return Object::ModelItem::at(i);
     }
@@ -84,11 +87,11 @@ IModelItemList *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case TimeGridLineItem:
-        return query<IModelItemList>(timeGridLines());
+        return query<IModelItemList>(_timeGridLines);
     case PitchGridLineItem:
-        return query<IModelItemList>(pitchGridLines());
+        return query<IModelItemList>(_pitchGridLines);
     case ControlGridLineItem:
-        return query<IModelItemList>(controlGridLines());
+        return query<IModelItemList>(_controlGridLines);
     default:
         return Object::ModelItem::findList(listType);
     }

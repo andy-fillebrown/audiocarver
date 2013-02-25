@@ -28,10 +28,7 @@ namespace Core {
 class AC_CORE_EXPORT Model : public Base::Model
 {
 public:
-    Model()
-    {}
-
-    IUnknown *initialize();
+    Model();
 };
 
 }

@@ -22,11 +22,6 @@ using namespace Ac;
 
 namespace ControlGridLine {
 
-IUnknown *ModelItem::initialize()
-{
-    return GridLine::ModelItem::initialize();
-}
-
 int ModelItem::itemType() const
 {
     return ControlGridLineItem;

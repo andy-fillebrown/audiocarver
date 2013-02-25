@@ -22,11 +22,6 @@ using namespace Ac;
 
 namespace ProjectSettings {
 
-IUnknown *ModelItem::initialize()
-{
-    return Object::ModelItem::initialize();
-}
-
 int ModelItem::itemType() const
 {
     return ProjectSettingsItem;

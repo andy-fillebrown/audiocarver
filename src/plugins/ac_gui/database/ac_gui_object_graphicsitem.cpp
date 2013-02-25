@@ -22,15 +22,8 @@ namespace Object {
 
 void *GraphicsItem::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<GraphicsItem*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
-
-IUnknown *GraphicsItem::initialize()
-{
-    aggregate()->append(this);
-    return this;
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : aggregate()->queryInterface(interfaceType);
 }
 
 }

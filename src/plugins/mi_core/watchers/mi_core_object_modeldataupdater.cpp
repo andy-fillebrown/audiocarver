@@ -15,37 +15,32 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_modeldatawatcher.h"
-#include "ac_gui_namespace.h"
+#include "mi_core_object_modeldataupdater.h"
 #include <iaggregate.h>
-#include <igraphicsitem.h>
-#include <imodeldata.h>
-
-using namespace Ac;
+#include <imodel.h>
 
 namespace Object {
 
-void *ModelDataWatcher::queryInterface(int interfaceType) const
+ModelDataUpdater::ModelDataUpdater(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelDataWatcher*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    _aggregate->append(this);
 }
 
-IUnknown *ModelDataWatcher::initialize()
+void *ModelDataUpdater::queryInterface(int interfaceType) const
 {
-    return aggregate()->append(this);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void ModelDataWatcher::beginChangeData(const IModelData *data, int role, int changeType)
-{}
-
-void ModelDataWatcher::endChangeData(const IModelData *data, int role, int changeType)
+void ModelDataUpdater::beginChangeData(const IModelData *data, int role, int changeType)
 {
-    IGraphicsItem *graphics_item = query<IGraphicsItem>(data);
-    if (!graphics_item)
-        return;
-    graphics_item->update(role);
+    IModel::instance()->beginChangeData(data, role, changeType);
+}
+
+void ModelDataUpdater::endChangeData(const IModelData *data, int role, int changeType)
+{
+    IModel::instance()->endChangeData(data, role, changeType);
 }
 
 }

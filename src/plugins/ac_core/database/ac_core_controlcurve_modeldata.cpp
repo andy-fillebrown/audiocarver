@@ -23,9 +23,13 @@ using namespace Ac;
 
 namespace ControlCurve {
 
-IUnknown *ModelData::initialize()
+bool ModelData::setControlType(int controlType)
 {
-    return Curve::ModelData::initialize();
+    if (_controlType == controlType)
+        return false;
+    ScopedDataChange data_change(this, ControlTypeRole);
+    _controlType = controlType;
+    return true;
 }
 
 void ModelData::conformPoints()
@@ -44,15 +48,6 @@ void ModelData::conformPoints()
     }
 }
 
-bool ModelData::setControlType(int controlType)
-{
-    if (_controlType == controlType)
-        return false;
-    ScopedDataChange data_change(this, ControlTypeRole);
-    _controlType = controlType;
-    return true;
-}
-
 int ModelData::roleAt(int i) const
 {
     switch (i - RoleCountOffset) {
@@ -67,7 +62,7 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case ControlTypeRole:
-        return controlType();
+        return _controlType;
     default:
         return Curve::ModelData::getValue(role);
     }

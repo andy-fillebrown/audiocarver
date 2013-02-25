@@ -23,11 +23,6 @@ using namespace Ac;
 
 namespace Velocity {
 
-IUnknown *ModelItem::initialize()
-{
-    return Object::ModelItem::initialize();
-}
-
 int ModelItem::itemType() const
 {
     return VelocityItem;
@@ -35,16 +30,12 @@ int ModelItem::itemType() const
 
 bool ModelItem::isTypeOfItem(int itemType) const
 {
-    if (VelocityItem == itemType)
-        return true;
-    return Object::ModelItem::isTypeOfItem(itemType);
+    return VelocityItem == itemType ? true : Object::ModelItem::isTypeOfItem(itemType);
 }
 
 IModelItem *ModelItem::findItem(int itemType) const
 {
-    if (GripsItem == itemType)
-        return query<IModelItem>(grips());
-    return Object::ModelItem::findItem(itemType);
+    return GripsItem == itemType ? query<IModelItem>(_grips) : Object::ModelItem::findItem(itemType);
 }
 
 }

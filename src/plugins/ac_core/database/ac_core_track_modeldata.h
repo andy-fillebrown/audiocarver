@@ -31,41 +31,17 @@ class ModelData : public ScoreObject::ModelData
     enum { RoleCount = 4 };
 
 public:
+    ModelData(IAggregate *aggregate);
+
+protected:
     enum {
         RoleCountOffset = ScoreObject::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
-
-protected:
-    int color() const
-    {
-        return _color;
-    }
-
     bool setColor(int color);
-
-    QString instrument() const
-    {
-        return _instrument;
-    }
-
     bool setInstrument(const QString &instrument);
-
-    bool isVisible() const
-    {
-        return _visible;
-    }
-
     bool setVisible(bool visible);
-
-    bool isRecording() const
-    {
-        return _recording;
-    }
-
     bool setRecording(bool recording);
 
     int roleCount() const

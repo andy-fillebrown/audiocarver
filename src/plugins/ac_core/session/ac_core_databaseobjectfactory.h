@@ -25,9 +25,6 @@ namespace Core {
 
 class AC_CORE_EXPORT DatabaseObjectFactory : public Base::DatabaseObjectFactory
 {
-public:
-    IUnknown *initialize();
-
 protected:
     IAggregate *create(int itemType, IModelItem *parent = 0);
     virtual IAggregate *create(int itemType, IAggregate *aggregate);

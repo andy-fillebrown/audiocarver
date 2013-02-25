@@ -18,19 +18,17 @@
 #ifndef IGRAPHICSITEM_H
 #define IGRAPHICSITEM_H
 
-#include <iunknown.h>
+#include <icomponent.h>
 #include "ac_gui_interfaces.h"
-#include <ac_core_point.h>
+#include <QList>
 
-class QGraphicsItem;
-
-class IGraphicsItem : public IUnknown
+class IGraphicsItem : public IComponent
 {
 public:
     enum { InterfaceType = I::IGraphicsItem };
 
-    virtual QGraphicsItem *node(int sceneType, int transformType) const = 0;
-    virtual void update(int role) = 0;
+    virtual IGraphicsItem *parent() const = 0;
+    virtual QList<IGraphicsItem*> children() const = 0;
 
     int interfaceType() const
     {
@@ -39,7 +37,7 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

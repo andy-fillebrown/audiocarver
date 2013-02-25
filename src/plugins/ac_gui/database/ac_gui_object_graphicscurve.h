@@ -36,7 +36,8 @@ protected:
         :   _aggregate(aggregate)
     {}
 
-    virtual IUnknown *initialize();
+    void initialize()
+    {}
 
     IAggregate *aggregate() const
     {

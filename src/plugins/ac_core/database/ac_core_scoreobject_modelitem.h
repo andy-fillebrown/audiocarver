@@ -30,31 +30,15 @@ class AC_CORE_EXPORT ModelItem : public Object::ModelItem
     enum { ItemCount = 2 };
 
 public:
+    ModelItem(IAggregate *aggregate);
+
+protected:
     enum {
         ItemCountOffset = Object::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-        ,   _pitchCurve(0)
-        ,   _controlCurves(0)
-    {}
-
-    IUnknown *initialize();
-
-protected:
     ~ModelItem();
-
-    IAggregate *pitchCurve() const
-    {
-        return _pitchCurve;
-    }
-
-    IAggregate *controlCurves() const
-    {
-        return _controlCurves;
-    }
 
     bool isTypeOfItem(int itemType) const = 0;
     int count() const;

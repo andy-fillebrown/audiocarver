@@ -18,13 +18,12 @@
 #ifndef IFILEFILER_H
 #define IFILEFILER_H
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+#include <icomponent.h>
 
 class QFile;
 class QString;
 
-class IFileFiler : public IUnknown
+class IFileFiler : public IComponent
 {
 public:
     enum { InterfaceType = I::IFileFiler };
@@ -40,7 +39,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

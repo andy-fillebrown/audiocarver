@@ -15,45 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_TRACKLIST_MODELITEMLISTWATCHER_H
-#define AC_GUI_TRACKLIST_MODELITEMLISTWATCHER_H
+#ifndef AC_GUI_NOTE_GRAPHICSITEMUPDATER_H
+#define AC_GUI_NOTE_GRAPHICSITEMUPDATER_H
 
-#include <imodelitemlistwatcher.h>
+#include <imodelitemwatcher.h>
 
 class IAggregate;
 
-namespace TrackList {
+namespace Note {
 
-class ModelItemListWatcher : public IModelItemListWatcher
+class GraphicsItemUpdater : public IModelItemWatcher
 {
     IAggregate *_aggregate;
 
 public:
+    GraphicsItemUpdater(IAggregate *aggregate);
+
     void *queryInterface(int interfaceType) const;
 
-    ModelItemListWatcher(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
-
 protected:
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    void updateZValues(const IModelItemList *parent);
-
-    void beginInsertItem(const IModelItemList *parent, int index)
+    void initialize()
     {}
 
-    void endInsertItem(const IModelItemList *parent, int index);
-
-    void beginRemoveItem(const IModelItemList *parent, int index)
-    {}
-
-    void endRemoveItem(const IModelItemList *parent, int index);
+    void endChangeParent(const IModelItem *child);
 };
 
 }

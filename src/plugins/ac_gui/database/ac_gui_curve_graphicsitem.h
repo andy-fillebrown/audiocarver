@@ -30,12 +30,7 @@ class GraphicsItem : public Object::GraphicsCurve
     GraphicsCurveNode *_curveNode;
 
 protected:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsCurve(aggregate)
-        ,   _curveNode(0)
-    {}
-
-    virtual IUnknown *initialize();
+    GraphicsItem(IAggregate *aggregate);
     ~GraphicsItem();
 
     GraphicsCurveNode *curveNode() const

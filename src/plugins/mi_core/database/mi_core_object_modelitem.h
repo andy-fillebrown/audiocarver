@@ -41,17 +41,15 @@ protected:
         TotalItemCount = ItemCount
     };
 
-    ModelItem(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-        ,   _parent(0)
-    {}
-
-    virtual IUnknown *initialize();
+    ModelItem(IAggregate *aggregate);
 
     IAggregate *aggregate() const
     {
         return _aggregate;
     }
+
+    void initialize()
+    {}
 
     int itemType() const;
 

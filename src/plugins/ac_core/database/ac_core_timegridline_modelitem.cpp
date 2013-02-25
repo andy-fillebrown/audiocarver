@@ -22,11 +22,6 @@ using namespace Ac;
 
 namespace TimeGridLine {
 
-IUnknown *ModelItem::initialize()
-{
-    return GridLine::ModelItem::initialize();
-}
-
 int ModelItem::itemType() const
 {
     return TimeGridLineItem;

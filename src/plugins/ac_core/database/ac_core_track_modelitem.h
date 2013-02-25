@@ -28,25 +28,15 @@ class ModelItem : public ScoreObject::ModelItem
     enum { ItemCount = 1 };
 
 public:
+    ModelItem(IAggregate *aggregate);
+
+protected:
     enum {
         ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    ModelItem(IAggregate *aggregate)
-        :   ScoreObject::ModelItem(aggregate)
-        ,   _notes(0)
-    {}
-
-    IUnknown *initialize();
-
-protected:
     ~ModelItem();
-
-    IAggregate *notes() const
-    {
-        return _notes;
-    }
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;

@@ -27,12 +27,14 @@ namespace Base {
 class MI_CORE_EXPORT Model : public IModel
 {
 public:
+    void *queryInterface(int interfaceType) const;
     Model();
     ~Model();
-    virtual IUnknown *initialize();
-    void *queryInterface(int interfaceType) const;
 
 protected:
+    void initialize()
+    {}
+
     void beginChangeData(const IModelData *data, int role, int changeType);
     void endChangeData(const IModelData *data, int role, int changeType);
     void beginInsertItem(const IModelItemList* list, int index);

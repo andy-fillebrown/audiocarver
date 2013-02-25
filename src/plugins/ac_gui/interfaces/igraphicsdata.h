@@ -15,38 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_OBJECT_MODELDATAWATCHER_H
-#define MI_CORE_OBJECT_MODELDATAWATCHER_H
+#ifndef IGRAPHICSDATA_H
+#define IGRAPHICSDATA_H
 
-#include <imodeldatawatcher.h>
-#include "mi_core_global.h"
+#include <icomponent.h>
+#include "ac_gui_interfaces.h"
 
-class IAggregate;
+class QGraphicsItem;
 
-namespace Object {
-
-class MI_CORE_EXPORT ModelDataWatcher : public IModelDataWatcher
+class IGraphicsData : public IComponent
 {
-    IAggregate *_aggregate;
-
 public:
-    ModelDataWatcher(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
+    enum { InterfaceType = I::IGraphicsData };
 
-    virtual IUnknown *initialize();
-    void *queryInterface(int interfaceType) const;
+    virtual QGraphicsItem *node(int sceneType, int transformType) const = 0;
+    virtual void update(int role) = 0;
 
-protected:
-    IAggregate *aggregate() const
+    int interfaceType() const
     {
-        return _aggregate;
+        return InterfaceType;
     }
 
-    void beginChangeData(const IModelData *data, int role, int changeType);
-    void endChangeData(const IModelData *data, int role, int changeType);
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

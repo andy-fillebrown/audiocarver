@@ -15,26 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_NOTE_MODELITEMWATCHER_H
-#define AC_GUI_NOTE_MODELITEMWATCHER_H
+#include "ac_gui_note_graphicsitemupdater.h"
+#include <ac_core_namespace.h>
+#include <igraphicsdata.h>
+#include <imodelitem.h>
 
-#include "ac_gui_object_modelitemwatcher.h"
+using namespace Ac;
 
 namespace Note {
 
-class ModelItemWatcher : public Object::ModelItemWatcher
+GraphicsItemUpdater::GraphicsItemUpdater(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-public:
-    ModelItemWatcher(IAggregate *aggregate)
-        :   Object::ModelItemWatcher(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
-
-protected:
-    void endChangeParent(const IModelItem *child);
-};
-
+    _aggregate->append(this);
 }
 
-#endif
+void *GraphicsItemUpdater::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
+
+void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
+{
+    IGraphicsData *child_gdata = query<IGraphicsData>(child);
+    if (child_gdata)
+        child_gdata->update(ColorRole);
+}
+
+}

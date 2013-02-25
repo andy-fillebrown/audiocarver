@@ -26,11 +26,6 @@ ModelData::ModelData(IAggregate *aggregate)
     :   Object::ModelData(aggregate)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return Object::ModelData::initialize();
-}
-
 bool ModelData::setPoints(const PointList &points)
 {
     const PointList old_points = _points;

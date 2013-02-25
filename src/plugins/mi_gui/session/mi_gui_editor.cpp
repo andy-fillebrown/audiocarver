@@ -31,14 +31,11 @@ namespace Base {
 Editor::Editor()
     :   _isInCommand(false)
 {
-    ISession::instance()->remove(::instance);
+    IAggregate *aggregate = ISession::instance();
+    aggregate->remove(::instance);
     delete ::instance;
     ::instance = this;
-}
-
-IUnknown *Editor::initialize()
-{
-    return ISession::instance()->append(this);
+    aggregate->append(this);
 }
 
 Editor::~Editor()
@@ -48,9 +45,8 @@ Editor::~Editor()
 
 void *Editor::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Editor*>(this);
-    return ISession::instance()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
 }
 
 }

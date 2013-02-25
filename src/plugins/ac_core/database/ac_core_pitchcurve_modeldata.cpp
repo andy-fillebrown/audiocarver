@@ -19,11 +19,6 @@
 
 namespace PitchCurve {
 
-IUnknown *ModelData::initialize()
-{
-    return Curve::ModelData::initialize();
-}
-
 void ModelData::conformPoints()
 {
     PointList &points = this->points();

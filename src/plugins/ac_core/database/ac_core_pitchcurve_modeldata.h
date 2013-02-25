@@ -29,8 +29,6 @@ public:
         :   Curve::ModelData(aggregate)
     {}
 
-    IUnknown *initialize();
-
 protected:
     void conformPoints();
 };

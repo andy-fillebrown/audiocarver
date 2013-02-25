@@ -48,17 +48,13 @@ using namespace Ac;
 
 namespace Core {
 
-IUnknown *DatabaseObjectFactory::initialize()
-{
-    return Base::DatabaseObjectFactory::initialize();
-}
-
 IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
 {
-    IAggregate *aggregate = (new Base::Aggregate)->initialize();
+    IAggregate *aggregate = new Base::Aggregate;
     create(itemType, aggregate);
     if (parent)
         query<IModelItem>(aggregate)->setParent(parent);
+    aggregate->initialize();
     return aggregate;
 }
 
@@ -66,89 +62,89 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
 {
     switch (itemType) {
     case ControlCurveItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new ControlCurve::ModelData(aggregate))->initialize();
-        (new ControlCurve::ModelItem(aggregate))->initialize();
+        new ControlCurve::ModelItem(aggregate);
+        new ControlCurve::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case ControlCurveListItem:
-        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
-        (new ObjectList::ModelItem(aggregate, ControlCurveItem))->initialize();
-        (new ObjectList::ModelData(aggregate))->initialize();
+        new ObjectList::ModelItem(aggregate, ControlCurveItem);
+        new ObjectList::ModelData(aggregate);
+        new ObjectList::ModelItemListWatcher(aggregate);
         break;
     case ControlGridLineItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new ControlGridLine::ModelItem(aggregate))->initialize();
-        (new GridLine::ModelData(aggregate))->initialize();
+        new ControlGridLine::ModelItem(aggregate);
+        new GridLine::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case ControlGridLineListItem:
-        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
-        (new ObjectList::ModelItem(aggregate, ControlGridLineItem))->initialize();
-        (new ObjectList::ModelData(aggregate))->initialize();
+        new ObjectList::ModelItem(aggregate, ControlGridLineItem);
+        new ObjectList::ModelData(aggregate);
+        new ObjectList::ModelItemListWatcher(aggregate);
         break;
     case GridSettingsItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new GridSettings::ModelItem(aggregate))->initialize();
-        (new GridSettings::ModelData(aggregate))->initialize();
+        new GridSettings::ModelItem(aggregate);
+        new GridSettings::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case NoteItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new Note::ModelItem(aggregate))->initialize();
-        (new ScoreObject::ModelData(aggregate))->initialize();
+        new Note::ModelItem(aggregate);
+        new ScoreObject::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case NoteListItem:
-        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
-        (new ObjectList::ModelItem(aggregate, NoteItem))->initialize();
-        (new ObjectList::ModelData(aggregate))->initialize();
+        new ObjectList::ModelItem(aggregate, NoteItem);
+        new ObjectList::ModelData(aggregate);
+        new ObjectList::ModelItemListWatcher(aggregate);
         break;
     case PitchCurveItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new PitchCurve::ModelData(aggregate))->initialize();
-        (new PitchCurve::ModelItem(aggregate))->initialize();
+        new PitchCurve::ModelItem(aggregate);
+        new PitchCurve::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case PitchGridLineItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new PitchGridLine::ModelItem(aggregate))->initialize();
-        (new GridLine::ModelData(aggregate))->initialize();
+        new PitchGridLine::ModelItem(aggregate);
+        new GridLine::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case PitchGridLineListItem:
-        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
-        (new ObjectList::ModelItem(aggregate, PitchGridLineItem))->initialize();
-        (new ObjectList::ModelData(aggregate))->initialize();
+        new ObjectList::ModelItem(aggregate, PitchGridLineItem);
+        new ObjectList::ModelData(aggregate);
+        new ObjectList::ModelItemListWatcher(aggregate);
         break;
     case ProjectSettingsItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new ProjectSettings::ModelItem(aggregate))->initialize();
-        (new ProjectSettings::ModelData(aggregate))->initialize();
+        new ProjectSettings::ModelItem(aggregate);
+        new ProjectSettings::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case ScoreItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new Score::ModelItem(aggregate))->initialize();
-        (new Score::ModelData(aggregate))->initialize();
+        new Score::ModelItem(aggregate);
+        new Score::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case TimeGridLineItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new TimeGridLine::ModelItem(aggregate))->initialize();
-        (new GridLine::ModelData(aggregate))->initialize();
+        new TimeGridLine::ModelItem(aggregate);
+        new GridLine::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case TimeGridLineListItem:
-        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
-        (new ObjectList::ModelItem(aggregate, TimeGridLineItem))->initialize();
-        (new ObjectList::ModelData(aggregate))->initialize();
+        new ObjectList::ModelItem(aggregate, TimeGridLineItem);
+        new ObjectList::ModelData(aggregate);
+        new ObjectList::ModelItemListWatcher(aggregate);
         break;
     case TrackItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new Track::ModelItem(aggregate))->initialize();
-        (new Track::ModelData(aggregate))->initialize();
+        new Track::ModelItem(aggregate);
+        new Track::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     case TrackListItem:
-        (new ObjectList::ModelItemListWatcher(aggregate))->initialize();
-        (new ObjectList::ModelItem(aggregate, TrackItem))->initialize();
-        (new ObjectList::ModelData(aggregate))->initialize();
+        new ObjectList::ModelItem(aggregate, TrackItem);
+        new ObjectList::ModelData(aggregate);
+        new ObjectList::ModelItemListWatcher(aggregate);
         break;
     case ViewSettingsItem:
-        (new Object::ModelDataWatcher(aggregate))->initialize();
-        (new ViewSettings::ModelItem(aggregate))->initialize();
-        (new ViewSettings::ModelData(aggregate))->initialize();
+        new ViewSettings::ModelItem(aggregate);
+        new ViewSettings::ModelData(aggregate);
+        new Object::ModelDataWatcher(aggregate);
         break;
     default:
         Q_ASSERT(0);

@@ -26,16 +26,15 @@ namespace Object {
 
 void *GraphicsEntity::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<GraphicsEntity*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : aggregate()->queryInterface(interfaceType);
 }
 
-IUnknown *GraphicsEntity::initialize()
+GraphicsEntity::GraphicsEntity(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
     _mainNodes.insert(PitchScene, new GraphicsNode);
     _mainNodes.insert(ControlScene, new GraphicsNode);
-    return aggregate()->append(this);
 }
 
 QGraphicsItem *GraphicsEntity::node(int sceneType, int transformType) const

@@ -23,7 +23,8 @@ using namespace Ac;
 
 namespace GridSettings {
 
-IUnknown *GraphicsItem::initialize()
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Object::GraphicsItem(aggregate)
 {
     _mainNodes.insert(TimeLabelScene, new GraphicsNode);
     _mainNodes.insert(PitchLabelScene, new GraphicsNode);
@@ -32,7 +33,6 @@ IUnknown *GraphicsItem::initialize()
     _unitXNodes.insert(ControlScene, new GraphicsNode);
     _unitYNodes.insert(PitchScene, new GraphicsNode);
     _unitYNodes.insert(ControlScene, new GraphicsNode);
-    return Object::GraphicsItem::initialize();
 }
 
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const

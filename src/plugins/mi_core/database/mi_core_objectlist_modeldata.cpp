@@ -24,16 +24,16 @@ using namespace Qt;
 
 namespace ObjectList {
 
-IUnknown *ModelData::initialize()
-{
-    return aggregate()->append(this);
-}
-
 void *ModelData::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelData*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
+
+ModelData::ModelData(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
 }
 
 QVariant ModelData::getValue(int role) const

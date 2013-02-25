@@ -23,11 +23,6 @@ using namespace Ac;
 
 namespace ControlCurve {
 
-IUnknown *GraphicsItem::initialize()
-{
-    return Curve::GraphicsItem::initialize();
-}
-
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
 {
     if (ControlScene == sceneType && MainTransform == transformType)

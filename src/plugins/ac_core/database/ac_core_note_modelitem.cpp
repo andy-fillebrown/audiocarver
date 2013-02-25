@@ -22,11 +22,6 @@ using namespace Ac;
 
 namespace Note {
 
-IUnknown *ModelItem::initialize()
-{
-    return ScoreObject::ModelItem::initialize();
-}
-
 int ModelItem::itemType() const
 {
     return NoteItem;

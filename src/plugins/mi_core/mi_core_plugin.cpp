@@ -32,21 +32,30 @@ static bool test();
 namespace Mi {
 namespace Core {
 
+Plugin::Plugin()
+{
+    new Session;
+}
+
+Plugin::~Plugin()
+{
+    delete ISession::instance();
+}
+
 bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     appendItemDataRole(ItemTypeRole, "type");
     appendItemDataRole(ListTypeRole, "listType");
     appendItemDataRole(NameRole, "name");
-    (new Session)->initialize();
 #ifdef QT_DEBUG
     test();
 #endif
     return true;
 }
 
-Plugin::~Plugin()
+void Plugin::extensionsInitialized()
 {
-    delete ISession::instance();
+    ISession::instance()->initialize();
 }
 
 }
@@ -56,7 +65,6 @@ Q_EXPORT_PLUGIN(Mi::Core::Plugin)
 
 #ifdef QT_DEBUG
 
-#include <imodel.h>
 #include <imodel.h>
 
 #define RUN(x) if (!x()) return false

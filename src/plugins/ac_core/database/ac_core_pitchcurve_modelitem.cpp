@@ -22,11 +22,6 @@ using namespace Ac;
 
 namespace PitchCurve {
 
-IUnknown *ModelItem::initialize()
-{
-    return Curve::ModelItem::initialize();
-}
-
 int ModelItem::itemType() const
 {
     return PitchCurveItem;

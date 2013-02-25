@@ -29,23 +29,9 @@ class GraphicsItem : public ScoreObject::GraphicsItem
     QMap<int, QGraphicsItem*> _unitYNodes;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   ScoreObject::GraphicsItem(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
-    const QMap<int, QGraphicsItem*> &unitXNodes() const
-    {
-        return _unitXNodes;
-    }
-
-    const QMap<int, QGraphicsItem*> &unitYNodes() const
-    {
-        return _unitYNodes;
-    }
-
     QGraphicsItem *node(int sceneType, int transformType) const;
     void update(int role);
 };

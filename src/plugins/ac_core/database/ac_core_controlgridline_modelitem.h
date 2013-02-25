@@ -29,8 +29,6 @@ public:
         :   GridLine::ModelItem(aggregate)
     {}
 
-    IUnknown *initialize();
-
 protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;

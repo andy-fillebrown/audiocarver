@@ -29,7 +29,10 @@ class MI_CORE_EXPORT Database : public IDatabase
 protected:
     Database();
     ~Database();
-    virtual IUnknown *initialize();
+
+    void initialize()
+    {}
+
     void *queryInterface(int interfaceType) const;
 };
 

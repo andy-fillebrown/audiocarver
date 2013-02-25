@@ -30,10 +30,10 @@ using namespace Ac;
 
 namespace Core {
 
-IUnknown *Database::initialize()
+Database::Database()
+    :   _score(0)
 {
     _score = IDatabaseObjectFactory::instance()->create(ScoreItem);
-    return Base::Database::initialize();
 }
 
 Database::~Database()

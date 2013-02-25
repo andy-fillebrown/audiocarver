@@ -27,11 +27,6 @@ using namespace Mi;
 
 namespace Note {
 
-IUnknown *GraphicsItem::initialize()
-{
-    return Object::GraphicsEntity::initialize();
-}
-
 QList<IGraphicsEntity*> GraphicsItem::subentities() const
 {
     QList<IGraphicsEntity*> subents;

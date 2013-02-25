@@ -36,8 +36,8 @@ public:
     {
         if (!_list)
             return;
-        const QList<IUnknown*> &components = query<IAggregate>(_list)->components();
-        foreach (IUnknown *component, components)
+        const QList<IComponent*> &components = query<IAggregate>(_list)->components();
+        foreach (IComponent *component, components)
             if (component->isTypeOfInterface(I::IModelItemListWatcher))
                 _watchers.append(query<IModelItemListWatcher>(component));
         foreach (IModelItemListWatcher *watcher, _watchers)

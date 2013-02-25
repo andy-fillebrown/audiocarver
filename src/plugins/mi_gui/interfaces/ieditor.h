@@ -18,13 +18,13 @@
 #ifndef IEDITOR_H
 #define IEDITOR_H
 
-#include <iunknown.h>
+#include <icomponent.h>
 #include "mi_gui_global.h"
 #include "mi_gui_interfaces.h"
 
 class QUndoCommand;
 
-class MI_GUI_EXPORT IEditor : public IUnknown
+class MI_GUI_EXPORT IEditor : public IComponent
 {
 public:
     enum { InterfaceType = I::IEditor };
@@ -52,7 +52,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

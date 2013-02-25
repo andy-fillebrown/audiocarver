@@ -24,11 +24,6 @@ using namespace Ac;
 
 namespace ViewSettings {
 
-IUnknown *ModelItem::initialize()
-{
-    return Object::ModelItem::initialize();
-}
-
 int ModelItem::itemType() const
 {
     return ViewSettingsItem;

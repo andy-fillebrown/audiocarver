@@ -37,11 +37,6 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _controlScale(VIEWSCALE_MIN)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return Object::ModelData::initialize();
-}
-
 bool ModelData::setTimePosition(qreal position)
 {
     IModelData *score_data = query<IModelData>(IDatabase::instance()->rootItem());
@@ -127,17 +122,17 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case TimePositionRole:
-        return timePosition();
+        return _timePosition;
     case PitchPositionRole:
-        return pitchPosition();
+        return _pitchPosition;
     case ControlPositionRole:
-        return controlPosition();
+        return _controlPosition;
     case TimeScaleRole:
-        return timeScale();
+        return _timeScale;
     case PitchScaleRole:
-        return pitchScale();
+        return _pitchScale;
     case ControlScaleRole:
-        return controlScale();
+        return _controlScale;
     default:
         return Object::ModelData::getValue(role);
     }

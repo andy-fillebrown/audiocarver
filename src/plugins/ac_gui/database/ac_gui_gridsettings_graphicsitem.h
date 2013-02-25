@@ -30,11 +30,7 @@ class GraphicsItem : public Object::GraphicsItem
     QMap<int, QGraphicsItem*> _unitYNodes;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsItem(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
     QGraphicsItem *node(int sceneType, int transformType) const;

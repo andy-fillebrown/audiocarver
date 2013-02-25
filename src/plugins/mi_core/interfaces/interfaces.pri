@@ -1,6 +1,7 @@
 
 SOURCE_FILES = \
     iaggregate \
+    icomponent \
     idatabase \
     idatabaseobjectfactory \
     ifilefiler \
@@ -12,8 +13,6 @@ SOURCE_FILES = \
     imodelitemlist \
     imodelitemlistwatcher \
     imodelitemwatcher \
-    iorphanage \
-    iqmodel \
     ireader \
     isession \
     iunknown \

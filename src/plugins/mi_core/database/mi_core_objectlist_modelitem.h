@@ -36,21 +36,17 @@ class MI_CORE_EXPORT ModelItem : public IModelItemList
     QList<IModelItem*> _items;
 
 public:
-    ModelItem(IAggregate *aggregate, int listType)
-        :   _aggregate(aggregate)
-        ,   _parent(0)
-        ,   _listType(listType)
-    {}
-
-    virtual IUnknown *initialize();
-
     void *queryInterface(int interfaceType) const;
+    ModelItem(IAggregate *aggregate, int listType);
 
 protected:
     IAggregate *aggregate() const
     {
         return _aggregate;
     }
+
+    void initialize()
+    {}
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;

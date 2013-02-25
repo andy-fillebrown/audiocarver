@@ -34,28 +34,24 @@ IModel *IModel::instance()
 
 namespace Base {
 
+void *Model::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
+}
+
 Model::Model()
 {
-    ISession::instance()->remove(::instance);
+    IAggregate *aggregate = ISession::instance();
+    aggregate->remove(::instance);
     delete ::instance;
     ::instance = this;
+    aggregate->append(this);
 }
 
 Model::~Model()
 {
     ::instance = 0;
-}
-
-IUnknown *Model::initialize()
-{
-    return ISession::instance()->append(this);
-}
-
-void *Model::queryInterface(int interfaceType) const
-{
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Model*>(this);
-    return ISession::instance()->queryInterface(interfaceType);
 }
 
 void Model::beginChangeData(const IModelData *data, int role, int changeType)

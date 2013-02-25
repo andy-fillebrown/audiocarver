@@ -24,11 +24,6 @@ using namespace Ac;
 
 namespace ControlGridLine {
 
-IUnknown *GraphicsItem::initialize()
-{
-    return HorizontalGridLine::GraphicsItem::initialize();
-}
-
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
 {
     if (ControlScene == sceneType && UnitXTransform == transformType)
@@ -36,11 +31,6 @@ QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
     if (ControlLabelScene == sceneType && MainTransform == transformType)
         return labelSceneRootNode();
     return 0;
-}
-
-void GraphicsItem::update(int role)
-{
-    HorizontalGridLine::GraphicsItem::update(role);
 }
 
 }

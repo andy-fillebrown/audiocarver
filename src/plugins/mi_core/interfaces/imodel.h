@@ -19,16 +19,15 @@
 #define IMODEL_H
 
 #include <QAbstractItemModel>
-#include <iunknown.h>
+#include <icomponent.h>
 #include "mi_core_global.h"
-#include "mi_core_interfaces.h"
 
 class IModelData;
 class IModelItem;
 class IModelItemList;
 
 class MI_CORE_EXPORT IModel : public QAbstractItemModel
-        ,   public IUnknown
+        ,   public IComponent
 {
     Q_OBJECT
 
@@ -60,14 +59,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
-    }
-
-    void *queryInterface(int interfaceType) const
-    {
-        if (isTypeOfInterface(interfaceType))
-            return const_cast<IModel*>(this);
-        return 0;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 
 signals:

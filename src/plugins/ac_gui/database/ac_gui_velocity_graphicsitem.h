@@ -31,24 +31,16 @@ class GraphicsItem : public Object::GraphicsCurve
     QGraphicsLineItem *_lineNode;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsCurve(aggregate)
-        ,   _lineNode(0)
-    {}
-
-    virtual IUnknown *initialize();
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
-    ~GraphicsItem();
-
+    IModelItem *parentItem() const;
     QGraphicsItem *node(int sceneType, int transformType) const;
     void setColor(int color);
     void setPoints(const PointList &points);
     bool intersects(const QRectF &rect) const;
     void highlight(bool on);
     virtual void update(int role);
-
-    IModelItem *parentItem() const;
 };
 
 }

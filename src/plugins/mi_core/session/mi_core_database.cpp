@@ -30,9 +30,11 @@ namespace Base {
 
 Database::Database()
 {
-    ISession::instance()->remove(::instance);
+    IAggregate *aggregate = ISession::instance();
+    aggregate->remove(::instance);
     delete ::instance;
     ::instance = this;
+    aggregate->append(this);
 }
 
 Database::~Database()
@@ -40,16 +42,10 @@ Database::~Database()
     ::instance = 0;
 }
 
-IUnknown *Database::initialize()
-{
-    return ISession::instance()->append(this);
-}
-
 void *Database::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Database*>(this);
-    return ISession::instance()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
 }
 
 }

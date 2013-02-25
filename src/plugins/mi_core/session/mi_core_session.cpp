@@ -33,11 +33,6 @@ Session::Session()
     ::instance = this;
 }
 
-IAggregate *Session::initialize()
-{
-    return this;
-}
-
 Session::~Session()
 {
     ::instance = 0;

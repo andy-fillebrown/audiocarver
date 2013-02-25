@@ -29,8 +29,7 @@ protected:
         :   Object::ModelItem(aggregate)
     {}
 
-    IUnknown *initialize();
-    bool isTypeOfItem(int itemType) const = 0;
+    bool isTypeOfItem(int itemType) const;
 };
 
 }

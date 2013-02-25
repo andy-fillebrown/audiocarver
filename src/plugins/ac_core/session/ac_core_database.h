@@ -30,19 +30,10 @@ class AC_CORE_EXPORT Database : public Base::Database
     IAggregate *_score;
 
 public:
-    Database()
-        :   _score(0)
-    {}
-
-    IUnknown *initialize();
+    Database();
     ~Database();
 
 protected:
-    IAggregate *score() const
-    {
-        return _score;
-    }
-
     IModelItem *rootItem() const;
     const QString &fileExtension() const;
     const QString &fileFilter() const;

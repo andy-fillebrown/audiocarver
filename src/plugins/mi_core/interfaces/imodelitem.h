@@ -18,12 +18,11 @@
 #ifndef IMODELITEM_H
 #define IMODELITEM_H
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+#include <icomponent.h>
 
 class IModelItemList;
 
-class IModelItem : public IUnknown
+class IModelItem : public IComponent
 {
 public:
     enum { InterfaceType = I::IModelItem };
@@ -53,7 +52,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

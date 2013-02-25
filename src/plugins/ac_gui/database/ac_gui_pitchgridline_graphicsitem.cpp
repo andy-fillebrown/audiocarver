@@ -24,11 +24,6 @@ using namespace Ac;
 
 namespace PitchGridLine {
 
-IUnknown *GraphicsItem::initialize()
-{
-    return HorizontalGridLine::GraphicsItem::initialize();
-}
-
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
 {
     if (PitchScene == sceneType && UnitXTransform == transformType)
@@ -36,11 +31,6 @@ QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
     if (PitchLabelScene == sceneType && MainTransform == transformType)
         return labelSceneRootNode();
     return 0;
-}
-
-void GraphicsItem::update(int role)
-{
-    HorizontalGridLine::GraphicsItem::update(role);
 }
 
 }

@@ -18,11 +18,10 @@
 #ifndef IMODELDATA_H
 #define IMODELDATA_H
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+#include <icomponent.h>
 #include <QVariant>
 
-class IModelData : public IUnknown
+class IModelData : public IComponent
 {
 public:
     enum { InterfaceType = I::IModelData };
@@ -50,7 +49,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

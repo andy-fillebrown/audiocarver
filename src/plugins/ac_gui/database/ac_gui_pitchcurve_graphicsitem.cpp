@@ -24,11 +24,6 @@ using namespace Ac;
 
 namespace PitchCurve {
 
-IUnknown *GraphicsItem::initialize()
-{
-    return Curve::GraphicsItem::initialize();
-}
-
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
 {
     if (PitchScene == sceneType && MainTransform == transformType)

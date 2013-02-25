@@ -145,10 +145,11 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
     return true;
 }
 
-IUnknown *Reader::initialize()
+Reader::Reader(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+    ,   _stream(0)
 {
-    aggregate()->append(this);
-    return this;
+    _aggregate->append(this);
 }
 
 Reader::~Reader()
@@ -158,9 +159,8 @@ Reader::~Reader()
 
 void *Reader::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<Reader*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IReader::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
 void Reader::setStream(QXmlStreamReader *stream)
@@ -173,7 +173,7 @@ void Reader::setStream(QXmlStreamReader *stream)
 
 int Reader::nextItemType()
 {
-    QXmlStreamReader *reader = stream();
+    QXmlStreamReader *reader = _stream;
     if (!reader)
         return -1;
     if (!nextStartElement(reader))
@@ -189,7 +189,7 @@ bool Reader::read(IModelItem *item)
     QFile *file = query<IFileFiler>(this)->file();
     if (file && file->open(QIODevice::ReadOnly))
         setStream(new QXmlStreamReader(file));
-    QXmlStreamReader *reader = stream();
+    QXmlStreamReader *reader = _stream;
     if (!reader)
         return false;
     if (!nextStartElement(reader))

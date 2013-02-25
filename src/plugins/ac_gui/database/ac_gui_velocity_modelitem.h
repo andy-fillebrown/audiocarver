@@ -31,14 +31,7 @@ public:
         :   Object::ModelItem(aggregate)
     {}
 
-    virtual IUnknown *initialize();
-
 protected:
-    IAggregate *grips() const
-    {
-        return _grips;
-    }
-
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
     IModelItem *findItem(int itemType) const;

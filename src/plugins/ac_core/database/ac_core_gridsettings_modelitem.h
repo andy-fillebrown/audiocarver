@@ -30,37 +30,15 @@ class ModelItem : public Object::ModelItem
     enum { ItemCount = 3 };
 
 public:
+    ModelItem(IAggregate *aggregate);
+
+protected:
     enum {
         ItemCountOffset = Object::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-        ,   _timeGridLines(0)
-        ,   _pitchGridLines(0)
-        ,   _controlGridLines(0)
-    {}
-
-    IUnknown *initialize();
-
-protected:
     ~ModelItem();
-
-    IAggregate *timeGridLines() const
-    {
-        return _timeGridLines;
-    }
-
-    IAggregate *pitchGridLines() const
-    {
-        return _pitchGridLines;
-    }
-
-    IAggregate *controlGridLines() const
-    {
-        return _controlGridLines;
-    }
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;

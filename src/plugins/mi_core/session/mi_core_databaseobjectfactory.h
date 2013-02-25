@@ -29,7 +29,10 @@ class MI_CORE_EXPORT DatabaseObjectFactory : public IDatabaseObjectFactory
 protected:
     DatabaseObjectFactory();
     ~DatabaseObjectFactory();
-    virtual IUnknown *initialize();
+
+    void initialize()
+    {}
+
     void *queryInterface(int interfaceType) const;
 };
 

@@ -20,14 +20,6 @@
 
 namespace Gui {
 
-IUnknown *Editor::initialize()
-{
-    return Base::Editor::initialize();
-}
-
-Editor::~Editor()
-{}
-
 void Editor::undo()
 {
     qDebug() << Q_FUNC_INFO;

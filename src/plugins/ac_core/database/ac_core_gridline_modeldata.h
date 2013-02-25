@@ -33,49 +33,18 @@ class ModelData : public Object::ModelData
     int _visible : 1;
 
 public:
+    ModelData(IAggregate *aggregate);
+
+protected:
     enum {
         RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-
-    IUnknown *initialize();
-
-protected:
-    qreal location() const
-    {
-        return _location;
-    }
-
     bool setLocation(qreal location);
-
-    QString label() const
-    {
-        return _label;
-    }
-
     bool setLabel(const QString &label);
-
-    int priority() const
-    {
-        return _priority;
-    }
-
     bool setPriority(int priority);
-
-    int color() const
-    {
-        return _color;
-    }
-
     bool setColor(int color);
-
-    bool isVisible() const
-    {
-        return _visible;
-    }
-
     bool setVisible(bool visible);
 
     int roleCount() const

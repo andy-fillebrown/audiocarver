@@ -29,27 +29,15 @@ class ModelData : public ScoreObject::ModelData
     enum { RoleCount = 2 };
 
 public:
+    ModelData(IAggregate *aggregate);
+
+protected:
     enum {
         RoleCountOffset = ScoreObject::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
-
-protected:
-    qreal length() const
-    {
-        return _length;
-    }
-
     bool setLength(qreal length);
-
-    qreal startTime() const
-    {
-        return _startTime;
-    }
-
     bool setStartTime(qreal time);
 
     int roleCount() const

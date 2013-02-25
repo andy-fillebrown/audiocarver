@@ -1,7 +1,8 @@
 
 SOURCE_FILES *= \
-    igraphicscurve \
-    igraphicsentity \
+#    igraphicscurve \
+#    igraphicsentity \
+    igraphicsdata \
     igraphicsitem \
     igrip \
     iplaycursor \

@@ -32,25 +32,14 @@ class AC_CORE_EXPORT Writer : public IWriter
     QXmlStreamWriter *_stream;
 
 public:
-    Writer(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-        ,   _stream(0)
-    {}
-
-    virtual IUnknown *initialize();
+    Writer(IAggregate *aggregate);
     ~Writer();
+
     void *queryInterface(int interfaceType) const;
 
 protected:
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    QXmlStreamWriter *stream()
-    {
-        return _stream;
-    }
+    void initialize()
+    {}
 
     void setStream(QXmlStreamWriter *stream);
     bool write(IModelItem *item);

@@ -27,7 +27,10 @@ class MI_CORE_EXPORT FilerFactory : public IFilerFactory
 protected:
     FilerFactory();
     ~FilerFactory();
-    virtual IUnknown *initialize();
+
+    void initialize()
+    {}
+
     void *queryInterface(int interfaceType) const;
 };
 

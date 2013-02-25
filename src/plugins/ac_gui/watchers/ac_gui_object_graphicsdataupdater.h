@@ -15,29 +15,31 @@
 **
 **************************************************************************/
 
-#include "ac_gui_note_modelitemwatcher.h"
-#include <ac_core_namespace.h>
-#include <igraphicsitem.h>
-#include <imodelitem.h>
+#ifndef AC_GUI_OBJECT_GRAPHICSDATAUPDATER_H
+#define AC_GUI_OBJECT_GRAPHICSDATAUPDATER_H
 
-using namespace Ac;
+#include <imodeldatawatcher.h>
 
-namespace Note {
+class IAggregate;
 
-IUnknown *ModelItemWatcher::initialize()
+namespace Object {
+
+class GraphicsDataUpdater : public IModelDataWatcher
 {
-    return Object::ModelItemWatcher::initialize();
+    IAggregate *_aggregate;
+
+public:
+    GraphicsDataUpdater(IAggregate *aggregate)
+        :   _aggregate(aggregate)
+    {}
+
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    void beginChangeData(const IModelData *data, int role, int changeType);
+    void endChangeData(const IModelData *data, int role, int changeType);
+};
+
 }
 
-void ModelItemWatcher::endChangeParent(const IModelItem *child)
-{
-    if (!child)
-        return;
-    Object::ModelItemWatcher::endChangeParent(child);
-    IGraphicsItem *child_graphics = query<IGraphicsItem>(child);
-    if (!child_graphics)
-        return;
-    child_graphics->update(ColorRole);
-}
-
-}
+#endif

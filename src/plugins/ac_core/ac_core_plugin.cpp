@@ -21,6 +21,7 @@
 #include "ac_core_filerfactory.h"
 #include "ac_core_model.h"
 #include "ac_core_namespace.h"
+#include <isession.h>
 #include <pluginmanager.h>
 #include <QtPlugin>
 
@@ -32,6 +33,14 @@ using namespace Core;
 
 namespace Ac {
 namespace Core {
+
+Plugin::Plugin()
+{
+    new DatabaseObjectFactory;
+    new Database;
+    new FilerFactory;
+    new Model;
+}
 
 bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
@@ -75,10 +84,6 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(TimeSnapRole, "timeSnap");
     appendItemDataRole(PitchSnapRole, "pitchSnap");
     appendItemDataRole(ControlSnapRole, "controlSnap");
-    (new DatabaseObjectFactory)->initialize();
-    (new Database)->initialize();
-    (new FilerFactory)->initialize();
-    (new Model)->initialize();
     return true;
 }
 

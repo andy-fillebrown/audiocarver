@@ -33,55 +33,19 @@ class ModelData : public Object::ModelData
     enum { RoleCount = 6 };
 
 public:
+    ModelData(IAggregate *aggregate);
+
+protected:
     enum {
         RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
-
-protected:
-    qreal timePosition() const
-    {
-        return _timePosition;
-    }
-
     bool setTimePosition(qreal position);
-
-    qreal pitchPosition() const
-    {
-        return _pitchPosition;
-    }
-
     bool setPitchPosition(qreal position);
-
-    qreal controlPosition() const
-    {
-        return _controlPosition;
-    }
-
     bool setControlPosition(qreal position);
-
-    qreal timeScale() const
-    {
-        return _timeScale;
-    }
-
     bool setTimeScale(qreal scale);
-
-    qreal pitchScale() const
-    {
-        return _pitchScale;
-    }
-
     bool setPitchScale(qreal scale);
-
-    qreal controlScale() const
-    {
-        return _controlScale;
-    }
-
     bool setControlScale(qreal scale);
 
     int roleCount() const

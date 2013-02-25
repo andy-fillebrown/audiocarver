@@ -29,8 +29,6 @@ public:
         :   Curve::GraphicsItem(aggregate)
     {}
 
-    virtual IUnknown *initialize();
-
 protected:
     QGraphicsItem *node(int sceneType, int transformType) const;
 };

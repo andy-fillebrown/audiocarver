@@ -27,7 +27,10 @@ using namespace Mi;
 
 namespace HorizontalGridLine {
 
-IUnknown *GraphicsItem::initialize()
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   GridLine::GraphicsItem(aggregate)
+    ,   _editorSceneLineNode(0)
+    ,   _editorSceneLineExtensionNode(0)
 {
     _editorSceneLineNode = new QGraphicsLineItem;
     _editorSceneLineExtensionNode = new QGraphicsLineItem(_editorSceneLineNode);
@@ -37,7 +40,6 @@ IUnknown *GraphicsItem::initialize()
     _editorSceneLineNode->setPen(pen);
     pen.setStyle(GridLine::GraphicsItem::gridLineExtensionPenStyle());
     _editorSceneLineExtensionNode->setPen(pen);
-    return GridLine::GraphicsItem::initialize();
 }
 
 GraphicsItem::~GraphicsItem()

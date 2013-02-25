@@ -37,11 +37,8 @@ protected:
     static Qt::PenStyle gridLinePenStyle();
     static Qt::PenStyle gridLineExtensionPenStyle();
 
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsEntity(aggregate)
-        ,   _labelSceneRootNode(0)
-        ,   _labelSceneTextNode(0)
-    {}
+    GraphicsItem(IAggregate *aggregate);
+    ~GraphicsItem();
 
     GraphicsNode *labelSceneRootNode() const
     {
@@ -52,9 +49,6 @@ protected:
     {
         return _labelSceneTextNode;
     }
-
-    virtual IUnknown *initialize();
-    ~GraphicsItem();
 
     void setColor(int color);
     void update(int role);

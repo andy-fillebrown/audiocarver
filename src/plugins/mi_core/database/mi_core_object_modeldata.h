@@ -41,11 +41,7 @@ protected:
         TotalRoleCount = RoleCount
     };
 
-    ModelData(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
+    ModelData(IAggregate *aggregate);
 
     IAggregate *aggregate() const
     {
@@ -56,6 +52,9 @@ protected:
     {
         return _name;
     }
+
+    void initialize()
+    {}
 
     bool setName(const QString &name);
 

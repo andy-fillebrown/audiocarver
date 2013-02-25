@@ -29,11 +29,14 @@ class MI_GUI_EXPORT Editor : public IEditor
 
 public:
     Editor();
-    virtual IUnknown *initialize();
-    virtual ~Editor();
+    ~Editor();
+
     void *queryInterface(int interfaceType) const;
 
 protected:
+    void initialize()
+    {}
+
     bool isInCommand() const
     {
         return _isInCommand;

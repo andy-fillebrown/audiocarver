@@ -34,11 +34,7 @@ public:
     void *queryInterface(int interfaceType) const;
 
 protected:
-    GraphicsEntity(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
+    GraphicsEntity(IAggregate *aggregate);
 
     IAggregate *aggregate() const
     {
@@ -53,6 +49,9 @@ protected:
     QGraphicsItem *node(int sceneType, int transformType) const;
 
     void update(int role)
+    {}
+
+    void initialize()
     {}
 };
 

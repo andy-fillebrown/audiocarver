@@ -33,11 +33,6 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _controlSnap(DEFAULT_GRIDSETTINGS_CONTROLSNAP)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return Object::ModelData::initialize();
-}
-
 bool ModelData::setSnapEnabled(bool enabled)
 {
     if (_snapEnabled == enabled)
@@ -108,15 +103,15 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case SnapEnabledRole:
-        return isSnapEnabled();
+        return _snapEnabled;
     case GridSnapEnabledRole:
-        return isGridSnapEnabled();
+        return _gridSnapEnabled;
     case TimeSnapRole:
-        return timeSnap();
+        return _timeSnap;
     case PitchSnapRole:
-        return pitchSnap();
+        return _pitchSnap;
     case ControlSnapRole:
-        return controlSnap();
+        return _controlSnap;
     default:
         return Object::ModelData::getValue(role);
     }

@@ -27,7 +27,9 @@ using namespace Ac;
 
 namespace Velocity {
 
-IUnknown *GraphicsItem::initialize()
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Object::GraphicsCurve(aggregate)
+    ,   _lineNode(0)
 {
     _lineNode = new QGraphicsLineItem;
     _lineNode->setData(0, quintptr(this));
@@ -39,12 +41,11 @@ IUnknown *GraphicsItem::initialize()
     pen.setCosmetic(true);
     _lineNode->setPen(pen);
     highlight(false);
-    return aggregate()->append(this);
 }
 
-GraphicsItem::~GraphicsItem()
+IModelItem *GraphicsItem::parentItem() const
 {
-    delete _lineNode;
+    return query<IModelItem>(this)->parent();
 }
 
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
@@ -111,11 +112,6 @@ void GraphicsItem::update(int role)
         velocity_line_points.append(Point(x, volume));
         setPoints(velocity_line_points);
     }
-}
-
-IModelItem *GraphicsItem::parentItem() const
-{
-    return query<IModelItem>(this)->parent();
 }
 
 }

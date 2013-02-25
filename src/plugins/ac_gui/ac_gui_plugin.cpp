@@ -38,13 +38,12 @@ using namespace Gui;
 namespace Ac {
 namespace Gui {
 
-bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
+Plugin::Plugin()
 {
-    (new ::Gui::DatabaseObjectFactory)->initialize();
-    (new Core::Database)->initialize();
-    (new Editor)->initialize();
+    new ::Gui::DatabaseObjectFactory;
+    new Core::Database;
+    new Editor;
     addAutoReleasedObject(new MainWindowExtension);
-    return true;
 }
 
 void Plugin::extensionsInitialized()

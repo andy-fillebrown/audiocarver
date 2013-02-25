@@ -15,32 +15,35 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modeldatawatcher.h"
-#include <iaggregate.h>
-#include <imodel.h>
+#ifndef ICOMPONENT_H
+#define ICOMPONENT_H
 
-namespace Object {
+#include <iunknown.h>
+#include "mi_core_interfaces.h"
 
-void *ModelDataWatcher::queryInterface(int interfaceType) const
+class IComponent : public IUnknown
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelDataWatcher*>(this);
-    return aggregate()->queryInterface(interfaceType);
-}
+public:
+    enum { InterfaceType = I::IComponent };
 
-IUnknown *ModelDataWatcher::initialize()
-{
-    return aggregate()->append(this);
-}
+    virtual void initialize() = 0;
 
-void ModelDataWatcher::beginChangeData(const IModelData *data, int role, int changeType)
-{
-    IModel::instance()->beginChangeData(data, role, changeType);
-}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-void ModelDataWatcher::endChangeData(const IModelData *data, int role, int changeType)
-{
-    IModel::instance()->endChangeData(data, role, changeType);
-}
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 
-}
+    void *queryInterface(int interfaceType) const
+    {
+        if (isTypeOfInterface(interfaceType))
+            return const_cast<IComponent*>(this);
+        return 0;
+    }
+};
+
+#endif

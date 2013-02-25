@@ -28,27 +28,20 @@ class ModelData : public Curve::ModelData
     enum { RoleCount = 1 };
 
 public:
-    enum {
-        RoleCountOffset = Curve::ModelData::TotalRoleCount,
-        TotalRoleCount = RoleCountOffset + RoleCount
-    };
-
     ModelData(IAggregate *aggregate)
         :   Curve::ModelData(aggregate)
         ,   _controlType(-1)
     {}
 
-    IUnknown *initialize();
-
 protected:
-    void conformPoints();
-
-    int controlType() const
-    {
-        return _controlType;
-    }
+    enum {
+        RoleCountOffset = Curve::ModelData::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
     bool setControlType(int controlType);
+
+    void conformPoints();
 
     int roleCount() const
     {

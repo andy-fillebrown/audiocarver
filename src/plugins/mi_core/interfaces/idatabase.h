@@ -18,13 +18,12 @@
 #ifndef IDATABASE_H
 #define IDATABASE_H
 
-#include <iunknown.h>
+#include <icomponent.h>
 #include "mi_core_global.h"
-#include "mi_core_interfaces.h"
 
 class IModelItem;
 
-class MI_CORE_EXPORT IDatabase : public IUnknown
+class MI_CORE_EXPORT IDatabase : public IComponent
 {
 public:
     enum { InterfaceType = I::IDatabase };
@@ -47,7 +46,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

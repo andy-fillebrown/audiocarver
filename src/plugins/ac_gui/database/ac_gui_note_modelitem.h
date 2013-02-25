@@ -28,11 +28,7 @@ class ModelItem : public Note::ModelItem
     IAggregate *_velocity;
 
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Note::ModelItem(aggregate)
-    {}
-
-    IUnknown *initialize();
+    ModelItem(IAggregate *aggregate);
 
 protected:
     ~ModelItem();

@@ -32,28 +32,16 @@ class AC_CORE_EXPORT Reader : public IReader
     QXmlStreamReader *_stream;
 
 public:
-    Reader(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-        ,   _stream(0)
-    {}
-
-    virtual IUnknown *initialize();
+    Reader(IAggregate *aggregate);
     ~Reader();
+
     void *queryInterface(int interfaceType) const;
 
 protected:
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    QXmlStreamReader *stream()
-    {
-        return _stream;
-    }
+    void initialize()
+    {}
 
     void setStream(QXmlStreamReader *stream);
-
     int nextItemType();
     bool read(IModelItem *item);
 };

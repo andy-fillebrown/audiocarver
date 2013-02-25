@@ -2,11 +2,9 @@
 SOURCE_FILES = \
     aggregate \
     object_modeldata \
-    object_modeldatawatcher \
     object_modelitem \
     objectlist_modeldata \
     objectlist_modelitem \
-    objectlist_modelitemlistwatcher \
 
 DIR = $$dirname(_FILE_)
 DIR = $$basename(DIR)

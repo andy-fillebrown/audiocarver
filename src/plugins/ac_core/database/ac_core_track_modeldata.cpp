@@ -32,11 +32,6 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _recording(false)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return ScoreObject::ModelData::initialize();
-}
-
 bool ModelData::setColor(int color)
 {
     if (_color == color)
@@ -93,13 +88,13 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case ColorRole:
-        return colorFromInt(color());
+        return colorFromInt(_color);
     case InstrumentRole:
-        return instrument();
+        return _instrument;
     case VisibilityRole:
-        return isVisible();
+        return _visible;
     case RecordingRole:
-        return isRecording();
+        return _recording;
     default:
         return ScoreObject::ModelData::getValue(role);
     }

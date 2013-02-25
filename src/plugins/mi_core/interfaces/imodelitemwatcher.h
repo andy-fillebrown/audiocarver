@@ -18,12 +18,11 @@
 #ifndef IMODELITEMWATCHER_H
 #define IMODELITEMWATCHER_H
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+#include <icomponent.h>
 
 class IModelItem;
 
-class IModelItemWatcher : public IUnknown
+class IModelItemWatcher : public IComponent
 {
 public:
     enum { InterfaceType = I::IModelItemWatcher };
@@ -38,7 +37,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

@@ -27,7 +27,9 @@ class MI_CORE_EXPORT Session : public Aggregate
 public:
     Session();
     virtual ~Session();
-    IAggregate *initialize();
+
+    void initialize()
+    {}
 };
 
 }

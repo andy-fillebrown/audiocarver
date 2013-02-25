@@ -31,20 +31,14 @@ class FileFiler : public IFileFiler
     QFile *_file;
 
 public:
-    FileFiler(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-        ,   _file(0)
-    {}
-
-    virtual IUnknown *initialize();
+    FileFiler(IAggregate *aggregate);
     ~FileFiler();
+
     void *queryInterface(int interfaceType) const;
 
 protected:
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
+    void initialize()
+    {}
 
     QFile *file() const
     {

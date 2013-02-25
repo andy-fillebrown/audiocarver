@@ -22,11 +22,6 @@ using namespace Ac;
 
 namespace GridLine {
 
-IUnknown *ModelItem::initialize()
-{
-    return Object::ModelItem::initialize();
-}
-
 bool ModelItem::isTypeOfItem(int itemType) const
 {
     return GridLineItem == itemType;

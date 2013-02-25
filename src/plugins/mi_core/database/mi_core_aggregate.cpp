@@ -19,6 +19,14 @@
 
 namespace Base {
 
+void *Aggregate::queryInterface(int interfaceType) const
+{
+    foreach (IComponent *component, _components)
+        if (component->isTypeOfInterface(interfaceType))
+            return component->queryInterface(interfaceType);
+    return IAggregate::queryInterface(interfaceType);
+}
+
 Aggregate::Aggregate()
 {}
 
@@ -28,17 +36,10 @@ Aggregate::~Aggregate()
     _components.clear();
 }
 
-IAggregate *Aggregate::initialize()
+void Aggregate::initialize()
 {
-    return this;
-}
-
-void *Aggregate::queryInterface(int interfaceType) const
-{
-    foreach (IUnknown *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
+    foreach (IComponent *component, _components)
+        component->initialize();
 }
 
 }

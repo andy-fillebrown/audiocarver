@@ -25,9 +25,6 @@ namespace Core {
 
 class AC_CORE_EXPORT FilerFactory : public Base::FilerFactory
 {
-public:
-    IUnknown *initialize();
-
 protected:
     IAggregate *create(int filerType);
 };

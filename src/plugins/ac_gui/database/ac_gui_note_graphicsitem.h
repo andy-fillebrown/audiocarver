@@ -29,11 +29,8 @@ public:
         :   Object::GraphicsEntity(aggregate)
     {}
 
-    virtual IUnknown *initialize();
-
 protected:
     QList<IGraphicsEntity*> subentities() const;
-
     void setColor(int color);
     void highlight(bool on);
     void update(int role);

@@ -27,16 +27,18 @@ using namespace Mi;
 
 namespace ObjectList {
 
-IUnknown *ModelItem::initialize()
-{
-    return aggregate()->append(this);
-}
-
 void *ModelItem::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItem*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
+
+ModelItem::ModelItem(IAggregate *aggregate, int listType)
+    :   _aggregate(aggregate)
+    ,   _parent(0)
+    ,   _listType(listType)
+{
+    _aggregate->append(this);
 }
 
 int ModelItem::itemType() const

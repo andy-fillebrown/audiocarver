@@ -26,7 +26,12 @@ using namespace Ac;
 
 namespace Score {
 
-IUnknown *ModelItem::initialize()
+ModelItem::ModelItem(IAggregate *aggregate)
+    :  ScoreObject::ModelItem(aggregate)
+    ,   _tracks(0)
+    ,   _gridSettings(0)
+    ,   _projectSettings(0)
+    ,   _viewSettings(0)
 {
     ScoreObject::ModelItem::initialize();
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
@@ -34,7 +39,6 @@ IUnknown *ModelItem::initialize()
     _gridSettings = factory->create(GridSettingsItem, this);
     _projectSettings = factory->create(ProjectSettingsItem, this);
     _viewSettings = factory->create(ViewSettingsItem, this);
-    return this;
 }
 
 ModelItem::~ModelItem()
@@ -59,13 +63,13 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 int ModelItem::indexOf(const IModelItem *item) const
 {
-    if (query<IModelItem>(tracks()) == item)
+    if (query<IModelItem>(_tracks) == item)
         return ItemCountOffset;
-    if (query<IModelItem>(gridSettings()) == item)
+    if (query<IModelItem>(_gridSettings) == item)
         return ItemCountOffset + 1;
-    if (query<IModelItem>(projectSettings()) == item)
+    if (query<IModelItem>(_projectSettings) == item)
         return ItemCountOffset + 2;
-    if (query<IModelItem>(viewSettings()) == item)
+    if (query<IModelItem>(_viewSettings) == item)
         return ItemCountOffset + 3;
     return ScoreObject::ModelItem::indexOf(item);
 }
@@ -74,13 +78,13 @@ IModelItem *ModelItem::at(int i) const
 {
     switch (i - ItemCountOffset) {
     case 0:
-        return query<IModelItem>(tracks());
+        return query<IModelItem>(_tracks);
     case 1:
-        return query<IModelItem>(gridSettings());
+        return query<IModelItem>(_gridSettings);
     case 2:
-        return query<IModelItem>(projectSettings());
+        return query<IModelItem>(_projectSettings);
     case 3:
-        return query<IModelItem>(viewSettings());
+        return query<IModelItem>(_viewSettings);
     default:
         return ScoreObject::ModelItem::at(i);
     }
@@ -90,11 +94,11 @@ IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
     case GridSettingsItem:
-        return query<IModelItem>(gridSettings());
+        return query<IModelItem>(_gridSettings);
     case ProjectSettingsItem:
-        return query<IModelItem>(projectSettings());
+        return query<IModelItem>(_projectSettings);
     case ViewSettingsItem:
-        return query<IModelItem>(viewSettings());
+        return query<IModelItem>(_viewSettings);
     default:
         return ScoreObject::ModelItem::findItem(itemType);
     }
@@ -104,7 +108,7 @@ IModelItemList *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case TrackItem:
-        return query<IModelItemList>(tracks());
+        return query<IModelItemList>(_tracks);
     default:
         return ScoreObject::ModelItem::findList(listType);
     }

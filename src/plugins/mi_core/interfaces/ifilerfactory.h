@@ -18,13 +18,13 @@
 #ifndef IFILERFACTORY_H
 #define IFILERFACTORY_H
 
-#include <iunknown.h>
+#include <icomponent.h>
 #include "mi_core_interfaces.h"
 #include "mi_core_global.h"
 
 class IAggregate;
 
-class MI_CORE_EXPORT IFilerFactory : public IUnknown
+class MI_CORE_EXPORT IFilerFactory : public IComponent
 {
 public:
     enum { InterfaceType = I::IFilerFactory };
@@ -40,7 +40,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

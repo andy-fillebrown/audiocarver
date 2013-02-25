@@ -30,9 +30,11 @@ namespace Base {
 
 FilerFactory::FilerFactory()
 {
-    ISession::instance()->remove(::instance);
+    IAggregate *aggregate = ISession::instance();
+    aggregate->remove(::instance);
     delete ::instance;
     ::instance = this;
+    aggregate->append(this);
 }
 
 FilerFactory::~FilerFactory()
@@ -40,16 +42,10 @@ FilerFactory::~FilerFactory()
     ::instance = 0;
 }
 
-IUnknown *FilerFactory::initialize()
-{
-    return ISession::instance()->append(this);
-}
-
 void *FilerFactory::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<FilerFactory*>(this);
-    return ISession::instance()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
 }
 
 }

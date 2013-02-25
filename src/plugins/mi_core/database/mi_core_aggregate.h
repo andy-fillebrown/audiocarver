@@ -26,28 +26,28 @@ namespace Base {
 
 class MI_CORE_EXPORT Aggregate : public IAggregate
 {
-    QList<IUnknown*> _components;
+    QList<IComponent*> _components;
 
 public:
+    void *queryInterface(int interfaceType) const;
     Aggregate();
     ~Aggregate();
-    virtual IAggregate *initialize();
-    void *queryInterface(int interfaceType) const;
+    void initialize();
 
 protected:
-    const QList<IUnknown*> &components() const
+    const QList<IComponent*> &components() const
     {
         return _components;
     }
 
-    IUnknown *append(IUnknown *component)
+    IUnknown *append(IComponent *component)
     {
         if (!_components.contains(component))
             _components.append(component);
         return component;
     }
 
-    void remove(IUnknown *component)
+    void remove(IComponent *component)
     {
         _components.removeOne(component);
     }

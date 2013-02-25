@@ -18,21 +18,19 @@
 #include "ac_gui_scoreobject_graphicsitem.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
-#include <igraphicsitem.h>
 #include <imodeldata.h>
 #include <imodelitemlist.h>
-#include <QGraphicsScene>
 
 using namespace Ac;
 using namespace Mi;
 
 namespace ScoreObject {
 
-IUnknown *GraphicsItem::initialize()
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Object::GraphicsItem(aggregate)
 {
     _mainNodes.insert(PitchScene, new GraphicsNode);
     _mainNodes.insert(ControlScene, new GraphicsNode);
-    return Object::GraphicsItem::initialize();
 }
 
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const

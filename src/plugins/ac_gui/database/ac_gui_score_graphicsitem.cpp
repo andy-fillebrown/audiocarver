@@ -26,7 +26,8 @@ using namespace Ac;
 
 namespace Score {
 
-IUnknown *GraphicsItem::initialize()
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   ScoreObject::GraphicsItem(aggregate)
 {
     QMap<int, QGraphicsItem*> &main_nodes = mainNodes();
     for (int i = 0;  i < SceneTypeCount;  ++i) {
@@ -38,16 +39,15 @@ IUnknown *GraphicsItem::initialize()
     _unitXNodes[PitchScene]->setTransform(QTransform::fromScale(DEFAULT_SCORE_LENGTH, 1.0f));
     _unitXNodes[ControlScene]->setTransform(QTransform::fromScale(DEFAULT_SCORE_LENGTH, 1.0f));
     _unitYNodes[PitchScene]->setTransform(QTransform::fromScale(1.0f, 127.0f));
-    return Object::GraphicsItem::initialize();
 }
 
 QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
 {
     switch (transformType) {
     case UnitXTransform:
-        return unitXNodes().value(sceneType);
+        return _unitXNodes.value(sceneType);
     case UnitYTransform:
-        return unitYNodes().value(sceneType);
+        return _unitYNodes.value(sceneType);
     default:
         return ScoreObject::GraphicsItem::node(sceneType, transformType);
     }
@@ -61,9 +61,8 @@ void GraphicsItem::update(int role)
         if (!data)
             return;
         qreal score_length = data->get<qreal>(LengthRole);
-        const QMap<int, QGraphicsItem*> &unitXNodes = this->unitXNodes();
-        unitXNodes[PitchScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
-        unitXNodes[ControlScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
+        _unitXNodes[PitchScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
+        _unitXNodes[ControlScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
     }   break;
     }
     ScoreObject::GraphicsItem::update(role);

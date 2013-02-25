@@ -15,27 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_MODELDATAWATCHER_H
-#define AC_GUI_OBJECT_MODELDATAWATCHER_H
+#ifndef MI_CORE_OBJECTLIST_MODELITEMLISTUPDATER_H
+#define MI_CORE_OBJECTLIST_MODELITEMLISTUPDATER_H
 
-#include <imodeldatawatcher.h>
+#include <imodelitemlistwatcher.h>
+#include "mi_core_global.h"
 
 class IAggregate;
 
-namespace Object {
+namespace ObjectList {
 
-class ModelDataWatcher : public IModelDataWatcher
+class MI_CORE_EXPORT ModelItemListUpdater : public IModelItemListWatcher
 {
     IAggregate *_aggregate;
 
 public:
+    ModelItemListUpdater(IAggregate *aggregate);
+
     void *queryInterface(int interfaceType) const;
-
-    ModelDataWatcher(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
 
 protected:
     IAggregate *aggregate() const
@@ -43,8 +40,13 @@ protected:
         return _aggregate;
     }
 
-    void beginChangeData(const IModelData *data, int role, int changeType);
-    void endChangeData(const IModelData *data, int role, int changeType);
+    void initialize()
+    {}
+
+    void beginInsertItem(const IModelItemList *list, int index);
+    void endInsertItem(const IModelItemList *list, int index);
+    void beginRemoveItem(const IModelItemList *list, int index);
+    void endRemoveItem(const IModelItemList *list, int index);
 };
 
 }

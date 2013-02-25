@@ -17,15 +17,13 @@
 
 #include "ac_core_model.h"
 #include "ac_core_trackmodel.h"
-#include <imodelitem.h>
-#include <idatabase.h>
+#include <isession.h>
 
 namespace Core {
 
-IUnknown *Model::initialize()
+Model::Model()
 {
     new TrackModel(this);
-    return Base::Model::initialize();
 }
 
 }

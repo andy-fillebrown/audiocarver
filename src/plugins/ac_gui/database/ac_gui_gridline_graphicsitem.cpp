@@ -49,12 +49,14 @@ Qt::PenStyle GraphicsItem::gridLineExtensionPenStyle()
     return Qt::DotLine;
 }
 
-IUnknown *GraphicsItem::initialize()
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Object::GraphicsEntity(aggregate)
+    ,   _labelSceneRootNode(0)
+    ,   _labelSceneTextNode(0)
 {
     _labelSceneRootNode = new GraphicsNode;
     _labelSceneTextNode = new GraphicsTextNode(_labelSceneRootNode);
     _labelSceneTextNode->setFont(gridLabelFont());
-    return Object::GraphicsEntity::initialize();
 }
 
 GraphicsItem::~GraphicsItem()

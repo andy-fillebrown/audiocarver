@@ -30,11 +30,8 @@ class GraphicsItem : public GridLine::GraphicsItem
     QGraphicsLineItem *_editorSceneLineExtensionNode;
 
 protected:
-    GraphicsItem(IAggregate *aggregate)
-        :   GridLine::GraphicsItem(aggregate)
-        ,   _editorSceneLineNode(0)
-        ,   _editorSceneLineExtensionNode(0)
-    {}
+    GraphicsItem(IAggregate *aggregate);
+    ~GraphicsItem();
 
     QGraphicsLineItem *editorSceneLineNode() const
     {
@@ -45,9 +42,6 @@ protected:
     {
         return _editorSceneLineExtensionNode;
     }
-
-    virtual IUnknown *initialize();
-    ~GraphicsItem();
 
     void setColor(int color);
     void update(int role);

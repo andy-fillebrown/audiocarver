@@ -29,13 +29,6 @@ class Editor : public Base::Editor
 {
     QList<IGraphicsViewGroup*> _viewGroups;
 
-public:
-    Editor()
-    {}
-
-    IUnknown *initialize();
-    ~Editor();
-
 protected:
     void undo();
     void redo();

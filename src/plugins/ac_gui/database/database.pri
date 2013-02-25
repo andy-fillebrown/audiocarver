@@ -8,19 +8,15 @@ SOURCE_FILES = \
     horizontalgridline_graphicsitem \
     note_graphicsitem \
     note_modelitem \
-    note_modelitemwatcher \
     object_graphicscurve \
     object_graphicsentity \
     object_graphicsitem \
-    object_modeldatawatcher \
-    object_modelitemwatcher \
     pitchcurve_graphicsitem \
     pitchgridline_graphicsitem \
     score_graphicsitem \
     scoreobject_graphicsitem \
     timegridline_graphicsitem \
     track_graphicsitem \
-    tracklist_modelitemlistwatcher \
     velocity_graphicsitem \
     velocity_modelitem \
 

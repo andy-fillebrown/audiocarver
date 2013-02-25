@@ -35,7 +35,6 @@ protected:
     };
 
     ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
 
     PointList &points()
     {
@@ -43,7 +42,6 @@ protected:
     }
 
     bool setPoints(const PointList &points);
-
     virtual void conformPoints() = 0;
 
     int roleCount() const

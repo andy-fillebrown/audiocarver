@@ -15,49 +15,44 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_modelitemwatcher.h"
-#include "ac_gui_namespace.h"
+#include "ac_gui_object_graphicsitemupdater.h"
 #include <iaggregate.h>
+#include <igraphicsdata.h>
 #include <igraphicsitem.h>
-#include <imodelitem.h>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
-using namespace Ac;
-
 namespace Object {
 
-void *ModelItemWatcher::queryInterface(int interfaceType) const
+GraphicsItemUpdater::GraphicsItemUpdater(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItemWatcher*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    _aggregate->append(this);
 }
 
-IUnknown *ModelItemWatcher::initialize()
+void *GraphicsItemUpdater::queryInterface(int interfaceType) const
 {
-    return aggregate()->append(this);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void ModelItemWatcher::beginChangeParent(const IModelItem *child)
-{}
-
-void ModelItemWatcher::endChangeParent(const IModelItem *child)
+void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
-    IGraphicsItem *parent_graphics_item = 0;
-    IModelItem *parent_model_item = child->parent();
-    if (parent_model_item && parent_model_item->isList())
-        parent_model_item = parent_model_item->parent();
-    parent_graphics_item = query<IGraphicsItem>(parent_model_item);
-    IGraphicsItem *child_graphics_item = query<IGraphicsItem>(child);
+    IGraphicsData *child_gdata = query<IGraphicsData>(child);
+    if (!child_gdata)
+        return;
+    IGraphicsItem *child_gitem = query<IGraphicsItem>(child);
+    if (!child_gitem)
+        return;
+    IGraphicsData *parent_gdata = query<IGraphicsData>(child_gitem->parent());
     for (int i = 0;  i < SceneTypeCount;  ++i) {
         for (int j = 0;  j < TransformTypeCount;  ++j) {
-            QGraphicsItem *child_node = child_graphics_item ? child_graphics_item->node(i, j) : 0;
+            QGraphicsItem *child_node = child_gdata ? child_gdata->node(i, j) : 0;
             if (!child_node)
                 continue;
-            QGraphicsItem *parent_node = parent_graphics_item ? parent_graphics_item->node(i, j) : 0;
+            QGraphicsItem *parent_node = parent_gdata ? parent_gdata->node(i, j) : 0;
             child_node->setParentItem(parent_node);
             if (!parent_node) {
                 QGraphicsScene *scene = child_node->scene();

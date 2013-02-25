@@ -30,34 +30,16 @@ class ModelData : public Object::ModelData
     enum { RoleCount = 3 };
 
 public:
+    ModelData(IAggregate *aggregate);
+
+protected:
     enum {
         RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
-
-protected:
-    int sampleRate() const
-    {
-        return _sampleRate;
-    }
-
     bool setSampleRate(int rate);
-
-    int controlRate() const
-    {
-        return _controlRate;
-    }
-
     bool setControlRate(int rate);
-
-    int curveRate() const
-    {
-        return _curveRate;
-    }
-
     bool setCurveRate(int rate);
 
     int roleCount() const

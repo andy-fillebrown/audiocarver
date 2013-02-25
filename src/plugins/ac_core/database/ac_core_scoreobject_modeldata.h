@@ -29,21 +29,16 @@ class AC_CORE_EXPORT ModelData : public Object::ModelData
     enum { RoleCount = 1 };
 
 public:
+    ModelData(IAggregate *aggregate);
+
+protected:
     enum {
         RoleCountOffset = Object::ModelData::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-    IUnknown *initialize();
-
-protected:
-    qreal volume() const
-    {
-        return _volume;
-    }
-
     bool setVolume(qreal volume);
+
     int roleCount() const;
     int roleAt(int i) const;
     QVariant getValue(int role) const;

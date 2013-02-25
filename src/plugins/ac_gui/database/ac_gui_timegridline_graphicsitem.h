@@ -34,21 +34,9 @@ class GraphicsItem : public GridLine::GraphicsItem
     QGraphicsLineItem *_controlSceneLineExtensionNode;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   GridLine::GraphicsItem(aggregate)
-        ,   _labelSceneLineNode(0)
-        ,   _pitchSceneLineNode(0)
-        ,   _pitchSceneLineHighExtensionNode(0)
-        ,   _pitchSceneLineLowExtensionNode(0)
-        ,   _controlSceneLineNode(0)
-        ,   _controlSceneLineExtensionNode(0)
-    {}
-
-    virtual IUnknown *initialize();
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
-    ~GraphicsItem();
-
     QGraphicsItem *node(int sceneType, int transformType) const;
     void setColor(int color);
     void update(int role);

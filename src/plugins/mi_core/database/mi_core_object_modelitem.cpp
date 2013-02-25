@@ -27,14 +27,15 @@ namespace Object {
 
 void *ModelItem::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItem*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-IUnknown *ModelItem::initialize()
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+    ,   _parent(0)
 {
-    return aggregate()->append(this);
+    _aggregate->append(this);
 }
 
 int ModelItem::itemType() const

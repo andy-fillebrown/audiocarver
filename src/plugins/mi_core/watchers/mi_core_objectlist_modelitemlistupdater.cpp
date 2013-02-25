@@ -15,40 +15,40 @@
 **
 **************************************************************************/
 
-#include "mi_core_objectlist_modelitemlistwatcher.h"
+#include "mi_core_objectlist_modelitemlistupdater.h"
 #include <iaggregate.h>
 #include <imodel.h>
 
 namespace ObjectList {
 
-IUnknown *ModelItemListWatcher::initialize()
+ModelItemListUpdater::ModelItemListUpdater(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    return aggregate()->append(this);
+    _aggregate->append(this);
 }
 
-void *ModelItemListWatcher::queryInterface(int interfaceType) const
+void *ModelItemListUpdater::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<ModelItemListWatcher*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void ModelItemListWatcher::beginInsertItem(const IModelItemList *list, int index)
+void ModelItemListUpdater::beginInsertItem(const IModelItemList *list, int index)
 {
     IModel::instance()->beginInsertItem(list, index);
 }
 
-void ModelItemListWatcher::endInsertItem(const IModelItemList *list, int index)
+void ModelItemListUpdater::endInsertItem(const IModelItemList *list, int index)
 {
     IModel::instance()->endInsertItem(list, index);
 }
 
-void ModelItemListWatcher::beginRemoveItem(const IModelItemList *list, int index)
+void ModelItemListUpdater::beginRemoveItem(const IModelItemList *list, int index)
 {
     IModel::instance()->beginRemoveItem(list, index);
 }
 
-void ModelItemListWatcher::endRemoveItem(const IModelItemList *list, int index)
+void ModelItemListUpdater::endRemoveItem(const IModelItemList *list, int index)
 {
     IModel::instance()->endRemoveItem(list, index);
 }

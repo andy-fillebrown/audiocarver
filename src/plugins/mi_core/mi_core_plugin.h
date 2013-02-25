@@ -27,13 +27,14 @@ class Plugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
 
+public:
+    Plugin();
+
 protected:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-
-    void extensionsInitialized()
-    {}
-
     ~Plugin();
+
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized();
 };
 
 }

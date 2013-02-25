@@ -21,10 +21,11 @@
 
 namespace Xml {
 
-IUnknown *FileFiler::initialize()
+FileFiler::FileFiler(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+    ,   _file(0)
 {
-    aggregate()->append(this);
-    return this;
+    _aggregate->append(this);
 }
 
 FileFiler::~FileFiler()
@@ -34,9 +35,8 @@ FileFiler::~FileFiler()
 
 void *FileFiler::queryInterface(int interfaceType) const
 {
-    if (isTypeOfInterface(interfaceType))
-        return const_cast<FileFiler*>(this);
-    return aggregate()->queryInterface(interfaceType);
+    void *i = IFileFiler::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
 QString FileFiler::fileName() const

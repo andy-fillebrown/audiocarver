@@ -32,12 +32,8 @@ class MI_CORE_EXPORT ModelData : public IModelData
     enum { RoleCount = 0 };
 
 public:
-    ModelData(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
-
-    virtual IUnknown *initialize();
     void *queryInterface(int interfaceType) const;
+    ModelData(IAggregate *aggregate);
 
 protected:
     enum {
@@ -49,6 +45,9 @@ protected:
     {
         return _aggregate;
     }
+
+    void initialize()
+    {}
 
     int roleCount() const
     {

@@ -25,10 +25,11 @@ using namespace Ac;
 
 namespace Track {
 
-IUnknown *ModelItem::initialize()
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   ScoreObject::ModelItem(aggregate)
+    ,   _notes(0)
 {
     _notes = IDatabaseObjectFactory::instance()->create(NoteListItem, this);
-    return ScoreObject::ModelItem::initialize();
 }
 
 ModelItem::~ModelItem()
@@ -50,7 +51,7 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 int ModelItem::indexOf(const IModelItem *item) const
 {
-    if (query<IModelItem>(notes()) == item)
+    if (query<IModelItem>(_notes) == item)
         return ItemCountOffset;
     return ScoreObject::ModelItem::indexOf(item);
 }
@@ -60,7 +61,7 @@ IModelItem *ModelItem::at(int i) const
     Q_ASSERT(0 <= (TotalItemCount - i));
     switch (i - ItemCountOffset) {
     case 0:
-        return query<IModelItem>(notes());
+        return query<IModelItem>(_notes);
     default:
         return ScoreObject::ModelItem::at(i);
     }
@@ -70,7 +71,7 @@ IModelItemList *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case NoteItem:
-        return query<IModelItemList>(notes());
+        return query<IModelItemList>(_notes);
     default:
         return ScoreObject::ModelItem::findList(listType);
     }

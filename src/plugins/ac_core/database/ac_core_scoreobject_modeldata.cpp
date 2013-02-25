@@ -29,11 +29,6 @@ ModelData::ModelData(IAggregate *aggregate)
     ,   _volume(DEFAULT_SCOREOBJECT_VOLUME)
 {}
 
-IUnknown *ModelData::initialize()
-{
-    return Object::ModelData::initialize();
-}
-
 bool ModelData::setVolume(qreal volume)
 {
     volume = qBound(qreal(0.0f), volume, qreal(1.0f));
@@ -63,7 +58,7 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case VolumeRole:
-        return volume();
+        return _volume;
     default:
         return Object::ModelData::getValue(role);
     }

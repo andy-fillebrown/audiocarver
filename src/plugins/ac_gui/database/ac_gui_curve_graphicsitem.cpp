@@ -25,11 +25,12 @@ using namespace Ac;
 
 namespace Curve {
 
-IUnknown *GraphicsItem::initialize()
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Object::GraphicsCurve(aggregate)
+    ,   _curveNode(0)
 {
     _curveNode = new GraphicsCurveNode;
     _curveNode->setGraphicsItem(this);
-    return aggregate()->append(this);
 }
 
 GraphicsItem::~GraphicsItem()
