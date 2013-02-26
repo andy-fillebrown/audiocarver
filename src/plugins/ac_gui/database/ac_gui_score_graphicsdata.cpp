@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_score_graphicsitem.h"
+#include "ac_gui_score_graphicsdata.h"
 #include "ac_gui_graphicsrootnode.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_constants.h>
@@ -26,8 +26,8 @@ using namespace Ac;
 
 namespace Score {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   ScoreObject::GraphicsItem(aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
+    :   ScoreObject::GraphicsData(aggregate)
 {
     QMap<int, QGraphicsItem*> &main_nodes = mainNodes();
     for (int i = 0;  i < SceneTypeCount;  ++i) {
@@ -41,7 +41,7 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     _unitYNodes[PitchScene]->setTransform(QTransform::fromScale(1.0f, 127.0f));
 }
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
     switch (transformType) {
     case UnitXTransform:
@@ -49,23 +49,18 @@ QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
     case UnitYTransform:
         return _unitYNodes.value(sceneType);
     default:
-        return ScoreObject::GraphicsItem::node(sceneType, transformType);
+        return ScoreObject::GraphicsData::node(sceneType, transformType);
     }
 }
 
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
-    switch (role) {
-    case LengthRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        qreal score_length = data->get<qreal>(LengthRole);
+    if (LengthRole == role) {
+        qreal score_length = qvariant_cast<qreal>(value);
         _unitXNodes[PitchScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
         _unitXNodes[ControlScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
-    }   break;
     }
-    ScoreObject::GraphicsItem::update(role);
+    ScoreObject::GraphicsData::update(role, value);
 }
 
 }

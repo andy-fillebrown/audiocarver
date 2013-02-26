@@ -33,11 +33,6 @@ public:
 protected:
     ~ModelItem();
 
-    IAggregate *velocity() const
-    {
-        return _velocity;
-    }
-
     IModelItem *findItem(int itemType) const;
 };
 

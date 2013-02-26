@@ -15,11 +15,9 @@
 **
 **************************************************************************/
 
-#include "ac_gui_horizontalgridline_graphicsitem.h"
+#include "ac_gui_horizontalgridline_graphicsdata.h"
 #include "ac_gui_graphicsnode.h"
 #include <ac_core_constants.h>
-#include <mi_core_utilities.h>
-#include <imodeldata.h>
 #include <QPen>
 
 using namespace Ac;
@@ -27,8 +25,8 @@ using namespace Mi;
 
 namespace HorizontalGridLine {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   GridLine::GraphicsItem(aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
+    :   GridLine::GraphicsData(aggregate)
     ,   _editorSceneLineNode(0)
     ,   _editorSceneLineExtensionNode(0)
 {
@@ -36,54 +34,34 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     _editorSceneLineExtensionNode = new QGraphicsLineItem(_editorSceneLineNode);
     QPen pen(DEFAULT_GRIDLINE_COLOR);
     pen.setCosmetic(true);
-    pen.setStyle(GridLine::GraphicsItem::gridLinePenStyle());
+    pen.setStyle(GridLine::GraphicsData::gridLinePenStyle());
     _editorSceneLineNode->setPen(pen);
-    pen.setStyle(GridLine::GraphicsItem::gridLineExtensionPenStyle());
+    pen.setStyle(GridLine::GraphicsData::gridLineExtensionPenStyle());
     _editorSceneLineExtensionNode->setPen(pen);
 }
 
-GraphicsItem::~GraphicsItem()
+GraphicsData::~GraphicsData()
 {
     delete _editorSceneLineExtensionNode;
     delete _editorSceneLineNode;
 }
 
-void GraphicsItem::setColor(int color)
-{
-    QPen pen = _editorSceneLineNode->pen();
-    pen.setColor(color);
-    _editorSceneLineNode->setPen(pen);
-    pen = _editorSceneLineExtensionNode->pen();
-    pen.setColor(color);
-    _editorSceneLineExtensionNode->setPen(pen);
-    return GridLine::GraphicsItem::setColor(color);
-}
-
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
     switch (role) {
     case VisibilityRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        const bool visible = data->get<bool>(VisibilityRole);
+        const bool visible = qvariant_cast<bool>(value);
         _editorSceneLineNode->setVisible(visible);
         _editorSceneLineExtensionNode->setVisible(visible);
     }   break;
     case LocationRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        qreal location = data->get<qreal>(LocationRole);
+        qreal location = qvariant_cast<qreal>(value);
         labelSceneRootNode()->setPos(0.0f, location);
         _editorSceneLineNode->setLine(0.0f, location, 1.0f, location);
         _editorSceneLineExtensionNode->setLine(1.0f, location, 2.0f, location);
     } break;
     case ColorRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        const int color = intFromColor(data->get<QString>(ColorRole));
+        const int color = qvariant_cast<int>(value);
         QPen pen = _editorSceneLineNode->pen();
         pen.setColor(color);
         _editorSceneLineNode->setPen(pen);
@@ -92,7 +70,7 @@ void GraphicsItem::update(int role)
         _editorSceneLineExtensionNode->setPen(pen);
     } break;
     }
-    GridLine::GraphicsItem::update(role);
+    GridLine::GraphicsData::update(role, value);
 }
 
 }

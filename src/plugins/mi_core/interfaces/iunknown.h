@@ -18,6 +18,8 @@
 #ifndef IUNKOWN_H
 #define IUNKOWN_H
 
+#define QUERY(InterfaceType, Unknown) query<InterfaceType>(Unknown)
+
 class IUnknown
 {
 public:

@@ -17,10 +17,15 @@
 
 #include "ac_gui_note_graphicsitemupdater.h"
 #include <ac_core_namespace.h>
+#include <mi_core_utilities.h>
+#include <iaggregate.h>
 #include <igraphicsdata.h>
+#include <imodeldata.h>
 #include <imodelitem.h>
+#include <QColor>
 
 using namespace Ac;
+using namespace Mi;
 
 namespace Note {
 
@@ -38,9 +43,11 @@ void *GraphicsItemUpdater::queryInterface(int interfaceType) const
 
 void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
 {
-    IGraphicsData *child_gdata = query<IGraphicsData>(child);
+    IModelData *track_data = QUERY(IModelData, child->parent());
+    QColor color = intFromColor(track_data->get<QString>(ColorRole));
+    IGraphicsData *child_gdata = QUERY(IGraphicsData, child);
     if (child_gdata)
-        child_gdata->update(ColorRole);
+        child_gdata->update(ColorRole, color);
 }
 
 }

@@ -15,25 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_PITCHCURVE_GRAPHICSITEM_H
-#define AC_GUI_PITCHCURVE_GRAPHICSITEM_H
+#include "ac_gui_object_graphicsdata.h"
+#include <iaggregate.h>
 
-#include "ac_gui_curve_graphicsitem.h"
+namespace Object {
 
-namespace PitchCurve {
-
-class GraphicsItem : public Curve::GraphicsItem
+void *GraphicsData::queryInterface(int interfaceType) const
 {
-public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Curve::GraphicsItem(aggregate)
-    {}
-
-protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
-    void update(int role);
-};
-
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-#endif
+GraphicsData::GraphicsData(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
+
+}

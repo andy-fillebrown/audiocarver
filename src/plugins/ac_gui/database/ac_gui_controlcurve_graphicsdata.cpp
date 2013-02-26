@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_controlcurve_graphicsitem.h"
+#include "ac_gui_controlcurve_graphicsdata.h"
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
 
@@ -23,7 +23,7 @@ using namespace Ac;
 
 namespace ControlCurve {
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
     if (ControlScene == sceneType && MainTransform == transformType)
         return curveNode();

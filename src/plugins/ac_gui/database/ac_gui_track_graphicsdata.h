@@ -15,22 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_PITCHGRIDLINE_GRAPHICSITEM_H
-#define AC_GUI_PITCHGRIDLINE_GRAPHICSITEM_H
+#ifndef AC_GUI_TRACK_GRAPHICSDATA_H
+#define AC_GUI_TRACK_GRAPHICSDATA_H
 
-#include "ac_gui_horizontalgridline_graphicsitem.h"
+#include "ac_gui_scoreobject_graphicsdata.h"
 
-namespace PitchGridLine {
+namespace Track {
 
-class GraphicsItem : public HorizontalGridLine::GraphicsItem
+class GraphicsData : public ScoreObject::GraphicsData
 {
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   HorizontalGridLine::GraphicsItem(aggregate)
+    GraphicsData(IAggregate *aggregate)
+        :   ScoreObject::GraphicsData(aggregate)
     {}
 
 protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
 };
 
 }

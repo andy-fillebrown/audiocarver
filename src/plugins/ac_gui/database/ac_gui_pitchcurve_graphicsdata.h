@@ -15,25 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SCORE_GRAPHICSITEM_H
-#define AC_GUI_SCORE_GRAPHICSITEM_H
+#ifndef AC_GUI_PITCHCURVE_GRAPHICSDATA_H
+#define AC_GUI_PITCHCURVE_GRAPHICSDATA_H
 
-#include "ac_gui_scoreobject_graphicsitem.h"
-#include <QMap>
+#include "ac_gui_curve_graphicsdata.h"
 
-namespace Score {
+namespace PitchCurve {
 
-class GraphicsItem : public ScoreObject::GraphicsItem
+class GraphicsData : public Curve::GraphicsData
 {
-    QMap<int, QGraphicsItem*> _unitXNodes;
-    QMap<int, QGraphicsItem*> _unitYNodes;
-
 public:
-    GraphicsItem(IAggregate *aggregate);
+    GraphicsData(IAggregate *aggregate)
+        :   Curve::GraphicsData(aggregate)
+    {}
 
 protected:
     QGraphicsItem *node(int sceneType, int transformType) const;
-    void update(int role);
+    void update(int role, const QVariant &value);
 };
 
 }

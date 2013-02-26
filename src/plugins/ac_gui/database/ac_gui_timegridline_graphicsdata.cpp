@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_timegridline_graphicsitem.h"
+#include "ac_gui_timegridline_graphicsdata.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_constants.h>
@@ -28,8 +28,8 @@ using namespace Mi;
 
 namespace TimeGridLine {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   GridLine::GraphicsItem(aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
+    :   GridLine::GraphicsData(aggregate)
     ,   _labelSceneLineNode(0)
     ,   _pitchSceneLineNode(0)
     ,   _pitchSceneLineHighExtensionNode(0)
@@ -46,17 +46,17 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     _controlSceneLineExtensionNode = new QGraphicsLineItem(_controlSceneLineNode);
     QPen pen(DEFAULT_GRIDLINE_COLOR);
     pen.setCosmetic(true);
-    pen.setStyle(GridLine::GraphicsItem::gridLinePenStyle());
+    pen.setStyle(GridLine::GraphicsData::gridLinePenStyle());
     _pitchSceneLineNode->setPen(pen);
     _controlSceneLineNode->setPen(pen);
-    pen.setStyle(GridLine::GraphicsItem::gridLineExtensionPenStyle());
+    pen.setStyle(GridLine::GraphicsData::gridLineExtensionPenStyle());
     _labelSceneLineNode->setPen(pen);
     _pitchSceneLineHighExtensionNode->setPen(pen);
     _pitchSceneLineLowExtensionNode->setPen(pen);
     _controlSceneLineExtensionNode->setPen(pen);
 }
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
     if (UnitYTransform == transformType) {
         switch (sceneType) {
@@ -70,45 +70,16 @@ QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
     return 0;
 }
 
-void GraphicsItem::setColor(int color)
-{
-    QPen pen = _labelSceneLineNode->pen();
-    pen.setColor(color);
-    _labelSceneLineNode->setPen(pen);
-    pen = _pitchSceneLineNode->pen();
-    pen.setColor(color);
-    _pitchSceneLineNode->setPen(pen);
-    pen = _pitchSceneLineHighExtensionNode->pen();
-    pen.setColor(color);
-    _pitchSceneLineHighExtensionNode->setPen(pen);
-    pen = _pitchSceneLineLowExtensionNode->pen();
-    pen.setColor(color);
-    _pitchSceneLineLowExtensionNode->setPen(pen);
-    pen = _controlSceneLineNode->pen();
-    pen.setColor(color);
-    _controlSceneLineNode->setPen(pen);
-    pen = _controlSceneLineExtensionNode->pen();
-    pen.setColor(color);
-    _controlSceneLineExtensionNode->setPen(pen);
-    GridLine::GraphicsItem::setColor(color);
-}
-
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
     switch (role) {
     case VisibilityRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        const bool visible = data->get<bool>(VisibilityRole);
+        const bool visible = qvariant_cast<bool>(value);
         _pitchSceneLineNode->setVisible(visible);
         _controlSceneLineNode->setVisible(visible);
     }   break;
     case LocationRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        const qreal location = data->get<qreal>(LocationRole);
+        const qreal location = qvariant_cast<qreal>(value);
         labelSceneRootNode()->setPos(location, 0.0f);
         _pitchSceneLineNode->setLine(location, 0.0f, location, 1.0f);
         _pitchSceneLineHighExtensionNode->setLine(location, 1.0f, location, 2.0f);
@@ -117,13 +88,28 @@ void GraphicsItem::update(int role)
         _controlSceneLineExtensionNode->setLine(location, 1.0f, location, 2.0f);
     }   break;
     case ColorRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        setColor(intFromColor(data->get<QString>(ColorRole)));
+        QColor color = qvariant_cast<int>(value);
+        QPen pen = _labelSceneLineNode->pen();
+        pen.setColor(color);
+        _labelSceneLineNode->setPen(pen);
+        pen = _pitchSceneLineNode->pen();
+        pen.setColor(color);
+        _pitchSceneLineNode->setPen(pen);
+        pen = _pitchSceneLineHighExtensionNode->pen();
+        pen.setColor(color);
+        _pitchSceneLineHighExtensionNode->setPen(pen);
+        pen = _pitchSceneLineLowExtensionNode->pen();
+        pen.setColor(color);
+        _pitchSceneLineLowExtensionNode->setPen(pen);
+        pen = _controlSceneLineNode->pen();
+        pen.setColor(color);
+        _controlSceneLineNode->setPen(pen);
+        pen = _controlSceneLineExtensionNode->pen();
+        pen.setColor(color);
+        _controlSceneLineExtensionNode->setPen(pen);
     }   break;
     }
-    GridLine::GraphicsItem::update(role);
+    GridLine::GraphicsData::update(role, value);
 }
 
 }

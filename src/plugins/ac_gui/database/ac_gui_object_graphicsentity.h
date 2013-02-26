@@ -36,10 +36,8 @@ public:
 protected:
     GraphicsEntity(IAggregate *aggregate);
 
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
+    void initialize()
+    {}
 
     QMap<int, QGraphicsItem*> &mainNodes()
     {
@@ -48,10 +46,7 @@ protected:
 
     QGraphicsItem *node(int sceneType, int transformType) const;
 
-    void update(int role)
-    {}
-
-    void initialize()
+    void update(int role, const QVariant &value)
     {}
 };
 

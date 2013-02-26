@@ -15,22 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CONTROLCURVE_GRAPHICSITEM_H
-#define AC_GUI_CONTROLCURVE_GRAPHICSITEM_H
+#ifndef AC_GUI_NOTE_GRAPHICSDATA_H
+#define AC_GUI_NOTE_GRAPHICSDATA_H
 
-#include "ac_gui_curve_graphicsitem.h"
+#include "ac_gui_object_graphicsentity.h"
 
-namespace ControlCurve {
+namespace Note {
 
-class GraphicsItem : public Curve::GraphicsItem
+class GraphicsData : public Object::GraphicsEntity
 {
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Curve::GraphicsItem(aggregate)
+    GraphicsData(IAggregate *aggregate)
+        :   Object::GraphicsEntity(aggregate)
     {}
 
 protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    QList<IGraphicsEntity*> subentities() const;
+    void highlight(bool on);
+    void update(int role, const QVariant &value);
 };
 
 }

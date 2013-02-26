@@ -37,6 +37,9 @@ protected:
     void initialize()
     {}
 
+    void beginChangeParent(const IModelItem *child)
+    {}
+
     void endChangeParent(const IModelItem *child);
 };
 

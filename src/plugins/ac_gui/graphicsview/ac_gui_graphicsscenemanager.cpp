@@ -23,7 +23,7 @@
 #include "ac_gui_graphicspitchlabelscene.h"
 #include "ac_gui_graphicstimelabelscene.h"
 #include <idatabase.h>
-#include <igraphicsitem.h>
+#include <igraphicsdata.h>
 #include <imodel.h>
 #include <imodelitem.h>
 #include <qdebug.h>
@@ -46,12 +46,12 @@ GraphicsSceneManager::GraphicsSceneManager(QObject *parent)
     ,   _timeLabelScene(new GraphicsTimeLabelScene(this))
 {
     // Add the root entity's main graphics items to the scenes.
-    IGraphicsItem *root_item = query<IGraphicsItem>(IDatabase::instance()->rootItem());
-    Q_ASSERT(root_item);
-    if (!root_item)
+    IGraphicsData *root_gdata = QUERY(IGraphicsData, IDatabase::instance()->rootItem());
+    Q_ASSERT(root_gdata);
+    if (!root_gdata)
         qDebug() << Q_FUNC_INFO << "The database root item was not found.";
     for (int i = 0;  i < SceneTypeCount;  ++i) {
-        scene(i)->addItem(root_item->node(i, MainTransform));
+        scene(i)->addItem(root_gdata->node(i, MainTransform));
     }
     ::instance = this;
 }

@@ -27,6 +27,7 @@
 #include <idatabase.h>
 #include <ieditor.h>
 #include <igraphicscurve.h>
+#include <igraphicsitem.h>
 #include <igrip.h>
 #include <imodel.h>
 #include <imodelitem.h>
@@ -247,13 +248,14 @@ public:
                         hoveredGrips.append(grip);
                     }
                 } else if (!grip_is_hovered) {
-                    IGraphicsCurve *curve_graphic = query<IGraphicsCurve>(unknown);
-                    if (curve_graphic && curve_graphic->intersects(scene_pick_rect)) {
+                    IGraphicsCurve *curve_gdata = QUERY(IGraphicsCurve, unknown);
+                    if (curve_gdata && curve_gdata->intersects(scene_pick_rect)) {
                         entity_is_hovered = true;
-                        IGraphicsEntity *parent_graphic = curve_graphic->parent();
-                        if (parent_graphic && !pickedEntities.contains(parent_graphic)) {
-                            hoveredEntities.append(parent_graphic);
-                            parent_graphic->highlight();
+                        IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, unknown);
+                        IGraphicsEntity *parent_gdata = QUERY(IGraphicsEntity, curve_gitem->parent());
+                        if (!pickedEntities.contains(parent_gdata)) {
+                            hoveredEntities.append(parent_gdata);
+                            parent_gdata->highlight();
                         }
                     }
                 }

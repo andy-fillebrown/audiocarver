@@ -1,23 +1,24 @@
 
 SOURCE_FILES = \
-    controlcurve_graphicsitem \
-    controlgridline_graphicsitem \
-    curve_graphicsitem \
-    gridline_graphicsitem \
-    gridsettings_graphicsitem \
-    horizontalgridline_graphicsitem \
-    note_graphicsitem \
+    controlcurve_graphicsdata \
+    controlgridline_graphicsdata \
+    curve_graphicsdata \
+    gridline_graphicsdata \
+    gridsettings_graphicsdata \
+    horizontalgridline_graphicsdata \
+    note_graphicsdata \
     note_modelitem \
     object_graphicscurve \
+    object_graphicsdata \
     object_graphicsentity \
     object_graphicsitem \
-    pitchcurve_graphicsitem \
-    pitchgridline_graphicsitem \
-    score_graphicsitem \
-    scoreobject_graphicsitem \
-    timegridline_graphicsitem \
-    track_graphicsitem \
-    velocity_graphicsitem \
+    pitchcurve_graphicsdata \
+    pitchgridline_graphicsdata \
+    score_graphicsdata \
+    scoreobject_graphicsdata \
+    timegridline_graphicsdata \
+    track_graphicsdata \
+    velocity_graphicsdata \
     velocity_modelitem \
 
 for(file, SOURCE_FILES) {

@@ -15,37 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSITEM_H
-#define AC_GUI_OBJECT_GRAPHICSITEM_H
+#ifndef AC_GUI_CONTROLGRIDLINE_GRAPHICSDATA_H
+#define AC_GUI_CONTROLGRIDLINE_GRAPHICSDATA_H
 
-#include <igraphicsitem.h>
+#include "ac_gui_horizontalgridline_graphicsdata.h"
 
-class IAggregate;
+namespace ControlGridLine {
 
-namespace Object {
-
-class GraphicsItem : public IGraphicsItem
+class GraphicsData : public HorizontalGridLine::GraphicsData
 {
-    IAggregate *_aggregate;
-
 public:
-    void *queryInterface(int interfaceType) const;
-
-protected:
-    GraphicsItem(IAggregate *aggregate);
-
-    void initialize()
+    GraphicsData(IAggregate *aggregate)
+        :   HorizontalGridLine::GraphicsData(aggregate)
     {}
 
-    IGraphicsItem *parent() const
-    {
-        return 0;
-    }
-
-    QList<IGraphicsItem*> children() const
-    {
-        return QList<IGraphicsItem*>();
-    }
+protected:
+    QGraphicsItem *node(int sceneType, int transformType) const;
 };
 
 }

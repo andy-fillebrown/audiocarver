@@ -28,13 +28,13 @@ namespace Object {
 void *GraphicsCurve::queryInterface(int interfaceType) const
 {
     void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : aggregate()->queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-IGraphicsEntity *GraphicsCurve::parent() const
+GraphicsCurve::GraphicsCurve(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    IModelItem *this_item = query<IModelItem>(this);
-    return this_item ? query<IGraphicsEntity>(this_item->parent()) : 0;
+    _aggregate->append(this);
 }
 
 }

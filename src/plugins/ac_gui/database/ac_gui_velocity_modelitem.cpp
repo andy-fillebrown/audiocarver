@@ -35,7 +35,7 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 IModelItem *ModelItem::findItem(int itemType) const
 {
-    return GripsItem == itemType ? query<IModelItem>(_grips) : Object::ModelItem::findItem(itemType);
+    return GripsItem == itemType ? QUERY(IModelItem, _grips) : Object::ModelItem::findItem(itemType);
 }
 
 }

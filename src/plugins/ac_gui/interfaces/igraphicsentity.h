@@ -18,15 +18,14 @@
 #ifndef IGRAPHICSENTITY_H
 #define IGRAPHICSENTITY_H
 
-#include <igraphicsitem.h>
+#include <igraphicsdata.h>
 #include "ac_gui_interfaces.h"
 
-class IGraphicsEntity : public IGraphicsItem
+class IGraphicsEntity : public IGraphicsData
 {
 public:
     enum { InterfaceType = I::IGraphicsEntity };
 
-    virtual void setColor(int color) = 0;
     virtual void highlight(bool on = true) = 0;
 
     int interfaceType() const
@@ -38,7 +37,7 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return IGraphicsItem::isTypeOfInterface(interfaceType);
+        return IGraphicsData::isTypeOfInterface(interfaceType);
     }
 };
 

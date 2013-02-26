@@ -16,11 +16,15 @@
 **************************************************************************/
 
 #include "ac_gui_object_graphicsitemupdater.h"
+#include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <igraphicsdata.h>
 #include <igraphicsitem.h>
+#include <imodelitem.h>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
+
+using namespace Ac;
 
 namespace Object {
 

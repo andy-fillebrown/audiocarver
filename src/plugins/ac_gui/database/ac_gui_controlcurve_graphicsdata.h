@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CONTROLGRIDLINE_GRAPHICSITEM_H
-#define AC_GUI_CONTROLGRIDLINE_GRAPHICSITEM_H
+#ifndef AC_GUI_CONTROLCURVE_GRAPHICSDATA_H
+#define AC_GUI_CONTROLCURVE_GRAPHICSDATA_H
 
-#include "ac_gui_horizontalgridline_graphicsitem.h"
+#include "ac_gui_curve_graphicsdata.h"
 
-namespace ControlGridLine {
+namespace ControlCurve {
 
-class GraphicsItem : public HorizontalGridLine::GraphicsItem
+class GraphicsData : public Curve::GraphicsData
 {
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   HorizontalGridLine::GraphicsItem(aggregate)
+    GraphicsData(IAggregate *aggregate)
+        :   Curve::GraphicsData(aggregate)
     {}
 
 protected:

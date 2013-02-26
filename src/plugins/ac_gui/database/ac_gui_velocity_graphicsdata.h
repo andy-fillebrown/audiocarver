@@ -15,34 +15,31 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_GRAPHICSITEM_H
-#define AC_GUI_CURVE_GRAPHICSITEM_H
+#ifndef AC_GUI_VELOCITY_GRAPHICSDATA_H
+#define AC_GUI_VELOCITY_GRAPHICSDATA_H
 
 #include <ac_gui_object_graphicscurve.h>
 
-class GraphicsCurveNode;
 class IAggregate;
+class IModelItem;
+class QGraphicsLineItem;
 
-namespace Curve {
+namespace Velocity {
 
-class GraphicsItem : public Object::GraphicsCurve
+class GraphicsData : public Object::GraphicsCurve
 {
-    GraphicsCurveNode *_curveNode;
+    QGraphicsLineItem *_lineNode;
+
+public:
+    GraphicsData(IAggregate *aggregate);
 
 protected:
-    GraphicsItem(IAggregate *aggregate);
-    ~GraphicsItem();
+    void initialize();
 
-    GraphicsCurveNode *curveNode() const
-    {
-        return _curveNode;
-    }
-
-    void setColor(int color);
-    void setPoints(const PointList &points);
+    QGraphicsItem *node(int sceneType, int transformType) const;
     bool intersects(const QRectF &rect) const;
     void highlight(bool on);
-    void update(int role);
+    void update(int role, const QVariant &value);
 };
 
 }

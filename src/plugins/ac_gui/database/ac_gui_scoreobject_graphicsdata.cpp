@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_scoreobject_graphicsitem.h"
+#include "ac_gui_scoreobject_graphicsdata.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 #include <imodeldata.h>
@@ -26,14 +26,14 @@ using namespace Mi;
 
 namespace ScoreObject {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   Object::GraphicsItem(aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
+    :   Object::GraphicsData(aggregate)
 {
     _mainNodes.insert(PitchScene, new GraphicsNode);
     _mainNodes.insert(ControlScene, new GraphicsNode);
 }
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
     switch (transformType) {
     case MainTransform:
@@ -43,10 +43,10 @@ QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
     }
 }
 
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
     if (VisibilityRole == role) {
-        bool visible = query<IModelData>(this)->get<bool>(VisibilityRole);
+        bool visible = qvariant_cast<bool>(value);
         for (int i = 0;  i < SceneTypeCount;  ++i) {
             QGraphicsItem *node = this->node(i, MainTransform);
             if (node)

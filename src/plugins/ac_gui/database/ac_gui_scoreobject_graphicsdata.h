@@ -15,25 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_NOTE_GRAPHICSITEM_H
-#define AC_GUI_NOTE_GRAPHICSITEM_H
+#ifndef AC_GUI_SCOREOBJECT_GRAPHICSDATA_H
+#define AC_GUI_SCOREOBJECT_GRAPHICSDATA_H
 
-#include "ac_gui_object_graphicsentity.h"
+#include "ac_gui_object_graphicsdata.h"
+#include <QMap>
 
-namespace Note {
+namespace ScoreObject {
 
-class GraphicsItem : public Object::GraphicsEntity
+class GraphicsData : public Object::GraphicsData
 {
+    QMap<int, QGraphicsItem*> _mainNodes;
+
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsEntity(aggregate)
-    {}
+    GraphicsData(IAggregate *aggregate);
 
 protected:
-    QList<IGraphicsEntity*> subentities() const;
-    void setColor(int color);
-    void highlight(bool on);
-    void update(int role);
+    QMap<int, QGraphicsItem*> &mainNodes()
+    {
+        return _mainNodes;
+    }
+
+    QGraphicsItem *node(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
 };
 
 }

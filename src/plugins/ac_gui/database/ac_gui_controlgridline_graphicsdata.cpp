@@ -15,34 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchcurve_graphicsitem.h"
-#include "ac_gui_graphicscurvenode.h"
+#include "ac_gui_controlgridline_graphicsdata.h"
+#include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
-#include <imodelitem.h>
+#include <QGraphicsLineItem>
 
 using namespace Ac;
 
-namespace PitchCurve {
+namespace ControlGridLine {
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
-    if (PitchScene == sceneType && MainTransform == transformType)
-        return curveNode();
+    if (ControlScene == sceneType && UnitXTransform == transformType)
+        return editorSceneLineNode();
+    if (ControlLabelScene == sceneType && MainTransform == transformType)
+        return labelSceneRootNode();
     return 0;
-}
-
-void GraphicsItem::update(int role)
-{
-    Curve::GraphicsItem::update(role);
-    if (PointsRole == role) {
-        IModelItem *this_item = query<IModelItem>(this);
-        if (!this_item)
-            return;
-        IGraphicsItem *note_graphic = query<IGraphicsItem>(this_item->parent());
-        if (!note_graphic)
-            return;
-        note_graphic->update(VolumeRole);
-    }
 }
 
 }

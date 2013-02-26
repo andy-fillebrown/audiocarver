@@ -15,32 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_VELOCITY_GRAPHICSITEM_H
-#define AC_GUI_VELOCITY_GRAPHICSITEM_H
+#ifndef AC_GUI_PITCHGRIDLINE_GRAPHICSDATA_H
+#define AC_GUI_PITCHGRIDLINE_GRAPHICSDATA_H
 
-#include <ac_gui_object_graphicscurve.h>
+#include "ac_gui_horizontalgridline_graphicsdata.h"
 
-class IAggregate;
-class IModelItem;
-class QGraphicsLineItem;
+namespace PitchGridLine {
 
-namespace Velocity {
-
-class GraphicsItem : public Object::GraphicsCurve
+class GraphicsData : public HorizontalGridLine::GraphicsData
 {
-    QGraphicsLineItem *_lineNode;
-
 public:
-    GraphicsItem(IAggregate *aggregate);
+    GraphicsData(IAggregate *aggregate)
+        :   HorizontalGridLine::GraphicsData(aggregate)
+    {}
 
 protected:
-    IModelItem *parentItem() const;
     QGraphicsItem *node(int sceneType, int transformType) const;
-    void setColor(int color);
-    void setPoints(const PointList &points);
-    bool intersects(const QRectF &rect) const;
-    void highlight(bool on);
-    virtual void update(int role);
 };
 
 }

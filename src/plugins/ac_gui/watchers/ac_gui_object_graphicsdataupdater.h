@@ -29,14 +29,17 @@ class GraphicsDataUpdater : public IModelDataWatcher
     IAggregate *_aggregate;
 
 public:
-    GraphicsDataUpdater(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
+    GraphicsDataUpdater(IAggregate *aggregate);
 
     void *queryInterface(int interfaceType) const;
 
 protected:
-    void beginChangeData(const IModelData *data, int role, int changeType);
+    void initialize()
+    {}
+
+    void beginChangeData(const IModelData *data, int role, int changeType)
+    {}
+
     void endChangeData(const IModelData *data, int role, int changeType);
 };
 

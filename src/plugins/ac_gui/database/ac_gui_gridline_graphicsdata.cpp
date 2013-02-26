@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_gridline_graphicsitem.h"
+#include "ac_gui_gridline_graphicsdata.h"
 #include "ac_gui_graphicstextnode.h"
 #include <ac_core_constants.h>
 #include <mi_core_utilities.h>
@@ -28,7 +28,7 @@ using namespace Mi;
 
 namespace GridLine {
 
-const QFont &GraphicsItem::gridLabelFont()
+const QFont &GraphicsData::gridLabelFont()
 {
     static QFont font;
     static bool initialized = false;
@@ -39,17 +39,17 @@ const QFont &GraphicsItem::gridLabelFont()
     return font;
 }
 
-Qt::PenStyle GraphicsItem::gridLinePenStyle()
+Qt::PenStyle GraphicsData::gridLinePenStyle()
 {
     return Qt::DotLine;
 }
 
-Qt::PenStyle GraphicsItem::gridLineExtensionPenStyle()
+Qt::PenStyle GraphicsData::gridLineExtensionPenStyle()
 {
     return Qt::DotLine;
 }
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
     :   Object::GraphicsEntity(aggregate)
     ,   _labelSceneRootNode(0)
     ,   _labelSceneTextNode(0)
@@ -59,32 +59,23 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     _labelSceneTextNode->setFont(gridLabelFont());
 }
 
-GraphicsItem::~GraphicsItem()
+GraphicsData::~GraphicsData()
 {
     delete _labelSceneTextNode;
     delete _labelSceneRootNode;
 }
 
-void GraphicsItem::setColor(int color)
-{
-    labelSceneTextNode()->setColor(color);
-}
-
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
     switch (role) {
-    case VisibilityRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        _labelSceneRootNode->setVisible(data->get<bool>(VisibilityRole));
-    }   break;
-    case LabelRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        _labelSceneTextNode->setText(data->get<QString>(LabelRole));
-    }   break;
+    case VisibilityRole:
+        _labelSceneRootNode->setVisible(qvariant_cast<bool>(value));
+        break;
+    case ColorRole:
+        _labelSceneTextNode->setColor(qvariant_cast<int>(value));
+    case LabelRole:
+        _labelSceneTextNode->setText(qvariant_cast<QString>(value));
+        break;
     }
 }
 

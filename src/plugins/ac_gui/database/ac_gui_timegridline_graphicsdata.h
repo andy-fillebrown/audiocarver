@@ -15,24 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_TRACK_GRAPHICSITEM_H
-#define AC_GUI_TRACK_GRAPHICSITEM_H
+#ifndef AC_GUI_TIMEGRIDLINE_GRAPHICSDATA_H
+#define AC_GUI_TIMEGRIDLINE_GRAPHICSDATA_H
 
-#include "ac_gui_scoreobject_graphicsitem.h"
+#include "ac_gui_gridline_graphicsdata.h"
 
-namespace Track {
+class QGraphicsLineItem;
 
-class GraphicsItem : public ScoreObject::GraphicsItem
+namespace TimeGridLine {
+
+class GraphicsData : public GridLine::GraphicsData
 {
-public:
-    GraphicsItem(IAggregate *aggregate)
-        :   ScoreObject::GraphicsItem(aggregate)
-    {}
+    QGraphicsLineItem *_labelSceneLineNode;
+    QGraphicsLineItem *_pitchSceneLineNode;
+    QGraphicsLineItem *_pitchSceneLineHighExtensionNode;
+    QGraphicsLineItem *_pitchSceneLineLowExtensionNode;
+    QGraphicsLineItem *_controlSceneLineNode;
+    QGraphicsLineItem *_controlSceneLineExtensionNode;
 
-    virtual IUnknown *initialize();
+public:
+    GraphicsData(IAggregate *aggregate);
 
 protected:
-    void update(int role);
+    QGraphicsItem *node(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
 };
 
 }

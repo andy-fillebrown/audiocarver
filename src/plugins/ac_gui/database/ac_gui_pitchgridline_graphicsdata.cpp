@@ -15,38 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_HORIZONTALGRIDLINE_GRAPHICSITEM_H
-#define AC_GUI_HORIZONTALGRIDLINE_GRAPHICSITEM_H
+#include "ac_gui_pitchgridline_graphicsdata.h"
+#include "ac_gui_graphicsnode.h"
+#include "ac_gui_namespace.h"
+#include <QGraphicsLineItem>
 
-#include "ac_gui_gridline_graphicsitem.h"
+using namespace Ac;
 
-class QGraphicsLineItem;
+namespace PitchGridLine {
 
-namespace HorizontalGridLine {
-
-class GraphicsItem : public GridLine::GraphicsItem
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
-    QGraphicsLineItem *_editorSceneLineNode;
-    QGraphicsLineItem *_editorSceneLineExtensionNode;
-
-protected:
-    GraphicsItem(IAggregate *aggregate);
-    ~GraphicsItem();
-
-    QGraphicsLineItem *editorSceneLineNode() const
-    {
-        return _editorSceneLineNode;
-    }
-
-    QGraphicsLineItem *editorSceneLineExtensionNode() const
-    {
-        return _editorSceneLineExtensionNode;
-    }
-
-    void setColor(int color);
-    void update(int role);
-};
-
+    if (PitchScene == sceneType && UnitXTransform == transformType)
+        return editorSceneLineNode();
+    if (PitchLabelScene == sceneType && MainTransform == transformType)
+        return labelSceneRootNode();
+    return 0;
 }
 
-#endif
+}

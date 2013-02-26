@@ -15,31 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_TIMEGRIDLINE_GRAPHICSITEM_H
-#define AC_GUI_TIMEGRIDLINE_GRAPHICSITEM_H
+#ifndef AC_GUI_GRIDSETTINGS_GRAPHICSDATA_H
+#define AC_GUI_GRIDSETTINGS_GRAPHICSDATA_H
 
-#include "ac_gui_gridline_graphicsitem.h"
+#include "ac_gui_object_graphicsdata.h"
+#include <QMap>
 
-class QGraphicsLineItem;
+namespace GridSettings {
 
-namespace TimeGridLine {
-
-class GraphicsItem : public GridLine::GraphicsItem
+class GraphicsData : public Object::GraphicsData
 {
-    QGraphicsLineItem *_labelSceneLineNode;
-    QGraphicsLineItem *_pitchSceneLineNode;
-    QGraphicsLineItem *_pitchSceneLineHighExtensionNode;
-    QGraphicsLineItem *_pitchSceneLineLowExtensionNode;
-    QGraphicsLineItem *_controlSceneLineNode;
-    QGraphicsLineItem *_controlSceneLineExtensionNode;
+    QMap<int, QGraphicsItem*> _mainNodes;
+    QMap<int, QGraphicsItem*> _unitXNodes;
+    QMap<int, QGraphicsItem*> _unitYNodes;
 
 public:
-    GraphicsItem(IAggregate *aggregate);
+    GraphicsData(IAggregate *aggregate);
 
 protected:
     QGraphicsItem *node(int sceneType, int transformType) const;
-    void setColor(int color);
-    void update(int role);
 };
 
 }

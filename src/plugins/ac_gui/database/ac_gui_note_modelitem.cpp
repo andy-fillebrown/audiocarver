@@ -39,7 +39,7 @@ ModelItem::~ModelItem()
 
 IModelItem *ModelItem::findItem(int itemType) const
 {
-    return VelocityItem == itemType ? query<IModelItem>(velocity()) : Note::ModelItem::findItem(itemType);
+    return VelocityItem == itemType ? QUERY(IModelItem, _velocity) : Note::ModelItem::findItem(itemType);
 }
 
 }

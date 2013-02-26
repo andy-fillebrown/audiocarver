@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRIDLINE_GRAPHICSITEM_H
-#define AC_GUI_GRIDLINE_GRAPHICSITEM_H
+#ifndef AC_GUI_GRIDLINE_GRAPHICSDATA_H
+#define AC_GUI_GRIDLINE_GRAPHICSDATA_H
 
 #include "ac_gui_object_graphicsentity.h"
 #include <qnamespace.h>
@@ -27,7 +27,7 @@ class QFont;
 
 namespace GridLine {
 
-class GraphicsItem : public Object::GraphicsEntity
+class GraphicsData : public Object::GraphicsEntity
 {
     GraphicsNode *_labelSceneRootNode;
     GraphicsTextNode *_labelSceneTextNode;
@@ -37,8 +37,8 @@ protected:
     static Qt::PenStyle gridLinePenStyle();
     static Qt::PenStyle gridLineExtensionPenStyle();
 
-    GraphicsItem(IAggregate *aggregate);
-    ~GraphicsItem();
+    GraphicsData(IAggregate *aggregate);
+    ~GraphicsData();
 
     GraphicsNode *labelSceneRootNode() const
     {
@@ -50,8 +50,7 @@ protected:
         return _labelSceneTextNode;
     }
 
-    void setColor(int color);
-    void update(int role);
+    void update(int role, const QVariant &value);
 
     void highlight(bool on)
     {}

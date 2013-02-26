@@ -39,9 +39,9 @@ void *GraphicsDataUpdater::queryInterface(int interfaceType) const
 
 void GraphicsDataUpdater::endChangeData(const IModelData *data, int role, int changeType)
 {
-    IGraphicsData *gdata = query<IGraphicsData>(data);
+    IGraphicsData *gdata = QUERY(IGraphicsData, data);
     if (gdata)
-        gdata->update(role);
+        gdata->update(role, data->getValue(role));
 }
 
 }

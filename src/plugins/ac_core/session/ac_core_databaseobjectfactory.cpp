@@ -38,10 +38,10 @@
 #include "ac_core_viewsettings_modeldata.h"
 #include "ac_core_viewsettings_modelitem.h"
 #include <mi_core_aggregate.h>
-#include <mi_core_object_modeldatawatcher.h>
+#include <mi_core_object_modeldataupdater.h>
 #include <mi_core_objectlist_modeldata.h>
 #include <mi_core_objectlist_modelitem.h>
-#include <mi_core_objectlist_modelitemlistwatcher.h>
+#include <mi_core_objectlist_modelitemlistupdater.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -64,87 +64,87 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case ControlCurveItem:
         new ControlCurve::ModelItem(aggregate);
         new ControlCurve::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case ControlCurveListItem:
         new ObjectList::ModelItem(aggregate, ControlCurveItem);
         new ObjectList::ModelData(aggregate);
-        new ObjectList::ModelItemListWatcher(aggregate);
+        new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case ControlGridLineItem:
         new ControlGridLine::ModelItem(aggregate);
         new GridLine::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case ControlGridLineListItem:
         new ObjectList::ModelItem(aggregate, ControlGridLineItem);
         new ObjectList::ModelData(aggregate);
-        new ObjectList::ModelItemListWatcher(aggregate);
+        new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case GridSettingsItem:
         new GridSettings::ModelItem(aggregate);
         new GridSettings::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case NoteItem:
         new Note::ModelItem(aggregate);
         new ScoreObject::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case NoteListItem:
         new ObjectList::ModelItem(aggregate, NoteItem);
         new ObjectList::ModelData(aggregate);
-        new ObjectList::ModelItemListWatcher(aggregate);
+        new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case PitchCurveItem:
         new PitchCurve::ModelItem(aggregate);
         new PitchCurve::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case PitchGridLineItem:
         new PitchGridLine::ModelItem(aggregate);
         new GridLine::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case PitchGridLineListItem:
         new ObjectList::ModelItem(aggregate, PitchGridLineItem);
         new ObjectList::ModelData(aggregate);
-        new ObjectList::ModelItemListWatcher(aggregate);
+        new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case ProjectSettingsItem:
         new ProjectSettings::ModelItem(aggregate);
         new ProjectSettings::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case ScoreItem:
         new Score::ModelItem(aggregate);
         new Score::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case TimeGridLineItem:
         new TimeGridLine::ModelItem(aggregate);
         new GridLine::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case TimeGridLineListItem:
         new ObjectList::ModelItem(aggregate, TimeGridLineItem);
         new ObjectList::ModelData(aggregate);
-        new ObjectList::ModelItemListWatcher(aggregate);
+        new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case TrackItem:
         new Track::ModelItem(aggregate);
         new Track::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case TrackListItem:
         new ObjectList::ModelItem(aggregate, TrackItem);
         new ObjectList::ModelData(aggregate);
-        new ObjectList::ModelItemListWatcher(aggregate);
+        new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case ViewSettingsItem:
         new ViewSettings::ModelItem(aggregate);
         new ViewSettings::ModelData(aggregate);
-        new Object::ModelDataWatcher(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     default:
         Q_ASSERT(0);

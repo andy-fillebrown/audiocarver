@@ -15,22 +15,32 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchgridline_graphicsitem.h"
-#include "ac_gui_graphicsnode.h"
-#include "ac_gui_namespace.h"
-#include <QGraphicsLineItem>
+#ifndef AC_GUI_OBJECT_GRAPHICSDATA_H
+#define AC_GUI_OBJECT_GRAPHICSDATA_H
 
-using namespace Ac;
+#include <igraphicsdata.h>
 
-namespace PitchGridLine {
+class IAggregate;
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+namespace Object {
+
+class GraphicsData : public IGraphicsData
 {
-    if (PitchScene == sceneType && UnitXTransform == transformType)
-        return editorSceneLineNode();
-    if (PitchLabelScene == sceneType && MainTransform == transformType)
-        return labelSceneRootNode();
-    return 0;
-}
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    GraphicsData(IAggregate *aggregate);
+
+    void initialize()
+    {}
+
+    void update(int role, const QVariant &value)
+    {}
+};
 
 }
+
+#endif

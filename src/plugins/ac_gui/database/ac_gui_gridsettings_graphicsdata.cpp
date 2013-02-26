@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_gridsettings_graphicsitem.h"
+#include "ac_gui_gridsettings_graphicsdata.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 
@@ -23,8 +23,8 @@ using namespace Ac;
 
 namespace GridSettings {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   Object::GraphicsItem(aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
+    :   Object::GraphicsData(aggregate)
 {
     _mainNodes.insert(TimeLabelScene, new GraphicsNode);
     _mainNodes.insert(PitchLabelScene, new GraphicsNode);
@@ -35,7 +35,7 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     _unitYNodes.insert(ControlScene, new GraphicsNode);
 }
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
     switch (transformType) {
     case MainTransform:

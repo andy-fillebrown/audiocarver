@@ -32,19 +32,13 @@ public:
     void *queryInterface(int interfaceType) const;
 
 protected:
-    GraphicsCurve(IAggregate *aggregate)
-        :   _aggregate(aggregate)
-    {}
+    GraphicsCurve(IAggregate *aggregate);
 
     void initialize()
     {}
 
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    IGraphicsEntity *parent() const;
+    void update(int role, const QVariant &value)
+    {}
 };
 
 }

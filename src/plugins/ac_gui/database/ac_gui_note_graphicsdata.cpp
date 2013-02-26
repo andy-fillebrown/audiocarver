@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_note_graphicsitem.h"
+#include "ac_gui_note_graphicsdata.h"
 #include "ac_gui_namespace.h"
 #include <idatabaseobjectfactory.h>
 #include <imodeldata.h>
@@ -27,11 +27,11 @@ using namespace Mi;
 
 namespace Note {
 
-QList<IGraphicsEntity*> GraphicsItem::subentities() const
+QList<IGraphicsEntity*> GraphicsData::subentities() const
 {
     QList<IGraphicsEntity*> subents;
 
-    IModelItem *this_item = query<IModelItem>(this);
+    IModelItem *this_item = QUERY(IModelItem, this);
     if (!this_item)
         return subents;
     IModelItem *pitch_item = this_item->findItem(PitchCurveItem);
@@ -44,43 +44,27 @@ QList<IGraphicsEntity*> GraphicsItem::subentities() const
 //    if (volume_entity)
 //        subents.append(volume_entity);
     IModelItem *velocity_item = this_item->findItem(VelocityItem);
-    IGraphicsEntity *velocity_entity = query<IGraphicsEntity>(velocity_item);
+    IGraphicsEntity *velocity_entity = QUERY(IGraphicsEntity, velocity_item);
     if (velocity_entity)
         subents.append(velocity_entity);
 
     return subents;
 }
 
-void GraphicsItem::setColor(int color)
-{
-    QList<IGraphicsEntity*> subents = subentities();
-    foreach (IGraphicsEntity *subent, subents)
-        subent->setColor(color);
-}
-
-void GraphicsItem::highlight(bool on)
+void GraphicsData::highlight(bool on)
 {
     QList<IGraphicsEntity*> subents = subentities();
     foreach (IGraphicsEntity *subent, subents)
         subent->highlight(on);
 }
 
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
-    switch (role) {
-    case ColorRole: {
-        IModelItem *this_item = query<IModelItem>(this);
-        IModelItem *list_item = this_item ? this_item->parent() : 0;
-        IModelItem *parent_item = list_item ? list_item->parent() : 0;
-        IModelData *parent_data = query<IModelData>(parent_item);
-        if (parent_data)
-            setColor(intFromColor(parent_data->get<QString>(ColorRole)));
-    }   break;
-    default: {
+    QList<IGraphicsEntity*> subents = subentities();
+    if (ColorRole == role) {
         QList<IGraphicsEntity*> subents = subentities();
         foreach (IGraphicsEntity *subent, subents)
-            subent->update(role);
-    } break;
+            subent->update(ColorRole, value);
     }
 }
 

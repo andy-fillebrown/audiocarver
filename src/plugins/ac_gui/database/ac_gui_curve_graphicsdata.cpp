@@ -15,54 +15,52 @@
 **
 **************************************************************************/
 
-#include "ac_gui_curve_graphicsitem.h"
+#include "ac_gui_curve_graphicsdata.h"
 #include "ac_gui_graphicscurvenode.h"
+#include <iaggregate.h>
+#include <igraphicsitem.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
-#include <iaggregate.h>
 
 using namespace Ac;
 
 namespace Curve {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
     :   Object::GraphicsCurve(aggregate)
     ,   _curveNode(0)
 {
     _curveNode = new GraphicsCurveNode;
-    _curveNode->setGraphicsItem(this);
 }
 
-GraphicsItem::~GraphicsItem()
+GraphicsData::~GraphicsData()
 {
     delete _curveNode;
 }
 
-void GraphicsItem::setColor(int color)
+void GraphicsData::initialize()
 {
-    curveNode()->setColor(color);
+    _curveNode->setGraphicsItem(QUERY(IGraphicsItem, this));
 }
 
-void GraphicsItem::setPoints(const PointList &points)
-{
-    curveNode()->setPoints(points);
-}
-
-bool GraphicsItem::intersects(const QRectF &rect) const
+bool GraphicsData::intersects(const QRectF &rect) const
 {
     return curveNode()->intersects(rect);
 }
 
-void GraphicsItem::highlight(bool on)
+void GraphicsData::highlight(bool on)
 {
     curveNode()->highlight(on);
 }
 
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
     switch (role) {
+    case ColorRole:
+        _curveNode->setColor(qvariant_cast<QColor>(value));
     case PointsRole:
-        query<IGraphicsCurve>(this)->setPoints(query<IModelData>(this)->get<PointList>(PointsRole));
+        _curveNode->setPoints(qvariant_cast<PointList>(value));
+        break;
     }
 }
 

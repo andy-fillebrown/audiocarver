@@ -15,25 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRIDSETTINGS_GRAPHICSITEM_H
-#define AC_GUI_GRIDSETTINGS_GRAPHICSITEM_H
+#ifndef AC_GUI_HORIZONTALGRIDLINE_GRAPHICSDATA_H
+#define AC_GUI_HORIZONTALGRIDLINE_GRAPHICSDATA_H
 
-#include "ac_gui_object_graphicsitem.h"
-#include <QMap>
+#include "ac_gui_gridline_graphicsdata.h"
 
-namespace GridSettings {
+class QGraphicsLineItem;
 
-class GraphicsItem : public Object::GraphicsItem
+namespace HorizontalGridLine {
+
+class GraphicsData : public GridLine::GraphicsData
 {
-    QMap<int, QGraphicsItem*> _mainNodes;
-    QMap<int, QGraphicsItem*> _unitXNodes;
-    QMap<int, QGraphicsItem*> _unitYNodes;
-
-public:
-    GraphicsItem(IAggregate *aggregate);
+    QGraphicsLineItem *_editorSceneLineNode;
+    QGraphicsLineItem *_editorSceneLineExtensionNode;
 
 protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    GraphicsData(IAggregate *aggregate);
+    ~GraphicsData();
+
+    QGraphicsLineItem *editorSceneLineNode() const
+    {
+        return _editorSceneLineNode;
+    }
+
+    QGraphicsLineItem *editorSceneLineExtensionNode() const
+    {
+        return _editorSceneLineExtensionNode;
+    }
+
+    void update(int role, const QVariant &value);
 };
 
 }

@@ -28,9 +28,7 @@ class IGraphicsCurve : public IGraphicsEntity
 public:
     enum { InterfaceType = I::IGraphicsCurve };
 
-    virtual IGraphicsEntity *parent() const = 0;
     virtual bool intersects(const QRectF &rect) const = 0;
-    virtual void setPoints(const PointList &points) = 0;
 
     int interfaceType() const
     {

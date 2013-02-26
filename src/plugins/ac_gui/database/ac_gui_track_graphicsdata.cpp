@@ -15,9 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_gui_track_graphicsitem.h"
+#include "ac_gui_track_graphicsdata.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_namespace.h>
+#include <igraphicsdata.h>
 #include <imodeldata.h>
 #include <imodelitemlist.h>
 #include <QGraphicsItem>
@@ -26,36 +27,22 @@ using namespace Ac;
 
 namespace Track {
 
-IUnknown *GraphicsItem::initialize()
+void GraphicsData::update(int role, const QVariant &value)
 {
-    return ScoreObject::GraphicsItem::initialize();
-}
-
-void GraphicsItem::update(int role)
-{
-    switch (role) {
-    case ColorRole: {
-        IModelItem *track_item = query<IModelItem>(this);
+    if (ColorRole == role) {
+        IModelItem *track_item = QUERY(IModelItem, this);
         if (!track_item)
             return;
         IModelItemList *note_list = track_item->findList(NoteItem);
         const int note_count = note_list->count();
         for (int i = 0;  i < note_count;  ++i) {
-            IGraphicsItem *note_item = query<IGraphicsItem>(note_list->at(i));
-            if (!note_item)
+            IGraphicsData *note_gdata = QUERY(IGraphicsData, note_list->at(i));
+            if (!note_gdata)
                 continue;
-            note_item->update(ColorRole);
+            note_gdata->update(role, value);
         }
-    } break;
-    case VisibilityRole: {
-        IModelData *data = query<IModelData>(this);
-        if (!data)
-            return;
-        const bool visible = data->get<bool>(VisibilityRole);
-        node(PitchScene, MainTransform)->setVisible(visible);
-        node(ControlScene, MainTransform)->setVisible(visible);
-    }   break;
     }
+    ScoreObject::GraphicsData::update(role, value);
 }
 
 }

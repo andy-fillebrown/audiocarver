@@ -23,7 +23,13 @@ namespace Object {
 void *GraphicsItem::queryInterface(int interfaceType) const
 {
     void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : aggregate()->queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
+
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
 }
 
 }

@@ -15,10 +15,11 @@
 **
 **************************************************************************/
 
-#include "ac_gui_velocity_graphicsitem.h"
+#include "ac_gui_velocity_graphicsdata.h"
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
+#include <igraphicsitem.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
 #include <QPen>
@@ -27,28 +28,28 @@ using namespace Ac;
 
 namespace Velocity {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
     :   Object::GraphicsCurve(aggregate)
     ,   _lineNode(0)
 {
     _lineNode = new QGraphicsLineItem;
-    _lineNode->setData(0, quintptr(this));
-    IGraphicsItem *parent_graphic = parent();
-    QGraphicsItem *parent_node = parent_graphic ? parent_graphic->node(ControlScene, MainTransform) : 0;
-    _lineNode->setParentItem(parent_node);
-    _lineNode->setData(0, quintptr(this));
     QPen pen;
     pen.setCosmetic(true);
     _lineNode->setPen(pen);
     highlight(false);
 }
 
-IModelItem *GraphicsItem::parentItem() const
+void GraphicsData::initialize()
 {
-    return query<IModelItem>(this)->parent();
+    IModelItem *this_item = QUERY(IModelItem, this);
+    IModelItem *parent_item = this_item->parent();
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, parent_item);
+    _lineNode->setParentItem(parent_gdata->node(ControlScene, MainTransform));
+    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+    _lineNode->setData(0, quintptr(this_gitem));
 }
 
-QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
 {
     if (ControlScene == sceneType
             && MainTransform == transformType)
@@ -56,21 +57,7 @@ QGraphicsItem *GraphicsItem::node(int sceneType, int transformType) const
     return 0;
 }
 
-void GraphicsItem::setColor(int color)
-{
-    QPen pen = _lineNode->pen();
-    pen.setColor(color);
-    _lineNode->setPen(pen);
-}
-
-void GraphicsItem::setPoints(const PointList &points)
-{
-    QPointF start_point = points.first().pos;
-    QPointF end_point = points.last().pos;
-    _lineNode->setLine(start_point.x(), start_point.y(), end_point.x(), end_point.y());
-}
-
-bool GraphicsItem::intersects(const QRectF &rect) const
+bool GraphicsData::intersects(const QRectF &rect) const
 {
     QLineF line = _lineNode->line();
     if (rect.contains(line.p1()) && rect.contains(line.p2()))
@@ -86,7 +73,7 @@ bool GraphicsItem::intersects(const QRectF &rect) const
     return false;
 }
 
-void GraphicsItem::highlight(bool on)
+void GraphicsData::highlight(bool on)
 {
     QPen pen = _lineNode->pen();
     if (on)
@@ -96,21 +83,26 @@ void GraphicsItem::highlight(bool on)
     _lineNode->setPen(pen);
 }
 
-void GraphicsItem::update(int role)
+void GraphicsData::update(int role, const QVariant &value)
 {
     if (VolumeRole == role) {
-        IModelItem *parent_item = parentItem();
+        IModelItem *this_item = QUERY(IModelItem, this);
+        IModelItem *parent_item = this_item->parent();
         if (!parent_item)
             return;
         PointList pitch_points = query<IModelData>(parent_item->findItem(PitchCurveItem))->get<PointList>(PointsRole);
         if (pitch_points.isEmpty())
             return;
-        qreal volume = query<IModelData>(parent_item)->get<qreal>(VolumeRole);
-        PointList velocity_line_points;
         qreal x = pitch_points.first().pos.x();
-        velocity_line_points.append(Point(x, 0.0f));
-        velocity_line_points.append(Point(x, volume));
-        setPoints(velocity_line_points);
+        qreal volume = qvariant_cast<qreal>(value);
+        _lineNode->setLine(x, 0.0f, x, volume);
+        return;
+    }
+    if (ColorRole == role) {
+        QPen pen = _lineNode->pen();
+        pen.setColor(qvariant_cast<int>(value));
+        _lineNode->setPen(pen);
+        return;
     }
 }
 
