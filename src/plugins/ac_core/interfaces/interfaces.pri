@@ -5,9 +5,7 @@ SOURCE_FILES = \
     iqaudioengine \
     isynthesizer \
 
-DIR = $$dirname(_FILE_)
-DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    file = $${file}.h
-    exists($$file): HEADERS *= $$DIR/$$file
+    file = {file}.h
+    exists($$file): HEADERS *= interfaces/$$file
 }

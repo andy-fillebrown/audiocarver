@@ -4,12 +4,9 @@ SOURCE_FILES = \
     rolestocolumnsproxymodel \
     trackmodel \
 
-DIR = $$dirname(_FILE_)
-DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    file = $${SOURCE_FILE_PREFIX}_$$file
-    header = $${file}.h
-    source = $${file}.cpp
-    exists($$header): HEADERS *= $$DIR/$$header
-    exists($$source): SOURCES *= $$DIR/$$source
+    header = ac_core_$${file}.h
+    source = ac_core_$${file}.cpp
+    exists($$header): HEADERS *= models/$$header
+    exists($$source): SOURCES *= models/$$source
 }

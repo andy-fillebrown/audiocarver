@@ -18,9 +18,8 @@ SOURCE_FILES = \
     iunknown \
     iwriter \
 
-DIR = $$dirname(_FILE_)
-DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
     header = $${file}.h
-    exists($$header): HEADERS *= $$DIR/$$header
+    source = $${file}.cpp
+    exists($$header): HEADERS *= interfaces/$$header
 }

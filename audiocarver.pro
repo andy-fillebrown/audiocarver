@@ -16,8 +16,6 @@ CONFIG += ordered
 SUBDIRS = src
 
 OTHER_FILES *= \
-    scripts/blender/addons/io_scene_audiocarver/* \
-    \
     testing/*.ac \
     \
     .gitignore \

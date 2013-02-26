@@ -10,7 +10,7 @@ SUBDIRS = \
     ac_core \
     ac_gui \
 #    ac_audioengine \
-#    ac_midifileplugin \
+#    ac_midifile \
 #    ac_synthesizer \
 
 OTHER_FILES *= \
