@@ -29,18 +29,15 @@ class GraphicsItem : public IGraphicsItem
     IAggregate *_aggregate;
 
 public:
+    GraphicsItem(IAggregate *aggregate);
+
     void *queryInterface(int interfaceType) const;
 
 protected:
-    GraphicsItem(IAggregate *aggregate);
-
     void initialize()
     {}
 
-    IGraphicsItem *parent() const
-    {
-        return 0;
-    }
+    IGraphicsItem *parent() const;
 
     QList<IGraphicsItem*> children() const
     {

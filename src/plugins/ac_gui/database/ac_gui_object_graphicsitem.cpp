@@ -17,8 +17,15 @@
 
 #include "ac_gui_object_graphicsitem.h"
 #include <iaggregate.h>
+#include <imodelitem.h>
 
 namespace Object {
+
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
 
 void *GraphicsItem::queryInterface(int interfaceType) const
 {
@@ -26,10 +33,13 @@ void *GraphicsItem::queryInterface(int interfaceType) const
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+IGraphicsItem *GraphicsItem::parent() const
 {
-    _aggregate->append(this);
+    IModelItem *this_item = QUERY(IModelItem, this);
+    IModelItem *parent_item = this_item->parent();
+    if (parent_item->isList())
+        parent_item = parent_item->parent();
+    return QUERY(IGraphicsItem, parent_item);
 }
 
 }

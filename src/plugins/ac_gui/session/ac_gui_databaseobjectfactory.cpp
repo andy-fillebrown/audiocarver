@@ -24,6 +24,7 @@
 #include "ac_gui_note_graphicsitemupdater.h"
 #include "ac_gui_note_modelitem.h"
 #include "ac_gui_object_graphicsdataupdater.h"
+#include "ac_gui_object_graphicsitem.h"
 #include "ac_gui_object_graphicsitemupdater.h"
 #include "ac_gui_pitchcurve_graphicsdata.h"
 #include "ac_gui_pitchgridline_graphicsdata.h"
@@ -45,66 +46,76 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
 {
     switch (itemType) {
     case ControlCurveItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new ControlCurve::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case ControlGridLineItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new ControlGridLine::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case GridSettingsItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new GridSettings::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case NoteItem:
-        new Note::Gui::ModelItem(aggregate);
-        new ScoreObject::ModelData(aggregate);
         new Note::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         new Note::GraphicsItemUpdater(aggregate);
+        new ScoreObject::ModelData(aggregate);
+        new Note::Gui::ModelItem(aggregate);
         break;
     case PitchCurveItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new PitchCurve::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case PitchGridLineItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new PitchGridLine::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case ScoreItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new Score::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case TimeGridLineItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new TimeGridLine::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case TrackItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new Track::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case TrackListItem:
-        Core::DatabaseObjectFactory::create(itemType, aggregate);
         new TrackList::GraphicsDataUpdater(aggregate);
+        Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case VelocityItem:
-        new Velocity::ModelItem(aggregate);
         new Velocity::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
+        new Velocity::ModelItem(aggregate);
         break;
     default:
         Core::DatabaseObjectFactory::create(itemType, aggregate);

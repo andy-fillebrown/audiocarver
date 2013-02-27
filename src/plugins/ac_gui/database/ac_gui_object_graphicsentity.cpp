@@ -33,6 +33,7 @@ void *GraphicsEntity::queryInterface(int interfaceType) const
 GraphicsEntity::GraphicsEntity(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
+    _aggregate->append(this);
     _mainNodes.insert(PitchScene, new GraphicsNode);
     _mainNodes.insert(ControlScene, new GraphicsNode);
 }
