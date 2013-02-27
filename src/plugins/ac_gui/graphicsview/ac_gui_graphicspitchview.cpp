@@ -71,7 +71,7 @@ public:
 //            IModelItem *noteItem = ObjectFactory::instance()->create(NoteItem);
 //            model->insertItem(noteItem, model->rowCount(notesIndex), notesIndex);
 
-//            IEntity *noteEntity = query<IEntity>(noteItem);
+//            IEntity *noteEntity = QUERY(IEntity, noteItem);
 //            const QList<IEntity*> pitchSubEntities = noteEntity->subEntities(PitchScene);
 //            IEntity *pitchCurveEntity = pitchSubEntities.first();
 
@@ -137,7 +137,7 @@ public:
 //            model->removeItem(model->rowCount(notesIndex) - 1, notesIndex);
 
 //            notesIndexes.append(notesIndex);
-//            noteItems.append(query<IModelItem>(currentNotes.at(i)));
+//            noteItems.append(QUERY(IModelItem, currentNotes.at(i)));
 //        }
 
 //        IEditor *editor = IEditor::instance();

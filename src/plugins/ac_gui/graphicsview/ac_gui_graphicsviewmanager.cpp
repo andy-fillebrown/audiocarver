@@ -168,14 +168,14 @@ public:
     void updateViewVariables()
     {
         IModelItem *score_item = IDatabase::instance()->rootItem();
-        IModelData *score_data = query<IModelData>(score_item);
+        IModelData *score_data = QUERY(IModelData, score_item);
         const qreal score_length = score_data->get<qreal>(LengthRole);
         if (scoreLength != score_length) {
             scoreLength = score_length;
             emit q->scoreLengthChanged();
             updateViewsTimer->start();
         }
-        IModelData *view_settings_data = query<IModelData>(score_item->findItem(ViewSettingsItem));
+        IModelData *view_settings_data = QUERY(IModelData, score_item->findItem(ViewSettingsItem));
         q->setPosition(view_settings_data->get<qreal>(TimePositionRole), TimePositionRole);
         q->setPosition(view_settings_data->get<qreal>(PitchPositionRole), PitchPositionRole);
         q->setPosition(view_settings_data->get<qreal>(ControlPositionRole), ControlPositionRole);
@@ -467,7 +467,7 @@ void GraphicsViewManager::enableUpdates()
 void GraphicsViewManager::dataChanged(const IModelData *data)
 {
     if (!d->updatingDatabase
-            && ViewSettingsItem == query<IModelItem>(data)->itemType())
+            && ViewSettingsItem == QUERY(IModelItem, data)->itemType())
         d->updateViewVariables();
 }
 

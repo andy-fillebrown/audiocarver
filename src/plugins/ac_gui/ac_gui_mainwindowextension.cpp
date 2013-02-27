@@ -205,7 +205,7 @@ void MainWindowExtension::createTrack()
     IEditor *editor = IEditor::instance();
     editor->beginCommand();
     IModelItemList *track_list = IDatabase::instance()->rootItem()->findList(TrackItem);
-    IModelItem *track = query<IModelItem>(IDatabaseObjectFactory::instance()->create(TrackItem));
+    IModelItem *track = QUERY(IModelItem, IDatabaseObjectFactory::instance()->create(TrackItem));
     track_list->append(track);
     editor->endCommand();
 }
@@ -234,7 +234,7 @@ void MainWindowExtension::erase()
 
     // If no points are selected, erase selected tracks in reverse row order so
     // higher row numbers don't change if lower rows are being erased, too.
-//    IModel *model = query<IModel>(IDatabase::instance());
+//    IModel *model = QUERY(IModel, IDatabase::instance());
 //    const QModelIndexList track_ss = TrackSelectionModel::instance()->selectedRows();
 //    QList<int> rows;
 //    rows.reserve(track_ss.count());
@@ -294,7 +294,7 @@ void MainWindowExtension::startOrStop()
 
 void MainWindowExtension::start()
 {
-    IModelData *score = query<IModelData>(IDatabase::instance()->rootItem());
+    IModelData *score = QUERY(IModelData, IDatabase::instance()->rootItem());
     if (score->get<int>(StartTimeRole) == score->get<int>(LengthRole)) {
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
         return;

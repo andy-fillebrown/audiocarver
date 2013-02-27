@@ -45,7 +45,7 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
         return false;
 
     // Open a file-open dialog and set the track's instrument if the user didn't cancel the dialog.
-    const IModelData *project_settings = query<IModelData>(IDatabase::instance()->rootItem()->findItem(ProjectSettingsItem));
+    const IModelData *project_settings = QUERY(IModelData, IDatabase::instance()->rootItem()->findItem(ProjectSettingsItem));
     QString instrument_dir_name = project_settings->get<QString>(InstrumentDirectoryRole);
     if (instrument_dir_name.isEmpty())
         instrument_dir_name = applicationTreeDirectory() + "instruments";
@@ -53,7 +53,7 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);
         QString instrument_basename = instrument_file_info.baseName();
-        IModelData *track = query<IModelData>(IModel::instance()->itemFromIndex(index));
+        IModelData *track = QUERY(IModelData, IModel::instance()->itemFromIndex(index));
         track->set(instrument_basename, InstrumentRole);
     }
     return true;

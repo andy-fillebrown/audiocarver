@@ -43,7 +43,7 @@ Database::~Database()
 
 IModelItem *Database::rootItem() const
 {
-    return query<IModelItem>(_score);
+    return QUERY(IModelItem, _score);
 }
 
 const QString &Database::fileExtension() const
@@ -74,8 +74,8 @@ void Database::read(const QString &fileName)
 {
     reset();
     IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
-    query<IFileFiler>(filer)->setFileName(fileName);
-    if (query<IReader>(filer)->read(rootItem()))
+    QUERY(IFileFiler, filer)->setFileName(fileName);
+    if (QUERY(IReader, filer)->read(rootItem()))
         _fileName = fileName;
     delete filer;
 }
@@ -83,8 +83,8 @@ void Database::read(const QString &fileName)
 void Database::write(const QString &fileName)
 {
     IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
-    query<IFileFiler>(filer)->setFileName(fileName);
-    query<IWriter>(filer)->write(rootItem());
+    QUERY(IFileFiler, filer)->setFileName(fileName);
+    QUERY(IWriter, filer)->write(rootItem());
     delete filer;
 }
 

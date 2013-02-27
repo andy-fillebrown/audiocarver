@@ -90,7 +90,7 @@ void GraphicsData::update(int role, const QVariant &value)
         IModelItem *parent_item = this_item->parent();
         if (!parent_item)
             return;
-        PointList pitch_points = query<IModelData>(parent_item->findItem(PitchCurveItem))->get<PointList>(PointsRole);
+        PointList pitch_points = QUERY(IModelData, parent_item->findItem(PitchCurveItem))->get<PointList>(PointsRole);
         if (pitch_points.isEmpty())
             return;
         qreal x = pitch_points.first().pos.x();

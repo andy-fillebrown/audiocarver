@@ -40,9 +40,9 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case ItemTypeRole:
-        return query<IModelItem>(this)->itemType();
+        return QUERY(IModelItem, this)->itemType();
     case ListTypeRole:
-        return query<IModelItemList>(this)->listType();
+        return QUERY(IModelItemList, this)->listType();
     default:
         return QVariant();
     }

@@ -35,12 +35,12 @@ QList<IGraphicsEntity*> GraphicsData::subentities() const
     if (!this_item)
         return subents;
     IModelItem *pitch_item = this_item->findItem(PitchCurveItem);
-    IGraphicsEntity *pitch_entity = query<IGraphicsEntity>(pitch_item);
+    IGraphicsEntity *pitch_entity = QUERY(IGraphicsEntity, pitch_item);
     if (pitch_entity)
         subents.append(pitch_entity);
 //    IModelItemList *control_list = this_item->findList(ControlCurveItem);
 //    IModelItem *volume_item = control_list->at(-1);
-//    IGraphicsEntity *volume_entity = query<IGraphicsEntity>(volume_item);
+//    IGraphicsEntity *volume_entity = QUERY(IGraphicsEntity, volume_item);
 //    if (volume_entity)
 //        subents.append(volume_entity);
     IModelItem *velocity_item = this_item->findItem(VelocityItem);

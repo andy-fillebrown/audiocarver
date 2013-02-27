@@ -38,7 +38,7 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 void ModelItem::reset()
 {
-    IModelData *data = query<IModelData>(this);
+    IModelData *data = QUERY(IModelData, this);
     data->set(DEFAULT_VIEWSETTINGS_TIMEPOSITION, TimePositionRole);
     data->set(DEFAULT_VIEWSETTINGS_PITCHPOSITION, PitchPositionRole);
     data->set(DEFAULT_VIEWSETTINGS_CONTROLPOSITION, ControlPositionRole);

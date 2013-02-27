@@ -41,9 +41,9 @@ bool ModelData::setName(const QString &name)
 {
     if (_name == name)
         return false;
-    IModelItem *parent = query<IModelItem>(this)->parent();
+    IModelItem *parent = QUERY(IModelItem, this)->parent();
     if (!name.isEmpty() && parent && parent->isList()) {
-        IModelItemList *list = query<IModelItemList>(parent);
+        IModelItemList *list = QUERY(IModelItemList, parent);
         if (list && list->contains(name))
             return false;
     }
@@ -68,7 +68,7 @@ QVariant ModelData::getValue(int role) const
     case NameRole:
         return name();
     case ItemTypeRole:
-        return query<IModelItem>(this)->itemType();
+        return QUERY(IModelItem, this)->itemType();
     default:
         return QVariant();
     }

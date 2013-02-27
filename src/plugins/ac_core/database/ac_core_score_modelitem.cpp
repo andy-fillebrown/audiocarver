@@ -63,13 +63,13 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 int ModelItem::indexOf(const IModelItem *item) const
 {
-    if (query<IModelItem>(_tracks) == item)
+    if (QUERY(IModelItem, _tracks) == item)
         return ItemCountOffset;
-    if (query<IModelItem>(_gridSettings) == item)
+    if (QUERY(IModelItem, _gridSettings) == item)
         return ItemCountOffset + 1;
-    if (query<IModelItem>(_projectSettings) == item)
+    if (QUERY(IModelItem, _projectSettings) == item)
         return ItemCountOffset + 2;
-    if (query<IModelItem>(_viewSettings) == item)
+    if (QUERY(IModelItem, _viewSettings) == item)
         return ItemCountOffset + 3;
     return ScoreObject::ModelItem::indexOf(item);
 }
@@ -78,13 +78,13 @@ IModelItem *ModelItem::at(int i) const
 {
     switch (i - ItemCountOffset) {
     case 0:
-        return query<IModelItem>(_tracks);
+        return QUERY(IModelItem, _tracks);
     case 1:
-        return query<IModelItem>(_gridSettings);
+        return QUERY(IModelItem, _gridSettings);
     case 2:
-        return query<IModelItem>(_projectSettings);
+        return QUERY(IModelItem, _projectSettings);
     case 3:
-        return query<IModelItem>(_viewSettings);
+        return QUERY(IModelItem, _viewSettings);
     default:
         return ScoreObject::ModelItem::at(i);
     }
@@ -94,11 +94,11 @@ IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
     case GridSettingsItem:
-        return query<IModelItem>(_gridSettings);
+        return QUERY(IModelItem, _gridSettings);
     case ProjectSettingsItem:
-        return query<IModelItem>(_projectSettings);
+        return QUERY(IModelItem, _projectSettings);
     case ViewSettingsItem:
-        return query<IModelItem>(_viewSettings);
+        return QUERY(IModelItem, _viewSettings);
     default:
         return ScoreObject::ModelItem::findItem(itemType);
     }
@@ -108,7 +108,7 @@ IModelItemList *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case TrackItem:
-        return query<IModelItemList>(_tracks);
+        return QUERY(IModelItemList, _tracks);
     default:
         return ScoreObject::ModelItem::findList(listType);
     }
@@ -116,7 +116,7 @@ IModelItemList *ModelItem::findList(int listType) const
 
 void ModelItem::reset()
 {
-    IModelData *data = query<IModelData>(this);
+    IModelData *data = QUERY(IModelData, this);
     data->set(DEFAULT_SCORE_LENGTH, LengthRole);
     data->set(DEFAULT_SCORE_STARTTIME, StartTimeRole);
     ScoreObject::ModelItem::reset();

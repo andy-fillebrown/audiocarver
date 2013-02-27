@@ -36,10 +36,10 @@ public:
     {
         if (!_list)
             return;
-        const QList<IComponent*> &components = query<IAggregate>(_list)->components();
+        const QList<IComponent*> &components = QUERY(IAggregate, _list)->components();
         foreach (IComponent *component, components)
             if (component->isTypeOfInterface(I::IModelItemListWatcher))
-                _watchers.append(query<IModelItemListWatcher>(component));
+                _watchers.append(QUERY(IModelItemListWatcher, component));
         foreach (IModelItemListWatcher *watcher, _watchers)
             watcher->beginRemoveItem(_list, index);
     }

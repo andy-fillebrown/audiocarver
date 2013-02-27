@@ -39,7 +39,7 @@ const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_S
 //    {
 //        item->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 //        item->setRect(GRIP_RECT);
-//        item->setData(0, quintptr(query<IGripItem>(q)));
+//        item->setData(0, quintptr(QUERY(IGripItem, q)));
 
 //        QPen pen(Qt::blue, 2, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin);
 //        item->setPen(pen);
@@ -93,7 +93,7 @@ const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_S
 //{
 //    GripSelectionModel *grip_model = GripSelectionModel::instance();
 //    if (grip_model)
-//        grip_model->removeGrip(::query<IGripItem>(this));
+//        grip_model->removeGrip(QUERY(IGripItem, this));
 //    delete d;
 //}
 
@@ -147,7 +147,7 @@ const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_S
 //        break;
 //    case FullHighlight:
 //        d->setItemColor(Qt::red);
-//        GripSelectionModel::instance()->appendGrip(::query<IGripItem>(this));
+//        GripSelectionModel::instance()->appendGrip(QUERY(IGripItem, this));
 //        break;
 //    }
 
@@ -157,7 +157,7 @@ const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_S
 //void GraphicsGripItem::unhighlight()
 //{
 //    if (d->isFullyHighlighted())
-//        GripSelectionModel::instance()->removeGrip(::query<IGripItem>(this));
+//        GripSelectionModel::instance()->removeGrip(QUERY(IGripItem, this));
 //    d->setItemColor(Qt::blue);
 //    d->setItemFilled(false);
 //}

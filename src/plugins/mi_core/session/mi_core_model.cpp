@@ -91,7 +91,7 @@ void Model::endRemoveItem(const IModelItemList *list, int index)
 
 IModelData *Model::dataFromIndex(const QModelIndex &index) const
 {
-    return query<IModelData>(itemFromIndex(index));
+    return QUERY(IModelData, itemFromIndex(index));
 }
 
 IModelItem *Model::itemFromIndex(const QModelIndex &index) const
@@ -106,7 +106,7 @@ IModelItem *Model::itemFromIndex(const QModelIndex &index) const
 
 QModelIndex Model::indexFromData(const IModelData *data) const
 {
-    return indexFromItem(query<IModelItem>(data));
+    return indexFromItem(QUERY(IModelItem, data));
 }
 
 QModelIndex Model::indexFromItem(const IModelItem *item) const
@@ -164,7 +164,7 @@ bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
 
 ItemFlags Model::flags(const QModelIndex &index) const
 {
-    IModelData *index_data = index.isValid() ? dataFromIndex(index) : query<IModelData>(IDatabase::instance()->rootItem());
+    IModelData *index_data = index.isValid() ? dataFromIndex(index) : QUERY(IModelData, IDatabase::instance()->rootItem());
     return index_data ? ItemFlags(index_data->flags()) : NoItemFlags;
 }
 

@@ -58,7 +58,7 @@ static void writeItemData(IModelData *data, int roleIndex, QXmlStreamWriter *wri
 
 static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
 {
-    IModelData *data = query<IModelData>(item);
+    IModelData *data = QUERY(IModelData, item);
     if (data) {
         if (item->isTypeOfItem(CurveItem) && data->get<PointList>(PointsRole).isEmpty())
             return true;
@@ -70,7 +70,7 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
         if (item->isList()) {
             if (0 == item->count())
                 return true;
-            writer->writeStartElement(itemTypeString(query<IModelItemList>(item)->listType()) + "List");
+            writer->writeStartElement(itemTypeString(QUERY(IModelItemList, item)->listType()) + "List");
         } else
             writer->writeStartElement(itemTypeString(item->itemType()));
     }
@@ -111,7 +111,7 @@ bool Writer::write(IModelItem *item)
 {
     if (!item)
         return false;
-    QFile *file = query<IFileFiler>(this)->file();
+    QFile *file = QUERY(IFileFiler, this)->file();
     if (file && file->open(QIODevice::WriteOnly))
         setStream(new QXmlStreamWriter(file));
     QXmlStreamWriter *writer = _stream;

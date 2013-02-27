@@ -60,11 +60,11 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 int ModelItem::indexOf(const IModelItem *item) const
 {
-    if (query<IModelItem>(_timeGridLines) == item)
+    if (QUERY(IModelItem, _timeGridLines) == item)
         return ItemCountOffset;
-    if (query<IModelItem>(_pitchGridLines) == item)
+    if (QUERY(IModelItem, _pitchGridLines) == item)
         return ItemCountOffset + 1;
-    if (query<IModelItem>(_controlGridLines) == item)
+    if (QUERY(IModelItem, _controlGridLines) == item)
         return ItemCountOffset + 2;
     return Object::ModelItem::indexOf(item);
 }
@@ -73,11 +73,11 @@ IModelItem *ModelItem::at(int i) const
 {
     switch (i - ItemCountOffset) {
     case 0:
-        return query<IModelItem>(_timeGridLines);
+        return QUERY(IModelItem, _timeGridLines);
     case 1:
-        return query<IModelItem>(_pitchGridLines);
+        return QUERY(IModelItem, _pitchGridLines);
     case 2:
-        return query<IModelItem>(_controlGridLines);
+        return QUERY(IModelItem, _controlGridLines);
     default:
         return Object::ModelItem::at(i);
     }
@@ -87,11 +87,11 @@ IModelItemList *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case TimeGridLineItem:
-        return query<IModelItemList>(_timeGridLines);
+        return QUERY(IModelItemList, _timeGridLines);
     case PitchGridLineItem:
-        return query<IModelItemList>(_pitchGridLines);
+        return QUERY(IModelItemList, _pitchGridLines);
     case ControlGridLineItem:
-        return query<IModelItemList>(_controlGridLines);
+        return QUERY(IModelItemList, _controlGridLines);
     default:
         return Object::ModelItem::findList(listType);
     }
@@ -99,7 +99,7 @@ IModelItemList *ModelItem::findList(int listType) const
 
 void ModelItem::reset()
 {
-    IModelData *data = query<IModelData>(this);
+    IModelData *data = QUERY(IModelData, this);
     data->set(DEFAULT_GRIDSETTINGS_SNAPENABLED, SnapEnabledRole);
     data->set(DEFAULT_GRIDSETTINGS_GRIDSNAPENABLED, GridSnapEnabledRole);
     data->set(DEFAULT_GRIDSETTINGS_TIMESNAP, TimeSnapRole);

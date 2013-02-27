@@ -38,10 +38,10 @@ public:
     {
         if (!_data)
             return;
-        const QList<IComponent*> &components = query<IAggregate>(_data)->components();
+        const QList<IComponent*> &components = QUERY(IAggregate, _data)->components();
         foreach (IComponent *component, components)
             if (component->isTypeOfInterface(I::IModelDataWatcher))
-                _watchers.append(query<IModelDataWatcher>(component));
+                _watchers.append(QUERY(IModelDataWatcher, component));
         foreach (IModelDataWatcher *watcher, _watchers)
             watcher->beginChangeData(_data, _role, _dataChangeType);
     }

@@ -45,7 +45,7 @@ void GraphicsLabelView::updateGridLineVisibilities()
     int prevPriority = 0;
     qreal prevLocation = qreal(-1.0f);
     for (int i = 0;  i < n;  ++i) {
-        IModelData *line = query<IModelData>(grid_lines->at(i));
+        IModelData *line = QUERY(IModelData, grid_lines->at(i));
         int curPriority = line->get<int>(PriorityRole);
         if (minPriority && (minPriority < curPriority))
             continue;
@@ -58,7 +58,7 @@ void GraphicsLabelView::updateGridLineVisibilities()
         }
     }
     for (int i = 0;  i < n;  ++i) {
-        IModelData *line = query<IModelData>(grid_lines->at(i));
+        IModelData *line = QUERY(IModelData, grid_lines->at(i));
         if (line->get<int>(PriorityRole) <= minPriority) {
             if (!line->get<bool>(VisibilityRole)) {
                 setUpdatesEnabled(false);

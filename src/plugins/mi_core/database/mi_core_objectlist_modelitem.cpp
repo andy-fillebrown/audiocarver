@@ -62,7 +62,7 @@ void ModelItem::setParent(IModelItem *parent)
 bool ModelItem::contains(const QString &name) const
 {
     foreach (IModelItem *item, _items)
-        if (query<IModelData>(item)->get<QString>(NameRole) == name)
+        if (QUERY(IModelData, item)->get<QString>(NameRole) == name)
             return true;
     return false;
 }
@@ -75,7 +75,7 @@ void ModelItem::insert(int i, IModelItem *item)
             return;
         old_list->remove(item);
     }
-    IModelData *data = query<IModelData>(item);
+    IModelData *data = QUERY(IModelData, item);
     const QString name = data->get<QString>(NameRole);
     if (!name.isEmpty()) {
         int suffix = 0;
@@ -100,7 +100,7 @@ void ModelItem::removeAt(int i)
 void ModelItem::reset()
 {
     foreach (IModelItem *item, _items)
-        delete query<IAggregate>(item);
+        delete QUERY(IAggregate, item);
     _items.clear();
 }
 

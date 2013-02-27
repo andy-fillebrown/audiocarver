@@ -54,9 +54,9 @@ int ModelItem::count() const
 
 int ModelItem::indexOf(const IModelItem *item) const
 {
-    if (query<IModelItem>(_pitchCurve) == item)
+    if (QUERY(IModelItem, _pitchCurve) == item)
         return ItemCountOffset;
-    if (query<IModelItem>(_controlCurves) == item)
+    if (QUERY(IModelItem, _controlCurves) == item)
         return ItemCountOffset + 1;
     return Object::ModelItem::indexOf(item);
 }
@@ -65,9 +65,9 @@ IModelItem *ModelItem::at(int i) const
 {
     switch (i - ItemCountOffset) {
     case 0:
-        return query<IModelItem>(_pitchCurve);
+        return QUERY(IModelItem, _pitchCurve);
     case 1:
-        return query<IModelItem>(_controlCurves);
+        return QUERY(IModelItem, _controlCurves);
     default:
         return Object::ModelItem::at(i);
     }
@@ -77,7 +77,7 @@ IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
     case PitchCurveItem:
-        return query<IModelItem>(_pitchCurve);
+        return QUERY(IModelItem, _pitchCurve);
     default:
         return Object::ModelItem::findItem(itemType);
     }
@@ -87,7 +87,7 @@ IModelItemList *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case ControlCurveItem:
-        return query<IModelItemList>(_controlCurves);
+        return QUERY(IModelItemList, _controlCurves);
     default:
         return Object::ModelItem::findList(listType);
     }

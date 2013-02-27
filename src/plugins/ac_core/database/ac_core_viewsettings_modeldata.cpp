@@ -39,7 +39,7 @@ ModelData::ModelData(IAggregate *aggregate)
 
 bool ModelData::setTimePosition(qreal position)
 {
-    IModelData *score_data = query<IModelData>(IDatabase::instance()->rootItem());
+    IModelData *score_data = QUERY(IModelData, IDatabase::instance()->rootItem());
     position = qBound(qreal(0.0f), position, score_data->get<qreal>(LengthRole));
     if (_timePosition == position)
         return false;

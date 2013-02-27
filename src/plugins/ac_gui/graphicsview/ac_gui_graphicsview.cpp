@@ -233,14 +233,14 @@ public:
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
             if (unknown) {
-                IPlayCursor *cursor = query<IPlayCursor>(unknown);
+                IPlayCursor *cursor = QUERY(IPlayCursor, unknown);
                 if (cursor) {
                     playCursorHovered = true;
                     previousCursor = q->cursor();
                     q->setCursor(QCursor(SplitHCursor));
                     break;
                 }
-                IGrip *grip = query<IGrip>(unknown);
+                IGrip *grip = QUERY(IGrip, unknown);
                 if (grip) {
                     grip_is_hovered = true;
                     if (!pickedGrips.contains(grip)) {
@@ -289,7 +289,7 @@ public:
 //        foreach (QGraphicsItem *item, items) {
 //            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
 //            if (unknown) {
-//                play_cursor = query<IPlayCursor>(unknown);
+//                play_cursor = QUERY(IPlayCursor, unknown);
 //                if (play_cursor)
 //                    break;
 //            }
@@ -346,7 +346,7 @@ public:
 //        foreach (QGraphicsItem *item, items) {
 //            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
 //            if (unknown) {
-//                IGripItem *grip = query<IGripItem>(unknown);
+//                IGripItem *grip = QUERY(IGripItem, unknown);
 //                if (grip) {
 //                    if (!selectedGrip)
 //                        clearHovered();
@@ -499,9 +499,9 @@ public:
 //        foreach (QGraphicsItem *item, items) {
 //            IUnknown *unknown = variantToUnknown_cast(item->data(0));
 //            if (unknown) {
-//                IEntity *entity = query<IEntity>(unknown);
+//                IEntity *entity = QUERY(IEntity, unknown);
 //                if (entity && entity->intersects(pickRect)) {
-//                    ISubEntity *sub_entity = query<ISubEntity>(unknown);
+//                    ISubEntity *sub_entity = QUERY(ISubEntity, unknown);
 //                    if (sub_entity) {
 //                        IEntity *parent_entity = sub_entity->parentEntity();
 //                        entities.append(parent_entity);
@@ -514,7 +514,7 @@ public:
 //        QItemSelection ss;
 //        ss.reserve(entities.count());
 //        foreach (IEntity *entity, entities) {
-//            const QModelIndex index = IModel::instance()->indexFromItem(query<IModelItem>(entity));
+//            const QModelIndex index = IModel::instance()->indexFromItem(QUERY(IModelItem, entity));
 //            ss.select(index, index);
 //        }
 //        QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
@@ -540,7 +540,7 @@ public:
 
     bool entityIsPicked(IGraphicsEntity *entity)
     {
-//        ISubEntity *subEntity = query<ISubEntity>(entity);
+//        ISubEntity *subEntity = QUERY(ISubEntity, entity);
 //        IEntity *parentEntity = subEntity ? subEntity->parentEntity() : 0;
 //        foreach (GraphicsEntityItem *item, pickedEntities) {
 //            const IEntity *itemEntity = item->entity();
@@ -600,7 +600,7 @@ public:
 
 //                // Unhighlight and remove any hovered grips on the item before
 //                // deleting it.
-//                IEntityItem *entity_item = query<IEntityItem>(item);
+//                IEntityItem *entity_item = QUERY(IEntityItem, item);
 //                for (int i = 0;  i < hoveredGrips.count();  ++i) {
 //                    IGripItem *grip = hoveredGrips[i];
 //                    if (entity_item == grip->parentEntityItem()) {
@@ -807,9 +807,9 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 
 //    // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
 //    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
-//    IEntity *entity = query<IEntity>(item);
+//    IEntity *entity = QUERY(IEntity, item);
 //    if (!entity) {
-//        ISubEntity *subEntity = query<ISubEntity>(item);
+//        ISubEntity *subEntity = QUERY(ISubEntity, item);
 //        if (subEntity)
 //            entity = subEntity->parentEntity();
 //    }
@@ -839,7 +839,7 @@ void GraphicsView::noteSelectionChanged(const QItemSelection &selected, const QI
 //    const QModelIndexList selectedIndexes = selected.indexes();
 //    QList<IEntity*> selectedEntities;
 //    foreach (const QModelIndex &index, selectedIndexes) {
-//        IEntity *note = query<IEntity>(model->itemFromIndex(index));
+//        IEntity *note = QUERY(IEntity, model->itemFromIndex(index));
 //        QList<IEntity*> curves = note->subEntities(sceneType());
 //        selectedEntities.append(curves);
 //    }
@@ -847,7 +847,7 @@ void GraphicsView::noteSelectionChanged(const QItemSelection &selected, const QI
 //    const QModelIndexList deselectedIndexes = deselected.indexes();
 //    QList<IEntity*> deselectedEntities;
 //    foreach (const QModelIndex &index, deselectedIndexes) {
-//        IEntity *note = query<IEntity>(model->itemFromIndex(index));
+//        IEntity *note = QUERY(IEntity, model->itemFromIndex(index));
 //        QList<IEntity*> curves = note->subEntities(sceneType());
 //        deselectedEntities.append(curves);
 //    }

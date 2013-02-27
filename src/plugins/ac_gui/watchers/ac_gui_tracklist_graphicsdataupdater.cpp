@@ -27,14 +27,14 @@ using namespace Ac;
 
 static void updateZValues(const IModelItemList *parent)
 {
-    IGraphicsItem *parent_gitem = query<IGraphicsItem>(parent);
+    IGraphicsItem *parent_gitem = QUERY(IGraphicsItem, parent);
     if (!parent_gitem)
         return;
     QList<IGraphicsItem*> child_gitems = parent_gitem->children();
     const int item_count = child_gitems.count();
     for (int i = 0;  i < item_count;  ++i) {
         const int z_value = item_count - i;
-        IGraphicsData *child_gdata = query<IGraphicsData>(child_gitems.at(i));
+        IGraphicsData *child_gdata = QUERY(IGraphicsData, child_gitems.at(i));
         child_gdata->node(PitchScene, MainTransform)->setZValue(z_value);
         child_gdata->node(ControlScene, MainTransform)->setZValue(z_value);
     }

@@ -76,12 +76,12 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
         return false;
     }
     if (elementName.endsWith("List")) {
-        IModelItemList *list = query<IModelItemList>(item);
+        IModelItemList *list = QUERY(IModelItemList, item);
         QString listElementName = elementName;
         listElementName.chop(4);
         int itemType = elementType(listElementName);
         while (nextElement(reader) == QXmlStreamReader::StartElement) {
-            IModelItem *newItem = query<IModelItem>(factory->create(itemType));
+            IModelItem *newItem = QUERY(IModelItem, factory->create(itemType));
             list->append(newItem);
             if (!readItem(newItem, reader)) {
                 qWarning() << Q_FUNC_INFO << ": failed to read list item in" << elementName;
@@ -89,7 +89,7 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
             }
         }
     } else {
-        IModelData *data = query<IModelData>(item);
+        IModelData *data = QUERY(IModelData, item);
         if (!data) {
             qWarning() << Q_FUNC_INFO << ": Query IModelData failed in" << elementName;
             return false;
@@ -129,7 +129,7 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
                 if (subElementName.endsWith("List")) {
                     QString subElementListName = subElementName;
                     subElementListName.chop(4);
-                    subItem = query<IModelItem>(item->findList(elementType(subElementListName)));
+                    subItem = QUERY(IModelItem, item->findList(elementType(subElementListName)));
                 } else
                     subItem = item->findItem(elementType(subElementName));
                 if (!readItem(subItem, reader)) {
@@ -186,7 +186,7 @@ bool Reader::read(IModelItem *item)
 {
     if (!item)
         return false;
-    QFile *file = query<IFileFiler>(this)->file();
+    QFile *file = QUERY(IFileFiler, this)->file();
     if (file && file->open(QIODevice::ReadOnly))
         setStream(new QXmlStreamReader(file));
     QXmlStreamReader *reader = _stream;

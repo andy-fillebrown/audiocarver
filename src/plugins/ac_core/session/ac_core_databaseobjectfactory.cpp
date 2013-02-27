@@ -53,7 +53,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IModelItem *parent)
     IAggregate *aggregate = new Base::Aggregate;
     create(itemType, aggregate);
     if (parent)
-        query<IModelItem>(aggregate)->setParent(parent);
+        QUERY(IModelItem, aggregate)->setParent(parent);
     aggregate->initialize();
     return aggregate;
 }

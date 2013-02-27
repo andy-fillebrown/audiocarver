@@ -51,7 +51,7 @@ bool ModelItem::isTypeOfItem(int itemType) const
 
 int ModelItem::indexOf(const IModelItem *item) const
 {
-    if (query<IModelItem>(_notes) == item)
+    if (QUERY(IModelItem, _notes) == item)
         return ItemCountOffset;
     return ScoreObject::ModelItem::indexOf(item);
 }
@@ -61,7 +61,7 @@ IModelItem *ModelItem::at(int i) const
     Q_ASSERT(0 <= (TotalItemCount - i));
     switch (i - ItemCountOffset) {
     case 0:
-        return query<IModelItem>(_notes);
+        return QUERY(IModelItem, _notes);
     default:
         return ScoreObject::ModelItem::at(i);
     }
@@ -71,7 +71,7 @@ IModelItemList *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case NoteItem:
-        return query<IModelItemList>(_notes);
+        return QUERY(IModelItemList, _notes);
     default:
         return ScoreObject::ModelItem::findList(listType);
     }

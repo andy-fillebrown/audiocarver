@@ -118,7 +118,7 @@ bool test_1()
     // Make sure querying aggregates succeeds.
     IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
     CHECK(control_curve);
-    IModelItem *item = query<IModelItem>(control_curve);
+    IModelItem *item = QUERY(IModelItem, control_curve);
     CHECK(item);
     delete control_curve;
     return true;
@@ -129,7 +129,7 @@ bool test_2()
     // Make sure setting item name succeeds.
     IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
     CHECK(control_curve);
-    IModelData *data = query<IModelData>(control_curve);
+    IModelData *data = QUERY(IModelData, control_curve);
     CHECK(data);
     CHECK(data->set("ControlCurve", NameRole));
     CHECK("ControlCurve" == data->get<QString>(NameRole));

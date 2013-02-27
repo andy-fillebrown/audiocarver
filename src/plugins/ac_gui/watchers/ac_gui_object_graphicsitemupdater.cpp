@@ -44,13 +44,13 @@ void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
-    IGraphicsData *child_gdata = query<IGraphicsData>(child);
+    IGraphicsData *child_gdata = QUERY(IGraphicsData, child);
     if (!child_gdata)
         return;
-    IGraphicsItem *child_gitem = query<IGraphicsItem>(child);
+    IGraphicsItem *child_gitem = QUERY(IGraphicsItem, child);
     if (!child_gitem)
         return;
-    IGraphicsData *parent_gdata = query<IGraphicsData>(child_gitem->parent());
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, child_gitem->parent());
     for (int i = 0;  i < SceneTypeCount;  ++i) {
         for (int j = 0;  j < TransformTypeCount;  ++j) {
             QGraphicsItem *child_node = child_gdata ? child_gdata->node(i, j) : 0;
