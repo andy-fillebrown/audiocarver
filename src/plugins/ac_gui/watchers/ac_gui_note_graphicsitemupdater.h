@@ -18,28 +18,20 @@
 #ifndef AC_GUI_NOTE_GRAPHICSITEMUPDATER_H
 #define AC_GUI_NOTE_GRAPHICSITEMUPDATER_H
 
-#include <imodelitemwatcher.h>
+#include <ac_gui_object_graphicsitemupdater.h>
 
 class IAggregate;
 
 namespace Note {
 
-class GraphicsItemUpdater : public IModelItemWatcher
+class GraphicsItemUpdater : public Object::GraphicsItemUpdater
 {
-    IAggregate *_aggregate;
-
 public:
-    GraphicsItemUpdater(IAggregate *aggregate);
-
-    void *queryInterface(int interfaceType) const;
+    GraphicsItemUpdater(IAggregate *aggregate)
+        :   Object::GraphicsItemUpdater(aggregate)
+    {}
 
 protected:
-    void initialize()
-    {}
-
-    void beginChangeParent(const IModelItem *child)
-    {}
-
     void endChangeParent(const IModelItem *child);
 };
 

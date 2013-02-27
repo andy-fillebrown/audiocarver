@@ -58,6 +58,7 @@ void GraphicsData::update(int role, const QVariant &value)
     switch (role) {
     case ColorRole:
         _curveNode->setColor(qvariant_cast<QColor>(value));
+        break;
     case PointsRole:
         _curveNode->setPoints(qvariant_cast<PointList>(value));
         break;
