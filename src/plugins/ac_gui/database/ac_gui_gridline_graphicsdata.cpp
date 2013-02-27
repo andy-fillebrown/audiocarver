@@ -71,8 +71,6 @@ void GraphicsData::update(int role, const QVariant &value)
     case VisibilityRole:
         _labelSceneRootNode->setVisible(qvariant_cast<bool>(value));
         break;
-    case ColorRole:
-        _labelSceneTextNode->setColor(qvariant_cast<int>(value));
     case LabelRole:
         _labelSceneTextNode->setText(qvariant_cast<QString>(value));
         break;

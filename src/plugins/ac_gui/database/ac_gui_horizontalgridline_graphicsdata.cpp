@@ -61,7 +61,7 @@ void GraphicsData::update(int role, const QVariant &value)
         _editorSceneLineExtensionNode->setLine(1.0f, location, 2.0f, location);
     } break;
     case ColorRole: {
-        const int color = qvariant_cast<int>(value);
+        const QColor color = qvariant_cast<QColor>(value);
         QPen pen = _editorSceneLineNode->pen();
         pen.setColor(color);
         _editorSceneLineNode->setPen(pen);
