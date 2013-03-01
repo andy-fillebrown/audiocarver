@@ -18,7 +18,6 @@
 #include "ac_gui_note_graphicsitemupdater.h"
 #include <ac_core_namespace.h>
 #include <mi_core_utilities.h>
-#include <iaggregate.h>
 #include <igraphicsdata.h>
 #include <igraphicsitem.h>
 #include <imodeldata.h>
