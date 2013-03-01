@@ -4,7 +4,7 @@ TARGET_NAME = CorePlugin
 TEMPLATE = lib
 QT -= gui
 
-include(../../_plugin.prf)
+include(../../_.plugin.prf)
 
 DEFINES *= \
     MI_CORE_LIBRARY
@@ -25,7 +25,7 @@ for(file, SOURCE_FILES) {
 
 resource = $${SOURCE_FILE_PREFIX}.qrc
 prf = $${SOURCE_FILE_PREFIX}.prf
-dependencies_prf = _$${SOURCE_FILE_PREFIX}_dependencies.prf
+dependencies_prf = _.$${SOURCE_FILE_PREFIX}_dependencies.prf
 pluginspec = $${SOURCE_FILE_PREFIX}.pluginspec.in
 exists($$resource): RESOURCES *= $$resource
 exists($$prf): OTHER_FILES *= $$prf

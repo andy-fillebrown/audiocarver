@@ -1,8 +1,8 @@
 TARGET = QtCorePlugin
 TEMPLATE = lib
 
-load(../../_plugin.prf)
-load(../qt_core/qt_core_dependencies.prf)
+include(../../_.plugin.prf)
+include(../qt_core/_.qt_core_dependencies.prf)
 
 QMAKE_SUBSTITUTES *= \
     pro_version.h.in \
@@ -79,7 +79,7 @@ RESOURCES = \
 OTHER_FILES *= \
     pro_version.h.in \
     qt_core.prf \
-    qt_core_dependencies.prf \
+    _.qt_core_dependencies.prf \
     qt_core.pluginspec.in \
 
 unix {
