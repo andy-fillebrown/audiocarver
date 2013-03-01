@@ -100,7 +100,7 @@ void GraphicsData::update(int role, const QVariant &value)
     }
     if (ColorRole == role) {
         QPen pen = _lineNode->pen();
-        pen.setColor(qvariant_cast<int>(value));
+        pen.setColor(qvariant_cast<QColor>(value));
         _lineNode->setPen(pen);
         return;
     }

@@ -60,11 +60,11 @@ void GraphicsData::highlight(bool on)
 
 void GraphicsData::update(int role, const QVariant &value)
 {
-    QList<IGraphicsEntity*> subents = subentities();
-    if (ColorRole == role) {
+    if (ColorRole == role
+            || VolumeRole == role) {
         QList<IGraphicsEntity*> subents = subentities();
         foreach (IGraphicsEntity *subent, subents)
-            subent->update(ColorRole, value);
+            subent->update(role, value);
     }
 }
 

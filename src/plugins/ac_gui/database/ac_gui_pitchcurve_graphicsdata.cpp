@@ -19,6 +19,7 @@
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
 #include <igraphicsitem.h>
+#include <imodeldata.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -37,11 +38,10 @@ void GraphicsData::update(int role, const QVariant &value)
     Curve::GraphicsData::update(role, value);
     if (PointsRole == role) {
         IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-        if (!this_gitem)
-            return;
         IGraphicsData *note_gdata = QUERY(IGraphicsData, this_gitem->parent());
-        if (note_gdata)
-            note_gdata->update(VolumeRole, value);
+        IModelData *note_data = QUERY(IModelData, note_gdata);
+        const QVariant volume = note_data->getValue(VolumeRole);
+        note_gdata->update(VolumeRole, volume);
     }
 }
 
