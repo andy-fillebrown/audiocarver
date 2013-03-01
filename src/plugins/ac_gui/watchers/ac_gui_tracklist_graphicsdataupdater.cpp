@@ -25,16 +25,15 @@
 
 using namespace Ac;
 
-static void updateZValues(const IModelItemList *parent)
+static void updateZValues(const IModelItemList *list)
 {
-    IGraphicsItem *parent_gitem = QUERY(IGraphicsItem, parent);
+    IGraphicsItem *parent_gitem = QUERY(IGraphicsItem, list->parent());
     if (!parent_gitem)
         return;
-    QList<IGraphicsItem*> child_gitems = parent_gitem->children();
-    const int item_count = child_gitems.count();
-    for (int i = 0;  i < item_count;  ++i) {
-        const int z_value = item_count - i;
-        IGraphicsData *child_gdata = QUERY(IGraphicsData, child_gitems.at(i));
+    const int child_count = list->count();
+    for (int i = 0;  i < child_count;  ++i) {
+        const int z_value = child_count - i;
+        IGraphicsData *child_gdata = QUERY(IGraphicsData, list->at(i));
         child_gdata->node(PitchScene, MainTransform)->setZValue(z_value);
         child_gdata->node(ControlScene, MainTransform)->setZValue(z_value);
     }
@@ -54,14 +53,9 @@ void *GraphicsDataUpdater::queryInterface(int interfaceType) const
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void GraphicsDataUpdater::endInsertItem(const IModelItemList *parent, int index)
+void GraphicsDataUpdater::endInsertItem(const IModelItemList *list, int index)
 {
-    updateZValues(parent);
-}
-
-void GraphicsDataUpdater::endRemoveItem(const IModelItemList *parent, int index)
-{
-    updateZValues(parent);
+    updateZValues(list);
 }
 
 }

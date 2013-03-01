@@ -27,10 +27,10 @@ class IModelItemListWatcher : public IComponent
 public:
     enum { InterfaceType = I::IModelItemListWatcher };
 
-    virtual void beginInsertItem(const IModelItemList *parent, int index) = 0;
-    virtual void endInsertItem(const IModelItemList *parent, int index) = 0;
-    virtual void beginRemoveItem(const IModelItemList *parent, int index) = 0;
-    virtual void endRemoveItem(const IModelItemList *parent, int index) = 0;
+    virtual void beginInsertItem(const IModelItemList *list, int index) = 0;
+    virtual void endInsertItem(const IModelItemList *list, int index) = 0;
+    virtual void beginRemoveItem(const IModelItemList *list, int index) = 0;
+    virtual void endRemoveItem(const IModelItemList *list, int index) = 0;
 
     int interfaceType() const
     {

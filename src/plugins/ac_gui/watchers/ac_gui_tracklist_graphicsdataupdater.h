@@ -37,15 +37,16 @@ protected:
     void initialize()
     {}
 
-    void beginInsertItem(const IModelItemList *parent, int index)
+    void beginInsertItem(const IModelItemList *list, int index)
     {}
 
-    void endInsertItem(const IModelItemList *parent, int index);
+    void endInsertItem(const IModelItemList *list, int index);
 
-    void beginRemoveItem(const IModelItemList *parent, int index)
+    void beginRemoveItem(const IModelItemList *list, int index)
     {}
 
-    void endRemoveItem(const IModelItemList *parent, int index);
+    void endRemoveItem(const IModelItemList *list, int index)
+    {}
 };
 
 }

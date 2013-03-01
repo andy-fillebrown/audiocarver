@@ -28,7 +28,6 @@ public:
     enum { InterfaceType = I::IGraphicsItem };
 
     virtual IGraphicsItem *parent() const = 0;
-    virtual QList<IGraphicsItem*> children() const = 0;
 
     int interfaceType() const
     {

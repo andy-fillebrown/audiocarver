@@ -37,7 +37,7 @@ IGraphicsItem *GraphicsItem::parent() const
 {
     IModelItem *this_item = QUERY(IModelItem, this);
     IModelItem *parent_item = this_item->parent();
-    if (parent_item->isList())
+    if (parent_item && parent_item->isList())
         parent_item = parent_item->parent();
     return QUERY(IGraphicsItem, parent_item);
 }
