@@ -18,7 +18,7 @@
 #ifndef AC_CORE_DATABASE_H
 #define AC_CORE_DATABASE_H
 
-#include <mi_core_database.h>
+#include <mi_core_base_database.h>
 #include "ac_core_global.h"
 #include <QString>
 

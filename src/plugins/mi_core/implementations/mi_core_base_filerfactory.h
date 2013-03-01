@@ -15,38 +15,25 @@
 **
 **************************************************************************/
 
-#include "mi_gui_editor.h"
-#include <iaggregate.h>
-#include <isession.h>
+#ifndef MI_CORE_BASE_FILERFACTORY_H
+#define MI_CORE_BASE_FILERFACTORY_H
 
-static IEditor *instance = 0;
-
-IEditor *IEditor::instance()
-{
-    return ::instance;
-}
+#include <ifilerfactory.h>
 
 namespace Base {
 
-Editor::Editor()
-    :   _isInCommand(false)
+class MI_CORE_EXPORT FilerFactory : public IFilerFactory
 {
-    IAggregate *aggregate = ISession::instance();
-    aggregate->remove(::instance);
-    delete ::instance;
-    ::instance = this;
-    aggregate->append(this);
-}
+protected:
+    FilerFactory();
+    ~FilerFactory();
 
-Editor::~Editor()
-{
-    ::instance = 0;
-}
+    void initialize()
+    {}
 
-void *Editor::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : ISession::instance()->queryInterface(interfaceType);
-}
+    void *queryInterface(int interfaceType) const;
+};
 
 }
+
+#endif

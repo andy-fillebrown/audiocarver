@@ -15,27 +15,23 @@
 **
 **************************************************************************/
 
-#include "mi_core_session.h"
-#include <isession.h>
+#ifndef MI_CORE_BASE_SESSION_H
+#define MI_CORE_BASE_SESSION_H
 
-static IAggregate *instance = 0;
-
-IAggregate *ISession::instance()
-{
-    return ::instance;
-}
+#include "mi_core_base_aggregate.h"
 
 namespace Base {
 
-Session::Session()
+class MI_CORE_EXPORT Session : public Aggregate
 {
-    delete ::instance;
-    ::instance = this;
+public:
+    Session();
+    virtual ~Session();
+
+    void initialize()
+    {}
+};
+
 }
 
-Session::~Session()
-{
-    ::instance = 0;
-}
-
-}
+#endif

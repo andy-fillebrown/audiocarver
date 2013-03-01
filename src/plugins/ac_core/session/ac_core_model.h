@@ -18,7 +18,7 @@
 #ifndef AC_CORE_MODEL_H
 #define AC_CORE_MODEL_H
 
-#include <mi_core_model.h>
+#include <mi_core_base_model.h>
 #include "ac_core_global.h"
 
 class QAbstractItemModel;

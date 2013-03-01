@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "mi_core_model.h"
+#include "mi_core_base_model.h"
 #include <iaggregate.h>
 #include <idatabase.h>
 #include <imodel.h>

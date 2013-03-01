@@ -18,7 +18,7 @@
 #ifndef AC_GUI_EDITOR_H
 #define AC_GUI_EDITOR_H
 
-#include <mi_gui_editor.h>
+#include <mi_gui_base_editor.h>
 #include <QList>
 
 class IGraphicsViewGroup;

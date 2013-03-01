@@ -35,7 +35,7 @@
 #include "ac_gui_velocity_graphicsdata.h"
 #include "ac_gui_velocity_modelitem.h"
 #include <ac_core_scoreobject_modeldata.h>
-#include <mi_core_aggregate.h>
+#include <mi_core_base_aggregate.h>
 #include <imodelitem.h>
 
 using namespace Ac;

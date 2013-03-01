@@ -15,23 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_SESSION_H
-#define MI_CORE_SESSION_H
+#include "mi_core_base_filerfactory.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-#include "mi_core_aggregate.h"
+static IFilerFactory *instance = 0;
+
+IFilerFactory *IFilerFactory::instance()
+{
+    return ::instance;
+}
 
 namespace Base {
 
-class MI_CORE_EXPORT Session : public Aggregate
+FilerFactory::FilerFactory()
 {
-public:
-    Session();
-    virtual ~Session();
-
-    void initialize()
-    {}
-};
-
+    IAggregate *aggregate = ISession::instance();
+    aggregate->remove(::instance);
+    delete ::instance;
+    ::instance = this;
+    aggregate->append(this);
 }
 
-#endif
+FilerFactory::~FilerFactory()
+{
+    ::instance = 0;
+}
+
+void *FilerFactory::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
+}
+
+}

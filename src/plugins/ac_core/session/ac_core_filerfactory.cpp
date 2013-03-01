@@ -20,7 +20,7 @@
 #include "ac_core_namespace.h"
 #include "ac_core_reader.h"
 #include "ac_core_writer.h"
-#include <mi_core_aggregate.h>
+#include <mi_core_base_aggregate.h>
 
 using namespace Ac;
 

@@ -15,37 +15,27 @@
 **
 **************************************************************************/
 
-#include "mi_core_database.h"
-#include <iaggregate.h>
-#include <isession.h>
+#ifndef MI_CORE_BASE_DATABASE_H
+#define MI_CORE_BASE_DATABASE_H
 
-static IDatabase *instance = 0;
+#include <idatabase.h>
 
-IDatabase *IDatabase::instance()
-{
-    return ::instance;
-}
+class IAggregate;
 
 namespace Base {
 
-Database::Database()
+class MI_CORE_EXPORT Database : public IDatabase
 {
-    IAggregate *aggregate = ISession::instance();
-    aggregate->remove(::instance);
-    delete ::instance;
-    ::instance = this;
-    aggregate->append(this);
-}
+protected:
+    Database();
+    ~Database();
 
-Database::~Database()
-{
-    ::instance = 0;
-}
+    void initialize()
+    {}
 
-void *Database::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : ISession::instance()->queryInterface(interfaceType);
-}
+    void *queryInterface(int interfaceType) const;
+};
 
 }
+
+#endif

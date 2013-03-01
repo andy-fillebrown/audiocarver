@@ -15,20 +15,21 @@
 **
 **************************************************************************/
 
-#include "mi_core_filerfactory.h"
+#include "mi_gui_base_editor.h"
 #include <iaggregate.h>
 #include <isession.h>
 
-static IFilerFactory *instance = 0;
+static IEditor *instance = 0;
 
-IFilerFactory *IFilerFactory::instance()
+IEditor *IEditor::instance()
 {
     return ::instance;
 }
 
 namespace Base {
 
-FilerFactory::FilerFactory()
+Editor::Editor()
+    :   _isInCommand(false)
 {
     IAggregate *aggregate = ISession::instance();
     aggregate->remove(::instance);
@@ -37,12 +38,12 @@ FilerFactory::FilerFactory()
     aggregate->append(this);
 }
 
-FilerFactory::~FilerFactory()
+Editor::~Editor()
 {
     ::instance = 0;
 }
 
-void *FilerFactory::queryInterface(int interfaceType) const
+void *Editor::queryInterface(int interfaceType) const
 {
     void *i = IComponent::queryInterface(interfaceType);
     return i ? i : ISession::instance()->queryInterface(interfaceType);

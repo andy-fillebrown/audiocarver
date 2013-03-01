@@ -15,25 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_FILERFACTORY_H
-#define MI_CORE_FILERFACTORY_H
+#include "mi_core_base_database.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-#include <ifilerfactory.h>
+static IDatabase *instance = 0;
+
+IDatabase *IDatabase::instance()
+{
+    return ::instance;
+}
 
 namespace Base {
 
-class MI_CORE_EXPORT FilerFactory : public IFilerFactory
+Database::Database()
 {
-protected:
-    FilerFactory();
-    ~FilerFactory();
-
-    void initialize()
-    {}
-
-    void *queryInterface(int interfaceType) const;
-};
-
+    IAggregate *aggregate = ISession::instance();
+    aggregate->remove(::instance);
+    delete ::instance;
+    ::instance = this;
+    aggregate->append(this);
 }
 
-#endif
+Database::~Database()
+{
+    ::instance = 0;
+}
+
+void *Database::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
+}
+
+}

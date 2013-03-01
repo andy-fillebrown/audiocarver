@@ -18,7 +18,7 @@
 #ifndef AC_CORE_FILERFACTORY_H
 #define AC_CORE_FILERFACTORY_H
 
-#include <mi_core_filerfactory.h>
+#include <mi_core_base_filerfactory.h>
 #include "ac_core_global.h"
 
 namespace Core {

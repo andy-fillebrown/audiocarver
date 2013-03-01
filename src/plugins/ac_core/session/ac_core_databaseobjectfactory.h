@@ -18,7 +18,7 @@
 #ifndef AC_CORE_DATABASEOBJECTFACTORY_H
 #define AC_CORE_DATABASEOBJECTFACTORY_H
 
-#include <mi_core_databaseobjectfactory.h>
+#include <mi_core_base_databaseobjectfactory.h>
 #include "ac_core_global.h"
 
 namespace Core {

@@ -8,7 +8,7 @@ DIRS = \
 #    filers \
     graphics \
     graphicsview \
-#    implementations \
+    implementations \
     interfaces \
     itemviews \
 #    models \

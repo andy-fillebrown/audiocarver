@@ -1,6 +1,5 @@
 
 SOURCE_FILES = \
-    aggregate \
     object_modeldata \
     object_modelitem \
     objectlist_modeldata \

@@ -15,31 +15,27 @@
 **
 **************************************************************************/
 
-#include "mi_core_aggregate.h"
+#include "mi_core_base_session.h"
+#include <isession.h>
+
+static IAggregate *instance = 0;
+
+IAggregate *ISession::instance()
+{
+    return ::instance;
+}
 
 namespace Base {
 
-void *Aggregate::queryInterface(int interfaceType) const
+Session::Session()
 {
-    foreach (IComponent *component, _components)
-        if (component->isTypeOfInterface(interfaceType))
-            return component->queryInterface(interfaceType);
-    return IAggregate::queryInterface(interfaceType);
+    delete ::instance;
+    ::instance = this;
 }
 
-Aggregate::Aggregate()
-{}
-
-Aggregate::~Aggregate()
+Session::~Session()
 {
-    qDeleteAll(_components);
-    _components.clear();
-}
-
-void Aggregate::initialize()
-{
-    foreach (IComponent *component, _components)
-        component->initialize();
+    ::instance = 0;
 }
 
 }

@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_MODEL_H
-#define MI_CORE_MODEL_H
+#ifndef MI_CORE_BASE_MODEL_H
+#define MI_CORE_BASE_MODEL_H
 
 #include <imodel.h>
 

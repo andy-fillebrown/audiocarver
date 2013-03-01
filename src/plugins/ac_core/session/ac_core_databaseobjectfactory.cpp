@@ -37,7 +37,7 @@
 #include "ac_core_track_modelitem.h"
 #include "ac_core_viewsettings_modeldata.h"
 #include "ac_core_viewsettings_modelitem.h"
-#include <mi_core_aggregate.h>
+#include <mi_core_base_aggregate.h>
 #include <mi_core_object_modeldataupdater.h>
 #include <mi_core_objectlist_modeldata.h>
 #include <mi_core_objectlist_modelitem.h>

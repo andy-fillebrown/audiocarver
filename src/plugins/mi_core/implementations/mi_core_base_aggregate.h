@@ -15,25 +15,45 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_DATABASEOBJECTFACTORY_H
-#define MI_CORE_DATABASEOBJECTFACTORY_H
+#ifndef MI_CORE_BASE_AGGREGATE_H
+#define MI_CORE_BASE_AGGREGATE_H
 
-#include <idatabaseobjectfactory.h>
-
-class IAggregate;
+#include <iaggregate.h>
+#include "mi_core_global.h"
+#include <QList>
 
 namespace Base {
 
-class MI_CORE_EXPORT DatabaseObjectFactory : public IDatabaseObjectFactory
+class MI_CORE_EXPORT Aggregate : public IAggregate
 {
-protected:
-    DatabaseObjectFactory();
-    ~DatabaseObjectFactory();
+    QList<IComponent*> _components;
 
-    void initialize()
+public:
+    Aggregate()
     {}
 
+    ~Aggregate();
+
     void *queryInterface(int interfaceType) const;
+    void initialize();
+
+protected:
+    const QList<IComponent*> &components() const
+    {
+        return _components;
+    }
+
+    IUnknown *append(IComponent *component)
+    {
+        if (!_components.contains(component))
+            _components.append(component);
+        return component;
+    }
+
+    void remove(IComponent *component)
+    {
+        _components.removeOne(component);
+    }
 };
 
 }

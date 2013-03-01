@@ -3,10 +3,10 @@ load(../mi_core/mi_core.prf)
 
 DIRS = \
     graphicsview \
+    implementations \
     interfaces \
     itemviews \
 #    models \
-    session \
     widgets \
 
 for(dir, DIRS) {

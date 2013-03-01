@@ -15,60 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef MI_GUI_EDITOR_H
-#define MI_GUI_EDITOR_H
+#ifndef MI_CORE_BASE_DATABASEOBJECTFACTORY_H
+#define MI_CORE_BASE_DATABASEOBJECTFACTORY_H
 
-#include <ieditor.h>
+#include <idatabaseobjectfactory.h>
+
+class IAggregate;
 
 namespace Base {
 
-class MI_GUI_EXPORT Editor : public IEditor
+class MI_CORE_EXPORT DatabaseObjectFactory : public IDatabaseObjectFactory
 {
-    int _isInCommand : 1;
-    int _isCreating : 1;
-
-public:
-    Editor();
-    ~Editor();
-
-    void *queryInterface(int interfaceType) const;
-
 protected:
+    DatabaseObjectFactory();
+    ~DatabaseObjectFactory();
+
     void initialize()
     {}
 
-    bool isInCommand() const
-    {
-        return _isInCommand;
-    }
-
-    void beginCommand()
-    {
-        _isInCommand = true;
-    }
-
-    void endCommand()
-    {
-        _isInCommand = false;
-    }
-
-    void pushCommand(QUndoCommand *command)
-    {}
-
-    bool isCreating() const
-    {
-        return false;
-    }
-
-    void startCreating()
-    {
-        _isCreating = true;
-    }
-
-    void finishCreating()
-    {
-        _isCreating = false;
-    }
+    void *queryInterface(int interfaceType) const;
 };
 
 }

@@ -15,41 +15,59 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_AGGREGATE_H
-#define MI_CORE_AGGREGATE_H
+#ifndef MI_GUI_BASE_EDITOR_H
+#define MI_GUI_BASE_EDITOR_H
 
-#include <iaggregate.h>
-#include "mi_core_global.h"
-#include <QList>
+#include <ieditor.h>
 
 namespace Base {
 
-class MI_CORE_EXPORT Aggregate : public IAggregate
+class MI_GUI_EXPORT Editor : public IEditor
 {
-    QList<IComponent*> _components;
+    int _isInCommand : 1;
+    int _isCreating : 1;
 
 public:
+    Editor();
+    ~Editor();
+
     void *queryInterface(int interfaceType) const;
-    Aggregate();
-    ~Aggregate();
-    void initialize();
 
 protected:
-    const QList<IComponent*> &components() const
+    void initialize()
+    {}
+
+    bool isInCommand() const
     {
-        return _components;
+        return _isInCommand;
     }
 
-    IUnknown *append(IComponent *component)
+    void beginCommand()
     {
-        if (!_components.contains(component))
-            _components.append(component);
-        return component;
+        _isInCommand = true;
     }
 
-    void remove(IComponent *component)
+    void endCommand()
     {
-        _components.removeOne(component);
+        _isInCommand = false;
+    }
+
+    void pushCommand(QUndoCommand *command)
+    {}
+
+    bool isCreating() const
+    {
+        return false;
+    }
+
+    void startCreating()
+    {
+        _isCreating = true;
+    }
+
+    void finishCreating()
+    {
+        _isCreating = false;
     }
 };
 
