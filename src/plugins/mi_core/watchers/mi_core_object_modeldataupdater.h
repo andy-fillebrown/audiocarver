@@ -18,31 +18,18 @@
 #ifndef MI_CORE_OBJECT_MODELDATAUPDATER_H
 #define MI_CORE_OBJECT_MODELDATAUPDATER_H
 
-#include <imodeldatawatcher.h>
-#include "mi_core_global.h"
-
-class IAggregate;
+#include "mi_core_base_modeldatawatcher.h"
 
 namespace Object {
 
-class MI_CORE_EXPORT ModelDataUpdater : public IModelDataWatcher
+class MI_CORE_EXPORT ModelDataUpdater : public Base::ModelDataWatcher
 {
-    IAggregate *_aggregate;
-
 public:
-    ModelDataUpdater(IAggregate *aggregate);
-
-    void *queryInterface(int interfaceType) const;
-
-protected:
-    void initialize()
+    ModelDataUpdater(IAggregate *aggregate)
+        :   Base::ModelDataWatcher(aggregate)
     {}
 
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
+protected:
     void beginChangeData(const IModelData *data, int role, int changeType);
     void endChangeData(const IModelData *data, int role, int changeType);
 };

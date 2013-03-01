@@ -27,7 +27,7 @@ using namespace Ac;
 namespace Curve {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Object::GraphicsCurve(aggregate)
+    :   Base::GraphicsCurve(aggregate)
     ,   _curveNode(0)
 {
     _curveNode = new GraphicsCurveNode;

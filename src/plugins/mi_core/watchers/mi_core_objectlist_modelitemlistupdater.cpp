@@ -16,22 +16,9 @@
 **************************************************************************/
 
 #include "mi_core_objectlist_modelitemlistupdater.h"
-#include <iaggregate.h>
 #include <imodel.h>
 
 namespace ObjectList {
-
-ModelItemListUpdater::ModelItemListUpdater(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
-void *ModelItemListUpdater::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
 
 void ModelItemListUpdater::beginInsertItem(const IModelItemList *list, int index)
 {

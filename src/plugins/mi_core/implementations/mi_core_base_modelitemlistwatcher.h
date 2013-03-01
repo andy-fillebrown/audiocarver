@@ -15,21 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSITEM_H
-#define AC_GUI_OBJECT_GRAPHICSITEM_H
+#ifndef MI_CORE_BASE_MODELITEMLISTWATCHER_H
+#define MI_CORE_BASE_MODELITEMLISTWATCHER_H
 
-#include "ac_gui_base_graphicsitem.h"
+#include <imodelitemlistwatcher.h>
+#include "mi_core_global.h"
 
-namespace Object {
+class IAggregate;
 
-class GraphicsItem : public Base::GraphicsItem
+namespace Base {
+
+class MI_CORE_EXPORT ModelItemListWatcher : public IModelItemListWatcher
 {
+    IAggregate *_aggregate;
+
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsItem(aggregate)
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    ModelItemListWatcher(IAggregate *aggregate);
+
+    void initialize()
     {}
 
-    IGraphicsItem *parent() const;
+    void beginInsertItem(const IModelItemList *list, int index)
+    {}
+
+    void endInsertItem(const IModelItemList *list, int index)
+    {}
+
+    void beginRemoveItem(const IModelItemList *list, int index)
+    {}
+
+    void endRemoveItem(const IModelItemList *list, int index)
+    {}
 };
 
 }

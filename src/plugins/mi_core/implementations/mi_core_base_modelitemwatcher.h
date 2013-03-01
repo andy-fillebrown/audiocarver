@@ -15,16 +15,17 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSDATA_H
-#define AC_GUI_OBJECT_GRAPHICSDATA_H
+#ifndef MI_CORE_BASE_MODELITEMWATCHER_H
+#define MI_CORE_BASE_MODELITEMWATCHER_H
 
-#include <igraphicsdata.h>
+#include <imodelitemwatcher.h>
+#include "mi_core_global.h"
 
 class IAggregate;
 
-namespace Object {
+namespace Base {
 
-class GraphicsData : public IGraphicsData
+class MI_CORE_EXPORT ModelItemWatcher : public IModelItemWatcher
 {
     IAggregate *_aggregate;
 
@@ -32,12 +33,15 @@ public:
     void *queryInterface(int interfaceType) const;
 
 protected:
-    GraphicsData(IAggregate *aggregate);
+    ModelItemWatcher(IAggregate *aggregate);
 
     void initialize()
     {}
 
-    void update(int role, const QVariant &value)
+    void beginChangeParent(const IModelItem *child)
+    {}
+
+    void endChangeParent(const IModelItem *child)
     {}
 };
 

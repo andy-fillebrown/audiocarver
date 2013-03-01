@@ -5,6 +5,12 @@ SOURCE_FILES = \
     databaseobjectfactory \
     filerfactory \
     model \
+    modeldata \
+    modeldatawatcher \
+    modelitem \
+    modelitemlist \
+    modelitemlistwatcher \
+    modelitemwatcher \
     session \
 
 for(file, SOURCE_FILES) {

@@ -29,7 +29,7 @@ using namespace Ac;
 namespace Velocity {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Object::GraphicsCurve(aggregate)
+    :   Base::GraphicsCurve(aggregate)
     ,   _lineNode(0)
 {
     _lineNode = new QGraphicsLineItem;

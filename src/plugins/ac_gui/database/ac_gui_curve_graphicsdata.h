@@ -18,14 +18,14 @@
 #ifndef AC_GUI_CURVE_GRAPHICSITEM_H
 #define AC_GUI_CURVE_GRAPHICSITEM_H
 
-#include <ac_gui_object_graphicscurve.h>
+#include <ac_gui_base_graphicscurve.h>
 
 class GraphicsCurveNode;
 class IAggregate;
 
 namespace Curve {
 
-class GraphicsData : public Object::GraphicsCurve
+class GraphicsData : public Base::GraphicsCurve
 {
     GraphicsCurveNode *_curveNode;
 

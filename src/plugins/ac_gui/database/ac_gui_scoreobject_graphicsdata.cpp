@@ -27,7 +27,7 @@ using namespace Mi;
 namespace ScoreObject {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Object::GraphicsData(aggregate)
+    :   Base::GraphicsData(aggregate)
 {
     _mainNodes.insert(PitchScene, new GraphicsNode);
     _mainNodes.insert(ControlScene, new GraphicsNode);

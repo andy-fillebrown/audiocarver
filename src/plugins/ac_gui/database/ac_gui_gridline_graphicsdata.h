@@ -18,7 +18,7 @@
 #ifndef AC_GUI_GRIDLINE_GRAPHICSDATA_H
 #define AC_GUI_GRIDLINE_GRAPHICSDATA_H
 
-#include "ac_gui_object_graphicsentity.h"
+#include "ac_gui_base_graphicsentity.h"
 #include <qnamespace.h>
 
 class GraphicsNode;
@@ -27,7 +27,7 @@ class QFont;
 
 namespace GridLine {
 
-class GraphicsData : public Object::GraphicsEntity
+class GraphicsData : public Base::GraphicsEntity
 {
     GraphicsNode *_labelSceneRootNode;
     GraphicsTextNode *_labelSceneTextNode;

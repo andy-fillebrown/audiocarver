@@ -21,18 +21,6 @@
 
 namespace Object {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
-void *GraphicsItem::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
-
 IGraphicsItem *GraphicsItem::parent() const
 {
     IModelItem *this_item = QUERY(IModelItem, this);

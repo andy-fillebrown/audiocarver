@@ -18,31 +18,18 @@
 #ifndef MI_CORE_OBJECTLIST_MODELITEMLISTUPDATER_H
 #define MI_CORE_OBJECTLIST_MODELITEMLISTUPDATER_H
 
-#include <imodelitemlistwatcher.h>
-#include "mi_core_global.h"
-
-class IAggregate;
+#include "mi_core_base_modelitemlistwatcher.h"
 
 namespace ObjectList {
 
-class MI_CORE_EXPORT ModelItemListUpdater : public IModelItemListWatcher
+class MI_CORE_EXPORT ModelItemListUpdater : public Base::ModelItemListWatcher
 {
-    IAggregate *_aggregate;
-
 public:
-    ModelItemListUpdater(IAggregate *aggregate);
-
-    void *queryInterface(int interfaceType) const;
-
-protected:
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    void initialize()
+    ModelItemListUpdater(IAggregate *aggregate)
+        :   Base::ModelItemListWatcher(aggregate)
     {}
 
+protected:
     void beginInsertItem(const IModelItemList *list, int index);
     void endInsertItem(const IModelItemList *list, int index);
     void beginRemoveItem(const IModelItemList *list, int index);

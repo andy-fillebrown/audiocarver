@@ -18,36 +18,24 @@
 #ifndef MI_CORE_OBJECTLIST_MODELDATA_H
 #define MI_CORE_OBJECTLIST_MODELDATA_H
 
-#include <imodeldata.h>
-#include "mi_core_global.h"
-
-class IAggregate;
+#include "mi_core_base_modeldata.h"
 
 namespace ObjectList {
 
-class MI_CORE_EXPORT ModelData : public IModelData
+class MI_CORE_EXPORT ModelData : public Base::ModelData
 {
-    IAggregate *_aggregate;
-
     enum { RoleCount = 0 };
 
 public:
-    void *queryInterface(int interfaceType) const;
-    ModelData(IAggregate *aggregate);
+    ModelData(IAggregate *aggregate)
+        :   Base::ModelData(aggregate)
+    {}
 
 protected:
     enum {
         RoleCountOffset = 0,
         TotalRoleCount = 0
     };
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    void initialize()
-    {}
 
     int roleCount() const
     {

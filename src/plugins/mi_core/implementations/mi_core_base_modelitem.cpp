@@ -15,23 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSITEM_H
-#define AC_GUI_OBJECT_GRAPHICSITEM_H
+#include "mi_core_base_modelitem.h"
+#include <iaggregate.h>
 
-#include "ac_gui_base_graphicsitem.h"
+namespace Base {
 
-namespace Object {
-
-class GraphicsItem : public Base::GraphicsItem
+void *ModelItem::queryInterface(int interfaceType) const
 {
-public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsItem(aggregate)
-    {}
-
-    IGraphicsItem *parent() const;
-};
-
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-#endif
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
+
+}

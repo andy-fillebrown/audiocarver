@@ -15,15 +15,13 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_graphicscurve.h"
+#include "ac_gui_base_graphicscurve.h"
 #include "ac_gui_namespace.h"
-#include "ac_gui_graphicsnode.h"
 #include <iaggregate.h>
-#include <imodelitem.h>
 
 using namespace Ac;
 
-namespace Object {
+namespace Base {
 
 void *GraphicsCurve::queryInterface(int interfaceType) const
 {

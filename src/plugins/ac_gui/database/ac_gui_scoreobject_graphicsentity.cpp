@@ -15,23 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSITEM_H
-#define AC_GUI_OBJECT_GRAPHICSITEM_H
+#include "ac_gui_scoreobject_graphicsentity.h"
+#include "ac_gui_namespace.h"
+#include "ac_gui_graphicsnode.h"
 
-#include "ac_gui_base_graphicsitem.h"
+using namespace Ac;
 
-namespace Object {
+namespace ScoreObject {
 
-class GraphicsItem : public Base::GraphicsItem
+GraphicsEntity::GraphicsEntity(IAggregate *aggregate)
+    :   Base::GraphicsEntity(aggregate)
 {
-public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsItem(aggregate)
-    {}
-
-    IGraphicsItem *parent() const;
-};
-
+    _mainNodes.insert(PitchScene, new GraphicsNode);
+    _mainNodes.insert(ControlScene, new GraphicsNode);
 }
 
-#endif
+QGraphicsItem *GraphicsEntity::node(int sceneType, int transformType) const
+{
+    switch (transformType) {
+    case MainTransform:
+        return _mainNodes.value(sceneType);
+    default:
+        return 0;
+    }
+}
+
+}

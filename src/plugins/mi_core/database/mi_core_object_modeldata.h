@@ -18,22 +18,14 @@
 #ifndef MI_CORE_OBJECT_MODELDATA_H
 #define MI_CORE_OBJECT_MODELDATA_H
 
-#include <imodeldata.h>
-#include "mi_core_global.h"
-
-class IAggregate;
+#include "mi_core_base_modeldata.h"
 
 namespace Object {
 
-class MI_CORE_EXPORT ModelData : public IModelData
+class MI_CORE_EXPORT ModelData : public Base::ModelData
 {
-    IAggregate *_aggregate;
-
     QString _name;
     enum { RoleCount = 1 };
-
-public:
-    void *queryInterface(int interfaceType) const;
 
 protected:
     enum {
@@ -41,20 +33,14 @@ protected:
         TotalRoleCount = RoleCount
     };
 
-    ModelData(IAggregate *aggregate);
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
+    ModelData(IAggregate *aggregate)
+        :   Base::ModelData(aggregate)
+    {}
 
     const QString &name() const
     {
         return _name;
     }
-
-    void initialize()
-    {}
 
     bool setName(const QString &name);
 

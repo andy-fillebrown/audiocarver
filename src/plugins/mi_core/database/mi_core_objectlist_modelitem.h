@@ -18,36 +18,25 @@
 #ifndef MI_CORE_OBJECTLIST_MODELITEM_H
 #define MI_CORE_OBJECTLIST_MODELITEM_H
 
-#include <imodelitemlist.h>
-#include "mi_core_global.h"
+#include "mi_core_base_modelitemlist.h"
 #include <QList>
-
-class IAggregate;
 
 namespace ObjectList {
 
-class Aggregate;
-
-class MI_CORE_EXPORT ModelItem : public IModelItemList
+class MI_CORE_EXPORT ModelItem : public Base::ModelItemList
 {
-    IAggregate *_aggregate;
     IModelItem *_parent;
     const int _listType;
     QList<IModelItem*> _items;
 
 public:
-    void *queryInterface(int interfaceType) const;
-    ModelItem(IAggregate *aggregate, int listType);
-
-protected:
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    void initialize()
+    ModelItem(IAggregate *aggregate, int listType)
+        :   Base::ModelItemList(aggregate)
+        ,   _parent(0)
+        ,   _listType(listType)
     {}
 
+protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
 

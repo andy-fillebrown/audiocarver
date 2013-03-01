@@ -20,21 +20,8 @@
 #include <imodelitemlist.h>
 
 using namespace Mi;
-using namespace Qt;
 
 namespace ObjectList {
-
-void *ModelData::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
-
-ModelData::ModelData(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
 
 QVariant ModelData::getValue(int role) const
 {

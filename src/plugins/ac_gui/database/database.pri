@@ -8,14 +8,12 @@ SOURCE_FILES = \
     horizontalgridline_graphicsdata \
     note_graphicsdata \
     note_modelitem \
-    object_graphicscurve \
-    object_graphicsdata \
-    object_graphicsentity \
     object_graphicsitem \
     pitchcurve_graphicsdata \
     pitchgridline_graphicsdata \
     score_graphicsdata \
     scoreobject_graphicsdata \
+    scoreobject_graphicsentity \
     timegridline_graphicsdata \
     track_graphicsdata \
     velocity_graphicsdata \

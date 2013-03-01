@@ -18,28 +18,18 @@
 #ifndef AC_GUI_OBJECT_GRAPHICSDATAUPDATER_H
 #define AC_GUI_OBJECT_GRAPHICSDATAUPDATER_H
 
-#include <imodeldatawatcher.h>
-
-class IAggregate;
+#include "mi_core_base_modeldatawatcher.h"
 
 namespace Object {
 
-class GraphicsDataUpdater : public IModelDataWatcher
+class GraphicsDataUpdater : public Base::ModelDataWatcher
 {
-    IAggregate *_aggregate;
-
 public:
-    GraphicsDataUpdater(IAggregate *aggregate);
-
-    void *queryInterface(int interfaceType) const;
+    GraphicsDataUpdater(IAggregate *aggregate)
+        :   Base::ModelDataWatcher(aggregate)
+    {}
 
 protected:
-    void initialize()
-    {}
-
-    void beginChangeData(const IModelData *data, int role, int changeType)
-    {}
-
     void endChangeData(const IModelData *data, int role, int changeType);
 };
 

@@ -25,18 +25,6 @@ using namespace Ac;
 
 namespace Object {
 
-GraphicsDataUpdater::GraphicsDataUpdater(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
-void *GraphicsDataUpdater::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
-
 void GraphicsDataUpdater::endChangeData(const IModelData *data, int role, int changeType)
 {
     IGraphicsData *gdata = QUERY(IGraphicsData, data);

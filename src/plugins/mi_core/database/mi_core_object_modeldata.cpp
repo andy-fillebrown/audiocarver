@@ -25,18 +25,6 @@ using namespace Qt;
 
 namespace Object {
 
-void *ModelData::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
-
-ModelData::ModelData(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
 bool ModelData::setName(const QString &name)
 {
     if (_name == name)

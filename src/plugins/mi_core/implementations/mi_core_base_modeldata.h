@@ -15,21 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSITEM_H
-#define AC_GUI_OBJECT_GRAPHICSITEM_H
+#ifndef MI_CORE_BASE_MODELDATA_H
+#define MI_CORE_BASE_MODELDATA_H
 
-#include "ac_gui_base_graphicsitem.h"
+#include <imodeldata.h>
+#include "mi_core_global.h"
 
-namespace Object {
+class IAggregate;
 
-class GraphicsItem : public Base::GraphicsItem
+namespace Base {
+
+class MI_CORE_EXPORT ModelData : public IModelData
 {
-public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsItem(aggregate)
-    {}
+    IAggregate *_aggregate;
 
-    IGraphicsItem *parent() const;
+public:
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    enum {
+        RoleCountOffset = 0,
+        TotalRoleCount = 0
+    };
+
+    ModelData(IAggregate *aggregate);
+
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    void initialize()
+    {}
 };
 
 }

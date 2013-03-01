@@ -15,21 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSITEM_H
-#define AC_GUI_OBJECT_GRAPHICSITEM_H
+#ifndef AC_GUI_BASE_GRAPHICSDATA_H
+#define AC_GUI_BASE_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicsitem.h"
+#include <igraphicsdata.h>
 
-namespace Object {
+class IAggregate;
 
-class GraphicsItem : public Base::GraphicsItem
+namespace Base {
+
+class GraphicsData : public IGraphicsData
 {
+    IAggregate *_aggregate;
+
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsItem(aggregate)
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    GraphicsData(IAggregate *aggregate);
+
+    void initialize()
     {}
 
-    IGraphicsItem *parent() const;
+    void update(int role, const QVariant &value)
+    {}
 };
 
 }

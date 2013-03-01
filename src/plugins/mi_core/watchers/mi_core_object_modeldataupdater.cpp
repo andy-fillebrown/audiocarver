@@ -16,22 +16,9 @@
 **************************************************************************/
 
 #include "mi_core_object_modeldataupdater.h"
-#include <iaggregate.h>
 #include <imodel.h>
 
 namespace Object {
-
-ModelDataUpdater::ModelDataUpdater(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
-void *ModelDataUpdater::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
 
 void ModelDataUpdater::beginChangeData(const IModelData *data, int role, int changeType)
 {

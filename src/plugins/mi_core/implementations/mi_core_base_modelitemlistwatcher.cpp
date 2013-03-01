@@ -15,37 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_graphicsentity.h"
-#include "ac_gui_namespace.h"
-#include "ac_gui_graphicsnode.h"
+#include "mi_core_base_modelitemlistwatcher.h"
 #include <iaggregate.h>
 
-using namespace Ac;
+namespace Base {
 
-namespace Object {
-
-void *GraphicsEntity::queryInterface(int interfaceType) const
+void *ModelItemListWatcher::queryInterface(int interfaceType) const
 {
     void *i = IComponent::queryInterface(interfaceType);
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-GraphicsEntity::GraphicsEntity(IAggregate *aggregate)
+ModelItemListWatcher::ModelItemListWatcher(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
     _aggregate->append(this);
-    _mainNodes.insert(PitchScene, new GraphicsNode);
-    _mainNodes.insert(ControlScene, new GraphicsNode);
-}
-
-QGraphicsItem *GraphicsEntity::node(int sceneType, int transformType) const
-{
-    switch (transformType) {
-    case MainTransform:
-        return _mainNodes.value(sceneType);
-    default:
-        return 0;
-    }
 }
 
 }

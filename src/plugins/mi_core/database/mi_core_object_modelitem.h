@@ -18,22 +18,15 @@
 #ifndef MI_CORE_OBJECT_MODELITEM_H
 #define MI_CORE_OBJECT_MODELITEM_H
 
-#include <imodelitem.h>
-#include "mi_core_global.h"
-
-class IAggregate;
+#include "mi_core_base_modelitem.h"
 
 namespace Object {
 
-class MI_CORE_EXPORT ModelItem : public IModelItem
+class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 {
-    IAggregate *_aggregate;
     IModelItem *_parent;
 
     enum { ItemCount = 0 };
-
-public:
-    void *queryInterface(int interfaceType) const;
 
 protected:
     enum {
@@ -41,14 +34,9 @@ protected:
         TotalItemCount = ItemCount
     };
 
-    ModelItem(IAggregate *aggregate);
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    void initialize()
+    ModelItem(IAggregate *aggregate)
+        :   Base::ModelItem(aggregate)
+        ,   _parent(0)
     {}
 
     int itemType() const;

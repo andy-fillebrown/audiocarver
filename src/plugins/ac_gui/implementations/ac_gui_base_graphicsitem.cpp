@@ -15,41 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRAPHICSENTITY_H
-#define AC_GUI_OBJECT_GRAPHICSENTITY_H
+#include "ac_gui_base_graphicsitem.h"
+#include <iaggregate.h>
+#include <imodelitem.h>
 
-#include <igraphicsentity.h>
-#include <QMap>
+namespace Base {
 
-class IAggregate;
-
-namespace Object {
-
-class GraphicsEntity : public IGraphicsEntity
+void *GraphicsItem::queryInterface(int interfaceType) const
 {
-    IAggregate *_aggregate;
-    QMap<int, QGraphicsItem*> _mainNodes;
-
-public:
-    void *queryInterface(int interfaceType) const;
-
-protected:
-    GraphicsEntity(IAggregate *aggregate);
-
-    void initialize()
-    {}
-
-    QMap<int, QGraphicsItem*> &mainNodes()
-    {
-        return _mainNodes;
-    }
-
-    QGraphicsItem *node(int sceneType, int transformType) const;
-
-    void update(int role, const QVariant &value)
-    {}
-};
-
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-#endif
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
+
+}

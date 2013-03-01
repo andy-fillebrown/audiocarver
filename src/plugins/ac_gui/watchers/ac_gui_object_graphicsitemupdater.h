@@ -18,28 +18,18 @@
 #ifndef AC_GUI_OBJECT_GRAPHICSITEMUPDATER_H
 #define AC_GUI_OBJECT_GRAPHICSITEMUPDATER_H
 
-#include <imodelitemwatcher.h>
-
-class IAggregate;
+#include "mi_core_base_modelitemwatcher.h"
 
 namespace Object {
 
-class GraphicsItemUpdater : public IModelItemWatcher
+class GraphicsItemUpdater : public Base::ModelItemWatcher
 {
-    IAggregate *_aggregate;
-
 public:
-    GraphicsItemUpdater(IAggregate *aggregate);
-
-    void *queryInterface(int interfaceType) const;
+    GraphicsItemUpdater(IAggregate *aggregate)
+        :   Base::ModelItemWatcher(aggregate)
+    {}
 
 protected:
-    void initialize()
-    {}
-
-    void beginChangeParent(const IModelItem *child)
-    {}
-
     void endChangeParent(const IModelItem *child);
 };
 

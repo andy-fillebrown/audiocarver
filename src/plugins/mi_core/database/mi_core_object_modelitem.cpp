@@ -25,19 +25,6 @@ using namespace Mi;
 
 namespace Object {
 
-void *ModelItem::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
-
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-    ,   _parent(0)
-{
-    _aggregate->append(this);
-}
-
 int ModelItem::itemType() const
 {
     return UnknownItem;

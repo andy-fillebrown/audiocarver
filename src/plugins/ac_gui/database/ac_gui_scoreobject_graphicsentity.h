@@ -15,21 +15,29 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_graphicsdata.h"
-#include <iaggregate.h>
+#ifndef AC_GUI_SCOREOBJECT_GRAPHICSENTITY_H
+#define AC_GUI_SCOREOBJECT_GRAPHICSENTITY_H
 
-namespace Object {
+#include "ac_gui_base_graphicsentity.h"
+#include <QMap>
 
-void *GraphicsData::queryInterface(int interfaceType) const
+namespace ScoreObject {
+
+class GraphicsEntity : public Base::GraphicsEntity
 {
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
+    QMap<int, QGraphicsItem*> _mainNodes;
+
+protected:
+    GraphicsEntity(IAggregate *aggregate);
+
+    QMap<int, QGraphicsItem*> &mainNodes()
+    {
+        return _mainNodes;
+    }
+
+    QGraphicsItem *node(int sceneType, int transformType) const;
+};
+
 }
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
-}
+#endif
