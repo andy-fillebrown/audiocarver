@@ -85,6 +85,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         new Note::GraphicsItemUpdater(aggregate);
         new ScoreObject::ModelData(aggregate);
         new Note::Gui::ModelItem(aggregate);
+        new Object::ModelDataUpdater(aggregate);
         break;
     case PitchCurveItem:
         new PitchCurve::GraphicsData(aggregate);
