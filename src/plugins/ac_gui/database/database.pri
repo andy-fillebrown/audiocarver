@@ -2,6 +2,7 @@
 SOURCE_FILES = \
     controlcurve_modelitem \
     curve_modelitemhelper \
+    grip_modelitem \
     note_modelitem \
     pitchcurve_modelitem \
     velocity_modelitem \
