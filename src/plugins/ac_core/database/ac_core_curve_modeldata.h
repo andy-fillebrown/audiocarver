@@ -19,11 +19,12 @@
 #define AC_CORE_CURVE_MODELDATA_H
 
 #include <mi_core_object_modeldata.h>
+#include "ac_core_global.h"
 #include "ac_core_point.h"
 
 namespace Curve {
 
-class ModelData : public Object::ModelData
+class AC_CORE_EXPORT ModelData : public Object::ModelData
 {
     PointList _points;
     enum { RoleCount = 1 };

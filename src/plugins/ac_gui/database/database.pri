@@ -1,6 +1,9 @@
 
 SOURCE_FILES = \
+    controlcurve_modelitem \
+    curve_modelitemhelper \
     note_modelitem \
+    pitchcurve_modelitem \
     velocity_modelitem \
 
 for(file, SOURCE_FILES) {

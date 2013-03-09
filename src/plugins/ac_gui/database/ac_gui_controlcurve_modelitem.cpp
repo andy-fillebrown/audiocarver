@@ -15,24 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#include "ac_gui_controlcurve_modelitem.h"
+#include "ac_gui_namespace.h"
+#include <iaggregate.h>
+#include <imodelitemlist.h>
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+using namespace Ac;
 
-namespace Curve {
+namespace ControlCurve {
+namespace Gui {
 
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   ControlCurve::ModelItem(aggregate)
+    ,   _helper(this)
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
-
-    bool isTypeOfItem(int itemType) const;
-};
-
 }
 
-#endif
+IModelItemList *ModelItem::findList(int listType) const
+{
+    IModelItemList *list = _helper.findList(listType);
+    if (list)
+        return list;
+    return ControlCurve::ModelItem::findList(listType);
+}
+
+}
+}

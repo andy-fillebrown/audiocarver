@@ -19,10 +19,11 @@
 #define AC_CORE_CONTROLCURVE_MODELITEM_H
 
 #include "ac_core_curve_modelitem.h"
+#include "ac_core_global.h"
 
 namespace ControlCurve {
 
-class ModelItem : public Curve::ModelItem
+class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
 {
 public:
     ModelItem(IAggregate *aggregate)

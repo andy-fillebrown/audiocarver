@@ -18,10 +18,17 @@
 #include "ac_gui_velocity_modelitem.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
+#include <imodelitemlist.h>
 
 using namespace Ac;
 
 namespace Velocity {
+
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   Object::ModelItem(aggregate)
+    ,   _helper(this)
+{
+}
 
 int ModelItem::itemType() const
 {
@@ -33,9 +40,12 @@ bool ModelItem::isTypeOfItem(int itemType) const
     return VelocityItem == itemType ? true : Object::ModelItem::isTypeOfItem(itemType);
 }
 
-IModelItem *ModelItem::findItem(int itemType) const
+IModelItemList *ModelItem::findList(int listType) const
 {
-    return GripsItem == itemType ? QUERY(IModelItem, _grips) : Object::ModelItem::findItem(itemType);
+    IModelItemList *list = _helper.findList(listType);
+    if (list)
+        return list;
+    return Object::ModelItem::findList(listType);
 }
 
 }

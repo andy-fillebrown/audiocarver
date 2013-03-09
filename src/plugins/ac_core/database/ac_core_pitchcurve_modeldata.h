@@ -19,10 +19,11 @@
 #define AC_CORE_PITCHCURVE_MODELDATA_H
 
 #include "ac_core_curve_modeldata.h"
+#include "ac_core_global.h"
 
 namespace PitchCurve {
 
-class ModelData : public Curve::ModelData
+class AC_CORE_EXPORT ModelData : public Curve::ModelData
 {
 public:
     ModelData(IAggregate *aggregate)

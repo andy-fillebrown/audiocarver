@@ -19,22 +19,21 @@
 #define AC_GUI_VELOCITY_MODELITEM_H
 
 #include <mi_core_object_modelitem.h>
+#include "ac_gui_curve_modelitemhelper.h"
 
 namespace Velocity {
 
 class ModelItem : public Object::ModelItem
 {
-    IAggregate *_grips;
+    Curve::Gui::ModelItemHelper _helper;
 
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    ModelItem(IAggregate *aggregate);
 
 protected:
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
-    IModelItem *findItem(int itemType) const;
+    IModelItemList *findList(int listType) const;
 };
 
 }

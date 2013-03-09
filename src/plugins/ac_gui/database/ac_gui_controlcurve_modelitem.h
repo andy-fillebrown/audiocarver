@@ -15,45 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CONTROLCURVE_MODELDATA_H
-#define AC_CORE_CONTROLCURVE_MODELDATA_H
+#ifndef AC_GUI_CONTROLCURVE_MODELITEM_H
+#define AC_GUI_CONTROLCURVE_MODELITEM_H
 
-#include "ac_core_curve_modeldata.h"
-#include "ac_core_global.h"
+#include "ac_core_controlcurve_modelitem.h"
+#include "ac_gui_curve_modelitemhelper.h"
 
 namespace ControlCurve {
+namespace Gui {
 
-class AC_CORE_EXPORT ModelData : public Curve::ModelData
+class ModelItem : public ControlCurve::ModelItem
 {
-    int _controlType;
-    enum { RoleCount = 1 };
+    Curve::Gui::ModelItemHelper _helper;
 
 public:
-    ModelData(IAggregate *aggregate)
-        :   Curve::ModelData(aggregate)
-        ,   _controlType(-1)
-    {}
+    ModelItem(IAggregate *aggregate);
 
 protected:
-    enum {
-        RoleCountOffset = Curve::ModelData::TotalRoleCount,
-        TotalRoleCount = RoleCountOffset + RoleCount
-    };
-
-    bool setControlType(int controlType);
-
-    void conformPoints();
-
-    int roleCount() const
-    {
-        return TotalRoleCount;
-    }
-
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(const QVariant &value, int role);
+    IModelItemList *findList(int listType) const;
 };
 
+}
 }
 
 #endif

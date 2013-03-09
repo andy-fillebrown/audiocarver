@@ -15,24 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#include "ac_gui_curve_modelitemhelper.h"
+#include "ac_gui_namespace.h"
+#include <iaggregate.h>
+#include <idatabaseobjectfactory.h>
+#include <imodelitemlist.h>
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+using namespace Ac;
 
 namespace Curve {
+namespace Gui {
 
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+ModelItemHelper::ModelItemHelper(IModelItem *curve)
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
-
-    bool isTypeOfItem(int itemType) const;
-};
-
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    _grips = factory->create(GripListItem, curve);
 }
 
-#endif
+ModelItemHelper::~ModelItemHelper()
+{
+    delete _grips;
+}
+
+IModelItemList *ModelItemHelper::findList(int listType) const
+{
+    return GripItem == listType ? QUERY(IModelItemList, _grips) : 0;
+}
+
+}
+}

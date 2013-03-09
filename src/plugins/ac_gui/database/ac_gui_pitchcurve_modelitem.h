@@ -15,24 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#ifndef AC_GUI_PITCHCURVE_MODELITEM_H
+#define AC_GUI_PITCHCURVE_MODELITEM_H
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+#include "ac_core_pitchcurve_modelitem.h"
+#include "ac_gui_curve_modelitemhelper.h"
 
-namespace Curve {
+namespace PitchCurve {
+namespace Gui {
 
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+class ModelItem : public PitchCurve::ModelItem
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    Curve::Gui::ModelItemHelper _helper;
 
-    bool isTypeOfItem(int itemType) const;
+public:
+    ModelItem(IAggregate *aggregate);
+
+protected:
+    IModelItemList *findList(int listType) const;
 };
 
+}
 }
 
 #endif
