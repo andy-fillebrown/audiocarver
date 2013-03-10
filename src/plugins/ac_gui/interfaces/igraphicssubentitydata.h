@@ -15,18 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSITEM_H
-#define IGRAPHICSITEM_H
+#ifndef IGRAPHICSSUBENTITYDATA_H
+#define IGRAPHICSSUBENTITYDATA_H
 
-#include <icomponent.h>
+#include <igraphicsdata.h>
 #include "ac_gui_interfaces.h"
 
-class IGraphicsItem : public IComponent
+class QGraphicsItem;
+
+class IGraphicsSubEntityData : public IGraphicsData
 {
 public:
-    enum { InterfaceType = I::IGraphicsItem };
+    enum { InterfaceType = I::IGraphicsSubEntityData };
 
-    virtual IGraphicsItem *parent() const = 0;
+    virtual QGraphicsItem *node() const = 0;
 
     int interfaceType() const
     {
@@ -35,7 +37,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
+        if (InterfaceType == interfaceType)
+            return true;
+        return IGraphicsData::isTypeOfInterface(interfaceType);
     }
 };
 

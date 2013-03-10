@@ -77,7 +77,8 @@ enum ItemDataRole {
     GridSnapEnabledRole,
     TimeSnapRole,
     PitchSnapRole,
-    ControlSnapRole
+    ControlSnapRole,
+    CoreItemDataRoleCount
 };
 
 enum CurveType {

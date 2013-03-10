@@ -15,16 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_BASE_GRAPHICSENTITY_H
-#define AC_GUI_BASE_GRAPHICSENTITY_H
+#ifndef AC_GUI_BASE_GRAPHICSENTITYDATA_H
+#define AC_GUI_BASE_GRAPHICSENTITYDATA_H
 
-#include <igraphicsentity.h>
+#include <igraphicsentitydata.h>
 
 class IAggregate;
 
 namespace Base {
 
-class GraphicsEntity : public IGraphicsEntity
+class GraphicsEntityData : public IGraphicsEntityData
 {
     IAggregate *_aggregate;
 
@@ -32,7 +32,7 @@ public:
     void *queryInterface(int interfaceType) const;
 
 protected:
-    GraphicsEntity(IAggregate *aggregate);
+    GraphicsEntityData(IAggregate *aggregate);
 
     void initialize()
     {}

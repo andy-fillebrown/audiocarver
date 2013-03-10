@@ -15,30 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSENTITY_H
-#define IGRAPHICSENTITY_H
+#include "ac_gui_base_graphicsentityitem.h"
+#include <iaggregate.h>
 
-#include <igraphicsdata.h>
-#include "ac_gui_interfaces.h"
+namespace Base {
 
-class IGraphicsEntity : public IGraphicsData
+void *GraphicsEntityItem::queryInterface(int interfaceType) const
 {
-public:
-    enum { InterfaceType = I::IGraphicsEntity };
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
 
-    virtual void highlight(bool on = true) = 0;
+GraphicsEntityItem::GraphicsEntityItem(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IGraphicsData::isTypeOfInterface(interfaceType);
-    }
-};
-
-#endif
+}

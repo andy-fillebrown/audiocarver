@@ -15,18 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_gui_base_graphicsentity.h"
+#include "ac_gui_base_graphicscurvedata.h"
+#include "ac_gui_namespace.h"
 #include <iaggregate.h>
+
+using namespace Ac;
 
 namespace Base {
 
-void *GraphicsEntity::queryInterface(int interfaceType) const
+void *GraphicsCurveData::queryInterface(int interfaceType) const
 {
     void *i = IComponent::queryInterface(interfaceType);
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-GraphicsEntity::GraphicsEntity(IAggregate *aggregate)
+GraphicsCurveData::GraphicsCurveData(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
     _aggregate->append(this);

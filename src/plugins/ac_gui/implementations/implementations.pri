@@ -1,9 +1,10 @@
 
 SOURCE_FILES = \
-    graphicscurve \
-    graphicsdata \
-    graphicsentity \
+    graphicscurvedata \
+    graphicsentitydata \
+    graphicsentityitem \
     graphicsitem \
+    graphicssubentitydata \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_base_$${file}.h

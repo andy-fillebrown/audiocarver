@@ -15,32 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_BASE_GRAPHICSDATA_H
-#define AC_GUI_BASE_GRAPHICSDATA_H
+#ifndef IGRAPHICSENTITYITEM_H
+#define IGRAPHICSENTITYITEM_H
 
-#include <igraphicsdata.h>
+#include <igraphicsitem.h>
+#include <QList>
 
-class IAggregate;
-
-namespace Base {
-
-class GraphicsData : public IGraphicsData
+class IGraphicsEntityItem : public IGraphicsItem
 {
-    IAggregate *_aggregate;
-
 public:
-    void *queryInterface(int interfaceType) const;
+    enum { InterfaceType = I::IGraphicsEntityItem };
 
-protected:
-    GraphicsData(IAggregate *aggregate);
+    virtual QList<IGraphicsItem*> subentities(int sceneType, int transformType) const = 0;
 
-    void initialize()
-    {}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-    void update(int role, const QVariant &value)
-    {}
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType ? true : IGraphicsItem::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

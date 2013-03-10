@@ -15,32 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSCURVE_H
-#define IGRAPHICSCURVE_H
+#include "ac_gui_base_graphicsentitydata.h"
+#include <iaggregate.h>
 
-#include <igraphicsentity.h>
-#include <ac_core_point.h>
+namespace Base {
 
-class QRectF;
-
-class IGraphicsCurve : public IGraphicsEntity
+void *GraphicsEntityData::queryInterface(int interfaceType) const
 {
-public:
-    enum { InterfaceType = I::IGraphicsCurve };
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
 
-    virtual bool intersects(const QRectF &rect) const = 0;
+GraphicsEntityData::GraphicsEntityData(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IGraphicsEntity::isTypeOfInterface(interfaceType);
-    }
-};
-
-#endif
+}

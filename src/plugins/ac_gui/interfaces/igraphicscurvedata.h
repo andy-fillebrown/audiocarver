@@ -15,18 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSITEM_H
-#define IGRAPHICSITEM_H
+#ifndef IGRAPHICSCURVEDATA_H
+#define IGRAPHICSCURVEDATA_H
 
-#include <icomponent.h>
-#include "ac_gui_interfaces.h"
+#include <igraphicssubentitydata.h>
 
-class IGraphicsItem : public IComponent
+class QRectF;
+
+class IGraphicsCurveData : public IGraphicsSubEntityData
 {
 public:
-    enum { InterfaceType = I::IGraphicsItem };
+    enum { InterfaceType = I::IGraphicsCurveData };
 
-    virtual IGraphicsItem *parent() const = 0;
+    virtual bool intersects(const QRectF &rect) const = 0;
 
     int interfaceType() const
     {
@@ -35,7 +36,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
+        if (InterfaceType == interfaceType)
+            return true;
+        return IGraphicsSubEntityData::isTypeOfInterface(interfaceType);
     }
 };
 

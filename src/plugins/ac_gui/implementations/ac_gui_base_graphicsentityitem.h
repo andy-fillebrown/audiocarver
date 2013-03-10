@@ -15,28 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSITEM_H
-#define IGRAPHICSITEM_H
+#ifndef AC_GUI_BASE_GRAPHICSENTITYITEM_H
+#define AC_GUI_BASE_GRAPHICSENTITYITEM_H
 
-#include <icomponent.h>
-#include "ac_gui_interfaces.h"
+#include <igraphicsentityitem.h>
 
-class IGraphicsItem : public IComponent
+class IAggregate;
+
+namespace Base {
+
+class GraphicsEntityItem : public IGraphicsEntityItem
 {
+    IAggregate *_aggregate;
+
 public:
-    enum { InterfaceType = I::IGraphicsItem };
+    void *queryInterface(int interfaceType) const;
 
-    virtual IGraphicsItem *parent() const = 0;
+protected:
+    GraphicsEntityItem(IAggregate *aggregate);
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
-    }
+    void initialize()
+    {}
 };
+
+}
 
 #endif

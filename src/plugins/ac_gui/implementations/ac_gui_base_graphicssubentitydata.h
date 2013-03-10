@@ -15,21 +15,32 @@
 **
 **************************************************************************/
 
-#include "ac_gui_base_graphicsdata.h"
-#include <iaggregate.h>
+#ifndef AC_GUI_BASE_GRAPHICSSUBENTITYDATA_H
+#define AC_GUI_BASE_GRAPHICSSUBENTITYDATA_H
+
+#include <igraphicssubentitydata.h>
+
+class IAggregate;
 
 namespace Base {
 
-void *GraphicsData::queryInterface(int interfaceType) const
+class GraphicsSubEntityData : public IGraphicsSubEntityData
 {
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    GraphicsSubEntityData(IAggregate *aggregate);
+
+    void initialize()
+    {}
+
+    void update(int role, const QVariant &value)
+    {}
+};
+
 }
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
-}
+#endif

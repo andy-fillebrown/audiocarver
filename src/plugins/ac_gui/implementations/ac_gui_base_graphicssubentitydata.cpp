@@ -15,32 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_BASE_GRAPHICSCURVE_H
-#define AC_GUI_BASE_GRAPHICSCURVE_H
-
-#include <igraphicscurve.h>
-
-class IAggregate;
+#include "ac_gui_base_graphicssubentitydata.h"
+#include <iaggregate.h>
 
 namespace Base {
 
-class GraphicsCurve : public IGraphicsCurve
+void *GraphicsSubEntityData::queryInterface(int interfaceType) const
 {
-    IAggregate *_aggregate;
-
-public:
-    void *queryInterface(int interfaceType) const;
-
-protected:
-    GraphicsCurve(IAggregate *aggregate);
-
-    void initialize()
-    {}
-
-    void update(int role, const QVariant &value)
-    {}
-};
-
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-#endif
+GraphicsSubEntityData::GraphicsSubEntityData(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
+
+}

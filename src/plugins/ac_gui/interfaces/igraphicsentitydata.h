@@ -15,24 +15,32 @@
 **
 **************************************************************************/
 
-#include "ac_gui_base_graphicscurve.h"
-#include "ac_gui_namespace.h"
-#include <iaggregate.h>
+#ifndef IGRAPHICSENTITYDATA_H
+#define IGRAPHICSENTITYDATA_H
 
-using namespace Ac;
+#include <igraphicsdata.h>
+#include "ac_gui_interfaces.h"
 
-namespace Base {
+class QGraphicsItem;
 
-void *GraphicsCurve::queryInterface(int interfaceType) const
+class IGraphicsEntityData : public IGraphicsData
 {
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
+public:
+    enum { InterfaceType = I::IGraphicsEntityData };
 
-GraphicsCurve::GraphicsCurve(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
+    virtual QGraphicsItem *node(int sceneType, int transformType) const = 0;
 
-}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IGraphicsData::isTypeOfInterface(interfaceType);
+    }
+};
+
+#endif

@@ -29,6 +29,10 @@ enum GuiItemType {
     GuiItemTypeCount
 };
 
+enum GuiItemDataRole {
+    HighlightRole = Ac::CoreItemDataRoleCount
+};
+
 enum SceneType {
     ControlLabelScene,
     ControlScene,
@@ -46,8 +50,9 @@ enum TransformType {
 };
 
 enum HighlightType {
-    FullHighlight,
-    HoverHighlight
+    NoHighlight,
+    HoverHighlight,
+    FullHighlight
 };
 
 enum DragType {

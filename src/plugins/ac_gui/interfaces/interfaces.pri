@@ -1,9 +1,11 @@
 
 SOURCE_FILES *= \
-    igraphicscurve \
-    igraphicsentity \
+    igraphicscurvedata \
     igraphicsdata \
+    igraphicsentitydata \
+    igraphicsentityitem \
     igraphicsitem \
+    igraphicssubentitydata \
     igrip \
     iplaycursor \
     ipoint \

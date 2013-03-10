@@ -15,28 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSITEM_H
-#define IGRAPHICSITEM_H
+#ifndef AC_GUI_BASE_GRAPHICSCURVEDATA_H
+#define AC_GUI_BASE_GRAPHICSCURVEDATA_H
 
-#include <icomponent.h>
-#include "ac_gui_interfaces.h"
+#include <igraphicscurvedata.h>
 
-class IGraphicsItem : public IComponent
+class IAggregate;
+
+namespace Base {
+
+class GraphicsCurveData : public IGraphicsCurveData
 {
+    IAggregate *_aggregate;
+
 public:
-    enum { InterfaceType = I::IGraphicsItem };
+    void *queryInterface(int interfaceType) const;
 
-    virtual IGraphicsItem *parent() const = 0;
+protected:
+    GraphicsCurveData(IAggregate *aggregate);
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+    void initialize()
+    {}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
-    }
+    void update(int role, const QVariant &value)
+    {}
 };
+
+}
 
 #endif
