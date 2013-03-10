@@ -15,16 +15,87 @@
 **
 **************************************************************************/
 
-//#include "ac_gui_graphicsgripitem.h"
+#include "ac_gui_grip_graphicsdata.h"
 //#include <ac_gripselectionmodel.h>
 //#include <ac_gui_graphicsentityitem.h>
-#include <ac_gui_constants.h>
+#include "ac_gui_constants.h"
+#include "ac_gui_graphicsgripnode.h"
+#include <igraphicsitem.h>
+#include <imodelitem.h>
 #include <QGraphicsRectItem>
+#include <QPen>
 #include <QRect>
 
 const qreal GRIP_SIZE    = qreal(8.0f);
 const qreal GRIP_SIZE_D2 = GRIP_SIZE / qreal(2.0f);
 const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_SIZE);
+
+using namespace Ac;
+
+namespace Grip {
+
+GraphicsData::GraphicsData(IAggregate *aggregate)
+    :   Base::GraphicsEntity(aggregate)
+    ,   _gripNode(0)
+{
+    _gripNode = new GraphicsGripNode;
+    QPen pen;
+    pen.setCosmetic(true);
+    pen.setColor(Qt::blue);
+    _gripNode->setPen(pen);
+    QBrush brush;
+    brush.setStyle(Qt::NoBrush);
+    _gripNode->setBrush(brush);
+}
+
+GraphicsData::~GraphicsData()
+{
+    delete _gripNode;
+}
+
+void GraphicsData::initialize()
+{
+    IModelItem *this_item = QUERY(IModelItem, this);
+    IModelItem *parent_item = this_item->parent();
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, parent_item);
+    _gripNode->setParentItem(parent_gdata->node(ControlScene, MainTransform));
+    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+    _gripNode->setData(0, quintptr(this_gitem));
+}
+
+QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+{
+    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, this_gitem->parent());
+    if (parent_gdata->node(sceneType, transformType))
+        return _gripNode;
+    return 0;
+}
+
+void GraphicsData::highlight(bool on)
+{
+    QPen pen = _gripNode->pen();
+    QBrush brush = _gripNode->brush();
+    if (on) {
+        if (QColor(Qt::blue) == pen.color()) {
+            if (Qt::SolidPattern == brush.style())
+                pen.setColor(Qt::red);
+            else
+                brush.setStyle(Qt::SolidPattern);
+        }
+    } else {
+        if (Qt::SolidPattern == brush.style()) {
+            if (QColor(Qt::red) == pen.color())
+                pen.setColor(Qt::blue);
+            else
+                brush.setStyle(Qt::NoBrush);
+        }
+    }
+    _gripNode->setBrush(brush);
+    _gripNode->setPen(pen);
+}
+
+}
 
 //class GraphicsGripItemPrivate
 //{

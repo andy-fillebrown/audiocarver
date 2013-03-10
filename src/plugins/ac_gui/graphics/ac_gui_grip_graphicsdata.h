@@ -15,38 +15,35 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRIP_GRAPHICSITEM_H
-#define AC_GUI_GRIP_GRAPHICSITEM_H
+#ifndef AC_GUI_GRIP_GRAPHICSDATA_H
+#define AC_GUI_GRIP_GRAPHICSDATA_H
 
-#include <ac_gui_object_graphicsitem.h>
+#include "ac_gui_base_graphicsentity.h"
 
-class GraphicsGripItem;
+class GraphicsGripNode;
 
 namespace Grip {
 
-class GraphicsItem : public Object::GraphicsItem
+class GraphicsData : public Base::GraphicsEntity
 {
-    GraphicsGripItem *_graphicsGripItem;
+    GraphicsGripNode *_gripNode;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Object::GraphicsItem(aggregate)
-        ,   _graphicsGripItem(0)
-    {}
+    GraphicsData(IAggregate *aggregate);
 
-    ~GraphicsItem();
-    IUnknown *initialize();
+protected:
+    ~GraphicsData();
 
-    GraphicsGripItem *graphicsGripItem() const
-    {
-        return _graphicsGripItem;
-    }
+    void initialize();
+    QGraphicsItem *node(int sceneType, int transformType) const;
 
-    void setColor(int color);
-    void setPoints(const PointList &points);
-    bool intersects(const QRectF &rect) const;
+//    void setColor(int color);
+//    void setPoints(const PointList &points);
+//    bool intersects(const QRectF &rect) const;
     void highlight(bool on);
-    bool isVisible() const;
+//    bool isVisible() const;
 };
+
+}
 
 #endif

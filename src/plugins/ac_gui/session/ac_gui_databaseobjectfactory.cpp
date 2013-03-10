@@ -20,6 +20,7 @@
 #include "ac_gui_controlcurve_modelitem.h"
 #include "ac_gui_controlgridline_graphicsdata.h"
 #include "ac_gui_gridsettings_graphicsdata.h"
+#include "ac_gui_grip_graphicsdata.h"
 #include "ac_gui_grip_modelitem.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_note_graphicsdata.h"
@@ -76,6 +77,8 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case GripItem:
+        new Grip::GraphicsData(aggregate);
+        new Object::GraphicsItem(aggregate);
         new Grip::ModelItem(aggregate);
         break;
     case GripListItem:
