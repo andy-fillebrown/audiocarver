@@ -46,7 +46,6 @@
 #include <ac_core_scoreobject_modeldata.h>
 #include <mi_core_base_aggregate.h>
 #include <mi_core_object_modeldataupdater.h>
-#include <mi_core_objectlist_modeldata.h>
 #include <mi_core_objectlist_modelitem.h>
 #include <imodelitem.h>
 
@@ -87,7 +86,6 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         break;
     case GripListItem:
         new ObjectList::ModelItem(aggregate, GripItem);
-        new ObjectList::ModelData(aggregate);
         break;
     case NoteItem:
         new Note::GraphicsData(aggregate);

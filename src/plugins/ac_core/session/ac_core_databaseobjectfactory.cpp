@@ -44,7 +44,6 @@
 #include "ac_core_viewsettings_modeliteminfo.h"
 #include <mi_core_base_aggregate.h>
 #include <mi_core_object_modeldataupdater.h>
-#include <mi_core_objectlist_modeldata.h>
 #include <mi_core_objectlist_modelitem.h>
 #include <mi_core_objectlist_modeliteminfo.h>
 #include <mi_core_objectlist_modelitemlistupdater.h>
@@ -76,7 +75,6 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case ControlCurveListItem:
         new ObjectList::ModelItemInfo(aggregate);
         new ObjectList::ModelItem(aggregate, ControlCurveItem);
-        new ObjectList::ModelData(aggregate);
         new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case ControlGridLineItem:
@@ -88,7 +86,6 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case ControlGridLineListItem:
         new ObjectList::ModelItemInfo(aggregate);
         new ObjectList::ModelItem(aggregate, ControlGridLineItem);
-        new ObjectList::ModelData(aggregate);
         new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case GridSettingsItem:
@@ -106,7 +103,6 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case NoteListItem:
         new ObjectList::ModelItemInfo(aggregate);
         new ObjectList::ModelItem(aggregate, NoteItem);
-        new ObjectList::ModelData(aggregate);
         new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case PitchCurveItem:
@@ -124,7 +120,6 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case PitchGridLineListItem:
         new ObjectList::ModelItemInfo(aggregate);
         new ObjectList::ModelItem(aggregate, PitchGridLineItem);
-        new ObjectList::ModelData(aggregate);
         new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case ProjectSettingsItem:
@@ -148,7 +143,6 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case TimeGridLineListItem:
         new ObjectList::ModelItemInfo(aggregate);
         new ObjectList::ModelItem(aggregate, TimeGridLineItem);
-        new ObjectList::ModelData(aggregate);
         new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case TrackItem:
@@ -160,7 +154,6 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case TrackListItem:
         new ObjectList::ModelItemInfo(aggregate);
         new ObjectList::ModelItem(aggregate, TrackItem);
-        new ObjectList::ModelData(aggregate);
         new ObjectList::ModelItemListUpdater(aggregate);
         break;
     case ViewSettingsItem:
