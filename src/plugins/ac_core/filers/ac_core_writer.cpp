@@ -20,6 +20,7 @@
 #include <iaggregate.h>
 #include <ifilefiler.h>
 #include <imodeldata.h>
+#include <imodeliteminfo.h>
 #include <imodelitemlist.h>
 #include <QFile>
 #include <QXmlStreamWriter>
@@ -58,11 +59,12 @@ static void writeItemData(IModelData *data, int roleIndex, QXmlStreamWriter *wri
 
 static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
 {
+    IModelItemInfo *info = QUERY(IModelItemInfo, item);
     IModelData *data = QUERY(IModelData, item);
     if (data) {
-        if (item->isTypeOfItem(CurveItem) && data->get<PointList>(PointsRole).isEmpty())
+        if (info->isTypeOfItem(CurveItem) && data->get<PointList>(PointsRole).isEmpty())
             return true;
-        writer->writeStartElement(itemTypeString(item->itemType()));
+        writer->writeStartElement(itemTypeString(info->itemType()));
         int roleCount = data->roleCount();
         for (int i = 0;  i < roleCount;  ++i)
             writeItemData(data, i, writer);
@@ -72,7 +74,7 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
                 return true;
             writer->writeStartElement(itemTypeString(QUERY(IModelItemList, item)->listType()) + "List");
         } else
-            writer->writeStartElement(itemTypeString(item->itemType()));
+            writer->writeStartElement(itemTypeString(info->itemType()));
     }
     int item_count = item->count();
     for (int i = 0;  i < item_count;  ++i)

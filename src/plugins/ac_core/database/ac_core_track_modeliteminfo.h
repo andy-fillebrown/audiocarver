@@ -15,20 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_GRIDLINE_MODELITEM_H
-#define AC_CORE_GRIDLINE_MODELITEM_H
+#ifndef AC_CORE_TRACK_MODELITEMINFO_H
+#define AC_CORE_TRACK_MODELITEMINFO_H
 
-#include <mi_core_object_modelitem.h>
+#include "ac_core_scoreobject_modeliteminfo.h"
 
-namespace GridLine {
+namespace Track {
 
-class ModelItem : public Object::ModelItem
+class ModelItemInfo : public ScoreObject::ModelItemInfo
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
+public:
+    ModelItemInfo(IAggregate *aggregate)
+        :   ScoreObject::ModelItemInfo(aggregate)
     {}
 
+protected:
+    int itemType() const;
     bool isTypeOfItem(int itemType) const;
 };
 

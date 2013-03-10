@@ -15,19 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CONTROLCURVE_MODELITEM_H
-#define AC_CORE_CONTROLCURVE_MODELITEM_H
+#ifndef MI_CORE_OBJECTLIST_MODELITEMINFO_H
+#define MI_CORE_OBJECTLIST_MODELITEMINFO_H
 
-#include "ac_core_curve_modelitem.h"
-#include "ac_core_global.h"
+#include "mi_core_base_modeliteminfo.h"
 
-namespace ControlCurve {
+namespace ObjectList {
 
-class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
+class MI_CORE_EXPORT ModelItemInfo : public Base::ModelItemInfo
 {
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Curve::ModelItem(aggregate)
+    ModelItemInfo(IAggregate *aggregate)
+        :   Base::ModelItemInfo(aggregate)
     {}
 
 protected:

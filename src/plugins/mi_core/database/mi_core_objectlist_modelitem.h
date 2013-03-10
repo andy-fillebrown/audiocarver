@@ -37,9 +37,6 @@ public:
     {}
 
 protected:
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-
     IModelItem *parent() const
     {
         return _parent;

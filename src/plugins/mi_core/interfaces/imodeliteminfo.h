@@ -15,32 +15,30 @@
 **
 **************************************************************************/
 
-#include "ac_gui_note_modelitem.h"
-#include "ac_gui_namespace.h"
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
+#ifndef IMODELITEMINFO_H
+#define IMODELITEMINFO_H
 
-using namespace Ac;
+#include <icomponent.h>
 
-namespace Note {
-namespace Gui {
-
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   ScoreObject::ModelItem(aggregate)
+class IModelItemInfo : public IComponent
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _velocity = factory->create(VelocityItem, this);
-}
+public:
+    enum { InterfaceType = I::IModelItemInfo };
 
-ModelItem::~ModelItem()
-{
-    delete _velocity;
-}
+    virtual int itemType() const = 0;
+    virtual bool isTypeOfItem(int itemType) const = 0;
 
-IModelItem *ModelItem::findItem(int itemType) const
-{
-    return VelocityItem == itemType ? QUERY(IModelItem, _velocity) : ScoreObject::ModelItem::findItem(itemType);
-}
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
 
-}
-}
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
+};
+
+#endif

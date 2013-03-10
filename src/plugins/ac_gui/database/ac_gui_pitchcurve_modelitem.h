@@ -18,13 +18,13 @@
 #ifndef AC_GUI_PITCHCURVE_MODELITEM_H
 #define AC_GUI_PITCHCURVE_MODELITEM_H
 
-#include "ac_core_pitchcurve_modelitem.h"
+#include "mi_core_object_modelitem.h"
 #include "ac_gui_curve_modelitemhelper.h"
 
 namespace PitchCurve {
 namespace Gui {
 
-class ModelItem : public PitchCurve::ModelItem
+class ModelItem : public Object::ModelItem
 {
     Curve::Gui::ModelItemHelper _helper;
 

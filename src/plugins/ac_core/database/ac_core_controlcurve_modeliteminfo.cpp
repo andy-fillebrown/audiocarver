@@ -15,32 +15,23 @@
 **
 **************************************************************************/
 
-#include "ac_gui_note_modelitem.h"
-#include "ac_gui_namespace.h"
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
+#include "ac_core_controlcurve_modeliteminfo.h"
+#include "ac_core_namespace.h"
 
 using namespace Ac;
 
-namespace Note {
-namespace Gui {
+namespace ControlCurve {
 
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   ScoreObject::ModelItem(aggregate)
+int ModelItemInfo::itemType() const
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _velocity = factory->create(VelocityItem, this);
+    return ControlCurveItem;
 }
 
-ModelItem::~ModelItem()
+bool ModelItemInfo::isTypeOfItem(int itemType) const
 {
-    delete _velocity;
+    if (ControlCurveItem == itemType)
+        return true;
+    return Curve::ModelItemInfo::isTypeOfItem(itemType);
 }
 
-IModelItem *ModelItem::findItem(int itemType) const
-{
-    return VelocityItem == itemType ? QUERY(IModelItem, _velocity) : ScoreObject::ModelItem::findItem(itemType);
-}
-
-}
 }

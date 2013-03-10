@@ -18,11 +18,11 @@
 #ifndef AC_CORE_TRACK_MODELITEM_H
 #define AC_CORE_TRACK_MODELITEM_H
 
-#include "ac_core_scoreobject_modelitem.h"
+#include <mi_core_object_modelitem.h>
 
 namespace Track {
 
-class ModelItem : public ScoreObject::ModelItem
+class ModelItem : public Object::ModelItem
 {
     IAggregate *_notes;
     enum { ItemCount = 1 };
@@ -32,14 +32,11 @@ public:
 
 protected:
     enum {
-        ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
+        ItemCountOffset = Object::ModelItem::TotalItemCount,
         TotalItemCount = ItemCountOffset + ItemCount
     };
 
     ~ModelItem();
-
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
 
     int count() const
     {

@@ -15,14 +15,14 @@
 **
 **************************************************************************/
 
-#include "ac_core_curve_modelitem.h"
+#include "ac_core_curve_modeliteminfo.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;
 
 namespace Curve {
 
-bool ModelItem::isTypeOfItem(int itemType) const
+bool ModelItemInfo::isTypeOfItem(int itemType) const
 {
     return CurveItem == itemType;
 }

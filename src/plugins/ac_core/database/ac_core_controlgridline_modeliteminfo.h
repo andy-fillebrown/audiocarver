@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_core_timegridline_modelitem.h"
-#include "ac_core_namespace.h"
+#ifndef AC_CORE_CONTROLGRIDLINE_MODELITEMINFO_H
+#define AC_CORE_CONTROLGRIDLINE_MODELITEMINFO_H
 
-using namespace Ac;
+#include "ac_core_gridline_modeliteminfo.h"
 
-namespace TimeGridLine {
+namespace ControlGridLine {
 
-int ModelItem::itemType() const
+class ModelItemInfo : public GridLine::ModelItemInfo
 {
-    return TimeGridLineItem;
+public:
+    ModelItemInfo(IAggregate *aggregate)
+        :   GridLine::ModelItemInfo(aggregate)
+    {}
+
+protected:
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+};
+
 }
 
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    if (TimeGridLineItem == itemType)
-        return true;
-    return GridLine::ModelItem::isTypeOfItem(itemType);
-}
-
-}
+#endif

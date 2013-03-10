@@ -34,6 +34,7 @@
 #include <imodel.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
+#include <imodeliteminfo.h>
 #include <mainwindow.h>
 #include <QMessageBox>
 #include <QTimer>
@@ -467,7 +468,7 @@ void GraphicsViewManager::enableUpdates()
 void GraphicsViewManager::dataChanged(const IModelData *data)
 {
     if (!d->updatingDatabase
-            && ViewSettingsItem == QUERY(IModelItem, data)->itemType())
+            && ViewSettingsItem == QUERY(IModelItemInfo, data)->itemType())
         d->updateViewVariables();
 }
 

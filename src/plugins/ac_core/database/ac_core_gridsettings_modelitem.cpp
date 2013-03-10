@@ -46,18 +46,6 @@ ModelItem::~ModelItem()
     delete _timeGridLines;
 }
 
-int ModelItem::itemType() const
-{
-    return GridSettingsItem;
-}
-
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    if (GridSettingsItem == itemType)
-        return true;
-    return Object::ModelItem::isTypeOfItem(itemType);
-}
-
 int ModelItem::indexOf(const IModelItem *item) const
 {
     if (QUERY(IModelItem, _timeGridLines) == item)

@@ -15,23 +15,16 @@
 **
 **************************************************************************/
 
-#include "ac_core_controlcurve_modelitem.h"
+#include "ac_core_scoreobject_modeliteminfo.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;
 
-namespace ControlCurve {
+namespace ScoreObject {
 
-int ModelItem::itemType() const
+bool ModelItemInfo::isTypeOfItem(int itemType) const
 {
-    return ControlCurveItem;
-}
-
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    if (ControlCurveItem == itemType)
-        return true;
-    return Curve::ModelItem::isTypeOfItem(itemType);
+    return ScoreObjectItem == itemType;
 }
 
 }

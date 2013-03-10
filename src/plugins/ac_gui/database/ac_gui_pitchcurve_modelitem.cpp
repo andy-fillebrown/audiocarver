@@ -26,7 +26,7 @@ namespace PitchCurve {
 namespace Gui {
 
 ModelItem::ModelItem(IAggregate *aggregate)
-    :   PitchCurve::ModelItem(aggregate)
+    :   Object::ModelItem(aggregate)
     ,   _helper(this)
 {
 }
@@ -36,7 +36,7 @@ IModelItemList *ModelItem::findList(int listType) const
     IModelItemList *list = _helper.findList(listType);
     if (list)
         return list;
-    return PitchCurve::ModelItem::findList(listType);
+    return Object::ModelItem::findList(listType);
 }
 
 }

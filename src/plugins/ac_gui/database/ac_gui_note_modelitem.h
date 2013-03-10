@@ -18,12 +18,12 @@
 #ifndef AC_GUI_NOTE_MODELITEM_H
 #define AC_GUI_NOTE_MODELITEM_H
 
-#include "ac_core_note_modelitem.h"
+#include <ac_core_scoreobject_modelitem.h>
 
 namespace Note {
 namespace Gui {
 
-class ModelItem : public Note::ModelItem
+class ModelItem : public ScoreObject::ModelItem
 {
     IAggregate *_velocity;
 

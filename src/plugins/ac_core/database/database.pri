@@ -1,29 +1,34 @@
 
 SOURCE_FILES = \
-    curve_modeldata \
-    curve_modelitem \
     controlcurve_modeldata \
-    controlcurve_modelitem \
-    controlgridline_modelitem \
+    controlcurve_modeliteminfo \
+    controlgridline_modeliteminfo \
+    curve_modeldata \
+    curve_modeliteminfo \
     gridline_modeldata \
-    gridline_modelitem \
+    gridline_modeliteminfo \
     gridsettings_modeldata \
     gridsettings_modelitem \
-    note_modelitem \
+    gridsettings_modeliteminfo \
+    note_modeliteminfo \
     pitchcurve_modeldata \
-    pitchcurve_modelitem \
-    pitchgridline_modelitem \
+    pitchcurve_modeliteminfo \
+    pitchgridline_modeliteminfo \
     projectsettings_modeldata \
-    projectsettings_modelitem \
+    projectsettings_modeliteminfo \
     score_modeldata \
     score_modelitem \
+    score_modeliteminfo \
     scoreobject_modeldata \
     scoreobject_modelitem \
-    timegridline_modelitem \
+    scoreobject_modeliteminfo \
+    timegridline_modeliteminfo \
     track_modeldata \
     track_modelitem \
+    track_modeliteminfo \
     viewsettings_modeldata \
     viewsettings_modelitem \
+    viewsettings_modeliteminfo \
 
 for(file, SOURCE_FILES) {
     header = ac_core_$${file}.h

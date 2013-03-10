@@ -28,16 +28,17 @@ class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 
     enum { ItemCount = 0 };
 
+public:
+    ModelItem(IAggregate *aggregate)
+        :   Base::ModelItem(aggregate)
+        ,   _parent(0)
+    {}
+
 protected:
     enum {
         ItemCountOffset = 0,
         TotalItemCount = ItemCount
     };
-
-    ModelItem(IAggregate *aggregate)
-        :   Base::ModelItem(aggregate)
-        ,   _parent(0)
-    {}
 
     int itemType() const;
 

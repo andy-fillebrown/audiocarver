@@ -18,13 +18,13 @@
 #ifndef AC_GUI_CONTROLCURVE_MODELITEM_H
 #define AC_GUI_CONTROLCURVE_MODELITEM_H
 
-#include "ac_core_controlcurve_modelitem.h"
+#include "mi_core_object_modelitem.h"
 #include "ac_gui_curve_modelitemhelper.h"
 
 namespace ControlCurve {
 namespace Gui {
 
-class ModelItem : public ControlCurve::ModelItem
+class ModelItem : public Object::ModelItem
 {
     Curve::Gui::ModelItemHelper _helper;
 

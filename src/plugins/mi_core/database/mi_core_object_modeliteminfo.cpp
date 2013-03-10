@@ -15,26 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_NOTE_MODELITEM_H
-#define AC_CORE_NOTE_MODELITEM_H
+#include "mi_core_object_modeliteminfo.h"
+#include "mi_core_namespace.h"
 
-#include "ac_core_scoreobject_modelitem.h"
-#include "ac_core_global.h"
+using namespace Mi;
 
-namespace Note {
+namespace Object {
 
-class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
+int ModelItemInfo::itemType() const
 {
-public:
-    ModelItem(IAggregate *aggregate)
-        :   ScoreObject::ModelItem(aggregate)
-    {}
-
-protected:
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-};
-
+    return UnknownItem;
 }
 
-#endif
+}

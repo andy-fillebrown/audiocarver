@@ -40,9 +40,6 @@ protected:
 
     ~ModelItem();
 
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-
     int count() const
     {
         return TotalItemCount;

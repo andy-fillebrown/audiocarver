@@ -39,7 +39,10 @@
 #include "ac_gui_velocity_graphicsdata.h"
 #include "ac_gui_velocity_modelitem.h"
 #include <ac_core_controlcurve_modeldata.h>
+#include <ac_core_controlcurve_modeliteminfo.h>
+#include <ac_core_note_modeliteminfo.h>
 #include <ac_core_pitchcurve_modeldata.h>
+#include <ac_core_pitchcurve_modeliteminfo.h>
 #include <ac_core_scoreobject_modeldata.h>
 #include <mi_core_base_aggregate.h>
 #include <mi_core_object_modeldataupdater.h>
@@ -59,6 +62,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        new ControlCurve::ModelItemInfo(aggregate);
         new ControlCurve::Gui::ModelItem(aggregate);
         new ControlCurve::ModelData(aggregate);
         new Object::ModelDataUpdater(aggregate);
@@ -90,6 +94,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         new Note::GraphicsItemUpdater(aggregate);
+        new Note::ModelItemInfo(aggregate);
         new ScoreObject::ModelData(aggregate);
         new Note::Gui::ModelItem(aggregate);
         new Object::ModelDataUpdater(aggregate);
@@ -99,6 +104,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
+        new PitchCurve::ModelItemInfo(aggregate);
         new PitchCurve::Gui::ModelItem(aggregate);
         new PitchCurve::ModelData(aggregate);
         new Object::ModelDataUpdater(aggregate);

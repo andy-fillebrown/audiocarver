@@ -32,6 +32,7 @@ enum MiCoreInterface {
     IModelData,
     IModelDataWatcher,
     IModelItem,
+    IModelItemInfo,
     IModelItemList,
     IModelItemListWatcher,
     IModelItemWatcher,

@@ -27,9 +27,6 @@ class IModelItem : public IComponent
 public:
     enum { InterfaceType = I::IModelItem };
 
-    virtual int itemType() const = 0;
-    virtual bool isTypeOfItem(int itemType) const = 0;
-
     virtual bool isList() const
     {
         return false;

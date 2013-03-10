@@ -15,16 +15,23 @@
 **
 **************************************************************************/
 
-#include "ac_core_gridline_modelitem.h"
+#include "ac_core_projectsettings_modeliteminfo.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;
 
-namespace GridLine {
+namespace ProjectSettings {
 
-bool ModelItem::isTypeOfItem(int itemType) const
+int ModelItemInfo::itemType() const
 {
-    return GridLineItem == itemType;
+    return ProjectSettingsItem;
+}
+
+bool ModelItemInfo::isTypeOfItem(int itemType) const
+{
+    if (ProjectSettingsItem == itemType)
+        return true;
+    return Object::ModelItemInfo::isTypeOfItem(itemType);
 }
 
 }

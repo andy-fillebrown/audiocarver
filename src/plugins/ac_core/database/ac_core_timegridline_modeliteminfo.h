@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CONTROLGRIDLINE_MODELITEM_H
-#define AC_CORE_CONTROLGRIDLINE_MODELITEM_H
+#ifndef AC_CORE_TIMEGRIDLINE_MODELITEMINFO_H
+#define AC_CORE_TIMEGRIDLINE_MODELITEMINFO_H
 
-#include "ac_core_gridline_modelitem.h"
+#include "ac_core_gridline_modeliteminfo.h"
 
-namespace ControlGridLine {
+namespace TimeGridLine {
 
-class ModelItem : public GridLine::ModelItem
+class ModelItemInfo : public GridLine::ModelItemInfo
 {
 public:
-    ModelItem(IAggregate *aggregate)
-        :   GridLine::ModelItem(aggregate)
+    ModelItemInfo(IAggregate *aggregate)
+        :   GridLine::ModelItemInfo(aggregate)
     {}
 
 protected:

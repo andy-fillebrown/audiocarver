@@ -8,6 +8,7 @@ SOURCE_FILES = \
     modeldata \
     modeldatawatcher \
     modelitem \
+    modeliteminfo \
     modelitemlist \
     modelitemlistwatcher \
     modelitemwatcher \

@@ -18,6 +18,7 @@
 #include "mi_core_object_modeldata.h"
 #include "mi_core_scopeddatachange.h"
 #include <iaggregate.h>
+#include <imodeliteminfo.h>
 #include <imodelitemlist.h>
 
 using namespace Mi;
@@ -56,7 +57,7 @@ QVariant ModelData::getValue(int role) const
     case NameRole:
         return name();
     case ItemTypeRole:
-        return QUERY(IModelItem, this)->itemType();
+        return QUERY(IModelItemInfo, this)->itemType();
     default:
         return QVariant();
     }

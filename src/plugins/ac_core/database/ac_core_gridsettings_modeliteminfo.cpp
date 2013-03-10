@@ -15,23 +15,23 @@
 **
 **************************************************************************/
 
-#include "ac_core_note_modelitem.h"
+#include "ac_core_gridsettings_modeliteminfo.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;
 
-namespace Note {
+namespace GridSettings {
 
-int ModelItem::itemType() const
+int ModelItemInfo::itemType() const
 {
-    return NoteItem;
+    return GridSettingsItem;
 }
 
-bool ModelItem::isTypeOfItem(int itemType) const
+bool ModelItemInfo::isTypeOfItem(int itemType) const
 {
-    if (NoteItem == itemType)
+    if (GridSettingsItem == itemType)
         return true;
-    return ScoreObject::ModelItem::isTypeOfItem(itemType);
+    return Object::ModelItemInfo::isTypeOfItem(itemType);
 }
 
 }

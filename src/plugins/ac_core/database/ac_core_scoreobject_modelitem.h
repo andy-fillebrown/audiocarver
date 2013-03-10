@@ -40,7 +40,6 @@ protected:
 
     ~ModelItem();
 
-    bool isTypeOfItem(int itemType) const = 0;
     int count() const;
     int indexOf(const IModelItem *item) const;
     IModelItem *at(int i) const;

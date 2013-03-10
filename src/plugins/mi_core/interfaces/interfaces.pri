@@ -10,6 +10,7 @@ SOURCE_FILES = \
     imodeldata \
     imodeldatawatcher \
     imodelitem \
+    imodeliteminfo \
     imodelitemlist \
     imodelitemlistwatcher \
     imodelitemwatcher \

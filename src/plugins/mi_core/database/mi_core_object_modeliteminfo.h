@@ -15,32 +15,28 @@
 **
 **************************************************************************/
 
-#include "ac_gui_note_modelitem.h"
-#include "ac_gui_namespace.h"
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
+#ifndef MI_CORE_OBJECT_MODELITEMINFO_H
+#define MI_CORE_OBJECT_MODELITEMINFO_H
 
-using namespace Ac;
+#include "mi_core_base_modeliteminfo.h"
 
-namespace Note {
-namespace Gui {
+namespace Object {
 
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   ScoreObject::ModelItem(aggregate)
+class MI_CORE_EXPORT ModelItemInfo : public Base::ModelItemInfo
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _velocity = factory->create(VelocityItem, this);
+protected:
+    ModelItemInfo(IAggregate *aggregate)
+        :   Base::ModelItemInfo(aggregate)
+    {}
+
+    int itemType() const;
+
+    bool isTypeOfItem(int itemType) const
+    {
+        return false;
+    }
+};
+
 }
 
-ModelItem::~ModelItem()
-{
-    delete _velocity;
-}
-
-IModelItem *ModelItem::findItem(int itemType) const
-{
-    return VelocityItem == itemType ? QUERY(IModelItem, _velocity) : ScoreObject::ModelItem::findItem(itemType);
-}
-
-}
-}
+#endif

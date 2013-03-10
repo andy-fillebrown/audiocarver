@@ -24,18 +24,6 @@ using namespace Ac;
 
 namespace ViewSettings {
 
-int ModelItem::itemType() const
-{
-    return ViewSettingsItem;
-}
-
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    if (ViewSettingsItem == itemType)
-        return true;
-    return Object::ModelItem::isTypeOfItem(itemType);
-}
-
 void ModelItem::reset()
 {
     IModelData *data = QUERY(IModelData, this);

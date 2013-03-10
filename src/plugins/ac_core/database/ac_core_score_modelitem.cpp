@@ -27,13 +27,12 @@ using namespace Ac;
 namespace Score {
 
 ModelItem::ModelItem(IAggregate *aggregate)
-    :  ScoreObject::ModelItem(aggregate)
+    :  Object::ModelItem(aggregate)
     ,   _tracks(0)
     ,   _gridSettings(0)
     ,   _projectSettings(0)
     ,   _viewSettings(0)
 {
-    ScoreObject::ModelItem::initialize();
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _tracks = factory->create(TrackListItem, this);
     _gridSettings = factory->create(GridSettingsItem, this);
@@ -49,18 +48,6 @@ ModelItem::~ModelItem()
     delete _tracks;
 }
 
-int ModelItem::itemType() const
-{
-    return ScoreItem;
-}
-
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    if (ScoreItem == itemType)
-        return true;
-    return ScoreObject::ModelItem::isTypeOfItem(itemType);
-}
-
 int ModelItem::indexOf(const IModelItem *item) const
 {
     if (QUERY(IModelItem, _tracks) == item)
@@ -71,7 +58,7 @@ int ModelItem::indexOf(const IModelItem *item) const
         return ItemCountOffset + 2;
     if (QUERY(IModelItem, _viewSettings) == item)
         return ItemCountOffset + 3;
-    return ScoreObject::ModelItem::indexOf(item);
+    return Object::ModelItem::indexOf(item);
 }
 
 IModelItem *ModelItem::at(int i) const
@@ -86,7 +73,7 @@ IModelItem *ModelItem::at(int i) const
     case 3:
         return QUERY(IModelItem, _viewSettings);
     default:
-        return ScoreObject::ModelItem::at(i);
+        return Object::ModelItem::at(i);
     }
 }
 
@@ -100,7 +87,7 @@ IModelItem *ModelItem::findItem(int itemType) const
     case ViewSettingsItem:
         return QUERY(IModelItem, _viewSettings);
     default:
-        return ScoreObject::ModelItem::findItem(itemType);
+        return Object::ModelItem::findItem(itemType);
     }
 }
 
@@ -110,7 +97,7 @@ IModelItemList *ModelItem::findList(int listType) const
     case TrackItem:
         return QUERY(IModelItemList, _tracks);
     default:
-        return ScoreObject::ModelItem::findList(listType);
+        return Object::ModelItem::findList(listType);
     }
 }
 
@@ -119,7 +106,7 @@ void ModelItem::reset()
     IModelData *data = QUERY(IModelData, this);
     data->set(DEFAULT_SCORE_LENGTH, LengthRole);
     data->set(DEFAULT_SCORE_STARTTIME, StartTimeRole);
-    ScoreObject::ModelItem::reset();
+    Object::ModelItem::reset();
 }
 
 }

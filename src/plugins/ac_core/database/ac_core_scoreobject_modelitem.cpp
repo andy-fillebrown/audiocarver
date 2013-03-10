@@ -42,11 +42,6 @@ ModelItem::~ModelItem()
     delete _pitchCurve;
 }
 
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    return ScoreObjectItem == itemType;
-}
-
 int ModelItem::count() const
 {
     return TotalItemCount;

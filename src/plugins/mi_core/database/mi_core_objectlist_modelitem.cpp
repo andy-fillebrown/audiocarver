@@ -27,16 +27,6 @@ using namespace Mi;
 
 namespace ObjectList {
 
-int ModelItem::itemType() const
-{
-    return ListItem;
-}
-
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    return ListItem == itemType;
-}
-
 void ModelItem::setParent(IModelItem *parent)
 {
     if (_parent == parent)

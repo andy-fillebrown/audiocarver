@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_core_pitchgridline_modelitem.h"
-#include "ac_core_namespace.h"
+#ifndef AC_CORE_SCORE_MODELITEMINFO_H
+#define AC_CORE_SCORE_MODELITEMINFO_H
 
-using namespace Ac;
+#include "ac_core_scoreobject_modeliteminfo.h"
 
-namespace PitchGridLine {
+namespace Score {
 
-int ModelItem::itemType() const
+class ModelItemInfo : public ScoreObject::ModelItemInfo
 {
-    return PitchGridLineItem;
+public:
+    ModelItemInfo(IAggregate *aggregate)
+        :   ScoreObject::ModelItemInfo(aggregate)
+    {}
+
+protected:
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+};
+
 }
 
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    if (PitchGridLineItem == itemType)
-        return true;
-    return GridLine::ModelItem::isTypeOfItem(itemType);
-}
-
-}
+#endif

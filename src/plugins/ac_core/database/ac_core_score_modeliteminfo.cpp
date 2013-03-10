@@ -15,23 +15,23 @@
 **
 **************************************************************************/
 
-#include "ac_core_controlgridline_modelitem.h"
+#include "ac_core_score_modeliteminfo.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;
 
-namespace ControlGridLine {
+namespace Score {
 
-int ModelItem::itemType() const
+int ModelItemInfo::itemType() const
 {
-    return ControlGridLineItem;
+    return ScoreItem;
 }
 
-bool ModelItem::isTypeOfItem(int itemType) const
+bool ModelItemInfo::isTypeOfItem(int itemType) const
 {
-    if (ControlGridLineItem == itemType)
+    if (ScoreItem == itemType)
         return true;
-    return GridLine::ModelItem::isTypeOfItem(itemType);
+    return ScoreObject::ModelItemInfo::isTypeOfItem(itemType);
 }
 
 }

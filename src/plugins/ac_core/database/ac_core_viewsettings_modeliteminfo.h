@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_PITCHGRIDLINE_MODELITEM_H
-#define AC_CORE_PITCHGRIDLINE_MODELITEM_H
+#ifndef AC_CORE_VIEWSETTINGS_MODELITEMINFO_H
+#define AC_CORE_VIEWSETTINGS_MODELITEMINFO_H
 
-#include "ac_core_gridline_modelitem.h"
+#include <mi_core_object_modeliteminfo.h>
 
-namespace PitchGridLine {
+namespace ViewSettings {
 
-class ModelItem : public GridLine::ModelItem
+class ModelItemInfo : public Object::ModelItemInfo
 {
 public:
-    ModelItem(IAggregate *aggregate)
-        :   GridLine::ModelItem(aggregate)
+    ModelItemInfo(IAggregate *aggregate)
+        :   Object::ModelItemInfo(aggregate)
     {}
 
 protected:

@@ -15,19 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_PITCHCURVE_MODELITEM_H
-#define AC_CORE_PITCHCURVE_MODELITEM_H
+#ifndef AC_CORE_NOTE_MODELITEMINFO_H
+#define AC_CORE_NOTE_MODELITEMINFO_H
 
-#include "ac_core_curve_modelitem.h"
+#include "ac_core_scoreobject_modeliteminfo.h"
 #include "ac_core_global.h"
 
-namespace PitchCurve {
+namespace Note {
 
-class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
+class AC_CORE_EXPORT ModelItemInfo : public ScoreObject::ModelItemInfo
 {
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Curve::ModelItem(aggregate)
+    ModelItemInfo(IAggregate *aggregate)
+        :   ScoreObject::ModelItemInfo(aggregate)
     {}
 
 protected:

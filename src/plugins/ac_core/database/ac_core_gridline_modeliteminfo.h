@@ -15,22 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_PROJECTSETTINGS_MODELITEM_H
-#define AC_CORE_PROJECTSETTINGS_MODELITEM_H
+#ifndef AC_CORE_GRIDLINE_MODELITEMINFO_H
+#define AC_CORE_GRIDLINE_MODELITEMINFO_H
 
-#include <mi_core_object_modelitem.h>
+#include <mi_core_object_modeliteminfo.h>
 
-namespace ProjectSettings {
+namespace GridLine {
 
-class ModelItem : public Object::ModelItem
+class ModelItemInfo : public Object::ModelItemInfo
 {
-public:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
+protected:
+    ModelItemInfo(IAggregate *aggregate)
+        :   Object::ModelItemInfo(aggregate)
     {}
 
-protected:
-    int itemType() const;
     bool isTypeOfItem(int itemType) const;
 };
 

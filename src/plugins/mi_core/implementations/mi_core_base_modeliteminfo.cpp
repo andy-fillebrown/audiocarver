@@ -15,24 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_CURVE_MODELITEM_H
-#define AC_CORE_CURVE_MODELITEM_H
+#include "mi_core_base_modeliteminfo.h"
+#include <iaggregate.h>
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+namespace Base {
 
-namespace Curve {
-
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+void *ModelItemInfo::queryInterface(int interfaceType) const
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
-
-    bool isTypeOfItem(int itemType) const;
-};
-
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-#endif
+ModelItemInfo::ModelItemInfo(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
+
+}

@@ -15,23 +15,37 @@
 **
 **************************************************************************/
 
-#include "ac_core_pitchcurve_modelitem.h"
-#include "ac_core_namespace.h"
+#ifndef MI_CORE_BASE_MODELITEMINFO_H
+#define MI_CORE_BASE_MODELITEMINFO_H
 
-using namespace Ac;
+#include <imodeliteminfo.h>
+#include "mi_core_global.h"
 
-namespace PitchCurve {
+class IAggregate;
 
-int ModelItem::itemType() const
+namespace Base {
+
+class Aggregate;
+
+class MI_CORE_EXPORT ModelItemInfo : public IModelItemInfo
 {
-    return PitchCurveItem;
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    ModelItemInfo(IAggregate *aggregate);
+
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    void initialize()
+    {}
+};
+
 }
 
-bool ModelItem::isTypeOfItem(int itemType) const
-{
-    if (PitchCurveItem == itemType)
-        return true;
-    return Curve::ModelItem::isTypeOfItem(itemType);
-}
-
-}
+#endif
