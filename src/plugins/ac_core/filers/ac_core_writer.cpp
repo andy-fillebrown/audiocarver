@@ -87,7 +87,9 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
 Writer::Writer(IAggregate *aggregate)
     :   _aggregate(aggregate)
     ,   _stream(0)
-{}
+{
+    _aggregate->append(this);
+}
 
 Writer::~Writer()
 {
