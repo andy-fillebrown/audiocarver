@@ -50,7 +50,7 @@ Qt::PenStyle GraphicsData::gridLineExtensionPenStyle()
 }
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsEntity(aggregate)
+    :   Base::GraphicsEntityData(aggregate)
     ,   _labelSceneRootNode(0)
     ,   _labelSceneTextNode(0)
 {

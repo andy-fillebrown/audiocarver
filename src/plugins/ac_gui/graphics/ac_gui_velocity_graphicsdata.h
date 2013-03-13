@@ -18,15 +18,13 @@
 #ifndef AC_GUI_VELOCITY_GRAPHICSDATA_H
 #define AC_GUI_VELOCITY_GRAPHICSDATA_H
 
-#include <ac_gui_base_graphicscurve.h>
+#include <ac_gui_base_graphicscurvedata.h>
 
-class IAggregate;
-class IModelItem;
 class QGraphicsLineItem;
 
 namespace Velocity {
 
-class GraphicsData : public Base::GraphicsCurve
+class GraphicsData : public Base::GraphicsCurveData
 {
     QGraphicsLineItem *_lineNode;
 
@@ -35,9 +33,8 @@ public:
 
 protected:
     void initialize();
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    QGraphicsItem *node() const;
     bool intersects(const QRectF &rect) const;
-    void highlight(bool on);
     void update(int role, const QVariant &value);
 };
 

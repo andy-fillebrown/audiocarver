@@ -15,22 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CONTROLCURVE_GRAPHICSDATA_H
-#define AC_GUI_CONTROLCURVE_GRAPHICSDATA_H
+#ifndef AC_GUI_BASE_GRAPHICSITEMINFO_H
+#define AC_GUI_BASE_GRAPHICSITEMINFO_H
 
-#include "ac_gui_curve_graphicsdata.h"
+#include <igraphicsiteminfo.h>
 
-namespace ControlCurve {
+class IAggregate;
 
-class GraphicsData : public Curve::GraphicsData
+namespace Base {
+
+class GraphicsItemInfo : public IGraphicsItemInfo
 {
+    IAggregate *_aggregate;
+
 public:
-    GraphicsData(IAggregate *aggregate)
-        :   Curve::GraphicsData(aggregate)
-    {}
+    void *queryInterface(int interfaceType) const;
 
 protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    GraphicsItemInfo(IAggregate *aggregate);
+
+    void initialize()
+    {}
 };
 
 }

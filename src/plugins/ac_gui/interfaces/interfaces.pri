@@ -5,6 +5,7 @@ SOURCE_FILES *= \
     igraphicsentitydata \
     igraphicsentityitem \
     igraphicsitem \
+    igraphicsiteminfo \
     igraphicssubentitydata \
     igrip \
     iplaycursor \

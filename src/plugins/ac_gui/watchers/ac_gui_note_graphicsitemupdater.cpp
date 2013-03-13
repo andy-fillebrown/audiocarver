@@ -37,7 +37,7 @@ void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
     IGraphicsData *child_gdata = QUERY(IGraphicsData, child);
     if (child_gdata)
         child_gdata->update(ColorRole, color);
-    Object::GraphicsItemUpdater::endChangeParent(child);
+    Object::GraphicsEntityItemUpdater::endChangeParent(child);
 }
 
 }

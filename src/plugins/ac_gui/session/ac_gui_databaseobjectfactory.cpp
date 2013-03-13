@@ -16,20 +16,23 @@
 **************************************************************************/
 
 #include "ac_gui_databaseobjectfactory.h"
-#include "ac_gui_controlcurve_graphicsdata.h"
+#include "ac_gui_controlcurve_graphicsiteminfo.h"
 #include "ac_gui_controlcurve_modelitem.h"
 #include "ac_gui_controlgridline_graphicsdata.h"
+#include "ac_gui_curve_graphicsdata.h"
 #include "ac_gui_gridsettings_graphicsdata.h"
 #include "ac_gui_grip_graphicsdata.h"
 #include "ac_gui_grip_modelitem.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_note_graphicsdata.h"
+#include "ac_gui_note_graphicsitem.h"
 #include "ac_gui_note_graphicsitemupdater.h"
 #include "ac_gui_note_modelitem.h"
 #include "ac_gui_object_graphicsdataupdater.h"
+#include "ac_gui_object_graphicsentityitemupdater.h"
 #include "ac_gui_object_graphicsitem.h"
 #include "ac_gui_object_graphicsitemupdater.h"
-#include "ac_gui_pitchcurve_graphicsdata.h"
+#include "ac_gui_pitchcurve_graphicsiteminfo.h"
 #include "ac_gui_pitchcurve_modelitem.h"
 #include "ac_gui_pitchgridline_graphicsdata.h"
 #include "ac_gui_score_graphicsdata.h"
@@ -57,7 +60,8 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
 {
     switch (itemType) {
     case ControlCurveItem:
-        new ControlCurve::GraphicsData(aggregate);
+        new ControlCurve::GraphicsItemInfo(aggregate);
+        new Curve::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
@@ -76,7 +80,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case GridSettingsItem:
         new GridSettings::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
+        new Object::GraphicsEntityItemUpdater(aggregate);
         Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case GripItem:
@@ -89,7 +93,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         break;
     case NoteItem:
         new Note::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
+        new Note::GraphicsItem(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         new Note::GraphicsItemUpdater(aggregate);
         new Note::ModelItemInfo(aggregate);
@@ -98,7 +102,8 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         new Object::ModelDataUpdater(aggregate);
         break;
     case PitchCurveItem:
-        new PitchCurve::GraphicsData(aggregate);
+        new PitchCurve::GraphicsItemInfo(aggregate);
+        new Curve::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
@@ -130,7 +135,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case TrackItem:
         new Track::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
+        new Object::GraphicsEntityItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
@@ -139,6 +144,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
     case VelocityItem:
+        new ControlCurve::GraphicsItemInfo(aggregate);
         new Velocity::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);

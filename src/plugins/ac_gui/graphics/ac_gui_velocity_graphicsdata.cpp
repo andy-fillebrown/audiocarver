@@ -19,6 +19,7 @@
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
+#include <igraphicsentitydata.h>
 #include <igraphicsitem.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
@@ -29,32 +30,29 @@ using namespace Ac;
 namespace Velocity {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsCurve(aggregate)
+    :   Base::GraphicsCurveData(aggregate)
     ,   _lineNode(0)
 {
     _lineNode = new QGraphicsLineItem;
     QPen pen;
     pen.setCosmetic(true);
     _lineNode->setPen(pen);
-    highlight(false);
+    update(HighlightRole, false);
 }
 
 void GraphicsData::initialize()
 {
     IModelItem *this_item = QUERY(IModelItem, this);
     IModelItem *parent_item = this_item->parent();
-    IGraphicsData *parent_gdata = QUERY(IGraphicsData, parent_item);
+    IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, parent_item);
     _lineNode->setParentItem(parent_gdata->node(ControlScene, MainTransform));
     IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
     _lineNode->setData(0, quintptr(this_gitem));
 }
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node() const
 {
-    if (ControlScene == sceneType
-            && MainTransform == transformType)
-        return _lineNode;
-    return 0;
+    return _lineNode;
 }
 
 bool GraphicsData::intersects(const QRectF &rect) const
@@ -71,16 +69,6 @@ bool GraphicsData::intersects(const QRectF &rect) const
     if (QLineF::BoundedIntersection == line.intersect(QLineF(rect.bottomLeft(), rect.topLeft()), 0))
         return true;
     return false;
-}
-
-void GraphicsData::highlight(bool on)
-{
-    QPen pen = _lineNode->pen();
-    if (on)
-        pen.setWidth(3.0f);
-    else
-        pen.setWidth(1.0f);
-    _lineNode->setPen(pen);
 }
 
 void GraphicsData::update(int role, const QVariant &value)
@@ -101,6 +89,16 @@ void GraphicsData::update(int role, const QVariant &value)
     if (ColorRole == role) {
         QPen pen = _lineNode->pen();
         pen.setColor(qvariant_cast<QColor>(value));
+        _lineNode->setPen(pen);
+        return;
+    }
+    if (HighlightRole == role) {
+        bool on = qvariant_cast<bool>(value);
+        QPen pen = _lineNode->pen();
+        if (on)
+            pen.setWidth(3.0f);
+        else
+            pen.setWidth(1.0f);
         _lineNode->setPen(pen);
         return;
     }

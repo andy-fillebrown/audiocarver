@@ -24,7 +24,7 @@ using namespace Ac;
 namespace GridSettings {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsData(aggregate)
+    :   Base::GraphicsEntityData(aggregate)
 {
     _mainNodes.insert(TimeLabelScene, new GraphicsNode);
     _mainNodes.insert(PitchLabelScene, new GraphicsNode);

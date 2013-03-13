@@ -18,13 +18,13 @@
 #ifndef AC_GUI_GRIP_GRAPHICSDATA_H
 #define AC_GUI_GRIP_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicsentity.h"
+#include "ac_gui_base_graphicssubentitydata.h"
 
 class GraphicsGripNode;
 
 namespace Grip {
 
-class GraphicsData : public Base::GraphicsEntity
+class GraphicsData : public Base::GraphicsSubEntityData
 {
     GraphicsGripNode *_gripNode;
 
@@ -35,12 +35,12 @@ protected:
     ~GraphicsData();
 
     void initialize();
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    QGraphicsItem *node() const;
+    void update(int role, const QVariant &value);
 
 //    void setColor(int color);
 //    void setPoints(const PointList &points);
 //    bool intersects(const QRectF &rect) const;
-    void highlight(bool on);
 //    bool isVisible() const;
 };
 

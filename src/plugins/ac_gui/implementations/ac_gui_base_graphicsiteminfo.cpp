@@ -15,19 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_gui_controlcurve_graphicsdata.h"
-#include "ac_gui_graphicscurvenode.h"
-#include "ac_gui_namespace.h"
+#include "ac_gui_base_graphicsiteminfo.h"
+#include <iaggregate.h>
+#include <imodelitem.h>
 
-using namespace Ac;
+namespace Base {
 
-namespace ControlCurve {
-
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+void *GraphicsItemInfo::queryInterface(int interfaceType) const
 {
-    if (ControlScene == sceneType && MainTransform == transformType)
-        return curveNode();
-    return 0;
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
+
+GraphicsItemInfo::GraphicsItemInfo(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
 }
 
 }

@@ -18,6 +18,7 @@
 #include "ac_gui_note_graphicsdata.h"
 #include "ac_gui_namespace.h"
 #include <idatabaseobjectfactory.h>
+#include <igraphicsentityitem.h>
 #include <imodeldata.h>
 #include <imodelitemlist.h>
 #include <mi_core_utilities.h>
@@ -27,44 +28,19 @@ using namespace Mi;
 
 namespace Note {
 
-QList<IGraphicsEntity*> GraphicsData::subentities() const
-{
-    QList<IGraphicsEntity*> subents;
-
-    IModelItem *this_item = QUERY(IModelItem, this);
-    if (!this_item)
-        return subents;
-    IModelItem *pitch_item = this_item->findItem(PitchCurveItem);
-    IGraphicsEntity *pitch_entity = QUERY(IGraphicsEntity, pitch_item);
-    if (pitch_entity)
-        subents.append(pitch_entity);
-//    IModelItemList *control_list = this_item->findList(ControlCurveItem);
-//    IModelItem *volume_item = control_list->at(-1);
-//    IGraphicsEntity *volume_entity = QUERY(IGraphicsEntity, volume_item);
-//    if (volume_entity)
-//        subents.append(volume_entity);
-    IModelItem *velocity_item = this_item->findItem(VelocityItem);
-    IGraphicsEntity *velocity_entity = QUERY(IGraphicsEntity, velocity_item);
-    if (velocity_entity)
-        subents.append(velocity_entity);
-
-    return subents;
-}
-
-void GraphicsData::highlight(bool on)
-{
-    QList<IGraphicsEntity*> subents = subentities();
-    foreach (IGraphicsEntity *subent, subents)
-        subent->highlight(on);
-}
-
 void GraphicsData::update(int role, const QVariant &value)
 {
     if (ColorRole == role
-            || VolumeRole == role) {
-        QList<IGraphicsEntity*> subents = subentities();
-        foreach (IGraphicsEntity *subent, subents)
-            subent->update(role, value);
+            || VolumeRole == role
+            || HighlightRole == role) {
+        IGraphicsEntityItem *gitem = QUERY(IGraphicsEntityItem, this);
+        for (int i = 0;  i < SceneTypeCount;  ++i) {
+            QList<IGraphicsItem*> subents = gitem->subentities(i, MainTransform);
+            foreach (IGraphicsItem *subent_gitem, subents) {
+                IGraphicsData *subent_gdata = QUERY(IGraphicsData, subent_gitem);
+                subent_gdata->update(role, value);
+            }
+        }
     }
 }
 

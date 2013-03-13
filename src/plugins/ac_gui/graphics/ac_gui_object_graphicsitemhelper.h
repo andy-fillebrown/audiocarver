@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2012 Andrew Fillebrown.
+** Copyright (c) 2013 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,21 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchcurve_subentity.h"
-#include "ac_gui_namespace.h"
+#ifndef AC_GUI_OBJECT_GRAPHICSITEMHELPER_H
+#define AC_GUI_OBJECT_GRAPHICSITEMHELPER_H
 
-using namespace Ac;
+class IGraphicsItem;
 
-namespace PitchCurve {
+namespace Object {
 
-IUnknown *SubEntity::initialize()
+class GraphicsItemHelper
 {
-    return Curve::SubEntity::initialize();
+    IGraphicsItem *_gitem;
+
+public:
+    GraphicsItemHelper(IGraphicsItem *item)
+        :   _gitem(item)
+    {}
+
+    IGraphicsItem *parent() const;
+};
+
 }
 
-int SubEntity::sceneType() const
-{
-    return PitchScene;
-}
-
-}
+#endif

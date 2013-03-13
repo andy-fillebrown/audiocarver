@@ -15,44 +15,35 @@
 **
 **************************************************************************/
 
-#include "ac_gui_scoreobject_graphicsdata.h"
-#include "ac_gui_graphicsnode.h"
+#include "ac_gui_scoreobject_graphicsitem.h"
 #include "ac_gui_namespace.h"
-#include <imodeldata.h>
-#include <imodelitemlist.h>
+#include "ac_gui_graphicsnode.h"
+#include <imodelitem.h>
 
 using namespace Ac;
-using namespace Mi;
 
 namespace ScoreObject {
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsEntityData(aggregate)
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Base::GraphicsEntityItem(aggregate)
+    ,   _helper(this)
 {
     _mainNodes.insert(PitchScene, new GraphicsNode);
     _mainNodes.insert(ControlScene, new GraphicsNode);
 }
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QList<IGraphicsItem*> GraphicsItem::subentities(int sceneType, int transformType) const
 {
-    switch (transformType) {
-    case MainTransform:
-        return _mainNodes.value(sceneType);
-    default:
-        return 0;
-    }
-}
-
-void GraphicsData::update(int role, const QVariant &value)
-{
-    if (VisibilityRole == role) {
-        bool visible = qvariant_cast<bool>(value);
-        for (int i = 0;  i < SceneTypeCount;  ++i) {
-            QGraphicsItem *node = this->node(i, MainTransform);
-            if (node)
-                node->setVisible(visible);
-        }
-    }
+    QList<IGraphicsItem*> subents;
+    IModelItem *item = QUERY(IModelItem, this);
+    if (!item)
+        return subents;
+    IModelItem *pitch_curve = item->findItem(PitchCurveItem);
+    subents.append(QUERY(IGraphicsItem, pitch_curve));
+    IModelItem *control_curve = item->findItem(ControlCurveItem);
+    subents.append(QUERY(IGraphicsItem, control_curve));
+    subents.removeAll(0);
+    return subents;
 }
 
 }

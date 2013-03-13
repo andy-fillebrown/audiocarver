@@ -15,35 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#include "ac_gui_note_graphicsitem.h"
+#include "ac_gui_namespace.h"
+#include <imodelitem.h>
 
-#include <ac_core_interfaces.h>
+using namespace Ac;
 
-namespace I {
+namespace Note {
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
-};
-
+QList<IGraphicsItem*> GraphicsItem::subentities(int sceneType, int transformType) const
+{
+    QList<IGraphicsItem*> subents = ScoreObject::GraphicsItem::subentities(sceneType, transformType);
+    IModelItem *this_item = QUERY(IModelItem, this);
+    IModelItem *velocity_item = this_item->findItem(VelocityItem);
+    IGraphicsItem *velocity_gitem = QUERY(IGraphicsItem, velocity_item);
+    if (velocity_gitem)
+        subents.append(velocity_gitem);
+    return subents;
 }
 
-#endif
+}

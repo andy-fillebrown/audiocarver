@@ -4,6 +4,7 @@ SOURCE_FILES = \
     graphicsentitydata \
     graphicsentityitem \
     graphicsitem \
+    graphicsiteminfo \
     graphicssubentitydata \
 
 for(file, SOURCE_FILES) {

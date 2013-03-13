@@ -15,25 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_PITCHCURVE_GRAPHICSDATA_H
-#define AC_GUI_PITCHCURVE_GRAPHICSDATA_H
+#include "ac_gui_object_graphicsitemhelper.h"
+#include <igraphicsitem.h>
+#include <imodelitem.h>
 
-#include "ac_gui_curve_graphicsdata.h"
+namespace Object {
 
-namespace PitchCurve {
-
-class GraphicsData : public Curve::GraphicsData
+IGraphicsItem *GraphicsItemHelper::parent() const
 {
-public:
-    GraphicsData(IAggregate *aggregate)
-        :   Curve::GraphicsData(aggregate)
-    {}
-
-protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
-    void update(int role, const QVariant &value);
-};
-
+    IModelItem *item = QUERY(IModelItem, _gitem);
+    IModelItem *parent_item = item->parent();
+    if (parent_item && parent_item->isList())
+        parent_item = parent_item->parent();
+    return QUERY(IGraphicsItem, parent_item);
 }
 
-#endif
+}

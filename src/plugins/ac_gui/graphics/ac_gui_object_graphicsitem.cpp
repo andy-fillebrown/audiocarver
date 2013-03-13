@@ -16,18 +16,9 @@
 **************************************************************************/
 
 #include "ac_gui_object_graphicsitem.h"
-#include <iaggregate.h>
-#include <imodelitem.h>
 
 namespace Object {
 
-IGraphicsItem *GraphicsItem::parent() const
-{
-    IModelItem *this_item = QUERY(IModelItem, this);
-    IModelItem *parent_item = this_item->parent();
-    if (parent_item && parent_item->isList())
-        parent_item = parent_item->parent();
-    return QUERY(IGraphicsItem, parent_item);
-}
+
 
 }

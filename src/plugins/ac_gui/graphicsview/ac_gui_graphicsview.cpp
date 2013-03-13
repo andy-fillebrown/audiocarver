@@ -26,8 +26,9 @@
 #include <ac_core_namespace.h>
 #include <idatabase.h>
 #include <ieditor.h>
-#include <igraphicscurve.h>
-#include <igraphicsitem.h>
+#include <igraphicscurvedata.h>
+#include <igraphicsentitydata.h>
+#include <igraphicsentityitem.h>
 #include <igrip.h>
 #include <imodel.h>
 #include <imodelitem.h>
@@ -67,12 +68,12 @@ public:
     QRect prevZoomGlyphRect;
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
-    QList<IGraphicsEntity*> pickedEntities;
+    QList<IGraphicsEntityData*> pickedEntities;
     QList<IGrip*> pickedGrips;
     IGrip *curGrip;
-    QList<IGraphicsEntity*> hoveredEntities;
+    QList<IGraphicsEntityData*> hoveredEntities;
     QList<IGrip*> hoveredGrips;
-//    QList<IEntityItem*> entitiesToUpdate;
+    QList<IGraphicsEntityData*> entitiesToUpdate;
     GraphicsRootNode *rootNode;
     IPlayCursor *playCursor;
     QCursor previousCursor;
@@ -248,14 +249,14 @@ public:
                         hoveredGrips.append(grip);
                     }
                 } else if (!grip_is_hovered) {
-                    IGraphicsCurve *curve_gdata = QUERY(IGraphicsCurve, unknown);
+                    IGraphicsCurveData *curve_gdata = QUERY(IGraphicsCurveData, unknown);
                     if (curve_gdata && curve_gdata->intersects(scene_pick_rect)) {
                         entity_is_hovered = true;
                         IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, unknown);
-                        IGraphicsEntity *parent_gdata = QUERY(IGraphicsEntity, curve_gitem->parent());
+                        IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, curve_gitem->parent());
                         if (!pickedEntities.contains(parent_gdata)) {
                             hoveredEntities.append(parent_gdata);
-                            parent_gdata->highlight();
+                            parent_gdata->update(HighlightRole, HoverHighlight);
                         }
                     }
                 }
@@ -276,9 +277,9 @@ public:
             if (!pickedGrips.contains(grip))
                 grip->highlight(false);
         hoveredGrips.clear();
-        foreach (IGraphicsEntity *entity, hoveredEntities) {
+        foreach (IGraphicsEntityData *entity, hoveredEntities) {
             if (!entityIsPicked(entity))
-                entity->highlight(false);
+                entity->update(HighlightRole, NoHighlight);
         }
         hoveredEntities.clear();
     }
@@ -538,7 +539,7 @@ public:
         dragState = 0;
     }
 
-    bool entityIsPicked(IGraphicsEntity *entity)
+    bool entityIsPicked(IGraphicsEntityData *entity)
     {
 //        ISubEntity *subEntity = QUERY(ISubEntity, entity);
 //        IEntity *parentEntity = subEntity ? subEntity->parentEntity() : 0;
@@ -558,13 +559,13 @@ public:
 //        return 0;
 //    }
 
-    void setPickedEntities(const QList<IGraphicsEntity*> &entities)
+    void setPickedEntities(const QList<IGraphicsEntityItem*> &entities)
     {
         clearPickedEntities();
         appendPickedEntities(entities);
     }
 
-    void appendPickedEntities(const QList<IGraphicsEntity*> &entities)
+    void appendPickedEntities(const QList<IGraphicsEntityItem*> &entities)
     {
 //        if (entities.isEmpty())
 //            return;
@@ -581,7 +582,7 @@ public:
 //        vm->enableUpdates();
     }
 
-    void removePickedEntities(const QList<IGraphicsEntity*> &entities)
+    void removePickedEntities(const QList<IGraphicsEntityItem*> &entities)
     {
 //        if (entities.isEmpty())
 //            return;

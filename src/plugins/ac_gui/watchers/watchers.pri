@@ -2,6 +2,7 @@
 SOURCE_FILES = \
     note_graphicsitemupdater \
     object_graphicsdataupdater \
+    object_graphicsentityitemupdater \
     object_graphicsitemupdater \
     tracklist_graphicsdataupdater \
 

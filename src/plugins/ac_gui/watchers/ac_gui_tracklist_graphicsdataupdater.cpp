@@ -18,8 +18,8 @@
 #include "ac_gui_tracklist_graphicsdataupdater.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
-#include <igraphicsdata.h>
-#include <igraphicsitem.h>
+#include <igraphicsentitydata.h>
+#include <igraphicsentityitem.h>
 #include <imodelitemlist.h>
 #include <QGraphicsItem>
 
@@ -27,13 +27,13 @@ using namespace Ac;
 
 static void updateZValues(const IModelItemList *list)
 {
-    IGraphicsItem *parent_gitem = QUERY(IGraphicsItem, list->parent());
+    IGraphicsEntityItem *parent_gitem = QUERY(IGraphicsEntityItem, list->parent());
     if (!parent_gitem)
         return;
     const int child_count = list->count();
     for (int i = 0;  i < child_count;  ++i) {
         const int z_value = child_count - i;
-        IGraphicsData *child_gdata = QUERY(IGraphicsData, list->at(i));
+        IGraphicsEntityData *child_gdata = QUERY(IGraphicsEntityData, list->at(i));
         child_gdata->node(PitchScene, MainTransform)->setZValue(z_value);
         child_gdata->node(ControlScene, MainTransform)->setZValue(z_value);
     }

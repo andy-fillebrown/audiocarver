@@ -18,21 +18,18 @@
 #ifndef AC_GUI_NOTE_GRAPHICSDATA_H
 #define AC_GUI_NOTE_GRAPHICSDATA_H
 
-#include "ac_gui_scoreobject_graphicsentity.h"
+#include "ac_gui_scoreobject_graphicsdata.h"
 
 namespace Note {
 
-class GraphicsData : public ScoreObject::GraphicsEntity
+class GraphicsData : public ScoreObject::GraphicsData
 {
 public:
     GraphicsData(IAggregate *aggregate)
-        :   ScoreObject::GraphicsEntity(aggregate)
+        :   ScoreObject::GraphicsData(aggregate)
     {}
 
 protected:
-    QList<IGraphicsEntity*> subentities() const;
-
-    void highlight(bool on);
     void update(int role, const QVariant &value);
 };
 

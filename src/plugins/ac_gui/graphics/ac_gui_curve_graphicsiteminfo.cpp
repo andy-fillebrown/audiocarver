@@ -15,35 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#include "ac_gui_curve_graphicsiteminfo.h"
+#include "ac_gui_namespace.h"
 
-#include <ac_core_interfaces.h>
+using namespace Ac;
 
-namespace I {
+namespace Curve {
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
-};
-
+int GraphicsItemInfo::transformType() const
+{
+    return MainTransform;
 }
 
-#endif
+}

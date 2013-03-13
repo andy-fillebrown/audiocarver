@@ -31,11 +31,12 @@ const qreal GRIP_SIZE_D2 = GRIP_SIZE / qreal(2.0f);
 const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_SIZE);
 
 using namespace Ac;
+using namespace Qt;
 
 namespace Grip {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsEntity(aggregate)
+    :   Base::GraphicsSubEntityData(aggregate)
     ,   _gripNode(0)
 {
     _gripNode = new GraphicsGripNode;
@@ -55,41 +56,37 @@ GraphicsData::~GraphicsData()
 
 void GraphicsData::initialize()
 {
-    IModelItem *this_item = QUERY(IModelItem, this);
-    IModelItem *parent_item = this_item->parent();
-    IGraphicsData *parent_gdata = QUERY(IGraphicsData, parent_item);
-    _gripNode->setParentItem(parent_gdata->node(ControlScene, MainTransform));
     IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
     _gripNode->setData(0, quintptr(this_gitem));
+    IGraphicsSubEntityData *parent_gdata = QUERY(IGraphicsSubEntityData, this_gitem->parent());
+    _gripNode->setParentItem(parent_gdata->node());
 }
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::node() const
 {
-    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    IGraphicsData *parent_gdata = QUERY(IGraphicsData, this_gitem->parent());
-    if (parent_gdata->node(sceneType, transformType))
-        return _gripNode;
-    return 0;
+    return _gripNode;
 }
 
-void GraphicsData::highlight(bool on)
+void GraphicsData::update(int role, const QVariant &value)
 {
+    if (HighlightRole != role)
+        return;
+    int highlight_type = qvariant_cast<int>(value);
     QPen pen = _gripNode->pen();
     QBrush brush = _gripNode->brush();
-    if (on) {
-        if (QColor(Qt::blue) == pen.color()) {
-            if (Qt::SolidPattern == brush.style())
-                pen.setColor(Qt::red);
-            else
-                brush.setStyle(Qt::SolidPattern);
-        }
-    } else {
-        if (Qt::SolidPattern == brush.style()) {
-            if (QColor(Qt::red) == pen.color())
-                pen.setColor(Qt::blue);
-            else
-                brush.setStyle(Qt::NoBrush);
-        }
+    switch (highlight_type) {
+    case NoHighlight:
+        pen.setColor(blue);
+        brush.setStyle(NoBrush);
+        break;
+    case HoverHighlight:
+        pen.setColor(blue);
+        brush.setStyle(SolidPattern);
+        break;
+    case FullHighlight:
+        pen.setColor(Qt::red);
+        brush.setStyle(SolidPattern);
+        break;
     }
     _gripNode->setBrush(brush);
     _gripNode->setPen(pen);

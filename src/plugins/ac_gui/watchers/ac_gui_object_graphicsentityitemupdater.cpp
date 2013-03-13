@@ -15,12 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_graphicsitemupdater.h"
+#include "ac_gui_object_graphicsentityitemupdater.h"
 #include "ac_gui_namespace.h"
 #include <igraphicsentitydata.h>
 #include <igraphicsitem.h>
-#include <igraphicsiteminfo.h>
-#include <igraphicssubentitydata.h>
 #include <imodelitem.h>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -29,33 +27,30 @@ using namespace Ac;
 
 namespace Object {
 
-void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
+void GraphicsEntityItemUpdater::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
-    IGraphicsSubEntityData *child_gdata = QUERY(IGraphicsSubEntityData, child);
+    IGraphicsEntityData *child_gdata = QUERY(IGraphicsEntityData, child);
     if (!child_gdata)
         return;
     IGraphicsItem *child_gitem = QUERY(IGraphicsItem, child);
     if (!child_gitem)
         return;
-    QGraphicsItem *child_node = child_gdata->node();
-    if (!child_node)
-        return;
-    QGraphicsItem *parent_node = 0;
-    IGraphicsSubEntityData *parent_gdata = QUERY(IGraphicsSubEntityData, child_gitem->parent());
-    if (parent_gdata) {
-        parent_node = parent_gdata->node();
-    } else {
-        IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, child_gitem->parent());
-        IGraphicsItemInfo *child_info = QUERY(IGraphicsItemInfo, child);
-        parent_node = parent_gdata->node(child_info->sceneType(), child_info->transformType());
-    }
-    child_node->setParentItem(parent_node);
-    if (!parent_node) {
-        QGraphicsScene *scene = child_node->scene();
-        if (scene)
-            scene->removeItem(child_node);
+    IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, child_gitem->parent());
+    for (int i = 0;  i < SceneTypeCount;  ++i) {
+        for (int j = 0;  j < TransformTypeCount;  ++j) {
+            QGraphicsItem *child_node = child_gdata->node(i, j);
+            if (!child_node)
+                continue;
+            QGraphicsItem *parent_node = parent_gdata ? parent_gdata->node(i, j) : 0;
+            child_node->setParentItem(parent_node);
+            if (!parent_node) {
+                QGraphicsScene *scene = child_node->scene();
+                if (scene)
+                    scene->removeItem(child_node);
+            }
+        }
     }
 }
 

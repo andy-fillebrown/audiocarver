@@ -17,6 +17,7 @@
 
 #include "ac_gui_curve_graphicsdata.h"
 #include "ac_gui_graphicscurvenode.h"
+#include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <igraphicsitem.h>
 #include <imodeldata.h>
@@ -27,7 +28,7 @@ using namespace Ac;
 namespace Curve {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsCurve(aggregate)
+    :   Base::GraphicsCurveData(aggregate)
     ,   _curveNode(0)
 {
     _curveNode = new GraphicsCurveNode;
@@ -45,12 +46,12 @@ void GraphicsData::initialize()
 
 bool GraphicsData::intersects(const QRectF &rect) const
 {
-    return curveNode()->intersects(rect);
+    return _curveNode->intersects(rect);
 }
 
-void GraphicsData::highlight(bool on)
+QGraphicsItem *GraphicsData::node() const
 {
-    curveNode()->highlight(on);
+    return _curveNode;
 }
 
 void GraphicsData::update(int role, const QVariant &value)
@@ -61,6 +62,9 @@ void GraphicsData::update(int role, const QVariant &value)
         break;
     case PointsRole:
         _curveNode->setPoints(qvariant_cast<PointList>(value));
+        break;
+    case HighlightRole:
+        _curveNode->highlight(qvariant_cast<bool>(value));
         break;
     }
 }

@@ -15,33 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef AC_GUI_CONTROLCURVE_GRAPHICSITEMINFO_H
+#define AC_GUI_CONTROLCURVE_GRAPHICSITEMINFO_H
 
-#include <ac_core_interfaces.h>
+#include "ac_gui_curve_graphicsiteminfo.h"
 
-namespace I {
+namespace ControlCurve {
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+class GraphicsItemInfo : public Curve::GraphicsItemInfo
+{
+public:
+    GraphicsItemInfo(IAggregate *aggregate)
+        :   Curve::GraphicsItemInfo(aggregate)
+    {}
+
+protected:
+    int sceneType() const;
 };
 
 }

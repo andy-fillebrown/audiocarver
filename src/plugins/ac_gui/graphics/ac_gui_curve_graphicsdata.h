@@ -15,33 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CURVE_GRAPHICSITEM_H
-#define AC_GUI_CURVE_GRAPHICSITEM_H
+#ifndef AC_GUI_CURVE_GRAPHICSDATA_H
+#define AC_GUI_CURVE_GRAPHICSDATA_H
 
-#include <ac_gui_base_graphicscurve.h>
+#include <ac_gui_base_graphicscurvedata.h>
 
 class GraphicsCurveNode;
 class IAggregate;
 
 namespace Curve {
 
-class GraphicsData : public Base::GraphicsCurve
+class GraphicsData : public Base::GraphicsCurveData
 {
     GraphicsCurveNode *_curveNode;
 
-protected:
+public:
     GraphicsData(IAggregate *aggregate);
+
+protected:
     ~GraphicsData();
 
     void initialize();
 
-    GraphicsCurveNode *curveNode() const
-    {
-        return _curveNode;
-    }
-
     bool intersects(const QRectF &rect) const;
-    void highlight(bool on);
+    QGraphicsItem *node() const;
     void update(int role, const QVariant &value);
 };
 

@@ -15,29 +15,16 @@
 **
 **************************************************************************/
 
-#include "ac_gui_scoreobject_graphicsentity.h"
+#include "ac_gui_controlcurve_graphicsiteminfo.h"
 #include "ac_gui_namespace.h"
-#include "ac_gui_graphicsnode.h"
 
 using namespace Ac;
 
-namespace ScoreObject {
+namespace ControlCurve {
 
-GraphicsEntity::GraphicsEntity(IAggregate *aggregate)
-    :   Base::GraphicsEntity(aggregate)
+int GraphicsItemInfo::sceneType() const
 {
-    _mainNodes.insert(PitchScene, new GraphicsNode);
-    _mainNodes.insert(ControlScene, new GraphicsNode);
-}
-
-QGraphicsItem *GraphicsEntity::node(int sceneType, int transformType) const
-{
-    switch (transformType) {
-    case MainTransform:
-        return _mainNodes.value(sceneType);
-    default:
-        return 0;
-    }
+    return ControlScene;
 }
 
 }

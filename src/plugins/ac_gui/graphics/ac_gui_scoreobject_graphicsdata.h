@@ -18,12 +18,12 @@
 #ifndef AC_GUI_SCOREOBJECT_GRAPHICSDATA_H
 #define AC_GUI_SCOREOBJECT_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicsdata.h"
+#include "ac_gui_base_graphicsentitydata.h"
 #include <QMap>
 
 namespace ScoreObject {
 
-class GraphicsData : public Base::GraphicsData
+class GraphicsData : public Base::GraphicsEntityData
 {
     QMap<int, QGraphicsItem*> _mainNodes;
 

@@ -15,33 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef AC_GUI_OBJECT_GRAPHICSENTITYITEMUPDATER_H
+#define AC_GUI_OBJECT_GRAPHICSENTITYITEMUPDATER_H
 
-#include <ac_core_interfaces.h>
+#include "mi_core_base_modelitemwatcher.h"
 
-namespace I {
+namespace Object {
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+class GraphicsEntityItemUpdater : public Base::ModelItemWatcher
+{
+public:
+    GraphicsEntityItemUpdater(IAggregate *aggregate)
+        :   Base::ModelItemWatcher(aggregate)
+    {}
+
+protected:
+    void endChangeParent(const IModelItem *child);
 };
 
 }

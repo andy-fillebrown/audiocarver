@@ -19,17 +19,24 @@
 #define AC_GUI_OBJECT_GRAPHICSITEM_H
 
 #include "ac_gui_base_graphicsitem.h"
+#include "ac_gui_object_graphicsitemhelper.h"
 
 namespace Object {
 
 class GraphicsItem : public Base::GraphicsItem
 {
+    GraphicsItemHelper _helper;
+
 public:
     GraphicsItem(IAggregate *aggregate)
         :   Base::GraphicsItem(aggregate)
+        ,   _helper(this)
     {}
 
-    IGraphicsItem *parent() const;
+    IGraphicsItem *parent() const
+    {
+        return _helper.parent();
+    }
 };
 
 }

@@ -18,17 +18,17 @@
 #ifndef AC_GUI_NOTE_GRAPHICSITEMUPDATER_H
 #define AC_GUI_NOTE_GRAPHICSITEMUPDATER_H
 
-#include <ac_gui_object_graphicsitemupdater.h>
+#include <ac_gui_object_graphicsentityitemupdater.h>
 
 class IAggregate;
 
 namespace Note {
 
-class GraphicsItemUpdater : public Object::GraphicsItemUpdater
+class GraphicsItemUpdater : public Object::GraphicsEntityItemUpdater
 {
 public:
     GraphicsItemUpdater(IAggregate *aggregate)
-        :   Object::GraphicsItemUpdater(aggregate)
+        :   Object::GraphicsEntityItemUpdater(aggregate)
     {}
 
 protected:

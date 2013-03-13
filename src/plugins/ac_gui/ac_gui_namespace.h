@@ -50,7 +50,7 @@ enum TransformType {
 };
 
 enum HighlightType {
-    NoHighlight,
+    NoHighlight = 0,
     HoverHighlight,
     FullHighlight
 };
