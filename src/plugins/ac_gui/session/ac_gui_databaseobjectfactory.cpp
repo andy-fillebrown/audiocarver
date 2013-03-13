@@ -73,7 +73,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case ControlGridLineItem:
         new ControlGridLine::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
+        new Object::GraphicsEntityItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
@@ -115,7 +115,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case PitchGridLineItem:
         new PitchGridLine::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
+        new Object::GraphicsEntityItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
@@ -128,7 +128,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case TimeGridLineItem:
         new TimeGridLine::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
+        new Object::GraphicsEntityItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         Core::DatabaseObjectFactory::create(itemType, aggregate);
         break;
