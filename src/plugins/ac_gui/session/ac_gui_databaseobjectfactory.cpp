@@ -32,6 +32,7 @@
 #include "ac_gui_object_graphicsentityitemupdater.h"
 #include "ac_gui_object_graphicsitem.h"
 #include "ac_gui_object_graphicsitemupdater.h"
+#include "ac_gui_pitchcurve_graphicsdata.h"
 #include "ac_gui_pitchcurve_graphicsiteminfo.h"
 #include "ac_gui_pitchcurve_modelitem.h"
 #include "ac_gui_pitchgridline_graphicsdata.h"
@@ -103,7 +104,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         break;
     case PitchCurveItem:
         new PitchCurve::GraphicsItemInfo(aggregate);
-        new Curve::GraphicsData(aggregate);
+        new PitchCurve::GraphicsData(aggregate);
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
