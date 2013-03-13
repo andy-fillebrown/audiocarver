@@ -13,8 +13,8 @@ SOURCE_FILES = \
     object_graphicsitem \
     object_graphicsitemhelper \
     pitchcurve_graphicsdata \
-    pitchgridline_graphicsdata \
     pitchcurve_graphicsiteminfo \
+    pitchgridline_graphicsdata \
     score_graphicsdata \
     scoreobject_graphicsdata \
     scoreobject_graphicsitem \
