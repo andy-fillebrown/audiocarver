@@ -19,7 +19,6 @@
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <igraphicsentitydata.h>
-#include <igraphicsentityitem.h>
 #include <imodelitemlist.h>
 #include <QGraphicsItem>
 
@@ -27,9 +26,6 @@ using namespace Ac;
 
 static void updateZValues(const IModelItemList *list)
 {
-    IGraphicsEntityItem *parent_gitem = QUERY(IGraphicsEntityItem, list->parent());
-    if (!parent_gitem)
-        return;
     const int child_count = list->count();
     for (int i = 0;  i < child_count;  ++i) {
         const int z_value = child_count - i;
