@@ -24,12 +24,16 @@ namespace Note {
 
 class GraphicsItem : public ScoreObject::GraphicsItem
 {
+    IAggregate *_velocity;
+
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   ScoreObject::GraphicsItem(aggregate)
-    {}
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
+    ~GraphicsItem();
+
+    void initialize();
+
     QList<IGraphicsItem*> subentities(int sceneType, int transformType) const;
 };
 

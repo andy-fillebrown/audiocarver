@@ -17,18 +17,36 @@
 
 #include "ac_gui_note_graphicsitem.h"
 #include "ac_gui_namespace.h"
+#include <iaggregate.h>
+#include <idatabaseobjectfactory.h>
 #include <imodelitem.h>
 
 using namespace Ac;
 
 namespace Note {
 
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   ScoreObject::GraphicsItem(aggregate)
+    ,   _velocity(0)
+{}
+
+GraphicsItem::~GraphicsItem()
+{
+    delete _velocity;
+}
+
+void GraphicsItem::initialize()
+{
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    IModelItem *this_item = QUERY(IModelItem, this);
+    Q_ASSERT(this_item);
+    _velocity = factory->create(VelocityItem, this_item);
+}
+
 QList<IGraphicsItem*> GraphicsItem::subentities(int sceneType, int transformType) const
 {
     QList<IGraphicsItem*> subents = ScoreObject::GraphicsItem::subentities(sceneType, transformType);
-    IModelItem *this_item = QUERY(IModelItem, this);
-    IModelItem *velocity_item = this_item->findItem(VelocityItem);
-    IGraphicsItem *velocity_gitem = QUERY(IGraphicsItem, velocity_item);
+    IGraphicsItem *velocity_gitem = QUERY(IGraphicsItem, _velocity);
     if (velocity_gitem)
         subents.append(velocity_gitem);
     return subents;
