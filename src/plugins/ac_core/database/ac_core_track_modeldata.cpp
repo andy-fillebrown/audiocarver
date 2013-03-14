@@ -92,9 +92,9 @@ QVariant ModelData::getValue(int role) const
     case InstrumentRole:
         return _instrument;
     case VisibilityRole:
-        return _visible;
+        return bool(_visible);
     case RecordingRole:
-        return _recording;
+        return bool(_recording);
     default:
         return ScoreObject::ModelData::getValue(role);
     }

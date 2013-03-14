@@ -103,9 +103,9 @@ QVariant ModelData::getValue(int role) const
 {
     switch (role) {
     case SnapEnabledRole:
-        return _snapEnabled;
+        return bool(_snapEnabled);
     case GridSnapEnabledRole:
-        return _gridSnapEnabled;
+        return bool(_gridSnapEnabled);
     case TimeSnapRole:
         return _timeSnap;
     case PitchSnapRole:
