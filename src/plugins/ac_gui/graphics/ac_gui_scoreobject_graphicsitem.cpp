@@ -38,11 +38,20 @@ QList<IGraphicsItem*> GraphicsItem::subentities(int sceneType, int transformType
     IModelItem *item = QUERY(IModelItem, this);
     if (!item)
         return subents;
-    IModelItem *pitch_curve = item->findItem(PitchCurveItem);
-    subents.append(QUERY(IGraphicsItem, pitch_curve));
-    IModelItem *control_curve = item->findItem(ControlCurveItem);
-    subents.append(QUERY(IGraphicsItem, control_curve));
-    subents.removeAll(0);
+    IModelItem *curve_item = 0;
+    if (MainTransform == transformType) {
+        switch (sceneType) {
+        case PitchScene:
+            curve_item = item->findItem(PitchCurveItem);
+            break;
+        case ControlScene:
+            curve_item = item->findItem(ControlCurveItem);
+            break;
+        }
+    }
+    IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, curve_item);
+    if (curve_gitem)
+        subents.append(curve_gitem);
     return subents;
 }
 
