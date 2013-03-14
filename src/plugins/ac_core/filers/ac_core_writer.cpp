@@ -60,21 +60,21 @@ static void writeItemData(IModelData *data, int roleIndex, QXmlStreamWriter *wri
 static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
 {
     IModelItemInfo *info = QUERY(IModelItemInfo, item);
-    IModelData *data = QUERY(IModelData, item);
-    if (data) {
-        if (info->isTypeOfItem(CurveItem) && data->get<PointList>(PointsRole).isEmpty())
+    QString element_name;
+    if (item->isList()) {
+        if (0 == item->count())
             return true;
-        writer->writeStartElement(itemTypeString(info->itemType()));
+        element_name = itemTypeString(QUERY(IModelItemList, item)->listType()) + "List";
+    } else
+        element_name = itemTypeString(info->itemType());
+    IModelData *data = QUERY(IModelData, item);
+    if (data && info->isTypeOfItem(CurveItem) && data->get<PointList>(PointsRole).isEmpty())
+        return true;
+    writer->writeStartElement(element_name);
+    if (data) {
         int roleCount = data->roleCount();
         for (int i = 0;  i < roleCount;  ++i)
             writeItemData(data, i, writer);
-    } else {
-        if (item->isList()) {
-            if (0 == item->count())
-                return true;
-            writer->writeStartElement(itemTypeString(QUERY(IModelItemList, item)->listType()) + "List");
-        } else
-            writer->writeStartElement(itemTypeString(info->itemType()));
     }
     int item_count = item->count();
     for (int i = 0;  i < item_count;  ++i)
