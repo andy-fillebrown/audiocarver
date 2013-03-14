@@ -46,9 +46,11 @@ void GraphicsItem::initialize()
 QList<IGraphicsItem*> GraphicsItem::subentities(int sceneType, int transformType) const
 {
     QList<IGraphicsItem*> subents = ScoreObject::GraphicsItem::subentities(sceneType, transformType);
-    IGraphicsItem *velocity_gitem = QUERY(IGraphicsItem, _velocity);
-    if (velocity_gitem)
-        subents.append(velocity_gitem);
+    if (ControlScene == sceneType && MainTransform == transformType) {
+        IGraphicsItem *velocity_gitem = QUERY(IGraphicsItem, _velocity);
+        if (velocity_gitem)
+            subents.append(velocity_gitem);
+    }
     return subents;
 }
 
