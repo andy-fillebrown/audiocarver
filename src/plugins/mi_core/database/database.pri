@@ -3,6 +3,7 @@ SOURCE_FILES = \
     object_modeldata \
     object_modelitem \
     object_modeliteminfo \
+    objectlist_modeldata \
     objectlist_modelitem \
     objectlist_modeliteminfo \
 
