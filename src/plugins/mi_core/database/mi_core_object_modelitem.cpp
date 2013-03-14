@@ -25,11 +25,6 @@ using namespace Mi;
 
 namespace Object {
 
-int ModelItem::itemType() const
-{
-    return UnknownItem;
-}
-
 void ModelItem::setParent(IModelItem *parent)
 {
     if (_parent == parent)
