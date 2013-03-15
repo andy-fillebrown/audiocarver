@@ -21,7 +21,6 @@
 #include "ac_gui_curve_graphicsdata.h"
 #include "ac_gui_curve_graphicsitem.h"
 #include "ac_gui_gridsettings_graphicsdata.h"
-#include "ac_gui_grip_graphicsdata.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_note_graphicsdata.h"
 #include "ac_gui_note_graphicsitem.h"
@@ -76,7 +75,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         new Object::GraphicsEntityItemUpdater(aggregate);
         break;
     case GripItem:
-        new Grip::GraphicsData(aggregate);
+//        new Grip::GraphicsData(aggregate);
         new Object::ModelItem(aggregate);
         return aggregate;
     case GripListItem:
