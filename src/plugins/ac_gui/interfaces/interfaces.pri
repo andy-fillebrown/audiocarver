@@ -7,6 +7,7 @@ SOURCE_FILES *= \
     igraphicsitem \
     igraphicsiteminfo \
     igraphicssubentitydata \
+    igraphicssubentityitem \
     igrip \
     iplaycursor \
     ipoint \

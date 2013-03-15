@@ -15,36 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#include "ac_gui_curve_graphicsitem.h"
+#include "ac_gui_namespace.h"
+#include <iaggregate.h>
+#include <idatabaseobjectfactory.h>
+#include <imodelitem.h>
 
-#include <ac_core_interfaces.h>
+using namespace Ac;
 
-namespace I {
+namespace Curve {
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
-};
-
+GraphicsItem::~GraphicsItem()
+{
+    delete _grips;
 }
 
-#endif
+void GraphicsItem::initialize()
+{
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    _grips = factory->create(GripListItem, QUERY(IModelItem, this));
+}
+
+QList<IGraphicsItem*> GraphicsItem::subentities() const
+{
+    QList<IGraphicsItem*> subents;
+    subents.append(QUERY(IGraphicsItem, _grips));
+    return subents;
+}
+
+}

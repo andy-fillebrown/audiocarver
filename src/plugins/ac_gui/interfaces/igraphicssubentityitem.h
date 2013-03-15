@@ -15,36 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef IGRAPHICSSUBENTITYITEM_H
+#define IGRAPHICSSUBENTITYITEM_H
 
-#include <ac_core_interfaces.h>
+#include <igraphicsitem.h>
+#include <QList>
 
-namespace I {
+class IGraphicsSubEntityItem : public IGraphicsItem
+{
+public:
+    enum { InterfaceType = I::IGraphicsSubEntityItem };
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+    virtual QList<IGraphicsItem*> subentities() const = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType ? true : IGraphicsItem::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

@@ -6,6 +6,7 @@ SOURCE_FILES = \
     graphicsitem \
     graphicsiteminfo \
     graphicssubentitydata \
+    graphicssubentityitem \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_base_$${file}.h

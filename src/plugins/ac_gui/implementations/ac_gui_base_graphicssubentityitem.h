@@ -15,34 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef AC_GUI_BASE_GRAPHICSSUBENTITYITEM_H
+#define AC_GUI_BASE_GRAPHICSSUBENTITYITEM_H
 
-#include <ac_core_interfaces.h>
+#include <igraphicssubentityitem.h>
 
-namespace I {
+class IAggregate;
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+namespace Base {
+
+class GraphicsSubEntityItem : public IGraphicsSubEntityItem
+{
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    GraphicsSubEntityItem(IAggregate *aggregate);
+
+    void initialize()
+    {}
 };
 
 }

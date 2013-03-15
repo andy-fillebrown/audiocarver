@@ -15,34 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef AC_GUI_CURVE_GRAPHICSITEM_H
+#define AC_GUI_CURVE_GRAPHICSITEM_H
 
-#include <ac_core_interfaces.h>
+#include "ac_gui_base_graphicssubentityitem.h"
+#include "ac_gui_object_graphicsitemhelper.h"
 
-namespace I {
+namespace Curve {
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGrip,
-    IPlayCursor,
-    IPoints,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+class GraphicsItem : public Base::GraphicsSubEntityItem
+{
+    Object::GraphicsItemHelper _helper;
+    IAggregate *_grips;
+
+public:
+    GraphicsItem(IAggregate *aggregate)
+        :   Base::GraphicsSubEntityItem(aggregate)
+        ,   _helper(this)
+        ,   _grips(0)
+    {}
+
+    ~GraphicsItem();
+
+    void initialize();
+
+    IGraphicsItem *parent() const
+    {
+        return _helper.parent();
+    }
+
+    QList<IGraphicsItem*> subentities() const;
 };
 
 }

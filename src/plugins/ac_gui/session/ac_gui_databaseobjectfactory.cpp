@@ -19,6 +19,7 @@
 #include "ac_gui_controlcurve_graphicsiteminfo.h"
 #include "ac_gui_controlgridline_graphicsdata.h"
 #include "ac_gui_curve_graphicsdata.h"
+#include "ac_gui_curve_graphicsitem.h"
 #include "ac_gui_gridsettings_graphicsdata.h"
 #include "ac_gui_grip_graphicsdata.h"
 #include "ac_gui_namespace.h"
@@ -59,7 +60,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case ControlCurveItem:
         new ControlCurve::GraphicsItemInfo(aggregate);
         new Curve::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
+        new Curve::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         break;
@@ -90,7 +91,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case PitchCurveItem:
         new PitchCurve::GraphicsItemInfo(aggregate);
         new PitchCurve::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
+        new Curve::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::GraphicsDataUpdater(aggregate);
         break;
@@ -123,7 +124,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
     case VelocityItem:
         new ControlCurve::GraphicsItemInfo(aggregate);
         new Velocity::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
+        new Curve::GraphicsItem(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::ModelItem(aggregate);
         return aggregate;
