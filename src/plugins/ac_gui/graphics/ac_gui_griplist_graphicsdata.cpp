@@ -61,8 +61,6 @@ void GraphicsData::update(int role, const QVariant &value)
         _node->setVisible(HoverHighlight == qvariant_cast<int>(value));
     else if (PointsRole == role) {
         PointList points = qvariant_cast<PointList>(value);
-        while (points.count() < _grips.count())
-            _grips.removeLast();
         if (_grips.count() < points.count()) {
             IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
             IModelItem *this_item = QUERY(IModelItem, this);
@@ -74,6 +72,10 @@ void GraphicsData::update(int role, const QVariant &value)
                 grip_node->setData(0, quintptr(grip));
                 _grips.append(grip);
             }
+        }
+        while (points.count() < _grips.count()) {
+            delete _grips.last();
+            _grips.removeLast();
         }
         for (int i = 0;  i < _grips.count();  ++i) {
             IGraphicsData *grip_gdata = QUERY(IGraphicsData, _grips.at(i));
