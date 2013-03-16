@@ -28,6 +28,7 @@ GraphicsCurveNode::GraphicsCurveNode(QGraphicsItem *parent)
     ,   _guide(new GraphicsGuideNode(this))
     ,   _noteHead(new QGraphicsRectItem(this))
 {
+    _noteHead->setRect(-1.0f, -1.0f, 2.0f, 2.0f);
     _noteHead->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     _noteHead->hide();
     QPen pen;
@@ -100,14 +101,7 @@ void GraphicsCurveNode::setColor(const QColor &color)
 void GraphicsCurveNode::highlight(bool on)
 {
     QPen pen = this->pen();
-    if (on) {
-        pen.setWidthF(3.0f);
-        _noteHead->setRect(-3.0f, -3.0f, 6.0f, 6.0f);
-        _guide->show();
-    } else {
-        pen.setWidth(1.0f);
-        _noteHead->setRect(-1.0f, -1.0f, 2.0f, 2.0f);
-        _guide->hide();
-    }
+    pen.setWidthF(on ? 3.0f : 1.0f);
     setPen(pen);
+    _guide->setVisible(on);
 }

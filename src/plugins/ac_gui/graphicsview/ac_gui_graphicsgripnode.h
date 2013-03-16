@@ -29,7 +29,7 @@ public:
     GraphicsGripNode(QGraphicsItem *parent = 0, const QPointF &position = QPointF());
 
     void setModelItem(IModelItem *modelItem);
-    void highlight(bool on);
+    void highlight(int highlightType);
 };
 
 #endif

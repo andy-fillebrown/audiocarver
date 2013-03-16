@@ -23,6 +23,7 @@ const qreal GRIP_SIZE_D2 = GRIP_SIZE / qreal(2.0f);
 const QRect GRIP_RECT    = QRect(-GRIP_SIZE_D2, -GRIP_SIZE_D2, GRIP_SIZE, GRIP_SIZE);
 
 using namespace Ac;
+using namespace Qt;
 
 GraphicsGripNode::GraphicsGripNode(QGraphicsItem *parent, const QPointF &position)
     :   QGraphicsRectItem(parent)
@@ -30,7 +31,13 @@ GraphicsGripNode::GraphicsGripNode(QGraphicsItem *parent, const QPointF &positio
     setFlag(QGraphicsItem::ItemIgnoresTransformations);
     setRect(GRIP_RECT);
     setPos(position);
-    highlight(false);
+    QPen pen = this->pen();
+    pen.setCosmetic(true);
+    pen.setWidth(2);
+    pen.setCapStyle(SquareCap);
+    pen.setJoinStyle(MiterJoin);
+    setPen(pen);
+    highlight(NoHighlight);
 }
 
 void GraphicsGripNode::setModelItem(IModelItem *modelItem)
@@ -39,18 +46,23 @@ void GraphicsGripNode::setModelItem(IModelItem *modelItem)
     setData(0, data);
 }
 
-void GraphicsGripNode::highlight(bool on)
+void GraphicsGripNode::highlight(int highlightType)
 {
     QPen pen = this->pen();
     QBrush brush = this->brush();
-    if (on) {
-        if (brush.style() == Qt::SolidPattern)
-            pen.setColor(Qt::red);
-        brush.setStyle(Qt::SolidPattern);
-    } else {
-        if (QColor(Qt::red) == pen.color())
-            brush.setStyle(Qt::NoBrush);
+    switch (highlightType) {
+    case NoHighlight:
         pen.setColor(Qt::blue);
+        brush.setStyle(NoBrush);
+        break;
+    case HoverHighlight:
+        pen.setColor(Qt::blue);
+        brush.setStyle(SolidPattern);
+        break;
+    case FullHighlight:
+        pen.setColor(Qt::red);
+        brush.setStyle(SolidPattern);
+        break;
     }
     setBrush(brush);
     setPen(pen);
