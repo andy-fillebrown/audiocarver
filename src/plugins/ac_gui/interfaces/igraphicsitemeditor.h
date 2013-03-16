@@ -15,35 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef IGRAPHICSITEMEDITOR_H
+#define IGRAPHICSITEMEDITOR_H
 
-#include <ac_core_interfaces.h>
+#include <icomponent.h>
+#include "ac_gui_interfaces.h"
 
-namespace I {
+class IGraphicsItemEditor : public IComponent
+{
+public:
+    enum { InterfaceType = I::IGraphicsItemEditor };
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGraphicsItemEditor,
-    IPlayCursor,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+    virtual void updateModel() = 0;
+    virtual void updateGraphics() = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
 };
-
-}
 
 #endif

@@ -5,6 +5,7 @@ SOURCE_FILES *= \
     igraphicsentitydata \
     igraphicsentityitem \
     igraphicsitem \
+    igraphicsitemeditor \
     igraphicsiteminfo \
     igraphicssubentitydata \
     igraphicssubentityitem \
