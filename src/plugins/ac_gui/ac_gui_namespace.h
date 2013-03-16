@@ -30,7 +30,9 @@ enum GuiItemType {
 };
 
 enum GuiItemDataRole {
-    HighlightRole = Ac::CoreItemDataRoleCount
+    HighlightRole = Ac::CoreItemDataRoleCount,
+    PositionRole,
+    CurveRole
 };
 
 enum SceneType {

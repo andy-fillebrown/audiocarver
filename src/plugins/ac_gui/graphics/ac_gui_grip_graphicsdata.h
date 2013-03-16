@@ -15,25 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRIP_GRAPHICSITEM_H
-#define AC_GUI_GRIP_GRAPHICSITEM_H
+#ifndef AC_GUI_GRIP_GRAPHICSDATA_H
+#define AC_GUI_GRIP_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicsitem.h"
+#include "ac_gui_base_graphicssubentitydata.h"
 
-namespace GripList {
+class GraphicsGripNode;
 
-class GraphicsItem : public Base::GraphicsItem
+namespace Grip {
+
+class GraphicsData : public Base::GraphicsSubEntityData
 {
+    GraphicsGripNode *_gripNode;
+
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsItem(aggregate)
-    {}
+    GraphicsData(IAggregate *aggregate);
 
 protected:
-    IGraphicsItem *parent() const
-    {
-        return 0;
-    }
+    ~GraphicsData();
+
+    void initialize();
+    QGraphicsItem *node() const;
+    void update(int role, const QVariant &value);
 };
 
 }

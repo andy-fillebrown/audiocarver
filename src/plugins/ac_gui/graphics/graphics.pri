@@ -7,8 +7,8 @@ SOURCE_FILES = \
     curve_graphicsiteminfo \
     gridline_graphicsdata \
     gridsettings_graphicsdata \
+    grip_graphicsdata \
     griplist_graphicsdata \
-    griplist_graphicsitem \
     horizontalgridline_graphicsdata \
     note_graphicsdata \
     note_graphicsitem \

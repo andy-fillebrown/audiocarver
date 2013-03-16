@@ -20,16 +20,16 @@
 //#include <ac_gui_graphicsgripitem.h>
 #include "ac_gui_graphicsrootnode.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_namespace.h"
 //#include <ac_gripselectionmodel.h>
 //#include <ac_noteselectionmodel.h>
 //#include <ac_trackselectionmodel.h>
-#include <ac_core_namespace.h>
 #include <idatabase.h>
 #include <ieditor.h>
 #include <igraphicscurvedata.h>
 #include <igraphicsentitydata.h>
 #include <igraphicsentityitem.h>
-#include <igrip.h>
+//#include <igrip.h>
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iplaycursor.h>
@@ -241,14 +241,14 @@ public:
                     q->setCursor(QCursor(SplitHCursor));
                     break;
                 }
-                IGrip *grip = QUERY(IGrip, unknown);
-                if (grip) {
-                    grip_is_hovered = true;
-                    if (!pickedGrips.contains(grip)) {
-                        grip->highlight(HoverHighlight);
-                        hoveredGrips.append(grip);
-                    }
-                } else if (!grip_is_hovered) {
+//                IGrip *grip = QUERY(IGrip, unknown);
+//                if (grip) {
+//                    grip_is_hovered = true;
+//                    if (!pickedGrips.contains(grip)) {
+//                        grip->highlight(HoverHighlight);
+//                        hoveredGrips.append(grip);
+//                    }
+//                } else if (!grip_is_hovered) {
                     IGraphicsCurveData *curve_gdata = QUERY(IGraphicsCurveData, unknown);
                     if (curve_gdata && curve_gdata->intersects(scene_pick_rect)) {
                         entity_is_hovered = true;
@@ -259,7 +259,7 @@ public:
                             parent_gdata->update(HighlightRole, HoverHighlight);
                         }
                     }
-                }
+//                }
                 if (!(ShiftModifier & QApplication::keyboardModifiers())
                         && (grip_is_hovered || entity_is_hovered))
                     break;
@@ -273,9 +273,9 @@ public:
             playCursorHovered = false;
             q->setCursor(previousCursor);
         }
-        foreach (IGrip *grip, hoveredGrips)
-            if (!pickedGrips.contains(grip))
-                grip->highlight(false);
+//        foreach (IGrip *grip, hoveredGrips)
+//            if (!pickedGrips.contains(grip))
+//                grip->highlight(false);
         hoveredGrips.clear();
         foreach (IGraphicsEntityData *entity, hoveredEntities) {
             if (!entityIsPicked(entity))

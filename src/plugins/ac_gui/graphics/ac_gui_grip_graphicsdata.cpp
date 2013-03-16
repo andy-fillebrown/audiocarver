@@ -17,7 +17,6 @@
 
 #include "ac_gui_grip_graphicsdata.h"
 //#include <ac_gripselectionmodel.h>
-//#include <ac_gui_graphicsentityitem.h>
 #include "ac_gui_constants.h"
 #include "ac_gui_graphicsgripnode.h"
 #include <igraphicsitem.h>
@@ -69,27 +68,32 @@ QGraphicsItem *GraphicsData::node() const
 
 void GraphicsData::update(int role, const QVariant &value)
 {
-    if (HighlightRole != role)
+    if (HighlightRole == role) {
+        int highlight_type = qvariant_cast<int>(value);
+        QPen pen = _gripNode->pen();
+        QBrush brush = _gripNode->brush();
+        switch (highlight_type) {
+        case NoHighlight:
+            pen.setColor(blue);
+            brush.setStyle(NoBrush);
+            break;
+        case HoverHighlight:
+            pen.setColor(blue);
+            brush.setStyle(SolidPattern);
+            break;
+        case FullHighlight:
+            pen.setColor(Qt::red);
+            brush.setStyle(SolidPattern);
+            break;
+        }
+        _gripNode->setBrush(brush);
+        _gripNode->setPen(pen);
         return;
-    int highlight_type = qvariant_cast<int>(value);
-    QPen pen = _gripNode->pen();
-    QBrush brush = _gripNode->brush();
-    switch (highlight_type) {
-    case NoHighlight:
-        pen.setColor(blue);
-        brush.setStyle(NoBrush);
-        break;
-    case HoverHighlight:
-        pen.setColor(blue);
-        brush.setStyle(SolidPattern);
-        break;
-    case FullHighlight:
-        pen.setColor(Qt::red);
-        brush.setStyle(SolidPattern);
-        break;
     }
-    _gripNode->setBrush(brush);
-    _gripNode->setPen(pen);
+    if (PositionRole == role) {
+        _gripNode->setPos(qvariant_cast<QPointF>(value));
+        return;
+    }
 }
 
 }

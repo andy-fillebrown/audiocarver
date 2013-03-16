@@ -19,7 +19,7 @@
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
-#include <igraphicsitem.h>
+#include <igraphicssubentityitem.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
 
@@ -66,6 +66,12 @@ void GraphicsData::update(int role, const QVariant &value)
     case HighlightRole:
         _curveNode->highlight(qvariant_cast<bool>(value));
         break;
+    }
+    IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
+    QList<IGraphicsItem*> subentities = this_gitem->subentities();
+    foreach (IGraphicsItem *subentity, subentities) {
+        IGraphicsData *subentity_gdata = QUERY(IGraphicsData, subentity);
+        subentity_gdata->update(role, value);
     }
 }
 

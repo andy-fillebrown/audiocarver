@@ -18,6 +18,9 @@
 #include "ac_gui_griplist_graphicsdata.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
+#include <ac_core_point.h>
+#include <iaggregate.h>
+#include <idatabaseobjectfactory.h>
 #include <igraphicsitem.h>
 #include <imodelitem.h>
 
@@ -28,11 +31,13 @@ namespace GripList {
 GraphicsData::GraphicsData(IAggregate *aggregate)
     :   Base::GraphicsSubEntityData(aggregate)
     ,   _node(new GraphicsNode)
-{}
+{
+    _node->setVisible(false);
+}
 
 GraphicsData::~GraphicsData()
 {
-    delete _node;
+//    delete _node;
 }
 
 void GraphicsData::initialize()
@@ -52,6 +57,30 @@ QGraphicsItem *GraphicsData::node() const
 
 void GraphicsData::update(int role, const QVariant &value)
 {
+    if (HighlightRole == role)
+        _node->setVisible(HoverHighlight == qvariant_cast<int>(value));
+    else if (PointsRole == role) {
+        PointList points = qvariant_cast<PointList>(value);
+        while (points.count() < _grips.count())
+            _grips.removeLast();
+        if (_grips.count() < points.count()) {
+            IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+            IModelItem *this_item = QUERY(IModelItem, this);
+            Q_ASSERT(this_item);
+            while (_grips.count() < points.count()) {
+                IAggregate *grip = factory->create(GripItem, this_item);
+                IGraphicsSubEntityData *grip_gdata = QUERY(IGraphicsSubEntityData, grip);
+                QGraphicsItem *grip_node = grip_gdata->node();
+                grip_node->setParentItem(_node);
+                grip_node->setData(0, quintptr(grip));
+                _grips.append(grip);
+            }
+        }
+        for (int i = 0;  i < _grips.count();  ++i) {
+            IGraphicsData *grip_gdata = QUERY(IGraphicsData, _grips.at(i));
+            grip_gdata->update(PositionRole, points.at(i).pos);
+        }
+    }
 }
 
 }

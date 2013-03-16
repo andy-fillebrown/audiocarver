@@ -15,21 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRIP_GRAPHICSDATA_H
-#define AC_GUI_GRIP_GRAPHICSDATA_H
+#ifndef AC_GUI_GRIPLIST_GRAPHICSDATA_H
+#define AC_GUI_GRIPLIST_GRAPHICSDATA_H
 
 #include "ac_gui_base_graphicssubentitydata.h"
 #include <QList>
 
 class GraphicsNode;
-class IGrip;
+class IAggregate;
 
 namespace GripList {
 
 class GraphicsData : public Base::GraphicsSubEntityData
 {
     GraphicsNode *_node;
-    QList<IGrip*> _grips;
+    QList<IAggregate*> _grips;
 
 public:
     GraphicsData(IAggregate *aggregate);
