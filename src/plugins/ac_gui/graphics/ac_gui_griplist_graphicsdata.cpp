@@ -66,7 +66,6 @@ void GraphicsData::update(int role, const QVariant &value)
         if (_grips.count() < points.count()) {
             IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
             IModelItem *this_item = QUERY(IModelItem, this);
-            Q_ASSERT(this_item);
             while (_grips.count() < points.count()) {
                 IAggregate *grip = factory->create(GripItem, this_item);
                 IGraphicsSubEntityData *grip_gdata = QUERY(IGraphicsSubEntityData, grip);
