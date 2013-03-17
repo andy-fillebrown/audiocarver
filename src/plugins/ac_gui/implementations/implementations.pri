@@ -1,6 +1,7 @@
 
 SOURCE_FILES = \
     graphicscurvedata \
+    graphicsdelegate \
     graphicsentitydata \
     graphicsentityitem \
     graphicsitem \
