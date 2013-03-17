@@ -18,7 +18,7 @@
 #ifndef AC_GUI_GRIPLIST_GRAPHICSDATA_H
 #define AC_GUI_GRIPLIST_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicssubentitydata.h"
+#include "ac_gui_base_griplistdata.h"
 #include <QList>
 
 class GraphicsNode;
@@ -26,10 +26,10 @@ class IAggregate;
 
 namespace GripList {
 
-class GraphicsData : public Base::GraphicsSubEntityData
+class GraphicsData : public Base::GripListData
 {
     GraphicsNode *_node;
-    QList<IAggregate*> _grips;
+    QList<IGripData*> _grips;
 
 public:
     GraphicsData(IAggregate *aggregate);
@@ -38,6 +38,12 @@ protected:
     ~GraphicsData();
 
     void initialize();
+
+    QList<IGripData*> grips() const
+    {
+        return _grips;
+    }
+
     QGraphicsItem *node() const;
     void update(int role, const QVariant &value);
 };

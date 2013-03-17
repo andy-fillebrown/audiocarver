@@ -18,15 +18,16 @@
 #ifndef AC_GUI_GRIP_GRAPHICSDATA_H
 #define AC_GUI_GRIP_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicssubentitydata.h"
+#include "ac_gui_base_gripdata.h"
 
 class GraphicsGripNode;
 
 namespace Grip {
 
-class GraphicsData : public Base::GraphicsSubEntityData
+class GraphicsData : public Base::GripData
 {
     GraphicsGripNode *_gripNode;
+    int _curveType;
 
 public:
     GraphicsData(IAggregate *aggregate);
@@ -35,6 +36,8 @@ protected:
     ~GraphicsData();
 
     void initialize();
+    QPointF position() const;
+    int curveType() const;
     QGraphicsItem *node() const;
     void update(int role, const QVariant &value);
 };

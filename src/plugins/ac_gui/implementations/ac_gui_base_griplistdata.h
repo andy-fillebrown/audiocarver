@@ -15,35 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef AC_GUI_BASE_GRIPLISTDATA_H
+#define AC_GUI_BASE_GRIPLISTDATA_H
 
-#include <ac_core_interfaces.h>
+#include <igriplistdata.h>
 
-namespace I {
+class IAggregate;
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGraphicsItemEditor,
-    IGripListData,
-    IGripData,
-    IPlayCursor,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+namespace Base {
+
+class GripListData : public IGripListData
+{
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    GripListData(IAggregate *aggregate);
+
+    void initialize()
+    {}
+
+    void update(int role, const QVariant &value)
+    {}
 };
 
 }

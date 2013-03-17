@@ -8,6 +8,8 @@ SOURCE_FILES = \
     graphicsiteminfo \
     graphicssubentitydata \
     graphicssubentityitem \
+    gripdata \
+    griplistdata \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_base_$${file}.h

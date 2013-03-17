@@ -9,6 +9,8 @@ SOURCE_FILES *= \
     igraphicsiteminfo \
     igraphicssubentitydata \
     igraphicssubentityitem \
+    igripdata \
+    igriplistdata \
     iplaycursor \
     ipoint \
 #    iqaudioengine \

@@ -28,8 +28,9 @@ using namespace Qt;
 namespace Grip {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsSubEntityData(aggregate)
+    :   Base::GripData(aggregate)
     ,   _gripNode(0)
+    ,   _curveType(NoCurve)
 {
     _gripNode = new GraphicsGripNode;
 }
@@ -47,6 +48,16 @@ void GraphicsData::initialize()
     _gripNode->setParentItem(parent_gdata->node());
 }
 
+QPointF GraphicsData::position() const
+{
+    return _gripNode->pos();
+}
+
+int GraphicsData::curveType() const
+{
+    return _curveType;
+}
+
 QGraphicsItem *GraphicsData::node() const
 {
     return _gripNode;
@@ -60,6 +71,9 @@ void GraphicsData::update(int role, const QVariant &value)
         break;
     case PositionRole:
         _gripNode->setPos(qvariant_cast<QPointF>(value));
+        break;
+    case CurveTypeRole:
+        _curveType = qvariant_cast<int>(value);
         break;
     }
 }

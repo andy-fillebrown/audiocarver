@@ -15,37 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_INTERFACES_H
-#define AC_GUI_INTERFACES_H
+#ifndef IGRIPLISTDATA_H
+#define IGRIPLISTDATA_H
 
-#include <ac_core_interfaces.h>
+#include <igraphicssubentitydata.h>
+#include "ac_gui_interfaces.h"
+#include <QList>
 
-namespace I {
+class IGripData;
 
-enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
-    IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
-    IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
-    IGraphicsCurveData,
-    IGraphicsItemEditor,
-    IGripListData,
-    IGripData,
-    IPlayCursor,
-    IGraphicsScene,
-    IGraphicsView,
-    IGraphicsViewGroup,
-    IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IQAudioEngine,
-    ISynthesizer,
-    AcGuiInterfaceCount
+class IGripListData : public IGraphicsSubEntityData
+{
+public:
+    enum { InterfaceType = I::IGripListData };
+
+    virtual QList<IGripData*> grips() const = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IGraphicsSubEntityData::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

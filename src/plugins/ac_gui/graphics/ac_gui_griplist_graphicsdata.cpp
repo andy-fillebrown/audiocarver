@@ -22,6 +22,7 @@
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
 #include <igraphicsitem.h>
+#include <igripdata.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -29,7 +30,7 @@ using namespace Ac;
 namespace GripList {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsSubEntityData(aggregate)
+    :   Base::GripListData(aggregate)
     ,   _node(new GraphicsNode)
 {
     _node->setVisible(false);
@@ -66,11 +67,11 @@ void GraphicsData::update(int role, const QVariant &value)
             IModelItem *this_item = QUERY(IModelItem, this);
             while (_grips.count() < points.count()) {
                 IAggregate *grip = factory->create(GripItem, this_item);
-                IGraphicsSubEntityData *grip_gdata = QUERY(IGraphicsSubEntityData, grip);
+                IGripData *grip_gdata = QUERY(IGripData, grip);
                 QGraphicsItem *grip_node = grip_gdata->node();
                 grip_node->setParentItem(_node);
                 grip_node->setData(0, quintptr(grip));
-                _grips.append(grip);
+                _grips.append(grip_gdata);
             }
         }
         while (points.count() < _grips.count()) {
@@ -79,7 +80,9 @@ void GraphicsData::update(int role, const QVariant &value)
         }
         for (int i = 0;  i < _grips.count();  ++i) {
             IGraphicsData *grip_gdata = QUERY(IGraphicsData, _grips.at(i));
-            grip_gdata->update(PositionRole, points.at(i).pos);
+            const Point &point = points.at(i);
+            grip_gdata->update(PositionRole, point.pos);
+            grip_gdata->update(CurveTypeRole, point.curveType);
         }
     }
 }
