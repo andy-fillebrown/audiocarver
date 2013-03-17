@@ -3,6 +3,7 @@ SOURCE_FILES = \
     controlcurve_graphicsiteminfo \
     controlgridline_graphicsdata \
     curve_graphicsdata \
+    curve_graphicsdelegate \
     curve_graphicsitem \
     curve_graphicsiteminfo \
     gridline_graphicsdata \
