@@ -20,7 +20,7 @@
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <igraphicsentitydata.h>
-#include <igraphicsitem.h>
+#include <igraphicssubentityitem.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
 #include <QPen>
@@ -84,6 +84,16 @@ void GraphicsData::update(int role, const QVariant &value)
         qreal x = pitch_points.first().pos.x();
         qreal volume = qvariant_cast<qreal>(value);
         _lineNode->setLine(x, 0.0f, x, volume);
+        IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
+        if (this_gitem) {
+            PointList points;
+            points.append(Point(x, volume));
+            QList<IGraphicsItem*> subentities = this_gitem->subentities();
+            foreach (IGraphicsItem *subentity, subentities) {
+                IGraphicsData *subentity_gdata = QUERY(IGraphicsData, subentity);
+                subentity_gdata->update(PointsRole, QVariant::fromValue(points));
+            }
+        }
         return;
     }
     if (ColorRole == role) {
@@ -93,13 +103,21 @@ void GraphicsData::update(int role, const QVariant &value)
         return;
     }
     if (HighlightRole == role) {
-        bool on = qvariant_cast<bool>(value);
+        int highlightType = qvariant_cast<int>(value);
         QPen pen = _lineNode->pen();
-        if (on)
+        if (0 < highlightType)
             pen.setWidth(3.0f);
         else
             pen.setWidth(1.0f);
         _lineNode->setPen(pen);
+        IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
+        if (this_gitem) {
+            QList<IGraphicsItem*> subentities = this_gitem->subentities();
+            foreach (IGraphicsItem *subentity, subentities) {
+                IGraphicsData *subentity_gdata = QUERY(IGraphicsData, subentity);
+                subentity_gdata->update(role, value);
+            }
+        }
         return;
     }
 }
