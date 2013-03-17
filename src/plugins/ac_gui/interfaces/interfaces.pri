@@ -2,10 +2,10 @@
 SOURCE_FILES *= \
     igraphicscurvedata \
     igraphicsdata \
+    igraphicsdelegate \
     igraphicsentitydata \
     igraphicsentityitem \
     igraphicsitem \
-    igraphicsitemeditor \
     igraphicsiteminfo \
     igraphicssubentitydata \
     igraphicssubentityitem \

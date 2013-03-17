@@ -15,16 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSITEMEDITOR_H
-#define IGRAPHICSITEMEDITOR_H
+#ifndef IGRAPHICSDELEGATE_H
+#define IGRAPHICSDELEGATE_H
 
 #include <icomponent.h>
 #include "ac_gui_interfaces.h"
 
-class IGraphicsItemEditor : public IComponent
+class IGraphicsDelegate : public IComponent
 {
 public:
-    enum { InterfaceType = I::IGraphicsItemEditor };
+    enum { InterfaceType = I::IGraphicsDelegate };
 
     virtual void updateModel() = 0;
     virtual void updateGraphics() = 0;
@@ -36,7 +36,7 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

@@ -31,7 +31,7 @@ enum AcGuiInterfaces {
     IGraphicsEntityData,
     IGraphicsSubEntityData,
     IGraphicsCurveData,
-    IGraphicsItemEditor,
+    IGraphicsDelegate,
     IGripListData,
     IGripData,
     IPlayCursor,
