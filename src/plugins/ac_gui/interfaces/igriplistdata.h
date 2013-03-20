@@ -30,6 +30,7 @@ public:
     enum { InterfaceType = I::IGripListData };
 
     virtual QList<IGripData*> grips() const = 0;
+    virtual void sort() = 0;
 
     int interfaceType() const
     {

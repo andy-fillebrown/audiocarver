@@ -44,6 +44,7 @@ protected:
         return _grips;
     }
 
+    void sort();
     QGraphicsItem *node() const;
     void update(int role, const QVariant &value);
 };

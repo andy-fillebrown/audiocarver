@@ -5,7 +5,6 @@ SOURCE_FILES = \
     graphicsentitydata \
     graphicsentityitem \
     graphicsitem \
-    graphicsitemeditor \
     graphicsiteminfo \
     graphicssubentitydata \
     graphicssubentityitem \

@@ -15,27 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_BASE_GRAPHICSITEMEDITOR_H
-#define AC_GUI_BASE_GRAPHICSITEMEDITOR_H
+#ifndef AC_GUI_VELOCITY_GRAPHICSDELEGATE_H
+#define AC_GUI_VELOCITY_GRAPHICSDELEGATE_H
 
-#include <igraphicsitemeditor.h>
+#include "ac_gui_curve_graphicsdelegate.h"
 
-class IAggregate;
+namespace Velocity {
 
-namespace Base {
-
-class GraphicsItemEditor : public IGraphicsItemEditor
+class GraphicsDelegate : public Curve::GraphicsDelegate
 {
-    IAggregate *_aggregate;
-
 public:
-    void *queryInterface(int interfaceType) const;
+    GraphicsDelegate(IAggregate *aggregate)
+        :   Curve::GraphicsDelegate(aggregate)
+    {}
 
 protected:
-    GraphicsItemEditor(IAggregate *aggregate);
-
-    void initialize()
-    {}
+    void updateModel();
+    void updateGraphics();
 };
 
 }

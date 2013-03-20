@@ -24,6 +24,7 @@ SOURCE_FILES = \
     timegridline_graphicsdata \
     track_graphicsdata \
     velocity_graphicsdata \
+    velocity_graphicsdelegate \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_$${file}.h

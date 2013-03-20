@@ -19,6 +19,9 @@
 #define AC_GUI_CURVE_GRAPHICSDELEGATE_H
 
 #include <ac_gui_base_graphicsdelegate.h>
+#include <ac_core_point.h>
+
+class IGripListData;
 
 namespace Curve {
 
@@ -30,6 +33,9 @@ public:
     {}
 
 protected:
+    IGripListData *findGripListData();
+    PointList buildPointList();
+
     void updateModel();
     void updateGraphics();
 };

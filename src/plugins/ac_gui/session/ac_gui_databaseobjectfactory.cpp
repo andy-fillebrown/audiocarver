@@ -40,6 +40,7 @@
 #include "ac_gui_track_graphicsdata.h"
 #include "ac_gui_tracklist_graphicsdataupdater.h"
 #include "ac_gui_velocity_graphicsdata.h"
+#include "ac_gui_velocity_graphicsdelegate.h"
 #include <ac_core_controlcurve_modeldata.h>
 #include <ac_core_controlcurve_modeliteminfo.h>
 #include <ac_core_note_modeliteminfo.h>
@@ -132,6 +133,7 @@ IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
         new ControlCurve::GraphicsItemInfo(aggregate);
         new Velocity::GraphicsData(aggregate);
         new Curve::GraphicsItem(aggregate);
+        new Velocity::GraphicsDelegate(aggregate);
         new Object::GraphicsItemUpdater(aggregate);
         new Object::ModelItem(aggregate);
         return aggregate;

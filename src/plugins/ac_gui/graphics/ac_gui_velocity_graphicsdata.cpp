@@ -20,7 +20,10 @@
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <igraphicsentitydata.h>
+#include <igraphicsentityitem.h>
 #include <igraphicssubentityitem.h>
+#include <igripdata.h>
+#include <igriplistdata.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
 #include <QPen>
@@ -73,26 +76,62 @@ bool GraphicsData::intersects(const QRectF &rect) const
 
 void GraphicsData::update(int role, const QVariant &value)
 {
+    QVariant actual_value = value;
+    if (PointsRole == role) {
+        // The points role should only be passed in by the graphics delegate
+        // since the velocity curve doesn't have points in the model data.
+        // Use the passed in points to create a valid volume and let the volume
+        // role handler take it from there.
+        PointList velocity_curve_points = qvariant_cast<PointList>(value);
+        actual_value = velocity_curve_points.first().pos.y();
+        role = VolumeRole;
+    }
     if (VolumeRole == role) {
         IModelItem *this_item = QUERY(IModelItem, this);
         IModelItem *parent_item = this_item->parent();
         if (!parent_item)
             return;
-        PointList pitch_points = QUERY(IModelData, parent_item->findItem(PitchCurveItem))->get<PointList>(PointsRole);
-        if (pitch_points.isEmpty())
-            return;
-        qreal x = pitch_points.first().pos.x();
-        qreal volume = qvariant_cast<qreal>(value);
-        _lineNode->setLine(x, 0.0f, x, volume);
         IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
-        if (this_gitem) {
-            PointList points;
-            points.append(Point(x, volume));
-            QList<IGraphicsItem*> subentities = this_gitem->subentities();
-            foreach (IGraphicsItem *subentity, subentities) {
-                IGraphicsData *subentity_gdata = QUERY(IGraphicsData, subentity);
-                subentity_gdata->update(PointsRole, QVariant::fromValue(points));
+        if (!this_gitem)
+            return;
+        IGraphicsEntityItem *note_gitem = QUERY(IGraphicsEntityItem, this_gitem->parent());
+        QList<IGraphicsItem*> note_pitchscene_gitems = note_gitem->subentities(PitchScene, MainTransform);
+        IGripListData *pitchcurve_griplist_gdata = 0;
+        foreach (IGraphicsItem *maybe_pitchcurve_gitem, note_pitchscene_gitems) {
+            IGraphicsSubEntityItem *pitchcurve_gitem = QUERY(IGraphicsSubEntityItem, maybe_pitchcurve_gitem);
+            QList<IGraphicsItem*> pitchcurve_griplist_gitems = pitchcurve_gitem->subentities();
+            foreach (IGraphicsItem *maybe_pitchcurve_griplist_gitem, pitchcurve_griplist_gitems) {
+                pitchcurve_griplist_gdata = QUERY(IGripListData, maybe_pitchcurve_griplist_gitem);
+                if (pitchcurve_griplist_gdata)
+                    break;
             }
+        }
+        if (!pitchcurve_griplist_gdata)
+            return;
+        qreal x = 0.0f;
+        if (!pitchcurve_griplist_gdata->grips().isEmpty()) {
+            // If the pitch curve grip data is available, use it to set the
+            // velocity curve's x coord so it gets updated correctly when being
+            // dragged.
+            IGripData *first_grip = pitchcurve_griplist_gdata->grips().first();
+            x = first_grip->position().x();
+        } else {
+            // If the pitch curve grip data is not available, use the model
+            // data to get the velocity curve's x coord.
+            PointList pitch_points = QUERY(IModelData, parent_item->findItem(PitchCurveItem))->get<PointList>(PointsRole);
+            if (pitch_points.isEmpty())
+                return;
+            x = pitch_points.first().pos.x();
+        }
+        x = qMax(qreal(0.0f), x);
+        qreal volume = qBound(qreal(0.0f), qvariant_cast<qreal>(actual_value), qreal(1.0f));
+        _lineNode->setLine(x, 0.0f, x, volume);
+        PointList points;
+        points.append(Point(x, volume));
+        QList<IGraphicsItem*> grip_gitems = this_gitem->subentities();
+        foreach (IGraphicsItem *grip_gitem, grip_gitems) {
+            IGraphicsData *grip_gdata = QUERY(IGraphicsData, grip_gitem);
+            grip_gdata->update(PointsRole, QVariant::fromValue(points));
         }
         return;
     }

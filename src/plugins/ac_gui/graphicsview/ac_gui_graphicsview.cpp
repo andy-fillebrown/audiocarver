@@ -27,9 +27,12 @@
 #include <idatabase.h>
 #include <ieditor.h>
 #include <igraphicscurvedata.h>
+#include <igraphicsdelegate.h>
 #include <igraphicsentitydata.h>
 #include <igraphicsentityitem.h>
-//#include <igrip.h>
+#include <igraphicssubentityitem.h>
+#include <igripdata.h>
+#include <igriplistdata.h>
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iplaycursor.h>
@@ -69,11 +72,11 @@ public:
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
     QList<IGraphicsEntityData*> pickedEntities;
-    QList<IGrip*> pickedGrips;
-    IGrip *curGrip;
+    QList<IGripData*> pickedGrips;
+    IGripData *curGrip;
     QList<IGraphicsEntityData*> hoveredEntities;
-    QList<IGrip*> hoveredGrips;
-    QList<IGraphicsEntityData*> entitiesToUpdate;
+    QList<IGripData*> hoveredGrips;
+    QList<IGraphicsDelegate*> delegatesToUpdate;
     GraphicsRootNode *rootNode;
     IPlayCursor *playCursor;
     QCursor previousCursor;
@@ -241,14 +244,14 @@ public:
                     q->setCursor(QCursor(SplitHCursor));
                     break;
                 }
-//                IGrip *grip = QUERY(IGrip, unknown);
-//                if (grip) {
-//                    grip_is_hovered = true;
-//                    if (!pickedGrips.contains(grip)) {
-//                        grip->highlight(HoverHighlight);
-//                        hoveredGrips.append(grip);
-//                    }
-//                } else if (!grip_is_hovered) {
+                IGripData *grip = QUERY(IGripData, unknown);
+                if (grip) {
+                    grip_is_hovered = true;
+                    if (!pickedGrips.contains(grip)) {
+                        grip->update(HighlightRole, HoverHighlight);
+                        hoveredGrips.append(grip);
+                    }
+                } else if (!grip_is_hovered) {
                     IGraphicsCurveData *curve_gdata = QUERY(IGraphicsCurveData, unknown);
                     if (curve_gdata && curve_gdata->intersects(scene_pick_rect)) {
                         entity_is_hovered = true;
@@ -259,7 +262,7 @@ public:
                             parent_gdata->update(HighlightRole, HoverHighlight);
                         }
                     }
-//                }
+                }
                 if (!(ShiftModifier & QApplication::keyboardModifiers())
                         && (grip_is_hovered || entity_is_hovered))
                     break;
@@ -273,9 +276,9 @@ public:
             playCursorHovered = false;
             q->setCursor(previousCursor);
         }
-//        foreach (IGrip *grip, hoveredGrips)
-//            if (!pickedGrips.contains(grip))
-//                grip->highlight(false);
+        foreach (IGripData *grip, hoveredGrips)
+            if (!pickedGrips.contains(grip))
+                grip->update(HighlightRole, NoHighlight);
         hoveredGrips.clear();
         foreach (IGraphicsEntityData *entity, hoveredEntities) {
             if (!entityIsPicked(entity))
@@ -317,155 +320,157 @@ public:
 
     void finishDraggingPlayCursor(const QPoint &pos)
     {
-        if (!playCursor) {
-            playCursor = findPlayCursor(q->items());
-            if (!playCursor) {
-                qWarning() << Q_FUNC_INFO << ": play cursor not found";
-                return;
-            }
-        }
+//        if (!playCursor) {
+//            playCursor = findPlayCursor(q->items());
+//            if (!playCursor) {
+//                qWarning() << Q_FUNC_INFO << ": play cursor not found";
+//                return;
+//            }
+//        }
 
-        // The view manager might have different view settings than the
-        // database.  Update the database's view settings so they don't
-        // overwrite the view manager's view settings in the view manager's
-        // dataChanged implementation when the cursor position is changed.
-        GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->updateDatabase();
+//        // The view manager might have different view settings than the
+//        // database.  Update the database's view settings so they don't
+//        // overwrite the view manager's view settings in the view manager's
+//        // dataChanged implementation when the cursor position is changed.
+//        GraphicsViewManager *vm = GraphicsViewManager::instance();
+//        vm->updateDatabase();
 
-//        const qreal fromScenePos = playCursor->playCursorPosition();
-//        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-//        const qreal sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()).x() - fromScenePos;
-//        playCursor->setPlayCursorPosition(fromScenePos + sceneOffset);
-        playCursor = 0;
-        q->setCursor(GraphicsView::normalCrosshair());
+////        const qreal fromScenePos = playCursor->playCursorPosition();
+////        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
+////        const qreal sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()).x() - fromScenePos;
+////        playCursor->setPlayCursorPosition(fromScenePos + sceneOffset);
+//        playCursor = 0;
+//        q->setCursor(GraphicsView::normalCrosshair());
     }
 
     bool selectGrips(const QPoint &pos)
     {
-//        bool selectedGrip = false;
-//        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
-//        foreach (QGraphicsItem *item, items) {
-//            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
-//            if (unknown) {
-//                IGripItem *grip = QUERY(IGripItem, unknown);
-//                if (grip) {
-//                    if (!selectedGrip)
-//                        clearHovered();
-//                    selectedGrip = true;
-//                    dragStartPos = pos;
-//                    curGrip = grip;
-//                    if (pickedGrips.contains(grip))
-//                        keepGripsPicked = true;
-//                    if (ControlModifier & QApplication::keyboardModifiers()) {
-//                        grip->unhighlight();
-//                        pickedGrips.removeOne(grip);
-//                    } else {
-//                        if (ShiftModifier & QApplication::keyboardModifiers())
-//                            keepGripsPicked = true;
-//                        else if (!keepGripsPicked)
-//                            clearPickedGrips();
-//                        grip->highlight();
-//                        if (!pickedGrips.contains(grip)) {
-//                            pickedGrips.append(grip);
-//                            IEntityItem *entity = grip->parentEntityItem();
-//                            if (!entitiesToUpdate.contains(entity))
-//                                entitiesToUpdate.append(entity);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return selectedGrip;
-        return false;
+        bool selectedGrip = false;
+        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
+            if (unknown) {
+                IGripData *grip = QUERY(IGripData, unknown);
+                if (grip) {
+                    if (!selectedGrip)
+                        clearHovered();
+                    selectedGrip = true;
+                    dragStartPos = pos;
+                    curGrip = grip;
+                    if (pickedGrips.contains(grip))
+                        keepGripsPicked = true;
+                    if (ControlModifier & QApplication::keyboardModifiers()) {
+                        grip->update(HighlightRole, NoHighlight);
+                        pickedGrips.removeOne(grip);
+                    } else {
+                        if (ShiftModifier & QApplication::keyboardModifiers())
+                            keepGripsPicked = true;
+                        else if (!keepGripsPicked)
+                            clearPickedGrips();
+                        grip->update(HighlightRole, FullHighlight);
+                        if (!pickedGrips.contains(grip)) {
+                            pickedGrips.append(grip);
+                            IGraphicsItem *grip_gitem = QUERY(IGraphicsItem, grip);
+                            IGraphicsDelegate *curve_gdelegate = QUERY(IGraphicsDelegate, grip_gitem->parent()->parent());
+                            Q_ASSERT(curve_gdelegate);
+                            if (!delegatesToUpdate.contains(curve_gdelegate))
+                                delegatesToUpdate.append(curve_gdelegate);
+                        }
+                    }
+                }
+            }
+        }
+        return selectedGrip;
     }
 
     void selectAllGrips()
     {
-//        clearPickedGrips();
-//        foreach (GraphicsEntityItem *entity_item, pickedEntities) {
-//            entitiesToUpdate.append(entity_item);
-//            const QList<IGripItem*> &grips = entity_item->gripItems();
-//            pickedGrips.append(grips);
-//            foreach (IGripItem *grip, grips)
-//                grip->highlight();
-//        }
+        clearPickedGrips();
+        foreach (IGraphicsEntityData *entity_gdata, pickedEntities) {
+            delegatesToUpdate.append(QUERY(IGraphicsDelegate, entity_gdata));
+            const QList<IGripData*> &grips = QUERY(IGripListData, entity_gdata)->grips();
+            pickedGrips.append(grips);
+            foreach (IGripData *grip, grips)
+                grip->update(HighlightRole, FullHighlight);
+        }
     }
 
     void startGripDrag()
     {
-//        selectAllGrips();
-//        if (pickedGrips.isEmpty())
-//            return;
+        selectAllGrips();
+        if (pickedGrips.isEmpty())
+            return;
 
-//        // Set curGrip to the lowest and earliest grip.
-//        curGrip = pickedGrips.first();
-//        foreach (IGripItem *grip_item, pickedGrips) {
-//            const QPointF pos = grip_item->position();
-//            if (pos.x() < curGrip->position().x()
-//                    || (pos.x() == curGrip->position().x()
-//                        && pos.y() < curGrip->position().y()))
-//                curGrip = grip_item;
-//        }
+        // Set curGrip to the lowest and earliest grip.
+        curGrip = pickedGrips.first();
+        foreach (IGripData *grip, pickedGrips) {
+            const QPointF pos = grip->position();
+            if (pos.x() < curGrip->position().x()
+                    || (pos.x() == curGrip->position().x()
+                        && pos.y() < curGrip->position().y()))
+                curGrip = grip;
+        }
 
-//        startDraggingGrips();
+        startDraggingGrips();
     }
 
     void clearPickedGrips()
     {
-//        keepGripsPicked = false;
-//        clearHovered();
-//        foreach (IGripItem *grip, pickedGrips)
-//            grip->unhighlight();
-//        pickedGrips.clear();
-//        entitiesToUpdate.clear();
+        keepGripsPicked = false;
+        clearHovered();
+        foreach (IGripData *grip, pickedGrips)
+            grip->update(HighlightRole, NoHighlight);
+        pickedGrips.clear();
+        delegatesToUpdate.clear();
     }
 
     void startDraggingGrips()
     {
-//        dragState = DraggingGrips;
-//        foreach (IEntityItem *entityItem, entitiesToUpdate)
-//            entityItem->startUpdatingPoints();
+        dragState = DraggingGrips;
     }
 
     void dragGripsTo(const QPoint &pos)
     {
-//        GraphicsViewManager *vm = GraphicsViewManager::instance();
-//        vm->disableUpdates();
-//        const QPointF fromScenePos = curGrip->originalPosition();
-//        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-//        const QPointF sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()) - fromScenePos;
-//        foreach (IGripItem *grip, pickedGrips)
-//            grip->setPosition(grip->originalPosition() + sceneOffset);
-//        foreach (IEntityItem *entity, entitiesToUpdate)
-//            entity->updatePoints();
-//        gripsDragged = true;
-//        vm->enableUpdates();
+        GraphicsViewManager *vm = GraphicsViewManager::instance();
+        vm->disableUpdates();
+        const QPointF fromScenePos = curGrip->originalPosition();
+        const QPointF toScenePos = rootNode->transform().map(q->mapToScene(pos));
+        const QPointF sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()) - fromScenePos;
+        foreach (IGripData *grip, pickedGrips)
+            grip->update(PositionRole, grip->originalPosition() + sceneOffset);
+        foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
+            delegate->updateGraphics();
+        gripsDragged = true;
+        vm->enableUpdates();
     }
 
     void finishDraggingGrips(const QPoint &pos)
     {
-//        dragGripsTo(pos);
-//        dragState = 0;
-//        curGrip = 0;
-//        if (gripsDragged) {
-//            IEditor *editor = IEditor::instance();
-//            editor->beginCommand();
-//            foreach (IEntityItem *entityItem, entitiesToUpdate)
-//                entityItem->finishUpdatingPoints();
-//            editor->endCommand();
-//            gripsDragged = false;
-//        }
+        dragGripsTo(pos);
+        dragState = 0;
+        curGrip = 0;
+        if (gripsDragged) {
+            IEditor *editor = IEditor::instance();
+            editor->beginCommand();
+            foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
+                delegate->updateModel();
+            editor->endCommand();
+            gripsDragged = false;
+            if (!keepGripsPicked)
+                clearPickedGrips();
+        }
     }
 
     void cancelGripDrag()
     {
-//        dragState = 0;
-//        curGrip = 0;
-//        const int n = entitiesToUpdate.count();
-//        for (int i = 0;  i < n;  ++i)
-//            entitiesToUpdate.at(i)->entity()->popPoints();
-//        gripsDragged = false;
-//        resetPickedEntities();
+        dragState = 0;
+        curGrip = 0;
+        foreach (IGripData *grip, pickedGrips)
+            grip->update(PositionRole, grip->originalPosition());
+        foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
+            delegate->updateGraphics();
+        gripsDragged = false;
+        resetPickedEntities();
     }
 
     QRect pickBoxBounds() const
@@ -491,30 +496,32 @@ public:
     void finishPicking(const QPoint &pos)
     {
         bool pickOne = false;
-//        const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < QApplication::startDragDistance())
-//                ? pickOneRect(dragStartPos)
-//                : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
-//        const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
-//        const QList<QGraphicsItem*> items = q->items(rect);
-//        QList<IEntity*> entities;
-//        foreach (QGraphicsItem *item, items) {
-//            IUnknown *unknown = variantToUnknown_cast(item->data(0));
-//            if (unknown) {
-//                IEntity *entity = QUERY(IEntity, unknown);
-//                if (entity && entity->intersects(pickRect)) {
-//                    ISubEntity *sub_entity = QUERY(ISubEntity, unknown);
-//                    if (sub_entity) {
-//                        IEntity *parent_entity = sub_entity->parentEntity();
-//                        entities.append(parent_entity);
-//                        if (pickOne && !(QApplication::keyboardModifiers() & ShiftModifier))
-//                            break;
-//                    }
-//                }
-//            }
-//        }
+        const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < QApplication::startDragDistance())
+                ? pickOneRect(dragStartPos)
+                : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
+        const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
+        const QList<QGraphicsItem*> items = q->items(rect);
+        QList<IGraphicsEntityData*> entities;
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
+            if (unknown) {
+                IGraphicsCurveData *entity = QUERY(IGraphicsCurveData, unknown);
+                if (entity && entity->intersects(pickRect)) {
+                    IGraphicsItem *entity_gitem = QUERY(IGraphicsItem, unknown);
+                    if (entity_gitem) {
+                        IGraphicsItem *parent_gitem = entity_gitem->parent();
+                        IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, parent_gitem);
+                        if (parent_gdata)
+                            entities.append(parent_gdata);
+                        if (pickOne && !(QApplication::keyboardModifiers() & ShiftModifier))
+                            break;
+                    }
+                }
+            }
+        }
 //        QItemSelection ss;
 //        ss.reserve(entities.count());
-//        foreach (IEntity *entity, entities) {
+//        foreach (IGraphicsItem *entity, entities) {
 //            const QModelIndex index = IModel::instance()->indexFromItem(QUERY(IModelItem, entity));
 //            ss.select(index, index);
 //        }
@@ -534,6 +541,8 @@ public:
 //                TrackSelectionModel::instance()->clear();
 //            }
 //        }
+        if (entities.count())
+            appendPickedEntities(entities);
         if (!pickOne)
             pickBox->hide();
         dragState = 0;
@@ -541,14 +550,7 @@ public:
 
     bool entityIsPicked(IGraphicsEntityData *entity)
     {
-//        ISubEntity *subEntity = QUERY(ISubEntity, entity);
-//        IEntity *parentEntity = subEntity ? subEntity->parentEntity() : 0;
-//        foreach (GraphicsEntityItem *item, pickedEntities) {
-//            const IEntity *itemEntity = item->entity();
-//            if (itemEntity == entity || itemEntity == parentEntity)
-//                return true;
-//        }
-        return false;
+        return pickedEntities.contains(entity);
     }
 
 //    GraphicsEntityItem *findEntityItem(IEntity *entity)
@@ -559,63 +561,66 @@ public:
 //        return 0;
 //    }
 
-    void setPickedEntities(const QList<IGraphicsEntityItem*> &entities)
+    void setPickedEntities(const QList<IGraphicsEntityData*> &entities)
     {
         clearPickedEntities();
         appendPickedEntities(entities);
     }
 
-    void appendPickedEntities(const QList<IGraphicsEntityItem*> &entities)
+    void appendPickedEntities(const QList<IGraphicsEntityData*> &entities)
     {
-//        if (entities.isEmpty())
-//            return;
+        if (entities.isEmpty())
+            return;
 //        GraphicsViewManager *vm = GraphicsViewManager::instance();
 //        vm->disableUpdates();
-//        foreach (IEntity *entity, entities) {
+        foreach (IGraphicsEntityData *entity, entities) {
 //            if (entity->isVisible() && !entityIsPicked(entity)) {
-//                GraphicsEntityItem *item = new GraphicsEntityItem(entity);
-//                pickedEntities.append(item);
-//                item->setParentItem(rootItem);
-//                item->highlight();
-//            }
-//        }
+            if (!entityIsPicked(entity)) {
+                pickedEntities.append(entity);
+                entity->update(HighlightRole, FullHighlight);
+            }
+        }
 //        vm->enableUpdates();
     }
 
-    void removePickedEntities(const QList<IGraphicsEntityItem*> &entities)
+    void removePickedEntities(const QList<IGraphicsEntityData*> &entities)
     {
-//        if (entities.isEmpty())
-//            return;
+        if (entities.isEmpty())
+            return;
 //        GraphicsViewManager *vm = GraphicsViewManager::instance();
 //        vm->disableUpdates();
-//        foreach (IEntity *entity, entities) {
-//            GraphicsEntityItem *item = findEntityItem(entity);
-//            if (item) {
-//                pickedEntities.removeOne(item);
-//                entitiesToUpdate.removeOne(item);
-//                for (int i = 0;  i < pickedGrips.count();  ++i) {
-//                    IGripItem *grip = pickedGrips[i];
-//                    if (item == grip->parentEntityItem())
-//                        pickedGrips.removeAt(i--);
-//                }
-
-//                // Unhighlight and remove any hovered grips on the item before
-//                // deleting it.
-//                IEntityItem *entity_item = QUERY(IEntityItem, item);
-//                for (int i = 0;  i < hoveredGrips.count();  ++i) {
-//                    IGripItem *grip = hoveredGrips[i];
-//                    if (entity_item == grip->parentEntityItem()) {
-//                        grip->unhighlight();
-//                        hoveredGrips.removeAt(i);
-//                        --i;
-//                    }
-//                }
-
-//                item->unhighlight();
-//                delete item;
-//            }
-//        }
-//        clearPickedGrips();
+        foreach (IGraphicsEntityData *entity, entities) {
+            pickedEntities.removeOne(entity);
+            IGraphicsEntityItem *entity_gitem = QUERY(IGraphicsEntityItem, entity);
+            QList<IGraphicsItem*> subentities = entity_gitem->subentities(q->sceneType(), MainTransform);
+            foreach (IGraphicsItem *subentity, subentities) {
+                IGraphicsDelegate *curve_gdelegate = QUERY(IGraphicsDelegate, subentity);
+                delegatesToUpdate.removeOne(curve_gdelegate);
+                IGraphicsSubEntityItem *curve_gitem = QUERY(IGraphicsSubEntityItem, subentity);
+                QList<IGraphicsItem*> curve_subentities = curve_gitem->subentities();
+                IGripListData *griplist_gdata = 0;
+                foreach (IGraphicsItem *curve_subentity, curve_subentities) {
+                    griplist_gdata = QUERY(IGripListData, curve_subentity);
+                    if (griplist_gdata)
+                        break;
+                }
+                IGraphicsItem *griplist_gitem = QUERY(IGraphicsItem, griplist_gdata);
+                for (int i = 0;  i < pickedGrips.count();  ++i) {
+                    IGripData *grip = pickedGrips[i];
+                    IGraphicsItem *grip_gitem = QUERY(IGraphicsItem, grip);
+                    if (griplist_gitem == grip_gitem->parent())
+                        pickedGrips.removeAt(i--);
+                }
+                for (int i = 0;  i < hoveredGrips.count();  ++i) {
+                    IGripData *grip = hoveredGrips[i];
+                    IGraphicsItem *grip_gitem = QUERY(IGraphicsItem, grip);
+                    if (griplist_gitem == grip_gitem->parent())
+                        hoveredGrips.removeAt(i--);
+                }
+                entity->update(HighlightRole, NoHighlight);
+            }
+        }
+        clearPickedGrips();
 //        vm->enableUpdates();
     }
 
@@ -623,28 +628,32 @@ public:
     {
 //        GraphicsViewManager *vm = GraphicsViewManager::instance();
 //        vm->disableUpdates();
-//        clearPickedGrips();
+        clearPickedGrips();
 //        NoteSelectionModel::instance()->clear();
+        QList<IGraphicsEntityData*> picked_entities = pickedEntities;
+        removePickedEntities(picked_entities);
 //        vm->enableUpdates();
     }
 
     void resetPickedEntities()
     {
-//        clearPickedGrips();
+        clearPickedGrips();
 //        NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
 //        QItemSelection ss = noteSSModel->selection();
 //        noteSSModel->clear();
 //        noteSSModel->select(ss, QItemSelectionModel::Select);
+        QList<IGraphicsEntityData*> picked_entities = pickedEntities;
+        setPickedEntities(picked_entities);
     }
 
     void clearPicks()
     {
-//        if (!pickedGrips.isEmpty())
-//            GraphicsViewManager::instance()->clearPickedGrips();
-//        else {
-//            clearPickedEntities();
+        if (!pickedGrips.isEmpty())
+            GraphicsViewManager::instance()->clearPickedGrips();
+        else {
+            clearPickedEntities();
 //            TrackSelectionModel::instance()->clear();
-//        }
+        }
     }
 
     void insertPoint(const QPoint &pos)
@@ -1158,7 +1167,7 @@ void GraphicsView::clearGripSelection()
     d->clearPickedGrips();
 }
 
-void GraphicsView::gripDeselected(IGrip *grip)
+void GraphicsView::gripDeselected(IGripData *grip)
 {
     d->hoveredGrips.removeOne(grip);
     d->pickedGrips.removeOne(grip);

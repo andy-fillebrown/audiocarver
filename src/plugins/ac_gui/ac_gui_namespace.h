@@ -31,6 +31,7 @@ enum GuiItemType {
 
 enum GuiItemDataRole {
     HighlightRole = Ac::CoreItemDataRoleCount,
+    OriginalPositionRole,
     PositionRole,
     CurveTypeRole
 };

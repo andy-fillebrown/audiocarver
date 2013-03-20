@@ -48,6 +48,11 @@ void GraphicsData::initialize()
     _gripNode->setParentItem(parent_gdata->node());
 }
 
+QPointF GraphicsData::originalPosition() const
+{
+    return _originalPosition;
+}
+
 QPointF GraphicsData::position() const
 {
     return _gripNode->pos();
@@ -69,9 +74,14 @@ void GraphicsData::update(int role, const QVariant &value)
     case HighlightRole:
         _gripNode->highlight(qvariant_cast<int>(value));
         break;
-    case PositionRole:
-        _gripNode->setPos(qvariant_cast<QPointF>(value));
-        break;
+    case OriginalPositionRole:
+        _originalPosition = qvariant_cast<QPointF>(value);
+    case PositionRole: {
+        QPointF pos = qvariant_cast<QPointF>(value);
+        pos.rx() = qMax(qreal(0.0f), pos.rx());
+        pos.ry() = qBound(qreal(0.0f), pos.ry(), qreal(127.0f));
+        _gripNode->setPos(pos);
+    }   break;
     case CurveTypeRole:
         _curveType = qvariant_cast<int>(value);
         break;

@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_curve_graphicsdelegate.h"
+#include "ac_gui_velocity_graphicsdelegate.h"
 #include "ac_gui_namespace.h"
 #include <igraphicssubentityitem.h>
 #include <igripdata.h>
@@ -24,35 +24,16 @@
 
 using namespace Ac;
 
-namespace Curve {
-
-IGripListData *GraphicsDelegate::findGripListData()
-{
-    IGripListData *griplist_gdata = 0;
-    IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
-    QList<IGraphicsItem*> subentities = this_gitem->subentities();
-    foreach (IGraphicsItem *subentity, subentities) {
-        griplist_gdata = QUERY(IGripListData, subentity);
-        if (griplist_gdata)
-            return griplist_gdata;
-    }
-    return 0;
-}
-
-PointList GraphicsDelegate::buildPointList()
-{
-    PointList points;
-    IGripListData *griplist_gdata = findGripListData();
-    QList<IGripData*> grips = griplist_gdata->grips();
-    foreach (IGripData *grip, grips)
-        points.append(Point(grip->position(), CurveType(grip->curveType())));
-    return points;
-}
+namespace Velocity {
 
 void GraphicsDelegate::updateModel()
 {
-    IModelData *curve_data = QUERY(IModelData, this);
-    curve_data->set(QVariant::fromValue(buildPointList()), PointsRole);
+    PointList points = buildPointList();
+    qreal velocity = points.first().pos.y();
+    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+    IGraphicsItem *note_gitem = this_gitem->parent();
+    IModelData *note_gdata = QUERY(IModelData, note_gitem);
+    note_gdata->set(velocity, VolumeRole);
 }
 
 void GraphicsDelegate::updateGraphics()

@@ -19,6 +19,7 @@
 #define AC_GUI_GRIP_GRAPHICSDATA_H
 
 #include "ac_gui_base_gripdata.h"
+#include <QPointF>
 
 class GraphicsGripNode;
 
@@ -28,6 +29,7 @@ class GraphicsData : public Base::GripData
 {
     GraphicsGripNode *_gripNode;
     int _curveType;
+    QPointF _originalPosition;
 
 public:
     GraphicsData(IAggregate *aggregate);
@@ -36,6 +38,7 @@ protected:
     ~GraphicsData();
 
     void initialize();
+    QPointF originalPosition() const;
     QPointF position() const;
     int curveType() const;
     QGraphicsItem *node() const;

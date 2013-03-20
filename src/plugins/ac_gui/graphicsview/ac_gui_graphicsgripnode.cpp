@@ -57,10 +57,12 @@ void GraphicsGripNode::highlight(int highlightType)
         break;
     case HoverHighlight:
         pen.setColor(Qt::blue);
+        brush.setColor(Qt::blue);
         brush.setStyle(SolidPattern);
         break;
     case FullHighlight:
         pen.setColor(Qt::red);
+        brush.setColor(Qt::red);
         brush.setStyle(SolidPattern);
         break;
     }

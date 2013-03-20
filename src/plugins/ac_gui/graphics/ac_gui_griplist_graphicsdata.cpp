@@ -20,12 +20,28 @@
 #include "ac_gui_namespace.h"
 #include <ac_core_point.h>
 #include <iaggregate.h>
+#include <idatabase.h>
 #include <idatabaseobjectfactory.h>
+#include <igraphicsentitydata.h>
 #include <igraphicsitem.h>
+#include <igraphicsiteminfo.h>
 #include <igripdata.h>
 #include <imodelitem.h>
 
 using namespace Ac;
+
+static bool gripLessThan(IGripData *a, IGripData *b)
+{
+    QPointF a_pos = a->position();
+    QPointF b_pos = b->position();
+    if (a_pos.x() < b_pos.x())
+        return true;
+    if (b_pos.x() < a_pos.x())
+        return false;
+    if (a_pos.y() < b_pos.y())
+        return true;
+    return false;
+}
 
 namespace GripList {
 
@@ -34,6 +50,7 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     ,   _node(new GraphicsNode)
 {
     _node->setVisible(false);
+    _node->setZValue(Q_FLOAT_MAX);
 }
 
 GraphicsData::~GraphicsData()
@@ -43,12 +60,19 @@ GraphicsData::~GraphicsData()
 
 void GraphicsData::initialize()
 {
+    IModelItem *root_item = IDatabase::instance()->rootItem();
+    IGraphicsEntityData *root_gdata = QUERY(IGraphicsEntityData, root_item);
     IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    IGraphicsItem *parent_gitem = this_gitem->parent();
-    if (!parent_gitem)
+    IGraphicsItemInfo *parent_ginfo = QUERY(IGraphicsItemInfo, this_gitem->parent());
+    if (!parent_ginfo)
         return;
-    IGraphicsSubEntityData *parent_gdata = QUERY(IGraphicsSubEntityData, parent_gitem);
-    _node->setParentItem(parent_gdata->node());
+    QGraphicsItem *root_node = root_gdata->node(parent_ginfo->sceneType(), MainTransform);
+    _node->setParentItem(root_node);
+}
+
+void GraphicsData::sort()
+{
+    qSort(_grips.begin(), _grips.end(), gripLessThan);
 }
 
 QGraphicsItem *GraphicsData::node() const
@@ -59,7 +83,7 @@ QGraphicsItem *GraphicsData::node() const
 void GraphicsData::update(int role, const QVariant &value)
 {
     if (HighlightRole == role)
-        _node->setVisible(HoverHighlight == qvariant_cast<int>(value));
+        _node->setVisible(FullHighlight == qvariant_cast<int>(value));
     else if (PointsRole == role) {
         PointList points = qvariant_cast<PointList>(value);
         if (_grips.count() < points.count()) {
@@ -81,7 +105,7 @@ void GraphicsData::update(int role, const QVariant &value)
         for (int i = 0;  i < _grips.count();  ++i) {
             IGraphicsData *grip_gdata = QUERY(IGraphicsData, _grips.at(i));
             const Point &point = points.at(i);
-            grip_gdata->update(PositionRole, point.pos);
+            grip_gdata->update(OriginalPositionRole, point.pos);
             grip_gdata->update(CurveTypeRole, point.curveType);
         }
     }

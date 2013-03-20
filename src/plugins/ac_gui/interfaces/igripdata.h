@@ -28,6 +28,7 @@ class IGripData : public IGraphicsSubEntityData
 public:
     enum { InterfaceType = I::IGripData };
 
+    virtual QPointF originalPosition() const = 0;
     virtual QPointF position() const = 0;
     virtual int curveType() const = 0;
 

@@ -21,7 +21,7 @@
 #include <mi_gui_graphicsview.h>
 #include <QModelIndex>
 
-class IGrip;
+class IGripData;
 class QItemSelection;
 
 class GraphicsViewPrivate;
@@ -94,7 +94,7 @@ protected:
 
 private slots:
     void clearGripSelection();
-    void gripDeselected(IGrip *grip);
+    void gripDeselected(IGripData *grip);
     void modelAboutToBeDestroyed();
 };
 
