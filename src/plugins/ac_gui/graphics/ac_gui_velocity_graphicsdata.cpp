@@ -87,10 +87,6 @@ void GraphicsData::update(int role, const QVariant &value)
         role = VolumeRole;
     }
     if (VolumeRole == role) {
-        IModelItem *this_item = QUERY(IModelItem, this);
-        IModelItem *parent_item = this_item->parent();
-        if (!parent_item)
-            return;
         IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
         if (!this_gitem)
             return;
@@ -118,6 +114,10 @@ void GraphicsData::update(int role, const QVariant &value)
         } else {
             // If the pitch curve grip data is not available, use the model
             // data to get the velocity curve's x coord.
+            IModelItem *this_item = QUERY(IModelItem, this);
+            IModelItem *parent_item = this_item->parent();
+            if (!parent_item)
+                return;
             PointList pitch_points = QUERY(IModelData, parent_item->findItem(PitchCurveItem))->get<PointList>(PointsRole);
             if (pitch_points.isEmpty())
                 return;
