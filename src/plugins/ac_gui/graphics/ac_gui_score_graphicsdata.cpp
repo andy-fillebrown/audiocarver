@@ -31,10 +31,12 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
 {
     QMap<int, QGraphicsItem*> &main_nodes = mainNodes();
     for (int i = 0;  i < SceneTypeCount;  ++i) {
-        QGraphicsItem *main_node = new GraphicsRootNode;
-        main_nodes.insert(i, main_node);
-        _unitXNodes.insert(i, new GraphicsNode(main_node));
-        _unitYNodes.insert(i, new GraphicsNode(main_node));
+        QGraphicsItem *current_node = main_nodes.value(i);
+        delete current_node;
+        QGraphicsItem *new_node = new GraphicsRootNode;
+        main_nodes.insert(i, new_node);
+        _unitXNodes.insert(i, new GraphicsNode(new_node));
+        _unitYNodes.insert(i, new GraphicsNode(new_node));
     }
     _unitXNodes[PitchScene]->setTransform(QTransform::fromScale(DEFAULT_SCORE_LENGTH, 1.0f));
     _unitXNodes[ControlScene]->setTransform(QTransform::fromScale(DEFAULT_SCORE_LENGTH, 1.0f));
