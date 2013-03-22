@@ -299,8 +299,9 @@ unix: !macx: !freebsd* {
         ../../sndfile/src \
 
     LIBS *= \
+        -ldl \
+        -lpthread \
         -lsndfile \
-
 }
 macx {
     DEFINES *= \
