@@ -18,12 +18,12 @@
 #ifndef IGRIPDATA_H
 #define IGRIPDATA_H
 
-#include <igraphicssubentitydata.h>
+#include <igraphicsdata.h>
 #include "ac_gui_interfaces.h"
 
 class QPointF;
 
-class IGripData : public IGraphicsSubEntityData
+class IGripData : public IGraphicsData
 {
 public:
     enum { InterfaceType = I::IGripData };
@@ -41,7 +41,7 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return IGraphicsSubEntityData::isTypeOfInterface(interfaceType);
+        return IGraphicsData::isTypeOfInterface(interfaceType);
     }
 };
 

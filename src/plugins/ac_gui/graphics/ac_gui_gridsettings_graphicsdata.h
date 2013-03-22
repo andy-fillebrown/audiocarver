@@ -18,12 +18,12 @@
 #ifndef AC_GUI_GRIDSETTINGS_GRAPHICSDATA_H
 #define AC_GUI_GRIDSETTINGS_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicsentitydata.h"
+#include "ac_gui_base_graphicsdata.h"
 #include <QMap>
 
 namespace GridSettings {
 
-class GraphicsData : public Base::GraphicsEntityData
+class GraphicsData : public Base::GraphicsData
 {
     QMap<int, QGraphicsItem*> _mainNodes;
     QMap<int, QGraphicsItem*> _unitXNodes;
@@ -33,7 +33,7 @@ public:
     GraphicsData(IAggregate *aggregate);
 
 protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
 };
 
 }

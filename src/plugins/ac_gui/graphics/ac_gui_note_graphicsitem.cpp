@@ -43,15 +43,18 @@ void GraphicsItem::initialize()
     _velocity = factory->create(VelocityItem, this_item);
 }
 
-QList<IGraphicsItem*> GraphicsItem::subentities(int sceneType, int transformType) const
+IGraphicsItem *GraphicsItem::at(int i) const
 {
-    QList<IGraphicsItem*> subents = ScoreObject::GraphicsItem::subentities(sceneType, transformType);
-    if (ControlScene == sceneType && MainTransform == transformType) {
-        IGraphicsItem *velocity_gitem = QUERY(IGraphicsItem, _velocity);
-        if (velocity_gitem)
-            subents.append(velocity_gitem);
-    }
-    return subents;
+    if (2 == i)
+        return QUERY(IGraphicsItem, _velocity);
+    return ScoreObject::GraphicsItem::at(i);
+}
+
+IGraphicsItem *GraphicsItem::findItem(int itemType) const
+{
+    if (VelocityItem == itemType)
+        return QUERY(IGraphicsItem, _velocity);
+    return ScoreObject::GraphicsItem::findItem(itemType);
 }
 
 }

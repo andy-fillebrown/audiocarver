@@ -24,7 +24,7 @@ using namespace Ac;
 
 namespace PitchGridLine {
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
     if (PitchScene == sceneType && UnitXTransform == transformType)
         return editorSceneLineNode();

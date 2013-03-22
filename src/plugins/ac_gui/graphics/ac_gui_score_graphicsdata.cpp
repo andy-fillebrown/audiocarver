@@ -43,7 +43,7 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _unitYNodes[PitchScene]->setTransform(QTransform::fromScale(1.0f, 127.0f));
 }
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
     switch (transformType) {
     case UnitXTransform:
@@ -51,7 +51,7 @@ QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
     case UnitYTransform:
         return _unitYNodes.value(sceneType);
     default:
-        return ScoreObject::GraphicsData::node(sceneType, transformType);
+        return ScoreObject::GraphicsData::findNode(sceneType, transformType);
     }
 }
 

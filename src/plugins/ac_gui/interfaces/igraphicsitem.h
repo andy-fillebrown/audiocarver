@@ -27,6 +27,9 @@ public:
     enum { InterfaceType = I::IGraphicsItem };
 
     virtual IGraphicsItem *parent() const = 0;
+    virtual int count() const = 0;
+    virtual IGraphicsItem *at(int i) const = 0;
+    virtual IGraphicsItem *findItem(int itemType) const = 0;
 
     int interfaceType() const
     {

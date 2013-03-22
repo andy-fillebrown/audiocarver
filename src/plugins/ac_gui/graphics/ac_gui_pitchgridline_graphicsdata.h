@@ -30,7 +30,7 @@ public:
     {}
 
 protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
 };
 
 }

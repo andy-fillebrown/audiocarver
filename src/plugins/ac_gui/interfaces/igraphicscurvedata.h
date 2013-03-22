@@ -18,11 +18,11 @@
 #ifndef IGRAPHICSCURVEDATA_H
 #define IGRAPHICSCURVEDATA_H
 
-#include <igraphicssubentitydata.h>
+#include <igraphicsdata.h>
 
 class QRectF;
 
-class IGraphicsCurveData : public IGraphicsSubEntityData
+class IGraphicsCurveData : public IGraphicsData
 {
 public:
     enum { InterfaceType = I::IGraphicsCurveData };
@@ -38,7 +38,7 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return IGraphicsSubEntityData::isTypeOfInterface(interfaceType);
+        return IGraphicsData::isTypeOfInterface(interfaceType);
     }
 };
 

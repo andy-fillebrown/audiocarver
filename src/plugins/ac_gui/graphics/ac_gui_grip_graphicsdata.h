@@ -41,7 +41,7 @@ protected:
     QPointF originalPosition() const;
     QPointF position() const;
     int curveType() const;
-    QGraphicsItem *node() const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
     void update(int role, const QVariant &value);
 };
 

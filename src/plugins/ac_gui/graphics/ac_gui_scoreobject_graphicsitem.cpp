@@ -17,7 +17,6 @@
 
 #include "ac_gui_scoreobject_graphicsitem.h"
 #include "ac_gui_namespace.h"
-#include "ac_gui_graphicsnode.h"
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -25,34 +24,26 @@ using namespace Ac;
 namespace ScoreObject {
 
 GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   Base::GraphicsEntityItem(aggregate)
+    :   Base::GraphicsItem(aggregate)
     ,   _helper(this)
+{}
+
+int GraphicsItem::count() const
 {
-    _mainNodes.insert(PitchScene, new GraphicsNode);
-    _mainNodes.insert(ControlScene, new GraphicsNode);
+    IModelItem *this_item = QUERY(IModelItem, this);
+    return this_item->count();
 }
 
-QList<IGraphicsItem*> GraphicsItem::subentities(int sceneType, int transformType) const
+IGraphicsItem *GraphicsItem::at(int i) const
 {
-    QList<IGraphicsItem*> subents;
-    IModelItem *item = QUERY(IModelItem, this);
-    if (!item)
-        return subents;
-    IModelItem *curve_item = 0;
-    if (MainTransform == transformType) {
-        switch (sceneType) {
-        case PitchScene:
-            curve_item = item->findItem(PitchCurveItem);
-            break;
-        case ControlScene:
-            curve_item = item->findItem(ControlCurveItem);
-            break;
-        }
-    }
-    IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, curve_item);
-    if (curve_gitem)
-        subents.append(curve_gitem);
-    return subents;
+    IModelItem *this_item = QUERY(IModelItem, this);
+    return QUERY(IGraphicsItem, this_item->at(i));
+}
+
+IGraphicsItem *GraphicsItem::findItem(int itemType) const
+{
+    IModelItem *this_item = QUERY(IModelItem, this);
+    return QUERY(IGraphicsItem, this_item->findItem(itemType));
 }
 
 }

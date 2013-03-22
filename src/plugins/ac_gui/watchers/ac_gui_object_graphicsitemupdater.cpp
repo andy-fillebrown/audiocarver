@@ -17,10 +17,9 @@
 
 #include "ac_gui_object_graphicsitemupdater.h"
 #include "ac_gui_namespace.h"
-#include <igraphicsentitydata.h>
+#include <igraphicsdata.h>
 #include <igraphicsitem.h>
 #include <igraphicsiteminfo.h>
-#include <igraphicssubentitydata.h>
 #include <imodelitem.h>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -33,23 +32,22 @@ void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
-    IGraphicsSubEntityData *child_gdata = QUERY(IGraphicsSubEntityData, child);
+    IGraphicsData *child_gdata = QUERY(IGraphicsData, child);
     if (!child_gdata)
         return;
     IGraphicsItem *child_gitem = QUERY(IGraphicsItem, child);
     if (!child_gitem)
         return;
-    QGraphicsItem *child_node = child_gdata->node();
+    QGraphicsItem *child_node = child_gdata->findNode();
     if (!child_node)
         return;
     QGraphicsItem *parent_node = 0;
-    IGraphicsSubEntityData *parent_gdata = QUERY(IGraphicsSubEntityData, child_gitem->parent());
-    if (parent_gdata) {
-        parent_node = parent_gdata->node();
-    } else {
-        IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, child_gitem->parent());
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, child_gitem->parent());
+    if (parent_gdata)
+        parent_node = parent_gdata->findNode();
+    if (!parent_node) {
         IGraphicsItemInfo *child_info = QUERY(IGraphicsItemInfo, child);
-        parent_node = parent_gdata->node(child_info->sceneType(), child_info->transformType());
+        parent_node = parent_gdata->findNode(child_info->sceneType(), child_info->transformType());
     }
     child_node->setParentItem(parent_node);
     if (!parent_node) {

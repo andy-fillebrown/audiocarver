@@ -24,7 +24,7 @@ using namespace Ac;
 namespace GridSettings {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsEntityData(aggregate)
+    :   Base::GraphicsData(aggregate)
 {
     _mainNodes.insert(TimeLabelScene, new GraphicsNode);
     _mainNodes.insert(PitchLabelScene, new GraphicsNode);
@@ -35,7 +35,7 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _unitYNodes.insert(ControlScene, new GraphicsNode);
 }
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
     switch (transformType) {
     case MainTransform:

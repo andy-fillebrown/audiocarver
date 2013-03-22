@@ -37,7 +37,8 @@ enum GuiItemDataRole {
 };
 
 enum SceneType {
-    ControlLabelScene,
+    UnspecifiedScene = -1,
+    ControlLabelScene = 0,
     ControlScene,
     PitchLabelScene,
     PitchScene,
@@ -46,7 +47,8 @@ enum SceneType {
 };
 
 enum TransformType {
-    MainTransform,
+    UnspecifiedTransform = -1,
+    MainTransform = 0,
     UnitXTransform,
     UnitYTransform,
     TransformTypeCount

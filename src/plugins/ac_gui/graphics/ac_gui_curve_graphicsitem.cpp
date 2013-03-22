@@ -36,11 +36,18 @@ void GraphicsItem::initialize()
     _grips = factory->create(GripListItem, QUERY(IModelItem, this));
 }
 
-QList<IGraphicsItem*> GraphicsItem::subentities() const
+IGraphicsItem *GraphicsItem::at(int i) const
 {
-    QList<IGraphicsItem*> subents;
-    subents.append(QUERY(IGraphicsItem, _grips));
-    return subents;
+    if (0 == i)
+        return QUERY(IGraphicsItem, _grips);
+    return 0;
+}
+
+IGraphicsItem *GraphicsItem::findItem(int itemType) const
+{
+    if (GripListItem == itemType)
+        return QUERY(IGraphicsItem, _grips);
+    return 0;
 }
 
 }

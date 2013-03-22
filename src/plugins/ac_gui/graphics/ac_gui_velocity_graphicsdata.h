@@ -33,7 +33,7 @@ public:
 
 protected:
     void initialize();
-    QGraphicsItem *node() const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
     bool intersects(const QRectF &rect) const;
     void update(int role, const QVariant &value);
 };

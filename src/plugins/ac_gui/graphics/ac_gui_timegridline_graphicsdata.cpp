@@ -56,7 +56,7 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _controlSceneLineExtensionNode->setPen(pen);
 }
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
     if (UnitYTransform == transformType) {
         switch (sceneType) {

@@ -19,9 +19,7 @@
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
-#include <igraphicsentitydata.h>
-#include <igraphicsentityitem.h>
-#include <igraphicssubentityitem.h>
+#include <igraphicsitem.h>
 #include <igripdata.h>
 #include <igriplistdata.h>
 #include <imodeldata.h>
@@ -47,14 +45,16 @@ void GraphicsData::initialize()
 {
     IModelItem *this_item = QUERY(IModelItem, this);
     IModelItem *parent_item = this_item->parent();
-    IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, parent_item);
-    _lineNode->setParentItem(parent_gdata->node(ControlScene, MainTransform));
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, parent_item);
+    _lineNode->setParentItem(parent_gdata->findNode(ControlScene, MainTransform));
     IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
     _lineNode->setData(0, quintptr(this_gitem));
 }
 
-QGraphicsItem *GraphicsData::node() const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
+    Q_ASSERT(UnspecifiedScene == sceneType);
+    Q_ASSERT(UnspecifiedTransform == transformType);
     return _lineNode;
 }
 
@@ -87,21 +87,13 @@ void GraphicsData::update(int role, const QVariant &value)
         role = VolumeRole;
     }
     if (VolumeRole == role) {
-        IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
+        IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
         if (!this_gitem)
             return;
-        IGraphicsEntityItem *note_gitem = QUERY(IGraphicsEntityItem, this_gitem->parent());
-        QList<IGraphicsItem*> note_pitchscene_gitems = note_gitem->subentities(PitchScene, MainTransform);
-        IGripListData *pitchcurve_griplist_gdata = 0;
-        foreach (IGraphicsItem *maybe_pitchcurve_gitem, note_pitchscene_gitems) {
-            IGraphicsSubEntityItem *pitchcurve_gitem = QUERY(IGraphicsSubEntityItem, maybe_pitchcurve_gitem);
-            QList<IGraphicsItem*> pitchcurve_griplist_gitems = pitchcurve_gitem->subentities();
-            foreach (IGraphicsItem *maybe_pitchcurve_griplist_gitem, pitchcurve_griplist_gitems) {
-                pitchcurve_griplist_gdata = QUERY(IGripListData, maybe_pitchcurve_griplist_gitem);
-                if (pitchcurve_griplist_gdata)
-                    break;
-            }
-        }
+        IGraphicsItem *note_gitem = this_gitem->parent();
+        IGraphicsItem *pitchcurve_gitem = note_gitem->findItem(PitchCurveItem);
+        IGraphicsItem *pitchcurve_griplist_gitem = pitchcurve_gitem->findItem(GripListItem);
+        IGripListData *pitchcurve_griplist_gdata = QUERY(IGripListData, pitchcurve_griplist_gitem);
         if (!pitchcurve_griplist_gdata)
             return;
         qreal x = 0.0f;
@@ -128,11 +120,8 @@ void GraphicsData::update(int role, const QVariant &value)
         _lineNode->setLine(x, 0.0f, x, volume);
         PointList points;
         points.append(Point(x, volume));
-        QList<IGraphicsItem*> grip_gitems = this_gitem->subentities();
-        foreach (IGraphicsItem *grip_gitem, grip_gitems) {
-            IGraphicsData *grip_gdata = QUERY(IGraphicsData, grip_gitem);
-            grip_gdata->update(PointsRole, QVariant::fromValue(points));
-        }
+        IGraphicsData *this_griplist_gdata = QUERY(IGraphicsData, this_gitem->findItem(GripListItem));
+        this_griplist_gdata->update(PointsRole, QVariant::fromValue(points));
         return;
     }
     if (ColorRole == role) {
@@ -149,15 +138,10 @@ void GraphicsData::update(int role, const QVariant &value)
         else
             pen.setWidth(1.0f);
         _lineNode->setPen(pen);
-        IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
-        if (this_gitem) {
-            QList<IGraphicsItem*> subentities = this_gitem->subentities();
-            foreach (IGraphicsItem *subentity, subentities) {
-                IGraphicsData *subentity_gdata = QUERY(IGraphicsData, subentity);
-                subentity_gdata->update(role, value);
-            }
-        }
-        return;
+        IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+        if (!this_gitem)
+            return;
+        QUERY(IGraphicsData, this_gitem->findItem(GripListItem))->update(role, value);
     }
 }
 

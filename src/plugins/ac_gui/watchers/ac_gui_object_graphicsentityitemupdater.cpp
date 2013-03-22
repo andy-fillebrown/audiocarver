@@ -17,7 +17,7 @@
 
 #include "ac_gui_object_graphicsentityitemupdater.h"
 #include "ac_gui_namespace.h"
-#include <igraphicsentitydata.h>
+#include <igraphicsdata.h>
 #include <igraphicsitem.h>
 #include <imodelitem.h>
 #include <QGraphicsItem>
@@ -31,19 +31,19 @@ void GraphicsEntityItemUpdater::endChangeParent(const IModelItem *child)
 {
     if (!child)
         return;
-    IGraphicsEntityData *child_gdata = QUERY(IGraphicsEntityData, child);
+    IGraphicsData *child_gdata = QUERY(IGraphicsData, child);
     if (!child_gdata)
         return;
     IGraphicsItem *child_gitem = QUERY(IGraphicsItem, child);
     if (!child_gitem)
         return;
-    IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, child_gitem->parent());
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, child_gitem->parent());
     for (int i = 0;  i < SceneTypeCount;  ++i) {
         for (int j = 0;  j < TransformTypeCount;  ++j) {
-            QGraphicsItem *child_node = child_gdata->node(i, j);
+            QGraphicsItem *child_node = child_gdata->findNode(i, j);
             if (!child_node)
                 continue;
-            QGraphicsItem *parent_node = parent_gdata ? parent_gdata->node(i, j) : 0;
+            QGraphicsItem *parent_node = parent_gdata ? parent_gdata->findNode(i, j) : 0;
             child_node->setParentItem(parent_node);
             if (!parent_node) {
                 QGraphicsScene *scene = child_node->scene();

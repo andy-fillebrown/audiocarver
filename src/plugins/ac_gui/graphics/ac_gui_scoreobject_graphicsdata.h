@@ -18,12 +18,12 @@
 #ifndef AC_GUI_SCOREOBJECT_GRAPHICSDATA_H
 #define AC_GUI_SCOREOBJECT_GRAPHICSDATA_H
 
-#include "ac_gui_base_graphicsentitydata.h"
+#include "ac_gui_base_graphicsdata.h"
 #include <QMap>
 
 namespace ScoreObject {
 
-class GraphicsData : public Base::GraphicsEntityData
+class GraphicsData : public Base::GraphicsData
 {
     QMap<int, QGraphicsItem*> _mainNodes;
 
@@ -36,7 +36,7 @@ protected:
         return _mainNodes;
     }
 
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
     void update(int role, const QVariant &value);
 };
 

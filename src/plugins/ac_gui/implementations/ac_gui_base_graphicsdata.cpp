@@ -15,18 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_gui_base_graphicssubentityitem.h"
+#include "ac_gui_base_graphicsdata.h"
 #include <iaggregate.h>
 
 namespace Base {
 
-void *GraphicsSubEntityItem::queryInterface(int interfaceType) const
+void *GraphicsData::queryInterface(int interfaceType) const
 {
     void *i = IComponent::queryInterface(interfaceType);
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-GraphicsSubEntityItem::GraphicsSubEntityItem(IAggregate *aggregate)
+GraphicsData::GraphicsData(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
     _aggregate->append(this);

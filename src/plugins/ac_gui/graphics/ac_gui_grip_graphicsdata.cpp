@@ -44,8 +44,8 @@ void GraphicsData::initialize()
 {
     IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
     _gripNode->setData(0, quintptr(this_gitem));
-    IGraphicsSubEntityData *parent_gdata = QUERY(IGraphicsSubEntityData, this_gitem->parent());
-    _gripNode->setParentItem(parent_gdata->node());
+    IGraphicsData *parent_gdata = QUERY(IGraphicsData, this_gitem->parent());
+    _gripNode->setParentItem(parent_gdata->findNode());
 }
 
 QPointF GraphicsData::originalPosition() const
@@ -63,8 +63,10 @@ int GraphicsData::curveType() const
     return _curveType;
 }
 
-QGraphicsItem *GraphicsData::node() const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
+    Q_ASSERT(UnspecifiedScene == sceneType);
+    Q_ASSERT(UnspecifiedTransform == transformType);
     return _gripNode;
 }
 

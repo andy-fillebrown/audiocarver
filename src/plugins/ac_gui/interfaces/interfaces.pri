@@ -3,12 +3,8 @@ SOURCE_FILES *= \
     igraphicscurvedata \
     igraphicsdata \
     igraphicsdelegate \
-    igraphicsentitydata \
-    igraphicsentityitem \
     igraphicsitem \
     igraphicsiteminfo \
-    igraphicssubentitydata \
-    igraphicssubentityitem \
     igripdata \
     igriplistdata \
     iplaycursor \

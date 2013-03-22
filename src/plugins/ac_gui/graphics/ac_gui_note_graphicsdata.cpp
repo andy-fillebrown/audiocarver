@@ -18,7 +18,7 @@
 #include "ac_gui_note_graphicsdata.h"
 #include "ac_gui_namespace.h"
 #include <idatabaseobjectfactory.h>
-#include <igraphicsentityitem.h>
+#include <igraphicsitem.h>
 #include <imodeldata.h>
 #include <imodelitemlist.h>
 #include <mi_core_utilities.h>
@@ -33,14 +33,9 @@ void GraphicsData::update(int role, const QVariant &value)
     if (ColorRole == role
             || VolumeRole == role
             || HighlightRole == role) {
-        IGraphicsEntityItem *gitem = QUERY(IGraphicsEntityItem, this);
-        for (int i = 0;  i < SceneTypeCount;  ++i) {
-            QList<IGraphicsItem*> subents = gitem->subentities(i, MainTransform);
-            foreach (IGraphicsItem *subent_gitem, subents) {
-                IGraphicsData *subent_gdata = QUERY(IGraphicsData, subent_gitem);
-                subent_gdata->update(role, value);
-            }
-        }
+        IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+        QUERY(IGraphicsData, this_gitem->findItem(PitchCurveItem))->update(role, value);
+        QUERY(IGraphicsData, this_gitem->findItem(VelocityItem))->update(role, value);
     }
 }
 

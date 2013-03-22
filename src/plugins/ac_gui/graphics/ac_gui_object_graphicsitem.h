@@ -37,6 +37,21 @@ public:
     {
         return _helper.parent();
     }
+
+    int count() const
+    {
+        return 0;
+    }
+
+    IGraphicsItem *at(int i) const
+    {
+        return 0;
+    }
+
+    IGraphicsItem *findItem(int itemType) const
+    {
+        return 0;
+    }
 };
 
 }

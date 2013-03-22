@@ -17,7 +17,7 @@
 
 #include "ac_gui_velocity_graphicsdelegate.h"
 #include "ac_gui_namespace.h"
-#include <igraphicssubentityitem.h>
+#include <igraphicsitem.h>
 #include <igripdata.h>
 #include <igriplistdata.h>
 #include <imodeldata.h>

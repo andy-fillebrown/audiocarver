@@ -18,7 +18,7 @@
 #ifndef AC_GUI_SCOREOBJECT_GRAPHICSITEM_H
 #define AC_GUI_SCOREOBJECT_GRAPHICSITEM_H
 
-#include "ac_gui_base_graphicsentityitem.h"
+#include "ac_gui_base_graphicsitem.h"
 #include "ac_gui_object_graphicsitemhelper.h"
 #include <QMap>
 
@@ -26,25 +26,21 @@ class QGraphicsItem;
 
 namespace ScoreObject {
 
-class GraphicsItem : public Base::GraphicsEntityItem
+class GraphicsItem : public Base::GraphicsItem
 {
     Object::GraphicsItemHelper _helper;
-    QMap<int, QGraphicsItem*> _mainNodes;
 
 protected:
     GraphicsItem(IAggregate *aggregate);
-
-    QMap<int, QGraphicsItem*> &mainNodes()
-    {
-        return _mainNodes;
-    }
 
     IGraphicsItem *parent() const
     {
         return _helper.parent();
     }
 
-    QList<IGraphicsItem*> subentities(int sceneType, int transformType) const;
+    int count() const;
+    IGraphicsItem *at(int i) const;
+    IGraphicsItem *findItem(int itemType) const;
 };
 
 }

@@ -27,13 +27,13 @@ using namespace Mi;
 namespace ScoreObject {
 
 GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsEntityData(aggregate)
+    :   Base::GraphicsData(aggregate)
 {
     _mainNodes.insert(PitchScene, new GraphicsNode);
     _mainNodes.insert(ControlScene, new GraphicsNode);
 }
 
-QGraphicsItem *GraphicsData::node(int sceneType, int transformType) const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
     switch (transformType) {
     case MainTransform:
@@ -48,7 +48,7 @@ void GraphicsData::update(int role, const QVariant &value)
     if (VisibilityRole == role) {
         bool visible = qvariant_cast<bool>(value);
         for (int i = 0;  i < SceneTypeCount;  ++i) {
-            QGraphicsItem *node = this->node(i, MainTransform);
+            QGraphicsItem *node = this->findNode(i, MainTransform);
             if (node)
                 node->setVisible(visible);
         }

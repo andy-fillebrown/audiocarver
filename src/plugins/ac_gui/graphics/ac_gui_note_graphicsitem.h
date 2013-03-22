@@ -34,7 +34,13 @@ protected:
 
     void initialize();
 
-    QList<IGraphicsItem*> subentities(int sceneType, int transformType) const;
+    int count() const
+    {
+        return ScoreObject::GraphicsItem::count() + 1;
+    }
+
+    IGraphicsItem *at(int i) const;
+    IGraphicsItem *findItem(int itemType) const;
 };
 
 }

@@ -19,7 +19,7 @@
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
-#include <igraphicssubentityitem.h>
+#include <igraphicsitem.h>
 #include <imodeldata.h>
 #include <imodelitem.h>
 
@@ -49,8 +49,10 @@ bool GraphicsData::intersects(const QRectF &rect) const
     return _curveNode->intersects(rect);
 }
 
-QGraphicsItem *GraphicsData::node() const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
+    Q_ASSERT(UnspecifiedScene == sceneType);
+    Q_ASSERT(UnspecifiedTransform == transformType);
     return _curveNode;
 }
 
@@ -67,12 +69,8 @@ void GraphicsData::update(int role, const QVariant &value)
         _curveNode->highlight(qvariant_cast<bool>(value));
         break;
     }
-    IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
-    QList<IGraphicsItem*> subentities = this_gitem->subentities();
-    foreach (IGraphicsItem *subentity, subentities) {
-        IGraphicsData *subentity_gdata = QUERY(IGraphicsData, subentity);
-        subentity_gdata->update(role, value);
-    }
+    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+    QUERY(IGraphicsData, this_gitem->findItem(GripListItem))->update(role, value);
 }
 
 }

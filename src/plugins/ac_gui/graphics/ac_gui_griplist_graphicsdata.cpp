@@ -22,7 +22,7 @@
 #include <iaggregate.h>
 #include <idatabase.h>
 #include <idatabaseobjectfactory.h>
-#include <igraphicsentitydata.h>
+#include <igraphicsdata.h>
 #include <igraphicsitem.h>
 #include <igraphicsiteminfo.h>
 #include <igripdata.h>
@@ -61,12 +61,12 @@ GraphicsData::~GraphicsData()
 void GraphicsData::initialize()
 {
     IModelItem *root_item = IDatabase::instance()->rootItem();
-    IGraphicsEntityData *root_gdata = QUERY(IGraphicsEntityData, root_item);
+    IGraphicsData *root_gdata = QUERY(IGraphicsData, root_item);
     IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
     IGraphicsItemInfo *parent_ginfo = QUERY(IGraphicsItemInfo, this_gitem->parent());
     if (!parent_ginfo)
         return;
-    QGraphicsItem *root_node = root_gdata->node(parent_ginfo->sceneType(), MainTransform);
+    QGraphicsItem *root_node = root_gdata->findNode(parent_ginfo->sceneType(), MainTransform);
     _node->setParentItem(root_node);
 }
 
@@ -75,8 +75,10 @@ void GraphicsData::sort()
     qSort(_grips.begin(), _grips.end(), gripLessThan);
 }
 
-QGraphicsItem *GraphicsData::node() const
+QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
+    Q_ASSERT(UnspecifiedScene == sceneType);
+    Q_ASSERT(UnspecifiedTransform == transformType);
     return _node;
 }
 
@@ -92,7 +94,7 @@ void GraphicsData::update(int role, const QVariant &value)
             while (_grips.count() < points.count()) {
                 IAggregate *grip = factory->create(GripItem, this_item);
                 IGripData *grip_gdata = QUERY(IGripData, grip);
-                QGraphicsItem *grip_node = grip_gdata->node();
+                QGraphicsItem *grip_node = grip_gdata->findNode();
                 grip_node->setParentItem(_node);
                 grip_node->setData(0, quintptr(grip));
                 _grips.append(grip_gdata);

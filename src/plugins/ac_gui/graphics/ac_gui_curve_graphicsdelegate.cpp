@@ -17,7 +17,7 @@
 
 #include "ac_gui_curve_graphicsdelegate.h"
 #include "ac_gui_namespace.h"
-#include <igraphicssubentityitem.h>
+#include <igraphicsitem.h>
 #include <igripdata.h>
 #include <igriplistdata.h>
 #include <imodeldata.h>
@@ -28,15 +28,8 @@ namespace Curve {
 
 IGripListData *GraphicsDelegate::findGripListData()
 {
-    IGripListData *griplist_gdata = 0;
-    IGraphicsSubEntityItem *this_gitem = QUERY(IGraphicsSubEntityItem, this);
-    QList<IGraphicsItem*> subentities = this_gitem->subentities();
-    foreach (IGraphicsItem *subentity, subentities) {
-        griplist_gdata = QUERY(IGripListData, subentity);
-        if (griplist_gdata)
-            return griplist_gdata;
-    }
-    return 0;
+    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
+    return QUERY(IGripListData, this_gitem->findItem(GripListItem));
 }
 
 PointList GraphicsDelegate::buildPointList()

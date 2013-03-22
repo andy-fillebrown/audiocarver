@@ -32,7 +32,7 @@ public:
     GraphicsData(IAggregate *aggregate);
 
 protected:
-    QGraphicsItem *node(int sceneType, int transformType) const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
     void update(int role, const QVariant &value);
 };
 

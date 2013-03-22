@@ -1,13 +1,10 @@
 
 SOURCE_FILES = \
     graphicscurvedata \
+    graphicsdata \
     graphicsdelegate \
-    graphicsentitydata \
-    graphicsentityitem \
     graphicsitem \
     graphicsiteminfo \
-    graphicssubentitydata \
-    graphicssubentityitem \
     gripdata \
     griplistdata \
 

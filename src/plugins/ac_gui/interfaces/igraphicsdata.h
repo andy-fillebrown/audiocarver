@@ -20,7 +20,9 @@
 
 #include <icomponent.h>
 #include "ac_gui_interfaces.h"
+#include "ac_gui_namespace.h"
 
+class QGraphicsItem;
 class QVariant;
 
 class IGraphicsData : public IComponent
@@ -28,6 +30,7 @@ class IGraphicsData : public IComponent
 public:
     enum { InterfaceType = I::IGraphicsData };
 
+    virtual QGraphicsItem *findNode(int sceneType = Ac::UnspecifiedScene, int transformType = Ac::UnspecifiedTransform) const = 0;
     virtual void update(int role, const QVariant &value) = 0;
 
     int interfaceType() const

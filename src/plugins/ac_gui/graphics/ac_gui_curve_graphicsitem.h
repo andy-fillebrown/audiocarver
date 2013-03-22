@@ -18,23 +18,24 @@
 #ifndef AC_GUI_CURVE_GRAPHICSITEM_H
 #define AC_GUI_CURVE_GRAPHICSITEM_H
 
-#include "ac_gui_base_graphicssubentityitem.h"
+#include "ac_gui_base_graphicsitem.h"
 #include "ac_gui_object_graphicsitemhelper.h"
 
 namespace Curve {
 
-class GraphicsItem : public Base::GraphicsSubEntityItem
+class GraphicsItem : public Base::GraphicsItem
 {
     Object::GraphicsItemHelper _helper;
     IAggregate *_grips;
 
 public:
     GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsSubEntityItem(aggregate)
+        :   Base::GraphicsItem(aggregate)
         ,   _helper(this)
         ,   _grips(0)
     {}
 
+protected:
     ~GraphicsItem();
 
     void initialize();
@@ -44,7 +45,13 @@ public:
         return _helper.parent();
     }
 
-    QList<IGraphicsItem*> subentities() const;
+    int count() const
+    {
+        return 1;
+    }
+
+    IGraphicsItem *at(int i) const;
+    IGraphicsItem *findItem(int itemType) const;
 };
 
 }

@@ -25,11 +25,7 @@ namespace I {
 enum AcGuiInterfaces {
     IGraphicsItemInfo = AcCoreInterfaceCount,
     IGraphicsItem,
-    IGraphicsSubEntityItem,
-    IGraphicsEntityItem,
     IGraphicsData,
-    IGraphicsEntityData,
-    IGraphicsSubEntityData,
     IGraphicsCurveData,
     IGraphicsDelegate,
     IGripListData,

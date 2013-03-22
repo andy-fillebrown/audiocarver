@@ -28,9 +28,7 @@
 #include <ieditor.h>
 #include <igraphicscurvedata.h>
 #include <igraphicsdelegate.h>
-#include <igraphicsentitydata.h>
-#include <igraphicsentityitem.h>
-#include <igraphicssubentityitem.h>
+#include <igraphicsitem.h>
 #include <igripdata.h>
 #include <igriplistdata.h>
 #include <imodel.h>
@@ -71,10 +69,10 @@ public:
     QRect prevZoomGlyphRect;
     QPointF panStartCenter;
     QGraphicsRectItem *pickBox;
-    QList<IGraphicsEntityData*> pickedEntities;
+    QList<IGraphicsData*> pickedEntities;
     QList<IGripData*> pickedGrips;
     IGripData *curGrip;
-    QList<IGraphicsEntityData*> hoveredEntities;
+    QList<IGraphicsData*> hoveredEntities;
     QList<IGripData*> hoveredGrips;
     QList<IGraphicsDelegate*> delegatesToUpdate;
     GraphicsRootNode *rootNode;
@@ -256,7 +254,7 @@ public:
                     if (curve_gdata && curve_gdata->intersects(scene_pick_rect)) {
                         entity_is_hovered = true;
                         IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, unknown);
-                        IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, curve_gitem->parent());
+                        IGraphicsData *parent_gdata = QUERY(IGraphicsData, curve_gitem->parent());
                         if (!pickedEntities.contains(parent_gdata)) {
                             hoveredEntities.append(parent_gdata);
                             parent_gdata->update(HighlightRole, HoverHighlight);
@@ -280,7 +278,7 @@ public:
             if (!pickedGrips.contains(grip))
                 grip->update(HighlightRole, NoHighlight);
         hoveredGrips.clear();
-        foreach (IGraphicsEntityData *entity, hoveredEntities) {
+        foreach (IGraphicsData *entity, hoveredEntities) {
             if (!entityIsPicked(entity))
                 entity->update(HighlightRole, NoHighlight);
         }
@@ -386,7 +384,7 @@ public:
     void selectAllGrips()
     {
         clearPickedGrips();
-        foreach (IGraphicsEntityData *entity_gdata, pickedEntities) {
+        foreach (IGraphicsData *entity_gdata, pickedEntities) {
             delegatesToUpdate.append(QUERY(IGraphicsDelegate, entity_gdata));
             const QList<IGripData*> &grips = QUERY(IGripListData, entity_gdata)->grips();
             pickedGrips.append(grips);
@@ -501,7 +499,7 @@ public:
                 : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
         const QList<QGraphicsItem*> items = q->items(rect);
-        QList<IGraphicsEntityData*> entities;
+        QList<IGraphicsData*> entities;
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
             if (unknown) {
@@ -510,7 +508,7 @@ public:
                     IGraphicsItem *entity_gitem = QUERY(IGraphicsItem, unknown);
                     if (entity_gitem) {
                         IGraphicsItem *parent_gitem = entity_gitem->parent();
-                        IGraphicsEntityData *parent_gdata = QUERY(IGraphicsEntityData, parent_gitem);
+                        IGraphicsData *parent_gdata = QUERY(IGraphicsData, parent_gitem);
                         if (parent_gdata)
                             entities.append(parent_gdata);
                         if (pickOne && !(QApplication::keyboardModifiers() & ShiftModifier))
@@ -548,7 +546,7 @@ public:
         dragState = 0;
     }
 
-    bool entityIsPicked(IGraphicsEntityData *entity)
+    bool entityIsPicked(IGraphicsData *entity)
     {
         return pickedEntities.contains(entity);
     }
@@ -561,50 +559,45 @@ public:
 //        return 0;
 //    }
 
-    void setPickedEntities(const QList<IGraphicsEntityData*> &entities)
+    void setPickedEntities(const QList<IGraphicsData*> &entities)
     {
         clearPickedEntities();
         appendPickedEntities(entities);
     }
 
-    void appendPickedEntities(const QList<IGraphicsEntityData*> &entities)
+    void appendPickedEntities(const QList<IGraphicsData*> &entities)
     {
         if (entities.isEmpty())
             return;
-//        GraphicsViewManager *vm = GraphicsViewManager::instance();
-//        vm->disableUpdates();
-        foreach (IGraphicsEntityData *entity, entities) {
+        GraphicsViewManager *vm = GraphicsViewManager::instance();
+        vm->disableUpdates();
+        foreach (IGraphicsData *entity, entities) {
 //            if (entity->isVisible() && !entityIsPicked(entity)) {
             if (!entityIsPicked(entity)) {
                 pickedEntities.append(entity);
                 entity->update(HighlightRole, FullHighlight);
             }
         }
-//        vm->enableUpdates();
+        vm->enableUpdates();
     }
 
-    void removePickedEntities(const QList<IGraphicsEntityData*> &entities)
+    void removePickedEntities(const QList<IGraphicsData*> &entities)
     {
         if (entities.isEmpty())
             return;
-//        GraphicsViewManager *vm = GraphicsViewManager::instance();
-//        vm->disableUpdates();
-        foreach (IGraphicsEntityData *entity, entities) {
+        GraphicsViewManager *vm = GraphicsViewManager::instance();
+        vm->disableUpdates();
+        foreach (IGraphicsData *entity, entities) {
             pickedEntities.removeOne(entity);
-            IGraphicsEntityItem *entity_gitem = QUERY(IGraphicsEntityItem, entity);
-            QList<IGraphicsItem*> subentities = entity_gitem->subentities(q->sceneType(), MainTransform);
-            foreach (IGraphicsItem *subentity, subentities) {
-                IGraphicsDelegate *curve_gdelegate = QUERY(IGraphicsDelegate, subentity);
-                delegatesToUpdate.removeOne(curve_gdelegate);
-                IGraphicsSubEntityItem *curve_gitem = QUERY(IGraphicsSubEntityItem, subentity);
-                QList<IGraphicsItem*> curve_subentities = curve_gitem->subentities();
-                IGripListData *griplist_gdata = 0;
-                foreach (IGraphicsItem *curve_subentity, curve_subentities) {
-                    griplist_gdata = QUERY(IGripListData, curve_subentity);
-                    if (griplist_gdata)
-                        break;
-                }
-                IGraphicsItem *griplist_gitem = QUERY(IGraphicsItem, griplist_gdata);
+            IGraphicsItem *entity_gitem = QUERY(IGraphicsItem, entity);
+            int curve_count = entity_gitem->count();
+            for (int i = 0;  i < curve_count;  ++i) {
+                IGraphicsItem *curve_gitem = entity_gitem->at(i);
+                if (!curve_gitem)
+                    continue;
+                IGraphicsDelegate *curve_delegate = QUERY(IGraphicsDelegate, curve_gitem);
+                delegatesToUpdate.removeOne(curve_delegate);
+                IGraphicsItem *griplist_gitem = curve_gitem->findItem(GripListItem);
                 for (int i = 0;  i < pickedGrips.count();  ++i) {
                     IGripData *grip = pickedGrips[i];
                     IGraphicsItem *grip_gitem = QUERY(IGraphicsItem, grip);
@@ -617,22 +610,22 @@ public:
                     if (griplist_gitem == grip_gitem->parent())
                         hoveredGrips.removeAt(i--);
                 }
-                entity->update(HighlightRole, NoHighlight);
             }
+            entity->update(HighlightRole, NoHighlight);
         }
         clearPickedGrips();
-//        vm->enableUpdates();
+        vm->enableUpdates();
     }
 
     void clearPickedEntities()
     {
-//        GraphicsViewManager *vm = GraphicsViewManager::instance();
-//        vm->disableUpdates();
+        GraphicsViewManager *vm = GraphicsViewManager::instance();
+        vm->disableUpdates();
         clearPickedGrips();
 //        NoteSelectionModel::instance()->clear();
-        QList<IGraphicsEntityData*> picked_entities = pickedEntities;
+        QList<IGraphicsData*> picked_entities = pickedEntities;
         removePickedEntities(picked_entities);
-//        vm->enableUpdates();
+        vm->enableUpdates();
     }
 
     void resetPickedEntities()
@@ -642,7 +635,7 @@ public:
 //        QItemSelection ss = noteSSModel->selection();
 //        noteSSModel->clear();
 //        noteSSModel->select(ss, QItemSelectionModel::Select);
-        QList<IGraphicsEntityData*> picked_entities = pickedEntities;
+        QList<IGraphicsData*> picked_entities = pickedEntities;
         setPickedEntities(picked_entities);
     }
 
