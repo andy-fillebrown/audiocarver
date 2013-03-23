@@ -1,5 +1,11 @@
 load(../project.prf)
 
+# Qt 4.8.3 has a qmake bug that can be worked around by adding "dll" to CONFIG.
+win32-g++: CONFIG *= dll
+
+# Qt 4.8.3 has RTTI disabled by default.  Re-enable it.
+win32-g++: CONFIG -= rtti_off
+
 isEmpty(PROVIDER) {
     PROVIDER = $$PRO_AUTHOR_NOSPACE
 }
