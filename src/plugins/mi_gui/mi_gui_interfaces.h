@@ -24,6 +24,8 @@ namespace I {
 
 enum MiGuiInterfaces {
     IEditor = MiCoreInterfaceCount,
+    ISelectionSet,
+    ISelectionSetWatcher,
     MiGuiInterfaceCount
 };
 

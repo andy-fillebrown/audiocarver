@@ -15,37 +15,21 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#include "mi_gui_base_selectionsetwatcher.h"
+#include <iaggregate.h>
 
-#include <mi_gui_base_editor.h>
+namespace Base {
 
-class IAggregate;
-
-namespace Gui {
-
-class Editor : public Base::Editor
+void *SelectionSetWatcher::queryInterface(int interfaceType) const
 {
-    IAggregate *_ss;
-
-public:
-    Editor();
-    ~Editor();
-
-protected:
-    IAggregate *currentSelection() const
-    {
-        return _ss;
-    }
-
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
-};
-
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-#endif
+SelectionSetWatcher::SelectionSetWatcher(IAggregate *aggregate)
+    :   _aggregate(aggregate)
+{
+    _aggregate->append(this);
+}
+
+}

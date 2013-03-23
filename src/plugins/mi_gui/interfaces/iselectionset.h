@@ -15,37 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef IEDITOR_H
-#define IEDITOR_H
+#ifndef ISELECTIONSET_H
+#define ISELECTIONSET_H
 
 #include <icomponent.h>
-#include "mi_gui_global.h"
 #include "mi_gui_interfaces.h"
 
-class IAggregate;
-class QUndoCommand;
+class IModelItem;
+template <typename T> class QList;
 
-class MI_GUI_EXPORT IEditor : public IComponent
+class ISelectionSet : public IComponent
 {
 public:
-    enum { InterfaceType = I::IEditor };
+    enum { InterfaceType = I::ISelectionSet };
 
-    static IEditor *instance();
-
-    virtual IAggregate *currentSelection() const = 0;
-    virtual void undo() = 0;
-    virtual void redo() = 0;
-    virtual void cut() = 0;
-    virtual void copy() const = 0;
-    virtual void paste() = 0;
-    virtual void selectAll() = 0;
-    virtual bool isInCommand() const = 0;
-    virtual void beginCommand() = 0;
-    virtual void endCommand() = 0;
-    virtual void pushCommand(QUndoCommand *command) = 0;
-    virtual bool isCreating() const = 0;
-    virtual void startCreating() = 0;
-    virtual void finishCreating() = 0;
+    virtual const QList<IModelItem*> &items() const = 0;
+    virtual bool append(IModelItem *item) = 0;
+    virtual bool append(const QList<IModelItem*> &items) = 0;
+    virtual bool remove(IModelItem *item) = 0;
+    virtual bool remove(const QList<IModelItem*> &items) = 0;
+    virtual void clear() = 0;
 
     int interfaceType() const
     {

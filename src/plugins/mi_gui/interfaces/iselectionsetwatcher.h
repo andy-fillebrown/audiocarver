@@ -15,37 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#ifndef ISELECTIONSETWATCHER_H
+#define ISELECTIONSETWATCHER_H
 
-#include <mi_gui_base_editor.h>
+#include <icomponent.h>
+#include "mi_gui_interfaces.h"
 
-class IAggregate;
+class ISelectionSet;
 
-namespace Gui {
-
-class Editor : public Base::Editor
+class ISelectionSetWatcher : public IComponent
 {
-    IAggregate *_ss;
-
 public:
-    Editor();
-    ~Editor();
+    enum { InterfaceType = I::ISelectionSetWatcher };
 
-protected:
-    IAggregate *currentSelection() const
+    virtual void beginChangeSelection(const ISelectionSet *selectionSet) = 0;
+    virtual void endChangeSelection(const ISelectionSet *selectionSet) = 0;
+
+    int interfaceType() const
     {
-        return _ss;
+        return InterfaceType;
     }
 
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

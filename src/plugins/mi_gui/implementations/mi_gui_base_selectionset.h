@@ -15,36 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef ISELECTIONSET_H
-#define ISELECTIONSET_H
+#ifndef MI_GUI_BASE_SELECTIONSET_H
+#define MI_GUI_BASE_SELECTIONSET_H
 
-#include <iunknown.h>
-#include "ac_gui_interfaces.h"
+#include <iselectionset.h>
+#include "mi_gui_global.h"
 
-class IModelItem;
-template <typename T> class QList;
+class IAggregate;
 
-class ISelectionSet : public IUnknown
+namespace Base {
+
+class MI_GUI_EXPORT SelectionSet : public ISelectionSet
 {
+    IAggregate *_aggregate;
+
 public:
-    enum { InterfaceType = I::ISelectionSet };
+    void *queryInterface(int interfaceType) const;
 
-    virtual const QList<IModelItem*> &items() const = 0;
-    virtual bool append(IModelItem *item) = 0;
-    virtual bool append(const QList<IModelItem*> &items) = 0;
-    virtual bool remove(IModelItem *item) = 0;
-    virtual bool remove(const QList<IModelItem*> &items) = 0;
-    virtual void clear() = 0;
+protected:
+    SelectionSet(IAggregate *aggregate);
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
+    void initialize()
+    {}
 };
+
+}
 
 #endif

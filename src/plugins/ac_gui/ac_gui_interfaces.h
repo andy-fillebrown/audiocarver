@@ -35,8 +35,6 @@ enum AcGuiInterfaces {
     IGraphicsView,
     IGraphicsViewGroup,
     IGraphicsViewManager,
-    ISelectionSet,
-    ISelectionSetWatcher,
     IQAudioEngine,
     ISynthesizer,
     AcGuiInterfaceCount

@@ -16,9 +16,24 @@
 **************************************************************************/
 
 #include "ac_gui_editor.h"
+#include "ac_gui_selectionset.h"
+#include "ac_gui_selectionupdater.h"
+#include <mi_core_base_aggregate.h>
 #include <QtDebug>
 
 namespace Gui {
+
+Editor::Editor()
+{
+    _ss = new Base::Aggregate;
+    new SelectionSet(_ss);
+    new SelectionUpdater(_ss);
+}
+
+Editor::~Editor()
+{
+    delete _ss;
+}
 
 void Editor::undo()
 {

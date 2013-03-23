@@ -10,8 +10,6 @@ SOURCE_FILES *= \
     iplaycursor \
     ipoint \
 #    iqaudioengine \
-    iselectionset \
-    iselectionsetwatcher \
 #    isynthesizer \
 
 for(file, SOURCE_FILES) {

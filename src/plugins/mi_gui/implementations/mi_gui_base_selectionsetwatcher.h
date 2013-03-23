@@ -15,31 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef ISELECTIONSETWATCHER_H
-#define ISELECTIONSETWATCHER_H
+#ifndef MI_GUI_BASE_SELECTIONSETWATCHER_H
+#define MI_GUI_BASE_SELECTIONSETWATCHER_H
 
-#include <iunknown.h>
-#include "ac_gui_interfaces.h"
+#include <iselectionsetwatcher.h>
+#include "mi_gui_global.h"
 
-class ISelectionSet;
+class IAggregate;
 
-class ISelectionSetWatcher : public IUnknown
+namespace Base {
+
+class MI_GUI_EXPORT SelectionSetWatcher : public ISelectionSetWatcher
 {
+    IAggregate *_aggregate;
+
 public:
-    enum { InterfaceType = I::ISelectionSetWatcher };
+    void *queryInterface(int interfaceType) const;
 
-    virtual void beginChangeSelection(ISelectionSet *selectionSet) = 0;
-    virtual void endChangeSelection(ISelectionSet *selectionSet) = 0;
+protected:
+    SelectionSetWatcher(IAggregate *aggregate);
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
+    void initialize()
+    {}
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType;
-    }
+    void beginChangeSelection(const ISelectionSet *selectionSet)
+    {}
+
+    void endChangeSelection(const ISelectionSet *selectionSet)
+    {}
 };
+
+}
 
 #endif

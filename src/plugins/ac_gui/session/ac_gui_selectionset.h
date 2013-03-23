@@ -15,35 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#ifndef AC_GUI_SELECTIONSET_H
+#define AC_GUI_SELECTIONSET_H
 
-#include <mi_gui_base_editor.h>
+#include <mi_gui_base_selectionset.h>
+#include <QList>
 
-class IAggregate;
+class IGraphicsViewGroup;
 
 namespace Gui {
 
-class Editor : public Base::Editor
+class SelectionSet : public Base::SelectionSet
 {
-    IAggregate *_ss;
+    QList<IModelItem*> _items;
 
 public:
-    Editor();
-    ~Editor();
+    SelectionSet(IAggregate *aggregate)
+        :   Base::SelectionSet(aggregate)
+    {}
 
 protected:
-    IAggregate *currentSelection() const
+    const QList<IModelItem*> &items() const
     {
-        return _ss;
+        return _items;
     }
 
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
+    bool append(IModelItem *item);
+    bool append(const QList<IModelItem*> &items);
+    bool remove(IModelItem *item);
+    bool remove(const QList<IModelItem*> &items);
+    void clear();
 };
 
 }

@@ -15,35 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#ifndef AC_GUI_SELECTIONUPDATER_H
+#define AC_GUI_SELECTIONUPDATER_H
 
-#include <mi_gui_base_editor.h>
-
-class IAggregate;
+#include <mi_gui_base_selectionsetwatcher.h>
 
 namespace Gui {
 
-class Editor : public Base::Editor
+class SelectionUpdater : public Base::SelectionSetWatcher
 {
-    IAggregate *_ss;
-
 public:
-    Editor();
-    ~Editor();
+    SelectionUpdater(IAggregate *aggregate)
+        :   Base::SelectionSetWatcher(aggregate)
+    {}
 
 protected:
-    IAggregate *currentSelection() const
-    {
-        return _ss;
-    }
-
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
+    void endChangeSelection(const ISelectionSet *selectionSet);
 };
 
 }

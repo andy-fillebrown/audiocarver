@@ -15,37 +15,13 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
-
-#include <mi_gui_base_editor.h>
-
-class IAggregate;
+#include "ac_gui_selectionupdater.h"
 
 namespace Gui {
 
-class Editor : public Base::Editor
+void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
 {
-    IAggregate *_ss;
-
-public:
-    Editor();
-    ~Editor();
-
-protected:
-    IAggregate *currentSelection() const
-    {
-        return _ss;
-    }
-
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
-};
-
+    // TODO: Update graphics views.
 }
 
-#endif
+}
