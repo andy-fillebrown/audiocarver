@@ -20,6 +20,7 @@
 
 #include <QObject>
 
+class IGraphicsData;
 class IModelData;
 class IModelItem;
 class QGraphicsView;
@@ -50,6 +51,8 @@ public:
     void updateDatabase();
     void clearPickedGrips();
     QPointF snappedScenePos(const QPointF &pos, int sceneType) const;
+
+    void updateSelection(const QList<IGraphicsData*> &ss);
 
 public slots:
     void updateViews();

@@ -16,12 +16,14 @@
 **************************************************************************/
 
 #include "ac_gui_selectionupdater.h"
+#include "ac_gui_graphicsviewmanager.h"
+#include <iselectionset.h>
 
 namespace Gui {
 
 void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
 {
-    // TODO: Update graphics views.
+    GraphicsViewManager::instance()->updateSelection(selectionSet->items());
 }
 
 }

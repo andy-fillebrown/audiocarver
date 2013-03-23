@@ -24,6 +24,7 @@
 //#include <ac_gripselectionmodel.h>
 //#include <ac_noteselectionmodel.h>
 //#include <ac_trackselectionmodel.h>
+#include <iaggregate.h>
 #include <idatabase.h>
 #include <ieditor.h>
 #include <igraphicscurvedata.h>
@@ -34,6 +35,7 @@
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iplaycursor.h>
+#include <iselectionset.h>
 #include <QApplication>
 #include <QGraphicsRectItem>
 #include <QMouseEvent>
@@ -468,7 +470,7 @@ public:
         foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
             delegate->updateGraphics();
         gripsDragged = false;
-        resetPickedEntities();
+//        resetPickedEntities();
     }
 
     QRect pickBoxBounds() const
@@ -517,47 +519,39 @@ public:
                 }
             }
         }
-//        QItemSelection ss;
-//        ss.reserve(entities.count());
-//        foreach (IGraphicsItem *entity, entities) {
-//            const QModelIndex index = IModel::instance()->indexFromItem(QUERY(IModelItem, entity));
-//            ss.select(index, index);
-//        }
-//        QItemSelectionModel::SelectionFlags ss_flags = QItemSelectionModel::Clear;
-//        if (entities.count()) {
-//            ss_flags = QItemSelectionModel::Select;
-//            if (QApplication::keyboardModifiers() & ControlModifier)
-//                ss_flags = QItemSelectionModel::Deselect;
-//            if (!(QApplication::keyboardModifiers() & ShiftModifier))
-//                ss_flags |= QItemSelectionModel::Clear;
-//            NoteSelectionModel::instance()->select(ss, ss_flags);
-//        } else if (pickOne) {
-//            if (!pickedGrips.isEmpty())
-//                GraphicsViewManager::instance()->clearPickedGrips();
-//            else {
-//                NoteSelectionModel::instance()->clear();
-//                TrackSelectionModel::instance()->clear();
-//            }
-//        }
-        if (entities.count())
-            appendPickedEntities(entities);
+        ISelectionSet *ss = QUERY(ISelectionSet, IEditor::instance()->currentSelection());
+        if (entities.count()) {
+            if (ControlModifier & QApplication::keyboardModifiers())
+                ss->remove(entities);
+            else if (ShiftModifier & QApplication::keyboardModifiers())
+                ss->append(entities);
+            else {
+                ss->clear();
+                ss->append(entities);
+            }
+        } else if (pickOne) {
+            if (!pickedGrips.isEmpty())
+                GraphicsViewManager::instance()->clearPickedGrips();
+            else if (!(ShiftModifier & QApplication::keyboardModifiers()))
+                clearPicks();
+        }
         if (!pickOne)
             pickBox->hide();
         dragState = 0;
+    }
+
+    void clearPicks()
+    {
+        if (!pickedGrips.isEmpty())
+            GraphicsViewManager::instance()->clearPickedGrips();
+        else
+            QUERY(ISelectionSet, IEditor::instance()->currentSelection())->clear();
     }
 
     bool entityIsPicked(IGraphicsData *entity)
     {
         return pickedEntities.contains(entity);
     }
-
-//    GraphicsEntityItem *findEntityItem(IEntity *entity)
-//    {
-//        foreach (GraphicsEntityItem *item, pickedEntities)
-//            if (item->entity() == entity)
-//                return item;
-//        return 0;
-//    }
 
     void setPickedEntities(const QList<IGraphicsData*> &entities)
     {
@@ -569,24 +563,18 @@ public:
     {
         if (entities.isEmpty())
             return;
-        GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->disableUpdates();
         foreach (IGraphicsData *entity, entities) {
-//            if (entity->isVisible() && !entityIsPicked(entity)) {
             if (!entityIsPicked(entity)) {
                 pickedEntities.append(entity);
                 entity->update(HighlightRole, FullHighlight);
             }
         }
-        vm->enableUpdates();
     }
 
     void removePickedEntities(const QList<IGraphicsData*> &entities)
     {
         if (entities.isEmpty())
             return;
-        GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->disableUpdates();
         foreach (IGraphicsData *entity, entities) {
             pickedEntities.removeOne(entity);
             IGraphicsItem *entity_gitem = QUERY(IGraphicsItem, entity);
@@ -614,40 +602,21 @@ public:
             entity->update(HighlightRole, NoHighlight);
         }
         clearPickedGrips();
-        vm->enableUpdates();
     }
 
     void clearPickedEntities()
     {
-        GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->disableUpdates();
         clearPickedGrips();
-//        NoteSelectionModel::instance()->clear();
         QList<IGraphicsData*> picked_entities = pickedEntities;
         removePickedEntities(picked_entities);
-        vm->enableUpdates();
     }
 
-    void resetPickedEntities()
-    {
-        clearPickedGrips();
-//        NoteSelectionModel *noteSSModel = NoteSelectionModel::instance();
-//        QItemSelection ss = noteSSModel->selection();
-//        noteSSModel->clear();
-//        noteSSModel->select(ss, QItemSelectionModel::Select);
-        QList<IGraphicsData*> picked_entities = pickedEntities;
-        setPickedEntities(picked_entities);
-    }
-
-    void clearPicks()
-    {
-        if (!pickedGrips.isEmpty())
-            GraphicsViewManager::instance()->clearPickedGrips();
-        else {
-            clearPickedEntities();
-//            TrackSelectionModel::instance()->clear();
-        }
-    }
+//    void resetPickedEntities()
+//    {
+//        clearPickedGrips();
+//        QList<IGraphicsData*> picked_entities = pickedEntities;
+//        setPickedEntities(picked_entities);
+//    }
 
     void insertPoint(const QPoint &pos)
     {
@@ -763,9 +732,9 @@ void GraphicsView::finishInsertingPoints()
 //        entity->setPoints();
 //        entityItem->resetGripItems();
 //    }
-    setCursor(normalCrosshair());
-    d->insertingPoints = false;
-    d->resetPickedEntities();
+//    setCursor(normalCrosshair());
+//    d->insertingPoints = false;
+//    d->resetPickedEntities();
 }
 
 void GraphicsView::cancelPointInsertion()
@@ -773,9 +742,9 @@ void GraphicsView::cancelPointInsertion()
 //    const int n = d->pickedEntities.count();
 //    for (int i = 0;  i < n;  ++i)
 //        d->pickedEntities.at(i)->entity()->popPoints();
-    setCursor(normalCrosshair());
-    d->insertingPoints = false;
-    d->resetPickedEntities();
+//    setCursor(normalCrosshair());
+//    d->insertingPoints = false;
+//    d->resetPickedEntities();
 }
 
 bool GraphicsView::pointsAreSelected() const
@@ -796,6 +765,30 @@ void GraphicsView::startGripDrag()
 void GraphicsView::clearPickedGrips()
 {
     d->clearPickedGrips();
+}
+
+void GraphicsView::updateSelection(const QList<IGraphicsData*> &ss)
+{
+    if (ss.isEmpty()) {
+        d->clearPickedEntities();
+        return;
+    }
+    QList<IGraphicsData*> entities_to_select;
+    foreach (IGraphicsData *entity, ss) {
+        if (!d->entityIsPicked(entity))
+            entities_to_select.append(entity);
+    }
+    if (!entities_to_select.isEmpty()) {
+        d->appendPickedEntities(entities_to_select);
+        return;
+    }
+    QList<IGraphicsData*> entities_to_deselect;
+    foreach (IGraphicsData *entity, d->pickedEntities) {
+        if (!ss.contains(entity))
+            entities_to_deselect.append(entity);
+    }
+    if (!entities_to_deselect.isEmpty())
+        d->removePickedEntities(entities_to_deselect);
 }
 
 void GraphicsView::modelAboutToBeReset()

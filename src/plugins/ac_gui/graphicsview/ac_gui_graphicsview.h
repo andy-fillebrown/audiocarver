@@ -21,6 +21,7 @@
 #include <mi_gui_graphicsview.h>
 #include <QModelIndex>
 
+class IGraphicsData;
 class IGripData;
 class QItemSelection;
 
@@ -50,6 +51,8 @@ public:
     void selectAllGrips();
     void startGripDrag();
     void clearPickedGrips();
+
+    void updateSelection(const QList<IGraphicsData*> &ss);
 
 public slots:
     void modelAboutToBeReset();

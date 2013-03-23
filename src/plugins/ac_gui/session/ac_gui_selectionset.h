@@ -21,13 +21,11 @@
 #include <mi_gui_base_selectionset.h>
 #include <QList>
 
-class IGraphicsViewGroup;
-
 namespace Gui {
 
 class SelectionSet : public Base::SelectionSet
 {
-    QList<IModelItem*> _items;
+    QList<IGraphicsData*> _items;
 
 public:
     SelectionSet(IAggregate *aggregate)
@@ -35,15 +33,15 @@ public:
     {}
 
 protected:
-    const QList<IModelItem*> &items() const
+    const QList<IGraphicsData*> &items() const
     {
         return _items;
     }
 
-    bool append(IModelItem *item);
-    bool append(const QList<IModelItem*> &items);
-    bool remove(IModelItem *item);
-    bool remove(const QList<IModelItem*> &items);
+    bool append(IGraphicsData *item);
+    bool append(const QList<IGraphicsData*> &items);
+    bool remove(IGraphicsData *item);
+    bool remove(const QList<IGraphicsData*> &items);
     void clear();
 };
 
