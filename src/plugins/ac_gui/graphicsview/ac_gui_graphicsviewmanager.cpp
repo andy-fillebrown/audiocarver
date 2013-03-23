@@ -513,7 +513,7 @@ void GraphicsViewManager::selectAllGrips()
     d->pitchView->selectAllGrips();
 }
 
-void GraphicsViewManager::startGripDrag()
-{
-    d->pitchView->startGripDrag();
-}
+//void GraphicsViewManager::startGripDrag()
+//{
+//    d->pitchView->startGripDrag();
+//}

@@ -398,24 +398,24 @@ public:
         }
     }
 
-    void startGripDrag()
-    {
-        selectAllGrips();
-        if (pickedGrips.isEmpty())
-            return;
-
-        // Set curGrip to the lowest and earliest grip.
-        curGrip = pickedGrips.first();
-        foreach (IGripData *grip, pickedGrips) {
-            const QPointF pos = grip->position();
-            if (pos.x() < curGrip->position().x()
-                    || (pos.x() == curGrip->position().x()
-                        && pos.y() < curGrip->position().y()))
-                curGrip = grip;
-        }
-
-        startDraggingGrips();
-    }
+//    void startGripDrag()
+//    {
+//        selectAllGrips();
+//        if (pickedGrips.isEmpty())
+//            return;
+//
+//        // Set curGrip to the lowest and earliest grip.
+//        curGrip = pickedGrips.first();
+//        foreach (IGripData *grip, pickedGrips) {
+//            const QPointF pos = grip->position();
+//            if (pos.x() < curGrip->position().x()
+//                    || (pos.x() == curGrip->position().x()
+//                        && pos.y() < curGrip->position().y()))
+//                curGrip = grip;
+//        }
+//
+//        startDraggingGrips();
+//    }
 
     void clearPickedGrips()
     {
@@ -765,10 +765,10 @@ void GraphicsView::selectAllGrips()
     d->selectAllGrips();
 }
 
-void GraphicsView::startGripDrag()
-{
-    d->startGripDrag();
-}
+//void GraphicsView::startGripDrag()
+//{
+//    d->startGripDrag();
+//}
 
 void GraphicsView::clearPickedGrips()
 {

@@ -49,7 +49,7 @@ public:
     void cancelPointInsertion();
     bool pointsAreSelected() const;
     void selectAllGrips();
-    void startGripDrag();
+//    void startGripDrag();
     void clearPickedGrips();
 
     void updateSelection(const QList<IGraphicsData*> &ss);
