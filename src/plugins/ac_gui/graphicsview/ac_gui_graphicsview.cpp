@@ -21,6 +21,7 @@
 #include "ac_gui_graphicsrootnode.h"
 #include "ac_gui_graphicsviewmanager.h"
 #include "ac_gui_namespace.h"
+#include <ac_core_point.h>
 //#include <ac_gripselectionmodel.h>
 //#include <ac_noteselectionmodel.h>
 //#include <ac_trackselectionmodel.h>
@@ -33,6 +34,7 @@
 #include <igripdata.h>
 #include <igriplistdata.h>
 #include <imodel.h>
+#include <imodeldata.h>
 #include <imodelitem.h>
 #include <iplaycursor.h>
 #include <iselectionset.h>
@@ -427,6 +429,12 @@ public:
     void startDraggingGrips()
     {
         dragState = DraggingGrips;
+        foreach (IGraphicsDelegate *delegate, delegatesToUpdate) {
+            IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, delegate);
+            IGripListData *griplist_gdata = QUERY(IGripListData, curve_gitem->findItem(GripListItem));
+            IModelData *curve_data = QUERY(IModelData, curve_gitem);
+            griplist_gdata->update(OriginalPositionRole, curve_data->getValue(PointsRole));
+        }
     }
 
     void dragGripsTo(const QPoint &pos)
