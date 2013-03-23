@@ -57,7 +57,8 @@ enum ViewState {
 
 enum DragState {
     Picking = 1,
-    DraggingGrips
+    DraggingGrips,
+    CancelledGripDrag
 };
 
 class GraphicsViewPrivate
@@ -471,14 +472,13 @@ public:
 
     void cancelGripDrag()
     {
-        dragState = 0;
+        dragState = CancelledGripDrag;
         curGrip = 0;
         foreach (IGripData *grip, pickedGrips)
             grip->update(PositionRole, grip->originalPosition());
         foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
             delegate->updateGraphics();
         gripsDragged = false;
-//        resetPickedEntities();
     }
 
     QRect pickBoxBounds() const
@@ -1058,6 +1058,9 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
             d->insertPoint(event->pos());
         else {
             switch (d->dragState) {
+            case CancelledGripDrag:
+                d->dragState = 0;
+                break;
             case DraggingGrips:
                 d->finishDraggingGrips(event->pos());
                 break;
