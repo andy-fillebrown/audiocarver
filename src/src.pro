@@ -7,6 +7,6 @@ SUBDIRS = \
     app
 
 OTHER_FILES *= \
+    _.plugin.prf \
     library.prf \
-    plugin.prf \
     rpath.prf \
