@@ -7,7 +7,7 @@ PRO_AUTHOR         = Andrew Fillebrown
 PRO_AUTHOR_NOSPACE = AndyFillebrown
 PRO_AUTHOR_EMAIL   = andy.fillebrown@gmail.com
 PRO_YEAR           = 2013
-PRO_URL            = http://gitorious.org/audiocarver
+PRO_URL            = http://sourceforge.net/projects/audiocarver/
 
 DEFINES *= PRO_NAME_STR=\\\"$$PRO_NAME\\\"
 DEFINES *= PRO_NAME_LC_STR=\\\"$$lower($$PRO_NAME)\\\"
