@@ -61,7 +61,6 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
 
 GraphicsData::~GraphicsData()
 {
-    delete _labelSceneTextNode;
     delete _labelSceneRootNode;
 }
 

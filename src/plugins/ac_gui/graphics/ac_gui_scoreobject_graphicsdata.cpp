@@ -33,6 +33,12 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _mainNodes.insert(ControlScene, new GraphicsNode);
 }
 
+GraphicsData::~GraphicsData()
+{
+    delete _mainNodes.value(PitchScene);
+    delete _mainNodes.value(ControlScene);
+}
+
 QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
     switch (transformType) {

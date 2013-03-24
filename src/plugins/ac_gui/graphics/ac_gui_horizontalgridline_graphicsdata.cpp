@@ -42,7 +42,6 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
 
 GraphicsData::~GraphicsData()
 {
-    delete _editorSceneLineExtensionNode;
     delete _editorSceneLineNode;
 }
 

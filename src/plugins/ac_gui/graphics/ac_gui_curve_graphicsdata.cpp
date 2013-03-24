@@ -34,11 +34,6 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _curveNode = new GraphicsCurveNode;
 }
 
-GraphicsData::~GraphicsData()
-{
-    delete _curveNode;
-}
-
 void GraphicsData::initialize()
 {
     _curveNode->setGraphicsItem(QUERY(IGraphicsItem, this));

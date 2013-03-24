@@ -56,6 +56,13 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _controlSceneLineExtensionNode->setPen(pen);
 }
 
+GraphicsData::~GraphicsData()
+{
+    delete _controlSceneLineNode;
+    delete _pitchSceneLineNode;
+    delete _labelSceneLineNode;
+}
+
 QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 {
     if (UnitYTransform == transformType) {

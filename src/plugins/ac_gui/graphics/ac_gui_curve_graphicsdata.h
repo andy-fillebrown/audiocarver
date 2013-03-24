@@ -33,8 +33,6 @@ public:
     GraphicsData(IAggregate *aggregate);
 
 protected:
-    ~GraphicsData();
-
     void initialize();
 
     bool intersects(const QRectF &rect) const;

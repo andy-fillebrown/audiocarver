@@ -31,6 +31,8 @@ public:
     GraphicsData(IAggregate *aggregate);
 
 protected:
+    ~GraphicsData();
+
     QMap<int, QGraphicsItem*> &mainNodes()
     {
         return _mainNodes;
