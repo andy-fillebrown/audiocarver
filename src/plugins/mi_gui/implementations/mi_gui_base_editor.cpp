@@ -29,7 +29,7 @@ IEditor *IEditor::instance()
 namespace Base {
 
 Editor::Editor()
-    :   _isInCommand(false)
+    :   _inCommand(false)
 {
     IAggregate *aggregate = ISession::instance();
     aggregate->remove(::instance);

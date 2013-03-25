@@ -24,8 +24,8 @@ namespace Base {
 
 class MI_GUI_EXPORT Editor : public IEditor
 {
-    int _isInCommand : 1;
-    int _isCreating : 1;
+    int _inCommand : 1;
+    int _creating : 1;
 
 public:
     Editor();
@@ -39,17 +39,17 @@ protected:
 
     bool isInCommand() const
     {
-        return _isInCommand;
+        return _inCommand;
     }
 
     void beginCommand()
     {
-        _isInCommand = true;
+        _inCommand = true;
     }
 
     void endCommand()
     {
-        _isInCommand = false;
+        _inCommand = false;
     }
 
     void pushCommand(QUndoCommand *command)
@@ -57,17 +57,17 @@ protected:
 
     bool isCreating() const
     {
-        return false;
+        return _creating;
     }
 
     void startCreating()
     {
-        _isCreating = true;
+        _creating = true;
     }
 
     void finishCreating()
     {
-        _isCreating = false;
+        _creating = false;
     }
 };
 
