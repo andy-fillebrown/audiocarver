@@ -434,7 +434,8 @@ public:
             IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, delegate);
             IGripListData *griplist_gdata = QUERY(IGripListData, curve_gitem->findItem(GripListItem));
             IModelData *curve_data = QUERY(IModelData, curve_gitem);
-            griplist_gdata->update(OriginalPositionRole, curve_data->getValue(PointsRole));
+            if (curve_data)
+                griplist_gdata->update(OriginalPositionRole, curve_data->getValue(PointsRole));
         }
     }
 

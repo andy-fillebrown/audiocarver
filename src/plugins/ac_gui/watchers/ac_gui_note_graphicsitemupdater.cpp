@@ -33,10 +33,12 @@ void GraphicsItemUpdater::endChangeParent(const IModelItem *child)
 {
     IGraphicsItem *child_gitem = QUERY(IGraphicsItem, child);
     IModelData *track_data = QUERY(IModelData, child_gitem->parent());
-    QColor color = intFromColor(track_data->get<QString>(ColorRole));
-    IGraphicsData *child_gdata = QUERY(IGraphicsData, child);
-    if (child_gdata)
-        child_gdata->update(ColorRole, color);
+    if (track_data) {
+        QColor color = intFromColor(track_data->get<QString>(ColorRole));
+        IGraphicsData *child_gdata = QUERY(IGraphicsData, child);
+        if (child_gdata)
+            child_gdata->update(ColorRole, color);
+    }
     Object::GraphicsEntityItemUpdater::endChangeParent(child);
 }
 

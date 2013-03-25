@@ -18,9 +18,9 @@
 #include "ac_gui_mainwindowextension.h"
 //#include "ac_gridlinedialog.h"
 #include "ac_gui_constants.h"
-//#include "ac_gui_pitchview.h"
-//#include "ac_gui_viewmanager.h"
-#include "ac_gui_interfaces.h"
+#include "ac_gui_graphicspitchview.h"
+#include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_namespace.h"
 //#include "ac_noteselectionmodel.h"
 //#include "ac_trackselectionmodel.h"
 #include <ac_core_namespace.h>
@@ -97,7 +97,7 @@ void MainWindowExtension::initActions()
     Core::ActionContainer *transportMenu = am->actionContainer(M_TRANSPORT);
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
     Core::Context globalContext(Core::Constants::C_GLOBAL);
-//    ViewManager *viewManager = ViewManager::instance();
+    GraphicsViewManager *viewManager = GraphicsViewManager::instance();
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
@@ -125,7 +125,7 @@ void MainWindowExtension::initActions()
     action = new QAction(tr("&Note"), this);
     cmd = am->registerAction(action, CREATENOTE, globalContext);
     createMenu->addAction(cmd, G_CREATE_OTHER);
-//    connect(action, SIGNAL(triggered()), qobject_cast<PitchView*>(viewManager->view(PitchScene)), SLOT(createNote()));
+    connect(action, SIGNAL(triggered()), qobject_cast<GraphicsPitchView*>(viewManager->view(PitchScene)), SLOT(createNote()));
 
     // Insert Points Action
     action = new QAction(tr("&Insert Points"), this);
