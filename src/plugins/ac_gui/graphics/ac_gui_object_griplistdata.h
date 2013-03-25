@@ -15,37 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_VELOCITY_GRIPLISTDATA_H
-#define AC_GUI_VELOCITY_GRIPLISTDATA_H
+#ifndef AC_GUI_OBJECT_GRIPLISTDATA_H
+#define AC_GUI_OBJECT_GRIPLISTDATA_H
 
-#include "ac_gui_object_griplistdata.h"
+#include "ac_gui_base_griplistdata.h"
 
-namespace Velocity {
+class GraphicsNode;
 
-class GripListData : public Object::GripListData
+namespace Object {
+
+class GripListData : public Base::GripListData
 {
-    IGripData *_grip;
+    GraphicsNode *_node;
 
 public:
-    GripListData(IAggregate *aggregate)
-        :   Object::GripListData(aggregate)
-    {}
+    GripListData(IAggregate *aggregate);
 
 protected:
-    ~GripListData();
-
     void initialize();
-
-    QList<IGripData*> grips() const
-    {
-        QList<IGripData*> griplist;
-        griplist.append(_grip);
-        return griplist;
-    }
 
     void sort()
     {}
 
+    QGraphicsItem *findNode(int sceneType = Ac::UnspecifiedScene, int transformType = Ac::UnspecifiedTransform) const;
     void update(int role, const QVariant &value);
 };
 

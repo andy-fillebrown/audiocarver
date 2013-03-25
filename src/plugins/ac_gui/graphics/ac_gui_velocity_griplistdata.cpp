@@ -31,102 +31,46 @@
 
 using namespace Ac;
 
-static bool gripLessThan(IGripData *a, IGripData *b)
-{
-    QPointF a_pos = a->position();
-    QPointF b_pos = b->position();
-    if (a_pos.x() < b_pos.x())
-        return true;
-    if (b_pos.x() < a_pos.x())
-        return false;
-    if (a_pos.y() < b_pos.y())
-        return true;
-    return false;
-}
-
 namespace Velocity {
-
-GripListData::GripListData(IAggregate *aggregate)
-    :   Base::GripListData(aggregate)
-    ,   _node(new GraphicsNode)
-{
-    _node->setVisible(false);
-    _node->setZValue(Q_FLOAT_MAX);
-}
 
 GripListData::~GripListData()
 {
-//    delete _node;
+    delete QUERY(IAggregate, _grip);
 }
 
 void GripListData::initialize()
 {
-    IModelItem *root_item = IDatabase::instance()->rootItem();
-    IGraphicsData *root_gdata = QUERY(IGraphicsData, root_item);
-    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    IGraphicsItemInfo *parent_ginfo = QUERY(IGraphicsItemInfo, this_gitem->parent());
-    if (!parent_ginfo)
-        return;
-    QGraphicsItem *root_node = root_gdata->findNode(parent_ginfo->sceneType(), MainTransform);
-    _node->setParentItem(root_node);
-}
-
-void GripListData::sort()
-{
-    qSort(_grips.begin(), _grips.end(), gripLessThan);
-}
-
-QGraphicsItem *GripListData::findNode(int sceneType, int transformType) const
-{
-    Q_ASSERT(UnspecifiedScene == sceneType);
-    Q_ASSERT(UnspecifiedTransform == transformType);
-    return _node;
+    Object::GripListData::initialize();
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    IModelItem *this_item = QUERY(IModelItem, this);
+    _grip = QUERY(IGripData, factory->create(GripItem, this_item));
+    QGraphicsItem *grip_node = _grip->findNode();
+    grip_node->setParentItem(findNode());
+    grip_node->setData(0, quintptr(_grip));
 }
 
 void GripListData::update(int role, const QVariant &value)
 {
-    if (HighlightRole == role)
-        _node->setVisible(FullHighlight == qvariant_cast<int>(value));
-    else if (PointsRole == role
+    if (PointsRole == role
              || OriginalPositionRole == role) {
-        PointList points;
+        Point point;
         if (value.isNull()) {
             IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, this)->parent();
             IModelItem *note_item = QUERY(IModelItem, curve_gitem->parent());
             IModelData *pitchcurve_data = QUERY(IModelData, note_item->findItem(PitchCurveItem));
             IModelData *note_data = QUERY(IModelData, note_item);
             PointList pitch_points = pitchcurve_data->get<PointList>(PointsRole);
-            qreal x = pitch_points.first().pos.x();
-            qreal velocity = note_data->get<qreal>(VolumeRole);
-            points.append(Point(x, velocity));
+            point.pos.setX(pitch_points.first().pos.x());
+            point.pos.setY(note_data->get<qreal>(VolumeRole));
         }
         else
-            points = qvariant_cast<PointList>(value);
-        if (_grips.count() < points.count()) {
-            IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-            IModelItem *this_item = QUERY(IModelItem, this);
-            while (_grips.count() < points.count()) {
-                IAggregate *grip = factory->create(GripItem, this_item);
-                IGripData *grip_gdata = QUERY(IGripData, grip);
-                QGraphicsItem *grip_node = grip_gdata->findNode();
-                grip_node->setParentItem(_node);
-                grip_node->setData(0, quintptr(grip));
-                _grips.append(grip_gdata);
-            }
-        }
-        while (points.count() < _grips.count()) {
-            delete _grips.last();
-            _grips.removeLast();
-        }
+            point = qvariant_cast<PointList>(value).first();
         int grip_update_role = PositionRole;
         if (OriginalPositionRole == role)
             grip_update_role = OriginalPositionRole;
-        for (int i = 0;  i < _grips.count();  ++i) {
-            IGraphicsData *grip_gdata = QUERY(IGraphicsData, _grips.at(i));
-            const Point &point = points.at(i);
-            grip_gdata->update(grip_update_role, point.pos);
-        }
-    }
+        _grip->update(grip_update_role, point.pos);
+    } else
+        Object::GripListData::update(role, value);
 }
 
 }

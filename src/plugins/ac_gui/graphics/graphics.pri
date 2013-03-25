@@ -15,6 +15,7 @@ SOURCE_FILES = \
     note_graphicsitem \
     object_graphicsitem \
     object_graphicsitemhelper \
+    object_griplistdata \
     pitchcurve_graphicsdata \
     pitchcurve_graphicsiteminfo \
     pitchgridline_graphicsdata \

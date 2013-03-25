@@ -18,25 +18,24 @@
 #ifndef AC_GUI_CURVE_GRIPLISTDATA_H
 #define AC_GUI_CURVE_GRIPLISTDATA_H
 
-#include "ac_gui_base_griplistdata.h"
+#include "ac_gui_object_griplistdata.h"
 #include <QList>
 
 class GraphicsNode;
 
 namespace Curve {
 
-class GripListData : public Base::GripListData
+class GripListData : public Object::GripListData
 {
-    GraphicsNode *_node;
     QList<IGripData*> _grips;
 
 public:
-    GripListData(IAggregate *aggregate);
+    GripListData(IAggregate *aggregate)
+        :   Object::GripListData(aggregate)
+    {}
 
 protected:
     ~GripListData();
-
-    void initialize();
 
     QList<IGripData*> grips() const
     {
@@ -44,7 +43,6 @@ protected:
     }
 
     void sort();
-    QGraphicsItem *findNode(int sceneType, int transformType) const;
     void update(int role, const QVariant &value);
 };
 

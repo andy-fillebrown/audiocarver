@@ -46,29 +46,11 @@ static bool gripLessThan(IGripData *a, IGripData *b)
 
 namespace Curve {
 
-GripListData::GripListData(IAggregate *aggregate)
-    :   Base::GripListData(aggregate)
-    ,   _node(new GraphicsNode)
-{
-    _node->setVisible(false);
-    _node->setZValue(Q_FLOAT_MAX);
-}
-
 GripListData::~GripListData()
 {
-//    delete _node;
-}
-
-void GripListData::initialize()
-{
-    IModelItem *root_item = IDatabase::instance()->rootItem();
-    IGraphicsData *root_gdata = QUERY(IGraphicsData, root_item);
-    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    IGraphicsItemInfo *parent_ginfo = QUERY(IGraphicsItemInfo, this_gitem->parent());
-    if (!parent_ginfo)
-        return;
-    QGraphicsItem *root_node = root_gdata->findNode(parent_ginfo->sceneType(), MainTransform);
-    _node->setParentItem(root_node);
+    foreach (IGripData *grip, _grips)
+        delete QUERY(IAggregate, grip);
+    _grips.clear();
 }
 
 void GripListData::sort()
@@ -76,18 +58,9 @@ void GripListData::sort()
     qSort(_grips.begin(), _grips.end(), gripLessThan);
 }
 
-QGraphicsItem *GripListData::findNode(int sceneType, int transformType) const
-{
-    Q_ASSERT(UnspecifiedScene == sceneType);
-    Q_ASSERT(UnspecifiedTransform == transformType);
-    return _node;
-}
-
 void GripListData::update(int role, const QVariant &value)
 {
-    if (HighlightRole == role)
-        _node->setVisible(FullHighlight == qvariant_cast<int>(value));
-    else if (PointsRole == role
+    if (PointsRole == role
              || OriginalPositionRole == role) {
         PointList points;
         if (value.isNull()) {
@@ -103,7 +76,7 @@ void GripListData::update(int role, const QVariant &value)
                 IAggregate *grip = factory->create(GripItem, this_item);
                 IGripData *grip_gdata = QUERY(IGripData, grip);
                 QGraphicsItem *grip_node = grip_gdata->findNode();
-                grip_node->setParentItem(_node);
+                grip_node->setParentItem(findNode());
                 grip_node->setData(0, quintptr(grip));
                 _grips.append(grip_gdata);
             }
@@ -121,7 +94,8 @@ void GripListData::update(int role, const QVariant &value)
             grip_gdata->update(grip_update_role, point.pos);
             grip_gdata->update(CurveTypeRole, point.curveType);
         }
-    }
+    } else
+        Object::GripListData::update(role, value);
 }
 
 }
