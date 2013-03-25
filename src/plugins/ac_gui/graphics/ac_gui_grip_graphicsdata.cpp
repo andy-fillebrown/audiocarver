@@ -80,8 +80,6 @@ void GraphicsData::update(int role, const QVariant &value)
         _originalPosition = qvariant_cast<QPointF>(value);
     case PositionRole: {
         QPointF pos = qvariant_cast<QPointF>(value);
-        pos.rx() = qMax(qreal(0.0f), pos.rx());
-        pos.ry() = qBound(qreal(0.0f), pos.ry(), qreal(127.0f));
         _gripNode->setPos(pos);
     }   break;
     case CurveTypeRole:

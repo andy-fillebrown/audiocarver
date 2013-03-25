@@ -53,19 +53,27 @@ QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
 
 void GraphicsData::update(int role, const QVariant &value)
 {
+    QVariant actual_value = value;
     switch (role) {
     case ColorRole:
         _curveNode->setColor(qvariant_cast<QColor>(value));
         break;
-    case PointsRole:
-        _curveNode->setPoints(qvariant_cast<PointList>(value));
-        break;
+    case PointsRole: {
+        PointList points = qvariant_cast<PointList>(value);
+        const int point_count = points.count();
+        for (int i = 0;  i < point_count;  ++i) {
+            Point &point = points[i];
+            point.pos.rx() = qMax(qreal(0.0f), point.pos.rx());
+        }
+        actual_value = QVariant::fromValue(points);
+        _curveNode->setPoints(qvariant_cast<PointList>(actual_value));
+    }   break;
     case HighlightRole:
         _curveNode->highlight(qvariant_cast<bool>(value));
         break;
     }
     IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    QUERY(IGraphicsData, this_gitem->findItem(GripListItem))->update(role, value);
+    QUERY(IGraphicsData, this_gitem->findItem(GripListItem))->update(role, actual_value);
 }
 
 }

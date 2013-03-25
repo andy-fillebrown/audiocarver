@@ -33,7 +33,7 @@ GraphicsItem::~GraphicsItem()
 void GraphicsItem::initialize()
 {
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _grips = factory->create(GripListItem, QUERY(IModelItem, this));
+    _grips = factory->create(CurveGripListItem, QUERY(IModelItem, this));
 }
 
 IGraphicsItem *GraphicsItem::at(int i) const

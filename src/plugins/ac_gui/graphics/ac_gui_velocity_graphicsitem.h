@@ -15,33 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSDATA_H
-#define IGRAPHICSDATA_H
+#ifndef AC_GUI_VELOCITY_GRAPHICSITEM_H
+#define AC_GUI_VELOCITY_GRAPHICSITEM_H
 
-#include <icomponent.h>
-#include "ac_gui_interfaces.h"
-#include "ac_gui_namespace.h"
-#include <QVariant>
+#include "ac_gui_curve_graphicsitem.h"
 
-class QGraphicsItem;
+namespace Velocity {
 
-class IGraphicsData : public IComponent
+class GraphicsItem : public Curve::GraphicsItem
 {
 public:
-    enum { InterfaceType = I::IGraphicsData };
+    GraphicsItem(IAggregate *aggregate)
+        :   Curve::GraphicsItem(aggregate)
+    {}
 
-    virtual QGraphicsItem *findNode(int sceneType = Ac::UnspecifiedScene, int transformType = Ac::UnspecifiedTransform) const = 0;
-    virtual void update(int role, const QVariant &value = QVariant()) = 0;
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
-    }
+protected:
+    void initialize();
 };
+
+}
 
 #endif

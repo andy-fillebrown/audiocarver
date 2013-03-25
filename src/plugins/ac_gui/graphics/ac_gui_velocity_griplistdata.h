@@ -15,27 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRIPLIST_GRAPHICSDATA_H
-#define AC_GUI_GRIPLIST_GRAPHICSDATA_H
+#ifndef AC_GUI_VELOCITY_GRIPLISTDATA_H
+#define AC_GUI_VELOCITY_GRIPLISTDATA_H
 
 #include "ac_gui_base_griplistdata.h"
 #include <QList>
 
 class GraphicsNode;
-class IAggregate;
 
-namespace GripList {
+namespace Velocity {
 
-class GraphicsData : public Base::GripListData
+class GripListData : public Base::GripListData
 {
     GraphicsNode *_node;
     QList<IGripData*> _grips;
 
 public:
-    GraphicsData(IAggregate *aggregate);
+    GripListData(IAggregate *aggregate);
 
 protected:
-    ~GraphicsData();
+    ~GripListData();
 
     void initialize();
 

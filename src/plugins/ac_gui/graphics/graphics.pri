@@ -6,10 +6,10 @@ SOURCE_FILES = \
     curve_graphicsdelegate \
     curve_graphicsitem \
     curve_graphicsiteminfo \
+    curve_griplistdata \
     gridline_graphicsdata \
     gridsettings_graphicsdata \
     grip_graphicsdata \
-    griplist_graphicsdata \
     horizontalgridline_graphicsdata \
     note_graphicsdata \
     note_graphicsitem \
@@ -25,6 +25,8 @@ SOURCE_FILES = \
     track_graphicsdata \
     velocity_graphicsdata \
     velocity_graphicsdelegate \
+    velocity_graphicsitem \
+    velocity_griplistdata \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_$${file}.h

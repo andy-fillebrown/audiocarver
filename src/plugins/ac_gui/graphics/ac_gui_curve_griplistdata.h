@@ -15,33 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSDATA_H
-#define IGRAPHICSDATA_H
+#ifndef AC_GUI_CURVE_GRIPLISTDATA_H
+#define AC_GUI_CURVE_GRIPLISTDATA_H
 
-#include <icomponent.h>
-#include "ac_gui_interfaces.h"
-#include "ac_gui_namespace.h"
-#include <QVariant>
+#include "ac_gui_base_griplistdata.h"
+#include <QList>
 
-class QGraphicsItem;
+class GraphicsNode;
 
-class IGraphicsData : public IComponent
+namespace Curve {
+
+class GripListData : public Base::GripListData
 {
+    GraphicsNode *_node;
+    QList<IGripData*> _grips;
+
 public:
-    enum { InterfaceType = I::IGraphicsData };
+    GripListData(IAggregate *aggregate);
 
-    virtual QGraphicsItem *findNode(int sceneType = Ac::UnspecifiedScene, int transformType = Ac::UnspecifiedTransform) const = 0;
-    virtual void update(int role, const QVariant &value = QVariant()) = 0;
+protected:
+    ~GripListData();
 
-    int interfaceType() const
+    void initialize();
+
+    QList<IGripData*> grips() const
     {
-        return InterfaceType;
+        return _grips;
     }
 
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
-    }
+    void sort();
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
 };
+
+}
 
 #endif

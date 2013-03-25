@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_griplist_graphicsdata.h"
+#include "ac_gui_velocity_griplistdata.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_point.h>
@@ -26,6 +26,7 @@
 #include <igraphicsitem.h>
 #include <igraphicsiteminfo.h>
 #include <igripdata.h>
+#include <imodeldata.h>
 #include <imodelitem.h>
 
 using namespace Ac;
@@ -43,9 +44,9 @@ static bool gripLessThan(IGripData *a, IGripData *b)
     return false;
 }
 
-namespace GripList {
+namespace Velocity {
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
+GripListData::GripListData(IAggregate *aggregate)
     :   Base::GripListData(aggregate)
     ,   _node(new GraphicsNode)
 {
@@ -53,12 +54,12 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _node->setZValue(Q_FLOAT_MAX);
 }
 
-GraphicsData::~GraphicsData()
+GripListData::~GripListData()
 {
 //    delete _node;
 }
 
-void GraphicsData::initialize()
+void GripListData::initialize()
 {
     IModelItem *root_item = IDatabase::instance()->rootItem();
     IGraphicsData *root_gdata = QUERY(IGraphicsData, root_item);
@@ -70,25 +71,37 @@ void GraphicsData::initialize()
     _node->setParentItem(root_node);
 }
 
-void GraphicsData::sort()
+void GripListData::sort()
 {
     qSort(_grips.begin(), _grips.end(), gripLessThan);
 }
 
-QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
+QGraphicsItem *GripListData::findNode(int sceneType, int transformType) const
 {
     Q_ASSERT(UnspecifiedScene == sceneType);
     Q_ASSERT(UnspecifiedTransform == transformType);
     return _node;
 }
 
-void GraphicsData::update(int role, const QVariant &value)
+void GripListData::update(int role, const QVariant &value)
 {
     if (HighlightRole == role)
         _node->setVisible(FullHighlight == qvariant_cast<int>(value));
     else if (PointsRole == role
              || OriginalPositionRole == role) {
-        PointList points = qvariant_cast<PointList>(value);
+        PointList points;
+        if (value.isNull()) {
+            IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, this)->parent();
+            IModelItem *note_item = QUERY(IModelItem, curve_gitem->parent());
+            IModelData *pitchcurve_data = QUERY(IModelData, note_item->findItem(PitchCurveItem));
+            IModelData *note_data = QUERY(IModelData, note_item);
+            PointList pitch_points = pitchcurve_data->get<PointList>(PointsRole);
+            qreal x = pitch_points.first().pos.x();
+            qreal velocity = note_data->get<qreal>(VolumeRole);
+            points.append(Point(x, velocity));
+        }
+        else
+            points = qvariant_cast<PointList>(value);
         if (_grips.count() < points.count()) {
             IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
             IModelItem *this_item = QUERY(IModelItem, this);
@@ -112,7 +125,6 @@ void GraphicsData::update(int role, const QVariant &value)
             IGraphicsData *grip_gdata = QUERY(IGraphicsData, _grips.at(i));
             const Point &point = points.at(i);
             grip_gdata->update(grip_update_role, point.pos);
-            grip_gdata->update(CurveTypeRole, point.curveType);
         }
     }
 }

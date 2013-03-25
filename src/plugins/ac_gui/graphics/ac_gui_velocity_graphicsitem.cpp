@@ -15,33 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSDATA_H
-#define IGRAPHICSDATA_H
-
-#include <icomponent.h>
-#include "ac_gui_interfaces.h"
+#include "ac_gui_velocity_graphicsitem.h"
 #include "ac_gui_namespace.h"
-#include <QVariant>
+//#include <iaggregate.h>
+#include <idatabaseobjectfactory.h>
+#include <imodelitem.h>
 
-class QGraphicsItem;
+using namespace Ac;
 
-class IGraphicsData : public IComponent
+namespace Velocity {
+
+void GraphicsItem::initialize()
 {
-public:
-    enum { InterfaceType = I::IGraphicsData };
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    grips() = factory->create(VelocityGripListItem, QUERY(IModelItem, this));
+}
 
-    virtual QGraphicsItem *findNode(int sceneType = Ac::UnspecifiedScene, int transformType = Ac::UnspecifiedTransform) const = 0;
-    virtual void update(int role, const QVariant &value = QVariant()) = 0;
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
-    }
-};
-
-#endif
+}

@@ -38,6 +38,11 @@ public:
 protected:
     ~GraphicsItem();
 
+    IAggregate *&grips()
+    {
+        return _grips;
+    }
+
     void initialize();
 
     IGraphicsItem *parent() const
