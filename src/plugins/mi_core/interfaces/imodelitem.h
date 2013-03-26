@@ -45,7 +45,7 @@ public:
     virtual int roleCount() const = 0;
     virtual int roleAt(int i) const = 0;
     virtual QVariant getValue(int role) const = 0;
-    virtual bool setValue(const QVariant &value, int role) = 0;
+    virtual bool setValue(int role, const QVariant &value) = 0;
     virtual int flags() const = 0;
 
     bool isNotEmpty() const
@@ -85,9 +85,9 @@ public:
         return getValue(role).value<T>();
     }
 
-    bool set(const QVariant &value, int role)
+    bool set(int role, const QVariant &value)
     {
-        return setValue(value, role);
+        return setValue(role, value);
     }
 
     int interfaceType() const

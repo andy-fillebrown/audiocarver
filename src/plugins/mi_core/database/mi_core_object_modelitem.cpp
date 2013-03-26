@@ -68,7 +68,7 @@ QVariant ModelItem::getValue(int role) const
     }
 }
 
-bool ModelItem::setValue(const QVariant &value, int role)
+bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
     case EditRole:

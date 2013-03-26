@@ -148,7 +148,7 @@ QVariant Model::data(const QModelIndex &index, int role) const
 bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     IModelItem *item = itemFromIndex(index);
-    return item ? item->setValue(value, role) : false;
+    return item ? item->setValue(role, value) : false;
 }
 
 ItemFlags Model::flags(const QModelIndex &index) const

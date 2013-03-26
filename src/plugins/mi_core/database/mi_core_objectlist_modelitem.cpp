@@ -93,7 +93,7 @@ void ModelItem::insertItem(int i, IModelItem *item)
         while (containsItemNamed(new_name))
             new_name = QString("%1.%2").arg(name).arg(++suffix);
         if (name != new_name)
-            item->set(new_name, NameRole);
+            item->set(NameRole, new_name);
     }
     ScopedItemInsert item_insert(this, i);
     aggregate()->items().insert(i, query<IAggregate>(item));

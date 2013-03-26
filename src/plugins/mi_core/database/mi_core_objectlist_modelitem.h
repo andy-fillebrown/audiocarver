@@ -73,7 +73,7 @@ protected:
 
     QVariant getValue(int role) const;
 
-    bool setValue(const QVariant &value, int role)
+    bool setValue(int role, const QVariant &value)
     {
         return false;
     }

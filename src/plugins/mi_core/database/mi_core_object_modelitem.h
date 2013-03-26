@@ -77,7 +77,7 @@ protected:
     int roleCount() const;
     int roleAt(int i) const;
     QVariant getValue(int role) const;
-    bool setValue(const QVariant &value, int role);
+    bool setValue(int role, const QVariant &value);
 };
 
 }
