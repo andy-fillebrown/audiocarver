@@ -26,32 +26,13 @@ class Aggregate;
 
 class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 {
-    QString _name;
-    enum { RoleCount = 1 };
-
-    enum { ItemCount = 0 };
-
 public:
     ModelItem(IAggregate *aggregate)
         :   Base::ModelItem(aggregate)
     {}
 
 protected:
-    enum {
-        RoleCountOffset = 0,
-        TotalRoleCount = RoleCount,
-        ItemCountOffset = 0,
-        TotalItemCount = ItemCount
-    };
-
     Aggregate *aggregate() const;
-
-    const QString &name() const
-    {
-        return _name;
-    }
-
-    bool setName(const QString &name);
 
     int itemType() const;
     void setParent(IModelItem *parent);

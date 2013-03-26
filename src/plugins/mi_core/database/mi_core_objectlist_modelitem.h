@@ -35,6 +35,7 @@ protected:
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
+    IModelItem *parent() const;
 
     void setParent(IModelItem *parent)
     {
@@ -77,8 +78,6 @@ protected:
     {
         return false;
     }
-
-    void reset();
 };
 
 }

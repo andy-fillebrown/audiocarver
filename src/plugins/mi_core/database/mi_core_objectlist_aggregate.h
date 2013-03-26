@@ -18,32 +18,23 @@
 #ifndef MI_CORE_OBJECTLIST_AGGREGATE_H
 #define MI_CORE_OBJECTLIST_AGGREGATE_H
 
-#include "mi_core_object_aggregate.h"
+#include "mi_core_base_aggregate.h"
 
 namespace ObjectList {
 
-class MI_CORE_EXPORT Aggregate : public Object::Aggregate
+class MI_CORE_EXPORT Aggregate : public Base::Aggregate
 {
-    int _listType;
-    QList<IAggregate*> _items;
-
 public:
     Aggregate(IAggregate *parent)
-        :   Object::Aggregate(parent)
-        ,   _listType(0)
+        :   parent(parent)
+        ,   listType(0)
     {
         Q_ASSERT(parent);
     }
 
-    int &listType()
-    {
-        return _listType;
-    }
-
-    QList<IAggregate*> &items()
-    {
-        return _items;
-    }
+    IAggregate *parent;
+    int listType;
+    QList<IAggregate*> items;
 };
 
 }
