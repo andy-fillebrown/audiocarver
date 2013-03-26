@@ -32,10 +32,10 @@ Editor::Editor()
     :   _inCommand(false)
 {
     IAggregate *aggregate = ISession::instance();
-    aggregate->remove(::instance);
+    aggregate->removeComponent(::instance);
     delete ::instance;
     ::instance = this;
-    aggregate->append(this);
+    aggregate->appendComponent(this);
 }
 
 Editor::~Editor()

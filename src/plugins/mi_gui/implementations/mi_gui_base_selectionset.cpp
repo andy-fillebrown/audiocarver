@@ -29,7 +29,7 @@ void *SelectionSet::queryInterface(int interfaceType) const
 SelectionSet::SelectionSet(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 }

@@ -29,7 +29,7 @@ void *SelectionSetWatcher::queryInterface(int interfaceType) const
 SelectionSetWatcher::SelectionSetWatcher(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 }
