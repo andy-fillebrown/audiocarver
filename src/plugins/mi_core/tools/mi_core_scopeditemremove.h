@@ -19,28 +19,28 @@
 #define MI_CORE_SCOPEDITEMREMOVE_H
 
 #include <iaggregate.h>
-#include <imodelitemlist.h>
-#include <imodelitemlistwatcher.h>
+#include <imodelitem.h>
+#include <imodellistwatcher.h>
 #include <QList>
 
 class ScopedItemRemove
 {
-    const IModelItemList *_list;
+    const IModelItem *_list;
     const int _index;
-    QList<IModelItemListWatcher*> _watchers;
+    QList<IModelListWatcher*> _watchers;
 
 public:
-    ScopedItemRemove(const IModelItemList *list, int index)
+    ScopedItemRemove(const IModelItem *list, int index)
         :   _list(list)
         ,   _index(index)
     {
         if (!_list)
             return;
-        const QList<IComponent*> &components = QUERY(IAggregate, _list)->components();
+        const QList<IComponent*> &components = query<IAggregate>(_list)->components();
         foreach (IComponent *component, components)
-            if (component->isTypeOfInterface(I::IModelItemListWatcher))
-                _watchers.append(QUERY(IModelItemListWatcher, component));
-        foreach (IModelItemListWatcher *watcher, _watchers)
+            if (component->isTypeOfInterface(I::IModelListWatcher))
+                _watchers.append(query<IModelListWatcher>(component));
+        foreach (IModelListWatcher *watcher, _watchers)
             watcher->beginRemoveItem(_list, index);
     }
 
@@ -48,7 +48,7 @@ public:
     {
         if (!_list)
             return;
-        foreach (IModelItemListWatcher *watcher, _watchers)
+        foreach (IModelListWatcher *watcher, _watchers)
             watcher->endRemoveItem(_list, _index);
     }
 };

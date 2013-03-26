@@ -20,38 +20,36 @@
 
 #include "mi_core_namespace.h"
 #include <iaggregate.h>
-#include <imodeldata.h>
-#include <imodeldatawatcher.h>
+#include <imodelitem.h>
+#include <imodelitemwatcher.h>
 
 class ScopedDataChange
 {
-    const IModelData *_data;
+    const IModelItem *_item;
     const int _role;
-    const int _dataChangeType;
-    QList<IModelDataWatcher*> _watchers;
+    QList<IModelItemWatcher*> _watchers;
 
 public:
-    ScopedDataChange(const IModelData *data, int role, int dataChangeType = Mi::PermanentChange)
-        :   _data(data)
+    ScopedDataChange(const IModelItem *item, int role)
+        :   _item(item)
         ,   _role(role)
-        ,   _dataChangeType(dataChangeType)
     {
-        if (!_data)
+        if (!_item)
             return;
-        const QList<IComponent*> &components = QUERY(IAggregate, _data)->components();
+        const QList<IComponent*> &components = query<IAggregate>(_item)->components();
         foreach (IComponent *component, components)
-            if (component->isTypeOfInterface(I::IModelDataWatcher))
-                _watchers.append(QUERY(IModelDataWatcher, component));
-        foreach (IModelDataWatcher *watcher, _watchers)
-            watcher->beginChangeData(_data, _role, _dataChangeType);
+            if (component->isTypeOfInterface(I::IModelItemWatcher))
+                _watchers.append(query<IModelItemWatcher>(component));
+        foreach (IModelItemWatcher *watcher, _watchers)
+            watcher->beginChangeData(_item, _role);
     }
 
     ~ScopedDataChange()
     {
-        if (!_data)
+        if (!_item)
             return;
-        foreach (IModelDataWatcher *watcher, _watchers)
-            watcher->endChangeData(_data, _role, _dataChangeType);
+        foreach (IModelItemWatcher *watcher, _watchers)
+            watcher->endChangeData(_item, _role);
     }
 };
 

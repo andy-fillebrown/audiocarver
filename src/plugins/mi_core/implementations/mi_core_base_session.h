@@ -30,6 +30,12 @@ public:
 
     void initialize()
     {}
+
+    void reset()
+    {}
+
+    void destroy()
+    {}
 };
 
 }

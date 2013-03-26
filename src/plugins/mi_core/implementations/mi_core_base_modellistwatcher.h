@@ -15,23 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_OBJECTLIST_MODELITEMINFO_H
-#define MI_CORE_OBJECTLIST_MODELITEMINFO_H
+#ifndef MI_CORE_BASE_MODELLISTWATCHER_H
+#define MI_CORE_BASE_MODELLISTWATCHER_H
 
-#include "mi_core_base_modeliteminfo.h"
+#include <imodellistwatcher.h>
+#include "mi_core_global.h"
 
-namespace ObjectList {
+class IAggregate;
 
-class MI_CORE_EXPORT ModelItemInfo : public Base::ModelItemInfo
+namespace Base {
+
+class MI_CORE_EXPORT ModelListWatcher : public IModelListWatcher
 {
+    IAggregate *_aggregate;
+
 public:
-    ModelItemInfo(IAggregate *aggregate)
-        :   Base::ModelItemInfo(aggregate)
-    {}
+    void *queryInterface(int interfaceType) const;
 
 protected:
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
+    ModelListWatcher(IAggregate *aggregate);
+
+    void initialize()
+    {}
+
+    void beginInsertItem(const IModelItem *list, int index)
+    {}
+
+    void endInsertItem(const IModelItem *list, int index)
+    {}
+
+    void beginRemoveItem(const IModelItem *list, int index)
+    {}
+
+    void endRemoveItem(const IModelItem *list, int index)
+    {}
 };
 
 }

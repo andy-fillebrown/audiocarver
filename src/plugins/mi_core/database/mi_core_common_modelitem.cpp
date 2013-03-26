@@ -15,22 +15,27 @@
 **
 **************************************************************************/
 
-#include "mi_core_objectlist_modeldata.h"
+#include "mi_core_common_modelitem.h"
+#include "mi_core_common_aggregate.h"
 #include "mi_core_namespace.h"
-#include <imodelitemlist.h>
+#include "mi_core_scopedparentchange.h"
+#include <iaggregate.h>
 
 using namespace Mi;
 
-namespace ObjectList {
+namespace Common {
 
-QVariant ModelData::getValue(int role) const
+Aggregate *ModelItem::aggregate() const
 {
-    switch (role) {
-    case ListTypeRole:
-        return QUERY(IModelItemList, this)->listType();
-    default:
-        return Object::ModelData::getValue(role);
-    }
+    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
+}
+
+IModelItem *ModelItem::parent() const
+{
+    IAggregate *parent_aggregate = aggregate()->parent();
+    if (parent_aggregate)
+        return query<IModelItem>(parent_aggregate);
+    return 0;
 }
 
 }

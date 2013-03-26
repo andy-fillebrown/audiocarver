@@ -15,21 +15,35 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_modeldata.h"
-#include <iaggregate.h>
+#ifndef MI_CORE_OBJECTLIST_AGGREGATE_H
+#define MI_CORE_OBJECTLIST_AGGREGATE_H
 
-namespace Base {
+#include "mi_core_common_aggregate.h"
 
-void *ModelData::queryInterface(int interfaceType) const
+namespace ObjectList {
+
+class MI_CORE_EXPORT Aggregate : public Common::Aggregate
 {
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
+    const int _listType;
+    QList<IAggregate*> _items;
+
+public:
+    Aggregate(IAggregate *parent, int listType)
+        :   Common::Aggregate(parent)
+        ,   _listType(listType)
+    {}
+
+    int listType() const
+    {
+        return _listType;
+    }
+
+    QList<IAggregate*> &items()
+    {
+        return _items;
+    }
+};
+
 }
 
-ModelData::ModelData(IAggregate *aggregate)
-    :   _aggregate(aggregate)
-{
-    _aggregate->append(this);
-}
-
-}
+#endif

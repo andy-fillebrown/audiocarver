@@ -1,7 +1,7 @@
 
 SOURCE_FILES = \
-    object_modeldataupdater \
-    objectlist_modelitemlistupdater \
+    object_modelupdater \
+    objectlist_modelupdater \
 
 for(file, SOURCE_FILES) {
     header = mi_core_$${file}.h

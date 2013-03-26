@@ -29,7 +29,7 @@ void *ModelItem::queryInterface(int interfaceType) const
 ModelItem::ModelItem(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 }

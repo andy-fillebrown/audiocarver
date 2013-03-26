@@ -31,10 +31,10 @@ namespace Base {
 Database::Database()
 {
     IAggregate *aggregate = ISession::instance();
-    aggregate->remove(::instance);
+    aggregate->removeComponent(::instance);
     delete ::instance;
     ::instance = this;
-    aggregate->append(this);
+    aggregate->appendComponent(this);
 }
 
 Database::~Database()

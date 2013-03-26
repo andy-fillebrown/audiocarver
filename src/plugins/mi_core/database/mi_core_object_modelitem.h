@@ -22,43 +22,43 @@
 
 namespace Object {
 
+class Aggregate;
+
 class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 {
-    IModelItem *_parent;
-
-    enum { ItemCount = 0 };
-
 public:
     ModelItem(IAggregate *aggregate)
         :   Base::ModelItem(aggregate)
-        ,   _parent(0)
     {}
 
 protected:
-    enum {
-        ItemCountOffset = 0,
-        TotalItemCount = ItemCount
-    };
+    Aggregate *aggregate() const;
 
-    IModelItem *parent() const
-    {
-        return _parent;
-    }
+    int itemType() const;
 
     void setParent(IModelItem *parent);
-    IModelItemList *list() const;
 
-    int count() const
+    bool containsItem(IModelItem *item) const
+    {
+        return false;
+    }
+
+    bool containsItemNamed(const QString &name) const
+    {
+        return false;
+    }
+
+    int itemCount() const
     {
         return 0;
     }
 
-    int indexOf(const IModelItem *item) const
+    int indexOfItem(const IModelItem *item) const
     {
         return -1;
     }
 
-    IModelItem *at(int i) const
+    IModelItem *itemAt(int i) const
     {
         Q_ASSERT(false);
         return 0;
@@ -69,24 +69,15 @@ protected:
         return 0;
     }
 
-    IModelItemList *findList(int listType) const
+    IModelItem *findList(int listType) const
     {
-        IModelItemList *list = 0;
-        const int count = this->count();
-        for (int i = 0;  i < count;  ++i) {
-            list = at(i)->findList(listType);
-            if (list)
-                return list;
-        }
         return 0;
     }
 
-    void reset()
-    {
-        const int item_count = count();
-        for (int i = 0;  i < item_count;  ++i)
-            at(i)->reset();
-    }
+    int roleCount() const;
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(const QVariant &value, int role);
 };
 
 }

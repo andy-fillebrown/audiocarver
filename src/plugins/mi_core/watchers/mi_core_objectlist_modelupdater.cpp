@@ -15,21 +15,29 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_modelitemlist.h"
-#include <iaggregate.h>
+#include "mi_core_objectlist_modelupdater.h"
+#include <imodel.h>
 
-namespace Base {
+namespace ObjectList {
 
-void *ModelItemList::queryInterface(int interfaceType) const
+void ModelUpdater::beginInsertItem(const IModelItem *list, int index)
 {
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
+    IModel::instance()->beginInsertItem(list, index);
 }
 
-ModelItemList::ModelItemList(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+void ModelUpdater::endInsertItem(const IModelItem *list, int index)
 {
-    _aggregate->append(this);
+    IModel::instance()->endInsertItem(list, index);
+}
+
+void ModelUpdater::beginRemoveItem(const IModelItem *list, int index)
+{
+    IModel::instance()->beginRemoveItem(list, index);
+}
+
+void ModelUpdater::endRemoveItem(const IModelItem *list, int index)
+{
+    IModel::instance()->endRemoveItem(list, index);
 }
 
 }

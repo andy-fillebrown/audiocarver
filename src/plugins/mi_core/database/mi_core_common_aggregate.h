@@ -15,33 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef IMODELDATAWATCHER_H
-#define IMODELDATAWATCHER_H
+#ifndef MI_CORE_COMMON_AGGREGATE_H
+#define MI_CORE_COMMON_AGGREGATE_H
 
-#include <icomponent.h>
-#include "mi_core_interfaces.h"
+#include "mi_core_base_aggregate.h"
+#include <QString>
 
-class IModelData;
+namespace Common {
 
-class IModelDataWatcher : public IComponent
+class MI_CORE_EXPORT Aggregate : public Base::Aggregate
 {
+    IAggregate *_parent;
+
 public:
-    enum { InterfaceType = I::IModelDataWatcher };
+    Aggregate(IAggregate *parent = 0)
+        :   _parent(parent)
+    {}
 
-    virtual void beginChangeData(const IModelData *data, int role, int changeType) = 0;
-    virtual void endChangeData(const IModelData *data, int role, int changeType) = 0;
-
-    int interfaceType() const
+    IAggregate *&parent()
     {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IComponent::isTypeOfInterface(interfaceType);
+        return _parent;
     }
 };
+
+}
 
 #endif

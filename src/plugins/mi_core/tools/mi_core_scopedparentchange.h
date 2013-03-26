@@ -20,6 +20,7 @@
 
 #include "mi_core_namespace.h"
 #include <iaggregate.h>
+#include <imodelitem.h>
 #include <imodelitemwatcher.h>
 #include <QList>
 
@@ -34,10 +35,10 @@ public:
     {
         if (!_item)
             return;
-        const QList<IComponent*> &components = QUERY(IAggregate, _item)->components();
+        const QList<IComponent*> &components = query<IAggregate>(_item)->components();
         foreach (IComponent *component, components)
             if (component->isTypeOfInterface(I::IModelItemWatcher))
-                _watchers.append(QUERY(IModelItemWatcher, component));
+                _watchers.append(query<IModelItemWatcher>(component));
         foreach (IModelItemWatcher *watcher, _watchers)
             watcher->beginChangeParent(_item);
     }

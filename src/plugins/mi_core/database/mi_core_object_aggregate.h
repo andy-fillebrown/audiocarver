@@ -15,21 +15,42 @@
 **
 **************************************************************************/
 
-#include "mi_core_objectlist_modeliteminfo.h"
-#include "mi_core_namespace.h"
+#ifndef MI_CORE_OBJECT_AGGREGATE_H
+#define MI_CORE_OBJECT_AGGREGATE_H
 
-using namespace Mi;
+#include "mi_core_common_aggregate.h"
+#include <QString>
 
-namespace ObjectList {
+namespace Object {
 
-int ModelItemInfo::itemType() const
+class MI_CORE_EXPORT Aggregate : public Common::Aggregate
 {
-    return ListItem;
+    QString _name;
+
+public:
+    enum {
+        RoleCount = 1,
+        ItemCount = 0,
+        RoleCountOffset = 0,
+        TotalRoleCount = RoleCount,
+        ItemCountOffset = 0,
+        TotalItemCount = ItemCount
+    };
+
+    Aggregate(IAggregate *parent = 0)
+        :   Common::Aggregate(parent)
+    {}
+
+    void setParent(IAggregate *parent);
+
+    const QString &name() const
+    {
+        return _name;
+    }
+
+    bool setName(const QString &name);
+};
+
 }
 
-bool ModelItemInfo::isTypeOfItem(int itemType) const
-{
-    return ListItem == itemType;
-}
-
-}
+#endif

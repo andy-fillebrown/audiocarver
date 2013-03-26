@@ -29,7 +29,7 @@ void *ModelItemWatcher::queryInterface(int interfaceType) const
 ModelItemWatcher::ModelItemWatcher(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 }

@@ -22,9 +22,7 @@
 #include <icomponent.h>
 #include "mi_core_global.h"
 
-class IModelData;
 class IModelItem;
-class IModelItemList;
 
 class MI_CORE_EXPORT IModel : public QAbstractItemModel
         ,   public IComponent
@@ -36,16 +34,14 @@ public:
 
     static IModel *instance();
 
-    virtual IModelData *dataFromIndex(const QModelIndex &index) const = 0;
-    virtual QModelIndex indexFromData(const IModelData *data) const = 0;
     virtual IModelItem *itemFromIndex(const QModelIndex &index) const = 0;
     virtual QModelIndex indexFromItem(const IModelItem *item) const = 0;
-    virtual void beginChangeData(const IModelData *data, int role, int changeType) = 0;
-    virtual void endChangeData(const IModelData *data, int role, int changeType) = 0;
-    virtual void beginInsertItem(const IModelItemList* list, int index) = 0;
-    virtual void endInsertItem(const IModelItemList *list, int index) = 0;
-    virtual void beginRemoveItem(const IModelItemList *list, int index) = 0;
-    virtual void endRemoveItem(const IModelItemList *list, int index) = 0;
+    virtual void beginChangeData(const IModelItem *item, int role) = 0;
+    virtual void endChangeData(const IModelItem *item, int role) = 0;
+    virtual void beginInsertItem(const IModelItem* list, int index) = 0;
+    virtual void endInsertItem(const IModelItem *list, int index) = 0;
+    virtual void beginRemoveItem(const IModelItem *list, int index) = 0;
+    virtual void endRemoveItem(const IModelItem *list, int index) = 0;
 
     virtual void reset()
     {
@@ -65,12 +61,12 @@ public:
     }
 
 signals:
-    void dataAboutToBeChanged(const IModelData *data, int role, int changeType);
-    void dataChanged(const IModelData *data, int role, int changeType);
-    void itemAboutToBeInserted(const IModelItemList *list, int index);
-    void itemInserted(const IModelItemList *list, int index);
-    void itemAboutToBeRemoved(const IModelItemList *list, int index);
-    void itemRemoved(const IModelItemList *list, int index);
+    void dataAboutToBeChanged(const IModelItem *item, int role);
+    void dataChanged(const IModelItem *item, int role);
+    void itemAboutToBeInserted(const IModelItem *list, int index);
+    void itemInserted(const IModelItem *list, int index);
+    void itemAboutToBeRemoved(const IModelItem *list, int index);
+    void itemRemoved(const IModelItem *list, int index);
 };
 
 #endif

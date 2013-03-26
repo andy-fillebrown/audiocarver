@@ -20,8 +20,6 @@
 
 #include <imodel.h>
 
-class IAggregate;
-
 namespace Base {
 
 class MI_CORE_EXPORT Model : public IModel
@@ -35,15 +33,13 @@ protected:
     void initialize()
     {}
 
-    void beginChangeData(const IModelData *data, int role, int changeType);
-    void endChangeData(const IModelData *data, int role, int changeType);
-    void beginInsertItem(const IModelItemList* list, int index);
-    void endInsertItem(const IModelItemList *list, int index);
-    void beginRemoveItem(const IModelItemList *list, int index);
-    void endRemoveItem(const IModelItemList *list, int index);
-    IModelData *dataFromIndex(const QModelIndex &index) const;
+    void beginChangeData(const IModelItem *item, int role);
+    void endChangeData(const IModelItem *item, int role);
+    void beginInsertItem(const IModelItem *list, int index);
+    void endInsertItem(const IModelItem *list, int index);
+    void beginRemoveItem(const IModelItem *list, int index);
+    void endRemoveItem(const IModelItem *list, int index);
     IModelItem *itemFromIndex(const QModelIndex &index) const;
-    QModelIndex indexFromData(const IModelData *data) const;
     QModelIndex indexFromItem(const IModelItem *item) const;
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
@@ -59,9 +55,9 @@ protected:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 signals:
-    void dataChanged(const IModelData *data, int role, int changeType)
+    void dataChanged(const IModelItem *item, int role)
     {
-        IModel::emit dataChanged(data, role, changeType);
+        IModel::emit dataChanged(item, role);
     }
 
     void dataChanged(const QModelIndex &index)

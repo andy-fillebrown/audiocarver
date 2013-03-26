@@ -15,33 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_BASE_MODELITEMLIST_H
-#define MI_CORE_BASE_MODELITEMLIST_H
+#ifndef MI_CORE_OBJECT_MODELUPDATER_H
+#define MI_CORE_OBJECT_MODELUPDATER_H
 
-#include <imodelitemlist.h>
-#include "mi_core_global.h"
+#include "mi_core_base_modelitemwatcher.h"
 
-class IAggregate;
+namespace Object {
 
-namespace Base {
-
-class MI_CORE_EXPORT ModelItemList : public IModelItemList
+class MI_CORE_EXPORT ModelUpdater : public Base::ModelItemWatcher
 {
-    IAggregate *_aggregate;
-
 public:
-    void *queryInterface(int interfaceType) const;
+    ModelUpdater(IAggregate *aggregate)
+        :   Base::ModelItemWatcher(aggregate)
+    {}
 
 protected:
-    ModelItemList(IAggregate *aggregate);
-
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
-
-    void initialize()
-    {}
+    void beginChangeData(const IModelItem *item, int role);
+    void endChangeData(const IModelItem *item, int role);
 };
 
 }

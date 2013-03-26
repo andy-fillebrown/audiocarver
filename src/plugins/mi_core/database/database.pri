@@ -1,11 +1,11 @@
 
 SOURCE_FILES = \
-    object_modeldata \
+    common_aggregate \
+    common_modelitem \
+    object_aggregate \
     object_modelitem \
-    object_modeliteminfo \
-    objectlist_modeldata \
+    objectlist_aggregate \
     objectlist_modelitem \
-    objectlist_modeliteminfo \
 
 for(file, SOURCE_FILES) {
     header = mi_core_$${file}.h

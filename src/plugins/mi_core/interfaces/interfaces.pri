@@ -7,13 +7,9 @@ SOURCE_FILES = \
     ifilefiler \
     ifilerfactory \
     imodel \
-    imodeldata \
-    imodeldatawatcher \
     imodelitem \
-    imodeliteminfo \
-    imodelitemlist \
-    imodelitemlistwatcher \
     imodelitemwatcher \
+    imodellistwatcher \
     ireader \
     isession \
     iunknown \

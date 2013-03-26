@@ -18,16 +18,7 @@
 #ifndef IUNKOWN_H
 #define IUNKOWN_H
 
-#define QUERY(InterfaceType, Unknown) query<InterfaceType>(Unknown)
-
-class IUnknown
-{
-public:
-    virtual ~IUnknown() {}
-    virtual int interfaceType() const = 0;
-    virtual bool isTypeOfInterface(int interfaceType) const = 0;
-    virtual void *queryInterface(int interfaceType) const = 0;
-};
+#define query query
 
 template <class T, class Unknown> inline
 T *query(const Unknown *unknown)
@@ -36,5 +27,24 @@ T *query(const Unknown *unknown)
         return 0;
     return static_cast<T*>(unknown->queryInterface(T::InterfaceType));
 }
+
+class IUnknown
+{
+public:
+    virtual ~IUnknown() {}
+    virtual int interfaceType() const = 0;
+    virtual bool isTypeOfInterface(int interfaceType) const = 0;
+    virtual void *queryInterface(int interfaceType) const = 0;
+
+    template <class T> const T *query_t() const
+    {
+        return ::query<T>(this);
+    }
+
+    template <class T> T *Query()
+    {
+        return ::query<T>(this);
+    }
+};
 
 #endif

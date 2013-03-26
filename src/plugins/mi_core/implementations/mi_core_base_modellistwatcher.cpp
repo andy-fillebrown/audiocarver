@@ -15,21 +15,21 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_modeliteminfo.h"
+#include "mi_core_base_modellistwatcher.h"
 #include <iaggregate.h>
 
 namespace Base {
 
-void *ModelItemInfo::queryInterface(int interfaceType) const
+void *ModelListWatcher::queryInterface(int interfaceType) const
 {
     void *i = IComponent::queryInterface(interfaceType);
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-ModelItemInfo::ModelItemInfo(IAggregate *aggregate)
+ModelListWatcher::ModelListWatcher(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 }

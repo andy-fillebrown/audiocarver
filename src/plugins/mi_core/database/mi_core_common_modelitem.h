@@ -15,34 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef IMODELITEMLISTWATCHER_H
-#define IMODELITEMLISTWATCHER_H
+#ifndef MI_CORE_COMMON_MODELITEM_H
+#define MI_CORE_COMMON_MODELITEM_H
 
-#include <icomponent.h>
+#include "mi_core_base_modelitem.h"
 
-class IModelItemList;
+namespace Common {
 
-class IModelItemListWatcher : public IComponent
+class Aggregate;
+
+class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 {
 public:
-    enum { InterfaceType = I::IModelItemListWatcher };
+    ModelItem(IAggregate *aggregate)
+        :   Base::ModelItem(aggregate)
+    {}
 
-    virtual void beginInsertItem(const IModelItemList *list, int index) = 0;
-    virtual void endInsertItem(const IModelItemList *list, int index) = 0;
-    virtual void beginRemoveItem(const IModelItemList *list, int index) = 0;
-    virtual void endRemoveItem(const IModelItemList *list, int index) = 0;
+protected:
+    Aggregate *aggregate() const;
 
-    int interfaceType() const
+    bool isTypeOfItem(int itemType) const
     {
-        return InterfaceType;
+        return false;
     }
 
-    bool isTypeOfInterface(int interfaceType) const
+    IModelItem *parent() const;
+
+    int flags() const
     {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IComponent::isTypeOfInterface(interfaceType);
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 };
+
+}
 
 #endif

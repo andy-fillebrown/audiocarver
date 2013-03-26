@@ -17,67 +17,95 @@
 
 #include "mi_core_objectlist_modelitem.h"
 #include "mi_core_namespace.h"
+#include "mi_core_objectlist_aggregate.h"
 #include "mi_core_scopediteminsert.h"
 #include "mi_core_scopeditemremove.h"
-#include "mi_core_scopedparentchange.h"
-#include <iaggregate.h>
-#include <imodeldata.h>
 
 using namespace Mi;
 
 namespace ObjectList {
 
-void ModelItem::setParent(IModelItem *parent)
+Aggregate *ModelItem::aggregate() const
 {
-    if (_parent == parent)
-        return;
-    ScopedParentChange parent_change(this);
-    _parent = parent;
+    return static_cast<Aggregate*>(Common::ModelItem::aggregate());
 }
 
-bool ModelItem::contains(const QString &name) const
+int ModelItem::itemType() const
 {
-    foreach (IModelItem *item, _items)
-        if (QUERY(IModelData, item)->get<QString>(NameRole) == name)
+    return ListItem;
+}
+
+bool ModelItem::isTypeOfItem(int itemType) const
+{
+    return ListItem == itemType;
+}
+
+bool ModelItem::containsItem(IModelItem *item) const
+{
+    return aggregate()->items().contains(query<IAggregate>(item));
+}
+
+bool ModelItem::containsItemNamed(const QString &name) const
+{
+    foreach (IAggregate *item, aggregate()->items())
+        if (get<QString>(query<IModelItem>(item), NameRole) == name)
             return true;
     return false;
 }
 
-void ModelItem::insert(int i, IModelItem *item)
+int ModelItem::itemCount() const
 {
-    IModelItemList *old_list = item->list();
-    if (old_list) {
-        if (old_list == list())
-            return;
-        old_list->remove(item);
+    return aggregate()->items().count();
+}
+
+int ModelItem::indexOfItem(const IModelItem *item) const
+{
+    return aggregate()->items().indexOf(query<IAggregate>(item));
+}
+
+IModelItem *ModelItem::itemAt(int i) const
+{
+    return query<IModelItem>(aggregate()->items().at(i));
+}
+
+QVariant ModelItem::getValue(int role) const
+{
+    switch (role) {
+    case ListTypeRole:
+        return aggregate()->listType();
+    default:
+        return QVariant();
     }
-    IModelData *data = QUERY(IModelData, item);
-    const QString name = data->get<QString>(NameRole);
+}
+
+void ModelItem::insertItem(int i, IModelItem *item)
+{
+    IModelItem *old_list = item->parent();
+    if (old_list) {
+        if (old_list == parent())
+            return;
+        old_list->removeItem(item);
+    }
+    const QString name = get<QString>(item, NameRole);
     if (!name.isEmpty()) {
         int suffix = 0;
         QString new_name = name;
-        while (contains(new_name))
+        while (containsItemNamed(new_name))
             new_name = QString("%1.%2").arg(name).arg(++suffix);
         if (name != new_name)
-            data->set(new_name, NameRole);
+            item->set(new_name, NameRole);
     }
     ScopedItemInsert item_insert(this, i);
-    _items.insert(i, item);
+    aggregate()->items().insert(i, query<IAggregate>(item));
     item->setParent(this);
 }
 
-void ModelItem::removeAt(int i)
+void ModelItem::removeItemAt(int i)
 {
     ScopedItemRemove item_remove(this, i);
-    _items.at(i)->setParent(0);
-    _items.removeAt(i);
-}
-
-void ModelItem::reset()
-{
-    foreach (IModelItem *item, _items)
-        delete QUERY(IAggregate, item);
-    _items.clear();
+    QList<IAggregate*> &items = aggregate()->items();
+    query<IModelItem>(items.at(i))->setParent(0);
+    items.removeAt(i);
 }
 
 }

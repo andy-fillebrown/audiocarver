@@ -15,24 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_OBJECTLIST_MODELDATA_H
-#define MI_CORE_OBJECTLIST_MODELDATA_H
+#include "mi_core_object_aggregate.h"
+#include "mi_core_scopeddatachange.h"
+#include "mi_core_scopedparentchange.h"
+#include <imodelitem.h>
 
-#include "mi_core_object_modeldata.h"
+using namespace Mi;
 
-namespace ObjectList {
+namespace Object {
 
-class MI_CORE_EXPORT ModelData : public Object::ModelData
+void Aggregate::setParent(IAggregate *parent)
 {
-public:
-    ModelData(IAggregate *aggregate)
-        :   Object::ModelData(aggregate)
-    {}
-
-protected:
-    QVariant getValue(int role) const;
-};
-
+    if (this->parent() == parent)
+        return;
+    ScopedParentChange parent_change(query<IModelItem>(this));
+    this->parent() = parent;
 }
 
-#endif
+bool Aggregate::setName(const QString &name)
+{
+    if (_name == name)
+        return false;
+    IModelItem *parent = query<IModelItem>(this->parent());
+    if (!name.isEmpty() && parent && parent->containsItemNamed(name))
+        return false;
+    ScopedDataChange data_change(query<IModelItem>(this), NameRole);
+    _name = name;
+    return true;
+}
+
+}

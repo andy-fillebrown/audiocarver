@@ -15,37 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_BASE_MODELITEMINFO_H
-#define MI_CORE_BASE_MODELITEMINFO_H
+#ifndef IMODELLISTWATCHER_H
+#define IMODELLISTWATCHER_H
 
-#include <imodeliteminfo.h>
-#include "mi_core_global.h"
+#include <icomponent.h>
 
-class IAggregate;
+class IModelItem;
 
-namespace Base {
-
-class Aggregate;
-
-class MI_CORE_EXPORT ModelItemInfo : public IModelItemInfo
+class IModelListWatcher : public IComponent
 {
-    IAggregate *_aggregate;
-
 public:
-    void *queryInterface(int interfaceType) const;
+    enum { InterfaceType = I::IModelListWatcher };
 
-protected:
-    ModelItemInfo(IAggregate *aggregate);
+    virtual void beginInsertItem(const IModelItem *list, int index) = 0;
+    virtual void endInsertItem(const IModelItem *list, int index) = 0;
+    virtual void beginRemoveItem(const IModelItem *list, int index) = 0;
+    virtual void endRemoveItem(const IModelItem *list, int index) = 0;
 
-    IAggregate *aggregate() const
+    int interfaceType() const
     {
-        return _aggregate;
+        return InterfaceType;
     }
 
-    void initialize()
-    {}
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

@@ -15,19 +15,10 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modeldataupdater.h"
-#include <imodel.h>
+#include "mi_core_objectlist_aggregate.h"
 
-namespace Object {
+namespace ObjectList {
 
-void ModelDataUpdater::beginChangeData(const IModelData *data, int role, int changeType)
-{
-    IModel::instance()->beginChangeData(data, role, changeType);
-}
 
-void ModelDataUpdater::endChangeData(const IModelData *data, int role, int changeType)
-{
-    IModel::instance()->endChangeData(data, role, changeType);
-}
 
 }

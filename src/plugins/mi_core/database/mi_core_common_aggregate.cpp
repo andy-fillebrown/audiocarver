@@ -15,25 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_OBJECT_MODELDATAUPDATER_H
-#define MI_CORE_OBJECT_MODELDATAUPDATER_H
+#include "mi_core_common_aggregate.h"
 
-#include "mi_core_base_modeldatawatcher.h"
+namespace Common {
 
-namespace Object {
 
-class MI_CORE_EXPORT ModelDataUpdater : public Base::ModelDataWatcher
-{
-public:
-    ModelDataUpdater(IAggregate *aggregate)
-        :   Base::ModelDataWatcher(aggregate)
-    {}
-
-protected:
-    void beginChangeData(const IModelData *data, int role, int changeType);
-    void endChangeData(const IModelData *data, int role, int changeType);
-};
 
 }
-
-#endif

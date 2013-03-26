@@ -43,14 +43,14 @@ protected:
         return _components;
     }
 
-    IUnknown *append(IComponent *component)
+    IUnknown *appendComponent(IComponent *component)
     {
         if (!_components.contains(component))
             _components.append(component);
         return component;
     }
 
-    void remove(IComponent *component)
+    void removeComponent(IComponent *component)
     {
         _components.removeOne(component);
     }

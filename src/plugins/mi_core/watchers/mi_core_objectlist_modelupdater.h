@@ -15,16 +15,27 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modeliteminfo.h"
-#include "mi_core_namespace.h"
+#ifndef MI_CORE_OBJECTLIST_MODELUPDATER_H
+#define MI_CORE_OBJECTLIST_MODELUPDATER_H
 
-using namespace Mi;
+#include "mi_core_base_modellistwatcher.h"
 
-namespace Object {
+namespace ObjectList {
 
-int ModelItemInfo::itemType() const
+class MI_CORE_EXPORT ModelUpdater : public Base::ModelListWatcher
 {
-    return UnknownItem;
-}
+public:
+    ModelUpdater(IAggregate *aggregate)
+        :   Base::ModelListWatcher(aggregate)
+    {}
+
+protected:
+    void beginInsertItem(const IModelItem *list, int index);
+    void endInsertItem(const IModelItem *list, int index);
+    void beginRemoveItem(const IModelItem *list, int index);
+    void endRemoveItem(const IModelItem *list, int index);
+};
 
 }
+
+#endif

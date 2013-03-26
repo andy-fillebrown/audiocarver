@@ -31,10 +31,10 @@ namespace Base {
 FilerFactory::FilerFactory()
 {
     IAggregate *aggregate = ISession::instance();
-    aggregate->remove(::instance);
+    aggregate->removeComponent(::instance);
     delete ::instance;
     ::instance = this;
-    aggregate->append(this);
+    aggregate->appendComponent(this);
 }
 
 FilerFactory::~FilerFactory()

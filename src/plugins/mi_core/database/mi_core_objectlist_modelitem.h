@@ -18,53 +18,34 @@
 #ifndef MI_CORE_OBJECTLIST_MODELITEM_H
 #define MI_CORE_OBJECTLIST_MODELITEM_H
 
-#include "mi_core_base_modelitemlist.h"
+#include "mi_core_common_modelitem.h"
 #include <QList>
 
 namespace ObjectList {
 
-class MI_CORE_EXPORT ModelItem : public Base::ModelItemList
-{
-    IModelItem *_parent;
-    const int _listType;
-    QList<IModelItem*> _items;
+class Aggregate;
 
+class MI_CORE_EXPORT ModelItem : public Common::ModelItem
+{
 public:
-    ModelItem(IAggregate *aggregate, int listType)
-        :   Base::ModelItemList(aggregate)
-        ,   _parent(0)
-        ,   _listType(listType)
+    ModelItem(IAggregate *aggregate)
+        :   Common::ModelItem(aggregate)
     {}
 
 protected:
-    IModelItem *parent() const
-    {
-        return _parent;
-    }
+    Aggregate *aggregate() const;
 
-    void setParent(IModelItem *parent);
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
 
-    IModelItemList *list() const
-    {
-        return 0;
-    }
+    void setParent(IModelItem *parent)
+    {}
 
-    int count() const
-    {
-        return _items.count();
-    }
-
-    int indexOf(const IModelItem *item) const
-    {
-        return _items.indexOf(const_cast<IModelItem*>(item));
-    }
-
-    IModelItem *at(int i) const
-    {
-        if (i < count())
-            return _items.at(i);
-        return 0;
-    }
+    bool containsItem(IModelItem *item) const;
+    bool containsItemNamed(const QString &name) const;
+    int itemCount() const;
+    int indexOfItem(const IModelItem *item) const;
+    IModelItem *itemAt(int i) const;
 
     IModelItem *findItem(int itemType) const
     {
@@ -72,19 +53,31 @@ protected:
         return 0;
     }
 
-    IModelItemList *findList(int listType) const
+    IModelItem *findList(int listType) const
     {
         return 0;
     }
 
-    int listType() const
+    void insertItem(int i, IModelItem *item);
+    void removeItemAt(int i);
+
+    int roleCount() const
     {
-        return _listType;
+        return 0;
     }
 
-    bool contains(const QString &name) const;
-    void insert(int i, IModelItem *item);
-    void removeAt(int i);
+    int roleAt(int i) const
+    {
+        return -1;
+    }
+
+    QVariant getValue(int role) const;
+
+    bool setValue(const QVariant &value, int role)
+    {
+        return false;
+    }
+
     void reset();
 };
 

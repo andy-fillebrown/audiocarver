@@ -38,10 +38,16 @@ protected:
     void initialize()
     {}
 
-    void beginChangeParent(const IModelItem *child)
+    void beginChangeParent(const IModelItem *item)
     {}
 
-    void endChangeParent(const IModelItem *child)
+    void endChangeParent(const IModelItem *item)
+    {}
+
+    void beginChangeData(const IModelItem *item, int role)
+    {}
+
+    void endChangeData(const IModelItem *item, int role)
     {}
 };
 

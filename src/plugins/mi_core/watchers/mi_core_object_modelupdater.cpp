@@ -15,21 +15,19 @@
 **
 **************************************************************************/
 
-#include "mi_core_base_modeldatawatcher.h"
-#include <iaggregate.h>
+#include "mi_core_object_modelupdater.h"
+#include <imodel.h>
 
-namespace Base {
+namespace Object {
 
-void *ModelDataWatcher::queryInterface(int interfaceType) const
+void ModelUpdater::beginChangeData(const IModelItem *item, int role)
 {
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
+    IModel::instance()->beginChangeData(item, role);
 }
 
-ModelDataWatcher::ModelDataWatcher(IAggregate *aggregate)
-    :   _aggregate(aggregate)
+void ModelUpdater::endChangeData(const IModelItem *item, int role)
 {
-    _aggregate->append(this);
+    IModel::instance()->endChangeData(item, role);
 }
 
 }
