@@ -16,7 +16,10 @@
 **************************************************************************/
 
 #include "mi_core_base_modelitem.h"
+#include "mi_core_namespace.h"
 #include <iaggregate.h>
+
+using namespace Mi;
 
 namespace Base {
 
@@ -30,6 +33,16 @@ ModelItem::ModelItem(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
     _aggregate->appendComponent(this);
+}
+
+QVariant ModelItem::getValue(int role) const
+{
+    switch (role) {
+    case ItemTypeRole:
+        return itemType();
+    default:
+        return QVariant();
+    }
 }
 
 }

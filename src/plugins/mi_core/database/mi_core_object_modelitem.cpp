@@ -18,8 +18,8 @@
 #include "mi_core_object_modelitem.h"
 #include "mi_core_object_aggregate.h"
 #include "mi_core_namespace.h"
+#include "mi_core_scopeddatachange.h"
 #include "mi_core_scopedparentchange.h"
-#include <iaggregate.h>
 
 using namespace Mi;
 using namespace Qt;
@@ -31,6 +31,18 @@ Aggregate *ModelItem::aggregate() const
     return static_cast<Aggregate*>(Base::ModelItem::aggregate());
 }
 
+bool ModelItem::setName(const QString &name)
+{
+    if (_name == name)
+        return false;
+    IModelItem *parent = this->parent();
+    if (!name.isEmpty() && parent && parent->containsItemNamed(name))
+        return false;
+    ScopedDataChange data_change(this, NameRole);
+    _name = name;
+    return true;
+}
+
 int ModelItem::itemType() const
 {
     return UnknownItem;
@@ -38,19 +50,22 @@ int ModelItem::itemType() const
 
 void ModelItem::setParent(IModelItem *parent)
 {
-    aggregate()->setParent(parent ? query<IAggregate>(parent) : 0);
+    if (this->parent() == parent)
+        return;
+    ScopedParentChange parent_change(this);
+    aggregate()->parent() = query<IAggregate>(parent);
 }
 
 int ModelItem::roleCount() const
 {
-    return Aggregate::RoleCount;
+    return RoleCount;
 }
 
 int ModelItem::roleAt(int i) const
 {
     Q_ASSERT(0 <= i);
-    Q_ASSERT(i < Aggregate::RoleCount);
-    if (i < 0 || Aggregate::RoleCount <= i)
+    Q_ASSERT(i < RoleCount);
+    if (i < 0 || RoleCount <= i)
         return -1;
     return NameRole;
 }
@@ -60,11 +75,9 @@ QVariant ModelItem::getValue(int role) const
     switch (role) {
     case DisplayRole:
     case NameRole:
-        return aggregate()->name();
-    case ItemTypeRole:
-        return itemType();
+        return name();
     default:
-        return QVariant();
+        return Base::ModelItem::getValue(role);
     }
 }
 
@@ -73,7 +86,7 @@ bool ModelItem::setValue(int role, const QVariant &value)
     switch (role) {
     case EditRole:
     case NameRole:
-        return aggregate()->setName(qvariant_cast<QString>(value));
+        return setName(qvariant_cast<QString>(value));
     default:
         Q_ASSERT(false);
         return false;

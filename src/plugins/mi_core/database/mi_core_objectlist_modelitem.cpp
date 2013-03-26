@@ -25,9 +25,15 @@ using namespace Mi;
 
 namespace ObjectList {
 
+ModelItem::ModelItem(IAggregate *aggregate, int listType)
+    :   Base::ModelItem(aggregate)
+{
+    this->aggregate()->listType() = listType;
+}
+
 Aggregate *ModelItem::aggregate() const
 {
-    return static_cast<Aggregate*>(Common::ModelItem::aggregate());
+    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
 }
 
 int ModelItem::itemType() const
@@ -74,7 +80,7 @@ QVariant ModelItem::getValue(int role) const
     case ListTypeRole:
         return aggregate()->listType();
     default:
-        return QVariant();
+        return Base::ModelItem::getValue(role);
     }
 }
 

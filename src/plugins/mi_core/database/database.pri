@@ -1,7 +1,5 @@
 
 SOURCE_FILES = \
-    common_aggregate \
-    common_modelitem \
     object_aggregate \
     object_modelitem \
     objectlist_aggregate \

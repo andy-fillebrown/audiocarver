@@ -25,18 +25,18 @@ Aggregate::~Aggregate()
     _components.clear();
 }
 
+void Aggregate::initialize()
+{
+    foreach (IComponent *component, _components)
+        component->initialize();
+}
+
 void *Aggregate::queryInterface(int interfaceType) const
 {
     foreach (IComponent *component, _components)
         if (component->isTypeOfInterface(interfaceType))
             return component->queryInterface(interfaceType);
     return IAggregate::queryInterface(interfaceType);
-}
-
-void Aggregate::initialize()
-{
-    foreach (IComponent *component, _components)
-        component->initialize();
 }
 
 }

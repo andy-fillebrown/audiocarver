@@ -18,37 +18,23 @@
 #ifndef MI_CORE_OBJECT_AGGREGATE_H
 #define MI_CORE_OBJECT_AGGREGATE_H
 
-#include "mi_core_common_aggregate.h"
-#include <QString>
+#include "mi_core_base_aggregate.h"
 
 namespace Object {
 
-class MI_CORE_EXPORT Aggregate : public Common::Aggregate
+class MI_CORE_EXPORT Aggregate : public Base::Aggregate
 {
-    QString _name;
+    IAggregate *_parent;
 
 public:
-    enum {
-        RoleCount = 1,
-        ItemCount = 0,
-        RoleCountOffset = 0,
-        TotalRoleCount = RoleCount,
-        ItemCountOffset = 0,
-        TotalItemCount = ItemCount
-    };
-
     Aggregate(IAggregate *parent = 0)
-        :   Common::Aggregate(parent)
+        :   _parent(parent)
     {}
 
-    void setParent(IAggregate *parent);
-
-    const QString &name() const
+    IAggregate *&parent()
     {
-        return _name;
+        return _parent;
     }
-
-    bool setName(const QString &name);
 };
 
 }

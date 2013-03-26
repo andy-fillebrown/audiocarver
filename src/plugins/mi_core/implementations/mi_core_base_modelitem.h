@@ -44,6 +44,8 @@ protected:
 
     void initialize()
     {}
+
+    QVariant getValue(int role) const;
 };
 
 }

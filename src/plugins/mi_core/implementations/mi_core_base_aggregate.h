@@ -29,13 +29,10 @@ class MI_CORE_EXPORT Aggregate : public IAggregate
     QList<IComponent*> _components;
 
 public:
-    Aggregate()
-    {}
-
     ~Aggregate();
 
-    void *queryInterface(int interfaceType) const;
     void initialize();
+    void *queryInterface(int interfaceType) const;
 
 protected:
     const QList<IComponent*> &components() const

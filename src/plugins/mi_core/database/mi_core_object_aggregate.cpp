@@ -16,32 +16,9 @@
 **************************************************************************/
 
 #include "mi_core_object_aggregate.h"
-#include "mi_core_scopeddatachange.h"
-#include "mi_core_scopedparentchange.h"
-#include <imodelitem.h>
-
-using namespace Mi;
 
 namespace Object {
 
-void Aggregate::setParent(IAggregate *parent)
-{
-    if (this->parent() == parent)
-        return;
-    ScopedParentChange parent_change(query<IModelItem>(this));
-    this->parent() = parent;
-}
 
-bool Aggregate::setName(const QString &name)
-{
-    if (_name == name)
-        return false;
-    IModelItem *parent = query<IModelItem>(this->parent());
-    if (!name.isEmpty() && parent && parent->containsItemNamed(name))
-        return false;
-    ScopedDataChange data_change(query<IModelItem>(this), NameRole);
-    _name = name;
-    return true;
-}
 
 }

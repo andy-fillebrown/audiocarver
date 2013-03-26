@@ -18,19 +18,17 @@
 #ifndef MI_CORE_OBJECTLIST_MODELITEM_H
 #define MI_CORE_OBJECTLIST_MODELITEM_H
 
-#include "mi_core_common_modelitem.h"
+#include "mi_core_base_modelitem.h"
 #include <QList>
 
 namespace ObjectList {
 
 class Aggregate;
 
-class MI_CORE_EXPORT ModelItem : public Common::ModelItem
+class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 {
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Common::ModelItem(aggregate)
-    {}
+    ModelItem(IAggregate *aggregate, int listType);
 
 protected:
     Aggregate *aggregate() const;
@@ -39,7 +37,9 @@ protected:
     bool isTypeOfItem(int itemType) const;
 
     void setParent(IModelItem *parent)
-    {}
+    {
+        Q_ASSERT(false);
+    }
 
     bool containsItem(IModelItem *item) const;
     bool containsItemNamed(const QString &name) const;
