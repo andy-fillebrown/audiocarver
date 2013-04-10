@@ -22,35 +22,29 @@
 
 namespace Score {
 
+class Aggregate;
+
 class ModelItem : public Object::ModelItem
 {
-    IAggregate *_tracks;
-    IAggregate *_gridSettings;
-    IAggregate *_projectSettings;
-    IAggregate *_viewSettings;
-    enum { ItemCount = 4 };
-
 public:
-    ModelItem(IAggregate *aggregate);
+    ModelItem(IAggregate *aggregate)
+        :   Object::ModelItem(aggregate)
+    {}
 
 protected:
-    enum {
-        ItemCountOffset = Object::ModelItem::TotalItemCount,
-        TotalItemCount = ItemCountOffset + ItemCount
-    };
+    Aggregate *aggregate() const;
 
-    ~ModelItem();
-
-    int count() const
-    {
-        return TotalItemCount;
-    }
-
-    int indexOf(const IModelItem *item) const;
-    IModelItem *at(int i) const;
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+    int itemCount() const;
+    int indexOfItem(const IModelItem *item) const;
+    IModelItem *itemAt(int i) const;
     IModelItem *findItem(int itemType) const;
-    IModelItemList *findList(int listType) const;
-    void reset();
+    IModelItem *findList(int listType) const;
+    int roleCount() const;
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(int role, const QVariant &value);
 };
 
 }

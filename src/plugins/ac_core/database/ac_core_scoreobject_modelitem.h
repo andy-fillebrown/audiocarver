@@ -18,33 +18,33 @@
 #ifndef AC_CORE_SCOREOBJECT_MODELITEM_H
 #define AC_CORE_SCOREOBJECT_MODELITEM_H
 
-#include "ac_core_global.h"
 #include <mi_core_object_modelitem.h>
+#include "ac_core_global.h"
 
 namespace ScoreObject {
 
+class Aggregate;
+
 class AC_CORE_EXPORT ModelItem : public Object::ModelItem
 {
-    IAggregate *_pitchCurve;
-    IAggregate *_controlCurves;
-    enum { ItemCount = 2 };
-
 public:
-    ModelItem(IAggregate *aggregate);
+    ModelItem(IAggregate *aggregate)
+        :   Object::ModelItem(aggregate)
+    {}
 
 protected:
-    enum {
-        ItemCountOffset = Object::ModelItem::TotalItemCount,
-        TotalItemCount = ItemCountOffset + ItemCount
-    };
+    Aggregate *aggregate() const;
 
-    ~ModelItem();
-
-    int count() const;
-    int indexOf(const IModelItem *item) const;
-    IModelItem *at(int i) const;
+    bool isTypeOfItem(int itemType) const;
+    int itemCount() const;
+    int indexOfItem(const IModelItem *item) const;
+    IModelItem *itemAt(int i) const;
     IModelItem *findItem(int itemType) const;
-    IModelItemList *findList(int listType) const;
+    IModelItem *findList(int listType) const;
+    int roleCount() const;
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(int role, const QVariant &value);
 };
 
 }

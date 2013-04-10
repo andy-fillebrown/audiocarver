@@ -15,34 +15,39 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_TRACK_MODELITEM_H
-#define AC_CORE_TRACK_MODELITEM_H
+#ifndef AC_CORE_SCORE_AGGREGATE_H
+#define AC_CORE_SCORE_AGGREGATE_H
 
-#include <mi_core_object_modelitem.h>
+#include <mi_core_object_aggregate.h>
 #include "ac_core_global.h"
 
-namespace Track {
+namespace Score {
 
-class Aggregate;
-
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+class AC_CORE_EXPORT Aggregate : public Object::Aggregate
 {
 public:
-    ModelItem(IAggregate *aggregate);
+    Aggregate(IAggregate *parent);
+    ~Aggregate();
+
+    IAggregate *tracks;
+    IAggregate *gridSettings;
+    IAggregate *projectSettings;
+    IAggregate *viewSettings;
+    enum { ItemCount = 4 };
+
+    qreal length;
+    qreal startTime;
+    enum { RoleCount = 2 };
+
+    enum {
+        ItemCountOffset = Object::Aggregate::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount,
+        RoleCountOffset = Object::Aggregate::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
 protected:
-    Aggregate *aggregate() const;
-
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
-    int indexOfItem(const IModelItem *item) const;
-    IModelItem *itemAt(int i) const;
-    IModelItem *findList(int listType) const;
-    int roleCount() const;
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(int role, const QVariant &value);
+    void reset();
 };
 
 }

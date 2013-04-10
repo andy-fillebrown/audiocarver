@@ -15,36 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_TRACK_MODELITEM_H
-#define AC_CORE_TRACK_MODELITEM_H
+#include "ac_core_projectsettings_aggregate.h"
+#include "ac_core_constants.h"
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+namespace ProjectSettings {
 
-namespace Track {
-
-class Aggregate;
-
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
-{
-public:
-    ModelItem(IAggregate *aggregate);
-
-protected:
-    Aggregate *aggregate() const;
-
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
-    int indexOfItem(const IModelItem *item) const;
-    IModelItem *itemAt(int i) const;
-    IModelItem *findList(int listType) const;
-    int roleCount() const;
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(int role, const QVariant &value);
-};
+Aggregate::Aggregate(IAggregate *parent)
+    :   Object::Aggregate(parent)
+    ,   sampleRate(DEFAULT_PROJECTSETTINGS_SAMPLERATE)
+    ,   controlRate(DEFAULT_PROJECTSETTINGS_CONTROLRATE)
+    ,   curveRate(DEFAULT_PROJECTSETTINGS_CURVERATE)
+{}
 
 }
-
-#endif

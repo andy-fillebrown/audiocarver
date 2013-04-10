@@ -35,4 +35,10 @@ void qSort(Container &c, LessThan lessThan)
 #define Q_FLOAT_MIN 1E-37
 #define Q_FLOAT_MAX 1E+37
 
+template <class T> void qDelete(T *&t)
+{
+    delete t;
+    t = 0;
+}
+
 #endif

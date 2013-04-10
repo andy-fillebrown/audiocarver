@@ -22,6 +22,8 @@
 
 namespace ViewSettings {
 
+class Aggregate;
+
 class ModelItem : public Object::ModelItem
 {
 public:
@@ -30,7 +32,14 @@ public:
     {}
 
 protected:
-    void reset();
+    Aggregate *aggregate() const;
+
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+    int roleCount() const;
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(int role, const QVariant &value);
 };
 
 }

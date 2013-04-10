@@ -25,15 +25,15 @@ namespace ObjectList {
 class MI_CORE_EXPORT Aggregate : public Base::Aggregate
 {
 public:
-    Aggregate(IAggregate *parent)
+    Aggregate(IAggregate *parent, int listType)
         :   parent(parent)
-        ,   listType(0)
+        ,   listType(listType)
     {
         Q_ASSERT(parent);
     }
 
     IAggregate *parent;
-    int listType;
+    const int listType;
     QList<IAggregate*> items;
 };
 

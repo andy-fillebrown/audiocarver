@@ -15,35 +15,40 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_GRIDSETTINGS_MODELITEM_H
-#define AC_CORE_GRIDSETTINGS_MODELITEM_H
+#ifndef AC_CORE_GRIDSETTINGS_AGGREGATE_H
+#define AC_CORE_GRIDSETTINGS_AGGREGATE_H
 
-#include <mi_core_object_modelitem.h>
+#include <mi_core_object_aggregate.h>
 
 namespace GridSettings {
 
-class Aggregate;
-
-class ModelItem : public Object::ModelItem
+class Aggregate : public Object::Aggregate
 {
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    Aggregate(IAggregate *parent);
+    ~Aggregate();
+
+    IAggregate *timeGridLines;
+    IAggregate *pitchGridLines;
+    IAggregate *controlGridLines;
+    enum { ItemCount = 3 };
+
+    int snapEnabled : 1;
+    int gridSnapEnabled : 1;
+    qreal timeSnap;
+    qreal pitchSnap;
+    qreal controlSnap;
+    enum { RoleCount = 5 };
+
+    enum {
+        ItemCountOffset = Object::Aggregate::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount,
+        RoleCountOffset = Object::Aggregate::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
 protected:
-    Aggregate *aggregate() const;
-
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
-    int indexOfItem(const IModelItem *item) const;
-    IModelItem *itemAt(int i) const;
-    IModelItem *findList(int listType) const;
-    int roleCount() const;
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(int role, const QVariant &value);
+    void reset();
 };
 
 }

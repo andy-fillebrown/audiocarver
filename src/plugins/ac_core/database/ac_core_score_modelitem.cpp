@@ -18,62 +18,59 @@
 #include "ac_core_score_modelitem.h"
 #include "ac_core_constants.h"
 #include "ac_core_namespace.h"
-#include <idatabaseobjectfactory.h>
-#include <imodelitemlist.h>
+#include "ac_core_score_aggregate.h"
 #include <mi_core_scopeddatachange.h>
 
 using namespace Ac;
 
 namespace Score {
 
-ModelItem::ModelItem(IAggregate *aggregate)
-    :  Object::ModelItem(aggregate)
-    ,   _tracks(0)
-    ,   _gridSettings(0)
-    ,   _projectSettings(0)
-    ,   _viewSettings(0)
+Aggregate *ModelItem::aggregate() const
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _tracks = factory->create(TrackListItem, this);
-    _gridSettings = factory->create(GridSettingsItem, this);
-    _projectSettings = factory->create(ProjectSettingsItem, this);
-    _viewSettings = factory->create(ViewSettingsItem, this);
+    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
 }
 
-ModelItem::~ModelItem()
+int ModelItem::itemType() const
 {
-    delete _viewSettings;
-    delete _projectSettings;
-    delete _gridSettings;
-    delete _tracks;
+    return ScoreItem;
 }
 
-int ModelItem::indexOf(const IModelItem *item) const
+bool ModelItem::isTypeOfItem(int itemType) const
 {
-    if (QUERY(IModelItem, _tracks) == item)
-        return ItemCountOffset;
-    if (QUERY(IModelItem, _gridSettings) == item)
-        return ItemCountOffset + 1;
-    if (QUERY(IModelItem, _projectSettings) == item)
-        return ItemCountOffset + 2;
-    if (QUERY(IModelItem, _viewSettings) == item)
-        return ItemCountOffset + 3;
-    return Object::ModelItem::indexOf(item);
+    return ScoreItem == itemType;
 }
 
-IModelItem *ModelItem::at(int i) const
+int ModelItem::itemCount() const
 {
-    switch (i - ItemCountOffset) {
+    return Aggregate::TotalItemCount;
+}
+
+int ModelItem::indexOfItem(const IModelItem *item) const
+{
+    if (query<IModelItem>(aggregate()->tracks) == item)
+        return Aggregate::ItemCountOffset;
+    if (query<IModelItem>(aggregate()->gridSettings) == item)
+        return Aggregate::ItemCountOffset + 1;
+    if (query<IModelItem>(aggregate()->projectSettings) == item)
+        return Aggregate::ItemCountOffset + 2;
+    if (query<IModelItem>(aggregate()->viewSettings) == item)
+        return Aggregate::ItemCountOffset + 3;
+    return Object::ModelItem::indexOfItem(item);
+}
+
+IModelItem *ModelItem::itemAt(int i) const
+{
+    switch (i - Aggregate::ItemCountOffset) {
     case 0:
-        return QUERY(IModelItem, _tracks);
+        return query<IModelItem>(aggregate()->tracks);
     case 1:
-        return QUERY(IModelItem, _gridSettings);
+        return query<IModelItem>(aggregate()->gridSettings);
     case 2:
-        return QUERY(IModelItem, _projectSettings);
+        return query<IModelItem>(aggregate()->projectSettings);
     case 3:
-        return QUERY(IModelItem, _viewSettings);
+        return query<IModelItem>(aggregate()->viewSettings);
     default:
-        return Object::ModelItem::at(i);
+        return Object::ModelItem::itemAt(i);
     }
 }
 
@@ -81,32 +78,79 @@ IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
     case GridSettingsItem:
-        return QUERY(IModelItem, _gridSettings);
+        return query<IModelItem>(aggregate()->gridSettings);
     case ProjectSettingsItem:
-        return QUERY(IModelItem, _projectSettings);
+        return query<IModelItem>(aggregate()->projectSettings);
     case ViewSettingsItem:
-        return QUERY(IModelItem, _viewSettings);
+        return query<IModelItem>(aggregate()->viewSettings);
     default:
         return Object::ModelItem::findItem(itemType);
     }
 }
 
-IModelItemList *ModelItem::findList(int listType) const
+IModelItem *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case TrackItem:
-        return QUERY(IModelItemList, _tracks);
+        return query<IModelItem>(aggregate()->tracks);
     default:
         return Object::ModelItem::findList(listType);
     }
 }
 
-void ModelItem::reset()
+int ModelItem::roleCount() const
 {
-    IModelData *data = QUERY(IModelData, this);
-    data->set(DEFAULT_SCORE_LENGTH, LengthRole);
-    data->set(DEFAULT_SCORE_STARTTIME, StartTimeRole);
-    Object::ModelItem::reset();
+    return Aggregate::TotalRoleCount;
+}
+
+int ModelItem::roleAt(int i) const
+{
+    switch (i - Aggregate::RoleCountOffset) {
+    case 0:
+        return LengthRole;
+    case 1:
+        return StartTimeRole;
+    default:
+        return Object::ModelItem::roleAt(i);
+    }
+}
+
+QVariant ModelItem::getValue(int role) const
+{
+    switch (role) {
+    case LengthRole:
+        return aggregate()->length;
+    case StartTimeRole:
+        return aggregate()->startTime;
+    default:
+        return Object::ModelItem::getValue(role);
+    }
+}
+
+bool ModelItem::setValue(int role, const QVariant &value)
+{
+    switch (role) {
+    case LengthRole: {
+        qreal length = qvariant_cast<qreal>(value);
+        length = qMax(qreal(1.0f), length);
+        if (aggregate()->length == length)
+            return false;
+        ScopedDataChange data_change(this, LengthRole);
+        aggregate()->length = length;
+        return true;
+    }
+    case StartTimeRole: {
+        qreal startTime = qvariant_cast<qreal>(value);
+        startTime = qBound(qreal(0.0f), startTime, aggregate()->length);
+        if (aggregate()->startTime == startTime)
+            return false;
+        ScopedDataChange data_change(this, StartTimeRole);
+        aggregate()->startTime = startTime;
+        return true;
+    }
+    default:
+        return Object::ModelItem::setValue(role, value);
+    }
 }
 
 }

@@ -15,34 +15,27 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_TRACK_MODELITEM_H
-#define AC_CORE_TRACK_MODELITEM_H
+#ifndef AC_CORE_PROJECTSETTINGS_AGGREGATE_H
+#define AC_CORE_PROJECTSETTINGS_AGGREGATE_H
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+#include <mi_core_object_aggregate.h>
 
-namespace Track {
+namespace ProjectSettings {
 
-class Aggregate;
-
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+class Aggregate : public Object::Aggregate
 {
 public:
-    ModelItem(IAggregate *aggregate);
+    Aggregate(IAggregate *parent);
 
-protected:
-    Aggregate *aggregate() const;
+    int sampleRate;
+    int controlRate;
+    int curveRate;
+    enum { RoleCount = 3 };
 
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
-    int indexOfItem(const IModelItem *item) const;
-    IModelItem *itemAt(int i) const;
-    IModelItem *findList(int listType) const;
-    int roleCount() const;
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(int role, const QVariant &value);
+    enum {
+        RoleCountOffset = Object::Aggregate::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 };
 
 }

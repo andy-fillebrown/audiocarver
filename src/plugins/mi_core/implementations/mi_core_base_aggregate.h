@@ -51,6 +51,12 @@ protected:
     {
         _components.removeOne(component);
     }
+
+    void reset()
+    {}
+
+    void destroy()
+    {}
 };
 
 }

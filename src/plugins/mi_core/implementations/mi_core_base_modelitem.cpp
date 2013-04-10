@@ -20,6 +20,7 @@
 #include <iaggregate.h>
 
 using namespace Mi;
+using namespace Qt;
 
 namespace Base {
 
@@ -43,6 +44,11 @@ QVariant ModelItem::getValue(int role) const
     default:
         return QVariant();
     }
+}
+
+int ModelItem::flags() const
+{
+    return ItemIsEnabled;
 }
 
 }

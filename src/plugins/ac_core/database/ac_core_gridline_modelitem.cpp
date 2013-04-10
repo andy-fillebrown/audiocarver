@@ -15,67 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_core_track_modelitem.h"
+#include "ac_core_gridline_modelitem.h"
+#include "ac_core_gridline_aggregate.h"
 #include "ac_core_namespace.h"
-#include "ac_core_track_aggregate.h"
 #include <mi_core_scopeddatachange.h>
 #include <mi_core_utilities.h>
 
 using namespace Ac;
 using namespace Mi;
 
-namespace Track {
-
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   Object::ModelItem(aggregate)
-{}
+namespace GridLine {
 
 Aggregate *ModelItem::aggregate() const
 {
     return static_cast<Aggregate*>(Base::ModelItem::aggregate());
 }
 
-int ModelItem::itemType() const
-{
-    return TrackItem;
-}
-
 bool ModelItem::isTypeOfItem(int itemType) const
 {
-    return TrackItem == itemType;
-}
-
-int ModelItem::itemCount() const
-{
-    return Aggregate::TotalItemCount;
-}
-
-int ModelItem::indexOfItem(const IModelItem *item) const
-{
-    if (query<IModelItem>(aggregate()->notes) == item)
-        return Aggregate::ItemCountOffset;
-    return Object::ModelItem::indexOfItem(item);
-}
-
-IModelItem *ModelItem::itemAt(int i) const
-{
-    Q_ASSERT(0 <= (Aggregate::TotalItemCount - i));
-    switch (i - Aggregate::ItemCountOffset) {
-    case 0:
-        return query<IModelItem>(aggregate()->notes);
-    default:
-        return Object::ModelItem::itemAt(i);
-    }
-}
-
-IModelItem *ModelItem::findList(int listType) const
-{
-    switch (listType) {
-    case NoteItem:
-        return query<IModelItem>(aggregate()->notes);
-    default:
-        return Object::ModelItem::findList(listType);
-    }
+    return GridLineItem == itemType;
 }
 
 int ModelItem::roleCount() const
@@ -83,17 +41,18 @@ int ModelItem::roleCount() const
     return Aggregate::TotalRoleCount;
 }
 
+
 int ModelItem::roleAt(int i) const
 {
     switch (i - Aggregate::RoleCountOffset) {
     case 0:
-        return ColorRole;
+        return LocationRole;
     case 1:
-        return InstrumentRole;
+        return LabelRole;
     case 2:
-        return VisibilityRole;
+        return PriorityRole;
     case 3:
-        return RecordingRole;
+        return ColorRole;
     default:
         return Object::ModelItem::roleAt(i);
     }
@@ -102,14 +61,16 @@ int ModelItem::roleAt(int i) const
 QVariant ModelItem::getValue(int role) const
 {
     switch (role) {
+    case LocationRole:
+        return aggregate()->location;
+    case LabelRole:
+        return aggregate()->label;
+    case PriorityRole:
+        return aggregate()->priority;
     case ColorRole:
         return colorFromInt(aggregate()->color);
-    case InstrumentRole:
-        return aggregate()->instrument;
     case VisibilityRole:
-        return bool(aggregate()->visible);
-    case RecordingRole:
-        return bool(aggregate()->recording);
+        return aggregate()->visible;
     default:
         return Object::ModelItem::getValue(role);
     }
@@ -118,22 +79,40 @@ QVariant ModelItem::getValue(int role) const
 bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
+    case LocationRole: {
+        Aggregate *aggregate = this->aggregate();
+        const qreal location = qMax(qreal(0.0f), qvariant_cast<qreal>(value));
+        if (aggregate->location == location)
+            return false;
+        ScopedDataChange data_change(this, LocationRole);
+        aggregate->location = location;
+        return true;
+    }
+    case LabelRole: {
+        Aggregate *aggregate = this->aggregate();
+        const QString label = qvariant_cast<QString>(value);
+        if (aggregate->label == label)
+            return false;
+        ScopedDataChange data_change(this, LabelRole);
+        aggregate->label = label;
+        return true;
+    }
+    case PriorityRole: {
+        Aggregate *aggregate = this->aggregate();
+        const int priority = qMax(0, qvariant_cast<int>(value));
+        if (aggregate->priority == priority)
+            return false;
+        ScopedDataChange data_change(this, PriorityRole);
+        aggregate->priority = priority;
+        return true;
+    }
     case ColorRole: {
         Aggregate *aggregate = this->aggregate();
-        const int color = intFromColor(value);
+        const int color = qBound(0x000000, intFromColor(value), 0xffffff);
         if (aggregate->color == color)
             return false;
         ScopedDataChange data_change(this, ColorRole);
         aggregate->color = color;
-        return true;
-    }
-    case InstrumentRole: {
-        Aggregate *aggregate = this->aggregate();
-        const QString instrument = qvariant_cast<QString>(value);
-        if (aggregate->instrument == instrument)
-            return false;
-        ScopedDataChange data_change(this, InstrumentRole);
-        aggregate->instrument = instrument;
         return true;
     }
     case VisibilityRole: {
@@ -143,15 +122,6 @@ bool ModelItem::setValue(int role, const QVariant &value)
             return false;
         ScopedDataChange data_change(this, VisibilityRole);
         aggregate->visible = visible;
-        return true;
-    }
-    case RecordingRole: {
-        const bool recording = qvariant_cast<bool>(value);
-        Aggregate *aggregate = this->aggregate();
-        if (aggregate->recording == recording)
-            return false;
-        ScopedDataChange data_change(this, RecordingRole);
-        aggregate->recording = recording;
         return true;
     }
     default:

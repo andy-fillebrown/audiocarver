@@ -25,12 +25,6 @@ using namespace Mi;
 
 namespace ObjectList {
 
-ModelItem::ModelItem(IAggregate *aggregate, int listType)
-    :   Base::ModelItem(aggregate)
-{
-    this->aggregate()->listType = listType;
-}
-
 Aggregate *ModelItem::aggregate() const
 {
     return static_cast<Aggregate*>(Base::ModelItem::aggregate());

@@ -15,36 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_TRACK_MODELITEM_H
-#define AC_CORE_TRACK_MODELITEM_H
+#include "ac_core_viewsettings_aggregate.h"
+#include "ac_core_constants.h"
+#include "ac_core_namespace.h"
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+using namespace Ac;
 
-namespace Track {
+namespace ViewSettings {
 
-class Aggregate;
-
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+Aggregate::Aggregate(IAggregate *parent)
+    :   Object::Aggregate(parent)
 {
-public:
-    ModelItem(IAggregate *aggregate);
-
-protected:
-    Aggregate *aggregate() const;
-
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
-    int indexOfItem(const IModelItem *item) const;
-    IModelItem *itemAt(int i) const;
-    IModelItem *findList(int listType) const;
-    int roleCount() const;
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(int role, const QVariant &value);
-};
-
+    reset();
 }
 
-#endif
+void Aggregate::reset()
+{
+    timePosition = DEFAULT_VIEWSETTINGS_TIMEPOSITION;
+    pitchPosition = DEFAULT_VIEWSETTINGS_PITCHPOSITION;
+    controlPosition = DEFAULT_VIEWSETTINGS_CONTROLPOSITION;
+    timeScale = VIEWSCALE_MIN;
+    pitchScale = VIEWSCALE_MIN;
+    controlScale = VIEWSCALE_MIN;
+}
+
+}

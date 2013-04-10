@@ -13,7 +13,7 @@ SOURCE_FILES = \
     global \
     interfaces \
     namespace \
-    plugin \
+#    plugin \
 
 SOURCE_FILES *= $$target_name
 

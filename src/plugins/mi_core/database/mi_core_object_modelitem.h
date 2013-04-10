@@ -35,6 +35,7 @@ protected:
     Aggregate *aggregate() const;
 
     int itemType() const;
+    IModelItem *parent() const;
     void setParent(IModelItem *parent);
 
     bool containsItem(IModelItem *item) const
@@ -72,6 +73,12 @@ protected:
     {
         return 0;
     }
+
+    void insertItem(int i, IModelItem *item)
+    {}
+
+    void removeItemAt(int i)
+    {}
 
     int roleCount() const;
     int roleAt(int i) const;

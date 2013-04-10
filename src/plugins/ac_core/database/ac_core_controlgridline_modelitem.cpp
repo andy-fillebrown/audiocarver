@@ -15,36 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_TRACK_MODELITEM_H
-#define AC_CORE_TRACK_MODELITEM_H
+#include "ac_core_controlgridline_modelitem.h"
+#include "ac_core_namespace.h"
 
-#include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+using namespace Ac;
 
-namespace Track {
+namespace ControlGridLine {
 
-class Aggregate;
-
-class AC_CORE_EXPORT ModelItem : public Object::ModelItem
+int ModelItem::itemType() const
 {
-public:
-    ModelItem(IAggregate *aggregate);
-
-protected:
-    Aggregate *aggregate() const;
-
-    int itemType() const;
-    bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
-    int indexOfItem(const IModelItem *item) const;
-    IModelItem *itemAt(int i) const;
-    IModelItem *findList(int listType) const;
-    int roleCount() const;
-    int roleAt(int i) const;
-    QVariant getValue(int role) const;
-    bool setValue(int role, const QVariant &value);
-};
-
+    return ControlGridLineItem;
 }
 
-#endif
+bool ModelItem::isTypeOfItem(int itemType) const
+{
+    if (ControlGridLineItem == itemType)
+        return true;
+    return GridLine::ModelItem::isTypeOfItem(itemType);
+}
+
+}

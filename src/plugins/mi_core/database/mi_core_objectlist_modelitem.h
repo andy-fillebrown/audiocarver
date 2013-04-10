@@ -28,7 +28,9 @@ class Aggregate;
 class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 {
 public:
-    ModelItem(IAggregate *aggregate, int listType);
+    ModelItem(IAggregate *aggregate)
+        :   Base::ModelItem(aggregate)
+    {}
 
 protected:
     Aggregate *aggregate() const;

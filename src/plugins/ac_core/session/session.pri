@@ -1,9 +1,9 @@
 
 SOURCE_FILES = \
-    database \
+#    database \
     databaseobjectfactory \
-    filerfactory \
-    model \
+#    filerfactory \
+#    model \
 
 for(file, SOURCE_FILES) {
     header = ac_core_$${file}.h

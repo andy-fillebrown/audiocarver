@@ -17,83 +17,165 @@
 
 #include "ac_core_gridsettings_modelitem.h"
 #include "ac_core_constants.h"
+#include "ac_core_gridsettings_aggregate.h"
 #include "ac_core_namespace.h"
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
-#include <imodeldata.h>
-#include <imodelitemlist.h>
+#include <mi_core_scopeddatachange.h>
 
 using namespace Ac;
 
 namespace GridSettings {
 
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   Object::ModelItem(aggregate)
-    ,   _timeGridLines(0)
-    ,   _pitchGridLines(0)
-    ,   _controlGridLines(0)
+Aggregate *ModelItem::aggregate() const
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _timeGridLines = factory->create(TimeGridLineListItem, this);
-    _pitchGridLines = factory->create(PitchGridLineListItem, this);
-    _controlGridLines = factory->create(ControlGridLineListItem, this);
+    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
 }
 
-ModelItem::~ModelItem()
+int ModelItem::itemType() const
 {
-    delete _controlGridLines;
-    delete _pitchGridLines;
-    delete _timeGridLines;
+    return GridSettingsItem;
 }
 
-int ModelItem::indexOf(const IModelItem *item) const
+bool ModelItem::isTypeOfItem(int itemType) const
 {
-    if (QUERY(IModelItem, _timeGridLines) == item)
-        return ItemCountOffset;
-    if (QUERY(IModelItem, _pitchGridLines) == item)
-        return ItemCountOffset + 1;
-    if (QUERY(IModelItem, _controlGridLines) == item)
-        return ItemCountOffset + 2;
-    return Object::ModelItem::indexOf(item);
+    return GridSettingsItem == itemType;
 }
 
-IModelItem *ModelItem::at(int i) const
+int ModelItem::itemCount() const
 {
-    switch (i - ItemCountOffset) {
+    return Aggregate::TotalItemCount;
+}
+
+int ModelItem::indexOfItem(const IModelItem *item) const
+{
+    if (query<IModelItem>(aggregate()->timeGridLines) == item)
+        return Aggregate::ItemCountOffset;
+    if (query<ModelItem>(aggregate()->pitchGridLines) == item)
+        return Aggregate::ItemCountOffset + 1;
+    if (query<IModelItem>(aggregate()->controlGridLines) == item)
+        return Aggregate::ItemCountOffset + 2;
+    return Object::ModelItem::indexOfItem(item);
+}
+
+IModelItem *ModelItem::itemAt(int i) const
+{
+    switch (i - Aggregate::ItemCountOffset) {
     case 0:
-        return QUERY(IModelItem, _timeGridLines);
+        return query<IModelItem>(aggregate()->timeGridLines);
     case 1:
-        return QUERY(IModelItem, _pitchGridLines);
+        return query<ModelItem>(aggregate()->pitchGridLines);
     case 2:
-        return QUERY(IModelItem, _controlGridLines);
+        return query<IModelItem>(aggregate()->controlGridLines);
     default:
-        return Object::ModelItem::at(i);
+        return Object::ModelItem::itemAt(i);
     }
 }
 
-IModelItemList *ModelItem::findList(int listType) const
+IModelItem *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case TimeGridLineItem:
-        return QUERY(IModelItemList, _timeGridLines);
+        return query<IModelItem>(aggregate()->timeGridLines);
     case PitchGridLineItem:
-        return QUERY(IModelItemList, _pitchGridLines);
+        return query<ModelItem>(aggregate()->pitchGridLines);
     case ControlGridLineItem:
-        return QUERY(IModelItemList, _controlGridLines);
+        return query<IModelItem>(aggregate()->controlGridLines);
     default:
         return Object::ModelItem::findList(listType);
     }
 }
 
-void ModelItem::reset()
+int ModelItem::roleCount() const
 {
-    IModelData *data = QUERY(IModelData, this);
-    data->set(DEFAULT_GRIDSETTINGS_SNAPENABLED, SnapEnabledRole);
-    data->set(DEFAULT_GRIDSETTINGS_GRIDSNAPENABLED, GridSnapEnabledRole);
-    data->set(DEFAULT_GRIDSETTINGS_TIMESNAP, TimeSnapRole);
-    data->set(DEFAULT_GRIDSETTINGS_PITCHSNAP, PitchSnapRole);
-    data->set(DEFAULT_GRIDSETTINGS_CONTROLSNAP, ControlSnapRole);
-    Object::ModelItem::reset();
+    return Aggregate::TotalRoleCount;
+}
+
+int ModelItem::roleAt(int i) const
+{
+    switch (i - Aggregate::RoleCountOffset) {
+    case 0:
+        return SnapEnabledRole;
+    case 1:
+        return GridSnapEnabledRole;
+    case 2:
+        return TimeSnapRole;
+    case 3:
+        return PitchSnapRole;
+    case 4:
+        return ControlSnapRole;
+    default:
+        return Object::ModelItem::roleAt(i);
+    }
+}
+
+QVariant ModelItem::getValue(int role) const
+{
+    switch (role) {
+    case SnapEnabledRole:
+        return bool(aggregate()->snapEnabled);
+    case GridSnapEnabledRole:
+        return bool(aggregate()->gridSnapEnabled);
+    case TimeSnapRole:
+        return aggregate()->timeSnap;
+    case PitchSnapRole:
+        return aggregate()->pitchSnap;
+    case ControlSnapRole:
+        return aggregate()->controlSnap;
+    default:
+        return Object::ModelItem::getValue(role);
+    }
+}
+
+bool ModelItem::setValue(int role, const QVariant &value)
+{
+    switch (role) {
+    case SnapEnabledRole: {
+        Aggregate *aggregate = this->aggregate();
+        const bool enabled = qvariant_cast<bool>(value);
+        if (aggregate->snapEnabled == enabled)
+            return false;
+        ScopedDataChange data_change(this, SnapEnabledRole);
+        aggregate->snapEnabled = enabled;
+        return true;
+    }
+    case GridSnapEnabledRole: {
+        Aggregate *aggregate = this->aggregate();
+        const bool enabled = qvariant_cast<bool>(value);
+        if (aggregate->gridSnapEnabled == enabled)
+            return false;
+        ScopedDataChange data_change(this, GridSnapEnabledRole);
+        aggregate->gridSnapEnabled = enabled;
+        return true;
+    }
+    case TimeSnapRole: {
+        Aggregate *aggregate = this->aggregate();
+        const qreal snap = qMax(qreal(0.0f), qvariant_cast<qreal>(value));
+        if (aggregate->timeSnap == snap)
+            return false;
+        ScopedDataChange data_change(this, TimeSnapRole);
+        aggregate->timeSnap = snap;
+        return true;
+    }
+    case PitchSnapRole: {
+        Aggregate *aggregate = this->aggregate();
+        const qreal snap = qMax(qreal(0.0f), qvariant_cast<qreal>(value));
+        if (aggregate->pitchSnap == snap)
+            return false;
+        ScopedDataChange data_change(this, PitchSnapRole);
+        aggregate->pitchSnap = snap;
+        return true;
+    }
+    case ControlSnapRole: {
+        Aggregate *aggregate = this->aggregate();
+        const qreal snap = qMax(qreal(0.0f), qvariant_cast<qreal>(value));
+        if (aggregate->controlSnap == snap)
+            return false;
+        ScopedDataChange data_change(this, ControlSnapRole);
+        aggregate->controlSnap = snap;
+        return true;
+    }
+    default:
+        return Object::ModelItem::setValue(role, value);
+    }
 }
 
 }

@@ -36,6 +36,11 @@ int ModelItem::itemType() const
     return UnknownItem;
 }
 
+IModelItem *ModelItem::parent() const
+{
+    return query<IModelItem>(aggregate()->parent);
+}
+
 void ModelItem::setParent(IModelItem *parent)
 {
     if (this->parent() == parent)

@@ -17,54 +17,46 @@
 
 #include "ac_core_scoreobject_modelitem.h"
 #include "ac_core_namespace.h"
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
-#include <imodelitemlist.h>
+#include "ac_core_scoreobject_aggregate.h"
+#include <mi_core_scopeddatachange.h>
 
 using namespace Ac;
 
 namespace ScoreObject {
 
-ModelItem::ModelItem(IAggregate *aggregate)
-    :   Object::ModelItem(aggregate)
-    ,   _pitchCurve(0)
-    ,   _controlCurves(0)
+Aggregate *ModelItem::aggregate() const
 {
-    Object::ModelItem::initialize();
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _pitchCurve = factory->create(PitchCurveItem, this);
-    _controlCurves = factory->create(ControlCurveListItem, this);
+    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
 }
 
-ModelItem::~ModelItem()
+bool ModelItem::isTypeOfItem(int itemType) const
 {
-    delete _controlCurves;
-    delete _pitchCurve;
+    return ScoreObjectItem == itemType;
 }
 
-int ModelItem::count() const
+int ModelItem::itemCount() const
 {
-    return TotalItemCount;
+    return Aggregate::TotalItemCount;
 }
 
-int ModelItem::indexOf(const IModelItem *item) const
+int ModelItem::indexOfItem(const IModelItem *item) const
 {
-    if (QUERY(IModelItem, _pitchCurve) == item)
-        return ItemCountOffset;
-    if (QUERY(IModelItem, _controlCurves) == item)
-        return ItemCountOffset + 1;
-    return Object::ModelItem::indexOf(item);
+    if (query<IModelItem>(aggregate()->pitchCurve) == item)
+        return Aggregate::ItemCountOffset;
+    if (query<IModelItem>(aggregate()->controlCurve) == item)
+        return Aggregate::ItemCountOffset + 1;
+    return Object::ModelItem::indexOfItem(item);
 }
 
-IModelItem *ModelItem::at(int i) const
+IModelItem *ModelItem::itemAt(int i) const
 {
-    switch (i - ItemCountOffset) {
+    switch (i - Aggregate::ItemCountOffset) {
     case 0:
-        return QUERY(IModelItem, _pitchCurve);
+        return query<IModelItem>(aggregate()->pitchCurve);
     case 1:
-        return QUERY(IModelItem, _controlCurves);
+        return query<IModelItem>(aggregate()->controlCurve);
     default:
-        return Object::ModelItem::at(i);
+        return Object::ModelItem::itemAt(i);
     }
 }
 
@@ -72,19 +64,61 @@ IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
     case PitchCurveItem:
-        return QUERY(IModelItem, _pitchCurve);
+        return query<IModelItem>(aggregate()->pitchCurve);
     default:
         return Object::ModelItem::findItem(itemType);
     }
 }
 
-IModelItemList *ModelItem::findList(int listType) const
+IModelItem *ModelItem::findList(int listType) const
 {
     switch (listType) {
     case ControlCurveItem:
-        return QUERY(IModelItemList, _controlCurves);
+        return query<IModelItem>(aggregate()->controlCurve);
     default:
         return Object::ModelItem::findList(listType);
+    }
+}
+
+int ModelItem::roleCount() const
+{
+    return Aggregate::TotalRoleCount;
+}
+
+int ModelItem::roleAt(int i) const
+{
+    switch (i - Aggregate::RoleCountOffset) {
+    case 0:
+        return VolumeRole;
+    default:
+        return Object::ModelItem::roleAt(i);
+    }
+}
+
+QVariant ModelItem::getValue(int role) const
+{
+    switch (role) {
+    case VolumeRole:
+        return aggregate()->volume;
+    default:
+        return Object::ModelItem::getValue(role);
+    }
+}
+
+bool ModelItem::setValue(int role, const QVariant &value)
+{
+    switch (role) {
+    case VolumeRole: {
+        qreal volume = qvariant_cast<qreal>(value);
+        volume = qBound(qreal(0.0f), volume, qreal(1.0f));
+        if (aggregate()->volume == volume)
+            return false;
+        ScopedDataChange data_change(this, VolumeRole);
+        aggregate()->volume = volume;
+        return true;
+    }
+    default:
+        return Object::ModelItem::setValue(role, value);
     }
 }
 

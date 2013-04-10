@@ -32,7 +32,7 @@ public:
 
     static IDatabaseObjectFactory *instance();
 
-    virtual IAggregate *create(int itemType, IModelItem *parent = 0) = 0;
+    virtual IAggregate *create(int itemType, IAggregate *parent = 0) = 0;
 
     int interfaceType() const
     {
