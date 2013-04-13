@@ -26,6 +26,8 @@
 #  define MI_CORE_EXPORT Q_DECL_IMPORT
 #endif
 
+#define qobject_cast qobject_cast
+
 template <typename Container, typename LessThan>
 void qSort(Container &c, LessThan lessThan)
 {

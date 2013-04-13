@@ -20,8 +20,7 @@
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
 #include <ifilefiler.h>
-#include <imodeldata.h>
-#include <imodelitemlist.h>
+#include <imodelitem.h>
 #include <QDebug>
 #include <QFile>
 #include <QStringList>
@@ -44,10 +43,10 @@ static int attributeRole(const QString &name)
 
 static bool nextStartElement(QXmlStreamReader *reader)
 {
-    int tokenType = QXmlStreamReader::NoToken;
-    while (tokenType != QXmlStreamReader::StartElement) {
-        tokenType = reader->readNext();
-        if (tokenType == QXmlStreamReader::Invalid)
+    int token_type = QXmlStreamReader::NoToken;
+    while (token_type != QXmlStreamReader::StartElement) {
+        token_type = reader->readNext();
+        if (token_type == QXmlStreamReader::Invalid)
             continue;
         if (reader->atEnd())
             return false;
@@ -57,54 +56,47 @@ static bool nextStartElement(QXmlStreamReader *reader)
 
 static QXmlStreamReader::TokenType nextElement(QXmlStreamReader *reader)
 {
-    QXmlStreamReader::TokenType tokenType = QXmlStreamReader::NoToken;
-    while (tokenType != QXmlStreamReader::StartElement
-           && tokenType != QXmlStreamReader::EndElement) {
-        tokenType = reader->readNext();
+    QXmlStreamReader::TokenType token_type = QXmlStreamReader::NoToken;
+    while (token_type != QXmlStreamReader::StartElement
+           && token_type != QXmlStreamReader::EndElement) {
+        token_type = reader->readNext();
         if (reader->atEnd())
             return QXmlStreamReader::NoToken;
     }
-    return tokenType;
+    return token_type;
 }
 
 static bool readItem(IModelItem *item, QXmlStreamReader *reader)
 {
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    QString elementName = reader->name().toString();
-    if (elementName.isEmpty()) {
+    QString element_name = reader->name().toString();
+    if (element_name.isEmpty()) {
         qWarning() << Q_FUNC_INFO << ": Empty element name";
         return false;
     }
-    if (elementName.endsWith("List")) {
-        IModelItemList *list = QUERY(IModelItemList, item);
-        QString listElementName = elementName;
-        listElementName.chop(4);
-        int itemType = elementType(listElementName);
+    if (element_name.endsWith("List")) {
+        QString list_element_name = element_name;
+        list_element_name.chop(4);
+        int item_type = elementType(list_element_name);
         while (nextElement(reader) == QXmlStreamReader::StartElement) {
-            IModelItem *newItem = QUERY(IModelItem, factory->create(itemType));
-            list->append(newItem);
-            if (!readItem(newItem, reader)) {
-                qWarning() << Q_FUNC_INFO << ": failed to read list item in" << elementName;
+            IModelItem *new_item = query<IModelItem>(factory->create(item_type));
+            item->appendItem(new_item);
+            if (!readItem(new_item, reader)) {
+                qWarning() << Q_FUNC_INFO << ": failed to read list item in" << element_name;
                 return false;
             }
         }
     } else {
-        IModelData *data = QUERY(IModelData, item);
-        if (!data) {
-            qWarning() << Q_FUNC_INFO << ": Query IModelData failed in" << elementName;
-            return false;
-        }
         QXmlStreamAttributes attributes = reader->attributes();
         foreach (const QXmlStreamAttribute &attribute, attributes) {
-            QString roleString = attribute.name().toString();
-            int role = attributeRole(roleString);
+            int role = attributeRole(attribute.name().toString());
             if (InvalidRole == role) {
-                qWarning() << Q_FUNC_INFO << ": Invalid attribute role in" << elementName;
+                qWarning() << Q_FUNC_INFO << ": Invalid attribute role in" << element_name;
                 return false;
             }
-            data->set(attribute.value().toString(), role);
+            item->set(role, attribute.value().toString());
         }
-        if (elementName.endsWith("Curve")) {
+        if (element_name.endsWith("Curve")) {
             PointList points;
             while (nextElement(reader) == QXmlStreamReader::StartElement) {
                 Point point;
@@ -121,27 +113,27 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
                 points.append(point);
                 nextElement(reader);
             }
-            data->set(QVariant::fromValue(points), PointsRole);
+            item->set(PointsRole, QVariant::fromValue(points));
         } else {
             while (nextElement(reader) == QXmlStreamReader::StartElement) {
-                QString subElementName = reader->name().toString();
-                IModelItem *subItem = 0;
-                if (subElementName.endsWith("List")) {
-                    QString subElementListName = subElementName;
-                    subElementListName.chop(4);
-                    subItem = QUERY(IModelItem, item->findList(elementType(subElementListName)));
+                QString sub_element_name = reader->name().toString();
+                IModelItem *sub_item = 0;
+                if (sub_element_name.endsWith("List")) {
+                    QString sub_element_list_name = sub_element_name;
+                    sub_element_list_name.chop(4);
+                    sub_item = query<IModelItem>(item->findList(elementType(sub_element_list_name)));
                 } else
-                    subItem = item->findItem(elementType(subElementName));
-                if (!readItem(subItem, reader)) {
-                    qWarning() << Q_FUNC_INFO << ": Sub-item read failed in" << elementName << "at" << subElementName;
+                    sub_item = item->findItem(elementType(sub_element_name));
+                if (!readItem(sub_item, reader)) {
+                    qWarning() << Q_FUNC_INFO << ": Sub-item read failed in" << element_name << "at" << sub_element_name;
                     return false;
                 }
             }
         }
     }
-    QString endElementName = reader->name().toString();
-    if (endElementName != elementName)
-        qWarning() << Q_FUNC_INFO << ": Mismatched element start and end tags (" << elementName << "-->" << endElementName << ")";
+    QString end_element_name = reader->name().toString();
+    if (end_element_name != element_name)
+        qWarning() << Q_FUNC_INFO << ": Mismatched element start and end tags (" << element_name << "-->" << end_element_name << ")";
     return true;
 }
 
@@ -149,7 +141,7 @@ Reader::Reader(IAggregate *aggregate)
     :   _aggregate(aggregate)
     ,   _stream(0)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 Reader::~Reader()
@@ -178,15 +170,15 @@ int Reader::nextItemType()
         return -1;
     if (!nextStartElement(reader))
         return UnknownItem;
-    const QString elementName = reader->name().toString();
-    return elementType(elementName);
+    const QString element_name = reader->name().toString();
+    return elementType(element_name);
 }
 
 bool Reader::read(IModelItem *item)
 {
     if (!item)
         return false;
-    QFile *file = QUERY(IFileFiler, this)->file();
+    QFile *file = query<IFileFiler>(this)->file();
     if (file && file->open(QIODevice::ReadOnly))
         setStream(new QXmlStreamReader(file));
     QXmlStreamReader *reader = _stream;

@@ -3,9 +3,9 @@ load(../mi_core/mi_core.prf)
 
 DIRS = \
     database \
-#    filers \
+    filers \
 #    interfaces \
-#    models \
+    models \
     session \
     tools \
 

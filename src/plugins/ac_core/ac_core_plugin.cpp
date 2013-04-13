@@ -103,7 +103,6 @@ Q_EXPORT_PLUGIN(Ac::Core::Plugin)
 
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
-#include <imodeldata.h>
 #include <imodelitem.h>
 #include <QtDebug>
 
@@ -118,7 +117,7 @@ bool test_1()
     // Make sure querying aggregates succeeds.
     IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
     CHECK(control_curve);
-    IModelItem *item = QUERY(IModelItem, control_curve);
+    IModelItem *item = query<IModelItem>(control_curve);
     CHECK(item);
     delete control_curve;
     return true;
@@ -129,10 +128,10 @@ bool test_2()
     // Make sure setting item name succeeds.
     IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
     CHECK(control_curve);
-    IModelData *data = QUERY(IModelData, control_curve);
-    CHECK(data);
-    CHECK(data->set("ControlCurve", NameRole));
-    CHECK("ControlCurve" == data->get<QString>(NameRole));
+    IModelItem *item= query<IModelItem>(control_curve);
+    CHECK(item);
+    CHECK(item->set(NameRole, "ControlCurve"));
+    CHECK("ControlCurve" == get<QString>(item, NameRole));
     delete control_curve;
     return true;
 }

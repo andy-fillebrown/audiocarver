@@ -25,7 +25,7 @@ FileFiler::FileFiler(IAggregate *aggregate)
     :   _aggregate(aggregate)
     ,   _file(0)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 FileFiler::~FileFiler()

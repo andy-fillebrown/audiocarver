@@ -18,8 +18,6 @@
 #include "ac_core_trackmodel.h"
 #include "ac_core_model.h"
 #include "ac_core_namespace.h"
-#include <idatabase.h>
-#include <imodelitemlist.h>
 #include <QMimeData>
 #include <QStringList>
 

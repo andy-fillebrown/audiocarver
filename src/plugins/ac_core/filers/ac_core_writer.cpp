@@ -19,9 +19,7 @@
 #include "ac_core_point.h"
 #include <iaggregate.h>
 #include <ifilefiler.h>
-#include <imodeldata.h>
-#include <imodeliteminfo.h>
-#include <imodelitemlist.h>
+#include <imodelitem.h>
 #include <QFile>
 #include <QXmlStreamWriter>
 
@@ -44,41 +42,39 @@ static void writePoints(const PointList &points, QXmlStreamWriter *writer)
     }
 }
 
-static void writeItemData(IModelData *data, int roleIndex, QXmlStreamWriter *writer)
+static void writeItemData(IModelItem *item, int roleIndex, QXmlStreamWriter *writer)
 {
-    int role = data->roleAt(roleIndex);
-    QVariant variant = data->getValue(role);
+    int role = item->roleAt(roleIndex);
+    QVariant data = item->getValue(role);
     if (PointsRole == role)
-        writePoints(variant.value<PointList>(), writer);
+        writePoints(data.value<PointList>(), writer);
     else {
-        QString value_string = variant.toString();
-        if (!value_string.isEmpty())
-            writer->writeAttribute(itemDataRoleString(role), value_string);
+        QString data_string = data.toString();
+        if (!data_string.isEmpty())
+            writer->writeAttribute(itemDataRoleString(role), data_string);
     }
 }
 
 static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
 {
-    IModelItemInfo *info = QUERY(IModelItemInfo, item);
+    if (!item)
+        return false;
     QString element_name;
-    if (item->isList()) {
-        if (0 == item->count())
+    if (item->isTypeOfItem(ListItem)) {
+        if (0 == item->itemCount())
             return true;
-        element_name = itemTypeString(QUERY(IModelItemList, item)->listType()) + "List";
+        element_name = itemTypeString(get<int>(item, ListTypeRole)) + "List";
     } else
-        element_name = itemTypeString(info->itemType());
-    IModelData *data = QUERY(IModelData, item);
-    if (data && info->isTypeOfItem(CurveItem) && data->get<PointList>(PointsRole).isEmpty())
+        element_name = itemTypeString(item->itemType());
+    if (item->isTypeOfItem(CurveItem) && get<PointList>(item, PointsRole).isEmpty())
         return true;
     writer->writeStartElement(element_name);
-    if (data) {
-        int roleCount = data->roleCount();
-        for (int i = 0;  i < roleCount;  ++i)
-            writeItemData(data, i, writer);
-    }
-    int item_count = item->count();
+    int role_count = item->roleCount();
+    for (int i = 0;  i < role_count;  ++i)
+        writeItemData(item, i, writer);
+    int item_count = item->itemCount();
     for (int i = 0;  i < item_count;  ++i)
-        if (!writeItem(item->at(i), writer))
+        if (!writeItem(item->itemAt(i), writer))
             return false;
     writer->writeEndElement();
     return true;
@@ -88,7 +84,7 @@ Writer::Writer(IAggregate *aggregate)
     :   _aggregate(aggregate)
     ,   _stream(0)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 Writer::~Writer()
@@ -115,7 +111,7 @@ bool Writer::write(IModelItem *item)
 {
     if (!item)
         return false;
-    QFile *file = QUERY(IFileFiler, this)->file();
+    QFile *file = query<IFileFiler>(this)->file();
     if (file && file->open(QIODevice::WriteOnly))
         setStream(new QXmlStreamWriter(file));
     QXmlStreamWriter *writer = _stream;
