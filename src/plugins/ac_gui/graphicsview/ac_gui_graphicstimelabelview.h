@@ -31,7 +31,7 @@ protected:
         return qreal(0.5f) * sceneTransform().m11();
     }
 
-    IModelItemList *gridLineList() const;
+    IModelItem *gridLineList() const;
     int scaleRole() const;
     int sceneType() const;
     int horizontalPositionRole() const;

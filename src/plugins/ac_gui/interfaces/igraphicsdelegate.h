@@ -36,7 +36,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

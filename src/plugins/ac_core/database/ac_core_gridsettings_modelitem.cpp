@@ -70,17 +70,17 @@ IModelItem *ModelItem::itemAt(int i) const
     }
 }
 
-IModelItem *ModelItem::findList(int listType) const
+IModelItem *ModelItem::findItem(int itemType) const
 {
-    switch (listType) {
-    case TimeGridLineItem:
+    switch (itemType) {
+    case TimeGridLineListItem:
         return query<IModelItem>(aggregate()->timeGridLines);
-    case PitchGridLineItem:
+    case PitchGridLineListItem:
         return query<ModelItem>(aggregate()->pitchGridLines);
-    case ControlGridLineItem:
+    case ControlGridLineListItem:
         return query<IModelItem>(aggregate()->controlGridLines);
     default:
-        return Object::ModelItem::findList(listType);
+        return Object::ModelItem::findItem(itemType);
     }
 }
 

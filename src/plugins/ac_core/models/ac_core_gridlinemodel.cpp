@@ -15,17 +15,17 @@
 **
 **************************************************************************/
 
-#include "ac_gridlinemodel.h"
-
-#include <mi_idatabase.h>
-#include <mi_idataobjectfactory.h>
-#include <mi_ifiler.h>
-#include <mi_ifilerfactory.h>
-#include <mi_imodel.h>
-#include <mi_imodellist.h>
-
-#include <ac_core_gridline.h>
-
+#include "ac_core_gridlinemodel.h"
+#include "ac_core_gridline_aggregate.h"
+#include "ac_core_namespace.h"
+#include <idatabase.h>
+#include <idatabaseobjectfactory.h>
+#include <ifilefiler.h>
+#include <ifilerfactory.h>
+#include <imodel.h>
+#include <imodelitem.h>
+#include <ireader.h>
+#include <iwriter.h>
 #include <QMetaProperty>
 
 using namespace Mi;
@@ -41,56 +41,57 @@ namespace Core {
 
 void GridLineModel::updateList()
 {
-    _list = query<IModel>(IDatabase::instance())->rootItem()->findItem(GridSettingsItem)->findList(_gridLineType);
+    _list = IDatabase::instance()->rootItem()->findItem(GridSettingsItem)->findItem(_listType);
     syncDataToList(_list);
 }
 
-void GridLineModel::syncDataToList(IModelList *list)
+void GridLineModel::syncDataToList(IModelItem *list)
 {
     _valueLists.clear();
-    const int row_count = list->count();
+    const int row_count = list->itemCount();
     const int column_count = columnCount();
     for (int i = 0;  i < row_count;  ++i) {
-        IModelItem *item = list->at(i);
-        const IModelData *data = query<IModelData>(item);
+        IModelItem *item = list->itemAt(i);
         QList<QVariant> values;
         for (int j = 0;  j < column_count;  ++j)
-            values.append(data->getVariant(data->roleAt(GridLine::RoleCountOffset + j)));
+            values.append(item->getValue(item->roleAt(GridLine::Aggregate::RoleCountOffset + j)));
         _valueLists.append(values);
     }
 }
 
-void GridLineModel::syncListToData(IModelList *list)
+void GridLineModel::syncListToData(IModelItem *list)
 {
     const int row_count = _valueLists.count();
     const int column_count = columnCount();
     for (int i = 0;  i < row_count;  ++i) {
         IModelItem *item = 0;
-        if (list->count() <= i) {
-            item = query<IModelItem>(query<IDataObjectFactory>(IDatabase::instance())->create(_gridLineType));
-            list->insert(i, item);
+        if (list->itemCount() <= i) {
+            QString grid_line_type_string = itemTypeString(_listType);
+            grid_line_type_string.chop(4);
+            int grid_line_type = itemType(grid_line_type_string);
+            item = query<IModelItem>(IDatabaseObjectFactory::instance()->create(grid_line_type));
+            list->insertItem(i, item);
         } else
-            item = list->at(i);
-        IModelData *data = query<IModelData>(item);
+            item = list->itemAt(i);
         for (int j = 0;  j < column_count;  ++j)
-            data->set(_valueLists.at(i).at(j), data->roleAt(GridLine::RoleCountOffset + j));
+            item->set(item->roleAt(GridLine::Aggregate::RoleCountOffset + j), _valueLists.at(i).at(j));
     }
 
     // Remove the remaining items from the list.
-    int item_count = list->count();
+    int item_count = list->itemCount();
     if (row_count < item_count) {
         while (row_count < item_count) {
-            query<IModelData>(list->at(--item_count))->set(false, VisibilityRole);
-            list->removeAt(item_count);
+            list->itemAt(--item_count)->set(VisibilityRole, false);
+            list->removeItemAt(item_count);
         }
     }
 }
 
-void GridLineModel::setGridLineType(int type)
+void GridLineModel::setListType(int type)
 {
-    if (_gridLineType == type)
+    if (_listType == type)
         return;
-    _gridLineType = type;
+    _listType = type;
     updateList();
 }
 
@@ -98,15 +99,14 @@ bool GridLineModel::isChanged() const
 {
     if (!_list)
         return false;
-    const int item_count = _list->count();
+    const int item_count = _list->itemCount();
     if (item_count != _valueLists.count())
         return true;
     const int column_count = columnCount();
     for (int i = 0;  i < item_count;  ++i) {
-        IModelData *data = query<IModelData>(_list->at(i));
         const QList<QVariant> &values = _valueLists.at(i);
         for (int j = 0;  j < column_count;  ++j)
-            if (data->getVariant(GridLine::RoleCountOffset + j) != values.at(j))
+            if (_list->itemAt(i)->getValue(GridLine::Aggregate::RoleCountOffset + j) != values.at(j))
                 return true;
     }
     return false;
@@ -122,7 +122,7 @@ void GridLineModel::resetData()
 
 int GridLineModel::columnCount(const QModelIndex &parent) const
 {
-    return GridLine::RoleCount - GridLine::RoleCountOffset;
+    return GridLine::Aggregate::RoleCount - GridLine::Aggregate::RoleCountOffset;
 }
 
 int GridLineModel::rowCount(const QModelIndex &parent) const
@@ -165,7 +165,7 @@ QVariant GridLineModel::headerData(int section, Qt::Orientation orientation, int
             || Horizontal != orientation
             || section < 0 || columnCount(QModelIndex()) <= section)
         return QVariant();
-    QString label(itemDataRoleString(GridLine::RoleCountOffset + section));
+    QString label(itemDataRoleString(GridLine::Aggregate::RoleCountOffset + section));
     label[0] = label.at(0).toUpper();
     return label;
 }
@@ -190,55 +190,55 @@ bool GridLineModel::setData(const QModelIndex &index, const QVariant &value, int
 
 void GridLineModel::importFromFile(const QString &fileName)
 {
-    IAggregator *list_a = 0;
-    IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
-    switch (_gridLineType) {
+    IAggregate *list_aggregate = 0;
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    switch (_listType) {
     case TimeGridLineItem:
-        list_a = factory->create(TimeGridLineListItem);
+        list_aggregate = factory->create(TimeGridLineListItem);
         break;
     case Ac::PitchGridLineItem:
-        list_a = factory->create(PitchGridLineListItem);
+        list_aggregate = factory->create(PitchGridLineListItem);
         break;
     case Ac::ControlGridLineItem:
-        list_a = factory->create(ControlGridLineListItem);
+        list_aggregate = factory->create(ControlGridLineListItem);
         break;
     default:
         return;
     }
-    IModelList *list = query<IModelList>(list_a);
-    IAggregator *filer = query<IFilerFactory>(IDatabase::instance())->create(FileFiler);
+    IModelItem *list = query<IModelItem>(list_aggregate);
+    IAggregate *filer = query<IFilerFactory>(IFilerFactory::instance())->create(FileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
     query<IReader>(filer)->read(list);
     syncDataToList(list);
     emit layoutChanged();
     delete filer;
-    delete list_a;
+    delete list_aggregate;
 }
 
 void GridLineModel::exportToFile(const QString &fileName)
 {
-    IAggregator *list_a = 0;
-    IDataObjectFactory *factory = query<IDataObjectFactory>(IDatabase::instance());
-    switch (_gridLineType) {
+    IAggregate *list_aggregate = 0;
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    switch (_listType) {
     case TimeGridLineItem:
-        list_a = factory->create(TimeGridLineListItem);
+        list_aggregate = factory->create(TimeGridLineListItem);
         break;
     case Ac::PitchGridLineItem:
-        list_a = factory->create(PitchGridLineListItem);
+        list_aggregate = factory->create(PitchGridLineListItem);
         break;
     case Ac::ControlGridLineItem:
-        list_a = factory->create(ControlGridLineListItem);
+        list_aggregate = factory->create(ControlGridLineListItem);
         break;
     default:
         return;
     }
-    IModelList *list = query<IModelList>(list_a);
+    IModelItem *list = query<IModelItem>(list_aggregate);
     syncListToData(list);
-    IAggregator *filer = query<IFilerFactory>(IDatabase::instance())->create(FileFiler);
+    IAggregate *filer = query<IFilerFactory>(IFilerFactory::instance())->create(FileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
     query<IWriter>(filer)->write(list);
     delete filer;
-    delete list_a;
+    delete list_aggregate;
 }
 
 void GridLineModel::apply()

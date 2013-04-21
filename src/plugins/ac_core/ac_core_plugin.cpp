@@ -46,15 +46,21 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     appendItemType(ScoreItem, "Score");
     appendItemType(TrackItem, "Track");
+    appendItemType(TrackListItem, "TrackList");
     appendItemType(NoteItem, "Note");
+    appendItemType(NoteListItem, "NoteList");
     appendItemType(PitchCurveItem, "PitchCurve");
     appendItemType(ControlCurveItem, "ControlCurve");
     appendItemType(GridSettingsItem, "GridSettings");
     appendItemType(TimeGridLineItem, "TimeGridLine");
+    appendItemType(TimeGridLineListItem, "TimeGridLineList");
     appendItemType(PitchGridLineItem, "PitchGridLine");
+    appendItemType(PitchGridLineListItem, "PitchGridLineList");
     appendItemType(ControlGridLineItem, "ControlGridLine");
-    appendItemType(ViewSettingsItem, "ViewSettings");
+    appendItemType(ControlGridLineListItem, "ControlGridLineList");
+    appendItemType(GridSettingsItem, "GridSettings");
     appendItemType(ProjectSettingsItem, "ProjectSettings");
+    appendItemType(ViewSettingsItem, "ViewSettings");
     appendItemDataRole(PointsRole, "points");
     appendItemDataRole(ControlTypeRole, "controlType");
     appendItemDataRole(LocationRole, "location");

@@ -18,18 +18,23 @@
 #ifndef IGRAPHICSITEM_H
 #define IGRAPHICSITEM_H
 
-#include <icomponent.h>
-#include "ac_gui_interfaces.h"
+#include <igraphicseditor.h>
 
-class IGraphicsItem : public IComponent
+class QGraphicsItem;
+
+class IGraphicsItem : public IGraphicsEditor
 {
 public:
     enum { InterfaceType = I::IGraphicsItem };
 
+    virtual int sceneType() const = 0;
+    virtual int transformType() const = 0;
     virtual IGraphicsItem *parent() const = 0;
-    virtual int count() const = 0;
-    virtual IGraphicsItem *at(int i) const = 0;
+    virtual int itemCount() const = 0;
+    virtual IGraphicsItem *itemAt(int i) const = 0;
     virtual IGraphicsItem *findItem(int itemType) const = 0;
+    virtual QGraphicsItem *findNode(int sceneType = -1, int transformType = -1) const = 0;
+    virtual bool intersects(const QRectF &rect) const = 0;
 
     int interfaceType() const
     {
@@ -38,7 +43,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType ? true : IComponent::isTypeOfInterface(interfaceType);
+        if (InterfaceType == interfaceType)
+            return true;
+        return IGraphicsEditor::isTypeOfInterface(interfaceType);
     }
 };
 

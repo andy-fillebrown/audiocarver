@@ -22,7 +22,6 @@
 #include <QVariant>
 
 #define get get
-#define qvariant_cast qvariant_cast
 
 class IModelItem : public IComponent
 {
@@ -39,7 +38,6 @@ public:
     virtual int indexOfItem(const IModelItem *item) const = 0;
     virtual IModelItem *itemAt(int i) const = 0;
     virtual IModelItem *findItem(int itemType) const = 0;
-    virtual IModelItem *findList(int listType) const = 0;
     virtual void insertItem(int i, IModelItem *item) = 0;
     virtual void removeItemAt(int i) = 0;
     virtual int roleCount() const = 0;

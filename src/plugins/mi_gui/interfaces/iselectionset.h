@@ -21,7 +21,7 @@
 #include <icomponent.h>
 #include "mi_gui_interfaces.h"
 
-class IGraphicsData;
+class IGraphicsItem;
 template <typename T> class QList;
 
 class ISelectionSet : public IComponent
@@ -29,11 +29,11 @@ class ISelectionSet : public IComponent
 public:
     enum { InterfaceType = I::ISelectionSet };
 
-    virtual const QList<IGraphicsData*> &items() const = 0;
-    virtual bool append(IGraphicsData *item) = 0;
-    virtual bool append(const QList<IGraphicsData*> &items) = 0;
-    virtual bool remove(IGraphicsData *item) = 0;
-    virtual bool remove(const QList<IGraphicsData*> &items) = 0;
+    virtual const QList<IGraphicsItem*> &items() const = 0;
+    virtual bool append(IGraphicsItem *item) = 0;
+    virtual bool append(const QList<IGraphicsItem*> &items) = 0;
+    virtual bool remove(IGraphicsItem *item) = 0;
+    virtual bool remove(const QList<IGraphicsItem*> &items) = 0;
     virtual void clear() = 0;
 
     int interfaceType() const

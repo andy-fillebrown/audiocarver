@@ -20,8 +20,7 @@
 
 #include <QObject>
 
-class IGraphicsData;
-class IModelData;
+class IGraphicsItem;
 class IModelItem;
 class QGraphicsView;
 class QModelIndex;
@@ -52,7 +51,7 @@ public:
     void clearPickedGrips();
     QPointF snappedScenePos(const QPointF &pos, int sceneType) const;
 
-    void updateSelection(const QList<IGraphicsData*> &ss);
+    void updateSelection(const QList<IGraphicsItem*> &ss);
 
 public slots:
     void updateViews();
@@ -61,7 +60,7 @@ public slots:
     void databaseAboutToBeWritten();
     void disableUpdates();
     void enableUpdates();
-    void dataChanged(const IModelData *data);
+    void dataChanged(const IModelItem *item);
     void modelReset();
     void startInsertingPoints();
     void finishInsertingPoints();

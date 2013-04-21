@@ -52,12 +52,6 @@ protected:
 
     IModelItem *findItem(int itemType) const
     {
-        Q_ASSERT(0);
-        return 0;
-    }
-
-    IModelItem *findList(int listType) const
-    {
         return 0;
     }
 

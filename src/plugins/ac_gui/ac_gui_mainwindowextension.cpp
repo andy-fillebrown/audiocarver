@@ -31,8 +31,7 @@
 #include <idatabaseobjectfactory.h>
 #include <ieditor.h>
 #include <imodel.h>
-#include <imodeldata.h>
-#include <imodelitemlist.h>
+#include <imodelitem.h>
 //#include <iqaudioengine.h>
 //#include <isynthesizer.h>
 #include <mi_gui_constants.h>
@@ -204,9 +203,9 @@ void MainWindowExtension::createTrack()
 {
     IEditor *editor = IEditor::instance();
     editor->beginCommand();
-    IModelItemList *track_list = IDatabase::instance()->rootItem()->findList(TrackItem);
-    IModelItem *track = QUERY(IModelItem, IDatabaseObjectFactory::instance()->create(TrackItem));
-    track_list->append(track);
+    IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
+    IModelItem *track = query<IModelItem>(IDatabaseObjectFactory::instance()->create(TrackItem));
+    track_list->appendItem(track);
     editor->endCommand();
 }
 
@@ -294,8 +293,8 @@ void MainWindowExtension::startOrStop()
 
 void MainWindowExtension::start()
 {
-    IModelData *score = QUERY(IModelData, IDatabase::instance()->rootItem());
-    if (score->get<int>(StartTimeRole) == score->get<int>(LengthRole)) {
+    IModelItem *score = IDatabase::instance()->rootItem();
+    if (get<int>(score, StartTimeRole) == get<int>(score, LengthRole)) {
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
         return;
     }

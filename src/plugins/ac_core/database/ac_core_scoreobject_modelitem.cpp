@@ -63,20 +63,12 @@ IModelItem *ModelItem::itemAt(int i) const
 IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
+    case ControlCurveListItem:
+        return query<IModelItem>(aggregate()->controlCurve);
     case PitchCurveItem:
         return query<IModelItem>(aggregate()->pitchCurve);
     default:
         return Object::ModelItem::findItem(itemType);
-    }
-}
-
-IModelItem *ModelItem::findList(int listType) const
-{
-    switch (listType) {
-    case ControlCurveItem:
-        return query<IModelItem>(aggregate()->controlCurve);
-    default:
-        return Object::ModelItem::findList(listType);
     }
 }
 

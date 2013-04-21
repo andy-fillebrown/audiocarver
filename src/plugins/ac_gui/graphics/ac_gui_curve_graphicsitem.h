@@ -19,44 +19,25 @@
 #define AC_GUI_CURVE_GRAPHICSITEM_H
 
 #include "ac_gui_base_graphicsitem.h"
-#include "ac_gui_object_graphicsitemhelper.h"
+
+class GraphicsCurveNode;
 
 namespace Curve {
 
 class GraphicsItem : public Base::GraphicsItem
 {
-    Object::GraphicsItemHelper _helper;
-    IAggregate *_grips;
+    GraphicsCurveNode *_curveNode;
 
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Base::GraphicsItem(aggregate)
-        ,   _helper(this)
-        ,   _grips(0)
-    {}
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
     ~GraphicsItem();
 
-    IAggregate *&grips()
-    {
-        return _grips;
-    }
-
-    void initialize();
-
-    IGraphicsItem *parent() const
-    {
-        return _helper.parent();
-    }
-
-    int count() const
-    {
-        return 1;
-    }
-
-    IGraphicsItem *at(int i) const;
-    IGraphicsItem *findItem(int itemType) const;
+    int transformType() const;
+    bool intersects(const QRectF &rect) const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
 };
 
 }

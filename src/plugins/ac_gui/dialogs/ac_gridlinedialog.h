@@ -44,4 +44,4 @@ private:
     GridLineDialogPrivate *d;
 };
 
-#endif // AC_GRIDLINEDIALOG_H
+#endif

@@ -20,7 +20,7 @@
 
 namespace Gui {
 
-bool SelectionSet::append(IGraphicsData *item)
+bool SelectionSet::append(IGraphicsItem *item)
 {
     if (_items.contains(item))
         return false;
@@ -29,10 +29,10 @@ bool SelectionSet::append(IGraphicsData *item)
     return true;
 }
 
-bool SelectionSet::append(const QList<IGraphicsData*> &items)
+bool SelectionSet::append(const QList<IGraphicsItem*> &items)
 {
     bool items_to_append = false;
-    foreach (IGraphicsData *item, items) {
+    foreach (IGraphicsItem *item, items) {
         if (_items.contains(item))
             continue;
         items_to_append = true;
@@ -41,7 +41,7 @@ bool SelectionSet::append(const QList<IGraphicsData*> &items)
     if (!items_to_append)
         return false;
     ScopedSelectionChange scoped_selection_change(this);
-    foreach (IGraphicsData *item, items) {
+    foreach (IGraphicsItem *item, items) {
         if (_items.contains(item))
             continue;
         _items.append(item);
@@ -49,7 +49,7 @@ bool SelectionSet::append(const QList<IGraphicsData*> &items)
     return true;
 }
 
-bool SelectionSet::remove(IGraphicsData *item)
+bool SelectionSet::remove(IGraphicsItem *item)
 {
     if (!_items.contains(item))
         return false;
@@ -58,10 +58,10 @@ bool SelectionSet::remove(IGraphicsData *item)
     return true;
 }
 
-bool SelectionSet::remove(const QList<IGraphicsData*> &items)
+bool SelectionSet::remove(const QList<IGraphicsItem*> &items)
 {
     bool items_to_remove = false;
-    foreach (IGraphicsData *item, items) {
+    foreach (IGraphicsItem *item, items) {
         if (!_items.contains(item))
             continue;
         items_to_remove = true;
@@ -70,7 +70,7 @@ bool SelectionSet::remove(const QList<IGraphicsData*> &items)
     if (!items_to_remove)
         return false;
     ScopedSelectionChange scoped_selection_change(this);
-    foreach (IGraphicsData *item, items)
+    foreach (IGraphicsItem *item, items)
         _items.removeOne(item);
     return true;
 }

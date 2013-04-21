@@ -24,10 +24,6 @@ namespace Ac {
 
 enum GuiItemType {
     VelocityItem = Ac::CoreItemTypeCount,
-    GripListItem,
-    CurveGripListItem,
-    VelocityGripListItem,
-    GripItem,
     GuiItemTypeCount
 };
 

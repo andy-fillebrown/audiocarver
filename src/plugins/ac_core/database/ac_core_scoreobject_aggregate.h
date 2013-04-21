@@ -42,6 +42,8 @@ public:
         RoleCountOffset = Object::Aggregate::TotalRoleCount,
         TotalRoleCount = RoleCountOffset + RoleCount
     };
+
+    void initialize();
 };
 
 }

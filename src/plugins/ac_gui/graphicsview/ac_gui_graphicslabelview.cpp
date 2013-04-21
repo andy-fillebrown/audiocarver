@@ -20,8 +20,7 @@
 #include <ac_core_namespace.h>
 #include <idatabase.h>
 #include <imodel.h>
-#include <imodeldata.h>
-#include <imodelitemlist.h>
+#include <imodelitem.h>
 #include <QMouseEvent>
 #include <QModelIndex>
 
@@ -39,17 +38,17 @@ GraphicsLabelView::GraphicsLabelView(QGraphicsScene *scene, QWidget *parent)
 void GraphicsLabelView::updateGridLineVisibilities()
 {
     const qreal padding = qreal(30.0f) / paddingScale();
-    IModelItemList *grid_lines = gridLineList();
-    const int n = grid_lines->count();
+    IModelItem *grid_lines = gridLineList();
+    const int n = grid_lines->itemCount();
     int minPriority = INT_MAX;
     int prevPriority = 0;
     qreal prevLocation = qreal(-1.0f);
     for (int i = 0;  i < n;  ++i) {
-        IModelData *line = QUERY(IModelData, grid_lines->at(i));
-        int curPriority = line->get<int>(PriorityRole);
+        IModelItem *line = query<IModelItem>(grid_lines->itemAt(i));
+        int curPriority = get<int>(line, PriorityRole);
         if (minPriority && (minPriority < curPriority))
             continue;
-        const qreal curLocation = line->get<qreal>(LocationRole);
+        const qreal curLocation = get<qreal>(line, LocationRole);
         if (curPriority && (curLocation < prevLocation))
             minPriority = qMin(minPriority, qMax(prevPriority, curPriority));
         else {
@@ -58,15 +57,15 @@ void GraphicsLabelView::updateGridLineVisibilities()
         }
     }
     for (int i = 0;  i < n;  ++i) {
-        IModelData *line = QUERY(IModelData, grid_lines->at(i));
-        if (line->get<int>(PriorityRole) <= minPriority) {
-            if (!line->get<bool>(VisibilityRole)) {
+        IModelItem *line = query<IModelItem>(grid_lines->itemAt(i));
+        if (get<int>(line, PriorityRole) <= minPriority) {
+            if (!get<bool>(line, VisibilityRole)) {
                 setUpdatesEnabled(false);
                 _updatesDisabled = true;
                 line->set(true, VisibilityRole);
             }
         } else {
-            if (line->get<bool>(VisibilityRole)) {
+            if (get<bool>(line, VisibilityRole)) {
                 setUpdatesEnabled(false);
                 _updatesDisabled = true;
                 line->set(false, VisibilityRole);

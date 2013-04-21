@@ -16,38 +16,64 @@
 **************************************************************************/
 
 #include "ac_gui_curve_graphicsitem.h"
+#include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
-#include <imodelitem.h>
 
 using namespace Ac;
 
 namespace Curve {
 
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Base::GraphicsItem(aggregate)
+    ,   _curveNode(0)
+{
+    _curveNode = new GraphicsCurveNode;
+    _curveNode->setGraphicsItem(this);
+}
+
 GraphicsItem::~GraphicsItem()
 {
-    delete _grips;
+    qDelete(_curveNode);
 }
 
-void GraphicsItem::initialize()
+int GraphicsItem::transformType() const
 {
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    _grips = factory->create(CurveGripListItem, QUERY(IModelItem, this));
+    return MainTransform;
 }
 
-IGraphicsItem *GraphicsItem::at(int i) const
+bool GraphicsItem::intersects(const QRectF &rect) const
 {
-    if (0 == i)
-        return QUERY(IGraphicsItem, _grips);
-    return 0;
+    return _curveNode->intersects(rect);
 }
 
-IGraphicsItem *GraphicsItem::findItem(int itemType) const
+QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const
 {
-    if (GripListItem == itemType)
-        return QUERY(IGraphicsItem, _grips);
-    return 0;
+    Q_ASSERT(UnspecifiedScene == sceneType);
+    Q_ASSERT(UnspecifiedTransform == transformType);
+    return _curveNode;
+}
+
+void GraphicsItem::update(int role, const QVariant &value)
+{
+    QVariant actual_value = value;
+    switch (role) {
+    case ColorRole:
+        _curveNode->setColor(qvariant_cast<QColor>(value));
+        break;
+    case PointsRole: {
+        PointList points = qvariant_cast<PointList>(value);
+        const int point_count = points.count();
+        for (int i = 0;  i < point_count;  ++i) {
+            Point &point = points[i];
+            point.pos.rx() = qMax(qreal(0.0f), point.pos.rx());
+        }
+        actual_value = QVariant::fromValue(points);
+        _curveNode->setPoints(qvariant_cast<PointList>(actual_value));
+    }   break;
+    case HighlightRole:
+        _curveNode->highlight(qvariant_cast<bool>(value));
+        break;
+    }
 }
 
 }

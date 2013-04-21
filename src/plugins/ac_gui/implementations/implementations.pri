@@ -1,12 +1,9 @@
 
 SOURCE_FILES = \
-    graphicscurvedata \
-    graphicsdata \
     graphicsdelegate \
+    graphicsgrip \
+    graphicsgriplist \
     graphicsitem \
-    graphicsiteminfo \
-    gripdata \
-    griplistdata \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_base_$${file}.h

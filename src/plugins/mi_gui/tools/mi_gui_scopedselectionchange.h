@@ -34,10 +34,10 @@ public:
     {
         if (!_ss)
             return;
-        const QList<IComponent*> &components = QUERY(IAggregate, _ss)->components();
+        const QList<IComponent*> &components = query<IAggregate>(_ss)->components();
         foreach (IComponent *component, components)
             if (component->isTypeOfInterface(I::ISelectionSetWatcher))
-                _watchers.append(QUERY(ISelectionSetWatcher, component));
+                _watchers.append(query<ISelectionSetWatcher>(component));
         foreach (ISelectionSetWatcher *watcher, _watchers)
             watcher->beginChangeSelection(_ss);
     }

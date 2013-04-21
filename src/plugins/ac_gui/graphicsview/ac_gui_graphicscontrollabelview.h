@@ -26,7 +26,7 @@ public:
     GraphicsControlLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
 
 protected:
-    IModelItemList *gridLineList() const;
+    IModelItem *gridLineList() const;
     int verticalPositionRole() const;
     int verticalScaleRole() const;
     int sceneType() const;

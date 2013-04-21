@@ -16,8 +16,10 @@
 **************************************************************************/
 
 #include "ac_gui_scoreobject_graphicsitem.h"
+#include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 #include <imodelitem.h>
+#include <QGraphicsItem>
 
 using namespace Ac;
 
@@ -25,25 +27,36 @@ namespace ScoreObject {
 
 GraphicsItem::GraphicsItem(IAggregate *aggregate)
     :   Base::GraphicsItem(aggregate)
-    ,   _helper(this)
-{}
-
-int GraphicsItem::count() const
 {
-    IModelItem *this_item = QUERY(IModelItem, this);
-    return this_item->count();
+    _mainNodes.insert(PitchScene, new GraphicsNode);
+    _mainNodes.insert(ControlScene, new GraphicsNode);
 }
 
-IGraphicsItem *GraphicsItem::at(int i) const
+GraphicsItem::~GraphicsItem()
 {
-    IModelItem *this_item = QUERY(IModelItem, this);
-    return QUERY(IGraphicsItem, this_item->at(i));
+    for (int i = 0;  i < SceneTypeCount;  ++i) {
+        delete _mainNodes.value(i);
+        _mainNodes.insert(i, 0);
+    }
 }
 
-IGraphicsItem *GraphicsItem::findItem(int itemType) const
+QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const
 {
-    IModelItem *this_item = QUERY(IModelItem, this);
-    return QUERY(IGraphicsItem, this_item->findItem(itemType));
+    if (MainTransform == transformType)
+        return _mainNodes.value(sceneType);
+    return 0;
+}
+
+void GraphicsItem::update(int role, const QVariant &value)
+{
+    if (VisibilityRole == role) {
+        bool visible = qvariant_cast<bool>(value);
+        for (int i = 0;  i < SceneTypeCount;  ++i) {
+            QGraphicsItem *node = _mainNodes.value(i);
+            if (node)
+                node->setVisible(visible);
+        }
+    }
 }
 
 }

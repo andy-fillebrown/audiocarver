@@ -20,6 +20,8 @@
 #include "mi_core_namespace.h"
 #include "mi_core_scopeddatachange.h"
 #include "mi_core_scopedparentchange.h"
+#include <mi_core_namespace.h>
+#include <QtDebug>
 
 using namespace Mi;
 using namespace Qt;
@@ -90,7 +92,7 @@ bool ModelItem::setValue(int role, const QVariant &value)
         return true;
     }
     default:
-        Q_ASSERT(false);
+        qWarning() << Q_FUNC_INFO << QString("invalid role (%1)").arg(itemDataRoleString(role));
         return false;
     }
 }

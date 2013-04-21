@@ -21,8 +21,8 @@
 #include <mi_gui_graphicsview.h>
 #include <QModelIndex>
 
-class IGraphicsData;
-class IGripData;
+class IGraphicsGrip;
+class IGraphicsItem;
 class QItemSelection;
 
 class GraphicsViewPrivate;
@@ -52,7 +52,7 @@ public:
 //    void startGripDrag();
     void clearPickedGrips();
 
-    void updateSelection(const QList<IGraphicsData*> &ss);
+    void updateSelection(const QList<IGraphicsItem*> &ss);
 
 public slots:
     void modelAboutToBeReset();
@@ -97,7 +97,7 @@ protected:
 
 private slots:
     void clearGripSelection();
-    void gripDeselected(IGripData *grip);
+    void gripDeselected(IGraphicsGrip *grip);
     void modelAboutToBeDestroyed();
 };
 

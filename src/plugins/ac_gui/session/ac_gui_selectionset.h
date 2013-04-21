@@ -25,7 +25,7 @@ namespace Gui {
 
 class SelectionSet : public Base::SelectionSet
 {
-    QList<IGraphicsData*> _items;
+    QList<IGraphicsItem*> _items;
 
 public:
     SelectionSet(IAggregate *aggregate)
@@ -33,15 +33,15 @@ public:
     {}
 
 protected:
-    const QList<IGraphicsData*> &items() const
+    const QList<IGraphicsItem*> &items() const
     {
         return _items;
     }
 
-    bool append(IGraphicsData *item);
-    bool append(const QList<IGraphicsData*> &items);
-    bool remove(IGraphicsData *item);
-    bool remove(const QList<IGraphicsData*> &items);
+    bool append(IGraphicsItem *item);
+    bool append(const QList<IGraphicsItem*> &items);
+    bool remove(IGraphicsItem *item);
+    bool remove(const QList<IGraphicsItem*> &items);
     void clear();
 };
 

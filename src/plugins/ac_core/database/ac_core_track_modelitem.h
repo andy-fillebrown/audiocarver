@@ -38,7 +38,7 @@ protected:
     int itemCount() const;
     int indexOfItem(const IModelItem *item) const;
     IModelItem *itemAt(int i) const;
-    IModelItem *findList(int listType) const;
+    IModelItem *findItem(int itemType) const;
     int roleCount() const;
     int roleAt(int i) const;
     QVariant getValue(int role) const;

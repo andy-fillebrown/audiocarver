@@ -1,10 +1,8 @@
 
 SOURCE_FILES = \
-    note_graphicsitemupdater \
-    object_graphicsdataupdater \
-    object_graphicsentityitemupdater \
-    object_graphicsitemupdater \
-    tracklist_graphicsdataupdater \
+    note_graphicsupdater \
+    object_graphicsupdater \
+    tracklist_graphicsupdater \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_$${file}.h

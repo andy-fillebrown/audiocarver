@@ -19,10 +19,9 @@
 #define AC_GRIDLINEMODEL_H
 
 #include <QAbstractTableModel>
-
 #include <ac_core_global.h>
 
-class IModelList;
+class IModelItem;
 
 namespace Ac {
 namespace Core {
@@ -31,22 +30,22 @@ class AC_CORE_EXPORT GridLineModel : public QAbstractTableModel
 {
     Q_OBJECT
 
-    int _gridLineType;
-    IModelList *_list;
+    int _listType;
+    IModelItem *_list;
     QList<QList<QVariant> > _valueLists;
 
     void updateList();
-    void syncDataToList(IModelList *list);
-    void syncListToData(IModelList *list);
+    void syncDataToList(IModelItem *list);
+    void syncListToData(IModelItem *list);
 
 public:
     GridLineModel(QObject *parent = 0)
         :   QAbstractTableModel(parent)
-        ,   _gridLineType(0)
+        ,   _listType(0)
         ,   _list(0)
     {}
 
-    void setGridLineType(int type);
+    void setListType(int type);
     bool isChanged() const;
     void resetData();
 

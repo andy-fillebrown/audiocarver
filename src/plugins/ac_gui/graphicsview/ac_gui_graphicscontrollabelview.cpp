@@ -35,9 +35,9 @@ GraphicsControlLabelView::GraphicsControlLabelView(QGraphicsScene *scene, QWidge
                   "}");
 }
 
-IModelItemList *GraphicsControlLabelView::gridLineList() const
+IModelItem *GraphicsControlLabelView::gridLineList() const
 {
-    return IDatabase::instance()->rootItem()->findList(ControlGridLineItem);
+    return IDatabase::instance()->rootItem()->findItem(ControlGridLineListItem);
 }
 
 int GraphicsControlLabelView::verticalPositionRole() const

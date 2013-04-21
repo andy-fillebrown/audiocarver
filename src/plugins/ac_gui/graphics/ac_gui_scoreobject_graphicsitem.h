@@ -19,8 +19,6 @@
 #define AC_GUI_SCOREOBJECT_GRAPHICSITEM_H
 
 #include "ac_gui_base_graphicsitem.h"
-#include "ac_gui_object_graphicsitemhelper.h"
-#include <QMap>
 
 class QGraphicsItem;
 
@@ -28,19 +26,21 @@ namespace ScoreObject {
 
 class GraphicsItem : public Base::GraphicsItem
 {
-    Object::GraphicsItemHelper _helper;
+    QMap<int, QGraphicsItem*> _mainNodes;
 
-protected:
+public:
     GraphicsItem(IAggregate *aggregate);
 
-    IGraphicsItem *parent() const
+protected:
+    ~GraphicsItem();
+
+    QMap<int, QGraphicsItem*> &mainNodes()
     {
-        return _helper.parent();
+        return _mainNodes;
     }
 
-    int count() const;
-    IGraphicsItem *at(int i) const;
-    IGraphicsItem *findItem(int itemType) const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
 };
 
 }

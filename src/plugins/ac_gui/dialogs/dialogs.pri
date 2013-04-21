@@ -1,11 +1,9 @@
 
-SOURCE_PAIRS = \
-    ac_gridlinedialog \
+SOURCE_FILES = \
+    gridlinedialog \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= dialogs/$${pair}.h
-    SOURCES *= dialogs/$${pair}.cpp
+for(file, SOURCE_FILES) {
+    HEADERS *= dialogs/ac_$${file}.h
+    SOURCES *= dialogs/ac_$${file}.cpp
+    FORMS *= dialogs/ac_$${file}.ui
 }
-
-FORMS *= \
-    ac_gridlinedialog.ui \

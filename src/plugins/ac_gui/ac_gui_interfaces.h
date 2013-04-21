@@ -23,13 +23,11 @@
 namespace I {
 
 enum AcGuiInterfaces {
-    IGraphicsItemInfo = AcCoreInterfaceCount,
+    IGraphicsEditor = AcCoreInterfaceCount,
     IGraphicsItem,
-    IGraphicsData,
-    IGraphicsCurveData,
+    IGraphicsGrip,
+    IGraphicsGripList,
     IGraphicsDelegate,
-    IGripListData,
-    IGripData,
     IPlayCursor,
     IGraphicsScene,
     IGraphicsView,

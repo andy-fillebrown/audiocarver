@@ -64,16 +64,6 @@ protected:
         return 0;
     }
 
-    IModelItem *findItem(int itemType) const
-    {
-        return 0;
-    }
-
-    IModelItem *findList(int listType) const
-    {
-        return 0;
-    }
-
     void insertItem(int i, IModelItem *item)
     {}
 

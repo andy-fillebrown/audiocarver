@@ -16,8 +16,12 @@
 **************************************************************************/
 
 #include "ac_gui_base_graphicsitem.h"
+#include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <imodelitem.h>
+
+using namespace Ac;
+using namespace Mi;
 
 namespace Base {
 
@@ -30,7 +34,30 @@ void *GraphicsItem::queryInterface(int interfaceType) const
 GraphicsItem::GraphicsItem(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
+}
+
+IGraphicsItem *GraphicsItem::parent() const
+{
+    IModelItem *parent_item = query<IModelItem>(this)->parent();
+    if (parent_item && parent_item->isTypeOfItem(ListItem))
+        parent_item = parent_item->parent();
+    return query<IGraphicsItem>(parent_item);
+}
+
+int GraphicsItem::itemCount() const
+{
+    return query<IModelItem>(this)->itemCount();
+}
+
+IGraphicsItem *GraphicsItem::itemAt(int i) const
+{
+    return query<IGraphicsItem>(query<IModelItem>(this)->itemAt(i));
+}
+
+IGraphicsItem *GraphicsItem::findItem(int itemType) const
+{
+    return query<IGraphicsItem>(query<IModelItem>(this)->findItem(itemType));
 }
 
 }

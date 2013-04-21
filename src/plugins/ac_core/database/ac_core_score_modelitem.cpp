@@ -77,6 +77,8 @@ IModelItem *ModelItem::itemAt(int i) const
 IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
+    case TrackListItem:
+        return query<IModelItem>(aggregate()->tracks);
     case GridSettingsItem:
         return query<IModelItem>(aggregate()->gridSettings);
     case ProjectSettingsItem:
@@ -85,16 +87,6 @@ IModelItem *ModelItem::findItem(int itemType) const
         return query<IModelItem>(aggregate()->viewSettings);
     default:
         return Object::ModelItem::findItem(itemType);
-    }
-}
-
-IModelItem *ModelItem::findList(int listType) const
-{
-    switch (listType) {
-    case TrackItem:
-        return query<IModelItem>(aggregate()->tracks);
-    default:
-        return Object::ModelItem::findList(listType);
     }
 }
 

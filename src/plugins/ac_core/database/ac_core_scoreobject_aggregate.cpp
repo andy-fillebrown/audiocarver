@@ -29,16 +29,20 @@ Aggregate::Aggregate(IAggregate *aggregate)
     ,   pitchCurve(0)
     ,   controlCurve(0)
     ,   volume(DEFAULT_SCOREOBJECT_VOLUME)
-{
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    pitchCurve = factory->create(PitchCurveItem, this);
-    controlCurve = factory->create(ControlCurveItem, this);
-}
+{}
 
 Aggregate::~Aggregate()
 {
     qDelete(controlCurve);
     qDelete(pitchCurve);
+}
+
+void Aggregate::initialize()
+{
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    pitchCurve = factory->create(PitchCurveItem, this);
+    controlCurve = factory->create(ControlCurveItem, this);
+    Object::Aggregate::initialize();
 }
 
 }

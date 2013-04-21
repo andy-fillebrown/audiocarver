@@ -65,7 +65,6 @@ Q_EXPORT_PLUGIN(Ac::Gui::Plugin)
 
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
-#include <imodeldata.h>
 #include <imodelitem.h>
 #include <QtDebug>
 

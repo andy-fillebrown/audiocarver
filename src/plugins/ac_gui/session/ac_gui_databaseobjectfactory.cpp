@@ -16,136 +16,116 @@
 **************************************************************************/
 
 #include "ac_gui_databaseobjectfactory.h"
-#include "ac_gui_controlcurve_graphicsiteminfo.h"
-#include "ac_gui_controlgridline_graphicsdata.h"
-#include "ac_gui_curve_graphicsdata.h"
-#include "ac_gui_curve_graphicsdelegate.h"
-#include "ac_gui_curve_graphicsitem.h"
-#include "ac_gui_curve_griplistdata.h"
-#include "ac_gui_gridsettings_graphicsdata.h"
-#include "ac_gui_grip_graphicsdata.h"
+#include "ac_gui_controlcurve_graphicsitem.h"
+//#include "ac_gui_controlgridline_graphicsdata.h"
+//#include "ac_gui_gridsettings_graphicsdata.h"
+//#include "ac_gui_grip_graphicsdata.h"
 #include "ac_gui_namespace.h"
-#include "ac_gui_note_graphicsdata.h"
 #include "ac_gui_note_graphicsitem.h"
-#include "ac_gui_note_graphicsitemupdater.h"
-#include "ac_gui_object_graphicsdataupdater.h"
-#include "ac_gui_object_graphicsentityitemupdater.h"
-#include "ac_gui_object_graphicsitem.h"
-#include "ac_gui_object_graphicsitemupdater.h"
-#include "ac_gui_pitchcurve_graphicsdata.h"
-#include "ac_gui_pitchcurve_graphicsiteminfo.h"
-#include "ac_gui_pitchgridline_graphicsdata.h"
-#include "ac_gui_score_graphicsdata.h"
-#include "ac_gui_timegridline_graphicsdata.h"
-#include "ac_gui_track_graphicsdata.h"
-#include "ac_gui_tracklist_graphicsdataupdater.h"
-#include "ac_gui_velocity_graphicsdata.h"
-#include "ac_gui_velocity_graphicsdelegate.h"
+#include "ac_gui_note_graphicsupdater.h"
+//#include "ac_gui_object_graphicsitem.h"
+#include "ac_gui_object_graphicsupdater.h"
+#include "ac_gui_objectlist_graphicsitem.h"
+#include "ac_gui_pitchcurve_graphicsitem.h"
+#include "ac_gui_score_graphicsitem.h"
+#include "ac_gui_track_graphicsitem.h"
+#include "ac_gui_tracklist_graphicsupdater.h"
+//#include "ac_gui_velocity_graphicsdelegate.h"
+#include "ac_gui_velocity_modelitem.h"
 #include "ac_gui_velocity_graphicsitem.h"
-#include "ac_gui_velocity_griplistdata.h"
-#include <ac_core_controlcurve_modeldata.h>
-#include <ac_core_controlcurve_modeliteminfo.h>
-#include <ac_core_note_modeliteminfo.h>
-#include <ac_core_pitchcurve_modeldata.h>
-#include <ac_core_pitchcurve_modeliteminfo.h>
-#include <ac_core_scoreobject_modeldata.h>
-#include <mi_core_base_aggregate.h>
-#include <mi_core_object_modeldataupdater.h>
-#include <mi_core_object_modelitem.h>
-#include <mi_core_objectlist_modelitem.h>
-#include <imodelitem.h>
+//#include "ac_gui_velocity_griplistdata.h"
+#include <mi_core_object_aggregate.h>
 
 using namespace Ac;
 
 namespace Gui {
 
-IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *aggregate)
+IAggregate *DatabaseObjectFactory::createAggregate(int itemType, IAggregate *parent)
 {
     switch (itemType) {
+    case VelocityItem:
+        return new Object::Aggregate(parent);
+    default:
+        return Core::DatabaseObjectFactory::createAggregate(itemType, parent);
+    }
+}
+
+void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate)
+{
+    Core::DatabaseObjectFactory::createComponents(itemType, aggregate);
+    switch (itemType) {
     case ControlCurveItem:
-        new ControlCurve::GraphicsItemInfo(aggregate);
-        new Curve::GraphicsData(aggregate);
-        new Curve::GraphicsItem(aggregate);
-        new Curve::GraphicsDelegate(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
+        new ControlCurve::GraphicsItem(aggregate);
+//        new Curve::GraphicsDelegate(aggregate);
+        new Object::GraphicsUpdater(aggregate);
         break;
-    case ControlGridLineItem:
-        new ControlGridLine::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::GraphicsEntityItemUpdater(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
-        break;
-    case CurveGripListItem:
-        new Curve::GripListData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::ModelItem(aggregate);
-        return aggregate;
-    case GridSettingsItem:
-        new GridSettings::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::GraphicsEntityItemUpdater(aggregate);
-        break;
-    case GripItem:
-        new Grip::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::ModelItem(aggregate);
-        return aggregate;
+//    case ControlGridLineItem:
+//        new ControlGridLine::GraphicsData(aggregate);
+//        new Object::GraphicsItem(aggregate);
+//        new Object::GraphicsEntityItemUpdater(aggregate);
+//        new Object::GraphicsDataUpdater(aggregate);
+//        break;
+//    case CurveGripListItem:
+//        new Curve::GripListData(aggregate);
+//        new Object::GraphicsItem(aggregate);
+//        new Object::ModelItem(aggregate);
+//        return aggregate;
+//    case GridSettingsItem:
+//        new GridSettings::GraphicsData(aggregate);
+//        new Object::GraphicsItem(aggregate);
+//        new Object::GraphicsEntityItemUpdater(aggregate);
+//        break;
+//    case GripItem:
+//        new Grip::GraphicsData(aggregate);
+//        new Object::GraphicsItem(aggregate);
+//        new Object::ModelItem(aggregate);
+//        return aggregate;
     case NoteItem:
-        new Note::GraphicsData(aggregate);
         new Note::GraphicsItem(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
-        new Note::GraphicsItemUpdater(aggregate);
+        new Note::GraphicsUpdater(aggregate);
+        break;
+    case NoteListItem:
+        new ObjectList::GraphicsItem(aggregate);
         break;
     case PitchCurveItem:
-        new PitchCurve::GraphicsItemInfo(aggregate);
-        new PitchCurve::GraphicsData(aggregate);
-        new Curve::GraphicsItem(aggregate);
-        new Curve::GraphicsDelegate(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
+        new PitchCurve::GraphicsItem(aggregate);
+//        new Curve::GraphicsDelegate(aggregate);
+        new Object::GraphicsUpdater(aggregate);
         break;
-    case PitchGridLineItem:
-        new PitchGridLine::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::GraphicsEntityItemUpdater(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
-        break;
+//    case PitchGridLineItem:
+//        new PitchGridLine::GraphicsData(aggregate);
+//        new Object::GraphicsItem(aggregate);
+//        new Object::GraphicsEntityItemUpdater(aggregate);
+//        new Object::GraphicsDataUpdater(aggregate);
+//        break;
     case ScoreItem:
-        new Score::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
+        new Score::GraphicsItem(aggregate);
         break;
-    case TimeGridLineItem:
-        new TimeGridLine::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::GraphicsEntityItemUpdater(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
-        break;
+//    case TimeGridLineItem:
+//        new TimeGridLine::GraphicsData(aggregate);
+//        new Object::GraphicsItem(aggregate);
+//        new Object::GraphicsEntityItemUpdater(aggregate);
+//        new Object::GraphicsDataUpdater(aggregate);
+//        break;
     case TrackItem:
-        new Track::GraphicsData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::GraphicsEntityItemUpdater(aggregate);
-        new Object::GraphicsDataUpdater(aggregate);
+        new Track::GraphicsItem(aggregate);
+        new Object::GraphicsUpdater(aggregate);
         break;
     case TrackListItem:
-        new TrackList::GraphicsDataUpdater(aggregate);
+        new TrackList::GraphicsUpdater(aggregate);
         break;
-    case VelocityGripListItem:
-        new Velocity::GripListData(aggregate);
-        new Object::GraphicsItem(aggregate);
-        new Object::ModelItem(aggregate);
-        return aggregate;
+//    case VelocityGripListItem:
+//        new Velocity::GripListData(aggregate);
+//        new Object::GraphicsItem(aggregate);
+//        new Object::ModelItem(aggregate);
+//        return aggregate;
     case VelocityItem:
-        new ControlCurve::GraphicsItemInfo(aggregate);
-        new Velocity::GraphicsData(aggregate);
+        new Velocity::ModelItem(aggregate);
         new Velocity::GraphicsItem(aggregate);
-        new Velocity::GraphicsDelegate(aggregate);
-        new Object::GraphicsItemUpdater(aggregate);
-        new Object::ModelItem(aggregate);
-        return aggregate;
+//        new Velocity::GraphicsDelegate(aggregate);
+        new Object::GraphicsUpdater(aggregate);
+        break;
     }
-    return Core::DatabaseObjectFactory::create(itemType, aggregate);
 }
 
 }

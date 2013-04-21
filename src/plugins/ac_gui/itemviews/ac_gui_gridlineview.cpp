@@ -15,15 +15,15 @@
 **
 **************************************************************************/
 
-#include "ac_gridlineview.h"
+#include "ac_gui_gridlineview.h"
 
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
+#include <imodel.h>
+#include <imodelitem.h>
 
-#include <ac_colordelegate.h>
-#include <ac_gridlinemodel.h>
+#include <ac_gui_colordelegate.h>
 #include <ac_gui_namespace.h>
-#include <ac_lengthdelegate.h>
+#include <ac_core_gridlinemodel.h>
+#include <ac_gui_lengthdelegate.h>
 
 #include <QHeaderView>
 
@@ -48,7 +48,7 @@ TimeLineView::TimeLineView(QWidget *parent)
     :   GridLineView(parent)
 {
     GridLineModel *m = new GridLineModel(this);
-    m->setGridLineType(Ac::TimeGridLineItem);
+    m->setListType(Ac::TimeGridLineListItem);
     setModel(m);
 }
 
@@ -56,7 +56,7 @@ PitchLineView::PitchLineView(QWidget *parent)
     :   GridLineView(parent)
 {
     GridLineModel *m = new GridLineModel(this);
-    m->setGridLineType(Ac::PitchGridLineItem);
+    m->setListType(Ac::PitchGridLineListItem);
     setModel(m);
 }
 
@@ -64,6 +64,6 @@ ControlLineView::ControlLineView(QWidget *parent)
     :   GridLineView(parent)
 {
     GridLineModel *m = new GridLineModel(this);
-    m->setGridLineType(Ac::ControlGridLineItem);
+    m->setListType(Ac::ControlGridLineListItem);
     setModel(m);
 }

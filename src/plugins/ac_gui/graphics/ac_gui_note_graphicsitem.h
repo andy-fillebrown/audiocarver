@@ -32,15 +32,14 @@ public:
 protected:
     ~GraphicsItem();
 
-    void initialize();
-
-    int count() const
+    int itemCount() const
     {
-        return ScoreObject::GraphicsItem::count() + 1;
+        return ScoreObject::GraphicsItem::itemCount() + 1;
     }
 
-    IGraphicsItem *at(int i) const;
+    IGraphicsItem *itemAt(int i) const;
     IGraphicsItem *findItem(int itemType) const;
+    void update(int role, const QVariant &value);
 };
 
 }

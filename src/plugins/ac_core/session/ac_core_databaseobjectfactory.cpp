@@ -85,6 +85,7 @@ IAggregate *DatabaseObjectFactory::createAggregate(int itemType, IAggregate *par
     case TimeGridLineItem:
         return new GridLine::Aggregate(parent);
     case TimeGridLineListItem:
+        return new ObjectList::Aggregate(parent, TimeGridLineListItem);
     case TrackItem:
         return new Track::Aggregate(parent);
     case TrackListItem:

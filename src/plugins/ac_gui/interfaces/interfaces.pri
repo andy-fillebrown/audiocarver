@@ -1,14 +1,11 @@
 
 SOURCE_FILES *= \
-    igraphicscurvedata \
-    igraphicsdata \
     igraphicsdelegate \
+    igraphicseditor \
+    igraphicsgrip \
+    igraphicsgriplist \
     igraphicsitem \
-    igraphicsiteminfo \
-    igripdata \
-    igriplistdata \
     iplaycursor \
-    ipoint \
 #    iqaudioengine \
 #    isynthesizer \
 

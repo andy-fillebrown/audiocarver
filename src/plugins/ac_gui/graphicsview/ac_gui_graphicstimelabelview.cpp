@@ -41,9 +41,9 @@ GraphicsTimeLabelView::GraphicsTimeLabelView(QGraphicsScene *scene, QWidget *par
                   "}");
 }
 
-IModelItemList *GraphicsTimeLabelView::gridLineList() const
+IModelItem *GraphicsTimeLabelView::gridLineList() const
 {
-    return IDatabase::instance()->rootItem()->findList(TimeGridLineItem);
+    return IDatabase::instance()->rootItem()->findItem(TimeGridLineListItem);
 }
 
 int GraphicsTimeLabelView::scaleRole() const

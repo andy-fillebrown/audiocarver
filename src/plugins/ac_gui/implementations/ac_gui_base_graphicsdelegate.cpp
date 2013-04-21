@@ -17,7 +17,6 @@
 
 #include "ac_gui_base_graphicsdelegate.h"
 #include <iaggregate.h>
-#include <imodelitem.h>
 
 namespace Base {
 
@@ -30,7 +29,7 @@ void *GraphicsDelegate::queryInterface(int interfaceType) const
 GraphicsDelegate::GraphicsDelegate(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->append(this);
+    _aggregate->appendComponent(this);
 }
 
 }

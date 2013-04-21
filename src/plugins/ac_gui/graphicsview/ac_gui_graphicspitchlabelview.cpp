@@ -21,7 +21,7 @@
 #include <ac_core_namespace.h>
 #include <idatabase.h>
 #include <imodel.h>
-#include <imodelitemlist.h>
+#include <imodelitem.h>
 
 using namespace Ac;
 
@@ -36,9 +36,9 @@ GraphicsPitchLabelView::GraphicsPitchLabelView(QGraphicsScene *scene, QWidget *p
                   "}");
 }
 
-IModelItemList *GraphicsPitchLabelView::gridLineList() const
+IModelItem *GraphicsPitchLabelView::gridLineList() const
 {
-    return IDatabase::instance()->rootItem()->findList(PitchGridLineItem);
+    return IDatabase::instance()->rootItem()->findItem(PitchGridLineListItem);
 }
 
 int GraphicsPitchLabelView::sceneType() const

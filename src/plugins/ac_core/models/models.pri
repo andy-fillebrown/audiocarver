@@ -1,6 +1,6 @@
 
 SOURCE_FILES = \
-#    ac_gridlinemodel \
+    gridlinemodel \
     rolestocolumnsproxymodel \
     trackmodel \
 

@@ -27,6 +27,7 @@
 #endif
 
 #define qobject_cast qobject_cast
+#define qvariant_cast qvariant_cast
 
 template <typename Container, typename LessThan>
 void qSort(Container &c, LessThan lessThan)

@@ -36,6 +36,31 @@ protected:
 
     void initialize()
     {}
+
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    int sceneType() const
+    {
+        return -1;
+    }
+
+    int transformType() const
+    {
+        return -1;
+    }
+
+    IGraphicsItem *parent() const;
+    int itemCount() const;
+    IGraphicsItem *itemAt(int i) const;
+    IGraphicsItem *findItem(int itemType) const;
+
+    bool intersects(const QRectF &rect) const
+    {
+        return false;
+    }
 };
 
 }

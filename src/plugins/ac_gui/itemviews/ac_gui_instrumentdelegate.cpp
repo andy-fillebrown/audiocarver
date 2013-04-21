@@ -22,7 +22,6 @@
 #include <icore.h>
 #include <idatabase.h>
 #include <imodel.h>
-#include <imodeldata.h>
 #include <imodelitem.h>
 #include <QDir>
 #include <QFileDialog>
@@ -45,16 +44,16 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
         return false;
 
     // Open a file-open dialog and set the track's instrument if the user didn't cancel the dialog.
-    const IModelData *project_settings = QUERY(IModelData, IDatabase::instance()->rootItem()->findItem(ProjectSettingsItem));
-    QString instrument_dir_name = project_settings->get<QString>(InstrumentDirectoryRole);
+    IModelItem *project_settings = IDatabase::instance()->rootItem()->findItem(ProjectSettingsItem);
+    QString instrument_dir_name = get<QString>(project_settings, InstrumentDirectoryRole);
     if (instrument_dir_name.isEmpty())
         instrument_dir_name = applicationTreeDirectory() + "instruments";
     QString filename = QFileDialog::getOpenFileName(ICore::instance()->mainWindow(), "Open Instrument", instrument_dir_name, QString("Instrument (*orc)"));
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);
         QString instrument_basename = instrument_file_info.baseName();
-        IModelData *track = QUERY(IModelData, IModel::instance()->itemFromIndex(index));
-        track->set(instrument_basename, InstrumentRole);
+        IModelItem *track = IModel::instance()->itemFromIndex(index);
+        track->set(InstrumentRole, instrument_basename);
     }
     return true;
 }

@@ -2,7 +2,7 @@
 SOURCE_FILES = \
     colordelegate \
     doubledelegate \
-#    gridlineview \
+    gridlineview \
 #    gripitemspropertyview \
     instrumentdelegate \
     lengthdelegate \

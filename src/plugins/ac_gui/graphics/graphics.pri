@@ -1,33 +1,31 @@
 
 SOURCE_FILES = \
-    controlcurve_graphicsiteminfo \
-    controlgridline_graphicsdata \
-    curve_graphicsdata \
-    curve_graphicsdelegate \
+    controlcurve_graphicsitem \
+#    controlgridline_graphicsdata \
+#    curve_graphicsdata \
+#    curve_graphicsdelegate \
     curve_graphicsitem \
-    curve_graphicsiteminfo \
-    curve_griplistdata \
-    gridline_graphicsdata \
-    gridsettings_graphicsdata \
-    grip_graphicsdata \
-    horizontalgridline_graphicsdata \
-    note_graphicsdata \
+#    curve_graphicsiteminfo \
+#    curve_griplistdata \
+#    gridline_graphicsdata \
+#    gridsettings_graphicsdata \
+#    grip_graphicsdata \
+#    horizontalgridline_graphicsdata \
+#    note_graphicsdata \
     note_graphicsitem \
-    object_graphicsitem \
-    object_graphicsitemhelper \
-    object_griplistdata \
-    pitchcurve_graphicsdata \
-    pitchcurve_graphicsiteminfo \
-    pitchgridline_graphicsdata \
-    score_graphicsdata \
-    scoreobject_graphicsdata \
+#    object_graphicsitem \
+#    object_graphicsitemhelper \
+#    object_griplistdata \
+    objectlist_graphicsitem \
+    pitchcurve_graphicsitem \
+#    pitchgridline_graphicsdata \
+    score_graphicsitem \
     scoreobject_graphicsitem \
-    timegridline_graphicsdata \
-    track_graphicsdata \
-    velocity_graphicsdata \
-    velocity_graphicsdelegate \
+#    timegridline_graphicsdata \
+    track_graphicsitem \
+#    velocity_graphicsdelegate \
     velocity_graphicsitem \
-    velocity_griplistdata \
+#    velocity_griplistdata \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_$${file}.h

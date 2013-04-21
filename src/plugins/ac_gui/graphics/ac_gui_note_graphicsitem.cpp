@@ -19,7 +19,6 @@
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
-#include <imodelitem.h>
 
 using namespace Ac;
 
@@ -28,33 +27,37 @@ namespace Note {
 GraphicsItem::GraphicsItem(IAggregate *aggregate)
     :   ScoreObject::GraphicsItem(aggregate)
     ,   _velocity(0)
-{}
+{
+    _velocity = IDatabaseObjectFactory::instance()->create(VelocityItem, aggregate);
+}
 
 GraphicsItem::~GraphicsItem()
 {
-    delete _velocity;
+    qDelete(_velocity);
 }
 
-void GraphicsItem::initialize()
-{
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    IModelItem *this_item = QUERY(IModelItem, this);
-    Q_ASSERT(this_item);
-    _velocity = factory->create(VelocityItem, this_item);
-}
-
-IGraphicsItem *GraphicsItem::at(int i) const
+IGraphicsItem *GraphicsItem::itemAt(int i) const
 {
     if (2 == i)
-        return QUERY(IGraphicsItem, _velocity);
-    return ScoreObject::GraphicsItem::at(i);
+        return query<IGraphicsItem>(_velocity);
+    return ScoreObject::GraphicsItem::itemAt(i);
 }
 
 IGraphicsItem *GraphicsItem::findItem(int itemType) const
 {
     if (VelocityItem == itemType)
-        return QUERY(IGraphicsItem, _velocity);
+        return query<IGraphicsItem>(_velocity);
     return ScoreObject::GraphicsItem::findItem(itemType);
+}
+
+void GraphicsItem::update(int role, const QVariant &value)
+{
+    if (ColorRole == role
+            || VolumeRole == role
+            || HighlightRole == role) {
+        findItem(PitchCurveItem)->update(role, value);
+        findItem(VelocityItem)->update(role, value);
+    }
 }
 
 }

@@ -27,9 +27,9 @@
 #include <ieditor.h>
 #include <igraphicsdelegate.h>
 #include <igraphicsitem.h>
-#include <igriplistdata.h>
+#include <igraphicsgriplist.h>
 #include <imodel.h>
-#include <imodelitemlist.h>
+#include <imodelitem.h>
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -42,10 +42,10 @@ class GraphicsPitchViewPrivate
 {
 public:
     GraphicsPitchView *q;
-    IModelItemList *noteList;
+    IModelItem *noteList;
     IModelItem *noteItem;
     IGraphicsItem *noteGraphicsItem;
-    IGripListData *pitchGrips;
+    IGraphicsGripList *pitchGrips;
     IGraphicsDelegate *pitchDelegate;
     PointList points;
     uint creatingNote : 1;
@@ -67,12 +67,12 @@ public:
     void startNote(const QPoint &pos)
     {
         IEditor::instance()->startCreating();
-        noteItem = QUERY(IModelItem, IDatabaseObjectFactory::instance()->create(NoteItem));
-        noteList->append(noteItem);
-        noteGraphicsItem = QUERY(IGraphicsItem, noteItem);
-        IGraphicsItem *pitchcurve_gitem = noteGraphicsItem->findItem(PitchCurveItem);
-        pitchGrips = QUERY(IGripListData, pitchcurve_gitem->findItem(GripListItem));
-        pitchDelegate = QUERY(IGraphicsDelegate, pitchcurve_gitem);
+        noteItem = query<IModelItem>(IDatabaseObjectFactory::instance()->create(NoteItem));
+        noteList->appendItem(noteItem);
+        noteGraphicsItem = query<IGraphicsItem>(noteItem);
+        IGraphicsItem *pitchcurve_graphics = noteGraphicsItem->findItem(PitchCurveItem);
+        pitchGrips = query<IGraphicsGripList>(pitchcurve_graphics);
+        pitchDelegate = query<IGraphicsDelegate>(pitchcurve_graphics);
         const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
         points.append(scenePos);
         addNotePoint(pos);
@@ -107,19 +107,19 @@ public:
         pitchGrips->update(PointsRole, QVariant::fromValue(points));
         pitchDelegate->updateGraphics();
         pitchDelegate->updateModel();
-        noteList->remove(noteItem);
+        noteList->removeItem(noteItem);
         IEditor *editor = IEditor::instance();
         editor->finishCreating();
         editor->beginCommand();
-        noteList->append(noteItem);
+        noteList->appendItem(noteItem);
         editor->endCommand();
         endNote();
     }
 
     void cancelNote()
     {
-        noteList->remove(noteItem);
-        delete QUERY(IAggregate, noteItem);
+        noteList->removeItem(noteItem);
+        delete query<IAggregate>(noteItem);
         IEditor::instance()->finishCreating();
         endNote();
     }
@@ -186,14 +186,14 @@ QPointF GraphicsPitchView::sceneCenter() const
 void GraphicsPitchView::createNote()
 {
     IModelItem *root_item = IDatabase::instance()->rootItem();
-    IModelItem *tracklist_item = root_item->findList(TrackItem);
+    IModelItem *tracklist_item = root_item->findItem(TrackListItem);
     IModelItem *track_item = 0;
-    if (tracklist_item && tracklist_item->count())
-       track_item = tracklist_item->at(0);
+    if (tracklist_item && tracklist_item->itemCount())
+       track_item = tracklist_item->itemAt(0);
     if (!track_item)
         QMessageBox::warning(this, PRO_NAME_STR, "No tracks found.");
     else {
-        d->noteList = track_item->findList(NoteItem);
+        d->noteList = track_item->findItem(NoteListItem);
         setCursor(creationCrosshair());
         d->creatingNote = true;
     }

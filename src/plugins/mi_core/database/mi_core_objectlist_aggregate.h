@@ -28,9 +28,7 @@ public:
     Aggregate(IAggregate *parent, int listType)
         :   parent(parent)
         ,   listType(listType)
-    {
-        Q_ASSERT(parent);
-    }
+    {}
 
     IAggregate *parent;
     const int listType;

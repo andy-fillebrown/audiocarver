@@ -18,19 +18,35 @@
 #ifndef AC_GUI_VELOCITY_GRAPHICSITEM_H
 #define AC_GUI_VELOCITY_GRAPHICSITEM_H
 
-#include "ac_gui_curve_graphicsitem.h"
+#include "ac_gui_base_graphicsitem.h"
+
+class QGraphicsLineItem;
+
+namespace Object {
+class Aggregate;
+}
 
 namespace Velocity {
 
-class GraphicsItem : public Curve::GraphicsItem
+class GraphicsItem : public Base::GraphicsItem
 {
+    IAggregate *_grips;
+    QGraphicsLineItem *_lineNode;
+
 public:
-    GraphicsItem(IAggregate *aggregate)
-        :   Curve::GraphicsItem(aggregate)
-    {}
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
-    void initialize();
+    ~GraphicsItem();
+
+    Object::Aggregate *aggregate() const;
+
+    int sceneType() const;
+    int transformType() const;
+    bool intersects(const QRectF &rect) const;
+    IGraphicsItem *parent() const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
 };
 
 }

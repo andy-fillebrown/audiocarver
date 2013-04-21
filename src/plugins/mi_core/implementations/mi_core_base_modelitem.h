@@ -45,6 +45,18 @@ protected:
     void initialize()
     {}
 
+    IModelItem *findItem(int itemType) const
+    {
+        const int item_count = itemCount();
+        for (int i = 0;  i < item_count;  ++i) {
+            IModelItem *item = itemAt(i);
+            IModelItem *child = item->findItem(itemType);
+            if (child)
+                return child;
+        }
+        return 0;
+    }
+
     QVariant getValue(int role) const;
     int flags() const;
 };

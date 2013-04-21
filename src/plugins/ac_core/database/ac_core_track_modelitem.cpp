@@ -68,13 +68,13 @@ IModelItem *ModelItem::itemAt(int i) const
     }
 }
 
-IModelItem *ModelItem::findList(int listType) const
+IModelItem *ModelItem::findItem(int itemType) const
 {
-    switch (listType) {
-    case NoteItem:
+    switch (itemType) {
+    case NoteListItem:
         return query<IModelItem>(aggregate()->notes);
     default:
-        return Object::ModelItem::findList(listType);
+        return Object::ModelItem::findItem(itemType);
     }
 }
 

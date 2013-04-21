@@ -25,7 +25,8 @@ namespace Gui {
 class DatabaseObjectFactory : public Core::DatabaseObjectFactory
 {
 protected:
-    IAggregate *create(int itemType, IAggregate *aggregate = 0);
+    IAggregate *createAggregate(int itemType, IAggregate *parent);
+    void createComponents(int itemType, IAggregate *aggregate);
 };
 
 }

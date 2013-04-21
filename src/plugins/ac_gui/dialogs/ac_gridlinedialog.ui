@@ -384,17 +384,17 @@
   <customwidget>
    <class>TimeLineView</class>
    <extends>QTableView</extends>
-   <header>ac_gridlineview.h</header>
+   <header>ac_gui_gridlineview.h</header>
   </customwidget>
   <customwidget>
    <class>PitchLineView</class>
    <extends>QTableView</extends>
-   <header>ac_gridlineview.h</header>
+   <header>ac_gui_gridlineview.h</header>
   </customwidget>
   <customwidget>
    <class>ControlLineView</class>
    <extends>QTableView</extends>
-   <header>ac_gridlineview.h</header>
+   <header>ac_gui_gridlineview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

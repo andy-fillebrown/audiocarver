@@ -32,9 +32,7 @@
 #include <idatabase.h>
 #include <ieditor.h>
 #include <imodel.h>
-#include <imodeldata.h>
 #include <imodelitem.h>
-#include <imodeliteminfo.h>
 #include <mainwindow.h>
 #include <QMessageBox>
 #include <QTimer>
@@ -168,21 +166,20 @@ public:
 
     void updateViewVariables()
     {
-        IModelItem *score_item = IDatabase::instance()->rootItem();
-        IModelData *score_data = QUERY(IModelData, score_item);
-        const qreal score_length = score_data->get<qreal>(LengthRole);
+        IModelItem *score = IDatabase::instance()->rootItem();
+        const qreal score_length = get<qreal>(score, LengthRole);
         if (scoreLength != score_length) {
             scoreLength = score_length;
             emit q->scoreLengthChanged();
             updateViewsTimer->start();
         }
-        IModelData *view_settings_data = QUERY(IModelData, score_item->findItem(ViewSettingsItem));
-        q->setPosition(view_settings_data->get<qreal>(TimePositionRole), TimePositionRole);
-        q->setPosition(view_settings_data->get<qreal>(PitchPositionRole), PitchPositionRole);
-        q->setPosition(view_settings_data->get<qreal>(ControlPositionRole), ControlPositionRole);
-        q->setScale(view_settings_data->get<qreal>(TimeScaleRole), TimeScaleRole);
-        q->setScale(view_settings_data->get<qreal>(PitchScaleRole), PitchScaleRole);
-        q->setScale(view_settings_data->get<qreal>(ControlScaleRole), ControlScaleRole);
+        IModelItem *view_settings = score->findItem(ViewSettingsItem);
+        q->setPosition(get<qreal>(view_settings, TimePositionRole), TimePositionRole);
+        q->setPosition(get<qreal>(view_settings, PitchPositionRole), PitchPositionRole);
+        q->setPosition(get<qreal>(view_settings, ControlPositionRole), ControlPositionRole);
+        q->setScale(get<qreal>(view_settings, TimeScaleRole), TimeScaleRole);
+        q->setScale(get<qreal>(view_settings, PitchScaleRole), PitchScaleRole);
+        q->setScale(get<qreal>(view_settings, ControlScaleRole), ControlScaleRole);
     }
 
     void emitAllViewSettingsChanged()
@@ -259,7 +256,7 @@ GraphicsViewManager::GraphicsViewManager(QWidget *widget)
     ::instance = this;
     d->init();
     IModel *model = IModel::instance();
-    connect(model, SIGNAL(dataChanged(const IModelData*,int,int)), SLOT(dataChanged(const IModelData*)));
+    connect(model, SIGNAL(dataChanged(const IModelItem*,int)), SLOT(dataChanged(const IModelItem*)));
     connect(model, SIGNAL(modelAboutToBeReset()), SLOT(disableUpdates()));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
     connect(d->updateViewsTimer, SIGNAL(timeout()), SLOT(updateViews()));
@@ -420,7 +417,7 @@ QPointF GraphicsViewManager::snappedScenePos(const QPointF &pos, int sceneType) 
     return snapped_pos;
 }
 
-void GraphicsViewManager::updateSelection(const QList<IGraphicsData*> &ss)
+void GraphicsViewManager::updateSelection(const QList<IGraphicsItem *> &ss)
 {
     d->pitchView->updateSelection(ss);
     d->controlView->updateSelection(ss);
@@ -471,10 +468,10 @@ void GraphicsViewManager::enableUpdates()
         view(i)->setUpdatesEnabled(true);
 }
 
-void GraphicsViewManager::dataChanged(const IModelData *data)
+void GraphicsViewManager::dataChanged(const IModelItem *item)
 {
     if (!d->updatingDatabase
-            && ViewSettingsItem == QUERY(IModelItemInfo, data)->itemType())
+            && ViewSettingsItem == item->itemType())
         d->updateViewVariables();
 }
 

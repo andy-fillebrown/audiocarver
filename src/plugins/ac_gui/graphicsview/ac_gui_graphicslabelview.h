@@ -20,7 +20,7 @@
 
 #include "ac_gui_graphicsview.h"
 
-class IModelItemList;
+class IModelItem;
 class QModelIndex;
 
 class GraphicsLabelView : public GraphicsView
@@ -38,7 +38,7 @@ protected:
     void scoreLengthChanged();
     void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
     virtual qreal paddingScale() const = 0;
-    virtual IModelItemList *gridLineList() const = 0;
+    virtual IModelItem *gridLineList() const = 0;
     virtual int scaleRole() const = 0;
 
     QPointF sceneOffset() const

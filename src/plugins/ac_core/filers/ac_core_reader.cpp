@@ -117,13 +117,7 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
         } else {
             while (nextElement(reader) == QXmlStreamReader::StartElement) {
                 QString sub_element_name = reader->name().toString();
-                IModelItem *sub_item = 0;
-                if (sub_element_name.endsWith("List")) {
-                    QString sub_element_list_name = sub_element_name;
-                    sub_element_list_name.chop(4);
-                    sub_item = query<IModelItem>(item->findList(elementType(sub_element_list_name)));
-                } else
-                    sub_item = item->findItem(elementType(sub_element_name));
+                IModelItem *sub_item = item->findItem(elementType(sub_element_name));
                 if (!readItem(sub_item, reader)) {
                     qWarning() << Q_FUNC_INFO << ": Sub-item read failed in" << element_name << "at" << sub_element_name;
                     return false;
