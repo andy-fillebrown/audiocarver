@@ -17,10 +17,10 @@
 
 #include "ac_gui_velocity_graphicsdelegate.h"
 #include "ac_gui_namespace.h"
+#include <igraphicsgrip.h>
+#include <igraphicsgriplist.h>
 #include <igraphicsitem.h>
-#include <igripdata.h>
-#include <igriplistdata.h>
-#include <imodeldata.h>
+#include <imodelitem.h>
 
 using namespace Ac;
 
@@ -28,20 +28,20 @@ namespace Velocity {
 
 void GraphicsDelegate::updateModel()
 {
-    PointList points = buildPointList();
+    IGraphicsGripList *griplist = query<IGraphicsGripList>(this);
+    PointList points = buildPointList(griplist);
     qreal velocity = points.first().pos.y();
-    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    IGraphicsItem *note_gitem = this_gitem->parent();
-    IModelData *note_gdata = QUERY(IModelData, note_gitem);
-    note_gdata->set(velocity, VolumeRole);
+    IGraphicsItem *this_item = query<IGraphicsItem>(this);
+    IModelItem *note_item = query<IModelItem>(this_item->parent());
+    note_item->set(VolumeRole, velocity);
 }
 
 void GraphicsDelegate::updateGraphics()
 {
-    IGraphicsData *curve_gdata = QUERY(IGraphicsData, this);
-    IGripListData *griplist_gdata = findGripListData();
-    griplist_gdata->sort();
-    curve_gdata->update(PointsRole, QVariant::fromValue(buildPointList()));
+    IGraphicsItem *curve_item = query<IGraphicsItem>(this);
+    IGraphicsGripList *griplist = query<IGraphicsGripList>(this);
+    griplist->sort();
+    curve_item->update(PointsRole, QVariant::fromValue(buildPointList(griplist)));
 }
 
 }

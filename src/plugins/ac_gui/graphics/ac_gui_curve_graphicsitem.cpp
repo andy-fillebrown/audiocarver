@@ -24,7 +24,7 @@ using namespace Ac;
 namespace Curve {
 
 GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   Base::GraphicsItem(aggregate)
+    :   Object::GraphicsItem(aggregate)
     ,   _curveNode(0)
 {
     _curveNode = new GraphicsCurveNode;
@@ -74,6 +74,7 @@ void GraphicsItem::update(int role, const QVariant &value)
         _curveNode->highlight(qvariant_cast<bool>(value));
         break;
     }
+    Object::GraphicsItem::update(role, actual_value);
 }
 
 }

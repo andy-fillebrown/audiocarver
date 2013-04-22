@@ -22,12 +22,14 @@
 #include <QList>
 
 class IGraphicsGrip;
+class QGraphicsItem;
 
 class IGraphicsGripList : public IGraphicsEditor
 {
 public:
     enum { InterfaceType = I::IGraphicsGripList };
 
+    virtual QGraphicsItem *findNode() const = 0;
     virtual QList<IGraphicsGrip*> grips() const = 0;
     virtual void sort() = 0;
 

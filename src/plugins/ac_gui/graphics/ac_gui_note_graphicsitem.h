@@ -27,10 +27,15 @@ class GraphicsItem : public ScoreObject::GraphicsItem
     IAggregate *_velocity;
 
 public:
-    GraphicsItem(IAggregate *aggregate);
+    GraphicsItem(IAggregate *aggregate)
+        :   ScoreObject::GraphicsItem(aggregate)
+        ,   _velocity(0)
+    {}
 
 protected:
     ~GraphicsItem();
+
+    void initialize();
 
     int itemCount() const
     {

@@ -18,42 +18,36 @@
 #include "ac_gui_curve_graphicsdelegate.h"
 #include "ac_gui_namespace.h"
 #include <igraphicsitem.h>
-#include <igripdata.h>
-#include <igriplistdata.h>
-#include <imodeldata.h>
+#include <igraphicsgrip.h>
+#include <igraphicsgriplist.h>
+#include <imodelitem.h>
 
 using namespace Ac;
 
 namespace Curve {
 
-IGripListData *GraphicsDelegate::findGripListData()
-{
-    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    return QUERY(IGripListData, this_gitem->findItem(GripListItem));
-}
-
-PointList GraphicsDelegate::buildPointList()
+PointList GraphicsDelegate::buildPointList(IGraphicsGripList *griplist)
 {
     PointList points;
-    IGripListData *griplist_gdata = findGripListData();
-    QList<IGripData*> grips = griplist_gdata->grips();
-    foreach (IGripData *grip, grips)
+    QList<IGraphicsGrip*> grips = griplist->grips();
+    foreach (IGraphicsGrip *grip, grips)
         points.append(Point(grip->position(), CurveType(grip->curveType())));
     return points;
 }
 
 void GraphicsDelegate::updateModel()
 {
-    IModelData *curve_data = QUERY(IModelData, this);
-    curve_data->set(QVariant::fromValue(buildPointList()), PointsRole);
+    IModelItem *curve_item = query<IModelItem>(this);
+    IGraphicsGripList *griplist = query<IGraphicsGripList>(this);
+    curve_item->set(PointsRole, QVariant::fromValue(buildPointList(griplist)));
 }
 
 void GraphicsDelegate::updateGraphics()
 {
-    IGraphicsData *curve_gdata = QUERY(IGraphicsData, this);
-    IGripListData *griplist_gdata = findGripListData();
-    griplist_gdata->sort();
-    curve_gdata->update(PointsRole, QVariant::fromValue(buildPointList()));
+    IGraphicsItem *curve_item = query<IGraphicsItem>(this);
+    IGraphicsGripList *griplist = query<IGraphicsGripList>(this);
+    griplist->sort();
+    curve_item->update(PointsRole, QVariant::fromValue(buildPointList(griplist)));
 }
 
 }

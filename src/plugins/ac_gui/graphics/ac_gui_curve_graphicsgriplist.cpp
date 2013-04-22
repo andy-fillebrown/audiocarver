@@ -15,23 +15,20 @@
 **
 **************************************************************************/
 
-#include "ac_gui_curve_griplistdata.h"
+#include "ac_gui_curve_graphicsgriplist.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_point.h>
 #include <iaggregate.h>
 #include <idatabase.h>
 #include <idatabaseobjectfactory.h>
-#include <igraphicsdata.h>
 #include <igraphicsitem.h>
-#include <igraphicsiteminfo.h>
-#include <igripdata.h>
-#include <imodeldata.h>
+#include <igraphicsgrip.h>
 #include <imodelitem.h>
 
 using namespace Ac;
 
-static bool gripLessThan(IGripData *a, IGripData *b)
+static bool gripLessThan(IGraphicsGrip *a, IGraphicsGrip *b)
 {
     QPointF a_pos = a->position();
     QPointF b_pos = b->position();
@@ -46,39 +43,35 @@ static bool gripLessThan(IGripData *a, IGripData *b)
 
 namespace Curve {
 
-GripListData::~GripListData()
+GraphicsGripList::~GraphicsGripList()
 {
-    foreach (IGripData *grip, _grips)
-        delete QUERY(IAggregate, grip);
+    foreach (IGraphicsGrip *grip, _grips)
+        delete query<IAggregate>(grip);
     _grips.clear();
 }
 
-void GripListData::sort()
+void GraphicsGripList::sort()
 {
     qSort(_grips.begin(), _grips.end(), gripLessThan);
 }
 
-void GripListData::update(int role, const QVariant &value)
+void GraphicsGripList::update(int role, const QVariant &value)
 {
     if (PointsRole == role
              || OriginalPositionRole == role) {
         PointList points;
         if (value.isNull()) {
-            IModelData *curve_data = QUERY(IModelData, QUERY(IModelItem, this)->parent());
-            points = curve_data->get<PointList>(PointsRole);
+            IModelItem *this_item = query<IModelItem>(this);
+            points = get<PointList>(this_item, PointsRole);
         }
         else
             points = qvariant_cast<PointList>(value);
         if (_grips.count() < points.count()) {
             IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-            IModelItem *this_item = QUERY(IModelItem, this);
             while (_grips.count() < points.count()) {
-                IAggregate *grip = factory->create(GripItem, this_item);
-                IGripData *grip_gdata = QUERY(IGripData, grip);
-                QGraphicsItem *grip_node = grip_gdata->findNode();
-                grip_node->setParentItem(findNode());
-                grip_node->setData(0, quintptr(grip));
-                _grips.append(grip_gdata);
+                IAggregate *grip_aggregate = factory->create(GripItem, aggregate());
+                IGraphicsGrip *grip = query<IGraphicsGrip>(grip_aggregate);
+                _grips.append(grip);
             }
         }
         while (points.count() < _grips.count()) {
@@ -89,13 +82,13 @@ void GripListData::update(int role, const QVariant &value)
         if (OriginalPositionRole == role)
             grip_update_role = OriginalPositionRole;
         for (int i = 0;  i < _grips.count();  ++i) {
-            IGraphicsData *grip_gdata = QUERY(IGraphicsData, _grips.at(i));
+            IGraphicsGrip *grip = query<IGraphicsGrip>(_grips.at(i));
             const Point &point = points.at(i);
-            grip_gdata->update(grip_update_role, point.pos);
-            grip_gdata->update(CurveTypeRole, point.curveType);
+            grip->update(grip_update_role, point.pos);
+            grip->update(CurveTypeRole, point.curveType);
         }
     } else
-        Object::GripListData::update(role, value);
+        Object::GraphicsGripList::update(role, value);
 }
 
 }

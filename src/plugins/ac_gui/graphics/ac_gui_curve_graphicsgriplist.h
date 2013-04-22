@@ -15,16 +15,35 @@
 **
 **************************************************************************/
 
-#include "ac_gui_velocity_modelitem.h"
-#include "ac_gui_namespace.h"
+#ifndef AC_GUI_CURVE_GRAPHICSGRIPLIST_H
+#define AC_GUI_CURVE_GRAPHICSGRIPLIST_H
 
-using namespace Ac;
+#include "ac_gui_object_graphicsgriplist.h"
+#include <QList>
 
-namespace Velocity {
+namespace Curve {
 
-bool ModelItem::isTypeOfItem(int itemType) const
+class GraphicsGripList : public Object::GraphicsGripList
 {
-    return VelocityItem == itemType;
-}
+    QList<IGraphicsGrip*> _grips;
+
+public:
+    GraphicsGripList(IAggregate *aggregate)
+        :   Object::GraphicsGripList(aggregate)
+    {}
+
+protected:
+    ~GraphicsGripList();
+
+    QList<IGraphicsGrip*> grips() const
+    {
+        return _grips;
+    }
+
+    void sort();
+    void update(int role, const QVariant &value);
+};
 
 }
+
+#endif

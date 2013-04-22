@@ -24,16 +24,14 @@ using namespace Ac;
 
 namespace Note {
 
-GraphicsItem::GraphicsItem(IAggregate *aggregate)
-    :   ScoreObject::GraphicsItem(aggregate)
-    ,   _velocity(0)
-{
-    _velocity = IDatabaseObjectFactory::instance()->create(VelocityItem, aggregate);
-}
-
 GraphicsItem::~GraphicsItem()
 {
     qDelete(_velocity);
+}
+
+void GraphicsItem::initialize()
+{
+    _velocity = IDatabaseObjectFactory::instance()->create(VelocityItem, aggregate());
 }
 
 IGraphicsItem *GraphicsItem::itemAt(int i) const

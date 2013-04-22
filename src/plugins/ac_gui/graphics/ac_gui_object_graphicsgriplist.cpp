@@ -15,50 +15,41 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_griplistdata.h"
+#include "ac_gui_object_graphicsgriplist.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 #include <iaggregate.h>
 #include <idatabase.h>
-#include <igraphicsdata.h>
 #include <igraphicsitem.h>
-#include <igraphicsiteminfo.h>
-#include <igripdata.h>
-#include <imodeldata.h>
+#include <igraphicsgrip.h>
 #include <imodelitem.h>
 
 using namespace Ac;
 
 namespace Object {
 
-GripListData::GripListData(IAggregate *aggregate)
-    :   Base::GripListData(aggregate)
+GraphicsGripList::GraphicsGripList(IAggregate *aggregate)
+    :   Base::GraphicsGripList(aggregate)
     ,   _node(new GraphicsNode)
 {
     _node->setVisible(false);
     _node->setZValue(Q_FLOAT_MAX);
 }
 
-void GripListData::initialize()
+void GraphicsGripList::initialize()
 {
-    IModelItem *root_item = IDatabase::instance()->rootItem();
-    IGraphicsData *root_gdata = QUERY(IGraphicsData, root_item);
-    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    IGraphicsItemInfo *parent_ginfo = QUERY(IGraphicsItemInfo, this_gitem->parent());
-    if (!parent_ginfo)
-        return;
-    QGraphicsItem *root_node = root_gdata->findNode(parent_ginfo->sceneType(), MainTransform);
+    IGraphicsItem *this_item = query<IGraphicsItem>(this);
+    IGraphicsItem *root_item = query<IGraphicsItem>(IDatabase::instance()->rootItem());
+    QGraphicsItem *root_node = root_item->findNode(this_item->sceneType(), MainTransform);
     _node->setParentItem(root_node);
 }
 
-QGraphicsItem *GripListData::findNode(int sceneType, int transformType) const
+QGraphicsItem *GraphicsGripList::findNode() const
 {
-    Q_ASSERT(UnspecifiedScene == sceneType);
-    Q_ASSERT(UnspecifiedTransform == transformType);
     return _node;
 }
 
-void GripListData::update(int role, const QVariant &value)
+void GraphicsGripList::update(int role, const QVariant &value)
 {
     if (HighlightRole == role)
         _node->setVisible(FullHighlight == qvariant_cast<int>(value));

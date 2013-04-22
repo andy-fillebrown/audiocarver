@@ -15,53 +15,42 @@
 **
 **************************************************************************/
 
-#include "ac_gui_velocity_griplistdata.h"
-#include "ac_gui_graphicsnode.h"
+#include "ac_gui_velocity_graphicsgriplist.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_point.h>
 #include <iaggregate.h>
-#include <idatabase.h>
 #include <idatabaseobjectfactory.h>
-#include <igraphicsdata.h>
+#include <igraphicsgrip.h>
 #include <igraphicsitem.h>
-#include <igraphicsiteminfo.h>
-#include <igripdata.h>
-#include <imodeldata.h>
 #include <imodelitem.h>
 
 using namespace Ac;
 
 namespace Velocity {
 
-GripListData::~GripListData()
+GraphicsGripList::~GraphicsGripList()
 {
-    delete QUERY(IAggregate, _grip);
+    delete query<IAggregate>(_grip);
 }
 
-void GripListData::initialize()
+void GraphicsGripList::initialize()
 {
-    Object::GripListData::initialize();
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    IModelItem *this_item = QUERY(IModelItem, this);
-    _grip = QUERY(IGripData, factory->create(GripItem, this_item));
-    QGraphicsItem *grip_node = _grip->findNode();
-    grip_node->setParentItem(findNode());
-    grip_node->setData(0, quintptr(_grip));
+    Object::GraphicsGripList::initialize();
+    _grip = query<IGraphicsGrip>(IDatabaseObjectFactory::instance()->create(GripItem, aggregate()));
 }
 
-void GripListData::update(int role, const QVariant &value)
+void GraphicsGripList::update(int role, const QVariant &value)
 {
     if (PointsRole == role
              || OriginalPositionRole == role) {
         Point point;
         if (value.isNull()) {
-            IGraphicsItem *curve_gitem = QUERY(IGraphicsItem, this)->parent();
-            IModelItem *note_item = QUERY(IModelItem, curve_gitem->parent());
-            IModelData *pitchcurve_data = QUERY(IModelData, note_item->findItem(PitchCurveItem));
-            IModelData *note_data = QUERY(IModelData, note_item);
-            PointList pitch_points = pitchcurve_data->get<PointList>(PointsRole);
+            IGraphicsItem *curve_gitem = query<IGraphicsItem>(this);
+            IModelItem *note_item = query<IModelItem>(curve_gitem->parent());
+            IModelItem *pitchcurve_item = query<IModelItem>(note_item->findItem(PitchCurveItem));
+            PointList pitch_points = get<PointList>(pitchcurve_item, PointsRole);
             point.pos.setX(pitch_points.first().pos.x());
-            point.pos.setY(note_data->get<qreal>(VolumeRole));
+            point.pos.setY(get<qreal>(note_item, VolumeRole));
         }
         else
             point = qvariant_cast<PointList>(value).first();
@@ -70,7 +59,7 @@ void GripListData::update(int role, const QVariant &value)
             grip_update_role = OriginalPositionRole;
         _grip->update(grip_update_role, point.pos);
     } else
-        Object::GripListData::update(role, value);
+        Object::GraphicsGripList::update(role, value);
 }
 
 }

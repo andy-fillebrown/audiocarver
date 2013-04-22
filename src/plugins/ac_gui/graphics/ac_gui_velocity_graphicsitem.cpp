@@ -39,12 +39,16 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     QPen pen;
     pen.setCosmetic(true);
     _lineNode->setPen(pen);
-    update(HighlightRole, false);
 }
 
 GraphicsItem::~GraphicsItem()
 {
     qDelete(_lineNode);
+}
+
+void GraphicsItem::initialize()
+{
+    update(HighlightRole, false);
 }
 
 Object::Aggregate *GraphicsItem::aggregate() const
@@ -129,7 +133,7 @@ void GraphicsItem::update(int role, const QVariant &value)
         _lineNode->setLine(x, 0.0f, x, volume);
         PointList points;
         points.append(Point(x, volume));
-//        query<IGraphicsGripList>(this)->update(PointsRole, QVariant::fromValue(points));
+        query<IGraphicsGripList>(this)->update(PointsRole, QVariant::fromValue(points));
         return;
     }
     if (ColorRole == role) {
@@ -146,7 +150,7 @@ void GraphicsItem::update(int role, const QVariant &value)
         else
             pen.setWidth(1.0f);
         _lineNode->setPen(pen);
-//        query<IGraphicsGripList>(this)->update(role, value);
+        query<IGraphicsGripList>(this)->update(role, value);
         return;
     }
 }

@@ -15,29 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_OBJECT_GRIPLISTDATA_H
-#define AC_GUI_OBJECT_GRIPLISTDATA_H
+#ifndef AC_GUI_OBJECT_GRAPHICSGRIP_H
+#define AC_GUI_OBJECT_GRAPHICSGRIP_H
 
-#include "ac_gui_base_griplistdata.h"
+#include "ac_gui_base_graphicsgrip.h"
+#include <QPointF>
 
-class GraphicsNode;
+class GraphicsGripNode;
 
 namespace Object {
 
-class GripListData : public Base::GripListData
+class GraphicsGrip : public Base::GraphicsGrip
 {
-    GraphicsNode *_node;
+    GraphicsGripNode *_gripNode;
+    int _curveType;
+    QPointF _originalPosition;
 
 public:
-    GripListData(IAggregate *aggregate);
+    GraphicsGrip(IAggregate *aggregate);
 
 protected:
+    ~GraphicsGrip();
+
     void initialize();
-
-    void sort()
-    {}
-
-    QGraphicsItem *findNode(int sceneType = Ac::UnspecifiedScene, int transformType = Ac::UnspecifiedTransform) const;
+    QPointF originalPosition() const;
+    QPointF position() const;
+    int curveType() const;
     void update(int role, const QVariant &value);
 };
 

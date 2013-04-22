@@ -21,7 +21,7 @@
 #include <ac_gui_base_graphicsdelegate.h>
 #include <ac_core_point.h>
 
-class IGripListData;
+class IGraphicsGripList;
 
 namespace Curve {
 
@@ -33,8 +33,7 @@ public:
     {}
 
 protected:
-    IGripListData *findGripListData();
-    PointList buildPointList();
+    PointList buildPointList(IGraphicsGripList *griplist);
 
     void updateModel();
     void updateGraphics();

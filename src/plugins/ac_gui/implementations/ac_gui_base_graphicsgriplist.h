@@ -37,6 +37,11 @@ protected:
     void initialize()
     {}
 
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
     void update(int role, const QVariant &value)
     {}
 };

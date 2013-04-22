@@ -15,62 +15,57 @@
 **
 **************************************************************************/
 
-#include "ac_gui_grip_graphicsdata.h"
+#include "ac_gui_object_graphicsgrip.h"
 //#include <ac_gripselectionmodel.h>
 #include "ac_gui_constants.h"
 #include "ac_gui_graphicsgripnode.h"
 #include <igraphicsitem.h>
+#include <igraphicsgriplist.h>
 #include <imodelitem.h>
 
 using namespace Ac;
 using namespace Qt;
 
-namespace Grip {
+namespace Object {
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GripData(aggregate)
+GraphicsGrip::GraphicsGrip(IAggregate *aggregate)
+    :   Base::GraphicsGrip(aggregate)
     ,   _gripNode(0)
     ,   _curveType(NoCurve)
 {
     _gripNode = new GraphicsGripNode;
 }
 
-GraphicsData::~GraphicsData()
+GraphicsGrip::~GraphicsGrip()
 {
     delete _gripNode;
 }
 
-void GraphicsData::initialize()
+void GraphicsGrip::initialize()
 {
-    IGraphicsItem *this_gitem = QUERY(IGraphicsItem, this);
-    _gripNode->setData(0, quintptr(this_gitem));
-    IGraphicsData *parent_gdata = QUERY(IGraphicsData, this_gitem->parent());
-    _gripNode->setParentItem(parent_gdata->findNode());
+    IGraphicsItem *this_item = query<IGraphicsItem>(this);
+    _gripNode->setData(0, quintptr(this_item));
+    IGraphicsItem *parent_item = this_item->parent();
+    IGraphicsGripList *parent_griplist = query<IGraphicsGripList>(parent_item);
+    _gripNode->setParentItem(parent_griplist->findNode());
 }
 
-QPointF GraphicsData::originalPosition() const
+QPointF GraphicsGrip::originalPosition() const
 {
     return _originalPosition;
 }
 
-QPointF GraphicsData::position() const
+QPointF GraphicsGrip::position() const
 {
     return _gripNode->pos();
 }
 
-int GraphicsData::curveType() const
+int GraphicsGrip::curveType() const
 {
     return _curveType;
 }
 
-QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
-{
-    Q_ASSERT(UnspecifiedScene == sceneType);
-    Q_ASSERT(UnspecifiedTransform == transformType);
-    return _gripNode;
-}
-
-void GraphicsData::update(int role, const QVariant &value)
+void GraphicsGrip::update(int role, const QVariant &value)
 {
     switch (role) {
     case HighlightRole:

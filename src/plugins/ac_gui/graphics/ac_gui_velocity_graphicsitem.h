@@ -38,6 +38,7 @@ public:
 
 protected:
     ~GraphicsItem();
+    void initialize();
 
     Object::Aggregate *aggregate() const;
 

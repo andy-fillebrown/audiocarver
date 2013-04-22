@@ -16,9 +16,19 @@
 **************************************************************************/
 
 #include "ac_gui_object_graphicsitem.h"
+#include <igraphicsgrip.h>
+#include <igraphicsgriplist.h>
 
 namespace Object {
 
-
+void GraphicsItem::update(int role, const QVariant &value)
+{
+    IGraphicsGripList *grip_list = query<IGraphicsGripList>(this);
+    if (grip_list)
+        grip_list->update(role, value);
+    IGraphicsGrip *grip = query<IGraphicsGrip>(this);
+    if (grip)
+        grip->update(role, value);
+}
 
 }

@@ -18,13 +18,13 @@
 #ifndef AC_GUI_CURVE_GRAPHICSITEM_H
 #define AC_GUI_CURVE_GRAPHICSITEM_H
 
-#include "ac_gui_base_graphicsitem.h"
+#include "ac_gui_object_graphicsitem.h"
 
 class GraphicsCurveNode;
 
 namespace Curve {
 
-class GraphicsItem : public Base::GraphicsItem
+class GraphicsItem : public Object::GraphicsItem
 {
     GraphicsCurveNode *_curveNode;
 

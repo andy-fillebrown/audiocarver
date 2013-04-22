@@ -19,24 +19,15 @@
 #define AC_GUI_OBJECT_GRAPHICSITEM_H
 
 #include "ac_gui_base_graphicsitem.h"
-#include "ac_gui_object_graphicsitemhelper.h"
 
 namespace Object {
 
 class GraphicsItem : public Base::GraphicsItem
 {
-    GraphicsItemHelper _helper;
-
 public:
     GraphicsItem(IAggregate *aggregate)
         :   Base::GraphicsItem(aggregate)
-        ,   _helper(this)
     {}
-
-    IGraphicsItem *parent() const
-    {
-        return _helper.parent();
-    }
 
     int count() const
     {
@@ -52,6 +43,13 @@ public:
     {
         return 0;
     }
+
+    QGraphicsItem *findNode(int sceneType, int transformType) const
+    {
+        return 0;
+    }
+
+    void update(int role, const QVariant &value);
 };
 
 }

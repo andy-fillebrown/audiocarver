@@ -18,23 +18,25 @@
 #include "ac_gui_databaseobjectfactory.h"
 #include "ac_gui_controlcurve_graphicsitem.h"
 //#include "ac_gui_controlgridline_graphicsdata.h"
+#include "ac_gui_curve_graphicsdelegate.h"
+#include "ac_gui_curve_graphicsgriplist.h"
 //#include "ac_gui_gridsettings_graphicsdata.h"
-//#include "ac_gui_grip_graphicsdata.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_note_graphicsitem.h"
 #include "ac_gui_note_graphicsupdater.h"
-//#include "ac_gui_object_graphicsitem.h"
+#include "ac_gui_object_graphicsgrip.h"
+#include "ac_gui_object_graphicsitem.h"
 #include "ac_gui_object_graphicsupdater.h"
 #include "ac_gui_objectlist_graphicsitem.h"
 #include "ac_gui_pitchcurve_graphicsitem.h"
 #include "ac_gui_score_graphicsitem.h"
 #include "ac_gui_track_graphicsitem.h"
 #include "ac_gui_tracklist_graphicsupdater.h"
-//#include "ac_gui_velocity_graphicsdelegate.h"
-#include "ac_gui_velocity_modelitem.h"
+#include "ac_gui_velocity_graphicsdelegate.h"
+#include "ac_gui_velocity_graphicsgriplist.h"
 #include "ac_gui_velocity_graphicsitem.h"
-//#include "ac_gui_velocity_griplistdata.h"
 #include <mi_core_object_aggregate.h>
+#include <mi_core_object_modelitem.h>
 
 using namespace Ac;
 
@@ -43,6 +45,7 @@ namespace Gui {
 IAggregate *DatabaseObjectFactory::createAggregate(int itemType, IAggregate *parent)
 {
     switch (itemType) {
+    case GripItem:
     case VelocityItem:
         return new Object::Aggregate(parent);
     default:
@@ -56,7 +59,8 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
     switch (itemType) {
     case ControlCurveItem:
         new ControlCurve::GraphicsItem(aggregate);
-//        new Curve::GraphicsDelegate(aggregate);
+        new Curve::GraphicsGripList(aggregate);
+        new Curve::GraphicsDelegate(aggregate);
         new Object::GraphicsUpdater(aggregate);
         break;
 //    case ControlGridLineItem:
@@ -65,21 +69,16 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
 //        new Object::GraphicsEntityItemUpdater(aggregate);
 //        new Object::GraphicsDataUpdater(aggregate);
 //        break;
-//    case CurveGripListItem:
-//        new Curve::GripListData(aggregate);
-//        new Object::GraphicsItem(aggregate);
-//        new Object::ModelItem(aggregate);
-//        return aggregate;
 //    case GridSettingsItem:
 //        new GridSettings::GraphicsData(aggregate);
 //        new Object::GraphicsItem(aggregate);
 //        new Object::GraphicsEntityItemUpdater(aggregate);
 //        break;
-//    case GripItem:
-//        new Grip::GraphicsData(aggregate);
-//        new Object::GraphicsItem(aggregate);
-//        new Object::ModelItem(aggregate);
-//        return aggregate;
+    case GripItem:
+        new Object::ModelItem(aggregate);
+        new Object::GraphicsItem(aggregate);
+        new Object::GraphicsGrip(aggregate);
+        break;
     case NoteItem:
         new Note::GraphicsItem(aggregate);
         new Note::GraphicsUpdater(aggregate);
@@ -89,7 +88,8 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         break;
     case PitchCurveItem:
         new PitchCurve::GraphicsItem(aggregate);
-//        new Curve::GraphicsDelegate(aggregate);
+        new Curve::GraphicsGripList(aggregate);
+        new Curve::GraphicsDelegate(aggregate);
         new Object::GraphicsUpdater(aggregate);
         break;
 //    case PitchGridLineItem:
@@ -114,15 +114,11 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
     case TrackListItem:
         new TrackList::GraphicsUpdater(aggregate);
         break;
-//    case VelocityGripListItem:
-//        new Velocity::GripListData(aggregate);
-//        new Object::GraphicsItem(aggregate);
-//        new Object::ModelItem(aggregate);
-//        return aggregate;
     case VelocityItem:
-        new Velocity::ModelItem(aggregate);
+        new Object::ModelItem(aggregate);
         new Velocity::GraphicsItem(aggregate);
-//        new Velocity::GraphicsDelegate(aggregate);
+        new Velocity::GraphicsGripList(aggregate);
+        new Velocity::GraphicsDelegate(aggregate);
         new Object::GraphicsUpdater(aggregate);
         break;
     }
