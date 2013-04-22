@@ -62,13 +62,13 @@ void GraphicsLabelView::updateGridLineVisibilities()
             if (!get<bool>(line, VisibilityRole)) {
                 setUpdatesEnabled(false);
                 _updatesDisabled = true;
-                line->set(true, VisibilityRole);
+                line->set(VisibilityRole, true);
             }
         } else {
             if (get<bool>(line, VisibilityRole)) {
                 setUpdatesEnabled(false);
                 _updatesDisabled = true;
-                line->set(false, VisibilityRole);
+                line->set(VisibilityRole, false);
             }
         }
     }

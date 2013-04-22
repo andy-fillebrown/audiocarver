@@ -15,24 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_PITCHCURVE_GRAPHICSITEMINFO_H
-#define AC_GUI_PITCHCURVE_GRAPHICSITEMINFO_H
+#include "ac_gui_controlgridline_graphicsitem.h"
+#include "ac_gui_graphicsnode.h"
+#include "ac_gui_namespace.h"
+#include <QGraphicsLineItem>
 
-#include "ac_gui_curve_graphicsiteminfo.h"
+using namespace Ac;
 
-namespace PitchCurve {
+namespace ControlGridLine {
 
-class GraphicsItemInfo : public Curve::GraphicsItemInfo
+QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const
 {
-public:
-    GraphicsItemInfo(IAggregate *aggregate)
-        :   Curve::GraphicsItemInfo(aggregate)
-    {}
-
-protected:
-    int sceneType() const;
-};
-
+    if (ControlScene == sceneType && UnitXTransform == transformType)
+        return editorSceneLineNode();
+    if (ControlLabelScene == sceneType && MainTransform == transformType)
+        return labelSceneRootNode();
+    return 0;
 }
 
-#endif
+}

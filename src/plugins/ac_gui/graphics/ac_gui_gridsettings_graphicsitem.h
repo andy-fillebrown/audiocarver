@@ -15,22 +15,27 @@
 **
 **************************************************************************/
 
-#include "ac_gui_controlgridline_graphicsdata.h"
-#include "ac_gui_graphicsnode.h"
-#include "ac_gui_namespace.h"
-#include <QGraphicsLineItem>
+#ifndef AC_GUI_GRIDSETTINGS_GRAPHICSITEM_H
+#define AC_GUI_GRIDSETTINGS_GRAPHICSITEM_H
 
-using namespace Ac;
+#include "ac_gui_base_graphicsitem.h"
+#include <QMap>
 
-namespace ControlGridLine {
+namespace GridSettings {
 
-QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
+class GraphicsItem : public Base::GraphicsItem
 {
-    if (ControlScene == sceneType && UnitXTransform == transformType)
-        return editorSceneLineNode();
-    if (ControlLabelScene == sceneType && MainTransform == transformType)
-        return labelSceneRootNode();
-    return 0;
-}
+    QMap<int, QGraphicsItem*> _mainNodes;
+    QMap<int, QGraphicsItem*> _unitXNodes;
+    QMap<int, QGraphicsItem*> _unitYNodes;
+
+public:
+    GraphicsItem(IAggregate *aggregate);
+
+protected:
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
+};
 
 }
+
+#endif

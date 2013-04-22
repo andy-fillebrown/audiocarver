@@ -15,22 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_GRIDSETTINGS_GRAPHICSDATA_H
-#define AC_GUI_GRIDSETTINGS_GRAPHICSDATA_H
+#ifndef AC_GUI_CONTROLGRIDLINE_GRAPHICSITEM_H
+#define AC_GUI_CONTROLGRIDLINE_GRAPHICSITEM_H
 
-#include "ac_gui_base_graphicsdata.h"
-#include <QMap>
+#include "ac_gui_horizontalgridline_graphicsitem.h"
 
-namespace GridSettings {
+namespace ControlGridLine {
 
-class GraphicsData : public Base::GraphicsData
+class GraphicsItem : public HorizontalGridLine::GraphicsItem
 {
-    QMap<int, QGraphicsItem*> _mainNodes;
-    QMap<int, QGraphicsItem*> _unitXNodes;
-    QMap<int, QGraphicsItem*> _unitYNodes;
-
 public:
-    GraphicsData(IAggregate *aggregate);
+    GraphicsItem(IAggregate *aggregate)
+        :   HorizontalGridLine::GraphicsItem(aggregate)
+    {}
 
 protected:
     QGraphicsItem *findNode(int sceneType, int transformType) const;

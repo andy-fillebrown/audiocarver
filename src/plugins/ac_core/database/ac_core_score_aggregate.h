@@ -26,7 +26,14 @@ namespace Score {
 class AC_CORE_EXPORT Aggregate : public Object::Aggregate
 {
 public:
-    Aggregate(IAggregate *parent);
+    Aggregate(IAggregate *aggregate)
+        :   Object::Aggregate(aggregate)
+        ,   tracks(0)
+        ,   gridSettings(0)
+        ,   projectSettings(0)
+        ,   viewSettings(0)
+    {}
+
     ~Aggregate();
 
     IAggregate *tracks;
@@ -47,6 +54,7 @@ public:
     };
 
 protected:
+    void initialize();
     void reset();
 };
 

@@ -24,12 +24,15 @@ using namespace Ac;
 
 namespace Score {
 
-Aggregate::Aggregate(IAggregate *aggregate)
-    :   Object::Aggregate(aggregate)
-    ,   tracks(0)
-    ,   gridSettings(0)
-    ,   projectSettings(0)
-    ,   viewSettings(0)
+Aggregate::~Aggregate()
+{
+    qDelete(viewSettings);
+    qDelete(projectSettings);
+    qDelete(gridSettings);
+    qDelete(tracks);
+}
+
+void Aggregate::initialize()
 {
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     tracks = factory->create(TrackListItem, this);
@@ -37,14 +40,7 @@ Aggregate::Aggregate(IAggregate *aggregate)
     projectSettings = factory->create(ProjectSettingsItem, this);
     viewSettings = factory->create(ViewSettingsItem, this);
     reset();
-}
-
-Aggregate::~Aggregate()
-{
-    qDelete(viewSettings);
-    qDelete(projectSettings);
-    qDelete(gridSettings);
-    qDelete(tracks);
+    Object::Aggregate::initialize();
 }
 
 void Aggregate::reset()

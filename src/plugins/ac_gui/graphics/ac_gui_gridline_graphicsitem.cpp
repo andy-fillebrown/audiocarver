@@ -15,20 +15,18 @@
 **
 **************************************************************************/
 
-#include "ac_gui_gridline_graphicsdata.h"
+#include "ac_gui_gridline_graphicsitem.h"
 #include "ac_gui_graphicstextnode.h"
-#include <ac_core_constants.h>
-#include <mi_core_utilities.h>
-#include <imodeldata.h>
+#include "ac_gui_namespace.h"
 #include <QApplication>
 #include <QFont>
 
 using namespace Ac;
-using namespace Mi;
+using namespace Qt;
 
 namespace GridLine {
 
-const QFont &GraphicsData::gridLabelFont()
+const QFont &GraphicsItem::gridLabelFont()
 {
     static QFont font;
     static bool initialized = false;
@@ -39,18 +37,18 @@ const QFont &GraphicsData::gridLabelFont()
     return font;
 }
 
-Qt::PenStyle GraphicsData::gridLinePenStyle()
+Qt::PenStyle GraphicsItem::gridLinePenStyle()
 {
-    return Qt::DotLine;
+    return DotLine;
 }
 
-Qt::PenStyle GraphicsData::gridLineExtensionPenStyle()
+Qt::PenStyle GraphicsItem::gridLineExtensionPenStyle()
 {
-    return Qt::DotLine;
+    return DotLine;
 }
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   Base::GraphicsData(aggregate)
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   Base::GraphicsItem(aggregate)
     ,   _labelSceneRootNode(0)
     ,   _labelSceneTextNode(0)
 {
@@ -59,12 +57,12 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _labelSceneTextNode->setFont(gridLabelFont());
 }
 
-GraphicsData::~GraphicsData()
+GraphicsItem::~GraphicsItem()
 {
-    delete _labelSceneRootNode;
+    qDelete(_labelSceneRootNode);
 }
 
-void GraphicsData::update(int role, const QVariant &value)
+void GraphicsItem::update(int role, const QVariant &value)
 {
     switch (role) {
     case VisibilityRole:

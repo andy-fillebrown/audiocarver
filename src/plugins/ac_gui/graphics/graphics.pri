@@ -1,26 +1,23 @@
 
 SOURCE_FILES = \
     controlcurve_graphicsitem \
-#    controlgridline_graphicsdata \
-#    curve_graphicsdata \
+    controlgridline_graphicsitem \
     curve_graphicsdelegate \
     curve_graphicsitem \
-#    curve_graphicsiteminfo \
     curve_graphicsgriplist \
-#    gridline_graphicsdata \
-#    gridsettings_graphicsdata \
-#    horizontalgridline_graphicsdata \
-#    note_graphicsdata \
+    gridline_graphicsitem \
+    gridsettings_graphicsitem \
+    horizontalgridline_graphicsitem \
     note_graphicsitem \
     object_graphicsitem \
     object_graphicsgrip \
     object_graphicsgriplist \
     objectlist_graphicsitem \
     pitchcurve_graphicsitem \
-#    pitchgridline_graphicsdata \
+    pitchgridline_graphicsitem \
     score_graphicsitem \
     scoreobject_graphicsitem \
-#    timegridline_graphicsdata \
+    timegridline_graphicsitem \
     track_graphicsitem \
     velocity_graphicsdelegate \
     velocity_graphicsgriplist \

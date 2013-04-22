@@ -17,10 +17,10 @@
 
 #include "ac_gui_databaseobjectfactory.h"
 #include "ac_gui_controlcurve_graphicsitem.h"
-//#include "ac_gui_controlgridline_graphicsdata.h"
+#include "ac_gui_controlgridline_graphicsitem.h"
 #include "ac_gui_curve_graphicsdelegate.h"
 #include "ac_gui_curve_graphicsgriplist.h"
-//#include "ac_gui_gridsettings_graphicsdata.h"
+#include "ac_gui_gridsettings_graphicsitem.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_note_graphicsitem.h"
 #include "ac_gui_note_graphicsupdater.h"
@@ -29,7 +29,10 @@
 #include "ac_gui_object_graphicsupdater.h"
 #include "ac_gui_objectlist_graphicsitem.h"
 #include "ac_gui_pitchcurve_graphicsitem.h"
+#include "ac_gui_pitchgridline_graphicsitem.h"
 #include "ac_gui_score_graphicsitem.h"
+#include "ac_gui_score_graphicsupdater.h"
+#include "ac_gui_timegridline_graphicsitem.h"
 #include "ac_gui_track_graphicsitem.h"
 #include "ac_gui_tracklist_graphicsupdater.h"
 #include "ac_gui_velocity_graphicsdelegate.h"
@@ -63,17 +66,16 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Curve::GraphicsDelegate(aggregate);
         new Object::GraphicsUpdater(aggregate);
         break;
-//    case ControlGridLineItem:
-//        new ControlGridLine::GraphicsData(aggregate);
-//        new Object::GraphicsItem(aggregate);
-//        new Object::GraphicsEntityItemUpdater(aggregate);
-//        new Object::GraphicsDataUpdater(aggregate);
-//        break;
-//    case GridSettingsItem:
-//        new GridSettings::GraphicsData(aggregate);
-//        new Object::GraphicsItem(aggregate);
-//        new Object::GraphicsEntityItemUpdater(aggregate);
-//        break;
+    case ControlGridLineItem:
+        new ControlGridLine::GraphicsItem(aggregate);
+        new Object::GraphicsItem(aggregate);
+        new Object::GraphicsUpdater(aggregate);
+        break;
+    case GridSettingsItem:
+        new GridSettings::GraphicsItem(aggregate);
+        new Object::GraphicsItem(aggregate);
+        new Object::GraphicsUpdater(aggregate);
+        break;
     case GripItem:
         new Object::ModelItem(aggregate);
         new Object::GraphicsItem(aggregate);
@@ -92,21 +94,20 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Curve::GraphicsDelegate(aggregate);
         new Object::GraphicsUpdater(aggregate);
         break;
-//    case PitchGridLineItem:
-//        new PitchGridLine::GraphicsData(aggregate);
-//        new Object::GraphicsItem(aggregate);
-//        new Object::GraphicsEntityItemUpdater(aggregate);
-//        new Object::GraphicsDataUpdater(aggregate);
-//        break;
+    case PitchGridLineItem:
+        new PitchGridLine::GraphicsItem(aggregate);
+        new Object::GraphicsItem(aggregate);
+        new Object::GraphicsUpdater(aggregate);
+        break;
     case ScoreItem:
         new Score::GraphicsItem(aggregate);
+        new Score::GraphicsUpdater(aggregate);
         break;
-//    case TimeGridLineItem:
-//        new TimeGridLine::GraphicsData(aggregate);
-//        new Object::GraphicsItem(aggregate);
-//        new Object::GraphicsEntityItemUpdater(aggregate);
-//        new Object::GraphicsDataUpdater(aggregate);
-//        break;
+    case TimeGridLineItem:
+        new TimeGridLine::GraphicsItem(aggregate);
+        new Object::GraphicsItem(aggregate);
+        new Object::GraphicsUpdater(aggregate);
+        break;
     case TrackItem:
         new Track::GraphicsItem(aggregate);
         new Object::GraphicsUpdater(aggregate);

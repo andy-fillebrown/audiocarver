@@ -61,6 +61,9 @@ protected:
     {
         return false;
     }
+
+    void update(int role, const QVariant &value)
+    {}
 };
 
 }

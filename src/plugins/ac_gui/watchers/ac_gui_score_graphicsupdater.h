@@ -15,22 +15,25 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchgridline_graphicsdata.h"
-#include "ac_gui_graphicsnode.h"
-#include "ac_gui_namespace.h"
-#include <QGraphicsLineItem>
+#ifndef AC_GUI_SCORE_GRAPHICSUPDATER_H
+#define AC_GUI_SCORE_GRAPHICSUPDATER_H
 
-using namespace Ac;
+#include "ac_gui_object_graphicsupdater.h"
 
-namespace PitchGridLine {
+namespace Score {
 
-QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
+class GraphicsUpdater : public Object::GraphicsUpdater
 {
-    if (PitchScene == sceneType && UnitXTransform == transformType)
-        return editorSceneLineNode();
-    if (PitchLabelScene == sceneType && MainTransform == transformType)
-        return labelSceneRootNode();
-    return 0;
-}
+public:
+    GraphicsUpdater(IAggregate *aggregate)
+        :   Object::GraphicsUpdater(aggregate)
+    {}
+
+protected:
+    void endChangeParent(const IModelItem *child)
+    {}
+};
 
 }
+
+#endif

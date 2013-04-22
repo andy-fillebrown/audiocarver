@@ -15,12 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_gui_timegridline_graphicsdata.h"
+#include "ac_gui_timegridline_graphicsitem.h"
 #include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_constants.h>
-#include <mi_core_utilities.h>
-#include <imodeldata.h>
 #include <QPen>
 
 using namespace Ac;
@@ -28,8 +26,8 @@ using namespace Mi;
 
 namespace TimeGridLine {
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   GridLine::GraphicsData(aggregate)
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   GridLine::GraphicsItem(aggregate)
     ,   _labelSceneLineNode(0)
     ,   _pitchSceneLineNode(0)
     ,   _pitchSceneLineHighExtensionNode(0)
@@ -46,24 +44,24 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _controlSceneLineExtensionNode = new QGraphicsLineItem(_controlSceneLineNode);
     QPen pen(DEFAULT_GRIDLINE_COLOR);
     pen.setCosmetic(true);
-    pen.setStyle(GridLine::GraphicsData::gridLinePenStyle());
+    pen.setStyle(GridLine::GraphicsItem::gridLinePenStyle());
     _pitchSceneLineNode->setPen(pen);
     _controlSceneLineNode->setPen(pen);
-    pen.setStyle(GridLine::GraphicsData::gridLineExtensionPenStyle());
+    pen.setStyle(GridLine::GraphicsItem::gridLineExtensionPenStyle());
     _labelSceneLineNode->setPen(pen);
     _pitchSceneLineHighExtensionNode->setPen(pen);
     _pitchSceneLineLowExtensionNode->setPen(pen);
     _controlSceneLineExtensionNode->setPen(pen);
 }
 
-GraphicsData::~GraphicsData()
+GraphicsItem::~GraphicsItem()
 {
-    delete _controlSceneLineNode;
-    delete _pitchSceneLineNode;
-    delete _labelSceneLineNode;
+    qDelete(_controlSceneLineNode);
+    qDelete(_pitchSceneLineNode);
+    qDelete(_labelSceneLineNode);
 }
 
-QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
+QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const
 {
     if (UnitYTransform == transformType) {
         switch (sceneType) {
@@ -77,7 +75,7 @@ QGraphicsItem *GraphicsData::findNode(int sceneType, int transformType) const
     return 0;
 }
 
-void GraphicsData::update(int role, const QVariant &value)
+void GraphicsItem::update(int role, const QVariant &value)
 {
     switch (role) {
     case VisibilityRole: {
@@ -116,7 +114,7 @@ void GraphicsData::update(int role, const QVariant &value)
         _controlSceneLineExtensionNode->setPen(pen);
     }   break;
     }
-    GridLine::GraphicsData::update(role, value);
+    GridLine::GraphicsItem::update(role, value);
 }
 
 }

@@ -15,16 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_gui_pitchcurve_graphicsiteminfo.h"
+#include "ac_gui_pitchgridline_graphicsitem.h"
+#include "ac_gui_graphicsnode.h"
 #include "ac_gui_namespace.h"
+#include <QGraphicsLineItem>
 
 using namespace Ac;
 
-namespace PitchCurve {
+namespace PitchGridLine {
 
-int GraphicsItemInfo::sceneType() const
+QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const
 {
-    return PitchScene;
+    if (PitchScene == sceneType && UnitXTransform == transformType)
+        return editorSceneLineNode();
+    if (PitchLabelScene == sceneType && MainTransform == transformType)
+        return labelSceneRootNode();
+    return 0;
 }
 
 }

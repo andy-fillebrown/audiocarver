@@ -15,35 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_HORIZONTALGRIDLINE_GRAPHICSDATA_H
-#define AC_GUI_HORIZONTALGRIDLINE_GRAPHICSDATA_H
+#ifndef AC_GUI_PITCHGRIDLINE_GRAPHICSITEM_H
+#define AC_GUI_PITCHGRIDLINE_GRAPHICSITEM_H
 
-#include "ac_gui_gridline_graphicsdata.h"
+#include "ac_gui_horizontalgridline_graphicsitem.h"
 
-class QGraphicsLineItem;
+namespace PitchGridLine {
 
-namespace HorizontalGridLine {
-
-class GraphicsData : public GridLine::GraphicsData
+class GraphicsItem : public HorizontalGridLine::GraphicsItem
 {
-    QGraphicsLineItem *_editorSceneLineNode;
-    QGraphicsLineItem *_editorSceneLineExtensionNode;
+public:
+    GraphicsItem(IAggregate *aggregate)
+        :   HorizontalGridLine::GraphicsItem(aggregate)
+    {}
 
 protected:
-    GraphicsData(IAggregate *aggregate);
-    ~GraphicsData();
-
-    QGraphicsLineItem *editorSceneLineNode() const
-    {
-        return _editorSceneLineNode;
-    }
-
-    QGraphicsLineItem *editorSceneLineExtensionNode() const
-    {
-        return _editorSceneLineExtensionNode;
-    }
-
-    void update(int role, const QVariant &value);
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
 };
 
 }

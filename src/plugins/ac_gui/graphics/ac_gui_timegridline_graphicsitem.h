@@ -15,16 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_TIMEGRIDLINE_GRAPHICSDATA_H
-#define AC_GUI_TIMEGRIDLINE_GRAPHICSDATA_H
+#ifndef AC_GUI_TIMEGRIDLINE_GRAPHICSITEM_H
+#define AC_GUI_TIMEGRIDLINE_GRAPHICSITEM_H
 
-#include "ac_gui_gridline_graphicsdata.h"
+#include "ac_gui_gridline_graphicsitem.h"
 
 class QGraphicsLineItem;
 
 namespace TimeGridLine {
 
-class GraphicsData : public GridLine::GraphicsData
+class GraphicsItem : public GridLine::GraphicsItem
 {
     QGraphicsLineItem *_labelSceneLineNode;
     QGraphicsLineItem *_pitchSceneLineNode;
@@ -34,10 +34,10 @@ class GraphicsData : public GridLine::GraphicsData
     QGraphicsLineItem *_controlSceneLineExtensionNode;
 
 public:
-    GraphicsData(IAggregate *aggregate);
+    GraphicsItem(IAggregate *aggregate);
 
 protected:
-    ~GraphicsData();
+    ~GraphicsItem();
 
     QGraphicsItem *findNode(int sceneType, int transformType) const;
     void update(int role, const QVariant &value);

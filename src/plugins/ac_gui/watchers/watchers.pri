@@ -2,6 +2,7 @@
 SOURCE_FILES = \
     note_graphicsupdater \
     object_graphicsupdater \
+    score_graphicsupdater \
     tracklist_graphicsupdater \
 
 for(file, SOURCE_FILES) {

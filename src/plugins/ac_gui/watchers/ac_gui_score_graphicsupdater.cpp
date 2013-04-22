@@ -15,24 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_CONTROLGRIDLINE_GRAPHICSDATA_H
-#define AC_GUI_CONTROLGRIDLINE_GRAPHICSDATA_H
+#include "ac_gui_score_graphicsupdater.h"
 
-#include "ac_gui_horizontalgridline_graphicsdata.h"
+namespace Score {
 
-namespace ControlGridLine {
 
-class GraphicsData : public HorizontalGridLine::GraphicsData
-{
-public:
-    GraphicsData(IAggregate *aggregate)
-        :   HorizontalGridLine::GraphicsData(aggregate)
-    {}
 
-protected:
-    QGraphicsItem *findNode(int sceneType, int transformType) const;
-};
 
 }
-
-#endif

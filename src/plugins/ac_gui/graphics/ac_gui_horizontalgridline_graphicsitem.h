@@ -15,28 +15,37 @@
 **
 **************************************************************************/
 
-#include "ac_gui_scoreobject_aggregatehelper.h"
-#include "ac_gui_graphicsnode.h"
-#include "ac_gui_namespace.h"
+#ifndef AC_GUI_HORIZONTALGRIDLINE_GRAPHICSITEM_H
+#define AC_GUI_HORIZONTALGRIDLINE_GRAPHICSITEM_H
 
-using namespace Ac;
+#include "ac_gui_gridline_graphicsitem.h"
 
-namespace ScoreObject {
-namespace Gui {
+class QGraphicsLineItem;
 
-AggregateHelper::AggregateHelper()
+namespace HorizontalGridLine {
+
+class GraphicsItem : public GridLine::GraphicsItem
 {
-    mainNodes.insert(PitchScene, new GraphicsNode);
-    mainNodes.insert(ControlScene, new GraphicsNode);
+    QGraphicsLineItem *_editorSceneLineNode;
+    QGraphicsLineItem *_editorSceneLineExtensionNode;
+
+protected:
+    GraphicsItem(IAggregate *aggregate);
+    ~GraphicsItem();
+
+    QGraphicsLineItem *editorSceneLineNode() const
+    {
+        return _editorSceneLineNode;
+    }
+
+    QGraphicsLineItem *editorSceneLineExtensionNode() const
+    {
+        return _editorSceneLineExtensionNode;
+    }
+
+    void update(int role, const QVariant &value);
+};
+
 }
 
-AggregateHelper::~AggregateHelper()
-{
-    delete mainNodes.value(PitchScene);
-    mainNodes.insert(PitchScene, 0);
-    delete mainNodes.value(ControlScene);
-    mainNodes.insert(ControlScene, 0);
-}
-
-}
-}
+#endif

@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_gui_horizontalgridline_graphicsdata.h"
+#include "ac_gui_horizontalgridline_graphicsitem.h"
 #include "ac_gui_graphicsnode.h"
 #include <ac_core_constants.h>
 #include <QPen>
@@ -25,8 +25,8 @@ using namespace Mi;
 
 namespace HorizontalGridLine {
 
-GraphicsData::GraphicsData(IAggregate *aggregate)
-    :   GridLine::GraphicsData(aggregate)
+GraphicsItem::GraphicsItem(IAggregate *aggregate)
+    :   GridLine::GraphicsItem(aggregate)
     ,   _editorSceneLineNode(0)
     ,   _editorSceneLineExtensionNode(0)
 {
@@ -34,18 +34,18 @@ GraphicsData::GraphicsData(IAggregate *aggregate)
     _editorSceneLineExtensionNode = new QGraphicsLineItem(_editorSceneLineNode);
     QPen pen(DEFAULT_GRIDLINE_COLOR);
     pen.setCosmetic(true);
-    pen.setStyle(GridLine::GraphicsData::gridLinePenStyle());
+    pen.setStyle(GridLine::GraphicsItem::gridLinePenStyle());
     _editorSceneLineNode->setPen(pen);
-    pen.setStyle(GridLine::GraphicsData::gridLineExtensionPenStyle());
+    pen.setStyle(GridLine::GraphicsItem::gridLineExtensionPenStyle());
     _editorSceneLineExtensionNode->setPen(pen);
 }
 
-GraphicsData::~GraphicsData()
+GraphicsItem::~GraphicsItem()
 {
-    delete _editorSceneLineNode;
+    qDelete(_editorSceneLineNode);
 }
 
-void GraphicsData::update(int role, const QVariant &value)
+void GraphicsItem::update(int role, const QVariant &value)
 {
     switch (role) {
     case VisibilityRole: {
@@ -69,7 +69,7 @@ void GraphicsData::update(int role, const QVariant &value)
         _editorSceneLineExtensionNode->setPen(pen);
     } break;
     }
-    GridLine::GraphicsData::update(role, value);
+    GridLine::GraphicsItem::update(role, value);
 }
 
 }
