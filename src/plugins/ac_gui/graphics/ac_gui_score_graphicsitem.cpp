@@ -43,18 +43,11 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
 
 GraphicsItem::~GraphicsItem()
 {
-    delete _unitYNodes.value(PitchScene);
-    _unitYNodes.insert(PitchScene, 0);
-    delete _unitXNodes.value(ControlScene);
-    _unitXNodes.insert(ControlScene, 0);
-    delete _unitXNodes.value(PitchScene);
-    _unitXNodes.insert(PitchScene, 0);
     for (int i = 0;  i < SceneTypeCount;  ++i) {
-        delete _unitYNodes.value(i);
-        _unitYNodes.insert(i, 0);
-        delete _unitXNodes.value(i);
-        _unitXNodes.insert(i, 0);
+        qDelete(_unitYNodes, i);
+        qDelete(_unitXNodes, i);
     }
+    // Main nodes get deleted in ScoreObject::GraphicsItem destructor.
 }
 
 QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const

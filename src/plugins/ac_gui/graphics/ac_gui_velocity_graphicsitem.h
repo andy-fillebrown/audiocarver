@@ -37,8 +37,8 @@ public:
     GraphicsItem(IAggregate *aggregate);
 
 protected:
-    ~GraphicsItem();
     void initialize();
+    ~GraphicsItem();
 
     Object::Aggregate *aggregate() const;
 

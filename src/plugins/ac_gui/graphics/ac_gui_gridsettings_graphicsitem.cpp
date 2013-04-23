@@ -35,6 +35,17 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     _unitYNodes.insert(ControlScene, new GraphicsNode);
 }
 
+GraphicsItem::~GraphicsItem()
+{
+    qDelete(_unitYNodes, ControlScene);
+    qDelete(_unitYNodes, PitchScene);
+    qDelete(_unitXNodes, PitchScene);
+    qDelete(_unitXNodes, PitchScene);
+    qDelete(_mainNodes, ControlLabelScene);
+    qDelete(_mainNodes, PitchLabelScene);
+    qDelete(_mainNodes, TimeLabelScene);
+}
+
 QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const
 {
     switch (transformType) {

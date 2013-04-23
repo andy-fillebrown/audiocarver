@@ -41,14 +41,14 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     _lineNode->setPen(pen);
 }
 
-GraphicsItem::~GraphicsItem()
-{
-    qDelete(_lineNode);
-}
-
 void GraphicsItem::initialize()
 {
     update(HighlightRole, false);
+}
+
+GraphicsItem::~GraphicsItem()
+{
+    qDelete(_lineNode);
 }
 
 Object::Aggregate *GraphicsItem::aggregate() const

@@ -59,6 +59,7 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
 
 GraphicsItem::~GraphicsItem()
 {
+    qDelete(_labelSceneTextNode);
     qDelete(_labelSceneRootNode);
 }
 

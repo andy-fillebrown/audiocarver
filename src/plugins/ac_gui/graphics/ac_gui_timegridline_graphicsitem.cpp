@@ -56,7 +56,10 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
 
 GraphicsItem::~GraphicsItem()
 {
+    qDelete(_controlSceneLineExtensionNode);
     qDelete(_controlSceneLineNode);
+    qDelete(_pitchSceneLineLowExtensionNode);
+    qDelete(_pitchSceneLineHighExtensionNode);
     qDelete(_pitchSceneLineNode);
     qDelete(_labelSceneLineNode);
 }

@@ -34,10 +34,8 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
 
 GraphicsItem::~GraphicsItem()
 {
-    for (int i = 0;  i < SceneTypeCount;  ++i) {
-        delete _mainNodes.value(i);
-        _mainNodes.insert(i, 0);
-    }
+    for (int i = 0;  i < SceneTypeCount;  ++i)
+        qDelete(_mainNodes, i);
 }
 
 QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const

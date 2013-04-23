@@ -24,7 +24,7 @@ namespace Velocity {
 
 class GraphicsGripList : public Object::GraphicsGripList
 {
-    IGraphicsGrip *_grip;
+    IAggregate *_grip;
 
 public:
     GraphicsGripList(IAggregate *aggregate)
@@ -32,16 +32,10 @@ public:
     {}
 
 protected:
+    void initialize();
     ~GraphicsGripList();
 
-    void initialize();
-
-    QList<IGraphicsGrip*> grips() const
-    {
-        QList<IGraphicsGrip*> griplist;
-        griplist.append(_grip);
-        return griplist;
-    }
+    QList<IGraphicsGrip*> grips() const;
 
     void sort()
     {}

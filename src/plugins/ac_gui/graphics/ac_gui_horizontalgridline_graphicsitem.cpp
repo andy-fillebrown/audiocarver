@@ -42,6 +42,7 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
 
 GraphicsItem::~GraphicsItem()
 {
+    qDelete(_editorSceneLineExtensionNode);
     qDelete(_editorSceneLineNode);
 }
 

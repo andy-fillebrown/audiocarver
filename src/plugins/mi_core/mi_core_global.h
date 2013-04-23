@@ -44,4 +44,10 @@ template <class T> void qDelete(T *&t)
     t = 0;
 }
 
+template <class T> void qDelete(T &map, int key)
+{
+    delete map.value(key);
+    map.insert(key, 0);
+}
+
 #endif

@@ -33,6 +33,8 @@ public:
     GraphicsItem(IAggregate *aggregate);
 
 protected:
+    ~GraphicsItem();
+
     QGraphicsItem *findNode(int sceneType, int transformType) const;
 };
 

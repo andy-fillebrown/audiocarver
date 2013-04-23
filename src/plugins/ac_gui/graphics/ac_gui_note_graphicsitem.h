@@ -33,9 +33,8 @@ public:
     {}
 
 protected:
-    ~GraphicsItem();
-
     void initialize();
+    ~GraphicsItem();
 
     int itemCount() const
     {

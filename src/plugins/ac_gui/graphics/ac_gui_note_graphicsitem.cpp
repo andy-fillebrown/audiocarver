@@ -24,14 +24,14 @@ using namespace Ac;
 
 namespace Note {
 
-GraphicsItem::~GraphicsItem()
-{
-    qDelete(_velocity);
-}
-
 void GraphicsItem::initialize()
 {
     _velocity = IDatabaseObjectFactory::instance()->create(VelocityItem, aggregate());
+}
+
+GraphicsItem::~GraphicsItem()
+{
+    qDelete(_velocity);
 }
 
 IGraphicsItem *GraphicsItem::itemAt(int i) const
