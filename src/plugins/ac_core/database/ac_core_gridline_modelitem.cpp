@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_core_gridline_modelitem.h"
-#include "ac_core_gridline_aggregate.h"
+#include "ac_core_constants.h"
 #include "ac_core_namespace.h"
 #include <mi_core_scopeddatachange.h>
 #include <mi_core_utilities.h>
@@ -26,25 +26,22 @@ using namespace Mi;
 
 namespace GridLine {
 
-Aggregate *ModelItem::aggregate() const
-{
-    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
-}
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   Object::ModelItem(aggregate)
+    ,   _location(Q_FLOAT_MIN)
+    ,   _priority(0)
+    ,   _color(DEFAULT_GRIDLINE_COLOR)
+    ,   _visible(true)
+{}
 
 bool ModelItem::isTypeOfItem(int itemType) const
 {
     return GridLineItem == itemType;
 }
 
-int ModelItem::roleCount() const
-{
-    return Aggregate::TotalRoleCount;
-}
-
-
 int ModelItem::roleAt(int i) const
 {
-    switch (i - Aggregate::RoleCountOffset) {
+    switch (i - RoleCountOffset) {
     case 0:
         return LocationRole;
     case 1:
@@ -62,15 +59,15 @@ QVariant ModelItem::getValue(int role) const
 {
     switch (role) {
     case LocationRole:
-        return aggregate()->location;
+        return _location;
     case LabelRole:
-        return aggregate()->label;
+        return _label;
     case PriorityRole:
-        return aggregate()->priority;
+        return _priority;
     case ColorRole:
-        return colorFromInt(aggregate()->color);
+        return colorFromInt(_color);
     case VisibilityRole:
-        return aggregate()->visible;
+        return _visible;
     default:
         return Object::ModelItem::getValue(role);
     }
@@ -80,48 +77,43 @@ bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
     case LocationRole: {
-        Aggregate *aggregate = this->aggregate();
         const qreal location = qMax(qreal(0.0f), qvariant_cast<qreal>(value));
-        if (aggregate->location == location)
+        if (_location == location)
             return false;
         ScopedDataChange data_change(this, LocationRole);
-        aggregate->location = location;
+        _location = location;
         return true;
     }
     case LabelRole: {
-        Aggregate *aggregate = this->aggregate();
         const QString label = qvariant_cast<QString>(value);
-        if (aggregate->label == label)
+        if (_label == label)
             return false;
         ScopedDataChange data_change(this, LabelRole);
-        aggregate->label = label;
+        _label = label;
         return true;
     }
     case PriorityRole: {
-        Aggregate *aggregate = this->aggregate();
         const int priority = qMax(0, qvariant_cast<int>(value));
-        if (aggregate->priority == priority)
+        if (_priority == priority)
             return false;
         ScopedDataChange data_change(this, PriorityRole);
-        aggregate->priority = priority;
+        _priority = priority;
         return true;
     }
     case ColorRole: {
-        Aggregate *aggregate = this->aggregate();
         const int color = qBound(0x000000, intFromColor(value), 0xffffff);
-        if (aggregate->color == color)
+        if (_color == color)
             return false;
         ScopedDataChange data_change(this, ColorRole);
-        aggregate->color = color;
+        _color = color;
         return true;
     }
     case VisibilityRole: {
-        Aggregate *aggregate = this->aggregate();
         const bool visible = qvariant_cast<bool>(value);
-        if (aggregate->visible == visible)
+        if (_visible == visible)
             return false;
         ScopedDataChange data_change(this, VisibilityRole);
-        aggregate->visible = visible;
+        _visible = visible;
         return true;
     }
     default:

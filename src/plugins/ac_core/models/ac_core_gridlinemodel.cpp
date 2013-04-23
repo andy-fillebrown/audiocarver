@@ -16,18 +16,19 @@
 **************************************************************************/
 
 #include "ac_core_gridlinemodel.h"
-#include "ac_core_gridline_aggregate.h"
+#include "ac_core_gridline_modelitem.h"
 #include "ac_core_namespace.h"
+#include <iaggregate.h>
 #include <idatabase.h>
 #include <idatabaseobjectfactory.h>
 #include <ifilefiler.h>
 #include <ifilerfactory.h>
 #include <imodel.h>
-#include <imodelitem.h>
 #include <ireader.h>
 #include <iwriter.h>
 #include <QMetaProperty>
 
+using namespace Ac;
 using namespace Mi;
 using namespace Qt;
 
@@ -36,16 +37,15 @@ bool lessThan(const QList<QVariant> &a, const QList<QVariant> &b)
     return a.at(0).toReal() < b.at(0).toReal();
 }
 
-namespace Ac {
-namespace Core {
+namespace GridLine {
 
-void GridLineModel::updateList()
+void Model::updateList()
 {
     _list = IDatabase::instance()->rootItem()->findItem(GridSettingsItem)->findItem(_listType);
     syncDataToList(_list);
 }
 
-void GridLineModel::syncDataToList(IModelItem *list)
+void Model::syncDataToList(IModelItem *list)
 {
     _valueLists.clear();
     const int row_count = list->itemCount();
@@ -54,12 +54,12 @@ void GridLineModel::syncDataToList(IModelItem *list)
         IModelItem *item = list->itemAt(i);
         QList<QVariant> values;
         for (int j = 0;  j < column_count;  ++j)
-            values.append(item->getValue(item->roleAt(GridLine::Aggregate::RoleCountOffset + j)));
+            values.append(item->getValue(item->roleAt(GridLine::ModelItem::RoleCountOffset + j)));
         _valueLists.append(values);
     }
 }
 
-void GridLineModel::syncListToData(IModelItem *list)
+void Model::syncListToData(IModelItem *list)
 {
     const int row_count = _valueLists.count();
     const int column_count = columnCount();
@@ -74,7 +74,7 @@ void GridLineModel::syncListToData(IModelItem *list)
         } else
             item = list->itemAt(i);
         for (int j = 0;  j < column_count;  ++j)
-            item->set(item->roleAt(GridLine::Aggregate::RoleCountOffset + j), _valueLists.at(i).at(j));
+            item->set(item->roleAt(GridLine::ModelItem::RoleCountOffset + j), _valueLists.at(i).at(j));
     }
 
     // Remove the remaining items from the list.
@@ -87,7 +87,7 @@ void GridLineModel::syncListToData(IModelItem *list)
     }
 }
 
-void GridLineModel::setListType(int type)
+void Model::setListType(int type)
 {
     if (_listType == type)
         return;
@@ -95,7 +95,7 @@ void GridLineModel::setListType(int type)
     updateList();
 }
 
-bool GridLineModel::isChanged() const
+bool Model::isChanged() const
 {
     if (!_list)
         return false;
@@ -106,13 +106,13 @@ bool GridLineModel::isChanged() const
     for (int i = 0;  i < item_count;  ++i) {
         const QList<QVariant> &values = _valueLists.at(i);
         for (int j = 0;  j < column_count;  ++j)
-            if (_list->itemAt(i)->getValue(GridLine::Aggregate::RoleCountOffset + j) != values.at(j))
+            if (_list->itemAt(i)->getValue(GridLine::ModelItem::RoleCountOffset + j) != values.at(j))
                 return true;
     }
     return false;
 }
 
-void GridLineModel::resetData()
+void Model::resetData()
 {
     if (!isChanged())
         return;
@@ -120,30 +120,30 @@ void GridLineModel::resetData()
     emit layoutChanged();
 }
 
-int GridLineModel::columnCount(const QModelIndex &parent) const
+int Model::columnCount(const QModelIndex &parent) const
 {
-    return GridLine::Aggregate::RoleCount - GridLine::Aggregate::RoleCountOffset;
+    return GridLine::ModelItem::RoleCount - GridLine::ModelItem::RoleCountOffset;
 }
 
-int GridLineModel::rowCount(const QModelIndex &parent) const
+int Model::rowCount(const QModelIndex &parent) const
 {
     return _valueLists.count();
 }
 
-bool GridLineModel::insertRows(int row, int count, const QModelIndex &parent)
+bool Model::insertRows(int row, int count, const QModelIndex &parent)
 {
     QList<QVariant> values;
     values.append(0);
     values.append("");
     values.append(0);
-    values.append(lightGray);
+    values.append(Ac::lightGray);
     beginInsertRows(parent, 0, 0);
     _valueLists.insert(0, values);
     endInsertRows();
     return true;
 }
 
-bool GridLineModel::removeRows(int row, int count, const QModelIndex &parent)
+bool Model::removeRows(int row, int count, const QModelIndex &parent)
 {
     beginRemoveRows(parent, row, row + count);
     for (int i = 0;  i < count;  ++i)
@@ -152,25 +152,25 @@ bool GridLineModel::removeRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
-Qt::ItemFlags GridLineModel::flags(const QModelIndex &index) const
+Qt::ItemFlags Model::flags(const QModelIndex &index) const
 {
     return ItemIsEnabled
             | ItemIsSelectable
             | ItemIsEditable;
 }
 
-QVariant GridLineModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant Model::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (DisplayRole != role
             || Horizontal != orientation
             || section < 0 || columnCount(QModelIndex()) <= section)
         return QVariant();
-    QString label(itemDataRoleString(GridLine::Aggregate::RoleCountOffset + section));
+    QString label(itemDataRoleString(GridLine::ModelItem::RoleCountOffset + section));
     label[0] = label.at(0).toUpper();
     return label;
 }
 
-QVariant GridLineModel::data(const QModelIndex &index, int role) const
+QVariant Model::data(const QModelIndex &index, int role) const
 {
     if ((DisplayRole != role
          && EditRole != role)
@@ -179,7 +179,7 @@ QVariant GridLineModel::data(const QModelIndex &index, int role) const
     return _valueLists.at(index.row()).at(index.column());
 }
 
-bool GridLineModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (EditRole != role)
         return false;
@@ -188,7 +188,7 @@ bool GridLineModel::setData(const QModelIndex &index, const QVariant &value, int
     return true;
 }
 
-void GridLineModel::importFromFile(const QString &fileName)
+void Model::importFromFile(const QString &fileName)
 {
     IAggregate *list_aggregate = 0;
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
@@ -215,7 +215,7 @@ void GridLineModel::importFromFile(const QString &fileName)
     delete list_aggregate;
 }
 
-void GridLineModel::exportToFile(const QString &fileName)
+void Model::exportToFile(const QString &fileName)
 {
     IAggregate *list_aggregate = 0;
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
@@ -241,11 +241,11 @@ void GridLineModel::exportToFile(const QString &fileName)
     delete list_aggregate;
 }
 
-void GridLineModel::apply()
+void Model::apply()
 {
     if (isChanged())
         syncListToData(_list);
 }
 
-} // namespace Core
-} // namespace Ac
+}
+

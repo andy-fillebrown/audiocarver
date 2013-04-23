@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "ac_core_pitchgridline_modelitem.h"
+#include "ac_core_constants.h"
 #include "ac_core_namespace.h"
 
 using namespace Ac;

@@ -40,6 +40,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     QFile *file() const
     {
         return _file;

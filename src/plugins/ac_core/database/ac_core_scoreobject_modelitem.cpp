@@ -16,17 +16,24 @@
 **************************************************************************/
 
 #include "ac_core_scoreobject_modelitem.h"
+#include "ac_core_constants.h"
 #include "ac_core_namespace.h"
-#include "ac_core_scoreobject_aggregate.h"
 #include <mi_core_scopeddatachange.h>
 
 using namespace Ac;
 
 namespace ScoreObject {
 
-Aggregate *ModelItem::aggregate() const
+ModelItem::ModelItem(IAggregate *aggregate)
+    :   Object::ModelItem(aggregate)
 {
-    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
+    reset();
+}
+
+void ModelItem::reset()
+{
+    _volume = DEFAULT_SCOREOBJECT_VOLUME;
+    Object::ModelItem::reset();
 }
 
 bool ModelItem::isTypeOfItem(int itemType) const
@@ -34,52 +41,9 @@ bool ModelItem::isTypeOfItem(int itemType) const
     return ScoreObjectItem == itemType;
 }
 
-int ModelItem::itemCount() const
-{
-    return Aggregate::TotalItemCount;
-}
-
-int ModelItem::indexOfItem(const IModelItem *item) const
-{
-    if (query<IModelItem>(aggregate()->pitchCurve) == item)
-        return Aggregate::ItemCountOffset;
-    if (query<IModelItem>(aggregate()->controlCurve) == item)
-        return Aggregate::ItemCountOffset + 1;
-    return Object::ModelItem::indexOfItem(item);
-}
-
-IModelItem *ModelItem::itemAt(int i) const
-{
-    switch (i - Aggregate::ItemCountOffset) {
-    case 0:
-        return query<IModelItem>(aggregate()->pitchCurve);
-    case 1:
-        return query<IModelItem>(aggregate()->controlCurve);
-    default:
-        return Object::ModelItem::itemAt(i);
-    }
-}
-
-IModelItem *ModelItem::findItem(int itemType) const
-{
-    switch (itemType) {
-    case ControlCurveListItem:
-        return query<IModelItem>(aggregate()->controlCurve);
-    case PitchCurveItem:
-        return query<IModelItem>(aggregate()->pitchCurve);
-    default:
-        return Object::ModelItem::findItem(itemType);
-    }
-}
-
-int ModelItem::roleCount() const
-{
-    return Aggregate::TotalRoleCount;
-}
-
 int ModelItem::roleAt(int i) const
 {
-    switch (i - Aggregate::RoleCountOffset) {
+    switch (i - RoleCountOffset) {
     case 0:
         return VolumeRole;
     default:
@@ -91,7 +55,7 @@ QVariant ModelItem::getValue(int role) const
 {
     switch (role) {
     case VolumeRole:
-        return aggregate()->volume;
+        return _volume;
     default:
         return Object::ModelItem::getValue(role);
     }
@@ -101,12 +65,11 @@ bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
     case VolumeRole: {
-        qreal volume = qvariant_cast<qreal>(value);
-        volume = qBound(qreal(0.0f), volume, qreal(1.0f));
-        if (aggregate()->volume == volume)
+        qreal volume = qBound(qreal(0.0f), qvariant_cast<qreal>(value), qreal(1.0f));
+        if (_volume == volume)
             return false;
         ScopedDataChange data_change(this, VolumeRole);
-        aggregate()->volume = volume;
+        _volume = volume;
         return true;
     }
     default:

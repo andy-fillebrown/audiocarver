@@ -18,29 +18,54 @@
 #ifndef AC_CORE_SCORE_MODELITEM_H
 #define AC_CORE_SCORE_MODELITEM_H
 
-#include <mi_core_object_modelitem.h>
+#include "ac_core_scoreobject_modelitem.h"
 
 namespace Score {
 
-class Aggregate;
-
-class ModelItem : public Object::ModelItem
+class ModelItem : public ScoreObject::ModelItem
 {
+    IAggregate *_tracks;
+    IAggregate *_gridSettings;
+    IAggregate *_projectSettings;
+    IAggregate *_viewSettings;
+    enum { ItemCount = 4 };
+
+    qreal _length;
+    qreal _startTime;
+    enum { RoleCount = 2 };
+
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    ModelItem(IAggregate *aggregate);
 
 protected:
-    Aggregate *aggregate() const;
+    enum {
+        ItemCountOffset = ScoreObject::ModelItem::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount,
+        RoleCountOffset = ScoreObject::ModelItem::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
+    void initialize();
+    ~ModelItem();
+
+    void reset();
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
+
+    int itemCount() const
+    {
+        return TotalItemCount;
+    }
+
     int indexOfItem(const IModelItem *item) const;
     IModelItem *itemAt(int i) const;
     IModelItem *findItem(int itemType) const;
-    int roleCount() const;
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
     int roleAt(int i) const;
     QVariant getValue(int role) const;
     bool setValue(int role, const QVariant &value);

@@ -37,6 +37,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     bool isInCommand() const
     {
         return _inCommand;

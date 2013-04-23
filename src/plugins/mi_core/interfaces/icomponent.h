@@ -27,6 +27,7 @@ public:
     enum { InterfaceType = I::IComponent };
 
     virtual void initialize() = 0;
+    virtual void reset() = 0;
 
     int interfaceType() const
     {

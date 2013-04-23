@@ -32,15 +32,18 @@ public:
     void *queryInterface(int interfaceType) const;
 
 protected:
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
     GraphicsGripList(IAggregate *aggregate);
 
     void initialize()
     {}
 
-    IAggregate *aggregate() const
-    {
-        return _aggregate;
-    }
+    void reset()
+    {}
 
     void update(int role, const QVariant &value)
     {}

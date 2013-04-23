@@ -23,10 +23,9 @@
 
 class IModelItem;
 
-namespace Ac {
-namespace Core {
+namespace GridLine {
 
-class AC_CORE_EXPORT GridLineModel : public QAbstractTableModel
+class AC_CORE_EXPORT Model : public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -39,7 +38,7 @@ class AC_CORE_EXPORT GridLineModel : public QAbstractTableModel
     void syncListToData(IModelItem *list);
 
 public:
-    GridLineModel(QObject *parent = 0)
+    Model(QObject *parent = 0)
         :   QAbstractTableModel(parent)
         ,   _listType(0)
         ,   _list(0)
@@ -65,7 +64,6 @@ public slots:
     void apply();
 };
 
-} // namespace Core
-} // namespace Ac
+}
 
-#endif // AC_GRIDLINEMODEL_H
+#endif

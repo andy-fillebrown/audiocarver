@@ -26,21 +26,49 @@ class Aggregate;
 
 class ModelItem : public Object::ModelItem
 {
+    IAggregate *_timeGridLines;
+    IAggregate *_pitchGridLines;
+    IAggregate *_controlGridLines;
+    enum { ItemCount = 3 };
+
+    int _snapEnabled : 1;
+    int _gridSnapEnabled : 1;
+    qreal _timeSnap;
+    qreal _pitchSnap;
+    qreal _controlSnap;
+    enum { RoleCount = 5 };
+
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    ModelItem(IAggregate *aggregate);
 
 protected:
-    Aggregate *aggregate() const;
+    enum {
+        ItemCountOffset = Object::ModelItem::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount,
+        RoleCountOffset = Object::ModelItem::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
+
+    ~ModelItem();
+    void reset();
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
+
+    int itemCount() const
+    {
+        return TotalItemCount;
+    }
+
     int indexOfItem(const IModelItem *item) const;
     IModelItem *itemAt(int i) const;
     IModelItem *findItem(int itemType) const;
-    int roleCount() const;
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
     int roleAt(int i) const;
     QVariant getValue(int role) const;
     bool setValue(int role, const QVariant &value);

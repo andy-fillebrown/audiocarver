@@ -45,17 +45,6 @@ using namespace Ac;
 
 namespace Gui {
 
-IAggregate *DatabaseObjectFactory::createAggregate(int itemType, IAggregate *parent)
-{
-    switch (itemType) {
-    case GripItem:
-    case VelocityItem:
-        return new Object::Aggregate(parent);
-    default:
-        return Core::DatabaseObjectFactory::createAggregate(itemType, parent);
-    }
-}
-
 void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate)
 {
     Core::DatabaseObjectFactory::createComponents(itemType, aggregate);

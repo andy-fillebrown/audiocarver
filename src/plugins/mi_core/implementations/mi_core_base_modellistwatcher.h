@@ -38,6 +38,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     void beginInsertItem(const IModelItem *list, int index)
     {}
 

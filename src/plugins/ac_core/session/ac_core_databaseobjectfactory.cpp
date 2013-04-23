@@ -18,26 +18,18 @@
 #include "ac_core_databaseobjectfactory.h"
 #include "ac_core_controlcurve_modelitem.h"
 #include "ac_core_controlgridline_modelitem.h"
-#include "ac_core_curve_aggregate.h"
-#include "ac_core_gridline_aggregate.h"
-#include "ac_core_gridsettings_aggregate.h"
 #include "ac_core_gridsettings_modelitem.h"
 #include "ac_core_namespace.h"
-#include "ac_core_note_aggregate.h"
 #include "ac_core_note_modelitem.h"
 #include "ac_core_pitchcurve_modelitem.h"
 #include "ac_core_pitchgridline_modelitem.h"
-#include "ac_core_projectsettings_aggregate.h"
 #include "ac_core_projectsettings_modelitem.h"
-#include "ac_core_score_aggregate.h"
 #include "ac_core_score_modelitem.h"
 #include "ac_core_timegridline_modelitem.h"
-#include "ac_core_track_aggregate.h"
 #include "ac_core_track_modelitem.h"
-#include "ac_core_viewsettings_aggregate.h"
 #include "ac_core_viewsettings_modelitem.h"
+#include <mi_core_object_aggregate.h>
 #include <mi_core_object_modelupdater.h>
-#include <mi_core_objectlist_aggregate.h>
 #include <mi_core_objectlist_modelitem.h>
 #include <mi_core_objectlist_modelupdater.h>
 
@@ -45,57 +37,12 @@ using namespace Ac;
 
 namespace Core {
 
-IAggregate *DatabaseObjectFactory::create(int itemType, IAggregate *parent)
+IAggregate *DatabaseObjectFactory::create(int itemType, IComponent *parent)
 {
-    IAggregate *aggregate = createAggregate(itemType, parent);
-    if (!aggregate)
-        return 0;
+    IAggregate *aggregate = new Object::Aggregate(query<IAggregate>(parent));
     createComponents(itemType, aggregate);
     aggregate->initialize();
     return aggregate;
-}
-
-IAggregate *DatabaseObjectFactory::createAggregate(int itemType, IAggregate *parent)
-{
-    switch (itemType) {
-    case ControlCurveItem:
-        return new Curve::Aggregate(parent);
-    case ControlCurveListItem:
-        return new ObjectList::Aggregate(parent, ControlCurveItem);
-    case ControlGridLineItem:
-        return new GridLine::Aggregate(parent);
-    case ControlGridLineListItem:
-        return new ObjectList::Aggregate(parent, ControlGridLineItem);
-    case GridSettingsItem:
-        return new GridSettings::Aggregate(parent);
-    case NoteItem:
-        return new Note::Aggregate(parent);
-    case NoteListItem:
-        return new ObjectList::Aggregate(parent, NoteItem);
-    case PitchCurveItem:
-        return new Curve::Aggregate(parent);
-    case PitchGridLineItem:
-        return new GridLine::Aggregate(parent);
-    case PitchGridLineListItem:
-        return new ObjectList::Aggregate(parent, PitchGridLineItem);
-    case ProjectSettingsItem:
-        return new ProjectSettings::Aggregate(parent);
-    case ScoreItem:
-        return new Score::Aggregate(parent);
-    case TimeGridLineItem:
-        return new GridLine::Aggregate(parent);
-    case TimeGridLineListItem:
-        return new ObjectList::Aggregate(parent, TimeGridLineListItem);
-    case TrackItem:
-        return new Track::Aggregate(parent);
-    case TrackListItem:
-        return new ObjectList::Aggregate(parent, TrackItem);
-    case ViewSettingsItem:
-        return new ViewSettings::Aggregate(parent);
-    default:
-        Q_ASSERT(0);
-        return 0;
-    }
 }
 
 void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate)
@@ -106,7 +53,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Object::ModelUpdater(aggregate);
         break;
     case ControlCurveListItem:
-        new ObjectList::ModelItem(aggregate);
+        new ObjectList::ModelItem(aggregate, ControlCurveItem);
         new ObjectList::ModelUpdater(aggregate);
         break;
     case ControlGridLineItem:
@@ -114,7 +61,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Object::ModelUpdater(aggregate);
         break;
     case ControlGridLineListItem:
-        new ObjectList::ModelItem(aggregate);
+        new ObjectList::ModelItem(aggregate, ControlGridLineItem);
         new ObjectList::ModelUpdater(aggregate);
         break;
     case GridSettingsItem:
@@ -126,7 +73,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Object::ModelUpdater(aggregate);
         break;
     case NoteListItem:
-        new ObjectList::ModelItem(aggregate);
+        new ObjectList::ModelItem(aggregate, NoteItem);
         new ObjectList::ModelUpdater(aggregate);
         break;
     case PitchCurveItem:
@@ -138,7 +85,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Object::ModelUpdater(aggregate);
         break;
     case PitchGridLineListItem:
-        new ObjectList::ModelItem(aggregate);
+        new ObjectList::ModelItem(aggregate, PitchGridLineItem);
         new ObjectList::ModelUpdater(aggregate);
         break;
     case ProjectSettingsItem:
@@ -154,7 +101,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Object::ModelUpdater(aggregate);
         break;
     case TimeGridLineListItem:
-        new ObjectList::ModelItem(aggregate);
+        new ObjectList::ModelItem(aggregate, TimeGridLineItem);
         new ObjectList::ModelUpdater(aggregate);
         break;
     case TrackItem:
@@ -162,7 +109,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new Object::ModelUpdater(aggregate);
         break;
     case TrackListItem:
-        new ObjectList::ModelItem(aggregate);
+        new ObjectList::ModelItem(aggregate, TrackItem);
         new ObjectList::ModelUpdater(aggregate);
         break;
     case ViewSettingsItem:

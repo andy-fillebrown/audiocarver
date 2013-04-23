@@ -27,7 +27,7 @@
 
 #include <QHeaderView>
 
-using namespace Ac::Core;
+using namespace GridLine;
 
 GridLineView::GridLineView(QWidget *parent)
     :   QTableView(parent)
@@ -47,7 +47,7 @@ GridLineView::GridLineView(QWidget *parent)
 TimeLineView::TimeLineView(QWidget *parent)
     :   GridLineView(parent)
 {
-    GridLineModel *m = new GridLineModel(this);
+    Model *m = new Model(this);
     m->setListType(Ac::TimeGridLineListItem);
     setModel(m);
 }
@@ -55,7 +55,7 @@ TimeLineView::TimeLineView(QWidget *parent)
 PitchLineView::PitchLineView(QWidget *parent)
     :   GridLineView(parent)
 {
-    GridLineModel *m = new GridLineModel(this);
+    Model *m = new Model(this);
     m->setListType(Ac::PitchGridLineListItem);
     setModel(m);
 }
@@ -63,7 +63,7 @@ PitchLineView::PitchLineView(QWidget *parent)
 ControlLineView::ControlLineView(QWidget *parent)
     :   GridLineView(parent)
 {
-    GridLineModel *m = new GridLineModel(this);
+    Model *m = new Model(this);
     m->setListType(Ac::ControlGridLineListItem);
     setModel(m);
 }

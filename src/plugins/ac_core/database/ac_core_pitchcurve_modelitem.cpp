@@ -16,25 +16,12 @@
 **************************************************************************/
 
 #include "ac_core_pitchcurve_modelitem.h"
-#include "ac_core_curve_aggregate.h"
 #include "ac_core_namespace.h"
 #include "ac_core_point.h"
 
 using namespace Ac;
 
 namespace PitchCurve {
-
-void ModelItem::conformPoints()
-{
-    PointList &points = aggregate()->points;
-    qSort(points);
-    const int n = points.count();
-    for (int i = 0;  i < n;  ++i) {
-        Point &point = points[i];
-        point.pos.rx() = qMax(qreal(0.0f), point.pos.x());
-        point.pos.ry() = qBound(qreal(0.0f), point.pos.y(), qreal(127.0f));
-    }
-}
 
 int ModelItem::itemType() const
 {
@@ -46,6 +33,18 @@ bool ModelItem::isTypeOfItem(int itemType) const
     if (PitchCurveItem == itemType)
         return true;
     return Curve::ModelItem::isTypeOfItem(itemType);
+}
+
+void ModelItem::conformPoints()
+{
+    PointList &points = this->points();
+    qSort(points);
+    const int n = points.count();
+    for (int i = 0;  i < n;  ++i) {
+        Point &point = points[i];
+        point.pos.rx() = qMax(qreal(0.0f), point.pos.x());
+        point.pos.ry() = qBound(qreal(0.0f), point.pos.y(), qreal(127.0f));
+    }
 }
 
 }

@@ -16,7 +16,6 @@
 **************************************************************************/
 
 #include "ac_core_curve_modelitem.h"
-#include "ac_core_curve_aggregate.h"
 #include "ac_core_namespace.h"
 #include <mi_core_scopeddatachange.h>
 
@@ -24,24 +23,14 @@ using namespace Ac;
 
 namespace Curve {
 
-Aggregate *ModelItem::aggregate() const
-{
-    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
-}
-
 bool ModelItem::isTypeOfItem(int itemType) const
 {
     return CurveItem == itemType;
 }
 
-int ModelItem::roleCount() const
-{
-    return Aggregate::TotalRoleCount;
-}
-
 int ModelItem::roleAt(int i) const
 {
-    switch (i - Aggregate::RoleCountOffset) {
+    switch (i - RoleCountOffset) {
     case 0:
         return PointsRole;
     default:
@@ -53,7 +42,7 @@ QVariant ModelItem::getValue(int role) const
 {
     switch (role) {
     case PointsRole:
-        return QVariant::fromValue(aggregate()->points);
+        return QVariant::fromValue(_points);
     default:
         return Object::ModelItem::getValue(role);
     }
@@ -63,17 +52,16 @@ bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
     case PointsRole: {
-        Aggregate *aggregate = this->aggregate();
         const PointList points = qvariant_cast<PointList>(value);
-        const PointList old_points = aggregate->points;
-        aggregate->points = points;
+        const PointList old_points = _points;
+        _points = points;
         conformPoints();
-        if (aggregate->points == old_points)
+        if (_points == old_points)
             return false;
-        const PointList new_points = aggregate->points;
-        aggregate->points = old_points;
+        const PointList new_points = _points;
+        _points = old_points;
         ScopedDataChange data_change(this, PointsRole);
-        aggregate->points = new_points;
+        _points = new_points;
         return true;
     }
     default:

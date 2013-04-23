@@ -30,8 +30,6 @@ public:
     virtual const QList<IComponent*> &components() const = 0;
     virtual IUnknown *appendComponent(IComponent *component) = 0;
     virtual void removeComponent(IComponent *component) = 0;
-    virtual void reset() = 0;
-    virtual void destroy() = 0;
 
     int interfaceType() const
     {

@@ -22,7 +22,7 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 
-using namespace Ac::Core;
+using namespace GridLine;
 
 class GridLineDialogPrivate
 {
@@ -42,9 +42,9 @@ public:
         delete ui;
     }
 
-    GridLineModel *currentModel() const
+    Model *currentModel() const
     {
-        return qobject_cast<GridLineModel*>(currentView()->model());
+        return qobject_cast<Model*>(currentView()->model());
     }
 
     GridLineView *currentView() const
@@ -116,9 +116,9 @@ void GridLineDialog::exportToFile()
 
 void GridLineDialog::apply()
 {
-    GridLineModel *timeLinesModel = qobject_cast<GridLineModel*>(d->ui->timeLinesView->model());
-    GridLineModel *pitchLinesModel = qobject_cast<GridLineModel*>(d->ui->pitchLinesView->model());
-    GridLineModel *controlLinesModel = qobject_cast<GridLineModel*>(d->ui->controlLinesView->model());
+    Model *timeLinesModel = qobject_cast<Model*>(d->ui->timeLinesView->model());
+    Model *pitchLinesModel = qobject_cast<Model*>(d->ui->pitchLinesView->model());
+    Model *controlLinesModel = qobject_cast<Model*>(d->ui->controlLinesView->model());
 
     if (!timeLinesModel->isChanged()
             && !pitchLinesModel->isChanged()

@@ -33,6 +33,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     void *queryInterface(int interfaceType) const;
 };
 

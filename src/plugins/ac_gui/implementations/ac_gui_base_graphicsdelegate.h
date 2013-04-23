@@ -36,6 +36,9 @@ protected:
 
     void initialize()
     {}
+
+    void reset()
+    {}
 };
 
 }

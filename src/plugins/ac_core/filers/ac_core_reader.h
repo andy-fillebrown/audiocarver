@@ -41,6 +41,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     void setStream(QXmlStreamReader *stream);
     int nextItemType();
     bool read(IModelItem *item);

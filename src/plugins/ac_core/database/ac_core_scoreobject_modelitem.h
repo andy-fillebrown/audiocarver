@@ -23,24 +23,28 @@
 
 namespace ScoreObject {
 
-class Aggregate;
-
 class AC_CORE_EXPORT ModelItem : public Object::ModelItem
 {
+    qreal _volume;
+    enum { RoleCount = 1 };
+
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    ModelItem(IAggregate *aggregate);
 
 protected:
-    Aggregate *aggregate() const;
+    enum {
+        RoleCountOffset = Object::ModelItem::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
+    void reset();
     bool isTypeOfItem(int itemType) const;
-    int itemCount() const;
-    int indexOfItem(const IModelItem *item) const;
-    IModelItem *itemAt(int i) const;
-    IModelItem *findItem(int itemType) const;
-    int roleCount() const;
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
     int roleAt(int i) const;
     QVariant getValue(int role) const;
     bool setValue(int role, const QVariant &value);

@@ -2,7 +2,6 @@
 SOURCE_FILES = \
     object_aggregate \
     object_modelitem \
-    objectlist_aggregate \
     objectlist_modelitem \
 
 for(file, SOURCE_FILES) {

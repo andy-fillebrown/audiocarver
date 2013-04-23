@@ -19,28 +19,43 @@
 #define AC_CORE_CURVE_MODELITEM_H
 
 #include <mi_core_object_modelitem.h>
-#include "ac_core_global.h"
+#include "ac_core_point.h"
 
 namespace Curve {
 
-class Aggregate;
-
 class AC_CORE_EXPORT ModelItem : public Object::ModelItem
 {
+    PointList _points;
+    enum { RoleCount = 1 };
+
 public:
     ModelItem(IAggregate *aggregate)
         :   Object::ModelItem(aggregate)
     {}
 
-    Aggregate *aggregate() const;
+protected:
+    PointList &points()
+    {
+        return _points;
+    }
 
-    virtual void conformPoints() = 0;
+    enum {
+        RoleCountOffset = Object::ModelItem::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
     bool isTypeOfItem(int itemType) const;
-    int roleCount() const;
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
     int roleAt(int i) const;
     QVariant getValue(int role) const;
     bool setValue(int role, const QVariant &value);
+
+    virtual void conformPoints() = 0;
 };
 
 }

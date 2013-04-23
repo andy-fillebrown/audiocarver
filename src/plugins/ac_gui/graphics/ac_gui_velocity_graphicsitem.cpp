@@ -84,7 +84,7 @@ bool GraphicsItem::intersects(const QRectF &rect) const
 
 IGraphicsItem *GraphicsItem::parent() const
 {
-    return query<IGraphicsItem>(aggregate()->parent);
+    return query<IGraphicsItem>(aggregate()->parent());
 }
 
 QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const

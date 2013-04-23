@@ -16,29 +16,12 @@
 **************************************************************************/
 
 #include "ac_core_controlcurve_modelitem.h"
-#include "ac_core_curve_aggregate.h"
 #include "ac_core_namespace.h"
 #include "ac_core_point.h"
 
 using namespace Ac;
 
 namespace ControlCurve {
-
-void ModelItem::conformPoints()
-{
-    PointList &points = aggregate()->points;
-    qSort(points);
-    const int n = points.count();
-    if (2 <= n) {
-        points.first().pos = QPointF();
-        points.last().pos.rx() = 1.0f;
-        for (int i = 0;  i < n;  ++i) {
-            Point &point = points[i];
-            point.pos.rx() = qBound(qreal(0.0f), point.pos.x(), qreal(1.0f));
-            point.pos.ry() = qBound(qreal(0.0f), point.pos.y(), qreal(1.0f));
-        }
-    }
-}
 
 int ModelItem::itemType() const
 {
@@ -50,6 +33,22 @@ bool ModelItem::isTypeOfItem(int itemType) const
     if (ControlCurveItem == itemType)
         return true;
     return Curve::ModelItem::isTypeOfItem(itemType);
+}
+
+void ModelItem::conformPoints()
+{
+    PointList &points = this->points();
+    qSort(points);
+    const int n = points.count();
+    if (2 <= n) {
+        points.first().pos = QPointF();
+        points.last().pos.rx() = 1.0f;
+        for (int i = 0;  i < n;  ++i) {
+            Point &point = points[i];
+            point.pos.rx() = qBound(qreal(0.0f), point.pos.x(), qreal(1.0f));
+            point.pos.ry() = qBound(qreal(0.0f), point.pos.y(), qreal(1.0f));
+        }
+    }
 }
 
 }

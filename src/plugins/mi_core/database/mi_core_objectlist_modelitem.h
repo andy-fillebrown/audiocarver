@@ -21,19 +21,25 @@
 #include "mi_core_base_modelitem.h"
 #include <QList>
 
-namespace ObjectList {
-
+namespace Object {
 class Aggregate;
+}
+
+namespace ObjectList {
 
 class MI_CORE_EXPORT ModelItem : public Base::ModelItem
 {
+    const int _listType;
+    QList<IAggregate*> _items;
+
 public:
-    ModelItem(IAggregate *aggregate)
+    ModelItem(IAggregate *aggregate, int listType)
         :   Base::ModelItem(aggregate)
+        ,   _listType(listType)
     {}
 
 protected:
-    Aggregate *aggregate() const;
+    Object::Aggregate *aggregate() const;
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;

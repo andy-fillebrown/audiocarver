@@ -22,21 +22,30 @@
 
 namespace ProjectSettings {
 
-class Aggregate;
-
 class ModelItem : public Object::ModelItem
 {
+    int _sampleRate;
+    int _controlRate;
+    int _curveRate;
+    enum { RoleCount = 3 };
+
 public:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    ModelItem(IAggregate *aggregate);
 
 protected:
-    Aggregate *aggregate() const;
+    enum {
+        RoleCountOffset = Object::ModelItem::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
 
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
-    int roleCount() const;
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
     int roleAt(int i) const;
     QVariant getValue(int role) const;
     bool setValue(int role, const QVariant &value);

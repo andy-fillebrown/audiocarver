@@ -25,24 +25,22 @@ namespace Object {
 
 class MI_CORE_EXPORT Aggregate : public Base::Aggregate
 {
+    IAggregate *_parent;
+
 public:
     Aggregate(IAggregate *parent = 0)
-        :   parent(parent)
+        :   _parent(parent)
     {}
 
-    IAggregate *parent;
+    IAggregate *parent() const
+    {
+        return _parent;
+    }
 
-    QString name;
-    enum { RoleCount = 1 };
-
-    enum { ItemCount = 0 };
-
-    enum {
-        RoleCountOffset = 0,
-        TotalRoleCount = RoleCount,
-        ItemCountOffset = 0,
-        TotalItemCount = ItemCount
-    };
+    void setParent(IAggregate *parent)
+    {
+        _parent = parent;
+    }
 };
 
 }

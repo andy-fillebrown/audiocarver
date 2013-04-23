@@ -30,10 +30,9 @@ public:
     {}
 
 protected:
-    void conformPoints();
-
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
+    void conformPoints();
 };
 
 }

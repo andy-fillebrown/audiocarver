@@ -23,14 +23,35 @@
 
 namespace Note {
 
-class Aggregate;
-
 class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
 {
+    IAggregate *_pitchCurve;
+    IAggregate *_controlCurve;
+    enum { ItemCount = 2 };
+
 public:
-    ModelItem(IAggregate *aggregate)
-        :   ScoreObject::ModelItem(aggregate)
-    {}
+    ModelItem(IAggregate *aggregate);
+
+protected:
+    enum {
+        ItemCountOffset = Object::ModelItem::TotalItemCount,
+        TotalItemCount = ItemCountOffset + ItemCount
+    };
+
+    void initialize();
+    ~ModelItem();
+
+    int itemType() const;
+    bool isTypeOfItem(int itemType) const;
+
+    int itemCount() const
+    {
+        return TotalItemCount;
+    }
+
+    int indexOfItem(const IModelItem *item) const;
+    IModelItem *itemAt(int i) const;
+    IModelItem *findItem(int itemType) const;
 };
 
 }

@@ -22,19 +22,35 @@
 
 namespace GridLine {
 
-class Aggregate;
+class Model;
 
 class ModelItem : public Object::ModelItem
 {
-protected:
-    ModelItem(IAggregate *aggregate)
-        :   Object::ModelItem(aggregate)
-    {}
+    friend class Model;
 
-    Aggregate *aggregate() const;
+    qreal _location;
+    QString _label;
+    int _priority;
+    int _color;
+    enum { RoleCount = 4 };
+
+    int _visible : 1;
+
+protected:
+    enum {
+        RoleCountOffset = Object::ModelItem::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
+
+    ModelItem(IAggregate *aggregate);
 
     bool isTypeOfItem(int itemType) const;
-    int roleCount() const;
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
     int roleAt(int i) const;
     QVariant getValue(int role) const;
     bool setValue(int role, const QVariant &value);

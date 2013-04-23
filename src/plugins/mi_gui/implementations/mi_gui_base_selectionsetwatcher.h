@@ -38,6 +38,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     void beginChangeSelection(const ISelectionSet *selectionSet)
     {}
 

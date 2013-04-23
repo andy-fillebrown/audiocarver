@@ -37,6 +37,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     void update(int role, const QVariant &value)
     {}
 };

@@ -19,16 +19,16 @@
 
 namespace Base {
 
-Aggregate::~Aggregate()
-{
-    qDeleteAll(_components);
-    _components.clear();
-}
-
 void Aggregate::initialize()
 {
     foreach (IComponent *component, _components)
         component->initialize();
+}
+
+Aggregate::~Aggregate()
+{
+    qDeleteAll(_components);
+    _components.clear();
 }
 
 void *Aggregate::queryInterface(int interfaceType) const

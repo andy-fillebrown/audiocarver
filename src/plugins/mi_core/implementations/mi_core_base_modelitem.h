@@ -45,6 +45,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     IModelItem *findItem(int itemType) const
     {
         const int item_count = itemCount();

@@ -23,7 +23,6 @@
 #include "mi_core_interfaces.h"
 
 class IAggregate;
-class IModelItem;
 
 class MI_CORE_EXPORT IDatabaseObjectFactory : public IComponent
 {
@@ -32,7 +31,7 @@ public:
 
     static IDatabaseObjectFactory *instance();
 
-    virtual IAggregate *create(int itemType, IAggregate *parent = 0) = 0;
+    virtual IAggregate *create(int itemType, IComponent *parent = 0) = 0;
 
     int interfaceType() const
     {

@@ -40,7 +40,7 @@ int ModelItem::itemType() const
 
 IModelItem *ModelItem::parent() const
 {
-    return query<IModelItem>(aggregate()->parent);
+    return query<IModelItem>(aggregate()->parent());
 }
 
 void ModelItem::setParent(IModelItem *parent)
@@ -48,19 +48,19 @@ void ModelItem::setParent(IModelItem *parent)
     if (this->parent() == parent)
         return;
     ScopedParentChange parent_change(this);
-    aggregate()->parent = query<IAggregate>(parent);
+    aggregate()->setParent(query<IAggregate>(parent));
 }
 
 int ModelItem::roleCount() const
 {
-    return Aggregate::RoleCount;
+    return RoleCount;
 }
 
 int ModelItem::roleAt(int i) const
 {
     Q_ASSERT(0 <= i);
-    Q_ASSERT(i < Aggregate::RoleCount);
-    if (i < 0 || Aggregate::RoleCount <= i)
+    Q_ASSERT(i < RoleCount);
+    if (i < 0 || RoleCount <= i)
         return -1;
     return NameRole;
 }
@@ -70,7 +70,7 @@ QVariant ModelItem::getValue(int role) const
     switch (role) {
     case DisplayRole:
     case NameRole:
-        return aggregate()->name;
+        return _name;
     default:
         return Base::ModelItem::getValue(role);
     }
@@ -82,13 +82,13 @@ bool ModelItem::setValue(int role, const QVariant &value)
     case EditRole:
     case NameRole: {
         QString name = qvariant_cast<QString>(value);
-        if (aggregate()->name == name)
+        if (_name == name)
             return false;
         IModelItem *parent = this->parent();
         if (!name.isEmpty() && parent && parent->containsItemNamed(name))
             return false;
         ScopedDataChange data_change(this, NameRole);
-        aggregate()->name = name;
+        _name = name;
         return true;
     }
     default:

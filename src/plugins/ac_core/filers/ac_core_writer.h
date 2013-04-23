@@ -41,6 +41,9 @@ protected:
     void initialize()
     {}
 
+    void reset()
+    {}
+
     void setStream(QXmlStreamWriter *stream);
     bool write(IModelItem *item);
 };

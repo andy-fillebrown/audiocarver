@@ -18,7 +18,6 @@
 #include "ac_core_viewsettings_modelitem.h"
 #include "ac_core_constants.h"
 #include "ac_core_namespace.h"
-#include "ac_core_viewsettings_aggregate.h"
 #include <mi_core_scopeddatachange.h>
 #include <idatabase.h>
 
@@ -26,9 +25,20 @@ using namespace Ac;
 
 namespace ViewSettings {
 
-Aggregate *ModelItem::aggregate() const
+ModelItem::ModelItem(IAggregate *parent)
+    :   Object::ModelItem(parent)
 {
-    return static_cast<Aggregate*>(Base::ModelItem::aggregate());
+    reset();
+}
+
+void ModelItem::reset()
+{
+    _timePosition = DEFAULT_VIEWSETTINGS_TIMEPOSITION;
+    _pitchPosition = DEFAULT_VIEWSETTINGS_PITCHPOSITION;
+    _controlPosition = DEFAULT_VIEWSETTINGS_CONTROLPOSITION;
+    _timeScale = VIEWSCALE_MIN;
+    _pitchScale = VIEWSCALE_MIN;
+    _controlScale = VIEWSCALE_MIN;
 }
 
 int ModelItem::itemType() const
@@ -41,14 +51,9 @@ bool ModelItem::isTypeOfItem(int itemType) const
     return ViewSettingsItem == itemType;
 }
 
-int ModelItem::roleCount() const
-{
-    return Aggregate::TotalRoleCount;
-}
-
 int ModelItem::roleAt(int i) const
 {
-    switch (i - Aggregate::RoleCountOffset) {
+    switch (i - RoleCountOffset) {
     case 0:
         return TimePositionRole;
     case 1:
@@ -70,17 +75,17 @@ QVariant ModelItem::getValue(int role) const
 {
     switch (role) {
     case TimePositionRole:
-        return aggregate()->timePosition;
+        return _timePosition;
     case PitchPositionRole:
-        return aggregate()->pitchPosition;
+        return _pitchPosition;
     case ControlPositionRole:
-        return aggregate()->controlPosition;
+        return _controlPosition;
     case TimeScaleRole:
-        return aggregate()->timeScale;
+        return _timeScale;
     case PitchScaleRole:
-        return aggregate()->pitchScale;
+        return _pitchScale;
     case ControlScaleRole:
-        return aggregate()->controlScale;
+        return _controlScale;
     default:
         return Object::ModelItem::getValue(role);
     }
@@ -90,57 +95,51 @@ bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
     case TimePositionRole: {
-        Aggregate *aggregate = this->aggregate();
-        qreal position = qBound(qreal(0.0f), qvariant_cast<qreal>(value), get<qreal>(IDatabase::instance()->rootItem(), LengthRole));
-        if (aggregate->timePosition == position)
+        const qreal position = qBound(qreal(0.0f), qvariant_cast<qreal>(value), get<qreal>(IDatabase::instance()->rootItem(), LengthRole));
+        if (_timePosition == position)
             return false;
         ScopedDataChange data_change(this, TimePositionRole);
-        aggregate->timePosition = position;
+        _timePosition = position;
         return true;
     }
     case PitchPositionRole: {
-        Aggregate *aggregate = this->aggregate();
-        qreal position = qBound(qreal(0.0f), qvariant_cast<qreal>(value), qreal(127.0f));
-        if (aggregate->pitchPosition == position)
+        const qreal position = qBound(qreal(0.0f), qvariant_cast<qreal>(value), qreal(127.0f));
+        if (_pitchPosition == position)
             return false;
         ScopedDataChange data_change(this, PitchPositionRole);
-        aggregate->pitchPosition = position;
+        _pitchPosition = position;
         return true;
     }
     case ControlPositionRole: {
-        Aggregate *aggregate = this->aggregate();
-        qreal position = qBound(qreal(0.0f), qvariant_cast<qreal>(value), qreal(1.0f));
-        if (aggregate->controlPosition == position)
+        const qreal position = qBound(qreal(0.0f), qvariant_cast<qreal>(value), qreal(1.0f));
+        if (_controlPosition == position)
             return false;
         ScopedDataChange data_change(this, ControlPositionRole);
-        aggregate->controlPosition = position;
+        _controlPosition = position;
         return true;
     }
     case TimeScaleRole: {
-        Aggregate *aggregate = this->aggregate();
         qreal scale = qBound(qreal(VIEWSCALE_MIN), qvariant_cast<qreal>(value), qreal(VIEWSCALE_MAX));
-        if (aggregate->timeScale == scale)
+        if (_timeScale == scale)
             return false;
         ScopedDataChange data_change(this, TimeScaleRole);
-        aggregate->timeScale = scale;
+        _timeScale = scale;
         return true;
     }
     case PitchScaleRole: {
-        Aggregate *aggregate = this->aggregate();
         qreal scale = qBound(qreal(VIEWSCALE_MIN), qvariant_cast<qreal>(value), qreal(VIEWSCALE_MAX));
-        if (aggregate->pitchScale == scale)
+        if (_pitchScale == scale)
             return false;
         ScopedDataChange data_change(this, PitchScaleRole);
-        aggregate->pitchScale = scale;
+        _pitchScale = scale;
         return true;
     }
     case ControlScaleRole: {
-        Aggregate *aggregate = this->aggregate();
         qreal scale = qBound(qreal(VIEWSCALE_MIN), qvariant_cast<qreal>(value), qreal(VIEWSCALE_MAX));
-        if (aggregate->controlScale == scale)
+        if (_controlScale == scale)
             return false;
         ScopedDataChange data_change(this, ControlScaleRole);
-        aggregate->controlScale = scale;
+        _controlScale = scale;
         return true;
     }
     default:
