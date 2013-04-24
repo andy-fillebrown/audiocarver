@@ -24,7 +24,7 @@
 namespace Mi {
 
 enum ItemType {
-    UnknownItem,
+    UnknownItem = 0,
     ListItem,
     CoreItemTypeCount
 };

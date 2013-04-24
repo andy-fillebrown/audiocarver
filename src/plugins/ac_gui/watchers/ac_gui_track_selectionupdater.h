@@ -15,27 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_gui_track_graphicsitem.h"
-#include "ac_gui_namespace.h"
-#include <igraphicsgriplist.h>
+#ifndef AC_GUI_TRACK_SELECTIONUPDATER_H
+#define AC_GUI_TRACK_SELECTIONUPDATER_H
 
-using namespace Ac;
+#include <mi_gui_base_selectionsetwatcher.h>
 
 namespace Track {
 
-void GraphicsItem::update(int role, const QVariant &value)
+class SelectionUpdater : public Base::SelectionSetWatcher
 {
-    if (HighlightRole == role)
-        return;
-    IGraphicsItem *note_list = findItem(NoteListItem);
-    const int note_count = note_list->itemCount();
-    if (VisibilityRole == role && !qvariant_cast<bool>(value)) {
-        for (int i = 0;  i < note_count;  ++i)
-            note_list->itemAt(i)->update(HighlightRole, NoHighlight);
-    }
-    for (int i = 0;  i < note_count;  ++i)
-        note_list->itemAt(i)->update(role, value);
-    ScoreObject::GraphicsItem::update(role, value);
-}
+public:
+    SelectionUpdater(IAggregate *aggregate)
+        :   Base::SelectionSetWatcher(aggregate)
+    {}
+
+protected:
+    void endChangeSelection(const ISelectionSet *selectionSet);
+};
 
 }
+
+#endif

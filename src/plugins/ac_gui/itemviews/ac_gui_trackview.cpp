@@ -18,14 +18,14 @@
 #include "ac_gui_trackview.h"
 #include "ac_gui_colordelegate.h"
 #include "ac_gui_recordbuttondelegate.h"
-//#include "ac_noteselectionmodel.h"
-//#include "ac_trackselectionmodel.h"
 #include <ac_core_namespace.h>
 #include <ac_core_trackmodel.h>
 #include <idatabase.h>
 #include <ieditor.h>
+#include <igraphicsitem.h>
 #include <imodel.h>
 #include <imodelitem.h>
+#include <iselectionset.h>
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
@@ -61,15 +61,22 @@ public:
     }
 };
 
+TrackView *instance = 0;
+
+TrackView *TrackView::instance()
+{
+    return ::instance;
+}
+
 TrackView::TrackView(QWidget *parent)
     :   QTreeView(parent)
     ,   d(new TrackViewPrivate(this))
 {
+    ::instance = this;
     TrackModel *model = TrackModel::instance();
     setModel(model);
     connect(model, SIGNAL(rowsInserted(const QModelIndex&,int,int)), SLOT(rowsChanged()));
     connect(model, SIGNAL(rowsRemoved(const QModelIndex&,int,int)), SLOT(rowsChanged()));
-//    setSelectionModel(TrackSelectionModel::instance());
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);
@@ -217,8 +224,8 @@ void TrackView::keyPressEvent(QKeyEvent *event)
         // right arrow key is pressed.
         return;
     case Qt::Key_Escape:
-//        NoteSelectionModel::instance()->clear();
-//        TrackSelectionModel::instance()->clear();
+        IEditor::instance()->currentSelection()->clear();
+        selectionModel()->clearSelection();
         break;
     default:
         break;
@@ -230,4 +237,15 @@ void TrackView::rowsChanged()
 {
     setDirtyRegion(rect());
     resizeEvent(0);
+}
+
+void TrackView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    IModelItem *tracks = IDatabase::instance()->rootItem()->findItem(TrackListItem);
+    ISelectionSet *object_ss = IEditor::instance()->currentSelection();
+    foreach (QModelIndex index, selected.indexes())
+        object_ss->append(query<IGraphicsItem>(tracks->itemAt(index.row())));
+    foreach (QModelIndex index, deselected.indexes())
+        object_ss->remove(query<IGraphicsItem>(tracks->itemAt(index.row())));
+    QTreeView::selectionChanged(selected, deselected);
 }

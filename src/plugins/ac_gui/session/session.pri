@@ -3,7 +3,6 @@ SOURCE_FILES = \
     databaseobjectfactory \
     editor \
     selectionset \
-    selectionupdater \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_$${file}.h

@@ -32,7 +32,7 @@ public:
 
     static IEditor *instance();
 
-    virtual ISelectionSet *currentSelection() const = 0;
+    virtual ISelectionSet *currentSelection(int itemType = 0) const = 0;
     virtual void undo() = 0;
     virtual void redo() = 0;
     virtual void cut() = 0;

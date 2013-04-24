@@ -28,6 +28,8 @@ class TrackView : public QTreeView
     TrackViewPrivate *d;
 
 public:
+    static TrackView *instance();
+
     TrackView(QWidget *parent = 0);
 
     void setRootIndex(const QModelIndex &index)
@@ -45,6 +47,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 private slots:
     void rowsChanged();

@@ -569,6 +569,8 @@ public:
                 entity->update(HighlightRole, FullHighlight);
             }
         }
+        IEditor *editor = IEditor::instance();
+        editor->currentSelection(TrackItem)->clear();
     }
 
     void removePickedEntities(const QList<IGraphicsItem*> &entities)
@@ -754,6 +756,9 @@ void GraphicsView::updateSelection(const QList<IGraphicsItem*> &ss)
     }
     QList<IGraphicsItem*> entities_to_select;
     foreach (IGraphicsItem *entity, ss) {
+        IModelItem *item = query<IModelItem>(entity);
+        if (item->isTypeOfItem(TrackItem))
+            continue;
         if (!d->entityIsPicked(entity))
             entities_to_select.append(entity);
     }

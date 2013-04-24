@@ -21,8 +21,6 @@
 #include "ac_gui_graphicspitchview.h"
 #include "ac_gui_graphicsviewmanager.h"
 #include "ac_gui_namespace.h"
-//#include "ac_noteselectionmodel.h"
-//#include "ac_trackselectionmodel.h"
 #include <ac_core_namespace.h>
 #include <iaggregate.h>
 #include <icontext.h>
@@ -30,9 +28,11 @@
 #include <idatabase.h>
 #include <idatabaseobjectfactory.h>
 #include <ieditor.h>
+#include <igraphicsitem.h>
 #include <imodel.h>
 #include <imodelitem.h>
 //#include <iqaudioengine.h>
+#include <iselectionset.h>
 //#include <isynthesizer.h>
 #include <mi_gui_constants.h>
 #include <actioncontainer.h>
@@ -104,7 +104,7 @@ void MainWindowExtension::initActions()
     // Settings Separator
     action = new QAction(this);
     action->setSeparator(true);
-    cmd = am->registerAction(action, PRO_NAME_STR".Edit.Sep.Settings", globalContext);
+    cmd = am->registerAction(action, QString("%1%2").arg(PRO_NAME_STR).arg(".Edit.Sep.Settings"), globalContext);
     editMenu->addAction(cmd, G_EDIT_SETTINGS);
 
     // Grid Settings Action
@@ -176,10 +176,10 @@ void MainWindowExtension::initActions()
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
 #   ifdef Q_WS_MAC
-    {   action = new QAction(icon, tr("About &"PRO_NAME_STR), this); // it's convention not to add dots to the about menu
+    {   action = new QAction(icon, tr(QString("About &%1").arg(PRO_NAME_STR), this); // it's convention not to add dots to the about menu
     }
 #   else
-    {   action = new QAction(icon, tr("About &"PRO_NAME_STR"..."), this);
+    {   action = new QAction(icon, tr("About &%1...").arg(PRO_NAME_STR), this);
     }
 #   endif
     cmd = am->registerAction(action, ABOUTAUDIOCARVER, globalContext);
@@ -231,36 +231,41 @@ void MainWindowExtension::erase()
         return;
     }
 
-    // If no points are selected, erase selected tracks in reverse row order so
-    // higher row numbers don't change if lower rows are being erased, too.
-//    IModel *model = QUERY(IModel, IDatabase::instance());
-//    const QModelIndexList track_ss = TrackSelectionModel::instance()->selectedRows();
-//    QList<int> rows;
-//    rows.reserve(track_ss.count());
-//    foreach (const QModelIndex &track, track_ss)
-//        rows.append(track.row());
-//    qSort(rows);
-//    const int n = rows.count();
-//    IModelList *track_list = model->rootItem()->findList(TrackItem);
-//    if (n) {
-//        editor->beginCommand();
-//        for (int i = n - 1;  0 <= i;  --i)
-//            track_list->removeAt(rows.at(i));
-//        editor->endCommand();
-//        return;
-//    }
+    // If no points are selected, erase selected notes.
+    ISelectionSet *ss = editor->currentSelection(NoteItem);
+    QList<IGraphicsItem*> items = ss->items();
+    if (!items.isEmpty()) {
+        editor->beginCommand();
+        while (!items.isEmpty()) {
+            IGraphicsItem *item = items.last();
+            item->update(HighlightRole, NoHighlight);
+            IModelItem *note = query<IModelItem>(item);
+            note->remove();
+            items.removeLast();
+        }
+        editor->endCommand();
+        ss->clear();
+        editor->currentSelection()->clear();
+        return;
+    }
 
-    // If no points or tracks are selected, erase selected notes.
-//    QModelIndexList note_ss = NoteSelectionModel::instance()->selectedIndexes();
-//    if (!note_ss.isEmpty()) {
-//        editor->beginCommand();
-//        while (!note_ss.isEmpty()) {
-//            IModelItem *note_item = model->itemFromIndex(note_ss.last());
-//            note_item->list()->remove(note_item);
-//            note_ss.removeLast();
-//        }
-//        editor->endCommand();
-//    }
+    // If no points or notes are selected, erase selected tracks.
+    ss = editor->currentSelection(TrackItem);
+    items = ss->items();
+    if (!items.isEmpty()) {
+        editor->beginCommand();
+        while (!items.isEmpty()) {
+            IGraphicsItem *item = items.last();
+            item->update(HighlightRole, NoHighlight);
+            item->update(VisibilityRole, false);
+            IModelItem *track = query<IModelItem>(item);
+            track->remove();
+            items.removeLast();
+        }
+        editor->endCommand();
+        ss->clear();
+        return;
+    }
 }
 
 void MainWindowExtension::build()

@@ -26,14 +26,16 @@ namespace Gui {
 
 class Editor : public Base::Editor
 {
-    IAggregate *_ss;
+    IAggregate *_objectSS;
+    IAggregate *_trackSS;
+    IAggregate *_noteSS;
 
 public:
     Editor();
     ~Editor();
 
 protected:
-    ISelectionSet *currentSelection() const;
+    ISelectionSet *currentSelection(int itemType) const;
     void undo();
     void redo();
     void cut();

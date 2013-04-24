@@ -16,29 +16,49 @@
 **************************************************************************/
 
 #include "ac_gui_editor.h"
+#include "ac_gui_object_selectionupdater.h"
 #include "ac_gui_selectionset.h"
-#include "ac_gui_selectionupdater.h"
+#include "ac_gui_track_selectionupdater.h"
+#include <ac_core_namespace.h>
 #include <mi_core_base_aggregate.h>
-#include <iselectionset.h>
+
 #include <QtDebug>
+
+using namespace Ac;
+using namespace Mi;
 
 namespace Gui {
 
 Editor::Editor()
 {
-    _ss = new Base::Aggregate;
-    new SelectionSet(_ss);
-    new SelectionUpdater(_ss);
+    _objectSS = new Base::Aggregate;
+    new SelectionSet(_objectSS);
+    new Object::SelectionUpdater(_objectSS);
+    _trackSS = new Base::Aggregate;
+    new SelectionSet(_trackSS);
+    new Track::SelectionUpdater(_trackSS);
+    _noteSS = new Base::Aggregate;
+    new SelectionSet(_noteSS);
 }
 
 Editor::~Editor()
 {
-    delete _ss;
+    delete _objectSS;
 }
 
-ISelectionSet *Editor::currentSelection() const
+ISelectionSet *Editor::currentSelection(int itemType) const
 {
-    return query<ISelectionSet>(_ss);
+    switch (itemType) {
+    case UnknownItem:
+        return query<ISelectionSet>(_objectSS);
+    case TrackItem:
+        return query<ISelectionSet>(_trackSS);
+    case NoteItem:
+        return query<ISelectionSet>(_noteSS);
+    default:
+        Q_ASSERT(false);
+        return 0;
+    }
 }
 
 void Editor::undo()

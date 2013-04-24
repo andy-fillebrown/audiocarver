@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2012 Andrew Fillebrown.
+** Copyright (c) 2013 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,27 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_TRACKSELECTIONMODEL_H
-#define AC_TRACKSELECTIONMODEL_H
+#ifndef AC_GUI_OBJECT_SELECTIONUPDATER_H
+#define AC_GUI_OBJECT_SELECTIONUPDATER_H
 
-#include <ac_gui_namespace.h>
+#include <mi_gui_base_selectionsetwatcher.h>
 
-#include <mi_gui_itemselectionmodel.h>
+namespace Object {
 
-class TrackSelectionModel : public Mi::Gui::ItemSelectionModel
+class SelectionUpdater : public Base::SelectionSetWatcher
 {
-    Q_OBJECT
-
 public:
-    TrackSelectionModel(QAbstractItemModel *model);
+    SelectionUpdater(IAggregate *aggregate)
+        :   Base::SelectionSetWatcher(aggregate)
+    {}
 
-    static TrackSelectionModel *instance();
-
-    QModelIndexList selectedTrackIndexes() const;
-    virtual QList<IModelItem*> selectedItems() const;
-
-    // QItemSelectionModel
-    void select(const QItemSelection &selection, SelectionFlags command);
+protected:
+    void endChangeSelection(const ISelectionSet *selectionSet);
 };
 
-#endif // AC_TRACKSELECTIONMODEL_H
+}
+
+#endif

@@ -15,15 +15,32 @@
 **
 **************************************************************************/
 
-#include "ac_gui_selectionupdater.h"
+#include "ac_gui_object_selectionupdater.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include <ac_core_namespace.h>
+#include <ieditor.h>
+#include <igraphicsitem.h>
+#include <imodelitem.h>
 #include <iselectionset.h>
 
-namespace Gui {
+using namespace Ac;
+
+namespace Object {
 
 void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
 {
-    GraphicsViewManager::instance()->updateSelection(selectionSet->items());
+    const QList<IGraphicsItem*> &items = selectionSet->items();
+    GraphicsViewManager::instance()->updateSelection(items);
+    IEditor *editor = IEditor::instance();
+    ISelectionSet *track_ss = editor->currentSelection(TrackItem);
+    ISelectionSet *note_ss = editor->currentSelection(NoteItem);
+    foreach (IGraphicsItem *item, items) {
+        IModelItem *model_item = query<IModelItem>(item);
+        if (model_item->isTypeOfItem(TrackItem))
+            track_ss->append(item);
+        else if (model_item->isTypeOfItem(NoteItem))
+            note_ss->append(item);
+    }
 }
 
 }

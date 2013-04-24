@@ -15,24 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SELECTIONUPDATER_H
-#define AC_GUI_SELECTIONUPDATER_H
+#include "ac_gui_track_selectionupdater.h"
+#include "ac_gui_trackview.h"
+#include <igraphicsitem.h>
+#include <iselectionset.h>
 
-#include <mi_gui_base_selectionsetwatcher.h>
+namespace Track {
 
-namespace Gui {
-
-class SelectionUpdater : public Base::SelectionSetWatcher
+void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
 {
-public:
-    SelectionUpdater(IAggregate *aggregate)
-        :   Base::SelectionSetWatcher(aggregate)
-    {}
-
-protected:
-    void endChangeSelection(const ISelectionSet *selectionSet);
-};
+    const QList<IGraphicsItem*> &items = selectionSet->items();
+    if (items.isEmpty()) {
+        TrackView *track_view = TrackView::instance();
+        QItemSelectionModel *ss_model = track_view->selectionModel();
+        ss_model->clearSelection();
+    }
 
 }
 
-#endif
+}
