@@ -45,6 +45,8 @@ protected:
     void reset()
     {}
 
+    QList<Point> points() const;
+
     void update(int role, const QVariant &value)
     {}
 };

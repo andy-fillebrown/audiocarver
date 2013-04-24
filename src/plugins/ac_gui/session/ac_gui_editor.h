@@ -33,11 +33,7 @@ public:
     ~Editor();
 
 protected:
-    IAggregate *currentSelection() const
-    {
-        return _ss;
-    }
-
+    ISelectionSet *currentSelection() const;
     void undo();
     void redo();
     void cut();

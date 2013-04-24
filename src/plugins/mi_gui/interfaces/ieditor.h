@@ -22,7 +22,7 @@
 #include "mi_gui_global.h"
 #include "mi_gui_interfaces.h"
 
-class IAggregate;
+class ISelectionSet;
 class QUndoCommand;
 
 class MI_GUI_EXPORT IEditor : public IComponent
@@ -32,7 +32,7 @@ public:
 
     static IEditor *instance();
 
-    virtual IAggregate *currentSelection() const = 0;
+    virtual ISelectionSet *currentSelection() const = 0;
     virtual void undo() = 0;
     virtual void redo() = 0;
     virtual void cut() = 0;

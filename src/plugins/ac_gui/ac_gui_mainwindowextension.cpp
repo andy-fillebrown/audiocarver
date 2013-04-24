@@ -131,7 +131,7 @@ void MainWindowExtension::initActions()
     cmd = am->registerAction(action, INSERTPOINTS, globalContext);
     cmd->setDefaultKeySequence(Qt::Key_Insert);
     modifyMenu->addAction(cmd, G_MODIFY_OTHER);
-//    connect(action, SIGNAL(triggered()), viewManager, SLOT(startInsertingPoints()));
+    connect(action, SIGNAL(triggered()), viewManager, SLOT(startInsertingPoints()));
 
     // Erase Action
     action = new QAction(tr("&Erase"), this);

@@ -37,6 +37,7 @@ protected:
 
     void updateModel();
     void updateGraphics();
+    void reset();
 };
 
 }

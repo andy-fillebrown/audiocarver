@@ -21,6 +21,7 @@
 #include <igraphicseditor.h>
 #include <QList>
 
+class Point;
 class IGraphicsGrip;
 class QGraphicsItem;
 
@@ -31,6 +32,7 @@ public:
 
     virtual QGraphicsItem *findNode() const = 0;
     virtual QList<IGraphicsGrip*> grips() const = 0;
+    virtual QList<Point> points() const = 0;
     virtual void sort() = 0;
 
     int interfaceType() const

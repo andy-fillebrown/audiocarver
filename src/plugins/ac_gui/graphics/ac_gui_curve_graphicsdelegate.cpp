@@ -50,4 +50,14 @@ void GraphicsDelegate::updateGraphics()
     curve_item->update(PointsRole, QVariant::fromValue(buildPointList(griplist)));
 }
 
+void GraphicsDelegate::reset()
+{
+    IModelItem *curve_item = query<IModelItem>(this);
+    QVariant points = curve_item->getValue(PointsRole);
+    IGraphicsGripList *griplist = query<IGraphicsGripList>(this);
+    griplist->update(PointsRole, points);
+    IGraphicsItem *curve_graphics = query<IGraphicsItem>(this);
+    curve_graphics->update(PointsRole, points);
+}
+
 }

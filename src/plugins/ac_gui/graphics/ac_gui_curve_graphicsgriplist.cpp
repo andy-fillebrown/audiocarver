@@ -57,8 +57,7 @@ void GraphicsGripList::sort()
 
 void GraphicsGripList::update(int role, const QVariant &value)
 {
-    if (PointsRole == role
-             || OriginalPositionRole == role) {
+    if (PointsRole == role || OriginalPositionRole == role) {
         PointList points;
         if (value.isNull()) {
             IModelItem *this_item = query<IModelItem>(this);

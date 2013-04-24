@@ -19,6 +19,7 @@
 #include "ac_gui_selectionset.h"
 #include "ac_gui_selectionupdater.h"
 #include <mi_core_base_aggregate.h>
+#include <iselectionset.h>
 #include <QtDebug>
 
 namespace Gui {
@@ -33,6 +34,11 @@ Editor::Editor()
 Editor::~Editor()
 {
     delete _ss;
+}
+
+ISelectionSet *Editor::currentSelection() const
+{
+    return query<ISelectionSet>(_ss);
 }
 
 void Editor::undo()

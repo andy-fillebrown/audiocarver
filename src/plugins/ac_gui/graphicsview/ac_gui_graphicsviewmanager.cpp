@@ -33,6 +33,7 @@
 #include <ieditor.h>
 #include <imodel.h>
 #include <imodelitem.h>
+#include <iselectionset.h>
 #include <mainwindow.h>
 #include <QMessageBox>
 #include <QTimer>
@@ -483,11 +484,12 @@ void GraphicsViewManager::modelReset()
 
 void GraphicsViewManager::startInsertingPoints()
 {
-    IEditor::instance()->startCreating();
-//    if (NoteSelectionModel::instance()->selection().isEmpty())
-//        QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "No notes are selected.");
-//    else
-//        d->pitchView->startInsertingPoints();
+    IEditor *editor = IEditor::instance();
+    editor->startCreating();
+    if (editor->currentSelection()->items().isEmpty())
+        QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "No notes are selected.");
+    else
+        d->pitchView->startInsertingPoints();
 }
 
 void GraphicsViewManager::finishInsertingPoints()

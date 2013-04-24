@@ -606,27 +606,20 @@ public:
         removePickedEntities(picked_entities);
     }
 
-//    void resetPickedEntities()
-//    {
-//        clearPickedGrips();
-//        QList<IGraphicsData*> picked_entities = pickedEntities;
-//        setPickedEntities(picked_entities);
-//    }
-
     void insertPoint(const QPoint &pos)
     {
-//        const QPointF scenePos = GraphicsViewManager::instance()->snappedScenePos(q->sceneTransform().inverted().map(QPointF(pos)), q->sceneType());
-//        foreach (GraphicsEntityItem *entityItem, pickedEntities) {
-//            IEntity *entity = entityItem->entity();
-//            PointList pts = entity->points();
-//            Point pt = Point(scenePos);
-//            if (ControlModifier & QApplication::keyboardModifiers())
-//                pt.curveType = BezierCurve;
-//            pts.append(pt);
-//            entity->popPoints();
-//            entity->pushPoints(pts);
-//            entityItem->resetGripItems();
-//        }
+        const QPointF scenePos = GraphicsViewManager::instance()->snappedScenePos(q->sceneTransform().inverted().map(QPointF(pos)), q->sceneType());
+        foreach (IGraphicsItem *item, pickedEntities) {
+            IGraphicsItem *pitch_item = item->findItem(PitchCurveItem);
+            IGraphicsGripList *grips = query<IGraphicsGripList>(pitch_item);
+            PointList points = grips->points();
+            Point pt = Point(scenePos);
+            if (ControlModifier & QApplication::keyboardModifiers())
+                pt.curveType = BezierCurve;
+            points.append(pt);
+            grips->update(OriginalPositionRole, QVariant::fromValue(points));
+            query<IGraphicsDelegate>(pitch_item)->updateGraphics();
+        }
     }
 
     void updateViewSettings()
@@ -712,34 +705,24 @@ void GraphicsView::updateView()
 void GraphicsView::startInsertingPoints()
 {
     d->insertingPoints = true;
-//    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
-//        IEntity *entity = entityItem->entity();
-//        entity->pushPoints();
-//    }
     setCursor(creationCrosshair());
     d->clearPickedGrips();
 }
 
 void GraphicsView::finishInsertingPoints()
 {
-//    foreach (GraphicsEntityItem *entityItem, d->pickedEntities) {
-//        IEntity *entity = entityItem->entity();
-//        entity->setPoints();
-//        entityItem->resetGripItems();
-//    }
-//    setCursor(normalCrosshair());
-//    d->insertingPoints = false;
-//    d->resetPickedEntities();
+    setCursor(normalCrosshair());
+    foreach (IGraphicsItem *item, d->pickedEntities)
+        query<IGraphicsDelegate>(item->findItem(PitchCurveItem))->updateModel();
+    d->insertingPoints = false;
 }
 
 void GraphicsView::cancelPointInsertion()
 {
-//    const int n = d->pickedEntities.count();
-//    for (int i = 0;  i < n;  ++i)
-//        d->pickedEntities.at(i)->entity()->popPoints();
-//    setCursor(normalCrosshair());
-//    d->insertingPoints = false;
-//    d->resetPickedEntities();
+    setCursor(normalCrosshair());
+    foreach (IGraphicsItem *item, d->pickedEntities)
+        query<IGraphicsDelegate>(item->findItem(PitchCurveItem))->reset();
+    d->insertingPoints = false;
 }
 
 bool GraphicsView::pointsAreSelected() const
