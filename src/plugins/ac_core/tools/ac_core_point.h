@@ -18,7 +18,6 @@
 #ifndef AC_CORE_POINT_H
 #define AC_CORE_POINT_H
 
-#include "ac_core_namespace.h"
 #include <QList>
 #include <QMetaType>
 #include <QPointF>
@@ -27,18 +26,18 @@ class Point
 {
 public:
     QPointF pos;
-    Ac::CurveType curveType;
+    int curveType;
 
-    Point(Ac::CurveType curveType = Ac::NoCurve)
+    Point(int curveType = 0)
         :   curveType(curveType)
     {}
 
-    Point(qreal x, qreal y, Ac::CurveType curveType = Ac::NoCurve)
+    Point(qreal x, qreal y, int curveType = 0)
         :   pos(x, y)
         ,   curveType(curveType)
     {}
 
-    Point(const QPointF &pos, Ac::CurveType curveType = Ac::NoCurve)
+    Point(const QPointF &pos, int curveType = 0)
         :   pos(pos)
         ,   curveType(curveType)
     {}

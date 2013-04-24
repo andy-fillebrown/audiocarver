@@ -65,6 +65,8 @@ void GraphicsGripList::update(int role, const QVariant &value)
         }
         else
             points = qvariant_cast<PointList>(value);
+        if (points.count() < 2)
+            return;
         if (_grips.count() < points.count()) {
             IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
             while (_grips.count() < points.count()) {

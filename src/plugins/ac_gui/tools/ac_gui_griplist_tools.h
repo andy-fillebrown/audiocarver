@@ -15,36 +15,28 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSGRIPLIST_H
-#define IGRAPHICSGRIPLIST_H
+#ifndef AC_GUI_GRIPLIST_TOOLS_H
+#define AC_GUI_GRIPLIST_TOOLS_H
 
-#include <igraphicseditor.h>
-#include <QList>
+#include <ac_core_point.h>
+#include <igraphicsgrip.h>
+#include <igraphicsgriplist.h>
 
-class Point;
-class IGraphicsGrip;
-class QGraphicsItem;
+namespace GripList {
 
-class IGraphicsGripList : public IGraphicsEditor
+inline PointList toPointList(QList<IGraphicsGrip*> grips)
 {
-public:
-    enum { InterfaceType = I::IGraphicsGripList };
+    PointList points;
+    foreach (IGraphicsGrip *grip, grips)
+        points.append(Point(grip->position(), grip->curveType()));
+    return points;
+}
 
-    virtual QGraphicsItem *findNode() const = 0;
-    virtual QList<IGraphicsGrip*> grips() const = 0;
-    virtual void sort() = 0;
+inline PointList toPointList(IGraphicsGripList *griplist)
+{
+    return toPointList(griplist->grips());
+}
 
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IGraphicsEditor::isTypeOfInterface(interfaceType);
-    }
-};
+}
 
 #endif

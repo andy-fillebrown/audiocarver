@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "ac_core_writer.h"
+#include "ac_core_namespace.h"
 #include "ac_core_point.h"
 #include <iaggregate.h>
 #include <ifilefiler.h>

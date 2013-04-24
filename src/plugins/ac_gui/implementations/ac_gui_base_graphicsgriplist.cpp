@@ -16,11 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_base_graphicsgriplist.h"
-#include <ac_core_point.h>
 #include <iaggregate.h>
-#include <igraphicsgrip.h>
-
-using namespace Ac;
 
 namespace Base {
 
@@ -34,15 +30,6 @@ GraphicsGripList::GraphicsGripList(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
     _aggregate->appendComponent(this);
-}
-
-QList<Point> GraphicsGripList::points() const
-{
-    QList<IGraphicsGrip*> grips = this->grips();
-    PointList points;
-    foreach (IGraphicsGrip *grip, grips)
-        points.append(Point(grip->position(), CurveType(grip->curveType())));
-    return points;
 }
 
 }

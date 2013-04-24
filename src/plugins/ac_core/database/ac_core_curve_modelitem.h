@@ -19,6 +19,7 @@
 #define AC_CORE_CURVE_MODELITEM_H
 
 #include <mi_core_object_modelitem.h>
+#include "ac_core_global.h"
 #include "ac_core_point.h"
 
 namespace Curve {

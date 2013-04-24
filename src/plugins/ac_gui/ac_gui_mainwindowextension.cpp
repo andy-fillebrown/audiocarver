@@ -214,18 +214,18 @@ void MainWindowExtension::erase()
     IEditor *editor = IEditor::instance();
 
     // Erase selected points in pitch and control views.
-//    ViewManager *vm = ViewManager::instance();
-//    GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
-//    if (view->pointsAreSelected()) {
-//        editor->beginCommand();
-//        view->removePoints();
-//    }
-//    view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
-//    if (view->pointsAreSelected()) {
-//        if (!editor->isInCommand())
-//            editor->beginCommand();
-//        view->removePoints();
-//    }
+    GraphicsViewManager *vm = GraphicsViewManager::instance();
+    GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
+    if (view->pointsAreSelected()) {
+        editor->beginCommand();
+        view->removePoints();
+    }
+    view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
+    if (view->pointsAreSelected()) {
+        if (!editor->isInCommand())
+            editor->beginCommand();
+        view->removePoints();
+    }
     if (editor->isInCommand()) {
         editor->endCommand();
         return;

@@ -16,15 +16,17 @@
 **************************************************************************/
 
 #include "ac_core_reader.h"
+#include "ac_core_namespace.h"
 #include "ac_core_point.h"
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
 #include <ifilefiler.h>
 #include <imodelitem.h>
-#include <QDebug>
 #include <QFile>
 #include <QStringList>
 #include <QXmlStreamReader>
+
+#include <QtDebug>
 
 using namespace Mi;
 using namespace Ac;

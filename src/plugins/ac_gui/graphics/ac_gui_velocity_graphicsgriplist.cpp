@@ -57,8 +57,12 @@ void GraphicsGripList::update(int role, const QVariant &value)
             PointList pitch_points = get<PointList>(pitchcurve_item, PointsRole);
             point.pos.setX(pitch_points.first().pos.x());
             point.pos.setY(get<qreal>(note_item, VolumeRole));
-        } else
-            point = qvariant_cast<PointList>(value).first();
+        } else {
+            PointList points = qvariant_cast<PointList>(value);
+            if (points.isEmpty())
+                return;
+            point = points.first();
+        }
         int grip_update_role = PositionRole;
         if (OriginalPositionRole == role)
             grip_update_role = OriginalPositionRole;

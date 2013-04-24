@@ -12,6 +12,7 @@ DIRS = \
     itemviews \
 #    models \
     session \
+    tools \
 #    util \
     watchers \
 

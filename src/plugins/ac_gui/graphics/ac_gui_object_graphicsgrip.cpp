@@ -80,6 +80,8 @@ void GraphicsGrip::update(int role, const QVariant &value)
     case CurveTypeRole:
         _curveType = qvariant_cast<int>(value);
         break;
+    case VisibilityRole:
+        _gripNode->setVisible(qvariant_cast<bool>(value));
     }
 }
 

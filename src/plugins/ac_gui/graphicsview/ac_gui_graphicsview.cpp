@@ -20,6 +20,7 @@
 //#include <ac_gui_graphicsgripitem.h>
 #include "ac_gui_graphicsrootnode.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_griplist_tools.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_point.h>
 //#include <ac_gripselectionmodel.h>
@@ -612,7 +613,7 @@ public:
         foreach (IGraphicsItem *item, pickedEntities) {
             IGraphicsItem *pitch_item = item->findItem(PitchCurveItem);
             IGraphicsGripList *grips = query<IGraphicsGripList>(pitch_item);
-            PointList points = grips->points();
+            PointList points = GripList::toPointList(grips);
             Point pt = Point(scenePos);
             if (ControlModifier & QApplication::keyboardModifiers())
                 pt.curveType = BezierCurve;
@@ -807,27 +808,6 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 //        d->resetPickedEntities();
 }
 
-void GraphicsView::noteSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
-{
-//    const IModel *model = IModel::instance();
-//    const QModelIndexList selectedIndexes = selected.indexes();
-//    QList<IEntity*> selectedEntities;
-//    foreach (const QModelIndex &index, selectedIndexes) {
-//        IEntity *note = QUERY(IEntity, model->itemFromIndex(index));
-//        QList<IEntity*> curves = note->subEntities(sceneType());
-//        selectedEntities.append(curves);
-//    }
-//    d->appendPickedEntities(selectedEntities);
-//    const QModelIndexList deselectedIndexes = deselected.indexes();
-//    QList<IEntity*> deselectedEntities;
-//    foreach (const QModelIndex &index, deselectedIndexes) {
-//        IEntity *note = QUERY(IEntity, model->itemFromIndex(index));
-//        QList<IEntity*> curves = note->subEntities(sceneType());
-//        deselectedEntities.append(curves);
-//    }
-//    d->removePickedEntities(deselectedEntities);
-}
-
 void GraphicsView::viewPositionChanged(int role)
 {
     if (IDatabase::instance()->isReading())
@@ -853,26 +833,41 @@ void GraphicsView::scoreLengthChanged()
 
 void GraphicsView::removePoints()
 {
-//    // Store the view's picked grips locally so they can be cleared before
-//    // they're deleted by the entity item in resetGrips.
-//    QList<IGripItem*> picked_grips = d->pickedGrips;
-//    d->clearPickedGrips();
-
-//    foreach (IGripItem *grip, picked_grips) {
-//        IEntity *entity = grip->parentEntityItem()->entity();
-//        PointList points = entity->points();
-//        const int n = points.count();
-//        for (int i = 0;  i < n;  ++i) {
-//            if (grip->position() == points.at(i).pos) {
-//                points.removeAt(i);
-//                break;
-//            }
-//        }
-//        entity->setPoints(points);
-//        GraphicsEntityItem *entity_item = d->findEntityItem(entity);
-//        if (entity_item)
-//            entity_item->resetGripItems();
-//    }
+    QList<IGraphicsGrip*> picked_grips = d->pickedGrips;
+    QList<IGraphicsDelegate*> delegates = d->delegatesToUpdate;
+    d->clearPickedGrips();
+    int grip_count = picked_grips.count();
+    for (int i = 0;  i < grip_count;  ++i) {
+        IGraphicsGrip *grip = picked_grips.at(i);
+        IModelItem *grip_item = query<IModelItem>(grip);
+        IModelItem *curve_item = grip_item->parent();
+        IGraphicsGripList *curve_griplist = query<IGraphicsGripList>(curve_item);
+        QList<IGraphicsGrip*> curve_grips = curve_griplist->grips();
+        QList<IGraphicsGrip*> curve_grips_to_remove;
+        for (int j = 0;  j < grip_count;  ++j)
+            if (curve_item == query<IModelItem>(picked_grips.at(j))->parent())
+                curve_grips_to_remove.append(picked_grips.at(j));
+        int curve_grips_to_remove_count = curve_grips_to_remove.count();
+        if (curve_grips.count() - curve_grips_to_remove_count < 2) {
+            foreach (IGraphicsGrip *grip, curve_grips_to_remove)
+                picked_grips.removeOne(grip);
+            IModelItem *note_item = curve_item->parent();
+            note_item->set(VisibilityRole, false);
+            note_item->remove();
+            curve_griplist->findNode()->setVisible(false);
+            break;
+        } else {
+            foreach (IGraphicsGrip *grip, curve_grips_to_remove)
+                curve_grips.removeOne(grip);
+            curve_griplist->update(PointsRole, QVariant::fromValue(GripList::toPointList(curve_grips)));
+        }
+        i -= curve_grips_to_remove_count;
+        grip_count -= curve_grips_to_remove_count;
+    }
+    foreach (IGraphicsDelegate *delegate, delegates) {
+        delegate->updateModel();
+        delegate->updateGraphics();
+    }
 }
 
 int GraphicsView::horizontalPositionRole() const
