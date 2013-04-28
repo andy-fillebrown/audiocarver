@@ -10,7 +10,7 @@ DIRS = \
     implementations \
     interfaces \
     itemviews \
-#    models \
+    models \
     session \
     tools \
 #    util \

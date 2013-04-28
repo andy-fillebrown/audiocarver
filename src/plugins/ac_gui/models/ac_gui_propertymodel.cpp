@@ -15,24 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROPERTYMODEL_H
-#define AC_PROPERTYMODEL_H
+#include "ac_gui_propertymodel.h"
 
-#include <QAbstractTableModel>
+using namespace Qt;
 
-class PropertyModel : public QAbstractTableModel
+int PropertyModel::columnCount(const QModelIndex &parent) const
 {
-    Q_OBJECT
+    Q_UNUSED(parent);
+    return 2;
+}
 
-public:
-    PropertyModel(QObject *parent = 0)
-        :   QAbstractTableModel(parent)
-    {}
+Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
+{
+    const ItemFlags default_flags = ItemIsEnabled;
+    if (1 == index.column())
+        return default_flags | ItemIsEditable;
+    return default_flags;
+}
 
-    // QAbstractItemModel
-    int columnCount(const QModelIndex &parent) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-};
+QVariant PropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (DisplayRole != role
+            || Horizontal != orientation
+            || section < 0 || 1 < section)
+        return QVariant();
 
-#endif // AC_PROPERTYMODEL_H
+    if (0 == section)
+        return "Property";
+    return "Value";
+}

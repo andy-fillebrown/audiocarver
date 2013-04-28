@@ -15,134 +15,88 @@
 **
 **************************************************************************/
 
-#include "ac_selecteditemspropertymodel.h"
-
-#include <mi_idatabase.h>
-#include <mi_ieditor.h>
-#include <mi_imodel.h>
-#include <mi_imodeldata.h>
-#include <mi_imodelitem.h>
-
-#include <ac_gui_namespace.h>
-
-#include <mi_gui_itemselectionmodel.h>
-
-#include <QTimer>
+#include "ac_gui_selecteditemspropertymodel.h"
+#include "ac_gui_namespace.h"
+#include <idatabase.h>
+#include <ieditor.h>
+#include <igraphicsitem.h>
+#include <imodel.h>
+#include <imodelitem.h>
+#include <iselectionset.h>
 
 using namespace Ac;
 using namespace Mi;
-using namespace Mi::Gui;
 using namespace Qt;
 
 class SelectedItemsPropertyModelPrivate
 {
 public:
     SelectedItemsPropertyModel *q;
-    QList<const QAbstractItemModel*> models;
-    QList<const ItemSelectionModel*> selectionModels;
     QList<IModelItem*> selectedItems;
     QMap<int, QVariant> dataMap;
-    QTimer *updateTimer;
     uint nothingSelected : 1;
 
     SelectedItemsPropertyModelPrivate(SelectedItemsPropertyModel *q)
         :   q(q)
-        ,   updateTimer(new QTimer(q))
         ,   nothingSelected(true)
-    {
-        updateTimer->setSingleShot(true);
-    }
+    {}
 
     void update()
     {
-        QList<const QAbstractItemModel*> current_models;
-        foreach (const ItemSelectionModel *selection_model, selectionModels)
-            current_models.append(selection_model->model());
-        foreach (const QAbstractItemModel *model, current_models) {
-            if (!models.contains(model)) {
-                updateTimer->connect(model, SIGNAL(modelReset()), SIGNAL(timeout()));
-                updateTimer->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(timeout()));
-            }
-        }
-        foreach (const QAbstractItemModel *model, models) {
-            if (!current_models.contains(model))
-                QObject::disconnect(model, "", updateTimer, "");
-        }
-        models = current_models;
-
+        IEditor *editor = IEditor::instance();
+        QList<IGraphicsItem*> graphics_items;
+        graphics_items.append(editor->currentSelection(NoteItem)->items());
+        graphics_items.append(editor->currentSelection(TrackItem)->items());
         selectedItems.clear();
-        foreach (const ItemSelectionModel *selection_model, selectionModels) {
-            QList<IModelItem*> selected_items = selection_model->selectedItems();
-            foreach (IModelItem *selected_item, selected_items) {
-                if (selectedItems.contains(selected_item))
-                    continue;
-                selectedItems.append(selected_item);
-            }
+        foreach (IGraphicsItem *graphics_item, graphics_items) {
+            IModelItem *model_item = query<IModelItem>(graphics_item);
+            if (!selectedItems.contains(model_item))
+                selectedItems.append(model_item);
         }
-
         nothingSelected = selectedItems.isEmpty();
         if (nothingSelected) {
-            IModelItem *score = query<IModel>(IDatabase::instance())->rootItem();
+            IModelItem *score = IDatabase::instance()->rootItem();
             selectedItems.append(score);
             selectedItems.append(score->findItem(ProjectSettingsItem));
             selectedItems.append(score->findItem(GridSettingsItem));
         }
-
         dataMap.clear();
         foreach (IModelItem *selected_item, selectedItems) {
-            IModelData *selected_data = query<IModelData>(selected_item);
-            const int role_count = selected_data->roleCount();
+            const int role_count = selected_item->roleCount();
             for (int i = 0;  i < role_count;  ++i) {
-                const int role = selected_data->roleAt(i);
-                const QVariant data = selected_data->getVariant(role);
+                const int role = selected_item->roleAt(i);
+                const QVariant value = selected_item->getValue(role);
                 if (!dataMap.contains(role))
-                    dataMap.insert(role, data);
-                else if (data != dataMap.value(role)) {
+                    dataMap.insert(role, value);
+                else if (value != dataMap.value(role)) {
                     dataMap.remove(role);
                     dataMap.insert(role, "<varies>");
                 }
             }
         }
-
         q->reset();
     }
 };
 
 static SelectedItemsPropertyModel *instance = 0;
 
-SelectedItemsPropertyModel::SelectedItemsPropertyModel(QObject *parent)
-    :   PropertyModel(parent)
-    ,   d(new SelectedItemsPropertyModelPrivate(this))
-{
-    connect(d->updateTimer, SIGNAL(timeout()), SLOT(update()));
-    ::instance = this;
-}
-
-SelectedItemsPropertyModel::~SelectedItemsPropertyModel()
-{
-    delete d;
-}
-
 SelectedItemsPropertyModel *SelectedItemsPropertyModel::instance()
 {
     return ::instance;
 }
 
-void SelectedItemsPropertyModel::appendSelectionModel(ItemSelectionModel *selectionModel)
+SelectedItemsPropertyModel::SelectedItemsPropertyModel(QObject *parent)
+    :   PropertyModel(parent)
+    ,   d(new SelectedItemsPropertyModelPrivate(this))
 {
-    if (!d->updateTimer->connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SIGNAL(timeout()), UniqueConnection))
-        return;
-    d->selectionModels.append(selectionModel);
-    d->update();
+    ::instance = this;
+    connect(IModel::instance(), SIGNAL(dataChanged(const IModelItem*,int)), SLOT(update()));
+    update();
 }
 
-void SelectedItemsPropertyModel::removeSelectionModel(ItemSelectionModel *selectionModel)
+SelectedItemsPropertyModel::~SelectedItemsPropertyModel()
 {
-    if (!d->selectionModels.contains(selectionModel))
-        return;
-    selectionModel->disconnect(d->updateTimer);
-    d->selectionModels.removeOne(selectionModel);
-    d->update();
+    delete d;
 }
 
 int SelectedItemsPropertyModel::rowCount(const QModelIndex &parent) const
@@ -153,12 +107,12 @@ int SelectedItemsPropertyModel::rowCount(const QModelIndex &parent) const
 ItemFlags SelectedItemsPropertyModel::flags(const QModelIndex &index) const
 {
     if (d->nothingSelected) {
-        IModelData *grid_settings = query<IModelData>(query<IModel>(IDatabase::instance())->rootItem()->findItem(GridSettingsItem));
-        bool snap_enabled = grid_settings->get<bool>(SnapEnabledRole);
+        IModelItem *grid_settings = IDatabase::instance()->rootItem()->findItem(GridSettingsItem);
+        bool snap_enabled = get<bool>(grid_settings, SnapEnabledRole);
 
         // Disable snap settings if snap is off or grid snap is on.
         if (!snap_enabled
-                || grid_settings->get<bool>(GridSnapEnabledRole)) {
+                || get<bool>(grid_settings, GridSnapEnabledRole)) {
             switch (index.data(RoleTypeRole).toInt()) {
             case TimeSnapRole:
             case PitchSnapRole:
@@ -179,21 +133,15 @@ ItemFlags SelectedItemsPropertyModel::flags(const QModelIndex &index) const
 
 QVariant SelectedItemsPropertyModel::data(const QModelIndex &index, int role) const
 {
-    Q_UNUSED(index);
-
     if (Mi::RoleTypeRole == role)
         return d->dataMap.keys().at(index.row());
-
     if (Qt::DisplayRole != role
             && Qt::EditRole != role)
         return QVariant();
-
     const int column = index.column();
     const int row = index.row();
-
     if (0 == row)
         return QVariant();
-
     QVariant value;
     if (0 == column) {
         const QList<int> keys = d->dataMap.keys();
@@ -216,7 +164,7 @@ bool SelectedItemsPropertyModel::setData(const QModelIndex &index, const QVarian
     editor->beginCommand();
     int property_role = d->dataMap.keys().at(index.row());
     foreach (IModelItem *item, d->selectedItems)
-        query<IModelData>(item)->set(value, property_role);
+        item->set(property_role, value);
     editor->endCommand();
     return true;
 }

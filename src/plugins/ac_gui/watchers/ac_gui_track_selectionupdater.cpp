@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_track_selectionupdater.h"
+#include "ac_gui_selecteditemspropertymodel.h"
 #include "ac_gui_trackview.h"
 #include <igraphicsitem.h>
 #include <iselectionset.h>
@@ -30,7 +31,7 @@ void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
         QItemSelectionModel *ss_model = track_view->selectionModel();
         ss_model->clearSelection();
     }
-
+    SelectedItemsPropertyModel::instance()->update();
 }
 
 }

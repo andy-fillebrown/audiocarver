@@ -17,6 +17,7 @@
 
 #include "ac_gui_object_selectionupdater.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_selecteditemspropertymodel.h"
 #include <ac_core_namespace.h>
 #include <ieditor.h>
 #include <igraphicsitem.h>
@@ -41,6 +42,7 @@ void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
         else if (model_item->isTypeOfItem(NoteItem))
             note_ss->append(item);
     }
+    SelectedItemsPropertyModel::instance()->update();
 }
 
 }

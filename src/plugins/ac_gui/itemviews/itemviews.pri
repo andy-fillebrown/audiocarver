@@ -6,9 +6,9 @@ SOURCE_FILES = \
 #    gripitemspropertyview \
     instrumentdelegate \
     lengthdelegate \
-#    propertyview \
+    propertyview \
     recordbuttondelegate \
-#    selecteditemspropertyview \
+    selecteditemspropertyview \
     togglebuttondelegate \
     volumedelegate \
     trackview \

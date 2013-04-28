@@ -15,25 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_propertyview.h"
-
+#include "ac_gui_propertyview.h"
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QScrollBar>
 #include <QTableView>
 
+using namespace Qt;
+
 PropertyView::PropertyView(QWidget *parent)
     :   QTableView(parent)
 {
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
+    setHorizontalScrollBarPolicy(ScrollBarAlwaysOff);
     QHeaderView *v_header = verticalHeader();
     v_header->setDefaultSectionSize(v_header->minimumSectionSize());
     v_header->hide();
-
     QHeaderView *h_header = horizontalHeader();
     h_header->setClickable(false);
-    h_header->setDefaultAlignment(Qt::AlignLeft);
+    h_header->setDefaultAlignment(AlignLeft);
     h_header->setHighlightSections(false);
     h_header->setStretchLastSection(true);
     h_header->resizeSections(QHeaderView::ResizeToContents);

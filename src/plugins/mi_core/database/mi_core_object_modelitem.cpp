@@ -92,7 +92,6 @@ bool ModelItem::setValue(int role, const QVariant &value)
         return true;
     }
     default:
-        qWarning() << Q_FUNC_INFO << QString("invalid role (%1)").arg(itemDataRoleString(role));
         return false;
     }
 }

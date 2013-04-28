@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_PROPERTYVIEW_H
-#define AC_PROPERTYVIEW_H
+#ifndef AC_GUI_PROPERTYVIEW_H
+#define AC_GUI_PROPERTYVIEW_H
 
 #include <QTableView>
 
@@ -31,4 +31,4 @@ protected:
     void resizeEvent(QResizeEvent *event);
 };
 
-#endif // AC_PROPERTYVIEW_H
+#endif

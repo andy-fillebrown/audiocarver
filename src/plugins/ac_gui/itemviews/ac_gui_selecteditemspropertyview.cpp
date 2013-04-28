@@ -15,19 +15,22 @@
 **
 **************************************************************************/
 
-#include "ac_selecteditemspropertyview.h"
-
-#include <ac_colordelegate.h>
-#include <ac_instrumentdelegate.h>
-#include <ac_lengthdelegate.h>
-#include <ac_noteselectionmodel.h>
-#include <ac_selecteditemspropertymodel.h>
-#include <ac_recordbuttondelegate.h>
-#include <ac_trackselectionmodel.h>
-#include <ac_volumedelegate.h>
-
+#include "ac_gui_selecteditemspropertyview.h"
+#include "ac_gui_colordelegate.h"
+#include "ac_gui_instrumentdelegate.h"
+#include "ac_gui_lengthdelegate.h"
+#include "ac_gui_selecteditemspropertymodel.h"
+#include "ac_gui_recordbuttondelegate.h"
+#include "ac_gui_volumedelegate.h"
+#include <ac_core_namespace.h>
+#include <ieditor.h>
+#include <iselectionset.h>
 #include <QHeaderView>
 #include <QKeyEvent>
+
+using namespace Ac;
+using namespace Mi;
+using namespace Qt;
 
 class SelectedItemsPropertyViewPrivate
 {
@@ -60,15 +63,8 @@ public:
         recordButtonDelegate->setCustomColumn(1);
         toggleButtonDelegate->setCustomColumn(1);
         volumeDelegate->setCustomColumn(1);
-
         recordButtonDelegate->setButtonColumnWidth(16);
         toggleButtonDelegate->setButtonColumnWidth(16);
-    }
-
-    void init()
-    {
-        selectedItemsPropertyModel->appendSelectionModel(TrackSelectionModel::instance());
-        selectedItemsPropertyModel->appendSelectionModel(NoteSelectionModel::instance());
     }
 };
 
@@ -76,15 +72,11 @@ SelectedItemsPropertyView::SelectedItemsPropertyView(QWidget *parent)
     :   PropertyView(parent)
     ,   d(new SelectedItemsPropertyViewPrivate(this))
 {
-    d->init();
-
     setModel(d->selectedItemsPropertyModel);
     connect(d->selectedItemsPropertyModel, SIGNAL(modelReset()), SLOT(updateDelegates()));
     updateDelegates();
-
     QHeaderView *v_header = verticalHeader();
     v_header->hideSection(0);
-
     QHeaderView *h_header = horizontalHeader();
     h_header->resizeSections(QHeaderView::ResizeToContents);
     h_header->resizeSection(1, 0);
@@ -97,11 +89,11 @@ SelectedItemsPropertyView::~SelectedItemsPropertyView()
 
 void SelectedItemsPropertyView::keyReleaseEvent(QKeyEvent *event)
 {
-    if (Qt::Key_Escape == event->key()) {
-        NoteSelectionModel::instance()->clear();
-        TrackSelectionModel::instance()->clear();
+    if (Key_Escape == event->key()) {
+        IEditor *editor = IEditor::instance();
+        editor->currentSelection(NoteItem)->clear();
+        editor->currentSelection(TrackItem)->clear();
     }
-
     PropertyView::keyReleaseEvent(event);
 }
 
@@ -109,32 +101,32 @@ void SelectedItemsPropertyView::updateDelegates()
 {
     const int row_count = model()->rowCount();
     for (int i = 0;  i < row_count;  ++i) {
-        int role_type = model()->data(model()->index(i, 0), Mi::RoleTypeRole).toInt();
+        int role_type = model()->data(model()->index(i, 0), RoleTypeRole).toInt();
         switch (role_type) {
-        case Ac::StartTimeRole:
-        case Ac::TimeSnapRole:
-        case Ac::PitchSnapRole:
-        case Ac::ControlSnapRole:
+        case StartTimeRole:
+        case TimeSnapRole:
+        case PitchSnapRole:
+        case ControlSnapRole:
             setItemDelegateForRow(i, d->doubleDelegate);
             break;
-        case Ac::ColorRole:
+        case ColorRole:
             setItemDelegateForRow(i, d->colorDelegate);
             break;
-        case Ac::InstrumentRole:
+        case InstrumentRole:
             setItemDelegateForRow(i, d->instrumentDelegate);
             break;
-        case Ac::LengthRole:
+        case LengthRole:
             setItemDelegateForRow(i, d->lengthDelegate);
             break;
-        case Ac::RecordingRole:
+        case RecordingRole:
             setItemDelegateForRow(i, d->recordButtonDelegate);
             break;
-        case Ac::VisibilityRole:
-        case Ac::SnapEnabledRole:
-        case Ac::GridSnapEnabledRole:
+        case VisibilityRole:
+        case SnapEnabledRole:
+        case GridSnapEnabledRole:
             setItemDelegateForRow(i, d->toggleButtonDelegate);
             break;
-        case Ac::VolumeRole:
+        case VolumeRole:
             setItemDelegateForRow(i, d->volumeDelegate);
             break;
         default:

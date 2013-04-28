@@ -15,20 +15,12 @@
 **
 **************************************************************************/
 
-#ifndef AC_SELECTEDITEMSPROPERTYMODEL_H
-#define AC_SELECTEDITEMSPROPERTYMODEL_H
+#ifndef AC_GUI_SELECTEDITEMSPROPERTYMODEL_H
+#define AC_GUI_SELECTEDITEMSPROPERTYMODEL_H
 
-#include <ac_propertymodel.h>
+#include <ac_gui_propertymodel.h>
 
 class IModelItem;
-
-namespace Mi {
-namespace Gui {
-
-class ItemSelectionModel;
-
-} // namespace Gui
-} // namespace Mi
 
 class SelectedItemsPropertyModelPrivate;
 class SelectedItemsPropertyModel : public PropertyModel
@@ -36,21 +28,17 @@ class SelectedItemsPropertyModel : public PropertyModel
     Q_OBJECT
 
 public:
+    static SelectedItemsPropertyModel *instance();
+
     SelectedItemsPropertyModel(QObject *parent = 0);
     ~SelectedItemsPropertyModel();
 
-    static SelectedItemsPropertyModel *instance();
-
-    void appendSelectionModel(Mi::Gui::ItemSelectionModel *selectionModel);
-    void removeSelectionModel(Mi::Gui::ItemSelectionModel *selectionModel);
-
-    // QAbstractItemModel
     int rowCount(const QModelIndex &parent) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
-private slots:
+public slots:
     void update();
 
 private:
@@ -58,4 +46,4 @@ private:
     SelectedItemsPropertyModelPrivate *d;
 };
 
-#endif // AC_SELECTEDITEMSPROPERTYMODEL_H
+#endif

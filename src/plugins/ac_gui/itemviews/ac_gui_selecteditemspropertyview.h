@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_SELECTEDITEMSPROPERTYVIEW_H
-#define AC_SELECTEDITEMSPROPERTYVIEW_H
+#ifndef AC_GUI_SELECTEDITEMSPROPERTYVIEW_H
+#define AC_GUI_SELECTEDITEMSPROPERTYVIEW_H
 
-#include <ac_propertyview.h>
+#include <ac_gui_propertyview.h>
 
 class SelectedItemsPropertyViewPrivate;
 class SelectedItemsPropertyView : public PropertyView
@@ -39,4 +39,4 @@ private:
     SelectedItemsPropertyViewPrivate *d;
 };
 
-#endif // AC_SELECTEDITEMSPROPERTYVIEW_H
+#endif

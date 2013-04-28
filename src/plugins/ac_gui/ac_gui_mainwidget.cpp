@@ -16,12 +16,12 @@
 **************************************************************************/
 
 #include "ac_gui_mainwidget.h"
-#include "ac_gui_trackview.h"
 #include "ac_gui_graphicsviewmanager.h"
-#include "ac_gui_namespace.h"
 //#include "ac_gripitemspropertyview.h"
 //#include "ac_gripselectionmodel.h"
-//#include "ac_selecteditemspropertyview.h"
+#include "ac_gui_namespace.h"
+#include "ac_gui_selecteditemspropertyview.h"
+#include "ac_gui_trackview.h"
 #include <mi_gui_graphicsview.h>
 #include <mainwindow.h>
 #include <icore.h>
@@ -34,6 +34,7 @@
 #define LABELVIEW_WIDTH 48
 #define LABELVIEW_HEIGHT 23
 
+using namespace Ac;
 using namespace Base;
 using namespace Core;
 using namespace Qt;
@@ -46,8 +47,8 @@ public:
     qreal controlHeightPercentage;
     QDockWidget *trackViewDock;
     TrackView *trackView;
-//    QDockWidget *propertyViewDock;
-//    SelectedItemsPropertyView *propertyView;
+    QDockWidget *propertyViewDock;
+    SelectedItemsPropertyView *propertyView;
 //    GripItemsPropertyView *gripView;
     GraphicsViewManager *graphicsViewManager;
     uint hoveringOverSeparator : 1;
@@ -59,8 +60,8 @@ public:
         ,   controlHeightPercentage(0.25f)
         ,   trackViewDock(new QDockWidget("Track Editor", q))
         ,   trackView(new TrackView(trackViewDock))
-//        ,   propertyViewDock(new QDockWidget("Property Editor", q))
-//        ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
+        ,   propertyViewDock(new QDockWidget("Property Editor", q))
+        ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
 //        ,   gripView(new GripItemsPropertyView(propertyViewDock))
         ,   graphicsViewManager(new GraphicsViewManager(q))
         ,   hoveringOverSeparator(false)
@@ -75,14 +76,15 @@ public:
                                     "border-left: 0px solid palette(shadow);"
                                     "border-right: 1px solid palette(shadow);"
                                     "}");
-        for (int i = 0;  i < Ac::SceneTypeCount;  ++i)
-            graphicsViewManager->view(Ac::SceneType(i))->setParent(q);
-        MainWindow *main_window = ICore::instance()->mainWindow();
+        for (int i = 0;  i < SceneTypeCount;  ++i)
+            graphicsViewManager->view(SceneType(i))->setParent(q);
         trackViewDock->setObjectName("Track View Dock Widget");
         trackViewDock->setWidget(trackView);
+        propertyViewDock->setObjectName("Property View Dock Widget");
+        propertyViewDock->setWidget(propertyView);
+        MainWindow *main_window = ICore::instance()->mainWindow();
         main_window->addDockWidget(LeftDockWidgetArea, trackViewDock);
-//        propertyViewDock->setObjectName("Property View Dock Widget");
-//        mw->addDockWidget(Qt::LeftDockWidgetArea, propertyViewDock);
+        main_window->addDockWidget(LeftDockWidgetArea, propertyViewDock);
     }
 
     ~MainWidgetPrivate()
