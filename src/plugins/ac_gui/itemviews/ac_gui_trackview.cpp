@@ -75,8 +75,9 @@ TrackView::TrackView(QWidget *parent)
     ::instance = this;
     TrackModel *model = TrackModel::instance();
     setModel(model);
-    connect(model, SIGNAL(rowsInserted(const QModelIndex&,int,int)), SLOT(rowsChanged()));
-    connect(model, SIGNAL(rowsRemoved(const QModelIndex&,int,int)), SLOT(rowsChanged()));
+    connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(update()));
+    connect(model, SIGNAL(rowsInserted(const QModelIndex&,int,int)), SLOT(update()));
+    connect(model, SIGNAL(rowsRemoved(const QModelIndex&,int,int)), SLOT(update()));
     setHeaderHidden(true);
     setRootIsDecorated(false);
     setAutoScroll(false);
@@ -101,18 +102,32 @@ TrackView::TrackView(QWidget *parent)
 void TrackView::mousePressEvent(QMouseEvent *event)
 {
     // Save the event position.  We might be dragging tracks later.
-    if (Qt::LeftButton == event->button())
+    if (LeftButton == event->button())
         d->dragStartPos = event->pos();
 
-    // Pass the event to the base class so selecting items still works.
-    QTreeView::mousePressEvent(event);
+    QModelIndex index = indexAt(event->pos());
+    if (1 == index.column())
+        // If the mouse is over the "name" column, pass the event to the base class
+        // to select the track.
+        QTreeView::mousePressEvent(event);
+    else {
+        // If the mouse is not over the "name" column, pass the event to the
+        // delegate.
+        QAbstractItemDelegate *delegate = itemDelegate(index);
+        if (delegate)
+            delegate->editorEvent(event, model(), QStyleOptionViewItem(), index);
+    }
 }
 
 void TrackView::mouseMoveEvent(QMouseEvent *event)
 {
+    // Do not start dragging if the mouse press was not over the "name" column.
+    if (1 != indexAt(d->dragStartPos).column())
+        return;
+
     // Start dragging tracks if we've dragged far enough.
     if (QApplication::startDragDistance() < (d->dragStartPos - event->pos()).manhattanLength())
-        startDrag(Qt::MoveAction);
+        startDrag(MoveAction);
 }
 
 void TrackView::dragEnterEvent(QDragEnterEvent *event)
@@ -176,7 +191,7 @@ void TrackView::dropEvent(QDropEvent *event)
     }
     d->dragging = false;
 
-    // Clear the current index and redraw.
+    // Clear the current index, and redraw.
     setCurrentIndex(QModelIndex());
     setDirtyRegion(rect());
 }
@@ -219,11 +234,11 @@ void TrackView::paintEvent(QPaintEvent *event)
 void TrackView::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Right:
+    case Key_Right:
         // Do nothing here to keep the view from moving to the left when the
         // right arrow key is pressed.
         return;
-    case Qt::Key_Escape:
+    case Key_Escape:
         IEditor::instance()->currentSelection()->clear();
         selectionModel()->clearSelection();
         break;
@@ -233,7 +248,7 @@ void TrackView::keyPressEvent(QKeyEvent *event)
     QTreeView::keyPressEvent(event);
 }
 
-void TrackView::rowsChanged()
+void TrackView::update()
 {
     setDirtyRegion(rect());
     resizeEvent(0);
@@ -241,11 +256,14 @@ void TrackView::rowsChanged()
 
 void TrackView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
+    IEditor *editor = IEditor::instance();
+    if (!selected.indexes().isEmpty())
+        editor->currentSelection()->clear();
+    ISelectionSet *track_ss = editor->currentSelection(TrackItem);
     IModelItem *tracks = IDatabase::instance()->rootItem()->findItem(TrackListItem);
-    ISelectionSet *object_ss = IEditor::instance()->currentSelection();
     foreach (QModelIndex index, selected.indexes())
-        object_ss->append(query<IGraphicsItem>(tracks->itemAt(index.row())));
+        track_ss->append(query<IGraphicsItem>(tracks->itemAt(index.row())));
     foreach (QModelIndex index, deselected.indexes())
-        object_ss->remove(query<IGraphicsItem>(tracks->itemAt(index.row())));
+        track_ss->remove(query<IGraphicsItem>(tracks->itemAt(index.row())));
     QTreeView::selectionChanged(selected, deselected);
 }

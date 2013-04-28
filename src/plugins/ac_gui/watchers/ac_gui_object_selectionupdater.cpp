@@ -35,6 +35,8 @@ void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
     IEditor *editor = IEditor::instance();
     ISelectionSet *track_ss = editor->currentSelection(TrackItem);
     ISelectionSet *note_ss = editor->currentSelection(NoteItem);
+    track_ss->clear();
+    note_ss->clear();
     foreach (IGraphicsItem *item, items) {
         IModelItem *model_item = query<IModelItem>(item);
         if (model_item->isTypeOfItem(TrackItem))

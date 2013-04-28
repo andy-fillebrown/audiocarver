@@ -19,21 +19,24 @@
 #include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QtDebug>
+
+using namespace Qt;
 
 bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     if (customColumn() != index.column())
         return false;
 
-    // We're only interested in left button mouse double-clicks.
+    // We're only interested in left button mouse clicks.
     if (QEvent::MouseButtonDblClick != event->type())
         return false;
     QMouseEvent *mouse_event = static_cast<QMouseEvent*>(event);
-    if (Qt::LeftButton != mouse_event->button())
+    if (LeftButton != mouse_event->button())
         return false;
 
     // Open a color dialog and set the track's color if the user didn't cancel the dialog.
-    QColorDialog *dialog = new QColorDialog(index.data().value<QColor>(), qobject_cast<QWidget*>(parent()));
+    QColorDialog *dialog = new QColorDialog(qvariant_cast<QColor>(index.data()), qobject_cast<QWidget*>(parent()));
     dialog->exec();
     QColor color = dialog->selectedColor();
     if (color.isValid())
@@ -52,12 +55,21 @@ void ColorDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     Delegate::paint(painter, option, index.model()->index(0, 0));
 
     // Draw the color box.
-    const QColor color = index.data().value<QColor>();
     QRect rect = option.rect;
-    rect.setWidth(rect.height());
     painter->save();
-    painter->setPen(color);
-    painter->setBrush(QBrush(color));
-    painter->drawRect(rect.adjusted(1, 1, -2, -2));
+    QVariant data = index.data();
+    if ("<varies>" == qvariant_cast<QString>(data)) {
+        painter->setPen(QPen(black));
+        QPoint pos = rect.bottomLeft();
+        int offset = (rect.height() - painter->fontMetrics().height());
+        pos.ry() -= offset;
+        painter->drawText(pos, "<varies>");
+    } else {
+        const QColor color = data.value<QColor>();
+        rect.setWidth(rect.height());
+        painter->setPen(color);
+        painter->setBrush(QBrush(color));
+        painter->drawRect(rect.adjusted(1, 1, -2, -2));
+    }
     painter->restore();
 }

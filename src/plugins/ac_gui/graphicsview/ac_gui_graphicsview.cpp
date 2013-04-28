@@ -544,8 +544,11 @@ public:
     {
         if (!pickedGrips.isEmpty())
             GraphicsViewManager::instance()->clearPickedGrips();
-        else
-            query<ISelectionSet>(IEditor::instance()->currentSelection())->clear();
+        else {
+            IEditor *editor = IEditor::instance();
+            editor->currentSelection()->clear();
+            editor->currentSelection(TrackItem)->clear();
+        }
     }
 
     bool entityIsPicked(IGraphicsItem *entity)

@@ -50,7 +50,7 @@ protected:
     void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 private slots:
-    void rowsChanged();
+    void update();
 };
 
 #endif
