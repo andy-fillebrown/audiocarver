@@ -507,10 +507,10 @@ void GraphicsViewManager::cancelPointInsertion()
     d->pitchView->cancelPointInsertion();
 }
 
-void GraphicsViewManager::selectAllGrips()
-{
-    d->pitchView->selectAllGrips();
-}
+//void GraphicsViewManager::selectAllGrips()
+//{
+//    d->pitchView->selectAllGrips();
+//}
 
 //void GraphicsViewManager::startGripDrag()
 //{

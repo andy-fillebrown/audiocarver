@@ -384,17 +384,17 @@ public:
         return selectedGrip;
     }
 
-    void selectAllGrips()
-    {
-        clearPickedGrips();
-        foreach (IGraphicsItem *entity, pickedEntities) {
-            delegatesToUpdate.append(query<IGraphicsDelegate>(entity));
-            const QList<IGraphicsGrip*> &grips = query<IGraphicsGripList>(entity)->grips();
-            pickedGrips.append(grips);
-            foreach (IGraphicsGrip *grip, grips)
-                grip->update(HighlightRole, FullHighlight);
-        }
-    }
+//    void selectAllGrips()
+//    {
+//        clearPickedGrips();
+//        foreach (IGraphicsItem *entity, pickedEntities) {
+//            delegatesToUpdate.append(query<IGraphicsDelegate>(entity));
+//            const QList<IGraphicsGrip*> &grips = query<IGraphicsGripList>(entity)->grips();
+//            pickedGrips.append(grips);
+//            foreach (IGraphicsGrip *grip, grips)
+//                grip->update(HighlightRole, FullHighlight);
+//        }
+//    }
 
 //    void startGripDrag()
 //    {
@@ -733,10 +733,10 @@ bool GraphicsView::pointsAreSelected() const
     return 0 < d->pickedGrips.count();
 }
 
-void GraphicsView::selectAllGrips()
-{
-    d->selectAllGrips();
-}
+//void GraphicsView::selectAllGrips()
+//{
+//    d->selectAllGrips();
+//}
 
 //void GraphicsView::startGripDrag()
 //{

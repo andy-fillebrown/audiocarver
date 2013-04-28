@@ -65,7 +65,7 @@ public slots:
     void startInsertingPoints();
     void finishInsertingPoints();
     void cancelPointInsertion();
-    void selectAllGrips();
+//    void selectAllGrips();
 //    void startGripDrag();
 
 signals:
