@@ -41,6 +41,7 @@ public:
 protected:
     Object::Aggregate *aggregate() const;
 
+    void reset();
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
     IModelItem *parent() const;

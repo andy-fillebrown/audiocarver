@@ -53,7 +53,10 @@ protected:
     }
 
     void reset()
-    {}
+    {
+        foreach (IComponent *component, _components)
+            component->reset();
+    }
 
     void destroy()
     {}

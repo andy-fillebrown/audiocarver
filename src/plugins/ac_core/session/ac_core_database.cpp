@@ -65,9 +65,9 @@ QString Database::fileName() const
 
 void Database::reset()
 {
-    IModel::instance()->reset();
     _score->reset();
     _fileName.clear();
+    IModel::instance()->reset();
 }
 
 void Database::read(const QString &fileName)

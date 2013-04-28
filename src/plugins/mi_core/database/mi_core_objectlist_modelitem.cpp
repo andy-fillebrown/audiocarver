@@ -31,6 +31,12 @@ Aggregate *ModelItem::aggregate() const
     return static_cast<Aggregate*>(Base::ModelItem::aggregate());
 }
 
+void ModelItem::reset()
+{
+    qDeleteAll(_items);
+    _items.clear();
+}
+
 int ModelItem::itemType() const
 {
     return ListItem;

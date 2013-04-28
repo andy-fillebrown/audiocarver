@@ -46,7 +46,11 @@ protected:
     {}
 
     void reset()
-    {}
+    {
+        const int item_count = itemCount();
+        for (int i = 0;  i < item_count;  ++i)
+            itemAt(i)->reset();
+    }
 
     IModelItem *findItem(int itemType) const
     {

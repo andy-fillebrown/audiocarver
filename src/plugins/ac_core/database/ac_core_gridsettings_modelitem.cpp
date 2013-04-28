@@ -52,6 +52,7 @@ void ModelItem::reset()
     _timeSnap = DEFAULT_GRIDSETTINGS_TIMESNAP;
     _pitchSnap = DEFAULT_GRIDSETTINGS_PITCHSNAP;
     _controlSnap = DEFAULT_GRIDSETTINGS_CONTROLSNAP;
+    Object::ModelItem::reset();
 }
 
 int ModelItem::itemType() const
