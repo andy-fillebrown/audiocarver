@@ -46,6 +46,14 @@ public:
     virtual bool setValue(int role, const QVariant &value) = 0;
     virtual int flags() const = 0;
 
+    int row() const
+    {
+        IModelItem *parent = this->parent();
+        if (parent)
+            return parent->indexOfItem(this);
+        return -1;
+    }
+
     void remove()
     {
         IModelItem *parent = this->parent();
