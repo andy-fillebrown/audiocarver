@@ -486,7 +486,7 @@ void GraphicsViewManager::startInsertingPoints()
 {
     IEditor *editor = IEditor::instance();
     editor->startCreating();
-    if (editor->currentSelection()->items().isEmpty())
+    if (editor->currentSelection(NoteItem)->items().isEmpty())
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "No notes are selected.");
     else
         d->pitchView->startInsertingPoints();
