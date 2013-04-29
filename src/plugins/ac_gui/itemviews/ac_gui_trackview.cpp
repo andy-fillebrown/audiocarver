@@ -106,16 +106,36 @@ void TrackView::mousePressEvent(QMouseEvent *event)
         d->dragStartPos = event->pos();
 
     QModelIndex index = indexAt(event->pos());
-    if (1 == index.column())
-        // If the mouse is over the "name" column, pass the event to the base class
-        // to select the track.
+    const int index_column = index.column();
+    if (1 == index_column)
+        // The mouse is over the "name" column.  Pass the event to the base
+        // class to select the track.
         QTreeView::mousePressEvent(event);
-    else {
-        // If the mouse is not over the "name" column, pass the event to the
+    else if (0 == index_column) {
+        // The mouse is over the "color" column.  Pass the event to the
         // delegate.
         QAbstractItemDelegate *delegate = itemDelegate(index);
         if (delegate)
             delegate->editorEvent(event, model(), QStyleOptionViewItem(), index);
+    } else {
+        // The mouse is over one of the toggle buttons.
+        QModelIndexList selected_indexes = selectionModel()->selectedRows(index_column);
+        QAbstractItemModel *model = this->model();
+        if (selected_indexes.contains(index)) {
+            // The mouse is over one of the selected tracks.  Pass the event to
+            // each selected track's delegate.
+            foreach (QModelIndex selected_index, selected_indexes) {
+                QAbstractItemDelegate *delegate = itemDelegate(selected_index);
+                if (delegate)
+                    delegate->editorEvent(event, model, QStyleOptionViewItem(), selected_index);
+            }
+        } else {
+            // The mouse is not over one of the selected tracks.  Pass the
+            // event to the delegate.
+            QAbstractItemDelegate *delegate = itemDelegate(index);
+            if (delegate)
+                delegate->editorEvent(event, model, QStyleOptionViewItem(), index);
+        }
     }
 }
 
