@@ -664,11 +664,9 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setVerticalScrollBarPolicy(ScrollBarAlwaysOff);
     setCursor(normalCrosshair());
     setMouseTracking(true);
-
 //    connect(IEditor::instance(), SIGNAL(commandUndone()), SLOT(clearGripSelection()));
 //    connect(IEditor::instance(), SIGNAL(commandRedone()), SLOT(clearGripSelection()));
-//    connect(GripSelectionModel::instance(), SIGNAL(gripDeselected(IGripItem*)), SLOT(gripDeselected(IGripItem*)));
-//    connect(IModel::instance(), SIGNAL(modelAboutToBeDestroyed()), SLOT(modelAboutToBeDestroyed()));
+    connect(IModel::instance(), SIGNAL(modelAboutToBeReset()), SLOT(modelAboutToBeReset()));
 }
 
 GraphicsView::~GraphicsView()
@@ -762,12 +760,6 @@ void GraphicsView::updateSelection(const QList<IGraphicsItem*> &ss)
 void GraphicsView::modelAboutToBeReset()
 {
     d->reset();
-}
-
-void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
-{
-    if (DraggingGrips == d->dragState)
-        return;
 }
 
 void GraphicsView::viewPositionChanged(int role)
@@ -1097,9 +1089,4 @@ void GraphicsView::gripDeselected(IGraphicsGrip *grip)
 {
     d->hoveredGrips.removeOne(grip);
     d->pickedGrips.removeOne(grip);
-}
-
-void GraphicsView::modelAboutToBeDestroyed()
-{
-    d->reset();
 }

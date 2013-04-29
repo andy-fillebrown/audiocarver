@@ -54,7 +54,6 @@ public:
 
 public slots:
     void modelAboutToBeReset();
-    virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight = QModelIndex());
     virtual void viewPositionChanged(int role);
     virtual void viewScaleChanged(int role);
     virtual void scoreLengthChanged();
@@ -95,7 +94,6 @@ protected:
 private slots:
     void clearGripSelection();
     void gripDeselected(IGraphicsGrip *grip);
-    void modelAboutToBeDestroyed();
 };
 
 #endif
