@@ -176,7 +176,7 @@ void MainWindowExtension::initActions()
     // About Project Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
 #   ifdef Q_WS_MAC
-    {   action = new QAction(icon, tr(QString("About &%1").arg(PRO_NAME_STR), this); // it's convention not to add dots to the about menu
+    {   action = new QAction(icon, tr("About &%1").arg(PRO_NAME_STR), this); // it's convention not to add dots to the about menu
     }
 #   else
     {   action = new QAction(icon, tr("About &%1...").arg(PRO_NAME_STR), this);
