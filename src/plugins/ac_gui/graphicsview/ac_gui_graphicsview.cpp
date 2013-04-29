@@ -521,9 +521,15 @@ public:
         }
         ISelectionSet *ss = query<ISelectionSet>(IEditor::instance()->currentSelection());
         if (entities.count()) {
-            if (ControlModifier & QApplication::keyboardModifiers())
-                ss->remove(entities);
-            else if (ShiftModifier & QApplication::keyboardModifiers())
+            if (ControlModifier & QApplication::keyboardModifiers()) {
+                QList<IGraphicsItem*> items = ss->items();
+                foreach (IGraphicsItem *entity, entities) {
+                    if (items.contains(entity))
+                        ss->remove(entity);
+                    else
+                        ss->append(entity);
+                }
+            } else if (ShiftModifier & QApplication::keyboardModifiers())
                 ss->append(entities);
             else {
                 ss->clear();
