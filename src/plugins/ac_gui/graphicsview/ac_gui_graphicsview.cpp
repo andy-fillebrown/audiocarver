@@ -646,6 +646,29 @@ public:
         q->setTransform(QTransform::fromScale(viewWidth / sceneWidth, viewHeight / sceneHeight));
         dirty = false;
     }
+
+    void reset()
+    {
+        foreach (IGraphicsGrip *grip, pickedGrips)
+            grip->update(HighlightRole, NoHighlight);
+        foreach (IGraphicsItem *entity, pickedEntities)
+            entity->update(HighlightRole, NoHighlight);
+        dirty = true;
+        insertingPoints = false;
+        gripsDragged = false;
+        keepGripsPicked = false;
+        dragState = 0;
+        viewState = 0;
+        playCursorHovered = false;
+        playCursor = 0;
+        curGrip = 0;
+        delegatesToUpdate.clear();
+        hoveredGrips.clear();
+        hoveredEntities.clear();
+        curGrip = 0;
+        pickedGrips.clear();
+        pickedEntities.clear();
+    }
 };
 
 const QCursor &GraphicsView::normalCrosshair()
@@ -786,7 +809,7 @@ void GraphicsView::updateSelection(const QList<IGraphicsItem*> &ss)
 
 void GraphicsView::modelAboutToBeReset()
 {
-    d->clearPickedEntities();
+    d->reset();
 }
 
 void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
@@ -1153,6 +1176,5 @@ void GraphicsView::gripDeselected(IGraphicsGrip *grip)
 
 void GraphicsView::modelAboutToBeDestroyed()
 {
-    d->cancelGripDrag();
-    d->clearPickedEntities();
+    d->reset();
 }

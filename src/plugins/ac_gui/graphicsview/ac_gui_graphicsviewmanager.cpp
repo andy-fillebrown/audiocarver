@@ -478,6 +478,10 @@ void GraphicsViewManager::dataChanged(const IModelItem *item)
 
 void GraphicsViewManager::modelReset()
 {
+    IEditor *editor = IEditor::instance();
+    editor->currentSelection()->clear();
+    editor->currentSelection(NoteItem)->clear();
+    editor->currentSelection(TrackItem)->clear();
     d->updateViewVariables();
     enableUpdates();
 }

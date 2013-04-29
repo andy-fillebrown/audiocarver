@@ -65,8 +65,12 @@ QString Database::fileName() const
 
 void Database::reset()
 {
+    IModel::instance()->reset();
     _score->reset();
     _fileName.clear();
+
+    // Reset the model again so everything depending on score variables gets
+    // updated correctly.
     IModel::instance()->reset();
 }
 
