@@ -21,7 +21,6 @@
 #include "mi_core_scopeddatachange.h"
 #include "mi_core_scopedparentchange.h"
 #include <mi_core_namespace.h>
-#include <QtDebug>
 
 using namespace Mi;
 using namespace Qt;
