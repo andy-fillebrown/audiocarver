@@ -875,8 +875,10 @@ void GraphicsView::removePoints()
                 curve_grips.removeOne(grip);
             curve_griplist->update(PointsRole, QVariant::fromValue(GripList::toPointList(curve_grips)));
         }
-        i -= curve_grips_to_remove_count;
         grip_count -= curve_grips_to_remove_count;
+        i -= curve_grips_to_remove_count;
+        if (i < 0)
+            i = 0;
     }
     foreach (IGraphicsDelegate *delegate, delegates) {
         delegate->updateModel();
