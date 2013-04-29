@@ -15,12 +15,10 @@
 **
 **************************************************************************/
 
-#include "ac_gripitemspropertyview.h"
-
-#include <ac_doubledelegate.h>
-#include <ac_gripselectionmodel.h>
-#include <ac_togglebuttondelegate.h>
-
+#include "ac_gui_gripitemspropertyview.h"
+#include "ac_gui_doubledelegate.h"
+#include "ac_gui_gripselectionmodel.h"
+#include "ac_gui_togglebuttondelegate.h"
 #include <QHeaderView>
 
 class GripItemsPropertyViewPrivate
@@ -55,15 +53,12 @@ GripItemsPropertyView::GripItemsPropertyView(QWidget *parent)
 {
     setModel(d->gripItemsPropertyModel);
     connect(model(), SIGNAL(layoutChanged()), SLOT(updateColumnWidths()));
-
     setItemDelegateForColumn(2, d->timeDelegate);
     setItemDelegateForColumn(3, d->valueDelegate);
     setItemDelegateForColumn(4, d->curveButtonDelegate);
-
     QHeaderView *h_header = horizontalHeader();
     h_header->hideSection(0);
     connect(h_header, SIGNAL(sectionResized(int,int,int)), SLOT(updateMinimumColumnWidth(int,int,int)));
-
     for (int i = 0;  i < model()->columnCount();  ++i)
         d->minColumnWidths.append(-1);
 }
@@ -96,8 +91,6 @@ void GripItemsPropertyView::updateColumnWidths()
 
 void GripItemsPropertyView::updateMinimumColumnWidth(int column, int oldWidth, int width)
 {
-    Q_UNUSED(oldWidth);
-
     if (d->isResizing)
         return;
     d->minColumnWidths[column] = width;

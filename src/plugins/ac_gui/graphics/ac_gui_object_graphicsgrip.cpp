@@ -16,9 +16,9 @@
 **************************************************************************/
 
 #include "ac_gui_object_graphicsgrip.h"
-//#include <ac_gripselectionmodel.h>
 #include "ac_gui_constants.h"
 #include "ac_gui_graphicsgripnode.h"
+#include "ac_gui_gripselectionmodel.h"
 #include <igraphicsitem.h>
 #include <igraphicsgriplist.h>
 #include <imodelitem.h>
@@ -67,10 +67,16 @@ int GraphicsGrip::curveType() const
 
 void GraphicsGrip::update(int role, const QVariant &value)
 {
+    GripSelectionModel *grip_ss_model = GripSelectionModel::instance();
     switch (role) {
-    case HighlightRole:
-        _gripNode->highlight(qvariant_cast<int>(value));
-        break;
+    case HighlightRole: {
+        const int highlight_type = qvariant_cast<int>(value);
+        _gripNode->highlight(highlight_type);
+        if (FullHighlight == highlight_type)
+            grip_ss_model->appendGrip(this);
+        else
+            grip_ss_model->removeGrip(this);
+    }   return;
     case OriginalPositionRole:
         _originalPosition = qvariant_cast<QPointF>(value);
     case PositionRole: {
@@ -83,6 +89,7 @@ void GraphicsGrip::update(int role, const QVariant &value)
     case VisibilityRole:
         _gripNode->setVisible(qvariant_cast<bool>(value));
     }
+    grip_ss_model->update();
 }
 
 }

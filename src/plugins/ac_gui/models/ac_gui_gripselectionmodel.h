@@ -20,7 +20,11 @@
 
 #include <QAbstractTableModel>
 
-class IGrip;
+namespace Object {
+class GraphicsGrip;
+}
+
+class IGraphicsGrip;
 
 class GripSelectionModelPrivate;
 class GripSelectionModel : public QAbstractTableModel
@@ -28,12 +32,11 @@ class GripSelectionModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
+    static GripSelectionModel *instance();
+
     GripSelectionModel(QObject *parent = 0);
     ~GripSelectionModel();
 
-    static GripSelectionModel *instance();
-
-    // QAbstractItemModel
     int columnCount(const QModelIndex &parent) const;
     int rowCount(const QModelIndex &parent) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -42,17 +45,20 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 signals:
-    void gripDeselected(IGrip *grip);
+    void gripDeselected(IGraphicsGrip *grip);
     void gripsSelected();
     void gripsDeselected();
 
+private slots:
+    void delayedUpdate();
+
 private:
-    friend class GraphicsGripItem;
-    void appendGrip(IGrip *grip);
-    void removeGrip(IGrip *grip);
+    friend class Object::GraphicsGrip;
+    void appendGrip(IGraphicsGrip *grip);
+    void removeGrip(IGraphicsGrip *grip);
     void update();
 
     GripSelectionModelPrivate *d;
 };
 
-#endif // AC_GRIPSELECTIONMODEL_H
+#endif

@@ -17,8 +17,8 @@
 
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_graphicsviewmanager.h"
-//#include "ac_gripitemspropertyview.h"
-//#include "ac_gripselectionmodel.h"
+#include "ac_gui_gripitemspropertyview.h"
+#include "ac_gui_gripselectionmodel.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_selecteditemspropertyview.h"
 #include "ac_gui_trackview.h"
@@ -49,7 +49,7 @@ public:
     TrackView *trackView;
     QDockWidget *propertyViewDock;
     SelectedItemsPropertyView *propertyView;
-//    GripItemsPropertyView *gripView;
+    GripItemsPropertyView *gripView;
     GraphicsViewManager *graphicsViewManager;
     uint hoveringOverSeparator : 1;
     uint draggingSeparator : 1;
@@ -62,7 +62,7 @@ public:
         ,   trackView(new TrackView(trackViewDock))
         ,   propertyViewDock(new QDockWidget("Property Editor", q))
         ,   propertyView(new SelectedItemsPropertyView(propertyViewDock))
-//        ,   gripView(new GripItemsPropertyView(propertyViewDock))
+        ,   gripView(new GripItemsPropertyView(propertyViewDock))
         ,   graphicsViewManager(new GraphicsViewManager(q))
         ,   hoveringOverSeparator(false)
         ,   draggingSeparator(false)
@@ -173,9 +173,9 @@ MainWidget::MainWidget(QWidget *parent)
                   "}");
     setCursor(SplitVCursor);
     setMouseTracking(true);
-//    GripSelectionModel *grip_model = GripSelectionModel::instance();
-//    connect(grip_model, SIGNAL(gripsSelected()), SLOT(showGripView()));
-//    connect(grip_model, SIGNAL(gripsDeselected()), SLOT(showPropertyView()));
+    GripSelectionModel *grip_model = GripSelectionModel::instance();
+    connect(grip_model, SIGNAL(gripsSelected()), SLOT(showGripView()));
+    connect(grip_model, SIGNAL(gripsDeselected()), SLOT(showPropertyView()));
     showPropertyView();
     ::instance = this;
 }
@@ -245,14 +245,14 @@ void MainWidget::paintEvent(QPaintEvent *)
 
 void MainWidget::showGripView()
 {
-//    d->propertyView->hide();
-//    d->propertyViewDock->setWidget(d->gripView);
-//    d->gripView->show();
+    d->propertyView->hide();
+    d->propertyViewDock->setWidget(d->gripView);
+    d->gripView->show();
 }
 
 void MainWidget::showPropertyView()
 {
-//    d->gripView->hide();
-//    d->propertyViewDock->setWidget(d->propertyView);
-//    d->propertyView->show();
+    d->gripView->hide();
+    d->propertyViewDock->setWidget(d->propertyView);
+    d->propertyView->show();
 }

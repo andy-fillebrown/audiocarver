@@ -1,12 +1,11 @@
 
 SOURCE_PAIRS = \
-#    ac_gripselectionmodel \
-    ac_gui_propertymodel \
-    ac_gui_selecteditemspropertymodel \
-#    ac_noteselectionmodel \
-#    ac_trackselectionmodel \
+    gripselectionmodel \
+    propertymodel \
+    selecteditemspropertymodel \
 
-for(pair, SOURCE_PAIRS) {
-    HEADERS *= models/$${pair}.h
-    SOURCES *= models/$${pair}.cpp
+for(file, SOURCE_PAIRS) {
+    file = ac_gui_$$file
+    HEADERS *= models/$${file}.h
+    SOURCES *= models/$${file}.cpp
 }

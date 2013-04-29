@@ -24,7 +24,7 @@ QString DoubleDelegate::displayText(const QVariant &value, const QLocale &locale
 {
     if (QVariant::Double != value.type())
         return QStyledItemDelegate::displayText(value, locale);
-    QString text = locale.toString(value.toReal(), 'f', 12);
+    QString text = locale.toString(value.toReal(), 'f', 6);
     while (text.endsWith('0'))
         text.chop(1);
     if (text.endsWith('.'))

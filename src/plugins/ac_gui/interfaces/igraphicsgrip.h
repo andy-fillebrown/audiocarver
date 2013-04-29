@@ -20,8 +20,7 @@
 
 #include <igraphicseditor.h>
 #include "ac_gui_interfaces.h"
-
-class QPointF;
+#include <QPointF>
 
 class IGraphicsGrip : public IGraphicsEditor
 {
@@ -31,6 +30,19 @@ public:
     virtual QPointF originalPosition() const = 0;
     virtual QPointF position() const = 0;
     virtual int curveType() const = 0;
+
+    static bool lessThan(IGraphicsGrip *a, IGraphicsGrip *b)
+    {
+        const QPointF pos_a = a->position();
+        const QPointF pos_b = b->position();
+        if (pos_a.x() < pos_b.x())
+            return true;
+        if (pos_b.x() < pos_a.x())
+            return false;
+        if (pos_a.y() < pos_b.y())
+            return true;
+        return false;
+    }
 
     int interfaceType() const
     {

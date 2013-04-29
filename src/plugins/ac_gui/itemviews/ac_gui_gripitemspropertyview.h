@@ -15,10 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_GRIPITEMSPROPERTYVIEW_H
-#define AC_GRIPITEMSPROPERTYVIEW_H
+#ifndef AC_GUI_GRIPITEMSPROPERTYVIEW_H
+#define AC_GUI_GRIPITEMSPROPERTYVIEW_H
 
-#include <ac_propertyview.h>
+#include "ac_gui_propertyview.h"
 
 class GripItemsPropertyViewPrivate;
 class GripItemsPropertyView : public PropertyView
@@ -37,4 +37,4 @@ private:
     GripItemsPropertyViewPrivate *d;
 };
 
-#endif // AC_GRIPITEMSPROPERTYVIEW_H
+#endif
