@@ -36,10 +36,10 @@ class GraphicsViewManager : public QObject
     GraphicsViewManagerPrivate *d;
 
 public:
+    static GraphicsViewManager *instance();
+
     GraphicsViewManager(QWidget *widget);
     ~GraphicsViewManager();
-
-    static GraphicsViewManager *instance();
 
     QGraphicsView *view(int type) const;
     qreal scoreLength() const;
@@ -50,7 +50,6 @@ public:
     void updateDatabase();
     void clearPickedGrips();
     QPointF snappedScenePos(const QPointF &pos, int sceneType) const;
-
     void updateSelection(const QList<IGraphicsItem*> &ss);
 
 public slots:
@@ -65,8 +64,6 @@ public slots:
     void startInsertingPoints();
     void finishInsertingPoints();
     void cancelPointInsertion();
-//    void selectAllGrips();
-//    void startGripDrag();
 
 signals:
     void scoreLengthChanged();

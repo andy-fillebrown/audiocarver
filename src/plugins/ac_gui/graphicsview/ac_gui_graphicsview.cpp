@@ -16,16 +16,11 @@
 **************************************************************************/
 
 #include "ac_gui_graphicsview.h"
-//#include <ac_gui_graphicsentityitem.h>
-//#include <ac_gui_graphicsgripitem.h>
 #include "ac_gui_graphicsrootnode.h"
 #include "ac_gui_graphicsviewmanager.h"
 #include "ac_gui_griplist_tools.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_point.h>
-//#include <ac_gripselectionmodel.h>
-//#include <ac_noteselectionmodel.h>
-//#include <ac_trackselectionmodel.h>
 #include <iaggregate.h>
 #include <idatabase.h>
 #include <ieditor.h>
@@ -42,8 +37,6 @@
 #include <QMouseEvent>
 #include <QUndoStack>
 #include <qmath.h>
-
-#include <QtDebug>
 
 using namespace Ac;
 using namespace Mi;
@@ -383,37 +376,6 @@ public:
         }
         return selectedGrip;
     }
-
-//    void selectAllGrips()
-//    {
-//        clearPickedGrips();
-//        foreach (IGraphicsItem *entity, pickedEntities) {
-//            delegatesToUpdate.append(query<IGraphicsDelegate>(entity));
-//            const QList<IGraphicsGrip*> &grips = query<IGraphicsGripList>(entity)->grips();
-//            pickedGrips.append(grips);
-//            foreach (IGraphicsGrip *grip, grips)
-//                grip->update(HighlightRole, FullHighlight);
-//        }
-//    }
-
-//    void startGripDrag()
-//    {
-//        selectAllGrips();
-//        if (pickedGrips.isEmpty())
-//            return;
-//
-//        // Set curGrip to the lowest and earliest grip.
-//        curGrip = pickedGrips.first();
-//        foreach (IGripData *grip, pickedGrips) {
-//            const QPointF pos = grip->position();
-//            if (pos.x() < curGrip->position().x()
-//                    || (pos.x() == curGrip->position().x()
-//                        && pos.y() < curGrip->position().y()))
-//                curGrip = grip;
-//        }
-//
-//        startDraggingGrips();
-//    }
 
     void clearPickedGrips()
     {
@@ -765,16 +727,6 @@ bool GraphicsView::pointsAreSelected() const
     return 0 < d->pickedGrips.count();
 }
 
-//void GraphicsView::selectAllGrips()
-//{
-//    d->selectAllGrips();
-//}
-
-//void GraphicsView::startGripDrag()
-//{
-//    d->startGripDrag();
-//}
-
 void GraphicsView::clearPickedGrips()
 {
     d->clearPickedGrips();
@@ -816,33 +768,6 @@ void GraphicsView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 {
     if (DraggingGrips == d->dragState)
         return;
-
-//    // If topLeft is an entity (or subentity) and is showing grips, reset the grips.
-//    IModelItem *item = IModel::instance()->itemFromIndex(topLeft);
-//    IEntity *entity = QUERY(IEntity, item);
-//    if (!entity) {
-//        ISubEntity *subEntity = QUERY(ISubEntity, item);
-//        if (subEntity)
-//            entity = subEntity->parentEntity();
-//    }
-//    if (entity) {
-//        GraphicsEntityItem *entityItem = d->findEntityItem(entity);
-//        if (entityItem)
-//            entityItem->resetGripItems();
-//        else {
-//            QList<IEntity*> subEntities = entity->subEntities(sceneType());
-//            foreach (IEntity* subEntity, subEntities) {
-//                entityItem = d->findEntityItem(subEntity);
-//                if (entityItem)
-//                    entityItem->resetGripItems();
-//            }
-//        }
-//    }
-
-//    // If topLeft is a track, gripped entities might have been hidden.
-//    // Re-append the selected entities so the hidden ones are filtered out.
-//    if (TrackItem == topLeft.data(ItemTypeRole))
-//        d->resetPickedEntities();
 }
 
 void GraphicsView::viewPositionChanged(int role)

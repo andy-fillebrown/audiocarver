@@ -26,7 +26,6 @@
 //#include "ac_undo.h"
 #include <ac_core_constants.h>
 #include <ac_core_namespace.h>
-//#include <ac_noteselectionmodel.h>
 #include <mi_core_math.h>
 #include <icore.h>
 #include <idatabase.h>
@@ -110,7 +109,6 @@ public:
         timeLabelView = new GraphicsTimeLabelView(sceneManager->scene(TimeLabelScene), widget);
         pitchLabelView = new GraphicsPitchLabelView(sceneManager->scene(PitchLabelScene), widget);
         controlLabelView = new GraphicsControlLabelView(sceneManager->scene(ControlLabelScene), widget);
-
         q->connect(q, SIGNAL(viewPositionChanged(int)), pitchView, SLOT(viewPositionChanged(int)));
         q->connect(q, SIGNAL(viewPositionChanged(int)), controlView, SLOT(viewPositionChanged(int)));
         q->connect(q, SIGNAL(viewPositionChanged(int)), timeLabelView, SLOT(viewPositionChanged(int)));
@@ -126,12 +124,10 @@ public:
         q->connect(q, SIGNAL(scoreLengthChanged()), timeLabelView, SLOT(scoreLengthChanged()));
         q->connect(q, SIGNAL(scoreLengthChanged()), pitchLabelView, SLOT(scoreLengthChanged()));
         q->connect(q, SIGNAL(scoreLengthChanged()), controlLabelView, SLOT(scoreLengthChanged()));
-
 //        IDatabase *db = IDatabase::instance();
 //        q->connect(db, SIGNAL(databaseAboutToBeRead()), q, SLOT(databaseAboutToBeRead()));
 //        q->connect(db, SIGNAL(databaseRead()), q, SLOT(databaseRead()));
 //        q->connect(db, SIGNAL(databaseAboutToBeWritten()), q, SLOT(databaseAboutToBeWritten()));
-
         IModel *model = IModel::instance();
         q->connect(model, SIGNAL(modelAboutToBeReset()), pitchView, SLOT(modelAboutToBeReset()));
         q->connect(model, SIGNAL(modelAboutToBeReset()), controlView, SLOT(modelAboutToBeReset()));
@@ -143,13 +139,6 @@ public:
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), timeLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), pitchLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
         q->connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), controlLabelView, SLOT(dataChanged(QModelIndex,QModelIndex)));
-//        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), pitchView, SLOT(dataChanged(QModelIndex)));
-//        q->connect(model, SIGNAL(pointsChanged(QModelIndex)), controlView, SLOT(dataChanged(QModelIndex)));
-
-//        QItemSelectionModel *noteSSModel = NoteSelectionModel::instance();
-//        q->connect(noteSSModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), pitchView, SLOT(noteSelectionChanged(QItemSelection,QItemSelection)));
-//        q->connect(noteSSModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), controlView, SLOT(noteSelectionChanged(QItemSelection,QItemSelection)));
-
         updateViewVariables();
         q->updateViews();
         initialized = true;
@@ -250,6 +239,11 @@ public:
     }
 };
 
+GraphicsViewManager *GraphicsViewManager::instance()
+{
+    return ::instance;
+}
+
 GraphicsViewManager::GraphicsViewManager(QWidget *widget)
     :   QObject(widget)
     ,   d(new GraphicsViewManagerPrivate(this))
@@ -267,11 +261,6 @@ GraphicsViewManager::~GraphicsViewManager()
 {
     cancelPointInsertion();
     delete d;
-}
-
-GraphicsViewManager *GraphicsViewManager::instance()
-{
-    return ::instance;
 }
 
 QGraphicsView *GraphicsViewManager::view(int type) const
@@ -510,13 +499,3 @@ void GraphicsViewManager::cancelPointInsertion()
     editor->finishCreating();
     d->pitchView->cancelPointInsertion();
 }
-
-//void GraphicsViewManager::selectAllGrips()
-//{
-//    d->pitchView->selectAllGrips();
-//}
-
-//void GraphicsViewManager::startGripDrag()
-//{
-//    d->pitchView->startGripDrag();
-//}
