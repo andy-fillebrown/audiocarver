@@ -40,28 +40,29 @@
 #include <QtGlobal>
 
 using namespace Ac;
+using namespace Mi;
 
 static GraphicsViewManager *instance = 0;
 
-//static qreal closestGridlineLocation(qreal location, const IModelItem *gridlineListItem)
-//{
-//    qreal min_offset = Q_FLOAT_MAX;
-//    qreal closest_location = location;
+static qreal closestGridlineLocation(qreal location, const IModelItem *gridlineListItem)
+{
+    qreal min_offset = Q_FLOAT_MAX;
+    qreal closest_location = location;
 
-//    const int n = gridlineListItem->modelItemCount();
-//    for (int i = 0;  i < n;  ++i) {
-//        const IModelItem *gridline = gridlineListItem->modelItemAt(i);
-//        if (gridline->data(VisibilityRole).toBool()) {
-//            const qreal current_location = gridline->data(LocationRole).toReal();
-//            const qreal current_offset = qAbs(location - current_location);
-//            if (current_offset < min_offset) {
-//                min_offset = current_offset;
-//                closest_location = current_location;
-//            }
-//        }
-//    }
-//    return closest_location;
-//}
+    const int n = gridlineListItem->itemCount();
+    for (int i = 0;  i < n;  ++i) {
+        IModelItem *gridline = gridlineListItem->itemAt(i);
+        if (get<bool>(gridline, VisibilityRole)) {
+            const qreal current_location = get<qreal>(gridline, LocationRole);
+            const qreal current_offset = qAbs(location - current_location);
+            if (current_offset < min_offset) {
+                min_offset = current_offset;
+                closest_location = current_location;
+            }
+        }
+    }
+    return closest_location;
+}
 
 class GraphicsViewManagerPrivate
 {
@@ -186,41 +187,39 @@ public:
 
     void snapX(QPointF &pos, int role, bool snapToGrid)
     {
-//        qreal toX = -1.0f;
-
-//        if (TimePositionRole == role) {
-//            if (snapToGrid)
-//                toX = ::closestGridlineLocation(pos.x(), IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->findModelItemList(TimeGridLineItem));
-//            else
-//                toX = IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->data(TimeSnapRole).toReal();
-//        }
-
-//        if (snapToGrid)
-//            pos.setX(toX);
-//        else if (0.0f < toX)
-//            pos.setX(Mi::roundToNearest(pos.x(), toX));
+        qreal toX = -1.0f;
+        IModelItem *score = IDatabase::instance()->rootItem();
+        if (TimePositionRole == role) {
+            if (snapToGrid)
+                toX = closestGridlineLocation(pos.x(), score->findItem(GridSettingsItem)->findItem(TimeGridLineListItem));
+            else
+                toX = get<qreal>(score->findItem(GridSettingsItem), TimeSnapRole);
+        }
+        if (snapToGrid)
+            pos.setX(toX);
+        else if (0.0f < toX)
+            pos.setX(roundToNearest(pos.x(), toX));
     }
 
     void snapY(QPointF &pos, int role, bool snapToGrid)
     {
-//        qreal toY = -1.0f;
-
-//        if (PitchPositionRole == role) {
-//            if (snapToGrid)
-//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->findModelItemList(PitchGridLineItem));
-//            else
-//                toY = IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->data(PitchSnapRole).toReal();
-//        } else if (ControlPositionRole == role) {
-//            if (snapToGrid)
-//                toY = ::closestGridlineLocation(pos.y(), IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->findModelItemList(ControlGridLineItem));
-//            else
-//                toY = IModel::instance()->rootItem()->findModelItem(GridSettingsItem)->data(ControlSnapRole).toReal();
-//        }
-
-//        if (snapToGrid)
-//            pos.setY(toY);
-//        else if (0.0f < toY)
-//            pos.setY(Mi::roundToNearest(pos.y(), toY));
+        qreal toY = -1.0f;
+        IModelItem *score = IDatabase::instance()->rootItem();
+        if (PitchPositionRole == role) {
+            if (snapToGrid)
+                toY = closestGridlineLocation(pos.y(), score->findItem(GridSettingsItem)->findItem(PitchGridLineListItem));
+            else
+                toY = get<qreal>(score->findItem(GridSettingsItem), PitchSnapRole);
+        } else if (ControlPositionRole == role) {
+            if (snapToGrid)
+                toY = closestGridlineLocation(pos.y(), score->findItem(GridSettingsItem)->findItem(ControlGridLineListItem));
+            else
+                toY = get<qreal>(score->findItem(GridSettingsItem), ControlSnapRole);
+        }
+        if (snapToGrid)
+            pos.setY(toY);
+        else if (0.0f < toY)
+            pos.setY(roundToNearest(pos.y(), toY));
     }
 };
 
@@ -373,21 +372,17 @@ void GraphicsViewManager::clearPickedGrips()
 
 QPointF GraphicsViewManager::snappedScenePos(const QPointF &pos, int sceneType) const
 {
-//    IModel *model = IModel::instance();
-//    IModelItem *gridSettings = model->rootItem()->findModelItem(GridSettingsItem);
-
-//    bool is_snapping = gridSettings->data(SnapEnabledRole).toBool();
-//    if (!is_snapping)
-//        return pos;
-
-//    bool snap_to_grid = gridSettings->data(GridSnapEnabledRole).toBool();
-
+    IModelItem *grid_settings = IDatabase::instance()->rootItem()->findItem(GridSettingsItem);
+    bool is_snapping = get<bool>(grid_settings, SnapEnabledRole);
+    if (!is_snapping)
+        return pos;
+    bool snap_to_grid = get<qreal>(grid_settings, GridSnapEnabledRole);
     QPointF snapped_pos = pos;
-//    d->snapX(snapped_pos, TimePositionRole, snap_to_grid);
-//    if (PitchScene == sceneType)
-//        d->snapY(snapped_pos, PitchPositionRole, snap_to_grid);
-//    else if (ControlScene == sceneType)
-//        d->snapY(snapped_pos, ControlPositionRole, snap_to_grid);
+    d->snapX(snapped_pos, TimePositionRole, snap_to_grid);
+    if (PitchScene == sceneType)
+        d->snapY(snapped_pos, PitchPositionRole, snap_to_grid);
+    else if (ControlScene == sceneType)
+        d->snapY(snapped_pos, ControlPositionRole, snap_to_grid);
     return snapped_pos;
 }
 

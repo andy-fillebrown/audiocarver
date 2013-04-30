@@ -73,8 +73,9 @@ public:
         IGraphicsItem *pitchcurve_graphics = noteGraphicsItem->findItem(PitchCurveItem);
         pitchGrips = query<IGraphicsGripList>(pitchcurve_graphics);
         pitchDelegate = query<IGraphicsDelegate>(pitchcurve_graphics);
-        const QPointF scenePos = q->sceneTransform().inverted().map(QPointF(pos));
-        points.append(scenePos);
+        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
+        points.append(scene_pos);
         addNotePoint(pos);
         noteStarted = true;
     }
@@ -83,7 +84,8 @@ public:
     {
         if (ControlModifier & QApplication::keyboardModifiers())
             points.last().curveType = BezierCurve;
-        const QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
+        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
         points.append(scene_pos);
         pitchGrips->update(PointsRole, QVariant::fromValue(points));
         pitchDelegate->updateGraphics();
@@ -91,7 +93,8 @@ public:
 
     void moveNotePoint(const QPoint &pos)
     {
-        const QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
+        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
         points[points.count() - 1].pos = scene_pos;
         pitchGrips->update(PointsRole, QVariant::fromValue(points));
         pitchDelegate->updateGraphics();
