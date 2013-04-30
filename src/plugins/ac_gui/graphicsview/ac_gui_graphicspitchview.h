@@ -33,6 +33,7 @@ public:
 
 public slots:
     void createNote();
+    void moveNotes();
 
 protected:
     int sceneType() const;

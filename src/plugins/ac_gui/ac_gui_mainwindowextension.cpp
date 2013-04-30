@@ -97,6 +97,7 @@ void MainWindowExtension::initActions()
     Core::ActionContainer *helpMenu = am->actionContainer(Core::Constants::M_HELP);
     Core::Context globalContext(Core::Constants::C_GLOBAL);
     GraphicsViewManager *viewManager = GraphicsViewManager::instance();
+    GraphicsPitchView *pitchView = qobject_cast<GraphicsPitchView*>(viewManager->view(PitchScene));
     QIcon icon;
     QAction *action = 0;
     Core::Command *cmd = 0;
@@ -124,7 +125,7 @@ void MainWindowExtension::initActions()
     action = new QAction(tr("&Note"), this);
     cmd = am->registerAction(action, CREATENOTE, globalContext);
     createMenu->addAction(cmd, G_CREATE_OTHER);
-    connect(action, SIGNAL(triggered()), qobject_cast<GraphicsPitchView*>(viewManager->view(PitchScene)), SLOT(createNote()));
+    connect(action, SIGNAL(triggered()), pitchView, SLOT(createNote()));
 
     // Insert Points Action
     action = new QAction(tr("&Insert Points"), this);
@@ -132,6 +133,12 @@ void MainWindowExtension::initActions()
     cmd->setDefaultKeySequence(Qt::Key_Insert);
     modifyMenu->addAction(cmd, G_MODIFY_OTHER);
     connect(action, SIGNAL(triggered()), viewManager, SLOT(startInsertingPoints()));
+
+    // Move Note Action
+    action = new QAction(tr("&Move"), this);
+    cmd = am->registerAction(action, MOVE, globalContext);
+    modifyMenu->addAction(cmd, G_MODIFY_OTHER);
+    connect(action, SIGNAL(triggered()), pitchView, SLOT(moveNotes()));
 
     // Erase Action
     action = new QAction(tr("&Erase"), this);

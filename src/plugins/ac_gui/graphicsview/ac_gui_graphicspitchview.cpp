@@ -26,10 +26,12 @@
 #include <idatabaseobjectfactory.h>
 #include <ieditor.h>
 #include <igraphicsdelegate.h>
-#include <igraphicsitem.h>
+#include <igraphicsgrip.h>
 #include <igraphicsgriplist.h>
+#include <igraphicsitem.h>
 #include <imodel.h>
 #include <imodelitem.h>
+#include <iselectionset.h>
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -47,9 +49,15 @@ public:
     IGraphicsGripList *pitchGrips;
     IGraphicsDelegate *pitchDelegate;
     PointList points;
+    QList<IGraphicsItem*> noteSS;
+    QList<IGraphicsGripList*> noteGripLists;
+    QPointF origNotePos;
     uint creatingNote : 1;
     uint noteStarted : 1;
     uint curve : 1;
+    uint movingNotes : 1;
+    uint noteMoveStarted : 1;
+
 
     GraphicsPitchViewPrivate(GraphicsPitchView *q)
         :   q(q)
@@ -61,6 +69,8 @@ public:
         ,   creatingNote(false)
         ,   noteStarted(false)
         ,   curve(false)
+        ,   movingNotes(false)
+        ,   noteMoveStarted(false)
     {}
 
     void startNote(const QPoint &pos)
@@ -139,6 +149,67 @@ public:
         curve = false;
         q->setCursor(GraphicsView::normalCrosshair());
     }
+
+    void startMovingNotes(const QPointF &pos)
+    {
+        origNotePos = q->sceneTransform().inverted().map(QPointF(pos));
+        origNotePos = GraphicsViewManager::instance()->snappedScenePos(origNotePos, PitchScene);
+        foreach (IGraphicsItem *note, noteSS)
+            noteGripLists.append(query<IGraphicsGripList>(note->findItem(PitchCurveItem)));
+        noteMoveStarted = true;
+        foreach (IGraphicsGripList *griplist, noteGripLists) {
+            QList<IGraphicsGrip*> grips = griplist->grips();
+            foreach (IGraphicsGrip *grip, grips)
+                grip->update(OriginalPositionRole, grip->position());
+        }
+    }
+
+    void moveNotes(const QPointF &pos)
+    {
+        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
+        foreach (IGraphicsGripList *griplist, noteGripLists) {
+            QList<IGraphicsGrip*> grips = griplist->grips();
+            foreach (IGraphicsGrip *grip, grips) {
+                grip->reset();
+                grip->update(PositionRole, QVariant::fromValue(grip->originalPosition() + scene_pos - origNotePos));
+            }
+            query<IGraphicsDelegate>(griplist)->updateGraphics();
+        }
+    }
+
+    void finishMovingNotes(const QPointF &pos)
+    {
+        moveNotes(pos);
+        foreach (IGraphicsGripList *griplist, noteGripLists) {
+            QList<IGraphicsGrip*> grips = griplist->grips();
+            foreach (IGraphicsGrip *grip, grips)
+                grip->update(OriginalPositionRole, grip->position());
+            query<IGraphicsDelegate>(griplist)->updateModel();
+        }
+        endMovingNotes();
+    }
+
+    void cancelMovingNotes()
+    {
+        foreach (IGraphicsGripList *griplist, noteGripLists) {
+            QList<IGraphicsGrip*> grips = griplist->grips();
+            foreach (IGraphicsGrip *grip, grips) {
+                grip->update(PositionRole, QVariant::fromValue(grip->originalPosition()));
+            }
+            query<IGraphicsDelegate>(griplist)->updateGraphics();
+        }
+        endMovingNotes();
+    }
+
+    void endMovingNotes()
+    {
+        noteMoveStarted = false;
+        movingNotes = false;
+        noteGripLists.clear();
+        noteSS.clear();
+        q->setCursor(GraphicsView::normalCrosshair());
+    }
 };
 
 GraphicsPitchView::GraphicsPitchView(QGraphicsScene *scene, QWidget *parent)
@@ -201,18 +272,24 @@ void GraphicsPitchView::createNote()
     }
 }
 
+void GraphicsPitchView::moveNotes()
+{
+    d->noteSS = IEditor::instance()->currentSelection(NoteItem)->items();
+    if (d->noteSS.isEmpty())
+        QMessageBox::warning(this, PRO_NAME_STR, "No notes selected.");
+    else {
+        setCursor(creationCrosshair());
+        d->movingNotes = true;
+    }
+}
+
 void GraphicsPitchView::mousePressEvent(QMouseEvent *event)
 {
-    if (d->creatingNote) {
-        if (LeftButton == event->button()) {
-            if (!d->points.count())
-                d->startNote(event->pos());
-            else
-                d->addNotePoint(event->pos());
-            setFocus(MouseFocusReason);
-        }
-    } else
-        GraphicsHorizontalView::mousePressEvent(event);
+    // Don't let the base class do a selection operation if notes are being
+    // created or moved.
+    if (d->creatingNote || d->movingNotes)
+        return;
+    GraphicsHorizontalView::mousePressEvent(event);
 }
 
 void GraphicsPitchView::mouseMoveEvent(QMouseEvent *event)
@@ -220,19 +297,45 @@ void GraphicsPitchView::mouseMoveEvent(QMouseEvent *event)
     if (d->creatingNote) {
         if (d->noteStarted)
             d->moveNotePoint(event->pos());
-    } else
-        GraphicsHorizontalView::mouseMoveEvent(event);
+        return;
+    }
+    if (d->movingNotes) {
+        if (d->noteMoveStarted)
+            d->moveNotes(event->posF());
+        event->accept();
+        return;
+    }
+    GraphicsHorizontalView::mouseMoveEvent(event);
 }
 
 void GraphicsPitchView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (d->creatingNote) {
-        if (RightButton == event->button()) {
+    if (LeftButton == event->button()) {
+        if (d->creatingNote) {
+            if (!d->points.count())
+                d->startNote(event->pos());
+            else
+                d->addNotePoint(event->pos());
+            setFocus(MouseFocusReason);
+            return;
+        }
+        if (d->movingNotes) {
+            if (!d->noteMoveStarted)
+                d->startMovingNotes(event->posF());
+            else
+                d->finishMovingNotes(event->posF());
+            event->accept();
+            return;
+        }
+    }
+    if (RightButton == event->button()) {
+        if (d->creatingNote) {
             d->finishNote();
             event->accept();
+            return;
         }
-    } else
-        GraphicsHorizontalView::mouseReleaseEvent(event);
+    }
+    GraphicsHorizontalView::mouseReleaseEvent(event);
 }
 
 void GraphicsPitchView::mouseDoubleClickEvent(QMouseEvent *event)
@@ -248,16 +351,18 @@ void GraphicsPitchView::mouseDoubleClickEvent(QMouseEvent *event)
 
 void GraphicsPitchView::keyReleaseEvent(QKeyEvent *event)
 {
-    if (d->creatingNote) {
-        const int key = event->key();
-        switch (key) {
-        case Key_Enter:
+    const int key = event->key();
+    switch (key) {
+    case Key_Enter:
+        if (d->creatingNote)
             d->finishNote();
-            break;
-        case Key_Escape:
+        return;
+    case Key_Escape:
+        if (d->creatingNote)
             d->cancelNote();
-            break;
-        }
-    } else
-        GraphicsHorizontalView::keyReleaseEvent(event);
+        else if (d->movingNotes)
+            d->cancelMovingNotes();
+        return;
+    }
+    GraphicsHorizontalView::keyReleaseEvent(event);
 }
