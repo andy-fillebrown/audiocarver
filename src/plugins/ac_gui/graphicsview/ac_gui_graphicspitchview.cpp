@@ -33,7 +33,6 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
-#include <QModelIndexList>
 
 using namespace Ac;
 using namespace Qt;
