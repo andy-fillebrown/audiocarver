@@ -22,6 +22,8 @@
 #include "ac_core_global.h"
 #include <QString>
 
+class IAggregate;
+
 namespace Core {
 
 class AC_CORE_EXPORT Database : public Base::Database

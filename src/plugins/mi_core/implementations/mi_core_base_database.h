@@ -20,8 +20,6 @@
 
 #include <idatabase.h>
 
-class IAggregate;
-
 namespace Base {
 
 class MI_CORE_EXPORT Database : public IDatabase

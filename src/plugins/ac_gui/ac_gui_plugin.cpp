@@ -21,8 +21,6 @@
 #include "ac_gui_editor.h"
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindowextension.h"
-//#include "ac_selecteditemspropertyview.h"
-//#include "ac_trackview.h"
 #include <ac_core_database.h>
 #include <ac_core_namespace.h>
 #include <mainwindow.h>

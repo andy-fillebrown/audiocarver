@@ -124,10 +124,6 @@ public:
         q->connect(q, SIGNAL(scoreLengthChanged()), timeLabelView, SLOT(scoreLengthChanged()));
         q->connect(q, SIGNAL(scoreLengthChanged()), pitchLabelView, SLOT(scoreLengthChanged()));
         q->connect(q, SIGNAL(scoreLengthChanged()), controlLabelView, SLOT(scoreLengthChanged()));
-//        IDatabase *db = IDatabase::instance();
-//        q->connect(db, SIGNAL(databaseAboutToBeRead()), q, SLOT(databaseAboutToBeRead()));
-//        q->connect(db, SIGNAL(databaseRead()), q, SLOT(databaseRead()));
-//        q->connect(db, SIGNAL(databaseAboutToBeWritten()), q, SLOT(databaseAboutToBeWritten()));
         updateViewVariables();
         q->updateViews();
         initialized = true;
