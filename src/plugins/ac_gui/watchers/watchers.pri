@@ -1,5 +1,6 @@
 
 SOURCE_FILES = \
+    database_graphicsviewmanagerupdater \
     note_graphicsupdater \
     object_graphicsupdater \
     object_selectionupdater \

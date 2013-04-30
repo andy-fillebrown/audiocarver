@@ -15,30 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_INTERFACES_H
-#define MI_CORE_INTERFACES_H
+#ifndef AC_GUI_DATABASE_GRAPHICSVIEWMANAGERUPDATER_H
+#define AC_GUI_DATABASE_GRAPHICSVIEWMANAGERUPDATER_H
 
-namespace I {
+#include "mi_core_base_databasewatcher.h"
 
-enum MiCoreInterface {
-    IAggregate,
-    IComponent,
-    ICopyFiler,
-    IDatabase,
-    IDatabaseObjectFactory,
-    IDatabaseWatcher,
-    IFileFiler,
-    IFilerFactory,
-    IModel,
-    IModelItem,
-    IModelItemWatcher,
-    IModelListWatcher,
-    IModelReader,
-    IModelWriter,
-    IReader,
-    ISession,
-    IWriter,
-    MiCoreInterfaceCount
+namespace Database {
+
+class GraphicsViewManagerUpdater : public Base::DatabaseWatcher
+{
+public:
+    GraphicsViewManagerUpdater(IAggregate *aggregate)
+        :   Base::DatabaseWatcher(aggregate)
+    {}
+
+protected:
+    void beginRead(const IDatabase *database);
+    void endRead(const IDatabase *database);
+    void beginWrite(const IDatabase *database);
 };
 
 }

@@ -358,16 +358,15 @@ void GraphicsViewManager::setScale(qreal scale, int role)
 
 void GraphicsViewManager::updateDatabase()
 {
-//    IModel *model = IModel::instance();
-//    const QModelIndex viewSettings = model->itemIndex(ViewSettingsItem);
-//    d->updatingDatabase = true;
-//    model->setData(viewSettings, d->timePos, TimePositionRole);
-//    model->setData(viewSettings, d->pitchPos, PitchPositionRole);
-//    model->setData(viewSettings, d->controlPos, ControlPositionRole);
-//    model->setData(viewSettings, d->timeScale, TimeScaleRole);
-//    model->setData(viewSettings, d->pitchScale, PitchScaleRole);
-//    model->setData(viewSettings, d->controlScale, ControlScaleRole);
-//    d->updatingDatabase = false;
+    d->updatingDatabase = true;
+    IModelItem *view_settings = IDatabase::instance()->rootItem()->findItem(ViewSettingsItem);
+    view_settings->set(TimePositionRole, d->timePos);
+    view_settings->set(PitchPositionRole, d->pitchPos);
+    view_settings->set(ControlPositionRole, d->controlPos);
+    view_settings->set(TimeScaleRole, d->timeScale);
+    view_settings->set(PitchScaleRole, d->pitchScale);
+    view_settings->set(ControlScaleRole, d->controlScale);
+    d->updatingDatabase = false;
 }
 
 void GraphicsViewManager::clearPickedGrips()

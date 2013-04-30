@@ -4,6 +4,7 @@ SOURCE_FILES = \
     icomponent \
     idatabase \
     idatabaseobjectfactory \
+    idatabasewatcher \
     ifilefiler \
     ifilerfactory \
     imodel \

@@ -17,6 +17,7 @@
 
 #include "ac_gui_plugin.h"
 #include "ac_gui_databaseobjectfactory.h"
+#include "ac_gui_database_graphicsviewmanagerupdater.h"
 #include "ac_gui_editor.h"
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindowextension.h"
@@ -26,6 +27,7 @@
 #include <ac_core_namespace.h>
 #include <mainwindow.h>
 #include <icore.h>
+#include <isession.h>
 #include <QtPlugin>
 
 #ifdef QT_DEBUG
@@ -43,6 +45,7 @@ Plugin::Plugin()
     new ::Gui::DatabaseObjectFactory;
     new Core::Database;
     new Editor;
+    new Database::GraphicsViewManagerUpdater(ISession::instance());
     addAutoReleasedObject(new MainWindowExtension);
 }
 

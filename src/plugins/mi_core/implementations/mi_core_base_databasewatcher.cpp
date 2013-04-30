@@ -15,32 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_INTERFACES_H
-#define MI_CORE_INTERFACES_H
+#include "mi_core_base_databasewatcher.h"
+#include <iaggregate.h>
 
-namespace I {
+namespace Base {
 
-enum MiCoreInterface {
-    IAggregate,
-    IComponent,
-    ICopyFiler,
-    IDatabase,
-    IDatabaseObjectFactory,
-    IDatabaseWatcher,
-    IFileFiler,
-    IFilerFactory,
-    IModel,
-    IModelItem,
-    IModelItemWatcher,
-    IModelListWatcher,
-    IModelReader,
-    IModelWriter,
-    IReader,
-    ISession,
-    IWriter,
-    MiCoreInterfaceCount
-};
-
+DatabaseWatcher::DatabaseWatcher(IAggregate *aggregate)
+{
+    aggregate->appendComponent(this);
 }
 
-#endif
+void *DatabaseWatcher::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
+
+}

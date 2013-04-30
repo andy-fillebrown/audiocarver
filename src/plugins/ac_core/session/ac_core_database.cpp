@@ -17,6 +17,8 @@
 
 #include "ac_core_database.h"
 #include "ac_core_namespace.h"
+#include <mi_core_scopeddatabaseread.h>
+#include <mi_core_scopeddatabasewrite.h>
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
 #include <ifilefiler.h>
@@ -76,6 +78,7 @@ void Database::reset()
 
 void Database::read(const QString &fileName)
 {
+    ScopedDatabaseRead scoped_read(this);
     reset();
     IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
@@ -86,6 +89,7 @@ void Database::read(const QString &fileName)
 
 void Database::write(const QString &fileName)
 {
+    ScopedDatabaseWrite scoped_write(this);
     IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
     query<IFileFiler>(filer)->setFileName(fileName);
     query<IWriter>(filer)->write(rootItem());

@@ -15,32 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_INTERFACES_H
-#define MI_CORE_INTERFACES_H
+#ifndef IDATABASEWATCHER_H
+#define IDATABASEWATCHER_H
 
-namespace I {
+#include <icomponent.h>
 
-enum MiCoreInterface {
-    IAggregate,
-    IComponent,
-    ICopyFiler,
-    IDatabase,
-    IDatabaseObjectFactory,
-    IDatabaseWatcher,
-    IFileFiler,
-    IFilerFactory,
-    IModel,
-    IModelItem,
-    IModelItemWatcher,
-    IModelListWatcher,
-    IModelReader,
-    IModelWriter,
-    IReader,
-    ISession,
-    IWriter,
-    MiCoreInterfaceCount
+class IDatabase;
+
+class IDatabaseWatcher : public IComponent
+{
+public:
+    enum { InterfaceType = I::IDatabaseWatcher };
+
+    virtual void beginRead(const IDatabase *database) = 0;
+    virtual void endRead(const IDatabase *database) = 0;
+    virtual void beginWrite(const IDatabase *database) = 0;
+    virtual void endWrite(const IDatabase *database) = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

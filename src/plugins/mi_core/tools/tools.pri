@@ -1,6 +1,8 @@
 
 SOURCE_FILES = \
     math \
+    scopeddatabaseread \
+    scopeddatabasewrite \
     scopeddatachange \
     scopediteminsert \
     scopeditemremove \

@@ -15,30 +15,42 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_INTERFACES_H
-#define MI_CORE_INTERFACES_H
+#ifndef MI_CORE_BASE_DATABASEWATCHER_H
+#define MI_CORE_BASE_DATABASEWATCHER_H
 
-namespace I {
+#include <idatabasewatcher.h>
+#include "mi_core_global.h"
 
-enum MiCoreInterface {
-    IAggregate,
-    IComponent,
-    ICopyFiler,
-    IDatabase,
-    IDatabaseObjectFactory,
-    IDatabaseWatcher,
-    IFileFiler,
-    IFilerFactory,
-    IModel,
-    IModelItem,
-    IModelItemWatcher,
-    IModelListWatcher,
-    IModelReader,
-    IModelWriter,
-    IReader,
-    ISession,
-    IWriter,
-    MiCoreInterfaceCount
+class IAggregate;
+
+namespace Base {
+
+class MI_CORE_EXPORT DatabaseWatcher : public IDatabaseWatcher
+{
+    IAggregate *_aggregate;
+
+protected:
+    DatabaseWatcher(IAggregate *aggregate);
+
+    void *queryInterface(int interfaceType) const;
+
+    void initialize()
+    {}
+
+    void reset()
+    {}
+
+    void beginRead(const IDatabase *database)
+    {}
+
+    void endRead(const IDatabase *database)
+    {}
+
+    void beginWrite(const IDatabase *database)
+    {}
+
+    void endWrite(const IDatabase *database)
+    {}
 };
 
 }

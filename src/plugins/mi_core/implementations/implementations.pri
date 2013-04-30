@@ -3,6 +3,7 @@ SOURCE_FILES = \
     aggregate \
     database \
     databaseobjectfactory \
+    databasewatcher \
     filerfactory \
     model \
     modelitem \
