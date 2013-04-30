@@ -179,10 +179,10 @@ bool GripSelectionModel::setData(const QModelIndex &index, const QVariant &value
 
 void GripSelectionModel::delayedUpdate()
 {
-    if (d->grips.count() == 1)
-        emit gripsSelected();
-    else if (d->grips.isEmpty())
+    if (d->grips.isEmpty())
         emit gripsDeselected();
+    else
+        emit gripsSelected();
     emit layoutChanged();
 }
 
