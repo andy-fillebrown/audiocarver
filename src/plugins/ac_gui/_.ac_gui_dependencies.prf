@@ -13,7 +13,7 @@ DIRS = \
     models \
     session \
     tools \
-#    util \
+    undo \
     watchers \
 
 for(dir, DIRS) {

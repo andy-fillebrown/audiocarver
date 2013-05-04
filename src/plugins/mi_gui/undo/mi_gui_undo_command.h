@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2013 Andrew Fillebrown.
+** Copyright (c) 2012 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,38 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#ifndef MI_GUI_UNDO_COMMAND_H
+#define MI_GUI_UNDO_COMMAND_H
 
-#include <mi_gui_base_editor.h>
+#include <QUndoCommand>
+#include "mi_gui_global.h"
 
-class IAggregate;
+namespace Undo {
 
-namespace Gui {
-
-class Editor : public Base::Editor
+class MI_GUI_EXPORT Command : public QUndoCommand
 {
-    IAggregate *_objectSS;
-    IAggregate *_trackSS;
-    IAggregate *_noteSS;
-    int _undoing : 1;
-
-public:
-    Editor();
-    ~Editor();
+    int _enabled : 1;
 
 protected:
-    ISelectionSet *currentSelection(int itemType) const;
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
+    Command(QUndoCommand *parent)
+        :   QUndoCommand(parent)
+        ,   _enabled(false)
+    {}
 
-    bool isUndoing() const
+    bool isEnabled() const
     {
-        return _undoing;
+        return _enabled;
+    }
+
+    void enable()
+    {
+        _enabled = true;
     }
 };
 

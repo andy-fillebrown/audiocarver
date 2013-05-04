@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2013 Andrew Fillebrown.
+** Copyright (c) 2012 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,41 +15,10 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#include "mi_gui_undo_modelitemcommand.h"
 
-#include <mi_gui_base_editor.h>
+namespace Undo {
 
-class IAggregate;
 
-namespace Gui {
-
-class Editor : public Base::Editor
-{
-    IAggregate *_objectSS;
-    IAggregate *_trackSS;
-    IAggregate *_noteSS;
-    int _undoing : 1;
-
-public:
-    Editor();
-    ~Editor();
-
-protected:
-    ISelectionSet *currentSelection(int itemType) const;
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
-
-    bool isUndoing() const
-    {
-        return _undoing;
-    }
-};
 
 }
-
-#endif

@@ -19,6 +19,7 @@
 #define AC_GUI_NAMESPACE_H
 
 #include <ac_core_namespace.h>
+#include <mi_gui_namespace.h>
 
 namespace Ac {
 
@@ -62,6 +63,10 @@ enum HighlightType {
 enum DragType {
     Dragging,
     NotDragging
+};
+
+enum CommandId {
+    ViewSettingsCommandId = Mi::CommandIdCount
 };
 
 }

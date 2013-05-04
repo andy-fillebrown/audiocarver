@@ -30,6 +30,7 @@ using namespace Mi;
 namespace Gui {
 
 Editor::Editor()
+    :   _undoing(false)
 {
     _objectSS = new Base::Aggregate;
     new SelectionSet(_objectSS);
@@ -63,12 +64,16 @@ ISelectionSet *Editor::currentSelection(int itemType) const
 
 void Editor::undo()
 {
+    _undoing = true;
     qDebug() << Q_FUNC_INFO;
+    _undoing = false;
 }
 
 void Editor::redo()
 {
+    _undoing = true;
     qDebug() << Q_FUNC_INFO;
+    _undoing = false;
 }
 
 void Editor::cut()

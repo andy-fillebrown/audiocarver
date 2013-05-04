@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2013 Andrew Fillebrown.
+** Copyright (c) 2012 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,39 +15,38 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#ifndef AC_GUI_UNDO_VIEWSETTINGSCOMMAND_H
+#define AC_GUI_UNDO_VIEWSETTINGSCOMMAND_H
 
-#include <mi_gui_base_editor.h>
+#include <mi_gui_undo_command.h>
 
-class IAggregate;
+namespace Undo {
 
-namespace Gui {
-
-class Editor : public Base::Editor
+class ViewSettingsCommand : public Command
 {
-    IAggregate *_objectSS;
-    IAggregate *_trackSS;
-    IAggregate *_noteSS;
-    int _undoing : 1;
-
-public:
-    Editor();
-    ~Editor();
+    qreal _oldTimePos;
+    qreal _oldPitchPos;
+    qreal _oldControlPos;
+    qreal _oldTimeScale;
+    qreal _oldPitchScale;
+    qreal _oldControlScale;
+    qreal _newTimePos;
+    qreal _newPitchPos;
+    qreal _newControlPos;
+    qreal _newTimeScale;
+    qreal _newPitchScale;
+    qreal _newControlScale;
 
 protected:
-    ISelectionSet *currentSelection(int itemType) const;
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
+    ViewSettingsCommand(QUndoCommand *parent = 0);
 
-    bool isUndoing() const
-    {
-        return _undoing;
-    }
+    int id() const;
+    bool mergeWith(const QUndoCommand *other);
+    void redo();
+    void undo();
+
+private:
+    void updateNewData();
 };
 
 }

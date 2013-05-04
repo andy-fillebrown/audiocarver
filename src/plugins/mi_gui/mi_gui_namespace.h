@@ -15,39 +15,16 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_EDITOR_H
-#define AC_GUI_EDITOR_H
+#ifndef MI_GUI_NAMESPACE_H
+#define MI_GUI_NAMESPACE_H
 
-#include <mi_gui_base_editor.h>
+namespace Mi {
 
-class IAggregate;
-
-namespace Gui {
-
-class Editor : public Base::Editor
-{
-    IAggregate *_objectSS;
-    IAggregate *_trackSS;
-    IAggregate *_noteSS;
-    int _undoing : 1;
-
-public:
-    Editor();
-    ~Editor();
-
-protected:
-    ISelectionSet *currentSelection(int itemType) const;
-    void undo();
-    void redo();
-    void cut();
-    void copy() const;
-    void paste();
-    void selectAll();
-
-    bool isUndoing() const
-    {
-        return _undoing;
-    }
+enum CommandId {
+    DataChangeCommandId = 1,
+    InsertCommandId,
+    RemoveCommandId,
+    CommandIdCount
 };
 
 }
