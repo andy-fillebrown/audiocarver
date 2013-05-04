@@ -185,7 +185,7 @@ public:
 //        }
     }
 
-    void snapX(QPointF &pos, int role, bool snapToGrid)
+    void snapX(int role, QPointF &pos, bool snapToGrid)
     {
         qreal toX = -1.0f;
         IModelItem *score = IDatabase::instance()->rootItem();
@@ -201,7 +201,7 @@ public:
             pos.setX(roundToNearest(pos.x(), toX));
     }
 
-    void snapY(QPointF &pos, int role, bool snapToGrid)
+    void snapY(int role, QPointF &pos, bool snapToGrid)
     {
         qreal toY = -1.0f;
         IModelItem *score = IDatabase::instance()->rootItem();
@@ -378,11 +378,11 @@ QPointF GraphicsViewManager::snappedScenePos(int sceneType, const QPointF &pos) 
         return pos;
     bool snap_to_grid = get<qreal>(grid_settings, GridSnapEnabledRole);
     QPointF snapped_pos = pos;
-    d->snapX(snapped_pos, TimePositionRole, snap_to_grid);
+    d->snapX(TimePositionRole, snapped_pos, snap_to_grid);
     if (PitchScene == sceneType)
-        d->snapY(snapped_pos, PitchPositionRole, snap_to_grid);
+        d->snapY(PitchPositionRole, snapped_pos, snap_to_grid);
     else if (ControlScene == sceneType)
-        d->snapY(snapped_pos, ControlPositionRole, snap_to_grid);
+        d->snapY(ControlPositionRole, snapped_pos, snap_to_grid);
     return snapped_pos;
 }
 
