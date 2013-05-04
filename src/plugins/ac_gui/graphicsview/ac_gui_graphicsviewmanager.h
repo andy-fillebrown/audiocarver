@@ -44,9 +44,9 @@ public:
     QGraphicsView *view(int type) const;
     qreal scoreLength() const;
     qreal position(int role) const;
-    void setPosition(qreal position, int role);
+    void setPosition(int role, qreal position);
     qreal scale(int role) const;
-    void setScale(qreal scale, int role);
+    void setScale(int role, qreal scale);
     void updateDatabase();
     void clearPickedGrips();
     QPointF snappedScenePos(int sceneType, const QPointF &pos) const;

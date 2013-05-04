@@ -278,7 +278,7 @@ qreal GraphicsViewManager::position(int role) const
     }
 }
 
-void GraphicsViewManager::setPosition(qreal position, int role)
+void GraphicsViewManager::setPosition(int role, qreal position)
 {
     switch (role) {
     case TimePositionRole:
@@ -323,7 +323,7 @@ qreal GraphicsViewManager::scale(int role) const
     }
 }
 
-void GraphicsViewManager::setScale(qreal scale, int role)
+void GraphicsViewManager::setScale(int role, qreal scale)
 {
     if (scale < VIEWSCALE_MIN)
         scale = VIEWSCALE_MIN;
