@@ -386,7 +386,7 @@ QPointF GraphicsViewManager::snappedScenePos(int sceneType, const QPointF &pos) 
     return snapped_pos;
 }
 
-void GraphicsViewManager::updateSelection(const QList<IGraphicsItem *> &ss)
+void GraphicsViewManager::updateSelection(const QList<IGraphicsItem*> &ss)
 {
     d->pitchView->updateSelection(ss);
     d->controlView->updateSelection(ss);

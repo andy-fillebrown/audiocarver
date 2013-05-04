@@ -6,7 +6,6 @@ DIRS = \
     implementations \
     interfaces \
     itemviews \
-#    models \
     tools \
     undo \
     widgets \

@@ -49,7 +49,6 @@ public:
     void cancelPointInsertion();
     bool pointsAreSelected() const;
     void clearPickedGrips();
-
     void updateSelection(const QList<IGraphicsItem*> &ss);
 
 public slots:
