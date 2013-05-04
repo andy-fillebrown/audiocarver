@@ -150,12 +150,12 @@ public:
             updateViewsTimer->start();
         }
         IModelItem *view_settings = score->findItem(ViewSettingsItem);
-        q->setPosition(get<qreal>(view_settings, TimePositionRole), TimePositionRole);
-        q->setPosition(get<qreal>(view_settings, PitchPositionRole), PitchPositionRole);
-        q->setPosition(get<qreal>(view_settings, ControlPositionRole), ControlPositionRole);
-        q->setScale(get<qreal>(view_settings, TimeScaleRole), TimeScaleRole);
-        q->setScale(get<qreal>(view_settings, PitchScaleRole), PitchScaleRole);
-        q->setScale(get<qreal>(view_settings, ControlScaleRole), ControlScaleRole);
+        q->setPosition(TimePositionRole, get<qreal>(view_settings, TimePositionRole));
+        q->setPosition(PitchPositionRole, get<qreal>(view_settings, PitchPositionRole));
+        q->setPosition(ControlPositionRole, get<qreal>(view_settings, ControlPositionRole));
+        q->setScale(TimeScaleRole, get<qreal>(view_settings, TimeScaleRole));
+        q->setScale(PitchScaleRole, get<qreal>(view_settings, PitchScaleRole));
+        q->setScale(ControlScaleRole, get<qreal>(view_settings, ControlScaleRole));
     }
 
     void emitAllViewSettingsChanged()

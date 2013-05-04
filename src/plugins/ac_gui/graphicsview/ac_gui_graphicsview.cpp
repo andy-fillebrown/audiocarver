@@ -125,8 +125,8 @@ public:
     {
         const QPointF center = startPosDC + QTransform::fromScale(q->sceneWidth() / q->width(), -q->sceneHeight() / q->height()).map(centerOffsetDC);
         GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->setPosition(center.x(), q->horizontalPositionRole());
-        vm->setPosition(center.y(), q->verticalPositionRole());
+        vm->setPosition(q->horizontalPositionRole(), center.x());
+        vm->setPosition(q->verticalPositionRole(), center.y());
     }
 
     QRect zoomGlyphLineRect() const
@@ -165,12 +165,12 @@ public:
         const int x = offset.x();
         if (x) {
             qreal scale = qreal(1.0f) + (qreal(qAbs(x)) / qreal(10.0f));
-            GraphicsViewManager::instance()->setScale((x < 0 ? qreal(1.0f) / scale : scale) * zoomStartScaleX, q->horizontalScaleRole());
+            GraphicsViewManager::instance()->setScale(q->horizontalScaleRole(), (x < 0 ? qreal(1.0f) / scale : scale) * zoomStartScaleX);
         }
         const int y = offset.y();
         if (y) {
             const qreal scale = qreal(1.0f) + qreal(qAbs(y) / qreal(10.0f));
-            GraphicsViewManager::instance()->setScale((0 < y ? qreal(1.0f) / scale : scale) * zoomStartScaleY, q->verticalScaleRole());
+            GraphicsViewManager::instance()->setScale(q->verticalScaleRole(), (0 < y ? qreal(1.0f) / scale : scale) * zoomStartScaleY);
         }
         recenter(zoomStartPosDC, zoomCenterOffsetDC);
         if (dirty)
@@ -207,8 +207,8 @@ public:
         const QPointF offset = q->sceneScale().inverted().map(QPointF(pos - dragStartPos));
         const QPointF center = panStartCenter - offset;
         GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->setPosition(center.x(), q->horizontalPositionRole());
-        vm->setPosition(center.y(), q->verticalPositionRole());
+        vm->setPosition(q->horizontalPositionRole(), center.x());
+        vm->setPosition(q->verticalPositionRole(), center.y());
         vm->updateViews();
     }
 
@@ -1025,8 +1025,8 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     GraphicsViewManager *vm = GraphicsViewManager::instance();
     const int horizontal_scale_role = horizontalScaleRole();
     const int vertical_scale_role = verticalScaleRole();
-    vm->setScale(scaleAmount * vm->scale(horizontal_scale_role), horizontal_scale_role);
-    vm->setScale(scaleAmount * vm->scale(vertical_scale_role), vertical_scale_role);
+    vm->setScale(horizontal_scale_role, scaleAmount * vm->scale(horizontal_scale_role));
+    vm->setScale(vertical_scale_role, scaleAmount * vm->scale(vertical_scale_role));
     d->recenter(posDC, offsetDC);
     vm->updateViews();
     d->hover();
