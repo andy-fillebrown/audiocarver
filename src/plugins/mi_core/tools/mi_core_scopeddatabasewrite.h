@@ -25,11 +25,11 @@
 
 class ScopedDatabaseWrite
 {
-    const IDatabase *_database;
+    IDatabase *_database;
     QList<IDatabaseWatcher*> _watchers;
 
 public:
-    ScopedDatabaseWrite(const IDatabase *database)
+    ScopedDatabaseWrite(IDatabase *database)
         :   _database(database)
     {
         if (!_database)

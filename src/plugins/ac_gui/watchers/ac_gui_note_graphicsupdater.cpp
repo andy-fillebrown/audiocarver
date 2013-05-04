@@ -27,7 +27,7 @@ using namespace Mi;
 
 namespace Note {
 
-void GraphicsUpdater::endChangeParent(const IModelItem *child)
+void GraphicsUpdater::endChangeParent(IModelItem *child)
 {
     IGraphicsItem *child_graphics = query<IGraphicsItem>(child);
     IModelItem *track_item = query<IModelItem>(child_graphics->parent());

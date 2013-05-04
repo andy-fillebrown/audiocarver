@@ -23,7 +23,7 @@
 
 namespace Track {
 
-void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
+void SelectionUpdater::endChangeSelection(ISelectionSet *selectionSet)
 {
     const QList<IGraphicsItem*> &items = selectionSet->items();
     if (items.isEmpty()) {

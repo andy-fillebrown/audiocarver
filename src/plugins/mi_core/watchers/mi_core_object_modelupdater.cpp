@@ -20,12 +20,12 @@
 
 namespace Object {
 
-void ModelUpdater::beginChangeData(const IModelItem *item, int role)
+void ModelUpdater::beginChangeData(IModelItem *item, int role)
 {
     IModel::instance()->beginChangeData(item, role);
 }
 
-void ModelUpdater::endChangeData(const IModelItem *item, int role)
+void ModelUpdater::endChangeData(IModelItem *item, int role)
 {
     IModel::instance()->endChangeData(item, role);
 }

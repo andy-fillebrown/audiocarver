@@ -90,7 +90,7 @@ SelectedItemsPropertyModel::SelectedItemsPropertyModel(QObject *parent)
     ,   d(new SelectedItemsPropertyModelPrivate(this))
 {
     ::instance = this;
-    connect(IModel::instance(), SIGNAL(dataChanged(const IModelItem*,int)), SLOT(update()));
+    connect(IModel::instance(), SIGNAL(dataChanged(IModelItem*,int)), SLOT(update()));
     update();
 }
 

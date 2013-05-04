@@ -27,10 +27,10 @@ class IModelItemWatcher : public IComponent
 public:
     enum { InterfaceType = I::IModelItemWatcher };
 
-    virtual void beginChangeParent(const IModelItem *item) = 0;
-    virtual void endChangeParent(const IModelItem *item) = 0;
-    virtual void beginChangeData(const IModelItem *item, int role) = 0;
-    virtual void endChangeData(const IModelItem *item, int role) = 0;
+    virtual void beginChangeParent(IModelItem *item) = 0;
+    virtual void endChangeParent(IModelItem *item) = 0;
+    virtual void beginChangeData(IModelItem *item, int role) = 0;
+    virtual void endChangeData(IModelItem *item, int role) = 0;
 
     int interfaceType() const
     {

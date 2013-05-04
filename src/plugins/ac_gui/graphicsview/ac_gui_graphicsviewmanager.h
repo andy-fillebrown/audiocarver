@@ -59,7 +59,7 @@ public slots:
     void databaseAboutToBeWritten();
     void disableUpdates();
     void enableUpdates();
-    void dataChanged(const IModelItem *item);
+    void dataChanged(IModelItem *item);
     void modelReset();
     void startInsertingPoints();
     void finishInsertingPoints();

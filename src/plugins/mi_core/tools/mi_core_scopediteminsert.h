@@ -25,12 +25,12 @@
 
 class ScopedItemInsert
 {
-    const IModelItem *_list;
+    IModelItem *_list;
     const int _index;
     QList<IModelListWatcher*> _watchers;
 
 public:
-    ScopedItemInsert(const IModelItem *list, int index)
+    ScopedItemInsert(IModelItem *list, int index)
         :   _list(list)
         ,   _index(index)
     {

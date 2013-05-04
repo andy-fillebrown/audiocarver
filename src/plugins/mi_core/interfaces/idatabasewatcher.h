@@ -27,10 +27,10 @@ class IDatabaseWatcher : public IComponent
 public:
     enum { InterfaceType = I::IDatabaseWatcher };
 
-    virtual void beginRead(const IDatabase *database) = 0;
-    virtual void endRead(const IDatabase *database) = 0;
-    virtual void beginWrite(const IDatabase *database) = 0;
-    virtual void endWrite(const IDatabase *database) = 0;
+    virtual void beginRead(IDatabase *database) = 0;
+    virtual void endRead(IDatabase *database) = 0;
+    virtual void beginWrite(IDatabase *database) = 0;
+    virtual void endWrite(IDatabase *database) = 0;
 
     int interfaceType() const
     {

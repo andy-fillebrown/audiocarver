@@ -41,16 +41,16 @@ protected:
     void reset()
     {}
 
-    void beginChangeParent(const IModelItem *item)
+    void beginChangeParent(IModelItem *item)
     {}
 
-    void endChangeParent(const IModelItem *item)
+    void endChangeParent(IModelItem *item)
     {}
 
-    void beginChangeData(const IModelItem *item, int role)
+    void beginChangeData(IModelItem *item, int role)
     {}
 
-    void endChangeData(const IModelItem *item, int role)
+    void endChangeData(IModelItem *item, int role)
     {}
 };
 

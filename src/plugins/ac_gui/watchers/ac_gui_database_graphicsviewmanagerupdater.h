@@ -30,9 +30,9 @@ public:
     {}
 
 protected:
-    void beginRead(const IDatabase *database);
-    void endRead(const IDatabase *database);
-    void beginWrite(const IDatabase *database);
+    void beginRead(IDatabase *database);
+    void endRead(IDatabase *database);
+    void beginWrite(IDatabase *database);
 };
 
 }

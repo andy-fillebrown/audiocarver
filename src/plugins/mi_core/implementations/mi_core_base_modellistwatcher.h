@@ -41,16 +41,16 @@ protected:
     void reset()
     {}
 
-    void beginInsertItem(const IModelItem *list, int index)
+    void beginInsertItem(IModelItem *list, int index)
     {}
 
-    void endInsertItem(const IModelItem *list, int index)
+    void endInsertItem(IModelItem *list, int index)
     {}
 
-    void beginRemoveItem(const IModelItem *list, int index)
+    void beginRemoveItem(IModelItem *list, int index)
     {}
 
-    void endRemoveItem(const IModelItem *list, int index)
+    void endRemoveItem(IModelItem *list, int index)
     {}
 };
 

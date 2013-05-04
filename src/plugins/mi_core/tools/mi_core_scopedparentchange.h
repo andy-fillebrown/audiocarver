@@ -26,11 +26,11 @@
 
 class ScopedParentChange
 {
-    const IModelItem *_item;
+    IModelItem *_item;
     QList<IModelItemWatcher*> _watchers;
 
 public:
-    ScopedParentChange(const IModelItem *item)
+    ScopedParentChange(IModelItem *item)
         :   _item(item)
     {
         if (!_item)

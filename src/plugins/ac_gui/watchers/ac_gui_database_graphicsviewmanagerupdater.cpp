@@ -20,17 +20,17 @@
 
 namespace Database {
 
-void GraphicsViewManagerUpdater::beginRead(const IDatabase *database)
+void GraphicsViewManagerUpdater::beginRead(IDatabase *database)
 {
     GraphicsViewManager::instance()->databaseAboutToBeRead();
 }
 
-void GraphicsViewManagerUpdater::endRead(const IDatabase *database)
+void GraphicsViewManagerUpdater::endRead(IDatabase *database)
 {
     GraphicsViewManager::instance()->databaseRead();
 }
 
-void GraphicsViewManagerUpdater::beginWrite(const IDatabase *database)
+void GraphicsViewManagerUpdater::beginWrite(IDatabase *database)
 {
     GraphicsViewManager::instance()->databaseAboutToBeWritten();
 }

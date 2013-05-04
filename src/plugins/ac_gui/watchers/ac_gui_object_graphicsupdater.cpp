@@ -44,7 +44,7 @@ void GraphicsUpdater::initialize()
     endChangeParent(query<IModelItem>(this));
 }
 
-void GraphicsUpdater::endChangeParent(const IModelItem *child)
+void GraphicsUpdater::endChangeParent(IModelItem *child)
 {
     if (!child)
         return;
@@ -65,7 +65,7 @@ void GraphicsUpdater::endChangeParent(const IModelItem *child)
         updateParentItem(child_graphics->findNode(), parent_graphics, child_graphics->sceneType(), child_graphics->transformType());
 }
 
-void GraphicsUpdater::endChangeData(const IModelItem *item, int role)
+void GraphicsUpdater::endChangeData(IModelItem *item, int role)
 {
     IGraphicsItem *graphics = query<IGraphicsItem>(item);
     if (graphics)

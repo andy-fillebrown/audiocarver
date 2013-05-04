@@ -35,13 +35,13 @@ public:
     static IModel *instance();
 
     virtual IModelItem *itemFromIndex(const QModelIndex &index) const = 0;
-    virtual QModelIndex indexFromItem(const IModelItem *item) const = 0;
-    virtual void beginChangeData(const IModelItem *item, int role) = 0;
-    virtual void endChangeData(const IModelItem *item, int role) = 0;
-    virtual void beginInsertItem(const IModelItem* list, int index) = 0;
-    virtual void endInsertItem(const IModelItem *list, int index) = 0;
-    virtual void beginRemoveItem(const IModelItem *list, int index) = 0;
-    virtual void endRemoveItem(const IModelItem *list, int index) = 0;
+    virtual QModelIndex indexFromItem(IModelItem *item) const = 0;
+    virtual void beginChangeData(IModelItem *item, int role) = 0;
+    virtual void endChangeData(IModelItem *item, int role) = 0;
+    virtual void beginInsertItem(IModelItem* list, int index) = 0;
+    virtual void endInsertItem(IModelItem *list, int index) = 0;
+    virtual void beginRemoveItem(IModelItem *list, int index) = 0;
+    virtual void endRemoveItem(IModelItem *list, int index) = 0;
 
     virtual void reset()
     {
@@ -61,12 +61,12 @@ public:
     }
 
 signals:
-    void dataAboutToBeChanged(const IModelItem *item, int role);
-    void dataChanged(const IModelItem *item, int role);
-    void itemAboutToBeInserted(const IModelItem *list, int index);
-    void itemInserted(const IModelItem *list, int index);
-    void itemAboutToBeRemoved(const IModelItem *list, int index);
-    void itemRemoved(const IModelItem *list, int index);
+    void dataAboutToBeChanged(IModelItem *item, int role);
+    void dataChanged(IModelItem *item, int role);
+    void itemAboutToBeInserted(IModelItem *list, int index);
+    void itemInserted(IModelItem *list, int index);
+    void itemAboutToBeRemoved(IModelItem *list, int index);
+    void itemRemoved(IModelItem *list, int index);
 };
 
 #endif

@@ -31,8 +31,8 @@ public:
 
 protected:
     void initialize();
-    void endChangeParent(const IModelItem *child);
-    void endChangeData(const IModelItem *item, int role);
+    void endChangeParent(IModelItem *child);
+    void endChangeData(IModelItem *item, int role);
 };
 
 }

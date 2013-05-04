@@ -25,11 +25,11 @@
 
 class ScopedDatabaseRead
 {
-    const IDatabase *_database;
+    IDatabase *_database;
     QList<IDatabaseWatcher*> _watchers;
 
 public:
-    ScopedDatabaseRead(const IDatabase *database)
+    ScopedDatabaseRead(IDatabase *database)
         :   _database(database)
     {
         if (!_database)

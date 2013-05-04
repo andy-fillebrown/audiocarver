@@ -24,7 +24,7 @@
 
 using namespace Ac;
 
-static void updateZValues(const IModelItem *list)
+static void updateZValues(IModelItem *list)
 {
     const int child_count = list->itemCount();
     for (int i = 0;  i < child_count;  ++i) {
@@ -49,7 +49,7 @@ void *GraphicsUpdater::queryInterface(int interfaceType) const
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void GraphicsUpdater::endInsertItem(const IModelItem *list, int index)
+void GraphicsUpdater::endInsertItem(IModelItem *list, int index)
 {
     updateZValues(list);
 }

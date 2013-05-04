@@ -28,7 +28,7 @@ using namespace Ac;
 
 namespace Object {
 
-void SelectionUpdater::endChangeSelection(const ISelectionSet *selectionSet)
+void SelectionUpdater::endChangeSelection(ISelectionSet *selectionSet)
 {
     const QList<IGraphicsItem*> &items = selectionSet->items();
     GraphicsViewManager::instance()->updateSelection(items);

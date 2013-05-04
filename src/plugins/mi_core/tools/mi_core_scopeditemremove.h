@@ -25,12 +25,12 @@
 
 class ScopedItemRemove
 {
-    const IModelItem *_list;
+    IModelItem *_list;
     const int _index;
     QList<IModelListWatcher*> _watchers;
 
 public:
-    ScopedItemRemove(const IModelItem *list, int index)
+    ScopedItemRemove(IModelItem *list, int index)
         :   _list(list)
         ,   _index(index)
     {

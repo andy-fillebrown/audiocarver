@@ -20,22 +20,22 @@
 
 namespace ObjectList {
 
-void ModelUpdater::beginInsertItem(const IModelItem *list, int index)
+void ModelUpdater::beginInsertItem(IModelItem *list, int index)
 {
     IModel::instance()->beginInsertItem(list, index);
 }
 
-void ModelUpdater::endInsertItem(const IModelItem *list, int index)
+void ModelUpdater::endInsertItem(IModelItem *list, int index)
 {
     IModel::instance()->endInsertItem(list, index);
 }
 
-void ModelUpdater::beginRemoveItem(const IModelItem *list, int index)
+void ModelUpdater::beginRemoveItem(IModelItem *list, int index)
 {
     IModel::instance()->beginRemoveItem(list, index);
 }
 
-void ModelUpdater::endRemoveItem(const IModelItem *list, int index)
+void ModelUpdater::endRemoveItem(IModelItem *list, int index)
 {
     IModel::instance()->endRemoveItem(list, index);
 }

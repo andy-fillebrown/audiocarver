@@ -30,7 +30,7 @@ public:
     {}
 
 protected:
-    void endChangeSelection(const ISelectionSet *selectionSet);
+    void endChangeSelection(ISelectionSet *selectionSet);
 };
 
 }

@@ -30,8 +30,8 @@ public:
     {}
 
 protected:
-    void beginChangeData(const IModelItem *item, int role);
-    void endChangeData(const IModelItem *item, int role);
+    void beginChangeData(IModelItem *item, int role);
+    void endChangeData(IModelItem *item, int role);
 };
 
 }

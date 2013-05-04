@@ -33,14 +33,14 @@ protected:
     void initialize()
     {}
 
-    void beginChangeData(const IModelItem *item, int role);
-    void endChangeData(const IModelItem *item, int role);
-    void beginInsertItem(const IModelItem *list, int index);
-    void endInsertItem(const IModelItem *list, int index);
-    void beginRemoveItem(const IModelItem *list, int index);
-    void endRemoveItem(const IModelItem *list, int index);
+    void beginChangeData(IModelItem *item, int role);
+    void endChangeData(IModelItem *item, int role);
+    void beginInsertItem(IModelItem *list, int index);
+    void endInsertItem(IModelItem *list, int index);
+    void beginRemoveItem(IModelItem *list, int index);
+    void endRemoveItem(IModelItem *list, int index);
     IModelItem *itemFromIndex(const QModelIndex &index) const;
-    QModelIndex indexFromItem(const IModelItem *item) const;
+    QModelIndex indexFromItem(IModelItem *item) const;
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
 
@@ -55,7 +55,7 @@ protected:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 signals:
-    void dataChanged(const IModelItem *item, int role)
+    void dataChanged(IModelItem *item, int role)
     {
         IModel::emit dataChanged(item, role);
     }

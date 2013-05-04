@@ -235,7 +235,7 @@ GraphicsViewManager::GraphicsViewManager(QWidget *widget)
     ::instance = this;
     d->init();
     IModel *model = IModel::instance();
-    connect(model, SIGNAL(dataChanged(const IModelItem*,int)), SLOT(dataChanged(const IModelItem*)));
+    connect(model, SIGNAL(dataChanged(IModelItem*,int)), SLOT(dataChanged(IModelItem*)));
     connect(model, SIGNAL(modelAboutToBeReset()), SLOT(disableUpdates()));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
     connect(d->updateViewsTimer, SIGNAL(timeout()), SLOT(updateViews()));
@@ -437,7 +437,7 @@ void GraphicsViewManager::enableUpdates()
         view(i)->setUpdatesEnabled(true);
 }
 
-void GraphicsViewManager::dataChanged(const IModelItem *item)
+void GraphicsViewManager::dataChanged(IModelItem *item)
 {
     if (!d->updatingDatabase
             && ViewSettingsItem == item->itemType())

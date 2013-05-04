@@ -30,7 +30,7 @@ public:
     {}
 
 protected:
-    void endChangeParent(const IModelItem *child)
+    void endChangeParent(IModelItem *child)
     {}
 };
 

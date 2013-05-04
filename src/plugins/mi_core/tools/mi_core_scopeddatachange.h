@@ -25,12 +25,12 @@
 
 class ScopedDataChange
 {
-    const IModelItem *_item;
+    IModelItem *_item;
     const int _role;
     QList<IModelItemWatcher*> _watchers;
 
 public:
-    ScopedDataChange(const IModelItem *item, int role)
+    ScopedDataChange(IModelItem *item, int role)
         :   _item(item)
         ,   _role(role)
     {

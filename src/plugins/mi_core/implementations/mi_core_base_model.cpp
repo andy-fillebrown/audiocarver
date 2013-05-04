@@ -53,36 +53,36 @@ Model::~Model()
     ::instance = 0;
 }
 
-void Model::beginChangeData(const IModelItem *item, int role)
+void Model::beginChangeData(IModelItem *item, int role)
 {
     emit dataAboutToBeChanged(item, role);
 }
 
-void Model::endChangeData(const IModelItem *item, int role)
+void Model::endChangeData(IModelItem *item, int role)
 {
     emit dataChanged(item, role);
     emit dataChanged(indexFromItem(item));
 }
 
-void Model::beginInsertItem(const IModelItem *list, int index)
+void Model::beginInsertItem(IModelItem *list, int index)
 {
     emit itemAboutToBeInserted(list, index);
     beginInsertRows(indexFromItem(list), index, index);
 }
 
-void Model::endInsertItem(const IModelItem *list, int index)
+void Model::endInsertItem(IModelItem *list, int index)
 {
     emit itemInserted(list, index);
     endInsertRows();
 }
 
-void Model::beginRemoveItem(const IModelItem *list, int index)
+void Model::beginRemoveItem(IModelItem *list, int index)
 {
     emit itemAboutToBeRemoved(list, index);
     beginRemoveRows(indexFromItem(list), index, index);
 }
 
-void Model::endRemoveItem(const IModelItem *list, int index)
+void Model::endRemoveItem(IModelItem *list, int index)
 {
     emit itemRemoved(list, index);
     endRemoveRows();
@@ -98,7 +98,7 @@ IModelItem *Model::itemFromIndex(const QModelIndex &index) const
     return parent_item ? parent_item->itemAt(index.row()) : IDatabase::instance()->rootItem();
 }
 
-QModelIndex Model::indexFromItem(const IModelItem *item) const
+QModelIndex Model::indexFromItem(IModelItem *item) const
 {
     if (!item)
         return QModelIndex();
