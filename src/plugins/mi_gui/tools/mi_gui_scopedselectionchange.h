@@ -25,11 +25,11 @@
 
 class ScopedSelectionChange
 {
-    const ISelectionSet *_ss;
+    ISelectionSet *_ss;
     QList<ISelectionSetWatcher*> _watchers;
 
 public:
-    ScopedSelectionChange(const ISelectionSet *ss)
+    ScopedSelectionChange(ISelectionSet *ss)
         :   _ss(ss)
     {
         if (!_ss)

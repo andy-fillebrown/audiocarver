@@ -28,8 +28,8 @@ class ISelectionSetWatcher : public IComponent
 public:
     enum { InterfaceType = I::ISelectionSetWatcher };
 
-    virtual void beginChangeSelection(const ISelectionSet *selectionSet) = 0;
-    virtual void endChangeSelection(const ISelectionSet *selectionSet) = 0;
+    virtual void beginChangeSelection(ISelectionSet *selectionSet) = 0;
+    virtual void endChangeSelection(ISelectionSet *selectionSet) = 0;
 
     int interfaceType() const
     {

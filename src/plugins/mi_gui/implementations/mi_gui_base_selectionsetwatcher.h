@@ -41,10 +41,10 @@ protected:
     void reset()
     {}
 
-    void beginChangeSelection(const ISelectionSet *selectionSet)
+    void beginChangeSelection(ISelectionSet *selectionSet)
     {}
 
-    void endChangeSelection(const ISelectionSet *selectionSet)
+    void endChangeSelection(ISelectionSet *selectionSet)
     {}
 };
 
