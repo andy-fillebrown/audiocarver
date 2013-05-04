@@ -370,7 +370,7 @@ void GraphicsViewManager::clearPickedGrips()
     d->controlView->clearPickedGrips();
 }
 
-QPointF GraphicsViewManager::snappedScenePos(const QPointF &pos, int sceneType) const
+QPointF GraphicsViewManager::snappedScenePos(int sceneType, const QPointF &pos) const
 {
     IModelItem *grid_settings = IDatabase::instance()->rootItem()->findItem(GridSettingsItem);
     bool is_snapping = get<bool>(grid_settings, SnapEnabledRole);

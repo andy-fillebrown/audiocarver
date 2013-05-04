@@ -49,7 +49,7 @@ public:
     void setScale(qreal scale, int role);
     void updateDatabase();
     void clearPickedGrips();
-    QPointF snappedScenePos(const QPointF &pos, int sceneType) const;
+    QPointF snappedScenePos(int sceneType, const QPointF &pos) const;
     void updateSelection(const QList<IGraphicsItem*> &ss);
 
 public slots:

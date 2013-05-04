@@ -403,7 +403,7 @@ public:
         vm->disableUpdates();
         const QPointF fromScenePos = curGrip->originalPosition();
         const QPointF toScenePos = rootNode->transform().map(q->mapToScene(pos));
-        const QPointF sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()) - fromScenePos;
+        const QPointF sceneOffset = vm->snappedScenePos(q->sceneType(), toScenePos) - fromScenePos;
         foreach (IGraphicsGrip *grip, pickedGrips)
             grip->update(PositionRole, grip->originalPosition() + sceneOffset);
         foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
@@ -582,7 +582,7 @@ public:
 
     void insertPoint(const QPoint &pos)
     {
-        const QPointF scenePos = GraphicsViewManager::instance()->snappedScenePos(q->sceneTransform().inverted().map(QPointF(pos)), q->sceneType());
+        const QPointF scenePos = GraphicsViewManager::instance()->snappedScenePos(q->sceneType(), q->sceneTransform().inverted().map(QPointF(pos)));
         foreach (IGraphicsItem *item, pickedEntities) {
             IGraphicsItem *pitch_item = item->findItem(PitchCurveItem);
             IGraphicsGripList *grips = query<IGraphicsGripList>(pitch_item);

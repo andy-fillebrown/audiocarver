@@ -83,7 +83,7 @@ public:
         pitchGrips = query<IGraphicsGripList>(pitchcurve_graphics);
         pitchDelegate = query<IGraphicsDelegate>(pitchcurve_graphics);
         QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
         points.append(scene_pos);
         addNotePoint(pos);
         noteStarted = true;
@@ -94,7 +94,7 @@ public:
         if (ControlModifier & QApplication::keyboardModifiers())
             points.last().curveType = BezierCurve;
         QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
         points.append(scene_pos);
         pitchGrips->update(PointsRole, QVariant::fromValue(points));
         pitchDelegate->updateGraphics();
@@ -103,7 +103,7 @@ public:
     void moveNotePoint(const QPoint &pos)
     {
         QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
         points[points.count() - 1].pos = scene_pos;
         pitchGrips->update(PointsRole, QVariant::fromValue(points));
         pitchDelegate->updateGraphics();
@@ -153,7 +153,7 @@ public:
     void startMovingNotes(const QPointF &pos)
     {
         origNotePos = q->sceneTransform().inverted().map(QPointF(pos));
-        origNotePos = GraphicsViewManager::instance()->snappedScenePos(origNotePos, PitchScene);
+        origNotePos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, origNotePos);
         foreach (IGraphicsItem *note, noteSS)
             noteGripLists.append(query<IGraphicsGripList>(note->findItem(PitchCurveItem)));
         noteMoveStarted = true;
@@ -167,7 +167,7 @@ public:
     void moveNotes(const QPointF &pos)
     {
         QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(scene_pos, PitchScene);
+        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
         foreach (IGraphicsGripList *griplist, noteGripLists) {
             QList<IGraphicsGrip*> grips = griplist->grips();
             foreach (IGraphicsGrip *grip, grips) {
