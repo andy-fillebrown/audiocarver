@@ -17,9 +17,12 @@
 
 #include "mi_gui_undo_stack.h"
 #include "mi_gui_undo_datachangecommand.h"
+#include "mi_gui_undo_insertcommand.h"
+#include "mi_gui_undo_removecommand.h"
 #include <idatabase.h>
 #include <ieditor.h>
 #include <imodel.h>
+#include <imodelitem.h>
 
 Undo::Stack *instance = 0;
 
@@ -82,61 +85,63 @@ void Stack::dataChanged(IModelItem *item, int role)
 
 void Stack::itemAboutToBeInserted(IModelItem *list, int index)
 {
-//    if (undoCommandActive || IDatabase::instance()->isReading())
-//        return;
-//    d->inserts.append(new UndoInsertCommand(start, query<IModelList>(query<IModel>(IDatabase::instance())->itemFromIndex(parent))));
+    IEditor *editor = IEditor::instance();
+    if (IDatabase::instance()->isReading()
+            || editor->isUndoing()
+            || editor->isCreating())
+        return;
+    _inserts.append(new InsertCommand(list, index, editor->currentCommand()));
 }
 
 void Stack::itemInserted(IModelItem *list, int index)
 {
-//    IDatabase *db = IDatabase::instance();
-//    if (undoCommandActive
-//            || db->isReading()
-//            || IEditor::instance()->isCreating())
-//        return;
-//    IModel *model = query<IModel>(db);
-//    const int n = d->inserts.count();
-//    for (int i = 0;  i < n;  ++i) {
-//        UndoInsertCommand *cmd = d->inserts.at(i);
-//        if (query<IModelList>(model->itemFromIndex(parent)) != cmd->list() || start != cmd->row())
-//            continue;
-//        d->inserts.removeAt(i);
-//        push(cmd);
-//        cmd->setItem(model->itemFromIndex(query<IQModel>(db)->index(start, 0, parent)));
-//        break;
-//    }
+    IEditor *editor = IEditor::instance();
+    if (IDatabase::instance()->isReading()
+            || editor->isUndoing()
+            || editor->isCreating())
+        return;
+    const int n = _inserts.count();
+    for (int i = 0;  i < n;  ++i) {
+        InsertCommand *cmd = _inserts.at(i);
+        cmd->setItem(list->itemAt(index));
+        if (list != cmd->list() || index != cmd->index())
+            continue;
+        _inserts.removeAt(i);
+        if (!editor->isInCommand())
+            push(cmd);
+        break;
+    }
 }
 
 void Stack::itemAboutToBeRemoved(IModelItem *list, int index)
 {
-//    IDatabase *db = IDatabase::instance();
-//    if (undoCommandActive
-//            || IDatabase::instance()->isReading()
-//            || IEditor::instance()->isCreating())
-//        return;
-//    IModel *model = query<IModel>(db);
-//    IModelList *list = query<IModelList>(model->itemFromIndex(parent));
-//    IModelItem *item = list->at(start);
-//    d->removes.append(new UndoRemoveCommand(item, start, list));
+    IEditor *editor = IEditor::instance();
+    if (IDatabase::instance()->isReading()
+            || editor->isUndoing()
+            || editor->isCreating())
+        return;
+    RemoveCommand *cmd = new RemoveCommand(list, index, editor->currentCommand());
+    cmd->setItem(list->itemAt(index));
+    _removes.append(cmd);
 }
 
 void Stack::itemRemoved(IModelItem *list, int index)
 {
-//    IDatabase *db = IDatabase::instance();
-//    if (undoCommandActive
-//            || IDatabase::instance()->isReading()
-//            || IEditor::instance()->isCreating())
-//        return;
-//    IModelList *list = query<IModelList>(query<IModel>(db)->itemFromIndex(parent));
-//    const int n = d->removes.count();
-//    for (int i = 0;  i < n;  ++i) {
-//        UndoRemoveCommand *cmd = d->removes.at(i);
-//        if (list != cmd->list() || start != cmd->row())
-//            continue;
-//        d->removes.removeAt(i);
-//        push(cmd);
-//        break;
-//    }
+    IEditor *editor = IEditor::instance();
+    if (IDatabase::instance()->isReading()
+            || editor->isUndoing()
+            || editor->isCreating())
+        return;
+    const int n = _removes.count();
+    for (int i = 0;  i < n;  ++i) {
+        RemoveCommand *cmd = _removes.at(i);
+        if (list != cmd->list() || index != cmd->index())
+            continue;
+        _removes.removeAt(i);
+        if (!editor->isInCommand())
+            push(cmd);
+        break;
+    }
 }
 
 void Stack::modelReset()

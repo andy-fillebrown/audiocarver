@@ -16,9 +16,17 @@
 **************************************************************************/
 
 #include "mi_gui_undo_listcommand.h"
+#include <iaggregate.h>
 #include <imodelitem.h>
 
 namespace Undo {
+
+ListCommand::~ListCommand()
+{
+    IModelItem *item = this->item();
+    if (!_list->containsItem(item))
+        delete query<IAggregate>(item);
+}
 
 void ListCommand::insert()
 {

@@ -26,7 +26,7 @@ class InsertCommand : public ListCommand
 {
 public:
     InsertCommand(IModelItem *list, int index, QUndoCommand *parent = 0)
-        :   ListCommand(0, index, parent)
+        :   ListCommand(list, index, parent)
     {}
 
     int id() const;

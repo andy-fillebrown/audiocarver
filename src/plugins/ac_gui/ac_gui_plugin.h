@@ -29,6 +29,7 @@ class Plugin : public ExtensionSystem::IPlugin
 
 public:
     Plugin();
+    ~Plugin();
 
 protected:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0)

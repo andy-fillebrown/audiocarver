@@ -25,6 +25,7 @@
 #include <ac_core_namespace.h>
 #include <mainwindow.h>
 #include <icore.h>
+#include <imodel.h>
 #include <isession.h>
 #include <QtPlugin>
 
@@ -45,6 +46,11 @@ Plugin::Plugin()
     new Editor;
     new Database::GraphicsViewManagerUpdater(ISession::instance());
     addAutoReleasedObject(new MainWindowExtension);
+}
+
+Plugin::~Plugin()
+{
+    IModel::instance()->reset();
 }
 
 void Plugin::extensionsInitialized()

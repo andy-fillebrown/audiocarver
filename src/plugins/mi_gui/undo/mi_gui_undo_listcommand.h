@@ -34,6 +34,18 @@ public:
         ,   _index(index)
     {}
 
+    ~ListCommand();
+
+    IModelItem *list() const
+    {
+        return _list;
+    }
+
+    int index() const
+    {
+        return _index;
+    }
+
     void insert();
     void remove();
 };
