@@ -30,6 +30,7 @@ class Editor : public Base::Editor
     IAggregate *_objectSS;
     IAggregate *_trackSS;
     IAggregate *_noteSS;
+    QUndoCommand *_currentCommand;
     QUndoStack *_undoStack;
     int _undoing : 1;
 
@@ -51,6 +52,13 @@ protected:
         return _undoing;
     }
 
+    QUndoCommand *currentCommand() const
+    {
+        return _currentCommand;
+    }
+
+    void beginCommand();
+    void endCommand();
     void pushCommand(QUndoCommand *command);
 };
 

@@ -56,7 +56,7 @@ void Stack::dataAboutToBeChanged(IModelItem *item, int role)
             || editor->isUndoing()
             || editor->isCreating())
         return;
-    _dataChanges.append(new DataChangeCommand(item, role));
+    _dataChanges.append(new DataChangeCommand(item, role, IEditor::instance()->currentCommand()));
 }
 
 void Stack::dataChanged(IModelItem *item, int role)
@@ -73,7 +73,9 @@ void Stack::dataChanged(IModelItem *item, int role)
             continue;
         cmd->updateNewData();
         _dataChanges.removeAt(i);
-        push(cmd);
+        --i;
+        if (!IEditor::instance()->isInCommand())
+            push(cmd);
         break;
     }
 }

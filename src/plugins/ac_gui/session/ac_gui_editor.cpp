@@ -31,7 +31,8 @@ using namespace Mi;
 namespace Gui {
 
 Editor::Editor()
-    :   _undoing(false)
+    :   _currentCommand(0)
+    ,   _undoing(false)
 {
     _objectSS = new Base::Aggregate;
     new SelectionSet(_objectSS);
@@ -100,6 +101,21 @@ void Editor::paste()
 
 void Editor::selectAll()
 {
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor::beginCommand()
+{
+    Base::Editor::beginCommand();
+    _currentCommand = new QUndoCommand;
+    qDebug() << Q_FUNC_INFO;
+}
+
+void Editor::endCommand()
+{
+    pushCommand(_currentCommand);
+    _currentCommand = 0;
+    Base::Editor::endCommand();
     qDebug() << Q_FUNC_INFO;
 }
 

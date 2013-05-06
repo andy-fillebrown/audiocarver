@@ -40,6 +40,7 @@ public:
     virtual void paste() = 0;
     virtual void selectAll() = 0;
     virtual bool isUndoing() const = 0;
+    virtual QUndoCommand *currentCommand() const = 0;
     virtual bool isInCommand() const = 0;
     virtual void beginCommand() = 0;
     virtual void endCommand() = 0;
