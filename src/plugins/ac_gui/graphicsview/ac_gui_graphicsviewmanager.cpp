@@ -23,9 +23,10 @@
 #include "ac_gui_graphicspitchlabelview.h"
 #include "ac_gui_graphicspitchview.h"
 #include "ac_gui_graphicstimelabelview.h"
-//#include "ac_undo.h"
+#include "ac_gui_undo_viewsettingscommand.h"
 #include <ac_core_constants.h>
 #include <ac_core_namespace.h>
+#include <mi_gui_undo_stack.h>
 #include <mi_core_math.h>
 #include <icore.h>
 #include <idatabase.h>
@@ -81,7 +82,7 @@ public:
     qreal timeScale;
     qreal pitchScale;
     qreal controlScale;
-//    UndoViewSettingsCommand *undoCmd;
+    Undo::ViewSettingsCommand *undoCmd;
     QTimer *updateViewsTimer;
     uint initialized : 1;
     uint updatingDatabase : 1;
@@ -94,7 +95,7 @@ public:
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
-//        ,   undoCmd(0)
+        ,   undoCmd(0)
         ,   updateViewsTimer(new QTimer(q))
         ,   initialized(false)
         ,   updatingDatabase(false)
@@ -132,7 +133,7 @@ public:
 
     ~GraphicsViewManagerPrivate()
     {
-//        delete undoCmd;
+        qDelete(undoCmd);
         delete controlLabelView;
         delete pitchLabelView;
         delete timeLabelView;
@@ -170,19 +171,19 @@ public:
 
     void startUndo()
     {
-//        if (!undoCmd
-//                && initialized
-//                && !IDatabase::instance()->isReading()
-//                && !IEditor::instance()->isInCommand())
-//            undoCmd = new UndoViewSettingsCommand;
+        if (!undoCmd && initialized && !IDatabase::instance()->isReading()) {
+            IEditor *editor = IEditor::instance();
+            if (!editor->isUndoing() && !editor->isInCommand())
+                undoCmd = new Undo::ViewSettingsCommand;
+        }
     }
 
     void finishUndo()
     {
-//        if (undoCmd) {
-//            IEditor::instance()->pushCommand(undoCmd);
-//            undoCmd = 0;
-//        }
+        if (undoCmd) {
+            IEditor::instance()->pushCommand(undoCmd);
+            undoCmd = 0;
+        }
     }
 
     void snapX(int role, QPointF &pos, bool snapToGrid)

@@ -103,4 +103,9 @@ void Editor::selectAll()
     qDebug() << Q_FUNC_INFO;
 }
 
+void Editor::pushCommand(QUndoCommand *command)
+{
+    _undoStack->push(command);
+}
+
 }

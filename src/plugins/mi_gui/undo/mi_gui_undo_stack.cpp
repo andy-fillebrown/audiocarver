@@ -21,7 +21,14 @@
 #include <ieditor.h>
 #include <imodel.h>
 
+Undo::Stack *instance = 0;
+
 namespace Undo {
+
+Stack *Stack::instance()
+{
+    return ::instance;
+}
 
 Stack::Stack(QObject *parent)
     :   QUndoStack(parent)
@@ -34,6 +41,12 @@ Stack::Stack(QObject *parent)
     connect(model, SIGNAL(itemAboutToBeRemoved(IModelItem*,int)), SLOT(itemAboutToBeRemoved(IModelItem*,int)));
     connect(model, SIGNAL(itemRemoved(IModelItem*,int)), SLOT(itemRemoved(IModelItem*,int)));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
+    ::instance = this;
+}
+
+Stack::~Stack()
+{
+    ::instance = 0;
 }
 
 void Stack::dataAboutToBeChanged(IModelItem *item, int role)

@@ -50,6 +50,8 @@ protected:
     {
         return _undoing;
     }
+
+    void pushCommand(QUndoCommand *command);
 };
 
 }

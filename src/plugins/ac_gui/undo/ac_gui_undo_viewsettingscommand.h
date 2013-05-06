@@ -37,9 +37,10 @@ class ViewSettingsCommand : public Command
     qreal _newPitchScale;
     qreal _newControlScale;
 
-protected:
+public:
     ViewSettingsCommand(QUndoCommand *parent = 0);
 
+protected:
     int id() const;
     bool mergeWith(const QUndoCommand *other);
     void redo();
