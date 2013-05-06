@@ -8,6 +8,7 @@ DIRS = \
     models \
     session \
     tools \
+    watchers \
 
 for(dir, DIRS) {
     HEADERPATH *= $$PWD/$$dir

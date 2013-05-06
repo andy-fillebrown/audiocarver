@@ -18,6 +18,7 @@
 #include "ac_core_databaseobjectfactory.h"
 #include "ac_core_controlcurve_modelitem.h"
 #include "ac_core_controlgridline_modelitem.h"
+#include "ac_core_gridline_modelupdater.h"
 #include "ac_core_gridsettings_modelitem.h"
 #include "ac_core_namespace.h"
 #include "ac_core_note_modelitem.h"
@@ -58,7 +59,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         break;
     case ControlGridLineItem:
         new ControlGridLine::ModelItem(aggregate);
-        new Object::ModelUpdater(aggregate);
+        new GridLine::ModelUpdater(aggregate);
         break;
     case ControlGridLineListItem:
         new ObjectList::ModelItem(aggregate, ControlGridLineItem);
@@ -82,7 +83,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         break;
     case PitchGridLineItem:
         new PitchGridLine::ModelItem(aggregate);
-        new Object::ModelUpdater(aggregate);
+        new GridLine::ModelUpdater(aggregate);
         break;
     case PitchGridLineListItem:
         new ObjectList::ModelItem(aggregate, PitchGridLineItem);
@@ -98,7 +99,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         break;
     case TimeGridLineItem:
         new TimeGridLine::ModelItem(aggregate);
-        new Object::ModelUpdater(aggregate);
+        new GridLine::ModelUpdater(aggregate);
         break;
     case TimeGridLineListItem:
         new ObjectList::ModelItem(aggregate, TimeGridLineItem);
