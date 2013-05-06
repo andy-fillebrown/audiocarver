@@ -21,6 +21,7 @@
 #include <mi_gui_base_editor.h>
 
 class IAggregate;
+class QUndoStack;
 
 namespace Gui {
 
@@ -29,6 +30,7 @@ class Editor : public Base::Editor
     IAggregate *_objectSS;
     IAggregate *_trackSS;
     IAggregate *_noteSS;
+    QUndoStack *_undoStack;
     int _undoing : 1;
 
 public:

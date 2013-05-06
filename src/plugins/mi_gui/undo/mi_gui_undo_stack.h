@@ -19,6 +19,7 @@
 #define AC_UNDO_STACK_H
 
 #include <QUndoStack>
+#include "mi_gui_global.h"
 
 class IModelItem;
 
@@ -28,7 +29,7 @@ class DataChangeCommand;
 class InsertCommand;
 class RemoveCommand;
 
-class Stack : public QUndoStack
+class MI_GUI_EXPORT Stack : public QUndoStack
 {
     Q_OBJECT
     QList<DataChangeCommand*> _dataChanges;

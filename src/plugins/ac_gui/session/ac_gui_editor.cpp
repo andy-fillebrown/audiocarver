@@ -20,6 +20,7 @@
 #include "ac_gui_selectionset.h"
 #include "ac_gui_track_selectionupdater.h"
 #include <ac_core_namespace.h>
+#include <mi_gui_undo_stack.h>
 #include <mi_core_base_aggregate.h>
 
 #include <QtDebug>
@@ -40,11 +41,13 @@ Editor::Editor()
     new Track::SelectionUpdater(_trackSS);
     _noteSS = new Base::Aggregate;
     new SelectionSet(_noteSS);
+    _undoStack = new Undo::Stack;
 }
 
 Editor::~Editor()
 {
     delete _objectSS;
+    qDelete(_objectSS);
 }
 
 ISelectionSet *Editor::currentSelection(int itemType) const
@@ -66,6 +69,7 @@ void Editor::undo()
 {
     _undoing = true;
     qDebug() << Q_FUNC_INFO;
+    _undoStack->undo();
     _undoing = false;
 }
 
@@ -73,6 +77,7 @@ void Editor::redo()
 {
     _undoing = true;
     qDebug() << Q_FUNC_INFO;
+    _undoStack->redo();
     _undoing = false;
 }
 

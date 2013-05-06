@@ -34,6 +34,7 @@ namespace Core {
 
 Database::Database()
     :   _score(0)
+    ,   _reading(false)
 {
     _score = IDatabaseObjectFactory::instance()->create(ScoreItem);
 }
@@ -78,6 +79,7 @@ void Database::reset()
 
 void Database::read(const QString &fileName)
 {
+    _reading = true;
     ScopedDatabaseRead scoped_read(this);
     reset();
     IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
@@ -85,6 +87,7 @@ void Database::read(const QString &fileName)
     if (query<IReader>(filer)->read(rootItem()))
         _fileName = fileName;
     delete filer;
+    _reading = false;
 }
 
 void Database::write(const QString &fileName)
@@ -98,8 +101,7 @@ void Database::write(const QString &fileName)
 
 bool Database::isReading() const
 {
-//    return d->reading;
-    return false;
+    return _reading;
 }
 
 }

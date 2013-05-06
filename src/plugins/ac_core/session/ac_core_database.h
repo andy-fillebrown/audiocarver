@@ -30,6 +30,7 @@ class AC_CORE_EXPORT Database : public Base::Database
 {
     QString _fileName;
     IAggregate *_score;
+    int _reading : 1;
 
 public:
     Database();

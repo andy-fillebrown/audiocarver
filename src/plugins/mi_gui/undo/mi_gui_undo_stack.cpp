@@ -27,12 +27,12 @@ Stack::Stack(QObject *parent)
     :   QUndoStack(parent)
 {
     IModel *model = IModel::instance();
-    connect(model, SIGNAL(dataAboutToBeChanged(const IModelItem*,int)), SLOT(dataAboutToBeChanged(const IModelItem*,int)));
-    connect(model, SIGNAL(dataChanged(const IModelItem*,int)), SLOT(dataAboutToBeChanged(const IModelItem*,int)));
-    connect(model, SIGNAL(itemAboutToBeInserted(const IModelItem*,int)), SLOT(itemAboutToBeInserted(const IModelItem*,int)));
-    connect(model, SIGNAL(itemInserted(const IModelItem*,int)), SLOT(itemInserted(const IModelItem*,int)));
-    connect(model, SIGNAL(itemAboutToBeRemoved(const IModelItem*,int)), SLOT(itemAboutToBeRemoved(const IModelItem*,int)));
-    connect(model, SIGNAL(itemRemoved(const IModelItem*,int)), SLOT(itemRemoved(const IModelItem*,int)));
+    connect(model, SIGNAL(dataAboutToBeChanged(IModelItem*,int)), SLOT(dataAboutToBeChanged(IModelItem*,int)));
+    connect(model, SIGNAL(dataChanged(IModelItem*,int)), SLOT(dataChanged(IModelItem*,int)));
+    connect(model, SIGNAL(itemAboutToBeInserted(IModelItem*,int)), SLOT(itemAboutToBeInserted(IModelItem*,int)));
+    connect(model, SIGNAL(itemInserted(IModelItem*,int)), SLOT(itemInserted(IModelItem*,int)));
+    connect(model, SIGNAL(itemAboutToBeRemoved(IModelItem*,int)), SLOT(itemAboutToBeRemoved(IModelItem*,int)));
+    connect(model, SIGNAL(itemRemoved(IModelItem*,int)), SLOT(itemRemoved(IModelItem*,int)));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
 }
 
