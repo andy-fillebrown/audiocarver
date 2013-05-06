@@ -59,7 +59,7 @@ void Stack::dataAboutToBeChanged(IModelItem *item, int role)
             || editor->isUndoing()
             || editor->isCreating())
         return;
-    _dataChanges.append(new DataChangeCommand(item, role, IEditor::instance()->currentCommand()));
+    _dataChanges.append(new DataChangeCommand(item, role, editor->currentCommand()));
 }
 
 void Stack::dataChanged(IModelItem *item, int role)

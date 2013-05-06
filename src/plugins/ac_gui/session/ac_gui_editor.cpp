@@ -106,7 +106,6 @@ void Editor::beginCommand()
 {
     Base::Editor::beginCommand();
     _currentCommand = new QUndoCommand;
-    qDebug() << Q_FUNC_INFO;
 }
 
 void Editor::endCommand()
@@ -114,7 +113,6 @@ void Editor::endCommand()
     pushCommand(_currentCommand);
     _currentCommand = 0;
     Base::Editor::endCommand();
-    qDebug() << Q_FUNC_INFO;
 }
 
 void Editor::pushCommand(QUndoCommand *command)
