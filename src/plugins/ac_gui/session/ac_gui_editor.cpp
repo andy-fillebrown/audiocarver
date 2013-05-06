@@ -46,7 +46,9 @@ Editor::Editor()
 
 Editor::~Editor()
 {
-    delete _objectSS;
+    qDelete(_undoStack);
+    qDelete(_noteSS);
+    qDelete(_trackSS);
     qDelete(_objectSS);
 }
 
