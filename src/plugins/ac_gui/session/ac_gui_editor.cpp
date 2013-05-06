@@ -71,7 +71,6 @@ ISelectionSet *Editor::currentSelection(int itemType) const
 void Editor::undo()
 {
     _undoing = true;
-    qDebug() << Q_FUNC_INFO;
     _undoStack->undo();
     _undoing = false;
 }
@@ -79,7 +78,6 @@ void Editor::undo()
 void Editor::redo()
 {
     _undoing = true;
-    qDebug() << Q_FUNC_INFO;
     _undoStack->redo();
     _undoing = false;
 }
