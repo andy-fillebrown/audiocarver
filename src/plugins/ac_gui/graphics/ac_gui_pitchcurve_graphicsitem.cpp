@@ -32,20 +32,23 @@ int GraphicsItem::sceneType() const
 
 void GraphicsItem::update(int role, const QVariant &value)
 {
-    QVariant actual_value = value;
     if (PointsRole == role) {
-        IGraphicsItem *note_gitem = parent();
-        IModelItem *note_item = query<IModelItem>(note_gitem);
-        note_gitem->update(VolumeRole, note_item->getValue(VolumeRole));
         PointList points = qvariant_cast<PointList>(value);
         const int point_count = points.count();
         for (int i = 0;  i < point_count;  ++i) {
             Point &point = points[i];
             point.pos.ry() = qBound(qreal(0.0f), point.pos.ry(), qreal(127.0f));
         }
-        actual_value = QVariant::fromValue(points);
-    }
-    Curve::GraphicsItem::update(role, actual_value);
+        // The curve graphics item's points need to be updated before updating
+        // the note graphics item's volume location because the note item will
+        // read the curve graphics item's points when positioning the velocity
+        // graphics item.
+        Curve::GraphicsItem::update(role, QVariant::fromValue(points));
+        IGraphicsItem *note_gitem = parent();
+        IModelItem *note_item = query<IModelItem>(note_gitem);
+        note_gitem->update(VolumeRole, note_item->getValue(VolumeRole));
+    } else
+        Curve::GraphicsItem::update(role, value);
 }
 
 }
