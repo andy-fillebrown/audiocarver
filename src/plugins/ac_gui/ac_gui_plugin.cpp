@@ -33,7 +33,6 @@
 static bool test();
 #endif
 
-using namespace Core;
 using namespace Gui;
 
 namespace Ac {
@@ -41,7 +40,7 @@ namespace Gui {
 
 Plugin::Plugin()
 {
-    new ::Gui::DatabaseObjectFactory;
+    new DatabaseObjectFactory;
     new Core::Database;
     new Editor;
     new Database::GraphicsViewManagerUpdater(ISession::instance());
@@ -55,7 +54,7 @@ Plugin::~Plugin()
 
 void Plugin::extensionsInitialized()
 {
-    MainWindow *main_window = ICore::instance()->mainWindow();
+    Core::MainWindow *main_window = Core::ICore::instance()->mainWindow();
     MainWidget *widget = new MainWidget(main_window);
     main_window->setCentralWidget(widget);
 #ifdef QT_DEBUG
