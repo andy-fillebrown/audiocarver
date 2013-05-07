@@ -137,6 +137,7 @@ void MainWindowExtension::initActions()
     // Move Note Action
     action = new QAction(tr("&Move"), this);
     cmd = am->registerAction(action, MOVE, globalContext);
+    cmd->setDefaultKeySequence(tr("Ctrl+M"));
     modifyMenu->addAction(cmd, G_MODIFY_OTHER);
     connect(action, SIGNAL(triggered()), pitchView, SLOT(moveNotes()));
 
