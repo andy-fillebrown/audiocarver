@@ -50,7 +50,9 @@ class MainWindow;
 
 namespace Internal {
 
+struct ShortcutItem;
 class ActionManagerPrivate;
+
 }
 
 class CORE_EXPORT CommandMappings : public Core::IOptionsPage
@@ -86,7 +88,7 @@ protected:
     void setTargetEditTitle(const QString &s);
     void setTargetHeader(const QString &s);
     void setModified(QTreeWidgetItem *item, bool modified);
-    virtual void markPossibleCollisions(QTreeWidgetItem *) {}
+    virtual void markPossibleCollisions(Internal::ShortcutItem *) {}
     virtual void resetCollisionMarkers() {}
 private:
     Ui_CommandMappings *m_page;

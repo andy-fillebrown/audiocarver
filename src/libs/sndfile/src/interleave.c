@@ -288,7 +288,7 @@ interleave_read_double	(SF_PRIVATE *psf, double *ptr, sf_count_t len)
 
 static sf_count_t
 interleave_seek	(SF_PRIVATE *psf, int mode, sf_count_t samples_from_start)
-{	psf = psf ;	mode = mode ;
+{
 
 	/*
 	** Do nothing here. This is a place holder to prevent the default
