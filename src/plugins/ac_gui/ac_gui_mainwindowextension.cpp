@@ -22,6 +22,7 @@
 #include "ac_gui_gridlinedialog.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_namespace.h>
+#include <mi_gui_constants.h>
 #include <iaggregate.h>
 #include <icontext.h>
 #include <icore.h>
@@ -34,7 +35,6 @@
 //#include <iqaudioengine.h>
 #include <iselectionset.h>
 //#include <isynthesizer.h>
-#include <mi_gui_constants.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>

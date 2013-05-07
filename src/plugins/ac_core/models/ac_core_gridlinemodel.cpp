@@ -32,7 +32,7 @@ using namespace Ac;
 using namespace Mi;
 using namespace Qt;
 
-bool lessThan(const QList<QVariant> &a, const QList<QVariant> &b)
+static bool lessThan(const QList<QVariant> &a, const QList<QVariant> &b)
 {
     return a.at(0).toReal() < b.at(0).toReal();
 }
@@ -70,7 +70,7 @@ void Model::syncDataToList(IModelItem *list)
         IModelItem *item = list->itemAt(i);
         QList<QVariant> values;
         for (int j = 0;  j < column_count;  ++j)
-            values.append(item->getValue(item->roleAt(GridLine::ModelItem::RoleCountOffset + j)));
+            values.append(item->getValue(item->roleAt(ModelItem::RoleCountOffset + j)));
         _valueLists.append(values);
     }
 }
@@ -90,7 +90,7 @@ void Model::syncListToData(IModelItem *list)
         } else
             item = list->itemAt(i);
         for (int j = 0;  j < column_count;  ++j)
-            item->set(item->roleAt(GridLine::ModelItem::RoleCountOffset + j), _valueLists.at(i).at(j));
+            item->set(item->roleAt(ModelItem::RoleCountOffset + j), _valueLists.at(i).at(j));
     }
 
     // Remove the remaining items from the list.
@@ -122,7 +122,7 @@ bool Model::isChanged() const
     for (int i = 0;  i < item_count;  ++i) {
         const QList<QVariant> &values = _valueLists.at(i);
         for (int j = 0;  j < column_count;  ++j)
-            if (_list->itemAt(i)->getValue(GridLine::ModelItem::RoleCountOffset + j) != values.at(j))
+            if (_list->itemAt(i)->getValue(ModelItem::RoleCountOffset + j) != values.at(j))
                 return true;
     }
     return false;
@@ -138,7 +138,7 @@ void Model::resetData()
 
 int Model::columnCount(const QModelIndex &parent) const
 {
-    return GridLine::ModelItem::RoleCount;
+    return ModelItem::RoleCount;
 }
 
 int Model::rowCount(const QModelIndex &parent) const
@@ -181,7 +181,7 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
             || Horizontal != orientation
             || section < 0 || columnCount(QModelIndex()) <= section)
         return QVariant();
-    QString label(itemDataRoleString(gridLineMetaObject->roleAt(GridLine::ModelItem::RoleCountOffset + section)));
+    QString label(itemDataRoleString(gridLineMetaObject->roleAt(ModelItem::RoleCountOffset + section)));
     label[0] = label.at(0).toUpper();
     return label;
 }
@@ -239,10 +239,10 @@ void Model::exportToFile(const QString &fileName)
     case TimeGridLineItem:
         list_aggregate = factory->create(TimeGridLineListItem);
         break;
-    case Ac::PitchGridLineItem:
+    case PitchGridLineItem:
         list_aggregate = factory->create(PitchGridLineListItem);
         break;
-    case Ac::ControlGridLineItem:
+    case ControlGridLineItem:
         list_aggregate = factory->create(ControlGridLineListItem);
         break;
     default:
