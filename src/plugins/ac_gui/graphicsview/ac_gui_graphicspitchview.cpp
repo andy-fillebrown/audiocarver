@@ -181,12 +181,15 @@ public:
     void finishMovingNotes(const QPointF &pos)
     {
         moveNotes(pos);
+        IEditor *editor = IEditor::instance();
+        editor->beginCommand();
         foreach (IGraphicsGripList *griplist, noteGripLists) {
             QList<IGraphicsGrip*> grips = griplist->grips();
             foreach (IGraphicsGrip *grip, grips)
                 grip->update(OriginalPositionRole, grip->position());
             query<IGraphicsDelegate>(griplist)->updateModel();
         }
+        editor->endCommand();
         endMovingNotes();
     }
 
