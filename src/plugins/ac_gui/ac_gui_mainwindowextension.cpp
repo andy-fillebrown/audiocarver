@@ -16,10 +16,10 @@
 **************************************************************************/
 
 #include "ac_gui_mainwindowextension.h"
-//#include "ac_gridlinedialog.h"
 #include "ac_gui_constants.h"
 #include "ac_gui_graphicspitchview.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include "ac_gui_gridlinedialog.h"
 #include "ac_gui_namespace.h"
 #include <ac_core_namespace.h>
 #include <iaggregate.h>
@@ -111,6 +111,7 @@ void MainWindowExtension::initActions()
     // Grid Settings Action
     action = new QAction(tr("&Grid Settings..."), this);
     cmd = am->registerAction(action, SHOWGRIDSETTINGS, globalContext);
+    cmd->setDefaultKeySequence(tr("Ctrl+G"));
     editMenu->addAction(cmd, G_EDIT_SETTINGS);
     connect(action, SIGNAL(triggered()), SLOT(showGridSettings()));
 
@@ -202,9 +203,9 @@ void MainWindowExtension::initActions()
 
 void MainWindowExtension::showGridSettings()
 {
-//    GridLineDialog *dlg = new GridLineDialog(Core::ICore::instance()->mainWindow());
-//    dlg->exec();
-//    delete dlg;
+    GridLineDialog *dlg = new GridLineDialog(Core::ICore::instance()->mainWindow());
+    dlg->exec();
+    delete dlg;
 }
 
 void MainWindowExtension::createTrack()

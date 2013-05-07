@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#include "ac_gridlinedialog.h"
-#include <ui_ac_gridlinedialog.h>
+#include "ac_gui_gridlinedialog.h"
+#include <ui_ac_gui_gridlinedialog.h>
 #include <ac_core_gridlinemodel.h>
 #include <ieditor.h>
 #include <QDialogButtonBox>

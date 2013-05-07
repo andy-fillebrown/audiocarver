@@ -39,6 +39,22 @@ bool lessThan(const QList<QVariant> &a, const QList<QVariant> &b)
 
 namespace GridLine {
 
+static ModelItem *gridLineMetaObject = 0;
+
+Model::Model(QObject *parent)
+    :   QAbstractTableModel(parent)
+    ,   _listType(0)
+    ,   _list(0)
+{
+    if (!gridLineMetaObject)
+        gridLineMetaObject = new ModelItem;
+}
+
+Model::~Model()
+{
+    qDelete(gridLineMetaObject);
+}
+
 void Model::updateList()
 {
     _list = IDatabase::instance()->rootItem()->findItem(GridSettingsItem)->findItem(_listType);
@@ -122,7 +138,7 @@ void Model::resetData()
 
 int Model::columnCount(const QModelIndex &parent) const
 {
-    return GridLine::ModelItem::RoleCount - GridLine::ModelItem::RoleCountOffset;
+    return GridLine::ModelItem::RoleCount;
 }
 
 int Model::rowCount(const QModelIndex &parent) const
@@ -165,7 +181,7 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
             || Horizontal != orientation
             || section < 0 || columnCount(QModelIndex()) <= section)
         return QVariant();
-    QString label(itemDataRoleString(GridLine::ModelItem::RoleCountOffset + section));
+    QString label(itemDataRoleString(gridLineMetaObject->roleAt(GridLine::ModelItem::RoleCountOffset + section)));
     label[0] = label.at(0).toUpper();
     return label;
 }
@@ -174,7 +190,7 @@ QVariant Model::data(const QModelIndex &index, int role) const
 {
     if ((DisplayRole != role
          && EditRole != role)
-            || _list)
+            || !_list)
         return QVariant();
     return _valueLists.at(index.row()).at(index.column());
 }

@@ -33,7 +33,8 @@ void *ModelItem::queryInterface(int interfaceType) const
 ModelItem::ModelItem(IAggregate *aggregate)
     :   _aggregate(aggregate)
 {
-    _aggregate->appendComponent(this);
+    if (_aggregate)
+        _aggregate->appendComponent(this);
 }
 
 QVariant ModelItem::getValue(int role) const

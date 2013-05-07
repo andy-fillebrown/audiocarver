@@ -42,7 +42,7 @@ protected:
         TotalRoleCount = RoleCountOffset + RoleCount
     };
 
-    ModelItem(IAggregate *aggregate);
+    ModelItem(IAggregate *aggregate = 0);
 
     bool isTypeOfItem(int itemType) const;
 

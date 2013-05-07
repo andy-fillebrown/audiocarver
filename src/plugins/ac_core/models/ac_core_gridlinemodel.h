@@ -38,11 +38,8 @@ class AC_CORE_EXPORT Model : public QAbstractTableModel
     void syncListToData(IModelItem *list);
 
 public:
-    Model(QObject *parent = 0)
-        :   QAbstractTableModel(parent)
-        ,   _listType(0)
-        ,   _list(0)
-    {}
+    Model(QObject *parent = 0);
+    ~Model();
 
     void setListType(int type);
     bool isChanged() const;
