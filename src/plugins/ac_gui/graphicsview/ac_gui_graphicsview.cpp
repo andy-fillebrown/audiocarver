@@ -804,13 +804,15 @@ void GraphicsView::removePoints()
                 curve_grips_to_remove.append(picked_grips.at(j));
         int curve_grips_to_remove_count = curve_grips_to_remove.count();
         if (curve_grips.count() - curve_grips_to_remove_count < 2) {
+            curve_griplist->findNode()->setVisible(false);
             foreach (IGraphicsGrip *grip, curve_grips_to_remove)
                 picked_grips.removeOne(grip);
             IModelItem *note_item = curve_item->parent();
-            note_item->set(VisibilityRole, false);
+            IGraphicsItem *note_graphics = query<IGraphicsItem>(note_item);
+            note_graphics->update(HighlightRole, NoHighlight);
+            note_graphics->update(VisibilityRole, false);
             note_item->remove();
-            curve_griplist->findNode()->setVisible(false);
-            break;
+            IEditor::instance()->currentSelection()->remove(note_graphics);
         } else {
             foreach (IGraphicsGrip *grip, curve_grips_to_remove)
                 curve_grips.removeOne(grip);
@@ -818,8 +820,8 @@ void GraphicsView::removePoints()
         }
         grip_count -= curve_grips_to_remove_count;
         i -= curve_grips_to_remove_count;
-        if (i < 0)
-            i = 0;
+        if (i < -1)
+            i = -1;
     }
     foreach (IGraphicsDelegate *delegate, delegates) {
         delegate->updateModel();
