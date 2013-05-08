@@ -23,13 +23,15 @@ namespace Undo {
 
 ListCommand::~ListCommand()
 {
-    IModelItem *item = this->item();
-    if (!_list->containsItem(item))
+    if (_deleteItem) {
+        IModelItem *item = this->item();
         delete query<IAggregate>(item);
+    }
 }
 
 void ListCommand::insert()
 {
+    _deleteItem = false;
     if (!isEnabled()) {
         enable();
         return;
@@ -39,6 +41,7 @@ void ListCommand::insert()
 
 void ListCommand::remove()
 {
+    _deleteItem = true;
     if (!isEnabled()) {
         enable();
         return;
