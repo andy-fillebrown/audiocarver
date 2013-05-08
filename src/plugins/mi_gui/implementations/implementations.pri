@@ -3,6 +3,7 @@ SOURCE_FILES = \
     editor \
     selectionset \
     selectionsetwatcher \
+    undomanager \
 
 for(file, SOURCE_FILES) {
     header = mi_gui_base_$${file}.h

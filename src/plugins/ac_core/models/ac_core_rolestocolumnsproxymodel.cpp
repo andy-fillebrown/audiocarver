@@ -17,6 +17,7 @@
 
 #include "ac_core_rolestocolumnsproxymodel.h"
 
+namespace Ac {
 namespace Core {
 
 class RolesToColumnsProxyModelHelper : public QSortFilterProxyModel
@@ -91,4 +92,5 @@ void RolesToColumnsProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
     d->helper->setSourceModel(sourceModel);
 }
 
+}
 }

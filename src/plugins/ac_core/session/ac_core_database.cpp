@@ -28,8 +28,7 @@
 #include <ireader.h>
 #include <iwriter.h>
 
-using namespace Ac;
-
+namespace Ac {
 namespace Core {
 
 Database::Database()
@@ -104,4 +103,5 @@ bool Database::isReading() const
     return _reading;
 }
 
+}
 }

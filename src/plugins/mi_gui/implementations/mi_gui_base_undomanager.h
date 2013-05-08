@@ -15,38 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SELECTIONSET_H
-#define AC_GUI_SELECTIONSET_H
+#ifndef MI_GUI_BASE_UNDOMANAGER_H
+#define MI_GUI_BASE_UNDOMANAGER_H
 
-#include <mi_gui_base_selectionset.h>
-#include <QList>
+#include <iundomanager.h>
 
-namespace Ac {
-namespace Gui {
+namespace Base {
 
-class SelectionSet : public Base::SelectionSet
+class MI_GUI_EXPORT UndoManager : public IUndoManager
 {
-    QList<IGraphicsItem*> _items;
-
 public:
-    SelectionSet(IAggregate *aggregate)
-        :   Base::SelectionSet(aggregate)
-    {}
+    UndoManager();
+
+    void *queryInterface(int interfaceType) const;
 
 protected:
-    const QList<IGraphicsItem*> &items() const
-    {
-        return _items;
-    }
+    ~UndoManager();
 
-    bool append(IGraphicsItem *item);
-    bool append(const QList<IGraphicsItem*> &items);
-    bool remove(IGraphicsItem *item);
-    bool remove(const QList<IGraphicsItem*> &items);
-    void clear();
+    void initialize()
+    {}
+
+    void reset()
+    {}
+
+    void pushCommand(int commandId)
+    {}
 };
 
-}
 }
 
 #endif

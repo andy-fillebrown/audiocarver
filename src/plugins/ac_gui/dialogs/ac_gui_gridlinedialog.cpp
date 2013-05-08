@@ -18,7 +18,7 @@
 #include "ac_gui_gridlinedialog.h"
 #include <ui_ac_gui_gridlinedialog.h>
 #include <ac_core_gridlinemodel.h>
-#include <ieditor.h>
+#include <iundomanager.h>
 #include <QDialogButtonBox>
 #include <QFileDialog>
 
@@ -125,10 +125,10 @@ void GridLineDialog::apply()
             && !controlLinesModel->isChanged())
         return;
 
-    IEditor *editor = IEditor::instance();
-    editor->beginCommand();
+    IUndoManager *undo_manager = IUndoManager::instance();
+    undo_manager->beginCommand();
     timeLinesModel->apply();
     pitchLinesModel->apply();
     controlLinesModel->apply();
-    editor->endCommand();
+    undo_manager->endCommand();
 }

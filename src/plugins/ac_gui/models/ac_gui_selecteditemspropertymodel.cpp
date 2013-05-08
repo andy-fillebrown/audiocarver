@@ -23,6 +23,7 @@
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iselectionset.h>
+#include <iundomanager.h>
 
 using namespace Ac;
 using namespace Mi;
@@ -160,12 +161,12 @@ bool SelectedItemsPropertyModel::setData(const QModelIndex &index, const QVarian
     if ((DisplayRole != role && EditRole != role)
             ||  1 != index.column())
         return false;
-    IEditor *editor = IEditor::instance();
-    editor->beginCommand();
+    IUndoManager *undo_manager = IUndoManager::instance();
+    undo_manager->beginCommand();
     int property_role = d->dataMap.keys().at(index.row());
     foreach (IModelItem *item, d->selectedItems)
         item->set(property_role, value);
-    editor->endCommand();
+    undo_manager->endCommand();
     return true;
 }
 

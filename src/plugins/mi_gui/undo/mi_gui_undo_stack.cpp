@@ -23,8 +23,17 @@
 #include <ieditor.h>
 #include <imodel.h>
 #include <imodelitem.h>
+#include <iundomanager.h>
 
-Undo::Stack *instance = 0;
+static Undo::Stack *instance = 0;
+
+static bool notOkToUndo()
+{
+    IUndoManager *undo_manager = IUndoManager::instance();
+    return IDatabase::instance()->isReading()
+            || undo_manager->isPaused()
+            || undo_manager->isUndoing();
+}
 
 namespace Undo {
 
@@ -35,6 +44,7 @@ Stack *Stack::instance()
 
 Stack::Stack(QObject *parent)
     :   QUndoStack(parent)
+    ,   _command(0)
 {
     IModel *model = IModel::instance();
     connect(model, SIGNAL(dataAboutToBeChanged(IModelItem*,int)), SLOT(dataAboutToBeChanged(IModelItem*,int)));
@@ -49,25 +59,31 @@ Stack::Stack(QObject *parent)
 
 Stack::~Stack()
 {
+    qDelete(_command);
     ::instance = 0;
+}
+
+void Stack::beginCommand()
+{
+    _command = new QUndoCommand;
+}
+
+void Stack::endCommand()
+{
+    push(_command);
+    _command = 0;
 }
 
 void Stack::dataAboutToBeChanged(IModelItem *item, int role)
 {
-    IEditor *editor = IEditor::instance();
-    if (IDatabase::instance()->isReading()
-            || editor->isUndoing()
-            || editor->isCreating())
+    if (notOkToUndo())
         return;
-    _dataChanges.append(new DataChangeCommand(item, role, editor->currentCommand()));
+    _dataChanges.append(new DataChangeCommand(item, role, _command));
 }
 
 void Stack::dataChanged(IModelItem *item, int role)
 {
-    IEditor *editor = IEditor::instance();
-    if (IDatabase::instance()->isReading()
-            || editor->isUndoing()
-            || editor->isCreating())
+    if (notOkToUndo())
         return;
     const int n = _dataChanges.count();
     for (int i = 0;  i < n;  ++i) {
@@ -77,7 +93,7 @@ void Stack::dataChanged(IModelItem *item, int role)
         cmd->updateNewData();
         _dataChanges.removeAt(i);
         --i;
-        if (!IEditor::instance()->isInCommand())
+        if (!_command)
             push(cmd);
         break;
     }
@@ -85,20 +101,14 @@ void Stack::dataChanged(IModelItem *item, int role)
 
 void Stack::itemAboutToBeInserted(IModelItem *list, int index)
 {
-    IEditor *editor = IEditor::instance();
-    if (IDatabase::instance()->isReading()
-            || editor->isUndoing()
-            || editor->isCreating())
+    if (notOkToUndo())
         return;
-    _inserts.append(new InsertCommand(list, index, editor->currentCommand()));
+    _inserts.append(new InsertCommand(list, index, _command));
 }
 
 void Stack::itemInserted(IModelItem *list, int index)
 {
-    IEditor *editor = IEditor::instance();
-    if (IDatabase::instance()->isReading()
-            || editor->isUndoing()
-            || editor->isCreating())
+    if (notOkToUndo())
         return;
     const int n = _inserts.count();
     for (int i = 0;  i < n;  ++i) {
@@ -107,7 +117,7 @@ void Stack::itemInserted(IModelItem *list, int index)
         if (list != cmd->list() || index != cmd->index())
             continue;
         _inserts.removeAt(i);
-        if (!editor->isInCommand())
+        if (!_command)
             push(cmd);
         break;
     }
@@ -115,22 +125,16 @@ void Stack::itemInserted(IModelItem *list, int index)
 
 void Stack::itemAboutToBeRemoved(IModelItem *list, int index)
 {
-    IEditor *editor = IEditor::instance();
-    if (IDatabase::instance()->isReading()
-            || editor->isUndoing()
-            || editor->isCreating())
+    if (notOkToUndo())
         return;
-    RemoveCommand *cmd = new RemoveCommand(list, index, editor->currentCommand());
+    RemoveCommand *cmd = new RemoveCommand(list, index, _command);
     cmd->setItem(list->itemAt(index));
     _removes.append(cmd);
 }
 
 void Stack::itemRemoved(IModelItem *list, int index)
 {
-    IEditor *editor = IEditor::instance();
-    if (IDatabase::instance()->isReading()
-            || editor->isUndoing()
-            || editor->isCreating())
+    if (notOkToUndo())
         return;
     const int n = _removes.count();
     for (int i = 0;  i < n;  ++i) {
@@ -138,7 +142,7 @@ void Stack::itemRemoved(IModelItem *list, int index)
         if (list != cmd->list() || index != cmd->index())
             continue;
         _removes.removeAt(i);
-        if (!editor->isInCommand())
+        if (!_command)
             push(cmd);
         break;
     }

@@ -20,19 +20,16 @@
 #include "ac_gui_selectionset.h"
 #include "ac_gui_track_selectionupdater.h"
 #include <ac_core_namespace.h>
-#include <mi_gui_undo_stack.h>
 #include <mi_core_base_aggregate.h>
 
 #include <QtDebug>
 
-using namespace Ac;
 using namespace Mi;
 
+namespace Ac {
 namespace Gui {
 
 Editor::Editor()
-    :   _currentCommand(0)
-    ,   _undoing(false)
 {
     _objectSS = new Base::Aggregate;
     new SelectionSet(_objectSS);
@@ -42,12 +39,10 @@ Editor::Editor()
     new Track::SelectionUpdater(_trackSS);
     _noteSS = new Base::Aggregate;
     new SelectionSet(_noteSS);
-    _undoStack = new Undo::Stack;
 }
 
 Editor::~Editor()
 {
-    qDelete(_undoStack);
     qDelete(_noteSS);
     qDelete(_trackSS);
     qDelete(_objectSS);
@@ -66,20 +61,6 @@ ISelectionSet *Editor::currentSelection(int itemType) const
         Q_ASSERT(false);
         return 0;
     }
-}
-
-void Editor::undo()
-{
-    _undoing = true;
-    _undoStack->undo();
-    _undoing = false;
-}
-
-void Editor::redo()
-{
-    _undoing = true;
-    _undoStack->redo();
-    _undoing = false;
 }
 
 void Editor::cut()
@@ -102,22 +83,5 @@ void Editor::selectAll()
     qDebug() << Q_FUNC_INFO;
 }
 
-void Editor::beginCommand()
-{
-    Base::Editor::beginCommand();
-    _currentCommand = new QUndoCommand;
 }
-
-void Editor::endCommand()
-{
-    pushCommand(_currentCommand);
-    _currentCommand = 0;
-    Base::Editor::endCommand();
-}
-
-void Editor::pushCommand(QUndoCommand *command)
-{
-    _undoStack->push(command);
-}
-
 }

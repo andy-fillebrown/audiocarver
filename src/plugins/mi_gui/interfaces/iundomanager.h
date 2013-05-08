@@ -15,27 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef IEDITOR_H
-#define IEDITOR_H
+#ifndef IUNDOMANAGER_H
+#define IUNDOMANAGER_H
 
 #include <icomponent.h>
 #include "mi_gui_global.h"
 #include "mi_gui_interfaces.h"
 
-class ISelectionSet;
-
-class MI_GUI_EXPORT IEditor : public IComponent
+class MI_GUI_EXPORT IUndoManager : public IComponent
 {
 public:
-    enum { InterfaceType = I::IEditor };
+    enum { InterfaceType = I::IUndoManager };
 
-    static IEditor *instance();
+    static IUndoManager *instance();
 
-    virtual ISelectionSet *currentSelection(int itemType = 0) const = 0;
-    virtual void cut() = 0;
-    virtual void copy() const = 0;
-    virtual void paste() = 0;
-    virtual void selectAll() = 0;
+    virtual bool isUndoing() const = 0;
+    virtual void undo() = 0;
+    virtual void redo() = 0;
+    virtual bool isPaused() const = 0;
+    virtual void pause() = 0;
+    virtual void resume() = 0;
+    virtual bool isInCommand() const = 0;
+    virtual void beginCommand() = 0;
+    virtual void endCommand() = 0;
+    virtual void pushCommand(int commandId) = 0;
 
     int interfaceType() const
     {

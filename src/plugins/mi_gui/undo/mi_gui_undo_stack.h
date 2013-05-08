@@ -32,6 +32,7 @@ class RemoveCommand;
 class MI_GUI_EXPORT Stack : public QUndoStack
 {
     Q_OBJECT
+    QUndoCommand *_command;
     QList<DataChangeCommand*> _dataChanges;
     QList<InsertCommand*> _inserts;
     QList<RemoveCommand*> _removes;
@@ -41,6 +42,9 @@ public:
 
     Stack(QObject *parent = 0);
     ~Stack();
+
+    void beginCommand();
+    void endCommand();
 
 private slots:
     void dataAboutToBeChanged(IModelItem *item, int role);

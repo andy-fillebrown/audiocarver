@@ -15,35 +15,54 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SELECTIONSET_H
-#define AC_GUI_SELECTIONSET_H
+#ifndef MI_GUI_UNDOMANAGER_H
+#define MI_GUI_UNDOMANAGER_H
 
-#include <mi_gui_base_selectionset.h>
-#include <QList>
+#include "mi_gui_base_undomanager.h"
 
-namespace Ac {
+namespace Undo {
+class Stack;
+}
+
+namespace Mi {
 namespace Gui {
 
-class SelectionSet : public Base::SelectionSet
+class MI_GUI_EXPORT UndoManager : public Base::UndoManager
 {
-    QList<IGraphicsItem*> _items;
+    Undo::Stack *_undoStack;
+    int _undoing : 1;
+    int _paused : 1;
+    int _inCommand : 1;
 
 public:
-    SelectionSet(IAggregate *aggregate)
-        :   Base::SelectionSet(aggregate)
-    {}
+    UndoManager();
 
 protected:
-    const QList<IGraphicsItem*> &items() const
+    ~UndoManager();
+
+    bool isUndoing() const
     {
-        return _items;
+        return _undoing;
     }
 
-    bool append(IGraphicsItem *item);
-    bool append(const QList<IGraphicsItem*> &items);
-    bool remove(IGraphicsItem *item);
-    bool remove(const QList<IGraphicsItem*> &items);
-    void clear();
+    void undo();
+    void redo();
+
+    bool isPaused() const
+    {
+        return _paused;
+    }
+
+    void pause();
+    void resume();
+
+    bool isInCommand() const
+    {
+        return _inCommand;
+    }
+
+    void beginCommand();
+    void endCommand();
 };
 
 }

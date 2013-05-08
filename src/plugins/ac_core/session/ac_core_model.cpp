@@ -17,8 +17,8 @@
 
 #include "ac_core_model.h"
 #include "ac_core_trackmodel.h"
-#include <isession.h>
 
+namespace Ac {
 namespace Core {
 
 Model::Model()
@@ -26,4 +26,5 @@ Model::Model()
     new TrackModel(this);
 }
 
+}
 }

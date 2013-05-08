@@ -15,38 +15,23 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SELECTIONSET_H
-#define AC_GUI_SELECTIONSET_H
+#include "ac_gui_undomanager.h"
+#include "ac_gui_namespace.h"
+#include "ac_gui_undo_viewsettingscommand.h"
+#include <mi_gui_undo_stack.h>
 
-#include <mi_gui_base_selectionset.h>
-#include <QList>
+using namespace Undo;
 
 namespace Ac {
 namespace Gui {
 
-class SelectionSet : public Base::SelectionSet
+void UndoManager::pushCommand(int commandId)
 {
-    QList<IGraphicsItem*> _items;
-
-public:
-    SelectionSet(IAggregate *aggregate)
-        :   Base::SelectionSet(aggregate)
-    {}
-
-protected:
-    const QList<IGraphicsItem*> &items() const
-    {
-        return _items;
-    }
-
-    bool append(IGraphicsItem *item);
-    bool append(const QList<IGraphicsItem*> &items);
-    bool remove(IGraphicsItem *item);
-    bool remove(const QList<IGraphicsItem*> &items);
-    void clear();
-};
+    if (ViewSettingsCommandId == commandId)
+        Stack::instance()->push(new ViewSettingsCommand);
+    else
+        Mi::Gui::UndoManager::pushCommand(commandId);
+}
 
 }
 }
-
-#endif

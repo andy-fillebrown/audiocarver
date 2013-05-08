@@ -22,8 +22,7 @@
 #include "ac_core_writer.h"
 #include <mi_core_base_aggregate.h>
 
-using namespace Ac;
-
+namespace Ac {
 namespace Core {
 
 IAggregate *FilerFactory::create(int filerType)
@@ -43,4 +42,5 @@ IAggregate *FilerFactory::create(int filerType)
     return aggregate;
 }
 
+}
 }

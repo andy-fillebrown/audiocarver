@@ -29,7 +29,6 @@ IEditor *IEditor::instance()
 namespace Base {
 
 Editor::Editor()
-    :   _inCommand(false)
 {
     IAggregate *aggregate = ISession::instance();
     aggregate->removeComponent(::instance);

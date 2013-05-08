@@ -18,6 +18,7 @@
 #include "ac_gui_selectionset.h"
 #include <mi_gui_scopedselectionchange.h>
 
+namespace Ac {
 namespace Gui {
 
 bool SelectionSet::append(IGraphicsItem *item)
@@ -83,4 +84,5 @@ void SelectionSet::clear()
     _items.clear();
 }
 
+}
 }

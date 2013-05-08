@@ -32,6 +32,7 @@
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iselectionset.h>
+#include <iundomanager.h>
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -75,7 +76,7 @@ public:
 
     void startNote(const QPoint &pos)
     {
-        IEditor::instance()->startCreating();
+        IUndoManager::instance()->pause();
         noteItem = query<IModelItem>(IDatabaseObjectFactory::instance()->create(NoteItem));
         noteList->appendItem(noteItem);
         noteGraphicsItem = query<IGraphicsItem>(noteItem);
@@ -120,11 +121,11 @@ public:
         pitchDelegate->updateGraphics();
         pitchDelegate->updateModel();
         noteList->removeItem(noteItem);
-        IEditor *editor = IEditor::instance();
-        editor->finishCreating();
-        editor->beginCommand();
+        IUndoManager *undo_manager = IUndoManager::instance();
+        undo_manager->resume();
+        undo_manager->beginCommand();
         noteList->appendItem(noteItem);
-        editor->endCommand();
+        undo_manager->endCommand();
         endNote();
     }
 
@@ -132,7 +133,7 @@ public:
     {
         noteList->removeItem(noteItem);
         delete query<IAggregate>(noteItem);
-        IEditor::instance()->finishCreating();
+        IUndoManager::instance()->resume();
         endNote();
     }
 
@@ -181,15 +182,15 @@ public:
     void finishMovingNotes(const QPointF &pos)
     {
         moveNotes(pos);
-        IEditor *editor = IEditor::instance();
-        editor->beginCommand();
+        IUndoManager *undo_manager = IUndoManager::instance();
+        undo_manager->beginCommand();
         foreach (IGraphicsGripList *griplist, noteGripLists) {
             QList<IGraphicsGrip*> grips = griplist->grips();
             foreach (IGraphicsGrip *grip, grips)
                 grip->update(OriginalPositionRole, grip->position());
             query<IGraphicsDelegate>(griplist)->updateModel();
         }
-        editor->endCommand();
+        undo_manager->endCommand();
         endMovingNotes();
     }
 

@@ -41,8 +41,7 @@
 #include <mi_core_object_aggregate.h>
 #include <mi_core_object_modelitem.h>
 
-using namespace Ac;
-
+namespace Ac {
 namespace Gui {
 
 void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate)
@@ -114,4 +113,5 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
     }
 }
 
+}
 }

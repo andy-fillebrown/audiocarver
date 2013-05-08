@@ -25,6 +25,7 @@
 #include <icore.h>
 #include <idatabase.h>
 #include <ieditor.h>
+#include <iundomanager.h>
 #include <QAction>
 #include <QFileDialog>
 #include <QIcon>
@@ -203,12 +204,12 @@ void MainWindowExtension::saveFileAs()
 
 void MainWindowExtension::undo()
 {
-    IEditor::instance()->undo();
+    IUndoManager::instance()->undo();
 }
 
 void MainWindowExtension::redo()
 {
-    IEditor::instance()->redo();
+    IUndoManager::instance()->redo();
 }
 
 void MainWindowExtension::cut()

@@ -15,38 +15,37 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SELECTIONSET_H
-#define AC_GUI_SELECTIONSET_H
+#include "mi_gui_base_undomanager.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-#include <mi_gui_base_selectionset.h>
-#include <QList>
+static IUndoManager *instance = 0;
 
-namespace Ac {
-namespace Gui {
-
-class SelectionSet : public Base::SelectionSet
+IUndoManager *IUndoManager::instance()
 {
-    QList<IGraphicsItem*> _items;
-
-public:
-    SelectionSet(IAggregate *aggregate)
-        :   Base::SelectionSet(aggregate)
-    {}
-
-protected:
-    const QList<IGraphicsItem*> &items() const
-    {
-        return _items;
-    }
-
-    bool append(IGraphicsItem *item);
-    bool append(const QList<IGraphicsItem*> &items);
-    bool remove(IGraphicsItem *item);
-    bool remove(const QList<IGraphicsItem*> &items);
-    void clear();
-};
-
-}
+    return ::instance;
 }
 
-#endif
+namespace Base {
+
+UndoManager::UndoManager()
+{
+    IAggregate *aggregate = ISession::instance();
+    aggregate->removeComponent(::instance);
+    delete ::instance;
+    ::instance = this;
+    aggregate->appendComponent(this);
+}
+
+UndoManager::~UndoManager()
+{
+    ::instance = 0;
+}
+
+void *UndoManager::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : ISession::instance()->queryInterface(interfaceType);
+}
+
+}

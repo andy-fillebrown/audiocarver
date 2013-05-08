@@ -34,8 +34,7 @@
 #include <mi_core_objectlist_modelitem.h>
 #include <mi_core_objectlist_modelupdater.h>
 
-using namespace Ac;
-
+namespace Ac {
 namespace Core {
 
 IAggregate *DatabaseObjectFactory::create(int itemType, IComponent *parent)
@@ -120,4 +119,5 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
     }
 }
 
+}
 }

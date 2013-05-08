@@ -26,13 +26,14 @@
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iselectionset.h>
+#include <iundomanager.h>
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
 
-using namespace Core;
 using namespace Ac;
+using namespace Ac::Core;
 using namespace Qt;
 
 static const int buttonColumnWidth = 12;
@@ -190,23 +191,23 @@ void TrackView::dropEvent(QDropEvent *event)
             from_rows.append(from_row);
         }
         int to_row = d->dropRow;
-        IEditor *editor = IEditor::instance();
+        IUndoManager *undo_manager = IUndoManager::instance();
         if (!from_rows.contains(to_row)) {
             IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
             QList<IModelItem*> items;
             foreach (int row, from_rows) {
                 if (row == to_row)
                     continue;
-                if (!editor->isInCommand())
-                    editor->beginCommand();
+                if (!undo_manager->isInCommand())
+                    undo_manager->beginCommand();
                 items.append(track_list->takeItemAt(row));
                 if (row < to_row)
                     --to_row;
             }
             foreach (IModelItem *item, items)
                 track_list->insertItem(to_row, item);
-            if (editor->isInCommand())
-                editor->endCommand();
+            if (undo_manager->isInCommand())
+                undo_manager->endCommand();
         }
     }
     d->dragging = false;

@@ -21,6 +21,7 @@
 #include <mi_core_base_databaseobjectfactory.h>
 #include "ac_core_global.h"
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT DatabaseObjectFactory : public Base::DatabaseObjectFactory
@@ -30,6 +31,7 @@ protected:
     virtual void createComponents(int itemType, IAggregate *aggregate);
 };
 
+}
 }
 
 #endif

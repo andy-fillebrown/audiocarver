@@ -21,8 +21,7 @@
 #include <mi_core_base_model.h>
 #include "ac_core_global.h"
 
-class QAbstractItemModel;
-
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT Model : public Base::Model
@@ -31,6 +30,7 @@ public:
     Model();
 };
 
+}
 }
 
 #endif

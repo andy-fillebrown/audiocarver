@@ -32,6 +32,7 @@
 #include <imodelitem.h>
 #include <iplaycursor.h>
 #include <iselectionset.h>
+#include <iundomanager.h>
 #include <QApplication>
 #include <QGraphicsRectItem>
 #include <QMouseEvent>
@@ -418,11 +419,11 @@ public:
         dragState = 0;
         curGrip = 0;
         if (gripsDragged) {
-            IEditor *editor = IEditor::instance();
-            editor->beginCommand();
+            IUndoManager *undo_manager = IUndoManager::instance();
+            undo_manager->beginCommand();
             foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
                 delegate->updateModel();
-            editor->endCommand();
+            undo_manager->endCommand();
             gripsDragged = false;
             if (!keepGripsPicked)
                 clearPickedGrips();

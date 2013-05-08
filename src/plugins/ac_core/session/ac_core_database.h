@@ -24,6 +24,7 @@
 
 class IAggregate;
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT Database : public Base::Database
@@ -47,6 +48,7 @@ protected:
     bool isReading() const;
 };
 
+}
 }
 
 #endif

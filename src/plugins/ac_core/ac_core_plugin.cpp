@@ -29,8 +29,6 @@
 static bool test();
 #endif
 
-using namespace Core;
-
 namespace Ac {
 namespace Core {
 

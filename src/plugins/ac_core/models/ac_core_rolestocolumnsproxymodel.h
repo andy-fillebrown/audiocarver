@@ -21,6 +21,7 @@
 #include <QSortFilterProxyModel>
 #include "ac_core_global.h"
 
+namespace Ac {
 namespace Core {
 
 typedef QMap<int, int> RoleMap;
@@ -84,6 +85,7 @@ public:
     }
 };
 
+}
 }
 
 #endif

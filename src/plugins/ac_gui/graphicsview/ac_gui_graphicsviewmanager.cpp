@@ -23,7 +23,6 @@
 #include "ac_gui_graphicspitchlabelview.h"
 #include "ac_gui_graphicspitchview.h"
 #include "ac_gui_graphicstimelabelview.h"
-#include "ac_gui_undo_viewsettingscommand.h"
 #include <ac_core_constants.h>
 #include <ac_core_namespace.h>
 #include <mi_gui_undo_stack.h>
@@ -34,6 +33,7 @@
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iselectionset.h>
+#include <iundomanager.h>
 #include <mainwindow.h>
 #include <QMessageBox>
 #include <QTimer>
@@ -82,10 +82,10 @@ public:
     qreal timeScale;
     qreal pitchScale;
     qreal controlScale;
-    Undo::ViewSettingsCommand *undoCmd;
     QTimer *updateViewsTimer;
     uint initialized : 1;
     uint updatingDatabase : 1;
+    uint undoingViewSettings : 1;
 
     GraphicsViewManagerPrivate(GraphicsViewManager *q)
         :   q(q)
@@ -95,10 +95,10 @@ public:
         ,   timeLabelView(0)
         ,   pitchLabelView(0)
         ,   controlLabelView(0)
-        ,   undoCmd(0)
         ,   updateViewsTimer(new QTimer(q))
         ,   initialized(false)
         ,   updatingDatabase(false)
+        ,   undoingViewSettings(false)
     {
         updateViewsTimer->setSingleShot(true);
     }
@@ -133,7 +133,6 @@ public:
 
     ~GraphicsViewManagerPrivate()
     {
-        qDelete(undoCmd);
         delete controlLabelView;
         delete pitchLabelView;
         delete timeLabelView;
@@ -171,18 +170,18 @@ public:
 
     void startUndo()
     {
-        if (!undoCmd && initialized && !IDatabase::instance()->isReading()) {
-            IEditor *editor = IEditor::instance();
-            if (!editor->isUndoing() && !editor->isInCommand())
-                undoCmd = new Undo::ViewSettingsCommand;
+        if (initialized && !undoingViewSettings && !IDatabase::instance()->isReading()) {
+            IUndoManager *undo_manager = IUndoManager::instance();
+            if (!undo_manager->isUndoing() && !undo_manager->isInCommand())
+                undoingViewSettings = true;
         }
     }
 
     void finishUndo()
     {
-        if (undoCmd) {
-            IEditor::instance()->pushCommand(undoCmd);
-            undoCmd = 0;
+        if (undoingViewSettings) {
+            IUndoManager::instance()->pushCommand(ViewSettingsCommandId);
+            undoingViewSettings = false;
         }
     }
 
@@ -457,9 +456,8 @@ void GraphicsViewManager::modelReset()
 
 void GraphicsViewManager::startInsertingPoints()
 {
-    IEditor *editor = IEditor::instance();
-    editor->startCreating();
-    if (editor->currentSelection(NoteItem)->items().isEmpty())
+    IUndoManager::instance()->pause();
+    if (IEditor::instance()->currentSelection(NoteItem)->items().isEmpty())
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "No notes are selected.");
     else
         d->pitchView->startInsertingPoints();
@@ -467,15 +465,14 @@ void GraphicsViewManager::startInsertingPoints()
 
 void GraphicsViewManager::finishInsertingPoints()
 {
-    IEditor::instance()->finishCreating();
+    IUndoManager::instance()->resume();
     d->pitchView->finishInsertingPoints();
 }
 
 void GraphicsViewManager::cancelPointInsertion()
 {
-    IEditor *editor = IEditor::instance();
-    if (!editor)
-        return;
-    editor->finishCreating();
+    IUndoManager *undo_manager = IUndoManager::instance();
+    if (undo_manager)
+        undo_manager->resume();
     d->pitchView->cancelPointInsertion();
 }

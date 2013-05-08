@@ -20,6 +20,7 @@
 
 #include "ac_core_rolestocolumnsproxymodel.h"
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT TrackModel : public RolesToColumnsProxyModel
@@ -45,6 +46,7 @@ public:
     QMimeData *mimeData(const QModelIndexList &indexes) const;
 };
 
+}
 }
 
 #endif

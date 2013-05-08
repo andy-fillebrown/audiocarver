@@ -21,8 +21,8 @@
 #include <mi_gui_base_editor.h>
 
 class IAggregate;
-class QUndoStack;
 
+namespace Ac {
 namespace Gui {
 
 class Editor : public Base::Editor
@@ -30,9 +30,6 @@ class Editor : public Base::Editor
     IAggregate *_objectSS;
     IAggregate *_trackSS;
     IAggregate *_noteSS;
-    QUndoCommand *_currentCommand;
-    QUndoStack *_undoStack;
-    int _undoing : 1;
 
 public:
     Editor();
@@ -40,28 +37,13 @@ public:
 
 protected:
     ISelectionSet *currentSelection(int itemType) const;
-    void undo();
-    void redo();
     void cut();
     void copy() const;
     void paste();
     void selectAll();
-
-    bool isUndoing() const
-    {
-        return _undoing;
-    }
-
-    QUndoCommand *currentCommand() const
-    {
-        return _currentCommand;
-    }
-
-    void beginCommand();
-    void endCommand();
-    void pushCommand(QUndoCommand *command);
 };
 
+}
 }
 
 #endif

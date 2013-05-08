@@ -21,6 +21,7 @@
 #include "ac_gui_editor.h"
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindowextension.h"
+#include "ac_gui_undomanager.h"
 #include <ac_core_database.h>
 #include <ac_core_namespace.h>
 #include <mainwindow.h>
@@ -33,8 +34,6 @@
 static bool test();
 #endif
 
-using namespace Gui;
-
 namespace Ac {
 namespace Gui {
 
@@ -43,8 +42,9 @@ Plugin::Plugin()
     new DatabaseObjectFactory;
     new Core::Database;
     new Editor;
+    new UndoManager;
     new Database::GraphicsViewManagerUpdater(ISession::instance());
-    addAutoReleasedObject(new MainWindowExtension);
+    addAutoReleasedObject(new ::Gui::MainWindowExtension);
 }
 
 Plugin::~Plugin()
@@ -54,7 +54,7 @@ Plugin::~Plugin()
 
 void Plugin::extensionsInitialized()
 {
-    Core::MainWindow *main_window = Core::ICore::instance()->mainWindow();
+    ::Core::MainWindow *main_window = ::Core::ICore::instance()->mainWindow();
     MainWidget *widget = new MainWidget(main_window);
     main_window->setCentralWidget(widget);
 #ifdef QT_DEBUG
@@ -65,7 +65,7 @@ void Plugin::extensionsInitialized()
 }
 }
 
-Q_EXPORT_PLUGIN(Ac::Gui::Plugin)
+Q_EXPORT_PLUGIN(::Ac::Gui::Plugin)
 
 #ifdef QT_DEBUG
 
@@ -77,7 +77,7 @@ Q_EXPORT_PLUGIN(Ac::Gui::Plugin)
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
 
-using namespace Ac;
+using namespace ::Ac;
 
 bool test_create_item(IDatabaseObjectFactory *factory, int itemType)
 {

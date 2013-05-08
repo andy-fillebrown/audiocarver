@@ -16,7 +16,7 @@
 **************************************************************************/
 
 #include "ac_gui_togglebuttondelegate.h"
-#include <ieditor.h>
+#include <iundomanager.h>
 #include <QMouseEvent>
 #include <QPainter>
 
@@ -36,10 +36,10 @@ bool ToggleButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
         return false;
     const QMouseEvent *mouse_event = static_cast<const QMouseEvent*>(event);
     if (LeftButton == mouse_event->button()) {
-        IEditor *editor = IEditor::instance();
-        editor->beginCommand();
+        IUndoManager *undo_manager = IUndoManager::instance();
+        undo_manager->beginCommand();
         model->setData(index, !index.data().toBool(), DisplayRole);
-        editor->endCommand();
+        undo_manager->endCommand();
     }
     return true;
 }

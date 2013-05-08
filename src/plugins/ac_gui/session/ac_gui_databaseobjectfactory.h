@@ -20,6 +20,7 @@
 
 #include <ac_core_databaseobjectfactory.h>
 
+namespace Ac {
 namespace Gui {
 
 class DatabaseObjectFactory : public Core::DatabaseObjectFactory
@@ -28,6 +29,7 @@ protected:
     void createComponents(int itemType, IAggregate *aggregate);
 };
 
+}
 }
 
 #endif

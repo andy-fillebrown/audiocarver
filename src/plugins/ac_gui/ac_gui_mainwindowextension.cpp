@@ -35,6 +35,7 @@
 //#include <iqaudioengine.h>
 #include <iselectionset.h>
 //#include <isynthesizer.h>
+#include <iundomanager.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
@@ -210,33 +211,34 @@ void MainWindowExtension::showGridSettings()
 
 void MainWindowExtension::createTrack()
 {
-    IEditor *editor = IEditor::instance();
-    editor->beginCommand();
+    IUndoManager *undo_manager = IUndoManager::instance();
+    undo_manager->beginCommand();
     IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
     IModelItem *track = query<IModelItem>(IDatabaseObjectFactory::instance()->create(TrackItem));
     track_list->appendItem(track);
-    editor->endCommand();
+    undo_manager->endCommand();
 }
 
 void MainWindowExtension::erase()
 {
     IEditor *editor = IEditor::instance();
+    IUndoManager *undo_manager = IUndoManager::instance();
 
     // Erase selected points in pitch and control views.
     GraphicsViewManager *vm = GraphicsViewManager::instance();
     GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
     if (view->pointsAreSelected()) {
-        editor->beginCommand();
+        undo_manager->beginCommand();
         view->removePoints();
     }
     view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
     if (view->pointsAreSelected()) {
-        if (!editor->isInCommand())
-            editor->beginCommand();
+        if (!undo_manager->isInCommand())
+            undo_manager->beginCommand();
         view->removePoints();
     }
-    if (editor->isInCommand()) {
-        editor->endCommand();
+    if (undo_manager->isInCommand()) {
+        undo_manager->endCommand();
         return;
     }
 
@@ -244,7 +246,7 @@ void MainWindowExtension::erase()
     ISelectionSet *ss = editor->currentSelection(NoteItem);
     QList<IGraphicsItem*> items = ss->items();
     if (!items.isEmpty()) {
-        editor->beginCommand();
+        undo_manager->beginCommand();
         while (!items.isEmpty()) {
             IGraphicsItem *item = items.last();
             item->update(HighlightRole, NoHighlight);
@@ -252,7 +254,7 @@ void MainWindowExtension::erase()
             note->remove();
             items.removeLast();
         }
-        editor->endCommand();
+        undo_manager->endCommand();
         ss->clear();
         editor->currentSelection()->clear();
         return;
@@ -262,7 +264,7 @@ void MainWindowExtension::erase()
     ss = editor->currentSelection(TrackItem);
     items = ss->items();
     if (!items.isEmpty()) {
-        editor->beginCommand();
+        undo_manager->beginCommand();
         while (!items.isEmpty()) {
             IGraphicsItem *item = items.last();
             item->update(HighlightRole, NoHighlight);
@@ -271,7 +273,7 @@ void MainWindowExtension::erase()
             track->remove();
             items.removeLast();
         }
-        editor->endCommand();
+        undo_manager->endCommand();
         ss->clear();
         return;
     }

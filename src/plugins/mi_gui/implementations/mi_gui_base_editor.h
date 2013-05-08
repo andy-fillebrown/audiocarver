@@ -24,54 +24,19 @@ namespace Base {
 
 class MI_GUI_EXPORT Editor : public IEditor
 {
-    int _inCommand : 1;
-    int _creating : 1;
-
 public:
     Editor();
-    ~Editor();
 
     void *queryInterface(int interfaceType) const;
 
 protected:
+    ~Editor();
+
     void initialize()
     {}
 
     void reset()
     {}
-
-    bool isInCommand() const
-    {
-        return _inCommand;
-    }
-
-    void beginCommand()
-    {
-        _inCommand = true;
-    }
-
-    void endCommand()
-    {
-        _inCommand = false;
-    }
-
-    void pushCommand(QUndoCommand *command)
-    {}
-
-    bool isCreating() const
-    {
-        return _creating;
-    }
-
-    void startCreating()
-    {
-        _creating = true;
-    }
-
-    void finishCreating()
-    {
-        _creating = false;
-    }
 };
 
 }

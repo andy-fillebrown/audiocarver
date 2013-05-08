@@ -21,6 +21,7 @@
 #include <mi_core_base_filerfactory.h>
 #include "ac_core_global.h"
 
+namespace Ac {
 namespace Core {
 
 class AC_CORE_EXPORT FilerFactory : public Base::FilerFactory
@@ -29,6 +30,7 @@ protected:
     IAggregate *create(int filerType);
 };
 
+}
 }
 
 #endif

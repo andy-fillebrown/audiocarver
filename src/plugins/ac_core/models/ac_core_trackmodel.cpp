@@ -21,15 +21,20 @@
 #include <QMimeData>
 #include <QStringList>
 
-using namespace Ac;
 using namespace Mi;
 using namespace Qt;
-using namespace Core;
 
-static TrackModel *instance = 0;
 static const char mimeType[] = "AudioCarver track numbers";
 
+namespace Ac {
 namespace Core {
+
+static TrackModel *instance = 0;
+
+TrackModel *TrackModel::instance()
+{
+    return Ac::Core::instance;
+}
 
 TrackModel::TrackModel(QObject *parent)
     :   RolesToColumnsProxyModel(parent)
@@ -45,12 +50,7 @@ TrackModel::TrackModel(QObject *parent)
     role_maps[3].insert(DisplayRole, RecordingRole);
     setRoleMaps(role_maps);
     setSourceModel(qobject_cast<QAbstractItemModel*>(parent));
-    ::instance = this;
-}
-
-TrackModel *TrackModel::instance()
-{
-    return ::instance;
+    Ac::Core::instance = this;
 }
 
 bool TrackModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -83,4 +83,5 @@ QMimeData *TrackModel::mimeData(const QModelIndexList &indexes) const
     return mime_data;
 }
 
+}
 }

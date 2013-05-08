@@ -26,6 +26,7 @@ enum MiGuiInterfaces {
     IEditor = MiCoreInterfaceCount,
     ISelectionSet,
     ISelectionSetWatcher,
+    IUndoManager,
     MiGuiInterfaceCount
 };
 

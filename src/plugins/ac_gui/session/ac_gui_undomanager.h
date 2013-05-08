@@ -15,35 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_SELECTIONSET_H
-#define AC_GUI_SELECTIONSET_H
+#ifndef AC_GUI_UNDOMANAGER_H
+#define AC_GUI_UNDOMANAGER_H
 
-#include <mi_gui_base_selectionset.h>
-#include <QList>
+#include "mi_gui_undomanager.h"
 
 namespace Ac {
 namespace Gui {
 
-class SelectionSet : public Base::SelectionSet
+class UndoManager : public Mi::Gui::UndoManager
 {
-    QList<IGraphicsItem*> _items;
-
-public:
-    SelectionSet(IAggregate *aggregate)
-        :   Base::SelectionSet(aggregate)
-    {}
-
 protected:
-    const QList<IGraphicsItem*> &items() const
-    {
-        return _items;
-    }
-
-    bool append(IGraphicsItem *item);
-    bool append(const QList<IGraphicsItem*> &items);
-    bool remove(IGraphicsItem *item);
-    bool remove(const QList<IGraphicsItem*> &items);
-    void clear();
+    void pushCommand(int commandId);
 };
 
 }

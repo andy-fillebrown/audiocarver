@@ -24,17 +24,6 @@
 
 using namespace Ac;
 
-static void updateZValues(IModelItem *list)
-{
-    const int child_count = list->itemCount();
-    for (int i = 0;  i < child_count;  ++i) {
-        const int z_value = child_count - i;
-        IGraphicsItem *child_graphics = query<IGraphicsItem>(list->itemAt(i));
-        child_graphics->findNode(PitchScene, MainTransform)->setZValue(z_value);
-        child_graphics->findNode(ControlScene, MainTransform)->setZValue(z_value);
-    }
-}
-
 namespace TrackList {
 
 GraphicsUpdater::GraphicsUpdater(IAggregate *aggregate)
@@ -51,7 +40,15 @@ void *GraphicsUpdater::queryInterface(int interfaceType) const
 
 void GraphicsUpdater::endInsertItem(IModelItem *list, int index)
 {
-    updateZValues(list);
+    const int child_count = list->itemCount();
+    for (int i = 0;  i < child_count;  ++i) {
+        IModelItem *child_item = list->itemAt(i);
+        IGraphicsItem *child_graphics = query<IGraphicsItem>(child_item);
+        const int z_value = child_count - i;
+        child_graphics->findNode(PitchScene, MainTransform)->setZValue(z_value);
+        child_graphics->findNode(ControlScene, MainTransform)->setZValue(z_value);
+        child_graphics->update(VisibilityRole, child_item->getValue(VisibilityRole));
+    }
 }
 
 }
