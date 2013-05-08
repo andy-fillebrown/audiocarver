@@ -665,8 +665,6 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     setVerticalScrollBarPolicy(ScrollBarAlwaysOff);
     setCursor(normalCrosshair());
     setMouseTracking(true);
-//    connect(IEditor::instance(), SIGNAL(commandUndone()), SLOT(clearGripSelection()));
-//    connect(IEditor::instance(), SIGNAL(commandRedone()), SLOT(clearGripSelection()));
     connect(IModel::instance(), SIGNAL(modelAboutToBeReset()), SLOT(modelAboutToBeReset()));
 }
 
@@ -803,6 +801,8 @@ void GraphicsView::removePoints()
             if (curve_item == query<IModelItem>(picked_grips.at(j))->parent())
                 curve_grips_to_remove.append(picked_grips.at(j));
         int curve_grips_to_remove_count = curve_grips_to_remove.count();
+
+        // Delete the entire note if there will be less than two points left.
         if (curve_grips.count() - curve_grips_to_remove_count < 2) {
             curve_griplist->findNode()->setVisible(false);
             foreach (IGraphicsGrip *grip, curve_grips_to_remove)
@@ -814,9 +814,9 @@ void GraphicsView::removePoints()
             note_item->remove();
             IEditor::instance()->currentSelection()->remove(note_graphics);
         } else {
+            curve_griplist->update(PointsRole, QVariant::fromValue(GripList::toPointList(curve_grips)));
             foreach (IGraphicsGrip *grip, curve_grips_to_remove)
                 curve_grips.removeOne(grip);
-            curve_griplist->update(PointsRole, QVariant::fromValue(GripList::toPointList(curve_grips)));
         }
         grip_count -= curve_grips_to_remove_count;
         i -= curve_grips_to_remove_count;
