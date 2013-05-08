@@ -65,11 +65,15 @@ Stack::~Stack()
 
 void Stack::beginCommand()
 {
+    if (_command)
+        return;
     _command = new QUndoCommand;
 }
 
 void Stack::endCommand()
 {
+    if (!_command)
+        return;
     push(_command);
     _command = 0;
 }
