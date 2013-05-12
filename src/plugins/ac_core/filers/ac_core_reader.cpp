@@ -20,7 +20,7 @@
 #include "ac_core_point.h"
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
-#include <ifilefiler.h>
+#include <ifiler.h>
 #include <imodelitem.h>
 #include <QFile>
 #include <QStringList>
@@ -135,14 +135,9 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
 
 Reader::Reader(IAggregate *aggregate)
     :   _aggregate(aggregate)
-    ,   _stream(0)
+    ,   _reader(0)
 {
     _aggregate->appendComponent(this);
-}
-
-Reader::~Reader()
-{
-    delete _stream;
 }
 
 void *Reader::queryInterface(int interfaceType) const
@@ -151,22 +146,13 @@ void *Reader::queryInterface(int interfaceType) const
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void Reader::setStream(QXmlStreamReader *stream)
-{
-    if (_stream == stream)
-        return;
-    delete _stream;
-    _stream = stream;
-}
-
 int Reader::nextItemType()
 {
-    QXmlStreamReader *reader = _stream;
-    if (!reader)
+    if (!_reader)
         return -1;
-    if (!nextStartElement(reader))
+    if (!nextStartElement(_reader))
         return UnknownItem;
-    const QString element_name = reader->name().toString();
+    const QString element_name = _reader->name().toString();
     return elementType(element_name);
 }
 
@@ -174,15 +160,12 @@ bool Reader::read(IModelItem *item)
 {
     if (!item)
         return false;
-    QFile *file = query<IFileFiler>(this)->file();
-    if (file && file->open(QIODevice::ReadOnly))
-        setStream(new QXmlStreamReader(file));
-    QXmlStreamReader *reader = _stream;
-    if (!reader)
+    _reader = query<IFiler>(this)->reader();
+    if (!_reader)
         return false;
-    if (!nextStartElement(reader))
+    if (!nextStartElement(_reader))
         return false;
-    return readItem(item, reader);
+    return readItem(item, _reader);
 }
 
 }

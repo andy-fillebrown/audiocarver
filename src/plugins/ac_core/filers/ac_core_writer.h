@@ -29,11 +29,10 @@ namespace Xml {
 class AC_CORE_EXPORT Writer : public IWriter
 {
     IAggregate *_aggregate;
-    QXmlStreamWriter *_stream;
+    QXmlStreamWriter *_writer;
 
 public:
     Writer(IAggregate *aggregate);
-    ~Writer();
 
     void *queryInterface(int interfaceType) const;
 
@@ -44,7 +43,6 @@ protected:
     void reset()
     {}
 
-    void setStream(QXmlStreamWriter *stream);
     bool write(IModelItem *item);
 };
 

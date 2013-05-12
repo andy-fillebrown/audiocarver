@@ -15,22 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef IFILEFILER_H
-#define IFILEFILER_H
+#ifndef IFILER_H
+#define IFILER_H
 
 #include <icomponent.h>
 
 class QFile;
 class QString;
+class QXmlStreamReader;
+class QXmlStreamWriter;
 
-class IFileFiler : public IComponent
+class IFiler : public IComponent
 {
 public:
-    enum { InterfaceType = I::IFileFiler };
+    enum { InterfaceType = I::IFiler };
 
-    virtual QFile *file() const = 0;
     virtual QString fileName() const = 0;
     virtual void setFileName(const QString &fileName) = 0;
+    virtual QXmlStreamReader *reader() = 0;
+    virtual QXmlStreamWriter *writer() = 0;
 
     int interfaceType() const
     {

@@ -27,7 +27,7 @@ enum MiCoreInterface {
     IDatabase,
     IDatabaseObjectFactory,
     IDatabaseWatcher,
-    IFileFiler,
+    IFiler,
     IFilerFactory,
     IModel,
     IModelItem,

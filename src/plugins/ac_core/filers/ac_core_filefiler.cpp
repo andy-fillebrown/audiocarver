@@ -16,26 +16,33 @@
 **************************************************************************/
 
 #include "ac_core_filefiler.h"
+#include <mi_core_global.h>
 #include <iaggregate.h>
 #include <QFile>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 namespace Xml {
 
 FileFiler::FileFiler(IAggregate *aggregate)
     :   _aggregate(aggregate)
     ,   _file(0)
+    ,   _reader(0)
+    ,   _writer(0)
 {
     _aggregate->appendComponent(this);
 }
 
 FileFiler::~FileFiler()
 {
-    delete _file;
+    qDelete(_writer);
+    qDelete(_reader);
+    qDelete(_file);
 }
 
 void *FileFiler::queryInterface(int interfaceType) const
 {
-    void *i = IFileFiler::queryInterface(interfaceType);
+    void *i = IFiler::queryInterface(interfaceType);
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
@@ -52,6 +59,25 @@ void FileFiler::setFileName(const QString &fileName)
         return;
     delete _file;
     _file = new QFile(fileName);
+}
+
+QXmlStreamReader *FileFiler::reader()
+{
+    if (_file && !_reader && !_writer)
+        if (_file->open(QIODevice::ReadOnly))
+            _reader = new QXmlStreamReader(_file);
+    return _reader;
+}
+
+QXmlStreamWriter *FileFiler::writer()
+{
+    if (_file && !_reader && !_writer) {
+        if (_file->open(QIODevice::WriteOnly)) {
+            _writer = new QXmlStreamWriter(_file);
+            _writer->setAutoFormatting(true);
+        }
+    }
+    return _writer;
 }
 
 }

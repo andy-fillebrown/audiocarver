@@ -19,7 +19,7 @@
 #include "ac_core_namespace.h"
 #include "ac_core_point.h"
 #include <iaggregate.h>
-#include <ifilefiler.h>
+#include <ifiler.h>
 #include <imodelitem.h>
 #include <QFile>
 #include <QXmlStreamWriter>
@@ -83,14 +83,9 @@ static bool writeItem(IModelItem *item, QXmlStreamWriter *writer)
 
 Writer::Writer(IAggregate *aggregate)
     :   _aggregate(aggregate)
-    ,   _stream(0)
+    ,   _writer(0)
 {
     _aggregate->appendComponent(this);
-}
-
-Writer::~Writer()
-{
-    delete _stream;
 }
 
 void *Writer::queryInterface(int interfaceType) const
@@ -99,27 +94,15 @@ void *Writer::queryInterface(int interfaceType) const
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void Writer::setStream(QXmlStreamWriter *stream)
-{
-    if (_stream == stream)
-        return;
-    delete _stream;
-    _stream = stream;
-    _stream->setAutoFormatting(true);
-}
-
 bool Writer::write(IModelItem *item)
 {
     if (!item)
         return false;
-    QFile *file = query<IFileFiler>(this)->file();
-    if (file && file->open(QIODevice::WriteOnly))
-        setStream(new QXmlStreamWriter(file));
-    QXmlStreamWriter *writer = _stream;
-    if (!writer)
+    _writer = query<IFiler>(this)->writer();
+    if (!_writer)
         return false;
-    if (writeItem(item, writer)) {
-        writer->writeCharacters("\n");
+    if (writeItem(item, _writer)) {
+        _writer->writeCharacters("\n");
         return true;
     }
     return false;

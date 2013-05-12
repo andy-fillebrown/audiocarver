@@ -21,7 +21,7 @@
 #include <iaggregate.h>
 #include <idatabase.h>
 #include <idatabaseobjectfactory.h>
-#include <ifilefiler.h>
+#include <ifiler.h>
 #include <ifilerfactory.h>
 #include <imodel.h>
 #include <ireader.h>
@@ -223,7 +223,7 @@ void Model::importFromFile(const QString &fileName)
     }
     IModelItem *list = query<IModelItem>(list_aggregate);
     IAggregate *filer = query<IFilerFactory>(IFilerFactory::instance())->create(FileFiler);
-    query<IFileFiler>(filer)->setFileName(fileName);
+    query<IFiler>(filer)->setFileName(fileName);
     query<IReader>(filer)->read(list);
     syncDataToList(list);
     emit layoutChanged();
@@ -251,7 +251,7 @@ void Model::exportToFile(const QString &fileName)
     IModelItem *list = query<IModelItem>(list_aggregate);
     syncListToData(list);
     IAggregate *filer = query<IFilerFactory>(IFilerFactory::instance())->create(FileFiler);
-    query<IFileFiler>(filer)->setFileName(fileName);
+    query<IFiler>(filer)->setFileName(fileName);
     query<IWriter>(filer)->write(list);
     delete filer;
     delete list_aggregate;

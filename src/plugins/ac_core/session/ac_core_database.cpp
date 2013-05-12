@@ -21,7 +21,7 @@
 #include <mi_core_scopeddatabasewrite.h>
 #include <iaggregate.h>
 #include <idatabaseobjectfactory.h>
-#include <ifilefiler.h>
+#include <ifiler.h>
 #include <ifilerfactory.h>
 #include <imodel.h>
 #include <imodelitem.h>
@@ -82,7 +82,7 @@ void Database::read(const QString &fileName)
     ScopedDatabaseRead scoped_read(this);
     reset();
     IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
-    query<IFileFiler>(filer)->setFileName(fileName);
+    query<IFiler>(filer)->setFileName(fileName);
     if (query<IReader>(filer)->read(rootItem()))
         _fileName = fileName;
     delete filer;
@@ -93,7 +93,7 @@ void Database::write(const QString &fileName)
 {
     ScopedDatabaseWrite scoped_write(this);
     IAggregate *filer = IFilerFactory::instance()->create(FileFiler);
-    query<IFileFiler>(filer)->setFileName(fileName);
+    query<IFiler>(filer)->setFileName(fileName);
     query<IWriter>(filer)->write(rootItem());
     delete filer;
 }

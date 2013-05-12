@@ -29,11 +29,10 @@ namespace Xml {
 class AC_CORE_EXPORT Reader : public IReader
 {
     IAggregate *_aggregate;
-    QXmlStreamReader *_stream;
+    QXmlStreamReader *_reader;
 
 public:
     Reader(IAggregate *aggregate);
-    ~Reader();
 
     void *queryInterface(int interfaceType) const;
 
@@ -44,7 +43,6 @@ protected:
     void reset()
     {}
 
-    void setStream(QXmlStreamReader *stream);
     int nextItemType();
     bool read(IModelItem *item);
 };

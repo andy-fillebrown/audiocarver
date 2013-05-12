@@ -18,17 +18,19 @@
 #ifndef AC_CORE_FILEFILER_H
 #define AC_CORE_FILEFILER_H
 
-#include <ifilefiler.h>
+#include <ifiler.h>
 
 class IAggregate;
 class QFile;
 
 namespace Xml {
 
-class FileFiler : public IFileFiler
+class FileFiler : public IFiler
 {
     IAggregate *_aggregate;
     QFile *_file;
+    QXmlStreamReader *_reader;
+    QXmlStreamWriter *_writer;
 
 public:
     FileFiler(IAggregate *aggregate);
@@ -43,13 +45,10 @@ protected:
     void reset()
     {}
 
-    QFile *file() const
-    {
-        return _file;
-    }
-
     QString fileName() const;
     void setFileName(const QString &fileName);
+    QXmlStreamReader *reader();
+    QXmlStreamWriter *writer();
 };
 
 }

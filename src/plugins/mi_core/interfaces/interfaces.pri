@@ -5,7 +5,7 @@ SOURCE_FILES = \
     idatabase \
     idatabaseobjectfactory \
     idatabasewatcher \
-    ifilefiler \
+    ifiler \
     ifilerfactory \
     imodel \
     imodelitem \
