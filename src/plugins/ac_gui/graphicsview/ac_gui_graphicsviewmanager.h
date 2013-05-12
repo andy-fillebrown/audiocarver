@@ -60,7 +60,7 @@ public slots:
     void databaseAboutToBeWritten();
     void disableUpdates();
     void enableUpdates();
-    void dataChanged(IModelItem *item);
+    void dataChanged(IModelItem *item, int role);
     void modelReset();
     void startInsertingPoints();
     void finishInsertingPoints();

@@ -31,6 +31,7 @@
 #include <idatabase.h>
 #include <ieditor.h>
 #include <igraphicsgrip.h>
+#include <igraphicsitem.h>
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iselectionset.h>
@@ -252,7 +253,7 @@ GraphicsViewManager::GraphicsViewManager(QWidget *widget)
     ::instance = this;
     d->init();
     IModel *model = IModel::instance();
-    connect(model, SIGNAL(dataChanged(IModelItem*,int)), SLOT(dataChanged(IModelItem*)));
+    connect(model, SIGNAL(dataChanged(IModelItem*,int)), SLOT(dataChanged(IModelItem*,int)));
     connect(model, SIGNAL(modelAboutToBeReset()), SLOT(disableUpdates()));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
     connect(d->updateViewsTimer, SIGNAL(timeout()), SLOT(updateViews()));
@@ -458,11 +459,22 @@ void GraphicsViewManager::enableUpdates()
         view(i)->setUpdatesEnabled(true);
 }
 
-void GraphicsViewManager::dataChanged(IModelItem *item)
+void GraphicsViewManager::dataChanged(IModelItem *item, int role)
 {
-    if (!d->updatingDatabase
-            && ViewSettingsItem == item->itemType())
+    if (ViewSettingsItem == item->itemType() && !d->updatingDatabase)
         d->updateViewVariables();
+
+    // Remove notes from selection set when their track is turned off.
+    if (TrackItem == item->itemType() && VisibilityRole == role) {
+        if (!get<bool>(item, role)) {
+            IGraphicsItem *track_graphics = query<IGraphicsItem>(item);
+            ISelectionSet *ss = IEditor::instance()->currentSelection();
+            QList<IGraphicsItem*> ss_items = ss->items();
+            foreach (IGraphicsItem *ss_item, ss_items)
+                if (track_graphics == ss_item->parent())
+                    ss->remove(ss_item);
+        }
+    }
 }
 
 void GraphicsViewManager::modelReset()
