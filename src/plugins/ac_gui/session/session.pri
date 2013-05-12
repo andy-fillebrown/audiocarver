@@ -2,6 +2,7 @@
 SOURCE_FILES = \
     databaseobjectfactory \
     editor \
+    filerfactory \
     selectionset \
     undomanager \
 

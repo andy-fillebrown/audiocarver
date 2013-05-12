@@ -4,7 +4,7 @@ load(../ac_core/ac_core.prf)
 
 DIRS = \
     dialogs \
-#    filers \
+    filers \
     graphics \
     graphicsview \
     implementations \

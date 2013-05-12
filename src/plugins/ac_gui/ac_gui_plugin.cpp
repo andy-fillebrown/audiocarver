@@ -19,6 +19,7 @@
 #include "ac_gui_databaseobjectfactory.h"
 #include "ac_gui_database_graphicsviewmanagerupdater.h"
 #include "ac_gui_editor.h"
+#include "ac_gui_filerfactory.h"
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindowextension.h"
 #include "ac_gui_undomanager.h"
@@ -42,6 +43,7 @@ Plugin::Plugin()
     new DatabaseObjectFactory;
     new Core::Database;
     new Editor;
+    new FilerFactory;
     new UndoManager;
     new Database::GraphicsViewManagerUpdater(ISession::instance());
     addAutoReleasedObject(new ::Gui::MainWindowExtension);

@@ -1,13 +1,11 @@
 
 SOURCE_FILES = \
-    xmlcopyfiler \
+    copyfiler \
 
-DIR = $$dirname(_FILE_)
-DIR = $$basename(DIR)
 for(file, SOURCE_FILES) {
-    name = $${SOURCE_FILE_PREFIX}_$$file
+    name = ac_gui_$$file
     header = $${name}.h
     source = $${name}.cpp
-    exists($$header): HEADERS *= $$DIR/$$header
-    exists($$source): SOURCES *= $$DIR/$$source
+    exists($$header): HEADERS *= filers/$$header
+    exists($$source): SOURCES *= filers/$$source
 }
