@@ -24,6 +24,7 @@ class IGraphicsItem;
 class IModelItem;
 class QGraphicsView;
 class QModelIndex;
+class QPoint;
 class QPointF;
 class QWidget;
 
@@ -49,7 +50,7 @@ public:
     void setScale(int role, qreal scale);
     void updateDatabase();
     void clearPickedGrips();
-    QPointF snappedScenePos(int sceneType, const QPointF &pos) const;
+    QPointF snappedScenePos(int sceneType, const QPoint &pos) const;
     void updateSelection(const QList<IGraphicsItem*> &ss);
 
 public slots:

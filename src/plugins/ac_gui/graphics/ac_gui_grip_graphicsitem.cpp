@@ -15,10 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_gui_object_graphicsitem.h"
+#include "ac_gui_grip_graphicsitem.h"
+#include <igraphicsgrip.h>
 
-namespace Object {
+namespace Grip {
 
+int GraphicsItem::sceneType() const
+{
+    return parent()->sceneType();
+}
 
+void GraphicsItem::update(int role, const QVariant &value)
+{
+    IGraphicsGrip *grip = query<IGraphicsGrip>(this);
+    if (grip)
+        grip->update(role, value);
+}
 
 }

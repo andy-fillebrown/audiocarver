@@ -15,10 +15,25 @@
 **
 **************************************************************************/
 
+#ifndef AC_GUI_GRIP_GRAPHICSITEM_H
+#define AC_GUI_GRIP_GRAPHICSITEM_H
+
 #include "ac_gui_object_graphicsitem.h"
 
-namespace Object {
+namespace Grip {
 
+class GraphicsItem : public Object::GraphicsItem
+{
+public:
+    GraphicsItem(IAggregate *aggregate)
+        :   Object::GraphicsItem(aggregate)
+    {}
 
+protected:
+    int sceneType() const;
+    void update(int role, const QVariant &value);
+};
 
 }
+
+#endif

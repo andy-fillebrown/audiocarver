@@ -36,6 +36,7 @@ class GraphicsView : public Base::GraphicsView
 public:
     static const QCursor &normalCrosshair();
     static const QCursor &creationCrosshair();
+    static QRect pickOneRect(const QPoint &pos);
 
     GraphicsView(QGraphicsScene *scene = 0, QWidget *parent = 0);
     ~GraphicsView();

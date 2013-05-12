@@ -65,6 +65,11 @@ int GraphicsGrip::curveType() const
     return _curveType;
 }
 
+int GraphicsGrip::highlightType() const
+{
+    return _gripNode->highlightType();
+}
+
 void GraphicsGrip::update(int role, const QVariant &value)
 {
     GripSelectionModel *grip_ss_model = GripSelectionModel::instance();

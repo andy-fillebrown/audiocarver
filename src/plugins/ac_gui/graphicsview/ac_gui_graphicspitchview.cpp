@@ -36,6 +36,7 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QGraphicsItem>
 
 using namespace Ac;
 using namespace Qt;
@@ -52,6 +53,7 @@ public:
     PointList points;
     QList<IGraphicsItem*> noteSS;
     QList<IGraphicsGripList*> noteGripLists;
+    QList<IGraphicsGrip*> highlightedGrips;
     QPointF origNotePos;
     uint creatingNote : 1;
     uint noteStarted : 1;
@@ -83,8 +85,7 @@ public:
         IGraphicsItem *pitchcurve_graphics = noteGraphicsItem->findItem(PitchCurveItem);
         pitchGrips = query<IGraphicsGripList>(pitchcurve_graphics);
         pitchDelegate = query<IGraphicsDelegate>(pitchcurve_graphics);
-        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
+        QPointF scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, pos);
         points.append(scene_pos);
         addNotePoint(pos);
         noteStarted = true;
@@ -94,8 +95,7 @@ public:
     {
         if (ControlModifier & QApplication::keyboardModifiers())
             points.last().curveType = BezierCurve;
-        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
+        QPointF scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, pos);
         points.append(scene_pos);
         pitchGrips->update(PointsRole, QVariant::fromValue(points));
         pitchDelegate->updateGraphics();
@@ -103,8 +103,7 @@ public:
 
     void moveNotePoint(const QPoint &pos)
     {
-        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
+        QPointF scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, pos);
         points[points.count() - 1].pos = scene_pos;
         pitchGrips->update(PointsRole, QVariant::fromValue(points));
         pitchDelegate->updateGraphics();
@@ -151,10 +150,32 @@ public:
         q->setCursor(GraphicsView::normalCrosshair());
     }
 
-    void startMovingNotes(const QPointF &pos)
+    void highlightGrips(const QPoint &pos)
     {
-        origNotePos = q->sceneTransform().inverted().map(QPointF(pos));
-        origNotePos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, origNotePos);
+        const QList<QGraphicsItem*> items = q->items(GraphicsView::pickOneRect(pos));
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
+            if (unknown) {
+                IGraphicsGrip *grip = query<IGraphicsGrip>(unknown);
+                if (grip) {
+                    grip->update(HighlightRole, FullHighlight);
+                    highlightedGrips.append(grip);
+                }
+            }
+        }
+    }
+
+    void clearHighlightedGrips()
+    {
+        foreach (IGraphicsGrip *grip, highlightedGrips)
+            grip->update(HighlightRole, NoHighlight);
+        highlightedGrips.clear();
+    }
+
+    void startMovingNotes(const QPoint &pos)
+    {
+        clearHighlightedGrips();
+        origNotePos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, pos);
         foreach (IGraphicsItem *note, noteSS)
             noteGripLists.append(query<IGraphicsGripList>(note->findItem(PitchCurveItem)));
         noteMoveStarted = true;
@@ -163,12 +184,12 @@ public:
             foreach (IGraphicsGrip *grip, grips)
                 grip->update(OriginalPositionRole, grip->position());
         }
+        highlightGrips(pos);
     }
 
-    void moveNotes(const QPointF &pos)
+    void moveNotes(const QPoint &pos)
     {
-        QPointF scene_pos = q->sceneTransform().inverted().map(QPointF(pos));
-        scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, scene_pos);
+        const QPointF scene_pos = GraphicsViewManager::instance()->snappedScenePos(PitchScene, pos);
         foreach (IGraphicsGripList *griplist, noteGripLists) {
             QList<IGraphicsGrip*> grips = griplist->grips();
             foreach (IGraphicsGrip *grip, grips) {
@@ -179,7 +200,7 @@ public:
         }
     }
 
-    void finishMovingNotes(const QPointF &pos)
+    void finishMovingNotes(const QPoint &pos)
     {
         moveNotes(pos);
         IUndoManager *undo_manager = IUndoManager::instance();
@@ -213,6 +234,7 @@ public:
         noteGripLists.clear();
         noteSS.clear();
         q->setCursor(GraphicsView::normalCrosshair());
+        clearHighlightedGrips();
     }
 };
 
@@ -305,7 +327,11 @@ void GraphicsPitchView::mouseMoveEvent(QMouseEvent *event)
     }
     if (d->movingNotes) {
         if (d->noteMoveStarted)
-            d->moveNotes(event->posF());
+            d->moveNotes(event->pos());
+        else {
+            d->clearHighlightedGrips();
+            d->highlightGrips(event->pos());
+        }
         event->accept();
         return;
     }
@@ -325,9 +351,9 @@ void GraphicsPitchView::mouseReleaseEvent(QMouseEvent *event)
         }
         if (d->movingNotes) {
             if (!d->noteMoveStarted)
-                d->startMovingNotes(event->posF());
+                d->startMovingNotes(event->pos());
             else
-                d->finishMovingNotes(event->posF());
+                d->finishMovingNotes(event->pos());
             event->accept();
             return;
         }

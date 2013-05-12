@@ -21,6 +21,7 @@
 #include "ac_gui_curve_graphicsdelegate.h"
 #include "ac_gui_curve_graphicsgriplist.h"
 #include "ac_gui_gridsettings_graphicsitem.h"
+#include "ac_gui_grip_graphicsitem.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_note_graphicsitem.h"
 #include "ac_gui_note_graphicsupdater.h"
@@ -66,7 +67,7 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         break;
     case GripItem:
         new Object::ModelItem(aggregate);
-        new Object::GraphicsItem(aggregate);
+        new Grip::GraphicsItem(aggregate);
         new Object::GraphicsGrip(aggregate);
         break;
     case NoteItem:

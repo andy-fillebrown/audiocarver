@@ -48,8 +48,6 @@ public:
     {
         return 0;
     }
-
-    void update(int role, const QVariant &value);
 };
 
 }

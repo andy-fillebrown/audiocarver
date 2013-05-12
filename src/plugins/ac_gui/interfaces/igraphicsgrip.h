@@ -30,6 +30,7 @@ public:
     virtual QPointF originalPosition() const = 0;
     virtual QPointF position() const = 0;
     virtual int curveType() const = 0;
+    virtual int highlightType() const = 0;
 
     static bool lessThan(IGraphicsGrip *a, IGraphicsGrip *b)
     {

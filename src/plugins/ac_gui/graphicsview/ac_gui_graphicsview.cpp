@@ -140,11 +140,6 @@ public:
         return QRect(dragStartPos, dragStartPos).adjusted(-2, -2, 4, 4);
     }
 
-    QRect pickOneRect(const QPoint &pos) const
-    {
-        return QRect(pos.x() - 2, pos.y() - 2, 4, 4);
-    }
-
     void startZoom(const QPoint &pos)
     {
         q->zoomStarting();
@@ -225,7 +220,7 @@ public:
         clearHovered();
         if (viewState || Picking == dragState || insertingPoints)
             return;
-        const QRect view_pick_rect = pickOneRect(curPos);
+        const QRect view_pick_rect = GraphicsView::pickOneRect(curPos);
         const QRectF scene_pick_rect = q->sceneTransform().inverted().mapRect(QRectF(view_pick_rect));
         bool grip_is_hovered = false;
         bool entity_is_hovered = false;
@@ -298,7 +293,7 @@ public:
 
     bool selectPlayCursor(const QPoint &pos)
     {
-        playCursor = findPlayCursor(q->items(pickOneRect(pos)));
+        playCursor = findPlayCursor(q->items(GraphicsView::pickOneRect(pos)));
         return playCursor != 0;
     }
 
@@ -341,7 +336,7 @@ public:
     bool selectGrips(const QPoint &pos)
     {
         bool selectedGrip = false;
-        const QList<QGraphicsItem*> items = q->items(pickOneRect(pos));
+        const QList<QGraphicsItem*> items = q->items(GraphicsView::pickOneRect(pos));
         foreach (QGraphicsItem *item, items) {
             IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
             if (unknown) {
@@ -400,11 +395,12 @@ public:
 
     void dragGripsTo(const QPoint &pos)
     {
-        GraphicsViewManager *vm = GraphicsViewManager::instance();
-        vm->disableUpdates();
         const QPointF fromScenePos = curGrip->originalPosition();
-        const QPointF toScenePos = rootNode->transform().map(q->mapToScene(pos));
-        const QPointF sceneOffset = vm->snappedScenePos(q->sceneType(), toScenePos) - fromScenePos;
+        GraphicsViewManager *vm = GraphicsViewManager::instance();
+        const QPointF sceneOffset = vm->snappedScenePos(q->sceneType(), pos) - fromScenePos;
+        if (qreal(0.0f) == sceneOffset.manhattanLength())
+            return;
+        vm->disableUpdates();
         foreach (IGraphicsGrip *grip, pickedGrips)
             grip->update(PositionRole, grip->originalPosition() + sceneOffset);
         foreach (IGraphicsDelegate *delegate, delegatesToUpdate)
@@ -465,7 +461,7 @@ public:
     {
         bool pickOne = false;
         const QRect rect = (pickOne = (pos - dragStartPos).manhattanLength() < QApplication::startDragDistance())
-                ? pickOneRect(dragStartPos)
+                ? GraphicsView::pickOneRect(dragStartPos)
                 : QRect(dragStartPos, pos).normalized().intersected(pickBoxBounds());
         const QRectF pickRect = q->sceneTransform().inverted().mapRect(QRectF(rect));
         const QList<QGraphicsItem*> items = q->items(rect);
@@ -583,7 +579,7 @@ public:
 
     void insertPoint(const QPoint &pos)
     {
-        const QPointF scenePos = GraphicsViewManager::instance()->snappedScenePos(q->sceneType(), q->sceneTransform().inverted().map(QPointF(pos)));
+        const QPointF scenePos = GraphicsViewManager::instance()->snappedScenePos(q->sceneType(), pos);
         foreach (IGraphicsItem *item, pickedEntities) {
             IGraphicsItem *pitch_item = item->findItem(PitchCurveItem);
             IGraphicsGripList *grips = query<IGraphicsGripList>(pitch_item);
@@ -634,6 +630,12 @@ public:
     }
 };
 
+static const QCursor &zoomCursor()
+{
+    static const QCursor cursor(QPixmap(":/ac_gui/images/zoom-cursor.png"));
+    return cursor;
+}
+
 const QCursor &GraphicsView::normalCrosshair()
 {
     static const QCursor cursor(QPixmap(":/ac_gui/images/crosshair-black.png"));
@@ -646,10 +648,9 @@ const QCursor &GraphicsView::creationCrosshair()
     return cursor;
 }
 
-static const QCursor &zoomCursor()
+QRect GraphicsView::pickOneRect(const QPoint &pos)
 {
-    static const QCursor cursor(QPixmap(":/ac_gui/images/zoom-cursor.png"));
-    return cursor;
+    return QRect(pos.x() - 2, pos.y() - 2, 4, 4);
 }
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)

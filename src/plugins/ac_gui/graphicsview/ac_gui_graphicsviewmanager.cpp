@@ -30,11 +30,13 @@
 #include <icore.h>
 #include <idatabase.h>
 #include <ieditor.h>
+#include <igraphicsgrip.h>
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iselectionset.h>
 #include <iundomanager.h>
 #include <mainwindow.h>
+#include <QGraphicsItem>
 #include <QMessageBox>
 #include <QTimer>
 #include <QWidget>
@@ -49,7 +51,6 @@ static qreal closestGridlineLocation(qreal location, const IModelItem *gridlineL
 {
     qreal min_offset = Q_FLOAT_MAX;
     qreal closest_location = location;
-
     const int n = gridlineListItem->itemCount();
     for (int i = 0;  i < n;  ++i) {
         IModelItem *gridline = gridlineListItem->itemAt(i);
@@ -183,6 +184,22 @@ public:
             IUndoManager::instance()->pushCommand(ViewSettingsCommandId);
             undoingViewSettings = false;
         }
+    }
+
+    IGraphicsGrip *snapGrip(int sceneType, const QPoint &pos)
+    {
+        QGraphicsView *view = q->view(sceneType);
+        QList<QGraphicsItem*> items = view->items(GraphicsView::pickOneRect(pos));
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
+            if (unknown) {
+                IGraphicsGrip *grip = query<IGraphicsGrip>(unknown);
+                if (grip && FullHighlight != grip->highlightType()) {
+                    return grip;
+                }
+            }
+        }
+        return 0;
     }
 
     void snapX(int role, QPointF &pos, bool snapToGrid)
@@ -370,14 +387,18 @@ void GraphicsViewManager::clearPickedGrips()
     d->controlView->clearPickedGrips();
 }
 
-QPointF GraphicsViewManager::snappedScenePos(int sceneType, const QPointF &pos) const
+QPointF GraphicsViewManager::snappedScenePos(int sceneType, const QPoint &pos) const
 {
+    IGraphicsGrip *snap_grip = d->snapGrip(sceneType, pos);
+    if (snap_grip)
+        return snap_grip->position();
+    QPointF scene_pos = qobject_cast<GraphicsView*>(view(sceneType))->sceneTransform().inverted().map(QPointF(pos));
     IModelItem *grid_settings = IDatabase::instance()->rootItem()->findItem(GridSettingsItem);
     bool is_snapping = get<bool>(grid_settings, SnapEnabledRole);
     if (!is_snapping)
-        return pos;
+        return scene_pos;
     bool snap_to_grid = get<qreal>(grid_settings, GridSnapEnabledRole);
-    QPointF snapped_pos = pos;
+    QPointF snapped_pos = scene_pos;
     d->snapX(TimePositionRole, snapped_pos, snap_to_grid);
     if (PitchScene == sceneType)
         d->snapY(PitchPositionRole, snapped_pos, snap_to_grid);

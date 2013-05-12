@@ -46,6 +46,18 @@ void GraphicsGripNode::setModelItem(IModelItem *modelItem)
     setData(0, data);
 }
 
+int GraphicsGripNode::highlightType() const
+{
+    const QBrush brush = this->brush();
+    if (SolidPattern == brush.style()) {
+        if (QColor(Qt::blue) == brush.color())
+            return HoverHighlight;
+        else
+            return FullHighlight;
+    }
+    return NoHighlight;
+}
+
 void GraphicsGripNode::highlight(int highlightType)
 {
     QPen pen = this->pen();

@@ -41,6 +41,7 @@ protected:
     QPointF originalPosition() const;
     QPointF position() const;
     int curveType() const;
+    int highlightType() const;
     void update(int role, const QVariant &value);
 };
 

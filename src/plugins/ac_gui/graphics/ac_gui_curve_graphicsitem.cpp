@@ -18,6 +18,7 @@
 #include "ac_gui_curve_graphicsitem.h"
 #include "ac_gui_graphicscurvenode.h"
 #include "ac_gui_namespace.h"
+#include <igraphicsgriplist.h>
 
 using namespace Ac;
 
@@ -74,7 +75,9 @@ void GraphicsItem::update(int role, const QVariant &value)
         _curveNode->highlight(qvariant_cast<bool>(value));
         break;
     }
-    Object::GraphicsItem::update(role, actual_value);
+    IGraphicsGripList *grip_list = query<IGraphicsGripList>(this);
+    if (grip_list)
+        grip_list->update(role, actual_value);
 }
 
 }
