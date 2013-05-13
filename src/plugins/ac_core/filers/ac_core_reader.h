@@ -22,14 +22,12 @@
 #include "ac_core_global.h"
 
 class IAggregate;
-class QXmlStreamReader;
 
 namespace Xml {
 
 class AC_CORE_EXPORT Reader : public IReader
 {
     IAggregate *_aggregate;
-    QXmlStreamReader *_reader;
 
 public:
     Reader(IAggregate *aggregate);

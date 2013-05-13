@@ -51,7 +51,25 @@
 
 using namespace Ac;
 
+static Gui::MainWindowExtension *instance = 0;
+
 namespace Gui {
+
+MainWindowExtension *MainWindowExtension::instance()
+{
+    return ::instance;
+}
+
+MainWindowExtension::MainWindowExtension()
+    :   _versionDialog(0)
+{
+    ::instance = this;
+}
+
+MainWindowExtension::~MainWindowExtension()
+{
+    ::instance = 0;
+}
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
 {

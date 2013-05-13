@@ -21,12 +21,15 @@
 #include <icomponent.h>
 
 class IModelItem;
+class QString;
 
 class IWriter : public IComponent
 {
 public:
     enum { InterfaceType = I::IWriter };
 
+    virtual bool writeStartElement(const QString &elementName) = 0;
+    virtual bool writeEndElement() = 0;
     virtual bool write(IModelItem *item) = 0;
 
     int interfaceType() const

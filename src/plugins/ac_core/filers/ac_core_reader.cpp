@@ -135,7 +135,6 @@ static bool readItem(IModelItem *item, QXmlStreamReader *reader)
 
 Reader::Reader(IAggregate *aggregate)
     :   _aggregate(aggregate)
-    ,   _reader(0)
 {
     _aggregate->appendComponent(this);
 }
@@ -148,11 +147,12 @@ void *Reader::queryInterface(int interfaceType) const
 
 int Reader::nextItemType()
 {
-    if (!_reader)
+    QXmlStreamReader *reader = query<IFiler>(this)->reader();
+    if (!reader)
         return -1;
-    if (!nextStartElement(_reader))
+    if (!nextStartElement(reader))
         return UnknownItem;
-    const QString element_name = _reader->name().toString();
+    const QString element_name = reader->name().toString();
     return elementType(element_name);
 }
 
@@ -160,12 +160,12 @@ bool Reader::read(IModelItem *item)
 {
     if (!item)
         return false;
-    _reader = query<IFiler>(this)->reader();
-    if (!_reader)
+    QXmlStreamReader *reader = query<IFiler>(this)->reader();
+    if (!reader)
         return false;
-    if (!nextStartElement(_reader))
+    if (!nextStartElement(reader))
         return false;
-    return readItem(item, _reader);
+    return readItem(item, reader);
 }
 
 }

@@ -64,6 +64,7 @@ void GraphicsCurveNode::setPoints(const PointList &points)
         _noteHead->hide();
         return;
     }
+    show();
     QPainterPath curvePath(points.first().pos);
     QPainterPath guidePath;
     int n = points.count();

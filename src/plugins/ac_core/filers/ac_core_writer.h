@@ -43,6 +43,8 @@ protected:
     void reset()
     {}
 
+    bool writeStartElement(const QString &elementName);
+    bool writeEndElement();
     bool write(IModelItem *item);
 };
 

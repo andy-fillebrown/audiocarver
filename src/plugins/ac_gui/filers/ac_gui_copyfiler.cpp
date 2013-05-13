@@ -35,6 +35,7 @@ CopyFiler::CopyFiler(IAggregate *aggregate)
 
 CopyFiler::~CopyFiler()
 {
+    QApplication::clipboard()->setText(_data);
     qDelete(_writer);
     qDelete(_reader);
 }
@@ -45,10 +46,16 @@ void *CopyFiler::queryInterface(int interfaceType) const
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
+void CopyFiler::reset()
+{
+    qDelete(_writer);
+    qDelete(_reader);
+}
+
 QXmlStreamReader *CopyFiler::reader()
 {
     if (!_reader && !_writer) {
-        _data = QString("<clipboard>") + QApplication::clipboard()->text() + "</clipboard>";
+        _data = QApplication::clipboard()->text();
         _reader = new QXmlStreamReader(_data);
     }
     return _reader;

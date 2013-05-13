@@ -94,11 +94,30 @@ void *Writer::queryInterface(int interfaceType) const
     return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
+bool Writer::writeStartElement(const QString &elementName)
+{
+    if (!_writer)
+        _writer = query<IFiler>(this)->writer();
+    if (!_writer)
+        return false;
+    _writer->writeStartElement(elementName);
+    return true;
+}
+
+bool Writer::writeEndElement()
+{
+    if (!_writer)
+        return false;
+    _writer->writeEndElement();
+    return true;
+}
+
 bool Writer::write(IModelItem *item)
 {
     if (!item)
         return false;
-    _writer = query<IFiler>(this)->writer();
+    if (!_writer)
+        _writer = query<IFiler>(this)->writer();
     if (!_writer)
         return false;
     if (writeItem(item, _writer)) {

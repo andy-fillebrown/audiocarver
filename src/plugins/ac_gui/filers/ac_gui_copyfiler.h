@@ -42,8 +42,7 @@ protected:
     void initialize()
     {}
 
-    void reset()
-    {}
+    void reset();
 
     QString fileName() const
     {

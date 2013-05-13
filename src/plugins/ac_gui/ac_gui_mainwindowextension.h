@@ -34,16 +34,17 @@ class MainWindowExtension : public IMainWindowExtension
     Core::VersionDialog *_versionDialog;
 
 public:
-    MainWindowExtension()
-        :   _versionDialog(0)
-    {}
+    static MainWindowExtension *instance();
+
+    MainWindowExtension();
+    ~MainWindowExtension();
 
 protected:
     void initMenuBarGroups(QStringList &groups) const;
     void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
     void initActions();
 
-private slots:
+public slots:
     void showGridSettings();
     void createTrack();
     void erase();

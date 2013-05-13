@@ -18,6 +18,8 @@
 #include "ac_gui_note_graphicsupdater.h"
 #include <ac_core_namespace.h>
 #include <mi_core_utilities.h>
+#include <ieditor.h>
+#include <iselectionset.h>
 #include <igraphicsitem.h>
 #include <imodelitem.h>
 #include <QColor>
@@ -34,7 +36,8 @@ void GraphicsUpdater::endChangeParent(IModelItem *child)
     if (track_item) {
         QColor color = intFromColor(get<QString>(track_item, ColorRole));
         child_graphics->update(ColorRole, color);
-    }
+    } else
+        IEditor::instance()->currentSelection()->remove(child_graphics);
     Object::GraphicsUpdater::endChangeParent(child);
 }
 
