@@ -19,9 +19,9 @@
 #define ISYNTHESIZER_H
 
 #include <icomponent.h>
-#include "ac_synthesizer_global.h"
+#include "ac_csound_global.h"
 
-class AC_SYNTHESIZER_EXPORT ISynthesizer : public IComponent
+class AC_CSOUND_EXPORT ISynthesizer : public IComponent
 {
 public:
     enum { InterfaceType = I::ISynthesizer };

@@ -15,15 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef AC_SYNTHESIZER_GLOBAL_H
-#define AC_SYNTHESIZER_GLOBAL_H
+#include "ac_csound_base_synthesizer.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-#include <QtGlobal>
+namespace Base {
 
-#if defined(AC_SYNTHESIZER_LIBRARY)
-#  define AC_SYNTHESIZER_EXPORT Q_DECL_EXPORT
-#else
-#  define AC_SYNTHESIZER_EXPORT Q_DECL_IMPORT
-#endif
+void *Synthesizer::queryInterface(int interfaceType) const
+{
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
+}
 
-#endif
+Synthesizer::Synthesizer()
+    :   _aggregate(ISession::instance())
+{
+    _aggregate->appendComponent(this);
+}
+
+}

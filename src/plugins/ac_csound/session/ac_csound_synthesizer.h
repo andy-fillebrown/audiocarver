@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2013 Andrew Fillebrown.
+** Copyright (c) 2012 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,22 +15,21 @@
 **
 **************************************************************************/
 
-#include "ac_synthesizer_base_synthesizer.h"
-#include <iaggregate.h>
-#include <isession.h>
+#ifndef AC_CSOUND_SYNTHESIZER_H
+#define AC_CSOUND_SYNTHESIZER_H
 
-namespace Base {
+#include "ac_csound_base_synthesizer.h"
 
-void *Synthesizer::queryInterface(int interfaceType) const
+namespace Ac {
+namespace Csound {
+
+class Synthesizer : public Base::Synthesizer
 {
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : _aggregate->queryInterface(interfaceType);
-}
-
-Synthesizer::Synthesizer()
-    :   _aggregate(ISession::instance())
-{
-    _aggregate->appendComponent(this);
-}
+protected:
+    void renderTrack(int trackNumber);
+};
 
 }
+}
+
+#endif

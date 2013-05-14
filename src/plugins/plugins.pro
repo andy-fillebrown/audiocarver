@@ -8,7 +8,7 @@ SUBDIRS = \
     mi_core \
     mi_gui \
     ac_core \
-    ac_synthesizer \
+    ac_csound \
     ac_gui \
 #    ac_audioengine \
 #    ac_midifile \

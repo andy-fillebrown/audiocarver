@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_SYNTHESIZER_BASE_SYNTHESIZER_H
-#define AC_SYNTHESIZER_BASE_SYNTHESIZER_H
+#ifndef AC_CSOUND_BASE_SYNTHESIZER_H
+#define AC_CSOUND_BASE_SYNTHESIZER_H
 
 #include <isynthesizer.h>
 

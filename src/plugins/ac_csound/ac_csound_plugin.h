@@ -21,7 +21,7 @@
 #include <iplugin.h>
 
 namespace Ac {
-namespace Synthesizer {
+namespace Csound {
 
 class Plugin : public ExtensionSystem::IPlugin
 {

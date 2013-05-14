@@ -15,7 +15,7 @@
 **
 **************************************************************************/
 
-#include "ac_synthesizer_csound_synthesizer.h"
+#include "ac_csound_synthesizer.h"
 #include <ac_core_namespace.h>
 #include <ac_core_point.h>
 #include <mi_core_utilities.h>
@@ -193,6 +193,7 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
     table_file.close();
 }
 
+namespace Ac {
 namespace Csound {
 
 void Synthesizer::renderTrack(int trackNumber)
@@ -350,4 +351,5 @@ void Synthesizer::renderTrack(int trackNumber)
     csoundDestroy(csound);
 }
 
+}
 }

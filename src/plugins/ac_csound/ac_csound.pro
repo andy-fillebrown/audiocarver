@@ -1,12 +1,12 @@
 TARGET_PREFIX = Ac
-TARGET_NAME = SynthesizerPlugin
+TARGET_NAME = CsoundPlugin
 
 TEMPLATE = lib
 
 include(../../_.plugin.prf)
 
 DEFINES *= \
-    AC_SYNTHESIZER_LIBRARY \
+    AC_CSOUND_LIBRARY \
     USE_DOUBLE \
 
 SOURCE_FILES = \

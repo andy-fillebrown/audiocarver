@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2012 Andrew Fillebrown.
+** Copyright (c) 2013 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,20 +15,15 @@
 **
 **************************************************************************/
 
-#include "ac_synthesizer_plugin.h"
-#include "ac_synthesizer_csound_synthesizer.h"
-#include <QtPlugin>
+#ifndef AC_CSOUND_GLOBAL_H
+#define AC_CSOUND_GLOBAL_H
 
-namespace Ac {
-namespace Synthesizer {
+#include <QtGlobal>
 
-bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
-{
-    new Csound::Synthesizer;
-    return true;
-}
+#if defined(AC_CSOUND_LIBRARY)
+#  define AC_CSOUND_EXPORT Q_DECL_EXPORT
+#else
+#  define AC_CSOUND_EXPORT Q_DECL_IMPORT
+#endif
 
-}
-}
-
-Q_EXPORT_PLUGIN(Ac::Synthesizer::Plugin)
+#endif

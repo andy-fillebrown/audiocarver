@@ -15,19 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_SYNTHESIZER_CSOUND_SYNTHESIZER_H
-#define AC_SYNTHESIZER_CSOUND_SYNTHESIZER_H
+#include "ac_csound_plugin.h"
+#include "ac_csound_synthesizer.h"
+#include <QtPlugin>
 
-#include "ac_synthesizer_base_synthesizer.h"
-
+namespace Ac {
 namespace Csound {
 
-class Synthesizer : public Base::Synthesizer
+bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
-protected:
-    void renderTrack(int trackNumber);
-};
-
+    new Synthesizer;
+    return true;
 }
 
-#endif
+}
+}
+
+Q_EXPORT_PLUGIN(Ac::Csound::Plugin)
