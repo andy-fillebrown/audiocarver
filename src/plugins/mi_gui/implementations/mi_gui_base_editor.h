@@ -19,19 +19,29 @@
 #define MI_GUI_BASE_EDITOR_H
 
 #include <ieditor.h>
+#include "mi_gui_global.h"
 
 namespace Base {
 
 class MI_GUI_EXPORT Editor : public IEditor
 {
 public:
-    Editor();
+    Editor()
+    {
+        IAggregate *aggregate = ISession::instance();
+        IEditor *instance = IEditor::instance();
+        aggregate->removeComponent(instance);
+        delete instance;
+        aggregate->appendComponent(this);
+    }
 
-    void *queryInterface(int interfaceType) const;
+    void *queryInterface(int interfaceType) const
+    {
+        void *i = IComponent::queryInterface(interfaceType);
+        return i ? i : ISession::instance()->queryInterface(interfaceType);
+    }
 
 protected:
-    ~Editor();
-
     void initialize()
     {}
 

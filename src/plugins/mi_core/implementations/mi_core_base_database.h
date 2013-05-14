@@ -25,13 +25,23 @@ namespace Base {
 class MI_CORE_EXPORT Database : public IDatabase
 {
 protected:
-    Database();
-    ~Database();
+    Database()
+    {
+        IAggregate *aggregate = ISession::instance();
+        IDatabase *instance = IDatabase::instance();
+        aggregate->removeComponent(instance);
+        delete instance;
+        aggregate->appendComponent(this);
+    }
+
+    void *queryInterface(int interfaceType) const
+    {
+        void *i = IComponent::queryInterface(interfaceType);
+        return i ? i : ISession::instance()->queryInterface(interfaceType);
+    }
 
     void initialize()
     {}
-
-    void *queryInterface(int interfaceType) const;
 };
 
 }

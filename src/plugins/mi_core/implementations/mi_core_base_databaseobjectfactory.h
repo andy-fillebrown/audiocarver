@@ -27,16 +27,26 @@ namespace Base {
 class MI_CORE_EXPORT DatabaseObjectFactory : public IDatabaseObjectFactory
 {
 protected:
-    DatabaseObjectFactory();
-    ~DatabaseObjectFactory();
+    DatabaseObjectFactory()
+    {
+        IAggregate *aggregate = ISession::instance();
+        IDatabaseObjectFactory *instance = IDatabaseObjectFactory::instance();
+        aggregate->removeComponent(instance);
+        delete instance;
+        aggregate->appendComponent(this);
+    }
+
+    void *queryInterface(int interfaceType) const
+    {
+        void *i = IComponent::queryInterface(interfaceType);
+        return i ? i : ISession::instance()->queryInterface(interfaceType);
+    }
 
     void initialize()
     {}
 
     void reset()
     {}
-
-    void *queryInterface(int interfaceType) const;
 };
 
 }

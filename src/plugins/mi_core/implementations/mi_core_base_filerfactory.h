@@ -25,16 +25,26 @@ namespace Base {
 class MI_CORE_EXPORT FilerFactory : public IFilerFactory
 {
 protected:
-    FilerFactory();
-    ~FilerFactory();
+    FilerFactory()
+    {
+        IAggregate *aggregate = ISession::instance();
+        IFilerFactory *instance = IFilerFactory::instance();
+        aggregate->removeComponent(instance);
+        delete instance;
+        aggregate->appendComponent(this);
+    }
+
+    void *queryInterface(int interfaceType) const
+    {
+        void *i = IComponent::queryInterface(interfaceType);
+        return i ? i : ISession::instance()->queryInterface(interfaceType);
+    }
 
     void initialize()
     {}
 
     void reset()
     {}
-
-    void *queryInterface(int interfaceType) const;
 };
 
 }

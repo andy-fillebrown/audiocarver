@@ -19,14 +19,18 @@
 #define IUNDOMANAGER_H
 
 #include <icomponent.h>
-#include "mi_gui_global.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-class MI_GUI_EXPORT IUndoManager : public IComponent
+class IUndoManager : public IComponent
 {
 public:
     enum { InterfaceType = I::IUndoManager };
 
-    static IUndoManager *instance();
+    inline static IUndoManager *instance()
+    {
+        return query<IUndoManager>(ISession::instance());
+    }
 
     virtual bool isUndoing() const = 0;
     virtual void undo() = 0;

@@ -16,36 +16,9 @@
 **************************************************************************/
 
 #include "mi_gui_base_undomanager.h"
-#include <iaggregate.h>
-#include <isession.h>
-
-static IUndoManager *instance = 0;
-
-IUndoManager *IUndoManager::instance()
-{
-    return ::instance;
-}
 
 namespace Base {
 
-UndoManager::UndoManager()
-{
-    IAggregate *aggregate = ISession::instance();
-    aggregate->removeComponent(::instance);
-    delete ::instance;
-    ::instance = this;
-    aggregate->appendComponent(this);
-}
 
-UndoManager::~UndoManager()
-{
-    ::instance = 0;
-}
-
-void *UndoManager::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : ISession::instance()->queryInterface(interfaceType);
-}
 
 }

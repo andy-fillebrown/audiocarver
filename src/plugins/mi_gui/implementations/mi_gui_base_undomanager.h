@@ -19,19 +19,29 @@
 #define MI_GUI_BASE_UNDOMANAGER_H
 
 #include <iundomanager.h>
+#include "mi_gui_global.h"
 
 namespace Base {
 
 class MI_GUI_EXPORT UndoManager : public IUndoManager
 {
 public:
-    UndoManager();
+    UndoManager()
+    {
+        IAggregate *aggregate = ISession::instance();
+        IUndoManager *instance = IUndoManager::instance();
+        aggregate->removeComponent(instance);
+        delete instance;
+        aggregate->appendComponent(this);
+    }
 
-    void *queryInterface(int interfaceType) const;
+    void *queryInterface(int interfaceType) const
+    {
+        void *i = IComponent::queryInterface(interfaceType);
+        return i ? i : ISession::instance()->queryInterface(interfaceType);
+    }
 
 protected:
-    ~UndoManager();
-
     void initialize()
     {}
 

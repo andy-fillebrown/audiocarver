@@ -16,36 +16,9 @@
 **************************************************************************/
 
 #include "mi_gui_base_editor.h"
-#include <iaggregate.h>
-#include <isession.h>
-
-static IEditor *instance = 0;
-
-IEditor *IEditor::instance()
-{
-    return ::instance;
-}
 
 namespace Base {
 
-Editor::Editor()
-{
-    IAggregate *aggregate = ISession::instance();
-    aggregate->removeComponent(::instance);
-    delete ::instance;
-    ::instance = this;
-    aggregate->appendComponent(this);
-}
 
-Editor::~Editor()
-{
-    ::instance = 0;
-}
-
-void *Editor::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : ISession::instance()->queryInterface(interfaceType);
-}
 
 }

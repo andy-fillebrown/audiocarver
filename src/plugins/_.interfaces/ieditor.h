@@ -19,16 +19,20 @@
 #define IEDITOR_H
 
 #include <icomponent.h>
-#include "mi_gui_global.h"
+#include <iaggregate.h>
+#include <isession.h>
 
 class ISelectionSet;
 
-class MI_GUI_EXPORT IEditor : public IComponent
+class IEditor : public IComponent
 {
 public:
     enum { InterfaceType = I::IEditor };
 
-    static IEditor *instance();
+    inline static IEditor *instance()
+    {
+        return query<IEditor>(ISession::instance());
+    }
 
     virtual ISelectionSet *currentSelection(int itemType = 0) const = 0;
     virtual void cut() = 0;

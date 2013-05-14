@@ -19,16 +19,18 @@
 #define IFILERFACTORY_H
 
 #include <icomponent.h>
-#include "mi_core_global.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-class IAggregate;
-
-class MI_CORE_EXPORT IFilerFactory : public IComponent
+class IFilerFactory : public IComponent
 {
 public:
     enum { InterfaceType = I::IFilerFactory };
 
-    static IFilerFactory *instance();
+    inline static IFilerFactory *instance()
+    {
+        return query<IFilerFactory>(ISession::instance());
+    }
 
     virtual IAggregate *create(int filerType) = 0;
 

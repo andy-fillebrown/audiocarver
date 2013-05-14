@@ -28,9 +28,12 @@ void *Synthesizer::queryInterface(int interfaceType) const
 }
 
 Synthesizer::Synthesizer()
-    :   _aggregate(ISession::instance())
 {
-    _aggregate->appendComponent(this);
+    IAggregate *aggregate = ISession::instance();
+    ISynthesizer *instance = ISynthesizer::instance();
+    aggregate->removeComponent(instance);
+    delete instance;
+    aggregate->appendComponent(this);
 }
 
 }

@@ -19,16 +19,20 @@
 #define IDATABASE_H
 
 #include <icomponent.h>
-#include "mi_core_global.h"
+#include <iaggregate.h>
+#include <isession.h>
 
 class IModelItem;
 
-class MI_CORE_EXPORT IDatabase : public IComponent
+class IDatabase : public IComponent
 {
 public:
     enum { InterfaceType = I::IDatabase };
 
-    static IDatabase *instance();
+    inline static IDatabase *instance()
+    {
+        return query<IDatabase>(ISession::instance());
+    }
 
     virtual IModelItem *rootItem() const = 0;
     virtual const QString &fileExtension() const = 0;

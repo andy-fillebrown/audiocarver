@@ -19,16 +19,18 @@
 #define IDATABASEOBJECTFACTORY_H
 
 #include <icomponent.h>
-#include "mi_core_global.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-class IAggregate;
-
-class MI_CORE_EXPORT IDatabaseObjectFactory : public IComponent
+class IDatabaseObjectFactory : public IComponent
 {
 public:
     enum { InterfaceType = I::IDatabaseObjectFactory };
 
-    static IDatabaseObjectFactory *instance();
+    inline static IDatabaseObjectFactory *instance()
+    {
+        return query<IDatabaseObjectFactory>(ISession::instance());
+    }
 
     virtual IAggregate *create(int itemType, IComponent *parent = 0) = 0;
 

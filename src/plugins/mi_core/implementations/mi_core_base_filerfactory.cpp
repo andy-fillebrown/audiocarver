@@ -16,36 +16,9 @@
 **************************************************************************/
 
 #include "mi_core_base_filerfactory.h"
-#include <iaggregate.h>
-#include <isession.h>
-
-static IFilerFactory *instance = 0;
-
-IFilerFactory *IFilerFactory::instance()
-{
-    return ::instance;
-}
 
 namespace Base {
 
-FilerFactory::FilerFactory()
-{
-    IAggregate *aggregate = ISession::instance();
-    aggregate->removeComponent(::instance);
-    delete ::instance;
-    ::instance = this;
-    aggregate->appendComponent(this);
-}
 
-FilerFactory::~FilerFactory()
-{
-    ::instance = 0;
-}
-
-void *FilerFactory::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : ISession::instance()->queryInterface(interfaceType);
-}
 
 }

@@ -16,36 +16,9 @@
 **************************************************************************/
 
 #include "mi_core_base_databaseobjectfactory.h"
-#include <iaggregate.h>
-#include <isession.h>
-
-static IDatabaseObjectFactory *instance = 0;
-
-IDatabaseObjectFactory *IDatabaseObjectFactory::instance()
-{
-    return ::instance;
-}
 
 namespace Base {
 
-DatabaseObjectFactory::DatabaseObjectFactory()
-{
-    IAggregate *aggregate = ISession::instance();
-    aggregate->removeComponent(::instance);
-    delete ::instance;
-    ::instance = this;
-    aggregate->appendComponent(this);
-}
 
-DatabaseObjectFactory::~DatabaseObjectFactory()
-{
-    ::instance = 0;
-}
-
-void *DatabaseObjectFactory::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : ISession::instance()->queryInterface(interfaceType);
-}
 
 }

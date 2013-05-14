@@ -16,36 +16,9 @@
 **************************************************************************/
 
 #include "mi_core_base_database.h"
-#include <iaggregate.h>
-#include <isession.h>
-
-static IDatabase *instance = 0;
-
-IDatabase *IDatabase::instance()
-{
-    return ::instance;
-}
 
 namespace Base {
 
-Database::Database()
-{
-    IAggregate *aggregate = ISession::instance();
-    aggregate->removeComponent(::instance);
-    delete ::instance;
-    ::instance = this;
-    aggregate->appendComponent(this);
-}
 
-Database::~Database()
-{
-    ::instance = 0;
-}
-
-void *Database::queryInterface(int interfaceType) const
-{
-    void *i = IComponent::queryInterface(interfaceType);
-    return i ? i : ISession::instance()->queryInterface(interfaceType);
-}
 
 }

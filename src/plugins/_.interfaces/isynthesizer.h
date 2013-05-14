@@ -19,14 +19,18 @@
 #define ISYNTHESIZER_H
 
 #include <icomponent.h>
-#include "ac_csound_global.h"
+#include <iaggregate.h>
+#include <isession.h>
 
-class AC_CSOUND_EXPORT ISynthesizer : public IComponent
+class ISynthesizer : public IComponent
 {
 public:
     enum { InterfaceType = I::ISynthesizer };
 
-    static ISynthesizer *instance();
+    inline static ISynthesizer *instance()
+    {
+        return query<ISynthesizer>(ISession::instance());
+    }
 
     virtual void renderTrack(int trackNumber) = 0;
 
