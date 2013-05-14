@@ -15,33 +15,19 @@
 **
 **************************************************************************/
 
-#ifndef ISELECTIONSETWATCHER_H
-#define ISELECTIONSETWATCHER_H
+#ifndef IPLAYCURSOR_H
+#define IPLAYCURSOR_H
 
-#include <icomponent.h>
-#include "mi_gui_interfaces.h"
+#include <iunknown.h>
 
-class ISelectionSet;
-
-class ISelectionSetWatcher : public IComponent
+class IPlayCursor : public IUnknown
 {
 public:
-    enum { InterfaceType = I::ISelectionSetWatcher };
+    enum { InterfaceType = I::IPlayCursor };
 
-    virtual void beginChangeSelection(ISelectionSet *selectionSet) = 0;
-    virtual void endChangeSelection(ISelectionSet *selectionSet) = 0;
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IComponent::isTypeOfInterface(interfaceType);
-    }
+    virtual qreal playCursorPosition() const = 0;
+    virtual void dragPlayCursorTo(qreal position) = 0;
+    virtual void setPlayCursorPosition(qreal position) = 0;
 };
 
 #endif

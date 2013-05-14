@@ -15,30 +15,18 @@
 **
 **************************************************************************/
 
-#ifndef IUNDOMANAGER_H
-#define IUNDOMANAGER_H
+#ifndef IGRAPHICSEDITOR_H
+#define IGRAPHICSEDITOR_H
 
 #include <icomponent.h>
-#include "mi_gui_global.h"
-#include "mi_gui_interfaces.h"
+#include <QVariant>
 
-class MI_GUI_EXPORT IUndoManager : public IComponent
+class IGraphicsEditor : public IComponent
 {
 public:
-    enum { InterfaceType = I::IUndoManager };
+    enum { InterfaceType = I::IGraphicsEditor };
 
-    static IUndoManager *instance();
-
-    virtual bool isUndoing() const = 0;
-    virtual void undo() = 0;
-    virtual void redo() = 0;
-    virtual bool isPaused() const = 0;
-    virtual void pause() = 0;
-    virtual void resume() = 0;
-    virtual bool isInCommand() const = 0;
-    virtual void beginCommand() = 0;
-    virtual void endCommand() = 0;
-    virtual void pushCommand(int commandId) = 0;
+    virtual void update(int role, const QVariant &value = QVariant()) = 0;
 
     int interfaceType() const
     {

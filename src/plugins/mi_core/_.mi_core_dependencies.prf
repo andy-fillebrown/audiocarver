@@ -4,7 +4,6 @@ load(../qt_core/qt_core.prf)
 DIRS = \
     database \
     implementations \
-    interfaces \
     tools \
     watchers \
 

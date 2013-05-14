@@ -15,19 +15,22 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSEDITOR_H
-#define IGRAPHICSEDITOR_H
+#ifndef IFILERFACTORY_H
+#define IFILERFACTORY_H
 
 #include <icomponent.h>
-#include "ac_gui_interfaces.h"
-#include <QVariant>
+#include "mi_core_global.h"
 
-class IGraphicsEditor : public IComponent
+class IAggregate;
+
+class MI_CORE_EXPORT IFilerFactory : public IComponent
 {
 public:
-    enum { InterfaceType = I::IGraphicsEditor };
+    enum { InterfaceType = I::IFilerFactory };
 
-    virtual void update(int role, const QVariant &value = QVariant()) = 0;
+    static IFilerFactory *instance();
+
+    virtual IAggregate *create(int filerType) = 0;
 
     int interfaceType() const
     {

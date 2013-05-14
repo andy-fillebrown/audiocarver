@@ -15,19 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSDELEGATE_H
-#define IGRAPHICSDELEGATE_H
+#ifndef ISELECTIONSETWATCHER_H
+#define ISELECTIONSETWATCHER_H
 
 #include <icomponent.h>
-#include "ac_gui_interfaces.h"
 
-class IGraphicsDelegate : public IComponent
+class ISelectionSet;
+
+class ISelectionSetWatcher : public IComponent
 {
 public:
-    enum { InterfaceType = I::IGraphicsDelegate };
+    enum { InterfaceType = I::ISelectionSetWatcher };
 
-    virtual void updateModel() = 0;
-    virtual void updateGraphics() = 0;
+    virtual void beginChangeSelection(ISelectionSet *selectionSet) = 0;
+    virtual void endChangeSelection(ISelectionSet *selectionSet) = 0;
 
     int interfaceType() const
     {

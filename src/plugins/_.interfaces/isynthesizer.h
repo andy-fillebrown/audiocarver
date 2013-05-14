@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2013 Andrew Fillebrown.
+** Copyright (c) 2012 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,19 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef ICOMPONENT_H
-#define ICOMPONENT_H
+#ifndef ISYNTHESIZER_H
+#define ISYNTHESIZER_H
 
-#include <iunknown.h>
-#include "mi_core_interfaces.h"
+#include <icomponent.h>
+#include "ac_synthesizer_global.h"
 
-class IComponent : public IUnknown
+class AC_SYNTHESIZER_EXPORT ISynthesizer : public IComponent
 {
 public:
-    enum { InterfaceType = I::IComponent };
+    enum { InterfaceType = I::ISynthesizer };
 
-    virtual void initialize() = 0;
-    virtual void reset() = 0;
+    static ISynthesizer *instance();
+
+    virtual void renderTrack(int trackNumber) = 0;
 
     int interfaceType() const
     {
@@ -36,14 +37,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
-    }
-
-    void *queryInterface(int interfaceType) const
-    {
-        if (isTypeOfInterface(interfaceType))
-            return const_cast<IComponent*>(this);
-        return 0;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

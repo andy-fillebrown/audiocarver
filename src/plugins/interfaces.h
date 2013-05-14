@@ -15,35 +15,46 @@
 **
 **************************************************************************/
 
-#ifndef IDATABASEOBJECTFACTORY_H
-#define IDATABASEOBJECTFACTORY_H
+#ifndef INTERFACES_H
+#define INTERFACES_H
 
-#include <icomponent.h>
-#include "mi_core_global.h"
-#include "mi_core_interfaces.h"
+namespace I {
 
-class IAggregate;
-
-class MI_CORE_EXPORT IDatabaseObjectFactory : public IComponent
-{
-public:
-    enum { InterfaceType = I::IDatabaseObjectFactory };
-
-    static IDatabaseObjectFactory *instance();
-
-    virtual IAggregate *create(int itemType, IComponent *parent = 0) = 0;
-
-    int interfaceType() const
-    {
-        return InterfaceType;
-    }
-
-    bool isTypeOfInterface(int interfaceType) const
-    {
-        if (InterfaceType == interfaceType)
-            return true;
-        return IComponent::isTypeOfInterface(interfaceType);
-    }
+enum InterfaceIds {
+    IAggregate,
+    IComponent,
+    ICopyFiler,
+    IDatabase,
+    IDatabaseObjectFactory,
+    IDatabaseWatcher,
+    IEditor,
+    IFiler,
+    IFilerFactory,
+    IGraphicsDelegate,
+    IGraphicsEditor,
+    IGraphicsGrip,
+    IGraphicsGripList,
+    IGraphicsItem,
+    IGraphicsScene,
+    IGraphicsView,
+    IGraphicsViewGroup,
+    IGraphicsViewManager,
+    IModel,
+    IModelItem,
+    IModelItemWatcher,
+    IModelListWatcher,
+    IModelReader,
+    IModelWriter,
+    IPlayCursor,
+    IReader,
+    ISelectionSet,
+    ISelectionSetWatcher,
+    ISession,
+    ISynthesizer,
+    IUndoManager,
+    IWriter
 };
+
+}
 
 #endif

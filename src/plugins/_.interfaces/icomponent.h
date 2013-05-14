@@ -15,20 +15,36 @@
 **
 **************************************************************************/
 
-#ifndef IPLAYCURSOR_H
-#define IPLAYCURSOR_H
+#ifndef ICOMPONENT_H
+#define ICOMPONENT_H
 
 #include <iunknown.h>
-#include "ac_gui_interfaces.h"
+#include "interfaces.h"
 
-class IPlayCursor : public IUnknown
+class IComponent : public IUnknown
 {
 public:
-    enum { InterfaceType = I::IPlayCursor };
+    enum { InterfaceType = I::IComponent };
 
-    virtual qreal playCursorPosition() const = 0;
-    virtual void dragPlayCursorTo(qreal position) = 0;
-    virtual void setPlayCursorPosition(qreal position) = 0;
+    virtual void initialize() = 0;
+    virtual void reset() = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        return InterfaceType == interfaceType;
+    }
+
+    void *queryInterface(int interfaceType) const
+    {
+        if (isTypeOfInterface(interfaceType))
+            return const_cast<IComponent*>(this);
+        return 0;
+    }
 };
 
 #endif

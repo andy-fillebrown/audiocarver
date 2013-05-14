@@ -15,26 +15,26 @@
 **
 **************************************************************************/
 
-#ifndef ISELECTIONSET_H
-#define ISELECTIONSET_H
+#ifndef IEDITOR_H
+#define IEDITOR_H
 
 #include <icomponent.h>
-#include "mi_gui_interfaces.h"
+#include "mi_gui_global.h"
 
-class IGraphicsItem;
-template <typename T> class QList;
+class ISelectionSet;
 
-class ISelectionSet : public IComponent
+class MI_GUI_EXPORT IEditor : public IComponent
 {
 public:
-    enum { InterfaceType = I::ISelectionSet };
+    enum { InterfaceType = I::IEditor };
 
-    virtual const QList<IGraphicsItem*> &items() const = 0;
-    virtual bool append(IGraphicsItem *item) = 0;
-    virtual bool append(const QList<IGraphicsItem*> &items) = 0;
-    virtual bool remove(IGraphicsItem *item) = 0;
-    virtual bool remove(const QList<IGraphicsItem*> &items) = 0;
-    virtual void clear() = 0;
+    static IEditor *instance();
+
+    virtual ISelectionSet *currentSelection(int itemType = 0) const = 0;
+    virtual void cut() = 0;
+    virtual void copy() const = 0;
+    virtual void paste() = 0;
+    virtual void selectAll() = 0;
 
     int interfaceType() const
     {

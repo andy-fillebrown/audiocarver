@@ -11,6 +11,41 @@ SUBDIRS = \
     ac_gui \
 #    ac_audioengine \
 #    ac_midifile \
+
+HEADERS *= \
+    interfaces.h \
+
+INTERFACE_FILES *= \
+    aggregate \
+    component \
+    database \
+    databaseobjectfactory \
+    databasewatcher \
+    editor \
+    filer \
+    filerfactory \
+    graphicsdelegate \
+    graphicseditor \
+    graphicsgrip \
+    graphicsgriplist \
+    graphicsitem \
+    model \
+    modelitem \
+    modelitemwatcher \
+    modellistwatcher \
+    playcursor \
+    reader \
+    selectionset \
+    selectionsetwatcher \
+    session \
+    synthesizer \
+    undomanager \
+    unknown \
+    writer \
+
+for(file, INTERFACE_FILES) {
+    HEADERS *= _.interfaces/i$${file}.h
+}
 #    ac_synthesizer \
 
 OTHER_FILES *= \

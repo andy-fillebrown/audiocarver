@@ -15,21 +15,30 @@
 **
 **************************************************************************/
 
-#ifndef MI_GUI_INTERFACES_H
-#define MI_GUI_INTERFACES_H
+#ifndef IGRAPHICSDELEGATE_H
+#define IGRAPHICSDELEGATE_H
 
-#include <mi_core_interfaces.h>
+#include <icomponent.h>
 
-namespace I {
+class IGraphicsDelegate : public IComponent
+{
+public:
+    enum { InterfaceType = I::IGraphicsDelegate };
 
-enum MiGuiInterfaces {
-    IEditor = MiCoreInterfaceCount,
-    ISelectionSet,
-    ISelectionSetWatcher,
-    IUndoManager,
-    MiGuiInterfaceCount
+    virtual void updateModel() = 0;
+    virtual void updateGraphics() = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

@@ -11,7 +11,6 @@ DEFINES *= \
 SOURCE_FILES = \
     constants \
     global \
-    interfaces \
     mainwindowextension \
     namespace \
     plugin \

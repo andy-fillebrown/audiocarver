@@ -9,11 +9,17 @@ include(../../_.plugin.prf)
 DEFINES *= \
     MI_CORE_LIBRARY
 
+QOBJECT_INTERFACE_FILES *= \
+    model \
+
 SOURCE_FILES = \
     global \
-    interfaces \
     namespace \
     plugin \
+
+for(file, QOBJECT_INTERFACE_FILES) {
+    eval(HEADERS *= ../_.interfaces/i$${file}.h)
+}
 
 for(file, SOURCE_FILES) {
     name = $${SOURCE_FILE_PREFIX}_$$file

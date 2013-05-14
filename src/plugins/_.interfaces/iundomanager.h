@@ -15,35 +15,29 @@
 **
 **************************************************************************/
 
-#ifndef IGRAPHICSGRIP_H
-#define IGRAPHICSGRIP_H
+#ifndef IUNDOMANAGER_H
+#define IUNDOMANAGER_H
 
-#include <igraphicseditor.h>
-#include "ac_gui_interfaces.h"
-#include <QPointF>
+#include <icomponent.h>
+#include "mi_gui_global.h"
 
-class IGraphicsGrip : public IGraphicsEditor
+class MI_GUI_EXPORT IUndoManager : public IComponent
 {
 public:
-    enum { InterfaceType = I::IGraphicsGrip };
+    enum { InterfaceType = I::IUndoManager };
 
-    virtual QPointF originalPosition() const = 0;
-    virtual QPointF position() const = 0;
-    virtual int curveType() const = 0;
-    virtual int highlightType() const = 0;
+    static IUndoManager *instance();
 
-    static bool lessThan(IGraphicsGrip *a, IGraphicsGrip *b)
-    {
-        const QPointF pos_a = a->position();
-        const QPointF pos_b = b->position();
-        if (pos_a.x() < pos_b.x())
-            return true;
-        if (pos_b.x() < pos_a.x())
-            return false;
-        if (pos_a.y() < pos_b.y())
-            return true;
-        return false;
-    }
+    virtual bool isUndoing() const = 0;
+    virtual void undo() = 0;
+    virtual void redo() = 0;
+    virtual bool isPaused() const = 0;
+    virtual void pause() = 0;
+    virtual void resume() = 0;
+    virtual bool isInCommand() const = 0;
+    virtual void beginCommand() = 0;
+    virtual void endCommand() = 0;
+    virtual void pushCommand(int commandId) = 0;
 
     int interfaceType() const
     {
@@ -54,7 +48,7 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return IGraphicsEditor::isTypeOfInterface(interfaceType);
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2012 Andrew Fillebrown.
+** Copyright (c) 2013 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,20 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef ISYNTHESIZER_H
-#define ISYNTHESIZER_H
+#ifndef ISELECTIONSET_H
+#define ISELECTIONSET_H
 
-#include <iunknown.h>
-#include "ac_gui_global.h"
-#include "ac_gui_interfaces.h"
+#include <icomponent.h>
 
-class ISynthesizer : public IUnknown
+class IGraphicsItem;
+template <typename T> class QList;
+
+class ISelectionSet : public IComponent
 {
 public:
-    enum { InterfaceType = I::ISynthesizer };
-    static ISynthesizer *instance();
+    enum { InterfaceType = I::ISelectionSet };
 
-    virtual void renderTrack(int trackNumber) = 0;
+    virtual const QList<IGraphicsItem*> &items() const = 0;
+    virtual bool append(IGraphicsItem *item) = 0;
+    virtual bool append(const QList<IGraphicsItem*> &items) = 0;
+    virtual bool remove(IGraphicsItem *item) = 0;
+    virtual bool remove(const QList<IGraphicsItem*> &items) = 0;
+    virtual void clear() = 0;
 
     int interfaceType() const
     {
@@ -37,7 +42,9 @@ public:
 
     bool isTypeOfInterface(int interfaceType) const
     {
-        return InterfaceType == interfaceType;
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
     }
 };
 

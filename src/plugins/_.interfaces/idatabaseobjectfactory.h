@@ -15,32 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef MI_CORE_INTERFACES_H
-#define MI_CORE_INTERFACES_H
+#ifndef IDATABASEOBJECTFACTORY_H
+#define IDATABASEOBJECTFACTORY_H
 
-namespace I {
+#include <icomponent.h>
+#include "mi_core_global.h"
 
-enum MiCoreInterface {
-    IAggregate,
-    IComponent,
-    ICopyFiler,
-    IDatabase,
-    IDatabaseObjectFactory,
-    IDatabaseWatcher,
-    IFiler,
-    IFilerFactory,
-    IModel,
-    IModelItem,
-    IModelItemWatcher,
-    IModelListWatcher,
-    IModelReader,
-    IModelWriter,
-    IReader,
-    ISession,
-    IWriter,
-    MiCoreInterfaceCount
+class IAggregate;
+
+class MI_CORE_EXPORT IDatabaseObjectFactory : public IComponent
+{
+public:
+    enum { InterfaceType = I::IDatabaseObjectFactory };
+
+    static IDatabaseObjectFactory *instance();
+
+    virtual IAggregate *create(int itemType, IComponent *parent = 0) = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
 };
-
-}
 
 #endif

@@ -59,3 +59,6 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 }
 
 SOURCE_FILE_PREFIX = $$basename(_PRO_FILE_PWD_)
+
+INCLUDEPATH *= ../ ../_.interfaces
+DEPENDPATH *= ../ ../_.interfaces

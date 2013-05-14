@@ -4,7 +4,6 @@ load(../mi_core/mi_core.prf)
 DIRS = \
     graphicsview \
     implementations \
-    interfaces \
     itemviews \
     session \
     tools \

@@ -15,23 +15,34 @@
 **
 **************************************************************************/
 
-#ifndef IFILERFACTORY_H
-#define IFILERFACTORY_H
+#ifndef IGRAPHICSGRIP_H
+#define IGRAPHICSGRIP_H
 
-#include <icomponent.h>
-#include "mi_core_interfaces.h"
-#include "mi_core_global.h"
+#include <igraphicseditor.h>
+#include <QPointF>
 
-class IAggregate;
-
-class MI_CORE_EXPORT IFilerFactory : public IComponent
+class IGraphicsGrip : public IGraphicsEditor
 {
 public:
-    enum { InterfaceType = I::IFilerFactory };
+    enum { InterfaceType = I::IGraphicsGrip };
 
-    static IFilerFactory *instance();
+    virtual QPointF originalPosition() const = 0;
+    virtual QPointF position() const = 0;
+    virtual int curveType() const = 0;
+    virtual int highlightType() const = 0;
 
-    virtual IAggregate *create(int filerType) = 0;
+    static bool lessThan(IGraphicsGrip *a, IGraphicsGrip *b)
+    {
+        const QPointF pos_a = a->position();
+        const QPointF pos_b = b->position();
+        if (pos_a.x() < pos_b.x())
+            return true;
+        if (pos_b.x() < pos_a.x())
+            return false;
+        if (pos_a.y() < pos_b.y())
+            return true;
+        return false;
+    }
 
     int interfaceType() const
     {
@@ -42,7 +53,7 @@ public:
     {
         if (InterfaceType == interfaceType)
             return true;
-        return IComponent::isTypeOfInterface(interfaceType);
+        return IGraphicsEditor::isTypeOfInterface(interfaceType);
     }
 };
 
