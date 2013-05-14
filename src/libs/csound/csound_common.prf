@@ -1,5 +1,5 @@
 
-SRC_DIR = $$dirname(PWD)/src
+SRC_DIR = $$PWD/src
 
 INCLUDE_DIRS *= \
     $$SRC_DIR/Engine \

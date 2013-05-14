@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2012 Andrew Fillebrown.
+** Copyright (c) 2013 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,18 +15,32 @@
 **
 **************************************************************************/
 
-#ifndef AC_SYNTHESIZERPLUGIN_H
-#define AC_SYNTHESIZERPLUGIN_H
+#ifndef AC_SYNTHESIZER_BASE_SYNTHESIZER_H
+#define AC_SYNTHESIZER_BASE_SYNTHESIZER_H
 
-#include <iplugin.h>
+#include <isynthesizer.h>
 
-class AcSynthesizerPlugin : public ExtensionSystem::IPlugin
+class IAggregate;
+
+namespace Base {
+
+class Synthesizer : public ISynthesizer
 {
-    Q_OBJECT
+    IAggregate *_aggregate;
 
 public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    Synthesizer();
+
+    void initialize()
+    {}
+
+    void reset()
+    {}
 };
 
-#endif // AC_SYNTHESIZERPLUGIN_H
+}
+
+#endif

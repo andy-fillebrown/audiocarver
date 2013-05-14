@@ -1,9 +1,10 @@
 
 load(../../libs/csound/csound64/csound64.prf)
-load(../ac_coreplugin/ac_coreplugin.prf)
+load(../ac_core/ac_core.prf)
 
 DIRS = \
     csound \
+    implementations \
 
 for(dir, DIRS) {
     INCLUDEPATH *= $$PWD/$$dir

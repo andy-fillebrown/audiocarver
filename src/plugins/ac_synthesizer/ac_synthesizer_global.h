@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2012 Andrew Fillebrown.
+** Copyright (c) 2013 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,25 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_CSOUNDSYNTHESIZER_H
-#define AC_CSOUNDSYNTHESIZER_H
+#ifndef AC_SYNTHESIZER_GLOBAL_H
+#define AC_SYNTHESIZER_GLOBAL_H
 
-#include <ac_isynthesizer.h>
+#include <QtGlobal>
 
-class CsoundSynthesizerPrivate;
+#if defined(AC_SYNTHESIZER_LIBRARY)
+#  define AC_SYNTHESIZER_EXPORT Q_DECL_EXPORT
+#else
+#  define AC_SYNTHESIZER_EXPORT Q_DECL_IMPORT
+#endif
 
-class CsoundSynthesizer : public ISynthesizer
-{
-    Q_OBJECT
-
-public:
-    CsoundSynthesizer();
-    ~CsoundSynthesizer();
-
-    void renderTrack(int trackNumber);
-
-private:
-    CsoundSynthesizerPrivate *d;
-};
-
-#endif // AC_CSOUNDSYNTHESIZER_H
+#endif

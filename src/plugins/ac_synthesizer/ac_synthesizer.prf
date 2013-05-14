@@ -1,4 +1,4 @@
 
-include(../ac_synthesizer/ac_synthesizer_dependencies.prf)
+include(../ac_synthesizer/_.ac_synthesizer_dependencies.prf)
 
-LIBS *= -l$$qtLibraryName(AcSynthesizer)
+LIBS *= -l$$qtLibraryName(AcSynthesizerPlugin)

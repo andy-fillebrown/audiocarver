@@ -8,6 +8,7 @@ SUBDIRS = \
     mi_core \
     mi_gui \
     ac_core \
+    ac_synthesizer \
     ac_gui \
 #    ac_audioengine \
 #    ac_midifile \
@@ -46,7 +47,6 @@ INTERFACE_FILES *= \
 for(file, INTERFACE_FILES) {
     HEADERS *= _.interfaces/i$${file}.h
 }
-#    ac_synthesizer \
 
 OTHER_FILES *= \
     Doxyfile \
