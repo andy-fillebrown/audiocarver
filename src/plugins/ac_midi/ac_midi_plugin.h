@@ -15,15 +15,24 @@
 **
 **************************************************************************/
 
-#ifndef AC_MIDIFILEGLOBAL_H
-#define AC_MIDIFILEGLOBAL_H
+#ifndef AC_MIDI_PLUGIN_H
+#define AC_MIDI_PLUGIN_H
 
-#include <ac_global.h>
+#include <iplugin.h>
 
-#if defined(AC_MIDIFILE_LIBRARY)
-#  define AC_MIDIFILE_EXPORT Q_DECL_EXPORT
-#else
-#  define AC_MIDIFILE_EXPORT Q_DECL_IMPORT
+namespace Ac {
+namespace Midi {
+
+class Plugin : public ExtensionSystem::IPlugin
+{
+    Q_OBJECT
+
+public:
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized() {}
+};
+
+}
+}
+
 #endif
-
-#endif // AC_MIDIFILEGLOBAL_H

@@ -31,7 +31,7 @@ ModelItem::ModelItem(IAggregate *aggregate)
     :   ScoreObject::ModelItem(aggregate)
     ,   _notes(0)
     ,   _color(DEFAULT_TRACK_COLOR)
-    ,   _visible(false)
+    ,   _visible(true)
     ,   _recording(false)
 {
     _notes = IDatabaseObjectFactory::instance()->create(NoteListItem, this);

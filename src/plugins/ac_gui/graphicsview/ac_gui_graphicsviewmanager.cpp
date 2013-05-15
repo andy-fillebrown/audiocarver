@@ -463,6 +463,8 @@ void GraphicsViewManager::dataChanged(IModelItem *item, int role)
 {
     if (ViewSettingsItem == item->itemType() && !d->updatingDatabase)
         d->updateViewVariables();
+    if (IDatabase::instance()->rootItem() == item && LengthRole == role && !d->updatingDatabase)
+        d->updateViewVariables();
 
     // Remove notes from selection set when their track is turned off.
     if (TrackItem == item->itemType() && VisibilityRole == role) {

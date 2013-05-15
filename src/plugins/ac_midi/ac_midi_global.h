@@ -15,28 +15,15 @@
 **
 **************************************************************************/
 
-#ifndef AC_MIDIMAINWINDOWEXTENSION_H
-#define AC_MIDIMAINWINDOWEXTENSION_H
+#ifndef AC_MIDI_GLOBAL_H
+#define AC_MIDI_GLOBAL_H
 
-#include <imainwindowextension.h>
+#include <QtGlobal>
 
-namespace Ac {
-namespace Midi {
+#if defined(AC_MIDI_LIBRARY)
+#  define AC_MIDI_EXPORT Q_DECL_EXPORT
+#else
+#  define AC_MIDI_EXPORT Q_DECL_IMPORT
+#endif
 
-class MainWindowExtension : public Core::IMainWindowExtension
-{
-    Q_OBJECT
-
-public:
-    void initMenuBarGroups(QStringList &groups) const;
-    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
-    void initActions();
-
-private slots:
-    void importMidiFile();
-};
-
-} // namespace Midi
-} // namespace Ac
-
-#endif // AC_MIDIMAINWINDOWEXTENSION_H
+#endif

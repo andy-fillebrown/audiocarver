@@ -24,19 +24,53 @@
 **
 ******************************************************************************/
 
-#ifndef AC_MIDIFILENAMESPACE_H
-#define AC_MIDIFILENAMESPACE_H
+#ifndef AC_MIDI_FILEREADER_H
+#define AC_MIDI_FILEREADER_H
 
-namespace Midi
-{
+#include "ac_midi_event.h"
+#include <QObject>
 
-enum Format
+namespace Midi {
+
+class MeterChange
 {
-    Format0 = 0,
-    Format1 = 1,
-    Format2 = 2
+public:
+    qreal time;
+    int numerator;
+    int denominator;
+    int thirtysecondNotesPerQuarterNote;
+
+    MeterChange()
+        :   time(0.0f)
+        ,   numerator(4)
+        ,   denominator(4)
+        ,   thirtysecondNotesPerQuarterNote(8)
+    {}
 };
 
-} // namespace Midi
+class FileReaderPrivate;
 
-#endif // AC_MIDIFILENAMESPACE_H
+class AC_MIDI_EXPORT FileReader : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit FileReader(const QString &fileName = QString(), QObject *parent = 0);
+    virtual ~FileReader();
+
+    int format() const;
+    qint16 trackCount() const;
+    qint16 division() const;
+    bool isUsingTimeCode() const;
+    EventList events(int track = 0);
+    qreal tickRate() const;
+    qreal ticksToSeconds(quint64 tick);
+    const QList<MeterChange> &meterChanges();
+
+private:
+    FileReaderPrivate *d;
+};
+
+}
+
+#endif

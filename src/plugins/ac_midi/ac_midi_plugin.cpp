@@ -15,11 +15,20 @@
 **
 **************************************************************************/
 
-#ifndef AC_MIDIFILECONSTANTS_H
-#define AC_MIDIFILECONSTANTS_H
+#include "ac_midi_plugin.h"
+#include "ac_midi_mainwindowextension.h"
+#include <QtPlugin>
 
-#include <mi_guiconstants.h>
+namespace Ac {
+namespace Midi {
 
-const char * const IMPORTMIDIFILE = PRO_NAME_STR".ImportMidiFile";
+bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
+{
+    addAutoReleasedObject(new MainWindowExtension);
+    return true;
+}
 
-#endif // AC_MIDIFILECONSTANTS_H
+}
+}
+
+Q_EXPORT_PLUGIN(Ac::Midi::Plugin)

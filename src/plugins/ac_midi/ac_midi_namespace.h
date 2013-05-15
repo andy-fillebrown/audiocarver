@@ -24,33 +24,19 @@
 **
 ******************************************************************************/
 
-#ifndef AC_MIDIFILEIMPORTDIALOG_H
-#define AC_MIDIFILEIMPORTDIALOG_H
+#ifndef AC_MIDI_NAMESPACE_H
+#define AC_MIDI_NAMESPACE_H
 
-#include <ac_midifileglobal.h>
-
-#include <QDialog>
-
-class Ui_MidiFileImportDialog;
-
-class MidiFileImportDialogPrivate;
-class AC_MIDIFILE_EXPORT MidiFileImportDialog : public QDialog
+namespace Midi
 {
-    Q_OBJECT
 
-public:
-    explicit MidiFileImportDialog(QWidget *parent = 0);
-    virtual ~MidiFileImportDialog();
-
-private slots:
-    void openFile();
-    void import();
-
-private:
-    MidiFileImportDialogPrivate *d;
-    Ui_MidiFileImportDialog *ui;
-
-    friend class MidiFileImportDialogPrivate;
+enum FileFormat
+{
+    FileFormat0 = 0,
+    FileFormat1 = 1,
+    FileFormat2 = 2
 };
 
-#endif // AC_MIDIFILEIMPORTDIALOG_H
+}
+
+#endif

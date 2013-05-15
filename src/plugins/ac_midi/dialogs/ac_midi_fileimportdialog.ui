@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MidiFileImportDialog</class>
- <widget class="QWidget" name="MidiFileImportDialog">
+ <class>Midi::FileImportDialog</class>
+ <widget class="QWidget" name="Midi::FileImportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -76,8 +76,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../mi_guiplugin/mi_guiplugin.qrc">
-               <normaloff>:/mi_guiplugin/images/fileopen.png</normaloff>:/mi_guiplugin/images/fileopen.png</iconset>
+              <iconset resource="../../mi_gui/mi_gui.qrc">
+               <normaloff>:/mi_gui/images/fileopen.png</normaloff>:/mi_gui/images/fileopen.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -226,7 +226,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../mi_guiplugin/mi_guiplugin.qrc"/>
+  <include location="../../mi_gui/mi_gui.qrc"/>
  </resources>
  <connections/>
 </ui>

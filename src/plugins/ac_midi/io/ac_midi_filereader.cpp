@@ -24,25 +24,24 @@
 **
 ******************************************************************************/
 
-#include "ac_midifilereader.h"
-
-#include <ac_midievent.h>
-
+#include "ac_midi_filereader.h"
 #include <QFile>
+#include <QtDebug>
+#include <QtEndian>
 #include <qmath.h>
 
-#include <QtEndian>
-
-static void midifilereader_error(const QString &error)
+static void filereader_error(const QString &error)
 {
     qDebug() << qPrintable(error);
 }
 
-#define MIDIFILEREADER_ERROR(x) \
-    midifilereader_error(QString("%1 (%2): %3") \
+#define FILEREADER_ERROR(x) \
+    filereader_error(QString("%1 (%2): %3") \
         .arg(Q_FUNC_INFO) \
         .arg(__LINE__) \
         .arg(x))
+
+namespace Midi {
 
 struct TempoChange
 {
@@ -50,10 +49,10 @@ struct TempoChange
     qreal secondsPerTick;
 };
 
-class MidiFileTickConverter
+class TickConverter
 {
 public:
-    MidiFileTickConverter(MidiFileReader *reader);
+    TickConverter(FileReader *reader);
 
     qreal ticksToSeconds(quint64 tick);
 
@@ -61,7 +60,7 @@ private:
     void createTempoMap();
     void rewind();
 
-    MidiFileReader *reader;
+    FileReader *reader;
     QList<TempoChange> tempoChanges;
     quint64 curTick;
     qreal curTime;
@@ -69,7 +68,7 @@ private:
     quint64 curTempoChangeEndTick;
 };
 
-class MidiFileReaderPrivate
+class FileReaderPrivate
 {
     QList<quint64> trackPointers;
     QList<quint64> trackOffsets;
@@ -83,25 +82,24 @@ class MidiFileReaderPrivate
     quint64 readVariableLength();
 
 public:
-    MidiFileReader *q;
+    FileReader *q;
     QFile file;
-    Midi::Format format;
+    Midi::FileFormat format;
     qint16 trackCount;
     qint16 division;
     bool isUsingTimeCode;
 
-    MidiFileTickConverter *tickConverter;
+    TickConverter *tickConverter;
     QList<Midi::MeterChange> meterChanges;
 
-    MidiFileReaderPrivate(MidiFileReader *q, const QString &fileName);
+    FileReaderPrivate(FileReader *q, const QString &fileName);
 
     void rewind(int track = 0);
-    quint64 nextEvent(MidiEventBytes &data, int track = 0);
-
+    quint64 nextEvent(EventBytes &data, int track = 0);
     void updateMeterChanges();
 };
 
-QString MidiFileReaderPrivate::readString(int size)
+QString FileReaderPrivate::readString(int size)
 {
     char b[size + 1];
     if (!file.read(b, size))
@@ -110,7 +108,7 @@ QString MidiFileReaderPrivate::readString(int size)
     return QString(b);
 }
 
-qint16 MidiFileReaderPrivate::readValue16()
+qint16 FileReaderPrivate::readValue16()
 {
     char b[2];
     if (!file.read(b, 2))
@@ -119,7 +117,7 @@ qint16 MidiFileReaderPrivate::readValue16()
     return qFromBigEndian(*p);
 }
 
-qint32 MidiFileReaderPrivate::readValue32()
+qint32 FileReaderPrivate::readValue32()
 {
     char b[4];
     if (!file.read(b, 4))
@@ -128,7 +126,7 @@ qint32 MidiFileReaderPrivate::readValue32()
     return qFromBigEndian(*p);
 }
 
-quint64 MidiFileReaderPrivate::readVariableLength()
+quint64 FileReaderPrivate::readVariableLength()
 {
     quint64 val = 0;
     char c = 0;
@@ -146,10 +144,10 @@ quint64 MidiFileReaderPrivate::readVariableLength()
     return val;
 }
 
-MidiFileReaderPrivate::MidiFileReaderPrivate(MidiFileReader *q, const QString &fileName)
+FileReaderPrivate::FileReaderPrivate(FileReader *q, const QString &fileName)
     :   q(q)
     ,   file(fileName)
-    ,   format(Midi::Format0)
+    ,   format(FileFormat0)
     ,   trackCount(0)
     ,   division(0)
     ,   isUsingTimeCode(false)
@@ -157,56 +155,54 @@ MidiFileReaderPrivate::MidiFileReaderPrivate(MidiFileReader *q, const QString &f
 {
     // Open the file.
     if (!file.open(QIODevice::ReadOnly)) {
-        MIDIFILEREADER_ERROR(QString("could not open MIDI file %1").arg(file.fileName()));
+        FILEREADER_ERROR(QString("could not open MIDI file %1").arg(file.fileName()));
         return;
     }
 
     // Parse the header data.
     if ("MThd" != readString(4)) {
-        MIDIFILEREADER_ERROR("error in MIDI file track header");
+        FILEREADER_ERROR("error in MIDI file track header");
         return;
     }
     if (6 != readValue32()) {
-        MIDIFILEREADER_ERROR("error in MIDI file header length");
+        FILEREADER_ERROR("error in MIDI file header length");
         return;
     }
 
     // Read the MIDI file format.
-    format = Midi::Format(readValue16());
-    if (Midi::Format0 != format
-            && Midi::Format1 != format) {
-        MIDIFILEREADER_ERROR("MIDI file types 0 and 1 are the only formats supported");
+    format = FileFormat(readValue16());
+    if (FileFormat0 != format && FileFormat1 != format) {
+        FILEREADER_ERROR("MIDI file types 0 and 1 are the only formats supported");
         return;
     }
 
     // Read the track count.
     trackCount = readValue16();
     if (-1 == trackCount) {
-        MIDIFILEREADER_ERROR("error reading MIDI track count");
+        FILEREADER_ERROR("error reading MIDI track count");
         return;
     }
-    if (Midi::Format0 == format
-            && 1 != trackCount) {
-        MIDIFILEREADER_ERROR("invalid MIDI file format 0 track count");
+    if (FileFormat0 == format && 1 != trackCount) {
+        FILEREADER_ERROR("invalid MIDI file format 0 track count");
         return;
     }
 
     // Read the beat division.
     division = readValue16();
     if (-1 == division) {
-        MIDIFILEREADER_ERROR("error reading MIDI file beat division");
+        FILEREADER_ERROR("error reading MIDI file beat division");
         return;
     }
 
     // Locate the track offsets and lengths.
     for (int i = 0;  i < trackCount;  ++i) {
         if ("MTrk" != readString(4)) {
-            MIDIFILEREADER_ERROR("error reading MIDI file track header");
+            FILEREADER_ERROR("error reading MIDI file track header");
             return;
         }
         qint32 length = readValue32();
         if (-1 == length) {
-            MIDIFILEREADER_ERROR("error reading MIDI file track length");
+            FILEREADER_ERROR("error reading MIDI file track length");
             return;
         }
         trackLengths.append(length);
@@ -222,10 +218,10 @@ MidiFileReaderPrivate::MidiFileReaderPrivate(MidiFileReader *q, const QString &f
         isUsingTimeCode = true;
 }
 
-void MidiFileReaderPrivate::rewind(int track)
+void FileReaderPrivate::rewind(int track)
 {
     if (trackCount <= track) {
-        MIDIFILEREADER_ERROR(QString("invalid track argument (%1)").arg(track));
+        FILEREADER_ERROR(QString("invalid track argument (%1)").arg(track));
         return;
     }
     trackPointers[track] = trackOffsets[track];
@@ -233,12 +229,11 @@ void MidiFileReaderPrivate::rewind(int track)
     trackCounters[track] = 0;
 }
 
-quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
+quint64 FileReaderPrivate::nextEvent(EventBytes &event, int track)
 {
     quint64 tick = 0;
-
     if (trackCount <= track) {
-        MIDIFILEREADER_ERROR(QString("invalid track argument (%1)").arg(track));
+        FILEREADER_ERROR(QString("invalid track argument (%1)").arg(track));
         return 0;
     }
 
@@ -261,16 +256,16 @@ quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
     quint64 bytes = 0;
     quint8 c = 0;
     if (!file.read((char *)&c, 1)) {
-        MIDIFILEREADER_ERROR("error reading event stream");
+        FILEREADER_ERROR("error reading event stream");
         return 0;
     }
     switch (c) {
-    case MidiEvent::Meta: {
+    case Event::Meta: {
         quint64 position = 0;
         trackStatusBytes[track] = 0;
         event.append(c);
         if (!file.read((char *)&c, 1)) {
-            MIDIFILEREADER_ERROR("error reading event stream");
+            FILEREADER_ERROR("error reading event stream");
             return 0;
         }
         event.append(c);
@@ -280,8 +275,8 @@ quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
         file.seek(position);
         break;
     }
-    case MidiEvent::SysExStart:
-    case MidiEvent::SysExEnd: {
+    case Event::SysExStart:
+    case Event::SysExEnd: {
         trackStatusBytes[track] = 0;
         event.append(c);
         quint64 position = quint64(file.pos());
@@ -295,7 +290,7 @@ quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
         if (c & 0x80) {
             // Status byte is not running status.
             if (0xf0 < c) {
-                MIDIFILEREADER_ERROR("invalid channel event");
+                FILEREADER_ERROR("invalid channel event");
                 return 0;
             }
             trackStatusBytes[track] = c;
@@ -313,7 +308,7 @@ quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
             if ((c != 0xc0) && (c != 0xd0))
                 bytes = 1;
         } else {
-            MIDIFILEREADER_ERROR("invalid status byte");
+            FILEREADER_ERROR("invalid status byte");
             return 0;
         }
     }
@@ -322,7 +317,7 @@ quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
     // Read rest of data into event's bytes.
     for (quint64 i = 0;  i < bytes;  ++i) {
         if (!file.read((char *)&c, 1)) {
-            MIDIFILEREADER_ERROR("error reading event data");
+            FILEREADER_ERROR("error reading event data");
             return 0;
         }
         event.append(c);
@@ -333,16 +328,16 @@ quint64 MidiFileReaderPrivate::nextEvent(MidiEventBytes &event, int track)
     return tick;
 }
 
-void MidiFileReaderPrivate::updateMeterChanges()
+void FileReaderPrivate::updateMeterChanges()
 {
     // Create meter changes from track 0.
-    MidiEventList events = q->events(0);
-    foreach (MidiEvent event, events) {
+    EventList events = q->events(0);
+    foreach (Event event, events) {
         if (7 == event.size()
-                && MidiEvent::Meta == event.rawData(0)
-                && MidiEvent::MetaTimeSignature == event.data(0)
+                && Event::Meta == event.rawData(0)
+                && Event::MetaTimeSignature == event.data(0)
                 && 4 == event.data(1)) {
-            Midi::MeterChange meter_change;
+            MeterChange meter_change;
             meter_change.time = q->ticksToSeconds(event.tick());
             meter_change.numerator = event.data(2);
             meter_change.denominator = qPow(2, event.data(3));
@@ -352,56 +347,56 @@ void MidiFileReaderPrivate::updateMeterChanges()
     }
 }
 
-MidiFileReader::MidiFileReader(const QString &fileName, QObject *parent)
+FileReader::FileReader(const QString &fileName, QObject *parent)
     :   QObject(parent)
-    ,   d(new MidiFileReaderPrivate(this, fileName))
+    ,   d(new FileReaderPrivate(this, fileName))
 {}
 
-MidiFileReader::~MidiFileReader()
+FileReader::~FileReader()
 {
     delete d;
 }
 
-Midi::Format MidiFileReader::format() const
+int FileReader::format() const
 {
     return d->format;
 }
 
-qint16 MidiFileReader::trackCount() const
+qint16 FileReader::trackCount() const
 {
     return d->trackCount;
 }
 
-qint16 MidiFileReader::division() const
+qint16 FileReader::division() const
 {
     return d->division;
 }
 
-bool MidiFileReader::isUsingTimeCode() const
+bool FileReader::isUsingTimeCode() const
 {
     return d->isUsingTimeCode;
 }
 
-MidiEventList MidiFileReader::events(int track)
+EventList FileReader::events(int track)
 {
-    MidiEventList event_list;
+    EventList event_list;
     if (track < 0 || d->trackCount <= track) {
-        MIDIFILEREADER_ERROR(QString("invalid track (%1)").arg(track));
+        FILEREADER_ERROR(QString("invalid track (%1)").arg(track));
         return event_list;
     }
     d->rewind(track);
-    MidiEventBytes data;
+    EventBytes data;
     for (;;) {
         quint64 tick = d->nextEvent(data, track);
         if (data.size() == 0)
             break;
-        MidiEvent event(tick, data);
+        Event event(tick, data);
         event_list.append(event);
     }
     return event_list;
 }
 
-qreal MidiFileReader::tickRate() const
+qreal FileReader::tickRate() const
 {
     qreal rate = 0;
     int div = division();
@@ -421,27 +416,27 @@ qreal MidiFileReader::tickRate() const
     return rate;
 }
 
-qreal MidiFileReader::ticksToSeconds(quint64 tick)
+qreal FileReader::ticksToSeconds(quint64 tick)
 {
     if (!d->tickConverter)
-        d->tickConverter = new MidiFileTickConverter(this);
+        d->tickConverter = new TickConverter(this);
     return d->tickConverter->ticksToSeconds(tick);
 }
 
-const QList<Midi::MeterChange> &MidiFileReader::meterChanges()
+const QList<MeterChange> &FileReader::meterChanges()
 {
     if (d->meterChanges.isEmpty())
         d->updateMeterChanges();
     return d->meterChanges;
 }
 
-MidiFileTickConverter::MidiFileTickConverter(MidiFileReader *reader)
+TickConverter::TickConverter(FileReader *reader)
     :   reader(reader)
 {
     rewind();
 }
 
-qreal MidiFileTickConverter::ticksToSeconds(quint64 tick)
+qreal TickConverter::ticksToSeconds(quint64 tick)
 {
     // Create tempo change map if not done already.
     if (tempoChanges.size() == 0)
@@ -476,7 +471,7 @@ qreal MidiFileTickConverter::ticksToSeconds(quint64 tick)
     return curTime;
 }
 
-void MidiFileTickConverter::createTempoMap()
+void TickConverter::createTempoMap()
 {
     const qreal tick_rate = reader->tickRate();
 
@@ -490,11 +485,11 @@ void MidiFileTickConverter::createTempoMap()
     tempoChanges.append(tempo_change);
 
     // Create rest of tempo changes from track 0.
-    MidiEventList events = reader->events(0);
-    foreach (MidiEvent event, events) {
+    EventList events = reader->events(0);
+    foreach (Event event, events) {
         if (6 == event.size()
-                && MidiEvent::Meta == event.rawData(0)
-                && MidiEvent::MetaTempo == event.data(0)
+                && Event::Meta == event.rawData(0)
+                && Event::MetaTempo == event.data(0)
                 && 3 == event.data(1)) {
             const quint32 midi_rate = (event.data(2) << 16) + (event.data(3) << 8) + event.data(4);
             tempo_change.tick = event.tick();
@@ -517,7 +512,7 @@ void MidiFileTickConverter::createTempoMap()
 #endif
 }
 
-void MidiFileTickConverter::rewind()
+void TickConverter::rewind()
 {
     curTick = 0;
     curTime = 0;
@@ -525,4 +520,6 @@ void MidiFileTickConverter::rewind()
     curTempoChangeEndTick = 0xffffffff;
     if (1 < tempoChanges.size())
         curTempoChangeEndTick = tempoChanges[1].tick;
+}
+
 }

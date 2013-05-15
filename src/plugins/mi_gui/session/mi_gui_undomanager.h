@@ -40,6 +40,8 @@ public:
 protected:
     ~UndoManager();
 
+    void reset();
+
     bool isUndoing() const
     {
         return _undoing;

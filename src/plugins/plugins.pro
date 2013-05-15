@@ -10,8 +10,8 @@ SUBDIRS = \
     ac_core \
     ac_csound \
     ac_gui \
+    ac_midi \
 #    ac_audioengine \
-#    ac_midifile \
 
 HEADERS *= \
     interfaces.h \

@@ -24,19 +24,20 @@
 **
 ******************************************************************************/
 
-#ifndef AC_MIDIEVENT_H
-#define AC_MIDIEVENT_H
+#ifndef AC_MIDI_EVENT_H
+#define AC_MIDI_EVENT_H
 
-#include <ac_midifileglobal.h>
-#include <ac_midifilenamespace.h>
-
+#include "ac_midi_global.h"
+#include "ac_midi_namespace.h"
 #include <QList>
 
-class MidiEvent;
-typedef QList<MidiEvent> MidiEventList;
-typedef QList<quint8> MidiEventBytes;
+namespace Midi {
 
-class AC_MIDIFILE_EXPORT MidiEvent
+class Event;
+typedef QList<Event> EventList;
+typedef QList<quint8> EventBytes;
+
+class AC_MIDI_EXPORT Event
 {
 public:
     enum Type
@@ -140,7 +141,7 @@ public:
         MetaNoOp = 0x7f
     };
 
-    MidiEvent(quint64 tick, MidiEventBytes bytes)
+    Event(quint64 tick, EventBytes bytes)
         :   _tick(tick)
         ,   _data(bytes)
     {
@@ -152,26 +153,23 @@ public:
     quint64 tick() const { return _tick; }
     quint32 size() const { return quint32(_data.size()); }
     quint8 rawData(int i) const { return _data[i]; }
-
     quint8 channel() const { return _data[0] & 0x0f; }
     quint8 type() const { return _data[0] & 0xf0; }
     quint8 data(int i) const { return _data[i + 1]; }
-
     void setChannel(quint8 channel) { _data[0] &= 0xf0;  _data[0] += channel; }
     void setType(quint8 type) { _data[0] &= 0x0f;  _data[0] += type; }
     void setData(int i, quint8 byte) { _data[i + 1] = byte; }
-
-    bool operator==(const MidiEvent &event);
-    bool operator<(const MidiEvent &event);
+    bool operator==(const Event &event);
+    bool operator<(const Event &event);
 
 private:
     quint64 _tick;
     quint8 _chan;
     quint8 _type;
-    MidiEventBytes _data;
+    EventBytes _data;
 };
 
-inline bool MidiEvent::operator==(const MidiEvent &event)
+inline bool Event::operator==(const Event &event)
 {
     if (tick() != event.tick())
         return false;
@@ -188,11 +186,13 @@ inline bool MidiEvent::operator==(const MidiEvent &event)
     return true;
 }
 
-inline bool MidiEvent::operator<(const MidiEvent &event)
+inline bool Event::operator<(const Event &event)
 {
     if (tick() < event.tick())
         return true;
     return false;
 }
 
-#endif // AC_MIDIEVENT_H
+}
+
+#endif

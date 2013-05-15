@@ -1,4 +1,0 @@
-
-load(../ac_midifileplugin/ac_midifileplugin_dependencies.prf)
-
-LIBS *= -l$$qtLibraryName(AcMidiFilePlugin)

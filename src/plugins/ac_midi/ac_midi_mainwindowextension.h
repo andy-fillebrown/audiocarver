@@ -15,18 +15,28 @@
 **
 **************************************************************************/
 
-#include "ac_midifileplugin.h"
+#ifndef AC_MIDI_MAINWINDOWEXTENSION_H
+#define AC_MIDI_MAINWINDOWEXTENSION_H
 
-#include <ac_midimainwindowextension.h>
+#include <imainwindowextension.h>
 
-#include <QtPlugin>
+namespace Ac {
+namespace Midi {
 
-bool AcMidiFilePlugin::initialize(const QStringList &arguments, QString *errorMessage)
+class MainWindowExtension : public IMainWindowExtension
 {
-    Q_UNUSED(arguments);
-    Q_UNUSED(errorMessage);
-    addAutoReleasedObject(new Ac::Midi::MainWindowExtension);
-    return true;
+    Q_OBJECT
+
+public:
+    void initMenuBarGroups(QStringList &groups) const;
+    void initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const;
+    void initActions();
+
+private slots:
+    void importMidiFile();
+};
+
+}
 }
 
-Q_EXPORT_PLUGIN(AcMidiFilePlugin)
+#endif

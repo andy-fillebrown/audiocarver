@@ -15,46 +15,39 @@
 **
 **************************************************************************/
 
-#include "ac_midimainwindowextension.h"
-
-#include <ac_midifileconstants.h>
-#include <ac_midifileimportdialog.h>
-
+#include "ac_midi_mainwindowextension.h"
+#include "ac_midi_constants.h"
+#include "ac_midi_fileimportdialog.h"
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <icontext.h>
 #include <icore.h>
 #include <mainwindow.h>
-
 #include <QAction>
 #include <QMenu>
 
-using namespace Ac::Midi;
+using namespace Midi;
+using namespace Core;
+
+namespace Ac {
+namespace Midi {
 
 void MainWindowExtension::initMenuBarGroups(QStringList &groups) const
-{
-    Q_UNUSED(groups);
-}
+{}
 
 void MainWindowExtension::initMenuGroups(const QString &menuBarGroup, QString &id, QString &title, QStringList &groups) const
-{
-    Q_UNUSED(menuBarGroup);
-    Q_UNUSED(id);
-    Q_UNUSED(title);
-    Q_UNUSED(groups);
-}
+{}
 
 void MainWindowExtension::initActions()
 {
-    Core::ActionManager *am = Core::ICore::instance()->actionManager();
-    Core::ActionContainer *file_menu = am->actionContainer(Core::Constants::M_FILE);
-    Core::Context global_context(Core::Constants::C_GLOBAL);
-
+    ActionManager *am = ICore::instance()->actionManager();
+    ActionContainer *file_menu = am->actionContainer(Constants::M_FILE);
+    Context global_context(Constants::C_GLOBAL);
     QAction *action = 0;
-    Core::Command *cmd = 0;
+    Command *cmd = 0;
 
     // Create File->Import menu if not already created.
-    Core::ActionContainer *import_menu = am->actionContainer(M_IMPORT);
+    ActionContainer *import_menu = am->actionContainer(M_IMPORT);
     if (!import_menu) {
         action = new QAction(this);
         action->setSeparator(true);
@@ -74,7 +67,10 @@ void MainWindowExtension::initActions()
 
 void MainWindowExtension::importMidiFile()
 {
-    MidiFileImportDialog *dlg = new MidiFileImportDialog(Core::ICore::instance()->mainWindow());
+    FileImportDialog *dlg = new FileImportDialog(ICore::instance()->mainWindow());
     dlg->exec();
     delete dlg;
+}
+
+}
 }

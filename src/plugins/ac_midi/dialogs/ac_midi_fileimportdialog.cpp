@@ -24,50 +24,52 @@
 **
 ******************************************************************************/
 
-#include "ac_midifileimportdialog.h"
-#include "ui_ac_midifileimportdialog.h"
-
-#include <ac_midifileconstants.h>
-#include <ac_midifilereader.h>
-
-#include <ac_ifactory.h>
-#include <ac_namespace.h>
-#include <ac_point.h>
-
-#include <mi_ieditor.h>
-
-#include <mi_imodel.h>
-#include <mi_imodelitem.h>
-
+#include "ac_midi_fileimportdialog.h"
+#include <ui_ac_midi_fileimportdialog.h>
+#include "ac_midi_constants.h"
+#include "ac_midi_filereader.h"
+#include <ac_core_namespace.h>
+#include <ac_core_point.h>
 #include <icore.h>
-
+#include <idatabase.h>
+#include <idatabaseobjectfactory.h>
+#include <iundomanager.h>
+#include <imodelitem.h>
 #include <QFileDialog>
 #include <QMenu>
 #include <QSettings>
+#include <QtDebug>
+
+using namespace Midi;
+using namespace Ac;
+using namespace Core;
 
 enum ImportType {
     Overwrite,
     Append
 };
 
-struct MidiNote {
+namespace Midi {
+
+struct Note {
     qreal startTime;
     qreal stopTime;
     qreal velocity;
     qreal pitch;
 };
 
-typedef QList<MidiNote*> MidiNotes;
+typedef QList<Note*> Notes;
+
+}
 
 // Returns the length of the track, in seconds.
-static qreal importTrack(MidiFileReader &reader, const int trackNumber)
+static qreal importTrack(FileReader &reader, const int trackNumber)
 {
-    const MidiEventList events = reader.events(trackNumber);
+    const EventList events = reader.events(trackNumber);
 #   if 0
     {   qDebug() << "Track" << trackNumber;
-        foreach (const MidiEvent &e, events) {
-            if (MidiEvent::NoteOn == e.type()
-                    || MidiEvent::NoteOff == e.type())
+        foreach (const Event &e, events) {
+            if (Event::NoteOn == e.type() || Event::NoteOff == e.type())
                 qDebug() << "MIDI event:"
                         "\t  tick ==" << e.tick() <<
                         "\t  time ==" << reader.ticksToSeconds(e.tick()) <<
@@ -81,10 +83,10 @@ static qreal importTrack(MidiFileReader &reader, const int trackNumber)
 #   endif
 
     // Add midi note for NoteOn events to be matched with NoteOff events later.
-    MidiNotes notes;
-    foreach (const MidiEvent &event, events) {
-        if (MidiEvent::NoteOn == event.type()) {
-            MidiNote *note = new MidiNote;
+    Notes notes;
+    foreach (const Event &event, events) {
+        if (Event::NoteOn == event.type()) {
+            Note *note = new Note;
             note->startTime = reader.ticksToSeconds(event.tick());
             note->velocity = event.data(1) / qreal(127.0f);
             note->pitch = event.data(0);
@@ -93,14 +95,14 @@ static qreal importTrack(MidiFileReader &reader, const int trackNumber)
     }
 
     // Match NoteOff events.
-    MidiNotes matched_notes;
+    Notes matched_notes;
     const int note_count = notes.size();
     matched_notes.reserve(note_count);
-    foreach (const MidiEvent &event, events) {
-        if (MidiEvent::NoteOff == event.type()) {
+    foreach (const Event &event, events) {
+        if (Event::NoteOff == event.type()) {
             const qreal stop_time = reader.ticksToSeconds(event.tick());
             for (int i = 0;  i < note_count;  ++i) {
-                MidiNote *note = notes.at(i);
+                Note *note = notes.at(i);
                 if (note
                         && quint8(note->pitch) == event.data(0)
                         && note->startTime < stop_time) {
@@ -121,50 +123,45 @@ static qreal importTrack(MidiFileReader &reader, const int trackNumber)
         qWarning() << Q_FUNC_INFO << ":" << notes.count() << "unmatched note on events found";
         qDeleteAll(notes);
     }
-
     if (matched_notes.isEmpty())
         return 0.0f;
 
-    IModel *model = IModel::instance();
-    IModelItem *score = model->rootItem();
-
     // Add new track and notes to the score.
-    IModelItem *track_list = score->findModelItemList(Ac::TrackItem);
-    IObjectFactory *factory = IObjectFactory::instance();
-    IModelItem *track = factory->create(Ac::TrackItem);
-    model->insertItem(track, track_list->modelItemCount(), model->indexFromItem(track_list));
-    IModelItem *note_list = track->findModelItemList(Ac::NoteItem);
-    foreach (MidiNote *midi_note, matched_notes) {
-        IModelItem *note = factory->create(Ac::NoteItem);
-        IModelItem *pitch_curve = note->findModelItem(Ac::PitchCurveItem);
+    IModelItem *score = IDatabase::instance()->rootItem();
+    IModelItem *track_list = query<IModelItem>(score->findItem(TrackListItem));
+    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
+    IModelItem *track = query<IModelItem>(factory->create(TrackItem));
+    track_list->appendItem(track);
+    IModelItem *note_list = track->findItem(NoteListItem);
+    foreach (Note *midi_note, matched_notes) {
+        IModelItem *note = query<IModelItem>(factory->create(NoteItem));
+        IModelItem *pitch_curve = note->findItem(PitchCurveItem);
         PointList points;
         points.append(Point(midi_note->startTime, midi_note->pitch));
         points.append(Point(midi_note->stopTime, midi_note->pitch));
-        pitch_curve->setData(QVariant::fromValue(points), Ac::PointsRole);
-        note->setData(midi_note->velocity, Ac::VolumeRole);
-        note->setParentModelItem(note_list);
+        pitch_curve->setValue(PointsRole, QVariant::fromValue(points));
+        note->setValue(VolumeRole, midi_note->velocity);
+        note_list->appendItem(note);
     }
 
     // Extend the score length if the track is longer than the current length.
     qreal length = 0.0f;
-    foreach (MidiNote *note, matched_notes)
+    foreach (Note *note, matched_notes)
         if (length < note->stopTime)
             length = note->stopTime;
-    if (score->data(Ac::LengthRole).toReal() < length)
-        score->setData(length, Ac::LengthRole);
-
+    if (get<qreal>(score, LengthRole) < length)
+        score->setValue(LengthRole, length);
     qDeleteAll(matched_notes);
-
     return length;
 }
 
 static IModelItem *createBarline(qreal time, const QColor &color, int priority, const QString &label = QString())
 {
-    IModelItem *barline = IObjectFactory::instance()->create(Ac::TimeGridLineItem);
-    barline->setData(time, Ac::LocationRole);
-    barline->setData(color, Ac::ColorRole);
-    barline->setData(label, Ac::LabelRole);
-    barline->setData(priority, Ac::PriorityRole);
+    IModelItem *barline = query<IModelItem>(IDatabaseObjectFactory::instance()->create(TimeGridLineItem));
+    barline->setValue(LocationRole, time);
+    barline->setValue(ColorRole, color);
+    barline->setValue(LabelRole, label);
+    barline->setValue(PriorityRole, priority);
     return barline;
 }
 
@@ -177,10 +174,10 @@ static int calculatePriority(int value, int maxPower)
     return 1;
 }
 
-static void importBarlines(MidiFileReader &reader, qreal scoreLength)
+static void importBarlines(FileReader &reader, qreal scoreLength)
 {
     QList<IModelItem*> barline_items;
-    const QList<Midi::MeterChange> &meter_changes = reader.meterChanges();
+    const QList<MeterChange> &meter_changes = reader.meterChanges();
     int current_bar_number = 1;
     int current_tick = 0;
     qreal current_time = -1.0f;
@@ -188,18 +185,16 @@ static void importBarlines(MidiFileReader &reader, qreal scoreLength)
     // Create the barlines.
     const int n = meter_changes.count();
     for (int i = 0;  i < n;  ++i) {
-        const Midi::MeterChange &meter_change = meter_changes.at(i);
+        const MeterChange &meter_change = meter_changes.at(i);
         const float quarters_per_beat = 4.0f / float(meter_change.denominator);
         const int ticks_per_thirtysecond = reader.tickRate() / meter_change.thirtysecondNotesPerQuarterNote;
         const int ticks_per_barline_subdivision = quarters_per_beat * ticks_per_thirtysecond;
-
         qreal meter_duration = -1.0f;
         if (i + 1 < n)
             meter_duration = meter_changes.at(i + 1).time - meter_change.time;
         else
             meter_duration = scoreLength - meter_change.time;
         const qreal meter_end_time = meter_change.time + meter_duration;
-
         current_time = meter_change.time;
         while (current_time < meter_end_time
                && !qFuzzyCompare(current_time, meter_end_time)) {
@@ -224,31 +219,30 @@ static void importBarlines(MidiFileReader &reader, qreal scoreLength)
     }
     if (barline_items.isEmpty())
         return;
-
     barline_items.append(createBarline(current_time, QColor(Qt::red), 0));
-    barline_items.first()->setData(0, Ac::PriorityRole);
+    barline_items.first()->setValue(PriorityRole, 0);
 
-    // Add the barlines to the model.
-    IModel *model = IModel::instance();
-    IModelItem *barline_item_list = model->rootItem()->findModelItem(Ac::GridSettingsItem)->findModelItemList(Ac::TimeGridLineItem);
-    const QModelIndex &barline_list_index = model->indexFromItem(barline_item_list);
+    // Add the barlines to the database.
+    IModelItem *score = IDatabase::instance()->rootItem();
+    IModelItem *barline_item_list = score->findItem(GridSettingsItem)->findItem(TimeGridLineListItem);
     foreach (IModelItem *barline_item, barline_items)
-        model->insertItem(barline_item, barline_item_list->modelItemCount(), barline_list_index);
+        barline_item_list->appendItem(barline_item);
 
     // Extend the score length to the last barline, if necessary.
-    IModelItem *score = model->rootItem();
-    if (score->data(Ac::LengthRole).toReal() < current_time)
-        score->setData(current_time, Ac::LengthRole);
+    if (get<qreal>(score, LengthRole) < current_time)
+        score->setValue(LengthRole, current_time);
 }
 
-class MidiFileImportDialogPrivate
+namespace Midi {
+
+class FileImportDialogPrivate
 {
 public:
-    MidiFileImportDialog *q;
+    FileImportDialog *q;
     ImportType importType;
-    uint importBarlines : bitsizeof(uint);
+    uint importBarlines : 1;
 
-    MidiFileImportDialogPrivate(MidiFileImportDialog *q)
+    FileImportDialogPrivate(FileImportDialog *q)
         :   q(q)
         ,   importType(Overwrite)
         ,   importBarlines(true)
@@ -271,15 +265,13 @@ public:
         const QString file_name = filename();
         if (file_name.isEmpty())
             return;
-
         if (Overwrite == importType)
-            IModel::instance()->clear();
-
-        IEditor *editor = IEditor::instance();
-        editor->beginCommand();
+            IDatabase::instance()->reset();
+        IUndoManager *undo_manager = IUndoManager::instance();
+        undo_manager->pause();
 
         // Import MIDI file.
-        MidiFileReader reader(file_name);
+        FileReader reader(file_name);
     #   if 0
         {   qDebug();
             qDebug() << file_name;
@@ -301,34 +293,35 @@ public:
         if (importBarlines)
             ::importBarlines(reader, scoreLength);
 
-        editor->endCommand();
+        // TODO: Fix the undo bug so the undo manager doesn't have to be reset
+        // after a midi file is imported.
+        undo_manager->reset();
+        undo_manager->resume();
     }
 };
 
 
-MidiFileImportDialog::MidiFileImportDialog(QWidget *parent)
+FileImportDialog::FileImportDialog(QWidget *parent)
     :   QDialog(parent)
-    ,   d(new MidiFileImportDialogPrivate(this))
-    ,   ui(new Ui_MidiFileImportDialog)
+    ,   d(new FileImportDialogPrivate(this))
+    ,   ui(new Ui_FileImportDialog)
 {
     ui->setupUi(this);
-
     connect(ui->midiFileOpenButton, SIGNAL(clicked()), SLOT(openFile()));
     connect(ui->buttonBox, SIGNAL(accepted()), SLOT(import()));
     connect(ui->buttonBox, SIGNAL(rejected()), SLOT(close()));
-
     openFile();
 }
 
-MidiFileImportDialog::~MidiFileImportDialog()
+FileImportDialog::~FileImportDialog()
 {
     delete ui;
     delete d;
 }
 
-void MidiFileImportDialog::openFile()
+void FileImportDialog::openFile()
 {
-    QSettings *settings = Core::ICore::instance()->settings();
+    QSettings *settings = ICore::instance()->settings();
     QString mru_dir = settings->value("MidiImport/MRU_Directory").toString();
 
     // Get MIDI file name from user.
@@ -339,26 +332,24 @@ void MidiFileImportDialog::openFile()
                 "MIDI File (*.mid)");
     if (!QFile::exists(file_name))
         return;
-
     d->setFilename(file_name);
-
     mru_dir = QDir(file_name).path();
     settings->setValue("MidiImport/MRU_Directory", mru_dir);
     settings->sync();
 }
 
-void MidiFileImportDialog::import()
+void FileImportDialog::import()
 {
     if ("Create New Score" == ui->importTypeComboBox->currentText())
         d->importType = Overwrite;
     else
         d->importType = Append;
-
     if ("Import Barlines" == ui->importBarlinesComboBox->currentText())
         d->importBarlines = true;
     else
         d->importBarlines = false;
-
     d->import();
     close();
+}
+
 }

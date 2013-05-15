@@ -15,18 +15,11 @@
 **
 **************************************************************************/
 
-#ifndef AC_MIDIFILEPLUGIN_H
-#define AC_MIDIFILEPLUGIN_H
+#ifndef AC_MIDI_CONSTANTS_H
+#define AC_MIDI_CONSTANTS_H
 
-#include <iplugin.h>
+#include <mi_gui_constants.h>
 
-class AcMidiFilePlugin : public ExtensionSystem::IPlugin
-{
-    Q_OBJECT
+const char * const IMPORTMIDIFILE = PRO_NAME_STR".ImportMidiFile";
 
-public:
-    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized() {}
-};
-
-#endif // AC_MIDIFILEPLUGIN_H
+#endif
