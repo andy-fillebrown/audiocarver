@@ -17,27 +17,32 @@
 
 #include "mi_core_objectlist_modelupdater.h"
 #include <imodel.h>
+#include <imodelitem.h>
 
 namespace ObjectList {
 
 void ModelUpdater::beginInsertItem(IModelItem *list, int index)
 {
-    IModel::instance()->beginInsertItem(list, index);
+    if (list->parent())
+        IModel::instance()->beginInsertItem(list, index);
 }
 
 void ModelUpdater::endInsertItem(IModelItem *list, int index)
 {
-    IModel::instance()->endInsertItem(list, index);
+    if (list->parent())
+        IModel::instance()->endInsertItem(list, index);
 }
 
 void ModelUpdater::beginRemoveItem(IModelItem *list, int index)
 {
-    IModel::instance()->beginRemoveItem(list, index);
+    if (list->parent())
+        IModel::instance()->beginRemoveItem(list, index);
 }
 
 void ModelUpdater::endRemoveItem(IModelItem *list, int index)
 {
-    IModel::instance()->endRemoveItem(list, index);
+    if (list->parent())
+        IModel::instance()->endRemoveItem(list, index);
 }
 
 }

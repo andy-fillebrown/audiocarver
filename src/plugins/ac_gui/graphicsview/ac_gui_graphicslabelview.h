@@ -25,10 +25,15 @@ class QModelIndex;
 
 class GraphicsLabelView : public GraphicsView
 {
+    Q_OBJECT
+
     uint _updatesDisabled : 1;
 
 public:
     void updateView();
+
+public slots:
+    void itemChanged(IModelItem *list);
 
 protected:
     GraphicsLabelView(QGraphicsScene *scene = 0, QWidget *parent = 0);
@@ -36,7 +41,6 @@ protected:
     void updateGridLineVisibilities();
     void viewScaleChanged(int role);
     void scoreLengthChanged();
-    void dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft);
     virtual qreal paddingScale() const = 0;
     virtual IModelItem *gridLineList() const = 0;
     virtual int scaleRole() const = 0;

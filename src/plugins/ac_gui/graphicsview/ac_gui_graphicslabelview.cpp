@@ -31,6 +31,9 @@ GraphicsLabelView::GraphicsLabelView(QGraphicsScene *scene, QWidget *parent)
     :   GraphicsView(scene, parent)
     ,   _updatesDisabled(false)
 {
+    IModel *model = IModel::instance();
+    connect(model, SIGNAL(itemInserted(IModelItem*,int)), SLOT(itemChanged(IModelItem*)));
+    connect(model, SIGNAL(itemRemoved(IModelItem*,int)), SLOT(itemChanged(IModelItem*)));
     setBackgroundRole(QPalette::Window);
     setCursor(OpenHandCursor);
 }
@@ -85,6 +88,16 @@ void GraphicsLabelView::updateView()
         GraphicsView::updateView();
 }
 
+void GraphicsLabelView::itemChanged(IModelItem *list)
+{
+    if (IDatabase::instance()->isReading())
+        return;
+    if (list == gridLineList()) {
+        updateGridLineVisibilities();
+        updateView();
+    }
+}
+
 void GraphicsLabelView::viewScaleChanged(int role)
 {
     if (IDatabase::instance()->isReading())
@@ -103,18 +116,6 @@ void GraphicsLabelView::scoreLengthChanged()
     if (_updatesDisabled) {
         setUpdatesEnabled(true);
         _updatesDisabled = false;
-    }
-}
-
-void GraphicsLabelView::dataChanged(const QModelIndex &topRight, const QModelIndex &bottomLeft)
-{
-    IDatabase *db = IDatabase::instance();
-    if (db->isReading())
-        return;
-    IModelItem *top_right_item = IModel::instance()->itemFromIndex(topRight);
-    if (top_right_item == gridLineList()) {
-        updateGridLineVisibilities();
-        updateView();
     }
 }
 

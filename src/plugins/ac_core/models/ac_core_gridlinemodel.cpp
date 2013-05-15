@@ -209,13 +209,13 @@ void Model::importFromFile(const QString &fileName)
     IAggregate *list_aggregate = 0;
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     switch (_listType) {
-    case TimeGridLineItem:
+    case TimeGridLineListItem:
         list_aggregate = factory->create(TimeGridLineListItem);
         break;
-    case Ac::PitchGridLineItem:
+    case PitchGridLineListItem:
         list_aggregate = factory->create(PitchGridLineListItem);
         break;
-    case Ac::ControlGridLineItem:
+    case ControlGridLineListItem:
         list_aggregate = factory->create(ControlGridLineListItem);
         break;
     default:
@@ -236,13 +236,13 @@ void Model::exportToFile(const QString &fileName)
     IAggregate *list_aggregate = 0;
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     switch (_listType) {
-    case TimeGridLineItem:
+    case TimeGridLineListItem:
         list_aggregate = factory->create(TimeGridLineListItem);
         break;
-    case PitchGridLineItem:
+    case PitchGridLineListItem:
         list_aggregate = factory->create(PitchGridLineListItem);
         break;
-    case ControlGridLineItem:
+    case ControlGridLineListItem:
         list_aggregate = factory->create(ControlGridLineListItem);
         break;
     default:

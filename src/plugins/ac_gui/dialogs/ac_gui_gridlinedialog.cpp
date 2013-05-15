@@ -106,12 +106,15 @@ void GridLineDialog::importFromFile()
 
 void GridLineDialog::exportToFile()
 {
+    IUndoManager *undo_manager = IUndoManager::instance();
+    undo_manager->pause();
     QString fileName = QFileDialog::getSaveFileName(this, "Export Grid", "", "Grid (*.aci-grid)");
-    if (fileName.isEmpty())
-        return;
-    if (!fileName.endsWith("aci-grid"))
-        fileName.append(".aci-grid");
-    d->currentModel()->exportToFile(fileName);
+    if (!fileName.isEmpty()) {
+        if (!fileName.endsWith("aci-grid"))
+            fileName.append(".aci-grid");
+        d->currentModel()->exportToFile(fileName);
+    }
+    undo_manager->resume();
 }
 
 void GridLineDialog::apply()
