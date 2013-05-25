@@ -96,6 +96,7 @@ void Database::write(const QString &fileName)
     query<IFiler>(filer)->setFileName(fileName);
     query<IWriter>(filer)->write(rootItem());
     delete filer;
+    _fileName = fileName;
 }
 
 bool Database::isReading() const
