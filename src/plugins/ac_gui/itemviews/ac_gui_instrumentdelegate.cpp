@@ -21,8 +21,11 @@
 #include <mainwindow.h>
 #include <icore.h>
 #include <idatabase.h>
+#include <ieditor.h>
+#include <igraphicsitem.h>
 #include <imodel.h>
 #include <imodelitem.h>
+#include <iselectionset.h>
 #include <QDir>
 #include <QFileDialog>
 #include <QMouseEvent>
@@ -43,7 +46,8 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
     if (Qt::LeftButton != mouse_event->button())
         return false;
 
-    // Open a file-open dialog and set the track's instrument if the user didn't cancel the dialog.
+    // Open a file-open dialog and set each of the selected track's instruments
+    // if the user didn't cancel the dialog.
     IModelItem *project_settings = IDatabase::instance()->rootItem()->findItem(ProjectSettingsItem);
     QString instrument_dir_name = get<QString>(project_settings, InstrumentDirectoryRole);
     if (instrument_dir_name.isEmpty())
@@ -52,8 +56,10 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);
         QString instrument_basename = instrument_file_info.baseName();
-        IModelItem *track = IModel::instance()->itemFromIndex(index);
-        track->set(InstrumentRole, instrument_basename);
+        ISelectionSet *track_ss = IEditor::instance()->currentSelection(TrackItem);
+        const QList<IGraphicsItem*> &tracks = track_ss->items();
+        foreach (IGraphicsItem *track_gi, tracks)
+            query<IModelItem>(track_gi)->set(InstrumentRole, instrument_basename);
     }
     return true;
 }
