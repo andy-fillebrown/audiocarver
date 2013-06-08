@@ -34,7 +34,7 @@
 #include <imodelitem.h>
 //#include <iqaudioengine.h>
 #include <iselectionset.h>
-//#include <isynthesizer.h>
+#include <isynthesizer.h>
 #include <iundomanager.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
@@ -308,10 +308,10 @@ void MainWindowExtension::buildAll()
 {
     if (!maybeSaveDatabase())
         return;
-//    const int track_count = IDatabase::instance()->rootItem()->findList(TrackItem)->count();
-//    ISynthesizer *synth = ISynthesizer::instance();
-//    for (int i = 0;  i < track_count;  ++i)
-//        synth->renderTrack(i);
+    const int track_count = IDatabase::instance()->rootItem()->findItem(TrackListItem)->itemCount();
+    ISynthesizer *synth = ISynthesizer::instance();
+    for (int i = 0;  i < track_count;  ++i)
+        synth->renderTrack(i);
 }
 
 void MainWindowExtension::startOrStop()
