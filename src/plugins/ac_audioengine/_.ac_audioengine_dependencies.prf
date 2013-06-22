@@ -1,0 +1,13 @@
+
+load(../ac_core/ac_core.prf)
+load(../mi_audioengine/mi_audioengine.prf)
+
+DIRS = \
+    tools \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

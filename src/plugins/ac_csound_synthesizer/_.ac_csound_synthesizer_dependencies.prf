@@ -1,0 +1,14 @@
+
+load(../ac_core/ac_core.prf)
+load(../mi_synthesizer/mi_synthesizer.prf)
+
+DIRS = \
+    implementations \
+    session \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

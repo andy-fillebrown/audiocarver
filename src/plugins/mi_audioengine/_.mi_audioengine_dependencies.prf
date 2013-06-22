@@ -1,0 +1,16 @@
+
+load(../../libs/csound/csound/csound.prf)
+load(../mi_core/mi_core.prf)
+
+DIRS = \
+    dialogs \
+    implementations \
+    tools \
+    watchers \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

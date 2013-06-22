@@ -11,6 +11,5 @@ This plugin may be used under the terms of the GNU Lesser General Public License
     <url>$$PRO_URL</url>
     <dependencyList>
         <dependency name=\"MiGuiPlugin\" version=\"$$PRO_VERSION\"/>
-        <dependency name=\"AcCsoundPlugin\" verstion=\"$$PRO_VERSION\"/>
     </dependencyList>
 </plugin>

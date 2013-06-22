@@ -22,6 +22,8 @@ namespace I {
 
 enum InterfaceIds {
     IAggregate,
+    IAudioEngine,
+    IAudioEngineSettingsWatcher,
     IComponent,
     ICopyFiler,
     IDatabase,
@@ -44,6 +46,7 @@ enum InterfaceIds {
     IModelItemWatcher,
     IModelListWatcher,
     IModelReader,
+    IModelWatcher,
     IModelWriter,
     IPlayCursor,
     IReader,

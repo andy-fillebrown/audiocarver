@@ -1,0 +1,4 @@
+
+include(../mi_audioengine/_.mi_audioengine_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(MiAudioEnginePlugin)

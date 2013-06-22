@@ -1,0 +1,14 @@
+
+load(../ac_audioengine/ac_audioengine.prf)
+load(../../libs/csound/csound/csound.prf)
+
+DIRS = \
+    session \
+    watchers \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

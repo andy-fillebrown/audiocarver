@@ -1,7 +1,6 @@
 
-load(../mi_gui/mi_gui.prf)
 load(../ac_core/ac_core.prf)
-load(../ac_csound/ac_csound.prf)
+load(../mi_gui/mi_gui.prf)
 
 DIRS = \
     dialogs \

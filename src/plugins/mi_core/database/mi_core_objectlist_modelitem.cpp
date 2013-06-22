@@ -23,6 +23,7 @@
 
 using namespace Mi;
 using namespace Object;
+using namespace Qt;
 
 namespace ObjectList {
 
@@ -59,9 +60,11 @@ bool ModelItem::containsItem(IModelItem *item) const
 
 bool ModelItem::containsItemNamed(const QString &name) const
 {
-    foreach (IAggregate *item, _items)
-        if (get<QString>(query<IModelItem>(item), NameRole) == name)
+    foreach (IAggregate *item, _items) {
+        QString cur_name = get<QString>(query<IModelItem>(item), NameRole);
+        if (0 == cur_name.compare(name, CaseInsensitive))
             return true;
+    }
     return false;
 }
 

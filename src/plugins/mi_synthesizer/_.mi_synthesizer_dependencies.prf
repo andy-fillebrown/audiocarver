@@ -1,0 +1,13 @@
+
+load(../mi_core/mi_core.prf)
+load(../../libs/csound/csound64/csound64.prf)
+
+DIRS = \
+    implementations \
+
+for(dir, DIRS) {
+    INCLUDEPATH *= $$PWD/$$dir
+    DEPENDPATH *= $$PWD/$$dir
+}
+INCLUDEPATH *= $$PWD
+DEPENDPATH *= $$PWD

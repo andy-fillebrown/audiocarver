@@ -1,4 +1,4 @@
 
-include(../ac_audioengine/ac_audioengine_dependencies.prf)
+include(../ac_audioengine/_.ac_audioengine_dependencies.prf)
 
-LIBS *= -l$$qtLibraryName(AcAudioEngine)
+LIBS *= -l$$qtLibraryName(AcAudioEnginePlugin)

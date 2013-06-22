@@ -1,4 +1,4 @@
 
-load(../_csound_common.prf)
+load(../csound_common.prf)
 
 LIBS *= -l$$qtLibraryName(csound)

@@ -24,6 +24,7 @@
 #include <ac_core_namespace.h>
 #include <mi_gui_constants.h>
 #include <iaggregate.h>
+#include <iaudioengine.h>
 #include <icontext.h>
 #include <icore.h>
 #include <idatabase.h>
@@ -32,7 +33,6 @@
 #include <igraphicsitem.h>
 #include <imodel.h>
 #include <imodelitem.h>
-//#include <iqaudioengine.h>
 #include <iselectionset.h>
 #include <isynthesizer.h>
 #include <iundomanager.h>
@@ -316,13 +316,13 @@ void MainWindowExtension::buildAll()
 
 void MainWindowExtension::startOrStop()
 {
-//    IQAudioEngine *audio_engine = IQAudioEngine::instance();
-//    if (!audio_engine)
-//        return;
-//    if (audio_engine->isStarted())
-//        stop();
-//    else
-//        start();
+    IAudioEngine *audio_engine = IAudioEngine::instance();
+    if (!audio_engine)
+        return;
+    if (audio_engine->isStarted())
+        stop();
+    else
+        start();
 }
 
 void MainWindowExtension::start()
@@ -332,16 +332,16 @@ void MainWindowExtension::start()
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
         return;
     }
-//    IQAudioEngine *audio_engine = IQAudioEngine::instance();
-//    if (audio_engine)
-//        audio_engine->start();
+    IAudioEngine *audio_engine = IAudioEngine::instance();
+    if (audio_engine)
+        audio_engine->start();
 }
 
 void MainWindowExtension::stop()
 {
-//    IQAudioEngine *audio_engine = IQAudioEngine::instance();
-//    if (audio_engine)
-//        audio_engine->stop();
+    IAudioEngine *audio_engine = IAudioEngine::instance();
+    if (audio_engine)
+        audio_engine->stop();
 }
 
 void MainWindowExtension::aboutAudioCarver()

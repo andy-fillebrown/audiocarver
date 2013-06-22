@@ -9,6 +9,7 @@ SOURCE_FILES = \
     modelitem \
     modelitemwatcher \
     modellistwatcher \
+    modelwatcher \
     session \
 
 for(file, SOURCE_FILES) {

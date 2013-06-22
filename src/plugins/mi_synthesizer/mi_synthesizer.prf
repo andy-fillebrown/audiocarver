@@ -1,0 +1,4 @@
+
+include(../mi_synthesizer/_.mi_synthesizer_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(MiSynthesizerPlugin)

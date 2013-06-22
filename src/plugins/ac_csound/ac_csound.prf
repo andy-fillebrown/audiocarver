@@ -1,4 +1,0 @@
-
-include(../ac_csound/_.ac_csound_dependencies.prf)
-
-LIBS *= -l$$qtLibraryName(AcCsoundPlugin)

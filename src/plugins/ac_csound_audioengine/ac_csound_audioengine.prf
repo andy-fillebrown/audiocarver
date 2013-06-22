@@ -1,0 +1,4 @@
+
+include(../ac_csound_audioengine/_.ac_csound_audioengine_dependencies.prf)
+
+LIBS *= -l$$qtLibraryName(AcCsoundAudioEnginePlugin)
