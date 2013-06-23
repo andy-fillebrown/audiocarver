@@ -27,6 +27,8 @@ void GraphicsItem::update(int role, const QVariant &value)
 {
     if (HighlightRole == role)
         return;
+    if (VolumeRole == role)
+        return;
     IGraphicsItem *note_list = findItem(NoteListItem);
     const int note_count = note_list->itemCount();
     if (VisibilityRole == role && !qvariant_cast<bool>(value)) {
