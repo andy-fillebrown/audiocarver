@@ -128,6 +128,7 @@ public:
     int bytesPerSample;
     QAudioFormat::SampleType sampleType;
     QAudioFormat::Endian byteOrder;
+    qreal scoreVolume;
     int trackCount;
     qreal startTime;
     QString compiledDatabase;
@@ -156,6 +157,7 @@ public:
         ,   bytesPerSample(0)
         ,   sampleType(QAudioFormat::SignedInt)
         ,   byteOrder(QAudioFormat::LittleEndian)
+        ,   scoreVolume(1.0f)
         ,   trackCount(0)
         ,   startTime(0.0)
         ,   previousTrackVolume(-1.0f)
@@ -179,6 +181,7 @@ public:
         settings.read(Core::ICore::instance()->settings());
         compile();
         compileTimer->setSingleShot(true);
+        scoreVolume = get<qreal>(IDatabase::instance()->rootItem(), VolumeRole);
         IModel *model = IModel::instance();
         connect(model, SIGNAL(modelReset()), SLOT(reset()));
         connect(model, SIGNAL(dataAboutToBeChanged(IModelItem*,int)), SLOT(dataAboutToBeChanged(IModelItem*)));
@@ -220,8 +223,10 @@ public:
                 compiled = false;
                 compileTimer->start();
             }
-        } else if (ScoreItem == item->itemType())
+        } else if (ScoreItem == item->itemType()) {
+            scoreVolume = get<qreal>(item, VolumeRole);
             q->setStartTime(get<qreal>(item, StartTimeRole));
+        }
     }
 
     void itemChanged(IModelItem *item)
@@ -456,7 +461,7 @@ public:
 
             bytes_read += n;
             while (n) {
-                const float x = *csound_data;
+                const float x = scoreVolume * *csound_data;
                 if (8 == sampleSize) {
                     if (QAudioFormat::UnSignedInt == sampleType) {
                         const quint8 value = static_cast<quint8>((1.0f + x) / 2.0f * 255.0f);
