@@ -139,7 +139,7 @@ public:
     uint started : 1;
     uint connected : 1;
     uint stopping : 1;
-    uint scoreDone : 1;
+    int scoreDone;
     QTimer *stopTimer;
     QTimer *compileTimer;
 
@@ -166,7 +166,7 @@ public:
         ,   started(false)
         ,   connected(false)
         ,   stopping(false)
-        ,   scoreDone(false)
+        ,   scoreDone(0)
         ,   stopTimer(0)
         ,   compileTimer(new QTimer)
     {
@@ -407,7 +407,7 @@ public:
         stopping = false;
         currentSample = 0;
         csoundRewindScore(csound);
-        scoreDone = false;
+        scoreDone = 0;
         started = false;
         connected = false;
     }
