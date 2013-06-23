@@ -33,7 +33,7 @@ class AudioEnginePrivate : public QObject
 protected slots:
     virtual void reset() = 0;
     virtual void dataAboutToBeChanged(IModelItem *item) = 0;
-    virtual void dataChanged(IModelItem *item) = 0;
+    virtual void dataChanged(IModelItem *item, int role) = 0;
     virtual void itemChanged(IModelItem *item) = 0;
     virtual void compile() = 0;
     virtual void stop() = 0;

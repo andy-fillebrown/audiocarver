@@ -185,7 +185,7 @@ public:
         IModel *model = IModel::instance();
         connect(model, SIGNAL(modelReset()), SLOT(reset()));
         connect(model, SIGNAL(dataAboutToBeChanged(IModelItem*,int)), SLOT(dataAboutToBeChanged(IModelItem*)));
-        connect(model, SIGNAL(dataChanged(IModelItem*,int)), SLOT(dataChanged(IModelItem*)));
+        connect(model, SIGNAL(dataChanged(IModelItem*,int)), SLOT(dataChanged(IModelItem*,int)));
         connect(model, SIGNAL(itemInserted(IModelItem*,int)), SLOT(itemChanged(IModelItem*)));
         connect(model, SIGNAL(itemRemoved(IModelItem*,int)), SLOT(itemChanged(IModelItem*)));
         connect(compileTimer, SIGNAL(timeout()), SLOT(compile()));
@@ -215,7 +215,7 @@ public:
         previousTrackVolume = get<qreal>(item, VolumeRole);
     }
 
-    void dataChanged(IModelItem *item)
+    void dataChanged(IModelItem *item, int role)
     {
         if (TrackItem == item->itemType()) {
             if (previousTrackName != get<QString>(item, NameRole)
@@ -225,7 +225,8 @@ public:
             }
         } else if (ScoreItem == item->itemType()) {
             scoreVolume = get<qreal>(item, VolumeRole);
-            q->setStartTime(get<qreal>(item, StartTimeRole));
+            if (StartTimeRole == role)
+                q->setStartTime(get<qreal>(item, StartTimeRole));
         }
     }
 

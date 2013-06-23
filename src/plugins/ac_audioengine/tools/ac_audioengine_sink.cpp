@@ -31,13 +31,13 @@ void Sink::stop()
 {
     IDatabase *db = IDatabase::instance();
     if (db)
-        db->rootItem()->set(0.0f, PlaybackTimeRole);
+        db->rootItem()->set(PlaybackTimeRole, 0.0f);
     Mi::AudioEngine::Sink::stop();
 }
 
 void Sink::notify()
 {
-    IDatabase::instance()->rootItem()->set(playbackTime(), PlaybackTimeRole);
+    IDatabase::instance()->rootItem()->set(PlaybackTimeRole, playbackTime());
 }
 
 }

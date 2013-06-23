@@ -160,6 +160,16 @@ bool ModelItem::setValue(int role, const QVariant &value)
         _startTime = startTime;
         return true;
     }
+    case PlaybackTimeRole: {
+        qreal prev_start_time = _startTime;
+        qreal offset = qvariant_cast<qreal>(value);
+        {
+            ScopedDataChange data_change(this, PlaybackTimeRole);
+            _startTime += offset;
+        }
+        _startTime = prev_start_time;
+        return true;
+    }
     default:
         return ScoreObject::ModelItem::setValue(role, value);
     }
