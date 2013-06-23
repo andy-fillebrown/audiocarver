@@ -417,16 +417,16 @@ void AudioEngineDialog::engineSettingsChanged()
     d->updateSampleRates(settings.deviceName());
     d->updateControlRates(settings.sampleRate());
     d->updateBufferSizes(settings.sampleRate(), settings.controlRate());
-    d->setDeviceNameIndex(settings.deviceName());
-    d->setSampleSizeIndex(settings.sampleSize());
-    d->setSampleRateIndex(settings.sampleRate());
-    d->setControlRateIndex(settings.controlRate());
-    d->setBufferSizeIndex(settings.bufferSize());
     d->updateDeviceNamesUi();
     d->updateSampleSizesUi();
     d->updateSampleRatesUi();
     d->updateControlRatesUi();
     d->updateBufferSizesUi();
+    d->setDeviceNameIndex(settings.deviceName());
+    d->setSampleSizeIndex(settings.sampleSize());
+    d->setSampleRateIndex(settings.sampleRate());
+    d->setControlRateIndex(settings.controlRate());
+    d->setBufferSizeIndex(settings.bufferSize());
 }
 
 void AudioEngineDialog::updateDeviceList()

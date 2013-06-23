@@ -17,6 +17,7 @@
 
 #include "mi_audioengine_settings.h"
 #include "mi_audioengine_utilities.h"
+#include <icore.h>
 #include <QAudioDeviceInfo>
 #include <QSettings>
 
@@ -84,7 +85,10 @@ public:
 
 AudioEngineSettings::AudioEngineSettings()
     :   d(new AudioEngineSettingsPrivate)
-{}
+{
+    QSettings *settings = Core::ICore::instance()->settings();
+    read(settings);
+}
 
 AudioEngineSettings::AudioEngineSettings(const AudioEngineSettings &other)
     :   d(other.d)
