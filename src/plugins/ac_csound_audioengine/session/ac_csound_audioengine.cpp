@@ -133,6 +133,7 @@ public:
     QString compiledDatabase;
     QString previousTrackName;
     qreal previousTrackVolume;
+    uint compileFailed : 1;
     uint compiled : 1;
     uint started : 1;
     uint connected : 1;
@@ -158,6 +159,7 @@ public:
         ,   trackCount(0)
         ,   startTime(0.0)
         ,   previousTrackVolume(-1.0f)
+        ,   compileFailed(false)
         ,   compiled(false)
         ,   started(false)
         ,   connected(false)
@@ -233,12 +235,15 @@ public:
 
     void compile()
     {
+        compileFailed = false;
         if (compiledDatabase != IDatabase::instance()->fileName())
             compiled = false;
         if (compiled)
             return;
-        if (!csound || !databaseIsSaved())
+        if (!csound || !databaseIsSaved()) {
+            compileFailed = true;
             return;
+        }
         stop();
         csoundBuffer = 0;
         csoundBufferSize = 0;
@@ -262,11 +267,14 @@ public:
         const QString &orc_file_name = playbackOrcFileName();
         const QString &sco_file_name = playbackScoFileName();
         if (!writePlaybackOrc(orc_file_name)
-                || !writePlaybackSco(sco_file_name))
+                || !writePlaybackSco(sco_file_name)) {
+            compileFailed = true;
             return;
+        }
         csoundReset(csound);
         if (CSOUND_SUCCESS != csoundPreCompile(csound)) {
             qDebug() << Q_FUNC_INFO << ": Error precompiling csound";
+            compileFailed = true;
             return;
         } else
             csoundSetHostImplementedAudioIO(csound, 1, bufferSize);
@@ -289,11 +297,13 @@ public:
             qDebug() << Q_FUNC_INFO << "arg" << i << "==" << argv[i];
         if (CSOUND_SUCCESS != csoundCompile(csound, argc, argv)) {
             qDebug() << Q_FUNC_INFO << ": Error compiling csound";
+            compileFailed = true;
             return;
         } else {
             csoundBuffer = csoundGetOutputBuffer(csound);
             if (!csoundBuffer) {
                 qDebug() << Q_FUNC_INFO << ": Error getting csound buffer";
+                compileFailed = true;
                 return;
             }
         }
@@ -371,8 +381,11 @@ public:
             return;
         if (!compiled)
             compileTimer->start();
-        while (!compiled)
+        while (!compiled) {
+            if (compileFailed)
+                return;
             QThread::yieldCurrentThread();
+        }
         started = true;
         sink->start();
     }

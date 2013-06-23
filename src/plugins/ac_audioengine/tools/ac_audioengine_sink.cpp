@@ -29,7 +29,9 @@ Sink::Sink(const QAudioDeviceInfo &deviceInfo, const QAudioFormat &format, int b
 
 void Sink::stop()
 {
-    IDatabase::instance()->rootItem()->set(0.0f, PlaybackTimeRole);
+    IDatabase *db = IDatabase::instance();
+    if (db)
+        db->rootItem()->set(0.0f, PlaybackTimeRole);
     Mi::AudioEngine::Sink::stop();
 }
 

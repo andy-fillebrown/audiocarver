@@ -62,17 +62,20 @@ public:
     QAudioFormat format;
     SinkDevice *device;
     QAudioOutput *output;
+    uint starting : 1;
     uint stopped : 1;
 
     PlaybackThreadPrivate(Sink *sink)
         :   sink(sink)
         ,   device(0)
         ,   output(0)
+        ,   starting(false)
         ,   stopped(true)
     {}
 
     void start(QAudioDeviceInfo &deviceInfo, QAudioFormat format, SinkDevice *device)
     {
+        starting = true;
         this->deviceInfo = deviceInfo;
         this->format = format;
         this->device = device;
@@ -82,6 +85,8 @@ public:
 
     void stop()
     {
+        if (starting)
+            return;
         quit();
         while (!stopped)
             QThread::yieldCurrentThread();
@@ -91,13 +96,15 @@ private:
     void run()
     {
         stopped = false;
-        QAudioOutput audio_output(deviceInfo, format);
-        output = &audio_output;
+        output = new QAudioOutput(deviceInfo, format);
         output->setNotifyInterval(10);
         connect(output, SIGNAL(notify()), sink, SLOT(notify()), UniqueConnection);
         output->start(device);
+        starting = false;
         exec();
-        output->stop();
+#ifndef MI_SKIP_AUDIOOUTPUT_DESTRUCTION
+        delete output;
+#endif
         output = 0;
         stopped = true;
     }

@@ -9,6 +9,11 @@ include(../../_.plugin.prf)
 DEFINES *= \
     MI_AUDIOENGINE_LIBRARY \
 
+unix:!mac {
+    DEFINES *= \
+        MI_SKIP_AUDIOOUTPUT_DESTRUCTION \
+}
+
 SOURCE_FILES = \
     constants \
     global \
