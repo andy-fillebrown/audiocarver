@@ -102,6 +102,8 @@ private:
         output->start(device);
         starting = false;
         exec();
+        // Deleting the QAudioOutput object crashes on linux so we leave it as
+        // a small memory/resource leak until the audio engine is rewritten.
 #ifndef MI_SKIP_AUDIOOUTPUT_DESTRUCTION
         delete output;
 #endif
