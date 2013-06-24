@@ -91,7 +91,7 @@ SelectedItemsPropertyModel::SelectedItemsPropertyModel(QObject *parent)
     ,   d(new SelectedItemsPropertyModelPrivate(this))
 {
     ::instance = this;
-    connect(IModel::instance(), SIGNAL(dataChanged(IModelItem*,int)), SLOT(update()));
+    connect(IModel::instance(), SIGNAL(dataChanged(IModelItem*,int)), SLOT(update(IModelItem*,int)));
     update();
 }
 
@@ -170,7 +170,9 @@ bool SelectedItemsPropertyModel::setData(const QModelIndex &index, const QVarian
     return true;
 }
 
-void SelectedItemsPropertyModel::update()
+void SelectedItemsPropertyModel::update(IModelItem *item, int role)
 {
+    if (PlaybackTimeRole == role)
+        return;
     d->update();
 }

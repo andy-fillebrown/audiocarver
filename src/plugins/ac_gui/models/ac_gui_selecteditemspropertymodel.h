@@ -39,7 +39,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 public slots:
-    void update();
+    void update(IModelItem *item = 0, int role = -1);
 
 private:
     friend class SelectedItemsPropertyModelPrivate;
