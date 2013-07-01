@@ -15,23 +15,28 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modelupdater.h"
-#include <imodel.h>
+#ifndef AC_GUI_SCORE_PLAYCURSOR_H
+#define AC_GUI_SCORE_PLAYCURSOR_H
 
-namespace Object {
+#include <ac_gui_base_playcursor.h>
 
-void ModelUpdater::beginChangeData(IModelItem *item, int role)
+class IAggregate;
+
+namespace Score {
+
+class PlayCursor : public Base::PlayCursor
 {
-    IModel *model = IModel::instance();
-    if (model)
-        model->beginChangeData(item, role);
+public:
+    PlayCursor(IAggregate *aggregate)
+        :   Base::PlayCursor(aggregate)
+    {}
+
+protected:
+    qreal position() const;
+    void dragToPosition(qreal position);
+    void setPosition(qreal position);
+};
+
 }
 
-void ModelUpdater::endChangeData(IModelItem *item, int role)
-{
-    IModel *model = IModel::instance();
-    if (model)
-        model->endChangeData(item, role);
-}
-
-}
+#endif

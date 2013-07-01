@@ -37,6 +37,7 @@
 #include <QGraphicsRectItem>
 #include <QMouseEvent>
 #include <QUndoStack>
+#include <QtDebug>
 #include <qmath.h>
 
 using namespace Ac;
@@ -280,14 +281,14 @@ public:
     IPlayCursor *findPlayCursor(const QList<QGraphicsItem*> &items)
     {
         IPlayCursor *play_cursor = 0;
-//        foreach (QGraphicsItem *item, items) {
-//            IUnknown *unknown = static_cast<IUnknown*>(qvariant_cast<void*>(item->data(0)));
-//            if (unknown) {
-//                play_cursor = QUERY(IPlayCursor, unknown);
-//                if (play_cursor)
-//                    break;
-//            }
-//        }
+        foreach (QGraphicsItem *item, items) {
+            IUnknown *unknown = reinterpret_cast<IUnknown*>(qvariant_cast<quintptr>(item->data(0)));
+            if (unknown) {
+                play_cursor = query<IPlayCursor>(unknown);
+                if (play_cursor)
+                    break;
+            }
+        }
         return play_cursor;
     }
 
@@ -301,36 +302,27 @@ public:
     {
         GraphicsViewManager *vm = GraphicsViewManager::instance();
         vm->disableUpdates();
-//        const qreal fromScenePos = playCursor->playCursorPosition();
-//        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-//        const qreal sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()).x() - fromScenePos;
-//        playCursor->dragPlayCursorTo(fromScenePos + sceneOffset);
+        const qreal fromScenePos = playCursor->position();
+        const qreal sceneOffset = vm->snappedScenePos(q->sceneType(), pos).x() - fromScenePos;
+        playCursor->dragToPosition(sceneOffset);
         vm->enableUpdates();
     }
 
     void finishDraggingPlayCursor(const QPoint &pos)
     {
-//        if (!playCursor) {
-//            playCursor = findPlayCursor(q->items());
-//            if (!playCursor) {
-//                qWarning() << Q_FUNC_INFO << ": play cursor not found";
-//                return;
-//            }
-//        }
-
-//        // The view manager might have different view settings than the
-//        // database.  Update the database's view settings so they don't
-//        // overwrite the view manager's view settings in the view manager's
-//        // dataChanged implementation when the cursor position is changed.
-//        GraphicsViewManager *vm = GraphicsViewManager::instance();
-//        vm->updateDatabase();
-
-////        const qreal fromScenePos = playCursor->playCursorPosition();
-////        const QPointF toScenePos = rootItem->transform().map(q->mapToScene(pos));
-////        const qreal sceneOffset = vm->snappedScenePos(toScenePos, q->sceneType()).x() - fromScenePos;
-////        playCursor->setPlayCursorPosition(fromScenePos + sceneOffset);
-//        playCursor = 0;
-//        q->setCursor(GraphicsView::normalCrosshair());
+        if (!playCursor) {
+            playCursor = findPlayCursor(q->items());
+            if (!playCursor) {
+                qWarning() << Q_FUNC_INFO << ": play cursor not found";
+                return;
+            }
+        }
+        GraphicsViewManager *vm = GraphicsViewManager::instance();
+        const qreal fromScenePos = playCursor->position();
+        const qreal sceneOffset = vm->snappedScenePos(q->sceneType(), pos).x() - fromScenePos;
+        playCursor->setPosition(fromScenePos + sceneOffset);
+        playCursor = 0;
+        q->setCursor(GraphicsView::normalCrosshair());
     }
 
     bool selectGrips(const QPoint &pos)

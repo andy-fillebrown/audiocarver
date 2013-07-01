@@ -18,16 +18,29 @@
 #ifndef IPLAYCURSOR_H
 #define IPLAYCURSOR_H
 
-#include <iunknown.h>
+#include <icomponent.h>
+#include <QtGlobal>
 
-class IPlayCursor : public IUnknown
+class IPlayCursor : public IComponent
 {
 public:
     enum { InterfaceType = I::IPlayCursor };
 
-    virtual qreal playCursorPosition() const = 0;
-    virtual void dragPlayCursorTo(qreal position) = 0;
-    virtual void setPlayCursorPosition(qreal position) = 0;
+    virtual qreal position() const = 0;
+    virtual void dragToPosition(qreal position) = 0;
+    virtual void setPosition(qreal position) = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
 };
 
 #endif

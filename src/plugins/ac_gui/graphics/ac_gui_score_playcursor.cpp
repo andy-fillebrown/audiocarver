@@ -15,23 +15,28 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modelupdater.h"
-#include <imodel.h>
+#include "ac_gui_score_playcursor.h"
+#include "ac_gui_namespace.h"
+#include <idatabase.h>
+#include <imodelitem.h>
 
-namespace Object {
+using namespace Ac;
 
-void ModelUpdater::beginChangeData(IModelItem *item, int role)
+namespace Score {
+
+qreal PlayCursor::position() const
 {
-    IModel *model = IModel::instance();
-    if (model)
-        model->beginChangeData(item, role);
+    return get<qreal>(IDatabase::instance()->rootItem(), StartTimeRole);
 }
 
-void ModelUpdater::endChangeData(IModelItem *item, int role)
+void PlayCursor::dragToPosition(qreal position)
 {
-    IModel *model = IModel::instance();
-    if (model)
-        model->endChangeData(item, role);
+    IDatabase::instance()->rootItem()->setValue(PlaybackTimeRole, position);
+}
+
+void PlayCursor::setPosition(qreal position)
+{
+    IDatabase::instance()->rootItem()->setValue(StartTimeRole, position);
 }
 
 }

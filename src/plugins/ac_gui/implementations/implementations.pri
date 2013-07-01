@@ -4,6 +4,7 @@ SOURCE_FILES = \
     graphicsgrip \
     graphicsgriplist \
     graphicsitem \
+    playcursor \
 
 for(file, SOURCE_FILES) {
     header = ac_gui_base_$${file}.h

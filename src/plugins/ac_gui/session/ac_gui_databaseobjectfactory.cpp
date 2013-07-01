@@ -31,8 +31,10 @@
 #include "ac_gui_objectlist_graphicsitem.h"
 #include "ac_gui_pitchcurve_graphicsitem.h"
 #include "ac_gui_pitchgridline_graphicsitem.h"
+#include "ac_gui_playcursor_graphicsitem.h"
 #include "ac_gui_score_graphicsitem.h"
 #include "ac_gui_score_graphicsupdater.h"
+#include "ac_gui_score_playcursor.h"
 #include "ac_gui_timegridline_graphicsitem.h"
 #include "ac_gui_track_graphicsitem.h"
 #include "ac_gui_tracklist_graphicsupdater.h"
@@ -87,6 +89,12 @@ void DatabaseObjectFactory::createComponents(int itemType, IAggregate *aggregate
         new PitchGridLine::GraphicsItem(aggregate);
         new Object::GraphicsItem(aggregate);
         new Object::GraphicsUpdater(aggregate);
+        break;
+    case PlayCursorItem:
+        new Object::ModelItem(aggregate);
+        new PlayCursor::GraphicsItem(aggregate);
+        new Object::GraphicsUpdater(aggregate);
+        new Score::PlayCursor(aggregate);
         break;
     case ScoreItem:
         new Score::GraphicsItem(aggregate);

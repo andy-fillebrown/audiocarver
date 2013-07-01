@@ -15,23 +15,25 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modelupdater.h"
-#include <imodel.h>
+#include "ac_gui_base_playcursor.h"
+#include "ac_gui_namespace.h"
+#include <iaggregate.h>
 
-namespace Object {
+using namespace Ac;
+using namespace Mi;
 
-void ModelUpdater::beginChangeData(IModelItem *item, int role)
+namespace Base {
+
+void *PlayCursor::queryInterface(int interfaceType) const
 {
-    IModel *model = IModel::instance();
-    if (model)
-        model->beginChangeData(item, role);
+    void *i = IComponent::queryInterface(interfaceType);
+    return i ? i : _aggregate->queryInterface(interfaceType);
 }
 
-void ModelUpdater::endChangeData(IModelItem *item, int role)
+PlayCursor::PlayCursor(IAggregate *aggregate)
+    :   _aggregate(aggregate)
 {
-    IModel *model = IModel::instance();
-    if (model)
-        model->endChangeData(item, role);
+    _aggregate->appendComponent(this);
 }
 
 }

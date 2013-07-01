@@ -26,6 +26,8 @@ class Aggregate;
 
 class GraphicsItem : public ScoreObject::GraphicsItem
 {
+    IAggregate *_playCursor;
+
 public:
     GraphicsItem(IAggregate *aggregate);
     ~GraphicsItem();
@@ -35,6 +37,14 @@ protected:
     QMap<int, QGraphicsItem*> _unitYNodes;
 
     QGraphicsItem *findNode(int sceneType, int transformType) const;
+
+    int itemCount() const
+    {
+        return ScoreObject::GraphicsItem::itemCount() + 1;
+    }
+
+    IGraphicsItem *itemAt(int i) const;
+    IGraphicsItem *findItem(int itemType) const;
     void update(int role, const QVariant &value);
 };
 

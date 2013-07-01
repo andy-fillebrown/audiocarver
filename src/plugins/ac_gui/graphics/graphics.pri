@@ -16,7 +16,9 @@ SOURCE_FILES = \
     objectlist_graphicsitem \
     pitchcurve_graphicsitem \
     pitchgridline_graphicsitem \
+    playcursor_graphicsitem \
     score_graphicsitem \
+    score_playcursor \
     scoreobject_graphicsitem \
     timegridline_graphicsitem \
     track_graphicsitem \

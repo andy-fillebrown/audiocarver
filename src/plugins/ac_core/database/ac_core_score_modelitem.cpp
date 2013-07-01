@@ -54,8 +54,8 @@ ModelItem::~ModelItem()
 
 void ModelItem::reset()
 {
-    _length = DEFAULT_SCORE_LENGTH;
-    _startTime = DEFAULT_SCORE_STARTTIME;
+    setValue(LengthRole, DEFAULT_SCORE_LENGTH);
+    setValue(StartTimeRole, DEFAULT_SCORE_STARTTIME);
     ScoreObject::ModelItem::reset();
 }
 
@@ -134,6 +134,7 @@ QVariant ModelItem::getValue(int role) const
     case LengthRole:
         return _length;
     case StartTimeRole:
+    case PlaybackTimeRole:
         return _startTime;
     default:
         return ScoreObject::ModelItem::getValue(role);
@@ -165,7 +166,7 @@ bool ModelItem::setValue(int role, const QVariant &value)
         qreal offset = qvariant_cast<qreal>(value);
         {
             ScopedDataChange data_change(this, PlaybackTimeRole);
-            _startTime += offset;
+            _startTime = qBound(qreal(0.0f), _startTime + offset, _length);
         }
         _startTime = prev_start_time;
         return true;

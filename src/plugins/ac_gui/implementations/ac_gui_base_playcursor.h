@@ -15,23 +15,37 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modelupdater.h"
-#include <imodel.h>
+#ifndef AC_GUI_BASE_PLAYCURSOR_H
+#define AC_GUI_BASE_PLAYCURSOR_H
 
-namespace Object {
+#include <iplaycursor.h>
 
-void ModelUpdater::beginChangeData(IModelItem *item, int role)
+class IAggregate;
+
+namespace Base {
+
+class PlayCursor : public IPlayCursor
 {
-    IModel *model = IModel::instance();
-    if (model)
-        model->beginChangeData(item, role);
+    IAggregate *_aggregate;
+
+public:
+    void *queryInterface(int interfaceType) const;
+
+protected:
+    IAggregate *aggregate() const
+    {
+        return _aggregate;
+    }
+
+    PlayCursor(IAggregate *aggregate);
+
+    void initialize()
+    {}
+
+    void reset()
+    {}
+};
+
 }
 
-void ModelUpdater::endChangeData(IModelItem *item, int role)
-{
-    IModel *model = IModel::instance();
-    if (model)
-        model->endChangeData(item, role);
-}
-
-}
+#endif

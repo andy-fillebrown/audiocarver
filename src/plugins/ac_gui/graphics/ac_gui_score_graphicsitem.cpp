@@ -18,6 +18,7 @@
 #include "ac_gui_score_graphicsitem.h"
 #include "ac_gui_graphicsrootnode.h"
 #include "ac_gui_namespace.h"
+#include <idatabaseobjectfactory.h>
 #include <imodelitem.h>
 #include <QGraphicsItem>
 
@@ -27,6 +28,7 @@ namespace Score {
 
 GraphicsItem::GraphicsItem(IAggregate *aggregate)
     :   ScoreObject::GraphicsItem(aggregate)
+    ,   _playCursor(0)
 {
     for (int i = 0;  i < SceneTypeCount;  ++i) {
         QMap<int, QGraphicsItem*> &main_nodes = mainNodes();
@@ -39,6 +41,11 @@ GraphicsItem::GraphicsItem(IAggregate *aggregate)
     }
     _unitYNodes[PitchScene]->setTransform(QTransform::fromScale(1.0f, 127.0f));
     update(LengthRole, query<IModelItem>(this)->getValue(LengthRole));
+    _playCursor = IDatabaseObjectFactory::instance()->create(PlayCursorItem, this);
+    IGraphicsItem *play_cursor = query<IGraphicsItem>(_playCursor);
+    _unitYNodes.insert(TimeLabelScene, play_cursor->findNode(TimeLabelScene, UnitYTransform));
+    _unitYNodes.insert(PitchLabelScene, play_cursor->findNode(PitchLabelScene, UnitYTransform));
+    _unitYNodes.insert(ControlLabelScene, play_cursor->findNode(ControlLabelScene, UnitYTransform));
 }
 
 GraphicsItem::~GraphicsItem()
@@ -47,6 +54,7 @@ GraphicsItem::~GraphicsItem()
         qDelete(_unitYNodes, i);
         qDelete(_unitXNodes, i);
     }
+    qDelete(_playCursor);
     // Main nodes get deleted in ScoreObject::GraphicsItem destructor.
 }
 
@@ -62,12 +70,30 @@ QGraphicsItem *GraphicsItem::findNode(int sceneType, int transformType) const
     }
 }
 
+IGraphicsItem *GraphicsItem::itemAt(int i) const
+{
+    if (ScoreObject::GraphicsItem::itemCount() == i)
+        return query<IGraphicsItem>(_playCursor);
+    return ScoreObject::GraphicsItem::itemAt(i);
+}
+
+IGraphicsItem *GraphicsItem::findItem(int itemType) const
+{
+    if (PlayCursorItem == itemType)
+        return query<IGraphicsItem>(_playCursor);
+    return ScoreObject::GraphicsItem::findItem(itemType);
+}
+
 void GraphicsItem::update(int role, const QVariant &value)
 {
     if (LengthRole == role) {
         const qreal score_length = qvariant_cast<qreal>(value);
         _unitXNodes[PitchScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
         _unitXNodes[ControlScene]->setTransform(QTransform::fromScale(score_length, 1.0f));
+        return;
+    }
+    if (role == PlaybackTimeRole || role == StartTimeRole) {
+        query<IGraphicsItem>(_playCursor)->update(PlaybackTimeRole, value);
         return;
     }
     ScoreObject::GraphicsItem::update(role, value);

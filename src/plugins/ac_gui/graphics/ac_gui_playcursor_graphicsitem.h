@@ -15,23 +15,38 @@
 **
 **************************************************************************/
 
-#include "mi_core_object_modelupdater.h"
-#include <imodel.h>
+#ifndef AC_GUI_PLAYCURSOR_GRAPHICSITEM_H
+#define AC_GUI_PLAYCURSOR_GRAPHICSITEM_H
+
+#include "ac_gui_base_graphicsitem.h"
 
 namespace Object {
+class Aggregate;
+}
 
-void ModelUpdater::beginChangeData(IModelItem *item, int role)
+class QGraphicsLineItem;
+
+namespace PlayCursor {
+
+class GraphicsItem : public Base::GraphicsItem
 {
-    IModel *model = IModel::instance();
-    if (model)
-        model->beginChangeData(item, role);
+    QGraphicsLineItem *_timeLineNode;
+    QGraphicsLineItem *_pitchLineNode;
+    QGraphicsLineItem *_controlLineNode;
+
+public:
+    GraphicsItem(IAggregate *aggregate);
+
+protected:
+    Object::Aggregate *aggregate() const;
+
+    int transformType() const;
+    bool intersects(const QRectF &rect) const;
+    IGraphicsItem *parent() const;
+    QGraphicsItem *findNode(int sceneType, int transformType) const;
+    void update(int role, const QVariant &value);
+};
+
 }
 
-void ModelUpdater::endChangeData(IModelItem *item, int role)
-{
-    IModel *model = IModel::instance();
-    if (model)
-        model->endChangeData(item, role);
-}
-
-}
+#endif
