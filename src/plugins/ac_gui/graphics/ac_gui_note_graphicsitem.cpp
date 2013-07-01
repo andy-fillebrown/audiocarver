@@ -36,7 +36,7 @@ GraphicsItem::~GraphicsItem()
 
 IGraphicsItem *GraphicsItem::itemAt(int i) const
 {
-    if (2 == i)
+    if (ScoreObject::GraphicsItem::itemCount() == i)
         return query<IGraphicsItem>(_velocity);
     return ScoreObject::GraphicsItem::itemAt(i);
 }
