@@ -38,7 +38,6 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
         qDebug() << Q_FUNC_INFO << ": Error opening table file for write" << fileName;
         return;
     }
-
     const QPointF &start_point = points.first().pos;
     const qreal start_x = start_point.x();
     const qreal scale_x = 1.0 / (points.last().pos.x() - start_x);
