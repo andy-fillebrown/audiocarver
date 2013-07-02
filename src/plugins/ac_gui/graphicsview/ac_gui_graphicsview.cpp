@@ -807,9 +807,9 @@ void GraphicsView::removePoints()
             note_item->remove();
             IEditor::instance()->currentSelection()->remove(note_graphics);
         } else {
-            curve_griplist->update(PointsRole, QVariant::fromValue(GripList::toPointList(curve_grips)));
             foreach (IGraphicsGrip *grip, curve_grips_to_remove)
                 curve_grips.removeOne(grip);
+            curve_griplist->update(PointsRole, QVariant::fromValue(GripList::toPointList(curve_grips)));
         }
         grip_count -= curve_grips_to_remove_count;
         i -= curve_grips_to_remove_count;
