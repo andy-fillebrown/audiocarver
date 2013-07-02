@@ -16,6 +16,7 @@ SOURCE_FILES = \
 ACI_FILES = \
     instrument-control \
     track-control \
+    volume-envelope \
 
 ORC_FILES = \
     pluck \
