@@ -92,9 +92,9 @@ void GraphicsItem::update(int role, const QVariant &value)
     if (PlaybackTimeRole != role)
         return;
     qreal x = qvariant_cast<qreal>(value);
-    _timeLineNode->setLine(x, -1.0f, x, 1.5f);
-    _pitchLineNode->setLine(x, -1.0f, x, 1.5f);
-    _controlLineNode->setLine(x, -1.0f, x, 1.5f);
+    _timeLineNode->setLine(x, -1.0f, x, 2.0f);
+    _pitchLineNode->setLine(x, -1.0f, x, 2.0f);
+    _controlLineNode->setLine(x, -1.0f, x, 2.0f);
 }
 
 }
