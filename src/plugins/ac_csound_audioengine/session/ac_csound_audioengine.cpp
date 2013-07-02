@@ -73,7 +73,6 @@ static QString outputFileDirectoryName()
         qDebug() << Q_FUNC_INFO << ": Error making path" << output_dir_name;
         return "";
     }
-
     return output_dir_name;
 }
 
