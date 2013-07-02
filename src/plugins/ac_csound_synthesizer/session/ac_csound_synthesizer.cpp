@@ -229,6 +229,8 @@ void Synthesizer::renderTrack(int trackNumber)
     QString instrument_dir_name = get<QString>(project_settings, InstrumentDirectoryRole);
     if (instrument_dir_name.isEmpty())
         instrument_dir_name = applicationTreeDirectory() + "instruments";
+    else if (QDir::isRelativePath(instrument_dir_name))
+        instrument_dir_name = root_dir_name + "/" + instrument_dir_name;
     QString instrument_file_name = instrument_dir_name + "/" + get<QString>(track, InstrumentRole);
     if (!instrument_file_name.endsWith(".orc"))
         instrument_file_name += ".orc";

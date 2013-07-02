@@ -24,10 +24,11 @@ namespace ProjectSettings {
 
 class ModelItem : public Object::ModelItem
 {
+    QString _instrumentDirectory;
     int _sampleRate;
     int _controlRate;
     int _curveRate;
-    enum { RoleCount = 3 };
+    enum { RoleCount = 4 };
 
 public:
     ModelItem(IAggregate *aggregate);

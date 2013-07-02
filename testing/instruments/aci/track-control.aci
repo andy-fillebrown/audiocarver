@@ -1,0 +1,19 @@
+
+0dbfs = 1
+
+gk_volume init 1
+
+instr 1
+    i_duration = p3
+    i_volume = p4
+    i_volumeEnvelope = p5
+
+    k_normalizedTime init 0
+    k_time timeinsts
+    k_normalizedTime = k_time / i_duration
+
+    i_volumeEnvelopeLength = ftlen(i_volumeEnvelope)
+    k_volumeEnvelopeIndex =  k_normalizedTime * (i_volumeEnvelopeLength - 1)
+    gk_volume tablei k_volumeEnvelopeIndex, i_volumeEnvelope, 0
+    gk_volume = i_volume * gk_volume
+endin

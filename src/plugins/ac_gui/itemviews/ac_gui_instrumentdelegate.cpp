@@ -48,10 +48,14 @@ bool InstrumentDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
 
     // Open a file-open dialog and set each of the selected track's instruments
     // if the user didn't cancel the dialog.
-    IModelItem *project_settings = IDatabase::instance()->rootItem()->findItem(ProjectSettingsItem);
+    IDatabase *database = IDatabase::instance();
+    const QString root_dir_name = QFileInfo(database->fileName()).path();
+    IModelItem *project_settings = database->rootItem()->findItem(ProjectSettingsItem);
     QString instrument_dir_name = get<QString>(project_settings, InstrumentDirectoryRole);
-    if (instrument_dir_name.isEmpty())
+    if ("." == root_dir_name || instrument_dir_name.isEmpty())
         instrument_dir_name = applicationTreeDirectory() + "instruments";
+    else if (QDir::isRelativePath(instrument_dir_name))
+        instrument_dir_name = root_dir_name + "/" + instrument_dir_name;
     QString filename = QFileDialog::getOpenFileName(ICore::instance()->mainWindow(), "Open Instrument", instrument_dir_name, QString("Instrument (*orc)"));
     if (!filename.isEmpty()) {
         QFileInfo instrument_file_info(filename);

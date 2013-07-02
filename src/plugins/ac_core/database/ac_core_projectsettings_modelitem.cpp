@@ -45,10 +45,12 @@ int ModelItem::roleAt(int i) const
 {
     switch (i - RoleCountOffset) {
     case 0:
-        return SampleRateRole;
+        return InstrumentDirectoryRole;
     case 1:
-        return ControlRateRole;
+        return SampleRateRole;
     case 2:
+        return ControlRateRole;
+    case 3:
         return CurveRateRole;
     default:
         return Object::ModelItem::roleAt(i);
@@ -58,6 +60,8 @@ int ModelItem::roleAt(int i) const
 QVariant ModelItem::getValue(int role) const
 {
     switch (role) {
+    case InstrumentDirectoryRole:
+        return _instrumentDirectory;
     case SampleRateRole:
         return _sampleRate;
     case ControlRateRole:
@@ -72,6 +76,14 @@ QVariant ModelItem::getValue(int role) const
 bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
+    case InstrumentDirectoryRole: {
+        const QString dir = qvariant_cast<QString>(value);
+        if (_instrumentDirectory == dir)
+            return false;
+        ScopedDataChange data_change(this, InstrumentDirectoryRole);
+        _instrumentDirectory = dir;
+        return true;
+    }
     case SampleRateRole: {
         const int rate = qMax(44100, qvariant_cast<int>(value));
         if (_sampleRate == rate)
