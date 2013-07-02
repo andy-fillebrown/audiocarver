@@ -24,6 +24,7 @@ ORC_FILES = \
     sine \
     sine--smooth-envelope \
     subtractive-synth-01 \
+    subtractive-synth-01--reverb \
     square \
     triangle \
     wgbow \
