@@ -17,6 +17,7 @@ SUBDIRS = src
 
 OTHER_FILES *= \
     testing/*.ac \
+    testing/*.csd \
     \
     .gitignore \
     bugs.txt \
