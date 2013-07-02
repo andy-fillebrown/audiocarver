@@ -21,8 +21,6 @@
 #include <icomponent.h>
 #include <QVariant>
 
-#define get get
-
 class IModelItem : public IComponent
 {
 public:
@@ -116,6 +114,7 @@ public:
     }
 };
 
+#define get get
 template <typename T>
 T get(IModelItem *item, int role)
 {
