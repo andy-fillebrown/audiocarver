@@ -7,16 +7,13 @@
 #define RELEASE_TIME   #0.005#
 #define END_VOLUME     #0.000#
 
-gi_sine = 0
+gi_sine ftgen 0, 0, 65536, 10, 1
 
 #include "aci/track-control.aci"
 
 instr 2
 #include "aci/instrument-control.aci"
 #include "aci/volume-envelope.aci"
-    if (0 == gi_sine) then
-        gi_sine ftgen 0, 0, 16384, 10, 1
-    endif
-    a_out poscil k_volume, k_cps, gi_sine
+    a_out poscil3 k_volume, k_cps, gi_sine
     out a_out
 endin
