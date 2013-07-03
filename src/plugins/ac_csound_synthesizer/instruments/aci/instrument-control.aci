@@ -1,28 +1,28 @@
 
-    i_startTime = p2
+    i_start_time = p2
     i_duration = abs(p3)
     i_pitch = p4
     i_volume = p5
-    i_pitchEnvelope = p6
-    i_volumeEnvelope = p7
+    i_pitch_envelope_table_number = p6
+    i_volume_envelope_table_number = p7
 
-    k_normalizedTime init 0
+    k_normalized_time init 0
     k_time timeinsts
-    k_normalizedTime = k_time / i_duration
+    k_normalized_time = k_time / i_duration
 
     k_pitchOffset init 0
-    if (0 < i_pitchEnvelope) then
-        i_pitchEnvelopeLength = ftlen(i_pitchEnvelope)
-        k_pitchEnvelopeIndex = k_normalizedTime * (i_pitchEnvelopeLength - 1)
-        k_pitchOffset tablei k_pitchEnvelopeIndex, i_pitchEnvelope
+    if (0 < i_pitch_envelope_table_number) then
+        i_pitch_envelope_length = ftlen(i_pitch_envelope_table_number)
+        k_pitch_envelope_index = k_normalized_time * (i_pitch_envelope_length - 1)
+        k_pitch_offset tablei k_pitch_envelope_index, i_pitch_envelope_table_number
     endif
-    k_pitch = i_pitch + k_pitchOffset
+    k_pitch = i_pitch + k_pitch_offset
     k_cps = cpsmidinn(k_pitch)
 
-    k_volumeOffset init 1
-    if (0 < i_volumeEnvelope) then
-        i_volumeEnvelopeLength = ftlen(i_volumeEnvelope)
-        k_volumeEnvelopeIndex = k_normalizedTime * (i_volumeEnvelopeLength - 1)
-        k_volumeOffset tablei k_volumeEnvelopeIndex, i_volumeEnvelope
+    k_volume_offset init 1
+    if (0 < i_volume_envelope_table_number) then
+        i_volume_envelope_length = ftlen(i_volume_envelope_table_number)
+        k_volume_envelope_index = k_normalized_time * (i_volume_envelope_length - 1)
+        k_volume_offset tablei k_volume_envelope_index, i_volume_envelope_table_number
     endif
-    k_volume = gk_volume * i_volume * k_volumeOffset
+    k_volume = gk_volume * i_volume * k_volume_offset

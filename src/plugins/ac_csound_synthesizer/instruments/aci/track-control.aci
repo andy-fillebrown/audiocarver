@@ -6,14 +6,14 @@ gk_volume init 1
 instr 1
     i_duration = p3
     i_volume = p4
-    i_volumeEnvelope = p5
+    i_volume_envelope_table_number = p5
 
-    k_normalizedTime init 0
+    k_normalized_time init 0
     k_time timeinsts
-    k_normalizedTime = k_time / i_duration
+    k_normalized_time = k_time / i_duration
 
-    i_volumeEnvelopeLength = ftlen(i_volumeEnvelope)
-    k_volumeEnvelopeIndex =  k_normalizedTime * (i_volumeEnvelopeLength - 1)
-    gk_volume tablei k_volumeEnvelopeIndex, i_volumeEnvelope, 0
+    i_volume_envelope_length = ftlen(i_volume_envelope_table_number)
+    k_volume_envelope_index =  k_normalized_time * (i_volume_envelope_length - 1)
+    gk_volume tablei k_volume_envelope_index, i_volume_envelope_table_number, 0
     gk_volume = i_volume * gk_volume
 endin

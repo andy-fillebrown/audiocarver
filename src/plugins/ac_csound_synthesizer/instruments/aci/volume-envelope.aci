@@ -1,8 +1,10 @@
 
+	i_sustain_time = i_duration - $ATTACK_TIME - $DECAY_TIME - $RELEASE_TIME
     k_volume_envelope linseg \
         $START_VOLUME, \
         $ATTACK_TIME, $ATTACK_VOLUME, \
-        $DECAY_TIME, $SUSTAIN_VOLUME, \
-        i_duration -  $ATTACK_TIME - $DECAY_TIME - $RELEASE_TIME, $SUSTAIN_VOLUME, \
-        $RELEASE_TIME, $END_VOLUME
+        $DECAY_TIME, \
+        $SUSTAIN_VOLUME, i_sustain_time, $SUSTAIN_VOLUME, \
+        $RELEASE_TIME, \
+        $END_VOLUME
     k_volume = k_volume_envelope * k_volume
