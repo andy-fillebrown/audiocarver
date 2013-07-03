@@ -19,7 +19,7 @@ ACI_FILES = \
     volume-envelope \
 
 ORC_FILES = \
-    buzz-grain-01 \
+    grain-buzz-01 \
     pluck \
     pulse \
     saw \
