@@ -32,5 +32,5 @@ instr 2
         $GRAIN_FREQUENCY_DISTRIBUTION_VARIATION, \
         $GRAIN_SEED, \
         $GRAIN_MODE
-    out 0.1 * a_out
+    out 0.25 * k_volume * a_out
 endin
