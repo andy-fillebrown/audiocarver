@@ -17,8 +17,13 @@
 
 #include "ac_gui_database_graphicsviewmanagerupdater.h"
 #include "ac_gui_graphicsviewmanager.h"
+#include <isession.h>
 
 namespace Database {
+
+GraphicsViewManagerUpdater::GraphicsViewManagerUpdater()
+    :   Base::DatabaseWatcher(ISession::instance())
+{}
 
 void GraphicsViewManagerUpdater::beginRead(IDatabase *database)
 {

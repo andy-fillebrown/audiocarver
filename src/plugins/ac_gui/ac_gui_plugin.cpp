@@ -28,7 +28,6 @@
 #include <mainwindow.h>
 #include <icore.h>
 #include <imodel.h>
-#include <isession.h>
 #include <QtPlugin>
 
 #ifdef QT_DEBUG
@@ -45,7 +44,6 @@ Plugin::Plugin()
     new Editor;
     new FilerFactory;
     new UndoManager;
-    new Database::GraphicsViewManagerUpdater(ISession::instance());
     addAutoReleasedObject(new ::Gui::MainWindowExtension);
 }
 

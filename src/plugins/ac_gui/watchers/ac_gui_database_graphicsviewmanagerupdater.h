@@ -25,9 +25,7 @@ namespace Database {
 class GraphicsViewManagerUpdater : public Base::DatabaseWatcher
 {
 public:
-    GraphicsViewManagerUpdater(IAggregate *aggregate)
-        :   Base::DatabaseWatcher(aggregate)
-    {}
+    GraphicsViewManagerUpdater();
 
 protected:
     void beginRead(IDatabase *database);
