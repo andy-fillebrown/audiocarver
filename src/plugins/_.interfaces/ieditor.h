@@ -22,6 +22,7 @@
 #include <iaggregate.h>
 #include <isession.h>
 
+class IModelItem;
 class ISelectionSet;
 
 class IEditor : public IComponent
@@ -35,10 +36,15 @@ public:
     }
 
     virtual ISelectionSet *currentSelection(int itemType = 0) const = 0;
+    virtual void runCommand(int command) = 0;
     virtual void cut() = 0;
     virtual void copy() const = 0;
     virtual void paste() = 0;
     virtual void selectAll() = 0;
+    virtual void beginChangeData(IModelItem *item, int role) = 0;
+    virtual void endChangeData(IModelItem *item, int role) = 0;
+    virtual void endInsertItem(IModelItem *list, int index) = 0;
+    virtual void endRemoveItem(IModelItem *list, int index) = 0;
 
     int interfaceType() const
     {

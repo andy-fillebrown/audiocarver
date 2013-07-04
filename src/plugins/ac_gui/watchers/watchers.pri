@@ -1,6 +1,7 @@
 
 SOURCE_FILES = \
     database_graphicsviewmanagerupdater \
+    model_editorupdater \
     note_graphicsupdater \
     object_graphicsupdater \
     object_selectionupdater \

@@ -15,36 +15,25 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_MAINWIDGET_H
-#define AC_GUI_MAINWIDGET_H
+#ifndef AC_GUI_MODEL_EDITORUPDATER_H
+#define AC_GUI_MODEL_EDITORUPDATER_H
 
-#include <QFrame>
+#include "mi_core_base_modelwatcher.h"
 
-class MainWidgetPrivate;
-class MainWidget : public QFrame
+namespace Model {
+
+class EditorUpdater : public Base::ModelWatcher
 {
-    Q_OBJECT
-
 public:
-    MainWidget(QWidget *parent = 0);
-    ~MainWidget();
-
-    static MainWidget *instance();
+    EditorUpdater();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void leaveEvent(QEvent *);
-    void resizeEvent(QResizeEvent *);
-    void paintEvent(QPaintEvent *);
-
-private slots:
-    void showGripView();
-    void showPropertyView();
-
-private:
-    MainWidgetPrivate *d;
+    void beginChangeData(IModelItem *item, int role);
+    void endChangeData(IModelItem *item, int role);
+    void endInsertItem(IModelItem *list, int index);
+    void endRemoveItem(IModelItem *list, int index);
 };
+
+}
 
 #endif

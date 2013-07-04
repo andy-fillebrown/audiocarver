@@ -19,14 +19,14 @@
 #define AC_GUI_EDITOR_H
 
 #include <mi_gui_base_editor.h>
-
-class IAggregate;
+#include <QList>
 
 namespace Ac {
 namespace Gui {
 
 class Editor : public Base::Editor
 {
+    QList<QString> _dirtyTracks;
     IAggregate *_objectSS;
     IAggregate *_trackSS;
     IAggregate *_noteSS;
@@ -37,10 +37,15 @@ public:
 
 protected:
     ISelectionSet *currentSelection(int itemType) const;
+    void runCommand(int command);
     void cut();
     void copy() const;
     void paste();
     void selectAll();
+    void beginChangeData(IModelItem *item, int role);
+    void endChangeData(IModelItem *item, int role);
+    void endInsertItem(IModelItem *list, int index);
+    void endRemoveItem(IModelItem *list, int index);
 };
 
 }

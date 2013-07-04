@@ -15,36 +15,33 @@
 **
 **************************************************************************/
 
-#ifndef AC_GUI_MAINWIDGET_H
-#define AC_GUI_MAINWIDGET_H
+#include "ac_gui_model_editorupdater.h"
+#include <ieditor.h>
 
-#include <QFrame>
+namespace Model {
 
-class MainWidgetPrivate;
-class MainWidget : public QFrame
+EditorUpdater::EditorUpdater()
+    :   Base::ModelWatcher(ISession::instance())
+{}
+
+void EditorUpdater::beginChangeData(IModelItem *item, int role)
 {
-    Q_OBJECT
+    IEditor::instance()->beginChangeData(item, role);
+}
 
-public:
-    MainWidget(QWidget *parent = 0);
-    ~MainWidget();
+void EditorUpdater::endChangeData(IModelItem *item, int role)
+{
+    IEditor::instance()->endChangeData(item, role);
+}
 
-    static MainWidget *instance();
+void EditorUpdater::endInsertItem(IModelItem *list, int index)
+{
+    IEditor::instance()->endInsertItem(list, index);
+}
 
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void leaveEvent(QEvent *);
-    void resizeEvent(QResizeEvent *);
-    void paintEvent(QPaintEvent *);
+void EditorUpdater::endRemoveItem(IModelItem *list, int index)
+{
+    IEditor::instance()->endRemoveItem(list, index);
+}
 
-private slots:
-    void showGripView();
-    void showPropertyView();
-
-private:
-    MainWidgetPrivate *d;
-};
-
-#endif
+}

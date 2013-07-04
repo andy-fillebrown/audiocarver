@@ -34,7 +34,6 @@
 #include <imodel.h>
 #include <imodelitem.h>
 #include <iselectionset.h>
-#include <isynthesizer.h>
 #include <iundomanager.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
@@ -301,17 +300,14 @@ void MainWindowExtension::build()
 {
     if (!maybeSaveDatabase())
         return;
-    qDebug() << Q_FUNC_INFO;
+    IEditor::instance()->runCommand(BuildCommand);
 }
 
 void MainWindowExtension::buildAll()
 {
     if (!maybeSaveDatabase())
         return;
-    const int track_count = IDatabase::instance()->rootItem()->findItem(TrackListItem)->itemCount();
-    ISynthesizer *synth = ISynthesizer::instance();
-    for (int i = 0;  i < track_count;  ++i)
-        synth->renderTrack(i);
+    IEditor::instance()->runCommand(BuildAllCommand);
 }
 
 void MainWindowExtension::startOrStop()

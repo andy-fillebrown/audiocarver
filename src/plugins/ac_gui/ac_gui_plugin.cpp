@@ -22,6 +22,7 @@
 #include "ac_gui_filerfactory.h"
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindowextension.h"
+#include "ac_gui_model_editorupdater.h"
 #include "ac_gui_undomanager.h"
 #include <ac_core_database.h>
 #include <ac_core_namespace.h>
@@ -45,6 +46,7 @@ Plugin::Plugin()
     new FilerFactory;
     new UndoManager;
     new Database::GraphicsViewManagerUpdater;
+    new Model::EditorUpdater;
     addAutoReleasedObject(new ::Gui::MainWindowExtension);
 }
 
@@ -78,7 +80,7 @@ Q_EXPORT_PLUGIN(::Ac::Gui::Plugin)
 #define RUN(x) if (!x()) return false
 #define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
 
-using namespace ::Ac;
+using namespace Ac;
 
 bool test_create_item(IDatabaseObjectFactory *factory, int itemType)
 {

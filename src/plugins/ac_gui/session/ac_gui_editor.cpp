@@ -17,6 +17,7 @@
 
 #include "ac_gui_editor.h"
 #include "ac_gui_mainwindowextension.h"
+#include "ac_gui_namespace.h"
 #include "ac_gui_object_selectionupdater.h"
 #include "ac_gui_selectionset.h"
 #include "ac_gui_track_selectionupdater.h"
@@ -29,6 +30,7 @@
 #include <igraphicsitem.h>
 #include <imodelitem.h>
 #include <ireader.h>
+#include <isynthesizer.h>
 #include <iundomanager.h>
 #include <iwriter.h>
 
@@ -68,6 +70,30 @@ ISelectionSet *Editor::currentSelection(int itemType) const
     default:
         Q_ASSERT(false);
         return 0;
+    }
+}
+
+void Editor::runCommand(int command)
+{
+    switch (command) {
+    case BuildCommand: {
+        IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
+        ISynthesizer *synth = ISynthesizer::instance();
+        int track_count = track_list->itemCount();
+        for (int i = 0;  i < track_count;  ++i) {
+            QString track_name = get<QString>(track_list->itemAt(i), NameRole);
+            if (_dirtyTracks.contains(track_name))
+                synth->renderTrack(i);
+        }
+        _dirtyTracks.clear();
+    }   break;
+    case BuildAllCommand: {
+        const int track_count = IDatabase::instance()->rootItem()->findItem(TrackListItem)->itemCount();
+        ISynthesizer *synth = ISynthesizer::instance();
+        for (int i = 0;  i < track_count;  ++i)
+            synth->renderTrack(i);
+        _dirtyTracks.clear();
+    }   break;
     }
 }
 
@@ -142,6 +168,62 @@ void Editor::paste()
 
 void Editor::selectAll()
 {
+}
+
+void Editor::beginChangeData(IModelItem *item, int role)
+{
+    if (item->isTypeOfItem(TrackItem)) {
+        if (NameRole == role) {
+            _dirtyTracks.removeOne(get<QString>(item, NameRole));
+            return;
+        }
+    }
+}
+
+void Editor::endChangeData(IModelItem *item, int role)
+{
+    if (IDatabase::instance()->isReading())
+        return;
+    IModelItem *track = 0;
+    if (item->isTypeOfItem(TrackItem))
+        if (NameRole == role || InstrumentRole == role)
+            track = item;
+    if (item->isTypeOfItem(NoteItem))
+        track = item->parent();
+    else if (item->isTypeOfItem(CurveItem)) {
+        IModelItem *note = item->parent();
+        if (note)
+            track = note->parent()->parent();
+    }
+    if (track) {
+        QString track_name = get<QString>(track, NameRole);
+        if (!_dirtyTracks.contains(track_name)) {
+            _dirtyTracks.append(track_name);
+            return;
+        }
+    }
+}
+
+void Editor::endInsertItem(IModelItem *list, int index)
+{
+    if (IDatabase::instance()->isReading())
+        return;
+    if (list->isTypeOfItem(ListItem) && NoteItem == get<int>(list, ListTypeRole)) {
+        QString track_name = get<QString>(list->parent(), NameRole);
+        if (!_dirtyTracks.contains(track_name))
+            _dirtyTracks.append(track_name);
+    }
+}
+
+void Editor::endRemoveItem(IModelItem *list, int index)
+{
+    if (IDatabase::instance()->isReading())
+        return;
+    if (list->isTypeOfItem(ListItem) && NoteItem == get<int>(list, ListTypeRole)) {
+        QString track_name = get<QString>(list->parent(), NameRole);
+        if (!_dirtyTracks.contains(track_name))
+            _dirtyTracks.append(track_name);
+    }
 }
 
 }
