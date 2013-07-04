@@ -66,6 +66,19 @@ enum DragType {
     NotDragging
 };
 
+enum EditorCommands {
+    CreateTrackCommand = Mi::EditorCommandCount,
+    CreateNoteCommand,
+    InsertPointsCommand,
+    MoveNoteCommand,
+    EraseCommand,
+    BuildCommand,
+    BuildAllCommand,
+    StartOrStopTransportCommand,
+    StartTransportCommand,
+    StopTransportCommand
+};
+
 enum UndoCommands {
     UndoViewSettingsCommand = Mi::UndoCommandCount
 };

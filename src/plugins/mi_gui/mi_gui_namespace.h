@@ -20,6 +20,14 @@
 
 namespace Mi {
 
+enum EditorCommands {
+    CutCommand = 1,
+    CopyCommand,
+    PasteCommand,
+    SelectAllCommand,
+    EditorCommandCount
+};
+
 enum UndoCommands {
     UndoDataChangeCommand = 1,
     UndoInsertCommand,
