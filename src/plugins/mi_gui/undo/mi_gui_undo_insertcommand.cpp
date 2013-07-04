@@ -24,7 +24,7 @@ namespace Undo {
 
 int InsertCommand::id() const
 {
-    return InsertCommandId;
+    return UndoInsertCommand;
 }
 
 }

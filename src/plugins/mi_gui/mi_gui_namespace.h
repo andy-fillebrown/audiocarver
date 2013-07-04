@@ -20,11 +20,11 @@
 
 namespace Mi {
 
-enum CommandId {
-    DataChangeCommandId = 1,
-    InsertCommandId,
-    RemoveCommandId,
-    CommandIdCount
+enum UndoCommands {
+    UndoDataChangeCommand = 1,
+    UndoInsertCommand,
+    UndoRemoveCommand,
+    UndoCommandCount
 };
 
 }

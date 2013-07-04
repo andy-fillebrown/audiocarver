@@ -31,7 +31,7 @@ DataChangeCommand::DataChangeCommand(IModelItem *item, int role, QUndoCommand *p
 
 int DataChangeCommand::id() const
 {
-    return DataChangeCommandId;
+    return UndoDataChangeCommand;
 }
 
 void DataChangeCommand::redo()

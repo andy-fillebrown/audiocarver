@@ -66,8 +66,8 @@ enum DragType {
     NotDragging
 };
 
-enum CommandId {
-    ViewSettingsCommandId = Mi::CommandIdCount
+enum UndoCommands {
+    UndoViewSettingsCommand = Mi::UndoCommandCount
 };
 
 }

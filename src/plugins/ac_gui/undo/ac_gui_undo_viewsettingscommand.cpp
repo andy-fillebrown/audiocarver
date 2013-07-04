@@ -37,12 +37,12 @@ ViewSettingsCommand::ViewSettingsCommand(QUndoCommand *parent)
 
 int ViewSettingsCommand::id() const
 {
-    return ViewSettingsCommandId;
+    return UndoViewSettingsCommand;
 }
 
 bool ViewSettingsCommand::mergeWith(const QUndoCommand *other)
 {
-    if (ViewSettingsCommandId != other->id())
+    if (UndoViewSettingsCommand != other->id())
         return false;
     updateNewData();
     return true;

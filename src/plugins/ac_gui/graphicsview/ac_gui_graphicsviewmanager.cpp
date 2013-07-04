@@ -182,7 +182,7 @@ public:
     void finishUndo()
     {
         if (undoingViewSettings) {
-            IUndoManager::instance()->pushCommand(ViewSettingsCommandId);
+            IUndoManager::instance()->pushCommand(UndoViewSettingsCommand);
             undoingViewSettings = false;
         }
     }
