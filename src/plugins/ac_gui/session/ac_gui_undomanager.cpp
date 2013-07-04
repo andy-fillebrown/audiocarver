@@ -27,7 +27,7 @@ namespace Gui {
 
 void UndoManager::pushCommand(int commandId)
 {
-    if (ViewSettingsCommandId == commandId)
+    if (UndoViewSettingsCommand == commandId)
         Stack::instance()->push(new ViewSettingsCommand);
     else
         Mi::Gui::UndoManager::pushCommand(commandId);
