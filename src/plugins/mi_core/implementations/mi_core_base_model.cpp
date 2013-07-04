@@ -20,9 +20,21 @@
 #include <idatabase.h>
 #include <imodel.h>
 #include <imodelitem.h>
+#include <imodelwatcher.h>
 #include <isession.h>
 
 using namespace Qt;
+
+static QList<IModelWatcher*> getModelWatchers(IModel *model)
+{
+    QList<IModelWatcher*> model_watchers;
+    IAggregate *aggregate = query<IAggregate>(model);
+    const QList<IComponent*> &components = aggregate->components();
+    foreach (IComponent *component, components)
+        if (component->isTypeOfInterface(I::IModelWatcher))
+            model_watchers.append(query<IModelWatcher>(component));
+    return model_watchers;
+}
 
 static IModel *instance = 0;
 
@@ -55,35 +67,47 @@ Model::~Model()
 
 void Model::beginChangeData(IModelItem *item, int role)
 {
+    foreach (IModelWatcher *watcher, getModelWatchers(this))
+        watcher->beginChangeData(item, role);
     emit dataAboutToBeChanged(item, role);
 }
 
 void Model::endChangeData(IModelItem *item, int role)
 {
+    foreach (IModelWatcher *watcher, getModelWatchers(this))
+        watcher->endChangeData(item, role);
     emit dataChanged(item, role);
     emit dataChanged(indexFromItem(item));
 }
 
 void Model::beginInsertItem(IModelItem *list, int index)
 {
+    foreach (IModelWatcher *watcher, getModelWatchers(this))
+        watcher->beginInsertItem(list, index);
     emit itemAboutToBeInserted(list, index);
     beginInsertRows(indexFromItem(list), index, index);
 }
 
 void Model::endInsertItem(IModelItem *list, int index)
 {
+    foreach (IModelWatcher *watcher, getModelWatchers(this))
+        watcher->endInsertItem(list, index);
     emit itemInserted(list, index);
     endInsertRows();
 }
 
 void Model::beginRemoveItem(IModelItem *list, int index)
 {
+    foreach (IModelWatcher *watcher, getModelWatchers(this))
+        watcher->beginRemoveItem(list, index);
     emit itemAboutToBeRemoved(list, index);
     beginRemoveRows(indexFromItem(list), index, index);
 }
 
 void Model::endRemoveItem(IModelItem *list, int index)
 {
+    foreach (IModelWatcher *watcher, getModelWatchers(this))
+        watcher->endRemoveItem(list, index);
     emit itemRemoved(list, index);
     endRemoveRows();
 }
