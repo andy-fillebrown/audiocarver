@@ -44,6 +44,7 @@ Plugin::Plugin()
     new Editor;
     new FilerFactory;
     new UndoManager;
+    new Database::GraphicsViewManagerUpdater;
     addAutoReleasedObject(new ::Gui::MainWindowExtension);
 }
 
