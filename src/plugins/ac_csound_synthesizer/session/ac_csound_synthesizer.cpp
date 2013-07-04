@@ -64,6 +64,9 @@ static void writeTableFile(const QString &fileName, const PointList &points, int
             const qreal to_y = to_point.y();
             const int n_values = (to_x / div_x) + 0.5;
             for (int k = 0;  k < n_values;  ++k) {
+                // TODO:  Figure out why i is incrementing past the valueCount
+                //          when to_x is small.
+                i = qMin(i, valueCount - 1);
                 table_values[i] = intersectionY(0, to_x, 0, to_y, cur_x);
                 table_values[i] += point_offset.y();
                 cur_x += div_x;
