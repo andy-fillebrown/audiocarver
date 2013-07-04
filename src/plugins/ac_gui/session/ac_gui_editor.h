@@ -36,12 +36,20 @@ public:
     ~Editor();
 
 protected:
-    ISelectionSet *currentSelection(int itemType) const;
-    void runCommand(int command);
     void cut();
     void copy() const;
     void paste();
     void selectAll();
+    void createTrack();
+    void erase();
+    void build();
+    void buildAll();
+    void startOrStop();
+    void start();
+    void stop();
+
+    ISelectionSet *currentSelection(int itemType) const;
+    void runCommand(int command);
     void beginChangeData(IModelItem *item, int role);
     void endChangeData(IModelItem *item, int role);
     void endInsertItem(IModelItem *list, int index);

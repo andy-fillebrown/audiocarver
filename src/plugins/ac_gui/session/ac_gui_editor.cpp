@@ -16,13 +16,15 @@
 **************************************************************************/
 
 #include "ac_gui_editor.h"
-#include "ac_gui_mainwindowextension.h"
+#include "ac_gui_graphicsview.h"
+#include "ac_gui_graphicsviewmanager.h"
 #include "ac_gui_namespace.h"
 #include "ac_gui_object_selectionupdater.h"
 #include "ac_gui_selectionset.h"
 #include "ac_gui_track_selectionupdater.h"
 #include <ac_core_namespace.h>
 #include <mi_core_base_aggregate.h>
+#include <iaudioengine.h>
 #include <idatabase.h>
 #include <idatabaseobjectfactory.h>
 #include <ifiler.h>
@@ -58,49 +60,10 @@ Editor::~Editor()
     qDelete(_objectSS);
 }
 
-ISelectionSet *Editor::currentSelection(int itemType) const
-{
-    switch (itemType) {
-    case UnknownItem:
-        return query<ISelectionSet>(_objectSS);
-    case TrackItem:
-        return query<ISelectionSet>(_trackSS);
-    case NoteItem:
-        return query<ISelectionSet>(_noteSS);
-    default:
-        Q_ASSERT(false);
-        return 0;
-    }
-}
-
-void Editor::runCommand(int command)
-{
-    switch (command) {
-    case BuildCommand: {
-        IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
-        ISynthesizer *synth = ISynthesizer::instance();
-        int track_count = track_list->itemCount();
-        for (int i = 0;  i < track_count;  ++i) {
-            QString track_name = get<QString>(track_list->itemAt(i), NameRole);
-            if (_dirtyTracks.contains(track_name))
-                synth->renderTrack(i);
-        }
-        _dirtyTracks.clear();
-    }   break;
-    case BuildAllCommand: {
-        const int track_count = IDatabase::instance()->rootItem()->findItem(TrackListItem)->itemCount();
-        ISynthesizer *synth = ISynthesizer::instance();
-        for (int i = 0;  i < track_count;  ++i)
-            synth->renderTrack(i);
-        _dirtyTracks.clear();
-    }   break;
-    }
-}
-
 void Editor::cut()
 {
     copy();
-    ::Gui::MainWindowExtension::instance()->erase();
+    erase();
 }
 
 void Editor::copy() const
@@ -168,6 +131,168 @@ void Editor::paste()
 
 void Editor::selectAll()
 {
+}
+
+void Editor::createTrack()
+{
+    IUndoManager *undo_manager = IUndoManager::instance();
+    undo_manager->beginCommand();
+    IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
+    IModelItem *track = query<IModelItem>(IDatabaseObjectFactory::instance()->create(TrackItem));
+    track_list->appendItem(track);
+    undo_manager->endCommand();
+}
+
+void Editor::erase()
+{
+    IEditor *editor = IEditor::instance();
+    IUndoManager *undo_manager = IUndoManager::instance();
+
+    // Erase selected points in pitch and control views.
+    GraphicsViewManager *vm = GraphicsViewManager::instance();
+    GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
+    if (view->pointsAreSelected()) {
+        undo_manager->beginCommand();
+        view->removePoints();
+    }
+    view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
+    if (view->pointsAreSelected()) {
+        if (!undo_manager->isInCommand())
+            undo_manager->beginCommand();
+        view->removePoints();
+    }
+    if (undo_manager->isInCommand()) {
+        undo_manager->endCommand();
+        return;
+    }
+
+    // If no points are selected, erase selected notes.
+    ISelectionSet *ss = editor->currentSelection(NoteItem);
+    QList<IGraphicsItem*> items = ss->items();
+    if (!items.isEmpty()) {
+        undo_manager->beginCommand();
+        while (!items.isEmpty()) {
+            IGraphicsItem *item = items.last();
+            item->update(HighlightRole, NoHighlight);
+            IModelItem *note = query<IModelItem>(item);
+            note->remove();
+            items.removeLast();
+        }
+        undo_manager->endCommand();
+        ss->clear();
+        editor->currentSelection()->clear();
+        return;
+    }
+
+    // If no points or notes are selected, erase selected tracks.
+    ss = editor->currentSelection(TrackItem);
+    items = ss->items();
+    if (!items.isEmpty()) {
+        undo_manager->beginCommand();
+        while (!items.isEmpty()) {
+            IGraphicsItem *item = items.last();
+            item->update(HighlightRole, NoHighlight);
+            item->update(VisibilityRole, false);
+            IModelItem *track = query<IModelItem>(item);
+            track->remove();
+            items.removeLast();
+        }
+        undo_manager->endCommand();
+        ss->clear();
+        return;
+    }
+}
+
+void Editor::build()
+{
+    IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
+    ISynthesizer *synth = ISynthesizer::instance();
+    int track_count = track_list->itemCount();
+    for (int i = 0;  i < track_count;  ++i) {
+        QString track_name = get<QString>(track_list->itemAt(i), NameRole);
+        if (_dirtyTracks.contains(track_name))
+            synth->renderTrack(i);
+    }
+    _dirtyTracks.clear();
+}
+
+void Editor::buildAll()
+{
+    const int track_count = IDatabase::instance()->rootItem()->findItem(TrackListItem)->itemCount();
+    ISynthesizer *synth = ISynthesizer::instance();
+    for (int i = 0;  i < track_count;  ++i)
+        synth->renderTrack(i);
+    _dirtyTracks.clear();
+}
+
+void Editor::startOrStop()
+{
+    IAudioEngine *audio_engine = IAudioEngine::instance();
+    if (!audio_engine)
+        return;
+    if (audio_engine->isStarted())
+        stop();
+    else
+        start();
+}
+
+void Editor::start()
+{
+    IAudioEngine *audio_engine = IAudioEngine::instance();
+    if (audio_engine)
+        audio_engine->start();
+}
+
+void Editor::stop()
+{
+    IAudioEngine *audio_engine = IAudioEngine::instance();
+    if (audio_engine)
+        audio_engine->stop();
+}
+
+ISelectionSet *Editor::currentSelection(int itemType) const
+{
+    switch (itemType) {
+    case UnknownItem:
+        return query<ISelectionSet>(_objectSS);
+    case TrackItem:
+        return query<ISelectionSet>(_trackSS);
+    case NoteItem:
+        return query<ISelectionSet>(_noteSS);
+    default:
+        Q_ASSERT(false);
+        return 0;
+    }
+}
+
+void Editor::runCommand(int command)
+{
+    switch (command) {
+    case CutCommand:
+        return cut();
+    case CopyCommand:
+        return copy();
+    case PasteCommand:
+        return paste();
+    case SelectAllCommand:
+        return selectAll();
+    case CreateTrackCommand:
+        return createTrack();
+    case EraseCommand:
+        return erase();
+    case BuildCommand:
+        return build();
+    case BuildAllCommand:
+        return buildAll();
+    case StartOrStopTransportCommand:
+        return startOrStop();
+    case StartTransportCommand:
+        return start();
+    case StopTransportCommand:
+        return stop();
+    default:
+        return;
+    }
 }
 
 void Editor::beginChangeData(IModelItem *item, int role)

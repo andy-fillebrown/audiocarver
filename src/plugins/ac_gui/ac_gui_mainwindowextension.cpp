@@ -21,20 +21,13 @@
 #include "ac_gui_graphicsviewmanager.h"
 #include "ac_gui_gridlinedialog.h"
 #include "ac_gui_namespace.h"
-#include <ac_core_namespace.h>
 #include <mi_gui_constants.h>
 #include <iaggregate.h>
-#include <iaudioengine.h>
 #include <icontext.h>
 #include <icore.h>
 #include <idatabase.h>
-#include <idatabaseobjectfactory.h>
 #include <ieditor.h>
-#include <igraphicsitem.h>
-#include <imodel.h>
 #include <imodelitem.h>
-#include <iselectionset.h>
-#include <iundomanager.h>
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
@@ -45,8 +38,6 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QTimer>
-#include <QtDebug>
 
 using namespace Ac;
 
@@ -228,72 +219,12 @@ void MainWindowExtension::showGridSettings()
 
 void MainWindowExtension::createTrack()
 {
-    IUndoManager *undo_manager = IUndoManager::instance();
-    undo_manager->beginCommand();
-    IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
-    IModelItem *track = query<IModelItem>(IDatabaseObjectFactory::instance()->create(TrackItem));
-    track_list->appendItem(track);
-    undo_manager->endCommand();
+    IEditor::instance()->runCommand(CreateTrackCommand);
 }
 
 void MainWindowExtension::erase()
 {
-    IEditor *editor = IEditor::instance();
-    IUndoManager *undo_manager = IUndoManager::instance();
-
-    // Erase selected points in pitch and control views.
-    GraphicsViewManager *vm = GraphicsViewManager::instance();
-    GraphicsView *view = qobject_cast<GraphicsView*>(vm->view(PitchScene));
-    if (view->pointsAreSelected()) {
-        undo_manager->beginCommand();
-        view->removePoints();
-    }
-    view = qobject_cast<GraphicsView*>(vm->view(ControlScene));
-    if (view->pointsAreSelected()) {
-        if (!undo_manager->isInCommand())
-            undo_manager->beginCommand();
-        view->removePoints();
-    }
-    if (undo_manager->isInCommand()) {
-        undo_manager->endCommand();
-        return;
-    }
-
-    // If no points are selected, erase selected notes.
-    ISelectionSet *ss = editor->currentSelection(NoteItem);
-    QList<IGraphicsItem*> items = ss->items();
-    if (!items.isEmpty()) {
-        undo_manager->beginCommand();
-        while (!items.isEmpty()) {
-            IGraphicsItem *item = items.last();
-            item->update(HighlightRole, NoHighlight);
-            IModelItem *note = query<IModelItem>(item);
-            note->remove();
-            items.removeLast();
-        }
-        undo_manager->endCommand();
-        ss->clear();
-        editor->currentSelection()->clear();
-        return;
-    }
-
-    // If no points or notes are selected, erase selected tracks.
-    ss = editor->currentSelection(TrackItem);
-    items = ss->items();
-    if (!items.isEmpty()) {
-        undo_manager->beginCommand();
-        while (!items.isEmpty()) {
-            IGraphicsItem *item = items.last();
-            item->update(HighlightRole, NoHighlight);
-            item->update(VisibilityRole, false);
-            IModelItem *track = query<IModelItem>(item);
-            track->remove();
-            items.removeLast();
-        }
-        undo_manager->endCommand();
-        ss->clear();
-        return;
-    }
+    IEditor::instance()->runCommand(EraseCommand);
 }
 
 void MainWindowExtension::build()
@@ -312,32 +243,22 @@ void MainWindowExtension::buildAll()
 
 void MainWindowExtension::startOrStop()
 {
-    IAudioEngine *audio_engine = IAudioEngine::instance();
-    if (!audio_engine)
-        return;
-    if (audio_engine->isStarted())
-        stop();
-    else
-        start();
-}
-
-void MainWindowExtension::start()
-{
     IModelItem *score = IDatabase::instance()->rootItem();
     if (get<int>(score, StartTimeRole) == get<int>(score, LengthRole)) {
         QMessageBox::warning(Core::ICore::instance()->mainWindow(), PRO_NAME_STR, "Playback start time is at the end of the score.");
         return;
     }
-    IAudioEngine *audio_engine = IAudioEngine::instance();
-    if (audio_engine)
-        audio_engine->start();
+    IEditor::instance()->runCommand(StartOrStopTransportCommand);
+}
+
+void MainWindowExtension::start()
+{
+    IEditor::instance()->runCommand(StartTransportCommand);
 }
 
 void MainWindowExtension::stop()
 {
-    IAudioEngine *audio_engine = IAudioEngine::instance();
-    if (audio_engine)
-        audio_engine->stop();
+    IEditor::instance()->runCommand(StopTransportCommand);
 }
 
 void MainWindowExtension::aboutAudioCarver()

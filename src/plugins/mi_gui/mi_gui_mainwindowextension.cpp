@@ -17,6 +17,7 @@
 
 #include "mi_gui_mainwindowextension.h"
 #include "mi_gui_constants.h"
+#include "mi_gui_namespace.h"
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
@@ -30,6 +31,7 @@
 #include <QFileDialog>
 #include <QIcon>
 
+using namespace Mi;
 using namespace Core;
 
 namespace Base {
@@ -214,22 +216,22 @@ void MainWindowExtension::redo()
 
 void MainWindowExtension::cut()
 {
-    IEditor::instance()->cut();
+    IEditor::instance()->runCommand(CutCommand);
 }
 
 void MainWindowExtension::copy()
 {
-    IEditor::instance()->copy();
+    IEditor::instance()->runCommand(CopyCommand);
 }
 
 void MainWindowExtension::paste()
 {
-    IEditor::instance()->paste();
+    IEditor::instance()->runCommand(PasteCommand);
 }
 
 void MainWindowExtension::selectAll()
 {
-    IEditor::instance()->selectAll();
+    IEditor::instance()->runCommand(SelectAllCommand);
 }
 
 }
