@@ -2,7 +2,7 @@
 **
 ** This file is part of AudioCarver
 **
-** Copyright (c) 2013 Andrew Fillebrown.
+** Copyright (c) 2012 Andrew Fillebrown.
 **
 ** Contact: Andy Fillebrown (andy.fillebrown@gmail.com)
 **
@@ -15,27 +15,24 @@
 **
 **************************************************************************/
 
-#include "ac_gui_undomanager.h"
-#include "ac_gui_namespace.h"
 #include "ac_gui_undo_stack.h"
-#include "ac_gui_undo_viewsettingscommand.h"
-
-using namespace Undo;
+#include <ac_core_namespace.h>
 
 namespace Ac {
-namespace Gui {
+namespace Undo {
 
-UndoManager::UndoManager()
+void Stack::dataAboutToBeChanged(IModelItem *item, int role)
 {
-    setUndoStack(new Ac::Undo::Stack);
+    if (PlaybackTimeRole == role)
+        return;
+    ::Undo::Stack::dataAboutToBeChanged(item, role);
 }
 
-void UndoManager::pushCommand(int commandId)
+void Stack::dataChanged(IModelItem *item, int role)
 {
-    if (UndoViewSettingsCommand == commandId)
-        Stack::instance()->push(new ViewSettingsCommand);
-    else
-        Mi::Gui::UndoManager::pushCommand(commandId);
+    if (PlaybackTimeRole == role)
+        return;
+    ::Undo::Stack::dataChanged(item, role);
 }
 
 }

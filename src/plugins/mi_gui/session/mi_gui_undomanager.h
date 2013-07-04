@@ -40,6 +40,8 @@ public:
 protected:
     ~UndoManager();
 
+    void setUndoStack(Undo::Stack *stack);
+
     void reset();
 
     bool isUndoing() const

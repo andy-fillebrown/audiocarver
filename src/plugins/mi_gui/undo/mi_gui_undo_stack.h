@@ -15,8 +15,8 @@
 **
 **************************************************************************/
 
-#ifndef AC_UNDO_STACK_H
-#define AC_UNDO_STACK_H
+#ifndef MI_GUI_UNDO_STACK_H
+#define MI_GUI_UNDO_STACK_H
 
 #include <QUndoStack>
 #include "mi_gui_global.h"
@@ -46,14 +46,14 @@ public:
     void beginCommand();
     void endCommand();
 
-private slots:
-    void dataAboutToBeChanged(IModelItem *item, int role);
-    void dataChanged(IModelItem *item, int role);
-    void itemAboutToBeInserted(IModelItem *list, int index);
-    void itemInserted(IModelItem *list, int index);
-    void itemAboutToBeRemoved(IModelItem *list, int index);
-    void itemRemoved(IModelItem *list, int index);
-    void modelReset();
+protected slots:
+    virtual void dataAboutToBeChanged(IModelItem *item, int role);
+    virtual void dataChanged(IModelItem *item, int role);
+    virtual void itemAboutToBeInserted(IModelItem *list, int index);
+    virtual void itemInserted(IModelItem *list, int index);
+    virtual void itemAboutToBeRemoved(IModelItem *list, int index);
+    virtual void itemRemoved(IModelItem *list, int index);
+    virtual void modelReset();
 };
 
 }

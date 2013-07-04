@@ -1,5 +1,6 @@
 
 SOURCE_FILES = \
+    undo_stack \
     undo_viewsettingscommand \
 
 for(file, SOURCE_FILES) {

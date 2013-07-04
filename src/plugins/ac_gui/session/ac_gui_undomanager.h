@@ -25,6 +25,9 @@ namespace Gui {
 
 class UndoManager : public Mi::Gui::UndoManager
 {
+public:
+    UndoManager();
+
 protected:
     void pushCommand(int commandId);
 };

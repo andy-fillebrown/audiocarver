@@ -34,6 +34,14 @@ UndoManager::~UndoManager()
     qDelete(_undoStack);
 }
 
+void UndoManager::setUndoStack(Undo::Stack *stack)
+{
+    if (_undoStack == stack)
+        return;
+    qDelete(_undoStack);
+    _undoStack = stack;
+}
+
 void UndoManager::reset()
 {
     _undoStack->clear();
