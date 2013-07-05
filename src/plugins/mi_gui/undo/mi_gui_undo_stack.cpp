@@ -60,7 +60,6 @@ Stack::Stack(QObject *parent)
 Stack::~Stack()
 {
     qDelete(_command);
-    ::instance = 0;
 }
 
 void Stack::beginCommand()
