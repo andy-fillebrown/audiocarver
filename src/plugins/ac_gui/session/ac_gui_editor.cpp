@@ -317,8 +317,11 @@ void Editor::endChangeData(IModelItem *item, int role)
         track = item->parent();
     else if (item->isTypeOfItem(CurveItem)) {
         IModelItem *note = item->parent();
-        if (note)
-            track = note->parent()->parent();
+        if (note) {
+            IModelItem *note_list = note->parent();
+            if (note_list)
+                track = note_list->parent();
+        }
     }
     if (track) {
         QString track_name = get<QString>(track, NameRole);
