@@ -29,8 +29,6 @@
 
 #include "mainwindow.h"
 
-#include "interfaces/imainwindowextension.h"
-
 #include "actioncontainer.h"
 #include "command.h"
 #include "actionmanager_p.h"
@@ -45,6 +43,7 @@
 #include "versiondialog.h"
 #include "uniqueidmanager.h"
 
+#include <imainwindowextension.h>
 #include <qt_core/findplaceholder.h>
 #include <qt_core/icorelistener.h>
 #include <qt_core/settingsdatabase.h>

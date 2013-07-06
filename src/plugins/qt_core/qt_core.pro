@@ -10,6 +10,9 @@ QMAKE_SUBSTITUTES *= \
 DEFINES *= \
     CORE_LIBRARY \
 
+QOBJECT_INTERFACE_FILES *= \
+    mainwindowextension \
+
 HEADERS = \
     actionmanager/actioncontainer.h \
     actionmanager/actioncontainer_p.h \
@@ -23,8 +26,6 @@ HEADERS = \
     dialogs/ioptionspage.h \
     dialogs/settingsdialog.h \
     dialogs/shortcutsettings.h \
-    \
-    interfaces/imainwindowextension.h \
     \
     coreimpl.h \
     generalsettings.h \
@@ -75,6 +76,10 @@ FORMS = \
 
 RESOURCES = \
     qt_core.qrc \
+
+for(file, QOBJECT_INTERFACE_FILES) {
+    eval(HEADERS *= ../_.interfaces/i$${file}.h)
+}
 
 OTHER_FILES *= \
     pro_version.h.in \
