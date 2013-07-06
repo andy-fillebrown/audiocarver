@@ -30,32 +30,28 @@
 #include "mainwindow.h"
 
 #include "actioncontainer.h"
-#include "command.h"
 #include "actionmanager_p.h"
+#include "command.h"
 #include "coreimpl.h"
 #include "filemanager.h"
 #include "generalsettings.h"
 #include "plugindialog.h"
 #include "qt_core_constants.h"
-#include "shortcutsettings.h"
-
 #include "settingsdialog.h"
-#include "versiondialog.h"
+#include "shortcutsettings.h"
 #include "uniqueidmanager.h"
-
+#include "versiondialog.h"
 #include <imainwindowextension.h>
 #include <qt_core/findplaceholder.h>
 #include <qt_core/icorelistener.h>
 #include <qt_core/settingsdatabase.h>
+#include <extensionsystem/pluginmanager.h>
 #include <utils/pathchooser.h>
 #include <utils/stringutils.h>
-#include <extensionsystem/pluginmanager.h>
-
 #include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
 #include <QtCore/QtPlugin>
 #include <QtCore/QTimer>
-
 #include <QtGui/QApplication>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QMenu>
