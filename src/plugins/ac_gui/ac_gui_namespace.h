@@ -73,6 +73,7 @@ enum EditorCommands {
     MoveNoteCommand,
     EraseCommand,
     BuildCommand,
+    BuildSelectedCommand,
     BuildAllCommand,
     StartOrStopTransportCommand,
     StartTransportCommand,

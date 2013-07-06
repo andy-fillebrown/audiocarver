@@ -216,6 +216,19 @@ void Editor::build()
     _dirtyTracks.clear();
 }
 
+void Editor::buildSelected()
+{
+    ISelectionSet *track_ss = currentSelection(TrackItem);
+    const QList<IGraphicsItem*> &tracks = track_ss->items();
+    IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
+    ISynthesizer *synth = ISynthesizer::instance();
+    foreach (IGraphicsItem *track_graphics, tracks) {
+        IModelItem *track = query<IModelItem>(track_graphics);
+        synth->renderTrack(track_list->indexOfItem(track));
+        _dirtyTracks.removeAll(get<QString>(track, NameRole));
+    }
+}
+
 void Editor::buildAll()
 {
     const int track_count = IDatabase::instance()->rootItem()->findItem(TrackListItem)->itemCount();
@@ -282,6 +295,8 @@ void Editor::runCommand(int command)
         return erase();
     case BuildCommand:
         return build();
+    case BuildSelectedCommand:
+        return buildSelected();
     case BuildAllCommand:
         return buildAll();
     case StartOrStopTransportCommand:

@@ -165,6 +165,13 @@ void MainWindowExtension::initActions()
     buildMenu->addAction(cmd, G_BUILD_OTHER);
     connect(action, SIGNAL(triggered()), SLOT(build()));
 
+    // Build Selected Action
+    action = new QAction(tr("Build &Selected"), this);
+    cmd = am->registerAction(action, BUILDSELECTED, globalContext);
+    cmd->setDefaultKeySequence(tr("Shift+B"));
+    buildMenu->addAction(cmd, G_BUILD_OTHER);
+    connect(action, SIGNAL(triggered()), SLOT(buildSelected()));
+
     // Build All Action
     action = new QAction(tr("Build &All"), this);
     cmd = am->registerAction(action, BUILDALL, globalContext);
@@ -232,6 +239,13 @@ void MainWindowExtension::build()
     if (!maybeSaveDatabase())
         return;
     IEditor::instance()->runCommand(BuildCommand);
+}
+
+void MainWindowExtension::buildSelected()
+{
+    if (!maybeSaveDatabase())
+        return;
+    IEditor::instance()->runCommand(BuildSelectedCommand);
 }
 
 void MainWindowExtension::buildAll()

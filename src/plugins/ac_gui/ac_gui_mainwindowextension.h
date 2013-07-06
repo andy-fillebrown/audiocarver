@@ -49,6 +49,7 @@ public slots:
     void createTrack();
     void erase();
     void build();
+    void buildSelected();
     void buildAll();
     void startOrStop();
     void start();

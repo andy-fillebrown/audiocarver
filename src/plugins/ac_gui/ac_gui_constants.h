@@ -41,6 +41,7 @@ const char * const INSERTPOINTS            = PRO_NAME_STR".InsertPoints";
 const char * const MOVE                    = PRO_NAME_STR".Move";
 const char * const ERASE                   = PRO_NAME_STR".Erase";
 const char * const BUILD                   = PRO_NAME_STR".Build";
+const char * const BUILDSELECTED           = PRO_NAME_STR".BuildSelected";
 const char * const BUILDALL                = PRO_NAME_STR".BuildAll";
 const char * const START_STOP              = PRO_NAME_STR".Start/Stop";
 const char * const START                   = PRO_NAME_STR".Start";
