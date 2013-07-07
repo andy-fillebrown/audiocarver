@@ -23,7 +23,7 @@
 namespace Ac {
 namespace Gui {
 
-class MI_GUI_EXPORT MainWindow : public Mi::Gui::MainWindow
+class MainWindow : public Mi::Gui::MainWindow
 {
 protected:
     bool maybeSaveDatabase();
