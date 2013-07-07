@@ -32,7 +32,7 @@ public:
     }
 
     virtual bool maybeSaveDatabase() = 0;
-    virtual void runCommand(int command) = 0;
+    virtual bool runCommand(int command) = 0;
 
     int interfaceType() const
     {

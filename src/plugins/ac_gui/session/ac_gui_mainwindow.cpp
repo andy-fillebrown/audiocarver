@@ -40,7 +40,7 @@ bool MainWindow::maybeSaveDatabase()
     if (QMessageBox::Cancel == result)
         return false;
     if (QMessageBox::Save == result)
-        runCommand(FileSaveCommand);
+        return runCommand(FileSaveCommand);
     return true;
 }
 

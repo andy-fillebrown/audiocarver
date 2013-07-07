@@ -24,48 +24,52 @@
 
 using namespace Mi::Gui;
 
-static void fileSaveAs(MainWindow *mainWindow)
+static bool fileSaveAs(MainWindow *mainWindow)
 {
     IDatabase *database = IDatabase::instance();
     QString filename = QFileDialog::getSaveFileName(Core::ICore::instance()->mainWindow(), "", "", QObject::tr(qPrintable(database->fileFilter())));
     if (filename.isEmpty())
-        return;
+        return false;
     if (!filename.endsWith(database->fileExtension()))
         filename.append(database->fileExtension());
     database->write(filename);
+    return true;
 }
 
-static void fileSave(MainWindow *mainWindow)
+static bool fileSave(MainWindow *mainWindow)
 {
     IDatabase *database = IDatabase::instance();
     if (database->fileName().isEmpty())
-        fileSaveAs(mainWindow);
+        return fileSaveAs(mainWindow);
     else
         database->write(database->fileName());
+    return true;
 }
 
-static void fileNew(MainWindow *mainWindow)
+static bool fileNew(MainWindow *mainWindow)
 {
     IDatabase *database = IDatabase::instance();
     if (database->isDirty() && mainWindow->maybeSaveDatabase())
         database->reset();
+    return true;
 }
 
-static void fileOpen(MainWindow *mainWindow)
+static bool fileOpen(MainWindow *mainWindow)
 {
     IDatabase *database = IDatabase::instance();
     if (database->isDirty())
         if (!mainWindow->maybeSaveDatabase())
-            return;
+            return false;
     QString filename = QFileDialog::getOpenFileName(Core::ICore::instance()->mainWindow(), "", "", QObject::tr(qPrintable(database->fileFilter())));
     if (QFile::exists(filename))
         database->read(filename);
+    return true;
 }
 
 namespace Mi {
 namespace Gui {
 
-void MainWindow::runCommand(int command)
+bool MainWindow::runCommand(int command)
 {
     switch (command) {
     case FileNewCommand:
@@ -77,7 +81,7 @@ void MainWindow::runCommand(int command)
     case FileSaveAsCommand:
         return fileSaveAs(this);
     default:
-        return;
+        return false;
     }
 }
 

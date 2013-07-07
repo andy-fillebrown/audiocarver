@@ -26,7 +26,7 @@ namespace Gui {
 class MI_GUI_EXPORT MainWindow : public Base::MainWindow
 {
 protected:
-    void runCommand(int command);
+    bool runCommand(int command);
 };
 
 }
