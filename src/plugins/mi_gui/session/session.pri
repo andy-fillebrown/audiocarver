@@ -1,5 +1,6 @@
 
 SOURCE_FILES = \
+    mainwindow \
     undomanager \
 
 for(file, SOURCE_FILES) {

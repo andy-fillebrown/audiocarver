@@ -21,14 +21,12 @@
 #include <actioncontainer.h>
 #include <actionmanager.h>
 #include <command.h>
-#include <mainwindow.h>
 #include <icontext.h>
 #include <icore.h>
-#include <idatabase.h>
 #include <ieditor.h>
+#include <imainwindow.h>
 #include <iundomanager.h>
 #include <QAction>
-#include <QFileDialog>
 #include <QIcon>
 
 using namespace Mi;
@@ -172,36 +170,22 @@ void MainWindowExtension::initActions()
 
 void MainWindowExtension::newFile()
 {
-    IDatabase::instance()->reset();
+    IMainWindow::instance()->runCommand(FileNewCommand);
 }
 
 void MainWindowExtension::openFile()
 {
-    IDatabase *db = IDatabase::instance();
-    QString filename = QFileDialog::getOpenFileName(ICore::instance()->mainWindow(), "", "", tr(qPrintable(db->fileFilter())));
-    if (!QFile::exists(filename))
-        return;
-    db->read(filename);
+    IMainWindow::instance()->runCommand(FileOpenCommand);
 }
 
 void MainWindowExtension::saveFile()
 {
-    IDatabase *db = IDatabase::instance();
-    if (db->fileName().isEmpty())
-        saveFileAs();
-    else
-        db->write(db->fileName());
+    IMainWindow::instance()->runCommand(FileSaveCommand);
 }
 
 void MainWindowExtension::saveFileAs()
 {
-    IDatabase *db = IDatabase::instance();
-    QString filename = QFileDialog::getSaveFileName(ICore::instance()->mainWindow(), "", "", tr(qPrintable(db->fileFilter())));
-    if (filename.isEmpty())
-        return;
-    if (!filename.endsWith(db->fileExtension()))
-        filename.append(db->fileExtension());
-    db->write(filename);
+    IMainWindow::instance()->runCommand(FileSaveAsCommand);
 }
 
 void MainWindowExtension::undo()

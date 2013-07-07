@@ -8,6 +8,7 @@ DIRS = \
     session \
     tools \
     undo \
+    watchers \
     widgets \
 
 for(dir, DIRS) {

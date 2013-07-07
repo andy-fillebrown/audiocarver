@@ -1,6 +1,7 @@
 
 SOURCE_FILES = \
     editor \
+    mainwindow \
     selectionset \
     selectionsetwatcher \
     undomanager \

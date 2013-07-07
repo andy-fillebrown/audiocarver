@@ -15,24 +15,33 @@
 **
 **************************************************************************/
 
-#include "mi_gui_plugin.h"
-#include "mi_gui_core_databasesaver.h"
-#include "mi_gui_mainwindowextension.h"
-#include <QtPlugin>
+#include "ac_gui_model_databaseupdater.h"
+#include <idatabase.h>
 
-using namespace Base;
-using namespace Core;
+namespace Model {
 
-namespace Mi {
-namespace Gui {
+DatabaseUpdater::DatabaseUpdater()
+    :   Base::ModelWatcher(ISession::instance())
+{}
 
-Plugin::Plugin()
+void DatabaseUpdater::beginChangeData(IModelItem *item, int role)
 {
-    addAutoReleasedObject(new DatabaseSaver);
-    addAutoReleasedObject(new MainWindowExtension);
+    IDatabase::instance()->setDirty(true);
+}
+
+void DatabaseUpdater::endChangeData(IModelItem *item, int role)
+{
+    IDatabase::instance()->setDirty(true);
+}
+
+void DatabaseUpdater::endInsertItem(IModelItem *list, int index)
+{
+    IDatabase::instance()->setDirty(true);
+}
+
+void DatabaseUpdater::endRemoveItem(IModelItem *list, int index)
+{
+    IDatabase::instance()->setDirty(true);
 }
 
 }
-}
-
-Q_EXPORT_PLUGIN(Mi::Gui::Plugin)

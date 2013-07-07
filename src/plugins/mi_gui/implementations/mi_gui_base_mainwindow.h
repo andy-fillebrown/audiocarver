@@ -15,43 +15,41 @@
 **
 **************************************************************************/
 
-#ifndef AC_CORE_DATABASE_H
-#define AC_CORE_DATABASE_H
+#ifndef MI_GUI_BASE_MAINWINDOW_H
+#define MI_GUI_BASE_MAINWINDOW_H
 
-#include <mi_core_base_database.h>
-#include "ac_core_global.h"
-#include <QString>
+#include <imainwindow.h>
+#include <iaggregate.h>
+#include "mi_gui_global.h"
 
-class IAggregate;
+namespace Base {
 
-namespace Ac {
-namespace Core {
-
-class AC_CORE_EXPORT Database : public Base::Database
+class MI_GUI_EXPORT MainWindow : public IMainWindow
 {
-    QString _fileName;
-    IAggregate *_score;
-    int _reading : 1;
-    uint _dirty : 1;
-
 public:
-    Database();
-    ~Database();
+    MainWindow()
+    {
+        IAggregate *aggregate = ISession::instance();
+        IMainWindow *instance = IMainWindow::instance();
+        aggregate->removeComponent(instance);
+        delete instance;
+        aggregate->appendComponent(this);
+    }
+
+    void *queryInterface(int interfaceType) const
+    {
+        void *i = IComponent::queryInterface(interfaceType);
+        return i ? i : ISession::instance()->queryInterface(interfaceType);
+    }
 
 protected:
-    IModelItem *rootItem() const;
-    const QString &fileExtension() const;
-    const QString &fileFilter() const;
-    QString fileName() const;
-    void reset();
-    void read(const QString &fileName);
-    void write(const QString &fileName);
-    bool isReading() const;
-    void setDirty(bool dirty);
-    bool isDirty() const;
+    void initialize()
+    {}
+
+    void reset()
+    {}
 };
 
-}
 }
 
 #endif

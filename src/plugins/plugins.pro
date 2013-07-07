@@ -35,6 +35,8 @@ INTERFACE_FILES *= \
     graphicsgrip \
     graphicsgriplist \
     graphicsitem \
+    mainwindow \
+    mainwindowextension \
     model \
     modelitem \
     modelitemwatcher \

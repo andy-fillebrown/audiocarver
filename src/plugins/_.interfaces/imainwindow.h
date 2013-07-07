@@ -15,24 +15,36 @@
 **
 **************************************************************************/
 
-#include "mi_gui_plugin.h"
-#include "mi_gui_core_databasesaver.h"
-#include "mi_gui_mainwindowextension.h"
-#include <QtPlugin>
+#ifndef IMAINWINDOW_H
+#define IMAINWINDOW_H
 
-using namespace Base;
-using namespace Core;
+#include <icomponent.h>
+#include <isession.h>
 
-namespace Mi {
-namespace Gui {
-
-Plugin::Plugin()
+class IMainWindow : public IComponent
 {
-    addAutoReleasedObject(new DatabaseSaver);
-    addAutoReleasedObject(new MainWindowExtension);
-}
+public:
+    enum { InterfaceType = I::IMainWindow };
 
-}
-}
+    inline static IMainWindow *instance()
+    {
+        return query<IMainWindow>(ISession::instance());
+    }
 
-Q_EXPORT_PLUGIN(Mi::Gui::Plugin)
+    virtual bool maybeSaveDatabase() = 0;
+    virtual void runCommand(int command) = 0;
+
+    int interfaceType() const
+    {
+        return InterfaceType;
+    }
+
+    bool isTypeOfInterface(int interfaceType) const
+    {
+        if (InterfaceType == interfaceType)
+            return true;
+        return IComponent::isTypeOfInterface(interfaceType);
+    }
+};
+
+#endif

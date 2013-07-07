@@ -15,24 +15,25 @@
 **
 **************************************************************************/
 
-#include "mi_gui_plugin.h"
-#include "mi_gui_core_databasesaver.h"
-#include "mi_gui_mainwindowextension.h"
-#include <QtPlugin>
+#ifndef MI_GUI_CORE_DATABASESAVER_H
+#define MI_GUI_CORE_DATABASESAVER_H
 
-using namespace Base;
-using namespace Core;
+#include <icorelistener.h>
+#include <mi_gui_global.h>
 
-namespace Mi {
-namespace Gui {
+namespace Core {
 
-Plugin::Plugin()
+class MI_GUI_EXPORT DatabaseSaver : public ICoreListener
 {
-    addAutoReleasedObject(new DatabaseSaver);
-    addAutoReleasedObject(new MainWindowExtension);
-}
+public:
+    DatabaseSaver(QObject *parent = 0)
+        :   ICoreListener(parent)
+    {}
+
+protected:
+    bool coreAboutToClose();
+};
 
 }
-}
 
-Q_EXPORT_PLUGIN(Mi::Gui::Plugin)
+#endif

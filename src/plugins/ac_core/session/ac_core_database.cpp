@@ -34,8 +34,10 @@ namespace Core {
 Database::Database()
     :   _score(0)
     ,   _reading(false)
+    ,   _dirty(false)
 {
     _score = IDatabaseObjectFactory::instance()->create(ScoreItem);
+    setDirty(false);
 }
 
 Database::~Database()
@@ -87,6 +89,7 @@ void Database::read(const QString &fileName)
         _fileName = fileName;
     delete filer;
     _reading = false;
+    setDirty(false);
 }
 
 void Database::write(const QString &fileName)
@@ -97,11 +100,22 @@ void Database::write(const QString &fileName)
     query<IWriter>(filer)->write(rootItem());
     delete filer;
     _fileName = fileName;
+    setDirty(false);
 }
 
 bool Database::isReading() const
 {
     return _reading;
+}
+
+void Database::setDirty(bool dirty)
+{
+    _dirty = dirty;
+}
+
+bool Database::isDirty() const
+{
+    return _dirty;
 }
 
 }

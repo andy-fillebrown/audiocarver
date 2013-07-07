@@ -15,24 +15,10 @@
 **
 **************************************************************************/
 
-#include "mi_gui_plugin.h"
-#include "mi_gui_core_databasesaver.h"
-#include "mi_gui_mainwindowextension.h"
-#include <QtPlugin>
+#include "mi_gui_base_mainwindow.h"
 
-using namespace Base;
-using namespace Core;
+namespace Base {
 
-namespace Mi {
-namespace Gui {
 
-Plugin::Plugin()
-{
-    addAutoReleasedObject(new DatabaseSaver);
-    addAutoReleasedObject(new MainWindowExtension);
-}
 
 }
-}
-
-Q_EXPORT_PLUGIN(Mi::Gui::Plugin)

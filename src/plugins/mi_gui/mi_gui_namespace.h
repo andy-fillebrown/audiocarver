@@ -21,7 +21,11 @@
 namespace Mi {
 
 enum EditorCommands {
-    CutCommand = 1,
+    FileNewCommand = 1,
+    FileOpenCommand,
+    FileSaveCommand,
+    FileSaveAsCommand,
+    CutCommand,
     CopyCommand,
     PasteCommand,
     SelectAllCommand,

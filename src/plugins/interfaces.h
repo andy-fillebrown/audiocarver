@@ -41,6 +41,7 @@ enum InterfaceIds {
     IGraphicsView,
     IGraphicsViewGroup,
     IGraphicsViewManager,
+    IMainWindow,
     IModel,
     IModelItem,
     IModelItemWatcher,

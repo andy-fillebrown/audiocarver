@@ -137,6 +137,7 @@ bool test_2()
     CHECK(item->set(NameRole, "ControlCurve"));
     CHECK("ControlCurve" == get<QString>(item, NameRole));
     delete control_curve;
+    IDatabase::instance()->setDirty(false);
     return true;
 }
 
