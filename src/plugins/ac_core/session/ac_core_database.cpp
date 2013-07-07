@@ -67,17 +67,6 @@ QString Database::fileName() const
     return _fileName;
 }
 
-void Database::reset()
-{
-    IModel::instance()->reset();
-    _score->reset();
-    _fileName.clear();
-
-    // Reset the model again so everything depending on score variables gets
-    // updated correctly.
-    IModel::instance()->reset();
-}
-
 void Database::read(const QString &fileName)
 {
     _reading = true;
@@ -116,6 +105,18 @@ void Database::setDirty(bool dirty)
 bool Database::isDirty() const
 {
     return _dirty;
+}
+
+void Database::reset()
+{
+    IModel::instance()->reset();
+    _score->reset();
+    _fileName.clear();
+    setDirty(false);
+
+    // Reset the model again so everything depending on score variables gets
+    // updated correctly.
+    IModel::instance()->reset();
 }
 
 }

@@ -31,7 +31,7 @@ class AC_CORE_EXPORT Database : public Base::Database
 {
     QString _fileName;
     IAggregate *_score;
-    int _reading : 1;
+    uint _reading : 1;
     uint _dirty : 1;
 
 public:
@@ -43,12 +43,12 @@ protected:
     const QString &fileExtension() const;
     const QString &fileFilter() const;
     QString fileName() const;
-    void reset();
     void read(const QString &fileName);
     void write(const QString &fileName);
     bool isReading() const;
     void setDirty(bool dirty);
     bool isDirty() const;
+    void reset();
 };
 
 }
