@@ -2,7 +2,7 @@
 PROJECT_PRI_INCLUDED = 1
 
 PRO_NAME           = AudioCarver
-PRO_VERSION        = 1.0.0
+PRO_VERSION        = 0.7.0
 PRO_AUTHOR         = Andrew Fillebrown
 PRO_AUTHOR_NOSPACE = AndyFillebrown
 PRO_AUTHOR_EMAIL   = andy.fillebrown@gmail.com
