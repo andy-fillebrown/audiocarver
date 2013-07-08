@@ -31,7 +31,7 @@ class ModelItem : public ScoreObject::ModelItem
 
     int _color;
     QString _instrument;
-    int _visible : 1;
+    uint _visible : 1;
     enum { RoleCount = 3 };
 
 public:

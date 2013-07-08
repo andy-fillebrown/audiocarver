@@ -31,8 +31,8 @@ class ModelItem : public Object::ModelItem
     IAggregate *_controlGridLines;
     enum { ItemCount = 3 };
 
-    int _snapEnabled : 1;
-    int _gridSnapEnabled : 1;
+    uint _snapEnabled : 1;
+    uint _gridSnapEnabled : 1;
     qreal _timeSnap;
     qreal _pitchSnap;
     qreal _controlSnap;
