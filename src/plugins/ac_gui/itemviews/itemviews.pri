@@ -7,7 +7,6 @@ SOURCE_FILES = \
     instrumentdelegate \
     lengthdelegate \
     propertyview \
-    recordbuttondelegate \
     selecteditemspropertyview \
     togglebuttondelegate \
     volumedelegate \

@@ -40,14 +40,13 @@ TrackModel::TrackModel(QObject *parent)
     :   RolesToColumnsProxyModel(parent)
 {
     RoleMapList role_maps;
-    for (int i = 0;  i < 4;  ++i)
+    for (int i = 0;  i < 3;  ++i)
         role_maps.append(RoleMap());
     role_maps[0].insert(DisplayRole, ColorRole);
     role_maps[0].insert(EditRole, ColorRole);
     role_maps[1].insert(DisplayRole, NameRole);
     role_maps[1].insert(EditRole, NameRole);
     role_maps[2].insert(DisplayRole, VisibilityRole);
-    role_maps[3].insert(DisplayRole, RecordingRole);
     setRoleMaps(role_maps);
     setSourceModel(qobject_cast<QAbstractItemModel*>(parent));
     Ac::Core::instance = this;
