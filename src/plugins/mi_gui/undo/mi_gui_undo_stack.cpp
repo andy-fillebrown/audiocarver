@@ -19,6 +19,7 @@
 #include "mi_gui_undo_datachangecommand.h"
 #include "mi_gui_undo_insertcommand.h"
 #include "mi_gui_undo_removecommand.h"
+#include <iaggregate.h>
 #include <idatabase.h>
 #include <ieditor.h>
 #include <imodel.h>
@@ -60,6 +61,9 @@ Stack::Stack(QObject *parent)
 Stack::~Stack()
 {
     qDelete(_command);
+    foreach (IModelItem *orphaned_item, _orphanedItems)
+        delete query<IAggregate>(orphaned_item);
+    _orphanedItems.clear();
 }
 
 void Stack::beginCommand()
@@ -116,12 +120,14 @@ void Stack::itemInserted(IModelItem *list, int index)
     const int n = _inserts.count();
     for (int i = 0;  i < n;  ++i) {
         InsertCommand *cmd = _inserts.at(i);
-        cmd->setItem(list->itemAt(index));
+        IModelItem *item = list->itemAt(index);
+        cmd->setItem(item);
         if (list != cmd->list() || index != cmd->index())
             continue;
         _inserts.removeAt(i);
         if (!_command)
             push(cmd);
+        _orphanedItems.removeAll(item);
         break;
     }
 }
@@ -147,6 +153,7 @@ void Stack::itemRemoved(IModelItem *list, int index)
         _removes.removeAt(i);
         if (!_command)
             push(cmd);
+        _orphanedItems.append(cmd->item());
         break;
     }
 }
