@@ -30,9 +30,9 @@ namespace Gui {
 class MI_GUI_EXPORT UndoManager : public Base::UndoManager
 {
     Undo::Stack *_undoStack;
-    int _undoing : 1;
-    int _paused : 1;
-    int _inCommand : 1;
+    uint _undoing : 1;
+    uint _paused : 1;
+    uint _inCommand : 1;
 
 public:
     UndoManager();

@@ -25,7 +25,7 @@ namespace Undo {
 
 class MI_GUI_EXPORT Command : public QUndoCommand
 {
-    int _enabled : 1;
+    uint _enabled : 1;
 
 protected:
     Command(QUndoCommand *parent)
