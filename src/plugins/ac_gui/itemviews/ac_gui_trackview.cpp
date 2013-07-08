@@ -17,7 +17,7 @@
 
 #include "ac_gui_trackview.h"
 #include "ac_gui_colordelegate.h"
-#include "ac_gui_recordbuttondelegate.h"
+#include "ac_gui_togglebuttondelegate.h"
 #include <ac_core_namespace.h>
 #include <ac_core_trackmodel.h>
 #include <idatabase.h>
@@ -94,10 +94,6 @@ TrackView::TrackView(QWidget *parent)
     toggle_button_delegate->setButtonColumnWidth(buttonColumnWidth);
     toggle_button_delegate->setCustomColumn(2);
     setItemDelegateForColumn(2, toggle_button_delegate);
-    RecordButtonDelegate *record_button_delegate = new RecordButtonDelegate(this);
-    record_button_delegate->setButtonColumnWidth(buttonColumnWidth);
-    record_button_delegate->setCustomColumn(3);
-    setItemDelegateForColumn(3, record_button_delegate);
 }
 
 void TrackView::mousePressEvent(QMouseEvent *event)
@@ -234,9 +230,8 @@ void TrackView::resizeEvent(QResizeEvent *event)
     // Set the column widths.
     const int color_column_width = row_height;
     setColumnWidth(0, color_column_width);
-    setColumnWidth(1, viewport->width() - (color_column_width + buttonColumnWidth + buttonColumnWidth));
+    setColumnWidth(1, viewport->width() - (color_column_width + buttonColumnWidth));
     setColumnWidth(2, buttonColumnWidth);
-    setColumnWidth(3, buttonColumnWidth);
 }
 
 void TrackView::paintEvent(QPaintEvent *event)

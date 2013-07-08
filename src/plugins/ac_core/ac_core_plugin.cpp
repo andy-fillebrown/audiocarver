@@ -69,7 +69,6 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(VolumeRole, "volume");
     appendItemDataRole(ColorRole, "color");
     appendItemDataRole(VisibilityRole, "visible");
-    appendItemDataRole(RecordingRole, "recording");
     appendItemDataRole(TimePositionRole, "timePosition");
     appendItemDataRole(PitchPositionRole, "pitchPosition");
     appendItemDataRole(ControlPositionRole, "controlPosition");
