@@ -20,7 +20,7 @@
 #include "ac_gui_instrumentdelegate.h"
 #include "ac_gui_lengthdelegate.h"
 #include "ac_gui_selecteditemspropertymodel.h"
-#include "ac_gui_recordbuttondelegate.h"
+#include "ac_gui_togglebuttondelegate.h"
 #include "ac_gui_volumedelegate.h"
 #include <ac_core_namespace.h>
 #include <ieditor.h>
@@ -41,7 +41,6 @@ public:
     ColorDelegate *colorDelegate;
     InstrumentDelegate *instrumentDelegate;
     LengthDelegate *lengthDelegate;
-    RecordButtonDelegate *recordButtonDelegate;
     ToggleButtonDelegate *toggleButtonDelegate;
     VolumeDelegate *volumeDelegate;
 
@@ -52,7 +51,6 @@ public:
         ,   colorDelegate(new ColorDelegate(q))
         ,   instrumentDelegate(new InstrumentDelegate(q))
         ,   lengthDelegate(new LengthDelegate(q))
-        ,   recordButtonDelegate(new RecordButtonDelegate(q))
         ,   toggleButtonDelegate(new ToggleButtonDelegate(q))
         ,   volumeDelegate(new VolumeDelegate(q))
     {
@@ -60,10 +58,8 @@ public:
         colorDelegate->setCustomColumn(1);
         instrumentDelegate->setCustomColumn(1);
         lengthDelegate->setCustomColumn(1);
-        recordButtonDelegate->setCustomColumn(1);
         toggleButtonDelegate->setCustomColumn(1);
         volumeDelegate->setCustomColumn(1);
-        recordButtonDelegate->setButtonColumnWidth(16);
         toggleButtonDelegate->setButtonColumnWidth(16);
     }
 };
@@ -117,9 +113,6 @@ void SelectedItemsPropertyView::updateDelegates()
             break;
         case LengthRole:
             setItemDelegateForRow(i, d->lengthDelegate);
-            break;
-        case RecordingRole:
-            setItemDelegateForRow(i, d->recordButtonDelegate);
             break;
         case VisibilityRole:
         case SnapEnabledRole:

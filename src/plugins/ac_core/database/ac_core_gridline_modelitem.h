@@ -34,7 +34,7 @@ class ModelItem : public Object::ModelItem
     int _color;
     enum { RoleCount = 4 };
 
-    int _visible : 1;
+    uint _visible : 1;
 
 protected:
     enum {
