@@ -26,17 +26,13 @@ class ListCommand : public ModelItemCommand
 {
     IModelItem *_list;
     int _index;
-    uint _deleteItem : 1;
 
 public:
     ListCommand(IModelItem *list, int index, QUndoCommand *parent = 0)
         :   ModelItemCommand(0, parent)
         ,   _list(list)
         ,   _index(index)
-        ,   _deleteItem(false)
     {}
-
-    ~ListCommand();
 
     IModelItem *list() const
     {

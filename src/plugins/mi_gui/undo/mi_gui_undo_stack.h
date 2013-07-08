@@ -36,6 +36,7 @@ class MI_GUI_EXPORT Stack : public QUndoStack
     QList<DataChangeCommand*> _dataChanges;
     QList<InsertCommand*> _inserts;
     QList<RemoveCommand*> _removes;
+    QList<IModelItem*> _orphanedItems;
 
 public:
     static Stack *instance();
