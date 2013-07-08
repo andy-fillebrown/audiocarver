@@ -76,57 +76,100 @@ void Editor::copy() const
     }
     if (ss->items().isEmpty())
         return;
-    IWriter *writer = query<IWriter>(IFilerFactory::instance()->create(CopyFiler));
-    const QList<IGraphicsItem*> &items = ss->items();
-    writer->writeStartElement(itemTypeString(ss_type));
-    foreach (IGraphicsItem *item, items)
-        writer->write(query<IModelItem>(item));
-    writer->writeEndElement();
-    delete query<IAggregate>(writer);
-    return;
+    if (TrackListItem == ss_type) {
+        IWriter *writer = query<IWriter>(IFilerFactory::instance()->create(CopyFiler));
+        const QList<IGraphicsItem*> &items = ss->items();
+        writer->writeStartElement(itemTypeString(ss_type));
+        foreach (IGraphicsItem *item, items)
+            writer->write(query<IModelItem>(item));
+        writer->writeEndElement();
+        delete query<IAggregate>(writer);
+        return;
+    }
+    if (NoteListItem == ss_type) {
+        const QList<IGraphicsItem*> &graphics_items = ss->items();
+        QList<IModelItem*> model_items;
+        foreach (IGraphicsItem *graphics_item, graphics_items)
+            model_items.append(query<IModelItem>(graphics_item));
+        QList<int> track_number_list;
+        foreach (IModelItem *item, model_items) {
+            IModelItem *track = item->parent()->parent();
+            int track_number = track->parent()->indexOfItem(track);
+            if (!track_number_list.contains(track_number))
+                track_number_list.append(track_number);
+        }
+        qSort(track_number_list);
+        QList<QList<IModelItem*> > items_list;
+        int track_number_count = track_number_list.count();
+        for (int i = 0;  i < track_number_count;  ++i) {
+            items_list.append(QList<IModelItem*>());
+            QList<IModelItem*> &items = items_list[i];
+            foreach (IModelItem *item, model_items) {
+                IModelItem *track = item->parent()->parent();
+                int track_number = track->parent()->indexOfItem(track);
+                if (track_number_list[i] == track_number)
+                    items.append(item);
+            }
+        }
+        IWriter *writer = query<IWriter>(IFilerFactory::instance()->create(CopyFiler));
+        writer->writeStartElement("clipboard");
+        foreach (const QList<IModelItem*> &item_list, items_list) {
+            writer->writeStartElement(itemTypeString(TrackItem));
+            writer->writeStartElement(itemTypeString(NoteListItem));
+            foreach (IModelItem *item, item_list)
+                writer->write(item);
+            writer->writeEndElement();
+            writer->writeEndElement();
+        }
+        writer->writeEndElement();
+        delete query<IAggregate>(writer);
+        return;
+    }
 }
 
 void Editor::paste()
 {
-//    IReader *reader = query<IReader>(IFilerFactory::instance()->create(CopyFiler));
-//    IFiler *filer = query<IFiler>(reader);
-//    IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
-//    const int item_type = reader->nextItemType();
-//    filer->reset();
-//    if (NoteListItem == item_type) {
-//        QList<IModelItem*> tracks;
-//        QList<IGraphicsItem*> notes;
-//        const int track_count = track_list->itemCount();
-//        for (int i = 0;  i < track_count;  ++i) {
-//            IModelItem *track = track_list->itemAt(i);
-//            if (get<bool>(track, RecordingRole))
-//                tracks.append(track);
-//        }
-//        if (tracks.isEmpty())
-//            return;
-//        IUndoManager *undo_manager = IUndoManager::instance();
-//        undo_manager->beginCommand();
-//        foreach (IModelItem *track, tracks) {
-//            IModelItem *note_list = track->findItem(NoteListItem);
-//            const int prev_count = note_list->itemCount();
-//            reader->read(note_list);
-//            filer->reset();
-//            const int cur_count = note_list->itemCount();
-//            for (int i = prev_count;  i < cur_count;  ++i)
-//                notes.append(query<IGraphicsItem>(note_list->itemAt(i)));
-//        }
-//        undo_manager->endCommand();
-//        ISelectionSet *ss = IEditor::instance()->currentSelection();
-//        ss->clear();
-//        ss->append(notes);
-//    }
-//    else if (TrackListItem == item_type) {
-//        IUndoManager *undo_manager = IUndoManager::instance();
-//        undo_manager->beginCommand();
-//        reader->read(track_list);
-//        undo_manager->endCommand();
-//    }
-//    delete reader;
+    IReader *reader = query<IReader>(IFilerFactory::instance()->create(CopyFiler));
+    IFiler *filer = query<IFiler>(reader);
+    IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
+    const int item_type = reader->nextItemType();
+    if (-1 == item_type) {
+        QList<IModelItem*> tracks;
+        int track_count = track_list->itemCount();
+        for (int i = 0;  i < track_count;  ++i) {
+            IModelItem *track = track_list->itemAt(i);
+            if (get<bool>(track, VisibilityRole))
+                tracks.append(track);
+        }
+        if (!tracks.isEmpty()) {
+            ISelectionSet *ss = IEditor::instance()->currentSelection();
+            ss->clear();
+            IUndoManager *undo_manager = IUndoManager::instance();
+            undo_manager->beginCommand();
+            int i = 0;
+            track_count = tracks.count();
+            while (TrackItem == reader->nextItemType()) {
+                IModelItem *track = tracks.at(i);
+                IModelItem *track_note_list = track->findItem(NoteListItem);
+                int old_note_count = track_note_list->itemCount();
+                reader->read(track_note_list);
+                int new_note_count = track_note_list->itemCount();
+                for (int j = old_note_count;  j < new_note_count;  ++j)
+                    ss->append(query<IGraphicsItem>(track_note_list->itemAt(j)));
+                ++i;
+                if (track_count <= i)
+                    break;
+            }
+            undo_manager->endCommand();
+        }
+    } else if (TrackListItem == item_type) {
+        filer->reset();
+        IUndoManager *undo_manager = IUndoManager::instance();
+        undo_manager->beginCommand();
+        reader->read(track_list);
+        undo_manager->endCommand();
+    }
+    delete reader;
 }
 
 void Editor::selectAll()

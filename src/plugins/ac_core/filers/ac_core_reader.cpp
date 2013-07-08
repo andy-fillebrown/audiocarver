@@ -47,11 +47,11 @@ static bool nextStartElement(QXmlStreamReader *reader)
 {
     int token_type = QXmlStreamReader::NoToken;
     while (token_type != QXmlStreamReader::StartElement) {
+        if (reader->atEnd())
+            return false;
         token_type = reader->readNext();
         if (token_type == QXmlStreamReader::Invalid)
             continue;
-        if (reader->atEnd())
-            return false;
     }
     return true;
 }
