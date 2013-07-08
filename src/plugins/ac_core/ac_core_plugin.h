@@ -32,7 +32,9 @@ public:
 
 protected:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);
-    void extensionsInitialized();
+
+    void extensionsInitialized()
+    {}
 };
 
 }

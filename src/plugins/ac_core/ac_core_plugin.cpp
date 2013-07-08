@@ -25,10 +25,6 @@
 #include <pluginmanager.h>
 #include <QtPlugin>
 
-#ifdef QT_DEBUG
-static bool test();
-#endif
-
 namespace Ac {
 namespace Core {
 
@@ -90,62 +86,7 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     return true;
 }
 
-void Plugin::extensionsInitialized()
-{
-#ifdef QT_DEBUG
-    test();
-#endif
-}
-
 }
 }
 
 Q_EXPORT_PLUGIN(Ac::Core::Plugin)
-
-#ifdef QT_DEBUG
-
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
-#include <imodelitem.h>
-#include <QtDebug>
-
-#define RUN(x) if (!x()) return false
-#define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
-
-using namespace Ac;
-using namespace Mi;
-
-bool test_1()
-{
-    // Make sure querying aggregates succeeds.
-    IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
-    CHECK(control_curve);
-    IModelItem *item = query<IModelItem>(control_curve);
-    CHECK(item);
-    delete control_curve;
-    return true;
-}
-
-bool test_2()
-{
-    // Make sure setting item name succeeds.
-    IAggregate *control_curve = IDatabaseObjectFactory::instance()->create(ControlCurveItem);
-    CHECK(control_curve);
-    IModelItem *item= query<IModelItem>(control_curve);
-    CHECK(item);
-    CHECK(item->set(NameRole, "ControlCurve"));
-    CHECK("ControlCurve" == get<QString>(item, NameRole));
-    delete control_curve;
-    IDatabase::instance()->setDirty(false);
-    return true;
-}
-
-bool test()
-{
-    RUN(test_2);
-    RUN(test_1);
-    qDebug() << "Ac::Core::Plugin tests passed.";
-    return true;
-}
-
-#endif
