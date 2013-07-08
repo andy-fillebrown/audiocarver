@@ -59,7 +59,6 @@ enum ItemDataRole {
     StartTimeRole,
     ColorRole,
     VisibilityRole,
-    RecordingRole,
     TimePositionRole,
     PitchPositionRole,
     ControlPositionRole,

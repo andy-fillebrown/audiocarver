@@ -32,8 +32,7 @@ class ModelItem : public ScoreObject::ModelItem
     int _color;
     QString _instrument;
     int _visible : 1;
-    int _recording : 1;
-    enum { RoleCount = 4 };
+    enum { RoleCount = 3 };
 
 public:
     ModelItem(IAggregate *aggregate);

@@ -32,7 +32,6 @@ ModelItem::ModelItem(IAggregate *aggregate)
     ,   _notes(0)
     ,   _color(DEFAULT_TRACK_COLOR)
     ,   _visible(true)
-    ,   _recording(false)
 {
     _notes = IDatabaseObjectFactory::instance()->create(NoteListItem, this);
 }
@@ -91,8 +90,6 @@ int ModelItem::roleAt(int i) const
         return InstrumentRole;
     case 2:
         return VisibilityRole;
-    case 3:
-        return RecordingRole;
     default:
         return ScoreObject::ModelItem::roleAt(i);
     }
@@ -107,8 +104,6 @@ QVariant ModelItem::getValue(int role) const
         return _instrument;
     case VisibilityRole:
         return bool(_visible);
-    case RecordingRole:
-        return bool(_recording);
     default:
         return ScoreObject::ModelItem::getValue(role);
     }
@@ -139,14 +134,6 @@ bool ModelItem::setValue(int role, const QVariant &value)
             return false;
         ScopedDataChange data_change(this, VisibilityRole);
         _visible = visible;
-        return true;
-    }
-    case RecordingRole: {
-        const bool recording = qvariant_cast<bool>(value);
-        if (_recording == recording)
-            return false;
-        ScopedDataChange data_change(this, RecordingRole);
-        _recording = recording;
         return true;
     }
     default:
