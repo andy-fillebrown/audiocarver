@@ -23,7 +23,6 @@
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindow.h"
 #include "ac_gui_mainwindowextension.h"
-#include "ac_gui_model_databaseupdater.h"
 #include "ac_gui_model_editorupdater.h"
 #include "ac_gui_undomanager.h"
 #include <ac_core_database.h>
@@ -44,7 +43,6 @@ Plugin::Plugin()
     new FilerFactory;
     new UndoManager;
     new Database::GraphicsViewManagerUpdater;
-    new Model::DatabaseUpdater;
     new Model::EditorUpdater;
     new MainWindow;
     addAutoReleasedObject(new ::Gui::MainWindowExtension);

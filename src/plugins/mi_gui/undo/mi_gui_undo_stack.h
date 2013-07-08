@@ -55,6 +55,7 @@ protected slots:
     virtual void itemAboutToBeRemoved(IModelItem *list, int index);
     virtual void itemRemoved(IModelItem *list, int index);
     virtual void modelReset();
+    void cleanChanged(bool clean);
 };
 
 }

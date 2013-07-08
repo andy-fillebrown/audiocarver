@@ -55,6 +55,7 @@ Stack::Stack(QObject *parent)
     connect(model, SIGNAL(itemAboutToBeRemoved(IModelItem*,int)), SLOT(itemAboutToBeRemoved(IModelItem*,int)));
     connect(model, SIGNAL(itemRemoved(IModelItem*,int)), SLOT(itemRemoved(IModelItem*,int)));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
+    connect(this, SIGNAL(cleanChanged(bool)), SLOT(cleanChanged(bool)));
     ::instance = this;
 }
 
@@ -161,6 +162,11 @@ void Stack::itemRemoved(IModelItem *list, int index)
 void Stack::modelReset()
 {
     clear();
+}
+
+void Stack::cleanChanged(bool clean)
+{
+    IDatabase::instance()->setDirty(!clean);
 }
 
 }
