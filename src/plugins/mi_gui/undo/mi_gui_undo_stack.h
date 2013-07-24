@@ -46,6 +46,8 @@ public:
 
     void beginCommand();
     void endCommand();
+    void appendOrphanedItem(IModelItem* item);
+    void removeOrphanedItem(IModelItem* item);
 
 protected slots:
     virtual void dataAboutToBeChanged(IModelItem *item, int role);

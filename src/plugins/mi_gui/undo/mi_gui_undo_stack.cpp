@@ -82,6 +82,18 @@ void Stack::endCommand()
     _command = 0;
 }
 
+void Stack::appendOrphanedItem(IModelItem *item)
+{
+    if (!_orphanedItems.contains(item))
+        _orphanedItems.append(item);
+}
+
+void Stack::removeOrphanedItem(IModelItem *item)
+{
+    _orphanedItems.removeOne(item);
+    Q_ASSERT(!_orphanedItems.contains(item));
+}
+
 void Stack::dataAboutToBeChanged(IModelItem *item, int role)
 {
     if (notOkToUndo())
@@ -128,7 +140,7 @@ void Stack::itemInserted(IModelItem *list, int index)
         _inserts.removeAt(i);
         if (!_command)
             push(cmd);
-        _orphanedItems.removeAll(item);
+        removeOrphanedItem(item);
         break;
     }
 }
@@ -154,7 +166,7 @@ void Stack::itemRemoved(IModelItem *list, int index)
         _removes.removeAt(i);
         if (!_command)
             push(cmd);
-        _orphanedItems.append(cmd->item());
+        appendOrphanedItem(cmd->item());
         break;
     }
 }
