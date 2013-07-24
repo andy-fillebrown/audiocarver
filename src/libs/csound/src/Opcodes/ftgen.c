@@ -132,7 +132,7 @@ static int ftgen(CSOUND *csound, FTGEN *p)
           ftevt->strarg = (char*) p->p5;
           break;
         default:
-          csound->Free(csound, ftevt);
+          free(ftevt);
           return csound->InitError(csound, Str("ftgen string arg not allowed"));
         }
       }

@@ -62,19 +62,18 @@ typedef struct {
     AUXCH   buffer, tmp;
     MYFLT   *buf;
     int     sock;
-    int     wp, rp, wbufferuse, rbufferuse, canread;
     volatile int threadon;
-    int     usedbuf[MAXBUFS];
-    int     bufnos, bufsamps[MAXBUFS];
+    int buffsize;
+  int outsamps, rcvsamps;
     CSOUND  *cs;
     void    *thrid;
+    void  *cb;
     struct sockaddr_in server_addr;
 } SOCKRECV;
 
 static int deinit_udpRecv(CSOUND *csound, void *pdata)
 {
     SOCKRECV *p = (SOCKRECV *) pdata;
-
     p->threadon = 0;
     csound->JoinThread(p->thrid);
     return OK;
@@ -87,19 +86,13 @@ static uintptr_t udpRecv(void *pdata)
     SOCKRECV *p = (SOCKRECV *) pdata;
     MYFLT   *tmp = (MYFLT *) p->tmp.auxp;
     MYFLT   *buf;
-    int     i, bytes, n, bufnos = p->bufnos;
+    int     i, bytes;
+    CSOUND *csound = p->cs;
 
     while (p->threadon) {
       /* get the data from the socket and store it in a tmp buffer */
-      if ((bytes = recvfrom(p->sock, (void *)tmp, MTU, 0, &from, &clilen))) {
-        p->wbufferuse++;
-        p->wbufferuse = (p->wbufferuse == bufnos ? 0 : p->wbufferuse);
-        buf = (MYFLT *) ((char *) p->buffer.auxp + (p->wbufferuse * MTU));
-        p->usedbuf[p->wbufferuse] = 1;
-        p->bufsamps[p->wbufferuse] = n = bytes / sizeof(MYFLT);
-        for (i = 0; i < n; i++)
-          buf[i] = tmp[i];
-        p->canread = 1;
+      if ((bytes = recvfrom(p->sock, (void *)tmp, MTU, 0, &from, &clilen)) > 0) {
+        csound->WriteCircularBuffer(csound, p->cb, tmp, bytes/sizeof(MYFLT));
       }
     }
     return (uintptr_t) 0;
@@ -117,15 +110,11 @@ static int init_recv(CSOUND *csound, SOCKRECV *p)
       csound->InitError(csound, Str("Winsock2 failed to start: %d"), err);
 #endif
 
-    p->wp = 0;
-    p->rp = 0;
     p->cs = csound;
-    p->bufnos = *p->ptr3;
-    if (p->bufnos > MAXBUFS)
-      p->bufnos = MAXBUFS;
-    bufnos = p->bufnos;
-
     p->sock = socket(AF_INET, SOCK_DGRAM, 0);
+#ifndef WIN32
+    fcntl(p->sock, F_SETFL, O_NONBLOCK);
+#endif
     if (UNLIKELY(p->sock < 0)) {
       return csound->InitError
         (csound, Str("creating socket"));
@@ -140,12 +129,12 @@ static int init_recv(CSOUND *csound, SOCKRECV *p)
                       sizeof(p->server_addr)) < 0))
       return csound->InitError(csound, Str("bind failed"));
 
-    if (p->buffer.auxp == NULL || (long) (MTU * bufnos) > p->buffer.size)
+    if (p->buffer.auxp == NULL || (unsigned long) (MTU) > p->buffer.size)
       /* allocate space for the buffer */
-      csound->AuxAlloc(csound, MTU * bufnos, &p->buffer);
+      csound->AuxAlloc(csound, MTU, &p->buffer);
     else {
       buf = (MYFLT *) p->buffer.auxp;   /* make sure buffer is empty */
-      memset(buf, 0, MTU * bufnos);
+      memset(buf, 0, MTU);
     }
     /* create a buffer to store the received interleaved audio data */
     if (p->tmp.auxp == NULL || (long) p->tmp.size < MTU)
@@ -155,51 +144,49 @@ static int init_recv(CSOUND *csound, SOCKRECV *p)
       buf = (MYFLT *) p->tmp.auxp;      /* make sure buffer is empty */
       memset(buf, 0, MTU);
     }
-
+    p->buffsize = p->buffer.size/sizeof(MYFLT);
+    p->cb = csound->CreateCircularBuffer(csound,  *p->ptr3);
     /* create thread */
+    p->threadon = 1;
     p->thrid = csound->CreateThread(udpRecv, (void *) p);
     csound->RegisterDeinitCallback(csound, (void *) p, deinit_udpRecv);
-    p->threadon = 1;
-    memset(p->usedbuf, 0, bufnos * sizeof(int));
-    memset(p->bufsamps, 0, bufnos * sizeof(int));
     p->buf = p->buffer.auxp;
-    p->rbufferuse = p->wbufferuse = 0;
-    p->canread = 0;
-
+    p->outsamps = p->rcvsamps = 0;
     return OK;
 }
+
+static int send_recv_k(CSOUND *csound, SOCKRECV *p)
+{
+    MYFLT   *ksig = p->ptr1;
+    *ksig = FL(0.0);
+    if(p->outsamps >= p->rcvsamps){
+       p->outsamps =  0;
+       p->rcvsamps = csound->ReadCircularBuffer(csound, p->cb, p->buf, p->buffsize);
+      }
+    *ksig = p->buf[p->outsamps++];
+    return OK;
+}
+
 
 static int send_recv(CSOUND *csound, SOCKRECV *p)
 {
     MYFLT   *asig = p->ptr1;
     MYFLT   *buf = p->buf;
-    int     i, n, ksmps = csound->ksmps;
-    int     *bufsamps = p->bufsamps;
-    int     bufnos = p->bufnos;
+    int     i, ksmps = csound->ksmps;
+    int outsamps = p->outsamps, rcvsamps = p->rcvsamps;
+ 
+    memset(asig, 0, sizeof(MYFLT)*ksmps); 
 
-    if (p->canread) {
-      for (i = 0, n = p->rp; i < ksmps; i++, n++) {
-        if (n == bufsamps[p->rbufferuse]) {
-          p->usedbuf[p->rbufferuse] = 0;
-          p->rbufferuse++;
-          p->rbufferuse = (p->rbufferuse == bufnos ? 0 : p->rbufferuse);
-          buf = (MYFLT *) ((char *) p->buffer.auxp + (p->rbufferuse * MTU));
-          n = 0;
-          if (p->usedbuf[p->rbufferuse] == 0) {
-            p->canread = 0;
-            break;
-          }
-        }
-        asig[i] = buf[n];
+    for(i=0; i < ksmps ; i++){ 
+      if(outsamps >= rcvsamps){
+       outsamps =  0;
+       rcvsamps = csound->ReadCircularBuffer(csound, p->cb, buf, p->buffsize);
       }
-      p->rp = n;
-      p->buf = buf;
+      asig[i] = buf[outsamps];
+      outsamps++;
     }
-    else {
-      memset(asig, 0, sizeof(MYFLT)*ksmps);
-      /* for (i = 0; i < ksmps; i++) */
-      /*   asig[i] = FL(0.0); */
-    }
+    p->rcvsamps = rcvsamps;
+    p->outsamps = outsamps;
     return OK;
 }
 
@@ -215,14 +202,11 @@ static int init_recvS(CSOUND *csound, SOCKRECV *p)
       csound->InitError(csound, Str("Winsock2 failed to start: %d"), err);
 #endif
 
-    p->wp = 0;
-    p->rp = 0;
     p->cs = csound;
-    p->bufnos = *p->ptr4;
-    if (p->bufnos > MAXBUFS)
-      p->bufnos = MAXBUFS;
-    bufnos = p->bufnos;
     p->sock = socket(AF_INET, SOCK_DGRAM, 0);
+#ifndef WIN32
+    fcntl(p->sock, F_SETFL, O_NONBLOCK);
+#endif
     if (UNLIKELY(p->sock < 0)) {
       return csound->InitError(csound, Str("creating socket"));
     }
@@ -236,12 +220,12 @@ static int init_recvS(CSOUND *csound, SOCKRECV *p)
                       sizeof(p->server_addr)) < 0))
       return csound->InitError(csound, Str("bind failed"));
 
-    if (p->buffer.auxp == NULL || (long) (MTU * bufnos) > p->buffer.size)
+    if (p->buffer.auxp == NULL || (unsigned long) (MTU) > p->buffer.size)
       /* allocate space for the buffer */
-      csound->AuxAlloc(csound, MTU * bufnos, &p->buffer);
+      csound->AuxAlloc(csound, MTU, &p->buffer);
     else {
       buf = (MYFLT *) p->buffer.auxp;   /* make sure buffer is empty */
-      memset(buf, 0, MTU * bufnos);
+      memset(buf, 0, MTU);
     }
     /* create a buffer to store the received interleaved audio data */
     if (p->tmp.auxp == NULL || (long) p->tmp.size < MTU)
@@ -251,17 +235,14 @@ static int init_recvS(CSOUND *csound, SOCKRECV *p)
       buf = (MYFLT *) p->tmp.auxp;      /* make sure buffer is empty */
       memset(buf, 0, MTU);
     }
-
+    p->cb = csound->CreateCircularBuffer(csound,  *p->ptr4);
     /* create thread */
+       p->threadon = 1;
     p->thrid = csound->CreateThread(udpRecv, (void *) p);
     csound->RegisterDeinitCallback(csound, (void *) p, deinit_udpRecv);
-    p->threadon = 1;
-    memset(p->usedbuf, 0, bufnos * sizeof(int));
-    memset(p->bufsamps, 0, bufnos * sizeof(int));
     p->buf = p->buffer.auxp;
-    p->rbufferuse = p->wbufferuse = 0;
-    p->canread = 0;
-
+    p->outsamps = p->rcvsamps = 0;
+    p->buffsize = p->buffer.size/sizeof(MYFLT);
     return OK;
 }
 
@@ -270,37 +251,23 @@ static int send_recvS(CSOUND *csound, SOCKRECV *p)
     MYFLT   *asigl = p->ptr1;
     MYFLT   *asigr = p->ptr2;
     MYFLT   *buf = p->buf;
-    int     i, n, ksmps = csound->ksmps;
-    int     *bufsamps = p->bufsamps;
-    int     bufnos = p->bufnos;
+    int     i, ksmps = csound->ksmps;
+    int outsamps = p->outsamps, rcvsamps = p->rcvsamps;
 
-    if (p->canread) {
-      for (i = 0, n = p->rp; i < ksmps; i++, n += 2) {
-        if (n == bufsamps[p->rbufferuse]) {
-          p->usedbuf[p->rbufferuse] = 0;
-          p->rbufferuse++;
-          p->rbufferuse = (p->rbufferuse == bufnos ? 0 : p->rbufferuse);
-          buf = (MYFLT *) ((char *) p->buffer.auxp + (p->rbufferuse * MTU));
-          n = 0;
-          if (p->usedbuf[p->rbufferuse] == 0) {
-            p->canread = 0;
-            break;
-          }
-        }
-        asigl[i] = buf[n];
-        asigr[i] = buf[n + 1];
-      }
-      p->rp = n;
-      p->buf = buf;
-    }
-    else {
       memset(asigl, 0, sizeof(MYFLT)*ksmps);
       memset(asigr, 0, sizeof(MYFLT)*ksmps);
-      /* for (i = 0; i < ksmps; i++) { */
-      /*   asigl[i] = FL(0.0); */
-      /*   asigr[i] = FL(0.0); */
-    /* } */
-    }
+
+       for(i=0; i < ksmps ; i++){ 
+      if(outsamps >= rcvsamps){
+       outsamps =  0;
+       rcvsamps = csound->ReadCircularBuffer(csound, p->cb, buf, p->buffsize);
+      }
+        asigl[i] = buf[outsamps++];
+        asigr[i] = buf[outsamps++];
+      }
+    p->rcvsamps = rcvsamps;
+    p->outsamps = outsamps;
+
     return OK;
 }
 
@@ -371,7 +338,7 @@ static int send_srecv(CSOUND *csound, SOCKRECVT *p)
 #define S(x)    sizeof(x)
 
 static OENTRY sockrecv_localops[] = {
-  { "sockrecv", S(SOCKRECV), 5, "a", "ii", (SUBR) init_recv, NULL,
+  { "sockrecv", S(SOCKRECV), 7, "a", "ii", (SUBR) init_recv, (SUBR) send_recv_k,
     (SUBR) send_recv },
   { "sockrecvs", S(SOCKRECV), 5, "aa", "ii", (SUBR) init_recvS, NULL,
     (SUBR) send_recvS },

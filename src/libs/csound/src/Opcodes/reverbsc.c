@@ -163,7 +163,7 @@ static void init_delay_line(SC_REVERB *p, delayLine *lp, int n)
 static int sc_reverb_init(CSOUND *csound, SC_REVERB *p)
 {
     int i;
-    int nBytes;
+    unsigned int nBytes;
 
     /* check for valid parameters */
     if (*(p->iSampleRate) <= FL(0.0))

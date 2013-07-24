@@ -466,10 +466,9 @@ int loscil(CSOUND *csound, LOSC *p)
  phsout:
     p->lphs = phs;
  put0:
-    memset(ar1, 0, sizeof(MYFLT)*nsmps);
-    /* do { */
-    /*   *ar1++ = FL(0.0); */
-    /* } while (--nsmps); */
+    do {
+      *ar1++ = FL(0.0);
+    } while (--nsmps);
     return OK;
 
  phsck2:
@@ -552,12 +551,10 @@ int loscil(CSOUND *csound, LOSC *p)
  phsout2:
     p->lphs = phs;
  put0s:
-    memset(ar1, 0, sizeof(MYFLT)*nsmps);
-    memset(ar2, 0, sizeof(MYFLT)*nsmps);
-    /* do { */
-    /*   *ar1++ = FL(0.0); */
-    /*   *ar2++ = FL(0.0); */
-    /* } while (--nsmps); */
+    do {
+      *ar1++ = FL(0.0);
+      *ar2++ = FL(0.0);
+    } while (--nsmps);
 
     return OK;
 }
@@ -667,10 +664,9 @@ int loscil3(CSOUND *csound, LOSC *p)
  phsout:
     p->lphs = phs;
  put0:
-    memset(ar1, 0, sizeof(MYFLT)*nsmps);
-    /* do { */
-    /*   *ar1++ = FL(0.0); */
-    /* } while (--nsmps); */
+    do {
+      *ar1++ = FL(0.0);
+    } while (--nsmps);
     return OK;
 
  phsck2:
@@ -753,12 +749,10 @@ int loscil3(CSOUND *csound, LOSC *p)
  phsout2:
     p->lphs = phs;
  put0s:
-    memset(ar1, 0, sizeof(MYFLT)*nsmps);
-    memset(ar2, 0, sizeof(MYFLT)*nsmps);
-   /*  do { */
-   /*    *ar1++ = FL(0.0); */
-   /*    *ar2++ = FL(0.0); */
-   /*  } while (--nsmps); */
+    do {
+      *ar1++ = FL(0.0);
+      *ar2++ = FL(0.0);
+    } while (--nsmps);
 
     return OK;
 }

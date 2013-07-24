@@ -109,7 +109,7 @@ int tonex(CSOUND *csound, TONEX *p)      /* From Gabriel Maldonado, modified */
 {
     int j;
     int nsmps;
-    MYFLT *asig, *ar;
+    MYFLT *ar;
     double c1, c2, *yt1;
     if (*p->khp != p->prvhp) {
       double b;
@@ -132,7 +132,6 @@ int tonex(CSOUND *csound, TONEX *p)      /* From Gabriel Maldonado, modified */
         *yt1 = x;
         ar[n] = (MYFLT)x;
       }
-      asig = p->ar;
       yt1++;
     }
     return OK;

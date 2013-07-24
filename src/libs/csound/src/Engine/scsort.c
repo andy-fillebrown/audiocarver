@@ -52,7 +52,7 @@ void scsort(CSOUND *csound, FILE *scin, FILE *scout)
 #endif
 
 extern void sread_initstr(CSOUND *);
-void scsortstr(CSOUND *csound, CORFIL *scin)
+void scsortstr(CSOUND *csound)
 {
     int     n;
     int     m = 0;

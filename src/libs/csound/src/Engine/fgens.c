@@ -1284,7 +1284,21 @@ static MYFLT nextval(FILE *f)
     int c;
  top:
     c = getc(f);
-    if (feof(f)) return FL(0.0); /* Hope value is ignored */
+    if (feof(f)) {
+      return FL(0.0);          /* Hope value is ignored */
+    }
+    while (isspace(c)||(c==',')) {
+      c = getc(f);                        /* Whitespace */
+      if (feof(f)) {
+        return FL(0.0);          /* Hope value is ignored */
+      }
+    }
+    if (c==';' || c=='#') {               /* Comment */
+      while ((c = getc(f)) != '\n') if (c==EOF) break;
+    }
+    if (feof(f)) {
+      return FL(0.0);          /* Hope value is ignored */
+    }
     if (isdigit(c) || c=='e' || c=='E' || c=='+' || c=='-' || c=='.') {
       double d;                           /* A number starts */
       char buff[128];
@@ -1299,10 +1313,6 @@ static MYFLT nextval(FILE *f)
         while ((c = getc(f)) != '\n');
       }
       return (MYFLT)d;
-    }
-    while (isspace(c)) c = getc(f);       /* Whitespace */
-    if (c==';' || c=='#') {               /* Comment */
-      while ((c = getc(f)) != '\n');
     }
     goto top;
 }
@@ -1535,10 +1545,16 @@ static int gen28(FGDATA *ff, FUNC *ftp)
 #endif
       i++;
       if (i>=arraysize) {
+        MYFLT* newx, *newy, *newz;
         arraysize += 1000;
-        x = (MYFLT*)realloc(x, arraysize*sizeof(MYFLT));
-        y = (MYFLT*)realloc(y, arraysize*sizeof(MYFLT));
-        z = (MYFLT*)realloc(z, arraysize*sizeof(MYFLT));
+        newx = (MYFLT*)realloc(x, arraysize*sizeof(MYFLT));
+        newy = (MYFLT*)realloc(y, arraysize*sizeof(MYFLT));
+        newz = (MYFLT*)realloc(z, arraysize*sizeof(MYFLT));
+        if (!newx || !newy || !newz) {
+          fprintf(stderr, "Out of Memory\n");
+          exit(7);
+        }
+        x = newx; y = newy; z = newz;
       }
     }
     --i;
@@ -1968,7 +1984,7 @@ static int gen34(FGDATA *ff, FUNC *ftp)
     /* table length and data */
     ft = ftp->ftable; flen = (int32) ftp->flen;
     /* source table */
-    if (UNLIKELY((src = csoundFTFind(csound, &(ff->e.p[5]))) == NULL))
+    if (UNLIKELY((src = csoundFTnp2Find(csound, &(ff->e.p[5]))) == NULL))
       return NOTOK;
     srcft = src->ftable; srclen = (int32) src->flen;
     /* number of partials */
@@ -2253,7 +2269,7 @@ FUNC *csoundFTFind(CSOUND *csound, MYFLT *argp)
       csoundInitError(csound, Str("Invalid ftable no. %f"), *argp);
       return NULL;
     }
-    else if (UNLIKELY(ftp->lenmask == 0xFFFFFFFF)) {
+    else if (UNLIKELY(ftp->lenmask == (int32)0xFFFFFFFF)) {
       csoundInitError(csound, Str("illegal table length %d in table %f"),
                       ftp->flen, *argp);
       return NULL;
@@ -2276,6 +2292,7 @@ static CS_NOINLINE FUNC *gen01_defer_load(CSOUND *csound, int fno)
     /* The soundfile hasn't been loaded yet, so call GEN01 */
     strcpy(strarg, ftp->gen01args.strarg);
     memset(&ff, 0, sizeof(FGDATA));
+    ff.csound = csound;
     ff.fno = fno;
     ff.e.strarg = strarg;
     ff.e.opcod = 'f';
@@ -2367,11 +2384,16 @@ FUNC *csoundFTnp2Find(CSOUND *csound, MYFLT *argp)
     if (UNLIKELY((fno = (int) *argp) <= 0 ||
         fno > csound->maxfnum    ||
                  (ftp = csound->flist[fno]) == NULL)) {
-      csoundInitError(csound, Str("Invalid ftable no. %f"), *argp);
+      csound->InitError(csound, Str("Invalid ftable no. %f"), *argp);
       return NULL;
     }
     if (ftp->flen == 0) {
+     if(csound->oparms->gen01defer)
       ftp = gen01_defer_load(csound, fno);
+      else {
+        csound->PerfError(csound, Str("Invalid ftable no. %f"), *argp);
+        return NULL;
+      }
       if (UNLIKELY(ftp == NULL))
         csound->inerrcnt++;
     }
@@ -2437,6 +2459,9 @@ static int gen01raw(FGDATA *ff, FUNC *ftp)
       int32 filno = (int32) MYFLT2LRND(ff->e.p[5]);
       int   fmt = (int) MYFLT2LRND(ff->e.p[7]);
       if (filno == (int32) SSTRCOD) {
+        if (ff->e.strarg == NULL) {
+	   return fterror(ff, "invalid filename \n");
+	}
         if (ff->e.strarg[0] == '"') {
           int len = (int) strlen(ff->e.strarg) - 2;
           strcpy(p->sfname, ff->e.strarg + 1);
@@ -2805,7 +2830,7 @@ static int gen49raw(FGDATA *ff, FUNC *ftp)
     flen = ftp->flen;
     //printf("gen49: flen=%d size=%d bufsize=%d\n", flen, size, bufsize);
     while ((r == MP3DEC_RETCODE_OK) && bufused) {
-      int i;
+      unsigned int i;
       short *bb = (short*)buffer;
       //printf("gen49: p=%d bufused=%d\n", p, bufused);
       for (i=0; i<bufused*nchanls/mpainfo.decoded_sample_size; i++)  {

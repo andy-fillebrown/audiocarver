@@ -51,7 +51,7 @@ typedef struct {
 
 #ifdef PIPES
 # if defined(SGI) || defined(LINUX) || defined(__BEOS__) || defined(NeXT) ||  \
-     defined(__MACH__)
+     defined(__MACH__) || defined(__HAIKU__)
 #  define _popen popen
 #  define _pclose pclose
 # endif
@@ -521,13 +521,14 @@ void sfopenin(CSOUND *csound)           /* init for continuous soundin */
       ST(infile) = sf_open_fd(isfd, SFM_READ, &sfinfo, 0);
       if (UNLIKELY(ST(infile) == NULL)) {
         /* open failed: possibly raw file, but cannot seek back to try again */
-        csoundDie(csound, Str("isfinit: cannot open %s"), sfname);
+        const char *sfError = sf_strerror(NULL);
+        csoundDie(csound, Str("isfinit: cannot open %s -- %s"), sfname, sfError);
       }
     }
     else {
       fullName = csoundFindInputFile(csound, sfname, "SFDIR;SSDIR");
       if (UNLIKELY(fullName == NULL))                     /* if not found */
-        csoundDie(csound, Str("isfinit: cannot open %s"), sfname);
+        csoundDie(csound, Str("isfinit: cannot open %s [%n]"), sfname, __LINE__);
       ST(infile) = sf_open(fullName, SFM_READ, &sfinfo);
       if (ST(infile) == NULL) {
         /* open failed: maybe raw file ? */
@@ -538,8 +539,10 @@ void sfopenin(CSOUND *csound)           /* init for continuous soundin */
         sfinfo.format = TYPE2SF(TYP_RAW) | FORMAT2SF(O->outformat);
         ST(infile) = sf_open(fullName, SFM_READ, &sfinfo);  /* try again */
       }
-      if (UNLIKELY(ST(infile) == NULL))
-        csoundDie(csound, Str("isfinit: cannot open %s"), fullName);
+      if (UNLIKELY(ST(infile) == NULL)) {
+        const char *sfError = sf_strerror(NULL);
+        csoundDie(csound, Str("isfinit: cannot open %s -- %s"), fullName, sfError);
+      }
       /* only notify the host if we opened a real file, not stdin or a pipe */
       csoundNotifyFileOpened(csound, fullName,
                               sftype2csfiletype(sfinfo.format), 0, 0);
@@ -682,15 +685,15 @@ void sfopenout(CSOUND *csound)                  /* init for sound out       */
         char fmt_name[6];
         if (O->sfsampsize == 8) {
           if (O->filetyp == TYP_AU)
-            csoundDie(csound, Str("sfinit: cannot open fd %d\n%s"), osfd,
-                      sf_strerror(NULL));
+            csoundDie(csound, Str("sfinit: cannot open fd %d [%d]\n%s"), osfd,
+                      __LINE__, sf_strerror(NULL));
           strcpy(fmt_name, "AU");
           O->filetyp = TYP_AU;
         }
         else {
           if (O->filetyp == TYP_IRCAM)
-            csoundDie(csound, Str("sfinit: cannot open fd %d\n%s"), osfd,
-                      sf_strerror(NULL));
+            csoundDie(csound, Str("sfinit: cannot open fd %d [%d]\n%s"), osfd,
+                      __LINE__, sf_strerror(NULL));
           strcpy(fmt_name, "IRCAM");
           O->filetyp = TYP_IRCAM;
         }
@@ -707,11 +710,12 @@ void sfopenout(CSOUND *csound)                  /* init for sound out       */
     else {
       fullName = csoundFindOutputFile(csound, fName, "SFDIR");
       if (UNLIKELY(fullName == NULL))
-        csoundDie(csound, Str("sfinit: cannot open %s"), fName);
+        csoundDie(csound, Str("sfinit: cannot open %s (%s) [%d]"),
+                  fName, fullName, __LINE__);
       ST(sfoutname) = fullName;
       ST(outfile) = sf_open(fullName, SFM_WRITE, &sfinfo);
       if (UNLIKELY(ST(outfile) == NULL))
-        csoundDie(csound, Str("sfinit: cannot open %s"), fullName);
+        csoundDie(csound, Str("sfinit: cannot open %s [%d]"), fullName, __LINE__);
       /* only notify the host if we opened a real file, not stdout or a pipe */
       csoundNotifyFileOpened(csound, fullName,
                               type2csfiletype(O->filetyp, O->outformat), 1, 0);

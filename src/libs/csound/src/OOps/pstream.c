@@ -52,12 +52,37 @@ int fsigs_equal(const PVSDAT *f1, const PVSDAT *f2)
 /* Pandora's box opcode, but we can make it at least plausible,
    by forbidding copy to different format. */
 
+int fassign_set(CSOUND *csound, FASSIGN *p)
+{
+     int32 N = p->fsrc->N;
+    
+    p->fout->N =  N;
+    p->fout->overlap = p->fsrc->overlap;
+    p->fout->winsize = p->fsrc->winsize;
+    p->fout->wintype =p->fsrc->wintype;
+    p->fout->format = p->fout->format;
+    p->fout->sliding = p->fsrc->sliding;
+    /* sliding needs to be checked */
+    if (p->fsrc->sliding) {
+      p->fout->NB = p->fsrc->NB;
+      csound->AuxAlloc(csound, (N + 2) * sizeof(MYFLT) * csound->ksmps,
+                       &p->fout->frame);
+      return OK;
+    }
+    csound->AuxAlloc(csound, (N + 2) * sizeof(float), &p->fout->frame);
+    p->fout->framecount = 1;
+    //csound->Message(csound, Str("fsig = : init\n"));
+    return OK;
+}
+
+
 int fassign(CSOUND *csound, FASSIGN *p)
 {
     int32 framesize;
     float *fout,*fsrc;
-    if (UNLIKELY(!fsigs_equal(p->fout,p->fsrc)))
-      csound->Die(csound, Str("fsig = : formats are different.\n"));
+    
+    // if (UNLIKELY(!fsigs_equal(p->fout,p->fsrc)))
+    //csound->Die(csound, Str("fsig = : formats are different.\n"));
     if (p->fsrc->sliding) {
       memcpy(p->fout->frame.auxp, p->fsrc->frame.auxp,
              sizeof(MYFLT)*(p->fsrc->N+2)*csound->ksmps);
@@ -67,8 +92,12 @@ int fassign(CSOUND *csound, FASSIGN *p)
     fsrc = (float *) p->fsrc->frame.auxp;
 
     framesize = p->fsrc->N + 2;
-    if (p->fout->framecount == p->fsrc->framecount) /* avoid duplicate copying*/
-      memcpy(fout, fsrc, framesize*sizeof(float));
+  
+    if (p->fout->framecount == p->fsrc->framecount) {/* avoid duplicate copying*/
+    memcpy(fout, fsrc, framesize*sizeof(float));
+    p->fout->framecount++;
+    }
+   
      return OK;
 }
 
@@ -380,7 +409,7 @@ int pvsfread(CSOUND *csound, PVSFREAD *p)
     int i,j;
     MYFLT pos = *p->kpos;
     MYFLT framepos,frac;
-    int32 frame1pos,frame2pos,framesize,n_mcframes;
+    int32 frame1pos,framesize,n_mcframes;
 
     float *pmem,*pframe1,*pframe2;               /* RWD all MUST be 32bit */
     float *fout = (float *) p->fout->frame.auxp;
@@ -409,7 +438,7 @@ int pvsfread(CSOUND *csound, PVSFREAD *p)
         /* gotta interpolate */
         /* any optimizations possible here ?
            Avoid v samll frac values ? higher-order interp ? */
-        frame2pos = frame1pos+p->chans;
+        //frame2pos = frame1pos+p->chans;
         frac = framepos - (MYFLT) frame1pos;
         pframe1 = pmem + (frame1pos * p->blockalign) + p->chanoffset;
         pframe2 = pframe1 + p->blockalign;
@@ -486,12 +515,12 @@ int pvsmaskaset(CSOUND *csound, PVSMASKA *p)
 int pvsmaska(CSOUND *csound, PVSMASKA *p)
 {
     int i;
-    int32 flen, nbins;
+    int32 nbins;
     MYFLT *ftable;
     float *fout,*fsrc;                      /* RWD MUST be 32bit */
     float margin, depth = (float)*p->kdepth;
 
-    flen = p->maskfunc->flen + 1;
+    //flen = p->maskfunc->flen + 1;
     ftable = p->maskfunc->ftable;
     fout = (float *) p->fout->frame.auxp;   /* RWD both MUST be 32bit */
     fsrc = (float *) p->fsrc->frame.auxp;

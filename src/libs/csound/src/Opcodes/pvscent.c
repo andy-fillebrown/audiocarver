@@ -80,7 +80,7 @@ static int pvsscent(CSOUND *csound, PVSCENT *p)
 {
     MYFLT *a = p->ans;
     if (p->fin->sliding) {
-      int n, nsmps = csound->ksmps;
+      int n, nsmps = CS_KSMPS;
       int32 i,N = p->fin->N;
 
       MYFLT c = FL(0.0);
@@ -97,7 +97,7 @@ static int pvsscent(CSOUND *csound, PVSCENT *p)
       }
     }
     else {
-      int n, nsmps = csound->ksmps;
+      int n, nsmps = CS_KSMPS;
       MYFLT old = p->old;
       int32 i,N = p->fin->N;
       MYFLT c = FL(0.0);
@@ -243,7 +243,7 @@ typedef struct _pvspitch
 int pvspitch_init(CSOUND *csound, PVSPITCH *p)
 {
     /* Initialise frame count to zero. */
-    int size;
+    unsigned int size;
     p->lastframe = 0;
 
     if (UNLIKELY(p->fin->sliding))

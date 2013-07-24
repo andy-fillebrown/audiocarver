@@ -41,7 +41,8 @@ typedef struct dats{
 static int sinit(CSOUND *csound, DATASPACE *p)
 {
 
-  int N =  *p->iN, i,size, nchans;
+    int N =  *p->iN, i,nchans;
+    unsigned int size;
     int decim = *p->idecim;
 
     if (N) {
@@ -131,8 +132,8 @@ static int sprocess(CSOUND *csound, DATASPACE *p)
         */
         spos  = hsize*(int)((time[n])*csound->esr/hsize);
         sizefrs = size/nchans;
-        while(spos > sizefrs - N) spos -= sizefrs;
-        while(spos <= hsize)  spos += sizefrs;
+        while(spos > sizefrs) spos -= sizefrs;
+        while(spos <= hsize)  spos += (sizefrs + hsize);
         pos = spos;
 
         for (j = 0; j < nchans; j++) {
@@ -152,17 +153,23 @@ static int sprocess(CSOUND *csound, DATASPACE *p)
             frac = pos  - post;
             post *= nchans;
             post += j;
-            if (post >= 0 && post < size)
+             if(post < 0) post += size;
+            if(post >= size) post -= size;
+            // if (post >= 0 && post < size)
               in = tab[post] + frac*(tab[post+nchans] - tab[post]);
-            else in =  (MYFLT) 0;
+	    // else
+            // in =  (MYFLT) 0;
             fwin[i] = in * win[i]; /* window it */
             /* back windo, bwin */
             post = (int) (pos - hsize*pitch);
             post *= nchans;
             post += j;
-            if (post >= 0 && post < size)
-              in =  tab[post] + frac*(tab[post+nchans] - tab[post]);
-            else in =  (MYFLT) 0;
+            if(post < 0) post += size;
+            if(post >= size) post -= size;
+            // if (post >= 0 && post < size)
+              in = tab[post] + frac*(tab[post+nchans] - tab[post]);
+	    // else
+            // in =  (MYFLT) 0;
             bwin[i] = in * win[i];  /* window it */
             /* increment read pos according to pitch transposition */
             pos += pitch;
@@ -326,8 +333,8 @@ static int sprocess2(CSOUND *csound, DATASPACE *p)
                                                "sound file channels"));
 
         sizefrs = size/nchans;
-        while(spos > sizefrs - N - hsize) spos -= sizefrs;
-        while(spos <= hsize)  spos += sizefrs;
+        while(spos > sizefrs) spos -= sizefrs;
+        while(spos <= hsize)  spos += (sizefrs + hsize);
         pos = spos;
 
         for (j = 0; j < nchans; j++) {
@@ -344,9 +351,12 @@ static int sprocess2(CSOUND *csound, DATASPACE *p)
             frac = pos  - post;
             post *= nchans;
             post += j;
-            if (post >= 0 && post < size)
+             if(post < 0) post += size;
+            if(post >= size) post -= size;
+            // if (post >= 0 && post < size)
               in = tab[post] + frac*(tab[post+nchans] - tab[post]);
-            else in =  (MYFLT) 0;
+	    // else
+            // in =  (MYFLT) 0;
             fwin[i] = in * win[i];
 
             post = (int) (pos - hsize*pitch);
@@ -359,8 +369,12 @@ static int sprocess2(CSOUND *csound, DATASPACE *p)
             post = (int) pos + hsize;
             post *= nchans;
             post += j;
-            if (post >= 0 && post < size) in =  tab[post];
-            else in =  (MYFLT) 0;
+            if(post < 0) post += size;
+            if(post >= size) post -= size;
+            // if (post >= 0 && post < size)
+              in = tab[post] + frac*(tab[post+nchans] - tab[post]);
+	    // else
+            // in =  (MYFLT) 0;
             nwin[i] = in * win[i];
             pos += pitch;
           }

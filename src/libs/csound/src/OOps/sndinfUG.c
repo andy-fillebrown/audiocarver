@@ -34,7 +34,7 @@
 #include "pvfileio.h"
 #include "convolve.h"
 
-static int getsndinfo(CSOUND *csound, SNDINFO *p, SF_INFO *hdr)
+static int getsndinfo(CSOUND *csound, SNDINFO *p, SF_INFO *hdr, char *which)
 {
     char    *sfname, *s, soundiname[512];
     SNDFILE *sf;
@@ -56,7 +56,7 @@ static int getsndinfo(CSOUND *csound, SNDINFO *p, SF_INFO *hdr)
       s = csoundFindInputFile(csound, sfname, "SADIR");
       if (UNLIKELY(s == NULL)) {
         /* RWD 5:2001 better to exit in this situation ! */
-        csound->Die(csound, Str("diskinfo cannot open %s"), sfname);
+        csound->Die(csound, Str("%s cannot open \"%s\""), which, sfname);
       }
     }
     sfname = s;                         /* & record fullpath filnam */
@@ -120,7 +120,7 @@ static int getsndinfo(CSOUND *csound, SNDINFO *p, SF_INFO *hdr)
       }
     }
     if (UNLIKELY(sf == NULL && csFileType == CSFTYPE_UNKNOWN)) {
-      csound->Die(csound, Str("diskinfo cannot open %s"), sfname);
+      csound->Die(csound, Str("%s cannot open \"%s\""), which, sfname);
     }
     if (sf != NULL) {
       csFileType = sftype2csfiletype(sfinfo.format);
@@ -139,7 +139,7 @@ int filelen(CSOUND *csound, SNDINFO *p)
 {
     SF_INFO hdr;
 
-    if (getsndinfo(csound, p, &hdr))
+    if (getsndinfo(csound, p, &hdr, "filelen"))
       *(p->r1) = (MYFLT)((int32)hdr.frames) / (MYFLT)hdr.samplerate;
     else
       *(p->r1) = FL(0.0);
@@ -151,7 +151,7 @@ int filenchnls(CSOUND *csound, SNDINFO *p)
 {
     SF_INFO hdr;
 
-    getsndinfo(csound, p, &hdr);
+    getsndinfo(csound, p, &hdr, "filenchnls");
     *(p->r1) = (MYFLT)hdr.channels;
 
     return OK;
@@ -161,7 +161,7 @@ int filesr(CSOUND *csound, SNDINFO *p)
 {
     SF_INFO hdr;
 
-    getsndinfo(csound, p, &hdr);
+    getsndinfo(csound, p, &hdr, "filesr");
     *(p->r1) = (MYFLT)hdr.samplerate;
 
     return OK;
@@ -172,7 +172,7 @@ int filebit(CSOUND *csound, SNDINFO *p)
     SF_INFO hdr;
     int bits, format;
 
-    getsndinfo(csound, p, &hdr);
+    getsndinfo(csound, p, &hdr, "filebit");
     format = hdr.format &  SF_FORMAT_SUBMASK;
     if (format < 5)
       bits = format*8 ;
@@ -214,7 +214,7 @@ int filepeak(CSOUND *csound, SNDINFOPEAK *p)
                              "SFDIR;SSDIR", CSFTYPE_UNKNOWN_AUDIO, 0);
     if (UNLIKELY(fd == NULL)) {
       /* RWD 5:2001 better to exit in this situation ! */
-      csound->Die(csound, Str("diskinfo cannot open %s"), sfname);
+      csound->Die(csound, Str("filepeak cannot open \"%s\""), sfname);
     }
     if (channel <= 0) {
       if (sf_command(sf, SFC_GET_SIGNAL_MAX, &peakVal, sizeof(double))
@@ -261,15 +261,15 @@ int filepeak(CSOUND *csound, SNDINFOPEAK *p)
 int filevalid(CSOUND *csound, FILEVALID *p)
 {
     char soundiname[512];       /* There is no check on this length */
-    *p->r1 = 0;
+    *p->r1 = FL(0.0);
     csound->strarg2name(csound, soundiname, p->ifilno, "soundin.",
                         p->XSTRCODE);
     if (UNLIKELY(strcmp(soundiname, "-i") == 0)) {    /* get info on the -i    */
       if (csound->oparms->infilename)  /* commandline inputfile */
-        *p->r1 = 1;
+        *p->r1 = FL(1.0);
       return OK;
     }
     if (LIKELY(csound->FindInputFile(csound, soundiname, "SFDIR;SSDIR")))
-      *p->r1 = 1;
+      *p->r1 = FL(1.0);
     return OK;
 }

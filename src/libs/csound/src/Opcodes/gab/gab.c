@@ -40,7 +40,7 @@ static int krsnsetx(CSOUND *csound, KRESONX *p)
     if ((p->loop = MYFLT2LRND(*p->ord)) < 1)
       p->loop = 4; /*default value*/
     if (!*p->istor && (p->aux.auxp == NULL ||
-                       (int)(p->loop*2*sizeof(MYFLT)) > p->aux.size))
+                       (unsigned int)(p->loop*2*sizeof(MYFLT)) > p->aux.size))
       csound->AuxAlloc(csound, (long)(p->loop*2*sizeof(MYFLT)), &p->aux);
     p->yt1 = (MYFLT*)p->aux.auxp; p->yt2 = (MYFLT*)p->aux.auxp + p->loop;
     if (scale && scale != 1 && scale != 2) {
@@ -458,7 +458,7 @@ static int adsynt2_set(CSOUND *csound,ADSYNT2 *p)
     }
 
     if (p->lphs.auxp==NULL ||
-        p->lphs.size < (int32)(sizeof(int32)*count))
+        p->lphs.size < (uint32)(sizeof(int32)*count))
       csound->AuxAlloc(csound, sizeof(int32)*count, &p->lphs);
     lphs = (int32*)p->lphs.auxp;
 
@@ -477,7 +477,7 @@ static int adsynt2_set(CSOUND *csound,ADSYNT2 *p)
       }
     }
     if (p->pamp.auxp==NULL ||
-        p->pamp.size < (int32)(sizeof(MYFLT)*p->count))
+        p->pamp.size < (uint32)(sizeof(MYFLT)*p->count))
       csound->AuxAlloc(csound, sizeof(MYFLT)*p->count, &p->pamp);
     else                        /* AuxAlloc clear anyway */
       memset(p->pamp.auxp, 0, sizeof(MYFLT)*p->count);

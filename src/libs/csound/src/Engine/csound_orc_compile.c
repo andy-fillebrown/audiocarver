@@ -267,11 +267,11 @@ void set_xincod(CSOUND *csound, TEXT *tp, OENTRY *ep, int line)
       if ((treqd = types[nreqd-1]) == 'n') {  /* indef args: */
         int incnt = -1;                       /* Should count args */
         if (!(incnt & 01))                    /* require odd */
-          synterr(csound, Str("missing or extra arg"));
+          synterr(csound, Str("missing or extra arg, line %d"), line);
       }       /* IV - Sep 1 2002: added 'M' */
       else if (treqd != 'm' && treqd != 'z' && treqd != 'y' &&
                treqd != 'Z' && treqd != 'M' && treqd != 'N') /* else any no */
-        synterr(csound, Str("too many input args\n"));
+        synterr(csound, Str("too many input args, line %d\n"), line);
     }
 
     while (n--) {                     /* inargs:   */
@@ -658,10 +658,11 @@ INSTRTXT *create_instrument0(CSOUND *csound, TREE *root)
             csound->tran_ksmps = val;
           }
           else if (current->left->type == NCHNLS_TOKEN) {
-            csound->tran_nchnls = current->right->value->value;
+            csound->nchnls = current->right->value->value;
+            if (csound->inchnls<0) csound->inchnls = csound->nchnls;
           }
           else if (current->left->type == NCHNLSI_TOKEN) {
-            csound->tran_nchnlsi = current->right->value->value;
+            csound->inchnls = current->right->value->value;
             /* csound->Message(csound, "SETTING NCHNLS: %d\n",
                                csound->tran_nchnls); */
           }
@@ -1861,6 +1862,7 @@ uint8_t file_to_int(CSOUND *csound, const char *name)
     extern char *strdup(const char *);
     int n = 0;
     char **filedir = csound->filedir;
+    if(name == NULL) return 0;
     while (filedir[n] && n<63) {        /* Do we have it already? */
       if (strcmp(filedir[n], name)==0) return n; /* yes */
       n++;                                       /* look again */

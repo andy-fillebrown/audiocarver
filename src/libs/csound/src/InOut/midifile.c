@@ -150,7 +150,7 @@ static int msgDataBytes(int c)
     return -1;
 }
 
-static int alloc_event(CSOUND *csound, unsigned long kcnt, unsigned char *data,
+static int alloc_event(CSOUND *csound, unsigned long kcnt,
                                        int st, int d1, int d2)
 {
     midiEvent_t *tmp;
@@ -248,7 +248,7 @@ static int readEvent(CSOUND *csound, FILE *f, int *tlen,
         if (d < 0) return -1;
         dataBytes[cnt++] = d;
       }
-      return alloc_event(csound, tickCnt, NULL, st,
+      return alloc_event(csound, tickCnt, st,
                          dataBytes[0], dataBytes[1]);
     }
     /* message is of unknown or special type */

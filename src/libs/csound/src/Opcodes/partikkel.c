@@ -220,7 +220,7 @@ static inline MYFLT dsf(FUNC *tab, GRAIN *grain, double beta, MYFLT zscale,
 
 static int partikkel_init(CSOUND *csound, PARTIKKEL *p)
 {
-    int32 size;
+    uint32_t size;
     int ret;
 
     if ((ret = setup_globals(csound, p)) != OK)
@@ -721,7 +721,7 @@ static inline void render_trainlet(PARTIKKEL *p, GRAIN *grain, WAVEDATA *wav,
 static inline void render_grain(CSOUND *csound, PARTIKKEL *p, GRAIN *grain)
 {
     int i;
-    unsigned n;
+    unsigned int n;
     MYFLT *out1 = *(&(p->output1) + grain->chan1);
     MYFLT *out2 = *(&(p->output1) + grain->chan2);
     unsigned stop = grain->stop > csound->ksmps

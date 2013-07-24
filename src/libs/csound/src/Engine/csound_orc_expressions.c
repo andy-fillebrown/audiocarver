@@ -98,7 +98,7 @@ char * get_boolean_arg(CSOUND *csound, int type)
     return s;
 }
 
-int get_expression_ans_type(CSOUND * csound, char * ans)
+int get_expression_ans_type(char * ans)
 {
     char * t = ans;
     t++;
@@ -168,7 +168,7 @@ TREE * create_ans_token(CSOUND *csound, char* var)
 {
     TREE *ans = create_empty_token(csound);
 
-    ans->type = get_expression_ans_type(csound, var);
+    ans->type = get_expression_ans_type(var);
     ans->value = make_token(csound, var);
     ans->value->type = ans->type;
 
@@ -871,15 +871,10 @@ TREE *csound_orc_expand_expressions(CSOUND * csound, TREE *root)
                 /* relinking */
                 last->next = gotoToken;
                 gotoToken->next = statements;
-                /* VL: added as means of dealing with empty conditionals,
-                   may need revision */
-                if (statements == NULL)
-                  csound->Warning(csound,
-                                  Str("Empty statement in "
-                                      "conditional, line %d \n"),
-                                  last->right->line);
-                while (statements->next != NULL) {
-                  statements = statements->next;
+                if (statements != NULL) {
+                  while (statements->next != NULL) {
+                    statements = statements->next;
+                  }
                 }
                 if (endLabelCounter > 0) {
                   TREE *endLabel = create_synthetic_ident(csound,
@@ -892,11 +887,19 @@ TREE *csound_orc_expand_expressions(CSOUND * csound, TREE *root)
                   if (UNLIKELY(PARSER_DEBUG))
                     csound->Message(csound, "Creating simple goto token\n");
 
-                  statements->next = gotoEndLabelToken;
+                  if (statements == NULL) {
+                    gotoToken->next = gotoEndLabelToken;
+                  } else {
+                    statements->next = gotoEndLabelToken;
+                  }
                   gotoEndLabelToken->next = labelEnd;
                 }
                 else {
-                  statements->next = labelEnd;
+                  if (statements == NULL) {
+                    gotoToken->next = labelEnd;
+                  } else {
+                    statements->next = labelEnd;
+                  }
                 }
 
                 ifBlockLast = labelEnd;

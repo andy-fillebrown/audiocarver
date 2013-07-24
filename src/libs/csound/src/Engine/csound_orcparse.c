@@ -101,7 +101,7 @@
    //int namedInstrFlag = 0; /* THIS NEEDS TO BE MADE NON-GLOBAL */
 #define namedInstrFlag csound->parserNamedInstrFlag
 
-extern TREE* appendToTree(CSOUND * csound, TREE *first, TREE *newlast);
+extern TREE* appendToTree(TREE *first, TREE *newlast);
 extern int csound_orclex(TREE**, CSOUND *, void *);
 extern void print_tree(CSOUND *, char *msg, TREE *);
 extern void csound_orcerror(PARSE_PARM *, void *, CSOUND *, TREE*, const char*);
@@ -2302,7 +2302,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 189 "csound_orc.y"
     {
-                        (yyval) = appendToTree(csound, (yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
+                        (yyval) = appendToTree((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
                         ;}
     break;
 
@@ -2311,7 +2311,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 193 "csound_orc.y"
     {
-                        (yyval) = appendToTree(csound, (yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
+                        (yyval) = appendToTree((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
                         ;}
     break;
 
@@ -2320,7 +2320,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 197 "csound_orc.y"
     {
-                        (yyval) = appendToTree(csound, (yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
+                        (yyval) = appendToTree((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
                         ;}
     break;
 
@@ -2527,7 +2527,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 312 "csound_orc.y"
     {
-                    (yyval) = appendToTree(csound, (TREE *)(yyvsp[(1) - (2)]), (TREE *)(yyvsp[(2) - (2)]));
+                    (yyval) = appendToTree((TREE *)(yyvsp[(1) - (2)]), (TREE *)(yyvsp[(2) - (2)]));
                 ;}
     break;
 
@@ -2601,7 +2601,7 @@ yyreduce:
     {
               TREE *ans = make_leaf(csound,LINE,LOCN, '=', (ORCTOKEN *)(yyvsp[(5) - (7)]));
               ans->left = make_leaf(csound,LINE,LOCN, T_IDENT_T, (ORCTOKEN *)(yyvsp[(1) - (7)]));
-              ans->right = appendToTree(csound, (yyvsp[(3) - (7)]), (yyvsp[(6) - (7)]));
+              ans->right = appendToTree((yyvsp[(3) - (7)]), (yyvsp[(6) - (7)]));
                   /* ans->value->lexeme = get_assignment_type(csound,
                      ans->left->value->lexeme, ans->right->value->lexeme); */
               //print_tree(csound, "TABLE ASSIGN", ans);
@@ -2724,7 +2724,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 432 "csound_orc.y"
-    { (yyval) = appendToTree(csound, (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
+    { (yyval) = appendToTree((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); ;}
     break;
 
   case 46:
@@ -2734,7 +2734,7 @@ yyreduce:
     { csound->Message(csound,
                       "Unexpected untyped word %s when expecting a variable\n", 
                                ((ORCTOKEN*)(yyvsp[(3) - (4)]))->lexeme);
-                (yyval) = appendToTree(csound, (yyvsp[(1) - (4)]), NULL);
+                (yyval) = appendToTree((yyvsp[(1) - (4)]), NULL);
               ;}
     break;
 
@@ -3095,7 +3095,7 @@ yyreduce:
 #line 563 "csound_orc.y"
     {
                     /* $$ = make_node(',', $1, $3); */
-                    (yyval) = appendToTree(csound, (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)]));
+                    (yyval) = appendToTree((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)]));
                 ;}
     break;
 
@@ -3105,7 +3105,7 @@ yyreduce:
 #line 568 "csound_orc.y"
     {
                     /* $$ = make_node(',', $1, $3); */
-                    (yyval) = appendToTree(csound, (yyvsp[(1) - (3)]),
+                    (yyval) = appendToTree((yyvsp[(1) - (3)]),
                                       make_leaf(csound, LINE,LOCN,
                                                 LABEL_TOKEN, (ORCTOKEN *)(yyvsp[(3) - (3)])));
                 ;}

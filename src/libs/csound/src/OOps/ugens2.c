@@ -1134,6 +1134,7 @@ int osckk(CSOUND *csound, OSC *p)
       phs = (phs+inc)&PHMASK;
     }
     p->lphs = phs;
+    
     return OK;
  err1:
     return csound->PerfError(csound, Str("oscil: not initialised"));

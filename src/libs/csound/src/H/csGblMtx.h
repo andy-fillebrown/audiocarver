@@ -25,7 +25,7 @@
 #define CSOUND_CSGBLMTX_H
 
 #if defined(__linux) || defined(__linux__) || defined(__unix) ||    \
-    defined(__unix__) || defined(__MACOSX__) || defined(__APPLE__)
+    defined(__unix__) || defined(__MACOSX__) || defined(__APPLE__) || defined(__HAIKU__)
 
 #include <pthread.h>
 

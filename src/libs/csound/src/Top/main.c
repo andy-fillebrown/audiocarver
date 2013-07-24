@@ -83,7 +83,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
 {
     OPARMS  *O = csound->oparms;
     char    *s;
-    char    *sortedscore = NULL;
+    //    char    *sortedscore = NULL;
     //    char    *xtractedscore = "score.xtr";
     FILE    *xfile = NULL;
     int     n;
@@ -304,11 +304,12 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       csoundAppendEnv(csound, "MFDIR", fileDir);
       mfree(csound, fileDir);
     }
-
+    
     if (csound->orchstr==NULL) {
       /*  does not deal with search paths */
       csound->Message(csound, Str("orchname: %s\n"), csound->orchname);
       csound->orchstr = copy_to_corefile(csound, csound->orchname, NULL, 0);
+     
       if (csound->orchstr==NULL)
         csound->Die(csound,
                     Str("Failed to open input file %s\n"), csound->orchname);
@@ -319,6 +320,7 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       corfile_putc('\0', csound->orchstr);
       //csound->orchname = NULL;
     }
+     
     if (csound->xfilename != NULL)
       csound->Message(csound, "xfilename: %s\n", csound->xfilename);
     /* IV - Oct 31 2002: moved orchestra compilation here, so that named */
@@ -367,14 +369,14 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
       csound->scorestr = copy_to_corefile(csound, csound->scorename, NULL, 1);
     }
     else {
-      sortedscore = NULL;
+      //sortedscore = NULL;
       if (csound->scorestr==NULL) {
         csound->scorestr = copy_to_corefile(csound, csound->scorename, NULL, 1);
         if (csound->scorestr==NULL)
           csoundDie(csound, Str("cannot open scorefile %s"), csound->scorename);
       }
       csound->Message(csound, Str("Sorting score\n"));
-      scsortstr(csound, csound->scorestr);
+      scsortstr(csound);
       if (csound->keep_tmp) {
         FILE *ff = fopen("score.srt", "w");
         fputs(corfile_body(csound->scstr), ff);
@@ -446,4 +448,289 @@ PUBLIC int csoundCompile(CSOUND *csound, int argc, char **argv)
 
 
     return musmon(csound);
+}
+
+
+
+PUBLIC int csoundCompileFromStrings(CSOUND *csound, char *orchst, char *scorst, int argc, char **argv)
+{
+  OPARMS  *O = csound->oparms;
+  char    *s;
+  //char    *sortedscore = NULL;
+  FILE    *xfile = NULL;
+  int     n;
+  //int     csdFound = 0;
+  //char    *fileDir;
+
+  /* IV - Feb 05 2005: find out if csoundPreCompile() needs to be called */
+  if (csound->engineState != CS_STATE_PRE) {
+    csound->printerrormessagesflag = (void*)1234;
+    if ((n = csoundPreCompile(csound)) != CSOUND_SUCCESS)
+      return n;
+  }
+
+  if ((n = setjmp(csound->exitjmp)) != 0) {
+    return ((n - CSOUND_EXITJMP_SUCCESS) | CSOUND_EXITJMP_SUCCESS);
+  }
+
+  init_pvsys(csound);
+  /* utilities depend on this as well as orchs; may get changed by an orch */
+  /* dbfs_init(csound, DFLT_DBFS); */
+  csound->csRtClock = (RTCLOCK*) csound->Calloc(csound, sizeof(RTCLOCK));
+  csoundInitTimerStruct(csound->csRtClock);
+  csound->engineState |= CS_STATE_COMP | CS_STATE_CLN;
+
+#ifndef USE_DOUBLE
+#ifdef BETA
+  csound->Message(csound, Str("Csound version %s beta (float samples) %s\n"),
+                  CS_PACKAGE_VERSION, __DATE__);
+#else
+  csound->Message(csound, Str("Csound version %s (float samples) %s\n"),
+                  CS_PACKAGE_VERSION, __DATE__);
+#endif
+#else
+#ifdef BETA
+  csound->Message(csound, Str("Csound version %s beta (double samples) %s\n"),
+                  CS_PACKAGE_VERSION, __DATE__);
+#else
+  csound->Message(csound, Str("Csound version %s (double samples) %s\n"),
+                  CS_PACKAGE_VERSION, __DATE__);
+#endif
+#endif
+  {
+    char buffer[128];
+    sf_command(NULL, SFC_GET_LIB_VERSION, buffer, 128);
+    csound->DebugMsg(csound, "%s\n", buffer);
+  }
+
+  /* do not know file type yet */
+  O->filetyp = -1;
+  O->sfheader = 0;
+  csound->peakchunks = 1;
+  create_opcodlst(csound);
+  /* do not allow orc/sco/csd name in .csoundrc */
+  csound->orcname_mode = 2;
+  {
+    const char  *csrcname;
+    const char  *home_dir;
+    FILE        *csrc = NULL;
+    void        *fd = NULL;
+    /* IV - Feb 17 2005 */
+    csrcname = csoundGetEnv(csound, "CSOUNDRC");
+    if (csrcname != NULL && csrcname[0] != '\0') {
+      fd = csound->FileOpen2(csound, &csrc, CSFILE_STD, csrcname, "r", NULL,
+                             CSFTYPE_OPTIONS, 0);
+      if (fd == NULL)
+        csoundMessage(csound, Str("WARNING: cannot open csoundrc file %s\n"),
+                      csrcname);
+      else
+        csound->Message(csound, Str("Reading options from $CSOUNDRC: %s \n"),
+                        csrcname);
+    }
+    if (fd == NULL && ((home_dir = csoundGetEnv(csound, "HOME")) != NULL &&
+                       home_dir[0] != '\0')) {
+      s = csoundConcatenatePaths(csound, home_dir, ".csoundrc");
+      fd = csound->FileOpen2(csound, &csrc, CSFILE_STD, s, "r", NULL,
+                             CSFTYPE_OPTIONS, 0);
+      if (fd != NULL)
+        csound->Message(csound, Str("Reading options from $HOME/.csoundrc\n"));
+      mfree(csound, s);
+    }
+    /* read global .csoundrc file (if exists) */
+    if (fd != NULL) {
+      readOptions(csound, csrc, 0);
+      csound->FileClose(csound, fd);
+    }
+    /* check for .csoundrc in current directory */
+    fd = csound->FileOpen2(csound, &csrc, CSFILE_STD, ".csoundrc", "r", NULL,
+                           CSFTYPE_OPTIONS, 0);
+    if (fd != NULL) {
+      readOptions(csound, csrc, 0);
+      csound->Message(csound,
+                      Str("Reading options from local directory .csoundrc \n"));
+      csound->FileClose(csound, fd);
+    }
+  }
+  if (csound->delayederrormessages) {
+    if (O->msglevel>8)
+      csound->Warning(csound, csound->delayederrormessages);
+    free(csound->delayederrormessages);
+    csound->delayederrormessages = NULL;
+  }
+  
+   csound->orcname_mode = 1;           /* ignore orc/sco name */
+   argdecode(csound, argc-1, argv);   
+
+  /* some error checking */
+  if (csound->stdin_assign_flg &&
+      (csound->stdin_assign_flg & (csound->stdin_assign_flg - 1)) != 0) {
+    csound->Die(csound, Str("error: multiple uses of stdin"));
+  }
+  if (csound->stdout_assign_flg &&
+      (csound->stdout_assign_flg & (csound->stdout_assign_flg - 1)) != 0) {
+    csound->Die(csound, Str("error: multiple uses of stdout"));
+  }
+ 
+  /* if sound file type is still not known, check SFOUTYP */
+  if (O->filetyp <= 0) {
+    const char  *envoutyp;
+    envoutyp = csoundGetEnv(csound, "SFOUTYP");
+    if (envoutyp != NULL && envoutyp[0] != '\0') {
+      if (strcmp(envoutyp, "AIFF") == 0)
+        O->filetyp = TYP_AIFF;
+      else if (strcmp(envoutyp, "WAV") == 0 || strcmp(envoutyp, "WAVE") == 0)
+        O->filetyp = TYP_WAV;
+      else if (strcmp(envoutyp, "IRCAM") == 0)
+        O->filetyp = TYP_IRCAM;
+      else if (strcmp(envoutyp, "RAW") == 0)
+        O->filetyp = TYP_RAW;
+      else {
+        dieu(csound, Str("%s not a recognised SFOUTYP env setting"),
+             envoutyp);
+      }
+    }
+    else
+#if !defined(__MACH__) && !defined(mac_classic)
+      O->filetyp = TYP_WAV;   /* default to WAV if even SFOUTYP is unset */
+#else
+    O->filetyp = TYP_AIFF;  /* ... or AIFF on the Mac */
+#endif
+  }
+  /* everything other than a raw sound file has a header */
+  O->sfheader = (O->filetyp == TYP_RAW ? 0 : 1);
+  if (O->Linein || O->Midiin || O->FMidiin)
+    O->RTevents = 1;
+  if (!O->sfheader)
+    O->rewrt_hdr = 0;         /* cannot rewrite header of headerless file */
+  if (O->sr_override || O->kr_override) {
+    if (!O->sr_override || !O->kr_override)
+      dieu(csound, Str("srate and krate overrides must occur jointly"));
+  }
+  if (!O->outformat)                      /* if no audioformat yet  */
+    O->outformat = AE_SHORT;              /*  default to short_ints */
+  O->sfsampsize = sfsampsize(FORMAT2SF(O->outformat));
+  O->informat = O->outformat;             /* informat default */
+
+  if (scorst==NULL) {
+    /* No scorename yet */
+    csound->scorestr = corfile_create_r("f0 800000000000.0\n");
+    corfile_flush(csound->scorestr);
+    if (O->RTevents)
+      csound->Message(csound, Str("realtime performance using dummy "
+                                  "numeric scorefile\n"));
+  } 
+
+    csound->orchstr = corfile_create_w();
+    corfile_puts(orchst, csound->orchstr);
+    
+    if (csound->orchstr==NULL)
+      csound->Die(csound,
+                  Str("Failed to commit orch to memory:\n %s\n"), orchst);
+    if (O->newParser) corfile_puts("\n#exit\n", csound->orchstr);
+    corfile_putc('\0', csound->orchstr);
+    corfile_putc('\0', csound->orchstr);
+    /* csound->Message(csound, "ORCH \n %s \n", corfile_body(csound->orchstr)); */
+    
+  /* instrument numbers are known at the score read/sort stage */
+  csoundLoadExternals(csound);    /* load plugin opcodes */
+  /* IV - Jan 31 2005: initialise external modules */
+  if (csoundInitModules(csound) != 0)
+    csound->LongJmp(csound, 1);
+
+  if (O->newParser) {
+    int new_orc_parser(CSOUND *);
+    if (new_orc_parser(csound)) {
+      csoundDie(csound, Str("Stopping on parser failure\n"));
+    }
+  }
+  else {
+    csound->Message(csound,     "********************\n");
+    csound->Message(csound, Str("* USING OLD PARSER *\n"));
+    csound->Message(csound,     "********************\n");
+    otran(csound);                  /* read orcfile, setup desblks & spaces */
+  }
+#if defined(USE_OPENMP)
+  if (csound->oparms->numThreads > 1) {
+    omp_set_num_threads(csound->oparms->numThreads);
+    csound->Message(csound, Str("OpenMP enabled: requested %d threads.\n"),
+                    csound->oparms->numThreads);
+  }
+#endif
+
+  /* IV - Jan 28 2005 */
+  print_benchmark_info(csound, Str("end of orchestra compile"));
+  if (!csoundYield(csound))
+    return -1;
+    
+  //sortedscore = NULL;
+  if (csound->scorestr==NULL) {
+    csound->scorestr = corfile_create_r((const char *)scorst);
+    corfile_flush(csound->scorestr);
+    
+    if (csound->scorestr==NULL)
+      csoundDie(csound, Str("cannot read score string %s"), scorst);
+  }
+  csound->Message(csound, Str("Sorting score\n"));
+  scsortstr(csound);
+  if (csound->keep_tmp) {
+    FILE *ff = fopen("score.srt", "w");
+    fputs(corfile_body(csound->scstr), ff);
+    fclose(ff);
+  }
+  if (csound->xfilename != NULL) {            /* optionally extract */
+    if (!(xfile = fopen(csound->xfilename, "r")))
+      csoundDie(csound, Str("cannot open extract file %s"),csound->xfilename);
+    csoundNotifyFileOpened(csound, csound->xfilename,
+                           CSFTYPE_EXTRACT_PARMS, 0, 0);
+    csound->Message(csound, Str("  ... extracting ...\n"));
+    scxtract(csound, csound->scstr, xfile);
+    fclose(xfile);
+    csound->tempStatus &= ~csPlayScoMask;
+  }
+  /* copy sorted score name */
+  O->playscore = csound->scstr;
+  /* IV - Jan 28 2005 */
+  print_benchmark_info(csound, Str("end of score sort"));
+  if (O->syntaxCheckOnly) {
+    csound->Message(csound, Str("Syntax check completed.\n"));
+    return CSOUND_EXITJMP_SUCCESS;
+  }
+
+  /* open MIDI output (moved here from argdecode) */
+  if (O->Midioutname != NULL && O->Midioutname[0] == (char) '\0')
+    O->Midioutname = NULL;
+  if (O->FMidioutname != NULL && O->FMidioutname[0] == (char) '\0')
+    O->FMidioutname = NULL;
+  if (O->Midioutname != NULL || O->FMidioutname != NULL)
+    openMIDIout(csound);
+
+#ifdef PARCS
+  if (O->numThreads > 1) {
+    void csp_barrier_alloc(CSOUND *, pthread_barrier_t **, int);
+    int i;
+    THREADINFO *current = NULL;
+
+    csound->multiThreadedBarrier1 = csound->CreateBarrier(O->numThreads);
+    csound->multiThreadedBarrier2 = csound->CreateBarrier(O->numThreads);
+    csp_barrier_alloc(csound, &(csound->barrier1), O->numThreads);
+    csp_barrier_alloc(csound, &(csound->barrier2), O->numThreads);
+    csound->multiThreadedComplete = 0;
+
+    for (i = 1; i < O->numThreads; i++) {
+      THREADINFO *t = csound->Malloc(csound, sizeof(THREADINFO));
+      t->threadId = csound->CreateThread(&kperfThread, (void *)csound);
+      t->next = NULL;
+      if (current == NULL) {
+        csound->multiThreadedThreadInfo = t;
+      }
+      else {
+        current->next = t;
+      }
+      current = t;
+    }
+    csound->WaitBarrier(csound->barrier2);
+    csp_parallel_compute_spec_setup(csound);
+  }
+#endif
+  return musmon(csound);
 }

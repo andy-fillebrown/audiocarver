@@ -16,7 +16,7 @@
  *
  */
 
-#if defined(__MACH__) || defined(LINUX)
+#if defined(__MACH__) || defined(LINUX) || defined(__HAIKU__)
 
 #include "csoundCore.h"
 #include <sys/resource.h>
@@ -82,7 +82,7 @@ int cpupercent_init(CSOUND *csound, CPUMETER* p)
     for (k = 0; ; k++) {
       if (!fgets(buf, SMLBUFSIZ, p->fp))
         return csound->InitError(csound,Str("failed /proc/stat read"));
-      num = sscanf(buf, "cpu%u %Lu %Lu %Lu %Lu %Lu %Lu %Lu %Lu",
+      num = sscanf(buf, "cpu%llu %Lu %Lu %Lu %Lu %Lu %Lu %Lu %Lu",
                    &id, &u, &n, &s, &i, &w, &x, &y, &z);
       if (num<4) break;
     }
@@ -112,6 +112,7 @@ static int cpupercent_renew(CSOUND *csound, CPUMETER* p)
     num = sscanf(buf, "cpu %Lu %Lu %Lu %Lu %Lu %Lu %Lu %Lu",
                  &cpu[k].u, &cpu[k].n, &cpu[k].s, &cpu[k].i,
                  &cpu[k].w, &cpu[k].x, &cpu[k].y, &cpu[k].z);
+    if (num!=8) csound->PerfError(csound,Str("failed to decode /proc/stat"));
     u_frme = cpu[k].u - cpu[k].u_sav;
     s_frme = cpu[k].s - cpu[k].s_sav;
     n_frme = cpu[k].n - cpu[k].n_sav;
@@ -193,7 +194,7 @@ static int cpupercent_renew(CSOUND *csound, CPUMETER* p)
 }
 static int cpupercent(CSOUND *csound, CPUMETER* p)
 {
-    p->cnt -= csound->ksmps;
+    p->cnt -= CS_KSMPS;
     if (p->cnt< 0) {
       int n = cpupercent_renew(csound, p);
       p->cnt = p->trig;

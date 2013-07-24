@@ -1872,11 +1872,11 @@ int ktrnsegr(CSOUND *csound, TRANSEG *p)
         p->curx = FL(0.0);
       }
       if (p->alpha == FL(0.0))
-        p->curval += p->curinc*csound->ksmps;   /* advance the cur val  */
+        p->curval += p->curinc/* *csound->ksmps*/ ;   /* advance the cur val  */
       else
         p->curval = p->cursegp->val + p->curinc *
           (FL(1.0) - EXP(p->curx));
-      p->curx += (MYFLT)csound->ksmps*p->alpha;
+      p->curx += /*(MYFLT)csound->ksmps**/p->alpha;
     }
     return OK;
 }
@@ -1898,12 +1898,12 @@ int trnsegr(CSOUND *csound, TRANSEG *p)
         }                                 /*   get univ relestim  */
         segp->cnt = p->xtra>=0 ? p->xtra : p->h.insdshead->xtratim;
         if (segp->alpha == FL(0.0)) {
-          segp->c1 = (p->finalval-val)/segp->cnt;
+          segp->c1 = (p->finalval-val)/(CS_KSMPS*segp->cnt);
         }
         else {
           /* this is very wrong */
           segp->c1 = (p->finalval - val)/(FL(1.0) - EXP(p->lastalpha));
-          segp->alpha = p->lastalpha/segp->cnt;
+          segp->alpha = p->lastalpha/(CS_KSMPS*segp->cnt);
           segp->val = val;
         }
         goto newm;                        /*   and set new curmlt */

@@ -461,7 +461,8 @@ static int atsaddset(CSOUND *csound, ATSADD *p)
     char    atsfilname[MAXNAME];
     ATSSTRUCT *atsh;
     FUNC    *ftp, *AmpGateFunc;
-    int     memsize, n_partials, type;
+    unsigned int     memsize;
+    int     n_partials, type;
 
     /* set up function table for synthesis */
     if (UNLIKELY((ftp = csound->FTFind(csound, p->ifn)) == NULL)) {
@@ -1111,7 +1112,8 @@ static int atssinnoiset(CSOUND *csound, ATSSINNOI *p)
 {
     char        atsfilname[MAXNAME];
     ATSSTRUCT   *atsh;
-    int         i, memsize, nzmemsize, type;
+    int         i, nzmemsize, type;
+    unsigned int memsize;
 
     /* load memfile */
     p->swapped = load_atsfile(csound,

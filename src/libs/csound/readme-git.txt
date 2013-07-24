@@ -1,3 +1,3 @@
 
-Csound repository is at git://csound.git.sourceforge.net/gitroot/csound/csound5.git
-Commit: 23a9788 (9/23/2012)
+Csound repository is at git://git.code.sf.net/p/csound/csound5-git
+Commit: c948ec4 (7/3/2013)

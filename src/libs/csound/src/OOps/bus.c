@@ -84,7 +84,7 @@ static CS_NOINLINE int chan_realloc_f(CSOUND *csound,
     }
     memcpy((void*)&csound->exitjmp, (void*)&saved_exitjmp, sizeof(jmp_buf));
     (*p) = newp;
-    (*oldSize) = newSize;
+    (*oldSize) = newSize-1;
 
     return CSOUND_SUCCESS;
 }
@@ -500,7 +500,7 @@ static CS_NOINLINE channelEntry_t *alloc_channel(CSOUND *csound, MYFLT **p,
 {
     channelEntry_t  dummy;
     void            *pp;
-    int             nbytes, nameOffs, dataOffs;
+    int             nbytes, nameOffs, dataOffs, lockOffs;
 
     (void) dummy;
     nameOffs = (int)((char*) &(dummy.name[0]) - (char*) &dummy);
@@ -508,6 +508,7 @@ static CS_NOINLINE channelEntry_t *alloc_channel(CSOUND *csound, MYFLT **p,
     dataOffs += ((int)sizeof(MYFLT) - 1);
     dataOffs = (dataOffs / (int)sizeof(MYFLT)) * (int)sizeof(MYFLT);
     nbytes = dataOffs;
+    lockOffs = (int)((char*) &(dummy.lock) - (char*) &dummy);
     if (*p == NULL) {
       switch (type & CSOUND_CHANNEL_TYPE_MASK) {
       case CSOUND_CONTROL_CHANNEL:
@@ -525,6 +526,11 @@ static CS_NOINLINE channelEntry_t *alloc_channel(CSOUND *csound, MYFLT **p,
     if (pp == NULL)
       return (channelEntry_t*) NULL;
     memset(pp, 0, (size_t) nbytes);
+#ifndef MACOSX
+#if defined(HAVE_PTHREAD_SPIN_LOCK) 
+    pthread_spin_init((int*)((char*) pp + (int)lockOffs), PTHREAD_PROCESS_PRIVATE);
+#endif
+#endif
     if (*p == NULL)
       *p = (MYFLT*) ((char*) pp + (int)dataOffs);
     return (channelEntry_t*) pp;

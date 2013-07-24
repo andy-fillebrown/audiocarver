@@ -42,7 +42,7 @@ static int pvsdemix_init(CSOUND *csound, PVSDEMIX *p)
 {
     int32 N = p->finleft->N;
     int olap = p->finleft->overlap;
-    int M;
+    unsigned int M;
     p->beta = (int)(*p->slices);
 
     if (UNLIKELY(p->finleft->sliding))

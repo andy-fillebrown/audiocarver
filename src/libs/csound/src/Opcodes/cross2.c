@@ -308,7 +308,7 @@ static void pfht(MYFLT *fz, int32 n)
 
 static int Xsynthset(CSOUND *csound, CON *p)
 {
-    int32 flen, bufsize;
+    uint32 flen, bufsize;
     MYFLT       *b;
     FUNC        *ftp;
     MYFLT       ovlp = *p->ovlp;

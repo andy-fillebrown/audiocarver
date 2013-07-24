@@ -49,8 +49,10 @@ static int dconvset(CSOUND *csound, DCONV *p)
       return csound->InitError(csound, Str("No table for dconv"));
     }
     if (p->sigbuf.auxp == NULL ||
-        p->sigbuf.size < (int)(p->len*sizeof(MYFLT)))
+        p->sigbuf.size < (unsigned int)(p->len*sizeof(MYFLT)))
       csound->AuxAlloc(csound, p->len*sizeof(MYFLT), &p->sigbuf);
+    else
+      memset(p->sigbuf.auxp, '\0', p->len*sizeof(MYFLT));
     p->curp = (MYFLT *)p->sigbuf.auxp;
     return OK;
 }
@@ -361,7 +363,8 @@ static int not_a(CSOUND *csound, AOP *p)
 
 static int vcombset(CSOUND *csound, VCOMB *p)
 {
-    int32        lpsiz, nbytes;
+    int32        lpsiz;
+    uint32_t     nbytes;
 
     if (*p->insmps != FL(0.0)) {
       if (UNLIKELY((lpsiz = MYFLT2LONG(*p->imaxlpt)) <= 0)) {

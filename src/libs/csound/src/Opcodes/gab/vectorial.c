@@ -1717,10 +1717,10 @@ static int vport_set(CSOUND *csound,VPORT *p)
 {
     FUNC        *ftp;
     int elements;
-    MYFLT *vector, *yt1,*vecInit  = NULL;
+    MYFLT *yt1,*vecInit  = NULL;
 
     if (LIKELY((ftp = csound->FTnp2Find(csound,p->ifn)) != NULL)) {
-      vector = (p->vector = ftp->ftable);
+      p->vector = ftp->ftable;
       elements = (p->elements = (int) *p->ielements);
       if (UNLIKELY(elements > ftp->flen) )
         return csound->InitError(csound,
@@ -2099,7 +2099,7 @@ static int vecdly_set(CSOUND *csound, VECDEL *p)
       if (p->aux.auxp == NULL ||
           (int)(elements * sizeof(MYFLT *)
                 + n * elements * sizeof(MYFLT)
-                + elements * sizeof(int32)) > p->aux.size) {
+                + elements * sizeof(uint32)) > p->aux.size) {
         csound->AuxAlloc(csound, elements * sizeof(MYFLT *)
                  + n * elements * sizeof(MYFLT)
                  + elements * sizeof(int32),
@@ -2387,7 +2387,7 @@ static int kdel_set(CSOUND *csound,KDEL *p)
     if (n == 0) n = (p->maxd = 1);
 
     if (!*p->istod) {
-      if (p->aux.auxp == NULL || (int)(n*sizeof(MYFLT)) > p->aux.size)
+      if (p->aux.auxp == NULL || (unsigned int)(n*sizeof(MYFLT)) > p->aux.size)
         csound->AuxAlloc(csound, n * sizeof(MYFLT), &p->aux);
       else {
         memset(p->aux.auxp, 0, sizeof(MYFLT)*n);

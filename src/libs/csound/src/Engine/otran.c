@@ -1235,7 +1235,7 @@ void oload(CSOUND *p)
 
     if (O->newParser) {
       p->esr = p->tran_sr; p->ekr = p->tran_kr; p->ksmps = ensmps = p->tran_ksmps;
-      p->nchnls = p->tran_nchnls;
+      //p->nchnls = p->tran_nchnls;
       p->e0dbfs = p->tran_0dbfs;
     }
     else {

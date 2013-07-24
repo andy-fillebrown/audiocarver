@@ -308,7 +308,7 @@ static int resonz(CSOUND *csound, RESONZ *p)
 static int phaser1set(CSOUND *csound, PHASER1 *p)
 {
     int   loop = (int) MYFLT2LONG(*p->iorder);
-    int32  nBytes = (int32) loop * (int32) sizeof(MYFLT);
+    uint32_t nBytes = (int32) loop * (int32) sizeof(MYFLT);
 
     if (*p->istor == FL(0.0) || p->auxx.auxp == NULL || p->auxx.size<nBytes ||
                                 p->auxy.auxp == NULL || p->auxy.size<nBytes) {

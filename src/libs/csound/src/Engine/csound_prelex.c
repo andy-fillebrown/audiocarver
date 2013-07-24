@@ -993,7 +993,8 @@ YY_RULE_SETUP
 #line 144 "csound_pre.lex"
 {
                    MACRO     *mm, *mfound=NULL;
-                   int       i, len, mlen;
+                   int       i, len;
+                   unsigned int mlen;
                    //print_csound_predata(csound, "Macro call", yyscanner);
                    len = strlen(yytext)-1;
                    mlen = 0;
@@ -1041,7 +1042,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 191 "csound_pre.lex"
+#line 192 "csound_pre.lex"
 {
                    MACRO     *mm = PARM->macros;
                    yytext[yyleng-1] = '\0';
@@ -1074,7 +1075,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 220 "csound_pre.lex"
+#line 221 "csound_pre.lex"
 {
                    MACRO     *mm = PARM->macros;
                    char      *mname;
@@ -1146,7 +1147,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 288 "csound_pre.lex"
+#line 289 "csound_pre.lex"
 {
                    MACRO     *mm = PARM->macros;
                    char      *mname;
@@ -1214,7 +1215,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 352 "csound_pre.lex"
+#line 353 "csound_pre.lex"
 {
                   if (PARM->isString != 1)
                     BEGIN(incl);
@@ -1224,12 +1225,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 358 "csound_pre.lex"
+#line 359 "csound_pre.lex"
 /* eat the whitespace */
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 359 "csound_pre.lex"
+#line 360 "csound_pre.lex"
 { /* got the include file name */
                   do_include(csound, yytext[0], yyscanner);
                   BEGIN(INITIAL);
@@ -1237,7 +1238,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 363 "csound_pre.lex"
+#line 364 "csound_pre.lex"
 { corfile_putc('\0', csound->expanded_orc);
                   corfile_putc('\0', csound->expanded_orc);
                   return 0;}
@@ -1247,7 +1248,7 @@ case YY_STATE_EOF(incl):
 case YY_STATE_EOF(macro):
 case YY_STATE_EOF(umacro):
 case YY_STATE_EOF(ifdef):
-#line 366 "csound_pre.lex"
+#line 367 "csound_pre.lex"
 {
                   MACRO *x, *y=NULL;
                   int n;
@@ -1298,7 +1299,7 @@ case YY_STATE_EOF(ifdef):
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 413 "csound_pre.lex"
+#line 414 "csound_pre.lex"
 {
                   if (PARM->isString != 1)
                     BEGIN(macro);
@@ -1308,12 +1309,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 419 "csound_pre.lex"
+#line 420 "csound_pre.lex"
 /* eat the whitespace */
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 420 "csound_pre.lex"
+#line 421 "csound_pre.lex"
 {
                   yytext[yyleng-1] = '\0';
                   /* csound->DebugMsg(csound,"Define macro with args %s\n", yytext); */
@@ -1325,7 +1326,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 428 "csound_pre.lex"
+#line 429 "csound_pre.lex"
 {
                   /* csound->DebugMsg(csound,"Define macro %s\n", yytext); */
                   /* print_csound_predata(csound,"Before do_macro", yyscanner); */
@@ -1336,7 +1337,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 435 "csound_pre.lex"
+#line 436 "csound_pre.lex"
 {
                   if (PARM->isString != 1)
                     BEGIN(umacro);
@@ -1346,12 +1347,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 441 "csound_pre.lex"
+#line 442 "csound_pre.lex"
 /* eat the whitespace */
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 442 "csound_pre.lex"
+#line 443 "csound_pre.lex"
 {
                   /* csound->DebugMsg(csound,"Undefine macro %s\n", yytext); */
                   do_umacro(csound, yytext, yyscanner);
@@ -1360,7 +1361,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 448 "csound_pre.lex"
+#line 449 "csound_pre.lex"
 {
                   if (PARM->isString != 1) {
                     PARM->isIfndef = (yytext[3] == 'n');  /* #ifdef or #ifndef */
@@ -1377,12 +1378,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 461 "csound_pre.lex"
+#line 462 "csound_pre.lex"
 /* eat the whitespace */
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 462 "csound_pre.lex"
+#line 463 "csound_pre.lex"
 {
                   do_ifdef(csound, yytext, yyscanner);
                   BEGIN(INITIAL);
@@ -1393,7 +1394,7 @@ case 27:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 466 "csound_pre.lex"
+#line 467 "csound_pre.lex"
 { 
                   if (PARM->isString != 1) {
                     if (PARM->ifdefStack == NULL) {
@@ -1419,7 +1420,7 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 487 "csound_pre.lex"
+#line 488 "csound_pre.lex"
 {
                   if (PARM->isString != 1) {
                     IFDEFSTACK *pp = PARM->ifdefStack;
@@ -1441,15 +1442,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 505 "csound_pre.lex"
+#line 506 "csound_pre.lex"
 { corfile_putc(yytext[0], csound->expanded_orc); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 507 "csound_pre.lex"
+#line 508 "csound_pre.lex"
 ECHO;
 	YY_BREAK
-#line 1453 "Engine/csound_prelex.c"
+#line 1454 "Engine/csound_prelex.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2602,7 +2603,7 @@ void csound_prefree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 507 "csound_pre.lex"
+#line 508 "csound_pre.lex"
 
 
 void comment(yyscan_t yyscanner)              /* Skip until nextline */

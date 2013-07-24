@@ -254,7 +254,7 @@ PUBLIC int csoundScoreSort(CSOUND *csound, FILE *inFile, FILE *outFile)
     corfile_rewind(inf);
     /* scsortstr() ignores the second arg - Jan 5 2012 */
     csound->scorestr = inf;
-    scsortstr(csound, inf);
+    scsortstr(csound);
     while ((c=corfile_getc(csound->scstr))!=EOF)
       putc(c, outFile);
     corfile_rm(&csound->scstr);

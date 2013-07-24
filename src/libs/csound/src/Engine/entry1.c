@@ -284,6 +284,9 @@ OENTRY opcodlst_1[] = {
 { "i.i",   S(ASSIGN),   1,      "i",    "i",    assign                  },
 { "i.k",   S(ASSIGN),   1,      "i",    "k",    assign                  },
 { "k.i",   S(ASSIGN),   1,      "k",    "i",    assign                  },
+#ifdef JPFF
+{ "k.a",   S(DOWNSAMP), 3,      "k",    "ao", (SUBR)downset,(SUBR)downsamp }, 
+#endif
 { "cpsoct.i",S(EVAL),   1,      "i",    "i",    cpsoct                  },
 { "octpch.i",S(EVAL),   1,      "i",    "i",    octpch                  },
 { "cpspch.i",S(EVAL),   1,      "i",    "i",    cpspch                  },
@@ -674,8 +677,8 @@ OENTRY opcodlst_1[] = {
                                          (SUBR)reverbx_set,NULL,(SUBR)reverbx },
 { "nreverb",  S(NREV2),  5,     "a",    "akkoojoj",
                                          (SUBR)reverbx_set,NULL,(SUBR) reverbx },
-{ "=.f",      S(FASSIGN), 2,    "f",   "f",      NULL, fassign, NULL    },
-{ "init.f",   S(FASSIGN), 2,    "f",   "f",      fassign, NULL, NULL    },
+{ "=.f",      S(FASSIGN), 3,    "f",   "f",      (SUBR)fassign_set,(SUBR) fassign, NULL    },
+{ "init.f",   S(FASSIGN), 1,    "f",   "f",      (SUBR)fassign_set, NULL, NULL    },
 { "pvsanal",  S(PVSANAL), 5,    "f",   "aiiiioo",  pvsanalset, NULL, pvsanal  },
 { "pvsynth",  S(PVSYNTH), 5,    "a",   "fo",     pvsynthset, NULL, pvsynth  },
 { "pvsadsyn", S(PVADS),   7,    "a",   "fikopo", pvadsynset, pvadsyn, pvadsyn },
@@ -793,6 +796,7 @@ OENTRY opcodlst_1[] = {
 { "multitap", S(MDEL),  5,   "a", "am",
                                    (SUBR)multitap_set,NULL,(SUBR)multitap_play},
 { "comb",   S(COMB),    5,  "a",  "akioo", (SUBR)cmbset,NULL,   (SUBR)comb    },
+{ "combinv",S(COMB),    5,  "a",  "akioo", (SUBR)cmbset,NULL,   (SUBR)invcomb },
 { "alpass", S(COMB),    5,  "a",  "akioo", (SUBR)cmbset,NULL,   (SUBR)alpass  },
 {  "strset",   S(STRSET_OP),   1,  "",     "iS",
    (SUBR) strset_init, (SUBR) NULL, (SUBR) NULL                        },

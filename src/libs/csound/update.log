@@ -26,3 +26,16 @@ Undefined references to vbap init functions:
 - Fixed by removing vbap opcodes
 
 -------------------------------------------------------------------------------
+
+7/24/13: [Using csound repository commit c948ec4 (7/3/2013)
+
+H/ugens6.h and Opcodes/fout.h had to be overwritten manually after the xcopy
+ was done.  I don't know why.
+ 
+ Undefined references to vbap init functions:
+ - Fixed by removing vbap opcodes
+ 
+ Undefined references to circular buffer functions:
+ - Fixed by adding InOut/circularbuffer.c
+ 
+-------------------------------------------------------------------------------

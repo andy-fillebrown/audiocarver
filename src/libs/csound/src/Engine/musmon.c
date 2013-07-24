@@ -39,7 +39,7 @@ extern  int     MIDIinsert(CSOUND *, int, MCHNBLK*, MEVENT*);
 extern  int     insert(CSOUND *, int, EVTBLK*);
 extern  void    MidiOpen(CSOUND *);
 extern  void    m_chn_init_all(CSOUND *);
-extern  void    scsortstr(CSOUND *, CORFIL *);
+extern  void    scsortstr(CSOUND *);
 extern  void    infoff(CSOUND*, MYFLT), orcompact(CSOUND*);
 extern  void    beatexpire(CSOUND *, double), timexpire(CSOUND *, double);
 extern  void    sfopenin(CSOUND *), sfopenout(CSOUND*), sfnopenout(CSOUND*);
@@ -314,8 +314,7 @@ int musmon(CSOUND *csound)
         csoundDie(csound, Str("cannot reopen cscore.srt"));
       csoundNotifyFileOpened(csound, "cscore.srt", CSFTYPE_SCORE_OUT, 1, 0);
       csound->Message(csound, Str("sorting cscore.out ..\n"));
-      /* csound->scorestr = copy_to_corefile(csound, "cscore.srt", NULL, 1); */
-      scsortstr(csound, csound->scorestr);  /* call the sorter again */
+      scsortstr(csound);  /* call the sorter again */
       fclose(csound->scfp); csound->scfp = NULL;
       fputs(corfile_body(csound->scstr), csound->oscfp);
       fclose(csound->oscfp); csound->oscfp = NULL;
@@ -629,8 +628,8 @@ static int process_score_event(CSOUND *csound, EVTBLK *evt, int rtEvt)
         if (UNLIKELY((unsigned int)(insno-1) >= (unsigned int) csound->maxinsno ||
                      csound->instrtxtp[insno] == NULL)) {
           printScoreError(csound, rtEvt,
-                          Str(" - note deleted. instr %d(%d) undefined"),
-                          insno, csound->maxinsno);
+                          Str(" - note deleted. instr %d undefined"),
+                          insno);
           break;
         }
         csound->Message(csound, Str("Setting instrument %d %s\n"),
@@ -669,8 +668,8 @@ static int process_score_event(CSOUND *csound, EVTBLK *evt, int rtEvt)
         if (UNLIKELY((unsigned int)(insno-1) >= (unsigned int)csound->maxinsno ||
                      csound->instrtxtp[insno] == NULL)) {
           printScoreError(csound, rtEvt,
-                          Str(" - note deleted. instr %d(%d) undefined"),
-                          insno, csound->maxinsno);
+                          Str(" - note deleted. instr %d undefined"),
+                          insno);
           break;
         }
         if ((rfd = getRemoteInsRfd(csound, insno))) {
@@ -918,8 +917,9 @@ int sensevents(CSOUND *csound)
           continue;
         }
       }
-      /* calculate the number of k-periods remaining until next event */
-      if (O->Beatmode)
+      
+
+       if (O->Beatmode)
         csound->cyclesRemaining =
           RNDINT64((csound->nxtbt - csound->curBeat) / csound->curBeat_inc);
       else {
@@ -927,7 +927,9 @@ int sensevents(CSOUND *csound)
           RNDINT64((csound->nxtim*csound->esr - csound->icurTime) / csound->ksmps);
         csound->nxtim =
           (csound->cyclesRemaining*csound->ksmps+csound->icurTime)/csound->esr;
-      }
+      } 
+      
+     
     }
 
     /* handle any real time events now: */

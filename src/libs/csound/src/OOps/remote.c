@@ -24,18 +24,24 @@
 #include "csoundCore.h"
 #include "remote.h"
 
+/* Somewhat revised from the original.  Pete G. Nov 2012
+   More correct, I think, but I could be wrong... (:-/)
+*/
 #ifdef HAVE_SOCKETS
-#ifndef WIN32
-#include <sys/ioctl.h>
-#ifdef LINUX
-#include <linux/if.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-extern int inet_aton (const char *, struct in_addr *);
-#endif
-#include <net/if.h>
-#endif
+  #ifndef WIN32
+    #include <sys/ioctl.h>
+    #ifdef LINUX
+      #include <linux/if.h>
+    #endif
+    #ifdef __HAIKU__
+            #include <sys/sockio.h>
+    #endif
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+    extern int inet_aton (const char *, struct in_addr *);
+    #include <net/if.h>
+  #endif /* not WIN32 */
 #endif /* HAVE_SOCKETS */
 
 #define MAXREMOTES 10
@@ -50,44 +56,84 @@ void remoteRESET(CSOUND *csound)
 }
 
 #ifdef HAVE_SOCKETS
+  #ifndef WIN32
+#include <netdb.h>
+  #endif /* not WIN32 */
 
- /* get the IPaddress of this machine */
-static int getIpAddress(char *ipaddr, char *ifname)
+static int getIpAddress(char *ipaddr)
 {
-    int ret = 1;
+    /* VL 12/10/06: something needs to go here */
+    /* gethostbyname is the real answer; code below is unsafe */
+    /* should use getaddrinfo but do not understand yet -- JPff */
+    char hostname[1024];
+    struct hostent *he;
+    struct sockaddr_in sin;
+    if (gethostname(hostname, sizeof(hostname))<0) return 1;
+    if ((he = gethostbyname(hostname))==NULL) return 1;
+
+    memset(&sin, 0, sizeof (struct sockaddr_in));
+    memmove(&sin.sin_addr, he->h_addr_list[0], he->h_length);
+    strcpy(ipaddr, inet_ntoa (sin.sin_addr));
+    printf("IP: %s\n", ipaddr);
+    return 0;
+    /*  getaddrinfo would give multiple answers */
+}
+
+#if 0
+/* older version */
+ /* get the IPaddress of this machine */
+static int getIpAddress(char *ipaddr)
+{
 #ifdef WIN32
     /* VL 12/10/06: something needs to go here */
     /* gethostbyname is the real answer; code below is unsafe */
     char hostname[1024];
     struct hostent *he;
     struct sockaddr_in sin;
-    gethostname(hostname, sizeof(hostname));
-    he = gethostbyname(hostname);
+    if (gethostname(hostname, sizeof(hostname))<0) return 1;
+    if ((he = gethostbyname(hostname))==NULL) return 1;
 
     memset(&sin, 0, sizeof (struct sockaddr_in));
     memmove(&sin.sin_addr, he->h_addr_list[0], he->h_length);
     strcpy(ipaddr, inet_ntoa (sin.sin_addr));
-    ret = 0;
-
+    return 0;
 #else
+    int ret = 1;
     struct ifreq ifr;
     int fd;
 
     fd = socket(AF_INET,SOCK_DGRAM, 0);
     if (fd >= 0) {
-      strcpy(ifr.ifr_name, ifname);
-
+#ifdef MACOSX
+      strcpy(ifr.ifr_name, "en0");
+#else
+      strcpy(ifr.ifr_name, "eth0");
+#endif
       if (ioctl(fd, SIOCGIFADDR, &ifr) == 0) {
         char *local;
         local = inet_ntoa(((struct sockaddr_in *)(&ifr.ifr_addr))->sin_addr);
         strcpy(ipaddr, local);
+        printf("IP for remote: %s\n", ipaddr);
         ret = 0;
+      }
+      else {
+        strcpy(ifr.ifr_name, "wlan0");
+        if (ioctl(fd, SIOCGIFADDR, &ifr) == 0) {
+          char *local;
+          local = inet_ntoa(((struct sockaddr_in *)(&ifr.ifr_addr))->sin_addr);
+          strcpy(ipaddr, local);
+          printf("IP for remote: %s\n", ipaddr);
+          ret = 0;
+        }
       }
     }
     close(fd);
-#endif
     return ret;
+#endif
 }
+
+#endif
+
 
 char remoteID(CSOUND *csound)
 {
@@ -160,7 +206,8 @@ static int callox(CSOUND *csound)
 
     /* get IP adrs of this machine */
     /* FIXME: do not hardcode eth0 */
-    if (UNLIKELY(getIpAddress(ST(ipadrs), "eth0") < 0)) {
+    //foo(ST(ipadrs));
+    if (UNLIKELY(getIpAddress(ST(ipadrs))!=0)) {
       csound->Message(csound, Str("unable to get local ip address."));
       goto error;
     }
@@ -265,7 +312,7 @@ int CLsend(CSOUND *csound, int conn, void *data, int length)
     return OK;
 }
 
-static int SVopen(CSOUND *csound, char *ipadrs_local)
+static int SVopen(CSOUND *csound)
            /* Server -- open to receive */
 {
     int conn, socklisten,opt;
@@ -404,7 +451,7 @@ int insremot(CSOUND *csound, INSREMOT *p)
 /*       csound->Message(csound, Str("*** str2: %s own:%s\n"), */
 /*                       (char *)p->str2 , ST(ipadrs)); */
       /* open port to listen */
-      if (UNLIKELY(SVopen(csound, (char *)p->str2) == NOTOK)){
+      if (UNLIKELY(SVopen(csound) == NOTOK)){
         return csound->InitError(csound, Str("Failed to open port to listen"));
       }
     }
@@ -477,7 +524,7 @@ int midremot(CSOUND *csound, MIDREMOT *p)    /* declare certain channels for
     }
     else if (!strcmp(ST(ipadrs), (char *)p->str2)) { /* if server is this adrs */
       /* open port to listen */
-      if (UNLIKELY(SVopen(csound, (char *)p->str2) == NOTOK)){
+      if (UNLIKELY(SVopen(csound) == NOTOK)){
         return csound->InitError(csound, Str("Failed to open port to listen"));
       }
       csound->oparms->RMidiin = 1;            /* & enable rtevents in */

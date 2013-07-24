@@ -83,10 +83,10 @@ static int hm234set(CSOUND *csound, HARM234 *p)
 {
     MYFLT minoct = *p->ilowest;
     p->hmrngflg = 0;
-    if (p->auxch.auxp == NULL || minoct < p->minoct) {
+    if (p->auxch.auxp == NULL || minoct < p->minoct ) {
       MYFLT minfrq = POWER(FL(2.0), minoct) * ONEPT;
       int16 nbufs = (int16)(csound->ekr * 3 / minfrq) + 1;/* recalc max pulse prd */
-      int16 nbufsmps = nbufs * csound->ksmps;
+      int16 nbufsmps = nbufs * CS_KSMPS;
       int16 maxprd = (int16)(csound->esr * 2 / minfrq);   /* incl sigmoid ends */
       int16 cnt;
       int32  totalsiz = nbufsmps * 2 + maxprd * 4 + (SLEN+1);
@@ -106,8 +106,8 @@ static int hm234set(CSOUND *csound, HARM234 *p)
       p->maxprd = maxprd;
       p->nbufsmps = nbufsmps;
       p->n2bufsmps = nbufsmps * 2;
-      p->minoct = minoct;
     }
+    p->minoct = minoct;
     p->sicvt = FL(65536.0) * csound->onedsr;
     p->cpsmode = ((*p->icpsmode != FL(0.0)));
     p->polarity = (int16)*p->ipolarity;

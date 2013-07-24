@@ -76,6 +76,7 @@ int insert(CSOUND *csound, int insno, EVTBLK *newevtp)
     INSTRTXT  *tp;
     INSDS     *ip, *prvp, *nxtp;
     OPARMS    *O = csound->oparms;
+  
 
     if (csound->advanceCnt)
       return 0;
@@ -196,6 +197,7 @@ int insert(CSOUND *csound, int insno, EVTBLK *newevtp)
       if (UNLIKELY(O->odebug))
         csound->Message(csound, "   ending at %p\n", (void*) flp);
     }
+
     if (O->Beatmode)
       ip->p2 = (MYFLT) (csound->icurTime/csound->esr - csound->timeOffs);
     ip->offtim       = (double) ip->p3;         /* & duplicate p3 for now */
@@ -521,12 +523,12 @@ static void schedofftim(CSOUND *csound, INSDS *ip)
       ip->nxtoff = nxtp;
       /* IV - Feb 24 2006: check if this note already needs to be turned off */
       /* the following comparisons must match those in sensevents() */
-#ifdef BETA
+      #ifdef BETA
       if (UNLIKELY(csound->oparms->odebug))
         csound->Message(csound,"schedofftim: %lf %lf %f\n",
                         ip->offtim, csound->icurTime/csound->esr,
                         csound->curTime_inc);
-#endif
+      #endif
       if (csound->oparms_.Beatmode) {
         double  tval = csound->curBeat + (0.505 * csound->curBeat_inc);
         if (ip->offbet <= tval) beatexpire(csound, tval);
@@ -1034,7 +1036,7 @@ int useropcdset(CSOUND *csound, UOPCODE *p)
     saved_curip->offbet = lcurip->offbet;
     saved_curip->offtim = lcurip->offtim;
     saved_curip->p3 = lcurip->p3;
-
+    
     /* restore globals */
     csound->ids = saved_ids;
     csound->curip = saved_curip;
@@ -1049,10 +1051,12 @@ int useropcdset(CSOUND *csound, UOPCODE *p)
       csound->kicvt = g_kicvt;
       /* IV - Sep 17 2002: also select perf routine */
       p->h.opadr = (SUBR) useropcd1;
+      printf("here \n");
     }
     else {
       saved_curip->xtratim = lcurip->xtratim;
       p->h.opadr = (SUBR) useropcd2;
+      printf("there \n");
     }
 
     return OK;
@@ -1698,7 +1702,7 @@ int useropcd2(CSOUND *csound, UOPCODE *p)
     OPDS    *saved_pds = csound->pds;
     int     n;
     MYFLT   **tmp, *ptr1, *ptr2;
-
+    
      if (!(csound->pds = (OPDS*) (p->ip->nxtp))) goto endop; /* no perf code */
 
     //csound->Message(csound, "end input\n");

@@ -335,7 +335,7 @@ static int poscak(CSOUND *csound, POSC *p)
 static int kposc(CSOUND *csound, POSC *p)
 {
     double      phs = p->phs;
-    double      si = *p->freq * p->tablen * csound->onedkr;
+    double      si = *p->freq * p->tablen * CS_ONEDKR;
     MYFLT       *curr_samp = p->ftp->ftable + (int32)phs;
     MYFLT       fract = (MYFLT)(phs - (double)((int32)phs));
 
@@ -544,7 +544,7 @@ static int posc3aa(CSOUND *csound, POSC *p)
 static int kposc3(CSOUND *csound, POSC *p)
 {
     double      phs   = p->phs;
-    double      si    = *p->freq * p->tablen * csound->onedkr;
+    double      si    = *p->freq * p->tablen * CS_ONEDKR;
     MYFLT       *ftab = p->ftp->ftable;
     int         x0    = (int32)phs;
     MYFLT       fract = (MYFLT)(phs - (double)x0);
@@ -715,7 +715,7 @@ static int rsnsety(CSOUND *csound, RESONY *p)
     if ((p->loop = (int) MYFLT2LONG(*p->ord)) < 1)
       p->loop = 4;  /* default value */
     if (!*p->istor && (p->aux.auxp == NULL ||
-                      (int32) (p->loop * 2 * sizeof(MYFLT)) > p->aux.size))
+                      (uint32_t) (p->loop * 2 * sizeof(MYFLT)) > p->aux.size))
       csound->AuxAlloc(csound, (size_t) (p->loop * 2 * sizeof(MYFLT)), &p->aux);
     p->yt1 = (MYFLT*)p->aux.auxp; p->yt2 = (MYFLT*)p->aux.auxp + p->loop;
     if (UNLIKELY(scale && scale != 1 && scale != 2)) {
@@ -795,6 +795,7 @@ static int fold_set(CSOUND *csound, FOLD *p)
 {
     p->sample_index = 0;
     p->index = 0.0;
+    p->value = FL(0.0);         /* This was not initialised -- JPff */
     return OK;
 }
 
@@ -827,6 +828,9 @@ static int fold(CSOUND *csound, FOLD *p)
 static int loopseg_set(CSOUND *csound, LOOPSEG *p)
 {
     p->nsegs   = p->INOCOUNT-3;
+    // Should check this is even
+    if (UNLIKELY((p->nsegs&1)!=0)) 
+      csound->Warning(csound, Str("loop opcode: wrong argument count"));
     p->args[0] = FL(0.0);
     p->phs     = *p->iphase;
     return OK;
@@ -834,13 +838,13 @@ static int loopseg_set(CSOUND *csound, LOOPSEG *p)
 
 static int loopseg(CSOUND *csound, LOOPSEG *p)
 {
-    MYFLT *argp=p->args;
-    MYFLT beg_seg=FL(0.0), end_seg, durtot=FL(0.0);
-    double   phs, si=*p->freq*csound->onedkr;
+    MYFLT *argp = p->args;
+    MYFLT beg_seg = FL(0.0), end_seg, durtot = FL(0.0);
+    double   phs, si = *p->freq*CS_ONEDKR, dummy;
     int nsegs=p->nsegs+1;
     int j;
     if (*p->retrig)
-      phs=p->phs=*p->iphase;
+      phs=p->phs=modf((double)*p->iphase, &dummy);
     else
       phs=p->phs;
 
@@ -865,10 +869,10 @@ static int loopseg(CSOUND *csound, LOOPSEG *p)
       }
     }
     phs    += si;
-    while (phs >= 1.0)
-      phs -= 1.0;
-    while (phs < 0.0 )
-      phs += 1.0;
+    /* while (UNLIKELY(phs >= 1.0)) */
+    /*   phs -= 1.0; */
+    phs = modf(phs, &dummy);
+    if (UNLIKELY(phs < 0.0 )) phs += 1.0;
     p->phs = phs;
     return OK;
 }
@@ -878,11 +882,11 @@ static int loopxseg(CSOUND *csound, LOOPSEG *p)
     MYFLT exp1 = FL(1.0)/(FL(1.0)-EXP(FL(1.0)));
     MYFLT *argp=p->args;
     MYFLT beg_seg=FL(0.0), end_seg, durtot=FL(0.0);
-    double   phs, si=*p->freq*csound->onedkr;
+    double   phs, si=*p->freq*CS_ONEDKR, dummy;
     int nsegs=p->nsegs+1;
     int j;
     if (*p->retrig)
-      phs=p->phs=*p->iphase;
+      phs=p->phs=modf(*p->iphase, &dummy);
     else
       phs=p->phs;
 
@@ -907,10 +911,10 @@ static int loopxseg(CSOUND *csound, LOOPSEG *p)
       }
     }
     phs    += si;
-    while (phs >= 1.0)
-      phs -= 1.0;
-    while (phs < 0.0 )
-      phs += 1.0;
+    /* while (phs >= 1.0) */
+    /*   phs -= 1.0; */
+    phs = modf(phs, &dummy);
+    if (phs < 0.0 ) phs += 1.0;
     p->phs = phs;
     return OK;
 }
@@ -925,12 +929,12 @@ static int looptseg_set(CSOUND *csound, LOOPTSEG *p)
 static int looptseg(CSOUND *csound, LOOPTSEG *p)
 {
     MYFLT beg_seg=FL(0.0), end_seg=FL(0.0), durtot=FL(0.0);
-    double   phs, si=*p->freq*csound->onedkr;
+    double   phs, si=*p->freq*CS_ONEDKR, dummy;
     int nsegs=p->nsegs;
     int j;
 
     if (*p->retrig)
-      phs=p->phs=*p->iphase;
+      phs=p->phs=modf((double)*p->iphase, &dummy);
     else
       phs=p->phs;
 
@@ -954,10 +958,10 @@ static int looptseg(CSOUND *csound, LOOPTSEG *p)
       }
     }
     phs    += si;
-    while (UNLIKELY(phs >= 1.0))
-      phs -= 1.0;
-    while (UNLIKELY(phs < 0.0 ))
-      phs += 1.0;
+    /* while (UNLIKELY(phs >= 1.0)) */
+    /*   phs -= 1.0; */
+    phs = MODF(phs, &dummy);
+    if (UNLIKELY(phs < 0.0 )) phs += 1.0;
     p->phs = phs;
     return OK;
 }
@@ -965,13 +969,13 @@ static int looptseg(CSOUND *csound, LOOPTSEG *p)
 static int lpshold(CSOUND *csound, LOOPSEG *p)
 {
     MYFLT *argp=p->args;
-    MYFLT beg_seg=0, end_seg, durtot=FL(0.0);
-    double   phs, si=*p->freq*csound->onedkr;
+    MYFLT beg_seg=FL(0.0), end_seg, durtot=FL(0.0);
+    double   phs, si=*p->freq*CS_ONEDKR, dummy;
     int nsegs=p->nsegs+1;
     int j;
 
     if (*p->retrig)
-      phs=p->phs=*p->iphase;
+      phs=p->phs=modf((double)*p->iphase, &dummy);
     else
       phs=p->phs;
 
@@ -992,10 +996,10 @@ static int lpshold(CSOUND *csound, LOOPSEG *p)
       }
     }
     phs    += si;
-    while (phs >= 1.0)
-      phs -= 1.0;
-    while (phs < 0.0 )
-      phs += 1.0;
+    /* while (phs >= 1.0) */
+    /*   phs -= 1.0; */
+    phs = modf(phs, &dummy);
+    if (UNLIKELY(phs < 0.0 )) phs += 1.0;
     p->phs = phs;
     return OK;
 }
@@ -1010,17 +1014,17 @@ static int loopsegp_set(CSOUND *csound, LOOPSEGP *p)
 static int loopsegp(CSOUND *csound, LOOPSEGP *p)
 {
     MYFLT *argp = p->args;
-    MYFLT beg_seg=0, end_seg, durtot=FL(0.0);
+    MYFLT beg_seg=0, end_seg, durtot=FL(0.0), dummy;
     MYFLT phs;
     int nsegs=p->nsegs+1;
     int j;
 
     phs = *p->kphase;
 
-    while (phs >= FL(1.0))
-      phs -= FL(1.0);
-    while (phs < FL(0.0))
-      phs += FL(1.0);
+    /* while (phs >= FL(1.0)) */
+    /*   phs -= FL(1.0); */
+    phs = MODF(phs, &dummy);
+    if (phs < FL(0.0)) phs += FL(1.0);
 
     for (j=1; j<nsegs; j++)
       argp[j] = *p->argums[j-1];
@@ -1048,17 +1052,14 @@ static int loopsegp(CSOUND *csound, LOOPSEGP *p)
 static int lpsholdp(CSOUND *csound, LOOPSEGP *p)
 {
     MYFLT *argp=p->args;
-    MYFLT beg_seg=FL(0.0), end_seg, durtot=FL(0.0);
+    MYFLT beg_seg=FL(0.0), end_seg, durtot=FL(0.0), dummy;
     MYFLT phs;
     int nsegs=p->nsegs+1;
     int j;
 
-    phs = *p->kphase;
+    phs = MODF(*p->kphase, &dummy);
 
-    while (phs >= FL(1.0))
-      phs -= FL(1.0);
-    while (phs < FL(0.0))
-      phs += FL(1.0);
+    if (phs < FL(0.0)) phs += FL(1.0);
 
     for (j=1; j<nsegs; j++)
       argp[j] = *p->argums[j-1];
@@ -1143,7 +1144,7 @@ static int tlineto(CSOUND *csound, LINETO2 *p)
       p->current_val = *p->ksig;
     }
     else if (p->current_time < p->old_time) {
-      p->current_time += csound->onedkr;
+      p->current_time += CS_ONEDKR;
       p->val_incremented += p->incr;
     }
     *p->kr = p->val_incremented;
@@ -1168,7 +1169,7 @@ static int vibrato_set(CSOUND *csound, VIBRATO *p)
     p->xcpsFreqRate = randGab *(*p->ampMaxRate - *p->ampMinRate) +
       *p->ampMinRate;
     p->tablen = ftp->flen;
-    p->tablenUPkr = p->tablen * csound->onedkr;
+    p->tablenUPkr = p->tablen * CS_ONEDKR;
     return OK;
 }
 
@@ -1243,7 +1244,7 @@ static int vibr_set(CSOUND *csound, VIBR *p)
     p->xcpsAmpRate = randGab  * (cpsMaxRate - cpsMinRate) + cpsMinRate;
     p->xcpsFreqRate = randGab  * (ampMaxRate - ampMinRate) + ampMinRate;
     p->tablen = ftp->flen;
-    p->tablenUPkr = p->tablen * csound->onedkr;
+    p->tablenUPkr = p->tablen * CS_ONEDKR;
     return OK;
 }
 
@@ -1409,7 +1410,7 @@ static int jitters(CSOUND *csound, JITTERS *p)
     if (p->phs >= 1.0) {
       MYFLT     slope, resd1, resd0, f2, f1;
     next:
-      p->si = (randGab * (*p->cpsMax-*p->cpsMin) + *p->cpsMin)*csound->onedkr;
+      p->si = (randGab * (*p->cpsMax-*p->cpsMin) + *p->cpsMin)*CS_ONEDKR;
       if (p->si == 0) p->si = 1; /* Is this necessary? */
       while (p->phs > 1.0)
         p->phs -= 1.0;
@@ -1750,9 +1751,10 @@ static int random3(CSOUND *csound, RANDOM3 *p)
     if (p->phs >= 1.0) {
       MYFLT     slope, resd1, resd0, f2, f1;
     next:
-      p->si = (randGab * (*p->cpsMax-*p->cpsMin) + *p->cpsMin)*csound->onedkr;
-      while (p->phs > 1.0)
-        p->phs -= 1.0;
+      p->si = (randGab * (*p->cpsMax-*p->cpsMin) + *p->cpsMin)*CS_ONEDKR;
+      /* while (p->phs > 1.0) */
+      /*   p->phs -= 1.0; */
+      p->phs = MODF(p->phs, &f0);
       f0     = p->num0 = p->num1;
       f1     = p->num1 = p->num2;
       f2     = p->num2 = randGab;
@@ -1791,8 +1793,9 @@ static int random3a(CSOUND *csound, RANDOM3 *p)
         MYFLT   slope, resd1, resd0, f2, f1;
       next:
         si =  (randGab  * (cpsMax - cpsMin) + cpsMin)*csound->onedsr;
-        while (phs > 1.0)
-          phs -= 1.0;
+        /* while (phs > 1.0) */
+        /*   phs -= 1.0; */
+        phs    = MODF(phs, &f0);
         f0     = p->num0 = p->num1;
         f1     = p->num1 = p->num2;
         f2     = p->num2 = BiRandGab;

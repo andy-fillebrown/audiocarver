@@ -81,7 +81,7 @@ typedef struct {
 static int getcurdir(CSOUND *csound, GETCWD *p)
 {
     if (UNLIKELY(
-#if defined(__MACH__) || defined(LINUX)
+#if defined(__MACH__) || defined(LINUX) || defined(__HAIKU__)
                  getcwd
 #else
                  _getcwd
@@ -139,7 +139,7 @@ static int readf(CSOUND *csound, READF *p)
 
 static int readfi(CSOUND *csound, READF *p)
 {
-    if (p->fd<=0)
+    if ((int)p->fd<=0)
       if (UNLIKELY(readf_init(csound, p)!= OK))
         return csound->InitError(csound, Str("readi failed to initialise"));
     return readf(csound, p);

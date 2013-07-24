@@ -40,24 +40,24 @@ static void choose_ls_triplets(CSOUND *csound, ls lss[CHANNELS],
                                int ls_amount);
 static int any_ls_inside_triplet(int, int, int, ls *, int);
 static void add_ldsp_triplet(CSOUND *csound, int i, int j, int k,
-                             ls_triplet_chain **ls_triplets,
-                             ls *lss);
+                             ls_triplet_chain **ls_triplets);
 static void calculate_3x3_matrixes(CSOUND *csound,
                                    ls_triplet_chain *ls_triplets,
-                                   ls lss[CHANNELS], int ls_amount);
+                                   ls lss[CHANNELS], int ls_amount, int ind);
 static void choose_ls_tuplets(CSOUND *csound, ls lss[CHANNELS],
-                              ls_triplet_chain **ls_triplets,
-                              int ls_amount);
+                              int ls_amount, int ind);
 static void sort_2D_lss(ls lss[CHANNELS], int sorted_lss[CHANNELS],
                         int ls_amount);
 
-static MYFLT *create_ls_table(CSOUND *csound, size_t cnt)
+static MYFLT *create_ls_table(CSOUND *csound, size_t cnt, int ind)
 {
-    csound->DestroyGlobalVariable(csound, "vbap_ls_table");
-    if (UNLIKELY(csound->CreateGlobalVariable(csound, "vbap_ls_table",
+    char name[24];
+    sprintf(name, "vbap_ls_table_%d", ind);
+    csound->DestroyGlobalVariable(csound, name);
+    if (UNLIKELY(csound->CreateGlobalVariable(csound, name,
                                               cnt * sizeof(MYFLT)) != 0))
       csound->Die(csound, Str("vbap: error allocating loudspeaker table"));
-    return get_ls_table(csound);
+    return (MYFLT*) (csound->QueryGlobalVariableNoCheck(csound, name));
 }
 
 void calc_vbap_gns(int ls_set_am, int dim, LS_SET *sets,
@@ -114,8 +114,7 @@ void calc_vbap_gns(int ls_set_am, int dim, LS_SET *sets,
       }
     }
 
-
-        if (sets[j].set_gains[0]<=FL(0.0) &&
+    if (sets[j].set_gains[0]<=FL(0.0) &&
         sets[j].set_gains[1]<=FL(0.0) &&
         sets[j].set_gains[2]<=FL(0.0)) {
       sets[j].set_gains[0] = FL(1.0);
@@ -123,9 +122,6 @@ void calc_vbap_gns(int ls_set_am, int dim, LS_SET *sets,
       sets[j].set_gains[2] = FL(1.0);
       }
 
-/*     for (i=0;i<ls_amount;i++) { */
-/*       gains[i]=FL(0.0); */
-/*     } */
     memset(gains, 0, ls_amount*sizeof(MYFLT));
 
     gains[sets[j].ls_nos[0]-1] = sets[j].set_gains[0];
@@ -266,10 +262,11 @@ static void choose_ls_triplets(CSOUND *csound, ls lss[CHANNELS],
       csound->Die(csound, Str("Number of loudspeakers is zero\nExiting"));
     }
 
+    i = (CHANNELS * (CHANNELS - 1))/2;
     connections = calloc(CHANNELS * CHANNELS, sizeof(int));
-    distance_table = calloc(((CHANNELS * (CHANNELS - 1)) / 2), sizeof(MYFLT));
-    distance_table_i = calloc(((CHANNELS * (CHANNELS - 1)) / 2), sizeof(int));
-    distance_table_j = calloc(((CHANNELS * (CHANNELS - 1)) / 2), sizeof(int));
+    distance_table = calloc(i, sizeof(MYFLT));
+    distance_table_i = calloc(i, sizeof(int));
+    distance_table_j = calloc(i, sizeof(int));
 
 /*  i_ptr = (int *) connections; */
 /*  for (i=0;i< ((CHANNELS) * (CHANNELS )); i++) */
@@ -285,7 +282,7 @@ static void choose_ls_triplets(CSOUND *csound, ls lss[CHANNELS],
           connections[k+CHANNELS*i]=1;
           connections[j+CHANNELS*k]=1;
           connections[k+CHANNELS*j]=1;
-          add_ldsp_triplet(csound, i, j, k, ls_triplets, lss);
+          add_ldsp_triplet(csound, i, j, k, ls_triplets);
         }
       }
 
@@ -386,7 +383,7 @@ static int any_ls_inside_triplet(int a, int b, int c, ls lss[CHANNELS],
     lp3 =  &(lss[c].coords);
 
     /* matrix inversion */
-    invdet = FL(1.0) / (  lp1->x * ((lp2->y * lp3->z) - (lp2->z * lp3->y))
+    invdet = FL(1.0) / ( lp1->x * ((lp2->y * lp3->z) - (lp2->z * lp3->y))
                        - lp1->y * ((lp2->x * lp3->z) - (lp2->z * lp3->x))
                        + lp1->z * ((lp2->x * lp3->y) - (lp2->y * lp3->x)));
 
@@ -419,16 +416,15 @@ static int any_ls_inside_triplet(int a, int b, int c, ls lss[CHANNELS],
 }
 
 static void add_ldsp_triplet(CSOUND *csound, int i, int j, int k,
-                             struct ls_triplet_chain **ls_triplets,
-                             ls lss[CHANNELS])
+                             struct ls_triplet_chain **ls_triplets)
 {
     struct ls_triplet_chain *ls_ptr, *prev;
     ls_ptr = *ls_triplets;
     prev = NULL;
 
-  /*printf("Adding triangle %d %d %d %x... \n",i,j,k,ls_ptr);*/
+    printf("Adding triangle %d %d %d %x... \n",i,j,k,ls_ptr);
     while (ls_ptr != NULL) {
-      /*printf("ls_ptr %x %x\n",ls_ptr,ls_ptr->next);*/
+      printf("ls_ptr %x %x\n",ls_ptr,ls_ptr->next);
       prev = ls_ptr;
       ls_ptr = ls_ptr->next;
     }
@@ -442,7 +438,7 @@ static void add_ldsp_triplet(CSOUND *csound, int i, int j, int k,
     ls_ptr->ls_nos[0] = i;
     ls_ptr->ls_nos[1] = j;
     ls_ptr->ls_nos[2] = k;
-    /*printf("added.\n");*/
+    printf("added.\n");
 }
 
 MYFLT angle_in_base(CART_VEC vb1,CART_VEC vb2,CART_VEC vec)
@@ -537,7 +533,7 @@ int lines_intersect(int i,int j,int k,int l,ls  lss[CHANNELS])
     dist_knv3 = (vec_angle(lss[k].coords,neg_v3));
     dist_lnv3 = (vec_angle(neg_v3,lss[l].coords));
 
-    /* if one of loudspeakers is close to crossing point, don't do anything*/
+    /* if one of loudspeakers is close to crossing point, do not do anything*/
     if (FABS(dist_iv3) <= FL(0.01) || FABS(dist_jv3) <= FL(0.01) ||
         FABS(dist_kv3) <= FL(0.01) || FABS(dist_lv3) <= FL(0.01) ||
         FABS(dist_inv3) <= FL(0.01) || FABS(dist_jnv3) <= FL(0.01) ||
@@ -555,33 +551,32 @@ int lines_intersect(int i,int j,int k,int l,ls  lss[CHANNELS])
     }
 }
 
-int vbap_ls_init (CSOUND *csound, VBAP_LS_INIT *p)
+static inline int vbap_ls_init_sr (CSOUND *csound, int dim, int count,
+                            MYFLT **f, int layout)
      /* Inits the loudspeaker data. Calls choose_ls_tuplets or _triplets
         according to current dimension. The inversion matrices are
         stored in transposed form to ease calculation at run time.*/
 {
-    int dim, count;
     struct ls_triplet_chain *ls_triplets = NULL;
     ls lss[CHANNELS];
 
     ANG_VEC a_vector;
     CART_VEC c_vector;
     int i=0,j;
-    int ls_amount;
 
-    dim = (int) *p->dim;
+    //dim = (int) *p->dim;
     csound->Warning(csound, "dim : %d\n",dim);
     if (UNLIKELY(!((dim==2) || (dim == 3)))) {
       csound->Die(csound, Str("Error in loudspeaker dimension."));
     }
-    count = (int) *p->ls_amount;
+    //count = (int) *p->ls_amount;
     for (j=1;j<=count;j++) {
       if (dim == 3) {
-        a_vector.azi= (MYFLT) *p->f[2*j-2];
-        a_vector.ele= (MYFLT) *p->f[2*j-1];
+        a_vector.azi= (MYFLT) *f[2*j-2];
+        a_vector.ele= (MYFLT) *f[2*j-1];
       }
       else if (dim == 2) {
-        a_vector.azi= (MYFLT) *p->f[j-1];
+        a_vector.azi= (MYFLT) *f[j-1];
         a_vector.ele=FL(0.0);
       }
       angle_to_cart_II(&a_vector,&c_vector);
@@ -593,24 +588,34 @@ int vbap_ls_init (CSOUND *csound, VBAP_LS_INIT *p)
       lss[i].angles.length = FL(1.0);
       i++;
     }
-    ls_amount = (int)*p->ls_amount;
-    if (UNLIKELY(ls_amount < dim)) {
+    //ls_amount = (int)*p->ls_amount;
+    if (UNLIKELY(count < dim)) {
       csound->Die(csound, Str("Too few loudspeakers"));
     }
 
     if (dim == 3) {
-      choose_ls_triplets(csound, lss, &ls_triplets,ls_amount);
-      calculate_3x3_matrixes(csound, ls_triplets,lss,ls_amount);
+      choose_ls_triplets(csound, lss, &ls_triplets,count);
+      calculate_3x3_matrixes(csound, ls_triplets,lss,count, layout);
     }
     else if (dim ==2) {
-      choose_ls_tuplets(csound, lss, &ls_triplets,ls_amount);
+      choose_ls_tuplets(csound, lss, count, layout);
     }
     return OK;
 }
 
+int vbap_ls_init (CSOUND *csound, VBAP_LS_INIT *p)
+{
+    int dim = (int) *p->dim;
+    int layout = (int)MYFLT2LRND(FL(100.0)*(*p->dim-(MYFLT)dim));
+    /* printf("dim=%d p->dim=%f %f %f %d\n",  */
+    /*        dim, *p->dim, *p->dim-(MYFLT)dim, FL(100.0)*(*p->dim-(MYFLT)dim),  */
+    /*        layout); */
+    return vbap_ls_init_sr(csound, dim, (int) *p->ls_amount, p->f, layout);
+}
+
 static void calculate_3x3_matrixes(CSOUND *csound,
                                    struct ls_triplet_chain *ls_triplets,
-                                   ls lss[CHANNELS], int ls_amount)
+                                   ls lss[CHANNELS], int ls_amount, int ind)
      /* Calculates the inverse matrices for 3D */
 {
     MYFLT invdet;
@@ -631,7 +636,7 @@ static void calculate_3x3_matrixes(CSOUND *csound,
     }
 
     /* calculations and data storage to a global array */
-    ls_table = create_ls_table(csound, triplet_amount * 12 + 3);
+    ls_table = create_ls_table(csound, triplet_amount * 12 + 3, ind);
     ls_table[0] = FL(3.0);  /* dimension */
     ls_table[1] = (MYFLT) ls_amount;
     ls_table[2] = (MYFLT) triplet_amount;
@@ -644,18 +649,18 @@ static void calculate_3x3_matrixes(CSOUND *csound,
 
       /* matrix inversion */
       invmx = tr_ptr->inv_mx;
-      invdet = FL(1.0) / (  lp1->x * ((lp2->y * lp3->z) - (lp2->z * lp3->y))
-                         - lp1->y * ((lp2->x * lp3->z) - (lp2->z * lp3->x))
+      invdet = FL(1.0) / ( lp1->x * ((lp2->y * lp3->z) - (lp2->z * lp3->y))
+                         + lp1->y * ((lp2->z * lp3->x) - (lp2->x * lp3->z))
                          + lp1->z * ((lp2->x * lp3->y) - (lp2->y * lp3->x)));
-
+      printf("invdet = %g (%.8x %.8x)\n", invdet, invdet);
       invmx[0] = ((lp2->y * lp3->z) - (lp2->z * lp3->y)) * invdet;
-      invmx[3] = ((lp1->y * lp3->z) - (lp1->z * lp3->y)) * -invdet;
+      invmx[3] = ((lp1->y * lp3->z) - (lp1->z * lp3->y)) * (-invdet);
       invmx[6] = ((lp1->y * lp2->z) - (lp1->z * lp2->y)) * invdet;
-      invmx[1] = ((lp2->x * lp3->z) - (lp2->z * lp3->x)) * -invdet;
+      invmx[1] = ((lp2->x * lp3->z) - (lp2->z * lp3->x)) * (-invdet);
       invmx[4] = ((lp1->x * lp3->z) - (lp1->z * lp3->x)) * invdet;
-      invmx[7] = ((lp1->x * lp2->z) - (lp1->z * lp2->x)) * -invdet;
+      invmx[7] = ((lp1->x * lp2->z) - (lp1->z * lp2->x)) * (-invdet);
       invmx[2] = ((lp2->x * lp3->y) - (lp2->y * lp3->x)) * invdet;
-      invmx[5] = ((lp1->x * lp3->y) - (lp1->y * lp3->x)) * -invdet;
+      invmx[5] = ((lp1->x * lp3->y) - (lp1->y * lp3->x)) * (-invdet);
       invmx[8] = ((lp1->x * lp2->y) - (lp1->y * lp2->x)) * invdet;
       for (i=0;i<3;i++) {
         *(ptr++) = (MYFLT) tr_ptr->ls_nos[i]+1;
@@ -667,27 +672,26 @@ static void calculate_3x3_matrixes(CSOUND *csound,
     }
 
     k = 3;
-    csound->Warning(csound, Str("\nConfigured loudspeakers\n"));
+    csound->Message(csound, Str("\nConfigured loudspeakers\n"));
     for (i = 0; i < triplet_amount; i++) {
-      csound->Warning(csound, Str("Triplet %d Loudspeakers: "), i);
+      csound->Message(csound, Str("Triplet %d Loudspeakers: "), i);
       for (j = 0; j < 3; j++) {
-        csound->Warning(csound, "%d ", (int) ls_table[k++]);
+        csound->Message(csound, "%d ", (int) ls_table[k++]);
       }
-      csound->Warning(csound, "\n");
+      csound->Message(csound, "\n");
 
-   /* printf("\nMatrix "); */
+      printf("\nMatrix ");
       for (j = 0; j < 9; j++) {
-     /* printf("%f ", ls_table[k]); */
+        printf("%f%c", ls_table[k], (j%3==2?'\n':' '));
         k++;
       }
-   /* printf("\n\n"); */
+      printf("\n\n");
     }
 }
 
 static void choose_ls_tuplets(CSOUND *csound,
                               ls lss[CHANNELS],
-                              ls_triplet_chain **ls_triplets,
-                              int ls_amount)
+                              int ls_amount, int ind)
      /* selects the loudspeaker pairs, calculates the inversion
         matrices and stores the data to a global array */
 {
@@ -707,30 +711,39 @@ static void choose_ls_tuplets(CSOUND *csound,
 
     /* adjacent loudspeakers are the loudspeaker pairs to be used.*/
     for (i=0;i<(ls_amount-1);i++) {
-      /*csound->Message(csound, "%d %d %f %f\n",sorted_lss[i],sorted_lss[i+1],
+      csound->Message(csound, "%d %d: %f %f\n",sorted_lss[i],sorted_lss[i+1],
         lss[sorted_lss[i]].angles.azi,
-        lss[sorted_lss[i+1]].angles.azi);*/
-      if ((lss[sorted_lss[i+1]].angles.azi -
-           lss[sorted_lss[i]].angles.azi) <= (PI - 0.175)) {
-        if (calc_2D_inv_tmatrix( lss[sorted_lss[i]].angles.azi,
-                                 lss[sorted_lss[i+1]].angles.azi,
-                                 inv_mat[i]) != 0) {
+        lss[sorted_lss[i+1]].angles.azi);
+      if (LIKELY((lss[sorted_lss[i+1]].angles.azi -
+                  lss[sorted_lss[i]].angles.azi) <= (PI_F - 0.0175))) {
+        if (LIKELY(calc_2D_inv_tmatrix( lss[sorted_lss[i]].angles.azi,
+                                        lss[sorted_lss[i+1]].angles.azi,
+                                        inv_mat[i]) != 0)) {
           exist[i]=1;
           amount++;
         }
       }
+      else  csound->Warning(csound, Str("Pair of speakers at %f and %f ignored\n"),
+                            lss[sorted_lss[i]].angles.azi*FL(180.0)/PI_F,
+                            lss[sorted_lss[i+1]].angles.azi*FL(180.0)/PI_F);
     }
 
-    if (((6.283 - lss[sorted_lss[ls_amount-1]].angles.azi)
-         +lss[sorted_lss[0]].angles.azi) <= (PI - 0.175)) {
-      if (calc_2D_inv_tmatrix(lss[sorted_lss[ls_amount-1]].angles.azi,
-                              lss[sorted_lss[0]].angles.azi,
-                              inv_mat[ls_amount-1]) != 0) {
+    if (LIKELY(((TWOPI_F - lss[sorted_lss[ls_amount-1]].angles.azi)
+                +lss[sorted_lss[0]].angles.azi) < (PI - 0.0175))) {
+      //printf("less than PI type 2- 0.175\n");
+      if (LIKELY(calc_2D_inv_tmatrix(lss[sorted_lss[ls_amount-1]].angles.azi,
+                                     lss[sorted_lss[0]].angles.azi,
+                                     inv_mat[ls_amount-1]) != 0)) {
         exist[ls_amount-1]=1;
         amount++;
       }
     }
+    else  csound->Warning(csound, Str("Pair of speakers at %f and %f ignored\n"),
+                          lss[sorted_lss[ls_amount-1]].angles.azi*FL(180.0)/PI_F,
+                          lss[sorted_lss[0]].angles.azi*FL(180.0)/PI_F);
 
+    if (UNLIKELY(amount==0))
+      csound->InitError(csound, Str("insufficient valid speakers"));
 #if 0
     if ( amount*6 + 6 <= 16) ftable_size = 16;
     else if ( amount*6 + 6 <= 32) ftable_size = 32;
@@ -741,13 +754,14 @@ static void choose_ls_tuplets(CSOUND *csound,
     csound->Message(csound,
                     "Loudspeaker matrices calculated with configuration : ");
     for (i=0; i< ls_amount; i++)
-      csound->Message(csound, "%.1f ", lss[i].angles.azi / atorad);
+      csound->Message(csound, "%.3f ", lss[i].angles.azi);
     csound->Message(csound, "\n");
 #endif
-    ls_table = create_ls_table(csound, amount * 6 + 3 + 100);
+    ls_table = create_ls_table(csound, amount * 6 + 3 + 100, ind);
     ls_table[0] = FL(2.0);  /* dimension */
     ls_table[1] = (MYFLT) ls_amount;
     ls_table[2] = (MYFLT) amount;
+    //printf("init_ls: 2/%d/%d\n", ls_amount, amount);
     ptr = &(ls_table[3]);
     for (i=0;i<ls_amount - 1;i++) {
       if (exist[i] == 1) {
@@ -774,12 +788,12 @@ static void choose_ls_tuplets(CSOUND *csound,
       }
       csound->Warning(csound, "\n");
 
-   /* csound->Message(csound, "\nMatrix "); */
-      /* for (j=0; j < 4; j++) { */
-     /* csound->Message(csound, "%f ", ls_table[k]); */
-      /*   k++; */
-      /* } */
-   /* csound->Message(csound, "\n\n"); */
+      csound->Message(csound, "\nMatrix ");
+      for (j=0; j < 4; j++) {
+        csound->Message(csound, "%f ", ls_table[k]);
+        k++;
+      }
+      csound->Message(csound, "\n\n");
     }
 }
 
@@ -828,7 +842,7 @@ int calc_2D_inv_tmatrix(MYFLT azi1,MYFLT azi2, MYFLT inv_mat[4])
     x4 = SIN(azi2 );
     det = (x1 * x4) - ( x3 * x2 );
     if (FABS(det) <= FL(0.001)) {
-      /*printf("unusable pair, det %f\n",det);*/
+      printf("unusable pair, det %f\n",det);
       inv_mat[0] = FL(0.0);
       inv_mat[1] = FL(0.0);
       inv_mat[2] = FL(0.0);
@@ -836,6 +850,7 @@ int calc_2D_inv_tmatrix(MYFLT azi1,MYFLT azi2, MYFLT inv_mat[4])
       return 0;
     }
     else {
+      //printf("usable pair, det %f\n",det);
       inv_mat[0] =  (x4 / det);
       inv_mat[1] =  (-x3 / det);
       inv_mat[2] =  (-x2 / det);
@@ -901,6 +916,13 @@ void new_spread_base(CART_VEC spreaddir, CART_VEC vscartdir,
 
 /* static */
 static OENTRY vbap_localops[] = {
+  { "vbap",      S(VBAP),
+    TR|5,  "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
+    "akOOo",
+    (SUBR) vbap_init,          (SUBR) NULL,    (SUBR) vbap       },
+  { "vbapg",      S(VBAP1),             TR|3,
+    "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",  "kOOo",
+    (SUBR) vbap1_init,          (SUBR) vbap1,       (SUBR) NULL             },
   { "vbap4",      S(VBAP_FOUR),             TR|5,  "aaaa",             "akOO",
     (SUBR) vbap_FOUR_init,          (SUBR) NULL,    (SUBR) vbap_FOUR        },
   { "vbap8",      S(VBAP_EIGHT),            TR|5,  "aaaaaaaa",         "akOO",
@@ -909,8 +931,16 @@ static OENTRY vbap_localops[] = {
     (SUBR) vbap_SIXTEEN_init,       (SUBR) NULL,    (SUBR) vbap_SIXTEEN     },
   { "vbapz",      S(VBAP_ZAK),           ZW|TR|5,  "",                 "iiakOO",
     (SUBR) vbap_zak_init,           (SUBR) NULL,    (SUBR) vbap_zak         },
-  { "vbaplsinit", S(VBAP_LS_INIT), TR|1, "", "iioooooooooooooooooooooooooooooooo",
+  { "vbaplsinit", S(VBAP_LS_INIT), TR|1, "",
+     "ii" "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
+          "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo",
     (SUBR) vbap_ls_init,            (SUBR) NULL,    (SUBR) NULL             },
+  { "vbapmove",  S(VBAP_MOVING),      TR|5,
+    "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm", "aiiim",
+    (SUBR) vbap_moving_init,   (SUBR) NULL,    (SUBR) vbap_moving },
+  { "vbap1move",  S(VBAP1_MOVING),      TR|5,
+    "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "iiim",
+    (SUBR) vbap1_moving_init,   (SUBR) NULL,    (SUBR) vbap1_moving },
   { "vbap4move",  S(VBAP_FOUR_MOVING),      TR|5,  "aaaa",             "aiiim",
     (SUBR) vbap_FOUR_moving_init,   (SUBR) NULL,    (SUBR) vbap_FOUR_moving },
   { "vbap8move",  S(VBAP_EIGHT_MOVING),     TR|5,  "aaaaaaaa",         "aiiim",

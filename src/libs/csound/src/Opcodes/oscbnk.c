@@ -275,7 +275,7 @@ static void oscbnk_lfo(OSCBNK *p, OSCBNK_OSC *o)
 
 static int oscbnkset(CSOUND *csound, OSCBNK *p)
 {
-    int32    i;
+    uint32_t    i;
     FUNC    *ftp;
     MYFLT   x;
 
@@ -1126,7 +1126,7 @@ static int kosclikt(CSOUND *csound, OSCKT *p)
 {
     FUNC    *ftp;
     uint32   n, phs;
-    MYFLT   v, *ft;
+    MYFLT   v;
 
     /* check if table number was changed */
     if (*(p->kfn) != p->oldfn || p->ft == NULL) {
@@ -1137,7 +1137,7 @@ static int kosclikt(CSOUND *csound, OSCKT *p)
     }
 
     /* copy object data to local variables */
-    ft = p->ft; phs = p->phs;
+    phs = p->phs;
     /* read from table with interpolation */
     n = phs >> p->lobits; v = (MYFLT) ((int32) (phs & p->mask)) * p->pfrac;
     *(p->sr) = (p->ft[n] + (p->ft[n + 1] - p->ft[n]) * v) * *(p->xamp);
@@ -2472,13 +2472,13 @@ static const OENTRY localops[] = {
             (SUBR) rnd31set, (SUBR) NULL, (SUBR) rnd31a                 },
     { "oscilikt",   0xFFFE,             TR,      NULL,   NULL,
             (SUBR) NULL, (SUBR) NULL, (SUBR) NULL                       },
-    { "oscilikt.kk", sizeof(OSCKT),     7,      "s",    "kkkoo",
+    { "oscilikt.kk", sizeof(OSCKT),     TR|7,      "s",    "kkkoo",
             (SUBR) oscktset, (SUBR) kosclikt, (SUBR)osckkikt            },
-    { "oscilikt.ka", sizeof(OSCKT),     5,      "a",    "kakoo",
+    { "oscilikt.ka", sizeof(OSCKT),     TR|5,      "a",    "kakoo",
             (SUBR) oscktset, (SUBR) NULL, (SUBR) osckaikt               },
-    { "oscilikt.ak", sizeof(OSCKT),     5,      "a",    "akkoo",
+    { "oscilikt.ak", sizeof(OSCKT),     TR|5,      "a",    "akkoo",
             (SUBR) oscktset, (SUBR) NULL, (SUBR) oscakikt               },
-    { "oscilikt.aa", sizeof(OSCKT),     5,      "a",    "aakoo",
+    { "oscilikt.aa", sizeof(OSCKT),     TR|5,      "a",    "aakoo",
             (SUBR) oscktset, (SUBR) NULL, (SUBR) oscaaikt               },
     { "osciliktp",  sizeof(OSCKTP),     TR|5,      "a",    "kkko",
             (SUBR) oscktpset, (SUBR) NULL, (SUBR) oscktp                },

@@ -59,6 +59,10 @@ typedef __int16 int16;
 typedef unsigned __int32 uint32;
 typedef unsigned __int16 uint16;
 #else
+#ifdef __HAIKU__
+/* avoid conflicting typedefs */
+#include <SupportDefs.h>
+#else
 #include <stdint.h>
 typedef int_least32_t int32;
 typedef int_least16_t int16;
@@ -66,12 +70,13 @@ typedef uint_least32_t uint32;
 typedef uint_least16_t uint16;
 #endif
 #endif
+#endif
 
-#if defined(HAVE_PTHREAD_SPIN_LOCK)
+#if defined(HAVE_PTHREAD_SPIN_LOCK) && !defined(SWIG)
 #include <pthread.h>
 #endif
 
-#if defined(HAVE_PTHREAD_SPIN_LOCK)
+#if defined(HAVE_SYNC_LOCK_AND_TEST) && !defined(SWIG)
 #include <pthread.h>
 #endif
 

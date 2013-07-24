@@ -90,7 +90,7 @@
 #endif
 #endif
 
-#if defined(LINUX) || defined(NEW_MACH_CODE)
+#if defined(LINUX) || defined(NEW_MACH_CODE) || defined(__HAIKU__)
 #include <dlfcn.h>
 #elif defined(WIN32)
 #include <windows.h>
@@ -134,7 +134,16 @@ static  const   char    *plugindir_envvar =   "OPCODEDIR";
 static  const   char    *plugindir64_envvar = "OPCODEDIR64";
 
 /* default directory to load plugins from if environment variable is not set */
-#if !(defined(_CSOUND_RELEASE_) && (defined(LINUX) || defined(__MACH__)))
+#if defined(__HAIKU__)
+#  define ENABLE_OPCODEDIR_WARNINGS 0
+#  ifndef CS_DEFAULT_PLUGINDIR
+#    ifndef USE_DOUBLE
+#      define CS_DEFAULT_PLUGINDIR  "/boot/common/lib/csound/plugins"
+#    else
+#      define CS_DEFAULT_PLUGINDIR  "/boot/common/lib/csound/plugins64"
+#    endif
+#  endif
+#elif !(defined(_CSOUND_RELEASE_) && (defined(LINUX) || defined(__MACH__)))
 #  define ENABLE_OPCODEDIR_WARNINGS 1
 #  ifdef CS_DEFAULT_PLUGINDIR
 #    undef CS_DEFAULT_PLUGINDIR
@@ -249,7 +258,7 @@ static CS_NOINLINE int csoundLoadExternal(CSOUND *csound,
     err = csound->OpenLibrary(&h, libraryPath);
     if (UNLIKELY(err)) {
       char ERRSTR[256];
- #if defined(LINUX)
+ #if defined(LINUX) || defined(__HAIKU__)
       sprintf(ERRSTR, Str("could not open library '%s' (%s)"),
                       libraryPath, dlerror());
  #else
@@ -671,7 +680,7 @@ int csoundLoadModules(CSOUND *csound)
  */
 int csoundLoadModules(CSOUND *csound)
 {
-#ifdef HAVE_DIRENT_H
+#if (defined(HAVE_DIRENT_H) && (TARGET_OS_IPHONE == 0))
     DIR             *dir;
     struct dirent   *f;
     const char      *dname, *fname;
@@ -696,9 +705,9 @@ int csoundLoadModules(CSOUND *csound)
     }
     dir = opendir(dname);
     if (UNLIKELY(dir == (DIR*) NULL)) {
-      csound->ErrorMsg(csound, Str("Error opening plugin directory '%s': %s"),
+      csound->Warning(csound, Str("Error opening plugin directory '%s': %s"),
                                dname, strerror(errno));
-      return CSOUND_ERROR;
+      return CSOUND_SUCCESS;
     }
     /* load database for deferred plugin loading */
 /*     n = csoundLoadOpcodeDB(csound, dname); */
@@ -955,7 +964,7 @@ PUBLIC void *csoundGetLibrarySymbol(void *library, const char *procedureName)
     return (void*) GetProcAddress((HMODULE) library, procedureName);
 }
 
-#elif defined(LINUX) || defined (NEW_MACH_CODE)
+#elif defined(LINUX) || defined (NEW_MACH_CODE) || defined(__HAIKU__)
 
 PUBLIC int csoundOpenLibrary(void **library, const char *libraryPath)
 {
@@ -1348,7 +1357,7 @@ const INITFN staticmodules[] = { hrtfopcodes_localops_init, babo_localops_init,
                                  fareyseq_localops_init, hrtfearly_localops_init,
                                  hrtfreverb_localops_init, minmax_localops_init,
                                  vaops_localops_init,
-#ifndef WIN32
+#if defined(__MACH__) || defined(LINUX) || defined(__HAIKU__)
                                  cpumeter_localops_init,
 #endif
                                  mp3in_localops_init, gendy_localops_init,
@@ -1372,8 +1381,8 @@ CS_NOINLINE int csoundInitStaticModules(CSOUND *csound)
       if (UNLIKELY(length <= 0L)) return CSOUND_ERROR;
       length /= (long) sizeof(OENTRY);
       if (length) {
-        if (UNLIKELY(csound->AppendOpcodes(csound, opcodlst_n,
-                                           (int) length) != 0))
+         if (UNLIKELY(csound->AppendOpcodes(csound, opcodlst_n,
+                                         (int) length) != 0))
           return CSOUND_ERROR;
       }
     }

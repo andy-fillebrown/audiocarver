@@ -39,7 +39,7 @@
 
 static int syncgrain_init(CSOUND *csound, syncgrain *p)
 {
-    int size;
+    unsigned int size;
     p->efunc = csound->FTnp2Find(csound, p->ifn2);
     if (UNLIKELY(p->efunc == NULL))
       return NOTOK;
@@ -195,7 +195,7 @@ static int syncgrainloop_init(CSOUND *csound, syncgrainloop *p)
       p->olaps = 2;
 
     if (*p->iskip == 0) {
-      int size =  (p->olaps) * sizeof(double);
+      unsigned int size =  (p->olaps) * sizeof(double);
       if (p->index.auxp == NULL || p->index.size < size)
          csound->AuxAlloc(csound, size, &p->index);
       if (p->envindex.auxp == NULL || p->envindex.size < size)
@@ -375,7 +375,7 @@ typedef struct _filegrain {
 
 static int filegrain_init(CSOUND *csound, filegrain *p)
 {
-    int size;
+    unsigned int size;
     void *fd;
     MYFLT *buffer;
     SF_INFO sfinfo;

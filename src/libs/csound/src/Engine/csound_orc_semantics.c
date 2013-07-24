@@ -286,7 +286,7 @@ void csound_orcerror(PARSE_PARM *pp, void *yyscanner,
  * down the linked list to append at end; checks for NULL's and returns
  * appropriate nodes
  */
-TREE* appendToTree(CSOUND * csound, TREE *first, TREE *newlast) {
+TREE* appendToTree(TREE *first, TREE *newlast) {
     TREE *current;
     if (first == NULL) {
         return newlast;
@@ -797,20 +797,20 @@ void handle_optional_args(CSOUND *csound, TREE *l)
           temp = make_leaf(csound, l->line, l->locn,
                            INTEGER_TOKEN, make_int(csound, "0"));
           if (l->right==NULL) l->right = temp;
-          else appendToTree(csound, l->right, temp);
+          else appendToTree(l->right, temp);
           break;
         case 'P':
         case 'p':
           temp = make_leaf(csound, l->line, l->locn,
                            INTEGER_TOKEN, make_int(csound, "1"));
           if (l->right==NULL) l->right = temp;
-          else appendToTree(csound, l->right, temp);
+          else appendToTree(l->right, temp);
           break;
         case 'q':
           temp = make_leaf(csound, l->line, l->locn,
                            INTEGER_TOKEN, make_int(csound, "10"));
           if (l->right==NULL) l->right = temp;
-          else appendToTree(csound, l->right, temp);
+          else appendToTree(l->right, temp);
           break;
 
         case 'V':
@@ -818,20 +818,20 @@ void handle_optional_args(CSOUND *csound, TREE *l)
           temp = make_leaf(csound, l->line, l->locn,
                            NUMBER_TOKEN, make_num(csound, ".5"));
           if (l->right==NULL) l->right = temp;
-          else appendToTree(csound, l->right, temp);
+          else appendToTree(l->right, temp);
           break;
         case 'h':
           temp = make_leaf(csound, l->line, l->locn,
                            INTEGER_TOKEN, make_int(csound, "127"));
           if (l->right==NULL) l->right = temp;
-          else appendToTree(csound, l->right, temp);
+          else appendToTree(l->right, temp);
           break;
         case 'J':
         case 'j':
           temp = make_leaf(csound, l->line, l->locn,
                            INTEGER_TOKEN, make_int(csound, "-1"));
           if (l->right==NULL) l->right = temp;
-          else appendToTree(csound, l->right, temp);
+          else appendToTree(l->right, temp);
           break;
         case 'M':
         case 'N':

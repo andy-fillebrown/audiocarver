@@ -104,6 +104,7 @@ SOURCES = \
     ../src/Engine/symbtab.c \
     ../src/Engine/twarp.c \
     \
+    ../src/InOut/circularbuffer.c \
     ../src/InOut/libsnd.c \
     ../src/InOut/libsnd_u.c \
     ../src/InOut/midifile.c \
