@@ -20,9 +20,20 @@
 #include <icore.h>
 #include <idatabase.h>
 #include <mainwindow.h>
+#include <QCoreApplication>
 #include <QFileDialog>
 
 using namespace Mi::Gui;
+
+static void resetDatabase(IDatabase *database)
+{
+    database->reset();
+
+    // Process events and reset the database again to clear out any view change
+    // modifications on the undo stack.
+    QCoreApplication::processEvents();
+    database->reset();
+}
 
 static bool fileSaveAs(MainWindow *mainWindow)
 {
@@ -49,8 +60,11 @@ static bool fileSave(MainWindow *mainWindow)
 static bool fileNew(MainWindow *mainWindow)
 {
     IDatabase *database = IDatabase::instance();
-    if (database->isDirty() && mainWindow->maybeSaveDatabase())
-        database->reset();
+    if (database->isDirty()) {
+        if (mainWindow->maybeSaveDatabase())
+            resetDatabase(database);
+    } else
+        resetDatabase(database);
     return true;
 }
 

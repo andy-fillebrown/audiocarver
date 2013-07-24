@@ -46,6 +46,8 @@ public:
 
     void beginCommand();
     void endCommand();
+    void appendOrphanedItem(IModelItem* item);
+    void removeOrphanedItem(IModelItem* item);
 
 protected slots:
     virtual void dataAboutToBeChanged(IModelItem *item, int role);
@@ -55,6 +57,7 @@ protected slots:
     virtual void itemAboutToBeRemoved(IModelItem *list, int index);
     virtual void itemRemoved(IModelItem *list, int index);
     virtual void modelReset();
+    void cleanChanged(bool clean);
 };
 
 }

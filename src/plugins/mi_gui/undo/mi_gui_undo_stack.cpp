@@ -55,6 +55,7 @@ Stack::Stack(QObject *parent)
     connect(model, SIGNAL(itemAboutToBeRemoved(IModelItem*,int)), SLOT(itemAboutToBeRemoved(IModelItem*,int)));
     connect(model, SIGNAL(itemRemoved(IModelItem*,int)), SLOT(itemRemoved(IModelItem*,int)));
     connect(model, SIGNAL(modelReset()), SLOT(modelReset()));
+    connect(this, SIGNAL(cleanChanged(bool)), SLOT(cleanChanged(bool)));
     ::instance = this;
 }
 
@@ -79,6 +80,18 @@ void Stack::endCommand()
         return;
     push(_command);
     _command = 0;
+}
+
+void Stack::appendOrphanedItem(IModelItem *item)
+{
+    if (!_orphanedItems.contains(item))
+        _orphanedItems.append(item);
+}
+
+void Stack::removeOrphanedItem(IModelItem *item)
+{
+    _orphanedItems.removeOne(item);
+    Q_ASSERT(!_orphanedItems.contains(item));
 }
 
 void Stack::dataAboutToBeChanged(IModelItem *item, int role)
@@ -127,7 +140,7 @@ void Stack::itemInserted(IModelItem *list, int index)
         _inserts.removeAt(i);
         if (!_command)
             push(cmd);
-        _orphanedItems.removeAll(item);
+        removeOrphanedItem(item);
         break;
     }
 }
@@ -153,7 +166,7 @@ void Stack::itemRemoved(IModelItem *list, int index)
         _removes.removeAt(i);
         if (!_command)
             push(cmd);
-        _orphanedItems.append(cmd->item());
+        appendOrphanedItem(cmd->item());
         break;
     }
 }
@@ -161,6 +174,11 @@ void Stack::itemRemoved(IModelItem *list, int index)
 void Stack::modelReset()
 {
     clear();
+}
+
+void Stack::cleanChanged(bool clean)
+{
+    IDatabase::instance()->setDirty(!clean);
 }
 
 }

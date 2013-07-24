@@ -16,6 +16,7 @@
 **************************************************************************/
 
 #include "mi_gui_undo_listcommand.h"
+#include "mi_gui_undo_stack.h"
 #include <iaggregate.h>
 #include <imodelitem.h>
 
@@ -28,6 +29,7 @@ void ListCommand::insert()
         return;
     }
     _list->insertItem(_index, item());
+    Stack::instance()->removeOrphanedItem(item());
 }
 
 void ListCommand::remove()
@@ -37,6 +39,7 @@ void ListCommand::remove()
         return;
     }
     _list->removeItemAt(_index);
+    Stack::instance()->appendOrphanedItem(item());
 }
 
 }

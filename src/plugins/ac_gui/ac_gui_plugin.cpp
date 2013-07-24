@@ -23,7 +23,6 @@
 #include "ac_gui_mainwidget.h"
 #include "ac_gui_mainwindow.h"
 #include "ac_gui_mainwindowextension.h"
-#include "ac_gui_model_databaseupdater.h"
 #include "ac_gui_model_editorupdater.h"
 #include "ac_gui_undomanager.h"
 #include <ac_core_database.h>
@@ -32,10 +31,6 @@
 #include <icore.h>
 #include <imodel.h>
 #include <QtPlugin>
-
-#ifdef QT_DEBUG
-static bool test();
-#endif
 
 namespace Ac {
 namespace Gui {
@@ -48,7 +43,6 @@ Plugin::Plugin()
     new FilerFactory;
     new UndoManager;
     new Database::GraphicsViewManagerUpdater;
-    new Model::DatabaseUpdater;
     new Model::EditorUpdater;
     new MainWindow;
     addAutoReleasedObject(new ::Gui::MainWindowExtension);
@@ -64,67 +58,9 @@ void Plugin::extensionsInitialized()
     ::Core::MainWindow *main_window = ::Core::ICore::instance()->mainWindow();
     MainWidget *widget = new MainWidget(main_window);
     main_window->setCentralWidget(widget);
-#ifdef QT_DEBUG
-    test();
-#endif
 }
 
 }
 }
 
 Q_EXPORT_PLUGIN(::Ac::Gui::Plugin)
-
-#ifdef QT_DEBUG
-
-#include <iaggregate.h>
-#include <idatabaseobjectfactory.h>
-#include <imodelitem.h>
-#include <QtDebug>
-
-#define RUN(x) if (!x()) return false
-#define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
-
-using namespace Ac;
-
-bool test_create_item(IDatabaseObjectFactory *factory, int itemType)
-{
-    IAggregate *item = factory->create(itemType);
-    if (!item)
-        return false;
-    delete item;
-    return true;
-}
-
-bool test_1()
-{
-    // Make sure all item types can be created.
-    // Note:  Don't create a score item since it makes IDatabase::rootItem() return
-    // an unused score.
-    IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
-    CHECK(test_create_item(factory, TrackItem));
-    CHECK(test_create_item(factory, TrackListItem));
-    CHECK(test_create_item(factory, NoteItem));
-    CHECK(test_create_item(factory, NoteListItem));
-    CHECK(test_create_item(factory, PitchCurveItem));
-    CHECK(test_create_item(factory, ControlCurveItem));
-    CHECK(test_create_item(factory, ControlCurveListItem));
-    CHECK(test_create_item(factory, GridSettingsItem));
-    CHECK(test_create_item(factory, TimeGridLineItem));
-    CHECK(test_create_item(factory, TimeGridLineListItem));
-    CHECK(test_create_item(factory, PitchGridLineItem));
-    CHECK(test_create_item(factory, PitchGridLineListItem));
-    CHECK(test_create_item(factory, ControlGridLineItem));
-    CHECK(test_create_item(factory, ControlGridLineListItem));
-    CHECK(test_create_item(factory, ViewSettingsItem));
-    CHECK(test_create_item(factory, ProjectSettingsItem));
-    return true;
-}
-
-bool test()
-{
-    RUN(test_1);
-    qDebug() << "Ac::Gui::Plugin tests passed.";
-    return true;
-}
-
-#endif

@@ -20,14 +20,9 @@
 #include "mi_core_namespace.h"
 #include <isession.h>
 #include <pluginmanager.h>
-#include <QtDebug>
 #include <QtPlugin>
 
 using namespace Base;
-
-#ifdef QT_DEBUG
-static bool test();
-#endif
 
 namespace Mi {
 namespace Core {
@@ -47,9 +42,6 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
     appendItemDataRole(ItemTypeRole, "type");
     appendItemDataRole(ListTypeRole, "listType");
     appendItemDataRole(NameRole, "name");
-#ifdef QT_DEBUG
-    test();
-#endif
     return true;
 }
 
@@ -62,26 +54,3 @@ void Plugin::extensionsInitialized()
 }
 
 Q_EXPORT_PLUGIN(Mi::Core::Plugin)
-
-#ifdef QT_DEBUG
-
-#include <imodel.h>
-
-#define RUN(x) if (!x()) return false
-#define CHECK(x) if (!(x)) { Q_ASSERT(x); return false; }
-
-using namespace Mi::Core;
-
-bool test_1()
-{
-    return true;
-}
-
-bool test()
-{
-    RUN(test_1);
-    qDebug() << "Mi::Core::Plugin tests passed.";
-    return true;
-}
-
-#endif
