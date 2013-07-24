@@ -390,8 +390,6 @@ public:
         const QPointF fromScenePos = curGrip->originalPosition();
         GraphicsViewManager *vm = GraphicsViewManager::instance();
         const QPointF sceneOffset = vm->snappedScenePos(q->sceneType(), pos) - fromScenePos;
-        if (qreal(0.0f) == sceneOffset.manhattanLength())
-            return;
         vm->disableUpdates();
         foreach (IGraphicsGrip *grip, pickedGrips)
             grip->update(PositionRole, grip->originalPosition() + sceneOffset);
