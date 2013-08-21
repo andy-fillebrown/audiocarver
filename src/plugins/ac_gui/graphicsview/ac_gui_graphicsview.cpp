@@ -20,6 +20,7 @@
 #include "ac_gui_graphicsviewmanager.h"
 #include "ac_gui_griplist_tools.h"
 #include "ac_gui_namespace.h"
+#include <ac_core_constants.h>
 #include <ac_core_point.h>
 #include <iaggregate.h>
 #include <idatabase.h>
@@ -1019,11 +1020,16 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     GraphicsViewManager *vm = GraphicsViewManager::instance();
     const int horizontal_scale_role = horizontalScaleRole();
     const int vertical_scale_role = verticalScaleRole();
-    vm->setScale(horizontal_scale_role, scaleAmount * vm->scale(horizontal_scale_role));
-    vm->setScale(vertical_scale_role, scaleAmount * vm->scale(vertical_scale_role));
-    d->recenter(posDC, offsetDC);
-    vm->updateViews();
-    d->hover();
+    qreal horizontal_scale = scaleAmount * vm->scale(horizontal_scale_role);
+    qreal vertical_scale = scaleAmount * vm->scale(vertical_scale_role);
+    if (VIEWSCALE_MIN <= horizontal_scale && horizontal_scale <= VIEWSCALE_MAX
+            && VIEWSCALE_MIN <= vertical_scale && vertical_scale <= VIEWSCALE_MAX) {
+        vm->setScale(horizontal_scale_role, horizontal_scale);
+        vm->setScale(vertical_scale_role, vertical_scale);
+        d->recenter(posDC, offsetDC);
+        vm->updateViews();
+        d->hover();
+    }
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
