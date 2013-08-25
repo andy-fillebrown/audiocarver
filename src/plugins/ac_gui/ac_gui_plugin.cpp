@@ -37,11 +37,14 @@ namespace Gui {
 
 Plugin::Plugin()
 {
+    // The undo manager may contain graphics items that need to be cleaned up
+    // before the database deletes the root graphics node.  Create the undo
+    // manager first so it gets deleted before the database gets deleted.
+    new UndoManager;
     new DatabaseObjectFactory;
     new Core::Database;
     new Editor;
     new FilerFactory;
-    new UndoManager;
     new Database::GraphicsViewManagerUpdater;
     new Model::EditorUpdater;
     new MainWindow;
