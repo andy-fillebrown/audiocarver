@@ -134,6 +134,8 @@ void Editor::paste()
     IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
     const int item_type = reader->nextItemType();
     if (-1 == item_type) {
+
+        // Make a list of all tracks that can have notes pasted.
         QList<IModelItem*> tracks;
         int track_count = track_list->itemCount();
         for (int i = 0;  i < track_count;  ++i) {
@@ -142,11 +144,23 @@ void Editor::paste()
                 tracks.append(track);
         }
         if (!tracks.isEmpty()) {
+            // If no tracks are selected then start pasting the notes into the
+            // first track in the list.
+            int i = 0;
+
+            // If a track is selected then start pasting the notes into that
+            // track instead of the first track in the list.
+            ISelectionSet *track_ss = IEditor::instance()->currentSelection(TrackItem);
+            const QList<IGraphicsItem*> &track_items = track_ss->items();
+            if (!track_items.isEmpty())
+                i = tracks.indexOf(query<IModelItem>(track_items.first()));
+
+            // Clear the selection set, bring the notes in from the clipboard,
+            // and set the selection set to the new notes.
             ISelectionSet *ss = IEditor::instance()->currentSelection();
             ss->clear();
             IUndoManager *undo_manager = IUndoManager::instance();
             undo_manager->beginCommand();
-            int i = 0;
             track_count = tracks.count();
             while (TrackItem == reader->nextItemType()) {
                 IModelItem *track = tracks.at(i);
