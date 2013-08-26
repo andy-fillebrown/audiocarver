@@ -32,7 +32,14 @@ inline QString colorFromInt(int color)
 
 inline int intFromColor(QVariant colorStringVariant)
 {
-    return colorStringVariant.toString().remove("#").toInt(0, 16);
+    return qBound(0x000000, colorStringVariant.toString().remove("#").toInt(0, 16), 0xffffff);
+}
+
+inline int colorIntFromVariant(const QVariant &variant)
+{
+    if (QVariant::String == variant.type())
+        return intFromColor(variant);
+    return qBound(0x000000, qvariant_cast<int>(variant), 0xffffff);
 }
 
 }

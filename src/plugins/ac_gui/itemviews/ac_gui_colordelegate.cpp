@@ -16,11 +16,13 @@
 **************************************************************************/
 
 #include "ac_gui_colordelegate.h"
+#include <mi_core_utilities.h>
 #include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtDebug>
 
+using namespace Mi;
 using namespace Qt;
 
 bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
@@ -36,11 +38,13 @@ bool ColorDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const 
         return false;
 
     // Open a color dialog and set the track's color if the user didn't cancel the dialog.
-    QColorDialog *dialog = new QColorDialog(qvariant_cast<QColor>(index.data()), qobject_cast<QWidget*>(parent()));
+    QColorDialog *dialog = new QColorDialog(QColor(colorIntFromVariant(index.data())), qobject_cast<QWidget*>(parent()));
     dialog->exec();
     QColor color = dialog->selectedColor();
-    if (color.isValid())
-        model->setData(index, color);
+    if (color.isValid()) {
+        color.setAlpha(0);
+        model->setData(index, intFromColor(color));
+    }
     return true;
 }
 
@@ -65,7 +69,7 @@ void ColorDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         pos.ry() -= offset;
         painter->drawText(pos, "<varies>");
     } else {
-        const QColor color = data.value<QColor>();
+        const QColor color(colorIntFromVariant(data));
         rect.setWidth(rect.height());
         painter->setPen(color);
         painter->setBrush(QBrush(color));

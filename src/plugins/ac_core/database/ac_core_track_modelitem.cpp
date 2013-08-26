@@ -113,7 +113,7 @@ bool ModelItem::setValue(int role, const QVariant &value)
 {
     switch (role) {
     case ColorRole: {
-        const int color = intFromColor(value);
+        const int color = colorIntFromVariant(value);
         if (_color == color)
             return false;
         ScopedDataChange data_change(this, ColorRole);
