@@ -130,7 +130,6 @@ void Editor::copy() const
 void Editor::paste()
 {
     IReader *reader = query<IReader>(IFilerFactory::instance()->create(CopyFiler));
-    IFiler *filer = query<IFiler>(reader);
     IModelItem *track_list = IDatabase::instance()->rootItem()->findItem(TrackListItem);
     const int item_type = reader->nextItemType();
     if (-1 == item_type) {
@@ -177,6 +176,7 @@ void Editor::paste()
             undo_manager->endCommand();
         }
     } else if (TrackListItem == item_type) {
+        IFiler *filer = query<IFiler>(reader);
         filer->reset();
         IUndoManager *undo_manager = IUndoManager::instance();
         undo_manager->beginCommand();
