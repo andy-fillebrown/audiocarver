@@ -1008,6 +1008,7 @@ void GraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
     // Mac "magic mouse" scroll-wheel handling is annoying and buggy.
+    // ... but now I have a mouse witha  scroll wheel.
 //#ifdef Q_WS_MAC
 //    return;
 //#endif
