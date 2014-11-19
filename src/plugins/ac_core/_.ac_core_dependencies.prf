@@ -1,5 +1,5 @@
 
-load(../mi_core/mi_core.prf)
+include(../mi_core/mi_core.prf)
 
 DIRS = \
     database \

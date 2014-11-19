@@ -31,7 +31,7 @@
 #define VERSIONDIALOG_H
 
 #include "qt_core_global.h"
-#include <QtGui/QDialog>
+#include <QDialog>
 
 namespace Core {
 

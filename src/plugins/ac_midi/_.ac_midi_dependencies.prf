@@ -1,5 +1,5 @@
 
-load(../ac_gui/ac_gui.prf)
+include(../ac_gui/ac_gui.prf)
 
 DIRS = \
     dialogs \

@@ -2,7 +2,7 @@ TARGET_PREFIX = Mi
 TARGET_NAME = AudioEnginePlugin
 
 TEMPLATE = lib
-QT *= multimedia
+QT *= multimedia widgets
 
 include(../../_.plugin.prf)
 

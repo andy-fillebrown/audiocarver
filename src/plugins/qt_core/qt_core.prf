@@ -1,5 +1,5 @@
 
-load(../qt_core/_.qt_core_dependencies.prf)
+include(../qt_core/_.qt_core_dependencies.prf)
 
 # for pro_version.h
 INCLUDEPATH *= $$PRO_BUILD_TREE/src/plugins/qt_core

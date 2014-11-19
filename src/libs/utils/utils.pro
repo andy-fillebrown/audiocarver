@@ -1,5 +1,6 @@
 TARGET   = Utils
 TEMPLATE = lib
+QT *= widgets
 
 include(../../library.prf)
 

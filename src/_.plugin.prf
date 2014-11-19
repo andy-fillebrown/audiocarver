@@ -4,7 +4,7 @@
     TARGET = $$PREFIXED_TARGET_NAME
 }
 
-load(../project.prf)
+include(../project.prf)
 
 # Qt 4.8.3 has a qmake bug that can be worked around by adding "dll" to CONFIG.
 win32-g++: CONFIG *= dll

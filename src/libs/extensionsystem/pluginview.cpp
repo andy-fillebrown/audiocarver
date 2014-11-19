@@ -33,12 +33,10 @@
 #include "pluginspec.h"
 #include "plugincollection.h"
 #include "ui_pluginview.h"
-
-#include <QtCore/QDir>
-#include <QtGui/QHeaderView>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QPalette>
-
+#include <QHeaderView>
+#include <QTreeWidgetItem>
+#include <QPalette>
+#include <QDir>
 #include <QtDebug>
 
 /*!
@@ -84,8 +82,8 @@ PluginView::PluginView(PluginManager *manager, QWidget *parent)
 {
     m_ui->setupUi(this);
     QHeaderView *header = m_ui->categoryWidget->header();
-    header->setResizeMode(0, QHeaderView::ResizeToContents);
-    header->setResizeMode(2, QHeaderView::ResizeToContents);
+    header->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    header->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 
     m_okIcon = QIcon(QLatin1String(":/extensionsystem/images/ok.png"));
     m_errorIcon = QIcon(QLatin1String(":/extensionsystem/images/error.png"));

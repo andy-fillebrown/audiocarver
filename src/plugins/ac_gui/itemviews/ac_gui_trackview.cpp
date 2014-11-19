@@ -31,6 +31,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
+#include <QMimeData>
 
 using namespace Ac;
 using namespace Ac::Core;

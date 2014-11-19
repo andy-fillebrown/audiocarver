@@ -29,22 +29,18 @@
 
 #include "settingsdialog.h"
 #include "icore.h"
-
 #include <extensionsystem/pluginmanager.h>
-
 #include <utils/filterlineedit.h>
-
-#include <QtCore/QSettings>
-
-#include <QtGui/QApplication>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QLabel>
-#include <QtGui/QListView>
-#include <QtGui/QPushButton>
-#include <QtGui/QScrollBar>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QStackedLayout>
-#include <QtGui/QStyledItemDelegate>
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QListView>
+#include <QPushButton>
+#include <QScrollBar>
+#include <QSortFilterProxyModel>
+#include <QStackedLayout>
+#include <QStyledItemDelegate>
+#include <QSettings>
 
 static const char categoryKeyC[] = "General/LastPreferenceCategory";
 static const char pageKeyC[] = "General/LastPreferencePage";
@@ -142,7 +138,7 @@ void CategoryModel::setPages(const QList<IOptionsPage*> &pages)
         }
     }
 
-    reset();
+    resetInternalData();
 }
 
 Category *CategoryModel::findCategoryById(const QString &id)

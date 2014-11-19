@@ -31,9 +31,8 @@
 #define FINDPLACEHOLDER_H
 
 #include "qt_core_global.h"
-
-#include <QtCore/QPointer>
-#include <QtGui/QWidget>
+#include <QWidget>
+#include <QPointer>
 
 namespace Core {
 

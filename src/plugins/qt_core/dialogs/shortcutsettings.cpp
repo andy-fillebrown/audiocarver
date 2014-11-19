@@ -36,21 +36,20 @@
 #include "icore.h"
 #include "qt_core_constants.h"
 #include "uniqueidmanager.h"
-
 #include <utils/treewidgetcolumnstretcher.h>
-
-#include <QtGui/QKeyEvent>
-#include <QtGui/QShortcut>
-#include <QtGui/QHeaderView>
-#include <QtGui/QFileDialog>
-#include <QtGui/QLineEdit>
-#include <QtGui/QAction>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QTreeWidgetItem>
-#include <QtCore/QCoreApplication>
+#include <QShortcut>
+#include <QHeaderView>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QAction>
+#include <QTreeWidgetItem>
+#include <QKeyEvent>
+#include <QKeyEvent>
+#include <QCoreApplication>
+#include <QVariant>
 #include <QtDebug>
 
-Q_DECLARE_METATYPE(Core::Internal::ShortcutItem*);
+Q_DECLARE_METATYPE(Core::Internal::ShortcutItem*)
 
 using namespace Core;
 using namespace Core::Internal;
@@ -164,7 +163,7 @@ void ShortcutSettings::commandChanged(QTreeWidgetItem *current)
     CommandMappings::commandChanged(current);
     if (!current || !current->data(0, Qt::UserRole).isValid())
         return;
-    ShortcutItem *scitem = qVariantValue<ShortcutItem *>(current->data(0, Qt::UserRole));
+    ShortcutItem *scitem = current->data(0, Qt::UserRole).value<ShortcutItem*>();
     setKeySequence(scitem->m_key);
 }
 
@@ -172,13 +171,13 @@ void ShortcutSettings::targetIdentifierChanged()
 {
     QTreeWidgetItem *current = commandList()->currentItem();
     if (current && current->data(0, Qt::UserRole).isValid()) {
-        ShortcutItem *scitem = qVariantValue<ShortcutItem *>(current->data(0, Qt::UserRole));
+        ShortcutItem *scitem = current->data(0, Qt::UserRole).value<ShortcutItem*>();
         scitem->m_key = QKeySequence(m_key[0], m_key[1], m_key[2], m_key[3]);
         if (scitem->m_cmd->defaultKeySequence() != scitem->m_key)
             setModified(current, true);
         else
             setModified(current, false);
-        current->setText(2, scitem->m_key);
+        current->setText(2, scitem->m_key.toString());
         resetCollisionMarker(scitem);
         markPossibleCollisions(scitem);
     }
@@ -191,14 +190,14 @@ void ShortcutSettings::setKeySequence(const QKeySequence &key)
     for (int i = 0; i < m_keyNum; ++i) {
         m_key[i] = key[i];
     }
-    targetEdit()->setText(key);
+    targetEdit()->setText(key.toString());
 }
 
 void ShortcutSettings::resetTargetIdentifier()
 {
     QTreeWidgetItem *current = commandList()->currentItem();
     if (current && current->data(0, Qt::UserRole).isValid()) {
-        ShortcutItem *scitem = qVariantValue<ShortcutItem *>(current->data(0, Qt::UserRole));
+        ShortcutItem *scitem = current->data(0, Qt::UserRole).value<ShortcutItem*>();
         setKeySequence(scitem->m_cmd->defaultKeySequence());
     }
 }
@@ -225,7 +224,7 @@ void ShortcutSettings::importAction()
             QString sid = uidm->stringForUniqueIdentifier(item->m_cmd->id());
             if (mapping.contains(sid)) {
                 item->m_key = mapping.value(sid);
-                item->m_item->setText(2, item->m_key);
+                item->m_item->setText(2, item->m_key.toString());
                 if (item->m_item == commandList()->currentItem())
                     commandChanged(item->m_item);
 
@@ -247,7 +246,7 @@ void ShortcutSettings::defaultAction()
 {
     foreach (ShortcutItem *item, m_scitems) {
         item->m_key = item->m_cmd->defaultKeySequence();
-        item->m_item->setText(2, item->m_key);
+        item->m_item->setText(2, item->m_key.toString());
         setModified(item->m_item, false);
         if (item->m_item == commandList()->currentItem())
             commandChanged(item->m_item);
@@ -317,7 +316,7 @@ void ShortcutSettings::initialize()
             item->setText(1, c->shortcut()->whatsThis());
         }
 
-        item->setText(2, s->m_key);
+        item->setText(2, s->m_key.toString());
         if (s->m_cmd->defaultKeySequence() != s->m_key)
             setModified(item, true);
 
@@ -356,7 +355,7 @@ void ShortcutSettings::handleKeyEvent(QKeyEvent *e)
     }
     m_keyNum++;
     QKeySequence ks(m_key[0], m_key[1], m_key[2], m_key[3]);
-    targetEdit()->setText(ks);
+    targetEdit()->setText(ks.toString());
     e->accept();
 }
 

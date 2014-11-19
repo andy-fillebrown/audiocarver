@@ -28,21 +28,17 @@
 **************************************************************************/
 
 #include "versiondialog.h"
-
 #include "qt_core_constants.h"
 #include "icore.h"
-
 #include <utils/qtcassert.h>
-
-#include <QtCore/QDate>
-#include <QtCore/QFile>
-#include <QtCore/QSysInfo>
-
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QTextBrowser>
+#include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QTextBrowser>
+#include <QDate>
+#include <QFile>
+#include <QSysInfo>
 
 using namespace Core;
 using namespace Core::Constants;

@@ -35,4 +35,4 @@ Plugin::Plugin()
 }
 }
 
-Q_EXPORT_PLUGIN(Mi::Gui::Plugin)
+//Q_EXPORT_PLUGIN(Mi::Gui::Plugin)

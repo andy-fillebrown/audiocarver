@@ -1,7 +1,7 @@
 TARGET = sndfile
 TEMPLATE = lib
 
-load(../../library.prf)
+include(../../library.prf)
 
 CONFIG -= qt
 
@@ -109,6 +109,8 @@ SOURCES = \
     src/GSM610/rpe.c \
     src/GSM610/short_term.c \
     src/GSM610/table.c \
+
+QMAKE_CFLAGS_WARN_ON *= -Wno-unused-const-variable
 
 OTHER_FILES *= \
     AUTHORS \

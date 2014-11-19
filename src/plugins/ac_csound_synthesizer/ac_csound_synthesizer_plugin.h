@@ -27,6 +27,7 @@ namespace Synthesizer {
 class Plugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "andy.fillebrown.ac_csound_synthesizer.plugin")
 
 public:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);

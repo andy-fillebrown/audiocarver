@@ -1,11 +1,13 @@
 TARGET = QtCorePlugin
 TEMPLATE = lib
+QT *= widgets
 
 include(../../_.plugin.prf)
 include(../qt_core/_.qt_core_dependencies.prf)
 
-QMAKE_SUBSTITUTES *= \
-    pro_version.h.in \
+pro_version.input = pro_version.h.in
+pro_version.output = $$OUT_PWD/pro_version.h
+QMAKE_SUBSTITUTES *= pro_version
 
 DEFINES *= \
     CORE_LIBRARY \

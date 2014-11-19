@@ -45,7 +45,8 @@ public:
 
     virtual void reset()
     {
-        QAbstractItemModel::reset();
+        QAbstractItemModel::beginResetModel();
+        QAbstractItemModel::endResetModel();
     }
 
     int interfaceType() const

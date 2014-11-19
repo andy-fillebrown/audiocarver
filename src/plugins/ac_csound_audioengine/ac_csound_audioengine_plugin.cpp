@@ -37,4 +37,4 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 }
 }
 
-Q_EXPORT_PLUGIN(Ac::Csound::AudioEngine::Plugin)
+//Q_EXPORT_PLUGIN(Ac::Csound::AudioEngine::Plugin)

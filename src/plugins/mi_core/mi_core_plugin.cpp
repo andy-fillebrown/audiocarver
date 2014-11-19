@@ -53,4 +53,4 @@ void Plugin::extensionsInitialized()
 }
 }
 
-Q_EXPORT_PLUGIN(Mi::Core::Plugin)
+//Q_EXPORT_PLUGIN(Mi::Core::Plugin)

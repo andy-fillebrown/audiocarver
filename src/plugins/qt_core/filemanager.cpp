@@ -32,19 +32,17 @@
 #include "icore.h"
 #include "ifile.h"
 #include "qt_core_constants.h"
-
 #include <utils/pathchooser.h>
-
-#include <QtCore/QSettings>
-#include <QtCore/QFileInfo>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QTimer>
-#include <QtCore/QFileSystemWatcher>
-#include <QtCore/QDateTime>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMainWindow>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QMainWindow>
+#include <QSettings>
+#include <QFileInfo>
+#include <QFile>
+#include <QDir>
+#include <QTimer>
+#include <QFileSystemWatcher>
+#include <QDateTime>
 
 static const char settingsGroupC[] = "RecentFiles";
 static const char filesKeyC[] = "Files";

@@ -1,12 +1,11 @@
 TARGET = audiocarver
 TEMPLATE = app
+QT *= widgets
 
-load(../../project.prf)
-load(../rpath.prf)
+include(../../project.prf)
+include(../rpath.prf)
 
 DESTDIR = $$PRO_APP_PATH
-
-QMAKE_SUBSTITUTES = Info.plist.in
 
 DEFINES *= \
     PRO_LIBRARY_BASENAME=\\\"$$PRO_LIBRARY_BASENAME\\\" \
@@ -25,10 +24,9 @@ win32 {
 } else:macx {
     LIBS += -framework CoreFoundation
     ICON = audiocarver.icns
-    QMAKE_INFO_PLIST = Info.plist
-    FILETYPES.files = profile.icns prifile.icns
-    FILETYPES.path = Contents/Resources
-    QMAKE_BUNDLE_DATA += FILETYPES
+    info.input = Info.plist.in
+    info.output = $$OUT_PWD/Info.plist
+    QMAKE_SUBSTITUTES = info
 } else {
     target.path  = /bin
     INSTALLS    += target

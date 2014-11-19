@@ -2,6 +2,7 @@ TARGET_PREFIX = Mi
 TARGET_NAME = GuiPlugin
 
 TEMPLATE = lib
+QT *= widgets
 
 include(../../_.plugin.prf)
 

@@ -28,17 +28,14 @@
 **************************************************************************/
 
 #include "command_p.h"
-
 #include "icore.h"
 #include "icontext.h"
 #include "uniqueidmanager.h"
-
-#include <QtCore/QDebug>
-#include <QtCore/QTextStream>
-
-#include <QtGui/QAction>
-#include <QtGui/QShortcut>
-#include <QtGui/QMainWindow>
+#include <QAction>
+#include <QShortcut>
+#include <QMainWindow>
+#include <QDebug>
+#include <QTextStream>
 
 /*!
     \class Core::Command

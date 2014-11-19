@@ -31,7 +31,7 @@ PropertyView::PropertyView(QWidget *parent)
     v_header->setDefaultSectionSize(v_header->minimumSectionSize());
     v_header->hide();
     QHeaderView *h_header = horizontalHeader();
-    h_header->setClickable(false);
+    h_header->setSectionsClickable(false);
     h_header->setDefaultAlignment(AlignLeft);
     h_header->setHighlightSections(false);
     h_header->setStretchLastSection(true);

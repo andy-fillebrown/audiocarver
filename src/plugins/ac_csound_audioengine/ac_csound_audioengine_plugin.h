@@ -27,6 +27,7 @@ namespace AudioEngine {
 class Plugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "andy.fillebrown.ac_csound_audioengine.plugin")
 
 public:
     bool initialize(const QStringList &arguments, QString *errorMessage = 0);

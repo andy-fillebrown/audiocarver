@@ -1,4 +1,4 @@
-load(../project.prf)
+include(../project.prf)
 
 # Qt 4.8.3 has a qmake bug that can be worked around by adding "dll" to CONFIG.
 win32-g++: CONFIG *= dll
@@ -6,7 +6,7 @@ win32-g++: CONFIG *= dll
 win32: DLLDESTDIR = $$PRO_APP_PATH
 DESTDIR = $$PRO_LIBRARY_PATH
 
-load(../src/rpath.prf)
+include(../src/rpath.prf)
 
 !macx {
     CONFIG += plugin plugin_with_soname

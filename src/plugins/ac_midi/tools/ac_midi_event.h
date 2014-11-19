@@ -164,8 +164,6 @@ public:
 
 private:
     quint64 _tick;
-    quint8 _chan;
-    quint8 _type;
     EventBytes _data;
 };
 

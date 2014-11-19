@@ -89,4 +89,4 @@ bool Plugin::initialize(const QStringList &arguments, QString *errorMessage)
 }
 }
 
-Q_EXPORT_PLUGIN(Ac::Core::Plugin)
+//Q_EXPORT_PLUGIN(Ac::Core::Plugin)

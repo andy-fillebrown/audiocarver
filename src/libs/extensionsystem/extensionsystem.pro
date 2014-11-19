@@ -1,8 +1,9 @@
 TARGET = ExtensionSystem
 TEMPLATE = lib
+QT *= widgets
 
-load(../../library.prf)
-load(../extensionsystem/extensionsystem_dependencies.prf)
+include(../../library.prf)
+include(../extensionsystem/extensionsystem_dependencies.prf)
 
 DEFINES *= \
     EXTENSIONSYSTEM_LIBRARY \

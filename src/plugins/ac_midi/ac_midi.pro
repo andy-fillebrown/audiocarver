@@ -2,6 +2,7 @@ TARGET_PREFIX = Ac
 TARGET_NAME = MidiPlugin
 
 TEMPLATE = lib
+QT *= widgets
 
 include(../../_.plugin.prf)
 

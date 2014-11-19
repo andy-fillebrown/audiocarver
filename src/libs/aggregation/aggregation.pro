@@ -1,7 +1,7 @@
 TARGET = Aggregation
 TEMPLATE = lib
 
-load(../../library.prf)
+include(../../library.prf)
 
 DEFINES *= \
     AGGREGATION_LIBRARY \

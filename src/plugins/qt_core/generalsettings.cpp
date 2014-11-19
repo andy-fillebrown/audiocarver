@@ -29,23 +29,18 @@
 
 #include "generalsettings.h"
 #include "qt_core_constants.h"
-
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 #	include <utils/unixutils.h>
 #endif
-
 #include <qt_core/icore.h>
 #include <qt_core/mainwindow.h>
-
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-
-#include <QtCore/QCoreApplication>
-#include <QtCore/QTextStream>
-#include <QtCore/QDir>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QSettings>
-
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QCoreApplication>
+#include <QTextStream>
+#include <QDir>
+#include <QLibraryInfo>
+#include <QSettings>
 #include "ui_generalsettings.h"
 
 using namespace Core::Internal;

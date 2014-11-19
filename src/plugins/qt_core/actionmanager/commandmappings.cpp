@@ -31,24 +31,23 @@
 #include "ui_commandmappings.h"
 #include "actionmanager_p.h"
 #include "actionmanager/command.h"
+#include "dialogs/shortcutsettings.h"
 #include "command_p.h"
 #include "commandsfile.h"
 #include "qt_core_constants.h"
 #include "filemanager.h"
 #include "icore.h"
 #include "uniqueidmanager.h"
-
 #include <utils/treewidgetcolumnstretcher.h>
-
-#include <QtGui/QKeyEvent>
-#include <QtGui/QShortcut>
-#include <QtGui/QHeaderView>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QFileDialog>
-#include <QtCore/QCoreApplication>
+#include <QShortcut>
+#include <QHeaderView>
+#include <QTreeWidgetItem>
+#include <QFileDialog>
+#include <QKeyEvent>
+#include <QCoreApplication>
 #include <QtDebug>
 
-Q_DECLARE_METATYPE(Core::Internal::ShortcutItem*);
+Q_DECLARE_METATYPE(Core::Internal::ShortcutItem*)
 
 using namespace Core;
 using namespace Core::Internal;

@@ -40,4 +40,4 @@ IPlugin::ShutdownFlag Plugin::aboutToShutdown()
 }
 }
 
-Q_EXPORT_PLUGIN(Mi::AudioEngine::Plugin)
+//Q_EXPORT_PLUGIN(Mi::AudioEngine::Plugin)

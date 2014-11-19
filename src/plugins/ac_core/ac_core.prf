@@ -1,4 +1,4 @@
 
-load(../ac_core/_.ac_core_dependencies.prf)
+include(../ac_core/_.ac_core_dependencies.prf)
 
 LIBS *= -l$$qtLibraryName(AcCorePlugin)

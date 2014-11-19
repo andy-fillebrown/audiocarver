@@ -2,8 +2,8 @@
 QT *= sql
 QT *= xml
 
-load(../../libs/extensionsystem/extensionsystem.prf)
-load(../../libs/utils/utils.prf)
+include(../../libs/extensionsystem/extensionsystem.prf)
+include(../../libs/utils/utils.prf)
 
 DIRS = \
     .. \

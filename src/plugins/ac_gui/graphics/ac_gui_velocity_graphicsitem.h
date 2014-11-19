@@ -30,7 +30,6 @@ namespace Velocity {
 
 class GraphicsItem : public Base::GraphicsItem
 {
-    IAggregate *_grips;
     QGraphicsLineItem *_lineNode;
 
 public:

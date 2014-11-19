@@ -75,7 +75,8 @@ public:
                 }
             }
         }
-        q->reset();
+        q->beginResetModel();
+        q->endResetModel();
     }
 };
 

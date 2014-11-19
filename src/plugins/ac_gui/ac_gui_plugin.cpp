@@ -66,4 +66,4 @@ void Plugin::extensionsInitialized()
 }
 }
 
-Q_EXPORT_PLUGIN(::Ac::Gui::Plugin)
+//Q_EXPORT_PLUGIN(::Ac::Gui::Plugin)

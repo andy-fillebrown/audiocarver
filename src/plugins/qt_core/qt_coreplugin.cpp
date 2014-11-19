@@ -66,4 +66,4 @@ ExtensionSystem::IPlugin::ShutdownFlag CorePlugin::aboutToShutdown()
     return SynchronousShutdown;
 }
 
-Q_EXPORT_PLUGIN(CorePlugin)
+//Q_EXPORT_PLUGIN(CorePlugin);

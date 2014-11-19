@@ -31,11 +31,10 @@
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
 
-#include <QtGui/QApplication>
-#include <QtGui/QIcon>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-
+#include <QApplication>
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QIcon>
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
@@ -131,11 +130,6 @@ static void printHelp(const QString &a0, const ExtensionSystem::PluginManager &p
 static inline QString msgCoreLoadFailure(const QString &why)
 {
     return QCoreApplication::translate("Application", "Failed to load core: %1").arg(why);
-}
-
-static inline QString msgSendArgumentFailed()
-{
-    return QCoreApplication::translate("Application", "Unable to send command line arguments to the already running instance. It appears to be not responding.");
 }
 
 static inline QStringList getPluginPaths()

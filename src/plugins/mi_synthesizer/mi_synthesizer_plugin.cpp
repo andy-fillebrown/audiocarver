@@ -26,4 +26,4 @@ namespace Synthesizer {
 }
 }
 
-Q_EXPORT_PLUGIN(Mi::Synthesizer::Plugin)
+//Q_EXPORT_PLUGIN(Mi::Synthesizer::Plugin)

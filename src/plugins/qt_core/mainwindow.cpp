@@ -48,13 +48,13 @@
 #include <extensionsystem/pluginmanager.h>
 #include <utils/pathchooser.h>
 #include <utils/stringutils.h>
-#include <QtCore/QDebug>
-#include <QtCore/QFileInfo>
-#include <QtCore/QtPlugin>
-#include <QtCore/QTimer>
-#include <QtGui/QApplication>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QMenu>
+#include <QApplication>
+#include <QMenu>
+#include <QCloseEvent>
+#include <QDebug>
+#include <QFileInfo>
+#include <QtPlugin>
+#include <QTimer>
 
 using namespace Core;
 using namespace Core::Internal;

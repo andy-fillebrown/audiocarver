@@ -31,12 +31,11 @@
 #define SETTINGSDIALOG_H
 
 #include "qt_core/dialogs/ioptionspage.h"
-
-#include <QtCore/QList>
-#include <QtCore/QSet>
-#include <QtCore/QPointer>
-#include <QtCore/QEventLoop>
-#include <QtGui/QDialog>
+#include <QDialog>
+#include <QList>
+#include <QSet>
+#include <QPointer>
+#include <QEventLoop>
 
 QT_BEGIN_NAMESPACE
 

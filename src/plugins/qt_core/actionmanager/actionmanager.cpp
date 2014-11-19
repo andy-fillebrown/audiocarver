@@ -32,16 +32,14 @@
 #include "actioncontainer_p.h"
 #include "command_p.h"
 #include "uniqueidmanager.h"
-
 #include <qt_core/qt_core_constants.h>
 #include <qt_core/icore.h>
-
-#include <QtCore/QDebug>
-#include <QtCore/QSettings>
-#include <QtGui/QMenu>
-#include <QtGui/QAction>
-#include <QtGui/QShortcut>
-#include <QtGui/QMenuBar>
+#include <QMenu>
+#include <QAction>
+#include <QShortcut>
+#include <QMenuBar>
+#include <QDebug>
+#include <QSettings>
 
 namespace {
     enum { warnAboutFindFailures = 0 };

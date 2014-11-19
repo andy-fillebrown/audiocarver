@@ -29,12 +29,10 @@
 
 #include "coreimpl.h"
 #include "mainwindow.h"
-
-#include <QtCore/QDir>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
-
-#include <QtGui/QStatusBar>
+#include <QStatusBar>
+#include <QCoreApplication>
+#include <QDir>
+#include <QDebug>
 
 namespace Core {
 namespace Internal {

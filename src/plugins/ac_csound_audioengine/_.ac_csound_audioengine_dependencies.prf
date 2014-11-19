@@ -1,6 +1,6 @@
 
-load(../ac_audioengine/ac_audioengine.prf)
-load(../../libs/csound/csound/csound.prf)
+include(../ac_audioengine/ac_audioengine.prf)
+include(../../libs/csound/csound/csound.prf)
 
 DIRS = \
     session \

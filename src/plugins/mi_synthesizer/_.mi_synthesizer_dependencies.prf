@@ -1,6 +1,6 @@
 
-load(../mi_core/mi_core.prf)
-load(../../libs/csound/csound64/csound64.prf)
+include(../mi_core/mi_core.prf)
+include(../../libs/csound/csound64/csound64.prf)
 
 DIRS = \
     implementations \

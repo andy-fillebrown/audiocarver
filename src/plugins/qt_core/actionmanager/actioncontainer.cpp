@@ -29,16 +29,13 @@
 
 #include "actioncontainer_p.h"
 #include "actionmanager_p.h"
-
 #include "command_p.h"
-
 #include "qt_core_constants.h"
 #include "uniqueidmanager.h"
-
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
-#include <QtGui/QAction>
-#include <QtGui/QMenuBar>
+#include <QAction>
+#include <QMenuBar>
+#include <QDebug>
+#include <QTimer>
 
 Q_DECLARE_METATYPE(Core::Internal::MenuActionContainer*)
 

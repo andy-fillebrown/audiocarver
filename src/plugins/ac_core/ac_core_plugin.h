@@ -26,6 +26,7 @@ namespace Core {
 class Plugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "andy.fillebrown.ac_core.plugin")
 
 public:
     Plugin();

@@ -26,4 +26,4 @@ namespace AudioEngine {
 }
 }
 
-Q_EXPORT_PLUGIN(Ac::AudioEngine::Plugin)
+//Q_EXPORT_PLUGIN(Ac::AudioEngine::Plugin)

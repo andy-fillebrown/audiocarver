@@ -6,14 +6,14 @@ useDoubles {
     TARGET = $${TARGET}64
 }
 
-load(../../library.prf)
+include(../../library.prf)
 
 macx {
-    load(../sndfile/sndfile.prf)
+    include(../sndfile/sndfile.prf)
 }
 win32 {
-    load(../pthreads/pthreads.prf)
-    load(../sndfile/sndfile.prf)
+    include(../pthreads/pthreads.prf)
+    include(../sndfile/sndfile.prf)
 }
 
 CONFIG -= qt
