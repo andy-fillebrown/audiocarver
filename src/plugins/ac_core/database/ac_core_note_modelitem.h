@@ -26,7 +26,7 @@ namespace Note {
 class AC_CORE_EXPORT ModelItem : public ScoreObject::ModelItem
 {
     IAggregate *_pitchCurve;
-    IAggregate *_controlCurve;
+    IAggregate *_controlCurves;
     enum { ItemCount = 2 };
 
 public:

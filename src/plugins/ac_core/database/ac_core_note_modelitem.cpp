@@ -27,20 +27,20 @@ namespace Note {
 ModelItem::ModelItem(IAggregate *aggregate)
     :   ScoreObject::ModelItem(aggregate)
     ,   _pitchCurve(0)
-    ,   _controlCurve(0)
+    ,   _controlCurves(0)
 {}
 
 void ModelItem::initialize()
 {
     IDatabaseObjectFactory *factory = IDatabaseObjectFactory::instance();
     _pitchCurve = factory->create(PitchCurveItem, this);
-    _controlCurve = factory->create(ControlCurveItem, this);
+    _controlCurves = factory->create(ControlCurveListItem, this);
     ScoreObject::ModelItem::initialize();
 }
 
 ModelItem::~ModelItem()
 {
-    qDelete(_controlCurve);
+    qDelete(_controlCurves);
     qDelete(_pitchCurve);
 }
 
@@ -60,7 +60,7 @@ int ModelItem::indexOfItem(const IModelItem *item) const
 {
     if (query<IModelItem>(_pitchCurve) == item)
         return ItemCountOffset;
-    if (query<IModelItem>(_controlCurve) == item)
+    if (query<IModelItem>(_controlCurves) == item)
         return ItemCountOffset + 1;
     return ScoreObject::ModelItem::indexOfItem(item);
 }
@@ -71,7 +71,7 @@ IModelItem *ModelItem::itemAt(int i) const
     case 0:
         return query<IModelItem>(_pitchCurve);
     case 1:
-        return query<IModelItem>(_controlCurve);
+        return query<IModelItem>(_controlCurves);
     default:
         return Object::ModelItem::itemAt(i);
     }
@@ -81,7 +81,7 @@ IModelItem *ModelItem::findItem(int itemType) const
 {
     switch (itemType) {
     case ControlCurveListItem:
-        return query<IModelItem>(_controlCurve);
+        return query<IModelItem>(_controlCurves);
     case PitchCurveItem:
         return query<IModelItem>(_pitchCurve);
     default:
