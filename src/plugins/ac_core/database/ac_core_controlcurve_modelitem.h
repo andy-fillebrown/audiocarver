@@ -24,14 +24,32 @@ namespace ControlCurve {
 
 class AC_CORE_EXPORT ModelItem : public Curve::ModelItem
 {
+    int _controlType;
+    enum { RoleCount = 1 };
+    
 public:
     ModelItem(IAggregate *aggregate)
         :   Curve::ModelItem(aggregate)
     {}
 
 protected:
+    enum {
+        RoleCountOffset = Curve::ModelItem::TotalRoleCount,
+        TotalRoleCount = RoleCountOffset + RoleCount
+    };
+
     int itemType() const;
     bool isTypeOfItem(int itemType) const;
+
+    int roleCount() const
+    {
+        return TotalRoleCount;
+    }
+
+    int roleAt(int i) const;
+    QVariant getValue(int role) const;
+    bool setValue(int role, const QVariant &value);
+
     void conformPoints();
 };
 

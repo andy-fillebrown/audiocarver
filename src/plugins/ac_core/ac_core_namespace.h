@@ -85,6 +85,12 @@ enum CurveType {
     BezierCurve
 };
 
+enum ControlType {
+    UnknownControlType,
+    Volume,
+    Pan
+};
+
 enum FilerType {
     CopyFiler,
     FileFiler

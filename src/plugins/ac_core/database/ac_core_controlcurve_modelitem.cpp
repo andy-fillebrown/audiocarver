@@ -18,6 +18,7 @@
 #include "ac_core_controlcurve_modelitem.h"
 #include "ac_core_namespace.h"
 #include "ac_core_point.h"
+#include <mi_core_scopeddatachange.h>
 
 using namespace Ac;
 
@@ -33,6 +34,44 @@ bool ModelItem::isTypeOfItem(int itemType) const
     if (ControlCurveItem == itemType)
         return true;
     return Curve::ModelItem::isTypeOfItem(itemType);
+}
+
+int ModelItem::roleAt(int i) const
+{
+    switch (i - RoleCountOffset) {
+    case 0:
+        return ControlTypeRole;
+    default:
+        return Curve::ModelItem::roleAt(i);
+    }
+}
+
+QVariant ModelItem::getValue(int role) const
+{
+    switch (role) {
+    case ControlTypeRole:
+        return QVariant::fromValue(_controlType);
+    default:
+        return Object::ModelItem::getValue(role);
+    }
+}
+
+bool ModelItem::setValue(int role, const QVariant &value)
+{
+    switch (role) {
+    case ControlTypeRole: {
+        int control_type = qvariant_cast<int>(value);
+        if (control_type <= 0)
+            return false;
+        if (_controlType == control_type)
+            return false;
+        ScopedDataChange data_change(this, ControlTypeRole);
+        _controlType = control_type;
+        return true;
+    }
+    default:
+        return Curve::ModelItem::setValue(role, value);
+    }
 }
 
 void ModelItem::conformPoints()
