@@ -1,7 +1,7 @@
 TARGET = pthreads
 TEMPLATE = lib
 
-load(../../library.prf)
+include(../../library.prf)
 
 CONFIG -= qt
 CONFIG *= warn_off
@@ -66,6 +66,4 @@ win32 {
     HEADERS *= \
         config/windows/config.h \
 
-} else {
-    error("pthreads should only be built on Windows")
 }
