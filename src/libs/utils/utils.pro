@@ -2,7 +2,7 @@ TARGET   = Utils
 TEMPLATE = lib
 QT *= widgets
 
-include(../../library.prf)
+include(../../_.library.prf)
 
 DEFINES += UTILS_LIB
 
@@ -31,7 +31,7 @@ SOURCES = \
     treewidgetcolumnstretcher.cpp \
 
 OTHER_FILES *= \
-    utils.prf \
+    _.utils.prf \
 
 unix: !macx {
     HEADERS *= unixutils.h

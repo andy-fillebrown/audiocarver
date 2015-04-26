@@ -39,7 +39,7 @@ for(file, SOURCE_FILES) {
     exists($$source): SOURCES *= $$source
 }
 resource = $${SOURCE_FILE_PREFIX}.qrc
-prf = $${SOURCE_FILE_PREFIX}.prf
+prf = _.$${SOURCE_FILE_PREFIX}.prf
 dependencies_prf = _.$${SOURCE_FILE_PREFIX}_dependencies.prf
 pluginspec = $${SOURCE_FILE_PREFIX}.pluginspec.in
 exists($$resource): RESOURCES *= $$resource

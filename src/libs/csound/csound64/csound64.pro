@@ -1,6 +1,6 @@
 
 CONFIG *= useDoubles
-include(../csound.pri)
+include(../common.pri)
 
 OTHER_FILES *= \
-    csound64.prf \
+    _.csound64.prf \

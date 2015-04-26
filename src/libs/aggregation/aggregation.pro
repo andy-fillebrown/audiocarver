@@ -1,7 +1,7 @@
 TARGET = Aggregation
 TEMPLATE = lib
 
-include(../../library.prf)
+include(../../_.library.prf)
 
 DEFINES *= \
     AGGREGATION_LIBRARY \
@@ -14,4 +14,4 @@ SOURCES = \
     aggregate.cpp \
 
 OTHER_FILES *= \
-    aggregation.prf \
+    _.aggregation.prf \

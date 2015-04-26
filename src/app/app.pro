@@ -2,8 +2,8 @@ TARGET = audiocarver
 TEMPLATE = app
 QT *= widgets
 
-include(../../project.prf)
-include(../rpath.prf)
+include(../../_.project.prf)
+include(../_.rpath.prf)
 
 DESTDIR = $$PRO_APP_PATH
 

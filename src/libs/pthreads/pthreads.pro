@@ -1,7 +1,7 @@
 TARGET = pthreads
 TEMPLATE = lib
 
-include(../../library.prf)
+include(../../_.library.prf)
 
 CONFIG -= qt
 CONFIG *= warn_off
@@ -56,8 +56,8 @@ LIBS *= \
     -lwsock32 \
 
 OTHER_FILES *= \
+    _.pthreads.prf \
     COPYING \
-    pthreads.prf \
 
 win32 {
     INCLUDEPATH *= \

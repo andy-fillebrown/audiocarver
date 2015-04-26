@@ -1,5 +1,5 @@
 
-include(../qt_core/qt_core.prf)
+include(../qt_core/_.qt_core.prf)
 
 DIRS = \
     database \

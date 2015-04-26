@@ -84,9 +84,9 @@ for(file, QOBJECT_INTERFACE_FILES) {
 }
 
 OTHER_FILES *= \
-    pro_version.h.in \
-    qt_core.prf \
+    _.qt_core.prf \
     _.qt_core_dependencies.prf \
+    pro_version.h.in \
     qt_core.pluginspec.in \
 
 unix {

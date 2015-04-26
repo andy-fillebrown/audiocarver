@@ -1,6 +1,6 @@
 
-include(../ac_core/ac_core.prf)
-include(../mi_audioengine/mi_audioengine.prf)
+include(../ac_core/_.ac_core.prf)
+include(../mi_audioengine/_.mi_audioengine.prf)
 
 DIRS = \
     tools \

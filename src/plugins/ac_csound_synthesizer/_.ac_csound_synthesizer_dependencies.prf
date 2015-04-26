@@ -1,6 +1,6 @@
 
-include(../ac_core/ac_core.prf)
-include(../mi_synthesizer/mi_synthesizer.prf)
+include(../ac_core/_.ac_core.prf)
+include(../mi_synthesizer/_.mi_synthesizer.prf)
 
 DIRS = \
     implementations \

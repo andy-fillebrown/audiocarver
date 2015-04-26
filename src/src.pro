@@ -8,5 +8,5 @@ SUBDIRS = \
 
 OTHER_FILES *= \
     _.plugin.prf \
-    library.prf \
-    rpath.prf \
+    _.library.prf \
+    _.rpath.prf \

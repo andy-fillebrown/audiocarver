@@ -1,6 +1,6 @@
 
-include(../ac_core/ac_core.prf)
-include(../mi_gui/mi_gui.prf)
+include(../ac_core/_.ac_core.prf)
+include(../mi_gui/_.mi_gui.prf)
 
 DIRS = \
     dialogs \

@@ -1,6 +1,6 @@
 
-include(../../libs/csound/csound/csound.prf)
-include(../mi_core/mi_core.prf)
+include(../../libs/csound/csound/_.csound.prf)
+include(../mi_core/_.mi_core.prf)
 
 DIRS = \
     dialogs \

@@ -1,5 +1,5 @@
 
-include(../csound.pri)
+include(../common.pri)
 
 OTHER_FILES *= \
-    csound.prf \
+    _.csound.prf \

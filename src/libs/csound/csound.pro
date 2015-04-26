@@ -6,7 +6,8 @@ SUBDIRS = \
     csound64 \
 
 OTHER_FILES *= \
-    csound_common.prf \
+    _.csound_common.prf \
+    _.csound.pri \
     readme-git.txt \
     readme-parser.txt \
     readme-updating.txt \

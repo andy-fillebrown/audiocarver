@@ -2,8 +2,8 @@ TARGET = ExtensionSystem
 TEMPLATE = lib
 QT *= widgets
 
-include(../../library.prf)
-include(../extensionsystem/extensionsystem_dependencies.prf)
+include(../../_.library.prf)
+include(../extensionsystem/_.extensionsystem_dependencies.prf)
 
 DEFINES *= \
     EXTENSIONSYSTEM_LIBRARY \
@@ -41,8 +41,8 @@ FORMS = \
 RESOURCES = pluginview.qrc
 
 OTHER_FILES *= \
-    extensionsystem.prf \
-    extensionsystem_dependencies.prf \
+    _.extensionsystem.prf \
+    _.extensionsystem_dependencies.prf \
 
 unix:!macx:!freebsd* {
     LIBS *= \

@@ -1,7 +1,7 @@
 TARGET = sndfile
 TEMPLATE = lib
 
-include(../../library.prf)
+include(../../_.library.prf)
 
 CONFIG -= qt
 
@@ -113,10 +113,10 @@ SOURCES = \
 QMAKE_CFLAGS_WARN_ON *= -Wno-unused-const-variable
 
 OTHER_FILES *= \
+    _.sndfile.prf \
     AUTHORS \
     ChangeLog \
     COPYING \
-    sndfile.prf \
     README \
 
 macx {
