@@ -98,7 +98,7 @@
  * Set event if an event handle has been stored in the flag, and
  * set flag to -1 otherwise. Note that -1 cannot be a valid handle value.
  */
-INLINE void 
+void
 ptw32_mcs_flag_set (LONG * flag)
 {
   HANDLE e = (HANDLE)PTW32_INTERLOCKED_COMPARE_EXCHANGE(
@@ -118,7 +118,7 @@ ptw32_mcs_flag_set (LONG * flag)
  * Store an event handle in the flag and wait on it if the flag has not been
  * set, and proceed without creating an event otherwise.
  */
-INLINE void 
+void
 ptw32_mcs_flag_wait (LONG * flag)
 {
   if (0 == InterlockedExchangeAdd((LPLONG)flag, 0)) /* MBR fence */

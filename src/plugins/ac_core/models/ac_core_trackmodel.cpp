@@ -18,7 +18,9 @@
 #include "ac_core_trackmodel.h"
 #include "ac_core_model.h"
 #include "ac_core_namespace.h"
+#include <QDataStream>
 #include <QMimeData>
+#include <QIODevice>
 #include <QStringList>
 
 using namespace Mi;

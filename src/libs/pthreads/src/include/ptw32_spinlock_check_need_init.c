@@ -38,7 +38,7 @@
 #include "implement.h"
 
 
-INLINE int
+int
 ptw32_spinlock_check_need_init (pthread_spinlock_t * lock)
 {
   int result = 0;
